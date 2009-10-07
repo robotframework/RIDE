@@ -1,2 +1,5 @@
+syntax: glob
+
 tmp
 .*project
+*.pyc
