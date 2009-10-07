@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<keywordspec generated="20080401 09:09:28" type="resource" name="SpecResource">
+<doc></doc>
+<keywords>
+<kw name="Normal Keyword"> 
+<doc>This is kw documentation.
+
+This is more docs.</doc>
+<arguments>
+<arg>foo</arg>
+</arguments>
+</kw>
+<kw name="Attributeless Keyword"> 
+<doc></doc>
+<arguments>
+</arguments>
+</kw>
+<kw name="Multiarg Keyword"> 
+<doc></doc>
+<arguments>
+<arg>arg1</arg>
+<arg>arg2=default value</arg>
+<arg>*args</arg>
+</arguments>
+</kw>
+</keywords>
+</keywordspec>

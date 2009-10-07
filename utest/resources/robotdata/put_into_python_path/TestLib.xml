@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<keywordspec generated="20090123 09:16:37" type="library" name="TestLib">
+<doc>Documentation for test library `TestLib`.</doc>
+<keywords>
+<kw name="Testlib Keyword">
+<doc></doc>
+<arguments>
+</arguments>
+</kw>
+<kw name="Testlib Keyword With Args">
+<doc>This keyword requires one argument, has one optional argument and varargs.
+
+This is some more documentation</doc>
+<arguments>
+<arg>arg1</arg>
+<arg>arg2=default value</arg>
+<arg>*args</arg>
+</arguments>
+</kw>
+<kw name="Testlib Keyword Only in XML">
+<doc></doc>
+<arguments>
+</arguments>
+</kw>
+</keywords>
+</keywordspec>

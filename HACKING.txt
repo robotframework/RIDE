@@ -1,0 +1,72 @@
+= General =
+
+This document describes the technical process of contributing code in the RIDE
+project.
+
+In general, sending patches is the way to start contributing. Patches should
+follow the guidelines described below. After submitting some number of accepted
+patches, commit rights may be given.
+
+
+= Project information =
+
+RIDE is hosted in Google Code service [1]. All information about commits, code
+reviews and changes in issue tracker are sent to ride-code mailing list [2].
+For development discussion, robotframework-devel mailing list [3] is used.
+
+
+= Source code =
+
+Source code is hosted in the Google Code Subversion repository [4], which
+also supports read-only anonymous checkouts.
+
+
+= Coding guidelines =
+
+In general, all the code should be written according to Style Guide for Python
+Code [5] However, as stated in the Zen of Python, practicality beats purity.
+
+== Method names ==
+
+Typically, we use `lowercase_with_underscore` style for method names. Of
+course, when overriding wx methods, `AllCapitalized` style must be used.
+Additionally, there's a special case when writing event handler methods. We
+have chosen to name event handlers following this pattern: `OnEventName` (e.g.
+`OnMouseClick`).
+
+== Variable names ==
+
+Instance variables also follow the `lowercase_with_underscore` naming
+convention.  Additionally, a leading underscore indicates that the variable is
+considered private.
+
+Global variables (provided there's really a need for such) use `ALL_CAPS`
+style.
+
+== Getters and setters ==
+
+We follow the Pythonic way of not implementing getters and setters in the case
+where direct attribute access is sufficient
+
+
+= Tests =
+
+Unfortunately we do not currently have high level automated test cases.
+However, all new code should have unit test written for it. These unit tests
+are included in the `utest` directory. To execute all unit tests, run
+
+	python utest/run_utests.py
+
+The `atest` folder contains some tests for serialization. These tests read data
+in RIDE and serialize it right back. Then both the original and modified suite
+is executed, and results compared. These test may be run with command (in atest
+directory)
+
+	python test_golden.py golden
+
+
+[1] http://code.google.com/p/robotframework-ride/
+[2] http://groups.google.com/group/robotframework-ride-code
+[3] http://groups.google.com/group/robotframework-devel
+[4] http://code.google.com/p/robotframework-ride/source/browse/ 
+[5] http://www.python.org/dev/peps/pep-0008/
