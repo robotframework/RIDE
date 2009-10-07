@@ -17,8 +17,26 @@ For development discussion, robotframework-devel mailing list [3] is used.
 
 = Source code =
 
-Source code is hosted in the Google Code Subversion repository [4], which
+Source code is hosted in the Google Code Mercurial repository [4], which
 also supports read-only anonymous checkouts.
+
+Note that if you need to go through a proxy to access internet, Mercurial
+1.3.1 is required.
+
+== Configuring Mercurial ==
+
+User settings for mercurial can be found ~/.hgrc on Linux and %HOME%\.hgrc in Windows.
+If the file does not exists, it must be created.
+
+This is the minimum amount of information to be able to commit back to the repository:
+
+[auth]
+ride.prefix = robotframework-ride.googlecode.com/hg
+ride.username = GoogleCode Username
+ride.password = GoogleCode Password
+
+[ui]
+username = Your Name <address@domain>
 
 
 = Coding guidelines =
