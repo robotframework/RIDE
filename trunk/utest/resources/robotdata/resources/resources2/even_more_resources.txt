@@ -1,2 +1,0 @@
-*User Keywords*
-Foo  Bar
