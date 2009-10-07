@@ -1,0 +1,357 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="generator" content="RobotIDE"> 
+<style type="text/css">
+html {
+  font-family: Arial,Helvetica,sans-serif;
+  background-color: white;
+  color: black;
+}
+p {
+  max-width: 60em;
+}
+table {
+  border-collapse: collapse;
+  empty-cells: show;
+  margin: 1em 0em;
+  border: 0.1em solid black;
+}
+th, td {
+  border-style: solid;
+  border-width: 0.05em 0.1em;
+  border-color: black;
+  padding: 0.1em 0.2em;
+  height: 1.5em;
+}
+th {
+  background-color: rgb(192, 192, 192);
+  color: black;
+  border-width: 0.1em;
+  font-weight: bold;
+  text-align: center;
+  text-transform: capitalize;
+  letter-spacing: 0.1em;
+}
+/* Widths of named columns */
+col.name {
+  width: 10em;
+}
+.action, .value, .arg {
+  width: 15em;
+}
+/* Properties for the name column 
+- td:first-child should work in CSS 2.1 avare browsers (tested in Firefox)
+- col.name is against specs but works in IE
+*/
+td:first-child, col.name {
+  background-color: rgb(240, 240, 240);
+  text-transform: capitalize;
+  letter-spacing: 0.1em;
+}
+/* required for IE */
+th {
+  font-style: normal;
+}
+</style>
+<title>Everything</title></head>
+<body>
+<h1>Everything</h1>
+
+<table border="1">
+<colgroup span="99"><col class="name"><col class="value" span="4"></colgroup>
+<tbody><tr>
+<th>Setting</th>
+<th>Value</th>
+<th>Value</th>
+<th>Value</th>
+<th>Value</th>
+</tr>
+<tr>
+<td>Documentation</td>
+<td>This test data file is used in *RobotIDE* _integration_ tests.</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Default Tags</td>
+<td>regeression</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Force Tags</td>
+<td>ride</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Suite Setup</td>
+<td>My Suite Setup</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Suite Teardown</td>
+<td>My Suite Teardown</td>
+<td>${scalar}</td>
+<td>@{LIST}</td>
+<td></td>
+</tr>
+<tr>
+<td>Test Setup</td>
+<td>My Test Setup</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Test Teardown</td>
+<td>My Test Teardown</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Test Timeout</td>
+<td>10 seconds</td>
+<td>No tarrying allowed</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Meta: My Meta</td>
+<td>data</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Library</td>
+<td>OperatingSystem</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr><td>Library</td><td>TestLib</td><td></td><td></td><td></td></tr><tr>
+<td>Resource</td>
+<td>resources/resource.html</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr><td>Resource</td><td>PathResource.html</td><td></td><td></td><td></td></tr><tr><td>Resource</td><td>spec_resource.html</td><td></td><td></td><td></td></tr><tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+
+<table border="1">
+<colgroup span="99"><col class="name"><col class="value" span="4"></colgroup>
+<tbody><tr>
+<th>Variable</th>
+<th>Value</th>
+<th>Value</th>
+<th>Value</th>
+<th>Value</th>
+</tr>
+<tr>
+<td>${SCALAR} =</td>
+<td>value</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>@{LIST}</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+</tr>
+<tr>
+<td>...</td>
+<td>a</td>
+<td>b</td>
+<td>c</td>
+<td>d</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+
+<table border="1">
+<colgroup span="99"><col class="name"><col class="action"><col class="arg" span="3"></colgroup>
+<tbody><tr>
+<th>Test Case</th>
+<th>Action</th>
+<th>Argument</th>
+<th>Argument</th>
+<th>Argument</th>
+</tr>
+<tr>
+<td><a name="test_My Test">My Test</a></td>
+<td>[Documentation]</td>
+<td>This is _test_ *case* documentation</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>[Setup]</td>
+<td>My Overriding Test Setup</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>[Tags]</td>
+<td>test 1</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>[Timeout]</td>
+<td>2 seconds</td>
+<td>I'm in a great hurry</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>Log</td>
+<td>Nothing to see</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>[Teardown]</td>
+<td>My Overriding Test Teardown</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+
+<table border="1">
+<colgroup span="99"><col class="name"><col class="action"><col class="arg" span="3"></colgroup>
+<tbody><tr>
+<th>Keyword</th>
+<th>Action</th>
+<th>Argument</th>
+<th>Argument</th>
+<th>Argument</th>
+</tr>
+<tr>
+<td><a name="keyword_My Test Setup">My Test Setup</a></td>
+<td>[Timeout]</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><a name="keyword_My Suite Teardown">My Suite Teardown</a></td>
+<td>[Arguments]</td>
+<td>${scalar arg}</td>
+<td>@{list arg}</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>[Documentation]</td>
+<td>This is *user* _keyword_ documentation</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>[Timeout]</td>
+<td>1 second</td>
+<td>I'm faster than you</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>Log</td>
+<td>${scalar arg}</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>Log Many</td>
+<td>@{list arg}</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>[Return]</td>
+<td>Success</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><a name="keyword_Duplicate UK">Duplicate UK</a></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>No Operation</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+
+</body></html>
