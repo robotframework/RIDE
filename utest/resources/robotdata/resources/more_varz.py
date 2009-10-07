@@ -1,1 +1,0 @@
-varfrommorevarz = {'key': 'value'}
