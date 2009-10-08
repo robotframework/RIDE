@@ -77,7 +77,7 @@ class ForKeyword(BaseKeyword):
         
     def get_display_value(self):
         in_token = self.range and 'IN RANGE' or 'IN'
-        return [':: FOR'] + self.vars + [in_token] + self.items
+        return [':FOR'] + self.vars + [in_token] + self.items
 
 
 class ForItemKeyword(BaseKeyword):
@@ -92,7 +92,7 @@ class ForItemKeyword(BaseKeyword):
 class ParallelKeyword(BaseKeyword):
 
     def get_display_value(self):
-        return [':: PARALLEL']
+        return [':PARALLEL']
 
 
 class GeneratedKeyword(object):
