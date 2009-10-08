@@ -243,7 +243,7 @@ class _AbstractDataFile(object):
             raise SerializationError(e.strerror)
         self._stat = self._get_stat(self.source)
         self.dirty = False
-        if old_source and os.path.exists(old_source):
+        if old_source and os.path.isfile(old_source):
             os.remove(old_source)
 
     def _change_format_if_needed(self, format):
