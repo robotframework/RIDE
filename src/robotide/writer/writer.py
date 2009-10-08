@@ -186,7 +186,7 @@ class TxtFileWriter(_WriterHelper):
         for row in self._split_data(self._encode(data)):
             if indent:
                 self._output.write('    ')
-            self._output.write('   '.join(row) + '\n')
+            self._output.write('  '.join(row) + '\n')
 
 
 class HtmlFileWriter(_WriterHelper):
