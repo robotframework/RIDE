@@ -288,11 +288,10 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         dlg.Destroy()
 
 
-class _EditorPanel(wx.ScrolledWindow):
+class _EditorPanel(wx.Panel):
 
     def __init__(self, parent):
-        wx.ScrolledWindow.__init__(self, parent, style=wx.SUNKEN_BORDER)
-        self.SetScrollbars(1,1,600,400)
+        wx.Panel.__init__(self, parent, style=wx.SUNKEN_BORDER)
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.SetSizer(self.sizer)
         self.editor = None
