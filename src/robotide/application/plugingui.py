@@ -12,29 +12,23 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-
-"""A GUI for managing plugins, implemented as a plugin (!)"""
-
 import wx
 from plugin import Plugin
 from wx.lib.scrolledpanel import ScrolledPanel
+
+from robotide.context import SETTINGS
 
 ID_PLUGIN_MANAGER = wx.NewId()
 
 
 class PluginManagerPlugin(Plugin):
-    """GUI for managing Plugins."""
+    """GUI component for managing plugins, implemented as a plugin (!)"""
 
-    def __init__(self, manager=None):
-        Plugin.__init__(self, manager)
-        self.url = "http://code.google.com/p/robotframework-ride/"
-        self.internal = True
-        self.id = "ride.pluginmanager"
-        self.name = "Plugin Manager"
-        self.version = "0.1"
-        self.active = False
+    def __init__(self, application):
+        url = "http://code.google.com/p/robotframework-ride/"
+        Plugin.__init__(self, application, metadata={'url': url})
         self.panel = None
-        self.frame = manager.get_frame()
+        self.settings = SETTINGS.add_section('plugins')
 
     def activate(self):
         """Make the plugin available"""
@@ -42,17 +36,11 @@ class PluginManagerPlugin(Plugin):
         # the tools menu. We don't actually create a notebook page 
         # until the user clicks on the menu item
         self._add_to_menubar()
-        self.active = True
 
-    def deactivate(self):
-        # this can't be deactivated. It's a core service that needs
-        # to always be available.
-        pass
-        
     def OnShowManager(self, event):
         if not self.panel:
             self._add_to_notebook()
-        notebook = self.frame.notebook
+        notebook = self.get_notebook()
         notebook.SetSelection(notebook.GetPageIndex(self.panel))
         self._refresh()
 
@@ -68,14 +56,14 @@ class PluginManagerPlugin(Plugin):
         st2.SetFont(boldFont)
         plugin_panel_sizer.Add(st1, 0, wx.BOTTOM, border=8)
         plugin_panel_sizer.Add(st2, 0, wx.BOTTOM|wx.EXPAND, border=8)
-        for id, plugin in self.manager.get_plugins().items():
+        for plugin in self._app._plugins.plugins:
             cb = wx.CheckBox(self.plugin_panel, wx.ID_ANY)
             cb.SetValue(plugin.active)
             p = PluginPanel(self.plugin_panel, wx.ID_ANY, plugin)
             plugin_panel_sizer.Add(cb, 0, wx.ALIGN_CENTER_HORIZONTAL)
             plugin_panel_sizer.Add(p,  0, wx.EXPAND)
             self.plugin_panel.Bind(wx.EVT_CHECKBOX, lambda evt, plugin=plugin: self.OnCheckbox(plugin, evt), cb)
-            if plugin.is_internal() or plugin.error:
+            if plugin.error:
                 cb.Enable(False)
         self.panel.Layout()
         self.plugin_panel.Layout()
@@ -86,15 +74,21 @@ class PluginManagerPlugin(Plugin):
             plugin.activate()
         else:
             plugin.deactivate()
-        self.manager.save_settings()
-        # make sure that the activation or deactivation didn't
-        # change which tab was selected. We want this tab to 
-        # remain as the current tab
-        self.frame.notebook.SetSelection(self.frame.notebook.GetPageIndex(self.panel))
+        # FIXME: saves the wrong settings
+        self._save_settings()
+        # TODO: move to Plugin
+        nb = self.get_notebook()
+        nb.SetSelection(nb.GetPageIndex(self.panel))
+
+    def _save_settings(self):
+        """Saves the state of the plugins to the settings file"""
+        for plugin in self._app._plugins.plugins:
+            self.settings[plugin.name] = plugin.active
+        self.settings.save()
 
     def _add_to_notebook(self):
         """Add a tab for this plugin to the notebook if there's not already one"""
-        notebook = self.frame.notebook
+        notebook = self.get_notebook()
         self.panel = wx.Panel(notebook)
         notebook.AddPage(self.panel, "Manage Plugins")
         # notebook panel is composed of two sections, a header and
@@ -121,13 +115,12 @@ class PluginManagerPlugin(Plugin):
 
     def _add_to_menubar(self):
         """Add a menu item on the Tools menu"""
-        menubar = self.manager.get_menu_bar()
+        menubar = self.get_menu_bar()
         if menubar:
             pos = menubar.FindMenu("Tools")
             tools_menu = menubar.GetMenu(pos)
             tools_menu.Append(ID_PLUGIN_MANAGER, "Manage Plugins")
-
-            wx.EVT_MENU(self.frame, ID_PLUGIN_MANAGER, self.OnShowManager)
+            wx.EVT_MENU(self._frame, ID_PLUGIN_MANAGER, self.OnShowManager)
                    
         
 class PluginPanel(wx.Panel):
@@ -138,40 +131,34 @@ class PluginPanel(wx.Panel):
     # accept some basic HTML.tags.
     def __init__(self, parent, id, plugin):
         wx.Panel.__init__(self, parent, id)
-        self.plugin = plugin
-        name = self._name_ctrl()
-        description = wx.StaticText(self, wx.ID_ANY, self._get_description())
-        config=plugin.config_panel(self, wx.ID_ANY)
+        config = plugin.config_panel(self)
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(name, 0)
-        sizer.Add(description, 0, wx.EXPAND)
+        sizer.Add(wx.StaticText(self, wx.ID_ANY, plugin.name), 0)
+        # TODO: Add plugin metadata 
+        sizer.Add(self._get_description(plugin), 0, wx.EXPAND)
         if config:
             sizer.Add(config, 1, wx.EXPAND|wx.LEFT, border=16)
         self.SetSizer(sizer)
-        if plugin.error:
-            description.SetForegroundColour("firebrick")
 
     def _name_ctrl(self):
         """Return a suitable control for displaying the plugin name
 
-           This will return a HyperlinkCtrl if an url is defined,
-           a StaticText otherwise.
+        This will return a HyperlinkCtrl if an url is defined,
+        a StaticText otherwise.
         """
         text = self.plugin.name + " (version %s)" % self.plugin.version
         if self.plugin.url:
             ctrl = wx.HyperlinkCtrl(self, wx.ID_ANY, text, self.plugin.url)
         else:
-            ctrl=wx.StaticText(self, wx.ID_ANY, text)
+            ctrl = None
         return ctrl
 
-    def _get_description(self):
+    def _get_description(self, plugin):
         """Returns an appropriate descriptive string for a plugin"""
-        if self.plugin.error:
-            text = "This plugin is disabled because it failed to load properly, " + \
-                "due to the following reason:\n" + str(self.plugin.error)
-        else:
-            text = self.plugin.__doc__
-            text = text and text.strip() or "<no documentation>"
-        if self.plugin.is_internal():
-            text += "\nThis is a core plugin that cannot be disabled."
-        return text
+        if not plugin.error:
+            return wx.StaticText(self, label=plugin.doc)
+        text = "This plugin is disabled because it failed to load properly.\n" \
+               + "Error: " + plugin.error
+        desc = wx.StaticText(self, label=text)
+        desc.SetForegroundColour("firebrick")
+        return desc

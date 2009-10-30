@@ -12,6 +12,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import inspect
+
 from robot.utils import printable_name, contains, normalize, eq, eq_any,\
     HtmlWriter, NormalizedDict, timestr_to_secs, secs_to_timestr, normpath,\
     DomWrapper, unic, asserts, unescape, html_attr_escape,\
@@ -24,8 +26,9 @@ from onscreenframe import OnScreenEnsuringFrame
 
 
 def name_from_class(item, drop=None):
-    name = item.__class__.__name__
-    if drop:
+    cls = inspect.isclass(item) and item or item.__class__
+    name = cls.__name__
+    if drop and name.endswith(drop):
         name = name[:-len(drop)]
     return printable_name(name, code_style=True)
 

@@ -44,32 +44,30 @@ class InMemoryTxtWriter(TxtFileWriter):
 
 
 class PreviewPlugin(Plugin):
+    """Provides preview of the test data in HTML and TXT formats."""
 
-    def __init__(self, manager):
-        Plugin.__init__(self, manager)
-        self.internal = True
-        self.active = True
-        self.name = 'Preview'
-        self.version = VERSION
+    def __init__(self, application):
+        Plugin.__init__(self, application)
         self._panel = None
         self._item = None
 
     def activate(self):
-        self.manager.create_menu_item('Tools', 'Preview', self.OnShowPreview,
-                                     'Show preview of the current file', -1)
-        self.manager.subscribe(self._create_preview_if_item_changed,
-                               ('core', 'tree', 'selection'))
-        self.manager.subscribe(self._create_preview_if_self_selected,
-                               ('core', 'notebook', 'tabchange'))
+        self.create_menu_item('Tools', 'Preview', self.OnShowPreview,
+                              'Show preview of the current file', -1)
+        self.subscribe(self._create_preview_if_item_changed,
+                       ('core', 'tree', 'selection'))
+        self.subscribe(self._create_preview_if_self_selected,
+                       ('core', 'notebook', 'tabchange'))
 
     def deactivate(self):
-        self._panel.Destroy()
+        if self._panel:
+            self._panel.Destroy()
         self._panel = None
 
     def OnShowPreview(self, event):
         self._create_ui()
         if self._create_preview_if_item_is_selected():
-            self.manager.show_page(self._panel)
+            self.show_page(self._panel)
 
     def _create_preview_if_item_is_selected(self):
         item = self._get_item()
@@ -93,7 +91,7 @@ class PreviewPlugin(Plugin):
             self._create_preview_if_item_is_selected()
 
     def _get_item(self):
-        return self.manager.get_frame()._get_active_item()
+        return self.get_frame()._get_active_item()
 
     def _create_preview(self, item):
         if not self._panel:
@@ -102,7 +100,7 @@ class PreviewPlugin(Plugin):
 
     def _create_ui(self):
         if not self._panel:
-            notebook = self.manager.get_notebook()
+            notebook = self.get_notebook()
             self._panel = PreviewPanel(self, notebook)
 
 

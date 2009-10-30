@@ -43,18 +43,20 @@ def initialize_settings(tool_name, source_path, dest_file_name=None):
         shutil.copy(source_path, settings_path)
     else:
         _merge_settings(source_path, settings_path)
-    return settings_path
+    return os.path.abspath(settings_path)
 
 
 def _merge_settings(default_path, user_path):
     settings = ConfigObj(default_path, unrepr=True)
     try:
         settings.merge(ConfigObj(user_path, unrepr=True))
-    except UnreprError, error:
-        msg = "Invalid config file '%s'\n%s" % (user_path, error)
-        raise ConfigurationError(msg)
-    # TODO: There must be better way to do this
-    settings.write(open(user_path, 'w'))
+    except UnreprError, err:
+        raise ConfigurationError("Invalid config file '%s': %s" % (user_path, err))
+    try:
+        f = open(user_path, 'w')
+        settings.write(f)
+    finally:
+        f.close()
 
 
 class SectionError(Exception):
@@ -76,13 +78,21 @@ class _Section:
 
     def __setitem__(self, name, value):
         self.set(name, value)
-    
+
     def __getitem__(self, name):
         value = self._config_obj[name]
         if isinstance(value, Section):
             return _Section(value, self)
         return value
-    
+
+    def get(self, name, default):
+        """Returns specified setting or (automatically set) default."""
+        try:
+            return self[name]
+        except KeyError:
+            self.set(name, default)
+            return default
+
     def set(self, name, value, autosave=True, override=True):
         """Sets setting 'name' value to 'value'.
         

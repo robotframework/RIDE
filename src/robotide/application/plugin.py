@@ -12,80 +12,112 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import inspect
+import wx
+from  wx.lib.pubsub import Publisher
+
+from robotide import utils
+
 
 class Plugin(object):
-    """Base class for all RIDE plugins"""
 
-    def __init__(self, manager=None):
-        """Initialize the plugin. It shouldn't create any interface
-           elements. This should only initialize the data used
-           by the plugin manager. Any interface elements that need
-           to be created should be done in the activate() method
+    def __init__(self, application, name=None, doc=None, metadata=None,
+                 initially_active=False):
+        """Initialize the plugin. 
+
+        This shouldn't create any user interface elements, only initialize the
+        data used by the plugin loader and manager UI. Any user interface 
+        elements that need to be created should be done in the activate() method.
         """
-
-        # This should only be set by the code that loads a plugin. If 
-        # there is a problem loading the plugin this will be set to
-        # the exception
-        self.error = None
-        
-        # Defines the version of this plugin.
-        self.version = "unknown"
-
-        # Internal plugins are plugins that are part of the core
-        # ride and can't be disabled by the user
-        self.internal = False
-
-        # The id uniquely identifies this plugin. For lack of a better
-        # idea, perhaps java package naming convents should be used
-        # (eg: com.orbitz.helloWorld)
-        #
-        # (do we really need a unique id, or can we just the name
-        # of the file that implements the plugin?)
-        self.id = None
-
-        # This determines whether the plugin is active or not.
-        # Only active plugins will be loaded into the GUI.
-        self.active = False
-        
-        # A human-friendly name for the plugin. Mostly for displaying
-        # in a GUI or web page.
-        self.name = ""
-        
-        # A short description of the plugin
-        self.description = self.__doc__
-
-        # A URL to the plugin home page. The idea being, if this is
-        # set, the plugin manager can display the link so the user
-        # can get documentation, download new versions, etc.
-        self.url = None
-
-        # A handle to a plugin manager object to communicate with RIDE
-        self.manager = manager
-
-    def is_internal(self):
-        """Return True if this plugin is marked as 'internal'"""
-        # This method is primarily to support the plugin manager GUI
-        # to prevent users from disabling important plugins. Is this
-        # really necessary? Woe to the user that disables the plugin
-        # manager GUI!
-        if self.__dict__.has_key("internal"):
-            return self.internal
-        else:
-            return False
+        self._app = application
+        self._frame = application.frame
+        self.name = name or utils.name_from_class(self, drop='Plugin')
+        self.doc = doc or inspect.getdoc(self) or ''
+        self.metadata = metadata or {}
+        self.initially_active = initially_active
 
     def activate(self):
-        """Create the plugin window components or whatever else
-           it needs to do to become active 
-        """
-        self.active = True
+        """Create necessary user interface components."""
+        pass
 
     def deactivate(self):
-        """Undo whatever was done in the activate method"""
-        self.active = False
+        """Undo whatever was done in the activate method."""
+        pass
 
-    def config_panel(self, parent, id):
+    def config_panel(self, parent):
         """Returns a panel for configuring this plugin
 
            This can return None if there are no values to configure.
         """
         return None
+
+    def create_menu_item(self, menu_name, item_name, action, item_doc='',
+                         index=0):
+        """Create a menu item in an existing menu.
+
+        `menu_name` is the name of the toplevel menu
+        `item_name` is the visible name of the item
+        `action` is a callable that is bound to the menu event
+        `index` is the position of the item in the menu
+        """
+        # TODO: it would be better to be able to insert after a certain item
+        # not by position. Also, should the args be wrapped in an object?
+        menubar = self.get_menu_bar()
+        menu = menubar.GetMenu(menubar.FindMenu(menu_name))
+        id = wx.NewId()
+        if index < 0:
+            index = menu.GetMenuItemCount() + index + 1
+        menu.Insert(index, id, item_name, item_doc)
+        wx.EVT_MENU(self._frame, id, action)
+
+    def get_menu_bar(self):
+        """Returns the menu bar of the main RIDE window."""
+        return self._frame.GetMenuBar()
+
+    def get_tool_bar(self):
+        """Returns the menu bar of the main RIDE window."""
+        return self._frame.GetToolBar()
+
+    def get_frame(self):
+        return self._frame
+
+    def get_notebook(self):
+        return self._frame.notebook
+
+    def get_model(self):
+        return self._app.model
+
+    def get_tree(self):
+        return self._frame.tree
+
+    def show_page(self, page):
+        self._frame.show_page(page)
+
+    def new_suite_can_be_opened(self):
+        return self._app.ok_to_open_new()
+
+    def open_suite(self, path):
+        self._frame.open_suite(path)
+
+    def subscribe(self, listener, topic=''):
+        """Subscribe to notifications for the given topic.
+
+        A topic is a dot-separated string (eg: "core.open_suite") or
+        a tuple ("core","open_suite") representing a hierarchy. All
+        publications at or below the given hierarchy will call the
+        given function (ie: subscribing to ("core") will cause the
+        function to be called for ("core"), ("core","anything"), etc.
+
+        This just wraps wxPython's built-in Publisher object, so that plugins
+        need not be changed in case the underlying message passing mechanism
+        is changed later.
+        """
+        Publisher().subscribe(listener,topic)
+
+    def unsubscribe(self, listener, topics=None):
+        """Unsubscribe to notifications for the given topic."""
+        Publisher().unsubscribe(listener, topics)
+
+    def publish(self, topic, data):
+        """Publish a message to all subscribers"""
+        Publisher().sendMessage(topic, data)
