@@ -256,6 +256,13 @@ class TestSections(_TestSettings):
         self.settings['Plugin 1'].add_section('Plugin 1.1')
         self.assertEquals(self.settings['Plugin 1']['Plugin 1.1']._config_obj, {})
 
+    def test_add_settings_to_sub_section(self):
+        self.settings.add_section('Plugin 1')
+        self.settings['Plugin 1'].add_section('Plugin 1.1')
+        self.settings['Plugin 1']['Plugin 1.1']['foo'] = 'bar'
+        self.assertEquals(self.settings['Plugin 1']['Plugin 1.1']._config_obj, 
+                          {'foo':'bar'})
+
     def test_using_section_separately_and_saving(self):
         self.settings.add_section('Plugin 1')
         plugin_settings = self.settings['Plugin 1']
