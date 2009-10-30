@@ -12,7 +12,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-
 """Release notes plugin
 
 This will create a notebook tab that displays release notes
@@ -32,19 +31,13 @@ from wx.lib.ClickableHtmlWindow import PyClickableHtmlWindow
 class ReleaseNotesPlugin(Plugin):
     """Display Release Notes in a Tab"""
 
-    def __init__(self, manager=None):
-        Plugin.__init__(self, manager)
-        self.id = "releasenotes"
-        self.name = "Release Notes"
-        self.version = "0.1"
-        self.active = True
+    def __init__(self, application):
+        Plugin.__init__(self, application)
         self._panel = None
-        self.internal = True
-        self.settings = SETTINGS.add_section(self.id)
-        self.settings.set_defaults(auto_show = "")
+        self.settings = SETTINGS.add_section(self.name)
+        self.settings.set_defaults(auto_show='')
 
-        # This plugin doesn't have an activate or deactiveate method,
-        # it should always be active.
+    def activate(self):
         self._add_to_menubar()
 
     def auto_show(self):
@@ -65,7 +58,7 @@ class ReleaseNotesPlugin(Plugin):
         """Show the release notes tab"""
         if not self._panel:
             self._create_page()
-        self.manager.show_page(self._panel)
+        self.show_page(self._panel)
 
     def OnShowReleaseNotes(self, event):
         """Callback for the Release Notes menu item"""
@@ -73,17 +66,17 @@ class ReleaseNotesPlugin(Plugin):
 
     def _add_to_menubar(self):
         """Add a menu item on the Help menu"""
-        menubar = self.manager.get_menu_bar()
+        menubar = self.get_menu_bar()
         if menubar:
             pos = menubar.FindMenu("Help")
             release_notes_id = wx.NewId()
             help_menu = menubar.GetMenu(pos)
             help_menu.Insert(0, release_notes_id, "Release Notes", "Show the release notes")
-            wx.EVT_MENU(self.manager.get_frame(), release_notes_id, self.OnShowReleaseNotes)
+            wx.EVT_MENU(self.get_frame(), release_notes_id, self.OnShowReleaseNotes)
 
     def _create_page(self):
         """Add a tab for this plugin to the notebook"""
-        notebook = self.manager.get_notebook()
+        notebook = self.get_notebook()
         if notebook:
             self._panel = wx.Panel(notebook)
             self.html = PyClickableHtmlWindow(self._panel, wx.ID_ANY)

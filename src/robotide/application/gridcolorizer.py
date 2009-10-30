@@ -21,28 +21,20 @@ from plugin import Plugin
 class Colorizer(Plugin):
     """Colorizes cells in the keyword editor"""
 
-    def __init__(self, manager):
-        Plugin.__init__(self, manager)
-        self.name = "Keyword Editor Colorizer"
-        self.version = "0.1"
-        self.id = "ride.colorizer"
-        self._frame = manager.get_frame()
-        self._notebook = manager.get_notebook()
-        self._settings = context.SETTINGS.add_section(self.id)
+    def __init__(self, application):
+        Plugin.__init__(self, application)
+        self._frame = self.get_frame()
+        self._notebook = self.get_notebook()
+        self._settings = context.SETTINGS.add_section(self.name)
         self._settings.set_defaults(comment_fg="firebrick",
                                     keyword_fg='blue',
                                     variable_fg='forest green')
-        self.activate()
 
     def activate(self):
-        """Activate the plugin"""
-        self.active = True
-        self.manager.subscribe(self.OnCellChanged,("core","grid","cell changed"))
+        self.subscribe(self.OnCellChanged,("core","grid","cell changed"))
 
     def deactivate(self):
-        """Deactivate the plugin"""
-        self.manager.unsubscribe(self.OnCellChanged,("core","grid","cell changed"))
-        self.active = False
+        self.unsubscribe(self.OnCellChanged,("core","grid","cell changed"))
 
     def OnCellChanged(self, message):
         """Update the color of the cell whenever the content changes"""
