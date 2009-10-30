@@ -25,7 +25,7 @@ else:
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="RobotIDE" /> 
+<meta name="generator" content="RIDE" /> 
 <meta name="rf-template" content="False" /> 
 <style type="text/css">
 html {
