@@ -14,6 +14,7 @@
 
 import os
 import wx
+from  wx.lib.pubsub import Publisher
 try:
     import treemixin
 except ImportError:
@@ -42,7 +43,6 @@ class SuiteTree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnRightClick)
         self.Bind(wx.EVT_LEFT_DCLICK, self.OnLeftDClick)
         self.Bind(wx.EVT_TREE_END_LABEL_EDIT, self.OnLabelEdit)
-        self._plugin_manager = None
         self._editor_panel = editor_panel
         self._images = TreeImageList()
         self.SetImageList(self._images)
@@ -50,15 +50,10 @@ class SuiteTree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
         self._history = utils.History()
         self._resource_root = None
 
-    def populate_tree(self, model, plugin_manager=None):
-        self._initialize_plugin_manager(plugin_manager)
+    def populate_tree(self, model):
         self._clear_tree_data()
         self._populate_model(model)
         self._refresh_view()
-
-    def _initialize_plugin_manager(self, plugin_manager):
-        if not self._plugin_manager and plugin_manager:
-            self._plugin_manager = plugin_manager
 
     def _clear_tree_data(self):
         if self._root:
@@ -316,9 +311,9 @@ class SuiteTree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
         self._history.change(node)
         handler = self.GetItemPyData(node)
         if handler and handler.item:
-            self._plugin_manager.publish(('core', 'tree', 'selection'),
-                                         {'node': node, 'item': handler.item,
-                                          'text': self.GetItemText(node)})
+            Publisher().sendMessage(('core', 'tree', 'selection'),
+                                    {'node': node, 'item': handler.item,
+                                     'text': self.GetItemText(node)})
             self.show_editor(handler.item)
         event.Skip()
 

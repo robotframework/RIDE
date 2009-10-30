@@ -15,6 +15,7 @@
 
 import os
 import wx
+from  wx.lib.pubsub import Publisher
 try:
     from wx.lib.agw import flatnotebook as fnb
 except ImportError:
@@ -59,8 +60,8 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         self.notebook = NoteBook(splitter, self._application)
         self._editor_panel = _EditorPanel(self.notebook)
         self.notebook.AddPage(self._editor_panel, "Edit    ")
-        self._application.plugin_manager.subscribe(self._editor_panel.save,
-                                                   ('core', 'notebook', 'tabchange'))
+        Publisher().subscribe(self._editor_panel.save,
+                              ('core', 'notebook', 'tabchange'))
         sizer = wx.BoxSizer()
         sizer.Add(self._editor_panel, 1, wx.EXPAND)
         welcome_page = utils.RideHtmlWindow(self._editor_panel, wx.DefaultSize,
@@ -83,8 +84,8 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         self.SetToolBar(actions.get_toolbar())
         self.CreateStatusBar()
 
-    def populate_tree(self, model, plugin_manager):
-        self.tree.populate_tree(model, plugin_manager)
+    def populate_tree(self, model):
+        self.tree.populate_tree(model)
 
     def show_page(self, panel):
         """Shows the notebook page that contains the given panel.
@@ -340,5 +341,5 @@ class NoteBook(fnb.FlatNotebook):
             newtitle = self.GetPageText(event.GetSelection())
         else:
             newtitle = None
-        self._app.plugin_manager.publish(('core', 'notebook', 'tabchange'),
-                                         {'oldtab': oldtitle, 'newtab': newtitle})
+        Publisher().sendMessage(('core', 'notebook', 'tabchange'),
+                                {'oldtab': oldtitle, 'newtab': newtitle})
