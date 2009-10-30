@@ -13,16 +13,17 @@
 #  limitations under the License.
 
 
-import wx
 import sys
+import wx
+from wx.lib.pubsub import Publisher
 
-from robotide import context
 from robotide.robotapi import ROBOT_VERSION
 from robotide.errors import DataError, NoRideError
 from robotide.ui import RideFrame
+from robotide import context
 from robotide import utils
 
-from pluginmanager import PluginLoader, PluginManager
+from pluginmanager import PluginManager
 from datamodel import DataModel
 
 
@@ -37,37 +38,24 @@ class RIDE(wx.App):
         self._check_robot_version()
         self.model = None
         self.frame = RideFrame(self)
-        self.plugin_manager = PluginManager(self)
         self.frame.create_ui(_KeywordFilter(self))
-        self.plugins = self._load_plugins()
+        self._plugins = PluginManager(self)
         self.open_suite(self._path)
-        self.frame.populate_tree(self.model, self.plugin_manager)
+        self.frame.populate_tree(self.model)
         return True
 
     def _check_robot_version(self):
         if ROBOT_VERSION < '2.1':
             context.LOG.error('You are using an old version (%s) of Robot Framework.\n\n'
-                             'RIDE does not work correctly with this version. '
-                             'Please upgrade to Robot Framework 2.1 or newer from\n'
-                             'http://robotframework.org/.' % ROBOT_VERSION)
+                              'RIDE does not work correctly with this version. '
+                              'Please upgrade to Robot Framework 2.1 or newer from\n'
+                              'http://robotframework.org/.' % ROBOT_VERSION)
             sys.exit(1)
-
-    def _load_plugins(self):
-        # TODO: load user preferences which, among other things,
-        # can define which plugins to activate. We could also
-        # let the user define where to look for plugins...
-        plugin_loader = PluginLoader(self.plugin_manager)
-        loaded_plugins = plugin_loader.load_plugins()
-        # do this after loading all other plugins to insure it's
-        # effect isn't negated by some other plugin.
-        if plugin_loader.plugins.has_key("releasenotes"):
-            plugin_loader.plugins["releasenotes"].auto_show()
-        return loaded_plugins
 
     def open_suite(self, path):
         try:
             self.model = DataModel(path)
-            self.plugin_manager.publish(("core","open","suite"),{"path":path})
+            Publisher().sendMessage(('core', 'open', 'suite'), {'path': path})
         except (DataError, NoRideError), err:
             self.model = DataModel()
             context.LOG.error(str(err))
@@ -79,8 +67,8 @@ class RIDE(wx.App):
             context.LOG.error(str(err))
             resource = None
         if resource:
-            self.plugin_manager.publish(("core","open","resource"),
-                                        {"path": resource.source})
+            Publisher().sendMessage(('core', 'open', 'resource'),
+                                    {'path': resource.source})
             self.frame.tree.add_resource(resource)
 
     def import_new_resource(self, datafile, path):
@@ -121,17 +109,11 @@ class RIDE(wx.App):
     def save_as(self, path):
         self.model.save_as(path)
         self.frame.SetStatusText('Saved suite as %s' % self.model.suite.source)
-        self.plugin_manager.publish(("core","save_as"),{"path":self.model.suite.source})
+        self.plugin_manager.publish(('core', 'save_as'),
+                                    {'path': self.model.suite.source})
 
     def populate_tree(self):
         self.frame.populate_tree(self.model, self.plugin_manager)
-
-    def _maybe_show_release_notes(self):
-        # Release notes deserve some special attention. The release notes
-        # plugin could have any number of other plugins loaded after it
-        # but we want it to appear last in the notebook, and only under
-        # certain conditions. 
-        self.plugins["releasenotes"].auto_show()
 
 
 class _KeywordFilter(object):
@@ -156,4 +138,3 @@ class _KeywordFilter(object):
         if utils.contains(kw.name, pattern, ignore=['_']):
             return True
         return search_docs and utils.contains(kw.doc, pattern)
-
