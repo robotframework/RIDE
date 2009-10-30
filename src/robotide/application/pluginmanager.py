@@ -76,10 +76,10 @@ def PluginFactory(application, plugin_class):
     except Exception, err:
         return BrokenPlugin(str(err), plugin_class)
     else:
-        return PluginWrapper(application, plugin)
+        return PluginConnector(application, plugin)
 
 
-class _PluginWrapper(object):
+class _PluginConnector(object):
 
     def __init__(self, name, doc='', error=None):
         self.name = name
@@ -89,10 +89,10 @@ class _PluginWrapper(object):
         self.config_panel = lambda self: None
 
 
-class PluginWrapper(_PluginWrapper):
+class PluginConnector(_PluginConnector):
 
     def __init__(self, application, plugin):
-        _PluginWrapper.__init__(self, plugin.name, plugin.doc)
+        _PluginConnector.__init__(self, plugin.name, plugin.doc)
         self.config_panel = plugin.config_panel
         self.activate = plugin.activate
         self.deactivate = plugin.deactivate
@@ -101,9 +101,9 @@ class PluginWrapper(_PluginWrapper):
             self.active = True
 
 
-class BrokenPlugin(_PluginWrapper):
+class BrokenPlugin(_PluginConnector):
 
     def __init__(self, error, plugin_class):
         name = utils.name_from_class(plugin_class, 'Plugin')
-        _PluginWrapper.__init__(self, name, error=error)
+        _PluginConnector.__init__(self, name, error=error)
         LOG.error("Taking %s plugin into use failed:\n%s" % (name, error))
