@@ -13,38 +13,27 @@
 #  limitations under the License.
 
 import wx
-from plugin import Plugin
 from wx.lib.scrolledpanel import ScrolledPanel
 
 from robotide.context import SETTINGS
 
-ID_PLUGIN_MANAGER = wx.NewId()
 
-
-class PluginManagerPlugin(Plugin):
+class PluginManager(wx.Panel):
     """GUI component for managing plugins, implemented as a plugin (!)"""
 
-    def __init__(self, application):
-        url = "http://code.google.com/p/robotframework-ride/"
-        Plugin.__init__(self, application, metadata={'url': url})
-        self.panel = None
+    def __init__(self, notebook):
+        wx.Panel.__init__(self, notebook)
+        self._notebook = notebook
         self.settings = SETTINGS.add_section('plugins')
+        self.Show(False)
 
-    def activate(self):
-        """Make the plugin available"""
-        # in the case of this plugin, "active" means there's an item on
-        # the tools menu. We don't actually create a notebook page 
-        # until the user clicks on the menu item
-        self._add_to_menubar()
+    def show(self, plugins):
+        self._add_to_notebook()
+        self.Show(True)
+        self._notebook.SetSelection(self._notebook.GetPageIndex(self))
+        self._refresh(plugins)
 
-    def OnShowManager(self, event):
-        if not self.panel:
-            self._add_to_notebook()
-        notebook = self.get_notebook()
-        notebook.SetSelection(notebook.GetPageIndex(self.panel))
-        self._refresh()
-
-    def _refresh(self):
+    def _refresh(self, plugins):
         """Refresh the list of plugins"""
         plugin_panel_sizer = self.plugin_panel.GetSizer()
         plugin_panel_sizer.Clear(True)
@@ -56,7 +45,7 @@ class PluginManagerPlugin(Plugin):
         st2.SetFont(boldFont)
         plugin_panel_sizer.Add(st1, 0, wx.BOTTOM, border=8)
         plugin_panel_sizer.Add(st2, 0, wx.BOTTOM|wx.EXPAND, border=8)
-        for plugin in self._app._plugins.plugins:
+        for plugin in plugins:
             cb = wx.CheckBox(self.plugin_panel, wx.ID_ANY)
             cb.SetValue(plugin.active)
             p = PluginPanel(self.plugin_panel, wx.ID_ANY, plugin)
@@ -65,7 +54,7 @@ class PluginManagerPlugin(Plugin):
             self.plugin_panel.Bind(wx.EVT_CHECKBOX, lambda evt, plugin=plugin: self.OnCheckbox(plugin, evt), cb)
             if plugin.error:
                 cb.Enable(False)
-        self.panel.Layout()
+        self.Layout()
         self.plugin_panel.Layout()
 
     def OnCheckbox(self, plugin, evt):
@@ -88,39 +77,25 @@ class PluginManagerPlugin(Plugin):
 
     def _add_to_notebook(self):
         """Add a tab for this plugin to the notebook if there's not already one"""
-        notebook = self.get_notebook()
-        self.panel = wx.Panel(notebook)
-        notebook.AddPage(self.panel, "Manage Plugins")
+        self._notebook.AddPage(self, "Manage Plugins")
         # notebook panel is composed of two sections, a header and
         # the "plugin panel". The latter is a scrolled window that
         # has a row for each plugin.
-        header_panel = wx.Panel(self.panel, wx.ID_ANY)
+        header_panel = wx.Panel(self, wx.ID_ANY)
         header = wx.StaticText(header_panel, wx.ID_ANY, "Installed Plugins")
         header.SetFont(wx.Font(14, wx.SWISS, wx.NORMAL, wx.BOLD))
-        plugin_panel = ScrolledPanel(self.panel, wx.ID_ANY, style=wx.TAB_TRAVERSAL)
+        plugin_panel = ScrolledPanel(self, wx.ID_ANY, style=wx.TAB_TRAVERSAL)
         plugin_panel.SetupScrolling()
         plugin_panel_sizer = wx.FlexGridSizer(1, 2, hgap=8, vgap=8)
         plugin_panel_sizer.AddGrowableCol(1, 1)
         plugin_panel.SetSizer(plugin_panel_sizer)
-        line = wx.StaticLine(self.panel)
+        line = wx.StaticLine(self)
         main_sizer = wx.BoxSizer(wx.VERTICAL)
-        self.panel.SetSizer(main_sizer)
+        self.SetSizer(main_sizer)
         main_sizer.Add(header_panel, 0, wx.LEFT|wx.RIGHT|wx.TOP, border=16)
         main_sizer.Add(line, 0, wx.EXPAND|wx.LEFT|wx.RIGHT, border=16)
         main_sizer.Add(plugin_panel, 1, wx.EXPAND|wx.ALL, border=16)
         self.plugin_panel = plugin_panel
-
-    def _add_to_toolbar(self):
-        pass
-
-    def _add_to_menubar(self):
-        """Add a menu item on the Tools menu"""
-        menubar = self.get_menu_bar()
-        if menubar:
-            pos = menubar.FindMenu("Tools")
-            tools_menu = menubar.GetMenu(pos)
-            tools_menu.Append(ID_PLUGIN_MANAGER, "Manage Plugins")
-            wx.EVT_MENU(self._frame, ID_PLUGIN_MANAGER, self.OnShowManager)
                    
         
 class PluginPanel(wx.Panel):

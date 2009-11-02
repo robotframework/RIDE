@@ -141,7 +141,8 @@ _EditMenuData = [ MenuActionItem(*args) for args in
                   ('Uncomment', 'Uncomment selected rows', '', 'Ctrl-4')] ]
 
 _ToolsMenuData = [ MenuActionItem(*args) for args in
-                   [('Keyword Completion', 'Show available keywords',
+                   [('Manage Plugins', 'Please Implement', 'M'),
+                    ('Keyword Completion', 'Show available keywords',
                      '', 'Ctrl-Space'),
                     ('Search Keywords',
                      'Search keywords from libraries and resources')] ]

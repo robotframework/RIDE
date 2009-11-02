@@ -38,10 +38,13 @@ class RIDE(wx.App):
         self._check_robot_version()
         self.model = None
         self.frame = RideFrame(self, _KeywordFilter(self))
-        self._plugins = PluginLoader(self)
+        self._plugin_loader = PluginLoader(self)
         self.open_suite(self._path)
         self.frame.populate_tree(self.model)
         return True
+
+    def get_plugins(self):
+        return self._plugin_loader.plugins
 
     def _check_robot_version(self):
         if ROBOT_VERSION < '2.1':

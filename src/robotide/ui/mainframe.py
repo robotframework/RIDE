@@ -21,15 +21,17 @@ try:
 except ImportError:
     from wx.lib import flatnotebook as fnb
 
-from filedialogs import NewProjectDialog, NewResourceDialog, SaveAsDialog,\
-    ChangeFormatDialog
-from dialogs import KeywordSearchDialog, AboutDialog
 from robotide.editors import RideEventHandler
 from robotide.errors import PluginPageNotFoundError
-from suitetree import SuiteTree
-from actions import Actions
 from robotide import utils
 from robotide import context
+
+from actions import Actions
+from dialogs import KeywordSearchDialog, AboutDialog
+from filedialogs import NewProjectDialog, NewResourceDialog, SaveAsDialog,\
+    ChangeFormatDialog
+from pluginmanager import PluginManager
+from suitetree import SuiteTree
 
 
 class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
@@ -42,6 +44,7 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         self._create_decorations()
         self.ensure_on_screen()
         self._create_containers()
+        self._plugin_manager = PluginManager(self.notebook)
         self._kw_search_dialog = KeywordSearchDialog(self, keyword_filter)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         self.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CLOSING, self.OnPageClosing)
@@ -264,7 +267,7 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
     # Tools Menu
     
     def OnManagePlugins(self, event):
-        NotImplemented
+        self._plugin_manager.show(self._application.get_plugins())
 
     def OnKeywordCompletion(self, event):
         self._editor_panel.show_keyword_completion()
