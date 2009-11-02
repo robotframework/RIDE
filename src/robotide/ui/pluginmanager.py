@@ -18,26 +18,70 @@ from wx.lib.scrolledpanel import ScrolledPanel
 from robotide.context import SETTINGS
 
 
-class PluginManager(wx.Panel):
-    """GUI component for managing plugins, implemented as a plugin (!)"""
+class PluginManager(object):
+    _title = 'Manage Plugins'
+
+    def __init__(self, notebook):
+        self._notebook = notebook
+        self._panel = None
+        self.settings = SETTINGS.add_section('plugins')
+
+    def show(self, plugins):
+        if not self._panel:
+            self._panel = PluginPanel(self._notebook)
+        if not self._is_visible():
+            self._add_to_notebook()
+        self._panel.display(plugins)
+
+    def _is_visible(self):
+        for index in range(self._notebook.GetPageCount()):
+            if self._notebook.GetPageText(index) == self._title:
+                return True
+        return False
+
+    def _add_to_notebook(self):
+        self._notebook.AddPage(self._panel, self._title)
+        self._notebook.SetSelection(self._notebook.GetPageIndex(self._panel))
+
+    def _save_settings(self):
+        """Saves the state of the plugins to the settings file"""
+        for plugin in self._app._plugins.plugins:
+            self.settings[plugin.name] = plugin.active
+        self.settings.save()
+
+
+class PluginPanel(wx.Panel):
 
     def __init__(self, notebook):
         wx.Panel.__init__(self, notebook)
-        self._notebook = notebook
-        self.settings = SETTINGS.add_section('plugins')
-        self.Show(False)
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(self._create_header(), 0, wx.LEFT|wx.RIGHT|wx.TOP, border=16)
+        sizer.Add(self._create_line(), 0, wx.EXPAND|wx.LEFT|wx.RIGHT, border=16)
+        self.plugin_panel = self._create_body()
+        sizer.Add(self.plugin_panel, 1, wx.EXPAND|wx.ALL, border=16)
+        self.SetSizer(sizer)
 
-    def show(self, plugins):
-        self._add_to_notebook()
-        self.Show(True)
-        self._notebook.SetSelection(self._notebook.GetPageIndex(self))
-        self._refresh(plugins)
+    def _create_header(self):
+        header_panel = wx.Panel(self, wx.ID_ANY)
+        header = wx.StaticText(header_panel, wx.ID_ANY, "Installed Plugins")
+        header.SetFont(wx.Font(14, wx.SWISS, wx.NORMAL, wx.BOLD))
+        return header
 
-    def _refresh(self, plugins):
-        """Refresh the list of plugins"""
+    def _create_line(self):
+        return wx.StaticLine(self)
+
+    def _create_body(self):
+        panel = ScrolledPanel(self, wx.ID_ANY, style=wx.TAB_TRAVERSAL)
+        panel.SetupScrolling()
+        plugin_panel_sizer = wx.FlexGridSizer(1, 2, hgap=8, vgap=8)
+        plugin_panel_sizer.AddGrowableCol(1, 1)
+        panel.SetSizer(plugin_panel_sizer)
+        return panel
+
+    def display(self, plugins):
         plugin_panel_sizer = self.plugin_panel.GetSizer()
         plugin_panel_sizer.Clear(True)
-        st1 = wx.StaticText(self.plugin_panel, wx.ID_ANY, "Enabled?")
+        st1 = wx.StaticText(self.plugin_panel, wx.ID_ANY, "Enabled")
         st2 = wx.StaticText(self.plugin_panel, wx.ID_ANY, "Plugin")
         boldFont = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
         boldFont.SetWeight(wx.FONTWEIGHT_BOLD)
@@ -48,7 +92,7 @@ class PluginManager(wx.Panel):
         for plugin in plugins:
             cb = wx.CheckBox(self.plugin_panel, wx.ID_ANY)
             cb.SetValue(plugin.active)
-            p = PluginPanel(self.plugin_panel, wx.ID_ANY, plugin)
+            p = PluginRow(self.plugin_panel, wx.ID_ANY, plugin)
             plugin_panel_sizer.Add(cb, 0, wx.ALIGN_CENTER_HORIZONTAL)
             plugin_panel_sizer.Add(p,  0, wx.EXPAND)
             self.plugin_panel.Bind(wx.EVT_CHECKBOX, lambda evt, plugin=plugin: self.OnCheckbox(plugin, evt), cb)
@@ -69,36 +113,8 @@ class PluginManager(wx.Panel):
         nb = self.get_notebook()
         nb.SetSelection(nb.GetPageIndex(self.panel))
 
-    def _save_settings(self):
-        """Saves the state of the plugins to the settings file"""
-        for plugin in self._app._plugins.plugins:
-            self.settings[plugin.name] = plugin.active
-        self.settings.save()
 
-    def _add_to_notebook(self):
-        """Add a tab for this plugin to the notebook if there's not already one"""
-        self._notebook.AddPage(self, "Manage Plugins")
-        # notebook panel is composed of two sections, a header and
-        # the "plugin panel". The latter is a scrolled window that
-        # has a row for each plugin.
-        header_panel = wx.Panel(self, wx.ID_ANY)
-        header = wx.StaticText(header_panel, wx.ID_ANY, "Installed Plugins")
-        header.SetFont(wx.Font(14, wx.SWISS, wx.NORMAL, wx.BOLD))
-        plugin_panel = ScrolledPanel(self, wx.ID_ANY, style=wx.TAB_TRAVERSAL)
-        plugin_panel.SetupScrolling()
-        plugin_panel_sizer = wx.FlexGridSizer(1, 2, hgap=8, vgap=8)
-        plugin_panel_sizer.AddGrowableCol(1, 1)
-        plugin_panel.SetSizer(plugin_panel_sizer)
-        line = wx.StaticLine(self)
-        main_sizer = wx.BoxSizer(wx.VERTICAL)
-        self.SetSizer(main_sizer)
-        main_sizer.Add(header_panel, 0, wx.LEFT|wx.RIGHT|wx.TOP, border=16)
-        main_sizer.Add(line, 0, wx.EXPAND|wx.LEFT|wx.RIGHT, border=16)
-        main_sizer.Add(plugin_panel, 1, wx.EXPAND|wx.ALL, border=16)
-        self.plugin_panel = plugin_panel
-                   
-        
-class PluginPanel(wx.Panel):
+class PluginRow(wx.Panel):
     """Panel to display the details and configuration options of a plugin."""
 
     # TODO: there needs to be some smarter handling of long descriptions,
