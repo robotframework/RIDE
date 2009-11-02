@@ -17,9 +17,9 @@ import imp
 import inspect
 
 from robotide.context import SETTINGS, LOG
-from robotide import utils
 
 from plugin import Plugin
+from connector import PluginFactory
 
 
 class PluginLoader(object):
@@ -68,42 +68,3 @@ class PluginLoader(object):
                 file.close()
         return [ cls for _, cls in 
                  inspect.getmembers(module, predicate=inspect.isclass) ]
-
-
-def PluginFactory(application, plugin_class):
-    try:
-        plugin = plugin_class(application)
-    except Exception, err:
-        return BrokenPlugin(str(err), plugin_class)
-    else:
-        return PluginConnector(application, plugin)
-
-
-class _PluginConnector(object):
-
-    def __init__(self, name, doc='', error=None):
-        self.name = name
-        self.doc = doc
-        self.error = error
-        self.active = False
-        self.config_panel = lambda self: None
-
-
-class PluginConnector(_PluginConnector):
-
-    def __init__(self, application, plugin):
-        _PluginConnector.__init__(self, plugin.name, plugin.doc)
-        self.config_panel = plugin.config_panel
-        self.activate = plugin.activate
-        self.deactivate = plugin.deactivate
-        if SETTINGS['plugins'].get(plugin.name, plugin.initially_active):
-            plugin.activate()
-            self.active = True
-
-
-class BrokenPlugin(_PluginConnector):
-
-    def __init__(self, error, plugin_class):
-        name = utils.name_from_class(plugin_class, 'Plugin')
-        _PluginConnector.__init__(self, name, error=error)
-        LOG.error("Taking %s plugin into use failed:\n%s" % (name, error))
