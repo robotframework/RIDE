@@ -32,6 +32,7 @@ class _PluginConnector(object):
         self.doc = doc
         self.error = error
         self.active = False
+        self.metadata = {}
         self.config_panel = lambda self: None
 
 
@@ -42,6 +43,7 @@ class PluginConnector(_PluginConnector):
         self.config_panel = plugin.config_panel
         self.activate = plugin.activate
         self.deactivate = plugin.deactivate
+        self.metadata = plugin.metadata 
         if SETTINGS['plugins'].get(plugin.name, plugin.initially_active):
             plugin.activate()
             self.active = True
@@ -51,6 +53,8 @@ class BrokenPlugin(_PluginConnector):
 
     def __init__(self, error, plugin_class):
         name = utils.name_from_class(plugin_class, 'Plugin')
-        _PluginConnector.__init__(self, name, error=error)
+        doc = 'This plugin is disabled because it failed to load properly.\n' \
+               + 'Error: ' + error
+        _PluginConnector.__init__(self, name, doc=doc, error=error)
         LOG.error("Taking %s plugin into use failed:\n%s" % (name, error))
 

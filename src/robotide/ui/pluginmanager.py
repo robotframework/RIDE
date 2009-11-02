@@ -28,10 +28,9 @@ class PluginManager(object):
 
     def show(self, plugins):
         if not self._panel:
-            self._panel = PluginPanel(self._notebook)
+            self._panel = PluginPanel(self._notebook, plugins)
         if not self._is_visible():
             self._add_to_notebook()
-        self._panel.display(plugins)
 
     def _is_visible(self):
         for index in range(self._notebook.GetPageCount()):
@@ -52,13 +51,12 @@ class PluginManager(object):
 
 class PluginPanel(wx.Panel):
 
-    def __init__(self, notebook):
+    def __init__(self, notebook, plugins):
         wx.Panel.__init__(self, notebook)
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self._create_header(), 0, wx.LEFT|wx.RIGHT|wx.TOP, border=16)
         sizer.Add(self._create_line(), 0, wx.EXPAND|wx.LEFT|wx.RIGHT, border=16)
-        self.plugin_panel = self._create_body()
-        sizer.Add(self.plugin_panel, 1, wx.EXPAND|wx.ALL, border=16)
+        sizer.Add(self._create_body(plugins), 1, wx.EXPAND|wx.ALL, border=16)
         self.SetSizer(sizer)
 
     def _create_header(self):
@@ -70,36 +68,27 @@ class PluginPanel(wx.Panel):
     def _create_line(self):
         return wx.StaticLine(self)
 
-    def _create_body(self):
+    def _create_body(self, plugins):
         panel = ScrolledPanel(self, wx.ID_ANY, style=wx.TAB_TRAVERSAL)
         panel.SetupScrolling()
-        plugin_panel_sizer = wx.FlexGridSizer(1, 2, hgap=8, vgap=8)
-        plugin_panel_sizer.AddGrowableCol(1, 1)
-        panel.SetSizer(plugin_panel_sizer)
+        sizer = wx.FlexGridSizer(1, 2, hgap=8, vgap=8)
+        sizer.AddGrowableCol(1, 1)
+        sizer.Add(self._create_label(panel, 'Enabled'), 0, wx.BOTTOM, border=8)
+        sizer.Add(self._create_label(panel, 'Plugin'), 0,
+                  wx.BOTTOM|wx.EXPAND, border=8)
+        for plugin in plugins:
+            sizer.Add(PluginActivationCheckBox(panel, plugin), 0,
+                      wx.ALIGN_CENTER_HORIZONTAL)
+            sizer.Add(PluginRow(panel, plugin), 0, wx.EXPAND)
+        panel.SetSizer(sizer)
         return panel
 
-    def display(self, plugins):
-        plugin_panel_sizer = self.plugin_panel.GetSizer()
-        plugin_panel_sizer.Clear(True)
-        st1 = wx.StaticText(self.plugin_panel, wx.ID_ANY, "Enabled")
-        st2 = wx.StaticText(self.plugin_panel, wx.ID_ANY, "Plugin")
+    def _create_label(self, parent, text):
         boldFont = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
         boldFont.SetWeight(wx.FONTWEIGHT_BOLD)
-        st1.SetFont(boldFont)
-        st2.SetFont(boldFont)
-        plugin_panel_sizer.Add(st1, 0, wx.BOTTOM, border=8)
-        plugin_panel_sizer.Add(st2, 0, wx.BOTTOM|wx.EXPAND, border=8)
-        for plugin in plugins:
-            cb = wx.CheckBox(self.plugin_panel, wx.ID_ANY)
-            cb.SetValue(plugin.active)
-            p = PluginRow(self.plugin_panel, wx.ID_ANY, plugin)
-            plugin_panel_sizer.Add(cb, 0, wx.ALIGN_CENTER_HORIZONTAL)
-            plugin_panel_sizer.Add(p,  0, wx.EXPAND)
-            self.plugin_panel.Bind(wx.EVT_CHECKBOX, lambda evt, plugin=plugin: self.OnCheckbox(plugin, evt), cb)
-            if plugin.error:
-                cb.Enable(False)
-        self.Layout()
-        self.plugin_panel.Layout()
+        label = wx.StaticText(parent, wx.ID_ANY, text)
+        label.SetFont(boldFont)
+        return label
 
     def OnCheckbox(self, plugin, evt):
         """Handle checkbox events"""
@@ -114,42 +103,48 @@ class PluginPanel(wx.Panel):
         nb.SetSelection(nb.GetPageIndex(self.panel))
 
 
-class PluginRow(wx.Panel):
-    """Panel to display the details and configuration options of a plugin."""
+class PluginActivationCheckBox(wx.CheckBox):
 
-    # TODO: there needs to be some smarter handling of long descriptions,
-    # such as having them auto-wrap to the size of the window and/or
-    # accept some basic HTML.tags.
-    def __init__(self, parent, id, plugin):
-        wx.Panel.__init__(self, parent, id)
-        config = plugin.config_panel(self)
+    def __init__(self, parent, plugin):
+        wx.CheckBox.__init__(self, parent)
+        self.SetValue(plugin.active)
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheckBox)
+        if plugin.error:
+            self.Enable(False)
+        self._plugin = plugin
+
+    def OnCheckBox(self, event):
+        self._plugin.foobar
+
+
+class PluginRow(wx.Panel):
+
+    def __init__(self, parent, plugin):
+        wx.Panel.__init__(self, parent)
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(wx.StaticText(self, wx.ID_ANY, plugin.name), 0)
-        # TODO: Add plugin metadata 
+        sizer.Add(self._get_name(plugin))
+        for name, value in plugin.metadata.items():
+            sizer.Add(self._get_metadata(name, value))
         sizer.Add(self._get_description(plugin), 0, wx.EXPAND)
+        config = plugin.config_panel(self)
         if config:
             sizer.Add(config, 1, wx.EXPAND|wx.LEFT, border=16)
         self.SetSizer(sizer)
 
-    def _name_ctrl(self):
-        """Return a suitable control for displaying the plugin name
+    def _get_name(self, plugin):
+        return wx.StaticText(self, label=plugin.name)
 
-        This will return a HyperlinkCtrl if an url is defined,
-        a StaticText otherwise.
-        """
-        text = self.plugin.name + " (version %s)" % self.plugin.version
-        if self.plugin.url:
-            ctrl = wx.HyperlinkCtrl(self, wx.ID_ANY, text, self.plugin.url)
+    def _get_metadata(self, name, value):
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer.Add(wx.StaticText(self, label='%s: ' % name))
+        if value.split('://')[0] in ['http', 'https']:
+            sizer.Add(wx.HyperlinkCtrl(self, -1, label=value, url=value))
         else:
-            ctrl = None
-        return ctrl
+            sizer.Add(wx.StaticText(self, label=value))
+        return sizer
 
     def _get_description(self, plugin):
-        """Returns an appropriate descriptive string for a plugin"""
-        if not plugin.error:
-            return wx.StaticText(self, label=plugin.doc)
-        text = "This plugin is disabled because it failed to load properly.\n" \
-               + "Error: " + plugin.error
-        desc = wx.StaticText(self, label=text)
-        desc.SetForegroundColour("firebrick")
+        desc = wx.StaticText(self, label=plugin.doc)
+        if plugin.error:
+            desc.SetForegroundColour("firebrick")
         return desc
