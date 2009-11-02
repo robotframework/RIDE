@@ -29,10 +29,11 @@ class PluginManager(object):
     def show(self, plugins):
         if not self._panel:
             self._panel = PluginPanel(self._notebook, plugins)
-        if not self._is_visible():
+        if not self._is_notebook_tab_created():
             self._add_to_notebook()
+        self._notebook.SetSelection(self._notebook.GetPageIndex(self._panel))
 
-    def _is_visible(self):
+    def _is_notebook_tab_created(self):
         for index in range(self._notebook.GetPageCount()):
             if self._notebook.GetPageText(index) == self._title:
                 return True
