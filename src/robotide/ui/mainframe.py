@@ -34,16 +34,13 @@ from robotide import context
 
 class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
 
-    def __init__(self, application):
+    def __init__(self, application, keyword_filter):
         wx.Frame.__init__(self, None, -1, 'RIDE',
                           pos=context.SETTINGS["mainframe position"],
                           size=context.SETTINGS["mainframe size"])
         self._application = application
         self._create_decorations()
         self.ensure_on_screen()
-
-    def create_ui(self, keyword_filter):
-        """Called by application after it has properly initialized itself."""
         self._create_containers()
         self._kw_search_dialog = KeywordSearchDialog(self, keyword_filter)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
@@ -265,6 +262,9 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         event.Skip()
 
     # Tools Menu
+    
+    def OnManagePlugins(self, event):
+        NotImplemented
 
     def OnKeywordCompletion(self, event):
         self._editor_panel.show_keyword_completion()
