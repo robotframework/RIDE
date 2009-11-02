@@ -24,35 +24,26 @@ from the help menu.
 import wx
 from plugin import Plugin
 from robotide.version import VERSION
-from robotide.context import SETTINGS
 from wx.lib.ClickableHtmlWindow import PyClickableHtmlWindow
 
 
 class ReleaseNotesPlugin(Plugin):
     """Display Release Notes in a Tab"""
+    PERSISTENT_ATTRIBUTES = {'version_shown':''}
 
     def __init__(self, application):
-        Plugin.__init__(self, application)
+        Plugin.__init__(self, application, initially_active=True)
         self._panel = None
-        self.settings = SETTINGS.add_section(self.name)
-        self.settings.set_defaults(auto_show='')
 
     def activate(self):
         self._add_to_menubar()
+        self.auto_show()
 
     def auto_show(self):
-        """Show the release notes only if the current version release notes haven't been shown."""
-        # The idea is this, whenever the settings value for
-        # auto_show differs from the current value of the VERSION
-        # variable, auto-show the release notes. When we do that,
-        # set the variable to the current version. This way,
-        # each time the user installs a new version they automatically
-        # see the release notes the very first time they run RIDE.
-        # At least that's how it plays out in my head.
-        if self.settings["auto_show"] != VERSION:
+        """Show the release notes if the current version release notes haven't been shown."""
+        if self.version_shown != VERSION:
             self.show()
-            self.settings["auto_show"] = VERSION
-            self.settings.save()
+            self.version_shown = VERSION #Saves shown version
 
     def show(self):
         """Show the release notes tab"""
