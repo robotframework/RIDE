@@ -17,7 +17,7 @@ import os
 import unittest
 
 from robotide.context.configobj import UnreprError
-from robotide.context.settings import Settings, SectionError, \
+from robotide.context.settings import Settings, SectionError, PersistentAttributes,\
                 ConfigurationError, _merge_settings, initialize_settings
 from robotide.context  import settings
 
@@ -348,6 +348,31 @@ class TestMergeSettings(_TestSettings):
         self._check_content({'foo':'new value', 'hello' : 'world', 'new':'value'},
                             False)
 
+
+class PluginMock(PersistentAttributes):
+    PERSISTENT_ATTRIBUTES = {'foo':'bar'}
+
+
+class TestPersistentAttributes(_TestSettings):
+
+    def setUp(self):
+        _TestSettings.setUp(self)
+        self.settings.add_section('Plugins').add_section('Plugin 1')
+        self.plugin_settings = self.settings['Plugins']['Plugin 1']
+        self.plugin = PluginMock(self.plugin_settings)
+
+    def test_persistent_attribute(self):
+        self.assertEquals(self.plugin.foo, 'bar')
+        self.assertEquals(self.plugin._settings._config_obj['foo'], 'bar')
+        self.plugin.foo = 'new 1'
+        self.assertEquals(self.plugin._settings._config_obj['foo'], 'new 1')
+        self.plugin.foo = 'new 2'
+        self.assertEquals(self.plugin._settings._config_obj['foo'], 'new 2')
+
+    def test_set_not_persistent_attribute(self):
+        self.plugin.non_persistent = 'value'
+        self.assertFalse(self.plugin._settings._config_obj.has_key('non_persistent'))
+        self.assertEquals(self.plugin.non_persistent, 'value')
 
 if __name__ == "__main__":
     unittest.main()

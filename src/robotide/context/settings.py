@@ -152,3 +152,21 @@ class Settings(_Section):
 
     def save(self):
         self._config_obj.write()
+
+
+class PersistentAttributes(object):
+    PERSISTENT_ATTRIBUTES = {}
+
+    def __init__(self, settings):
+        self._settings = settings
+        self._settings.set_defaults(**self.PERSISTENT_ATTRIBUTES)
+
+    def __setattr__(self, name, value):
+        if name in self.PERSISTENT_ATTRIBUTES.keys():
+            self._settings.set(name, value)
+        object.__setattr__(self, name, value)
+
+    def __getattr__(self, name):
+        if name in self.PERSISTENT_ATTRIBUTES.keys():
+            return self._settings[name]
+        return object.__getattr__(self, name)
