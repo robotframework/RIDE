@@ -38,12 +38,10 @@ class PluginLoader(object):
 
     def _get_standard_plugin_classes(self):
         from releasenotes import ReleaseNotesPlugin
-        from plugingui import PluginManagerPlugin
         from recentfiles import RecentFilesPlugin 
         from preview import PreviewPlugin
         from gridcolorizer import Colorizer
-        return [ReleaseNotesPlugin, PluginManagerPlugin, RecentFilesPlugin,
-                PreviewPlugin, Colorizer]
+        return [ReleaseNotesPlugin, RecentFilesPlugin, PreviewPlugin, Colorizer]
 
     def _find_plugin_files(self):
         plugindirs = [SETTINGS.get_path('plugins'),
