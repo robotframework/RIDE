@@ -15,8 +15,6 @@
 import wx
 from wx.lib.scrolledpanel import ScrolledPanel
 
-from robotide.context import SETTINGS
-
 
 class PluginManager(object):
     _title = 'Manage Plugins'
@@ -24,7 +22,6 @@ class PluginManager(object):
     def __init__(self, notebook):
         self._notebook = notebook
         self._panel = None
-        self.settings = SETTINGS.add_section('plugins')
 
     def show(self, plugins):
         if not self._panel:
@@ -42,12 +39,6 @@ class PluginManager(object):
     def _add_to_notebook(self):
         self._notebook.AddPage(self._panel, self._title)
         self._notebook.SetSelection(self._notebook.GetPageIndex(self._panel))
-
-    def _save_settings(self):
-        """Saves the state of the plugins to the settings file"""
-        for plugin in self._app._plugins.plugins:
-            self.settings[plugin.name] = plugin.active
-        self.settings.save()
 
 
 class PluginPanel(wx.Panel):
@@ -91,17 +82,16 @@ class PluginPanel(wx.Panel):
         label.SetFont(boldFont)
         return label
 
-    def OnCheckbox(self, plugin, evt):
-        """Handle checkbox events"""
-        if evt.IsChecked():
-            plugin.activate()
-        else:
-            plugin.deactivate()
-        # FIXME: saves the wrong settings
-        self._save_settings()
+# TODO: Is this dead code? At least commenting it out does not affect loading plugins.
+#    def OnCheckbox(self, plugin, evt):
+#        """Handle checkbox events"""
+#        if evt.IsChecked():
+#            plugin.activate()
+#        else:
+#            plugin.deactivate()
         # TODO: move to Plugin
-        nb = self.get_notebook()
-        nb.SetSelection(nb.GetPageIndex(self.panel))
+        #nb = self.get_notebook()
+        #nb.SetSelection(nb.GetPageIndex(self.panel))
 
 
 class PluginActivationCheckBox(wx.CheckBox):
@@ -115,7 +105,10 @@ class PluginActivationCheckBox(wx.CheckBox):
         self._plugin = plugin
 
     def OnCheckBox(self, event):
-        self._plugin.foobar
+        if event.IsChecked():
+            self._plugin.activate()
+        else:
+            self._plugin.deactivate()
 
 
 class PluginRow(wx.Panel):
