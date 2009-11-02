@@ -17,8 +17,6 @@ import os.path
 import re
 import wx
 
-from robotide.context import SETTINGS
-
 from plugin import Plugin
 
 
@@ -27,36 +25,27 @@ class RecentFilesPlugin(Plugin):
 
     This is still very experimental, use at your own risk.
     """
+    PERSISTENT_ATTRIBUTES = {'recent_files':[], 'max_number_of_files':4}
 
-    def __init__(self, manager=None):
-        Plugin.__init__(self, manager)
-        self.id = "recentfiles"
-        self.name = "Recent Files Plugin"
+    def __init__(self, application=None):
+        Plugin.__init__(self, application)
         self.version = "0.1"
-        self.active = False
         self._menuitems = []
         self._file = {}
-        self.settings = SETTINGS.add_section(self.id)
-        self.settings.set_defaults(recent_files = [], numfiles = 4)
-        self._recent_files = self.settings["recent_files"]
-        self.numfiles = self.settings["numfiles"]
 
     def activate(self):
         """Make the plugin available for use."""
         # If there is a currently open file, add it to the top of the list
-        model = self.manager.get_model()
         self._remember_current_file()
         self._update_file_menu()
-        self.manager.subscribe(self.OnPublication, ("core", "open","suite"))
+        self.subscribe(self.OnPublication, ("core", "open","suite"))
         # This plugin doesn't currently support resources
 #        self._frame.subscribe(self.OnPublication, ("core", "open","resource"))
-        self.active = True
 
     def deactivate(self):
         """Deactivates this plugin."""
         self._remove_from_file_menu()
-        self.manager.unsubscribe(self.OnPublication)
-        self.active = False
+        self.unsubscribe(self.OnPublication)
 
     def OnAbout(self, event):
         """Displays a dialog about this plugin."""
@@ -70,14 +59,14 @@ class RecentFilesPlugin(Plugin):
     def OnOpenRecent(self, event):
         """Event handler used to open a recent file."""
         id = event.GetId()
-        if not self.manager.new_suite_can_be_opened():
+        if not self.new_suite_can_be_opened():
             return
         path = self._normalize(self._file[id])
         # There needs to be a better way. This assumes the path is a
         # suite but it could be a resource. There needs to be a
         # generic "open" command in the application or frame object
         # that Does The Right Thing no matter what the type.
-        self.manager.open_suite(path)
+        self.open_suite(path)
 
     def OnPublication(self,message):
         """Saves the path of a file when it is opened."""
@@ -104,13 +93,13 @@ class RecentFilesPlugin(Plugin):
             file = self._normalize(file)
             filename = os.path.basename(file)
             menuitem = menu.Insert(pos,id, "&%s: %s" % (n+1, filename), "Open %s" % file)
-            wx.EVT_MENU(self.manager.get_frame(), id, self.OnOpenRecent)
+            wx.EVT_MENU(self.get_frame(), id, self.OnOpenRecent)
             self._file[id] = file
         self._menuitems.append(menuitem)
 
     def _get_file_menu(self):
         """Return a handle to the File menu on the menubar."""
-        menubar = self.manager.get_menu_bar()
+        menubar = self.get_menu_bar()
         pos = menubar.FindMenu("File")
         file_menu = menubar.GetMenu(pos)
         return file_menu
@@ -118,16 +107,14 @@ class RecentFilesPlugin(Plugin):
     def _normalize(self, path):
         """If path matches */__init__.*, return the directory otherwise return the original path.""" 
         path = os.path.abspath(path)
-        basename = os.path.basename(path)
-        if re.match("__init__.*", basename):
+        if re.match("__init__.*", os.path.basename(path)):
             # represents a directory suite, use the actual directory name instead
-            original = path
             path = os.path.dirname(path)
         return path
 
     def _remember_current_file(self):
         """Save the currently loaded suite, if there is one"""
-        model = self.manager.get_model()
+        model = self.get_model()
         if model and model.suite:
             self._remember_file(model.suite.source)
 
@@ -136,12 +123,11 @@ class RecentFilesPlugin(Plugin):
         if not file:
             return
         file = self._normalize(file)
-        if file not in self._recent_files:
-            self._recent_files.insert(0,file)
-            self._recent_files = self._recent_files[0:self.numfiles]
+        if file not in self.recent_files:
+            self.recent_files.insert(0,file)
+            self.recent_files = self.recent_files[0:self.max_number_of_files]
             self._update_file_menu()
-            self._save_settings()
-        
+
     def _remove_from_file_menu(self):
         """Remove the menubar item from the menubar for this plugin."""
         file_menu = self._get_file_menu()
@@ -149,21 +135,15 @@ class RecentFilesPlugin(Plugin):
             file_menu.DeleteItem(menuitem)
         self._menuitems = []
         self._file = {}
-        
-    def _save_settings(self):
-        """Saves the settings for this plugin."""
-        self.settings["recent_files"] = self._recent_files
-        self.settings["numfiles"] = self.numfiles
-        self.settings.save()
-        
+
     def _update_file_menu(self):
         """Add all of the known recent files to the file menu."""
         self._remove_from_file_menu()
         file_menu = self._get_file_menu()
-        if len(self._recent_files) == 0:
+        if len(self.recent_files) == 0:
             self._add_menuitem(file_menu, "")
         else:
-            for n, file in enumerate(self._recent_files):
+            for n, file in enumerate(self.recent_files):
                 self._add_menuitem(file_menu, file, n)
         self._add_menuitem(file_menu, "---")
 
