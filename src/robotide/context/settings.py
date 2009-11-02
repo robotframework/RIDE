@@ -164,9 +164,10 @@ class PersistentAttributes(object):
     def __setattr__(self, name, value):
         if name in self.PERSISTENT_ATTRIBUTES.keys():
             self._settings.set(name, value)
-        object.__setattr__(self, name, value)
+        else:
+            object.__setattr__(self, name, value)
 
     def __getattr__(self, name):
         if name in self.PERSISTENT_ATTRIBUTES.keys():
             return self._settings[name]
-        return object.__getattr__(self, name)
+        return object.__getattribute__(self, name)

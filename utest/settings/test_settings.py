@@ -368,11 +368,23 @@ class TestPersistentAttributes(_TestSettings):
         self.assertEquals(self.plugin._settings._config_obj['foo'], 'new 1')
         self.plugin.foo = 'new 2'
         self.assertEquals(self.plugin._settings._config_obj['foo'], 'new 2')
+        self.assertEquals(self.plugin.foo, 'new 2')
 
     def test_set_not_persistent_attribute(self):
         self.plugin.non_persistent = 'value'
         self.assertFalse(self.plugin._settings._config_obj.has_key('non_persistent'))
         self.assertEquals(self.plugin.non_persistent, 'value')
+
+    def test_get_not_persistent_attribute(self):
+        self.assertEquals(self.plugin.PERSISTENT_ATTRIBUTES, {'foo':'bar'})
+
+    def test_get_non_existing_attribute(self):
+        try:
+            self.plugin.non_existing
+        except AttributeError:
+            return
+        raise AssertionError("Should raise AttributeError")
+
 
 if __name__ == "__main__":
     unittest.main()
