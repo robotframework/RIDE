@@ -17,9 +17,11 @@ import wx
 from  wx.lib.pubsub import Publisher
 
 from robotide import utils
+from robotide.context import SETTINGS, PersistentAttributes
 
 
-class Plugin(object):
+class Plugin(PersistentAttributes):
+    PERSISTENT_ATTRIBUTES = {}
 
     def __init__(self, application, name=None, doc=None, metadata=None,
                  initially_active=False):
@@ -32,6 +34,7 @@ class Plugin(object):
         self._app = application
         self._frame = application.frame
         self.name = name or utils.name_from_class(self, drop='Plugin')
+        PersistentAttributes.__init__(self, SETTINGS['Plugins'].add_section(self.name))
         self.doc = doc or inspect.getdoc(self) or ''
         self.metadata = metadata or {}
         self.initially_active = initially_active
