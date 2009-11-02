@@ -1,5 +1,7 @@
 syntax: glob
 
 tmp
+build
+dist
 .*project
 *.pyc
