@@ -22,7 +22,7 @@ from robotide import utils
 from plugin import Plugin
 
 
-class PluginManager(object):
+class PluginLoader(object):
 
     def __init__(self, application):
         self.plugins = [ PluginFactory(application, cls)

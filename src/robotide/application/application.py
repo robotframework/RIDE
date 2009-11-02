@@ -18,12 +18,12 @@ import wx
 from wx.lib.pubsub import Publisher
 
 from robotide.robotapi import ROBOT_VERSION
+from robotide.plugins import PluginLoader
 from robotide.errors import DataError, NoRideError
 from robotide.ui import RideFrame
 from robotide import context
 from robotide import utils
 
-from pluginmanager import PluginManager
 from datamodel import DataModel
 
 
@@ -39,7 +39,7 @@ class RIDE(wx.App):
         self.model = None
         self.frame = RideFrame(self)
         self.frame.create_ui(_KeywordFilter(self))
-        self._plugins = PluginManager(self)
+        self._plugins = PluginLoader(self)
         self.open_suite(self._path)
         self.frame.populate_tree(self.model)
         return True
