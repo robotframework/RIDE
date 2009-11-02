@@ -14,21 +14,18 @@
 
 import re
 
-from robotide import context
 from plugin import Plugin
 
 
 class Colorizer(Plugin):
     """Colorizes cells in the keyword editor"""
+    PERSISTENT_ATTRIBUTES = {'comment_fg':'firebrick', 'keyword_fg':'blue',
+                             'variable_fg':'forest green', 'default_fg':'black'}
 
     def __init__(self, application):
         Plugin.__init__(self, application)
         self._frame = self.get_frame()
         self._notebook = self.get_notebook()
-        self._settings = context.SETTINGS.add_section(self.name)
-        self._settings.set_defaults(comment_fg="firebrick",
-                                    keyword_fg='blue',
-                                    variable_fg='forest green')
 
     def activate(self):
         self.subscribe(self.OnCellChanged,("core","grid","cell changed"))
@@ -51,12 +48,12 @@ class Colorizer(Plugin):
 
     def _get_color(self, grid, row, col, value):
         if self._is_commented(grid, row):
-            return self._settings["comment_fg"]
+            return self.comment_fg
         if self._is_user_keyword(grid, value):
-            return self._settings["keyword_fg"]
+            return self.keyword_fg
         if self._is_variable(value):
-            return self._settings["variable_fg"]
-        return 'black'
+            return self.variable_fg
+        return self.default_fg
 
     def _is_variable(self, value):
         return re.match('[\$\@]{.*?}=?', value)
