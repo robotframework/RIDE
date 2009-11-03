@@ -89,6 +89,8 @@ class Plugin(PersistentAttributes):
         raise RuntimeError('Menubar cannot be found')
 
     def add_to_menu(self, label, tooltip, callback, menu_name, index=-1, enabled=True):
+        if not tooltip:
+            tooltip = ''
         menu = self.get_menu(menu_name)
         pos = self._resolve_position_from_index(menu, index)
         id = wx.NewId()

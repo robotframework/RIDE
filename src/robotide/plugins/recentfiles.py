@@ -106,32 +106,21 @@ class RecentFilesPlugin(Plugin):
     def _update_file_menu(self):
         """Add all of the known recent files to the file menu."""
         self.remove_added_menu_items()
-        file_menu = self._get_file_menu()
+        self._create_menu_items()
+
+    def _create_menu_items(self):
         if len(self.recent_files) == 0:
-            self._add_menuitem(file_menu, "")
-        else:
-            for n, file in enumerate(self.recent_files):
-                self._add_menuitem(file_menu, file, n)
-        self._add_menuitem(file_menu, "---")
-
-    def _add_menuitem(self, menu, file, n=0):
-        """Add a menuitem to the given menu. 
-
-        file may be one of the following:
-        '---' adds a separator, 
-        '' adds a disabled "no files available" item
-        anything else represents a filename as a string
-
-        """
-        if file == "---":
-            self.add_separator_to_menu('File', -1)
-        elif file == "":
             self.add_to_menu('no recent files', None, None, 'File', -1, 
                              enabled=False)
         else:
-            file = self._normalize(file)
-            filename = os.path.basename(file)
-            label = "&%s: %s" % (n+1, filename)
-            tooltip = "Open %s" % file
-            id = self.add_to_menu(label, tooltip, self.OnOpenRecent, 'File', -1)
-            self._files[id] = file
+            for n, file in enumerate(self.recent_files):
+                self._add_file_to_menu(file, n)
+        self.add_separator_to_menu('File', -1)
+
+    def _add_file_to_menu(self, file, n):
+        item = self._normalize(file)
+        filename = os.path.basename(file)
+        label = "&%s: %s" % (n+1, filename)
+        tooltip = "Open %s" % item
+        id = self.add_to_menu(label, tooltip, self.OnOpenRecent, 'File', -1)
+        self._files[id] = item
