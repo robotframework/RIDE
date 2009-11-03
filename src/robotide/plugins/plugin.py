@@ -21,7 +21,7 @@ from robotide.context import SETTINGS, PersistentAttributes
 
 
 class Plugin(PersistentAttributes):
-    PERSISTENT_ATTRIBUTES = {}
+    persistent_attributes = {}
 
     def __init__(self, application, name=None, doc=None, metadata=None,
                  initially_active=False):
@@ -76,6 +76,35 @@ class Plugin(PersistentAttributes):
     def get_menu_bar(self):
         """Returns the menu bar of the main RIDE window."""
         return self._frame.GetMenuBar()
+
+    def add_to_menu(self, label, tooltip, callback, menu, index=-1):
+        menubar = self.get_menu_bar()
+        # TODO: why is this checked? The should be a menubar, right?
+        if menubar:
+            menu_pos = menubar.FindMenu(menu)
+            if menu_pos == -1:
+                raise AttributeError('Menu "%s" cannot be found from the menubar.' % (menu))
+            id = wx.NewId()
+            menu = menubar.GetMenu(menu_pos)
+            pos = self._resolve_position_from_index(menu, index)
+            menu.Insert(pos, id, label, tooltip)
+            wx.EVT_MENU(self.get_frame(), id, callback)
+            return id
+        return None
+
+    def _resolve_position_from_index(self, menu, index):
+        if index > 0:
+            return index
+        pos = menu.GetMenuItemCount() + index
+        if pos < 0:
+            return 0
+        return pos
+
+    def remove_from_menu(self, menu, id):
+        menubar = self.get_menu_bar()
+        pos = menubar.FindMenu(menu)
+        help_menu = menubar.GetMenu(pos)
+        help_menu.Remove(id)
 
     def get_tool_bar(self):
         """Returns the menu bar of the main RIDE window."""

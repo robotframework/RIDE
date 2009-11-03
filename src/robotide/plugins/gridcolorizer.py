@@ -19,7 +19,7 @@ from plugin import Plugin
 
 class Colorizer(Plugin):
     """Colorizes cells in the keyword editor"""
-    PERSISTENT_ATTRIBUTES = {'comment_fg':'firebrick', 'keyword_fg':'blue',
+    persistent_attributes = {'comment_fg':'firebrick', 'keyword_fg':'blue',
                              'variable_fg':'forest green', 'default_fg':'black'}
 
     def __init__(self, application):

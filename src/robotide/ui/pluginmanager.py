@@ -82,17 +82,6 @@ class PluginPanel(wx.Panel):
         label.SetFont(boldFont)
         return label
 
-# TODO: Is this dead code? At least commenting it out does not affect loading plugins.
-#    def OnCheckbox(self, plugin, evt):
-#        """Handle checkbox events"""
-#        if evt.IsChecked():
-#            plugin.activate()
-#        else:
-#            plugin.deactivate()
-        # TODO: move to Plugin
-        #nb = self.get_notebook()
-        #nb.SetSelection(nb.GetPageIndex(self.panel))
-
 
 class PluginActivationCheckBox(wx.CheckBox):
 

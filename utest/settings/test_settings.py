@@ -350,7 +350,7 @@ class TestMergeSettings(_TestSettings):
 
 
 class PluginMock(PersistentAttributes):
-    PERSISTENT_ATTRIBUTES = {'foo':'bar'}
+    persistent_attributes = {'foo':'bar'}
 
 
 class TestPersistentAttributes(_TestSettings):
@@ -376,7 +376,7 @@ class TestPersistentAttributes(_TestSettings):
         self.assertEquals(self.plugin.non_persistent, 'value')
 
     def test_get_not_persistent_attribute(self):
-        self.assertEquals(self.plugin.PERSISTENT_ATTRIBUTES, {'foo':'bar'})
+        self.assertEquals(self.plugin.persistent_attributes, {'foo':'bar'})
 
     def test_get_non_existing_attribute(self):
         try:

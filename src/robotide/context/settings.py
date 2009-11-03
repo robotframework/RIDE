@@ -140,34 +140,34 @@ class _Section:
         return self._config_obj.has_key(name) and \
                isinstance(self._config_obj[name], Section)
 
-        
+
 class Settings(_Section):
-    
+
     def __init__(self, user_path):
         try:
             self._config_obj = ConfigObj(user_path, unrepr=True)
         except UnreprError, error:
             raise ConfigurationError(error)
-            
 
     def save(self):
         self._config_obj.write()
 
 
+# TODO: This works, but needs to be refactored away from inheritance solution?
 class PersistentAttributes(object):
-    PERSISTENT_ATTRIBUTES = {}
+    persistent_attributes = {}
 
     def __init__(self, settings):
         self._settings = settings
-        self._settings.set_defaults(**self.PERSISTENT_ATTRIBUTES)
+        self._settings.set_defaults(**self.persistent_attributes)
 
     def __setattr__(self, name, value):
-        if name in self.PERSISTENT_ATTRIBUTES.keys():
+        if name in self.persistent_attributes.keys():
             self._settings.set(name, value)
         else:
             object.__setattr__(self, name, value)
 
     def __getattr__(self, name):
-        if name in self.PERSISTENT_ATTRIBUTES.keys():
+        if name in self.persistent_attributes.keys():
             return self._settings[name]
         return object.__getattribute__(self, name)

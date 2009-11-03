@@ -28,16 +28,21 @@ from wx.lib.ClickableHtmlWindow import PyClickableHtmlWindow
 
 
 class ReleaseNotesPlugin(Plugin):
+
     """Display Release Notes in a Tab"""
-    PERSISTENT_ATTRIBUTES = {'version_shown':''}
+    persistent_attributes = {'version_shown':''}
 
     def __init__(self, application):
         Plugin.__init__(self, application, initially_active=True)
         self._panel = None
 
     def activate(self):
-        self._add_to_menubar()
+        self._id = self.add_to_menu('Release Notes', 'Show the release notes',
+                                    self.OnShowReleaseNotes, 'Help')
         self.auto_show()
+
+    def deactivate(self):
+        self.remove_from_menu('Help', self._id)
 
     def auto_show(self):
         """Show the release notes if the current version release notes haven't been shown."""
@@ -54,16 +59,6 @@ class ReleaseNotesPlugin(Plugin):
     def OnShowReleaseNotes(self, event):
         """Callback for the Release Notes menu item"""
         self.show()
-
-    def _add_to_menubar(self):
-        """Add a menu item on the Help menu"""
-        menubar = self.get_menu_bar()
-        if menubar:
-            pos = menubar.FindMenu("Help")
-            release_notes_id = wx.NewId()
-            help_menu = menubar.GetMenu(pos)
-            help_menu.Insert(0, release_notes_id, "Release Notes", "Show the release notes")
-            wx.EVT_MENU(self.get_frame(), release_notes_id, self.OnShowReleaseNotes)
 
     def _create_page(self):
         """Add a tab for this plugin to the notebook"""

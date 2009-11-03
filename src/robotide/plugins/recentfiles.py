@@ -25,7 +25,7 @@ class RecentFilesPlugin(Plugin):
 
     This is still very experimental, use at your own risk.
     """
-    PERSISTENT_ATTRIBUTES = {'recent_files':[], 'max_number_of_files':4}
+    persistent_attributes = {'recent_files':[], 'max_number_of_files':4}
 
     def __init__(self, application=None):
         Plugin.__init__(self, application)
