@@ -134,6 +134,10 @@ class Plugin(PersistentAttributes):
     def show_page(self, page):
         self._frame.show_page(page)
 
+    def delete_page(self, panel):
+        if panel:
+            self._frame.delete_page(panel)
+
     def new_suite_can_be_opened(self):
         return self._app.ok_to_open_new()
 

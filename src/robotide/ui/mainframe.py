@@ -99,6 +99,10 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
             else:
                 raise PluginPageNotFoundError("unable to find a notebook page for the given panel")
 
+    def delete_page(self, panel):
+        page = self.notebook.GetPageIndex(panel)
+        self.notebook.RemovePage(page)
+
     def _get_active_item(self):
         return self.tree.get_active_item()
 
@@ -338,7 +342,12 @@ class NoteBook(fnb.FlatNotebook):
     def OnPageChanging(self, event):
         if not self.GetPageCount():
             return
-        oldtitle = self.GetPageText(event.GetOldSelection())
+        try:
+            oldtitle = self.GetPageText(event.GetOldSelection())
+        except IndexError:
+            #TODO: Should be investigated why this is happening when closing 
+            #tabs from plugin manager
+            return
         newindex = event.GetSelection()
         if newindex <= self.GetPageCount() - 1:
             newtitle = self.GetPageText(event.GetSelection())

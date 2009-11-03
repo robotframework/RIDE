@@ -61,8 +61,7 @@ class PreviewPlugin(Plugin):
 
     def deactivate(self):
         self.remove_added_menu_items()
-        if self._panel:
-            self._panel.Destroy()
+        self.delete_page(self._panel)
         self._panel = None
 
     def OnShowPreview(self, event):

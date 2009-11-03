@@ -43,6 +43,8 @@ class ReleaseNotesPlugin(Plugin):
 
     def deactivate(self):
         self.remove_added_menu_items()
+        self.delete_page(self._panel)
+        self._panel = None
 
     def auto_show(self):
         """Show the release notes if the current version release notes haven't been shown."""
