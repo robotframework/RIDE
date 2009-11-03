@@ -38,6 +38,7 @@ class Plugin(PersistentAttributes):
         self.doc = doc or inspect.getdoc(self) or ''
         self.metadata = metadata or {}
         self.initially_active = initially_active
+        self._menu_items = []
 
     def activate(self):
         """Create necessary user interface components."""
@@ -77,20 +78,25 @@ class Plugin(PersistentAttributes):
         """Returns the menu bar of the main RIDE window."""
         return self._frame.GetMenuBar()
 
-    def add_to_menu(self, label, tooltip, callback, menu, index=-1):
+    def get_menu(self, name):
         menubar = self.get_menu_bar()
         # TODO: why is this checked? The should be a menubar, right?
         if menubar:
-            menu_pos = menubar.FindMenu(menu)
+            menu_pos = menubar.FindMenu(name)
             if menu_pos == -1:
-                raise AttributeError('Menu "%s" cannot be found from the menubar.' % (menu))
-            id = wx.NewId()
-            menu = menubar.GetMenu(menu_pos)
-            pos = self._resolve_position_from_index(menu, index)
-            menu.Insert(pos, id, label, tooltip)
-            wx.EVT_MENU(self.get_frame(), id, callback)
-            return id
-        return None
+                raise AttributeError('Menu "%s" cannot be found from the menubar' % (name))
+            return menubar.GetMenu(menu_pos)
+        raise RuntimeError('Menubar cannot be found')
+
+    def add_to_menu(self, label, tooltip, callback, menu_name, index=-1, enabled=True):
+        menu = self.get_menu(menu_name)
+        pos = self._resolve_position_from_index(menu, index)
+        id = wx.NewId()
+        menu_item = menu.Insert(pos, id, label, tooltip)
+        menu_item.Enable(enabled)
+        wx.EVT_MENU(self.get_frame(), id, callback)
+        self._menu_items.append((menu_name, menu_item))
+        return id
 
     def _resolve_position_from_index(self, menu, index):
         if index > 0:
@@ -100,11 +106,22 @@ class Plugin(PersistentAttributes):
             return 0
         return pos
 
-    def remove_from_menu(self, menu, id):
+    def add_separator_to_menu(self, menu_name, index):
+        menu = self.get_menu(menu_name)
+        pos = self._resolve_position_from_index(menu, index)
+        menu_item = menu.InsertSeparator(pos)
+        self._menu_items.append((menu_name, menu_item))
+
+    def remove_added_menu_items(self):
+        for menu_name, menu_item in self._menu_items:
+            self.get_menu(menu_name).RemoveItem(menu_item)
+        self._menu_items = []
+
+    def remove_from_menu(self, menu_name, id):
         menubar = self.get_menu_bar()
-        pos = menubar.FindMenu(menu)
-        help_menu = menubar.GetMenu(pos)
-        help_menu.Remove(id)
+        pos = menubar.FindMenu(menu_name)
+        menu = menubar.GetMenu(pos)
+        menu.Remove(id)
 
     def get_tool_bar(self):
         """Returns the menu bar of the main RIDE window."""

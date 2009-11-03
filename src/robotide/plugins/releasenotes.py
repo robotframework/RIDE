@@ -42,7 +42,7 @@ class ReleaseNotesPlugin(Plugin):
         self.auto_show()
 
     def deactivate(self):
-        self.remove_from_menu('Help', self._id)
+        self.remove_added_menu_items()
 
     def auto_show(self):
         """Show the release notes if the current version release notes haven't been shown."""

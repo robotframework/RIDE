@@ -30,8 +30,7 @@ class RecentFilesPlugin(Plugin):
     def __init__(self, application=None):
         Plugin.__init__(self, application)
         self.version = "0.1"
-        self._menuitems = []
-        self._file = {}
+        self._files = {}
 
     def activate(self):
         """Make the plugin available for use."""
@@ -44,7 +43,7 @@ class RecentFilesPlugin(Plugin):
 
     def deactivate(self):
         """Deactivates this plugin."""
-        self._remove_from_file_menu()
+        self.remove_added_menu_items()
         self.unsubscribe(self.OnPublication)
 
     def OnAbout(self, event):
@@ -61,7 +60,7 @@ class RecentFilesPlugin(Plugin):
         id = event.GetId()
         if not self.new_suite_can_be_opened():
             return
-        path = self._normalize(self._file[id])
+        path = self._normalize(self._files[id])
         # There needs to be a better way. This assumes the path is a
         # suite but it could be a resource. There needs to be a
         # generic "open" command in the application or frame object
@@ -72,30 +71,6 @@ class RecentFilesPlugin(Plugin):
         """Saves the path of a file when it is opened."""
         self._remember_file(message.data["path"])
 
-    def _add_menuitem(self, menu, file, n=0):
-        """Add a menuitem to the given menu. 
-
-        file may be one of the following:
-        '---' adds a separator, 
-        '' adds a disabled "no files available" item
-        anything else represents a filename as a string
-
-        """
-
-        id = wx.NewId()
-        pos = menu.GetMenuItemCount()-1
-        if file == "---":
-            menuitem = menu.InsertSeparator(pos)
-        elif file == "":
-            menuitem = menu.Insert(pos,id, "no recent files")
-            menuitem.Enable(False)
-        else:
-            file = self._normalize(file)
-            filename = os.path.basename(file)
-            menuitem = menu.Insert(pos,id, "&%s: %s" % (n+1, filename), "Open %s" % file)
-            wx.EVT_MENU(self.get_frame(), id, self.OnOpenRecent)
-            self._file[id] = file
-        self._menuitems.append(menuitem)
 
     def _get_file_menu(self):
         """Return a handle to the File menu on the menubar."""
@@ -128,17 +103,9 @@ class RecentFilesPlugin(Plugin):
             self.recent_files = self.recent_files[0:self.max_number_of_files]
             self._update_file_menu()
 
-    def _remove_from_file_menu(self):
-        """Remove the menubar item from the menubar for this plugin."""
-        file_menu = self._get_file_menu()
-        for menuitem in self._menuitems:
-            file_menu.DeleteItem(menuitem)
-        self._menuitems = []
-        self._file = {}
-
     def _update_file_menu(self):
         """Add all of the known recent files to the file menu."""
-        self._remove_from_file_menu()
+        self.remove_added_menu_items()
         file_menu = self._get_file_menu()
         if len(self.recent_files) == 0:
             self._add_menuitem(file_menu, "")
@@ -147,3 +114,24 @@ class RecentFilesPlugin(Plugin):
                 self._add_menuitem(file_menu, file, n)
         self._add_menuitem(file_menu, "---")
 
+    def _add_menuitem(self, menu, file, n=0):
+        """Add a menuitem to the given menu. 
+
+        file may be one of the following:
+        '---' adds a separator, 
+        '' adds a disabled "no files available" item
+        anything else represents a filename as a string
+
+        """
+        if file == "---":
+            self.add_separator_to_menu('File', -1)
+        elif file == "":
+            self.add_to_menu('no recent files', None, None, 'File', -1, 
+                             enabled=False)
+        else:
+            file = self._normalize(file)
+            filename = os.path.basename(file)
+            label = "&%s: %s" % (n+1, filename)
+            tooltip = "Open %s" % file
+            id = self.add_to_menu(label, tooltip, self.OnOpenRecent, 'File', -1)
+            self._files[id] = file
