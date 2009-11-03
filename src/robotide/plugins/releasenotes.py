@@ -37,8 +37,8 @@ class ReleaseNotesPlugin(Plugin):
         self._panel = None
 
     def activate(self):
-        self._id = self.add_to_menu('Release Notes', 'Show the release notes',
-                                    self.OnShowReleaseNotes, 'Help')
+        self.add_to_menu('Help', 'Release Notes', -1, self.OnShowReleaseNotes,
+                         'Show the release notes')
         self.auto_show()
 
     def deactivate(self):

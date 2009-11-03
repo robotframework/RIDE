@@ -110,8 +110,7 @@ class RecentFilesPlugin(Plugin):
 
     def _create_menu_items(self):
         if len(self.recent_files) == 0:
-            self.add_to_menu('no recent files', None, None, 'File', -1, 
-                             enabled=False)
+            self.add_to_menu('File', 'no recent files', -1, enabled=False)
         else:
             for n, file in enumerate(self.recent_files):
                 self._add_file_to_menu(file, n)
@@ -121,6 +120,6 @@ class RecentFilesPlugin(Plugin):
         item = self._normalize(file)
         filename = os.path.basename(file)
         label = "&%s: %s" % (n+1, filename)
-        tooltip = "Open %s" % item
-        id = self.add_to_menu(label, tooltip, self.OnOpenRecent, 'File', -1)
+        doc = "Open %s" % item
+        id = self.add_to_menu('File',label, -1, self.OnOpenRecent, doc)
         self._files[id] = item

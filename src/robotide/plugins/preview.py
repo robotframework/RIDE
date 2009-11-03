@@ -52,14 +52,15 @@ class PreviewPlugin(Plugin):
         self._item = None
 
     def activate(self):
-        self.create_menu_item('Tools', 'Preview', self.OnShowPreview,
-                              'Show preview of the current file', -1)
+        self.add_to_menu('Tools','Preview', -1, self.OnShowPreview,
+                         'Show preview of the current file')
         self.subscribe(self._create_preview_if_item_changed,
                        ('core', 'tree', 'selection'))
         self.subscribe(self._create_preview_if_self_selected,
                        ('core', 'notebook', 'tabchange'))
 
     def deactivate(self):
+        self.remove_added_menu_items()
         if self._panel:
             self._panel.Destroy()
         self._panel = None

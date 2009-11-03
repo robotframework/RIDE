@@ -55,25 +55,6 @@ class Plugin(PersistentAttributes):
         """
         return None
 
-    def create_menu_item(self, menu_name, item_name, action, item_doc='',
-                         index=0):
-        """Create a menu item in an existing menu.
-
-        `menu_name` is the name of the toplevel menu
-        `item_name` is the visible name of the item
-        `action` is a callable that is bound to the menu event
-        `index` is the position of the item in the menu
-        """
-        # TODO: it would be better to be able to insert after a certain item
-        # not by position. Also, should the args be wrapped in an object?
-        menubar = self.get_menu_bar()
-        menu = menubar.GetMenu(menubar.FindMenu(menu_name))
-        id = wx.NewId()
-        if index < 0:
-            index = menu.GetMenuItemCount() + index + 1
-        menu.Insert(index, id, item_name, item_doc)
-        wx.EVT_MENU(self._frame, id, action)
-
     def get_menu_bar(self):
         """Returns the menu bar of the main RIDE window."""
         return self._frame.GetMenuBar()
@@ -88,15 +69,24 @@ class Plugin(PersistentAttributes):
             return menubar.GetMenu(menu_pos)
         raise RuntimeError('Menubar cannot be found')
 
-    def add_to_menu(self, label, tooltip, callback, menu_name, index=-1, enabled=True):
-        if not tooltip:
-            tooltip = ''
+    def add_to_menu(self, menu_name, item_name, index=-1, 
+                    action=None, item_doc='', enabled=True):
+        """Create a menu item into an existing menu.
+
+        `menu_name` is the name of the toplevel menu
+        `item_name` is the visible name of the item
+        `index` is the position of the item in the menu, negative index is 
+        counted from the end
+        `action` is a callable that is bound to the menu event
+        `item_doc` is the documentation visible in status bar
+        `enabled` specifies whether the item is enabled, defaults to True
+        """
         menu = self.get_menu(menu_name)
         pos = self._resolve_position_from_index(menu, index)
         id = wx.NewId()
-        menu_item = menu.Insert(pos, id, label, tooltip)
+        menu_item = menu.Insert(pos, id, item_name, item_doc)
         menu_item.Enable(enabled)
-        wx.EVT_MENU(self.get_frame(), id, callback)
+        wx.EVT_MENU(self.get_frame(), id, action)
         self._menu_items.append((menu_name, menu_item))
         return id
 
