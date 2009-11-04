@@ -39,6 +39,11 @@ class Plugin(object):
         self.__settings.set_defaults(settings)
         self.initially_active = initially_active
         self._menu_items = []
+        # TODO: _listeners is needed to keep references to wrapped listeners in
+        # subscribe(), because Publisher only keeps weak references of listeners
+        # and without appending them to this list, they are garbage collected
+        # immediately. Is there a better way to keep the references?
+        self._listeners = []
 
     def activate(self):
         """Create necessary user interface components."""
@@ -139,10 +144,11 @@ class Plugin(object):
     def open_suite(self, path):
         self._frame.open_suite(path)
 
-    def subscribe(self, listener, topic=''):
-        """Subscribe to notifications for the given topic.
+    def subscribe(self, listener, event):
+        # FIXME: rewrite documentation to include event objects
+        """Subscribe to notifications for the given event.
 
-        A topic is a dot-separated string (eg: "core.open_suite") or
+        A event is a dot-separated string (eg: "core.open_suite") or
         a tuple ("core","open_suite") representing a hierarchy. All
         publications at or below the given hierarchy will call the
         given function (ie: subscribing to ("core") will cause the
@@ -152,7 +158,11 @@ class Plugin(object):
         need not be changed in case the underlying message passing mechanism
         is changed later.
         """
-        Publisher().subscribe(listener,topic)
+        def listener_wrapper(message):
+            listener(message.data)
+        self._listeners.append(listener_wrapper)
+        event = isinstance(event, basestring) and event or event.topic
+        Publisher().subscribe(self._listeners[-1], event.lower())
 
     def unsubscribe(self, listener, topics=None):
         """Unsubscribe to notifications for the given topic."""

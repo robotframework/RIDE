@@ -12,7 +12,15 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+
+from wx.lib.pubsub import Publisher
+
 from robotide import utils
+
+
+# TODO: is this name too generic? Where should this function be?
+def publish(event):
+    Publisher().sendMessage(event.topic.lower(), event)
 
 
 def get_topic(classname):
