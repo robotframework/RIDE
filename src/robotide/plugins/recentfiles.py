@@ -29,9 +29,9 @@ class RecentFilesPlugin(Plugin):
     def activate(self):
         self._save_currently_loaded_suite()
         self._update_file_menu()
-        self.subscribe(self.OnSuiteOpened, ("core", "open", "suite"))
+        self.subscribe(self.OnSuiteOpened, ('core', 'open', 'suite'))
         # TODO: This plugin doesn't currently support resources
-        # self._frame.subscribe(self.OnSuiteOpened, ("core", "open","resource"))
+        # self._frame.subscribe(self.OnSuiteOpened, ('core', 'open','resource'))
 
     def deactivate(self):
         self.remove_added_menu_items()
@@ -44,16 +44,16 @@ class RecentFilesPlugin(Plugin):
         path = self._normalize(self._files[id])
         # TODO: There needs to be a better way. This assumes the path is a
         # suite but it could be a resource. There needs to be a
-        # generic "open" command in the application or frame object
+        # generic 'open' command in the application or frame object
         # that Does The Right Thing no matter what the type.
         self.open_suite(path)
 
     def OnSuiteOpened(self,message):
-        self._add_to_recent_files(message.data["path"])
+        self._add_to_recent_files(message.data['path'])
 
     def _get_file_menu(self):
         menubar = self.get_menu_bar()
-        pos = menubar.FindMenu("File")
+        pos = menubar.FindMenu('File')
         file_menu = menubar.GetMenu(pos)
         return file_menu
 
@@ -91,7 +91,7 @@ class RecentFilesPlugin(Plugin):
     def _add_file_to_menu(self, file, n):
         item = self._normalize(file)
         filename = os.path.basename(file)
-        label = "&%s: %s" % (n+1, filename)
-        doc = "Open %s" % item
+        label = '&%s: %s' % (n+1, filename)
+        doc = 'Open %s' % item
         id = self.add_to_menu('File',label, -1, self.OnOpenRecent, doc)
         self._files[id] = item
