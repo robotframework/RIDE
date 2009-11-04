@@ -56,7 +56,6 @@ class Plugin(object):
         return None
 
     def get_menu_bar(self):
-        """Returns the menu bar of the main RIDE window."""
         return self._frame.GetMenuBar()
 
     def get_menu(self, name):
@@ -113,7 +112,6 @@ class Plugin(object):
         menu.Remove(id)
 
     def get_tool_bar(self):
-        """Returns the menu bar of the main RIDE window."""
         return self._frame.GetToolBar()
 
     def get_frame(self):
