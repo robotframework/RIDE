@@ -1,12 +1,12 @@
 import unittest
 
 import os
-from robot.utils.asserts import assert_equal, assert_true, assert_false
-from robotide.application.pluginmanager import PluginLoader
+from robot.utils.asserts import assert_equal
+from robotide.plugins.loader import PluginLoader
 
 
-PLUGIN1_ID='test.plugin1'
-PLUGIN2_ID='test.plugin2'
+PLUGIN1_NAME='Example Plugin 1'
+PLUGIN2_NAME='Example Plugin 2'
 PLUGIN_DIR = "./test_plugins"
 
 
@@ -14,13 +14,15 @@ class _FakeModel(object):
     suite = None
 
 class _FakeUIObject(object):
-    FindMenu = Insert = InsertSeparator = Append = Connect =\
-        lambda *args: None
-    GetMenu = lambda s, x: _FakeUIObject()
+    Enable = InsertSeparator = Append = Connect = lambda *args: None
+    Insert = FindMenu = GetMenuBar = GetMenu = lambda *args: _FakeUIObject()
     GetMenuItemCount = lambda s: 1
+    notebook = property(lambda *args: _FakeUIObject())
 
-class _FakeManager(object):
+class _FakeApplication(object):
 
+    frame = _FakeUIObject()
+    model = _FakeModel()
     get_model = lambda s: _FakeModel()
     subscribe = lambda s, x, y: None
     get_menu_bar = lambda s: _FakeUIObject()
@@ -29,32 +31,25 @@ class _FakeManager(object):
     create_menu_item = lambda *args: None
 
 
+class TestablePluginLoader(PluginLoader):
+    def _get_plugin_dirs(self):
+        return [os.path.join(os.path.dirname(__file__), PLUGIN_DIR)]
+
+
 class TestPluginLoader(unittest.TestCase):
 
-    def setUp(self):
-        self.pm = PluginLoader(manager=_FakeManager(),
-                                dirs=[os.path.join(os.path.dirname(__file__), PLUGIN_DIR)])
-    
-    def test_activate_all(self):
-        """This test loads and activates all plugins that it finds.
+    def test_plugin_loading(self):
+        loader = TestablePluginLoader(_FakeApplication())
+        assert_equal(len(loader.plugins), 6)
+        self._assert_plugin_loaded(loader, PLUGIN1_NAME)
+        self._assert_plugin_loaded(loader, PLUGIN2_NAME)
+        self._assert_plugin_loaded(loader, 'Release Notes')
 
-           This test depends expects two valid plugins to be in the 
-           test_plugins directory. There should also be at least one
-           non-plugin file in that directory too.
-        """
-        assert_equal(len(self.pm.plugins), 0)
-        self.pm.load_plugins()
-        assert_equal(len(self.pm.plugins), 7)
-        assert_equal(self.pm.plugins[PLUGIN1_ID].id, "test.plugin1")
-        assert_equal(self.pm.plugins[PLUGIN1_ID].name, "Test Plugin 1")
-        assert_false(self.pm.plugins[PLUGIN1_ID].active, "expected %s to be active but it is not")
-        assert_equal(self.pm.plugins[PLUGIN2_ID].id, "test.plugin2")
-        assert_equal(self.pm.plugins[PLUGIN2_ID].name, "Test Plugin 2")
-        assert_true(self.pm.plugins[PLUGIN2_ID].active, "expected %s to be active but it is not")
-
-    def test_finding_core_plugins(self):
-        self.pm.load_plugins()
-        assert_true(self.pm.plugins['releasenotes'].active)
+    def _assert_plugin_loaded(self, loader, name):
+        for p in loader.plugins:
+            if p.name == name:
+                return
+        raise AssertionError("Plugin '%s' not loaded" % name)
 
 
 if __name__ == '__main__':
