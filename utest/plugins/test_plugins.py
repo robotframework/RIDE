@@ -1,13 +1,14 @@
 import unittest
-
 import os
 from robot.utils.asserts import assert_equal
-from robotide.plugins.loader import PluginLoader
 
+from robotide.plugins.loader import PluginLoader
+from robotide.plugins.releasenotes import ReleaseNotesPlugin
+ReleaseNotesPlugin.auto_show = lambda *args: None
 
 PLUGIN1_NAME='Example Plugin 1'
 PLUGIN2_NAME='Example Plugin 2'
-PLUGIN_DIR = "./test_plugins"
+PLUGIN_DIR = "test_plugins"
 
 
 class _FakeModel(object):
@@ -20,7 +21,6 @@ class _FakeUIObject(object):
     notebook = property(lambda *args: _FakeUIObject())
 
 class _FakeApplication(object):
-
     frame = _FakeUIObject()
     model = _FakeModel()
     get_model = lambda s: _FakeModel()
