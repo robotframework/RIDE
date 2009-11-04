@@ -17,28 +17,29 @@ class TestEvent(unittest.TestCase):
 
     def test_missing_mandatory_attribute(self):
         msg = 'Missing mandatory attributes: bar'
-        assert_raises_with_msg(AttributeError, msg, RideTestEventWithAttrs, 
+        assert_raises_with_msg(TypeError, msg, RideTestEventWithAttrs, 
                                foo='bar')
 
     def test_missing_many_mandatory_attributes(self):
         msg = 'Missing mandatory attributes: foo, bar'
-        assert_raises_with_msg(AttributeError, msg, RideTestEventWithAttrs)
+        assert_raises_with_msg(TypeError, msg, RideTestEventWithAttrs)
 
     def test_no_such_attribute_should_fail(self):
         msg = 'RideTestEventWithAttrs has no attribute quux'
-        assert_raises_with_msg(AttributeError, msg, RideTestEventWithAttrs,
+        assert_raises_with_msg(TypeError, msg, RideTestEventWithAttrs,
                                foo='', bar='', quux='camel')
 
 
 class RideTestEvent(RideEvent):
-    pass
+    topic = 'Ride.Test'
+
 
 class RideTestEventWithAttrs(RideTestEvent):
     _attrs = ['foo', 'bar']
 
 
 class RideTestNodeEvent(RideTestEvent):
-    pass
+    topic = 'Ride.Test.Node'
 
 
 if __name__ == '__main__':
