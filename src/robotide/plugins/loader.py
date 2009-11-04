@@ -41,7 +41,9 @@ class PluginLoader(object):
         from recentfiles import RecentFilesPlugin 
         from preview import PreviewPlugin
         from gridcolorizer import Colorizer
-        return [ReleaseNotesPlugin, RecentFilesPlugin, PreviewPlugin, Colorizer]
+        from editor import EditorPlugin
+        return [ReleaseNotesPlugin, RecentFilesPlugin, PreviewPlugin, 
+                Colorizer, EditorPlugin]
 
     def _find_plugin_files(self):
         plugindirs = [SETTINGS.get_path('plugins'),
