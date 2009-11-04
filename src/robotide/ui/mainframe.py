@@ -101,7 +101,7 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
 
     def delete_page(self, panel):
         page = self.notebook.GetPageIndex(panel)
-        self.notebook.RemovePage(page)
+        self.notebook.DeletePage(page)
 
     def _get_active_item(self):
         return self.tree.get_active_item()
@@ -338,16 +338,17 @@ class NoteBook(fnb.FlatNotebook):
         style = fnb.FNB_NODRAG|fnb.FNB_HIDE_ON_SINGLE_TAB|fnb.FNB_VC8
         fnb.FlatNotebook.__init__(self, parent, style=style)
         self.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
+        self.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CLOSING, self.OnPageClosing)
+        self._page_closing = False
+
+    def OnPageClosing(self, event):
+        self._page_closing = True
 
     def OnPageChanging(self, event):
-        if not self.GetPageCount():
+        if not self._page_changed():
+            self._page_closing = False
             return
-        try:
-            oldtitle = self.GetPageText(event.GetOldSelection())
-        except IndexError:
-            #TODO: Should be investigated why this is happening when closing 
-            #tabs from plugin manager
-            return
+        oldtitle = self.GetPageText(event.GetOldSelection())
         newindex = event.GetSelection()
         if newindex <= self.GetPageCount() - 1:
             newtitle = self.GetPageText(event.GetSelection())
@@ -355,3 +356,9 @@ class NoteBook(fnb.FlatNotebook):
             newtitle = None
         Publisher().sendMessage(('core', 'notebook', 'tabchange'),
                                 {'oldtab': oldtitle, 'newtab': newtitle})
+
+    def _page_changed(self):
+        """Change event is send when no tab available or tab is closed"""
+        if not self.GetPageCount() or self._page_closing:
+            return False
+        return True
