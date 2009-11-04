@@ -124,9 +124,11 @@ class _Section:
                 self.save()
         return self
 
-    def set_defaults(self, **settings):
-        """Sets default values"""
-        return self.set_values(settings, override=False)
+    def set_defaults(self, settings_dict=None, **settings):
+        """Sets defaults based on dict and kwargs, kwargs having precedence."""
+        settings_dict = settings_dict or {}
+        settings_dict.update(settings)
+        return self.set_values(settings_dict, override=False)
 
     def add_section(self, name, **defaults):
         """Creates section or updates existing section with defaults."""

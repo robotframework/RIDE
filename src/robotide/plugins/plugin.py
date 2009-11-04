@@ -17,14 +17,13 @@ import wx
 from  wx.lib.pubsub import Publisher
 
 from robotide import utils
-from robotide.context import SETTINGS, PersistentAttributes
+from robotide.context import SETTINGS
 
 
-class Plugin(PersistentAttributes):
-    persistent_attributes = {}
+class Plugin(object):
 
     def __init__(self, application, name=None, doc=None, metadata=None,
-                 initially_active=False):
+                 settings=None, initially_active=False):
         """Initialize the plugin. 
 
         This shouldn't create any user interface elements, only initialize the
@@ -34,9 +33,10 @@ class Plugin(PersistentAttributes):
         self._app = application
         self._frame = application.frame
         self.name = name or utils.name_from_class(self, drop='Plugin')
-        PersistentAttributes.__init__(self, SETTINGS['Plugins'].add_section(self.name))
         self.doc = doc or inspect.getdoc(self) or ''
         self.metadata = metadata or {}
+        self.__settings = SETTINGS['Plugins'].add_section(self.name)
+        self.__settings.set_defaults(settings)
         self.initially_active = initially_active
         self._menu_items = []
 
