@@ -114,7 +114,6 @@ class PreviewPanel(wx.Panel):
         self._create_chooser()
         self._set_format('Text')
         notebook.AddPage(self, "Preview")
-        self.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CLOSING, self.OnClose, notebook)
 
     def _create_chooser(self):
         chooser = wx.RadioBox(self, label='Format', choices=['Text', 'HTML'])
@@ -163,9 +162,6 @@ class PreviewPanel(wx.Panel):
             self._view = TxtView(self)
         self.Sizer.Add(self._view, 1, wx.EXPAND|wx.ALL, border=8)
         self.Sizer.Layout()
-
-    def OnClose(self, event):
-        self._parent.deactivate()
 
 
 class HtmlView(wx.html.HtmlWindow):
