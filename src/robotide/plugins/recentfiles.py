@@ -14,87 +14,60 @@
 
 
 import os.path
-import re
-import wx
 
 from plugin import Plugin
 
 
 class RecentFilesPlugin(Plugin):
-    """Add recently opened files to the file menu.
-
-    This is still very experimental, use at your own risk.
-    """
+    """Add recently opened files to the file menu."""
     persistent_attributes = {'recent_files':[], 'max_number_of_files':4}
 
     def __init__(self, application=None):
         Plugin.__init__(self, application)
-        self.version = "0.1"
         self._files = {}
 
     def activate(self):
-        """Make the plugin available for use."""
-        # If there is a currently open file, add it to the top of the list
-        self._remember_current_file()
+        self._save_currently_loaded_suite()
         self._update_file_menu()
-        self.subscribe(self.OnPublication, ("core", "open","suite"))
-        # This plugin doesn't currently support resources
-#        self._frame.subscribe(self.OnPublication, ("core", "open","resource"))
+        self.subscribe(self.OnSuiteOpened, ("core", "open", "suite"))
+        # TODO: This plugin doesn't currently support resources
+        # self._frame.subscribe(self.OnSuiteOpened, ("core", "open","resource"))
 
     def deactivate(self):
-        """Deactivates this plugin."""
         self.remove_added_menu_items()
-        self.unsubscribe(self.OnPublication)
-
-    def OnAbout(self, event):
-        """Displays a dialog about this plugin."""
-        info = wx.AboutDialogInfo()
-        info.Name = self.name
-        info.Version = self.version
-        info.Description = self.__doc__
-        info.Developers = ["Bryan Oakley, Orbitz Worldwide"]
-        wx.AboutBox(info)
+        self.unsubscribe(self.OnSuiteOpened)
 
     def OnOpenRecent(self, event):
-        """Event handler used to open a recent file."""
         id = event.GetId()
         if not self.new_suite_can_be_opened():
             return
         path = self._normalize(self._files[id])
-        # There needs to be a better way. This assumes the path is a
+        # TODO: There needs to be a better way. This assumes the path is a
         # suite but it could be a resource. There needs to be a
         # generic "open" command in the application or frame object
         # that Does The Right Thing no matter what the type.
         self.open_suite(path)
 
-    def OnPublication(self,message):
-        """Saves the path of a file when it is opened."""
-        self._remember_file(message.data["path"])
-
+    def OnSuiteOpened(self,message):
+        self._add_to_recent_files(message.data["path"])
 
     def _get_file_menu(self):
-        """Return a handle to the File menu on the menubar."""
         menubar = self.get_menu_bar()
         pos = menubar.FindMenu("File")
         file_menu = menubar.GetMenu(pos)
         return file_menu
 
     def _normalize(self, path):
-        """If path matches */__init__.*, return the directory otherwise return the original path.""" 
-        path = os.path.abspath(path)
-        if re.match("__init__.*", os.path.basename(path)):
-            # represents a directory suite, use the actual directory name instead
-            path = os.path.dirname(path)
-        return path
+        if os.path.basename(path).startswith('__init__.'):
+            return os.path.dirname(path)
+        return os.path.abspath(path)
 
-    def _remember_current_file(self):
-        """Save the currently loaded suite, if there is one"""
+    def _save_currently_loaded_suite(self):
         model = self.get_model()
         if model and model.suite:
-            self._remember_file(model.suite.source)
+            self._add_to_recent_files(model.suite.source)
 
-    def _remember_file(self, file):
-        """Add a filename to the list of recent files."""
+    def _add_to_recent_files(self, file):
         if not file:
             return
         file = self._normalize(file)
@@ -104,11 +77,10 @@ class RecentFilesPlugin(Plugin):
             self._update_file_menu()
 
     def _update_file_menu(self):
-        """Add all of the known recent files to the file menu."""
         self.remove_added_menu_items()
-        self._create_menu_items()
+        self._add_recent_files_to_menu()
 
-    def _create_menu_items(self):
+    def _add_recent_files_to_menu(self):
         if len(self.recent_files) == 0:
             self.add_to_menu('File', 'no recent files', -1, enabled=False)
         else:
