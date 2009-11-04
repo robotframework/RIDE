@@ -61,13 +61,10 @@ class Plugin(PersistentAttributes):
 
     def get_menu(self, name):
         menubar = self.get_menu_bar()
-        # TODO: why is this checked? The should be a menubar, right?
-        if menubar:
-            menu_pos = menubar.FindMenu(name)
-            if menu_pos == -1:
-                raise AttributeError('Menu "%s" cannot be found from the menubar' % (name))
-            return menubar.GetMenu(menu_pos)
-        raise RuntimeError('Menubar cannot be found')
+        menu_pos = menubar.FindMenu(name)
+        if menu_pos == -1:
+            raise AttributeError('Menu "%s" cannot be found from the menubar' % (name))
+        return menubar.GetMenu(menu_pos)
 
     def add_to_menu(self, menu_name, item_name, index=-1, 
                     action=None, item_doc='', enabled=True):
