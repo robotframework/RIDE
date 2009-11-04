@@ -99,9 +99,8 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
             else:
                 raise PluginPageNotFoundError("unable to find a notebook page for the given panel")
 
-    def delete_page(self, panel):
-        page = self.notebook.GetPageIndex(panel)
-        self.notebook.RemovePage(page)
+    def delete_page(self, page):
+        self.notebook.RemovePage(self.notebook.GetPageIndex(page))
 
     def _get_active_item(self):
         return self.tree.get_active_item()
