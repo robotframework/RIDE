@@ -44,13 +44,15 @@ class PluginLoader(object):
         return [ReleaseNotesPlugin, RecentFilesPlugin, PreviewPlugin, Colorizer]
 
     def _find_plugin_files(self):
-        plugindirs = [SETTINGS.get_path('plugins'),
-                      os.path.join(SETTINGS['install root'], 'site-plugins')]
-        for path in plugindirs:
+        for path in self._get_plugin_dirs():
             if os.path.exists(path):
                 for filename in os.listdir(path):
                     if os.path.splitext(filename)[1].lower() == ".py":
                         yield os.path.join(path, filename)
+
+    def _get_plugin_dirs(self):
+        return [SETTINGS.get_path('plugins'),
+                os.path.join(SETTINGS['install root'], 'site-plugins')]
 
     def _import_classes(self, path):
         dirpath, filename = os.path.split(path)
