@@ -1,7 +1,7 @@
 from robotide.plugins import Plugin
 
 
-class ExamplePlugin1(Plugin):
+class ExamplePlugin3(Plugin):
 
     def __init__(self, application):
         Plugin.__init__(self, application)
