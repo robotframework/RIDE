@@ -12,9 +12,24 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from robotide import utils
+
+
+def get_topic(classname):
+    if classname.endswith('Event'):
+        classname = classname[:-len('Event')]
+    return utils.printable_name(classname, code_style=True).replace(' ', '.')
+
+
+class eventtype(type):
+    def __new__(cls, name, bases, dct):
+        if 'topic' not in dct:
+            dct['topic'] = get_topic(name)
+        return type.__new__(cls, name, bases, dct)
+
 
 class RideEvent(object):
-    topic = 'Ride'
+    __metaclass__ = eventtype
     _attrs = []
 
     def __init__(self, **kwargs):
