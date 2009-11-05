@@ -48,7 +48,6 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         self._plugin_manager = PluginManager(self.notebook)
         self._kw_search_dialog = KeywordSearchDialog(self, keyword_filter)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
-        self.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CLOSING, self.OnPageClosing)
         self.tree.Bind(wx.EVT_LEFT_DCLICK, self.OnSuiteTreeLeftDClick)
         self.Show()
 
