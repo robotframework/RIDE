@@ -19,8 +19,8 @@ from robotide.context import PUBLISHER
 class eventtype(type):
 
     def __new__(cls, name, bases, dct):
-        if not dct['topic']:
-            dct['topic'] = cls._get_topic_from_class_name(name)
+        if 'topic' not in dct or dct['topic'] is None:
+            dct['topic'] = cls._get_topic_from(name)
         return type.__new__(cls, name, bases, dct)
 
     @staticmethod
@@ -32,7 +32,6 @@ class eventtype(type):
 
 class RideEvent(object):
     __metaclass__ = eventtype
-    topic = None
     attr_names = []
 
     def __init__(self, **kwargs):
