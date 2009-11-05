@@ -19,14 +19,14 @@ class Publisher(object):
         return event.lower()
 
     def unsubscribe(self, listener, event):
-        self._wxpublisher.unsubscribe(self._find_listener(listener),
+        self._wxpublisher.unsubscribe(self._find_wrapper(listener),
                                       self._get_event(event))
 
-    def _find_listener(self, listener):
-        for l in self._listeners:
-            if l.listener == listener:
-                self._listeners.remove(l)
-                return l
+    def _find_wrapper(self, listener):
+        for wrapper in self._listeners:
+            if wrapper.listener == listener:
+                self._listeners.remove(wrapper)
+                return wrapper
         return None
 
 

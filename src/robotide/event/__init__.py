@@ -19,12 +19,12 @@ from robotide.context import PUBLISHER
 class eventtype(type):
 
     def __new__(cls, name, bases, dct):
-        if 'topic' not in dct or dct['topic'] is None:
-            dct['topic'] = eventtype.get_topic(name)
+        if not dct['topic']:
+            dct['topic'] = cls._get_topic_from_class_name(name)
         return type.__new__(cls, name, bases, dct)
 
     @staticmethod
-    def get_topic(classname):
+    def _get_topic_from(classname):
         if classname.endswith('Event'):
             classname = classname[:-len('Event')]
         return utils.printable_name(classname, code_style=True).replace(' ', '.')
@@ -36,7 +36,7 @@ class RideEvent(object):
     attr_names = []
 
     def __init__(self, **kwargs):
-        if not sorted(kwargs.keys()) == sorted(self.attr_names):
+        if sorted(kwargs.keys()) != sorted(self.attr_names):
             raise TypeError('Argument mismatch, expected: %s' % self.attr_names)
         self.__dict__.update(kwargs)
 
