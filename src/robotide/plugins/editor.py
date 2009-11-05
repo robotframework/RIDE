@@ -26,35 +26,38 @@ class EditorPlugin(Plugin):
     def __init__(self, application):
         Plugin.__init__(self, application, initially_active=True)
         self._tab = None
+        self._item = None
+        self.subscribe(self.OnTreeItemSelected, RideTreeSelection)
 
     def activate(self):
         self.add_to_menu('Tools', 'Editor', -1, self.OnOpen,
                          'Opens suite/resource editor')
-        self.subscribe(self.OnTreeItemSelected, RideTreeSelection)
         #TODO: Is the save really wanted when tab is changing?
         self.subscribe(self.OnSave, RideNotebookTabchange)
-        self._create_editor_tab(None)
+        self._create_editor_tab()
 
     def deactivate(self):
         self.remove_added_menu_items()
         self.delete_page(self._tab)
         self._tab = None
-        self.unsubscribe(self.OnTreeItemSelected, RideTreeSelection)
 
     def OnTreeItemSelected(self, message):
-        self._create_editor_tab(message.item)
+        self._item = message.item
+        if self._tab:
+            self._create_editor_tab()
 
     def OnOpen(self, event):
-        self._create_editor_tab()
+        if self._tab:
+            self._create_editor_tab()
 
     def OnSave(self, message):
         if self._tab:
             self._tab.save()
 
-    def _create_editor_tab(self, item):
+    def _create_editor_tab(self):
         self._tab = self._create_tab(self._tab)
-        if item:
-            editor = Editor(item, self._tab)
+        if self._item:
+            editor = Editor(self._item, self._tab)
         else:
             editor = self._get_welcome_editor(self._tab)
         self._tab.set_editor(editor)
