@@ -12,7 +12,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import wx
 import wx.html
 from StringIO import StringIO
 try:
@@ -22,8 +21,8 @@ except ImportError:
 
 from robotide.writer.writer import HtmlFileWriter, TxtFileWriter
 from robotide.model.tcuk import TestCase, UserKeyword
-from robotide.version import VERSION
 from robotide.errors import SerializationError
+from robotide.event import RideTreeSelection, RideNotebookTabchange
 
 from plugin import Plugin
 
@@ -54,12 +53,12 @@ class PreviewPlugin(Plugin):
     def activate(self):
         self.add_to_menu('Tools','Preview', -1, self.OnShowPreview,
                          'Show preview of the current file')
-        self.subscribe(self._create_preview_if_item_changed,
-                       ('core', 'tree', 'selection'))
-        self.subscribe(self._create_preview_if_self_selected,
-                       ('core', 'notebook', 'tabchange'))
+        self.subscribe(self._create_preview_if_item_changed, RideTreeSelection)
+        self.subscribe(self._create_preview_if_self_selected, 
+                       RideNotebookTabchange)
 
     def deactivate(self):
+        self.unsubscribe_all_events()
         self.remove_added_menu_items()
         self.delete_page(self._panel)
         self._panel = None
@@ -76,18 +75,18 @@ class PreviewPlugin(Plugin):
         self._create_preview(item)
         return True
 
-    def _create_preview_if_item_changed(self, message):
+    def _create_preview_if_item_changed(self, event):
         item = self._get_item()
         if not (item and self._panel):
             return
         if item is self._item:
-            self._panel.scroll_to_subitem(message.data['item'])
+            self._panel.scroll_to_subitem(event.item)
         else:
             self._item = item
             self._create_preview(item)
 
-    def _create_preview_if_self_selected(self, message):
-        if message.data['newtab'] == self.name:
+    def _create_preview_if_self_selected(self, event):
+        if event.newtab == self.name:
             self._create_preview_if_item_is_selected()
 
     def _get_item(self):
