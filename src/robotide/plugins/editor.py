@@ -17,6 +17,7 @@ import wx
 from robotide.editors import Editor
 from robotide.ui.dialogs import AboutDialog
 from robotide import utils
+from robotide.event import RideTreeSelection, RideNotebookTabchange
 from plugin import Plugin
 
 
@@ -24,49 +25,51 @@ class EditorPlugin(Plugin):
 
     def __init__(self, application):
         Plugin.__init__(self, application, initially_active=True)
-        self._panel = None
-        self._item = None
-        self._editor = None
+        self._tab = None
 
     def activate(self):
         self.add_to_menu('Tools', 'Editor', -1, self.OnOpen,
                          'Opens suite/resource editor')
-        self.subscribe(self.OnTreeItemSelected,('core','tree','selection'))
-        self.subscribe(self.OnSave, ('core', 'notebook', 'tabchange'))
-        self._create_editor_panel()
+        self.subscribe(self.OnTreeItemSelected, RideTreeSelection)
+        #TODO: Is the save really wanted when tab is changing?
+        self.subscribe(self.OnSave, RideNotebookTabchange)
+        self._create_editor_tab(None)
 
     def deactivate(self):
         self.remove_added_menu_items()
-        self.delete_page(self._panel)
-        self._panel = None
-        self.unsubscribe(self.OnTreeItemSelected,('core','tree','selection'))
+        self.delete_page(self._tab)
+        self._tab = None
+        self.unsubscribe(self.OnTreeItemSelected, RideTreeSelection)
 
     def OnTreeItemSelected(self, message):
-        self._item = message.data['item']
-        self._panel = None
-        self._create_editor_panel()
+        self._create_editor_tab(message.item)
 
     def OnOpen(self, event):
-        self._create_editor_panel()
+        self._create_editor_tab()
 
     def OnSave(self, message):
-        if self._panel:
-            self._panel.save()
+        if self._tab:
+            self._tab.save()
 
-    def _create_editor_panel(self):
-        if not self._panel:
+    def _create_editor_tab(self, item):
+        self._tab = self._create_tab(self._tab)
+        if item:
+            editor = Editor(item, self._tab)
+        else:
+            editor = self._get_welcome_editor(self._tab)
+        self._tab.set_editor(editor)
+
+    def _create_tab(self, panel):
+        if not panel:
             notebook = self.get_notebook()
-            self._panel = _EditorPanel(notebook)
-            notebook.AddPage(self._panel, 'Edit    ')
-            if self._item:
-                self._editor = Editor(self._item, self._panel)
-                self._panel.set_editor(self._editor)
-            else:
-                sizer = wx.BoxSizer()
-                sizer.Add(self._panel, 1, wx.EXPAND)
-                self._editor = utils.RideHtmlWindow(self._panel, wx.DefaultSize,
-                                                    AboutDialog.TEXT)
-                self._panel.set_editor(self._editor)
+            panel = _EditorPanel(notebook)
+            notebook.AddPage(panel, 'Edit    ')
+        return panel
+
+    def _get_welcome_editor(self, tab):
+        sizer = wx.BoxSizer()
+        sizer.Add(tab, 1, wx.EXPAND)
+        return utils.RideHtmlWindow(tab, wx.DefaultSize, AboutDialog.TEXT)
 
 
 class _EditorPanel(wx.Panel):

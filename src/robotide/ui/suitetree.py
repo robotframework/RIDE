@@ -14,7 +14,6 @@
 
 import os
 import wx
-from  wx.lib.pubsub import Publisher
 try:
     import treemixin
 except ImportError:
@@ -23,6 +22,8 @@ except ImportError:
 from robotide.editors import RideEventHandler #, Editor
 from robotide.model.tcuk import UserKeyword
 from robotide.model.files import _TestSuite
+from robotide.event import RideTreeSelection
+from robotide.context import PUBLISHER
 
 from images import TreeImageList
 from robotide import utils
@@ -103,6 +104,7 @@ class SuiteTree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
     def _create_resource_root(self):
         self._resource_root = self._create_node(self._root, 'Resources',
                                                 self._images['InitFile'])
+        #FIXME: NoneHAndler not available
         self.SetPyData(self._resource_root, NoneHandler())
 
     def _create_node(self, parent_node, label, img, index=None):
@@ -312,9 +314,8 @@ class SuiteTree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
         self._history.change(node)
         handler = self.GetItemPyData(node)
         if handler and handler.item:
-            Publisher().sendMessage(('core', 'tree', 'selection'),
-                                    {'node': node, 'item': handler.item,
-                                     'text': self.GetItemText(node)})
+            PUBLISHER.publish(RideTreeSelection(node=node, item=handler.item,
+                                     text=self.GetItemText(node)))
 #            self.show_editor(handler.item)
         event.Skip()
 

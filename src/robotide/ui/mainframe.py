@@ -25,6 +25,7 @@ from robotide.editors import RideEventHandler
 from robotide.errors import PluginPageNotFoundError
 from robotide import utils
 from robotide import context
+from robotide.event import RideNotebookTabchange
 
 from actions import Actions
 from dialogs import KeywordSearchDialog, AboutDialog
@@ -310,8 +311,7 @@ class NoteBook(fnb.FlatNotebook):
             newtitle = self.GetPageText(event.GetSelection())
         else:
             newtitle = None
-        Publisher().sendMessage(('core', 'notebook', 'tabchange'),
-                                {'oldtab': oldtitle, 'newtab': newtitle})
+        context.PUBLISHER.publish(RideNotebookTabchange(oldtab=oldtitle, newtab=newtitle))
 
     def _page_changed(self):
         """Change event is send when no tab available or tab is closed"""
