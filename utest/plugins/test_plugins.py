@@ -8,7 +8,7 @@ from robotide.plugins import Plugin
 from robotide.plugins.loader import PluginLoader
 from robotide.plugins.releasenotes import ReleaseNotesPlugin
 ReleaseNotesPlugin.auto_show = lambda *args: None
-from resources import FakeApplication, RideTestEvent, RideTestEventWithData
+from plugin_resources import FakeApplication, RideTestEvent, RideTestEventWithData
 
 
 class TestablePluginLoader(PluginLoader):
