@@ -25,4 +25,4 @@ class RideTestEvent(RideEvent):
     pass
 
 class RideTestEventWithData(RideEvent):
-    _attrs = ['data_item', 'more_data']
+    attr_names = ['data_item', 'more_data']

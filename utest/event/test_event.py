@@ -5,11 +5,14 @@ from robot.utils.asserts import assert_equals, assert_raises_with_msg
 from robotide.event import RideEvent
 
 
+_ARGS_ERROR = "Argument mismatch, expected: ['foo', 'bar']"
+
+
 class RideTestEvent(RideEvent):
     topic = 'My.Topic'
 
 class RideTestEventWithAttrs(RideTestEvent):
-    _attrs = ['foo', 'bar']
+    attr_names = ['foo', 'bar']
 
 class RideTestEventWithLongName(RideTestEvent):
     pass
@@ -29,16 +32,14 @@ class TestEvent(unittest.TestCase):
         assert_equals(evt.bar, 'quux')
 
     def test_missing_mandatory_attribute(self):
-        msg = 'Missing mandatory attributes: bar'
-        assert_raises_with_msg(TypeError, msg, RideTestEventWithAttrs, foo='bar')
+        assert_raises_with_msg(TypeError, _ARGS_ERROR,
+                               RideTestEventWithAttrs, foo='bar')
 
     def test_missing_many_mandatory_attributes(self):
-        msg = 'Missing mandatory attributes: foo, bar'
-        assert_raises_with_msg(TypeError, msg, RideTestEventWithAttrs)
+        assert_raises_with_msg(TypeError, _ARGS_ERROR, RideTestEventWithAttrs)
 
     def test_no_such_attribute_should_fail(self):
-        msg = 'RideTestEventWithAttrs has no attribute quux'
-        assert_raises_with_msg(TypeError, msg, RideTestEventWithAttrs,
+        assert_raises_with_msg(TypeError, _ARGS_ERROR, RideTestEventWithAttrs,
                                foo='', bar='', quux='camel')
 
 

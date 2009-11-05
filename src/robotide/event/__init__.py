@@ -12,7 +12,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-
 from wx.lib.pubsub import Publisher
 
 from robotide import utils
@@ -23,36 +22,26 @@ def publish(event):
     Publisher().sendMessage(event.topic.lower(), event)
 
 
-def get_topic(classname):
-    if classname.endswith('Event'):
-        classname = classname[:-len('Event')]
-    return utils.printable_name(classname, code_style=True).replace(' ', '.')
-
-
 class eventtype(type):
+
     def __new__(cls, name, bases, dct):
-        if 'topic' not in dct:
-            dct['topic'] = get_topic(name)
+        if 'topic' not in dct or dct['topic'] is None:
+            dct['topic'] = eventtype.get_topic(name)
         return type.__new__(cls, name, bases, dct)
+
+    @staticmethod
+    def get_topic(classname):
+        if classname.endswith('Event'):
+            classname = classname[:-len('Event')]
+        return utils.printable_name(classname, code_style=True).replace(' ', '.')
 
 
 class RideEvent(object):
     __metaclass__ = eventtype
-    _attrs = []
+    topic = None
+    attr_names = []
 
     def __init__(self, **kwargs):
-        self._check_mandatory_attrs_given(kwargs)
-        self._set_attrs(kwargs)
-
-    def _check_mandatory_attrs_given(self, kwargs):
-        missing = [ name for name in self._attrs if not name in kwargs ]
-        if missing:
-            raise TypeError('Missing mandatory attributes: %s'
-                            % ', '.join(missing))
-
-    def _set_attrs(self, kwargs):
-        for name, value in kwargs.items():
-            if name not in self._attrs:
-                raise TypeError('%s has no attribute %s' 
-                                % (self.__class__.__name__, name))
-            setattr(self, name, value)
+        if not sorted(kwargs.keys()) == sorted(self.attr_names):
+            raise TypeError('Argument mismatch, expected: %s' % self.attr_names)
+        self.__dict__.update(kwargs)

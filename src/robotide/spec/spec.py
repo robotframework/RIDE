@@ -40,7 +40,7 @@ class Spec(object):
             # TODO: XML validation errors should be logged
             return [], ''
         kw_nodes = root.get_nodes('keywords/kw') + root.get_nodes('kw')
-        source_type = root.attrs['type']
+        source_type = root.attr_names['type']
         if source_type == 'resource':
             source_type += ' file'
         keywords = [ _XMLKeywordContent(node, self.name, source_type) for node in kw_nodes ]
@@ -129,7 +129,7 @@ class _KeywordContent(object):
 class _XMLKeywordContent(_KeywordContent):
 
     def _get_name(self, node):
-        return node.attrs['name']
+        return node.attr_names['name']
 
     def _get_doc(self, node):
         return node.get_node('doc').text
