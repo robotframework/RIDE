@@ -15,7 +15,6 @@
 
 import os
 import wx
-from  wx.lib.pubsub import Publisher
 try:
     from wx.lib.agw import flatnotebook as fnb
 except ImportError:
