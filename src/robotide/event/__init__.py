@@ -44,9 +44,10 @@ class RideEvent(object):
         PUBLISHER.publish(self)
 
 class RideTreeSelection(RideEvent):
-    topic = 'ride.tree.selection'
     attr_names = ['node', 'item', 'text']
 
 class RideNotebookTabchange(RideEvent):
-    topic = 'core.notebook.tabchange'
     attr_names = ['oldtab', 'newtab']
+
+class RideDatafileEdited(RideEvent):
+    attr_names = ['datafile']

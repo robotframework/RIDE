@@ -18,6 +18,7 @@ import os
 from robotide import context
 from robotide import utils
 from robotide.model.settings import Documentation, ResourceImport
+from robotide.event import RideDatafileEdited
 
 from eventhandler import RideEventHandler
 from kweditor import KeywordEditor
@@ -173,7 +174,10 @@ class _SettingEditor(wx.Panel, RideEventHandler):
         self._update_value()
         if not self._datafile.dirty:
             self._datafile.dirty = True
-#            self.tree.set_dirty(self._datafile)
+            #FIXME: We need to decide whether we want to expose the model object 
+            #or subset of those attributes 
+            # self.tree.set_dirty(self._datafile)
+            context.PUBLISHER.publish(RideDatafileEdited(datafile=self._datafile))
         
     def OnClear(self, event):
         self._item.clear()
@@ -246,6 +250,7 @@ class TestCaseEditor(_RobotTableEditor):
 
     def set_dirty(self):
         self.item.datafile.set_dirty()
+        context.PUBLISHER.publish(RideDatafileEdited(datafile=self.item.datafile))
 #        self.tree.set_dirty(self.item.datafile)
 
     def Show(self, show):

@@ -22,7 +22,7 @@ except ImportError:
 from robotide.editors import RideEventHandler #, Editor
 from robotide.model.tcuk import UserKeyword
 from robotide.model.files import _TestSuite
-from robotide.event import RideTreeSelection
+from robotide.event import RideTreeSelection, RideDatafileEdited
 from robotide.context import PUBLISHER
 
 from images import TreeImageList
@@ -50,6 +50,10 @@ class SuiteTree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
 #        self._editor = None
         self._history = utils.History()
         self._resource_root = None
+        self._start_to_listen_events()
+
+    def _start_to_listen_events(self):
+        PUBLISHER.subscribe(self.OnDatafileEdited, RideDatafileEdited)
 
     def populate_tree(self, model):
         self._clear_tree_data()
@@ -255,8 +259,10 @@ class SuiteTree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
 #            self._editor.close()
         pass
 
-    def set_dirty(self, datafile):
-        self._mark_dirty(self._get_datafile_node(datafile))
+    def OnDatafileEdited(self, event):
+        self._mark_dirty(self._get_datafile_node(event.datafile))
+#    def set_dirty(self, datafile):
+#        self._mark_dirty(self._get_datafile_node(datafile))
 
     def unset_dirty(self):
         for node in self._datafile_nodes:

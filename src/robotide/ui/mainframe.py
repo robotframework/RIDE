@@ -62,6 +62,8 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         self.tree = SuiteTree(splitter) #, self._editor_panel)
         splitter.SplitVertically(self.tree, self.notebook, 300)
 
+    #FIXME: How we should handle the double click. publish -> subscribe in editor. 
+    #What if other plugins wants to listen this and show the tab?
     def OnSuiteTreeLeftDClick(self, event):
         """Make the editor tab visible on double-click in the tree."""
         self.show_page(self._editor_panel)
@@ -97,19 +99,6 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
 
     def _get_active_item(self):
         return self.tree.get_active_item()
-
-    def OnPageClosing(self, event):
-        """Disallow closing of the edit tab"""
-        # Eventually it might be nice to support having multiple editors
-        # open at once (for example, a keyword editor and a test editor)
-        # but for now we only support one and we can't let that one
-        # be deleted.
-        page = self.notebook.GetCurrentPage()
-        if page == self._editor_panel:
-            # Should we print a friendly message in the statusbar or
-            # is this Good Enough?
-            wx.Bell()
-            event.Veto()
 
     def OnClose(self, event):
         self._save_mainframe_size_and_position()
@@ -199,7 +188,8 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         self._save()
 
     def _save(self, datafile=None):
-        self._editor_panel.save()
+        #FIXME: This should be changed to use the publish, subscribe mechanism
+        #self._editor_panel.save()
         files_without_format = self._application.get_files_without_format(datafile)
         for f in files_without_format:
             self._show_format_dialog_for(f)
@@ -223,6 +213,7 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
                           (s, ', '.join(item.source for item in saved)))
 
     def OnSaveAs(self, event):
+        #FIXME: 
         self._editor_panel.save()
         dlg = SaveAsDialog(self, self._application.model.get_suite_path(),
                            self._application.model.is_directory_suite())
@@ -236,6 +227,9 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         event.Skip()
 
     # Edit Menu
+    #FIXME: How these should be handled? We should have one active component 
+    #always like tree, tab, etc.. -> plugin interface should have abstract 
+    #methods for handling the events.
 
     def OnCut(self, event):
         self._editor_panel.handle_event('cut')
@@ -265,6 +259,7 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
     def OnManagePlugins(self, event):
         self._plugin_manager.show(self._application.get_plugins())
 
+    #FIXME: Move to editor plugin
     def OnKeywordCompletion(self, event):
         self._editor_panel.show_keyword_completion()
 
