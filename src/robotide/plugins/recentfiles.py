@@ -16,6 +16,7 @@
 import os.path
 
 from plugin import Plugin
+from robotide.event import RideOpenSuite
 
 
 class RecentFilesPlugin(Plugin):
@@ -29,13 +30,13 @@ class RecentFilesPlugin(Plugin):
     def activate(self):
         self._save_currently_loaded_suite()
         self._update_file_menu()
-        self.subscribe(self.OnSuiteOpened, ('core', 'open', 'suite'))
+        self.subscribe(self.OnSuiteOpened, RideOpenSuite)
         # TODO: This plugin doesn't currently support resources
         # self._frame.subscribe(self.OnSuiteOpened, ('core', 'open','resource'))
 
     def deactivate(self):
         self.remove_added_menu_items()
-        self.unsubscribe(self.OnSuiteOpened)
+        self.unsubscribe(self.OnSuiteOpened, RideOpenSuite)
 
     def OnOpenRecent(self, event):
         id = event.GetId()

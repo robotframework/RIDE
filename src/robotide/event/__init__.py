@@ -42,3 +42,7 @@ class RideEvent(object):
 
     def publish(self):
         PUBLISHER.publish(self)
+
+
+class RideOpenSuite(RideEvent):
+    pass
