@@ -5,7 +5,7 @@ from robotide.context.configobj import UnreprError
 from robotide.context.settings import Settings
 
 
-class _TestSettings(unittest.TestCase):
+class TestSettingsHelper(unittest.TestCase):
 
     def setUp(self, settings=None):
         self._init_settings_paths()

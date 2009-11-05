@@ -22,7 +22,7 @@ from robot.utils.normalizing import _CASE_INSENSITIVE_FILESYSTEM
 
 from mocks import MockSerializer, FakeSuite, FakeDirectorySuite, FakeTestCase,\
     FakeUserKeyword, FakeResource
-
+from setting_utils import TestSettingsHelper
 
 DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]), 'robotdata')
 sys.path.append(os.path.join(DATAPATH, 'put_into_python_path'))

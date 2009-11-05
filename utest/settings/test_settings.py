@@ -17,14 +17,14 @@ import os
 import unittest
 
 from robotide.context.configobj import UnreprError
-from robotide.context.settings import Settings, SectionError, PersistentAttributes,\
+from robotide.context.settings import Settings, SectionError,\
                 ConfigurationError, _merge_settings, initialize_settings
 from robotide.context  import settings
 
-from testing_utils import _TestSettings
+from resources.setting_utils import TestSettingsHelper
 
 
-class TestInvalidSettings(_TestSettings):
+class TestInvalidSettings(TestSettingsHelper):
 
     def test_no_settings_exists(self):
         self.assertEquals(self.settings._config_obj, {})
@@ -39,7 +39,7 @@ class TestInvalidSettings(_TestSettings):
         self.assertRaises(ConfigurationError, Settings, self.user_settings_path)
 
 
-class TestSettingTypes(_TestSettings):
+class TestSettingTypes(TestSettingsHelper):
 
     def test_writing_string_setting(self):
         self._test_settings_types({'string':'value'})
@@ -87,7 +87,7 @@ and even triple quotes \"\"\" '''
         self.assertEqual(expected, self._read_settings()._config_obj)
 
 
-class TestSettings(_TestSettings):
+class TestSettings(TestSettingsHelper):
 
     def test_changing_settings_with_setitem(self):
         self._create_settings_with_defaults()
@@ -194,7 +194,7 @@ tuple = (2, 1)
 """
 
 
-class TestSettingsFileContent(_TestSettings):
+class TestSettingsFileContent(TestSettingsHelper):
 
     def test_settings_file_content_stay(self):
         self._write_settings(SETTINGS_CONTENT)
@@ -206,7 +206,7 @@ class TestSettingsFileContent(_TestSettings):
         self.assertEquals(self._read_settings_file_content(), expected)
 
 
-class TestSections(_TestSettings):
+class TestSections(TestSettingsHelper):
 
     def test_add_section(self):
         self.settings.add_section('Plugin 1')
@@ -278,7 +278,7 @@ class TestSections(_TestSettings):
         self.assertEquals(self._read_settings()['Plugin 1']._config_obj, defaults)
 
 
-class TestInitializeSettings(_TestSettings):
+class TestInitializeSettings(TestSettingsHelper):
 
     def setUp(self):
         self._orig_dir = settings.SETTINGS_DIRECTORY
@@ -322,7 +322,7 @@ class TestInitializeSettings(_TestSettings):
                           self.settings_path, 'user.cfg')
 
 
-class TestMergeSettings(_TestSettings):
+class TestMergeSettings(TestSettingsHelper):
 
     def setUp(self):
         self._init_settings_paths()
@@ -347,43 +347,6 @@ class TestMergeSettings(_TestSettings):
         _merge_settings(self.settings_path, self.user_settings_path)
         self._check_content({'foo':'new value', 'hello' : 'world', 'new':'value'},
                             False)
-
-
-class PluginMock(PersistentAttributes):
-    persistent_attributes = {'foo':'bar'}
-
-
-class TestPersistentAttributes(_TestSettings):
-
-    def setUp(self):
-        _TestSettings.setUp(self)
-        self.settings.add_section('Plugins').add_section('Plugin 1')
-        self.plugin_settings = self.settings['Plugins']['Plugin 1']
-        self.plugin = PluginMock(self.plugin_settings)
-
-    def test_persistent_attribute(self):
-        self.assertEquals(self.plugin.foo, 'bar')
-        self.assertEquals(self.plugin._settings._config_obj['foo'], 'bar')
-        self.plugin.foo = 'new 1'
-        self.assertEquals(self.plugin._settings._config_obj['foo'], 'new 1')
-        self.plugin.foo = 'new 2'
-        self.assertEquals(self.plugin._settings._config_obj['foo'], 'new 2')
-        self.assertEquals(self.plugin.foo, 'new 2')
-
-    def test_set_not_persistent_attribute(self):
-        self.plugin.non_persistent = 'value'
-        self.assertFalse(self.plugin._settings._config_obj.has_key('non_persistent'))
-        self.assertEquals(self.plugin.non_persistent, 'value')
-
-    def test_get_not_persistent_attribute(self):
-        self.assertEquals(self.plugin.persistent_attributes, {'foo':'bar'})
-
-    def test_get_non_existing_attribute(self):
-        try:
-            self.plugin.non_existing
-        except AttributeError:
-            return
-        raise AssertionError("Should raise AttributeError")
 
 
 if __name__ == "__main__":
