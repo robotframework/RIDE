@@ -19,7 +19,7 @@ import os.path
 from logger import Logger
 from publisher import Publisher
 from robotide.robotapi import ROBOT_LOGGER
-from settings import Settings, initialize_settings, PersistentAttributes
+from settings import Settings, initialize_settings
 
 
 class RideSettings(Settings):

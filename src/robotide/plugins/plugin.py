@@ -14,7 +14,6 @@
 
 import inspect
 import wx
-from  wx.lib.pubsub import Publisher
 
 from robotide import utils
 from robotide.context import SETTINGS, PUBLISHER
@@ -23,7 +22,7 @@ from robotide.context import SETTINGS, PUBLISHER
 class Plugin(object):
 
     def __init__(self, application, name=None, doc=None, metadata=None,
-                 settings=None, initially_active=False):
+                 default_settings=None, initially_active=False):
         """Initialize the plugin. 
 
         This shouldn't create any user interface elements, only initialize the
@@ -36,7 +35,7 @@ class Plugin(object):
         self.doc = doc or inspect.getdoc(self) or ''
         self.metadata = metadata or {}
         self.__settings = SETTINGS['Plugins'].add_section(self.name)
-        self.__settings.set_defaults(settings)
+        self.__settings.set_defaults(default_settings)
         self.initially_active = initially_active
         self._menu_items = []
         # TODO: _listeners is needed to keep references to wrapped listeners in
@@ -44,6 +43,20 @@ class Plugin(object):
         # and without appending them to this list, they are garbage collected
         # immediately. Is there a better way to keep the references?
         #self._listeners = []
+
+    def __getattr__(self, name):
+        """Provides convenient attribute access to saved settings.
+        
+        I.e. when you have setting 'color', you can access it with self.color
+        """
+        if not '__settings' in name and self.__settings.has_setting(name):
+            return self.__settings[name]
+        raise AttributeError("No attribute or settings with name '%s' found"
+                                 % (name))
+
+    def save_setting(self, name, value, override=True):
+        """Saves setting to ride settings under [Plugins] [[Plugin Name]] section """
+        self.__settings.set(name, value, override=override)
 
     def activate(self):
         """Create necessary user interface components."""

@@ -29,11 +29,9 @@ from wx.lib.ClickableHtmlWindow import PyClickableHtmlWindow
 
 class ReleaseNotesPlugin(Plugin):
 
-    """Display Release Notes in a Tab"""
-    persistent_attributes = {'version_shown':''}
-
     def __init__(self, application):
-        Plugin.__init__(self, application, initially_active=True)
+        Plugin.__init__(self, application, initially_active=True,
+                        default_settings={'version_shown':''})
         self._panel = None
 
     def activate(self):
@@ -50,7 +48,7 @@ class ReleaseNotesPlugin(Plugin):
         """Show the release notes if the current version release notes haven't been shown."""
         if self.version_shown != VERSION:
             self.show()
-            self.version_shown = VERSION #Saves shown version
+            self.save_setting('version_shown', VERSION)
 
     def show(self):
         """Show the release notes tab"""

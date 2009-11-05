@@ -20,10 +20,10 @@ from plugin import Plugin
 
 class RecentFilesPlugin(Plugin):
     """Add recently opened files to the file menu."""
-    persistent_attributes = {'recent_files':[], 'max_number_of_files':4}
 
     def __init__(self, application=None):
-        Plugin.__init__(self, application)
+        settings = {'recent_files':[], 'max_number_of_files':4}
+        Plugin.__init__(self, application, default_settings=settings)
         self._files = {}
 
     def activate(self):
@@ -74,6 +74,7 @@ class RecentFilesPlugin(Plugin):
         if file not in self.recent_files:
             self.recent_files.insert(0,file)
             self.recent_files = self.recent_files[0:self.max_number_of_files]
+            self.save_setting('recent_files', self.recent_files)
             self._update_file_menu()
 
     def _update_file_menu(self):

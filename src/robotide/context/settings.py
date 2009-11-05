@@ -85,6 +85,9 @@ class _Section:
             return _Section(value, self)
         return value
 
+    def has_setting(self, name):
+        return self._config_obj.has_key(name)
+
     def get(self, name, default):
         """Returns specified setting or (automatically set) default."""
         try:
@@ -153,23 +156,3 @@ class Settings(_Section):
 
     def save(self):
         self._config_obj.write()
-
-
-# TODO: This works, but needs to be refactored away from inheritance solution?
-class PersistentAttributes(object):
-    persistent_attributes = {}
-
-    def __init__(self, settings):
-        self._settings = settings
-        self._settings.set_defaults(**self.persistent_attributes)
-
-    def __setattr__(self, name, value):
-        if name in self.persistent_attributes.keys():
-            self._settings.set(name, value)
-        else:
-            object.__setattr__(self, name, value)
-
-    def __getattr__(self, name):
-        if name in self.persistent_attributes.keys():
-            return self._settings[name]
-        return object.__getattribute__(self, name)

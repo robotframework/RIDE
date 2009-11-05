@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.context import LOG
+from robotide.context import LOG, SETTINGS
 from robotide import utils
 
 
@@ -41,20 +41,21 @@ class PluginConnector(_PluginConnector):
     def __init__(self, application, plugin):
         _PluginConnector.__init__(self, plugin.name, plugin.doc)
         self._plugin = plugin
+        self._settings = SETTINGS['Plugins'][plugin.name]
         self.config_panel = plugin.config_panel
         self.metadata = plugin.metadata 
-        if plugin._settings.get('active', plugin.initially_active):
+        if self._settings.get('_active', plugin.initially_active):
             self.activate()
 
     def activate(self):
         self._plugin.activate()
         self.active = True
-        self._plugin._settings.set('active', True)
+        self._settings.set('_active', True)
 
     def deactivate(self):
         self._plugin.deactivate()
         self.active = False
-        self._plugin._settings.set('active', False)
+        self._settings.set('_active', False)
 
 
 class BrokenPlugin(_PluginConnector):
