@@ -17,7 +17,7 @@ import wx
 from  wx.lib.pubsub import Publisher
 
 from robotide import utils
-from robotide.context import SETTINGS
+from robotide.context import SETTINGS, PUBLISHER
 
 
 class Plugin(object):
@@ -43,7 +43,7 @@ class Plugin(object):
         # subscribe(), because Publisher only keeps weak references of listeners
         # and without appending them to this list, they are garbage collected
         # immediately. Is there a better way to keep the references?
-        self._listeners = []
+        #self._listeners = []
 
     def activate(self):
         """Create necessary user interface components."""
@@ -158,33 +158,13 @@ class Plugin(object):
         need not be changed in case the underlying message passing mechanism
         is changed later.
         """
-        self._listeners.append(ListenerWrapper(listener))
-        Publisher().subscribe(self._listeners[-1], self._get_event(event))
-
-    def _get_event(self, event):
-        event = isinstance(event, basestring) and event or event.topic
-        return event.lower()
+        PUBLISHER.subscribe(listener, event)
 
     def unsubscribe(self, listener, event):
         """Unsubscribe to notifications for the given topic."""
-        Publisher().unsubscribe(self._find_listener(listener), self._get_event(event))
-
-    def _find_listener(self, listener):
-        for l in self._listeners:
-            if l.listener == listener:
-                self._listeners.remove(l)
-                return l
-        return None
+        PUBLISHER.unsubscribe(listener, event)
 
     def publish(self, topic, data):
         """Publish a message to all subscribers"""
         Publisher().sendMessage(topic, data)
 
-
-class ListenerWrapper(object):
-
-    def __init__(self, listener):
-        self.listener = listener
-
-    def __call__(self, event):
-        self.listener(event.data)
