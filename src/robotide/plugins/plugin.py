@@ -158,16 +158,33 @@ class Plugin(object):
         need not be changed in case the underlying message passing mechanism
         is changed later.
         """
-        def listener_wrapper(message):
-            listener(message.data)
-        self._listeners.append(listener_wrapper)
-        event = isinstance(event, basestring) and event or event.topic
-        Publisher().subscribe(self._listeners[-1], event.lower())
+        self._listeners.append(ListenerWrapper(listener))
+        Publisher().subscribe(self._listeners[-1], self._get_event(event))
 
-    def unsubscribe(self, listener, topics=None):
+    def _get_event(self, event):
+        event = isinstance(event, basestring) and event or event.topic
+        return event.lower()
+
+    def unsubscribe(self, listener, event):
         """Unsubscribe to notifications for the given topic."""
-        Publisher().unsubscribe(listener, topics)
+        Publisher().unsubscribe(self._find_listener(listener), self._get_event(event))
+
+    def _find_listener(self, listener):
+        for l in self._listeners:
+            if l.listener == listener:
+                self._listeners.remove(l)
+                return l
+        return None
 
     def publish(self, topic, data):
         """Publish a message to all subscribers"""
         Publisher().sendMessage(topic, data)
+
+
+class ListenerWrapper(object):
+
+    def __init__(self, listener):
+        self.listener = listener
+
+    def __call__(self, event):
+        self.listener(event.data)

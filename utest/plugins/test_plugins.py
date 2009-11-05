@@ -1,14 +1,15 @@
 import os
 import unittest
 
-from robot.utils.asserts import assert_equals
+from robot.utils.asserts import assert_equals, assert_none
 
 from robotide.event import RideEvent, publish
 from robotide.plugins import Plugin
 from robotide.plugins.loader import PluginLoader
 from robotide.plugins.releasenotes import ReleaseNotesPlugin
 ReleaseNotesPlugin.auto_show = lambda *args: None
-from plugin_resources import FakeApplication, RideTestEvent, RideTestEventWithData
+from plugin_resources import FakeApplication, RideTestEvent,\
+    RideTestEventWithData
 
 
 class TestablePluginLoader(PluginLoader):
@@ -17,7 +18,7 @@ class TestablePluginLoader(PluginLoader):
 
 class TestPluginLoader(unittest.TestCase):
 
-    def test_plugin_loading(self):
+    def _test_plugin_loading(self):
         loader = TestablePluginLoader(FakeApplication())
         self._assert_plugin_loaded(loader, 'Example Plugin 1')
         self._assert_plugin_loaded(loader, 'Example Plugin 2')
@@ -35,16 +36,28 @@ class SubscribingPlugin(Plugin):
 
     def __init__(self, application):
         Plugin.__init__(self, application)
+        self._reset_recorders()
+        self._subscribe_or_unsubscribe_all(self.subscribe)
+
+    def _reset_recorders(self):
         self.record = {}
         self.count = 0
         self.events = []
-        self.subscribe(self.OnTestEventClass, RideTestEvent)
-        self.subscribe(self.OnTestEventString, 'ride.test')
-        self.subscribe(self.OnTestEventStringWrongCase, 'RIDE.tesT')
-        self.subscribe(self.OnTestEventWithData, RideTestEventWithData)
+        self.class_handler_topic = self.string_handler_topic =\
+            self.case_insensitive_string_handler_topic = None
+
+    def _subscribe_or_unsubscribe_all(self, action):
+        action(self.OnTestEventClass, RideTestEvent)
+        action(self.OnTestEventString, 'ride.test')
+        action(self.OnTestEventStringWrongCase, 'RIDE.tesT')
+        action(self.OnTestEventWithData, RideTestEventWithData)
         for _ in range(5):
-            self.subscribe(self.counting_handler, RideTestEvent)
-        self.subscribe(self.hierarchical_listener, RideEvent)
+            action(self.counting_handler, RideTestEvent)
+        action(self.hierarchical_listener, RideEvent)
+
+    def unsubscribe_all(self):
+        self._subscribe_or_unsubscribe_all(self.unsubscribe)
+        self._reset_recorders()
 
     def OnTestEventClass(self, event):
         self.class_handler_topic = event.topic
@@ -96,6 +109,18 @@ class TestPluginEvents(unittest.TestCase):
         publish(RideTestEvent())
         publish(RideTestEventWithData(data_item='Data', more_data=[1,2,3]))
         assert_equals(self.plugin.events, ['Ride.Test', 'Ride.Test.Event.With.Data'])
+
+    def test_unsubscribe(self):
+        self.plugin.unsubscribe_all()
+        publish(RideTestEvent())
+        publish(RideTestEventWithData(data_item='Data', more_data=[1,2,3]))
+        assert_none(self.plugin.class_handler_topic)
+        assert_none(self.plugin.string_handler_topic)
+        assert_none(self.plugin.case_insensitive_string_handler_topic)
+        assert_equals(self.plugin.record, {})
+        assert_equals(self.plugin.count, 0)
+        assert_equals(self.plugin.events, [])
+
 
 if __name__ == '__main__':
     unittest.main()
