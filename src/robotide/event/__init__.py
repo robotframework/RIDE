@@ -45,4 +45,8 @@ class RideEvent(object):
 
 
 class RideOpenSuite(RideEvent):
-    pass
+    attr_names = ['path']
+
+
+class RideOpenResource(RideEvent):
+    attr_names = ['path']

@@ -15,10 +15,10 @@
 
 import sys
 import wx
-from wx.lib.pubsub import Publisher
 
 from robotide.robotapi import ROBOT_VERSION
 from robotide.plugins import PluginLoader
+from robotide.event import RideOpenSuite, RideOpenResource
 from robotide.errors import DataError, NoRideError
 from robotide.ui import RideFrame
 from robotide import context
@@ -57,7 +57,7 @@ class RIDE(wx.App):
     def open_suite(self, path):
         try:
             self.model = DataModel(path)
-            Publisher().sendMessage(('core', 'open', 'suite'), {'path': path})
+            RideOpenSuite(path=path).publish()
         except (DataError, NoRideError), err:
             self.model = DataModel()
             context.LOG.error(str(err))
@@ -69,8 +69,7 @@ class RIDE(wx.App):
             context.LOG.error(str(err))
             resource = None
         if resource:
-            Publisher().sendMessage(('core', 'open', 'resource'),
-                                    {'path': resource.source})
+            RideOpenResource(path=resource.source).publish()
             self.frame.tree.add_resource(resource)
 
     def import_new_resource(self, datafile, path):

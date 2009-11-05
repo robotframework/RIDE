@@ -49,8 +49,8 @@ class RecentFilesPlugin(Plugin):
         # that Does The Right Thing no matter what the type.
         self.open_suite(path)
 
-    def OnSuiteOpened(self,message):
-        self._add_to_recent_files(message.data['path'])
+    def OnSuiteOpened(self, event):
+        self._add_to_recent_files(event.path)
 
     def _get_file_menu(self):
         menubar = self.get_menu_bar()
@@ -73,7 +73,7 @@ class RecentFilesPlugin(Plugin):
             return
         file = self._normalize(file)
         if file not in self.recent_files:
-            self.recent_files.insert(0,file)
+            self.recent_files.insert(0, file)
             self.recent_files = self.recent_files[0:self.max_number_of_files]
             self.save_setting('recent_files', self.recent_files)
             self._update_file_menu()
