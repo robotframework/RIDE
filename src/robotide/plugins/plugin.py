@@ -38,6 +38,7 @@ class Plugin(object):
         self.__settings.set_defaults(default_settings)
         self.initially_active = initially_active
         self._menu_items = []
+        self._subscribed_events = []
         # TODO: _listeners is needed to keep references to wrapped listeners in
         # subscribe(), because Publisher only keeps weak references of listeners
         # and without appending them to this list, they are garbage collected
@@ -172,15 +173,21 @@ class Plugin(object):
         is changed later.
         """
         PUBLISHER.subscribe(listener, event)
+        self._subscribed_events.append((listener, event))
 
     def unsubscribe(self, listener, event):
         """Unsubscribe to notifications for the given topic."""
         PUBLISHER.unsubscribe(listener, event)
+        self._subscribed_events.remove((listener, event))
+
+    def unsubscribe_all_events(self):
+        for listener, event in self._subscribed_events:
+            self.unsubscribe(listener, event)
 
     def publish(self, event):
         """Publish a message to all subscribers"""
         PUBLISHER.publish(event)
-        
+
 #TODO: There is probably need to add methods for adding and removing buttons to 
 # mainframe (_create_decorations creates the place in there) 
 
