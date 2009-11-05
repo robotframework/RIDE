@@ -180,4 +180,7 @@ class Plugin(object):
     def publish(self, event):
         """Publish a message to all subscribers"""
         PUBLISHER.publish(event)
+        
+#TODO: There is probably need to add methods for adding and removing buttons to 
+# mainframe (_create_decorations creates the place in there) 
 

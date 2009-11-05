@@ -44,9 +44,22 @@ class RideEvent(object):
         PUBLISHER.publish(self)
 
 
-class RideOpenSuite(RideEvent):
-    attr_names = ['path']
+class RideTreeSelection(RideEvent):
+    attr_names = ['node', 'item', 'text']
+
+
+class RideNotebookTabchange(RideEvent):
+    attr_names = ['oldtab', 'newtab']
+
+
+class RideDatafileEdited(RideEvent):
+    attr_names = ['datafile']
 
 
 class RideOpenResource(RideEvent):
     attr_names = ['path']
+
+
+class RideOpenSuite(RideEvent):
+    attr_names = ['path']
+

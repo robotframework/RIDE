@@ -25,6 +25,7 @@ from robotide.editors import RideEventHandler
 from robotide.errors import PluginPageNotFoundError
 from robotide import utils
 from robotide import context
+from robotide.event import RideNotebookTabchange
 
 from actions import Actions
 from dialogs import KeywordSearchDialog, AboutDialog
@@ -58,18 +59,11 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         # at least two tabs there's no point in taking up the screen
         # real estate. Eventually this should be a user preference.
         self.notebook = NoteBook(splitter, self._application)
-        self._editor_panel = _EditorPanel(self.notebook)
-        self.notebook.AddPage(self._editor_panel, "Edit    ")
-        Publisher().subscribe(self._editor_panel.save,
-                              ('core', 'notebook', 'tabchange'))
-        sizer = wx.BoxSizer()
-        sizer.Add(self._editor_panel, 1, wx.EXPAND)
-        welcome_page = utils.RideHtmlWindow(self._editor_panel, wx.DefaultSize,
-                                            AboutDialog.TEXT)
-        self._editor_panel.set_editor(welcome_page)
-        self.tree = SuiteTree(splitter, self._editor_panel)
+        self.tree = SuiteTree(splitter) #, self._editor_panel)
         splitter.SplitVertically(self.tree, self.notebook, 300)
 
+    #FIXME: How we should handle the double click. publish -> subscribe in editor. 
+    #What if other plugins wants to listen this and show the tab?
     def OnSuiteTreeLeftDClick(self, event):
         """Make the editor tab visible on double-click in the tree."""
         self.show_page(self._editor_panel)
@@ -99,24 +93,12 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
             else:
                 raise PluginPageNotFoundError("unable to find a notebook page for the given panel")
 
-    def delete_page(self, page):
-        self.notebook.RemovePage(self.notebook.GetPageIndex(page))
+    def delete_page(self, panel):
+        page = self.notebook.GetPageIndex(panel)
+        self.notebook.DeletePage(page)
 
     def _get_active_item(self):
         return self.tree.get_active_item()
-
-    def OnPageClosing(self, event):
-        """Disallow closing of the edit tab"""
-        # Eventually it might be nice to support having multiple editors
-        # open at once (for example, a keyword editor and a test editor)
-        # but for now we only support one and we can't let that one
-        # be deleted.
-        page = self.notebook.GetCurrentPage()
-        if page == self._editor_panel:
-            # Should we print a friendly message in the statusbar or
-            # is this Good Enough?
-            wx.Bell()
-            event.Veto()
 
     def OnClose(self, event):
         self._save_mainframe_size_and_position()
@@ -206,7 +188,8 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         self._save()
 
     def _save(self, datafile=None):
-        self._editor_panel.save()
+        #FIXME: This should be changed to use the publish, subscribe mechanism
+        #self._editor_panel.save()
         files_without_format = self._application.get_files_without_format(datafile)
         for f in files_without_format:
             self._show_format_dialog_for(f)
@@ -230,6 +213,7 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
                           (s, ', '.join(item.source for item in saved)))
 
     def OnSaveAs(self, event):
+        #FIXME: 
         self._editor_panel.save()
         dlg = SaveAsDialog(self, self._application.model.get_suite_path(),
                            self._application.model.is_directory_suite())
@@ -243,6 +227,9 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         event.Skip()
 
     # Edit Menu
+    #FIXME: How these should be handled? We should have one active component 
+    #always like tree, tab, etc.. -> plugin interface should have abstract 
+    #methods for handling the events.
 
     def OnCut(self, event):
         self._editor_panel.handle_event('cut')
@@ -272,6 +259,7 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
     def OnManagePlugins(self, event):
         self._plugin_manager.show(self._application.get_plugins())
 
+    #FIXME: Move to editor plugin
     def OnKeywordCompletion(self, event):
         self._editor_panel.show_keyword_completion()
 
@@ -295,41 +283,6 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         dlg.Destroy()
 
 
-class _EditorPanel(wx.Panel):
-
-    def __init__(self, parent):
-        wx.Panel.__init__(self, parent, style=wx.SUNKEN_BORDER)
-        self.sizer = wx.BoxSizer(wx.VERTICAL)
-        self.SetSizer(self.sizer)
-        self.editor = None
-
-    def set_editor(self, editor):
-        if self.editor:
-            self.editor.close()
-            self.sizer.Clear()
-        editor.Show(True)
-        self.sizer.Add(editor, 1, wx.ALL|wx.EXPAND)
-        self.Layout()
-        self.editor = editor
-
-    def save(self, message=None):
-        if hasattr(self.editor, 'save'):
-            self.editor.save()
-
-    def show_keyword_completion(self):
-        if hasattr(self.editor, 'kweditor'):
-            kwe = self.editor.kweditor
-            if kwe.IsCellEditControlShown():
-                kwe.show_content_assist()
-            return
-        wx.MessageBox('To use Keyword Completion, type the beginning of the keyword '
-                      'name into a cell and then choose this option.', 'Hint')
-
-    def handle_event(self, action):
-        if hasattr(self.editor, 'kweditor'):
-            getattr(self.editor.kweditor, action)()
-
-
 class NoteBook(fnb.FlatNotebook):
 
     def __init__(self, parent, app):
@@ -337,20 +290,26 @@ class NoteBook(fnb.FlatNotebook):
         style = fnb.FNB_NODRAG|fnb.FNB_HIDE_ON_SINGLE_TAB|fnb.FNB_VC8
         fnb.FlatNotebook.__init__(self, parent, style=style)
         self.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
+        self.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CLOSING, self.OnPageClosing)
+        self._page_closing = False
+
+    def OnPageClosing(self, event):
+        self._page_closing = True
 
     def OnPageChanging(self, event):
-        if not self.GetPageCount():
+        if not self._page_changed():
+            self._page_closing = False
             return
-        try:
-            oldtitle = self.GetPageText(event.GetOldSelection())
-        except IndexError:
-            #TODO: Should be investigated why this is happening when closing 
-            #tabs from plugin manager
-            return
+        oldtitle = self.GetPageText(event.GetOldSelection())
         newindex = event.GetSelection()
         if newindex <= self.GetPageCount() - 1:
             newtitle = self.GetPageText(event.GetSelection())
         else:
             newtitle = None
-        Publisher().sendMessage(('core', 'notebook', 'tabchange'),
-                                {'oldtab': oldtitle, 'newtab': newtitle})
+        context.PUBLISHER.publish(RideNotebookTabchange(oldtab=oldtitle, newtab=newtitle))
+
+    def _page_changed(self):
+        """Change event is send when no tab available or tab is closed"""
+        if not self.GetPageCount() or self._page_closing:
+            return False
+        return True

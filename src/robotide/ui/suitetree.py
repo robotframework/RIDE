@@ -14,15 +14,16 @@
 
 import os
 import wx
-from  wx.lib.pubsub import Publisher
 try:
     import treemixin
 except ImportError:
     from wx.lib.mixins import treemixin
 
-from robotide.editors import RideEventHandler, Editor
+from robotide.editors import RideEventHandler #, Editor
 from robotide.model.tcuk import UserKeyword
 from robotide.model.files import _TestSuite
+from robotide.event import RideTreeSelection, RideDatafileEdited
+from robotide.context import PUBLISHER
 
 from images import TreeImageList
 from robotide import utils
@@ -32,7 +33,7 @@ from namedialogs import TestCaseNameDialog, UserKeywordNameDialog
 
 class SuiteTree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
 
-    def __init__(self, parent, editor_panel):
+    def __init__(self, parent):#, editor_panel):
         style = wx.TR_DEFAULT_STYLE
         if wx.PlatformInfo[0] == '__WXMSW__':
             style = style|wx.TR_EDIT_LABELS
@@ -43,12 +44,16 @@ class SuiteTree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnRightClick)
         self.Bind(wx.EVT_LEFT_DCLICK, self.OnLeftDClick)
         self.Bind(wx.EVT_TREE_END_LABEL_EDIT, self.OnLabelEdit)
-        self._editor_panel = editor_panel
+#        self._editor_panel = editor_panel
         self._images = TreeImageList()
         self.SetImageList(self._images)
-        self._editor = None
+#        self._editor = None
         self._history = utils.History()
         self._resource_root = None
+        self._start_to_listen_events()
+
+    def _start_to_listen_events(self):
+        PUBLISHER.subscribe(self.OnDatafileEdited, RideDatafileEdited)
 
     def populate_tree(self, model):
         self._clear_tree_data()
@@ -103,6 +108,7 @@ class SuiteTree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
     def _create_resource_root(self):
         self._resource_root = self._create_node(self._root, 'Resources',
                                                 self._images['InitFile'])
+        #FIXME: NoneHAndler not available
         self.SetPyData(self._resource_root, NoneHandler())
 
     def _create_node(self, parent_node, label, img, index=None):
@@ -249,11 +255,14 @@ class SuiteTree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
             self.SelectItem(node)
 
     def save_keywords(self):
-        if self._editor:
-            self._editor.close()
+#        if self._editor:
+#            self._editor.close()
+        pass
 
-    def set_dirty(self, datafile):
-        self._mark_dirty(self._get_datafile_node(datafile))
+    def OnDatafileEdited(self, event):
+        self._mark_dirty(self._get_datafile_node(event.datafile))
+#    def set_dirty(self, datafile):
+#        self._mark_dirty(self._get_datafile_node(datafile))
 
     def unset_dirty(self):
         for node in self._datafile_nodes:
@@ -311,25 +320,24 @@ class SuiteTree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
         self._history.change(node)
         handler = self.GetItemPyData(node)
         if handler and handler.item:
-            Publisher().sendMessage(('core', 'tree', 'selection'),
-                                    {'node': node, 'item': handler.item,
-                                     'text': self.GetItemText(node)})
-            self.show_editor(handler.item)
+            PUBLISHER.publish(RideTreeSelection(node=node, item=handler.item,
+                                     text=self.GetItemText(node)))
+#            self.show_editor(handler.item)
         event.Skip()
 
-    def show_editor(self, item):
-        if item is None:
-            return
-        if self._editor:
-            self._editor.close()
-        self._editor = Editor(item, self._editor_panel, self)
-        self._editor.view()
+#    def show_editor(self, item):
+#        if item is None:
+#            return
+#        if self._editor:
+#            self._editor.close()
+#        self._editor = Editor(item, self._editor_panel, self)
+#        self._editor.view()
 
     def OnLeftDown(self, event):
         item, flags = self.HitTest(event.GetPosition())
         if item.IsOk() and self._click_on_item(flags):
-            if self._editor and item == self.GetSelection() and not self._editor.IsShown():
-                self._editor.view()
+#            if self._editor and item == self.GetSelection() and not self._editor.IsShown():
+#                self._editor.view()
             self.SelectItem(item)
         event.Skip()
 
@@ -343,7 +351,7 @@ class SuiteTree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
         handler = self.GetItemPyData(event.Item)
         if handler.rename(event.Label):
             self._mark_dirty(self.GetItemParent(event.Item))
-            self.show_editor(handler.item)
+#            self.show_editor(handler.item)
         else:
             event.Veto()
 
@@ -385,7 +393,7 @@ class _ActionHandler(wx.Window):
         if dlg.ShowModal() == wx.ID_OK:
             self.item.serialize(format=dlg.get_format(),
                                 recursive=dlg.get_recursive())
-            self._tree.show_editor(self.item)
+#            self._tree.show_editor(self.item)
         dlg.Destroy()
 
 
