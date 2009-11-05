@@ -7,6 +7,9 @@ class Publisher(object):
         self._listeners = []
         self._wxpublisher = WxPublisher()
 
+    def publish(self, event):
+        self._wxpublisher.sendMessage(event.topic.lower(), event)
+
     def subscribe(self, listener, event):
         self._listeners.append(_ListenerWrapper(listener))
         self._wxpublisher.subscribe(self._listeners[-1], self._get_event(event))

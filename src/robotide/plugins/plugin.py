@@ -177,7 +177,7 @@ class Plugin(object):
         """Unsubscribe to notifications for the given topic."""
         PUBLISHER.unsubscribe(listener, event)
 
-    def publish(self, topic, data):
+    def publish(self, event):
         """Publish a message to all subscribers"""
-        Publisher().sendMessage(topic, data)
+        PUBLISHER.publish(event)
 

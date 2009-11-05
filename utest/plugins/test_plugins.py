@@ -3,7 +3,7 @@ import unittest
 
 from robot.utils.asserts import assert_equals, assert_none
 
-from robotide.event import RideEvent, publish
+from robotide.event import RideEvent
 from robotide.plugins import Plugin
 from robotide.plugins.loader import PluginLoader
 from robotide.plugins.releasenotes import ReleaseNotesPlugin
@@ -85,35 +85,35 @@ class TestPluginEvents(unittest.TestCase):
         self.plugin = SubscribingPlugin(FakeApplication())
 
     def test_subscribing_with_class(self):
-        publish(RideTestEvent())
+        RideTestEvent().publish()
         assert_equals(self.plugin.class_handler_topic, 'Ride.Test')
 
     def test_subscribing_with_string(self):
-        publish(RideTestEvent())
+        RideTestEvent().publish()
         assert_equals(self.plugin.string_handler_topic, 'Ride.Test')
 
     def test_subscribing_with_string_is_case_insensitive(self):
-        publish(RideTestEvent())
+        RideTestEvent().publish()
         assert_equals(self.plugin.case_insensitive_string_handler_topic, 'Ride.Test')
 
     def test_event_with_data(self):
-        publish(RideTestEventWithData(data_item='Data', more_data=[1,2,3]))
+        RideTestEventWithData(data_item='Data', more_data=[1,2,3]).publish()
         assert_equals(self.plugin.record['data_item'], 'Data')
         assert_equals(self.plugin.record['more_data'], [1,2,3])
 
     def test_subscribing_multiple_times(self):
-        publish(RideTestEvent())
+        RideTestEvent().publish()
         assert_equals(self.plugin.count, 5)
 
     def test_subscribing_to_hierarchy(self):
-        publish(RideTestEvent())
-        publish(RideTestEventWithData(data_item='Data', more_data=[1,2,3]))
+        RideTestEvent().publish()
+        RideTestEventWithData(data_item='Data', more_data=[1,2,3]).publish()
         assert_equals(self.plugin.events, ['Ride.Test', 'Ride.Test.Event.With.Data'])
 
     def test_unsubscribe(self):
         self.plugin.unsubscribe_all()
-        publish(RideTestEvent())
-        publish(RideTestEventWithData(data_item='Data', more_data=[1,2,3]))
+        RideTestEvent().publish()
+        RideTestEventWithData(data_item='Data', more_data=[1,2,3]).publish()
         assert_none(self.plugin.class_handler_topic)
         assert_none(self.plugin.string_handler_topic)
         assert_none(self.plugin.case_insensitive_string_handler_topic)
