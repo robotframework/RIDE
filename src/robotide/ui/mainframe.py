@@ -58,16 +58,7 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         # at least two tabs there's no point in taking up the screen
         # real estate. Eventually this should be a user preference.
         self.notebook = NoteBook(splitter, self._application)
-        self._editor_panel = _EditorPanel(self.notebook)
-        self.notebook.AddPage(self._editor_panel, "Edit    ")
-        Publisher().subscribe(self._editor_panel.save,
-                              ('core', 'notebook', 'tabchange'))
-        sizer = wx.BoxSizer()
-        sizer.Add(self._editor_panel, 1, wx.EXPAND)
-        welcome_page = utils.RideHtmlWindow(self._editor_panel, wx.DefaultSize,
-                                            AboutDialog.TEXT)
-        self._editor_panel.set_editor(welcome_page)
-        self.tree = SuiteTree(splitter, self._editor_panel)
+        self.tree = SuiteTree(splitter) #, self._editor_panel)
         splitter.SplitVertically(self.tree, self.notebook, 300)
 
     def OnSuiteTreeLeftDClick(self, event):
@@ -99,8 +90,9 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
             else:
                 raise PluginPageNotFoundError("unable to find a notebook page for the given panel")
 
-    def delete_page(self, page):
-        self.notebook.RemovePage(self.notebook.GetPageIndex(page))
+    def delete_page(self, panel):
+        page = self.notebook.GetPageIndex(panel)
+        self.notebook.DeletePage(page)
 
     def _get_active_item(self):
         return self.tree.get_active_item()
@@ -295,41 +287,6 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         dlg.Destroy()
 
 
-class _EditorPanel(wx.Panel):
-
-    def __init__(self, parent):
-        wx.Panel.__init__(self, parent, style=wx.SUNKEN_BORDER)
-        self.sizer = wx.BoxSizer(wx.VERTICAL)
-        self.SetSizer(self.sizer)
-        self.editor = None
-
-    def set_editor(self, editor):
-        if self.editor:
-            self.editor.close()
-            self.sizer.Clear()
-        editor.Show(True)
-        self.sizer.Add(editor, 1, wx.ALL|wx.EXPAND)
-        self.Layout()
-        self.editor = editor
-
-    def save(self, message=None):
-        if hasattr(self.editor, 'save'):
-            self.editor.save()
-
-    def show_keyword_completion(self):
-        if hasattr(self.editor, 'kweditor'):
-            kwe = self.editor.kweditor
-            if kwe.IsCellEditControlShown():
-                kwe.show_content_assist()
-            return
-        wx.MessageBox('To use Keyword Completion, type the beginning of the keyword '
-                      'name into a cell and then choose this option.', 'Hint')
-
-    def handle_event(self, action):
-        if hasattr(self.editor, 'kweditor'):
-            getattr(self.editor.kweditor, action)()
-
-
 class NoteBook(fnb.FlatNotebook):
 
     def __init__(self, parent, app):
@@ -337,16 +294,17 @@ class NoteBook(fnb.FlatNotebook):
         style = fnb.FNB_NODRAG|fnb.FNB_HIDE_ON_SINGLE_TAB|fnb.FNB_VC8
         fnb.FlatNotebook.__init__(self, parent, style=style)
         self.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
+        self.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CLOSING, self.OnPageClosing)
+        self._page_closing = False
+
+    def OnPageClosing(self, event):
+        self._page_closing = True
 
     def OnPageChanging(self, event):
-        if not self.GetPageCount():
+        if not self._page_changed():
+            self._page_closing = False
             return
-        try:
-            oldtitle = self.GetPageText(event.GetOldSelection())
-        except IndexError:
-            #TODO: Should be investigated why this is happening when closing 
-            #tabs from plugin manager
-            return
+        oldtitle = self.GetPageText(event.GetOldSelection())
         newindex = event.GetSelection()
         if newindex <= self.GetPageCount() - 1:
             newtitle = self.GetPageText(event.GetSelection())
@@ -354,3 +312,9 @@ class NoteBook(fnb.FlatNotebook):
             newtitle = None
         Publisher().sendMessage(('core', 'notebook', 'tabchange'),
                                 {'oldtab': oldtitle, 'newtab': newtitle})
+
+    def _page_changed(self):
+        """Change event is send when no tab available or tab is closed"""
+        if not self.GetPageCount() or self._page_closing:
+            return False
+        return True
