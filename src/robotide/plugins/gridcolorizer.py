@@ -14,6 +14,8 @@
 
 import re
 
+from robotide.event import RideGridCellChanged
+
 from plugin import Plugin
 
 
@@ -28,19 +30,16 @@ class Colorizer(Plugin):
         self._notebook = self.get_notebook()
 
     def activate(self):
-        self.subscribe(self.OnCellChanged,("core","grid","cell changed"))
+        self.subscribe(self.OnCellChanged, RideGridCellChanged)
 
     def deactivate(self):
-        self.unsubscribe(self.OnCellChanged,("core","grid","cell changed"))
+        self.unsubscribe(self.OnCellChanged, RideGridCellChanged)
 
-    def OnCellChanged(self, message):
-        """Update the color of the cell whenever the content changes"""
-        grid = message.data["grid"]
-        row, col = message.data['cell']
-        value = message.data["value"]
-        previous = message.data["previous"]
-        self._colorize_cell(grid, row, col, value)
-        self._handle_comment_or_uncomment(grid, row, col, value, previous)
+    def OnCellChanged(self, event):
+        row, col = event.cell
+        self._colorize_cell(event.grid, row, col, event.value)
+        self._handle_comment_or_uncomment(event.grid, row, col, event.value, 
+                                          event.previous)
 
     def _colorize_cell(self, grid, row, col, value):
         color = self._get_color(grid, row, col, value)
