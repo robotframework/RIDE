@@ -12,14 +12,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-"""Release notes plugin
-
-This will create a notebook tab that displays release notes
-
-The release notes tab will automatically be shown once per release.
-The user can also view them on demand by selecting "Release Notes"
-from the help menu.
-"""
 
 import wx
 from plugin import Plugin
@@ -28,6 +20,14 @@ from wx.lib.ClickableHtmlWindow import PyClickableHtmlWindow
 
 
 class ReleaseNotesPlugin(Plugin):
+    """Release notes plugin
+    
+    This will create a notebook tab that displays release notes
+    
+    The release notes tab will automatically be shown once per release.
+    The user can also view them on demand by selecting "Release Notes"
+    from the help menu.
+    """
 
     def __init__(self, application):
         Plugin.__init__(self, application, initially_active=True,
