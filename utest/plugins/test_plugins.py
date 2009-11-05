@@ -18,7 +18,7 @@ class TestablePluginLoader(PluginLoader):
 
 class TestPluginLoader(unittest.TestCase):
 
-    def _test_plugin_loading(self):
+    def test_plugin_loading(self):
         loader = TestablePluginLoader(FakeApplication())
         self._assert_plugin_loaded(loader, 'Example Plugin 1')
         self._assert_plugin_loaded(loader, 'Example Plugin 2')
@@ -80,7 +80,7 @@ class SubscribingPlugin(Plugin):
 
 
 class TestPluginEvents(unittest.TestCase):
-    
+
     def setUp(self):
         self.plugin = SubscribingPlugin(FakeApplication())
 
