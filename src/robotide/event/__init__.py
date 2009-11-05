@@ -62,3 +62,7 @@ class RideOpenResource(RideEvent):
 class RideOpenSuite(RideEvent):
     attr_names = ['path']
 
+
+class RideGridCellChanged(RideEvent):
+    topic = 'Ride.Grid.Cell Changed'
+    attr_names = ['cell', 'value', 'previous', 'grid']

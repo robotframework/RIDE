@@ -13,12 +13,13 @@
 #  limitations under the License.
 
 from wx import grid
-from  wx.lib.pubsub import Publisher
 import wx
 
-from clipboard import GRID_CLIPBOARD
+from robotide.event import RideGridCellChanged
 from robotide.utils import ExpandingContentAssistTextCtrl, RidePopupWindow,\
     PopupMenu
+
+from clipboard import GRID_CLIPBOARD
 
 
 class KeywordEditorUi(grid.Grid):
@@ -50,9 +51,8 @@ class KeywordEditorUi(grid.Grid):
         previous = self.GetCellValue(row, col)
         grid.Grid.SetCellValue(self, row, col, value)
         if send_event:
-            data = {'cell': (row, col), 'value': value, 
-                    'previous': previous, 'grid': self}
-            Publisher().sendMessage(('core', 'grid', 'cell changed'), data)
+            RideGridCellChanged(cell=(row, col), value=value, previous=previous,
+                                grid=self).publish()
 
     def cut(self):
         """Cuts the contents of the selected cell(s). This does a normal cut
