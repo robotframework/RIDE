@@ -2,8 +2,7 @@ import unittest
 
 from robot.utils.asserts import assert_equals, assert_none, assert_false
 
-from robotide.context import PUBLISHER
-from robotide.event import RideMessage
+from robotide.publish import RideMessage, PUBLISHER
 from robotide.plugins import Plugin
 from plugin_resources import FakeApplication, RideTestMessage,\
     RideMessageWithData

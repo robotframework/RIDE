@@ -2,7 +2,7 @@ import unittest
 
 from robot.utils.asserts import assert_equals, assert_raises_with_msg
 
-from robotide.event import RideMessage
+from robotide.publish import RideMessage
 
 
 _ARGS_ERROR = "Argument mismatch, expected: ['foo', 'bar']"
