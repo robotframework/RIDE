@@ -158,7 +158,7 @@ class Plugin(object):
     def open_suite(self, path):
         self._frame.open_suite(path)
 
-    def subscribe(self, listener, event):
+    def subscribe(self, listener, *topics):
         # FIXME: rewrite documentation to include event objects
         """Subscribe to notifications for the given event.
 
@@ -172,22 +172,13 @@ class Plugin(object):
         need not be changed in case the underlying message passing mechanism
         is changed later.
         """
-        PUBLISHER.subscribe(listener, event)
-        self._subscribed_events.append((listener, event))
+        for topic in topics:
+            PUBLISHER.subscribe(listener, topic, key=self)
 
-    def unsubscribe(self, listener, event):
+    def unsubscribe(self, listener, *topics):
         """Unsubscribe to notifications for the given topic."""
-        PUBLISHER.unsubscribe(listener, event)
-        self._subscribed_events.remove((listener, event))
+        for topic in topics:
+            PUBLISHER.unsubscribe(listener, topic, key=self)
 
-    def unsubscribe_all_events(self):
-        for listener, event in self._subscribed_events:
-            self.unsubscribe(listener, event)
-
-    def publish(self, event):
-        """Publish a message to all subscribers"""
-        PUBLISHER.publish(event)
-
-#TODO: There is probably need to add methods for adding and removing buttons to 
-# mainframe (_create_decorations creates the place in there) 
-
+    def unsubscribe_all(self):
+        PUBLISHER.unsubscribe_all(key=self)
