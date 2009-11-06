@@ -43,7 +43,7 @@ class SuiteTree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
         self.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDown)
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnRightClick)
         self.Bind(wx.EVT_LEFT_DCLICK, self.OnLeftDClick)
-        self.Bind(wx.EVT_TREE_END_LABEL_EDIT, self.OnLabelEdit)
+        self.Bind(wx.EVT_TREE_END_LABEL_EDIT, self.OnLabelEdited)
 #        self._editor_panel = editor_panel
         self._images = TreeImageList()
         self.SetImageList(self._images)
@@ -51,9 +51,23 @@ class SuiteTree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
         self._history = utils.History()
         self._resource_root = None
         self._start_to_listen_events()
+        self._bind_keys()
 
     def _start_to_listen_events(self):
         PUBLISHER.subscribe(self.OnDatafileEdited, RideDatafileEdited)
+
+    def _bind_keys(self):
+        bindings = [(self.OnLabelEdit, wx.ACCEL_NORMAL, wx.WXK_F2)]
+        self._bind(bindings)
+
+    def _bind(self, bindings):
+        accel_binds = []
+        for callable, control_key, key in bindings:
+            id = wx.NewId()
+            self.Bind(wx.EVT_MENU, callable, id=id )
+            accel_binds.append((control_key, key, id ))
+        accel_tbl = wx.AcceleratorTable(accel_binds)
+        self.SetAcceleratorTable(accel_tbl)
 
     def populate_tree(self, model):
         self._clear_tree_data()
@@ -308,6 +322,7 @@ class SuiteTree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
         return self.GetItemPyData(node).item
 
     def _get_active_item(self):
+        #TODO: Refactor to use the public version
         return self.get_active_item()
 
     def OnSelChanged(self, event):
@@ -348,6 +363,9 @@ class SuiteTree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
             self.EditLabel(item)
 
     def OnLabelEdit(self, event):
+        self.EditLabel(self.GetSelection())
+
+    def OnLabelEdited(self, event):
         handler = self.GetItemPyData(event.Item)
         if handler.rename(event.Label):
             self._mark_dirty(self.GetItemParent(event.Item))
