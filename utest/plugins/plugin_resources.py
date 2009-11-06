@@ -1,4 +1,4 @@
-from robotide.event import RideEvent
+from robotide.event import RideMessage
 
 
 class _FakeModel(object):
@@ -21,8 +21,8 @@ class FakeApplication(object):
     create_menu_item = lambda *args: None
 
 
-class RideTestEvent(RideEvent):
+class RideTestMessage(RideMessage):
     pass
 
-class RideTestEventWithData(RideEvent):
-    attr_names = ['data_item', 'more_data']
+class RideMessageWithData(RideMessage):
+    data = ['data_item', 'more_data']
