@@ -2,44 +2,44 @@ import unittest
 
 from robot.utils.asserts import assert_equals, assert_raises_with_msg
 
-from robotide.event import RideEvent
+from robotide.event import RideMessage
 
 
 _ARGS_ERROR = "Argument mismatch, expected: ['foo', 'bar']"
 
 
-class RideTestEvent(RideEvent):
+class RideTestMessage(RideMessage):
     topic = 'My.Topic'
 
-class RideTestEventWithAttrs(RideTestEvent):
-    attr_names = ['foo', 'bar']
+class RideTestMessageWithAttrs(RideTestMessage):
+    data = ['foo', 'bar']
 
-class RideTestEventWithLongName(RideTestEvent):
+class RideTestMessageWithLongName(RideTestMessage):
     pass
 
 
 class TestEvent(unittest.TestCase):
 
     def test_topic(self):
-        assert_equals(RideEvent().topic, 'Ride')
-        assert_equals(RideTestEvent().topic, 'My.Topic')
-        assert_equals(RideTestEventWithLongName().topic,
-                      'Ride.Test.Event.With.Long.Name')
+        assert_equals(RideMessage().topic, 'ride')
+        assert_equals(RideTestMessage().topic, 'my.topic')
+        assert_equals(RideTestMessageWithLongName().topic,
+                      'ride.test.message.with.long.name')
 
     def test_all_attributes_given(self):
-        evt = RideTestEventWithAttrs(foo='bar', bar='quux')
+        evt = RideTestMessageWithAttrs(foo='bar', bar='quux')
         assert_equals(evt.foo, 'bar')
         assert_equals(evt.bar, 'quux')
 
     def test_missing_mandatory_attribute(self):
         assert_raises_with_msg(TypeError, _ARGS_ERROR,
-                               RideTestEventWithAttrs, foo='bar')
+                               RideTestMessageWithAttrs, foo='bar')
 
     def test_missing_many_mandatory_attributes(self):
-        assert_raises_with_msg(TypeError, _ARGS_ERROR, RideTestEventWithAttrs)
+        assert_raises_with_msg(TypeError, _ARGS_ERROR, RideTestMessageWithAttrs)
 
     def test_no_such_attribute_should_fail(self):
-        assert_raises_with_msg(TypeError, _ARGS_ERROR, RideTestEventWithAttrs,
+        assert_raises_with_msg(TypeError, _ARGS_ERROR, RideTestMessageWithAttrs,
                                foo='', bar='', quux='camel')
 
 
