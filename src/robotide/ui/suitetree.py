@@ -363,7 +363,10 @@ class SuiteTree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
             self.EditLabel(item)
 
     def OnLabelEdit(self, event):
-        self.EditLabel(self.GetSelection())
+        selection = self.GetSelection()
+        item = self.GetItemPyData(selection)
+        if item and item.is_renameable:
+            self.EditLabel(selection)
 
     def OnLabelEdited(self, event):
         handler = self.GetItemPyData(event.Item)
