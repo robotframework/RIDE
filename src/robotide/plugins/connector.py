@@ -41,8 +41,7 @@ class PluginConnector(_PluginConnector):
     def __init__(self, application, plugin):
         _PluginConnector.__init__(self, plugin.name, plugin.doc)
         self._plugin = plugin
-        # FIXME: breaks in case the section does not exist
-        self._settings = SETTINGS['Plugins'][plugin.name]
+        self._settings = SETTINGS['Plugins'].add_section(plugin.name)
         self.config_panel = plugin.config_panel
         self.metadata = plugin.metadata 
         if self._settings.get('_active', plugin.initially_active):
