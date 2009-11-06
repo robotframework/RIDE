@@ -24,7 +24,8 @@ from robotide.editors import RideEventHandler
 from robotide.errors import PluginPageNotFoundError
 from robotide import utils
 from robotide import context
-from robotide.event import RideNotebookTabchange
+from robotide.event import RideNotebookTabchange, RideSavingDatafile,\
+                           RideSavedDatafiles, RideSaveAsDatafile
 
 from actions import Actions
 from dialogs import KeywordSearchDialog, AboutDialog
@@ -47,8 +48,6 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         self._plugin_manager = PluginManager(self.notebook)
         self._kw_search_dialog = KeywordSearchDialog(self, keyword_filter)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
-        #TODO: This needs to be published!
-        #self.tree.Bind(wx.EVT_LEFT_DCLICK, self.OnSuiteTreeLeftDClick)
         self.Show()
 
     def _create_containers(self):
@@ -60,13 +59,6 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         self.notebook = NoteBook(splitter, self._application)
         self.tree = SuiteTree(splitter) #, self._editor_panel)
         splitter.SplitVertically(self.tree, self.notebook, 300)
-
-    #FIXME: How we should handle the double click. publish -> subscribe in editor. 
-    #What if other plugins wants to listen this and show the tab?
-    #def OnSuiteTreeLeftDClick(self, event):
-    #    """Make the editor tab visible on double-click in the tree."""
-    #    self.show_page(self._editor_panel)
-    #    event.Skip()
 
     def _create_decorations(self):
         # We need to define some standard toolbar buttons. For 
@@ -187,11 +179,10 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         self._save()
 
     def _save(self, datafile=None):
-        #FIXME: This should be changed to use the publish, subscribe mechanism
-        #self._editor_panel.save()
         files_without_format = self._application.get_files_without_format(datafile)
         for f in files_without_format:
             self._show_format_dialog_for(f)
+        context.PUBLISHER.publish(RideSavingDatafile(datafile=datafile))
         saved = self._application.save(datafile)
         self._report_saved_files(saved)
         self.tree.unset_dirty()
@@ -207,15 +198,17 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
     def _report_saved_files(self, saved):
         if not saved:
             return
+        context.PUBLISHER.publish(RideSavedDatafiles(datafiles=saved))
         s = len(saved) > 1 and 's' or ''
         self.SetStatusText('Wrote file%s: %s' %
                           (s, ', '.join(item.source for item in saved)))
 
     def OnSaveAs(self, event):
-        #FIXME: 
-        self._editor_panel.save()
-        dlg = SaveAsDialog(self, self._application.model.get_suite_path(),
-                           self._application.model.is_directory_suite())
+        path = self._application.model.get_suite_path()
+        is_directory = self._application.model.is_directory_suite()
+        context.PUBLISHER.publish(RideSaveAsDatafile(path=path, 
+                                                     is_directory=is_directory))
+        dlg = SaveAsDialog(self, path, is_directory)
         if dlg.ShowModal() == wx.ID_OK:
             self._application.save_as(dlg.get_path())
             self.tree.populate_tree(self._application.model)
@@ -304,7 +297,7 @@ class NoteBook(fnb.FlatNotebook):
         context.PUBLISHER.publish(RideNotebookTabchange(oldtab=oldtitle, newtab=newtitle))
 
     def _page_changed(self):
-        """Change event is send when no tab available or tab is closed"""
+        """Change event is send even when no tab available or tab is closed"""
         if not self.GetPageCount() or self._page_closing:
             return False
         return True

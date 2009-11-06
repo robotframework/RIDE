@@ -43,6 +43,7 @@ class RideEvent(object):
         PUBLISHER.publish(self)
 
 
+
 class RideTreeSelection(RideEvent):
     attr_names = ['node', 'item', 'text']
 
@@ -54,6 +55,15 @@ class RideNotebookTabchange(RideEvent):
 class RideDatafileEdited(RideEvent):
     attr_names = ['datafile']
 
+class RideSavingDatafile(RideEvent):
+    """`datafile` is None if all datafiles are going to be saved"""
+    attr_names = ['datafile']
+
+class RideSaveAsDatafile(RideEvent):
+    attr_names = ['path', 'is_directory']
+
+class RideSavedDatafiles(RideEvent):
+    attr_names = ['datafiles']
 
 class RideOpenResource(RideEvent):
     attr_names = ['path']

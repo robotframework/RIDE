@@ -17,7 +17,8 @@ import wx
 from robotide.editors import Editor
 from robotide.ui.dialogs import AboutDialog
 from robotide import utils
-from robotide.event import RideTreeSelection, RideNotebookTabchange
+from robotide.event import RideTreeSelection, RideNotebookTabchange,\
+                           RideSavingDatafile, RideSaveAsDatafile
 from plugin import Plugin
 
 
@@ -34,13 +35,17 @@ class EditorPlugin(Plugin):
                          'Opens suite/resource editor')
         #FIXME: Should we add the menu item?
         #('Keyword Completion', 'Show available keywords','', 'Ctrl-Space')
-        self.subscribe(self.SaveToModelOnTabChange, RideNotebookTabchange)
+        self.subscribe(self.SaveToModel, RideNotebookTabchange)
+        self.subscribe(self.SaveToModel, RideSavingDatafile)
+        self.subscribe(self.SaveToModel, RideSaveAsDatafile)
         self._create_editor_tab()
 
     def deactivate(self):
         self.remove_added_menu_items()
         self.delete_page(self._tab)
-        self.unsubscribe(self.SaveToModelOnTabChange, RideNotebookTabchange)
+        self.unsubscribe(self.SaveToModel, RideNotebookTabchange)
+        self.unsubscribe(self.SaveToModel, RideSavingDatafile)
+        self.unsubscribe(self.SaveToModel, RideSaveAsDatafile)
         self._tab = None
 
     def OnTreeItemSelected(self, message):
@@ -52,7 +57,7 @@ class EditorPlugin(Plugin):
         if self._tab:
             self._create_editor_tab()
 
-    def SaveToModelOnTabChange(self, message):
+    def SaveToModel(self, message):
         if self._tab:
             self._tab.save()
 
