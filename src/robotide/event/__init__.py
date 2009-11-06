@@ -12,67 +12,73 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from wx.lib.pubsub import Publisher as WxPublisher
+
 from robotide import utils
-from robotide.context import PUBLISHER
 
 
-class eventtype(type):
+class messagetype(type):
 
     def __new__(cls, name, bases, dct):
-        if 'topic' not in dct or dct['topic'] is None:
+        if not dct.get('topic'):
             dct['topic'] = cls._get_topic_from(name)
+        dct['topic'] = dct['topic'].lower()
         return type.__new__(cls, name, bases, dct)
 
     @staticmethod
     def _get_topic_from(classname):
-        if classname.endswith('Event'):
-            classname = classname[:-len('Event')]
+        if classname.endswith('Message'):
+            classname = classname[:-len('Message')]
         return utils.printable_name(classname, code_style=True).replace(' ', '.')
 
 
-class RideEvent(object):
-    __metaclass__ = eventtype
-    attr_names = []
+class Message(object):
+    __metaclass__ = messagetype
+    topic = None
+    data = []
 
     def __init__(self, **kwargs):
-        if sorted(kwargs.keys()) != sorted(self.attr_names):
-            raise TypeError('Argument mismatch, expected: %s' % self.attr_names)
+        if sorted(kwargs.keys()) != sorted(self.data):
+            raise TypeError('Argument mismatch, expected: %s' % self.data)
         self.__dict__.update(kwargs)
 
     def publish(self):
-        PUBLISHER.publish(self)
+        WxPublisher().sendMessage(self.topic, self)
 
 
-
-class RideTreeSelection(RideEvent):
-    attr_names = ['node', 'item', 'text']
-
-
-class RideNotebookTabchange(RideEvent):
-    attr_names = ['oldtab', 'newtab']
+class RideMessage(Message):
+    pass
 
 
-class RideDatafileEdited(RideEvent):
-    attr_names = ['datafile']
+class RideTreeSelection(RideMessage):
+    data = ['node', 'item', 'text']
 
-class RideSavingDatafile(RideEvent):
+
+class RideNotebookTabchange(RideMessage):
+    data = ['oldtab', 'newtab']
+
+
+class RideDatafileEdited(RideMessage):
+    data = ['datafile']
+
+class RideSavingDatafile(RideMessage):
     """`datafile` is None if all datafiles are going to be saved"""
-    attr_names = ['datafile']
+    data = ['datafile']
 
-class RideSaveAsDatafile(RideEvent):
-    attr_names = ['path', 'is_directory']
+class RideSaveAsDatafile(RideMessage):
+    data = ['path', 'is_directory']
 
-class RideSavedDatafiles(RideEvent):
-    attr_names = ['datafiles']
+class RideSavedDatafiles(RideMessage):
+    data = ['datafiles']
 
-class RideOpenResource(RideEvent):
-    attr_names = ['path']
-
-
-class RideOpenSuite(RideEvent):
-    attr_names = ['path']
+class RideOpenResource(RideMessage):
+    data = ['path']
 
 
-class RideGridCellChanged(RideEvent):
+class RideOpenSuite(RideMessage):
+    data = ['path']
+
+
+class RideGridCellChanged(RideMessage):
     topic = 'Ride.Grid.Cell Changed'
-    attr_names = ['cell', 'value', 'previous', 'grid']
+    data = ['cell', 'value', 'previous', 'grid']
