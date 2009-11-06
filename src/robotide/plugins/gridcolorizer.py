@@ -14,7 +14,7 @@
 
 import re
 
-from robotide.event import RideGridCellChanged
+from robotide.publish import RideGridCellChanged
 
 from plugin import Plugin
 

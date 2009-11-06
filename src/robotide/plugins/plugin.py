@@ -16,7 +16,8 @@ import inspect
 import wx
 
 from robotide import utils
-from robotide.context import SETTINGS, PUBLISHER
+from robotide.context import SETTINGS
+from robotide.publish import PUBLISHER
 
 
 class Plugin(object):

@@ -22,8 +22,7 @@ except ImportError:
 from robotide.editors import RideEventHandler #, Editor
 from robotide.model.tcuk import UserKeyword
 from robotide.model.files import _TestSuite
-from robotide.event import RideTreeSelection, RideDatafileEdited
-from robotide.context import PUBLISHER
+from robotide.publish import RideTreeSelection, RideDatafileEdited, PUBLISHER
 
 from images import TreeImageList
 from robotide import utils
@@ -335,8 +334,8 @@ class SuiteTree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
         self._history.change(node)
         handler = self.GetItemPyData(node)
         if handler and handler.item:
-            PUBLISHER.publish(RideTreeSelection(node=node, item=handler.item,
-                                     text=self.GetItemText(node)))
+            RideTreeSelection(node=node, item=handler.item,
+                              text=self.GetItemText(node)).publish()
 #            self.show_editor(handler.item)
         event.Skip()
 

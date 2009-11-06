@@ -1,4 +1,4 @@
-from robotide.event import RideMessage
+from robotide.publish import RideMessage
 
 
 class _FakeModel(object):

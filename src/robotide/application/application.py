@@ -18,7 +18,7 @@ import wx
 
 from robotide.robotapi import ROBOT_VERSION
 from robotide.plugins import PluginLoader
-from robotide.event import RideOpenSuite, RideOpenResource
+from robotide.publish import RideOpenSuite, RideOpenResource
 from robotide.errors import DataError, NoRideError
 from robotide.ui import RideFrame
 from robotide import context

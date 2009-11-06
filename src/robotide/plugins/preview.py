@@ -22,7 +22,7 @@ except ImportError:
 from robotide.writer.writer import HtmlFileWriter, TxtFileWriter
 from robotide.model.tcuk import TestCase, UserKeyword
 from robotide.errors import SerializationError
-from robotide.event import RideTreeSelection, RideNotebookTabchange
+from robotide.publish import RideTreeSelection, RideNotebookTabchange
 
 from plugin import Plugin
 

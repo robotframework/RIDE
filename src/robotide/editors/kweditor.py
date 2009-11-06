@@ -15,7 +15,7 @@
 from wx import grid
 import wx
 
-from robotide.event import RideGridCellChanged
+from robotide.publish import RideGridCellChanged
 from robotide.utils import ExpandingContentAssistTextCtrl, RidePopupWindow,\
     PopupMenu
 

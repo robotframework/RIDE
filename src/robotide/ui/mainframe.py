@@ -22,10 +22,10 @@ except ImportError:
 
 from robotide.editors import RideEventHandler
 from robotide.errors import PluginPageNotFoundError
+from robotide.publish import RideNotebookTabchange, RideSavingDatafile,\
+                           RideSavedDatafiles, RideSaveAsDatafile
 from robotide import utils
 from robotide import context
-from robotide.event import RideNotebookTabchange, RideSavingDatafile,\
-                           RideSavedDatafiles, RideSaveAsDatafile
 
 from actions import Actions
 from dialogs import KeywordSearchDialog, AboutDialog
@@ -182,7 +182,7 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         files_without_format = self._application.get_files_without_format(datafile)
         for f in files_without_format:
             self._show_format_dialog_for(f)
-        context.PUBLISHER.publish(RideSavingDatafile(datafile=datafile))
+        RideSavingDatafile(datafile=datafile).publish()
         saved = self._application.save(datafile)
         self._report_saved_files(saved)
         self.tree.unset_dirty()
@@ -198,7 +198,7 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
     def _report_saved_files(self, saved):
         if not saved:
             return
-        context.PUBLISHER.publish(RideSavedDatafiles(datafiles=saved))
+        RideSavedDatafiles(datafiles=saved).publish()
         s = len(saved) > 1 and 's' or ''
         self.SetStatusText('Wrote file%s: %s' %
                           (s, ', '.join(item.source for item in saved)))
@@ -206,8 +206,7 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
     def OnSaveAs(self, event):
         path = self._application.model.get_suite_path()
         is_directory = self._application.model.is_directory_suite()
-        context.PUBLISHER.publish(RideSaveAsDatafile(path=path, 
-                                                     is_directory=is_directory))
+        RideSaveAsDatafile(path=path, is_directory=is_directory)
         dlg = SaveAsDialog(self, path, is_directory)
         if dlg.ShowModal() == wx.ID_OK:
             self._application.save_as(dlg.get_path())
@@ -294,7 +293,7 @@ class NoteBook(fnb.FlatNotebook):
             newtitle = self.GetPageText(event.GetSelection())
         else:
             newtitle = None
-        context.PUBLISHER.publish(RideNotebookTabchange(oldtab=oldtitle, newtab=newtitle))
+        RideNotebookTabchange(oldtab=oldtitle, newtab=newtitle).publish()
 
     def _page_changed(self):
         """Change event is send even when no tab available or tab is closed"""

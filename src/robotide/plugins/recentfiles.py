@@ -12,11 +12,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-
 import os.path
 
 from plugin import Plugin
-from robotide.event import RideOpenSuite
+from robotide.publish import RideOpenSuite
 
 
 class RecentFilesPlugin(Plugin):

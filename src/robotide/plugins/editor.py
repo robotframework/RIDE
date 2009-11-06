@@ -17,7 +17,7 @@ import wx
 from robotide.editors import Editor
 from robotide.ui.dialogs import AboutDialog
 from robotide import utils
-from robotide.event import RideTreeSelection, RideNotebookTabchange,\
+from robotide.publish import RideTreeSelection, RideNotebookTabchange,\
                            RideSavingDatafile, RideSaveAsDatafile
 from plugin import Plugin
 
