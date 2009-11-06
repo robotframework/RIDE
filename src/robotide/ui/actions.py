@@ -142,8 +142,6 @@ _EditMenuData = [ MenuActionItem(*args) for args in
 
 _ToolsMenuData = [ MenuActionItem(*args) for args in
                    [('Manage Plugins', 'Please Implement', 'M'),
-                    ('Keyword Completion', 'Show available keywords',
-                     '', 'Ctrl-Space'),
                     ('Search Keywords',
                      'Search keywords from libraries and resources')] ]
 

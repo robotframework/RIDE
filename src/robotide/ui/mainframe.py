@@ -47,7 +47,8 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         self._plugin_manager = PluginManager(self.notebook)
         self._kw_search_dialog = KeywordSearchDialog(self, keyword_filter)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
-        self.tree.Bind(wx.EVT_LEFT_DCLICK, self.OnSuiteTreeLeftDClick)
+        #TODO: This needs to be published!
+        #self.tree.Bind(wx.EVT_LEFT_DCLICK, self.OnSuiteTreeLeftDClick)
         self.Show()
 
     def _create_containers(self):
@@ -62,10 +63,10 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
 
     #FIXME: How we should handle the double click. publish -> subscribe in editor. 
     #What if other plugins wants to listen this and show the tab?
-    def OnSuiteTreeLeftDClick(self, event):
-        """Make the editor tab visible on double-click in the tree."""
-        self.show_page(self._editor_panel)
-        event.Skip()
+    #def OnSuiteTreeLeftDClick(self, event):
+    #    """Make the editor tab visible on double-click in the tree."""
+    #    self.show_page(self._editor_panel)
+    #    event.Skip()
 
     def _create_decorations(self):
         # We need to define some standard toolbar buttons. For 
@@ -256,10 +257,6 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
     
     def OnManagePlugins(self, event):
         self._plugin_manager.show(self._application.get_plugins())
-
-    #FIXME: Move to editor plugin
-    def OnKeywordCompletion(self, event):
-        self._editor_panel.show_keyword_completion()
 
     def OnSearchKeywords(self, event):
         if not self._kw_search_dialog.IsShown():

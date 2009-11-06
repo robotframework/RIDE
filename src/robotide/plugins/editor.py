@@ -32,13 +32,15 @@ class EditorPlugin(Plugin):
     def activate(self):
         self.add_to_menu('Tools', 'Editor', -1, self.OnOpen,
                          'Opens suite/resource editor')
-        #TODO: Is the save really wanted when tab is changing?
-        self.subscribe(self.OnSave, RideNotebookTabchange)
+        #FIXME: Should we add the menu item?
+        #('Keyword Completion', 'Show available keywords','', 'Ctrl-Space')
+        self.subscribe(self.SaveToModelOnTabChange, RideNotebookTabchange)
         self._create_editor_tab()
 
     def deactivate(self):
         self.remove_added_menu_items()
         self.delete_page(self._tab)
+        self.unsubscribe(self.SaveToModelOnTabChange, RideNotebookTabchange)
         self._tab = None
 
     def OnTreeItemSelected(self, message):
@@ -50,7 +52,7 @@ class EditorPlugin(Plugin):
         if self._tab:
             self._create_editor_tab()
 
-    def OnSave(self, message):
+    def SaveToModelOnTabChange(self, message):
         if self._tab:
             self._tab.save()
 
@@ -66,6 +68,7 @@ class EditorPlugin(Plugin):
         if not panel:
             notebook = self.get_notebook()
             panel = _EditorPanel(notebook)
+            self._bind_keys(panel)
             notebook.AddPage(panel, 'Edit    ')
         return panel
 
@@ -73,6 +76,15 @@ class EditorPlugin(Plugin):
         sizer = wx.BoxSizer()
         sizer.Add(tab, 1, wx.EXPAND)
         return utils.RideHtmlWindow(tab, wx.DefaultSize, AboutDialog.TEXT)
+
+    def _bind_keys(self, panel):
+        id = wx.NewId()
+        panel.Bind(wx.EVT_MENU, self.OnKeywordCompletion, id=id )
+        accel_tbl = wx.AcceleratorTable([(wx.ACCEL_CTRL,  ord(' '), id )])
+        panel.SetAcceleratorTable(accel_tbl)
+
+    def OnKeywordCompletion(self, event):
+        self._tab.show_keyword_completion()
 
 
 class _EditorPanel(wx.Panel):
