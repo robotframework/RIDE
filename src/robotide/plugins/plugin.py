@@ -39,12 +39,6 @@ class Plugin(object):
         self.__settings.set_defaults(default_settings)
         self.initially_active = initially_active
         self._menu_items = []
-        self._subscribed_events = []
-        # TODO: _listeners is needed to keep references to wrapped listeners in
-        # subscribe(), because Publisher only keeps weak references of listeners
-        # and without appending them to this list, they are garbage collected
-        # immediately. Is there a better way to keep the references?
-        #self._listeners = []
 
     def __getattr__(self, name):
         """Provides convenient attribute access to saved settings.
