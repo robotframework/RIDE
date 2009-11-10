@@ -65,11 +65,6 @@ class RideSavingDatafile(RideMessage):
     """`datafile` is None if all datafiles are going to be saved"""
     data = ['datafile']
 
-class RideSavingAsDatafile(RideMessage):
-    data = ['datafile']
-
-class RideSaveAsDatafile(RideMessage):
-    data = ['path', 'is_directory']
 
 class RideSavedDatafiles(RideMessage):
     data = ['datafiles']

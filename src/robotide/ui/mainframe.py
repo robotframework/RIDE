@@ -29,8 +29,7 @@ from robotide import context
 
 from actions import Actions
 from dialogs import KeywordSearchDialog, AboutDialog
-from filedialogs import NewProjectDialog, NewResourceDialog, SaveAsDialog,\
-    ChangeFormatDialog
+from filedialogs import NewProjectDialog, NewResourceDialog, ChangeFormatDialog
 from pluginmanager import PluginManager
 from suitetree import SuiteTree
 
@@ -202,17 +201,6 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         s = len(saved) > 1 and 's' or ''
         self.SetStatusText('Wrote file%s: %s' %
                           (s, ', '.join(item.source for item in saved)))
-
-    def OnSaveAs(self, event):
-        path = self._application.model.get_root_suite_dir_path()
-        is_directory = self._application.model.is_directory_suite()
-        dlg = SaveAsDialog(self, path, is_directory)
-        if dlg.ShowModal() == wx.ID_OK:
-            self._application.save_as(dlg.get_path())
-            self.tree.populate_tree(self._application.model)
-            self.SetStatusText('Saved suite as %s' %
-                               self._application.model.suite.source)
-        dlg.Destroy()
 
     def OnExit(self, event):
         self.Close()

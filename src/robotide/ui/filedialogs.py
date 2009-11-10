@@ -163,25 +163,6 @@ class NewResourceDialog(_CreationDialog):
         return None
 
 
-class SaveAsDialog(_CreationDialog):
-
-    def __init__(self, parent, path, is_dir_suite):
-        self._base = path
-        self._is_dir_suite = is_dir_suite
-        _CreationDialog.__init__(self, parent, path, 'Save As')
-        self._parent_chooser.SetValue(self._base)
-        self._parent_chooser.startDirectory = self._base
-
-    def _create_type_chooser(self, sizer):
-        return None
-
-    def _create_format_chooser(self, sizer):
-        return None
-
-    def is_dir_type(self):
-        return self._is_dir_suite
-
-
 class AddSuiteDialog(_CreationDialog):
 
     def __init__(self, path):

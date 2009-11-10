@@ -11,8 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from robotide.publish.messages import RideSavedDatafiles, RideSaveAsDatafile,\
-    RideSavingAsDatafile
+from robotide.publish.messages import RideSavedDatafiles
 
 
 import sys
@@ -105,12 +104,6 @@ class RIDE(wx.App):
         if modified:
             RideSavedDatafiles(datafiles=modified).publish()
         return modified
-
-    def save_as(self, path):
-        RideSavingAsDatafile(datafile=path).publish()
-        self.model.save_as(path)
-        RideSaveAsDatafile(path=self.model.suite.source,
-                           is_directory=self.model.suite.is_directory_suite)
 
     def populate_tree(self):
         self.frame.populate_tree(self.model, self.plugin_manager)

@@ -18,7 +18,7 @@ from robotide.editors import Editor
 from robotide.ui.dialogs import AboutDialog
 from robotide import utils
 from robotide.publish import RideTreeSelection, RideNotebookTabchange,\
-                           RideSavingDatafile, RideSaveAsDatafile
+                           RideSavingDatafile
 from plugin import Plugin
 
 
@@ -37,7 +37,6 @@ class EditorPlugin(Plugin):
         #('Keyword Completion', 'Show available keywords','', 'Ctrl-Space')
         self.subscribe(self.SaveToModel, RideNotebookTabchange)
         self.subscribe(self.SaveToModel, RideSavingDatafile)
-        self.subscribe(self.SaveToModel, RideSaveAsDatafile)
         self._create_editor_tab()
 
     def deactivate(self):
@@ -45,7 +44,6 @@ class EditorPlugin(Plugin):
         self.delete_page(self._tab)
         self.unsubscribe(self.SaveToModel, RideNotebookTabchange)
         self.unsubscribe(self.SaveToModel, RideSavingDatafile)
-        self.unsubscribe(self.SaveToModel, RideSaveAsDatafile)
         self._tab = None
 
     def OnTreeItemSelected(self, message):

@@ -125,7 +125,6 @@ _FileMenuData = [ MenuActionItem(*args) for args in
                    ('---', ),
                    _SaveItemData + ('S', 'Ctrl-S'),
                    ('Save All', 'Save all changes', '', 'Ctrl-Shift-S'),
-                   ('Save As', 'Save current project with new name'),
                    ('---', ),
                    ('Exit', 'Exit RIDE', 'x', 'Ctrl-Q')]]
 

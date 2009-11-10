@@ -109,10 +109,6 @@ class DataModel(object):
     def is_directory_suite(self):
         return self.suite.is_directory_suite
 
-    def save_as(self, path):
-        self.suite.set_source(path)
-        self.serialize()
-
     def serialize(self, datafile=None):
         errors = []
         modified = []
