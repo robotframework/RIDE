@@ -105,7 +105,12 @@ class DataModel(object):
         return mod_suites
 
     def get_suite_path(self):
-        return os.path.dirname(self.suite.source)
+        return self._resolve_suite_path()
+
+    def _resolve_suite_path(self):
+        if os.path.isfile(self.item.source):
+            return os.path.dirname(self.item.source)
+        return self.item.source
 
     def is_directory_suite(self):
         return self.suite.is_directory_suite
