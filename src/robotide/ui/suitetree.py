@@ -434,16 +434,11 @@ class InitFileHandler(_ActionHandler):
         return False
 
     def OnAddSuite(self, event):
-        dlg = AddSuiteDialog(self._resolve_suite_path())
+        dlg = AddSuiteDialog(self.item.get_dir_path())
         if dlg.ShowModal() == wx.ID_OK:
             subsuite = self.item.add_suite(dlg.get_path())
             self._tree.add_suite(self.item, subsuite)
         dlg.Destroy()
-
-    def _resolve_suite_path(self):
-        if os.path.isfile(self.item.source):
-            return os.path.dirname(self.item.source)
-        return self.item.source
 
     def OnNewUserKeyword(self, event):
         dlg = UserKeywordNameDialog(self.item)

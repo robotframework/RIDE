@@ -204,7 +204,7 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
                           (s, ', '.join(item.source for item in saved)))
 
     def OnSaveAs(self, event):
-        path = self._application.model.get_suite_path()
+        path = self._application.model.get_root_suite_dir_path()
         is_directory = self._application.model.is_directory_suite()
         dlg = SaveAsDialog(self, path, is_directory)
         if dlg.ShowModal() == wx.ID_OK:

@@ -12,7 +12,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import os
 import operator
 
 from robotide.model import TestSuiteFactory, RESOURCEFILECACHE
@@ -104,13 +103,8 @@ class DataModel(object):
             mod_suites.extend(self._resolve_modified_suites(suite))
         return mod_suites
 
-    def get_suite_path(self):
-        return self._resolve_suite_path()
-
-    def _resolve_suite_path(self):
-        if os.path.isfile(self.item.source):
-            return os.path.dirname(self.item.source)
-        return self.item.source
+    def get_root_suite_dir_path(self):
+        return self.suite.get_dir_path()
 
     def is_directory_suite(self):
         return self.suite.is_directory_suite

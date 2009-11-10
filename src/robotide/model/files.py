@@ -303,6 +303,11 @@ class _TestSuite(_AbstractDataFile):
         test = self.tests.get_test(longname)
         return test or self.keywords.get_keyword(longname)
 
+    def get_dir_path(self):
+        if os.path.isfile(self.source):
+            return os.path.dirname(self.source)
+        return self.source
+
 
 class TestCaseFile(_TestSuite):
 
