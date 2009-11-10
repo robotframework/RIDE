@@ -11,6 +11,8 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+from robotide.publish.messages import RideSavedDatafiles, RideSaveAsDatafile,\
+    RideSavingAsDatafile
 
 
 import sys
@@ -98,20 +100,17 @@ class RIDE(wx.App):
     def get_files_without_format(self, datafile=None):
         return self.model.get_files_without_format(datafile)
 
-    def publish_save(self, saved):
-        self.plugin_manager.publish(('core', 'save'), {'files': saved})
-
     def save(self, datafile=None):
         modified = self.model.serialize(datafile)
         if modified:
-            self.publish_save(modified)
+            RideSavedDatafiles(datafiles=modified).publish()
         return modified
 
     def save_as(self, path):
+        RideSavingAsDatafile(datafile=path).publish()
         self.model.save_as(path)
-        self.frame.SetStatusText('Saved suite as %s' % self.model.suite.source)
-        self.plugin_manager.publish(('core', 'save_as'),
-                                    {'path': self.model.suite.source})
+        RideSaveAsDatafile(path=self.model.suite.source,
+                           is_directory=self.model.suite.is_directory_suite)
 
     def populate_tree(self):
         self.frame.populate_tree(self.model, self.plugin_manager)

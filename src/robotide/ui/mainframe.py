@@ -23,7 +23,7 @@ except ImportError:
 from robotide.editors import RideEventHandler
 from robotide.errors import PluginPageNotFoundError
 from robotide.publish import RideNotebookTabchange, RideSavingDatafile,\
-                           RideSavedDatafiles, RideSaveAsDatafile
+                           RideSavedDatafiles
 from robotide import utils
 from robotide import context
 
@@ -206,11 +206,12 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
     def OnSaveAs(self, event):
         path = self._application.model.get_suite_path()
         is_directory = self._application.model.is_directory_suite()
-        RideSaveAsDatafile(path=path, is_directory=is_directory)
         dlg = SaveAsDialog(self, path, is_directory)
         if dlg.ShowModal() == wx.ID_OK:
             self._application.save_as(dlg.get_path())
             self.tree.populate_tree(self._application.model)
+            self.SetStatusText('Saved suite as %s' %
+                               self._application.model.suite.source)
         dlg.Destroy()
 
     def OnExit(self, event):
