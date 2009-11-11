@@ -303,11 +303,6 @@ class _TestSuite(_AbstractDataFile):
         test = self.tests.get_test(longname)
         return test or self.keywords.get_keyword(longname)
 
-    def get_dir_path(self):
-        if os.path.isfile(self.source):
-            return os.path.dirname(self.source)
-        return self.source
-
 
 class TestCaseFile(_TestSuite):
 
@@ -367,6 +362,11 @@ class InitFile(_TestSuite):
 
     def reload_from_disk(self):
         self.__init__(InitFileData(os.path.dirname(self.source)))
+
+    def get_dir_path(self):
+        if os.path.isdir(self.source):
+            return self.source
+        return os.path.dirname(self.source)
 
     def _set_source(self, path, parent):
         path = path.replace('__init__.html', '').replace('__init__.tsv', '')
