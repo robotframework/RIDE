@@ -44,21 +44,24 @@ class Message(object):
 
     def publish(self):
         try:
-            WxPublisher().sendMessage(self.topic, self)
+            self._publish(self)
         except Exception, err:
-            RideError(error=str(err)).publish()
+            self._publish(RideLogMessage(message=str(err), level='ERROR'))
+
+    def _publish(self, msg):
+        WxPublisher().sendMessage(msg.topic, msg)
 
 
 class RideMessage(Message):
     pass
 
 
-class RideError(RideMessage):
-    data = ['error']
+class RideLogMessage(RideMessage):
+    data = ['message', 'level', 'timestamp']
 
-    def publish(self):
-        """Overridden to prevent infinite recursion"""
-        WxPublisher().sendMessage(self.topic, self)
+    def __init__(self, message, level='INFO'):
+        RideMessage.__init__(self, message=message, level=level,
+                             timestamp=utils.get_timestamp())
 
 
 class RideTreeSelection(RideMessage):

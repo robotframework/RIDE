@@ -1,8 +1,9 @@
 import unittest
 
-from robot.utils.asserts import assert_equals, assert_raises_with_msg
+from robot.utils.asserts import assert_equals, assert_raises_with_msg, assert_true
 
-from robotide.publish import RideMessage
+from robotide.publish import RideMessage, RideLogMessage
+from robotide.utils import get_timestamp
 
 
 _ARGS_ERROR = "Argument mismatch, expected: ['foo', 'bar']"
@@ -41,6 +42,15 @@ class TestEvent(unittest.TestCase):
     def test_no_such_attribute_should_fail(self):
         assert_raises_with_msg(TypeError, _ARGS_ERROR, RideTestMessageWithAttrs,
                                foo='', bar='', quux='camel')
+
+
+class TestRideLogMessage(unittest.TestCase):
+
+    def test_log_message(self):
+        msg = RideLogMessage(message='Some error text', level='ERROR')
+        assert_equals(msg.message, 'Some error text')
+        assert_equals(msg.level, 'ERROR')
+        assert_true(msg.timestamp.startswith('20'))
 
 
 if __name__ == '__main__':

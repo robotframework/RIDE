@@ -1,8 +1,9 @@
 import unittest
 
-from robot.utils.asserts import assert_equals, assert_none, assert_false
+from robot.utils.asserts import assert_equals, assert_none, assert_false, \
+    assert_raises_with_msg
 
-from robotide.publish import RideMessage, PUBLISHER
+from robotide.publish import RideMessage, RideLogMessage, PUBLISHER
 from robotide.plugins import Plugin
 from plugin_resources import FakeApplication, RideTestMessage,\
     RideMessageWithData
@@ -164,6 +165,42 @@ class TestUnsubscribingFromEvents(unittest.TestCase):
         assert_equals(self.plugin.count, 0)
         assert_equals(self.plugin.hierarchy_events, [])
         assert_false(self.plugin in PUBLISHER._listeners)
+
+
+class TestBrokenMessageListener(unittest.TestCase):
+
+    def setUp(self):
+        self.plugin = BrokenListenerPlugin(FakeApplication())
+
+    def tearDown(self):
+        self.plugin.deactivate()
+
+    def test_broken_listener(self):
+        self.plugin.subscribe(self.plugin.error_listener, RideLogMessage)
+        RideTestMessage().publish()
+        assert_equals(self.plugin.error.message, 'ride.test')
+        assert_equals(self.plugin.error.topic, 'ride.log')
+        assert_equals(self.plugin.error.level, 'ERROR')
+
+    def test_broken_error_listener(self):
+        self.plugin.subscribe(self.plugin.broken_listener, RideLogMessage)
+        assert_raises_with_msg(RuntimeError, 'ride.log', RideTestMessage().publish)
+
+
+class BrokenListenerPlugin(Plugin):
+
+    def __init__(self, application):
+        Plugin.__init__(self, application)
+        self.subscribe(self.broken_listener, RideTestMessage)
+
+    def deactivate(self):
+        self.unsubscribe_all()
+
+    def broken_listener(self, message):
+        raise RuntimeError(message.topic)
+
+    def error_listener(self, message):
+        self.error = message
 
 
 if __name__ == '__main__':
