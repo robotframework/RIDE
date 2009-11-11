@@ -43,11 +43,22 @@ class Message(object):
         self.__dict__.update(kwargs)
 
     def publish(self):
-        WxPublisher().sendMessage(self.topic, self)
+        try:
+            WxPublisher().sendMessage(self.topic, self)
+        except Exception, err:
+            RideError(error=str(err)).publish()
 
 
 class RideMessage(Message):
     pass
+
+
+class RideError(RideMessage):
+    data = ['error']
+
+    def publish(self):
+        """Overridden to prevent infinite recursion"""
+        WxPublisher().sendMessage(self.topic, self)
 
 
 class RideTreeSelection(RideMessage):
