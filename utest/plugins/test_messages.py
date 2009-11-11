@@ -5,63 +5,13 @@ from robot.utils.asserts import assert_equals, assert_none, assert_false, \
 
 from robotide.publish import RideMessage, RideLogMessage, PUBLISHER
 from robotide.plugins import Plugin
-from plugin_resources import FakeApplication, RideTestMessage,\
-    RideMessageWithData
-
-
-class SubscribingPlugin(Plugin):
-
-    def __init__(self, application):
-        Plugin.__init__(self, application)
-        self._reset_recorders()
-        self._subscribe_to_events()
-
-    def _reset_recorders(self):
-        self.record = {}
-        self.count = 0
-        self.hierarchy_events = []
-        self.multi_events = []
-        self.class_handler_topic = self.string_handler_topic =\
-            self.case_insensitive_string_handler_topic = None
-
-    def _subscribe_to_events(self):
-        self.subscribe(self.OnTestEventClass, RideTestMessage)
-        self.subscribe(self.OnTestEventString, 'ride.test')
-        self.subscribe(self.OnTestEventStringWrongCase, 'RIDE.tesT')
-        self.subscribe(self.OnTestEventWithData, RideMessageWithData)
-        for _ in range(5):
-            self.subscribe(self.counting_handler, RideTestMessage)
-        self.subscribe(self.hierarchical_listener, RideMessage)
-        self.subscribe(self.multiple_events_listening_handler, RideTestMessage,
-                       RideMessageWithData)
-
-    def OnTestEventClass(self, event):
-        self.class_handler_topic = event.topic
-
-    def OnTestEventString(self, event):
-        self.string_handler_topic = event.topic
-
-    def OnTestEventStringWrongCase(self, event):
-        self.case_insensitive_string_handler_topic = event.topic
-
-    def OnTestEventWithData(self, event):
-        self.record['data_item'] = event.data_item
-        self.record['more_data'] = event.more_data
-
-    def counting_handler(self, event):
-        self.count += 1
-
-    def hierarchical_listener(self, event):
-        self.hierarchy_events.append(event.topic)
-
-    def multiple_events_listening_handler(self, event):
-        self.multi_events.append(event.topic)
+from plugin_resources import RideTestMessage, RideMessageWithData
 
 
 class TestSubscribinigToEvents(unittest.TestCase):
 
     def setUp(self):
-        self.plugin = SubscribingPlugin(FakeApplication())
+        self.plugin = SubscribingPlugin()
 
     def test_subscribing_with_class(self):
         RideTestMessage().publish()
@@ -101,7 +51,7 @@ class TestSubscribinigToEvents(unittest.TestCase):
 class TestUnsubscribingFromEvents(unittest.TestCase):
 
     def setUp(self):
-        self.plugin = SubscribingPlugin(FakeApplication())
+        self.plugin = SubscribingPlugin()
 
     def test_unsubscribe_with_class(self):
         listener_count = len(PUBLISHER._listeners[self.plugin])
@@ -170,7 +120,7 @@ class TestUnsubscribingFromEvents(unittest.TestCase):
 class TestBrokenMessageListener(unittest.TestCase):
 
     def setUp(self):
-        self.plugin = BrokenListenerPlugin(FakeApplication())
+        self.plugin = BrokenListenerPlugin()
 
     def tearDown(self):
         self.plugin.deactivate()
@@ -189,8 +139,7 @@ class TestBrokenMessageListener(unittest.TestCase):
 
 class BrokenListenerPlugin(Plugin):
 
-    def __init__(self, application):
-        Plugin.__init__(self, application)
+    def __init__(self):
         self.subscribe(self.broken_listener, RideTestMessage)
 
     def deactivate(self):
@@ -201,6 +150,54 @@ class BrokenListenerPlugin(Plugin):
 
     def error_listener(self, message):
         self.error = message
+
+
+class SubscribingPlugin(Plugin):
+
+    def __init__(self):
+        self._reset_recorders()
+        self._subscribe_to_events()
+
+    def _reset_recorders(self):
+        self.record = {}
+        self.count = 0
+        self.hierarchy_events = []
+        self.multi_events = []
+        self.class_handler_topic = self.string_handler_topic =\
+            self.case_insensitive_string_handler_topic = None
+
+    def _subscribe_to_events(self):
+        self.subscribe(self.OnTestEventClass, RideTestMessage)
+        self.subscribe(self.OnTestEventString, 'ride.test')
+        self.subscribe(self.OnTestEventStringWrongCase, 'RIDE.tesT')
+        self.subscribe(self.OnTestEventWithData, RideMessageWithData)
+        for _ in range(5):
+            self.subscribe(self.counting_handler, RideTestMessage)
+        self.subscribe(self.hierarchical_listener, RideMessage)
+        self.subscribe(self.multiple_events_listening_handler, RideTestMessage,
+                       RideMessageWithData)
+
+    def OnTestEventClass(self, event):
+        self.class_handler_topic = event.topic
+
+    def OnTestEventString(self, event):
+        self.string_handler_topic = event.topic
+
+    def OnTestEventStringWrongCase(self, event):
+        self.case_insensitive_string_handler_topic = event.topic
+
+    def OnTestEventWithData(self, event):
+        self.record['data_item'] = event.data_item
+        self.record['more_data'] = event.more_data
+
+    def counting_handler(self, event):
+        self.count += 1
+
+    def hierarchical_listener(self, event):
+        self.hierarchy_events.append(event.topic)
+
+    def multiple_events_listening_handler(self, event):
+        self.multi_events.append(event.topic)
 
 
 if __name__ == '__main__':
