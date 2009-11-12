@@ -280,6 +280,7 @@ class NoteBook(fnb.FlatNotebook):
         newindex = event.GetSelection()
         if newindex <= self.GetPageCount() - 1:
             newtitle = self.GetPageText(event.GetSelection())
+            self.GetPage(event.GetSelection()).SetFocus()
         else:
             newtitle = None
         RideNotebookTabchange(oldtab=oldtitle, newtab=newtitle).publish()
