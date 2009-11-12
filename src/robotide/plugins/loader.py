@@ -25,8 +25,11 @@ from connector import PluginFactory
 class PluginLoader(object):
 
     def __init__(self, application):
+        self._load_errors = []
         self.plugins = [ PluginFactory(application, cls)
                          for cls in self._find_plugin_classes() ]
+        if self._load_errors:
+            LOG.error('\n\n'.join(self._load_errors))
 
     def _find_plugin_classes(self):
         for cls in self._get_standard_plugin_classes():
@@ -63,7 +66,7 @@ class PluginLoader(object):
         try:
             module = imp.load_module(modulename, file, imppath, description)
         except Exception, err:
-            LOG.error("Importing plugin module '%s' failed:\n%s" % (path, err))
+            self._load_errors.append("Importing plugin module '%s' failed:\n%s" % (path, err))
             return []
         finally:
             if file:
