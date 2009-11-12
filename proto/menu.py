@@ -9,7 +9,7 @@ class MenuBar(wx.MenuBar):
 
     def register_menu_entry(self, entry):
         menu = self._get_or_create_menu(entry.menu)
-        entry.register(menu, self._frame)
+        entry.bind_to_menu(menu, self._frame)
 
     def _get_or_create_menu(self, name):
         position = self.FindMenu(name)
@@ -22,30 +22,26 @@ class MenuBar(wx.MenuBar):
 class MenuEntry(object):
     _actions = {}
 
-    def __init__(self, menu, name, action, container=None, shortcut=None, doc=''):
+    def __init__(self, menu, name, action, container=None, 
+                 shortcut=None, doc=''):
         self.id = wx.NewId()
         self.menu = menu
-        self.name = self._get_name(name, shortcut)
+        self.name = shortcut and '%s\t%s' % (name, shortcut) or name
         self.doc = doc
-        self.action = self._get_action(action, container)
+        self.action = self._register_entry(shortcut, action, container)
 
-    def _get_name(self, name, shortcut):
-        if shortcut:
-            return '%s\t%s' % (name, shortcut)
-        return name
-
-    def _get_action(self, action, container):
-        delegator = self._actions.setdefault((self.menu, self.name),
-                                             ActionDelegator())
+    def _register_entry(self, shortcut, action, container):
+        key = shortcut or (self.menu, self.name)
+        delegator = self._actions.setdefault(key, ActionDelegator())
         delegator.add(action, container)
         return delegator
 
-    def register(self, menu, frame):
-        if self._is_not_registered(menu):
+    def bind_to_menu(self, menu, frame):
+        if self._is_not_bound_to_menu(menu):
             menu.Append(self.id, self.name, self.doc)
             frame.Bind(wx.EVT_MENU, self.action, id=self.id)
 
-    def _is_not_registered(self, menu):
+    def _is_not_bound_to_menu(self, menu):
         id = menu.FindItem(self.name)
         if id == -1:
             return True
@@ -55,17 +51,17 @@ class MenuEntry(object):
 class ActionDelegator(object):
 
     def __init__(self):
-        self._actions = []
+        self._actors = []
 
     def add(self, action, container):
-        self._actions.append(Action(action, container))
+        self._actors.append(Actor(action, container))
 
     def __call__(self, event):
-        for action in self._actions:
-            action.act()
+        for actor in self._actors:
+            actor.act()
 
 
-class Action(object):
+class Actor(object):
 
     def __init__(self, action, container):
         self._action = action
