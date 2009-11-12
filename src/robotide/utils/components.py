@@ -92,9 +92,9 @@ class PopupMenu(wx.Menu):
         return item
 
     def _add_item(self, parent, name, shortcut):
-        id_ = wx.NewId()
         handler = getattr(parent, 'On'+name.replace(' ', ''))
         if shortcut:
             name = '%s\t%s' % (name, shortcut)
+        id_ = wx.NewId()
         self.Append(id_, name)
         parent.Bind(wx.EVT_MENU, handler, id=id_)
