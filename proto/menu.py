@@ -20,23 +20,30 @@ class MenuBar(wx.MenuBar):
 
 
 class MenuEntry(object):
+    _actions = {}
 
     def __init__(self, menu, name, action, container=None, shortcut=None, doc=''):
         self.id = wx.NewId()
         self.menu = menu
         self.name = self._get_name(name, shortcut)
         self.doc = doc
-        self.action = ActionFactory(self, action, container)
+        self.action = self._get_action(action, container)
 
     def _get_name(self, name, shortcut):
         if shortcut:
             return '%s\t%s' % (name, shortcut)
         return name
 
+    def _get_action(self, action, container):
+        delegator = self._actions.setdefault((self.menu, self.name),
+                                             ActionDelegator())
+        delegator.add(action, container)
+        return delegator
+
     def register(self, menu, frame):
         if self._is_not_registered(menu):
             menu.Append(self.id, self.name, self.doc)
-        frame.Bind(wx.EVT_MENU, self.action, id=self.id)
+            frame.Bind(wx.EVT_MENU, self.action, id=self.id)
 
     def _is_not_registered(self, menu):
         id = menu.FindItem(self.name)
@@ -45,28 +52,20 @@ class MenuEntry(object):
         return menu.FindItemById(id).GetItemLabel() != self.name
 
 
-ACTIONS = {}
-
-def ActionFactory(entry, action, container):
-    proxy = ACTIONS.setdefault((entry.menu, entry.name), ActionProxy())
-    proxy.register_action(Actor(action, container))
-    return proxy
-
-
-class ActionProxy(object):
+class ActionDelegator(object):
 
     def __init__(self):
         self._actions = []
 
-    def register_action(self, action):
-        self._actions.append(action)
+    def add(self, action, container):
+        self._actions.append(Action(action, container))
 
     def __call__(self, event):
-        for actor in self._actions:
-            actor.act()
+        for action in self._actions:
+            action.act()
 
 
-class Actor(object):
+class Action(object):
 
     def __init__(self, action, container):
         self._action = action
