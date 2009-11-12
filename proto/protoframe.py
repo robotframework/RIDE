@@ -18,8 +18,9 @@ class ProtoFrame(wx.Frame):
         tree = Tree(splitter)
         self.nb = fnb.FlatNotebook(splitter)
         self.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
-        self.nb.AddPage(ProtoPanel(self, self.nb), 'P1')
-        self.nb.AddPage(AnotherProtoPanel(self, self.nb), 'P2')
+        self.nb.AddPage(ProtoPanel(self, self.nb, 1), 'P1')
+        self.nb.AddPage(ProtoPanel(self, self.nb, 2), 'P2')
+        self.nb.AddPage(ProtoPanel(self, self.nb, 3, scut='Del'), 'P3')
         splitter.SplitVertically(tree, self.nb, 100)
 
     def OnPageChanging(self, event):
@@ -46,26 +47,12 @@ class Tree(wx.TreeCtrl):
 
 class ProtoPanel(wx.Panel):
 
-    def __init__(self, frame, parent):
+    def __init__(self, frame, parent, id, name='Foo', scut='Ctrl-F'):
         wx.Panel.__init__(self, parent)
-        frame.register_menu_entry('Edit', 'Foo', self.OnMenu, self, 'Ctrl-F',
+        handler = lambda: wx.MessageBox('panel %s' % id)
+        frame.register_menu_entry('Edit', name, handler, self, scut,
                                   'Documentation')
-        wx.TextCtrl(self, value='I AM PANEL 1')
-
-    def OnMenu(self):
-        wx.MessageBox('panel 1')
-
-
-class AnotherProtoPanel(wx.Panel):
-
-    def __init__(self, frame, parent):
-        wx.Panel.__init__(self, parent)
-        frame.register_menu_entry('Edit', 'Foo', self.OnMenu, self, 'Ctrl-F',
-                                  'Some Documentation')
-        wx.TextCtrl(self, value='I AM PANEL 2')
-
-    def OnMenu(self):
-        wx.MessageBox('panel 2')
+        wx.TextCtrl(self, value='I AM PANEL %s' % id)
 
 
 if __name__ == '__main__':

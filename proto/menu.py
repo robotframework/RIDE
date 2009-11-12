@@ -10,9 +10,6 @@ class MenuBar(wx.MenuBar):
     def register_menu_entry(self, entry):
         menu = self._get_or_create_menu(entry.menu)
         entry.register(menu, self._frame)
-        #self._bind_handler(shortcut, action, container, id)
-        #self._menu_items.append((menu, menu_item, action, container))
-        #return id
 
     def _get_or_create_menu(self, name):
         position = self.FindMenu(name)
@@ -37,8 +34,15 @@ class MenuEntry(object):
         return name
 
     def register(self, menu, frame):
-        menu.Append(self.id, self.name, self.doc)
+        if self._is_not_registered(menu):
+            menu.Append(self.id, self.name, self.doc)
         frame.Bind(wx.EVT_MENU, self.action, id=self.id)
+
+    def _is_not_registered(self, menu):
+        id = menu.FindItem(self.name)
+        if id == -1:
+            return True
+        return menu.FindItemById(id).GetItemLabel() != self.name
 
 
 ACTIONS = {}
