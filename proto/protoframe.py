@@ -17,11 +17,13 @@ class ProtoFrame(wx.Frame):
         splitter.SetMinimumPaneSize(50)
         self.nb = fnb.FlatNotebook(splitter)
         self.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
-        self.nb.AddPage(ProtoPanel(self, self.nb), 'P1')
-        self.nb.AddPage(ProtoPanel(self, self.nb), 'P2')
-        self.nb.AddPage(ProtoPanel(self, self.nb, scut='Del'), 'P3')
-        self.nb.AddPage(ProtoPanel(self, self.nb, entry='Bar'), 'P4')
-        self.nb.AddPage(ProtoPanel(self, self.nb, menu='X', entry='Bar'), 'P5')
+        self.nb.AddPage(ProtoPanel(self, self.nb), 'F1')
+        self.nb.AddPage(ProtoPanel(self, self.nb), 'F2')
+        self.nb.AddPage(ProtoPanel(self, self.nb, entry='Bar'), 'F3')
+        self.nb.AddPage(ProtoPanel(self, self.nb, menu='X', entry='Bar'), 'F4')
+        self.nb.AddPage(ProtoPanel(self, self.nb, entry='D', scut='Del'), 'D1')
+        self.nb.AddPage(ProtoPanel(self, self.nb, entry='D', scut='Del',
+                                   container=False), 'D2')
         splitter.SplitVertically(Tree(splitter), self.nb, 100)
 
     def OnPageChanging(self, event):
@@ -49,12 +51,18 @@ class Tree(wx.TreeCtrl):
 class ProtoPanel(wx.Panel):
     counter = 0
 
-    def __init__(self, frame, parent, menu='Edit', entry='Foo', scut='Ctrl-F'):
-        wx.Panel.__init__(self, parent)
+    def __init__(self, frame, parent, menu='Edit', entry='Foo', scut='Ctrl-F',
+                 container=True):
         ProtoPanel.counter += 1
         name = 'Panel %d' % ProtoPanel.counter
-        frame.register_menu_entry(menu, entry, lambda: wx.MessageBox(name), 
-                                  self, scut, 'Doc for '+name)
+        wx.Panel.__init__(self, parent, name=name)
+        container = container and self or None
+        frame.register_menu_entry(menu, entry,
+                                  lambda: wx.MessageBox(name), 
+                                  container, scut, 'Doc for '+name)
+        frame.register_menu_entry(menu, entry+' (2)', 
+                                  lambda: wx.MessageBox(name+' (2)'), 
+                                  container, None, 'Doc 2 for '+name)
         wx.TextCtrl(self, value=name)
 
 
