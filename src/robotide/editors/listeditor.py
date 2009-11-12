@@ -11,6 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+from robotide.publish.messages import RideDatafileEdited
 
 import wx
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
@@ -92,7 +93,7 @@ class ListEditor(wx.Panel):
     def set_dirty(self):
         if not self._data.datafile.dirty:
             self._data.datafile.set_dirty()
-            self.GetParent().tree.set_dirty(self._data.datafile)
+            RideDatafileEdited(datafile=self._data.datafile).publish()
     
     def _check_modified_time(self, event_name):
         if self._data.datafile.has_been_modified_on_disk():
