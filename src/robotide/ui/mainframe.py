@@ -57,7 +57,7 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         # at least two tabs there's no point in taking up the screen
         # real estate. Eventually this should be a user preference.
         self.notebook = NoteBook(splitter, self._application)
-        self.tree = SuiteTree(splitter) #, self._editor_panel)
+        self.tree = SuiteTree(splitter)
         splitter.SplitVertically(self.tree, self.notebook, 300)
 
     def _create_decorations(self):
@@ -215,14 +215,6 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
     def OnSearchKeywords(self, event):
         if not self._kw_search_dialog.IsShown():
             self._kw_search_dialog.Show()
-
-    # Navigate Menu
-
-    def OnGoBack(self, event):
-        self.tree.go_back()
-
-    def OnGoForward(self, event):
-        self.tree.go_forward()
 
     # About Menu
 
