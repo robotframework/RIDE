@@ -9,7 +9,7 @@ class MenuBar(object):
 
     def register_menu_entry(self, entry):
         menu = self._get_or_create_menu(entry.menu)
-        entry.bind_to_menu(menu, self._frame)
+        entry.insert_to_menu(menu, self._frame)
 
     def _get_or_create_menu(self, name):
         position = self._mb.FindMenu(name)
@@ -25,26 +25,28 @@ class MenuBar(object):
 class MenuEntry(object):
     _actions = {}
 
-    def __init__(self, menu, name, action, container=None, 
-                 shortcut=None, doc=''):
+    def __init__(self, menu, name, action, container=None, shortcut=None, doc=''):
         self.id = wx.NewId()
         self.menu = menu
         self.name = shortcut and '%s\t%s' % (name, shortcut) or name
         self.doc = doc
-        self.action = self._register_entry(shortcut, action, container)
+        self.action = self._get_action_for(shortcut, action, container)
 
-    def _register_entry(self, shortcut, action, container):
+    def _get_action_for(self, shortcut, action, container):
+        action_delegator = self._register_action(shortcut)
+        action_delegator.add(action, container)
+        return action_delegator
+
+    def _register_action(self, shortcut):
         key = shortcut or (self.menu, self.name)
-        delegator = self._actions.setdefault(key, ActionDelegator())
-        delegator.add(action, container)
-        return delegator
+        return self._actions.setdefault(key, ActionDelegator())
 
-    def bind_to_menu(self, menu, frame):
-        if self._is_not_bound_to_menu(menu):
+    def insert_to_menu(self, menu, frame):
+        if self._is_not_in_menu(menu):
             menu.Append(self.id, self.name, self.doc)
             frame.Bind(wx.EVT_MENU, self.action, id=self.id)
 
-    def _is_not_bound_to_menu(self, menu):
+    def _is_not_in_menu(self, menu):
         id = menu.FindItem(self.name)
         if id == -1:
             return True
@@ -75,8 +77,14 @@ class Actor(object):
             self._action()
 
     def _should_act(self):
-        if self._container is None:
+        if self._is_always_active():
             return True
+        return self._container_is_active()
+
+    def _is_always_active(self):
+        return self._container is None
+
+    def _container_is_active(self):
         if not self._container.IsShownOnScreen():
             return False
         widget = wx.GetActiveWindow()
