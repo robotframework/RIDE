@@ -27,7 +27,8 @@ from robotide.publish import RideNotebookTabchange, RideSavingDatafile,\
 from robotide import utils
 from robotide import context
 
-from actions import Actions
+from menu import MenuBar
+from menuentries import MenuEntries
 from dialogs import KeywordSearchDialog, AboutDialog
 from filedialogs import NewProjectDialog, NewResourceDialog, ChangeFormatDialog
 from pluginmanager import PluginManager
@@ -60,16 +61,16 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         splitter.SplitVertically(self.tree, self.notebook, 300)
 
     def _create_decorations(self):
-        # We need to define some standard toolbar buttons. For 
-        # now, create an empty toolbar so plugins have a place to
-        # put their buttons.
-        actions = Actions(self)
-        self.SetMenuBar(actions.get_menubar())
-        self.SetToolBar(actions.get_toolbar())
+        self._menubar = MenuBar(self)
+        self._menubar.register_menu_entries(MenuEntries(self))
+        self._menubar.register_to_frame(self)
         self.CreateStatusBar()
 
     def populate_tree(self, model):
         self.tree.populate_tree(model)
+
+    def register_menu_entry(self, entry):
+        self._menubar.register_menu_entry(entry)
 
     def show_page(self, panel):
         """Shows the notebook page that contains the given panel.
@@ -132,14 +133,14 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
             self._application.open_resource(dlg.get_path())
         dlg.Destroy()
 
-    def OnOpen(self, event):
+    def OnOpen(self):
         if not self._application.ok_to_open_new():
             return
         path = self._get_path()
         if path:
             self.open_suite(path)
 
-    def OnOpenResource(self, event):
+    def OnOpenResource(self):
         path = self._get_path()
         if path:
             self._application.open_resource(path)

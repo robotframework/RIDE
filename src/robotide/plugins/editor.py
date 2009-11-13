@@ -16,10 +16,28 @@ import wx
 
 from robotide.editors import Editor
 from robotide.ui.dialogs import AboutDialog
+from robotide.ui import MenuEntries
 from robotide import utils
 from robotide.publish import RideTreeSelection, RideNotebookTabchange,\
                            RideSavingDatafile
 from plugin import Plugin
+
+
+edit_menu_data ="""
+Edit
+*Undo, Undo last modification, Ctrl-Z
+---
+*Cut, Cut from selected cells, Ctrl-X
+*Copy, Copy from selected cells, Ctrl-C
+*Paste, Paste to selected cell, Ctrl-V
+*Delete, Delete from selected cells, Del
+---
+*Comment, Comment selected rows, Ctrl-3
+*Uncomment, Uncomment selected rows, Ctrl-4
+
+Tools
+Open Editor, Opens suite/resource editor
+"""
 
 
 class EditorPlugin(Plugin):
@@ -31,13 +49,13 @@ class EditorPlugin(Plugin):
         self.subscribe(self.OnTreeItemSelected, RideTreeSelection)
 
     def activate(self):
-        self.add_to_menu('Tools', 'Editor', -1, self.OnOpen,
-                         'Opens suite/resource editor')
+        self._create_editor_tab()
+        for entry in MenuEntries(self, edit_menu_data, self._tab):
+            self._frame.register_menu_entry(entry)
         #FIXME: Should we add the menu item?
         #('Keyword Completion', 'Show available keywords','', 'Ctrl-Space')
         self.subscribe(self.SaveToModel, RideNotebookTabchange)
         self.subscribe(self.SaveToModel, RideSavingDatafile)
-        self._create_editor_tab()
 
     def deactivate(self):
         self.remove_added_menu_items()
@@ -51,9 +69,30 @@ class EditorPlugin(Plugin):
         if self._tab:
             self._create_editor_tab()
 
-    def OnOpen(self, event):
+    def OnOpenEditor(self, event):
         if self._tab:
             self._create_editor_tab()
+
+    def OnUndo(self):
+        raise NotImplementedError()
+
+    def OnCut(self):
+        raise NotImplementedError()
+
+    def OnCopy(self):
+        raise NotImplementedError()
+
+    def OnPaste(self):
+        raise NotImplementedError()
+
+    def OnDelete(self):
+        raise NotImplementedError()
+
+    def OnComment(self):
+        raise NotImplementedError()
+
+    def OnUncomment(self):
+        raise NotImplementedError()
 
     def SaveToModel(self, message):
         if self._tab:
