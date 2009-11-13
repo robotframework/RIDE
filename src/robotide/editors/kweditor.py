@@ -157,8 +157,12 @@ class KeywordEditorUi(grid.Grid):
 
     def _get_selected_rows(self):
         rows = self.GetSelectedRows()
-        if not rows and self._active_row is not None:
-            rows = [self._active_row]
+        # FIXME: please refactor
+        if not rows:
+            if self._active_row is not None:
+                rows = [self._active_row]
+            else:
+                rows = [self._active_coords.topleft.row]
         return rows
 
     def _set_cell_font(self, cell, color=None, underlined=False):

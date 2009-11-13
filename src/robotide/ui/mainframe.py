@@ -207,34 +207,6 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         self.Close()
         event.Skip()
 
-    # Edit Menu
-    #FIXME: How these should be handled? We should have one active component 
-    #always like tree, tab, etc.. -> plugin interface should have abstract 
-    #methods for handling the events.
-
-    def OnCut(self, event):
-        self._editor_panel.handle_event('cut')
-
-    def OnCopy(self, event):
-        self._editor_panel.handle_event('copy')
-
-    def OnPaste(self, event):
-        self._editor_panel.handle_event('paste')
-
-    def OnDelete(self, event):
-        self._editor_panel.handle_event('delete')
-
-    def OnUndo(self, event):
-        self._editor_panel.handle_event('undo')
-
-    def OnComment(self, event):
-        self._editor_panel.handle_event('comment')
-        event.Skip()
-
-    def OnUncomment(self, event):
-        self._editor_panel.handle_event('uncomment')
-        event.Skip()
-
     # Tools Menu
     
     def OnManagePlugins(self, event):

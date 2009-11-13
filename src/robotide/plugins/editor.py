@@ -74,25 +74,25 @@ class EditorPlugin(Plugin):
             self._create_editor_tab()
 
     def OnUndo(self):
-        raise NotImplementedError()
+        self._tab.editor.undo()
 
     def OnCut(self):
-        raise NotImplementedError()
+        self._tab.editor.cut()
 
     def OnCopy(self):
-        raise NotImplementedError()
+        self._tab.editor.copy()
 
     def OnPaste(self):
-        raise NotImplementedError()
+        self._tab.editor.paste()
 
     def OnDelete(self):
-        raise NotImplementedError()
+        self._tab.editor.delete()
 
     def OnComment(self):
-        raise NotImplementedError()
+        self._tab.editor.comment()
 
     def OnUncomment(self):
-        raise NotImplementedError()
+        self._tab.editor.uncomment()
 
     def SaveToModel(self, message):
         if self._tab:
@@ -158,7 +158,3 @@ class _EditorPanel(wx.Panel):
             return
         wx.MessageBox('To use Keyword Completion, type the beginning of the keyword '
                       'name into a cell and then choose this option.', 'Hint')
-
-    def handle_event(self, action):
-        if hasattr(self.editor, 'kweditor'):
-            getattr(self.editor.kweditor, action)()
