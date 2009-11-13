@@ -1,7 +1,7 @@
+from robotide.ui.menu import *
 import wx
 from wx.lib import flatnotebook as fnb
 
-from menu import *
 
 
 class ProtoFrame(wx.Frame):
