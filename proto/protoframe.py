@@ -11,7 +11,7 @@ class ProtoFrame(wx.Frame):
         self.mb = MenuBar(self)
         self.mb.register_menu_entry(MenuEntry('File', 'Event', self.OnEvent,
                                               shortcut='Alt-e'))
-        self.SetMenuBar(self.mb)
+        self.mb.register_to_frame(self)
         self.CreateStatusBar()
         splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
         splitter.SetMinimumPaneSize(50)

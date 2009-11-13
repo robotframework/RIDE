@@ -1,10 +1,10 @@
 import wx
 
 
-class MenuBar(wx.MenuBar):
+class MenuBar(object):
 
     def __init__(self, frame):
-        wx.MenuBar.__init__(self)
+        self._mb = wx.MenuBar()
         self._frame = frame
 
     def register_menu_entry(self, entry):
@@ -12,11 +12,14 @@ class MenuBar(wx.MenuBar):
         entry.bind_to_menu(menu, self._frame)
 
     def _get_or_create_menu(self, name):
-        position = self.FindMenu(name)
+        position = self._mb.FindMenu(name)
         if position == -1:
-            self.Append(wx.Menu(), name)
-            position = self.FindMenu(name)
-        return self.GetMenu(position)
+            self._mb.Append(wx.Menu(), name)
+            position = self._mb.FindMenu(name)
+        return self._mb.GetMenu(position)
+
+    def register_to_frame(self, frame):
+        frame.SetMenuBar(self._mb)
 
 
 class MenuEntry(object):
