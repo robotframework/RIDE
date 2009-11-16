@@ -73,25 +73,25 @@ class EditorPlugin(Plugin):
         if self._tab:
             self._create_editor_tab()
 
-    def OnUndo(self):
+    def OnUndo(self, event):
         self._tab.editor.undo()
 
-    def OnCut(self):
+    def OnCut(self, event):
         self._tab.editor.cut()
 
-    def OnCopy(self):
+    def OnCopy(self, event):
         self._tab.editor.copy()
 
-    def OnPaste(self):
+    def OnPaste(self, event):
         self._tab.editor.paste()
 
-    def OnDelete(self):
+    def OnDelete(self, event):
         self._tab.editor.delete()
 
-    def OnComment(self):
+    def OnComment(self, event):
         self._tab.editor.comment()
 
-    def OnUncomment(self):
+    def OnUncomment(self, event):
         self._tab.editor.uncomment()
 
     def SaveToModel(self, message):

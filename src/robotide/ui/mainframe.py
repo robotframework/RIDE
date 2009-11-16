@@ -192,7 +192,6 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         if path:
             self._default_dir = os.path.dirname(path)
             self.open_suite(path)
-        event.Skip()
 
     def OnSave(self, event):
         self._save(self._get_active_item())
@@ -227,7 +226,6 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
 
     def OnExit(self, event):
         self.Close()
-        event.Skip()
 
     # Tools Menu
 

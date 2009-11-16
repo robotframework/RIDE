@@ -186,6 +186,7 @@ class ActionDelegator(object):
     def __call__(self, event):
         for actor in self._actors:
             actor.act(event)
+        event.Skip()
 
 
 class Actor(object):
