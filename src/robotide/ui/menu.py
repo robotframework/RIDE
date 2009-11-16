@@ -138,9 +138,8 @@ class ToolBar(object):
         self._tb.Realize()
 
     def add_tool(self, entry):
-        tool = self._tb.AddLabelTool(entry.id, entry.name, entry.bitmap,
-                                     shortHelp=entry.name, longHelp=entry.doc)
-        self._frame.Bind(wx.EVT_TOOL, entry.action, source=tool)
+        self._tb.AddLabelTool(entry.id, entry.name, entry.bitmap,
+                              shortHelp=entry.name, longHelp=entry.doc)
 
 
 class ActionRegistry(object):
