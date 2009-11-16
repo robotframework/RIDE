@@ -23,15 +23,14 @@ class ActionRegisterer(object):
 
     def register_menu_entry(self, entry):
         self._menubar.register_menu_entry(entry)
+        self._toolbar.register_toolbar_entry(entry)
 
-    def register_actions(self, component, data, container=None):
-        for menuentry in ActionEntries(component, data, container):
-            self._menubar.register_menu_entry(menuentry)
-            if menuentry.bitmap:
-                self._toolbar.add_tool(menuentry)
+    def register_menu_entries(self, entries):
+        for entry in entries:
+            self.register_menu_entry(entry)
 
 
-def ActionEntries(component, data, container=None):
+def MenuEntries(data, component, container=None):
     menu = None
     for row in data.splitlines():
         if not row:
@@ -44,21 +43,20 @@ def ActionEntries(component, data, container=None):
 def Entry(component, menu, container, row):
     if is_separator(row):
         return MenuSeparator(menu)
-    return create_entries(component, menu, container, row)
+    return create_entry(component, menu, container, row)
 
 def is_separator(row):
     return row.startswith('---')
 
-def create_entries(component, menu, container, row):
+def create_entry(component, menu, container, row):
     tokens = [ t.strip() for t in row.split(',') ]
     tokens += [''] * (4-len(tokens))
-    name, doc, shortcut, bitmap =  tokens
+    name, doc, shortcut, icon =  tokens
     if name.startswith('!'):
         name = name[1:]
         container = None
     action = getattr(component, 'On%s' % name.replace(' ', ''))
-    bitmap = bitmap and wx.ArtProvider.GetBitmap(getattr(wx, bitmap), wx.ART_TOOLBAR, (16, 16)) or None
-    return MenuEntry(menu, name, action, container, shortcut, bitmap, doc)
+    return MenuEntry(menu, name, action, container, shortcut, icon, doc)
 
 
 class MenuBar(object):
@@ -86,10 +84,6 @@ class MenuBar(object):
         menu = self._get_or_create_menu(entry.menu_name)
         entry.insert_to_menu(menu, self._frame)
 
-    def register_menu_entries(self, entries):
-        for entry in entries:
-            self.register_menu_entry(entry)
-
     def _get_or_create_menu(self, name):
         position = self._mb.FindMenu(name)
         if position == -1:
@@ -99,16 +93,40 @@ class MenuBar(object):
         return self._mb.GetMenu(position)
 
 
+class ToolBar(object):
+
+    def __init__(self, frame):
+        self._tb = wx.ToolBar(frame)
+        self._tb.SetToolBitmapSize((16,16))
+        self._frame = frame
+        self._frame.SetToolBar(self._tb)
+        self._tb.Realize()
+        self._icons = []
+
+    def register_toolbar_entry(self, entry):
+        if entry.icon and entry.icon not in self._icons:
+            self._tb.AddLabelTool(entry.id, entry.name, entry.icon,
+                                  shortHelp=entry.name, longHelp=entry.doc)
+            self._icons.append(entry.icon)
+
+
 class MenuEntry(object):
 
     def __init__(self, menu_name, name, action, container=None, shortcut=None,
-                 bitmap=None, doc=''):
+                 icon=None, doc=''):
         self.id = wx.NewId()
         self.menu_name = menu_name
         self.name = shortcut and '%s\t%s' % (name, shortcut) or name
         self.doc = doc
-        self.bitmap = bitmap
+        self.icon = self._get_icon(icon)
         self.action = self._get_action_for(shortcut, action, container)
+
+    def _get_icon(self, icon):
+        if not icon:
+            return None
+        if isinstance(icon, basestring):
+            return wx.ArtProvider.GetBitmap(getattr(wx, icon), wx.ART_TOOLBAR, (16, 16))
+        return icon
 
     def _get_action_for(self, shortcut, action, container):
         key = shortcut or (self.menu_name, self.name)
@@ -119,7 +137,10 @@ class MenuEntry(object):
     def insert_to_menu(self, menu, frame):
         if self._is_not_in_menu(menu):
             menu.Append(self.id, self.name, self.doc)
+            # This binds also the possible tool bar action for this entry
             frame.Bind(wx.EVT_MENU, self.action, id=self.id)
+        else:
+            self.id = menu.FindItem(self.name)
 
     def _is_not_in_menu(self, menu):
         id = menu.FindItem(self.name)
@@ -132,24 +153,10 @@ class MenuSeparator(object):
 
     def __init__(self, menu):
         self.menu_name = menu
-        self.bitmap = None
+        self.icon = None
 
     def insert_to_menu(self, menu, frame):
         menu.AppendSeparator()
-
-
-class ToolBar(object):
-
-    def __init__(self, frame):
-        self._tb = wx.ToolBar(frame)
-        self._tb.SetToolBitmapSize((16,16))
-        self._frame = frame
-        self._frame.SetToolBar(self._tb)
-        self._tb.Realize()
-
-    def add_tool(self, entry):
-        self._tb.AddLabelTool(entry.id, entry.name, entry.bitmap,
-                              shortHelp=entry.name, longHelp=entry.doc)
 
 
 class ActionRegistry(object):

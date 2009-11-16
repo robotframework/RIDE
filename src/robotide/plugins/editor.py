@@ -16,7 +16,7 @@ import wx
 
 from robotide.editors import Editor
 from robotide.ui.dialogs import AboutDialog
-from robotide.ui import ActionEntries
+from robotide.ui import MenuEntries
 from robotide import utils
 from robotide.publish import RideTreeSelection, RideNotebookTabchange,\
                            RideSavingDatafile
@@ -50,8 +50,7 @@ class EditorPlugin(Plugin):
 
     def activate(self):
         self._create_editor_tab()
-        for menuentry in ActionEntries(self, edit_actions, self._tab):
-            self.register_menu_entry(menuentry)
+        self.register_menu_entries(MenuEntries(edit_actions, self, self._tab))
         #FIXME: Should we add the menu item?
         #('Keyword Completion', 'Show available keywords','', 'Ctrl-Space')
         self.subscribe(self.SaveToModel, RideNotebookTabchange)

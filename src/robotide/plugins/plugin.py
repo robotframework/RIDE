@@ -81,7 +81,10 @@ class Plugin(object):
         return menubar.GetMenu(menu_pos)
 
     def register_menu_entry(self, entry):
-        self._frame.register_menu_entry(entry)
+        self._frame.actions.register_menu_entry(entry)
+
+    def register_menu_entries(self, entries):
+        self._frame.actions.register_menu_entries(entries)
 
     def add_to_menu(self, menu_name, item_name, index=-1, 
                     action=None, item_doc='', enabled=True):

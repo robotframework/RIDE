@@ -26,7 +26,7 @@ from robotide.publish import RideNotebookTabchange, RideSavingDatafile,\
 from robotide import utils
 from robotide import context
 
-from menu import ActionRegisterer, MenuBar, ToolBar
+from menu import ActionRegisterer, MenuBar, ToolBar, MenuEntries
 from dialogs import KeywordSearchDialog, AboutDialog
 from filedialogs import NewProjectDialog, NewResourceDialog, ChangeFormatDialog
 from pluginmanager import PluginManager
@@ -78,21 +78,16 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         # at least two tabs there's no point in taking up the screen
         # real estate. Eventually this should be a user preference.
         self.notebook = NoteBook(splitter, self._application)
-        self.tree = Tree(splitter, self._actions)
+        self.tree = Tree(splitter, self.actions)
         splitter.SplitVertically(self.tree, self.notebook, 300)
 
     def _create_decorations(self):
-        menubar = MenuBar(self)
-        toolbar = ToolBar(self)
-        self._actions = ActionRegisterer(menubar, toolbar)
-        self._actions.register_actions(self, _menudata)
+        self.actions = ActionRegisterer(MenuBar(self), ToolBar(self))
+        self.actions.register_menu_entries(MenuEntries(_menudata, self))
         self.CreateStatusBar()
 
     def populate_tree(self, model):
         self.tree.populate_tree(model)
-
-    def register_menu_entry(self, entry):
-        self._actions.register_menu_entry(entry)
 
     def show_page(self, panel):
         """Shows the notebook page that contains the given panel.
