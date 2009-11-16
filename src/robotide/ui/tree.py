@@ -22,21 +22,29 @@ from robotide.editors import RideEventHandler
 from robotide.model.tcuk import UserKeyword
 from robotide.model.files import _TestSuite
 from robotide.publish import RideTreeSelection, RideDatafileEdited, PUBLISHER
+from robotide import utils
 
 from images import TreeImageList
-from robotide import utils
 from filedialogs import AddSuiteDialog, ChangeFormatDialog
 from namedialogs import TestCaseNameDialog, UserKeywordNameDialog
 
 
-class SuiteTree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
+navigate_actions ="""
+&Navigate
+Go Back, Go back to previous location in tree, Alt-Left, ART_GO_BACK
+Go Forward, Go forward to next location in tree, Alt-Right, ART_GO_FORWARD
+"""
 
-    def __init__(self, parent):
+
+class Tree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
+
+    def __init__(self, parent, action_registry):
         style = wx.TR_DEFAULT_STYLE
         if wx.PlatformInfo[0] == '__WXMSW__':
             style = style|wx.TR_EDIT_LABELS
         treemixin.DragAndDrop.__init__(self, parent, style=style)
         self._root = None
+        action_registry.register_actions(self, navigate_actions, self)
         self.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnSelChanged)
         self.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDown)
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnRightClick)
@@ -254,12 +262,12 @@ class SuiteTree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
         node = self._create_node_with_handler(self.GetItemParent(second), dataitem, second)
         return node
 
-    def go_back(self):
+    def OnGoBack(self, event):
         node = self._history.back()
         if node:
             self.SelectItem(node)
 
-    def go_forward(self):
+    def OnGoForward(self, event):
         node = self._history.forward()
         if node:
             self.SelectItem(node)
