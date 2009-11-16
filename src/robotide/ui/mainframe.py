@@ -110,8 +110,8 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         page = self.notebook.GetPageIndex(panel)
         self.notebook.DeletePage(page)
 
-    def _get_active_item(self):
-        return self.tree.get_active_item()
+    def get_active_datafile(self):
+        return self.tree.get_active_datafile()
 
     def OnClose(self, event):
         self._save_mainframe_size_and_position()
@@ -194,7 +194,7 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
             self.open_suite(path)
 
     def OnSave(self, event):
-        self._save(self._get_active_item())
+        self._save(self.get_active_datafile())
 
     def OnSaveAll(self, event):
         self._save()

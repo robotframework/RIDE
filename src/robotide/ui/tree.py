@@ -310,17 +310,13 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
             item, cookie = self.GetNextChild(node, cookie)
         return None
 
-    def get_active_item(self):
+    def get_active_datafile(self):
         node = self.GetSelection()
         if not node or node in (self._resource_root, self._root):
             return None
         while node not in self._datafile_nodes:
             node = self.GetItemParent(node)
         return self.GetItemPyData(node).item
-
-    def _get_active_item(self):
-        #TODO: Refactor to use the public version
-        return self.get_active_item()
 
     def OnSelChanged(self, event):
         node = event.Item
