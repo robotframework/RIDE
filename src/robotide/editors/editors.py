@@ -118,7 +118,7 @@ class TestCaseFileEditor(ResourceFileEditor):
 class InitFileEditor(TestCaseFileEditor):
 
     def _get_source(self):
-        return os.path.split(self.item.source)[0] + os.sep
+        return self.item.get_dir_path()
 
 
 class _SettingEditor(wx.Panel, RideEventHandler):
