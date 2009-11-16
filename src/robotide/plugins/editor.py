@@ -50,7 +50,7 @@ class EditorPlugin(Plugin):
 
     def activate(self):
         self._create_editor_tab()
-        for menuentry, _ in ActionEntries(self, edit_actions, self._tab):
+        for menuentry in ActionEntries(self, edit_actions, self._tab):
             self._frame.register_menu_entry(menuentry)
         #FIXME: Should we add the menu item?
         #('Keyword Completion', 'Show available keywords','', 'Ctrl-Space')
