@@ -12,7 +12,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-
 import os
 import wx
 try:
@@ -27,12 +26,34 @@ from robotide.publish import RideNotebookTabchange, RideSavingDatafile,\
 from robotide import utils
 from robotide import context
 
-from menu import MenuBar
-from menuentries import MenuEntries
+from menu import ActionRegisterer, MenuBar, ToolBar
 from dialogs import KeywordSearchDialog, AboutDialog
 from filedialogs import NewProjectDialog, NewResourceDialog, ChangeFormatDialog
 from pluginmanager import PluginManager
-from suitetree import SuiteTree
+from tree import Tree
+
+
+_menudata = """
+File
+!Open, Open file containing tests, Ctrl-O, ART_FILE_OPEN
+!Open Directory, Open dir containing Robot files, Shift-Ctrl-O, ART_FOLDER_OPEN
+!Open Resource, Open a resource file, Ctrl-R
+---
+!New Suite, Create a new top level suite, Ctrl-N
+!New Resource, Create New Resource File, Ctrl-Shift-N
+---
+!Save, Save current suite or resource, Ctrl-S, ART_FILE_SAVE
+!Save All, Save all changes, Ctrl-Shift-S
+---
+!Exit, Exit RIDE, Ctrl-Q
+
+Tools
+!Manage Plugins, Please Implement
+!Search Keywords, Search keywords from libraries and resources 
+
+Help
+!About, Information about RIDE
+"""
 
 
 class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
@@ -57,20 +78,21 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         # at least two tabs there's no point in taking up the screen
         # real estate. Eventually this should be a user preference.
         self.notebook = NoteBook(splitter, self._application)
-        self.tree = SuiteTree(splitter)
+        self.tree = Tree(splitter, self._actions)
         splitter.SplitVertically(self.tree, self.notebook, 300)
 
     def _create_decorations(self):
-        self._menubar = MenuBar(self)
-        self._menubar.register_menu_entries(MenuEntries(self))
-        self._menubar.register_to_frame(self)
+        menubar = MenuBar(self)
+        toolbar = ToolBar(self)
+        self._actions = ActionRegisterer(menubar, toolbar)
+        self._actions.register_actions(self, _menudata)
         self.CreateStatusBar()
 
     def populate_tree(self, model):
         self.tree.populate_tree(model)
 
     def register_menu_entry(self, entry):
-        self._menubar.register_menu_entry(entry)
+        self._actions.register_menu_entry(entry)
 
     def show_page(self, panel):
         """Shows the notebook page that contains the given panel.
@@ -133,14 +155,14 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
             self._application.open_resource(dlg.get_path())
         dlg.Destroy()
 
-    def OnOpen(self):
+    def OnOpen(self, event):
         if not self._application.ok_to_open_new():
             return
         path = self._get_path()
         if path:
             self.open_suite(path)
 
-    def OnOpenResource(self):
+    def OnOpenResource(self, event):
         path = self._get_path()
         if path:
             self._application.open_resource(path)
@@ -208,7 +230,7 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         event.Skip()
 
     # Tools Menu
-    
+
     def OnManagePlugins(self, event):
         self._plugin_manager.show(self._application.get_plugins())
 

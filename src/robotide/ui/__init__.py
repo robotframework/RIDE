@@ -13,5 +13,4 @@
 #  limitations under the License.
 
 from mainframe import RideFrame
-from menu import MenuEntry
-from menuentries import MenuEntries
+from menu import MenuEntry, ActionEntries

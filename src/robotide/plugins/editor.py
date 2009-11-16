@@ -16,7 +16,7 @@ import wx
 
 from robotide.editors import Editor
 from robotide.ui.dialogs import AboutDialog
-from robotide.ui import MenuEntries
+from robotide.ui import ActionEntries
 from robotide import utils
 from robotide.publish import RideTreeSelection, RideNotebookTabchange,\
                            RideSavingDatafile
@@ -25,18 +25,18 @@ from plugin import Plugin
 
 edit_menu_data ="""
 Edit
-*Undo, Undo last modification, Ctrl-Z
+Undo, Undo last modification, Ctrl-Z
 ---
-*Cut, Cut from selected cells, Ctrl-X
-*Copy, Copy from selected cells, Ctrl-C
-*Paste, Paste to selected cell, Ctrl-V
-*Delete, Delete from selected cells, Del
+Cut, Cut from selected cells, Ctrl-X
+Copy, Copy from selected cells, Ctrl-C
+Paste, Paste to selected cell, Ctrl-V
+Delete, Delete from selected cells, Del
 ---
-*Comment, Comment selected rows, Ctrl-3
-*Uncomment, Uncomment selected rows, Ctrl-4
+Comment, Comment selected rows, Ctrl-3
+Uncomment, Uncomment selected rows, Ctrl-4
 
 Tools
-Open Editor, Opens suite/resource editor
+!Open Editor, Opens suite/resource editor
 """
 
 
@@ -50,8 +50,8 @@ class EditorPlugin(Plugin):
 
     def activate(self):
         self._create_editor_tab()
-        for entry in MenuEntries(self, edit_menu_data, self._tab):
-            self._frame.register_menu_entry(entry)
+        for menuentry, _ in ActionEntries(self, edit_menu_data, self._tab):
+            self._frame.register_menu_entry(menuentry)
         #FIXME: Should we add the menu item?
         #('Keyword Completion', 'Show available keywords','', 'Ctrl-Space')
         self.subscribe(self.SaveToModel, RideNotebookTabchange)
