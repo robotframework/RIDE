@@ -20,7 +20,7 @@ from robotide import context
 class eventhandlertype(type):
     def __new__(cls, name, bases, dict):
         def mod_time_wrapper(method):
-            def wrapped(self, event=None):
+            def wrapped(self, event):
                 if self._can_be_edited(event):
                     method(self, event)
             return wrapped
