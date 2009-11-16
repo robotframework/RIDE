@@ -30,7 +30,7 @@ from namedialogs import TestCaseNameDialog, UserKeywordNameDialog
 
 
 navigate_actions ="""
-&Navigate
+Navigate
 Go Back, Go back to previous location in tree, Alt-Left, ART_GO_BACK
 Go Forward, Go forward to next location in tree, Alt-Right, ART_GO_FORWARD
 """

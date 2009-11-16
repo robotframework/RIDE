@@ -66,12 +66,21 @@ class MenuBar(object):
     def __init__(self, frame):
         self._mb = wx.MenuBar()
         self._frame = frame
+        self._accelerators = []
         self._create_default_menus()
         self._frame.SetMenuBar(self._mb)
 
     def _create_default_menus(self):
-        for name in ['&File', '&Edit', '&Tools', '&Help']:
-            self._mb.Append(wx.Menu(), name)
+        for name in ['File', 'Edit', 'Tools', 'Help']:
+            self._mb.Append(wx.Menu(), self._get_name_with_accelerator(name))
+
+    def _get_name_with_accelerator(self, name):
+        name = name.replace('&', '')
+        for pos, char in enumerate(name.upper()):
+            if char not in self._accelerators:
+                self._accelerators.append(char)
+                return '%s&%s' % (name[:pos], name[pos:])
+        return name 
 
     def register_menu_entry(self, entry):
         menu = self._get_or_create_menu(entry.menu_name)
@@ -84,7 +93,8 @@ class MenuBar(object):
     def _get_or_create_menu(self, name):
         position = self._mb.FindMenu(name)
         if position == -1:
-            self._mb.Insert(self._mb.FindMenu('Help'), wx.Menu(), name)
+            self._mb.Insert(self._mb.FindMenu('Help'), wx.Menu(),
+                            self._get_name_with_accelerator(name))
             position = self._mb.FindMenu(name)
         return self._mb.GetMenu(position)
 
