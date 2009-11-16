@@ -105,8 +105,7 @@ class ToolBar(object):
 
     def register_toolbar_entry(self, entry):
         if entry.icon and entry.icon not in self._icons:
-            self._tb.AddLabelTool(entry.id, entry.name, entry.icon,
-                                  shortHelp=entry.name, longHelp=entry.doc)
+            entry.insert_to_toolbar(self._tb)
             self._icons.append(entry.icon)
 
 
@@ -135,18 +134,23 @@ class MenuEntry(object):
         return action_delegator
 
     def insert_to_menu(self, menu, frame):
-        if self._is_not_in_menu(menu):
+        id = self._get_existing_id(menu)
+        if id is None:
             menu.Append(self.id, self.name, self.doc)
             # This binds also the possible tool bar action for this entry
             frame.Bind(wx.EVT_MENU, self.action, id=self.id)
         else:
-            self.id = menu.FindItem(self.name)
+            self.id = id
 
-    def _is_not_in_menu(self, menu):
+    def _get_existing_id(self, menu):
         id = menu.FindItem(self.name)
-        if id == -1:
-            return True
-        return menu.FindItemById(id).GetItemLabel() != self.name
+        if id != -1 and menu.FindItemById(id).GetItemLabel() == self.name:
+            return id
+        return None
+
+    def insert_to_toolbar(self, toolbar):
+        toolbar.AddLabelTool(self.id, self.name, self.icon,
+                             shortHelp=self.name, longHelp=self.doc)
 
 
 class MenuSeparator(object):
