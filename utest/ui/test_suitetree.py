@@ -30,7 +30,7 @@ st.FakeDirectorySuiteHandler = st.FakeUserKeywordHandler = \
 st.Editor = lambda *args: _FakeEditor()
 from robotide.ui.suitetree import SuiteTree
 SuiteTree._show_correct_editor = lambda self, x:None
-SuiteTree._get_active_item = lambda self: None
+SuiteTree.get_active_datafile = lambda self: None
 
 
 class _FakeMainFrame(wx.Frame):
@@ -173,7 +173,7 @@ class TestNodeSearchAndSelection(_BaseSuiteTreeTest):
 
     def _select_node_and_assert_parent(self, label, expected_parent_name):
         self._select_node(label)
-        suite_or_resource = self._tree.get_active_item()
+        suite_or_resource = self._tree.get_active_datafile()
         assert_equals(suite_or_resource.name, expected_parent_name)
 
 

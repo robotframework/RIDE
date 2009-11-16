@@ -348,7 +348,7 @@ class InitFile(_TestSuite):
         if data.initfile is not None:
             self.source = data.initfile
         else:
-            self.source = os.path.join(data.source)
+            self.source = data.source
         self._stat = self._get_stat(self.source)
 
     def set_format(self, format):
@@ -369,6 +369,7 @@ class InitFile(_TestSuite):
         return os.path.dirname(self.source)
 
     def _set_source(self, path, parent):
+        #FIXME: Should there be also __init__.txt
         path = path.replace('__init__.html', '').replace('__init__.tsv', '')
         if parent:
             owndir = os.path.split(os.path.dirname(self.source))[1]

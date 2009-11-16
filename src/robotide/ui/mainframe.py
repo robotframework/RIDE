@@ -12,7 +12,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-
 import os
 import wx
 try:
@@ -27,11 +26,34 @@ from robotide.publish import RideNotebookTabchange, RideSavingDatafile,\
 from robotide import utils
 from robotide import context
 
-from actions import Actions
+from menu import ActionRegisterer, MenuBar, ToolBar
 from dialogs import KeywordSearchDialog, AboutDialog
 from filedialogs import NewProjectDialog, NewResourceDialog, ChangeFormatDialog
 from pluginmanager import PluginManager
-from suitetree import SuiteTree
+from tree import Tree
+
+
+_menudata = """
+File
+!Open, Open file containing tests, Ctrl-O, ART_FILE_OPEN
+!Open Directory, Open dir containing Robot files, Shift-Ctrl-O, ART_FOLDER_OPEN
+!Open Resource, Open a resource file, Ctrl-R
+---
+!New Suite, Create a new top level suite, Ctrl-N
+!New Resource, Create New Resource File, Ctrl-Shift-N
+---
+!Save, Save current suite or resource, Ctrl-S, ART_FILE_SAVE
+!Save All, Save all changes, Ctrl-Shift-S
+---
+!Exit, Exit RIDE, Ctrl-Q
+
+Tools
+!Manage Plugins, Please Implement
+!Search Keywords, Search keywords from libraries and resources 
+
+Help
+!About, Information about RIDE
+"""
 
 
 class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
@@ -56,20 +78,21 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         # at least two tabs there's no point in taking up the screen
         # real estate. Eventually this should be a user preference.
         self.notebook = NoteBook(splitter, self._application)
-        self.tree = SuiteTree(splitter) #, self._editor_panel)
+        self.tree = Tree(splitter, self._actions)
         splitter.SplitVertically(self.tree, self.notebook, 300)
 
     def _create_decorations(self):
-        # We need to define some standard toolbar buttons. For 
-        # now, create an empty toolbar so plugins have a place to
-        # put their buttons.
-        actions = Actions(self)
-        self.SetMenuBar(actions.get_menubar())
-        self.SetToolBar(actions.get_toolbar())
+        menubar = MenuBar(self)
+        toolbar = ToolBar(self)
+        self._actions = ActionRegisterer(menubar, toolbar)
+        self._actions.register_actions(self, _menudata)
         self.CreateStatusBar()
 
     def populate_tree(self, model):
         self.tree.populate_tree(model)
+
+    def register_menu_entry(self, entry):
+        self._actions.register_menu_entry(entry)
 
     def show_page(self, panel):
         """Shows the notebook page that contains the given panel.
@@ -87,8 +110,8 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         page = self.notebook.GetPageIndex(panel)
         self.notebook.DeletePage(page)
 
-    def _get_active_item(self):
-        return self.tree.get_active_item()
+    def get_active_datafile(self):
+        return self.tree.get_active_datafile()
 
     def OnClose(self, event):
         self._save_mainframe_size_and_position()
@@ -169,10 +192,9 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         if path:
             self._default_dir = os.path.dirname(path)
             self.open_suite(path)
-        event.Skip()
 
     def OnSave(self, event):
-        self._save(self._get_active_item())
+        self._save(self.get_active_datafile())
 
     def OnSaveAll(self, event):
         self._save()
@@ -204,52 +226,15 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
 
     def OnExit(self, event):
         self.Close()
-        event.Skip()
-
-    # Edit Menu
-    #FIXME: How these should be handled? We should have one active component 
-    #always like tree, tab, etc.. -> plugin interface should have abstract 
-    #methods for handling the events.
-
-    def OnCut(self, event):
-        self._editor_panel.handle_event('cut')
-
-    def OnCopy(self, event):
-        self._editor_panel.handle_event('copy')
-
-    def OnPaste(self, event):
-        self._editor_panel.handle_event('paste')
-
-    def OnDelete(self, event):
-        self._editor_panel.handle_event('delete')
-
-    def OnUndo(self, event):
-        self._editor_panel.handle_event('undo')
-
-    def OnComment(self, event):
-        self._editor_panel.handle_event('comment')
-        event.Skip()
-
-    def OnUncomment(self, event):
-        self._editor_panel.handle_event('uncomment')
-        event.Skip()
 
     # Tools Menu
-    
+
     def OnManagePlugins(self, event):
         self._plugin_manager.show(self._application.get_plugins())
 
     def OnSearchKeywords(self, event):
         if not self._kw_search_dialog.IsShown():
             self._kw_search_dialog.Show()
-
-    # Navigate Menu
-
-    def OnGoBack(self, event):
-        self.tree.go_back()
-
-    def OnGoForward(self, event):
-        self.tree.go_forward()
 
     # About Menu
 
@@ -280,6 +265,7 @@ class NoteBook(fnb.FlatNotebook):
         newindex = event.GetSelection()
         if newindex <= self.GetPageCount() - 1:
             newtitle = self.GetPageText(event.GetSelection())
+            self.GetPage(event.GetSelection()).SetFocus()
         else:
             newtitle = None
         RideNotebookTabchange(oldtab=oldtitle, newtab=newtitle).publish()

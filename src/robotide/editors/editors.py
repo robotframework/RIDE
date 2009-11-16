@@ -26,9 +26,9 @@ from listeditor import ListEditor
 from editordialogs import *
 
 
-def Editor(item, editor_panel): #, tree):
+def Editor(item, editor_panel):
     editor_class = globals()[item.__class__.__name__ + 'Editor']
-    return editor_class(editor_panel, item) #, tree)
+    return editor_class(editor_panel, item)
 
 
 def dialog_from_class(obj):
@@ -38,7 +38,7 @@ def dialog_from_class(obj):
 class _RobotTableEditor(wx.Panel):
     title = None
 
-    def __init__(self, parent, item): #, tree):
+    def __init__(self, parent, item):
         wx.Panel.__init__(self, parent)
         self.Show(False)   
         self.sizer = wx.BoxSizer(wx.VERTICAL)
@@ -47,18 +47,16 @@ class _RobotTableEditor(wx.Panel):
             self.sizer.Add(self._create_header(self.title), 0, wx.ALL, 5)
             self.sizer.Add((0,10))
         self.item = item
-#        self.tree = tree
         self._populate()
-
-#    def view(self):
-#        self.GetParent().set_editor(self)
 
     def close(self):
         self.Show(False)
-    
+
     def save(self):
         pass
-    
+
+    undo = cut = copy = paste = delete = comment = uncomment = save
+
     def _create_header(self, text):
         header = wx.StaticText(self, -1, text)
         header.SetFont(wx.Font(12, wx.SWISS, wx.NORMAL, wx.BOLD))
@@ -70,8 +68,8 @@ class _RobotTableEditor(wx.Panel):
                 editor_class = _DocumentationEditor
             else:
                 editor_class = _SettingEditor
-            editor = editor_class(self, setting) #, self.tree)
-            self.sizer.Add(editor, 0, wx.ALL|wx.EXPAND, 1)        
+            editor = editor_class(self, setting)
+            self.sizer.Add(editor, 0, wx.ALL|wx.EXPAND, 1)
 
 
 class ResourceFileEditor(_RobotTableEditor):
@@ -95,13 +93,13 @@ class ResourceFileEditor(_RobotTableEditor):
                                       context.SETTING_ROW_HEIGTH)))
         sizer.Add(wx.StaticText(self, label=source))
         return sizer
-     
+
     def _add_import_settings(self):
-        editor = ImportSettingListEditor(self, self.item.settings.imports) #, self.tree)
+        editor = ImportSettingListEditor(self, self.item.settings.imports)
         self.sizer.Add(editor, 1, wx.EXPAND)
 
     def _add_variable_table(self):
-        editor = VariablesListEditor(self, self.item.variables) #, self.tree)
+        editor = VariablesListEditor(self, self.item.variables)
         self.sizer.Add(editor, 1, wx.EXPAND)
 
 
@@ -113,23 +111,22 @@ class TestCaseFileEditor(ResourceFileEditor):
         self._add_metadata()
 
     def _add_metadata(self):
-        editor = MetadataListEditor(self, self.item.settings.metadata) #, self.tree)
+        editor = MetadataListEditor(self, self.item.settings.metadata)
         self.sizer.Add(editor, 1, wx.EXPAND)
 
 
 class InitFileEditor(TestCaseFileEditor):
 
     def _get_source(self):
-        return os.path.split(self.item.source)[0] + os.sep
+        return self.item.get_dir_path()
 
 
 class _SettingEditor(wx.Panel, RideEventHandler):
-    
-    def __init__(self, parent, item): #, tree):
+
+    def __init__(self, parent, item):
         wx.Panel.__init__(self, parent)
         self._item = item
         self._datafile = parent.item.get_datafile()
-#        self.tree = tree
         self._create_controls(utils.name_from_class(item))
         self._dialog = dialog_from_class(item)
         self._editing = False
@@ -169,20 +166,19 @@ class _SettingEditor(wx.Panel, RideEventHandler):
         if selection[0] == selection[1] and not self._editing:
             wx.CallAfter(self.OnEdit, event)
         event.Skip()
-        
+
     def _update_and_notify(self):
         self._update_value()
         if not self._datafile.dirty:
             self._datafile.dirty = True
             #FIXME: We need to decide whether we want to expose the model object 
             #or subset of those attributes 
-            # self.tree.set_dirty(self._datafile)
             RideDatafileEdited(datafile=self._datafile).publish()
-        
+
     def OnClear(self, event):
         self._item.clear()
         self._update_and_notify()
-        
+
     def _update_value(self):
         if self._item.active():
             self._value_display.SetBackgroundColour('white')
@@ -191,17 +187,16 @@ class _SettingEditor(wx.Panel, RideEventHandler):
             self._value_display.Clear()
             self._value_display.SetBackgroundColour('light grey')
 
-    def _get_active_item(self):
+    def get_active_datafile(self):
         return self._datafile
 
 
 class _DocumentationEditor(_SettingEditor):
 
-    def __init__(self, parent, item): #, tree):
+    def __init__(self, parent, item):
         wx.Panel.__init__(self, parent)
         self._item = item
         self._datafile = parent.item.get_datafile()
-#        self.tree = tree
         self._create_controls('Documentation')
 
     def _get_value_display(self):
@@ -242,7 +237,7 @@ class TestCaseEditor(_RobotTableEditor):
         sizer.Add(utils.create_button(self, 'Add Column', kweditor.OnInsertCol),
                                       0, wx.ALL, 2)
         self.sizer.Add(sizer)
-    
+
     def _create_kweditor(self):
         self.kweditor = KeywordEditor(self, self.item.keywords)
         self._create_add_buttons(self.kweditor)
@@ -251,7 +246,6 @@ class TestCaseEditor(_RobotTableEditor):
     def set_dirty(self):
         self.item.datafile.set_dirty()
         RideDatafileEdited(datafile=self.item.datafile).publish()
-#        self.tree.set_dirty(self.item.datafile)
 
     def Show(self, show):
         if hasattr(self, 'kweditor') and not show:
@@ -261,10 +255,28 @@ class TestCaseEditor(_RobotTableEditor):
     def close(self):
         self.Show(False)
         self.kweditor.save()
-    
+
     def save(self):
         self.kweditor.save()
-      
+
+    def cut(self):
+        self.kweditor.cut()
+
+    def copy(self):
+        self.kweditor.copy()
+
+    def paste(self):
+        self.kweditor.paste()
+
+    def delete(self):
+        self.kweditor.delete()
+
+    def comment(self):
+        self.kweditor.comment()
+
+    def uncomment(self):
+        self.kweditor.uncomment()
+
     def view(self):
         _RobotTableEditor.view(self)
         self.kweditor.SetFocus()
@@ -276,13 +288,12 @@ class UserKeywordEditor(TestCaseEditor):
 
 class _AbstractListEditor(ListEditor, RideEventHandler):
 
-    def __init__(self, parent, data): #, tree):
+    def __init__(self, parent, data):
         ListEditor.__init__(self, parent, self._titles, data)
-#        self.tree = tree
+        self._datafile = parent.item.get_datafile()
 
-    def _get_active_item(self):
-        return None
-#        return self.tree.get_active_item()
+    def get_active_datafile(self):
+        return self._datafile
 
 
 class VariablesListEditor(_AbstractListEditor):
