@@ -348,7 +348,7 @@ class InitFile(_TestSuite):
         if data.initfile is not None:
             self.source = data.initfile
         else:
-            self.source = os.path.join(data.source)
+            self.source = data.source
         self._stat = self._get_stat(self.source)
 
     def set_format(self, format):
