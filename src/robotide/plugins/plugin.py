@@ -80,9 +80,7 @@ class Plugin(object):
             raise AttributeError('Menu "%s" cannot be found from the menubar' % (name))
         return menubar.GetMenu(menu_pos)
 
-    def register_menu_entry(self, menu, name, action, container=None,
-                            shortcut=None, doc=''):
-        entry = MenuEntry(menu, name, action, container, shortcut, doc)
+    def register_menu_entry(self, entry):
         self._frame.register_menu_entry(entry)
 
     def add_to_menu(self, menu_name, item_name, index=-1, 
