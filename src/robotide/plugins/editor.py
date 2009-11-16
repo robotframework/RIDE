@@ -23,7 +23,7 @@ from robotide.publish import RideTreeSelection, RideNotebookTabchange,\
 from plugin import Plugin
 
 
-edit_menu_data ="""
+edit_actions ="""
 Edit
 Undo, Undo last modification, Ctrl-Z
 ---
@@ -50,7 +50,7 @@ class EditorPlugin(Plugin):
 
     def activate(self):
         self._create_editor_tab()
-        for menuentry, _ in ActionEntries(self, edit_menu_data, self._tab):
+        for menuentry, _ in ActionEntries(self, edit_actions, self._tab):
             self._frame.register_menu_entry(menuentry)
         #FIXME: Should we add the menu item?
         #('Keyword Completion', 'Show available keywords','', 'Ctrl-Space')
