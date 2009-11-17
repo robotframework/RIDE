@@ -109,18 +109,16 @@ class Plugin(object):
         self.__frame.open_suite(path)
 
     def subscribe(self, listener, *topics):
-        # FIXME: rewrite documentation to include event objects
-        """Subscribe to notifications for the given event.
+        """Subscribe to notifications for the given topic.
 
-        A event is a dot-separated string (eg: "core.open_suite") or
-        a tuple ("core","open_suite") representing a hierarchy. All
-        publications at or below the given hierarchy will call the
-        given function (ie: subscribing to ("core") will cause the
-        function to be called for ("core"), ("core","anything"), etc.
+        A topic is a dot-separated string (e.g.: "ride.notebook.tabchange") or
+        a reference to the corresponding message class (e.g.
+        RideNotebookTabchange).
 
-        This just wraps wxPython's built-in Publisher object, so that plugins
-        need not be changed in case the underlying message passing mechanism
-        is changed later.
+        The topic represents a hierarchy, and all publications at or below the
+        given hierarchy will call the given function (i.e.: subscribing to
+        'Ride' or RideMessage will cause the function to be called for 'Ride',
+        'Ride.anything' etc.)
         """
         for topic in topics:
             PUBLISHER.subscribe(listener, topic, key=self)
