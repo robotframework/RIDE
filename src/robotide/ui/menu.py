@@ -29,6 +29,9 @@ class ActionRegisterer(object):
         for entry in entries:
             self.register_menu_entry(entry)
 
+    def unregister_menu_entry(self, entry):
+        self._menubar.remove_menu_entry(entry)
+
 
 def MenuEntries(data, component, container=None):
     menu = None
@@ -65,12 +68,18 @@ class MenuBar(object):
         self._mb = wx.MenuBar()
         self._frame = frame
         self._accelerators = []
+        self._menus =[]
         self._create_default_menus()
         self._frame.SetMenuBar(self._mb)
 
     def _create_default_menus(self):
         for name in ['File', 'Edit', 'Tools', 'Help']:
-            self._mb.Append(wx.Menu(), self._get_name_with_accelerator(name))
+            menu = Menu(name, self._frame)
+            self._append(menu)
+
+    def _append(self, menu):
+        self._mb.Append(menu._menu, self._get_name_with_accelerator(menu.name))
+        self._menus.append(menu)
 
     def _get_name_with_accelerator(self, name):
         name = name.replace('&', '')
@@ -82,15 +91,56 @@ class MenuBar(object):
 
     def register_menu_entry(self, entry):
         menu = self._get_or_create_menu(entry.menu_name)
-        entry.insert_to_menu(menu, self._frame)
+        menu.add_menu_item(entry)
+
+    def remove_menu_entry(self, entry):
+        menu = self._find_menu(entry.menu_name)
+        menu.remove_menu_item(entry)
 
     def _get_or_create_menu(self, name):
-        position = self._mb.FindMenu(name)
-        if position == -1:
-            self._mb.Insert(self._mb.FindMenu('Help'), wx.Menu(),
-                            self._get_name_with_accelerator(name))
-            position = self._mb.FindMenu(name)
-        return self._mb.GetMenu(position)
+        menu = self._find_menu(name)
+        if menu:
+            return menu
+        return self._create_menu(name)
+
+    def _find_menu(self, name):
+        for menu in self._menus:
+            if menu.name == name:
+                return menu
+        return None
+
+    def _create_menu(self, name):
+        menu = Menu(name, self._frame)
+        self._insert(menu)
+        return menu
+
+    def _insert(self, menu):
+        index = self._mb.FindMenu('Help')
+        self._mb.Insert(index, menu._menu, menu.name)
+        self._menus.insert(index, menu)
+
+
+class Menu(object):
+
+    def __init__(self, name, frame):
+        self._menu_item_entries = {}
+        self.name = name
+        self._menu = wx.Menu()
+        self._frame = frame
+
+    def add_menu_item(self, entry):
+        menu_item = entry.insert_to_menu(self._menu, self._frame)
+        if not menu_item in self._menu_item_entries:
+            self._menu_item_entries[menu_item] = []
+        self._menu_item_entries[menu_item].append(entry)
+
+    def remove_menu_item(self, entry):
+        menu_entry = self._menu.FindItemById(entry.id)
+        entries = self._menu_item_entries[menu_entry]
+        entries.remove(entry)
+        if not entries:
+            self._menu.RemoveItem(menu_entry)
+            del(self._menu_item_entries[menu_entry])
 
 
 class ToolBar(object):
@@ -162,8 +212,10 @@ class MenuEntry(_MenuEntry):
                 frame.Bind(wx.EVT_MENU, self.action, id=self.id)
             else:
                 menu_item.Enable(False)
+            return menu_item
         else:
             self.id = id
+            return menu.FindItemById(id)
 
     def _get_existing_id(self, menu):
         id = menu.FindItem(self.name)
@@ -184,7 +236,7 @@ class MenuSeparator(_MenuEntry):
         self.icon = None
 
     def insert_to_menu(self, menu, frame):
-        menu.InsertSeparator(self._get_insertion_index(menu))
+        return menu.InsertSeparator(self._get_insertion_index(menu))
 
 
 class ActionRegistry(object):
