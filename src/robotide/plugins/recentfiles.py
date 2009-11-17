@@ -30,7 +30,7 @@ class RecentFilesPlugin(Plugin):
 
     def activate(self):
         self._save_currently_loaded_suite()
-        self._update_file_menu()
+        self._add_recent_files_to_menu()
         self.subscribe(self.OnSuiteOpened, RideOpenSuite)
         # TODO: This plugin doesn't currently support resources
         # self._frame.subscribe(self.OnSuiteOpened, ('core', 'open','resource'))
