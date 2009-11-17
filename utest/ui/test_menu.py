@@ -1,52 +1,15 @@
 import unittest
-from robot.utils.asserts import assert_equals
-from robotide.ui.menu import MenuBar
-
-
-class MenuBarStub(MenuBar):
-    def __init__(self):
-        self._accelerators = []
-        self._registered_names = {}
-
-    def _get_name_with_accelerator(self, name):
-        normalized = name.replace('&', '').upper()
-        if normalized in self._registered_names:
-            return self._registered_names[normalized]
-        try:
-            name = self._use_given_accelerator(name)
-        except ValueError:
-            name = self._generate_accelerator(name)
-        self._registered_names[normalized] = name
-        return name
-    
-    def _use_given_accelerator(self, name):
-        index = name.find('&') + 1
-        if 0 < index < len(name) and self._accelerator_is_free(name[index]):
-            return name
-        raise ValueError
-
-    def _generate_accelerator(self, name):
-        name = name.replace('&', '')
-        for pos, char in enumerate(name):
-            if self._accelerator_is_free(char):
-                return '%s&%s' % (name[:pos], name[pos:])
-        return name
-
-    def _accelerator_is_free(self, char):
-        char = char.upper()
-        if char != ' ' and char not in self._accelerators:
-            self._accelerators.append(char)
-            return True
-        return False
+from robot.utils.asserts import assert_equals, assert_none
+from robotide.ui.menu import _NameBuilder
 
 
 class TestGetNameWithAccelerator(unittest.TestCase):
 
     def setUp(self):
-        self._mb = MenuBarStub()
+        self._nb = _NameBuilder()
 
     def _test(self, input, expected):
-        assert_equals(self._mb._get_name_with_accelerator(input), expected)
+        assert_equals(self._nb.get_name(input), expected)
 
     def test_use_first_free_char(self):
         self._test('File', '&File')
@@ -86,7 +49,13 @@ class TestGetNameWithAccelerator(unittest.TestCase):
 
     def test_ambersand_at_end_is_ignored(self):
         self._test('File&', '&File')
-        
+
+    def test_get_registered_name(self):
+        self._test('&File', '&File')
+        for name in 'F&ile', 'File', '&File', 'FI&LE', 'fil&e', 'file':
+            assert_equals(self._nb.get_registered_name(name), '&File')
+        assert_none(self._nb.get_registered_name('Non Existing'))
+
 
 if __name__ == '__main__':
     unittest.main()
