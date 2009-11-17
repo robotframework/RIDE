@@ -65,7 +65,7 @@ class RecentFilesPlugin(Plugin):
         return os.path.abspath(path)
 
     def _save_currently_loaded_suite(self):
-        model = self.get_model()
+        model = self.model
         if model and model.suite:
             self._add_to_recent_files(model.suite.source)
 

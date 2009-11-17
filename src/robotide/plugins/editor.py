@@ -107,10 +107,9 @@ class EditorPlugin(Plugin):
 
     def _create_tab(self, panel):
         if not panel:
-            notebook = self.get_notebook()
-            panel = _EditorPanel(notebook)
+            panel = _EditorPanel(self.notebook)
             self._bind_keys(panel)
-            notebook.AddPage(panel, 'Edit    ')
+            self.notebook.AddPage(panel, 'Edit    ')
         return panel
 
     def _get_welcome_editor(self, tab):

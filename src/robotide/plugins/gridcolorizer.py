@@ -26,8 +26,6 @@ class Colorizer(Plugin):
         settings  = {'comment_fg':'firebrick', 'keyword_fg':'blue',
                      'variable_fg':'forest green', 'default_fg':'black'}
         Plugin.__init__(self, application, default_settings=settings)
-        self._frame = self.get_frame()
-        self._notebook = self.get_notebook()
 
     def activate(self):
         self.subscribe(self.OnCellChanged, RideGridCellChanged)
