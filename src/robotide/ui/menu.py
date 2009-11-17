@@ -44,20 +44,14 @@ def MenuEntries(data, component, container=None):
         if not row:
             menu = None
         elif menu:
-            entries.append(Entry(component, menu, container, row))
+            entries.append(_create_entry(component, menu, container, row))
         else:
             menu = row
     return entries
 
-def Entry(component, menu, container, row):
-    if is_separator(row):
-        return MenuSeparator(menu)
-    return create_entry(component, menu, container, row)
-
-def is_separator(row):
-    return row.startswith('---')
-
-def create_entry(component, menu, container, row):
+def _create_entry(component, menu, container, row):
+    if row.startswith('---'):
+        return MenuSeparator(Menu)
     tokens = [ t.strip() for t in row.split(',') ]
     tokens += [''] * (4-len(tokens))
     name, doc, shortcut, icon =  tokens
