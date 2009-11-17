@@ -13,9 +13,7 @@
 #  limitations under the License.
 
 import inspect
-import wx
 
-from robotide.ui import MenuEntry
 from robotide.context import SETTINGS
 from robotide.publish import PUBLISHER
 from robotide import utils
@@ -39,14 +37,14 @@ class Plugin(object):
         self.__settings = SETTINGS['Plugins'].add_section(self.name)
         self.__settings.set_defaults(default_settings)
         self.initially_active = initially_active
-        self._menu_items = []
+        self._menu_entries = []
 
     def __getattr__(self, name):
         """Provides convenient attribute access to saved settings.
         
         I.e. when you have setting 'color', you can access it with self.color
         """
-        if not '__settings' in name and self.__settings.has_setting(name):
+        if '__settings' not in name and self.__settings.has_setting(name):
             return self.__settings[name]
         raise AttributeError("No attribute or settings with name '%s' found"
                                  % (name))
@@ -70,7 +68,7 @@ class Plugin(object):
         """
         return None
 
-    def get_menu_bar(self):
+    def get_menubar(self):
         return self._frame.GetMenuBar()
 
     def get_menu(self, name):
@@ -81,23 +79,18 @@ class Plugin(object):
         return menubar.GetMenu(menu_pos)
 
     def register_menu_entry(self, entry):
+        self._menu_entries.append(entry)
         self._frame.actions.register_menu_entry(entry)
 
     def register_menu_entries(self, entries):
+        self._menu_entries.extend(entries)
         self._frame.actions.register_menu_entries(entries)
 
-    def remove_added_menu_items(self):
-        for menu_name, menu_item in self._menu_items:
-            self.get_menu(menu_name).RemoveItem(menu_item)
-        self._menu_items = []
+    def unergister_menu_entries(self):
+        raise NotImplementedError()
+        self._menu_entries = []
 
-    def remove_from_menu(self, menu_name, id):
-        menubar = self.get_menu_bar()
-        pos = menubar.FindMenu(menu_name)
-        menu = menubar.GetMenu(pos)
-        menu.Remove(id)
-
-    def get_tool_bar(self):
+    def get_toolbar(self):
         return self._frame.GetToolBar()
 
     def get_frame(self):
