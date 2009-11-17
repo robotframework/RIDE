@@ -80,19 +80,19 @@ class RecentFilesPlugin(Plugin):
             self._update_file_menu()
 
     def _update_file_menu(self):
-        self.remove_added_menu_items()
+        self.unergister_menu_entries()
         self._add_recent_files_to_menu()
 
     def _add_recent_files_to_menu(self):
         if len(self.recent_files) == 0:
             entry = MenuEntry('File', 'No recent files')
-            entry.set_insertion_point_before('Exit')
+            entry.set_menu_position(before='Exit')
             self.register_menu_entry(entry)
         else:
             for n, file in enumerate(self.recent_files):
                 self._add_file_to_menu(file, n)
         sep = MenuSeparator('File')
-        sep.set_insertion_point_before('Exit')
+        sep.set_menu_position(before='Exit')
         self.register_menu_entry(sep)
 
     def _add_file_to_menu(self, file, n):
@@ -101,6 +101,6 @@ class RecentFilesPlugin(Plugin):
         label = '&%s: %s' % (n+1, filename)
         doc = 'Open %s' % item
         entry = MenuEntry('File', label, self.OnOpenRecent, doc=doc)
-        entry.set_insertion_point_before('Exit')
+        entry.set_menu_position(before='Exit')
         self.register_menu_entry(entry)
         self._files[entry.id] = item

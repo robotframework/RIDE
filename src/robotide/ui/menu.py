@@ -110,16 +110,20 @@ class ToolBar(object):
 
 
 class _MenuEntry(object):
-    insert_before = None
+    _insertion_point = None
 
-    def set_insertion_point_before(self, name):
-        self.insert_before = name
+    def set_menu_position(self, before=None, after=None):
+        self._insertion_point = before or after
+        self._insert_before = before is not None
 
     def _get_insertion_index(self, menu):
-        if not self.insert_before:
+        if not self._insertion_point:
             return menu.GetMenuItemCount()
-        item = menu.FindItemById(menu.FindItem(self.insert_before))
-        return menu.GetMenuItems().index(item)
+        item = menu.FindItemById(menu.FindItem(self._insertion_point))
+        index = menu.GetMenuItems().index(item)
+        if not self._insert_before:
+            index += 1
+        return index
 
 
 class MenuEntry(_MenuEntry):
@@ -175,6 +179,7 @@ class MenuEntry(_MenuEntry):
 class MenuSeparator(_MenuEntry):
 
     def __init__(self, menu):
+        self.id = wx.NewId()
         self.menu_name = menu
         self.icon = None
 
