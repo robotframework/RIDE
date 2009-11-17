@@ -14,6 +14,7 @@
 
 import wx.html
 from StringIO import StringIO
+from robotide.ui.menu import MenuEntry
 try:
     from wx.lib.agw import flatnotebook as fnb
 except ImportError:
@@ -51,8 +52,8 @@ class PreviewPlugin(Plugin):
         self._item = None
 
     def activate(self):
-        self.add_to_menu('Tools','Preview', -1, self.OnShowPreview,
-                         'Show preview of the current file')
+        self.register_menu_entry(MenuEntry('Tools','Preview', self.OnShowPreview,
+                                           doc='Show preview of the current file'))
         self.subscribe(self._create_preview_if_item_changed, RideTreeSelection)
         self.subscribe(self._create_preview_if_self_selected, 
                        RideNotebookTabchange)

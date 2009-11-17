@@ -86,41 +86,6 @@ class Plugin(object):
     def register_menu_entries(self, entries):
         self._frame.actions.register_menu_entries(entries)
 
-    def add_to_menu(self, menu_name, item_name, index=-1, 
-                    action=None, item_doc='', enabled=True):
-        """Create a menu item into an existing menu.
-
-        `menu_name` is the name of the toplevel menu
-        `item_name` is the visible name of the item
-        `index` is the position of the item in the menu, negative index is 
-        counted from the end
-        `action` is a callable that is bound to the menu event
-        `item_doc` is the documentation visible in status bar
-        `enabled` specifies whether the item is enabled, defaults to True
-        """
-        menu = self.get_menu(menu_name)
-        pos = self._resolve_position_from_index(menu, index)
-        id = wx.NewId()
-        menu_item = menu.Insert(pos, id, item_name, item_doc)
-        menu_item.Enable(enabled)
-        wx.EVT_MENU(self.get_frame(), id, action)
-        self._menu_items.append((menu_name, menu_item))
-        return id
-
-    def _resolve_position_from_index(self, menu, index):
-        if index > 0:
-            return index
-        pos = menu.GetMenuItemCount() + index
-        if pos < 0:
-            return 0
-        return pos
-
-    def add_separator_to_menu(self, menu_name, index):
-        menu = self.get_menu(menu_name)
-        pos = self._resolve_position_from_index(menu, index)
-        menu_item = menu.InsertSeparator(pos)
-        self._menu_items.append((menu_name, menu_item))
-
     def remove_added_menu_items(self):
         for menu_name, menu_item in self._menu_items:
             self.get_menu(menu_name).RemoveItem(menu_item)

@@ -14,8 +14,10 @@
 
 import os.path
 
-from plugin import Plugin
 from robotide.publish import RideOpenSuite
+from robotide.ui import MenuEntry, MenuSeparator
+
+from plugin import Plugin
 
 
 class RecentFilesPlugin(Plugin):
@@ -83,16 +85,22 @@ class RecentFilesPlugin(Plugin):
 
     def _add_recent_files_to_menu(self):
         if len(self.recent_files) == 0:
-            self.add_to_menu('File', 'no recent files', -1, enabled=False)
+            entry = MenuEntry('File', 'No recent files')
+            entry.set_insertion_point_before('Exit')
+            self.register_menu_entry(entry)
         else:
             for n, file in enumerate(self.recent_files):
                 self._add_file_to_menu(file, n)
-        self.add_separator_to_menu('File', -1)
+        sep = MenuSeparator('File')
+        sep.set_insertion_point_before('Exit')
+        self.register_menu_entry(sep)
 
     def _add_file_to_menu(self, file, n):
         item = self._normalize(file)
         filename = os.path.basename(file)
         label = '&%s: %s' % (n+1, filename)
         doc = 'Open %s' % item
-        id = self.add_to_menu('File',label, -1, self.OnOpenRecent, doc)
-        self._files[id] = item
+        entry = MenuEntry('File', label, self.OnOpenRecent, doc=doc)
+        entry.set_insertion_point_before('Exit')
+        self.register_menu_entry(entry)
+        self._files[entry.id] = item

@@ -109,10 +109,23 @@ class ToolBar(object):
             self._icons.append(entry.icon)
 
 
-class MenuEntry(object):
+class _MenuEntry(object):
+    insert_before = None
 
-    def __init__(self, menu_name, name, action, container=None, shortcut=None,
-                 icon=None, doc=''):
+    def set_insertion_point_before(self, name):
+        self.insert_before = name
+
+    def _get_insertion_index(self, menu):
+        if not self.insert_before:
+            return menu.GetMenuItemCount()
+        item = menu.FindItemById(menu.FindItem(self.insert_before))
+        return menu.GetMenuItems().index(item)
+
+
+class MenuEntry(_MenuEntry):
+
+    def __init__(self, menu_name, name, action=None, container=None,
+                 shortcut=None, icon=None, doc=''):
         self.id = wx.NewId()
         self.menu_name = menu_name
         self.name = shortcut and '%s\t%s' % (name, shortcut) or name
@@ -128,6 +141,8 @@ class MenuEntry(object):
         return icon
 
     def _get_action_for(self, shortcut, action, container):
+        if not action:
+            return None
         key = shortcut or (self.menu_name, self.name)
         action_delegator = ACTIONREGISTRY.register_action(key)
         action_delegator.add(action, container)
@@ -136,9 +151,13 @@ class MenuEntry(object):
     def insert_to_menu(self, menu, frame):
         id = self._get_existing_id(menu)
         if id is None:
-            menu.Append(self.id, self.name, self.doc)
-            # This binds also the possible tool bar action for this entry
-            frame.Bind(wx.EVT_MENU, self.action, id=self.id)
+            menu_item = menu.Insert(self._get_insertion_index(menu), self.id,
+                               self.name, self.doc)
+            if self.action:
+                # This binds also the possible tool bar action for this entry
+                frame.Bind(wx.EVT_MENU, self.action, id=self.id)
+            else:
+                menu_item.Enable(False)
         else:
             self.id = id
 
@@ -153,14 +172,14 @@ class MenuEntry(object):
                              shortHelp=self.name, longHelp=self.doc)
 
 
-class MenuSeparator(object):
+class MenuSeparator(_MenuEntry):
 
     def __init__(self, menu):
         self.menu_name = menu
         self.icon = None
 
     def insert_to_menu(self, menu, frame):
-        menu.AppendSeparator()
+        menu.InsertSeparator(self._get_insertion_index(menu))
 
 
 class ActionRegistry(object):

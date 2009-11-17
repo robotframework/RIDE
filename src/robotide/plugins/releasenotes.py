@@ -12,11 +12,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-
 import wx
-from plugin import Plugin
-from robotide.version import VERSION
 from wx.lib.ClickableHtmlWindow import PyClickableHtmlWindow
+
+from robotide.version import VERSION
+from robotide.ui import MenuEntry
+
+from plugin import Plugin
 
 
 class ReleaseNotesPlugin(Plugin):
@@ -35,8 +37,9 @@ class ReleaseNotesPlugin(Plugin):
         self._panel = None
 
     def activate(self):
-        self.add_to_menu('Help', 'Release Notes', -1, self.OnShowReleaseNotes,
-                         'Show the release notes')
+        self.register_menu_entry(MenuEntry('Help', 'Release Notes',
+                                           self.OnShowReleaseNotes,
+                                           doc='Show the release notes'))
         self.auto_show()
 
     def deactivate(self):
