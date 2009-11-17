@@ -182,6 +182,9 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
         return self.GetItemParent(node)
 
     def _remove_datafile_node(self, node):
+        for child in self.GetItemChildren(node):
+            if child in self._datafile_nodes:
+                self._remove_datafile_node(child)
         self._datafile_nodes.remove(node)
         self.Delete(node)
 
