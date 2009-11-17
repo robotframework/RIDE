@@ -85,28 +85,28 @@ class Plugin(object):
 
     def register_menu_entry(self, entry):
         self._menu_entries.append(entry)
-        self._frame.actions.register_menu_entry(entry)
+        self.__frame.actions.register_menu_entry(entry)
 
     def register_menu_entries(self, entries):
         self._menu_entries.extend(entries)
-        self._frame.actions.register_menu_entries(entries)
+        self.__frame.actions.register_menu_entries(entries)
 
     def unergister_menu_entries(self):
         raise NotImplementedError()
         self._menu_entries = []
 
     def show_page(self, page):
-        self._frame.show_page(page)
+        self.__frame.show_page(page)
 
     def delete_page(self, page):
         if page:
-            self._frame.delete_page(page)
+            self.__frame.delete_page(page)
 
     def new_suite_can_be_opened(self):
         return self._app.ok_to_open_new()
 
     def open_suite(self, path):
-        self._frame.open_suite(path)
+        self.__frame.open_suite(path)
 
     def subscribe(self, listener, *topics):
         # FIXME: rewrite documentation to include event objects
