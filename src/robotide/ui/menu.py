@@ -32,16 +32,22 @@ class ActionRegisterer(object):
     def unregister_menu_entry(self, entry):
         self._menubar.remove_menu_entry(entry)
 
+    def unregister_menu_entries(self, entries):
+        for entry in entries:
+            self.unregister_menu_entry(entry)
+
 
 def MenuEntries(data, component, container=None):
     menu = None
+    entries = []
     for row in data.splitlines():
         if not row:
             menu = None
         elif menu:
-            yield Entry(component, menu, container, row)
+            entries.append(Entry(component, menu, container, row))
         else:
             menu = row
+    return entries
 
 def Entry(component, menu, container, row):
     if is_separator(row):
@@ -129,18 +135,17 @@ class Menu(object):
         self._frame = frame
 
     def add_menu_item(self, entry):
-        menu_item = entry.insert_to_menu(self._menu, self._frame)
-        if not menu_item in self._menu_item_entries:
-            self._menu_item_entries[menu_item] = []
-        self._menu_item_entries[menu_item].append(entry)
+        entry.insert_to_menu(self._menu, self._frame)
+        if not entry.id in self._menu_item_entries:
+            self._menu_item_entries[entry.id] = []
+        self._menu_item_entries[entry.id].append(entry)
 
     def remove_menu_item(self, entry):
-        menu_entry = self._menu.FindItemById(entry.id)
-        entries = self._menu_item_entries[menu_entry]
+        entries = self._menu_item_entries[entry.id]
         entries.remove(entry)
         if not entries:
-            self._menu.RemoveItem(menu_entry)
-            del(self._menu_item_entries[menu_entry])
+            self._menu.Remove(entry.id)
+            del(self._menu_item_entries[entry.id])
 
 
 class ToolBar(object):
@@ -212,10 +217,8 @@ class MenuEntry(_MenuEntry):
                 frame.Bind(wx.EVT_MENU, self.action, id=self.id)
             else:
                 menu_item.Enable(False)
-            return menu_item
         else:
             self.id = id
-            return menu.FindItemById(id)
 
     def _get_existing_id(self, menu):
         id = menu.FindItem(self.name)
@@ -234,10 +237,11 @@ class MenuSeparator(_MenuEntry):
         self.id = wx.NewId()
         self.menu_name = menu
         self.icon = None
+        self.name = '---'
 
     def insert_to_menu(self, menu, frame):
-        return menu.InsertSeparator(self._get_insertion_index(menu))
-
+        menu_item = menu.InsertSeparator(self._get_insertion_index(menu))
+        menu_item.SetId(self.id)
 
 class ActionRegistry(object):
 

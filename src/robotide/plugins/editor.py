@@ -57,7 +57,7 @@ class EditorPlugin(Plugin):
         self.subscribe(self.SaveToModel, RideSavingDatafile)
 
     def deactivate(self):
-        self.remove_added_menu_items()
+        self.unergister_menu_entries()
         self.delete_page(self._tab)
         self.unsubscribe(self.SaveToModel, RideNotebookTabchange)
         self.unsubscribe(self.SaveToModel, RideSavingDatafile)

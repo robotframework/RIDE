@@ -92,7 +92,7 @@ class Plugin(object):
         self.__frame.actions.register_menu_entries(entries)
 
     def unergister_menu_entries(self):
-        raise NotImplementedError()
+        self.__frame.actions.unregister_menu_entries(self._menu_entries)
         self._menu_entries = []
 
     def show_page(self, page):
