@@ -340,7 +340,6 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
         item, flags = self.HitTest(event.GetPosition())
         if item.IsOk() and self._click_on_item(flags):
             self.SelectItem(item)
-        event.Skip()
 
     def OnLeftDClick(self, event):
         item, flags = self.HitTest(event.GetPosition())
