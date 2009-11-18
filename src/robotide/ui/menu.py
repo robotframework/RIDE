@@ -43,24 +43,25 @@ def MenuEntries(data, component, container=None):
     menu = None
     entries = []
     for row in data.splitlines():
+        row = row.strip()
         if not row:
-            menu = None
-        elif menu:
-            entries.append(_create_entry(component, menu, container, row))
+            continue
+        elif row.startswith('[') and row.endswith(']'):
+            menu = row[1:-1].strip()
         else:
-            menu = row
+            entries.append(_create_entry(component, menu, container, row))
     return entries
 
 def _create_entry(component, menu, container, row):
     if row.startswith('---'):
         return MenuSeparator(menu)
-    tokens = [ t.strip() for t in row.split(',') ]
+    tokens = [ t.strip() for t in row.split('|') ]
     tokens += [''] * (4-len(tokens))
     name, doc, shortcut, icon =  tokens
     if name.startswith('!'):
         name = name[1:]
         container = None
-    action = getattr(component, 'On%s' % name.replace(' ', ''))
+    action = getattr(component, 'On%s' % name.replace(' ', '').replace('&', ''))
     return MenuEntry(menu, name, action, container, shortcut, icon, doc)
 
 

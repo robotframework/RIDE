@@ -24,19 +24,19 @@ from plugin import Plugin
 
 
 edit_actions ="""
-Edit
-Undo, Undo last modification, Ctrl-Z
+[Edit]
+&Undo | Undo last modification | Ctrl-Z
 ---
-Cut, Cut from selected cells, Ctrl-X
-Copy, Copy from selected cells, Ctrl-C
-Paste, Paste to selected cell, Ctrl-V
-Delete, Delete from selected cells, Del
+Cu&t | Cut from selected cells | Ctrl-X
+&Copy | Copy from selected cells | Ctrl-C
+&Paste | Paste to selected cell | Ctrl-V
+&Delete | Delete from selected cells | Del
 ---
-Comment, Comment selected rows, Ctrl-3
-Uncomment, Uncomment selected rows, Ctrl-4
+Comment | Comment selected rows | Ctrl-3
+Uncomment | Uncomment selected rows | Ctrl-4
 
-Tools
-!Open Editor, Opens suite/resource editor
+[Tools]
+!Open &Editor | Opens suite/resource editor
 """
 
 

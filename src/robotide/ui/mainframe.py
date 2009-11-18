@@ -34,25 +34,25 @@ from tree import Tree
 
 
 _menudata = """
-File
-!Open, Open file containing tests, Ctrl-O, ART_FILE_OPEN
-!Open Directory, Open dir containing Robot files, Shift-Ctrl-O, ART_FOLDER_OPEN
-!Open Resource, Open a resource file, Ctrl-R
+[File]
+!Open | &Open file containing tests | Ctrl-O | ART_FILE_OPEN
+!Open &Directory | Open dir containing Robot files | Shift-Ctrl-O | ART_FOLDER_OPEN
+!Open &Resource | Open a resource file | Ctrl-R
 ---
-!New Suite, Create a new top level suite, Ctrl-N
-!New Resource, Create New Resource File, Ctrl-Shift-N
+!&New Suite | Create a new top level suite | Ctrl-N
+!N&ew Resource | Create New Resource File | Ctrl-Shift-N
 ---
-!Save, Save current suite or resource, Ctrl-S, ART_FILE_SAVE
-!Save All, Save all changes, Ctrl-Shift-S
+!&Save | Save current suite or resource | Ctrl-S | ART_FILE_SAVE
+!Save &All | Save all changes | Ctrl-Shift-S
 ---
-!Exit, Exit RIDE, Ctrl-Q
+!E&xit | Exit RIDE | Ctrl-Q
 
-Tools
-!Manage Plugins, Please Implement
-!Search Keywords, Search keywords from libraries and resources 
+[Tools]
+!Manage Plugins | Please Implement
+!Search Keywords | Search keywords from libraries and resources 
 
-Help
-!About, Information about RIDE
+[Help]
+!About | Information about RIDE
 """
 
 
