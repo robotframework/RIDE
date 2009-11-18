@@ -187,7 +187,7 @@ class _SettingEditor(wx.Panel, RideEventHandler):
             self._value_display.Clear()
             self._value_display.SetBackgroundColour('light grey')
 
-    def get_active_datafile(self):
+    def get_selected_datafile(self):
         return self._datafile
 
 
@@ -292,7 +292,7 @@ class _AbstractListEditor(ListEditor, RideEventHandler):
         ListEditor.__init__(self, parent, self._titles, data)
         self._datafile = parent.item.get_datafile()
 
-    def get_active_datafile(self):
+    def get_selected_datafile(self):
         return self._datafile
 
 

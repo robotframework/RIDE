@@ -36,7 +36,7 @@ class RideEventHandler(object):
     __metaclass__ = eventhandlertype
 
     def _can_be_edited(self, event):
-        item = self.get_active_datafile()
+        item = self.get_selected_datafile()
         if item and item.has_been_modified_on_disk():
             return self._show_modified_on_disk_warning(item, event)
         return True
@@ -60,5 +60,5 @@ class RideEventHandler(object):
         else:
             return False
 
-    def get_active_datafile(self):
+    def get_selected_datafile(self):
         raise NotImplementedError(self.__class__.__name__)

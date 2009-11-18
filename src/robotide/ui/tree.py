@@ -314,7 +314,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
             item, cookie = self.GetNextChild(node, cookie)
         return None
 
-    def get_active_datafile(self):
+    def get_selected_datafile(self):
         node = self.GetSelection()
         if not node or node in (self._resource_root, self._root):
             return None
