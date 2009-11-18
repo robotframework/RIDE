@@ -319,8 +319,6 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
         if not node.IsOk():
             event.Skip()
             return
-        if not self.IsExpanded(node):
-            self.Expand(node)
         self._history.change(node)
         handler = self.GetItemPyData(node)
         if handler and handler.item:
