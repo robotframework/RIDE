@@ -201,8 +201,8 @@ class KeywordEditorUi(grid.Grid):
 
     def OnLabelRightClick(self, event):
         self._active_row = event.GetRow()
-        PopupMenu(self, ['Insert Rows', 'Delete Rows', ('Comment Rows', 'Ctrl-3'),
-                         ('Uncomment Rows', 'Ctrl-4')])
+        PopupMenu(self, ['Insert Rows', 'Delete Rows', 'Comment Rows\tCtrl-3',
+                         'Uncomment Rows\tCtrl-4'])
         self._active_row = None
         event.Skip()
 

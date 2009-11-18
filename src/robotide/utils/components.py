@@ -77,24 +77,17 @@ class PopupMenu(wx.Menu):
 
     def __init__(self, parent, menu_items):
         wx.Menu.__init__(self)
-        for item in menu_items:
-            name, shortcut = self._get_name(item)
+        for name in menu_items:
             if name == '---':
                 self.AppendSeparator()
             else:
-                self._add_item(parent, name, shortcut)
+                self._add_item(parent, name)
         parent.PopupMenu(self)
         self.Destroy()
 
-    def _get_name(self, item):
-        if isinstance(item, basestring):
-            return item, None
-        return item
-
-    def _add_item(self, parent, name, shortcut):
-        handler = getattr(parent, 'On'+name.replace(' ', ''))
-        if shortcut:
-            name = '%s\t%s' % (name, shortcut)
+    def _add_item(self, parent, name):
+        handler_name = name.replace(' ', '').split('\t')[0]  # split shortcut
+        handler = getattr(parent, 'On'+handler_name)
         id_ = wx.NewId()
         self.Append(id_, name)
         parent.Bind(wx.EVT_MENU, handler, id=id_)
