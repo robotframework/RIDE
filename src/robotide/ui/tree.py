@@ -55,23 +55,16 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
         self._history = utils.History()
         self._resource_root = None
         self._start_to_listen_events()
-        self._bind_keys()
+        self._bind_f2()
 
     def _start_to_listen_events(self):
         PUBLISHER.subscribe(self.OnDatafileEdited, RideDatafileEdited)
 
-    def _bind_keys(self):
-        bindings = [(self.OnLabelEdit, wx.ACCEL_NORMAL, wx.WXK_F2)]
-        self._bind(bindings)
-
-    def _bind(self, bindings):
-        accel_binds = []
-        for callable, control_key, key in bindings:
-            id = wx.NewId()
-            self.Bind(wx.EVT_MENU, callable, id=id )
-            accel_binds.append((control_key, key, id ))
-        accel_tbl = wx.AcceleratorTable(accel_binds)
-        self.SetAcceleratorTable(accel_tbl)
+    def _bind_f2(self):
+        id = wx.NewId()
+        self.Bind(wx.EVT_MENU, self.OnLabelEdit, id=id)
+        self.SetAcceleratorTable(wx.AcceleratorTable([(wx.ACCEL_NORMAL,
+                                                       wx.WXK_F2, id)]))
 
     def populate_tree(self, model):
         self._clear_tree_data()
