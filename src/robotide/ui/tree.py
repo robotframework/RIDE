@@ -47,7 +47,6 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
         self._root = None
         action_registry.register_menu_entries(MenuEntries(tree_actions, self, self))
         self.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnSelChanged)
-        self.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDown)
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnRightClick)
         self.Bind(wx.EVT_LEFT_DCLICK, self.OnLeftDClick)
         self.Bind(wx.EVT_TREE_END_LABEL_EDIT, self.OnLabelEdited)
@@ -334,12 +333,6 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
         if handler and handler.item:
             RideTreeSelection(node=node, item=handler.item,
                               text=self.GetItemText(node)).publish()
-        event.Skip()
-
-    def OnLeftDown(self, event):
-        item, flags = self.HitTest(event.GetPosition())
-        if item.IsOk() and self._click_on_item(flags):
-            self.SelectItem(item)
 
     def OnLeftDClick(self, event):
         item, flags = self.HitTest(event.GetPosition())
