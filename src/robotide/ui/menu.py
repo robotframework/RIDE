@@ -289,7 +289,7 @@ class MenuEntry(_MenuEntry):
     def _container_is_active(self):
         if not self._container.IsShownOnScreen():
             return False
-        widget = wx.GetActiveWindow()
+        widget = self._container.FindFocus()
         while widget:
             if widget == self._container.Parent:
                 return True
@@ -341,5 +341,3 @@ class ActionDelegator(object):
     def __call__(self, event):
         for actor in self._actors:
             actor.act(event)
-        event.Skip()
-
