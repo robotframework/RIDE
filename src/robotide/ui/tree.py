@@ -41,7 +41,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
 
     def __init__(self, parent, action_registry):
         style = wx.TR_DEFAULT_STYLE
-        if wx.PlatformInfo[0] == '__WXMSW__':
+        if utils.is_windows:
             style = style|wx.TR_EDIT_LABELS
         treemixin.DragAndDrop.__init__(self, parent, style=style)
         self._root = None
@@ -64,6 +64,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
         accelrators = []
         for keycode, handler in [(wx.WXK_F2, self.OnLabelEdit),
                                  (wx.WXK_LEFT, self.OnLeftArrow)]:
+            if utils.is_windows and keycode == wx.WXK_LEFT:
+                continue
             id = wx.NewId()
             self.Bind(wx.EVT_MENU, handler, id=id)
             accelrators.append((wx.ACCEL_NORMAL, keycode, id))
