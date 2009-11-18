@@ -22,9 +22,7 @@ from plugin import Plugin
 
 
 class ReleaseNotesPlugin(Plugin):
-    """Release notes plugin
-    
-    This will create a notebook tab that displays release notes
+    """Shows release notes of the current version.
     
     The release notes tab will automatically be shown once per release.
     The user can also view them on demand by selecting "Release Notes"
@@ -34,47 +32,38 @@ class ReleaseNotesPlugin(Plugin):
     def __init__(self, application):
         Plugin.__init__(self, application, initially_active=True,
                         default_settings={'version_shown':''})
-        self._panel = None
+        self._view = None
 
     def activate(self):
-        self.register_menu_entry(MenuEntry('Help', 'Release Notes',
-                                           self.OnShowReleaseNotes,
+        self.register_menu_entry(MenuEntry('Help', 'Release Notes', self.show,
                                            doc='Show the release notes'))
-        self.auto_show()
+        self.show_if_updated()
 
     def deactivate(self):
         self.remove_added_menu_items()
-        self.delete_page(self._panel)
-        self._panel = None
+        self.delete_page(self._view)
+        self._view = None
 
-    def auto_show(self):
-        """Show the release notes if the current version release notes haven't been shown."""
+    def show_if_updated(self):
         if self.version_shown != VERSION:
             self.show()
             self.save_setting('version_shown', VERSION)
 
-    def show(self):
-        """Show the release notes tab"""
-        if not self._panel:
-            self._create_page()
-        self.show_page(self._panel)
+    def show(self, event=None):
+        if not self._view:
+            self._view = self._create_view()
+            self.notebook.AddPage(self._view, "Release Notes", select=False)
+        self.show_page(self._view)
 
-    def OnShowReleaseNotes(self, event):
-        """Callback for the Release Notes menu item"""
-        self.show()
-
-    def _create_page(self):
-        """Add a tab for this plugin to the notebook"""
-        notebook = self.get_notebook()
-        if notebook:
-            self._panel = wx.Panel(notebook)
-            self.html = PyClickableHtmlWindow(self._panel, wx.ID_ANY)
-            self.html.SetStandardFonts()
-            self.html.SetPage(WELCOME_TEXT + RELEASE_NOTES)
-            sizer = wx.BoxSizer(wx.VERTICAL)
-            sizer.Add(self.html, 1, wx.EXPAND|wx.ALL, border=8)
-            self._panel.SetSizer(sizer)
-            notebook.AddPage(self._panel, "Release Notes", select=False)
+    def _create_view(self):
+        panel = wx.Panel(self.notebook)
+        html_win = PyClickableHtmlWindow(panel, -1)
+        html_win.SetStandardFonts()
+        html_win.SetPage(WELCOME_TEXT + RELEASE_NOTES)
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(html_win, 1, wx.EXPAND|wx.ALL, border=8)
+        panel.SetSizer(sizer)
+        return panel
 
 
 WELCOME_TEXT = """
