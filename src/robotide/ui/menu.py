@@ -207,6 +207,7 @@ class ToolBar(object):
         if entry.icon and entry.icon not in self._icons:
             entry.insert_to_toolbar(self._tb)
             self._icons.append(entry.icon)
+            self._tb.Realize()
 
 
 class _MenuEntry(object):
