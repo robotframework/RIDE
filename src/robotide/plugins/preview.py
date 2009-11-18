@@ -91,7 +91,7 @@ class PreviewPlugin(Plugin):
             self._create_preview_if_item_is_selected()
 
     def _get_item(self):
-        return self.get_frame().get_active_datafile()
+        return self.get_selected_datafile()
 
     def _create_preview(self, item):
         if not self._panel:

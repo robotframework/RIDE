@@ -108,6 +108,9 @@ class Plugin(object):
     def open_suite(self, path):
         self.__frame.open_suite(path)
 
+    def get_selected_datafile(self):
+        return self.__frame.get_selected_datafile()
+
     def subscribe(self, listener, *topics):
         """Subscribe to notifications for the given topic.
 
