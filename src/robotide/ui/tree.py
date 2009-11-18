@@ -447,7 +447,7 @@ class _TestOrUserKeywordHandler(_ActionHandler):
     accepts_drag = lambda *args: False
     is_draggable = True
     is_renameable = True
-    _actions = ['Copy', 'Move Up', 'Move Down' , 'Rename','---', 'Delete']
+    _actions = ['Copy', 'Move Up', 'Move Down' , ('Rename','F2'), '---', 'Delete']
 
     def remove(self):
         self._tree.delete_node(self._node)
