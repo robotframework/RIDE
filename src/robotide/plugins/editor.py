@@ -15,11 +15,12 @@
 import wx
 
 from robotide.editors import Editor
-from robotide.ui.dialogs import AboutDialog
 from robotide.ui import MenuEntries
-from robotide import utils
 from robotide.publish import RideTreeSelection, RideNotebookTabchange,\
                            RideSavingDatafile
+from robotide import utils
+from robotide import context
+
 from plugin import Plugin
 
 
@@ -115,7 +116,7 @@ class EditorPlugin(Plugin):
     def _get_welcome_editor(self, tab):
         sizer = wx.BoxSizer()
         sizer.Add(tab, 1, wx.EXPAND)
-        return utils.RideHtmlWindow(tab, wx.DefaultSize, AboutDialog.TEXT)
+        return utils.RideHtmlWindow(tab, wx.DefaultSize, context.ABOUT_RIDE)
 
     def _bind_keys(self, panel):
         id = wx.NewId()

@@ -16,8 +16,8 @@
 import wx
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 
-from robotide.version import VERSION
 from robotide import utils
+from robotide import context
 
 
 class KeywordSearchDialog(wx.Frame):
@@ -109,13 +109,8 @@ class _KeywordList(wx.ListCtrl, ListCtrlAutoWidthMixin):
 
 class AboutDialog(wx.Dialog):
 
-    TEXT = '''<h3>RIDE, version %s</h3>
-<p>More information in <a href=http://code.google.com/p/robotframework-ride/>project pages</a>.</p>
-<p>Contact developers <a href="mailto:robotframework-devel@googlegroups.com">
-robotframework-devel@googlegroups.com</a>''' % VERSION
-
     def __init__(self, parent):
         wx.Dialog.__init__(self, parent, title='RIDE')
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(utils.RideHtmlWindow(self, (450, 200), self.TEXT))
+        sizer.Add(utils.RideHtmlWindow(self, (450, 200), context.ABOUT_RIDE))
         self.SetSizerAndFit(sizer)
