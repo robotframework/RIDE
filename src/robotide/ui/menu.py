@@ -24,7 +24,7 @@ class ActionRegisterer(object):
 
     def register_menu_entry(self, entry):
         # registering to action_registry needs to happen first
-        entry.register_to_action_registry(self._action_registry)
+        self._action_registry.register(entry)
         self._menubar.register_menu_entry(entry)
         self._toolbar.register_toolbar_entry(entry)
 
@@ -168,31 +168,27 @@ class Menu(object):
         else:
             menu_item = self._get_or_insert_menu_item(entry)
         self._menu_items[menu_item.id] = menu_item
-        #TODO: Chahge this
-        entry.register_to_menuitem(menu_item)
+        menu_item.register(entry)
 
     def _get_or_insert_menu_item(self, entry):
         menu_item = self._get_menu_item(entry)
         if not menu_item:
-            name_with_accerelator = self._build_menu_name(entry)
+            name_with_accerelator = self._get_name(entry, build_new=True)
             menu_item = MenuItem(self._frame, self, entry, name_with_accerelator)
         return menu_item
 
+    def _get_name(self, entry, build_new):
+        get_name = build_new and self._name_builder.get_name or \
+                                 self._name_builder.get_registered_name
+        if not entry.shortcut:
+            return get_name(entry.name)
+        return '%s\t%s' % (get_name(entry.name), entry.shortcut)
+
     def _get_menu_item(self, entry):
         for menu_item in self._menu_items.values():
-            if menu_item.name == self._get_name(entry):
+            if menu_item.name == self._get_name(entry, build_new=False):
                 return menu_item
         return None
-
-    def _get_name(self, entry):
-        if not entry.shortcut:
-            return self._name_builder.get_registered_name(entry.name)
-        return '%s\t%s' % (self._name_builder.get_registered_name(entry.name), entry.shortcut)
-
-    def _build_menu_name(self, entry):
-        if not entry.shortcut:
-            return self._name_builder.get_name(entry.name)
-        return '%s\t%s' % (self._name_builder.get_name(entry.name), entry.shortcut)
 
     def remove(self, id):
         self.wx_menu.Remove(id)
@@ -212,7 +208,7 @@ class _MenuItem(object):
 
     def register(self, entry):
         self._entries.append(entry)
-        return self.id
+        entry.register(self, id=self.id)
 
     def unregister(self, entry):
         self._entries.remove(entry)
@@ -254,6 +250,7 @@ class SeparatorMenuItem(_MenuItem):
         self._wx_menu_item = self.wx_menu.InsertSeparator(pos)
         self._wx_menu_item.SetId(self.id)
 
+
 class ToolBar(object):
 
     def __init__(self, frame):
@@ -277,6 +274,7 @@ class _MenuEntry(object):
     def __init__(self):
         self.id = None
         self._registered_to = []
+        self.action = None
 
     def set_menu_position(self, before=None, after=None):
         self._insertion_point = before or after
@@ -291,12 +289,10 @@ class _MenuEntry(object):
             index += 1
         return index
 
-    def register_to_action_registry(self, registerer):
-        pass
-
-    def register_to_menuitem(self, registerer):
-        self.id = registerer.register(self)
+    def register(self, registerer, **update_attrs):
         self._registered_to.append(registerer)
+        for key, value in update_attrs:
+            setattr(self, key, value)
 
     def unregister(self):
         for registerer in self._registered_to:
@@ -314,7 +310,7 @@ class MenuEntry(_MenuEntry):
         self.doc = doc
         self.icon = self._get_icon(icon)
         self._container = container
-        self._action = action
+        self.action = action
 
     def _get_icon(self, icon):
         if not icon:
@@ -332,9 +328,14 @@ class MenuEntry(_MenuEntry):
             self._action(event)
 
     def is_active(self):
+        if self._is_always_inactive():
+            return False
         if self._is_always_active():
             return True
         return self._container_is_active()
+
+    def _is_always_inactive(self):
+        return self.action is None
 
     def _is_always_active(self):
         return self._container is None
@@ -349,11 +350,6 @@ class MenuEntry(_MenuEntry):
             widget = widget.GetParent()
         return False
 
-    def register_to_action_registry(self, registerer):
-        if self._action:
-            self.action_delegator = registerer.register(self)
-            self._registered_to.append(registerer)
-
 
 class MenuSeparator(_MenuEntry):
 
@@ -363,9 +359,6 @@ class MenuSeparator(_MenuEntry):
         self.icon = None
         self.name = '---'
 
-#    def is_active(self):
-#        return False
-
 
 class ActionRegistry(object):
 
@@ -373,10 +366,12 @@ class ActionRegistry(object):
         self._actions = {}
 
     def register(self, entry):
+        if isinstance(entry, MenuSeparator):
+            return
         key = self._get_key(entry)
         delegator = self._actions.setdefault(key, ActionDelegator())
         delegator.add(entry)
-        return delegator
+        entry.register(self, action_delegator=delegator)
 
     def unregister(self, entry):
         key = self._get_key(entry)
@@ -384,6 +379,7 @@ class ActionRegistry(object):
 
     def _get_key(self, entry):
         return entry.shortcut or (entry.menu_name, entry.name)
+
 
 class ActionDelegator(object):
 
