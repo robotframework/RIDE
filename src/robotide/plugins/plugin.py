@@ -92,7 +92,8 @@ class Plugin(object):
         self.__frame.actions.register_menu_entries(entries)
 
     def unergister_menu_entries(self):
-        self.__frame.actions.unregister_menu_entries(self._menu_entries)
+        for entry in self._menu_entries:
+            entry.unregister()
         self._menu_entries = []
 
     def show_page(self, page):
