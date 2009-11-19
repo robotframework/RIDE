@@ -21,10 +21,3 @@ class NoRideError(Exception):
 
 class SerializationError(Exception):
     pass
-
-class PluginPageNotFoundError(Exception):
-    """Throw when a notebook tab cannot be found for a given plugin panel."""
-    def __init__(self, value=None):
-        self.parameter = value
-    def __str__(self):
-        return repr(self.parameter)
