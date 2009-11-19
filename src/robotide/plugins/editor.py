@@ -63,7 +63,7 @@ class EditorPlugin(Plugin):
             self._tab.create_editor(self.get_selected_item())
 
     def deactivate(self):
-        self.unergister_actions()
+        self.unregister_actions()
         self.unsubscribe_all()
         self.delete_tab(self._tab)
         self._tab = None
@@ -91,12 +91,14 @@ class _EditorTab(wx.Panel):
         self.editor = None
 
     def create_editor(self, item):
+        self.Show(False)
         if self.editor:
             self.editor.close()
             self.sizer.Clear()
         self.editor = Editor(item, self)
         self.sizer.Add(self.editor, 1, wx.ALL|wx.EXPAND)
         self.Layout()
+        self.Show()
 
     def OnUndo(self, event):
         self.editor.undo()

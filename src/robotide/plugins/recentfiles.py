@@ -80,7 +80,7 @@ class RecentFilesPlugin(Plugin):
             self._update_file_menu()
 
     def _update_file_menu(self):
-        self.unergister_actions()
+        self.unregister_actions()
         self._add_recent_files_to_menu()
 
     def _add_recent_files_to_menu(self):
