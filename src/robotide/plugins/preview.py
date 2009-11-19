@@ -14,16 +14,12 @@
 
 import wx.html
 from StringIO import StringIO
-from robotide.ui.menu import MenuEntry
-try:
-    from wx.lib.agw import flatnotebook as fnb
-except ImportError:
-    from wx.lib import flatnotebook as fnb
 
-from robotide.writer.writer import HtmlFileWriter, TxtFileWriter
+from robotide.ui.menu import MenuEntry
 from robotide.model.tcuk import TestCase, UserKeyword
 from robotide.errors import SerializationError
-from robotide.publish import RideTreeSelection, RideNotebookTabchange
+from robotide.publish import RideTreeSelection, RideNotebookTabChange
+from robotide.writer.writer import HtmlFileWriter, TxtFileWriter
 
 from plugin import Plugin
 
@@ -45,63 +41,39 @@ class InMemoryTxtWriter(TxtFileWriter):
 
 class PreviewPlugin(Plugin):
     """Provides preview of the test data in HTML and TXT formats."""
+    datafile = property(lambda self: self.get_selected_datafile())
 
     def __init__(self, application):
         Plugin.__init__(self, application)
         self._panel = None
-        self._item = None
 
     def activate(self):
         self.register_menu_entry(MenuEntry('Tools','Preview', self.OnShowPreview,
                                            doc='Show preview of the current file'))
-        self.subscribe(self._create_preview_if_item_changed, RideTreeSelection)
-        self.subscribe(self._create_preview_if_self_selected, 
-                       RideNotebookTabchange)
+        self.subscribe(self.OnTreeSelection, RideTreeSelection)
+        self.subscribe(self.OnTabChange, RideNotebookTabChange)
 
     def deactivate(self):
-        self.unsubscribe_all_events()
+        self.unsubscribe_all()
         self.remove_added_menu_items()
         self.delete_page(self._panel)
         self._panel = None
 
     def OnShowPreview(self, event):
-        self._create_ui()
-        if self._create_preview_if_item_is_selected():
-            self.show_page(self._panel)
-
-    def _create_preview_if_item_is_selected(self):
-        item = self._get_item()
-        if not item:
-            return False
-        self._create_preview(item)
-        return True
-
-    def _create_preview_if_item_changed(self, event):
-        item = self._get_item()
-        if not (item and self._panel):
-            return
-        if item is self._item:
-            self._panel.scroll_to_subitem(event.item)
-        else:
-            self._item = item
-            self._create_preview(item)
-
-    def _create_preview_if_self_selected(self, event):
-        if event.newtab == self.name:
-            self._create_preview_if_item_is_selected()
-
-    def _get_item(self):
-        return self.get_selected_datafile()
-
-    def _create_preview(self, item):
         if not self._panel:
-            return
-        self._panel.preview(item)
+            self._panel = PreviewPanel(self, self.notebook)
+        self._update_preview(self.datafile)
+        self.show_tab(self._panel)
 
-    def _create_ui(self):
-        if not self._panel:
-            notebook = self.get_notebook()
-            self._panel = PreviewPanel(self, notebook)
+    def OnTreeSelection(self, event):
+        self._update_preview(event.item)
+
+    def OnTabChange(self, event):
+        self._update_preview(self.datafile)
+
+    def _update_preview(self, item):
+        if self.tab_is_visible(self._panel) and item:
+            self._panel.update_preview(item)
 
 
 class PreviewPanel(wx.Panel):
@@ -109,7 +81,7 @@ class PreviewPanel(wx.Panel):
     def __init__(self, parent, notebook):
         wx.Panel.__init__(self, notebook)
         self._parent = parent
-        self._datafile = None
+        self._previous_datafile = None
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
         self._create_chooser()
         self._set_format('Text')
@@ -120,10 +92,14 @@ class PreviewPanel(wx.Panel):
         self.Bind(wx.EVT_RADIOBOX, self.OnTypeChanged, chooser)
         self.Sizer.Add(chooser)
 
-    def preview(self, datafile):
-        self._datafile = datafile
-        content = datafile and self._get_content(datafile) or ''
-        self._view.set_content(content.decode('UTF-8'))
+    def update_preview(self, item, force_reload=False):
+        datafile = isinstance(item, (TestCase, UserKeyword))and item.datafile or item
+        if datafile != self._previous_datafile or force_reload:
+            content = datafile and self._get_content(datafile) or ''
+            self._view.set_content(content.decode('UTF-8'))
+        else:
+            self._view.scroll_to_subitem(item)
+        self._previous_datafile = datafile
 
     def _get_content(self, datafile):
         output = StringIO()
@@ -137,19 +113,9 @@ class PreviewPanel(wx.Panel):
         else:
             return output.getvalue()
 
-    def scroll_to_subitem(self, item):
-        self._view.scroll_to_subitem(self._get_anchor(item))
-
-    def _get_anchor(self, item):
-        if isinstance(item, TestCase):
-            return 'test_%s' % item.name
-        if isinstance(item, UserKeyword):
-            return 'keyword_%s' % item.name
-        return ''
-
     def OnTypeChanged(self, event):
         self._set_format(event.GetString())
-        self.preview(self._datafile)
+        self.update_preview(self._previous_datafile, force_reload=True)
 
     def _set_format(self, format):
         self._format = format
@@ -173,12 +139,20 @@ class HtmlView(wx.html.HtmlWindow):
     def set_content(self, content):
         self.SetPage(content)
 
-    def scroll_to_subitem(self, anchor):
+    def scroll_to_subitem(self, item):
+        anchor = self._get_anchor(item)
         if self.HasAnchor(anchor):
             self.ScrollToAnchor(anchor)
             self.ScrollLines(-1)
         else:
             self.Scroll(0,0)
+
+    def _get_anchor(self, item):
+        if isinstance(item, TestCase):
+            return 'test_%s' % item.name
+        if isinstance(item, UserKeyword):
+            return 'keyword_%s' % item.name
+        return ''
 
 
 class TxtView(wx.TextCtrl):
@@ -193,3 +167,4 @@ class TxtView(wx.TextCtrl):
 
     def scroll_to_subitem(self, item):
         pass
+
