@@ -27,10 +27,10 @@ edit_actions ="""
 [Edit]
 &Undo | Undo last modification | Ctrl-Z
 ---
-Cu&t | Cut from selected cells | Ctrl-X
-&Copy | Copy from selected cells | Ctrl-C
-&Paste | Paste to selected cell | Ctrl-V
-&Delete | Delete from selected cells | Del
+Cu&t | Cut | Ctrl-X
+&Copy | Copy | Ctrl-C
+&Paste | Paste | Ctrl-V
+&Delete | Delete  | Del
 ---
 Comment | Comment selected rows | Ctrl-3
 Uncomment | Uncomment selected rows | Ctrl-4
