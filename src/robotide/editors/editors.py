@@ -37,6 +37,8 @@ def dialog_from_class(obj):
 
 
 class WelcomePage(utils.RideHtmlWindow):
+    undo = cut = copy = paste = delete = comment = uncomment = save \
+        = lambda self: None
 
     def __init__(self, parent):
         utils.RideHtmlWindow.__init__(self, parent, text=context.ABOUT_RIDE)
@@ -44,10 +46,11 @@ class WelcomePage(utils.RideHtmlWindow):
 
 class _RobotTableEditor(wx.Panel):
     title = None
+    undo = cut = copy = paste = delete = comment = uncomment = save \
+        = lambda self: None
 
     def __init__(self, parent, item):
         wx.Panel.__init__(self, parent)
-        self.Show(False)   
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.SetSizer(self.sizer)
         if self.title is not None:
@@ -58,11 +61,6 @@ class _RobotTableEditor(wx.Panel):
 
     def close(self):
         self.Show(False)
-
-    def save(self):
-        pass
-
-    undo = cut = copy = paste = delete = comment = uncomment = save
 
     def _create_header(self, text):
         header = wx.StaticText(self, -1, text)
