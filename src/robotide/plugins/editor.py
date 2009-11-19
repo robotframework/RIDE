@@ -15,7 +15,7 @@
 import wx
 
 from robotide.editors import Editor
-from robotide.ui import MenuEntries
+from robotide.ui import Actions
 from robotide.publish import RideTreeSelection, RideNotebookTabchange,\
                            RideSavingDatafile
 from robotide import utils
@@ -51,7 +51,7 @@ class EditorPlugin(Plugin):
 
     def activate(self):
         self._create_editor_tab()
-        self.register_menu_entries(MenuEntries(edit_actions, self, self._tab))
+        self.register_actions(Actions(edit_actions, self, self._tab))
         self.subscribe(self.SaveToModel, RideNotebookTabchange)
         self.subscribe(self.SaveToModel, RideSavingDatafile)
 
@@ -67,7 +67,7 @@ class EditorPlugin(Plugin):
         return panel
 
     def deactivate(self):
-        self.unergister_menu_entries()
+        self.unergister_actions()
         self.delete_page(self._tab)
         self.unsubscribe(self.SaveToModel, RideNotebookTabchange)
         self.unsubscribe(self.SaveToModel, RideSavingDatafile)

@@ -16,6 +16,7 @@ import inspect
 
 from robotide.context import SETTINGS
 from robotide.publish import PUBLISHER
+from robotide.ui.menu import Action
 from robotide import utils
 
 
@@ -37,7 +38,7 @@ class Plugin(object):
         self.__frame = application.frame
         self.__settings = SETTINGS['Plugins'].add_section(self.name)
         self.__settings.set_defaults(default_settings)
-        self._menu_entries = []
+        self._actions = []
 
     tree = property(lambda self: self.__frame.tree)
     menubar = property(lambda self: self.__frame.GetMenuBar())
@@ -83,18 +84,18 @@ class Plugin(object):
         """
         return None
 
-    def register_menu_entry(self, entry):
-        self._menu_entries.append(entry)
-        self.__frame.actions.register_menu_entry(entry)
+    def register_action(self, action_info):
+        action = self.__frame.actions.register_action(action_info)
+        self._actions.append(action)
 
-    def register_menu_entries(self, entries):
-        self._menu_entries.extend(entries)
-        self.__frame.actions.register_menu_entries(entries)
+    def register_actions(self, action_infos):
+        for action_info in action_infos:
+            self.register_action(action_info)
 
-    def unergister_menu_entries(self):
-        for entry in self._menu_entries:
-            entry.unregister()
-        self._menu_entries = []
+    def unregister_actions(self):
+        for action in self._actions:
+            action.unregister()
+        self._actions = []
 
     def show_page(self, page):
         self.__frame.show_page(page)

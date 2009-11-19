@@ -11,8 +11,8 @@ class ProtoFrame(wx.Frame):
         self.mb = MenuBar(self)
         self.tb = ToolBar(self)
         self.ar = ActionRegisterer(self.mb, self.tb)
-        self.ar.register_menu_entry(MenuEntry('File', 'Event', self.OnEvent,
-                                              shortcut='Alt-e'))
+        self.ar.register_action(ActionInfo('File', 'Event', self.OnEvent,
+                                shortcut='Alt-e'))
         self.CreateStatusBar()
         splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
         splitter.SetMinimumPaneSize(50)
@@ -34,8 +34,8 @@ class ProtoFrame(wx.Frame):
 
     def register_menu_entry(self, menu, name, action, container=None,
                             shortcut=None, doc=''):
-        self.ar.register_menu_entry(MenuEntry(menu, name, action, container,
-                                              shortcut, doc=doc))
+        self.ar.register_action(ActionInfo(menu, name, action, container,
+                                           shortcut, doc=doc))
 
     def OnEvent(self):
         wx.MessageBox('Main frame')
