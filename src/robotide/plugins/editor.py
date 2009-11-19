@@ -50,20 +50,20 @@ class EditorPlugin(Plugin):
         self.subscribe(self.OnTreeItemSelected, RideTreeSelection)
 
     def activate(self):
-        self._create_editor_tab()
+        self._show_editor()
         self.register_menu_entries(MenuEntries(edit_actions, self, self._tab))
         self.subscribe(self.SaveToModel, RideNotebookTabchange)
         self.subscribe(self.SaveToModel, RideSavingDatafile)
 
-    def _create_editor_tab(self):
-        self._tab = self._create_tab(self._tab)
+    def _show_editor(self):
+        if not self._tab:
+            self._tab = self._create_tab()
         self._tab.set_editor(Editor(self._item, self._tab))
 
-    def _create_tab(self, panel):
-        if not panel:
-            panel = _EditorPanel(self.notebook)
-            self._bind_keys(panel)
-            self.notebook.AddPage(panel, 'Edit    ')
+    def _create_tab(self):
+        panel = _EditorPanel(self.notebook)
+        self._bind_keys(panel)
+        self.notebook.AddPage(panel, 'Edit    ')
         return panel
 
     def deactivate(self):
@@ -75,12 +75,10 @@ class EditorPlugin(Plugin):
 
     def OnTreeItemSelected(self, message):
         self._item = message.item
-        if self._tab:
-            self._create_editor_tab()
+        self._show_editor()
 
     def OnOpenEditor(self, event):
-        if self._tab:
-            self._create_editor_tab()
+        self._show_editor()
 
     def OnUndo(self, event):
         self._tab.editor.undo()
