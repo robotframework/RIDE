@@ -9,7 +9,7 @@
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an 'AS IS' BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#  See the License for the specific language governing permissions and
+#  S    ee the License for the specific language governing permissions and
 #  limitations under the License.
 
 import wx
@@ -52,10 +52,19 @@ class EditorPlugin(Plugin):
     def activate(self):
         self._create_editor_tab()
         self.register_menu_entries(MenuEntries(edit_actions, self, self._tab))
-        #FIXME: Should we add the menu item?
-        #('Keyword Completion', 'Show available keywords','', 'Ctrl-Space')
         self.subscribe(self.SaveToModel, RideNotebookTabchange)
         self.subscribe(self.SaveToModel, RideSavingDatafile)
+
+    def _create_editor_tab(self):
+        self._tab = self._create_tab(self._tab)
+        self._tab.set_editor(Editor(self._item, self._tab))
+
+    def _create_tab(self, panel):
+        if not panel:
+            panel = _EditorPanel(self.notebook)
+            self._bind_keys(panel)
+            self.notebook.AddPage(panel, 'Edit    ')
+        return panel
 
     def deactivate(self):
         self.unergister_menu_entries()
@@ -97,26 +106,6 @@ class EditorPlugin(Plugin):
     def SaveToModel(self, message):
         if self._tab:
             self._tab.save()
-
-    def _create_editor_tab(self):
-        self._tab = self._create_tab(self._tab)
-        if self._item:
-            editor = Editor(self._item, self._tab)
-        else:
-            editor = self._get_welcome_editor(self._tab)
-        self._tab.set_editor(editor)
-
-    def _create_tab(self, panel):
-        if not panel:
-            panel = _EditorPanel(self.notebook)
-            self._bind_keys(panel)
-            self.notebook.AddPage(panel, 'Edit    ')
-        return panel
-
-    def _get_welcome_editor(self, tab):
-        sizer = wx.BoxSizer()
-        sizer.Add(tab, 1, wx.EXPAND)
-        return utils.RideHtmlWindow(tab, wx.DefaultSize, context.ABOUT_RIDE)
 
     def _bind_keys(self, panel):
         id = wx.NewId()
