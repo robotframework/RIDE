@@ -95,12 +95,17 @@ class Plugin(object):
         self.__frame.actions.unregister_menu_entries(self._menu_entries)
         self._menu_entries = []
 
-    def show_page(self, page):
-        self.__frame.show_page(page)
+    def add_tab(self, tab, title):
+        self.notebook.add_tab(tab, title)
 
-    def delete_page(self, page):
-        if page:
-            self.__frame.delete_page(page)
+    def show_tab(self, tab):
+        self.notebook.show_tab(tab)
+
+    def delete_tab(self, tab):
+        self.notebook.delete_tab(tab)
+
+    def tab_is_visible(self, tab):
+        return self.notebook.tab_is_visible(tab)
 
     def new_suite_can_be_opened(self):
         return self._app.ok_to_open_new()
