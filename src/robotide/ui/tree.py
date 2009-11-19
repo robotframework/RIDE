@@ -320,6 +320,10 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
             node = self.GetItemParent(node)
         return self.GetItemPyData(node).item
 
+    def get_selected_item(self):
+        node = self.GetSelection()
+        return node and self.GetItemPyData(node).item or None
+
     def OnSelChanged(self, event):
         node = event.Item
         if not node.IsOk():
