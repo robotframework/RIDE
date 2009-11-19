@@ -230,9 +230,17 @@ class MenuItem(_MenuItem):
         pos = action._get_insertion_index(menu.wx_menu)
         self._wx_menu_item = menu.wx_menu.Insert(pos, self.id, name, action.doc)
         self._frame.Bind(wx.EVT_MENU_OPEN, self.OnMenuOpen)
+        # Shortcut is not working when menu item is disabled. When focus changes
+        # menu items get out of the sync. By enabling all menu_items, we don't 
+        # need to keep on track about focus. It is done anyway in _Action.
+        self._frame.Bind(wx.EVT_MENU_CLOSE, self.OnMenuClose)
 
     def OnMenuOpen(self, event):
         self._wx_menu_item.Enable(self._is_enabled())
+        event.Skip()
+
+    def OnMenuClose(self, event):
+        self._wx_menu_item.Enable(True)
         event.Skip()
 
     def _is_enabled(self):
