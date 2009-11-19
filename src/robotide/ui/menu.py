@@ -164,58 +164,35 @@ class Menu(object):
 
     def add_menu_item(self, entry):
         if isinstance(entry, MenuSeparator):
-            menu_item = self._insert_separator(entry)
+            menu_item = SeparatorMenuItem(self._frame, self, entry)
         else:
-            menu_item = self._insert_menu_item(entry)
+            menu_item = self._get_or_insert_menu_item(entry)
+        self._menu_items[menu_item.id] = menu_item
+        #TODO: Chahge this
         entry.register_to_menuitem(menu_item)
 
-    def _insert_separator(self, entry):
-        menu_item = SeparatorMenuItem(self._frame, self)
-        pos = entry._get_insertion_index(self.wx_menu)
-        wx_menu_item = self.wx_menu.InsertSeparator(pos)
-        self._add_to_menuitem(menu_item, wx_menu_item)
-        return menu_item
-
-    def _insert_menu_item(self, entry):
+    def _get_or_insert_menu_item(self, entry):
         menu_item = self._get_menu_item(entry)
         if not menu_item:
-            menu_item = MenuItem(self._frame, self)
-            wx_menu_item = self.insert_to_wx_menu(menu_item.id, entry)
-            self._add_to_menuitem(menu_item, wx_menu_item)
+            name_with_accerelator = self._build_menu_name(entry)
+            menu_item = MenuItem(self._frame, self, entry, name_with_accerelator)
         return menu_item
 
-#    def _get_menu_item(self, entry):
-#        for menu_item in self._menu_items.values():
-#            if menu_item.name == self._get_name(entry):
-#                return menu_item
-#        return None
-
-#    def _get_name(self, entry):
-#        if not entry.shortcut:
-#            return self._name_builder.get_registered_name(entry.name)
-#        return '%s\t%s' % (self._name_builder.get_registered_name(entry.name), entry.shortcut)
-
     def _get_menu_item(self, entry):
-        name = self._build_menu_name(entry)
-        id = self.wx_menu.FindItem(name)
-        if id != -1 and self.wx_menu.FindItemById(id).GetItemLabel() == name:
-            return self._menu_items[id]
+        for menu_item in self._menu_items.values():
+            if menu_item.name == self._get_name(entry):
+                return menu_item
         return None
 
-    def _add_to_menuitem(self, menu_item, wx_menu_item):
-        menu_item.add_wx_menu_item(wx_menu_item)
-        self._menu_items[menu_item.id] = menu_item
+    def _get_name(self, entry):
+        if not entry.shortcut:
+            return self._name_builder.get_registered_name(entry.name)
+        return '%s\t%s' % (self._name_builder.get_registered_name(entry.name), entry.shortcut)
 
     def _build_menu_name(self, entry):
         if not entry.shortcut:
             return self._name_builder.get_name(entry.name)
         return '%s\t%s' % (self._name_builder.get_name(entry.name), entry.shortcut)
-
-    def insert_to_wx_menu(self, id, entry):
-        pos = entry._get_insertion_index(self.wx_menu)
-        name_with_accerelator = self._build_menu_name(entry)
-        menu_item = self.wx_menu.Insert(pos, id, name_with_accerelator, entry.doc)
-        return menu_item
 
     def remove(self, id):
         self.wx_menu.Remove(id)
@@ -224,18 +201,14 @@ class Menu(object):
 
 class _MenuItem(object):
 
-    def __init__(self, frame, menu):
+    def __init__(self, frame, menu, name):
         self._frame = frame
         self._menu = menu
+        self.name = name
         self.id = wx.NewId()
         self._bound = False
         self._entries = []
         self._wx_menu_item = None
-
-    def add_wx_menu_item(self, menu_item):
-        self._wx_menu_item = menu_item
-        self._wx_menu_item.SetId(self.id)
-        self.name = self._wx_menu_item.GetLabel()
 
     def register(self, entry):
         self._entries.append(entry)
@@ -249,13 +222,14 @@ class _MenuItem(object):
 
 class MenuItem(_MenuItem):
 
-    def __init__(self, frame, menu):
-        _MenuItem.__init__(self, frame, menu)
+    def __init__(self, frame, menu, entry, name):
+        _MenuItem.__init__(self, frame, menu, name)
+        pos = entry._get_insertion_index(menu.wx_menu)
+        self._wx_menu_item = menu.wx_menu.Insert(pos, self.id, name, entry.doc)
         self._frame.Bind(wx.EVT_MENU_OPEN, self.OnMenuOpen)
 
     def OnMenuOpen(self, event):
-        if self._wx_menu_item:
-            self._wx_menu_item.Enable(self._is_enabled())
+        self._wx_menu_item.Enable(self._is_enabled())
         event.Skip()
 
     def _is_enabled(self):
@@ -273,8 +247,12 @@ class MenuItem(_MenuItem):
 
 
 class SeparatorMenuItem(_MenuItem):
-    pass
 
+    def __init__(self, frame, menu, entry):
+        _MenuItem.__init__(self, frame, menu, '---')
+        pos = entry._get_insertion_index(self.wx_menu)
+        self._wx_menu_item = self.wx_menu.InsertSeparator(pos)
+        self._wx_menu_item.SetId(self.id)
 
 class ToolBar(object):
 
