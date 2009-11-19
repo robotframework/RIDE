@@ -22,20 +22,22 @@ class ActionRegisterer(object):
         self._toolbar = toolbar
         self._action_registry = ActionRegistry()
 
-    def register_menu_entry(self, entry):
+    def register_action(self, action_info):
+        action = Action(action_info)
         # registering to action_registry needs to happen first
-        self._action_registry.register(entry)
-        self._menubar.register_menu_entry(entry)
-        self._toolbar.register_toolbar_entry(entry)
+        self._action_registry.register(action)
+        self._menubar.register_action(action)
+        self._toolbar.register_toolbar_action(action)
+        return action
 
-    def register_menu_entries(self, entries):
-        for entry in entries:
-            self.register_menu_entry(entry)
+    def register_actions(self, actions):
+        for action in actions:
+            self.register_action(action)
 
 
-def MenuEntries(data, component, container=None):
+def Actions(data, component, container=None):
     menu = None
-    entries = []
+    actions = []
     for row in data.splitlines():
         row = row.strip()
         if not row:
@@ -43,12 +45,12 @@ def MenuEntries(data, component, container=None):
         elif row.startswith('[') and row.endswith(']'):
             menu = row[1:-1].strip()
         else:
-            entries.append(_create_entry(component, menu, container, row))
-    return entries
+            actions.append(_create_action_info(component, menu, container, row))
+    return actions
 
-def _create_entry(component, menu, container, row):
+def _create_action_info(component, menu, container, row):
     if row.startswith('---'):
-        return MenuSeparator(menu)
+        return SeparatorInfo(menu)
     tokens = [ t.strip() for t in row.split('|') ]
     tokens += [''] * (4-len(tokens))
     name, doc, shortcut, icon =  tokens
@@ -56,7 +58,7 @@ def _create_entry(component, menu, container, row):
         name = name[1:]
         container = None
     action = getattr(component, 'On%s' % name.replace(' ', '').replace('&', ''))
-    return MenuEntry(menu, name, action, container, shortcut, icon, doc)
+    return ActionInfo(menu, name, action, container, shortcut, icon, doc)
 
 
 class _NameBuilder(object):
@@ -134,11 +136,11 @@ class MenuBar(object):
         self._mb.Insert(index, menu.wx_menu, menu.name)
         self._menus.insert(index, menu)
 
-    def register_menu_entry(self, entry):
-        menu = self._find_menu(entry.menu_name)
+    def register_action(self, action):
+        menu = self._find_menu(action.menu_name)
         if not menu:
-            menu = self._create_menu(entry.menu_name)
-        menu.add_menu_item(entry)
+            menu = self._create_menu(action.menu_name)
+        menu.add_menu_item(action)
 
     def _find_menu(self, name):
         registered = self._name_builder.get_registered_name(name)
@@ -148,9 +150,9 @@ class MenuBar(object):
             if menu.name == registered:
                 return menu
 
-    def remove_menu_entry(self, entry):
-        menu = self._find_menu(entry.menu_name)
-        menu.remove_menu_item(entry)
+    def remove_action(self, action):
+        menu = self._find_menu(action.menu_name)
+        menu.remove_menu_item(action)
 
 
 class Menu(object):
@@ -162,38 +164,38 @@ class Menu(object):
         self._menu_items = {}
         self._name_builder = _NameBuilder()
 
-    def add_menu_item(self, entry):
-        menu_item = self._construct_menu_item(entry)
+    def add_menu_item(self, action):
+        menu_item = self._construct_menu_item(action)
         self._menu_items[menu_item.id] = menu_item
-        menu_item.register(entry)
+        menu_item.register(action)
 
-    def _construct_menu_item(self, entry):
-        if isinstance(entry, MenuSeparator):
-            return SeparatorMenuItem(self._frame, self, entry)
-        return self._get_or_create_menu_item(entry)
+    def _construct_menu_item(self, action):
+        if isinstance(action, _MenuSeparator):
+            return SeparatorMenuItem(self._frame, self, action)
+        return self._get_or_create_menu_item(action)
 
-    def _get_or_create_menu_item(self, entry):
-        menu_item = self._get_menu_item(entry)
+    def _get_or_create_menu_item(self, action):
+        menu_item = self._get_menu_item(action)
         if not menu_item:
-            name_with_accerelator = self._get_name(entry, build_new=True)
-            menu_item = MenuItem(self._frame, self, entry, name_with_accerelator)
+            name_with_accerelator = self._get_name(action, build_new=True)
+            menu_item = MenuItem(self._frame, self, action, name_with_accerelator)
         return menu_item
 
-    def _get_menu_item(self, entry):
+    def _get_menu_item(self, action):
         for menu_item in self._menu_items.values():
-            if self._names_equal(menu_item, entry):
+            if self._names_equal(menu_item, action):
                 return menu_item
         return None
 
-    def _names_equal(self, menu_item, entry):
-        return menu_item.name == self._get_name(entry, build_new=False)
+    def _names_equal(self, menu_item, action):
+        return menu_item.name == self._get_name(action, build_new=False)
 
-    def _get_name(self, entry, build_new):
+    def _get_name(self, action, build_new):
         get_name = build_new and self._name_builder.get_name or \
                                  self._name_builder.get_registered_name
-        if not entry.shortcut:
-            return get_name(entry.name)
-        return '%s\t%s' % (get_name(entry.name), entry.shortcut)
+        if not action.shortcut:
+            return get_name(action.name)
+        return '%s\t%s' % (get_name(action.name), action.shortcut)
 
     def remove(self, id):
         self.wx_menu.Remove(id)
@@ -208,25 +210,25 @@ class _MenuItem(object):
         self.name = name
         self.id = wx.NewId()
         self._bound = False
-        self._entries = []
+        self._actions = []
         self._wx_menu_item = None
 
-    def register(self, entry):
-        self._entries.append(entry)
-        entry.register(self, id=self.id)
+    def register(self, action):
+        self._actions.append(action)
+        action.register(self, id=self.id)
 
-    def unregister(self, entry):
-        self._entries.remove(entry)
-        if not self._entries:
-            self._menu.remove(entry.id)
+    def unregister(self, action):
+        self._actions.remove(action)
+        if not self._actions:
+            self._menu.remove(action.id)
 
 
 class MenuItem(_MenuItem):
 
-    def __init__(self, frame, menu, entry, name):
+    def __init__(self, frame, menu, action, name):
         _MenuItem.__init__(self, frame, menu, name)
-        pos = entry._get_insertion_index(menu.wx_menu)
-        self._wx_menu_item = menu.wx_menu.Insert(pos, self.id, name, entry.doc)
+        pos = action._get_insertion_index(menu.wx_menu)
+        self._wx_menu_item = menu.wx_menu.Insert(pos, self.id, name, action.doc)
         self._frame.Bind(wx.EVT_MENU_OPEN, self.OnMenuOpen)
 
     def OnMenuOpen(self, event):
@@ -234,24 +236,24 @@ class MenuItem(_MenuItem):
         event.Skip()
 
     def _is_enabled(self):
-        for entry in self._entries:
-            if entry.is_active():
+        for action in self._actions:
+            if action.is_active():
                 return True
         return False
 
-    def register(self, entry):
-        if entry.has_action() and not self._bound:
-            # This binds also the possible tool bar action for this entry
-            self._frame.Bind(wx.EVT_MENU, entry.action_delegator, id=self.id)
+    def register(self, action):
+        if action.has_action() and not self._bound:
+            # This binds also the possible tool bar action for this action
+            self._frame.Bind(wx.EVT_MENU, action.action_delegator, id=self.id)
             self._bound = True
-        return _MenuItem.register(self, entry)
+        return _MenuItem.register(self, action)
 
 
 class SeparatorMenuItem(_MenuItem):
 
-    def __init__(self, frame, menu, entry):
-        _MenuItem.__init__(self, frame, menu, entry.name)
-        pos = entry._get_insertion_index(menu.wx_menu)
+    def __init__(self, frame, menu, action):
+        _MenuItem.__init__(self, frame, menu, action.name)
+        pos = action._get_insertion_index(menu.wx_menu)
         self._wx_menu_item = menu.wx_menu.InsertSeparator(pos)
         self._wx_menu_item.SetId(self.id)
 
@@ -266,31 +268,27 @@ class ToolBar(object):
         self._tb.Realize()
         self._icons = []
 
-    def register_toolbar_entry(self, entry):
-        if entry.icon and entry.icon not in self._icons:
-            entry.insert_to_toolbar(self._tb)
-            self._icons.append(entry.icon)
+    def register_toolbar_action(self, action):
+        if action.icon and action.icon not in self._icons:
+            action.insert_to_toolbar(self._tb)
+            self._icons.append(action.icon)
             self._tb.Realize()
 
 
-class _MenuEntry(object):
-    _insertion_point = None
+class _Registrable(object):
 
-    def __init__(self):
+    def __init__(self, action_info):
         self.id = None
         self._registered_to = []
         self.action = None
-
-    def set_menu_position(self, before=None, after=None):
-        self._insertion_point = before or after
-        self._insert_before = before is not None
+        self.insertion_point = action_info.insertion_point
 
     def _get_insertion_index(self, menu):
-        if not self._insertion_point:
+        if not self.insertion_point:
             return menu.GetMenuItemCount()
-        item = menu.FindItemById(menu.FindItem(self._insertion_point))
+        item = menu.FindItemById(menu.FindItem(self.insertion_point.item))
         index = menu.GetMenuItems().index(item)
-        if not self._insert_before:
+        if not self.insertion_point.insert_before:
             index += 1
         return index
 
@@ -307,18 +305,17 @@ class _MenuEntry(object):
         return self.action is not None
 
 
-class MenuEntry(_MenuEntry):
+class _Action(_Registrable):
 
-    def __init__(self, menu_name, name, action=None, container=None,
-                 shortcut=None, icon=None, doc=''):
-        _MenuEntry.__init__(self)
-        self.menu_name = menu_name
-        self.shortcut = shortcut
-        self.name = name
-        self.doc = doc
-        self.icon = self._get_icon(icon)
-        self._container = container
-        self.action = action
+    def __init__(self, action_info):
+        _Registrable.__init__(self, action_info)
+        self.menu_name = action_info.menu_name
+        self.name = action_info.name
+        self.action = action_info.action
+        self.container = action_info.container
+        self.shortcut = action_info.shortcut
+        self.icon = action_info.icon
+        self.doc = action_info.doc
 
     def _get_icon(self, icon):
         if not icon:
@@ -346,26 +343,76 @@ class MenuEntry(_MenuEntry):
         return self.action is None
 
     def _is_always_active(self):
-        return self._container is None
+        return self.container is None
 
     def _container_is_active(self):
-        if not self._container.IsShownOnScreen():
+        if not self.container.IsShownOnScreen():
             return False
-        widget = self._container.FindFocus()
+        widget = self.container.FindFocus()
         while widget:
-            if widget == self._container.Parent:
+            if widget == self.container.Parent:
                 return True
             widget = widget.GetParent()
         return False
 
 
-class MenuSeparator(_MenuEntry):
+class _MenuSeparator(_Registrable):
 
-    def __init__(self, menu):
-        _MenuEntry.__init__(self)
-        self.menu_name = menu
+    def __init__(self, action_info):
+        _Registrable.__init__(self, action_info)
+        self.menu_name = action_info.menu_name
         self.icon = None
         self.name = '---'
+
+
+class _MenuInfo(object):
+
+    def __init__(self):
+        self.insertion_point = None
+
+    def set_menu_position(self, before=None, after=None):
+        self.insertion_point = InsertionPoint(before, after)
+
+
+class InsertionPoint(object):
+
+    def __init__(self, before=None, after=None):
+        self.item = before or after
+        self.insert_before = before is not None
+
+
+def Action(action_info):
+    if isinstance(action_info, SeparatorInfo):
+        return _MenuSeparator(action_info)
+    return _Action(action_info)
+
+
+class ActionInfo(_MenuInfo):
+
+    def __init__(self, menu_name, name, action=None, container=None,
+                 shortcut=None, icon=None, doc=''):
+        _MenuInfo.__init__(self)
+        self.menu_name = menu_name
+        self.name = name
+        self.action = action
+        self.container = container
+        self.shortcut = shortcut
+        self.icon = self._get_icon(icon)
+        self.doc = doc
+
+    def _get_icon(self, icon):
+        if not icon:
+            return None
+        if isinstance(icon, basestring):
+            return wx.ArtProvider.GetBitmap(getattr(wx, icon), wx.ART_TOOLBAR, (16, 16))
+        return icon
+
+
+class SeparatorInfo(_MenuInfo):
+
+    def __init__(self, menu_name):
+        _MenuInfo.__init__(self)
+        self.menu_name = menu_name
 
 
 class ActionRegistry(object):
@@ -373,19 +420,19 @@ class ActionRegistry(object):
     def __init__(self):
         self._actions = {}
 
-    def register(self, entry):
-        if entry.has_action():
-            key = self._get_key(entry)
+    def register(self, action):
+        if action.has_action():
+            key = self._get_key(action)
             delegator = self._actions.setdefault(key, ActionDelegator())
-            delegator.add(entry)
-            entry.register(self, action_delegator=delegator)
+            delegator.add(action)
+            action.register(self, action_delegator=delegator)
 
-    def unregister(self, entry):
-        key = self._get_key(entry)
-        self._actions[key].remove(entry)
+    def unregister(self, action):
+        key = self._get_key(action)
+        self._actions[key].remove(action)
 
-    def _get_key(self, entry):
-        return entry.shortcut or (entry.menu_name, entry.name)
+    def _get_key(self, action):
+        return action.shortcut or (action.menu_name, action.name)
 
 
 class ActionDelegator(object):

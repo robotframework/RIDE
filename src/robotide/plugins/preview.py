@@ -15,7 +15,7 @@
 import wx.html
 from StringIO import StringIO
 
-from robotide.ui.menu import MenuEntry
+from robotide.ui.menu import ActionInfo
 from robotide.model.tcuk import TestCase, UserKeyword
 from robotide.errors import SerializationError
 from robotide.publish import RideTreeSelection, RideNotebookTabChange
@@ -48,8 +48,8 @@ class PreviewPlugin(Plugin):
         self._panel = None
 
     def activate(self):
-        self.register_menu_entry(MenuEntry('Tools','Preview', self.OnShowPreview,
-                                           doc='Show preview of the current file'))
+        self.register_action(ActionInfo('Tools','Preview', self.OnShowPreview,
+                                        doc='Show preview of the current file'))
         self.subscribe(self.OnTreeSelection, RideTreeSelection)
         self.subscribe(self.OnTabChange, RideNotebookTabChange)
 

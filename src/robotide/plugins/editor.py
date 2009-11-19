@@ -15,7 +15,8 @@
 import wx
 
 from robotide.editors import Editor
-from robotide.ui import MenuEntries
+
+from robotide.ui import Actions
 from robotide.publish import RideTreeSelection, RideNotebookTabChange,\
                            RideSavingDatafile
 
@@ -48,8 +49,8 @@ class EditorPlugin(Plugin):
 
     def activate(self):
         self._show_editor()
-        self.register_menu_entries(MenuEntries(_TOOLS, self))
-        self.register_menu_entries(MenuEntries(_EDIT, self._tab, self._tab))
+        self.register_actions(Actions(_TOOLS, self))
+        self.register_actions(Actions(_EDIT, self._tab, self._tab))
         self.subscribe(self.OnTreeItemSelected, RideTreeSelection)
         self.subscribe(self.OnSaveToModel, RideNotebookTabChange)
         self.subscribe(self.OnSaveToModel, RideSavingDatafile)
@@ -65,7 +66,7 @@ class EditorPlugin(Plugin):
         return tab
 
     def deactivate(self):
-        self.unergister_menu_entries()
+        self.unergister_actions()
         self.unsubscribe_all()
         self.delete_tab(self._tab)
         self._tab = None

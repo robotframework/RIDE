@@ -20,7 +20,7 @@ from robotide.publish import RideSavingDatafile, RideSavedDatafiles
 from robotide import utils
 from robotide import context
 
-from menu import ActionRegisterer, MenuBar, ToolBar, MenuEntries
+from menu import ActionRegisterer, MenuBar, ToolBar, Actions
 from dialogs import KeywordSearchDialog, AboutDialog
 from filedialogs import NewProjectDialog, NewResourceDialog, ChangeFormatDialog
 from pluginmanager import PluginManager
@@ -78,7 +78,7 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
 
     def _create_decorations(self):
         self.actions = ActionRegisterer(MenuBar(self), ToolBar(self))
-        self.actions.register_menu_entries(MenuEntries(_menudata, self))
+        self.actions.register_actions(Actions(_menudata, self))
         self.CreateStatusBar()
 
     def populate_tree(self, model):
