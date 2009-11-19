@@ -30,7 +30,7 @@ from notebook import NoteBook
 
 _menudata = """
 [File]
-!Open | &Open file containing tests | Ctrl-O | ART_FILE_OPEN
+!&Open | Open file containing tests | Ctrl-O | ART_FILE_OPEN
 !Open &Directory | Open dir containing Robot files | Shift-Ctrl-O | ART_FOLDER_OPEN
 !Open &Resource | Open a resource file | Ctrl-R
 ---
