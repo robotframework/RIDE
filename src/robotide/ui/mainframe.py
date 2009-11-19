@@ -78,6 +78,9 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
         splitter.SplitVertically(self.tree, self.notebook, 300)
         self.CreateStatusBar()
 
+    def get_selected_datafile(self):
+        return self.tree.get_selected_datafile()
+
     def OnClose(self, event):
         SETTINGS['mainframe size'] = self.GetSizeTuple()
         SETTINGS['mainframe position'] = self.GetPositionTuple()
@@ -178,16 +181,12 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
     def OnExit(self, event):
         self.Close()
 
-    # Tools Menu
-
     def OnManagePlugins(self, event):
         self._plugin_manager.show(self._application.get_plugins())
 
     def OnSearchKeywords(self, event):
         if not self._kw_search_dialog.IsShown():
             self._kw_search_dialog.Show()
-
-    # About Menu
 
     def OnAbout(self, event):
         dlg = AboutDialog(self)
