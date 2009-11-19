@@ -41,30 +41,35 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
 
     def __init__(self, parent, action_registry):
         style = wx.TR_DEFAULT_STYLE
-        if wx.PlatformInfo[0] == '__WXMSW__':
+        if utils.is_windows:
             style = style|wx.TR_EDIT_LABELS
         treemixin.DragAndDrop.__init__(self, parent, style=style)
         self._root = None
         action_registry.register_menu_entries(MenuEntries(tree_actions, self, self))
         self.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnSelChanged)
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnRightClick)
-        self.Bind(wx.EVT_LEFT_DCLICK, self.OnLeftDClick)
+        self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnItemActivated)
         self.Bind(wx.EVT_TREE_END_LABEL_EDIT, self.OnLabelEdited)
         self._images = TreeImageList()
         self.SetImageList(self._images)
         self._history = utils.History()
         self._resource_root = None
         self._start_to_listen_events()
-        self._bind_f2()
+        self._bind_keys()
 
     def _start_to_listen_events(self):
         PUBLISHER.subscribe(self.OnDatafileEdited, RideDatafileEdited)
 
-    def _bind_f2(self):
-        id = wx.NewId()
-        self.Bind(wx.EVT_MENU, self.OnLabelEdit, id=id)
-        self.SetAcceleratorTable(wx.AcceleratorTable([(wx.ACCEL_NORMAL,
-                                                       wx.WXK_F2, id)]))
+    def _bind_keys(self):
+        accelrators = []
+        for keycode, handler in [(wx.WXK_F2, self.OnLabelEdit),
+                                 (wx.WXK_LEFT, self.OnLeftArrow)]:
+            if utils.is_windows and keycode == wx.WXK_LEFT:
+                continue
+            id = wx.NewId()
+            self.Bind(wx.EVT_MENU, handler, id=id)
+            accelrators.append((wx.ACCEL_NORMAL, keycode, id))
+        self.SetAcceleratorTable(wx.AcceleratorTable(accelrators))
 
     def populate_tree(self, model):
         self._clear_tree_data()
@@ -90,6 +95,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
             self.Expand(self._resource_root)
         if self._datafile_nodes:
             self.SelectItem(self._datafile_nodes[0])
+            self.Expand(self._datafile_nodes[0])
 
     def _render_resources(self, model):
         if model.resources:
@@ -319,19 +325,24 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
         if not node.IsOk():
             event.Skip()
             return
-        if not self.IsExpanded(node):
-            self.Expand(node)
         self._history.change(node)
         handler = self.GetItemPyData(node)
         if handler and handler.item:
             RideTreeSelection(node=node, item=handler.item,
                               text=self.GetItemText(node)).publish()
 
-    def OnLeftDClick(self, event):
-        item, flags = self.HitTest(event.GetPosition())
-        if item.IsOk() and self._click_on_item(flags) and \
-                self.GetItemPyData(item).is_renameable:
-            self.EditLabel(item)
+    def OnItemActivated(self, event):
+        if self.IsExpanded(event.Item):
+            self.Collapse(event.Item)
+        else:
+            self.Expand(event.Item)
+
+    def OnLeftArrow(self, event):
+        node = self.GetSelection()
+        if self.IsExpanded(node):
+            self.Collapse(node)
+        else:
+            event.Skip()
 
     def OnLabelEdit(self, event):
         selection = self.GetSelection()
@@ -438,7 +449,7 @@ class _TestOrUserKeywordHandler(_ActionHandler):
     accepts_drag = lambda *args: False
     is_draggable = True
     is_renameable = True
-    _actions = ['Copy', 'Move Up', 'Move Down' , 'Rename','---', 'Delete']
+    _actions = ['Copy', 'Move Up', 'Move Down' , 'Rename\tF2', '---', 'Delete']
 
     def remove(self):
         self._tree.delete_node(self._node)

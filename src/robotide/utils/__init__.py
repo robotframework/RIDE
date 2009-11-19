@@ -17,7 +17,7 @@ import inspect
 from robot.utils import printable_name, contains, normalize, eq, eq_any,\
     HtmlWriter, NormalizedDict, timestr_to_secs, secs_to_timestr, normpath,\
     DomWrapper, unic, asserts, unescape, html_attr_escape,\
-    printable_name_from_path, html_escape, get_timestamp
+    printable_name_from_path, html_escape, get_timestamp, is_windows
 from components import RideHtmlWindow, RidePopupWindow, PopupMenu
 from contentassist import ContentAssistTextCtrl, ExpandingContentAssistTextCtrl
 from factory import create_button, create_toolbar

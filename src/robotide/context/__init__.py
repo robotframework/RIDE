@@ -15,6 +15,8 @@
 
 import os.path
 
+from robotide.version import VERSION
+
 from logger import Logger
 from robotide.robotapi import ROBOT_LOGGER
 from settings import Settings, initialize_settings
@@ -44,5 +46,10 @@ SETTING_EDITOR_WIDTH = 450
 SETTING_LABEL_WIDTH = 175
 SETTING_ROW_HEIGTH = 25
 POPUP_BACKGROUND = (255, 255, 187)
+
+ABOUT_RIDE = '''<h3>RIDE, version %s</h3>
+<p>More information in <a href=http://code.google.com/p/robotframework-ride/>project pages</a>.</p>
+<p>Contact developers <a href="mailto:robotframework-devel@googlegroups.com">
+robotframework-devel@googlegroups.com</a>''' % VERSION
 
 APP = None

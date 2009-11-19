@@ -27,7 +27,7 @@ class eventhandlertype(type):
         for attr in dict:
             if attr.startswith('On') and \
                     not (name == 'RideFrame' and attr == 'OnClose') and \
-                    not (name == 'SuiteTree' and attr == 'OnDrop'):
+                    not (name == 'Tree' and attr == 'OnDrop'):
                 dict[attr] = mod_time_wrapper(dict[attr])
         return type.__new__(cls, name, bases, dict)
 

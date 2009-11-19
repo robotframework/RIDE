@@ -27,12 +27,19 @@ from editordialogs import *
 
 
 def Editor(item, editor_panel):
+    if not item:
+        return WelcomePage(editor_panel)
     editor_class = globals()[item.__class__.__name__ + 'Editor']
     return editor_class(editor_panel, item)
 
-
 def dialog_from_class(obj):
     return globals()[obj.__class__.__name__ + 'Dialog']
+
+
+class WelcomePage(utils.RideHtmlWindow):
+
+    def __init__(self, parent):
+        utils.RideHtmlWindow.__init__(self, parent, text=context.ABOUT_RIDE)
 
 
 class _RobotTableEditor(wx.Panel):
