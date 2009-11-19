@@ -55,8 +55,8 @@ class PreviewPlugin(Plugin):
 
     def deactivate(self):
         self.unsubscribe_all()
-        self.remove_added_menu_items()
-        self.delete_page(self._panel)
+        self.unregister_actions()
+        self.delete_tab(self._panel)
         self._panel = None
 
     def OnShowPreview(self, event):
