@@ -70,7 +70,7 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
 
     def _init_ui(self):
         self.actions = ActionRegisterer(MenuBar(self), ToolBar(self))
-        self.actions.register_menu_entries(Actions(_menudata, self))
+        self.actions.register_actions(Actions(_menudata, self))
         splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
         splitter.SetMinimumPaneSize(200)
         self.notebook = NoteBook(splitter, self._application)
