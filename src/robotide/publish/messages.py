@@ -68,7 +68,7 @@ class RideTreeSelection(RideMessage):
     data = ['node', 'item', 'text']
 
 
-class RideNotebookTabchange(RideMessage):
+class RideNotebookTabChange(RideMessage):
     data = ['oldtab', 'newtab']
 
 

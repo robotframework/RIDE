@@ -20,8 +20,7 @@ except ImportError:
     from wx.lib import flatnotebook as fnb
 
 from robotide.editors import RideEventHandler
-from robotide.errors import PluginPageNotFoundError
-from robotide.publish import RideNotebookTabchange, RideSavingDatafile,\
+from robotide.publish import RideNotebookTabChange, RideSavingDatafile,\
                            RideSavedDatafiles
 from robotide import utils
 from robotide import context
@@ -88,22 +87,6 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
 
     def populate_tree(self, model):
         self.tree.populate_tree(model)
-
-    def show_page(self, panel):
-        """Shows the notebook page that contains the given panel.
-
-        Throws a PluginPageNotFoundError exception if the page can't be found.
-        """
-        if self.notebook.GetCurrentPage() != panel:
-            page = self.notebook.GetPageIndex(panel)
-            if page >= 0:
-                self.notebook.SetSelection(page)
-            else:
-                raise PluginPageNotFoundError("unable to find a notebook page for the given panel")
-
-    def delete_page(self, panel):
-        page = self.notebook.GetPageIndex(panel)
-        self.notebook.DeletePage(page)
 
     def get_selected_datafile(self):
         return self.tree.get_selected_datafile()
@@ -249,6 +232,23 @@ class NoteBook(fnb.FlatNotebook):
         self.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CLOSING, self.OnPageClosing)
         self._page_closing = False
 
+    def add_tab(self, tab, title):
+        self.AddPage(tab, title.center(10))
+
+    def show_tab(self, tab):
+        """Shows the notebook page that contains the given tab."""
+        if not self.tab_is_visible(tab):
+            page = self.GetPageIndex(tab)
+            if page >= 0:
+                self.SetSelection(page)
+
+    def delete_tab(self, tab):
+        page = self.GetPageIndex(tab)
+        self.DeletePage(page)
+
+    def tab_is_visible(self, tab):
+        return tab == self.GetCurrentPage()
+
     def OnPageClosing(self, event):
         self._page_closing = True
 
@@ -263,7 +263,7 @@ class NoteBook(fnb.FlatNotebook):
             self.GetPage(event.GetSelection()).SetFocus()
         else:
             newtitle = None
-        RideNotebookTabchange(oldtab=oldtitle, newtab=newtitle).publish()
+        RideNotebookTabChange(oldtab=oldtitle, newtab=newtitle).publish()
 
     def _page_changed(self):
         """Change event is send even when no tab available or tab is closed"""

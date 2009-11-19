@@ -16,15 +16,17 @@ import wx
 
 from robotide.editors import Editor
 from robotide.ui import MenuEntries
-from robotide.publish import RideTreeSelection, RideNotebookTabchange,\
+from robotide.publish import RideTreeSelection, RideNotebookTabChange,\
                            RideSavingDatafile
-from robotide import utils
-from robotide import context
 
 from plugin import Plugin
 
 
-edit_actions ="""
+_TOOLS = """
+[Tools]
+!Open &Editor | Opens suite/resource editor
+"""
+_EDIT = """
 [Edit]
 &Undo | Undo last modification | Ctrl-Z
 ---
@@ -35,9 +37,6 @@ Cu&t | Cut | Ctrl-X
 ---
 Comment | Comment selected rows | Ctrl-3
 Uncomment | Uncomment selected rows | Ctrl-4
-
-[Tools]
-!Open &Editor | Opens suite/resource editor
 """
 
 
@@ -46,78 +45,43 @@ class EditorPlugin(Plugin):
     def __init__(self, application):
         Plugin.__init__(self, application, initially_active=True)
         self._tab = None
-        self._item = None
-        self.subscribe(self.OnTreeItemSelected, RideTreeSelection)
 
     def activate(self):
-        self._create_editor_tab()
-        self.register_menu_entries(MenuEntries(edit_actions, self, self._tab))
-        self.subscribe(self.SaveToModel, RideNotebookTabchange)
-        self.subscribe(self.SaveToModel, RideSavingDatafile)
+        self._show_editor()
+        self.register_menu_entries(MenuEntries(_TOOLS, self))
+        self.register_menu_entries(MenuEntries(_EDIT, self._tab, self._tab))
+        self.subscribe(self.OnTreeItemSelected, RideTreeSelection)
+        self.subscribe(self.OnSaveToModel, RideNotebookTabChange)
+        self.subscribe(self.OnSaveToModel, RideSavingDatafile)
 
-    def _create_editor_tab(self):
-        self._tab = self._create_tab(self._tab)
-        self._tab.set_editor(Editor(self._item, self._tab))
+    def _show_editor(self, item=None):
+        if not self._tab:
+            self._tab = self._create_tab()
+        self._tab.create_editor(item or self.get_selected_datafile())
 
-    def _create_tab(self, panel):
-        if not panel:
-            panel = _EditorPanel(self.notebook)
-            self._bind_keys(panel)
-            self.notebook.AddPage(panel, 'Edit    ')
-        return panel
+    def _create_tab(self):
+        tab = _EditorTab(self.notebook)
+        self.add_tab(tab, 'Edit')
+        return tab
 
     def deactivate(self):
         self.unergister_menu_entries()
-        self.delete_page(self._tab)
-        self.unsubscribe(self.SaveToModel, RideNotebookTabchange)
-        self.unsubscribe(self.SaveToModel, RideSavingDatafile)
+        self.unsubscribe_all()
+        self.delete_tab(self._tab)
         self._tab = None
 
     def OnTreeItemSelected(self, message):
-        self._item = message.item
-        if self._tab:
-            self._create_editor_tab()
+        self._show_editor(message.item)
 
     def OnOpenEditor(self, event):
-        if self._tab:
-            self._create_editor_tab()
+        self._show_editor()
 
-    def OnUndo(self, event):
-        self._tab.editor.undo()
-
-    def OnCut(self, event):
-        self._tab.editor.cut()
-
-    def OnCopy(self, event):
-        self._tab.editor.copy()
-
-    def OnPaste(self, event):
-        self._tab.editor.paste()
-
-    def OnDelete(self, event):
-        self._tab.editor.delete()
-
-    def OnComment(self, event):
-        self._tab.editor.comment()
-
-    def OnUncomment(self, event):
-        self._tab.editor.uncomment()
-
-    def SaveToModel(self, message):
+    def OnSaveToModel(self, message):
         if self._tab:
             self._tab.save()
 
-    def _bind_keys(self, panel):
-        id = wx.NewId()
-        panel.Bind(wx.EVT_MENU, self.OnKeywordCompletion, id=id )
-        accel_tbl = wx.AcceleratorTable([(wx.ACCEL_CTRL,  ord(' '), id )])
-        panel.SetAcceleratorTable(accel_tbl)
 
-    def OnKeywordCompletion(self, event):
-        self._tab.show_keyword_completion()
-
-
-class _EditorPanel(wx.Panel):
+class _EditorTab(wx.Panel):
 
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, style=wx.SUNKEN_BORDER)
@@ -125,24 +89,36 @@ class _EditorPanel(wx.Panel):
         self.SetSizer(self.sizer)
         self.editor = None
 
-    def set_editor(self, editor):
+    def create_editor(self, item):
+        self.Show(False)
         if self.editor:
             self.editor.close()
             self.sizer.Clear()
-        editor.Show(True)
-        self.sizer.Add(editor, 1, wx.ALL|wx.EXPAND)
+        self.editor = Editor(item, self)
+        self.sizer.Add(self.editor, 1, wx.ALL|wx.EXPAND)
         self.Layout()
-        self.editor = editor
+        self.Show(True)
+
+    def OnUndo(self, event):
+        self.editor.undo()
+
+    def OnCut(self, event):
+        self.editor.cut()
+
+    def OnCopy(self, event):
+        self.editor.copy()
+
+    def OnPaste(self, event):
+        self.editor.paste()
+
+    def OnDelete(self, event):
+        self.editor.delete()
+
+    def OnComment(self, event):
+        self.editor.comment()
+
+    def OnUncomment(self, event):
+        self.editor.uncomment()
 
     def save(self, message=None):
-        if hasattr(self.editor, 'save'):
-            self.editor.save()
-
-    def show_keyword_completion(self):
-        if hasattr(self.editor, 'kweditor'):
-            kwe = self.editor.kweditor
-            if kwe.IsCellEditControlShown():
-                kwe.show_content_assist()
-            return
-        wx.MessageBox('To use Keyword Completion, type the beginning of the keyword '
-                      'name into a cell and then choose this option.', 'Hint')
+        self.editor.save()
