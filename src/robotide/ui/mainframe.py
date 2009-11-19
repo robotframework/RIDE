@@ -18,7 +18,7 @@ import wx
 from robotide.editors import RideEventHandler
 from robotide.publish import RideSavingDatafile, RideSavedDatafiles
 from robotide import utils
-from robotide import context
+from robotide.context import SETTINGS
 
 from menu import ActionRegisterer, MenuBar, ToolBar, MenuEntries
 from dialogs import KeywordSearchDialog, AboutDialog
@@ -52,53 +52,39 @@ _menudata = """
 
 
 class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
+    _default_dir = property(lambda self: os.path.abspath(SETTINGS['default directory']),
+                            lambda self, path: SETTINGS.set('default directory', path))
+
 
     def __init__(self, application, keyword_filter):
-        wx.Frame.__init__(self, None, -1, 'RIDE',
-                          pos=context.SETTINGS["mainframe position"],
-                          size=context.SETTINGS["mainframe size"])
+        wx.Frame.__init__(self, parent=None, title='RIDE',
+                          pos=SETTINGS['mainframe position'],
+                          size=SETTINGS['mainframe size'])
         self._application = application
-        self._create_decorations()
-        self.ensure_on_screen()
-        self._create_containers()
+        self._init_ui()
         self._plugin_manager = PluginManager(self.notebook)
         self._kw_search_dialog = KeywordSearchDialog(self, keyword_filter)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
+        self.ensure_on_screen()
         self.Show()
 
-    def _create_containers(self):
+    def _init_ui(self):
+        self.actions = ActionRegisterer(MenuBar(self), ToolBar(self))
+        self.actions.register_menu_entries(MenuEntries(_menudata, self))
         splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
         splitter.SetMinimumPaneSize(200)
-        # for now, hide the tabs if there's only one. Until there are
-        # at least two tabs there's no point in taking up the screen
-        # real estate. Eventually this should be a user preference.
         self.notebook = NoteBook(splitter, self._application)
         self.tree = Tree(splitter, self.actions)
         splitter.SplitVertically(self.tree, self.notebook, 300)
-
-    def _create_decorations(self):
-        self.actions = ActionRegisterer(MenuBar(self), ToolBar(self))
-        self.actions.register_menu_entries(MenuEntries(_menudata, self))
         self.CreateStatusBar()
 
-    def populate_tree(self, model):
-        self.tree.populate_tree(model)
-
-    def get_selected_datafile(self):
-        return self.tree.get_selected_datafile()
-
     def OnClose(self, event):
-        self._save_mainframe_size_and_position()
+        SETTINGS['mainframe size'] = self.GetSizeTuple()
+        SETTINGS['mainframe position'] = self.GetPositionTuple()
         if self._application.ok_to_exit():
             self.Destroy()
         else:
             wx.CloseEvent.Veto(event)
-
-    def _save_mainframe_size_and_position(self):
-        context.SETTINGS["mainframe size"] = self.GetSizeTuple()
-        context.SETTINGS["mainframe position"] = self.GetPositionTuple()
-
-    #File Menu
 
     def OnNewSuite(self, event):
         if not self._application.ok_to_open_new():
@@ -110,17 +96,8 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
                 os.mkdir(dirname)
             self._default_dir = dirname
             self._application.open_suite(dlg.get_path())
-            self.tree.populate_tree(self._application.model)
+            self.tree.populate(self._application.model)
         dlg.Destroy()
-
-    # TODO: Are properties ok in here? Settings are saved when frame is closed.
-    def _set_default_dir(self, dirname):
-        context.SETTINGS["default directory"] = dirname
-
-    def _get_default_dir(self):
-        return os.path.abspath(context.SETTINGS["default directory"])
-
-    _default_dir = property(_get_default_dir, _set_default_dir)
 
     def OnNewResource(self, event):
         dlg = NewResourceDialog(self, self._default_dir)
@@ -156,7 +133,7 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
 
     def open_suite(self, path):
         self._application.open_suite(path)
-        self.tree.populate_tree(self._application.model)
+        self.tree.populate(self._application.model)
 
     def OnOpenDirectory(self, event):
         if not self._application.ok_to_open_new():

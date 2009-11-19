@@ -71,7 +71,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
             accelrators.append((wx.ACCEL_NORMAL, keycode, id))
         self.SetAcceleratorTable(wx.AcceleratorTable(accelrators))
 
-    def populate_tree(self, model):
+    def populate(self, model):
         self._clear_tree_data()
         self._populate_model(model)
         self._refresh_view()
