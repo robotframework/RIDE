@@ -117,6 +117,9 @@ class Plugin(object):
     def get_selected_datafile(self):
         return self.tree.get_selected_datafile()
 
+    def get_selected_item(self):
+        return self.tree.get_selected_item()
+
     def subscribe(self, listener, *topics):
         """Subscribe to notifications for the given topic.
 
