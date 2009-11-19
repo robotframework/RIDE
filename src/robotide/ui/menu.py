@@ -163,19 +163,30 @@ class Menu(object):
         self._name_builder = _NameBuilder()
 
     def add_menu_item(self, entry):
-        if isinstance(entry, MenuSeparator):
-            menu_item = SeparatorMenuItem(self._frame, self, entry)
-        else:
-            menu_item = self._get_or_insert_menu_item(entry)
+        menu_item = self._construct_menu_item(entry)
         self._menu_items[menu_item.id] = menu_item
         menu_item.register(entry)
 
-    def _get_or_insert_menu_item(self, entry):
+    def _construct_menu_item(self, entry):
+        if isinstance(entry, MenuSeparator):
+            return SeparatorMenuItem(self._frame, self, entry)
+        return self._get_or_create_menu_item(entry)
+
+    def _get_or_create_menu_item(self, entry):
         menu_item = self._get_menu_item(entry)
         if not menu_item:
             name_with_accerelator = self._get_name(entry, build_new=True)
             menu_item = MenuItem(self._frame, self, entry, name_with_accerelator)
         return menu_item
+
+    def _get_menu_item(self, entry):
+        for menu_item in self._menu_items.values():
+            if self._names_equal(menu_item, entry):
+                return menu_item
+        return None
+
+    def _names_equal(self, menu_item, entry):
+        return menu_item.name == self._get_name(entry, build_new=False)
 
     def _get_name(self, entry, build_new):
         get_name = build_new and self._name_builder.get_name or \
@@ -183,12 +194,6 @@ class Menu(object):
         if not entry.shortcut:
             return get_name(entry.name)
         return '%s\t%s' % (get_name(entry.name), entry.shortcut)
-
-    def _get_menu_item(self, entry):
-        for menu_item in self._menu_items.values():
-            if menu_item.name == self._get_name(entry, build_new=False):
-                return menu_item
-        return None
 
     def remove(self, id):
         self.wx_menu.Remove(id)
@@ -235,7 +240,7 @@ class MenuItem(_MenuItem):
         return False
 
     def register(self, entry):
-        if entry.action_delegator and not self._bound:
+        if entry.has_action() and not self._bound:
             # This binds also the possible tool bar action for this entry
             self._frame.Bind(wx.EVT_MENU, entry.action_delegator, id=self.id)
             self._bound = True
@@ -245,9 +250,9 @@ class MenuItem(_MenuItem):
 class SeparatorMenuItem(_MenuItem):
 
     def __init__(self, frame, menu, entry):
-        _MenuItem.__init__(self, frame, menu, '---')
-        pos = entry._get_insertion_index(self.wx_menu)
-        self._wx_menu_item = self.wx_menu.InsertSeparator(pos)
+        _MenuItem.__init__(self, frame, menu, entry.name)
+        pos = entry._get_insertion_index(menu.wx_menu)
+        self._wx_menu_item = menu.wx_menu.InsertSeparator(pos)
         self._wx_menu_item.SetId(self.id)
 
 
@@ -291,12 +296,15 @@ class _MenuEntry(object):
 
     def register(self, registerer, **update_attrs):
         self._registered_to.append(registerer)
-        for key, value in update_attrs:
+        for key, value in update_attrs.items():
             setattr(self, key, value)
 
     def unregister(self):
         for registerer in self._registered_to:
             registerer.unregister(self)
+
+    def has_action(self):
+        return self.action is not None
 
 
 class MenuEntry(_MenuEntry):
@@ -325,7 +333,7 @@ class MenuEntry(_MenuEntry):
 
     def act(self, event):
         if self.is_active():
-            self._action(event)
+            self.action(event)
 
     def is_active(self):
         if self._is_always_inactive():
@@ -366,12 +374,11 @@ class ActionRegistry(object):
         self._actions = {}
 
     def register(self, entry):
-        if isinstance(entry, MenuSeparator):
-            return
-        key = self._get_key(entry)
-        delegator = self._actions.setdefault(key, ActionDelegator())
-        delegator.add(entry)
-        entry.register(self, action_delegator=delegator)
+        if entry.has_action():
+            key = self._get_key(entry)
+            delegator = self._actions.setdefault(key, ActionDelegator())
+            delegator.add(entry)
+            entry.register(self, action_delegator=delegator)
 
     def unregister(self, entry):
         key = self._get_key(entry)
