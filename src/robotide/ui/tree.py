@@ -27,7 +27,7 @@ from robotide import utils
 from images import TreeImageList
 from filedialogs import AddSuiteDialog, ChangeFormatDialog
 from namedialogs import TestCaseNameDialog, UserKeywordNameDialog
-from menu import MenuEntries
+from menu import Actions
 
 
 tree_actions ="""
@@ -45,7 +45,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
             style = style|wx.TR_EDIT_LABELS
         treemixin.DragAndDrop.__init__(self, parent, style=style)
         self._root = None
-        action_registry.register_menu_entries(MenuEntries(tree_actions, self, self))
+        action_registry.register_actions(Actions(tree_actions, self, self))
         self.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnSelChanged)
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnRightClick)
         self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnItemActivated)

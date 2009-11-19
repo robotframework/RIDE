@@ -15,7 +15,7 @@
 import os.path
 
 from robotide.publish import RideOpenSuite
-from robotide.ui import MenuEntry, MenuSeparator
+from robotide.ui import ActionInfo, SeparatorInfo
 
 from plugin import Plugin
 
@@ -80,18 +80,18 @@ class RecentFilesPlugin(Plugin):
             self._update_file_menu()
 
     def _update_file_menu(self):
-        self.unergister_menu_entries()
+        self.unergister_actions()
         self._add_recent_files_to_menu()
 
     def _add_recent_files_to_menu(self):
         if len(self.recent_files) == 0:
-            entry = MenuEntry('File', 'No recent files')
-            entry.set_menu_position(before='Exit')
-            self.register_menu_entry(entry)
+            action = ActionInfo('File', 'No recent files')
+            action.set_menu_position(before='Exit')
+            self.register_action(action)
         else:
             for n, file in enumerate(self.recent_files):
                 self._add_file_to_menu(file, n)
-        sep = MenuSeparator('File')
+        sep = SeparatorInfo('File')
         sep.set_menu_position(before='Exit')
         self.register_menu_entry(sep)
 
@@ -100,7 +100,7 @@ class RecentFilesPlugin(Plugin):
         filename = os.path.basename(file)
         label = '&%s: %s' % (n+1, filename)
         doc = 'Open %s' % item
-        entry = MenuEntry('File', label, self.OnOpenRecent, doc=doc)
-        entry.set_menu_position(before='Exit')
-        self.register_menu_entry(entry)
-        self._files[entry.id] = item
+        action_info = ActionInfo('File', label, self.OnOpenRecent, doc=doc)
+        action_info.set_menu_position(before='Exit')
+        self.register_action(action_info)
+        self._files[action_info.id] = item

@@ -20,7 +20,7 @@ from robotide.publish import RideSavingDatafile, RideSavedDatafiles
 from robotide import utils
 from robotide.context import SETTINGS
 
-from menu import ActionRegisterer, MenuBar, ToolBar, MenuEntries
+from menu import ActionRegisterer, MenuBar, ToolBar, Actions
 from dialogs import KeywordSearchDialog, AboutDialog
 from filedialogs import NewProjectDialog, NewResourceDialog, ChangeFormatDialog
 from pluginmanager import PluginManager
@@ -70,7 +70,7 @@ class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
 
     def _init_ui(self):
         self.actions = ActionRegisterer(MenuBar(self), ToolBar(self))
-        self.actions.register_menu_entries(MenuEntries(_menudata, self))
+        self.actions.register_menu_entries(Actions(_menudata, self))
         splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
         splitter.SetMinimumPaneSize(200)
         self.notebook = NoteBook(splitter, self._application)

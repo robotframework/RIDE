@@ -16,7 +16,7 @@ import wx
 from wx.lib.ClickableHtmlWindow import PyClickableHtmlWindow
 
 from robotide.version import VERSION
-from robotide.ui import MenuEntry
+from robotide.ui import ActionInfo
 
 from plugin import Plugin
 
@@ -35,12 +35,12 @@ class ReleaseNotesPlugin(Plugin):
         self._view = None
 
     def activate(self):
-        self.register_menu_entry(MenuEntry('Help', 'Release Notes', self.show,
-                                           doc='Show the release notes'))
+        self.register_action(ActionInfo('Help', 'Release Notes', self.show,
+                                        doc='Show the release notes'))
         self.show_if_updated()
 
     def deactivate(self):
-        self.remove_added_menu_items()
+        self.unregister_actions()
         self.delete_page(self._view)
         self._view = None
 
