@@ -317,13 +317,6 @@ class _Action(_Registrable):
         self.icon = action_info.icon
         self.doc = action_info.doc
 
-    def _get_icon(self, icon):
-        if not icon:
-            return None
-        if isinstance(icon, basestring):
-            return wx.ArtProvider.GetBitmap(getattr(wx, icon), wx.ART_TOOLBAR, (16, 16))
-        return icon
-
     def insert_to_toolbar(self, toolbar):
         toolbar.AddLabelTool(self.id, self.name, self.icon,
                              shortHelp=self.name, longHelp=self.doc)
