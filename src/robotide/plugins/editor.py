@@ -18,8 +18,6 @@ from robotide.editors import Editor
 from robotide.ui import MenuEntries
 from robotide.publish import RideTreeSelection, RideNotebookTabchange,\
                            RideSavingDatafile
-from robotide import utils
-from robotide import context
 
 from plugin import Plugin
 
@@ -46,7 +44,6 @@ class EditorPlugin(Plugin):
     def __init__(self, application):
         Plugin.__init__(self, application, initially_active=True)
         self._tab = None
-        self._item = None
         self.subscribe(self.OnTreeItemSelected, RideTreeSelection)
 
     def activate(self):
@@ -55,10 +52,10 @@ class EditorPlugin(Plugin):
         self.subscribe(self.SaveToModel, RideNotebookTabchange)
         self.subscribe(self.SaveToModel, RideSavingDatafile)
 
-    def _show_editor(self):
+    def _show_editor(self, item=None):
         if not self._tab:
             self._tab = self._create_tab()
-        self._tab.set_editor(Editor(self._item, self._tab))
+        self._tab.set_editor(Editor(item, self._tab))
 
     def _create_tab(self):
         panel = _EditorPanel(self.notebook)
@@ -74,8 +71,7 @@ class EditorPlugin(Plugin):
         self._tab = None
 
     def OnTreeItemSelected(self, message):
-        self._item = message.item
-        self._show_editor()
+        self._show_editor(message.item)
 
     def OnOpenEditor(self, event):
         self._show_editor()
@@ -107,9 +103,9 @@ class EditorPlugin(Plugin):
 
     def _bind_keys(self, panel):
         id = wx.NewId()
-        panel.Bind(wx.EVT_MENU, self.OnKeywordCompletion, id=id )
-        accel_tbl = wx.AcceleratorTable([(wx.ACCEL_CTRL,  ord(' '), id )])
-        panel.SetAcceleratorTable(accel_tbl)
+        panel.Bind(wx.EVT_MENU, self.OnKeywordCompletion, id=id)
+        panel.SetAcceleratorTable(wx.AcceleratorTable([(wx.ACCEL_CTRL, 
+                                                        wx.WXK_SPACE, id)]))
 
     def OnKeywordCompletion(self, event):
         self._tab.show_keyword_completion()
