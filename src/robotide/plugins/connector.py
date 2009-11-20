@@ -48,14 +48,14 @@ class PluginConnector(_PluginConnector):
             self.activate()
 
     def activate(self):
-        self._plugin.activate()
-        self.active = True
         self._settings.set('_active', True)
+        self.active = True
+        self._plugin.activate()
 
     def deactivate(self):
-        self._plugin.deactivate()
-        self.active = False
         self._settings.set('_active', False)
+        self.active = False
+        self._plugin.deactivate()
 
 
 class BrokenPlugin(_PluginConnector):
