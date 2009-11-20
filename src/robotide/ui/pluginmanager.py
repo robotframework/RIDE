@@ -100,8 +100,12 @@ class PluginActivationCheckBox(wx.CheckBox):
         try:
             method()
         except Exception, err:
+            self.SetValue(False)
+            self.Enable(False)
             msg = 'Failed to %s plugin %s:\n%s'\
                    % (method.__name__, self._plugin.name, err)
+            self._plugin.error = err
+            self._plugin.doc = msg
             LOG.error(msg)
             RideLogMessage(message=msg, level='ERROR').publish()
 
