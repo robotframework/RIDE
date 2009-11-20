@@ -22,10 +22,6 @@ from robotide.publish import RideTreeSelection, RideNotebookTabChanging,\
 from plugin import Plugin
 
 
-_TOOLS = """
-[Tools]
-!Open &Editor | Opens suite/resource editor
-"""
 _EDIT = """
 [Edit]
 &Undo | Undo last modification | Ctrl-Z
@@ -48,7 +44,6 @@ class EditorPlugin(Plugin):
 
     def activate(self):
         self._show_editor()
-        self.register_actions(Actions(_TOOLS, self))
         self.register_actions(Actions(_EDIT, self._tab, self._tab))
         self.subscribe(self.OnTreeItemSelected, RideTreeSelection)
         self.subscribe(self.OnTabChanged, RideNotebookTabChanged)
