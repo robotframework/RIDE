@@ -266,16 +266,16 @@ class TestCaseEditor(_RobotTableEditor):
         self.kweditor.save()
 
     def cut(self):
-        self.kweditor.cut()
+        self.kweditor.OnCut()
 
     def copy(self):
-        self.kweditor.copy()
+        self.kweditor.OnCopy()
 
     def paste(self):
-        self.kweditor.paste()
+        self.kweditor.OnPaste()
 
     def delete(self):
-        self.kweditor.delete()
+        self.kweditor.OnDelete()
 
     def comment(self):
         self.kweditor.comment()
