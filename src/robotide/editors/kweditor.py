@@ -268,7 +268,7 @@ class KeywordEditor(KeywordEditorUi):
 
     _no_cell = grid.GridCellCoords(-1, -1)
 
-    def __init__(self, parent, keywords):
+    def __init__(self, parent, keywords, tree):
         KeywordEditorUi.__init__(self, parent, len(keywords)+5, 5)
         self.SetDefaultEditor(ContentAssistCellEditor(keywords.datafile))
         self._keywords = keywords
@@ -282,6 +282,7 @@ class KeywordEditor(KeywordEditorUi):
         self._popup = RidePopupWindow(self, (500,200))
         self._make_bindings()
         self._write_data(keywords)
+        self._tree = tree
 
     def _make_bindings(self):
         self.Bind(grid.EVT_GRID_EDITOR_SHOWN, self.OnEditor)
@@ -385,8 +386,7 @@ class KeywordEditor(KeywordEditorUi):
         if uk:
             self._set_cell_font((grid.GridCellCoords(row, col)))
             self._marked_cell = None
-            #FIXME: use plugin interface
-            self.GetParent().tree.select_user_keyword_node(uk)
+            self._tree.select_user_keyword_node(uk)
             return True
         return False
 

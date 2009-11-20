@@ -26,11 +26,11 @@ from listeditor import ListEditor
 from editordialogs import *
 
 
-def Editor(item, editor_panel):
+def Editor(item, editor_panel, tree):
     if not item:
         return WelcomePage(editor_panel)
     editor_class = globals()[item.__class__.__name__ + 'Editor']
-    return editor_class(editor_panel, item)
+    return editor_class(editor_panel, item, tree)
 
 def dialog_from_class(obj):
     return globals()[obj.__class__.__name__ + 'Dialog']
@@ -49,7 +49,7 @@ class _RobotTableEditor(wx.Panel):
     undo = cut = copy = paste = delete = comment = uncomment = save \
         = lambda self: None
 
-    def __init__(self, parent, item):
+    def __init__(self, parent, item, tree):
         wx.Panel.__init__(self, parent)
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.SetSizer(self.sizer)
@@ -57,6 +57,7 @@ class _RobotTableEditor(wx.Panel):
             self.sizer.Add(self._create_header(self.title), 0, wx.ALL, 5)
             self.sizer.Add((0,10))
         self.item = item
+        self._tree= tree
         self._populate()
 
     def close(self):
@@ -244,7 +245,7 @@ class TestCaseEditor(_RobotTableEditor):
         self.sizer.Add(sizer)
 
     def _create_kweditor(self):
-        self.kweditor = KeywordEditor(self, self.item.keywords)
+        self.kweditor = KeywordEditor(self, self.item.keywords, self._tree)
         self._create_add_buttons(self.kweditor)
         self.sizer.Add(self.kweditor, 1, wx.EXPAND|wx.ALL, 2)
 
