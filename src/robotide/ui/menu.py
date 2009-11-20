@@ -437,9 +437,17 @@ class ActionInfo(_MenuInfo):
         self.name = name
         self.action = action
         self.container = container
-        self.shortcut = shortcut
+        self.shortcut = self._get_shortcut(shortcut)
         self.icon = self._get_icon(icon)
         self.doc = doc
+
+    def _get_shortcut(self, shortcut):
+        if not shortcut:
+            return None
+        order = ['Shift', 'Ctrl', 'Alt']
+        tokens = [ t.title() for t in shortcut.replace('+', '-').split('-') ]
+        tokens.sort(key=lambda t: t in order and order.index(t) or 42)
+        return '-'.join(tokens)
 
     def _get_icon(self, icon):
         if not icon:
