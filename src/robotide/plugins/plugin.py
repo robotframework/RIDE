@@ -16,7 +16,6 @@ import inspect
 
 from robotide.context import SETTINGS
 from robotide.publish import PUBLISHER
-from robotide.ui.menu import Action
 from robotide import utils
 
 
@@ -54,7 +53,7 @@ class Plugin(object):
         if '__settings' not in name and self.__settings.has_setting(name):
             return self.__settings[name]
         raise AttributeError("No attribute or settings with name '%s' found"
-                                 % (name))
+                             % (name))
 
     def save_setting(self, name, value, override=True):
         """Saves setting with `name` and `value` to settings file. 
@@ -87,6 +86,7 @@ class Plugin(object):
     def register_action(self, action_info):
         action = self.__frame.actions.register_action(action_info)
         self._actions.append(action)
+        return action.id
 
     def register_actions(self, action_infos):
         for action_info in action_infos:
@@ -97,8 +97,8 @@ class Plugin(object):
             action.unregister()
         self._actions = []
 
-    def add_tab(self, tab, title):
-        self.notebook.add_tab(tab, title)
+    def add_tab(self, tab, title, allow_closing=True):
+        self.notebook.add_tab(tab, title, allow_closing)
 
     def show_tab(self, tab):
         self.notebook.show_tab(tab)
@@ -110,7 +110,7 @@ class Plugin(object):
         return self.notebook.tab_is_visible(tab)
 
     def new_suite_can_be_opened(self):
-        return self._app.ok_to_open_new()
+        return self.__app.ok_to_open_new()
 
     def open_suite(self, path):
         self.__frame.open_suite(path)

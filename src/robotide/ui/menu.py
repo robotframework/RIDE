@@ -159,6 +159,23 @@ class Menu(object):
         self.wx_menu = wx.Menu()
         self._menu_items = {}
         self._name_builder = _NameBuilder()
+        self._open = False
+        self._frame.Bind(wx.EVT_MENU_OPEN, self.OnMenuOpen)
+        self._frame.Bind(wx.EVT_MENU_CLOSE, self.OnMenuClose)
+
+    def OnMenuOpen(self, event):
+        if self.wx_menu == event.GetMenu() and not self._open:
+            self._open = True
+            for menu_item in self._menu_items.values():
+                menu_item.refresh_availability()
+        event.Skip()
+
+    def OnMenuClose(self, event):
+        if self._open:
+            self._open = False
+            for menu_item in self._menu_items.values():
+                menu_item.set_enabled()
+        event.Skip()
 
     def add_menu_item(self, action):
         menu_item = self._construct_menu_item(action)
@@ -194,7 +211,7 @@ class Menu(object):
         return '%s\t%s' % (get_name(action.name), action.shortcut)
 
     def remove(self, id):
-        self.wx_menu.Remove(id)
+        self.wx_menu.Delete(id)
         del(self._menu_items[id])
 
 
@@ -218,6 +235,12 @@ class _MenuItem(object):
         if not self._actions:
             self._menu.remove(action.id)
 
+    def refresh_availability(self):
+        self._wx_menu_item.Enable(self._is_enabled())
+
+    def set_enabled(self):
+        self._wx_menu_item.Enable(True)
+
 
 class MenuItem(_MenuItem):
 
@@ -225,6 +248,7 @@ class MenuItem(_MenuItem):
         _MenuItem.__init__(self, frame, menu, name)
         pos = action._get_insertion_index(menu.wx_menu)
         self._wx_menu_item = menu.wx_menu.Insert(pos, self.id, name, action.doc)
+<<<<<<< local
         self._frame.Bind(wx.EVT_MENU_OPEN, self.OnMenuOpen)
         # Shortcut is not working when menu item is disabled. When focus changes
         # menu items get out of the sync. By enabling all menu_items, we don't 
@@ -234,6 +258,8 @@ class MenuItem(_MenuItem):
     def OnMenuOpen(self, event):
         self._wx_menu_item.Enable(self._is_enabled())
         event.Skip()
+=======
+>>>>>>> other
 
     def OnMenuClose(self, event):
         self._wx_menu_item.Enable(True)
@@ -260,6 +286,8 @@ class SeparatorMenuItem(_MenuItem):
         self._wx_menu_item = menu.wx_menu.InsertSeparator(pos)
         self._wx_menu_item.SetId(self.id)
 
+    def _is_enabled(self):
+        return False
 
 class ToolBar(object):
 
