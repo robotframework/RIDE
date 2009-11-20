@@ -325,7 +325,8 @@ class KeywordEditor(KeywordEditorUi):
         return rowdata
 
     def show_content_assist(self):
-        self.GetCellEditor(*self._active_coords.cell).show_content_assist()
+        if self.IsCellEditControlShown():
+            self.GetCellEditor(*self._active_coords.cell).show_content_assist()
 
     def show_keyword_details(self):
         cell_value = self.GetCellValue(*self._active_coords.cell)

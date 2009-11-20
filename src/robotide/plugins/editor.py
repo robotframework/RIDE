@@ -33,6 +33,9 @@ Cu&t | Cut | Ctrl-X
 ---
 Comment | Comment selected rows | Ctrl-3
 Uncomment | Uncomment selected rows | Ctrl-4
+
+[Tools]
+Content Assistance | Show possible keyword and variable completions | Ctrl-Space 
 """
 
 
@@ -115,6 +118,9 @@ class _EditorTab(wx.Panel):
 
     def OnUncomment(self, event):
         self.editor.uncomment()
+
+    def OnContentAssistance(self, event):
+        self.editor.show_content_assist()
 
     def save(self, message=None):
         self.editor.save()

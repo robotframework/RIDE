@@ -35,6 +35,7 @@ class _ContentAssistTextCtrlBase(object):
         
     def OnKey(self, event):
         keycode = event.GetKeyCode()
+        # Ctrl-Space handling needed for dialogs
         if keycode == wx.WXK_SPACE and event.ControlDown():
             self.show_content_assist()
         elif keycode in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN] \

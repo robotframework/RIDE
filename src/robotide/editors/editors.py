@@ -38,7 +38,7 @@ def dialog_from_class(obj):
 
 class WelcomePage(utils.RideHtmlWindow):
     undo = cut = copy = paste = delete = comment = uncomment = save \
-        = lambda self: None
+        = show_content_assist = lambda self: None
 
     def __init__(self, parent):
         utils.RideHtmlWindow.__init__(self, parent, text=context.ABOUT_RIDE)
@@ -47,7 +47,7 @@ class WelcomePage(utils.RideHtmlWindow):
 class _RobotTableEditor(wx.Panel):
     title = None
     undo = cut = copy = paste = delete = comment = uncomment = save \
-        = lambda self: None
+        = show_content_assist = lambda self: None
 
     def __init__(self, parent, item, tree):
         wx.Panel.__init__(self, parent)
@@ -285,6 +285,9 @@ class TestCaseEditor(_RobotTableEditor):
 
     def uncomment(self):
         self.kweditor.uncomment()
+
+    def show_content_assist(self):
+        self.kweditor.show_content_assist()
 
     def view(self):
         _RobotTableEditor.view(self)
