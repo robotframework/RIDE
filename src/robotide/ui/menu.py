@@ -317,9 +317,10 @@ class ToolBarButton(object):
 
     def register(self, action):
         self._action_delegator.add(action)
+        action.register(self)
 
     def unregister(self, action):
-        if not self._action_delegator.remove(action):
+        if self._action_delegator.remove(action):
             self._toolbar.remove(self)
 
 
@@ -478,7 +479,8 @@ class ActionRegistry(object):
 
     def unregister(self, action):
         key = self._get_key(action)
-        self._actions[key].remove(action)
+        if self._actions[key].remove(action):
+            del(self._actions[key])
 
     def _get_key(self, action):
         return action.shortcut or (action.menu_name, action.name)
@@ -493,8 +495,9 @@ class ActionDelegator(object):
         self._actions.append(action)
 
     def remove(self, action):
+        """Removes action and returns True if delegator is empty."""
         self._actions.remove(action)
-        return len(self._actions) != 0
+        return len(self._actions) == 0
 
     def __call__(self, event):
         for action in self._actions:
