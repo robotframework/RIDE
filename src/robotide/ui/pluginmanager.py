@@ -15,6 +15,9 @@
 import wx
 from wx.lib.scrolledpanel import ScrolledPanel
 
+from robotide.context import LOG
+from robotide.publish import RideLogMessage
+
 
 class PluginManager(object):
 
@@ -88,10 +91,19 @@ class PluginActivationCheckBox(wx.CheckBox):
 
     def OnCheckBox(self, event):
         if event.IsChecked():
-            self._plugin.activate()
+            self._execute(self._plugin.activate)
         else:
-            self._plugin.deactivate()
+            self._execute(self._plugin.deactivate)
         self._callback()
+
+    def _execute(self, method):
+        try:
+            method()
+        except Exception, err:
+            msg = 'Failed to %s plugin %s:\n%s'\
+                   % (method.__name__, self._plugin.name, err)
+            LOG.error(msg)
+            RideLogMessage(message=msg, level='ERROR').publish()
 
 
 class PluginRow(wx.Panel):
