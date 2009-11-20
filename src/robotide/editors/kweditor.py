@@ -152,17 +152,14 @@ class KeywordEditorUi(grid.Grid):
 
     def _remove_selected_rows(self):
         """If whole row(s) are selected, remove them from the grid"""
-        for row in sorted(self._get_selected_rows(), reverse=True):
+        for row in sorted(self.GetSelectedRows(), reverse=True):
             self.DeleteRows(row, 1)
 
     def _get_selected_rows(self):
         rows = self.GetSelectedRows()
-        # FIXME: please refactor
         if not rows:
-            if self._active_row is not None:
-                rows = [self._active_row]
-            else:
-                rows = [self._active_coords.topleft.row]
+            rows = self._active_row and [self._active_row] or \
+                    [self._active_coords.topleft.row]
         return rows
 
     def _set_cell_font(self, cell, color=None, underlined=False):
