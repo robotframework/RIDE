@@ -18,13 +18,13 @@ class ProtoFrame(wx.Frame):
         splitter.SetMinimumPaneSize(50)
         self.nb = fnb.FlatNotebook(splitter)
         self.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
-        self.nb.AddPage(ProtoPanel(self, self.nb), 'F1')
-        self.nb.AddPage(ProtoPanel(self, self.nb), 'F2')
-        self.nb.AddPage(ProtoPanel(self, self.nb, entry='Bar'), 'F3')
+        self.nb.AddPage(ProtoPanel(self, self.nb, icon='ART_CDROM'), 'F1')
+        self.nb.AddPage(ProtoPanel(self, self.nb, icon='ART_CDROM'), 'F2')
+        self.nb.AddPage(ProtoPanel(self, self.nb, entry='Bar', icon='ART_FLOPPY'), 'F3')
         self.nb.AddPage(ProtoPanel(self, self.nb, menu='X', entry='Bar'), 'F4')
         self.nb.AddPage(ProtoPanel(self, self.nb, entry='D', scut='Del'), 'D1')
         self.nb.AddPage(ProtoPanel(self, self.nb, entry='D', scut='Del',
-                                   container=False), 'D2')
+                                   container=False, icon='ART_ERROR'), 'D2')
         splitter.SplitVertically(Tree(splitter), self.nb, 100)
 
     def OnPageChanging(self, event):
@@ -33,9 +33,9 @@ class ProtoFrame(wx.Frame):
             self.nb.GetPage(newindex).SetFocus()
 
     def register_menu_entry(self, menu, name, action, container=None,
-                            shortcut=None, doc=''):
+                            shortcut=None, icon=None, doc=''):
         self.ar.register_action(ActionInfo(menu, name, action, container,
-                                           shortcut, doc=doc))
+                                           shortcut, icon, doc))
 
     def OnEvent(self):
         wx.MessageBox('Main frame')
@@ -53,17 +53,17 @@ class ProtoPanel(wx.Panel):
     counter = 0
 
     def __init__(self, frame, parent, menu='Edit', entry='Foo', scut='Ctrl-F',
-                 container=True):
+                 container=True, icon=None):
         ProtoPanel.counter += 1
         name = 'Panel %d' % ProtoPanel.counter
         wx.Panel.__init__(self, parent, name=name)
         container = container and self or None
         frame.register_menu_entry(menu, entry,
                                   lambda x: wx.MessageBox(name), 
-                                  container, scut, 'Doc for '+name)
+                                  container, scut, icon, 'Doc for '+name)
         frame.register_menu_entry(menu, entry+' (2)', 
                                   lambda x: wx.MessageBox(name+' (2)'), 
-                                  container, None, 'Doc 2 for '+name)
+                                  container, None, icon, 'Doc 2 for '+name)
         wx.TextCtrl(self, value=name)
 
 
