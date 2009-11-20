@@ -54,7 +54,7 @@ class KeywordEditorUi(grid.Grid):
             RideGridCellChanged(cell=(row, col), value=value, previous=previous,
                                 grid=self).publish()
 
-    def cut(self):
+    def OnCut(self, event=None):
         """Cuts the contents of the selected cell(s). This does a normal cut
         action if the user is editing a cell, otherwise it places the selected
         range of cells on the clipboard.
@@ -67,7 +67,7 @@ class KeywordEditorUi(grid.Grid):
             self._move_to_clipboard(delete=True)
             self._remove_selected_rows()
 
-    def copy(self):
+    def OnCopy(self, event=None):
         """Copy the contents of the selected cell(s). This does a normal copy
         action if the user is editing a cell, otherwise it places the selected
         range of cells on the clipboard.
@@ -77,7 +77,7 @@ class KeywordEditorUi(grid.Grid):
         else:
             self._move_to_clipboard()
 
-    def paste(self):
+    def OnPaste(self, event=None):
         """Paste the contents of the clipboard. If a cell is being edited just
         do a normal paste. If a cell is not being edited, paste whole rows.
         """
@@ -106,7 +106,7 @@ class KeywordEditorUi(grid.Grid):
         self._save_keywords()
         self.set_dirty()
 
-    def delete(self, event=None):
+    def OnDelete(self, event=None):
         if not self.IsCellEditControlShown():
             self._move_to_clipboard(copy=False, delete=True)
         else:
@@ -147,22 +147,20 @@ class KeywordEditorUi(grid.Grid):
         if delete:
             self.set_dirty()
             self._save_keywords()
+            self._remove_selected_rows()
         if len(clipboard) > 0:
             GRID_CLIPBOARD.set_contents(clipboard)
 
     def _remove_selected_rows(self):
         """If whole row(s) are selected, remove them from the grid"""
-        for row in sorted(self._get_selected_rows(), reverse=True):
+        for row in sorted(self.GetSelectedRows(), reverse=True):
             self.DeleteRows(row, 1)
 
     def _get_selected_rows(self):
         rows = self.GetSelectedRows()
-        # FIXME: please refactor
         if not rows:
-            if self._active_row is not None:
-                rows = [self._active_row]
-            else:
-                rows = [self._active_coords.topleft.row]
+            rows = self._active_row and [self._active_row] or \
+                    [self._active_coords.topleft.row]
         return rows
 
     def _set_cell_font(self, cell, color=None, underlined=False):
@@ -201,8 +199,8 @@ class KeywordEditorUi(grid.Grid):
 
     def OnLabelRightClick(self, event):
         self._active_row = event.GetRow()
-        PopupMenu(self, ['Insert Rows', 'Delete Rows', 'Comment Rows\tCtrl-3',
-                         'Uncomment Rows\tCtrl-4'])
+        PopupMenu(self, ['Insert Rows', 'Delete Rows\tDel',
+                         'Comment Rows\tCtrl-3', 'Uncomment Rows\tCtrl-4'])
         self._active_row = None
         event.Skip()
 
@@ -265,7 +263,6 @@ class KeywordEditorUi(grid.Grid):
 
 
 class KeywordEditor(KeywordEditorUi):
-
     _no_cell = grid.GridCellCoords(-1, -1)
 
     def __init__(self, parent, keywords, tree):
@@ -290,6 +287,7 @@ class KeywordEditor(KeywordEditorUi):
         self.Bind(wx.EVT_IDLE, self.OnIdle)
         self.Bind(grid.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
         self.Bind(grid.EVT_GRID_CELL_LEFT_DCLICK, self.OnCellLeftDClick)
+        self.Bind(grid.EVT_GRID_CELL_RIGHT_CLICK, self.OnCellRightClick)
 
     def _write_data(self, keywords):
         for row, kw in enumerate(keywords):
@@ -389,6 +387,10 @@ class KeywordEditor(KeywordEditorUi):
             self._tree.select_user_keyword_node(uk)
             return True
         return False
+
+    def OnCellRightClick(self, event):
+        PopupMenu(self, ['Cut\tCtrl-X', 'Copy\tCtrl-C', 'Paste\tCtrl-V', '---',
+                         'Delete\tDel'])
 
     def OnIdle(self, evt):
         if not self.IsShownOnScreen() or self.IsCellEditControlShown():
