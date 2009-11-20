@@ -36,7 +36,7 @@ class RecentFilesPlugin(Plugin):
         # self._frame.subscribe(self.OnSuiteOpened, ('core', 'open','resource'))
 
     def deactivate(self):
-        self.remove_added_menu_items()
+        self.unregister_actions()
         self.unsubscribe(self.OnSuiteOpened, RideOpenSuite)
 
     def OnOpenRecent(self, event):
@@ -93,7 +93,7 @@ class RecentFilesPlugin(Plugin):
                 self._add_file_to_menu(file, n)
         sep = SeparatorInfo('File')
         sep.set_menu_position(before='Exit')
-        self.register_menu_entry(sep)
+        self.register_action(sep)
 
     def _add_file_to_menu(self, file, n):
         item = self._normalize(file)
@@ -102,5 +102,5 @@ class RecentFilesPlugin(Plugin):
         doc = 'Open %s' % item
         action_info = ActionInfo('File', label, self.OnOpenRecent, doc=doc)
         action_info.set_menu_position(before='Exit')
-        self.register_action(action_info)
-        self._files[action_info.id] = item
+        id = self.register_action(action_info)
+        self._files[id] = item
