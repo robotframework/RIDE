@@ -385,6 +385,7 @@ class KeywordEditor(KeywordEditorUi):
         if uk:
             self._set_cell_font((grid.GridCellCoords(row, col)))
             self._marked_cell = None
+            #FIXME: use plugin interface
             self.GetParent().tree.select_user_keyword_node(uk)
             return True
         return False
