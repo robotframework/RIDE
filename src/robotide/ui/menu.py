@@ -448,7 +448,15 @@ class ActionInfo(_MenuInfo):
         order = ['Shift', 'Ctrl', 'Alt']
         tokens = [ t.title() for t in shortcut.replace('+', '-').split('-') ]
         tokens.sort(key=lambda t: t in order and order.index(t) or 42)
-        return '-'.join(tokens)
+        return self._validate_shortcut('-'.join(tokens))
+
+    def _validate_shortcut(self, shortcut):
+        # Don't allow these in menu because they would steal shortcuts from
+        # components that have them automatically. These shortcuts can be
+        # bound to individual components using AcceleratorTable.  
+        if shortcut in ['Esc'] + [ 'F%d' % i for i in range(1, 13) ]:
+            return None
+        return shortcut
 
     def _get_icon(self, icon):
         if not icon:
