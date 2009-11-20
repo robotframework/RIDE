@@ -41,7 +41,7 @@ class ReleaseNotesPlugin(Plugin):
 
     def deactivate(self):
         self.unregister_actions()
-        self.delete_page(self._view)
+        self.delete_tab(self._view)
         self._view = None
 
     def show_if_updated(self):
