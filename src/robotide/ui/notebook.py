@@ -17,7 +17,7 @@ try:
 except ImportError:
     from wx.lib import flatnotebook as fnb
 
-from robotide.publish import RideNotebookTabChange
+from robotide.publish import RideNotebookTabChanging, RideNotebookTabChanged
 
 
 class NoteBook(fnb.FlatNotebook):
@@ -26,9 +26,10 @@ class NoteBook(fnb.FlatNotebook):
         self._app = app
         style = fnb.FNB_NODRAG|fnb.FNB_HIDE_ON_SINGLE_TAB|fnb.FNB_VC8
         fnb.FlatNotebook.__init__(self, parent, style=style)
-        self.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
-        self.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CLOSING, self.OnPageClosing)
-        self._page_closing = False
+        self.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CLOSING, self.OnTabClosing)
+        self.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnTabChanging)
+        self.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGED, self.OnTabChanged)
+        self._tab_closing = False
 
     def add_tab(self, tab, title):
         self.AddPage(tab, title.center(10))
@@ -47,12 +48,11 @@ class NoteBook(fnb.FlatNotebook):
     def tab_is_visible(self, tab):
         return tab == self.GetCurrentPage()
 
-    def OnPageClosing(self, event):
-        self._page_closing = True
+    def OnTabClosing(self, event):
+        self._tab_closing = True
 
-    def OnPageChanging(self, event):
-        if not self._page_changed():
-            self._page_closing = False
+    def OnTabChanging(self, event):
+        if not self._tab_changed():
             return
         oldtitle = self.GetPageText(event.GetOldSelection())
         newindex = event.GetSelection()
@@ -61,10 +61,16 @@ class NoteBook(fnb.FlatNotebook):
             self.GetPage(event.GetSelection()).SetFocus()
         else:
             newtitle = None
-        RideNotebookTabChange(oldtab=oldtitle, newtab=newtitle).publish()
+        RideNotebookTabChanging(oldtab=oldtitle, newtab=newtitle).publish()
 
-    def _page_changed(self):
+    def OnTabChanged(self, event):
+        if not self._tab_changed():
+            self._tab_closing = False
+            return
+        RideNotebookTabChanged().publish()
+
+    def _tab_changed(self):
         """Change event is send even when no tab available or tab is closed"""
-        if not self.GetPageCount() or self._page_closing:
+        if not self.GetPageCount() or self._tab_closing:
             return False
         return True

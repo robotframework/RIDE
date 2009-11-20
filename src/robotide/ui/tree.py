@@ -71,7 +71,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
             accelrators.append((wx.ACCEL_NORMAL, keycode, id))
         self.SetAcceleratorTable(wx.AcceleratorTable(accelrators))
 
-    def populate_tree(self, model):
+    def populate(self, model):
         self._clear_tree_data()
         self._populate_model(model)
         self._refresh_view()
@@ -319,6 +319,10 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
         while node not in self._datafile_nodes:
             node = self.GetItemParent(node)
         return self.GetItemPyData(node).item
+
+    def get_selected_item(self):
+        node = self.GetSelection()
+        return node and self.GetItemPyData(node).item or None
 
     def OnSelChanged(self, event):
         node = event.Item

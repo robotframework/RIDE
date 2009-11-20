@@ -17,38 +17,30 @@ from wx.lib.scrolledpanel import ScrolledPanel
 
 
 class PluginManager(object):
-    _title = 'Manage Plugins'
 
     def __init__(self, notebook):
         self._notebook = notebook
-        self._panel = None
+        self._tab = None
 
     def show(self, plugins):
-        if not self._panel:
-            self._panel = PluginPanel(self._notebook, plugins)
-        if not self._is_notebook_tab_created():
-            self._add_to_notebook()
-        self._notebook.SetSelection(self._notebook.GetPageIndex(self._panel))
+        if not self._tab:
+            self._tab = PluginPanel(self._notebook, plugins, self._show_tab)
+            self._notebook.add_tab(self._tab, 'Manage Plugins')
+        self._show_tab()
 
-    def _is_notebook_tab_created(self):
-        for index in range(self._notebook.GetPageCount()):
-            if self._notebook.GetPageText(index) == self._title:
-                return True
-        return False
-
-    def _add_to_notebook(self):
-        self._notebook.AddPage(self._panel, self._title)
-        self._notebook.SetSelection(self._notebook.GetPageIndex(self._panel))
+    def _show_tab(self):
+        self._notebook.show_tab(self._tab)
 
 
 class PluginPanel(wx.Panel):
 
-    def __init__(self, notebook, plugins):
+    def __init__(self, notebook, plugins, activation_callback):
         wx.Panel.__init__(self, notebook)
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self._create_header(), 0, wx.LEFT|wx.RIGHT|wx.TOP, border=16)
         sizer.Add(self._create_line(), 0, wx.EXPAND|wx.LEFT|wx.RIGHT, border=16)
-        sizer.Add(self._create_body(plugins), 1, wx.EXPAND|wx.ALL, border=16)
+        sizer.Add(self._create_body(plugins, activation_callback),
+                  1, wx.EXPAND|wx.ALL, border=16)
         self.SetSizer(sizer)
 
     def _create_header(self):
@@ -60,7 +52,7 @@ class PluginPanel(wx.Panel):
     def _create_line(self):
         return wx.StaticLine(self)
 
-    def _create_body(self, plugins):
+    def _create_body(self, plugins, activation_callback):
         panel = ScrolledPanel(self, wx.ID_ANY, style=wx.TAB_TRAVERSAL)
         panel.SetupScrolling()
         sizer = wx.FlexGridSizer(1, 2, hgap=8, vgap=8)
@@ -69,8 +61,8 @@ class PluginPanel(wx.Panel):
         sizer.Add(self._create_label(panel, 'Plugin'), 0,
                   wx.BOTTOM|wx.EXPAND, border=8)
         for plugin in plugins:
-            sizer.Add(PluginActivationCheckBox(panel, plugin), 0,
-                      wx.ALIGN_CENTER_HORIZONTAL)
+            sizer.Add(PluginActivationCheckBox(panel, plugin, activation_callback),
+                      flag=wx.ALIGN_CENTER_HORIZONTAL)
             sizer.Add(PluginRow(panel, plugin), 0, wx.EXPAND)
         panel.SetSizer(sizer)
         return panel
@@ -85,19 +77,21 @@ class PluginPanel(wx.Panel):
 
 class PluginActivationCheckBox(wx.CheckBox):
 
-    def __init__(self, parent, plugin):
+    def __init__(self, parent, plugin, activation_callback):
         wx.CheckBox.__init__(self, parent)
         self.SetValue(plugin.active)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckBox)
         if plugin.error:
             self.Enable(False)
         self._plugin = plugin
+        self._callback = activation_callback
 
     def OnCheckBox(self, event):
         if event.IsChecked():
             self._plugin.activate()
         else:
             self._plugin.deactivate()
+        self._callback()
 
 
 class PluginRow(wx.Panel):

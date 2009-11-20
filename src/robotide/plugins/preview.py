@@ -18,7 +18,7 @@ from StringIO import StringIO
 from robotide.ui.menu import ActionInfo
 from robotide.model.tcuk import TestCase, UserKeyword
 from robotide.errors import SerializationError
-from robotide.publish import RideTreeSelection, RideNotebookTabChange
+from robotide.publish import RideTreeSelection, RideNotebookTabChanged
 from robotide.writer.writer import HtmlFileWriter, TxtFileWriter
 
 from plugin import Plugin
@@ -51,12 +51,12 @@ class PreviewPlugin(Plugin):
         self.register_action(ActionInfo('Tools','Preview', self.OnShowPreview,
                                         doc='Show preview of the current file'))
         self.subscribe(self.OnTreeSelection, RideTreeSelection)
-        self.subscribe(self.OnTabChange, RideNotebookTabChange)
+        self.subscribe(self.OnTabChanged, RideNotebookTabChanged)
 
     def deactivate(self):
         self.unsubscribe_all()
-        self.remove_added_menu_items()
-        self.delete_page(self._panel)
+        self.unregister_actions()
+        self.delete_tab(self._panel)
         self._panel = None
 
     def OnShowPreview(self, event):
@@ -68,7 +68,7 @@ class PreviewPlugin(Plugin):
     def OnTreeSelection(self, event):
         self._update_preview(event.item)
 
-    def OnTabChange(self, event):
+    def OnTabChanged(self, event):
         self._update_preview(self.datafile)
 
     def _update_preview(self, item):

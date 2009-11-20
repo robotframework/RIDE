@@ -15,10 +15,9 @@
 import wx
 
 from robotide.editors import Editor
-
 from robotide.ui import Actions
-from robotide.publish import RideTreeSelection, RideNotebookTabChange,\
-                           RideSavingDatafile
+from robotide.publish import RideTreeSelection, RideNotebookTabChanging,\
+    RideNotebookTabChanged, RideSavingDatafile
 
 from plugin import Plugin
 
@@ -52,29 +51,30 @@ class EditorPlugin(Plugin):
         self.register_actions(Actions(_TOOLS, self))
         self.register_actions(Actions(_EDIT, self._tab, self._tab))
         self.subscribe(self.OnTreeItemSelected, RideTreeSelection)
-        self.subscribe(self.OnSaveToModel, RideNotebookTabChange)
+        self.subscribe(self.OnTabChanged, RideNotebookTabChanged)
+        self.subscribe(self.OnSaveToModel, RideNotebookTabChanging)
         self.subscribe(self.OnSaveToModel, RideSavingDatafile)
 
-    def _show_editor(self, item=None):
+    def _show_editor(self):
         if not self._tab:
-            self._tab = self._create_tab()
-        self._tab.create_editor(item or self.get_selected_datafile())
-
-    def _create_tab(self):
-        tab = _EditorTab(self.notebook)
-        self.add_tab(tab, 'Edit')
-        return tab
+            self._tab = _EditorTab(self.notebook)
+            self.add_tab(self._tab, 'Edit')
+        if self.tab_is_visible(self._tab):
+            self._tab.create_editor(self.get_selected_item())
 
     def deactivate(self):
-        self.unergister_actions()
+        self.unregister_actions()
         self.unsubscribe_all()
         self.delete_tab(self._tab)
         self._tab = None
 
     def OnTreeItemSelected(self, message):
-        self._show_editor(message.item)
+        self._show_editor()
 
     def OnOpenEditor(self, event):
+        self._show_editor()
+
+    def OnTabChanged(self, event):
         self._show_editor()
 
     def OnSaveToModel(self, message):
@@ -98,7 +98,7 @@ class _EditorTab(wx.Panel):
         self.editor = Editor(item, self)
         self.sizer.Add(self.editor, 1, wx.ALL|wx.EXPAND)
         self.Layout()
-        self.Show(True)
+        self.Show()
 
     def OnUndo(self, event):
         self.editor.undo()

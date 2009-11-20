@@ -41,7 +41,7 @@ class RIDE(wx.App):
         self.frame = RideFrame(self, _KeywordFilter(self))
         self._plugin_loader = PluginLoader(self)
         self.open_suite(self._path)
-        self.frame.populate_tree(self.model)
+        self.frame.tree.populate(self.model)
         return True
 
     def get_plugins(self):
@@ -104,9 +104,6 @@ class RIDE(wx.App):
         if modified:
             RideSavedDatafiles(datafiles=modified).publish()
         return modified
-
-    def populate_tree(self):
-        self.frame.populate_tree(self.model, self.plugin_manager)
 
 
 class _KeywordFilter(object):

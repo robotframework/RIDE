@@ -116,7 +116,10 @@ class Plugin(object):
         self.__frame.open_suite(path)
 
     def get_selected_datafile(self):
-        return self.__frame.get_selected_datafile()
+        return self.tree.get_selected_datafile()
+
+    def get_selected_item(self):
+        return self.tree.get_selected_item()
 
     def subscribe(self, listener, *topics):
         """Subscribe to notifications for the given topic.
