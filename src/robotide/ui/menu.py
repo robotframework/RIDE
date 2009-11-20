@@ -24,10 +24,10 @@ class ActionRegisterer(object):
 
     def register_action(self, action_info):
         action = Action(action_info)
-        # registering to action_registry needs to happen first
+        # registering order have to be 1.action_registry,  2.menubar, 3.toolbar
         self._action_registry.register(action)
-        self._menubar.register_action(action)
-        self._toolbar.register_toolbar_action(action)
+        self._menubar.register(action)
+        self._toolbar.register(action)
         return action
 
     def register_actions(self, actions):
@@ -136,7 +136,7 @@ class MenuBar(object):
         self._mb.Insert(index, menu.wx_menu, menu.name)
         self._menus.insert(index, menu)
 
-    def register_action(self, action):
+    def register(self, action):
         menu = self._find_menu(action.menu_name)
         if not menu:
             menu = self._create_menu(action.menu_name)
@@ -149,10 +149,6 @@ class MenuBar(object):
         for menu in self._menus:
             if menu.name == registered:
                 return menu
-
-    def remove_action(self, action):
-        menu = self._find_menu(action.menu_name)
-        menu.remove_menu_item(action)
 
 
 class Menu(object):
@@ -251,7 +247,6 @@ class MenuItem(_MenuItem):
 
     def register(self, action):
         if action.has_action() and not self._bound:
-            # This binds also the possible tool bar action for this action
             self._frame.Bind(wx.EVT_MENU, action.action_delegator, id=self.id)
             self._bound = True
         return _MenuItem.register(self, action)
@@ -269,18 +264,51 @@ class SeparatorMenuItem(_MenuItem):
 class ToolBar(object):
 
     def __init__(self, frame):
-        self._tb = wx.ToolBar(frame)
-        self._tb.SetToolBitmapSize((16,16))
         self._frame = frame
-        self._frame.SetToolBar(self._tb)
-        self._tb.Realize()
-        self._icons = []
+        self.wx_toolbar = wx.ToolBar(frame)
+        self.wx_toolbar.SetToolBitmapSize((16,16))
+        self._frame.SetToolBar(self.wx_toolbar)
+        self.wx_toolbar.Realize()
+        self._toolbar_buttons = []
 
-    def register_toolbar_action(self, action):
-        if action.icon and action.icon not in self._icons:
-            action.insert_to_toolbar(self._tb)
-            self._icons.append(action.icon)
-            self._tb.Realize()
+    def register(self, action):
+        if action.has_icon():
+            toolbar_button = self._get_toolbar(action)
+            if not toolbar_button:
+                toolbar_button = ToolBarButton(self._frame, self, action)
+                self._toolbar_buttons.append(toolbar_button)
+            toolbar_button.register(action)
+
+    def _get_toolbar(self, action):
+        for toolbar_button in self._toolbar_buttons:
+            if toolbar_button.icon == action.icon:
+                return toolbar_button
+        return None
+
+    def remove(self, toolbar_button):
+        self._toolbar_buttons.remove(toolbar_button)
+        self.wx_toolbar.RemoveTool(toolbar_button.id)
+        self.wx_toolbar.Realize()
+
+
+class ToolBarButton(object):
+
+    def __init__(self, frame, toolbar, action):
+        self._toolbar = toolbar
+        self.id = wx.NewId()
+        self.icon = action.icon
+        name = action.name.replace('&', '')
+        toolbar.wx_toolbar.AddLabelTool(self.id, label=name, bitmap=action.icon, 
+                                        shortHelp=name, longHelp=action.doc)
+        self._action_delegator = ActionDelegator()
+        frame.Bind(wx.EVT_MENU, self._action_delegator, id=self.id)
+
+    def register(self, action):
+        self._action_delegator.add(action)
+
+    def unregister(self, action):
+        if not self._action_delegator.remove(action):
+            self._toolbar.remove(self)
 
 
 class _Registrable(object):
@@ -289,6 +317,7 @@ class _Registrable(object):
         self.id = None
         self._registered_to = []
         self.action = None
+        self.icon = None
         self.insertion_point = action_info.insertion_point
 
     def _get_insertion_index(self, menu):
@@ -308,9 +337,13 @@ class _Registrable(object):
     def unregister(self):
         for registerer in self._registered_to:
             registerer.unregister(self)
+        self._registered_to = []
 
     def has_action(self):
         return self.action is not None
+
+    def has_icon(self):
+        return self.icon is not None
 
 
 class _Action(_Registrable):
@@ -324,10 +357,6 @@ class _Action(_Registrable):
         self.shortcut = action_info.shortcut
         self.icon = action_info.icon
         self.doc = action_info.doc
-
-    def insert_to_toolbar(self, toolbar):
-        toolbar.AddLabelTool(self.id, self.name, self.icon,
-                             shortHelp=self.name, longHelp=self.doc)
 
     def act(self, event):
         if self.is_active():
@@ -362,7 +391,6 @@ class _MenuSeparator(_Registrable):
     def __init__(self, action_info):
         _Registrable.__init__(self, action_info)
         self.menu_name = action_info.menu_name
-        self.icon = None
         self.name = '---'
 
 
@@ -439,14 +467,15 @@ class ActionRegistry(object):
 class ActionDelegator(object):
 
     def __init__(self):
-        self._actors = []
+        self._actions = []
 
-    def add(self, actor):
-        self._actors.append(actor)
+    def add(self, action):
+        self._actions.append(action)
 
-    def remove(self, actor):
-        self._actors.remove(actor)
+    def remove(self, action):
+        self._actions.remove(action)
+        return len(self._actions) != 0
 
     def __call__(self, event):
-        for actor in self._actors:
-            actor.act(event)
+        for action in self._actions:
+            action.act(event)
