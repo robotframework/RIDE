@@ -58,7 +58,7 @@ class EditorPlugin(Plugin):
     def _show_editor(self):
         if not self._tab:
             self._tab = _EditorTab(self.notebook)
-            self.add_tab(self._tab, 'Edit')
+            self.add_tab(self._tab, 'Edit', allow_closing=False)
         if self.tab_is_visible(self._tab):
             self._tab.create_editor(self.get_selected_item())
 

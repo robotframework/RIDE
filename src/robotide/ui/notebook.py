@@ -30,8 +30,11 @@ class NoteBook(fnb.FlatNotebook):
         self.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnTabChanging)
         self.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGED, self.OnTabChanged)
         self._tab_closing = False
+        self._uncloseable = []
 
-    def add_tab(self, tab, title):
+    def add_tab(self, tab, title, allow_closing=True):
+        if not allow_closing:
+            self._uncloseable.append(tab)
         self.AddPage(tab, title.center(10))
 
     def show_tab(self, tab):
@@ -42,6 +45,8 @@ class NoteBook(fnb.FlatNotebook):
                 self.SetSelection(page)
 
     def delete_tab(self, tab):
+        if tab in self._uncloseable:
+            self._uncloseable.remove(tab)
         page = self.GetPageIndex(tab)
         self.DeletePage(page)
 
@@ -49,6 +54,9 @@ class NoteBook(fnb.FlatNotebook):
         return tab == self.GetCurrentPage()
 
     def OnTabClosing(self, event):
+        if self.GetPage(event.GetSelection()) in self._uncloseable:
+            event.Veto()
+            return
         self._tab_closing = True
 
     def OnTabChanging(self, event):

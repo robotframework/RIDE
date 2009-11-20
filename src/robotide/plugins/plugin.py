@@ -16,7 +16,6 @@ import inspect
 
 from robotide.context import SETTINGS
 from robotide.publish import PUBLISHER
-from robotide.ui.menu import Action
 from robotide import utils
 
 
@@ -97,8 +96,8 @@ class Plugin(object):
             action.unregister()
         self._actions = []
 
-    def add_tab(self, tab, title):
-        self.notebook.add_tab(tab, title)
+    def add_tab(self, tab, title, allow_closing=True):
+        self.notebook.add_tab(tab, title, allow_closing)
 
     def show_tab(self, tab):
         self.notebook.show_tab(tab)
