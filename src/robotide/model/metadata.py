@@ -19,11 +19,12 @@ class Metadata(utils.RobotDataList):
 
     def _parse_data(self, data):
         for name, value in data.items():
-            self.append(MetaItem(name, value))
+            self.append(MetaItem(self.datafile, name, value))
 
     def new_metadata(self, name, value):
-        self.append(MetaItem(name, value))
-        
+        self.append(MetaItem(self.datafile, name, value))
+        self.datafile.dirty = True
+
     def serialize(self, serializer):
         for meta in self:
             meta.serialize(serializer)
@@ -31,10 +32,15 @@ class Metadata(utils.RobotDataList):
 
 class MetaItem(object):
 
-    def __init__(self, name, value=None):
+    def __init__(self, datafile, name, value=None):
         self.name = name
         self.value = value
+        self._datafile = datafile
 
     def serialize(self, serializer):
         if self.name:
             serializer.setting('Meta: %s' % self.name, [self.value])
+
+    def set_name_and_value(self, name, value):
+        self.name, self.value = name, value
+        self._datafile.dirty = True

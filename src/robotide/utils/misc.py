@@ -80,3 +80,7 @@ class RobotDataList(list):
             self.datafile.dirty = True
             return True
         return False
+
+    def pop(self, index):
+        self.datafile.dirty = True
+        list.pop(self, index)

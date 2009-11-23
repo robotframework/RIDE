@@ -61,11 +61,12 @@ class _TcUkBase(object):
     def _mark_dirty(self):
         self.datafile.dirty = True
 
+
 class TestCase(_TcUkBase):
 
     def __init__(self, datafile, data=None, name=None):
         _TcUkBase.__init__(self, datafile, data, name)
-        self.settings = TestCaseSettings(data)
+        self.settings = TestCaseSettings(datafile, data)
 
     def delete(self):
         self.datafile.tests.remove(self)
@@ -81,7 +82,7 @@ class UserKeyword(_TcUkBase):
 
     def __init__(self, datafile, data=None, name=None):
         _TcUkBase.__init__(self, datafile, data, name)
-        self.settings = UserKeywordSettings(data)
+        self.settings = UserKeywordSettings(datafile, data)
         self.source = datafile.name
 
     shortdoc = property(lambda self: self.doc.split('\n')[0])
@@ -98,12 +99,12 @@ class UserKeyword(_TcUkBase):
 
 class TestCaseSettings(object):
 
-    def __init__(self, data):
-        self.doc = Documentation(data)
-        self.setup = Setup(data)
-        self.teardown = Teardown(data)
-        self.tags = Tags(data)
-        self.timeout = Timeout(data)
+    def __init__(self, datafile, data):
+        self.doc = Documentation(datafile, data)
+        self.setup = Setup(datafile, data)
+        self.teardown = Teardown(datafile, data)
+        self.tags = Tags(datafile, data)
+        self.timeout = Timeout(datafile, data)
 
     def serialize_before_kws(self, serializer):
         for setting in [self.doc, self.tags, self.timeout, self.setup]:
@@ -118,11 +119,11 @@ class TestCaseSettings(object):
 
 class UserKeywordSettings(object):
 
-    def __init__(self, data):
-        self.doc = Documentation(data)
-        self.args = Arguments(data)
-        self.timeout = Timeout(data)
-        self.return_value = ReturnValue(data)
+    def __init__(self, datafile, data):
+        self.doc = Documentation(datafile, data)
+        self.args = Arguments(datafile, data)
+        self.timeout = Timeout(datafile, data)
+        self.return_value = ReturnValue(datafile, data)
 
     def serialize_before_kws(self, serializer):
         for setting in [self.args, self.doc, self.timeout]:

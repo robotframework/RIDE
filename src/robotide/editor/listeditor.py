@@ -11,7 +11,6 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from robotide.publish.messages import RideDatafileEdited
 
 import wx
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
@@ -23,8 +22,9 @@ class ListEditor(wx.Panel):
     _menu = ['Edit', 'Move Up', 'Move Down', '---', 'Delete']
     _buttons = []
     
-    def __init__(self, parent, columns, data=[]):
+    def __init__(self, parent, tree, columns, data):
         wx.Panel.__init__(self, parent)
+        self._tree = tree
         self._data = data
         self._list = AutoWidthColumnList(self, columns, data)
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected)
@@ -53,11 +53,11 @@ class ListEditor(wx.Panel):
         
     def OnItemSelected(self, event):
         self._selection = event.GetIndex()
-        
+
     def OnItemActivated(self, event):
         pass
-            
-    def OnMoveUp(self, event):        
+
+    def OnMoveUp(self, event):
         if self._selection < 1:
             return
         self._switch_items(self._selection, self._selection-1)
@@ -72,7 +72,7 @@ class ListEditor(wx.Panel):
     def _switch_items(self, ind1, ind2):
         self._data.swap(ind1, ind2)
         self.update_data()
-        
+
     def OnDelete(self, event):
         if self._selection == -1:
             return
@@ -81,20 +81,15 @@ class ListEditor(wx.Panel):
         if self._selection >= len(self._data):
             self._selection = len(self._data) - 1
         self._list.Select(self._selection, True)
-        
+
     def update_data(self):
         self._list.DeleteAllItems()
         self._list.insert_data(self._data)
-        self.set_dirty()
-        
+        self._tree.mark_dirty(self._data.datafile)
+
     def update_selected_item(self, data):
         self._list.update_item(self._selection, data)
-    
-    def set_dirty(self):
-        if not self._data.datafile.dirty:
-            self._data.datafile.set_dirty()
-            RideDatafileEdited(datafile=self._data.datafile).publish()
-    
+
     def _check_modified_time(self, event_name):
         if self._data.datafile.has_been_modified_on_disk():
             return self._show_modified_on_disk()

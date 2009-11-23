@@ -296,7 +296,9 @@ class KeywordEditor(KeywordEditorUi):
         self.AutoSizeRows()
 
     def set_dirty(self):
-        self.GetParent().set_dirty()
+        # TODO: it would be better to not set dirty directly
+        self._datafile.dirty = True
+        self._tree.mark_dirty(self._datafile)
 
     def save(self):
         self._hide_tooltip()

@@ -20,7 +20,7 @@ except ImportError:
 
 from robotide.model.tcuk import UserKeyword
 from robotide.model.files import _TestSuite
-from robotide.publish import RideTreeSelection, RideDatafileEdited, PUBLISHER
+from robotide.publish import RideTreeSelection
 from robotide import utils
 
 from images import TreeImageList
@@ -53,11 +53,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self.SetImageList(self._images)
         self._history = utils.History()
         self._resource_root = None
-        self._start_to_listen_events()
         self._bind_keys()
-
-    def _start_to_listen_events(self):
-        PUBLISHER.subscribe(self.OnDatafileEdited, RideDatafileEdited)
 
     def _bind_keys(self):
         accelrators = []
@@ -273,8 +269,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         if node:
             self.SelectItem(node)
 
-    def OnDatafileEdited(self, event):
-        self._mark_dirty(self._get_datafile_node(event.datafile))
+    def mark_dirty(self, datafile):
+        self._mark_dirty(self._get_datafile_node(datafile))
 
     def unset_dirty(self):
         for node in self._datafile_nodes:
