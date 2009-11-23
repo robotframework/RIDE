@@ -26,7 +26,7 @@ class ImportSettings(utils.RobotDataList):
                           'Variables': VariablesImport}
         for item in data:
             import_class = import_classes[item.name]
-            self.append(import_class(item._item.value))
+            self.append(import_class(self.datafile, item._item.value))
 
     def new_resource(self, value):
         self._new_import(ResourceImport, [value])
@@ -44,7 +44,8 @@ class ImportSettings(utils.RobotDataList):
         self._new_import(VariablesImport, utils.split_value(value))
 
     def _new_import(self, class_, value):
-        self.append(class_(value))
+        self.append(class_(self.datafile, value))
+        self.datafile.dirty = True
 
     def serialize(self, serializer):
         for item in self:

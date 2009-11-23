@@ -21,11 +21,12 @@ class _Setting(object):
     _serialized_name = property(lambda self: utils.name_from_class(self))
     _serialized_value = property(lambda self: self.value)
 
-    def __init__(self, data=None):
+    def __init__(self, datafile, data=None):
         if data:
             self.value = self._get_value(data)
         else:
             self.value = self._initial
+        self.datafile = datafile
 
     def serialize(self, serializer):
         if self.active():
@@ -44,6 +45,7 @@ class _Setting(object):
 
     def set_str_value(self, value):
         self.value = [ v.strip() for v in utils.split_value(value) ]
+        self.datafile.dirty = True
 
 
 class Documentation(_Setting):
@@ -60,6 +62,7 @@ class Documentation(_Setting):
 
     def set_str_value(self, doc):
         self.value = doc and [doc] or []
+        self.datafile.dirty = True
 
 
 class ForceTags(_Setting):
@@ -182,10 +185,10 @@ class ResourceImport(_Import):
 
     def set_str_value(self, value):
         self.value = [value]
+        self.datafile.dirty = True
 
 class LibraryImport(_Import):
     _serialized_name = 'Library'
 
 class VariablesImport(_Import):
     _serialized_name = 'Variables'
-

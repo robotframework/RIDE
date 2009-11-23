@@ -74,9 +74,6 @@ class RideNotebookTabChanging(RideMessage):
 class RideNotebookTabChanged(RideMessage):
     pass
 
-class RideDatafileEdited(RideMessage):
-    data = ['datafile']
-
 class RideSavingDatafile(RideMessage):
     """`datafile` is None if all datafiles are going to be saved"""
     data = ['datafile']

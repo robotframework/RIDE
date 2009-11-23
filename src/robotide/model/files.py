@@ -201,9 +201,6 @@ class _AbstractDataFile(object):
     def get_variable_imports(self):
         return self.settings.imports.get_variable_imports()
 
-    def get_datafile(self):
-        return self
-
     def has_been_modified_on_disk(self):
         return self._get_stat(self.source) != self._stat
 

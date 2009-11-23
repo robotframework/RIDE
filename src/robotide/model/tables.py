@@ -126,10 +126,12 @@ class VariableTable(object):
         name = name is not None and name or default_name
         self._vars[name] = value
         self._order.append(name)
+        self.datafile.dirty = True
 
     def pop(self, index):
         del self._vars[utils.normalize(self._order[index], ignore=['_'])]
         self._order.pop(index)
+        self.datafile.dirty = True
 
     def get_name_and_value(self, index):
         key = self._order[index]
@@ -149,6 +151,7 @@ class VariableTable(object):
         if name.startswith('@{'):
             value = utils.split_value(value)
         self._vars[name] = value
+        self.datafile.dirty = True
 
     def serialize(self, serializer):
         if len(self) == 0:
