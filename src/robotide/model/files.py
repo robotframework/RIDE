@@ -287,11 +287,6 @@ class _TestSuite(_AbstractDataFile):
                 raise NoRideError("Test data file '%s' is not supposed to be "
                                   "edited with RIDE." % data.source)
 
-    def set_source(self, path, parent=False):
-        """Used to set new source when Save As is used."""
-        self.dirty = True
-        self._set_source(path, parent)
-
     def add_suite(self, path):
         if not os.path.exists(os.path.dirname(path)):
             os.mkdir(os.path.dirname(path))
@@ -322,13 +317,6 @@ class TestCaseFile(_TestSuite):
 
     def reload_from_disk(self):
         self.__init__(TestSuiteData(self.source))
-
-    def _set_source(self, path, parent):
-        if not parent:
-            self.source = path
-            self.name = utils.printable_name_from_path(self.source)
-        else:
-            self.source = os.path.join(path, os.path.basename(self.source))
 
     def _validate_serialization(self):
         if not self.tests:
@@ -367,18 +355,6 @@ class InitFile(_TestSuite):
         if os.path.isdir(self.source):
             return self.source
         return os.path.dirname(self.source)
-
-    def _set_source(self, path, parent):
-        #FIXME: Should there be also __init__.txt
-        path = path.replace('__init__.html', '').replace('__init__.tsv', '')
-        if parent:
-            owndir = os.path.split(os.path.dirname(self.source))[1]
-            path = os.path.join(path, owndir)
-        os.mkdir(path)
-        self.source = os.path.join(path, os.path.basename(self.source))
-        self.name = utils.printable_name_from_path(path)
-        for suite in self.suites:
-            suite.set_source(path, parent=True)
 
 
 class ResourceFile(_AbstractDataFile):
