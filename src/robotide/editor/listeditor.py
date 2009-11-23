@@ -21,7 +21,7 @@ from robotide import utils
 class ListEditor(wx.Panel):
     _menu = ['Edit', 'Move Up', 'Move Down', '---', 'Delete']
     _buttons = []
-    
+
     def __init__(self, parent, tree, columns, data):
         wx.Panel.__init__(self, parent)
         self._tree = tree
@@ -39,7 +39,7 @@ class ListEditor(wx.Panel):
         sizer.Layout()
         self._selection = -1
         self._columns = columns
-        
+
     def _create_buttons(self):  
         sizer = wx.BoxSizer(wx.VERTICAL)
         for label in self._buttons:
@@ -50,7 +50,7 @@ class ListEditor(wx.Panel):
 
     def OnRightClick(self, event):
         utils.PopupMenu(self, self._menu)
-        
+
     def OnItemSelected(self, event):
         self._selection = event.GetIndex()
 
