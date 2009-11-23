@@ -46,6 +46,9 @@ class ValueEditor(wx.Panel):
     def get_value(self):
         return self._editor.GetValue()
 
+    def set_focus(self):
+        self._editor.SetFocus()
+
 
 class MultiLineEditor(ValueEditor):
     _sizer_flags_for_editor = wx.ALL|wx.EXPAND

@@ -40,18 +40,18 @@ class _Dialog(wx.Dialog):
         self._create_buttons()
         self.SetSizer(self._sizer)
         self._sizer.Fit(self)
-        self._editors[0].SetFocus()
+        self._editors[0].set_focus()
 
     def _create_line(self):
         line = wx.StaticLine(self, size=(20,-1), style=wx.LI_HORIZONTAL)
         self._sizer.Add(line, 0, wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.RIGHT|wx.TOP, 5)
-        
+
     def _create_help(self):
         text = wx.StaticText(self, label=get_help(self._title))
         text.SetFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTWEIGHT_NORMAL,
                              wx.FONTSTYLE_NORMAL))
         self._sizer.Add(text, flag=wx.ALL, border=2)
-        
+
     def _create_buttons(self):
         buttons = self.CreateStdDialogButtonSizer(wx.OK|wx.CANCEL)
         self._sizer.Add(buttons, 0, wx.ALIGN_CENTER|wx.ALL, 5)
@@ -88,7 +88,7 @@ class LibraryImportDialog(_Dialog):
 
 class VariablesImportDialog(LibraryImportDialog):
     _title = 'Variable Import'
-          
+
 class ResourceImportDialog(LibraryImportDialog):
     pass
 
