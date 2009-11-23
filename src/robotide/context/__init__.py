@@ -12,13 +12,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-
 import os.path
 
 from robotide.version import VERSION
+from robotide.robotapi import ROBOT_LOGGER
 
 from logger import Logger
-from robotide.robotapi import ROBOT_LOGGER
 from settings import Settings, initialize_settings
 from coreplugins import get_core_plugins
 
