@@ -15,12 +15,11 @@
 import wx.html
 from StringIO import StringIO
 
-from robotide.ui.menu import ActionInfo
 from robotide.model.tcuk import TestCase, UserKeyword
 from robotide.errors import SerializationError
 from robotide.publish import RideTreeSelection, RideNotebookTabChanged
 from robotide.writer.writer import HtmlFileWriter, TxtFileWriter
-from robotide.plugin import Plugin
+from robotide.plugin import Plugin, ActionInfo
 
 
 class InMemoryHtmlWriter(HtmlFileWriter):

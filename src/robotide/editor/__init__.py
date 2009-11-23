@@ -14,8 +14,7 @@
 
 import wx
 
-from robotide.plugin import Plugin
-from robotide.ui import Actions
+from robotide.plugin import Plugin, Actions
 from robotide.publish import RideTreeSelection, RideNotebookTabChanging,\
     RideNotebookTabChanged, RideSavingDatafile
 
