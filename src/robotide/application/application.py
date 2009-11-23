@@ -17,7 +17,7 @@ import sys
 import wx
 
 from robotide.robotapi import ROBOT_VERSION
-from robotide.plugins import Plugin
+from robotide.plugin import Plugin
 from robotide.ui.recentfiles import RecentFilesPlugin
 from robotide.ui.preview import PreviewPlugin
 from robotide.editor import EditorPlugin, Colorizer
