@@ -16,48 +16,34 @@ import os
 import imp
 import inspect
 
-from robotide.context import SETTINGS, LOG
+from robotide.context import LOG
 
-from plugin import Plugin
 from connector import PluginFactory
 
 
 class PluginLoader(object):
 
-    def __init__(self, application):
+    def __init__(self, application, load_dirs, interface, standard_classes):
         self._load_errors = []
-        self.plugins = [ PluginFactory(application, cls)
-                         for cls in self._find_plugin_classes() ]
+        self.plugins = [ PluginFactory(application, cls) for cls in 
+                         standard_classes + self._find_implementing_classes(load_dirs, interface) ]
         if self._load_errors:
             LOG.error('\n\n'.join(self._load_errors))
 
-    def _find_plugin_classes(self):
-        for cls in self._get_standard_plugin_classes():
-            yield cls
-        for path in self._find_plugin_files():
+    def _find_implementing_classes(self, load_dirs, interface):
+        classes = []
+        for path in self._find_python_files(load_dirs):
             for cls in self._import_classes(path):
-                if issubclass(cls, Plugin) and cls is not Plugin:
-                    yield cls
+                if issubclass(cls, interface) and cls is not interface:
+                    classes.append(cls)
+        return classes
 
-    def _get_standard_plugin_classes(self):
-        from releasenotes import ReleaseNotesPlugin
-        from recentfiles import RecentFilesPlugin 
-        from preview import PreviewPlugin
-        from gridcolorizer import Colorizer
-        from editor import EditorPlugin
-        return [ReleaseNotesPlugin, RecentFilesPlugin, PreviewPlugin, 
-                Colorizer, EditorPlugin]
-
-    def _find_plugin_files(self):
-        for path in self._get_plugin_dirs():
+    def _find_python_files(self, load_dirs):
+        for path in load_dirs:
             if os.path.exists(path):
                 for filename in os.listdir(path):
                     if os.path.splitext(filename)[1].lower() == ".py":
                         yield os.path.join(path, filename)
-
-    def _get_plugin_dirs(self):
-        return [SETTINGS.get_path('plugins'),
-                os.path.join(SETTINGS['install root'], 'site-plugins')]
 
     def _import_classes(self, path):
         dirpath, filename = os.path.split(path)

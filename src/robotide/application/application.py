@@ -11,15 +11,19 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from robotide.publish.messages import RideSavedDatafiles
 
-
+import os
 import sys
 import wx
 
 from robotide.robotapi import ROBOT_VERSION
-from robotide.plugins import PluginLoader
-from robotide.publish import RideOpenSuite, RideOpenResource
+from robotide.plugins import PluginLoader, Plugin
+from robotide.plugins.releasenotes import ReleaseNotesPlugin
+from robotide.plugins.recentfiles import RecentFilesPlugin 
+from robotide.plugins.preview import PreviewPlugin
+from robotide.plugins.gridcolorizer import Colorizer
+from robotide.plugins.editor import EditorPlugin
+from robotide.publish import RideOpenSuite, RideOpenResource, RideSavedDatafiles
 from robotide.errors import DataError, NoRideError
 from robotide.ui import RideFrame
 from robotide import context
@@ -39,10 +43,19 @@ class RIDE(wx.App):
         self._check_robot_version()
         self.model = None
         self.frame = RideFrame(self, _KeywordFilter(self))
-        self._plugin_loader = PluginLoader(self)
+        self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(), Plugin,
+                                           self._get_standard_plugin_classes())
         self.open_suite(self._path)
         self.frame.tree.populate(self.model)
         return True
+
+    def _get_standard_plugin_classes(self):
+        return [ReleaseNotesPlugin, RecentFilesPlugin, PreviewPlugin, 
+                Colorizer, EditorPlugin]
+
+    def _get_plugin_dirs(self):
+        return [context.SETTINGS.get_path('plugins'),
+                os.path.join(context.SETTINGS['install root'], 'site-plugins')]
 
     def get_plugins(self):
         return self._plugin_loader.plugins
