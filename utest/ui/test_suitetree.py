@@ -174,7 +174,7 @@ class TestNodeSearchAndSelection(_BaseSuiteTreeTest):
 
     def _select_node_and_assert_parent(self, label, expected_parent_name):
         self._select_node(label)
-        suite_or_resource = self._tree.get_active_datafile()
+        suite_or_resource = self._tree.get_selected_datafile()
         assert_equals(suite_or_resource.name, expected_parent_name)
 
 
