@@ -20,6 +20,7 @@ from robotide.version import VERSION
 from logger import Logger
 from robotide.robotapi import ROBOT_LOGGER
 from settings import Settings, initialize_settings
+from coreplugins import get_core_plugins
 
 
 class RideSettings(Settings):

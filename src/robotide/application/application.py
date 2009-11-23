@@ -17,16 +17,12 @@ import sys
 import wx
 
 from robotide.robotapi import ROBOT_VERSION
-from robotide.ui.recentfiles import RecentFilesPlugin
-from robotide.ui.preview import PreviewPlugin
-from robotide.editor import EditorPlugin, Colorizer
 from robotide.publish import RideOpenSuite, RideOpenResource, RideSavedDatafiles
 from robotide.errors import DataError, NoRideError
 from robotide.ui import RideFrame
 from robotide import context
 from robotide import utils
 
-from releasenotes import ReleaseNotesPlugin
 from datamodel import DataModel
 from pluginloader import PluginLoader
 
@@ -43,14 +39,10 @@ class RIDE(wx.App):
         self.model = None
         self.frame = RideFrame(self, _KeywordFilter(self))
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),
-                                           self._get_standard_plugin_classes())
+                                           context.get_core_plugins())
         self.open_suite(self._path)
         self.frame.tree.populate(self.model)
         return True
-
-    def _get_standard_plugin_classes(self):
-        return [ReleaseNotesPlugin, RecentFilesPlugin, PreviewPlugin, 
-                Colorizer, EditorPlugin]
 
     def _get_plugin_dirs(self):
         return [context.SETTINGS.get_path('plugins'),
