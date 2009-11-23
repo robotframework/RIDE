@@ -45,7 +45,7 @@ def get_tests(patterns, directory=None):
     return tests
 
 def _load_module(dir, file_name):
-    modname = os.path.basename(file_name)
+    modname = os.path.splitext(file_name)[0]
     sys.path.insert(0, dir)
     module = __import__(modname)
     if dir != os.path.dirname(module.__file__):
