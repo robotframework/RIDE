@@ -4,7 +4,7 @@ from robot.utils.asserts import assert_equals, assert_none, assert_false, \
     assert_raises_with_msg
 
 from robotide.publish import RideMessage, RideLogMessage, PUBLISHER
-from robotide.plugins import Plugin
+from robotide.plugin import Plugin
 from plugin_resources import RideTestMessage, RideMessageWithData
 
 
