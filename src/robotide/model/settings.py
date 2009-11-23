@@ -34,6 +34,7 @@ class _Setting(object):
 
     def clear(self):
         self.value = self._initial
+        self.datafile.dirty = True
 
     def active(self):
         return self.value != self._initial

@@ -23,9 +23,9 @@ from settings import Documentation, SuiteSetup, SuiteTeardown, TestSetup,\
 
 
 class ResourceSettingTable(object):
-    
+
     def __init__(self, resource, data):
-        self.doc = Documentation(data)
+        self.doc = Documentation(resource, data)
         self.imports = ImportSettings(resource, data.imports)
 
     def serialize(self, serializer):
@@ -44,10 +44,10 @@ class ResourceSettingTable(object):
 class InitFileSettingTable(ResourceSettingTable):
 
     def __init__(self, suite, data):
-        self.doc = Documentation(data)
-        self.suite_setup = SuiteSetup(data)
-        self.suite_teardown = SuiteTeardown(data)
-        self.force_tags = ForceTags(data)
+        self.doc = Documentation(suite, data)
+        self.suite_setup = SuiteSetup(suite, data)
+        self.suite_teardown = SuiteTeardown(suite, data)
+        self.force_tags = ForceTags(suite, data)
         self.metadata = Metadata(suite, data.metadata)
         self.imports = ImportSettings(suite, data.imports)
 
@@ -59,10 +59,10 @@ class SuiteSettingTable(InitFileSettingTable):
 
     def __init__(self, suite, data):
         InitFileSettingTable.__init__(self, suite, data)
-        self.test_setup = TestSetup(data)
-        self.test_teardown = TestTeardown(data)
-        self.default_tags = DefaultTags(data)
-        self.test_timeout = TestTimeout(data)
+        self.test_setup = TestSetup(suite, data)
+        self.test_teardown = TestTeardown(suite, data)
+        self.default_tags = DefaultTags(suite, data)
+        self.test_timeout = TestTimeout(suite, data)
 
     def __iter__(self):
         return iter([self.doc, self.suite_setup, self.suite_teardown,
