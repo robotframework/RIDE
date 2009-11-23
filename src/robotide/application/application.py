@@ -43,7 +43,7 @@ class RIDE(wx.App):
         self._check_robot_version()
         self.model = None
         self.frame = RideFrame(self, _KeywordFilter(self))
-        self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(), Plugin,
+        self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),
                                            self._get_standard_plugin_classes())
         self.open_suite(self._path)
         self.frame.tree.populate(self.model)

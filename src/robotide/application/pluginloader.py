@@ -17,24 +17,25 @@ import imp
 import inspect
 
 from robotide.context import LOG
+from robotide.plugin import Plugin
 
 from pluginconnector import PluginFactory
 
 
 class PluginLoader(object):
 
-    def __init__(self, application, load_dirs, interface, standard_classes):
+    def __init__(self, application, load_dirs, standard_classes):
         self._load_errors = []
         self.plugins = [ PluginFactory(application, cls) for cls in 
-                         standard_classes + self._find_implementing_classes(load_dirs, interface) ]
+                         standard_classes + self._find_classes(load_dirs) ]
         if self._load_errors:
             LOG.error('\n\n'.join(self._load_errors))
 
-    def _find_implementing_classes(self, load_dirs, interface):
+    def _find_classes(self, load_dirs):
         classes = []
         for path in self._find_python_files(load_dirs):
             for cls in self._import_classes(path):
-                if issubclass(cls, interface) and cls is not interface:
+                if issubclass(cls, Plugin) and cls is not Plugin:
                     classes.append(cls)
         return classes
 

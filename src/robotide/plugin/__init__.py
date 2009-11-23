@@ -13,5 +13,6 @@
 #  limitations under the License.
 
 from robotide.ui import Actions, ActionInfo, SeparatorInfo
+from robotide.publish.messages import *
 
 from plugin import Plugin
