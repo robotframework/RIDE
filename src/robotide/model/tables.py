@@ -95,12 +95,13 @@ class VariableTable(object):
         return data
 
     def _remove_possible_equal_sign(self, name):
-        """Parsed data may have '=' at the end of a variable name"""
+        # Parsed data may have '=' at the end of a variable name
         return name.rstrip('=').strip()
 
     def swap(self, index1, index2):
         self._order[index1], self._order[index2] = self._order[index2], self._order[index1]
-        
+        self.datafile.dirty = True
+
     def value_as_string(self, name):
         value = self._vars[name]
         if isinstance(value, basestring):

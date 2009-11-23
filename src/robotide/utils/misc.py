@@ -64,6 +64,7 @@ class RobotDataList(list):
 
     def swap(self, index1, index2):
         self[index1], self[index2] = self[index2], self[index1]
+        self.datafile.dirty = True
 
     def move_up(self, item):
         index = self.index(item)
