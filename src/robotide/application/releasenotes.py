@@ -74,7 +74,7 @@ WELCOME_TEXT = """
 <ul>
   <li><a href="http://code.google.com/p/robotframework-ride/">
       RIDE project page on Google Code</a></li>
-  <li><a href="http://code.google.com/p/robotframework-ride/wiki/InstallationInstruction">
+  <li><a href="http://code.google.com/p/robotframework-ride/wiki/InstallationInstructions">
       Installation instructions</a></li>
   <li><a href="http://code.google.com/p/robotframework-ride/wiki/ReleaseNotes">
       Release notes</a></li>
