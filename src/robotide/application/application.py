@@ -22,7 +22,7 @@ from robotide.plugins.releasenotes import ReleaseNotesPlugin
 from robotide.plugins.recentfiles import RecentFilesPlugin 
 from robotide.plugins.preview import PreviewPlugin
 from robotide.plugins.gridcolorizer import Colorizer
-from robotide.plugins.editor import EditorPlugin
+from robotide.editor import EditorPlugin
 from robotide.publish import RideOpenSuite, RideOpenResource, RideSavedDatafiles
 from robotide.errors import DataError, NoRideError
 from robotide.ui import RideFrame

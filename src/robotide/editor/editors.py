@@ -16,11 +16,10 @@ import wx
 import os
 
 from robotide import context
-from robotide import utils
 from robotide.model.settings import Documentation, ResourceImport
 from robotide.publish import RideDatafileEdited
+from robotide.utils import RideEventHandler
 
-from eventhandler import RideEventHandler
 from kweditor import KeywordEditor
 from listeditor import ListEditor
 from editordialogs import *

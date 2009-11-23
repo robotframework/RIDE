@@ -18,7 +18,6 @@ try:
 except ImportError:
     from wx.lib.mixins import treemixin
 
-from robotide.editors import RideEventHandler
 from robotide.model.tcuk import UserKeyword
 from robotide.model.files import _TestSuite
 from robotide.publish import RideTreeSelection, RideDatafileEdited, PUBLISHER
@@ -37,7 +36,7 @@ tree_actions ="""
 """
 
 
-class Tree(treemixin.DragAndDrop, wx.TreeCtrl, RideEventHandler):
+class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def __init__(self, parent, action_registry):
         style = wx.TR_DEFAULT_STYLE

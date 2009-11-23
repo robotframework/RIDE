@@ -15,9 +15,8 @@
 import os
 import wx
 
-from robotide.editors import RideEventHandler
 from robotide.publish import RideSavingDatafile, RideSavedDatafiles
-from robotide import utils
+from robotide.utils import OnScreenEnsuringFrame, RideEventHandler
 from robotide.context import SETTINGS
 
 from menu import ActionRegisterer, MenuBar, ToolBar, Actions
@@ -51,7 +50,7 @@ _menudata = """
 """
 
 
-class RideFrame(wx.Frame, RideEventHandler, utils.OnScreenEnsuringFrame):
+class RideFrame(wx.Frame, RideEventHandler, OnScreenEnsuringFrame):
     _default_dir = property(lambda self: os.path.abspath(SETTINGS['default directory']),
                             lambda self, path: SETTINGS.set('default directory', path))
 
