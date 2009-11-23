@@ -18,8 +18,7 @@ import wx
 
 from robotide.robotapi import ROBOT_VERSION
 from robotide.plugins import Plugin
-from robotide.plugins.releasenotes import ReleaseNotesPlugin
-from robotide.plugins.recentfiles import RecentFilesPlugin 
+from robotide.plugins.recentfiles import RecentFilesPlugin
 from robotide.plugins.preview import PreviewPlugin
 from robotide.editor import EditorPlugin, Colorizer
 from robotide.publish import RideOpenSuite, RideOpenResource, RideSavedDatafiles
@@ -28,6 +27,7 @@ from robotide.ui import RideFrame
 from robotide import context
 from robotide import utils
 
+from releasenotes import ReleaseNotesPlugin
 from datamodel import DataModel
 from pluginloader import PluginLoader
 
