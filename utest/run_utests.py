@@ -18,14 +18,13 @@ import sys
 import re
 import getopt
 
-
-base = os.path.abspath(os.path.normpath(os.path.split(sys.argv[0])[0]))
-for path in [ "../src",  'resources/robotdata/libs' ]:
+base = os.path.abspath(os.path.dirname(__file__))
+for path in [ "../src", 'resources/robotdata/libs']:
     path = os.path.join(base, path.replace('/', os.sep))
     if path not in sys.path:
         sys.path.insert(0, path)
-        
-testfile = re.compile("^test_.*\.py$", re.IGNORECASE)          
+
+testfile = re.compile("^test_.*\.py$", re.IGNORECASE)
 
 
 def get_tests(patterns, directory=None):
@@ -40,11 +39,20 @@ def get_tests(patterns, directory=None):
         if os.path.isdir(fullname):
             tests.extend(get_tests(patterns, fullname))
         elif testfile.match(name) and _match_pattern(name, patterns):
-            modname = os.path.splitext(name)[0]
-            modules.append(__import__(modname))
+            modules.append(_load_module(directory, name))
     tests.extend([ unittest.defaultTestLoader.loadTestsFromModule(module)
                    for module in modules ])
-    return tests        
+    return tests
+
+def _load_module(dir, file_name):
+    modname = os.path.basename(file_name)
+    sys.path.insert(0, dir)
+    module = __import__(modname)
+    if dir != os.path.dirname(module.__file__):
+        del(sys.modules[modname])
+        module = __import__(modname)
+    sys.path.pop(0)
+    return module
 
 def _match_pattern(name, patterns):
     if not patterns:
