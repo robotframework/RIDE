@@ -18,8 +18,8 @@ import wx
 
 from robotide.robotapi import ROBOT_VERSION
 from robotide.plugins import Plugin
-from robotide.plugins.recentfiles import RecentFilesPlugin
-from robotide.plugins.preview import PreviewPlugin
+from robotide.ui.recentfiles import RecentFilesPlugin
+from robotide.ui.preview import PreviewPlugin
 from robotide.editor import EditorPlugin, Colorizer
 from robotide.publish import RideOpenSuite, RideOpenResource, RideSavedDatafiles
 from robotide.errors import DataError, NoRideError

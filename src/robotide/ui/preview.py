@@ -21,7 +21,7 @@ from robotide.errors import SerializationError
 from robotide.publish import RideTreeSelection, RideNotebookTabChanged
 from robotide.writer.writer import HtmlFileWriter, TxtFileWriter
 
-from plugin import Plugin
+from robotide.plugins import Plugin
 
 
 class InMemoryHtmlWriter(HtmlFileWriter):

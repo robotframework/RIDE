@@ -17,7 +17,7 @@ import os.path
 from robotide.publish import RideOpenSuite
 from robotide.ui import ActionInfo, SeparatorInfo
 
-from plugin import Plugin
+from robotide.plugins import Plugin
 
 
 class RecentFilesPlugin(Plugin):
