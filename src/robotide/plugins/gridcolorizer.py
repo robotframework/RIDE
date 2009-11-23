@@ -27,10 +27,10 @@ class Colorizer(Plugin):
                      'variable_fg':'forest green', 'default_fg':'black'}
         Plugin.__init__(self, application, default_settings=settings)
 
-    def activate(self):
+    def enable(self):
         self.subscribe(self.OnCellChanged, RideGridCellChanged)
 
-    def deactivate(self):
+    def disable(self):
         self.unsubscribe(self.OnCellChanged, RideGridCellChanged)
 
     def OnCellChanged(self, event):

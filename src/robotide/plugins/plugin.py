@@ -27,7 +27,7 @@ class Plugin(object):
 
         This shouldn't create any user interface elements, only initialize the
         data used by the plugin loader and manager UI. Any user interface 
-        elements that need to be created should be done in the activate() method.
+        elements that need to be created should be done in the enable() method.
         """
         self.name = name or utils.name_from_class(self, drop='Plugin')
         self.doc = doc or inspect.getdoc(self) or ''
@@ -65,15 +65,15 @@ class Plugin(object):
         """
         self.__settings.set(name, value, override=override)
 
-    def activate(self):
-        """This method is called when the plugin is activated.
+    def enable(self):
+        """This method is called when the plugin is enabled.
 
         Possible integration to UI should be done in this method.
         """
         pass
 
-    def deactivate(self):
-        """Undo whatever was done in the activate method."""
+    def disable(self):
+        """Undo whatever was done in the enable method."""
         pass
 
     def config_panel(self, parent):

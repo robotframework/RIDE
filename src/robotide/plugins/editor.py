@@ -45,7 +45,7 @@ class EditorPlugin(Plugin):
         Plugin.__init__(self, application, initially_active=True)
         self._tab = None
 
-    def activate(self):
+    def enable(self):
         self._show_editor()
         self.register_actions(Actions(_EDIT, self._tab, self._tab))
         self.subscribe(self.OnTreeItemSelected, RideTreeSelection)
@@ -60,7 +60,7 @@ class EditorPlugin(Plugin):
         if self.tab_is_visible(self._tab):
             self._tab.create_editor(self.get_selected_item(), self.tree)
 
-    def deactivate(self):
+    def disable(self):
         self.unregister_actions()
         self.unsubscribe_all()
         self.delete_tab(self._tab)

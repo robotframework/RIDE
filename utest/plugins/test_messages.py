@@ -123,7 +123,7 @@ class TestBrokenMessageListener(unittest.TestCase):
         self.plugin = BrokenListenerPlugin()
 
     def tearDown(self):
-        self.plugin.deactivate()
+        self.plugin.disable()
 
     def test_broken_listener(self):
         self.plugin.subscribe(self.plugin.error_listener, RideLogMessage)
@@ -142,7 +142,7 @@ class BrokenListenerPlugin(Plugin):
     def __init__(self):
         self.subscribe(self.broken_listener, RideTestMessage)
 
-    def deactivate(self):
+    def disable(self):
         self.unsubscribe_all()
 
     def broken_listener(self, message):

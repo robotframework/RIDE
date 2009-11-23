@@ -91,9 +91,9 @@ class PluginActivationCheckBox(wx.CheckBox):
 
     def OnCheckBox(self, event):
         if event.IsChecked():
-            self._execute(self._plugin.activate)
+            self._execute(self._plugin.enable)
         else:
-            self._execute(self._plugin.deactivate)
+            self._execute(self._plugin.disable)
         self._callback()
 
     def _execute(self, method):

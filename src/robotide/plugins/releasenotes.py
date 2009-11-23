@@ -34,12 +34,12 @@ class ReleaseNotesPlugin(Plugin):
                         default_settings={'version_shown':''})
         self._view = None
 
-    def activate(self):
+    def enable(self):
         self.register_action(ActionInfo('Help', 'Release Notes', self.show,
                                         doc='Show the release notes'))
         self.show_if_updated()
 
-    def deactivate(self):
+    def disable(self):
         self.unregister_actions()
         self.delete_tab(self._view)
         self._view = None
@@ -53,7 +53,7 @@ class ReleaseNotesPlugin(Plugin):
         if not self._view:
             self._view = self._create_view()
             self.notebook.AddPage(self._view, "Release Notes", select=False)
-        self.show_page(self._view)
+        self.show_tab(self._view)
 
     def _create_view(self):
         panel = wx.Panel(self.notebook)

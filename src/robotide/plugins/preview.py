@@ -47,13 +47,13 @@ class PreviewPlugin(Plugin):
         Plugin.__init__(self, application)
         self._panel = None
 
-    def activate(self):
+    def enable(self):
         self.register_action(ActionInfo('Tools','Preview', self.OnShowPreview,
                                         doc='Show preview of the current file'))
         self.subscribe(self.OnTreeSelection, RideTreeSelection)
         self.subscribe(self.OnTabChanged, RideNotebookTabChanged)
 
-    def deactivate(self):
+    def disable(self):
         self.unsubscribe_all()
         self.unregister_actions()
         self.delete_tab(self._panel)

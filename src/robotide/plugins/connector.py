@@ -45,17 +45,17 @@ class PluginConnector(_PluginConnector):
         self.config_panel = plugin.config_panel
         self.metadata = plugin.metadata 
         if self._settings.get('_active', plugin.initially_active):
-            self.activate()
+            self.enable()
 
-    def activate(self):
+    def enable(self):
         self._settings.set('_active', True)
         self.active = True
-        self._plugin.activate()
+        self._plugin.enable()
 
-    def deactivate(self):
+    def disable(self):
         self._settings.set('_active', False)
         self.active = False
-        self._plugin.deactivate()
+        self._plugin.disable()
 
 
 class BrokenPlugin(_PluginConnector):
