@@ -130,7 +130,7 @@ class _SettingEditor(wx.Panel, RideEventHandler):
     def __init__(self, parent, item, tree):
         wx.Panel.__init__(self, parent)
         self._item = item
-        self._datafile = parent.item
+        self._datafile = item.datafile
         self._create_controls(utils.name_from_class(item))
         self._dialog = dialog_from_class(item)
         self._tree = tree
@@ -197,7 +197,7 @@ class _DocumentationEditor(_SettingEditor):
     def __init__(self, parent, item, tree):
         wx.Panel.__init__(self, parent)
         self._item = item
-        self._datafile = parent.item
+        self._datafile = item.datafile
         self._tree = tree
         self._create_controls('Documentation')
 

@@ -71,6 +71,7 @@ class _AbstractDataFile(object):
         self.keywords = UserKeywordTable(self, data.user_keywords)
         self.dirty = False
         self.suites = []
+        self.datafile = self # Needed by editors that edit suites and tc/uks
 
     def _get_stat(self, path):
         if os.path.isfile(path):

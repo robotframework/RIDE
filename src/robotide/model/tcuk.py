@@ -46,9 +46,6 @@ class _TcUkBase(object):
     def show_add_suite_dialog(self, tree):
         self.datafile.show_add_suite_dialog(tree)
 
-    def get_datafile(self):
-        return self.datafile
-
     def _serialize(self, serializer):
         self.settings.serialize_before_kws(serializer)
         for kw in self.keywords:
