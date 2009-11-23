@@ -4,7 +4,7 @@ import wx
 from robot.utils.asserts import assert_equals, assert_true, assert_false
 
 from resources import PYAPP_REFERENCE #Needed to be able to create wx components
-from robotide.editors.clipboard import GridClipboard
+from robotide.editor.clipboard import GridClipboard
 
 
 class TestGridClipBoard(unittest.TestCase):

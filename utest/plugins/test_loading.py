@@ -1,8 +1,8 @@
 import os
 import unittest
 
-from robotide.plugins.loader import PluginLoader
-from robotide.plugins.releasenotes import ReleaseNotesPlugin
+from robotide.application.pluginloader import PluginLoader
+from robotide.application.releasenotes import ReleaseNotesPlugin
 ReleaseNotesPlugin.auto_show = lambda *args: None
 
 from plugin_resources import FakeApplication
@@ -15,7 +15,7 @@ class TestablePluginLoader(PluginLoader):
 class TestPluginLoader(unittest.TestCase):
 
     def test_plugin_loading(self):
-        loader = TestablePluginLoader(FakeApplication())
+        loader = TestablePluginLoader(FakeApplication(), '.', [])
         self._assert_plugin_loaded(loader, 'Example Plugin 1')
         self._assert_plugin_loaded(loader, 'Example Plugin 2')
         self._assert_plugin_loaded(loader, 'Example Plugin 3')

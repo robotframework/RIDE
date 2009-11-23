@@ -20,17 +20,18 @@ import wx
 
 from robot.utils.asserts import assert_equals, assert_none
 from robotide.application import DataModel
+from robotide.ui.menu import ActionRegisterer, MenuBar, ToolBar
 from resources import FakeSuite, FakeDirectorySuite, FakeUserKeyword,\
     FakeResource, FakeTestCase
 
-from robotide.ui import suitetree as st
+from robotide.ui import tree as st
 st.FakeDirectorySuiteHandler = st.FakeUserKeywordHandler = \
     st.FakeSuiteHandler = st.FakeTestCaseHandler = \
     st.FakeResourceHandler = st.InitFileHandler
 st.Editor = lambda *args: _FakeEditor()
-from robotide.ui.suitetree import SuiteTree
-SuiteTree._show_correct_editor = lambda self, x:None
-SuiteTree.get_active_datafile = lambda self: None
+from robotide.ui.tree import Tree
+Tree._show_correct_editor = lambda self, x:None
+Tree.get_active_datafile = lambda self: None
 
 
 class _FakeMainFrame(wx.Frame):
@@ -65,12 +66,12 @@ class _BaseSuiteTreeTest(unittest.TestCase):
     def setUp(self):
         frame = _FakeMainFrame(None)
         self._model = self._create_model()
-        self._tree = SuiteTree(frame, wx.Panel(frame))
+        self._tree = Tree(frame, ActionRegisterer(MenuBar(frame), ToolBar(frame)))
         imgs =  _FakeImageList()
         self._tree._images = imgs
         self._tree.SetImageList(imgs)
-        self._tree.populate_tree(self._model, plugin_manager=frame)
-        
+        self._tree.populate(self._model)
+
     def _create_model(self):
         suite = self._create_directory_suite('Top Suite', '/topsuite/__init__.html')
         suite.suites = [ self._create_file_suite('Sub Suite %d' % i, 'foo.html') 
@@ -222,7 +223,7 @@ class TestNavigationHistory(_BaseSuiteTreeTest):
         for name in nodes:
             self._select_node(name)
         for _ in range(3):
-            self._tree.go_back()
+            self._tree.OnGoBack(None)
         for name in nodes:    
             self._go_forward_and_assert_selection(name)
 
@@ -236,11 +237,11 @@ class TestNavigationHistory(_BaseSuiteTreeTest):
         self._go_forward_and_assert_selection('Sub Suite 0 Fake UK 2')
 
     def _go_back_and_assert_selection(self, expected_selection):
-        self._tree.go_back()
+        self._tree.OnGoBack(None)
         assert_equals(self._get_selected_label(), expected_selection)
 
     def _go_forward_and_assert_selection(self, expected_selection):
-        self._tree.go_forward()
+        self._tree.OnGoForward(None)
         assert_equals(self._get_selected_label(), expected_selection)
 
 

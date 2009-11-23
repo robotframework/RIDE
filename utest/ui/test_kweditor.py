@@ -2,7 +2,9 @@ import unittest
 
 from robot.utils.asserts import assert_equals
 
-from robotide.editors.kweditor import KeywordEditor, GRID_CLIPBOARD
+from robotide.editor.kweditor import KeywordEditor, GRID_CLIPBOARD
+from robotide.publish.messages import RideGridCellChanged
+from robotide.publish import PUBLISHER
 from resources import PYAPP_REFERENCE #Needed to be able to create wx components
 
 # wx needs to imported last so that robotide can select correct wx version.
@@ -44,7 +46,7 @@ class _KeywordData(object):
 class TestCoordinates(unittest.TestCase):
 
     def setUp(self):
-        self._editor = KeywordEditor(_FakeMainFrame(), _KeywordList())
+        self._editor = KeywordEditor(_FakeMainFrame(), _KeywordList(), None)
 
     def test_cell_selection(self):
         self._editor.SelectBlock(2,2,2,2)
@@ -64,7 +66,7 @@ class TestCoordinates(unittest.TestCase):
 class TestClipBoard(unittest.TestCase):
 
     def setUp(self):
-        self._editor = KeywordEditor(_FakeMainFrame(), _KeywordList())
+        self._editor = KeywordEditor(_FakeMainFrame(), _KeywordList(), None)
 
     def test_copy_one_cell(self):
         self._copy_block_and_verify((0,0,0,0), [[val for val in DATA[0] if val]])
@@ -77,7 +79,7 @@ class TestClipBoard(unittest.TestCase):
 
     def _copy_block_and_verify(self, block, exp_content):
         self._editor.SelectBlock(*block)
-        self._editor.copy()
+        self._editor.OnCopy()
         assert_equals(GRID_CLIPBOARD.get_contents(), exp_content)
         self._verify_grid_content(DATA)
 
@@ -115,7 +117,7 @@ class TestClipBoard(unittest.TestCase):
 
     def _cut_block(self, block):
         self._editor.SelectBlock(*block)
-        self._editor.cut()
+        self._editor.OnCut()
 
     def test_paste_one_cell(self):
         self._copy_and_paste_block((1,0,1,0), (3,0,3,0), DATA + [['kw2']])
@@ -134,9 +136,9 @@ class TestClipBoard(unittest.TestCase):
 
     def _copy_and_paste_block(self, sourceblock, targetblock, exp_content):
         self._editor.SelectBlock(*sourceblock)
-        self._editor.copy()
+        self._editor.OnCopy()
         self._editor.SelectBlock(*targetblock)
-        self._editor.paste()
+        self._editor.OnPaste()
         self._verify_grid_content(exp_content)
 
     def _verify_grid_content(self, data):
@@ -152,7 +154,7 @@ class TestClipBoard(unittest.TestCase):
 
     def test_simple_undo(self):
         self._editor.SelectBlock(*(0,0,0,0))
-        self._editor.cut()
+        self._editor.OnCut()
         self._editor.undo()
         self._verify_grid_content(DATA)
 
@@ -160,25 +162,25 @@ class TestClipBoard(unittest.TestCase):
 class TestEditing(unittest.TestCase):
 
     def setUp(self):
-        self._editor = KeywordEditor(_FakeMainFrame(), _KeywordList())
-        Publisher().subscribe(self._on_cell_changed, ('core', 'grid', 'cell changed'))
+        self._editor = KeywordEditor(_FakeMainFrame(), _KeywordList(), None)
+        PUBLISHER.subscribe(self._on_cell_changed, RideGridCellChanged)#('core', 'grid', 'cell changed')
 
     def test_correct_event_is_published_during_population(self):
         self._editor.write_cell('Hello', 0, 0)
-        assert_equals(self._data['cell'], (0,0))
-        assert_equals(self._data['value'], 'Hello')
-        assert_equals(self._data['previous'], 'kw1')
-        assert_equals(self._data['grid'], self._editor)
+        assert_equals(self._data.cell, (0,0))
+        assert_equals(self._data.value, 'Hello')
+        assert_equals(self._data.previous, 'kw1')
+        assert_equals(self._data.grid, self._editor)
 
     def test_correct_event_is_published_when_editing(self):
         self._editor.SetCellValue(2, 3, 'Robot rulez!')
-        assert_equals(self._data['cell'], (2,3))
-        assert_equals(self._data['value'], 'Robot rulez!')
-        assert_equals(self._data['previous'], '')
-        assert_equals(self._data['grid'], self._editor)
+        assert_equals(self._data.cell, (2,3))
+        assert_equals(self._data.value, 'Robot rulez!')
+        assert_equals(self._data.previous, '')
+        assert_equals(self._data.grid, self._editor)
 
     def _on_cell_changed(self, message):
-        self._data = message.data
+        self._data = message
 
 
 if __name__ == '__main__':
