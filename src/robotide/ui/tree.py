@@ -38,13 +38,13 @@ tree_actions ="""
 
 class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
-    def __init__(self, parent, action_registry):
+    def __init__(self, parent, action_registerer):
         style = wx.TR_DEFAULT_STYLE
         if utils.is_windows:
             style = style|wx.TR_EDIT_LABELS
         treemixin.DragAndDrop.__init__(self, parent, style=style)
         self._root = None
-        action_registry.register_actions(Actions(tree_actions, self, self))
+        action_registerer.register_actions(Actions(tree_actions, self, self))
         self.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnSelChanged)
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnRightClick)
         self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnItemActivated)
