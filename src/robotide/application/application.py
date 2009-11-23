@@ -17,7 +17,7 @@ import sys
 import wx
 
 from robotide.robotapi import ROBOT_VERSION
-from robotide.plugins import PluginLoader, Plugin
+from robotide.plugins import Plugin
 from robotide.plugins.releasenotes import ReleaseNotesPlugin
 from robotide.plugins.recentfiles import RecentFilesPlugin 
 from robotide.plugins.preview import PreviewPlugin
@@ -30,6 +30,7 @@ from robotide import context
 from robotide import utils
 
 from datamodel import DataModel
+from pluginloader import PluginLoader
 
 
 class RIDE(wx.App):
