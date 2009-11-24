@@ -122,12 +122,8 @@ class ResourceFileCache(_FileCache):
         except KeyError:
             #TODO: There is cyclic import which should be removed
             from files import ResourceFileFactory
-            try:
-                resource = ResourceFileFactory(path, create_new) or XMLResource(name)
-            except DataError:
-                resource = None
-            if resource:
-                self._resource_files[path or name] = resource
+            resource = ResourceFileFactory(path, create_new) or XMLResource(name)
+            self._resource_files[path or name] = resource
             return resource
 
     def _get_from_cache(self, source, name):
