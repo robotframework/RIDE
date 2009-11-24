@@ -103,10 +103,12 @@ class TestGettingKeywords(unittest.TestCase):
         self._assert_contains(VARS_SUITE.get_keywords(), 'Open Connection', 'Telnet')
 
     def test_added_resource_affects_found_keywords_in_kw_completion(self):
+        self._robot_2_1_1_required()
         VARS_SUITE.settings.imports.new_resource('resources/resources2/even_more_resources.txt')
         self._assert_contains(VARS_SUITE.get_keywords(), 'Foo', 'even_more_resources.txt')
 
     def test_updated_resource_affects_found_keywords_in_kw_completion(self):
+        self._robot_2_1_1_required()
         self.suite.settings.imports.new_resource('resources/resources2/resources.txt')
         self._assert_does_not_contain(self.suite.get_keywords(), 'Foo', 'even_more_resources.txt')
         self.suite.settings.imports[-1].set_str_value('resources/resources2/even_more_resources.txt')
@@ -154,6 +156,12 @@ class TestGettingKeywords(unittest.TestCase):
         for kw in keywords:
             if kw.name == name and kw.source == source:
                 raise AssertionError("Keyword '%s' found from source %s\n" % (name, source))
+
+    def _robot_2_1_1_required(self):
+        try:
+            import robot.parsing.txtreader
+        except ImportError:
+            raise AssertionError("Robot 2.1.1 or newer required to run this test.")
 
 
 class TestGettingVariablesFromAssistant(unittest.TestCase):
