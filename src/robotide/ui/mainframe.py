@@ -74,7 +74,6 @@ class RideFrame(wx.Frame, RideEventHandler, OnScreenEnsuringFrame):
         self.notebook = NoteBook(splitter, self._application)
         self.tree = Tree(splitter, self.actions)
         splitter.SplitVertically(self.tree, self.notebook, 300)
-        #FIXME: Is this needed? Who should do this currently also MenuBar does this
         self.CreateStatusBar()
         save = ActionInfo('File', '&Save', self.OnSave, self.tree, 'Ctrl-S',
                           'ART_FILE_SAVE', 'Save current suite or resource')
