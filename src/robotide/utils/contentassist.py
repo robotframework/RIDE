@@ -41,8 +41,9 @@ class _ContentAssistTextCtrlBase(object):
         elif keycode in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN] \
                 and self._popup.is_shown():
             self._popup.select_and_scroll(keycode)
-        elif keycode == wx.WXK_RETURN:
+        elif keycode == wx.WXK_RETURN and self._popup.is_shown():
             self.OnFocusLost(event)
+            return
         elif keycode == wx.WXK_TAB:
             self.OnFocusLost(event, False)
         elif self._popup.is_shown() and keycode < 256:
