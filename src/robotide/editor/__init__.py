@@ -23,6 +23,9 @@ from gridcolorizer import Colorizer
 
 
 _EDIT = """
+[File]
+&Save | Save current suite or resource | Ctrl-S | ART_FILE_SAVE
+
 [Edit]
 &Undo | Undo last modification | Ctrl-Z
 ---
@@ -55,7 +58,7 @@ class EditorPlugin(Plugin):
 
     def _show_editor(self):
         if not self._tab:
-            self._tab = _EditorTab(self.notebook)
+            self._tab = _EditorTab(self.notebook, self)
             self.add_tab(self._tab, 'Edit', allow_closing=False)
         if self.tab_is_visible(self._tab):
             self._tab.create_editor(self.get_selected_item(), self.tree)
@@ -82,7 +85,8 @@ class EditorPlugin(Plugin):
 
 class _EditorTab(wx.Panel):
 
-    def __init__(self, parent):
+    def __init__(self, parent, plugin):
+        self._plugin = plugin
         wx.Panel.__init__(self, parent, style=wx.SUNKEN_BORDER)
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.SetSizer(self.sizer)
@@ -97,6 +101,9 @@ class _EditorTab(wx.Panel):
         self.sizer.Add(self.editor, 1, wx.ALL|wx.EXPAND)
         self.Layout()
         self.Show()
+
+    def OnSave(self, event):
+        self._plugin.save_active_datafile()
 
     def OnUndo(self, event):
         self.editor.undo()

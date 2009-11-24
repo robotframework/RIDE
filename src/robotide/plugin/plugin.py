@@ -118,6 +118,9 @@ class Plugin(object):
     def get_selected_datafile(self):
         return self.tree.get_selected_datafile()
 
+    def save_active_datafile(self):
+        self.__frame.save(self.get_selected_datafile())
+
     def get_selected_item(self):
         return self.tree.get_selected_item()
 

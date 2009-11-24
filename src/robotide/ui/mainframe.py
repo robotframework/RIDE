@@ -19,7 +19,7 @@ from robotide.publish import RideSavingDatafile, RideSavedDatafiles
 from robotide.utils import OnScreenEnsuringFrame, RideEventHandler
 from robotide.context import SETTINGS
 
-from menu import ActionRegisterer, MenuBar, ToolBar, Actions
+from menu import ActionRegisterer, MenuBar, ToolBar, Actions, ActionInfo
 from dialogs import KeywordSearchDialog, AboutDialog
 from filedialogs import NewProjectDialog, NewResourceDialog, ChangeFormatDialog
 from pluginmanager import PluginManager
@@ -36,7 +36,6 @@ _menudata = """
 !&New Suite | Create a new top level suite | Ctrl-N
 !N&ew Resource | Create New Resource File | Ctrl-Shift-N
 ---
-!&Save | Save current suite or resource | Ctrl-S | ART_FILE_SAVE
 !Save &All | Save all changes | Ctrl-Shift-S
 ---
 !E&xit | Exit RIDE | Ctrl-Q
@@ -75,7 +74,12 @@ class RideFrame(wx.Frame, RideEventHandler, OnScreenEnsuringFrame):
         self.notebook = NoteBook(splitter, self._application)
         self.tree = Tree(splitter, self.actions)
         splitter.SplitVertically(self.tree, self.notebook, 300)
+        #FIXME: Is this needed? Who should do this currently also MenuBar does this
         self.CreateStatusBar()
+        save = ActionInfo('File', '&Save', self.OnSave, self.tree, 'Ctrl-S',
+                          'ART_FILE_SAVE', 'Save current suite or resource')
+        save.set_menu_position(before='Save All')
+        self.actions.register_action(save)
 
     def get_selected_datafile(self):
         return self.tree.get_selected_datafile()
@@ -147,12 +151,12 @@ class RideFrame(wx.Frame, RideEventHandler, OnScreenEnsuringFrame):
             self.open_suite(path)
 
     def OnSave(self, event):
-        self._save(self.get_selected_datafile())
+        self.save(self.get_selected_datafile())
 
     def OnSaveAll(self, event):
-        self._save()
+        self.save()
 
-    def _save(self, datafile=None):
+    def save(self, datafile=None):
         files_without_format = self._application.get_files_without_format(datafile)
         for f in files_without_format:
             self._show_format_dialog_for(f)
