@@ -23,10 +23,10 @@ class Plugin(object):
 
     def __init__(self, application, name=None, doc=None, metadata=None,
                  default_settings=None, initially_active=False):
-        """Initialize the plugin. 
+        """Initialize the plugin.
 
         This shouldn't create any user interface elements, only initialize the
-        data used by the plugin loader and manager UI. Any user interface 
+        data used by the plugin loader and manager UI. Any user interface
         elements that need to be created should be done in the enable() method.
         """
         self.name = name or utils.name_from_class(self, drop='Plugin')
@@ -84,44 +84,75 @@ class Plugin(object):
         return None
 
     def register_action(self, action_info):
+        """Registers action to the UI.
+        
+        `action_info` is ActionInfo class containing needed attributes for 
+        creating menu and possible shortcut and/or icon to toolbar. See more 
+        from TODO."""
         action = self.__frame.actions.register_action(action_info)
         self._actions.append(action)
         return action.id
 
     def register_actions(self, action_infos):
+        """Registers actions to the UI."""
         for action_info in action_infos:
             self.register_action(action_info)
 
     def unregister_actions(self):
+        """Unregisters actions added to the UI with register_action(s) methods."""
         for action in self._actions:
             action.unregister()
         self._actions = []
 
     def add_tab(self, tab, title, allow_closing=True):
+        """Adds given `tab` with given `title` to the right side view.
+        
+        `tab` can be any wx container.
+        """
         self.notebook.add_tab(tab, title, allow_closing)
 
     def show_tab(self, tab):
+        """Makes the `tab` added with add_tab visible."""
         self.notebook.show_tab(tab)
 
     def delete_tab(self, tab):
+        """Deletes the `tab` added with add_tab."""
         self.notebook.delete_tab(tab)
 
     def tab_is_visible(self, tab):
+        """Returns whether the `tab` added with add_tab is visible or not."""
         return self.notebook.tab_is_visible(tab)
 
     def new_suite_can_be_opened(self):
+        """Checks is there modified files and asks user to decide what to do.
+        
+        In case there are modified files and user cancels, False is returned."""
         return self.__app.ok_to_open_new()
 
     def open_suite(self, path):
         self.__frame.open_suite(path)
 
     def get_selected_datafile(self):
+        """Returns the datafile which is currently selected in the tree.
+        
+        In case test case or keyword is selected, returns datafile containing 
+        selected item.
+        """
         return self.tree.get_selected_datafile()
 
     def save_active_datafile(self):
+        """Saves the datafile which is currently selected in the tree.
+        
+        In case test case or keyword is selected, saves datafile containing 
+        selected item.
+        """
         self.__frame.save(self.get_selected_datafile())
 
     def get_selected_item(self):
+        """Returns the model item which is currently selected in the tree. 
+        
+        Model item can be test suite, test case, keyword or resource file.
+        """
         return self.tree.get_selected_item()
 
     def subscribe(self, listener, *topics):
@@ -140,9 +171,12 @@ class Plugin(object):
             PUBLISHER.subscribe(listener, topic, key=self)
 
     def unsubscribe(self, listener, *topics):
-        """Unsubscribe to notifications for the given topic."""
+        """Unsubscribes notifications from the defined `topics`.
+        
+        `topics` are same as those used in subscribe."""
         for topic in topics:
             PUBLISHER.unsubscribe(listener, topic, key=self)
 
     def unsubscribe_all(self):
+        """Unsubscribes all the notifications from topics subscribed."""
         PUBLISHER.unsubscribe_all(key=self)
