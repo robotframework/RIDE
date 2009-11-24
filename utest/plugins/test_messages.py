@@ -13,6 +13,9 @@ class TestSubscribingToEvents(unittest.TestCase):
     def setUp(self):
         self.plugin = SubscribingPlugin()
 
+    def tearDown(self):
+        self.plugin.disable()
+
     def test_subscribing_with_class(self):
         RideTestMessage().publish()
         assert_equals(self.plugin.class_handler_topic, 'ride.test')
@@ -52,6 +55,11 @@ class TestUnsubscribingFromEvents(unittest.TestCase):
 
     def setUp(self):
         self.plugin = SubscribingPlugin()
+        self._unsubscribe_all = True
+
+    def tearDown(self):
+        if self._unsubscribe_all:
+            self.plugin.unsubscribe_all()
 
     def test_unsubscribe_with_class(self):
         listener_count = len(PUBLISHER._listeners[self.plugin])
@@ -106,6 +114,7 @@ class TestUnsubscribingFromEvents(unittest.TestCase):
 
     def test_unsubscribe_all(self):
         self.plugin.unsubscribe_all()
+        self._unsubscribe_all = False
         RideTestMessage().publish()
         RideMessageWithData(data_item='Data', more_data=[1,2,3]).publish()
         assert_none(self.plugin.class_handler_topic)
