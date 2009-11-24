@@ -12,14 +12,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-
 import unittest
-import wx
 
 from robot.utils.asserts import assert_equals
 
 from robotide.utils.contentassist import ContentAssistPopup
-from resources import PYAPP_REFERENCE
+from resources import PYAPP_REFERENCE as _
+import wx
 
 
 class TestIsVariableRegexp(unittest.TestCase):
@@ -39,3 +38,6 @@ class TestIsVariableRegexp(unittest.TestCase):
         for comb in ['', 'foo' 'some text %']:
             assert_equals(self.popup._get_variable_start_index(comb), -1)
 
+
+if __name__ == '__main__':
+    unittest.main()
