@@ -71,8 +71,10 @@ class RideTreeSelection(RideMessage):
 class RideNotebookTabChanging(RideMessage):
     data = ['oldtab', 'newtab']
 
+
 class RideNotebookTabChanged(RideMessage):
     pass
+
 
 class RideSavingDatafile(RideMessage):
     """`datafile` is None if all datafiles are going to be saved"""
@@ -81,6 +83,11 @@ class RideSavingDatafile(RideMessage):
 
 class RideSavedDatafiles(RideMessage):
     data = ['datafiles']
+
+
+class RideSaveAll(RideMessage):
+    pass
+
 
 class RideOpenResource(RideMessage):
     data = ['path']

@@ -1,70 +1,65 @@
-T S V T E S T S
-
-*Setting*	*Value*	*Value*	*Value*	*Value*	*Value*	*Value*	*Value*	
-Resource	golden_resource.html							
-Library	OperatingSystem							
-Documentation	Test cases for IDE compatibility							
-Suite Setup	My Suite Setup							
-Suite Teardown	My Suite Teardown							
-Test Setup	My Test Setup							
-Test Teardown	My Test Teardown							
-Default Tags	d1	d2						
-Force Tags	force1	force 2						
-Test Timeout	1 min							
-Meta: My Meta Data	This has some interesting values							
-								
-
-*Variable*	*Value*	*Value*	*Value*	*Value*	*Value*	*Value*	*Value*	
-${SCALAR_VAR}	Hello, World!							
-@{LIST}	1	2	3	4				
-${unicode}	§öäå							
-								
-
-*Test Case*	*Action*	*Argument*	*Argument*	*Argument*	*Argument*	*Argument*	*Argument*	
-Passing Test	[Documentation]	This is a passing test						
-	[Tags]	tag1	tag2	tag3				
-	[Timeout]	20 seconds						
-	Log Many	Hello	World	${CURDIR}	@{LIST}	${UNICODE}		
-	Log Many	1	2	3	4	5	6	
-	...	7	8	9	10	11	12	
-	Should Not Contain	${CURDIR}	golden					
-	Curdir in Resource							
-								
-User Keywords	${ret} =	User Keyword	args					
-	Should Be Equal	${ret}	Success					
-	Resource UK	my value						
-								
-Challenging Test	[Setup]							
-	:: FOR	${i}	IN	@{list}				
-		Log	${i}					
-	:: FOR	${x}	${y}	IN RANGE	10			
-		${result} =	Evaluate	${x}*${y}				
-		Log	${result}					
-	:: PARALLEL							
-		Fail Unless	@{list}[0]==1					
-		Log	Inside Paralell Block					
-								
-Failing Teardown	No Operation							
-	[Teardown]	Fail						
-								
-Unicode §	Log	½¼¤						
-	Should Be Equal	${unicode}	§öäå					
-								
-
-*Keyword*	*Action*	*Argument*	*Argument*	*Argument*	*Argument*	*Argument*	*Argument*	
-My Test Setup	Log	Hello from test setup						
-								
-My Suite Setup	Log	Hello from suite setup						
-								
-My Test Teardown	Log	Hello from test teardown						
-								
-My Suite Teardown	Log	Hello from suite teardown						
-								
-User Keyword	[Arguments]	${arg}	${default}=default	@{list}				
-	[Documentation]	This is a User Keyword						
-	Log	${arg}						
-	Log	${default}						
-	Log Many	@{list}						
-	[Return]	Success						
-								
-
+*Setting*	*Value*	*Value*	*Value*	*Value*	*Value*	*Value*	*Value*
+Documentation	Test cases for IDE compatibility						
+Suite Setup	My Suite Setup						
+Suite Teardown	My Suite Teardown						
+Test Setup	My Test Setup						
+Test Teardown	My Test Teardown						
+Force Tags	force1	force 2					
+Default Tags	d1	d2					
+Test Timeout	1 minute						
+Meta: My Meta Data	This has some interesting values						
+Resource	golden_resource.html						
+Library	OperatingSystem						
+							
+*Variable*	*Value*	*Value*	*Value*	*Value*	*Value*	*Value*	*Value*
+${SCALAR_VAR}	Hello, World!						
+@{LIST}	1	2	3	4			
+${unicode}	§öäå						
+							
+*Test Case*	*Action*	*Argument*	*Argument*	*Argument*	*Argument*	*Argument*	*Argument*
+Passing Test	[Documentation]	This is a passing test					
+	[Tags]	tag1	tag2	tag3			
+	[Timeout]	20 seconds					
+	Log Many	Hello	World	${CURDIR}	@{LIST}	${UNICODE}	
+	Log Many	1	2	3	4	5	6
+	...	7	8	9	10	11	12
+	Should Not Contain	${CURDIR}	golden				
+	Curdir in Resource						
+							
+User Keywords	${ret} =	User Keyword	args				
+	Should Be Equal	${ret}	Success				
+	Resource UK	my value					
+							
+Challenging Test	[Setup]						
+	:FOR	${i}	IN	@{list}			
+		Log	${i}				
+	:FOR	${x}	${y}	IN RANGE	10		
+		${result} =	Evaluate	${x}*${y}			
+		Log	${result}				
+	:PARALLEL						
+		Fail Unless	@{list}[0]==1				
+		Log	Inside Paralell Block				
+							
+Failing Teardown	No Operation						
+	asdasd						
+	[Teardown]	Fail					
+							
+Unicode §	Log	½¼¤					
+	Should Be Equal	${unicode}	§öäå				
+							
+*Keyword*	*Action*	*Argument*	*Argument*	*Argument*	*Argument*	*Argument*	*Argument*
+My Test Setup	Log	Hello from test setup					
+							
+My Suite Setup	Log	Hello from suite setup					
+							
+My Test Teardown	Log	Hello from test teardown					
+							
+My Suite Teardown	Log	Hello from suite teardown					
+							
+User Keyword	[Arguments]	${arg}	${default}=default	@{list}			
+	[Documentation]	This is a User Keyword					
+	Log	${arg}					
+	Log	${default}					
+	Log Many	@{list}					
+	[Return]	Success					
+							

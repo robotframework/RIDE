@@ -15,7 +15,7 @@
 import os
 import wx
 
-from robotide.publish import RideSavingDatafile, RideSavedDatafiles
+from robotide.publish import RideSaveAll, RideSavingDatafile, RideSavedDatafiles
 from robotide.utils import OnScreenEnsuringFrame, RideEventHandler
 from robotide.context import SETTINGS
 
@@ -154,6 +154,7 @@ class RideFrame(wx.Frame, RideEventHandler, OnScreenEnsuringFrame):
 
     def OnSaveAll(self, event):
         self.save()
+        RideSaveAll().publish()
 
     def save(self, datafile=None):
         files_without_format = self._application.get_files_without_format(datafile)
