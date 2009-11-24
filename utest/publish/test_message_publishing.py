@@ -19,7 +19,7 @@ class RideTestMessageWithLongName(RideTestMessage):
     pass
 
 
-class TestEvent(unittest.TestCase):
+class TestMessage(unittest.TestCase):
 
     def test_topic(self):
         assert_equals(RideMessage().topic, 'ride')
@@ -28,9 +28,9 @@ class TestEvent(unittest.TestCase):
                       'ride.test.message.with.long.name')
 
     def test_all_attributes_given(self):
-        evt = RideTestMessageWithAttrs(foo='bar', bar='quux')
-        assert_equals(evt.foo, 'bar')
-        assert_equals(evt.bar, 'quux')
+        msg = RideTestMessageWithAttrs(foo='bar', bar='quux')
+        assert_equals(msg.foo, 'bar')
+        assert_equals(msg.bar, 'quux')
 
     def test_missing_mandatory_attribute(self):
         assert_raises_with_msg(TypeError, _ARGS_ERROR,
