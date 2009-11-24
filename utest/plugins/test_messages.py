@@ -8,7 +8,7 @@ from robotide.plugin import Plugin
 from plugin_resources import RideTestMessage, RideMessageWithData
 
 
-class TestSubscribinigToEvents(unittest.TestCase):
+class TestSubscribingToEvents(unittest.TestCase):
 
     def setUp(self):
         self.plugin = SubscribingPlugin()
