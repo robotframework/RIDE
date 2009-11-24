@@ -26,6 +26,8 @@ for path in [ "../src", 'resources/robotdata/libs']:
 
 testfile = re.compile("^test_.*\.py$", re.IGNORECASE)
 
+loaded_modules = []
+
 
 def get_tests(patterns, directory=None):
     if directory is None:
@@ -39,20 +41,21 @@ def get_tests(patterns, directory=None):
         if os.path.isdir(fullname):
             tests.extend(get_tests(patterns, fullname))
         elif testfile.match(name) and _match_pattern(name, patterns):
-            modules.append(_load_module(directory, name))
+            modules.append(_get_module(directory, name))
     tests.extend([ unittest.defaultTestLoader.loadTestsFromModule(module)
                    for module in modules ])
     return tests
 
-def _load_module(dir, file_name):
-    modname = os.path.splitext(file_name)[0]
-    sys.path.insert(0, dir)
-    module = __import__(modname)
-    if dir != os.path.dirname(module.__file__):
-        del(sys.modules[modname])
-        module = __import__(modname)
-    sys.path.pop(0)
-    return module
+
+def _get_module(directory, name):
+    modname = os.path.splitext(name)[0]
+    if modname in loaded_modules:
+        msg = "Cannot run module '%s' from '%s' as module with same name " +\
+        "already exists. Please rename your module."
+        raise RuntimeError(msg % (modname, directory))
+    loaded_modules.append(modname) 
+    return __import__(modname)
+
 
 def _match_pattern(name, patterns):
     if not patterns:
