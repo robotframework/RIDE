@@ -37,7 +37,9 @@ class Publisher(object):
         del self._listeners[key]
 
 
-class _ListenerWrapper(object):
+class _ListenerWrapper:
+    # Must be an old-style class because wxPython's pubsub doesn't handle
+    # new-style classes in 2.8.7.1. Newer versions have that bug fixed.
 
     def __init__(self, listener, topic):
         self.listener = listener

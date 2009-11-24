@@ -2,12 +2,13 @@
 
 import os
 import sys
-from subprocess import call
 
 src = os.path.join(os.path.dirname(__file__), 'src')
-ride = os.path.join(src, 'bin', 'ride.py')
-os.environ['PYTHONPATH'] = src
+sys.path.insert(0, src)
+
+from robotide import main
+
 try:
-    call(['python', ride] + sys.argv[1:], shell=os.name=='nt')
+    main(sys.argv[1:])
 except KeyboardInterrupt:
     pass
