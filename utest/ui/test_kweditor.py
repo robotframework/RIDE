@@ -5,11 +5,10 @@ from robot.utils.asserts import assert_equals
 from robotide.editor.kweditor import KeywordEditor, GRID_CLIPBOARD
 from robotide.publish.messages import RideGridCellChanged
 from robotide.publish import PUBLISHER
-from resources import PYAPP_REFERENCE #Needed to be able to create wx components
+from resources import FakeSuite, PYAPP_REFERENCE #Needed to be able to create wx components
 
 # wx needs to imported last so that robotide can select correct wx version.
 import wx
-from wx.lib.pubsub import Publisher
 
 
 DATA = [['kw1', '', ''],
@@ -20,12 +19,13 @@ class _FakeMainFrame(wx.Frame):
     def __init__(self):
         wx.Frame.__init__(self, None)
 
-    set_dirty = lambda self: None
+class _FakeTree(object):
+    mark_dirty = lambda self, datafile: None
 
 class _KeywordList(list):
     def __init__(self):
         list.__init__(self)
-        self.datafile = 'TEST SUITE'
+        self.datafile = FakeSuite()
         for item in DATA:
             self.append(_KeywordData(item[0], [val for val in item[1:] if val]))
 
@@ -66,7 +66,7 @@ class TestCoordinates(unittest.TestCase):
 class TestClipBoard(unittest.TestCase):
 
     def setUp(self):
-        self._editor = KeywordEditor(_FakeMainFrame(), _KeywordList(), None)
+        self._editor = KeywordEditor(_FakeMainFrame(), _KeywordList(), _FakeTree())
 
     def test_copy_one_cell(self):
         self._copy_block_and_verify((0,0,0,0), [[val for val in DATA[0] if val]])
