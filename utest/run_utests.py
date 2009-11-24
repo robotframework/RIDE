@@ -19,7 +19,7 @@ import re
 import getopt
 
 base = os.path.abspath(os.path.dirname(__file__))
-for path in [ "../src", 'resources/robotdata/libs']:
+for path in [ "../src"]:
     path = os.path.join(base, path.replace('/', os.sep))
     if path not in sys.path:
         sys.path.insert(0, path)

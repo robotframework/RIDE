@@ -12,12 +12,16 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-
 import unittest
+import sys
+import os
 
 from robot.utils.asserts import assert_equals, assert_true
 from robotide.spec import LibrarySpec
 from robotide.model import cache
+
+from resources import DATAPATH
+sys.path.append(os.path.join(DATAPATH, 'libs'))
 
 
 class TestLibrarySpec(unittest.TestCase):
