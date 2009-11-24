@@ -1,7 +1,6 @@
 import os
 import unittest
 
-from robotide.context.configobj import UnreprError
 from robotide.context.settings import Settings
 
 

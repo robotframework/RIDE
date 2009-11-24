@@ -16,7 +16,6 @@
 import os
 import unittest
 
-from robotide.context.configobj import UnreprError
 from robotide.context.settings import Settings, SectionError,\
                 ConfigurationError, _merge_settings, initialize_settings
 from robotide.context  import settings
