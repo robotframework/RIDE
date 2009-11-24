@@ -17,8 +17,9 @@ import unittest
 from robot.utils.asserts import assert_equals
 
 from robotide.utils.contentassist import ContentAssistPopup
-from resources import PYAPP_REFERENCE as _
-import wx
+
+from resources import PYAPP_REFERENCE as _ # Needed to allow importing wx
+import wx # Needs to be after robotide and PYAPP_REFERENCE import
 
 
 class TestIsVariableRegexp(unittest.TestCase):

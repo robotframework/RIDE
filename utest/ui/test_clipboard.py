@@ -1,5 +1,4 @@
-import unittest 
-import wx
+import unittest
 
 from robot.utils.asserts import assert_equals, assert_true, assert_false
 
@@ -23,3 +22,7 @@ class TestGridClipBoard(unittest.TestCase):
         clipb.set_contents(content)
         assert_false(clipb.is_empty())
         assert_equals(clipb.get_contents(), content)
+
+
+if __name__ == '__main__':
+    unittest.main()
