@@ -46,6 +46,9 @@ class _ContentAssistTextCtrlBase(object):
             return
         elif keycode == wx.WXK_TAB:
             self.OnFocusLost(event, False)
+        elif keycode == wx.WXK_ESCAPE and self._popup.is_shown():
+            self._popup.hide()
+            return
         elif self._popup.is_shown() and keycode < 256:
             self._populate_content_assist(event)
         event.Skip()
