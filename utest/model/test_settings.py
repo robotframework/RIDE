@@ -3,12 +3,13 @@ import unittest
 from robot.utils.asserts import assert_equals
 
 from robotide.model.settings import _Setting
+from resources import FakeSuite
 
 
 class TestGetStrValue(unittest.TestCase):
 
     def setUp(self):
-        self.s = _Setting()
+        self.s = _Setting(FakeSuite())
 
     def test_get_value(self):
         self.s.value = ['some', 'data']
@@ -38,7 +39,7 @@ class TestGetStrValue(unittest.TestCase):
 class TestSetStrValue(unittest.TestCase):
 
     def setUp(self):
-        self.s = _Setting()
+        self.s = _Setting(FakeSuite())
 
     def test_empty_value(self):
         self.s.set_str_value('')
