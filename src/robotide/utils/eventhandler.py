@@ -51,8 +51,7 @@ class RideEventHandler(object):
                             style=wx.YES_NO|wx.CANCEL|wx.ICON_WARNING)
         if ret == wx.YES:
             item.reload_from_disk()
-            # TODO: law of D
-            context.APP.frame.tree.refresh_datafile(item, event)
+            self.refresh_datafile(item, event)
             return True
         elif ret == wx.NO:
             item.serialize(force=True)

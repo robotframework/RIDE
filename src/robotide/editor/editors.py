@@ -150,12 +150,15 @@ class _SettingEditor(wx.Panel, RideEventHandler):
         sizer.Add(utils.create_button(self, 'Clear', self.OnClear))
         sizer.Layout()
         self.SetSizer(sizer)
-        
+
     def _get_value_display(self):
         display = wx.TextCtrl(self, size=(-1, context.SETTING_ROW_HEIGTH))
         display.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
         display.SetEditable(False)
         return display
+
+    def refresh_datafile(self, item, event):
+        self._tree.refresh_datafile(item, event)
 
     def OnEdit(self, event=None):
         self._editing = True
@@ -298,6 +301,9 @@ class _AbstractListEditor(ListEditor, RideEventHandler):
 
     def get_selected_datafile(self):
         return self._datafile
+
+    def refresh_datafile(self, item, event):
+        self._tree.refresh_datafile(item, event)
 
 
 class VariablesListEditor(_AbstractListEditor):
