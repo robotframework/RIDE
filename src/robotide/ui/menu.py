@@ -246,7 +246,7 @@ class MenuItem(_MenuItem):
 
     def __init__(self, frame, menu, action, name):
         _MenuItem.__init__(self, frame, menu, name)
-        pos = action._get_insertion_index(menu.wx_menu)
+        pos = action.get_insertion_index(menu.wx_menu)
         self._wx_menu_item = menu.wx_menu.Insert(pos, self.id, name, action.doc)
 
     def _is_enabled(self):
@@ -266,7 +266,7 @@ class SeparatorMenuItem(_MenuItem):
 
     def __init__(self, frame, menu, action):
         _MenuItem.__init__(self, frame, menu, action.name)
-        pos = action._get_insertion_index(menu.wx_menu)
+        pos = action.get_insertion_index(menu.wx_menu)
         self._wx_menu_item = menu.wx_menu.InsertSeparator(pos)
         self._wx_menu_item.SetId(self.id)
 
@@ -332,16 +332,10 @@ class _Registrable(object):
         self._registered_to = []
         self.action = None
         self.icon = None
-        self.insertion_point = action_info.insertion_point
+        self._insertion_point = action_info.insertion_point
 
-    def _get_insertion_index(self, menu):
-        if not self.insertion_point:
-            return menu.GetMenuItemCount()
-        item = menu.FindItemById(menu.FindItem(self.insertion_point.item))
-        index = menu.GetMenuItems().index(item)
-        if not self.insertion_point.insert_before:
-            index += 1
-        return index
+    def get_insertion_index(self, menu):
+        return self._insertion_point.get_index(menu)
 
     def register(self, registerer, **update_attrs):
         self._registered_to.append(registerer)
@@ -411,7 +405,7 @@ class _MenuSeparator(_Registrable):
 class _MenuInfo(object):
 
     def __init__(self):
-        self.insertion_point = None
+        self.insertion_point = InsertionPoint()
 
     def set_menu_position(self, before=None, after=None):
         self.insertion_point = InsertionPoint(before, after)
@@ -420,8 +414,19 @@ class _MenuInfo(object):
 class InsertionPoint(object):
 
     def __init__(self, before=None, after=None):
-        self.item = before or after
-        self.insert_before = before is not None
+        self._item = before or after
+        self._insert_before = before is not None
+
+    def get_index(self, menu):
+        if not self._item:
+            return menu.GetMenuItemCount()
+        item = menu.FindItemById(menu.FindItem(self._item))
+        if not item: # Specified insertion point not found
+            return menu.GetMenuItemCount()
+        index = menu.GetMenuItems().index(item)
+        if not self._insert_before:
+            index += 1
+        return index
 
 
 def Action(action_info):
