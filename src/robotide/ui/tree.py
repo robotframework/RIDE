@@ -120,7 +120,6 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def _create_resource_root(self):
         self._resource_root = self._create_node(self._root, 'Resources',
                                                 self._images['InitFile'])
-        #FIXME: NoneHAndler not available
         self.SetPyData(self._resource_root, NoneHandler())
 
     def _create_node(self, parent_node, label, img, index=None):
@@ -467,7 +466,6 @@ class _TestOrUserKeywordHandler(_ActionHandler):
     def OnCopy(self, event):
         dlg = self._dialog_class(self.item.datafile, self.item)
         if dlg.ShowModal() == wx.ID_OK:
-            # FIXME: law of Demeter
             copied = self._datalist.copy(self.item, dlg.get_value())
             self._add_copy_to_tree(self._tree.GetItemParent(self._node), copied)
         dlg.Destroy()
@@ -489,7 +487,7 @@ class _TestOrUserKeywordHandler(_ActionHandler):
 
 
 class TestCaseHandler(_TestOrUserKeywordHandler):
-    # FIXME: law of Demeter
+    # TODO: law of Demeter
     _datalist = property(lambda self: self.item.datafile.tests)
     _dialog_class = TestCaseNameDialog
 
@@ -498,7 +496,7 @@ class TestCaseHandler(_TestOrUserKeywordHandler):
 
 
 class UserKeywordHandler(_TestOrUserKeywordHandler):
-    # FIXME: law of Demeter
+    # TODO: law of Demeter
     _datalist = property(lambda self: self.item.datafile.keywords)
     _dialog_class = UserKeywordNameDialog
 
