@@ -73,7 +73,7 @@ class RideFrame(wx.Frame, RideEventHandler, OnScreenEnsuringFrame):
         splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
         splitter.SetMinimumPaneSize(200)
         self.notebook = NoteBook(splitter, self._application)
-        self.actions = ActionRegisterer(MenuBar(self), ToolBar(self))
+        self.actions = ActionRegisterer(self, MenuBar(self), ToolBar(self))
         self.tree = Tree(splitter, self.actions)
         self.actions.register_actions(Actions(_menudata, self, self.tree))
         splitter.SplitVertically(self.tree, self.notebook, 300)

@@ -11,16 +11,19 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+import re
 
 import wx
+
+from keymapping import parse_shortcut
 
 
 class ActionRegisterer(object):
 
-    def __init__(self, menubar, toolbar):
+    def __init__(self, frame, menubar, toolbar):
         self._menubar  = menubar
         self._toolbar = toolbar
-        self._action_registry = ActionRegistry()
+        self._action_registry = ActionRegistry(frame)
 
     def register_action(self, action_info):
         action = Action(action_info)
@@ -208,7 +211,7 @@ class Menu(object):
                                  self._name_builder.get_registered_name
         if not action.shortcut:
             return get_name(action.name)
-        return '%s\t%s' % (get_name(action.name), action.shortcut)
+        return '%s   (%s)' % (get_name(action.name), action.shortcut)
 
     def remove(self, id):
         self.wx_menu.Delete(id)
@@ -221,18 +224,16 @@ class _MenuItem(object):
         self._frame = frame
         self._menu = menu
         self.name = name
-        self.id = wx.NewId()
-        self._bound = False
-        self._actions = []
+        self._action_delegator = ActionDelegator(self._frame)
+        self.id = self._action_delegator.id
         self._wx_menu_item = None
 
     def register(self, action):
-        self._actions.append(action)
-        action.register(self, id=self.id)
+        self._action_delegator.add(action)
+        action.register(self, id=self._action_delegator.id)
 
     def unregister(self, action):
-        self._actions.remove(action)
-        if not self._actions:
+        if self._action_delegator.remove(action):
             self._menu.remove(action.id)
 
     def refresh_availability(self):
@@ -250,16 +251,7 @@ class MenuItem(_MenuItem):
         self._wx_menu_item = menu.wx_menu.Insert(pos, self.id, name, action.doc)
 
     def _is_enabled(self):
-        for action in self._actions:
-            if action.is_active():
-                return True
-        return False
-
-    def register(self, action):
-        if action.has_action() and not self._bound:
-            self._frame.Bind(wx.EVT_MENU, action.action_delegator, id=self.id)
-            self._bound = True
-        return _MenuItem.register(self, action)
+        return self._action_delegator.is_active()
 
 
 class SeparatorMenuItem(_MenuItem):
@@ -272,6 +264,9 @@ class SeparatorMenuItem(_MenuItem):
 
     def _is_enabled(self):
         return False
+
+    def set_enabled(self):
+        pass
 
 
 class ToolBar(object):
@@ -308,13 +303,12 @@ class ToolBarButton(object):
 
     def __init__(self, frame, toolbar, action):
         self._toolbar = toolbar
-        self.id = wx.NewId()
         self.icon = action.icon
+        self._action_delegator = ActionDelegator(frame)
+        self.id = self._action_delegator.id
         name = action.name.replace('&', '')
         toolbar.wx_toolbar.AddLabelTool(self.id, label=name, bitmap=action.icon, 
                                         shortHelp=name, longHelp=action.doc)
-        self._action_delegator = ActionDelegator()
-        frame.Bind(wx.EVT_MENU, self._action_delegator, id=self.id)
 
     def register(self, action):
         self._action_delegator.add(action)
@@ -412,6 +406,7 @@ class _MenuInfo(object):
 
 
 class InsertionPoint(object):
+    _shortcut_remover = re.compile(' {2,}\([^()]+\)$')
 
     def __init__(self, before=None, after=None):
         self._item = before or after
@@ -420,13 +415,22 @@ class InsertionPoint(object):
     def get_index(self, menu):
         if not self._item:
             return menu.GetMenuItemCount()
-        item = menu.FindItemById(menu.FindItem(self._item))
-        if not item: # Specified insertion point not found
+        index = self._find_position_in_menu(menu)
+        if not index:
             return menu.GetMenuItemCount()
-        index = menu.GetMenuItems().index(item)
         if not self._insert_before:
             index += 1
         return index
+
+    def _find_position_in_menu(self, menu):
+        for index in range(0, menu.GetMenuItemCount()):
+            item = menu.FindItemByPosition(index)
+            if self._get_menu_item_name(item).lower() == self._item.lower():
+                return index
+        return None
+
+    def _get_menu_item_name(self, item):
+        return self._shortcut_remover.split(item.GetLabel())[0]
 
 
 def Action(action_info):
@@ -454,15 +458,7 @@ class ActionInfo(_MenuInfo):
         order = ['Shift', 'Ctrl', 'Alt']
         tokens = [ t.title() for t in shortcut.replace('+', '-').split('-') ]
         tokens.sort(key=lambda t: t in order and order.index(t) or 42)
-        return self._validate_shortcut('-'.join(tokens))
-
-    def _validate_shortcut(self, scut):
-        # Don't allow these in menu because they would steal shortcuts from
-        # components that have them automatically. These shortcuts can be
-        # bound to individual components using AcceleratorTable.  
-        if scut in ['Esc']+['F%d' % i for i in range(1, 13)] or len(scut) < 2:
-            return None
-        return scut
+        return '-'.join(tokens)
 
     def _get_icon(self, icon):
         if not icon:
@@ -481,38 +477,64 @@ class SeparatorInfo(_MenuInfo):
 
 class ActionRegistry(object):
 
-    def __init__(self):
+    def __init__(self, frame):
+        self._frame = frame
         self._actions = {}
 
     def register(self, action):
         if action.has_action():
             key = self._get_key(action)
-            delegator = self._actions.setdefault(key, ActionDelegator())
+            delegator = self._actions.setdefault(key, ActionDelegator(self._frame))
             delegator.add(action)
-            action.register(self, action_delegator=delegator)
+            action.register(self)
+            self._update_accerelator_table()
 
     def unregister(self, action):
         key = self._get_key(action)
         if self._actions[key].remove(action):
             del(self._actions[key])
+        self._update_accerelator_table()
 
     def _get_key(self, action):
         return action.shortcut or (action.menu_name, action.name)
 
+    def _update_accerelator_table(self):
+        accerelators = []
+        for shortcut, delegator in self._actions.items():
+            if not isinstance(shortcut, basestring):
+                continue
+            flags, key_code = parse_shortcut(shortcut)
+            accerelators.append(wx.AcceleratorEntry(flags, key_code, delegator.id))
+        self._frame.SetAcceleratorTable(wx.AcceleratorTable(accerelators))
+
 
 class ActionDelegator(object):
 
-    def __init__(self):
+    def __init__(self, frame):
+        self._frame = frame
+        self.id = wx.NewId()
         self._actions = []
 
     def add(self, action):
         self._actions.append(action)
+        if len(self._actions) == 1:
+            self._frame.Bind(wx.EVT_MENU, self, id=self.id)
 
     def remove(self, action):
         """Removes action and returns True if delegator is empty."""
         self._actions.remove(action)
-        return len(self._actions) == 0
+        if len(self._actions) == 0:
+            self._frame.Unbind(wx.EVT_MENU, id=self.id)
+            return True
+        return False
+
+    def is_active(self):
+        for action in self._actions:
+            if action.is_active():
+                return True
+        return False
 
     def __call__(self, event):
         for action in self._actions:
             action.act(event)
+        event.Skip()
