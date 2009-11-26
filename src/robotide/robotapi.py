@@ -13,7 +13,7 @@
 #  limitations under the License.
 
 from robot.utils import version as ROBOT_VERSION
-from robot.utils import normpath
+from robot.utils import normpath, NormalizedDict
 from robot.parsing import TestSuite as TestSuiteData
 from robot.parsing import ResourceFile as ResourceFileData
 from robot.running import TestLibrary
