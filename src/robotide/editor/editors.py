@@ -41,6 +41,9 @@ class WelcomePage(utils.RideHtmlWindow):
     def __init__(self, parent):
         utils.RideHtmlWindow.__init__(self, parent, text=context.ABOUT_RIDE)
 
+    def close(self):
+        self.Show(False)
+
 
 class _RobotTableEditor(wx.Panel):
     title = None
@@ -254,7 +257,7 @@ class TestCaseEditor(_RobotTableEditor):
         wx.Panel.Show(self, show)
 
     def close(self):
-        self.Show(False)
+        _RobotTableEditor.close(self)
         self.kweditor.save()
 
     def save(self):
