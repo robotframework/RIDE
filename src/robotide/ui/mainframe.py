@@ -19,7 +19,7 @@ from robotide.publish import RideSaveAll, RideSavingDatafile, RideSavedDatafiles
 from robotide.utils import OnScreenEnsuringFrame, RideEventHandler
 from robotide.context import SETTINGS
 
-from menu import ActionRegisterer, MenuBar, ToolBar, Actions, ActionInfo
+from menu import ActionRegisterer, MenuBar, ToolBar, Actions
 from dialogs import KeywordSearchDialog, AboutDialog
 from filedialogs import NewProjectDialog, NewResourceDialog, ChangeFormatDialog
 from pluginmanager import PluginManager
@@ -30,12 +30,13 @@ from notebook import NoteBook
 _menudata = """
 [File]
 !&Open | Open file containing tests | Ctrl-O | ART_FILE_OPEN
-!Open &Directory | Open dir containing Robot files | Shift-Ctrl-O | ART_FOLDER_OPEN
+!Open &Directory | Open directory containing datafiles | Shift-Ctrl-O | ART_FOLDER_OPEN
 !Open &Resource | Open a resource file | Ctrl-R
 ---
 !&New Suite | Create a new top level suite | Ctrl-N
 !N&ew Resource | Create New Resource File | Ctrl-Shift-N
 ---
+&Save | Save selected datafile | Ctrl-S | ART_FILE_SAVE
 !Save &All | Save all changes | Ctrl-Shift-S
 ---
 !E&xit | Exit RIDE | Ctrl-Q
@@ -67,18 +68,14 @@ class RideFrame(wx.Frame, RideEventHandler, OnScreenEnsuringFrame):
         self.Show()
 
     def _init_ui(self):
-        self.actions = ActionRegisterer(MenuBar(self), ToolBar(self))
-        self.actions.register_actions(Actions(_menudata, self))
         splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
         splitter.SetMinimumPaneSize(200)
         self.notebook = NoteBook(splitter, self._application)
+        self.actions = ActionRegisterer(MenuBar(self), ToolBar(self))
         self.tree = Tree(splitter, self.actions)
+        self.actions.register_actions(Actions(_menudata, self, self.tree))
         splitter.SplitVertically(self.tree, self.notebook, 300)
         self.CreateStatusBar()
-        save = ActionInfo('File', '&Save', self.OnSave, self.tree, 'Ctrl-S',
-                          'ART_FILE_SAVE', 'Save current suite or resource')
-        save.set_menu_position(before='Save All')
-        self.actions.register_action(save)
 
     def get_selected_datafile(self):
         return self.tree.get_selected_datafile()
