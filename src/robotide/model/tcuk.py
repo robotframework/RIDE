@@ -60,6 +60,7 @@ class _TcUkBase(object):
 
 
 class TestCase(_TcUkBase):
+    datalist = property(lambda self: self.datafile.tests)
 
     def __init__(self, datafile, data=None, name=None):
         _TcUkBase.__init__(self, datafile, data, name)
@@ -76,6 +77,7 @@ class TestCase(_TcUkBase):
 
 
 class UserKeyword(_TcUkBase):
+    datalist = property(lambda self: self.datafile.keywords)
 
     def __init__(self, datafile, data=None, name=None):
         _TcUkBase.__init__(self, datafile, data, name)

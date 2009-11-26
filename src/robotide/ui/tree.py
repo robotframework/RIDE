@@ -487,8 +487,7 @@ class _TestOrUserKeywordHandler(_ActionHandler):
 
 
 class TestCaseHandler(_TestOrUserKeywordHandler):
-    # TODO: law of Demeter
-    _datalist = property(lambda self: self.item.datafile.tests)
+    _datalist = property(lambda self: self.item.datalist)
     _dialog_class = TestCaseNameDialog
 
     def _add_copy_to_tree(self, parent_node, copied):
@@ -496,8 +495,7 @@ class TestCaseHandler(_TestOrUserKeywordHandler):
 
 
 class UserKeywordHandler(_TestOrUserKeywordHandler):
-    # TODO: law of Demeter
-    _datalist = property(lambda self: self.item.datafile.keywords)
+    _datalist = property(lambda self: self.item.datalist)
     _dialog_class = UserKeywordNameDialog
 
     def _add_copy_to_tree(self, parent_node, copied):
