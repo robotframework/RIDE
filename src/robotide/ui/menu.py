@@ -276,7 +276,6 @@ class ToolBar(object):
         self.wx_toolbar = wx.ToolBar(frame)
         self.wx_toolbar.SetToolBitmapSize((16,16))
         self._frame.SetToolBar(self.wx_toolbar)
-        self.wx_toolbar.Realize()
         self._toolbar_buttons = []
 
     def register(self, action):
@@ -285,6 +284,7 @@ class ToolBar(object):
             if not toolbar_button:
                 toolbar_button = ToolBarButton(self._frame, self, action)
                 self._toolbar_buttons.append(toolbar_button)
+                self.wx_toolbar.Realize()
             toolbar_button.register(action)
 
     def _get_toolbar(self, action):
