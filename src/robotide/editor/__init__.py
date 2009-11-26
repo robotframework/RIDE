@@ -58,7 +58,7 @@ class EditorPlugin(Plugin):
 
     def _show_editor(self):
         if not self._tab:
-            self._tab = _EditorTab(self.notebook, self)
+            self._tab = _EditorTab(self)
             self.add_tab(self._tab, 'Edit', allow_closing=False)
         if self.tab_is_visible(self._tab):
             self._tab.create_editor(self.get_selected_item(), self.tree)
@@ -85,9 +85,9 @@ class EditorPlugin(Plugin):
 
 class _EditorTab(wx.Panel):
 
-    def __init__(self, parent, plugin):
+    def __init__(self, plugin):
+        wx.Panel.__init__(self, plugin.notebook, style=wx.SUNKEN_BORDER)
         self._plugin = plugin
-        wx.Panel.__init__(self, parent, style=wx.SUNKEN_BORDER)
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.SetSizer(self.sizer)
         self.editor = None
@@ -103,7 +103,7 @@ class _EditorTab(wx.Panel):
         self.Show()
 
     def OnSave(self, event):
-        self._plugin.save_active_datafile()
+        self._plugin.save_selected_datafile()
 
     def OnUndo(self, event):
         self.editor.undo()

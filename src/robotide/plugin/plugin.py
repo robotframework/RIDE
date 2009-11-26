@@ -140,7 +140,7 @@ class Plugin(object):
         """
         return self.tree.get_selected_datafile()
 
-    def save_active_datafile(self):
+    def save_selected_datafile(self):
         """Saves the datafile which is currently selected in the tree.
         
         In case test case or keyword is selected, saves datafile containing 
