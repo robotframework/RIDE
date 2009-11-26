@@ -16,7 +16,7 @@ import wx
 
 from robotide.plugin import Plugin, Actions
 from robotide.publish import RideTreeSelection, RideNotebookTabChanging,\
-    RideNotebookTabChanged, RideSavingDatafile
+    RideNotebookTabChanged, RideSaving
 
 from editors import Editor
 from gridcolorizer import Colorizer
@@ -54,7 +54,7 @@ class EditorPlugin(Plugin):
         self.subscribe(self.OnTreeItemSelected, RideTreeSelection)
         self.subscribe(self.OnTabChanged, RideNotebookTabChanged)
         self.subscribe(self.OnSaveToModel, RideNotebookTabChanging)
-        self.subscribe(self.OnSaveToModel, RideSavingDatafile)
+        self.subscribe(self.OnSaveToModel, RideSaving)
 
     def _show_editor(self):
         if not self._tab:
