@@ -273,30 +273,37 @@ class ToolBar(object):
 
     def __init__(self, frame):
         self._frame = frame
-        self.wx_toolbar = wx.ToolBar(frame)
-        self.wx_toolbar.SetToolBitmapSize((16,16))
-        self._frame.SetToolBar(self.wx_toolbar)
-        self._toolbar_buttons = []
+        self._wx_toolbar = wx.ToolBar(frame)
+        self._wx_toolbar.SetToolBitmapSize((16,16))
+        self._frame.SetToolBar(self._wx_toolbar)
+        self._buttons = []
 
     def register(self, action):
         if action.has_icon():
-            toolbar_button = self._get_toolbar(action)
-            if not toolbar_button:
-                toolbar_button = ToolBarButton(self._frame, self, action)
-                self._toolbar_buttons.append(toolbar_button)
-                self.wx_toolbar.Realize()
-            toolbar_button.register(action)
+            button = self._get_existing_button(action)
+            if not button:
+                button = self._create_button(action)
+            button.register(action)
 
-    def _get_toolbar(self, action):
-        for toolbar_button in self._toolbar_buttons:
-            if toolbar_button.icon == action.icon:
-                return toolbar_button
+    def _get_existing_button(self, action):
+        for button in self._buttons:
+            if button.icon == action.icon:
+                return button
         return None
 
-    def remove(self, toolbar_button):
-        self._toolbar_buttons.remove(toolbar_button)
-        self.wx_toolbar.RemoveTool(toolbar_button.id)
-        self.wx_toolbar.Realize()
+    def _create_button(self, action):
+        button = ToolBarButton(self._frame, self, action)
+        name = action.name.replace('&', '')
+        self._wx_toolbar.AddLabelTool(button.id, label=name, bitmap=action.icon,
+                                      shortHelp=name, longHelp=action.doc)
+        self._wx_toolbar.Realize()
+        self._buttons.append(button)
+        return button
+
+    def remove(self, button):
+        self._buttons.remove(button)
+        self._wx_toolbar.RemoveTool(button.id)
+        self._wx_toolbar.Realize()
 
 
 class ToolBarButton(object):
@@ -306,9 +313,6 @@ class ToolBarButton(object):
         self.icon = action.icon
         self._action_delegator = ActionDelegator(frame)
         self.id = self._action_delegator.id
-        name = action.name.replace('&', '')
-        toolbar.wx_toolbar.AddLabelTool(self.id, label=name, bitmap=action.icon, 
-                                        shortHelp=name, longHelp=action.doc)
 
     def register(self, action):
         self._action_delegator.add(action)
