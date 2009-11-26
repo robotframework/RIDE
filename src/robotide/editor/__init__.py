@@ -96,6 +96,7 @@ class _EditorTab(wx.Panel):
         self.Show(False)
         if self.editor:
             self.editor.close()
+            self.editor.Destroy()
             self.sizer.Clear()
         self.editor = Editor(item, self, tree)
         self.sizer.Add(self.editor, 1, wx.ALL|wx.EXPAND)
