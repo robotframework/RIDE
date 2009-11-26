@@ -143,6 +143,9 @@ class RideFrame(wx.Frame, RideEventHandler, OnScreenEnsuringFrame):
     def refresh_datafile(self, item, event):
         self.tree.refresh_datafile(item, event)
 
+    def add_resource(self, resource):
+        self.tree.add_resource(resource)
+
     def OnOpenDirectory(self, event):
         if not self._application.ok_to_open_new():
             return

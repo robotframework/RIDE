@@ -75,8 +75,7 @@ class RIDE(wx.App):
             resource = None
         if resource:
             RideOpenResource(path=resource.source).publish()
-            # TODO: law of demeter breakage
-            self.frame.tree.add_resource(resource)
+            self.frame.add_resource(resource)
 
     def import_new_resource(self, datafile, path):
         self.open_resource(path, datafile)
