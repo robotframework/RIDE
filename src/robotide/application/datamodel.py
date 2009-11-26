@@ -86,41 +86,43 @@ class DataModel(object):
             datafiles = [self.suite] + self.suite.suites
         return [ df for df in datafiles if df.dirty and not df.has_format() ]
 
-    def resolve_modified_items(self):
-        mod = []
-        if self.suite:
-            mod.extend(self._resolve_modified_suites(self.suite))
-        for res in self.resources:
-            if res.dirty:
-                mod.append(res)
-        return mod
-
-    def _resolve_modified_suites(self, suite):
-        mod_suites = []
-        if suite.dirty:
-            mod_suites.append(suite)
-        for suite in suite.suites:
-            mod_suites.extend(self._resolve_modified_suites(suite))
-        return mod_suites
-
     def get_root_suite_dir_path(self):
         return self.suite.get_dir_path()
 
     def is_directory_suite(self):
         return self.suite.is_directory_suite
+ 
+    def is_dirty(self):
+        if self.suite and self._is_suite_dirty(self.suite):
+            return True
+        for res in self.resources:
+            if res.dirty:
+                return True
+        return False
+
+    def _is_suite_dirty(self, suite):
+        if suite.dirty:
+            return True
+        for s in suite.suites:
+            if self._is_suite_dirty(s):
+                return True
+        return False
 
     def serialize(self, datafile=None):
+        # TODO: split to single file save and save all
         errors = []
-        modified = []
-        datafiles = datafile and [datafile] or self.resolve_modified_items()
+        datafiles = self._get_files_to_serialize(datafile)
         for df in datafiles:
             try:
-                df.serialize()
+                df.serialize(recursive=datafile is None)
             except SerializationError, err:
                 errors.append('%s: %s\n' % (df.source, str(err)))
-            else:
-                modified.append(df)
         if errors:
             context.LOG.error('Following file(s) could not be saved:\n\n%s' %
                               '\n'.join(errors))
-        return modified
+
+    def _get_files_to_serialize(self, datafile):
+        if datafile:
+            return [datafile]
+        if self.suite:
+            return [self.suite] + self.resources

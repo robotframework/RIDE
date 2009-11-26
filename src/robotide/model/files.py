@@ -19,6 +19,7 @@ import copy
 from robotide import utils
 from robotide.spec import UserKeywordContent
 from robotide.errors import NoRideError, DataError, SerializationError
+from robotide.publish import RideSaving, RideSaved
 from robotide.robotapi import TestSuiteData, ResourceFileData, InitFileData
 from robotide.writer import FileWriter
 
@@ -228,6 +229,7 @@ class _AbstractDataFile(object):
         return format
 
     def serialize(self, force=False, format=None, recursive=False):
+        RideSaving(path=self.source).publish()
         if recursive:
             for s in self.suites:
                 s.serialize(force, format, recursive)
@@ -239,6 +241,8 @@ class _AbstractDataFile(object):
             self._serialize(FileWriter(self.source))
         except EnvironmentError, e:
             raise SerializationError(e.strerror)
+        else:
+            RideSaved(path=self.source).publish()
         self._stat = self._get_stat(self.source)
         self.dirty = False
         if old_source and os.path.isfile(old_source):

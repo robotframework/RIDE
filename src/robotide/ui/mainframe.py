@@ -15,7 +15,7 @@
 import os
 import wx
 
-from robotide.publish import RideSaveAll, RideSavingDatafile, RideSavedDatafiles
+from robotide.publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER
 from robotide.utils import OnScreenEnsuringFrame, RideEventHandler
 from robotide.context import SETTINGS
 
@@ -64,6 +64,8 @@ class RideFrame(wx.Frame, RideEventHandler, OnScreenEnsuringFrame):
         self._plugin_manager = PluginManager(self.notebook)
         self._kw_search_dialog = KeywordSearchDialog(self, keyword_filter)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
+        PUBLISHER.subscribe(lambda msg: self.SetStatusText('Saved %s' % msg.path), 
+                            RideSaved)
         self.ensure_on_screen()
         self.Show()
 
@@ -84,6 +86,7 @@ class RideFrame(wx.Frame, RideEventHandler, OnScreenEnsuringFrame):
         SETTINGS['mainframe size'] = self.GetSizeTuple()
         SETTINGS['mainframe position'] = self.GetPositionTuple()
         if self._application.ok_to_exit():
+            RideClosing().publish()
             self.Destroy()
         else:
             wx.CloseEvent.Veto(event)
@@ -152,14 +155,13 @@ class RideFrame(wx.Frame, RideEventHandler, OnScreenEnsuringFrame):
     def OnSaveAll(self, event):
         self.save()
         RideSaveAll().publish()
+        self.SetStatusText('Saved all files')
 
     def save(self, datafile=None):
         files_without_format = self._application.get_files_without_format(datafile)
         for f in files_without_format:
             self._show_format_dialog_for(f)
-        RideSavingDatafile(datafile=datafile).publish()
-        saved = self._application.save(datafile)
-        self._report_saved_files(saved)
+        self._application.save(datafile)
         self.tree.unset_dirty()
 
     def _show_format_dialog_for(self, file_without_format):
@@ -170,11 +172,8 @@ class RideFrame(wx.Frame, RideEventHandler, OnScreenEnsuringFrame):
             file_without_format.set_format(dlg.get_format())
         dlg.Destroy()
 
-    def _report_saved_files(self, saved):
-        if not saved:
-            return
-        RideSavedDatafiles(datafiles=saved).publish()
-        s = len(saved) > 1 and 's' or ''
+    def _report_saved_files(self):
+        raise NotImplementedError()
         self.SetStatusText('Wrote file%s: %s' %
                           (s, ', '.join(item.source for item in saved)))
 

@@ -17,7 +17,7 @@ import sys
 import wx
 
 from robotide.robotapi import ROBOT_VERSION
-from robotide.publish import RideOpenSuite, RideOpenResource, RideSavedDatafiles
+from robotide.publish import RideOpenSuite, RideOpenResource
 from robotide.errors import DataError, NoRideError
 from robotide.ui import RideFrame
 from robotide import context
@@ -84,7 +84,7 @@ class RIDE(wx.App):
         return self.model and self.model.get_all_keywords() or []
 
     def ok_to_exit(self):
-        if self.model.resolve_modified_items():
+        if self.model.is_dirty():
             ret = wx.MessageBox('There are unsaved modifications.\nDo you want to save your changes before exiting?',
                                 'Warning', wx.ICON_WARNING|wx.CANCEL|wx.YES_NO)
             if ret == wx.CANCEL:
@@ -94,7 +94,7 @@ class RIDE(wx.App):
         return True
 
     def ok_to_open_new(self):
-        if self.model.resolve_modified_items():
+        if self.model.is_dirty():
             ret = wx.MessageBox('There are unsaved modifications.\nDo you want to proceed without saving?',
                                 'Warning', wx.ICON_WARNING|wx.YES_NO)
             return ret == wx.YES
@@ -104,10 +104,7 @@ class RIDE(wx.App):
         return self.model.get_files_without_format(datafile)
 
     def save(self, datafile=None):
-        modified = self.model.serialize(datafile)
-        if modified:
-            RideSavedDatafiles(datafiles=modified).publish()
-        return modified
+        self.model.serialize(datafile)
 
 
 class _KeywordFilter(object):

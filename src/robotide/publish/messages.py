@@ -76,13 +76,12 @@ class RideNotebookTabChanged(RideMessage):
     pass
 
 
-class RideSavingDatafile(RideMessage):
-    """`datafile` is None if all datafiles are going to be saved"""
-    data = ['datafile']
+class RideSaving(RideMessage):
+    data = ['path']
 
 
-class RideSavedDatafiles(RideMessage):
-    data = ['datafiles']
+class RideSaved(RideMessage):
+    data = ['path']
 
 
 class RideSaveAll(RideMessage):
@@ -100,3 +99,7 @@ class RideOpenSuite(RideMessage):
 class RideGridCellChanged(RideMessage):
     topic = 'Ride.Grid.Cell Changed'
     data = ['cell', 'value', 'previous', 'grid']
+
+
+class RideClosing(RideMessage):
+    pass
