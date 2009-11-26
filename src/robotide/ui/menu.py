@@ -273,6 +273,7 @@ class SeparatorMenuItem(_MenuItem):
     def _is_enabled(self):
         return False
 
+
 class ToolBar(object):
 
     def __init__(self, frame):
