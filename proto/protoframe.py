@@ -28,7 +28,7 @@ class ProtoFrame(wx.Frame):
         self.nb.AddPage(ProtoPanel(self, self.nb, entry='Bar', icon='ART_FLOPPY'), 'F3')
         register_unregister_actions.extend(self.actions)
         self.nb.AddPage(ProtoPanel(self, self.nb, menu='X', entry='Bar', container=False), 'F4')
-        self.nb.AddPage(ProtoPanel(self, self.nb, entry='D', scut='Del'), 'D1')
+        self.nb.AddPage(ProtoPanel(self, self.nb, entry='D', scut='Delete'), 'D1')
         self.nb.AddPage(ProtoPanel(self, self.nb, entry='D', scut='Del', container=False, icon='ART_ERROR'), 'D2')
         splitter.SplitVertically(Tree(splitter), self.nb, 100)
         self.actions = register_unregister_actions
@@ -76,8 +76,8 @@ class ProtoPanel(wx.Panel):
         name = 'Panel %d' % ProtoPanel.counter
         wx.Panel.__init__(self, parent, name=name)
         container = container and self or None
-        frame.register_action(menu, entry, lambda x: frame.SetStatusText(name), 
-#        frame.register_action(menu, entry, lambda x: wx.MessageBox(name), 
+        #frame.register_action(menu, entry, lambda x: frame.SetStatusText(name), 
+        frame.register_action(menu, entry, lambda x: wx.MessageBox(name), 
                               container, scut, icon, 'Doc for '+name)
         frame.register_action(menu, entry+' (2)', 
                               lambda x: wx.MessageBox(name+' (2)'), 
