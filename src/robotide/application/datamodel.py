@@ -126,3 +126,4 @@ class DataModel(object):
             return [datafile]
         if self.suite:
             return [self.suite] + self.resources
+        return []
