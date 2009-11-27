@@ -315,8 +315,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         return self.GetItemPyData(node).item
 
     def get_selected_item(self):
-        node = self.GetSelection()
-        return node and self.GetItemPyData(node).item or None
+        data = self.GetItemPyData(self.GetSelection())
+        return data and data.item or None
 
     def OnSelChanged(self, event):
         node = event.Item
