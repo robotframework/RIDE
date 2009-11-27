@@ -70,6 +70,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._clear_tree_data()
         self._populate_model(model)
         self._refresh_view()
+        self.SetFocus() # Needed for keyboard shortcuts
 
     def _clear_tree_data(self):
         if self._root:
