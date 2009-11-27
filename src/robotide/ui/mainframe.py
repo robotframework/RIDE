@@ -178,11 +178,6 @@ class RideFrame(wx.Frame, RideEventHandler, OnScreenEnsuringFrame):
             file_without_format.set_format(dlg.get_format())
         dlg.Destroy()
 
-    def _report_saved_files(self):
-        raise NotImplementedError()
-        self.SetStatusText('Wrote file%s: %s' %
-                          (s, ', '.join(item.source for item in saved)))
-
     def OnExit(self, event):
         self.Close()
 
