@@ -352,7 +352,7 @@ class _Registrable(object):
         return self.action is not None
 
     def has_shortcut(self):
-        return self.action is not None
+        return self.shortcut is not None
 
     def has_icon(self):
         return self.icon is not None
