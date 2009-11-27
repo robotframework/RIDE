@@ -491,9 +491,7 @@ class ContentAssistCellEditor(grid.PyGridCellEditor):
 
     def StartingKey(self, event):
         key = event.GetKeyCode()
-        if key > 255:
-            return
-        if key is wx.WXK_DELETE:
+        if key is wx.WXK_DELETE or key > 255:
             self._grid.HideCellEditControl()
             return
         self._tc.SetValue(unichr(key))
