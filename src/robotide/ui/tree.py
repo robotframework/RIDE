@@ -366,7 +366,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def OnDrop(self, target, dragged):
         dragged = self.GetItemPyData(dragged)
         target = self.GetItemPyData(target)
-        if target.accepts_drag(dragged):
+        if target and target.accepts_drag(dragged):
             dragged.remove()
             target.do_drop(dragged.item)
 
