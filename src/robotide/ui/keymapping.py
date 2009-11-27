@@ -13,37 +13,26 @@
 #  limitations under the License.
 
 import wx
-from robotide.robotapi import NormalizedDict
 
-
-KEY_MAPPINGS = NormalizedDict({'DEL': wx.WXK_DELETE,
-                'INS': wx.WXK_INSERT,
-                'ENTER': wx.WXK_RETURN,
-                'PGUP': wx.WXK_PAGEUP,
-                'PGDN': wx.WXK_PAGEDOWN,
-                'ESC': wx.WXK_ESCAPE,
-                })
-
-CTRL_KEY_MAPPINGS = NormalizedDict({
-                    'Ctrl': wx.ACCEL_CTRL,
-                    'Shift': wx.ACCEL_SHIFT,
-                    'Cmd': wx.ACCEL_CMD,
-                    'Alt': wx.ACCEL_ALT})
 
 def parse_shortcut(shortcut):
-    keys = shortcut.split('-')
+    keys = shortcut.replace('+', '-').split('-')
     if len(keys) == 1:
         flags = wx.ACCEL_NORMAL
     else:
-        flags = sum(CTRL_KEY_MAPPINGS[key] for key in keys[:-1])
+        flags = sum(_get_wx_key_constant('ACCEL', key) for key in keys[:-1])
     return flags, _get_key(keys[-1])
 
 def _get_key(key):
-    if key in KEY_MAPPINGS:
-        return KEY_MAPPINGS[key]
-    name = 'WXK_%s' % (key.upper())
-    if hasattr(wx, name):
-        return getattr(wx, name)
     if len(key) == 1:
-        return ord(key)
-    raise AttributeError("Invalid key '%s'" % (key))
+        return ord(key.upper())
+    key = {'Del': 'Delete', 'Ins': 'Insert',
+           'Enter': 'Return', 'Esc':'Escape'}.get(key.title(), key)
+    return _get_wx_key_constant('WXK', key)
+
+def _get_wx_key_constant(prefix, name):
+    attr = '%s_%s' % (prefix, name.upper().replace(' ', ''))
+    try:
+        return getattr(wx, attr)
+    except AttributeError:
+        raise ValueError('Invalid shortcut key: %s' % name)
