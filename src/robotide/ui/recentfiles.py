@@ -18,13 +18,18 @@ from robotide.publish import RideOpenSuite
 from robotide.plugin import Plugin, ActionInfo, SeparatorInfo
 
 
+def normalize_path(path):
+    if os.path.basename(path).startswith('__init__.'):
+        return os.path.dirname(path)
+    return os.path.abspath(path)
+
+
 class RecentFilesPlugin(Plugin):
     """Add recently opened files to the file menu."""
 
     def __init__(self, application=None):
         settings = {'recent_files':[], 'max_number_of_files':4}
         Plugin.__init__(self, application, default_settings=settings)
-        self._files = {}
 
     def enable(self):
         self._save_currently_loaded_suite()
@@ -37,17 +42,6 @@ class RecentFilesPlugin(Plugin):
         self.unregister_actions()
         self.unsubscribe(self.OnSuiteOpened, RideOpenSuite)
 
-    def OnOpenRecent(self, event):
-        id = event.GetId()
-        if not self.new_suite_can_be_opened():
-            return
-        path = self._normalize(self._files[id])
-        # TODO: There needs to be a better way. This assumes the path is a
-        # suite but it could be a resource. There needs to be a
-        # generic 'open' command in the application or frame object
-        # that Does The Right Thing no matter what the type.
-        self.open_suite(path)
-
     def OnSuiteOpened(self, event):
         self._add_to_recent_files(event.path)
 
@@ -57,11 +51,6 @@ class RecentFilesPlugin(Plugin):
         file_menu = menubar.GetMenu(pos)
         return file_menu
 
-    def _normalize(self, path):
-        if os.path.basename(path).startswith('__init__.'):
-            return os.path.dirname(path)
-        return os.path.abspath(path)
-
     def _save_currently_loaded_suite(self):
         model = self.model
         if model and model.suite:
@@ -70,7 +59,7 @@ class RecentFilesPlugin(Plugin):
     def _add_to_recent_files(self, file):
         if not file:
             return
-        file = self._normalize(file)
+        file = normalize_path(file)
         if file not in self.recent_files:
             self.recent_files.insert(0, file)
             self.recent_files = self.recent_files[0:self.max_number_of_files]
@@ -94,11 +83,27 @@ class RecentFilesPlugin(Plugin):
         self.register_action(sep)
 
     def _add_file_to_menu(self, file, n):
-        item = self._normalize(file)
-        filename = os.path.basename(file)
-        label = '&%s: %s' % (n+1, filename)
-        doc = 'Open %s' % item
-        action_info = ActionInfo('File', label, self.OnOpenRecent, doc=doc)
+        entry = RecentFileEntry(n+1, file, self)
+        self.register_action(entry.get_action_info())
+
+
+class RecentFileEntry(object):
+
+    def __init__(self, index, file, plugin):
+        self.file = file
+        self.index = index
+        self.path = normalize_path(self.file)
+        self.filename = os.path.basename(file)
+        self.plugin = plugin
+        self.label = '&%s: %s' % (index, self.filename)
+        self.doc = 'Open %s' % self.path
+
+    def OnOpenRecent(self, event):
+        self.plugin.open_suite(self.path)
+
+    def get_action_info(self):
+        action_info = ActionInfo('File', self.label, self.OnOpenRecent, 
+                                 doc=self.doc)
         action_info.set_menu_position(before='Exit')
-        id = self.register_action(action_info)
-        self._files[id] = item
+        return action_info
+
