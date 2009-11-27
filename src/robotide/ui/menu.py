@@ -27,7 +27,6 @@ class ActionRegisterer(object):
 
     def register_action(self, action_info):
         action = Action(action_info)
-        # registering order have to be 1.action_registry,  2.menubar, 3.toolbar
         self._action_registry.register(action)
         self._menubar.register(action)
         self._toolbar.register(action)
@@ -187,14 +186,16 @@ class Menu(object):
 
     def _construct_menu_item(self, action):
         if isinstance(action, _MenuSeparator):
-            return SeparatorMenuItem(self._frame, self, action)
-        return self._get_or_create_menu_item(action)
-
-    def _get_or_create_menu_item(self, action):
+            return self._create_separator(action)
         menu_item = self._get_menu_item(action)
         if not menu_item:
-            name_with_accerelator = self._get_name(action, build_new=True)
-            menu_item = MenuItem(self._frame, self, action, name_with_accerelator)
+            menu_item = self._create_menu_item(action)
+        return menu_item
+
+    def _create_separator(self, action):
+        menu_item = SeparatorMenuItem(self._frame, self, action)
+        pos = action.get_insertion_index(self.wx_menu)
+        menu_item.set_wx_menu_item(self.wx_menu.InsertSeparator(pos))
         return menu_item
 
     def _get_menu_item(self, action):
@@ -213,6 +214,15 @@ class Menu(object):
             return get_name(action.name)
         return '%s   (%s)' % (get_name(action.name), action.shortcut)
 
+    def _create_menu_item(self, action):
+        name_with_accerelator = self._get_name(action, build_new=True)
+        menu_item = MenuItem(self._frame, self, name_with_accerelator)
+        pos = action.get_insertion_index(self.wx_menu)
+        _wx_menu_item = self.wx_menu.Insert(pos, menu_item.id, 
+                                            menu_item.name, action.doc)
+        menu_item.set_wx_menu_item(_wx_menu_item)
+        return menu_item
+
     def remove(self, id):
         self.wx_menu.Delete(id)
         del(self._menu_items[id])
@@ -226,11 +236,13 @@ class _MenuItem(object):
         self.name = name
         self._action_delegator = ActionDelegator(self._frame)
         self.id = self._action_delegator.id
-        self._wx_menu_item = None
+
+    def set_wx_menu_item(self, wx_menu_item):
+        self._wx_menu_item = wx_menu_item
 
     def register(self, action):
         self._action_delegator.add(action)
-        action.register(self, id=self._action_delegator.id)
+        action.register(self)
 
     def unregister(self, action):
         if self._action_delegator.remove(action):
@@ -245,21 +257,14 @@ class _MenuItem(object):
 
 class MenuItem(_MenuItem):
 
-    def __init__(self, frame, menu, action, name):
-        _MenuItem.__init__(self, frame, menu, name)
-        pos = action.get_insertion_index(menu.wx_menu)
-        self._wx_menu_item = menu.wx_menu.Insert(pos, self.id, name, action.doc)
-
     def _is_enabled(self):
         return self._action_delegator.is_active()
 
 
 class SeparatorMenuItem(_MenuItem):
 
-    def __init__(self, frame, menu, action):
-        _MenuItem.__init__(self, frame, menu, action.name)
-        pos = action.get_insertion_index(menu.wx_menu)
-        self._wx_menu_item = menu.wx_menu.InsertSeparator(pos)
+    def set_wx_menu_item(self, wx_menu_item):
+        _MenuItem.set_wx_menu_item(self, wx_menu_item)
         self._wx_menu_item.SetId(self.id)
 
     def _is_enabled(self):
@@ -326,7 +331,6 @@ class ToolBarButton(object):
 class _Registrable(object):
 
     def __init__(self, action_info):
-        self.id = None
         self._registered_to = []
         self.action = None
         self.icon = None
@@ -335,10 +339,8 @@ class _Registrable(object):
     def get_insertion_index(self, menu):
         return self._insertion_point.get_index(menu)
 
-    def register(self, registerer, **update_attrs):
+    def register(self, registerer):
         self._registered_to.append(registerer)
-        for key, value in update_attrs.items():
-            setattr(self, key, value)
 
     def unregister(self):
         for registerer in self._registered_to:
