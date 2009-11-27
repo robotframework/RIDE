@@ -23,11 +23,11 @@ class ActionRegisterer(object):
     def __init__(self, frame, menubar, toolbar):
         self._menubar  = menubar
         self._toolbar = toolbar
-        self._action_registry = ActionRegistry(frame)
+        self._shortcut_registry = ShortcutRegistry(frame)
 
     def register_action(self, action_info):
         action = Action(action_info)
-        self._action_registry.register(action)
+        self._shortcut_registry.register(action)
         self._menubar.register(action)
         self._toolbar.register(action)
         return action
@@ -223,7 +223,7 @@ class Menu(object):
         menu_item.set_wx_menu_item(_wx_menu_item)
         return menu_item
 
-    def remove(self, id):
+    def remove_menu_item(self, id):
         self.wx_menu.Delete(id)
         del(self._menu_items[id])
 
@@ -246,7 +246,7 @@ class _MenuItem(object):
 
     def unregister(self, action):
         if self._action_delegator.remove(action):
-            self._menu.remove(action.id)
+            self._menu.remove_menu_item(self.id)
 
     def refresh_availability(self):
         self._wx_menu_item.Enable(self._is_enabled())
@@ -305,7 +305,7 @@ class ToolBar(object):
         self._buttons.append(button)
         return button
 
-    def remove(self, button):
+    def remove_toolbar_button(self, button):
         self._buttons.remove(button)
         self._wx_toolbar.RemoveTool(button.id)
         self._wx_toolbar.Realize()
@@ -325,7 +325,7 @@ class ToolBarButton(object):
 
     def unregister(self, action):
         if self._action_delegator.remove(action):
-            self._toolbar.remove(self)
+            self._toolbar.remove_toolbar_button(self)
 
 
 class _Registrable(object):
@@ -333,6 +333,7 @@ class _Registrable(object):
     def __init__(self, action_info):
         self._registered_to = []
         self.action = None
+        self.shortcut = None
         self.icon = None
         self._insertion_point = action_info.insertion_point
 
@@ -348,6 +349,9 @@ class _Registrable(object):
         self._registered_to = []
 
     def has_action(self):
+        return self.action is not None
+
+    def has_shortcut(self):
         return self.action is not None
 
     def has_icon(self):
@@ -473,28 +477,25 @@ class SeparatorInfo(_MenuInfo):
         self.menu_name = menu_name
 
 
-class ActionRegistry(object):
+class ShortcutRegistry(object):
 
     def __init__(self, frame):
         self._frame = frame
         self._actions = {}
 
     def register(self, action):
-        if action.has_action():
-            key = self._get_key(action)
-            delegator = self._actions.setdefault(key, ActionDelegator(self._frame))
+        if action.has_shortcut() and action.has_action():
+            delegator = self._actions.setdefault(action.shortcut,
+                                                 ActionDelegator(self._frame))
             delegator.add(action)
             action.register(self)
             self._update_accerelator_table()
 
     def unregister(self, action):
-        key = self._get_key(action)
+        key = action.shortcut
         if self._actions[key].remove(action):
             del(self._actions[key])
         self._update_accerelator_table()
-
-    def _get_key(self, action):
-        return action.shortcut or (action.menu_name, action.name)
 
     def _update_accerelator_table(self):
         accerelators = []
