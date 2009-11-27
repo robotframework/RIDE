@@ -13,4 +13,3 @@
 #  limitations under the License.
 
 from mainframe import RideFrame
-from menu import ActionInfo, SeparatorInfo, Actions

@@ -14,7 +14,7 @@
 
 import wx
 
-from robotide.plugin import Plugin, Actions
+from robotide.plugin import Plugin, ActionInfoCollection
 from robotide.publish import RideTreeSelection, RideNotebookTabChanging,\
     RideNotebookTabChanged, RideSaving
 
@@ -50,7 +50,7 @@ class EditorPlugin(Plugin):
 
     def enable(self):
         self._show_editor()
-        self.register_actions(Actions(_EDIT, self._tab, self._tab))
+        self.register_actions(ActionInfoCollection(_EDIT, self._tab, self._tab))
         self.subscribe(self.OnTreeItemSelected, RideTreeSelection)
         self.subscribe(self.OnTabChanged, RideNotebookTabChanged)
         self.subscribe(self.OnSaveToModel, RideNotebookTabChanging)

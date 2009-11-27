@@ -15,11 +15,12 @@
 import os
 import wx
 
+from robotide.action import ActionInfoCollection, Action
 from robotide.publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER
 from robotide.utils import OnScreenEnsuringFrame, RideEventHandler
 from robotide.context import SETTINGS
 
-from menu import ActionRegisterer, MenuBar, ToolBar, Actions
+from actiontriggers import MenuBar, ToolBar, ShortcutRegistry
 from dialogs import KeywordSearchDialog, AboutDialog
 from filedialogs import NewProjectDialog, NewResourceDialog, ChangeFormatDialog
 from pluginmanager import PluginManager
@@ -73,9 +74,11 @@ class RideFrame(wx.Frame, RideEventHandler, OnScreenEnsuringFrame):
         splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
         splitter.SetMinimumPaneSize(200)
         self.notebook = NoteBook(splitter, self._application)
-        self.actions = ActionRegisterer(self, MenuBar(self), ToolBar(self))
+        self.actions = ActionRegisterer(MenuBar(self), ToolBar(self),
+                                        ShortcutRegistry(self))
         self.tree = Tree(splitter, self.actions)
-        self.actions.register_actions(Actions(_menudata, self, self.tree))
+        self.actions.register_actions(ActionInfoCollection(_menudata, self,
+                                                           self.tree))
         splitter.SplitVertically(self.tree, self.notebook, 300)
         self.CreateStatusBar()
 
@@ -192,3 +195,22 @@ class RideFrame(wx.Frame, RideEventHandler, OnScreenEnsuringFrame):
         dlg = AboutDialog(self)
         dlg.ShowModal()
         dlg.Destroy()
+
+
+class ActionRegisterer(object):
+
+    def __init__(self, menubar, toolbar, shortcut_registry):
+        self._menubar  = menubar
+        self._toolbar = toolbar
+        self._shortcut_registry = shortcut_registry
+
+    def register_action(self, action_info):
+        action = Action(action_info)
+        self._shortcut_registry.register(action)
+        self._menubar.register(action)
+        self._toolbar.register(action)
+        return action
+
+    def register_actions(self, actions):
+        for action in actions:
+            self.register_action(action)

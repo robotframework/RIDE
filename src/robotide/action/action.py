@@ -1,0 +1,105 @@
+#  Copyright 2008-2009 Nokia Siemens Networks Oyj
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+def Action(action_info):
+    if action_info.is_separator():
+        return _MenuSeparator(action_info)
+    return _Action(action_info)
+
+
+class _Registrable(object):
+
+    def __init__(self, action_info):
+        self._registered_to = []
+        self.action = None
+        self.shortcut = None
+        self.icon = None
+        self._insertion_point = action_info.insertion_point
+
+    def is_separator(self):
+        return False
+
+    def get_insertion_index(self, menu):
+        return self._insertion_point.get_index(menu)
+
+    def register(self, registerer):
+        self._registered_to.append(registerer)
+
+    def unregister(self):
+        for registerer in self._registered_to:
+            registerer.unregister(self)
+        self._registered_to = []
+
+    def has_action(self):
+        return self.action is not None
+
+    def has_shortcut(self):
+        return bool(self.shortcut)
+
+    def has_icon(self):
+        return self.icon is not None
+
+
+class _Action(_Registrable):
+
+    def __init__(self, action_info):
+        _Registrable.__init__(self, action_info)
+        self.menu_name = action_info.menu_name
+        self.name = action_info.name
+        self.action = action_info.action
+        self.container = action_info.container
+        self.shortcut = action_info.shortcut
+        self.icon = action_info.icon
+        self.doc = action_info.doc
+
+    def get_shortcut(self):
+        return self.shortcut.value
+
+    def act(self, event):
+        if self.is_active():
+            self.action(event)
+
+    def is_active(self):
+        if self._is_always_inactive():
+            return False
+        if self._is_always_active():
+            return True
+        return self._container_is_active()
+
+    def _is_always_inactive(self):
+        return self.action is None
+
+    def _is_always_active(self):
+        return self.container is None
+
+    def _container_is_active(self):
+        if not self.container.IsShownOnScreen():
+            return False
+        widget = self.container.FindFocus()
+        while widget:
+            if widget == self.container.Parent:
+                return True
+            widget = widget.GetParent()
+        return False
+
+
+class _MenuSeparator(_Registrable):
+
+    def __init__(self, action_info):
+        _Registrable.__init__(self, action_info)
+        self.menu_name = action_info.menu_name
+        self.name = '---'
+
+    def is_separator(self):
+        return True

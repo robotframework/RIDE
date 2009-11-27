@@ -18,6 +18,7 @@ try:
 except ImportError:
     from wx.lib.mixins import treemixin
 
+from robotide.action import ActionInfoCollection
 from robotide.model.tcuk import UserKeyword
 from robotide.model.files import _TestSuite
 from robotide.publish import RideTreeSelection
@@ -26,7 +27,6 @@ from robotide import utils
 from images import TreeImageList
 from filedialogs import AddSuiteDialog, ChangeFormatDialog
 from namedialogs import TestCaseNameDialog, UserKeywordNameDialog
-from menu import Actions
 
 
 tree_actions ="""
@@ -44,7 +44,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             style = style|wx.TR_EDIT_LABELS
         treemixin.DragAndDrop.__init__(self, parent, style=style)
         self._root = None
-        action_registerer.register_actions(Actions(tree_actions, self, self))
+        actions = ActionInfoCollection(tree_actions, self, self)
+        action_registerer.register_actions(actions)
         self.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnSelChanged)
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnRightClick)
         self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnItemActivated)
