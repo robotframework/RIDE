@@ -15,20 +15,31 @@
 import wx
 
 
+def normalize_shortcut(shortcut):
+    if not shortcut:
+        return None
+    order = ['Shift', 'Ctrl', 'Alt']
+    keys = [ _normalize_key(key) for key in _split_shortcut(shortcut) ]
+    keys.sort(key=lambda t: t in order and order.index(t) or 42)
+    return '-'.join(keys)
+
+
 def parse_shortcut(shortcut):
-    keys = shortcut.replace('+', '-').split('-')
+    keys = _split_shortcut(shortcut)
     if len(keys) == 1:
         flags = wx.ACCEL_NORMAL
     else:
         flags = sum(_get_wx_key_constant('ACCEL', key) for key in keys[:-1])
     return flags, _get_key(keys[-1])
 
-def _get_key(key):
-    if len(key) == 1:
-        return ord(key.upper())
-    key = {'Del': 'Delete', 'Ins': 'Insert',
-           'Enter': 'Return', 'Esc':'Escape'}.get(key.title(), key)
-    return _get_wx_key_constant('WXK', key)
+
+def _normalize_key(key):
+    key = key.title()
+    return {'Del': 'Delete', 'Ins': 'Insert',
+            'Enter': 'Return', 'Esc':'Escape'}.get(key, key)
+
+def _split_shortcut(shortcut):
+    return shortcut.replace('+', '-').split('-')
 
 def _get_wx_key_constant(prefix, name):
     attr = '%s_%s' % (prefix, name.upper().replace(' ', ''))
@@ -36,3 +47,8 @@ def _get_wx_key_constant(prefix, name):
         return getattr(wx, attr)
     except AttributeError:
         raise ValueError('Invalid shortcut key: %s' % name)
+
+def _get_key(key):
+    if len(key) == 1:
+        return ord(key.upper())
+    return _get_wx_key_constant('WXK', _normalize_key(key))

@@ -15,7 +15,7 @@ import re
 
 import wx
 
-from keymapping import parse_shortcut
+import keymapping
 
 
 class ActionRegisterer(object):
@@ -452,17 +452,9 @@ class ActionInfo(_MenuInfo):
         self.name = name
         self.action = action
         self.container = container
-        self.shortcut = self._get_shortcut(shortcut)
+        self.shortcut = keymapping.normalize_shortcut(shortcut)
         self.icon = self._get_icon(icon)
         self.doc = doc
-
-    def _get_shortcut(self, shortcut):
-        if not shortcut:
-            return None
-        order = ['Shift', 'Ctrl', 'Alt']
-        tokens = [ t.title() for t in shortcut.replace('+', '-').split('-') ]
-        tokens.sort(key=lambda t: t in order and order.index(t) or 42)
-        return '-'.join(tokens)
 
     def _get_icon(self, icon):
         if not icon:
@@ -507,7 +499,7 @@ class ActionRegistry(object):
         for shortcut, delegator in self._actions.items():
             if not isinstance(shortcut, basestring):
                 continue
-            flags, key_code = parse_shortcut(shortcut)
+            flags, key_code = keymapping.parse_shortcut(shortcut)
             accerelators.append(wx.AcceleratorEntry(flags, key_code, delegator.id))
         self._frame.SetAcceleratorTable(wx.AcceleratorTable(accerelators))
 
