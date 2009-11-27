@@ -91,7 +91,6 @@ class Plugin(object):
         from TODO."""
         action = self.__frame.actions.register_action(action_info)
         self._actions.append(action)
-        return action.id
 
     def register_actions(self, action_infos):
         """Registers actions to the UI."""
