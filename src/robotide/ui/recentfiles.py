@@ -102,7 +102,7 @@ class RecentFileEntry(object):
         self.plugin.open_suite(self.path)
 
     def get_action_info(self):
-        action_info = ActionInfo('File', self.label, self.OnOpenRecent, 
+        action_info = ActionInfo('File', self.label, self.OnOpenRecent,
                                  doc=self.doc)
         action_info.set_menu_position(before='Exit')
         return action_info
