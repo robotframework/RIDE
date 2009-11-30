@@ -79,7 +79,11 @@ class Plugin(object):
     def config_panel(self, parent):
         """Returns a panel for configuring this plugin
 
-        This can return None if there are no values to configure.
+        The panel returned will be integrated in the Plugin Manager UI, and can
+        be used e.g. to configure settings to be stored in the settings file.
+
+        The default implementation returns None, meaning there are no values to
+        configure.
         """
         return None
 
@@ -93,12 +97,15 @@ class Plugin(object):
         self._actions.append(action)
 
     def register_actions(self, action_infos):
-        """Registers actions to the UI."""
+        """Registers actions to the UI.
+
+        `action_infos` is a list of ActionInfo items.
+        """
         for action_info in action_infos:
             self.register_action(action_info)
 
     def unregister_actions(self):
-        """Unregisters actions added to the UI with register_action(s) methods."""
+        """Unregisters all actions added to the UI with register_action(s) methods."""
         for action in self._actions:
             action.unregister()
         self._actions = []
@@ -107,15 +114,21 @@ class Plugin(object):
         """Adds given `tab` with given `title` to the right side view.
 
         `tab` can be any wx container.
+
+        Defining `allow_closing` to be False disallows closing the tab while
+        the plugin is active.
         """
         self.notebook.add_tab(tab, title, allow_closing)
 
     def show_tab(self, tab):
-        """Makes the `tab` added with add_tab visible."""
+        """Makes the `tab` visible.
+
+        `tab` need to have been added previously with `add_tab`.
+        """
         self.notebook.show_tab(tab)
 
     def delete_tab(self, tab):
-        """Deletes the `tab` added with add_tab."""
+        """Deletes `tab` added with `add_tab`."""
         self.notebook.delete_tab(tab)
 
     def tab_is_visible(self, tab):
@@ -129,6 +142,10 @@ class Plugin(object):
         return self.__app.ok_to_open_new()
 
     def open_suite(self, path):
+        """Opens test suite from the given `path`.
+
+        If the parsing of the data source given with `path` fails, there will
+        be no suite opened at all"""
         self.__frame.open_suite(path)
 
     def get_selected_datafile(self):
@@ -150,33 +167,33 @@ class Plugin(object):
     def get_selected_item(self):
         """Returns the model item which is currently selected in the tree.
 
-        Model item can be test suite, test case, keyword or resource file.
+        Model item can be test suite, resource file, test case or user keyword.
         """
         return self.tree.get_selected_item()
 
     def subscribe(self, listener, *topics):
-        """Subscribe to notifications for the given topic.
+        """Subscribe to notifications for the given `topic(s)`.
 
-        A topic is a dot-separated string (e.g.: "ride.notebook.tabchange") or
+        A topic is a dot-separated string (e.g.: 'ride.notebook.tabchange') or
         a reference to the corresponding message class (e.g.
         RideNotebookTabchange).
 
         The topic represents a hierarchy, and all publications at or below the
-        given hierarchy will call the given function (i.e.: subscribing to
-        'Ride' or RideMessage will cause the function to be called for 'Ride',
+        given hierarchy will call the given `listener` (i.e.: subscribing to
+        'Ride' or class RideMessage will cause the `listener` to be called for 'Ride',
         'Ride.anything' etc.)
         """
         for topic in topics:
             PUBLISHER.subscribe(listener, topic, key=self)
 
     def unsubscribe(self, listener, *topics):
-        """Unsubscribes notifications from the defined `topics`.
+        """Unsubscribes notifications from the given `topic(s)`.
 
         `topics` are same as those used in subscribe."""
         for topic in topics:
             PUBLISHER.unsubscribe(listener, topic, key=self)
 
     def unsubscribe_all(self):
-        """Unsubscribes all the notifications from topics subscribed."""
+        """Unsubscribes all the notifications from topics subscribed by this Plugin."""
         PUBLISHER.unsubscribe_all(key=self)
 
