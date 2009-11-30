@@ -37,7 +37,7 @@ class Plugin(object):
         self.__frame = application.frame
         self.__settings = SETTINGS['Plugins'].add_section(self.name)
         self.__settings.set_defaults(default_settings)
-        self._actions = []
+        self.__actions = []
 
     tree = property(lambda self: self.__frame.tree)
     menubar = property(lambda self: self.__frame.GetMenuBar())
@@ -94,7 +94,7 @@ class Plugin(object):
         creating menu and possible shortcut and/or icon to toolbar. See more
         from TODO."""
         action = self.__frame.actions.register_action(action_info)
-        self._actions.append(action)
+        self.__actions.append(action)
 
     def register_actions(self, action_infos):
         """Registers actions to the UI.
@@ -106,9 +106,9 @@ class Plugin(object):
 
     def unregister_actions(self):
         """Unregisters all actions added to the UI with register_action(s) methods."""
-        for action in self._actions:
+        for action in self.__actions:
             action.unregister()
-        self._actions = []
+        self.__actions = []
 
     def add_tab(self, tab, title, allow_closing=True):
         """Adds given `tab` with given `title` to the right side view.
