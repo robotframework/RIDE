@@ -22,7 +22,7 @@ from robotide import utils
 class Plugin(object):
 
     def __init__(self, application, name=None, doc=None, metadata=None,
-                 default_settings=None, initially_active=False):
+                 default_settings=None, initially_active=True):
         """Initialize the plugin.
 
         This shouldn't create any user interface elements, only initialize the
