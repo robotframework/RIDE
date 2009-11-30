@@ -1,11 +1,11 @@
 #  Copyright 2008-2009 Nokia Siemens Networks Oyj
-#  
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -56,12 +56,12 @@ class Plugin(object):
                              % (name))
 
     def save_setting(self, name, value, override=True):
-        """Saves setting with `name` and `value` to settings file. 
+        """Saves setting with `name` and `value` to settings file.
 
         Setting is stored in section [Plugins] [[Plugin Name]].
 
-        `override` controls whether possibly already existing value is 
-        overridden or not. 
+        `override` controls whether possibly already existing value is
+        overridden or not.
         """
         self.__settings.set(name, value, override=override)
 
@@ -85,9 +85,9 @@ class Plugin(object):
 
     def register_action(self, action_info):
         """Registers action to the UI.
-        
-        `action_info` is ActionInfo class containing needed attributes for 
-        creating menu and possible shortcut and/or icon to toolbar. See more 
+
+        `action_info` is ActionInfo class containing needed attributes for
+        creating menu and possible shortcut and/or icon to toolbar. See more
         from TODO."""
         action = self.__frame.actions.register_action(action_info)
         self._actions.append(action)
@@ -105,7 +105,7 @@ class Plugin(object):
 
     def add_tab(self, tab, title, allow_closing=True):
         """Adds given `tab` with given `title` to the right side view.
-        
+
         `tab` can be any wx container.
         """
         self.notebook.add_tab(tab, title, allow_closing)
@@ -124,7 +124,7 @@ class Plugin(object):
 
     def new_suite_can_be_opened(self):
         """Checks is there modified files and asks user to decide what to do.
-        
+
         In case there are modified files and user cancels, False is returned."""
         return self.__app.ok_to_open_new()
 
@@ -133,23 +133,23 @@ class Plugin(object):
 
     def get_selected_datafile(self):
         """Returns the datafile which is currently selected in the tree.
-        
-        In case test case or keyword is selected, returns datafile containing 
+
+        In case test case or keyword is selected, returns datafile containing
         selected item.
         """
         return self.tree.get_selected_datafile()
 
     def save_selected_datafile(self):
         """Saves the datafile which is currently selected in the tree.
-        
-        In case test case or keyword is selected, saves datafile containing 
+
+        In case test case or keyword is selected, saves datafile containing
         selected item.
         """
         self.__frame.save(self.get_selected_datafile())
 
     def get_selected_item(self):
-        """Returns the model item which is currently selected in the tree. 
-        
+        """Returns the model item which is currently selected in the tree.
+
         Model item can be test suite, test case, keyword or resource file.
         """
         return self.tree.get_selected_item()
@@ -171,7 +171,7 @@ class Plugin(object):
 
     def unsubscribe(self, listener, *topics):
         """Unsubscribes notifications from the defined `topics`.
-        
+
         `topics` are same as those used in subscribe."""
         for topic in topics:
             PUBLISHER.unsubscribe(listener, topic, key=self)
@@ -179,3 +179,4 @@ class Plugin(object):
     def unsubscribe_all(self):
         """Unsubscribes all the notifications from topics subscribed."""
         PUBLISHER.unsubscribe_all(key=self)
+
