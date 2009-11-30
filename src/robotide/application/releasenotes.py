@@ -21,15 +21,14 @@ from robotide.plugin import Plugin, ActionInfo
 
 class ReleaseNotesPlugin(Plugin):
     """Shows release notes of the current version.
-    
+
     The release notes tab will automatically be shown once per release.
     The user can also view them on demand by selecting "Release Notes"
     from the help menu.
     """
 
     def __init__(self, application):
-        Plugin.__init__(self, application, initially_active=True,
-                        default_settings={'version_shown':''})
+        Plugin.__init__(self, application, default_settings={'version_shown':''})
         self._view = None
 
     def enable(self):

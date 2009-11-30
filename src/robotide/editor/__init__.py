@@ -45,7 +45,7 @@ Content Assistance | Show possible keyword and variable completions | Ctrl-Space
 class EditorPlugin(Plugin):
 
     def __init__(self, application):
-        Plugin.__init__(self, application, initially_active=True)
+        Plugin.__init__(self, application)
         self._tab = None
 
     def enable(self):
