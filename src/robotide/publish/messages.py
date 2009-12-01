@@ -25,10 +25,11 @@ class Message(object):
     :CVariables:
       topic
         Topic of this message. If not overridden, value is got from the class
-        name by lowercasing it, separating words with dot and dropping possible
+        name by lowercasing it, separating words with a dot and dropping possible
         'Message' from the end. For example 'MyExampleMessage' -> 'my.example'.
       data
-        Names of keyword arguments that must be given when an instance is made.
+        Names of attributes this message provides. These must be given as
+        keyword arguments to `__init__` when an instance is created.
     """
     __metaclass__ = messagetype.messagetype
     topic = None
