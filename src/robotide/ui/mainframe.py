@@ -43,7 +43,7 @@ _menudata = """
 !E&xit | Exit RIDE | Ctrl-Q
 
 [Tools]
-!Manage Plugins | Please Implement
+!Manage Plugins
 !Search Keywords | Search keywords from libraries and resources 
 
 [Help]

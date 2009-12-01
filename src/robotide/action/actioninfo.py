@@ -19,6 +19,71 @@ from shortcut import Shortcut
 
 
 def ActionInfoCollection(data, eventhandler, container=None):
+
+    """Parses ActionInfo objects from the provided DSL data.
+
+    ActionInfoCollection parses ActionInfo/SeparatorInfo objects from the DSL 
+    data on initialization and after that the ActionInfo objects can be accessed 
+    via returned list.
+
+    **DSL format**::
+
+        [menu name]
+        !&name | documentation | shortcut | icon
+
+    menu name
+      The menu under which the entries are inserted.
+
+    name
+      The menu entry name. Mandatory field. The action name is created 
+      from the name by inserting On prefix and camel casing the name 
+      e.g. Some name -> OnSomeName.
+
+      \!
+        Specifies that the container is None (action is 'global'). Optional.
+        When omitted then the container is the provided `container`.
+
+      \& 
+        Defines the accelerator character for the menu entry. Optional.
+
+      \-\-\-
+        Used to mark the separator in the menu.
+
+    documentation
+      Documentation visible in the statusbar. Optional.
+
+    shortcut
+      Keyboard shortcut to invoke the action. Optional.
+
+    icon
+      Icon for the Toolbar button.
+
+    See `ActionInfo` for more information about the fields.
+
+
+    **Example usage of the DSL**::
+
+        [File]
+        !&Open | Open file containing tests | Ctrl-O | ART_FILE_OPEN
+        !Open &Resource | Open a resource file | Ctrl-R
+        ---
+        &Save | Save selected datafile | Ctrl-S | ART_FILE_SAVE
+
+        [Tools]
+        !Manage Plugins
+
+    :Parameters:
+      data
+        The DSL data containing Menu entries to be parsed into ActionInfo and
+        SeparatorInfo objects.
+      eventhandler
+        The event handler that implements the actions. See name field about how 
+        actions are generated.
+      container
+        the wxPython element containing the UI components associated with 
+        the `ActionInfo`.
+    """
+
     menu = None
     actions = []
     for row in data.splitlines():
