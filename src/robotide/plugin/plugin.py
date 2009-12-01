@@ -215,52 +215,65 @@ class Plugin(object):
         """
         self.__frame.open_suite(path)
 
+    # TODO: Should we somehow specify the API of the object returned by
+    # this and subsequent methods?
     def get_selected_datafile(self):
         """Returns the data file that is currently selected in the tree.
 
-        If a test case or keyword is selected, the data file containing the
+        If a test case or a keyword is selected, the data file containing the
         selected item is returned.
         """
         return self.tree.get_selected_datafile()
 
     def save_selected_datafile(self):
-        """Saves the datafile which is currently selected in the tree.
+        """Saves the data file that is currently selected in the tree.
 
-        In case test case or keyword is selected, saves datafile containing
-        selected item.
+        If a test case or a keyword is selected, the data file containing the
+        selected item is saved.
         """
         self.__frame.save(self.get_selected_datafile())
 
     def get_selected_item(self):
-        """Returns the model item which is currently selected in the tree.
+        """Returns the item that is currently selected in the tree.
 
-        Model item can be test suite, resource file, test case or user keyword.
+        The item can be a test suite, a resource file, a test case or a keyword.
         """
         return self.tree.get_selected_item()
 
     def subscribe(self, listener, *topics):
-        """Subscribe to notifications for the given `topics`.
+        """Start to listen to messages with the given ``topics``.
 
-        A topic is a dot-separated string (e.g.: 'ride.notebook.tabchange') or
-        a reference to the corresponding message class (e.g.
-        RideNotebookTabchange).
+        The ``listener`` is called when a message with the specified topic
+        is published by the core framework or other plugins.
 
-        The topic represents a hierarchy, and all publications at or below the
-        given hierarchy will call the given `listener` (i.e.: subscribing to
-        'Ride' or class RideMessage will cause the `listener` to be called for 'Ride',
-        'Ride.anything' etc.)
+        Topics can be specified using message classes in `robotide.publish.messages` 
+        module (e.g. `RideTreeSelection`) or with dot separated strings 
+        (e.g. ``ride.tree.selection``).
+        
+        Topic strings represents a hierarchy, and all publications at or below
+        the given hierarchy level will match the topic. For example, subscribing
+        to ``ride.notebook`` topic means that the listener is called when
+        `RideNotebookTabChanged` or any other message starting with 
+        ``RideNotebook`` is published.
+        
+        See the individual message classes for information about the attributes
+        that they contain. `unsubscribe` and `unsubscribe_all` can be used to
+        stop listening to certain or all messages. 
         """
         for topic in topics:
             PUBLISHER.subscribe(listener, topic, key=self)
 
     def unsubscribe(self, listener, *topics):
-        """Unsubscribes notifications from the given `topics`.
+        """Stops listening to messages with the given ``topics``.
 
-        `topics` are same as those used in subscribe."""
+        ``listener`` and ``topics`` have the same meaning as in `subscribe`
+        and a listener/topic combination is unsubscribed only when both of them
+        match. 
+        """
         for topic in topics:
             PUBLISHER.unsubscribe(listener, topic, key=self)
 
     def unsubscribe_all(self):
-        """Unsubscribes all the notifications from topics subscribed by this Plugin."""
+        """Stops to listen to all messages"""
         PUBLISHER.unsubscribe_all(key=self)
 
