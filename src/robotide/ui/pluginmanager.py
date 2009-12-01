@@ -27,7 +27,7 @@ class PluginManager(object):
 
     def show(self, plugins):
         if not self._tab:
-            self._tab = PluginPanel(self._notebook, plugins, self._show_tab)
+            self._tab = _PluginPanel(self._notebook, plugins, self._show_tab)
             self._notebook.add_tab(self._tab, 'Manage Plugins')
         self._show_tab()
 
@@ -35,7 +35,7 @@ class PluginManager(object):
         self._notebook.show_tab(self._tab)
 
 
-class PluginPanel(wx.Panel):
+class _PluginPanel(wx.Panel):
 
     def __init__(self, notebook, plugins, activation_callback):
         wx.Panel.__init__(self, notebook)
@@ -64,9 +64,9 @@ class PluginPanel(wx.Panel):
         sizer.Add(self._create_label(panel, 'Plugin'), 0,
                   wx.BOTTOM|wx.EXPAND, border=8)
         for plugin in plugins:
-            sizer.Add(PluginActivationCheckBox(panel, plugin, activation_callback),
+            sizer.Add(_PluginEnablationCheckBox(panel, plugin, activation_callback),
                       flag=wx.ALIGN_CENTER_HORIZONTAL)
-            sizer.Add(PluginRow(panel, plugin), 0, wx.EXPAND)
+            sizer.Add(_PluginRow(panel, plugin), 0, wx.EXPAND)
         panel.SetSizer(sizer)
         return panel
 
@@ -78,11 +78,11 @@ class PluginPanel(wx.Panel):
         return label
 
 
-class PluginActivationCheckBox(wx.CheckBox):
+class _PluginEnablationCheckBox(wx.CheckBox):
 
     def __init__(self, parent, plugin, activation_callback):
         wx.CheckBox.__init__(self, parent)
-        self.SetValue(plugin.active)
+        self.SetValue(plugin.enabled)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckBox)
         if plugin.error:
             self.Enable(False)
@@ -110,7 +110,7 @@ class PluginActivationCheckBox(wx.CheckBox):
             RideLogMessage(message=msg, level='ERROR').publish()
 
 
-class PluginRow(wx.Panel):
+class _PluginRow(wx.Panel):
 
     def __init__(self, parent, plugin):
         wx.Panel.__init__(self, parent)

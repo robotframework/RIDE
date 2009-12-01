@@ -86,8 +86,6 @@ class Plugin(object):
           initially_enabled
             Specifies should the plugin be enabled when loaded for the first
             time. The status can be changed later from the plugin manager.
-
-        TODO: Should we still change active/deactive to enable/disable?
         """
         self.name = name or utils.name_from_class(self, drop='Plugin')
         self.doc = self._get_doc(doc)
@@ -176,7 +174,7 @@ class Plugin(object):
         `tab` can be any wx container.
 
         Defining `allow_closing` to be False disallows closing the tab while
-        the plugin is active.
+        the plugin is enabled.
         """
         self.notebook.add_tab(tab, title, allow_closing)
 
