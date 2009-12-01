@@ -37,10 +37,10 @@ class RideMessage(object):
 
     def __init__(self, **kwargs):
         """Initializes message based on given keyword arguments.
-        
-        This method will check that the names of the given keyword arguments
-        match to names in `data` class attribute. 
-        
+
+        Names of the given keyword arguments must match to names in `data`
+        class attribute, otherwise the initialization fails.
+
         Must be called explicitly by subclass if overridden.
         """
         if sorted(kwargs.keys()) != sorted(self.data):
@@ -48,6 +48,16 @@ class RideMessage(object):
         self.__dict__.update(kwargs)
 
     def publish(self):
+        """Publishes the message.
+
+        All listeners that have subscribed to the topic of this message will be
+        called with the topic of this message as first argument and this
+        instance as a second argument.
+
+        Notifications are sent sequentially. Due to the limitations of current
+        implementation, if any of the listeners raises an exception, subsequent
+        listeners will not get the notification.
+        """
         try:
             self._publish(self)
         except Exception, err:
@@ -58,49 +68,81 @@ class RideMessage(object):
 
 
 class RideLogMessage(RideMessage):
+    """This class represents a general purpoes log message.
+
+    This message may used to inform error conditions or to provide
+    some kind of debugging information, mainly to be shown to users.
+    """
     data = ['message', 'level', 'timestamp']
 
     def __init__(self, message, level='INFO'):
+        """Initializes a RIDE log message.
+
+        'level' specifies the log level of the message and it defaults to INFO
+        """
         RideMessage.__init__(self, message=message, level=level,
                              timestamp=utils.get_timestamp())
 
 
 class RideTreeSelection(RideMessage):
+    """Sent whenever user selects a node from the tree."""
     data = ['node', 'item', 'text']
 
 
 class RideNotebookTabChanging(RideMessage):
+    """Sent when the notebook tab change has started.
+
+    Subscribing to this event allows the listener to do something before the
+    tab has actually changed in the UI.
+    """
     data = ['oldtab', 'newtab']
 
 
 class RideNotebookTabChanged(RideMessage):
+    """Sent after the notebook tab change has completed."""
     pass
 
 
 class RideSaving(RideMessage):
+    """Sent when user selects Save from File menu or via shortcut.
+
+    This is used for example to store current changes from editor to data
+    model, to guarantee that all changes are really saved."""
     data = ['path']
 
 
 class RideSaved(RideMessage):
+    """Sent after the file has been actually saved to disk."""
     data = ['path']
 
 
 class RideSaveAll(RideMessage):
+    """Sent when user selects Save All from File menu or via shortcut."""
     pass
 
 
-class RideOpenResource(RideMessage):
+class RideOpenSuite(RideMessage):
+    """Sent when a new suite has finished loading."""
     data = ['path']
 
 
-class RideOpenSuite(RideMessage):
+class RideOpenResource(RideMessage):
+    """Sent when a new resource has finished loading."""
     data = ['path']
 
 
 class RideGridCellChanged(RideMessage):
+    """Sent when a value in grid cell has changed.
+
+    This message is sent both with regular edits and with cut, paste or delete
+    operations.  If a single cut, paste or delete operation affects multiple
+    cells, this message is sent individually for each cell.
+    """
     topic = 'Ride.Grid.Cell Changed'
     data = ['cell', 'value', 'previous', 'grid']
 
 
 class RideClosing(RideMessage):
+    """Sent when user selects Quit from File menu or via shortcut."""
     pass
+
