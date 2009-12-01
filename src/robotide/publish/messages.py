@@ -51,8 +51,7 @@ class RideMessage(object):
         """Publishes the message.
 
         All listeners that have subscribed to the topic of this message will be
-        called with the topic of this message as first argument and this
-        instance as a second argument.
+        called with the this instance as an argument.
 
         Notifications are sent sequentially. Due to the limitations of current
         implementation, if any of the listeners raises an exception, subsequent

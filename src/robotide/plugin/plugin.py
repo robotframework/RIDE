@@ -252,10 +252,10 @@ class Plugin(object):
         subscribing to 'Ride' or class `RideMessage` will cause the ``listener`` to
         be called for 'ride', 'ride.anything' etc.)
 
-        ``listener`` needs to be a callable that accepts two arguments, the
-        first being the topic of the published message, and the second being an
-        instance of the message class, containing additional information in its
-        attributes.
+        ``listener`` needs to be a callable that accepts one argument. When the
+        corresponding message is published, the ``listener`` will be called
+        with an instance of the message class as an argument. That instance
+        contains topic and possibly some additional information in its attributes.
         """
         for topic in topics:
             PUBLISHER.subscribe(listener, topic, key=self)
