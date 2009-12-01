@@ -46,7 +46,7 @@ def _create_action_info(eventhandler, menu, container, row):
 
 
 class MenuInfo(object):
-    """Base class for ActionInfo and SeparatorInfo."""
+    """Base class for `ActionInfo` and `SeparatorInfo`."""
 
     def __init__(self):
         self.insertion_point = _InsertionPoint()
@@ -55,22 +55,22 @@ class MenuInfo(object):
         return False
 
     def set_menu_position(self, before=None, after=None):
-        """Sets the menu entry position in the menu.
+        """Sets the position of this menu entry.
 
         :Parameters:
           before
-            the menu entry name without the shortcut which is used to set
-            the position before (above) given menu entry.
+            Place this menu entry before the specified entry.
           after
-            used to set the position after (below) the given menu entry name.
+            Place this menu entry after the specified entry.
 
-        Use either `before` or `after`.
+        Use either `before` or `after` and give the name without the possible
+        shortcut.
         """
         self.insertion_point = _InsertionPoint(before, after)
 
 
 class ActionInfo(MenuInfo):
-    """ Used to create menu entries, keyboard shortcuts and/or toolbar buttons."""
+    """Used to create menu entries, keyboard shortcuts and/or toolbar buttons."""
 
     def __init__(self, menu_name, name, action=None, container=None,
                  shortcut=None, icon=None, doc=''):
@@ -78,31 +78,31 @@ class ActionInfo(MenuInfo):
 
         :Parameters:
           menu_name
-            menu where menu entry will be added.
+            The name of the menu where the new entry will be added.
           name
-            the name of the menu entry.
+            The name of the new menu entry.
           action
-            callable which will be called in case user does any of the 
+            The callable which will be called when a user does any of the
             associated actions (selects menu entry, pushes toolbar button or 
             selects shortcut).
           container
-            the wxPython element containing the UI components associated with 
+            The wxPython element containing the UI components associated with 
             this ActionInfo's actions. When any of the actions is executed,
             container is used to check whether to call the `action` or not.
             `container` must be visible and it must have focus, otherwise the 
-            `action` is not called. In case `container` is None, `action` is 
-            thought to be global and it is called always. Same checks is used to
-            decide whether the associated menu entry is enabled or disabled.
+            `action` is not called. If `container` is None, `action` is 
+            considered global and it is always called.
           shortcut
-            the keyboard shortcut used to invoke the `action`.
+            The keyboard shortcut associated to the `action`.
           icon
-            the icon added to toolbar as toolbar button. It can be either 16x16
-            bitmap or string presenting one of the ready icons provided by the
-            wxPython ArtProvider class i.e. 'ART_FILE_OPEN'
-            (http://www.wxpython.org/docs/api/wx.ArtProvider-class.html).
+            The icon added to the toolbar as a toolbar button. It can be either
+            a 16x16 bitmap or a string presenting one of the icons provided by
+            `wxPython's ArtProvider class`__ (e.g. 'ART_FILE_OPEN').
+
+            __ http://www.wxpython.org/docs/api/wx.ArtProvider-class.html
           doc
-            the documentation shown on statusbar when selection is on
-            associated menu entry or toolbar button.
+            The documentation shown on the statusbar when selection is on
+            the associated menu entry or toolbar button.
         """
         MenuInfo.__init__(self)
         self.menu_name = menu_name
@@ -123,14 +123,14 @@ class ActionInfo(MenuInfo):
 
 
 class SeparatorInfo(MenuInfo):
-    """ Used to create separators to menus."""
+    """Used to create separators to menus."""
 
     def __init__(self, menu_name):
         """Initializes information needed to add separators to menus.
         
         :Parameters:
           menu_name
-            menu where separator will be added.
+            The name of the menu where the separator will be added.
         """
         MenuInfo.__init__(self)
         self.menu_name = menu_name
