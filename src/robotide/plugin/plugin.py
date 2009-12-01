@@ -36,23 +36,30 @@ class Plugin(object):
 
     :IVariables:
       name
-        Plugin name. Set in `__init__`.
+        Plugin name. Set in `__init__` based on the given name or the class name.
       doc
-        Plugin documentation. Set in `__init__`.
+        Plugin documentation. Set in `__init__` based on the given doc or
+        the class docstring.
       metadata
-        Plugin metadata. Set in `__init__`.
-      initially_active
-        Initial activity. Set in `__init__`.
+        Plugin metadata. Set in `__init__` based on the given metadata.
+      initially_enabled
+        Specifies should the plugin be enabled when first loaded.
+        Set in `__init__`.
     """
 
-    tree = property(lambda self: self.__frame.tree, doc='This should be set...')
-    menubar = property(lambda self: self.__frame.GetMenuBar())
-    toolbar = property(lambda self: self.__frame.GetToolBar())
-    notebook = property(lambda self: self.__frame.notebook)
-    model = property(lambda self: self.__app.model)
+    tree = property(lambda self: self.__frame.tree, 
+                    doc='Provides access to the suite and resource tree')
+    menubar = property(lambda self: self.__frame.GetMenuBar(),
+                       doc='Provides access to the application menubar')
+    toolbar = property(lambda self: self.__frame.GetToolBar(),
+                       doc='Provides access to the application toolbar')
+    notebook = property(lambda self: self.__frame.notebook,
+                       doc='Provides access to the tabbed notebook')
+    model = property(lambda self: self.__app.model,
+                       doc='Provides access to the data model')
 
     def __init__(self, application, name=None, doc=None, metadata=None,
-                 default_settings=None, initially_active=True):
+                 default_settings=None, initially_enabled=True):
         """Initialize the plugin - must be called explicitly if overridden.
 
         Mainly used to initialize the data shown in the plugin manager. 
@@ -76,8 +83,8 @@ class Plugin(object):
             automatically stored onto RIDE configuration file, can be 
             accessed using direct attribute access via `__getattr__`, and new
             settings can be saved using `save_setting`.
-          initially_active
-            Specifies should the plugin be activated when loaded for the first
+          initially_enabled
+            Specifies should the plugin be enabled when loaded for the first
             time. The status can be changed later from the plugin manager.
 
         TODO: Should we still change active/deactive to enable/disable?
@@ -85,7 +92,7 @@ class Plugin(object):
         self.name = name or utils.name_from_class(self, drop='Plugin')
         self.doc = self._get_doc(doc)
         self.metadata = metadata or {} 
-        self.initially_active = initially_active
+        self.initially_enabled = initially_enabled
         self.__app = application
         self.__frame = application.frame
         self.__settings = SETTINGS['Plugins'].add_section(self.name)
