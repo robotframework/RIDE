@@ -6,7 +6,6 @@ from robotide.editor.kweditor import KeywordEditor, GRID_CLIPBOARD
 from robotide.publish.messages import RideGridCellChanged
 from robotide.publish import PUBLISHER
 from resources import FakeSuite, PYAPP_REFERENCE #Needed to be able to create wx components
-
 # wx needs to imported last so that robotide can select correct wx version.
 import wx
 

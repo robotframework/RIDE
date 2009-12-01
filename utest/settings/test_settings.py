@@ -12,12 +12,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-
-import os
 import unittest
+import os
 
 from robotide.context.settings import Settings, SectionError,\
-                ConfigurationError, _merge_settings, initialize_settings
+    ConfigurationError, _merge_settings, initialize_settings
 from robotide.context  import settings
 
 from resources.setting_utils import TestSettingsHelper

@@ -20,7 +20,7 @@ from resources import TestSettingsHelper, FakeApplication
 
 
 class TestPluginSettings(TestSettingsHelper):
-    
+
     def setUp(self):
         TestSettingsHelper.setUp(self)
         self.orig_plugin_settings = plugin.SETTINGS

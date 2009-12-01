@@ -28,6 +28,7 @@ COMPLEX_MODEL = DataModel(COMPLEX_SUITE_PATH)
 COMPLEX_SUITE = COMPLEX_MODEL.suite
 VARS_SUITE = DataModel(VARS_SUITE_PATH).suite
 
+
 class APPMock(object):
 
     def import_new_resource(self, datafile, path):
@@ -223,4 +224,3 @@ class TestGettingVariablesFromAssistant(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-

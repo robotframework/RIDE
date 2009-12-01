@@ -1,6 +1,21 @@
+#  Copyright 2008 Nokia Siemens Networks Oyj
+#  
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#  
+#      http://www.apache.org/licenses/LICENSE-2.0
+#  
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
 import unittest
 from StringIO import StringIO
-from robot.utils.asserts import assert_equal, assert_true, assert_none, assert_not_none
+
+from robot.utils.asserts import assert_equal, assert_none, assert_not_none
 
 from robotide.writer.template import _settings_re as sere
 from robotide.writer.template import _variables_re as vare
@@ -69,7 +84,7 @@ class TestTableRegexps(unittest.TestCase):
 
 
 class TestSubstitution(unittest.TestCase):
-    
+
     def test_simple_substitution(self):
         repl = _table_replacer('content')
         assert_equal(sere.sub(repl, 'before<table id="settings"></table>after'),

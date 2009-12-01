@@ -19,7 +19,8 @@ from robot.utils.asserts import assert_equals
 from robotide.utils.contentassist import ContentAssistPopup
 
 from resources import PYAPP_REFERENCE as _ # Needed to allow importing wx
-import wx # Needs to be after robotide and PYAPP_REFERENCE import
+# wx needs to imported last so that robotide can select correct wx version.
+import wx 
 
 
 class TestIsVariableRegexp(unittest.TestCase):

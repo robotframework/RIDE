@@ -13,17 +13,16 @@
 #  limitations under the License.
 
 # This is needed to be able to create WX objects.
-from resources import PYAPP_REFERENCE as _
 
 import unittest
-import wx
 
 from robot.utils.asserts import assert_equals, assert_none
+
 from robotide.application import DataModel
 from robotide.ui.actiontriggers import MenuBar, ToolBar, ShortcutRegistry
 from robotide.ui.mainframe import ActionRegisterer
 from resources import FakeSuite, FakeDirectorySuite, FakeUserKeyword,\
-    FakeResource, FakeTestCase
+    FakeResource, FakeTestCase, PYAPP_REFERENCE
 
 from robotide.ui import tree as st
 st.FakeDirectorySuiteHandler = st.FakeUserKeywordHandler = \
@@ -33,6 +32,8 @@ st.Editor = lambda *args: _FakeEditor()
 from robotide.ui.tree import Tree
 Tree._show_correct_editor = lambda self, x:None
 Tree.get_active_datafile = lambda self: None
+# wx needs to imported last so that robotide can select correct wx version.
+import wx
 
 
 class _FakeMainFrame(wx.Frame):

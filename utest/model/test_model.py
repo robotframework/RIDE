@@ -36,7 +36,7 @@ INITPATH = os.path.join(DIRPATH, '__init__.tsv')
 
 
 class TestNoRide(unittest.TestCase):
-    
+
     def test_creating_suite_with_no_ride_meta_fails(self):
         msg = "Test data file 'fake/suite.html' is not supposed to be edited with RIDE."
         assert_raises_with_msg(NoRideError, msg, _NoRideFakeSuite)
@@ -58,7 +58,7 @@ class TestModifiedOnDiskWithFileSuite(unittest.TestCase):
         suite = FakeSuite(path=FILEPATH)
         open(FILEPATH, 'a').write('#Ninja edit\n')
         assert_true(suite.has_been_modified_on_disk())
-        
+
     def test_reload(self):
         suite = TestSuiteFactory(FILEPATH)
         assert_equals(len(suite.tests), 1)
@@ -176,12 +176,12 @@ class TestCreatingNewUserKeyword(unittest.TestCase):
 
 
 class TestUserKeywordCopy(unittest.TestCase):
-    
+
     def setUp(self):
         self.suite = FakeSuite()
         uk = FakeUserKeyword(self.suite)
         self.copy = uk.copy('Copy')
-    
+
     def test_name(self):
         assert_equals(self.copy.name, 'Copy') 
 
@@ -189,7 +189,7 @@ class TestUserKeywordCopy(unittest.TestCase):
         assert_equals(self.copy.settings.args.value, ['${scalar}'])
         assert_equals(self.copy.doc, 'Some doc')
         assert_equals(self.copy.settings.timeout.value, None)
-            
+
     def test_keyword_list(self):
         assert_equals(len(self.copy.keywords), 1)
 
@@ -210,7 +210,7 @@ class TestVariables(unittest.TestCase):
 
 
 class _NoRideFakeSuite(TestCaseFile):
-    
+
     def __init__(self):
         data = _EmptyTestSuite('.')
         data.metadata = {'No Ride': ''}
@@ -223,7 +223,7 @@ class _NoRideFakeResource(FakeResource):
     def __init__(self):
         FakeResource.__init__(self)
         self.metadata = {'No Ride': ''}
-    
+
 
 if __name__ == '__main__':
     unittest.main()

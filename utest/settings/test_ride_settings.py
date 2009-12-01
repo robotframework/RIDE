@@ -12,9 +12,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-
-import os.path
 import unittest
+import os
 
 from robotide.context import RideSettings
 

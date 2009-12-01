@@ -12,7 +12,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-
 import unittest
 
 from robotide.model.files import TestSuiteFactory
@@ -21,7 +20,7 @@ from robot.utils.asserts import assert_equals
 
 
 class TestSerialization(unittest.TestCase):
-    
+
     def test_test_suite_serializing(self):
         suite = TestSuiteFactory(COMPLEX_SUITE_PATH)
         serializer = MockSerializer()
@@ -70,7 +69,7 @@ class TestSerialization(unittest.TestCase):
                'End User Keywords']
         for act, expected in zip(serializer.record, exp):
             assert_equals(act, expected)
-    
-             
+
+
 if __name__  == '__main__':
     unittest.main()
