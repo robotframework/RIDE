@@ -45,7 +45,8 @@ def _create_action_info(eventhandler, menu, container, row):
     return ActionInfo(menu, name, action, container, shortcut, icon, doc)
 
 
-class _MenuInfo(object):
+class MenuInfo(object):
+    """Base class for ActionInfo and SeparatorInfo."""
 
     def __init__(self):
         self.insertion_point = _InsertionPoint()
@@ -54,14 +55,52 @@ class _MenuInfo(object):
         return False
 
     def set_menu_position(self, before=None, after=None):
+        """Sets the menu entry position in the menu.
+
+        `before` is the menu entry name without the shortcut and it is used to 
+        define the position before (above) given menu entry.
+        `after` defines the position after (below) the menu entry.
+        Use `before` or `after`, not both.
+        """
         self.insertion_point = _InsertionPoint(before, after)
 
 
-class ActionInfo(_MenuInfo):
+class ActionInfo(MenuInfo):
+    """ Used to create menu entries, keyboard shortcuts and/or toolbar buttons."""
 
     def __init__(self, menu_name, name, action=None, container=None,
                  shortcut=None, icon=None, doc=''):
-        _MenuInfo.__init__(self)
+        """Initializes information needed to create actions in RIDE.
+
+        :Parameters:
+          menu_name
+            menu where menu entry will be added.
+          name
+            the name of the menu entry.
+          action
+            callable which will be called in case user does any of the 
+            associated actions (selects menu entry, pushes toolbar button or 
+            selects shortcut).
+          container
+            the wxPython element containing the UI components associated with 
+            this ActionInfo's actions. When any of the actions is executed,
+            container is used to check whether to call the `action` or not.
+            `container` must be visible and it must have focus, otherwise the 
+            `action` is not called. In case `container` is None, `action` is 
+            thought to be global and it is called always. Same checks is used to
+            decide whether the associated menu entry is enabled or disabled.
+          shortcut
+            the keyboard shortcut used to invoke the `action`.
+          icon
+            the icon added to toolbar as toolbar button. It can be either 16x16
+            bitmap or string presenting one of the ready icons provided by the
+            wxPython ArtProvider class i.e. 'ART_FILE_OPEN'.
+            (http://www.wxpython.org/docs/api/wx.ArtProvider-class.html)
+          doc
+            the documentation shown on status bar when selection is on
+            associated menu entry or toolbar button.
+        """
+        MenuInfo.__init__(self)
         self.menu_name = menu_name
         self.name = name
         self.action = action
@@ -79,10 +118,17 @@ class ActionInfo(_MenuInfo):
         return icon
 
 
-class SeparatorInfo(_MenuInfo):
+class SeparatorInfo(MenuInfo):
+    """ Used to create separators to menus."""
 
     def __init__(self, menu_name):
-        _MenuInfo.__init__(self)
+        """Initializes information needed to add separators to menus.
+        
+        :Parameters:
+          menu_name
+            menu where separator will be added.
+        """
+        MenuInfo.__init__(self)
         self.menu_name = menu_name
 
     def is_separator(self):
