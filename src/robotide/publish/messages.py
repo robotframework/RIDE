@@ -19,11 +19,28 @@ from messagetype import messagetype
 
 
 class Message(object):
+    """Base class for all messages sent by RIDE.
+
+    :CVariables:
+      topic
+        Topic of this message. If not overridden, value is got from the class
+        name by lowercasing it, separating words with dot and dropping possible
+        'Message' from the end. For example 'MyExampleMessage' -> 'my.example'.
+      data
+        Names of keyword arguments that must be given when an instance is made.
+    """
     __metaclass__ = messagetype
     topic = None
     data = []
 
     def __init__(self, **kwargs):
+        """Initializes message based on given keyword arguments.
+        
+        This method will check that the names of the given keyword arguments
+        match to names in `data` class attribute. 
+        
+        Must be called explicitly by subclass if overridden.
+        """
         if sorted(kwargs.keys()) != sorted(self.data):
             raise TypeError('Argument mismatch, expected: %s' % self.data)
         self.__dict__.update(kwargs)
