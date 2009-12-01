@@ -31,7 +31,7 @@ class _PluginConnector(object):
         self.name = name
         self.doc = doc
         self.error = error
-        self.active = False
+        self.enabled = False
         self.metadata = {}
         self.config_panel = lambda self: None
 
@@ -44,17 +44,17 @@ class PluginConnector(_PluginConnector):
         self._settings = SETTINGS['Plugins'].add_section(plugin.name)
         self.config_panel = plugin.config_panel
         self.metadata = plugin.metadata 
-        if self._settings.get('_active', plugin.initially_active):
+        if self._settings.get('_enabled', plugin.initially_enabled):
             self.enable()
 
     def enable(self):
-        self._settings.set('_active', True)
-        self.active = True
+        self._settings.set('_enabled', True)
+        self.enabled = True
         self._plugin.enable()
 
     def disable(self):
-        self._settings.set('_active', False)
-        self.active = False
+        self._settings.set('_enabled', False)
+        self.enabled = False
         self._plugin.disable()
 
 
@@ -66,4 +66,3 @@ class BrokenPlugin(_PluginConnector):
                + 'Error: ' + error
         _PluginConnector.__init__(self, name, doc=doc, error=error)
         LOG.error("Taking %s plugin into use failed:\n%s" % (name, error))
-
