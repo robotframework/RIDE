@@ -148,7 +148,7 @@ class Plugin(object):
         The panel returned will be integrated into the plugin manager UI, and
         can be used e.g. to display configurable settings.
 
-        Be default there is no configuration panel.
+        By default there is no configuration panel.
         """
         return None
 
@@ -181,7 +181,7 @@ class Plugin(object):
         self.__actions = []
 
     def add_tab(self, tab, title, allow_closing=True):
-        """Adds the ``tab`` with the `title` to the tabbed notebook and shows it.
+        """Adds the ``tab`` with the ``title`` to the tabbed notebook and shows it.
 
         The ``tab`` can be any wxPython container. ``allow_closing`` defines
         can users close the tab while the plugin is enabled or not.
@@ -197,7 +197,7 @@ class Plugin(object):
         self.notebook.delete_tab(tab)
 
     def tab_is_visible(self, tab):
-        """Returns is the ``tab`` added using `add_tab` visible or not."""
+        """Returns whether the ``tab`` added using `add_tab` is visible."""
         return self.notebook.tab_is_visible(tab)
 
     def new_suite_can_be_opened(self):
@@ -239,28 +239,35 @@ class Plugin(object):
         return self.tree.get_selected_item()
 
     def subscribe(self, listener, *topics):
-        """Subscribe to notifications for the given `topics`.
+        """Subscribe to notifications for the given ``topics``.
 
-        A topic is a dot-separated string (e.g.: 'ride.notebook.tabchange') or
-        a reference to the corresponding message class (e.g.
-        RideNotebookTabchange).
+        A topic is a dot-separated string or a reference to the corresponding
+        message class, for example::
+
+          self.subscribe('ride.tree.selection') or
+          self.subscribe(RideTreeSelection)
 
         The topic represents a hierarchy, and all publications at or below the
-        given hierarchy will call the given `listener` (i.e.: subscribing to
-        'Ride' or class RideMessage will cause the `listener` to be called for 'Ride',
-        'Ride.anything' etc.)
+        given hierarchy will call the given ``listener`` For example,
+        subscribing to 'Ride' or class `RideMessage` will cause the ``listener`` to
+        be called for 'ride', 'ride.anything' etc.)
+
+        ``listener`` needs to be a callable that accepts two arguments, the
+        first being the topic of the published message, and the second being an
+        instance of the message class, containing additional information in its
+        attributes.
         """
         for topic in topics:
             PUBLISHER.subscribe(listener, topic, key=self)
 
     def unsubscribe(self, listener, *topics):
-        """Unsubscribes notifications from the given `topics`.
+        """Unsubscribes from the given ``topics``.
 
-        `topics` are same as those used in subscribe."""
+        ``topics`` are same as those used in subscribe."""
         for topic in topics:
             PUBLISHER.unsubscribe(listener, topic, key=self)
 
     def unsubscribe_all(self):
-        """Unsubscribes all the notifications from topics subscribed by this Plugin."""
+        """Unsubscribes from all topics."""
         PUBLISHER.unsubscribe_all(key=self)
 
