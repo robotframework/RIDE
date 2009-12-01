@@ -57,10 +57,14 @@ class MenuInfo(object):
     def set_menu_position(self, before=None, after=None):
         """Sets the menu entry position in the menu.
 
-        `before` is the menu entry name without the shortcut and it is used to 
-        define the position before (above) given menu entry.
-        `after` defines the position after (below) the menu entry.
-        Use `before` or `after`, not both.
+        :Parameters:
+          before
+            the menu entry name without the shortcut which is used to set
+            the position before (above) given menu entry.
+          after
+            used to set the position after (below) the given menu entry name.
+
+        Use either `before` or `after`.
         """
         self.insertion_point = _InsertionPoint(before, after)
 
@@ -94,10 +98,10 @@ class ActionInfo(MenuInfo):
           icon
             the icon added to toolbar as toolbar button. It can be either 16x16
             bitmap or string presenting one of the ready icons provided by the
-            wxPython ArtProvider class i.e. 'ART_FILE_OPEN'.
-            (http://www.wxpython.org/docs/api/wx.ArtProvider-class.html)
+            wxPython ArtProvider class i.e. 'ART_FILE_OPEN'
+            (http://www.wxpython.org/docs/api/wx.ArtProvider-class.html).
           doc
-            the documentation shown on status bar when selection is on
+            the documentation shown on statusbar when selection is on
             associated menu entry or toolbar button.
         """
         MenuInfo.__init__(self)
