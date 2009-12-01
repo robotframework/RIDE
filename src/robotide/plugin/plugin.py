@@ -25,15 +25,15 @@ class Plugin(object):
 
     Plugins can use the helper methods implemented in this class to interact
     with the core application. The methods and their arguments are kept stable
-    across the different RIDE releases to the extend that it is possible.
-    
+    across the different RIDE releases to the extent that it is possible.
+
     If the provided methods are not enough, plugins can also interact with the 
     core directly using properties `tree`, `menubar`, `toolbar`, etc. Although
     these attributes themselves are stable, the functionality behind them may
     change radically between releases. Users are recommended to propose new 
     helper methods, preferably with patches, for often needed functionality 
     not yet available through them.
-    
+
     :IVariables:
       name
         Plugin name. Set in `__init__`.
@@ -69,7 +69,7 @@ class Plugin(object):
             Plugin documentation. If not specified, the doc is got from the
             plugin class docstring.
           metadata
-            A dictionary of free metadata shown on the plugin manage. Values
+            A dictionary of free metadata shown on the plugin manager. Values
             containing URLs will be shown as links.
           default_settings
             A dictionary of settings and their default values. Settings are
