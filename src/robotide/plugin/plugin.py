@@ -21,17 +21,70 @@ from robotide import utils
 
 class Plugin(object):
 
+    """Entry point to RIDE plugin API - all plugins must extend this class.
+
+    Plugins can use the helper methods implemented in this class to interact
+    with the core application. The methods and their arguments are kept stable
+    across the different RIDE releases to the extend that it is possible.
+    
+    If the provided methods are not enough, plugins can also interact with the 
+    core directly using properties `tree`, `menubar`, `toolbar`, etc. Although
+    these attributes themselves are stable, the functionality behind them may
+    change radically between releases. Users are recommended to propose new 
+    helper methods, preferably with patches, for often needed functionality 
+    not yet available through them.
+    
+    :IVariables:
+      name
+        Plugin name. Set in `__init__`.
+      doc
+        Plugin documentation. Set in `__init__`.
+      metadata
+        Plugin metadata. Set in `__init__`.
+      initially_active
+        Initial activity. Set in `__init__`.
+    """
+
+    tree = property(lambda self: self.__frame.tree, doc='This should be set...')
+    menubar = property(lambda self: self.__frame.GetMenuBar())
+    toolbar = property(lambda self: self.__frame.GetToolBar())
+    notebook = property(lambda self: self.__frame.notebook)
+    model = property(lambda self: self.__app.model)
+
     def __init__(self, application, name=None, doc=None, metadata=None,
                  default_settings=None, initially_active=True):
-        """Initialize the plugin.
+        """Initialize the plugin - must be called explicitly if overridden.
 
-        This shouldn't create any user interface elements, only initialize the
-        data used by the plugin loader and manager UI. Any user interface
-        elements that need to be created should be done in the enable() method.
+        Mainly used to initialize the data shown in the plugin manager. 
+        Any user interface elements that need to be created should be done in
+        the `enable` method.
+
+        :Parameters:
+          application
+            RIDE application reference.
+          name
+            Name of the plugin. If not specified, the name is got from the
+            plugin class name dropping possible 'Plugin' from the end.
+          doc
+            Plugin documentation. If not specified, the doc is got from the
+            plugin class docstring.
+          metadata
+            A dictionary of free metadata shown on the plugin manage. Values
+            containing URLs will be shown as links.
+          default_settings
+            A dictionary of settings and their default values. Settings are
+            automatically stored onto RIDE configuration file, can be 
+            accessed using direct attribute access via `__getattr__`, and new
+            settings can be saved using `save_setting`.
+          initially_active
+            Specifies should the plugin be activated when loaded for the first
+            time. The status can be changed later from the plugin manager.
+
+        TODO: Should we still change active/deactive to enable/disable?
         """
         self.name = name or utils.name_from_class(self, drop='Plugin')
-        self.doc = doc or inspect.getdoc(self) or ''
-        self.metadata = metadata or {}
+        self.doc = self._get_doc(doc)
+        self.metadata = metadata or {} 
         self.initially_active = initially_active
         self.__app = application
         self.__frame = application.frame
@@ -39,11 +92,12 @@ class Plugin(object):
         self.__settings.set_defaults(default_settings)
         self.__actions = []
 
-    tree = property(lambda self: self.__frame.tree)
-    menubar = property(lambda self: self.__frame.GetMenuBar())
-    toolbar = property(lambda self: self.__frame.GetToolBar())
-    notebook = property(lambda self: self.__frame.notebook)
-    model = property(lambda self: self.__app.model)
+    def _get_doc(self, given_doc):
+        if given_doc:
+            return given_doc
+        if self.__doc__ == Plugin.__doc__:
+            return ''
+        return inspect.getdoc(self) or ''
 
     def __getattr__(self, name):
         """Provides convenient attribute access to saved settings.
@@ -52,8 +106,7 @@ class Plugin(object):
         """
         if '__settings' not in name and self.__settings.has_setting(name):
             return self.__settings[name]
-        raise AttributeError("No attribute or settings with name '%s' found"
-                             % (name))
+        raise AttributeError("No attribute or settings with name '%s' found" % name)
 
     def save_setting(self, name, value, override=True):
         """Saves setting with `name` and `value` to settings file.
@@ -172,7 +225,7 @@ class Plugin(object):
         return self.tree.get_selected_item()
 
     def subscribe(self, listener, *topics):
-        """Subscribe to notifications for the given `topic(s)`.
+        """Subscribe to notifications for the given `topics`.
 
         A topic is a dot-separated string (e.g.: 'ride.notebook.tabchange') or
         a reference to the corresponding message class (e.g.
@@ -187,7 +240,7 @@ class Plugin(object):
             PUBLISHER.subscribe(listener, topic, key=self)
 
     def unsubscribe(self, listener, *topics):
-        """Unsubscribes notifications from the given `topic(s)`.
+        """Unsubscribes notifications from the given `topics`.
 
         `topics` are same as those used in subscribe."""
         for topic in topics:
