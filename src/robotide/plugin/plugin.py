@@ -197,7 +197,7 @@ class Plugin(object):
         self.notebook.delete_tab(tab)
 
     def tab_is_visible(self, tab):
-        """Returns whether the ``tab`` added using `add_tab` is visible."""
+        """Returns is the ``tab`` added using `add_tab` visible or not."""
         return self.notebook.tab_is_visible(tab)
 
     def new_suite_can_be_opened(self):
@@ -215,59 +215,68 @@ class Plugin(object):
         """
         self.__frame.open_suite(path)
 
+    # TODO: Should we somehow specify the API of the object returned by
+    # this and subsequent methods?
     def get_selected_datafile(self):
         """Returns the data file that is currently selected in the tree.
 
-        If a test case or keyword is selected, the data file containing the
+        If a test case or a keyword is selected, the data file containing the
         selected item is returned.
         """
         return self.tree.get_selected_datafile()
 
     def save_selected_datafile(self):
-        """Saves the datafile which is currently selected in the tree.
+        """Saves the data file that is currently selected in the tree.
 
-        In case test case or keyword is selected, saves datafile containing
-        selected item.
+        If a test case or a keyword is selected, the data file containing the
+        selected item is saved.
         """
         self.__frame.save(self.get_selected_datafile())
 
     def get_selected_item(self):
-        """Returns the model item which is currently selected in the tree.
+        """Returns the item that is currently selected in the tree.
 
-        Model item can be test suite, resource file, test case or user keyword.
+        The item can be a test suite, a resource file, a test case or a keyword.
         """
         return self.tree.get_selected_item()
 
     def subscribe(self, listener, *topics):
-        """Subscribe to notifications for the given ``topics``.
+        """Start to listen to messages with the given ``topics``.
 
-        A topic is a dot-separated string or a reference to the corresponding
-        message class, for example::
+        Topics can be specified using message classes in `robotide.publish.messages` 
+        module or with dot separated topic strings. For example these two are
+        equivelant::
 
-          self.subscribe('ride.tree.selection') or
+          self.subscribe('ride.tree.selection')
           self.subscribe(RideTreeSelection)
 
-        The topic represents a hierarchy, and all publications at or below the
-        given hierarchy will call the given ``listener`` For example,
-        subscribing to 'Ride' or class `RideMessage` will cause the ``listener`` to
-        be called for 'ride', 'ride.anything' etc.)
-
+        Topic strings represents a hierarchy, and all publications at or below
+        the given hierarchy level will match the topic. For example, subscribing
+        to ``ride.notebook`` topic means that `RideNotebookTabChanged` or any
+        other message with a topic starting with ``ride.notebook`` will match.
+        
         ``listener`` needs to be a callable that accepts one argument. When the
         corresponding message is published, the ``listener`` will be called
         with an instance of the message class as an argument. That instance
         contains topic and possibly some additional information in its attributes.
+        
+        `unsubscribe` and `unsubscribe_all` can be used to stop listening to
+        certain or all messages.
         """
         for topic in topics:
             PUBLISHER.subscribe(listener, topic, key=self)
 
     def unsubscribe(self, listener, *topics):
-        """Unsubscribes from the given ``topics``.
+        """Stops listening to messages with the given ``topics``.
 
-        ``topics`` are same as those used in subscribe."""
+        ``listener`` and ``topics`` have the same meaning as in `subscribe`
+        and a listener/topic combination is unsubscribed only when both of them
+        match. 
+        """
         for topic in topics:
             PUBLISHER.unsubscribe(listener, topic, key=self)
 
     def unsubscribe_all(self):
-        """Unsubscribes from all topics."""
+        """Stops to listen to all messages"""
         PUBLISHER.unsubscribe_all(key=self)
 
