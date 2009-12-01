@@ -15,7 +15,8 @@
 from wx.lib.pubsub import Publisher as WxPublisher
 
 from robotide import utils
-from messagetype import messagetype
+
+import messagetype
 
 
 class Message(object):
@@ -29,7 +30,7 @@ class Message(object):
       data
         Names of keyword arguments that must be given when an instance is made.
     """
-    __metaclass__ = messagetype
+    __metaclass__ = messagetype.messagetype
     topic = None
     data = []
 
