@@ -1,6 +1,6 @@
 import unittest
 from robot.utils.asserts import assert_equals, assert_none
-from robotide.ui.menu import _NameBuilder
+from robotide.ui.actiontriggers import _NameBuilder
 
 
 class TestGetNameWithAccelerator(unittest.TestCase):

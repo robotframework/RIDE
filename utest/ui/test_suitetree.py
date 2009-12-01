@@ -20,7 +20,8 @@ import wx
 
 from robot.utils.asserts import assert_equals, assert_none
 from robotide.application import DataModel
-from robotide.ui.menu import ActionRegisterer, MenuBar, ToolBar
+from robotide.ui.actiontriggers import MenuBar, ToolBar, ShortcutRegistry
+from robotide.ui.mainframe import ActionRegisterer
 from resources import FakeSuite, FakeDirectorySuite, FakeUserKeyword,\
     FakeResource, FakeTestCase
 
@@ -66,7 +67,8 @@ class _BaseSuiteTreeTest(unittest.TestCase):
     def setUp(self):
         frame = _FakeMainFrame(None)
         self._model = self._create_model()
-        self._tree = Tree(frame, ActionRegisterer(MenuBar(frame), ToolBar(frame)))
+        self._tree = Tree(frame, ActionRegisterer(MenuBar(frame), ToolBar(frame),
+                                                  ShortcutRegistry(frame)))
         imgs =  _FakeImageList()
         self._tree._images = imgs
         self._tree.SetImageList(imgs)
