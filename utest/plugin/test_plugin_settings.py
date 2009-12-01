@@ -16,8 +16,7 @@ import unittest
 
 from robotide.plugin import plugin
 
-from plugin_resources import FakeApplication
-from resources import TestSettingsHelper
+from resources import TestSettingsHelper, FakeApplication
 
 
 class TestPluginSettings(TestSettingsHelper):

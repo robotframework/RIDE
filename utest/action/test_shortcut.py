@@ -1,6 +1,6 @@
 import unittest 
 
-from robotide.ui.keymapping import parse_shortcut
+from robotide.action.shortcut import Shortcut
 
 import wx
 
@@ -28,11 +28,11 @@ class TestShortcutParsing(unittest.TestCase):
                     ('Alt-Cmd-DELETE', (wx.ACCEL_ALT+wx.ACCEL_CMD, wx.WXK_DELETE))])
 
     def test_invalid_shortcut(self):
-        self.assertRaises(ValueError, parse_shortcut, 'InvaLid')
+        self.assertRaises(ValueError, Shortcut('InvaLid').parse)
 
     def _test(self, data):
         for shortcut, expected in data:
-            self.assertEquals(parse_shortcut(shortcut), expected)
+            self.assertEquals(Shortcut(shortcut).parse(), expected)
 
 
 if __name__ == '__main__':

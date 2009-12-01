@@ -4,7 +4,7 @@ import unittest
 from robotide.application.pluginloader import PluginLoader
 from robotide.editor import Colorizer
 
-from plugin_resources import FakeApplication
+from resources import FakeApplication 
 
 
 class TestPluginLoader(unittest.TestCase):

@@ -5,7 +5,13 @@ from robot.utils.asserts import assert_equals, assert_none, assert_false, \
 
 from robotide.publish import RideMessage, RideLogMessage, PUBLISHER
 from robotide.plugin import Plugin
-from plugin_resources import RideTestMessage, RideMessageWithData
+
+
+class RideTestMessage(RideMessage):
+    pass
+
+class RideMessageWithData(RideMessage):
+    data = ['data_item', 'more_data']
 
 
 class TestSubscribingToEvents(unittest.TestCase):
