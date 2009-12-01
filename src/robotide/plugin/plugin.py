@@ -107,110 +107,119 @@ class Plugin(object):
     def __getattr__(self, name):
         """Provides convenient attribute access to saved settings.
 
-        For example, setting 'color' can be accessed with self.color
+        For example, setting ``color`` can be accessed directly like
+        ``self.color``.
         """
         if '__settings' not in name and self.__settings.has_setting(name):
             return self.__settings[name]
         raise AttributeError("No attribute or settings with name '%s' found" % name)
 
     def save_setting(self, name, value, override=True):
-        """Saves setting with `name` and `value` to settings file.
+        """Saves the specified setting into the RIDE configuration file.
 
-        Setting is stored in section [Plugins] [[Plugin Name]].
+        Plugin settings are stored into ``[[Plugin Name]]`` subsection
+        under ``[Plugins]`` section. They can be accessed using direct attribute
+        access via `__getattr__`.
 
-        `override` controls whether possibly already existing value is
+        ``override`` controls whether a possibly already existing value is
         overridden or not.
         """
         self.__settings.set(name, value, override=override)
 
     def enable(self):
-        """This method is called when the plugin is enabled.
+        """This method is called by RIDE when the plugin is enabled.
 
-        Possible integration to UI should be done in this method.
+        Possible integration to UI should be done in this method and removed
+        when `disable` is called.
         """
         pass
 
     def disable(self):
-        """Undo whatever was done in the enable method."""
+        """Called by RIDE when the plugin is disabled.
+
+        Undo whatever was done in the `enable` method.
+        """
         pass
 
+    # TODO: Should this be get_config_panel instead?
     def config_panel(self, parent):
-        """Returns a panel for configuring this plugin
+        """Called by RIDE to get the plugin configuration panel.
 
-        The panel returned will be integrated in the Plugin Manager UI, and can
-        be used e.g. to configure settings to be stored in the settings file.
+        The panel returned will be integrated into the plugin manager UI, and
+        can be used e.g. to display configurable settings.
 
-        The default implementation returns None, meaning there are no values to
-        configure.
+        Be default there is no configuration panel.
         """
         return None
 
     def register_action(self, action_info):
-        """Registers action to the UI.
+        """Registers a menu entry and optionally a shortcut and a toolbar icon.
 
-        `action_info` is ActionInfo class containing needed attributes for
-        creating menu and possible shortcut and/or icon to toolbar. See more
-        from TODO."""
+        ``action_info`` is an instance of `ActionInfo` class containing needed
+        information about the registered action.
+        """
         action = self.__frame.actions.register_action(action_info)
         self.__actions.append(action)
 
     def register_actions(self, action_infos):
-        """Registers actions to the UI.
+        """Registers multiple menu entries and shortcuts/icons.
 
-        `action_infos` is a list of ActionInfo items.
+        ``action_infos`` is a list of same `ActionInfo` objects that 
+        `register_action` method accepts.
         """
         for action_info in action_infos:
             self.register_action(action_info)
 
     def unregister_actions(self):
-        """Unregisters all actions added to the UI with register_action(s) methods."""
+        """Unregisters all actions registered by this plugin.
+
+        Actions can be registered via `register_action` and `register_actions`
+        methods.
+        """
         for action in self.__actions:
             action.unregister()
         self.__actions = []
 
     def add_tab(self, tab, title, allow_closing=True):
-        """Adds given `tab` with given `title` to the right side view.
+        """Adds the ``tab`` with the `title` to the tabbed notebook and shows it.
 
-        `tab` can be any wx container.
-
-        Defining `allow_closing` to be False disallows closing the tab while
-        the plugin is enabled.
+        The ``tab`` can be any wxPython container. ``allow_closing`` defines
+        can users close the tab while the plugin is enabled or not.
         """
         self.notebook.add_tab(tab, title, allow_closing)
 
     def show_tab(self, tab):
-        """Makes the `tab` visible.
-
-        `tab` need to have been added previously with `add_tab`.
-        """
+        """Makes the ``tab`` added using `add_tab` visible."""
         self.notebook.show_tab(tab)
 
     def delete_tab(self, tab):
-        """Deletes `tab` added with `add_tab`."""
+        """Deletes the ``tab`` added using `add_tab`."""
         self.notebook.delete_tab(tab)
 
     def tab_is_visible(self, tab):
-        """Returns whether the `tab` added with add_tab is visible or not."""
+        """Returns is the ``tab`` added using `add_tab` visible or not."""
         return self.notebook.tab_is_visible(tab)
 
     def new_suite_can_be_opened(self):
-        """Checks is there modified files and asks user to decide what to do.
+        """Checks are there modified files and asks user what to do if there are.
 
-        In case there are modified files and user cancels, False is returned."""
+        Returns False if there were modified files and user canceled the dialog,
+        otherwise returns True.
+        """
         return self.__app.ok_to_open_new()
 
     def open_suite(self, path):
-        """Opens test suite from the given `path`.
+        """Opens a test suite specified by the ``path``.
 
-        If the parsing of the data source given with `path` fails, there will
-        be no suite opened at all"""
+        No suite is opened if parsing the suite fails.
+        """
         self.__frame.open_suite(path)
 
     def get_selected_datafile(self):
-        """Returns the datafile which is currently selected in the tree.
+        """Returns the data file that is currently selected in the tree.
 
-        In case test case or keyword is selected, returns datafile containing
-        selected item.
+        If a test case or keyword is selected, the data file containing the
+        selected item is returned.
         """
         return self.tree.get_selected_datafile()
 
