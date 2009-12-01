@@ -19,7 +19,7 @@ from robotide import utils
 import messagetype
 
 
-class Message(object):
+class RideMessage(object):
     """Base class for all messages sent by RIDE.
 
     :CVariables:
@@ -55,10 +55,6 @@ class Message(object):
 
     def _publish(self, msg):
         WxPublisher().sendMessage(msg.topic, msg)
-
-
-class RideMessage(Message):
-    pass
 
 
 class RideLogMessage(RideMessage):
