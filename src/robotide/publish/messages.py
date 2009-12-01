@@ -15,21 +15,7 @@
 from wx.lib.pubsub import Publisher as WxPublisher
 
 from robotide import utils
-
-
-class messagetype(type):
-
-    def __new__(cls, name, bases, dct):
-        if not dct.get('topic'):
-            dct['topic'] = cls._get_topic_from(name)
-        dct['topic'] = dct['topic'].lower()
-        return type.__new__(cls, name, bases, dct)
-
-    @staticmethod
-    def _get_topic_from(classname):
-        if classname.endswith('Message'):
-            classname = classname[:-len('Message')]
-        return utils.printable_name(classname, code_style=True).replace(' ', '.')
+from messagetype import messagetype
 
 
 class Message(object):
