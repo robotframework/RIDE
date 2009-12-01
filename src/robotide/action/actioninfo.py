@@ -143,9 +143,11 @@ class ActionInfo(MenuInfo):
 
         :Parameters:
           menu_name
-            The name of the menu where the new entry will be added.
+            The name of the menu where the new entry will be added. The menu is 
+            created if it's missing.
           name
-            The name of the new menu entry.
+            The name of the new menu entry. The accelerator key is specified in 
+            the name by prefixing that key by & character.
           action
             The callable which will be called when a user does any of the
             associated actions (selects menu entry, pushes toolbar button or 
