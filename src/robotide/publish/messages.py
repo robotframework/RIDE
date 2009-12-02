@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 from wx.lib.pubsub import Publisher as WxPublisher
+import inspect
 
 from robotide import utils
 
@@ -145,3 +146,6 @@ class RideClosing(RideMessage):
     """Sent when user selects Quit from File menu or via shortcut."""
     pass
 
+
+__all__ = [ name for name, cls in globals().items()
+            if inspect.isclass(cls) and issubclass(cls, RideMessage) ]

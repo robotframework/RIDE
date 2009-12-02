@@ -23,8 +23,7 @@ Tidying works for both test case and resource files, but it does not work with
 test data directories. When RIDE is used like this, no GUI is opened.
 
 RIDE's API is still evolving while the project is moving towards the 1.0 
-release. The most stable, and best documented, modules are those related to 
-plugin development: `robotide.plugin`, `robotide.publish`,`robotide.action`.
+release. The most stable, and best documented, module is `robotide.pluginapi`.
 """
 
 import sys
