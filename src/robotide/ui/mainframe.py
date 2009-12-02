@@ -155,7 +155,7 @@ class RideFrame(wx.Frame, RideEventHandler, OnScreenEnsuringFrame):
         path = wx.DirSelector(message='Choose a directory containing Robot files',
                               defaultPath=self._default_dir)
         if path:
-            self._default_dir = os.path.dirname(path)
+            self._default_dir = path
             self.open_suite(path)
 
     def OnSave(self, event):
