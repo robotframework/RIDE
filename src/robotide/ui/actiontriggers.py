@@ -12,6 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import os
 import wx
 
 
@@ -338,4 +339,5 @@ class ActionDelegator(object):
     def __call__(self, event):
         for action in self._actions:
             action.act(event)
-        event.Skip()
+        if not os.name == 'nt':
+            event.Skip()
