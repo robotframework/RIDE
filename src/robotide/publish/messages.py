@@ -138,7 +138,7 @@ class RideGridCellChanged(RideMessage):
     operations.  If a single cut, paste or delete operation affects multiple
     cells, this message is sent individually for each cell.
     """
-    topic = 'Ride.Grid.Cell Changed'
+    topic = 'ride.grid.cell changed'
     data = ['cell', 'value', 'previous', 'grid']
 
 
