@@ -59,7 +59,11 @@ class KeywordEditorUi(grid.Grid):
         action if the user is editing a cell, otherwise it places the selected
         range of cells on the clipboard.
         """
-        if not self.IsCellEditControlShown():
+        if self.IsCellEditControlShown():
+            self._get_cell_edit_control().Cut()
+            self._save_keywords()
+            self.set_dirty()
+        else:
             self._move_to_clipboard(delete=True)
             self._remove_selected_rows()
 
@@ -68,14 +72,23 @@ class KeywordEditorUi(grid.Grid):
         action if the user is editing a cell, otherwise it places the selected
         range of cells on the clipboard.
         """
-        if not self.IsCellEditControlShown():
+        if self.IsCellEditControlShown():
+            self._get_cell_edit_control().Copy()
+        else:
             self._move_to_clipboard()
 
     def OnPaste(self, event=None):
         """Paste the contents of the clipboard. If a cell is being edited just
         do a normal paste. If a cell is not being edited, paste whole rows.
         """
-        if not self.IsCellEditControlShown():
+        if self.IsCellEditControlShown():
+            clipboard = GRID_CLIPBOARD.get_contents()
+            if isinstance(clipboard, list):
+                cells_as_text = ' '.join([' '.join(row) for row in clipboard])
+                self._get_cell_edit_control().WriteText(cells_as_text)
+            else:
+                self._get_cell_edit_control().Paste()
+        else:
             clipboard = GRID_CLIPBOARD.get_contents()
             if not clipboard:
                 return
@@ -96,6 +109,14 @@ class KeywordEditorUi(grid.Grid):
     def OnDelete(self, event=None):
         if not self.IsCellEditControlShown():
             self._move_to_clipboard(copy=False, delete=True)
+        else:
+            editor = self._get_cell_edit_control()
+            start, end = editor.GetSelection()
+            if start == end:
+                end += 1
+            editor.Remove(start, end)
+            if event:
+                event.Skip()
 
     def undo(self):
         if self._edit_history:
