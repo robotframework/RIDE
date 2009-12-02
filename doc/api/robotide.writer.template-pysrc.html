@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>robotide.writer.template</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="robotide-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://code.google.com/p/robotframework-ride">RIDE</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="robotide-module.html">Package&nbsp;robotide</a> ::
+        <a href="robotide.writer-module.html">Package&nbsp;writer</a> ::
+        Module&nbsp;template
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="robotide.writer.template-module.html">Module robotide.writer.template</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-comment">#  Copyright 2008-2009 Nokia Siemens Networks Oyj</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-comment">#  Licensed under the Apache License, Version 2.0 (the "License");</tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-comment">#  you may not use this file except in compliance with the License.</tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"><tt class="py-comment">#  You may obtain a copy of the License at</tt> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"><tt class="py-comment">#      http://www.apache.org/licenses/LICENSE-2.0</tt> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"><tt class="py-comment">#  Unless required by applicable law or agreed to in writing, software</tt> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"><tt class="py-comment">#  distributed under the License is distributed on an "AS IS" BASIS,</tt> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line"><tt class="py-comment">#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</tt> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line"><tt class="py-comment">#  See the License for the specific language governing permissions and</tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line"><tt class="py-comment">#  limitations under the License.</tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line"> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">os</tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">re</tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line"> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package robotide=robotide-module.html"><a title="robotide" class="py-name" href="#" onclick="return doclink('link-0', 'robotide', 'link-0');">robotide</a></tt> <tt class="py-keyword">import</tt> <tt id="link-1" class="py-name" targets="Package robotide.utils=robotide.utils-module.html"><a title="robotide.utils" class="py-name" href="#" onclick="return doclink('link-1', 'utils', 'link-1');">utils</a></tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt id="link-2" class="py-name" targets="Module robotide.writer.htmltemplate=robotide.writer.htmltemplate-module.html"><a title="robotide.writer.htmltemplate" class="py-name" href="#" onclick="return doclink('link-2', 'htmltemplate', 'link-2');">htmltemplate</a></tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line"> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line"> </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line"><tt class="py-name">_table_re</tt> <tt class="py-op">=</tt> <tt class="py-string">'(&lt;table\s[^&gt;]*id=["\']?%s["\']?[^&gt;]*&gt;).*?(&lt;/table&gt;)'</tt> </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line"><tt id="link-3" class="py-name" targets="Variable robotide.writer.template._settings_re=robotide.writer.template-module.html#_settings_re"><a title="robotide.writer.template._settings_re" class="py-name" href="#" onclick="return doclink('link-3', '_settings_re', 'link-3');">_settings_re</a></tt> <tt class="py-op">=</tt> <tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">compile</tt><tt class="py-op">(</tt><tt class="py-name">_table_re</tt> <tt class="py-op">%</tt> <tt class="py-string">'settings'</tt><tt class="py-op">,</tt> <tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">IGNORECASE</tt> <tt class="py-op">|</tt> <tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">DOTALL</tt><tt class="py-op">)</tt> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line"><tt id="link-4" class="py-name" targets="Variable robotide.writer.template._variables_re=robotide.writer.template-module.html#_variables_re"><a title="robotide.writer.template._variables_re" class="py-name" href="#" onclick="return doclink('link-4', '_variables_re', 'link-4');">_variables_re</a></tt> <tt class="py-op">=</tt> <tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">compile</tt><tt class="py-op">(</tt><tt class="py-name">_table_re</tt> <tt class="py-op">%</tt> <tt class="py-string">'variables'</tt><tt class="py-op">,</tt> <tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">IGNORECASE</tt> <tt class="py-op">|</tt> <tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">DOTALL</tt><tt class="py-op">)</tt> </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line"><tt id="link-5" class="py-name" targets="Variable robotide.writer.template._testcases_re=robotide.writer.template-module.html#_testcases_re"><a title="robotide.writer.template._testcases_re" class="py-name" href="#" onclick="return doclink('link-5', '_testcases_re', 'link-5');">_testcases_re</a></tt> <tt class="py-op">=</tt> <tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">compile</tt><tt class="py-op">(</tt><tt class="py-name">_table_re</tt> <tt class="py-op">%</tt> <tt class="py-string">'testcases'</tt><tt class="py-op">,</tt> <tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">IGNORECASE</tt> <tt class="py-op">|</tt> <tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">DOTALL</tt><tt class="py-op">)</tt> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line"><tt id="link-6" class="py-name" targets="Variable robotide.writer.template._keywords_re=robotide.writer.template-module.html#_keywords_re"><a title="robotide.writer.template._keywords_re" class="py-name" href="#" onclick="return doclink('link-6', '_keywords_re', 'link-6');">_keywords_re</a></tt> <tt class="py-op">=</tt> <tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">compile</tt><tt class="py-op">(</tt><tt class="py-name">_table_re</tt> <tt class="py-op">%</tt> <tt class="py-string">'keywords'</tt><tt class="py-op">,</tt> <tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">IGNORECASE</tt> <tt class="py-op">|</tt> <tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">DOTALL</tt><tt class="py-op">)</tt> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line"><tt class="py-keyword">del</tt> <tt class="py-name">_table_re</tt> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line"><tt id="link-7" class="py-name" targets="Variable robotide.writer.template._meta_re=robotide.writer.template-module.html#_meta_re"><a title="robotide.writer.template._meta_re" class="py-name" href="#" onclick="return doclink('link-7', '_meta_re', 'link-7');">_meta_re</a></tt> <tt class="py-op">=</tt> <tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">compile</tt><tt class="py-op">(</tt><tt class="py-string">'''</tt> </tt>
+<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line"><tt class="py-string">&lt;head.*          # allow match only inside head element</tt> </tt>
+<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line"><tt class="py-string">&lt;meta\s+(        # allow name and content in any order</tt> </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line"><tt class="py-string">name=["\']?rf-template["\']?\s*|</tt> </tt>
+<a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line"><tt class="py-string">content=["\']?true["\']?\s*</tt> </tt>
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line"><tt class="py-string">){2}/?&gt;          # allows also name or content twice, but that's ok</tt> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line"><tt class="py-string">.*&lt;/head&gt;</tt> </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line"><tt class="py-string">'''</tt><tt class="py-op">,</tt> <tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">IGNORECASE</tt> <tt class="py-op">|</tt> <tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">DOTALL</tt> <tt class="py-op">|</tt> <tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">VERBOSE</tt><tt class="py-op">)</tt> </tt>
+<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line"> </tt>
+<a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line"> </tt>
+<a name="Template"></a><div id="Template-def"><a name="L38"></a><tt class="py-lineno">38</tt> <a class="py-toggle" href="#" id="Template-toggle" onclick="return toggle('Template');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.writer.template-module.html#Template">Template</a><tt class="py-op">(</tt><tt class="py-param">data_path</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Template-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="Template-expanded"><a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line">    <tt class="py-comment"># TODO: should the file be closed explicitly? same issue in htmltemplate.</tt> </tt>
+<a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">data_path</tt> <tt class="py-keyword">and</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">isfile</tt><tt class="py-op">(</tt><tt class="py-name">data_path</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line">        <tt class="py-name">tmpl</tt> <tt class="py-op">=</tt> <tt class="py-name">_get_template</tt><tt class="py-op">(</tt><tt class="py-name">open</tt><tt class="py-op">(</tt><tt class="py-name">data_path</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt id="link-8" class="py-name"><a title="robotide.writer.htmltemplate" class="py-name" href="#" onclick="return doclink('link-8', 'htmltemplate', 'link-2');">htmltemplate</a></tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Variable robotide.writer.htmltemplate.TEMPLATE=robotide.writer.htmltemplate-module.html#TEMPLATE"><a title="robotide.writer.htmltemplate.TEMPLATE" class="py-name" href="#" onclick="return doclink('link-9', 'TEMPLATE', 'link-9');">TEMPLATE</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line">    <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line">        <tt class="py-name">tmpl</tt> <tt class="py-op">=</tt> <tt id="link-10" class="py-name"><a title="robotide.writer.htmltemplate" class="py-name" href="#" onclick="return doclink('link-10', 'htmltemplate', 'link-2');">htmltemplate</a></tt><tt class="py-op">.</tt><tt id="link-11" class="py-name"><a title="robotide.writer.htmltemplate.TEMPLATE" class="py-name" href="#" onclick="return doclink('link-11', 'TEMPLATE', 'link-9');">TEMPLATE</a></tt> </tt>
+<a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">tmpl</tt> <tt class="py-op">%</tt> <tt class="py-op">{</tt><tt class="py-string">'NAME'</tt><tt class="py-op">:</tt> <tt class="py-name">_get_datafile_name</tt><tt class="py-op">(</tt><tt class="py-name">data_path</tt><tt class="py-op">)</tt><tt class="py-op">}</tt> </tt>
+</div><a name="L45"></a><tt class="py-lineno">45</tt>  <tt class="py-line"> </tt>
+<a name="_get_template"></a><div id="_get_template-def"><a name="L46"></a><tt class="py-lineno">46</tt> <a class="py-toggle" href="#" id="_get_template-toggle" onclick="return toggle('_get_template');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.writer.template-module.html#_get_template">_get_template</a><tt class="py-op">(</tt><tt class="py-param">data_file</tt><tt class="py-op">,</tt> <tt class="py-param">default_template</tt><tt class="py-op">,</tt> <tt class="py-param">resource_file</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_get_template-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="_get_template-expanded"><a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line">    <tt class="py-name">content</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line">    <tt class="py-name">template_matches</tt> <tt class="py-op">=</tt> <tt class="py-name">False</tt> </tt>
+<a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">line</tt> <tt class="py-keyword">in</tt> <tt class="py-name">data_file</tt><tt class="py-op">.</tt><tt class="py-name">readlines</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L50"></a><tt class="py-lineno">50</tt>  <tt class="py-line">        <tt class="py-name">content</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">line</tt><tt class="py-op">)</tt> </tt>
+<a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">template_matches</tt> <tt class="py-keyword">and</tt> <tt class="py-string">'&lt;/head&gt;'</tt> <tt class="py-keyword">in</tt> <tt class="py-name">line</tt><tt class="py-op">.</tt><tt class="py-name">lower</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L52"></a><tt class="py-lineno">52</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt id="link-12" class="py-name"><a title="robotide.writer.template._meta_re" class="py-name" href="#" onclick="return doclink('link-12', '_meta_re', 'link-7');">_meta_re</a></tt><tt class="py-op">.</tt><tt class="py-name">search</tt><tt class="py-op">(</tt><tt class="py-string">''</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">content</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L53"></a><tt class="py-lineno">53</tt>  <tt class="py-line">                <tt class="py-name">template_matches</tt> <tt class="py-op">=</tt> <tt class="py-name">True</tt> </tt>
+<a name="L54"></a><tt class="py-lineno">54</tt>  <tt class="py-line">            <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L55"></a><tt class="py-lineno">55</tt>  <tt class="py-line">                <tt class="py-keyword">break</tt> </tt>
+<a name="L56"></a><tt class="py-lineno">56</tt>  <tt class="py-line">    <tt class="py-name">tmpl</tt> <tt class="py-op">=</tt> <tt class="py-name">template_matches</tt> <tt class="py-keyword">and</tt> <tt class="py-string">''</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">content</tt><tt class="py-op">)</tt> <tt class="py-keyword">or</tt> <tt class="py-name">default_template</tt> </tt>
+<a name="L57"></a><tt class="py-lineno">57</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">resource_file</tt><tt class="py-op">:</tt> </tt>
+<a name="L58"></a><tt class="py-lineno">58</tt>  <tt class="py-line">        <tt class="py-name">tmpl</tt> <tt class="py-op">=</tt> <tt id="link-13" class="py-name"><a title="robotide.writer.template._testcases_re" class="py-name" href="#" onclick="return doclink('link-13', '_testcases_re', 'link-5');">_testcases_re</a></tt><tt class="py-op">.</tt><tt class="py-name">sub</tt><tt class="py-op">(</tt><tt class="py-string">''</tt><tt class="py-op">,</tt> <tt class="py-name">tmpl</tt><tt class="py-op">)</tt> </tt>
+<a name="L59"></a><tt class="py-lineno">59</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">tmpl</tt> </tt>
+</div><a name="L60"></a><tt class="py-lineno">60</tt>  <tt class="py-line"> </tt>
+<a name="_get_datafile_name"></a><div id="_get_datafile_name-def"><a name="L61"></a><tt class="py-lineno">61</tt> <a class="py-toggle" href="#" id="_get_datafile_name-toggle" onclick="return toggle('_get_datafile_name');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.writer.template-module.html#_get_datafile_name">_get_datafile_name</a><tt class="py-op">(</tt><tt class="py-param">path</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_get_datafile_name-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="_get_datafile_name-expanded"><a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">path</tt><tt class="py-op">:</tt> </tt>
+<a name="L63"></a><tt class="py-lineno">63</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-string">''</tt> </tt>
+<a name="L64"></a><tt class="py-lineno">64</tt>  <tt class="py-line">    <tt class="py-name">dire</tt><tt class="py-op">,</tt> <tt class="py-name">base</tt> <tt class="py-op">=</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">split</tt><tt class="py-op">(</tt><tt class="py-name">path</tt><tt class="py-op">)</tt> </tt>
+<a name="L65"></a><tt class="py-lineno">65</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">splitext</tt><tt class="py-op">(</tt><tt class="py-name">base</tt><tt class="py-op">.</tt><tt class="py-name">lower</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> <tt class="py-op">==</tt> <tt class="py-string">'__init__'</tt><tt class="py-op">:</tt> </tt>
+<a name="L66"></a><tt class="py-lineno">66</tt>  <tt class="py-line">        <tt class="py-name">path</tt> <tt class="py-op">=</tt> <tt class="py-name">dire</tt> </tt>
+<a name="L67"></a><tt class="py-lineno">67</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt id="link-14" class="py-name"><a title="robotide.utils" class="py-name" href="#" onclick="return doclink('link-14', 'utils', 'link-1');">utils</a></tt><tt class="py-op">.</tt><tt class="py-name">printable_name_from_path</tt><tt class="py-op">(</tt><tt class="py-name">path</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L68"></a><tt class="py-lineno">68</tt>  <tt class="py-line"> </tt>
+<a name="L69"></a><tt class="py-lineno">69</tt>  <tt class="py-line"> </tt>
+<a name="settings_table"></a><div id="settings_table-def"><a name="L70"></a><tt class="py-lineno">70</tt> <a class="py-toggle" href="#" id="settings_table-toggle" onclick="return toggle('settings_table');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.writer.template-module.html#settings_table">settings_table</a><tt class="py-op">(</tt><tt class="py-param">table</tt><tt class="py-op">,</tt> <tt class="py-param">content</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="settings_table-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="settings_table-expanded"><a name="L71"></a><tt class="py-lineno">71</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">_table</tt><tt class="py-op">(</tt><tt id="link-15" class="py-name"><a title="robotide.writer.template._settings_re" class="py-name" href="#" onclick="return doclink('link-15', '_settings_re', 'link-3');">_settings_re</a></tt><tt class="py-op">,</tt> <tt class="py-name">table</tt><tt class="py-op">,</tt> <tt class="py-name">content</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L72"></a><tt class="py-lineno">72</tt>  <tt class="py-line"> </tt>
+<a name="variables_table"></a><div id="variables_table-def"><a name="L73"></a><tt class="py-lineno">73</tt> <a class="py-toggle" href="#" id="variables_table-toggle" onclick="return toggle('variables_table');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.writer.template-module.html#variables_table">variables_table</a><tt class="py-op">(</tt><tt class="py-param">table</tt><tt class="py-op">,</tt> <tt class="py-param">content</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="variables_table-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="variables_table-expanded"><a name="L74"></a><tt class="py-lineno">74</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">_table</tt><tt class="py-op">(</tt><tt id="link-16" class="py-name"><a title="robotide.writer.template._variables_re" class="py-name" href="#" onclick="return doclink('link-16', '_variables_re', 'link-4');">_variables_re</a></tt><tt class="py-op">,</tt> <tt class="py-name">table</tt><tt class="py-op">,</tt> <tt class="py-name">content</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L75"></a><tt class="py-lineno">75</tt>  <tt class="py-line"> </tt>
+<a name="testcases_table"></a><div id="testcases_table-def"><a name="L76"></a><tt class="py-lineno">76</tt> <a class="py-toggle" href="#" id="testcases_table-toggle" onclick="return toggle('testcases_table');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.writer.template-module.html#testcases_table">testcases_table</a><tt class="py-op">(</tt><tt class="py-param">table</tt><tt class="py-op">,</tt> <tt class="py-param">content</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="testcases_table-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="testcases_table-expanded"><a name="L77"></a><tt class="py-lineno">77</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">_table</tt><tt class="py-op">(</tt><tt id="link-17" class="py-name"><a title="robotide.writer.template._testcases_re" class="py-name" href="#" onclick="return doclink('link-17', '_testcases_re', 'link-5');">_testcases_re</a></tt><tt class="py-op">,</tt> <tt class="py-name">table</tt><tt class="py-op">,</tt> <tt class="py-name">content</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L78"></a><tt class="py-lineno">78</tt>  <tt class="py-line"> </tt>
+<a name="keywords_table"></a><div id="keywords_table-def"><a name="L79"></a><tt class="py-lineno">79</tt> <a class="py-toggle" href="#" id="keywords_table-toggle" onclick="return toggle('keywords_table');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.writer.template-module.html#keywords_table">keywords_table</a><tt class="py-op">(</tt><tt class="py-param">table</tt><tt class="py-op">,</tt> <tt class="py-param">content</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="keywords_table-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="keywords_table-expanded"><a name="L80"></a><tt class="py-lineno">80</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">_table</tt><tt class="py-op">(</tt><tt id="link-18" class="py-name"><a title="robotide.writer.template._keywords_re" class="py-name" href="#" onclick="return doclink('link-18', '_keywords_re', 'link-6');">_keywords_re</a></tt><tt class="py-op">,</tt> <tt class="py-name">table</tt><tt class="py-op">,</tt> <tt class="py-name">content</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L81"></a><tt class="py-lineno">81</tt>  <tt class="py-line"> </tt>
+<a name="_table"></a><div id="_table-def"><a name="L82"></a><tt class="py-lineno">82</tt> <a class="py-toggle" href="#" id="_table-toggle" onclick="return toggle('_table');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.writer.template-module.html#_table">_table</a><tt class="py-op">(</tt><tt class="py-param">table_re</tt><tt class="py-op">,</tt> <tt class="py-param">table</tt><tt class="py-op">,</tt> <tt class="py-param">content</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_table-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="_table-expanded"><a name="L83"></a><tt class="py-lineno">83</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">table_re</tt><tt class="py-op">.</tt><tt class="py-name">sub</tt><tt class="py-op">(</tt><tt class="py-name">_table_replacer</tt><tt class="py-op">(</tt><tt class="py-name">table</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">content</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L84"></a><tt class="py-lineno">84</tt>  <tt class="py-line"> </tt>
+<a name="_table_replacer"></a><div id="_table_replacer-def"><a name="L85"></a><tt class="py-lineno">85</tt> <a class="py-toggle" href="#" id="_table_replacer-toggle" onclick="return toggle('_table_replacer');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.writer.template-module.html#_table_replacer">_table_replacer</a><tt class="py-op">(</tt><tt class="py-param">content</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_table_replacer-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="_table_replacer-expanded"><a name="L86"></a><tt class="py-lineno">86</tt>  <tt class="py-line">    <tt class="py-name">content</tt> <tt class="py-op">=</tt> <tt class="py-name">content</tt><tt class="py-op">.</tt><tt class="py-name">strip</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L87"></a><tt class="py-lineno">87</tt>  <tt class="py-line">    <tt class="py-keyword">def</tt> <tt class="py-def-name">repl</tt><tt class="py-op">(</tt><tt class="py-param">match</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L88"></a><tt class="py-lineno">88</tt>  <tt class="py-line">        <tt class="py-name">start</tt><tt class="py-op">,</tt> <tt class="py-name">end</tt> <tt class="py-op">=</tt> <tt class="py-name">match</tt><tt class="py-op">.</tt><tt class="py-name">groups</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L89"></a><tt class="py-lineno">89</tt>  <tt class="py-line">        <tt class="py-name">parts</tt> <tt class="py-op">=</tt> <tt class="py-name">content</tt> <tt class="py-keyword">and</tt> <tt class="py-op">[</tt><tt class="py-name">start</tt><tt class="py-op">,</tt> <tt class="py-name">content</tt><tt class="py-op">,</tt> <tt class="py-name">end</tt><tt class="py-op">]</tt> <tt class="py-keyword">or</tt> <tt class="py-op">[</tt><tt class="py-name">start</tt><tt class="py-op">,</tt> <tt class="py-name">end</tt><tt class="py-op">]</tt> </tt>
+<a name="L90"></a><tt class="py-lineno">90</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-string">'\n'</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">parts</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L91"></a><tt class="py-lineno">91</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">repl</tt> </tt>
+</div><a name="L92"></a><tt class="py-lineno">92</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="robotide-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://code.google.com/p/robotframework-ride">RIDE</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Wed Dec  2 12:51:57 2009
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

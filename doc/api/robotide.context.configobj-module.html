@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>robotide.context.configobj</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="robotide-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://code.google.com/p/robotframework-ride">RIDE</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="robotide-module.html">Package&nbsp;robotide</a> ::
+        <a href="robotide.context-module.html">Package&nbsp;context</a> ::
+        Module&nbsp;configobj
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== MODULE DESCRIPTION ==================== -->
+<h1 class="epydoc">Module configobj</h1><p class="nomargin-top"><span class="codelink"><a href="robotide.context.configobj-pysrc.html">source&nbsp;code</a></span></p>
+<hr />
+<div class="fields">      <p><strong>Version:</strong>
+        4.6.0
+      </p>
+</div><!-- ==================== CLASSES ==================== -->
+<a name="section-Classes"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Classes</span></td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.context.configobj.UnknownType-class.html" class="summary-name">UnknownType</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.context.configobj.ConfigObjError-class.html" class="summary-name">ConfigObjError</a><br />
+      This is the base class for all errors that ConfigObj raises.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.context.configobj.NestingError-class.html" class="summary-name">NestingError</a><br />
+      This error indicates a level of nesting that doesn't match.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.context.configobj.ParseError-class.html" class="summary-name">ParseError</a><br />
+      This error indicates that a line is badly written.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.context.configobj.ReloadError-class.html" class="summary-name">ReloadError</a><br />
+      A 'reload' operation failed.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.context.configobj.DuplicateError-class.html" class="summary-name">DuplicateError</a><br />
+      The keyword or section specified already exists.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.context.configobj.ConfigspecError-class.html" class="summary-name">ConfigspecError</a><br />
+      An error occured whilst parsing a configspec.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.context.configobj.InterpolationError-class.html" class="summary-name">InterpolationError</a><br />
+      Base class for the two interpolation errors.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.context.configobj.InterpolationLoopError-class.html" class="summary-name">InterpolationLoopError</a><br />
+      Maximum interpolation depth exceeded in string interpolation.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.context.configobj.RepeatSectionError-class.html" class="summary-name">RepeatSectionError</a><br />
+      This error indicates additional sections in a section with a
+<tt class="rst-rst-docutils literal rst-docutils literal"><span class="pre">__many__</span></tt> (repeated) section.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.context.configobj.MissingInterpolationOption-class.html" class="summary-name">MissingInterpolationOption</a><br />
+      A value specified for interpolation was missing.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.context.configobj.UnreprError-class.html" class="summary-name">UnreprError</a><br />
+      An error parsing in unrepr mode.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.context.configobj.ConfigObj-class.html" class="summary-name">ConfigObj</a><br />
+      An object to read, create, and write config files.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.context.configobj.SimpleVal-class.html" class="summary-name">SimpleVal</a><br />
+      A simple validator.
+    </td>
+  </tr>
+</table>
+<!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Functions</span></td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.context.configobj-module.html#flatten_errors" class="summary-sig-name">flatten_errors</a>(<span class="summary-sig-arg">cfg</span>,
+        <span class="summary-sig-arg">res</span>,
+        <span class="summary-sig-arg">levels</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">results</span>=<span class="summary-sig-default">None</span>)</span><br />
+      An example function that will turn a nested dictionary of results
+(as returned by <tt class="rst-docutils literal"><span class="pre">ConfigObj.validate</span></tt>) into a flat list.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.context.configobj-pysrc.html#flatten_errors">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES ==================== -->
+<a name="section-Variables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Variables</span></td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.context.configobj-module.html#DEFAULT_INTERPOLATION" class="summary-name">DEFAULT_INTERPOLATION</a> = <code title="'configparser'"><code class="variable-quote">'</code><code class="variable-string">configparser</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.context.configobj-module.html#DEFAULT_INDENT_TYPE" class="summary-name">DEFAULT_INDENT_TYPE</a> = <code title="'    '"><code class="variable-quote">'</code><code class="variable-string">    </code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+</table>
+<!-- ==================== FUNCTION DETAILS ==================== -->
+<a name="section-FunctionDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Function Details</span></td>
+</tr>
+</table>
+<a name="flatten_errors"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">flatten_errors</span>(<span class="sig-arg">cfg</span>,
+        <span class="sig-arg">res</span>,
+        <span class="sig-arg">levels</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">results</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.context.configobj-pysrc.html#flatten_errors">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>An example function that will turn a nested dictionary of results
+(as returned by <tt class="rst-rst-docutils literal rst-docutils literal"><span class="pre">ConfigObj.validate</span></tt>) into a flat list.</p>
+<p><tt class="rst-docutils literal"><span class="pre">cfg</span></tt> is the ConfigObj instance being checked, <tt class="rst-docutils literal"><span class="pre">res</span></tt> is the results
+dictionary returned by <tt class="rst-docutils literal"><span class="pre">validate</span></tt>.</p>
+<p>(This is a recursive function, so you shouldn't use the <tt class="rst-docutils literal"><span class="pre">levels</span></tt> or
+<tt class="rst-docutils literal"><span class="pre">results</span></tt> arguments - they are used by the function.)</p>
+<p>Returns a list of keys that failed. Each member of the list is a tuple :</p>
+<pre class="rst-literal-block">
+([list of sections...], key, result)
+</pre>
+<p>If <tt class="rst-docutils literal"><span class="pre">validate</span></tt> was called with <tt class="rst-docutils literal"><span class="pre">preserve_errors=False</span></tt> (the default)
+then <tt class="rst-docutils literal"><span class="pre">result</span></tt> will always be <tt class="rst-docutils literal"><span class="pre">False</span></tt>.</p>
+<p><em>list of sections</em> is a flattened list of sections that the key was found
+in.</p>
+<p>If the section was missing (or a section was expected and a scalar provided
+- or vice-versa) then key will be <tt class="rst-docutils literal"><span class="pre">None</span></tt>.</p>
+<p>If the value (or section) was missing then <tt class="rst-docutils literal"><span class="pre">result</span></tt> will be <tt class="rst-docutils literal"><span class="pre">False</span></tt>.</p>
+<p>If <tt class="rst-docutils literal"><span class="pre">validate</span></tt> was called with <tt class="rst-docutils literal"><span class="pre">preserve_errors=True</span></tt> and a value
+was present, but failed the check, then <tt class="rst-docutils literal"><span class="pre">result</span></tt> will be the exception
+object returned. You can use this as a string that describes the failure.</p>
+<p>For example <em>The value &quot;3&quot; is of the wrong type</em>.</p>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span><span class="py-keyword">import</span> validate
+<span class="py-prompt">&gt;&gt;&gt; </span>vtor = validate.Validator()
+<span class="py-prompt">&gt;&gt;&gt; </span>my_ini = <span class="py-string">'''</span>
+<span class="py-more">... </span><span class="py-string">    option1 = True</span>
+<span class="py-more">... </span><span class="py-string">    [section1]</span>
+<span class="py-more">... </span><span class="py-string">    option1 = True</span>
+<span class="py-more">... </span><span class="py-string">    [section2]</span>
+<span class="py-more">... </span><span class="py-string">    another_option = Probably</span>
+<span class="py-more">... </span><span class="py-string">    [section3]</span>
+<span class="py-more">... </span><span class="py-string">    another_option = True</span>
+<span class="py-more">... </span><span class="py-string">    [[section3b]]</span>
+<span class="py-more">... </span><span class="py-string">    value = 3</span>
+<span class="py-more">... </span><span class="py-string">    value2 = a</span>
+<span class="py-more">... </span><span class="py-string">    value3 = 11</span>
+<span class="py-more">... </span><span class="py-string">    '''</span>
+<span class="py-prompt">&gt;&gt;&gt; </span>my_cfg = <span class="py-string">'''</span>
+<span class="py-more">... </span><span class="py-string">    option1 = boolean()</span>
+<span class="py-more">... </span><span class="py-string">    option2 = boolean()</span>
+<span class="py-more">... </span><span class="py-string">    option3 = boolean(default=Bad_value)</span>
+<span class="py-more">... </span><span class="py-string">    [section1]</span>
+<span class="py-more">... </span><span class="py-string">    option1 = boolean()</span>
+<span class="py-more">... </span><span class="py-string">    option2 = boolean()</span>
+<span class="py-more">... </span><span class="py-string">    option3 = boolean(default=Bad_value)</span>
+<span class="py-more">... </span><span class="py-string">    [section2]</span>
+<span class="py-more">... </span><span class="py-string">    another_option = boolean()</span>
+<span class="py-more">... </span><span class="py-string">    [section3]</span>
+<span class="py-more">... </span><span class="py-string">    another_option = boolean()</span>
+<span class="py-more">... </span><span class="py-string">    [[section3b]]</span>
+<span class="py-more">... </span><span class="py-string">    value = integer</span>
+<span class="py-more">... </span><span class="py-string">    value2 = integer</span>
+<span class="py-more">... </span><span class="py-string">    value3 = integer(0, 10)</span>
+<span class="py-more">... </span><span class="py-string">        [[[section3b-sub]]]</span>
+<span class="py-more">... </span><span class="py-string">        value = string</span>
+<span class="py-more">... </span><span class="py-string">    [section4]</span>
+<span class="py-more">... </span><span class="py-string">    another_option = boolean()</span>
+<span class="py-more">... </span><span class="py-string">    '''</span>
+<span class="py-prompt">&gt;&gt;&gt; </span>cs = my_cfg.split(<span class="py-string">'\n'</span>)
+<span class="py-prompt">&gt;&gt;&gt; </span>ini = my_ini.split(<span class="py-string">'\n'</span>)
+<span class="py-prompt">&gt;&gt;&gt; </span>cfg = ConfigObj(ini, configspec=cs)
+<span class="py-prompt">&gt;&gt;&gt; </span>res = cfg.validate(vtor, preserve_errors=True)
+<span class="py-prompt">&gt;&gt;&gt; </span>errors = []
+<span class="py-prompt">&gt;&gt;&gt; </span><span class="py-keyword">for</span> entry <span class="py-keyword">in</span> flatten_errors(cfg, res):
+<span class="py-more">... </span>    section_list, key, error = entry
+<span class="py-more">... </span>    section_list.insert(0, <span class="py-string">'[root]'</span>)
+<span class="py-more">... </span>    <span class="py-keyword">if</span> key <span class="py-keyword">is</span> <span class="py-keyword">not</span> None:
+<span class="py-more">... </span>       section_list.append(key)
+<span class="py-more">... </span>    <span class="py-keyword">else</span>:
+<span class="py-more">... </span>        section_list.append(<span class="py-string">'[missing]'</span>)
+<span class="py-more">... </span>    section_string = <span class="py-string">', '</span>.join(section_list)
+<span class="py-more">... </span>    errors.append((section_string, <span class="py-string">' = '</span>, error))
+<span class="py-prompt">&gt;&gt;&gt; </span>errors.sort()
+<span class="py-prompt">&gt;&gt;&gt; </span><span class="py-keyword">for</span> entry <span class="py-keyword">in</span> errors:
+<span class="py-more">... </span>    <span class="py-keyword">print</span> entry[0], entry[1], (entry[2] <span class="py-keyword">or</span> 0)
+<span class="py-output">[root], option2  =  0</span>
+<span class="py-output">[root], option3  =  the value &quot;Bad_value&quot; is of the wrong type.</span>
+<span class="py-output">[root], section1, option2  =  0</span>
+<span class="py-output">[root], section1, option3  =  the value &quot;Bad_value&quot; is of the wrong type.</span>
+<span class="py-output">[root], section2, another_option  =  the value &quot;Probably&quot; is of the wrong type.</span>
+<span class="py-output">[root], section3, section3b, section3b-sub, [missing]  =  0</span>
+<span class="py-output">[root], section3, section3b, value2  =  the value &quot;a&quot; is of the wrong type.</span>
+<span class="py-output">[root], section3, section3b, value3  =  the value &quot;11&quot; is too big.</span>
+<span class="py-output">[root], section4, [missing]  =  0</span></pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== VARIABLES DETAILS ==================== -->
+<a name="section-VariablesDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Variables Details</span></td>
+</tr>
+</table>
+<a name="DEFAULT_INTERPOLATION"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">DEFAULT_INTERPOLATION</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-quote">'</code><code class="variable-string">configparser</code><code class="variable-quote">'</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="DEFAULT_INDENT_TYPE"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">DEFAULT_INDENT_TYPE</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-quote">'</code><code class="variable-string">    </code><code class="variable-quote">'</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="robotide-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://code.google.com/p/robotframework-ride">RIDE</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Wed Dec  2 12:51:54 2009
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
