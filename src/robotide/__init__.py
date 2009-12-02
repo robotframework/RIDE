@@ -32,7 +32,6 @@ import wxversion
 wxversion.select('2.8')
 
 from robotide.errors import DataError, NoRideError
-from robotide.plugin import Plugin
 
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'spec'))
