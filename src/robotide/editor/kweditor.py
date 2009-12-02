@@ -60,6 +60,7 @@ class KeywordEditorUi(grid.Grid):
         range of cells on the clipboard.
         """
         if self.IsCellEditControlShown():
+            # This is needed in Windows
             self._get_cell_edit_control().Cut()
             self._save_keywords()
             self.set_dirty()
@@ -73,6 +74,7 @@ class KeywordEditorUi(grid.Grid):
         range of cells on the clipboard.
         """
         if self.IsCellEditControlShown():
+            # This is needed in Windows
             self._get_cell_edit_control().Copy()
         else:
             self._move_to_clipboard()
@@ -82,6 +84,7 @@ class KeywordEditorUi(grid.Grid):
         do a normal paste. If a cell is not being edited, paste whole rows.
         """
         if self.IsCellEditControlShown():
+            # This is needed in Windows
             clipboard = GRID_CLIPBOARD.get_contents()
             if isinstance(clipboard, list):
                 cells_as_text = ' '.join([' '.join(row) for row in clipboard])
@@ -107,9 +110,8 @@ class KeywordEditorUi(grid.Grid):
         self.set_dirty()
 
     def OnDelete(self, event=None):
-        if not self.IsCellEditControlShown():
-            self._move_to_clipboard(copy=False, delete=True)
-        else:
+        if self.IsCellEditControlShown():
+            # This is needed in Windows
             editor = self._get_cell_edit_control()
             start, end = editor.GetSelection()
             if start == end:
@@ -117,7 +119,9 @@ class KeywordEditorUi(grid.Grid):
             editor.Remove(start, end)
             if event:
                 event.Skip()
-
+        else:
+            self._move_to_clipboard(copy=False, delete=True)
+                
     def undo(self):
         if self._edit_history:
             self.ClearGrid()
