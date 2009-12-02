@@ -15,7 +15,7 @@
 import os.path
 
 from robotide.publish import RideOpenSuite
-from robotide.plugin import Plugin, ActionInfo, SeparatorInfo
+from robotide.pluginapi import Plugin, ActionInfo, SeparatorInfo
 
 
 def normalize_path(path):

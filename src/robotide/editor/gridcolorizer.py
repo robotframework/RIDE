@@ -15,7 +15,7 @@
 import re
 
 from robotide.publish import RideGridCellChanged
-from robotide.plugin import Plugin
+from robotide.pluginapi import Plugin
 
 
 class Colorizer(Plugin):

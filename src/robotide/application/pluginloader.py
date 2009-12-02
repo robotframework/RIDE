@@ -17,7 +17,7 @@ import imp
 import inspect
 
 from robotide.context import LOG
-from robotide.plugin import Plugin
+from robotide.pluginapi import Plugin
 
 from pluginconnector import PluginFactory
 

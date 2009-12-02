@@ -16,7 +16,7 @@ import wx
 from wx.lib.ClickableHtmlWindow import PyClickableHtmlWindow
 
 from robotide.version import VERSION
-from robotide.plugin import Plugin, ActionInfo
+from robotide.pluginapi import Plugin, ActionInfo
 
 
 class ReleaseNotesPlugin(Plugin):
