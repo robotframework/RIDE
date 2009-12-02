@@ -24,7 +24,7 @@ test data directories. When RIDE is used like this, no GUI is opened.
 
 RIDE's API is still evolving while the project is moving towards the 1.0 
 release. The most stable, and best documented, modules are those related to 
-plugin development: `robotide.plugin`, `robotide.publish`,`robotide.action`.
+plugin development: `robotide.plugin`, `robotide.publish`, `robotide.action`.
 """
 
 import sys
