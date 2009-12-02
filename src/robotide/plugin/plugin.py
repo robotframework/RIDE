@@ -155,7 +155,8 @@ class Plugin(object):
         """Registers a menu entry and optionally a shortcut and a toolbar icon.
 
         ``action_info`` is an instance of `ActionInfo` class containing needed
-        information about the registered action.
+        information to create menu entry, keyboard shortcut and/or toolbar 
+        button for the action.
         """
         action = self.__frame.actions.register_action(action_info)
         self.__actions.append(action)
