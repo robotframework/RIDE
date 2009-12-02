@@ -106,7 +106,6 @@ robotide.editor.editors	robotide.editor.editors-module.html
 robotide.editor.editors.Editor	robotide.editor.editors-module.html#Editor
 robotide.editor.editors.__package__	robotide.editor.editors-module.html#__package__
 robotide.editor.editors.dialog_from_class	robotide.editor.editors-module.html#dialog_from_class
-robotide.editor.editors.get_help	robotide.editor.dialoghelps-module.html#get_help
 robotide.editor.fieldeditors	robotide.editor.fieldeditors-module.html
 robotide.editor.fieldeditors.__package__	robotide.editor.fieldeditors-module.html#__package__
 robotide.editor.gridcolorizer	robotide.editor.gridcolorizer-module.html
@@ -150,13 +149,15 @@ robotide.model.tcuk	robotide.model.tcuk-module.html
 robotide.model.tcuk.Keyword	robotide.model.keywords-module.html#Keyword
 robotide.model.tcuk.__package__	robotide.model.tcuk-module.html#__package__
 robotide.plugin	robotide.plugin-module.html
-robotide.plugin.ActionInfoCollection	robotide.action.actioninfo-module.html#ActionInfoCollection
+robotide.plugin.WxPublisher	robotide.plugin-module.html#WxPublisher
 robotide.plugin.__package__	robotide.plugin-module.html#__package__
+robotide.plugin.ActionInfoCollection	robotide.action.actioninfo-module.html#ActionInfoCollection
 robotide.plugin.plugin	robotide.plugin.plugin-module.html
 robotide.plugin.plugin.__package__	robotide.plugin.plugin-module.html#__package__
 robotide.publish	robotide.publish-module.html
-robotide.publish.__package__	robotide.publish-module.html#__package__
 robotide.publish.PUBLISHER	robotide.publish-module.html#PUBLISHER
+robotide.publish.WxPublisher	robotide.publish-module.html#WxPublisher
+robotide.publish.__package__	robotide.publish-module.html#__package__
 robotide.publish.messages	robotide.publish.messages-module.html
 robotide.publish.messages.__package__	robotide.publish.messages-module.html#__package__
 robotide.publish.messagetype	robotide.publish.messagetype-module.html
