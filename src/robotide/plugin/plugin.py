@@ -141,7 +141,6 @@ class Plugin(object):
         """
         pass
 
-    # TODO: Should this be get_config_panel instead?
     def config_panel(self, parent):
         """Called by RIDE to get the plugin configuration panel.
 
@@ -164,7 +163,7 @@ class Plugin(object):
     def register_actions(self, action_infos):
         """Registers multiple menu entries and shortcuts/icons.
 
-        ``action_infos`` is a list of same `ActionInfo` objects that 
+        ``action_infos`` is a list of same `ActionInfo` objects that
         `register_action` method accepts.
         """
         for action_info in action_infos:
@@ -215,13 +214,14 @@ class Plugin(object):
         """
         self.__frame.open_suite(path)
 
-    # TODO: Should we somehow specify the API of the object returned by
-    # this and subsequent methods?
     def get_selected_datafile(self):
         """Returns the data file that is currently selected in the tree.
 
         If a test case or a keyword is selected, the data file containing the
         selected item is returned.
+
+        :rtype:
+            `InitFile`, `TestCaseFile` or `ResourceFile`
         """
         return self.tree.get_selected_datafile()
 
@@ -237,6 +237,9 @@ class Plugin(object):
         """Returns the item that is currently selected in the tree.
 
         The item can be a test suite, a resource file, a test case or a keyword.
+
+        :rtype:
+            `InitFile`, `TestCaseFile`, `ResourceFile`, `TestCase` or `UserKeyword`
         """
         return self.tree.get_selected_item()
 
