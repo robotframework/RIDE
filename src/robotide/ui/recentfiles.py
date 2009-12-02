@@ -60,11 +60,12 @@ class RecentFilesPlugin(Plugin):
         if not file:
             return
         file = normalize_path(file)
-        if file not in self.recent_files:
-            self.recent_files.insert(0, file)
-            self.recent_files = self.recent_files[0:self.max_number_of_files]
-            self.save_setting('recent_files', self.recent_files)
-            self._update_file_menu()
+        if file in self.recent_files:
+            self.recent_files.remove(file)
+        self.recent_files.insert(0, file)
+        self.recent_files = self.recent_files[0:self.max_number_of_files]
+        self.save_setting('recent_files', self.recent_files)
+        self._update_file_menu()
 
     def _update_file_menu(self):
         self.unregister_actions()
