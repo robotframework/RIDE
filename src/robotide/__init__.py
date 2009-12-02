@@ -12,21 +12,19 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-"""RIDE
+"""RIDE -- Robot Framework test data editor
 
-Usage: python -m robotide [inpath] [outpath]
-  or:  python /path/to/robotide/run.py [inpath] [outpath]
+Usage: ride.py [inpath] [outpath]
 
-First usage works only with Python 2.5 and newer. Latter works also with
-Python 2.4, which is also the minimum supported version.
+RIDE can be started either without any arguments or by giving a path to a test
+data file or directory to be opened. RIDE can also be used for 'tidying'
+Robot Framework test data by giving both ``inpath`` and ``outpath`` arguments.
+Tidying works for both test case and resource files, but it does not work with
+test data directories. When RIDE is used like this, no GUI is opened.
 
-RIDE can be started either without any arguments or by giving a path to 
-a test data to be opened.
-
-RIDE can also be used for 'tidying' Robot test data. To use IDE like this,
-both inpath and outpath must be given. Tidying works for both test case and
-resource files, but it does not work with test data directories. When Robot 
-IDE is used like this, no GUI is opened. 
+RIDE's API is still evolving while the project is moving towards the 1.0 
+release. The most stable, and best documented, modules are those related to 
+plugin development: `robotide.plugin`, `robotide.publish`,`robotide.action`.
 """
 
 import sys
