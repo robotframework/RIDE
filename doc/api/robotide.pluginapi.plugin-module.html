@@ -3,7 +3,7 @@
           "DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>robotide.plugin</title>
+  <title>robotide.pluginapi.plugin</title>
   <link rel="stylesheet" href="epydoc.css" type="text/css" />
   <script type="text/javascript" src="epydoc.js"></script>
 </head>
@@ -43,7 +43,8 @@
     <td width="100%">
       <span class="breadcrumbs">
         <a href="robotide-module.html">Package&nbsp;robotide</a> ::
-        Package&nbsp;plugin
+        <a href="robotide.pluginapi-module.html">Package&nbsp;pluginapi</a> ::
+        Module&nbsp;plugin
       </span>
     </td>
     <td>
@@ -53,23 +54,25 @@
     </td>
   </tr>
 </table>
-<!-- ==================== PACKAGE DESCRIPTION ==================== -->
-<h1 class="epydoc">Package plugin</h1><p class="nomargin-top"><span class="codelink"><a href="robotide.plugin-pysrc.html">source&nbsp;code</a></span></p>
-<!-- ==================== SUBMODULES ==================== -->
-<a name="section-Submodules"></a>
+<!-- ==================== MODULE DESCRIPTION ==================== -->
+<h1 class="epydoc">Module plugin</h1><p class="nomargin-top"><span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html">source&nbsp;code</a></span></p>
+<!-- ==================== CLASSES ==================== -->
+<a name="section-Classes"></a>
 <table class="summary" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr bgcolor="#70b0f0" class="table-header">
   <td align="left" colspan="2" class="table-header">
-    <span class="table-header">Submodules</span></td>
+    <span class="table-header">Classes</span></td>
 </tr>
-  <tr><td class="summary">
-  <ul class="nomargin">
-    <li> <strong class="uidlink"><a href="robotide.plugin.plugin-module.html">robotide.plugin.plugin</a></strong>    </li>
-  </ul></td></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.pluginapi.plugin.Plugin-class.html" class="summary-name">Plugin</a><br />
+      Entry point to RIDE plugin API - all plugins must extend this class.
+    </td>
+  </tr>
 </table>
-
-<br />
 <!-- ==================== VARIABLES ==================== -->
 <a name="section-Variables"></a>
 <table class="summary" border="1" cellpadding="3"
@@ -82,17 +85,16 @@
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="robotide.plugin-module.html#WxPublisher" class="summary-name">WxPublisher</a> = <code title="&lt;wx.lib.pubsub.PublisherClass instance at 0xa081dec&gt;">&lt;wx.lib.pubsub.PublisherClass instance at 0xa081<code class="variable-ellipsis">...</code></code>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a href="robotide.plugin-module.html#__package__" class="summary-name">__package__</a> = <code title="'robotide.plugin'"><code class="variable-quote">'</code><code class="variable-string">robotide.plugin</code><code class="variable-quote">'</code></code>
+        <a href="robotide.pluginapi.plugin-module.html#__package__" class="summary-name">__package__</a> = <code title="'robotide.pluginapi'"><code class="variable-quote">'</code><code class="variable-string">robotide.pluginapi</code><code class="variable-quote">'</code></code>
     </td>
   </tr>
 </table>
+<p class="indent-wrapped-lines"><b>Imports:</b>
+  <span title="inspect">inspect</span>,
+  <span title="robotide.context.SETTINGS">SETTINGS</span>,
+  <span title="robotide.publish.PUBLISHER">PUBLISHER</span>,
+  <a href="robotide.utils-module.html" title="robotide.utils">utils</a>
+</p><br />
 <!-- ==================== VARIABLES DETAILS ==================== -->
 <a name="section-VariablesDetails"></a>
 <table class="details" border="1" cellpadding="3"
@@ -102,24 +104,6 @@
     <span class="table-header">Variables Details</span></td>
 </tr>
 </table>
-<a name="WxPublisher"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <h3 class="epydoc">WxPublisher</h3>
-  
-  <dl class="fields">
-  </dl>
-  <dl class="fields">
-    <dt>Value:</dt>
-      <dd><table><tr><td><pre class="variable">
-&lt;wx.lib.pubsub.PublisherClass instance at 0xa081dec&gt;
-</pre></td></tr></table>
-</dd>
-  </dl>
-</td></tr></table>
-</div>
 <a name="__package__"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -132,7 +116,7 @@
   <dl class="fields">
     <dt>Value:</dt>
       <dd><table><tr><td><pre class="variable">
-<code class="variable-quote">'</code><code class="variable-string">robotide.plugin</code><code class="variable-quote">'</code>
+<code class="variable-quote">'</code><code class="variable-string">robotide.pluginapi</code><code class="variable-quote">'</code>
 </pre></td></tr></table>
 </dd>
   </dl>
@@ -170,7 +154,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Dec  2 15:48:05 2009
+    Generated by Epydoc 3.0.1 on Thu Dec  3 00:56:22 2009
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

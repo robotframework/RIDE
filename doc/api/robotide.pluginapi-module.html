@@ -3,7 +3,7 @@
           "DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>robotide.plugin.plugin</title>
+  <title>robotide.pluginapi</title>
   <link rel="stylesheet" href="epydoc.css" type="text/css" />
   <script type="text/javascript" src="epydoc.js"></script>
 </head>
@@ -43,8 +43,7 @@
     <td width="100%">
       <span class="breadcrumbs">
         <a href="robotide-module.html">Package&nbsp;robotide</a> ::
-        <a href="robotide.plugin-module.html">Package&nbsp;plugin</a> ::
-        Module&nbsp;plugin
+        Package&nbsp;pluginapi
       </span>
     </td>
     <td>
@@ -54,25 +53,23 @@
     </td>
   </tr>
 </table>
-<!-- ==================== MODULE DESCRIPTION ==================== -->
-<h1 class="epydoc">Module plugin</h1><p class="nomargin-top"><span class="codelink"><a href="robotide.plugin.plugin-pysrc.html">source&nbsp;code</a></span></p>
-<!-- ==================== CLASSES ==================== -->
-<a name="section-Classes"></a>
+<!-- ==================== PACKAGE DESCRIPTION ==================== -->
+<h1 class="epydoc">Package pluginapi</h1><p class="nomargin-top"><span class="codelink"><a href="robotide.pluginapi-pysrc.html">source&nbsp;code</a></span></p>
+<!-- ==================== SUBMODULES ==================== -->
+<a name="section-Submodules"></a>
 <table class="summary" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr bgcolor="#70b0f0" class="table-header">
   <td align="left" colspan="2" class="table-header">
-    <span class="table-header">Classes</span></td>
+    <span class="table-header">Submodules</span></td>
 </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a href="robotide.plugin.plugin.Plugin-class.html" class="summary-name">Plugin</a><br />
-      Entry point to RIDE plugin API - all plugins must extend this class.
-    </td>
-  </tr>
+  <tr><td class="summary">
+  <ul class="nomargin">
+    <li> <strong class="uidlink"><a href="robotide.pluginapi.plugin-module.html">robotide.pluginapi.plugin</a></strong>    </li>
+  </ul></td></tr>
 </table>
+
+<br />
 <!-- ==================== VARIABLES ==================== -->
 <a name="section-Variables"></a>
 <table class="summary" border="1" cellpadding="3"
@@ -85,10 +82,29 @@
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="robotide.plugin.plugin-module.html#__package__" class="summary-name">__package__</a> = <code title="'robotide.plugin'"><code class="variable-quote">'</code><code class="variable-string">robotide.plugin</code><code class="variable-quote">'</code></code>
+        <a href="robotide.pluginapi-module.html#__package__" class="summary-name">__package__</a> = <code title="'robotide.pluginapi'"><code class="variable-quote">'</code><code class="variable-string">robotide.pluginapi</code><code class="variable-quote">'</code></code>
     </td>
   </tr>
 </table>
+<p class="indent-wrapped-lines"><b>Imports:</b>
+  <a href="robotide.action.actioninfo-module.html#ActionInfoCollection" title="robotide.action.ActionInfoCollection">ActionInfoCollection</a>,
+  <a href="robotide.action.actioninfo.ActionInfo-class.html" title="robotide.action.ActionInfo">ActionInfo</a>,
+  <a href="robotide.action.actioninfo.SeparatorInfo-class.html" title="robotide.action.SeparatorInfo">SeparatorInfo</a>,
+  <a href="robotide.pluginapi.plugin.Plugin-class.html" title="robotide.pluginapi.plugin.Plugin">Plugin</a>,
+  <a href="robotide.publish.messages.RideClosing-class.html" title="robotide.publish.messages.RideClosing">RideClosing</a>,
+  <a href="robotide.publish.messages.RideGridCellChanged-class.html" title="robotide.publish.messages.RideGridCellChanged">RideGridCellChanged</a>,
+  <a href="robotide.publish.messages.RideLogMessage-class.html" title="robotide.publish.messages.RideLogMessage">RideLogMessage</a>,
+  <a href="robotide.publish.messages.RideMessage-class.html" title="robotide.publish.messages.RideMessage">RideMessage</a>,
+  <a href="robotide.publish.messages.RideNotebookTabChanged-class.html" title="robotide.publish.messages.RideNotebookTabChanged">RideNotebookTabChanged</a>,
+  <a href="robotide.publish.messages.RideNotebookTabChanging-class.html" title="robotide.publish.messages.RideNotebookTabChanging">RideNotebookTabChanging</a>,
+  <a href="robotide.publish.messages.RideOpenResource-class.html" title="robotide.publish.messages.RideOpenResource">RideOpenResource</a>,
+  <a href="robotide.publish.messages.RideOpenSuite-class.html" title="robotide.publish.messages.RideOpenSuite">RideOpenSuite</a>,
+  <a href="robotide.publish.messages.RideSaveAll-class.html" title="robotide.publish.messages.RideSaveAll">RideSaveAll</a>,
+  <a href="robotide.publish.messages.RideSaved-class.html" title="robotide.publish.messages.RideSaved">RideSaved</a>,
+  <a href="robotide.publish.messages.RideSaving-class.html" title="robotide.publish.messages.RideSaving">RideSaving</a>,
+  <a href="robotide.publish.messages.RideTreeSelection-class.html" title="robotide.publish.messages.RideTreeSelection">RideTreeSelection</a>,
+  <a href="robotide.pluginapi.plugin-module.html" title="robotide.pluginapi.plugin">plugin</a>
+</p><br />
 <!-- ==================== VARIABLES DETAILS ==================== -->
 <a name="section-VariablesDetails"></a>
 <table class="details" border="1" cellpadding="3"
@@ -110,7 +126,7 @@
   <dl class="fields">
     <dt>Value:</dt>
       <dd><table><tr><td><pre class="variable">
-<code class="variable-quote">'</code><code class="variable-string">robotide.plugin</code><code class="variable-quote">'</code>
+<code class="variable-quote">'</code><code class="variable-string">robotide.pluginapi</code><code class="variable-quote">'</code>
 </pre></td></tr></table>
 </dd>
   </dl>
@@ -148,7 +164,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Dec  2 15:48:05 2009
+    Generated by Epydoc 3.0.1 on Thu Dec  3 00:56:22 2009
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

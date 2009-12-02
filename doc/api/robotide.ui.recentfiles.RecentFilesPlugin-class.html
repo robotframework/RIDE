@@ -58,11 +58,11 @@
 <!-- ==================== CLASS DESCRIPTION ==================== -->
 <h1 class="epydoc">Class RecentFilesPlugin</h1><p class="nomargin-top"><span class="codelink"><a href="robotide.ui.recentfiles-pysrc.html#RecentFilesPlugin">source&nbsp;code</a></span></p>
 <pre class="base-tree">
-          object --+    
-                   |    
-<a href="robotide.plugin.plugin.Plugin-class.html">plugin.plugin.Plugin</a> --+
-                       |
-                      <strong class="uidshort">RecentFilesPlugin</strong>
+             object --+    
+                      |    
+<a href="robotide.pluginapi.plugin.Plugin-class.html">pluginapi.plugin.Plugin</a> --+
+                          |
+                         <strong class="uidshort">RecentFilesPlugin</strong>
 </pre>
 
 <hr />
@@ -151,12 +151,12 @@ Add recently opened files to the file menu.
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#__getattr__" class="summary-sig-name">__getattr__</a>(<span class="summary-sig-arg">self</span>,
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#__getattr__" class="summary-sig-name">__getattr__</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">name</span>)</span><br />
       Provides convenient attribute access to saved settings.
-      <em>(Inherited from <a href="robotide.plugin.plugin.Plugin-class.html">robotide.plugin.plugin.Plugin</a>)</em></td>
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.__getattr__">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.__getattr__">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -170,14 +170,14 @@ Add recently opened files to the file menu.
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#add_tab" class="summary-sig-name">add_tab</a>(<span class="summary-sig-arg">self</span>,
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#add_tab" class="summary-sig-name">add_tab</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">tab</span>,
         <span class="summary-sig-arg">title</span>,
         <span class="summary-sig-arg">allow_closing</span>=<span class="summary-sig-default">True</span>)</span><br />
       Adds the <tt class="rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">tab</span></tt> with the <tt class="rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">title</span></tt> to the tabbed notebook and shows it.
-      <em>(Inherited from <a href="robotide.plugin.plugin.Plugin-class.html">robotide.plugin.plugin.Plugin</a>)</em></td>
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.add_tab">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.add_tab">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -191,12 +191,12 @@ Add recently opened files to the file menu.
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#config_panel" class="summary-sig-name">config_panel</a>(<span class="summary-sig-arg">self</span>,
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#config_panel" class="summary-sig-name">config_panel</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">parent</span>)</span><br />
       Called by RIDE to get the plugin configuration panel.
-      <em>(Inherited from <a href="robotide.plugin.plugin.Plugin-class.html">robotide.plugin.plugin.Plugin</a>)</em></td>
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.config_panel">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.config_panel">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -210,12 +210,12 @@ Add recently opened files to the file menu.
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#delete_tab" class="summary-sig-name">delete_tab</a>(<span class="summary-sig-arg">self</span>,
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#delete_tab" class="summary-sig-name">delete_tab</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">tab</span>)</span><br />
-      Deletes the <tt class="rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">tab</span></tt> added using <a href="robotide.plugin.plugin.Plugin-class.html#add_tab" class="link">add_tab</a>.
-      <em>(Inherited from <a href="robotide.plugin.plugin.Plugin-class.html">robotide.plugin.plugin.Plugin</a>)</em></td>
+      Deletes the <tt class="rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">tab</span></tt> added using <a href="robotide.pluginapi.plugin.Plugin-class.html#add_tab" class="link">add_tab</a>.
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.delete_tab">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.delete_tab">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -229,11 +229,11 @@ Add recently opened files to the file menu.
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#get_selected_datafile" class="summary-sig-name">get_selected_datafile</a>(<span class="summary-sig-arg">self</span>)</span><br />
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#get_selected_datafile" class="summary-sig-name">get_selected_datafile</a>(<span class="summary-sig-arg">self</span>)</span><br />
       Returns the data file that is currently selected in the tree.
-      <em>(Inherited from <a href="robotide.plugin.plugin.Plugin-class.html">robotide.plugin.plugin.Plugin</a>)</em></td>
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.get_selected_datafile">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.get_selected_datafile">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -247,11 +247,11 @@ Add recently opened files to the file menu.
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#get_selected_item" class="summary-sig-name">get_selected_item</a>(<span class="summary-sig-arg">self</span>)</span><br />
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#get_selected_item" class="summary-sig-name">get_selected_item</a>(<span class="summary-sig-arg">self</span>)</span><br />
       Returns the item that is currently selected in the tree.
-      <em>(Inherited from <a href="robotide.plugin.plugin.Plugin-class.html">robotide.plugin.plugin.Plugin</a>)</em></td>
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.get_selected_item">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.get_selected_item">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -265,11 +265,11 @@ Add recently opened files to the file menu.
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#new_suite_can_be_opened" class="summary-sig-name">new_suite_can_be_opened</a>(<span class="summary-sig-arg">self</span>)</span><br />
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#new_suite_can_be_opened" class="summary-sig-name">new_suite_can_be_opened</a>(<span class="summary-sig-arg">self</span>)</span><br />
       Checks are there modified files and asks user what to do if there are.
-      <em>(Inherited from <a href="robotide.plugin.plugin.Plugin-class.html">robotide.plugin.plugin.Plugin</a>)</em></td>
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.new_suite_can_be_opened">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.new_suite_can_be_opened">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -283,12 +283,12 @@ Add recently opened files to the file menu.
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#open_suite" class="summary-sig-name">open_suite</a>(<span class="summary-sig-arg">self</span>,
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#open_suite" class="summary-sig-name">open_suite</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">path</span>)</span><br />
       Opens a test suite specified by the <tt class="rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">path</span></tt>.
-      <em>(Inherited from <a href="robotide.plugin.plugin.Plugin-class.html">robotide.plugin.plugin.Plugin</a>)</em></td>
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.open_suite">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.open_suite">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -302,12 +302,12 @@ Add recently opened files to the file menu.
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#register_action" class="summary-sig-name">register_action</a>(<span class="summary-sig-arg">self</span>,
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#register_action" class="summary-sig-name">register_action</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">action_info</span>)</span><br />
       Registers a menu entry and optionally a shortcut and a toolbar icon.
-      <em>(Inherited from <a href="robotide.plugin.plugin.Plugin-class.html">robotide.plugin.plugin.Plugin</a>)</em></td>
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.register_action">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.register_action">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -321,12 +321,12 @@ Add recently opened files to the file menu.
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#register_actions" class="summary-sig-name">register_actions</a>(<span class="summary-sig-arg">self</span>,
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#register_actions" class="summary-sig-name">register_actions</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">action_infos</span>)</span><br />
       Registers multiple menu entries and shortcuts/icons.
-      <em>(Inherited from <a href="robotide.plugin.plugin.Plugin-class.html">robotide.plugin.plugin.Plugin</a>)</em></td>
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.register_actions">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.register_actions">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -340,11 +340,11 @@ Add recently opened files to the file menu.
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#save_selected_datafile" class="summary-sig-name">save_selected_datafile</a>(<span class="summary-sig-arg">self</span>)</span><br />
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#save_selected_datafile" class="summary-sig-name">save_selected_datafile</a>(<span class="summary-sig-arg">self</span>)</span><br />
       Saves the data file that is currently selected in the tree.
-      <em>(Inherited from <a href="robotide.plugin.plugin.Plugin-class.html">robotide.plugin.plugin.Plugin</a>)</em></td>
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.save_selected_datafile">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.save_selected_datafile">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -358,14 +358,14 @@ Add recently opened files to the file menu.
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#save_setting" class="summary-sig-name">save_setting</a>(<span class="summary-sig-arg">self</span>,
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#save_setting" class="summary-sig-name">save_setting</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">name</span>,
         <span class="summary-sig-arg">value</span>,
         <span class="summary-sig-arg">override</span>=<span class="summary-sig-default">True</span>)</span><br />
       Saves the specified setting into the RIDE configuration file.
-      <em>(Inherited from <a href="robotide.plugin.plugin.Plugin-class.html">robotide.plugin.plugin.Plugin</a>)</em></td>
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.save_setting">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.save_setting">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -379,12 +379,12 @@ Add recently opened files to the file menu.
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#show_tab" class="summary-sig-name">show_tab</a>(<span class="summary-sig-arg">self</span>,
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#show_tab" class="summary-sig-name">show_tab</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">tab</span>)</span><br />
-      Makes the <tt class="rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">tab</span></tt> added using <a href="robotide.plugin.plugin.Plugin-class.html#add_tab" class="link">add_tab</a> visible.
-      <em>(Inherited from <a href="robotide.plugin.plugin.Plugin-class.html">robotide.plugin.plugin.Plugin</a>)</em></td>
+      Makes the <tt class="rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">tab</span></tt> added using <a href="robotide.pluginapi.plugin.Plugin-class.html#add_tab" class="link">add_tab</a> visible.
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.show_tab">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.show_tab">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -398,13 +398,13 @@ Add recently opened files to the file menu.
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#subscribe" class="summary-sig-name">subscribe</a>(<span class="summary-sig-arg">self</span>,
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#subscribe" class="summary-sig-name">subscribe</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">listener</span>,
         <span class="summary-sig-arg">*topics</span>)</span><br />
       Start to listen to messages with the given <tt class="rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">topics</span></tt>.
-      <em>(Inherited from <a href="robotide.plugin.plugin.Plugin-class.html">robotide.plugin.plugin.Plugin</a>)</em></td>
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.subscribe">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.subscribe">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -418,12 +418,12 @@ Add recently opened files to the file menu.
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#tab_is_visible" class="summary-sig-name">tab_is_visible</a>(<span class="summary-sig-arg">self</span>,
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#tab_is_visible" class="summary-sig-name">tab_is_visible</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">tab</span>)</span><br />
-      Returns is the <tt class="rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">tab</span></tt> added using <a href="robotide.plugin.plugin.Plugin-class.html#add_tab" class="link">add_tab</a> visible or not.
-      <em>(Inherited from <a href="robotide.plugin.plugin.Plugin-class.html">robotide.plugin.plugin.Plugin</a>)</em></td>
+      Returns is the <tt class="rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">tab</span></tt> added using <a href="robotide.pluginapi.plugin.Plugin-class.html#add_tab" class="link">add_tab</a> visible or not.
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.tab_is_visible">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.tab_is_visible">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -437,11 +437,11 @@ Add recently opened files to the file menu.
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#unregister_actions" class="summary-sig-name">unregister_actions</a>(<span class="summary-sig-arg">self</span>)</span><br />
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#unregister_actions" class="summary-sig-name">unregister_actions</a>(<span class="summary-sig-arg">self</span>)</span><br />
       Unregisters all actions registered by this plugin.
-      <em>(Inherited from <a href="robotide.plugin.plugin.Plugin-class.html">robotide.plugin.plugin.Plugin</a>)</em></td>
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.unregister_actions">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.unregister_actions">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -455,13 +455,13 @@ Add recently opened files to the file menu.
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#unsubscribe" class="summary-sig-name">unsubscribe</a>(<span class="summary-sig-arg">self</span>,
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#unsubscribe" class="summary-sig-name">unsubscribe</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">listener</span>,
         <span class="summary-sig-arg">*topics</span>)</span><br />
       Stops listening to messages with the given <tt class="rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">topics</span></tt>.
-      <em>(Inherited from <a href="robotide.plugin.plugin.Plugin-class.html">robotide.plugin.plugin.Plugin</a>)</em></td>
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.unsubscribe">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.unsubscribe">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -475,11 +475,11 @@ Add recently opened files to the file menu.
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#unsubscribe_all" class="summary-sig-name">unsubscribe_all</a>(<span class="summary-sig-arg">self</span>)</span><br />
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#unsubscribe_all" class="summary-sig-name">unsubscribe_all</a>(<span class="summary-sig-arg">self</span>)</span><br />
       Stops to listen to all messages
-      <em>(Inherited from <a href="robotide.plugin.plugin.Plugin-class.html">robotide.plugin.plugin.Plugin</a>)</em></td>
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.unsubscribe_all">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.unsubscribe_all">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -500,36 +500,36 @@ Add recently opened files to the file menu.
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="robotide.plugin.plugin.Plugin-class.html#doc" class="summary-name">doc</a><br />
+        <a href="robotide.pluginapi.plugin.Plugin-class.html#doc" class="summary-name">doc</a><br />
       Plugin documentation.
-      <em>(Inherited from <a href="robotide.plugin.plugin.Plugin-class.html">robotide.plugin.plugin.Plugin</a>)</em>
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em>
     </td>
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="robotide.plugin.plugin.Plugin-class.html#initially_enabled" class="summary-name">initially_enabled</a><br />
+        <a href="robotide.pluginapi.plugin.Plugin-class.html#initially_enabled" class="summary-name">initially_enabled</a><br />
       Specifies should the plugin be enabled when first loaded.
-      <em>(Inherited from <a href="robotide.plugin.plugin.Plugin-class.html">robotide.plugin.plugin.Plugin</a>)</em>
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em>
     </td>
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="robotide.plugin.plugin.Plugin-class.html#metadata" class="summary-name">metadata</a><br />
+        <a href="robotide.pluginapi.plugin.Plugin-class.html#metadata" class="summary-name">metadata</a><br />
       Plugin metadata.
-      <em>(Inherited from <a href="robotide.plugin.plugin.Plugin-class.html">robotide.plugin.plugin.Plugin</a>)</em>
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em>
     </td>
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="robotide.plugin.plugin.Plugin-class.html#name" class="summary-name">name</a><br />
+        <a href="robotide.pluginapi.plugin.Plugin-class.html#name" class="summary-name">name</a><br />
       Plugin name.
-      <em>(Inherited from <a href="robotide.plugin.plugin.Plugin-class.html">robotide.plugin.plugin.Plugin</a>)</em>
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em>
     </td>
   </tr>
 </table>
@@ -545,45 +545,45 @@ Add recently opened files to the file menu.
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="robotide.plugin.plugin.Plugin-class.html#menubar" class="summary-name">menubar</a><br />
+        <a href="robotide.pluginapi.plugin.Plugin-class.html#menubar" class="summary-name">menubar</a><br />
       Provides access to the application menubar
-      <em>(Inherited from <a href="robotide.plugin.plugin.Plugin-class.html">robotide.plugin.plugin.Plugin</a>)</em>
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em>
     </td>
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="robotide.plugin.plugin.Plugin-class.html#model" class="summary-name">model</a><br />
+        <a href="robotide.pluginapi.plugin.Plugin-class.html#model" class="summary-name">model</a><br />
       Provides access to the data model
-      <em>(Inherited from <a href="robotide.plugin.plugin.Plugin-class.html">robotide.plugin.plugin.Plugin</a>)</em>
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em>
     </td>
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="robotide.plugin.plugin.Plugin-class.html#notebook" class="summary-name">notebook</a><br />
+        <a href="robotide.pluginapi.plugin.Plugin-class.html#notebook" class="summary-name">notebook</a><br />
       Provides access to the tabbed notebook
-      <em>(Inherited from <a href="robotide.plugin.plugin.Plugin-class.html">robotide.plugin.plugin.Plugin</a>)</em>
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em>
     </td>
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="robotide.plugin.plugin.Plugin-class.html#toolbar" class="summary-name">toolbar</a><br />
+        <a href="robotide.pluginapi.plugin.Plugin-class.html#toolbar" class="summary-name">toolbar</a><br />
       Provides access to the application toolbar
-      <em>(Inherited from <a href="robotide.plugin.plugin.Plugin-class.html">robotide.plugin.plugin.Plugin</a>)</em>
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em>
     </td>
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="robotide.plugin.plugin.Plugin-class.html#tree" class="summary-name">tree</a><br />
+        <a href="robotide.pluginapi.plugin.Plugin-class.html#tree" class="summary-name">tree</a><br />
       Provides access to the suite and resource tree
-      <em>(Inherited from <a href="robotide.plugin.plugin.Plugin-class.html">robotide.plugin.plugin.Plugin</a>)</em>
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em>
     </td>
   </tr>
 </table>
@@ -628,13 +628,13 @@ plugin class docstring.</li>
 containing URLs will be shown as links.</li>
         <li><strong class="pname"><code>default_settings</code></strong> - A dictionary of settings and their default values. Settings are
 automatically stored onto RIDE configuration file, can be
-accessed using direct attribute access via <a href="robotide.plugin.plugin.Plugin-class.html#__getattr__" class="link">__getattr__</a>, and new
-settings can be saved using <a href="robotide.plugin.plugin.Plugin-class.html#save_setting" class="link">save_setting</a>.</li>
+accessed using direct attribute access via <a href="robotide.pluginapi.plugin.Plugin-class.html#__getattr__" class="link">__getattr__</a>, and new
+settings can be saved using <a href="robotide.pluginapi.plugin.Plugin-class.html#save_setting" class="link">save_setting</a>.</li>
         <li><strong class="pname"><code>initially_enabled</code></strong> - Specifies should the plugin be enabled when loaded for the first
 time. The status can be changed later from the plugin manager.</li>
     </ul></dd>
     <dt>Overrides:
-        <a href="robotide.plugin.plugin.Plugin-class.html#__init__">plugin.plugin.Plugin.__init__</a>
+        <a href="robotide.pluginapi.plugin.Plugin-class.html#__init__">pluginapi.plugin.Plugin.__init__</a>
         <dd><em class="note">(inherited documentation)</em></dd>
     </dt>
   </dl>
@@ -659,7 +659,7 @@ time. The status can be changed later from the plugin manager.</li>
 when <a href="robotide.ui.recentfiles.RecentFilesPlugin-class.html#disable" class="link">disable</a> is called.</p>
   <dl class="fields">
     <dt>Overrides:
-        <a href="robotide.plugin.plugin.Plugin-class.html#enable">plugin.plugin.Plugin.enable</a>
+        <a href="robotide.pluginapi.plugin.Plugin-class.html#enable">pluginapi.plugin.Plugin.enable</a>
         <dd><em class="note">(inherited documentation)</em></dd>
     </dt>
   </dl>
@@ -683,7 +683,7 @@ when <a href="robotide.ui.recentfiles.RecentFilesPlugin-class.html#disable" clas
 <p>Undo whatever was done in the <a href="robotide.ui.recentfiles.RecentFilesPlugin-class.html#enable" class="link">enable</a> method.</p>
   <dl class="fields">
     <dt>Overrides:
-        <a href="robotide.plugin.plugin.Plugin-class.html#disable">plugin.plugin.Plugin.disable</a>
+        <a href="robotide.pluginapi.plugin.Plugin-class.html#disable">pluginapi.plugin.Plugin.disable</a>
         <dd><em class="note">(inherited documentation)</em></dd>
     </dt>
   </dl>
@@ -741,7 +741,7 @@ when <a href="robotide.ui.recentfiles.RecentFilesPlugin-class.html#disable" clas
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Dec  2 15:48:09 2009
+    Generated by Epydoc 3.0.1 on Thu Dec  3 00:56:26 2009
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
