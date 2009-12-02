@@ -66,7 +66,7 @@ object --+
 <dl><dt>Known Subclasses:</dt>
 <dd>
       <ul class="subclass-list">
-<li><a href="robotide.editor.EditorPlugin-class.html">editor.EditorPlugin</a></li><li>, <a href="robotide.editor.gridcolorizer.Colorizer-class.html">editor.gridcolorizer.Colorizer</a></li><li>, <a href="robotide.application.releasenotes.ReleaseNotesPlugin-class.html">application.releasenotes.ReleaseNotesPlugin</a></li><li>, <a href="robotide.ui.recentfiles.RecentFilesPlugin-class.html">ui.recentfiles.RecentFilesPlugin</a></li><li>, <a href="robotide.ui.preview.PreviewPlugin-class.html">ui.preview.PreviewPlugin</a></li>  </ul>
+<li><a href="robotide.editor.EditorPlugin-class.html">editor.EditorPlugin</a></li><li>, <a href="robotide.editor.gridcolorizer.Colorizer-class.html">editor.gridcolorizer.Colorizer</a></li><li>, <a href="robotide.ui.recentfiles.RecentFilesPlugin-class.html">ui.recentfiles.RecentFilesPlugin</a></li><li>, <a href="robotide.ui.preview.PreviewPlugin-class.html">ui.preview.PreviewPlugin</a></li><li>, <a href="robotide.application.releasenotes.ReleaseNotesPlugin-class.html">application.releasenotes.ReleaseNotesPlugin</a></li>  </ul>
 </dd></dl>
 
 <hr />
@@ -89,6 +89,24 @@ not yet available through them.</p>
   <td align="left" colspan="2" class="table-header">
     <span class="table-header">Instance Methods</span></td>
 </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#__getattr__" class="summary-sig-name">__getattr__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>)</span><br />
+      Provides convenient attribute access to saved settings.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.__getattr__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
@@ -118,11 +136,13 @@ not yet available through them.</p>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#__getattr__" class="summary-sig-name">__getattr__</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">name</span>)</span><br />
-      Provides convenient attribute access to saved settings.</td>
+          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#add_tab" class="summary-sig-name">add_tab</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">tab</span>,
+        <span class="summary-sig-arg">title</span>,
+        <span class="summary-sig-arg">allow_closing</span>=<span class="summary-sig-default">True</span>)</span><br />
+      Adds the <tt class="rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">tab</span></tt> with the <tt class="rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">title</span></tt> to the tabbed notebook and shows it.</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.__getattr__">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.add_tab">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -136,13 +156,11 @@ not yet available through them.</p>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#save_setting" class="summary-sig-name">save_setting</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">name</span>,
-        <span class="summary-sig-arg">value</span>,
-        <span class="summary-sig-arg">override</span>=<span class="summary-sig-default">True</span>)</span><br />
-      Saves the specified setting into the RIDE configuration file.</td>
+          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#config_panel" class="summary-sig-name">config_panel</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">parent</span>)</span><br />
+      Called by RIDE to get the plugin configuration panel.</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.save_setting">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.config_panel">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -156,10 +174,11 @@ not yet available through them.</p>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#enable" class="summary-sig-name">enable</a>(<span class="summary-sig-arg">self</span>)</span><br />
-      This method is called by RIDE when the plugin is enabled.</td>
+          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#delete_tab" class="summary-sig-name">delete_tab</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">tab</span>)</span><br />
+      Deletes the <tt class="rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">tab</span></tt> added using <a href="robotide.plugin.plugin.Plugin-class.html#add_tab" class="link">add_tab</a>.</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.enable">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.delete_tab">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -190,11 +209,79 @@ not yet available through them.</p>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#config_panel" class="summary-sig-name">config_panel</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">parent</span>)</span><br />
-      Called by RIDE to get the plugin configuration panel.</td>
+          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#enable" class="summary-sig-name">enable</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      This method is called by RIDE when the plugin is enabled.</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.config_panel">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.enable">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type"><a href="robotide.model.files.InitFile-class.html" class="link">InitFile</a>, <a href="robotide.model.files.TestCaseFile-class.html" class="link">TestCaseFile</a> or <a href="robotide.model.files.ResourceFile-class.html" class="link">ResourceFile</a></span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#get_selected_datafile" class="summary-sig-name">get_selected_datafile</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Returns the data file that is currently selected in the tree.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.get_selected_datafile">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type"><a href="robotide.model.files.InitFile-class.html" class="link">InitFile</a>, <a href="robotide.model.files.TestCaseFile-class.html" class="link">TestCaseFile</a>, <a href="robotide.model.files.ResourceFile-class.html" class="link">ResourceFile</a>, <a href="robotide.model.tcuk.TestCase-class.html" class="link">TestCase</a> or <a href="robotide.model.tcuk.UserKeyword-class.html" class="link">UserKeyword</a></span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#get_selected_item" class="summary-sig-name">get_selected_item</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Returns the item that is currently selected in the tree.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.get_selected_item">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#new_suite_can_be_opened" class="summary-sig-name">new_suite_can_be_opened</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Checks are there modified files and asks user what to do if there are.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.new_suite_can_be_opened">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#open_suite" class="summary-sig-name">open_suite</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">path</span>)</span><br />
+      Opens a test suite specified by the <tt class="rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">path</span></tt>.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.open_suite">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -244,10 +331,10 @@ not yet available through them.</p>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#unregister_actions" class="summary-sig-name">unregister_actions</a>(<span class="summary-sig-arg">self</span>)</span><br />
-      Unregisters all actions registered by this plugin.</td>
+          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#save_selected_datafile" class="summary-sig-name">save_selected_datafile</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Saves the data file that is currently selected in the tree.</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.unregister_actions">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.save_selected_datafile">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -261,13 +348,13 @@ not yet available through them.</p>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#add_tab" class="summary-sig-name">add_tab</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">tab</span>,
-        <span class="summary-sig-arg">title</span>,
-        <span class="summary-sig-arg">allow_closing</span>=<span class="summary-sig-default">True</span>)</span><br />
-      Adds the <tt class="rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">tab</span></tt> with the <tt class="rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">title</span></tt> to the tabbed notebook and shows it.</td>
+          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#save_setting" class="summary-sig-name">save_setting</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>,
+        <span class="summary-sig-arg">value</span>,
+        <span class="summary-sig-arg">override</span>=<span class="summary-sig-default">True</span>)</span><br />
+      Saves the specified setting into the RIDE configuration file.</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.add_tab">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.save_setting">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -299,11 +386,12 @@ not yet available through them.</p>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#delete_tab" class="summary-sig-name">delete_tab</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">tab</span>)</span><br />
-      Deletes the <tt class="rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">tab</span></tt> added using <a href="robotide.plugin.plugin.Plugin-class.html#add_tab" class="link">add_tab</a>.</td>
+          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#subscribe" class="summary-sig-name">subscribe</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">listener</span>,
+        <span class="summary-sig-arg">*topics</span>)</span><br />
+      Start to listen to messages with the given <tt class="rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">topics</span></tt>.</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.delete_tab">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.subscribe">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -335,98 +423,10 @@ not yet available through them.</p>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#new_suite_can_be_opened" class="summary-sig-name">new_suite_can_be_opened</a>(<span class="summary-sig-arg">self</span>)</span><br />
-      Checks are there modified files and asks user what to do if there are.</td>
+          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#unregister_actions" class="summary-sig-name">unregister_actions</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Unregisters all actions registered by this plugin.</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.new_suite_can_be_opened">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#open_suite" class="summary-sig-name">open_suite</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">path</span>)</span><br />
-      Opens a test suite specified by the <tt class="rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">path</span></tt>.</td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.open_suite">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type"><a href="robotide.model.files.InitFile-class.html" class="link">InitFile</a>, <a href="robotide.model.files.TestCaseFile-class.html" class="link">TestCaseFile</a> or <a href="robotide.model.files.ResourceFile-class.html" class="link">ResourceFile</a></span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#get_selected_datafile" class="summary-sig-name">get_selected_datafile</a>(<span class="summary-sig-arg">self</span>)</span><br />
-      Returns the data file that is currently selected in the tree.</td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.get_selected_datafile">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#save_selected_datafile" class="summary-sig-name">save_selected_datafile</a>(<span class="summary-sig-arg">self</span>)</span><br />
-      Saves the data file that is currently selected in the tree.</td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.save_selected_datafile">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type"><a href="robotide.model.files.InitFile-class.html" class="link">InitFile</a>, <a href="robotide.model.files.TestCaseFile-class.html" class="link">TestCaseFile</a>, <a href="robotide.model.files.ResourceFile-class.html" class="link">ResourceFile</a>, <a href="robotide.model.tcuk.TestCase-class.html" class="link">TestCase</a> or <a href="robotide.model.tcuk.UserKeyword-class.html" class="link">UserKeyword</a></span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#get_selected_item" class="summary-sig-name">get_selected_item</a>(<span class="summary-sig-arg">self</span>)</span><br />
-      Returns the item that is currently selected in the tree.</td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.get_selected_item">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="robotide.plugin.plugin.Plugin-class.html#subscribe" class="summary-sig-name">subscribe</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">listener</span>,
-        <span class="summary-sig-arg">*topics</span>)</span><br />
-      Start to listen to messages with the given <tt class="rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">topics</span></tt>.</td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.subscribe">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.unregister_actions">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -524,14 +524,6 @@ not yet available through them.</p>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="robotide.plugin.plugin.Plugin-class.html#tree" class="summary-name">tree</a><br />
-      Provides access to the suite and resource tree
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
         <a href="robotide.plugin.plugin.Plugin-class.html#menubar" class="summary-name">menubar</a><br />
       Provides access to the application menubar
     </td>
@@ -540,8 +532,8 @@ not yet available through them.</p>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="robotide.plugin.plugin.Plugin-class.html#toolbar" class="summary-name">toolbar</a><br />
-      Provides access to the application toolbar
+        <a href="robotide.plugin.plugin.Plugin-class.html#model" class="summary-name">model</a><br />
+      Provides access to the data model
     </td>
   </tr>
 <tr>
@@ -556,8 +548,16 @@ not yet available through them.</p>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="robotide.plugin.plugin.Plugin-class.html#model" class="summary-name">model</a><br />
-      Provides access to the data model
+        <a href="robotide.plugin.plugin.Plugin-class.html#toolbar" class="summary-name">toolbar</a><br />
+      Provides access to the application toolbar
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.plugin.plugin.Plugin-class.html#tree" class="summary-name">tree</a><br />
+      Provides access to the suite and resource tree
     </td>
   </tr>
 </table>
@@ -570,6 +570,29 @@ not yet available through them.</p>
     <span class="table-header">Method Details</span></td>
 </tr>
 </table>
+<a name="__getattr__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__getattr__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">name</span>)</span>
+    <br /><em class="fname">(Qualification operator)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.__getattr__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Provides convenient attribute access to saved settings.</p>
+<p>For example, setting <tt class="rst-docutils literal"><span class="pre">color</span></tt> can be accessed directly like
+<tt class="rst-docutils literal"><span class="pre">self.color</span></tt>.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
 <a name="__init__"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -615,52 +638,89 @@ time. The status can be changed later from the plugin manager.</li>
   </dl>
 </td></tr></table>
 </div>
-<a name="__getattr__"></a>
+<a name="add_tab"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">__getattr__</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">name</span>)</span>
-    <br /><em class="fname">(Qualification operator)</em>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">add_tab</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">tab</span>,
+        <span class="sig-arg">title</span>,
+        <span class="sig-arg">allow_closing</span>=<span class="sig-default">True</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.__getattr__">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.add_tab">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
-  <p>Provides convenient attribute access to saved settings.</p>
-<p>For example, setting <tt class="rst-docutils literal"><span class="pre">color</span></tt> can be accessed directly like
-<tt class="rst-docutils literal"><span class="pre">self.color</span></tt>.</p>
+  <p>Adds the <tt class="rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">tab</span></tt> with the <tt class="rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">title</span></tt> to the tabbed notebook and shows it.</p>
+<p>The <tt class="rst-docutils literal"><span class="pre">tab</span></tt> can be any wxPython container. <tt class="rst-docutils literal"><span class="pre">allow_closing</span></tt> defines
+can users close the tab while the plugin is enabled or not.</p>
   <dl class="fields">
   </dl>
 </td></tr></table>
 </div>
-<a name="save_setting"></a>
+<a name="config_panel"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">save_setting</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">name</span>,
-        <span class="sig-arg">value</span>,
-        <span class="sig-arg">override</span>=<span class="sig-default">True</span>)</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">config_panel</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">parent</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.save_setting">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.config_panel">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
-  <p>Saves the specified setting into the RIDE configuration file.</p>
-<p>Plugin settings are stored into <tt class="rst-docutils literal"><span class="pre">[[Plugin</span> <span class="pre">Name]]</span></tt> subsection
-under <tt class="rst-docutils literal"><span class="pre">[Plugins]</span></tt> section. They can be accessed using direct attribute
-access via <a href="robotide.plugin.plugin.Plugin-class.html#__getattr__" class="link">__getattr__</a>.</p>
-<p><tt class="rst-docutils literal"><span class="pre">override</span></tt> controls whether a possibly already existing value is
-overridden or not.</p>
+  <p>Called by RIDE to get the plugin configuration panel.</p>
+<p>The panel returned will be integrated into the plugin manager UI, and
+can be used e.g. to display configurable settings.</p>
+<p>By default there is no configuration panel.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="delete_tab"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">delete_tab</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">tab</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.delete_tab">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Deletes the <tt class="rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">tab</span></tt> added using <a href="robotide.plugin.plugin.Plugin-class.html#add_tab" class="link">add_tab</a>.
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="disable"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">disable</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.disable">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Called by RIDE when the plugin is disabled.</p>
+<p>Undo whatever was done in the <a href="robotide.plugin.plugin.Plugin-class.html#enable" class="link">enable</a> method.</p>
   <dl class="fields">
   </dl>
 </td></tr></table>
@@ -686,45 +746,87 @@ when <a href="robotide.plugin.plugin.Plugin-class.html#disable" class="link">dis
   </dl>
 </td></tr></table>
 </div>
-<a name="disable"></a>
+<a name="get_selected_datafile"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">disable</span>(<span class="sig-arg">self</span>)</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_selected_datafile</span>(<span class="sig-arg">self</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.disable">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.get_selected_datafile">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
-  <p>Called by RIDE when the plugin is disabled.</p>
-<p>Undo whatever was done in the <a href="robotide.plugin.plugin.Plugin-class.html#enable" class="link">enable</a> method.</p>
+  <p>Returns the data file that is currently selected in the tree.</p>
+<p>If a test case or a keyword is selected, the data file containing the
+selected item is returned.</p>
+  <dl class="fields">
+    <dt>Returns: <a href="robotide.model.files.InitFile-class.html" class="link">InitFile</a>, <a href="robotide.model.files.TestCaseFile-class.html" class="link">TestCaseFile</a> or <a href="robotide.model.files.ResourceFile-class.html" class="link">ResourceFile</a></dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_selected_item"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_selected_item</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.get_selected_item">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Returns the item that is currently selected in the tree.</p>
+<p>The item can be a test suite, a resource file, a test case or a keyword.</p>
+  <dl class="fields">
+    <dt>Returns: <a href="robotide.model.files.InitFile-class.html" class="link">InitFile</a>, <a href="robotide.model.files.TestCaseFile-class.html" class="link">TestCaseFile</a>, <a href="robotide.model.files.ResourceFile-class.html" class="link">ResourceFile</a>, <a href="robotide.model.tcuk.TestCase-class.html" class="link">TestCase</a> or <a href="robotide.model.tcuk.UserKeyword-class.html" class="link">UserKeyword</a></dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="new_suite_can_be_opened"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">new_suite_can_be_opened</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.new_suite_can_be_opened">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Checks are there modified files and asks user what to do if there are.</p>
+<p>Returns False if there were modified files and user canceled the dialog,
+otherwise returns True.</p>
   <dl class="fields">
   </dl>
 </td></tr></table>
 </div>
-<a name="config_panel"></a>
+<a name="open_suite"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">config_panel</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">parent</span>)</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">open_suite</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">path</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.config_panel">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.open_suite">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
-  <p>Called by RIDE to get the plugin configuration panel.</p>
-<p>The panel returned will be integrated into the plugin manager UI, and
-can be used e.g. to display configurable settings.</p>
-<p>By default there is no configuration panel.</p>
+  <p>Opens a test suite specified by the <tt class="rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">path</span></tt>.</p>
+<p>No suite is opened if parsing the suite fails.</p>
   <dl class="fields">
   </dl>
 </td></tr></table>
@@ -773,175 +875,6 @@ information about the registered action.</p>
   </dl>
 </td></tr></table>
 </div>
-<a name="unregister_actions"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">unregister_actions</span>(<span class="sig-arg">self</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.unregister_actions">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  <p>Unregisters all actions registered by this plugin.</p>
-<p>Actions can be registered via <a href="robotide.plugin.plugin.Plugin-class.html#register_action" class="link">register_action</a> and <a href="robotide.plugin.plugin.Plugin-class.html#register_actions" class="link">register_actions</a>
-methods.</p>
-  <dl class="fields">
-  </dl>
-</td></tr></table>
-</div>
-<a name="add_tab"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">add_tab</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">tab</span>,
-        <span class="sig-arg">title</span>,
-        <span class="sig-arg">allow_closing</span>=<span class="sig-default">True</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.add_tab">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  <p>Adds the <tt class="rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">tab</span></tt> with the <tt class="rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">title</span></tt> to the tabbed notebook and shows it.</p>
-<p>The <tt class="rst-docutils literal"><span class="pre">tab</span></tt> can be any wxPython container. <tt class="rst-docutils literal"><span class="pre">allow_closing</span></tt> defines
-can users close the tab while the plugin is enabled or not.</p>
-  <dl class="fields">
-  </dl>
-</td></tr></table>
-</div>
-<a name="show_tab"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">show_tab</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">tab</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.show_tab">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  Makes the <tt class="rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">tab</span></tt> added using <a href="robotide.plugin.plugin.Plugin-class.html#add_tab" class="link">add_tab</a> visible.
-  <dl class="fields">
-  </dl>
-</td></tr></table>
-</div>
-<a name="delete_tab"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">delete_tab</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">tab</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.delete_tab">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  Deletes the <tt class="rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">tab</span></tt> added using <a href="robotide.plugin.plugin.Plugin-class.html#add_tab" class="link">add_tab</a>.
-  <dl class="fields">
-  </dl>
-</td></tr></table>
-</div>
-<a name="tab_is_visible"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">tab_is_visible</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">tab</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.tab_is_visible">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  Returns is the <tt class="rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">tab</span></tt> added using <a href="robotide.plugin.plugin.Plugin-class.html#add_tab" class="link">add_tab</a> visible or not.
-  <dl class="fields">
-  </dl>
-</td></tr></table>
-</div>
-<a name="new_suite_can_be_opened"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">new_suite_can_be_opened</span>(<span class="sig-arg">self</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.new_suite_can_be_opened">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  <p>Checks are there modified files and asks user what to do if there are.</p>
-<p>Returns False if there were modified files and user canceled the dialog,
-otherwise returns True.</p>
-  <dl class="fields">
-  </dl>
-</td></tr></table>
-</div>
-<a name="open_suite"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">open_suite</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">path</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.open_suite">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  <p>Opens a test suite specified by the <tt class="rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">path</span></tt>.</p>
-<p>No suite is opened if parsing the suite fails.</p>
-  <dl class="fields">
-  </dl>
-</td></tr></table>
-</div>
-<a name="get_selected_datafile"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_selected_datafile</span>(<span class="sig-arg">self</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.get_selected_datafile">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  <p>Returns the data file that is currently selected in the tree.</p>
-<p>If a test case or a keyword is selected, the data file containing the
-selected item is returned.</p>
-  <dl class="fields">
-    <dt>Returns: <a href="robotide.model.files.InitFile-class.html" class="link">InitFile</a>, <a href="robotide.model.files.TestCaseFile-class.html" class="link">TestCaseFile</a> or <a href="robotide.model.files.ResourceFile-class.html" class="link">ResourceFile</a></dt>
-  </dl>
-</td></tr></table>
-</div>
 <a name="save_selected_datafile"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -963,24 +896,50 @@ selected item is saved.</p>
   </dl>
 </td></tr></table>
 </div>
-<a name="get_selected_item"></a>
+<a name="save_setting"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_selected_item</span>(<span class="sig-arg">self</span>)</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">save_setting</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">name</span>,
+        <span class="sig-arg">value</span>,
+        <span class="sig-arg">override</span>=<span class="sig-default">True</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.get_selected_item">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.save_setting">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
-  <p>Returns the item that is currently selected in the tree.</p>
-<p>The item can be a test suite, a resource file, a test case or a keyword.</p>
+  <p>Saves the specified setting into the RIDE configuration file.</p>
+<p>Plugin settings are stored into <tt class="rst-docutils literal"><span class="pre">[[Plugin</span> <span class="pre">Name]]</span></tt> subsection
+under <tt class="rst-docutils literal"><span class="pre">[Plugins]</span></tt> section. They can be accessed using direct attribute
+access via <a href="robotide.plugin.plugin.Plugin-class.html#__getattr__" class="link">__getattr__</a>.</p>
+<p><tt class="rst-docutils literal"><span class="pre">override</span></tt> controls whether a possibly already existing value is
+overridden or not.</p>
   <dl class="fields">
-    <dt>Returns: <a href="robotide.model.files.InitFile-class.html" class="link">InitFile</a>, <a href="robotide.model.files.TestCaseFile-class.html" class="link">TestCaseFile</a>, <a href="robotide.model.files.ResourceFile-class.html" class="link">ResourceFile</a>, <a href="robotide.model.tcuk.TestCase-class.html" class="link">TestCase</a> or <a href="robotide.model.tcuk.UserKeyword-class.html" class="link">UserKeyword</a></dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="show_tab"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">show_tab</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">tab</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.show_tab">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Makes the <tt class="rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">tab</span></tt> added using <a href="robotide.plugin.plugin.Plugin-class.html#add_tab" class="link">add_tab</a> visible.
+  <dl class="fields">
   </dl>
 </td></tr></table>
 </div>
@@ -1018,6 +977,47 @@ with an instance of the message class as an argument. That instance
 contains topic and possibly some additional information in its attributes.</p>
 <p><a href="robotide.plugin.plugin.Plugin-class.html#unsubscribe" class="link">unsubscribe</a> and <a href="robotide.plugin.plugin.Plugin-class.html#unsubscribe_all" class="link">unsubscribe_all</a> can be used to stop listening to
 certain or all messages.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="tab_is_visible"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">tab_is_visible</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">tab</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.tab_is_visible">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Returns is the <tt class="rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">tab</span></tt> added using <a href="robotide.plugin.plugin.Plugin-class.html#add_tab" class="link">add_tab</a> visible or not.
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="unregister_actions"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">unregister_actions</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.plugin.plugin-pysrc.html#Plugin.unregister_actions">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Unregisters all actions registered by this plugin.</p>
+<p>Actions can be registered via <a href="robotide.plugin.plugin.Plugin-class.html#register_action" class="link">register_action</a> and <a href="robotide.plugin.plugin.Plugin-class.html#register_actions" class="link">register_actions</a>
+methods.</p>
   <dl class="fields">
   </dl>
 </td></tr></table>
@@ -1131,20 +1131,6 @@ Set in <a href="robotide.plugin.plugin.Plugin-class.html#__init__" class="link">
     <span class="table-header">Property Details</span></td>
 </tr>
 </table>
-<a name="tree"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <h3 class="epydoc">tree</h3>
-  Provides access to the suite and resource tree
-  <dl class="fields">
-    <dt>Get Method:</dt>
-    <dd class="value"><span class="summary-sig"><i>unreachable</i>(<span class="summary-sig-arg">self</span>)</span>
-    </dd>
-  </dl>
-</td></tr></table>
-</div>
 <a name="menubar"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -1159,13 +1145,13 @@ Set in <a href="robotide.plugin.plugin.Plugin-class.html#__init__" class="link">
   </dl>
 </td></tr></table>
 </div>
-<a name="toolbar"></a>
+<a name="model"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
-  <h3 class="epydoc">toolbar</h3>
-  Provides access to the application toolbar
+  <h3 class="epydoc">model</h3>
+  Provides access to the data model
   <dl class="fields">
     <dt>Get Method:</dt>
     <dd class="value"><span class="summary-sig"><i>unreachable</i>(<span class="summary-sig-arg">self</span>)</span>
@@ -1187,13 +1173,27 @@ Set in <a href="robotide.plugin.plugin.Plugin-class.html#__init__" class="link">
   </dl>
 </td></tr></table>
 </div>
-<a name="model"></a>
+<a name="toolbar"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
-  <h3 class="epydoc">model</h3>
-  Provides access to the data model
+  <h3 class="epydoc">toolbar</h3>
+  Provides access to the application toolbar
+  <dl class="fields">
+    <dt>Get Method:</dt>
+    <dd class="value"><span class="summary-sig"><i>unreachable</i>(<span class="summary-sig-arg">self</span>)</span>
+    </dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="tree"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">tree</h3>
+  Provides access to the suite and resource tree
   <dl class="fields">
     <dt>Get Method:</dt>
     <dd class="value"><span class="summary-sig"><i>unreachable</i>(<span class="summary-sig-arg">self</span>)</span>
@@ -1233,7 +1233,7 @@ Set in <a href="robotide.plugin.plugin.Plugin-class.html#__init__" class="link">
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Dec  2 12:51:55 2009
+    Generated by Epydoc 3.0.1 on Wed Dec  2 15:48:08 2009
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

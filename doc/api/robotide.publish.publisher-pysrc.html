@@ -70,7 +70,8 @@
 <a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line"><tt class="py-comment">#  See the License for the specific language governing permissions and</tt> </tt>
 <a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line"><tt class="py-comment">#  limitations under the License.</tt> </tt>
 <a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line"> </tt>
-<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">lib</tt><tt class="py-op">.</tt><tt class="py-name">pubsub</tt> <tt class="py-keyword">import</tt> <tt id="link-0" class="py-name" targets="Class robotide.publish.publisher.Publisher=robotide.publish.publisher.Publisher-class.html"><a title="robotide.publish.publisher.Publisher" class="py-name" href="#" onclick="return doclink('link-0', 'Publisher', 'link-0');">Publisher</a></tt> <tt class="py-keyword">as</tt> <tt class="py-name">WxPublisher</tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">lib</tt><tt class="py-op">.</tt><tt class="py-name">pubsub</tt> <tt class="py-keyword">import</tt> <tt id="link-0" class="py-name" targets="Class robotide.publish.publisher.Publisher=robotide.publish.publisher.Publisher-class.html"><a title="robotide.publish.publisher.Publisher" class="py-name" href="#" onclick="return doclink('link-0', 'Publisher', 'link-0');">Publisher</a></tt> <tt class="py-keyword">as</tt> <tt id="link-1" class="py-name" targets="Variable robotide.plugin.WxPublisher=robotide.plugin-module.html#WxPublisher,Variable robotide.publish.WxPublisher=robotide.publish-module.html#WxPublisher"><a title="robotide.plugin.WxPublisher
+robotide.publish.WxPublisher" class="py-name" href="#" onclick="return doclink('link-1', 'WxPublisher', 'link-1');">WxPublisher</a></tt> </tt>
 <a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line"> </tt>
 <a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line"> </tt>
 <a name="Publisher"></a><div id="Publisher-def"><a name="L18"></a><tt class="py-lineno">18</tt> <a class="py-toggle" href="#" id="Publisher-toggle" onclick="return toggle('Publisher');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="robotide.publish.publisher.Publisher-class.html">Publisher</a><tt class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
@@ -79,7 +80,7 @@
 </div><div id="Publisher.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="Publisher.__init__-expanded"><a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_listeners</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
 </div><a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line"> </tt>
 <a name="Publisher.subscribe"></a><div id="Publisher.subscribe-def"><a name="L23"></a><tt class="py-lineno">23</tt> <a class="py-toggle" href="#" id="Publisher.subscribe-toggle" onclick="return toggle('Publisher.subscribe');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.publish.publisher.Publisher-class.html#subscribe">subscribe</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">listener</tt><tt class="py-op">,</tt> <tt class="py-param">topic</tt><tt class="py-op">,</tt> <tt class="py-param">key</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="Publisher.subscribe-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="Publisher.subscribe-expanded"><a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line">        <tt class="py-name">wrapper</tt> <tt class="py-op">=</tt> <tt class="py-name">_ListenerWrapper</tt><tt class="py-op">(</tt><tt class="py-name">listener</tt><tt class="py-op">,</tt> <tt id="link-1" class="py-name" targets="Variable robotide.publish.messages.RideClosing.topic=robotide.publish.messages.RideClosing-class.html#topic,Variable robotide.publish.messages.RideGridCellChanged.topic=robotide.publish.messages.RideGridCellChanged-class.html#topic,Variable robotide.publish.messages.RideLogMessage.topic=robotide.publish.messages.RideLogMessage-class.html#topic,Variable robotide.publish.messages.RideMessage.topic=robotide.publish.messages.RideMessage-class.html#topic,Variable robotide.publish.messages.RideNotebookTabChanged.topic=robotide.publish.messages.RideNotebookTabChanged-class.html#topic,Variable robotide.publish.messages.RideNotebookTabChanging.topic=robotide.publish.messages.RideNotebookTabChanging-class.html#topic,Variable robotide.publish.messages.RideOpenResource.topic=robotide.publish.messages.RideOpenResource-class.html#topic,Variable robotide.publish.messages.RideOpenSuite.topic=robotide.publish.messages.RideOpenSuite-class.html#topic,Variable robotide.publish.messages.RideSaveAll.topic=robotide.publish.messages.RideSaveAll-class.html#topic,Variable robotide.publish.messages.RideSaved.topic=robotide.publish.messages.RideSaved-class.html#topic,Variable robotide.publish.messages.RideSaving.topic=robotide.publish.messages.RideSaving-class.html#topic,Variable robotide.publish.messages.RideTreeSelection.topic=robotide.publish.messages.RideTreeSelection-class.html#topic"><a title="robotide.publish.messages.RideClosing.topic
+</div><div id="Publisher.subscribe-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="Publisher.subscribe-expanded"><a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line">        <tt class="py-name">wrapper</tt> <tt class="py-op">=</tt> <tt class="py-name">_ListenerWrapper</tt><tt class="py-op">(</tt><tt class="py-name">listener</tt><tt class="py-op">,</tt> <tt id="link-2" class="py-name" targets="Variable robotide.publish.messages.RideClosing.topic=robotide.publish.messages.RideClosing-class.html#topic,Variable robotide.publish.messages.RideGridCellChanged.topic=robotide.publish.messages.RideGridCellChanged-class.html#topic,Variable robotide.publish.messages.RideLogMessage.topic=robotide.publish.messages.RideLogMessage-class.html#topic,Variable robotide.publish.messages.RideMessage.topic=robotide.publish.messages.RideMessage-class.html#topic,Variable robotide.publish.messages.RideNotebookTabChanged.topic=robotide.publish.messages.RideNotebookTabChanged-class.html#topic,Variable robotide.publish.messages.RideNotebookTabChanging.topic=robotide.publish.messages.RideNotebookTabChanging-class.html#topic,Variable robotide.publish.messages.RideOpenResource.topic=robotide.publish.messages.RideOpenResource-class.html#topic,Variable robotide.publish.messages.RideOpenSuite.topic=robotide.publish.messages.RideOpenSuite-class.html#topic,Variable robotide.publish.messages.RideSaveAll.topic=robotide.publish.messages.RideSaveAll-class.html#topic,Variable robotide.publish.messages.RideSaved.topic=robotide.publish.messages.RideSaved-class.html#topic,Variable robotide.publish.messages.RideSaving.topic=robotide.publish.messages.RideSaving-class.html#topic,Variable robotide.publish.messages.RideTreeSelection.topic=robotide.publish.messages.RideTreeSelection-class.html#topic"><a title="robotide.publish.messages.RideClosing.topic
 robotide.publish.messages.RideGridCellChanged.topic
 robotide.publish.messages.RideLogMessage.topic
 robotide.publish.messages.RideMessage.topic
@@ -90,12 +91,12 @@ robotide.publish.messages.RideOpenSuite.topic
 robotide.publish.messages.RideSaveAll.topic
 robotide.publish.messages.RideSaved.topic
 robotide.publish.messages.RideSaving.topic
-robotide.publish.messages.RideTreeSelection.topic" class="py-name" href="#" onclick="return doclink('link-1', 'topic', 'link-1');">topic</a></tt><tt class="py-op">)</tt> </tt>
+robotide.publish.messages.RideTreeSelection.topic" class="py-name" href="#" onclick="return doclink('link-2', 'topic', 'link-2');">topic</a></tt><tt class="py-op">)</tt> </tt>
 <a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_listeners</tt><tt class="py-op">.</tt><tt class="py-name">setdefault</tt><tt class="py-op">(</tt><tt class="py-name">key</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">wrapper</tt><tt class="py-op">)</tt> </tt>
 </div><a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line"> </tt>
 <a name="Publisher.unsubscribe"></a><div id="Publisher.unsubscribe-def"><a name="L27"></a><tt class="py-lineno">27</tt> <a class="py-toggle" href="#" id="Publisher.unsubscribe-toggle" onclick="return toggle('Publisher.unsubscribe');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.publish.publisher.Publisher-class.html#unsubscribe">unsubscribe</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">listener</tt><tt class="py-op">,</tt> <tt class="py-param">topic</tt><tt class="py-op">,</tt> <tt class="py-param">key</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
 </div><div id="Publisher.unsubscribe-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="Publisher.unsubscribe-expanded"><a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">wrapper</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_listeners</tt><tt class="py-op">[</tt><tt class="py-name">key</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
-<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">wrapper</tt><tt class="py-op">.</tt><tt class="py-name">wraps</tt><tt class="py-op">(</tt><tt class="py-name">listener</tt><tt class="py-op">,</tt> <tt id="link-2" class="py-name"><a title="robotide.publish.messages.RideClosing.topic
+<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">wrapper</tt><tt class="py-op">.</tt><tt class="py-name">wraps</tt><tt class="py-op">(</tt><tt class="py-name">listener</tt><tt class="py-op">,</tt> <tt id="link-3" class="py-name"><a title="robotide.publish.messages.RideClosing.topic
 robotide.publish.messages.RideGridCellChanged.topic
 robotide.publish.messages.RideLogMessage.topic
 robotide.publish.messages.RideMessage.topic
@@ -106,16 +107,16 @@ robotide.publish.messages.RideOpenSuite.topic
 robotide.publish.messages.RideSaveAll.topic
 robotide.publish.messages.RideSaved.topic
 robotide.publish.messages.RideSaving.topic
-robotide.publish.messages.RideTreeSelection.topic" class="py-name" href="#" onclick="return doclink('link-2', 'topic', 'link-1');">topic</a></tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line">                <tt class="py-name">wrapper</tt><tt class="py-op">.</tt><tt id="link-3" class="py-name" targets="Method robotide.plugin.plugin.Plugin.unsubscribe()=robotide.plugin.plugin.Plugin-class.html#unsubscribe,Method robotide.publish.publisher.Publisher.unsubscribe()=robotide.publish.publisher.Publisher-class.html#unsubscribe"><a title="robotide.plugin.plugin.Plugin.unsubscribe
-robotide.publish.publisher.Publisher.unsubscribe" class="py-name" href="#" onclick="return doclink('link-3', 'unsubscribe', 'link-3');">unsubscribe</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_listeners</tt><tt class="py-op">[</tt><tt class="py-name">key</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Method robotide.ui.actiontriggers.ActionDelegator.remove()=robotide.ui.actiontriggers.ActionDelegator-class.html#remove"><a title="robotide.ui.actiontriggers.ActionDelegator.remove" class="py-name" href="#" onclick="return doclink('link-4', 'remove', 'link-4');">remove</a></tt><tt class="py-op">(</tt><tt class="py-name">wrapper</tt><tt class="py-op">)</tt> </tt>
+robotide.publish.messages.RideTreeSelection.topic" class="py-name" href="#" onclick="return doclink('link-3', 'topic', 'link-2');">topic</a></tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line">                <tt class="py-name">wrapper</tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Method robotide.plugin.plugin.Plugin.unsubscribe()=robotide.plugin.plugin.Plugin-class.html#unsubscribe,Method robotide.publish.publisher.Publisher.unsubscribe()=robotide.publish.publisher.Publisher-class.html#unsubscribe"><a title="robotide.plugin.plugin.Plugin.unsubscribe
+robotide.publish.publisher.Publisher.unsubscribe" class="py-name" href="#" onclick="return doclink('link-4', 'unsubscribe', 'link-4');">unsubscribe</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_listeners</tt><tt class="py-op">[</tt><tt class="py-name">key</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt id="link-5" class="py-name" targets="Method robotide.ui.actiontriggers.ActionDelegator.remove()=robotide.ui.actiontriggers.ActionDelegator-class.html#remove"><a title="robotide.ui.actiontriggers.ActionDelegator.remove" class="py-name" href="#" onclick="return doclink('link-5', 'remove', 'link-5');">remove</a></tt><tt class="py-op">(</tt><tt class="py-name">wrapper</tt><tt class="py-op">)</tt> </tt>
 <a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line">                <tt class="py-keyword">break</tt> </tt>
 </div><a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line"> </tt>
 <a name="Publisher.unsubscribe_all"></a><div id="Publisher.unsubscribe_all-def"><a name="L34"></a><tt class="py-lineno">34</tt> <a class="py-toggle" href="#" id="Publisher.unsubscribe_all-toggle" onclick="return toggle('Publisher.unsubscribe_all');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.publish.publisher.Publisher-class.html#unsubscribe_all">unsubscribe_all</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">key</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
 </div><div id="Publisher.unsubscribe_all-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="Publisher.unsubscribe_all-expanded"><a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">wrapper</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_listeners</tt><tt class="py-op">[</tt><tt class="py-name">key</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
-<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line">            <tt class="py-name">wrapper</tt><tt class="py-op">.</tt><tt id="link-5" class="py-name"><a title="robotide.plugin.plugin.Plugin.unsubscribe
-robotide.publish.publisher.Publisher.unsubscribe" class="py-name" href="#" onclick="return doclink('link-5', 'unsubscribe', 'link-3');">unsubscribe</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line">            <tt class="py-name">wrapper</tt><tt class="py-op">.</tt><tt id="link-6" class="py-name"><a title="robotide.plugin.plugin.Plugin.unsubscribe
+robotide.publish.publisher.Publisher.unsubscribe" class="py-name" href="#" onclick="return doclink('link-6', 'unsubscribe', 'link-4');">unsubscribe</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
 <a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line">        <tt class="py-keyword">del</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_listeners</tt><tt class="py-op">[</tt><tt class="py-name">key</tt><tt class="py-op">]</tt> </tt>
 </div></div><a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line"> </tt>
 <a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line"> </tt>
@@ -125,7 +126,7 @@ robotide.publish.publisher.Publisher.unsubscribe" class="py-name" href="#" oncli
 <a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line"> </tt>
 <a name="_ListenerWrapper.__init__"></a><div id="_ListenerWrapper.__init__-def"><a name="L44"></a><tt class="py-lineno">44</tt> <a class="py-toggle" href="#" id="_ListenerWrapper.__init__-toggle" onclick="return toggle('_ListenerWrapper.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.publish.publisher._ListenerWrapper-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">listener</tt><tt class="py-op">,</tt> <tt class="py-param">topic</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
 </div><div id="_ListenerWrapper.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="_ListenerWrapper.__init__-expanded"><a name="L45"></a><tt class="py-lineno">45</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">listener</tt> <tt class="py-op">=</tt> <tt class="py-name">listener</tt> </tt>
-<a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-6" class="py-name"><a title="robotide.publish.messages.RideClosing.topic
+<a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-7" class="py-name"><a title="robotide.publish.messages.RideClosing.topic
 robotide.publish.messages.RideGridCellChanged.topic
 robotide.publish.messages.RideLogMessage.topic
 robotide.publish.messages.RideMessage.topic
@@ -136,7 +137,7 @@ robotide.publish.messages.RideOpenSuite.topic
 robotide.publish.messages.RideSaveAll.topic
 robotide.publish.messages.RideSaved.topic
 robotide.publish.messages.RideSaving.topic
-robotide.publish.messages.RideTreeSelection.topic" class="py-name" href="#" onclick="return doclink('link-6', 'topic', 'link-1');">topic</a></tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_get_topic</tt><tt class="py-op">(</tt><tt id="link-7" class="py-name"><a title="robotide.publish.messages.RideClosing.topic
+robotide.publish.messages.RideTreeSelection.topic" class="py-name" href="#" onclick="return doclink('link-7', 'topic', 'link-2');">topic</a></tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_get_topic</tt><tt class="py-op">(</tt><tt id="link-8" class="py-name"><a title="robotide.publish.messages.RideClosing.topic
 robotide.publish.messages.RideGridCellChanged.topic
 robotide.publish.messages.RideLogMessage.topic
 robotide.publish.messages.RideMessage.topic
@@ -147,9 +148,10 @@ robotide.publish.messages.RideOpenSuite.topic
 robotide.publish.messages.RideSaveAll.topic
 robotide.publish.messages.RideSaved.topic
 robotide.publish.messages.RideSaving.topic
-robotide.publish.messages.RideTreeSelection.topic" class="py-name" href="#" onclick="return doclink('link-7', 'topic', 'link-1');">topic</a></tt><tt class="py-op">)</tt> </tt>
-<a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line">        <tt class="py-name">WxPublisher</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-8" class="py-name" targets="Method robotide.plugin.plugin.Plugin.subscribe()=robotide.plugin.plugin.Plugin-class.html#subscribe,Method robotide.publish.publisher.Publisher.subscribe()=robotide.publish.publisher.Publisher-class.html#subscribe"><a title="robotide.plugin.plugin.Plugin.subscribe
-robotide.publish.publisher.Publisher.subscribe" class="py-name" href="#" onclick="return doclink('link-8', 'subscribe', 'link-8');">subscribe</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-9" class="py-name"><a title="robotide.publish.messages.RideClosing.topic
+robotide.publish.messages.RideTreeSelection.topic" class="py-name" href="#" onclick="return doclink('link-8', 'topic', 'link-2');">topic</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line">        <tt id="link-9" class="py-name"><a title="robotide.plugin.WxPublisher
+robotide.publish.WxPublisher" class="py-name" href="#" onclick="return doclink('link-9', 'WxPublisher', 'link-1');">WxPublisher</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Method robotide.plugin.plugin.Plugin.subscribe()=robotide.plugin.plugin.Plugin-class.html#subscribe,Method robotide.publish.publisher.Publisher.subscribe()=robotide.publish.publisher.Publisher-class.html#subscribe"><a title="robotide.plugin.plugin.Plugin.subscribe
+robotide.publish.publisher.Publisher.subscribe" class="py-name" href="#" onclick="return doclink('link-10', 'subscribe', 'link-10');">subscribe</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-11" class="py-name"><a title="robotide.publish.messages.RideClosing.topic
 robotide.publish.messages.RideGridCellChanged.topic
 robotide.publish.messages.RideLogMessage.topic
 robotide.publish.messages.RideMessage.topic
@@ -160,10 +162,10 @@ robotide.publish.messages.RideOpenSuite.topic
 robotide.publish.messages.RideSaveAll.topic
 robotide.publish.messages.RideSaved.topic
 robotide.publish.messages.RideSaving.topic
-robotide.publish.messages.RideTreeSelection.topic" class="py-name" href="#" onclick="return doclink('link-9', 'topic', 'link-1');">topic</a></tt><tt class="py-op">)</tt> </tt>
+robotide.publish.messages.RideTreeSelection.topic" class="py-name" href="#" onclick="return doclink('link-11', 'topic', 'link-2');">topic</a></tt><tt class="py-op">)</tt> </tt>
 </div><a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line"> </tt>
 <a name="_ListenerWrapper._get_topic"></a><div id="_ListenerWrapper._get_topic-def"><a name="L49"></a><tt class="py-lineno">49</tt> <a class="py-toggle" href="#" id="_ListenerWrapper._get_topic-toggle" onclick="return toggle('_ListenerWrapper._get_topic');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.publish.publisher._ListenerWrapper-class.html#_get_topic">_get_topic</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">topic</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="_ListenerWrapper._get_topic-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="_ListenerWrapper._get_topic-expanded"><a name="L50"></a><tt class="py-lineno">50</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt id="link-10" class="py-name"><a title="robotide.publish.messages.RideClosing.topic
+</div><div id="_ListenerWrapper._get_topic-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="_ListenerWrapper._get_topic-expanded"><a name="L50"></a><tt class="py-lineno">50</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt id="link-12" class="py-name"><a title="robotide.publish.messages.RideClosing.topic
 robotide.publish.messages.RideGridCellChanged.topic
 robotide.publish.messages.RideLogMessage.topic
 robotide.publish.messages.RideMessage.topic
@@ -174,8 +176,8 @@ robotide.publish.messages.RideOpenSuite.topic
 robotide.publish.messages.RideSaveAll.topic
 robotide.publish.messages.RideSaved.topic
 robotide.publish.messages.RideSaving.topic
-robotide.publish.messages.RideTreeSelection.topic" class="py-name" href="#" onclick="return doclink('link-10', 'topic', 'link-1');">topic</a></tt><tt class="py-op">,</tt> <tt class="py-name">basestring</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-<a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line">            <tt id="link-11" class="py-name"><a title="robotide.publish.messages.RideClosing.topic
+robotide.publish.messages.RideTreeSelection.topic" class="py-name" href="#" onclick="return doclink('link-12', 'topic', 'link-2');">topic</a></tt><tt class="py-op">,</tt> <tt class="py-name">basestring</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line">            <tt id="link-13" class="py-name"><a title="robotide.publish.messages.RideClosing.topic
 robotide.publish.messages.RideGridCellChanged.topic
 robotide.publish.messages.RideLogMessage.topic
 robotide.publish.messages.RideMessage.topic
@@ -186,7 +188,7 @@ robotide.publish.messages.RideOpenSuite.topic
 robotide.publish.messages.RideSaveAll.topic
 robotide.publish.messages.RideSaved.topic
 robotide.publish.messages.RideSaving.topic
-robotide.publish.messages.RideTreeSelection.topic" class="py-name" href="#" onclick="return doclink('link-11', 'topic', 'link-1');">topic</a></tt> <tt class="py-op">=</tt> <tt id="link-12" class="py-name"><a title="robotide.publish.messages.RideClosing.topic
+robotide.publish.messages.RideTreeSelection.topic" class="py-name" href="#" onclick="return doclink('link-13', 'topic', 'link-2');">topic</a></tt> <tt class="py-op">=</tt> <tt id="link-14" class="py-name"><a title="robotide.publish.messages.RideClosing.topic
 robotide.publish.messages.RideGridCellChanged.topic
 robotide.publish.messages.RideLogMessage.topic
 robotide.publish.messages.RideMessage.topic
@@ -197,7 +199,7 @@ robotide.publish.messages.RideOpenSuite.topic
 robotide.publish.messages.RideSaveAll.topic
 robotide.publish.messages.RideSaved.topic
 robotide.publish.messages.RideSaving.topic
-robotide.publish.messages.RideTreeSelection.topic" class="py-name" href="#" onclick="return doclink('link-12', 'topic', 'link-1');">topic</a></tt><tt class="py-op">.</tt><tt id="link-13" class="py-name"><a title="robotide.publish.messages.RideClosing.topic
+robotide.publish.messages.RideTreeSelection.topic" class="py-name" href="#" onclick="return doclink('link-14', 'topic', 'link-2');">topic</a></tt><tt class="py-op">.</tt><tt id="link-15" class="py-name"><a title="robotide.publish.messages.RideClosing.topic
 robotide.publish.messages.RideGridCellChanged.topic
 robotide.publish.messages.RideLogMessage.topic
 robotide.publish.messages.RideMessage.topic
@@ -208,8 +210,8 @@ robotide.publish.messages.RideOpenSuite.topic
 robotide.publish.messages.RideSaveAll.topic
 robotide.publish.messages.RideSaved.topic
 robotide.publish.messages.RideSaving.topic
-robotide.publish.messages.RideTreeSelection.topic" class="py-name" href="#" onclick="return doclink('link-13', 'topic', 'link-1');">topic</a></tt> </tt>
-<a name="L52"></a><tt class="py-lineno">52</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt id="link-14" class="py-name"><a title="robotide.publish.messages.RideClosing.topic
+robotide.publish.messages.RideTreeSelection.topic" class="py-name" href="#" onclick="return doclink('link-15', 'topic', 'link-2');">topic</a></tt> </tt>
+<a name="L52"></a><tt class="py-lineno">52</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt id="link-16" class="py-name"><a title="robotide.publish.messages.RideClosing.topic
 robotide.publish.messages.RideGridCellChanged.topic
 robotide.publish.messages.RideLogMessage.topic
 robotide.publish.messages.RideMessage.topic
@@ -220,10 +222,10 @@ robotide.publish.messages.RideOpenSuite.topic
 robotide.publish.messages.RideSaveAll.topic
 robotide.publish.messages.RideSaved.topic
 robotide.publish.messages.RideSaving.topic
-robotide.publish.messages.RideTreeSelection.topic" class="py-name" href="#" onclick="return doclink('link-14', 'topic', 'link-1');">topic</a></tt><tt class="py-op">.</tt><tt class="py-name">lower</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+robotide.publish.messages.RideTreeSelection.topic" class="py-name" href="#" onclick="return doclink('link-16', 'topic', 'link-2');">topic</a></tt><tt class="py-op">.</tt><tt class="py-name">lower</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
 </div><a name="L53"></a><tt class="py-lineno">53</tt>  <tt class="py-line"> </tt>
 <a name="_ListenerWrapper.wraps"></a><div id="_ListenerWrapper.wraps-def"><a name="L54"></a><tt class="py-lineno">54</tt> <a class="py-toggle" href="#" id="_ListenerWrapper.wraps-toggle" onclick="return toggle('_ListenerWrapper.wraps');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.publish.publisher._ListenerWrapper-class.html#wraps">wraps</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">listener</tt><tt class="py-op">,</tt> <tt class="py-param">topic</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="_ListenerWrapper.wraps-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="_ListenerWrapper.wraps-expanded"><a name="L55"></a><tt class="py-lineno">55</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">listener</tt> <tt class="py-op">==</tt> <tt class="py-name">listener</tt> <tt class="py-keyword">and</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-15" class="py-name"><a title="robotide.publish.messages.RideClosing.topic
+</div><div id="_ListenerWrapper.wraps-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="_ListenerWrapper.wraps-expanded"><a name="L55"></a><tt class="py-lineno">55</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">listener</tt> <tt class="py-op">==</tt> <tt class="py-name">listener</tt> <tt class="py-keyword">and</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-17" class="py-name"><a title="robotide.publish.messages.RideClosing.topic
 robotide.publish.messages.RideGridCellChanged.topic
 robotide.publish.messages.RideLogMessage.topic
 robotide.publish.messages.RideMessage.topic
@@ -234,7 +236,7 @@ robotide.publish.messages.RideOpenSuite.topic
 robotide.publish.messages.RideSaveAll.topic
 robotide.publish.messages.RideSaved.topic
 robotide.publish.messages.RideSaving.topic
-robotide.publish.messages.RideTreeSelection.topic" class="py-name" href="#" onclick="return doclink('link-15', 'topic', 'link-1');">topic</a></tt> <tt class="py-op">==</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_get_topic</tt><tt class="py-op">(</tt><tt id="link-16" class="py-name"><a title="robotide.publish.messages.RideClosing.topic
+robotide.publish.messages.RideTreeSelection.topic" class="py-name" href="#" onclick="return doclink('link-17', 'topic', 'link-2');">topic</a></tt> <tt class="py-op">==</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_get_topic</tt><tt class="py-op">(</tt><tt id="link-18" class="py-name"><a title="robotide.publish.messages.RideClosing.topic
 robotide.publish.messages.RideGridCellChanged.topic
 robotide.publish.messages.RideLogMessage.topic
 robotide.publish.messages.RideMessage.topic
@@ -245,11 +247,12 @@ robotide.publish.messages.RideOpenSuite.topic
 robotide.publish.messages.RideSaveAll.topic
 robotide.publish.messages.RideSaved.topic
 robotide.publish.messages.RideSaving.topic
-robotide.publish.messages.RideTreeSelection.topic" class="py-name" href="#" onclick="return doclink('link-16', 'topic', 'link-1');">topic</a></tt><tt class="py-op">)</tt>  </tt>
+robotide.publish.messages.RideTreeSelection.topic" class="py-name" href="#" onclick="return doclink('link-18', 'topic', 'link-2');">topic</a></tt><tt class="py-op">)</tt>  </tt>
 </div><a name="L56"></a><tt class="py-lineno">56</tt>  <tt class="py-line"> </tt>
 <a name="_ListenerWrapper.unsubscribe"></a><div id="_ListenerWrapper.unsubscribe-def"><a name="L57"></a><tt class="py-lineno">57</tt> <a class="py-toggle" href="#" id="_ListenerWrapper.unsubscribe-toggle" onclick="return toggle('_ListenerWrapper.unsubscribe');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.publish.publisher._ListenerWrapper-class.html#unsubscribe">unsubscribe</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="_ListenerWrapper.unsubscribe-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="_ListenerWrapper.unsubscribe-expanded"><a name="L58"></a><tt class="py-lineno">58</tt>  <tt class="py-line">        <tt class="py-name">WxPublisher</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-17" class="py-name"><a title="robotide.plugin.plugin.Plugin.unsubscribe
-robotide.publish.publisher.Publisher.unsubscribe" class="py-name" href="#" onclick="return doclink('link-17', 'unsubscribe', 'link-3');">unsubscribe</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-18" class="py-name"><a title="robotide.publish.messages.RideClosing.topic
+</div><div id="_ListenerWrapper.unsubscribe-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="_ListenerWrapper.unsubscribe-expanded"><a name="L58"></a><tt class="py-lineno">58</tt>  <tt class="py-line">        <tt id="link-19" class="py-name"><a title="robotide.plugin.WxPublisher
+robotide.publish.WxPublisher" class="py-name" href="#" onclick="return doclink('link-19', 'WxPublisher', 'link-1');">WxPublisher</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-20" class="py-name"><a title="robotide.plugin.plugin.Plugin.unsubscribe
+robotide.publish.publisher.Publisher.unsubscribe" class="py-name" href="#" onclick="return doclink('link-20', 'unsubscribe', 'link-4');">unsubscribe</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-21" class="py-name"><a title="robotide.publish.messages.RideClosing.topic
 robotide.publish.messages.RideGridCellChanged.topic
 robotide.publish.messages.RideLogMessage.topic
 robotide.publish.messages.RideMessage.topic
@@ -260,10 +263,10 @@ robotide.publish.messages.RideOpenSuite.topic
 robotide.publish.messages.RideSaveAll.topic
 robotide.publish.messages.RideSaved.topic
 robotide.publish.messages.RideSaving.topic
-robotide.publish.messages.RideTreeSelection.topic" class="py-name" href="#" onclick="return doclink('link-18', 'topic', 'link-1');">topic</a></tt><tt class="py-op">)</tt> </tt>
+robotide.publish.messages.RideTreeSelection.topic" class="py-name" href="#" onclick="return doclink('link-21', 'topic', 'link-2');">topic</a></tt><tt class="py-op">)</tt> </tt>
 </div><a name="L59"></a><tt class="py-lineno">59</tt>  <tt class="py-line"> </tt>
 <a name="_ListenerWrapper.__call__"></a><div id="_ListenerWrapper.__call__-def"><a name="L60"></a><tt class="py-lineno">60</tt> <a class="py-toggle" href="#" id="_ListenerWrapper.__call__-toggle" onclick="return toggle('_ListenerWrapper.__call__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.publish.publisher._ListenerWrapper-class.html#__call__">__call__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">event</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="_ListenerWrapper.__call__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="_ListenerWrapper.__call__-expanded"><a name="L61"></a><tt class="py-lineno">61</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">listener</tt><tt class="py-op">(</tt><tt class="py-name">event</tt><tt class="py-op">.</tt><tt id="link-19" class="py-name" targets="Variable robotide.publish.messages.RideGridCellChanged.data=robotide.publish.messages.RideGridCellChanged-class.html#data,Variable robotide.publish.messages.RideLogMessage.data=robotide.publish.messages.RideLogMessage-class.html#data,Variable robotide.publish.messages.RideMessage.data=robotide.publish.messages.RideMessage-class.html#data,Variable robotide.publish.messages.RideNotebookTabChanging.data=robotide.publish.messages.RideNotebookTabChanging-class.html#data,Variable robotide.publish.messages.RideOpenResource.data=robotide.publish.messages.RideOpenResource-class.html#data,Variable robotide.publish.messages.RideOpenSuite.data=robotide.publish.messages.RideOpenSuite-class.html#data,Variable robotide.publish.messages.RideSaved.data=robotide.publish.messages.RideSaved-class.html#data,Variable robotide.publish.messages.RideSaving.data=robotide.publish.messages.RideSaving-class.html#data,Variable robotide.publish.messages.RideTreeSelection.data=robotide.publish.messages.RideTreeSelection-class.html#data"><a title="robotide.publish.messages.RideGridCellChanged.data
+</div><div id="_ListenerWrapper.__call__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="_ListenerWrapper.__call__-expanded"><a name="L61"></a><tt class="py-lineno">61</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">listener</tt><tt class="py-op">(</tt><tt class="py-name">event</tt><tt class="py-op">.</tt><tt id="link-22" class="py-name" targets="Variable robotide.publish.messages.RideGridCellChanged.data=robotide.publish.messages.RideGridCellChanged-class.html#data,Variable robotide.publish.messages.RideLogMessage.data=robotide.publish.messages.RideLogMessage-class.html#data,Variable robotide.publish.messages.RideMessage.data=robotide.publish.messages.RideMessage-class.html#data,Variable robotide.publish.messages.RideNotebookTabChanging.data=robotide.publish.messages.RideNotebookTabChanging-class.html#data,Variable robotide.publish.messages.RideOpenResource.data=robotide.publish.messages.RideOpenResource-class.html#data,Variable robotide.publish.messages.RideOpenSuite.data=robotide.publish.messages.RideOpenSuite-class.html#data,Variable robotide.publish.messages.RideSaved.data=robotide.publish.messages.RideSaved-class.html#data,Variable robotide.publish.messages.RideSaving.data=robotide.publish.messages.RideSaving-class.html#data,Variable robotide.publish.messages.RideTreeSelection.data=robotide.publish.messages.RideTreeSelection-class.html#data"><a title="robotide.publish.messages.RideGridCellChanged.data
 robotide.publish.messages.RideLogMessage.data
 robotide.publish.messages.RideMessage.data
 robotide.publish.messages.RideNotebookTabChanging.data
@@ -271,7 +274,7 @@ robotide.publish.messages.RideOpenResource.data
 robotide.publish.messages.RideOpenSuite.data
 robotide.publish.messages.RideSaved.data
 robotide.publish.messages.RideSaving.data
-robotide.publish.messages.RideTreeSelection.data" class="py-name" href="#" onclick="return doclink('link-19', 'data', 'link-19');">data</a></tt><tt class="py-op">)</tt> </tt>
+robotide.publish.messages.RideTreeSelection.data" class="py-name" href="#" onclick="return doclink('link-22', 'data', 'link-22');">data</a></tt><tt class="py-op">)</tt> </tt>
 </div></div><a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line"> </tt><script type="text/javascript">
 <!--
 expandto(location.href);
@@ -310,7 +313,7 @@ expandto(location.href);
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Dec  2 12:52:00 2009
+    Generated by Epydoc 3.0.1 on Wed Dec  2 15:48:12 2009
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
