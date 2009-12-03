@@ -1,10 +1,9 @@
-
-
 /* Epydoc CSS Stylesheet
  *
  * This stylesheet can be used to customize the appearance of epydoc's
  * HTML output.
  *
+ * RIDE specific customization is at the end.
  */
 
 /* Default Colors & Styles
@@ -320,3 +319,15 @@ p.log                       { font-weight: bold; margin: .5em 0 .5em 0; }
 tr.opt-changed              { color: #000000; font-weight: bold; }
 tr.opt-default              { color: #606060; }
 pre.log                     { margin: 0; padding: 0; padding-left: 1em; }
+
+
+/*
+ * RIDE specific configuration
+ */
+h1 a, h2 a, h3 a, h4 a, h5 a {
+    text-decoration: inherit;
+}
+pre.rst-literal-block {
+    margin-left: 2em;
+
+}
