@@ -12,6 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import os
 from wx import grid
 import wx
 
@@ -83,16 +84,17 @@ class KeywordEditorUi(grid.Grid):
         """Paste the contents of the clipboard. If a cell is being edited just
         do a normal paste. If a cell is not being edited, paste whole rows.
         """
+        clipboard = GRID_CLIPBOARD.get_contents()
         if self.IsCellEditControlShown():
             # This is needed in Windows
-            clipboard = GRID_CLIPBOARD.get_contents()
             if isinstance(clipboard, list):
                 cells_as_text = ' '.join([' '.join(row) for row in clipboard])
                 self._get_cell_edit_control().WriteText(cells_as_text)
-            else:
+            # FIXME: there must be a better way to prevent double pasting on
+            # linux, also this breaks the pasting via menu
+            elif os.name == 'nt':
                 self._get_cell_edit_control().Paste()
         else:
-            clipboard = GRID_CLIPBOARD.get_contents()
             if not clipboard:
                 return
             cell = self._active_coords.topleft
