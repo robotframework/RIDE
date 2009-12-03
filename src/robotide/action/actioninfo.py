@@ -18,12 +18,12 @@ import re
 from shortcut import Shortcut
 
 
-def ActionInfoCollection(data, eventhandler, container=None):
+def ActionInfoCollection(data, event_handler, container=None):
 
     """Parses ActionInfo objects from the provided DSL data.
 
-    ActionInfoCollection parses ActionInfo/SeparatorInfo objects from the DSL 
-    data on initialization and after that the ActionInfo objects can be accessed 
+    ActionInfoCollection parses ActionInfo/SeparatorInfo objects from the DSL
+    data on initialization and after that the ActionInfo objects can be accessed
     via returned list.
 
     **DSL format**::
@@ -35,15 +35,15 @@ def ActionInfoCollection(data, eventhandler, container=None):
       The menu under which the entries are inserted.
 
     name
-      The menu entry name. Mandatory field. The action name is created 
-      from the name by inserting On prefix and camel casing the name 
-      e.g. Some name -> OnSomeName.
+      The menu entry name. Mandatory field. ``eventhandler`` class needs to 
+      contain method matching this name (On prefix and camel case 
+      e.g. Some name -> OnSomeName).
 
       \!
         Specifies that the container is None (action is 'global'). Optional.
-        When omitted then the container is the provided `container`.
+        When omitted then the container is the provided ``container``.
 
-      \& 
+      \&
         Defines the accelerator character for the menu entry. Optional.
 
       \-\-\-
@@ -76,11 +76,11 @@ def ActionInfoCollection(data, eventhandler, container=None):
       data
         The DSL data containing Menu entries to be parsed into ActionInfo and
         SeparatorInfo objects.
-      eventhandler
-        The event handler that implements the actions. See name field about how 
+      event_handler
+        The event handler that implements the actions. See name field about how
         actions are generated.
       container
-        the wxPython element containing the UI components associated with 
+        the wxPython element containing the UI components associated with
         the `ActionInfo`.
     """
 
@@ -93,7 +93,8 @@ def ActionInfoCollection(data, eventhandler, container=None):
         elif row.startswith('[') and row.endswith(']'):
             menu = row[1:-1].strip()
         else:
-            actions.append(_create_action_info(eventhandler, menu, container, row))
+            actions.append(_create_action_info(event_handler, menu, container,
+                                               row))
     return actions
 
 
@@ -128,8 +129,8 @@ class MenuInfo(object):
           after
             Place this menu entry after the specified entry.
 
-        Use either `before` or `after` and give the name without the possible
-        shortcut.
+        Use either ``before`` or ``after`` and give the name without the 
+        possible shortcut.
         """
         self.insertion_point = _InsertionPoint(before, after)
 
@@ -143,24 +144,31 @@ class ActionInfo(MenuInfo):
 
         :Parameters:
           menu_name
-            The name of the menu where the new entry will be added. The menu is 
-            created if it's missing.
+            The name of the menu where the new entry will be added. The menu is
+            created if it does not exist.
           name
-            The name of the new menu entry. The accelerator key is specified in 
+            The name of the new menu entry. The accelerator key is specified in
             the name by prefixing that key by & character.
           action
             The callable which will be called when a user does any of the
-            associated actions (selects menu entry, pushes toolbar button or 
+            associated UI actions (selects menu entry, pushes toolbar button or
             selects shortcut).
           container
-            The wxPython element containing the UI components associated with 
-            this ActionInfo's actions. When any of the actions is executed,
-            container is used to check whether to call the `action` or not.
-            `container` must be visible and it must have focus, otherwise the 
-            `action` is not called. If `container` is None, `action` is 
-            considered global and it is always called.
+            The wxPython element containing the UI components associated with
+            this ActionInfo's action. When any of the related UI actions is
+            executed, container is used to check whether to call the ``action``
+            or not. ``container``'s child component must have focus, otherwise
+            the ``action`` is not called. If ``container`` is None,``action`` is
+            always called.
           shortcut
-            The keyboard shortcut associated to the `action`.
+            The keyboard shortcut associated to the ``action``. ``shortcut`` is
+            string constructed from two parts, control key(s) and key. Control
+            key can be  Ctrl/Shift/Alt/Cmd or combination of those separated
+            with '-'. Key can be character or name of the `wx keycode`__ without
+            'WXK\_' prefix. Control key and key are also separated with '-' e.g.
+            Ctrl-Shift-H and Shift-Enter.
+
+            __ http://docs.wxwidgets.org/stable/wx_keycodes.html#keycodes
           icon
             The icon added to the toolbar as a toolbar button. It can be either
             a 16x16 bitmap or a string presenting one of the icons provided by
@@ -185,7 +193,8 @@ class ActionInfo(MenuInfo):
             return None
         if isinstance(icon, basestring):
             # TODO: The icon should be created in the client code
-            return wx.ArtProvider.GetBitmap(getattr(wx, icon), wx.ART_TOOLBAR, (16, 16))
+            return wx.ArtProvider.GetBitmap(getattr(wx, icon), wx.ART_TOOLBAR,
+                                            (16, 16))
         return icon
 
 
@@ -197,7 +206,8 @@ class SeparatorInfo(MenuInfo):
         
         :Parameters:
           menu_name
-            The name of the menu where the separator will be added.
+            The name of the menu where the separator will be added. If menu does
+            not exist, it is created automatically.
         """
         MenuInfo.__init__(self)
         self.menu_name = menu_name
