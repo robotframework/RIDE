@@ -21,10 +21,26 @@ class Publisher(object):
         self._listeners = {}
 
     def subscribe(self, listener, topic, key=None):
+        """Start to listen to messages with the specified ``topic``.
+
+        The ``topic`` can be either a message class or a dot separated topic
+        string, and the ``listener`` must be a callable accepting a message
+        instance. See the generic documentation of the `robotide.publish`
+        module for more details.
+
+        The ``key`` is used for keeping a reference of the listener so that
+        all listeners with the same key can be unsubscribed at once using 
+        ``unsubscribe_all``.
+        """
         wrapper = _ListenerWrapper(listener, topic)
         self._listeners.setdefault(key, []).append(wrapper)
 
     def unsubscribe(self, listener, topic, key=None):
+        """Stop listening for messages with the specified ``topic``.
+
+        The ``topic``, the ``listener``, and the ``key`` must match the
+        values passed to `subscribe` earlier.
+        """
         for wrapper in self._listeners[key]:
             if wrapper.wraps(listener, topic):
                 wrapper.unsubscribe()
@@ -32,6 +48,7 @@ class Publisher(object):
                 break
 
     def unsubscribe_all(self, key):
+        """Unsubscribe all listeners registered with the given ``key``"""
         for wrapper in self._listeners[key]:
             wrapper.unsubscribe()
         del self._listeners[key]

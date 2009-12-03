@@ -27,7 +27,9 @@ class RideMessage(object):
       topic
         Topic of this message. If not overridden, value is got from the class
         name by lowercasing it, separating words with a dot and dropping possible
-        'Message' from the end. For example 'MyExampleMessage' -> 'my.example'.
+        ``Message`` from the end. For example classes ``MyExample`` and 
+        ``AnotherExampleMessage`` get titles ``my.example`` and
+        ``another.example``, respectively.
       data
         Names of attributes this message provides. These must be given as
         keyword arguments to `__init__` when an instance is created.
@@ -68,7 +70,7 @@ class RideMessage(object):
 
 
 class RideLogMessage(RideMessage):
-    """This class represents a general purpoes log message.
+    """This class represents a general purpose log message.
 
     This message may used to inform error conditions or to provide
     some kind of debugging information, mainly to be shown to users.
@@ -78,7 +80,8 @@ class RideLogMessage(RideMessage):
     def __init__(self, message, level='INFO'):
         """Initializes a RIDE log message.
 
-        'level' specifies the log level of the message and it defaults to INFO
+        The log ``level`` has default value ``INFO`` and the ``timestamp``
+        is generated automatically.
         """
         RideMessage.__init__(self, message=message, level=level,
                              timestamp=utils.get_timestamp())
@@ -117,7 +120,7 @@ class RideSaved(RideMessage):
 
 
 class RideSaveAll(RideMessage):
-    """Sent when user selects Save All from File menu or via shortcut."""
+    """Sent when user selects ``Save All`` from ``File`` menu or via shortcut."""
     pass
 
 
@@ -143,7 +146,7 @@ class RideGridCellChanged(RideMessage):
 
 
 class RideClosing(RideMessage):
-    """Sent when user selects Quit from File menu or via shortcut."""
+    """Sent when user selects ``Quit`` from ``File`` menu or via shortcut."""
     pass
 
 

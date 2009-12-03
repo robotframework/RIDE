@@ -20,7 +20,6 @@ from robotide import utils
 
 
 class Plugin(object):
-
     """Entry point to RIDE plugin API - all plugins must extend this class.
 
     Plugins can use the helper methods implemented in this class to interact
@@ -247,22 +246,8 @@ class Plugin(object):
     def subscribe(self, listener, *topics):
         """Start to listen to messages with the given ``topics``.
 
-        Topics can be specified using message classes in `robotide.publish.messages` 
-        module or with dot separated topic strings. For example these two are
-        equivelant::
-
-          self.subscribe('ride.tree.selection')
-          self.subscribe(RideTreeSelection)
-
-        Topic strings represents a hierarchy, and all publications at or below
-        the given hierarchy level will match the topic. For example, subscribing
-        to ``ride.notebook`` topic means that `RideNotebookTabChanged` or any
-        other message with a topic starting with ``ride.notebook`` will match.
-        
-        ``listener`` needs to be a callable that accepts one argument. When the
-        corresponding message is published, the ``listener`` will be called
-        with an instance of the message class as an argument. That instance
-        contains topic and possibly some additional information in its attributes.
+        See the documentation of the `robotide.publish` module for more 
+        information about subscribing to messages and the messaging system
         
         `unsubscribe` and `unsubscribe_all` can be used to stop listening to
         certain or all messages.
@@ -281,6 +266,6 @@ class Plugin(object):
             PUBLISHER.unsubscribe(listener, topic, key=self)
 
     def unsubscribe_all(self):
-        """Stops to listen to all messages"""
+        """Stops to listen to all messages this plugin has subscribed to."""
         PUBLISHER.unsubscribe_all(key=self)
 
