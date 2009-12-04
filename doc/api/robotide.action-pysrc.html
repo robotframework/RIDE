@@ -69,10 +69,60 @@
 <a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line"><tt class="py-comment">#  See the License for the specific language governing permissions and</tt> </tt>
 <a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line"><tt class="py-comment">#  limitations under the License.</tt> </tt>
 <a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line"> </tt>
-<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Module robotide.action.actioninfo=robotide.action.actioninfo-module.html"><a title="robotide.action.actioninfo" class="py-name" href="#" onclick="return doclink('link-0', 'actioninfo', 'link-0');">actioninfo</a></tt> <tt class="py-keyword">import</tt> <tt id="link-1" class="py-name" targets="Function robotide.action.actioninfo.ActionInfoCollection()=robotide.action.actioninfo-module.html#ActionInfoCollection"><a title="robotide.action.actioninfo.ActionInfoCollection" class="py-name" href="#" onclick="return doclink('link-1', 'ActionInfoCollection', 'link-1');">ActionInfoCollection</a></tt><tt class="py-op">,</tt> <tt id="link-2" class="py-name" targets="Class robotide.action.actioninfo.SeparatorInfo=robotide.action.actioninfo.SeparatorInfo-class.html"><a title="robotide.action.actioninfo.SeparatorInfo" class="py-name" href="#" onclick="return doclink('link-2', 'SeparatorInfo', 'link-2');">SeparatorInfo</a></tt><tt class="py-op">,</tt> <tt id="link-3" class="py-name" targets="Class robotide.action.actioninfo.ActionInfo=robotide.action.actioninfo.ActionInfo-class.html"><a title="robotide.action.actioninfo.ActionInfo" class="py-name" href="#" onclick="return doclink('link-3', 'ActionInfo', 'link-3');">ActionInfo</a></tt> </tt>
-<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-4" class="py-name" targets="Package robotide.action=robotide.action-module.html,Module robotide.action.action=robotide.action.action-module.html"><a title="robotide.action
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line"> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line"><tt class="py-docstring">"""Module for handling UI actions.</tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line"><tt class="py-docstring">.. contents::</tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line"><tt class="py-docstring">   :depth: 2</tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line"><tt class="py-docstring">   :local:</tt> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line"><tt class="py-docstring">Introduction</tt> </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line"><tt class="py-docstring">------------</tt> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line"><tt class="py-docstring">This module is used both by the core application and plugins to create and</tt> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line"><tt class="py-docstring">register menu entries, toolbar buttons and keyboard shortcuts. All these are</tt> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line"><tt class="py-docstring">created using the `ActionInfo` and `SeparatorInfo` classes.</tt> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line"><tt class="py-docstring">Registering actions</tt> </tt>
+<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line"><tt class="py-docstring">-------------------</tt> </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line"><tt class="py-docstring">Actions are registered by creating an instance of the `ActionInfo` class with</tt> </tt>
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line"><tt class="py-docstring">the needed data. After configuring the instance it can be registered. The core</tt> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line"><tt class="py-docstring">application handles registration itself, but plugins should always use the</tt> </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line"><tt class="py-docstring">`pluginapi.Plugin.register_action` method.</tt> </tt>
+<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line"><tt class="py-docstring">Menu separators</tt> </tt>
+<a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line"><tt class="py-docstring">~~~~~~~~~~~~~~~</tt> </tt>
+<a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line"><tt class="py-docstring">Menu separators are created using instances of the `SeparatorInfo` class. </tt> </tt>
+<a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line"><tt class="py-docstring">They must be registered using the same methods as the `ActionInfo` instances. </tt> </tt>
+<a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line"><tt class="py-docstring">Registering multiple actions</tt> </tt>
+<a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line"><tt class="py-docstring">~~~~~~~~~~~~~~~~~~~~~~~~~~~~</tt> </tt>
+<a name="L45"></a><tt class="py-lineno">45</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line"><tt class="py-docstring">If there is a need to create a larger number of actions, it might be convenient</tt> </tt>
+<a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line"><tt class="py-docstring">to use a simple DSL understood by the `ActionInfoCollection` factory method.</tt> </tt>
+<a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line"><tt class="py-docstring">This factory creates a list containing `ActionInfo` and `SeparatorInfo` objects</tt> </tt>
+<a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line"><tt class="py-docstring">which can be registered in a one go.</tt> </tt>
+<a name="L50"></a><tt class="py-lineno">50</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line"><tt class="py-docstring">Handling actions</tt> </tt>
+<a name="L52"></a><tt class="py-lineno">52</tt>  <tt class="py-line"><tt class="py-docstring">----------------</tt> </tt>
+<a name="L53"></a><tt class="py-lineno">53</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L54"></a><tt class="py-lineno">54</tt>  <tt class="py-line"><tt class="py-docstring">When any of the registered user actions is executed, RIDE decides which</tt> </tt>
+<a name="L55"></a><tt class="py-lineno">55</tt>  <tt class="py-line"><tt class="py-docstring">registered event handlers should be called. It is possible to register a handler</tt> </tt>
+<a name="L56"></a><tt class="py-lineno">56</tt>  <tt class="py-line"><tt class="py-docstring">globally or so that it is called only when the plugin is considered active</tt> </tt>
+<a name="L57"></a><tt class="py-lineno">57</tt>  <tt class="py-line"><tt class="py-docstring">(i.e. it has focus).</tt> </tt>
+<a name="L58"></a><tt class="py-lineno">58</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L59"></a><tt class="py-lineno">59</tt>  <tt class="py-line"><tt class="py-docstring">The registering mechanism allows multiple handlers to be registered to the same</tt> </tt>
+<a name="L60"></a><tt class="py-lineno">60</tt>  <tt class="py-line"><tt class="py-docstring">menu entry, button, or shortcut. It is thus possible that, for example, one</tt> </tt>
+<a name="L61"></a><tt class="py-lineno">61</tt>  <tt class="py-line"><tt class="py-docstring">keyboard shortcut calls multiple handlers. </tt> </tt>
+<a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
+<a name="L63"></a><tt class="py-lineno">63</tt>  <tt class="py-line"> </tt>
+<a name="L64"></a><tt class="py-lineno">64</tt>  <tt class="py-line"> </tt>
+<a name="L65"></a><tt class="py-lineno">65</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Module robotide.action.actioninfo=robotide.action.actioninfo-module.html"><a title="robotide.action.actioninfo" class="py-name" href="#" onclick="return doclink('link-0', 'actioninfo', 'link-0');">actioninfo</a></tt> <tt class="py-keyword">import</tt> <tt id="link-1" class="py-name" targets="Function robotide.action.actioninfo.ActionInfoCollection()=robotide.action.actioninfo-module.html#ActionInfoCollection"><a title="robotide.action.actioninfo.ActionInfoCollection" class="py-name" href="#" onclick="return doclink('link-1', 'ActionInfoCollection', 'link-1');">ActionInfoCollection</a></tt><tt class="py-op">,</tt> <tt id="link-2" class="py-name" targets="Class robotide.action.actioninfo.SeparatorInfo=robotide.action.actioninfo.SeparatorInfo-class.html"><a title="robotide.action.actioninfo.SeparatorInfo" class="py-name" href="#" onclick="return doclink('link-2', 'SeparatorInfo', 'link-2');">SeparatorInfo</a></tt><tt class="py-op">,</tt> <tt id="link-3" class="py-name" targets="Class robotide.action.actioninfo.ActionInfo=robotide.action.actioninfo.ActionInfo-class.html"><a title="robotide.action.actioninfo.ActionInfo" class="py-name" href="#" onclick="return doclink('link-3', 'ActionInfo', 'link-3');">ActionInfo</a></tt> </tt>
+<a name="L66"></a><tt class="py-lineno">66</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-4" class="py-name" targets="Package robotide.action=robotide.action-module.html,Module robotide.action.action=robotide.action.action-module.html"><a title="robotide.action
 robotide.action.action" class="py-name" href="#" onclick="return doclink('link-4', 'action', 'link-4');">action</a></tt> <tt class="py-keyword">import</tt> <tt id="link-5" class="py-name" targets="Function robotide.action.action.Action()=robotide.action.action-module.html#Action"><a title="robotide.action.action.Action" class="py-name" href="#" onclick="return doclink('link-5', 'Action', 'link-5');">Action</a></tt> </tt>
-<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<a name="L67"></a><tt class="py-lineno">67</tt>  <tt class="py-line"> </tt><script type="text/javascript">
 <!--
 expandto(location.href);
 // -->
@@ -110,7 +160,7 @@ expandto(location.href);
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Dec  3 00:56:27 2009
+    Generated by Epydoc 3.0.1 on Fri Dec  4 04:01:14 2009
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

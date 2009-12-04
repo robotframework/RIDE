@@ -70,16 +70,16 @@ object --+
 </dd></dl>
 
 <hr />
-<p>Entry point to RIDE plugin API - all plugins must extend this class.</p>
+<p>Entry point to RIDE plugin API -- all plugins must extend this class.</p>
 <p>Plugins can use the helper methods implemented in this class to interact
 with the core application. The methods and their arguments are kept stable
 across the different RIDE releases to the extent that it is possible.</p>
 <p>If the provided methods are not enough, plugins can also interact with the
-core directly using properties <a href="robotide.pluginapi.plugin.Plugin-class.html#tree" class="link">tree</a>, <a href="robotide.pluginapi.plugin.Plugin-class.html#menubar" class="link">menubar</a>, <a href="robotide.pluginapi.plugin.Plugin-class.html#toolbar" class="link">toolbar</a>, etc. Although
-these attributes themselves are stable, the functionality behind them may
-change radically between releases. Users are recommended to propose new
-helper methods, preferably with patches, for often needed functionality
-not yet available through them.</p>
+core directly using properties <a href="robotide.pluginapi.plugin.Plugin-class.html#tree" class="link">tree</a>, <a href="robotide.pluginapi.plugin.Plugin-class.html#menubar" class="link">menubar</a>, <a href="robotide.pluginapi.plugin.Plugin-class.html#toolbar" class="link">toolbar</a>, <a href="robotide.pluginapi.plugin.Plugin-class.html#notebook" class="link">notebook</a> and
+<a href="robotide.pluginapi.plugin.Plugin-class.html#model" class="link">model</a>. Although these attributes themselves are stable, the functionality
+behind them may still change between releases. Users are thus recommended
+to propose new helper methods, preferably with patches, for often needed
+functionality that is only available through these properties.</p>
 
 <!-- ==================== INSTANCE METHODS ==================== -->
 <a name="section-InstanceMethods"></a>
@@ -120,7 +120,7 @@ not yet available through them.</p>
         <span class="summary-sig-arg">metadata</span>=<span class="summary-sig-default">None</span>,
         <span class="summary-sig-arg">default_settings</span>=<span class="summary-sig-default">None</span>,
         <span class="summary-sig-arg">initially_enabled</span>=<span class="summary-sig-default">True</span>)</span><br />
-      Initialize the plugin - must be called explicitly if overridden.</td>
+      Initialize the plugin with the provided data.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.__init__">source&nbsp;code</a></span>
             
@@ -460,7 +460,7 @@ not yet available through them.</p>
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#unsubscribe_all" class="summary-sig-name">unsubscribe_all</a>(<span class="summary-sig-arg">self</span>)</span><br />
-      Stops to listen to all messages</td>
+      Stops to listen to all messages this plugin has subscribed to.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.unsubscribe_all">source&nbsp;code</a></span>
             
@@ -614,16 +614,27 @@ not yet available through them.</p>
     </td>
   </tr></table>
   
-  <p>Initialize the plugin - must be called explicitly if overridden.</p>
-<p>Mainly used to initialize the data shown in the plugin manager.
-Any user interface elements that need to be created should be done in
-the <a href="robotide.pluginapi.plugin.Plugin-class.html#enable" class="link">enable</a> method.</p>
+  <p>Initialize the plugin with the provided data.</p>
+<p>The provided information is mainly used by the plugin manager. Simple
+plugins are often fine with the defaults. If this method is overridden,
+the plugin must call it explicitly:</p>
+<pre class="rst-rst-rst-rst-literal-block rst-rst-rst-literal-block rst-rst-literal-block rst-literal-block">
+from robotide.pluginapi import Plugin
+
+class MyCoolPluginExample(Plugin):
+    &quot;&quot;&quot;This extra cool docstring is used as the plugin doc.&quot;&quot;&quot;
+    def __init__(self, application):
+        Plugin.__init__(self, application, metadata={'version': '0.1'},
+                        default_settings={'color': 'red', 'x': 42})
+</pre>
+<p>Plugins should not create any user interface elements at this point but
+wait until the <a href="robotide.pluginapi.plugin.Plugin-class.html#enable" class="link">enable</a> method is called.</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
         <li><strong class="pname"><code>application</code></strong> - RIDE application reference.</li>
         <li><strong class="pname"><code>name</code></strong> - Name of the plugin. If not specified, the name is got from the
-plugin class name dropping possible 'Plugin' from the end.</li>
+plugin class name dropping possible <tt class="rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">Plugin</span></tt> from the end.</li>
         <li><strong class="pname"><code>doc</code></strong> - Plugin documentation. If not specified, the doc is got from the
 plugin class docstring.</li>
         <li><strong class="pname"><code>metadata</code></strong> - A dictionary of free metadata shown on the plugin manager. Values
@@ -633,7 +644,7 @@ automatically stored onto RIDE configuration file, can be
 accessed using direct attribute access via <a href="robotide.pluginapi.plugin.Plugin-class.html#__getattr__" class="link">__getattr__</a>, and new
 settings can be saved using <a href="robotide.pluginapi.plugin.Plugin-class.html#save_setting" class="link">save_setting</a>.</li>
         <li><strong class="pname"><code>initially_enabled</code></strong> - Specifies should the plugin be enabled when loaded for the first
-time. The status can be changed later from the plugin manager.</li>
+time. Users can change the status later from the plugin manager.</li>
     </ul></dd>
   </dl>
 </td></tr></table>
@@ -657,7 +668,7 @@ time. The status can be changed later from the plugin manager.</li>
   
   <p>Adds the <tt class="rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">tab</span></tt> with the <tt class="rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">title</span></tt> to the tabbed notebook and shows it.</p>
 <p>The <tt class="rst-docutils literal"><span class="pre">tab</span></tt> can be any wxPython container. <tt class="rst-docutils literal"><span class="pre">allow_closing</span></tt> defines
-can users close the tab while the plugin is enabled or not.</p>
+can users close the tab while the plugin is enabled.</p>
   <dl class="fields">
   </dl>
 </td></tr></table>
@@ -741,7 +752,7 @@ can be used e.g. to display configurable settings.</p>
   
   <p>This method is called by RIDE when the plugin is enabled.</p>
 <p>Possible integration to UI should be done in this method and removed
-when <a href="robotide.pluginapi.plugin.Plugin-class.html#disable" class="link">disable</a> is called.</p>
+when the <a href="robotide.pluginapi.plugin.Plugin-class.html#disable" class="link">disable</a> method is called.</p>
   <dl class="fields">
   </dl>
 </td></tr></table>
@@ -850,6 +861,8 @@ otherwise returns True.</p>
 <p><tt class="rst-docutils literal"><span class="pre">action_info</span></tt> is an instance of <a href="robotide.action.actioninfo.ActionInfo-class.html" class="link">ActionInfo</a> class containing needed
 information to create menu entry, keyboard shortcut and/or toolbar
 button for the action.</p>
+<p>All registered actions can be registered using
+the <a href="robotide.pluginapi.plugin.Plugin-class.html#unregister_actions" class="link">unregister_actions</a> method.</p>
   <dl class="fields">
   </dl>
 </td></tr></table>
@@ -915,11 +928,9 @@ selected item is saved.</p>
   </tr></table>
   
   <p>Saves the specified setting into the RIDE configuration file.</p>
-<p>Plugin settings are stored into <tt class="rst-docutils literal"><span class="pre">[[Plugin</span> <span class="pre">Name]]</span></tt> subsection
-under <tt class="rst-docutils literal"><span class="pre">[Plugins]</span></tt> section. They can be accessed using direct attribute
-access via <a href="robotide.pluginapi.plugin.Plugin-class.html#__getattr__" class="link">__getattr__</a>.</p>
 <p><tt class="rst-docutils literal"><span class="pre">override</span></tt> controls whether a possibly already existing value is
-overridden or not.</p>
+overridden or not. Saved settings can be accessed using direct attribute
+access via <a href="robotide.pluginapi.plugin.Plugin-class.html#__getattr__" class="link">__getattr__</a>.</p>
   <dl class="fields">
   </dl>
 </td></tr></table>
@@ -961,21 +972,8 @@ overridden or not.</p>
   </tr></table>
   
   <p>Start to listen to messages with the given <tt class="rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">topics</span></tt>.</p>
-<p>Topics can be specified using message classes in <a href="robotide.publish.messages-module.html" class="link">robotide.publish.messages</a>
-module or with dot separated topic strings. For example these two are
-equivelant:</p>
-<pre class="rst-literal-block">
-self.subscribe('ride.tree.selection')
-self.subscribe(RideTreeSelection)
-</pre>
-<p>Topic strings represents a hierarchy, and all publications at or below
-the given hierarchy level will match the topic. For example, subscribing
-to <tt class="rst-docutils literal"><span class="pre">ride.notebook</span></tt> topic means that <a href="robotide.publish.messages.RideNotebookTabChanged-class.html" class="link">RideNotebookTabChanged</a> or any
-other message with a topic starting with <tt class="rst-docutils literal"><span class="pre">ride.notebook</span></tt> will match.</p>
-<p><tt class="rst-docutils literal"><span class="pre">listener</span></tt> needs to be a callable that accepts one argument. When the
-corresponding message is published, the <tt class="rst-docutils literal"><span class="pre">listener</span></tt> will be called
-with an instance of the message class as an argument. That instance
-contains topic and possibly some additional information in its attributes.</p>
+<p>See the documentation of the <a href="robotide.publish-module.html" class="link">robotide.publish</a> module for more
+information about subscribing to messages and the messaging system</p>
 <p><a href="robotide.pluginapi.plugin.Plugin-class.html#unsubscribe" class="link">unsubscribe</a> and <a href="robotide.pluginapi.plugin.Plugin-class.html#unsubscribe_all" class="link">unsubscribe_all</a> can be used to stop listening to
 certain or all messages.</p>
   <dl class="fields">
@@ -1016,9 +1014,7 @@ certain or all messages.</p>
     </td>
   </tr></table>
   
-  <p>Unregisters all actions registered by this plugin.</p>
-<p>Actions can be registered via <a href="robotide.pluginapi.plugin.Plugin-class.html#register_action" class="link">register_action</a> and <a href="robotide.pluginapi.plugin.Plugin-class.html#register_actions" class="link">register_actions</a>
-methods.</p>
+  Unregisters all actions registered by this plugin.
   <dl class="fields">
   </dl>
 </td></tr></table>
@@ -1061,7 +1057,7 @@ match.</p>
     </td>
   </tr></table>
   
-  Stops to listen to all messages
+  Stops to listen to all messages this plugin has subscribed to.
   <dl class="fields">
   </dl>
 </td></tr></table>
@@ -1234,7 +1230,7 @@ Set in <a href="robotide.pluginapi.plugin.Plugin-class.html#__init__" class="lin
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Dec  3 00:56:25 2009
+    Generated by Epydoc 3.0.1 on Fri Dec  4 04:01:11 2009
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

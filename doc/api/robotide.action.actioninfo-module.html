@@ -104,9 +104,9 @@
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="robotide.action.actioninfo-module.html#ActionInfoCollection" class="summary-sig-name">ActionInfoCollection</a>(<span class="summary-sig-arg">data</span>,
-        <span class="summary-sig-arg">eventhandler</span>,
+        <span class="summary-sig-arg">event_handler</span>,
         <span class="summary-sig-arg">container</span>=<span class="summary-sig-default">None</span>)</span><br />
-      Parses ActionInfo objects from the provided DSL data.</td>
+      Parses the <tt class="rst-docutils literal"><span class="pre">data</span></tt> into a list of <a href="robotide.action.actioninfo.ActionInfo-class.html" class="link">ActionInfo</a> and <a href="robotide.action.actioninfo.SeparatorInfo-class.html" class="link">SeparatorInfo</a> objects.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.action.actioninfo-pysrc.html#ActionInfoCollection">source&nbsp;code</a></span>
             
@@ -155,7 +155,7 @@
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">ActionInfoCollection</span>(<span class="sig-arg">data</span>,
-        <span class="sig-arg">eventhandler</span>,
+        <span class="sig-arg">event_handler</span>,
         <span class="sig-arg">container</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
@@ -163,41 +163,52 @@
     </td>
   </tr></table>
   
-  <p>Parses ActionInfo objects from the provided DSL data.</p>
-<p>ActionInfoCollection parses ActionInfo/SeparatorInfo objects from the DSL
-data on initialization and after that the ActionInfo objects can be accessed
-via returned list.</p>
-<p><strong>DSL format</strong>:</p>
+  <p>Parses the <tt class="rst-rst-docutils literal rst-docutils literal"><span class="pre">data</span></tt> into a list of <a href="robotide.action.actioninfo.ActionInfo-class.html" class="link">ActionInfo</a> and <a href="robotide.action.actioninfo.SeparatorInfo-class.html" class="link">SeparatorInfo</a> objects.</p>
+<p>The data is parsed based on the simple DSL documented below.</p>
+<div class="rst-section" id="rst-dsl-syntax">
+<h1 class="heading">DSL syntax</h1>
 <pre class="rst-literal-block">
-[menu name]
-!&amp;name | documentation | shortcut | icon
+[menu]
+name | documentation | shortcut | icon
 </pre>
+</div>
+<div class="rst-section" id="rst-fields">
+<h1 class="heading">Fields</h1>
 <dl class="rst-docutils">
-<dt>menu name</dt>
-<dd>The menu under which the entries are inserted.</dd>
+<dt>menu</dt>
+<dd>The name of the menu under which the entries below it are inserted.</dd>
 <dt>name</dt>
-<dd><p class="rst-first">The menu entry name. Mandatory field. The action name is created
-from the name by inserting On prefix and camel casing the name
-e.g. Some name -&gt; OnSomeName.</p>
-<dl class="rst-last rst-docutils">
-<dt>!</dt>
-<dd>Specifies that the container is None (action is 'global'). Optional.
-When omitted then the container is the provided <code class="link">container</code>.</dd>
-<dt>&amp;</dt>
-<dd>Defines the accelerator character for the menu entry. Optional.</dd>
-<dt>---</dt>
-<dd>Used to mark the separator in the menu.</dd>
-</dl>
-</dd>
+<dd>The name of the menu entry to be added. If name is <tt class="rst-docutils literal"><span class="pre">---</span></tt>, a
+<a href="robotide.action.actioninfo.SeparatorInfo-class.html" class="link">SeparatorInfo</a> object is created instead of an <a href="robotide.action.actioninfo.ActionInfo-class.html" class="link">ActionInfo</a> object.</dd>
 <dt>documentation</dt>
-<dd>Documentation visible in the statusbar. Optional.</dd>
+<dd>Documentation for the action.</dd>
 <dt>shortcut</dt>
-<dd>Keyboard shortcut to invoke the action. Optional.</dd>
+<dd>Keyboard shortcut to invoke the action.</dd>
 <dt>icon</dt>
-<dd>Icon for the Toolbar button.</dd>
+<dd>Icon for the toolbar button.</dd>
 </dl>
-<p>See <a href="robotide.action.actioninfo.ActionInfo-class.html" class="link">ActionInfo</a> for more information about the fields.</p>
-<p><strong>Example usage of the DSL</strong>:</p>
+<p>See the <a href="robotide.action.actioninfo.ActionInfo-class.html" class="link">ActionInfo</a> attributes with same/similar names for more
+information about the fields and their possible values. Three
+last fields are optional.</p>
+</div>
+<div class="rst-section" id="rst-finding-handlers">
+<h1 class="heading">Finding handlers</h1>
+<p>The given <tt class="rst-docutils literal"><span class="pre">event_handler</span></tt> must have handler methods that map to the
+specified action names. The mapping is done by prefixing the name with
+<tt class="rst-docutils literal"><span class="pre">On</span></tt>, removing spaces, and capitalizing all words. For example <tt class="rst-docutils literal"><span class="pre">Save</span></tt>
+and <tt class="rst-docutils literal"><span class="pre">My</span> <span class="pre">Action</span></tt> must have handler methods <tt class="rst-docutils literal"><span class="pre">OnSave</span></tt> and <tt class="rst-docutils literal"><span class="pre">OnMyAction</span></tt>,
+respectively.</p>
+</div>
+<div class="rst-section" id="rst-specifying-container">
+<h1 class="heading">Specifying container</h1>
+<p>By default the given <tt class="rst-docutils literal"><span class="pre">container</span></tt> is passed to the <a href="robotide.action.actioninfo.ActionInfo-class.html#__init__" class="link">ActionInfo.__init__</a>
+method directly. This can be altered by prefixing the <tt class="rst-docutils literal"><span class="pre">name</span></tt> with an
+exclamation mark (e.g. <tt class="rst-docutils literal"><span class="pre">!Save</span></tt> or <tt class="rst-docutils literal"><span class="pre">!My</span> <span class="pre">Action</span></tt>) to make that action
+global. With these actions the container given to the <a href="robotide.action.actioninfo.ActionInfo-class.html#__init__" class="link">ActionInfo.__init__</a>
+is always <tt class="rst-docutils literal"><span class="pre">None</span></tt>.</p>
+</div>
+<div class="rst-section" id="rst-example">
+<h1 class="heading">Example</h1>
 <pre class="rst-literal-block">
 [File]
 !&amp;Open | Open file containing tests | Ctrl-O | ART_FILE_OPEN
@@ -208,13 +219,13 @@ When omitted then the container is the provided <code class="link">container</co
 [Tools]
 !Manage Plugins
 </pre>
+</div>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>data</code></strong> - The DSL data containing Menu entries to be parsed into ActionInfo and
-SeparatorInfo objects.</li>
-        <li><strong class="pname"><code>eventhandler</code></strong> - The event handler that implements the actions. See name field about how
-actions are generated.</li>
+        <li><strong class="pname"><code>data</code></strong> - The data to be parsed into <a href="robotide.action.actioninfo.ActionInfo-class.html" class="link">ActionInfo</a> and <a href="robotide.action.actioninfo.SeparatorInfo-class.html" class="link">SeparatorInfo</a> objects.</li>
+        <li><strong class="pname"><code>event_handler</code></strong> - The event handler that implements the actions. See <a class="rst-reference internal" href="#rst-finding-handlers">finding handlers</a>
+for more information.</li>
         <li><strong class="pname"><code>container</code></strong> - the wxPython element containing the UI components associated with
 the <a href="robotide.action.actioninfo.ActionInfo-class.html" class="link">ActionInfo</a>.</li>
     </ul></dd>
@@ -281,7 +292,7 @@ the <a href="robotide.action.actioninfo.ActionInfo-class.html" class="link">Acti
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Dec  3 00:56:21 2009
+    Generated by Epydoc 3.0.1 on Fri Dec  4 04:01:08 2009
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

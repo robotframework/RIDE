@@ -90,7 +90,7 @@ Used to create menu entries, keyboard shortcuts and/or toolbar buttons.
         <span class="summary-sig-arg">shortcut</span>=<span class="summary-sig-default">None</span>,
         <span class="summary-sig-arg">icon</span>=<span class="summary-sig-default">None</span>,
         <span class="summary-sig-arg">doc</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></span>)</span><br />
-      Initializes information needed to create actions in RIDE.</td>
+      Initializes information needed to create actions..</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.action.actioninfo-pysrc.html#ActionInfo.__init__">source&nbsp;code</a></span>
             
@@ -169,27 +169,32 @@ Used to create menu entries, keyboard shortcuts and/or toolbar buttons.
     </td>
   </tr></table>
   
-  Initializes information needed to create actions in RIDE.
+  <p>Initializes information needed to create actions..</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
         <li><strong class="pname"><code>menu_name</code></strong> - The name of the menu where the new entry will be added. The menu is
-created if it's missing.</li>
-        <li><strong class="pname"><code>name</code></strong> - The name of the new menu entry. The accelerator key is specified in
-the name by prefixing that key by &amp; character.</li>
+created if it does not exist.</li>
+        <li><strong class="pname"><code>name</code></strong> - The name of the new menu entry. The name may contain an accelerator
+key prefixed by an ampersand like <tt class="rst-docutils literal"><span class="pre">New</span> <span class="pre">&amp;Action</span></tt>. If an accelerator
+is not specified, or the one requested is already taken, the next
+free key is selectd.</li>
         <li><strong class="pname"><code>action</code></strong> - The callable which will be called when a user does any of the
-associated actions (selects menu entry, pushes toolbar button or
-selects shortcut).</li>
+associated UI actions.</li>
         <li><strong class="pname"><code>container</code></strong> - The wxPython element containing the UI components associated with
-this ActionInfo's actions. When any of the actions is executed,
-container is used to check whether to call the <a href="robotide.action.action-module.html" class="link">action</a> or not.
-<code class="link">container</code> must be visible and it must have focus, otherwise the
-<a href="robotide.action.action-module.html" class="link">action</a> is not called. If <code class="link">container</code> is None, <a href="robotide.action.action-module.html" class="link">action</a> is
-considered global and it is always called.</li>
-        <li><strong class="pname"><code>shortcut</code></strong> - The keyboard shortcut associated to the <a href="robotide.action.action-module.html" class="link">action</a>.</li>
-        <li><p><strong class="pname"><code>icon</code></strong> - The icon added to the toolbar as a toolbar button. It can be either
+the <tt class="rst-docutils literal"><span class="pre">action</span></tt>. When any of the registered UI actions is executed,
+the <tt class="rst-docutils literal"><span class="pre">action</span></tt> is called only if the <tt class="rst-docutils literal"><span class="pre">container</span></tt> or any of its
+child components has focus. It is possible to make the <tt class="rst-docutils literal"><span class="pre">action</span></tt>
+always active by using <tt class="rst-docutils literal"><span class="pre">None</span></tt> as the <tt class="rst-docutils literal"><span class="pre">container</span></tt>.</li>
+        <li><strong class="pname"><code>shortcut</code></strong> - The keyboard shortcut associated to the <tt class="rst-docutils literal"><span class="pre">action</span></tt>. The <tt class="rst-docutils literal"><span class="pre">shortcut</span></tt>
+must be a string constructed from optional modifiers (<tt class="rst-docutils literal"><span class="pre">Ctrl,</span> <span class="pre">Shift,</span>
+<span class="pre">Alt</span></tt>) and the actual shortcut key separating the parts with a hyphen.
+The shortcut key can be either a single character or any of the
+<a class="rst-reference external" href="http://docs.wxwidgets.org/stable/wx_keycodes.html#keycodes" target="_top">wx keycodes</a> without the <tt class="rst-docutils literal"><span class="pre">WXK_</span></tt> prefix. Examples: <tt class="rst-docutils literal"><span class="pre">Ctrl-C</span></tt>,
+<tt class="rst-docutils literal"><span class="pre">Shight-Ctrl-6</span></tt>, <tt class="rst-docutils literal"><span class="pre">Alt-Left</span></tt>, <tt class="rst-docutils literal"><span class="pre">F6</span></tt>.</li>
+        <li><strong class="pname"><code>icon</code></strong> - The icon added to the toolbar as a toolbar button. It can be either
 a 16x16 bitmap or a string presenting one of the icons provided by
-<a class="rst-reference external" href="http://www.wxpython.org/docs/api/wx.ArtProvider-class.html" target="_top">wxPython's ArtProvider class</a> (e.g. 'ART_FILE_OPEN').</p></li>
+<a class="rst-reference external" href="http://www.wxpython.org/docs/api/wx.ArtProvider-class.html" target="_top">wxPython's ArtProvider</a> like <tt class="rst-docutils literal"><span class="pre">ART_FILE_OPEN</span></tt>.</li>
         <li><strong class="pname"><code>doc</code></strong> - The documentation shown on the statusbar when selection is on
 the associated menu entry or toolbar button.</li>
     </ul></dd>
@@ -231,7 +236,7 @@ the associated menu entry or toolbar button.</li>
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Dec  3 00:56:22 2009
+    Generated by Epydoc 3.0.1 on Fri Dec  4 04:01:08 2009
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

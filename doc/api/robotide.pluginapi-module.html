@@ -55,6 +55,121 @@
 </table>
 <!-- ==================== PACKAGE DESCRIPTION ==================== -->
 <h1 class="epydoc">Package pluginapi</h1><p class="nomargin-top"><span class="codelink"><a href="robotide.pluginapi-pysrc.html">source&nbsp;code</a></span></p>
+<p>RIDE Plugin API</p>
+<div class="rst-contents rst-local rst-topic" id="rst-contents">
+<ul class="rst-simple">
+<li><a class="rst-reference internal" href="#rst-introduction" id="rst-id1">Introduction</a></li>
+<li><a class="rst-reference internal" href="#rst-finding-plugins" id="rst-id2">Finding plugins</a></li>
+<li><a class="rst-reference internal" href="#rst-initialization" id="rst-id3">Initialization</a></li>
+<li><a class="rst-reference internal" href="#rst-enabling-and-disabling" id="rst-id4">Enabling and disabling</a></li>
+<li><a class="rst-reference internal" href="#rst-creating-menu-entries-and-shortcuts" id="rst-id5">Creating menu entries and shortcuts</a></li>
+<li><a class="rst-reference internal" href="#rst-messaging" id="rst-id6">Messaging</a></li>
+<li><a class="rst-reference internal" href="#rst-settings" id="rst-id7">Settings</a></li>
+</ul>
+</div>
+<div class="rst-section" id="rst-introduction">
+<h1 class="heading"><a class="rst-toc-backref" href="#rst-id1">Introduction</a></h1>
+<p>RIDE can be extended with plugins written in Python starting with version 0.16.
+The plugin API went through a major overhaul in the 0.20 release and this
+documentation describes how to write plugins against the new API. After the
+changes in RIDE 0.20, the goal is to limit backwards incompatible changes to
+the minimum at least until the 1.0 release sometime in the spring 2010.</p>
+</div>
+<div class="rst-section" id="rst-finding-plugins">
+<h1 class="heading"><a class="rst-toc-backref" href="#rst-id2">Finding plugins</a></h1>
+<p>Plugins are loaded automatically when RIDE starts up. RIDE will look in the
+following directories for plugins:</p>
+<ul class="rst-simple">
+<li><tt class="rst-docutils literal"><span class="pre">&lt;RIDE_INSTALLATION_DIR&gt;/site-plugins</span></tt></li>
+<li><tt class="rst-docutils literal"><span class="pre">&lt;USER_DATA&gt;/plugins</span></tt></li>
+</ul>
+<p>Location of the <tt class="rst-docutils literal"><span class="pre">&lt;USER_DATA&gt;</span></tt> directory will vary depending on your platform.
+On Linux and OSX this will be <tt class="rst-docutils literal"><span class="pre">~/.robotframework/ride</span></tt> while on Windows the
+location is <tt class="rst-docutils literal"><span class="pre">%APPDATA%\RobotFramework\ride</span></tt>.</p>
+<p>Each Python file that is found in these directories is dynamically imported and
+inspected. Every subclass of the <a href="robotide.pluginapi.plugin.Plugin-class.html" class="link">Plugin</a> class in these files will be
+instantiated as a plugin. This has a few noteworthy consequences:</p>
+<ul class="rst-simple">
+<li>Common utility code may be distributed as separate files, located in the
+plugin directories.</li>
+<li>All the top level code in the found Python files is executed as they are
+imported. Beware of the side effects.</li>
+<li>A Python file may contain more than one plugin.</li>
+</ul>
+</div>
+<div class="rst-section" id="rst-initialization">
+<h1 class="heading"><a class="rst-toc-backref" href="#rst-id3">Initialization</a></h1>
+<p>As stated earlier, every plugin <em>must</em> inherit from the <a href="robotide.pluginapi.plugin.Plugin-class.html" class="link">Plugin</a> base class.
+This class is exposed directly from the <a href="robotide.pluginapi-module.html" class="link">pluginapi</a> module, similarly as all
+other classes that plugins most often need, and can thus be imported like:</p>
+<pre class="rst-literal-block">
+from robotide.pluginapi import Plugin
+</pre>
+<p>When a plugin class is found, an instance of it will be created. Different
+initialization options are explained in the documentation of the
+<a href="robotide.pluginapi.plugin.Plugin-class.html#__init__" class="link">Plugin.__init__</a> method. If creating an instance of a plugin class fails, an
+error message is shown to the user and the plugin is disabled.</p>
+</div>
+<div class="rst-section" id="rst-enabling-and-disabling">
+<h1 class="heading"><a class="rst-toc-backref" href="#rst-id4">Enabling and disabling</a></h1>
+<p>Plugins can control are they enabled by default when they are loaded for the
+first time. Afterwards users can enable and disable plugins from the plugin
+manager, which is available from the menu through <tt class="rst-docutils literal"><span class="pre">Tools</span> <span class="pre">&gt;</span> <span class="pre">Manage</span> <span class="pre">Plugins</span></tt>.
+Plugins' enabled/disabled state is stored into RIDE's settings file and read
+from there when plugins are loaded again later.</p>
+<p>When the plugin is enabled, the <a href="robotide.pluginapi.plugin.Plugin-class.html#enable" class="link">Plugin.enable</a> method is called. This is the
+point where the plugin is actually turned on and also the time when possible
+integration into RIDE UI should happen. The <a href="robotide.pluginapi.plugin.Plugin-class.html#disable" class="link">Plugin.disable</a> method is called
+when the plugin is disabled, and its purpose is to undo whatever was done in
+the <a href="robotide.pluginapi.plugin.Plugin-class.html#enable" class="link">Plugin.enable</a> method.</p>
+</div>
+<div class="rst-section" id="rst-creating-menu-entries-and-shortcuts">
+<h1 class="heading"><a class="rst-toc-backref" href="#rst-id5">Creating menu entries and shortcuts</a></h1>
+<p>Plugins can create new entries to menus, buttons to the toolbar, and register
+shortcuts using <a href="robotide.action.actioninfo.ActionInfo-class.html" class="link">ActionInfo</a> objects and the <a href="robotide.pluginapi.plugin.Plugin-class.html#register_action" class="link">Plugin.register_action</a> method.
+Registering actions is thoroughly documented in the <a href="robotide.action-module.html" class="link">robotide.action</a> module.
+Notice that all the relevant action classes are exposed also through the
+<a href="robotide.pluginapi-module.html" class="link">pluginapi</a> module and plugins should import them like:</p>
+<pre class="rst-literal-block">
+from robotide.pluginapi import ActionInfo
+</pre>
+</div>
+<div class="rst-section" id="rst-messaging">
+<h1 class="heading"><a class="rst-toc-backref" href="#rst-id6">Messaging</a></h1>
+<p>RIDE has a messaging system that allows both sending messages when something
+happens and subscribing to certain messages. Messages sent upon some
+user action, like selecting an item in the tree or saving a file, are the
+main communication mechanism from RIDE to plugins, but sometimes plugins may
+also have a need to sent their own messages. Plugins can subscribe to messages
+using the <a href="robotide.pluginapi.plugin.Plugin-class.html#subscribe" class="link">Plugin.subscribe</a> method. The whole messaging system is documented
+in the <a href="robotide.publish-module.html" class="link">robotide.publish</a> module, but plugins can import the relevant classes
+through the <a href="robotide.pluginapi-module.html" class="link">pluginapi</a> module like:</p>
+<pre class="rst-literal-block">
+from robotide.pluginapi import RideTreeSelection, RideSaved
+</pre>
+</div>
+<div class="rst-section" id="rst-settings">
+<h1 class="heading"><a class="rst-toc-backref" href="#rst-id7">Settings</a></h1>
+<p>Plugin can store information persistently to RIDE's setting file. The initial
+values can be given to the <a href="robotide.pluginapi.plugin.Plugin-class.html#__init__" class="link">Plugin.__init__</a> method and new values saved using
+<a href="robotide.pluginapi.plugin.Plugin-class.html#save_setting" class="link">Plugin.save_setting</a>. Saved settings can be accessed using direct attribute
+access via <a href="robotide.pluginapi.plugin.Plugin-class.html#__getattr__" class="link">Plugin.__getattr__</a>.</p>
+<p>Settings are stored into the setting file under <tt class="rst-docutils literal"><span class="pre">[Plugins]</span></tt> section into
+plugin specific subsections. Settings names starting with an underscore
+(currently only <tt class="rst-docutils literal"><span class="pre">_enabled</span></tt>) are reserved for RIDE's internal usage. The saved
+settings may look something like this:</p>
+<pre class="rst-literal-block">
+[Plugins]
+[[Release Notes]]
+version_shown = 'trunk'
+_enabled = True
+[[Recent Files]]
+max_number_of_files = 4
+recent_files = []
+_enabled = False
+</pre>
+</div>
+
 <!-- ==================== SUBMODULES ==================== -->
 <a name="section-Submodules"></a>
 <table class="summary" border="1" cellpadding="3"
@@ -164,7 +279,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Dec  3 00:56:22 2009
+    Generated by Epydoc 3.0.1 on Fri Dec  4 04:01:08 2009
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

@@ -84,7 +84,7 @@ Colorizes cells in the keyword editor
         <tr>
           <td><span class="summary-sig"><a href="robotide.editor.gridcolorizer.Colorizer-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">application</span>)</span><br />
-      Initialize the plugin - must be called explicitly if overridden.</td>
+      Initialize the plugin with the provided data.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.editor.gridcolorizer-pysrc.html#Colorizer.__init__">source&nbsp;code</a></span>
             
@@ -476,7 +476,7 @@ Colorizes cells in the keyword editor
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#unsubscribe_all" class="summary-sig-name">unsubscribe_all</a>(<span class="summary-sig-arg">self</span>)</span><br />
-      Stops to listen to all messages
+      Stops to listen to all messages this plugin has subscribed to.
       <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.unsubscribe_all">source&nbsp;code</a></span>
@@ -612,16 +612,27 @@ Colorizes cells in the keyword editor
     </td>
   </tr></table>
   
-  <p>Initialize the plugin - must be called explicitly if overridden.</p>
-<p>Mainly used to initialize the data shown in the plugin manager.
-Any user interface elements that need to be created should be done in
-the <a href="robotide.editor.gridcolorizer.Colorizer-class.html#enable" class="link">enable</a> method.</p>
+  <p>Initialize the plugin with the provided data.</p>
+<p>The provided information is mainly used by the plugin manager. Simple
+plugins are often fine with the defaults. If this method is overridden,
+the plugin must call it explicitly:</p>
+<pre class="rst-rst-rst-literal-block rst-rst-literal-block rst-literal-block">
+from robotide.pluginapi import Plugin
+
+class MyCoolPluginExample(Plugin):
+    &quot;&quot;&quot;This extra cool docstring is used as the plugin doc.&quot;&quot;&quot;
+    def __init__(self, application):
+        Plugin.__init__(self, application, metadata={'version': '0.1'},
+                        default_settings={'color': 'red', 'x': 42})
+</pre>
+<p>Plugins should not create any user interface elements at this point but
+wait until the <a href="robotide.editor.gridcolorizer.Colorizer-class.html#enable" class="link">enable</a> method is called.</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
         <li><strong class="pname"><code>application</code></strong> - RIDE application reference.</li>
         <li><strong class="pname"><code>name</code></strong> - Name of the plugin. If not specified, the name is got from the
-plugin class name dropping possible 'Plugin' from the end.</li>
+plugin class name dropping possible <tt class="rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">Plugin</span></tt> from the end.</li>
         <li><strong class="pname"><code>doc</code></strong> - Plugin documentation. If not specified, the doc is got from the
 plugin class docstring.</li>
         <li><strong class="pname"><code>metadata</code></strong> - A dictionary of free metadata shown on the plugin manager. Values
@@ -631,7 +642,7 @@ automatically stored onto RIDE configuration file, can be
 accessed using direct attribute access via <a href="robotide.pluginapi.plugin.Plugin-class.html#__getattr__" class="link">__getattr__</a>, and new
 settings can be saved using <a href="robotide.pluginapi.plugin.Plugin-class.html#save_setting" class="link">save_setting</a>.</li>
         <li><strong class="pname"><code>initially_enabled</code></strong> - Specifies should the plugin be enabled when loaded for the first
-time. The status can be changed later from the plugin manager.</li>
+time. Users can change the status later from the plugin manager.</li>
     </ul></dd>
     <dt>Overrides:
         <a href="robotide.pluginapi.plugin.Plugin-class.html#__init__">pluginapi.plugin.Plugin.__init__</a>
@@ -656,7 +667,7 @@ time. The status can be changed later from the plugin manager.</li>
   
   <p>This method is called by RIDE when the plugin is enabled.</p>
 <p>Possible integration to UI should be done in this method and removed
-when <a href="robotide.editor.gridcolorizer.Colorizer-class.html#disable" class="link">disable</a> is called.</p>
+when the <a href="robotide.editor.gridcolorizer.Colorizer-class.html#disable" class="link">disable</a> method is called.</p>
   <dl class="fields">
     <dt>Overrides:
         <a href="robotide.pluginapi.plugin.Plugin-class.html#enable">pluginapi.plugin.Plugin.enable</a>
@@ -741,7 +752,7 @@ when <a href="robotide.editor.gridcolorizer.Colorizer-class.html#disable" class=
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Dec  3 00:56:24 2009
+    Generated by Epydoc 3.0.1 on Fri Dec  4 04:01:10 2009
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
