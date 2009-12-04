@@ -109,6 +109,7 @@ def version(version_number, release_tag=None):
         _keep_version()
     elif version_number =='trunk':
         _update_version(version_number, '%d%02d%02d' % time.localtime()[:3])
+        _update_release_notes_plugin("")
     else:
         _update_version(version_number, _verify_version(release_tag, RELEASES))
         _create_release_notes(version_number)
