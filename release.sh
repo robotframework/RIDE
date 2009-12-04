@@ -30,7 +30,8 @@ else
     rm MANIFEST
     cd $start_dir
     echo Create Windows distribution with following commands:
-    echo hg pull -r $1
+    echo hg pull -u
+    echo hg update $1
     echo python package.py wininst keep
-    echo hg pull
+    echo hg update
 fi
