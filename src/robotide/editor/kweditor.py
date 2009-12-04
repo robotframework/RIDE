@@ -155,7 +155,7 @@ class KeywordEditorUi(grid.Grid):
             self._save_keywords()
             self._remove_selected_rows()
         if len(clipboard) > 0:
-            if self._is_single_cell_data(clipboard):
+            if self._is_single_cell_data(clipboard) and os.name == 'nt':
                 self._add_single_cell_data_to_clipboard(clipboard)
             else:
                 GRID_CLIPBOARD.set_contents(clipboard)
