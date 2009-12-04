@@ -20,18 +20,18 @@ from robotide import utils
 
 
 class Plugin(object):
-    """Entry point to RIDE plugin API - all plugins must extend this class.
+    """Entry point to RIDE plugin API -- all plugins must extend this class.
 
     Plugins can use the helper methods implemented in this class to interact
     with the core application. The methods and their arguments are kept stable
     across the different RIDE releases to the extent that it is possible.
 
     If the provided methods are not enough, plugins can also interact with the 
-    core directly using properties `tree`, `menubar`, `toolbar`, etc. Although
-    these attributes themselves are stable, the functionality behind them may
-    change radically between releases. Users are recommended to propose new 
-    helper methods, preferably with patches, for often needed functionality 
-    not yet available through them.
+    core directly using properties `tree`, `menubar`, `toolbar`, `notebook` and
+    `model`. Although these attributes themselves are stable, the functionality
+    behind them may still change between releases. Users are thus recommended
+    to propose new helper methods, preferably with patches, for often needed
+    functionality that is only available through these properties.
 
     :IVariables:
       name
@@ -59,18 +59,29 @@ class Plugin(object):
 
     def __init__(self, application, name=None, doc=None, metadata=None,
                  default_settings=None, initially_enabled=True):
-        """Initialize the plugin - must be called explicitly if overridden.
+        """Initialize the plugin with the provided data. 
 
-        Mainly used to initialize the data shown in the plugin manager. 
-        Any user interface elements that need to be created should be done in
-        the `enable` method.
+        The provided information is mainly used by the plugin manager. Simple
+        plugins are often fine with the defaults. If this method is overridden,
+        the plugin must call it explicitly::
+        
+            from robotide.pluginapi import Plugin
+            
+            class MyCoolPluginExample(Plugin):
+                \"\"\"This extra cool docstring is used as the plugin doc.\"\"\"
+                def __init__(self, application):
+                    Plugin.__init__(self, application, metadata={'version': '0.1'},
+                                    default_settings={'color': 'red', 'x': 42}) 
+
+        Plugins should not create any user interface elements at this point but
+        wait until the `enable` method is called.
 
         :Parameters:
           application
             RIDE application reference.
           name
             Name of the plugin. If not specified, the name is got from the
-            plugin class name dropping possible 'Plugin' from the end.
+            plugin class name dropping possible ``Plugin`` from the end.
           doc
             Plugin documentation. If not specified, the doc is got from the
             plugin class docstring.
@@ -84,7 +95,7 @@ class Plugin(object):
             settings can be saved using `save_setting`.
           initially_enabled
             Specifies should the plugin be enabled when loaded for the first
-            time. The status can be changed later from the plugin manager.
+            time. Users can change the status later from the plugin manager.
         """
         self.name = name or utils.name_from_class(self, drop='Plugin')
         self.doc = self._get_doc(doc)
@@ -116,12 +127,9 @@ class Plugin(object):
     def save_setting(self, name, value, override=True):
         """Saves the specified setting into the RIDE configuration file.
 
-        Plugin settings are stored into ``[[Plugin Name]]`` subsection
-        under ``[Plugins]`` section. They can be accessed using direct attribute
-        access via `__getattr__`.
-
         ``override`` controls whether a possibly already existing value is
-        overridden or not.
+        overridden or not. Saved settings can be accessed using direct attribute
+        access via `__getattr__`.
         """
         self.__settings.set(name, value, override=override)
 
@@ -129,14 +137,14 @@ class Plugin(object):
         """This method is called by RIDE when the plugin is enabled.
 
         Possible integration to UI should be done in this method and removed
-        when `disable` is called.
+        when the `disable` method is called.
         """
         pass
 
     def disable(self):
         """Called by RIDE when the plugin is disabled.
 
-        Undo whatever was done in the `enable` method.
+        Undo whatever was done in the `enable` method. 
         """
         pass
 
@@ -156,6 +164,9 @@ class Plugin(object):
         ``action_info`` is an instance of `ActionInfo` class containing needed
         information to create menu entry, keyboard shortcut and/or toolbar 
         button for the action.
+
+        All registered actions can be registered using 
+        the `unregister_actions` method.
         """
         action = self.__frame.actions.register_action(action_info)
         self.__actions.append(action)
@@ -170,11 +181,7 @@ class Plugin(object):
             self.register_action(action_info)
 
     def unregister_actions(self):
-        """Unregisters all actions registered by this plugin.
-
-        Actions can be registered via `register_action` and `register_actions`
-        methods.
-        """
+        """Unregisters all actions registered by this plugin."""
         for action in self.__actions:
             action.unregister()
         self.__actions = []
@@ -183,7 +190,7 @@ class Plugin(object):
         """Adds the ``tab`` with the ``title`` to the tabbed notebook and shows it.
 
         The ``tab`` can be any wxPython container. ``allow_closing`` defines
-        can users close the tab while the plugin is enabled or not.
+        can users close the tab while the plugin is enabled.
         """
         self.notebook.add_tab(tab, title, allow_closing)
 
@@ -268,4 +275,3 @@ class Plugin(object):
     def unsubscribe_all(self):
         """Stops to listen to all messages this plugin has subscribed to."""
         PUBLISHER.unsubscribe_all(key=self)
-
