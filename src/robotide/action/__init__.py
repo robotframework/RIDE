@@ -15,18 +15,50 @@
 
 """Module for handling UI actions.
 
-Menu entries, keyboard shortcuts and toolbar buttons (UI action) are created 
-using `ActionInfo` class in RIDE. This class is instantiated with proper data 
-and registered to RIDE using register_action method from `Plugin` class.
-Registering mechanism allows multiple actions to be registered to the same
-UI action. In case UI action does not exist, it is created. Menu separators are
-created by instantiating and registering `SeparatorInfo`.
+.. contents::
+   :depth: 2
+   :local:
 
-UI action triggers action if the related UI container's child component has
-focus. In case action does not have container, it is always called.
+Introduction
+------------
 
-For creating multiple actions there is convenience method `ActionInfoCollection`
-which generates `ActionInfo` objects from given multiline string.
+This module is used both by the core application and plugins to create and
+register menu entries, toolbar buttons and keyboard shortcuts. All these are
+created using the `ActionInfo` and `SeparatorInfo` classes.
+
+Registering actions
+-------------------
+
+Actions are registered by creating an instance of the `ActionInfo` class with
+the needed data. After configuring the instance it can be registered. The core
+application handles registration itself, but plugins should always use the
+`pluginapi.Plugin.register_action` method.
+
+Menu separators
+~~~~~~~~~~~~~~~
+
+Menu separators are created using instances of the `SeparatorInfo` class. 
+They must be registered using the same methods as the `ActionInfo` instances. 
+
+Registering multiple actions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If there is a need to create a larger number of actions, it might be convenient
+to use a simple DSL understood by the `ActionInfoCollection` factory method.
+This factory creates a list containing `ActionInfo` and `SeparatorInfo` objects
+which can be registered in a one go.
+
+Handling actions
+----------------
+
+When any of the registered user actions is executed, RIDE decides which
+registered event handlers should be called. It is possible to register a handler
+globally or so that it is called only when the plugin is considered active
+(i.e. it has focus).
+
+The registering mechanism allows multiple handlers to be registered to the same
+menu entry, button, or shortcut. It is thus possible that, for example, one
+keyboard shortcut calls multiple handlers. 
 """
 
 

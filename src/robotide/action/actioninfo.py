@@ -19,49 +19,67 @@ from shortcut import Shortcut
 
 
 def ActionInfoCollection(data, event_handler, container=None):
+    """Parses the ``data`` into a list of `ActionInfo` and `SeparatorInfo` objects.
 
-    """Parses ActionInfo objects from the provided DSL data.
+    The data is parsed based on the simple DSL documented below. 
 
-    ActionInfoCollection parses ActionInfo/SeparatorInfo objects from the DSL
-    data on initialization and after that the ActionInfo objects can be accessed
-    via returned list.
+    :Parameters:
+      data
+        The data to be parsed into `ActionInfo` and `SeparatorInfo` objects.
+      event_handler
+        The event handler that implements the actions. See `finding handlers`_
+        for more information.
+      container
+        the wxPython element containing the UI components associated with
+        the `ActionInfo`.
 
-    **DSL format**::
+    DSL syntax
+    ----------
+    ::
 
-        [menu name]
-        !&name | documentation | shortcut | icon
+      [menu]
+      name | documentation | shortcut | icon
 
-    menu name
-      The menu under which the entries are inserted.
+    Fields
+    ------
 
+    menu
+      The name of the menu under which the entries below it are inserted.
     name
-      The menu entry name. Mandatory field. ``eventhandler`` class needs to 
-      contain method matching this name (On prefix and camel case 
-      e.g. Some name -> OnSomeName).
-
-      \!
-        Specifies that the container is None (action is 'global'). Optional.
-        When omitted then the container is the provided ``container``.
-
-      \&
-        Defines the accelerator character for the menu entry. Optional.
-
-      \-\-\-
-        Used to mark the separator in the menu.
-
+      The name of the menu entry to be added. If name is ``---``, a 
+      `SeparatorInfo` object is created instead of an `ActionInfo` object.
     documentation
-      Documentation visible in the statusbar. Optional.
-
+      Documentation for the action.
     shortcut
-      Keyboard shortcut to invoke the action. Optional.
-
+      Keyboard shortcut to invoke the action.
     icon
-      Icon for the Toolbar button.
+      Icon for the toolbar button.
 
-    See `ActionInfo` for more information about the fields.
+    See the `ActionInfo` attributes with same/similar names for more
+    information about the fields and their possible values. Three
+    last fields are optional.
 
+    Finding handlers
+    ----------------
 
-    **Example usage of the DSL**::
+    The given ``event_handler`` must have handler methods that map to the 
+    specified action names. The mapping is done by prefixing the name with 
+    ``On``, removing spaces, and capitalizing all words. For example ``Save``
+    and ``My Action`` must have handler methods ``OnSave`` and ``OnMyAction``,
+    respectively.
+
+    Specifying container
+    --------------------
+
+    By default the given ``container`` is passed to the `ActionInfo.__init__`
+    method directly. This can be altered by prefixing the ``name`` with an
+    exclamation mark (e.g. ``!Save`` or ``!My Action``) to make that action
+    global. With these actions the container given to the `ActionInfo.__init__` 
+    is always ``None``.
+
+    Example
+    -------
+    ::
 
         [File]
         !&Open | Open file containing tests | Ctrl-O | ART_FILE_OPEN
@@ -71,17 +89,6 @@ def ActionInfoCollection(data, event_handler, container=None):
 
         [Tools]
         !Manage Plugins
-
-    :Parameters:
-      data
-        The DSL data containing Menu entries to be parsed into ActionInfo and
-        SeparatorInfo objects.
-      event_handler
-        The event handler that implements the actions. See name field about how
-        actions are generated.
-      container
-        the wxPython element containing the UI components associated with
-        the `ActionInfo`.
     """
 
     menu = None
@@ -140,44 +147,43 @@ class ActionInfo(MenuInfo):
 
     def __init__(self, menu_name, name, action=None, container=None,
                  shortcut=None, icon=None, doc=''):
-        """Initializes information needed to create actions in RIDE.
+        """Initializes information needed to create actions..
 
         :Parameters:
           menu_name
             The name of the menu where the new entry will be added. The menu is
             created if it does not exist.
           name
-            The name of the new menu entry. The accelerator key is specified in
-            the name by prefixing that key by & character.
+            The name of the new menu entry. The name may contain an accelerator
+            key prefixed by an ampersand like ``New &Action``. If an accelerator
+            is not specified, or the one requested is already taken, the next
+            free key is selectd.
           action
             The callable which will be called when a user does any of the
-            associated UI actions (selects menu entry, pushes toolbar button or
-            selects shortcut).
+            associated UI actions.
           container
             The wxPython element containing the UI components associated with
-            this ActionInfo's action. When any of the related UI actions is
-            executed, container is used to check whether to call the ``action``
-            or not. ``container``'s child component must have focus, otherwise
-            the ``action`` is not called. If ``container`` is None,``action`` is
-            always called.
+            the ``action``. When any of the registered UI actions is executed,
+            the ``action`` is called only if the ``container`` or any of its
+            child components has focus. It is possible to make the ``action``
+            always active by using ``None`` as the ``container``.
           shortcut
-            The keyboard shortcut associated to the ``action``. ``shortcut`` is
-            string constructed from two parts, control key(s) and key. Control
-            key can be  Ctrl/Shift/Alt/Cmd or combination of those separated
-            with '-'. Key can be character or name of the `wx keycode`__ without
-            'WXK\_' prefix. Control key and key are also separated with '-' e.g.
-            Ctrl-Shift-H and Shift-Enter.
-
-            __ http://docs.wxwidgets.org/stable/wx_keycodes.html#keycodes
+            The keyboard shortcut associated to the ``action``. The ``shortcut``
+            must be a string constructed from optional modifiers (``Ctrl, Shift, 
+            Alt``) and the actual shortcut key separating the parts with a hyphen.
+            The shortcut key can be either a single character or any of the
+            `wx keycodes`__ without the ``WXK_`` prefix. Examples: ``Ctrl-C``,
+            ``Shight-Ctrl-6``, ``Alt-Left``, ``F6``.
           icon
             The icon added to the toolbar as a toolbar button. It can be either
             a 16x16 bitmap or a string presenting one of the icons provided by
-            `wxPython's ArtProvider class`__ (e.g. 'ART_FILE_OPEN').
-
-            __ http://www.wxpython.org/docs/api/wx.ArtProvider-class.html
+            `wxPython's ArtProvider`__ like ``ART_FILE_OPEN``.
           doc
             The documentation shown on the statusbar when selection is on
             the associated menu entry or toolbar button.
+            
+        __ http://docs.wxwidgets.org/stable/wx_keycodes.html#keycodes
+        __ http://www.wxpython.org/docs/api/wx.ArtProvider-class.html
         """
         MenuInfo.__init__(self)
         self.menu_name = menu_name
