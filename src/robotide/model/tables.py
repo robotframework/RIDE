@@ -167,17 +167,18 @@ class VariableTable(object):
 
 
 class _TcUkTable(utils.RobotDataList):
-    _error_msg_duplicate_name = '%s with this name already exists'
 
     def new_item(self, name):
         item = self._item_class(self.datafile, name=name)
         self.append(item)
         return item
 
-    def validate_name(self, name):
+    def validate_name(self, new_name, old_name=None):
         for item in self:
-            if utils.eq(item.name, name):
-                return self._error_msg_duplicate_name % self._item_name
+            if old_name and item.name == old_name:
+                continue
+            if utils.eq(item.name, new_name):
+                return '%s with this name already exists' % self._item_name
         return None
 
     def copy(self, orig, name):
