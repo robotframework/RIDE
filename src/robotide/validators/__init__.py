@@ -150,11 +150,13 @@ class _NameValidator(_AbstractValidator):
 
 
 class TestCaseNameValidator(_NameValidator):
+
     def _validate(self, value):
         return self._datafile.validate_test_name(value)
 
 
 class UserKeywordNameValidator(_NameValidator):
+
     def _validate(self, value):
         return self._datafile.validate_keyword_name(value)
 
