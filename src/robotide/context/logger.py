@@ -25,19 +25,34 @@ class Logger(object):
                                             "file '.*' contains no test data.")
     trace = debug = info = lambda self, msg: None
 
+    def __init__(self):
+        self._errors = []
+
+    def report_errors(self):
+        errors = '\n'.join(self._errors)
+        if errors:
+            self.error('Following parsing errors occurred:\n' + errors)
+        self._errors = []
+
     def warn(self, msg=''):
-        self.write(msg, 'WARN')
+        self.write(msg, 'WARN', show=True)
 
     def error(self, msg=''):
-        self.write(msg, 'ERROR')
+        self.write(msg, 'ERROR', show=True)
 
-    def write(self, msg, level):
+    def write(self, msg, level, show=False):
         self._raise_if_no_ride_warning(msg)
         level = level.upper()
-        if level == 'ERROR':
-            self._show_message(level, msg, wx.ICON_ERROR)
+        if level not in ['ERROR', 'WARN']:
+            return
+        if not show:
+            self._errors.append(msg)
+        elif level == 'ERROR':
+            if show:
+                self._show_message(level, msg, wx.ICON_ERROR)
         elif level == 'WARN':
-            self._show_message(level, msg, wx.ICON_WARNING)
+            if show:
+                self._show_message(level, msg, wx.ICON_WARNING)
 
     def message(self, msg):
         self.write(msg.message, msg.level)

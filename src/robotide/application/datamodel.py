@@ -37,6 +37,7 @@ class DataModel(object):
             except DataError:
                 raise DataError("Given file '%s' is not a valid Robot Framework "
                                 "test case or resource file" % path)
+        context.LOG.report_errors()
 
     def _open_suite(self, path):
         self.suite = TestSuiteFactory(path)
