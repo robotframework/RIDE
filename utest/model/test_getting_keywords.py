@@ -40,7 +40,7 @@ context.APP = APP_MOCK
 
 
 class TestGettingKeywords(unittest.TestCase):
-    
+
     def setUp(self):
         self.suite = DataModel(VARS_SUITE_PATH).suite
 
@@ -53,7 +53,9 @@ class TestGettingKeywords(unittest.TestCase):
                               'My Test Setup', '<this file>')
 
     def test_keywords_from_imports(self):
-        for name, source in [('Resource UK', 'resource.html'), 
+        for name, source in [('Resource UK', 'resource.html'),
+                             ('Resource2 UK', 'resource2.html'),
+                             ('UK From Text Resource', 'resource.txt'),
                              ('Another Resource UK', 'another_resource.html'),
                              ('File Should Exist', 'OperatingSystem')]:
             self._assert_contains(COMPLEX_SUITE.get_keywords(), name, source)
