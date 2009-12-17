@@ -26,7 +26,9 @@ class ImportSettings(utils.RobotDataList):
                           'Variables': VariablesImport}
         for item in data:
             import_class = import_classes[item.name]
-            self.append(import_class(self.datafile, item._item.value))
+            # Handle invalid imports with empty values.
+            if item._item.value:
+                self.append(import_class(self.datafile, item._item.value))
 
     def new_resource(self, value):
         self._new_import(ResourceImport, [value])
