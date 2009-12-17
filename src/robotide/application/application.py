@@ -122,8 +122,7 @@ class _KeywordFilter(object):
         return self.keywords
 
     def get_documentation(self, index):
-        item = self.keywords[index]
-        return utils.html_escape('Arguments: %s\n\n%s' % (item.args, item.doc))
+        return self.keywords[index].get_details()
 
     def _matches_search_criteria(self, kw, pattern, search_docs):
         if utils.contains(kw.name, pattern, ignore=['_']):
