@@ -99,7 +99,7 @@ class _AbstractDataFile(object):
         self.dirty = True
 
     def get_user_keyword(self, name):
-        kws = self._filter(self.keywords + self.get_user_keywords(), name)
+        kws = self._filter(self.get_user_keywords(), name)
         return kws and kws[0] or None 
 
     def get_user_keywords(self):

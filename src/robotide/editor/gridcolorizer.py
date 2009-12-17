@@ -22,8 +22,9 @@ class Colorizer(Plugin):
     """Colorizes cells in the keyword editor"""
 
     def __init__(self, application):
-        settings  = {'comment_fg':'firebrick', 'keyword_fg':'blue',
-                     'variable_fg':'forest green', 'default_fg':'black'}
+        settings  = {'comment_fg': 'firebrick', 'user_keyword_fg': 'blue',
+                     'library_keyword_fg': 'purple', 'variable_fg':'forest green',
+                     'default_fg':'black'}
         Plugin.__init__(self, application, default_settings=settings)
 
     def enable(self):
@@ -39,23 +40,29 @@ class Colorizer(Plugin):
                                           event.previous)
 
     def _colorize_cell(self, grid, row, col, value):
-        color = self._get_color(grid, row, col, value)
+        color = self._get_color(grid, row, value)
         grid.SetCellTextColour(row, col, color)
 
-    def _get_color(self, grid, row, col, value):
-        if self._is_commented(grid, row):
-            return self.comment_fg
-        if self._is_user_keyword(grid, value):
-            return self.keyword_fg
+    def _get_color(self, grid, row, value):
+        if self._is_user_keyword(value):
+            return self.user_keyword_fg
+        if self._is_library_keyword(value):
+            return self.library_keyword_fg
         if self._is_variable(value):
             return self.variable_fg
+        if self._is_commented(grid, row):
+            return self.comment_fg
         return self.default_fg
+
+    def _is_user_keyword(self, value):
+        return self.get_selected_datafile().get_user_keyword(value) is not None
+
+    def _is_library_keyword(self, value):
+        kws = self.get_selected_datafile().get_keywords_for_content_assist(name=value)
+        return kws and kws[0].is_library_keyword()
 
     def _is_variable(self, value):
         return re.match('[\$\@]{.*?}=?', value)
-
-    def _is_user_keyword(self, grid, value):
-        return grid._datafile.get_user_keyword(value) is not None
 
     def _is_commented(self, grid, row):
         return grid.GetCellValue(row, 0).strip().lower() == "comment"

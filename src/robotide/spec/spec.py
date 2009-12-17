@@ -125,6 +125,9 @@ class _KeywordContent(object):
     def _format_args(self, args):
         return '[ %s ]' % ' | '.join(args)
 
+    def is_library_keyword(self):
+        return False
+
 
 class _XMLKeywordContent(_KeywordContent):
 
@@ -155,6 +158,9 @@ class _LibraryKeywordContent(_KeywordContent):
         if handler.varargs:
             args.append('*%s' % handler.varargs)
         return args
+
+    def is_library_keyword(self):
+        return True
 
 
 class UserKeywordContent(_KeywordContent):
