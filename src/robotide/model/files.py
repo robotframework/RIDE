@@ -20,7 +20,8 @@ from robotide import utils
 from robotide.spec import UserKeywordContent
 from robotide.errors import NoRideError, DataError, SerializationError
 from robotide.publish import RideSaving, RideSaved
-from robotide.robotapi import TestSuiteData, ResourceFileData, InitFileData
+from robotide.robotapi import TestSuiteData, ResourceFileData, InitFileData,\
+    UserErrorHandler
 from robotide.writer import FileWriter
 
 from tables import InitFileSettingTable, SuiteSettingTable, ResourceSettingTable,\
@@ -69,7 +70,9 @@ class _AbstractDataFile(object):
         self.source = data.source.decode('UTF-8')
         self._stat = self._get_stat(self.source)
         self.variables = VariableTable(self, data.variables)
-        self.keywords = UserKeywordTable(self, data.user_keywords)
+        kws = [ kw for kw in data.user_keywords 
+                if not isinstance(kw, UserErrorHandler)]
+        self.keywords = UserKeywordTable(self, kws)
         self.dirty = False
         self.suites = []
         self.datafile = self # Needed by editors that edit suites and tc/uks
