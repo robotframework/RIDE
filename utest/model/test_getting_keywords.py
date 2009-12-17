@@ -73,6 +73,10 @@ class TestGettingKeywords(unittest.TestCase):
         self._assert_contains(COMPLEX_SUITE.get_keywords(),
                               'Testlib Keyword', 'TestLib')
 
+    def test_spec_file_name_is_case_sensitive(self):
+        self._assert_does_not_contain(COMPLEX_SUITE.get_keywords(),
+                                      'Open Browser', 'seleniumlibrary')
+
     def test_filtering_keywords_with_longnames(self):
         self._assert_contains(COMPLEX_SUITE.get_keywords_for_content_assist(name='BuiltIn.Catenate'),
                               'Catenate', 'BuiltIn')
