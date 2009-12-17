@@ -18,7 +18,7 @@ from robot.utils.asserts import assert_equals, assert_none, assert_false, \
     assert_raises_with_msg
 
 from robotide.publish import RideMessage, RideLogMessage, PUBLISHER
-from robotide.plugin import Plugin
+from robotide.pluginapi import Plugin
 
 
 class RideTestMessage(RideMessage):

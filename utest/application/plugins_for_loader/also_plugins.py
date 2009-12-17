@@ -1,4 +1,4 @@
-from robotide.plugin import Plugin
+from robotide.pluginapi import Plugin
 
 
 class ExamplePlugin3(Plugin):
