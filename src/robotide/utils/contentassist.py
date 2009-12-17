@@ -144,7 +144,7 @@ class ContentAssistPopup(object):
         return val1.lower().startswith(val2.lower())
 
     def content_assist_value(self, value):
-        if value and self._selection > -1:
+        if self._selection > -1:
             var_index = self._get_variable_start_index(value)
             if var_index != -1:
                 return value[:var_index] + self._list.GetItem(self._selection).GetText()
