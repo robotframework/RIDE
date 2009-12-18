@@ -77,7 +77,7 @@ class RIDE(wx.App):
             self.model = DataModel()
         else:
             RideOpenSuite(path=path).publish()
-        context.LOG.report_errors()
+        context.LOG.report_parsing_errors()
 
     def open_resource(self, path, datafile=None):
         try:
