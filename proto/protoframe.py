@@ -1,7 +1,9 @@
-from robotide.ui.menu import *
+from robotide.ui.actiontriggers import *
+from robotide.ui.mainframe import ActionRegisterer
+from robotide.action import ActionInfo
+
 import wx
 from wx.lib import flatnotebook as fnb
-
 
 
 class ProtoFrame(wx.Frame):
@@ -10,7 +12,8 @@ class ProtoFrame(wx.Frame):
         wx.Frame.__init__(self, None, title='ProtoFrame')
         self.mb = MenuBar(self)
         self.tb = ToolBar(self)
-        self.ar = ActionRegisterer(self, self.mb, self.tb)
+        self.sr = ShortcutRegistry(self)
+        self.ar = ActionRegisterer(self.mb, self.tb, self.sr)
         action_info = ActionInfo('File', 'Event', self.OnEvent, shortcut='Ctrl-E')
         action = self.ar.register_action(action_info)
         register_unregister_actions = [(action_info, action)]
