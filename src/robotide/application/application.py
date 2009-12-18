@@ -66,17 +66,18 @@ class RIDE(wx.App):
                                             maximum=100, parent=self.frame,
                                             style = wx.PD_ELAPSED_TIME)
         loader = DataLoader(path)
-        try:
-            loader.start()
-            while loader.is_alive():
-                progress_dialog.Pulse()
-                time.sleep(0.1)
-            self.model = loader.model
-            RideOpenSuite(path=path).publish()
-        except (DataError, NoRideError), err:
-            self.model = DataModel()
-            context.LOG.error(str(err))
+        loader.start()
+        while loader.is_alive():
+            time.sleep(0.1)
+            progress_dialog.Pulse()
         progress_dialog.Destroy()
+        self.model = loader.model
+        if isinstance(self.model, basestring):
+            context.LOG.error(self.model)
+            self.model = DataModel()
+        else:
+            RideOpenSuite(path=path).publish()
+        context.LOG.report_errors()
 
     def open_resource(self, path, datafile=None):
         try:
@@ -149,5 +150,7 @@ class DataLoader(Thread):
         self.model = None
 
     def run(self):
-        self.model = DataModel(self._path)
-
+        try:
+            self.model = DataModel(self._path)
+        except (DataError, NoRideError), err:
+            self.model = str(err)
