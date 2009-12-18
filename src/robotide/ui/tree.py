@@ -20,7 +20,6 @@ except ImportError:
 
 from robotide.action import ActionInfoCollection
 from robotide.model.tcuk import UserKeyword
-from robotide.model.files import _TestSuite
 from robotide.publish import RideTreeSelection
 from robotide import utils
 
@@ -43,7 +42,6 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         if utils.is_windows:
             style = style|wx.TR_EDIT_LABELS
         treemixin.DragAndDrop.__init__(self, parent, style=style)
-        self._root = None
         actions = ActionInfoCollection(tree_actions, self, self)
         action_registerer.register_actions(actions)
         self.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnSelChanged)
@@ -53,7 +51,6 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._images = TreeImageList()
         self.SetImageList(self._images)
         self._history = utils.History()
-        self._resource_root = None
         self._bind_keys()
 
     def _bind_keys(self):
@@ -74,17 +71,22 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self.SetFocus() # Needed for keyboard shortcuts
 
     def _clear_tree_data(self):
-        if self._root:
-            self.DeleteAllItems()
+        self.DeleteAllItems()
         self._root = self.AddRoot('')
-        self._resource_root = None
+        self._resource_root = self._create_resource_root()
         self._datafile_nodes = []
 
+    def _create_resource_root(self):
+        resource_root = self._create_node(self._root, 'Resources',
+                                          self._images['InitFile'])
+        self.SetPyData(resource_root, NoneHandler())
+        return resource_root
+
     def _populate_model(self, model):
-        self._model = model
         if model.suite:
-            self._render_suite(self._root, model.suite)
-        self._render_resources(model)
+            self._render_datafile(self._root, model.suite, self._root)
+        for res in model.resources:
+            self._render_datafile(self._resource_root, res)
 
     def _refresh_view(self):
         self.Refresh()
@@ -94,35 +96,13 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             self.SelectItem(self._datafile_nodes[0])
             self.Expand(self._datafile_nodes[0])
 
-    def _render_resources(self, model):
-        if model.resources:
-            for res in model.resources:
-                self._render_resource(res)
-
-    def _render_suite(self, parent_node, suite, index=None):
-        snode = self._create_node_with_handler(parent_node, suite, index)
-        self._datafile_nodes.append(snode)
-        for test in suite.tests:
-            self._create_node_with_handler(snode, test)
-        for kw in suite.keywords:
-            self._create_node_with_handler(snode, kw)
-        for suite in suite.suites:
-            self._render_suite(snode, suite)
-        return snode
-
-    def _render_resource(self, resource, index=None):
-        if not self._resource_root:
-            self._create_resource_root()
-        rnode = self._create_node_with_handler(self._resource_root, resource, index)
-        self._datafile_nodes.append(rnode)
-        for kw in resource.keywords:
-            self._create_node_with_handler(rnode, kw)
-        return rnode
-
-    def _create_resource_root(self):
-        self._resource_root = self._create_node(self._root, 'Resources',
-                                                self._images['InitFile'])
-        self.SetPyData(self._resource_root, NoneHandler())
+    def _render_datafile(self, parent_node, datafile, index=None):
+        node = self._create_node_with_handler(parent_node, datafile, index)
+        self.SetItemHasChildren(node, True)
+        self._datafile_nodes.append(node)
+        for suite in datafile.suites:
+            self._render_datafile(node, suite, None)
+        return node
 
     def _create_node(self, parent_node, label, img, index=None):
         if index is not None:
@@ -182,39 +162,33 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._datafile_nodes.remove(node)
         self.Delete(node)
 
-    def _render_datafile(self, parent, datafile, index):
-        if isinstance(datafile, _TestSuite):
-            return self._render_suite(parent, datafile, index)
-        else:
-            return self._render_resource(datafile, index)
-
     def _handle_pending_selection(self, to_be_selected, parent_node):
         if to_be_selected:
             self.SelectItem(self._get_node_with_label(parent_node, to_be_selected))
 
     def add_suite(self, parent, suite):
-        snode = self._render_suite(self._get_datafile_node(parent), suite)
+        snode = self._render_datafile(self._get_datafile_node(parent), suite)
         self.SelectItem(snode)
 
     def add_resource(self, resource):
-        self._render_resource(resource)
+        self._render_datafile(self._resource_root, resource)
 
     def add_test(self, parent_node, test):
-        self._add_dataitem(parent_node, test, UserKeyword)
+        self._add_dataitem(parent_node, test, lambda item: item.is_user_keyword)
 
     def add_keyword(self, parent_node, kw):
-        self._add_dataitem(parent_node, kw, _TestSuite)
+        self._add_dataitem(parent_node, kw, lambda item: item.is_test_suite)
 
-    def _add_dataitem(self, parent_node, dataitem, clazz):
-        index = self._get_insertion_index(parent_node, clazz)
+    def _add_dataitem(self, parent_node, dataitem, predicate):
+        index = self._get_insertion_index(parent_node, predicate)
         node = self._create_node_with_handler(parent_node, dataitem, index)
         self.SelectItem(node)
         self._mark_dirty(parent_node)
 
-    def _get_insertion_index(self, parent_node, clazz):
+    def _get_insertion_index(self, parent_node, predicate):
         item, cookie = self.GetFirstChild(parent_node)
         while item:
-            if isinstance(self.GetItemPyData(item).item, clazz):
+            if predicate(self.GetItemPyData(item)):
                 index = self.GetPrevSibling(item)
                 if not index.IsOk:
                     index = 0
@@ -284,6 +258,9 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         parent_node = self._get_datafile_node(uk.datafile)
         if not parent_node:
             return
+        if not self.IsExpanded(parent_node):
+            self.Expand(parent_node)
+            self._render_children(parent_node)
         node = self._get_node_with_label(parent_node, utils.normalize(uk.name))
         if node != self.GetSelection():
             self.SelectItem(node)
@@ -335,10 +312,19 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
                               text=self.GetItemText(node)).publish()
 
     def OnItemActivated(self, event):
-        if self.IsExpanded(event.Item):
-            self.Collapse(event.Item)
-        else:
-            self.Expand(event.Item)
+        node = event.Item
+        if self.IsExpanded(node):
+            self.Collapse(node)
+        elif self.ItemHasChildren(node):
+            self._render_children(node)
+            self.Expand(node)
+
+    def _render_children(self, node):
+        item = self.GetItemPyData(node).item
+        for test in item.tests:
+            self._create_node_with_handler(node, test)
+        for kw in item.keywords:
+            self._create_node_with_handler(node, kw)
 
     def OnLeftArrow(self, event):
         node = self.GetSelection()
@@ -380,6 +366,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
 
 class _ActionHandler(wx.Window):
+    is_user_keyword = False
+    is_test_suite = False
 
     def __init__(self, item, tree, node):
         wx.Window.__init__(self, tree)
@@ -405,6 +393,7 @@ class InitFileHandler(_ActionHandler):
     accepts_drag = lambda self, dragged: isinstance(dragged, UserKeywordHandler)
     is_draggable = False
     is_renameable = False
+    is_test_suite = True
     _actions = ['Add Suite', 'New User Keyword', '---', 'Change Format']
 
     def has_been_modified_on_disk(self):
@@ -433,6 +422,7 @@ class InitFileHandler(_ActionHandler):
 
 
 class ResourceFileHandler(InitFileHandler):
+    is_test_suite = False
     _actions = ['New User Keyword', '---', 'Change Format']
 
 
@@ -501,6 +491,7 @@ class TestCaseHandler(_TestOrUserKeywordHandler):
 
 
 class UserKeywordHandler(_TestOrUserKeywordHandler):
+    is_user_keyword = True
     _datalist = property(lambda self: self.item.datalist)
     _dialog_class = UserKeywordNameDialog
 
@@ -510,7 +501,7 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
 
 class NoneHandler(object):
     """Null object (pattern)"""
-    is_renameable = is_draggable = False
+    is_renameable = is_draggable = is_user_keyword = is_test_suite = False
     item = None
     show_popup = lambda self: None
     rename = lambda self, new_name: False
