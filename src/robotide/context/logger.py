@@ -23,7 +23,6 @@ class Logger(object):
     no_ride_regexp = re.compile("'(.*?)'.*no ride", re.IGNORECASE)
     empty_suite_init_file_warn = re.compile("Test suite directory initialization "
                                             "file '.*' contains no test data.")
-    trace = debug = info = lambda self, msg: None
 
     def __init__(self):
         self._errors = []
