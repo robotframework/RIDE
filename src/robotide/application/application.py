@@ -15,6 +15,8 @@
 import os
 import sys
 import wx
+import time
+from threading import Thread
 
 from robotide.robotapi import ROBOT_VERSION
 from robotide.publish import RideOpenSuite, RideOpenResource
@@ -60,12 +62,21 @@ class RIDE(wx.App):
             sys.exit(1)
 
     def open_suite(self, path):
+        progress_dialog = wx.ProgressDialog('RIDE', 'Loading the test data',
+                                            maximum=100, parent=self.frame,
+                                            style = wx.PD_ELAPSED_TIME)
+        loader = DataLoader(path)
         try:
-            self.model = DataModel(path)
+            loader.start()
+            while loader.is_alive():
+                progress_dialog.Pulse()
+                time.sleep(0.1)
+            self.model = loader.model
             RideOpenSuite(path=path).publish()
         except (DataError, NoRideError), err:
             self.model = DataModel()
             context.LOG.error(str(err))
+        progress_dialog.Destroy()
 
     def open_resource(self, path, datafile=None):
         try:
@@ -128,3 +139,15 @@ class _KeywordFilter(object):
         if utils.contains(kw.name, pattern, ignore=['_']):
             return True
         return search_docs and utils.contains(kw.doc, pattern)
+
+
+class DataLoader(Thread):
+
+    def __init__(self, path):
+        Thread.__init__(self)
+        self._path = path
+        self.model = None
+
+    def run(self):
+        self.model = DataModel(self._path)
+
