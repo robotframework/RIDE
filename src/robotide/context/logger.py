@@ -25,32 +25,34 @@ class Logger(object):
                                             "file '.*' contains no test data.")
 
     def __init__(self):
-        self._errors = []
+        self._messages = []
 
     def report_parsing_errors(self):
-        errors = '\n'.join(self._errors)
+        errors = '\n'.join([m[0] for m in self._messages])
+        level = 'ERROR' in [m[1] for m in self._messages] and 'ERROR' or 'WARN'
         if errors:
-            self.error('Following parsing errors occurred:\n' + errors)
-        self._errors = []
+            self._write('Following parsing errors occurred:\n' + errors, level)
+        self._messages = []
 
     def warn(self, msg=''):
-        self._write(msg, 'WARN', cache_msg=False)
+        self._write(msg, 'WARN')
 
     def error(self, msg=''):
-        self._write(msg, 'ERROR', cache_msg=False)
+        self._write(msg, 'ERROR')
 
     def message(self, msg):
-        self._write(msg.message, msg.level)
+        message, level = msg.message, msg.level.upper()
+        if self._is_logged(level):
+            self._messages.append((message, level))
 
-    def _write(self, msg, level, cache_msg=True):
+    def _write(self, msg, level):
         self._raise_if_no_ride_warning(msg)
         level = level.upper()
-        if level not in ['ERROR', 'WARN']:
-            return
-        if cache_msg:
-            self._errors.append(msg)
-        else:
+        if self._is_logged(level) and not self._is_ignored_warning(msg):
             self._show_message(msg, level)
+
+    def _is_logged(self, level):
+        return level.upper() in ['ERROR', 'WARN']
 
     def _raise_if_no_ride_warning(self, msg):
         res = self.no_ride_regexp.search(msg)
@@ -58,14 +60,12 @@ class Logger(object):
             raise NoRideError("Test data file '%s' is not supposed to be "
                               "edited with RIDE." % res.group(1))
 
+    def _is_ignored_warning(self, msg):
+        return self.empty_suite_init_file_warn.search(msg)
+
     def _show_message(self, msg, level):
-        if self._is_ignored_warning(msg):
-            return
         try:
             icon = level == 'ERROR' and wx.ICON_ERROR or wx.ICON_WARNING
             wx.MessageBox(msg, level, icon)
         except wx.PyNoAppError:
             sys.stderr.write('%s: %s\n' % (level, msg))
-
-    def _is_ignored_warning(self, msg):
-        return self.empty_suite_init_file_warn.search(msg)
