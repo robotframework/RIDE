@@ -13,7 +13,6 @@
 #  limitations under the License.
 
 import wx
-import os
 
 from robotide import context
 from robotide.model.settings import Documentation, ResourceImport
@@ -331,11 +330,11 @@ class VariablesListEditor(_AbstractListEditor):
         dlg.Destroy()
 
     def OnEdit(self, event):
-        var_tuple = self._data.get_name_and_value(self._selection)
-        if var_tuple[0].startswith('${'): 
-            dlg = ScalarVariableDialog(self.GetGrandParent(), var_tuple)
+        name, value = self._data.get_name_and_value(self._selection)
+        if name.startswith('${'): 
+            dlg = ScalarVariableDialog(self.GetGrandParent(), name, value)
         else:
-            dlg = ListVariableDialog(self.GetGrandParent(), var_tuple)
+            dlg = ListVariableDialog(self.GetGrandParent(), name, value)
         if dlg.ShowModal() == wx.ID_OK:
             self._data.set_name_and_value(self._selection, *dlg.get_value())
             self.update_data()
