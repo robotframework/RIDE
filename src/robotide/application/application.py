@@ -62,6 +62,10 @@ class RIDE(wx.App):
             sys.exit(1)
 
     def open_suite(self, path):
+        self.model = self._load_suite(path)
+        context.LOG.report_parsing_errors()
+
+    def _load_suite(self, path):
         progress_dialog = wx.ProgressDialog('RIDE', 'Loading the test data',
                                             maximum=100, parent=self.frame,
                                             style = wx.PD_ELAPSED_TIME)
@@ -71,13 +75,7 @@ class RIDE(wx.App):
             time.sleep(0.1)
             progress_dialog.Pulse()
         progress_dialog.Destroy()
-        self.model = loader.model
-        if isinstance(self.model, basestring):
-            context.LOG.error(self.model)
-            self.model = DataModel()
-        else:
-            RideOpenSuite(path=path).publish()
-        context.LOG.report_parsing_errors()
+        return loader.model
 
     def open_resource(self, path, datafile=None):
         try:
@@ -152,5 +150,7 @@ class DataLoader(Thread):
     def run(self):
         try:
             self.model = DataModel(self._path)
+            RideOpenSuite(path=self._path).publish()
         except (DataError, NoRideError), err:
-            self.model = str(err)
+            context.LOG(str(err))
+            self.model = DataModel()
