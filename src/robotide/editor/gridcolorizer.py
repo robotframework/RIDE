@@ -23,7 +23,7 @@ class Colorizer(Plugin):
 
     def __init__(self, application):
         settings  = {'comment_fg': 'firebrick', 'user_keyword_fg': 'blue',
-                     'library_keyword_fg': 'purple', 'variable_fg':'forest green',
+                     'library_keyword_fg': 'blue', 'variable_fg':'forest green',
                      'default_fg':'black'}
         Plugin.__init__(self, application, default_settings=settings)
 
