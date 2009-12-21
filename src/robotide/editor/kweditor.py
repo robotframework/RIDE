@@ -13,14 +13,15 @@
 #  limitations under the License.
 
 import os
-from wx import grid
 import wx
+from wx import grid
 
 from robotide.publish import RideGridCellChanged
-from contentassist import ExpandingContentAssistTextCtrl
-from robotide.utils import RidePopupWindow, PopupMenu
+from robotide.utils import PopupMenu
 
 from clipboard import GRID_CLIPBOARD
+from contentassist import ExpandingContentAssistTextCtrl
+from popupwindow import RidePopupWindow
 
 
 class KeywordEditorUi(grid.Grid):

@@ -17,7 +17,8 @@ from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 from wx.lib.expando import ExpandoTextCtrl
 
 from robotide import context
-from robotide.utils import RidePopupWindow
+
+from popupwindow import RidePopupWindow
 
 
 _PREFERRED_POPUP_SIZE = (450, 200)

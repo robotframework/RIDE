@@ -38,41 +38,6 @@ class RideHtmlWindow(HtmlWindow):
         self.SetPage('')
 
 
-class RidePopupWindow(wx.PopupWindow):
-
-    def __init__(self, parent, size):
-        wx.PopupWindow.__init__(self, parent)
-        self.SetSize(size)
-        self._details = RideHtmlWindow(self, size=size)
-
-    def set_content(self, content):
-        color = ''.join([hex(item)[2:] for item in context.POPUP_BACKGROUND])
-        details = '<body bgcolor=#%s>%s</body>' % (color, content)
-        self._details.SetPage(details)
-
-
-class MacRidePopupWindow(wx.Window):
-    """Mac version of RidePopupWindow with very limited functionality.
-
-    wx.PopupWindow does not work on Mac and without this hack RIDE could
-    not be used on that platform at all.
-    """
-
-    def __init__(self, parent, size):
-        wx.Window.__init__(self, parent)
-
-    def set_content(self, content):
-        pass
-
-    def IsShown(self):
-        return False
-
-
-if wx.PlatformInfo[0] == '__WXMAC__':
-    RidePopupWindow = MacRidePopupWindow
-del MacRidePopupWindow
-
-
 class PopupMenu(wx.Menu):
 
     def __init__(self, parent, menu_items):
