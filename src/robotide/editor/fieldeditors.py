@@ -13,11 +13,13 @@
 #  limitations under the License.
 
 import wx
+from wx import grid
 
 from robotide import utils
 
 
 class ValueEditor(wx.Panel):
+    expand_factor = 1
     _sizer_flags_for_editor = wx.ALL
 
     def __init__(self, parent, value, label=None, validator=None):
@@ -49,6 +51,68 @@ class ValueEditor(wx.Panel):
     def set_focus(self):
         self._editor.SetFocus()
         self._editor.SelectAll()
+
+
+class ListValueEditor(ValueEditor):
+    expand_factor = 3
+    _sizer_flags_for_editor = wx.ALL|wx.EXPAND
+
+    def _create_editor(self, value, label):
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer.Add(self._create_label_and_add_button(label))
+        self._editor = _EditorGrid(self, value)
+        sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
+        self._sizer.Add(sizer, 1, wx.EXPAND)
+
+    def _create_label_and_add_button(self, label):
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(wx.StaticText(self, label=label, size=(80,-1)), 0, wx.ALL, 5)
+        add_btn = wx.Button(self, label='Add Row')
+        self.Bind(wx.EVT_BUTTON, self.OnAddRow, add_btn)
+        sizer.Add(add_btn)
+        return sizer
+
+    def OnAddRow(self, event):
+        self._editor.add_row()
+
+    def get_value(self):
+        return self._editor.get_value()
+
+
+class _EditorGrid(grid.Grid):
+
+    def __init__(self, parent, value):
+        grid.Grid.__init__(self, parent)
+        self._set_default_sizes()
+        self._create_grid(value)
+        self._initialize_value(value)
+
+    def _set_default_sizes(self):
+        self.SetColLabelSize(0)
+        self.SetRowLabelSize(0)
+        self.SetDefaultColSize(175)
+
+    def _create_grid(self, value):
+        cols = 4
+        rows = len(value)/cols + 2
+        self.CreateGrid(rows, cols)
+
+    def _initialize_value(self, value):
+        for index, item in enumerate(value): 
+            row, col = divmod(index, self.NumberCols)
+            self.SetCellValue(row, col, item)
+
+    def add_row(self):
+        self.AppendRows()
+
+    def get_value(self):
+        value = []
+        for row in range(self.NumberRows):
+            for col in range(self.NumberCols):
+                value.append(self.GetCellValue(row, col))
+        while not value[-1]:
+            value.pop()
+        return value
 
 
 class MultiLineEditor(ValueEditor):

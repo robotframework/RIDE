@@ -121,7 +121,7 @@ class VariableTable(object):
         self._create_var(name, value, '${}')
 
     def new_list_var(self, name=None, value=None):
-        self._create_var(name, utils.split_value(value), '@{}')
+        self._create_var(name, value, '@{}')
     
     def _create_var(self, name, value, default_name):
         name = name is not None and name or default_name
@@ -136,12 +136,7 @@ class VariableTable(object):
 
     def get_name_and_value(self, index):
         key = self._order[index]
-        return key, self._format_value(self._vars[key])
-
-    def _format_value(self, value):
-        if isinstance(value, basestring):
-            return value
-        return utils.join_value(value)
+        return key, self._vars[key]
 
     def set_name_and_value(self, index, name, value):
         name = self._remove_possible_equal_sign(name)
@@ -149,8 +144,6 @@ class VariableTable(object):
         if key != name:
             del self._vars[utils.normalize(key, ignore=['_'])]
             self._order[index] = name
-        if name.startswith('@{'):
-            value = utils.split_value(value)
         self._vars[name] = value
         self.datafile.dirty = True
 

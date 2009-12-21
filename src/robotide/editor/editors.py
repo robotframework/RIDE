@@ -332,9 +332,9 @@ class VariablesListEditor(_AbstractListEditor):
     def OnEdit(self, event):
         name, value = self._data.get_name_and_value(self._selection)
         if name.startswith('${'): 
-            dlg = ScalarVariableDialog(self.GetGrandParent(), name, value)
+            dlg = ScalarVariableDialog(self.GetGrandParent(), (name, value))
         else:
-            dlg = ListVariableDialog(self.GetGrandParent(), name, value)
+            dlg = ListVariableDialog(self.GetGrandParent(), (name, value))
         if dlg.ShowModal() == wx.ID_OK:
             self._data.set_name_and_value(self._selection, *dlg.get_value())
             self.update_data()

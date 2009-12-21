@@ -18,7 +18,8 @@ from robotide import utils
 from robotide.validators import ScalarVariableNameValidator,\
     ListVariableNameValidator, TimeoutValidator, NonEmptyValidator, ArgumentsValidator
 
-from fieldeditors import ValueEditor, MultiLineEditor, ContentAssistEditor
+from fieldeditors import ValueEditor, ListValueEditor, MultiLineEditor,\
+    ContentAssistEditor
 from dialoghelps import get_help
 
 
@@ -34,7 +35,7 @@ class _Dialog(wx.Dialog):
         self._sizer = wx.BoxSizer(wx.VERTICAL)
         self._editors = self._get_editors(item)
         for editor in self._editors:
-            self._sizer.Add(editor, 1, wx.EXPAND)
+            self._sizer.Add(editor, editor.expand_factor, wx.EXPAND)
         self._create_help()
         self._create_line()
         self._create_buttons()
@@ -63,20 +64,21 @@ class _Dialog(wx.Dialog):
         return values
 
 
-class _VariableDialog(_Dialog):
+class ScalarVariableDialog(_Dialog):
 
     def _get_editors(self, var):
-        name, value = var or (self._empty_name, '')
-        return [ValueEditor(self, name, 'Name', validator=self._validator()),
+        name, value = var or ('${}', '')
+        return [ValueEditor(self, name, 'Name',
+                            validator=ScalarVariableNameValidator()),
                 ValueEditor(self, value, 'Value')]
 
-class ScalarVariableDialog(_VariableDialog):
-    _empty_name = '${}'
-    _validator = ScalarVariableNameValidator
+class ListVariableDialog(_Dialog):
 
-class ListVariableDialog(_VariableDialog):
-    _empty_name = '@{}'
-    _validator = ListVariableNameValidator
+    def _get_editors(self, var):
+        name, value = var or ('@{}', '')
+        return [ValueEditor(self, name, 'Name',
+                            validator=ListVariableNameValidator()),
+                ListValueEditor(self, value, 'Value')]
 
 
 class LibraryImportDialog(_Dialog):
