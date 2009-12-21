@@ -50,7 +50,6 @@ class ValueEditor(wx.Panel):
 
     def set_focus(self):
         self._editor.SetFocus()
-        self._editor.SelectAll()
 
 
 class ListValueEditor(ValueEditor):
