@@ -31,8 +31,6 @@ Give name and value of the variable.
 
 List Variable
 Give name and value of the variable.
-Use a pipe character to separate values from each others like 'first value | second | 3'.
-%(ESCAPE)s
 
 Library Import
 Give name of the library to import.
