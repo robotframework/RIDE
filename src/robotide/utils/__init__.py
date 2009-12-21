@@ -21,7 +21,6 @@ from robot.utils import printable_name, contains, normalize, eq, eq_any,\
 from components import RideHtmlWindow, PopupMenu
 from eventhandler import RideEventHandler
 from misc import RobotDataList, History, find_from_pythonpath
-from onscreenframe import OnScreenEnsuringFrame
 
 
 def name_from_class(item, drop=None):
