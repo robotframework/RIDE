@@ -15,7 +15,7 @@
 import wx
 from wx import grid
 
-from robotide import utils
+from contentassist import ContentAssistTextCtrl
 
 
 class ValueEditor(wx.Panel):
@@ -124,4 +124,4 @@ class MultiLineEditor(ValueEditor):
 class ContentAssistEditor(ValueEditor):
 
     def _get_text_ctrl(self):
-        return utils.ContentAssistTextCtrl(self, self.Parent.datafile, (500, -1))
+        return ContentAssistTextCtrl(self, self.Parent.datafile, (500, -1))

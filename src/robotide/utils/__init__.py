@@ -19,7 +19,6 @@ from robot.utils import printable_name, contains, normalize, eq, eq_any,\
     DomWrapper, unic, asserts, unescape, html_attr_escape,\
     printable_name_from_path, html_escape, get_timestamp, is_windows
 from components import RideHtmlWindow, RidePopupWindow, PopupMenu
-from contentassist import ContentAssistTextCtrl, ExpandingContentAssistTextCtrl
 from eventhandler import RideEventHandler
 from factory import create_button, create_toolbar
 from misc import RobotDataList, History, find_from_pythonpath

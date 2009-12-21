@@ -17,8 +17,8 @@ from wx import grid
 import wx
 
 from robotide.publish import RideGridCellChanged
-from robotide.utils import ExpandingContentAssistTextCtrl, RidePopupWindow,\
-    PopupMenu
+from contentassist import ExpandingContentAssistTextCtrl
+from robotide.utils import RidePopupWindow, PopupMenu
 
 from clipboard import GRID_CLIPBOARD
 
