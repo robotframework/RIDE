@@ -15,7 +15,7 @@
 import wx
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 
-from robotide import utils
+from robotide.utils import ButtonWithHandler, PopupMenu
 
 
 class ListEditor(wx.Panel):
@@ -43,13 +43,11 @@ class ListEditor(wx.Panel):
     def _create_buttons(self):  
         sizer = wx.BoxSizer(wx.VERTICAL)
         for label in self._buttons:
-            handler = getattr(self, 'On'+label.replace(' ', ''))
-            sizer.Add(utils.create_button(self, label, handler, width=120),
-                      0, wx.ALL, 1)
+            sizer.Add(ButtonWithHandler(self, label, width=120), 0, wx.ALL, 1)
         return sizer
 
     def OnRightClick(self, event):
-        utils.PopupMenu(self, self._menu)
+        PopupMenu(self, self._menu)
 
     def OnItemSelected(self, event):
         self._selection = event.GetIndex()

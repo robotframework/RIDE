@@ -16,7 +16,8 @@ import wx
 
 from robotide import context
 from robotide.model.settings import Documentation, ResourceImport
-from robotide.utils import RideEventHandler
+from robotide.utils import RideEventHandler, RideHtmlWindow, ButtonWithHandler
+from robotide import utils
 
 from kweditor import KeywordEditor
 from listeditor import ListEditor
@@ -33,12 +34,12 @@ def dialog_from_class(obj):
     return globals()[obj.__class__.__name__ + 'Dialog']
 
 
-class WelcomePage(utils.RideHtmlWindow):
+class WelcomePage(RideHtmlWindow):
     undo = cut = copy = paste = delete = comment = uncomment = save \
         = show_content_assist = lambda self: None
 
     def __init__(self, parent):
-        utils.RideHtmlWindow.__init__(self, parent, text=context.ABOUT_RIDE)
+        RideHtmlWindow.__init__(self, parent, text=context.ABOUT_RIDE)
 
     def close(self):
         self.Show(False)
@@ -147,9 +148,8 @@ class _SettingEditor(wx.Panel, RideEventHandler):
         self._value_display = self._get_value_display()
         self._update_value() 
         sizer.Add(self._value_display, 1, wx.EXPAND)
-        sizer.Add(utils.create_button(self, 'Edit', self.OnEdit),
-                  flag=wx.LEFT|wx.RIGHT, border=5)
-        sizer.Add(utils.create_button(self, 'Clear', self.OnClear))
+        sizer.Add(ButtonWithHandler(self, 'Edit'), flag=wx.LEFT|wx.RIGHT, border=5)
+        sizer.Add(ButtonWithHandler(self, 'Clear'))
         sizer.Layout()
         self.SetSizer(sizer)
 
@@ -207,7 +207,7 @@ class _DocumentationEditor(_SettingEditor):
         self._create_controls('Documentation')
 
     def _get_value_display(self):
-        display = utils.RideHtmlWindow(self, (-1, 60))
+        display = RideHtmlWindow(self, (-1, 60))
         display.Bind(wx.EVT_LEFT_DOWN, self.OnEdit)
         return display
 
@@ -239,10 +239,10 @@ class TestCaseEditor(_RobotTableEditor):
 
     def _create_add_buttons(self, kweditor):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.Add(utils.create_button(self, 'Add Row', kweditor.OnInsertRows),
-                                      0, wx.ALL, 2)
-        sizer.Add(utils.create_button(self, 'Add Column', kweditor.OnInsertCol),
-                                      0, wx.ALL, 2)
+        sizer.Add(ButtonWithHandler(self, 'Add Row', kweditor.OnInsertRows),
+                                    0, wx.ALL, 2)
+        sizer.Add(ButtonWithHandler(self, 'Add Column', kweditor.OnInsertCol),
+                                    0, wx.ALL, 2)
         self.sizer.Add(sizer)
 
     def _create_kweditor(self):
