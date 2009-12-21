@@ -17,7 +17,7 @@ import wx
 
 from robotide.action import ActionInfoCollection, Action
 from robotide.publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER
-from robotide.utils import OnScreenEnsuringFrame, RideEventHandler
+from robotide.utils import RideEventHandler
 from robotide.context import SETTINGS
 
 from actiontriggers import MenuBar, ToolBar, ShortcutRegistry
@@ -51,7 +51,7 @@ _menudata = """
 """
 
 
-class RideFrame(wx.Frame, RideEventHandler, OnScreenEnsuringFrame):
+class RideFrame(wx.Frame, RideEventHandler):
     _default_dir = property(lambda self: os.path.abspath(SETTINGS['default directory']),
                             lambda self, path: SETTINGS.set('default directory', path))
 
@@ -195,6 +195,35 @@ class RideFrame(wx.Frame, RideEventHandler, OnScreenEnsuringFrame):
         dlg = AboutDialog(self)
         dlg.ShowModal()
         dlg.Destroy()
+
+# This code is copied from http://wiki.wxpython.org/EnsureFrameIsOnScreen,
+# and adapted to fit our code style. 
+    def ensure_on_screen(self):
+        try:
+            display_id = wx.Display.GetFromWindow(self)
+        except NotImplementedError:
+            display_id = 0
+        if display_id == -1:
+            display_id = 0
+        geometry = wx.Display(display_id).GetGeometry()
+        position = self.GetPosition()
+        if position.x < geometry.x:
+            position.x = geometry.x
+        if position.y < geometry.y:
+            position.y = geometry.y
+        size = self.GetSize()
+        if size.width > geometry.width:
+            size.width = geometry.width
+            position.x = geometry.x
+        elif position.x + size.width > geometry.x + geometry.width:
+            position.x = geometry.x + geometry.width - size.width
+        if size.height > geometry.height:
+            size.height = geometry.height
+            position.y = geometry.y
+        elif position.y + size.height > geometry.y + geometry.height:
+            position.y = geometry.y + geometry.height - size.height
+        self.SetPosition(position)
+        self.SetSize(size)
 
 
 class ActionRegisterer(object):
