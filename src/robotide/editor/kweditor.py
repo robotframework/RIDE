@@ -41,18 +41,6 @@ class GridEditor(grid.Grid):
         self.Bind(grid.EVT_GRID_RANGE_SELECT, self.OnRangeSelect)
         self.Bind(grid.EVT_GRID_CELL_RIGHT_CLICK, self.OnCellRightClick)
 
-    def set_dirty(self):
-        # TODO: necessary?
-        pass
-
-    def _save_keywords(self):
-        # TODO: necessary?
-        pass
-
-    def _remove_selected_rows(self):
-        # TODO: necessary?
-        pass
-
     def OnSelectCell(self, event):
         self._active_coords = _GridCoords((event.GetRow(), event.GetCol()))
         self.AutoSizeRows()
@@ -150,8 +138,6 @@ class GridEditor(grid.Grid):
                 event.Skip()
         else:
             self._clear_cells(self._get_selected_cells())
-        self._save_keywords()
-        self.set_dirty()
 
     def OnPaste(self, event=None):
         """Paste the contents of the clipboard. If a cell is being edited just
