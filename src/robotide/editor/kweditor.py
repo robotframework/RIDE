@@ -76,28 +76,7 @@ class GridEditor(grid.Grid):
         PopupMenu(self, ['Cut\tCtrl-X', 'Copy\tCtrl-C', 'Paste\tCtrl-V', '---',
                          'Delete\tDel'])
 
-    def OnCut(self, event=None):
-        """Cuts the contents of the selected cell(s). This does a normal cut
-        action if the user is editing a cell, otherwise it places the selected
-        range of cells on the clipboard.
-        """
-        if self.IsCellEditControlShown():
-            # This is needed in Windows
-            self._get_cell_edit_control().Cut()
-            self._save_keywords()
-            self.set_dirty()
-        else:
-            self._add_data_to_clipboard(self._get_selected_content())
-            self._clear_cells(self._get_selected_cells())
-        self._remove_selected_rows()
-        self._save_keywords()
-        self.set_dirty()
-
-    def _clear_cells(self, cells):
-        for row, col in cells:
-            self.write_cell(row, col, '')
-
-    def OnCopy(self, event=None):
+    def copy(self):
         """Copy the contents of the selected cell(s). This does a normal copy
         action if the user is editing a cell, otherwise it places the selected
         range of cells on the data.
@@ -107,6 +86,22 @@ class GridEditor(grid.Grid):
             self._get_cell_edit_control().Copy()
         else:
             self._add_data_to_clipboard(self._get_selected_content())
+
+    def cut(self):
+        """Cuts the contents of the selected cell(s). This does a normal cut
+        action if the user is editing a cell, otherwise it places the selected
+        range of cells on the clipboard.
+        """
+        if self.IsCellEditControlShown():
+            # This is needed in Windows
+            self._get_cell_edit_control().Cut()
+        else:
+            self._add_data_to_clipboard(self._get_selected_content())
+            self._clear_cells(self._get_selected_cells())
+
+    def _clear_cells(self, cells):
+        for row, col in cells:
+            self.write_cell(row, col, '')
 
     def _get_selected_content(self):
         data = []
@@ -143,7 +138,7 @@ class GridEditor(grid.Grid):
         wx.TheClipboard.AddData(do)
         wx.TheClipboard.Close()
 
-    def OnDelete(self, event=None):
+    def delete(self, event=None):
         if self.IsCellEditControlShown():
             # This is needed in Windows
             editor = self._get_cell_edit_control()
@@ -363,6 +358,19 @@ class KeywordEditor(KeywordEditorUi):
             for col, arg in enumerate(kw.get_display_value()):
                 self.write_cell(row, col, arg)
         self.AutoSizeRows()
+
+    def OnCopy(self, event=None):
+        self.copy()
+
+    def OnCut(self, event=None):
+        self.cut()
+        self._save_keywords()
+        self.set_dirty()
+
+    def OnDelete(self, event=None):
+        self.delete(event)
+        self._save_keywords()
+        self.set_dirty()
 
     def set_dirty(self):
         # TODO: it would be better to not set dirty directly
