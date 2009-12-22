@@ -126,7 +126,6 @@ class TestPopulating(_BaseSuiteTreeTest):
         dir_suite = self._tree._datafile_nodes[0]
         item, cookie = self._tree.GetFirstChild(dir_suite)
         while item:
-            print self._tree.GetItemText(item)
             item, cookie = self._tree.GetNextChild(dir_suite, cookie)
         nodes = ['Top Suite Fake UK 0', 'Top Suite Fake UK 1', 'Top Suite Fake UK 2',
                  'Top Suite Fake UK 3', 'Top Suite Fake UK 4', 'Sub Suite 0']
