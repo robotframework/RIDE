@@ -95,13 +95,13 @@ class _EditorGrid(GridEditor):
 
     def _bind_actions(self):
         accelrators = []
-        for keycode, handler in [(ord('c'), self.OnCopy),
-                                 (ord('x'), self.OnCut),
-                                 (ord('v'), self.OnPaste),
-                                 (wx.WXK_DELETE, self.OnDelete)]:
+        for mod, key, handler in [(wx.ACCEL_CTRL, ord('c'), self.OnCopy),
+                                 (wx.ACCEL_CTRL, ord('x'), self.OnCut),
+                                 (wx.ACCEL_CTRL, ord('v'), self.OnPaste),
+                                 (wx.ACCEL_NORMAL, wx.WXK_DELETE, self.OnDelete)]:
             id = wx.NewId()
             self.Bind(wx.EVT_MENU, handler, id=id)
-            accelrators.append((wx.ACCEL_CTRL, keycode, id))
+            accelrators.append((mod, key, id))
         self.SetAcceleratorTable(wx.AcceleratorTable(accelrators))
 
     def _create_grid(self, value):
