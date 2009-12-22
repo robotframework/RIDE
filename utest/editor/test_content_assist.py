@@ -16,7 +16,7 @@ import unittest
 
 from robot.utils.asserts import assert_equals
 
-from robotide.utils.contentassist import ContentAssistPopup
+from robotide.editor.contentassist import ContentAssistPopup
 
 from resources import PYAPP_REFERENCE as _ # Needed to allow importing wx
 # wx needs to imported last so that robotide can select correct wx version.
