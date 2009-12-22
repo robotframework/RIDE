@@ -94,7 +94,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             self.Expand(self._resource_root)
         if self._datafile_nodes:
             self.SelectItem(self._datafile_nodes[0])
-            self.Expand(self._datafile_nodes[0])
+            self._expand_and_render_children(self._datafile_nodes[0],
+                                             lambda item: item.is_test_suite)
 
     def _render_datafile(self, parent_node, datafile, index=None):
         node = self._create_node_with_handler(parent_node, datafile, index)
@@ -164,6 +165,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _handle_pending_selection(self, to_be_selected, parent_node):
         if to_be_selected:
+            self._expand_and_render_children(parent_node)
             self.SelectItem(self._get_node_with_label(parent_node, to_be_selected))
 
     def add_suite(self, parent, suite):
@@ -259,8 +261,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         if not parent_node:
             return
         if not self.IsExpanded(parent_node):
-            self.Expand(parent_node)
-            self._render_children(parent_node)
+            self._expand_and_render_children(parent_node)
         node = self._get_node_with_label(parent_node, utils.normalize(uk.name))
         if node != self.GetSelection():
             self.SelectItem(node)
@@ -316,15 +317,19 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         if self.IsExpanded(node):
             self.Collapse(node)
         elif self.ItemHasChildren(node):
-            self._render_children(node)
-            self.Expand(node)
+            self._expand_and_render_children(node)
 
-    def _render_children(self, node):
+    def _expand_and_render_children(self, node, predicate=None):
         item = self.GetItemPyData(node).item
         for test in item.tests:
             self._create_node_with_handler(node, test)
         for kw in item.keywords:
-            self._create_node_with_handler(node, kw)
+            if predicate:
+                index = self._get_insertion_index(node, predicate)
+            else:
+                index = None
+            self._create_node_with_handler(node, kw, index)
+        self.Expand(node)
 
     def OnLeftArrow(self, event):
         node = self.GetSelection()

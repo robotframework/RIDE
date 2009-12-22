@@ -74,6 +74,7 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         self._tree._images = imgs
         self._tree.SetImageList(imgs)
         self._tree.populate(self._model)
+        self._expand_all()
 
     def _create_model(self):
         suite = self._create_directory_suite('Top Suite', '/topsuite/__init__.html')
@@ -97,7 +98,11 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         suite.keywords.extend([ FakeUserKeyword(suite, '%s Fake UK %d' % (name, i))
                                 for i in range(5) ])
         return suite
-    
+
+    def _expand_all(self):
+        for node in self._tree._datafile_nodes[1:]:
+            self._tree._expand_and_render_children(node)
+
     def _get_selected_label(self):
         return self._tree.GetItemText(self._tree.GetSelection())
 
@@ -119,6 +124,10 @@ class TestPopulating(_BaseSuiteTreeTest):
 
     def test_directory_suite_has_correct_subnodes(self):
         dir_suite = self._tree._datafile_nodes[0]
+        item, cookie = self._tree.GetFirstChild(dir_suite)
+        while item:
+            print self._tree.GetItemText(item)
+            item, cookie = self._tree.GetNextChild(dir_suite, cookie)
         nodes = ['Top Suite Fake UK 0', 'Top Suite Fake UK 1', 'Top Suite Fake UK 2',
                  'Top Suite Fake UK 3', 'Top Suite Fake UK 4', 'Sub Suite 0']
         self._assert_children(dir_suite, nodes)
@@ -256,6 +265,7 @@ class TestRefreshingDataNode(_BaseSuiteTreeTest):
         suite = self._model.suite.suites[0]
         suite.tests[0].rename(new_name)
         self._tree.refresh_datafile(suite, None)
+        self._expand_all()
         snode = self._get_node(suite.name)
         tnode = self._tree.GetFirstChild(snode)[0]
         assert_equals(self._tree.GetItemText(tnode), new_name)
@@ -267,6 +277,7 @@ class TestRefreshingDataNode(_BaseSuiteTreeTest):
         resource = self._model.resources[0]
         resource.keywords[0].rename(new_name)
         self._tree.refresh_datafile(resource, None)
+        self._expand_all()
         rnode = self._get_node(resource.name)
         knode = self._tree.GetFirstChild(rnode)[0]
         assert_equals(self._tree.GetItemText(knode), new_name)
