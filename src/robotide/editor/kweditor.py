@@ -24,6 +24,11 @@ from contentassist import ExpandingContentAssistTextCtrl
 from popupwindow import RidePopupWindow
 
 
+class ClipBoardHandler(object):
+    def __init__(self, grid):
+        self._grid = grid
+
+
 class GridEditor(grid.Grid):
 
     def __init__(self, parent):
@@ -54,16 +59,18 @@ class GridEditor(grid.Grid):
         event.Skip()
 
     def OnRangeSelect(self, event):
-        if event.Selecting():
-            row_selection = self.GetSelectedRows()
-            if row_selection:
-                topleft  = row_selection[0], 0
-                bottomright = row_selection[-1], self.GetNumberCols()-1
-            else:
-                topleft = event.GetTopLeftCoords().GetRow(), event.GetTopLeftCoords().GetCol()
-                bottomright = event.GetBottomRightCoords().GetRow(), event.GetBottomRightCoords().GetCol()
-            self._active_coords = _GridCoords(topleft, bottomright)
-        event.Skip()
+        if not event.Selecting():
+            return
+        whole_row_selection = self.GetSelectedRows()
+        if whole_row_selection:
+            topleft  = whole_row_selection[0], 0
+            bottomright = whole_row_selection[-1], self.GetNumberCols()-1
+        else:
+            topleft = event.GetTopLeftCoords().GetRow(),\
+                        event.GetTopLeftCoords().GetCol()
+            bottomright = event.GetBottomRightCoords().GetRow(),\
+                            event.GetBottomRightCoords().GetCol()
+        self._active_coords = _GridCoords(topleft, bottomright)
 
     def OnCellRightClick(self, event):
         PopupMenu(self, ['Cut\tCtrl-X', 'Copy\tCtrl-C', 'Paste\tCtrl-V', '---',
@@ -80,46 +87,50 @@ class GridEditor(grid.Grid):
             self._save_keywords()
             self.set_dirty()
         else:
-            self._move_to_clipboard(delete=True)
-            self._remove_selected_rows()
+            self._add_data_to_clipboard(self._get_selected_content())
+            self._clear_cells(self._get_selected_cells())
+        self._remove_selected_rows()
+        self._save_keywords()
+        self.set_dirty()
+
+    def _clear_cells(self, cells):
+        for row, col in cells:
+            self.write_cell(row, col, '')
 
     def OnCopy(self, event=None):
         """Copy the contents of the selected cell(s). This does a normal copy
         action if the user is editing a cell, otherwise it places the selected
-        range of cells on the clipboard.
+        range of cells on the data.
         """
         if self.IsCellEditControlShown():
             # This is needed in Windows
             self._get_cell_edit_control().Copy()
         else:
-            self._move_to_clipboard()
+            self._add_data_to_clipboard(self._get_selected_content())
 
-    def _move_to_clipboard(self, copy=True, delete=False):
-        if self._active_coords is None:
+    def _get_selected_content(self):
+        data = []
+        for row in self._active_coords.get_selected_rows():
+            data.append([self.GetCellValue(row, col) for
+                         col in self._active_coords.get_selected_cols()])
+        return data
+
+    def _add_data_to_clipboard(self, data):
+        if not data:
             return
-        clipboard = []
-        startrow = self._active_coords.topleft.row
-        startcol = self._active_coords.topleft.col
-        endrow = self._active_coords.bottomright.row
-        endcol = self._active_coords.bottomright.col
-        row = []
-        for i in range(endrow-startrow+1):
-            for j in range(endcol-startcol+1):
-                row.append(self.GetCellValue(startrow+i, startcol+j))
-                if delete:
-                    self.write_cell(startrow+i, startcol+j, '')
-            if copy:
-                clipboard.append(row)
-            row = []
-        if delete:
-            self.set_dirty()
-            self._save_keywords()
-            self._remove_selected_rows()
-        if len(clipboard) > 0:
-            if self._is_single_cell_data(clipboard) and os.name == 'nt':
-                self._add_single_cell_data_to_clipboard(clipboard)
-            else:
-                GRID_CLIPBOARD.set_contents(clipboard)
+        if self._is_single_cell_data(data) and os.name == 'nt':
+            self._add_single_cell_data_to_clipboard(data)
+        else:
+            GRID_CLIPBOARD.set_contents(data)
+
+    def _get_selected_cells(self):
+        cells = []
+        if self._active_coords is None:
+            return cells
+        for row in self._active_coords.get_selected_rows():
+            for col in self._active_coords.get_selected_cols():
+                cells.append((row, col))
+        return cells
 
     def _is_single_cell_data(self, clipboard):
         return len(clipboard) == 1 and len(clipboard[0]) == 1
@@ -143,7 +154,9 @@ class GridEditor(grid.Grid):
             if event:
                 event.Skip()
         else:
-            self._move_to_clipboard(copy=False, delete=True)
+            self._clear_cells(self._get_selected_cells())
+        self._save_keywords()
+        self.set_dirty()
 
     def OnPaste(self, event=None):
         """Paste the contents of the clipboard. If a cell is being edited just
@@ -507,6 +520,13 @@ class _GridCoords(object):
         self.bottomright = _Cell(*bottomright)
         self.cell = (self.topleft.row, self.topleft.col)
 
+    def get_selected_rows(self):
+        """Returns a list containing indices of rows currently selected."""
+        return range(self.topleft.row, self.bottomright.row+1)
+
+    def get_selected_cols(self):
+        """Returns a list containing indices of columns currently selected."""
+        return range(self.topleft.col, self.bottomright.col+1)
 
 class _Cell(object):
 
