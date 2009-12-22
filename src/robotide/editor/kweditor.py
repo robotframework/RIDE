@@ -24,10 +24,17 @@ from contentassist import ExpandingContentAssistTextCtrl
 from popupwindow import RidePopupWindow
 
 
-class KeywordEditorUi(grid.Grid):
+class GridEditor(grid.Grid):
+
+    def __init__(self, parent):
+        grid.Grid.__init__(self, parent)
+        self._edit_history = []
+
+
+class KeywordEditorUi(GridEditor):
 
     def __init__(self, parent, num_rows, num_cols):
-        grid.Grid.__init__(self, parent)
+        GridEditor.__init__(self, parent)
         self.SetRowLabelSize(25)
         self.SetColLabelSize(0)
         self.SetDefaultColSize(170)
@@ -37,7 +44,6 @@ class KeywordEditorUi(grid.Grid):
         self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
         self.Bind(grid.EVT_GRID_SELECT_CELL, self.OnSelectCell)
         self.Bind(grid.EVT_GRID_RANGE_SELECT, self.OnRangeSelect)
-        self._edit_history = []
 
     def write_cell(self, celldata, row, col):
         if row >= self.GetNumberRows():
