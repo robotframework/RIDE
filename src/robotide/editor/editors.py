@@ -21,7 +21,9 @@ from robotide import utils
 
 from kweditor import KeywordEditor
 from listeditor import ListEditor
-from editordialogs import *
+from editordialogs import EditorDialog, DocumentationDialog,\
+    ScalarVariableDialog, ListVariableDialog, LibraryImportDialog,\
+    ResourceImportDialog, VariablesImportDialog, MetadataDialog
 
 
 def Editor(item, editor_panel, tree):
@@ -29,9 +31,6 @@ def Editor(item, editor_panel, tree):
         return WelcomePage(editor_panel)
     editor_class = globals()[item.__class__.__name__ + 'Editor']
     return editor_class(editor_panel, item, tree)
-
-def dialog_from_class(obj):
-    return globals()[obj.__class__.__name__ + 'Dialog']
 
 
 class WelcomePage(RideHtmlWindow):
@@ -135,7 +134,7 @@ class _SettingEditor(wx.Panel, RideEventHandler):
         self._item = item
         self._datafile = item.datafile
         self._create_controls(utils.name_from_class(item))
-        self._dialog = dialog_from_class(item)
+        self._dialog = EditorDialog(item)
         self._tree = tree
         self._editing = False
 
@@ -347,7 +346,7 @@ class ImportSettingListEditor(_AbstractListEditor):
 
     def OnEdit(self, event):
         setting = self._get_setting()
-        dlg = dialog_from_class(setting)(self.GetGrandParent(), setting)
+        dlg = EditorDialog(setting)(self.GetGrandParent(), setting)
         if dlg.ShowModal() == wx.ID_OK:
             setting.set_str_value(dlg.get_value())
             self.update_data()

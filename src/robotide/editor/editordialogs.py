@@ -23,6 +23,10 @@ from fieldeditors import ValueEditor, ListValueEditor, MultiLineEditor,\
 from dialoghelps import get_help
 
 
+def EditorDialog(obj):
+    return globals()[obj.__class__.__name__ + 'Dialog']
+
+
 class _Dialog(wx.Dialog):
     _title = property(lambda self: utils.name_from_class(self, drop='Dialog'))
 
