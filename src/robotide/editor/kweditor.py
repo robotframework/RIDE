@@ -124,6 +124,14 @@ class GridEditor(grid.Grid):
     def _is_single_cell_data(self, clipboard):
         return len(clipboard) == 1 and len(clipboard[0]) == 1
 
+    def _add_single_cell_data_to_clipboard(self, data_table):
+        #TODO: This should be moved to clipboard module
+        do = wx.TextDataObject()
+        do.SetText(data_table[0][0])
+        wx.TheClipboard.Open()
+        wx.TheClipboard.AddData(do)
+        wx.TheClipboard.Close()
+
     def OnDelete(self, event=None):
         if self.IsCellEditControlShown():
             # This is needed in Windows
@@ -166,6 +174,9 @@ class GridEditor(grid.Grid):
                         col += 1
                     row += 1
 
+    def _get_cell_edit_control(self):
+        return self.GetCellEditor(*self._active_coords.cell).GetControl()
+
     def write_cell(self, row, col, value):
         self.SetCellValue(row, col, value)
 
@@ -203,17 +214,6 @@ class KeywordEditorUi(GridEditor):
             self.GetGrandParent().GetSizer().Layout()
         if col >= self.GetNumberCols():
             self.AppendCols(1)
-
-    def _get_cell_edit_control(self):
-        return self.GetCellEditor(*self._active_coords.cell).GetControl()
-
-    def _add_single_cell_data_to_clipboard(self, data_table):
-        #TODO: This should be moved to clipboard module
-        do = wx.TextDataObject()
-        do.SetText(data_table[0][0])
-        wx.TheClipboard.Open()
-        wx.TheClipboard.AddData(do)
-        wx.TheClipboard.Close()
 
     def _remove_selected_rows(self):
         """If whole row(s) are selected, remove them from the grid"""
