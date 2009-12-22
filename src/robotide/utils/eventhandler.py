@@ -14,8 +14,6 @@
 
 import wx
 
-from robotide import context
-
 
 class eventhandlertype(type):
     def __new__(cls, name, bases, dict):
