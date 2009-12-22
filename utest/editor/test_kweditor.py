@@ -162,7 +162,7 @@ class TestEditing(unittest.TestCase):
 
     def setUp(self):
         self._editor = KeywordEditor(_FakeMainFrame(), _KeywordList(), None)
-        PUBLISHER.subscribe(self._on_cell_changed, RideGridCellChanged)#('core', 'grid', 'cell changed')
+        PUBLISHER.subscribe(self._on_cell_changed, RideGridCellChanged)
 
     def test_correct_event_is_published_during_population(self):
         self._editor.write_cell('Hello', 0, 0)
