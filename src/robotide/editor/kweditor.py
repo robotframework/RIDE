@@ -28,39 +28,46 @@ class GridEditor(grid.Grid):
 
     def __init__(self, parent):
         grid.Grid.__init__(self, parent)
+        self._bind_to_events()
         self._edit_history = []
 
-
-class KeywordEditorUi(GridEditor):
-
-    def __init__(self, parent, num_rows, num_cols):
-        GridEditor.__init__(self, parent)
-        self.SetRowLabelSize(25)
-        self.SetColLabelSize(0)
-        self.SetDefaultColSize(170)
-        self.SetDefaultCellOverflow(False)
-        self.SetDefaultRenderer(grid.GridCellAutoWrapStringRenderer())
-        self.CreateGrid(num_rows, num_cols)
-        self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
+    def _bind_to_events(self):
         self.Bind(grid.EVT_GRID_SELECT_CELL, self.OnSelectCell)
         self.Bind(grid.EVT_GRID_RANGE_SELECT, self.OnRangeSelect)
+        self.Bind(grid.EVT_GRID_CELL_RIGHT_CLICK, self.OnCellRightClick)
 
-    def write_cell(self, celldata, row, col):
-        if row >= self.GetNumberRows():
-            self.AppendRows(2)
-            self.SetSize(self.GetBestSize())
-            self.GetParent().GetSizer().Fit(self.GetParent())
-            self.GetGrandParent().GetSizer().Layout()
-        if col >= self.GetNumberCols():
-            self.AppendCols(1)
-        self.SetCellValue(row, col, celldata)
+    def set_dirty(self):
+        # TODO: necessary?
+        pass
 
-    def SetCellValue(self, row, col, value, send_event=True):
-        previous = self.GetCellValue(row, col)
-        grid.Grid.SetCellValue(self, row, col, value)
-        if send_event:
-            RideGridCellChanged(cell=(row, col), value=value, previous=previous,
-                                grid=self).publish()
+    def _save_keywords(self):
+        # TODO: necessary?
+        pass
+
+    def _remove_selected_rows(self):
+        # TODO: necessary?
+        pass
+
+    def OnSelectCell(self, event):
+        self._active_coords = _GridCoords((event.GetRow(), event.GetCol()))
+        self.AutoSizeRows()
+        event.Skip()
+
+    def OnRangeSelect(self, event):
+        if event.Selecting():
+            row_selection = self.GetSelectedRows()
+            if row_selection:
+                topleft  = row_selection[0], 0
+                bottomright = row_selection[-1], self.GetNumberCols()-1
+            else:
+                topleft = event.GetTopLeftCoords().GetRow(), event.GetTopLeftCoords().GetCol()
+                bottomright = event.GetBottomRightCoords().GetRow(), event.GetBottomRightCoords().GetCol()
+            self._active_coords = _GridCoords(topleft, bottomright)
+        event.Skip()
+
+    def OnCellRightClick(self, event):
+        PopupMenu(self, ['Cut\tCtrl-X', 'Copy\tCtrl-C', 'Paste\tCtrl-V', '---',
+                         'Delete\tDel'])
 
     def OnCut(self, event=None):
         """Cuts the contents of the selected cell(s). This does a normal cut
@@ -87,6 +94,49 @@ class KeywordEditorUi(GridEditor):
         else:
             self._move_to_clipboard()
 
+    def _move_to_clipboard(self, copy=True, delete=False):
+        if self._active_coords is None:
+            return
+        clipboard = []
+        startrow = self._active_coords.topleft.row
+        startcol = self._active_coords.topleft.col
+        endrow = self._active_coords.bottomright.row
+        endcol = self._active_coords.bottomright.col
+        row = []
+        for i in range(endrow-startrow+1):
+            for j in range(endcol-startcol+1):
+                row.append(self.GetCellValue(startrow+i, startcol+j))
+                if delete:
+                    self.write_cell(startrow+i, startcol+j, '')
+            if copy:
+                clipboard.append(row)
+            row = []
+        if delete:
+            self.set_dirty()
+            self._save_keywords()
+            self._remove_selected_rows()
+        if len(clipboard) > 0:
+            if self._is_single_cell_data(clipboard) and os.name == 'nt':
+                self._add_single_cell_data_to_clipboard(clipboard)
+            else:
+                GRID_CLIPBOARD.set_contents(clipboard)
+
+    def _is_single_cell_data(self, clipboard):
+        return len(clipboard) == 1 and len(clipboard[0]) == 1
+
+    def OnDelete(self, event=None):
+        if self.IsCellEditControlShown():
+            # This is needed in Windows
+            editor = self._get_cell_edit_control()
+            start, end = editor.GetSelection()
+            if start == end:
+                end += 1
+            editor.Remove(start, end)
+            if event:
+                event.Skip()
+        else:
+            self._move_to_clipboard(copy=False, delete=True)
+
     def OnPaste(self, event=None):
         """Paste the contents of the clipboard. If a cell is being edited just
         do a normal paste. If a cell is not being edited, paste whole rows.
@@ -106,69 +156,56 @@ class KeywordEditorUi(GridEditor):
                 return
             cell = self._active_coords.topleft
             if not isinstance(clipboard, list):
-                self.write_cell(clipboard, cell.row, cell.col)
+                self.write_cell(cell.row, cell.col, clipboard)
             else:
                 row = cell.row
                 for datarow in clipboard:
                     col = cell.col
-                    for data in datarow:
-                        self.write_cell(data, row, col)
+                    for value in datarow:
+                        self.write_cell(row, col, value)
                         col += 1
                     row += 1
-        self._save_keywords()
-        self.set_dirty()
 
-    def OnDelete(self, event=None):
-        if self.IsCellEditControlShown():
-            # This is needed in Windows
-            editor = self._get_cell_edit_control()
-            start, end = editor.GetSelection()
-            if start == end:
-                end += 1
-            editor.Remove(start, end)
-            if event:
-                event.Skip()
-        else:
-            self._move_to_clipboard(copy=False, delete=True)
-                
+    def write_cell(self, row, col, value):
+        self.SetCellValue(row, col, value)
+
     def undo(self):
         if self._edit_history:
             self.ClearGrid()
             self._write_data(self._edit_history.pop())
             self._save_keywords(append_to_history=False)
 
+
+class KeywordEditorUi(GridEditor):
+
+    def __init__(self, parent, num_rows, num_cols):
+        GridEditor.__init__(self, parent)
+        self.SetRowLabelSize(25)
+        self.SetColLabelSize(0)
+        self.SetDefaultColSize(170)
+        self.SetDefaultCellOverflow(False)
+        self.SetDefaultRenderer(grid.GridCellAutoWrapStringRenderer())
+        self.CreateGrid(num_rows, num_cols)
+        self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
+
+    def write_cell(self, row, col, value):
+        previous = self.GetCellValue(row, col)
+        self._expand_if_necessary(row, col)
+        self.SetCellValue(row, col, value)
+        RideGridCellChanged(cell=(row, col), value=value, previous=previous,
+                            grid=self).publish()
+
+    def _expand_if_necessary(self, row, col):
+        if row >= self.GetNumberRows():
+            self.AppendRows(2)
+            self.SetSize(self.GetBestSize())
+            self.GetParent().GetSizer().Fit(self.GetParent())
+            self.GetGrandParent().GetSizer().Layout()
+        if col >= self.GetNumberCols():
+            self.AppendCols(1)
+
     def _get_cell_edit_control(self):
         return self.GetCellEditor(*self._active_coords.cell).GetControl()
-
-    def _move_to_clipboard(self, copy=True, delete=False):
-        if self._active_coords is None:
-            return
-        clipboard = []
-        startrow = self._active_coords.topleft.row
-        startcol = self._active_coords.topleft.col
-        endrow = self._active_coords.bottomright.row
-        endcol = self._active_coords.bottomright.col
-        row = []
-        for i in range(endrow-startrow+1):
-            for j in range(endcol-startcol+1):
-                row.append(self.GetCellValue(startrow+i, startcol+j))
-                if delete:
-                    self.write_cell('', startrow+i, startcol+j)
-            if copy:
-                clipboard.append(row)
-            row = []
-        if delete:
-            self.set_dirty()
-            self._save_keywords()
-            self._remove_selected_rows()
-        if len(clipboard) > 0:
-            if self._is_single_cell_data(clipboard) and os.name == 'nt':
-                self._add_single_cell_data_to_clipboard(clipboard)
-            else:
-                GRID_CLIPBOARD.set_contents(clipboard)
-
-    def _is_single_cell_data(self, clipboard):
-        return len(clipboard) == 1 and len(clipboard[0]) == 1
 
     def _add_single_cell_data_to_clipboard(self, data_table):
         #TODO: This should be moved to clipboard module
@@ -211,13 +248,13 @@ class KeywordEditorUi(GridEditor):
         if rowdata[-1]:
             self.InsertCols(self.GetNumberCols())
         for col, value in enumerate(rowdata):
-            self.SetCellValue(row, col, value)
+            self.write_cell(row, col, value)
 
     def _uncomment_row(self, row):
         if self.GetCellValue(row, 0).lower() == 'comment':
             for col in range(1, self.GetNumberCols()):
-                self.SetCellValue(row, col-1, self.GetCellValue(row, col))
-            self.SetCellValue(row, self.GetNumberCols()-1, '')
+                self.write_cell(row, col-1, self.GetCellValue(row, col))
+            self.write_cell(row, self.GetNumberCols()-1, '')
 
     def _do_action_on_selected_rows(self, action):
         for row in self._get_selected_rows():
@@ -236,18 +273,6 @@ class KeywordEditorUi(GridEditor):
         self.AutoSizeRows()
         event.Skip()
 
-    def OnRangeSelect(self, event):
-        if event.Selecting():
-            row_selection = self.GetSelectedRows()
-            if row_selection:
-                topleft  = row_selection[0], 0
-                bottomright = row_selection[-1], self.GetNumberCols()-1
-            else:
-                topleft = event.GetTopLeftCoords().GetRow(), event.GetTopLeftCoords().GetCol()
-                bottomright = event.GetBottomRightCoords().GetRow(), event.GetBottomRightCoords().GetCol()
-            self._active_coords = _GridCoords(topleft, bottomright)
-        event.Skip()
-
     def OnInsertRows(self, event):
         self.InsertRows(*self._get_insertion_position_and_row_count(event))
         self.GetParent().Sizer.Layout()
@@ -258,6 +283,11 @@ class KeywordEditorUi(GridEditor):
             return self.GetNumberRows(), 1
         rows = self._get_selected_rows()
         return min(rows), len(rows)
+
+    def OnPaste(self, event=None):
+        GridEditor.OnPaste(self, event)
+        self._save_keywords()
+        self.set_dirty()
 
     def OnDeleteRows(self, event):
         self.set_dirty()
@@ -314,12 +344,11 @@ class KeywordEditor(KeywordEditorUi):
         self.Bind(wx.EVT_IDLE, self.OnIdle)
         self.Bind(grid.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
         self.Bind(grid.EVT_GRID_CELL_LEFT_DCLICK, self.OnCellLeftDClick)
-        self.Bind(grid.EVT_GRID_CELL_RIGHT_CLICK, self.OnCellRightClick)
 
     def _write_data(self, keywords):
         for row, kw in enumerate(keywords):
             for col, arg in enumerate(kw.get_display_value()):
-                self.write_cell(arg, row, col)
+                self.write_cell(row, col, arg)
         self.AutoSizeRows()
 
     def set_dirty(self):
@@ -417,10 +446,6 @@ class KeywordEditor(KeywordEditorUi):
             self._tree.select_user_keyword_node(uk)
             return True
         return False
-
-    def OnCellRightClick(self, event):
-        PopupMenu(self, ['Cut\tCtrl-X', 'Copy\tCtrl-C', 'Paste\tCtrl-V', '---',
-                         'Delete\tDel'])
 
     def OnIdle(self, evt):
         if not self.IsShownOnScreen() or self.IsCellEditControlShown():
@@ -526,7 +551,7 @@ class ContentAssistCellEditor(grid.PyGridCellEditor):
             value = self._tc.content_assist_value()
         else:
             value = self._tc.GetValue()
-        grid.SetCellValue(row, col, value)
+        grid.write_cell(row, col, value)
         if value != self._previous_value:
             grid.set_dirty()
         self._previous_value = value

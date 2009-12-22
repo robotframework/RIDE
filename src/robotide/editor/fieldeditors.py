@@ -16,6 +16,7 @@ import wx
 from wx import grid
 
 from contentassist import ContentAssistTextCtrl
+from kweditor import GridEditor
 
 
 class ValueEditor(wx.Panel):
@@ -78,11 +79,12 @@ class ListValueEditor(ValueEditor):
         return self._editor.get_value()
 
 
-class _EditorGrid(grid.Grid):
+class _EditorGrid(GridEditor):
 
     def __init__(self, parent, value):
-        grid.Grid.__init__(self, parent)
+        GridEditor.__init__(self, parent)
         self._set_default_sizes()
+        self._bind_actions()
         self._create_grid(value)
         self._initialize_value(value)
 
@@ -90,6 +92,17 @@ class _EditorGrid(grid.Grid):
         self.SetColLabelSize(0)
         self.SetRowLabelSize(0)
         self.SetDefaultColSize(175)
+
+    def _bind_actions(self):
+        accelrators = []
+        for keycode, handler in [(ord('c'), self.OnCopy),
+                                 (ord('x'), self.OnCut),
+                                 (ord('v'), self.OnPaste),
+                                 (wx.WXK_DELETE, self.OnDelete)]:
+            id = wx.NewId()
+            self.Bind(wx.EVT_MENU, handler, id=id)
+            accelrators.append((wx.ACCEL_CTRL, keycode, id))
+        self.SetAcceleratorTable(wx.AcceleratorTable(accelrators))
 
     def _create_grid(self, value):
         cols = 4

@@ -165,17 +165,10 @@ class TestEditing(unittest.TestCase):
         PUBLISHER.subscribe(self._on_cell_changed, RideGridCellChanged)
 
     def test_correct_event_is_published_during_population(self):
-        self._editor.write_cell('Hello', 0, 0)
+        self._editor.write_cell(0, 0, 'Hello')
         assert_equals(self._data.cell, (0,0))
         assert_equals(self._data.value, 'Hello')
         assert_equals(self._data.previous, 'kw1')
-        assert_equals(self._data.grid, self._editor)
-
-    def test_correct_event_is_published_when_editing(self):
-        self._editor.SetCellValue(2, 3, 'Robot rulez!')
-        assert_equals(self._data.cell, (2,3))
-        assert_equals(self._data.value, 'Robot rulez!')
-        assert_equals(self._data.previous, '')
         assert_equals(self._data.grid, self._editor)
 
     def _on_cell_changed(self, message):
