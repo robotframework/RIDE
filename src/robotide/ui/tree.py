@@ -105,6 +105,18 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             self._render_datafile(node, suite, None)
         return node
 
+    def _expand_and_render_children(self, node, predicate=None):
+        item = self.GetItemPyData(node).item
+        for test in item.tests:
+            self._create_node_with_handler(node, test)
+        for kw in item.keywords:
+            if predicate:
+                index = self._get_insertion_index(node, predicate)
+            else:
+                index = None
+            self._create_node_with_handler(node, kw, index)
+        self.Expand(node)
+
     def _create_node(self, parent_node, label, img, index=None):
         if index is not None:
             # blame wxPython for this ugliness 
@@ -125,48 +137,6 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         handler_class = globals()[name + 'Handler']
         self.SetPyData(node, handler_class(dataitem, self, node))
         return node
-
-    def refresh_datafile(self, datafile, event):
-        to_be_selected = self._get_pending_selection(event)
-        orig_node = self._get_datafile_node(datafile)
-        insertion_index = self._get_datafile_index(orig_node)
-        parent = self._get_parent(orig_node)
-        self._remove_datafile_node(orig_node)
-        new_node = self._render_datafile(parent, datafile, insertion_index)
-        self._handle_pending_selection(to_be_selected, new_node)
-
-    def _get_pending_selection(self, event):
-        if hasattr(event, 'Item'):
-            item= event.Item
-            event.Veto()
-        elif hasattr(event, 'Position'):
-            item, flags = self.HitTest(event.Position)
-            if not (item.IsOk() and self._click_on_item(flags)):
-                return
-        else:
-            return
-        return self.GetItemText(item)
-
-    def _get_datafile_index(self, node):
-        insertion_index = self.GetPrevSibling(node)
-        if not insertion_index.IsOk():
-            insertion_index = 0
-        return insertion_index
-
-    def _get_parent(self, node):
-        return self.GetItemParent(node)
-
-    def _remove_datafile_node(self, node):
-        for child in self.GetItemChildren(node):
-            if child in self._datafile_nodes:
-                self._remove_datafile_node(child)
-        self._datafile_nodes.remove(node)
-        self.Delete(node)
-
-    def _handle_pending_selection(self, to_be_selected, parent_node):
-        if to_be_selected:
-            self._expand_and_render_children(parent_node)
-            self.SelectItem(self._get_node_with_label(parent_node, to_be_selected))
 
     def add_suite(self, parent, suite):
         snode = self._render_datafile(self._get_datafile_node(parent), suite)
@@ -198,56 +168,18 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             item, cookie = self.GetNextChild(parent_node, cookie)
         return None
 
-    def do_drop(self, datafilehandler, test_or_uk):
-        for node in self._datafile_nodes:
-            if self.GetItemPyData(node) == datafilehandler:
-                self._mark_dirty(node)
-                if isinstance(test_or_uk, UserKeyword):
-                    self.add_keyword(node, test_or_uk)
-                else:
-                    self.add_test(node, test_or_uk)
-
     def delete_node(self, node):
         parent = self.GetItemParent(node)
         self._mark_dirty(parent)
         self.Delete(node)
 
+    def mark_dirty(self, datafile):
+        self._mark_dirty(self._get_datafile_node(datafile))
+
     def _mark_dirty(self, node):
         text = self.GetItemText(node)
         if not text.startswith('*'):
             self.SetItemText(node, '*' + text)
-
-    def move_up(self, node):
-        prev = self.GetPrevSibling(node)
-        if prev.IsOk():
-            self._switch_items(prev, node)
-
-    def move_down(self, node):
-        next = self.GetNextSibling(node)
-        if next.IsOk():
-            self.SelectItem(self._switch_items(node, next))
-
-    def _switch_items(self, first, second):
-        """Changes the order of given items, first is expected to be directly above the second"""
-        parent = self.GetItemParent(first)
-        self._mark_dirty(parent)
-        dataitem = self.GetItemPyData(first).item
-        self.Delete(first)
-        node = self._create_node_with_handler(self.GetItemParent(second), dataitem, second)
-        return node
-
-    def OnGoBack(self, event):
-        node = self._history.back()
-        if node:
-            self.SelectItem(node)
-
-    def OnGoForward(self, event):
-        node = self._history.forward()
-        if node:
-            self.SelectItem(node)
-
-    def mark_dirty(self, datafile):
-        self._mark_dirty(self._get_datafile_node(datafile))
 
     def unset_dirty(self):
         for node in self._datafile_nodes:
@@ -287,6 +219,10 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         return None
 
     def get_selected_datafile(self):
+        """Returns currently selected data file.
+        
+        If a test or user keyword node is selected, returns parent of that item.
+        """
         node = self.GetSelection()
         if not node or node in (self._resource_root, self._root):
             return None
@@ -295,11 +231,87 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         return self.GetItemPyData(node).item
 
     def get_selected_item(self):
+        """Returns model object associated with currently selected tree node."""
         selection = self.GetSelection()
         if not selection:
             return None
         data = self.GetItemPyData(selection)
         return data and data.item or None
+
+    def move_up(self, node):
+        prev = self.GetPrevSibling(node)
+        if prev.IsOk():
+            self._switch_items(prev, node)
+
+    def move_down(self, node):
+        next = self.GetNextSibling(node)
+        if next.IsOk():
+            self.SelectItem(self._switch_items(node, next))
+
+    def _switch_items(self, first, second):
+        """Changes the order of given items, first is expected to be directly above the second"""
+        parent = self.GetItemParent(first)
+        self._mark_dirty(parent)
+        dataitem = self.GetItemPyData(first).item
+        self.Delete(first)
+        node = self._create_node_with_handler(self.GetItemParent(second),
+                                              dataitem, second)
+        return node
+
+    def refresh_datafile(self, datafile, event):
+        to_be_selected = self._get_pending_selection(event)
+        orig_node = self._get_datafile_node(datafile)
+        insertion_index = self._get_datafile_index(orig_node)
+        parent = self._get_parent(orig_node)
+        self._remove_datafile_node(orig_node)
+        new_node = self._render_datafile(parent, datafile, insertion_index)
+        self._handle_pending_selection(to_be_selected, new_node)
+
+    def _get_pending_selection(self, event):
+        if hasattr(event, 'Item'):
+            item= event.Item
+            event.Veto()
+        elif hasattr(event, 'Position'):
+            item, flags = self.HitTest(event.Position)
+            if not (item.IsOk() and self._click_on_item(flags)):
+                return
+        else:
+            return
+        return self.GetItemText(item)
+
+    def _click_on_item(self, flags):
+        return flags & wx.TREE_HITTEST_ONITEM
+
+    def _get_datafile_index(self, node):
+        insertion_index = self.GetPrevSibling(node)
+        if not insertion_index.IsOk():
+            insertion_index = 0
+        return insertion_index
+
+    def _get_parent(self, node):
+        return self.GetItemParent(node)
+
+    def _remove_datafile_node(self, node):
+        for child in self.GetItemChildren(node):
+            if child in self._datafile_nodes:
+                self._remove_datafile_node(child)
+        self._datafile_nodes.remove(node)
+        self.Delete(node)
+
+    def _handle_pending_selection(self, to_be_selected, parent_node):
+        if to_be_selected:
+            self._expand_and_render_children(parent_node)
+            self.SelectItem(self._get_node_with_label(parent_node, to_be_selected))
+
+    def OnGoBack(self, event):
+        node = self._history.back()
+        if node:
+            self.SelectItem(node)
+
+    def OnGoForward(self, event):
+        node = self._history.forward()
+        if node:
+            self.SelectItem(node)
 
     def OnSelChanged(self, event):
         node = event.Item
@@ -318,18 +330,6 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             self.Collapse(node)
         elif self.ItemHasChildren(node):
             self._expand_and_render_children(node)
-
-    def _expand_and_render_children(self, node, predicate=None):
-        item = self.GetItemPyData(node).item
-        for test in item.tests:
-            self._create_node_with_handler(node, test)
-        for kw in item.keywords:
-            if predicate:
-                index = self._get_insertion_index(node, predicate)
-            else:
-                index = None
-            self._create_node_with_handler(node, kw, index)
-        self.Expand(node)
 
     def OnLeftArrow(self, event):
         node = self.GetSelection()
@@ -351,9 +351,6 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         else:
             event.Veto()
 
-    def _click_on_item(self, flags):
-        return flags & wx.TREE_HITTEST_ONITEM
-
     def OnRightClick(self, event):
         handler = self.GetItemPyData(event.GetItem())
         if handler:
@@ -365,6 +362,15 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         if target and target.accepts_drag(dragged):
             dragged.remove()
             target.do_drop(dragged.item)
+
+    def do_drop(self, datafilehandler, test_or_uk):
+        for node in self._datafile_nodes:
+            if self.GetItemPyData(node) == datafilehandler:
+                self._mark_dirty(node)
+                if isinstance(test_or_uk, UserKeyword):
+                    self.add_keyword(node, test_or_uk)
+                else:
+                    self.add_test(node, test_or_uk)
 
     def IsValidDragItem(self, item):
         return self.GetItemPyData(item).is_draggable
