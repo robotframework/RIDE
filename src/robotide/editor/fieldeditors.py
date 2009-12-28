@@ -15,7 +15,7 @@
 import wx
 
 from contentassist import ContentAssistTextCtrl
-from kweditor import GridEditor
+from grid import GridEditor
 
 
 class ValueEditor(wx.Panel):
