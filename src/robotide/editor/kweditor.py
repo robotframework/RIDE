@@ -139,7 +139,7 @@ class GridEditor(grid.Grid):
         else:
             self._clear_cells(self._get_selected_cells())
 
-    def OnPaste(self, event=None):
+    def paste(self):
         """Paste the contents of the clipboard. If a cell is being edited just
         do a normal paste. If a cell is not being edited, paste whole rows.
         """
@@ -278,11 +278,6 @@ class KeywordEditorUi(GridEditor):
         rows = self._get_selected_rows()
         return min(rows), len(rows)
 
-    def OnPaste(self, event=None):
-        GridEditor.OnPaste(self, event)
-        self._save_keywords()
-        self.set_dirty()
-
     def OnDeleteRows(self, event):
         self.set_dirty()
         self._remove_selected_rows()
@@ -355,6 +350,11 @@ class KeywordEditor(KeywordEditorUi):
 
     def OnDelete(self, event=None):
         self.delete(event)
+        self._save_keywords()
+        self.set_dirty()
+
+    def OnPaste(self, event=None):
+        self.paste()
         self._save_keywords()
         self.set_dirty()
 
