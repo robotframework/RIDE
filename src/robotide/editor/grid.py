@@ -73,10 +73,10 @@ class GridEditor(grid.Grid):
             self._get_cell_edit_control().Cut()
         else:
             self._add_data_to_clipboard(self._get_selected_content())
-            self._clear_cells(self._get_selected_cells())
+            self._clear_selected_cells()
 
-    def _clear_cells(self, cells):
-        for row, col in cells:
+    def _clear_selected_cells(self):
+        for row, col in self._active_coords.get_selected_cells():
             self.write_cell(row, col, '')
 
     def _get_selected_content(self):
@@ -93,10 +93,6 @@ class GridEditor(grid.Grid):
             self._add_single_cell_data_to_clipboard(data)
         else:
             GRID_CLIPBOARD.set_contents(data)
-
-    def _get_selected_cells(self):
-        return [(row, col) for col in self._active_coords.get_selected_cols()
-                           for row in self._active_coords.get_selected_rows()]
 
     def _is_single_cell_data(self, clipboard):
         return len(clipboard) == 1 and len(clipboard[0]) == 1
@@ -120,7 +116,7 @@ class GridEditor(grid.Grid):
             if event:
                 event.Skip()
         else:
-            self._clear_cells(self._get_selected_cells())
+            self._clear_selected_cells()
 
     def paste(self):
         """Paste the contents of the clipboard. If a cell is being edited just
@@ -197,6 +193,11 @@ class _GridCoordinates(object):
     def get_selected_cols(self):
         """Returns a list containing indices of columns currently selected."""
         return range(self.topleft.col, self.bottomright.col+1)
+
+    def get_selected_cells(self):
+        """Return selected cells as a list of tuples (row, column)."""
+        return [(row, col) for col in self.get_selected_cols()
+                           for row in self.get_selected_rows()]
 
 
 class _Cell(object):
