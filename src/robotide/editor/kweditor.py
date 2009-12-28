@@ -43,12 +43,12 @@ class KeywordEditorUi(GridEditor):
                             grid=self).publish()
 
     def _expand_if_necessary(self, row, col):
-        if row >= self.GetNumberRows():
+        if row >= self.NumberRows-1:
             self.AppendRows(2)
             self.SetSize(self.GetBestSize())
             self.GetParent().GetSizer().Fit(self.GetParent())
             self.GetGrandParent().GetSizer().Layout()
-        if col >= self.GetNumberCols():
+        if col >= self.NumberCols-1:
             self.AppendCols(1)
 
     def _remove_selected_rows(self):
