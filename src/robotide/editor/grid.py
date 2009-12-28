@@ -31,7 +31,8 @@ class GridEditor(grid.Grid):
         grid.Grid.__init__(self, parent)
         self._bind_to_events()
         self._edit_history = []
-        self._active_coords = _GridCoords((0, 0))
+        self._active_coords = _GridCoordinates()
+        self.SelectBlock(0,0,0,0)
 
     def _bind_to_events(self):
         self.Bind(grid.EVT_GRID_SELECT_CELL, self.OnSelectCell)
@@ -39,23 +40,13 @@ class GridEditor(grid.Grid):
         self.Bind(grid.EVT_GRID_CELL_RIGHT_CLICK, self.OnCellRightClick)
 
     def OnSelectCell(self, event):
-        self._active_coords = _GridCoords((event.GetRow(), event.GetCol()))
+        self._active_coords.set_from_single_selection(event)
         self.AutoSizeRows()
         event.Skip()
 
     def OnRangeSelect(self, event):
-        if not event.Selecting():
-            return
-        whole_row_selection = self.GetSelectedRows()
-        if whole_row_selection:
-            topleft  = whole_row_selection[0], 0
-            bottomright = whole_row_selection[-1], self.GetNumberCols()-1
-        else:
-            topleft = event.GetTopLeftCoords().GetRow(),\
-                        event.GetTopLeftCoords().GetCol()
-            bottomright = event.GetBottomRightCoords().GetRow(),\
-                            event.GetBottomRightCoords().GetCol()
-        self._active_coords = _GridCoords(topleft, bottomright)
+        if event.Selecting():
+            self._active_coords.set_from_range_selection(self, event)
 
     def OnCellRightClick(self, event):
         PopupMenu(self, ['Cut\tCtrl-X', 'Copy\tCtrl-C', 'Paste\tCtrl-V', '---',
@@ -104,13 +95,8 @@ class GridEditor(grid.Grid):
             GRID_CLIPBOARD.set_contents(data)
 
     def _get_selected_cells(self):
-        cells = []
-        if self._active_coords is None:
-            return cells
-        for row in self._active_coords.get_selected_rows():
-            for col in self._active_coords.get_selected_cols():
-                cells.append((row, col))
-        return cells
+        return [(row, col) for col in self._active_coords.get_selected_cols()
+                           for row in self._active_coords.get_selected_rows()]
 
     def _is_single_cell_data(self, clipboard):
         return len(clipboard) == 1 and len(clipboard[0]) == 1
@@ -178,14 +164,31 @@ class GridEditor(grid.Grid):
             self._save_keywords(append_to_history=False)
 
 
-class _GridCoords(object):
+class _GridCoordinates(object):
+    cell = property(lambda self: (self.topleft.row, self.topleft.col))
 
-    def __init__(self, topleft, bottomright=None):
-        self.topleft = _Cell(*topleft)
-        if bottomright is None:
-            bottomright = topleft
-        self.bottomright = _Cell(*bottomright)
-        self.cell = (self.topleft.row, self.topleft.col)
+    def __init__(self):
+        self._set((0,0))
+
+    def _set(self, topleft, bottomright=None):
+        cell = _Cell(topleft[0], topleft[1])
+        self.topleft = cell
+        self.bottomright = bottomright and \
+                _Cell(bottomright[0], bottomright[1]) or cell
+
+    def set_from_single_selection(self, event):
+        self._set((event.Row, event.Col))
+
+    def set_from_range_selection(self, grid, event):
+        self._set(*self._get_bounding_coordinates(grid, event))
+
+    def _get_bounding_coordinates(self, grid, event):
+        whole_row_selection = grid.SelectedRows
+        if whole_row_selection:
+            return (whole_row_selection[0], 0),\
+                   (whole_row_selection[-1], grid.NumberCols-1)
+        return (event.TopLeftCoords.Row,event.TopLeftCoords.Col),\
+               (event.BottomRightCoords.Row, event.BottomRightCoords.Col)
 
     def get_selected_rows(self):
         """Returns a list containing indices of rows currently selected."""
@@ -194,6 +197,7 @@ class _GridCoords(object):
     def get_selected_cols(self):
         """Returns a list containing indices of columns currently selected."""
         return range(self.topleft.col, self.bottomright.col+1)
+
 
 class _Cell(object):
 
