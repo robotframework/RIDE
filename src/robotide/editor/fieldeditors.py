@@ -94,10 +94,10 @@ class _EditorGrid(GridEditor):
 
     def _bind_actions(self):
         accelrators = []
-        for mod, key, handler in [(wx.ACCEL_CTRL, ord('c'), self.copy),
-                                 (wx.ACCEL_CTRL, ord('x'), self.cut),
-                                 (wx.ACCEL_CTRL, ord('v'), self.paste),
-                                 (wx.ACCEL_NORMAL, wx.WXK_DELETE, self.delete)]:
+        for mod, key, handler in [(wx.ACCEL_CTRL, ord('c'), self.OnCopy),
+                                 (wx.ACCEL_CTRL, ord('x'), self.OnCut),
+                                 (wx.ACCEL_CTRL, ord('v'), self.OnPaste),
+                                 (wx.ACCEL_NORMAL, wx.WXK_DELETE, self.OnDelete)]:
             id = wx.NewId()
             self.Bind(wx.EVT_MENU, handler, id=id)
             accelrators.append((mod, key, id))
@@ -125,6 +125,17 @@ class _EditorGrid(GridEditor):
             value.pop()
         return value
 
+    def OnCopy(self, event):
+        self.copy()
+
+    def OnCut(self, event):
+        self.cut()
+
+    def OnPaste(self, event):
+        self.paste()
+
+    def OnDelete(self, event):
+        self.delete(event)
 
 class MultiLineEditor(ValueEditor):
     _sizer_flags_for_editor = wx.ALL|wx.EXPAND
