@@ -84,7 +84,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _populate_model(self, model):
         if model.suite:
-            self._render_datafile(self._root, model.suite, self._root)
+            self._render_datafile(self._root, model.suite, 0)
         for res in model.resources:
             self._render_datafile(self._resource_root, res)
 
