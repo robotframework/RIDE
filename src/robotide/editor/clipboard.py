@@ -12,6 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import os
 import wx
 import pickle
 
@@ -31,11 +32,20 @@ class GridClipboard(object):
         return not cont 
     
     def set_contents(self, data):
-        do = PythonDataObject()
-        do.SetData(pickle.dumps(data))
         wx.TheClipboard.Open()
-        wx.TheClipboard.SetData(do)
+        wx.TheClipboard.SetData(self._get_data_object(data))
         wx.TheClipboard.Close()
+
+    def _get_data_object(self, data):
+        if os.name == 'nt' and  self._is_single_cell_data(data):
+            do = wx.TextDataObject()
+            do.SetText(data[0][0])
+        else:
+            do = PythonDataObject()
+            do.SetData(pickle.dumps(data))
+
+    def _is_single_cell_data(self, clipboard):
+        return len(clipboard) == 1 and len(clipboard[0]) == 1
 
     def get_contents(self):
         """Gets contents of the clipboard, returning a python object if

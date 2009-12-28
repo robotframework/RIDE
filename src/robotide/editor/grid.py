@@ -89,21 +89,7 @@ class GridEditor(grid.Grid):
     def _add_data_to_clipboard(self, data):
         if not data:
             return
-        if self._is_single_cell_data(data) and os.name == 'nt':
-            self._add_single_cell_data_to_clipboard(data)
-        else:
-            GRID_CLIPBOARD.set_contents(data)
-
-    def _is_single_cell_data(self, clipboard):
-        return len(clipboard) == 1 and len(clipboard[0]) == 1
-
-    def _add_single_cell_data_to_clipboard(self, data_table):
-        #TODO: This should be moved to clipboard module
-        do = wx.TextDataObject()
-        do.SetText(data_table[0][0])
-        wx.TheClipboard.Open()
-        wx.TheClipboard.AddData(do)
-        wx.TheClipboard.Close()
+        GRID_CLIPBOARD.set_contents(data)
 
     def delete(self, event=None):
         if self.IsCellEditControlShown():
