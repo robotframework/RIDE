@@ -61,7 +61,7 @@ class GridEditor(grid.Grid):
             # This is needed in Windows
             self._get_cell_edit_control().Copy()
         else:
-            self._add_data_to_clipboard(self._get_selected_content())
+            self._add_selected_data_to_clipboard()
 
     def cut(self):
         """Cuts the contents of the selected cell(s). This does a normal cut
@@ -72,7 +72,7 @@ class GridEditor(grid.Grid):
             # This is needed in Windows
             self._get_cell_edit_control().Cut()
         else:
-            self._add_data_to_clipboard(self._get_selected_content())
+            self._add_selected_data_to_clipboard()
             self._clear_selected_cells()
 
     def _clear_selected_cells(self):
@@ -86,10 +86,8 @@ class GridEditor(grid.Grid):
                          col in self._active_coords.get_selected_cols()])
         return data
 
-    def _add_data_to_clipboard(self, data):
-        if not data:
-            return
-        GRID_CLIPBOARD.set_contents(data)
+    def _add_selected_data_to_clipboard(self):
+        GRID_CLIPBOARD.set_contents(self._get_selected_content())
 
     def delete(self, event=None):
         if self.IsCellEditControlShown():

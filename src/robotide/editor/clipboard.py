@@ -32,6 +32,8 @@ class GridClipboard(object):
         return not cont 
     
     def set_contents(self, data):
+        if not data:
+            return
         wx.TheClipboard.Open()
         wx.TheClipboard.SetData(self._get_data_object(data))
         wx.TheClipboard.Close()
@@ -43,6 +45,7 @@ class GridClipboard(object):
         else:
             do = PythonDataObject()
             do.SetData(pickle.dumps(data))
+        return do
 
     def _is_single_cell_data(self, clipboard):
         return len(clipboard) == 1 and len(clipboard[0]) == 1
