@@ -113,6 +113,7 @@ class GridEditor(grid.Grid):
             if start == end:
                 end += 1
             editor.Remove(start, end)
+            # TODO: is this really needed??
             if event:
                 event.Skip()
         else:
