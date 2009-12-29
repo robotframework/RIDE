@@ -17,86 +17,11 @@ import wx
 import pickle
 
 
-class _GridClipboard(object):
-    """Implements a "smart" clipboard. String objects are saved as usual, but
-    other python objects can be saved as well. The primary purpose is to place
-    a list of grid rows on the clipboard.
-    """
-
-    def set_contents(self, data):
-        if not data:
-            return
-        wx.TheClipboard.Open()
-        wx.TheClipboard.SetData(self._get_data_object(data))
-        wx.TheClipboard.Close()
-
-    def _get_data_object(self, data):
-        if os.name == 'nt' and  self._is_single_cell_data(data):
-            do = wx.TextDataObject()
-            do.SetText(data[0][0])
-        else:
-            do = PythonDataObject()
-            do.SetData(pickle.dumps(data))
-        return do
-
-    def _is_single_cell_data(self, clipboard):
-        return len(clipboard) == 1 and len(clipboard[0]) == 1
-
-    def get_contents(self):
-        """Gets contents of the clipboard, returning a python object if
-        possible, otherwise returns plain text or None if the clipboard is
-        empty.
-        """
-        wx.TheClipboard.Open()
-        try:
-            return self._get_value()
-        finally:
-            wx.TheClipboard.Close()
-
-    def _get_value(self):
-        try:
-            do = PythonDataObject()
-            wx.TheClipboard.GetData(do)
-            return pickle.loads(do.GetDataHere())
-        except TypeError:
-            try:
-                do = wx.TextDataObject()
-                wx.TheClipboard.GetData(do)
-                # For some reason, when getting string contents from the 
-                # clipboard on Windows '\x00' is inserted between each char.
-                # WTF?!?!?!?
-                data =  do.GetDataHere()
-                if data:
-                    return data.replace('\x00', '')
-            except TypeError:
-                pass
-        return None
-
-
-class PythonDataObject(wx.PyDataObjectSimple):
-
-    def __init__(self):
-        wx.PyDataObjectSimple.__init__(self, wx.CustomDataFormat('PythonDataObject'))
-        self.data = None
-
-    def GetDataSize(self):
-        return len(self.data)
-
-    def GetDataHere(self):
-        return self.data
-
-    def SetData(self, data):
-        self.data = data
-        return True
-
-
-_GRID_CLIPBOARD = _GridClipboard()
-
-
 class _ClipboardHandler(object):
 
     def __init__(self, grid):
         self._grid = grid
+        self._clipboard = _GridClipboard()
 
     def copy(self):
         """Copy the contents of the selected cell(s). This does a normal copy
@@ -113,7 +38,7 @@ class _ClipboardHandler(object):
         self._add_selected_data_to_clipboard()
 
     def _add_selected_data_to_clipboard(self):
-        _GRID_CLIPBOARD.set_contents(self._grid.get_selected_content())
+        self._clipboard.set_contents(self._grid.get_selected_content())
 
     def paste(self):
         """Paste the contents of the clipboard. If a cell is being edited just
@@ -125,13 +50,13 @@ class _ClipboardHandler(object):
             self._paste_to_grid()
 
     def _paste_to_cell_editor(self):
-        clipboard = _GRID_CLIPBOARD.get_contents()
+        clipboard = self._clipboard.get_contents()
         if isinstance(clipboard, list):
             cells_as_text = ' '.join([' '.join(row) for row in clipboard])
             self._get_edit_control().WriteText(cells_as_text)
 
     def _paste_to_grid(self):
-        clipboard = _GRID_CLIPBOARD.get_contents()
+        clipboard = self._clipboard.get_contents()
         if not clipboard:
             return
         cell = self._get_starting_cell()
@@ -178,3 +103,77 @@ class _WindowsClipboardHandler(_ClipboardHandler):
 
 
 ClipboardHandler = os.name == 'nt' and _WindowsClipboardHandler or _ClipboardHandler
+
+
+class _GridClipboard(object):
+    """Implements a "smart" clipboard. String objects are saved as usual, but
+    other python objects can be saved as well. The primary purpose is to place
+    a list of grid rows on the clipboard.
+    """
+
+    def set_contents(self, data):
+        if not data:
+            return
+        wx.TheClipboard.Open()
+        wx.TheClipboard.SetData(self._get_data_object(data))
+        wx.TheClipboard.Close()
+
+    def _get_data_object(self, data):
+        if os.name == 'nt' and  self._is_single_cell_data(data):
+
+            do = wx.TextDataObject()
+            do.SetText(data[0][0])
+        else:
+            do = _PythonDataObject()
+            do.SetData(pickle.dumps(data))
+        return do
+
+    def _is_single_cell_data(self, clipboard):
+        return len(clipboard) == 1 and len(clipboard[0]) == 1
+
+    def get_contents(self):
+        """Gets contents of the clipboard, returning a python object if
+        possible, otherwise returns plain text or None if the clipboard is
+        empty.
+        """
+        wx.TheClipboard.Open()
+        try:
+            return self._get_value()
+        finally:
+            wx.TheClipboard.Close()
+
+    def _get_value(self):
+        try:
+            do = _PythonDataObject()
+            wx.TheClipboard.GetData(do)
+            return pickle.loads(do.GetDataHere())
+        except TypeError:
+            try:
+                do = wx.TextDataObject()
+                wx.TheClipboard.GetData(do)
+                # For some reason, when getting string contents from the 
+                # clipboard on Windows '\x00' is inserted between each char.
+                # WTF?!?!?!?
+                data =  do.GetDataHere()
+                if data:
+                    return data.replace('\x00', '')
+            except TypeError:
+                pass
+        return None
+
+
+class _PythonDataObject(wx.PyDataObjectSimple):
+
+    def __init__(self):
+        wx.PyDataObjectSimple.__init__(self, wx.CustomDataFormat('PythonDataObject'))
+        self.data = None
+
+    def GetDataSize(self):
+        return len(self.data)
+
+    def GetDataHere(self):
+        return self.data
+
+    def SetData(self, data):
+        self.data = data
+        return True
