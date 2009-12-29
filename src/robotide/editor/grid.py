@@ -24,7 +24,7 @@ class GridEditor(grid.Grid):
         grid.Grid.__init__(self, parent)
         self._bind_to_events()
         self._edit_history = []
-        self.selection = _GridCoordinates()
+        self.selection = _GridSelection()
         self._clipboard_handler = ClipboardHandler(self)
         self.SelectBlock(0,0,0,0)
 
@@ -91,7 +91,7 @@ class GridEditor(grid.Grid):
                          'Delete\tDel'])
 
 
-class _GridCoordinates(object):
+class _GridSelection(object):
     cell = property(lambda self: (self.topleft.row, self.topleft.col))
 
     def __init__(self):
