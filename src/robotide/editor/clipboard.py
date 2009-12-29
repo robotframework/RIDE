@@ -23,14 +23,6 @@ class _GridClipboard(object):
     a list of grid rows on the clipboard.
     """
 
-    def is_empty(self):
-        # For some reason, empty contents in the clipboard on Windows is '\x00\x00'
-        # WTF?!?!?!?
-        cont = self.get_contents()
-        if isinstance(cont, basestring):
-            cont = cont.replace('\x00', '')
-        return not cont 
-
     def set_contents(self, data):
         if not data:
             return
