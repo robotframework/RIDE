@@ -60,7 +60,7 @@ class KeywordEditorUi(GridEditor):
         rows = self.GetSelectedRows()
         if not rows:
             rows = self._active_row and [self._active_row] or \
-                    [self._active_coords.topleft.row]
+                    [self.active_coords.topleft.row]
         return rows
 
     def _set_cell_font(self, cell, color=None, underlined=False):
@@ -202,9 +202,9 @@ class KeywordEditor(KeywordEditorUi):
     def save(self):
         self._hide_tooltip()
         if self.IsCellEditControlShown():
-            cell_editor = self.GetCellEditor(*self._active_coords.cell)
-            cell_editor.EndEdit(self._active_coords.topleft.row,
-                                self._active_coords.topleft.col, self)
+            cell_editor = self.GetCellEditor(*self.active_coords.cell)
+            cell_editor.EndEdit(self.active_coords.topleft.row,
+                                self.active_coords.topleft.col, self)
         self._save_keywords()
 
     def _save_keywords(self, append_to_history=True):
@@ -228,10 +228,10 @@ class KeywordEditor(KeywordEditorUi):
 
     def show_content_assist(self):
         if self.IsCellEditControlShown():
-            self.GetCellEditor(*self._active_coords.cell).show_content_assist()
+            self.GetCellEditor(*self.active_coords.cell).show_content_assist()
 
     def show_keyword_details(self):
-        cell_value = self.GetCellValue(*self._active_coords.cell)
+        cell_value = self.GetCellValue(*self.active_coords.cell)
         kw = self._datafile.get_keywords_for_content_assist(name=cell_value)
         if kw:
             self._popup.SetPosition(self._calculate_position())
@@ -248,8 +248,8 @@ class KeywordEditor(KeywordEditorUi):
             self._popup.Show(False)
 
     def OnEditor(self, event):
-        row_height = self.GetRowSize(self._active_coords.topleft.row)
-        self.GetCellEditor(*self._active_coords.cell).SetHeight(row_height)
+        row_height = self.GetRowSize(self.active_coords.topleft.row)
+        self.GetCellEditor(*self.active_coords.cell).SetHeight(row_height)
         event.Skip()
 
     def OnKey(self, event):

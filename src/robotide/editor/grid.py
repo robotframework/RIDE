@@ -21,9 +21,10 @@ from clipboard import GRID_CLIPBOARD
 
 
 class _ClipboardHandler(object):
+
     def __init__(self, grid):
         self._grid = grid
-    
+
     def copy(self):
         """Copy the contents of the selected cell(s). This does a normal copy
         action if the user is editing a cell, otherwise it places the selected
@@ -40,32 +41,79 @@ class _ClipboardHandler(object):
 
     def _add_selected_data_to_clipboard(self):
         GRID_CLIPBOARD.set_contents(self._grid.get_selected_content())
-        
+
+    def paste(self):
+        """Paste the contents of the clipboard. If a cell is being edited just
+        do a normal paste. If a cell is not being edited, paste whole rows.
+        """
+        if self._edit_control_shown():
+            self._paste_to_cell_editor()
+        else:
+            self._paste_to_grid()
+
+    def _paste_to_cell_editor(self):
+        clipboard = GRID_CLIPBOARD.get_contents()
+        if isinstance(clipboard, list):
+            cells_as_text = ' '.join([' '.join(row) for row in clipboard])
+            self._get_edit_control().WriteText(cells_as_text)
+
+    def _paste_to_grid(self):
+        clipboard = GRID_CLIPBOARD.get_contents()
+        if not clipboard:
+            return
+        cell = self._get_starting_cell()
+        if not isinstance(clipboard, list):
+            self._write_cell(cell.row, cell.col, clipboard)
+        else:
+            row = cell.row
+            for datarow in clipboard:
+                col = cell.col
+                for value in datarow:
+                    self._write_cell(row, col, value)
+                    col += 1
+                row += 1
+
+    def _get_starting_cell(self):
+        return self._grid.active_coords.topleft
+
+    def _write_cell(self, row, col, value):
+        self._grid.write_cell(row, col, value)
+
+    def _get_edit_control(self):
+        return self._grid.get_cell_edit_control()
+
+    def _edit_control_shown(self):
+        return self._grid.IsCellEditControlShown()
+
+
 class _WindowsClipboardHandler(_ClipboardHandler):
 
     def copy(self):
-        if self._grid.IsCellEditControlShown():
-            self._grid.get_cell_edit_control().Copy()
+        if self._edit_control_shown():
+            self._get_edit_control().Copy()
         else:
             _ClipboardHandler.copy(self)
 
     def cut(self):
-        if self._grid.IsCellEditControlShown():
-            self._grid.get_cell_edit_control().Cut()
+        if self._edit_control_shown():
+            self._get_edit_control().Cut()
         else:
             _ClipboardHandler.copy(self)
+
+    def _paste_to_cell_editor(self):
+        self._get_edit_control().Paste()
 
 
 ClipboardHandler = os.name == 'nt' and _WindowsClipboardHandler or _ClipboardHandler
 
- 
+
 class GridEditor(grid.Grid):
 
     def __init__(self, parent):
         grid.Grid.__init__(self, parent)
         self._bind_to_events()
         self._edit_history = []
-        self._active_coords = _GridCoordinates()
+        self.active_coords = _GridCoordinates()
         self._clipboard_handler = ClipboardHandler(self)
         self.SelectBlock(0,0,0,0)
 
@@ -75,13 +123,13 @@ class GridEditor(grid.Grid):
         self.Bind(grid.EVT_GRID_CELL_RIGHT_CLICK, self.OnCellRightClick)
 
     def OnSelectCell(self, event):
-        self._active_coords.set_from_single_selection(event)
+        self.active_coords.set_from_single_selection(event)
         self.AutoSizeRows()
         event.Skip()
 
     def OnRangeSelect(self, event):
         if event.Selecting():
-            self._active_coords.set_from_range_selection(self, event)
+            self.active_coords.set_from_range_selection(self, event)
 
     def OnCellRightClick(self, event):
         PopupMenu(self, ['Cut\tCtrl-X', 'Copy\tCtrl-C', 'Paste\tCtrl-V', '---',
@@ -95,14 +143,14 @@ class GridEditor(grid.Grid):
         self._clear_selected_cells()
 
     def _clear_selected_cells(self):
-        for row, col in self._active_coords.get_selected_cells():
+        for row, col in self.active_coords.get_selected_cells():
             self.write_cell(row, col, '')
 
     def get_selected_content(self):
         data = []
-        for row in self._active_coords.get_selected_rows():
+        for row in self.active_coords.get_selected_rows():
             data.append([self.GetCellValue(row, col) for
-                         col in self._active_coords.get_selected_cols()])
+                         col in self.active_coords.get_selected_cols()])
         return data
 
     def delete(self, event=None):
@@ -120,36 +168,10 @@ class GridEditor(grid.Grid):
             self._clear_selected_cells()
 
     def paste(self):
-        """Paste the contents of the clipboard. If a cell is being edited just
-        do a normal paste. If a cell is not being edited, paste whole rows.
-        """
-        clipboard = GRID_CLIPBOARD.get_contents()
-        if self.IsCellEditControlShown():
-            # This is needed in Windows
-            if isinstance(clipboard, list):
-                cells_as_text = ' '.join([' '.join(row) for row in clipboard])
-                self.get_cell_edit_control().WriteText(cells_as_text)
-            # FIXME: there must be a better way to prevent double pasting on
-            # linux, also this breaks the pasting via menu
-            elif os.name == 'nt':
-                self.get_cell_edit_control().Paste()
-        else:
-            if not clipboard:
-                return
-            cell = self._active_coords.topleft
-            if not isinstance(clipboard, list):
-                self.write_cell(cell.row, cell.col, clipboard)
-            else:
-                row = cell.row
-                for datarow in clipboard:
-                    col = cell.col
-                    for value in datarow:
-                        self.write_cell(row, col, value)
-                        col += 1
-                    row += 1
+        self._clipboard_handler.paste()
 
     def get_cell_edit_control(self):
-        return self.GetCellEditor(*self._active_coords.cell).GetControl()
+        return self.GetCellEditor(*self.active_coords.cell).GetControl()
 
     def write_cell(self, row, col, value):
         self.SetCellValue(row, col, value)
