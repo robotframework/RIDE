@@ -17,7 +17,7 @@ import unittest
 from robot.utils.asserts import assert_equals, assert_false
 
 from resources import PYAPP_REFERENCE as _ #Needed to be able to create wx components
-from robotide.editor.clipboard import GridClipboard
+from robotide.editor.clipboard import _GridClipboard
 
 
 class TestGridClipBoard(unittest.TestCase):
@@ -32,9 +32,8 @@ class TestGridClipBoard(unittest.TestCase):
         self._test_clipboard({0: 'Hello', 1: 'World!'})
 
     def _test_clipboard(self, content):
-        clipb = GridClipboard()
+        clipb = _GridClipboard()
         clipb.set_contents(content)
-        assert_false(clipb.is_empty())
         assert_equals(clipb.get_contents(), content)
 
 
