@@ -50,7 +50,7 @@ class GridEditor(grid.Grid):
     def paste(self):
         self._clipboard_handler.paste()
 
-    def delete(self, event=None):
+    def delete(self):
         if self.IsCellEditControlShown():
             self._delete_from_cell_editor()
         else:

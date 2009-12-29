@@ -185,7 +185,7 @@ class KeywordEditor(KeywordEditorUi):
         self.set_dirty()
 
     def OnDelete(self, event=None):
-        self.delete(event)
+        self.delete()
         self._save_keywords()
         self.set_dirty()
 
