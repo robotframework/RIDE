@@ -24,7 +24,7 @@ class GridEditor(grid.Grid):
         grid.Grid.__init__(self, parent)
         self._bind_to_events()
         self._edit_history = []
-        self.active_coords = _GridCoordinates()
+        self.selection = _GridCoordinates()
         self._clipboard_handler = ClipboardHandler(self)
         self.SelectBlock(0,0,0,0)
 
@@ -33,18 +33,8 @@ class GridEditor(grid.Grid):
         self.Bind(grid.EVT_GRID_RANGE_SELECT, self.OnRangeSelect)
         self.Bind(grid.EVT_GRID_CELL_RIGHT_CLICK, self.OnCellRightClick)
 
-    def OnSelectCell(self, event):
-        self.active_coords.set_from_single_selection(event)
-        self.AutoSizeRows()
-        event.Skip()
-
-    def OnRangeSelect(self, event):
-        if event.Selecting():
-            self.active_coords.set_from_range_selection(self, event)
-
-    def OnCellRightClick(self, event):
-        PopupMenu(self, ['Cut\tCtrl-X', 'Copy\tCtrl-C', 'Paste\tCtrl-V', '---',
-                         'Delete\tDel'])
+    def write_cell(self, row, col, value):
+        self.SetCellValue(row, col, value)
 
     def copy(self):
         self._clipboard_handler.copy()
@@ -54,44 +44,51 @@ class GridEditor(grid.Grid):
         self._clear_selected_cells()
 
     def _clear_selected_cells(self):
-        for row, col in self.active_coords.get_selected_cells():
+        for row, col in self.selection.cells():
             self.write_cell(row, col, '')
-
-    def get_selected_content(self):
-        data = []
-        for row in self.active_coords.get_selected_rows():
-            data.append([self.GetCellValue(row, col) for
-                         col in self.active_coords.get_selected_cols()])
-        return data
-
-    def delete(self, event=None):
-        if self.IsCellEditControlShown():
-            # This is needed in Windows
-            editor = self.get_cell_edit_control()
-            start, end = editor.GetSelection()
-            if start == end:
-                end += 1
-            editor.Remove(start, end)
-            # TODO: is this really needed??
-            if event:
-                event.Skip()
-        else:
-            self._clear_selected_cells()
 
     def paste(self):
         self._clipboard_handler.paste()
 
-    def get_cell_edit_control(self):
-        return self.GetCellEditor(*self.active_coords.cell).GetControl()
+    def delete(self, event=None):
+        if self.IsCellEditControlShown():
+            self._delete_from_cell_editor()
+        else:
+            self._clear_selected_cells()
 
-    def write_cell(self, row, col, value):
-        self.SetCellValue(row, col, value)
+    def _delete_from_cell_editor(self):
+        editor = self.get_cell_edit_control()
+        start, end = editor.Selection
+        if start == end:
+            end += 1
+        editor.Remove(start, end)
+
+    def get_cell_edit_control(self):
+        return self.GetCellEditor(*self.selection.cell).GetControl()
+
+    def get_selected_content(self):
+        def _get_cells(r):
+            return [ self.GetCellValue(r, c) for c in self.selection.cols() ]
+        return [ _get_cells(r) for r in self.selection.rows() ]
 
     def undo(self):
         if self._edit_history:
             self.ClearGrid()
             self._write_data(self._edit_history.pop())
             self._save_keywords(append_to_history=False)
+
+    def OnSelectCell(self, event):
+        self.selection.set_from_single_selection(event)
+        self.AutoSizeRows()
+        event.Skip()
+
+    def OnRangeSelect(self, event):
+        if event.Selecting():
+            self.selection.set_from_range_selection(self, event)
+
+    def OnCellRightClick(self, event):
+        PopupMenu(self, ['Cut\tCtrl-X', 'Copy\tCtrl-C', 'Paste\tCtrl-V', '---',
+                         'Delete\tDel'])
 
 
 class _GridCoordinates(object):
@@ -120,18 +117,18 @@ class _GridCoordinates(object):
         return (event.TopLeftCoords.Row,event.TopLeftCoords.Col),\
                (event.BottomRightCoords.Row, event.BottomRightCoords.Col)
 
-    def get_selected_rows(self):
+    def rows(self):
         """Returns a list containing indices of rows currently selected."""
         return range(self.topleft.row, self.bottomright.row+1)
 
-    def get_selected_cols(self):
+    def cols(self):
         """Returns a list containing indices of columns currently selected."""
         return range(self.topleft.col, self.bottomright.col+1)
 
-    def get_selected_cells(self):
+    def cells(self):
         """Return selected cells as a list of tuples (row, column)."""
-        return [(row, col) for col in self.get_selected_cols()
-                           for row in self.get_selected_rows()]
+        return [(row, col) for col in self.cols()
+                           for row in self.rows()]
 
 
 class _Cell(object):

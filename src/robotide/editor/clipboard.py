@@ -12,9 +12,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import os
 import wx
 import pickle
+
+from robotide import utils
 
 
 class _ClipboardHandler(object):
@@ -72,7 +73,7 @@ class _ClipboardHandler(object):
                 row += 1
 
     def _get_starting_cell(self):
-        return self._grid.active_coords.topleft
+        return self._grid.selection.topleft
 
     def _write_cell(self, row, col, value):
         self._grid.write_cell(row, col, value)
@@ -102,7 +103,8 @@ class _WindowsClipboardHandler(_ClipboardHandler):
         self._get_edit_control().Paste()
 
 
-ClipboardHandler = os.name == 'nt' and _WindowsClipboardHandler or _ClipboardHandler
+ClipboardHandler = utils.is_windows and _WindowsClipboardHandler\
+                                    or _ClipboardHandler
 
 
 class _GridClipboard(object):
@@ -119,8 +121,7 @@ class _GridClipboard(object):
         wx.TheClipboard.Close()
 
     def _get_data_object(self, data):
-        if os.name == 'nt' and  self._is_single_cell_data(data):
-
+        if utils.is_windows and self._is_single_cell_data(data):
             do = wx.TextDataObject()
             do.SetText(data[0][0])
         else:

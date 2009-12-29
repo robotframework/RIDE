@@ -56,10 +56,10 @@ class TestCoordinates(unittest.TestCase):
         self._verify_selection(0,1,3,4)
 
     def _verify_selection(self, toprow, topcol, botrow, botcol):
-        assert_equals(self._editor.active_coords.topleft.row, toprow)
-        assert_equals(self._editor.active_coords.topleft.col, topcol)
-        assert_equals(self._editor.active_coords.bottomright.row, botrow)
-        assert_equals(self._editor.active_coords.bottomright.col, botcol)
+        assert_equals(self._editor.selection.topleft.row, toprow)
+        assert_equals(self._editor.selection.topleft.col, topcol)
+        assert_equals(self._editor.selection.bottomright.row, botrow)
+        assert_equals(self._editor.selection.bottomright.col, botcol)
 
 
 class TestClipBoard(unittest.TestCase):
