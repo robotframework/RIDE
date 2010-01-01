@@ -71,7 +71,7 @@ class RIDE(wx.App):
                                             style = wx.PD_ELAPSED_TIME)
         loader = DataLoader(path)
         loader.start()
-        while loader.is_alive():
+        while loader.isAlive():
             time.sleep(0.1)
             progress_dialog.Pulse()
         progress_dialog.Destroy()
