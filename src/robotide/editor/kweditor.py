@@ -160,8 +160,9 @@ class KeywordEditor(KeywordEditorUi):
         self._active_row = self._active_col = None
         self._popup = RidePopupWindow(self, (500,200))
         self._make_bindings()
-        self._write_data(keywords)
+        self._write_keywords(keywords)
         self._tree = tree
+        self._update_history()
 
     def _make_bindings(self):
         self.Bind(grid.EVT_GRID_EDITOR_SHOWN, self.OnEditor)
@@ -170,11 +171,8 @@ class KeywordEditor(KeywordEditorUi):
         self.Bind(grid.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
         self.Bind(grid.EVT_GRID_CELL_LEFT_DCLICK, self.OnCellLeftDClick)
 
-    def _write_data(self, keywords):
-        for row, kw in enumerate(keywords):
-            for col, arg in enumerate(kw.get_display_value()):
-                self.write_cell(row, col, arg)
-        self.AutoSizeRows()
+    def _write_keywords(self, keywords):
+        self._write_data([kw.get_display_value() for kw in keywords])
 
     def OnCopy(self, event=None):
         self.copy()
@@ -207,9 +205,7 @@ class KeywordEditor(KeywordEditorUi):
                                 self.selection.topleft.col, self)
         self._save_keywords()
 
-    def _save_keywords(self, append_to_history=True):
-        if append_to_history:
-            self._edit_history.append(self._keywords[:])
+    def _save_keywords(self):
         kwdata = []
         for i in range(self.GetNumberRows()):
             rowdata = []
