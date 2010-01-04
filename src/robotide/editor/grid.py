@@ -14,7 +14,7 @@
 
 from wx import grid
 
-from robotide.utils import PopupMenu
+from robotide.utils import PopupMenu, History
 from clipboard import ClipboardHandler
 
 
@@ -23,10 +23,9 @@ class GridEditor(grid.Grid):
     def __init__(self, parent):
         grid.Grid.__init__(self, parent)
         self._bind_to_events()
-        self._edit_history = []
         self.selection = _GridSelection()
         self._clipboard_handler = ClipboardHandler(self)
-        self.SelectBlock(0,0,0,0)
+        self._history = History()
 
     def _bind_to_events(self):
         self.Bind(grid.EVT_GRID_SELECT_CELL, self.OnSelectCell)
@@ -35,6 +34,11 @@ class GridEditor(grid.Grid):
 
     def write_cell(self, row, col, value):
         self.SetCellValue(row, col, value)
+        self._update_history()
+
+    def _update_history(self):
+        self._history.change(self._get_block_content(range(self.NumberRows),
+                                                     range(self.NumberCols)))
 
     def copy(self):
         self._clipboard_handler.copy()
@@ -42,6 +46,7 @@ class GridEditor(grid.Grid):
     def cut(self):
         self._clipboard_handler.cut()
         self._clear_selected_cells()
+        self._update_history()
 
     def _clear_selected_cells(self):
         for row, col in self.selection.cells():
@@ -49,8 +54,10 @@ class GridEditor(grid.Grid):
 
     def paste(self):
         self._clipboard_handler.paste()
+        self._update_history()
 
     def delete(self):
+        self._update_history()
         if self.IsCellEditControlShown():
             self._delete_from_cell_editor()
         else:
@@ -67,15 +74,24 @@ class GridEditor(grid.Grid):
         return self.GetCellEditor(*self.selection.cell).GetControl()
 
     def get_selected_content(self):
-        def _get_cells(r):
-            return [ self.GetCellValue(r, c) for c in self.selection.cols() ]
-        return [ _get_cells(r) for r in self.selection.rows() ]
+        return self._get_block_content(self.selection.rows(),
+                                       self.selection.cols())
+
+    def _get_block_content(self, row_range, col_range):
+        return [ [ self.GetCellValue(row, col) for col in col_range ]
+                 for row in row_range ]
 
     def undo(self):
-        if self._edit_history:
+        if self._history.top():
+            data = self._history.back()
             self.ClearGrid()
-            self._write_data(self._edit_history.pop())
-            self._save_keywords(append_to_history=False)
+            self._write_data(data)
+            self._save_keywords()
+
+    def _write_data(self, data):
+        for row_index, row_data in enumerate(data):
+            for col_index, cell_value in enumerate(row_data):
+                self.write_cell(row_index, col_index, cell_value)
 
     def OnSelectCell(self, event):
         self.selection.set_from_single_selection(event)

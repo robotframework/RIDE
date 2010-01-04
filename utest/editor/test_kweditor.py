@@ -21,6 +21,10 @@ class _FakeMainFrame(wx.Frame):
 class _FakeTree(object):
     mark_dirty = lambda self, datafile: None
 
+class TestableKwEditor(KeywordEditor):
+    def _expand_if_necessary(self, row, col):
+        pass
+
 class _KeywordList(list):
     def __init__(self):
         list.__init__(self)
@@ -45,7 +49,7 @@ class _KeywordData(object):
 class TestCoordinates(unittest.TestCase):
 
     def setUp(self):
-        self._editor = KeywordEditor(_FakeMainFrame(), _KeywordList(), None)
+        self._editor = TestableKwEditor(_FakeMainFrame(), _KeywordList(), None)
 
     def test_cell_selection(self):
         self._editor.SelectBlock(2,2,2,2)
@@ -65,7 +69,8 @@ class TestCoordinates(unittest.TestCase):
 class TestClipBoard(unittest.TestCase):
 
     def setUp(self):
-        self._editor = KeywordEditor(_FakeMainFrame(), _KeywordList(), _FakeTree())
+        self._editor = TestableKwEditor(_FakeMainFrame(), _KeywordList(),
+                                        _FakeTree())
 
     def test_copy_one_cell(self):
         self._copy_block_and_verify((0,0,0,0), [[val for val in DATA[0] if val]])
