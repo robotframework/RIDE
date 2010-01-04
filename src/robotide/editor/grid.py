@@ -33,8 +33,8 @@ class GridEditor(grid.Grid):
         self.Bind(grid.EVT_GRID_CELL_RIGHT_CLICK, self.OnCellRightClick)
 
     def write_cell(self, row, col, value):
-        self.SetCellValue(row, col, value)
         self._update_history()
+        self.SetCellValue(row, col, value)
 
     def _update_history(self):
         self._history.change(self._get_block_content(range(self.NumberRows),
@@ -44,17 +44,17 @@ class GridEditor(grid.Grid):
         self._clipboard_handler.copy()
 
     def cut(self):
+        self._update_history()
         self._clipboard_handler.cut()
         self._clear_selected_cells()
-        self._update_history()
 
     def _clear_selected_cells(self):
         for row, col in self.selection.cells():
             self.write_cell(row, col, '')
 
     def paste(self):
-        self._clipboard_handler.paste()
         self._update_history()
+        self._clipboard_handler.paste()
 
     def delete(self):
         self._update_history()
@@ -78,8 +78,16 @@ class GridEditor(grid.Grid):
                                        self.selection.cols())
 
     def _get_block_content(self, row_range, col_range):
-        return [ [ self.GetCellValue(row, col) for col in col_range ]
-                 for row in row_range ]
+        content = [ [ self.GetCellValue(row, col) for col in col_range ]
+                   for row in row_range ]
+        return self._remove_trailing_empty_rows(content)
+
+    def _remove_trailing_empty_rows(self, content):
+        def _is_empty_row(row):
+            return len([cell for cell in row if cell != '']) == 0
+        while content and _is_empty_row(content[-1]):
+            content.pop()
+        return content
 
     def undo(self):
         if self._history.top():
