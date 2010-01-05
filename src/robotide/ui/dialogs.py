@@ -22,16 +22,16 @@ from robotide import context
 
 class KeywordSearchDialog(wx.Frame):
 
-    def __init__(self, parent, keywords):
+    def __init__(self, parent, keyword_filter):
         wx.Frame.__init__(self, parent, title="Search Keywords")
-        self._keywords = keywords
-        self._create_components()
+        self._keywords = keyword_filter
+        self._create_components(keyword_filter)
         self._make_bindings()
 
-    def _create_components(self):
+    def _create_components(self, keyword_filter):
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
         self._add_search_control('Filter Names: ')
-        self._list = _KeywordList(self, self._keywords.keywords)
+        self._list = _KeywordList(self, keyword_filter)
         self._list.SetSize(self.Size)
         self.Sizer.Add(self._list, 1, wx.EXPAND| wx.ALL, 3)
         self._details = utils.RideHtmlWindow(self)
@@ -60,12 +60,12 @@ class KeywordSearchDialog(wx.Frame):
         self.Hide()
 
     def OnSearch(self, event):
-        keywords = self._search()
-        self._list.show_search_results(keywords)
+        pattern= self._search_control.GetValue().lower()
+        use_doc = self._use_doc.GetValue()
+        self._list.filter_and_show_keywords(pattern, use_doc)
         self._details.clear()
 
     def OnActivate(self, event):
-        self._keywords.refresh()
         self.OnSearch(event)
 
     def OnItemSelected(self, event):
@@ -74,37 +74,39 @@ class KeywordSearchDialog(wx.Frame):
 
     def _search(self):
         pattern = self._search_control.GetValue().lower()
+        if pattern != self._previous_search_term:
+            self._previous_search_term = pattern
         search_docs = self._use_doc.GetValue()
         return self._keywords.search(pattern, search_docs)
 
 
 class _KeywordList(wx.ListCtrl, ListCtrlAutoWidthMixin):
 
-    def __init__(self, parent, all_keywords):
+    def __init__(self, parent, keywords):
         wx.ListCtrl.__init__(self, parent, 
-                             style=wx.LC_REPORT|wx.NO_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES)
+                             style=wx.LC_REPORT|wx.NO_BORDER|wx.LC_SINGLE_SEL|
+                                   wx.LC_HRULES|wx.LC_VIRTUAL)
         ListCtrlAutoWidthMixin.__init__(self)
-        self._populate(all_keywords)
+        self._create_headers()
+        self.show_keywords(keywords)
+        self._previous_search_term = None
 
-    def _populate(self, kws):
+    def _create_headers(self):
         for col, title in enumerate(['Keyword', 'Source', 'Description']):
             self.InsertColumn(col, title)
         self.SetColumnWidth(0, 250)
-        self._add_keywords(kws)
 
-    def _add_keywords(self, kws):
-        for kw in kws:
-            self._add_kw(kw)
+    def show_keywords(self, keywords):
+        self._keywords = keywords
+        self.SetItemCount(len(keywords.keywords))
 
-    def _add_kw(self, kw):
-        row = self.ItemCount
-        self.InsertStringItem(row, kw.name)
-        self.SetStringItem(row, 1, kw.source)
-        self.SetStringItem(row, 2, kw.shortdoc)
-
-    def show_search_results(self, kws):
-        self.DeleteAllItems()
-        self._add_keywords(kws)
+    def OnGetItemText(self, row, col):
+        kw = self._keywords[row]
+        if col == 0:
+            return kw.name
+        elif col == 1:
+            return kw.source
+        return kw.shortdoc
 
 
 class AboutDialog(wx.Dialog):
