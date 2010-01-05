@@ -94,5 +94,4 @@ class _RunConfig(object):
         process = subprocess.Popen(self.command, stdout=subprocess.PIPE,
                                    stderr=subprocess.STDOUT, shell=True)
         output = process.communicate()[0]
-        print output
-
+        return output
