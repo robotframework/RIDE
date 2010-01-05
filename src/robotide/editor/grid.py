@@ -100,7 +100,6 @@ class GridEditor(grid.Grid):
         if prev_data:
             self.ClearGrid()
             self._write_data(prev_data, update_history=False)
-            self._save_keywords()
 
     def _write_data(self, data, update_history=True):
         for row_index, row_data in enumerate(data):
