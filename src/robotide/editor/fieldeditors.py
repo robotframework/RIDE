@@ -86,7 +86,6 @@ class _EditorGrid(GridEditor):
         self._bind_actions()
         self._create_grid(value)
         self._initialize_value(value)
-        self._update_history()
 
     def _set_default_sizes(self):
         self.SetColLabelSize(0)

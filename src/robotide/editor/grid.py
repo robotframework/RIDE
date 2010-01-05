@@ -14,7 +14,7 @@
 
 from wx import grid
 
-from robotide.utils import PopupMenu, History
+from robotide.utils import PopupMenu
 from clipboard import ClipboardHandler
 
 
@@ -25,15 +25,16 @@ class GridEditor(grid.Grid):
         self._bind_to_events()
         self.selection = _GridSelection()
         self._clipboard_handler = ClipboardHandler(self)
-        self._history = History()
+        self._history = _GridState()
 
     def _bind_to_events(self):
         self.Bind(grid.EVT_GRID_SELECT_CELL, self.OnSelectCell)
         self.Bind(grid.EVT_GRID_RANGE_SELECT, self.OnRangeSelect)
         self.Bind(grid.EVT_GRID_CELL_RIGHT_CLICK, self.OnCellRightClick)
 
-    def write_cell(self, row, col, value):
-        self._update_history()
+    def write_cell(self, row, col, value, update_history=True):
+        if update_history:
+            self._update_history()
         self.SetCellValue(row, col, value)
 
     def _update_history(self):
@@ -50,7 +51,7 @@ class GridEditor(grid.Grid):
 
     def _clear_selected_cells(self):
         for row, col in self.selection.cells():
-            self.write_cell(row, col, '')
+            self.write_cell(row, col, '', update_history=False)
 
     def paste(self):
         self._update_history()
@@ -80,26 +81,31 @@ class GridEditor(grid.Grid):
     def _get_block_content(self, row_range, col_range):
         content = [ [ self.GetCellValue(row, col) for col in col_range ]
                    for row in row_range ]
-        return self._remove_trailing_empty_rows(content)
+        return self._remove_trailing_empty_rows_and_cols(content)
 
-    def _remove_trailing_empty_rows(self, content):
+    def _remove_trailing_empty_rows_and_cols(self, content):
         def _is_empty_row(row):
             return len([cell for cell in row if cell != '']) == 0
         while content and _is_empty_row(content[-1]):
             content.pop()
-        return content
+        return [ self._strip_trailing_empty_cells(row) for row in content ]
+
+    def _strip_trailing_empty_cells(self, rowdata):
+        while rowdata and not rowdata[-1]:
+            rowdata.pop()
+        return rowdata
 
     def undo(self):
-        if self._history.top():
-            data = self._history.back()
+        prev_data = self._history.back()
+        if prev_data:
             self.ClearGrid()
-            self._write_data(data)
+            self._write_data(prev_data, update_history=False)
             self._save_keywords()
 
-    def _write_data(self, data):
+    def _write_data(self, data, update_history=True):
         for row_index, row_data in enumerate(data):
             for col_index, cell_value in enumerate(row_data):
-                self.write_cell(row_index, col_index, cell_value)
+                self.write_cell(row_index, col_index, cell_value, update_history)
 
     def OnSelectCell(self, event):
         self.selection.set_from_single_selection(event)
@@ -160,3 +166,28 @@ class _Cell(object):
     def __init__(self, row, col):
         self.row = row
         self.col = col
+
+
+class _GridState(object):
+
+    def __init__(self):
+        self._back = []
+        self._forward = []
+
+    def change(self, state):
+        if not self._back or state != self._back[-1]:
+            self._back.append(state)
+            self._forward = []
+
+    def back(self):
+        if not self._back:
+            return None
+        self._forward.append(self._back.pop())
+        return self._forward[-1]
+
+    def forward(self):
+        if not self._forward:
+            return None
+        state = self._forward.pop()
+        self._back.append(state)
+        return state

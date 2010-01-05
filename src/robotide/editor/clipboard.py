@@ -76,7 +76,7 @@ class _ClipboardHandler(object):
         return self._grid.selection.topleft
 
     def _write_cell(self, row, col, value):
-        self._grid.write_cell(row, col, value)
+        self._grid.write_cell(row, col, value, update_history=False)
 
     def _get_edit_control(self):
         return self._grid.get_cell_edit_control()

@@ -35,10 +35,10 @@ class KeywordEditorUi(GridEditor):
         self.CreateGrid(num_rows, num_cols)
         self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
 
-    def write_cell(self, row, col, value):
+    def write_cell(self, row, col, value, update_history=True):
         previous = self.GetCellValue(row, col)
         self._expand_if_necessary(row, col)
-        self.SetCellValue(row, col, value)
+        GridEditor.write_cell(self, row, col, value, update_history)
         RideGridCellChanged(cell=(row, col), value=value, previous=previous,
                             grid=self).publish()
 
@@ -162,7 +162,6 @@ class KeywordEditor(KeywordEditorUi):
         self._make_bindings()
         self._write_keywords(keywords)
         self._tree = tree
-        self._update_history()
 
     def _make_bindings(self):
         self.Bind(grid.EVT_GRID_EDITOR_SHOWN, self.OnEditor)
@@ -172,7 +171,8 @@ class KeywordEditor(KeywordEditorUi):
         self.Bind(grid.EVT_GRID_CELL_LEFT_DCLICK, self.OnCellLeftDClick)
 
     def _write_keywords(self, keywords):
-        self._write_data([kw.get_display_value() for kw in keywords])
+        self._write_data([kw.get_display_value() for kw in keywords],
+                         update_history=False)
 
     def OnCopy(self, event=None):
         self.copy()
@@ -189,6 +189,11 @@ class KeywordEditor(KeywordEditorUi):
 
     def OnPaste(self, event=None):
         self.paste()
+        self._save_keywords()
+        self.set_dirty()
+
+    def OnUndo(self, event=None):
+        self.undo()
         self._save_keywords()
         self.set_dirty()
 
@@ -216,11 +221,6 @@ class KeywordEditor(KeywordEditorUi):
             if rowdata:
                 kwdata.append(rowdata)
         self._keywords.parse_keywords_from_grid(kwdata)
-
-    def _strip_trailing_empty_cells(self, rowdata):
-        while rowdata and not rowdata[-1]:
-            rowdata.pop()
-        return rowdata
 
     def show_content_assist(self):
         if self.IsCellEditControlShown():
@@ -374,8 +374,8 @@ class ContentAssistCellEditor(grid.PyGridCellEditor):
             value = self._tc.content_assist_value()
         else:
             value = self._tc.GetValue()
-        grid.write_cell(row, col, value)
-        if value != self._previous_value:
+        if value != self._original_value:
+            grid.write_cell(row, col, value)
             grid.set_dirty()
         self._previous_value = value
         self._tc.hide()
