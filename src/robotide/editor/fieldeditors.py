@@ -135,7 +135,7 @@ class _EditorGrid(GridEditor):
         self.paste()
 
     def OnDelete(self, event):
-        self.delete(event)
+        self.delete()
 
 class MultiLineEditor(ValueEditor):
     _sizer_flags_for_editor = wx.ALL|wx.EXPAND
