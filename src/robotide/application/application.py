@@ -69,7 +69,7 @@ class RIDE(wx.App):
         progress_dialog = wx.ProgressDialog('RIDE', 'Loading the test data',
                                             maximum=100, parent=self.frame,
                                             style = wx.PD_ELAPSED_TIME)
-        loader = DataLoader(path)
+        loader = _DataLoader(path)
         loader.start()
         while loader.isAlive():
             time.sleep(0.1)
@@ -140,7 +140,7 @@ class _KeywordFilter(object):
         return search_docs and utils.contains(kw.doc, pattern)
 
 
-class DataLoader(Thread):
+class _DataLoader(Thread):
 
     def __init__(self, path):
         Thread.__init__(self)
