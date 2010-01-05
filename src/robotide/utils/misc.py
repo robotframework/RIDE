@@ -33,6 +33,8 @@ class History(object):
         self._forward = []
 
     def change(self, state):
+        if isinstance(state, list):
+            print 'storing', state
         if not self._back or state != self._back[-1]:
             self._back.append(state)
             self._forward = []
@@ -40,9 +42,9 @@ class History(object):
     def back(self):
         if not self._back:
             return None
-        if len(self._back) > 1:
-            self._forward.append(self._back.pop())
-        return self._back[-1]
+        prev = self._back.pop()
+        self._forward.append(prev)
+        return prev
 
     def forward(self):
         if not self._forward:
