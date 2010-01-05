@@ -10,8 +10,8 @@ from resources import FakeSuite, PYAPP_REFERENCE #Needed to be able to create wx
 import wx
 
 
-DATA = [['kw1', '', ''],
-        ['kw2', 'arg1', ''],
+DATA = [['kw1'],
+        ['kw2', 'arg1'],
         ['kw3', 'arg1', 'arg2']]
 
 class _FakeMainFrame(wx.Frame):
@@ -129,7 +129,8 @@ class TestClipBoard(unittest.TestCase):
         self._copy_and_paste_block((1,0,1,0), (3,0,3,0), DATA + [['kw2']])
         # These tests are not independent
         self._copy_and_paste_block((1,0,1,0), (0,3,0,3),
-                                   [DATA[0] + ['kw2']] + DATA[1:] + [['kw2']])
+                                   [DATA[0] + ['', '', 'kw2']] +
+                                    DATA[1:] + [['kw2']])
 
     def test_paste_row(self):
         self._copy_and_paste_block((2,0,2,2), (3,1,3,1), DATA + [[''] + DATA[2]])
