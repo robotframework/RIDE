@@ -40,9 +40,9 @@ class History(object):
     def back(self):
         if not self._back:
             return None
-        prev = self._back.pop()
-        self._forward.append(prev)
-        return prev
+        if len(self._back) > 1:
+            self._forward.append(self._back.pop())
+        return self._back[-1]
 
     def forward(self):
         if not self._forward:
