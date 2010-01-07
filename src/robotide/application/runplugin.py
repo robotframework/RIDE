@@ -16,6 +16,7 @@ import wx
 import subprocess
 
 from robotide.pluginapi import Plugin, ActionInfo, SeparatorInfo
+from robotide.editor.listeditor import ListEditor
 
 
 class RunAnything(Plugin):
@@ -26,6 +27,8 @@ class RunAnything(Plugin):
     def enable(self):
         self.register_action(ActionInfo('Run', 'New Run Configuration',
                                         self.OnNewConfiguration))
+        self.register_action(ActionInfo('Run', 'Manage Run Configurations',
+                                        self.OnManageConfigurations))
         self.register_action(SeparatorInfo('Run'))
         self._configs = _RunConfigs(self.configs)
         for config in self._configs:
@@ -37,6 +40,12 @@ class RunAnything(Plugin):
             config = self._configs.add(*dlg.get_value())
             self._add_config_to_menu(config)
             self.save_setting('configs', self._configs.data_to_save())
+        dlg.Destroy()
+
+    def OnManageConfigurations(self, event):
+        dlg = _ManageConfigsDialog(self._configs)
+        dlg.ShowModal()
+        dlg.Destroy()
 
     def _add_config_to_menu(self, config):
         def _run(event):
@@ -111,6 +120,28 @@ class _ConfigDialog(wx.Dialog):
 
     def get_value(self):
         return [ e.GetValue() for e in self._editors ]
+
+
+class _ManageConfigsDialog(wx.Dialog):
+
+    def __init__(self, configs):
+        wx.Dialog.__init__(self, wx.GetTopLevelWindows()[0],
+                           title='Manage Run Configurations')
+        self._list = _ConfigListEditor(self, configs)
+        self.SetSize((600, 200))
+
+
+class _ConfigListEditor(ListEditor):
+
+    def __init__(self, parent, configs):
+        ListEditor.__init__(self, parent, None,
+                            ['Name', 'Documentation', 'Command'], configs)
+
+    def get_column_values(self, config):
+        return config.name, config.doc, config.command
+
+    def OnEdit(self, event):
+        pass
 
 
 class _Runner(wx.EvtHandler):
