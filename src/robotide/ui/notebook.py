@@ -50,6 +50,9 @@ class NoteBook(fnb.FlatNotebook):
         page = self.GetPageIndex(tab)
         self.DeletePage(page)
 
+    def rename_tab(self, tab, new_name):
+        self.SetPageText(self.GetPageIndex(tab), new_name)
+
     def tab_is_visible(self, tab):
         return tab == self.GetCurrentPage()
 
