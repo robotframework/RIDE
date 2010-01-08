@@ -184,6 +184,7 @@ class _OutputWindow(wx.ScrolledWindow):
 
     def __init__(self, parent, name):
         wx.ScrolledWindow.__init__(self, parent)
+        self.SetScrollRate(10, 10)
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
         self._output = wx.StaticText(self)
         self.Sizer.Add(self._output)
@@ -195,3 +196,4 @@ class _OutputWindow(wx.ScrolledWindow):
         self._output.SetLabel(self._output.GetLabel() + output)
         if finished:
             self.Parent.rename_tab(self, '%s (finished)' % self._name)
+        self.SetVirtualSize(self._output.Size)
