@@ -82,7 +82,8 @@ class KeywordSearchDialog(wx.Frame):
     def _add_search_control(self, label):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add(wx.StaticText(self, label=label))
-        self._search_control = wx.SearchCtrl(self, size=(200,-1), style=wx.TE_PROCESS_ENTER)
+        self._search_control = wx.SearchCtrl(self, size=(200,-1),
+                                             style=wx.TE_PROCESS_ENTER)
         sizer.Add(self._search_control)
         self._use_doc = wx.CheckBox(self, label='Search Documentation')
         self._use_doc.SetValue(True)
@@ -91,7 +92,8 @@ class KeywordSearchDialog(wx.Frame):
 
     def _make_bindings(self):
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected, self._list)
-        self.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.OnSearch, self._search_control)
+        self.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.OnSearch,
+                  self._search_control)
         self.Bind(wx.EVT_TEXT_ENTER, self.OnSearch, self._search_control)
         self.Bind(wx.EVT_ACTIVATE, self.OnActivate)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
@@ -106,7 +108,7 @@ class KeywordSearchDialog(wx.Frame):
         self._details.clear()
 
     def _get_search_criteria(self):
-        return self._search_control.GetValue().lower(),  self._use_doc.GetValue()
+        return self._search_control.GetValue().lower(), self._use_doc.GetValue()
 
     def OnItemSelected(self, event):
         self._details.SetPage(self._keywords[event.Index].get_details())
