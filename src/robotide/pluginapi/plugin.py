@@ -53,9 +53,11 @@ class Plugin(object):
     toolbar = property(lambda self: self.__frame.GetToolBar(),
                        doc='Provides access to the application toolbar')
     notebook = property(lambda self: self.__frame.notebook,
-                       doc='Provides access to the tabbed notebook')
+                        doc='Provides access to the tabbed notebook')
     model = property(lambda self: self.__app.model,
-                       doc='Provides access to the data model')
+                     doc='Provides access to the data model')
+    frame = property(lambda self: self.__frame,
+                     doc='Reference to the RIDE main frame')
 
     def __init__(self, application, name=None, doc=None, metadata=None,
                  default_settings=None, initially_enabled=True):

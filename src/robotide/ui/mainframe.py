@@ -44,7 +44,6 @@ _menudata = """
 
 [Tools]
 !Manage Plugins
-!Search Keywords | Search keywords from libraries and resources 
 
 [Help]
 !About | Information about RIDE
@@ -56,14 +55,13 @@ class RideFrame(wx.Frame, RideEventHandler):
                             lambda self, path: SETTINGS.set('default directory', path))
 
 
-    def __init__(self, application, keyword_filter):
+    def __init__(self, application):
         wx.Frame.__init__(self, parent=None, title='RIDE',
                           pos=SETTINGS['mainframe position'],
                           size=SETTINGS['mainframe size'])
         self._application = application
         self._init_ui()
         self._plugin_manager = PluginManager(self.notebook)
-        self._kw_search_dialog = KeywordSearchDialog(self, keyword_filter)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         PUBLISHER.subscribe(lambda msg: self.SetStatusText('Saved %s' % msg.path), 
                             RideSaved)
@@ -186,10 +184,6 @@ class RideFrame(wx.Frame, RideEventHandler):
 
     def OnManagePlugins(self, event):
         self._plugin_manager.show(self._application.get_plugins())
-
-    def OnSearchKeywords(self, event):
-        if not self._kw_search_dialog.IsShown():
-            self._kw_search_dialog.Show()
 
     def OnAbout(self, event):
         dlg = AboutDialog(self)

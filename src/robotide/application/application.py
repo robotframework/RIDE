@@ -39,7 +39,8 @@ class RIDE(wx.App):
     def OnInit(self):
         self._check_robot_version()
         self.model = None
-        self.frame = RideFrame(self, _KeywordFilter(self))
+        self.frame = RideFrame(self)
+        self.keyword_filter =  _KeywordFilter(self)
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),
                                            context.get_core_plugins())
         self.open_suite(self._path)

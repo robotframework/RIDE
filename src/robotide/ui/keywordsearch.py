@@ -15,7 +15,25 @@
 import wx
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 
+from robotide.pluginapi import Plugin, ActionInfo
 from robotide import utils
+
+
+class KeywordSearch(Plugin):
+
+    def __init__(self, app):
+        Plugin.__init__(self, app)
+        self._app = app
+
+    def enable(self):
+        action = ActionInfo('Tools', 'Search Keywords', self.OnSearch,
+                            doc='Search keywords from libraries and resources')
+        self.register_action(action)
+        self._dialog = KeywordSearchDialog(self.frame, self._app.keyword_filter)
+
+    def OnSearch(self, event):
+        if not self._dialog.IsShown():
+            self._dialog.Show()
 
 
 class KeywordSearchDialog(wx.Frame):
@@ -80,13 +98,14 @@ class KeywordSearchDialog(wx.Frame):
 
 class _KeywordList(wx.ListCtrl, ListCtrlAutoWidthMixin):
 
-    def __init__(self, parent, keywords):
+    def __init__(self, parent, filter):
         wx.ListCtrl.__init__(self, parent, 
                              style=wx.LC_REPORT|wx.NO_BORDER|wx.LC_SINGLE_SEL|
                                    wx.LC_HRULES|wx.LC_VIRTUAL)
         ListCtrlAutoWidthMixin.__init__(self)
         self._create_headers()
-        self.show_keywords(keywords)
+        self._filter = filter
+        self.filter_and_show_keywords('', True)
         self._previous_search_term = None
 
     def _create_headers(self):
@@ -94,9 +113,9 @@ class _KeywordList(wx.ListCtrl, ListCtrlAutoWidthMixin):
             self.InsertColumn(col, title)
         self.SetColumnWidth(0, 250)
 
-    def show_keywords(self, keywords):
-        self._keywords = keywords
-        self.SetItemCount(len(keywords.keywords))
+    def filter_and_show_keywords(self, pattern, use_doc):
+        self._keywords = self._filter.search(pattern, use_doc)
+        self.SetItemCount(len(self._keywords))
 
     def OnGetItemText(self, row, col):
         kw = self._keywords[row]
