@@ -27,14 +27,7 @@ class RunAnything(Plugin):
         Plugin.__init__(self, app, default_settings={'configs': []})
 
     def enable(self):
-        self.register_action(ActionInfo('Run', 'New Run Configuration',
-                                        self.OnNewConfiguration))
-        self.register_action(ActionInfo('Run', 'Manage Run Configurations',
-                                        self.OnManageConfigurations))
-        self.register_action(SeparatorInfo('Run'))
-        self._configs = _RunConfigs(self.configs)
-        for config in self._configs:
-            self._add_config_to_menu(config)
+        self._create_menu(_RunConfigs(self.configs))
 
     def OnNewConfiguration(self, event):
         dlg = _ConfigDialog()
@@ -45,26 +38,27 @@ class RunAnything(Plugin):
         dlg.Destroy()
 
     def OnManageConfigurations(self, event):
-        dlg = _ManageConfigsDialog(self._configs)
+        dlg = _ManageConfigsDialog(_RunConfigs(self.configs))
         if dlg.ShowModal() == wx.ID_OK:
-            self._configs = _RunConfigs(dlg.get_data())
-            self._create_menu()
+            configs = _RunConfigs(dlg.get_data())
+            self.save_setting('configs', configs.data_to_save())
+            self._create_menu(configs)
         dlg.Destroy()
 
-    def _create_menu(self):
+    def _create_menu(self, configs):
         self.unregister_actions()
         self.register_action(ActionInfo('Run', 'New Run Configuration',
                                         self.OnNewConfiguration))
         self.register_action(ActionInfo('Run', 'Manage Run Configurations',
                                         self.OnManageConfigurations))
         self.register_action(SeparatorInfo('Run'))
-        for config in self._configs:
-            self._add_config_to_menu(config)
+        for index, cfg in enumerate(configs):
+            self._add_config_to_menu(cfg, index)
 
-    def _add_config_to_menu(self, config):
+    def _add_config_to_menu(self, config, index):
         def run(event):
             _Runner(_OutputWindow(self.notebook, config.name), config).run()
-        info = ActionInfo('Run', name='%d: %s' % (config.index, config.name),
+        info = ActionInfo('Run', name='%d: %s' % (index, config.name),
                           doc=config.help, action=run) 
         self.register_action(info)
 
@@ -80,7 +74,7 @@ class _RunConfigs(object):
         return iter(self._configs)
 
     def add(self, name, command, doc):
-        config = _RunConfig(name, command, doc, len(self._configs)+1)
+        config = _RunConfig(name, command, doc)
         self._configs.append(config)
         return config
 
@@ -91,11 +85,10 @@ class _RunConfigs(object):
 class _RunConfig(object):
     help = property(lambda self: '%s (%s)' % (self.doc, self.command))
 
-    def __init__(self, name, command, doc, index):
+    def __init__(self, name, command, doc):
         self.name = name
         self.command = command
         self.doc = doc
-        self.index = index
 
     def run(self, output):
         # TODO: check subprocess usage in Windows
