@@ -12,8 +12,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import wx
+import os
 import subprocess
+import tempfile
+import wx
 
 from robotide.pluginapi import Plugin, ActionInfo, SeparatorInfo
 from robotide.editor.listeditor import ListEditor
@@ -48,10 +50,10 @@ class RunAnything(Plugin):
         dlg.Destroy()
 
     def _add_config_to_menu(self, config):
-        def _run(event):
-            _Runner(_OutputWindow(self.notebook, config), config).run()
+        def run(event):
+            _Runner(_OutputWindow(self.notebook, config.name), config).run()
         info = ActionInfo('Run', name='%d: %s' % (config.index, config.name),
-                          doc=config.help, action=_run) 
+                          doc=config.help, action=run) 
         self.register_action(info)
 
 
@@ -83,15 +85,13 @@ class _RunConfig(object):
         self.command = command
         self.index = index
 
-    def run(self):
-        self._process = subprocess.Popen(self.command, stdout=subprocess.PIPE,
-                                   stderr=subprocess.STDOUT, shell=True)
+    def run(self, output):
+        # TODO: check subprocess usage in Windows
+        self._process = subprocess.Popen(self.command, stdout=output,
+                                         stderr=subprocess.STDOUT, shell=True)
 
     def finished(self):
         return self._process.poll() is not None
-
-    def get_output(self):
-        return self._process.stdout.read()
 
 
 class _ConfigDialog(wx.Dialog):
@@ -154,26 +154,31 @@ class _Runner(wx.EvtHandler):
         self._config = config
 
     def run(self):
-        self._config.run()
-        self._timer.Start(100)
+        out_fd, path = tempfile.mkstemp()
+        self._output = open(path)
+        os.unlink(path)
+        self._config.run(out_fd)
+        self._timer.Start(500)
 
     def OnTimer(self, event):
-        if self._config.finished():
+        finished = self._config.finished()
+        self._window.update_output(self._output.read(), finished)
+        if finished:
             self._timer.Stop()
-            self._window.publish_result()
 
 
 class _OutputWindow(wx.ScrolledWindow):
 
-    def __init__(self, parent, config):
+    def __init__(self, parent, name):
         wx.ScrolledWindow.__init__(self, parent)
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
-        self.output = wx.StaticText(self)
-        self.Sizer.Add(self.output)
-        parent.add_tab(self, '%s (running)' % config.name)
+        self._output = wx.StaticText(self)
+        self.Sizer.Add(self._output)
+        self._name = name
+        parent.add_tab(self, '%s (running)' % name)
         parent.show_tab(self)
-        self._config = config
 
-    def publish_result(self):
-        self.output.SetLabel(self._config.get_output())
-        self.Parent.rename_tab(self, '%s (finished)' % self._config.name)
+    def update_output(self, output, finished=False):
+        self._output.SetLabel(self._output.GetLabel() + output)
+        if finished:
+            self.Parent.rename_tab(self, '%s (finished)' % self._name)
