@@ -67,22 +67,22 @@ class _RunConfigs(object):
     def __iter__(self):
         return iter(self._configs)
 
-    def add(self, name, doc, command):
-        config = _RunConfig(name, doc, command, len(self._configs)+1)
+    def add(self, name, command, doc):
+        config = _RunConfig(name, command, doc, len(self._configs)+1)
         self._configs.append(config)
         return config
 
     def data_to_save(self):
-        return [ (c.name, c.doc, c.command) for c in self._configs ]
+        return [ (c.name, c.command, c.doc) for c in self._configs ]
 
 
 class _RunConfig(object):
     help = property(lambda self: '%s (%s)' % (self.doc, self.command))
 
-    def __init__(self, name, doc, command, index):
+    def __init__(self, name, command, doc, index):
         self.name = name
-        self.doc = doc
         self.command = command
+        self.doc = doc
         self.index = index
 
     def run(self, output):
@@ -101,7 +101,7 @@ class _ConfigDialog(wx.Dialog):
                            title='New Run Configuration')
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
         self._editors = []
-        for label in ['Name', 'Documentation', 'Command']:
+        for label in ['Name', 'Command', 'Documentation']:
             self.Sizer.Add(self._get_entry_field(label))
         line = wx.StaticLine(self, size=(20,-1), style=wx.LI_HORIZONTAL)
         self.Sizer.Add(line, border=5,
@@ -135,10 +135,10 @@ class _ConfigListEditor(ListEditor):
 
     def __init__(self, parent, configs):
         ListEditor.__init__(self, parent, None,
-                            ['Name', 'Documentation', 'Command'], configs)
+                            ['Name', 'Command', 'Documentation'], configs)
 
     def get_column_values(self, config):
-        return config.name, config.doc, config.command
+        return config.name, config.command, config.doc
 
     def OnEdit(self, event):
         pass
