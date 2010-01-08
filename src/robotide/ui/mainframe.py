@@ -17,11 +17,10 @@ import wx
 
 from robotide.action import ActionInfoCollection, Action
 from robotide.publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER
-from robotide.utils import RideEventHandler
-from robotide.context import SETTINGS
+from robotide.utils import RideEventHandler, RideHtmlWindow
+from robotide.context import SETTINGS, ABOUT_RIDE
 
 from actiontriggers import MenuBar, ToolBar, ShortcutRegistry
-from dialogs import AboutDialog
 from keywordsearch import KeywordSearchDialog
 from filedialogs import NewProjectDialog, NewResourceDialog, ChangeFormatDialog
 from pluginmanager import PluginManager
@@ -244,3 +243,12 @@ class ActionRegisterer(object):
     def register_actions(self, actions):
         for action in actions:
             self.register_action(action)
+
+
+class AboutDialog(wx.Dialog):
+
+    def __init__(self, parent):
+        wx.Dialog.__init__(self, parent, title='RIDE')
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(RideHtmlWindow(self, (450, 200), ABOUT_RIDE))
+        self.SetSizerAndFit(sizer)
