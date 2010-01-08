@@ -13,7 +13,7 @@
 #  limitations under the License.
 
 import wx
-from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
+from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin, TextEditMixin
 
 from robotide.utils import ButtonWithHandler, PopupMenu
 
@@ -94,12 +94,13 @@ class ListEditor(wx.Panel):
         return True
 
 
-class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
+class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin, TextEditMixin):
 
     def __init__(self, parent, columns, data=[]):
         wx.ListCtrl.__init__(self, parent, 
                              style=wx.LC_REPORT|wx.NO_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES)
         ListCtrlAutoWidthMixin.__init__(self)
+        TextEditMixin.__init__(self)
         self._parent = parent
         self.populate(columns, data)
 

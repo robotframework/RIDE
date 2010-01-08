@@ -127,21 +127,46 @@ class _ManageConfigsDialog(wx.Dialog):
     def __init__(self, configs):
         wx.Dialog.__init__(self, wx.GetTopLevelWindows()[0],
                            title='Manage Run Configurations')
+        self.SetSizer(wx.BoxSizer(wx.VERTICAL))
         self._list = _ConfigListEditor(self, configs)
-        self.SetSize((600, 200))
+        self.Sizer.Add(self._list, flag=wx.GROW, proportion=1)
+        line = wx.StaticLine(self, size=(20,-1), style=wx.LI_HORIZONTAL)
+        self.Sizer.Add(line, border=5,
+                       flag=wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.RIGHT|wx.TOP)
+        buttons = self.CreateStdDialogButtonSizer(wx.OK|wx.CANCEL)
+        self.Bind(wx.EVT_BUTTON, self.OnOk, buttons.GetAffirmativeButton())
+        self.Sizer.Add(buttons, flag=wx.ALIGN_CENTER|wx.ALL, border=5)
+        self.SetSize((750, 200))
+
+    def OnOk(self, event):
+        event.Skip()
 
 
 class _ConfigListEditor(ListEditor):
+    _buttons = ['New']
 
     def __init__(self, parent, configs):
         ListEditor.__init__(self, parent, None,
                             ['Name', 'Command', 'Documentation'], configs)
+        self._list.col_locs = [0]
+        loc = 0
+        for n in range(self._list.GetColumnCount()):
+            loc = loc + self._list.GetColumnWidth(n)
+            self._list.col_locs.append(loc)
 
     def get_column_values(self, config):
         return config.name, config.command, config.doc
 
     def OnEdit(self, event):
         pass
+
+    def OnNew(self, event):
+        self._list.InsertStringItem(self._list.ItemCount, '')
+        self._list.OpenEditor(0, self._list.ItemCount-1)
+
+    def get_data(self):
+        return [ [ self._list.GetItem(row, col).GetText() for col in range(3) ] 
+                 for row in range(self._list.ItemCount) ]
 
 
 class _Runner(wx.EvtHandler):
