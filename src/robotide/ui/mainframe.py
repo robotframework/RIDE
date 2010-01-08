@@ -21,7 +21,8 @@ from robotide.utils import RideEventHandler
 from robotide.context import SETTINGS
 
 from actiontriggers import MenuBar, ToolBar, ShortcutRegistry
-from dialogs import KeywordSearchDialog, AboutDialog
+from dialogs import AboutDialog
+from keywordsearch import KeywordSearchDialog
 from filedialogs import NewProjectDialog, NewResourceDialog, ChangeFormatDialog
 from pluginmanager import PluginManager
 from tree import Tree
