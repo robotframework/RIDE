@@ -63,10 +63,20 @@ class _RunConfigs(object):
     def __iter__(self):
         return iter(self._configs)
 
+    def __len__(self):
+        return len(self._configs)
+
     def add(self, name, command, doc):
         config = _RunConfig(name, command, doc)
         self._configs.append(config)
         return config
+
+    def swap(self, index1, index2):
+        self._configs[index1], self._configs[index2] = \
+                self._configs[index2], self._configs[index1]
+
+    def pop(self, index):
+        self._configs.pop(index)
 
     def data_to_save(self):
         return [ (c.name, c.command, c.doc) for c in self._configs ]
@@ -136,10 +146,13 @@ class _ConfigListEditor(ListEditor):
     def OnNew(self, event):
         self._list.InsertStringItem(self._list.ItemCount, '')
         self._open_editor(self._list.ItemCount-1)
+        self._data.add(*self._get_row(self._list.ItemCount-1))
 
     def get_data(self):
-        return [ [ self._list.GetItem(row, col).GetText() for col in range(3) ] 
-                 for row in range(self._list.ItemCount) ]
+        return [ self._get_row(row) for row in range(self._list.ItemCount) ]
+
+    def _get_row(self, row):
+        return [ self._list.GetItem(row, col).GetText() for col in range(3)]
 
 
 class _Runner(wx.EvtHandler):

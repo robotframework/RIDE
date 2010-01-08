@@ -83,7 +83,8 @@ class ListEditor(wx.Panel):
     def update_data(self):
         self._list.DeleteAllItems()
         self._list.insert_data(self._data)
-        self._tree.mark_dirty(self._data.datafile)
+        if self._tree:
+            self._tree.mark_dirty(self._data.datafile)
 
     def update_selected_item(self, data):
         self._list.update_item(self._selection, data)
