@@ -15,7 +15,8 @@
 import wx
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 
-from robotide.pluginapi import Plugin, ActionInfo
+from robotide.pluginapi import Plugin, ActionInfo, RideOpenSuite,\
+    RideOpenResource
 from robotide import utils
 
 
@@ -23,28 +24,25 @@ class KeywordSearch(Plugin):
 
     def __init__(self, app):
         Plugin.__init__(self, app)
-        self.all_keywords = self.model and self.model.get_all_keywords() or []
-        self.keywords = self.all_keywords
+        self._all_keywords = self.model and self.model.get_all_keywords() or []
+        self.keywords = self._all_keywords
 
     def enable(self):
         action = ActionInfo('Tools', 'Search Keywords', self.OnSearch,
                             doc='Search keywords from libraries and resources')
         self.register_action(action)
-        self.refresh()
+        self.subscribe(self.refresh, RideOpenSuite, RideOpenResource)
         self._dialog = KeywordSearchDialog(self.frame, self)
 
     def OnSearch(self, event):
-        # TODO: dirty hack
-        if not self.all_keywords:
-            self.refresh()
         if not self._dialog.IsShown():
             self._dialog.Show()
 
-    def refresh(self):
-        self.keywords = self.all_keywords = self.model and self.model.get_all_keywords() or []
+    def refresh(self, message):
+        self.keywords = self._all_keywords = self.model and self.model.get_all_keywords() or []
 
     def search(self, pattern, search_docs):
-        self.keywords = [ kw for kw in self.all_keywords if \
+        self.keywords = [ kw for kw in self._all_keywords if \
                           self._matches_criteria(kw, pattern, search_docs) ]
         return self.keywords
 
