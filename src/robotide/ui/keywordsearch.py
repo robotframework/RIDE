@@ -136,4 +136,4 @@ class _KeywordList(wx.ListCtrl, ListCtrlAutoWidthMixin):
 
     def OnGetItemText(self, row, col):
         kw = self._keywords[row]
-        return {0: kw.name, 1: kw.source, 2: kw.shortdoc}[col]
+        return [kw.name, kw.source, kw.shortdoc][col]
