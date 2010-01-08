@@ -43,7 +43,7 @@ class RunAnything(Plugin):
                                         self.OnManageConfigurations))
         self.register_action(SeparatorInfo('Run'))
         for index, cfg in enumerate(configs):
-            self._add_config_to_menu(cfg, index)
+            self._add_config_to_menu(cfg, index+1)
 
     def _add_config_to_menu(self, config, index):
         def run(event):
@@ -152,7 +152,8 @@ class _Runner(wx.EvtHandler):
         self._config = config
 
     def run(self):
-        self._out_fd, self._out_path = tempfile.mkstemp()
+        self._out_fd, self._out_path \
+                      = tempfile.mkstemp(prefix='riderun_', text=True)
         self._out_file = open(self._out_path)
         self._config.run(self._out_fd)
         self._timer.Start(500)
