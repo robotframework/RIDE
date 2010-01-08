@@ -128,11 +128,14 @@ class _ConfigListEditor(ListEditor):
         return config.name, config.command, config.doc
 
     def OnEdit(self, event):
-        pass
+        self._open_editor(self._selection)
+
+    def _open_editor(self, row):
+        self._list.OpenEditor(0, row)
 
     def OnNew(self, event):
         self._list.InsertStringItem(self._list.ItemCount, '')
-        self._list.OpenEditor(0, self._list.ItemCount-1)
+        self._open_editor(self._list.ItemCount-1)
 
     def get_data(self):
         return [ [ self._list.GetItem(row, col).GetText() for col in range(3) ] 
