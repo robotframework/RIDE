@@ -62,6 +62,7 @@ class RIDE(wx.App):
 
     def open_suite(self, path):
         self.model = self._load_suite(path)
+        RideOpenSuite(path=self._path).publish()
         context.LOG.report_parsing_errors()
 
     def _load_suite(self, path):
@@ -123,7 +124,6 @@ class _DataLoader(Thread):
     def run(self):
         try:
             self.model = DataModel(self._path)
-            RideOpenSuite(path=self._path).publish()
         except (DataError, NoRideError), err:
             context.LOG(str(err))
             self.model = DataModel()
