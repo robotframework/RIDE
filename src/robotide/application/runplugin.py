@@ -194,7 +194,8 @@ class _OutputWindow(wx.ScrolledWindow):
         parent.show_tab(self)
 
     def update_output(self, output, finished=False):
-        self._output.SetLabel(self._output.GetLabel() + output)
+        if output:
+            self._output.SetLabel(self._output.GetLabel() + output)
+            self.SetVirtualSize(self._output.Size)
         if finished:
             self.Parent.rename_tab(self, '%s (finished)' % self._name)
-        self.SetVirtualSize(self._output.Size)
