@@ -23,31 +23,52 @@ class KeywordSearch(Plugin):
 
     def __init__(self, app):
         Plugin.__init__(self, app)
-        self._app = app
+        self.all_keywords = self.model and self.model.get_all_keywords() or []
+        self.keywords = self.all_keywords
 
     def enable(self):
         action = ActionInfo('Tools', 'Search Keywords', self.OnSearch,
                             doc='Search keywords from libraries and resources')
         self.register_action(action)
-        self._dialog = KeywordSearchDialog(self.frame, self._app.keyword_filter)
+        self.refresh()
+        self._dialog = KeywordSearchDialog(self.frame, self)
 
     def OnSearch(self, event):
+        # TODO: dirty hack
+        if not self.all_keywords:
+            self.refresh()
         if not self._dialog.IsShown():
             self._dialog.Show()
+
+    def refresh(self):
+        self.keywords = self.all_keywords = self.model and self.model.get_all_keywords() or []
+
+    def search(self, pattern, search_docs):
+        self.keywords = [ kw for kw in self.all_keywords if \
+                          self._matches_criteria(kw, pattern, search_docs) ]
+        return self.keywords
+
+    def get_documentation(self, index):
+        return self.keywords[index].get_details()
+
+    def _matches_criteria(self, kw, pattern, search_docs):
+        if utils.contains(kw.name, pattern, ignore=['_']):
+            return True
+        return search_docs and utils.contains(kw.doc, pattern)
 
 
 class KeywordSearchDialog(wx.Frame):
 
-    def __init__(self, parent, keyword_filter):
+    def __init__(self, parent, searcher):
         wx.Frame.__init__(self, parent, title="Search Keywords")
-        self._keywords = keyword_filter
-        self._create_components(keyword_filter)
+        self._searcher = searcher
+        self._create_components(searcher)
         self._make_bindings()
 
-    def _create_components(self, keyword_filter):
+    def _create_components(self, searcher):
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
         self._add_search_control('Filter Names: ')
-        self._list = _KeywordList(self, keyword_filter)
+        self._list = _KeywordList(self, searcher)
         self._list.SetSize(self.Size)
         self.Sizer.Add(self._list, 1, wx.EXPAND| wx.ALL, 3)
         self._details = utils.RideHtmlWindow(self)
@@ -85,26 +106,19 @@ class KeywordSearchDialog(wx.Frame):
         self.OnSearch(event)
 
     def OnItemSelected(self, event):
-        doc = self._keywords.get_documentation(event.GetIndex())
+        doc = self.keyword_searcher.get_documentation(event.GetIndex())
         self._details.SetPage(doc)
-
-    def _search(self):
-        pattern = self._search_control.GetValue().lower()
-        if pattern != self._previous_search_term:
-            self._previous_search_term = pattern
-        search_docs = self._use_doc.GetValue()
-        return self._keywords.search(pattern, search_docs)
 
 
 class _KeywordList(wx.ListCtrl, ListCtrlAutoWidthMixin):
 
-    def __init__(self, parent, filter):
+    def __init__(self, parent, searcher):
         wx.ListCtrl.__init__(self, parent, 
                              style=wx.LC_REPORT|wx.NO_BORDER|wx.LC_SINGLE_SEL|
                                    wx.LC_HRULES|wx.LC_VIRTUAL)
         ListCtrlAutoWidthMixin.__init__(self)
         self._create_headers()
-        self._filter = filter
+        self._searcher = searcher
         self.filter_and_show_keywords('', True)
         self._previous_search_term = None
 
@@ -114,7 +128,7 @@ class _KeywordList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         self.SetColumnWidth(0, 250)
 
     def filter_and_show_keywords(self, pattern, use_doc):
-        self._keywords = self._filter.search(pattern, use_doc)
+        self._keywords = self._searcher.search(pattern, use_doc)
         self.SetItemCount(len(self._keywords))
 
     def OnGetItemText(self, row, col):
@@ -124,4 +138,3 @@ class _KeywordList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         elif col == 1:
             return kw.source
         return kw.shortdoc
-

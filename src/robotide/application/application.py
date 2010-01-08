@@ -23,7 +23,6 @@ from robotide.publish import RideOpenSuite, RideOpenResource
 from robotide.errors import DataError, NoRideError
 from robotide.ui import RideFrame
 from robotide import context
-from robotide import utils
 
 from datamodel import DataModel
 from pluginloader import PluginLoader
@@ -40,7 +39,6 @@ class RIDE(wx.App):
         self._check_robot_version()
         self.model = None
         self.frame = RideFrame(self)
-        self.keyword_filter =  _KeywordFilter(self)
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),
                                            context.get_core_plugins())
         self.open_suite(self._path)
@@ -91,9 +89,6 @@ class RIDE(wx.App):
     def import_new_resource(self, datafile, path):
         self.open_resource(path, datafile)
 
-    def get_all_keywords(self):
-        return self.model and self.model.get_all_keywords() or []
-
     def ok_to_exit(self):
         if self.model.is_dirty():
             ret = wx.MessageBox('There are unsaved modifications.\nDo you want to save your changes before exiting?',
@@ -116,29 +111,6 @@ class RIDE(wx.App):
 
     def save(self, datafile=None):
         self.model.serialize(datafile)
-
-
-class _KeywordFilter(object):
-
-    def __init__(self, app):
-        self._app = app
-        self.refresh()
-
-    def refresh(self):
-        self.keywords = self._app.get_all_keywords()
-
-    def search(self, pattern, search_docs):
-        self.keywords = [ kw for kw in self._app.get_all_keywords() if \
-                          self._matches_search_criteria(kw, pattern, search_docs) ]
-        return self.keywords
-
-    def get_documentation(self, index):
-        return self.keywords[index].get_details()
-
-    def _matches_search_criteria(self, kw, pattern, search_docs):
-        if utils.contains(kw.name, pattern, ignore=['_']):
-            return True
-        return search_docs and utils.contains(kw.doc, pattern)
 
 
 class _DataLoader(Thread):
