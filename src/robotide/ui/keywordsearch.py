@@ -24,8 +24,8 @@ class KeywordSearch(Plugin):
 
     def __init__(self, app):
         Plugin.__init__(self, app)
-        self._all_keywords = self.model and self.model.get_all_keywords() or []
-        self.keywords = self._all_keywords
+        self._all_keywords = []
+        self._criteria = _SearchCriteria()
 
     def enable(self):
         action = ActionInfo('Tools', 'Search Keywords', self.OnSearch,
@@ -39,20 +39,26 @@ class KeywordSearch(Plugin):
             self._dialog.Show()
 
     def refresh(self, message):
-        self.keywords = self._all_keywords = self.model and self.model.get_all_keywords() or []
+        self._all_keywords = self.model.get_all_keywords()
 
     def search(self, pattern, search_docs):
-        self.keywords = [ kw for kw in self._all_keywords if \
-                          self._matches_criteria(kw, pattern, search_docs) ]
-        return self.keywords
+        self._criteria = _SearchCriteria(pattern, search_docs)
+        return self._search()
 
-    def get_documentation(self, index):
-        return self.keywords[index].get_details()
+    def _search(self):
+        return [ kw for kw in self._all_keywords if self._criteria.matches(kw) ]
 
-    def _matches_criteria(self, kw, pattern, search_docs):
-        if utils.contains(kw.name, pattern, ignore=['_']):
+
+class _SearchCriteria(object):
+
+    def __init__(self, pattern='', search_docs=True):
+        self._pattern = pattern
+        self._search_docs = search_docs
+
+    def matches(self, kw):
+        if utils.contains(kw.name, self._pattern, ignore=['_']):
             return True
-        return search_docs and utils.contains(kw.doc, pattern)
+        return self._search_docs and utils.contains(kw.doc, self._pattern)
 
 
 class KeywordSearchDialog(wx.Frame):
@@ -66,7 +72,7 @@ class KeywordSearchDialog(wx.Frame):
     def _create_components(self, searcher):
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
         self._add_search_control('Filter Names: ')
-        self._list = _KeywordList(self, searcher)
+        self._list = _KeywordList(self)
         self._list.SetSize(self.Size)
         self.Sizer.Add(self._list, 1, wx.EXPAND| wx.ALL, 3)
         self._details = utils.RideHtmlWindow(self)
@@ -91,48 +97,41 @@ class KeywordSearchDialog(wx.Frame):
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         self.Bind(wx.EVT_CHECKBOX, self.OnSearch, self._use_doc)
 
-    def OnClose(self, event):
-        self.Hide()
-
-    def OnSearch(self, event):
-        pattern= self._search_control.GetValue().lower()
-        use_doc = self._use_doc.GetValue()
-        self._list.filter_and_show_keywords(pattern, use_doc)
-        self._details.clear()
-
     def OnActivate(self, event):
         self.OnSearch(event)
 
+    def OnSearch(self, event):
+        self._keywords = self._searcher.search(*self._get_search_criteria())
+        self._list.show_keywords(self._keywords)
+        self._details.clear()
+
+    def _get_search_criteria(self):
+        return self._search_control.GetValue().lower(),  self._use_doc.GetValue()
+
     def OnItemSelected(self, event):
-        doc = self.keyword_searcher.get_documentation(event.GetIndex())
-        self._details.SetPage(doc)
+        self._details.SetPage(self._keywords[event.Index].get_details())
+
+    def OnClose(self, event):
+        self.Hide()
 
 
 class _KeywordList(wx.ListCtrl, ListCtrlAutoWidthMixin):
 
-    def __init__(self, parent, searcher):
-        wx.ListCtrl.__init__(self, parent, 
-                             style=wx.LC_REPORT|wx.NO_BORDER|wx.LC_SINGLE_SEL|
-                                   wx.LC_HRULES|wx.LC_VIRTUAL)
+    def __init__(self, parent):
+        style = wx.LC_REPORT|wx.NO_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VIRTUAL
+        wx.ListCtrl.__init__(self, parent, style=style)
         ListCtrlAutoWidthMixin.__init__(self)
         self._create_headers()
-        self._searcher = searcher
-        self.filter_and_show_keywords('', True)
-        self._previous_search_term = None
 
     def _create_headers(self):
         for col, title in enumerate(['Keyword', 'Source', 'Description']):
             self.InsertColumn(col, title)
         self.SetColumnWidth(0, 250)
 
-    def filter_and_show_keywords(self, pattern, use_doc):
-        self._keywords = self._searcher.search(pattern, use_doc)
+    def show_keywords(self, keywords):
+        self._keywords = keywords
         self.SetItemCount(len(self._keywords))
 
     def OnGetItemText(self, row, col):
         kw = self._keywords[row]
-        if col == 0:
-            return kw.name
-        elif col == 1:
-            return kw.source
-        return kw.shortdoc
+        return {0: kw.name, 1: kw.source, 2: kw.shortdoc}[col]
