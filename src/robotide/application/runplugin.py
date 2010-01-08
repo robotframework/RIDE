@@ -27,44 +27,28 @@ class RunAnything(Plugin):
         Plugin.__init__(self, app, default_settings={'configs': []})
 
     def enable(self):
-        self.register_action(ActionInfo('Run', 'New Run Configuration',
-                                        self.OnNewConfiguration))
-        self.register_action(ActionInfo('Run', 'Manage Run Configurations',
-                                        self.OnManageConfigurations))
-        self.register_action(SeparatorInfo('Run'))
-        self._configs = _RunConfigs(self.configs)
-        for config in self._configs:
-            self._add_config_to_menu(config)
-
-    def OnNewConfiguration(self, event):
-        dlg = _ConfigDialog()
-        if dlg.ShowModal() == wx.ID_OK:
-            config = self._configs.add(*dlg.get_value())
-            self._add_config_to_menu(config)
-            self.save_setting('configs', self._configs.data_to_save())
-        dlg.Destroy()
+        self._create_menu(_RunConfigs(self.configs))
 
     def OnManageConfigurations(self, event):
-        dlg = _ManageConfigsDialog(self._configs)
+        dlg = _ManageConfigsDialog(_RunConfigs(self.configs))
         if dlg.ShowModal() == wx.ID_OK:
-            self._configs = _RunConfigs(dlg.get_data())
-            self._create_menu()
+            configs = _RunConfigs(dlg.get_data())
+            self.save_setting('configs', configs.data_to_save())
+            self._create_menu(configs)
         dlg.Destroy()
 
-    def _create_menu(self):
+    def _create_menu(self, configs):
         self.unregister_actions()
-        self.register_action(ActionInfo('Run', 'New Run Configuration',
-                                        self.OnNewConfiguration))
         self.register_action(ActionInfo('Run', 'Manage Run Configurations',
                                         self.OnManageConfigurations))
         self.register_action(SeparatorInfo('Run'))
-        for config in self._configs:
-            self._add_config_to_menu(config)
+        for index, cfg in enumerate(configs):
+            self._add_config_to_menu(cfg, index)
 
-    def _add_config_to_menu(self, config):
+    def _add_config_to_menu(self, config, index):
         def run(event):
             _Runner(_OutputWindow(self.notebook, config.name), config).run()
-        info = ActionInfo('Run', name='%d: %s' % (config.index, config.name),
+        info = ActionInfo('Run', name='%d: %s' % (index, config.name),
                           doc=config.help, action=run) 
         self.register_action(info)
 
@@ -80,7 +64,7 @@ class _RunConfigs(object):
         return iter(self._configs)
 
     def add(self, name, command, doc):
-        config = _RunConfig(name, command, doc, len(self._configs)+1)
+        config = _RunConfig(name, command, doc)
         self._configs.append(config)
         return config
 
@@ -91,11 +75,10 @@ class _RunConfigs(object):
 class _RunConfig(object):
     help = property(lambda self: '%s (%s)' % (self.doc, self.command))
 
-    def __init__(self, name, command, doc, index):
+    def __init__(self, name, command, doc):
         self.name = name
         self.command = command
         self.doc = doc
-        self.index = index
 
     def run(self, output):
         # TODO: check subprocess usage in Windows
@@ -104,34 +87,6 @@ class _RunConfig(object):
 
     def finished(self):
         return self._process.poll() is not None
-
-
-class _ConfigDialog(wx.Dialog):
-
-    def __init__(self):
-        wx.Dialog.__init__(self, wx.GetTopLevelWindows()[0],
-                           title='New Run Configuration')
-        self.SetSizer(wx.BoxSizer(wx.VERTICAL))
-        self._editors = []
-        for label in ['Name', 'Command', 'Documentation']:
-            self.Sizer.Add(self._get_entry_field(label))
-        line = wx.StaticLine(self, size=(20,-1), style=wx.LI_HORIZONTAL)
-        self.Sizer.Add(line, border=5,
-                       flag=wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.RIGHT|wx.TOP)
-        self.Sizer.Add(self.CreateStdDialogButtonSizer(wx.OK|wx.CANCEL),
-                       flag=wx.ALIGN_CENTER|wx.ALL, border=5)
-        self.Fit()
-
-    def _get_entry_field(self, label):
-        sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.Add(wx.StaticText(self, label=label, size=(100, -1)))
-        editor = wx.TextCtrl(self, size=(200,-1))
-        sizer.Add(editor)
-        self._editors.append(editor)
-        return sizer
-
-    def get_value(self):
-        return [ e.GetValue() for e in self._editors ]
 
 
 class _ManageConfigsDialog(wx.Dialog):
@@ -173,11 +128,14 @@ class _ConfigListEditor(ListEditor):
         return config.name, config.command, config.doc
 
     def OnEdit(self, event):
-        pass
+        self._open_editor(self._selection)
+
+    def _open_editor(self, row):
+        self._list.OpenEditor(0, row)
 
     def OnNew(self, event):
         self._list.InsertStringItem(self._list.ItemCount, '')
-        self._list.OpenEditor(0, self._list.ItemCount-1)
+        self._open_editor(self._list.ItemCount-1)
 
     def get_data(self):
         return [ [ self._list.GetItem(row, col).GetText() for col in range(3) ] 
