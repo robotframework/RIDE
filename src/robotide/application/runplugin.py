@@ -194,17 +194,19 @@ class _Runner(wx.EvtHandler):
         self._config = config
 
     def run(self):
-        out_fd, path = tempfile.mkstemp()
-        self._output = open(path)
-        os.unlink(path)
-        self._config.run(out_fd)
+        self._out_fd, self._out_path = tempfile.mkstemp()
+        self._out_file = open(self._out_path)
+        self._config.run(self._out_fd)
         self._timer.Start(500)
 
     def OnTimer(self, event):
         finished = self._config.finished()
-        self._window.update_output(self._output.read(), finished)
+        self._window.update_output(self._out_file.read(), finished)
         if finished:
             self._timer.Stop()
+            self._out_file.close()
+            os.close(self._out_fd)
+            os.remove(self._out_path)
 
 
 class _OutputWindow(wx.ScrolledWindow):
