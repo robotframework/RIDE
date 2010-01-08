@@ -46,8 +46,20 @@ class RunAnything(Plugin):
 
     def OnManageConfigurations(self, event):
         dlg = _ManageConfigsDialog(self._configs)
-        dlg.ShowModal()
+        if dlg.ShowModal() == wx.ID_OK:
+            self._configs = _RunConfigs(dlg.get_data())
+            self._create_menu()
         dlg.Destroy()
+
+    def _create_menu(self):
+        self.unregister_actions()
+        self.register_action(ActionInfo('Run', 'New Run Configuration',
+                                        self.OnNewConfiguration))
+        self.register_action(ActionInfo('Run', 'Manage Run Configurations',
+                                        self.OnManageConfigurations))
+        self.register_action(SeparatorInfo('Run'))
+        for config in self._configs:
+            self._add_config_to_menu(config)
 
     def _add_config_to_menu(self, config):
         def run(event):
@@ -140,6 +152,9 @@ class _ManageConfigsDialog(wx.Dialog):
 
     def OnOk(self, event):
         event.Skip()
+
+    def get_data(self):
+        return self._list.get_data()
 
 
 class _ConfigListEditor(ListEditor):
