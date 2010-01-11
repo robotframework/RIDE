@@ -16,7 +16,7 @@ import wx
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 
 from robotide.pluginapi import Plugin, ActionInfo, RideOpenSuite,\
-    RideOpenResource
+    RideOpenResource, RideImportSetting, RideUserKeyword
 from robotide import utils
 
 
@@ -31,7 +31,8 @@ class KeywordSearch(Plugin):
         action = ActionInfo('Tools', 'Search Keywords', self.OnSearch,
                             doc='Search keywords from libraries and resources')
         self.register_action(action)
-        self.subscribe(self.refresh, RideOpenSuite, RideOpenResource)
+        self.subscribe(self.refresh, RideOpenSuite, RideOpenResource,
+                       RideImportSetting, RideUserKeyword)
         self._dialog = KeywordSearchDialog(self.frame, self)
 
     def OnSearch(self, event):
