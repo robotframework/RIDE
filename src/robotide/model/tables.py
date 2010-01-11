@@ -12,8 +12,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide import utils
+from robotide.publish import RideUserKeywordAdded
 from robotide.robotapi import RobotVariables
+from robotide import utils
 
 from datalist import RobotDataList
 from metadata import Metadata
@@ -213,7 +214,9 @@ class UserKeywordTable(_TcUkTable):
     _item_name = 'User Keyword'
 
     def new_keyword(self, name):
-        return _TcUkTable.new_item(self, name)
+        uk = _TcUkTable.new_item(self, name)
+        RideUserKeywordAdded(datafile=self.datafile, name=uk.name).publish()
+        return uk
 
     def get_keyword(self, longname):
         return _TcUkTable.get_item(self, longname)
