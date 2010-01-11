@@ -42,11 +42,11 @@ class Logger(object):
 
     def message(self, msg):
         message, level = msg.message, msg.level.upper()
+        self._raise_if_no_ride_warning(message)
         if self._is_logged(level):
             self._messages.append((message, level))
 
     def _write(self, msg, level):
-        self._raise_if_no_ride_warning(msg)
         level = level.upper()
         if self._is_logged(level) and not self._is_ignored_warning(msg):
             self._show_message(msg, level)
