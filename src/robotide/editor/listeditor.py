@@ -26,9 +26,12 @@ class ListEditor(wx.Panel):
         wx.Panel.__init__(self, parent)
         self._data = data
         self._list = AutoWidthColumnList(self, columns, data)
-        self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected)
-        self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnEdit)
-        self.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.OnRightClick)
+        self._selection = -1
+        self._columns = columns
+        self._create_ui()
+        self._make_bindings()
+
+    def _create_ui(self):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add(self._list, 1, wx.EXPAND)
         sizer.Add((5,0))
@@ -36,8 +39,11 @@ class ListEditor(wx.Panel):
         sizer.Add((5,0))
         self.SetSizer(sizer)
         sizer.Layout()
-        self._selection = -1
-        self._columns = columns
+
+    def _make_bindings(self):
+        self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected)
+        self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnEdit)
+        self.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.OnRightClick)
 
     def _create_buttons(self):  
         sizer = wx.BoxSizer(wx.VERTICAL)
