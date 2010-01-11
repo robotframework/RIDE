@@ -226,7 +226,7 @@ class _Runner(wx.EvtHandler):
 
     def stop(self):
         # subprocess.kill is only available in Python 2.6 and later
-        if sys.version_info[1] > 7:
+        if sys.version_info[1] > 5:
             self._config.kill()
             self.OnTimer()
         else:
