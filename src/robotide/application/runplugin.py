@@ -51,7 +51,7 @@ class RunAnything(Plugin):
         def run(event):
             _Runner(config, self.notebook).run()
         info = ActionInfo('Run', name='%d: %s' % (index, config.name),
-                          doc=config.help, action=run) 
+                          doc=config.help, action=run)
         self.register_action(info)
 
 
@@ -162,7 +162,7 @@ class _TextEditListCtrl(AutoWidthColumnList, TextEditMixin):
 
     def _calculate_col_locs(self):
         """Calculates and returns initial locations of colums.
-        
+
         This is needed so that TextEditMixin can work from context menu,
         without selecting the row first.
         """
@@ -190,7 +190,7 @@ class _TextEditListCtrl(AutoWidthColumnList, TextEditMixin):
     def CloseEditor(self, event=None):
         TextEditMixin.CloseEditor(self, event)
         # It seems that this is called twice per editing action and in the
-        # first time the value may be empty. 
+        # first time the value may be empty.
         # End new item creation only when there really is a value
         lastrow = self._get_row(self.last_index)
         if self._new_item_creation and any(lastrow):
