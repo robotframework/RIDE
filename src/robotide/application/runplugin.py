@@ -101,9 +101,10 @@ class _RunConfig(object):
 
 
 class _ManageConfigsDialog(wx.Dialog):
+    _style = style = wx.DEFAULT_DIALOG_STYLE|wx.THICK_FRAME
 
     def __init__(self, configs):
-        wx.Dialog.__init__(self, wx.GetTopLevelWindows()[0],
+        wx.Dialog.__init__(self, wx.GetTopLevelWindows()[0], style=self._style,
                            title='Manage Run Configurations')
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
         self._editor = _ConfigListEditor(self, configs)
