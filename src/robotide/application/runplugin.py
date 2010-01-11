@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 import os
+import sys
 import subprocess
 import tempfile
 import wx
@@ -48,7 +49,7 @@ class RunAnything(Plugin):
 
     def _add_config_to_menu(self, config, index):
         def run(event):
-            _Runner(_OutputWindow(self.notebook, config.name), config).run()
+            _Runner(config, self.notebook).run()
         info = ActionInfo('Run', name='%d: %s' % (index, config.name),
                           doc=config.help, action=run) 
         self.register_action(info)
@@ -99,6 +100,9 @@ class _RunConfig(object):
     def finished(self):
         return self._process.poll() is not None
 
+    def kill(self):
+        self._process.kill()
+
 
 class _ManageConfigsDialog(wx.Dialog):
     _style = style = wx.DEFAULT_DIALOG_STYLE|wx.THICK_FRAME
@@ -112,13 +116,9 @@ class _ManageConfigsDialog(wx.Dialog):
         line = wx.StaticLine(self, size=(20,-1), style=wx.LI_HORIZONTAL)
         self.Sizer.Add(line, border=5,
                        flag=wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.RIGHT|wx.TOP)
-        buttons = self.CreateStdDialogButtonSizer(wx.OK|wx.CANCEL)
-        self.Bind(wx.EVT_BUTTON, self.OnOk, buttons.GetAffirmativeButton())
-        self.Sizer.Add(buttons, flag=wx.ALIGN_CENTER|wx.ALL, border=5)
+        self.Sizer.Add(self.CreateStdDialogButtonSizer(wx.OK|wx.CANCEL),
+                       flag=wx.ALIGN_CENTER|wx.ALL, border=5)
         self.SetSize((750, 200))
-
-    def OnOk(self, event):
-        event.Skip()
 
     def get_data(self):
         return self._editor.get_data()
@@ -147,7 +147,6 @@ class _ConfigListEditor(ListEditor):
         self._list.new_item()
 
     def _new_config(self, data):
-        print data
         self._data.add(*data)
 
 
@@ -201,11 +200,12 @@ class _TextEditListCtrl(AutoWidthColumnList, TextEditMixin):
 
 class _Runner(wx.EvtHandler):
 
-    def __init__(self, window, config):
+    def __init__(self, config, notebook):
         wx.EvtHandler.__init__(self)
         self.Bind(wx.EVT_TIMER, self.OnTimer)
+        self.name = config.name
         self._timer = wx.Timer(self)
-        self._window = window
+        self._window = _OutputWindow(notebook, self)
         self._config = config
 
     def run(self):
@@ -215,7 +215,7 @@ class _Runner(wx.EvtHandler):
         self._config.run(self._out_fd)
         self._timer.Start(500)
 
-    def OnTimer(self, event):
+    def OnTimer(self, event=None):
         finished = self._config.finished()
         self._window.update_output(self._out_file.read(), finished)
         if finished:
@@ -224,22 +224,75 @@ class _Runner(wx.EvtHandler):
             os.close(self._out_fd)
             os.remove(self._out_path)
 
+    def stop(self):
+        # subprocess.kill is only available in Python 2.6 and later
+        if sys.version_info[1] > 7:
+            self._config.kill()
+            self.OnTimer()
+        else:
+            wx.MessageBox('Stopping process is possible only with '
+                          'Python 2.6 or newer', style=wx.ICON_INFORMATION)
+
+    def restart(self):
+        self.run()
+
 
 class _OutputWindow(wx.ScrolledWindow):
 
-    def __init__(self, parent, name):
-        wx.ScrolledWindow.__init__(self, parent)
-        self.SetScrollRate(10, 10)
-        self.SetSizer(wx.BoxSizer(wx.VERTICAL))
+    def __init__(self, notebook, runner):
+        wx.ScrolledWindow.__init__(self, notebook)
+        self._create_ui()
+        self._add_to_notebook(notebook, runner.name)
+        self._runner = runner
+
+    def _create_ui(self):
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(self._create_state_button())
+        sizer.Add(self._create_output())
+        self.SetSizer(sizer)
+        self.SetScrollRate(20, 20)
+
+    def _create_state_button(self):
+        self._state_button = _StateButton(self)
+        return self._state_button
+
+    def _create_output(self):
         self._output = wx.StaticText(self)
-        self.Sizer.Add(self._output)
-        self._name = name
-        parent.add_tab(self, '%s (running)' % name)
-        parent.show_tab(self)
+        return self._output
+
+    def _add_to_notebook(self, notebook, name):
+        notebook.add_tab(self, '%s (running)' % name)
+        notebook.show_tab(self)
 
     def update_output(self, output, finished=False):
         if output:
             self._output.SetLabel(self._output.GetLabel() + output)
             self.SetVirtualSize(self._output.Size)
         if finished:
-            self.Parent.rename_tab(self, '%s (finished)' % self._name)
+            self._rename_tab('%s (finished)' % self._runner.name)
+            self._state_button.toggle()
+
+    def OnStop(self):
+        self._runner.stop()
+
+    def OnRunAgain(self):
+        self._output.SetLabel('')
+        self._rename_tab('%s (running)' % self._runner.name)
+        self._runner.restart()
+
+    def _rename_tab(self, name):
+        self.Parent.rename_tab(self, name)
+
+
+class _StateButton(wx.Button):
+
+    def __init__(self, parent):
+        wx.Button.__init__(self, parent, label='Stop')
+        self.Bind(wx.EVT_BUTTON, self.OnClick, self)
+
+    def OnClick(self, event):
+        getattr(self.Parent, 'On' + self.LabelText.replace(' ', ''))()
+        self.toggle()
+
+    def toggle(self):
+        self.SetLabel(self.LabelText=='Stop' and 'Run Again' or 'Stop')
