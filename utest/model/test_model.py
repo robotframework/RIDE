@@ -17,13 +17,13 @@ import tempfile
 import os
 
 from robotide.model.tcuk import TestCase, UserKeyword
-from robotide.model.files import TestSuiteFactory, TestCaseFile, ResourceFileFactory,\
-    _EmptyTestSuite
+from robotide.model.files import TestSuiteFactory, ResourceFileFactory
+    
 from resources import MockSerializer, FakeSuite, FakeTestCase, FakeUserKeyword, \
-    FakeResource, COMPLEX_SUITE_PATH
+    COMPLEX_SUITE_PATH
 
 from robot.utils.asserts import assert_false, assert_true, assert_equals,\
-    assert_raises_with_msg, assert_not_equals
+    assert_not_equals
 
 
 DIRPATH = os.path.join(tempfile.gettempdir(), 'ride_model_utest_dir')
