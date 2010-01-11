@@ -27,7 +27,6 @@ class ListEditor(wx.Panel):
         self._data = data
         self._list = AutoWidthColumnList(self, columns, data)
         self._selection = -1
-        self._columns = columns
         self._create_ui()
         self._make_bindings()
 
