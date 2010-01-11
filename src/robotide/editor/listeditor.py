@@ -91,11 +91,6 @@ class ListEditor(wx.Panel):
     def update_selected_item(self, data):
         self._list.update_item(self._selection, data)
 
-    def _check_modified_time(self, event_name):
-        if self._data.datafile.has_been_modified_on_disk():
-            return self._show_modified_on_disk()
-        return True
-
 
 class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin, TextEditMixin):
 
