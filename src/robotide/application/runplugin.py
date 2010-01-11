@@ -16,9 +16,10 @@ import os
 import subprocess
 import tempfile
 import wx
+from wx.lib.mixins.listctrl import TextEditMixin
 
 from robotide.pluginapi import Plugin, ActionInfo, SeparatorInfo
-from robotide.editor.listeditor import ListEditor
+from robotide.editor.listeditor import ListEditor, AutoWidthColumnList
 
 
 class RunAnything(Plugin):
@@ -105,8 +106,8 @@ class _ManageConfigsDialog(wx.Dialog):
         wx.Dialog.__init__(self, wx.GetTopLevelWindows()[0],
                            title='Manage Run Configurations')
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
-        self._list = _ConfigListEditor(self, configs)
-        self.Sizer.Add(self._list, flag=wx.GROW, proportion=1)
+        self._editor = _ConfigListEditor(self, configs)
+        self.Sizer.Add(self._editor, flag=wx.GROW, proportion=1)
         line = wx.StaticLine(self, size=(20,-1), style=wx.LI_HORIZONTAL)
         self.Sizer.Add(line, border=5,
                        flag=wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.RIGHT|wx.TOP)
@@ -119,7 +120,7 @@ class _ManageConfigsDialog(wx.Dialog):
         event.Skip()
 
     def get_data(self):
-        return self._list.get_data()
+        return self._editor.get_data()
 
 
 class _ConfigListEditor(ListEditor):
@@ -128,31 +129,56 @@ class _ConfigListEditor(ListEditor):
 
     def __init__(self, parent, configs):
         ListEditor.__init__(self, parent, self._columns, configs)
-        self._list.col_locs = [0]
-        loc = 0
-        for n in range(self._list.GetColumnCount()):
-            loc = loc + self._list.GetColumnWidth(n)
-            self._list.col_locs.append(loc)
+
+    def _create_list(self, columns, data):
+        return _TextEditListCtrl(self, columns, data)
 
     def get_column_values(self, config):
         return config.name, config.command, config.doc
 
-    def OnEdit(self, event):
-        self._open_editor(self._selection)
+    def get_data(self):
+        return self._list.get_data()
 
-    def _open_editor(self, row):
-        self._list.OpenEditor(0, row)
+    def OnEdit(self, event):
+        self._list.open_editor(self._selection)
 
     def OnNew(self, event):
-        self._list.InsertStringItem(self._list.ItemCount, '')
-        self._open_editor(self._list.ItemCount-1)
-        self._data.add(*self._get_row(self._list.ItemCount-1))
+        self._data.add(*self._list.new_item())
+
+
+class _TextEditListCtrl(AutoWidthColumnList, TextEditMixin):
+
+    def __init__(self, parent, columns, data=[]):
+        AutoWidthColumnList.__init__(self, parent, columns, data)
+        TextEditMixin.__init__(self)
+        self.col_locs = self._calculate_col_locs()
+
+    def _calculate_col_locs(self):
+        """Calculates and returns initial locations of colums.
+        
+        This is needed so that TextEditMixin can work from context menu,
+        without selecting the row first.
+        """
+        locations = [0]
+        loc = 0
+        for n in range(self.GetColumnCount()):
+            loc = loc + self.GetColumnWidth(n)
+            locations.append(loc)
+        return locations
+
+    def open_editor(self, row):
+        self.OpenEditor(0, row)
+
+    def new_item(self):
+        self.InsertStringItem(self.ItemCount, '')
+        self.open_editor(self.ItemCount-1)
+        return self._get_row(self.ItemCount-1)
 
     def get_data(self):
-        return [ self._get_row(row) for row in range(self._list.ItemCount) ]
+        return [ self._get_row(row) for row in range(self.ItemCount) ]
 
     def _get_row(self, row):
-        return [ self._list.GetItem(row, col).GetText() for col in range(3)]
+        return [ self.GetItem(row, col).GetText() for col in range(3)]
 
 
 class _Runner(wx.EvtHandler):
