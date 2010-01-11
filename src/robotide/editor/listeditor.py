@@ -13,7 +13,7 @@
 #  limitations under the License.
 
 import wx
-from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin, TextEditMixin
+from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 
 from robotide.utils import ButtonWithHandler, PopupMenu
 
@@ -25,13 +25,13 @@ class ListEditor(wx.Panel):
     def __init__(self, parent, columns, data):
         wx.Panel.__init__(self, parent)
         self._data = data
-        self._list = AutoWidthColumnList(self, columns, data)
         self._selection = -1
-        self._create_ui()
+        self._create_ui(columns, data)
         self._make_bindings()
 
-    def _create_ui(self):
+    def _create_ui(self, columns, data):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
+        self._list = self._create_list(columns, data)
         sizer.Add(self._list, 1, wx.EXPAND)
         sizer.Add((5,0))
         sizer.Add(self._create_buttons())
@@ -39,16 +39,19 @@ class ListEditor(wx.Panel):
         self.SetSizer(sizer)
         sizer.Layout()
 
-    def _make_bindings(self):
-        self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected)
-        self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnEdit)
-        self.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.OnRightClick)
+    def _create_list(self, columns, data):
+        return AutoWidthColumnList(self, columns, data)
 
     def _create_buttons(self):  
         sizer = wx.BoxSizer(wx.VERTICAL)
         for label in self._buttons:
             sizer.Add(ButtonWithHandler(self, label, width=120), 0, wx.ALL, 1)
         return sizer
+
+    def _make_bindings(self):
+        self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected)
+        self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnEdit)
+        self.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.OnRightClick)
 
     def OnRightClick(self, event):
         PopupMenu(self, self._menu)
@@ -92,13 +95,12 @@ class ListEditor(wx.Panel):
         self._list.update_item(self._selection, data)
 
 
-class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin, TextEditMixin):
+class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
 
     def __init__(self, parent, columns, data=[]):
         wx.ListCtrl.__init__(self, parent, 
                              style=wx.LC_REPORT|wx.NO_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES)
         ListCtrlAutoWidthMixin.__init__(self)
-        TextEditMixin.__init__(self)
         self._parent = parent
         self.populate(columns, data)
 
