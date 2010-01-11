@@ -50,7 +50,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self.Bind(wx.EVT_TREE_END_LABEL_EDIT, self.OnLabelEdited)
         self._images = TreeImageList()
         self.SetImageList(self._images)
-        self._history = utils.History()
+        self._history = _History()
         self._bind_keys()
 
     def _bind_keys(self):
@@ -517,3 +517,32 @@ class NoneHandler(object):
     show_popup = lambda self: None
     rename = lambda self, new_name: False
     accepts_drag = lambda self, dragged: False
+
+
+class _History(object):
+
+    def __init__(self):
+        self._back = []
+        self._forward = []
+
+    def change(self, state):
+        if not self._back or state != self._back[-1]:
+            self._back.append(state)
+            self._forward = []
+
+    def back(self):
+        if not self._back:
+            return None
+        if len(self._back) > 1:
+            self._forward.append(self._back.pop())
+        return self._back[-1]
+
+    def forward(self):
+        if not self._forward:
+            return None
+        state = self._forward.pop()
+        self._back.append(state)
+        return state
+    
+    def top(self):
+        return self._back and self._back[-1] or None

@@ -12,10 +12,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide import utils
+from datalist import RobotDataList
 
 
-class Metadata(utils.RobotDataList):
+class Metadata(RobotDataList):
 
     def _parse_data(self, data):
         for name, value in data.items():

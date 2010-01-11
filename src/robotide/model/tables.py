@@ -15,6 +15,7 @@
 from robotide import utils
 from robotide.robotapi import RobotVariables
 
+from datalist import RobotDataList
 from metadata import Metadata
 from importsettings import ImportSettings
 from tcuk import TestCase, UserKeyword
@@ -159,7 +160,7 @@ class VariableTable(object):
         serializer.end_variables()
 
 
-class _TcUkTable(utils.RobotDataList):
+class _TcUkTable(RobotDataList):
 
     def new_item(self, name):
         item = self._item_class(self.datafile, name=name)

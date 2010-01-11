@@ -12,6 +12,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import os
+import sys
 import inspect
 
 from robot.utils import printable_name, contains, normalize, eq, eq_any,\
@@ -20,7 +22,6 @@ from robot.utils import printable_name, contains, normalize, eq, eq_any,\
     printable_name_from_path, html_escape, get_timestamp, is_windows
 from components import RideHtmlWindow, PopupMenu, ButtonWithHandler
 from eventhandler import RideEventHandler
-from misc import RobotDataList, History, find_from_pythonpath
 
 
 def name_from_class(item, drop=None):
@@ -58,3 +59,13 @@ def join_value(value, sep='|', joiner=None):
     if not joiner:
         joiner = ' %s ' % sep
     return joiner.join([ v.replace(sep, '\\'+sep) for v in value ])
+
+
+def find_from_pythonpath(name):
+    for dirpath in sys.path:
+        if not os.path.isdir(dirpath):
+            continue
+        path = os.path.join(dirpath, name)
+        if os.path.isfile(path) and name in os.listdir(dirpath):
+            return path
+    return None

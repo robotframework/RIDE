@@ -15,10 +15,11 @@
 from robotide import context
 from robotide import utils
 
+from datalist import RobotDataList
 from settings import ResourceImport, LibraryImport, VariablesImport
 
 
-class ImportSettings(utils.RobotDataList):
+class ImportSettings(RobotDataList):
 
     def _parse_data(self, data):
         import_classes = {'Resource': ResourceImport,

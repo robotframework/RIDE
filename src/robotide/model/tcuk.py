@@ -14,8 +14,7 @@
 
 import copy
 
-from robotide import utils
-
+from datalist import RobotDataList
 from keywords import Keyword, KeywordData
 from settings import Setup, Teardown, Timeout, Tags, Arguments, ReturnValue,\
     Documentation
@@ -135,7 +134,7 @@ class UserKeywordSettings(object):
         return iter([self.doc, self.args, self.timeout, self.return_value])
 
 
-class KeywordList(utils.RobotDataList):
+class KeywordList(RobotDataList):
     
     def _parse_data(self, kwdata):
         for kw in kwdata:
