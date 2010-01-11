@@ -35,13 +35,6 @@ RESOURCEPATH = os.path.join(DIRPATH, 'resource.tsv')
 INITPATH = os.path.join(DIRPATH, '__init__.tsv') 
 
 
-class TestNoRide(unittest.TestCase):
-
-    def test_creating_suite_with_no_ride_meta_fails(self):
-        msg = "Test data file 'fake/suite.html' is not supposed to be edited with RIDE."
-        assert_raises_with_msg(NoRideError, msg, _NoRideFakeSuite)
-
-
 class TestModifiedOnDiskWithFileSuite(unittest.TestCase):
 
     def setUp(self):
