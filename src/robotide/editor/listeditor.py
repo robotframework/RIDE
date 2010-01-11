@@ -22,9 +22,8 @@ class ListEditor(wx.Panel):
     _menu = ['Edit', 'Move Up', 'Move Down', '---', 'Delete']
     _buttons = []
 
-    def __init__(self, parent, tree, columns, data):
+    def __init__(self, parent, columns, data):
         wx.Panel.__init__(self, parent)
-        self._tree = tree
         self._data = data
         self._list = AutoWidthColumnList(self, columns, data)
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected)
@@ -83,8 +82,6 @@ class ListEditor(wx.Panel):
     def update_data(self):
         self._list.DeleteAllItems()
         self._list.insert_data(self._data)
-        if self._tree:
-            self._tree.mark_dirty(self._data.datafile)
 
     def update_selected_item(self, data):
         self._list.update_item(self._selection, data)

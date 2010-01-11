@@ -124,10 +124,10 @@ class _ManageConfigsDialog(wx.Dialog):
 
 class _ConfigListEditor(ListEditor):
     _buttons = ['New']
+    _columns = ['Name', 'Command', 'Documentation']
 
     def __init__(self, parent, configs):
-        ListEditor.__init__(self, parent, None,
-                            ['Name', 'Command', 'Documentation'], configs)
+        ListEditor.__init__(self, parent, self._columns, configs)
         self._list.col_locs = [0]
         loc = 0
         for n in range(self._list.GetColumnCount()):

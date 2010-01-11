@@ -297,14 +297,19 @@ class UserKeywordEditor(TestCaseEditor):
 class _AbstractListEditor(ListEditor, RideEventHandler):
 
     def __init__(self, parent, tree, data):
-        ListEditor.__init__(self, parent, tree, self._titles, data)
+        ListEditor.__init__(self, parent, self._titles, data)
         self._datafile = parent.item
+        self._tree = tree
 
     def get_selected_datafile(self):
         return self._datafile
 
     def refresh_datafile(self, item, event):
         self._tree.refresh_datafile(item, event)
+
+    def update_data(self):
+        ListEditor.update_data(self)
+        self._tree.mark_dirty(self._datafile)
 
 
 class VariablesListEditor(_AbstractListEditor):
