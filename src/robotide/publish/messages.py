@@ -145,6 +145,34 @@ class RideGridCellChanged(RideMessage):
     data = ['cell', 'value', 'previous', 'grid']
 
 
+class RideImportSetting(RideMessage):
+    """Base class for all messages about changes to import settings."""
+
+class RideImportSettingAdded(RideImportSetting):
+    """Sent whenever an import setting is added.
+
+    ``datafile`` is the suite or resource file whose imports have changed,
+    ``type`` is either ``resource``, ``library``, or ``variables``.
+    """
+    data = ['datafile', 'type', 'name']
+
+class RideImportSettingChanged(RideImportSetting):
+    """Sent whenever a value of import setting is changed.
+
+    ``datafile`` is the suite or resource file whose imports have changed,
+    ``type`` is either ``resource``, ``library``, or ``variables``.
+    """
+    data = ['datafile', 'type', 'name']
+
+
+class RideUserKeyword(RideMessage):
+    """Base class for all messages about changes to any user keyword."""
+
+class RideUserKeywordAdded(RideUserKeyword):
+    """Sent when a new user keyword is added to a suite or resource."""
+    data = ['datafile', 'name']
+
+
 class RideClosing(RideMessage):
     """Sent when user selects ``Quit`` from ``File`` menu or via shortcut."""
     pass
