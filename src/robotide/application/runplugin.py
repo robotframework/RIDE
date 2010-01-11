@@ -257,7 +257,7 @@ class _OutputWindow(wx.ScrolledWindow):
         return self._state_button
 
     def _create_output(self):
-        self._output = wx.StaticText(self)
+        self._output = _OutputDisplay(self)
         return self._output
 
     def _add_to_notebook(self, notebook, name):
@@ -266,7 +266,7 @@ class _OutputWindow(wx.ScrolledWindow):
 
     def update_output(self, output, finished=False):
         if output:
-            self._output.SetLabel(self._output.GetLabel() + output)
+            self._output.update(output)
             self.SetVirtualSize(self._output.Size)
         if finished:
             self._rename_tab('%s (finished)' % self._runner.name)
@@ -276,12 +276,24 @@ class _OutputWindow(wx.ScrolledWindow):
         self._runner.stop()
 
     def OnRunAgain(self):
-        self._output.SetLabel('')
+        self._output.clear()
         self._rename_tab('%s (running)' % self._runner.name)
         self._runner.restart()
 
     def _rename_tab(self, name):
         self.Parent.rename_tab(self, name)
+
+
+class _OutputDisplay(wx.StaticText):
+
+    def __init__(self, parent):
+        wx.StaticText.__init__(self, parent)
+
+    def update(self, addition):
+        self.SetLabel(self.LabelText + addition)
+
+    def clear(self):
+        self.SetLabel('')
 
 
 class _StateButton(wx.Button):
