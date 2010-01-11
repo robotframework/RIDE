@@ -2,13 +2,13 @@ import unittest
 
 from robot.utils.asserts import assert_equals
 
-from robotide.utils import History
+from robotide.ui.tree import _History
 
 
 class TestChange(unittest.TestCase):
 
     def setUp(self):
-        self.history = History()
+        self.history = _History()
         for i in range(4):
             self.history.change(i)
 
@@ -38,7 +38,7 @@ class TestChange(unittest.TestCase):
 class TestBack(unittest.TestCase):
 
     def setUp(self):
-        self.history = History()
+        self.history = _History()
         for i in range(4):
             self.history.change(i)
 
@@ -52,7 +52,7 @@ class TestBack(unittest.TestCase):
         self._test_back(2,1,0,0,0)
 
     def test_back_before_state_change(self):
-        assert_equals(History().back(), None)
+        assert_equals(_History().back(), None)
 
     def _test_back(self, *states):
         for state in states:
@@ -62,7 +62,7 @@ class TestBack(unittest.TestCase):
 class TestForward(unittest.TestCase):
 
     def setUp(self):
-        self.history = History()
+        self.history = _History()
         for i in range(5):
             self.history.change(i)
 
@@ -79,7 +79,7 @@ class TestForward(unittest.TestCase):
         assert_equals(self.history.forward(), None)
 
     def test_forward_before_state_change(self):
-        assert_equals(History().forward(), None)
+        assert_equals(_History().forward(), None)
 
     def test_change_between_back_and_forward(self):
         self.history.back()
