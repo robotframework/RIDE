@@ -21,7 +21,6 @@ from robotide.model.files import TestSuiteFactory, TestCaseFile, ResourceFileFac
     _EmptyTestSuite
 from resources import MockSerializer, FakeSuite, FakeTestCase, FakeUserKeyword, \
     FakeResource, COMPLEX_SUITE_PATH
-from robotide.errors import NoRideError
 
 from robot.utils.asserts import assert_false, assert_true, assert_equals,\
     assert_raises_with_msg, assert_not_equals
@@ -201,22 +200,6 @@ class TestVariables(unittest.TestCase):
     def test_handling_equals_sign(self):
         self.suite.variables.set_name_and_value(0, '${SCALAR} =', 'new value')
         assert_equals(self.suite.variables.get_name_and_value(0), ('${SCALAR}', 'new value'))
-
-
-class _NoRideFakeSuite(TestCaseFile):
-
-    def __init__(self):
-        data = _EmptyTestSuite('.')
-        data.metadata = {'No Ride': ''}
-        data.source = 'fake/suite.html'
-        TestCaseFile.__init__(self, data)
-
-
-class _NoRideFakeResource(FakeResource):
-
-    def __init__(self):
-        FakeResource.__init__(self)
-        self.metadata = {'No Ride': ''}
 
 
 if __name__ == '__main__':
