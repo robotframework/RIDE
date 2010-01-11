@@ -131,7 +131,7 @@ class _ConfigListEditor(ListEditor):
         ListEditor.__init__(self, parent, self._columns, configs)
 
     def _create_list(self, columns, data):
-        return _TextEditListCtrl(self, columns, data)
+        return _TextEditListCtrl(self, columns, data, self._new_config)
 
     def get_column_values(self, config):
         return config.name, config.command, config.doc
@@ -143,15 +143,22 @@ class _ConfigListEditor(ListEditor):
         self._list.open_editor(self._selection)
 
     def OnNew(self, event):
-        self._data.add(*self._list.new_item())
+        self._list.new_item()
+
+    def _new_config(self, data):
+        print data
+        self._data.add(*data)
 
 
 class _TextEditListCtrl(AutoWidthColumnList, TextEditMixin):
+    last_index = property(lambda self: self.ItemCount-1)
 
-    def __init__(self, parent, columns, data=[]):
+    def __init__(self, parent, columns, data, new_item_callback):
         AutoWidthColumnList.__init__(self, parent, columns, data)
         TextEditMixin.__init__(self)
         self.col_locs = self._calculate_col_locs()
+        self._new_item_callback = new_item_callback
+        self._new_item_creation = False
 
     def _calculate_col_locs(self):
         """Calculates and returns initial locations of colums.
@@ -170,15 +177,25 @@ class _TextEditListCtrl(AutoWidthColumnList, TextEditMixin):
         self.OpenEditor(0, row)
 
     def new_item(self):
+        self._new_item_creation = True
         self.InsertStringItem(self.ItemCount, '')
-        self.open_editor(self.ItemCount-1)
-        return self._get_row(self.ItemCount-1)
+        self.open_editor(self.last_index)
 
     def get_data(self):
         return [ self._get_row(row) for row in range(self.ItemCount) ]
 
     def _get_row(self, row):
         return [ self.GetItem(row, col).GetText() for col in range(3)]
+
+    def CloseEditor(self, event=None):
+        TextEditMixin.CloseEditor(self, event)
+        # It seems that this is called twice per editing action and in the
+        # first time the value may be empty. 
+        # End new item creation only when there really is a value
+        lastrow = self._get_row(self.last_index)
+        if self._new_item_creation and any(lastrow):
+            self._new_item_creation = False
+            self._new_item_callback(lastrow)
 
 
 class _Runner(wx.EvtHandler):
