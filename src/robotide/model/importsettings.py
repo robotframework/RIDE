@@ -12,6 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from robotide.publish import RideImportSettingAdded, RideImportSettingChanged
 from robotide import context
 from robotide import utils
 
@@ -35,14 +36,21 @@ class ImportSettings(RobotDataList):
         self._new_import(ResourceImport, [value])
         resource_import_name = self[-1].name
         context.APP.import_new_resource(self.datafile, resource_import_name)
+        self._publish_new_import('resource')
 
     def new_library(self, value):
         self._new_import(LibraryImport, utils.split_value(value))
-    
+        self._publish_new_import('library')
+
+    def _publish_new_import(self, type_):
+        RideImportSettingAdded(datafile=self.datafile, type=type_,
+                               name=self[-1].name).publish()
+
     def resource_updated(self, index):
-        resource_import_name = self[index].name
-        context.APP.import_new_resource(self.datafile, resource_import_name)
-    
+        name = self[index].name
+        context.APP.import_new_resource(self.datafile, name)
+        RideImportSettingChanged(self.datafile, 'resource', name)
+
     def new_variables(self, value):
         self._new_import(VariablesImport, utils.split_value(value))
 
