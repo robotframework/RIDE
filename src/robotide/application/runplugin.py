@@ -290,7 +290,7 @@ class _OutputDisplay(wx.StaticText):
         wx.StaticText.__init__(self, parent)
 
     def update(self, addition):
-        self.SetLabel(self.LabelText + addition)
+        self.SetLabel(self.LabelText + addition.decode('UTF-8', 'ignore'))
 
     def clear(self):
         self.SetLabel('')
