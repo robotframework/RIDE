@@ -13,7 +13,6 @@
 #  limitations under the License.
 
 import os
-import sys
 import subprocess
 import tempfile
 import wx
@@ -225,11 +224,10 @@ class _Runner(wx.EvtHandler):
             os.remove(self._out_path)
 
     def stop(self):
-        # subprocess.kill is only available in Python 2.6 and later
-        if sys.version_info[1] > 5:
+        try:
             self._config.kill()
             self.OnTimer()
-        else:
+        except AttributeError:
             wx.MessageBox('Stopping process is possible only with '
                           'Python 2.6 or newer', style=wx.ICON_INFORMATION)
 
@@ -253,7 +251,7 @@ class _OutputWindow(wx.ScrolledWindow):
         self.SetScrollRate(20, 20)
 
     def _create_state_button(self):
-        self._state_button = _StateButton(self)
+        self._state_button = _StateButton(self, 'Stop')
         return self._state_button
 
     def _create_output(self):
@@ -270,7 +268,7 @@ class _OutputWindow(wx.ScrolledWindow):
             self.SetVirtualSize(self._output.Size)
         if finished:
             self._rename_tab('%s (finished)' % self._runner.name)
-            self._state_button.toggle()
+            self._state_button.set_label('Run Again')
 
     def OnStop(self):
         self._runner.stop()
@@ -278,6 +276,7 @@ class _OutputWindow(wx.ScrolledWindow):
     def OnRunAgain(self):
         self._output.clear()
         self._rename_tab('%s (running)' % self._runner.name)
+        self._state_button.set_label('Stop')
         self._runner.restart()
 
     def _rename_tab(self, name):
@@ -298,13 +297,12 @@ class _OutputDisplay(wx.StaticText):
 
 class _StateButton(wx.Button):
 
-    def __init__(self, parent):
-        wx.Button.__init__(self, parent, label='Stop')
+    def __init__(self, parent, label):
+        wx.Button.__init__(self, parent, label=label)
         self.Bind(wx.EVT_BUTTON, self.OnClick, self)
 
     def OnClick(self, event):
         getattr(self.Parent, 'On' + self.LabelText.replace(' ', ''))()
-        self.toggle()
 
-    def toggle(self):
-        self.SetLabel(self.LabelText=='Stop' and 'Run Again' or 'Stop')
+    def set_label(self, new_text):
+        self.SetLabel(new_text)
