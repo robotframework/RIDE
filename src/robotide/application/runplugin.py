@@ -105,7 +105,7 @@ class _RunConfig(object):
 
 
 class _ManageConfigsDialog(wx.Dialog):
-    _style = style = wx.DEFAULT_DIALOG_STYLE|wx.THICK_FRAME
+    _style = wx.DEFAULT_DIALOG_STYLE|wx.THICK_FRAME
 
     def __init__(self, configs):
         wx.Dialog.__init__(self, wx.GetTopLevelWindows()[0], style=self._style,
