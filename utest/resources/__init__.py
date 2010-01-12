@@ -24,15 +24,16 @@ from mocks import MockSerializer, FakeSuite, FakeDirectorySuite, FakeTestCase,\
     FakeUserKeyword, FakeResource, FakeApplication
 from setting_utils import TestSettingsHelper
 
-DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]), 'robotdata')
+DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]),
+                        'robotdata')
 sys.path.append(os.path.join(DATAPATH, 'put_into_python_path'))
-COMPLEX_SUITE_PATH = os.path.join(DATAPATH, 'everything.html')
-MINIMAL_SUITE_PATH = os.path.join(DATAPATH, 'minimal.html')
-VARS_SUITE_PATH = os.path.join(DATAPATH, 'variables.html')
-NO_RIDE_PATH = os.path.join(DATAPATH, '.no_ride', 'no_ride.html')
-NO_RIDE_RESOURCE_PATH = os.path.join(DATAPATH, '.no_ride', 'no_ride_resource.html')
+SUITEPATH = os.path.join(DATAPATH, 'testsuite')
+COMPLEX_SUITE_PATH = os.path.join(SUITEPATH, 'everything.html')
+MINIMAL_SUITE_PATH = os.path.join(SUITEPATH, 'minimal.html')
+NO_RIDE_PATH = os.path.join(DATAPATH, 'no_ride', 'no_ride.html')
+NO_RIDE_RESOURCE_PATH = os.path.join(DATAPATH, 'no_ride', 'no_ride_resource.html')
 RESOURCE_PATH = os.path.normpath(os.path.join(DATAPATH, 'resources', 'resource.html'))
-INVALID_PATH = os.path.join(DATAPATH, 'invalid.html')
+INVALID_PATH = os.path.join(SUITEPATH, 'invalid.html')
 
 PATH_RESOURCE_NAME = _CASE_INSENSITIVE_FILESYSTEM and 'pathresource.html' or 'PathResource.html'
 

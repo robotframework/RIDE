@@ -17,9 +17,9 @@ import unittest
 from robotide.model.files import InitFile
 from robotide.robotapi import TestSuiteData
 from robot.utils.asserts import assert_equals
-from resources import DATAPATH, PATH_RESOURCE_NAME
+from resources import SUITEPATH, PATH_RESOURCE_NAME
 
-DATA = TestSuiteData(DATAPATH)
+DATA = TestSuiteData(SUITEPATH)
 
 
 class TestParsing(unittest.TestCase):
@@ -32,7 +32,7 @@ class TestParsing(unittest.TestCase):
 
     def test_test_suite_parsing(self):
         assert_equals(self.file_suite.name, 'Everything')
-        assert_equals(self.file_suite.longname, 'Robotdata.Everything')
+        assert_equals(self.file_suite.longname, 'Testsuite.Everything')
         assert_equals(self.file_suite.settings.doc.get_str_value(),
                       'This test data file is used in *RobotIDE* _integration_ tests.')
         assert_equals(self.file_suite.settings.default_tags.value, ['regeression'])
@@ -49,7 +49,7 @@ class TestParsing(unittest.TestCase):
 
     def test_test_case_parsing(self):
         assert_equals(self.test.name, 'My Test')
-        assert_equals(self.test.longname, 'Robotdata.Everything.My Test')
+        assert_equals(self.test.longname, 'Testsuite.Everything.My Test')
         assert_equals(self.test.doc, 'This is _test_ *case* documentation')
         s = self.test.settings
         assert_equals(s.tags.value, ['test 1'])
@@ -59,7 +59,7 @@ class TestParsing(unittest.TestCase):
         
     def test_user_keyword_parsing(self):
         assert_equals(self.uk.name, 'My Suite Teardown')
-        assert_equals(self.uk.longname, 'Robotdata.Everything.My Suite Teardown')
+        assert_equals(self.uk.longname, 'Testsuite.Everything.My Suite Teardown')
         assert_equals(self.uk.doc, 'This is *user* _keyword_ documentation')
         assert_equals(self.uk.settings.args.value, ['${scalar arg}', '@{list arg}'])
         assert_equals(self.uk.settings.return_value.value, ['Success'])
@@ -67,7 +67,7 @@ class TestParsing(unittest.TestCase):
                       ['1 second', "I'm faster than you"])
 
     def test_variables_parsing(self):
-        assert_equals(len(self.file_suite.variables), 2)
+        assert_equals(len(self.file_suite.variables), 5)
         assert_equals(self.file_suite.variables.get_name_and_value(0),
                       ('${SCALAR}', 'value'))
 
@@ -95,13 +95,13 @@ class TestFindingImports(unittest.TestCase):
 class TestFindingImportsWithVariables(unittest.TestCase):
 
     def setUp(self):
-        self.suite = InitFile(DATA).suites[2]
+        self.suite = InitFile(DATA).suites[0]
 
     def test_finding_resource_import_with_variable(self):
-        assert_equals(self.suite.get_resources()[0].name, 'another_resource.html')
+        assert_equals(self.suite.get_resources()[3].name, 'another_resource.html')
 
     def test_finding_resource_file_with_variable_in_path(self):
-        assert_equals(self.suite.get_resources()[1].name, 'resource2.html')
+        assert_equals(self.suite.get_resources()[4].name, 'resource2.html')
 
     def test_finding_variable_file_with_variable_in_path(self):
         assert_equals(self.suite._get_variable_file_variables()[3].name,

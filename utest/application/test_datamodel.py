@@ -22,7 +22,7 @@ from robot.utils.asserts import assert_none, assert_false, assert_equals,\
     assert_true, assert_raises_with_msg
 from robotide import utils
 from robotide.errors import DataError
-from resources import DATAPATH, RESOURCE_PATH, INVALID_PATH, PATH_RESOURCE_NAME
+from resources import SUITEPATH, RESOURCE_PATH, INVALID_PATH, PATH_RESOURCE_NAME
 
 
 class _FakeTree(object):
@@ -64,7 +64,7 @@ class TestDataModelInAction(unittest.TestCase):
 
     def __init__(self, *args):
         unittest.TestCase.__init__(self, *args)
-        self.model = DataModel(DATAPATH)
+        self.model = DataModel(SUITEPATH)
 
     def test_resolving_simple_resource_import(self):
         assert_equals(self.model.resources[0].name, 'resource.html')

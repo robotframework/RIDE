@@ -69,6 +69,7 @@ class LibrarySpec(Spec):
 
 
 class _XMLResource(Spec):
+    variables = property(lambda self: self)
 
     def __init__(self, name, specfile):
         self.source = name
@@ -89,6 +90,9 @@ class _XMLResource(Spec):
 
     def get_resources(self):
         return []
+
+    def replace_scalar(self, value):
+        return value
 
     def replace_variables(self, value):
         return value

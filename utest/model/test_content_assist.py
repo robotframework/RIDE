@@ -21,12 +21,11 @@ from robot.utils.normalizing import _CASE_INSENSITIVE_FILESYSTEM
 from robotide.application import DataModel
 from robotide.model import cache
 from robotide import context
-from resources import COMPLEX_SUITE_PATH, VARS_SUITE_PATH, PATH_RESOURCE_NAME
+from resources import COMPLEX_SUITE_PATH, PATH_RESOURCE_NAME
 
 
 COMPLEX_MODEL = DataModel(COMPLEX_SUITE_PATH)
 COMPLEX_SUITE = COMPLEX_MODEL.suite
-VARS_SUITE = DataModel(VARS_SUITE_PATH).suite
 
 
 class APPMock(object):
@@ -40,9 +39,6 @@ context.APP = APP_MOCK
 
 
 class TestGettingKeywords(unittest.TestCase):
-
-    def setUp(self):
-        self.suite = DataModel(VARS_SUITE_PATH).suite
 
     def test_own_user_keywords(self):
         self._assert_contains(COMPLEX_SUITE.get_keywords(), 
@@ -101,52 +97,51 @@ class TestGettingKeywords(unittest.TestCase):
         self._assert_contains(COMPLEX_MODEL.get_all_keywords(), 'New Suite UK', 'Everything')
 
     def test_finding_keywords_from_libary_defined_as_variable(self):
-        self._assert_contains(VARS_SUITE.get_keywords(), 'List Should Contain Value', 'Collections')
+        self._assert_contains(COMPLEX_SUITE.get_keywords(), 'List Should Contain Value', 'Collections')
 
     def test_variables_in_import_settings_are_case_insensitive(self):
-        self._assert_contains(VARS_SUITE.get_keywords(), 'File Should Exist', 'OperatingSystem')
+        self._assert_contains(COMPLEX_SUITE.get_keywords(), 'File Should Exist', 'OperatingSystem')
 
     def test_variables_from_other_imports_can_be_used(self):
-        self._assert_contains(VARS_SUITE.get_keywords(), 'Open Connection', 'Telnet')
+        self._assert_contains(COMPLEX_SUITE.get_keywords(), 'Open Connection', 'Telnet')
 
     def test_added_resource_affects_found_keywords_in_kw_completion(self):
         self._robot_2_1_1_required()
-        VARS_SUITE.settings.imports.new_resource('resources/resources2/even_more_resources.txt')
-        self._assert_contains(VARS_SUITE.get_keywords(), 'Foo', 'even_more_resources.txt')
+        COMPLEX_SUITE.settings.imports.new_resource('../resources/resources2/even_more_resources.txt')
+        self._assert_contains(COMPLEX_SUITE.get_keywords(), 'Foo', 'even_more_resources.txt')
+        COMPLEX_SUITE.settings.imports.pop(-1)
 
     def test_updated_resource_affects_found_keywords_in_kw_completion(self):
         self._robot_2_1_1_required()
-        self.suite.settings.imports.new_resource('resources/resources2/resources.txt')
-        self._assert_does_not_contain(self.suite.get_keywords(), 'Foo', 'even_more_resources.txt')
-        self.suite.settings.imports[-1].set_str_value('resources/resources2/even_more_resources.txt')
-        self._assert_contains(self.suite.get_keywords(), 'Foo', 'even_more_resources.txt')
+        COMPLEX_SUITE.settings.imports.new_resource('../resources/resources2/resources.txt')
+        self._assert_does_not_contain(COMPLEX_SUITE.get_keywords(), 'Foo', 'even_more_resources.txt')
+        COMPLEX_SUITE.settings.imports[-1].set_str_value('../resources/resources2/even_more_resources.txt')
+        self._assert_contains(COMPLEX_SUITE.get_keywords(), 'Foo', 'even_more_resources.txt')
+        COMPLEX_SUITE.settings.imports.pop(-1)
 
     def test_removed_resource_affects_found_keywords_in_kw_completion(self):
         self.test_added_resource_affects_found_keywords_in_kw_completion()
-        self.suite.settings.imports.pop(-1)
-        self._assert_does_not_contain(self.suite.get_keywords(), 'Foo', 'even_more_resources.txt')
+        self._assert_does_not_contain(COMPLEX_SUITE.get_keywords(), 'Foo', 'even_more_resources.txt')
 
     def test_added_resource_path_is_normalized_in_case_insensitive_file_systems(self):
-        self.suite.settings.imports.new_resource('Resources/Resources2/Even_More_Resources.txt')
+        COMPLEX_SUITE.settings.imports.new_resource('../Resources/Resources2/Even_More_Resources.txt')
         if _CASE_INSENSITIVE_FILESYSTEM:
-            self._assert_contains(self.suite.get_keywords(), 'Foo', 'even_more_resources.txt')
+            self._assert_contains(COMPLEX_SUITE.get_keywords(), 'Foo', 'even_more_resources.txt')
         else:
-            self._assert_does_not_contain(self.suite.get_keywords(), 'Foo', 'even_more_resources.txt')
+            self._assert_does_not_contain(COMPLEX_SUITE.get_keywords(), 'Foo', 'even_more_resources.txt')
+        COMPLEX_SUITE.settings.imports.pop(-1)
 
     def test_added_library_affects_found_keywords_in_kw_completion(self):
-        self.suite.settings.imports.new_library('Dialogs')
-        self._assert_contains(self.suite.get_keywords(), 'Execute Manual Step', 'Dialogs')
+        COMPLEX_SUITE.settings.imports.new_library('Dialogs')
+        self._assert_contains(COMPLEX_SUITE.get_keywords(), 'Execute Manual Step', 'Dialogs')
+        COMPLEX_SUITE.settings.imports.pop(-1)
 
     def test_updated_library_affects_found_keywords_in_kw_completion(self):
-        self.suite.settings.imports.new_library('InvalidDialogs')
-        self._assert_does_not_contain(self.suite.get_keywords(), 'Execute Manual Step', 'Dialogs')
-        self.suite.settings.imports[-1].set_str_value('Dialogs')
-        self._assert_contains(self.suite.get_keywords(), 'Execute Manual Step', 'Dialogs')
-
-    def test_failed_library_affects_found_keywords_in_kw_completion(self):
-        self.test_added_library_affects_found_keywords_in_kw_completion()
-        self.suite.settings.imports.pop(-1)
-        self._assert_does_not_contain(self.suite.get_keywords(), 'Execute Manual Step', 'Dialogs')
+        COMPLEX_SUITE.settings.imports.new_library('InvalidDialogs')
+        self._assert_does_not_contain(COMPLEX_SUITE.get_keywords(), 'Execute Manual Step', 'Dialogs')
+        COMPLEX_SUITE.settings.imports[-1].set_str_value('Dialogs')
+        self._assert_contains(COMPLEX_SUITE.get_keywords(), 'Execute Manual Step', 'Dialogs')
+        COMPLEX_SUITE.settings.imports.pop(-1)
 
     def _assert_contains(self, keywords, name, source):
         for kw in keywords:
@@ -173,9 +168,6 @@ class TestGettingKeywords(unittest.TestCase):
 
 class TestGettingVariablesFromAssistant(unittest.TestCase):
 
-    def setUp(self):
-        self.suite = DataModel(VARS_SUITE_PATH).suite
-
     def test_get_variables_for_suite(self):  
         self._assert_variable(COMPLEX_SUITE, '${SCALAR}')
 
@@ -185,35 +177,38 @@ class TestGettingVariablesFromAssistant(unittest.TestCase):
             self._assert_variable(COMPLEX_SUITE, name)
 
     def test_finding_variables_from_variable_file(self):
-        self._assert_variable(self.suite, '${var_from_file}')
+        self._assert_variable(COMPLEX_SUITE, '${var_from_file}')
 
     def test_finding_variables_from_variable_file_importes_in_resource(self):
-        self._assert_variable(self.suite, '${var_from_resource_var_file}')
+        self._assert_variable(COMPLEX_SUITE, '${var_from_resource_var_file}')
 
     def test_variables_are_resolved_before_passed_to_variable_files(self):
-        self._assert_variable(self.suite, '${value}')
+        self._assert_variable(COMPLEX_SUITE, '${value}')
 
     def test_added_variable_file_affects_found_variables_in_variable_completion(self):
-        self.suite.settings.imports.new_variables('resources/resources2/even_more_varz.py')
-        self._assert_variable(self.suite, '${var_in_resource2}')
+        COMPLEX_SUITE.settings.imports.new_variables('../resources/resources2/even_more_varz.py')
+        self._assert_variable(COMPLEX_SUITE, '${var_in_resource2}')
+        COMPLEX_SUITE.settings.imports.pop(-1)
 
     def test_updated_variable_file_affects_found_variables_in_variable_completion(self):
-        self.suite.settings.imports.new_variables('invalid.py')
-        self._assert_variable_does_not_exist(self.suite, '${var_in_resource2}')
-        self.suite.settings.imports[-1].set_str_value('resources/resources2/even_more_varz.py')
-        self._assert_variable(self.suite, '${var_in_resource2}')
+        COMPLEX_SUITE.settings.imports.new_variables('invalid.py')
+        self._assert_variable_does_not_exist(COMPLEX_SUITE, '${var_in_resource2}')
+        COMPLEX_SUITE.settings.imports[-1].set_str_value('../resources/resources2/even_more_varz.py')
+        self._assert_variable(COMPLEX_SUITE, '${var_in_resource2}')
+        COMPLEX_SUITE.settings.imports.pop(-1)
 
     def test_deleted_variable_file_affects_found_variables_in_variable_completion(self):
-        self.suite.settings.imports.new_variables('resources/resources2/even_more_varz.py')
-        self._assert_variable(self.suite, '${var_in_resource2}')
-        self.suite.settings.imports.pop(-1)
-        self._assert_variable_does_not_exist(self.suite, '${var_in_resource2}')
+        COMPLEX_SUITE.settings.imports.new_variables('../resources/resources2/even_more_varz.py')
+        self._assert_variable(COMPLEX_SUITE, '${var_in_resource2}')
+        COMPLEX_SUITE.settings.imports.pop(-1)
+        self._assert_variable_does_not_exist(COMPLEX_SUITE, '${var_in_resource2}')
 
     def test_variable_file_in_pythonpath_affects_found_variables_in_variable_completion(self):
         path = os.path.join(os.path.dirname(__file__), '..', 'resources', 'robotdata', 'resources', 'resources2')
         sys.path.append(path)
-        self.suite.settings.imports.new_variables('even_more_varz.py')
-        self._assert_variable(self.suite, '${var_in_resource2}')
+        COMPLEX_SUITE.settings.imports.new_variables('even_more_varz.py')
+        self._assert_variable(COMPLEX_SUITE, '${var_in_resource2}')
+        COMPLEX_SUITE.settings.imports.pop(-1)
 
     def _assert_variable(self, suite, name):
         variables = [ var.name for var in suite.get_variables() ]
