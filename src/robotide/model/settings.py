@@ -178,6 +178,7 @@ class _Import(_Setting):
     args = property(lambda self: self.value[1:])
 
     def _get_value(self, data):
+        data[0] = data[0].replace('${/}', '/')
         return data
 
 
