@@ -157,22 +157,23 @@ class TestModifyingDataAffectReturnedKeywords(_ContentAssistBaseTest):
 
 
 class TestModifyingImportsAffectsResolvedKeywords(_ContentAssistBaseTest):
+    _more_resources = '../resources/more_resources/even_more_resources.txt'
 
     def tearDown(self):
         COMPLEX_SUITE.settings.imports.pop(-1)
 
     def test_adding_resource(self):
         self._robot_2_1_1_required()
-        COMPLEX_SUITE.settings.imports.new_resource('../resources/resources2/even_more_resources.txt')
+        COMPLEX_SUITE.settings.imports.new_resource(self._more_resources)
         self._assert_contains(COMPLEX_SUITE.get_keywords(),
                               'Foo', 'even_more_resources.txt')
 
     def test_updating_resource(self):
         self._robot_2_1_1_required()
-        COMPLEX_SUITE.settings.imports.new_resource('../resources/resources2/resources.txt')
+        COMPLEX_SUITE.settings.imports.new_resource('../resources/more_resources/resources.txt')
         self._assert_does_not_contain(COMPLEX_SUITE.get_keywords(),
                                       'Foo', 'even_more_resources.txt')
-        COMPLEX_SUITE.settings.imports[-1].set_str_value('../resources/resources2/even_more_resources.txt')
+        COMPLEX_SUITE.settings.imports[-1].set_str_value(self._more_resources)
         self._assert_contains(COMPLEX_SUITE.get_keywords(),
                               'Foo', 'even_more_resources.txt')
 
@@ -185,7 +186,7 @@ class TestModifyingImportsAffectsResolvedKeywords(_ContentAssistBaseTest):
         self.test_adding_resource()
 
     def test_added_resource_path_is_normalized_in_case_insensitive_file_systems(self):
-        COMPLEX_SUITE.settings.imports.new_resource('../Resources/Resources2/Even_More_Resources.txt')
+        COMPLEX_SUITE.settings.imports.new_resource('../Resources/More_ResourceS/Even_More_Resources.txt')
         if _CASE_INSENSITIVE_FILESYSTEM:
             self._assert_contains(COMPLEX_SUITE.get_keywords(),
                                   'Foo','even_more_resources.txt')
@@ -243,21 +244,21 @@ class TestModifyingImportsAffectResolvedVariables(_ContentAssistBaseTest):
         COMPLEX_SUITE.settings.imports.pop(-1)
 
     def test_adding_variable_file(self):
-        self._add_variable_import('../resources/resources2/even_more_varz.py')
+        self._add_variable_import('../resources/more_resources/even_more_varz.py')
         self._assert_variable(COMPLEX_SUITE, '${var_in_resource2}')
 
     def test_updating_variable_file(self):
         self._add_variable_import('invalid.py')
         self._assert_variable_does_not_exist(COMPLEX_SUITE, '${var_in_resource2}')
-        COMPLEX_SUITE.settings.imports[-1].set_str_value('../resources/resources2/even_more_varz.py')
+        COMPLEX_SUITE.settings.imports[-1].set_str_value('../resources/more_resources/even_more_varz.py')
         self._assert_variable(COMPLEX_SUITE, '${var_in_resource2}')
 
     def test_deleting_variable_file(self):
-        self._add_variable_import('../resources/resources2/even_more_varz.py')
+        self._add_variable_import('../resources/more_resources/even_more_varz.py')
         self._assert_variable(COMPLEX_SUITE, '${var_in_resource2}')
         COMPLEX_SUITE.settings.imports.pop(-1)
         self._assert_variable_does_not_exist(COMPLEX_SUITE, '${var_in_resource2}')
-        self._add_variable_import('../resources/resources2/even_more_varz.py')
+        self._add_variable_import('../resources/more_resources/even_more_varz.py')
 
     def test_adding_variable_file_in_pythonpath(self):
         path = os.path.join(os.path.dirname(__file__), '..', 'resources',
