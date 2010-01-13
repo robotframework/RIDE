@@ -85,7 +85,7 @@ class _XMLResource(Spec):
     def get_user_keyword(self, longname):
         return None
 
-    def get_variables(self):
+    def get_variables_for_content_assist(self):
         return []
 
     def get_resources(self):

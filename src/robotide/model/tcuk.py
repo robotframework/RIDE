@@ -14,6 +14,8 @@
 
 import copy
 
+from robotide.spec import VariableSpec
+
 from datalist import RobotDataList
 from keywords import Keyword, KeywordData
 from settings import Setup, Teardown, Timeout, Tags, Arguments, ReturnValue,\
@@ -44,6 +46,12 @@ class _TcUkBase(object):
 
     def show_add_suite_dialog(self, tree):
         self.datafile.show_add_suite_dialog(tree)
+
+    def get_keywords_for_content_assist(self):
+        return self.datafile.get_keywords_for_content_assist()
+
+    def get_variables_for_content_assist(self):
+        return self.datafile.get_variables_for_content_assist()
 
     def _serialize(self, serializer):
         self.settings.serialize_before_kws(serializer)
@@ -89,6 +97,11 @@ class UserKeyword(_TcUkBase):
         self.datafile.keywords.remove(self)
         self._mark_dirty()
 
+    def get_variables_for_content_assist(self):
+        return [ VariableSpec('<argument>', var) for var
+                 in self.settings.get_args() ] + \
+                _TcUkBase.get_variables_for_content_assist(self)
+
     def serialize(self, serializer):
         serializer.start_keyword(self)
         self._serialize(serializer)
@@ -123,6 +136,9 @@ class UserKeywordSettings(object):
         self.timeout = Timeout(datafile, data)
         self.return_value = ReturnValue(datafile, data)
 
+    def get_args(self):
+        return self.args.value
+
     def serialize_before_kws(self, serializer):
         for setting in [self.args, self.doc, self.timeout]:
             setting.serialize(serializer)
@@ -135,7 +151,7 @@ class UserKeywordSettings(object):
 
 
 class KeywordList(RobotDataList):
-    
+
     def _parse_data(self, kwdata):
         for kw in kwdata:
             kw = Keyword(kw)

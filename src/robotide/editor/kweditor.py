@@ -148,11 +148,11 @@ class KeywordEditorUi(GridEditor):
 class KeywordEditor(KeywordEditorUi):
     _no_cell = grid.GridCellCoords(-1, -1)
 
-    def __init__(self, parent, keywords, tree):
-        KeywordEditorUi.__init__(self, parent, len(keywords)+5, 5)
-        self.SetDefaultEditor(ContentAssistCellEditor(keywords.datafile))
-        self._keywords = keywords
-        self._datafile = keywords.datafile
+    def __init__(self, parent, test_or_keyword, tree):
+        self._keywords = test_or_keyword.keywords
+        KeywordEditorUi.__init__(self, parent, len(self._keywords)+5, 5)
+        self.SetDefaultEditor(ContentAssistCellEditor(test_or_keyword))
+        self._datafile = test_or_keyword.datafile
         # TODO: Tooltip may be smaller when the documentation is wrapped correctly
         self._tooltip = RidePopupWindow(self, (650, 400))
         self._marked_cell = None
@@ -160,7 +160,7 @@ class KeywordEditor(KeywordEditorUi):
         self._active_row = self._active_col = None
         self._popup = RidePopupWindow(self, (500,200))
         self._make_bindings()
-        self._write_keywords(keywords)
+        self._write_keywords(self._keywords)
         self._tree = tree
 
     def _make_bindings(self):
@@ -340,9 +340,9 @@ class KeywordEditor(KeywordEditorUi):
 
 class ContentAssistCellEditor(grid.PyGridCellEditor):
 
-    def __init__(self, item):
+    def __init__(self, test_or_keyword):
         grid.PyGridCellEditor.__init__(self)
-        self._item = item
+        self._test_or_keyword = test_or_keyword
         self._grid = None
         self._previous_value = None
 
@@ -350,7 +350,7 @@ class ContentAssistCellEditor(grid.PyGridCellEditor):
         self._tc.show_content_assist()
 
     def Create(self, parent, id, evthandler):
-        self._tc = ExpandingContentAssistTextCtrl(parent, self._item)
+        self._tc = ExpandingContentAssistTextCtrl(parent, self._test_or_keyword)
         self._tc.Bind(wx.EVT_TEXT, self.OnText, self._tc)
         self.SetControl(self._tc)
         if evthandler:

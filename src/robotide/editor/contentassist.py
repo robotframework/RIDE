@@ -26,14 +26,14 @@ _PREFERRED_DETAILS_SIZE = (500, 200)
 
 
 class _ContentAssistTextCtrlBase(object):
-    
+
     def __init__(self, item):
         self._item = item
         self._popup = ContentAssistPopup(self)
         self.Bind(wx.EVT_KEY_DOWN, self.OnKey)
         self.Bind(wx.EVT_KILL_FOCUS, self.OnFocusLost)
         self.Bind(wx.EVT_MOVE, self.OnFocusLost)
-        
+
     def OnKey(self, event):
         keycode = event.GetKeyCode()
         # Ctrl-Space handling needed for dialogs
@@ -64,11 +64,11 @@ class _ContentAssistTextCtrlBase(object):
         else:
             self.Clear()
         self.hide()
-        
+
     def show_content_assist(self):
         if self._populate_content_assist():
             self._show_content_assist()
-        
+
     def _populate_content_assist(self, event=None):
         value = self.GetValue()
         if event is not None:
@@ -79,12 +79,12 @@ class _ContentAssistTextCtrlBase(object):
             else:
                 value += chr(event.GetRawKeyCode())
         return self._popup.content_assist_for(value, self._item)
-                
+
     def _show_content_assist(self):
         height = self.GetSizeTuple()[1]
         x, y = self.ClientToScreenXY(0, height)
         self._popup.show(x, y)
-        
+
     def content_assist_value(self):
         return self._popup.content_assist_value(self.Value)
 
@@ -94,9 +94,9 @@ class _ContentAssistTextCtrlBase(object):
 
 class ExpandingContentAssistTextCtrl(_ContentAssistTextCtrlBase, ExpandoTextCtrl):
 
-    def __init__(self, parent, item, size=wx.DefaultSize):
+    def __init__(self, parent, test_or_keyword, size=wx.DefaultSize):
         ExpandoTextCtrl.__init__(self, parent, size=size, style=wx.WANTS_CHARS)
-        _ContentAssistTextCtrlBase.__init__(self, item)
+        _ContentAssistTextCtrlBase.__init__(self, test_or_keyword)
 
 
 class ContentAssistTextCtrl(_ContentAssistTextCtrlBase, wx.TextCtrl):
@@ -115,19 +115,19 @@ class ContentAssistPopup(object):
         self._selection = -1
         self._list = ContentAssistList(self._main_popup, self.OnListItemSelected, 
                                        self.OnListItemActivated)
-    
+
     def get_value(self):
         return self._selection != -1 and self._list.get_text(self._selection) or None
 
-    def content_assist_for(self, value, datafile):
+    def content_assist_for(self, value, item):
         var_index = self._get_variable_start_index(value)
         if  var_index != -1:
-            variables = datafile.get_variables()
+            variables = item.get_variables_for_content_assist()
             self._choices = [ var for var in variables if self._starts(var.name, value[var_index:]) ]
             colnames = 'name', 'value'
             data = [ (var.name, var.parent) for var in self._choices ]
         else:
-            keywords = datafile.get_keywords_for_content_assist()
+            keywords = item.get_keywords_for_content_assist()
             self._choices = [ kw for kw in keywords if self._starts(kw.name, value) ]
             colnames = 'name', 'source'
             data = [ (kw.name, kw.source) for kw in self._choices ]
@@ -197,7 +197,7 @@ class ContentAssistPopup(object):
     def OnListItemActivated(self, event):
         # TODO: should this be implemented with callback? 
         self._parent.OnFocusLost(event)
-        
+
     def OnListItemSelected(self, event):
         self._selection = event.GetIndex()
         item = self._choices[self._selection]
@@ -208,7 +208,7 @@ class ContentAssistPopup(object):
 
 
 class ContentAssistList(wx.ListCtrl, ListCtrlAutoWidthMixin):
-    
+
     def __init__(self, parent, selection_callback, activation_callback=None):
         style = wx.LC_REPORT | wx.LC_SINGLE_SEL | wx.LC_NO_HEADER
         wx.ListCtrl.__init__(self, parent, style=style)
@@ -219,7 +219,7 @@ class ContentAssistList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         self.SetBackgroundColour(context.POPUP_BACKGROUND)
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, selection_callback)
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, activation_callback)
-        
+
     def populate(self, colnames, data):
         self.ClearAll()
         self._create_columns(colnames)
@@ -233,6 +233,6 @@ class ContentAssistList(wx.ListCtrl, ListCtrlAutoWidthMixin):
             self.InsertColumn(index, colname)
         self.SetColumnWidth(0, 230)
         self.resizeLastColumn(_PREFERRED_POPUP_SIZE[0]-230)
-        
+
     def get_text(self, index):
         return self.GetItem(index).GetText()

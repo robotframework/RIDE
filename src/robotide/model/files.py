@@ -17,7 +17,7 @@ import operator
 import copy
 
 from robotide import utils
-from robotide.spec import UserKeywordContent
+from robotide.spec import UserKeywordContent, VariableSpec
 from robotide.errors import NoRideError, DataError, SerializationError
 from robotide.publish import RideSaving, RideSaved
 from robotide.robotapi import TestSuiteData, ResourceFileData, InitFileData,\
@@ -167,9 +167,9 @@ class _AbstractDataFile(object):
                 pass
         return value
 
-    def get_variables(self):
-        return [ _VariableSpec(self.name, var) for var in self.variables ] + \
-                self._get_resource_variables() + self._get_variable_file_variables()
+    def get_variables_for_content_assist(self):
+        return [ VariableSpec(self.name, var) for var in self.variables ] +\
+                 self._get_resource_variables() + self._get_variable_file_variables()
 
     def validate_keyword_name(self, value):
         return self.keywords.validate_name(value)
@@ -177,13 +177,14 @@ class _AbstractDataFile(object):
     def _get_resource_variables(self):
         vars = []
         for resource in self.get_resources():
-            vars.extend(resource.get_variables())
+            vars.extend(resource.get_variables_for_content_assist())
         return vars
 
     def _get_variable_file_variables(self):
         vars = []
         for varfile in self._get_variable_files():
-            vars.extend([_VariableSpec(varfile.source, var) for var in varfile.keys()])
+            vars.extend([ VariableSpec(varfile.source, var)
+                         for var in varfile.keys() ])
         return vars
 
     def _get_variable_files(self):
@@ -409,13 +410,3 @@ class _EmptyInitFile(_EmptyTestSuite):
         if '__init__' in self.source:
             source = os.path.split(self.source)[0]
         return utils.printable_name_from_path(source)
-
-
-class _VariableSpec(object):
-
-    def __init__(self, parent, name):
-        self.parent = parent
-        self.name = name
-
-    def get_details(self):
-        return ''

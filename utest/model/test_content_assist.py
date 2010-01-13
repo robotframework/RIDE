@@ -59,13 +59,13 @@ class _ContentAssistBaseTest(unittest.TestCase):
                                      (name, source))
 
     def _assert_variable(self, suite, name):
-        variables = [ var.name for var in suite.get_variables() ]
+        variables = [ var.name for var in suite.get_variables_for_content_assist() ]
         if not name in variables:
             raise AssertionError("Variable '%s' not found in %s" % 
                                 (name, variables))
 
     def _assert_variable_does_not_exist(self, suite, name):
-        variables = [ var.name for var in suite.get_variables() ]
+        variables = [ var.name for var in suite.get_variables_for_content_assist() ]
         if name in variables:
             raise AssertionError("Variable '%s' found in %s" % 
                                 (name, variables))
@@ -218,6 +218,10 @@ class TestResolvingVariables(_ContentAssistBaseTest):
     def test_get_variables_for_suite(self):  
         self._assert_variable(COMPLEX_SUITE, '${SCALAR}')
 
+    def test_variables_for_user_keyword_contain_arguments(self):
+        kw = COMPLEX_SUITE.keywords[1]
+        self._assert_variable(kw, '${scalar arg}')
+
     def test_get_variables_from_resource_files(self):
         for name in ['${SCALAR}', '@{LIST}', '${RESOURCE var}',
                      '@{RESOURCE 2 List VARIABLE}']:
@@ -264,6 +268,7 @@ class TestModifyingImportsAffectResolvedVariables(_ContentAssistBaseTest):
 
     def _add_variable_import(self, name):
         COMPLEX_SUITE.settings.imports.new_variables(name)
+
 
 if __name__ == '__main__':
     unittest.main()

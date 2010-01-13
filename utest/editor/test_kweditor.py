@@ -21,21 +21,18 @@ class _FakeMainFrame(wx.Frame):
 class _FakeTree(object):
     mark_dirty = lambda self, datafile: None
 
-class TestableKwEditor(KeywordEditor):
-    def _expand_if_necessary(self, row, col):
-        pass
+class _FakeTest(object):
+    def __init__(self):
+        self.datafile = FakeSuite()
+        self.keywords = _KeywordList(DATA)
 
 class _KeywordList(list):
-    def __init__(self):
-        list.__init__(self)
-        self.datafile = FakeSuite()
-        for item in DATA:
-            self.append(_KeywordData(item[0], [val for val in item[1:] if val]))
+    def __init__(self, data):
+        for kw in data:
+            list.append(self, _KeywordData(kw[0], [val for val in kw[1:] if val]))
 
     def parse_keywords_from_grid(self, kwdata):
-        list.__init__(self)
-        for kw in kwdata:
-            self.append(_KeywordData(kw[0], [val for val in kw[1:] if val]))
+        self.__init__(kwdata)
 
 class _KeywordData(object):
     def __init__(self, name, args):
@@ -45,11 +42,15 @@ class _KeywordData(object):
     def get_display_value(self):
         return [self.name] + self.args
 
+class TestableKwEditor(KeywordEditor):
+    def _expand_if_necessary(self, row, col):
+        pass
+
 
 class TestCoordinates(unittest.TestCase):
 
     def setUp(self):
-        self._editor = TestableKwEditor(_FakeMainFrame(), _KeywordList(), None)
+        self._editor = TestableKwEditor(_FakeMainFrame(), _FakeTest(), None)
 
     def test_cell_selection(self):
         self._editor.SelectBlock(2,2,2,2)
@@ -69,7 +70,7 @@ class TestCoordinates(unittest.TestCase):
 class TestClipBoard(unittest.TestCase):
 
     def setUp(self):
-        self._editor = TestableKwEditor(_FakeMainFrame(), _KeywordList(),
+        self._editor = TestableKwEditor(_FakeMainFrame(), _FakeTest(),
                                         _FakeTree())
 
     def test_copy_one_cell(self):
@@ -169,7 +170,7 @@ class TestClipBoard(unittest.TestCase):
 class TestEditing(unittest.TestCase):
 
     def setUp(self):
-        self._editor = KeywordEditor(_FakeMainFrame(), _KeywordList(), None)
+        self._editor = KeywordEditor(_FakeMainFrame(), _FakeTest(), None)
         PUBLISHER.subscribe(self._on_cell_changed, RideGridCellChanged)
 
     def test_correct_event_is_published_during_population(self):

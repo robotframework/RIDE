@@ -245,7 +245,7 @@ class TestCaseEditor(_RobotTableEditor):
         self.sizer.Add(sizer)
 
     def _create_kweditor(self):
-        self.kweditor = KeywordEditor(self, self.item.keywords, self._tree)
+        self.kweditor = KeywordEditor(self, self.item, self._tree)
         self._create_add_buttons(self.kweditor)
         self.sizer.Add(self.kweditor, 1, wx.EXPAND|wx.ALL, 2)
 

@@ -13,3 +13,13 @@
 #  limitations under the License.
 
 from spec import LibrarySpec, XMLResource, UserKeywordContent
+
+
+class VariableSpec(object):
+
+    def __init__(self, parent, name):
+        self.parent = parent
+        self.name = name
+
+    def get_details(self):
+        return ''
