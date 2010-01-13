@@ -252,6 +252,13 @@ class Plugin(object):
         """
         return self.tree.get_selected_item()
 
+    def get_plugins(self):
+        """Returns list containing plugin wrapper for every loaded plugin.
+
+        Wrapper is an instance of `PluginConnector` if the plugin has loaded
+        successfully, otherwise it's an instance of `BrokenPlugin`."""
+        return self.__app.get_plugins()
+
     def subscribe(self, listener, *topics):
         """Start to listen to messages with the given ``topics``.
 
