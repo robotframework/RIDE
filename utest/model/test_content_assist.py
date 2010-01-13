@@ -90,18 +90,22 @@ class TestResolvingOwnKeywords(_ContentAssistBaseTest):
 
 class TestResolvingKeywordsFromImports(_ContentAssistBaseTest):
 
-    def test_keywords_from_imports(self):
-        for name, source in [('Resource UK', 'resource.html'),
-                             ('Resource2 UK', 'resource2.html'),
-                             ('UK From Text Resource', 'resource.txt'),
-                             ('Another Resource UK', 'another_resource.html'),
+    def test_keywords_from_library_imports(self):
+        for name, source in [('Should Be Equal', 'BuiltIn'),
                              ('File Should Exist', 'OperatingSystem')]:
             self._assert_contains(COMPLEX_SUITE.get_keywords(), name, source)
 
-    def test_keywords_from_resource_in_python_path(self):
-        for name, source in [('Path Resource UK', PATH_RESOURCE_NAME),
-                             ('Lists Should Be Equal', 'Collections')]:
+    def test_keywords_from_imports(self):
+        for name, source in [('Resource UK', 'resource.html'),
+                             ('Resource2 UK', 'resource2.html'),
+                             ('Resource3 UK', 'resource3.html'),
+                             ('UK From Text Resource', 'resource.txt'),
+                             ]:
             self._assert_contains(COMPLEX_SUITE.get_keywords(), name, source)
+
+    def test_keywords_from_resource_in_python_path(self):
+        self._assert_contains(COMPLEX_SUITE.get_keywords(),
+                              'Path Resource UK', PATH_RESOURCE_NAME)
 
     def test_keywords_from_spec_resource(self):
         self._assert_contains(COMPLEX_SUITE.get_keywords(), 
@@ -121,10 +125,6 @@ class TestResolvingKeywordsFromImportsWithVariables(_ContentAssistBaseTest):
     def test_libary_defined_as_variable(self):
         self._assert_contains(COMPLEX_SUITE.get_keywords(),
                               'List Should Contain Value', 'Collections')
-
-    def test_variables_in_import_settings_are_case_insensitive(self):
-        self._assert_contains(COMPLEX_SUITE.get_keywords(),
-                              'File Should Exist', 'OperatingSystem')
 
     def test_variables_from_other_imports_can_be_used(self):
         self._assert_contains(COMPLEX_SUITE.get_keywords(),
