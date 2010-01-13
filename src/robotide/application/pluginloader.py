@@ -31,6 +31,10 @@ class PluginLoader(object):
         if self._load_errors:
             LOG.error('\n\n'.join(self._load_errors))
 
+    def enable_plugins(self):
+        for p in self.plugins:
+            p.enable()
+
     def _find_classes(self, load_dirs):
         classes = []
         for path in self._find_python_files(load_dirs):

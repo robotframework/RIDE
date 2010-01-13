@@ -41,6 +41,7 @@ class RIDE(wx.App):
         self.frame = RideFrame(self)
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),
                                            context.get_core_plugins())
+        self._plugin_loader.enable_plugins()
         self.open_suite(self._path)
         self.frame.tree.populate(self.model)
         return True
