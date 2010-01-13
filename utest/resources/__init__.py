@@ -21,7 +21,7 @@ import wx
 from robot.utils.normalizing import _CASE_INSENSITIVE_FILESYSTEM
 
 from mocks import MockSerializer, FakeSuite, FakeDirectorySuite, FakeTestCase,\
-    FakeUserKeyword, FakeResource, FakeApplication
+    FakeUserKeyword, FakeResource, FakeApplication, FakeSettings
 from setting_utils import TestSettingsHelper
 
 DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]),
