@@ -114,17 +114,19 @@ class ResourceFileCache(_FileCache):
         if datafile:
             return self.get_resource_file(datafile.source, path)
         else:
-            return self._get_resource_file(normpath(path), None, create_new=True)
+            return self._get_resource_file(path, None, create_new=True)
 
     def _get_resource_file(self, path, name, create_new=False):
+        normalized_key = path and normpath(path) or name
         try:
-            return self._resource_files[path or name]
+            return self._resource_files[normalized_key]
         except KeyError:
             #TODO: There is cyclic import which should be removed
             from files import ResourceFileFactory
             resource = ResourceFileFactory(path, create_new) or XMLResource(name)
-            self._resource_files[path or name] = resource
+            self._resource_files[normalized_key] = resource
             return resource
+
 
     def _get_from_cache(self, source, name):
         try:
