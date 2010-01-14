@@ -1,11 +1,11 @@
 #  Copyright 2008-2009 Nokia Siemens Networks Oyj
-#  
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -119,7 +119,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _create_node(self, parent_node, label, img, index=None):
         if index is not None:
-            # blame wxPython for this ugliness 
+            # blame wxPython for this ugliness
             if isinstance(index, int):
                 node = self.InsertItemBefore(parent_node, index, label)
             else:
@@ -220,7 +220,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def get_selected_datafile(self):
         """Returns currently selected data file.
-        
+
         If a test or user keyword node is selected, returns parent of that item.
         """
         node = self.GetSelection()
@@ -413,7 +413,7 @@ class InitFileHandler(_ActionHandler):
     def do_drop(self, test_or_kw):
         self.item.add_test_or_user_keyword(test_or_kw)
         self._tree.do_drop(self, test_or_kw)
-    
+
     def rename(self, new_name):
         return False
 
@@ -460,7 +460,7 @@ class _TestOrUserKeywordHandler(_ActionHandler):
         self.item.delete()
 
     def rename(self, new_name):
-        # new_name is empty also when the value is not changed 
+        # new_name is empty also when the value is not changed
         if not new_name.strip():
             return False
         msg = self._datalist.validate_name(new_name, self.item.name)
@@ -543,6 +543,6 @@ class _History(object):
         state = self._forward.pop()
         self._back.append(state)
         return state
-    
+
     def top(self):
         return self._back and self._back[-1] or None
