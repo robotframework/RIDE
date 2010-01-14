@@ -26,7 +26,7 @@ class Plugin(object):
     with the core application. The methods and their arguments are kept stable
     across the different RIDE releases to the extent that it is possible.
 
-    If the provided methods are not enough, plugins can also interact with the 
+    If the provided methods are not enough, plugins can also interact with the
     core directly using properties `tree`, `menubar`, `toolbar`, `notebook` and
     `model`. Although these attributes themselves are stable, the functionality
     behind them may still change between releases. Users are thus recommended
@@ -46,7 +46,7 @@ class Plugin(object):
         Set in `__init__`.
     """
 
-    tree = property(lambda self: self.__frame.tree, 
+    tree = property(lambda self: self.__frame.tree,
                     doc='Provides access to the suite and resource tree')
     menubar = property(lambda self: self.__frame.GetMenuBar(),
                        doc='Provides access to the application menubar')
@@ -61,19 +61,19 @@ class Plugin(object):
 
     def __init__(self, application, name=None, doc=None, metadata=None,
                  default_settings=None, initially_enabled=True):
-        """Initialize the plugin with the provided data. 
+        """Initialize the plugin with the provided data.
 
         The provided information is mainly used by the plugin manager. Simple
         plugins are often fine with the defaults. If this method is overridden,
         the plugin must call it explicitly::
-        
+
             from robotide.pluginapi import Plugin
-            
+
             class MyCoolPluginExample(Plugin):
                 \"\"\"This extra cool docstring is used as the plugin doc.\"\"\"
                 def __init__(self, application):
                     Plugin.__init__(self, application, metadata={'version': '0.1'},
-                                    default_settings={'color': 'red', 'x': 42}) 
+                                    default_settings={'color': 'red', 'x': 42})
 
         Plugins should not create any user interface elements at this point but
         wait until the `enable` method is called.
@@ -92,7 +92,7 @@ class Plugin(object):
             containing URLs will be shown as links.
           default_settings
             A dictionary of settings and their default values. Settings are
-            automatically stored onto RIDE configuration file, can be 
+            automatically stored onto RIDE configuration file, can be
             accessed using direct attribute access via `__getattr__`, and new
             settings can be saved using `save_setting`.
           initially_enabled
@@ -101,7 +101,7 @@ class Plugin(object):
         """
         self.name = name or utils.name_from_class(self, drop='Plugin')
         self.doc = self._get_doc(doc)
-        self.metadata = metadata or {} 
+        self.metadata = metadata or {}
         self.initially_enabled = initially_enabled
         self.__app = application
         self.__frame = application.frame
@@ -146,7 +146,7 @@ class Plugin(object):
     def disable(self):
         """Called by RIDE when the plugin is disabled.
 
-        Undo whatever was done in the `enable` method. 
+        Undo whatever was done in the `enable` method.
         """
         pass
 
@@ -164,10 +164,10 @@ class Plugin(object):
         """Registers a menu entry and optionally a shortcut and a toolbar icon.
 
         ``action_info`` is an instance of `ActionInfo` class containing needed
-        information to create menu entry, keyboard shortcut and/or toolbar 
+        information to create menu entry, keyboard shortcut and/or toolbar
         button for the action.
 
-        All registered actions can be registered using 
+        All registered actions can be registered using
         the `unregister_actions` method.
         """
         action = self.__frame.actions.register_action(action_info)
@@ -203,6 +203,10 @@ class Plugin(object):
     def delete_tab(self, tab):
         """Deletes the ``tab`` added using `add_tab`."""
         self.notebook.delete_tab(tab)
+
+    def allow_tab_closing(self, tab):
+        """Allows closing a tab that has been created using allow_closing=False."""
+        self.notebook.allow_closing(tab)
 
     def tab_is_visible(self, tab):
         """Returns is the ``tab`` added using `add_tab` visible or not."""
@@ -262,9 +266,9 @@ class Plugin(object):
     def subscribe(self, listener, *topics):
         """Start to listen to messages with the given ``topics``.
 
-        See the documentation of the `robotide.publish` module for more 
+        See the documentation of the `robotide.publish` module for more
         information about subscribing to messages and the messaging system
-        
+
         `unsubscribe` and `unsubscribe_all` can be used to stop listening to
         certain or all messages.
         """
@@ -276,7 +280,7 @@ class Plugin(object):
 
         ``listener`` and ``topics`` have the same meaning as in `subscribe`
         and a listener/topic combination is unsubscribed only when both of them
-        match. 
+        match.
         """
         for topic in topics:
             PUBLISHER.unsubscribe(listener, topic, key=self)
