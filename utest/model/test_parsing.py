@@ -83,7 +83,7 @@ class TestFindingImports(unittest.TestCase):
 
     def test_nested_resource_imports(self):
         assert_equals(self.suite.get_resources()[0].get_resources()[0].name,
-                      'another_resource.html')
+                      'resource2.html')
 
     def test_resource_from_python_path(self):
         assert_equals(self.suite.get_resources()[1].name, PATH_RESOURCE_NAME)
@@ -101,7 +101,7 @@ class TestFindingImportsWithVariables(unittest.TestCase):
         assert_equals(self.suite.get_resources()[3].name, 'another_resource.html')
 
     def test_finding_resource_file_with_variable_in_path(self):
-        assert_equals(self.suite.get_resources()[4].name, 'resource2.html')
+        assert_equals(self.suite.get_resources()[4].name, 'resource4.html')
 
     def test_finding_variable_file_with_variable_in_path(self):
         assert_equals(self.suite._get_variable_file_variables()[3].name,
