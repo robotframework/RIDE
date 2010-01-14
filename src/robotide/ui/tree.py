@@ -323,6 +323,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         if handler and handler.item:
             RideTreeSelection(node=node, item=handler.item,
                               text=self.GetItemText(node)).publish()
+        self.SetFocus()
 
     def OnItemActivated(self, event):
         node = event.Item
