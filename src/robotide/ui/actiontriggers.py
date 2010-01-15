@@ -124,9 +124,9 @@ class _Menu(object):
         name_with_accerelator = self._get_name(action, build_new=True)
         menu_item = MenuItem(self._frame, self, name_with_accerelator)
         pos = action.get_insertion_index(self.wx_menu)
-        _wx_menu_item = self.wx_menu.Insert(pos, menu_item.id, 
-                                            menu_item.name, action.doc)
-        menu_item.set_wx_menu_item(_wx_menu_item)
+        wx_menu_item = self.wx_menu.Insert(pos, menu_item.id,
+                                           menu_item.name, action.doc)
+        menu_item.set_wx_menu_item(wx_menu_item)
         return menu_item
 
     def remove_menu_item(self, id):

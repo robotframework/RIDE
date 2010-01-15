@@ -1,11 +1,11 @@
 #  Copyright 2008 Nokia Siemens Networks Oyj
-#  
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -56,14 +56,14 @@ class TestParsing(unittest.TestCase):
         assert_equals(s.setup.value, ['My Overriding Test Setup'])
         assert_equals(s.teardown.value, ['My Overriding Test Teardown'])
         assert_equals(s.timeout.value, ['2 seconds', "I'm in a great hurry"])
-        
+
     def test_user_keyword_parsing(self):
         assert_equals(self.uk.name, 'My Suite Teardown')
         assert_equals(self.uk.longname, 'Testsuite.Everything.My Suite Teardown')
         assert_equals(self.uk.doc, 'This is *user* _keyword_ documentation')
         assert_equals(self.uk.settings.args.value, ['${scalar arg}', '@{list arg}'])
         assert_equals(self.uk.settings.return_value.value, ['Success'])
-        assert_equals(self.uk.settings.timeout.value, 
+        assert_equals(self.uk.settings.timeout.value,
                       ['1 second', "I'm faster than you"])
 
     def test_variables_parsing(self):
@@ -83,8 +83,8 @@ class TestFindingImports(unittest.TestCase):
 
     def test_nested_resource_imports(self):
         assert_equals(self.suite.get_resources()[0].get_resources()[0].name,
-                      'another_resource.html')
-            
+                      'resource2.html')
+
     def test_resource_from_python_path(self):
         assert_equals(self.suite.get_resources()[1].name, PATH_RESOURCE_NAME)
 
@@ -101,7 +101,7 @@ class TestFindingImportsWithVariables(unittest.TestCase):
         assert_equals(self.suite.get_resources()[3].name, 'another_resource.html')
 
     def test_finding_resource_file_with_variable_in_path(self):
-        assert_equals(self.suite.get_resources()[4].name, 'resource2.html')
+        assert_equals(self.suite.get_resources()[4].name, 'resource4.html')
 
     def test_finding_variable_file_with_variable_in_path(self):
         assert_equals(self.suite._get_variable_file_variables()[3].name,

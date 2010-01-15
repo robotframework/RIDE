@@ -63,13 +63,10 @@ class KeywordEditorUi(GridEditor):
                     [self.selection.topleft.row]
         return rows
 
-    def _set_cell_font(self, cell, color=None, underlined=False):
-        if not color:
-            color = self.GetDefaultCellTextColour()
-        font = self.GetDefaultCellFont()
-        font.SetUnderlined(underlined)
+    def _toggle_underlined(self, cell):
+        font = self.GetCellFont(cell.Row, cell.Col)
+        font.SetUnderlined(not font.Underlined)
         self.SetCellFont(cell.Row, cell.Col, font)
-        self.SetCellTextColour(cell.Row, cell.Col, color)
         self.Refresh()
 
     def comment(self):
@@ -281,7 +278,7 @@ class KeywordEditor(KeywordEditorUi):
         value = self.GetCellValue(row, col)
         uk = self._datafile.get_user_keyword(value)
         if uk:
-            self._set_cell_font((grid.GridCellCoords(row, col)))
+            self._toggle_underlined((grid.GridCellCoords(row, col)))
             self._marked_cell = None
             self._tree.select_user_keyword_node(uk)
             return True
@@ -310,14 +307,14 @@ class KeywordEditor(KeywordEditorUi):
         value = self.GetCellValue(cell.Row, cell.Col)
         if not self._datafile.get_user_keyword(value):
             return
-        self._set_cell_font(cell, color='Blue', underlined=True)
+        self._toggle_underlined(cell)
         self._marked_cell = cell
 
     def _hide_link_if_necessary(self, cell):
         if not self._marked_cell:
             return
         if cell != self._marked_cell:
-            self._set_cell_font(self._marked_cell)
+            self._toggle_underlined(self._marked_cell)
             self._marked_cell = None
 
     def _show_kw_tooltip(self, cell):

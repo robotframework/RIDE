@@ -259,7 +259,7 @@ class _OutputWindow(wx.ScrolledWindow):
         return self._output
 
     def _add_to_notebook(self, notebook, name):
-        notebook.add_tab(self, '%s (running)' % name)
+        notebook.add_tab(self, '%s (running)' % name, allow_closing=False)
         notebook.show_tab(self)
 
     def update_output(self, output, finished=False):
@@ -268,6 +268,7 @@ class _OutputWindow(wx.ScrolledWindow):
             self.SetVirtualSize(self._output.Size)
         if finished:
             self._rename_tab('%s (finished)' % self._runner.name)
+            self.Parent.allow_closing(self)
             self._state_button.set_label('Run Again')
 
     def OnStop(self):
@@ -306,3 +307,4 @@ class _StateButton(wx.Button):
 
     def set_label(self, new_text):
         self.SetLabel(new_text)
+

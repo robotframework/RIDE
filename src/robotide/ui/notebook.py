@@ -53,6 +53,10 @@ class NoteBook(fnb.FlatNotebook):
     def rename_tab(self, tab, new_name):
         self.SetPageText(self.GetPageIndex(tab), new_name)
 
+    def allow_closing(self, tab):
+        if tab in self._uncloseable:
+            self._uncloseable.remove(tab)
+
     def tab_is_visible(self, tab):
         return tab == self.GetCurrentPage()
 

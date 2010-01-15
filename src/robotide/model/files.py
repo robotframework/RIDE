@@ -368,9 +368,15 @@ class ResourceFile(_AbstractDataFile):
     type = 'resource file'
 
     def __init__(self, data):
-        self.name = self.longname = os.path.basename(data.source)
+        self.name = self.longname = self._find_source(data.source)
         self.settings = ResourceSettingTable(self, data)
         _AbstractDataFile.__init__(self, data)
+
+    def _find_source(self, source):
+        dirpath, filename = os.path.split(source)
+        for candidate in os.listdir(dirpath):
+            if utils.normpath(candidate) == utils.normpath(filename):
+                return candidate
 
     def reload_from_disk(self):
         data = ResourceFileData(self.source)

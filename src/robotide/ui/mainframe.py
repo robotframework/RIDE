@@ -21,7 +21,6 @@ from robotide.utils import RideEventHandler, RideHtmlWindow
 from robotide.context import SETTINGS, ABOUT_RIDE
 
 from actiontriggers import MenuBar, ToolBar, ShortcutRegistry
-from keywordsearch import KeywordSearchDialog
 from filedialogs import NewProjectDialog, NewResourceDialog, ChangeFormatDialog
 from pluginmanager import PluginManager
 from tree import Tree
@@ -63,7 +62,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         self._init_ui()
         self._plugin_manager = PluginManager(self.notebook)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
-        PUBLISHER.subscribe(lambda msg: self.SetStatusText('Saved %s' % msg.path), 
+        PUBLISHER.subscribe(lambda msg: self.SetStatusText('Saved %s' % msg.path),
                             RideSaved)
         self.ensure_on_screen()
         self.Show()
@@ -191,7 +190,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         dlg.Destroy()
 
 # This code is copied from http://wiki.wxpython.org/EnsureFrameIsOnScreen,
-# and adapted to fit our code style. 
+# and adapted to fit our code style.
     def ensure_on_screen(self):
         try:
             display_id = wx.Display.GetFromWindow(self)

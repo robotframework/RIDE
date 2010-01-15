@@ -1,11 +1,11 @@
 #  Copyright 2008-2009 Nokia Siemens Networks Oyj
-#  
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -145,7 +145,7 @@ class _SettingEditor(wx.Panel, RideEventHandler):
                                 size=(context.SETTING_LABEL_WIDTH,
                                       context.SETTING_ROW_HEIGTH)))
         self._value_display = self._get_value_display()
-        self._update_value() 
+        self._update_value()
         sizer.Add(self._value_display, 1, wx.EXPAND)
         sizer.Add(ButtonWithHandler(self, 'Edit'), flag=wx.LEFT|wx.RIGHT, border=5)
         sizer.Add(ButtonWithHandler(self, 'Clear'))
@@ -335,7 +335,7 @@ class VariablesListEditor(_AbstractListEditor):
 
     def OnEdit(self, event):
         name, value = self._data.get_name_and_value(self._selection)
-        if name.startswith('${'): 
+        if name.startswith('${'):
             dlg = ScalarVariableDialog(self.GetGrandParent(), (name, value))
         else:
             dlg = ListVariableDialog(self.GetGrandParent(), (name, value))
@@ -367,7 +367,7 @@ class ImportSettingListEditor(_AbstractListEditor):
 
     def OnAddVariables(self, event):
         self._show_import_editor_dialog(VariablesImportDialog, self._data.new_variables)
-    
+
     def _show_import_editor_dialog(self, dialog, creator):
         dlg = dialog(self.GetGrandParent())
         if dlg.ShowModal() == wx.ID_OK:
@@ -376,7 +376,7 @@ class ImportSettingListEditor(_AbstractListEditor):
         dlg.Destroy()
 
     def get_column_values(self, item):
-        return [utils.name_from_class(item, 'Import'), item.name, 
+        return [utils.name_from_class(item, 'Import'), item.name,
                 utils.join_value(item.args)]
 
     def _resource_import_modified(self):
@@ -405,6 +405,6 @@ class MetadataListEditor(_AbstractListEditor):
             self._data.new_metadata(*dlg.get_value())
             self.update_data()
         dlg.Destroy()
-        
+
     def get_column_values(self, item):
         return [utils.printable_name(item.name), utils.html_escape(item.value)]
