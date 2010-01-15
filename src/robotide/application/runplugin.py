@@ -277,6 +277,7 @@ class _OutputWindow(wx.ScrolledWindow):
     def OnRunAgain(self):
         self._output.clear()
         self._rename_tab('%s (running)' % self._runner.name)
+        self.Parent.disallow_closing(self)
         self._state_button.set_label('Stop')
         self._runner.restart()
 
