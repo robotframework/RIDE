@@ -146,7 +146,8 @@ class _AbstractDataFile(object):
         keywords = []
         for lib_import in self.get_library_imports():
             name = self.replace_variables(lib_import.name)
-            keywords.extend(LIBRARYCACHE.get_library_keywords(name, lib_import.args))
+            args = [ self.replace_variables(a) for a in lib_import.args ]
+            keywords.extend(LIBRARYCACHE.get_library_keywords(name, args))
         keywords.extend(LIBRARYCACHE.get_default_keywords())
         return keywords
 
