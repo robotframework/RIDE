@@ -131,8 +131,12 @@ class TestResolvingKeywordsFromImportsWithVariables(_ContentAssistBaseTest):
                               'Open Connection', 'Telnet')
 
     def test_variables_are_passed_to_libraries(self):
-        self._assert_contains(COMPLEX_SUITE.get_keywords_for_content_assist(), 'Get Mandatory',
-                              'ArgLib')
+        self._assert_contains(COMPLEX_SUITE.get_keywords_for_content_assist(),
+                              'Get Mandatory', 'ArgLib')
+
+    def test_variables_are_passed_to_libraries_in_resource_files(self):
+        self._assert_contains(COMPLEX_SUITE.get_keywords_for_content_assist(),
+                              'Longest', 'AnotherArgLib')
 
 
 class TestModifyingDataAffectReturnedKeywords(_ContentAssistBaseTest):
