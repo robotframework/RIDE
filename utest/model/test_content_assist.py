@@ -130,7 +130,7 @@ class TestResolvingKeywordsFromImportsWithVariables(_ContentAssistBaseTest):
         self._assert_contains(COMPLEX_SUITE.get_keywords(),
                               'Open Connection', 'Telnet')
 
-    def test_variables_are_passed_to_libraries(self):
+    def test_variables_are_resolved_before_passed_to_libraries(self):
         self._assert_contains(COMPLEX_SUITE.get_keywords_for_content_assist(),
                               'Get Mandatory', 'ArgLib')
 
