@@ -1,11 +1,11 @@
 #  Copyright 2008-2009 Nokia Siemens Networks Oyj
-#  
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -70,7 +70,7 @@ class _AbstractDataFile(object):
         self.source = data.source.decode('UTF-8')
         self._stat = self._get_stat(self.source)
         self.variables = VariableTable(self, data.variables)
-        kws = [ kw for kw in data.user_keywords 
+        kws = [ kw for kw in data.user_keywords
                 if not isinstance(kw, UserErrorHandler)]
         self.keywords = UserKeywordTable(self, kws)
         self.dirty = False
@@ -81,7 +81,7 @@ class _AbstractDataFile(object):
     def _get_stat(self, path):
         if os.path.isfile(path):
             stat = os.stat(path)
-            return (stat.st_mtime, stat.st_size) 
+            return (stat.st_mtime, stat.st_size)
         return (0, 0)
 
     def get_resources(self):
@@ -101,7 +101,7 @@ class _AbstractDataFile(object):
 
     def get_user_keyword(self, name):
         kws = self._filter(self.get_user_keywords(), name)
-        return kws and kws[0] or None 
+        return kws and kws[0] or None
 
     def get_user_keywords(self):
         kws = copy.copy(self.keywords)
@@ -110,13 +110,13 @@ class _AbstractDataFile(object):
         return kws
 
     def get_keywords(self, library_keywords=True):
-        kws = self._get_own_keywords() + self._get_resource_keywords(library_keywords) 
+        kws = self._get_own_keywords() + self._get_resource_keywords(library_keywords)
         if library_keywords:
             kws += self._get_library_keywords()
         return kws
 
     def get_keywords_for_content_assist(self, relative=True, name=None):
-        own_kws = self._get_own_keywords(relative=relative) 
+        own_kws = self._get_own_keywords(relative=relative)
         resource_keywords = []
         for res in self.get_resources():
             resource_keywords.extend(res.get_keywords_for_content_assist(relative=False))
@@ -190,7 +190,7 @@ class _AbstractDataFile(object):
     def _get_variable_files(self):
         varfiles = []
         for var_settings in self.get_variable_imports():
-            # TODO: There is need for namespace object which could be used for 
+            # TODO: There is need for namespace object which could be used for
             # all variable replacing
             name = self.variables.replace_scalar(var_settings.name)
             args = self.variables.replace_list(var_settings.args)
@@ -200,7 +200,7 @@ class _AbstractDataFile(object):
         return varfiles
 
     def get_resource_imports(self):
-        return self.settings.imports.get_resource_imports() 
+        return self.settings.imports.get_resource_imports()
 
     def get_library_imports(self):
         return self.settings.imports.get_library_imports()
