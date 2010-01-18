@@ -36,7 +36,7 @@ class Colorizer(Plugin):
     def OnCellChanged(self, event):
         row, col = event.cell
         self._colorize_cell(event.grid, row, col, event.value)
-        self._handle_comment_or_uncomment(event.grid, row, col, event.value, 
+        self._handle_comment_or_uncomment(event.grid, row, col, event.value,
                                           event.previous)
 
     def _colorize_cell(self, grid, row, col, value):
