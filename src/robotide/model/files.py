@@ -255,7 +255,7 @@ class _AbstractDataFile(object):
             os.remove(old_source)
 
     def _change_format_if_needed(self, format):
-        if format in [None, self.get_format()]:
+        if format in [None, self.get_format()] or not os.path.isfile(self.source):
             return None
         old = self.source
         self.source = '%s.%s' % (os.path.splitext(old)[0], format.lower())
