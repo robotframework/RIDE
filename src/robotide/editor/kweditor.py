@@ -223,16 +223,7 @@ class KeywordEditor(KeywordEditorUi):
         if self.IsCellEditControlShown():
             self.GetCellEditor(*self.selection.cell).show_content_assist()
 
-    def show_keyword_details(self):
-        cell_value = self.GetCellValue(*self.selection.cell)
-        kw = self._datafile.get_keywords_for_content_assist(name=cell_value)
-        if kw:
-            self._popup.SetPosition(self._calculate_position())
-            text = 'Source: %s<br><br>Arguments: %s<br><br>%s' % (kw.source, kw.args, kw.doc)
-            self._popup.set_content(text)
-            self._popup.Show()
-
-    def _calculate_position(self):
+   def _calculate_position(self):
         x, y = wx.GetMousePosition()
         return x, y + 20
 
