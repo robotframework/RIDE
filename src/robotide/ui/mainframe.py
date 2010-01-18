@@ -37,7 +37,7 @@ _menudata = """
 !N&ew Resource | Create New Resource File | Ctrl-Shift-N
 ---
 &Save | Save selected datafile | Ctrl-S | ART_FILE_SAVE
-!Save &All | Save all changes | Ctrl-Shift-S
+!Save &All | Save all changes | Ctrl-Shift-S | ART_FILE_SAVE_AS
 ---
 !E&xit | Exit RIDE | Ctrl-Q
 
