@@ -223,7 +223,7 @@ class KeywordEditor(KeywordEditorUi):
         if self.IsCellEditControlShown():
             self.GetCellEditor(*self.selection.cell).show_content_assist()
 
-   def _calculate_position(self):
+    def _calculate_position(self):
         x, y = wx.GetMousePosition()
         return x, y + 20
 
