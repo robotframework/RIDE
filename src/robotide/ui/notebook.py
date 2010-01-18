@@ -57,6 +57,10 @@ class NoteBook(fnb.FlatNotebook):
         if tab in self._uncloseable:
             self._uncloseable.remove(tab)
 
+    def disallow_closing(self, tab):
+        if tab not in self._uncloseable:
+            self._uncloseable.append(tab)
+
     def tab_is_visible(self, tab):
         return tab == self.GetCurrentPage()
 

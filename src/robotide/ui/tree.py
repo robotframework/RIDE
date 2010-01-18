@@ -45,6 +45,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         actions = ActionInfoCollection(tree_actions, self, self)
         action_registerer.register_actions(actions)
         self.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnSelChanged)
+        self.Bind(wx.EVT_TREE_ITEM_EXPANDING, self.OnTreeItemExpanding)
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnRightClick)
         self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnItemActivated)
         self.Bind(wx.EVT_TREE_END_LABEL_EDIT, self.OnLabelEdited)
@@ -106,6 +107,12 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         return node
 
     def _expand_and_render_children(self, node, predicate=None):
+        self._render_children(node, predicate)
+        self.Expand(node)
+
+    def _render_children(self, node, predicate=None):
+        if self.GetChildrenCount(node) > 0:
+            return
         item = self.GetItemPyData(node).item
         for test in item.tests:
             self._create_node_with_handler(node, test)
@@ -115,7 +122,6 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             else:
                 index = None
             self._create_node_with_handler(node, kw, index)
-        self.Expand(node)
 
     def _create_node(self, parent_node, label, img, index=None):
         if index is not None:
@@ -324,6 +330,11 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             RideTreeSelection(node=node, item=handler.item,
                               text=self.GetItemText(node)).publish()
         self.SetFocus()
+
+    def OnTreeItemExpanding(self, event):
+        node = event.Item
+        if node.IsOk():
+            self._render_children(node)
 
     def OnItemActivated(self, event):
         node = event.Item

@@ -15,6 +15,8 @@
 import os
 
 from robotide.robotapi import TestLibrary as RobotTestLibrary
+from robotide.errors import DataError
+from robotide.publish import RideLogMessage
 from robotide import utils
 
 
@@ -43,7 +45,8 @@ class Spec(object):
         source_type = root.attrs['type']
         if source_type == 'resource':
             source_type += ' file'
-        keywords = [ _XMLKeywordContent(node, self.name, source_type) for node in kw_nodes ]
+        keywords = [ _XMLKeywordContent(node, self.name, source_type)
+                     for node in kw_nodes ]
         return keywords, root.doc
 
 
@@ -55,11 +58,13 @@ class LibrarySpec(Spec):
             args = args[:-2]
         try:
             self.keywords, self.doc = self._init_from_library(self.name, args)
-        except:
-            # TODO: RF TestLibary does not always raise DataError on failure.
-            # Need to probably at least log this failure somehow.
+        except (ImportError, DataError), err:
             specfile = utils.find_from_pythonpath(self.name + '.xml')
             self.keywords, self.doc = self._init_from_specfile(specfile)
+            if not self.keywords:
+                msg = 'Importing test library "%s" failed: %s' %\
+                      (self.name, err)
+                RideLogMessage(message=msg, level='WARN').publish()
 
     def _init_from_library(self, name, args):
         lib = RobotTestLibrary(name, args)

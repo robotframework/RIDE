@@ -1,11 +1,11 @@
 #  Copyright 2008 Nokia Siemens Networks Oyj
-#  
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -55,30 +55,30 @@ class _ContentAssistBaseTest(unittest.TestCase):
     def _assert_does_not_contain(self, keywords, name, source):
         for kw in keywords:
             if kw.name == name and kw.source == source:
-                raise AssertionError("Keyword '%s' found from source %s\n" % 
+                raise AssertionError("Keyword '%s' found from source %s\n" %
                                      (name, source))
 
     def _assert_variable(self, suite, name):
         variables = [ var.name for var in suite.get_variables_for_content_assist() ]
         if not name in variables:
-            raise AssertionError("Variable '%s' not found in %s" % 
+            raise AssertionError("Variable '%s' not found in %s" %
                                 (name, variables))
 
     def _assert_variable_does_not_exist(self, suite, name):
         variables = [ var.name for var in suite.get_variables_for_content_assist() ]
         if name in variables:
-            raise AssertionError("Variable '%s' found in %s" % 
+            raise AssertionError("Variable '%s' found in %s" %
                                 (name, variables))
 
 
 class TestResolvingOwnKeywords(_ContentAssistBaseTest):
 
     def test_own_user_keywords(self):
-        self._assert_contains(COMPLEX_SUITE.get_keywords(), 
+        self._assert_contains(COMPLEX_SUITE.get_keywords(),
                               'My Test Setup', COMPLEX_SUITE.name)
 
     def test_own_keyword_for_content_assist(self):
-        self._assert_contains(COMPLEX_SUITE.get_keywords_for_content_assist(), 
+        self._assert_contains(COMPLEX_SUITE.get_keywords_for_content_assist(),
                               'My Test Setup', '<this file>')
 
     def test_filtering_keywords_with_longnames(self):
@@ -108,7 +108,7 @@ class TestResolvingKeywordsFromImports(_ContentAssistBaseTest):
                               'Path Resource UK', PATH_RESOURCE_NAME)
 
     def test_keywords_from_spec_resource(self):
-        self._assert_contains(COMPLEX_SUITE.get_keywords(), 
+        self._assert_contains(COMPLEX_SUITE.get_keywords(),
                               'Attributeless Keyword', 'Spec Resource')
 
     def test_keywords_from_spec_library(self):
@@ -130,6 +130,14 @@ class TestResolvingKeywordsFromImportsWithVariables(_ContentAssistBaseTest):
         self._assert_contains(COMPLEX_SUITE.get_keywords(),
                               'Open Connection', 'Telnet')
 
+    def test_variables_are_resolved_before_passed_to_libraries(self):
+        self._assert_contains(COMPLEX_SUITE.get_keywords_for_content_assist(),
+                              'Get Mandatory', 'ArgLib')
+
+    def test_variables_are_passed_to_libraries_in_resource_files(self):
+        self._assert_contains(COMPLEX_SUITE.get_keywords_for_content_assist(),
+                              'Longest', 'AnotherArgLib')
+
 
 class TestModifyingDataAffectReturnedKeywords(_ContentAssistBaseTest):
 
@@ -147,7 +155,7 @@ class TestModifyingDataAffectReturnedKeywords(_ContentAssistBaseTest):
         self._assert_contains(COMPLEX_SUITE.get_keywords(), 'New UK', resource.name)
 
     def test_get_all_keywords(self):
-        for name, source in [('My Test Setup', 'Everything'), 
+        for name, source in [('My Test Setup', 'Everything'),
                              ('Resource UK', 'resource.html'),
                              ('Another Resource UK', 'another_resource.html')]:
             self._assert_contains(COMPLEX_MODEL.get_all_keywords(), name, source)
@@ -216,7 +224,7 @@ class TestModifyingImportsAffectsResolvedKeywords(_ContentAssistBaseTest):
 
 class TestResolvingVariables(_ContentAssistBaseTest):
 
-    def test_get_variables_for_suite(self):  
+    def test_get_variables_for_suite(self):
         self._assert_variable(COMPLEX_SUITE, '${SCALAR}')
 
     def test_variables_for_user_keyword_contain_arguments(self):
