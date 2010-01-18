@@ -47,8 +47,8 @@ class _TcUkBase(object):
     def show_add_suite_dialog(self, tree):
         self.datafile.show_add_suite_dialog(tree)
 
-    def get_keywords_for_content_assist(self):
-        return self.datafile.get_keywords_for_content_assist()
+    def content_assist_values(self):
+        return self.datafile.content_assist_values()
 
     def get_variables_for_content_assist(self):
         return self.datafile.get_variables_for_content_assist()
@@ -159,7 +159,7 @@ class KeywordList(RobotDataList):
                 self.extend(kw)
             else:
                 self.append(kw)
-        
+
     def parse_keywords_from_grid(self, griddata):
         self.__init__(self.datafile, [KeywordData(row) for row in griddata])
 

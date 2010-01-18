@@ -1,11 +1,11 @@
 #  Copyright 2008-2009 Nokia Siemens Networks Oyj
-#  
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -75,7 +75,7 @@ class _ContentAssistTextCtrlBase(object):
             if event.GetKeyCode() == wx.WXK_BACK:
                 value = value[:-1]
             elif event.GetKeyCode() == wx.WXK_ESCAPE:
-                self.hide()            
+                self.hide()
             else:
                 value += chr(event.GetRawKeyCode())
         return self._popup.content_assist_for(value, self._item)
@@ -113,7 +113,7 @@ class ContentAssistPopup(object):
         self._main_popup = RidePopupWindow(parent, _PREFERRED_POPUP_SIZE)
         self._details_popup = RidePopupWindow(parent, _PREFERRED_DETAILS_SIZE)
         self._selection = -1
-        self._list = ContentAssistList(self._main_popup, self.OnListItemSelected, 
+        self._list = ContentAssistList(self._main_popup, self.OnListItemSelected,
                                        self.OnListItemActivated)
 
     def get_value(self):
@@ -127,7 +127,7 @@ class ContentAssistPopup(object):
             colnames = 'name', 'value'
             data = [ (var.name, var.parent) for var in self._choices ]
         else:
-            keywords = item.get_keywords_for_content_assist()
+            keywords = item.content_assist_values()
             self._choices = [ kw for kw in keywords if self._starts(kw.name, value) ]
             colnames = 'name', 'source'
             data = [ (kw.name, kw.source) for kw in self._choices ]
@@ -184,7 +184,7 @@ class ContentAssistPopup(object):
             else:
                 self._select_and_scroll(0)
 
-    def _select_and_scroll(self, selection):        
+    def _select_and_scroll(self, selection):
         self._selection = selection
         self._list.Select(self._selection)
         self._list.EnsureVisible(self._selection)
@@ -195,7 +195,7 @@ class ContentAssistPopup(object):
         self._details_popup.Show(False)
 
     def OnListItemActivated(self, event):
-        # TODO: should this be implemented with callback? 
+        # TODO: should this be implemented with callback?
         self._parent.OnFocusLost(event)
 
     def OnListItemSelected(self, event):
