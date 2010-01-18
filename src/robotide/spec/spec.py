@@ -102,7 +102,7 @@ class _XMLResource(Spec):
     def replace_variables(self, value):
         return value
 
-    def get_keywords_for_content_assist(self, relative=False, filter=''):
+    def content_assist_values(self, relative=False, filter=''):
         return self.keywords
 
     def serialize(self):

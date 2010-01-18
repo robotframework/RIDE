@@ -115,11 +115,11 @@ class _AbstractDataFile(object):
             kws += self._get_library_keywords()
         return kws
 
-    def get_keywords_for_content_assist(self, relative=True, name=None):
+    def content_assist_values(self, relative=True, name=None):
         own_kws = self._get_own_keywords(relative=relative)
         resource_keywords = []
         for res in self.get_resources():
-            resource_keywords.extend(res.get_keywords_for_content_assist(relative=False))
+            resource_keywords.extend(res.content_assist_values(relative=False))
         kws = own_kws + self._get_library_keywords() + resource_keywords
         kws = self._remove_duplicates(self._filter(kws, name))
         kws.sort(key=operator.attrgetter('name'))

@@ -78,13 +78,13 @@ class TestResolvingOwnKeywords(_ContentAssistBaseTest):
                               'My Test Setup', COMPLEX_SUITE.name)
 
     def test_own_keyword_for_content_assist(self):
-        self._assert_contains(COMPLEX_SUITE.get_keywords_for_content_assist(),
+        self._assert_contains(COMPLEX_SUITE.content_assist_values(),
                               'My Test Setup', '<this file>')
 
     def test_filtering_keywords_with_longnames(self):
-        self._assert_contains(COMPLEX_SUITE.get_keywords_for_content_assist(name='BuiltIn.Catenate'),
+        self._assert_contains(COMPLEX_SUITE.content_assist_values(name='BuiltIn.Catenate'),
                               'Catenate', 'BuiltIn')
-        self._assert_contains(COMPLEX_SUITE.get_keywords_for_content_assist(name='Catenate'),
+        self._assert_contains(COMPLEX_SUITE.content_assist_values(name='Catenate'),
                               'Catenate', 'BuiltIn')
 
 
@@ -131,11 +131,11 @@ class TestResolvingKeywordsFromImportsWithVariables(_ContentAssistBaseTest):
                               'Open Connection', 'Telnet')
 
     def test_variables_are_resolved_before_passed_to_libraries(self):
-        self._assert_contains(COMPLEX_SUITE.get_keywords_for_content_assist(),
+        self._assert_contains(COMPLEX_SUITE.content_assist_values(),
                               'Get Mandatory', 'ArgLib')
 
     def test_variables_are_passed_to_libraries_in_resource_files(self):
-        self._assert_contains(COMPLEX_SUITE.get_keywords_for_content_assist(),
+        self._assert_contains(COMPLEX_SUITE.content_assist_values(),
                               'Longest', 'AnotherArgLib')
 
 
