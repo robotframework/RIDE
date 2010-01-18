@@ -310,7 +310,7 @@ class KeywordEditor(KeywordEditorUi):
 
     def _show_kw_tooltip(self, cell):
         value = self.GetCellValue(cell.Row, cell.Col)
-        kws = self._datafile.get_keywords_for_content_assist(name=value)
+        kws = self._datafile.content_assist_values(name=value)
         # TODO: Handle multiple return values.
         if len(kws) != 1:
             return
