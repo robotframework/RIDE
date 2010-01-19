@@ -1,11 +1,11 @@
 #  Copyright 2008-2009 Nokia Siemens Networks Oyj
-#  
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -54,7 +54,8 @@ class InitFileSettingTable(ResourceSettingTable):
         self.imports = ImportSettings(suite, data.imports)
 
     def __iter__(self):
-        return iter([self.doc, self.suite_setup, self.suite_teardown, self.force_tags])
+        return iter([self.doc, self.suite_setup, self.suite_teardown,
+                     self.force_tags])
 
 
 class SuiteSettingTable(InitFileSettingTable):
@@ -101,7 +102,8 @@ class VariableTable(object):
         return name.rstrip('=').strip()
 
     def swap(self, index1, index2):
-        self._order[index1], self._order[index2] = self._order[index2], self._order[index1]
+        self._order[index1], self._order[index2] =\
+                self._order[index2], self._order[index1]
         self.datafile.dirty = True
 
     def value_as_string(self, name):
@@ -124,7 +126,7 @@ class VariableTable(object):
 
     def new_list_var(self, name=None, value=None):
         self._create_var(name, value, '@{}')
-    
+
     def _create_var(self, name, value, default_name):
         name = name is not None and name or default_name
         self._vars[name] = value
@@ -153,7 +155,7 @@ class VariableTable(object):
         if len(self) == 0:
             return
         serializer.start_variables()
-        for key in self._order: 
+        for key in self._order:
             value = self._vars[key]
             if isinstance(value, basestring):
                 value = [value]
@@ -204,7 +206,7 @@ class TestCaseTable(_TcUkTable):
 
     def serialize(self, serializer):
         serializer.start_testcases()
-        for test in self: 
+        for test in self:
             test.serialize(serializer)
         serializer.end_testcases()
 

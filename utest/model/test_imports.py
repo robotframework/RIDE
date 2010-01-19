@@ -16,6 +16,13 @@ import unittest
 from robot.utils.asserts import assert_equals
 
 from robotide.model.tables import ImportSettings
+from robotide.model.files import _TestSuiteFactory
+from robotide.robotapi import TestSuiteData
+
+from resources import COMPLEX_SUITE_PATH
+
+
+PARSED_DATA = TestSuiteData(COMPLEX_SUITE_PATH)
 
 
 class _ParsedImport(object):
@@ -50,5 +57,15 @@ class TestAutomaticHandlingOfFileSeparatorVariable(unittest.TestCase):
         assert_equals(self._imports[2].args, ['arg${/}value'])
 
 
+class TestResolvingLibraryKeywords(unittest.TestCase):
+
+    def setUp(self):
+        suite = _TestSuiteFactory(PARSED_DATA)
+        self.imports = suite.settings.
+
+    def test_resolving_simple_library(self):
+        print self.imports
+
 if __name__ == '__main__':
     unittest.main()
+
