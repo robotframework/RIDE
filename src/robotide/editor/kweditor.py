@@ -367,6 +367,7 @@ class ContentAssistCellEditor(grid.PyGridCellEditor):
             grid.set_dirty()
         self._previous_value = value
         self._tc.hide()
+        grid.SetFocus()
         return True
 
     def Reset(self):
