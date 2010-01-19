@@ -57,14 +57,68 @@ class TestAutomaticHandlingOfFileSeparatorVariable(unittest.TestCase):
         assert_equals(self._imports[2].args, ['arg${/}value'])
 
 
-class TestResolvingLibraryKeywords(unittest.TestCase):
+class TestResolvingKeywords(unittest.TestCase):
 
     def setUp(self):
         suite = _TestSuiteFactory(PARSED_DATA)
-        self.imports = suite.settings.
+        self.imports = suite.settings.imports
 
-    def test_resolving_simple_library(self):
-        print self.imports
+    def test_normal_library_import(self):
+        self._should_contain_keyword('File Should Exist', 'OperatingSystem')
+
+    def test_library_import_defined_as_variable(self):
+        self._should_contain_keyword('Create Dictionary', 'Collections')
+
+    def test_variables_from_resource_files_may_be_used_to_import_libs(self):
+        self._should_contain_keyword('File Should Exist', 'OperatingSystem')
+
+    def test_variables_from_variable_files_may_be_used_to_import_libs(self):
+        self._should_contain_keyword('Execute Command', 'Telnet')
+
+    def test_library_imported_in_resource(self):
+        self._should_contain_keyword('Longest', 'AnotherArgLib')
+
+    def test_library_taking_arguments(self):
+        self._should_contain_keyword('Get Mandatory', 'ArgLib')
+
+    def test_library_spec_file(self):
+        self._should_contain_keyword('Attributeless Keyword',
+                                     'LibSpecLibrary')
+
+    def test_library_imports_are_case_insensitive(self):
+        self._should_not_contain_keyword('Open Connection', 'SeleniumLibrary')
+
+    def test_resource_file(self):
+        self._should_contain_keyword('Resource UK', 'resource.html')
+
+    def test_chained_resource_file(self):
+        self._should_contain_keyword('Resource2 UK', 'resource2.html')
+
+    def test_resource_import_with_variables(self):
+        self._should_contain_keyword('Another Resource UK',
+                                     'another_resource.html')
+
+    def test_vars_from_resources_are_used_to_resolve_resource_imports(self):
+        self._should_contain_keyword('Resource4 UK', 'resource4.html')
+
+    def test_resource_in_pythonpath(self):
+        self._should_contain_keyword('Path Resource UK', 'PathResource.html')
+
+    def test_resource_spec_file(self):
+        self._should_contain_keyword('Attributeless Keyword',
+                                     'Spec Resource')
+
+    def _should_contain_keyword(self, name, source):
+        for kw in self.imports.get_keywords():
+            if kw.name == name and kw.source == source:
+                return
+        raise AssertionError('Keyword "%s" not found' % name)
+
+    def _should_not_contain_keyword(self, name, source):
+        for kw in self.imports.get_keywords():
+            if kw.name == name and kw.source == source:
+                raise AssertionError('Keyword "%s" found' % name)
+
 
 if __name__ == '__main__':
     unittest.main()

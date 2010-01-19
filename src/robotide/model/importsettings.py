@@ -1,11 +1,11 @@
 #  Copyright 2008-2009 Nokia Siemens Networks Oyj
-#  
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,7 @@ from robotide import utils
 
 from datalist import RobotDataList
 from settings import ResourceImport, LibraryImport, VariablesImport
+from cache import LIBRARYCACHE, RESOURCEFILECACHE
 
 
 class ImportSettings(RobotDataList):
@@ -31,6 +32,22 @@ class ImportSettings(RobotDataList):
             # Handle invalid imports with empty values.
             if item._item.value:
                 self.append(import_class(self.datafile, item._item.value))
+
+    def get_keywords(self):
+        kws = []
+        for lib in self.get_library_imports():
+            name = self.datafile.replace_variables(lib.name)
+            args = [ self.datafile.replace_variables(arg) for arg in lib.args ]
+            kws.extend(LIBRARYCACHE.get_library_keywords(name, args))
+        for name in self.get_resource_imports():
+            # TODO: why does RESOURCEFILECACHE return None in some cases?
+            name = self.datafile.replace_variables(name)
+            res= RESOURCEFILECACHE.get_resource_file(self.datafile.source,
+                                                     name)
+            if res:
+                kws.extend(res.get_keywords())
+
+        return kws
 
     def new_resource(self, value):
         self._new_import(ResourceImport, [value])
