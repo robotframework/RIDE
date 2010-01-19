@@ -1,11 +1,11 @@
 #  Copyright 2008 Nokia Siemens Networks Oyj
-#  
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -56,7 +56,7 @@ class _FakeImageList(wx.ImageList):
 class _FakeImage(object):
     def __init__(self, imglist):
         self.normal = self.expanded = \
-            imglist.Add(wx.ArtProvider_GetBitmap(wx.ART_FOLDER, wx.ART_OTHER, 
+            imglist.Add(wx.ArtProvider_GetBitmap(wx.ART_FOLDER, wx.ART_OTHER,
                                                  (16,16)))
 
 class _FakeEditor(object):
@@ -78,7 +78,7 @@ class _BaseSuiteTreeTest(unittest.TestCase):
 
     def _create_model(self):
         suite = self._create_directory_suite('Top Suite', '/topsuite/__init__.html')
-        suite.suites = [ self._create_file_suite('Sub Suite %d' % i, 'foo.html') 
+        suite.suites = [ self._create_file_suite('Sub Suite %d' % i, 'foo.html')
                          for i in range(3) ]
         res = FakeResource()
         res.keywords.append(FakeUserKeyword(res, 'Resource Keyword'))
@@ -117,7 +117,7 @@ class TestPopulating(_BaseSuiteTreeTest):
 
     def test_suite_count_and_names(self):
         assert_equals(len(self._tree._datafile_nodes), 5)
-        for index, name in enumerate(['Top Suite'] + 
+        for index, name in enumerate(['Top Suite'] +
                                      ['Sub Suite %d' % i for i in range(3)]):
             assert_equals(self._tree.GetItemText(self._tree._datafile_nodes[index]),
                           name)
@@ -156,7 +156,7 @@ class TestAddingItems(_BaseSuiteTreeTest):
         new_test = FakeTestCase(suite, 'New Fake Test', 'Test Doc')
         self._tree.add_test(self._get_node(suite.name), new_test)
         assert_equals(self._get_selected_label(), 'New Fake Test')
-        
+
     def test_adding_suite(self):
         new_suite = FakeSuite('New Fake Suite')
         self._tree.add_suite(self._model.suite, new_suite)
@@ -177,7 +177,7 @@ class TestNodeSearchAndSelection(_BaseSuiteTreeTest):
         assert_equals(self._get_selected_label(), uk.name)
 
     def test_get_active_suite_or_resource(self):
-        exp = [('Top Suite Fake UK 2', 'Top Suite'), 
+        exp = [('Top Suite Fake UK 2', 'Top Suite'),
                ('Sub Suite 1 Fake Test 1', 'Sub Suite 1'),
                ('Resource Keyword', 'Fake Resource')]
         for node, parent_name in exp:
@@ -235,7 +235,7 @@ class TestNavigationHistory(_BaseSuiteTreeTest):
             self._select_node(name)
         for _ in range(3):
             self._tree.OnGoBack(None)
-        for name in nodes:    
+        for name in nodes:
             self._go_forward_and_assert_selection(name)
 
     def test_go_back_and_forward_between_suite_and_resource(self):
