@@ -111,17 +111,19 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self.Expand(node)
 
     def _render_children(self, node, predicate=None):
-        if self.GetChildrenCount(node) > 0:
+        handler = self.GetItemPyData(node)
+        if not handler or handler.rendered:
             return
-        item = self.GetItemPyData(node).item
-        for test in item.tests:
+        datafile = handler.item
+        for test in datafile.tests:
             self._create_node_with_handler(node, test)
-        for kw in item.keywords:
+        for kw in datafile.keywords:
             if predicate:
                 index = self._get_insertion_index(node, predicate)
             else:
                 index = None
             self._create_node_with_handler(node, kw, index)
+        handler.rendered = True
 
     def _create_node(self, parent_node, label, img, index=None):
         if index is not None:
@@ -417,6 +419,7 @@ class InitFileHandler(_ActionHandler):
     is_draggable = False
     is_renameable = False
     is_test_suite = True
+    rendered = False
     _actions = ['Add Suite', 'New User Keyword', '---', 'Change Format']
 
     def has_been_modified_on_disk(self):
@@ -529,6 +532,7 @@ class NoneHandler(object):
     show_popup = lambda self: None
     rename = lambda self, new_name: False
     accepts_drag = lambda self, dragged: False
+    __len__ = lambda self: 0
 
 
 class _History(object):
