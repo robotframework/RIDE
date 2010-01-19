@@ -41,7 +41,7 @@ class TestAutomaticHandlingOfFileSeparatorVariable(unittest.TestCase):
                                                          'arg${/}value']))
                  ])
 
-    def test_(self):
+    def test_path_separator_variable_is_replaces(self):
         assert_equals(self._imports[0].name, '/some/path')
         assert_equals(self._imports[1].name, '../resources')
         assert_equals(self._imports[2].name, 'vars/first.py')
