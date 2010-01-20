@@ -35,19 +35,24 @@ class ImportSettings(RobotDataList):
 
     def get_keywords(self):
         kws = []
-        for lib in self.get_library_imports():
-            name = self.datafile.replace_variables(lib.name)
-            args = [ self.datafile.replace_variables(arg) for arg in lib.args ]
+        for lib_import in self.get_library_imports():
+            name, args = self._replace_vars_from_lib_import(lib_import)
             kws.extend(LIBRARYCACHE.get_library_keywords(name, args))
         for name in self.get_resource_imports():
             # TODO: why does RESOURCEFILECACHE return None in some cases?
-            name = self.datafile.replace_variables(name)
+            name = self._replace_variables(name)
             res= RESOURCEFILECACHE.get_resource_file(self.datafile.source,
                                                      name)
             if res:
                 kws.extend(res.get_keywords())
-
         return kws
+
+    def _replace_vars_from_lib_import(self, lib_import):
+        return (self._replace_variables(lib_import.name),
+                [ self._replace_variables(arg) for arg in lib_import.args ])
+
+    def _replace_variables(self, value):
+        return self.datafile.replace_variables(value)
 
     def new_resource(self, value):
         self._new_import(ResourceImport, [value])
