@@ -18,11 +18,19 @@ from robot.utils.asserts import assert_equals
 from robotide.model.tables import ImportSettings
 from robotide.model.files import _TestSuiteFactory
 from robotide.robotapi import TestSuiteData
+from robotide import context
 
 from resources import COMPLEX_SUITE_PATH
 
 
+class APPMock(object):
+    def import_new_resource(self, datafile, path):
+        self.datafile = datafile
+        self.path = path
+
+context.APP = APPMock()
 PARSED_DATA = TestSuiteData(COMPLEX_SUITE_PATH)
+EVEN_MORE_PATH = '../resources/more_resources/even_more_resources.txt'
 
 
 class _ParsedImport(object):
@@ -88,11 +96,23 @@ class TestResolvingKeywords(unittest.TestCase):
     def test_library_imports_are_case_insensitive(self):
         self._should_not_contain_keyword('Open Connection', 'SeleniumLibrary')
 
+    def test_adding_library(self):
+        self.imports.new_library('Dialogs')
+        self._should_contain_keyword('Execute Manual Step', 'Dialogs')
+
+    def test_updating_library(self):
+        self.imports.new_library('InvalidDialogs')
+        self._should_not_contain_keyword('Execute Manual Step', 'Dialogs')
+        self.imports[-1].set_str_value('Dialogs')
+        self._should_contain_keyword('Execute Manual Step', 'Dialogs')
+
     def test_resource_file(self):
         self._should_contain_keyword('Resource UK', 'resource.html')
 
     def test_chained_resource_file(self):
         self._should_contain_keyword('Resource2 UK', 'resource2.html')
+        self._should_contain_keyword('Resource3 UK', 'resource3.html')
+        self._should_contain_keyword('UK From Text Resource', 'resource.txt')
 
     def test_resource_import_with_variables(self):
         self._should_contain_keyword('Another Resource UK',
@@ -107,6 +127,28 @@ class TestResolvingKeywords(unittest.TestCase):
     def test_resource_spec_file(self):
         self._should_contain_keyword('Attributeless Keyword',
                                      'Spec Resource')
+
+    def test_adding_resource_import(self):
+        self.imports.new_resource(EVEN_MORE_PATH)
+        self._should_contain_keyword('Foo', 'even_more_resources.txt')
+
+    def test_updating_resource_import(self):
+        self.imports.new_resource('invalid/path')
+        self.imports[-1].set_str_value(EVEN_MORE_PATH)
+
+    def test_removing_resource_import(self):
+        self.test_adding_resource_import()
+        self.imports.pop(-1)
+        self._should_not_contain_keyword('Foo', 'even_more_resources.txt')
+
+    def test_path_is_normalized_in_case_insensitive_file_systems(self):
+        from robot.utils.normalizing import _CASE_INSENSITIVE_FILESYSTEM
+        path = '../Resources/More_ResourceS/Even_More_Resources.txt'
+        self.imports.new_resource(path)
+        if _CASE_INSENSITIVE_FILESYSTEM:
+            self._should_contain_keyword('Foo','even_more_resources.txt')
+        else:
+            self._should_not_contain_keyword('Foo', 'even_more_resources.txt')
 
     def _should_contain_keyword(self, name, source):
         for kw in self.imports.get_keywords():
