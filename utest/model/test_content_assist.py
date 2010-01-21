@@ -70,6 +70,34 @@ class _ContentAssistBaseTest(unittest.TestCase):
             raise AssertionError("Variable '%s' found in %s" %
                                 (name, variables))
 
+    def _should_contain(self, name, source):
+        for item in COMPLEX_SUITE.content_assist_values():
+            if item.name == name and item.source == source:
+                return
+        raise AssertionError('Item "%s" not found from %s' % (name, source))
+
+
+class TestResolvingKeywordAndVariablesForContentAssist(_ContentAssistBaseTest):
+    exp_data = [ ('Should Be Equal', 'BuiltIn'),
+                 ('File Should Exist', 'OperatingSystem'),
+                 ('Resource UK', 'resource.html'),
+                 ('Resource2 UK', 'resource2.html'),
+                 ('Resource3 UK', 'resource3.html'),
+                 ('UK From Text Resource', 'resource.txt'),
+                 ('Path Resource UK', PATH_RESOURCE_NAME),
+                 ('Attributeless Keyword', 'LibSpecLibrary'),
+                 #('Attributeless Keyword', 'Spec Resource'),
+                 ('Testlib Keyword', 'TestLib'),
+                 ('List Should Contain Value', 'Collections'),
+                 ('Open Connection', 'Telnet'),
+                 ('Get Mandatory', 'ArgLib'),
+                 ('Longest', 'AnotherArgLib'),
+               ]
+
+    def test_content_assist_for(self):
+        for name, source in [('My Test Setup', '<this file>')] + self.exp_data:
+            self._should_contain(name, source)
+
 
 class TestResolvingOwnKeywords(_ContentAssistBaseTest):
 
@@ -77,66 +105,11 @@ class TestResolvingOwnKeywords(_ContentAssistBaseTest):
         self._assert_contains(COMPLEX_SUITE.get_keywords(),
                               'My Test Setup', COMPLEX_SUITE.name)
 
-    def test_own_keyword_for_content_assist(self):
-        self._assert_contains(COMPLEX_SUITE.content_assist_values(),
-                              'My Test Setup', '<this file>')
-
     def test_filtering_keywords_with_longnames(self):
         self._assert_contains(COMPLEX_SUITE.content_assist_values(name='BuiltIn.Catenate'),
                               'Catenate', 'BuiltIn')
         self._assert_contains(COMPLEX_SUITE.content_assist_values(name='Catenate'),
                               'Catenate', 'BuiltIn')
-
-
-class TestResolvingKeywordsFromImports(_ContentAssistBaseTest):
-
-    def test_keywords_from_library_imports(self):
-        for name, source in [('Should Be Equal', 'BuiltIn'),
-                             ('File Should Exist', 'OperatingSystem')]:
-            self._assert_contains(COMPLEX_SUITE.get_keywords(), name, source)
-
-    def test_keywords_from_imports(self):
-        for name, source in [('Resource UK', 'resource.html'),
-                             ('Resource2 UK', 'resource2.html'),
-                             ('Resource3 UK', 'resource3.html'),
-                             ('UK From Text Resource', 'resource.txt'),
-                             ]:
-            self._assert_contains(COMPLEX_SUITE.get_keywords(), name, source)
-
-    def test_keywords_from_resource_in_python_path(self):
-        self._assert_contains(COMPLEX_SUITE.get_keywords(),
-                              'Path Resource UK', PATH_RESOURCE_NAME)
-
-    def test_keywords_from_spec_resource(self):
-        self._assert_contains(COMPLEX_SUITE.get_keywords(),
-                              'Attributeless Keyword', 'Spec Resource')
-
-    def test_keywords_from_spec_library(self):
-        self._assert_contains(COMPLEX_SUITE.get_keywords(),
-                              'Testlib Keyword', 'TestLib')
-
-    def test_spec_file_name_is_case_sensitive(self):
-        self._assert_does_not_contain(COMPLEX_SUITE.get_keywords(),
-                                      'Open Browser', 'seleniumlibrary')
-
-
-class TestResolvingKeywordsFromImportsWithVariables(_ContentAssistBaseTest):
-
-    def test_libary_defined_as_variable(self):
-        self._assert_contains(COMPLEX_SUITE.get_keywords(),
-                              'List Should Contain Value', 'Collections')
-
-    def test_variables_from_other_imports_can_be_used(self):
-        self._assert_contains(COMPLEX_SUITE.get_keywords(),
-                              'Open Connection', 'Telnet')
-
-    def test_variables_are_resolved_before_passed_to_libraries(self):
-        self._assert_contains(COMPLEX_SUITE.content_assist_values(),
-                              'Get Mandatory', 'ArgLib')
-
-    def test_variables_are_passed_to_libraries_in_resource_files(self):
-        self._assert_contains(COMPLEX_SUITE.content_assist_values(),
-                              'Longest', 'AnotherArgLib')
 
 
 class TestModifyingDataAffectReturnedKeywords(_ContentAssistBaseTest):
@@ -162,64 +135,6 @@ class TestModifyingDataAffectReturnedKeywords(_ContentAssistBaseTest):
         COMPLEX_SUITE.keywords.new_keyword('New Suite UK')
         self._assert_contains(COMPLEX_MODEL.get_all_keywords(), 'New Suite UK',
                               'Everything')
-
-
-class TestModifyingImportsAffectsResolvedKeywords(_ContentAssistBaseTest):
-    _more_resources = '../resources/more_resources/even_more_resources.txt'
-
-    def tearDown(self):
-        COMPLEX_SUITE.settings.imports.pop(-1)
-
-    def test_adding_resource(self):
-        self._robot_2_1_1_required()
-        COMPLEX_SUITE.settings.imports.new_resource(self._more_resources)
-        self._assert_contains(COMPLEX_SUITE.get_keywords(),
-                              'Foo', 'even_more_resources.txt')
-
-    def test_updating_resource(self):
-        self._robot_2_1_1_required()
-        COMPLEX_SUITE.settings.imports.new_resource('../resources/more_resources/resources.txt')
-        self._assert_does_not_contain(COMPLEX_SUITE.get_keywords(),
-                                      'Foo', 'even_more_resources.txt')
-        COMPLEX_SUITE.settings.imports[-1].set_str_value(self._more_resources)
-        self._assert_contains(COMPLEX_SUITE.get_keywords(),
-                              'Foo', 'even_more_resources.txt')
-
-    def test_removing_resource(self):
-        self.test_adding_resource()
-        COMPLEX_SUITE.settings.imports.pop(-1)
-        self._assert_does_not_contain(COMPLEX_SUITE.get_keywords(),
-                                      'Foo', 'even_more_resources.txt')
-        # Hack, restore global state
-        self.test_adding_resource()
-
-    def test_added_resource_path_is_normalized_in_case_insensitive_file_systems(self):
-        COMPLEX_SUITE.settings.imports.new_resource('../Resources/More_ResourceS/Even_More_Resources.txt')
-        if _CASE_INSENSITIVE_FILESYSTEM:
-            self._assert_contains(COMPLEX_SUITE.get_keywords(),
-                                  'Foo','even_more_resources.txt')
-        else:
-            self._assert_does_not_contain(COMPLEX_SUITE.get_keywords(),
-                                          'Foo', 'even_more_resources.txt')
-
-    def test_adding_library(self):
-        COMPLEX_SUITE.settings.imports.new_library('Dialogs')
-        self._assert_contains(COMPLEX_SUITE.get_keywords(),
-                              'Execute Manual Step', 'Dialogs')
-
-    def test_updating_library(self):
-        COMPLEX_SUITE.settings.imports.new_library('InvalidDialogs')
-        self._assert_does_not_contain(COMPLEX_SUITE.get_keywords(),
-                                      'Execute Manual Step', 'Dialogs')
-        COMPLEX_SUITE.settings.imports[-1].set_str_value('Dialogs')
-        self._assert_contains(COMPLEX_SUITE.get_keywords(),
-                              'Execute Manual Step', 'Dialogs')
-
-    def _robot_2_1_1_required(self):
-        try:
-            import robot.parsing.txtreader
-        except ImportError:
-            raise AssertionError("Robot 2.1.1 or newer required to run this test.")
 
 
 class TestResolvingVariables(_ContentAssistBaseTest):
