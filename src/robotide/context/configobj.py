@@ -16,7 +16,7 @@
 # http://lists.sourceforge.net/lists/listinfo/configobj-develop
 # Comments, suggestions and bug reports welcome.
 #
-# Note! All TODOs and FIXMEs removed from the original source, by RIDE-project
+# Note! All TO DOs and FIX MEs removed from the original source, by RIDE-project
 
 from __future__ import generators
 
