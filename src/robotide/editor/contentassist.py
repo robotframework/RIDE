@@ -119,36 +119,21 @@ class ContentAssistPopup(object):
     def get_value(self):
         return self._selection != -1 and self._list.get_text(self._selection) or None
 
-    def content_assist_for(self, value, item):
-        var_index = self._get_variable_start_index(value)
-        if  var_index != -1:
-            variables = item.get_variables_for_content_assist()
-            self._choices = [ var for var in variables if self._starts(var.name, value[var_index:]) ]
-            colnames = 'name', 'value'
-            data = [ (var.name, var.parent) for var in self._choices ]
-        else:
-            keywords = item.content_assist_values()
-            self._choices = [ kw for kw in keywords if self._starts(kw.name, value) ]
-            colnames = 'name', 'source'
-            data = [ (kw.name, kw.source) for kw in self._choices ]
+    def content_assist_for(self, startvalue, dataitem):
+        self._choices = [ val for val in dataitem.content_assist_values() if
+                          self._starts(val.name, startvalue) ]
         if not self._choices:
             self._list.ClearAll()
             self.hide()
             return False
-        self._list.populate(colnames, data)
+        self._list.populate(['name', 'source'], self._choices)
         return True
-
-    def _get_variable_start_index(self, value):
-        return max(value.rfind('$'), value.rfind( '@'))
 
     def _starts(self, val1, val2):
         return val1.lower().startswith(val2.lower())
 
     def content_assist_value(self, value):
         if self._selection > -1:
-            var_index = self._get_variable_start_index(value)
-            if var_index != -1:
-                return value[:var_index] + self._list.GetItem(self._selection).GetText()
             return self._list.GetItem(self._selection).GetText()
         return None
 
@@ -224,8 +209,8 @@ class ContentAssistList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         self.ClearAll()
         self._create_columns(colnames)
         for row, item in enumerate(data):
-            self.InsertStringItem(row, item[0])
-            self.SetStringItem(row, 1, item[1])
+            self.InsertStringItem(row, item.name)
+            self.SetStringItem(row, 1, item.source)
         self.Select(0)
 
     def _create_columns(self, colnames):
