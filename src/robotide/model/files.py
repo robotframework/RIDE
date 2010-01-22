@@ -17,6 +17,7 @@ import operator
 import copy
 
 from robotide import utils
+from robotide import context
 from robotide.spec import UserKeywordContent, VariableSpec
 from robotide.errors import NoRideError, DataError, SerializationError
 from robotide.publish import RideSaving, RideSaved
@@ -64,6 +65,7 @@ def ResourceFileFactory(path, create_empty=True):
 
 
 class _AbstractDataFile(object):
+    imports = property(lambda self: self.settings.imports)
     is_directory_suite = False
 
     def __init__(self, data):
@@ -109,24 +111,27 @@ class _AbstractDataFile(object):
             kws.extend(res.get_user_keywords())
         return kws
 
-    def get_keywords(self, library_keywords=True):
-        kws = self._get_own_keywords() + self._get_resource_keywords(library_keywords)
-        if library_keywords:
-            kws += self._get_library_keywords()
-        return kws
+    def get_keywords(self):
+        return self._get_keywords(self.name)
 
-    def content_assist_values(self, relative=True, name=None):
-        own_kws = self._get_own_keywords(relative=relative)
-        resource_keywords = []
-        for res in self.get_resources():
-            resource_keywords.extend(res.content_assist_values(relative=False))
-        kws = own_kws + self._get_library_keywords() + resource_keywords
-        kws = self._remove_duplicates(self._filter(kws, name))
-        kws.sort(key=operator.attrgetter('name'))
-        return kws
+    def content_assist_values(self):
+        return self._get_keywords('<this file>')
 
-    def _get_own_keywords(self, relative=False):
-        source = relative and '<this file>' or self.name
+    def get_keyword_details(self, name):
+        kws = self._filter(self.content_assist_values(), name)
+        return kws and kws[0].get_details() or None
+
+    def is_library_keyword(self, name):
+        kws = self._filter(self.content_assist_values(), name)
+        return kws and kws[0].is_library_keyword() or False
+
+    def _get_keywords(self, source_for_own_kws):
+        kws =  self._get_own_keywords(source_for_own_kws) + \
+               self.imports.get_keywords() + \
+               LIBRARYCACHE.get_default_keywords()# TODO: should be elsewhere
+        return self._remove_duplicates(kws)
+
+    def _get_own_keywords(self, source):
         return [ UserKeywordContent(kw, source, self.type) for kw in self.keywords ]
 
     def _filter(self, keywords, name):
@@ -136,11 +141,7 @@ class _AbstractDataFile(object):
         return keywords
 
     def _remove_duplicates(self, keywords):
-        filtered = {}
-        for kw in keywords:
-            if kw.name not in filtered:
-                filtered[kw.name] = kw
-        return filtered.values()
+        return list(set(keywords))
 
     def _get_library_keywords(self):
         keywords = []

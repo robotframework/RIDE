@@ -310,11 +310,10 @@ class KeywordEditor(KeywordEditorUi):
 
     def _show_kw_tooltip(self, cell):
         value = self.GetCellValue(cell.Row, cell.Col)
-        kws = self._datafile.content_assist_values(name=value)
-        # TODO: Handle multiple return values.
-        if len(kws) != 1:
+        details = self._datafile.get_keyword_details(value)
+        if not details:
             return
-        self._tooltip.set_content(kws[0].get_details())
+        self._tooltip.set_content(details)
         point = self.CellToRect(cell.Row, cell.Col).GetTopRight()
         point.x += self.GetRowLabelSize() + 5
         point = self.CalcScrolledPosition(point)

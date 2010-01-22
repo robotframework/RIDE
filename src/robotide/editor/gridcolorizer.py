@@ -58,8 +58,7 @@ class Colorizer(Plugin):
         return self.get_selected_datafile().get_user_keyword(value) is not None
 
     def _is_library_keyword(self, value):
-        kws = self.get_selected_datafile().content_assist_values(name=value)
-        return kws and kws[0].is_library_keyword()
+        return self.get_selected_datafile().is_library_keyword(value)
 
     def _is_variable(self, value):
         return re.match('[\$\@]{.*?}=?', value)
