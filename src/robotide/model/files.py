@@ -113,16 +113,17 @@ class _AbstractDataFile(object):
     def get_keywords(self):
         return self._get_keywords(self.name)
 
-    def content_assist_values(self):
-        return self._sort(self._get_keywords('<this file>'))
-
     def get_keyword_details(self, name):
-        kws = self._filter(self.content_assist_values(), name)
+        kws = self._filter(self._get_keywords('<this file>'), name)
         return kws and kws[0].get_details() or None
 
     def is_library_keyword(self, name):
-        kws = self._filter(self.content_assist_values(), name)
+        kws = self._filter(self.get_keywords(), name)
         return kws and kws[0].is_library_keyword() or False
+
+    def content_assist_values(self):
+        return self._sort(self._get_variables()) + \
+                self._sort(self._get_keywords('<this file>'))
 
     def _get_keywords(self, source_for_own_kws):
         kws =  self._get_own_keywords(source_for_own_kws) + \
@@ -132,6 +133,10 @@ class _AbstractDataFile(object):
 
     def _get_own_keywords(self, source):
         return [ UserKeywordContent(kw, source, self.type) for kw in self.keywords ]
+
+    def _get_variables(self):
+        return [ VariableSpec('<this file>', var) for var in self.variables ] + \
+                self.imports.get_variables()
 
     def _sort(self, keywords):
         keywords.sort(key=operator.attrgetter('name'))
