@@ -50,8 +50,8 @@ class _TcUkBase(object):
     def content_assist_values(self):
         return self.datafile.content_assist_values()
 
-    def get_variables_for_content_assist(self):
-        return self.datafile.get_variables_for_content_assist()
+    def get_variables(self):
+        return self.datafile.get_variables()
 
     def _serialize(self, serializer):
         self.settings.serialize_before_kws(serializer)
@@ -97,10 +97,10 @@ class UserKeyword(_TcUkBase):
         self.datafile.keywords.remove(self)
         self._mark_dirty()
 
-    def get_variables_for_content_assist(self):
+    def get_variables(self):
         return [ VariableSpec('<argument>', var) for var
                  in self.settings.get_args() ] + \
-                _TcUkBase.get_variables_for_content_assist(self)
+                _TcUkBase.get_variables(self)
 
     def serialize(self, serializer):
         serializer.start_keyword(self)
