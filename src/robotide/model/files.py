@@ -14,6 +14,7 @@
 
 import os
 import copy
+import operator
 
 from robotide import utils
 from robotide.spec import UserKeywordContent, VariableSpec
@@ -113,7 +114,7 @@ class _AbstractDataFile(object):
         return self._get_keywords(self.name)
 
     def content_assist_values(self):
-        return self._get_keywords('<this file>')
+        return self._sort(self._get_keywords('<this file>'))
 
     def get_keyword_details(self, name):
         kws = self._filter(self.content_assist_values(), name)
@@ -131,6 +132,10 @@ class _AbstractDataFile(object):
 
     def _get_own_keywords(self, source):
         return [ UserKeywordContent(kw, source, self.type) for kw in self.keywords ]
+
+    def _sort(self, keywords):
+        keywords.sort(key=operator.attrgetter('name'))
+        return keywords
 
     def _filter(self, keywords, name):
         if name is not None:

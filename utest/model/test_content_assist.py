@@ -15,10 +15,10 @@
 import os
 import sys
 import unittest
-from robot.utils.asserts import assert_true, assert_none
+from robot.utils.asserts import assert_true, assert_none, assert_false
 
 from robotide.application import DataModel
-from robotide.model import cache
+from robotide.model import cache, TestSuiteFactory
 from robotide import context
 from resources import COMPLEX_SUITE_PATH, PATH_RESOURCE_NAME
 
@@ -107,6 +107,15 @@ class TestResolvingKeywordAndVariables(_ContentAssistBaseTest):
         for name, source in data:
             self._should_contain(self.suite.get_keywords(), name, source)
 
+    def test_keywords_should_be_in_alphabetical_order(self):
+        kws = self.suite.content_assist_values()
+        assert_true(kws[0].name < kws[1].name < kws[2].name)
+
+    def test_content_assist_values_should_not_have_duplicates(self):
+        kws = [ kw for kw in self.suite.content_assist_values() if
+                kw.name == 'Should Be Equal' ]
+        assert_true(len(kws) == 1)
+
     def test_get_keyword_details(self):
         data = [('Convert To Integer',
                  'Converts the given item to an integer number.'),
@@ -122,19 +131,25 @@ class TestResolvingKeywordAndVariables(_ContentAssistBaseTest):
         for name in ['Should Be Equal', 'Copy Directory',
                      'Telnet.Open Connection']:
             assert_true(self.suite.is_library_keyword(name))
+        for name in ['Resource UK', 'Invalid']:
+            assert_false(self.suite.is_library_keyword(name))
 
 
 class TestModifyingDataAffectReturnedKeywords(_ContentAssistBaseTest):
 
+    def setUp(self):
+        self.suite = TestSuiteFactory(COMPLEX_SUITE_PATH)
+
     def test_changing_keywords_in_suite(self):
-        COMPLEX_SUITE.keywords.new_keyword('New Keyword')
-        self._assert_contains(COMPLEX_SUITE.get_keywords(), 'New Keyword',
-                              COMPLEX_SUITE.name)
+        self.suite.keywords.new_keyword('New Keyword')
+        self._assert_contains(self.suite.get_keywords(), 'New Keyword',
+                              self.suite.name)
 
     def test_changing_keywords_in_resource(self):
-        resource = COMPLEX_SUITE.get_resources()[0]
-        resource.keywords.new_keyword('New UK')
-        self._assert_contains(COMPLEX_SUITE.get_keywords(), 'New UK', resource.name)
+        res = self.suite.get_resources()[0]
+        res.keywords.new_keyword('New UK')
+        self._assert_contains(res.get_keywords(), 'New UK', res.name)
+        self._assert_contains(self.suite.get_keywords(), 'New UK', res.name)
 
 
 class TestResolvingVariables(_ContentAssistBaseTest):
