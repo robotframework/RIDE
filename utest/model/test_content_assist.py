@@ -163,11 +163,6 @@ class TestResolvingVariables(_ContentAssistBaseTest):
         kw = COMPLEX_SUITE.keywords[1]
         self._assert_variable(kw, '${scalar arg}')
 
-    def test_get_variables_from_resource_files(self):
-        for name in ['${SCALAR}', '@{LIST}', '${RESOURCE var}',
-                     '@{RESOURCE 2 List VARIABLE}']:
-            self._assert_variable(COMPLEX_SUITE, name)
-
     def test_finding_variables_from_variable_file(self):
         self._assert_variable(COMPLEX_SUITE, '${var_from_file}')
 

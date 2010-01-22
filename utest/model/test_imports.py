@@ -65,11 +65,17 @@ class TestAutomaticHandlingOfFileSeparatorVariable(unittest.TestCase):
         assert_equals(self._imports[2].args, ['arg${/}value'])
 
 
+def contains(items, name, source):
+    for it in items:
+        if it.name == name and it.source == source:
+            return True
+    return False
+
+
 class TestResolvingKeywords(unittest.TestCase):
 
     def setUp(self):
-        suite = _TestSuiteFactory(PARSED_DATA)
-        self.imports = suite.imports
+        self.imports = _TestSuiteFactory(PARSED_DATA).imports
 
     def test_normal_library_import(self):
         self._should_contain_keyword('File Should Exist', 'OperatingSystem')
@@ -151,27 +157,36 @@ class TestResolvingKeywords(unittest.TestCase):
             self._should_not_contain_keyword('Foo', 'even_more_resources.txt')
 
     def _should_contain_keyword(self, name, source):
-        if not self._contains(self.imports.get_keywords(), name, source):
+        if not contains(self.imports.get_keywords(), name, source):
             raise AssertionError('Keyword "%s" not found' % name)
 
-    def _should_contain_variable(self, name, source):
-        if not self._contains(self.imports.get_variables(), name, source):
-            raise AssertionError('Variable "%s" not found' % name)
-
-    def _contains(self, items, name, source):
-        for it in items:
-            if it.name == name and it.source == source:
-                return True
-        return False
-
     def _should_not_contain_keyword(self, name, source):
-        if self._contains(self.imports.get_keywords(), name, source):
+        if contains(self.imports.get_keywords(), name, source):
             raise AssertionError('Keyword "%s" found' % name)
+
+
+class TestResolvingVariables(unittest.TestCase):
+
+    def setUp(self):
+        self.imports = _TestSuiteFactory(PARSED_DATA).imports
 
     def test_vars_from_resource_files(self):
         for name, source in [('${RESOURCE var}', 'resource.html'),
                              ('@{RESOURCE 2 List VARIABLE}', 'resource2.html')]:
             self._should_contain_variable(name, source)
+
+    def test_variable_file(self):
+        self._should_contain_variable('${var_from_file}', 'varz.py')
+
+    def test_variable_file_in_resource(self):
+        self._should_contain_variable('${var_from_resource_var_file}', 'res_var_file.py')
+
+    def test_variables_are_resolved_before_passed_to_variable_files(self):
+        self._should_contain_variable('${value}', 'dynamic_varz.py')
+
+    def _should_contain_variable(self, name, source):
+        if not contains(self.imports.get_variables(), name, source):
+            raise AssertionError('Variable "%s" not found' % name)
 
 
 if __name__ == '__main__':
