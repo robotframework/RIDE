@@ -13,12 +13,13 @@
 #  limitations under the License.
 
 from robotide.publish import RideImportSettingAdded, RideImportSettingChanged
+from robotide.spec import VariableSpec
 from robotide import context
 from robotide import utils
 
 from datalist import RobotDataList
 from settings import ResourceImport, LibraryImport, VariablesImport
-from cache import LIBRARYCACHE, RESOURCEFILECACHE
+from cache import LIBRARYCACHE, RESOURCEFILECACHE, VARIABLEFILECACHE
 
 
 class ImportSettings(RobotDataList):
@@ -53,6 +54,37 @@ class ImportSettings(RobotDataList):
 
     def _replace_variables(self, value):
         return self.datafile.replace_variables(value)
+
+    def get_variables(self):
+        vars = []
+        for name in self.get_resource_imports():
+            name = self._replace_variables(name)
+            res= RESOURCEFILECACHE.get_resource_file(self.datafile.source,
+                                                     name)
+            if res:
+                vars.extend(res.get_variables())
+        for varfile in self._get_variable_files():
+            vars.extend([ VariableSpec(varfile.source, var)
+                         for var in varfile.keys() ])
+        return vars
+
+    def _get_resource_variables(self):
+        vars = []
+        for resource in self.get_resources():
+            vars.extend(resource.get_variables_for_content_assist())
+        return vars
+
+    def _get_variable_files(self):
+        varfiles = []
+        for var_settings in self.get_variable_imports():
+            # TODO: There is need for namespace object which could be used for
+            # all variable replacing
+            name = self.datafile.variables.replace_scalar(var_settings.name)
+            args = self.datafile.variables.replace_list(var_settings.args)
+            varfile = VARIABLEFILECACHE.get_varfile(self.datafile.source, name, args)
+            if varfile:
+                varfiles.append(varfile)
+        return varfiles
 
     def new_resource(self, value):
         self._new_import(ResourceImport, [value])
