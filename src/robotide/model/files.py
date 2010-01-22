@@ -146,21 +146,6 @@ class _AbstractDataFile(object):
     def _remove_duplicates(self, keywords):
         return list(set(keywords))
 
-    def _get_library_keywords(self):
-        keywords = []
-        for lib_import in self.get_library_imports():
-            name = self.replace_variables(lib_import.name)
-            args = [ self.replace_variables(a) for a in lib_import.args ]
-            keywords.extend(LIBRARYCACHE.get_library_keywords(name, args))
-        keywords.extend(LIBRARYCACHE.get_default_keywords())
-        return keywords
-
-    def _get_resource_keywords(self, library_keywords=True):
-        keywords = []
-        for resource in self.get_resources():
-            keywords.extend(resource.get_keywords(library_keywords=library_keywords))
-        return keywords
-
     def replace_variables(self, value):
         value = self.variables.replace_scalar(value)
         for res in self.get_resources():
