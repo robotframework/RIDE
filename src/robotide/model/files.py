@@ -13,11 +13,9 @@
 #  limitations under the License.
 
 import os
-import operator
 import copy
 
 from robotide import utils
-from robotide import context
 from robotide.spec import UserKeywordContent, VariableSpec
 from robotide.errors import NoRideError, DataError, SerializationError
 from robotide.publish import RideSaving, RideSaved
