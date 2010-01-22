@@ -18,13 +18,14 @@ import unittest
 from robot.utils.asserts import assert_true, assert_none, assert_false
 
 from robotide.application import DataModel
-from robotide.model import cache, TestSuiteFactory
+from robotide.robotapi import TestSuiteData
+from robotide.model import cache
+from robotide.model.files import _TestSuiteFactory
 from robotide import context
 from resources import COMPLEX_SUITE_PATH, PATH_RESOURCE_NAME
 
 
-COMPLEX_MODEL = DataModel(COMPLEX_SUITE_PATH)
-COMPLEX_SUITE = COMPLEX_MODEL.suite
+SUITEDATA = TestSuiteData(COMPLEX_SUITE_PATH)
 
 
 class APPMock(object):
@@ -39,35 +40,21 @@ context.APP = APP_MOCK
 
 class _ContentAssistBaseTest(unittest.TestCase):
 
-    def _assert_contains(self, keywords, name, source):
-        for kw in keywords:
-            if kw.name == name:
-                if kw.source == source:
-                    return
-                raise AssertionError("Keyword '%s' had wrong source: '%s' != '%s'"
-                                     % (kw.name, kw.source, source))
-        raise AssertionError("Keyword '%s' not found in suite or resource\n"
-                             "Imported libs: %s\n"
-                             % (name, [lib for lib in
-                                       cache.LIBRARYCACHE.libraries]))
-
-    def _assert_does_not_contain(self, keywords, name, source):
-        for kw in keywords:
-            if kw.name == name and kw.source == source:
-                raise AssertionError("Keyword '%s' found from source %s\n" %
-                                     (name, source))
-
-    def _assert_variable(self, suite, name):
-        variables = [ var.name for var in suite.get_variables_for_content_assist() ]
-        if not name in variables:
-            raise AssertionError("Variable '%s' not found in %s" %
-                                (name, variables))
+    def _content_assist_should_not_contain(self, name):
+        for item in self.suite.content_assist_values():
+            if item.name == name:
+                raise AssertionError("Item '%s' found from content assist"
+                                     % (name))
 
     def _assert_variable_does_not_exist(self, suite, name):
-        variables = [ var.name for var in suite.get_variables_for_content_assist() ]
+        variables = [ var.name for var in suite.get_variables() ]
         if name in variables:
             raise AssertionError("Variable '%s' found in %s" %
                                 (name, variables))
+
+    def _content_assist_should_contain(self, name, source):
+        self._should_contain(self.suite.content_assist_values(),
+                             name, source)
 
     def _should_contain(self, items, name, source):
         for item in items:
@@ -90,26 +77,28 @@ class TestResolvingKeywordAndVariables(_ContentAssistBaseTest):
                 ('List Should Contain Value', 'Collections'),
                 ('Open Connection', 'Telnet'),
                 ('Get Mandatory', 'ArgLib'),
-                ('Longest', 'AnotherArgLib'),
-               ]
+                ('Longest', 'AnotherArgLib') ]
 
-    exp_vars = []
+    exp_vars = [ ('${SCALAR}', '<this file>'),
+                 ('${RESOURCE var}', 'resource.html'),
+                 ('${var_from_file}', 'varz.py'),
+                 ('${var_from_resource_var_file}', 'res_var_file.py'),
+                 ('${value}', 'dynamic_varz.py') ]
 
     def setUp(self):
-        self.suite = DataModel(COMPLEX_SUITE_PATH).suite
+        self.suite = _TestSuiteFactory(SUITEDATA)
 
-    def test_content_assist_for(self):
-        data = [('My Test Setup', '<this file>')] + self.exp_kws
+    def test_content_assist(self):
+        data = [('My Test Setup', '<this file>')] + self.exp_kws + self.exp_vars
         for name, source in data:
-            self._should_contain(self.suite.content_assist_values(),
-                                 name, source)
+            self._content_assist_should_contain(name, source)
 
     def test_get_keywords(self):
         data = [('My Test Setup', self.suite.name)] + self.exp_kws
         for name, source in data:
             self._should_contain(self.suite.get_keywords(), name, source)
 
-    def test_keywords_should_be_in_alphabetical_order(self):
+    def test_items_should_be_in_alphabetical_order(self):
         kws = self.suite.content_assist_values()
         assert_true(kws[0].name < kws[1].name < kws[2].name)
 
@@ -136,75 +125,55 @@ class TestResolvingKeywordAndVariables(_ContentAssistBaseTest):
         for name in ['Resource UK', 'Invalid']:
             assert_false(self.suite.is_library_keyword(name))
 
+    def test_variables_for_user_keyword_contain_arguments(self):
+        kw = self.suite.keywords[1]
+        self._should_contain(kw.get_variables(), '${scalar arg}', '<argument>')
 
-class TestModifyingDataAffectReturnedKeywords(_ContentAssistBaseTest):
+
+class TestModifyingDataAffectsContentAssist(_ContentAssistBaseTest):
+    _more_varz = '../resources/more_resources/even_more_varz.py'
+    _new_var = ('${var_in_resource2}', 'even_more_varz.py')
 
     def setUp(self):
-        self.suite = TestSuiteFactory(COMPLEX_SUITE_PATH)
+        self.suite = _TestSuiteFactory(SUITEDATA)
 
     def test_changing_keywords_in_suite(self):
         self.suite.keywords.new_keyword('New Keyword')
-        self._assert_contains(self.suite.get_keywords(), 'New Keyword',
-                              self.suite.name)
+        self._content_assist_should_contain('New Keyword', '<this file>')
 
     def test_changing_keywords_in_resource(self):
         res = self.suite.get_resources()[0]
         res.keywords.new_keyword('New UK')
-        self._assert_contains(res.get_keywords(), 'New UK', res.name)
-        self._assert_contains(self.suite.get_keywords(), 'New UK', res.name)
-
-
-class TestResolvingVariables(_ContentAssistBaseTest):
-
-    def test_get_variables_for_suite(self):
-        self._assert_variable(COMPLEX_SUITE, '${SCALAR}')
-
-    def test_variables_for_user_keyword_contain_arguments(self):
-        kw = COMPLEX_SUITE.keywords[1]
-        self._assert_variable(kw, '${scalar arg}')
-
-    def test_finding_variables_from_variable_file(self):
-        self._assert_variable(COMPLEX_SUITE, '${var_from_file}')
-
-    def test_finding_variables_from_variable_file_importes_in_resource(self):
-        self._assert_variable(COMPLEX_SUITE, '${var_from_resource_var_file}')
-
-    def test_variables_are_resolved_before_passed_to_variable_files(self):
-        self._assert_variable(COMPLEX_SUITE, '${value}')
-
-
-class TestModifyingImportsAffectResolvedVariables(_ContentAssistBaseTest):
-
-    def tearDown(self):
-        COMPLEX_SUITE.settings.imports.pop(-1)
+        self._should_contain(res.get_keywords(), 'New UK', res.name)
+        self._content_assist_should_contain('New UK', res.name)
 
     def test_adding_variable_file(self):
-        self._add_variable_import('../resources/more_resources/even_more_varz.py')
-        self._assert_variable(COMPLEX_SUITE, '${var_in_resource2}')
+        self._add_variable_import(self._more_varz)
+        self._content_assist_should_contain(*self._new_var)
 
     def test_updating_variable_file(self):
         self._add_variable_import('invalid.py')
-        self._assert_variable_does_not_exist(COMPLEX_SUITE, '${var_in_resource2}')
-        COMPLEX_SUITE.settings.imports[-1].set_str_value('../resources/more_resources/even_more_varz.py')
-        self._assert_variable(COMPLEX_SUITE, '${var_in_resource2}')
+        self._content_assist_should_not_contain('${var_in_resource2}')
+        self.suite.settings.imports[-1].set_str_value(self._more_varz)
+        self._content_assist_should_contain(*self._new_var)
 
     def test_deleting_variable_file(self):
-        self._add_variable_import('../resources/more_resources/even_more_varz.py')
-        self._assert_variable(COMPLEX_SUITE, '${var_in_resource2}')
-        COMPLEX_SUITE.settings.imports.pop(-1)
-        self._assert_variable_does_not_exist(COMPLEX_SUITE, '${var_in_resource2}')
-        self._add_variable_import('../resources/more_resources/even_more_varz.py')
+        self._add_variable_import(self._more_varz)
+        self._content_assist_should_contain(*self._new_var)
+        self.suite.settings.imports.pop(-1)
+        self._content_assist_should_not_contain('${var_in_resource2}')
 
     def test_adding_variable_file_in_pythonpath(self):
         path = os.path.join(os.path.dirname(__file__), '..', 'resources',
                             'robotdata', 'resources', 'resources2')
         sys.path.append(path)
         self._add_variable_import('even_more_varz.py')
-        self._assert_variable(COMPLEX_SUITE, '${var_in_resource2}')
+        self._content_assist_should_contain(*self._new_var)
 
     def _add_variable_import(self, name):
-        COMPLEX_SUITE.settings.imports.new_variables(name)
+        self.suite.settings.imports.new_variables(name)
 
 
 if __name__ == '__main__':
     unittest.main()
+
