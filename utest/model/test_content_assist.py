@@ -127,7 +127,8 @@ class TestResolvingKeywordAndVariables(_ContentAssistBaseTest):
 
     def test_variables_for_user_keyword_contain_arguments(self):
         kw = self.suite.keywords[1]
-        self._should_contain(kw.get_variables(), '${scalar arg}', '<argument>')
+        self._should_contain(kw.content_assist_values(),
+                             '${scalar arg}', '<argument>')
 
 
 class TestModifyingDataAffectsContentAssist(_ContentAssistBaseTest):
