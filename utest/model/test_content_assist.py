@@ -15,8 +15,7 @@
 import os
 import sys
 import unittest
-
-from robot.utils.normalizing import _CASE_INSENSITIVE_FILESYSTEM
+from robot.utils.asserts import assert_true, assert_none
 
 from robotide.application import DataModel
 from robotide.model import cache
@@ -70,52 +69,62 @@ class _ContentAssistBaseTest(unittest.TestCase):
             raise AssertionError("Variable '%s' found in %s" %
                                 (name, variables))
 
-    def _should_contain(self, name, source):
-        for item in COMPLEX_SUITE.content_assist_values():
+    def _should_contain(self, items, name, source):
+        for item in items:
             if item.name == name and item.source == source:
                 return
         raise AssertionError('Item "%s" not found from %s' % (name, source))
 
 
-class TestResolvingKeywordAndVariablesForContentAssist(_ContentAssistBaseTest):
-    exp_data = [ ('Should Be Equal', 'BuiltIn'),
-                 ('File Should Exist', 'OperatingSystem'),
-                 ('Resource UK', 'resource.html'),
-                 ('Resource2 UK', 'resource2.html'),
-                 ('Resource3 UK', 'resource3.html'),
-                 ('UK From Text Resource', 'resource.txt'),
-                 ('Path Resource UK', PATH_RESOURCE_NAME),
-                 ('Attributeless Keyword', 'LibSpecLibrary'),
-                 #('Attributeless Keyword', 'Spec Resource'),
-                 ('Testlib Keyword', 'TestLib'),
-                 ('List Should Contain Value', 'Collections'),
-                 ('Open Connection', 'Telnet'),
-                 ('Get Mandatory', 'ArgLib'),
-                 ('Longest', 'AnotherArgLib'),
+class TestResolvingKeywordAndVariables(_ContentAssistBaseTest):
+    exp_kws = [ ('Should Be Equal', 'BuiltIn'),
+                ('File Should Exist', 'OperatingSystem'),
+                ('Resource UK', 'resource.html'),
+                ('Resource2 UK', 'resource2.html'),
+                ('Resource3 UK', 'resource3.html'),
+                ('UK From Text Resource', 'resource.txt'),
+                ('Path Resource UK', PATH_RESOURCE_NAME),
+                ('Attributeless Keyword', 'LibSpecLibrary'),
+                #('Attributeless Keyword', 'Spec Resource'),
+                ('Testlib Keyword', 'TestLib'),
+                ('List Should Contain Value', 'Collections'),
+                ('Open Connection', 'Telnet'),
+                ('Get Mandatory', 'ArgLib'),
+                ('Longest', 'AnotherArgLib'),
                ]
 
+    def setUp(self):
+        self.suite = DataModel(COMPLEX_SUITE_PATH).suite
+
     def test_content_assist_for(self):
-        for name, source in [('My Test Setup', '<this file>')] + self.exp_data:
-            self._should_contain(name, source)
+        data = [('My Test Setup', '<this file>')] + self.exp_kws
+        for name, source in data:
+            self._should_contain(self.suite.content_assist_values(),
+                                 name, source)
 
+    def test_get_keywords(self):
+        data = [('My Test Setup', self.suite.name)] + self.exp_kws
+        for name, source in data:
+            self._should_contain(self.suite.get_keywords(), name, source)
 
-class TestResolvingOwnKeywords(_ContentAssistBaseTest):
+    def test_get_keyword_details(self):
+        data = [('Convert To Integer',
+                 'Converts the given item to an integer number.'),
+                ('BuiltIn.Convert To Integer',
+                 'Converts the given item to an integer number.'),
+                ('Resource UK',
+                 'This is a user keyword from resource file')]
+        for name, details in data:
+            assert_true(details in self.suite.get_keyword_details(name))
+        assert_none(self.suite.get_keyword_details('Invalid KW name'))
 
-    def test_own_user_keywords(self):
-        self._assert_contains(COMPLEX_SUITE.get_keywords(),
-                              'My Test Setup', COMPLEX_SUITE.name)
-
-    def test_filtering_keywords_with_longnames(self):
-        self._assert_contains(COMPLEX_SUITE.content_assist_values(name='BuiltIn.Catenate'),
-                              'Catenate', 'BuiltIn')
-        self._assert_contains(COMPLEX_SUITE.content_assist_values(name='Catenate'),
-                              'Catenate', 'BuiltIn')
+    def test_is_library_keyword(self):
+        for name in ['Should Be Equal', 'Copy Directory',
+                     'Telnet.Open Connection']:
+            assert_true(self.suite.is_library_keyword(name))
 
 
 class TestModifyingDataAffectReturnedKeywords(_ContentAssistBaseTest):
-
-    def tearDown(self):
-        COMPLEX_SUITE.keywords.pop(-1)
 
     def test_changing_keywords_in_suite(self):
         COMPLEX_SUITE.keywords.new_keyword('New Keyword')
@@ -126,15 +135,6 @@ class TestModifyingDataAffectReturnedKeywords(_ContentAssistBaseTest):
         resource = COMPLEX_SUITE.get_resources()[0]
         resource.keywords.new_keyword('New UK')
         self._assert_contains(COMPLEX_SUITE.get_keywords(), 'New UK', resource.name)
-
-    def test_get_all_keywords(self):
-        for name, source in [('My Test Setup', 'Everything'),
-                             ('Resource UK', 'resource.html'),
-                             ('Another Resource UK', 'another_resource.html')]:
-            self._assert_contains(COMPLEX_MODEL.get_all_keywords(), name, source)
-        COMPLEX_SUITE.keywords.new_keyword('New Suite UK')
-        self._assert_contains(COMPLEX_MODEL.get_all_keywords(), 'New Suite UK',
-                              'Everything')
 
 
 class TestResolvingVariables(_ContentAssistBaseTest):
