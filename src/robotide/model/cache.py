@@ -93,7 +93,7 @@ class VariableFileCache(_FileCache):
             imported.set_from_file(path, args)
         except DataError:
             return None
-        imported.source = name
+        imported.source = os.path.basename(name)
         return imported
 
 
