@@ -93,6 +93,8 @@ class TestResolvingKeywordAndVariables(_ContentAssistBaseTest):
                 ('Longest', 'AnotherArgLib'),
                ]
 
+    exp_vars = []
+
     def setUp(self):
         self.suite = DataModel(COMPLEX_SUITE_PATH).suite
 

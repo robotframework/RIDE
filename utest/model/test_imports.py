@@ -69,7 +69,7 @@ class TestResolvingKeywords(unittest.TestCase):
 
     def setUp(self):
         suite = _TestSuiteFactory(PARSED_DATA)
-        self.imports = suite.settings.imports
+        self.imports = suite.imports
 
     def test_normal_library_import(self):
         self._should_contain_keyword('File Should Exist', 'OperatingSystem')
@@ -151,15 +151,27 @@ class TestResolvingKeywords(unittest.TestCase):
             self._should_not_contain_keyword('Foo', 'even_more_resources.txt')
 
     def _should_contain_keyword(self, name, source):
-        for kw in self.imports.get_keywords():
-            if kw.name == name and kw.source == source:
-                return
-        raise AssertionError('Keyword "%s" not found' % name)
+        if not self._contains(self.imports.get_keywords(), name, source):
+            raise AssertionError('Keyword "%s" not found' % name)
+
+    def _should_contain_variable(self, name, source):
+        if not self._contains(self.imports.get_variables(), name, source):
+            raise AssertionError('Variable "%s" not found' % name)
+
+    def _contains(self, items, name, source):
+        for it in items:
+            if it.name == name and it.source == source:
+                return True
+        return False
 
     def _should_not_contain_keyword(self, name, source):
-        for kw in self.imports.get_keywords():
-            if kw.name == name and kw.source == source:
-                raise AssertionError('Keyword "%s" found' % name)
+        if self._contains(self.imports.get_keywords(), name, source):
+            raise AssertionError('Keyword "%s" found' % name)
+
+    def test_vars_from_resource_files(self):
+        for name, source in [('${RESOURCE var}', 'resource.html'),
+                             ('@{RESOURCE 2 List VARIABLE}', 'resource2.html')]:
+            self._should_contain_variable(name, source)
 
 
 if __name__ == '__main__':
