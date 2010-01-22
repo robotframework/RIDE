@@ -157,7 +157,7 @@ class _AbstractDataFile(object):
                 pass
         return value
 
-    def get_variables_for_content_assist(self):
+    def get_variables(self):
         return [ VariableSpec(self.name, var) for var in self.variables ] +\
                  self._get_resource_variables() + self._get_variable_file_variables()
 
@@ -167,7 +167,7 @@ class _AbstractDataFile(object):
     def _get_resource_variables(self):
         vars = []
         for resource in self.get_resources():
-            vars.extend(resource.get_variables_for_content_assist())
+            vars.extend(resource.get_variables())
         return vars
 
     def _get_variable_file_variables(self):
