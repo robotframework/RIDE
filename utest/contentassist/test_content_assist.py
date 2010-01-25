@@ -47,12 +47,6 @@ class _ContentAssistBaseTest(unittest.TestCase):
                 raise AssertionError("Item '%s' found from content assist"
                                      % (name))
 
-    def _assert_variable_does_not_exist(self, suite, name):
-        variables = [ var.name for var in suite.get_variables() ]
-        if name in variables:
-            raise AssertionError("Variable '%s' found in %s" %
-                                (name, variables))
-
     def _content_assist_should_contain(self, name, source):
         self._should_contain(self.assister.content_assist_values(self.suite, ''),
                              name, source)
