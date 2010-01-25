@@ -15,6 +15,7 @@
 import os
 import sys
 import subprocess
+import time
 import tempfile
 import wx
 from wx.lib.mixins.listctrl import TextEditMixin
@@ -89,16 +90,65 @@ class _RunConfig(object):
 
     def __init__(self, name, command, doc):
         self.name = name
-        self.command = command
+        self.command = command.split()
         self.doc = doc
+        self._finished = False
+        self._error = False
 
-    def run(self, output):
-        # TODO: check subprocess usage in Windows
-        self._process = subprocess.Popen(self.command, stdout=output,
-                                         stderr=subprocess.STDOUT, shell=True)
+    def run(self):
+        self._process = _Process(self.command)
+
+    def get_output(self):
+        return self._process.get_output()
 
     def finished(self):
-        return self._process.poll() is not None
+        return self._process.finished()
+
+    def kill(self):
+        self._process.kill()
+
+
+class _Process(object):
+
+    def __init__(self, command):
+        self._out_fd, self._out_path \
+                      = tempfile.mkstemp(prefix='riderun_', text=True)
+        self._out_file = open(self._out_path)
+        self._finished = False
+        self._error = None
+        try:
+            self._process = subprocess.Popen(command, stdout=self._out_fd,
+                                             stderr=subprocess.STDOUT)
+        except OSError, err:
+            self._error = str(err)
+
+    def finished(self):
+        if self._error:
+            return True
+        self._finished = self._process.poll() is not None
+        return self._finished
+
+    def get_output(self):
+        if self._error:
+            return self._error
+        output = self._out_file.read()
+        if self._finished:
+            self._close_outputs()
+        return output
+
+    def _close_outputs(self):
+        self._out_file.close()
+        os.close(self._out_fd)
+        self._remove_tempfile()
+
+    def _remove_tempfile(self):
+        for _ in range(10):
+            try:
+                os.remove(self._out_path)
+            except OSError:
+                time.sleep(1)
+            else:
+                return
 
     def kill(self):
         self._process.kill()
@@ -205,29 +255,25 @@ class _Runner(wx.EvtHandler):
         self.Bind(wx.EVT_TIMER, self.OnTimer)
         self.name = config.name
         self._timer = wx.Timer(self)
-        self._window = _OutputWindow(notebook, self)
         self._config = config
+        self._window = self._get_output_window(notebook)
+
+    def _get_output_window(self, notebook):
+        return _OutputWindow(notebook, self)
 
     def run(self):
-        self._out_fd, self._out_path \
-                      = tempfile.mkstemp(prefix='riderun_', text=True)
-        self._out_file = open(self._out_path)
-        self._config.run(self._out_fd)
+        self._config.run()
         self._timer.Start(500)
 
     def OnTimer(self, event=None):
         finished = self._config.finished()
-        self._window.update_output(self._out_file.read(), finished)
+        self._window.update_output(self._config.get_output(), finished)
         if finished:
             self._timer.Stop()
-            self._out_file.close()
-            os.close(self._out_fd)
-            os.remove(self._out_path)
 
     def stop(self):
         try:
             self._config.kill()
-            self.OnTimer()
         except AttributeError:
             wx.MessageBox('Stopping process is possible only with '
                           'Python 2.6 or newer', style=wx.ICON_INFORMATION)
