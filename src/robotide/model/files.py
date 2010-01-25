@@ -127,8 +127,7 @@ class _AbstractDataFile(object):
 
     def _get_keywords(self, source_for_own_kws):
         kws =  self._get_own_keywords(source_for_own_kws) + \
-               self.imports.get_keywords() + \
-               LIBRARYCACHE.get_default_keywords()# TODO: should be elsewhere
+               self.imports.get_keywords()
         return self._remove_duplicates(kws)
 
     def _get_own_keywords(self, source):

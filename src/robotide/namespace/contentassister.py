@@ -16,5 +16,6 @@
 class ContentAssister(object):
 
     def content_assist_values(self, item, value):
-        return item.content_assist_values()
+        return item.content_assist_values() + \
+               LIBRARYCACHE.get_default_keywords()
 
