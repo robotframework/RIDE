@@ -18,6 +18,7 @@ import unittest
 from robot.utils.asserts import assert_true, assert_none, assert_false
 
 from robotide.application import DataModel
+from robotide.contentassist import ContentAssister
 from robotide.robotapi import TestSuiteData
 from robotide.model import cache
 from robotide.model.files import _TestSuiteFactory
@@ -41,7 +42,7 @@ context.APP = APP_MOCK
 class _ContentAssistBaseTest(unittest.TestCase):
 
     def _content_assist_should_not_contain(self, name):
-        for item in self.suite.content_assist_values():
+        for item in self.assister.content_assist_values(self.suite, ''):
             if item.name == name:
                 raise AssertionError("Item '%s' found from content assist"
                                      % (name))
@@ -53,7 +54,7 @@ class _ContentAssistBaseTest(unittest.TestCase):
                                 (name, variables))
 
     def _content_assist_should_contain(self, name, source):
-        self._should_contain(self.suite.content_assist_values(),
+        self._should_contain(self.assister.content_assist_values(self.suite, ''),
                              name, source)
 
     def _should_contain(self, items, name, source):
@@ -86,6 +87,7 @@ class TestResolvingKeywordAndVariables(_ContentAssistBaseTest):
                  ('${value}', 'dynamic_varz.py') ]
 
     def setUp(self):
+        self.assister = ContentAssister()
         self.suite = _TestSuiteFactory(SUITEDATA)
 
     def test_content_assist(self):
@@ -136,6 +138,7 @@ class TestModifyingDataAffectsContentAssist(_ContentAssistBaseTest):
     _new_var = ('${var_in_resource2}', 'even_more_varz.py')
 
     def setUp(self):
+        self.assister = ContentAssister()
         self.suite = _TestSuiteFactory(SUITEDATA)
 
     def test_changing_keywords_in_suite(self):
