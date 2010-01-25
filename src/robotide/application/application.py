@@ -19,7 +19,7 @@ import time
 from threading import Thread
 
 from robotide.robotapi import ROBOT_VERSION
-from robotide.contentassist import ContentAssister
+from robotide.namespace import ContentAssister
 from robotide.publish import RideOpenSuite, RideOpenResource
 from robotide.errors import DataError, NoRideError
 from robotide.ui import RideFrame
