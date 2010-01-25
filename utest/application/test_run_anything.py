@@ -39,7 +39,7 @@ class TestRunAnything(unittest.TestCase):
         time.sleep(0.1)
         runner.stop()
         self._sleep_and_log_output(runner, 0.5)
-        assert_false(os.path.exists(runner._out_path))
+        assert_false(os.path.exists(config._process._out_path))
         assert_true(runner.finished)
         assert_true(runner.outstr.startswith('start\nrunning '))
 
