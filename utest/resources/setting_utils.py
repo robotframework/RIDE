@@ -18,7 +18,7 @@ class TestSettingsHelper(unittest.TestCase):
         self.user_settings_path = os.path.join(os.path.dirname(__file__),
                                           'user.cfg')
 
-    def tearDown(self):    
+    def tearDown(self):
         for path in [self.settings_path, self.user_settings_path]:
             self._remove_path(path)
 
@@ -31,7 +31,7 @@ class TestSettingsHelper(unittest.TestCase):
         self.assertEquals(settings._config_obj, expected_dict)
         if check_self_settings:
             self.assertEquals(self.settings._config_obj, expected_dict)
-        
+
     def _write_settings(self, content, path=None):
         f = open(self._get_path(path), 'w')
         f.write(content)
@@ -46,7 +46,7 @@ class TestSettingsHelper(unittest.TestCase):
     def _get_path(self, path):
         if path:
             return path
-        return self.user_settings_path 
+        return self.user_settings_path
 
     def _create_invalid_settings_file(self, path=None):
         self._write_settings('invalid = invalid', path)
