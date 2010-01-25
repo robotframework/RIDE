@@ -19,6 +19,7 @@ import time
 from threading import Thread
 
 from robotide.robotapi import ROBOT_VERSION
+from robotide.contentassist import ContentAssister
 from robotide.publish import RideOpenSuite, RideOpenResource
 from robotide.errors import DataError, NoRideError
 from robotide.ui import RideFrame
@@ -39,6 +40,7 @@ class RIDE(wx.App):
         self._check_robot_version()
         self.model = None
         self.frame = RideFrame(self)
+        self.assister = ContentAssister()
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),
                                            context.get_core_plugins())
         self._plugin_loader.enable_plugins()
