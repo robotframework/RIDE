@@ -18,9 +18,8 @@ import unittest
 from robot.utils.asserts import assert_true, assert_none, assert_false
 
 from robotide.application import DataModel
-from robotide.namespace import ContentAssister
+from robotide.namespace import ContentAssister, cache
 from robotide.robotapi import TestSuiteData
-from robotide.model import cache
 from robotide.model.files import _TestSuiteFactory
 from robotide import context
 from resources import COMPLEX_SUITE_PATH, PATH_RESOURCE_NAME

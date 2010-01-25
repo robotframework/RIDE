@@ -26,7 +26,7 @@ from robotide.writer import FileWriter
 
 from tables import InitFileSettingTable, SuiteSettingTable,\
         ResourceSettingTable, VariableTable, TestCaseTable, UserKeywordTable
-from cache import LIBRARYCACHE, VARIABLEFILECACHE, RESOURCEFILECACHE
+from robotide.namespace import LIBRARYCACHE, VARIABLEFILECACHE, RESOURCEFILECACHE
 from tcuk import UserKeyword
 
 
