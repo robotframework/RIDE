@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 import os
+import sys
 import subprocess
 import tempfile
 import wx
@@ -251,7 +252,10 @@ class _OutputWindow(wx.ScrolledWindow):
         self.SetScrollRate(20, 20)
 
     def _create_state_button(self):
-        self._state_button = _StateButton(self, 'Stop')
+        if sys.version_info[:2] >= (2,6) and os.name != 'nt':
+            self._state_button = _StopAndRunAgainButton(self)
+        else:
+            self._state_button = _RunAgainButton(self)
         return self._state_button
 
     def _create_output(self):
@@ -269,7 +273,7 @@ class _OutputWindow(wx.ScrolledWindow):
         if finished:
             self._rename_tab('%s (finished)' % self._runner.name)
             self.Parent.allow_closing(self)
-            self._state_button.set_label('Run Again')
+            self._state_button.enable_run_again()
 
     def OnStop(self):
         self._runner.stop()
@@ -278,7 +282,7 @@ class _OutputWindow(wx.ScrolledWindow):
         self._output.clear()
         self._rename_tab('%s (running)' % self._runner.name)
         self.Parent.disallow_closing(self)
-        self._state_button.set_label('Stop')
+        self._state_button.reset()
         self._runner.restart()
 
     def _rename_tab(self, name):
@@ -297,15 +301,35 @@ class _OutputDisplay(wx.StaticText):
         self.SetLabel('')
 
 
-class _StateButton(wx.Button):
+class _StopAndRunAgainButton(wx.Button):
 
-    def __init__(self, parent, label):
-        wx.Button.__init__(self, parent, label=label)
+    def __init__(self, parent):
+        wx.Button.__init__(self, parent, label='Stop')
         self.Bind(wx.EVT_BUTTON, self.OnClick, self)
 
     def OnClick(self, event):
         getattr(self.Parent, 'On' + self.LabelText.replace(' ', ''))()
 
-    def set_label(self, new_text):
-        self.SetLabel(new_text)
+    def enable_run_again(self):
+        self.SetLabel('Run Again')
+
+    def reset(self):
+        self.SetLabel('Stop')
+
+
+class _RunAgainButton(wx.Button):
+
+    def __init__(self, parent):
+        wx.Button.__init__(self, parent, label='Run Again')
+        self.Bind(wx.EVT_BUTTON, self.OnClick, self)
+        self.Enable(False)
+
+    def OnClick(self, event):
+        self.Parent.OnRunAgain()
+
+    def enable_run_again(self):
+        self.Enable()
+
+    def reset(self):
+        self.Enable(False)
 
