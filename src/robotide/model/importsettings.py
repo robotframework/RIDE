@@ -13,13 +13,13 @@
 #  limitations under the License.
 
 from robotide.publish import RideImportSettingAdded, RideImportSettingChanged
+from robotide.contentassist import LIBRARYCACHE, RESOURCEFILECACHE, VARIABLEFILECACHE
 from robotide.spec import VariableSpec
 from robotide import context
 from robotide import utils
 
 from datalist import RobotDataList
 from settings import ResourceImport, LibraryImport, VariablesImport
-from cache import LIBRARYCACHE, RESOURCEFILECACHE, VARIABLEFILECACHE
 
 
 class ImportSettings(RobotDataList):
