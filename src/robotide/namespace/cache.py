@@ -122,7 +122,7 @@ class ResourceFileCache(_FileCache):
             return self._resource_files[normalized_key]
         except KeyError:
             #TODO: There is cyclic import which should be removed
-            from files import ResourceFileFactory
+            from robotide.model.files import ResourceFileFactory
             resource = ResourceFileFactory(path, create_new) or XMLResource(name)
             self._resource_files[normalized_key] = resource
             return resource

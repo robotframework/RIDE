@@ -13,4 +13,5 @@
 #  limitations under the License.
 
 from contentassister import ContentAssister
+from cache import LIBRARYCACHE, RESOURCEFILECACHE, VARIABLEFILECACHE
 
