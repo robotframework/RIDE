@@ -1,11 +1,11 @@
 #  Copyright 2008 Nokia Siemens Networks Oyj
-#  
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,7 +18,7 @@ import os
 
 from robotide.model.tcuk import TestCase, UserKeyword
 from robotide.model.files import TestSuiteFactory, ResourceFileFactory
-    
+
 from resources import MockSerializer, FakeSuite, FakeTestCase, FakeUserKeyword, \
     COMPLEX_SUITE_PATH
 
@@ -31,7 +31,7 @@ if not os.path.exists(DIRPATH):
     os.mkdir(DIRPATH)
 FILEPATH = os.path.join(DIRPATH, 'tests.tsv')
 RESOURCEPATH = os.path.join(DIRPATH, 'resource.tsv')
-INITPATH = os.path.join(DIRPATH, '__init__.tsv') 
+INITPATH = os.path.join(DIRPATH, '__init__.tsv')
 
 
 class TestModifiedOnDiskWithFileSuite(unittest.TestCase):
@@ -104,14 +104,14 @@ class TestModifiedOnDiskWithresource(unittest.TestCase):
 
 
 class TestCreatingNewTestCase(unittest.TestCase):
-    
+
     def setUp(self):
         self.suite = FakeSuite()
         self.test = TestCase(self.suite, name='TestCase')
 
     def test_name(self):
         assert_equals(self.test.name, 'TestCase')
-        
+
     def test_settings(self):
         s = self.test.settings
         assert_equals(s.doc.value, [])
@@ -119,7 +119,7 @@ class TestCreatingNewTestCase(unittest.TestCase):
         assert_equals(s.setup.value, None)
         assert_equals(s.teardown.value, None)
         assert_equals(s.tags.value, None)
-            
+
     def test_keyword_list(self):
         assert_equals(len(self.test.keywords), 0)
 
@@ -136,7 +136,7 @@ class TestTestCaseCopy(unittest.TestCase):
         assert_equals(self.copy.name, 'Copy')
 
     def test_settings(self):
-        orig, copied = self.copy.settings.setup, self.test.settings.setup 
+        orig, copied = self.copy.settings.setup, self.test.settings.setup
         assert_equals(orig.value, copied.value)
         assert_false(orig is copied)
 
@@ -176,7 +176,7 @@ class TestUserKeywordCopy(unittest.TestCase):
         self.copy = uk.copy('Copy')
 
     def test_name(self):
-        assert_equals(self.copy.name, 'Copy') 
+        assert_equals(self.copy.name, 'Copy')
 
     def test_settings(self):
         assert_equals(self.copy.settings.args.value, ['${scalar}'])
