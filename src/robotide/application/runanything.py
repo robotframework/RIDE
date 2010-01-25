@@ -141,14 +141,15 @@ class _Process(object):
         os.close(self._out_fd)
         self._remove_tempfile()
 
-    def _remove_tempfile(self):
-        for _ in range(10):
-            try:
-                os.remove(self._out_path)
-            except OSError:
+    def _remove_tempfile(self, attempts=10):
+        try:
+            os.remove(self._out_path)
+        except OSError:
+            if attempts:
                 time.sleep(1)
-            else:
-                return
+                self._remove_tempfile(attempts-1)
+        else:
+            raise
 
     def kill(self):
         self._process.kill()
