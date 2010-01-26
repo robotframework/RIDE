@@ -72,7 +72,7 @@ class RIDE(wx.App):
         progress_dialog = wx.ProgressDialog('RIDE', 'Loading the test data',
                                             maximum=100, parent=self.frame,
                                             style = wx.PD_ELAPSED_TIME)
-        loader = _DataLoader(self._namespace, path)
+        loader = _DataLoader(self.namespace, path)
         loader.start()
         while loader.isAlive():
             time.sleep(0.1)

@@ -105,7 +105,7 @@ class Plugin(object):
         self.initially_enabled = initially_enabled
         self.__app = application
         self.__frame = application.frame
-        self.__assister = application.assister
+        self.__assister = application.namespace
         self.__settings = SETTINGS['Plugins'].add_section(self.name)
         self.__settings.set_defaults(default_settings)
         self.__actions = []
