@@ -139,6 +139,7 @@ class TestTestCaseCopy(unittest.TestCase):
         orig, copied = self.copy.settings.setup, self.test.settings.setup
         assert_equals(orig.value, copied.value)
         assert_false(orig is copied)
+        assert_true(orig.datafile is copied.datafile, "Datafile should be singleton.")
 
     def test_keyword_list(self):
         assert_equals(len(self.copy.keywords), 1)
