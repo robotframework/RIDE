@@ -99,8 +99,9 @@ class VariableFileCache(_FileCache):
 
 class ResourceFileCache(_FileCache):
 
-    def __init__(self):
+    def __init__(self, namespace):
         self._resource_files = {}
+        self._namespace = namespace
 
     def get_resource_file(self, source, name):
         try:
@@ -123,7 +124,8 @@ class ResourceFileCache(_FileCache):
         except KeyError:
             #TODO: There is cyclic import which should be removed
             from robotide.model.files import ResourceFileFactory
-            resource = ResourceFileFactory(path, create_new) or XMLResource(name)
+            resource = ResourceFileFactory(path, self._namespace, create_new)\
+                    or XMLResource(name)
             self._resource_files[normalized_key] = resource
             return resource
 
@@ -134,9 +136,4 @@ class ResourceFileCache(_FileCache):
         except KeyError:
             path = normpath(os.path.join(os.path.dirname(source), name))
             return self._resource_files[path]
-
-
-LIBRARYCACHE = LibraryCache()
-VARIABLEFILECACHE = VariableFileCache()
-RESOURCEFILECACHE = ResourceFileCache()
 

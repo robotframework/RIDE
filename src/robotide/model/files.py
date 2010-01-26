@@ -26,20 +26,19 @@ from robotide.writer import FileWriter
 
 from tables import InitFileSettingTable, SuiteSettingTable,\
         ResourceSettingTable, VariableTable, TestCaseTable, UserKeywordTable
-from robotide.namespace import LIBRARYCACHE, VARIABLEFILECACHE, RESOURCEFILECACHE
 from tcuk import UserKeyword
 
 
-def TestSuiteFactory(path):
+def TestSuiteFactory(path, namespace=None):
     if not os.path.exists(path):
         if '__init__' in path:
-            return _TestSuiteFactory(_EmptyInitFile(path))
-        return _TestSuiteFactory(_EmptyTestSuite(path))
+            return _TestSuiteFactory(_EmptyInitFile(path), namespace)
+        return _TestSuiteFactory(_EmptyTestSuite(path), namespace)
     if _is_empty_dir(path):
-        return _TestSuiteFactory(_EmptyInitFile(path))
+        return _TestSuiteFactory(_EmptyInitFile(path), namespace)
     if _is_empty_file(path):
-        return _TestSuiteFactory(_EmptyTestSuite(path))
-    return _TestSuiteFactory(TestSuiteData(path))
+        return _TestSuiteFactory(_EmptyTestSuite(path), namespace)
+    return _TestSuiteFactory(TestSuiteData(path), namespace)
 
 def _is_empty_dir(path):
     return os.path.isdir(path) and not os.listdir(path)
@@ -47,27 +46,27 @@ def _is_empty_dir(path):
 def _is_empty_file(path):
     return os.path.isfile(path) and os.path.getsize(path) == 0
 
-def _TestSuiteFactory(data, parent=None):
+def _TestSuiteFactory(data, namespace, parent=None):
     if hasattr(data, 'initfile'):
-        return InitFile(data, parent)
-    return TestCaseFile(data, parent)
+        return InitFile(data, namespace, parent)
+    return TestCaseFile(data, namespace, parent)
 
 
-def ResourceFileFactory(path, create_empty=True):
+def ResourceFileFactory(path, namespace, create_empty=True):
     if path and os.path.isfile(path):
         data = ResourceFileData(path)
     elif create_empty:
         data = _EmptyResourceFile(path)
     else:
         return None
-    return ResourceFile(data)
+    return ResourceFile(data, namespace)
 
 
 class _AbstractDataFile(object):
     imports = property(lambda self: self.settings.imports)
     is_directory_suite = False
 
-    def __init__(self, data):
+    def __init__(self, data, namespace):
         self.source = data.source.decode('UTF-8')
         self._stat = self._get_stat(self.source)
         self.variables = VariableTable(self, data.variables)
@@ -77,6 +76,7 @@ class _AbstractDataFile(object):
         self.dirty = False
         self.suites = []
         self.tests = []
+        self.namespace = namespace
         self.datafile = self # Needed by editors that edit suites and tc/uks
 
     def _get_stat(self, path):
@@ -92,7 +92,7 @@ class _AbstractDataFile(object):
             name = self.variables.replace_scalar(name)
             for res in resources:
                 name = res.variables.replace_scalar(name)
-            resource = RESOURCEFILECACHE.get_resource_file(self.source, name)
+            resource = self.namespace.get_resource_file(self.source, name)
             if resource:
                 resources.append(resource)
         return resources
@@ -110,42 +110,27 @@ class _AbstractDataFile(object):
             kws.extend(res.get_user_keywords())
         return kws
 
-    def get_keywords(self):
-        return self._get_keywords(self.name)
-
     def get_keyword_details(self, name):
-        kws = self._filter(self._get_keywords('<this file>'), name)
-        return kws and kws[0].get_details() or None
+        return self.namespace.get_keyword_details(self, name)
 
     def is_library_keyword(self, name):
-        kws = self._filter(self.get_keywords(), name)
-        return kws and kws[0].is_library_keyword() or False
+        return self.namespace.is_library_keyword(self, name)
 
-    def content_assist_values(self):
-        return self._sort(self._get_variables()) + \
-                self._sort(self._get_keywords('<this file>'))
-
-    def _get_keywords(self, source_for_own_kws):
-        kws =  self._get_own_keywords(source_for_own_kws) + \
+    def get_keywords(self, source_for_own_kws=None):
+        kws =  self.get_own_keywords(source_for_own_kws) + \
                self.imports.get_keywords()
         return self._remove_duplicates(kws)
 
-    def _get_own_keywords(self, source):
+    def get_own_keywords(self, source=None):
+        source = source or self.name
         return [ UserKeywordContent(kw, source, self.type) for kw in self.keywords ]
 
-    def _get_variables(self):
-        return [ VariableSpec('<this file>', var) for var in self.variables ] + \
+    def get_own_variables(self):
+        return [ VariableSpec('<this file>', var) for var in self.variables ]
+
+    def get_variables(self):
+        return [ VariableSpec(self.name, var) for var in self.variables ] + \
                 self.imports.get_variables()
-
-    def _sort(self, keywords):
-        keywords.sort(key=operator.attrgetter('name'))
-        return keywords
-
-    def _filter(self, keywords, name):
-        if name is not None:
-            keywords = [ kw for kw in keywords if utils.eq(kw.name, name) or
-                                                  utils.eq(kw.longname, name) ]
-        return keywords
 
     def _remove_duplicates(self, keywords):
         return list(set(keywords))
@@ -160,10 +145,6 @@ class _AbstractDataFile(object):
             except DataError:
                 pass
         return value
-
-    def get_variables(self):
-        return [ VariableSpec(self.name, var) for var in self.variables ] +\
-                 self._get_resource_variables() + self._get_variable_file_variables()
 
     def validate_keyword_name(self, value):
         return self.keywords.validate_name(value)
@@ -188,7 +169,7 @@ class _AbstractDataFile(object):
             # all variable replacing
             name = self.variables.replace_scalar(var_settings.name)
             args = self.variables.replace_list(var_settings.args)
-            varfile = VARIABLEFILECACHE.get_varfile(self.source, name, args)
+            varfile = self.namespace.get_varfile(self.source, name, args)
             if varfile:
                 varfiles.append(varfile)
         return varfiles
@@ -272,14 +253,14 @@ class _AbstractDataFile(object):
 class _TestSuite(_AbstractDataFile):
     type = 'test suite'
 
-    def __init__(self, data, parent=None):
+    def __init__(self, data, namespace, parent=None):
         self._check_ride_suitability(data)
         self.name = data.name.decode('UTF-8')
         self.longname = parent and '%s.%s' % (parent.longname, self.name) or self.name
-        _AbstractDataFile.__init__(self, data)
+        _AbstractDataFile.__init__(self, data, namespace)
         self._parent = parent
         self.tests = TestCaseTable(self, data.tests)
-        self.suites = [ _TestSuiteFactory(suite, self)
+        self.suites = [ _TestSuiteFactory(suite, namespace, self)
                         for suite in data.suites ]
 
     def _check_ride_suitability(self, data):
@@ -302,9 +283,9 @@ class _TestSuite(_AbstractDataFile):
 
 class TestCaseFile(_TestSuite):
 
-    def __init__(self, data, parent=None):
+    def __init__(self, data, namespace, parent=None):
         self.settings = SuiteSettingTable(self, data)
-        _TestSuite.__init__(self, data, parent)
+        _TestSuite.__init__(self, data, namespace, parent)
 
     def new_test(self, name):
         self.dirty = True
@@ -317,7 +298,7 @@ class TestCaseFile(_TestSuite):
         return self._parent
 
     def reload_from_disk(self):
-        self.__init__(TestSuiteData(self.source))
+        self.__init__(TestSuiteData(self.source), self.namespace)
 
     def _validate_serialization(self):
         if not self.tests:
@@ -331,9 +312,9 @@ class TestCaseFile(_TestSuite):
 class InitFile(_TestSuite):
     is_directory_suite = True
 
-    def __init__(self, data, parent=None):
+    def __init__(self, data, namespace, parent=None):
         self.settings = InitFileSettingTable(self, data)
-        _TestSuite.__init__(self, data, parent)
+        _TestSuite.__init__(self, data, namespace, parent)
         if data.initfile is not None:
             self.source = data.initfile
         else:
@@ -350,7 +331,8 @@ class InitFile(_TestSuite):
         return self
 
     def reload_from_disk(self):
-        self.__init__(InitFileData(os.path.dirname(self.source)))
+        self.__init__(InitFileData(os.path.dirname(self.source)),
+                      self.namespace)
 
     def get_dir_path(self):
         if os.path.isdir(self.source):
@@ -361,10 +343,10 @@ class InitFile(_TestSuite):
 class ResourceFile(_AbstractDataFile):
     type = 'resource file'
 
-    def __init__(self, data):
+    def __init__(self, data, namespace):
         self.name = self.longname = self._find_source(data.source)
         self.settings = ResourceSettingTable(self, data)
-        _AbstractDataFile.__init__(self, data)
+        _AbstractDataFile.__init__(self, data, namespace)
 
     def _find_source(self, source):
         dirpath, filename = os.path.split(source)
@@ -374,7 +356,7 @@ class ResourceFile(_AbstractDataFile):
 
     def reload_from_disk(self):
         data = ResourceFileData(self.source)
-        self.__init__(data)
+        self.__init__(data, self.namespace)
 
 
 class _EmptyResourceFile(object):

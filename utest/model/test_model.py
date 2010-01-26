@@ -52,7 +52,7 @@ class TestModifiedOnDiskWithFileSuite(unittest.TestCase):
         assert_true(suite.has_been_modified_on_disk())
 
     def test_reload(self):
-        suite = TestSuiteFactory(FILEPATH)
+        suite = TestSuiteFactory(FILEPATH, None)
         assert_equals(len(suite.tests), 1)
         open(FILEPATH, 'a').write('Second Test\tLog\tHello World!\n')
         suite.reload_from_disk()
@@ -60,7 +60,7 @@ class TestModifiedOnDiskWithFileSuite(unittest.TestCase):
         assert_equals(suite.tests[-1].name, 'Second Test')
 
     def test_overwrite(self):
-        suite = TestSuiteFactory(FILEPATH)
+        suite = TestSuiteFactory(FILEPATH, None)
         os.utime(FILEPATH, (1,1))
         assert_true(suite.has_been_modified_on_disk())
         suite.serialize(force=True)
@@ -95,7 +95,7 @@ class TestModifiedOnDiskWithresource(unittest.TestCase):
         open(RESOURCEPATH, 'w').write('*Keywords*\nUnit Test Keyword\tNo Operation\n')
 
     def test_reload_with_resource(self):
-        resource = ResourceFileFactory(RESOURCEPATH)
+        resource = ResourceFileFactory(RESOURCEPATH, None)
         assert_equals(len(resource.keywords), 1)
         open(RESOURCEPATH, 'a').write('Ninjaed Keyword\tLog\tI am taking over!\n')
         resource.reload_from_disk()
@@ -188,7 +188,7 @@ class TestUserKeywordCopy(unittest.TestCase):
 
 
 class TestVariables(unittest.TestCase):
-    suite = TestSuiteFactory(COMPLEX_SUITE_PATH)
+    suite = TestSuiteFactory(COMPLEX_SUITE_PATH, None)
 
     def test_equals_sign_is_removed_in_parsing(self):
         assert_equals(self.suite.variables.get_name_and_value(0), ('${SCALAR}', 'value'))

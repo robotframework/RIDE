@@ -19,7 +19,7 @@ import time
 from threading import Thread
 
 from robotide.robotapi import ROBOT_VERSION
-from robotide.namespace import ContentAssister
+from robotide.namespace import Namespace
 from robotide.publish import RideOpenSuite, RideOpenResource
 from robotide.errors import DataError, NoRideError
 from robotide.ui import RideFrame
@@ -40,7 +40,7 @@ class RIDE(wx.App):
         self._check_robot_version()
         self.model = None
         self.frame = RideFrame(self)
-        self.assister = ContentAssister()
+        self.namespace = Namespace()
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),
                                            context.get_core_plugins())
         self._plugin_loader.enable_plugins()
@@ -72,7 +72,7 @@ class RIDE(wx.App):
         progress_dialog = wx.ProgressDialog('RIDE', 'Loading the test data',
                                             maximum=100, parent=self.frame,
                                             style = wx.PD_ELAPSED_TIME)
-        loader = _DataLoader(path)
+        loader = _DataLoader(self._namespace, path)
         loader.start()
         while loader.isAlive():
             time.sleep(0.1)
@@ -119,14 +119,15 @@ class RIDE(wx.App):
 
 class _DataLoader(Thread):
 
-    def __init__(self, path):
+    def __init__(self, namespace, path):
         Thread.__init__(self)
         self._path = path
+        self._namespace = namespace
         self.model = None
 
     def run(self):
         try:
-            self.model = DataModel(self._path)
+            self.model = DataModel(self._namespace, self._path)
         except (DataError, NoRideError), err:
             context.LOG(str(err))
             self.model = DataModel()

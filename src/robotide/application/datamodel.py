@@ -15,16 +15,16 @@
 import operator
 
 from robotide.model import TestSuiteFactory
-from robotide.namespace import RESOURCEFILECACHE
 from robotide.errors import DataError, SerializationError
 from robotide import context
 
 
 class DataModel(object):
 
-    def __init__(self, path=None):
+    def __init__(self, namespace, path=None):
         self.resources = []
         self.suite = None
+        self._namespace = namespace
         self._open(path)
 
     def _open(self, path):
@@ -40,11 +40,11 @@ class DataModel(object):
                                 "test case or resource file" % path)
 
     def _open_suite(self, path):
-        self.suite = TestSuiteFactory(path)
+        self.suite = TestSuiteFactory(path, self._namespace)
         self._resolve_imported_resources(self.suite)
 
     def open_resource(self, path, datafile=None):
-        resource = RESOURCEFILECACHE.load_resource(path, datafile)
+        resource = self._namespace.load_resource(path, datafile)
         if not resource:
             return None
         if resource not in self.resources:

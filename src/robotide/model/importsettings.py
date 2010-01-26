@@ -13,7 +13,6 @@
 #  limitations under the License.
 
 from robotide.publish import RideImportSettingAdded, RideImportSettingChanged
-from robotide.namespace import LIBRARYCACHE, RESOURCEFILECACHE, VARIABLEFILECACHE
 from robotide.spec import VariableSpec
 from robotide import context
 from robotide import utils
@@ -38,11 +37,11 @@ class ImportSettings(RobotDataList):
         kws = []
         for lib_import in self.get_library_imports():
             name, args = self._replace_vars_from_lib_import(lib_import)
-            kws.extend(LIBRARYCACHE.get_library_keywords(name, args))
+            kws.extend(self.datafile.namespace.get_library_keywords(name, args))
         for name in self.get_resource_imports():
             # TODO: why does RESOURCEFILECACHE return None in some cases?
             name = self._replace_variables(name)
-            res= RESOURCEFILECACHE.get_resource_file(self.datafile.source,
+            res= self.datafile.namespace.get_resource_file(self.datafile.source,
                                                      name)
             if res:
                 kws.extend(res.get_keywords())
@@ -59,7 +58,7 @@ class ImportSettings(RobotDataList):
         vars = []
         for name in self.get_resource_imports():
             name = self._replace_variables(name)
-            res= RESOURCEFILECACHE.get_resource_file(self.datafile.source,
+            res= self.datafile.namespace.get_resource_file(self.datafile.source,
                                                      name)
             if res:
                 vars.extend(res.get_variables())
@@ -81,7 +80,7 @@ class ImportSettings(RobotDataList):
             # all variable replacing
             name = self.datafile.variables.replace_scalar(var_settings.name)
             args = self.datafile.variables.replace_list(var_settings.args)
-            varfile = VARIABLEFILECACHE.get_varfile(self.datafile.source, name, args)
+            varfile = self.datafile.namespace.get_varfile(self.datafile.source, name, args)
             if varfile:
                 varfiles.append(varfile)
         return varfiles

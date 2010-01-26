@@ -18,7 +18,7 @@ import unittest
 from robot.utils.asserts import assert_true, assert_none, assert_false
 
 from robotide.application import DataModel
-from robotide.namespace import ContentAssister, cache
+from robotide.namespace import Namespace
 from robotide.robotapi import TestSuiteData
 from robotide.model.files import _TestSuiteFactory
 from robotide import context
@@ -41,13 +41,13 @@ context.APP = APP_MOCK
 class _ContentAssistBaseTest(unittest.TestCase):
 
     def _content_assist_should_not_contain(self, name):
-        for item in self.assister.content_assist_values(self.suite, ''):
+        for item in self.ns.content_assist_values(self.suite, ''):
             if item.name == name:
                 raise AssertionError("Item '%s' found from content assist"
                                      % (name))
 
     def _content_assist_should_contain(self, name, source):
-        self._should_contain(self.assister.content_assist_values(self.suite, ''),
+        self._should_contain(self.ns.content_assist_values(self.suite, ''),
                              name, source)
 
     def _should_contain(self, items, name, source):
@@ -80,8 +80,8 @@ class TestResolvingKeywordAndVariables(_ContentAssistBaseTest):
                  ('${value}', 'dynamic_varz.py') ]
 
     def setUp(self):
-        self.assister = ContentAssister()
-        self.suite = _TestSuiteFactory(SUITEDATA)
+        self.ns = Namespace()
+        self.suite = _TestSuiteFactory(SUITEDATA, self.ns)
 
     def test_content_assist(self):
         data = [('My Test Setup', '<this file>')] + self.exp_kws + self.exp_vars
@@ -91,14 +91,14 @@ class TestResolvingKeywordAndVariables(_ContentAssistBaseTest):
     def test_get_keywords(self):
         data = [('My Test Setup', self.suite.name)] + self.exp_kws
         for name, source in data:
-            self._should_contain(self.suite.get_keywords(), name, source)
+            self._should_contain(self.ns.get_keywords(self.suite), name, source)
 
     def test_items_should_be_in_alphabetical_order(self):
-        kws = self.suite.content_assist_values()
+        kws = self.ns.content_assist_values(self.suite)
         assert_true(kws[0].name < kws[1].name < kws[2].name)
 
     def test_content_assist_values_should_not_have_duplicates(self):
-        kws = [ kw for kw in self.suite.content_assist_values() if
+        kws = [ kw for kw in self.ns.content_assist_values(self.suite) if
                 kw.name == 'Should Be Equal' ]
         assert_true(len(kws) == 1)
 
@@ -122,7 +122,7 @@ class TestResolvingKeywordAndVariables(_ContentAssistBaseTest):
 
     def test_variables_for_user_keyword_contain_arguments(self):
         kw = self.suite.keywords[1]
-        self._should_contain(kw.content_assist_values(),
+        self._should_contain(self.ns.content_assist_values(kw),
                              '${scalar arg}', '<argument>')
 
 
@@ -131,8 +131,8 @@ class TestModifyingDataAffectsContentAssist(_ContentAssistBaseTest):
     _new_var = ('${var_in_resource2}', 'even_more_varz.py')
 
     def setUp(self):
-        self.assister = ContentAssister()
-        self.suite = _TestSuiteFactory(SUITEDATA)
+        self.ns = Namespace()
+        self.suite = _TestSuiteFactory(SUITEDATA, self.ns)
 
     def test_changing_keywords_in_suite(self):
         self.suite.keywords.new_keyword('New Keyword')

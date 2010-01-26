@@ -87,6 +87,7 @@ class UserKeyword(_TcUkBase):
         _TcUkBase.__init__(self, datafile, data, name)
         self.settings = UserKeywordSettings(datafile, data)
         self.source = datafile.name
+        self.imports = datafile.imports
 
     shortdoc = property(lambda self: self.doc.split('\n')[0])
 
@@ -94,10 +95,12 @@ class UserKeyword(_TcUkBase):
         self.datafile.keywords.remove(self)
         self._mark_dirty()
 
-    def content_assist_values(self):
+    def get_own_variables(self):
         return [ VariableSpec('<argument>', var) for var
-                 in self.settings.get_args() ] + \
-                _TcUkBase.content_assist_values(self)
+                 in self.settings.get_args() ]
+
+    def get_own_keywords(self, *args):
+        return []
 
     def serialize(self, serializer):
         serializer.start_keyword(self)

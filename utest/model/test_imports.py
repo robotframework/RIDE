@@ -18,6 +18,7 @@ from robot.utils.asserts import assert_equals
 from robotide.model.tables import ImportSettings
 from robotide.model.files import _TestSuiteFactory
 from robotide.robotapi import TestSuiteData
+from robotide.namespace import Namespace
 from robotide import context
 
 from resources import COMPLEX_SUITE_PATH
@@ -75,7 +76,7 @@ def contains(items, name, source):
 class TestResolvingKeywords(unittest.TestCase):
 
     def setUp(self):
-        self.imports = _TestSuiteFactory(PARSED_DATA).imports
+        self.imports = _TestSuiteFactory(PARSED_DATA, Namespace()).imports
 
     def test_normal_library_import(self):
         self._should_contain_keyword('File Should Exist', 'OperatingSystem')
@@ -168,7 +169,7 @@ class TestResolvingKeywords(unittest.TestCase):
 class TestResolvingVariables(unittest.TestCase):
 
     def setUp(self):
-        self.imports = _TestSuiteFactory(PARSED_DATA).imports
+        self.imports = _TestSuiteFactory(PARSED_DATA, Namespace()).imports
 
     def test_vars_from_resource_files(self):
         for name, source in [('${RESOURCE var}', 'resource.html'),

@@ -14,6 +14,7 @@
 
 import unittest
 
+from robotide.namespace import Namespace
 from robotide.model.files import InitFile
 from robotide.robotapi import TestSuiteData
 from robot.utils.asserts import assert_equals
@@ -25,7 +26,7 @@ DATA = TestSuiteData(SUITEPATH)
 class TestParsing(unittest.TestCase):
 
     def setUp(self):
-        self.suite = InitFile(DATA)
+        self.suite = InitFile(DATA, Namespace())
         self.file_suite = self.suite.suites[0]
         self.test = self.file_suite.tests[0]
         self.uk = self.file_suite.keywords[1]
@@ -75,7 +76,7 @@ class TestParsing(unittest.TestCase):
 class TestFindingImports(unittest.TestCase):
 
     def setUp(self):
-        self.suite = InitFile(DATA).suites[0]
+        self.suite = InitFile(DATA, Namespace()).suites[0]
 
     def test_resource_imports(self):
         assert_equals(self.suite.get_resources()[0].name, 'resource.html')
@@ -95,7 +96,7 @@ class TestFindingImports(unittest.TestCase):
 class TestFindingImportsWithVariables(unittest.TestCase):
 
     def setUp(self):
-        self.suite = InitFile(DATA).suites[0]
+        self.suite = InitFile(DATA, Namespace()).suites[0]
 
     def test_finding_resource_import_with_variable(self):
         assert_equals(self.suite.get_resources()[3].name, 'another_resource.html')
