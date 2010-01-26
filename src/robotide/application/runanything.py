@@ -148,8 +148,8 @@ class _Process(object):
             if attempts:
                 time.sleep(1)
                 self._remove_tempfile(attempts-1)
-        else:
-            raise
+            else:
+                raise
 
     def kill(self):
         self._process.kill()
