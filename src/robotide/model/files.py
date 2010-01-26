@@ -79,6 +79,10 @@ class _AbstractDataFile(object):
         self.namespace = namespace
         self.datafile = self # Needed by editors that edit suites and tc/uks
 
+    def __deepcopy__(self, memo):
+        # We don't want to copy data file when test case or uk is copied.
+        return self
+
     def _get_stat(self, path):
         if os.path.isfile(path):
             stat = os.stat(path)

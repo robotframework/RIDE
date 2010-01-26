@@ -34,7 +34,6 @@ class _TcUkBase(object):
 
     def copy(self, name):
         ret = copy.deepcopy(self)
-        ret.datafile = self.datafile
         ret.name = name
         self._mark_dirty()
         return ret
