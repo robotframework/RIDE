@@ -12,13 +12,5 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-def get_core_plugins():
-    from robotide.application.releasenotes import ReleaseNotesPlugin
-    from robotide.run import RunAnything
-    from robotide.ui.recentfiles import RecentFilesPlugin
-    from robotide.ui.preview import PreviewPlugin
-    from robotide.ui.keywordsearch import KeywordSearch
-    from robotide.editor import EditorPlugin, Colorizer
+from runanything import RunAnything
 
-    return [ReleaseNotesPlugin, RunAnything, RecentFilesPlugin, PreviewPlugin,
-            Colorizer, EditorPlugin, KeywordSearch]
