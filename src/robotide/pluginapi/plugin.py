@@ -105,7 +105,7 @@ class Plugin(object):
         self.initially_enabled = initially_enabled
         self.__app = application
         self.__frame = application.frame
-        self.__assister = application.namespace
+        self.__namespace = application.namespace
         self.__settings = SETTINGS['Plugins'].add_section(self.name)
         self.__settings.set_defaults(default_settings)
         self.__actions = []
@@ -263,8 +263,8 @@ class Plugin(object):
 
     def content_assist_values(self, value):
         """Returns content assist values for currently selected item."""
-        return self.assister.content_assist_values(self.get_selected_item(),
-                                                   value)
+        return self.__namespace.content_assist_values(self.get_selected_item(),
+                                                      value)
 
     def get_plugins(self):
         """Returns list containing plugin wrapper for every loaded plugin.
