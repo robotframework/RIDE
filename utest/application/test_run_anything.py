@@ -3,8 +3,8 @@ import time
 import os
 from robot.utils.asserts import assert_equals, assert_false, assert_true
 
-from robotide.application.runanything import _Runner, _RunConfig
-from resources import PYAPP_REFERENCE
+from robotide.run.runanything import _Runner, _RunConfig
+from resources import PYAPP_REFERENCE as _
 
 
 SCRIPT = os.path.join(os.path.dirname(__file__), 'run_test_scripts.py')
