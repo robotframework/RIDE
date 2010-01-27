@@ -17,6 +17,8 @@ DATA = [['kw1'],
 class _FakeMainFrame(wx.Frame):
     def __init__(self):
         wx.Frame.__init__(self, None)
+        self.item =  _FakeTest()
+        self.plugin = None
 
 class _FakeTree(object):
     mark_dirty = lambda self, datafile: None
@@ -50,7 +52,7 @@ class TestableKwEditor(KeywordEditor):
 class TestCoordinates(unittest.TestCase):
 
     def setUp(self):
-        self._editor = TestableKwEditor(_FakeMainFrame(), _FakeTest(), None)
+        self._editor = TestableKwEditor(_FakeMainFrame(), None)
 
     def test_cell_selection(self):
         self._editor.SelectBlock(2,2,2,2)
@@ -70,8 +72,7 @@ class TestCoordinates(unittest.TestCase):
 class TestClipBoard(unittest.TestCase):
 
     def setUp(self):
-        self._editor = TestableKwEditor(_FakeMainFrame(), _FakeTest(),
-                                        _FakeTree())
+        self._editor = TestableKwEditor(_FakeMainFrame(), _FakeTree())
 
     def test_copy_one_cell(self):
         self._copy_block_and_verify((0,0,0,0), [[val for val in DATA[0] if val]])
@@ -170,7 +171,7 @@ class TestClipBoard(unittest.TestCase):
 class TestEditing(unittest.TestCase):
 
     def setUp(self):
-        self._editor = KeywordEditor(_FakeMainFrame(), _FakeTest(), None)
+        self._editor = KeywordEditor(_FakeMainFrame(), None)
         PUBLISHER.subscribe(self._on_cell_changed, RideGridCellChanged)
 
     def test_correct_event_is_published_during_population(self):
