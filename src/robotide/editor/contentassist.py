@@ -27,9 +27,8 @@ _PREFERRED_DETAILS_SIZE = (500, 200)
 
 class _ContentAssistTextCtrlBase(object):
 
-    def __init__(self, item):
-        self._item = item
-        self._popup = ContentAssistPopup(self)
+    def __init__(self, plugin):
+        self._popup = ContentAssistPopup(self, plugin)
         self.Bind(wx.EVT_KEY_DOWN, self.OnKey)
         self.Bind(wx.EVT_KILL_FOCUS, self.OnFocusLost)
         self.Bind(wx.EVT_MOVE, self.OnFocusLost)
@@ -78,7 +77,7 @@ class _ContentAssistTextCtrlBase(object):
                 self.hide()
             else:
                 value += chr(event.GetRawKeyCode())
-        return self._popup.content_assist_for(value, self._item)
+        return self._popup.content_assist_for(value)
 
     def _show_content_assist(self):
         height = self.GetSizeTuple()[1]
@@ -94,22 +93,23 @@ class _ContentAssistTextCtrlBase(object):
 
 class ExpandingContentAssistTextCtrl(_ContentAssistTextCtrlBase, ExpandoTextCtrl):
 
-    def __init__(self, parent, test_or_keyword, size=wx.DefaultSize):
+    def __init__(self, parent, plugin, size=wx.DefaultSize):
         ExpandoTextCtrl.__init__(self, parent, size=size, style=wx.WANTS_CHARS)
-        _ContentAssistTextCtrlBase.__init__(self, test_or_keyword)
+        _ContentAssistTextCtrlBase.__init__(self, plugin)
 
 
 class ContentAssistTextCtrl(_ContentAssistTextCtrlBase, wx.TextCtrl):
 
-    def __init__(self, parent, item, size=wx.DefaultSize):
+    def __init__(self, parent, plugin, size=wx.DefaultSize):
         wx.TextCtrl.__init__(self, parent, size=size, style=wx.WANTS_CHARS)
-        _ContentAssistTextCtrlBase.__init__(self, item)
+        _ContentAssistTextCtrlBase.__init__(self, plugin)
 
 
 class ContentAssistPopup(object):
 
-    def __init__(self, parent):
+    def __init__(self, parent, plugin):
         self._parent = parent
+        self._plugin = plugin
         self._main_popup = RidePopupWindow(parent, _PREFERRED_POPUP_SIZE)
         self._details_popup = RidePopupWindow(parent, _PREFERRED_DETAILS_SIZE)
         self._selection = -1
@@ -119,8 +119,9 @@ class ContentAssistPopup(object):
     def get_value(self):
         return self._selection != -1 and self._list.get_text(self._selection) or None
 
-    def content_assist_for(self, startvalue, dataitem):
-        self._choices = [ val for val in dataitem.content_assist_values() if
+    def content_assist_for(self, startvalue):
+        self._choices = [ val for val in
+                          self._plugin.content_assist_values(startvalue) if
                           self._starts(val.name, startvalue) ]
         if not self._choices:
             self._list.ClearAll()

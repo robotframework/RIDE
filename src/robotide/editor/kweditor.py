@@ -148,7 +148,7 @@ class KeywordEditor(KeywordEditorUi):
     def __init__(self, parent, tree):
         self._keywords = parent.item.keywords
         KeywordEditorUi.__init__(self, parent, len(self._keywords)+5, 5)
-        self.SetDefaultEditor(ContentAssistCellEditor(parent.item))
+        self.SetDefaultEditor(ContentAssistCellEditor(parent.plugin))
         self._datafile = parent.item.datafile
         # TODO: Tooltip may be smaller when the documentation is wrapped correctly
         self._tooltip = RidePopupWindow(self, (650, 400))
@@ -268,7 +268,7 @@ class KeywordEditor(KeywordEditorUi):
 
     def _navigate_to_matching_user_keyword(self, row, col):
         value = self.GetCellValue(row, col)
-        uk = self._datafile.get_user_keyword(value)
+        uk = self._plugin.get_user_keyword(value)
         if uk:
             self._toggle_underlined((grid.GridCellCoords(row, col)))
             self._marked_cell = None
@@ -297,7 +297,7 @@ class KeywordEditor(KeywordEditorUi):
         if cell == self._marked_cell:
             return
         value = self.GetCellValue(cell.Row, cell.Col)
-        if not self._datafile.get_user_keyword(value):
+        if not self._plugin.get_user_keyword(value):
             return
         self._toggle_underlined(cell)
         self._marked_cell = cell
@@ -311,7 +311,7 @@ class KeywordEditor(KeywordEditorUi):
 
     def _show_kw_tooltip(self, cell):
         value = self.GetCellValue(cell.Row, cell.Col)
-        details = self._datafile.get_keyword_details(value)
+        details = self._plugin.get_keyword_details(value)
         if not details:
             return
         self._tooltip.set_content(details)
@@ -328,9 +328,9 @@ class KeywordEditor(KeywordEditorUi):
 
 class ContentAssistCellEditor(grid.PyGridCellEditor):
 
-    def __init__(self, test_or_keyword):
+    def __init__(self, plugin):
         grid.PyGridCellEditor.__init__(self)
-        self._test_or_keyword = test_or_keyword
+        self._plugin = plugin
         self._grid = None
         self._previous_value = None
 
@@ -338,7 +338,7 @@ class ContentAssistCellEditor(grid.PyGridCellEditor):
         self._tc.show_content_assist()
 
     def Create(self, parent, id, evthandler):
-        self._tc = ExpandingContentAssistTextCtrl(parent, self._test_or_keyword)
+        self._tc = ExpandingContentAssistTextCtrl(parent, self._plugin)
         self._tc.Bind(wx.EVT_TEXT, self.OnText, self._tc)
         self.SetControl(self._tc)
         if evthandler:

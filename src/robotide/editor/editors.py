@@ -76,7 +76,7 @@ class _RobotTableEditor(wx.Panel):
                 editor_class = _DocumentationEditor
             else:
                 editor_class = _SettingEditor
-            editor = editor_class(self, setting, self._tree)
+            editor = editor_class(self, setting, self.plugin, self._tree)
             self.sizer.Add(editor, 0, wx.ALL|wx.EXPAND, 1)
 
 
@@ -131,9 +131,10 @@ class InitFileEditor(TestCaseFileEditor):
 
 class _SettingEditor(wx.Panel, RideEventHandler):
 
-    def __init__(self, parent, item, tree):
+    def __init__(self, parent, item, plugin, tree):
         wx.Panel.__init__(self, parent)
         self._item = item
+        self._plugin = plugin
         self._datafile = item.datafile
         self._create_controls(utils.name_from_class(item))
         self._dialog = EditorDialog(item)
@@ -165,7 +166,7 @@ class _SettingEditor(wx.Panel, RideEventHandler):
 
     def OnEdit(self, event=None):
         self._editing = True
-        dlg = self._dialog(self.GetGrandParent(), self._item, self._datafile)
+        dlg = self._dialog(self.GetGrandParent(), self._plugin, self._item)
         if dlg.ShowModal() == wx.ID_OK:
             self._item.set_str_value(dlg.get_value())
             self._update_and_notify()
@@ -200,9 +201,10 @@ class _SettingEditor(wx.Panel, RideEventHandler):
 
 class _DocumentationEditor(_SettingEditor):
 
-    def __init__(self, parent, item, tree):
+    def __init__(self, parent, item, plugin, tree):
         wx.Panel.__init__(self, parent)
         self._item = item
+        self._plugin = plugin
         self._datafile = item.datafile
         self._tree = tree
         self._create_controls('Documentation')
@@ -217,7 +219,7 @@ class _DocumentationEditor(_SettingEditor):
         self._value_display.SetPage(utils.html_escape(value, formatting=True))
 
     def OnEdit(self, event):
-        editor = DocumentationDialog(self.GetGrandParent(),
+        editor = DocumentationDialog(self.GetGrandParent(), self._plugin,
                                      self._item.get_str_value())
         if editor.ShowModal() == wx.ID_OK:
             self._item.set_str_value(editor.get_value())

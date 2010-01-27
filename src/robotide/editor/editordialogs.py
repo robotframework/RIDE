@@ -31,12 +31,12 @@ def EditorDialog(obj):
 class _Dialog(wx.Dialog):
     _title = property(lambda self: utils.name_from_class(self, drop='Dialog'))
 
-    def __init__(self, parent, item=None, datafile=None):
+    def __init__(self, parent, plugin, item=None):
         wx.Dialog.__init__(self, parent, -1, self._title,
                            style=wx.DEFAULT_DIALOG_STYLE|wx.THICK_FRAME)
         self.SetExtraStyle(wx.WS_EX_VALIDATE_RECURSIVELY)
+        self.plugin = plugin
         self._item = item
-        self.datafile = datafile
         self._sizer = wx.BoxSizer(wx.VERTICAL)
         self._editors = self._get_editors(item)
         for editor in self._editors:

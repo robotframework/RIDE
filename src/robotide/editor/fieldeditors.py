@@ -152,4 +152,5 @@ class MultiLineEditor(ValueEditor):
 class ContentAssistEditor(ValueEditor):
 
     def _get_text_ctrl(self):
-        return ContentAssistTextCtrl(self, self.Parent.datafile, (500, -1))
+        return ContentAssistTextCtrl(self, self.Parent.plugin, (500, -1))
+
