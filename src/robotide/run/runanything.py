@@ -89,7 +89,7 @@ class _RunConfig(object):
 
     def __init__(self, name, command, doc):
         self.name = name
-        self.command = command.split()
+        self.command = command
         self.doc = doc
         self._finished = False
         self._error = False
