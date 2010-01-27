@@ -45,7 +45,11 @@ class Process(object):
         return self._error is not None or self._process.poll() is not None
 
     def stop(self):
-        self._process.kill()
+        try:
+            self._process.kill()
+        except AttributeError:
+            raise AttributeError('Stopping process is possible only with '
+                                 'Python 2.6 or newer')
 
     def get_output(self, wait_until_finished=False):
         """Returns the output produced by the process.

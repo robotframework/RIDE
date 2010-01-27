@@ -215,9 +215,8 @@ class _Runner(wx.EvtHandler):
     def stop(self):
         try:
             self._process.stop()
-        except AttributeError:
-            wx.MessageBox('Stopping process is possible only with '
-                          'Python 2.6 or newer', style=wx.ICON_INFORMATION)
+        except Exception, err:
+            wx.MessageBox(str(err), style=wx.ICON_ERROR)
 
     def restart(self):
         self.run()
