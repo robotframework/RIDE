@@ -18,7 +18,9 @@ def get_core_plugins():
     from robotide.ui.recentfiles import RecentFilesPlugin
     from robotide.ui.preview import PreviewPlugin
     from robotide.ui.keywordsearch import KeywordSearch
-    from robotide.editor import EditorPlugin, Colorizer
+    from robotide.editor import EditorPlugin
+    from robotide.editor.gridcolorizer import Colorizer
 
     return [ReleaseNotesPlugin, RunAnything, RecentFilesPlugin, PreviewPlugin,
             Colorizer, EditorPlugin, KeywordSearch]
+
