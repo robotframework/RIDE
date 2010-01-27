@@ -32,7 +32,7 @@ from pluginloader import PluginLoader
 class RIDE(wx.App):
 
     def __init__(self, path=None):
-        self._path = path
+        self._initial_path = path
         context.APP = self
         wx.App.__init__(self, redirect=False)
 
@@ -44,7 +44,7 @@ class RIDE(wx.App):
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),
                                            context.get_core_plugins())
         self._plugin_loader.enable_plugins()
-        self.open_suite(self._path)
+        self.open_suite(self._initial_path)
         self.frame.tree.populate(self.model)
         return True
 
@@ -65,7 +65,7 @@ class RIDE(wx.App):
 
     def open_suite(self, path):
         self.model = self._load_suite(path)
-        RideOpenSuite(path=self._path).publish()
+        RideOpenSuite(path=path).publish()
         context.LOG.report_parsing_errors()
 
     def _load_suite(self, path):
