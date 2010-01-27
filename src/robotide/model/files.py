@@ -14,7 +14,6 @@
 
 import os
 import copy
-import operator
 
 from robotide import utils
 from robotide.spec import UserKeywordContent, VariableSpec
