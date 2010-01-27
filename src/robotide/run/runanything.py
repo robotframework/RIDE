@@ -323,4 +323,3 @@ class _RunAgainButton(wx.Button):
 
     def reset(self):
         self.Enable(False)
-

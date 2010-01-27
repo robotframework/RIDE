@@ -40,7 +40,6 @@ class Process(object):
                                              stderr=subprocess.STDOUT)
         except OSError, err:
             self._error = str(err)
-            self._close_outputs()
 
     def is_finished(self):
         return self._error is not None or self._process.poll() is not None
@@ -59,6 +58,7 @@ class Process(object):
         everything that has been written by the process.
         """
         if self._error:
+            self._close_outputs()
             return self._error
         if wait_until_finished:
             self._process.wait()
