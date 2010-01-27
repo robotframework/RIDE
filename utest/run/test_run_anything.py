@@ -3,14 +3,15 @@ import time
 import os
 from robot.utils.asserts import assert_equals, assert_true
 
-from robotide.run.runanything import _Runner, _RunConfig
+from robotide.run.runanything import _RunConfig
+from robotide.run.ui import Runner
 from resources import PYAPP_REFERENCE as _
 
 
 SCRIPT = os.path.join(os.path.dirname(__file__), 'process_test_scripts.py')
 
 
-class _TestableRunner(_Runner):
+class _TestableRunner(Runner):
     output = property(lambda self: self._window.output)
     outstr = property(lambda self: self._window.outstr)
     finished = property(lambda self: self._window.finished)

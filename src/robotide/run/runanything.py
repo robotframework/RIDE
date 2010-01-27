@@ -12,14 +12,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import sys
 import wx
-from wx.lib.mixins.listctrl import TextEditMixin
 
 from robotide.pluginapi import Plugin, ActionInfo, SeparatorInfo
-from robotide.editor.listeditor import ListEditor, AutoWidthColumnList
-
-from process import Process
+from robotide.run.configmanagerui import ConfigManagerDialog
+from robotide.run.ui import Runner
 
 
 class RunAnything(Plugin):
@@ -31,7 +28,7 @@ class RunAnything(Plugin):
         self._create_menu(_RunConfigs(self.configs))
 
     def OnManageConfigurations(self, event):
-        dlg = _ManageConfigsDialog(_RunConfigs(self.configs))
+        dlg = ConfigManagerDialog(_RunConfigs(self.configs))
         if dlg.ShowModal() == wx.ID_OK:
             configs = _RunConfigs(dlg.get_data())
             self.save_setting('configs', configs.data_to_save())
@@ -48,7 +45,7 @@ class RunAnything(Plugin):
 
     def _add_config_to_menu(self, config, index):
         def run(event):
-            _Runner(config, self.notebook).run()
+            Runner(config, self.notebook).run()
         info = ActionInfo('Run', name='%d: %s' % (index, config.name),
                           doc=config.help, action=run)
         self.register_action(info)
@@ -93,228 +90,3 @@ class _RunConfig(object):
         self._finished = False
         self._error = False
 
-
-class _ManageConfigsDialog(wx.Dialog):
-    _style = wx.DEFAULT_DIALOG_STYLE|wx.THICK_FRAME
-
-    def __init__(self, configs):
-        wx.Dialog.__init__(self, wx.GetTopLevelWindows()[0], style=self._style,
-                           title='Manage Run Configurations')
-        self.SetSizer(wx.BoxSizer(wx.VERTICAL))
-        self._editor = _ConfigListEditor(self, configs)
-        self.Sizer.Add(self._editor, flag=wx.GROW, proportion=1)
-        line = wx.StaticLine(self, size=(20,-1), style=wx.LI_HORIZONTAL)
-        self.Sizer.Add(line, border=5,
-                       flag=wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.RIGHT|wx.TOP)
-        self.Sizer.Add(self.CreateStdDialogButtonSizer(wx.OK|wx.CANCEL),
-                       flag=wx.ALIGN_CENTER|wx.ALL, border=5)
-        self.SetSize((750, 200))
-
-    def get_data(self):
-        return self._editor.get_data()
-
-
-class _ConfigListEditor(ListEditor):
-    _buttons = ['New']
-    _columns = ['Name', 'Command', 'Documentation']
-
-    def __init__(self, parent, configs):
-        ListEditor.__init__(self, parent, self._columns, configs)
-
-    def _create_list(self, columns, data):
-        return _TextEditListCtrl(self, columns, data, self._new_config)
-
-    def get_column_values(self, config):
-        return config.name, config.command, config.doc
-
-    def get_data(self):
-        return self._list.get_data()
-
-    def OnEdit(self, event):
-        self._list.open_editor(self._selection)
-
-    def OnNew(self, event):
-        self._list.new_item()
-
-    def _new_config(self, data):
-        self._data.add(*data)
-
-
-class _TextEditListCtrl(AutoWidthColumnList, TextEditMixin):
-    last_index = property(lambda self: self.ItemCount-1)
-
-    def __init__(self, parent, columns, data, new_item_callback):
-        AutoWidthColumnList.__init__(self, parent, columns, data)
-        TextEditMixin.__init__(self)
-        self.col_locs = self._calculate_col_locs()
-        self._new_item_callback = new_item_callback
-        self._new_item_creation = False
-
-    def _calculate_col_locs(self):
-        """Calculates and returns initial locations of colums.
-
-        This is needed so that TextEditMixin can work from context menu,
-        without selecting the row first.
-        """
-        locations = [0]
-        loc = 0
-        for n in range(self.GetColumnCount()):
-            loc = loc + self.GetColumnWidth(n)
-            locations.append(loc)
-        return locations
-
-    def open_editor(self, row):
-        self.OpenEditor(0, row)
-
-    def new_item(self):
-        self._new_item_creation = True
-        self.InsertStringItem(self.ItemCount, '')
-        self.open_editor(self.last_index)
-
-    def get_data(self):
-        return [ self._get_row(row) for row in range(self.ItemCount) ]
-
-    def _get_row(self, row):
-        return [ self.GetItem(row, col).GetText() for col in range(3)]
-
-    def CloseEditor(self, event=None):
-        TextEditMixin.CloseEditor(self, event)
-        # It seems that this is called twice per editing action and in the
-        # first time the value may be empty.
-        # End new item creation only when there really is a value
-        lastrow = self._get_row(self.last_index)
-        if self._new_item_creation and any(lastrow):
-            self._new_item_creation = False
-            self._new_item_callback(lastrow)
-
-
-class _Runner(wx.EvtHandler):
-
-    def __init__(self, config, notebook):
-        wx.EvtHandler.__init__(self)
-        self.Bind(wx.EVT_TIMER, self.OnTimer)
-        self.name = config.name
-        self._timer = wx.Timer(self)
-        self._config = config
-        self._window = self._get_output_window(notebook)
-
-    def _get_output_window(self, notebook):
-        return _OutputWindow(notebook, self)
-
-    def run(self):
-        self._process = Process(self._config.command)
-        self._process.start()
-        self._timer.Start(500)
-
-    def OnTimer(self, event=None):
-        finished = self._process.is_finished()
-        self._window.update_output(self._process.get_output(), finished)
-        if finished:
-            self._timer.Stop()
-
-    def stop(self):
-        try:
-            self._process.stop()
-        except Exception, err:
-            wx.MessageBox(str(err), style=wx.ICON_ERROR)
-
-
-class _OutputWindow(wx.ScrolledWindow):
-
-    def __init__(self, notebook, runner):
-        wx.ScrolledWindow.__init__(self, notebook)
-        self._create_ui()
-        self._add_to_notebook(notebook, runner.name)
-        self._runner = runner
-
-    def _create_ui(self):
-        sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self._create_state_button())
-        sizer.Add(self._create_output())
-        self.SetSizer(sizer)
-        self.SetScrollRate(20, 20)
-
-    def _create_state_button(self):
-        if sys.version_info[:2] >= (2,6):
-            self._state_button = _StopAndRunAgainButton(self)
-        else:
-            self._state_button = _RunAgainButton(self)
-        return self._state_button
-
-    def _create_output(self):
-        self._output = _OutputDisplay(self)
-        return self._output
-
-    def _add_to_notebook(self, notebook, name):
-        notebook.add_tab(self, '%s (running)' % name, allow_closing=False)
-        notebook.show_tab(self)
-
-    def update_output(self, output, finished=False):
-        if output:
-            self._output.update(output)
-            self.SetVirtualSize(self._output.Size)
-        if finished:
-            self._rename_tab('%s (finished)' % self._runner.name)
-            self.Parent.allow_closing(self)
-            self._state_button.enable_run_again()
-
-    def OnStop(self):
-        self._runner.stop()
-
-    def OnRunAgain(self):
-        self._output.clear()
-        self._rename_tab('%s (running)' % self._runner.name)
-        self.Parent.disallow_closing(self)
-        self._state_button.reset()
-        self._runner.run()
-
-    def _rename_tab(self, name):
-        self.Parent.rename_tab(self, name)
-
-
-class _OutputDisplay(wx.StaticText):
-
-    def __init__(self, parent):
-        wx.StaticText.__init__(self, parent)
-
-    def update(self, addition):
-        self.SetLabel(self.LabelText + addition.decode('UTF-8', 'ignore'))
-
-    def clear(self):
-        self.SetLabel('')
-
-
-class _StopAndRunAgainButton(wx.Button):
-
-    def __init__(self, parent):
-        wx.Button.__init__(self, parent, label='Stop')
-        self.Bind(wx.EVT_BUTTON, self.OnClick, self)
-
-    def OnClick(self, event):
-        self.Enable(False)
-        getattr(self.Parent, 'On' + self.LabelText.replace(' ', ''))()
-
-    def enable_run_again(self):
-        self.Enable()
-        self.SetLabel('Run Again')
-
-    def reset(self):
-        self.Enable()
-        self.SetLabel('Stop')
-
-
-class _RunAgainButton(wx.Button):
-
-    def __init__(self, parent):
-        wx.Button.__init__(self, parent, label='Run Again')
-        self.Bind(wx.EVT_BUTTON, self.OnClick, self)
-        self.Enable(False)
-
-    def OnClick(self, event):
-        self.Parent.OnRunAgain()
-
-    def enable_run_again(self):
-        self.Enable()
-
-    def reset(self):
-        self.Enable(False)
