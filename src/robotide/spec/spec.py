@@ -87,8 +87,8 @@ class _XMLResource(Spec):
     def get_keywords(self, library_keywords=True):
         return self.keywords
 
-    def get_user_keyword(self, longname):
-        return None
+    def get_user_keywords(self):
+        return []
 
     def get_variables(self):
         return []
