@@ -58,6 +58,8 @@ class Plugin(object):
                      doc='Provides access to the data model')
     frame = property(lambda self: self.__frame,
                      doc='Reference to the RIDE main frame')
+    datafile = property(lambda self: self.get_selected_datafile(),
+                        doc='Currently selected datafile')
 
     def __init__(self, application, name=None, doc=None, metadata=None,
                  default_settings=None, initially_enabled=True):
@@ -265,6 +267,17 @@ class Plugin(object):
         """Returns content assist values for currently selected item."""
         return self.__namespace.content_assist_values(self.get_selected_item(),
                                                       value)
+
+    def is_user_keyword(self, name):
+        """Returns whether ``name`` is a user keyword of current datafile.
+
+        Checks both the datafile's own and imported user keywords for match.
+        """
+        return self.__namespace.is_user_keyword(self.datafile, name)
+
+    def is_library_keyword(self, name):
+        """Returns whether ``name`` is a keyword imported by current datafile."""
+        return self.__namespace.is_library_keyword(self.datafile, name)
 
     def get_plugins(self):
         """Returns list containing plugin wrapper for every loaded plugin.

@@ -57,6 +57,9 @@ class Namespace(object):
         kws = self._filter(self._get_library_keywords(item), name)
         return kws and kws[0].is_library_keyword() or False
 
+    def is_user_keyword(self, item, name):
+        return self._filter(item.get_user_keywords(), name) != []
+
     def get_keyword_details(self, item, name):
         kws = self._filter(self._get_keywords(item), name)
         return kws and kws[0].get_details() or None
