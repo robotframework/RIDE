@@ -14,14 +14,13 @@
 
 import os
 import sys
-import subprocess
-import time
-import tempfile
 import wx
 from wx.lib.mixins.listctrl import TextEditMixin
 
 from robotide.pluginapi import Plugin, ActionInfo, SeparatorInfo
 from robotide.editor.listeditor import ListEditor, AutoWidthColumnList
+
+from process import Process
 
 
 class RunAnything(Plugin):
@@ -94,65 +93,6 @@ class _RunConfig(object):
         self.doc = doc
         self._finished = False
         self._error = False
-
-    def run(self):
-        self._process = _Process(self.command)
-
-    def get_output(self):
-        return self._process.get_output()
-
-    def finished(self):
-        return self._process.finished()
-
-    def kill(self):
-        self._process.kill()
-
-
-class _Process(object):
-
-    def __init__(self, command):
-        self._out_fd, self._out_path \
-                      = tempfile.mkstemp(prefix='riderun_', text=True)
-        self._out_file = open(self._out_path)
-        self._finished = False
-        self._error = None
-        try:
-            self._process = subprocess.Popen(command, stdout=self._out_fd,
-                                             stderr=subprocess.STDOUT)
-        except OSError, err:
-            self._error = str(err)
-
-    def finished(self):
-        if self._error:
-            return True
-        self._finished = self._process.poll() is not None
-        return self._finished
-
-    def get_output(self):
-        if self._error:
-            return self._error
-        output = self._out_file.read()
-        if self._finished:
-            self._close_outputs()
-        return output
-
-    def _close_outputs(self):
-        self._out_file.close()
-        os.close(self._out_fd)
-        self._remove_tempfile()
-
-    def _remove_tempfile(self, attempts=10):
-        try:
-            os.remove(self._out_path)
-        except OSError:
-            if attempts:
-                time.sleep(1)
-                self._remove_tempfile(attempts-1)
-            else:
-                raise
-
-    def kill(self):
-        self._process.kill()
 
 
 class _ManageConfigsDialog(wx.Dialog):
@@ -263,18 +203,19 @@ class _Runner(wx.EvtHandler):
         return _OutputWindow(notebook, self)
 
     def run(self):
-        self._config.run()
+        self._process = Process(self._config.command)
+        self._process.start()
         self._timer.Start(500)
 
     def OnTimer(self, event=None):
-        finished = self._config.finished()
-        self._window.update_output(self._config.get_output(), finished)
+        finished = self._process.is_finished()
+        self._window.update_output(self._process.get_output(), finished)
         if finished:
             self._timer.Stop()
 
     def stop(self):
         try:
-            self._config.kill()
+            self._process.stop()
         except AttributeError:
             wx.MessageBox('Stopping process is possible only with '
                           'Python 2.6 or newer', style=wx.ICON_INFORMATION)
