@@ -16,6 +16,20 @@ import wx
 from wx.lib.mixins.listctrl import TextEditMixin
 
 from robotide.editor.listeditor import ListEditor, AutoWidthColumnList
+from robotide import context
+
+
+_CONFIG_HELP = """
+Command will be executed in system without opening shell. This means that shell services will not be available to
+the executed command. For example, in Windows, it is not possible to execute batch files without .bat extension.
+
+The command string will be split from whitespaces, first part is interpreted as command name and additional parts
+will be separate command arguments. If space is needed in argument, it must be written as <SPACE>.
+
+Examples:
+    pybot.bat --help
+    C:\\Program<SPACE>Files\Prog\prg.exe argument<SPACE>with<SPACE>space
+"""
 
 
 class ConfigManagerDialog(wx.Dialog):
@@ -24,15 +38,34 @@ class ConfigManagerDialog(wx.Dialog):
     def __init__(self, configs):
         wx.Dialog.__init__(self, wx.GetTopLevelWindows()[0], style=self._style,
                            title='Manage Run Configurations')
+        self._create_ui(configs)
+
+    def _create_ui(self, configs):
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
-        self._editor = _ConfigListEditor(self, configs)
-        self.Sizer.Add(self._editor, flag=wx.GROW, proportion=1)
+        self._editor = self._create_editor(configs)
+        self._create_help()
+        self._create_line()
+        self._create_buttons()
+        self.SetSize((750, 400))
+
+    def _create_editor(self, configs):
+        editor = _ConfigListEditor(self, configs)
+        self.Sizer.Add(editor, flag=wx.GROW, proportion=1)
+        return editor
+
+    def _create_help(self):
+        help = wx.StaticText(self, label=_CONFIG_HELP)
+        help.SetFont(wx.Font(*context.HELP_FONT))
+        self.Sizer.Add(help, border=5,flag=wx.TOP)
+
+    def _create_line(self):
         line = wx.StaticLine(self, size=(20,-1), style=wx.LI_HORIZONTAL)
         self.Sizer.Add(line, border=5,
                        flag=wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.RIGHT|wx.TOP)
+
+    def _create_buttons(self):
         self.Sizer.Add(self.CreateStdDialogButtonSizer(wx.OK|wx.CANCEL),
                        flag=wx.ALIGN_CENTER|wx.ALL, border=5)
-        self.SetSize((750, 200))
 
     def get_data(self):
         return self._editor.get_data()
