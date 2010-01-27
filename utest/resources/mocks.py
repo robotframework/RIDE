@@ -141,7 +141,7 @@ class _FakeUIObject(object):
 class FakeApplication(object):
     frame = _FakeUIObject()
     model = _FakeModel()
-    assister = None
+    namespace = None
     get_model = lambda s: _FakeModel()
     subscribe = lambda s, x, y: None
     get_menu_bar = lambda s: _FakeUIObject()

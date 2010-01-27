@@ -14,7 +14,6 @@
 
 import os
 import copy
-import operator
 
 from robotide import utils
 from robotide.spec import UserKeywordContent, VariableSpec
@@ -105,8 +104,7 @@ class _AbstractDataFile(object):
         self.dirty = True
 
     def get_user_keyword(self, name):
-        kws = self._filter(self.get_user_keywords(), name)
-        return kws and kws[0] or None
+        return self.namespace.get_user_keyword(self, name)
 
     def get_user_keywords(self):
         kws = copy.copy(self.keywords)
@@ -348,7 +346,8 @@ class ResourceFile(_AbstractDataFile):
     type = 'resource file'
 
     def __init__(self, data, namespace):
-        self.name = self.longname = self._find_source(data.source)
+        self.name = self._find_source(data.source)
+        self.longname = os.path.splitext(self.name)[0]
         self.settings = ResourceSettingTable(self, data)
         _AbstractDataFile.__init__(self, data, namespace)
 

@@ -15,9 +15,9 @@
 import os
 import sys
 import unittest
-from robot.utils.asserts import assert_true, assert_none, assert_false
+from robot.utils.asserts import assert_true, assert_none, assert_false, \
+        assert_equals
 
-from robotide.application import DataModel
 from robotide.namespace import Namespace
 from robotide.robotapi import TestSuiteData
 from robotide.model.files import _TestSuiteFactory
@@ -112,6 +112,12 @@ class TestResolvingKeywordAndVariables(_ContentAssistBaseTest):
         for name, details in data:
             assert_true(details in self.suite.get_keyword_details(name))
         assert_none(self.suite.get_keyword_details('Invalid KW name'))
+
+    def test_get_user_keyword(self):
+        for name in ['My Suite Teardown', 'Resource UK',
+                     'resource2.Resource2 UK']:
+            kw = self.ns.get_user_keyword(self.suite, name)
+            assert_equals(kw.name, name.split('.')[-1])
 
     def test_is_library_keyword(self):
         for name in ['Should Be Equal', 'Copy Directory',

@@ -15,10 +15,10 @@
 import unittest
 
 from robotide.namespace import Namespace
-from robotide.model.files import InitFile
-from robotide.robotapi import TestSuiteData
+from robotide.model.files import InitFile, ResourceFile
+from robotide.robotapi import TestSuiteData, ResourceFileData
 from robot.utils.asserts import assert_equals
-from resources import SUITEPATH, PATH_RESOURCE_NAME
+from resources import SUITEPATH, RESOURCE_PATH, PATH_RESOURCE_NAME
 
 DATA = TestSuiteData(SUITEPATH)
 
@@ -35,8 +35,10 @@ class TestParsing(unittest.TestCase):
         assert_equals(self.file_suite.name, 'Everything')
         assert_equals(self.file_suite.longname, 'Testsuite.Everything')
         assert_equals(self.file_suite.settings.doc.get_str_value(),
-                      'This test data file is used in *RobotIDE* _integration_ tests.')
-        assert_equals(self.file_suite.settings.default_tags.value, ['regeression'])
+                      'This test data file is used in *RobotIDE* ' +
+                      '_integration_ tests.')
+        assert_equals(self.file_suite.settings.default_tags.value,
+                      ['regeression'])
         assert_equals(self.file_suite.settings.force_tags.value, ['ride'])
         for fixture, exp_value in [('suite_setup', ['My Suite Setup']),
                                     ('suite_teardown', ['My Suite Teardown',
@@ -47,6 +49,11 @@ class TestParsing(unittest.TestCase):
                                   exp_value)
         assert_equals(self.file_suite.settings.test_timeout.value,
                       ['10 seconds', 'No tarrying allowed'])
+
+    def test_resource_parsing(self):
+        res = ResourceFile(ResourceFileData(RESOURCE_PATH), Namespace())
+        assert_equals(res.name, 'resource.html')
+        assert_equals(res.longname, 'resource')
 
     def test_test_case_parsing(self):
         assert_equals(self.test.name, 'My Test')
@@ -60,9 +67,11 @@ class TestParsing(unittest.TestCase):
 
     def test_user_keyword_parsing(self):
         assert_equals(self.uk.name, 'My Suite Teardown')
-        assert_equals(self.uk.longname, 'Testsuite.Everything.My Suite Teardown')
+        assert_equals(self.uk.longname,
+                      'Testsuite.Everything.My Suite Teardown')
         assert_equals(self.uk.doc, 'This is *user* _keyword_ documentation')
-        assert_equals(self.uk.settings.args.value, ['${scalar arg}', '@{list arg}'])
+        assert_equals(self.uk.settings.args.value,
+                      ['${scalar arg}', '@{list arg}'])
         assert_equals(self.uk.settings.return_value.value, ['Success'])
         assert_equals(self.uk.settings.timeout.value,
                       ['1 second', "I'm faster than you"])
@@ -80,7 +89,7 @@ class TestFindingImports(unittest.TestCase):
 
     def test_resource_imports(self):
         assert_equals(self.suite.get_resources()[0].name, 'resource.html')
-        assert_equals(self.suite.get_resources()[0].longname, 'resource.html')
+        assert_equals(self.suite.get_resources()[0].longname, 'resource')
 
     def test_nested_resource_imports(self):
         assert_equals(self.suite.get_resources()[0].get_resources()[0].name,
@@ -99,7 +108,8 @@ class TestFindingImportsWithVariables(unittest.TestCase):
         self.suite = InitFile(DATA, Namespace()).suites[0]
 
     def test_finding_resource_import_with_variable(self):
-        assert_equals(self.suite.get_resources()[3].name, 'another_resource.html')
+        assert_equals(self.suite.get_resources()[3].name,
+                      'another_resource.html')
 
     def test_finding_resource_file_with_variable_in_path(self):
         assert_equals(self.suite.get_resources()[4].name, 'resource4.html')
@@ -111,3 +121,4 @@ class TestFindingImportsWithVariables(unittest.TestCase):
 
 if __name__  == '__main__':
     unittest.main()
+
