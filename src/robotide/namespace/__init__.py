@@ -49,6 +49,10 @@ class Namespace(object):
         return item.get_own_keywords() + item.imports.get_keywords() +\
                 self._lib_cache.get_default_keywords()
 
+    def get_user_keyword(self, item, name):
+        kws = self._filter(item.get_user_keywords(), name)
+        return kws and kws[0] or None
+
     def is_library_keyword(self, item, name):
         kws = self._filter(self._get_library_keywords(item), name)
         return kws and kws[0].is_library_keyword() or False
