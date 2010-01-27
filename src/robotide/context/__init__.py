@@ -1,17 +1,18 @@
 #  Copyright 2008-2009 Nokia Siemens Networks Oyj
-#  
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import wx
 import os.path
 
 from robotide.version import VERSION
@@ -46,7 +47,7 @@ SETTING_EDITOR_WIDTH = 450
 SETTING_LABEL_WIDTH = 175
 SETTING_ROW_HEIGTH = 25
 POPUP_BACKGROUND = (255, 255, 187)
-
+HELP_FONT = (8, wx.FONTFAMILY_DEFAULT, wx.FONTWEIGHT_NORMAL, wx.FONTSTYLE_NORMAL)
 ABOUT_RIDE = '''<h3>RIDE, version %s</h3>
 <p>More information in <a href=http://code.google.com/p/robotframework-ride/>project pages</a>.</p>
 <p>Contact developers <a href="mailto:robotframework-devel@googlegroups.com">
