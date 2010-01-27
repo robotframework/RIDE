@@ -26,11 +26,12 @@ from editordialogs import EditorDialog, DocumentationDialog,\
     ResourceImportDialog, VariablesImportDialog, MetadataDialog
 
 
-def Editor(item, editor_panel, tree):
+def Editor(plugin, editor_panel, tree):
+    item = plugin.get_selected_item()
     if not item:
         return WelcomePage(editor_panel)
     editor_class = globals()[item.__class__.__name__ + 'Editor']
-    return editor_class(editor_panel, item, tree)
+    return editor_class(plugin, editor_panel, item, tree)
 
 
 class WelcomePage(RideHtmlWindow):
@@ -49,15 +50,16 @@ class _RobotTableEditor(wx.Panel):
     undo = cut = copy = paste = delete = comment = uncomment = save \
         = show_content_assist = lambda self: None
 
-    def __init__(self, parent, item, tree):
+    def __init__(self, plugin, parent, item, tree):
         wx.Panel.__init__(self, parent)
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.SetSizer(self.sizer)
         if self.title is not None:
             self.sizer.Add(self._create_header(self.title), 0, wx.ALL, 5)
             self.sizer.Add((0,10))
+        self.plugin = plugin
         self.item = item
-        self._tree= tree
+        self._tree = tree
         self._populate()
 
     def close(self):
@@ -245,7 +247,7 @@ class TestCaseEditor(_RobotTableEditor):
         self.sizer.Add(sizer)
 
     def _create_kweditor(self):
-        self.kweditor = KeywordEditor(self, self.item, self._tree)
+        self.kweditor = KeywordEditor(self, self._tree)
         self._create_add_buttons(self.kweditor)
         self.sizer.Add(self.kweditor, 1, wx.EXPAND|wx.ALL, 2)
 

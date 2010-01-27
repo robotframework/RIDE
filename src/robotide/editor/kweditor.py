@@ -145,11 +145,11 @@ class KeywordEditorUi(GridEditor):
 class KeywordEditor(KeywordEditorUi):
     _no_cell = grid.GridCellCoords(-1, -1)
 
-    def __init__(self, parent, test_or_keyword, tree):
-        self._keywords = test_or_keyword.keywords
+    def __init__(self, parent, tree):
+        self._keywords = parent.item.keywords
         KeywordEditorUi.__init__(self, parent, len(self._keywords)+5, 5)
-        self.SetDefaultEditor(ContentAssistCellEditor(test_or_keyword))
-        self._datafile = test_or_keyword.datafile
+        self.SetDefaultEditor(ContentAssistCellEditor(parent.item))
+        self._datafile = parent.item.datafile
         # TODO: Tooltip may be smaller when the documentation is wrapped correctly
         self._tooltip = RidePopupWindow(self, (650, 400))
         self._marked_cell = None
@@ -159,6 +159,7 @@ class KeywordEditor(KeywordEditorUi):
         self._make_bindings()
         self._write_keywords(self._keywords)
         self._tree = tree
+        self._plugin = parent.plugin
 
     def _make_bindings(self):
         self.Bind(grid.EVT_GRID_EDITOR_SHOWN, self.OnEditor)

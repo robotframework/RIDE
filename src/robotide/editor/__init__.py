@@ -60,7 +60,7 @@ class EditorPlugin(Plugin):
             self._tab = _EditorTab(self)
             self.add_tab(self._tab, 'Edit', allow_closing=False)
         if self.tab_is_visible(self._tab):
-            self._tab.create_editor(self.get_selected_item(), self.tree)
+            self._tab.create_editor(self.tree)
 
     def disable(self):
         self.unregister_actions()
@@ -91,13 +91,13 @@ class _EditorTab(wx.Panel):
         self.SetSizer(self.sizer)
         self.editor = None
 
-    def create_editor(self, item, tree):
+    def create_editor(self, tree):
         self.Show(False)
         if self.editor:
             self.editor.close()
             self.editor.Destroy()
             self.sizer.Clear()
-        self.editor = Editor(item, self, tree)
+        self.editor = Editor(self._plugin, self, tree)
         self.sizer.Add(self.editor, 1, wx.ALL|wx.EXPAND)
         self.Layout()
         self.Show()
