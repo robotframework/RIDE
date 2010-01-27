@@ -19,7 +19,6 @@ from robotide.publish import RideTreeSelection, RideNotebookTabChanging,\
     RideNotebookTabChanged, RideSaving
 
 from editors import Editor
-from gridcolorizer import Colorizer
 
 
 _EDIT = """
