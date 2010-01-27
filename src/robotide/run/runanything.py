@@ -240,7 +240,7 @@ class _OutputWindow(wx.ScrolledWindow):
         self.SetScrollRate(20, 20)
 
     def _create_state_button(self):
-        if sys.version_info[:2] >= (2,6) and os.name != 'nt':
+        if sys.version_info[:2] >= (2,6):
             self._state_button = _StopAndRunAgainButton(self)
         else:
             self._state_button = _RunAgainButton(self)
@@ -296,12 +296,15 @@ class _StopAndRunAgainButton(wx.Button):
         self.Bind(wx.EVT_BUTTON, self.OnClick, self)
 
     def OnClick(self, event):
+        self.Enable(False)
         getattr(self.Parent, 'On' + self.LabelText.replace(' ', ''))()
 
     def enable_run_again(self):
+        self.Enable()
         self.SetLabel('Run Again')
 
     def reset(self):
+        self.Enable()
         self.SetLabel('Stop')
 
 
