@@ -218,9 +218,6 @@ class _Runner(wx.EvtHandler):
         except Exception, err:
             wx.MessageBox(str(err), style=wx.ICON_ERROR)
 
-    def restart(self):
-        self.run()
-
 
 class _OutputWindow(wx.ScrolledWindow):
 
@@ -269,7 +266,7 @@ class _OutputWindow(wx.ScrolledWindow):
         self._rename_tab('%s (running)' % self._runner.name)
         self.Parent.disallow_closing(self)
         self._state_button.reset()
-        self._runner.restart()
+        self._runner.run()
 
     def _rename_tab(self, name):
         self.Parent.rename_tab(self, name)
