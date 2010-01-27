@@ -10,5 +10,11 @@ def output(sleep=0.2):
     print 'done'
 
 
+def count_args(*args):
+    print len(args)
+
+def stderr():
+    sys.stderr.write('This is stderr\n')
+
 globals()[sys.argv[1]](*sys.argv[2:])
 
