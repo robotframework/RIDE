@@ -1,7 +1,7 @@
 import unittest
 import time
 import os
-from robot.utils.asserts import assert_equals, assert_false, assert_true
+from robot.utils.asserts import assert_equals, assert_true
 
 from robotide.run.runanything import _Runner, _RunConfig
 from resources import PYAPP_REFERENCE as _
