@@ -291,6 +291,11 @@ class Plugin(object):
         return self.__namespace.is_library_keyword(self.datafile, name)
 
     def register_content_assist_hook(self, hook):
+        """Allows plugin to insert values in content assist dialog.
+
+        ``hook`` must be a callable, which should return a list of instances
+        of `ContentAssistItem` class.
+        """
         self.__namespace.register_content_assist_hook(hook)
 
     def get_plugins(self):
