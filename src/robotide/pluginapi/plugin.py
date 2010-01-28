@@ -290,6 +290,9 @@ class Plugin(object):
         """Returns whether ``name`` is a keyword imported by current datafile."""
         return self.__namespace.is_library_keyword(self.datafile, name)
 
+    def register_content_assist_hook(self, hook):
+        self.__namespace.register_content_assist_hook(hook)
+
     def get_plugins(self):
         """Returns list containing plugin wrapper for every loaded plugin.
 
