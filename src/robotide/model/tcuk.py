@@ -14,7 +14,7 @@
 
 import copy
 
-from robotide.spec import VariableSpec
+from robotide.namespace.spec import VariableSpec
 
 from datalist import RobotDataList
 from keywords import Keyword, KeywordData
@@ -31,6 +31,7 @@ class _TcUkBase(object):
         self.longname = self._get_longname()
         keywords = data and data.keywords or []
         self.keywords = KeywordList(datafile, keywords)
+        self.imports = datafile.imports
 
     def copy(self, name):
         ret = copy.deepcopy(self)
@@ -47,6 +48,9 @@ class _TcUkBase(object):
         self.datafile.show_add_suite_dialog(tree)
 
     def get_own_keywords(self, *args):
+        return []
+
+    def get_own_variables(self):
         return []
 
     def _serialize(self, serializer):
@@ -86,7 +90,6 @@ class UserKeyword(_TcUkBase):
         _TcUkBase.__init__(self, datafile, data, name)
         self.settings = UserKeywordSettings(datafile, data)
         self.source = datafile.name
-        self.imports = datafile.imports
 
     shortdoc = property(lambda self: self.doc.split('\n')[0])
 
