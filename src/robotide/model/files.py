@@ -124,8 +124,7 @@ class _AbstractDataFile(object):
         return self._remove_duplicates(kws)
 
     def get_own_keywords(self, source=None):
-        source = source or self.name
-        return [ UserKeywordContent(kw, source, self.type) for kw in self.keywords ]
+        return self.keywords
 
     def get_own_variables(self):
         return [ VariableSpec('<this file>', var) for var in self.variables ]

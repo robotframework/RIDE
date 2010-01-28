@@ -15,7 +15,7 @@
 import operator
 
 from robotide import utils
-from robotide.namespace.contentassister import ContentAssister
+from robotide.namespace.spec import UserKeywordContent, _XMLResource
 from robotide.namespace.cache import LibraryCache, ResourceFileCache, \
     VariableFileCache
 
@@ -28,10 +28,27 @@ class Namespace(object):
         self._var_cache = VariableFileCache()
 
     def content_assist_values(self, item, value=None):
-        values = item.get_own_keywords('<this file>') + item.get_own_variables()+\
+        values = self._get_item_keywords(item) + item.get_own_variables()+\
                self._lib_cache.get_default_keywords() +\
-               item.imports.get_keywords() + item.imports.get_variables()
+               item.imports.get_variables()
         return self._sort(self._remove_duplicates(values))
+
+    def _get_item_keywords(self, item):
+        return [ UserKeywordContent(kw, '<this file>', item.type) for
+                 kw in item.get_own_keywords() ] +\
+                self._get_user_keywords_from_imports(item) +\
+                item.imports.get_library_keywords()
+
+    def _get_user_keywords_from_imports(self, item):
+        kws = []
+        for res in item.imports.get_resources():
+            if isinstance(res, _XMLResource):
+                kws.extend(res.get_keywords())
+            else:
+                kws.extend([UserKeywordContent(kw, res.name, res.type) for kw in
+                            res.keywords])
+                kws.extend(self._get_user_keywords_from_imports(res))
+        return kws
 
     def load_resource(self, path, datafile):
         return self._res_cache.load_resource(path, datafile)
@@ -65,10 +82,11 @@ class Namespace(object):
         return kws and kws[0].get_details() or None
 
     def _get_keywords(self, item):
-        return self._get_library_keywords(item) + item.get_own_keywords('<this file>')
+        return self._get_item_keywords(item) +\
+            self._lib_cache.get_default_keywords()
 
     def _get_library_keywords(self, item):
-        return item.imports.get_keywords() + \
+        return item.imports.get_library_keywords() + \
                self._lib_cache.get_default_keywords()
 
     def _filter(self, keywords, name):

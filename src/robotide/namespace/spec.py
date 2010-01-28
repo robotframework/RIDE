@@ -84,7 +84,10 @@ class LibrarySpec(Spec):
 
 
 class _XMLResource(Spec):
+    type = 'resource'
     variables = property(lambda self: self)
+    imports = property(lambda self: self)
+    get_library_keywords = lambda self: []
 
     def __init__(self, name, specfile):
         self.source = name
