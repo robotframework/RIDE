@@ -27,6 +27,16 @@ def XMLResource(resource_name):
     return None
 
 
+class VariableSpec(object):
+
+    def __init__(self, source, name):
+        self.source = source
+        self.name = name
+
+    def get_details(self):
+        return ''
+
+
 class Spec(object):
 
     def _init_from_specfile(self, specfile):
@@ -101,9 +111,6 @@ class _XMLResource(Spec):
 
     def replace_variables(self, value):
         return value
-
-    def content_assist_values(self, relative=False, filter=''):
-        return self.keywords
 
     def serialize(self):
         pass

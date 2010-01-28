@@ -16,7 +16,7 @@ import os
 
 from robotide import utils
 from robotide.context import SETTINGS
-from robotide.spec import LibrarySpec, XMLResource
+from robotide.namespace.spec import LibrarySpec, XMLResource
 from robotide.robotapi import RobotVariables, normpath
 from robotide.errors import DataError
 

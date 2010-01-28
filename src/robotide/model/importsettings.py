@@ -13,7 +13,7 @@
 #  limitations under the License.
 
 from robotide.publish import RideImportSettingAdded, RideImportSettingChanged
-from robotide.spec import VariableSpec
+from robotide.namespace.spec import VariableSpec
 from robotide import context
 from robotide import utils
 

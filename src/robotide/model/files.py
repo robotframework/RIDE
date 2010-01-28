@@ -16,7 +16,7 @@ import os
 import copy
 
 from robotide import utils
-from robotide.spec import UserKeywordContent, VariableSpec
+from robotide.namespace.spec import UserKeywordContent, VariableSpec
 from robotide.errors import NoRideError, DataError, SerializationError
 from robotide.publish import RideSaving, RideSaved
 from robotide.robotapi import TestSuiteData, ResourceFileData, InitFileData,\
