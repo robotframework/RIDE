@@ -27,16 +27,6 @@ def XMLResource(resource_name):
     return None
 
 
-class VariableSpec(object):
-
-    def __init__(self, source, name):
-        self.source = source
-        self.name = name
-
-    def get_details(self):
-        return ''
-
-
 class Spec(object):
 
     def _init_from_specfile(self, specfile):

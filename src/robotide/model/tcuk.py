@@ -14,7 +14,7 @@
 
 import copy
 
-from robotide.namespace.spec import VariableSpec
+from robotide.namespace import VariableSpec
 
 from datalist import RobotDataList
 from keywords import Keyword, KeywordData

@@ -20,17 +20,37 @@ from robotide.namespace.cache import LibraryCache, ResourceFileCache, \
     VariableFileCache
 
 
+class ContentAssistItem(object):
+
+    def __init__(self, source, name, details=''):
+        self.source = source
+        self.name = name
+        self.details = details
+
+    def get_details(self):
+        return self.details
+
+class VariableSpec(ContentAssistItem):
+    pass
+
+
 class Namespace(object):
 
     def __init__(self):
         self._lib_cache = LibraryCache()
         self._res_cache = ResourceFileCache(self)
         self._var_cache = VariableFileCache()
+        self._hooks = []
+
+    def register_content_assist_hook(self, hook):
+        self._hooks.append(hook)
 
     def content_assist_values(self, item, value=None):
         values = self._get_item_keywords(item) + item.get_own_variables()+\
                self._lib_cache.get_default_keywords() +\
                item.imports.get_variables()
+        for hook in self._hooks:
+            values.extend(hook())
         return self._sort(self._remove_duplicates(values))
 
     def _get_item_keywords(self, item):
