@@ -46,9 +46,6 @@ class _TcUkBase(object):
     def show_add_suite_dialog(self, tree):
         self.datafile.show_add_suite_dialog(tree)
 
-    def content_assist_values(self):
-        return self.datafile.content_assist_values()
-
     def get_own_keywords(self, *args):
         return []
 
