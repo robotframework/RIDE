@@ -103,9 +103,6 @@ class _AbstractDataFile(object):
     def set_dirty(self):
         self.dirty = True
 
-    def get_user_keyword(self, name):
-        return self.namespace.get_user_keyword(self, name)
-
     def get_user_keywords(self):
         kws = copy.copy(self.keywords)
         for res in self.get_resources():
