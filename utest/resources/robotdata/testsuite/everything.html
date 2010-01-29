@@ -4,6 +4,7 @@
 
 
 
+
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="generator" content="RobotIDE"> 
 <style type="text/css">
@@ -602,8 +603,9 @@ th {
 <td><a name="keyword_My Suite Teardown">My Suite Teardown</a></td>
 <td>[Arguments]</td>
 <td>${scalar arg}</td>
-<td>@{list arg}</td>
-<td><br>
+<td>${default arg}=default<br>
+</td>
+<td>@{list arg}
 </td>
 </tr>
 <tr>
