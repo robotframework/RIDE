@@ -97,6 +97,10 @@ class TestResolvingKeywordAndVariables(_ContentAssistBaseTest):
         for name in ['No Operation', 'Testlib Keyword']:
             self._content_assist_should_not_contain(name, 're')
 
+    def test_filtering_with_variable_start_in_end(self):
+        values = self.ns.content_assist_values(self.suite, 'start${')
+        self._should_contain(values, 'start${SCALAR}', '<this file>')
+
     def test_get_keywords(self):
         data = [('My Test Setup', self.suite.name)] + self.exp_kws
         for name, source in data:
@@ -117,10 +121,6 @@ class TestResolvingKeywordAndVariables(_ContentAssistBaseTest):
         kws = [ kw for kw in self.ns.content_assist_values(self.suite) if
                 kw.name == 'Should Be Equal' ]
         assert_true(len(kws) == 1)
-
-    def test_variable_in_middle(self):
-        values = self.ns.content_assist_values(self.suite, 'start${')
-        self._should_contain(values, 'start${SCALAR}', '<this file>')
 
     def test_get_keyword_details(self):
         data = [('Convert To Integer',

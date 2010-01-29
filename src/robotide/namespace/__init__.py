@@ -128,10 +128,22 @@ class Namespace(object):
         return keywords
 
     def _filter(self, values, start):
+        var_id, var_index = self._get_variable_start_index(start)
+        if var_index:
+            return [VariableSpec(v.source, start[:var_index] + v.name) for
+                    v in values if self._starts(v, var_id)]
         return [ v for v in values if self._starts(v, start) ]
 
     def _starts(self, value, start):
         return value.name.lower().startswith(start.lower())
+
+    def _get_variable_start_index(self, start):
+        scalar_id, list_id = '${', '@'
+        if start.endswith(scalar_id):
+            return scalar_id, start.index(scalar_id)
+        elif start.endswith(list_id):
+            return list_id, start.index(list_id)
+        return None, None
 
     def _remove_duplicates(self, keywords):
         return list(set(keywords))
