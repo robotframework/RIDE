@@ -120,9 +120,7 @@ class ContentAssistPopup(object):
         return self._selection != -1 and self._list.get_text(self._selection) or None
 
     def content_assist_for(self, value):
-        self._choices = [ val for val in
-                          self._plugin.content_assist_values(value) if
-                          self._starts(val.name, value) ]
+        self._choices = self._plugin.content_assist_values(value)
         if not self._choices:
             self._list.ClearAll()
             self.hide()

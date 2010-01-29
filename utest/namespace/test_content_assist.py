@@ -41,14 +41,14 @@ context.APP = APP_MOCK
 
 class _ContentAssistBaseTest(unittest.TestCase):
 
-    def _content_assist_should_not_contain(self, name):
-        for item in self.ns.content_assist_values(self.suite, ''):
+    def _content_assist_should_not_contain(self, name, value=''):
+        for item in self.ns.content_assist_values(self.suite, value):
             if item.name == name:
                 raise AssertionError("Item '%s' found from content assist"
                                      % (name))
 
-    def _content_assist_should_contain(self, name, source):
-        self._should_contain(self.ns.content_assist_values(self.suite, ''),
+    def _content_assist_should_contain(self, name, source, value=''):
+        self._should_contain(self.ns.content_assist_values(self.suite, value),
                              name, source)
 
     def _should_contain(self, items, name, source):
@@ -89,6 +89,14 @@ class TestResolvingKeywordAndVariables(_ContentAssistBaseTest):
         for name, source in data:
             self._content_assist_should_contain(name, source)
 
+    def test_filtering_on_value(self):
+        for name, source in [('Read Process Output', 'OperatingSystem'),
+                             ('Regexp Escape', 'BuiltIn'),
+                             ('Resource UK', 'resource.html')]:
+            self._content_assist_should_contain(name, source, 're')
+        for name in ['No Operation', 'Testlib Keyword']:
+            self._content_assist_should_not_contain(name, 're')
+
     def test_get_keywords(self):
         data = [('My Test Setup', self.suite.name)] + self.exp_kws
         for name, source in data:
@@ -109,6 +117,10 @@ class TestResolvingKeywordAndVariables(_ContentAssistBaseTest):
         kws = [ kw for kw in self.ns.content_assist_values(self.suite) if
                 kw.name == 'Should Be Equal' ]
         assert_true(len(kws) == 1)
+
+    def test_variable_in_middle(self):
+        values = self.ns.content_assist_values(self.suite, 'start${')
+        self._should_contain(values, 'start${SCALAR}', '<this file>')
 
     def test_get_keyword_details(self):
         data = [('Convert To Integer',

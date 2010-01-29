@@ -45,10 +45,11 @@ class Namespace(object):
     def register_content_assist_hook(self, hook):
         self._hooks.append(hook)
 
-    def content_assist_values(self, item, value=''):
+    def content_assist_values(self, item, start=''):
         values = self._get_item_keywords(item) + item.get_own_variables()+\
                self._lib_cache.get_default_keywords() +\
                item.imports.get_variables()
+        values = self._filter(values, start)
         for hook in self._hooks:
             values.extend(hook())
         return self._sort(self._remove_duplicates(values))
@@ -125,6 +126,12 @@ class Namespace(object):
             keywords = [ kw for kw in keywords if utils.eq(kw.name, name) or
                                                   utils.eq(kw.longname, name) ]
         return keywords
+
+    def _filter(self, values, start):
+        return [ v for v in values if self._starts(v, start) ]
+
+    def _starts(self, value, start):
+        return value.name.lower().startswith(start.lower())
 
     def _remove_duplicates(self, keywords):
         return list(set(keywords))
