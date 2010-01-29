@@ -45,7 +45,7 @@ class Namespace(object):
     def register_content_assist_hook(self, hook):
         self._hooks.append(hook)
 
-    def content_assist_values(self, item, value=None):
+    def content_assist_values(self, item, value=''):
         values = self._get_item_keywords(item) + item.get_own_variables()+\
                self._lib_cache.get_default_keywords() +\
                item.imports.get_variables()
@@ -98,18 +98,18 @@ class Namespace(object):
                 self._lib_cache.get_default_keywords()
 
     def get_user_keyword(self, item, name):
-        kws = self._filter(item.get_user_keywords(), name)
+        kws = self._match_name(item.get_user_keywords(), name)
         return kws and kws[0] or None
 
     def is_library_keyword(self, item, name):
-        kws = self._filter(self._get_library_keywords(item), name)
+        kws = self._match_name(self._get_library_keywords(item), name)
         return kws and kws[0].is_library_keyword() or False
 
     def is_user_keyword(self, item, name):
-        return self._filter(item.get_user_keywords(), name) != []
+        return self._match_name(item.get_user_keywords(), name) != []
 
     def get_keyword_details(self, item, name):
-        kws = self._filter(self._get_keywords(item), name)
+        kws = self._match_name(self._get_keywords(item), name)
         return kws and kws[0].get_details() or None
 
     def _get_keywords(self, item):
@@ -120,7 +120,7 @@ class Namespace(object):
         return item.imports.get_library_keywords() + \
                self._lib_cache.get_default_keywords()
 
-    def _filter(self, keywords, name):
+    def _match_name(self, keywords, name):
         if name is not None:
             keywords = [ kw for kw in keywords if utils.eq(kw.name, name) or
                                                   utils.eq(kw.longname, name) ]
