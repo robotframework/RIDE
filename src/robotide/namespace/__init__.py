@@ -51,7 +51,7 @@ class Namespace(object):
                item.imports.get_variables()
         values = self._filter(values, start)
         for hook in self._hooks:
-            values.extend(hook())
+            values.extend(hook(item, start))
         return self._sort(self._remove_duplicates(values))
 
     def get_all_keywords(self, model):
