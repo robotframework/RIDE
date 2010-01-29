@@ -21,6 +21,7 @@ from robotide.publish import RideSaving, RideSaved
 from robotide.robotapi import TestSuiteData, ResourceFileData, InitFileData,\
     UserErrorHandler
 from robotide.writer import FileWriter
+from robotide.namespace import VariableSpec
 
 from tables import InitFileSettingTable, SuiteSettingTable,\
         ResourceSettingTable, VariableTable, TestCaseTable, UserKeywordTable
