@@ -61,22 +61,7 @@ class DataModel(object):
             self._resolve_imported_resources(item)
 
     def get_all_keywords(self):
-        kws = []
-        if self.suite:
-            kws = self.suite.get_keywords()
-            for s in self.suite.suites:
-                kws.extend(s.get_keywords())
-        for res in self.resources:
-            kws.extend(res.get_keywords())
-        kws = self._remove_duplicates(kws)
-        kws.sort(key=operator.attrgetter('name'))
-        return kws
-
-    def _remove_duplicates(self, kws):
-        kws_by_name = {}
-        for kw in kws:
-            kws_by_name[kw.longname] = kw
-        return kws_by_name.values()
+        return self._namespace.get_all_keywords(self)
 
     def get_files_without_format(self, datafile=None):
         if not self.suite:

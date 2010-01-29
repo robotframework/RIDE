@@ -21,6 +21,7 @@ from robot.utils.asserts import assert_true, assert_none, assert_false, \
 from robotide.namespace import Namespace
 from robotide.robotapi import TestSuiteData
 from robotide.model.files import _TestSuiteFactory
+from robotide.application import DataModel
 from robotide import context
 from resources import COMPLEX_SUITE_PATH, PATH_RESOURCE_NAME
 
@@ -92,6 +93,13 @@ class TestResolvingKeywordAndVariables(_ContentAssistBaseTest):
         data = [('My Test Setup', self.suite.name)] + self.exp_kws
         for name, source in data:
             self._should_contain(self.ns.get_keywords(self.suite), name, source)
+
+    def test_get_all_keywords(self):
+        data = [('My Test Setup', self.suite.name)] + self.exp_kws
+        model = DataModel(self.ns)
+        model.suite = self.suite
+        for name, source in data:
+            self._should_contain(self.ns.get_all_keywords(model), name, source)
 
     def test_items_should_be_in_alphabetical_order(self):
         kws = self.ns.content_assist_values(self.suite)

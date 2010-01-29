@@ -53,6 +53,17 @@ class Namespace(object):
             values.extend(hook())
         return self._sort(self._remove_duplicates(values))
 
+    def get_all_keywords(self, model):
+        kws = []
+        if model.suite:
+            kws = model.suite.get_keywords()
+            for s in model.suite.suites:
+                kws.extend(s.get_keywords())
+        for res in model.resources:
+            kws.extend(res.get_keywords())
+        kws.extend(self._lib_cache.get_default_keywords())
+        return self._sort(self._remove_duplicates(kws))
+
     def _get_item_keywords(self, item):
         return [ UserKeywordContent(kw, '<this file>', item.type) for
                  kw in item.get_own_keywords() ] +\
