@@ -139,6 +139,12 @@ class TestResolvingKeywordAndVariables(_ContentAssistBaseTest):
         self._should_contain(self.ns.content_assist_values(kw),
                              '${scalar arg}', '<argument>')
 
+    def test_default_values_are_remove_from_uk_arguments(self):
+        kw = self.suite.keywords[1]
+        self._should_contain(self.ns.content_assist_values(kw),
+                             '${default arg}', '<argument>')
+
+
 
 class TestModifyingDataAffectsContentAssist(_ContentAssistBaseTest):
     _more_varz = '../resources/more_resources/even_more_varz.py'

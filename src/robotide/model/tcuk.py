@@ -98,8 +98,12 @@ class UserKeyword(_TcUkBase):
         self._mark_dirty()
 
     def get_own_variables(self):
-        return [ VariableSpec('<argument>', var) for var
-                 in self.settings.get_args() ]
+        return [ VariableSpec('<argument>', self._strip_default_value(var))
+                 for var in self.settings.get_args() ]
+
+    def _strip_default_value(self, var):
+        return var.split('=')[0]
+
 
     def serialize(self, serializer):
         serializer.start_keyword(self)
