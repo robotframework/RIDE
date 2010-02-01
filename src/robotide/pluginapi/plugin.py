@@ -170,8 +170,12 @@ class Plugin(object):
         information to create menu entry, keyboard shortcut and/or toolbar
         button for the action.
 
-        All registered actions can be registered using
-        the `unregister_actions` method.
+        All registered actions can be un-registered using the
+        `unregister_actions` method.
+
+        If register action is used in menu event handler and it modifies the
+        menu that triggered the event, it is safest to wrap register action
+        call inside wx.CallAfter function.
         """
         action = self.__frame.actions.register_action(action_info)
         self.__actions.append(action)
