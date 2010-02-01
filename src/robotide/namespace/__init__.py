@@ -46,9 +46,9 @@ class Namespace(object):
         self._hooks.append(hook)
 
     def content_assist_values(self, item, start=''):
-        values = self._get_item_keywords(item) + item.get_own_variables()+\
-               self._lib_cache.get_default_keywords() +\
-               item.imports.get_variables()
+        values = self._get_item_keywords(item) + item.get_own_variables()+ \
+                 self._lib_cache.get_default_keywords() + \
+                 item.imports.get_variables()
         values = self._filter(values, start)
         for hook in self._hooks:
             values.extend(hook(item, start))
