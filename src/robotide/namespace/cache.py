@@ -17,6 +17,7 @@ import os
 from robotide import utils
 from robotide.context import SETTINGS
 from robotide.spec import LibrarySpec, XMLResource
+from robotide.model.files import ResourceFileFactory
 from robotide.robotapi import RobotVariables, normpath
 from robotide.errors import DataError
 
@@ -122,8 +123,6 @@ class ResourceFileCache(_FileCache):
         try:
             return self._resource_files[normalized_key]
         except KeyError:
-            #TODO: There is cyclic import which should be removed
-            from robotide.model.files import ResourceFileFactory
             resource = ResourceFileFactory(path, self._namespace, create_new)\
                     or XMLResource(name)
             self._resource_files[normalized_key] = resource
