@@ -110,6 +110,7 @@ class _XMLResource(Spec):
 
 
 class _KeywordContent(object):
+    details = property(lambda self: self._get_details())
 
     def __init__(self, item, source, source_type):
         self.name = self._get_name(item)
@@ -120,7 +121,7 @@ class _KeywordContent(object):
         self.args = self._format_args(self._parse_args(item))
         self._source_type = source_type
 
-    def get_details(self):
+    def _get_details(self):
         doc = utils.html_escape(self.doc, formatting=True)
         return 'Source: %s &lt;%s&gt;<br><br>Arguments: %s<br><br>%s' % \
                 (self.source, self._source_type, self.args, doc)

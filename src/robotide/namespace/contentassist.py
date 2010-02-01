@@ -19,17 +19,25 @@ class ContentAssistItem(object):
     """Represents an object that can be displayed by content assistant."""
 
     def __init__(self, name, source, details=''):
-        """
+        """Creates a content assist item.
+
+        :Parameters:
+          name
+            Item name. Is shown in the first column of the content assist popup.
+          source
+            Item source. Is shown in the second column of the content assist popup.
+          details
+            Detailed information for item that is shown in the additional popup
+            besides the list that contains content assist values. Will be
+            displayed as HTML.
         """
         self.source = source
         self.name = name
         self.details = details
 
-    def get_details(self):
-        return self.details
-
 
 class _KeywordContent(object):
+    details = property(lambda self: self._get_details())
 
     def __init__(self, item, source, source_type):
         self.name = self._get_name(item)
@@ -40,7 +48,7 @@ class _KeywordContent(object):
         self.args = self._format_args(self._parse_args(item))
         self._source_type = source_type
 
-    def get_details(self):
+    def _get_details(self):
         doc = utils.html_escape(self.doc, formatting=True)
         return 'Source: %s &lt;%s&gt;<br><br>Arguments: %s<br><br>%s' % \
                 (self.source, self._source_type, self.args, doc)
