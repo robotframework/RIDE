@@ -1,0 +1,776 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>robotide.utils.components.RideHtmlWindow</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="robotide-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://code.google.com/p/robotframework-ride">RIDE</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="robotide-module.html">Package&nbsp;robotide</a> ::
+        <a href="robotide.utils-module.html">Package&nbsp;utils</a> ::
+        <a href="robotide.utils.components-module.html">Module&nbsp;components</a> ::
+        Class&nbsp;RideHtmlWindow
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class RideHtmlWindow</h1><p class="nomargin-top"><span class="codelink"><a href="robotide.utils.components-pysrc.html#RideHtmlWindow">source&nbsp;code</a></span></p>
+<pre class="base-tree">
+     object --+                        
+              |                        
+wx._core.Object --+                    
+                  |                    
+wx._core.EvtHandler --+                
+                      |                
+        wx._core.Window --+            
+                          |            
+          wx._windows.Panel --+        
+                              |        
+     wx._windows.ScrolledWindow --+    
+                                  |    
+                 wx.html.HtmlWindow --+
+                                      |
+                                     <strong class="uidshort">RideHtmlWindow</strong>
+</pre>
+
+<dl><dt>Known Subclasses:</dt>
+<dd>
+      <ul class="subclass-list">
+<li><a href="robotide.editor.editors.WelcomePage-class.html">editor.editors.WelcomePage</a></li>  </ul>
+</dd></dl>
+
+<hr />
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Instance Methods</span></td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">EvtHandler</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.utils.components.RideHtmlWindow-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">size</span>=<span class="summary-sig-default">wx.Size(-1, -1)</span>,
+        <span class="summary-sig-arg">text</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Size size=DefaultSize, int style=HW_DEFAULT_STYLE,
+String name=HtmlWindowNameStr) -&gt; HtmlWindow</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.utils.components-pysrc.html#RideHtmlWindow.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.utils.components.RideHtmlWindow-class.html#OnLinkClicked" class="summary-sig-name">OnLinkClicked</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">link</span>)</span><br />
+      OnLinkClicked(self, HtmlLinkInfo link)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.utils.components-pysrc.html#RideHtmlWindow.OnLinkClicked">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.utils.components.RideHtmlWindow-class.html#close" class="summary-sig-name">close</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.utils.components-pysrc.html#RideHtmlWindow.close">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.utils.components.RideHtmlWindow-class.html#clear" class="summary-sig-name">clear</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.utils.components-pysrc.html#RideHtmlWindow.clear">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>wx.html.HtmlWindow</code></b>:
+      <code>AppendToPage</code>,
+      <code>Create</code>,
+      <code>GetInternalRepresentation</code>,
+      <code>GetOpenedAnchor</code>,
+      <code>GetOpenedPage</code>,
+      <code>GetOpenedPageTitle</code>,
+      <code>GetParser</code>,
+      <code>GetRelatedFrame</code>,
+      <code>HasAnchor</code>,
+      <code>HistoryBack</code>,
+      <code>HistoryCanBack</code>,
+      <code>HistoryCanForward</code>,
+      <code>HistoryClear</code>,
+      <code>HistoryForward</code>,
+      <code>LoadFile</code>,
+      <code>LoadPage</code>,
+      <code>OnCellClicked</code>,
+      <code>OnCellMouseHover</code>,
+      <code>OnOpeningURL</code>,
+      <code>OnSetTitle</code>,
+      <code>ReadCustomization</code>,
+      <code>ScrollToAnchor</code>,
+      <code>SelectAll</code>,
+      <code>SelectLine</code>,
+      <code>SelectWord</code>,
+      <code>SelectionToText</code>,
+      <code>SetBackgroundImage</code>,
+      <code>SetBorders</code>,
+      <code>SetFonts</code>,
+      <code>SetPage</code>,
+      <code>SetRelatedFrame</code>,
+      <code>SetRelatedStatusBar</code>,
+      <code>SetStandardFonts</code>,
+      <code>ToText</code>,
+      <code>WriteCustomization</code>,
+      <code>__repr__</code>,
+      <code>base_OnCellClicked</code>,
+      <code>base_OnCellMouseHover</code>,
+      <code>base_OnLinkClicked</code>,
+      <code>base_OnSetTitle</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>wx._windows.ScrolledWindow</code></b>:
+      <code>AdjustScrollbars</code>,
+      <code>CalcScrollInc</code>,
+      <code>CalcScrolledPosition</code>,
+      <code>CalcUnscrolledPosition</code>,
+      <code>DoPrepareDC</code>,
+      <code>EnableScrolling</code>,
+      <code>GetScaleX</code>,
+      <code>GetScaleY</code>,
+      <code>GetScrollPageSize</code>,
+      <code>GetScrollPixelsPerUnit</code>,
+      <code>GetTargetWindow</code>,
+      <code>GetViewStart</code>,
+      <code>Scroll</code>,
+      <code>SetScale</code>,
+      <code>SetScrollPageSize</code>,
+      <code>SetScrollRate</code>,
+      <code>SetScrollbars</code>,
+      <code>SetTargetWindow</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>wx._windows.Panel</code></b>:
+      <code>SetFocusIgnoringChildren</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>wx._core.Window</code></b>:
+      <code>AcceptsFocus</code>,
+      <code>AcceptsFocusFromKeyboard</code>,
+      <code>AddChild</code>,
+      <code>AdjustForLayoutDirection</code>,
+      <code>AssociateHandle</code>,
+      <code>CacheBestSize</code>,
+      <code>CanSetTransparent</code>,
+      <code>CaptureMouse</code>,
+      <code>Center</code>,
+      <code>CenterOnParent</code>,
+      <code>Centre</code>,
+      <code>CentreOnParent</code>,
+      <code>ClearBackground</code>,
+      <code>ClientToScreen</code>,
+      <code>ClientToScreenXY</code>,
+      <code>ClientToWindowSize</code>,
+      <code>Close</code>,
+      <code>ConvertDialogPointToPixels</code>,
+      <code>ConvertDialogSizeToPixels</code>,
+      <code>ConvertPixelPointToDialog</code>,
+      <code>ConvertPixelSizeToDialog</code>,
+      <code>DLG_PNT</code>,
+      <code>DLG_SZE</code>,
+      <code>Destroy</code>,
+      <code>DestroyChildren</code>,
+      <code>Disable</code>,
+      <code>DissociateHandle</code>,
+      <code>DragAcceptFiles</code>,
+      <code>Enable</code>,
+      <code>FindWindowById</code>,
+      <code>FindWindowByLabel</code>,
+      <code>FindWindowByName</code>,
+      <code>Fit</code>,
+      <code>FitInside</code>,
+      <code>Freeze</code>,
+      <code>GetAcceleratorTable</code>,
+      <code>GetAdjustedBestSize</code>,
+      <code>GetAutoLayout</code>,
+      <code>GetBackgroundColour</code>,
+      <code>GetBackgroundStyle</code>,
+      <code>GetBestFittingSize</code>,
+      <code>GetBestSize</code>,
+      <code>GetBestSizeTuple</code>,
+      <code>GetBestVirtualSize</code>,
+      <code>GetBorder</code>,
+      <code>GetCaret</code>,
+      <code>GetCharHeight</code>,
+      <code>GetCharWidth</code>,
+      <code>GetChildren</code>,
+      <code>GetClientAreaOrigin</code>,
+      <code>GetClientRect</code>,
+      <code>GetClientSize</code>,
+      <code>GetClientSizeTuple</code>,
+      <code>GetConstraints</code>,
+      <code>GetContainingSizer</code>,
+      <code>GetCursor</code>,
+      <code>GetDefaultAttributes</code>,
+      <code>GetDropTarget</code>,
+      <code>GetEffectiveMinSize</code>,
+      <code>GetEventHandler</code>,
+      <code>GetExtraStyle</code>,
+      <code>GetFont</code>,
+      <code>GetForegroundColour</code>,
+      <code>GetFullTextExtent</code>,
+      <code>GetGrandParent</code>,
+      <code>GetGtkWidget</code>,
+      <code>GetHandle</code>,
+      <code>GetHelpText</code>,
+      <code>GetHelpTextAtPoint</code>,
+      <code>GetId</code>,
+      <code>GetLabel</code>,
+      <code>GetLayoutDirection</code>,
+      <code>GetMaxHeight</code>,
+      <code>GetMaxSize</code>,
+      <code>GetMaxWidth</code>,
+      <code>GetMinHeight</code>,
+      <code>GetMinSize</code>,
+      <code>GetMinWidth</code>,
+      <code>GetName</code>,
+      <code>GetParent</code>,
+      <code>GetPosition</code>,
+      <code>GetPositionTuple</code>,
+      <code>GetRect</code>,
+      <code>GetScreenPosition</code>,
+      <code>GetScreenPositionTuple</code>,
+      <code>GetScreenRect</code>,
+      <code>GetScrollPos</code>,
+      <code>GetScrollRange</code>,
+      <code>GetScrollThumb</code>,
+      <code>GetSize</code>,
+      <code>GetSizeTuple</code>,
+      <code>GetSizer</code>,
+      <code>GetTextExtent</code>,
+      <code>GetThemeEnabled</code>,
+      <code>GetToolTip</code>,
+      <code>GetTopLevelParent</code>,
+      <code>GetUpdateClientRect</code>,
+      <code>GetUpdateRegion</code>,
+      <code>GetValidator</code>,
+      <code>GetVirtualSize</code>,
+      <code>GetVirtualSizeTuple</code>,
+      <code>GetWindowBorderSize</code>,
+      <code>GetWindowStyle</code>,
+      <code>GetWindowStyleFlag</code>,
+      <code>GetWindowVariant</code>,
+      <code>HasCapture</code>,
+      <code>HasFlag</code>,
+      <code>HasMultiplePages</code>,
+      <code>HasScrollbar</code>,
+      <code>HasTransparentBackground</code>,
+      <code>Hide</code>,
+      <code>HitTest</code>,
+      <code>HitTestXY</code>,
+      <code>InheritAttributes</code>,
+      <code>InheritsBackgroundColour</code>,
+      <code>InitDialog</code>,
+      <code>InvalidateBestSize</code>,
+      <code>IsBeingDeleted</code>,
+      <code>IsDoubleBuffered</code>,
+      <code>IsEnabled</code>,
+      <code>IsExposed</code>,
+      <code>IsExposedPoint</code>,
+      <code>IsExposedRect</code>,
+      <code>IsFrozen</code>,
+      <code>IsRetained</code>,
+      <code>IsShown</code>,
+      <code>IsShownOnScreen</code>,
+      <code>IsTopLevel</code>,
+      <code>Layout</code>,
+      <code>LineDown</code>,
+      <code>LineUp</code>,
+      <code>Lower</code>,
+      <code>MakeModal</code>,
+      <code>Move</code>,
+      <code>MoveAfterInTabOrder</code>,
+      <code>MoveBeforeInTabOrder</code>,
+      <code>MoveXY</code>,
+      <code>Navigate</code>,
+      <code>PageDown</code>,
+      <code>PageUp</code>,
+      <code>PopEventHandler</code>,
+      <code>PopupMenu</code>,
+      <code>PopupMenuXY</code>,
+      <code>PostCreate</code>,
+      <code>PrepareDC</code>,
+      <code>PushEventHandler</code>,
+      <code>Raise</code>,
+      <code>Refresh</code>,
+      <code>RefreshRect</code>,
+      <code>RegisterHotKey</code>,
+      <code>ReleaseMouse</code>,
+      <code>RemoveChild</code>,
+      <code>RemoveEventHandler</code>,
+      <code>Reparent</code>,
+      <code>ScreenToClient</code>,
+      <code>ScreenToClientXY</code>,
+      <code>ScrollLines</code>,
+      <code>ScrollPages</code>,
+      <code>ScrollWindow</code>,
+      <code>SendSizeEvent</code>,
+      <code>SetAcceleratorTable</code>,
+      <code>SetAutoLayout</code>,
+      <code>SetBackgroundColour</code>,
+      <code>SetBackgroundStyle</code>,
+      <code>SetBestFittingSize</code>,
+      <code>SetCaret</code>,
+      <code>SetClientRect</code>,
+      <code>SetClientSize</code>,
+      <code>SetClientSizeWH</code>,
+      <code>SetConstraints</code>,
+      <code>SetContainingSizer</code>,
+      <code>SetCursor</code>,
+      <code>SetDimensions</code>,
+      <code>SetDoubleBuffered</code>,
+      <code>SetDropTarget</code>,
+      <code>SetEventHandler</code>,
+      <code>SetExtraStyle</code>,
+      <code>SetFocus</code>,
+      <code>SetFocusFromKbd</code>,
+      <code>SetFont</code>,
+      <code>SetForegroundColour</code>,
+      <code>SetHelpText</code>,
+      <code>SetHelpTextForId</code>,
+      <code>SetId</code>,
+      <code>SetInitialSize</code>,
+      <code>SetLabel</code>,
+      <code>SetLayoutDirection</code>,
+      <code>SetMaxSize</code>,
+      <code>SetMinSize</code>,
+      <code>SetName</code>,
+      <code>SetOwnBackgroundColour</code>,
+      <code>SetOwnFont</code>,
+      <code>SetOwnForegroundColour</code>,
+      <code>SetPosition</code>,
+      <code>SetRect</code>,
+      <code>SetScrollPos</code>,
+      <code>SetScrollbar</code>,
+      <code>SetSize</code>,
+      <code>SetSizeHints</code>,
+      <code>SetSizeHintsSz</code>,
+      <code>SetSizeWH</code>,
+      <code>SetSizer</code>,
+      <code>SetSizerAndFit</code>,
+      <code>SetThemeEnabled</code>,
+      <code>SetToolTip</code>,
+      <code>SetToolTipString</code>,
+      <code>SetTransparent</code>,
+      <code>SetValidator</code>,
+      <code>SetVirtualSize</code>,
+      <code>SetVirtualSizeHints</code>,
+      <code>SetVirtualSizeHintsSz</code>,
+      <code>SetVirtualSizeWH</code>,
+      <code>SetWindowStyle</code>,
+      <code>SetWindowStyleFlag</code>,
+      <code>SetWindowVariant</code>,
+      <code>ShouldInheritColours</code>,
+      <code>Show</code>,
+      <code>Thaw</code>,
+      <code>ToggleWindowStyle</code>,
+      <code>TransferDataFromWindow</code>,
+      <code>TransferDataToWindow</code>,
+      <code>UnregisterHotKey</code>,
+      <code>Update</code>,
+      <code>UpdateWindowUI</code>,
+      <code>UseBgCol</code>,
+      <code>Validate</code>,
+      <code>WarpPointer</code>,
+      <code>WindowToClientSize</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>wx._core.EvtHandler</code></b>:
+      <code>AddPendingEvent</code>,
+      <code>Bind</code>,
+      <code>Connect</code>,
+      <code>Disconnect</code>,
+      <code>GetEvtHandlerEnabled</code>,
+      <code>GetNextHandler</code>,
+      <code>GetPreviousHandler</code>,
+      <code>ProcessEvent</code>,
+      <code>ProcessPendingEvents</code>,
+      <code>SetEvtHandlerEnabled</code>,
+      <code>SetNextHandler</code>,
+      <code>SetPreviousHandler</code>,
+      <code>Unbind</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>wx._core.Object</code></b>:
+      <code>GetClassName</code>,
+      <code>IsSameAs</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== STATIC METHODS ==================== -->
+<a name="section-StaticMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Static Methods</span></td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>wx.html.HtmlWindow</code></b>:
+      <code>AddFilter</code>,
+      <code>GetClassDefaultAttributes</code>,
+      <code>GetDefaultHTMLCursor</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>wx._core.Window</code></b>:
+      <code>FindFocus</code>,
+      <code>GetCapture</code>,
+      <code>NewControlId</code>,
+      <code>NextControlId</code>,
+      <code>PrevControlId</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Class Variables</span></td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>wx.html.HtmlWindow</code></b>:
+      <code>HTMLCursor_Default</code>,
+      <code>HTMLCursor_Link</code>,
+      <code>HTMLCursor_Text</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Properties</span></td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>wx.html.HtmlWindow</code></b>:
+      <code>InternalRepresentation</code>,
+      <code>OpenedAnchor</code>,
+      <code>OpenedPage</code>,
+      <code>OpenedPageTitle</code>,
+      <code>Parser</code>,
+      <code>RelatedFrame</code>,
+      <code>thisown</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>wx._windows.ScrolledWindow</code></b>:
+      <code>ScaleX</code>,
+      <code>ScaleY</code>,
+      <code>TargetWindow</code>,
+      <code>ViewStart</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>wx._core.Window</code></b>:
+      <code>AcceleratorTable</code>,
+      <code>AutoLayout</code>,
+      <code>BackgroundColour</code>,
+      <code>BackgroundStyle</code>,
+      <code>BestSize</code>,
+      <code>BestVirtualSize</code>,
+      <code>Border</code>,
+      <code>Caret</code>,
+      <code>CharHeight</code>,
+      <code>CharWidth</code>,
+      <code>Children</code>,
+      <code>ClientAreaOrigin</code>,
+      <code>ClientRect</code>,
+      <code>ClientSize</code>,
+      <code>Constraints</code>,
+      <code>ContainingSizer</code>,
+      <code>Cursor</code>,
+      <code>DefaultAttributes</code>,
+      <code>DropTarget</code>,
+      <code>EffectiveMinSize</code>,
+      <code>Enabled</code>,
+      <code>EventHandler</code>,
+      <code>ExtraStyle</code>,
+      <code>Font</code>,
+      <code>ForegroundColour</code>,
+      <code>GrandParent</code>,
+      <code>GtkWidget</code>,
+      <code>Handle</code>,
+      <code>HelpText</code>,
+      <code>Id</code>,
+      <code>Label</code>,
+      <code>LayoutDirection</code>,
+      <code>MaxHeight</code>,
+      <code>MaxSize</code>,
+      <code>MaxWidth</code>,
+      <code>MinHeight</code>,
+      <code>MinSize</code>,
+      <code>MinWidth</code>,
+      <code>Name</code>,
+      <code>Parent</code>,
+      <code>Position</code>,
+      <code>Rect</code>,
+      <code>ScreenPosition</code>,
+      <code>ScreenRect</code>,
+      <code>Shown</code>,
+      <code>Size</code>,
+      <code>Sizer</code>,
+      <code>ThemeEnabled</code>,
+      <code>ToolTip</code>,
+      <code>TopLevel</code>,
+      <code>TopLevelParent</code>,
+      <code>UpdateClientRect</code>,
+      <code>UpdateRegion</code>,
+      <code>Validator</code>,
+      <code>VirtualSize</code>,
+      <code>WindowStyle</code>,
+      <code>WindowStyleFlag</code>,
+      <code>WindowVariant</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>wx._core.EvtHandler</code></b>:
+      <code>EvtHandlerEnabled</code>,
+      <code>NextHandler</code>,
+      <code>PreviousHandler</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>wx._core.Object</code></b>:
+      <code>ClassName</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Method Details</span></td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">parent</span>,
+        <span class="sig-arg">size</span>=<span class="sig-default">wx.Size(-1, -1)</span>,
+        <span class="sig-arg">text</span>=<span class="sig-default">None</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.utils.components-pysrc.html#RideHtmlWindow.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <dl class="rst-rst-rst-docutils rst-rst-docutils rst-docutils">
+<dt>__init__(self, Window parent, int id=-1, Point pos=DefaultPosition,</dt>
+<dd><p class="rst-rst-first rst-rst-last rst-rst-first rst-rst-last rst-first rst-last">Size size=DefaultSize, int style=HW_DEFAULT_STYLE,
+String name=HtmlWindowNameStr) -&gt; HtmlWindow</p>
+</dd>
+</dl>
+  <dl class="fields">
+    <dt>Returns: EvtHandler</dt>
+    <dt>Overrides:
+        wx._core.Object.__init__
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="OnLinkClicked"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnLinkClicked</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">link</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.utils.components-pysrc.html#RideHtmlWindow.OnLinkClicked">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  OnLinkClicked(self, HtmlLinkInfo link)
+  <dl class="fields">
+    <dt>Overrides:
+        wx.html.HtmlWindow.OnLinkClicked
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="close"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">close</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.utils.components-pysrc.html#RideHtmlWindow.close">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="clear"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">clear</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.utils.components-pysrc.html#RideHtmlWindow.clear">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="robotide-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://code.google.com/p/robotframework-ride">RIDE</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Mon Feb  1 14:04:02 2010
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

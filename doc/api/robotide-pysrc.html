@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>robotide</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th bgcolor="#70b0f0" class="navbar-select"
+          >&nbsp;&nbsp;&nbsp;Home&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://code.google.com/p/robotframework-ride">RIDE</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Package&nbsp;robotide
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="robotide-module.html">Package robotide</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-comment">#  Copyright 2008-2009 Nokia Siemens Networks Oyj</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-comment">#  </tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-comment">#  Licensed under the Apache License, Version 2.0 (the "License");</tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-comment">#  you may not use this file except in compliance with the License.</tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"><tt class="py-comment">#  You may obtain a copy of the License at</tt> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"><tt class="py-comment">#  </tt> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"><tt class="py-comment">#      http://www.apache.org/licenses/LICENSE-2.0</tt> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"><tt class="py-comment">#  </tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"><tt class="py-comment">#  Unless required by applicable law or agreed to in writing, software</tt> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"><tt class="py-comment">#  distributed under the License is distributed on an "AS IS" BASIS,</tt> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line"><tt class="py-comment">#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</tt> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line"><tt class="py-comment">#  See the License for the specific language governing permissions and</tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line"><tt class="py-comment">#  limitations under the License.</tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line"> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line"><tt class="py-docstring">"""RIDE -- Robot Framework test data editor</tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line"><tt class="py-docstring">Usage: ride.py [inpath] [outpath]</tt> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line"><tt class="py-docstring">RIDE can be started either without any arguments or by giving a path to a test</tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line"><tt class="py-docstring">data file or directory to be opened. RIDE can also be used for 'tidying'</tt> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line"><tt class="py-docstring">Robot Framework test data by giving both ``inpath`` and ``outpath`` arguments.</tt> </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line"><tt class="py-docstring">Tidying works for both test case and resource files, but it does not work with</tt> </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line"><tt class="py-docstring">test data directories. When RIDE is used like this, no GUI is opened.</tt> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line"><tt class="py-docstring">RIDE's API is still evolving while the project is moving towards the 1.0 </tt> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line"><tt class="py-docstring">release. The most stable, and best documented, module is `robotide.pluginapi`.</tt> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line"> </tt>
+<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">sys</tt> </tt>
+<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">os</tt> </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">wxversion</tt> </tt>
+<a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line"><tt class="py-name">wxversion</tt><tt class="py-op">.</tt><tt class="py-name">select</tt><tt class="py-op">(</tt><tt class="py-string">'2.8'</tt><tt class="py-op">)</tt> </tt>
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line"> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package robotide=robotide-module.html"><a title="robotide" class="py-name" href="#" onclick="return doclink('link-0', 'robotide', 'link-0');">robotide</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Module robotide.errors=robotide.errors-module.html"><a title="robotide.errors" class="py-name" href="#" onclick="return doclink('link-1', 'errors', 'link-1');">errors</a></tt> <tt class="py-keyword">import</tt> <tt class="py-name">DataError</tt><tt class="py-op">,</tt> <tt id="link-2" class="py-name" targets="Class robotide.errors.NoRideError=robotide.errors.NoRideError-class.html"><a title="robotide.errors.NoRideError" class="py-name" href="#" onclick="return doclink('link-2', 'NoRideError', 'link-2');">NoRideError</a></tt> </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line"> </tt>
+<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line"> </tt>
+<a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line"><tt class="py-name">sys</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">dirname</tt><tt class="py-op">(</tt><tt class="py-name">__file__</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-string">'spec'</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line"> </tt>
+<a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line"> </tt>
+<a name="main"></a><div id="main-def"><a name="L40"></a><tt class="py-lineno">40</tt> <a class="py-toggle" href="#" id="main-toggle" onclick="return toggle('main');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide-module.html#main">main</a><tt class="py-op">(</tt><tt class="py-param">args</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="main-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="main-expanded"><a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">args</tt><tt class="py-op">)</tt> <tt class="py-op">&gt;</tt> <tt class="py-number">2</tt> <tt class="py-keyword">or</tt> <tt class="py-string">'--help'</tt> <tt class="py-keyword">in</tt> <tt class="py-name">args</tt><tt class="py-op">:</tt> </tt>
+<a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-name">__doc__</tt> </tt>
+<a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line">        <tt class="py-name">sys</tt><tt class="py-op">.</tt><tt class="py-name">exit</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line">    <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L45"></a><tt class="py-lineno">45</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">args</tt><tt class="py-op">)</tt> <tt class="py-op">&lt;</tt> <tt class="py-number">2</tt><tt class="py-op">:</tt> </tt>
+<a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line">            <tt class="py-name">_run</tt><tt class="py-op">(</tt><tt class="py-op">*</tt><tt class="py-name">args</tt><tt class="py-op">)</tt> </tt>
+<a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line">            <tt class="py-name">_tidy</tt><tt class="py-op">(</tt><tt class="py-op">*</tt><tt class="py-name">args</tt><tt class="py-op">)</tt> </tt>
+<a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line">    <tt class="py-keyword">except</tt> <tt class="py-name">DataError</tt><tt class="py-op">,</tt> <tt class="py-name">err</tt><tt class="py-op">:</tt> </tt>
+<a name="L50"></a><tt class="py-lineno">50</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">err</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-string">'\n\nUse --help to get usage information.'</tt> </tt>
+<a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line">    <tt class="py-keyword">except</tt> <tt id="link-3" class="py-name"><a title="robotide.errors.NoRideError" class="py-name" href="#" onclick="return doclink('link-3', 'NoRideError', 'link-2');">NoRideError</a></tt><tt class="py-op">,</tt> <tt class="py-name">err</tt><tt class="py-op">:</tt> </tt>
+<a name="L52"></a><tt class="py-lineno">52</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">err</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L53"></a><tt class="py-lineno">53</tt>  <tt class="py-line"> </tt>
+<a name="L54"></a><tt class="py-lineno">54</tt>  <tt class="py-line"> </tt>
+<a name="_run"></a><div id="_run-def"><a name="L55"></a><tt class="py-lineno">55</tt> <a class="py-toggle" href="#" id="_run-toggle" onclick="return toggle('_run');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide-module.html#_run">_run</a><tt class="py-op">(</tt><tt class="py-param">inpath</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_run-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="_run-expanded"><a name="L56"></a><tt class="py-lineno">56</tt>  <tt class="py-line">    <tt class="py-keyword">from</tt> <tt id="link-4" class="py-name"><a title="robotide" class="py-name" href="#" onclick="return doclink('link-4', 'robotide', 'link-0');">robotide</a></tt><tt class="py-op">.</tt><tt id="link-5" class="py-name" targets="Package robotide.application=robotide.application-module.html,Module robotide.application.application=robotide.application.application-module.html"><a title="robotide.application
+robotide.application.application" class="py-name" href="#" onclick="return doclink('link-5', 'application', 'link-5');">application</a></tt> <tt class="py-keyword">import</tt> <tt id="link-6" class="py-name" targets="Class robotide.application.application.RIDE=robotide.application.application.RIDE-class.html"><a title="robotide.application.application.RIDE" class="py-name" href="#" onclick="return doclink('link-6', 'RIDE', 'link-6');">RIDE</a></tt> </tt>
+<a name="L57"></a><tt class="py-lineno">57</tt>  <tt class="py-line">    <tt class="py-name">ride</tt> <tt class="py-op">=</tt> <tt id="link-7" class="py-name"><a title="robotide.application.application.RIDE" class="py-name" href="#" onclick="return doclink('link-7', 'RIDE', 'link-6');">RIDE</a></tt><tt class="py-op">(</tt><tt class="py-name">inpath</tt><tt class="py-op">)</tt> </tt>
+<a name="L58"></a><tt class="py-lineno">58</tt>  <tt class="py-line">    <tt class="py-name">ride</tt><tt class="py-op">.</tt><tt class="py-name">MainLoop</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L59"></a><tt class="py-lineno">59</tt>  <tt class="py-line"> </tt>
+<a name="L60"></a><tt class="py-lineno">60</tt>  <tt class="py-line"> </tt>
+<a name="_tidy"></a><div id="_tidy-def"><a name="L61"></a><tt class="py-lineno">61</tt> <a class="py-toggle" href="#" id="_tidy-toggle" onclick="return toggle('_tidy');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide-module.html#_tidy">_tidy</a><tt class="py-op">(</tt><tt class="py-param">inpath</tt><tt class="py-op">,</tt> <tt class="py-param">outpath</tt><tt class="py-op">)</tt><tt class="py-op">:</tt>    </tt>
+</div><a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line">    <tt class="py-keyword">from</tt> <tt id="link-8" class="py-name"><a title="robotide" class="py-name" href="#" onclick="return doclink('link-8', 'robotide', 'link-0');">robotide</a></tt><tt class="py-op">.</tt><tt id="link-9" class="py-name"><a title="robotide.application
+robotide.application.application" class="py-name" href="#" onclick="return doclink('link-9', 'application', 'link-5');">application</a></tt> <tt class="py-keyword">import</tt> <tt id="link-10" class="py-name" targets="Class robotide.application.datamodel.DataModel=robotide.application.datamodel.DataModel-class.html"><a title="robotide.application.datamodel.DataModel" class="py-name" href="#" onclick="return doclink('link-10', 'DataModel', 'link-10');">DataModel</a></tt> </tt>
+<a name="L63"></a><tt class="py-lineno">63</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">exists</tt><tt class="py-op">(</tt><tt class="py-name">inpath</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L64"></a><tt class="py-lineno">64</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt class="py-name">DataError</tt><tt class="py-op">(</tt><tt class="py-string">'Given input file does not exist.'</tt><tt class="py-op">)</tt> </tt>
+<a name="L65"></a><tt class="py-lineno">65</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">isfile</tt><tt class="py-op">(</tt><tt class="py-name">inpath</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L66"></a><tt class="py-lineno">66</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt class="py-name">DataError</tt><tt class="py-op">(</tt><tt class="py-string">'Tidy functionality only supports single files.'</tt><tt class="py-op">)</tt> </tt>
+<a name="L67"></a><tt class="py-lineno">67</tt>  <tt class="py-line">    <tt id="link-11" class="py-name" targets="Variable robotide.publish.messages.RideGridCellChanged.data=robotide.publish.messages.RideGridCellChanged-class.html#data,Variable robotide.publish.messages.RideImportSettingAdded.data=robotide.publish.messages.RideImportSettingAdded-class.html#data,Variable robotide.publish.messages.RideImportSettingChanged.data=robotide.publish.messages.RideImportSettingChanged-class.html#data,Variable robotide.publish.messages.RideLogMessage.data=robotide.publish.messages.RideLogMessage-class.html#data,Variable robotide.publish.messages.RideMessage.data=robotide.publish.messages.RideMessage-class.html#data,Variable robotide.publish.messages.RideNotebookTabChanging.data=robotide.publish.messages.RideNotebookTabChanging-class.html#data,Variable robotide.publish.messages.RideOpenResource.data=robotide.publish.messages.RideOpenResource-class.html#data,Variable robotide.publish.messages.RideOpenSuite.data=robotide.publish.messages.RideOpenSuite-class.html#data,Variable robotide.publish.messages.RideSaved.data=robotide.publish.messages.RideSaved-class.html#data,Variable robotide.publish.messages.RideSaving.data=robotide.publish.messages.RideSaving-class.html#data,Variable robotide.publish.messages.RideTreeSelection.data=robotide.publish.messages.RideTreeSelection-class.html#data,Variable robotide.publish.messages.RideUserKeywordAdded.data=robotide.publish.messages.RideUserKeywordAdded-class.html#data"><a title="robotide.publish.messages.RideGridCellChanged.data
+robotide.publish.messages.RideImportSettingAdded.data
+robotide.publish.messages.RideImportSettingChanged.data
+robotide.publish.messages.RideLogMessage.data
+robotide.publish.messages.RideMessage.data
+robotide.publish.messages.RideNotebookTabChanging.data
+robotide.publish.messages.RideOpenResource.data
+robotide.publish.messages.RideOpenSuite.data
+robotide.publish.messages.RideSaved.data
+robotide.publish.messages.RideSaving.data
+robotide.publish.messages.RideTreeSelection.data
+robotide.publish.messages.RideUserKeywordAdded.data" class="py-name" href="#" onclick="return doclink('link-11', 'data', 'link-11');">data</a></tt> <tt class="py-op">=</tt> <tt id="link-12" class="py-name"><a title="robotide.application.datamodel.DataModel" class="py-name" href="#" onclick="return doclink('link-12', 'DataModel', 'link-10');">DataModel</a></tt><tt class="py-op">(</tt><tt class="py-name">inpath</tt><tt class="py-op">)</tt> </tt>
+<a name="L68"></a><tt class="py-lineno">68</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt id="link-13" class="py-name"><a title="robotide.publish.messages.RideGridCellChanged.data
+robotide.publish.messages.RideImportSettingAdded.data
+robotide.publish.messages.RideImportSettingChanged.data
+robotide.publish.messages.RideLogMessage.data
+robotide.publish.messages.RideMessage.data
+robotide.publish.messages.RideNotebookTabChanging.data
+robotide.publish.messages.RideOpenResource.data
+robotide.publish.messages.RideOpenSuite.data
+robotide.publish.messages.RideSaved.data
+robotide.publish.messages.RideSaving.data
+robotide.publish.messages.RideTreeSelection.data
+robotide.publish.messages.RideUserKeywordAdded.data" class="py-name" href="#" onclick="return doclink('link-13', 'data', 'link-11');">data</a></tt><tt class="py-op">.</tt><tt class="py-name">suite</tt><tt class="py-op">:</tt> </tt>
+<a name="L69"></a><tt class="py-lineno">69</tt>  <tt class="py-line">        <tt id="link-14" class="py-name" targets="Variable robotide.ui.tree.NoneHandler.item=robotide.ui.tree.NoneHandler-class.html#item"><a title="robotide.ui.tree.NoneHandler.item" class="py-name" href="#" onclick="return doclink('link-14', 'item', 'link-14');">item</a></tt> <tt class="py-op">=</tt> <tt id="link-15" class="py-name"><a title="robotide.publish.messages.RideGridCellChanged.data
+robotide.publish.messages.RideImportSettingAdded.data
+robotide.publish.messages.RideImportSettingChanged.data
+robotide.publish.messages.RideLogMessage.data
+robotide.publish.messages.RideMessage.data
+robotide.publish.messages.RideNotebookTabChanging.data
+robotide.publish.messages.RideOpenResource.data
+robotide.publish.messages.RideOpenSuite.data
+robotide.publish.messages.RideSaved.data
+robotide.publish.messages.RideSaving.data
+robotide.publish.messages.RideTreeSelection.data
+robotide.publish.messages.RideUserKeywordAdded.data" class="py-name" href="#" onclick="return doclink('link-15', 'data', 'link-11');">data</a></tt><tt class="py-op">.</tt><tt class="py-name">suite</tt> </tt>
+<a name="L70"></a><tt class="py-lineno">70</tt>  <tt class="py-line">    <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L71"></a><tt class="py-lineno">71</tt>  <tt class="py-line">        <tt id="link-16" class="py-name"><a title="robotide.ui.tree.NoneHandler.item" class="py-name" href="#" onclick="return doclink('link-16', 'item', 'link-14');">item</a></tt> <tt class="py-op">=</tt> <tt id="link-17" class="py-name"><a title="robotide.publish.messages.RideGridCellChanged.data
+robotide.publish.messages.RideImportSettingAdded.data
+robotide.publish.messages.RideImportSettingChanged.data
+robotide.publish.messages.RideLogMessage.data
+robotide.publish.messages.RideMessage.data
+robotide.publish.messages.RideNotebookTabChanging.data
+robotide.publish.messages.RideOpenResource.data
+robotide.publish.messages.RideOpenSuite.data
+robotide.publish.messages.RideSaved.data
+robotide.publish.messages.RideSaving.data
+robotide.publish.messages.RideTreeSelection.data
+robotide.publish.messages.RideUserKeywordAdded.data" class="py-name" href="#" onclick="return doclink('link-17', 'data', 'link-11');">data</a></tt><tt class="py-op">.</tt><tt class="py-name">resources</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
+<a name="L72"></a><tt class="py-lineno">72</tt>  <tt class="py-line">    <tt id="link-18" class="py-name"><a title="robotide.ui.tree.NoneHandler.item" class="py-name" href="#" onclick="return doclink('link-18', 'item', 'link-14');">item</a></tt><tt class="py-op">.</tt><tt class="py-name">source</tt> <tt class="py-op">=</tt> <tt class="py-name">outpath</tt> </tt>
+<a name="L73"></a><tt class="py-lineno">73</tt>  <tt class="py-line">    <tt id="link-19" class="py-name"><a title="robotide.ui.tree.NoneHandler.item" class="py-name" href="#" onclick="return doclink('link-19', 'item', 'link-14');">item</a></tt><tt class="py-op">.</tt><tt class="py-name">dirty</tt> <tt class="py-op">=</tt> <tt class="py-name">True</tt> </tt>
+<a name="L74"></a><tt class="py-lineno">74</tt>  <tt class="py-line">    <tt class="py-keyword">print</tt> <tt class="py-string">'Tidying %s -&gt; %s'</tt> <tt class="py-op">%</tt> <tt class="py-op">(</tt><tt class="py-name">inpath</tt><tt class="py-op">,</tt> <tt class="py-name">outpath</tt><tt class="py-op">)</tt> </tt>
+<a name="L75"></a><tt class="py-lineno">75</tt>  <tt class="py-line">    <tt id="link-20" class="py-name"><a title="robotide.ui.tree.NoneHandler.item" class="py-name" href="#" onclick="return doclink('link-20', 'item', 'link-14');">item</a></tt><tt class="py-op">.</tt><tt id="link-21" class="py-name" targets="Method robotide.application.datamodel.DataModel.serialize()=robotide.application.datamodel.DataModel-class.html#serialize,Method robotide.model.importsettings.ImportSettings.serialize()=robotide.model.importsettings.ImportSettings-class.html#serialize,Method robotide.model.metadata.MetaItem.serialize()=robotide.model.metadata.MetaItem-class.html#serialize,Method robotide.model.metadata.Metadata.serialize()=robotide.model.metadata.Metadata-class.html#serialize,Method robotide.model.tables.ResourceSettingTable.serialize()=robotide.model.tables.ResourceSettingTable-class.html#serialize,Method robotide.model.tables.TestCaseTable.serialize()=robotide.model.tables.TestCaseTable-class.html#serialize,Method robotide.model.tables.UserKeywordTable.serialize()=robotide.model.tables.UserKeywordTable-class.html#serialize,Method robotide.model.tables.VariableTable.serialize()=robotide.model.tables.VariableTable-class.html#serialize,Method robotide.model.tcuk.TestCase.serialize()=robotide.model.tcuk.TestCase-class.html#serialize,Method robotide.model.tcuk.UserKeyword.serialize()=robotide.model.tcuk.UserKeyword-class.html#serialize"><a title="robotide.application.datamodel.DataModel.serialize
+robotide.model.importsettings.ImportSettings.serialize
+robotide.model.metadata.MetaItem.serialize
+robotide.model.metadata.Metadata.serialize
+robotide.model.tables.ResourceSettingTable.serialize
+robotide.model.tables.TestCaseTable.serialize
+robotide.model.tables.UserKeywordTable.serialize
+robotide.model.tables.VariableTable.serialize
+robotide.model.tcuk.TestCase.serialize
+robotide.model.tcuk.UserKeyword.serialize" class="py-name" href="#" onclick="return doclink('link-21', 'serialize', 'link-21');">serialize</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L76"></a><tt class="py-lineno">76</tt>  <tt class="py-line"> </tt>
+<a name="L77"></a><tt class="py-lineno">77</tt>  <tt class="py-line"> </tt>
+<a name="L78"></a><tt class="py-lineno">78</tt>  <tt class="py-line"><tt class="py-keyword">if</tt> <tt class="py-name">__name__</tt> <tt class="py-op">==</tt> <tt class="py-string">'__main__'</tt><tt class="py-op">:</tt> </tt>
+<a name="L79"></a><tt class="py-lineno">79</tt>  <tt class="py-line">    <tt id="link-22" class="py-name" targets="Function robotide.main()=robotide-module.html#main"><a title="robotide.main" class="py-name" href="#" onclick="return doclink('link-22', 'main', 'link-22');">main</a></tt><tt class="py-op">(</tt><tt class="py-name">sys</tt><tt class="py-op">.</tt><tt class="py-name">argv</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">:</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L80"></a><tt class="py-lineno">80</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th bgcolor="#70b0f0" class="navbar-select"
+          >&nbsp;&nbsp;&nbsp;Home&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://code.google.com/p/robotframework-ride">RIDE</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Mon Feb  1 14:04:05 2010
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

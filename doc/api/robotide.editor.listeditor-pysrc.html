@@ -1,0 +1,696 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>robotide.editor.listeditor</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="robotide-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://code.google.com/p/robotframework-ride">RIDE</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="robotide-module.html">Package&nbsp;robotide</a> ::
+        <a href="robotide.editor-module.html">Package&nbsp;editor</a> ::
+        Module&nbsp;listeditor
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="robotide.editor.listeditor-module.html">Module robotide.editor.listeditor</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment">#  Copyright 2008-2009 Nokia Siemens Networks Oyj</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-comment">#  </tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-comment">#  Licensed under the Apache License, Version 2.0 (the "License");</tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-comment">#  you may not use this file except in compliance with the License.</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-comment">#  You may obtain a copy of the License at</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-comment">#  </tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-comment">#      http://www.apache.org/licenses/LICENSE-2.0</tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-comment">#  </tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-comment">#  Unless required by applicable law or agreed to in writing, software</tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-comment">#  distributed under the License is distributed on an "AS IS" BASIS,</tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-comment">#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-comment">#  See the License for the specific language governing permissions and</tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt class="py-comment">#  limitations under the License.</tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">wx</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">lib</tt><tt class="py-op">.</tt><tt class="py-name">mixins</tt><tt class="py-op">.</tt><tt class="py-name">listctrl</tt> <tt class="py-keyword">import</tt> <tt class="py-name">ListCtrlAutoWidthMixin</tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package robotide=robotide-module.html"><a title="robotide" class="py-name" href="#" onclick="return doclink('link-0', 'robotide', 'link-0');">robotide</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Package robotide.utils=robotide.utils-module.html"><a title="robotide.utils" class="py-name" href="#" onclick="return doclink('link-1', 'utils', 'link-1');">utils</a></tt> <tt class="py-keyword">import</tt> <tt id="link-2" class="py-name" targets="Class robotide.utils.components.ButtonWithHandler=robotide.utils.components.ButtonWithHandler-class.html"><a title="robotide.utils.components.ButtonWithHandler" class="py-name" href="#" onclick="return doclink('link-2', 'ButtonWithHandler', 'link-2');">ButtonWithHandler</a></tt><tt class="py-op">,</tt> <tt id="link-3" class="py-name" targets="Class robotide.utils.components.PopupMenu=robotide.utils.components.PopupMenu-class.html"><a title="robotide.utils.components.PopupMenu" class="py-name" href="#" onclick="return doclink('link-3', 'PopupMenu', 'link-3');">PopupMenu</a></tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"> </tt>
+<a name="ListEditor"></a><div id="ListEditor-def"><a name="L21"></a><tt class="py-lineno"> 21</tt> <a class="py-toggle" href="#" id="ListEditor-toggle" onclick="return toggle('ListEditor');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="robotide.editor.listeditor.ListEditor-class.html">ListEditor</a><tt class="py-op">(</tt><tt class="py-base-class">wx</tt><tt class="py-op">.</tt><tt class="py-base-class">Panel</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ListEditor-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="ListEditor-expanded"><a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line">    <tt id="link-4" class="py-name" targets="Variable robotide.editor.listeditor.ListEditor._menu=robotide.editor.listeditor.ListEditor-class.html#_menu"><a title="robotide.editor.listeditor.ListEditor._menu" class="py-name" href="#" onclick="return doclink('link-4', '_menu', 'link-4');">_menu</a></tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-string">'Edit'</tt><tt class="py-op">,</tt> <tt class="py-string">'Move Up'</tt><tt class="py-op">,</tt> <tt class="py-string">'Move Down'</tt><tt class="py-op">,</tt> <tt class="py-string">'---'</tt><tt class="py-op">,</tt> <tt class="py-string">'Delete'</tt><tt class="py-op">]</tt> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line">    <tt id="link-5" class="py-name" targets="Variable robotide.editor.editors.ImportSettingListEditor._buttons=robotide.editor.editors.ImportSettingListEditor-class.html#_buttons,Variable robotide.editor.editors.MetadataListEditor._buttons=robotide.editor.editors.MetadataListEditor-class.html#_buttons,Variable robotide.editor.editors.VariablesListEditor._buttons=robotide.editor.editors.VariablesListEditor-class.html#_buttons,Variable robotide.editor.listeditor.ListEditor._buttons=robotide.editor.listeditor.ListEditor-class.html#_buttons"><a title="robotide.editor.editors.ImportSettingListEditor._buttons
+robotide.editor.editors.MetadataListEditor._buttons
+robotide.editor.editors.VariablesListEditor._buttons
+robotide.editor.listeditor.ListEditor._buttons" class="py-name" href="#" onclick="return doclink('link-5', '_buttons', 'link-5');">_buttons</a></tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line"> </tt>
+<a name="ListEditor.__init__"></a><div id="ListEditor.__init__-def"><a name="L25"></a><tt class="py-lineno"> 25</tt> <a class="py-toggle" href="#" id="ListEditor.__init__-toggle" onclick="return toggle('ListEditor.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.listeditor.ListEditor-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">parent</tt><tt class="py-op">,</tt> <tt class="py-param">columns</tt><tt class="py-op">,</tt> <tt class="py-param">data</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ListEditor.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="ListEditor.__init__-expanded"><a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line">        <tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">Panel</tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Method robotide.action.actioninfo.ActionInfo.__init__()=robotide.action.actioninfo.ActionInfo-class.html#__init__,Method robotide.action.actioninfo.MenuInfo.__init__()=robotide.action.actioninfo.MenuInfo-class.html#__init__,Method robotide.action.actioninfo.SeparatorInfo.__init__()=robotide.action.actioninfo.SeparatorInfo-class.html#__init__,Method robotide.action.shortcut.Shortcut.__init__()=robotide.action.shortcut.Shortcut-class.html#__init__,Method robotide.application.application.RIDE.__init__()=robotide.application.application.RIDE-class.html#__init__,Method robotide.application.datamodel.DataModel.__init__()=robotide.application.datamodel.DataModel-class.html#__init__,Method robotide.application.pluginconnector.BrokenPlugin.__init__()=robotide.application.pluginconnector.BrokenPlugin-class.html#__init__,Method robotide.application.pluginconnector.PluginConnector.__init__()=robotide.application.pluginconnector.PluginConnector-class.html#__init__,Method robotide.application.pluginloader.PluginLoader.__init__()=robotide.application.pluginloader.PluginLoader-class.html#__init__,Method robotide.application.releasenotes.ReleaseNotesPlugin.__init__()=robotide.application.releasenotes.ReleaseNotesPlugin-class.html#__init__,Method robotide.context.RideSettings.__init__()=robotide.context.RideSettings-class.html#__init__,Method robotide.context.configobj.ConfigObj.__init__()=robotide.context.configobj.ConfigObj-class.html#__init__,Method robotide.context.configobj.ConfigObjError.__init__()=robotide.context.configobj.ConfigObjError-class.html#__init__,Method robotide.context.configobj.InterpolationLoopError.__init__()=robotide.context.configobj.InterpolationLoopError-class.html#__init__,Method robotide.context.configobj.MissingInterpolationOption.__init__()=robotide.context.configobj.MissingInterpolationOption-class.html#__init__,Method robotide.context.configobj.ReloadError.__init__()=robotide.context.configobj.ReloadError-class.html#__init__,Method robotide.context.configobj.SimpleVal.__init__()=robotide.context.configobj.SimpleVal-class.html#__init__,Method robotide.context.logger.Logger.__init__()=robotide.context.logger.Logger-class.html#__init__,Method robotide.context.settings.Settings.__init__()=robotide.context.settings.Settings-class.html#__init__,Method robotide.editor.EditorPlugin.__init__()=robotide.editor.EditorPlugin-class.html#__init__,Method robotide.editor.clipboard._ClipboardHandler.__init__()=robotide.editor.clipboard._ClipboardHandler-class.html#__init__,Method robotide.editor.contentassist.ContentAssistList.__init__()=robotide.editor.contentassist.ContentAssistList-class.html#__init__,Method robotide.editor.contentassist.ContentAssistPopup.__init__()=robotide.editor.contentassist.ContentAssistPopup-class.html#__init__,Method robotide.editor.contentassist.ContentAssistTextCtrl.__init__()=robotide.editor.contentassist.ContentAssistTextCtrl-class.html#__init__,Method robotide.editor.contentassist.ExpandingContentAssistTextCtrl.__init__()=robotide.editor.contentassist.ExpandingContentAssistTextCtrl-class.html#__init__,Method robotide.editor.editors.WelcomePage.__init__()=robotide.editor.editors.WelcomePage-class.html#__init__,Method robotide.editor.fieldeditors.ValueEditor.__init__()=robotide.editor.fieldeditors.ValueEditor-class.html#__init__,Method robotide.editor.grid.GridEditor.__init__()=robotide.editor.grid.GridEditor-class.html#__init__,Method robotide.editor.gridcolorizer.Colorizer.__init__()=robotide.editor.gridcolorizer.Colorizer-class.html#__init__,Method robotide.editor.kweditor.ContentAssistCellEditor.__init__()=robotide.editor.kweditor.ContentAssistCellEditor-class.html#__init__,Method robotide.editor.kweditor.KeywordEditor.__init__()=robotide.editor.kweditor.KeywordEditor-class.html#__init__,Method robotide.editor.kweditor.KeywordEditorUi.__init__()=robotide.editor.kweditor.KeywordEditorUi-class.html#__init__,Method robotide.editor.listeditor.AutoWidthColumnList.__init__()=robotide.editor.listeditor.AutoWidthColumnList-class.html#__init__,Method robotide.editor.listeditor.ListEditor.__init__()=robotide.editor.listeditor.ListEditor-class.html#__init__,Method robotide.model.datalist.RobotDataList.__init__()=robotide.model.datalist.RobotDataList-class.html#__init__,Method robotide.model.files.InitFile.__init__()=robotide.model.files.InitFile-class.html#__init__,Method robotide.model.files.ResourceFile.__init__()=robotide.model.files.ResourceFile-class.html#__init__,Method robotide.model.files.TestCaseFile.__init__()=robotide.model.files.TestCaseFile-class.html#__init__,Method robotide.model.keywords.BaseKeyword.__init__()=robotide.model.keywords.BaseKeyword-class.html#__init__,Method robotide.model.keywords.ForItemKeyword.__init__()=robotide.model.keywords.ForItemKeyword-class.html#__init__,Method robotide.model.keywords.ForKeyword.__init__()=robotide.model.keywords.ForKeyword-class.html#__init__,Method robotide.model.keywords.GeneratedKeyword.__init__()=robotide.model.keywords.GeneratedKeyword-class.html#__init__,Method robotide.model.keywords.KeywordData.__init__()=robotide.model.keywords.KeywordData-class.html#__init__,Method robotide.model.keywords.RepeatKeyword.__init__()=robotide.model.keywords.RepeatKeyword-class.html#__init__,Method robotide.model.keywords.SetKeyword.__init__()=robotide.model.keywords.SetKeyword-class.html#__init__,Method robotide.model.metadata.MetaItem.__init__()=robotide.model.metadata.MetaItem-class.html#__init__,Method robotide.model.tables.InitFileSettingTable.__init__()=robotide.model.tables.InitFileSettingTable-class.html#__init__,Method robotide.model.tables.ResourceSettingTable.__init__()=robotide.model.tables.ResourceSettingTable-class.html#__init__,Method robotide.model.tables.SuiteSettingTable.__init__()=robotide.model.tables.SuiteSettingTable-class.html#__init__,Method robotide.model.tables.VariableTable.__init__()=robotide.model.tables.VariableTable-class.html#__init__,Method robotide.model.tcuk.TestCase.__init__()=robotide.model.tcuk.TestCase-class.html#__init__,Method robotide.model.tcuk.TestCaseSettings.__init__()=robotide.model.tcuk.TestCaseSettings-class.html#__init__,Method robotide.model.tcuk.UserKeyword.__init__()=robotide.model.tcuk.UserKeyword-class.html#__init__,Method robotide.model.tcuk.UserKeywordSettings.__init__()=robotide.model.tcuk.UserKeywordSettings-class.html#__init__,Method robotide.namespace.Namespace.__init__()=robotide.namespace.Namespace-class.html#__init__,Method robotide.namespace.cache.LibraryCache.__init__()=robotide.namespace.cache.LibraryCache-class.html#__init__,Method robotide.namespace.cache.ResourceFileCache.__init__()=robotide.namespace.cache.ResourceFileCache-class.html#__init__,Method robotide.namespace.cache.VariableFileCache.__init__()=robotide.namespace.cache.VariableFileCache-class.html#__init__,Method robotide.namespace.contentassist.ContentAssistItem.__init__()=robotide.namespace.contentassist.ContentAssistItem-class.html#__init__,Method robotide.pluginapi.plugin.Plugin.__init__()=robotide.pluginapi.plugin.Plugin-class.html#__init__,Method robotide.publish.messages.RideLogMessage.__init__()=robotide.publish.messages.RideLogMessage-class.html#__init__,Method robotide.publish.messages.RideMessage.__init__()=robotide.publish.messages.RideMessage-class.html#__init__,Method robotide.publish.publisher.Publisher.__init__()=robotide.publish.publisher.Publisher-class.html#__init__,Method robotide.robotapi.InitFileData.__init__()=robotide.robotapi.InitFileData-class.html#__init__,Method robotide.run.configmanagerui.ConfigManagerDialog.__init__()=robotide.run.configmanagerui.ConfigManagerDialog-class.html#__init__,Method robotide.run.process.Process.__init__()=robotide.run.process.Process-class.html#__init__,Method robotide.run.runanything.RunAnything.__init__()=robotide.run.runanything.RunAnything-class.html#__init__,Method robotide.run.ui.Runner.__init__()=robotide.run.ui.Runner-class.html#__init__,Method robotide.spec.xmlreaders.LibrarySpec.__init__()=robotide.spec.xmlreaders.LibrarySpec-class.html#__init__,Method robotide.ui.actiontriggers.ActionDelegator.__init__()=robotide.ui.actiontriggers.ActionDelegator-class.html#__init__,Method robotide.ui.actiontriggers.MenuBar.__init__()=robotide.ui.actiontriggers.MenuBar-class.html#__init__,Method robotide.ui.actiontriggers.ShortcutRegistry.__init__()=robotide.ui.actiontriggers.ShortcutRegistry-class.html#__init__,Method robotide.ui.actiontriggers.ToolBar.__init__()=robotide.ui.actiontriggers.ToolBar-class.html#__init__,Method robotide.ui.actiontriggers.ToolBarButton.__init__()=robotide.ui.actiontriggers.ToolBarButton-class.html#__init__,Method robotide.ui.filedialogs.AddSuiteDialog.__init__()=robotide.ui.filedialogs.AddSuiteDialog-class.html#__init__,Method robotide.ui.filedialogs.ChangeFormatDialog.__init__()=robotide.ui.filedialogs.ChangeFormatDialog-class.html#__init__,Method robotide.ui.filedialogs.NewProjectDialog.__init__()=robotide.ui.filedialogs.NewProjectDialog-class.html#__init__,Method robotide.ui.filedialogs.NewResourceDialog.__init__()=robotide.ui.filedialogs.NewResourceDialog-class.html#__init__,Method robotide.ui.images.TreeImageList.__init__()=robotide.ui.images.TreeImageList-class.html#__init__,Method robotide.ui.keywordsearch.KeywordSearch.__init__()=robotide.ui.keywordsearch.KeywordSearch-class.html#__init__,Method robotide.ui.keywordsearch.KeywordSearchDialog.__init__()=robotide.ui.keywordsearch.KeywordSearchDialog-class.html#__init__,Method robotide.ui.mainframe.AboutDialog.__init__()=robotide.ui.mainframe.AboutDialog-class.html#__init__,Method robotide.ui.mainframe.ActionRegisterer.__init__()=robotide.ui.mainframe.ActionRegisterer-class.html#__init__,Method robotide.ui.mainframe.RideFrame.__init__()=robotide.ui.mainframe.RideFrame-class.html#__init__,Method robotide.ui.notebook.NoteBook.__init__()=robotide.ui.notebook.NoteBook-class.html#__init__,Method robotide.ui.pluginmanager.PluginManager.__init__()=robotide.ui.pluginmanager.PluginManager-class.html#__init__,Method robotide.ui.preview.HtmlView.__init__()=robotide.ui.preview.HtmlView-class.html#__init__,Method robotide.ui.preview.PreviewPanel.__init__()=robotide.ui.preview.PreviewPanel-class.html#__init__,Method robotide.ui.preview.PreviewPlugin.__init__()=robotide.ui.preview.PreviewPlugin-class.html#__init__,Method robotide.ui.preview.TxtView.__init__()=robotide.ui.preview.TxtView-class.html#__init__,Method robotide.ui.recentfiles.RecentFileEntry.__init__()=robotide.ui.recentfiles.RecentFileEntry-class.html#__init__,Method robotide.ui.recentfiles.RecentFilesPlugin.__init__()=robotide.ui.recentfiles.RecentFilesPlugin-class.html#__init__,Method robotide.ui.tree.Tree.__init__()=robotide.ui.tree.Tree-class.html#__init__,Method robotide.utils.components.ButtonWithHandler.__init__()=robotide.utils.components.ButtonWithHandler-class.html#__init__,Method robotide.utils.components.PopupMenu.__init__()=robotide.utils.components.PopupMenu-class.html#__init__,Method robotide.utils.components.RideHtmlWindow.__init__()=robotide.utils.components.RideHtmlWindow-class.html#__init__,Method robotide.validators.NonEmptyValidator.__init__()=robotide.validators.NonEmptyValidator-class.html#__init__,Method robotide.writer.writer.HtmlFileWriter.__init__()=robotide.writer.writer.HtmlFileWriter-class.html#__init__,Method robotide.writer.writer.TsvFileWriter.__init__()=robotide.writer.writer.TsvFileWriter-class.html#__init__,Method robotide.writer.writer.TxtFileWriter.__init__()=robotide.writer.writer.TxtFileWriter-class.html#__init__"><a title="robotide.action.actioninfo.ActionInfo.__init__
+robotide.action.actioninfo.MenuInfo.__init__
+robotide.action.actioninfo.SeparatorInfo.__init__
+robotide.action.shortcut.Shortcut.__init__
+robotide.application.application.RIDE.__init__
+robotide.application.datamodel.DataModel.__init__
+robotide.application.pluginconnector.BrokenPlugin.__init__
+robotide.application.pluginconnector.PluginConnector.__init__
+robotide.application.pluginloader.PluginLoader.__init__
+robotide.application.releasenotes.ReleaseNotesPlugin.__init__
+robotide.context.RideSettings.__init__
+robotide.context.configobj.ConfigObj.__init__
+robotide.context.configobj.ConfigObjError.__init__
+robotide.context.configobj.InterpolationLoopError.__init__
+robotide.context.configobj.MissingInterpolationOption.__init__
+robotide.context.configobj.ReloadError.__init__
+robotide.context.configobj.SimpleVal.__init__
+robotide.context.logger.Logger.__init__
+robotide.context.settings.Settings.__init__
+robotide.editor.EditorPlugin.__init__
+robotide.editor.clipboard._ClipboardHandler.__init__
+robotide.editor.contentassist.ContentAssistList.__init__
+robotide.editor.contentassist.ContentAssistPopup.__init__
+robotide.editor.contentassist.ContentAssistTextCtrl.__init__
+robotide.editor.contentassist.ExpandingContentAssistTextCtrl.__init__
+robotide.editor.editors.WelcomePage.__init__
+robotide.editor.fieldeditors.ValueEditor.__init__
+robotide.editor.grid.GridEditor.__init__
+robotide.editor.gridcolorizer.Colorizer.__init__
+robotide.editor.kweditor.ContentAssistCellEditor.__init__
+robotide.editor.kweditor.KeywordEditor.__init__
+robotide.editor.kweditor.KeywordEditorUi.__init__
+robotide.editor.listeditor.AutoWidthColumnList.__init__
+robotide.editor.listeditor.ListEditor.__init__
+robotide.model.datalist.RobotDataList.__init__
+robotide.model.files.InitFile.__init__
+robotide.model.files.ResourceFile.__init__
+robotide.model.files.TestCaseFile.__init__
+robotide.model.keywords.BaseKeyword.__init__
+robotide.model.keywords.ForItemKeyword.__init__
+robotide.model.keywords.ForKeyword.__init__
+robotide.model.keywords.GeneratedKeyword.__init__
+robotide.model.keywords.KeywordData.__init__
+robotide.model.keywords.RepeatKeyword.__init__
+robotide.model.keywords.SetKeyword.__init__
+robotide.model.metadata.MetaItem.__init__
+robotide.model.tables.InitFileSettingTable.__init__
+robotide.model.tables.ResourceSettingTable.__init__
+robotide.model.tables.SuiteSettingTable.__init__
+robotide.model.tables.VariableTable.__init__
+robotide.model.tcuk.TestCase.__init__
+robotide.model.tcuk.TestCaseSettings.__init__
+robotide.model.tcuk.UserKeyword.__init__
+robotide.model.tcuk.UserKeywordSettings.__init__
+robotide.namespace.Namespace.__init__
+robotide.namespace.cache.LibraryCache.__init__
+robotide.namespace.cache.ResourceFileCache.__init__
+robotide.namespace.cache.VariableFileCache.__init__
+robotide.namespace.contentassist.ContentAssistItem.__init__
+robotide.pluginapi.plugin.Plugin.__init__
+robotide.publish.messages.RideLogMessage.__init__
+robotide.publish.messages.RideMessage.__init__
+robotide.publish.publisher.Publisher.__init__
+robotide.robotapi.InitFileData.__init__
+robotide.run.configmanagerui.ConfigManagerDialog.__init__
+robotide.run.process.Process.__init__
+robotide.run.runanything.RunAnything.__init__
+robotide.run.ui.Runner.__init__
+robotide.spec.xmlreaders.LibrarySpec.__init__
+robotide.ui.actiontriggers.ActionDelegator.__init__
+robotide.ui.actiontriggers.MenuBar.__init__
+robotide.ui.actiontriggers.ShortcutRegistry.__init__
+robotide.ui.actiontriggers.ToolBar.__init__
+robotide.ui.actiontriggers.ToolBarButton.__init__
+robotide.ui.filedialogs.AddSuiteDialog.__init__
+robotide.ui.filedialogs.ChangeFormatDialog.__init__
+robotide.ui.filedialogs.NewProjectDialog.__init__
+robotide.ui.filedialogs.NewResourceDialog.__init__
+robotide.ui.images.TreeImageList.__init__
+robotide.ui.keywordsearch.KeywordSearch.__init__
+robotide.ui.keywordsearch.KeywordSearchDialog.__init__
+robotide.ui.mainframe.AboutDialog.__init__
+robotide.ui.mainframe.ActionRegisterer.__init__
+robotide.ui.mainframe.RideFrame.__init__
+robotide.ui.notebook.NoteBook.__init__
+robotide.ui.pluginmanager.PluginManager.__init__
+robotide.ui.preview.HtmlView.__init__
+robotide.ui.preview.PreviewPanel.__init__
+robotide.ui.preview.PreviewPlugin.__init__
+robotide.ui.preview.TxtView.__init__
+robotide.ui.recentfiles.RecentFileEntry.__init__
+robotide.ui.recentfiles.RecentFilesPlugin.__init__
+robotide.ui.tree.Tree.__init__
+robotide.utils.components.ButtonWithHandler.__init__
+robotide.utils.components.PopupMenu.__init__
+robotide.utils.components.RideHtmlWindow.__init__
+robotide.validators.NonEmptyValidator.__init__
+robotide.writer.writer.HtmlFileWriter.__init__
+robotide.writer.writer.TsvFileWriter.__init__
+robotide.writer.writer.TxtFileWriter.__init__" class="py-name" href="#" onclick="return doclink('link-6', '__init__', 'link-6');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">parent</tt><tt class="py-op">)</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_data</tt> <tt class="py-op">=</tt> <tt id="link-7" class="py-name" targets="Variable robotide.publish.messages.RideGridCellChanged.data=robotide.publish.messages.RideGridCellChanged-class.html#data,Variable robotide.publish.messages.RideImportSettingAdded.data=robotide.publish.messages.RideImportSettingAdded-class.html#data,Variable robotide.publish.messages.RideImportSettingChanged.data=robotide.publish.messages.RideImportSettingChanged-class.html#data,Variable robotide.publish.messages.RideLogMessage.data=robotide.publish.messages.RideLogMessage-class.html#data,Variable robotide.publish.messages.RideMessage.data=robotide.publish.messages.RideMessage-class.html#data,Variable robotide.publish.messages.RideNotebookTabChanging.data=robotide.publish.messages.RideNotebookTabChanging-class.html#data,Variable robotide.publish.messages.RideOpenResource.data=robotide.publish.messages.RideOpenResource-class.html#data,Variable robotide.publish.messages.RideOpenSuite.data=robotide.publish.messages.RideOpenSuite-class.html#data,Variable robotide.publish.messages.RideSaved.data=robotide.publish.messages.RideSaved-class.html#data,Variable robotide.publish.messages.RideSaving.data=robotide.publish.messages.RideSaving-class.html#data,Variable robotide.publish.messages.RideTreeSelection.data=robotide.publish.messages.RideTreeSelection-class.html#data,Variable robotide.publish.messages.RideUserKeywordAdded.data=robotide.publish.messages.RideUserKeywordAdded-class.html#data"><a title="robotide.publish.messages.RideGridCellChanged.data
+robotide.publish.messages.RideImportSettingAdded.data
+robotide.publish.messages.RideImportSettingChanged.data
+robotide.publish.messages.RideLogMessage.data
+robotide.publish.messages.RideMessage.data
+robotide.publish.messages.RideNotebookTabChanging.data
+robotide.publish.messages.RideOpenResource.data
+robotide.publish.messages.RideOpenSuite.data
+robotide.publish.messages.RideSaved.data
+robotide.publish.messages.RideSaving.data
+robotide.publish.messages.RideTreeSelection.data
+robotide.publish.messages.RideUserKeywordAdded.data" class="py-name" href="#" onclick="return doclink('link-7', 'data', 'link-7');">data</a></tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_selection</tt> <tt class="py-op">=</tt> <tt class="py-op">-</tt><tt class="py-number">1</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_create_ui</tt><tt class="py-op">(</tt><tt class="py-name">columns</tt><tt class="py-op">,</tt> <tt id="link-8" class="py-name"><a title="robotide.publish.messages.RideGridCellChanged.data
+robotide.publish.messages.RideImportSettingAdded.data
+robotide.publish.messages.RideImportSettingChanged.data
+robotide.publish.messages.RideLogMessage.data
+robotide.publish.messages.RideMessage.data
+robotide.publish.messages.RideNotebookTabChanging.data
+robotide.publish.messages.RideOpenResource.data
+robotide.publish.messages.RideOpenSuite.data
+robotide.publish.messages.RideSaved.data
+robotide.publish.messages.RideSaving.data
+robotide.publish.messages.RideTreeSelection.data
+robotide.publish.messages.RideUserKeywordAdded.data" class="py-name" href="#" onclick="return doclink('link-8', 'data', 'link-7');">data</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_make_bindings</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line"> </tt>
+<a name="ListEditor._create_ui"></a><div id="ListEditor._create_ui-def"><a name="L32"></a><tt class="py-lineno"> 32</tt> <a class="py-toggle" href="#" id="ListEditor._create_ui-toggle" onclick="return toggle('ListEditor._create_ui');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.listeditor.ListEditor-class.html#_create_ui">_create_ui</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">columns</tt><tt class="py-op">,</tt> <tt class="py-param">data</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ListEditor._create_ui-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="ListEditor._create_ui-expanded"><a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line">        <tt class="py-name">sizer</tt> <tt class="py-op">=</tt> <tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">BoxSizer</tt><tt class="py-op">(</tt><tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">HORIZONTAL</tt><tt class="py-op">)</tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_list</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_create_list</tt><tt class="py-op">(</tt><tt class="py-name">columns</tt><tt class="py-op">,</tt> <tt id="link-9" class="py-name"><a title="robotide.publish.messages.RideGridCellChanged.data
+robotide.publish.messages.RideImportSettingAdded.data
+robotide.publish.messages.RideImportSettingChanged.data
+robotide.publish.messages.RideLogMessage.data
+robotide.publish.messages.RideMessage.data
+robotide.publish.messages.RideNotebookTabChanging.data
+robotide.publish.messages.RideOpenResource.data
+robotide.publish.messages.RideOpenSuite.data
+robotide.publish.messages.RideSaved.data
+robotide.publish.messages.RideSaving.data
+robotide.publish.messages.RideTreeSelection.data
+robotide.publish.messages.RideUserKeywordAdded.data" class="py-name" href="#" onclick="return doclink('link-9', 'data', 'link-7');">data</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line">        <tt class="py-name">sizer</tt><tt class="py-op">.</tt><tt class="py-name">Add</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_list</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">EXPAND</tt><tt class="py-op">)</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line">        <tt class="py-name">sizer</tt><tt class="py-op">.</tt><tt class="py-name">Add</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-number">5</tt><tt class="py-op">,</tt><tt class="py-number">0</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line">        <tt class="py-name">sizer</tt><tt class="py-op">.</tt><tt class="py-name">Add</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_create_buttons</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line">        <tt class="py-name">sizer</tt><tt class="py-op">.</tt><tt class="py-name">Add</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-number">5</tt><tt class="py-op">,</tt><tt class="py-number">0</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">SetSizer</tt><tt class="py-op">(</tt><tt class="py-name">sizer</tt><tt class="py-op">)</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line">        <tt class="py-name">sizer</tt><tt class="py-op">.</tt><tt class="py-name">Layout</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line"> </tt>
+<a name="ListEditor._create_list"></a><div id="ListEditor._create_list-def"><a name="L42"></a><tt class="py-lineno"> 42</tt> <a class="py-toggle" href="#" id="ListEditor._create_list-toggle" onclick="return toggle('ListEditor._create_list');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.listeditor.ListEditor-class.html#_create_list">_create_list</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">columns</tt><tt class="py-op">,</tt> <tt class="py-param">data</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ListEditor._create_list-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="ListEditor._create_list-expanded"><a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt id="link-10" class="py-name" targets="Class robotide.editor.listeditor.AutoWidthColumnList=robotide.editor.listeditor.AutoWidthColumnList-class.html"><a title="robotide.editor.listeditor.AutoWidthColumnList" class="py-name" href="#" onclick="return doclink('link-10', 'AutoWidthColumnList', 'link-10');">AutoWidthColumnList</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">columns</tt><tt class="py-op">,</tt> <tt id="link-11" class="py-name"><a title="robotide.publish.messages.RideGridCellChanged.data
+robotide.publish.messages.RideImportSettingAdded.data
+robotide.publish.messages.RideImportSettingChanged.data
+robotide.publish.messages.RideLogMessage.data
+robotide.publish.messages.RideMessage.data
+robotide.publish.messages.RideNotebookTabChanging.data
+robotide.publish.messages.RideOpenResource.data
+robotide.publish.messages.RideOpenSuite.data
+robotide.publish.messages.RideSaved.data
+robotide.publish.messages.RideSaving.data
+robotide.publish.messages.RideTreeSelection.data
+robotide.publish.messages.RideUserKeywordAdded.data" class="py-name" href="#" onclick="return doclink('link-11', 'data', 'link-7');">data</a></tt><tt class="py-op">)</tt> </tt>
+</div><a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line"> </tt>
+<a name="ListEditor._create_buttons"></a><div id="ListEditor._create_buttons-def"><a name="L45"></a><tt class="py-lineno"> 45</tt> <a class="py-toggle" href="#" id="ListEditor._create_buttons-toggle" onclick="return toggle('ListEditor._create_buttons');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.listeditor.ListEditor-class.html#_create_buttons">_create_buttons</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt>   </tt>
+</div><a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">        <tt class="py-name">sizer</tt> <tt class="py-op">=</tt> <tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">BoxSizer</tt><tt class="py-op">(</tt><tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">VERTICAL</tt><tt class="py-op">)</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">label</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-12" class="py-name"><a title="robotide.editor.editors.ImportSettingListEditor._buttons
+robotide.editor.editors.MetadataListEditor._buttons
+robotide.editor.editors.VariablesListEditor._buttons
+robotide.editor.listeditor.ListEditor._buttons" class="py-name" href="#" onclick="return doclink('link-12', '_buttons', 'link-5');">_buttons</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">            <tt class="py-name">sizer</tt><tt class="py-op">.</tt><tt class="py-name">Add</tt><tt class="py-op">(</tt><tt id="link-13" class="py-name"><a title="robotide.utils.components.ButtonWithHandler" class="py-name" href="#" onclick="return doclink('link-13', 'ButtonWithHandler', 'link-2');">ButtonWithHandler</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">label</tt><tt class="py-op">,</tt> <tt class="py-name">width</tt><tt class="py-op">=</tt><tt class="py-number">120</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">ALL</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">sizer</tt> </tt>
+</div><a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line"> </tt>
+<a name="ListEditor._make_bindings"></a><div id="ListEditor._make_bindings-def"><a name="L51"></a><tt class="py-lineno"> 51</tt> <a class="py-toggle" href="#" id="ListEditor._make_bindings-toggle" onclick="return toggle('ListEditor._make_bindings');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.listeditor.ListEditor-class.html#_make_bindings">_make_bindings</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ListEditor._make_bindings-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="ListEditor._make_bindings-expanded"><a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Bind</tt><tt class="py-op">(</tt><tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">EVT_LIST_ITEM_SELECTED</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-14" class="py-name" targets="Method robotide.editor.listeditor.ListEditor.OnItemSelected()=robotide.editor.listeditor.ListEditor-class.html#OnItemSelected,Method robotide.ui.keywordsearch.KeywordSearchDialog.OnItemSelected()=robotide.ui.keywordsearch.KeywordSearchDialog-class.html#OnItemSelected"><a title="robotide.editor.listeditor.ListEditor.OnItemSelected
+robotide.ui.keywordsearch.KeywordSearchDialog.OnItemSelected" class="py-name" href="#" onclick="return doclink('link-14', 'OnItemSelected', 'link-14');">OnItemSelected</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Bind</tt><tt class="py-op">(</tt><tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">EVT_LIST_ITEM_ACTIVATED</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-15" class="py-name" targets="Method robotide.editor.editors.ImportSettingListEditor.OnEdit()=robotide.editor.editors.ImportSettingListEditor-class.html#OnEdit,Method robotide.editor.editors.MetadataListEditor.OnEdit()=robotide.editor.editors.MetadataListEditor-class.html#OnEdit,Method robotide.editor.editors.VariablesListEditor.OnEdit()=robotide.editor.editors.VariablesListEditor-class.html#OnEdit"><a title="robotide.editor.editors.ImportSettingListEditor.OnEdit
+robotide.editor.editors.MetadataListEditor.OnEdit
+robotide.editor.editors.VariablesListEditor.OnEdit" class="py-name" href="#" onclick="return doclink('link-15', 'OnEdit', 'link-15');">OnEdit</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">Bind</tt><tt class="py-op">(</tt><tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">EVT_LIST_ITEM_RIGHT_CLICK</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-16" class="py-name" targets="Method robotide.editor.listeditor.ListEditor.OnRightClick()=robotide.editor.listeditor.ListEditor-class.html#OnRightClick,Method robotide.ui.tree.Tree.OnRightClick()=robotide.ui.tree.Tree-class.html#OnRightClick"><a title="robotide.editor.listeditor.ListEditor.OnRightClick
+robotide.ui.tree.Tree.OnRightClick" class="py-name" href="#" onclick="return doclink('link-16', 'OnRightClick', 'link-16');">OnRightClick</a></tt><tt class="py-op">)</tt> </tt>
+</div><a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line"> </tt>
+<a name="ListEditor.OnRightClick"></a><div id="ListEditor.OnRightClick-def"><a name="L56"></a><tt class="py-lineno"> 56</tt> <a class="py-toggle" href="#" id="ListEditor.OnRightClick-toggle" onclick="return toggle('ListEditor.OnRightClick');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.listeditor.ListEditor-class.html#OnRightClick">OnRightClick</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">event</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ListEditor.OnRightClick-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="ListEditor.OnRightClick-expanded"><a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">        <tt id="link-17" class="py-name"><a title="robotide.utils.components.PopupMenu" class="py-name" href="#" onclick="return doclink('link-17', 'PopupMenu', 'link-3');">PopupMenu</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-18" class="py-name"><a title="robotide.editor.listeditor.ListEditor._menu" class="py-name" href="#" onclick="return doclink('link-18', '_menu', 'link-4');">_menu</a></tt><tt class="py-op">)</tt> </tt>
+</div><a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line"> </tt>
+<a name="ListEditor.OnItemSelected"></a><div id="ListEditor.OnItemSelected-def"><a name="L59"></a><tt class="py-lineno"> 59</tt> <a class="py-toggle" href="#" id="ListEditor.OnItemSelected-toggle" onclick="return toggle('ListEditor.OnItemSelected');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.listeditor.ListEditor-class.html#OnItemSelected">OnItemSelected</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">event</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ListEditor.OnItemSelected-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="ListEditor.OnItemSelected-expanded"><a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_selection</tt> <tt class="py-op">=</tt> <tt class="py-name">event</tt><tt class="py-op">.</tt><tt class="py-name">GetIndex</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line"> </tt>
+<a name="ListEditor.OnItemActivated"></a><div id="ListEditor.OnItemActivated-def"><a name="L62"></a><tt class="py-lineno"> 62</tt> <a class="py-toggle" href="#" id="ListEditor.OnItemActivated-toggle" onclick="return toggle('ListEditor.OnItemActivated');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.listeditor.ListEditor-class.html#OnItemActivated">OnItemActivated</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">event</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ListEditor.OnItemActivated-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="ListEditor.OnItemActivated-expanded"><a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">        <tt class="py-keyword">pass</tt> </tt>
+</div><a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line"> </tt>
+<a name="ListEditor.OnMoveUp"></a><div id="ListEditor.OnMoveUp-def"><a name="L65"></a><tt class="py-lineno"> 65</tt> <a class="py-toggle" href="#" id="ListEditor.OnMoveUp-toggle" onclick="return toggle('ListEditor.OnMoveUp');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.listeditor.ListEditor-class.html#OnMoveUp">OnMoveUp</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">event</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ListEditor.OnMoveUp-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="ListEditor.OnMoveUp-expanded"><a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_selection</tt> <tt class="py-op">&lt;</tt> <tt class="py-number">1</tt><tt class="py-op">:</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_switch_items</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_selection</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_selection</tt><tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_list</tt><tt class="py-op">.</tt><tt class="py-name">Select</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_selection</tt><tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-name">True</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line"> </tt>
+<a name="ListEditor.OnMoveDown"></a><div id="ListEditor.OnMoveDown-def"><a name="L71"></a><tt class="py-lineno"> 71</tt> <a class="py-toggle" href="#" id="ListEditor.OnMoveDown-toggle" onclick="return toggle('ListEditor.OnMoveDown');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.listeditor.ListEditor-class.html#OnMoveDown">OnMoveDown</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">event</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ListEditor.OnMoveDown-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="ListEditor.OnMoveDown-expanded"><a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_selection</tt> <tt class="py-op">==</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_list</tt><tt class="py-op">.</tt><tt class="py-name">GetItemCount</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">-</tt> <tt class="py-number">1</tt> <tt class="py-keyword">or</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_selection</tt> <tt class="py-op">==</tt> <tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">:</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_switch_items</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_selection</tt><tt class="py-op">+</tt><tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_selection</tt><tt class="py-op">)</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_list</tt><tt class="py-op">.</tt><tt class="py-name">Select</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_selection</tt><tt class="py-op">+</tt><tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-name">True</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line"> </tt>
+<a name="ListEditor._switch_items"></a><div id="ListEditor._switch_items-def"><a name="L77"></a><tt class="py-lineno"> 77</tt> <a class="py-toggle" href="#" id="ListEditor._switch_items-toggle" onclick="return toggle('ListEditor._switch_items');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.listeditor.ListEditor-class.html#_switch_items">_switch_items</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">ind1</tt><tt class="py-op">,</tt> <tt class="py-param">ind2</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ListEditor._switch_items-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="ListEditor._switch_items-expanded"><a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_data</tt><tt class="py-op">.</tt><tt id="link-19" class="py-name" targets="Method robotide.model.datalist.RobotDataList.swap()=robotide.model.datalist.RobotDataList-class.html#swap,Method robotide.model.tables.VariableTable.swap()=robotide.model.tables.VariableTable-class.html#swap"><a title="robotide.model.datalist.RobotDataList.swap
+robotide.model.tables.VariableTable.swap" class="py-name" href="#" onclick="return doclink('link-19', 'swap', 'link-19');">swap</a></tt><tt class="py-op">(</tt><tt class="py-name">ind1</tt><tt class="py-op">,</tt> <tt class="py-name">ind2</tt><tt class="py-op">)</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-20" class="py-name" targets="Method robotide.editor.listeditor.ListEditor.update_data()=robotide.editor.listeditor.ListEditor-class.html#update_data"><a title="robotide.editor.listeditor.ListEditor.update_data" class="py-name" href="#" onclick="return doclink('link-20', 'update_data', 'link-20');">update_data</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line"> </tt>
+<a name="ListEditor.OnDelete"></a><div id="ListEditor.OnDelete-def"><a name="L81"></a><tt class="py-lineno"> 81</tt> <a class="py-toggle" href="#" id="ListEditor.OnDelete-toggle" onclick="return toggle('ListEditor.OnDelete');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.listeditor.ListEditor-class.html#OnDelete">OnDelete</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">event</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ListEditor.OnDelete-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="ListEditor.OnDelete-expanded"><a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_selection</tt> <tt class="py-op">==</tt> <tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">:</tt> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_data</tt><tt class="py-op">.</tt><tt id="link-21" class="py-name" targets="Method robotide.model.datalist.RobotDataList.pop()=robotide.model.datalist.RobotDataList-class.html#pop,Method robotide.model.tables.VariableTable.pop()=robotide.model.tables.VariableTable-class.html#pop"><a title="robotide.model.datalist.RobotDataList.pop
+robotide.model.tables.VariableTable.pop" class="py-name" href="#" onclick="return doclink('link-21', 'pop', 'link-21');">pop</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_selection</tt><tt class="py-op">)</tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-22" class="py-name"><a title="robotide.editor.listeditor.ListEditor.update_data" class="py-name" href="#" onclick="return doclink('link-22', 'update_data', 'link-20');">update_data</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_selection</tt> <tt class="py-op">&gt;=</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_data</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_selection</tt> <tt class="py-op">=</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_data</tt><tt class="py-op">)</tt> <tt class="py-op">-</tt> <tt class="py-number">1</tt> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_list</tt><tt class="py-op">.</tt><tt class="py-name">Select</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_selection</tt><tt class="py-op">,</tt> <tt class="py-name">True</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line"> </tt>
+<a name="ListEditor.update_data"></a><div id="ListEditor.update_data-def"><a name="L90"></a><tt class="py-lineno"> 90</tt> <a class="py-toggle" href="#" id="ListEditor.update_data-toggle" onclick="return toggle('ListEditor.update_data');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.listeditor.ListEditor-class.html#update_data">update_data</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ListEditor.update_data-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="ListEditor.update_data-expanded"><a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_list</tt><tt class="py-op">.</tt><tt class="py-name">DeleteAllItems</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_list</tt><tt class="py-op">.</tt><tt id="link-23" class="py-name" targets="Method robotide.editor.listeditor.AutoWidthColumnList.insert_data()=robotide.editor.listeditor.AutoWidthColumnList-class.html#insert_data"><a title="robotide.editor.listeditor.AutoWidthColumnList.insert_data" class="py-name" href="#" onclick="return doclink('link-23', 'insert_data', 'link-23');">insert_data</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_data</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line"> </tt>
+<a name="ListEditor.update_selected_item"></a><div id="ListEditor.update_selected_item-def"><a name="L94"></a><tt class="py-lineno"> 94</tt> <a class="py-toggle" href="#" id="ListEditor.update_selected_item-toggle" onclick="return toggle('ListEditor.update_selected_item');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.listeditor.ListEditor-class.html#update_selected_item">update_selected_item</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">data</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ListEditor.update_selected_item-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="ListEditor.update_selected_item-expanded"><a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_list</tt><tt class="py-op">.</tt><tt id="link-24" class="py-name" targets="Method robotide.editor.listeditor.AutoWidthColumnList.update_item()=robotide.editor.listeditor.AutoWidthColumnList-class.html#update_item"><a title="robotide.editor.listeditor.AutoWidthColumnList.update_item" class="py-name" href="#" onclick="return doclink('link-24', 'update_item', 'link-24');">update_item</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_selection</tt><tt class="py-op">,</tt> <tt id="link-25" class="py-name"><a title="robotide.publish.messages.RideGridCellChanged.data
+robotide.publish.messages.RideImportSettingAdded.data
+robotide.publish.messages.RideImportSettingChanged.data
+robotide.publish.messages.RideLogMessage.data
+robotide.publish.messages.RideMessage.data
+robotide.publish.messages.RideNotebookTabChanging.data
+robotide.publish.messages.RideOpenResource.data
+robotide.publish.messages.RideOpenSuite.data
+robotide.publish.messages.RideSaved.data
+robotide.publish.messages.RideSaving.data
+robotide.publish.messages.RideTreeSelection.data
+robotide.publish.messages.RideUserKeywordAdded.data" class="py-name" href="#" onclick="return doclink('link-25', 'data', 'link-7');">data</a></tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line"> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line"> </tt>
+<a name="AutoWidthColumnList"></a><div id="AutoWidthColumnList-def"><a name="L98"></a><tt class="py-lineno"> 98</tt> <a class="py-toggle" href="#" id="AutoWidthColumnList-toggle" onclick="return toggle('AutoWidthColumnList');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="robotide.editor.listeditor.AutoWidthColumnList-class.html">AutoWidthColumnList</a><tt class="py-op">(</tt><tt class="py-base-class">wx</tt><tt class="py-op">.</tt><tt class="py-base-class">ListCtrl</tt><tt class="py-op">,</tt> <tt class="py-base-class">ListCtrlAutoWidthMixin</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="AutoWidthColumnList-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="AutoWidthColumnList-expanded"><a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line"> </tt>
+<a name="AutoWidthColumnList.__init__"></a><div id="AutoWidthColumnList.__init__-def"><a name="L100"></a><tt class="py-lineno">100</tt> <a class="py-toggle" href="#" id="AutoWidthColumnList.__init__-toggle" onclick="return toggle('AutoWidthColumnList.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.listeditor.AutoWidthColumnList-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">parent</tt><tt class="py-op">,</tt> <tt class="py-param">columns</tt><tt class="py-op">,</tt> <tt class="py-param">data</tt><tt class="py-op">=</tt><tt class="py-op">[</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="AutoWidthColumnList.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="AutoWidthColumnList.__init__-expanded"><a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line">        <tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">ListCtrl</tt><tt class="py-op">.</tt><tt id="link-26" class="py-name"><a title="robotide.action.actioninfo.ActionInfo.__init__
+robotide.action.actioninfo.MenuInfo.__init__
+robotide.action.actioninfo.SeparatorInfo.__init__
+robotide.action.shortcut.Shortcut.__init__
+robotide.application.application.RIDE.__init__
+robotide.application.datamodel.DataModel.__init__
+robotide.application.pluginconnector.BrokenPlugin.__init__
+robotide.application.pluginconnector.PluginConnector.__init__
+robotide.application.pluginloader.PluginLoader.__init__
+robotide.application.releasenotes.ReleaseNotesPlugin.__init__
+robotide.context.RideSettings.__init__
+robotide.context.configobj.ConfigObj.__init__
+robotide.context.configobj.ConfigObjError.__init__
+robotide.context.configobj.InterpolationLoopError.__init__
+robotide.context.configobj.MissingInterpolationOption.__init__
+robotide.context.configobj.ReloadError.__init__
+robotide.context.configobj.SimpleVal.__init__
+robotide.context.logger.Logger.__init__
+robotide.context.settings.Settings.__init__
+robotide.editor.EditorPlugin.__init__
+robotide.editor.clipboard._ClipboardHandler.__init__
+robotide.editor.contentassist.ContentAssistList.__init__
+robotide.editor.contentassist.ContentAssistPopup.__init__
+robotide.editor.contentassist.ContentAssistTextCtrl.__init__
+robotide.editor.contentassist.ExpandingContentAssistTextCtrl.__init__
+robotide.editor.editors.WelcomePage.__init__
+robotide.editor.fieldeditors.ValueEditor.__init__
+robotide.editor.grid.GridEditor.__init__
+robotide.editor.gridcolorizer.Colorizer.__init__
+robotide.editor.kweditor.ContentAssistCellEditor.__init__
+robotide.editor.kweditor.KeywordEditor.__init__
+robotide.editor.kweditor.KeywordEditorUi.__init__
+robotide.editor.listeditor.AutoWidthColumnList.__init__
+robotide.editor.listeditor.ListEditor.__init__
+robotide.model.datalist.RobotDataList.__init__
+robotide.model.files.InitFile.__init__
+robotide.model.files.ResourceFile.__init__
+robotide.model.files.TestCaseFile.__init__
+robotide.model.keywords.BaseKeyword.__init__
+robotide.model.keywords.ForItemKeyword.__init__
+robotide.model.keywords.ForKeyword.__init__
+robotide.model.keywords.GeneratedKeyword.__init__
+robotide.model.keywords.KeywordData.__init__
+robotide.model.keywords.RepeatKeyword.__init__
+robotide.model.keywords.SetKeyword.__init__
+robotide.model.metadata.MetaItem.__init__
+robotide.model.tables.InitFileSettingTable.__init__
+robotide.model.tables.ResourceSettingTable.__init__
+robotide.model.tables.SuiteSettingTable.__init__
+robotide.model.tables.VariableTable.__init__
+robotide.model.tcuk.TestCase.__init__
+robotide.model.tcuk.TestCaseSettings.__init__
+robotide.model.tcuk.UserKeyword.__init__
+robotide.model.tcuk.UserKeywordSettings.__init__
+robotide.namespace.Namespace.__init__
+robotide.namespace.cache.LibraryCache.__init__
+robotide.namespace.cache.ResourceFileCache.__init__
+robotide.namespace.cache.VariableFileCache.__init__
+robotide.namespace.contentassist.ContentAssistItem.__init__
+robotide.pluginapi.plugin.Plugin.__init__
+robotide.publish.messages.RideLogMessage.__init__
+robotide.publish.messages.RideMessage.__init__
+robotide.publish.publisher.Publisher.__init__
+robotide.robotapi.InitFileData.__init__
+robotide.run.configmanagerui.ConfigManagerDialog.__init__
+robotide.run.process.Process.__init__
+robotide.run.runanything.RunAnything.__init__
+robotide.run.ui.Runner.__init__
+robotide.spec.xmlreaders.LibrarySpec.__init__
+robotide.ui.actiontriggers.ActionDelegator.__init__
+robotide.ui.actiontriggers.MenuBar.__init__
+robotide.ui.actiontriggers.ShortcutRegistry.__init__
+robotide.ui.actiontriggers.ToolBar.__init__
+robotide.ui.actiontriggers.ToolBarButton.__init__
+robotide.ui.filedialogs.AddSuiteDialog.__init__
+robotide.ui.filedialogs.ChangeFormatDialog.__init__
+robotide.ui.filedialogs.NewProjectDialog.__init__
+robotide.ui.filedialogs.NewResourceDialog.__init__
+robotide.ui.images.TreeImageList.__init__
+robotide.ui.keywordsearch.KeywordSearch.__init__
+robotide.ui.keywordsearch.KeywordSearchDialog.__init__
+robotide.ui.mainframe.AboutDialog.__init__
+robotide.ui.mainframe.ActionRegisterer.__init__
+robotide.ui.mainframe.RideFrame.__init__
+robotide.ui.notebook.NoteBook.__init__
+robotide.ui.pluginmanager.PluginManager.__init__
+robotide.ui.preview.HtmlView.__init__
+robotide.ui.preview.PreviewPanel.__init__
+robotide.ui.preview.PreviewPlugin.__init__
+robotide.ui.preview.TxtView.__init__
+robotide.ui.recentfiles.RecentFileEntry.__init__
+robotide.ui.recentfiles.RecentFilesPlugin.__init__
+robotide.ui.tree.Tree.__init__
+robotide.utils.components.ButtonWithHandler.__init__
+robotide.utils.components.PopupMenu.__init__
+robotide.utils.components.RideHtmlWindow.__init__
+robotide.validators.NonEmptyValidator.__init__
+robotide.writer.writer.HtmlFileWriter.__init__
+robotide.writer.writer.TsvFileWriter.__init__
+robotide.writer.writer.TxtFileWriter.__init__" class="py-name" href="#" onclick="return doclink('link-26', '__init__', 'link-6');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">parent</tt><tt class="py-op">,</tt>  </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line">                             <tt class="py-name">style</tt><tt class="py-op">=</tt><tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">LC_REPORT</tt><tt class="py-op">|</tt><tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">NO_BORDER</tt><tt class="py-op">|</tt><tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">LC_SINGLE_SEL</tt><tt class="py-op">|</tt><tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">LC_HRULES</tt><tt class="py-op">)</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line">        <tt class="py-name">ListCtrlAutoWidthMixin</tt><tt class="py-op">.</tt><tt id="link-27" class="py-name"><a title="robotide.action.actioninfo.ActionInfo.__init__
+robotide.action.actioninfo.MenuInfo.__init__
+robotide.action.actioninfo.SeparatorInfo.__init__
+robotide.action.shortcut.Shortcut.__init__
+robotide.application.application.RIDE.__init__
+robotide.application.datamodel.DataModel.__init__
+robotide.application.pluginconnector.BrokenPlugin.__init__
+robotide.application.pluginconnector.PluginConnector.__init__
+robotide.application.pluginloader.PluginLoader.__init__
+robotide.application.releasenotes.ReleaseNotesPlugin.__init__
+robotide.context.RideSettings.__init__
+robotide.context.configobj.ConfigObj.__init__
+robotide.context.configobj.ConfigObjError.__init__
+robotide.context.configobj.InterpolationLoopError.__init__
+robotide.context.configobj.MissingInterpolationOption.__init__
+robotide.context.configobj.ReloadError.__init__
+robotide.context.configobj.SimpleVal.__init__
+robotide.context.logger.Logger.__init__
+robotide.context.settings.Settings.__init__
+robotide.editor.EditorPlugin.__init__
+robotide.editor.clipboard._ClipboardHandler.__init__
+robotide.editor.contentassist.ContentAssistList.__init__
+robotide.editor.contentassist.ContentAssistPopup.__init__
+robotide.editor.contentassist.ContentAssistTextCtrl.__init__
+robotide.editor.contentassist.ExpandingContentAssistTextCtrl.__init__
+robotide.editor.editors.WelcomePage.__init__
+robotide.editor.fieldeditors.ValueEditor.__init__
+robotide.editor.grid.GridEditor.__init__
+robotide.editor.gridcolorizer.Colorizer.__init__
+robotide.editor.kweditor.ContentAssistCellEditor.__init__
+robotide.editor.kweditor.KeywordEditor.__init__
+robotide.editor.kweditor.KeywordEditorUi.__init__
+robotide.editor.listeditor.AutoWidthColumnList.__init__
+robotide.editor.listeditor.ListEditor.__init__
+robotide.model.datalist.RobotDataList.__init__
+robotide.model.files.InitFile.__init__
+robotide.model.files.ResourceFile.__init__
+robotide.model.files.TestCaseFile.__init__
+robotide.model.keywords.BaseKeyword.__init__
+robotide.model.keywords.ForItemKeyword.__init__
+robotide.model.keywords.ForKeyword.__init__
+robotide.model.keywords.GeneratedKeyword.__init__
+robotide.model.keywords.KeywordData.__init__
+robotide.model.keywords.RepeatKeyword.__init__
+robotide.model.keywords.SetKeyword.__init__
+robotide.model.metadata.MetaItem.__init__
+robotide.model.tables.InitFileSettingTable.__init__
+robotide.model.tables.ResourceSettingTable.__init__
+robotide.model.tables.SuiteSettingTable.__init__
+robotide.model.tables.VariableTable.__init__
+robotide.model.tcuk.TestCase.__init__
+robotide.model.tcuk.TestCaseSettings.__init__
+robotide.model.tcuk.UserKeyword.__init__
+robotide.model.tcuk.UserKeywordSettings.__init__
+robotide.namespace.Namespace.__init__
+robotide.namespace.cache.LibraryCache.__init__
+robotide.namespace.cache.ResourceFileCache.__init__
+robotide.namespace.cache.VariableFileCache.__init__
+robotide.namespace.contentassist.ContentAssistItem.__init__
+robotide.pluginapi.plugin.Plugin.__init__
+robotide.publish.messages.RideLogMessage.__init__
+robotide.publish.messages.RideMessage.__init__
+robotide.publish.publisher.Publisher.__init__
+robotide.robotapi.InitFileData.__init__
+robotide.run.configmanagerui.ConfigManagerDialog.__init__
+robotide.run.process.Process.__init__
+robotide.run.runanything.RunAnything.__init__
+robotide.run.ui.Runner.__init__
+robotide.spec.xmlreaders.LibrarySpec.__init__
+robotide.ui.actiontriggers.ActionDelegator.__init__
+robotide.ui.actiontriggers.MenuBar.__init__
+robotide.ui.actiontriggers.ShortcutRegistry.__init__
+robotide.ui.actiontriggers.ToolBar.__init__
+robotide.ui.actiontriggers.ToolBarButton.__init__
+robotide.ui.filedialogs.AddSuiteDialog.__init__
+robotide.ui.filedialogs.ChangeFormatDialog.__init__
+robotide.ui.filedialogs.NewProjectDialog.__init__
+robotide.ui.filedialogs.NewResourceDialog.__init__
+robotide.ui.images.TreeImageList.__init__
+robotide.ui.keywordsearch.KeywordSearch.__init__
+robotide.ui.keywordsearch.KeywordSearchDialog.__init__
+robotide.ui.mainframe.AboutDialog.__init__
+robotide.ui.mainframe.ActionRegisterer.__init__
+robotide.ui.mainframe.RideFrame.__init__
+robotide.ui.notebook.NoteBook.__init__
+robotide.ui.pluginmanager.PluginManager.__init__
+robotide.ui.preview.HtmlView.__init__
+robotide.ui.preview.PreviewPanel.__init__
+robotide.ui.preview.PreviewPlugin.__init__
+robotide.ui.preview.TxtView.__init__
+robotide.ui.recentfiles.RecentFileEntry.__init__
+robotide.ui.recentfiles.RecentFilesPlugin.__init__
+robotide.ui.tree.Tree.__init__
+robotide.utils.components.ButtonWithHandler.__init__
+robotide.utils.components.PopupMenu.__init__
+robotide.utils.components.RideHtmlWindow.__init__
+robotide.validators.NonEmptyValidator.__init__
+robotide.writer.writer.HtmlFileWriter.__init__
+robotide.writer.writer.TsvFileWriter.__init__
+robotide.writer.writer.TxtFileWriter.__init__" class="py-name" href="#" onclick="return doclink('link-27', '__init__', 'link-6');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_parent</tt> <tt class="py-op">=</tt> <tt class="py-name">parent</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-28" class="py-name" targets="Method robotide.editor.contentassist.ContentAssistList.populate()=robotide.editor.contentassist.ContentAssistList-class.html#populate,Method robotide.editor.listeditor.AutoWidthColumnList.populate()=robotide.editor.listeditor.AutoWidthColumnList-class.html#populate,Method robotide.ui.tree.Tree.populate()=robotide.ui.tree.Tree-class.html#populate"><a title="robotide.editor.contentassist.ContentAssistList.populate
+robotide.editor.listeditor.AutoWidthColumnList.populate
+robotide.ui.tree.Tree.populate" class="py-name" href="#" onclick="return doclink('link-28', 'populate', 'link-28');">populate</a></tt><tt class="py-op">(</tt><tt class="py-name">columns</tt><tt class="py-op">,</tt> <tt id="link-29" class="py-name"><a title="robotide.publish.messages.RideGridCellChanged.data
+robotide.publish.messages.RideImportSettingAdded.data
+robotide.publish.messages.RideImportSettingChanged.data
+robotide.publish.messages.RideLogMessage.data
+robotide.publish.messages.RideMessage.data
+robotide.publish.messages.RideNotebookTabChanging.data
+robotide.publish.messages.RideOpenResource.data
+robotide.publish.messages.RideOpenSuite.data
+robotide.publish.messages.RideSaved.data
+robotide.publish.messages.RideSaving.data
+robotide.publish.messages.RideTreeSelection.data
+robotide.publish.messages.RideUserKeywordAdded.data" class="py-name" href="#" onclick="return doclink('link-29', 'data', 'link-7');">data</a></tt><tt class="py-op">)</tt> </tt>
+</div><a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line"> </tt>
+<a name="AutoWidthColumnList.populate"></a><div id="AutoWidthColumnList.populate-def"><a name="L107"></a><tt class="py-lineno">107</tt> <a class="py-toggle" href="#" id="AutoWidthColumnList.populate-toggle" onclick="return toggle('AutoWidthColumnList.populate');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.listeditor.AutoWidthColumnList-class.html#populate">populate</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">columns</tt><tt class="py-op">,</tt> <tt class="py-param">data</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="AutoWidthColumnList.populate-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="AutoWidthColumnList.populate-expanded"><a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">i</tt><tt class="py-op">,</tt> <tt id="link-30" class="py-name" targets="Variable robotide.publish.messages.name=robotide.publish.messages-module.html#name"><a title="robotide.publish.messages.name" class="py-name" href="#" onclick="return doclink('link-30', 'name', 'link-30');">name</a></tt> <tt class="py-keyword">in</tt> <tt class="py-name">enumerate</tt><tt class="py-op">(</tt><tt class="py-name">columns</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">InsertColumn</tt><tt class="py-op">(</tt><tt class="py-name">i</tt><tt class="py-op">,</tt> <tt id="link-31" class="py-name"><a title="robotide.publish.messages.name" class="py-name" href="#" onclick="return doclink('link-31', 'name', 'link-30');">name</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">SetColumnWidth</tt><tt class="py-op">(</tt><tt class="py-name">i</tt><tt class="py-op">,</tt> <tt class="py-number">200</tt><tt class="py-op">)</tt> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-32" class="py-name"><a title="robotide.editor.listeditor.AutoWidthColumnList.insert_data" class="py-name" href="#" onclick="return doclink('link-32', 'insert_data', 'link-23');">insert_data</a></tt><tt class="py-op">(</tt><tt id="link-33" class="py-name"><a title="robotide.publish.messages.RideGridCellChanged.data
+robotide.publish.messages.RideImportSettingAdded.data
+robotide.publish.messages.RideImportSettingChanged.data
+robotide.publish.messages.RideLogMessage.data
+robotide.publish.messages.RideMessage.data
+robotide.publish.messages.RideNotebookTabChanging.data
+robotide.publish.messages.RideOpenResource.data
+robotide.publish.messages.RideOpenSuite.data
+robotide.publish.messages.RideSaved.data
+robotide.publish.messages.RideSaving.data
+robotide.publish.messages.RideTreeSelection.data
+robotide.publish.messages.RideUserKeywordAdded.data" class="py-name" href="#" onclick="return doclink('link-33', 'data', 'link-7');">data</a></tt><tt class="py-op">)</tt> </tt>
+</div><a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line"> </tt>
+<a name="AutoWidthColumnList.insert_data"></a><div id="AutoWidthColumnList.insert_data-def"><a name="L113"></a><tt class="py-lineno">113</tt> <a class="py-toggle" href="#" id="AutoWidthColumnList.insert_data-toggle" onclick="return toggle('AutoWidthColumnList.insert_data');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.listeditor.AutoWidthColumnList-class.html#insert_data">insert_data</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">data</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="AutoWidthColumnList.insert_data-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="AutoWidthColumnList.insert_data-expanded"><a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt id="link-34" class="py-name" targets="Variable robotide.editor.dialoghelps.row=robotide.editor.dialoghelps-module.html#row"><a title="robotide.editor.dialoghelps.row" class="py-name" href="#" onclick="return doclink('link-34', 'row', 'link-34');">row</a></tt><tt class="py-op">,</tt> <tt id="link-35" class="py-name" targets="Variable robotide.ui.tree.NoneHandler.item=robotide.ui.tree.NoneHandler-class.html#item"><a title="robotide.ui.tree.NoneHandler.item" class="py-name" href="#" onclick="return doclink('link-35', 'item', 'link-35');">item</a></tt> <tt class="py-keyword">in</tt> <tt class="py-name">enumerate</tt><tt class="py-op">(</tt><tt id="link-36" class="py-name"><a title="robotide.publish.messages.RideGridCellChanged.data
+robotide.publish.messages.RideImportSettingAdded.data
+robotide.publish.messages.RideImportSettingChanged.data
+robotide.publish.messages.RideLogMessage.data
+robotide.publish.messages.RideMessage.data
+robotide.publish.messages.RideNotebookTabChanging.data
+robotide.publish.messages.RideOpenResource.data
+robotide.publish.messages.RideOpenSuite.data
+robotide.publish.messages.RideSaved.data
+robotide.publish.messages.RideSaving.data
+robotide.publish.messages.RideTreeSelection.data
+robotide.publish.messages.RideUserKeywordAdded.data" class="py-name" href="#" onclick="return doclink('link-36', 'data', 'link-7');">data</a></tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line">            <tt class="py-name">rowdata</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_parent</tt><tt class="py-op">.</tt><tt id="link-37" class="py-name" targets="Method robotide.editor.editors.ImportSettingListEditor.get_column_values()=robotide.editor.editors.ImportSettingListEditor-class.html#get_column_values,Method robotide.editor.editors.MetadataListEditor.get_column_values()=robotide.editor.editors.MetadataListEditor-class.html#get_column_values,Method robotide.editor.editors.VariablesListEditor.get_column_values()=robotide.editor.editors.VariablesListEditor-class.html#get_column_values"><a title="robotide.editor.editors.ImportSettingListEditor.get_column_values
+robotide.editor.editors.MetadataListEditor.get_column_values
+robotide.editor.editors.VariablesListEditor.get_column_values" class="py-name" href="#" onclick="return doclink('link-37', 'get_column_values', 'link-37');">get_column_values</a></tt><tt class="py-op">(</tt><tt id="link-38" class="py-name"><a title="robotide.ui.tree.NoneHandler.item" class="py-name" href="#" onclick="return doclink('link-38', 'item', 'link-35');">item</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">InsertStringItem</tt><tt class="py-op">(</tt><tt id="link-39" class="py-name"><a title="robotide.editor.dialoghelps.row" class="py-name" href="#" onclick="return doclink('link-39', 'row', 'link-34');">row</a></tt><tt class="py-op">,</tt> <tt class="py-name">rowdata</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line">            <tt class="py-keyword">for</tt> <tt class="py-name">i</tt> <tt class="py-keyword">in</tt> <tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">rowdata</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line">                <tt id="link-40" class="py-name"><a title="robotide.publish.messages.RideGridCellChanged.data
+robotide.publish.messages.RideImportSettingAdded.data
+robotide.publish.messages.RideImportSettingChanged.data
+robotide.publish.messages.RideLogMessage.data
+robotide.publish.messages.RideMessage.data
+robotide.publish.messages.RideNotebookTabChanging.data
+robotide.publish.messages.RideOpenResource.data
+robotide.publish.messages.RideOpenSuite.data
+robotide.publish.messages.RideSaved.data
+robotide.publish.messages.RideSaving.data
+robotide.publish.messages.RideTreeSelection.data
+robotide.publish.messages.RideUserKeywordAdded.data" class="py-name" href="#" onclick="return doclink('link-40', 'data', 'link-7');">data</a></tt> <tt class="py-op">=</tt> <tt class="py-name">rowdata</tt><tt class="py-op">[</tt><tt class="py-name">i</tt><tt class="py-op">]</tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt> <tt class="py-keyword">and</tt> <tt class="py-name">rowdata</tt><tt class="py-op">[</tt><tt class="py-name">i</tt><tt class="py-op">]</tt> <tt class="py-keyword">or</tt> <tt class="py-string">''</tt> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">SetStringItem</tt><tt class="py-op">(</tt><tt id="link-41" class="py-name"><a title="robotide.editor.dialoghelps.row" class="py-name" href="#" onclick="return doclink('link-41', 'row', 'link-34');">row</a></tt><tt class="py-op">,</tt> <tt class="py-name">i</tt><tt class="py-op">,</tt> <tt id="link-42" class="py-name"><a title="robotide.publish.messages.RideGridCellChanged.data
+robotide.publish.messages.RideImportSettingAdded.data
+robotide.publish.messages.RideImportSettingChanged.data
+robotide.publish.messages.RideLogMessage.data
+robotide.publish.messages.RideMessage.data
+robotide.publish.messages.RideNotebookTabChanging.data
+robotide.publish.messages.RideOpenResource.data
+robotide.publish.messages.RideOpenSuite.data
+robotide.publish.messages.RideSaved.data
+robotide.publish.messages.RideSaving.data
+robotide.publish.messages.RideTreeSelection.data
+robotide.publish.messages.RideUserKeywordAdded.data" class="py-name" href="#" onclick="return doclink('link-42', 'data', 'link-7');">data</a></tt><tt class="py-op">)</tt> </tt>
+</div><a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line"> </tt>
+<a name="AutoWidthColumnList.update_item"></a><div id="AutoWidthColumnList.update_item-def"><a name="L121"></a><tt class="py-lineno">121</tt> <a class="py-toggle" href="#" id="AutoWidthColumnList.update_item-toggle" onclick="return toggle('AutoWidthColumnList.update_item');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.listeditor.AutoWidthColumnList-class.html#update_item">update_item</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">index</tt><tt class="py-op">,</tt> <tt class="py-param">data</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="AutoWidthColumnList.update_item-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="AutoWidthColumnList.update_item-expanded"><a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">SetItemText</tt><tt class="py-op">(</tt><tt class="py-name">index</tt><tt class="py-op">,</tt> <tt id="link-43" class="py-name"><a title="robotide.publish.messages.RideGridCellChanged.data
+robotide.publish.messages.RideImportSettingAdded.data
+robotide.publish.messages.RideImportSettingChanged.data
+robotide.publish.messages.RideLogMessage.data
+robotide.publish.messages.RideMessage.data
+robotide.publish.messages.RideNotebookTabChanging.data
+robotide.publish.messages.RideOpenResource.data
+robotide.publish.messages.RideOpenSuite.data
+robotide.publish.messages.RideSaved.data
+robotide.publish.messages.RideSaving.data
+robotide.publish.messages.RideTreeSelection.data
+robotide.publish.messages.RideUserKeywordAdded.data" class="py-name" href="#" onclick="return doclink('link-43', 'data', 'link-7');">data</a></tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">col</tt> <tt class="py-keyword">in</tt> <tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt id="link-44" class="py-name"><a title="robotide.publish.messages.RideGridCellChanged.data
+robotide.publish.messages.RideImportSettingAdded.data
+robotide.publish.messages.RideImportSettingChanged.data
+robotide.publish.messages.RideLogMessage.data
+robotide.publish.messages.RideMessage.data
+robotide.publish.messages.RideNotebookTabChanging.data
+robotide.publish.messages.RideOpenResource.data
+robotide.publish.messages.RideOpenSuite.data
+robotide.publish.messages.RideSaved.data
+robotide.publish.messages.RideSaving.data
+robotide.publish.messages.RideTreeSelection.data
+robotide.publish.messages.RideUserKeywordAdded.data" class="py-name" href="#" onclick="return doclink('link-44', 'data', 'link-7');">data</a></tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">SetStringItem</tt><tt class="py-op">(</tt><tt class="py-name">index</tt><tt class="py-op">,</tt> <tt class="py-name">col</tt><tt class="py-op">,</tt> <tt id="link-45" class="py-name"><a title="robotide.publish.messages.RideGridCellChanged.data
+robotide.publish.messages.RideImportSettingAdded.data
+robotide.publish.messages.RideImportSettingChanged.data
+robotide.publish.messages.RideLogMessage.data
+robotide.publish.messages.RideMessage.data
+robotide.publish.messages.RideNotebookTabChanging.data
+robotide.publish.messages.RideOpenResource.data
+robotide.publish.messages.RideOpenSuite.data
+robotide.publish.messages.RideSaved.data
+robotide.publish.messages.RideSaving.data
+robotide.publish.messages.RideTreeSelection.data
+robotide.publish.messages.RideUserKeywordAdded.data" class="py-name" href="#" onclick="return doclink('link-45', 'data', 'link-7');">data</a></tt><tt class="py-op">[</tt><tt class="py-name">col</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="robotide-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://code.google.com/p/robotframework-ride">RIDE</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Mon Feb  1 14:04:03 2010
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

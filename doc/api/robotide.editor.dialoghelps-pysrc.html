@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>robotide.editor.dialoghelps</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="robotide-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://code.google.com/p/robotframework-ride">RIDE</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="robotide-module.html">Package&nbsp;robotide</a> ::
+        <a href="robotide.editor-module.html">Package&nbsp;editor</a> ::
+        Module&nbsp;dialoghelps
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="robotide.editor.dialoghelps-module.html">Module robotide.editor.dialoghelps</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment">#  Copyright 2008-2009 Nokia Siemens Networks Oyj</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-comment">#  </tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-comment">#  Licensed under the Apache License, Version 2.0 (the "License");</tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-comment">#  you may not use this file except in compliance with the License.</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-comment">#  You may obtain a copy of the License at</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-comment">#  </tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-comment">#      http://www.apache.org/licenses/LICENSE-2.0</tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-comment">#  </tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-comment">#  Unless required by applicable law or agreed to in writing, software</tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-comment">#  distributed under the License is distributed on an "AS IS" BASIS,</tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-comment">#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-comment">#  See the License for the specific language governing permissions and</tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt class="py-comment">#  limitations under the License.</tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"> </tt>
+<a name="get_help"></a><div id="get_help-def"><a name="L15"></a><tt class="py-lineno"> 15</tt> <a class="py-toggle" href="#" id="get_help-toggle" onclick="return toggle('get_help');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.dialoghelps-module.html#get_help">get_help</a><tt class="py-op">(</tt><tt class="py-param">title</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="get_help-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="get_help-expanded"><a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-string">'\n'</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt id="link-0" class="py-name" targets="Variable robotide.editor.dialoghelps._HELPS=robotide.editor.dialoghelps-module.html#_HELPS"><a title="robotide.editor.dialoghelps._HELPS" class="py-name" href="#" onclick="return doclink('link-0', '_HELPS', 'link-0');">_HELPS</a></tt><tt class="py-op">[</tt><tt class="py-name">title</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"><tt id="link-1" class="py-name"><a title="robotide.editor.dialoghelps._HELPS" class="py-name" href="#" onclick="return doclink('link-1', '_HELPS', 'link-0');">_HELPS</a></tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"><tt id="link-2" class="py-name" targets="Variable robotide.editor.dialoghelps._EXAMPLES=robotide.editor.dialoghelps-module.html#_EXAMPLES"><a title="robotide.editor.dialoghelps._EXAMPLES" class="py-name" href="#" onclick="return doclink('link-2', '_EXAMPLES', 'link-2');">_EXAMPLES</a></tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"><tt class="py-string">'ESCAPE'</tt><tt class="py-op">:</tt> <tt class="py-string">"Possible pipes in the value must be escaped with a backslash like '\|'."</tt><tt class="py-op">,</tt>  </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"><tt class="py-string">'TAG'</tt><tt class="py-op">:</tt> <tt class="py-string">"Separate tags with a pipe character like 'tag | second tag | 3rd'."</tt><tt class="py-op">,</tt> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"><tt class="py-string">'FIXTURE'</tt><tt class="py-op">:</tt> <tt class="py-string">"Separate possible arguments with a pipe character like 'My Keyword | arg 1 | arg 2'."</tt><tt class="py-op">,</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line"><tt class="py-string">'TIMEOUT'</tt><tt class="py-op">:</tt> <tt class="py-op">(</tt><tt class="py-string">"Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"</tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line">            <tt class="py-string">"Optional message can be specified like '3 minutes | My message here'."</tt><tt class="py-op">)</tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line"><tt class="py-op">}</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line"> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"><tt class="py-keyword">for</tt> <tt id="link-3" class="py-name" targets="Variable robotide.editor.dialoghelps.row=robotide.editor.dialoghelps-module.html#row"><a title="robotide.editor.dialoghelps.row" class="py-name" href="#" onclick="return doclink('link-3', 'row', 'link-3');">row</a></tt> <tt class="py-keyword">in</tt> <tt class="py-string">"""</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"><tt class="py-string">Scalar Variable</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line"><tt class="py-string">Give name and value of the variable.</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line"><tt class="py-string">List Variable</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line"><tt class="py-string">Give name and value of the variable.</tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line"><tt class="py-string">Library Import</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line"><tt class="py-string">Give name of the library to import.</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line"><tt class="py-string">Separate possible arguments with a pipe character like 'MyLibrary | arg 1 | arg 2'.</tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line"><tt class="py-string">%(ESCAPE)s</tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line"><tt class="py-string">Variable Import</tt> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line"><tt class="py-string">Give path to the variable file to import. </tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line"><tt class="py-string">Separate possible arguments with a pipe character like 'some_vars.py | an argument'.</tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line"><tt class="py-string">%(ESCAPE)s</tt> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line"><tt class="py-string">Resource Import</tt> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line"><tt class="py-string">Give path to the resource file to import. </tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line"><tt class="py-string">Existing resources will be automatically loaded to the resource tree.</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line"><tt class="py-string">New resources must be created separately.</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line"><tt class="py-string">Documentation</tt> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line"><tt class="py-string">Give the documentation.</tt> </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line"><tt class="py-string">Simple formatting like *bold* and _italic_ can be used.</tt> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line"><tt class="py-string">Additionally, URLs are converted to clickable links.</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line"><tt class="py-string">Force Tags</tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line"><tt class="py-string">These tags are set to all test cases in this test suite.</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line"><tt class="py-string">%(TAG)s</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line"><tt class="py-string">%(ESCAPE)s</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line"><tt class="py-string">Default Tags</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line"><tt class="py-string">These tags are set to all test cases in this test suite unless test cases have their own tags.</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line"><tt class="py-string">%(TAG)s</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line"><tt class="py-string">%(ESCAPE)s</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line"><tt class="py-string">Tags</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line"><tt class="py-string">These tags are set to this test cases in addition to Force Tags and they override possible Default Tags.</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line"><tt class="py-string">%(TAG)s</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line"><tt class="py-string">%(ESCAPE)s</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line"><tt class="py-string">Suite Setup</tt> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line"><tt class="py-string">This keyword is executed before executing any test case or lower level suite.</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line"><tt class="py-string">%(FIXTURE)s</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line"><tt class="py-string">%(ESCAPE)s</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line"><tt class="py-string">Suite Teardown</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line"><tt class="py-string">This keyword is executed after all test cases and lower level suites have been executed.</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line"><tt class="py-string">%(FIXTURE)s</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line"><tt class="py-string">%(ESCAPE)s</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line"><tt class="py-string">Test Setup</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line"><tt class="py-string">This keyword is executed before every test case in this suite unless test cases override it.</tt> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line"><tt class="py-string">%(FIXTURE)s</tt> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line"><tt class="py-string">%(ESCAPE)s</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line"><tt class="py-string">Test Teardown</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line"><tt class="py-string">This keyword is executed after every test case in this suite unless test cases override it.</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line"><tt class="py-string">%(FIXTURE)s</tt> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line"><tt class="py-string">%(ESCAPE)s</tt> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line"><tt class="py-string">Setup</tt> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line"><tt class="py-string">This keyword is executed before other keywords in this test case.</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line"><tt class="py-string">Overrides possible Test Setup set on the suite level.</tt> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line"><tt class="py-string">%(FIXTURE)s</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line"><tt class="py-string">%(ESCAPE)s</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line"><tt class="py-string">Teardown</tt> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line"><tt class="py-string">This keyword is executed after other keywords in this test case even if the test fails. </tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line"><tt class="py-string">Overrides possible Test Teardown set on the suite level.</tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line"><tt class="py-string">%(FIXTURE)s</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line"><tt class="py-string">%(ESCAPE)s</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line"><tt class="py-string">Arguments</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line"><tt class="py-string">Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line"><tt class="py-string">Default values are given using equal sign and the last argument can be a list variable.</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line"><tt class="py-string">Example: '${arg1} | ${arg2}=default value | @{rest}'.</tt> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line"><tt class="py-string">%(ESCAPE)s</tt> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line"><tt class="py-string">Return Value</tt> </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line"><tt class="py-string">Specify the return value. Use a pipe character to separate multiple values.</tt> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line"><tt class="py-string">%(ESCAPE)s</tt> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line"><tt class="py-string">Test Timeout</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line"><tt class="py-string">Maximum time test cases in this suite are allowed to execute before aborting them forcefully.</tt> </tt>
+<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line"><tt class="py-string">Can be overridden by individual test cases using Timeout setting.</tt> </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line"><tt class="py-string">%(TIMEOUT)s</tt> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line"><tt class="py-string">Timeout</tt> </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line"><tt class="py-string">Maximum time this test/keyword is allowed to execute before aborting it forcefully.</tt> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line"><tt class="py-string">With test cases this setting overrides Test Timeout set on the suite level.</tt> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line"><tt class="py-string">%(TIMEOUT)s</tt> </tt>
+<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line"><tt class="py-string">Metadata</tt> </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line"><tt class="py-string">Give name and value of the free metadata you want to set to the test suite.</tt> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line"><tt class="py-string">"""</tt><tt class="py-op">.</tt><tt class="py-name">splitlines</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line">    <tt id="link-4" class="py-name"><a title="robotide.editor.dialoghelps.row" class="py-name" href="#" onclick="return doclink('link-4', 'row', 'link-3');">row</a></tt> <tt class="py-op">=</tt> <tt id="link-5" class="py-name"><a title="robotide.editor.dialoghelps.row" class="py-name" href="#" onclick="return doclink('link-5', 'row', 'link-3');">row</a></tt><tt class="py-op">.</tt><tt class="py-name">strip</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt id="link-6" class="py-name"><a title="robotide.editor.dialoghelps.row" class="py-name" href="#" onclick="return doclink('link-6', 'row', 'link-3');">row</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line">        <tt id="link-7" class="py-name" targets="Variable robotide.editor.dialoghelps.current=robotide.editor.dialoghelps-module.html#current"><a title="robotide.editor.dialoghelps.current" class="py-name" href="#" onclick="return doclink('link-7', 'current', 'link-7');">current</a></tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+<a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line">    <tt class="py-keyword">elif</tt> <tt id="link-8" class="py-name"><a title="robotide.editor.dialoghelps.current" class="py-name" href="#" onclick="return doclink('link-8', 'current', 'link-7');">current</a></tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line">        <tt id="link-9" class="py-name"><a title="robotide.editor.dialoghelps.current" class="py-name" href="#" onclick="return doclink('link-9', 'current', 'link-7');">current</a></tt> <tt class="py-op">=</tt> <tt id="link-10" class="py-name"><a title="robotide.editor.dialoghelps._HELPS" class="py-name" href="#" onclick="return doclink('link-10', '_HELPS', 'link-0');">_HELPS</a></tt><tt class="py-op">.</tt><tt class="py-name">setdefault</tt><tt class="py-op">(</tt><tt id="link-11" class="py-name"><a title="robotide.editor.dialoghelps.row" class="py-name" href="#" onclick="return doclink('link-11', 'row', 'link-3');">row</a></tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line">    <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line">        <tt id="link-12" class="py-name"><a title="robotide.editor.dialoghelps.current" class="py-name" href="#" onclick="return doclink('link-12', 'current', 'link-7');">current</a></tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt id="link-13" class="py-name"><a title="robotide.editor.dialoghelps.row" class="py-name" href="#" onclick="return doclink('link-13', 'row', 'link-3');">row</a></tt> <tt class="py-op">%</tt> <tt id="link-14" class="py-name"><a title="robotide.editor.dialoghelps._EXAMPLES" class="py-name" href="#" onclick="return doclink('link-14', '_EXAMPLES', 'link-2');">_EXAMPLES</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="robotide-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://code.google.com/p/robotframework-ride">RIDE</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Mon Feb  1 14:04:05 2010
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
