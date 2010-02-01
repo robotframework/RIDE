@@ -293,8 +293,10 @@ class Plugin(object):
     def register_content_assist_hook(self, hook):
         """Allows plugin to insert values in content assist dialog.
 
-        ``hook`` must be a callable, which should return a list of instances
-        of `ContentAssistItem` class.
+        ``hook`` must be a callable, which should take two arguments and
+        return a list of instances of `ContentAssistItem` class. When content
+        assist is requested by user, ``hook`` will be called with the current
+        dataitem and current value of cell as parameters.
         """
         self.__namespace.register_content_assist_hook(hook)
 
