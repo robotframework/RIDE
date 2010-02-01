@@ -171,23 +171,3 @@ class _LibraryKeywordContent(_KeywordContent):
     def is_library_keyword(self):
         return True
 
-
-class UserKeywordContent(_KeywordContent):
-
-    def _get_doc(self, uk):
-        return uk.doc
-
-    def _parse_args(self, uk):
-        return [ self._format_arg(arg) for arg in uk.settings.args.value ]
-
-    def _format_arg(self, arg):
-        argstr = ''
-        if arg and arg[0] == '@':
-            argstr += '*'
-        tokens = arg.split('=', 1)
-        name = tokens[0]
-        def_value = len(tokens) > 1 and tokens[1] or ''
-        argstr += name[2:-1] # Strip ${} or @{}
-        if def_value:
-            argstr += '=%s' % def_value
-        return argstr

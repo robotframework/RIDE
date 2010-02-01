@@ -17,7 +17,7 @@ import sys
 import os
 
 from robot.utils.asserts import assert_equals, assert_true
-from robotide.namespace.spec import LibrarySpec
+from robotide.spec import LibrarySpec
 from robotide.namespace import cache
 
 from resources import DATAPATH

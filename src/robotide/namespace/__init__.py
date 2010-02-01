@@ -15,23 +15,11 @@
 import operator
 
 from robotide import utils
-from robotide.namespace.spec import UserKeywordContent, _XMLResource
+from robotide.spec.xmlreaders import _XMLResource
+from robotide.namespace.contentassist import ContentAssistItem, \
+    UserKeywordContent, VariableSpec
 from robotide.namespace.cache import LibraryCache, ResourceFileCache, \
     VariableFileCache
-
-
-class ContentAssistItem(object):
-
-    def __init__(self, source, name, details=''):
-        self.source = source
-        self.name = name
-        self.details = details
-
-    def get_details(self):
-        return self.details
-
-class VariableSpec(ContentAssistItem):
-    pass
 
 
 class Namespace(object):
