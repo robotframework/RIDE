@@ -129,5 +129,6 @@ class _DataLoader(Thread):
         try:
             self.model = DataModel(self._namespace, self._path)
         except (DataError, NoRideError), err:
-            context.LOG(str(err))
-            self.model = DataModel()
+            context.LOG.error(str(err))
+            self.model = DataModel(self._namespace)
+
