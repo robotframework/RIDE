@@ -31,7 +31,7 @@ def EditorDialog(obj):
 class _Dialog(wx.Dialog):
     _title = property(lambda self: utils.name_from_class(self, drop='Dialog'))
 
-    def __init__(self, parent, plugin, item=None):
+    def __init__(self, parent, plugin=None, item=None):
         wx.Dialog.__init__(self, parent, -1, self._title,
                            style=wx.DEFAULT_DIALOG_STYLE|wx.THICK_FRAME)
         self.SetExtraStyle(wx.WS_EX_VALIDATE_RECURSIVELY)
