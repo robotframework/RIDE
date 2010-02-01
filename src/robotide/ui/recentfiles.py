@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 import os.path
+import wx
 
 from robotide.publish import RideOpenSuite
 from robotide.pluginapi import Plugin, ActionInfo, SeparatorInfo
@@ -43,7 +44,9 @@ class RecentFilesPlugin(Plugin):
         self.unsubscribe(self.OnSuiteOpened, RideOpenSuite)
 
     def OnSuiteOpened(self, event):
-        self._add_to_recent_files(event.path)
+        # Update menu with CallAfter to ensure ongoing menu selection
+        # handling has finished before menu is changed
+        wx.CallAfter(self._add_to_recent_files, event.path)
 
     def _get_file_menu(self):
         menubar = self.get_menu_bar()
