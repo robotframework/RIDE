@@ -22,10 +22,10 @@ from robotide import context
 _CONFIG_HELP = '\n\n'.join([ txt for txt in
 '''The specified command string will be split from whitespaces into a command
 and its arguments. If either the command or any of the arguments require
-internal spaces, they must be written as `<SPACE>`.'''.replace('\n', ' '),
+internal spaces, they must be written as '<SPACE>'.'''.replace('\n', ' '),
 '''The command will be executed in the system directly without opening a shell.
 This means that shell commands and extensions are not available. For example,
-in Windows batch files to execute must contain the `.bat` extension and `dir`
+in Windows batch files to execute must contain the '.bat' extension and 'dir'
 command does not work.'''.replace('\n', ' '),
 '''Examples:
     pybot.bat --include smoke C:\\my_tests
