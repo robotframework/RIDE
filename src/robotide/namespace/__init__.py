@@ -105,7 +105,7 @@ class Namespace(object):
 
     def get_keyword_details(self, item, name):
         kws = self._match_name(self._get_keywords(item), name)
-        return kws and kws[0].get_details() or None
+        return kws and kws[0].details or None
 
     def _get_keywords(self, item):
         return self._get_item_keywords(item) +\

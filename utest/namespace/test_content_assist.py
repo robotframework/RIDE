@@ -133,7 +133,8 @@ class TestResolvingKeywordAndVariables(_ContentAssistBaseTest):
                 ('Resource UK',
                  'This is a user keyword from resource file')]
         for name, details in data:
-            assert_true(details in self.suite.get_keyword_details(name))
+            assert_true(details in self.ns.get_keyword_details(self.suite,
+                                                                 name))
         assert_none(self.suite.get_keyword_details('Invalid KW name'))
 
     def test_get_user_keyword(self):
