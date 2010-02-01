@@ -13,7 +13,6 @@
 #  limitations under the License.
 
 from robotide.publish import RideImportSettingAdded, RideImportSettingChanged
-from robotide.namespace import VariableSpec
 from robotide import context
 from robotide import utils
 
@@ -99,8 +98,7 @@ class ImportSettings(RobotDataList):
             if res:
                 vars.extend(res.get_variables())
         for varfile in self._get_variable_files():
-            vars.extend([ VariableSpec(varfile.source, var)
-                         for var in varfile.keys() ])
+            vars.extend([ (varfile.source, var) for var in varfile.keys() ])
         return vars
 
     def _get_resource_variables(self):

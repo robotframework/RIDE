@@ -17,7 +17,7 @@ import operator
 from robotide import utils
 from robotide.spec.xmlreaders import _XMLResource
 from robotide.namespace.contentassist import ContentAssistItem, \
-    UserKeywordContent, VariableSpec
+    UserKeywordContent
 from robotide.namespace.cache import LibraryCache, ResourceFileCache, \
     VariableFileCache
 
@@ -34,13 +34,23 @@ class Namespace(object):
         self._hooks.append(hook)
 
     def content_assist_values(self, item, start=''):
-        values = self._get_item_keywords(item) + item.get_own_variables()+ \
-                 self._lib_cache.get_default_keywords() + \
-                 item.imports.get_variables()
+        values = self._get_item_keywords(item) + \
+                 self._get_item_variables(item) + \
+                 self._lib_cache.get_default_keywords()
         values = self._filter(values, start)
         for hook in self._hooks:
             values.extend(hook(item, start))
         return self._sort(self._remove_duplicates(values))
+
+    def _get_item_keywords(self, item):
+        return [ UserKeywordContent(kw, '<this file>', item.type) for
+                 kw in item.get_own_keywords() ] +\
+                self._get_user_keywords_from_imports(item) +\
+                item.imports.get_library_keywords()
+
+    def _get_item_variables(self, item):
+        return [ ContentAssistItem(source, name) for source, name
+                 in item.get_own_variables() + item.imports.get_variables() ]
 
     def get_all_keywords(self, model):
         kws = []
@@ -52,12 +62,6 @@ class Namespace(object):
             kws.extend(res.get_keywords())
         kws.extend(self._lib_cache.get_default_keywords())
         return self._sort(self._remove_duplicates(kws))
-
-    def _get_item_keywords(self, item):
-        return [ UserKeywordContent(kw, '<this file>', item.type) for
-                 kw in item.get_own_keywords() ] +\
-                self._get_user_keywords_from_imports(item) +\
-                item.imports.get_library_keywords()
 
     def _get_user_keywords_from_imports(self, item):
         kws = []
@@ -118,8 +122,8 @@ class Namespace(object):
     def _filter(self, values, start):
         var_id, var_index = self._get_variable_start_index(start)
         if var_index:
-            return [VariableSpec(v.source, start[:var_index] + v.name) for
-                    v in values if self._starts(v, var_id)]
+            return [ ContentAssistItem(v.source, start[:var_index] + v.name)
+                     for v in values if self._starts(v, var_id)]
         return [ v for v in values if self._starts(v, start) ]
 
     def _starts(self, value, start):

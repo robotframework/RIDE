@@ -21,7 +21,6 @@ from robotide.publish import RideSaving, RideSaved
 from robotide.robotapi import TestSuiteData, ResourceFileData, InitFileData,\
     UserErrorHandler
 from robotide.writer import FileWriter
-from robotide.namespace import VariableSpec
 
 from tables import InitFileSettingTable, SuiteSettingTable,\
         ResourceSettingTable, VariableTable, TestCaseTable, UserKeywordTable
@@ -124,11 +123,11 @@ class _AbstractDataFile(object):
         return self.keywords
 
     def get_own_variables(self):
-        return [ VariableSpec('<this file>', var) for var in self.variables ]
+        return [ ('<this file>', var) for var in self.variables ]
 
     def get_variables(self):
-        return [ VariableSpec(self.name, var) for var in self.variables ] + \
-                self.imports.get_variables()
+        return [ (self.name, var) for var in self.variables ] + \
+               self.imports.get_variables()
 
     def _remove_duplicates(self, keywords):
         return list(set(keywords))
@@ -146,19 +145,6 @@ class _AbstractDataFile(object):
 
     def validate_keyword_name(self, value):
         return self.keywords.validate_name(value)
-
-    def _get_resource_variables(self):
-        vars = []
-        for resource in self.get_resources():
-            vars.extend(resource.get_variables())
-        return vars
-
-    def _get_variable_file_variables(self):
-        vars = []
-        for varfile in self._get_variable_files():
-            vars.extend([ VariableSpec(varfile.source, var)
-                         for var in varfile.keys() ])
-        return vars
 
     def _get_variable_files(self):
         varfiles = []

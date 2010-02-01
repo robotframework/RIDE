@@ -25,9 +25,6 @@ class ContentAssistItem(object):
     def get_details(self):
         return self.details
 
-class VariableSpec(ContentAssistItem):
-    pass
-
 
 class _KeywordContent(object):
 

@@ -14,8 +14,6 @@
 
 import copy
 
-from robotide.namespace import VariableSpec
-
 from datalist import RobotDataList
 from keywords import Keyword, KeywordData
 from settings import Setup, Teardown, Timeout, Tags, Arguments, ReturnValue,\
@@ -98,7 +96,7 @@ class UserKeyword(_TcUkBase):
         self._mark_dirty()
 
     def get_own_variables(self):
-        return [ VariableSpec('<argument>', self._strip_default_value(var))
+        return [ ('<argument>', self._strip_default_value(var))
                  for var in self.settings.get_args() ]
 
     def _strip_default_value(self, var):
