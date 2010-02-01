@@ -189,6 +189,8 @@ class ContentAssistPopup(object):
         if details:
             self._details_popup.Show()
             self._details_popup.set_content(details)
+        elif self._details_popup.IsShown():
+            self._details_popup.Show(False)
 
 
 class ContentAssistList(wx.ListCtrl, ListCtrlAutoWidthMixin):
