@@ -66,13 +66,6 @@ class TestAutomaticHandlingOfFileSeparatorVariable(unittest.TestCase):
         assert_equals(self._imports[2].args, ['arg${/}value'])
 
 
-def contains(items, name, source):
-    for it in items:
-        if it.name == name and it.source == source:
-            return True
-    return False
-
-
 class TestResolvingKeywords(unittest.TestCase):
 
     def setUp(self):
@@ -158,12 +151,18 @@ class TestResolvingKeywords(unittest.TestCase):
             self._should_not_contain_keyword('Foo', 'even_more_resources.txt')
 
     def _should_contain_keyword(self, name, source):
-        if not contains(self.imports.get_keywords(), name, source):
+        if not self._contains(self.imports.get_keywords(), name, source):
             raise AssertionError('Keyword "%s" not found' % name)
 
     def _should_not_contain_keyword(self, name, source):
-        if contains(self.imports.get_keywords(), name, source):
+        if self._contains(self.imports.get_keywords(), name, source):
             raise AssertionError('Keyword "%s" found' % name)
+
+    def _contains(self, items, name, source):
+        for it in items:
+            if it.name == name and it.source == source:
+                return True
+        return False
 
 
 class TestResolvingVariables(unittest.TestCase):
@@ -186,8 +185,14 @@ class TestResolvingVariables(unittest.TestCase):
         self._should_contain_variable('${value}', 'dynamic_varz.py')
 
     def _should_contain_variable(self, name, source):
-        if not contains(self.imports.get_variables(), name, source):
+        if not self._contains(self.imports.get_variables(), source, name):
             raise AssertionError('Variable "%s" not found' % name)
+
+    def _contains(self, items, exp_source, exp_name):
+        for source, name in items:
+            if name == exp_name and source == exp_source:
+                return True
+        return False
 
 
 if __name__ == '__main__':
