@@ -49,7 +49,7 @@ class _TcUkBase(object):
         return []
 
     def get_own_variables(self):
-        return []
+        return self.datafile.get_own_variables()
 
     def _serialize(self, serializer):
         self.settings.serialize_before_kws(serializer)
@@ -97,7 +97,8 @@ class UserKeyword(_TcUkBase):
 
     def get_own_variables(self):
         return [ ('<argument>', self._strip_default_value(var))
-                 for var in self.settings.get_args() ]
+                 for var in self.settings.get_args() ] +\
+               _TcUkBase.get_own_variables(self)
 
     def _strip_default_value(self, var):
         return var.split('=')[0]
