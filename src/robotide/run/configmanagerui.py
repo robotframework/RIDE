@@ -19,17 +19,19 @@ from robotide.editor.listeditor import ListEditor, AutoWidthColumnList
 from robotide import context
 
 
-_CONFIG_HELP = """
-Command will be executed in system without opening shell. This means that shell services will not be available to
-the executed command. For example, in Windows, it is not possible to execute batch files without .bat extension.
-
-The command string will be split from whitespaces, first part is interpreted as command name and additional parts
-will be separate command arguments. If space is needed in argument, it must be written as <SPACE>.
-
-Examples:
-    pybot.bat --help
-    C:\\Program<SPACE>Files\Prog\prg.exe argument<SPACE>with<SPACE>space
-"""
+_CONFIG_HELP = '\n\n'.join([ txt for txt in
+'''The specified command string will be split from whitespaces into a command
+and its arguments. If either the command or any of the arguments require
+internal spaces, they must be written as `<SPACE>`.'''.replace('\n', ' '),
+'''The command will be executed in the system directly without opening a shell.
+This means that shell commands and extensions are not available. For example,
+in Windows batch files to execute must contain the `.bat` extension and `dir`
+command does not work.'''.replace('\n', ' '),
+'''Examples:
+    pybot.bat --include smoke C:\\my_tests
+    svn update /home/robot
+    C:\\Program<SPACE>Files\\App\\prg.exe argument<SPACE>with<SPACE>space'''
+])
 
 
 class ConfigManagerDialog(wx.Dialog):
@@ -55,6 +57,7 @@ class ConfigManagerDialog(wx.Dialog):
 
     def _create_help(self):
         help = wx.StaticText(self, label=_CONFIG_HELP)
+        help.Wrap(700)
         help.SetFont(wx.Font(*context.HELP_FONT))
         self.Sizer.Add(help, border=5,flag=wx.TOP)
 
