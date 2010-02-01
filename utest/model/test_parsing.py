@@ -71,7 +71,7 @@ class TestParsing(unittest.TestCase):
                       'Testsuite.Everything.My Suite Teardown')
         assert_equals(self.uk.doc, 'This is *user* _keyword_ documentation')
         assert_equals(self.uk.settings.args.value,
-                      ['${scalar arg}', '@{list arg}'])
+                      ['${scalar arg}', '${default arg}=default', '@{list arg}'])
         assert_equals(self.uk.settings.return_value.value, ['Success'])
         assert_equals(self.uk.settings.timeout.value,
                       ['1 second', "I'm faster than you"])
