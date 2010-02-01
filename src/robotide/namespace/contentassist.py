@@ -16,8 +16,11 @@ from robotide import utils
 
 
 class ContentAssistItem(object):
+    """Represents an object that can be displayed by content assistant."""
 
-    def __init__(self, source, name, details=''):
+    def __init__(self, name, source, details=''):
+        """
+        """
         self.source = source
         self.name = name
         self.details = details

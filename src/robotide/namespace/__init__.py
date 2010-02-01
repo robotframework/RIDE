@@ -51,7 +51,7 @@ class Namespace(object):
                 item.imports.get_library_keywords()
 
     def _get_item_variables(self, item):
-        return [ ContentAssistItem(source, name) for source, name
+        return [ ContentAssistItem(name, source) for source, name
                  in item.get_own_variables() + item.imports.get_variables() ]
 
     def get_all_keywords(self, model):
@@ -124,7 +124,7 @@ class Namespace(object):
     def _filter(self, values, start):
         var_id, var_index = self._get_variable_start_index(start)
         if var_index:
-            return [ ContentAssistItem(v.source, start[:var_index] + v.name)
+            return [ ContentAssistItem(start[:var_index] + v.name, v.source)
                      for v in values if self._starts(v, var_id)]
         return [ v for v in values if self._starts(v, start) ]
 

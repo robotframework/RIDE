@@ -11,7 +11,7 @@ class ContentAssistPlugin(Plugin):
     def _get_content_assist_values(self, item, value):
         assert_equals(item.name, 'Fake Suite')
         assert_equals(value, 'given')
-        return [ContentAssistItem('test', 'foo')]
+        return [ContentAssistItem('foo', 'test')]
 
 
 class TestContentAssistHook(unittest.TestCase):
@@ -29,6 +29,4 @@ class TestContentAssistHook(unittest.TestCase):
             if val.name == name:
                 return
         raise AssertionError()
-
-
 
