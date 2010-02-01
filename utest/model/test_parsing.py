@@ -114,10 +114,6 @@ class TestFindingImportsWithVariables(unittest.TestCase):
     def test_finding_resource_file_with_variable_in_path(self):
         assert_equals(self.suite.get_resources()[4].name, 'resource4.html')
 
-    def test_finding_variable_file_with_variable_in_path(self):
-        assert_equals(self.suite._get_variable_file_variables()[4].name,
-                      '${varfrommorevarz}')
-
 
 if __name__  == '__main__':
     unittest.main()
