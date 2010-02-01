@@ -263,7 +263,7 @@ class Plugin(object):
         """
         return self.tree.get_selected_item()
 
-    def content_assist_values(self, value):
+    def content_assist_values(self, value=''):
         """Returns content assist values for currently selected item."""
         return self.__namespace.content_assist_values(self.get_selected_item(),
                                                       value)
