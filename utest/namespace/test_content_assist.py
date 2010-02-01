@@ -89,6 +89,9 @@ class TestResolvingKeywordAndVariables(_ContentAssistBaseTest):
         for name, source in data:
             self._content_assist_should_contain(name, source)
 
+    def test_content_assist_for_none(self):
+        assert_equals(self.ns.content_assist_values(None), [])
+
     def test_filtering_on_value(self):
         for name, source in [('Read Process Output', 'OperatingSystem'),
                              ('Regexp Escape', 'BuiltIn'),

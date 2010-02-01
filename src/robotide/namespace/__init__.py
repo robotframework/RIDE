@@ -34,6 +34,8 @@ class Namespace(object):
         self._hooks.append(hook)
 
     def content_assist_values(self, item, start=''):
+        if not item:
+            return []
         values = self._get_item_keywords(item) + \
                  self._get_item_variables(item) + \
                  self._lib_cache.get_default_keywords()
