@@ -30,7 +30,7 @@ Scalar Variable
 Give name and value of the variable.
 
 List Variable
-Give name and value of the variable.
+Give name and value of the variable. Input list variable items into separate cells.
 
 Library Import
 Give name of the library to import.
