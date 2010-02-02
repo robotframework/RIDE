@@ -45,11 +45,14 @@ class PluginConnector(_PluginConnector):
         self.config_panel = plugin.config_panel
         self.metadata = plugin.metadata
 
-    def enable(self):
+    def enable_on_startup(self):
         if self._settings.get('_enabled', self._plugin.initially_enabled):
-            self._settings.set('_enabled', True)
-            self.enabled = True
-            self._plugin.enable()
+            self.enable()
+
+    def enable(self):
+        self._settings.set('_enabled', True)
+        self.enabled = True
+        self._plugin.enable()
 
     def disable(self):
         if self.enabled:

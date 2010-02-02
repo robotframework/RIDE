@@ -33,7 +33,7 @@ class PluginLoader(object):
 
     def enable_plugins(self):
         for p in self.plugins:
-            p.enable()
+            p.enable_on_startup()
 
     def _find_classes(self, load_dirs):
         classes = []
