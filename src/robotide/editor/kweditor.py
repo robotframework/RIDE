@@ -277,7 +277,7 @@ class KeywordEditor(KeywordEditorUi):
         return False
 
     def OnIdle(self, evt):
-        if not self.IsShownOnScreen() or self.IsCellEditControlShown():
+        if not self._is_active_window() or self.IsCellEditControlShown():
             return
         pos = self.CalcUnscrolledPosition(self.ScreenToClient(wx.GetMousePosition()))
         cell = self.XYToCell(*pos)
@@ -292,6 +292,9 @@ class KeywordEditor(KeywordEditorUi):
         self._show_possible_user_keyword_link(cell)
         if not self._tooltip.IsShown():
             self._show_kw_tooltip(cell)
+
+    def _is_active_window(self):
+        return self.IsShownOnScreen() and self.FindFocus()
 
     def _show_possible_user_keyword_link(self, cell):
         if cell == self._marked_cell:
