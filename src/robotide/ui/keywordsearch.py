@@ -112,7 +112,7 @@ class KeywordSearchDialog(wx.Frame):
         return self._search_control.GetValue().lower(), self._use_doc.GetValue()
 
     def OnItemSelected(self, event):
-        self._details.SetPage(self._keywords[event.Index].get_details())
+        self._details.SetPage(self._keywords[event.Index].details)
 
     def OnClose(self, event):
         self.Hide()
