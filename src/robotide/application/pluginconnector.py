@@ -1,11 +1,11 @@
 #  Copyright 2008-2009 Nokia Siemens Networks Oyj
-#  
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -43,13 +43,16 @@ class PluginConnector(_PluginConnector):
         self._plugin = plugin
         self._settings = SETTINGS['Plugins'].add_section(plugin.name)
         self.config_panel = plugin.config_panel
-        self.metadata = plugin.metadata 
+        self.metadata = plugin.metadata
+
+    def enable_on_startup(self):
+        if self._settings.get('_enabled', self._plugin.initially_enabled):
+            self.enable()
 
     def enable(self):
-        if self._settings.get('_enabled', self._plugin.initially_enabled):
-            self._settings.set('_enabled', True)
-            self.enabled = True
-            self._plugin.enable()
+        self._settings.set('_enabled', True)
+        self.enabled = True
+        self._plugin.enable()
 
     def disable(self):
         if self.enabled:

@@ -1,11 +1,11 @@
 #  Copyright 2008-2009 Nokia Siemens Networks Oyj
-#  
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,14 +26,14 @@ class PluginLoader(object):
 
     def __init__(self, application, load_dirs, standard_classes):
         self._load_errors = []
-        self.plugins = [ PluginFactory(application, cls) for cls in 
+        self.plugins = [ PluginFactory(application, cls) for cls in
                          standard_classes + self._find_classes(load_dirs) ]
         if self._load_errors:
             LOG.error('\n\n'.join(self._load_errors))
 
     def enable_plugins(self):
         for p in self.plugins:
-            p.enable()
+            p.enable_on_startup()
 
     def _find_classes(self, load_dirs):
         classes = []
@@ -62,5 +62,5 @@ class PluginLoader(object):
         finally:
             if file:
                 file.close()
-        return [ cls for _, cls in 
+        return [ cls for _, cls in
                  inspect.getmembers(module, predicate=inspect.isclass) ]
