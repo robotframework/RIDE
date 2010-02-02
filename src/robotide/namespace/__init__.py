@@ -44,8 +44,8 @@ class Namespace(object):
             values.extend(hook(item, start))
         return self._sort(self._remove_duplicates(values))
 
-    def _get_item_keywords(self, item):
-        return [ UserKeywordContent(kw, '<this file>', item.type) for
+    def _get_item_keywords(self, item, source_for_own_kws='<this file>'):
+        return [ UserKeywordContent(kw, source_for_own_kws, item.type) for
                  kw in item.get_own_keywords() ] +\
                 self._get_user_keywords_from_imports(item) +\
                 item.imports.get_library_keywords()
@@ -57,11 +57,10 @@ class Namespace(object):
     def get_all_keywords(self, model):
         kws = []
         if model.suite:
-            kws = model.suite.get_keywords()
-            for s in model.suite.suites:
-                kws.extend(s.get_keywords())
+            for s in [model.suite] + model.suite.suites:
+                kws.extend(self._get_item_keywords(s, s.name))
         for res in model.resources:
-            kws.extend(res.get_keywords())
+            kws.extend(self._get_item_keywords(res, res.name))
         kws.extend(self._lib_cache.get_default_keywords())
         return self._sort(self._remove_duplicates(kws))
 
@@ -139,8 +138,13 @@ class Namespace(object):
             return list_id, start.index(list_id)
         return None, None
 
-    def _remove_duplicates(self, keywords):
-        return list(set(keywords))
+    def _remove_duplicates(self, values):
+        unique_values = {}
+        for v in values:
+            key = (v.name, v.source)
+            if key not in unique_values:
+                unique_values[key] = v
+        return unique_values.values()
 
     def _sort(self, values):
         values.sort(key=operator.attrgetter('name'))
