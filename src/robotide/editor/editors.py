@@ -364,13 +364,16 @@ class ImportSettingListEditor(_AbstractListEditor):
         dlg.Destroy()
 
     def OnAddLibrary(self, event):
-        self._show_import_editor_dialog(LibraryImportDialog, self._data.new_library)
+        self._show_import_editor_dialog(LibraryImportDialog,
+                                        self._data.new_library)
 
     def OnAddResource(self, event):
-        self._show_import_editor_dialog(ResourceImportDialog, self._data.new_resource)
+        self._show_import_editor_dialog(ResourceImportDialog,
+                                        self._data.new_resource)
 
     def OnAddVariables(self, event):
-        self._show_import_editor_dialog(VariablesImportDialog, self._data.new_variables)
+        self._show_import_editor_dialog(VariablesImportDialog,
+                                        self._data.new_variables)
 
     def _show_import_editor_dialog(self, dialog, creator):
         dlg = dialog(self.GetGrandParent())
