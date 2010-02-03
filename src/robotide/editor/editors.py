@@ -338,11 +338,11 @@ class VariablesListEditor(_AbstractListEditor):
         dlg.Destroy()
 
     def OnEdit(self, event):
-        name, value = self._data.get_name_and_value(self._selection)
-        if name.startswith('${'):
-            dlg = ScalarVariableDialog(self.GetGrandParent(), (name, value))
+        item = self._data.get_name_and_value(self._selection)
+        if item[0].startswith('${'):
+            dlg = ScalarVariableDialog(self.GetGrandParent(), item=item)
         else:
-            dlg = ListVariableDialog(self.GetGrandParent(), (name, value))
+            dlg = ListVariableDialog(self.GetGrandParent(), item=item)
         if dlg.ShowModal() == wx.ID_OK:
             self._data.set_name_and_value(self._selection, *dlg.get_value())
             self.update_data()
@@ -355,7 +355,7 @@ class ImportSettingListEditor(_AbstractListEditor):
 
     def OnEdit(self, event):
         setting = self._get_setting()
-        dlg = EditorDialog(setting)(self.GetGrandParent(), setting)
+        dlg = EditorDialog(setting)(self.GetGrandParent(), item=setting)
         if dlg.ShowModal() == wx.ID_OK:
             setting.set_str_value(dlg.get_value())
             self.update_data()
@@ -364,13 +364,16 @@ class ImportSettingListEditor(_AbstractListEditor):
         dlg.Destroy()
 
     def OnAddLibrary(self, event):
-        self._show_import_editor_dialog(LibraryImportDialog, self._data.new_library)
+        self._show_import_editor_dialog(LibraryImportDialog,
+                                        self._data.new_library)
 
     def OnAddResource(self, event):
-        self._show_import_editor_dialog(ResourceImportDialog, self._data.new_resource)
+        self._show_import_editor_dialog(ResourceImportDialog,
+                                        self._data.new_resource)
 
     def OnAddVariables(self, event):
-        self._show_import_editor_dialog(VariablesImportDialog, self._data.new_variables)
+        self._show_import_editor_dialog(VariablesImportDialog,
+                                        self._data.new_variables)
 
     def _show_import_editor_dialog(self, dialog, creator):
         dlg = dialog(self.GetGrandParent())
@@ -397,7 +400,7 @@ class MetadataListEditor(_AbstractListEditor):
 
     def OnEdit(self, event):
         meta = self._data[self._selection]
-        dlg = MetadataDialog(self.GetGrandParent(), meta)
+        dlg = MetadataDialog(self.GetGrandParent(), item=meta)
         if dlg.ShowModal() == wx.ID_OK:
             meta.set_name_and_value(*dlg.get_value())
             self.update_data()
