@@ -338,6 +338,7 @@ class ResourceFile(_AbstractDataFile):
         for candidate in os.listdir(dirpath):
             if utils.normpath(candidate) == utils.normpath(filename):
                 return candidate
+        return os.path.basename(source)
 
     def reload_from_disk(self):
         data = ResourceFileData(self.source)
