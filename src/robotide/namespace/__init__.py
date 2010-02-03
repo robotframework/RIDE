@@ -12,8 +12,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import operator
-
 from robotide import utils
 from robotide.spec.xmlreaders import _XMLResource
 from robotide.namespace.contentassist import ContentAssistItem, \
@@ -147,6 +145,4 @@ class Namespace(object):
         return unique_values.values()
 
     def _sort(self, values):
-        values.sort(key=operator.attrgetter('name'))
-        return values
-
+        return sorted(values, key=lambda item: item.name.lower())
