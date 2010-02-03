@@ -161,6 +161,11 @@ class TestAddingItems(_BaseSuiteTreeTest):
         new_suite = FakeSuite('New Fake Suite')
         self._tree.add_suite(self._model.suite, new_suite)
         assert_equals(self._get_selected_label(), 'New Fake Suite')
+        new_test = new_suite.tests.new_test('New Fake Test')
+        node = self._get_node(new_suite.name)
+        self._tree.add_test(node, new_test)
+        assert_equals(self._get_selected_label(), 'New Fake Test')
+        assert_equals(self._tree.GetChildrenCount(node), 1)
 
 
 class TestNodeSearchAndSelection(_BaseSuiteTreeTest):

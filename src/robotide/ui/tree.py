@@ -160,9 +160,14 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._add_dataitem(parent_node, kw, lambda item: item.is_test_suite)
 
     def _add_dataitem(self, parent_node, dataitem, predicate):
-        index = self._get_insertion_index(parent_node, predicate)
-        node = self._create_node_with_handler(parent_node, dataitem, index)
-        self.SelectItem(node)
+        if not self.IsExpanded(parent_node):
+            self._expand_and_render_children(parent_node)
+            node = self._get_node_with_label(parent_node, dataitem.name)
+            self.SelectItem(node)
+        else:
+            index = self._get_insertion_index(parent_node, predicate)
+            node = self._create_node_with_handler(parent_node, dataitem, index)
+            self.SelectItem(node)
         self._mark_dirty(parent_node)
 
     def _get_insertion_index(self, parent_node, predicate):
