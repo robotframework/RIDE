@@ -84,4 +84,36 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
+<h2>Release notes for 0.21.1</h2>
+<table border="1">
+<tr>
+<td><b>ID</b></td>
+<td><b>Type</b></td>
+<td><b>Priority</b></td>
+<td><b>Summary</b></td>
+<td><b>AllLabels</b></td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=367">Issue 367</a></td>
+<td>Defect</td>
+<td>Critical</td>
+<td>Editing import settings, variables or metadata does not work in RIDE 0.21</td>
+<td>Type-Defect, Priority-Critical, Target-0.21.1</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=369">Issue 369</a></td>
+<td>Defect</td>
+<td>Critical</td>
+<td>Creating new resources does not work in RIDE 0.21</td>
+<td>Type-Defect, Priority-Critical, Target-0.21.1</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=370">Issue 370</a></td>
+<td>Defect</td>
+<td>Medium</td>
+<td>Creating test or user keyword to empty suite shows the created item twice in tree</td>
+<td>Priority-Medium, Type-Defect, Target-0.21.1</td>
+</tr>
+</table>
+<p>Altogether 3 issues.</p>
 """
