@@ -44,14 +44,14 @@ class Colorizer(Plugin):
         grid.SetCellTextColour(row, col, color)
 
     def _get_color(self, grid, row, value):
+        if self._is_commented(grid, row):
+            return self.comment_fg
         if self.is_user_keyword(value):
             return self.user_keyword_fg
         if self.is_library_keyword(value):
             return self.library_keyword_fg
         if self._is_variable(value):
             return self.variable_fg
-        if self._is_commented(grid, row):
-            return self.comment_fg
         return self.default_fg
 
     def _is_variable(self, value):
