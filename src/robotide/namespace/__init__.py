@@ -18,6 +18,7 @@ from robotide.namespace.contentassist import ContentAssistItem, \
     UserKeywordContent
 from robotide.namespace.cache import LibraryCache, ResourceFileCache, \
     VariableFileCache
+from symbol import except_clause
 
 
 class Namespace(object):
@@ -27,6 +28,8 @@ class Namespace(object):
         self._res_cache = ResourceFileCache(self)
         self._var_cache = VariableFileCache()
         self._hooks = []
+        self._lib_kw_cache = {}
+        self._user_kw_cache = {}
 
     def register_content_assist_hook(self, hook):
         self._hooks.append(hook)
@@ -43,24 +46,41 @@ class Namespace(object):
         return self._sort(self._remove_duplicates(values))
 
     def _get_item_keywords(self, item, source_for_own_kws='<this file>'):
-        return [ UserKeywordContent(kw, source_for_own_kws, item.type) for
-                 kw in item.get_own_keywords() ] +\
-                self._get_user_keywords_from_imports(item) +\
-                item.imports.get_library_keywords()
+        user_kws = self._get_cached_user_kws(item, source_for_own_kws)
+        lib_kws = self._get_cached_lib_kws(item)
+        return user_kws + lib_kws
+
+    def _get_keywords_from(self, item, source_for_own_kws):
+        return [ UserKeywordContent(kw, source_for_own_kws, item.type) for kw
+                 in item.get_own_keywords() ]
 
     def _get_item_variables(self, item):
         return [ ContentAssistItem(name, source) for source, name
                  in item.get_own_variables() + item.imports.get_variables() ]
 
     def get_all_keywords(self, model):
+        kws = self._get_item_kws(model)
+        kws.extend(self._get_resource_kws(model))
+        kws.extend(self._get_default_kws())
+        return self._sort(self._remove_duplicates(kws))
+
+    def _get_item_kws(self, model):
         kws = []
         if model.suite:
-            for s in [model.suite] + model.suite.suites:
-                kws.extend(self._get_item_keywords(s, s.name))
+            for item in [model.suite] + model.suite.suites:
+                item_kws = self._get_item_keywords(item, item.name)
+                kws.extend(item_kws)
+        return kws
+
+    def _get_resource_kws(self, model):
+        kws = []
         for res in model.resources:
-            kws.extend(self._get_item_keywords(res, res.name))
-        kws.extend(self._lib_cache.get_default_keywords())
-        return self._sort(self._remove_duplicates(kws))
+            item_kws = self._get_item_keywords(res, res.name)
+            kws.extend(item_kws)
+        return kws
+
+    def _get_default_kws(self):
+        return self._lib_cache.get_default_keywords()
 
     def _get_user_keywords_from_imports(self, item):
         kws = []
@@ -94,11 +114,30 @@ class Namespace(object):
         return kws and kws[0] or None
 
     def is_library_keyword(self, item, name):
-        kws = self._match_name(self._get_library_keywords(item), name)
+        kws = self._match_name(self._get_cached_lib_kws(item), name)
         return kws and kws[0].is_library_keyword() or False
 
-    def is_user_keyword(self, item, name):
-        return self._match_name(item.get_user_keywords(), name) != []
+    def _get_cached_lib_kws(self, item):
+        try:
+            return self._lib_kw_cache[item.name]
+        except KeyError:
+            kws = self._get_library_keywords(item)
+            self._lib_kw_cache[item.name] = kws
+            return kws
+
+    def is_user_keyword(self, datafile, name):
+        user_kws = self._get_cached_user_kws(datafile, datafile.name)
+        return self._match_name(user_kws, name) != []
+
+    def _get_cached_user_kws(self, item, source_for_own_kws):
+        try:
+            return self._user_kw_cache[item.name]
+        except KeyError:
+            
+            kws = self._get_keywords_from(item, source_for_own_kws) + \
+                  self._get_user_keywords_from_imports(item)
+            self._user_kw_cache[item.name] = kws
+            return kws
 
     def get_keyword_details(self, item, name):
         kws = self._match_name(self._get_keywords(item), name)
