@@ -54,7 +54,7 @@ pyversion = '.'.join([ str(v) for v in sys.version_info[:3] ])
 ABOUT_RIDE = '''<h3>RIDE -- Robot Framework Test Data Editor</h3>
 <p>Version %s running on Python %s.</p>
 <p>Documentation, issue tracker and other information can be found from the project pages at
-<a href=http://code.google.com/p/robotframework-ride">http://code.google.com/p/robotframework-ride</a>.
+<a href="http://code.google.com/p/robotframework-ride">http://code.google.com/p/robotframework-ride</a>.
 ''' % (VERSION, pyversion)
 
 APP = None
