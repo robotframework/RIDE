@@ -25,6 +25,7 @@ class _TcUkBase(object):
 
     def __init__(self, datafile, data=None, name=None):
         self.datafile = datafile
+        self.type = datafile.type
         self.name = name or data.name
         self.longname = self._get_longname()
         keywords = data and data.keywords or []
@@ -46,7 +47,7 @@ class _TcUkBase(object):
         self.datafile.show_add_suite_dialog(tree)
 
     def get_own_keywords(self, *args):
-        return []
+        return self.datafile.get_own_keywords()
 
     def get_own_variables(self):
         return self.datafile.get_own_variables()
