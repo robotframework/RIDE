@@ -102,6 +102,9 @@ class _AbstractDataFile(object):
     def set_dirty(self):
         self.dirty = True
 
+    def refresh_namespace(self):
+        self.namespace.clear_caches()
+
     def get_user_keywords(self):
         kws = copy.copy(self.keywords)
         for res in self.get_resources():
