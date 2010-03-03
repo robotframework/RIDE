@@ -136,7 +136,8 @@ class ImportSettings(RobotDataList):
     def resource_updated(self, index):
         name = self[index].name
         context.APP.import_new_resource(self.datafile, name)
-        RideImportSettingChanged(self.datafile, 'resource', name)
+        RideImportSettingChanged(datafile=self.datafile, type='resource', 
+                                 name=name).publish()
 
     def new_variables(self, value):
         self._new_import(VariablesImport, utils.split_value(value))
