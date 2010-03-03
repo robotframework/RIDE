@@ -62,8 +62,7 @@ class _TcUkBase(object):
         return '%s.%s' % (self.datafile.longname, self.name)
 
     def _mark_dirty(self):
-        self.datafile.dirty = True
-
+        self.datafile.set_dirty()
 
 class TestCase(_TcUkBase):
     datalist = property(lambda self: self.datafile.tests)
