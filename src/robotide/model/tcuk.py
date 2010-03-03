@@ -42,6 +42,7 @@ class _TcUkBase(object):
         self.name = new_name
         self.longname = self._get_longname()
         self._mark_dirty()
+        self.datafile.refresh_namespace()
 
     def show_add_suite_dialog(self, tree):
         self.datafile.show_add_suite_dialog(tree)
