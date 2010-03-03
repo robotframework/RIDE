@@ -196,8 +196,7 @@ class KeywordEditor(KeywordEditorUi):
         self.set_dirty()
 
     def set_dirty(self):
-        # TODO: it would be better to not set dirty directly
-        self._datafile.dirty = True
+        self._datafile.set_dirty()
         self._tree.mark_dirty(self._datafile)
 
     def save(self):
