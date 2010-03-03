@@ -31,6 +31,10 @@ class Namespace(object):
         self._lib_kw_cache = {}
         self._user_kw_cache = {}
 
+    def clear_caches(self):
+        self._lib_kw_cache = {}
+        self._user_kw_cache = {}
+
     def register_content_assist_hook(self, hook):
         self._hooks.append(hook)
 
