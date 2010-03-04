@@ -34,7 +34,7 @@ class _Setting(object):
 
     def clear(self):
         self.value = self._initial
-        self.datafile.dirty = True
+        self.datafile.set_dirty()
 
     def active(self):
         return self.value != self._initial
@@ -46,7 +46,7 @@ class _Setting(object):
 
     def set_str_value(self, value):
         self.value = [ v.strip() for v in utils.split_value(value) ]
-        self.datafile.dirty = True
+        self.datafile.set_dirty()
 
 
 class Documentation(_Setting):
@@ -63,7 +63,7 @@ class Documentation(_Setting):
 
     def set_str_value(self, doc):
         self.value = doc and [doc] or []
-        self.datafile.dirty = True
+        self.datafile.set_dirty()
 
 
 class ForceTags(_Setting):
@@ -187,10 +187,14 @@ class ResourceImport(_Import):
 
     def set_str_value(self, value):
         self.value = [value]
-        self.datafile.dirty = True
+        self.datafile.set_dirty()
 
 class LibraryImport(_Import):
     _serialized_name = 'Library'
+
+    def set_str_value(self, value):
+        self.value = [value]
+        self.datafile.set_dirty()
 
 class VariablesImport(_Import):
     _serialized_name = 'Variables'
