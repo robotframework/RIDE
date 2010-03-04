@@ -103,7 +103,9 @@ class _AbstractDataFile(object):
         self.dirty = True
 
     def refresh_namespace(self):
-        self.namespace.clear_caches()
+        # TODO ns was None with new import...
+        if self.namespace:
+            self.namespace.clear_caches()
 
     def get_user_keywords(self):
         kws = copy.copy(self.keywords)
