@@ -23,7 +23,7 @@ class Metadata(RobotDataList):
 
     def new_metadata(self, name, value):
         self.append(MetaItem(self.datafile, name, value))
-        self.datafile.dirty = True
+        self.datafile.set_dirty()
 
     def serialize(self, serializer):
         for meta in self:
@@ -43,4 +43,4 @@ class MetaItem(object):
 
     def set_name_and_value(self, name, value):
         self.name, self.value = name, value
-        self._datafile.dirty = True
+        self._datafile.set_dirty()
