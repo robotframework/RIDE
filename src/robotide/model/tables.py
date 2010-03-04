@@ -104,7 +104,7 @@ class VariableTable(object):
     def swap(self, index1, index2):
         self._order[index1], self._order[index2] =\
                 self._order[index2], self._order[index1]
-        self.datafile.dirty = True
+        self.datafile.set_dirty()
 
     def value_as_string(self, name):
         value = self._vars[name]
@@ -131,12 +131,12 @@ class VariableTable(object):
         name = name is not None and name or default_name
         self._vars[name] = value
         self._order.append(name)
-        self.datafile.dirty = True
+        self.datafile.set_dirty()
 
     def pop(self, index):
         del self._vars[utils.normalize(self._order[index], ignore=['_'])]
         self._order.pop(index)
-        self.datafile.dirty = True
+        self.datafile.set_dirty()
 
     def get_name_and_value(self, index):
         key = self._order[index]
@@ -149,7 +149,7 @@ class VariableTable(object):
             del self._vars[utils.normalize(key, ignore=['_'])]
             self._order[index] = name
         self._vars[name] = value
-        self.datafile.dirty = True
+        self.datafile.set_dirty()
 
     def serialize(self, serializer):
         if len(self) == 0:
