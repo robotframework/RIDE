@@ -16,6 +16,7 @@
 from robotide.model.files import TestCaseFile, ResourceFile, InitFile,\
     _EmptyResourceFile, _EmptyTestSuite
 from robotide.model.tcuk import UserKeyword, TestCase
+from robotide.namespace import Namespace
 
 
 class MockSerializer(object):
@@ -76,7 +77,7 @@ class MockSerializer(object):
 class FakeResource(ResourceFile):
     def __init__(self, name='Fake Resource', doc='', path='fake/resource.html'):
         data = _EmptyResourceFile(path)
-        ResourceFile.__init__(self, data, None)
+        ResourceFile.__init__(self, data, Namespace())
         self.name = name
         self.doc = doc
         self.source = path
@@ -96,7 +97,7 @@ class FakeDirectorySuite(InitFile):
         data = _EmptyTestSuite(path)
         data.doc = doc
         data.initfile = path
-        InitFile.__init__(self, data, None)
+        InitFile.__init__(self, data, Namespace())
         self.name = name
         self.rendered = False
 
@@ -104,7 +105,7 @@ class FakeSuite(TestCaseFile):
     def __init__(self, name='Fake Suite', doc='', path='fake/suite.html'):
         data = _EmptyTestSuite(path)
         data.doc = doc
-        TestCaseFile.__init__(self, data, None)
+        TestCaseFile.__init__(self, data, Namespace())
         self.name = name
         self.rendered = False
 
