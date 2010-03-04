@@ -22,13 +22,13 @@ class RobotDataList(list):
 
     def swap(self, index1, index2):
         self[index1], self[index2] = self[index2], self[index1]
-        self.datafile.dirty = True
+        self.datafile.set_dirty()
 
     def move_up(self, item):
         index = self.index(item)
         if index:
             self.swap(index-1, index)
-            self.datafile.dirty = True
+            self.datafile.set_dirty()
             return True
         return False
 
@@ -36,10 +36,10 @@ class RobotDataList(list):
         index = self.index(item)
         if index < len(self)-1:
             self.swap(index, index+1)
-            self.datafile.dirty = True
+            self.datafile.set_dirty()
             return True
         return False
 
     def pop(self, index):
-        self.datafile.dirty = True
+        self.datafile.set_dirty()
         list.pop(self, index)
