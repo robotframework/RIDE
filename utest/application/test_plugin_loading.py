@@ -35,6 +35,10 @@ class TestPluginLoader(unittest.TestCase):
         self.loader = PluginLoader(app, plugins_dir, [Colorizer])
         app.get_plugins = lambda: self.loader.plugins
 
+    def tearDown(self):
+        for p in self.loader.plugins:
+            p.disable()
+
     def test_plugin_loading(self):
         for name in self.expected_plugins:
             self._assert_plugin_loaded(name)
