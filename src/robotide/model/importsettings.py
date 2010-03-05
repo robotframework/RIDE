@@ -22,6 +22,11 @@ from settings import ResourceImport, LibraryImport, VariablesImport
 
 class ImportSettings(RobotDataList):
 
+    def pop(self, index):
+        self.datafile.set_dirty()
+        list.pop(self, index)
+        self.datafile.refresh_namespace()
+
     def _parse_data(self, data):
         import_classes = {'Resource': ResourceImport,
                           'Library': LibraryImport,
