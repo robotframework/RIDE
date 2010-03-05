@@ -118,7 +118,7 @@ class TestResolvingKeywordAndVariables(_ContentAssistBaseTest):
 
     def test_items_should_be_in_alphabetical_order(self):
         kws = self.ns.content_assist_values(self.suite)
-        assert_true(kws[0].name < kws[1].name < kws[2].name)
+        assert_true(kws[10].name < kws[11].name < kws[12].name)
 
     def test_content_assist_values_should_not_have_duplicates(self):
         kws = [ kw for kw in self.ns.content_assist_values(self.suite) if
