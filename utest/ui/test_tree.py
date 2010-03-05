@@ -122,15 +122,6 @@ class TestPopulating(_BaseSuiteTreeTest):
             assert_equals(self._tree.GetItemText(self._tree._datafile_nodes[index]),
                           name)
 
-    def test_directory_suite_has_correct_subnodes(self):
-        dir_suite = self._tree._datafile_nodes[0]
-        item, cookie = self._tree.GetFirstChild(dir_suite)
-        while item:
-            item, cookie = self._tree.GetNextChild(dir_suite, cookie)
-        nodes = ['Top Suite Fake UK 0', 'Top Suite Fake UK 1', 'Top Suite Fake UK 2',
-                 'Top Suite Fake UK 3', 'Top Suite Fake UK 4', 'Sub Suite 0']
-        self._assert_children(dir_suite, nodes)
-
     def test_file_suite_has_correct_subnodes(self):
         file_suite = self._tree._datafile_nodes[1]
         self._assert_children(file_suite, ['Sub Suite 0 Fake Test 0'])
