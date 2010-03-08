@@ -55,9 +55,12 @@ class PluginLoader(object):
         modulename = os.path.splitext(filename)[0]
         file, imppath, description = imp.find_module(modulename, [dirpath])
         try:
-            module = imp.load_module(modulename, file, imppath, description)
-        except Exception, err:
-            self._load_errors.append("Importing plugin module '%s' failed:\n%s" % (path, err))
+            try:
+                module = imp.load_module(modulename, file, imppath,
+                                         description)
+            except Exception, err:
+                self._load_errors.append("Importing plugin module '%s' failed:\n%s"
+                                         % (path, err))
             return []
         finally:
             if file:
