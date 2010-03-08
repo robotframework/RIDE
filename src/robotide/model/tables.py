@@ -13,7 +13,7 @@
 #  limitations under the License.
 
 from robotide.publish import RideUserKeywordAdded
-from robotide.robotapi import RobotVariables
+from robotide.robotapi import RobotVariables, is_scalar_var, is_list_var
 from robotide import utils
 
 from datalist import RobotDataList
@@ -121,6 +121,20 @@ class VariableTable(object):
         except:
             return values
 
+    def validate_scalar_variable_name(self, name):
+        return self._validate_name(_ScalarVarType(), name)
+
+    def validate_list_variable_name(self, name):
+        return self._validate_name(_ListVarType(), name)
+
+    def _validate_name(self, var_type, name):
+        if not var_type.validator(name):
+            return '%s variable name must be in format %s{name}' % \
+                    (var_type.name, var_type.prefix)
+        if name in self._vars:
+            return 'Variable with this name already exists.'
+        return None
+
     def new_scalar_var(self, name=None, value=None):
         self._create_var(name, value, '${}')
 
@@ -161,6 +175,17 @@ class VariableTable(object):
                 value = [value]
             serializer.variable(key, value)
         serializer.end_variables()
+
+
+class _ScalarVarType(object):
+    validator = lambda self, name: is_scalar_var(name)
+    name = 'Scalar'
+    prefix = '$'
+
+class _ListVarType(object):
+    validator = lambda self, name: is_list_var(name)
+    name = 'List'
+    prefix = '@'
 
 
 class _TcUkTable(RobotDataList):

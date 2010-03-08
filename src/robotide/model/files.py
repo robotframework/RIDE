@@ -151,6 +151,12 @@ class _AbstractDataFile(object):
     def validate_keyword_name(self, value):
         return self.keywords.validate_name(value)
 
+    def validate_scalar_variable_name(self, name):
+        return self.variables.validate_scalar_variable_name(name)
+
+    def validate_list_variable_name(self, name):
+        return self.variables.validate_list_variable_name(name)
+
     def _get_variable_files(self):
         varfiles = []
         for var_settings in self.get_variable_imports():

@@ -1,11 +1,11 @@
 #  Copyright 2008-2009 Nokia Siemens Networks Oyj
-#  
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -161,15 +161,12 @@ class UserKeywordNameValidator(_NameValidator):
         return self._datafile.validate_keyword_name(value)
 
 
-class _VariableNameValidator(_AbstractValidator):
+class ScalarVariableNameValidator(_NameValidator):
 
     def _validate(self, value):
-        if not self._validator(value):
-            return 'Invalid variable name'
-        return None
+        return self._datafile.validate_scalar_variable_name(value)
 
-class ScalarVariableNameValidator(_VariableNameValidator):
-    _validator = lambda self, value: is_scalar_var(value)
+class ListVariableNameValidator(_NameValidator):
 
-class ListVariableNameValidator(_VariableNameValidator):
-    _validator = lambda self, value: is_list_var(value)
+    def _validate(self, value):
+        return self._datafile.validate_list_variable_name(value)
