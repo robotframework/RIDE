@@ -45,8 +45,13 @@ class _Setting(object):
         return utils.join_value(self.value)
 
     def set_str_value(self, value):
-        self.value = [ v.strip() for v in utils.split_value(value) ]
-        self.datafile.set_dirty()
+        val = self._listify(value)
+        if self.value != val:
+            self.value = val
+            self.datafile.set_dirty()
+
+    def _listify(self, value):
+        return [ v.strip() for v in utils.split_value(value) ]
 
 
 class Documentation(_Setting):
@@ -61,9 +66,8 @@ class Documentation(_Setting):
     def get_str_value(self):
         return ''.join(self.value)
 
-    def set_str_value(self, doc):
-        self.value = doc and [doc] or []
-        self.datafile.set_dirty()
+    def _listify(self, value):
+        return value and [value] or []
 
 
 class ForceTags(_Setting):
@@ -185,16 +189,14 @@ class _Import(_Setting):
 class ResourceImport(_Import):
     _serialized_name = 'Resource'
 
-    def set_str_value(self, value):
-        self.value = [value]
-        self.datafile.set_dirty()
+    def _listify(self, value):
+        return value and [value] or []
 
 class LibraryImport(_Import):
     _serialized_name = 'Library'
 
-    def set_str_value(self, value):
-        self.value = [value]
-        self.datafile.set_dirty()
+    def _listify(self, value):
+        return value and [value] or []
 
 class VariablesImport(_Import):
     _serialized_name = 'Variables'

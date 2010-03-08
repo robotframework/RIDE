@@ -187,7 +187,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self.Delete(node)
 
     def mark_dirty(self, datafile):
-        self._mark_dirty(self._get_datafile_node(datafile))
+        if datafile.dirty:
+            self._mark_dirty(self._get_datafile_node(datafile))
 
     def _mark_dirty(self, node):
         text = self.GetItemText(node)
