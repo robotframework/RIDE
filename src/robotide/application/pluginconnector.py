@@ -70,5 +70,5 @@ class BrokenPlugin(_PluginConnector):
         _PluginConnector.__init__(self, name, doc=doc, error=error)
         LOG.error("Taking %s plugin into use failed:\n%s" % (name, error))
 
-    def enable(self):
+    def enable_on_startup(self):
         pass
