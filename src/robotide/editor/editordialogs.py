@@ -31,11 +31,12 @@ def EditorDialog(obj):
 class _Dialog(wx.Dialog):
     _title = property(lambda self: utils.name_from_class(self, drop='Dialog'))
 
-    def __init__(self, parent, plugin=None, item=None):
+    def __init__(self, parent, datafile, plugin=None, item=None):
         wx.Dialog.__init__(self, parent, -1, self._title,
                            style=wx.DEFAULT_DIALOG_STYLE|wx.THICK_FRAME)
         self.SetExtraStyle(wx.WS_EX_VALIDATE_RECURSIVELY)
         self.plugin = plugin
+        self._datafile = datafile
         self._item = item
         self._sizer = wx.BoxSizer(wx.VERTICAL)
         self._editors = self._get_editors(item)
@@ -73,7 +74,7 @@ class ScalarVariableDialog(_Dialog):
     def _get_editors(self, var):
         name, value = var or ('${}', '')
         return [ValueEditor(self, name, 'Name',
-                            validator=ScalarVariableNameValidator()),
+                            validator=ScalarVariableNameValidator(self._datafile)),
                 ValueEditor(self, value, 'Value')]
 
 class ListVariableDialog(_Dialog):
@@ -81,7 +82,7 @@ class ListVariableDialog(_Dialog):
     def _get_editors(self, var):
         name, value = var or ('@{}', '')
         return [ValueEditor(self, name, 'Name',
-                            validator=ListVariableNameValidator()),
+                            validator=ListVariableNameValidator(self._datafile)),
                 ListValueEditor(self, value, 'Value')]
 
 

@@ -166,7 +166,8 @@ class _SettingEditor(wx.Panel, RideEventHandler):
 
     def OnEdit(self, event=None):
         self._editing = True
-        dlg = self._dialog(self.GetGrandParent(), self._plugin, self._item)
+        dlg = self._dialog(self.GetGrandParent(), self._datafile, self._plugin,
+                           self._item)
         if dlg.ShowModal() == wx.ID_OK:
             self._item.set_str_value(dlg.get_value())
             self._update_and_notify()
@@ -219,8 +220,8 @@ class _DocumentationEditor(_SettingEditor):
         self._value_display.SetPage(utils.html_escape(value, formatting=True))
 
     def OnEdit(self, event):
-        editor = DocumentationDialog(self.GetGrandParent(), self._plugin,
-                                     self._item.get_str_value())
+        editor = DocumentationDialog(self.GetGrandParent(), self._datafile,
+                                     self._plugin, self._item.get_str_value())
         if editor.ShowModal() == wx.ID_OK:
             self._item.set_str_value(editor.get_value())
             self._update_and_notify()
@@ -324,14 +325,14 @@ class VariablesListEditor(_AbstractListEditor):
         return [item, self._data.value_as_string(item)]
 
     def OnAddScalar(self, event):
-        dlg = ScalarVariableDialog(self.GetGrandParent())
+        dlg = ScalarVariableDialog(self.GetGrandParent(), self._data.datafile)
         if dlg.ShowModal() == wx.ID_OK:
             self._data.new_scalar_var(*dlg.get_value())
             self.update_data()
         dlg.Destroy()
 
     def OnAddList(self, event):
-        dlg = ListVariableDialog(self.GetGrandParent())
+        dlg = ListVariableDialog(self.GetGrandParent(), self._data.datafile)
         if dlg.ShowModal() == wx.ID_OK:
             self._data.new_list_var(*dlg.get_value())
             self.update_data()
@@ -340,9 +341,11 @@ class VariablesListEditor(_AbstractListEditor):
     def OnEdit(self, event):
         item = self._data.get_name_and_value(self._selection)
         if item[0].startswith('${'):
-            dlg = ScalarVariableDialog(self.GetGrandParent(), item=item)
+            dlg = ScalarVariableDialog(self.GetGrandParent(),
+                                       self._data.datafile, item=item)
         else:
-            dlg = ListVariableDialog(self.GetGrandParent(), item=item)
+            dlg = ListVariableDialog(self.GetGrandParent(),
+                                     self._data.datafile, item=item)
         if dlg.ShowModal() == wx.ID_OK:
             self._data.set_name_and_value(self._selection, *dlg.get_value())
             self.update_data()
@@ -355,7 +358,8 @@ class ImportSettingListEditor(_AbstractListEditor):
 
     def OnEdit(self, event):
         setting = self._get_setting()
-        dlg = EditorDialog(setting)(self.GetGrandParent(), item=setting)
+        dlg = EditorDialog(setting)(self.GetGrandParent(), self._data.datafile,
+                                    item=setting)
         if dlg.ShowModal() == wx.ID_OK:
             setting.set_str_value(dlg.get_value())
             self.update_data()
@@ -376,7 +380,7 @@ class ImportSettingListEditor(_AbstractListEditor):
                                         self._data.new_variables)
 
     def _show_import_editor_dialog(self, dialog, creator):
-        dlg = dialog(self.GetGrandParent())
+        dlg = dialog(self.GetGrandParent(), self._data.datafile)
         if dlg.ShowModal() == wx.ID_OK:
             creator(dlg.get_value())
             self.update_data()
@@ -400,14 +404,15 @@ class MetadataListEditor(_AbstractListEditor):
 
     def OnEdit(self, event):
         meta = self._data[self._selection]
-        dlg = MetadataDialog(self.GetGrandParent(), item=meta)
+        dlg = MetadataDialog(self.GetGrandParent(), self._data.datafile,
+                             item=meta)
         if dlg.ShowModal() == wx.ID_OK:
             meta.set_name_and_value(*dlg.get_value())
             self.update_data()
         dlg.Destroy()
 
     def OnAddMetadata(self, event):
-        dlg = MetadataDialog(self.GetGrandParent())
+        dlg = MetadataDialog(self.GetGrandParent(), self._data.datafile)
         if dlg.ShowModal() == wx.ID_OK:
             self._data.new_metadata(*dlg.get_value())
             self.update_data()
