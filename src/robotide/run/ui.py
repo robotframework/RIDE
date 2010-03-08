@@ -106,6 +106,8 @@ class _OutputDisplay(wx.StaticText):
 
     def __init__(self, parent):
         wx.StaticText.__init__(self, parent)
+        self.SetFont(wx.Font(10, wx.FONTFAMILY_MODERN, wx.FONTWEIGHT_NORMAL,
+                             wx.FONTSTYLE_NORMAL))
 
     def update(self, addition):
         self.SetLabel(self.LabelText + addition.decode('UTF-8', 'ignore'))
