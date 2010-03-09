@@ -1,0 +1,25 @@
+#  Copyright 2008-2009 Nokia Siemens Networks Oyj
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+import wx
+
+
+class Font(object):
+    help = property(lambda self: self._get_font(scale=-2))
+    fixed = property(lambda self: self._get_font(family=wx.FONTFAMILY_MODERN))
+
+    def _get_font(self, scale=0, family=wx.FONTFAMILY_DEFAULT):
+        size = wx.SystemSettings.GetFont(wx.SYS_SYSTEM_FIXED_FONT).GetPointSize()
+        return wx.Font(size + scale, family, wx.FONTWEIGHT_NORMAL,
+                       wx.FONTSTYLE_NORMAL)

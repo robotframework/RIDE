@@ -17,7 +17,7 @@ import wx
 from robotide.validators import ScalarVariableNameValidator,\
     ListVariableNameValidator, TimeoutValidator, NonEmptyValidator, ArgumentsValidator
 from robotide import utils
-from robotide import context
+from robotide.context import Font
 
 from fieldeditors import ValueEditor, ListValueEditor, MultiLineEditor,\
     ContentAssistEditor
@@ -55,7 +55,7 @@ class _Dialog(wx.Dialog):
 
     def _create_help(self):
         text = wx.StaticText(self, label=get_help(self._title))
-        text.SetFont(wx.Font(*context.HELP_FONT))
+        text.SetFont(Font().help)
         self._sizer.Add(text, flag=wx.ALL, border=2)
 
     def _create_buttons(self):

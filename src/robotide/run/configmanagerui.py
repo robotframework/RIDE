@@ -16,7 +16,7 @@ import wx
 from wx.lib.mixins.listctrl import TextEditMixin
 
 from robotide.editor.listeditor import ListEditor, AutoWidthColumnList
-from robotide import context
+from robotide.context import Font
 
 
 _CONFIG_HELP = '\n\n'.join([ txt for txt in
@@ -58,7 +58,7 @@ class ConfigManagerDialog(wx.Dialog):
     def _create_help(self):
         help = wx.StaticText(self, label=_CONFIG_HELP)
         help.Wrap(700)
-        help.SetFont(wx.Font(*context.HELP_FONT))
+        help.SetFont(Font().help)
         self.Sizer.Add(help, border=5,flag=wx.TOP)
 
     def _create_line(self):

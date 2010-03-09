@@ -20,7 +20,7 @@ from robotide.errors import SerializationError
 from robotide.publish import RideTreeSelection, RideNotebookTabChanged
 from robotide.writer.writer import HtmlFileWriter, TxtFileWriter
 from robotide.pluginapi import Plugin, ActionInfo
-from robotide import context
+from robotide.context import Font
 
 
 class InMemoryHtmlWriter(HtmlFileWriter):
@@ -159,7 +159,7 @@ class TxtView(wx.TextCtrl):
     def __init__(self, parent):
         wx.TextCtrl.__init__(self, parent, style=wx.TE_MULTILINE)
         self.SetEditable(False)
-        self.SetFont(context.FIXED_WIDTH_FONT)
+        self.SetFont(Font().fixed)
 
     def set_content(self, content):
         self.SetValue(content)
