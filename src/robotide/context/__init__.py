@@ -49,6 +49,8 @@ SETTING_LABEL_WIDTH = 175
 SETTING_ROW_HEIGTH = 25
 POPUP_BACKGROUND = (255, 255, 187)
 HELP_FONT = (8, wx.FONTFAMILY_DEFAULT, wx.FONTWEIGHT_NORMAL, wx.FONTSTYLE_NORMAL)
+FIXED_WIDTH_FONT = (wx.SystemSettings.GetFont(wx.SYS_SYSTEM_FIXED_FONT).GetPointSize(),
+                    wx.FONTFAMILY_MODERN, FONTWEIGHT_NORMAL, FONTSTYLE_NORMAL)
 
 pyversion = '.'.join([ str(v) for v in sys.version_info[:3] ])
 ABOUT_RIDE = '''<h3>RIDE -- Robot Framework Test Data Editor</h3>

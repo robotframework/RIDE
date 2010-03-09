@@ -16,6 +16,7 @@ import wx
 import sys
 
 from robotide.run.process import Process
+from robotide import context
 
 
 class Runner(wx.EvtHandler):
@@ -106,8 +107,7 @@ class _OutputDisplay(wx.StaticText):
 
     def __init__(self, parent):
         wx.StaticText.__init__(self, parent)
-        self.SetFont(wx.Font(10, wx.FONTFAMILY_MODERN, wx.FONTWEIGHT_NORMAL,
-                             wx.FONTSTYLE_NORMAL))
+        self.SetFont(context.FIXED_WIDTH_FONT)
 
     def update(self, addition):
         self.SetLabel(self.LabelText + addition.decode('UTF-8', 'ignore'))
