@@ -112,7 +112,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _render_children(self, node, predicate=None):
         handler = self.GetItemPyData(node)
-        if not handler or handler.rendered:
+        if not handler or handler.children_rendered():
             return
         datafile = handler.item
         for test in datafile.tests:
@@ -123,7 +123,6 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             else:
                 index = None
             self._create_node_with_handler(node, kw, index)
-        handler.rendered = True
 
     def _create_node(self, parent_node, label, img, index=None):
         if index is not None:
@@ -406,6 +405,7 @@ class _ActionHandler(wx.Window):
         self.item = item
         self._tree = tree
         self._node = node
+        self._rendered = False
         self.Show(False)
 
     def show_popup(self):
@@ -425,7 +425,6 @@ class InitFileHandler(_ActionHandler):
     is_draggable = False
     is_renameable = False
     is_test_suite = True
-    rendered = False
     _actions = ['Add Suite', 'New User Keyword', '---', 'Change Format']
 
     def has_been_modified_on_disk(self):
@@ -437,6 +436,15 @@ class InitFileHandler(_ActionHandler):
 
     def rename(self, new_name):
         return False
+
+    def children_rendered(self):
+        if len(self.item.keywords + self.item.tests) == 0:
+            return True
+        elif not self._rendered:
+            self._rendered = True
+            return False
+        return True
+
 
     def OnAddSuite(self, event):
         dlg = AddSuiteDialog(self.item.get_dir_path())
