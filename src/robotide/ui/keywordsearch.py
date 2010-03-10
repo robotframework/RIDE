@@ -69,6 +69,8 @@ class KeywordSearchDialog(wx.Frame):
         self._searcher = searcher
         self._create_components(searcher)
         self._make_bindings()
+        self._sort_up = True
+        self._sortcol = 0
 
     def _create_components(self, searcher):
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
@@ -99,20 +101,71 @@ class KeywordSearchDialog(wx.Frame):
         self.Bind(wx.EVT_ACTIVATE, self.OnActivate)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         self.Bind(wx.EVT_CHECKBOX, self.OnSearch, self._use_doc)
+        self.Bind(wx.EVT_LIST_COL_CLICK, self.OnColClick)
+
+    def OnColClick(self,event):
+        col = event.GetColumn()
+        if self._is_not_kw_or_source_col(col):
+            event.Skip()
+            return
+        if self._col_already_selected(col):
+            self._swap_sort_direction()
+        else:
+            self._set_sort_up()
+        self._sortcol = col
+        self.OnSearch(event)
+        event.Skip()
+
+    def _is_not_kw_or_source_col(self, col):
+        return col >= 2
+
+    def _col_already_selected(self, col):
+        return col == self._sortcol
+
+    def _swap_sort_direction(self):
+        self._sort_up = not self._sort_up
+
+    def _set_sort_up(self):
+        self._sort_up = True
 
     def OnActivate(self, event):
         self.OnSearch(event)
 
     def OnSearch(self, event):
         self._keywords = self._searcher.search(*self._get_search_criteria())
-        self._list.show_keywords(self._keywords)
+        if self._kw_col_sorted_down():
+            self._keywords.reverse()
+        self._list.show_keywords(self._keywords, self._sortcol, self._sort_up)
         self._details.clear()
+        self.Refresh()
+
+    def _kw_col_sorted_down(self):
+        return self._sortcol == 0 and self._sort_up == False
 
     def _get_search_criteria(self):
         return self._search_control.GetValue().lower(), self._use_doc.GetValue()
 
     def OnItemSelected(self, event):
-        self._details.SetPage(self._keywords[event.Index].details)
+        self._set_details_page(self._get_kw(event).details)
+
+    def _set_details_page(self, kw_details):
+        self._details.SetPage(kw_details)
+
+    def _get_kw(self, event):
+        if self._sortcol_is_source_col():
+            index = self._search_for_index(event.Index)
+            return self._keywords[index]
+        return self._keywords[event.Index]
+
+    def _sortcol_is_source_col(self):
+        return self._sortcol == 1
+
+    def _search_for_index(self, row):
+        search_item = self._list.GetItem(row, 0).GetText()
+        for index, kw in enumerate(self._keywords):
+            if kw.name == search_item:
+                return index
+        return None
 
     def OnClose(self, event):
         self.Hide()
@@ -131,10 +184,26 @@ class _KeywordList(wx.ListCtrl, ListCtrlAutoWidthMixin):
             self.InsertColumn(col, title)
         self.SetColumnWidth(0, 250)
 
-    def show_keywords(self, keywords):
-        self._keywords = keywords
+    def show_keywords(self, keywords, col=0, sort_up=True):
+        if self._is_source_col(col):
+            keys = [ kw.source for kw in keywords ]
+            self._sort(keys, sort_up)
+            self._keywords = [ kw for source in keys for kw in keywords
+                               if kw.source == source ]
+        else:
+            self._keywords = keywords
         self.SetItemCount(len(self._keywords))
+
+    def _is_source_col(self, col):
+        return col == 1
+
+    def _sort(self, keys, sort_up):
+        if sort_up:
+            keys.sort(lambda x, y: cmp(x.lower(), y.lower()))
+        else :
+            keys.sort(lambda x, y: cmp(y.lower(), x.lower()))
 
     def OnGetItemText(self, row, col):
         kw = self._keywords[row]
         return [kw.name, kw.source, kw.shortdoc][col]
+
