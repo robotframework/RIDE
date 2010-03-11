@@ -61,7 +61,7 @@ class PluginLoader(object):
             except Exception, err:
                 self._load_errors.append("Importing plugin module '%s' failed:\n%s"
                                          % (path, err))
-            return []
+                return []
         finally:
             if file:
                 file.close()
