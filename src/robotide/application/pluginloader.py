@@ -47,13 +47,17 @@ class PluginLoader(object):
         for path in load_dirs:
             if os.path.exists(path):
                 for filename in os.listdir(path):
-                    if os.path.splitext(filename)[1].lower() == ".py":
+                    if filename[0].isalpha() and \
+                            os.path.splitext(filename)[1].lower() == ".py":
                         yield os.path.join(path, filename)
 
     def _import_classes(self, path):
         dirpath, filename = os.path.split(path)
         modulename = os.path.splitext(filename)[0]
-        file, imppath, description = imp.find_module(modulename, [dirpath])
+        try:
+            file, imppath, description = imp.find_module(modulename, [dirpath])
+        except ImportError:
+            return []
         try:
             try:
                 module = imp.load_module(modulename, file, imppath,
