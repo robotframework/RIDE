@@ -78,9 +78,18 @@ class TestPublisher(unittest.TestCase):
         pub.publish('test.message', 'content')
         assert_equals(self._msg, 'content')
 
+    def test_broken_string_message_listener(self):
+        pub = Publisher()
+        pub.subscribe(self._broken_listener, 'test.message')
+        pub.publish('test.message', 'content')
+        assert_equals(self._msg, 'content')
+
     def _listener(self, data):
         self._msg = data
 
+    def _broken_listener(self, data):
+        self._msg = data
+        raise RuntimeError(data)
 
 if __name__ == '__main__':
     unittest.main()

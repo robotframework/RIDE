@@ -14,6 +14,8 @@
 
 from wx.lib.pubsub import Publisher as WxPublisher
 
+from messages import RideLogMessage
+
 
 class Publisher(object):
 
@@ -21,7 +23,10 @@ class Publisher(object):
         self._listeners = {}
 
     def publish(self, topic, data):
-        WxPublisher().sendMessage(topic, data)
+        try:
+            WxPublisher().sendMessage(topic, data)
+        except Exception, err:
+            RideLogMessage(message=str(err), level='ERROR').publish()
 
     def subscribe(self, listener, topic, key=None):
         """Start to listen to messages with the specified ``topic``.
