@@ -1,11 +1,11 @@
 #  Copyright 2008-2009 Nokia Siemens Networks Oyj
-#  
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -119,7 +119,6 @@ class _WriterHelper(object):
 
 
 class TsvFileWriter(_WriterHelper):
-
     _setting_titles = ['Setting', 'Value']
     _variable_titles = ['Variable', 'Value']
     _testcase_titles = ['Test Case', 'Action', 'Argument']
@@ -127,7 +126,8 @@ class TsvFileWriter(_WriterHelper):
 
     def __init__(self, output):
         _WriterHelper.__init__(self, output, 8)
-        self._writer = csv.writer(self._output, dialect='excel-tab')
+        self._writer = csv.writer(self._output, dialect='excel-tab',
+                                  lineterminator='\n')
 
     def _setting_table_setting(self, name, value):
         self._write_data([name] + value)
@@ -144,7 +144,7 @@ class TsvFileWriter(_WriterHelper):
     def _write_header(self, row):
         row = self._add_padding(row, padding=row[-1])
         self._writer.writerow(['*%s*' % cell for cell in row])
-        
+
     def _write_data(self, data, indent=0):
         data = self._encode(data)
         for row in self._split_data(data, indent):
@@ -152,7 +152,6 @@ class TsvFileWriter(_WriterHelper):
 
 
 class TxtFileWriter(_WriterHelper):
-
     _setting_titles = 'Settings'
     _variable_titles = 'Variables'
     _testcase_titles = 'Test Cases'
@@ -190,7 +189,6 @@ class TxtFileWriter(_WriterHelper):
 
 
 class HtmlFileWriter(_WriterHelper):
-
     _setting_titles = ['Setting', 'Value']
     _variable_titles = ['Variable', 'Value']
     _testcase_titles = ['Test Case', 'Action', 'Arguments']
