@@ -311,6 +311,16 @@ class Plugin(object):
         successfully, otherwise it's an instance of `BrokenPlugin`."""
         return self.__app.get_plugins()
 
+    def publish(self, topic, data):
+        """Publishes a message with given topic and client data.
+
+        Purpose of this method is to support inter-plugin communication which
+        is not possible to achieve using custom message classes.
+
+        `data` will be passed as an argument to registered listener methods.
+        """
+        PUBLISHER.publish(topic, data)
+
     def subscribe(self, listener, *topics):
         """Start to listen to messages with the given ``topics``.
 
