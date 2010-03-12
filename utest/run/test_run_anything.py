@@ -1,6 +1,7 @@
 import unittest
 import time
 import os
+import sys
 from robot.utils.asserts import assert_equals, assert_true
 
 from robotide.run.runanything import _RunConfig
@@ -38,13 +39,14 @@ class TestRunAnything(unittest.TestCase):
         assert_equals(self.runner.outstr, output)
         assert_true(self.runner.finished)
 
-    def test_stopping(self):
-        self.runner = self._create_runner('python %s output 0.8' % SCRIPT)
-        time.sleep(0.1)
-        self.runner.stop()
-        self._sleep_and_log_output(0.5)
-        assert_true(self.runner.finished)
-        assert_true(self.runner.outstr.startswith('start\nrunning '))
+    if not sys.version_info[:2] >= (2,6):
+        def test_stopping(self):
+            self.runner = self._create_runner('python %s output 0.8' % SCRIPT)
+            time.sleep(0.1)
+            self.runner.stop()
+            self._sleep_and_log_output(0.5)
+            assert_true(self.runner.finished)
+            assert_true(self.runner.outstr.startswith('start\nrunning '))
 
     def test_error(self):
         self.runner = self._create_runner('invalid command')

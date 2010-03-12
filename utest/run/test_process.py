@@ -1,9 +1,11 @@
 import unittest
 import os
+import sys
 import time
 
 from robotide.run.process import Process
-from robot.utils.asserts import assert_equals, assert_false, assert_true
+from robot.utils.asserts import assert_equals, assert_false, assert_true, \
+        assert_raises_with_msg
 
 
 SCRIPT = os.path.join(os.path.dirname(__file__), 'process_test_scripts.py')
@@ -22,14 +24,21 @@ class TestProcess(unittest.TestCase):
         self._wait_until_finished()
         self._assert_output('3\n')
 
-    def test_stopping(self):
-        self.proc = self._create_process(['python', SCRIPT, 'output', '0.8'])
-        time.sleep(0.1)
-        self.proc.stop()
-        time.sleep(0.5)
-        assert_true(self.proc.get_output().startswith('start\nrunning '))
-        assert_false(os.path.exists(self.proc._out_path))
-        assert_true(self.proc.is_finished())
+    if sys.version_info[:2] >= (2,6):
+        def test_stopping(self):
+            self.proc = self._create_process(['python', SCRIPT, 'output', '0.8'])
+            time.sleep(0.1)
+            self.proc.stop()
+            time.sleep(0.5)
+            assert_true(self.proc.get_output().startswith('start\nrunning '))
+            assert_false(os.path.exists(self.proc._out_path))
+            assert_true(self.proc.is_finished())
+
+    else:
+        def test_stopping(self):
+            msg = 'Stopping process is possible only with Python 2.6 or newer'
+            assert_raises_with_msg(AttributeError, msg,
+                                   self._create_process(['']).stop)
 
     def test_error(self):
         proc = self._create_process(['invalid command'])
