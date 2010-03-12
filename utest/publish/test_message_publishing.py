@@ -1,11 +1,11 @@
 #  Copyright 2008 Nokia Siemens Networks Oyj
-#  
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,7 +17,7 @@ import unittest
 from robot.utils.asserts import assert_equals, assert_raises_with_msg,\
     assert_true
 
-from robotide.publish import RideMessage, RideLogMessage
+from robotide.publish import RideMessage, RideLogMessage, Publisher
 
 
 _ARGS_ERROR = "Argument mismatch, expected: ['foo', 'bar']"
@@ -65,6 +65,21 @@ class TestRideLogMessage(unittest.TestCase):
         assert_equals(msg.message, 'Some error text')
         assert_equals(msg.level, 'ERROR')
         assert_true(msg.timestamp.startswith('20'))
+
+
+class TestPublisher(unittest.TestCase):
+
+    def setUp(self):
+        self._msg = ''
+
+    def test_publishing_string_message(self):
+        pub = Publisher()
+        pub.subscribe(self._listener, 'test.message')
+        pub.publish('test.message', 'content')
+        assert_equals(self._msg, 'content')
+
+    def _listener(self, data):
+        self._msg = data
 
 
 if __name__ == '__main__':
