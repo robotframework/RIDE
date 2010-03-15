@@ -20,6 +20,11 @@ from robotide.run.ui import Runner
 
 
 class RunAnything(Plugin):
+    """A plugin for executing commands on the system.
+
+    This plugin enables creation of persistent run configurations and
+    execution of those. Output of the executed command is displayed in a
+    separate tab."""
 
     def __init__(self, app):
         Plugin.__init__(self, app, default_settings={'configs': []})

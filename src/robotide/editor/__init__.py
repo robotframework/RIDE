@@ -42,6 +42,11 @@ Content Assistance | Show possible keyword and variable completions | Ctrl-Space
 
 
 class EditorPlugin(Plugin):
+    """The default editor plugin.
+
+    This plugin implements editors for the various items of Robot Framework
+    test data.
+    """
 
     def __init__(self, application):
         Plugin.__init__(self, application)

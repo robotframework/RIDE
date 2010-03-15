@@ -21,6 +21,7 @@ from robotide import utils
 
 
 class KeywordSearch(Plugin):
+    """A plugin for searching keywords based on name or documentation."""
 
     def __init__(self, app):
         Plugin.__init__(self, app)
