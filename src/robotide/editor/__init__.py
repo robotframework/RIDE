@@ -17,8 +17,10 @@ import wx
 from robotide.pluginapi import Plugin, ActionInfoCollection
 from robotide.publish import RideTreeSelection, RideNotebookTabChanging,\
     RideNotebookTabChanged, RideSaving
-
-from editors import Editor
+from robotide.model.tcuk import TestCase, UserKeyword
+from robotide.model.files import TestCaseFile, ResourceFile, InitFile
+from editors import Editor, TestCaseEditor, UserKeywordEditor, \
+    TestCaseFileEditor, ResourceFileEditor, InitFileEditor
 
 
 _EDIT = """
@@ -50,10 +52,17 @@ class EditorPlugin(Plugin):
 
     def __init__(self, application):
         Plugin.__init__(self, application)
+        self.application = application
         self._tab = None
 
     def enable(self):
         self._show_editor()
+
+        self.application.register_editor(InitFile, InitFileEditor)
+        self.application.register_editor(ResourceFile, ResourceFileEditor)
+        self.application.register_editor(TestCase, TestCaseEditor)
+        self.application.register_editor(TestCaseFile, TestCaseFileEditor)
+        self.application.register_editor(UserKeyword, UserKeywordEditor)
         self.register_actions(ActionInfoCollection(_EDIT, self._tab, self._tab))
         self.subscribe(self.OnTreeItemSelected, RideTreeSelection)
         self.subscribe(self.OnTabChanged, RideNotebookTabChanged)
