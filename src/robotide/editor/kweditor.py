@@ -237,15 +237,16 @@ class KeywordEditor(KeywordEditorUi):
         event.Skip()
 
     def OnKey(self, event):
-        if event.ControlDown() and self._tooltip.IsShown():
+        keycode, control_down = event.GetKeyCode(), event.ControlDown()
+        if control_down and self._tooltip.IsShown():
             return
         self._hide_tooltip()
         self.hide_popup()
-        if event.ControlDown() or event.GetKeyCode() not in [wx.WXK_RETURN, wx.WXK_BACK]:
+        if control_down or keycode not in [wx.WXK_RETURN, wx.WXK_BACK]:
             event.Skip()
             return
         self.DisableCellEditControl()
-        if event.GetKeyCode() == wx.WXK_RETURN:
+        if keycode == wx.WXK_RETURN:
             self.MoveCursorRight(event.ShiftDown())
         else:
             self.MoveCursorLeft(event.ShiftDown())
