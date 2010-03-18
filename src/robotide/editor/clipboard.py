@@ -169,7 +169,7 @@ class _GridClipboard(object):
     def _split_string_from_tabs_and_newlines(self, string):
         if not '\t' in string:
             return string
-        return [ line.split('\t') for line in string.split('\n')]
+        return [ line.split('\t') for line in string.splitlines()]
 
 
 class _PythonDataObject(wx.PyDataObjectSimple):
