@@ -27,11 +27,20 @@ from editordialogs import EditorDialog, DocumentationDialog,\
 
 
 def Editor(plugin, editor_panel, tree):
-    item = plugin.get_selected_item()
-    if not item:
-        return WelcomePage(editor_panel)
-    editor_class = globals()[item.__class__.__name__ + 'Editor']
-    return editor_class(plugin, editor_panel, item, tree)
+    try:
+        item = plugin.get_selected_item()
+        if not item:
+            return WelcomePage(editor_panel)
+        # ask the application which class to use; if it doesn't know, fall
+        # back to a default
+        editor_class = plugin.application.get_editor(item.__class__)
+        if editor_class is None:
+            editor_class = globals()[item.__class__.__name__ + 'Editor']
+        return editor_class(plugin, editor_panel, item, tree)
+    except Exception, e:
+        # we need something better than the WelcomPage; maybe just
+        # a plain text editor?
+        return WelcomePage
 
 
 class WelcomePage(RideHtmlWindow):
@@ -45,21 +54,34 @@ class WelcomePage(RideHtmlWindow):
         self.Show(False)
 
 
-class _RobotTableEditor(wx.Panel):
+class EditorPanel(wx.Panel):
+    '''Base class for all editor panels'''
     title = None
     undo = cut = copy = paste = delete = comment = uncomment = save \
         = show_content_assist = lambda self: None
-
+    # these are designed to be used in dynamically generated controls 
+    # that let you pick from a list of available editors (not presently
+    # implemented in this plugin...)
+    shortname = ""
+    shorthelp = ""
+    
     def __init__(self, plugin, parent, item, tree):
         wx.Panel.__init__(self, parent)
+        self.plugin = plugin
+        self.item = item
+        self._tree = tree
+
+class _RobotTableEditor(EditorPanel):
+    shortname = "table"
+    shorthelp = "table editor"
+
+    def __init__(self, plugin, parent, item, tree):
+        EditorPanel.__init__(self, plugin, parent, item, tree)
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.SetSizer(self.sizer)
         if self.title is not None:
             self.sizer.Add(self._create_header(self.title), 0, wx.ALL, 5)
             self.sizer.Add((0,10))
-        self.plugin = plugin
-        self.item = item
-        self._tree = tree
         self._populate()
 
     def close(self):
