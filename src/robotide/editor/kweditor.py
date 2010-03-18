@@ -375,7 +375,7 @@ class ContentAssistCellEditor(grid.PyGridCellEditor):
 
     def Reset(self):
         self._tc.SetValue(self._original_value)
-        self._tc._selection = -1
+        self._tc.reset()
 
     def StartingKey(self, event):
         key = event.GetKeyCode()

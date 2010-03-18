@@ -64,6 +64,9 @@ class _ContentAssistTextCtrlBase(object):
             self.Clear()
         self.hide()
 
+    def reset(self):
+        self._popup.reset()
+
     def show_content_assist(self):
         if self._populate_content_assist():
             self._show_content_assist()
@@ -115,6 +118,9 @@ class ContentAssistPopup(object):
         self._selection = -1
         self._list = ContentAssistList(self._main_popup, self.OnListItemSelected,
                                        self.OnListItemActivated)
+
+    def reset(self):
+        self._selection = -1
 
     def get_value(self):
         return self._selection != -1 and self._list.get_text(self._selection) or None
