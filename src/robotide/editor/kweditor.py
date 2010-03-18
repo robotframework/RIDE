@@ -37,7 +37,6 @@ class KeywordEditorUi(GridEditor):
 
     def write_cell(self, row, col, value, update_history=True):
         previous = self.GetCellValue(row, col)
-        self._expand_if_necessary(row, col)
         GridEditor.write_cell(self, row, col, value, update_history)
         RideGridCellChanged(cell=(row, col), value=value, previous=previous,
                             grid=self).publish()

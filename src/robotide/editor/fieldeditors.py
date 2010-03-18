@@ -115,8 +115,17 @@ class _EditorGrid(GridEditor):
             row, col = divmod(index, self.NumberCols)
             self.SetCellValue(row, col, item)
 
+    def _expand_if_necessary(self, row, col):
+        if row > self.NumberRows-1:
+            self.add_row()
+        if col > self.NumberCols-1:
+            self.add_col()
+
     def add_row(self):
-        self.AppendRows()
+        self.AppendRows(1)
+
+    def add_col(self):
+        self.AppendCols(1)
 
     def get_value(self):
         value = []

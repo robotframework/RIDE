@@ -35,7 +35,11 @@ class GridEditor(grid.Grid):
     def write_cell(self, row, col, value, update_history=True):
         if update_history:
             self._update_history()
+        self._expand_if_necessary(row, col)
         self.SetCellValue(row, col, value)
+
+    def _expand_if_necessary(self, row, col):
+        pass
 
     def _update_history(self):
         self._history.change(self._get_block_content(range(self.NumberRows),
