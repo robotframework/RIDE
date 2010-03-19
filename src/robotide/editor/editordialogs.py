@@ -74,7 +74,8 @@ class ScalarVariableDialog(_Dialog):
     def _get_editors(self, var):
         name, value = var or ('${}', '')
         return [ValueEditor(self, name, 'Name',
-                            validator=ScalarVariableNameValidator(self._datafile)),
+                            validator=ScalarVariableNameValidator(self._datafile,
+                                                                  name)),
                 ValueEditor(self, value, 'Value')]
 
 class ListVariableDialog(_Dialog):
@@ -82,7 +83,8 @@ class ListVariableDialog(_Dialog):
     def _get_editors(self, var):
         name, value = var or ('@{}', '')
         return [ValueEditor(self, name, 'Name',
-                            validator=ListVariableNameValidator(self._datafile)),
+                            validator=ListVariableNameValidator(self._datafile,
+                                                                name)),
                 ListValueEditor(self, value, 'Value')]
 
 
