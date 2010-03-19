@@ -108,10 +108,9 @@ class KeywordEditorUi(GridEditor):
     def _row_is_commented(self, row):
         data = [ self.GetCellValue(row, col) for col in range(self.NumberCols) ]
         while data:
-            if not data[0]:
-                data = data[1:]
-            elif self._is_comment(data[0]):
+            if self._is_comment(data[0]):
                 return True
+            data = data[1:]
         return False
 
     def _is_comment(self, value):
