@@ -142,6 +142,7 @@ class KeywordEditorUi(GridEditor):
 
 
 class KeywordEditor(KeywordEditorUi):
+    dirty = property(lambda self: self._datafile.dirty)
     _no_cell = grid.GridCellCoords(-1, -1)
 
     def __init__(self, parent, tree):
@@ -204,7 +205,8 @@ class KeywordEditor(KeywordEditorUi):
             cell_editor = self.GetCellEditor(*self.selection.cell)
             cell_editor.EndEdit(self.selection.topleft.row,
                                 self.selection.topleft.col, self)
-        self._save_keywords()
+        if self.dirty:
+            self._save_keywords()
 
     def _save_keywords(self):
         kwdata = []
