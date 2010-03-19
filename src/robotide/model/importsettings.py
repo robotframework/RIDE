@@ -122,16 +122,16 @@ class ImportSettings(RobotDataList):
         self._publish_new_import('library')
 
     def _publish_new_import(self, type_):
+        self.datafile.refresh_namespace()
         RideImportSettingAdded(datafile=self.datafile, type=type_,
                                name=self[-1].name).publish()
-        self.datafile.refresh_namespace()
 
     def resource_updated(self, index):
         name = self[index].name
         context.APP.import_new_resource(self.datafile, name)
+        self.datafile.refresh_namespace()
         RideImportSettingChanged(datafile=self.datafile, type='resource',
                                  name=name).publish()
-        self.datafile.refresh_namespace()
 
     def new_variables(self, value):
         self._new_import(VariablesImport, utils.split_value(value))
