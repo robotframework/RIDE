@@ -57,7 +57,7 @@ class EditorPlugin(Plugin):
         self.register_actions(ActionInfoCollection(_EDIT, self._tab, self._tab))
         self.subscribe(self.OnTreeItemSelected, RideTreeSelection)
         self.subscribe(self.OnTabChanged, RideNotebookTabChanged)
-        self.subscribe(self.OnSaveToModel, RideNotebookTabChanging)
+        self.subscribe(self.OnTabChanging, RideNotebookTabChanging)
         self.subscribe(self.OnSaveToModel, RideSaving)
 
     def _show_editor(self):
@@ -81,6 +81,10 @@ class EditorPlugin(Plugin):
 
     def OnTabChanged(self, event):
         self._show_editor()
+
+    def OnTabChanging(self, message):
+        if 'Edit' in message.oldtab:
+            self._tab.save()
 
     def OnSaveToModel(self, message):
         if self._tab:
