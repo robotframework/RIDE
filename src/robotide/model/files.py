@@ -267,7 +267,7 @@ class _TestSuite(_AbstractDataFile):
     def add_suite(self, path):
         if not os.path.exists(os.path.dirname(path)):
             os.mkdir(os.path.dirname(path))
-        suite = TestSuiteFactory(path)
+        suite = TestSuiteFactory(path, self.namespace)
         self.suites.append(suite)
         return suite
 
