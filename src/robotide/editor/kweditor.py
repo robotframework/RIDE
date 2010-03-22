@@ -75,18 +75,46 @@ class KeywordEditorUi(GridEditor):
         self._do_action_on_selected_rows(self._uncomment_row)
 
     def _comment_row(self, row):
-        rowdata = [ self.GetCellValue(row, col) for col in range(self.NumberCols) ]
-        rowdata = ['Comment'] + self._strip_trailing_empty_cells(rowdata)
-        if rowdata[-1]:
-            self.InsertCols(self.GetNumberCols())
+        rowdata = self._get_commented_row(row)
+        if len(rowdata) > self.NumberCols:
+            self.AppendCols(1)
         for col, value in enumerate(rowdata):
             self.write_cell(row, col, value)
 
+    def _get_commented_row(self, row):
+        data = [ self.GetCellValue(row, col) for col in range(self.NumberCols) ]
+        comment_index = self._get_comment_insertion_index(data)
+        data.insert(comment_index, 'Comment')
+        return self._strip_trailing_empty_cells(data)
+
+    def _get_comment_insertion_index(self, data):
+        index = 0
+        while data:
+            if data[0]:
+                break
+            index += 1
+            data = data[1:]
+        return index
+
     def _uncomment_row(self, row):
-        if self.GetCellValue(row, 0).lower() == 'comment':
+        if self._row_is_commented(row):
             for col in range(1, self.GetNumberCols()):
-                self.write_cell(row, col-1, self.GetCellValue(row, col))
+                value = self.GetCellValue(row, col)
+                if self._is_comment(value):
+                    value = ''
+                self.write_cell(row, col-1, value)
             self.write_cell(row, self.GetNumberCols()-1, '')
+
+    def _row_is_commented(self, row):
+        data = [ self.GetCellValue(row, col) for col in range(self.NumberCols) ]
+        while data:
+            if self._is_comment(data[0]):
+                return True
+            data = data[1:]
+        return False
+
+    def _is_comment(self, value):
+        return value.lower().strip() == 'comment'
 
     def _do_action_on_selected_rows(self, action):
         for row in self._get_selected_rows():
@@ -142,6 +170,7 @@ class KeywordEditorUi(GridEditor):
 
 
 class KeywordEditor(KeywordEditorUi):
+    dirty = property(lambda self: self._datafile.dirty)
     _no_cell = grid.GridCellCoords(-1, -1)
 
     def __init__(self, parent, tree):
@@ -204,7 +233,8 @@ class KeywordEditor(KeywordEditorUi):
             cell_editor = self.GetCellEditor(*self.selection.cell)
             cell_editor.EndEdit(self.selection.topleft.row,
                                 self.selection.topleft.col, self)
-        self._save_keywords()
+        if self.dirty:
+            self._save_keywords()
 
     def _save_keywords(self):
         kwdata = []

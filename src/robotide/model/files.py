@@ -183,6 +183,7 @@ class _AbstractDataFile(object):
 
     def new_keyword(self, name):
         self.dirty = True
+        self.refresh_namespace()
         return self.keywords.new_keyword(name)
 
     def add_test_or_user_keyword(self, item):
@@ -267,7 +268,7 @@ class _TestSuite(_AbstractDataFile):
     def add_suite(self, path):
         if not os.path.exists(os.path.dirname(path)):
             os.mkdir(os.path.dirname(path))
-        suite = TestSuiteFactory(path)
+        suite = TestSuiteFactory(path, self.namespace)
         self.suites.append(suite)
         return suite
 

@@ -137,7 +137,6 @@ class Namespace(object):
         try:
             return self._user_kw_cache[item.name]
         except KeyError:
-            
             kws = self._get_keywords_from(item, source_for_own_kws) + \
                   self._get_user_keywords_from_imports(item)
             self._user_kw_cache[item.name] = kws
