@@ -33,7 +33,7 @@ _menudata = """
 !Open &Directory | Open directory containing datafiles | Shift-Ctrl-O | ART_FOLDER_OPEN
 !Open &Resource | Open a resource file | Ctrl-R
 ---
-!&New Suite | Create a new top level suite | Ctrl-N
+!&New Project | Create a new top level suite | Ctrl-N
 !N&ew Resource | Create New Resource File | Ctrl-Shift-N
 ---
 &Save | Save selected datafile | Ctrl-S | ART_FILE_SAVE
@@ -91,7 +91,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         else:
             wx.CloseEvent.Veto(event)
 
-    def OnNewSuite(self, event):
+    def OnNewProject(self, event):
         if not self._application.ok_to_open_new():
             return
         dlg = NewProjectDialog(self, self._default_dir)
