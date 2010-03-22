@@ -75,7 +75,6 @@ class TestCase(_TcUkBase):
     def delete(self):
         self.datafile.tests.remove(self)
         self._mark_dirty()
-        self.datafile.refresh_namespace()
 
     def serialize(self, serializer):
         serializer.start_testcase(self)
@@ -105,7 +104,6 @@ class UserKeyword(_TcUkBase):
 
     def _strip_default_value(self, var):
         return var.split('=')[0]
-
 
     def serialize(self, serializer):
         serializer.start_keyword(self)
