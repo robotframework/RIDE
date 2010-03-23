@@ -182,10 +182,7 @@ class _AbstractDataFile(object):
         return self._get_stat(self.source) != self._stat
 
     def new_keyword(self, name):
-        self.dirty = True
-        kw = self.keywords.new_keyword(name)
-        self.namespace.new_keyword(kw)
-        return kw
+        return self.keywords.new_keyword(name)
 
     def add_test_or_user_keyword(self, item):
         item.longname = '%s.%s' %(self.longname, item.name)
