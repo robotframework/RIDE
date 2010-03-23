@@ -183,8 +183,9 @@ class _AbstractDataFile(object):
 
     def new_keyword(self, name):
         self.dirty = True
-        self.refresh_namespace()
-        return self.keywords.new_keyword(name)
+        kw = self.keywords.new_keyword(name)
+        self.namespace.new_keyword(kw)
+        return kw
 
     def add_test_or_user_keyword(self, item):
         item.longname = '%s.%s' %(self.longname, item.name)
