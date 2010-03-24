@@ -12,6 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import os
 import wx
 import pickle
 
@@ -108,82 +109,54 @@ ClipboardHandler = utils.is_windows and _WindowsClipboardHandler\
 
 
 class _GridClipboard(object):
-    """Implements a "smart" clipboard. String objects are saved as usual, but
-    other python objects can be saved as well. The primary purpose is to place
-    a list of grid rows on the clipboard.
-    """
+    """Implements a "smart" clipboard."""
 
     def set_contents(self, data):
+        """Insert `data` to the system clipboard
+
+        `data` may be either a string or list of lists representing rows of
+        grid data. Other data is ignored
+        """
+        data = self._format_data(data)
         if not data:
             return
+        dataobject = wx.TextDataObject()
+        dataobject.SetText(data)
         wx.TheClipboard.Open()
-        wx.TheClipboard.SetData(self._get_data_object(data))
+        wx.TheClipboard.SetData(dataobject)
         wx.TheClipboard.Close()
 
-    def _get_data_object(self, data):
-        if utils.is_windows and self._is_single_cell_data(data):
-            do = wx.TextDataObject()
-            do.SetText(data[0][0])
-        else:
-            do = _PythonDataObject()
-            do.SetData(pickle.dumps(data))
-        return do
-
-    def _is_single_cell_data(self, clipboard):
-        return len(clipboard) == 1 and len(clipboard[0]) == 1
+    def _format_data(self, data):
+        if isinstance(data, list):
+            return os.linesep.join('\t'.join(row) for row in data)
+        if isinstance(data, basestring):
+            return data
+        return None
 
     def get_contents(self):
-        """Gets contents of the clipboard, returning a python object if
-        possible, otherwise returns plain text or None if the clipboard is
-        empty.
+        """Gets contents of the clipboard.
+
+        Returns either a string or a list of rows to be pasted into clipboard.
         """
         wx.TheClipboard.Open()
         try:
-            return self._get_value()
+            return self._split_string_from_tabs_and_newlines(self._get_value_from_clipboard())
         finally:
             wx.TheClipboard.Close()
 
-    def _get_value(self):
+    def _get_value_from_clipboard(self):
         try:
-            do = _PythonDataObject()
+            do = wx.TextDataObject()
             wx.TheClipboard.GetData(do)
-            value = pickle.loads(do.GetDataHere())
-            if isinstance(value, basestring):
-                return self._split_string_from_tabs_and_newlines(value)
-            return value
+            data =  do.GetDataHere()
         except TypeError:
-            try:
-                do = wx.TextDataObject()
-                wx.TheClipboard.GetData(do)
-                # For some reason, when getting string contents from the
-                # clipboard on Windows '\x00' is inserted between each char.
-                # WTF?!?!?!?
-                data =  do.GetDataHere()
-                if data:
-                    data =  data.replace('\x00', '')
-                    return self._split_string_from_tabs_and_newlines(data)
-            except TypeError:
-                pass
-        return None
+            return ''
+        # For some reason, when getting string contents from the
+        # clipboard on Windows '\x00' is inserted between each char.
+        # WTF?!?!?!?
+        return data.replace('\x00', '')
 
     def _split_string_from_tabs_and_newlines(self, string):
         if not '\t' in string:
             return string
         return [ line.split('\t') for line in string.splitlines()]
-
-
-class _PythonDataObject(wx.PyDataObjectSimple):
-
-    def __init__(self):
-        wx.PyDataObjectSimple.__init__(self, wx.CustomDataFormat('PythonDataObject'))
-        self.data = None
-
-    def GetDataSize(self):
-        return len(self.data)
-
-    def GetDataHere(self):
-        return self.data
-
-    def SetData(self, data):
-        self.data = data
-        return True
