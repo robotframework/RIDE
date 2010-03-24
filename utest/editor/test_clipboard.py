@@ -12,6 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import os
 import unittest
 
 from robot.utils.asserts import assert_equals
@@ -23,22 +24,23 @@ from robotide.editor.clipboard import _GridClipboard
 class TestGridClipBoard(unittest.TestCase):
 
     def test_with_string_content(self):
-        self._test_clipboard('Hello, world!')
+        self._test_clipboard('Hello, world!', 'Hello, world!')
 
     def test_with_list_content(self):
-        self._test_clipboard(['Hello', 'world!'])
+        self._test_clipboard([['Hello', 'world!']], 'Hello\tworld!')
 
-    def test_with_dictionary_content(self):
-        self._test_clipboard({0: 'Hello', 1: 'World!'})
+    def test_with_multiple_rows(self):
+        self._test_clipboard([['Hello', 'world!'], ['Another', 'row']],
+                             'Hello\tworld!\nAnother\trow')
 
-    def test_tab_and_newline_separated_string_is_returned_as_grid_data(self):
-        self._test_clipboard('Hello\tWorld\nAnd\tgreetings\tsir!',
-                             [['Hello', 'World'], ['And', 'greetings', 'sir!']])
+    def test_with_invalid_data(self):
+        self._test_clipboard(_GridClipboard())
 
-    def _test_clipboard(self, content, expected=None):
+    def _test_clipboard(self, content, expected=''):
         clipb = _GridClipboard()
         clipb.set_contents(content)
-        assert_equals(clipb.get_contents(), expected or content)
+        assert_equals(clipb._get_value_from_clipboard(),
+                      expected.replace('\n', os.linesep))
 
 
 if __name__ == '__main__':
