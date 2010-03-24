@@ -11,7 +11,7 @@ class EditorProvider(object):
     def unregister_editor(self, key, editor):
         self._editors[key].remove(editor)
 
-    def set_editor(self, key, editor):
+    def activate_editor(self, key, editor):
         self._editors[key].set_default(editor)
 
     def get_editor(self, key):
