@@ -286,6 +286,44 @@ Add recently opened files to the file menu.
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#get_editor" class="summary-sig-name">get_editor</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">item_class</span>)</span><br />
+      Return the current editor class for the given model item class
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.get_editor">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#get_editors" class="summary-sig-name">get_editors</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">item_class</span>)</span><br />
+      Return all registered editors for the given model item class.
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.get_editors">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#get_keyword_details" class="summary-sig-name">get_keyword_details</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">name</span>)</span><br />
       Returns details (documentatioin, source) of keyword with name <tt class="rst-rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">name</span></tt>.
@@ -453,6 +491,26 @@ Add recently opened files to the file menu.
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#publish" class="summary-sig-name">publish</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">topic</span>,
+        <span class="summary-sig-arg">data</span>)</span><br />
+      Publishes a message with given topic and client data.
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.publish">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#register_action" class="summary-sig-name">register_action</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">action_info</span>)</span><br />
       Registers a menu entry and optionally a shortcut and a toolbar icon.
@@ -510,6 +568,27 @@ Add recently opened files to the file menu.
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#register_editor" class="summary-sig-name">register_editor</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">item_class</span>,
+        <span class="summary-sig-arg">editor_class</span>,
+        <span class="summary-sig-arg">activate</span>=<span class="summary-sig-default">True</span>)</span><br />
+      Register <tt class="rst-rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">editor_class</span></tt> as an editor class for model items of type <tt class="rst-rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">item_class</span></tt>
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.register_editor">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#save_selected_datafile" class="summary-sig-name">save_selected_datafile</a>(<span class="summary-sig-arg">self</span>)</span><br />
       Saves the data file that is currently selected in the tree.
       <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
@@ -536,6 +615,26 @@ Add recently opened files to the file menu.
       <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.save_setting">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#set_active_editor" class="summary-sig-name">set_active_editor</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">item_class</span>,
+        <span class="summary-sig-arg">editor_class</span>)</span><br />
+      Activates the specified editor to be used with the specified model item.
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.set_active_editor">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -612,6 +711,26 @@ Add recently opened files to the file menu.
       <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.unregister_actions">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#unregister_editor" class="summary-sig-name">unregister_editor</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">item_class</span>,
+        <span class="summary-sig-arg">editor_class</span>)</span><br />
+      Unregisters <tt class="rst-rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">editor_class</span></tt> as an editor class for model items of type <tt class="rst-rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">item_class</span></tt>
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.unregister_editor">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -940,7 +1059,7 @@ when the <a href="robotide.ui.recentfiles.RecentFilesPlugin-class.html#disable" 
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Mon Feb  1 14:04:02 2010
+    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:45 2010
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

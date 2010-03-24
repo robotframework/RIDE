@@ -44,6 +44,6 @@ class TestEditorProvide(unittest.TestCase):
 
     def test_activating(self):
         self.p.register_editor(TestObject, TestEditor2, default=False)
-        self.p.activate_editor(TestObject, TestEditor2)
+        self.p.set_active_editor(TestObject, TestEditor2)
         assert_equals(self.p.get_editor(TestObject), TestEditor2)
 

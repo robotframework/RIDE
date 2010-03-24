@@ -126,7 +126,7 @@ class RIDE(wx.App):
         self._editor_provider.unregister_editor(object_class, editor_class)
 
     def activate_editor(self, object_class, editor_class):
-        self._editor_provider.activate_editor(object_class, editor_class)
+        self._editor_provider.set_active_editor(object_class, editor_class)
 
     def get_editors(self, object_class):
         return self._editor_provider.get_editors(object_class)

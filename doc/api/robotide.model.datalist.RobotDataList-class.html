@@ -68,7 +68,7 @@ object --+
 <dl><dt>Known Subclasses:</dt>
 <dd>
       <ul class="subclass-list">
-<li><a href="robotide.model.metadata.Metadata-class.html">metadata.Metadata</a></li><li class="private">, tables._TcUkTable</li><li>, <a href="robotide.model.tcuk.KeywordList-class.html">tcuk.KeywordList</a></li><li>, <a href="robotide.model.importsettings.ImportSettings-class.html">importsettings.ImportSettings</a></li>  </ul>
+<li class="private">tables._TcUkTable</li><li>, <a href="robotide.model.importsettings.ImportSettings-class.html">importsettings.ImportSettings</a></li><li>, <a href="robotide.model.metadata.Metadata-class.html">metadata.Metadata</a></li><li>, <a href="robotide.model.tcuk.KeywordList-class.html">tcuk.KeywordList</a></li>  </ul>
 </dd></dl>
 
 <hr />
@@ -105,11 +105,10 @@ object --+
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.model.datalist.RobotDataList-class.html#swap" class="summary-sig-name">swap</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">index1</span>,
-        <span class="summary-sig-arg">index2</span>)</span></td>
+          <td><span class="summary-sig"><a href="robotide.model.datalist.RobotDataList-class.html#move_down" class="summary-sig-name">move_down</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">item</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.model.datalist-pysrc.html#RobotDataList.swap">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.model.datalist-pysrc.html#RobotDataList.move_down">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -136,23 +135,6 @@ object --+
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="robotide.model.datalist.RobotDataList-class.html#move_down" class="summary-sig-name">move_down</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">item</span>)</span></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.model.datalist-pysrc.html#RobotDataList.move_down">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">item</span>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -162,6 +144,24 @@ object --+
       remove and return item at index (default last).</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.model.datalist-pysrc.html#RobotDataList.pop">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.model.datalist.RobotDataList-class.html#swap" class="summary-sig-name">swap</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index1</span>,
+        <span class="summary-sig-arg">index2</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.model.datalist-pysrc.html#RobotDataList.swap">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -261,19 +261,18 @@ object --+
   </dl>
 </td></tr></table>
 </div>
-<a name="swap"></a>
+<a name="move_down"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">swap</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">index1</span>,
-        <span class="sig-arg">index2</span>)</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">move_down</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">item</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.model.datalist-pysrc.html#RobotDataList.swap">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="robotide.model.datalist-pysrc.html#RobotDataList.move_down">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
@@ -294,26 +293,6 @@ object --+
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="robotide.model.datalist-pysrc.html#RobotDataList.move_up">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  
-  <dl class="fields">
-  </dl>
-</td></tr></table>
-</div>
-<a name="move_down"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">move_down</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">item</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.model.datalist-pysrc.html#RobotDataList.move_down">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
@@ -345,6 +324,27 @@ Raises IndexError if list is empty or index is out of range.
         list.pop
         <dd><em class="note">(inherited documentation)</em></dd>
     </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="swap"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">swap</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">index1</span>,
+        <span class="sig-arg">index2</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.model.datalist-pysrc.html#RobotDataList.swap">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
   </dl>
 </td></tr></table>
 </div>
@@ -380,7 +380,7 @@ Raises IndexError if list is empty or index is out of range.
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Mon Feb  1 14:04:01 2010
+    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:44 2010
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

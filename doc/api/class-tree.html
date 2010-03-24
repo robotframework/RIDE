@@ -201,11 +201,16 @@ interpreter exiting.</em>
     </li>
     </ul>
     </li>
-    <li> <strong class="uidlink"><a href="robotide.namespace.contentassist.ContentAssistItem-class.html">robotide.namespace.contentassist.ContentAssistItem</a></strong>
+    <li> <strong class="uidlink"><a href="robotide.namespace.contentassist.ContentAssistItem-class.html">robotide.namespace.contentassist.ContentAssistItem</a></strong>:
+      <em class="summary">Represents an object that can be displayed by content assistant.</em>
     </li>
     <li> <strong class="uidlink"><a href="robotide.editor.contentassist.ContentAssistPopup-class.html">robotide.editor.contentassist.ContentAssistPopup</a></strong>
     </li>
     <li> <strong class="uidlink"><a href="robotide.application.datamodel.DataModel-class.html">robotide.application.datamodel.DataModel</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="robotide.application.editorprovider.EditorProvider-class.html">robotide.application.editorprovider.EditorProvider</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="robotide.context.font.Font-class.html">robotide.context.font.Font</a></strong>
     </li>
     <li> <strong class="uidlink"><a href="robotide.model.keywords.GeneratedKeyword-class.html">robotide.model.keywords.GeneratedKeyword</a></strong>
     </li>
@@ -302,17 +307,13 @@ much functionality is needed nor exposed.</em>
     </li>
     <li> <strong class="uidlink">robotide.validators._NameValidator</strong>
     <ul>
-    <li> <strong class="uidlink"><a href="robotide.validators.TestCaseNameValidator-class.html">robotide.validators.TestCaseNameValidator</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="robotide.validators.UserKeywordNameValidator-class.html">robotide.validators.UserKeywordNameValidator</a></strong>
-    </li>
-    </ul>
-    </li>
-    <li> <strong class="uidlink">robotide.validators._VariableNameValidator</strong>
-    <ul>
     <li> <strong class="uidlink"><a href="robotide.validators.ListVariableNameValidator-class.html">robotide.validators.ListVariableNameValidator</a></strong>
     </li>
     <li> <strong class="uidlink"><a href="robotide.validators.ScalarVariableNameValidator-class.html">robotide.validators.ScalarVariableNameValidator</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="robotide.validators.TestCaseNameValidator-class.html">robotide.validators.TestCaseNameValidator</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="robotide.validators.UserKeywordNameValidator-class.html">robotide.validators.UserKeywordNameValidator</a></strong>
     </li>
     </ul>
     </li>
@@ -378,6 +379,31 @@ lines needed to display the current content of the control.</em>
     <li> <strong class="uidlink">wx._windows.Panel</strong>:
       <em class="summary">Proxy of C++ Panel class</em>
     <ul>
+    <li> <strong class="uidlink"><a href="robotide.editor.editors.EditorPanel-class.html">robotide.editor.editors.EditorPanel</a></strong>:
+      <em class="summary">Base class for all editor panels</em>
+    <ul>
+    <li> <strong class="uidlink">robotide.editor.editors._RobotTableEditor</strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="robotide.editor.editors.ResourceFileEditor-class.html">robotide.editor.editors.ResourceFileEditor</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="robotide.editor.editors.TestCaseFileEditor-class.html">robotide.editor.editors.TestCaseFileEditor</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="robotide.editor.editors.InitFileEditor-class.html">robotide.editor.editors.InitFileEditor</a></strong>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="robotide.editor.editors.TestCaseEditor-class.html">robotide.editor.editors.TestCaseEditor</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="robotide.editor.editors.UserKeywordEditor-class.html">robotide.editor.editors.UserKeywordEditor</a></strong>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
     <li> <strong class="uidlink"><a href="robotide.editor.listeditor.ListEditor-class.html">robotide.editor.listeditor.ListEditor</a></strong>
     <ul>
     <li> <strong class="uidlink">robotide.editor.editors._AbstractListEditor</strong>
@@ -447,25 +473,7 @@ lines needed to display the current content of the control.</em>
     </li>
     <li> <strong class="uidlink"><a href="robotide.editor.fieldeditors.MultiLineEditor-class.html">robotide.editor.fieldeditors.MultiLineEditor</a></strong>
     </li>
-    </ul>
-    </li>
-    <li> <strong class="uidlink">robotide.editor.editors._RobotTableEditor</strong>
-    <ul>
-    <li> <strong class="uidlink"><a href="robotide.editor.editors.ResourceFileEditor-class.html">robotide.editor.editors.ResourceFileEditor</a></strong>
-    <ul>
-    <li> <strong class="uidlink"><a href="robotide.editor.editors.TestCaseFileEditor-class.html">robotide.editor.editors.TestCaseFileEditor</a></strong>
-    <ul>
-    <li> <strong class="uidlink"><a href="robotide.editor.editors.InitFileEditor-class.html">robotide.editor.editors.InitFileEditor</a></strong>
-    </li>
-    </ul>
-    </li>
-    </ul>
-    </li>
-    <li> <strong class="uidlink"><a href="robotide.editor.editors.TestCaseEditor-class.html">robotide.editor.editors.TestCaseEditor</a></strong>
-    <ul>
-    <li> <strong class="uidlink"><a href="robotide.editor.editors.UserKeywordEditor-class.html">robotide.editor.editors.UserKeywordEditor</a></strong>
-    </li>
-    </ul>
+    <li> <strong class="uidlink"><a href="robotide.editor.fieldeditors.VariableNameEditor-class.html">robotide.editor.fieldeditors.VariableNameEditor</a></strong>
     </li>
     </ul>
     </li>
@@ -622,9 +630,11 @@ lines needed to display the current content of the control.</em>
     <li> <strong class="uidlink"><a href="robotide.editor.gridcolorizer.Colorizer-class.html">robotide.editor.gridcolorizer.Colorizer</a></strong>:
       <em class="summary">Colorizes cells in the keyword editor</em>
     </li>
-    <li> <strong class="uidlink"><a href="robotide.editor.EditorPlugin-class.html">robotide.editor.EditorPlugin</a></strong>
+    <li> <strong class="uidlink"><a href="robotide.editor.EditorPlugin-class.html">robotide.editor.EditorPlugin</a></strong>:
+      <em class="summary">The default editor plugin.</em>
     </li>
-    <li> <strong class="uidlink"><a href="robotide.ui.keywordsearch.KeywordSearch-class.html">robotide.ui.keywordsearch.KeywordSearch</a></strong>
+    <li> <strong class="uidlink"><a href="robotide.ui.keywordsearch.KeywordSearch-class.html">robotide.ui.keywordsearch.KeywordSearch</a></strong>:
+      <em class="summary">A plugin for searching keywords based on name or documentation.</em>
     </li>
     <li> <strong class="uidlink"><a href="robotide.ui.preview.PreviewPlugin-class.html">robotide.ui.preview.PreviewPlugin</a></strong>:
       <em class="summary">Provides preview of the test data in HTML and TXT formats.</em>
@@ -635,7 +645,8 @@ lines needed to display the current content of the control.</em>
     <li> <strong class="uidlink"><a href="robotide.application.releasenotes.ReleaseNotesPlugin-class.html">robotide.application.releasenotes.ReleaseNotesPlugin</a></strong>:
       <em class="summary">Shows release notes of the current version.</em>
     </li>
-    <li> <strong class="uidlink"><a href="robotide.run.runanything.RunAnything-class.html">robotide.run.runanything.RunAnything</a></strong>
+    <li> <strong class="uidlink"><a href="robotide.run.runanything.RunAnything-class.html">robotide.run.runanything.RunAnything</a></strong>:
+      <em class="summary">A plugin for executing commands on the system.</em>
     </li>
     </ul>
     </li>
@@ -998,7 +1009,7 @@ type(name, bases, dict) -&gt; a new type</em>
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Mon Feb  1 14:03:59 2010
+    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:40 2010
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

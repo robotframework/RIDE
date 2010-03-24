@@ -65,6 +65,10 @@
 </pre>
 
 <hr />
+<p>The default editor plugin.</p>
+<p>This plugin implements editors for the various items of Robot Framework
+test data.</p>
+
 <!-- ==================== INSTANCE METHODS ==================== -->
 <a name="section-InstanceMethods"></a>
 <table class="summary" border="1" cellpadding="3"
@@ -169,6 +173,23 @@
         <span class="summary-sig-arg">event</span>)</span></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.editor-pysrc.html#EditorPlugin.OnTabChanged">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.EditorPlugin-class.html#OnTabChanging" class="summary-sig-name">OnTabChanging</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">message</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.editor-pysrc.html#EditorPlugin.OnTabChanging">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -321,6 +342,44 @@
       <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.disallow_tab_closing">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#get_editor" class="summary-sig-name">get_editor</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">item_class</span>)</span><br />
+      Return the current editor class for the given model item class
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.get_editor">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#get_editors" class="summary-sig-name">get_editors</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">item_class</span>)</span><br />
+      Return all registered editors for the given model item class.
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.get_editors">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -501,6 +560,26 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#publish" class="summary-sig-name">publish</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">topic</span>,
+        <span class="summary-sig-arg">data</span>)</span><br />
+      Publishes a message with given topic and client data.
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.publish">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#register_action" class="summary-sig-name">register_action</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">action_info</span>)</span><br />
       Registers a menu entry and optionally a shortcut and a toolbar icon.
@@ -558,6 +637,27 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#register_editor" class="summary-sig-name">register_editor</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">item_class</span>,
+        <span class="summary-sig-arg">editor_class</span>,
+        <span class="summary-sig-arg">activate</span>=<span class="summary-sig-default">True</span>)</span><br />
+      Register <tt class="rst-rst-docutils literal rst-docutils literal"><span class="pre">editor_class</span></tt> as an editor class for model items of type <tt class="rst-rst-docutils literal rst-docutils literal"><span class="pre">item_class</span></tt>
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.register_editor">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#save_selected_datafile" class="summary-sig-name">save_selected_datafile</a>(<span class="summary-sig-arg">self</span>)</span><br />
       Saves the data file that is currently selected in the tree.
       <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
@@ -584,6 +684,26 @@
       <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.save_setting">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#set_active_editor" class="summary-sig-name">set_active_editor</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">item_class</span>,
+        <span class="summary-sig-arg">editor_class</span>)</span><br />
+      Activates the specified editor to be used with the specified model item.
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.set_active_editor">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -660,6 +780,26 @@
       <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.unregister_actions">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#unregister_editor" class="summary-sig-name">unregister_editor</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">item_class</span>,
+        <span class="summary-sig-arg">editor_class</span>)</span><br />
+      Unregisters <tt class="rst-rst-docutils literal rst-docutils literal"><span class="pre">editor_class</span></tt> as an editor class for model items of type <tt class="rst-rst-docutils literal rst-docutils literal"><span class="pre">item_class</span></tt>
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.unregister_editor">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -996,6 +1136,26 @@ when the <a href="robotide.editor.EditorPlugin-class.html#disable" class="link">
   </dl>
 </td></tr></table>
 </div>
+<a name="OnTabChanging"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnTabChanging</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">message</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.editor-pysrc.html#EditorPlugin.OnTabChanging">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
 <a name="OnSaveToModel"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -1048,7 +1208,7 @@ when the <a href="robotide.editor.EditorPlugin-class.html#disable" class="link">
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Mon Feb  1 14:03:59 2010
+    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:41 2010
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

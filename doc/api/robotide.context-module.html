@@ -67,6 +67,7 @@
   <ul class="nomargin">
     <li> <strong class="uidlink"><a href="robotide.context.configobj-module.html">robotide.context.configobj</a></strong>    </li>
     <li> <strong class="uidlink"><a href="robotide.context.coreplugins-module.html">robotide.context.coreplugins</a></strong>    </li>
+    <li> <strong class="uidlink"><a href="robotide.context.font-module.html">robotide.context.font</a></strong>    </li>
     <li> <strong class="uidlink"><a href="robotide.context.logger-module.html">robotide.context.logger</a></strong>    </li>
     <li> <strong class="uidlink"><a href="robotide.context.settings-module.html">robotide.context.settings</a></strong>    </li>
   </ul></td></tr>
@@ -143,19 +144,20 @@
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="robotide.context-module.html#HELP_FONT" class="summary-name">HELP_FONT</a> = <code title="(8, 70, 90, 90)"><code class="variable-group">(</code>8<code class="variable-op">, </code>70<code class="variable-op">, </code>90<code class="variable-op">, </code>90<code class="variable-group">)</code></code>
+        <a href="robotide.context-module.html#pyversion" class="summary-name">pyversion</a> = <code title="'2.6.4'"><code class="variable-quote">'</code><code class="variable-string">2.6.4</code><code class="variable-quote">'</code></code>
     </td>
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="robotide.context-module.html#ABOUT_RIDE" class="summary-name">ABOUT_RIDE</a> = <code title="'''&lt;h3&gt;RIDE, version trunk&lt;/h3&gt;
-&lt;p&gt;More information in &lt;a href=http://code.google.com/p/robotframework\
--ride/&gt;project pages&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;Contact developers &lt;a href=&quot;mailto:robotframework-devel@googlegroup\
-s.com&quot;&gt;
-robotframework-devel@googlegroups.com&lt;/a&gt;'''"><code class="variable-quote">'</code><code class="variable-string">&lt;h3&gt;RIDE, version trunk&lt;/h3&gt;\n&lt;p&gt;More informatio</code><code class="variable-ellipsis">...</code></code>
+        <a href="robotide.context-module.html#ABOUT_RIDE" class="summary-name">ABOUT_RIDE</a> = <code title="'''&lt;h3&gt;RIDE -- Robot Framework Test Data Editor&lt;/h3&gt;
+&lt;p&gt;Version trunk running on Python 2.6.4.&lt;/p&gt;
+&lt;p&gt;Documentation, issue tracker and other information can be found fro\
+m the project pages at
+&lt;a href=&quot;http://code.google.com/p/robotframework-ride&quot;&gt;http://code.goo\
+gle.com/p/robotframework-ride&lt;/a&gt;.
+'''"><code class="variable-quote">'</code><code class="variable-string">&lt;h3&gt;RIDE -- Robot Framework Test Data Editor&lt;/h3</code><code class="variable-ellipsis">...</code></code>
     </td>
   </tr>
 <tr>
@@ -172,18 +174,28 @@ robotframework-devel@googlegroups.com&lt;/a&gt;'''"><code class="variable-quote"
         <a href="robotide.context-module.html#__package__" class="summary-name">__package__</a> = <code title="'robotide.context'"><code class="variable-quote">'</code><code class="variable-string">robotide.context</code><code class="variable-quote">'</code></code>
     </td>
   </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.context-module.html#v" class="summary-name">v</a> = <code title="4">4</code>
+    </td>
+  </tr>
 </table>
 <p class="indent-wrapped-lines"><b>Imports:</b>
   <span title="wx">wx</span>,
   <span title="os">os</span>,
+  <span title="sys">sys</span>,
   <span title="robotide.version.VERSION">VERSION</span>,
   <span title="robotide.robotapi.ROBOT_LOGGER">ROBOT_LOGGER</span>,
+  <a href="robotide.context.font.Font-class.html" title="robotide.context.font.Font">Font</a>,
   <a href="robotide.context.logger.Logger-class.html" title="robotide.context.logger.Logger">Logger</a>,
   <a href="robotide.context.settings.Settings-class.html" title="robotide.context.settings.Settings">Settings</a>,
   <a href="robotide.context.settings-module.html#initialize_settings" title="robotide.context.settings.initialize_settings">initialize_settings</a>,
   <a href="robotide.context.coreplugins-module.html#get_core_plugins" title="robotide.context.coreplugins.get_core_plugins">get_core_plugins</a>,
   <a href="robotide.context.configobj-module.html" title="robotide.context.configobj">configobj</a>,
   <a href="robotide.context.coreplugins-module.html" title="robotide.context.coreplugins">coreplugins</a>,
+  <a href="robotide.context.font-module.html" title="robotide.context.font">font</a>,
   <a href="robotide.context.logger-module.html" title="robotide.context.logger">logger</a>,
   <a href="robotide.context.settings-module.html" title="robotide.context.settings">settings</a>
 </p><br />
@@ -304,19 +316,19 @@ Logger()
   </dl>
 </td></tr></table>
 </div>
-<a name="HELP_FONT"></a>
+<a name="pyversion"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
-  <h3 class="epydoc">HELP_FONT</h3>
+  <h3 class="epydoc">pyversion</h3>
   
   <dl class="fields">
   </dl>
   <dl class="fields">
     <dt>Value:</dt>
       <dd><table><tr><td><pre class="variable">
-<code class="variable-group">(</code>8<code class="variable-op">, </code>70<code class="variable-op">, </code>90<code class="variable-op">, </code>90<code class="variable-group">)</code>
+<code class="variable-quote">'</code><code class="variable-string">2.6.4</code><code class="variable-quote">'</code>
 </pre></td></tr></table>
 </dd>
   </dl>
@@ -334,12 +346,13 @@ Logger()
   <dl class="fields">
     <dt>Value:</dt>
       <dd><table><tr><td><pre class="variable">
-<code class="variable-quote">'''</code><code class="variable-string">&lt;h3&gt;RIDE, version trunk&lt;/h3&gt;</code>
-<code class="variable-string">&lt;p&gt;More information in &lt;a href=http://code.google.com/p/robotframework</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
-<code class="variable-string">-ride/&gt;project pages&lt;/a&gt;.&lt;/p&gt;</code>
-<code class="variable-string">&lt;p&gt;Contact developers &lt;a href=&quot;mailto:robotframework-devel@googlegroup</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
-<code class="variable-string">s.com&quot;&gt;</code>
-<code class="variable-string">robotframework-devel@googlegroups.com&lt;/a&gt;</code><code class="variable-quote">'''</code>
+<code class="variable-quote">'''</code><code class="variable-string">&lt;h3&gt;RIDE -- Robot Framework Test Data Editor&lt;/h3&gt;</code>
+<code class="variable-string">&lt;p&gt;Version trunk running on Python 2.6.4.&lt;/p&gt;</code>
+<code class="variable-string">&lt;p&gt;Documentation, issue tracker and other information can be found fro</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">m the project pages at</code>
+<code class="variable-string">&lt;a href=&quot;http://code.google.com/p/robotframework-ride&quot;&gt;http://code.goo</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">gle.com/p/robotframework-ride&lt;/a&gt;.</code>
+<code class="variable-string"></code><code class="variable-quote">'''</code>
 </pre></td></tr></table>
 </dd>
   </dl>
@@ -381,6 +394,24 @@ None
   </dl>
 </td></tr></table>
 </div>
+<a name="v"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">v</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+4
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
 <br />
 <!-- ==================== NAVIGATION BAR ==================== -->
 <table class="navbar" border="0" width="100%" cellpadding="0"
@@ -413,7 +444,7 @@ None
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Mon Feb  1 14:03:59 2010
+    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:41 2010
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

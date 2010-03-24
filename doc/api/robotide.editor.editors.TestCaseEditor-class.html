@@ -58,19 +58,21 @@
 <!-- ==================== CLASS DESCRIPTION ==================== -->
 <h1 class="epydoc">Class TestCaseEditor</h1><p class="nomargin-top"><span class="codelink"><a href="robotide.editor.editors-pysrc.html#TestCaseEditor">source&nbsp;code</a></span></p>
 <pre class="base-tree">
-     object --+                    
-              |                    
-wx._core.Object --+                
-                  |                
-wx._core.EvtHandler --+            
-                      |            
-        wx._core.Window --+        
-                          |        
-          wx._windows.Panel --+    
-                              |    
-              _RobotTableEditor --+
-                                  |
-                                 <strong class="uidshort">TestCaseEditor</strong>
+     object --+                        
+              |                        
+wx._core.Object --+                    
+                  |                    
+wx._core.EvtHandler --+                
+                      |                
+        wx._core.Window --+            
+                          |            
+          wx._windows.Panel --+        
+                              |        
+                    <a href="robotide.editor.editors.EditorPanel-class.html">EditorPanel</a> --+    
+                                  |    
+                  _RobotTableEditor --+
+                                      |
+                                     <strong class="uidshort">TestCaseEditor</strong>
 </pre>
 
 <dl><dt>Known Subclasses:</dt>
@@ -574,10 +576,19 @@ wx._core.EvtHandler --+
   <td align="left" colspan="2" class="table-header">
     <span class="table-header">Class Variables</span></td>
 </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.editor.editors.EditorPanel-class.html#title" class="summary-name">title</a> = <code title="None">None</code>
+      <em>(Inherited from <a href="robotide.editor.editors.EditorPanel-class.html">robotide.editor.editors.EditorPanel</a>)</em>
+    </td>
+  </tr>
   <tr>
     <td colspan="2" class="summary">
     <p class="indent-wrapped-lines"><b>Inherited from <code>_RobotTableEditor</code></b>:
-      <code>title</code>
+      <code>doc</code>,
+      <code>name</code>
       </p>
     </td>
   </tr>
@@ -743,7 +754,7 @@ because it already was in the requested state.</p>
   
   <dl class="fields">
     <dt>Overrides:
-        _RobotTableEditor.show_content_assist
+        <a href="robotide.editor.editors.EditorPanel-class.html#show_content_assist">EditorPanel.show_content_assist</a>
     </dt>
   </dl>
 </td></tr></table>
@@ -765,7 +776,7 @@ because it already was in the requested state.</p>
   
   <dl class="fields">
     <dt>Overrides:
-        _RobotTableEditor.show_content_assist
+        <a href="robotide.editor.editors.EditorPanel-class.html#show_content_assist">EditorPanel.show_content_assist</a>
     </dt>
   </dl>
 </td></tr></table>
@@ -787,7 +798,7 @@ because it already was in the requested state.</p>
   
   <dl class="fields">
     <dt>Overrides:
-        _RobotTableEditor.show_content_assist
+        <a href="robotide.editor.editors.EditorPanel-class.html#show_content_assist">EditorPanel.show_content_assist</a>
     </dt>
   </dl>
 </td></tr></table>
@@ -809,7 +820,7 @@ because it already was in the requested state.</p>
   
   <dl class="fields">
     <dt>Overrides:
-        _RobotTableEditor.show_content_assist
+        <a href="robotide.editor.editors.EditorPanel-class.html#show_content_assist">EditorPanel.show_content_assist</a>
     </dt>
   </dl>
 </td></tr></table>
@@ -831,7 +842,7 @@ because it already was in the requested state.</p>
   
   <dl class="fields">
     <dt>Overrides:
-        _RobotTableEditor.show_content_assist
+        <a href="robotide.editor.editors.EditorPanel-class.html#show_content_assist">EditorPanel.show_content_assist</a>
     </dt>
   </dl>
 </td></tr></table>
@@ -853,7 +864,7 @@ because it already was in the requested state.</p>
   
   <dl class="fields">
     <dt>Overrides:
-        _RobotTableEditor.show_content_assist
+        <a href="robotide.editor.editors.EditorPanel-class.html#show_content_assist">EditorPanel.show_content_assist</a>
     </dt>
   </dl>
 </td></tr></table>
@@ -875,7 +886,7 @@ because it already was in the requested state.</p>
   
   <dl class="fields">
     <dt>Overrides:
-        _RobotTableEditor.show_content_assist
+        <a href="robotide.editor.editors.EditorPanel-class.html#show_content_assist">EditorPanel.show_content_assist</a>
     </dt>
   </dl>
 </td></tr></table>
@@ -897,7 +908,7 @@ because it already was in the requested state.</p>
   
   <dl class="fields">
     <dt>Overrides:
-        _RobotTableEditor.show_content_assist
+        <a href="robotide.editor.editors.EditorPanel-class.html#show_content_assist">EditorPanel.show_content_assist</a>
     </dt>
   </dl>
 </td></tr></table>
@@ -919,7 +930,7 @@ because it already was in the requested state.</p>
   
   <dl class="fields">
     <dt>Overrides:
-        _RobotTableEditor.show_content_assist
+        <a href="robotide.editor.editors.EditorPanel-class.html#show_content_assist">EditorPanel.show_content_assist</a>
     </dt>
   </dl>
 </td></tr></table>
@@ -975,7 +986,7 @@ because it already was in the requested state.</p>
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Mon Feb  1 14:04:00 2010
+    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:43 2010
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
