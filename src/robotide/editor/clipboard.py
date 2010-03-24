@@ -14,7 +14,6 @@
 
 import os
 import wx
-import pickle
 
 from robotide import utils
 
@@ -138,13 +137,18 @@ class _GridClipboard(object):
 
         Returns either a string or a list of rows to be pasted into clipboard.
         """
+        return self._split_string_from_tabs_and_newlines(self._get_contents())
+
+    def _get_contents(self):
         wx.TheClipboard.Open()
         try:
-            return self._split_string_from_tabs_and_newlines(self._get_value_from_clipboard())
+            return self._get_value_from_clipboard()
         finally:
             wx.TheClipboard.Close()
 
     def _get_value_from_clipboard(self):
+        # TODO: This method can be inlined with the previous, when
+        # try-except-finally works.
         try:
             do = wx.TextDataObject()
             wx.TheClipboard.GetData(do)
@@ -154,7 +158,7 @@ class _GridClipboard(object):
         # For some reason, when getting string contents from the
         # clipboard on Windows '\x00' is inserted between each char.
         # WTF?!?!?!?
-        return data.replace('\x00', '')
+        return data and data.replace('\x00', '') or ''
 
     def _split_string_from_tabs_and_newlines(self, string):
         if not '\t' in string:

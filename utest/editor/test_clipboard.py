@@ -39,7 +39,7 @@ class TestGridClipBoard(unittest.TestCase):
     def _test_clipboard(self, content, expected=''):
         clipb = _GridClipboard()
         clipb.set_contents(content)
-        assert_equals(clipb._get_value_from_clipboard(),
+        assert_equals(clipb._get_contents(),
                       expected.replace('\n', os.linesep))
 
 
