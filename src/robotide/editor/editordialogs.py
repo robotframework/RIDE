@@ -20,7 +20,7 @@ from robotide import utils
 from robotide.context import Font
 
 from fieldeditors import ValueEditor, ListValueEditor, MultiLineEditor,\
-    ContentAssistEditor
+    ContentAssistEditor, VariableNameEditor
 from dialoghelps import get_help
 
 
@@ -73,18 +73,16 @@ class ScalarVariableDialog(_Dialog):
 
     def _get_editors(self, var):
         name, value = var or ('${}', '')
-        return [ValueEditor(self, name, 'Name',
-                            validator=ScalarVariableNameValidator(self._datafile,
-                                                                  name)),
+        validator = ScalarVariableNameValidator(self._datafile, name)
+        return [VariableNameEditor(self, name, 'Name', validator),
                 ValueEditor(self, value, 'Value')]
 
 class ListVariableDialog(_Dialog):
 
     def _get_editors(self, var):
         name, value = var or ('@{}', '')
-        return [ValueEditor(self, name, 'Name',
-                            validator=ListVariableNameValidator(self._datafile,
-                                                                name)),
+        validator = ListVariableNameValidator(self._datafile, name)
+        return [VariableNameEditor(self, name, 'Name', validator),
                 ListValueEditor(self, value, 'Value')]
 
 

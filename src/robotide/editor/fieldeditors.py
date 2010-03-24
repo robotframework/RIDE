@@ -52,6 +52,20 @@ class ValueEditor(wx.Panel):
         self._editor.SetFocus()
 
 
+class VariableNameEditor(ValueEditor):
+
+    def _get_text_ctrl(self):
+        textctrl = ValueEditor._get_text_ctrl(self)
+        textctrl.Bind(wx.EVT_SET_FOCUS, self.OnFocus)
+        return textctrl
+
+    def OnFocus(self, event):
+        wx.CallAfter(self.SetSelection, event.GetEventObject())
+
+    def SetSelection(self, event):
+        self._editor.SetSelection(2, len(self._editor.Value)-1)
+
+
 class ListValueEditor(ValueEditor):
     expand_factor = 3
     _sizer_flags_for_editor = wx.ALL|wx.EXPAND
