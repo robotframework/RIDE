@@ -33,10 +33,6 @@ class TestGridClipBoard(unittest.TestCase):
         self._test_clipboard([['Hello', 'world!'], ['Another', 'row']],
                              'Hello\tworld!\nAnother\trow')
 
-    def test_with_invalid_data(self):
-        self._test_clipboard('')
-        self._test_clipboard(_GridClipboard())
-
     def _test_clipboard(self, content, expected=''):
         clipb = _GridClipboard()
         clipb.set_contents(content)
