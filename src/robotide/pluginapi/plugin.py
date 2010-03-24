@@ -346,3 +346,33 @@ class Plugin(object):
     def unsubscribe_all(self):
         """Stops to listen to all messages this plugin has subscribed to."""
         PUBLISHER.unsubscribe_all(key=self)
+
+    def register_editor(self, item_class, editor_class, activate=True):
+        """Register ``editor_class`` as an editor class for model items of type ``item_class``
+
+        If ``activate`` is True, the given editor is automatically activated
+        using `activate_editor`.
+        """
+        self.__app.register_editor(item_class, editor_class, activate)
+
+    def unregister_editor(self, item_class, editor_class):
+        """Unregisters ``editor_class`` as an editor class for model items of type ``item_class``"""
+        self.__app.unregister_editor(item_class, editor_class)
+
+    def activate_editor(self, item_class, editor_class):
+        """Activates the specified editor to be used with the specified model item.
+
+        The editor must have been registered first by using `register_editor`.
+        """
+        self.__app.activate_editor(item_class, editor_class)
+
+    def get_editors(self, item_class):
+        """Return all registered editors for the given model item class.
+
+        The last editor in the list is the currently active editor.
+        """
+        return self.__app.get_editors(item_class)
+
+    def get_editor(self, item_class):
+        """Return the current editor class for the given model item class"""
+        return self.__app.get_editor(item_class)

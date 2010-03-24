@@ -27,6 +27,7 @@ from robotide import context
 
 from datamodel import DataModel
 from pluginloader import PluginLoader
+from editorprovider import EditorProvider
 
 
 class RIDE(wx.App):
@@ -41,7 +42,7 @@ class RIDE(wx.App):
         self.model = None
         self.frame = RideFrame(self)
         self.namespace = Namespace()
-        self._editor_classes = {}
+        self._editor_provider = EditorProvider()
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),
                                            context.get_core_plugins())
         self._plugin_loader.enable_plugins()
@@ -117,49 +118,21 @@ class RIDE(wx.App):
     def save(self, datafile=None):
         self.model.serialize(datafile)
 
-    def register_editor(self, object_class, editor_class):
-        '''Register 'editor_class' as an editor class for objects of type 'object_class'''
-        if object_class not in self._editor_classes:
-            self._editor_classes[object_class] = [editor_class]
-        else:
-            # insert it at the head of the list; the tail of the list
-            # is considered to be the current editor
-            if editor_class not in self._editor_classes[object_class]:
-                self._editor_classes[object_class].insert(0, editor_class)
+    def register_editor(self, object_class, editor_class, activate):
+        self._editor_provider.register_editor(object_class, editor_class,
+                                              activate)
 
     def unregister_editor(self, object_class, editor_class):
-        '''Unregisters 'editor_class' as an editor class for objects of type 'object_class'''
-        if object_class not in self._editor_classes:
-            return
-        else:
-            if editor_class in self._editor_classes[object_class]:
-                self._editor_classes[object_class].remove(editor_class)
+        self._editor_provider.unregister_editor(object_class, editor_class)
 
-    def set_editor(self, object_class, editor_class):
-        '''Designate which editor class to use for the given object class
-
-        The notion of "current editor" is merely whichever one is at the
-        end of the list.
-        '''
-        if object_class not in self._editor_classes:
-            self._editor_classes[object_class] = [editor_class]
-        else:
-            if editor_class in self._editor_classes[object_class]:
-                self._editor_classes[object_class].remove(editor_class)
-            self._editor_classes[object_class].append(editor_class)
+    def activate_editor(self, object_class, editor_class):
+        self._editor_provider.activate_editor(object_class, editor_class)
 
     def get_editors(self, object_class):
-        '''Return all registered editors for the given object class'''
-        return self._editor_classes.get(object_class, [])
-        
+        return self._editor_provider.get_editors(object_class)
+
     def get_editor(self, object_class):
-        '''Return the current editor class for the given object class'''
-        class_list = self._editor_classes.get(object_class, [])
-        if len(class_list) > 0:
-            editor_class = class_list[-1]
-        else:
-            editor_class = None
-        return editor_class
+        return self._editor_provider.get_editor(object_class)
 
 
 class _DataLoader(Thread):

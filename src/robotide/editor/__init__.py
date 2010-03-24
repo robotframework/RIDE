@@ -49,20 +49,17 @@ class EditorPlugin(Plugin):
     This plugin implements editors for the various items of Robot Framework
     test data.
     """
-
     def __init__(self, application):
         Plugin.__init__(self, application)
-        self.application = application
         self._tab = None
 
     def enable(self):
+        self.register_editor(InitFile, InitFileEditor)
+        self.register_editor(ResourceFile, ResourceFileEditor)
+        self.register_editor(TestCase, TestCaseEditor)
+        self.register_editor(TestCaseFile, TestCaseFileEditor)
+        self.register_editor(UserKeyword, UserKeywordEditor)
         self._show_editor()
-
-        self.application.register_editor(InitFile, InitFileEditor)
-        self.application.register_editor(ResourceFile, ResourceFileEditor)
-        self.application.register_editor(TestCase, TestCaseEditor)
-        self.application.register_editor(TestCaseFile, TestCaseFileEditor)
-        self.application.register_editor(UserKeyword, UserKeywordEditor)
         self.register_actions(ActionInfoCollection(_EDIT, self._tab, self._tab))
         self.subscribe(self.OnTreeItemSelected, RideTreeSelection)
         self.subscribe(self.OnTabChanged, RideNotebookTabChanged)
