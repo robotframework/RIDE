@@ -127,7 +127,7 @@ class TsvFileWriter(_WriterHelper):
     def __init__(self, output):
         _WriterHelper.__init__(self, output, 8)
         self._writer = csv.writer(self._output, dialect='excel-tab',
-                                  lineterminator='\n')
+                                  lineterminator=os.linesep)
 
     def _setting_table_setting(self, name, value):
         self._write_data([name] + value)
@@ -176,18 +176,21 @@ class TxtFileWriter(_WriterHelper):
         self._write_data(keyword.get_display_value(), indent=True)
 
     def _write_header(self, title):
-        self._output.write('*** %s ***\n' % title)
+        self._write_row('*** %s ***' % title)
 
     def _write_data(self, data, indent=False):
         data[1:] = [ d.strip() or '${EMPTY}' for d in data[1:] ]
         if data and data[0].strip() == '':
             data[0] = '\\' # support FOR and PARALLEL blocks
         for row in self._split_data(self._encode(data)):
-            if indent:
-                self._output.write('    ')
-            self._output.write('  '.join(row) + '\n')
+            self._write_row('  '.join(row), indent)
 
+    def _write_row(self, text, indent=False):
+        if indent:
+            self._output.write('    ')
+        self._output.write(text + os.linesep)
 
+    
 class HtmlFileWriter(_WriterHelper):
     _setting_titles = ['Setting', 'Value']
     _variable_titles = ['Variable', 'Value']
