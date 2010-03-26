@@ -399,12 +399,12 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         return self.GetItemPyData(item).is_draggable
 
     def OnMoveUp(self, event):
-        handler = self.GetItemPyData(self.GetSelection())
+        handler = self.GetItemPyData(self.Selection)
         if handler.is_draggable:
             handler.OnMoveUp(event)
 
     def OnMoveDown(self, event):
-        handler = self.GetItemPyData(self.GetSelection())
+        handler = self.GetItemPyData(self.Selection)
         if handler.is_draggable:
             handler.OnMoveDown(event)
 
