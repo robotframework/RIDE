@@ -56,13 +56,17 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _bind_keys(self):
         accelrators = []
-        for keycode, handler in [(wx.WXK_F2, self.OnLabelEdit),
-                                 (wx.WXK_LEFT, self.OnLeftArrow)]:
+        for accel, keycode, handler in [
+            (wx.ACCEL_CTRL, wx.WXK_UP, self.OnMoveUp),
+            (wx.ACCEL_CTRL, wx.WXK_DOWN, self.OnMoveDown),
+            (wx.ACCEL_NORMAL, wx.WXK_F2, self.OnLabelEdit),
+            (wx.ACCEL_NORMAL, wx.WXK_LEFT, self.OnLeftArrow),
+            ]:
             if utils.is_windows and keycode == wx.WXK_LEFT:
                 continue
             id = wx.NewId()
             self.Bind(wx.EVT_MENU, handler, id=id)
-            accelrators.append((wx.ACCEL_NORMAL, keycode, id))
+            accelrators.append((accel, keycode, id))
         self.SetAcceleratorTable(wx.AcceleratorTable(accelrators))
 
     def populate(self, model):
@@ -394,6 +398,16 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def IsValidDragItem(self, item):
         return self.GetItemPyData(item).is_draggable
 
+    def OnMoveUp(self, event):
+        handler = self.GetItemPyData(self.GetSelection())
+        if handler.is_draggable:
+            handler.OnMoveUp(event)
+
+    def OnMoveDown(self, event):
+        handler = self.GetItemPyData(self.GetSelection())
+        if handler.is_draggable:
+            handler.OnMoveDown(event)
+
 
 class _ActionHandler(wx.Window):
     is_user_keyword = False
@@ -482,7 +496,8 @@ class _TestOrUserKeywordHandler(_ActionHandler):
     accepts_drag = lambda *args: False
     is_draggable = True
     is_renameable = True
-    _actions = ['Copy', 'Move Up', 'Move Down' , 'Rename\tF2', '---', 'Delete']
+    _actions = ['Copy', 'Move Up\tCtrl-Up', 'Move Down\tCtrl-Down',
+                'Rename\tF2', '---', 'Delete']
 
     def remove(self):
         self._tree.delete_node(self._node)
