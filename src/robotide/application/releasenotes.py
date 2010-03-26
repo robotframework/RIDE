@@ -84,43 +84,4 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 0.22.1</h2>
-<table border="1">
-<tr>
-<td><b>ID</b></td>
-<td><b>Type</b></td>
-<td><b>Priority</b></td>
-<td><b>Summary</b></td>
-<td><b>AllLabels</b></td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=419">Issue 419</a></td>
-<td>Defect</td>
-<td>Critical</td>
-<td>Library imports are messed up</td>
-<td>Type-Defect, Priority-Critical, Target-0.22.1</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=422">Issue 422</a></td>
-<td>Defect</td>
-<td>High</td>
-<td>Copy-pasting multiple rows in a single column results in a single cell</td>
-<td>Type-Defect, Priority-High, Target-0.22.1</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=405">Issue 405</a></td>
-<td>Enhancement</td>
-<td>High</td>
-<td>Keyboard shortcuts `Ctrl-Up/Ctrl-Down` for moving tests/keywords up/down</td>
-<td>Type-Enhancement, Priority-High, Target-0.22.1</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=421">Issue 421</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>RIDE saves files using Unix line separator on Windows</td>
-<td>Type-Defect, Priority-Medium, Target-0.22.1</td>
-</tr>
-</table>
-<p>Altogether 4 issues.</p>
 """
