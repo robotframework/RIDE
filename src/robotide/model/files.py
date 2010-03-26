@@ -234,7 +234,9 @@ class _AbstractDataFile(object):
         return old
 
     def _validate_serialization(self):
-        pass
+        if 'NO RIDE' in self.settings.doc:
+            raise SerializationError('This file is not supposed to be edited '
+                                     'with RIDE (it has "NO RIDE" in its documentation)')
 
     def _serialize(self, serializer):
         self.settings.serialize(serializer)
@@ -291,6 +293,7 @@ class TestCaseFile(_TestSuite):
         self.__init__(TestSuiteData(self.source), self.namespace)
 
     def _validate_serialization(self):
+        _AbstractDataFile._validate_serialization(self)
         if not self.tests:
             raise SerializationError('File suite contains no test cases and '
                                      'cannot be properly serialized.')

@@ -58,6 +58,9 @@ class Documentation(_Setting):
     _serialized_value = property(lambda self:
                                 [self.get_str_value().replace('\n', '\\n\n')])
 
+    def __contains__(self, val):
+        return val in self.get_str_value()
+
     def _get_value(self, data):
         if data.doc:
             return [data.doc.replace('\n ', '\n').replace('\\n', '\n')]
