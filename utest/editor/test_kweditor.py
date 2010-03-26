@@ -75,7 +75,7 @@ class TestClipBoard(unittest.TestCase):
         self._editor = TestableKwEditor(_FakeMainFrame(), _FakeTree())
 
     def test_copy_one_cell(self):
-        self._copy_block_and_verify((0,0,0,0), 'kw1')
+        self._copy_block_and_verify((0,0,0,0), [['kw1']])
 
     def test_copy_row(self):
         self._copy_block_and_verify((1,0,1,1), [[val for val in DATA[1] if val]])
@@ -91,7 +91,7 @@ class TestClipBoard(unittest.TestCase):
         self._verify_grid_content(DATA)
 
     def test_cut_one_cell(self):
-        self._cut_block_and_verify((0,0,0,0), 'kw1',
+        self._cut_block_and_verify((0,0,0,0), [['kw1']],
                                    [['', '', '']] + DATA[1:])
 
     def test_cut_row(self):
