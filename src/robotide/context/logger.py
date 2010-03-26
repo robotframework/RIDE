@@ -16,11 +16,8 @@ import re
 import sys
 import wx
 
-from robotide.errors import NoRideError
-
 
 class Logger(object):
-    no_ride_regexp = re.compile("'(.*?)'.*no ride", re.IGNORECASE)
     empty_suite_init_file_warn = re.compile("Test suite directory initialization "
                                             "file '.*' contains no test data.")
 
@@ -42,7 +39,6 @@ class Logger(object):
 
     def message(self, msg):
         message, level = msg.message, msg.level.upper()
-        self._raise_if_no_ride_warning(message)
         if self._is_logged(level):
             self._messages.append((message, level))
 
@@ -53,12 +49,6 @@ class Logger(object):
 
     def _is_logged(self, level):
         return level.upper() in ['ERROR', 'WARN']
-
-    def _raise_if_no_ride_warning(self, msg):
-        res = self.no_ride_regexp.search(msg)
-        if res:
-            raise NoRideError("Test data file '%s' is not supposed to be "
-                              "edited with RIDE." % res.group(1))
 
     def _is_ignored_warning(self, msg):
         return self.empty_suite_init_file_warn.search(msg)

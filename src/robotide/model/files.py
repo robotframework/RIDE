@@ -16,7 +16,7 @@ import os
 import copy
 
 from robotide import utils
-from robotide.errors import NoRideError, DataError, SerializationError
+from robotide.errors import DataError, SerializationError
 from robotide.publish import RideSaving, RideSaved
 from robotide.robotapi import TestSuiteData, ResourceFileData, InitFileData,\
     UserErrorHandler
@@ -251,7 +251,6 @@ class _TestSuite(_AbstractDataFile):
     type = 'test suite'
 
     def __init__(self, data, namespace, parent=None):
-        self._check_ride_suitability(data)
         self.name = data.name.decode('UTF-8')
         self.longname = parent and '%s.%s' % (parent.longname, self.name) or self.name
         _AbstractDataFile.__init__(self, data, namespace)
@@ -259,12 +258,6 @@ class _TestSuite(_AbstractDataFile):
         self.tests = TestCaseTable(self, data.tests)
         self.suites = [ _TestSuiteFactory(suite, namespace, self)
                         for suite in data.suites ]
-
-    def _check_ride_suitability(self, data):
-        for meta in data.metadata:
-            if meta.lower() == 'no ride':
-                raise NoRideError("Test data file '%s' is not supposed to be "
-                                  "edited with RIDE." % data.source)
 
     def add_suite(self, path):
         if not os.path.exists(os.path.dirname(path)):

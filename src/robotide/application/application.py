@@ -21,7 +21,7 @@ from threading import Thread
 from robotide.robotapi import ROBOT_VERSION
 from robotide.namespace import Namespace
 from robotide.publish import RideOpenSuite, RideOpenResource
-from robotide.errors import DataError, NoRideError
+from robotide.errors import DataError
 from robotide.ui import RideFrame
 from robotide import context
 
@@ -146,7 +146,7 @@ class _DataLoader(Thread):
     def run(self):
         try:
             self.model = DataModel(self._namespace, self._path)
-        except (DataError, NoRideError), err:
+        except DataError, err:
             context.LOG.error(str(err))
             self.model = DataModel(self._namespace)
 
