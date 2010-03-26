@@ -161,6 +161,4 @@ class _GridClipboard(object):
         return data and data.replace('\x00', '') or ''
 
     def _split_string_from_tabs_and_newlines(self, string):
-        if not '\t' in string:
-            return string
         return [ line.split('\t') for line in string.splitlines()]
