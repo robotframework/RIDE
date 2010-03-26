@@ -12,8 +12,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import operator
-
 from robotide.model import TestSuiteFactory
 from robotide.errors import DataError, SerializationError
 from robotide import context
