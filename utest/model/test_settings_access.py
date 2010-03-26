@@ -1,11 +1,11 @@
 #  Copyright 2008 Nokia Siemens Networks Oyj
-#  
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,7 @@ import unittest
 from robot.utils.asserts import assert_equals
 
 from robotide.model.settings import _Setting
+from robotide.model.settings import *
 from resources import FakeSuite
 
 
@@ -76,17 +77,25 @@ class TestSetStrValue(unittest.TestCase):
         assert_equals(self.s.value, ['', '2nd', '', '', '5th', '', ''])
 
     def test_unescaping(self):
-        for inp, exp in [ (r'\|', ['|']),           (r'\|x', ['|x']), 
+        for inp, exp in [ (r'\|', ['|']),           (r'\|x', ['|x']),
                           (r'\||', ['|', '']),      (r'\||x', ['|', 'x']),
                           (r'\\|', [r'\\', '']),    (r'\\|x', [r'\\', 'x']),
                           (r'\\\|', [r'\\|']),      (r'\\\| x', [r'\\| x']),
                           (r'\\\\|', [r'\\\\', '']),
                           (r'\\ |', [r'\\', '']),
-                          (r'c:\\sanity\\|\\|\|?', 
+                          (r'c:\\sanity\\|\\|\|?',
                            [r'c:\\sanity\\', r'\\', '|?']) ]:
             self.s.set_str_value(inp)
             assert_equals(self.s.value, exp, inp)
 
+    def test_concrete_implementations(self):
+        for cls in [ForceTags, DefaultTags, Tags, TestSetup, TestTeardown,
+                    Setup, Teardown, SuiteSetup, SuiteTeardown, TestTimeout,
+                    Timeout, Arguments, ReturnValue,
+                    LibraryImport, VariablesImport]:
+            setting = cls(FakeSuite())
+            setting.set_str_value('Foo | Bar')
+            assert_equals(setting.value, ['Foo', 'Bar'])
 
 if __name__ == '__main__':
     unittest.main()
