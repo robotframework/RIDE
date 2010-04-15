@@ -45,9 +45,7 @@ class _ClipboardHandler(object):
         """Paste the contents of the clipboard. If a cell is being edited just
         do a normal paste. If a cell is not being edited, paste whole rows.
         """
-        if self._edit_control_shown():
-            self._paste_to_cell_editor()
-        else:
+        if not self._edit_control_shown():
             self._paste_to_grid()
 
     def _paste_to_cell_editor(self):
