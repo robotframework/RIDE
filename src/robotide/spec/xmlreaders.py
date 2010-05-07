@@ -159,14 +159,15 @@ class _LibraryKeywordContent(_KeywordContent):
 
     def _parse_args(self, handler):
         args = []
-        if handler.args:
-            args.extend(list(handler.args))
-        if handler.defaults:
-            for i, value in enumerate(handler.defaults):
-                index = len(handler.args) - len(handler.defaults) + i
+        handler_args = handler.arguments
+        if handler_args.names:
+            args.extend(list(handler_args.names))
+        if handler_args.defaults:
+            for i, value in enumerate(handler_args.defaults):
+                index = len(handler_args.names) - len(handler_args.defaults) + i
                 args[index] = args[index] + '=' + str(value)
-        if handler.varargs:
-            args.append('*%s' % handler.varargs)
+        if handler_args.varargs:
+            args.append('*%s' % handler_args.varargs)
         return args
 
     def is_library_keyword(self):
