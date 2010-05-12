@@ -84,4 +84,36 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
+<h2>Release notes for 0.23</h2>
+<table border="1">
+<tr>
+<td><b>ID</b></td>
+<td><b>Type</b></td>
+<td><b>Priority</b></td>
+<td><b>Summary</b></td>
+<td><b>AllLabels</b></td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=426">Issue 426</a></td>
+<td>Defect</td>
+<td>High</td>
+<td>Copying part of the cell always copies all the cell contents</td>
+<td>Type-Defect, Priority-High, Target-0.23</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=427">Issue 427</a></td>
+<td>Defect</td>
+<td>High</td>
+<td>Copy-pasting cell content results in two copies in Linux</td>
+<td>Type-Defect, Priority-High, Target-0.23</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=450">Issue 450</a></td>
+<td>Enhancement</td>
+<td>High</td>
+<td>Compatibility with Robot Framework alpha 1</td>
+<td>Type-Enhancement, Priority-High, Target-0.23</td>
+</tr>
+</table>
+<p>Altogether 3 issues.</p>
 """
