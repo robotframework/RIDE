@@ -158,6 +158,23 @@ class _LibraryKeywordContent(_KeywordContent):
         _KeywordContent.__init__(self, item, source, 'test library')
 
     def _parse_args(self, handler):
+        if hasattr(handler, 'arguments'):
+            return self._parse_args_with_rf_25_alpha(handler)
+        return self._parse_args_with_ye_olde_rf(handler)
+
+    def _parse_args_with_ye_olde_rf(self, handler):
+        args = []
+        if handler.args:
+            args.extend(list(handler.args))
+        if handler.defaults:
+            for i, value in enumerate(handler.defaults):
+                index = len(handler.args) - len(handler.defaults) + i
+                args[index] = args[index] + '=' + str(value)
+        if handler.varargs:
+            args.append('*%s' % handler.varargs)
+        return args
+
+    def _parse_args_with_rf_25_alpha(self, handler):
         args = []
         handler_args = handler.arguments
         if handler_args.names:
