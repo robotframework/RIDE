@@ -40,7 +40,6 @@ class _ClipboardHandler(object):
         self._add_selected_data_to_clipboard()
 
     def _add_selected_data_to_clipboard(self):
-        print 'adding', self._grid.get_selected_content()
         self._clipboard.set_contents(self._grid.get_selected_content())
 
     def paste(self):
