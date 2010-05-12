@@ -12,12 +12,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import wx
 import os.path
 import sys
 
 from robotide.version import VERSION
-from robotide.robotapi import ROBOT_LOGGER
+from robotide.robotapi import ROBOT_LOGGER, ROBOT_VERSION
 
 from font import Font
 from logger import Logger
@@ -52,9 +51,9 @@ POPUP_BACKGROUND = (255, 255, 187)
 
 pyversion = '.'.join([ str(v) for v in sys.version_info[:3] ])
 ABOUT_RIDE = '''<h3>RIDE -- Robot Framework Test Data Editor</h3>
-<p>Version %s running on Python %s.</p>
+<p>Version %s running on Python %s using Robot Framework %s.</p>
 <p>Documentation, issue tracker and other information can be found from the project pages at
 <a href="http://code.google.com/p/robotframework-ride">http://code.google.com/p/robotframework-ride</a>.
-''' % (VERSION, pyversion)
+''' % (VERSION, pyversion, ROBOT_VERSION)
 
 APP = None
