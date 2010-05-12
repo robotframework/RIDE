@@ -29,7 +29,8 @@ class _ClipboardHandler(object):
         action if the user is editing a cell, otherwise it places the selected
         range of cells on the data.
         """
-        self._add_selected_data_to_clipboard()
+        if not self._edit_control_shown():
+            self._add_selected_data_to_clipboard()
 
     def cut(self):
         """Cuts the contents of the selected cell(s). This does a normal cut
@@ -39,6 +40,7 @@ class _ClipboardHandler(object):
         self._add_selected_data_to_clipboard()
 
     def _add_selected_data_to_clipboard(self):
+        print 'adding', self._grid.get_selected_content()
         self._clipboard.set_contents(self._grid.get_selected_content())
 
     def paste(self):
