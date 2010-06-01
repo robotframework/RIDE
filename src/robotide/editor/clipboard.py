@@ -18,6 +18,9 @@ import wx
 from robotide import utils
 
 
+_IS_WINDOWS = os.sep == '\\'
+
+
 class _ClipboardHandler(object):
 
     def __init__(self, grid):
@@ -102,7 +105,7 @@ class _WindowsClipboardHandler(_ClipboardHandler):
         self._get_edit_control().Paste()
 
 
-ClipboardHandler = utils.is_windows and _WindowsClipboardHandler\
+ClipboardHandler = _IS_WINDOWS and _WindowsClipboardHandler\
                                     or _ClipboardHandler
 
 

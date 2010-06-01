@@ -24,8 +24,8 @@ class TreeImageList(wx.ImageList):
 
     def __init__(self):
         wx.ImageList.__init__(self, *_SIZE)
-        self._images = {    
-            'InitFile': _TreeImage(self, wx.ART_FOLDER, wx.ART_FOLDER_OPEN),
+        self._images = {
+            'TestDataDirectory': _TreeImage(self, wx.ART_FOLDER, wx.ART_FOLDER_OPEN),
             'TestCaseFile': _TreeImage(self, wx.ART_NORMAL_FILE),
             'TestCase': _TreeImage(self, 'robot.png'),
             'UserKeyword': _TreeImage(self, 'process.png'),
@@ -35,13 +35,13 @@ class TreeImageList(wx.ImageList):
     def __getitem__(self, key):
         return self._images[key]
 
-    
+
 class _TreeImage(object):
-    
+
     def __init__(self, image_list, normal, expanded=None):
         self.normal = self._get_image(image_list, normal)
         self.expanded = expanded and self._get_image(image_list, expanded) or self.normal
-                    
+
     def _get_image(self, image_list, source):
         if source.startswith('wx'):
             img = wx.ArtProvider_GetBitmap(source, wx.ART_OTHER, _SIZE)

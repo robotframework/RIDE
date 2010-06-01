@@ -12,8 +12,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.model import TestSuiteFactory
+import os
+
 from robotide.errors import DataError, SerializationError
+from robotide.robotapi import TestDataDirectory, TestCaseFile, ResourceFile
+from robotide.model.controller import DataController
 from robotide import context
 
 
@@ -38,8 +41,11 @@ class DataModel(object):
                                 "test case or resource file" % path)
 
     def _open_suite(self, path):
-        self.suite = TestSuiteFactory(path, self._namespace)
-        self._resolve_imported_resources(self.suite)
+        if os.path.isdir(path):
+            self.suite = DataController(TestDataDirectory(source=path))
+        else:
+            self.suite = DataController(TestCaseFile(source=path))
+        # FIXME:::  self._resolve_imported_resources(self.suite)
 
     def open_resource(self, path, datafile=None):
         resource = self._namespace.load_resource(path, datafile)
@@ -85,6 +91,7 @@ class DataModel(object):
         return False
 
     def _is_suite_dirty(self, suite):
+        return False
         if suite.dirty:
             return True
         for s in suite.suites:

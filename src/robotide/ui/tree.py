@@ -1,3 +1,4 @@
+
 #  Copyright 2008-2009 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import os
 import wx
 try:
     import treemixin
@@ -33,13 +35,14 @@ tree_actions ="""
 !Go &Back | Go back to previous location in tree | Alt-Left | ART_GO_BACK
 !Go &Forward | Go forward to next location in tree | Alt-Right | ART_GO_FORWARD
 """
+_IS_WINDOWS = os.sep == '\\'
 
 
 class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def __init__(self, parent, action_registerer):
         style = wx.TR_DEFAULT_STYLE
-        if utils.is_windows:
+        if _IS_WINDOWS:
             style = style|wx.TR_EDIT_LABELS
         treemixin.DragAndDrop.__init__(self, parent, style=style)
         actions = ActionInfoCollection(tree_actions, self, self)
@@ -62,7 +65,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             (wx.ACCEL_NORMAL, wx.WXK_F2, self.OnLabelEdit),
             (wx.ACCEL_NORMAL, wx.WXK_LEFT, self.OnLeftArrow),
             ]:
-            if utils.is_windows and keycode == wx.WXK_LEFT:
+            if _IS_WINDOWS and keycode == wx.WXK_LEFT:
                 continue
             id = wx.NewId()
             self.Bind(wx.EVT_MENU, handler, id=id)
@@ -83,13 +86,13 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _create_resource_root(self):
         resource_root = self._create_node(self._root, 'Resources',
-                                          self._images['InitFile'])
+                                          self._images['TestDataDirectory'])
         self.SetPyData(resource_root, NoneHandler())
         return resource_root
 
     def _populate_model(self, model):
         if model.suite:
-            self._render_datafile(self._root, model.suite, 0)
+            self._render_datafile(self._root, model.suite.data, 0)
         for res in model.resources:
             self._render_datafile(self._resource_root, res)
 
@@ -106,7 +109,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         node = self._create_node_with_handler(parent_node, datafile, index)
         self.SetItemHasChildren(node, True)
         self._datafile_nodes.append(node)
-        for suite in datafile.suites:
+        for suite in datafile.children:
             self._render_datafile(node, suite, None)
         return node
 
@@ -436,7 +439,7 @@ class _ActionHandler(wx.Window):
         dlg.Destroy()
 
 
-class InitFileHandler(_ActionHandler):
+class TestDataDirectoryHandler(_ActionHandler):
     accepts_drag = lambda self, dragged: isinstance(dragged, UserKeywordHandler)
     is_draggable = False
     is_renameable = False
@@ -454,7 +457,7 @@ class InitFileHandler(_ActionHandler):
         return False
 
     def children_rendered(self):
-        if len(self.item.keywords + self.item.tests) == 0:
+        if self.item.keyword_table or self.item.testcase_table:
             return True
         elif not self._rendered:
             self._rendered = True
@@ -477,12 +480,12 @@ class InitFileHandler(_ActionHandler):
         dlg.Destroy()
 
 
-class ResourceFileHandler(InitFileHandler):
+class ResourceFileHandler(TestDataDirectoryHandler):
     is_test_suite = False
     _actions = ['New User Keyword', '---', 'Change Format']
 
 
-class TestCaseFileHandler(InitFileHandler):
+class TestCaseFileHandler(TestDataDirectoryHandler):
     accepts_drag = lambda *args: True
     _actions = ['New Test Case', 'New User Keyword', '---', 'Change Format']
 

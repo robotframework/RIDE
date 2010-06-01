@@ -34,6 +34,7 @@ class RideEventHandler(object):
     __metaclass__ = eventhandlertype
 
     def _can_be_edited(self, event):
+        return True
         item = self.get_selected_datafile()
         if item and item.has_been_modified_on_disk():
             return self._show_modified_on_disk_warning(item, event)
@@ -44,8 +45,8 @@ class RideEventHandler(object):
                'Do you want to reload the file?',
                'Answering <No> will overwrite the changes on disk.']
         if item.dirty:
-            msg.insert(2, 'Answering <Yes> will discard unsaved changes.') 
-        ret = wx.MessageBox('\n'.join(msg), 'File Modified', 
+            msg.insert(2, 'Answering <Yes> will discard unsaved changes.')
+        ret = wx.MessageBox('\n'.join(msg), 'File Modified',
                             style=wx.YES_NO|wx.CANCEL|wx.ICON_WARNING)
         if ret == wx.YES:
             item.reload_from_disk()

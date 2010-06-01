@@ -13,9 +13,10 @@
 #  limitations under the License.
 
 import wx
+from robot.parsing.settings import Documentation
 
 from robotide import context
-from robotide.model.settings import Documentation, ResourceImport
+from robotide.model.settings import ResourceImport
 from robotide.utils import RideEventHandler, RideHtmlWindow, ButtonWithHandler
 from robotide import utils
 
@@ -82,7 +83,8 @@ class _RobotTableEditor(EditorPanel):
         return header
 
     def _add_settings(self):
-        for setting in self.item.settings:
+        for setting in self.item.setting_table:
+            print setting
             if isinstance(setting, Documentation):
                 editor_class = _DocumentationEditor
             else:

@@ -15,10 +15,10 @@
 import wx
 
 from robotide.pluginapi import Plugin, ActionInfoCollection
+from robotide.robotapi import ResourceFile, TestCaseFile, TestDataDirectory
 from robotide.publish import RideTreeSelection, RideNotebookTabChanging,\
     RideNotebookTabChanged, RideSaving
 from robotide.model.tcuk import TestCase, UserKeyword
-from robotide.model.files import TestCaseFile, ResourceFile, InitFile
 from editors import Editor, TestCaseEditor, UserKeywordEditor, \
     TestCaseFileEditor, ResourceFileEditor, InitFileEditor
 
@@ -54,7 +54,7 @@ class EditorPlugin(Plugin):
         self._tab = None
 
     def enable(self):
-        self.register_editor(InitFile, InitFileEditor)
+        self.register_editor(TestDataDirectory, InitFileEditor)
         self.register_editor(ResourceFile, ResourceFileEditor)
         self.register_editor(TestCase, TestCaseEditor)
         self.register_editor(TestCaseFile, TestCaseFileEditor)

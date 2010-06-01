@@ -16,10 +16,10 @@ import os
 import sys
 import inspect
 
-from robot.utils import printable_name, contains, normalize, eq, eq_any,\
+from robot.utils import printable_name, normalize, eq, eq_any,\
     HtmlWriter, NormalizedDict, timestr_to_secs, secs_to_timestr, normpath,\
     DomWrapper, unic, asserts, unescape, html_attr_escape,\
-    printable_name_from_path, html_escape, get_timestamp, is_windows
+    html_escape, get_timestamp
 from components import RideHtmlWindow, PopupMenu, ButtonWithHandler
 from eventhandler import RideEventHandler
 
