@@ -31,13 +31,6 @@ class Namespace(object):
         self._lib_kw_cache = {}
         self._user_kw_cache = {}
 
-    def new_keyword(self, kw):
-        kwc = UserKeywordContent(kw, kw.source, kw.type)
-        try:
-            self._user_kw_cache[kw.datafile.name].append(kwc)
-        except KeyError:
-            self._user_kw_cache[kw.datafile.name] = [kwc]
-
     def clear_caches(self):
         self._lib_kw_cache = {}
         self._user_kw_cache = {}
