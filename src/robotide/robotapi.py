@@ -18,7 +18,8 @@ robot.parsing.datareader.PROCESS_CURDIR = False
 from robot.version import get_version
 from robot.utils import normpath, NormalizedDict
 from robot.common.handlers import UserErrorHandler
-from robot.parsing import TestCaseFile, ResourceFile, TestDataDirectory
+from robot.parsing import (TestCaseFile, ResourceFile, TestDataDirectory,
+                           TestCase, UserKeyword)
 from robot.running import TestLibrary
 from robot.output import LOGGER as ROBOT_LOGGER
 from robot.variables import Variables as RobotVariables

@@ -15,12 +15,12 @@
 import wx
 
 from robotide.pluginapi import Plugin, ActionInfoCollection
-from robotide.robotapi import ResourceFile, TestCaseFile, TestDataDirectory
-from robotide.publish import RideTreeSelection, RideNotebookTabChanging,\
-    RideNotebookTabChanged, RideSaving
-from robotide.model.tcuk import TestCase, UserKeyword
-from editors import Editor, TestCaseEditor, UserKeywordEditor, \
-    TestCaseFileEditor, ResourceFileEditor, InitFileEditor
+from robotide.robotapi import (ResourceFile, TestCaseFile, TestDataDirectory,
+                               TestCase, UserKeyword)
+from robotide.publish import (RideTreeSelection, RideNotebookTabChanging,
+                              RideNotebookTabChanged, RideSaving)
+from editors import (Editor, TestCaseEditor, UserKeywordEditor,
+                     TestCaseFileEditor, ResourceFileEditor, InitFileEditor)
 
 
 _EDIT = """

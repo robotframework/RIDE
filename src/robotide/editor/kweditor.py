@@ -174,10 +174,10 @@ class KeywordEditor(KeywordEditorUi):
     _no_cell = grid.GridCellCoords(-1, -1)
 
     def __init__(self, parent, tree):
-        self._keywords = parent.item.keywords
+        self._keywords = parent.item.steps
         KeywordEditorUi.__init__(self, parent, len(self._keywords)+5, 5)
         self.SetDefaultEditor(ContentAssistCellEditor(parent.plugin))
-        self._datafile = parent.item.datafile
+        self._datafile = parent.item.parent
         # TODO: Tooltip may be smaller when the documentation is wrapped correctly
         self._tooltip = RidePopupWindow(self, (650, 400))
         self._marked_cell = None
@@ -197,7 +197,7 @@ class KeywordEditor(KeywordEditorUi):
         self.Bind(grid.EVT_GRID_CELL_LEFT_DCLICK, self.OnCellLeftDClick)
 
     def _write_keywords(self, keywords):
-        self._write_data([kw.get_display_value() for kw in keywords],
+        self._write_data([kw.assign +[kw.keyword] + kw.args for kw in keywords],
                          update_history=False)
 
     def OnCopy(self, event=None):
@@ -228,6 +228,8 @@ class KeywordEditor(KeywordEditorUi):
         self._tree.mark_dirty(self._datafile)
 
     def save(self):
+        return 
+        # FIXME: 
         self._hide_tooltip()
         if self.IsCellEditControlShown():
             cell_editor = self.GetCellEditor(*self.selection.cell)

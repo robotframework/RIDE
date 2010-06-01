@@ -91,8 +91,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         return resource_root
 
     def _populate_model(self, model):
-        if model.suite:
-            self._render_datafile(self._root, model.suite.data, 0)
+        if model.data:
+            self._render_datafile(self._root, model.data.file, 0)
         for res in model.resources:
             self._render_datafile(self._resource_root, res)
 
@@ -122,9 +122,9 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         if not handler or handler.children_rendered():
             return
         datafile = handler.item
-        for test in datafile.tests:
+        for test in datafile.testcase_table:
             self._create_node_with_handler(node, test)
-        for kw in datafile.keywords:
+        for kw in datafile.keyword_table:
             if predicate:
                 index = self._get_insertion_index(node, predicate)
             else:
@@ -457,13 +457,12 @@ class TestDataDirectoryHandler(_ActionHandler):
         return False
 
     def children_rendered(self):
-        if self.item.keyword_table or self.item.testcase_table:
+        if not (self.item.keyword_table or self.item.testcase_table):
             return True
         elif not self._rendered:
             self._rendered = True
             return False
         return True
-
 
     def OnAddSuite(self, event):
         dlg = AddSuiteDialog(self.item.get_dir_path())

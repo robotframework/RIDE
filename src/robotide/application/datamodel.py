@@ -24,7 +24,7 @@ class DataModel(object):
 
     def __init__(self, namespace, path=None):
         self.resources = []
-        self.suite = None
+        self.data = None
         self._namespace = namespace
         self._open(path)
 
@@ -42,9 +42,9 @@ class DataModel(object):
 
     def _open_suite(self, path):
         if os.path.isdir(path):
-            self.suite = DataController(TestDataDirectory(source=path))
+            self.data = DataController(TestDataDirectory(source=path))
         else:
-            self.suite = DataController(TestCaseFile(source=path))
+            self.data = DataController(TestCaseFile(source=path))
         # FIXME:::  self._resolve_imported_resources(self.suite)
 
     def open_resource(self, path, datafile=None):
@@ -83,7 +83,7 @@ class DataModel(object):
         return self.suite.is_directory_suite
 
     def is_dirty(self):
-        if self.suite and self._is_suite_dirty(self.suite):
+        if self.data and self._is_suite_dirty(self.data):
             return True
         for res in self.resources:
             if res.dirty:
