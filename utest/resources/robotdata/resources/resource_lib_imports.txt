@@ -1,0 +1,3 @@
+*** settings ***
+library  Telnet
+library  String

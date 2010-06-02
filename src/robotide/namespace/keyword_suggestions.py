@@ -46,41 +46,42 @@ class Namespace(object):
             kws.append(KeywordInfo(kw.name, kw.source, kw.doc))
         return kws
 
-    def _get_datafile_keywords(self):
-        return [KeywordInfo(kw.name, self.datafile.source, kw.doc) 
-                for kw in self.datafile.keywords]
+    def _get_datafile_keywords(self, datafile):
+        return [KeywordInfo(kw.name, datafile.source, kw.doc) 
+                for kw in datafile.keywords]
 
-    def _get_imported_keywords(self):
-        return self._collect_kws_from_imports(Library, self._lib_kw_getter)
+    def _get_imported_keywords(self, datafile):
+        return self.__collect_kws_from_imports(datafile, Library, self.__lib_kw_getter)
 
-    def _lib_kw_getter(self, imp):
+    def __lib_kw_getter(self, imp):
         return self.lib_cache.get_library_keywords(imp.name, imp.args)
 
-    def _get_import_resource_keywords(self):
-        kws = self._collect_kws_from_imports(Resource, self._res_kw_recursive_getter)
+    def _get_import_resource_keywords(self, datafile):
+        kws = self.__collect_kws_from_imports(datafile, Resource, self.__res_kw_recursive_getter)
         return kws
 
-    def _res_kw_getter(self, imp):
-        return self.res_cache.get_resource(imp).keywords
-
-    def _res_kw_recursive_getter(self, imp):
+    def __res_kw_recursive_getter(self, imp):
         res = self.res_cache.get_resource(imp)
         kws = []
-        for child in self._collect_import_of_type(res, Resource):
-            kws.extend(self._res_kw_recursive_getter(child))
+        for child in self.__collect_import_of_type(res, Resource):
+            kws.extend(self.__res_kw_recursive_getter(child))
+        kws.extend(self._get_imported_keywords(res))
         return res.keywords + kws
 
-    def _collect_kws_from_imports(self, instance_type, getter):
-        for imp in self._collect_import_of_type(self.datafile, instance_type):
-            return [KeywordInfo(kw.name, kw.source, kw.doc) for kw in getter(imp)]
+    def __collect_kws_from_imports(self, datafile, instance_type, getter):
+        kws = []
+        for imp in self.__collect_import_of_type(datafile, instance_type):
+            kws.extend([KeywordInfo(kw.name, kw.source, kw.doc) 
+                        for kw in getter(imp)])
+        return kws
 
-    def _collect_import_of_type(self, datafile, instance_type):
+    def __collect_import_of_type(self, datafile, instance_type):
         return [imp for imp in datafile.imports
                 if isinstance(imp, instance_type)]
 
     def get_keywords(self):
-        return self._get_default_keywords() + self._get_datafile_keywords() +\
-               self._get_imported_keywords() + self._get_import_resource_keywords()
+        return self._get_default_keywords() + self._get_datafile_keywords(self.datafile) +\
+               self._get_imported_keywords(self.datafile) + self._get_import_resource_keywords(self.datafile)
 
     def _get_name_and_args(self, libsetting):
         parts = libsetting.split('|')
