@@ -57,14 +57,26 @@ class Namespace(object):
         return self.lib_cache.get_library_keywords(imp.name, imp.args)
 
     def _get_import_resource_keywords(self):
-        return self._collect_kws_from_imports(Resource, self._res_kw_getter)
+        kws = self._collect_kws_from_imports(Resource, self._res_kw_recursive_getter)
+        return kws
 
     def _res_kw_getter(self, imp):
-        return self.res_cache.get_resource(imp.name).keywords
+        return self.res_cache.get_resource(imp).keywords
+
+    def _res_kw_recursive_getter(self, imp):
+        res = self.res_cache.get_resource(imp)
+        kws = []
+        for child in self._collect_import_of_type(res, Resource):
+            kws.extend(self._res_kw_recursive_getter(child))
+        return res.keywords + kws
 
     def _collect_kws_from_imports(self, instance_type, getter):
-        for imp in [i for i in self.datafile.imports if isinstance(i, instance_type)]:
+        for imp in self._collect_import_of_type(self.datafile, instance_type):
             return [KeywordInfo(kw.name, kw.source, kw.doc) for kw in getter(imp)]
+
+    def _collect_import_of_type(self, datafile, instance_type):
+        return [imp for imp in datafile.imports
+                if isinstance(imp, instance_type)]
 
     def get_keywords(self):
         return self._get_default_keywords() + self._get_datafile_keywords() +\
@@ -82,7 +94,8 @@ class ResourceCache(object):
     def __init__(self):
         self.cache = {}
 
-    def get_resource(self, path):
+    def get_resource(self, resource_import):
+        path = os.path.join(resource_import.directory, resource_import.name) 
         normalized = os.path.normpath(path)
         if normalized not in self.cache:
             self.cache[normalized] = ResourceFile(normalized)

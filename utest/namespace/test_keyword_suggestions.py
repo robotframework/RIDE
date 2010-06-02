@@ -4,6 +4,7 @@ from robot.utils.asserts import assert_true, assert_none, assert_false, \
 from robotide.namespace.keyword_suggestions import KeywordSuggestions, Namespace, \
     ResourceCache
 from robotide.robotapi import TestCaseFile
+from robot.parsing.settings import Resource
 import os
 import unittest
 
@@ -52,7 +53,11 @@ class TestKeywordSuggestions(unittest.TestCase):
     def test_resource_file_keywords(self):
         sugs = self.kw_suggestions.get_suggestions_for('Resource Uk')
         self._assert_import_kws(sugs, 'resource.html')
-    
+
+    def test_uk_from_reource_files_reource_file(self):
+        sugs = self.kw_suggestions.get_suggestions_for('UK From Text Resource')
+        self._assert_import_kws(sugs, 'resource.txt')
+
     def _assert_import_kws(self, sugs, source):
         assert_true(len(sugs) > 0)
         for s in sugs:
@@ -65,6 +70,15 @@ class TestResourceCache(unittest.TestCase):
         self.rc = ResourceCache()
 
     def test_file_read_only_once(self):
-        first = self.rc.get_resource(RESOURCE_PATH)
-        second = self.rc.get_resource(RESOURCE_PATH)
+        imp = Resource(None, RESOURCE_PATH)
+        first = self.rc.get_resource(imp)
+        second = self.rc.get_resource(imp)
         assert_true(first is second)
+
+    def test_file_with_absolute_path(self):
+        imp = Resource(ParentMock(), RESOURCE_PATH)
+        first = self.rc.get_resource(imp)
+        assert_true(first)
+
+class ParentMock(object):
+    directory = '/tmp/exmaple'
