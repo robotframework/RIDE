@@ -23,6 +23,7 @@ except ImportError:
 from robotide.action import ActionInfoCollection
 from robotide.model.tcuk import UserKeyword
 from robotide.publish import RideTreeSelection
+from robotide.robotapi import TestDataDirectory
 from robotide import utils
 
 from images import TreeImageList
@@ -92,7 +93,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _populate_model(self, model):
         if model.data:
-            self._render_datafile(self._root, model.data.file, 0)
+            self._render_datafile(self._root, model.data, 0)
         for res in model.resources:
             self._render_datafile(self._resource_root, res)
 
@@ -105,12 +106,21 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             self._expand_and_render_children(self._datafile_nodes[0],
                                              lambda item: item.is_test_suite)
 
-    def _render_datafile(self, parent_node, datafile, index=None):
-        node = self._create_node_with_handler(parent_node, datafile, index)
+    def _render_datafile(self, parent_node, controller, index=None):
+        node = self._create_node_with_handler(parent_node, controller,
+                                              index)
         self.SetItemHasChildren(node, True)
         self._datafile_nodes.append(node)
-        for suite in datafile.children:
-            self._render_datafile(node, suite, None)
+        for child in controller.children:
+            self._render_datafile(node, child, None)
+        return node
+
+    def _create_node_with_handler(self, parent_node, controller, index=None):
+        name = controller.data.__class__.__name__
+        node = self._create_node(parent_node, controller.data.name, self._images[name],
+                                 index)
+        handler_class = globals()[name + 'Handler']
+        self.SetPyData(node, handler_class(controller, self, node))
         return node
 
     def _expand_and_render_children(self, node, predicate=None):
@@ -121,10 +131,9 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         handler = self._get_handler(node)
         if not handler or handler.children_rendered():
             return
-        datafile = handler.item
-        for test in datafile.testcase_table:
+        for test in handler.tests:
             self._create_node_with_handler(node, test)
-        for kw in datafile.keyword_table:
+        for kw in handler.keywords:
             if predicate:
                 index = self._get_insertion_index(node, predicate)
             else:
@@ -142,14 +151,6 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             node = self.AppendItem(parent_node, label)
         self.SetItemImage(node, img.normal, wx.TreeItemIcon_Normal)
         self.SetItemImage(node, img.expanded, wx.TreeItemIcon_Expanded)
-        return node
-
-    def _create_node_with_handler(self, parent_node, dataitem, index=None):
-        name = dataitem.__class__.__name__
-        node = self._create_node(parent_node, dataitem.name, self._images[name],
-                                 index)
-        handler_class = globals()[name + 'Handler']
-        self.SetPyData(node, handler_class(dataitem, self, node))
         return node
 
     def add_suite(self, parent, suite):
@@ -256,7 +257,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         if not selection:
             return None
         handler = self._get_handler(selection)
-        return handler and handler.item or None
+        return handler and handler._controller or None
 
     def move_up(self, node):
         prev = self.GetPrevSibling(node)
@@ -418,8 +419,10 @@ class _ActionHandler(wx.Window):
     is_user_keyword = False
     is_test_suite = False
 
-    def __init__(self, item, tree, node):
+    def __init__(self, controller, tree, node):
         wx.Window.__init__(self, tree)
+        self._controller = controller
+        item = controller.data
         self.name = item.name
         self.item = item
         self._tree = tree
@@ -445,6 +448,14 @@ class TestDataDirectoryHandler(_ActionHandler):
     is_renameable = False
     is_test_suite = True
     _actions = ['Add Suite', 'New User Keyword', '---', 'Change Format']
+
+    @property
+    def tests(self):
+        return self._controller.tests
+
+    @property
+    def keywords(self):
+        return self._controller.keywords
 
     def has_been_modified_on_disk(self):
         return self.item.has_been_modified_on_disk()

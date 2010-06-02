@@ -31,6 +31,7 @@ def Editor(plugin, editor_panel, tree):
     item = plugin.get_selected_item()
     if not item:
         return WelcomePage(editor_panel)
+    item = item.data
     editor_class = plugin.get_editor(item.__class__)
     return editor_class(plugin, editor_panel, item, tree)
 
