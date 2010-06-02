@@ -13,7 +13,6 @@
 #  limitations under the License.
 
 import wx
-from robot.parsing.settings import Documentation, Metadata, _Import
 
 from robotide import context
 from robotide.model.settings import ResourceImport
@@ -28,12 +27,11 @@ from editordialogs import EditorDialog, DocumentationDialog,\
 
 
 def Editor(plugin, editor_panel, tree):
-    item = plugin.get_selected_item()
-    if not item:
+    controller = plugin.get_selected_item()
+    if not controller:
         return WelcomePage(editor_panel)
-    item = item.data
-    editor_class = plugin.get_editor(item.__class__)
-    return editor_class(plugin, editor_panel, item, tree)
+    editor_class = plugin.get_editor(controller.data.__class__)
+    return editor_class(plugin, editor_panel, controller, tree)
 
 
 class WelcomePage(RideHtmlWindow):
@@ -55,10 +53,10 @@ class EditorPanel(wx.Panel):
     undo = cut = copy = paste = delete = comment = uncomment = save \
         = show_content_assist = lambda self: None
 
-    def __init__(self, plugin, parent, item, tree):
+    def __init__(self, plugin, parent, controller, tree):
         wx.Panel.__init__(self, parent)
         self.plugin = plugin
-        self.item = item
+        self.controller = controller
         self._tree = tree
 
 
@@ -66,8 +64,8 @@ class _RobotTableEditor(EditorPanel):
     name = 'table'
     doc = 'table editor'
 
-    def __init__(self, plugin, parent, item, tree):
-        EditorPanel.__init__(self, plugin, parent, item, tree)
+    def __init__(self, plugin, parent, controller, tree):
+        EditorPanel.__init__(self, plugin, parent, controller, tree)
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.SetSizer(self.sizer)
         if self.title:
@@ -84,25 +82,19 @@ class _RobotTableEditor(EditorPanel):
         return header
 
     def _add_settings(self):
-        for setting in self.item.setting_table:
-            if isinstance(setting, (Metadata, _Import)):
-            # FIXME: should be handled elsewhere
-                continue
-            if isinstance(setting, Documentation):
-                editor_class = _DocumentationEditor
-            else:
-                editor_class = _SettingEditor
-            editor = editor_class(self, setting, self.plugin, self._tree)
+        for setting in self.controller.settings:
+            editor = setting.editor(self, setting, self.plugin, self._tree)
             self.sizer.Add(editor, 0, wx.ALL|wx.EXPAND, 1)
 
 
 class ResourceFileEditor(_RobotTableEditor):
 
     def _populate(self):
-        self.sizer.Add(self._create_header(self.item.name), 0, wx.ALL, 5)
-        self.sizer.Add(self._create_source_label(self.item.source), 0, wx.ALL, 1)
-        self._add_settings()
+        datafile = self.controller.data
+        self.sizer.Add(self._create_header(datafile.name), 0, wx.ALL, 5)
+        self.sizer.Add(self._create_source_label(datafile.source), 0, wx.ALL, 1)
         self.sizer.Add((0, 10))
+        self._add_settings()
         self._add_import_settings()
         self._add_variable_table()
 
@@ -116,12 +108,11 @@ class ResourceFileEditor(_RobotTableEditor):
         return sizer
 
     def _add_import_settings(self):
-        # FIXME: demeter
-        editor = ImportSettingListEditor(self, self._tree, self.item.setting_table.imports)
+        editor = ImportSettingListEditor(self, self._tree, self.controller.imports)
         self.sizer.Add(editor, 1, wx.EXPAND)
 
     def _add_variable_table(self):
-        editor = VariablesListEditor(self, self._tree, self.item.variable_table)
+        editor = VariablesListEditor(self, self._tree, self.controller.variables)
         self.sizer.Add(editor, 1, wx.EXPAND)
 
 
@@ -133,8 +124,7 @@ class TestCaseFileEditor(ResourceFileEditor):
         self._add_metadata()
 
     def _add_metadata(self):
-        # FIXME: demeter
-        editor = MetadataListEditor(self, self._tree, self.item.setting_table.metadata)
+        editor = MetadataListEditor(self, self._tree, self.controller.metadata)
         self.sizer.Add(editor, 1, wx.EXPAND)
 
 
@@ -142,22 +132,22 @@ class InitFileEditor(TestCaseFileEditor):
     pass
 
 
-class _SettingEditor(wx.Panel, RideEventHandler):
+class SettingEditor(wx.Panel, RideEventHandler):
 
-    def __init__(self, parent, item, plugin, tree):
+    def __init__(self, parent, controller, plugin, tree):
         wx.Panel.__init__(self, parent)
-        self._item = item
+        self._controller = controller
         self._plugin = plugin
-        self._datafile = item.parent
-        self._create_controls(utils.name_from_class(item))
+        self._datafile = controller.parent
+        self._create_controls()
 #        self._dialog = EditorDialog(item)
         self._tree = tree
         self._editing = False
 
-    def _create_controls(self, label):
+    def _create_controls(self):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add((5,0))
-        sizer.Add(wx.StaticText(self, label=label,
+        sizer.Add(wx.StaticText(self, label=self._controller.label,
                                 size=(context.SETTING_LABEL_WIDTH,
                                       context.SETTING_ROW_HEIGTH)))
         self._value_display = self._get_value_display()
@@ -180,7 +170,7 @@ class _SettingEditor(wx.Panel, RideEventHandler):
     def OnEdit(self, event=None):
         self._editing = True
         dlg = self._dialog(self.GetGrandParent(), self._datafile, self._plugin,
-                           self._item)
+                           self._controller)
         if dlg.ShowModal() == wx.ID_OK:
             self._item.set_str_value(dlg.get_value())
             self._update_and_notify()
@@ -195,16 +185,17 @@ class _SettingEditor(wx.Panel, RideEventHandler):
 
     def _update_and_notify(self):
         self._update_value()
-        self._tree.mark_dirty(self._datafile)
+        # FIXME: FIXMEEE
+        #self._tree.mark_dirty(self._datafile)
 
     def OnClear(self, event):
-        self._item.clear()
+        self._controller.clear()
         self._update_and_notify()
 
     def _update_value(self):
-        if self._item.is_set():
+        if self._controller.is_set():
             self._value_display.SetBackgroundColour('white')
-            self._value_display.SetValue(self._item.value)
+            self._value_display.SetValue(self._controller.value)
         else:
             self._value_display.Clear()
             self._value_display.SetBackgroundColour('light grey')
@@ -213,15 +204,15 @@ class _SettingEditor(wx.Panel, RideEventHandler):
         return self._datafile
 
 
-class _DocumentationEditor(_SettingEditor):
+class DocumentationEditor(SettingEditor):
 
-    def __init__(self, parent, item, plugin, tree):
+    def __init__(self, parent, controller, plugin, tree):
         wx.Panel.__init__(self, parent)
-        self._item = item
+        self._controller = controller
         self._plugin = plugin
-        self._datafile = item.parent
+        self._datafile = controller.parent
         self._tree = tree
-        self._create_controls('Documentation')
+        self._create_controls()
 
     def _get_value_display(self):
         display = RideHtmlWindow(self, (-1, 60))
@@ -229,14 +220,14 @@ class _DocumentationEditor(_SettingEditor):
         return display
 
     def _update_value(self):
-        value = self._item.value
+        value = self._controller.value
         self._value_display.SetPage(utils.html_escape(value, formatting=True))
 
     def OnEdit(self, event):
         editor = DocumentationDialog(self.GetGrandParent(), self._datafile,
-                                     self._plugin, self._item.get_str_value())
+                                     self._plugin, self._controller.value)
         if editor.ShowModal() == wx.ID_OK:
-            self._item.set_str_value(editor.get_value())
+            self._controller.set_value(editor.get_value())
             self._update_and_notify()
         editor.Destroy()
 
@@ -248,22 +239,11 @@ class _DocumentationEditor(_SettingEditor):
 class TestCaseEditor(_RobotTableEditor):
 
     def _populate(self):
-        self.header = self._create_header(self.item.name)
+        self.header = self._create_header(self.controller.name)
         self.sizer.Add(self.header, 0, wx.ALL, 5)
-        print 'blaa'
         self._add_settings()
         self.sizer.Add((0,10))
         self._create_kweditor()
-
-    def _add_settings(self):
-        for setting in (self.item.doc, self.item.setup, self.item.teardown,
-                        self.item.tags, self.item.timeout):
-            if isinstance(setting, Documentation):
-                editor_class = _DocumentationEditor
-            else:
-                editor_class = _SettingEditor
-            editor = editor_class(self, setting, self.plugin, self._tree)
-            self.sizer.Add(editor, 0, wx.ALL|wx.EXPAND, 1)
 
     def _create_add_buttons(self, kweditor):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -319,24 +299,14 @@ class TestCaseEditor(_RobotTableEditor):
         self.kweditor.SetFocus()
 
 
-class UserKeywordEditor(TestCaseEditor):
-
-    def _add_settings(self):
-        for setting in (self.item.doc, self.item.args , self.item.timeout,
-                        self.item.return_):
-            if isinstance(setting, Documentation):
-                editor_class = _DocumentationEditor
-            else:
-                editor_class = _SettingEditor
-            editor = editor_class(self, setting, self.plugin, self._tree)
-            self.sizer.Add(editor, 0, wx.ALL|wx.EXPAND, 1)
+class UserKeywordEditor(TestCaseEditor): pass
 
 
 class _AbstractListEditor(ListEditor, RideEventHandler):
 
     def __init__(self, parent, tree, data):
         ListEditor.__init__(self, parent, self._titles, data)
-        self._datafile = parent.item
+        self._datafile = data.parent
         self._tree = tree
 
     def get_selected_datafile(self):
@@ -426,8 +396,7 @@ class ImportSettingListEditor(_AbstractListEditor):
         dlg.Destroy()
 
     def get_column_values(self, item):
-        return [utils.name_from_class(item, 'Import'), item.name,
-                utils.join_value(item.args)]
+        return [item.type, item.name, utils.join_value(item.args)]
 
     def _resource_import_modified(self):
         return self._get_setting().__class__ == ResourceImport
@@ -458,4 +427,4 @@ class MetadataListEditor(_AbstractListEditor):
         dlg.Destroy()
 
     def get_column_values(self, item):
-        return [utils.printable_name(item.name), utils.html_escape(item.value)]
+        return [item.name, utils.html_escape(item.value)]
