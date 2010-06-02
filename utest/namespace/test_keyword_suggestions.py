@@ -12,6 +12,7 @@ import unittest
 DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]),
                         '..', 'resources', 'robotdata')
 RESOURCE_PATH = os.path.normpath(os.path.join(DATAPATH, 'resources', 'resource.html'))
+RESOURCE_LIB_PATH = os.path.normpath(os.path.join(DATAPATH, 'resources', 'resource_lib_imports.txt'))
 
 class TestKeywordSuggestions(unittest.TestCase):
 
@@ -24,6 +25,7 @@ class TestKeywordSuggestions(unittest.TestCase):
         tcf = TestCaseFile()
         tcf.setting_table.add_library('Operating System')
         tcf.setting_table.add_resource(RESOURCE_PATH)
+        tcf.setting_table.add_resource(RESOURCE_LIB_PATH)
         uk_table = tcf.keyword_table
         uk_table.add('Should be in keywords Uk')
         return tcf
@@ -50,11 +52,16 @@ class TestKeywordSuggestions(unittest.TestCase):
         sugs = self.kw_suggestions.get_suggestions_for('create file')
         self._assert_import_kws(sugs, 'OperatingSystem')
 
+    def test_lib_from_resource_file(self):
+        sugs = self.kw_suggestions.get_suggestions_for('generate random')
+        self._assert_import_kws(sugs, 'String')
+
+
     def test_resource_file_keywords(self):
         sugs = self.kw_suggestions.get_suggestions_for('Resource Uk')
         self._assert_import_kws(sugs, 'resource.html')
 
-    def test_uk_from_reource_files_reource_file(self):
+    def test_uk_from_resource_files_resource_file(self):
         sugs = self.kw_suggestions.get_suggestions_for('UK From Text Resource')
         self._assert_import_kws(sugs, 'resource.txt')
 
