@@ -19,7 +19,6 @@ from robotide.namespace.cache import LibraryCache
 import os
 
 
-
 class KeywordSuggestions(object):
 
     def __init__(self, namespace):
@@ -52,10 +51,11 @@ class KeywordInfo(object):
         return not self.__cmp__(other)
 
     def __hash__(self):
-        # TODO: is this correct way to combine hashes
+        # TODO: is this correct way to combine hashes?
         return hash(self.name) + hash(self.source)
 
 
+# FIXME: refactor to something more beautiful
 class Namespace(object):
 
     def __init__(self, datafile):
@@ -139,6 +139,7 @@ class Namespace(object):
 
     def get_resources(self):
         return list(self._get_resources_recursive(self.datafile, VariableStash()))
+
 
 class ResourceCache(object):
 
