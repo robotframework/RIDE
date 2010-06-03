@@ -119,6 +119,18 @@ class Namespace(object):
             return parts[0], None
         return parts[0], parts[1:]
 
+    def _get_resources_recursive(self, datafile, vars):
+        resources= set()
+        vars.add_vars(datafile.variable_table)
+        for imp in self.__collect_import_of_type(datafile, Resource):
+            resolved_name = self._resolve_variable(imp.name, vars)
+            res = self.res_cache.get_resource(imp.directory, resolved_name)
+            resources.add(res)
+            resources.update(self._get_resources_recursive(res, vars))
+        return resources
+
+    def get_resources(self):
+        return list(self._get_resources_recursive(self.datafile, VariableStash()))
 
 class ResourceCache(object):
 

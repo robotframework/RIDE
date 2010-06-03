@@ -1,12 +1,13 @@
-import os
-import unittest
-
+from robot.parsing.settings import Resource
+from robot.utils import normalizing
 from robot.utils.asserts import assert_true, assert_none, assert_false, \
     assert_not_none, assert_equals
 from robotide.namespace.keyword_suggestions import KeywordSuggestions, Namespace, \
     ResourceCache
 from robotide.robotapi import TestCaseFile
-from robot.parsing.settings import Resource
+import os
+import unittest
+
 
 
 DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]),
@@ -89,6 +90,29 @@ class TestKeywordSuggestions(unittest.TestCase):
         for s in sugs:
             assert_true(s.source.endswith(source))
 
+
+class TestResourceGetter(unittest.TestCase):
+
+    def setUp(self):
+        self.tcf = self._build_test_case_file()
+        self.ns = Namespace(self.tcf)
+
+    def _build_test_case_file(self):
+        tcf = TestCaseFile()
+        tcf.setting_table.add_resource(RESOURCE_PATH)
+        tcf.setting_table.add_resource(RESOURCE_LIB_PATH)
+        tcf.setting_table.add_resource('${resname}')
+        tcf.variable_table.add('${resname}', RESOURCE_WITH_VARS)
+        return tcf
+
+    def test_resource_getter(self):
+        resources = self.ns.get_resources()
+        assert_equals(len(resources),6)
+        paths = []
+        for res in resources:
+            normalized = normalizing.normpath(res.source)
+            assert_false(normalized in paths)
+            paths.append(normalized)
 
 class TestResourceCache(unittest.TestCase):
 
