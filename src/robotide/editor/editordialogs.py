@@ -113,7 +113,7 @@ class _SettingDialog(_Dialog):
     _validator = None
 
     def _get_editors(self, item):
-        editor = ValueEditor(self, item.get_str_value())
+        editor = ValueEditor(self, item.value)
         if self._validator:
             editor.set_validator(self._validator())
         return [editor]
