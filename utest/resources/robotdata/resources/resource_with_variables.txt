@@ -1,0 +1,8 @@
+***User Keywords***
+UK From Variable Resource  No Operation
+
+*** Variables ***
+${library_from_resource}  Dialogs
+
+*** Settings ***
+Library  ${library_from_resource}

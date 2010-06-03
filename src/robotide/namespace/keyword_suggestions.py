@@ -74,18 +74,28 @@ class Namespace(object):
                 for kw in datafile.keywords]
 
     def _get_imported_keywords(self, datafile):
-        return self.__collect_kws_from_imports(datafile, Library, self.__lib_kw_getter)
+        return self.__collect_kws_from_imports(datafile, Library, 
+                                               self.__lib_kw_getter)
 
     def __lib_kw_getter(self, imp):
-        resolved_name = self.var_cache.get(imp.name)
-        return self.lib_cache.get_library_keywords(resolved_name[0], imp.args)
+        return self.lib_cache.get_library_keywords(self._resolve_variable(imp.name), 
+                                                   imp.args)
+
+    def _resolve_variable(self, name):
+        resolved = self.var_cache.get(name)
+        if resolved is None:
+            return name
+        return resolved[0] if resolved else ''
 
     def _get_import_resource_keywords(self, datafile):
-        kws = self.__collect_kws_from_imports(datafile, Resource, self.__res_kw_recursive_getter)
+        kws = self.__collect_kws_from_imports(datafile, Resource, 
+                                              self.__res_kw_recursive_getter)
         return kws
 
     def __res_kw_recursive_getter(self, imp):
-        res = self.res_cache.get_resource(imp)
+        resolved_name = self._resolve_variable(imp.name)
+        res = self.res_cache.get_resource(imp.directory, resolved_name)
+        self.var_cache.add_vars(res.variable_table)
         kws = []
         for child in self.__collect_import_of_type(res, Resource):
             kws.extend(self.__res_kw_recursive_getter(child))
@@ -115,8 +125,8 @@ class ResourceCache(object):
     def __init__(self):
         self.cache = {}
 
-    def get_resource(self, resource_import):
-        path = os.path.join(resource_import.directory, resource_import.name) 
+    def get_resource(self, directory, name):
+        path = os.path.join(directory, name) 
         normalized = os.path.normpath(path)
         if normalized not in self.cache:
             self.cache[normalized] = ResourceFile(normalized)
@@ -135,4 +145,4 @@ class VariableCache(object):
             self._variables[v.name] = v.value
 
     def get(self, name):
-        return self._variables[name] if name in self._variables else [name]
+        return self._variables[name] if name in self._variables else None

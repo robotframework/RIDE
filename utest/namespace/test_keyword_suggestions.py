@@ -11,8 +11,12 @@ from robot.parsing.settings import Resource
 
 DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]),
                         '..', 'resources', 'robotdata')
-RESOURCE_PATH = os.path.normpath(os.path.join(DATAPATH, 'resources', 'resource.html'))
-RESOURCE_LIB_PATH = os.path.normpath(os.path.join(DATAPATH, 'resources', 'resource_lib_imports.txt'))
+RESOURCE_PATH = os.path.normpath(os.path.join(DATAPATH, 'resources',
+                                              'resource.html'))
+RESOURCE_LIB_PATH = os.path.normpath(os.path.join(DATAPATH, 'resources',
+                                                  'resource_lib_imports.txt'))
+RESOURCE_WITH_VARS = os.path.normpath(os.path.join(DATAPATH, 'resources',
+                                                   'resource_with_variables.txt'))
 
 class TestKeywordSuggestions(unittest.TestCase):
 
@@ -26,8 +30,10 @@ class TestKeywordSuggestions(unittest.TestCase):
         tcf.setting_table.add_library('Operating System')
         tcf.setting_table.add_resource(RESOURCE_PATH)
         tcf.setting_table.add_resource(RESOURCE_LIB_PATH)
+        tcf.setting_table.add_resource('${resname}')
         tcf.setting_table.add_library('${libname}')
         tcf.variable_table.add('${libname}', 'Collections')
+        tcf.variable_table.add('${resname}', RESOURCE_WITH_VARS)
         uk_table = tcf.keyword_table
         uk_table.add('Should be in keywords Uk')
         return tcf
@@ -70,6 +76,14 @@ class TestKeywordSuggestions(unittest.TestCase):
         sugs = self.kw_suggestions.get_suggestions_for('UK From Text Resource')
         self._assert_import_kws(sugs, 'resource.txt')
 
+    def test_resource_file_from_variable(self):
+        sugs = self.kw_suggestions.get_suggestions_for('UK From Variable Resource')
+        self._assert_import_kws(sugs, 'resource_with_variables.txt')
+
+    def test_library_from_resourcefile_variable(self):
+        sugs = self.kw_suggestions.get_suggestions_for('Execute Manual')
+        self._assert_import_kws(sugs, 'Dialogs')
+
     def _assert_import_kws(self, sugs, source):
         assert_true(len(sugs) > 0)
         for s in sugs:
@@ -83,13 +97,13 @@ class TestResourceCache(unittest.TestCase):
 
     def test_file_read_only_once(self):
         imp = Resource(None, RESOURCE_PATH)
-        first = self.rc.get_resource(imp)
-        second = self.rc.get_resource(imp)
+        first = self.rc.get_resource(imp.directory, imp.name)
+        second = self.rc.get_resource(imp.directory, imp.name)
         assert_true(first is second)
 
     def test_file_with_absolute_path(self):
         imp = Resource(ParentMock(), RESOURCE_PATH)
-        first = self.rc.get_resource(imp)
+        first = self.rc.get_resource(imp.directory, imp.name)
         assert_true(first)
 
 class ParentMock(object):
