@@ -178,6 +178,7 @@ class KeywordEditor(KeywordEditorUi):
         KeywordEditorUi.__init__(self, parent, len(self._keywords)+5, 5)
         self.SetDefaultEditor(ContentAssistCellEditor(parent.plugin))
         self._datafile = controller.datafile
+        print controller
         # TODO: Tooltip may be smaller when the documentation is wrapped correctly
         self._tooltip = RidePopupWindow(self, (650, 400))
         self._marked_cell = None
@@ -197,7 +198,7 @@ class KeywordEditor(KeywordEditorUi):
         self.Bind(grid.EVT_GRID_CELL_LEFT_DCLICK, self.OnCellLeftDClick)
 
     def _write_keywords(self, keywords):
-        self._write_data([kw.assign +[kw.keyword] + kw.args for kw in keywords],
+        self._write_data([kw.assign + [kw.keyword] if kw.keyword else [] + kw.args for kw in keywords],
                          update_history=False)
 
     def OnCopy(self, event=None):

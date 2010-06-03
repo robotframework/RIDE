@@ -99,6 +99,12 @@ Overrides possible Test Teardown set on the suite level.
 %(FIXTURE)s
 %(ESCAPE)s
 
+Test Template
+FIXME
+
+Template
+FIXME
+
 Arguments
 Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.
 Default values are given using equal sign and the last argument can be a list variable.

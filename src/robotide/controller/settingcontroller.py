@@ -22,6 +22,7 @@ class MetadataController(object):
         self.name = meta.name
         self.value = meta.value
 
+
 class ImportController(object):
     def __init__(self, import_):
         self._import = import_
@@ -48,6 +49,23 @@ class _SettingController(object):
     def dirty(self):
         return self._parent.dirty
 
+    def set_value(self, value):
+        if self._changed(value):
+            self._set(value)
+            self._mark_dirty()
+
+    def _changed(self, value):
+        return value != self._data.value
+
+    def _set(self, value):
+        self._data.value = value
+
+    def _split_from_separators(self, value):
+        return utils.split_value(value)
+
+    def _mark_dirty(self):
+        self._parent.mark_dirty()
+
 
 class DocumentationController(_SettingController):
     editor = DocumentationEditor
@@ -60,11 +78,6 @@ class DocumentationController(_SettingController):
     def value(self):
         return self._doc.value
 
-    def set_value(self, value):
-        if value != self._doc.value:
-            self._doc.value = value
-            self._parent.mark_dirty()
-
 
 class FixtureController(_SettingController):
     editor = SettingEditor
@@ -76,19 +89,18 @@ class FixtureController(_SettingController):
     def value(self):
         return ' | '.join([self._fixture.name or ''] + self._fixture.args or [])
 
-    def set_value(self, value):
+    def _changed(self, value):
         name, args = self._parse(value)
-        if self._changed(name, args):
-            self._fixture.name = name
-            self._fixture.args = args
-            self._parent.mark_dirty()
+        return self._fixture.name != name or self._fixture.args != args
+
+    def _set(self, value):
+        name, args = self._parse(value)
+        self._fixture.name = name
+        self._fixture.args = args
 
     def _parse(self, value):
-        value = [v.strip() for v in utils.split_value(value)]
+        value = self._split_from_separators(value)
         return value[0] if value else '', value[1:] if value else []
-
-    def _changed(self, name, args):
-        return self._fixture.name != name or self._fixture.args != args
 
 
 class TagsController(_SettingController):
@@ -99,10 +111,13 @@ class TagsController(_SettingController):
 
     @property
     def value(self):
-        return ' | '.join(self._tags.value)
+        return ' | '.join(self._tags.value or [])
 
-    def set_value(self, value):
-        raise NotImplementedError()
+    def _changed(self, value):
+        return self._tags.value != self._split_from_separators(value)
+
+    def _set(self, value):
+        self._tags.value = self._split_from_separators(value) 
 
 
 class TimeoutController(_SettingController):
@@ -113,10 +128,26 @@ class TimeoutController(_SettingController):
 
     @property
     def value(self):
-        return ' | '.join([self._timeout.value, self._timeout.message])
+        value, msg = self._timeout.value, self._timeout.message
+        if not value:
+            return ''
+        return value if not msg else value + ' | ' + msg
 
-    def set_value(self, value):
-        raise NotImplementedError()
+    def _changed(self, value):
+        val, msg = self._parse(value)
+        return self._timeout.value != val or self._timeout.message != msg
+
+    def _set(self, value):
+        value, message = self._parse(value)
+        self._timeout.value = value
+        self._timeout.message = message
+
+    def _parse(self, value):
+        parts = value.split('|', 1)
+        val = parts[0].strip() if parts else ''
+        msg = parts[1].strip() if len(parts) == 2 else ''
+        return val, msg
+
 
 
 class TemplateController(_SettingController):
@@ -127,10 +158,7 @@ class TemplateController(_SettingController):
 
     @property
     def value(self):
-        return self._template.value
-
-    def set_value(self, value):
-        raise NotImplementedError()
+        return self._template.value or ''
 
 
 class ArgumentsController(_SettingController):
@@ -141,7 +169,10 @@ class ArgumentsController(_SettingController):
 
     @property
     def value(self):
-        return ' | '.join(self._args.value)
+        return ' | '.join(self._args.value or [])
 
-    def set_value(self, value):
-        raise NotImplementedError()
+    def _changed(self, value):
+        return self._args.value != self._split_from_separators(value)
+
+    def _set(self, value):
+        self._args.value = self._split_from_separators(value)

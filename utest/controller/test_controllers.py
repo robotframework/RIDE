@@ -1,12 +1,12 @@
 import unittest
 from robot.parsing import TestCaseFile
-from robot.parsing.settings import Fixture, Documentation
+from robot.parsing.settings import Fixture, Documentation, Timeout, Tags
 
-from robotide.model.controller import FixtureController, DocumentationController,\
-    TestCaseFileController, TestDataDirectoryController, TestCaseController,\
-    UserKeywordController
 from robot.utils.asserts import assert_equals, assert_true, assert_false
 from robot.parsing.model import TestDataDirectory, TestCase, UserKeyword
+from robotide.controller.settingcontroller import *
+from robotide.controller.filecontroller import (TestCaseFileController,
+        TestDataDirectoryController, TestCaseController, UserKeywordController)
 
 
 class _FakeParent(object):
@@ -16,7 +16,7 @@ class _FakeParent(object):
         self.dirty = True
 
 
-class TestDocumentationController(unittest.TestCase):
+class DocumentationControllerTest(unittest.TestCase):
 
     def setUp(self):
         self.doc = Documentation()
@@ -48,7 +48,7 @@ class TestDocumentationController(unittest.TestCase):
         assert_false(self.ctrl.dirty)
 
 
-class TestFixtureController(unittest.TestCase):
+class FixtureControllerTest(unittest.TestCase):
 
     def setUp(self):
         self.fix = Fixture()
@@ -60,6 +60,9 @@ class TestFixtureController(unittest.TestCase):
     def test_creation(self):
         assert_equals(self.ctrl.value, 'My Setup | argh | urgh')
         assert_true(self.ctrl.is_set)
+
+    def test_value_with_empty_fixture(self):
+        assert_equals(FixtureController(self.parent, Fixture(), '').value, '')
 
     def test_setting_value_changes_fixture_state(self):
         self.ctrl.set_value('Blaa')
@@ -90,7 +93,81 @@ class TestFixtureController(unittest.TestCase):
         assert_false(self.ctrl.dirty)
 
 
-class TestTestCaseFileController(unittest.TestCase):
+class TagsControllerTest(unittest.TestCase):
+
+    def setUp(self):
+        self.tags = Tags()
+        self.tags.value = ['f1', 'f2']
+        self.parent = _FakeParent()
+        self.ctrl = TagsController(self.parent, self.tags, 'Force Tags')
+
+    def test_creation(self):
+        assert_equals(self.ctrl.value, 'f1 | f2')
+        assert_true(self.ctrl.is_set)
+
+    def test_value_with_empty_fixture(self):
+        assert_equals(TagsController(self.parent, Tags(), '').value, '')
+
+    def test_setting_value_changes_fixture_state(self):
+        self.ctrl.set_value('Blaa')
+        assert_equals(self.tags.value, ['Blaa'])
+        self.ctrl.set_value('a1 | a2 | a3')
+        assert_equals(self.tags.value, ['a1', 'a2', 'a3'])
+
+    def test_setting_value_informs_parent_controller_about_dirty_model(self):
+        self.ctrl.set_value('Blaa')
+        assert_true(self.ctrl.dirty)
+
+    def test_set_empty_value(self):
+        self.ctrl.set_value('')
+        assert_equals(self.tags.value, [])
+        assert_true(self.ctrl.dirty)
+
+    def test_same_value(self):
+        self.ctrl.set_value('f1 | f2')
+        assert_false(self.ctrl.dirty)
+
+
+class TimeoutControllerTest(unittest.TestCase):
+
+    def setUp(self):
+        self.to = Timeout()
+        self.to.value = '1 s'
+        self.to.message = 'message'
+        self.parent = _FakeParent()
+        self.ctrl = TimeoutController(self.parent, self.to, 'Suite Setup')
+
+    def test_creation(self):
+        assert_equals(self.ctrl.value, '1 s | message')
+        assert_true(self.ctrl.is_set)
+
+    def test_value_with_empty_timeout(self):
+        assert_equals(TimeoutController(self.parent, Timeout(), '').value, '')
+
+    def test_setting_value_changes_fixture_state(self):
+        self.ctrl.set_value('3 s')
+        assert_equals(self.to.value, '3 s')
+        assert_equals(self.to.message, '')
+        self.ctrl.set_value('3 s | new message')
+        assert_equals(self.to.value, '3 s')
+        assert_equals(self.to.message, 'new message')
+
+    def test_setting_value_informs_parent_controller_about_dirty_model(self):
+        self.ctrl.set_value('1 min')
+        assert_true(self.ctrl.dirty)
+
+    def test_set_empty_value(self):
+        self.ctrl.set_value('')
+        assert_equals(self.to.value, '')
+        assert_equals(self.to.message, '')
+        assert_true(self.ctrl.dirty)
+
+    def test_same_value(self):
+        self.ctrl.set_value('1 s | message')
+        assert_false(self.ctrl.dirty)
+
+
+class TestCaseFileControllerTest(unittest.TestCase):
 
     def test_creation(self):
         ctrl = TestCaseFileController(TestCaseFile())
@@ -98,7 +175,7 @@ class TestTestCaseFileController(unittest.TestCase):
             assert_true(st is not None)
 
 
-class TestTestDirectoryDataController(unittest.TestCase):
+class TestDataDirectoryControllerTest(unittest.TestCase):
 
     def test_creation(self):
         ctrl = TestDataDirectoryController(TestDataDirectory())
@@ -106,7 +183,7 @@ class TestTestDirectoryDataController(unittest.TestCase):
             assert_true(st is not None)
 
 
-class TestTestCaseController(unittest.TestCase):
+class TestCaseControllerTest(unittest.TestCase):
 
     def test_creation(self):
         ctrl = TestCaseController(TestCase(parent=None, name='Test'))
@@ -114,7 +191,7 @@ class TestTestCaseController(unittest.TestCase):
             assert_true(st is not None)
 
 
-class TestUserKeywordController(unittest.TestCase):
+class UserKeywordControllerTest(unittest.TestCase):
 
     def test_creation(self):
         ctrl = UserKeywordController(UserKeyword(parent=None, name='UK'))
