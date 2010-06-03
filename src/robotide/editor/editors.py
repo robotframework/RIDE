@@ -138,9 +138,9 @@ class SettingEditor(wx.Panel, RideEventHandler):
         wx.Panel.__init__(self, parent)
         self._controller = controller
         self._plugin = plugin
-        self._datafile = controller.parent
+        self._datafile = controller.datafile
         self._create_controls()
-#        self._dialog = EditorDialog(item)
+        self._dialog = EditorDialog(controller)
         self._tree = tree
         self._editing = False
 
@@ -172,7 +172,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
         dlg = self._dialog(self.GetGrandParent(), self._datafile, self._plugin,
                            self._controller)
         if dlg.ShowModal() == wx.ID_OK:
-            self._item.set_str_value(dlg.get_value())
+            self._controller.set_value(dlg.get_value())
             self._update_and_notify()
         dlg.Destroy()
         self._editing = False
@@ -193,7 +193,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
         self._update_and_notify()
 
     def _update_value(self):
-        if self._controller.is_set():
+        if self._controller.is_set:
             self._value_display.SetBackgroundColour('white')
             self._value_display.SetValue(self._controller.value)
         else:
@@ -210,7 +210,7 @@ class DocumentationEditor(SettingEditor):
         wx.Panel.__init__(self, parent)
         self._controller = controller
         self._plugin = plugin
-        self._datafile = controller.parent
+        self._datafile = controller.datafile
         self._tree = tree
         self._create_controls()
 
@@ -254,7 +254,7 @@ class TestCaseEditor(_RobotTableEditor):
         self.sizer.Add(sizer)
 
     def _create_kweditor(self):
-        self.kweditor = KeywordEditor(self, self._tree)
+        self.kweditor = KeywordEditor(self, self.controller, self._tree)
         self._create_add_buttons(self.kweditor)
         self.sizer.Add(self.kweditor, 1, wx.EXPAND|wx.ALL, 2)
 
@@ -306,7 +306,7 @@ class _AbstractListEditor(ListEditor, RideEventHandler):
 
     def __init__(self, parent, tree, data):
         ListEditor.__init__(self, parent, self._titles, data)
-        self._datafile = data.parent
+        self._datafile = data.datafile
         self._tree = tree
 
     def get_selected_datafile(self):
