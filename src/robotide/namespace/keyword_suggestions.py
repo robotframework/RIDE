@@ -54,14 +54,14 @@ class Namespace(object):
         self.datafile = datafile
         self.lib_cache = LibraryCache()
         self.res_cache = ResourceCache()
-        self.var_cache = VariableCache()
-        self.var_cache.add_vars(datafile.variable_table)
 
     def get_keywords(self):
+        vars = VariableStash()
+        vars.add_vars(self.datafile.variable_table)
         return self._get_default_keywords() + \
                self._get_datafile_keywords(self.datafile) +\
-               self._get_imported_keywords(self.datafile) + \
-               self._get_import_resource_keywords(self.datafile)
+               self._get_imported_keywords(self.datafile, vars) + \
+               self._get_import_resource_keywords(self.datafile, vars)
 
     def _get_default_keywords(self):
         kws = []
@@ -73,40 +73,40 @@ class Namespace(object):
         return [KeywordInfo(kw.name, datafile.source, kw.doc) 
                 for kw in datafile.keywords]
 
-    def _get_imported_keywords(self, datafile):
+    def _get_imported_keywords(self, datafile, vars):
         return self.__collect_kws_from_imports(datafile, Library, 
-                                               self.__lib_kw_getter)
+                                               self.__lib_kw_getter, vars)
 
-    def __lib_kw_getter(self, imp):
-        return self.lib_cache.get_library_keywords(self._resolve_variable(imp.name), 
+    def __lib_kw_getter(self, imp, vars):
+        return self.lib_cache.get_library_keywords(self._resolve_variable(imp.name, vars), 
                                                    imp.args)
 
-    def _resolve_variable(self, name):
-        resolved = self.var_cache.get(name)
+    def _resolve_variable(self, name, vars):
+        resolved = vars.get(name)
         if resolved is None:
             return name
         return resolved[0] if resolved else ''
 
-    def _get_import_resource_keywords(self, datafile):
+    def _get_import_resource_keywords(self, datafile, vars):
         kws = self.__collect_kws_from_imports(datafile, Resource, 
-                                              self.__res_kw_recursive_getter)
+                                              self.__res_kw_recursive_getter, vars)
         return kws
 
-    def __res_kw_recursive_getter(self, imp):
-        resolved_name = self._resolve_variable(imp.name)
+    def __res_kw_recursive_getter(self, imp, vars):
+        resolved_name = self._resolve_variable(imp.name, vars)
         res = self.res_cache.get_resource(imp.directory, resolved_name)
-        self.var_cache.add_vars(res.variable_table)
+        vars.add_vars(res.variable_table)
         kws = []
         for child in self.__collect_import_of_type(res, Resource):
-            kws.extend(self.__res_kw_recursive_getter(child))
-        kws.extend(self._get_imported_keywords(res))
+            kws.extend(self.__res_kw_recursive_getter(child, vars))
+        kws.extend(self._get_imported_keywords(res, vars))
         return res.keywords + kws
 
-    def __collect_kws_from_imports(self, datafile, instance_type, getter):
+    def __collect_kws_from_imports(self, datafile, instance_type, getter, vars):
         kws = []
         for imp in self.__collect_import_of_type(datafile, instance_type):
             kws.extend([KeywordInfo(kw.name, kw.source, kw.doc) 
-                        for kw in getter(imp)])
+                        for kw in getter(imp, vars)])
         return kws
 
     def __collect_import_of_type(self, datafile, instance_type):
@@ -132,7 +132,8 @@ class ResourceCache(object):
             self.cache[normalized] = ResourceFile(normalized)
         return self.cache[normalized]
 
-class VariableCache(object):
+
+class VariableStash(object):
 
     def __init__(self):
         self._variables = NormalizedDict()
