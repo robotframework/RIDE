@@ -45,7 +45,15 @@ class KeywordInfo(object):
                                                               self.doc)
 
     def __cmp__(self, other):
-        return cmp(self.name, other.name)
+        name_cmp = cmp(self.name, other.name)
+        return name_cmp if name_cmp else cmp(self.source, other.source)
+
+    def __eq__(self, other):
+        return not self.__cmp__(other)
+
+    def __hash__(self):
+        # TODO: is this correct way to combine hashes
+        return hash(self.name) + hash(self.source)
 
 
 class Namespace(object):
@@ -58,10 +66,10 @@ class Namespace(object):
     def get_keywords(self):
         vars = VariableStash()
         vars.add_vars(self.datafile.variable_table)
-        return self._get_default_keywords() + \
-               self._get_datafile_keywords(self.datafile) +\
-               self._get_imported_keywords(self.datafile, vars) + \
-               self._get_import_resource_keywords(self.datafile, vars)
+        return list(set(self._get_default_keywords() + \
+                        self._get_datafile_keywords(self.datafile) +\
+                        self._get_imported_keywords(self.datafile, vars) + \
+                        self._get_import_resource_keywords(self.datafile, vars)))
 
     def _get_default_keywords(self):
         kws = []

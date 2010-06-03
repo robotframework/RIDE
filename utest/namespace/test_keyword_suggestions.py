@@ -85,6 +85,14 @@ class TestKeywordSuggestions(unittest.TestCase):
         sugs = self.kw_suggestions.get_suggestions_for('Execute Manual')
         self._assert_import_kws(sugs, 'Dialogs')
 
+    def test_keywords_only_once_per_source(self):
+        sugs = self.kw_suggestions.get_suggestions_for('')
+        kw_set = []
+        for kw in sugs:
+            key = 'kw: %s %s' % (kw.name, kw.source)
+            assert_false(key in kw_set)
+            kw_set.append(key)
+
     def _assert_import_kws(self, sugs, source):
         assert_true(len(sugs) > 0)
         for s in sugs:
