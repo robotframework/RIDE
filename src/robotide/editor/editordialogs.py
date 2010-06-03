@@ -25,7 +25,7 @@ from dialoghelps import get_help
 
 
 def EditorDialog(obj):
-    return globals()[obj.__class__.__name__ + 'Dialog']
+    return globals()[obj.label.replace(' ', '') + 'Dialog']
 
 
 class _Dialog(wx.Dialog):
@@ -132,25 +132,24 @@ class TagsDialog(_SettingDialog):
 class _FixtureDialog(_SettingDialog):
 
     def _get_editors(self, item):
-        return [ContentAssistEditor(self, item.get_str_value())]
+        return [ContentAssistEditor(self, item.value)]
 
-class SuiteSetupDialog(_FixtureDialog):
-    pass
+class SuiteSetupDialog(_FixtureDialog): pass
 
-class SuiteTeardownDialog(_FixtureDialog):
-    pass
+class SuiteTeardownDialog(_FixtureDialog): pass
 
-class TestSetupDialog(_FixtureDialog):
-    pass
+class TestSetupDialog(_FixtureDialog): pass
 
-class TestTeardownDialog(_FixtureDialog):
-    pass
+class TestTeardownDialog(_FixtureDialog): pass
 
-class SetupDialog(_FixtureDialog):
-    pass
+class SetupDialog(_FixtureDialog): pass
 
-class TeardownDialog(_FixtureDialog):
-    pass
+class TeardownDialog(_FixtureDialog): pass
+
+
+class TemplateDialog(_SettingDialog): pass
+
+class TestTemplateDialog(_SettingDialog): pass
 
 
 class ArgumentsDialog(_SettingDialog):

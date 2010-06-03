@@ -173,11 +173,11 @@ class KeywordEditor(KeywordEditorUi):
     dirty = property(lambda self: self._datafile.dirty)
     _no_cell = grid.GridCellCoords(-1, -1)
 
-    def __init__(self, parent, tree):
-        self._keywords = parent.controller.steps
+    def __init__(self, parent, controller, tree):
+        self._keywords = controller.steps
         KeywordEditorUi.__init__(self, parent, len(self._keywords)+5, 5)
         self.SetDefaultEditor(ContentAssistCellEditor(parent.plugin))
-        self._datafile = parent.controller.parent
+        self._datafile = controller.datafile
         # TODO: Tooltip may be smaller when the documentation is wrapped correctly
         self._tooltip = RidePopupWindow(self, (650, 400))
         self._marked_cell = None

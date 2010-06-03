@@ -16,7 +16,7 @@ import os
 
 from robotide.errors import DataError, SerializationError
 from robotide.robotapi import TestDataDirectory, TestCaseFile, ResourceFile
-from robotide.model.controller import DataController
+from robotide.controller import DataController
 from robotide import context
 
 
