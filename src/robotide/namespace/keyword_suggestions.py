@@ -12,11 +12,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import os
-
 from robot.parsing.model import ResourceFile
 from robot.parsing.settings import Library, Resource
+from robot.utils.normalizing import NormalizedDict
 from robotide.namespace.cache import LibraryCache
+import os
+
 
 
 class KeywordSuggestions(object):
@@ -53,6 +54,14 @@ class Namespace(object):
         self.datafile = datafile
         self.lib_cache = LibraryCache()
         self.res_cache = ResourceCache()
+        self.var_cache = VariableCache()
+        self.var_cache.add_vars(datafile.variable_table)
+
+    def get_keywords(self):
+        return self._get_default_keywords() + \
+               self._get_datafile_keywords(self.datafile) +\
+               self._get_imported_keywords(self.datafile) + \
+               self._get_import_resource_keywords(self.datafile)
 
     def _get_default_keywords(self):
         kws = []
@@ -68,7 +77,8 @@ class Namespace(object):
         return self.__collect_kws_from_imports(datafile, Library, self.__lib_kw_getter)
 
     def __lib_kw_getter(self, imp):
-        return self.lib_cache.get_library_keywords(imp.name, imp.args)
+        resolved_name = self.var_cache.get(imp.name)
+        return self.lib_cache.get_library_keywords(resolved_name[0], imp.args)
 
     def _get_import_resource_keywords(self, datafile):
         kws = self.__collect_kws_from_imports(datafile, Resource, self.__res_kw_recursive_getter)
@@ -93,10 +103,6 @@ class Namespace(object):
         return [imp for imp in datafile.imports
                 if isinstance(imp, instance_type)]
 
-    def get_keywords(self):
-        return self._get_default_keywords() + self._get_datafile_keywords(self.datafile) +\
-               self._get_imported_keywords(self.datafile) + self._get_import_resource_keywords(self.datafile)
-
     def _get_name_and_args(self, libsetting):
         parts = libsetting.split('|')
         if len(parts) == 1:
@@ -115,3 +121,18 @@ class ResourceCache(object):
         if normalized not in self.cache:
             self.cache[normalized] = ResourceFile(normalized)
         return self.cache[normalized]
+
+class VariableCache(object):
+
+    def __init__(self):
+        self._variables = NormalizedDict()
+
+    def _add_variable(self, name, value):
+        self._variables[name] = value
+
+    def add_vars(self, variable_table):
+        for v in variable_table.variables:
+            self._variables[v.name] = v.value
+
+    def get(self, name):
+        return self._variables[name] if name in self._variables else [name]

@@ -26,6 +26,8 @@ class TestKeywordSuggestions(unittest.TestCase):
         tcf.setting_table.add_library('Operating System')
         tcf.setting_table.add_resource(RESOURCE_PATH)
         tcf.setting_table.add_resource(RESOURCE_LIB_PATH)
+        tcf.setting_table.add_library('${libname}')
+        tcf.variable_table.add('${libname}', 'Collections')
         uk_table = tcf.keyword_table
         uk_table.add('Should be in keywords Uk')
         return tcf
@@ -56,6 +58,9 @@ class TestKeywordSuggestions(unittest.TestCase):
         sugs = self.kw_suggestions.get_suggestions_for('generate random')
         self._assert_import_kws(sugs, 'String')
 
+    def test_lib_import_from_var(self):
+        sugs = self.kw_suggestions.get_suggestions_for('Copy List')
+        self._assert_import_kws(sugs, 'Collections')
 
     def test_resource_file_keywords(self):
         sugs = self.kw_suggestions.get_suggestions_for('Resource Uk')
