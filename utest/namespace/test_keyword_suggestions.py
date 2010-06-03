@@ -1,3 +1,5 @@
+import os
+import unittest
 
 from robot.utils.asserts import assert_true, assert_none, assert_false, \
     assert_not_none, assert_equals
@@ -5,8 +7,6 @@ from robotide.namespace.keyword_suggestions import KeywordSuggestions, Namespace
     ResourceCache
 from robotide.robotapi import TestCaseFile
 from robot.parsing.settings import Resource
-import os
-import unittest
 
 
 DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]),
