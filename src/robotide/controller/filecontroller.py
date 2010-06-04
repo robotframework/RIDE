@@ -13,6 +13,8 @@
 #  limitations under the License.
 
 from robotide.robotapi import TestCaseFile
+from robot.parsing.datareader import DataRow
+from robot.parsing.populator import UserKeywordPopulator
 
 from robotide.controller.settingcontroller import (DocumentationController,
         FixtureController, TagsController, TimeoutController, TemplateController,
@@ -25,6 +27,11 @@ def DataController(data):
 
 
 class _DataController(object):
+
+    def __init__(self, data):
+        self.data = data
+        self.dirty = False
+        self.children = self._children(data)
 
     @property
     def settings(self):
@@ -46,11 +53,15 @@ class _DataController(object):
 
     @property
     def tests(self):
-        return TestCaseTableController(self.data.testcase_table)
+        return TestCaseTableController(self, self.data.testcase_table)
+
+    @property
+    def datafile(self):
+        return self.data
 
     @property
     def keywords(self):
-        return KeywordTableController(self.data.keyword_table)
+        return KeywordTableController(self, self.data.keyword_table)
 
     @property
     def imports(self):
@@ -69,16 +80,14 @@ class _DataController(object):
 
 class TestDataDirectoryController(_DataController):
 
-    def __init__(self, data):
-        self.data = data
-        self.children = [DataController(child) for child in data.children]
+        def _children(self, data):
+            return [DataController(child) for child in data.children]
 
 
 class TestCaseFileController(_DataController):
 
-    def __init__(self, data):
-        self.data = data
-        self.children = []
+    def _children(self, data):
+        return []
 
     def _settings(self):
         ss = self.data.setting_table
@@ -114,9 +123,24 @@ class MetadataListController(object):
         return self._table.parent
 
 
-class TestCaseTableController(object):
-    def __init__(self, tctable):
-        self._table = tctable
+class _TableController(object):
+    def __init__(self, parent_controller, table):
+        self._parent = parent_controller
+        self._table = table
+
+    def mark_dirty(self):
+        self._parent.mark_dirty()
+
+    @property
+    def dirty(self):
+        return self._parent.dirty
+
+    @property
+    def datafile(self):
+        return self._parent.datafile
+
+
+class TestCaseTableController(_TableController):
     def __iter__(self):
         return iter(TestCaseController(t) for t in self._table)
 
@@ -140,22 +164,24 @@ class TestCaseController(object):
 
     @property
     def datafile(self):
-        return self._test.parent
+        return self._test.parent.parent
 
     @property
     def steps(self):
         return self._test.steps
 
+    def mark_dirty(self):
+        self._parent.mark_dirty()
 
-class KeywordTableController(object):
-    def __init__(self, kwtable):
-        self._table = kwtable
+
+class KeywordTableController(_TableController):
     def __iter__(self):
-        return iter(UserKeywordController(kw) for kw in self._table)
+        return iter(UserKeywordController(self, kw) for kw in self._table)
 
 
 class UserKeywordController(object):
-    def __init__(self, kw):
+    def __init__(self, parent_controller, kw):
+        self._parent = parent_controller
         self.data = self._kw = kw
 
     @property
@@ -172,11 +198,26 @@ class UserKeywordController(object):
 
     @property
     def datafile(self):
-        return self._kw.parent
+        return self._parent.datafile
 
     @property
     def steps(self):
         return self._kw.steps
+
+    def mark_dirty(self):
+        self._parent.mark_dirty()
+
+    @property
+    def dirty(self):
+        return self._parent.dirty
+
+    def parse_steps_from_rows(self, rows):
+        self._kw.steps = []
+        pop = UserKeywordPopulator(lambda name: self._kw)
+        for r in rows:
+            r = DataRow([''] + r)
+            pop.add(r)
+        pop.populate()
 
 
 class ImportSettingsController(object):

@@ -3,10 +3,11 @@ from robot.parsing import TestCaseFile
 from robot.parsing.settings import Fixture, Documentation, Timeout, Tags
 
 from robot.utils.asserts import assert_equals, assert_true, assert_false
-from robot.parsing.model import TestDataDirectory, TestCase, UserKeyword
+from robot.parsing.model import TestDataDirectory
 from robotide.controller.settingcontroller import *
 from robotide.controller.filecontroller import (TestCaseFileController,
-        TestDataDirectoryController, TestCaseController, UserKeywordController)
+        TestDataDirectoryController, TestCaseController, UserKeywordController,
+        KeywordTableController)
 
 
 class _FakeParent(object):
@@ -173,6 +174,7 @@ class TestCaseFileControllerTest(unittest.TestCase):
         ctrl = TestCaseFileController(TestCaseFile())
         for st in ctrl.settings:
             assert_true(st is not None)
+        assert_false(ctrl.dirty)
 
 
 class TestDataDirectoryControllerTest(unittest.TestCase):
@@ -186,15 +188,43 @@ class TestDataDirectoryControllerTest(unittest.TestCase):
 class TestCaseControllerTest(unittest.TestCase):
 
     def test_creation(self):
-        ctrl = TestCaseController(TestCase(parent=None, name='Test'))
+        tcf = TestCaseFile()
+        testcase = tcf.testcase_table.add('Test')
+        ctrl = TestCaseController(testcase)
         for st in ctrl.settings:
             assert_true(st is not None)
+        assert_true(ctrl.datafile is tcf, ctrl.datafile)
 
 
 class UserKeywordControllerTest(unittest.TestCase):
 
-    def test_creation(self):
-        ctrl = UserKeywordController(UserKeyword(parent=None, name='UK'))
-        for st in ctrl.settings:
-            assert_true(st is not None)
+    def setUp(self):
+        self.tcf = TestCaseFile()
+        uk = self.tcf.keyword_table.add('UK')
+        uk.add_step(['No Operation'])
+        self.ctrl = UserKeywordController(KeywordTableController(TestCaseFileController(self.tcf), []), uk)
 
+    def test_creation(self):
+        for st in self.ctrl.settings:
+            assert_true(st is not None)
+        assert_equals(self.ctrl.steps[0].keyword, 'No Operation')
+        assert_true(self.ctrl.datafile is self.tcf)
+
+    def test_dirty(self):
+        self.ctrl.mark_dirty()
+        assert_true(self.ctrl.dirty)
+
+    def test_step_parsing(self):
+        self.ctrl.parse_steps_from_rows([['Foo']])
+        self._assert_step(self.ctrl.steps[0], exp_keyword='Foo')
+        self.ctrl.parse_steps_from_rows([['${var}= ', 'Foo', 'args'],
+                                         [': FOR', '${i}', 'In', '@{bar}'],
+                                         ['', 'blaa']])
+        self._assert_step(self.ctrl.steps[0], ['${var}='], 'Foo', ['args'])
+        assert_equals(self.ctrl.steps[1].vars, ['${i}'])
+        self._assert_step(self.ctrl.steps[1].steps[0], exp_keyword='blaa')
+
+    def _assert_step(self, step, exp_assign=[], exp_keyword=None, exp_args=[]):
+        assert_equals(step.assign, exp_assign)
+        assert_equals(step.keyword, exp_keyword)
+        assert_equals(step.args, exp_args)
