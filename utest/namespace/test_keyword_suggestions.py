@@ -3,12 +3,11 @@ import unittest
 
 from robot.parsing.settings import Resource
 from robot.utils import normalizing
-from robot.utils.asserts import assert_true, assert_none, assert_false, \
+from robot.utils.asserts import assert_true, assert_false, \
     assert_not_none, assert_equals
 from robotide.namespace.keyword_suggestions import KeywordSuggestions, Namespace, \
     ResourceCache
 from robotide.robotapi import TestCaseFile
-
 
 
 DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]),
@@ -20,6 +19,7 @@ RESOURCE_LIB_PATH = os.path.normpath(os.path.join(DATAPATH, 'resources',
 RESOURCE_WITH_VARS = os.path.normpath(os.path.join(DATAPATH, 'resources',
                                                    'resource_with_variables.txt'))
 
+
 class TestKeywordSuggestions(unittest.TestCase):
 
     def setUp(self):
@@ -29,16 +29,25 @@ class TestKeywordSuggestions(unittest.TestCase):
 
     def _build_test_case_file(self):
         tcf = TestCaseFile()
+        self._add_settings_table(tcf)
+        self._add_variable_table(tcf)
+        self._add_keyword_table(tcf)
+        return tcf
+
+    def _add_settings_table(self, tcf):
         tcf.setting_table.add_library('Operating System')
         tcf.setting_table.add_resource(RESOURCE_PATH)
         tcf.setting_table.add_resource(RESOURCE_LIB_PATH)
         tcf.setting_table.add_resource('${resname}')
         tcf.setting_table.add_library('${libname}')
+
+    def _add_variable_table(self, tcf):
         tcf.variable_table.add('${libname}', 'Collections')
         tcf.variable_table.add('${resname}', RESOURCE_WITH_VARS)
+
+    def _add_keyword_table(self, tcf):
         uk_table = tcf.keyword_table
         uk_table.add('Should be in keywords Uk')
-        return tcf
 
     def test_kw_suggestions_creation(self):
         assert_not_none(KeywordSuggestions(self.ns))
@@ -108,11 +117,17 @@ class TestResourceGetter(unittest.TestCase):
 
     def _build_test_case_file(self):
         tcf = TestCaseFile()
+        self._add_settings_table(tcf)
+        self._add_variable_table(tcf)
+        return tcf
+
+    def _add_settings_table(self, tcf):
         tcf.setting_table.add_resource(RESOURCE_PATH)
         tcf.setting_table.add_resource(RESOURCE_LIB_PATH)
         tcf.setting_table.add_resource('${resname}')
-        tcf.variable_table.add('${resname}', RESOURCE_WITH_VARS)
-        return tcf
+
+    def _add_variable_table(self, tcf):
+        return tcf.variable_table.add('${resname}', RESOURCE_WITH_VARS)
 
     def test_resource_getter(self):
         resources = self.ns.get_resources()
@@ -122,6 +137,7 @@ class TestResourceGetter(unittest.TestCase):
             normalized = normalizing.normpath(res.source)
             assert_false(normalized in paths)
             paths.append(normalized)
+
 
 class TestResourceCache(unittest.TestCase):
 
@@ -136,8 +152,8 @@ class TestResourceCache(unittest.TestCase):
 
     def test_file_with_absolute_path(self):
         imp = Resource(ParentMock(), RESOURCE_PATH)
-        first = self.rc.get_resource(imp.directory, imp.name)
-        assert_true(first)
+        assert_true(self.rc.get_resource(imp.directory, imp.name))
+
 
 class ParentMock(object):
     directory = '/tmp/exmaple'
