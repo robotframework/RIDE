@@ -21,36 +21,6 @@ from robot.utils.normalizing import NormalizedDict, normalize
 from robotide.namespace.cache import LibraryCache
 
 
-class KeywordSearch(object):
-
-    def __init__(self, namespace):
-        self.namespace = namespace
-
-    def get_all_keywords(self, datafiles):
-        kws = set()
-        kws.update(self._get_default_keywords())
-        kws.update(self._get_keywords_from(datafiles))
-        return list(kws)
-
-    def _get_default_keywords(self):
-        return self.namespace.get_default_keywords()
-
-    def _get_keywords_from(self, datafiles):
-        kws = set()
-        for df in datafiles:
-            kws.update(self.namespace.get_keywords(df))
-        return kws
-
-    def get_suggestions_for(self, datafile, start):
-        start_normalized = normalize(start)
-        suggestions = self.namespace.get_keywords(datafile)
-        return sorted([sug for sug in suggestions
-                       if normalize(sug.name).startswith(start_normalized)])
-
-    def find_user_keyword(self, datafile, kw_name):
-        return self.namespace.find_user_keyword(datafile, kw_name)
-
-
 class KeywordInfo(object):
 
     def __init__(self, name, source=None, doc=None):
@@ -81,7 +51,25 @@ class Namespace(object):
         self.lib_cache = LibraryCache()
         self.res_cache = ResourceCache()
 
-    def get_keywords(self, datafile):
+    def get_all_keywords(self, datafiles):
+        kws = set()
+        kws.update(self.get_default_keywords())
+        kws.update(self._get_keywords_from(datafiles))
+        return list(kws)
+
+    def _get_keywords_from(self, datafiles):
+        kws = set()
+        for df in datafiles:
+            kws.update(self._get_keywords(df))
+        return kws
+
+    def get_suggestions_for(self, datafile, start):
+        start_normalized = normalize(start)
+        suggestions = self._get_keywords(datafile)
+        return sorted([sug for sug in suggestions
+                       if normalize(sug.name).startswith(start_normalized)])
+
+    def _get_keywords(self, datafile):
         vars = VariableStash()
         vars.add_vars(datafile.variable_table)
         return list(set(self.get_default_keywords() + \
