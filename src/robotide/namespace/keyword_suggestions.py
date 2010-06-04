@@ -11,25 +11,44 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
 import os
 
 from robot.parsing.model import ResourceFile
 from robot.parsing.settings import Library, Resource
-from robot.utils.normalizing import NormalizedDict
+from robot.utils.match import eq
+from robot.utils.normalizing import NormalizedDict, normalize
 from robotide.namespace.cache import LibraryCache
 
 
-class KeywordSuggestions(object):
+class KeywordSearch(object):
 
-    def __init__(self, namespace, datafile):
+    def __init__(self, namespace):
         self.namespace = namespace
-        self.datafile = datafile
 
-    def get_suggestions_for(self, start):
-        start_lower = start.lower()
-        suggestions = self.namespace.get_keywords(self.datafile)
+    def get_all_keywords(self, datafiles):
+        kws = set()
+        kws.update(self._get_default_keywords())
+        kws.update(self._get_keywords_from(datafiles))
+        return list(kws)
+
+    def _get_default_keywords(self):
+        return self.namespace.get_default_keywords()
+
+    def _get_keywords_from(self, datafiles):
+        kws = set()
+        for df in datafiles:
+            kws.update(self.namespace.get_keywords(df))
+        return kws
+
+    def get_suggestions_for(self, datafile, start):
+        start_normalized = normalize(start)
+        suggestions = self.namespace.get_keywords(datafile)
         return sorted([sug for sug in suggestions
-                       if sug.name.lower().startswith(start_lower)])
+                       if normalize(sug.name).startswith(start_normalized)])
+
+    def find_user_keyword(self, datafile, kw_name):
+        return self.namespace.find_user_keyword(datafile, kw_name)
 
 
 class KeywordInfo(object):
@@ -65,12 +84,12 @@ class Namespace(object):
     def get_keywords(self, datafile):
         vars = VariableStash()
         vars.add_vars(datafile.variable_table)
-        return list(set(self._get_default_keywords() + \
+        return list(set(self.get_default_keywords() + \
                         self._get_datafile_keywords(datafile) +\
                         self._get_imported_keywords(datafile, vars) + \
                         self._get_import_resource_keywords(datafile, vars)))
 
-    def _get_default_keywords(self):
+    def get_default_keywords(self):
         kws = []
         for kw in self.lib_cache.get_default_keywords():
             kws.append(KeywordInfo(kw.name, kw.source, kw.doc))
@@ -102,6 +121,8 @@ class Namespace(object):
     def __res_kw_recursive_getter(self, imp, vars):
         resolved_name = self._resolve_variable(imp.name, vars)
         res = self.res_cache.get_resource(imp.directory, resolved_name)
+        if not res:
+            return []
         vars.add_vars(res.variable_table)
         kws = []
         for child in self.__collect_import_of_type(res, Resource):
@@ -132,9 +153,30 @@ class Namespace(object):
         for imp in self.__collect_import_of_type(datafile, Resource):
             resolved_name = self._resolve_variable(imp.name, vars)
             res = self.res_cache.get_resource(imp.directory, resolved_name)
+            if not res:
+                return resources
             resources.add(res)
             resources.update(self._get_resources_recursive(res, vars))
         return resources
+
+    def find_user_keyword(self, datafile, kw_name):
+        vars = VariableStash()
+        vars.add_vars(datafile.variable_table)
+        return self._find_user_recursive_keyword(datafile, kw_name, vars)
+
+    def _find_user_recursive_keyword(self, datafile, kw_name, vars):
+        if not datafile:
+            return None
+        for kw in datafile.keywords:
+            if eq(kw_name, kw.name):
+                return kw
+        for imp in self.__collect_import_of_type(datafile, Resource):
+            resolved_name = self._resolve_variable(imp.name, vars)
+            res = self.res_cache.get_resource(imp.directory, resolved_name)
+            result = self._find_user_recursive_keyword(res, kw_name, vars)
+            if result:
+                return result
+        return None
 
     def get_resources(self, datafile):
         return list(self._get_resources_recursive(datafile, VariableStash()))
@@ -149,7 +191,10 @@ class ResourceCache(object):
         path = os.path.join(directory, name)
         normalized = os.path.normpath(path)
         if normalized not in self.cache:
-            self.cache[normalized] = ResourceFile(normalized)
+            try:
+                self.cache[normalized] = ResourceFile(normalized)
+            except:
+                return None
         return self.cache[normalized]
 
 
