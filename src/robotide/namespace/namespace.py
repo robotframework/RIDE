@@ -12,13 +12,14 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import os
-
 from robot.parsing.model import ResourceFile
 from robot.parsing.settings import Library, Resource
 from robot.utils.match import eq
 from robot.utils.normalizing import NormalizedDict, normalize
 from robotide.namespace.cache import LibraryCache
+import os
+import re
+
 
 
 class KeywordInfo(object):
@@ -86,14 +87,8 @@ class Namespace(object):
                                                self.__lib_kw_getter, vars)
 
     def __lib_kw_getter(self, imp, vars):
-        return self.lib_cache.get_library_keywords(self._resolve_variable(imp.name, vars),
-                                                   imp.args)
-
-    def _resolve_variable(self, name, vars):
-        resolved = vars.get(name)
-        if resolved is None:
-            return name
-        return resolved[0] if resolved else ''
+        name = vars.replace_variables(imp.name)
+        return self.lib_cache.get_library_keywords(name, imp.args)
 
     def _get_import_resource_keywords(self, datafile, vars):
         kws = self.__collect_kws_from_imports(datafile, Resource,
@@ -101,7 +96,7 @@ class Namespace(object):
         return kws
 
     def __res_kw_recursive_getter(self, imp, vars):
-        resolved_name = self._resolve_variable(imp.name, vars)
+        resolved_name = vars.replace_variables(imp.name)
         res = self.res_cache.get_resource(imp.directory, resolved_name)
         if not res:
             return []
@@ -142,12 +137,12 @@ class Namespace(object):
         resources= set()
         vars.add_vars(datafile.variable_table)
         for imp in self.__collect_import_of_type(datafile, Resource):
-            resolved_name = self._resolve_variable(imp.name, vars)
+            resolved_name = vars.replace_variables(imp.name)
+            print '\nResolved name ',resolved_name
             res = self.res_cache.get_resource(imp.directory, resolved_name)
-            if not res:
-                return resources
-            resources.add(res)
-            resources.update(self._get_resources_recursive(res, vars))
+            if res:
+                resources.add(res)
+                resources.update(self._get_resources_recursive(res, vars))
         for child in datafile.children:
             resources.update(self.get_resources(child))
         return resources
@@ -164,7 +159,7 @@ class Namespace(object):
             if eq(kw_name, kw.name):
                 return kw
         for imp in self.__collect_import_of_type(datafile, Resource):
-            resolved_name = self._resolve_variable(imp.name, vars)
+            resolved_name = vars.replace_variables(imp.name)
             res = self.res_cache.get_resource(imp.directory, resolved_name)
             result = self._find_user_recursive_keyword(res, kw_name, vars)
             if result:
@@ -192,13 +187,16 @@ class VariableStash(object):
 
     def __init__(self):
         self._variables = NormalizedDict()
-
-    def _add_variable(self, name, value):
-        self._variables[name] = value
+        self._regexp = re.compile('(\$\{[^{}]*\})')
 
     def add_vars(self, variable_table):
         for v in variable_table.variables:
             self._variables[v.name] = v.value
 
-    def get(self, name):
-        return self._variables[name] if name in self._variables else None
+    def replace_variables(self, string):
+        parts = self._regexp.split(string)
+        return ''.join([self._replace_variable(part) for part in parts])
+
+    def _replace_variable(self, string):
+        result = self._variables.get(string, None)
+        return result[0] if result else string

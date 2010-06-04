@@ -1,12 +1,14 @@
-import os
-import unittest
-
 from robot.parsing.settings import Resource
 from robot.utils import normalizing
 from robot.utils.asserts import assert_true, assert_false, assert_not_none, \
     assert_equals, fail, assert_none
 from robotide.namespace import Namespace
+from robotide.namespace.namespace import VariableStash
 from robotide.robotapi import TestCaseFile
+import os
+import unittest
+from robot.parsing.model import VariableTable
+
 
 
 DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]),
@@ -19,6 +21,8 @@ RESOURCE_WITH_VARS = os.path.normpath(os.path.join(DATAPATH, 'resources',
                                                    'resource_with_variables.txt'))
 TESTCASEFILE_WITH_EVERYTHING = os.path.normpath(os.path.join(DATAPATH, 'testsuite',
                                                    'everything.html'))
+RESOURCE_WITH_VARIABLE_IN_PATH = os.path.normpath(os.path.join(DATAPATH, 'resources',
+                                                   'resu.${extension}'))
 
 
 def _build_test_case_file():
@@ -35,10 +39,13 @@ def _add_settings_table(tcf):
     tcf.setting_table.add_resource(RESOURCE_LIB_PATH)
     tcf.setting_table.add_resource('${resname}')
     tcf.setting_table.add_library('${libname}')
+    tcf.setting_table.add_library('${libname}')
+    tcf.setting_table.add_resource(RESOURCE_WITH_VARIABLE_IN_PATH)
 
 def _add_variable_table(tcf):
     tcf.variable_table.add('${libname}', 'Collections')
     tcf.variable_table.add('${resname}', RESOURCE_WITH_VARS)
+    tcf.variable_table.add('${extension}', 'txt')
 
 def _add_keyword_table(tcf):
     uk_table = tcf.keyword_table
@@ -112,6 +119,10 @@ class TestKeywordSuggestions(_DataFileTest):
             assert_false(key in kw_set)
             kw_set.append(key)
 
+    def test_resource_with_variable_in_path(self):
+        sugs = self.ns.get_suggestions_for(self.tcf, 'Resu UK')
+        self._assert_import_kws(sugs, 'resu.txt')
+
     def _assert_import_kws(self, sugs, source):
         assert_true(len(sugs) > 0)
         for s in sugs:
@@ -150,11 +161,23 @@ class TestFindUserKeyword(_DataFileTest):
         assert_none(self.ns.find_user_keyword(self.tcf, 'Copy List'))
 
 
+class TestVariableStash(unittest.TestCase):
+
+    def test_variable_resolving(self):
+        vars = VariableStash()
+        var_table = VariableTable(None)
+        var_table.add('${var1}', 'foo')
+        var_table.add('${var2}', 'bar')
+        vars.add_vars(var_table)
+        result = vars.replace_variables('hoo${var1}hii${var2}huu')
+        assert_equals('hoofoohiibarhuu',result)
+
+
 class TestResourceGetter(_DataFileTest):
 
     def test_resource_getter(self):
         resources = self.ns.get_resources(self.tcf)
-        assert_equals(len(resources),7)
+        assert_equals(len(resources),8)
         paths = []
         for res in resources:
             normalized = normalizing.normpath(res.source)
