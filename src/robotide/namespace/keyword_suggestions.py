@@ -21,12 +21,13 @@ from robotide.namespace.cache import LibraryCache
 
 class KeywordSuggestions(object):
 
-    def __init__(self, namespace):
+    def __init__(self, namespace, datafile):
         self.namespace = namespace
+        self.datafile = datafile
 
     def get_suggestions_for(self, start):
         start_lower = start.lower()
-        suggestions = self.namespace.get_keywords()
+        suggestions = self.namespace.get_keywords(self.datafile)
         return sorted([sug for sug in suggestions
                        if sug.name.lower().startswith(start_lower)])
 
@@ -51,25 +52,23 @@ class KeywordInfo(object):
         return not self.__cmp__(other)
 
     def __hash__(self):
-        # TODO: is this correct way to combine hashes?
+        # FIXME: is this correct way to combine hashes?
         return hash(self.name) + hash(self.source)
 
 
-# FIXME: refactor to something more beautiful
 class Namespace(object):
 
-    def __init__(self, datafile):
-        self.datafile = datafile
+    def __init__(self):
         self.lib_cache = LibraryCache()
         self.res_cache = ResourceCache()
 
-    def get_keywords(self):
+    def get_keywords(self, datafile):
         vars = VariableStash()
-        vars.add_vars(self.datafile.variable_table)
+        vars.add_vars(datafile.variable_table)
         return list(set(self._get_default_keywords() + \
-                        self._get_datafile_keywords(self.datafile) +\
-                        self._get_imported_keywords(self.datafile, vars) + \
-                        self._get_import_resource_keywords(self.datafile, vars)))
+                        self._get_datafile_keywords(datafile) +\
+                        self._get_imported_keywords(datafile, vars) + \
+                        self._get_import_resource_keywords(datafile, vars)))
 
     def _get_default_keywords(self):
         kws = []
@@ -137,8 +136,8 @@ class Namespace(object):
             resources.update(self._get_resources_recursive(res, vars))
         return resources
 
-    def get_resources(self):
-        return list(self._get_resources_recursive(self.datafile, VariableStash()))
+    def get_resources(self, datafile):
+        return list(self._get_resources_recursive(datafile, VariableStash()))
 
 
 class ResourceCache(object):

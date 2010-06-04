@@ -24,8 +24,8 @@ class TestKeywordSuggestions(unittest.TestCase):
 
     def setUp(self):
         self.tcf = self._build_test_case_file()
-        self.ns = Namespace(self.tcf)
-        self.kw_suggestions = KeywordSuggestions(self.ns)
+        self.ns = Namespace()
+        self.kw_suggestions = KeywordSuggestions(self.ns, self.tcf)
 
     def _build_test_case_file(self):
         tcf = TestCaseFile()
@@ -50,7 +50,7 @@ class TestKeywordSuggestions(unittest.TestCase):
         uk_table.add('Should be in keywords Uk')
 
     def test_kw_suggestions_creation(self):
-        assert_not_none(KeywordSuggestions(self.ns))
+        assert_not_none(KeywordSuggestions(self.ns, self.tcf))
 
     def test_getting_suggestions_for_empty_datafile(self):
         start = 'shOulD'
@@ -113,7 +113,7 @@ class TestResourceGetter(unittest.TestCase):
 
     def setUp(self):
         self.tcf = self._build_test_case_file()
-        self.ns = Namespace(self.tcf)
+        self.ns = Namespace()
 
     def _build_test_case_file(self):
         tcf = TestCaseFile()
@@ -130,7 +130,7 @@ class TestResourceGetter(unittest.TestCase):
         return tcf.variable_table.add('${resname}', RESOURCE_WITH_VARS)
 
     def test_resource_getter(self):
-        resources = self.ns.get_resources()
+        resources = self.ns.get_resources(self.tcf)
         assert_equals(len(resources),6)
         paths = []
         for res in resources:
