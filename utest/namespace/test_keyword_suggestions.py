@@ -5,7 +5,7 @@ from robot.parsing.settings import Resource
 from robot.utils import normalizing
 from robot.utils.asserts import assert_true, assert_false, assert_not_none, \
     assert_equals, fail, assert_none
-from robotide.namespace.keyword_suggestions import Namespace, KeywordSearch
+from robotide.namespace.keyword_suggestions import Namespace
 from robotide.robotapi import TestCaseFile
 
 
@@ -48,65 +48,64 @@ def _add_keyword_table(tcf):
 class _DataFileTest(unittest.TestCase):
     tcf = _build_test_case_file()
     ns = Namespace()
-    kw_search = KeywordSearch(ns)
 
 
 class TestKeywordSuggestions(_DataFileTest):
 
     def test_getting_suggestions_for_empty_datafile(self):
         start = 'shOulD'
-        sugs = self.kw_search.get_suggestions_for(self.tcf, start)
+        sugs = self.ns.get_suggestions_for(self.tcf, start)
         assert_true(len(sugs) > 0)
         for s in sugs:
             assert_true(s.name.lower().startswith(start.lower()))
 
     def test_getting_suggestions_in_order(self):
-        sugs = self.kw_search.get_suggestions_for(self.tcf, 'sHoUlD')
+        sugs = self.ns.get_suggestions_for(self.tcf, 'sHoUlD')
         assert_true(len(sugs) > 2)
         assert_equals(sugs, sorted(sugs))
 
     def test_user_keywords(self):
-        sugs = self.kw_search.get_suggestions_for(self.tcf, 'sHoUlD')
+        sugs = self.ns.get_suggestions_for(self.tcf, 'sHoUlD')
         assert_true('Should be in keywords Uk' in [s.name for s in sugs])
 
     def test_imported_lib_keywords(self):
-        sugs = self.kw_search.get_suggestions_for(self.tcf, 'create file')
+        sugs = self.ns.get_suggestions_for(self.tcf, 'create file')
         self._assert_import_kws(sugs, 'OperatingSystem')
 
     def test_lib_from_resource_file(self):
-        sugs = self.kw_search.get_suggestions_for(self.tcf, 'generate random')
+        sugs = self.ns.get_suggestions_for(self.tcf, 'generate random')
         self._assert_import_kws(sugs, 'String')
 
     def test_lib_import_from_var(self):
-        sugs = self.kw_search.get_suggestions_for(self.tcf, 'Copy List')
+        sugs = self.ns.get_suggestions_for(self.tcf, 'Copy List')
         self._assert_import_kws(sugs, 'Collections')
 
     def test_resource_file_keywords(self):
-        sugs = self.kw_search.get_suggestions_for(self.tcf, 'Resource Uk')
+        sugs = self.ns.get_suggestions_for(self.tcf, 'Resource Uk')
         self._assert_import_kws(sugs, 'resource.html')
 
     def test_keywords_normalization(self):
-        sugs = self.kw_search.get_suggestions_for(self.tcf, 'Reso   Urceuk')
+        sugs = self.ns.get_suggestions_for(self.tcf, 'Reso   Urceuk')
         self._assert_import_kws(sugs, 'resource.html')
 
     def test_uk_from_resource_files_resource_file(self):
-        sugs = self.kw_search.get_suggestions_for(self.tcf, 'UK From Text Resource')
+        sugs = self.ns.get_suggestions_for(self.tcf, 'UK From Text Resource')
         self._assert_import_kws(sugs, 'resource.txt')
 
     def test_resource_file_from_variable(self):
-        sugs = self.kw_search.get_suggestions_for(self.tcf, 'UK From Variable Resource')
+        sugs = self.ns.get_suggestions_for(self.tcf, 'UK From Variable Resource')
         self._assert_import_kws(sugs, 'resource_with_variables.txt')
 
     def test_resource_file_from_resource_file_with_variable(self):
-        sugs = self.kw_search.get_suggestions_for(self.tcf, 'UK From Resource from Resource with Variable')
+        sugs = self.ns.get_suggestions_for(self.tcf, 'UK From Resource from Resource with Variable')
         self._assert_import_kws(sugs, 'resource_from_resource_with_variable.txt')
 
     def test_library_from_resourcefile_variable(self):
-        sugs = self.kw_search.get_suggestions_for(self.tcf, 'Execute Manual')
+        sugs = self.ns.get_suggestions_for(self.tcf, 'Execute Manual')
         self._assert_import_kws(sugs, 'Dialogs')
 
     def test_keywords_only_once_per_source(self):
-        sugs = self.kw_search.get_suggestions_for(self.tcf, '')
+        sugs = self.ns.get_suggestions_for(self.tcf, '')
         kw_set = []
         for kw in sugs:
             key = 'kw: %s %s' % (kw.name, kw.source)
@@ -122,13 +121,13 @@ class TestKeywordSuggestions(_DataFileTest):
 class TestKeywordSearch(_DataFileTest):
 
     def test_find_default_keywords(self):
-        all_kws = self.kw_search.get_all_keywords([])
+        all_kws = self.ns.get_all_keywords([])
         assert_not_none(all_kws)
         self.assert_in_keywords(all_kws, 'Should Be Equal')
 
     def test_find_suite_keywords(self):
         everything_tcf = TestCaseFile(source=TESTCASEFILE_WITH_EVERYTHING)
-        all_kws = self.kw_search.get_all_keywords([self.tcf, everything_tcf])
+        all_kws = self.ns.get_all_keywords([self.tcf, everything_tcf])
         self.assert_in_keywords(all_kws, 'Should be in keywords Uk',
                                          'Copy List',
                                          'Uk From Variable Resource')
@@ -147,8 +146,8 @@ class TestKeywordSearch(_DataFileTest):
 class TestFindUserKeyword(_DataFileTest):
 
     def test_find_uk(self):
-        assert_not_none(self.kw_search.find_user_keyword(self.tcf, 'UK From Resource from Resource with Variable'))
-        assert_none(self.kw_search.find_user_keyword(self.tcf, 'Copy List'))
+        assert_not_none(self.ns.find_user_keyword(self.tcf, 'UK From Resource from Resource with Variable'))
+        assert_none(self.ns.find_user_keyword(self.tcf, 'Copy List'))
 
 
 class TestResourceGetter(_DataFileTest):
