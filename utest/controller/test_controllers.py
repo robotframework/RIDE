@@ -13,6 +13,7 @@ from robotide.controller.filecontroller import (TestCaseFileController,
 class _FakeParent(object):
     def __init__(self):
         self.dirty = False
+        self.datafile = None
     def mark_dirty(self):
         self.dirty = True
 

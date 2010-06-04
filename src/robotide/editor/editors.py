@@ -185,8 +185,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
 
     def _update_and_notify(self):
         self._update_value()
-        # FIXME: FIXMEEE
-        #self._tree.mark_dirty(self._datafile)
+        self._tree.mark_dirty(self._controller)
 
     def OnClear(self, event):
         self._controller.clear()

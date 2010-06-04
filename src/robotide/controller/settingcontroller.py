@@ -36,7 +36,7 @@ class _SettingController(object):
     def __init__(self, parent_controller, data, label=None):
         self._parent = parent_controller
         self._data = data
-        self.datafile = data.parent
+        self.datafile = parent_controller.datafile
         if label:
             self.label = label
         self._init(data)
