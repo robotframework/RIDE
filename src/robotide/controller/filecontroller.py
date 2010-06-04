@@ -186,7 +186,7 @@ class _WithStepsCotroller(object):
 
     def parse_steps_from_rows(self, rows):
         self.data.steps = []
-        pop = self._populator(lambda name: self._data)
+        pop = self._populator(lambda name: self.data)
         for r in rows:
             r = DataRow([''] + r)
             pop.add(r)
