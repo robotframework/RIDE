@@ -5,8 +5,7 @@ from robot.parsing.settings import Resource
 from robot.utils import normalizing
 from robot.utils.asserts import assert_true, assert_false, assert_not_none, \
     assert_equals, fail, assert_none
-from robotide.namespace.keyword_suggestions import Namespace, \
-    ResourceCache, KeywordSearch
+from robotide.namespace.keyword_suggestions import Namespace, KeywordSearch
 from robotide.robotapi import TestCaseFile
 
 
@@ -148,25 +147,7 @@ class TestFindUserKeyword(_DataFileTest):
         assert_none(self.kw_search.find_user_keyword(self.tcf, 'Copy List'))
 
 
-class TestResourceGetter(unittest.TestCase):
-
-    def setUp(self):
-        self.tcf = self._build_test_case_file()
-        self.ns = Namespace()
-
-    def _build_test_case_file(self):
-        tcf = TestCaseFile()
-        self._add_settings_table(tcf)
-        self._add_variable_table(tcf)
-        return tcf
-
-    def _add_settings_table(self, tcf):
-        tcf.setting_table.add_resource(RESOURCE_PATH)
-        tcf.setting_table.add_resource(RESOURCE_LIB_PATH)
-        tcf.setting_table.add_resource('${resname}')
-
-    def _add_variable_table(self, tcf):
-        return tcf.variable_table.add('${resname}', RESOURCE_WITH_VARS)
+class TestResourceGetter(_DataFileTest):
 
     def test_resource_getter(self):
         resources = self.ns.get_resources(self.tcf)
@@ -178,24 +159,24 @@ class TestResourceGetter(unittest.TestCase):
             paths.append(normalized)
 
 
-class TestResourceCache(unittest.TestCase):
+class TestResourceCache(_DataFileTest):
 
     def setUp(self):
-        self.rc = ResourceCache()
+        self.res_cache = self.ns.res_cache
 
     def test_file_read_only_once(self):
         imp = Resource(None, RESOURCE_PATH)
-        first = self.rc.get_resource(imp.directory, imp.name)
-        second = self.rc.get_resource(imp.directory, imp.name)
+        first = self.res_cache.get_resource(imp.directory, imp.name)
+        second = self.res_cache.get_resource(imp.directory, imp.name)
         assert_true(first is second)
 
     def test_file_with_absolute_path(self):
         imp = Resource(ParentMock(), RESOURCE_PATH)
-        assert_true(self.rc.get_resource(imp.directory, imp.name))
+        assert_true(self.res_cache.get_resource(imp.directory, imp.name))
 
     def test_file_with_invalid_path(self):
         imp = Resource(ParentMock(), '${kumikameli}')
-        assert_none(self.rc.get_resource(imp.directory, imp.name))
+        assert_none(self.res_cache.get_resource(imp.directory, imp.name))
 
 
 class ParentMock(object):
