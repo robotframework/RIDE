@@ -170,15 +170,14 @@ class KeywordEditorUi(GridEditor):
 
 
 class KeywordEditor(KeywordEditorUi):
-    dirty = property(lambda self: self._datafile.dirty)
+    dirty = property(lambda self: self._controller.dirty)
     _no_cell = grid.GridCellCoords(-1, -1)
 
     def __init__(self, parent, controller, tree):
         self._keywords = controller.steps
         KeywordEditorUi.__init__(self, parent, len(self._keywords)+5, 5)
         self.SetDefaultEditor(ContentAssistCellEditor(parent.plugin))
-        self._datafile = controller.datafile
-        print controller
+        self._controller = controller
         # TODO: Tooltip may be smaller when the documentation is wrapped correctly
         self._tooltip = RidePopupWindow(self, (650, 400))
         self._marked_cell = None
@@ -198,8 +197,13 @@ class KeywordEditor(KeywordEditorUi):
         self.Bind(grid.EVT_GRID_CELL_LEFT_DCLICK, self.OnCellLeftDClick)
 
     def _write_keywords(self, keywords):
-        self._write_data([kw.assign + [kw.keyword] if kw.keyword else [] + kw.args for kw in keywords],
-                         update_history=False)
+        data = []
+        for step in keywords:
+            data.append(step.as_list())
+            if hasattr(step, 'steps'):
+                for s in step.steps:
+                    data.append([''] + s.as_list())
+        self._write_data(data, update_history=False)
 
     def OnCopy(self, event=None):
         self.copy()
@@ -225,12 +229,10 @@ class KeywordEditor(KeywordEditorUi):
         self.set_dirty()
 
     def set_dirty(self):
-        self._datafile.set_dirty()
-        self._tree.mark_dirty(self._datafile)
+        self._controller.mark_dirty()
+        self._tree.mark_dirty(self._controller)
 
     def save(self):
-        return 
-        # FIXME: 
         self._hide_tooltip()
         if self.IsCellEditControlShown():
             cell_editor = self.GetCellEditor(*self.selection.cell)
@@ -240,7 +242,7 @@ class KeywordEditor(KeywordEditorUi):
             self._save_keywords()
 
     def _save_keywords(self):
-        kwdata = []
+        rows = []
         for i in range(self.GetNumberRows()):
             rowdata = []
             for j in range(self.GetNumberCols()):
@@ -248,8 +250,8 @@ class KeywordEditor(KeywordEditorUi):
                 rowdata.append(cellvalue)
             rowdata = self._strip_trailing_empty_cells(rowdata)
             if rowdata:
-                kwdata.append(rowdata)
-        self._keywords.parse_keywords_from_grid(kwdata)
+                rows.append(rowdata)
+        self._controller.parse_steps_from_rows(rows)
 
     def show_content_assist(self):
         if self.IsCellEditControlShown():
@@ -300,7 +302,7 @@ class KeywordEditor(KeywordEditorUi):
 
     def _navigate_to_matching_user_keyword(self, row, col):
         value = self.GetCellValue(row, col)
-        uk = self._plugin.get_user_keyword(value)
+        uk = None #FIXME: self._plugin.get_user_keyword(value)
         if uk:
             self._toggle_underlined((grid.GridCellCoords(row, col)))
             self._marked_cell = None
