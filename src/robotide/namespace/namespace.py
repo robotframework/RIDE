@@ -148,6 +148,8 @@ class Namespace(object):
                 return resources
             resources.add(res)
             resources.update(self._get_resources_recursive(res, vars))
+        for child in datafile.children:
+            resources.update(self.get_resources(child))
         return resources
 
     def find_user_keyword(self, datafile, kw_name):
