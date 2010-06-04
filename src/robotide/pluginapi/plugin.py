@@ -269,7 +269,7 @@ class Plugin(object):
 
     def content_assist_values(self, value=''):
         """Returns content assist values for currently selected item."""
-        return self.__namespace.content_assist_values(self.get_selected_item(),
+        return self.__namespace.get_suggestions_for(self.get_selected_item().datafile,
                                                       value)
 
     def get_user_keyword(self, name):
