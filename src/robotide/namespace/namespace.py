@@ -138,7 +138,6 @@ class Namespace(object):
         vars.add_vars(datafile.variable_table)
         for imp in self.__collect_import_of_type(datafile, Resource):
             resolved_name = vars.replace_variables(imp.name)
-            print '\nResolved name ',resolved_name
             res = self.res_cache.get_resource(imp.directory, resolved_name)
             if res:
                 resources.add(res)
