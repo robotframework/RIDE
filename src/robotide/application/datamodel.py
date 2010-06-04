@@ -15,8 +15,8 @@
 import os
 
 from robotide.errors import DataError, SerializationError
-from robotide.robotapi import TestDataDirectory, TestCaseFile, ResourceFile
-from robotide.controller import DataController
+from robotide.robotapi import TestDataDirectory, TestCaseFile
+from robotide.controller import DataController, ResourceFileController
 from robotide import context
 
 
@@ -45,6 +45,7 @@ class DataModel(object):
             self.data = DataController(TestDataDirectory(source=path))
         else:
             self.data = DataController(TestCaseFile(source=path))
+        self.resources = [ResourceFileController(r) for r in  self._namespace.get_resources(self.data.data)]
         # FIXME:::  self._resolve_imported_resources(self.suite)
 
     def open_resource(self, path, datafile=None):

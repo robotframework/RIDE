@@ -80,8 +80,8 @@ class _DataController(object):
 
 class TestDataDirectoryController(_DataController):
 
-        def _children(self, data):
-            return [DataController(child) for child in data.children]
+    def _children(self, data):
+        return [DataController(child) for child in data.children]
 
 
 class TestCaseFileController(_DataController):
@@ -95,6 +95,14 @@ class TestCaseFileController(_DataController):
                 [TimeoutController(self, ss.test_timeout, 'Test Timeout'),
                  TemplateController(self, ss.test_template, 'Test Template')]
 
+
+class ResourceFileController(_DataController):
+
+    def _settings(self):
+        return [DocumentationController(self, self.data.setting_table.doc)]
+
+    def _children(self, data):
+        return []
 
 
 class _TableController(object):
@@ -143,12 +151,53 @@ class MetadataListController(object):
 
 class TestCaseTableController(_TableController):
     def __iter__(self):
-        return iter(TestCaseController(t) for t in self._table)
+        return iter(TestCaseController(self, t) for t in self._table)
 
 
-class TestCaseController(object):
-    def __init__(self, test):
-        self.data = self._test = test
+class KeywordTableController(_TableController):
+    def __iter__(self):
+        return iter(UserKeywordController(self, kw) for kw in self._table)
+
+
+class _WithStepsCotroller(object):
+    def __init__(self, parent_controller, data):
+        self._parent = parent_controller
+        self.data = data
+        self._init(data)
+
+    @property
+    def name(self):
+        return self.data.name
+
+    @property
+    def datafile(self):
+        return self.data.parent.parent
+
+    @property
+    def steps(self):
+        return self.data.steps
+
+    @property
+    def dirty(self):
+        return self._parent.dirty
+
+    def mark_dirty(self):
+        self._parent.mark_dirty()
+
+    def parse_steps_from_rows(self, rows):
+        self.data.steps = []
+        pop = self._populator(lambda name: self._data)
+        for r in rows:
+            r = DataRow([''] + r)
+            pop.add(r)
+        pop.populate()
+
+
+class TestCaseController(_WithStepsCotroller):
+    _populator = UserKeywordPopulator
+
+    def _init(self, test):
+        self._test = test
 
     @property
     def settings(self):
@@ -159,31 +208,12 @@ class TestCaseController(object):
                 TimeoutController(self, self._test.timeout, 'Timeout'),
                 TemplateController(self, self._test.template, 'Template')]
 
-    @property
-    def name(self):
-        return self._test.name
 
-    @property
-    def datafile(self):
-        return self._test.parent.parent
+class UserKeywordController(_WithStepsCotroller):
+    _populator = UserKeywordPopulator
 
-    @property
-    def steps(self):
-        return self._test.steps
-
-    def mark_dirty(self):
-        self._parent.mark_dirty()
-
-
-class KeywordTableController(_TableController):
-    def __iter__(self):
-        return iter(UserKeywordController(self, kw) for kw in self._table)
-
-
-class UserKeywordController(object):
-    def __init__(self, parent_controller, kw):
-        self._parent = parent_controller
-        self.data = self._kw = kw
+    def _init(self, kw):
+        self._kw = kw
 
     @property
     def settings(self):
@@ -192,33 +222,6 @@ class UserKeywordController(object):
                 TimeoutController(self, self._kw.timeout, 'Timeout'),
                 # TODO: Wrong class, works right though
                 ArgumentsController(self, self._kw.return_, 'Return Value')]
-
-    @property
-    def name(self):
-        return self._kw.name
-
-    @property
-    def datafile(self):
-        return self._parent.datafile
-
-    @property
-    def steps(self):
-        return self._kw.steps
-
-    def mark_dirty(self):
-        self._parent.mark_dirty()
-
-    @property
-    def dirty(self):
-        return self._parent.dirty
-
-    def parse_steps_from_rows(self, rows):
-        self._kw.steps = []
-        pop = UserKeywordPopulator(lambda name: self._kw)
-        for r in rows:
-            r = DataRow([''] + r)
-            pop.add(r)
-        pop.populate()
 
 
 class ImportSettingsController(object):

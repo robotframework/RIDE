@@ -7,7 +7,7 @@ from robot.parsing.model import TestDataDirectory
 from robotide.controller.settingcontroller import *
 from robotide.controller.filecontroller import (TestCaseFileController,
         TestDataDirectoryController, TestCaseController, UserKeywordController,
-        KeywordTableController)
+        TestCaseTableController, KeywordTableController)
 
 
 class _FakeParent(object):
@@ -191,7 +191,7 @@ class TestCaseControllerTest(unittest.TestCase):
     def test_creation(self):
         tcf = TestCaseFile()
         testcase = tcf.testcase_table.add('Test')
-        ctrl = TestCaseController(testcase)
+        ctrl = TestCaseController(TestCaseTableController(TestCaseFileController(tcf), []), testcase)
         for st in ctrl.settings:
             assert_true(st is not None)
         assert_true(ctrl.datafile is tcf, ctrl.datafile)
