@@ -161,12 +161,12 @@ class Namespace(object):
 
     def find_user_keyword(self, datafile, kw_name):
         vars = VariableStash()
-        vars.add_vars(datafile.variable_table)
         return self._find_user_recursive_keyword(datafile, kw_name, vars)
 
     def _find_user_recursive_keyword(self, datafile, kw_name, vars):
         if not datafile:
             return None
+        vars.add_vars(datafile.variable_table)
         for kw in datafile.keywords:
             if eq(kw_name, kw.name):
                 return kw

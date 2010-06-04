@@ -97,6 +97,10 @@ class TestKeywordSuggestions(_DataFileTest):
         sugs = self.kw_search.get_suggestions_for(self.tcf, 'UK From Variable Resource')
         self._assert_import_kws(sugs, 'resource_with_variables.txt')
 
+    def test_resource_file_from_resource_file_with_variable(self):
+        sugs = self.kw_search.get_suggestions_for(self.tcf, 'UK From Resource from Resource with Variable')
+        self._assert_import_kws(sugs, 'resource_from_resource_with_variable.txt')
+
     def test_library_from_resourcefile_variable(self):
         sugs = self.kw_search.get_suggestions_for(self.tcf, 'Execute Manual')
         self._assert_import_kws(sugs, 'Dialogs')
@@ -143,7 +147,7 @@ class TestKeywordSearch(_DataFileTest):
 class TestFindUserKeyword(_DataFileTest):
 
     def test_find_uk(self):
-        assert_not_none(self.kw_search.find_user_keyword(self.tcf, 'Should be in keywords Uk'))
+        assert_not_none(self.kw_search.find_user_keyword(self.tcf, 'UK From Resource from Resource with Variable'))
         assert_none(self.kw_search.find_user_keyword(self.tcf, 'Copy List'))
 
 
@@ -151,7 +155,7 @@ class TestResourceGetter(_DataFileTest):
 
     def test_resource_getter(self):
         resources = self.ns.get_resources(self.tcf)
-        assert_equals(len(resources),6)
+        assert_equals(len(resources),7)
         paths = []
         for res in resources:
             normalized = normalizing.normpath(res.source)
