@@ -5,7 +5,7 @@ from robot.parsing.settings import Resource
 from robot.utils import normalizing
 from robot.utils.asserts import assert_true, assert_false, assert_not_none, \
     assert_equals, fail, assert_none
-from robotide.namespace.keyword_suggestions import Namespace
+from robotide.namespace import Namespace
 from robotide.robotapi import TestCaseFile
 
 
