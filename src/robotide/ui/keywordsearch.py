@@ -58,9 +58,12 @@ class _SearchCriteria(object):
         self._search_docs = search_docs
 
     def matches(self, kw):
-        if utils.contains(kw.name, self._pattern, ignore=['_']):
+        if self._contains(kw.name, self._pattern):
             return True
-        return self._search_docs and utils.contains(kw.doc, self._pattern)
+        return self._search_docs and self._contains(kw.doc, self._pattern)
+
+    def _contains(self, string, pattern):
+        return utils.normalize(pattern) in utils.normalize(string)
 
 
 class KeywordSearchDialog(wx.Frame):

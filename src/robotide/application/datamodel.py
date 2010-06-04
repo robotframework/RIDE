@@ -66,7 +66,7 @@ class DataModel(object):
             self._resolve_imported_resources(item)
 
     def get_all_keywords(self):
-        return self._namespace.get_all_keywords(self)
+        return self._namespace.get_all_keywords([self.data.data] if self.data else [] + self.resources )
 
     def get_files_without_format(self, datafile=None):
         if not self.suite:

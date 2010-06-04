@@ -24,10 +24,12 @@ import re
 
 class KeywordInfo(object):
 
-    def __init__(self, name, source=None, doc=None):
+    def __init__(self, name, source=None, doc=''):
         self.name = name
         self.source = source
-        self.doc = doc
+        # FIXME: cleanup, need also args and html_escape
+        self.doc = doc if isinstance(doc, basestring) else doc.value
+        self.shortdoc = self.doc.splitlines()[0] if self.doc else ''
 
     def __str__(self):
         return 'KeywordInfo[name: %s, source: %s, doc: %s]' %(self.name,
