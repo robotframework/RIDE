@@ -96,6 +96,24 @@ class TestCaseFileController(_DataController):
                  TemplateController(self, ss.test_template, 'Test Template')]
 
 
+
+class _TableController(object):
+    def __init__(self, parent_controller, table):
+        self._parent = parent_controller
+        self._table = table
+
+    def mark_dirty(self):
+        self._parent.mark_dirty()
+
+    @property
+    def dirty(self):
+        return self._parent.dirty
+
+    @property
+    def datafile(self):
+        return self._parent.datafile
+
+
 class VariableTableController(object):
     def __init__(self, variables):
         self._variables = variables
@@ -121,23 +139,6 @@ class MetadataListController(object):
     @property
     def datafile(self):
         return self._table.parent
-
-
-class _TableController(object):
-    def __init__(self, parent_controller, table):
-        self._parent = parent_controller
-        self._table = table
-
-    def mark_dirty(self):
-        self._parent.mark_dirty()
-
-    @property
-    def dirty(self):
-        return self._parent.dirty
-
-    @property
-    def datafile(self):
-        return self._parent.datafile
 
 
 class TestCaseTableController(_TableController):
