@@ -11,12 +11,12 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+import os
 
 from robot.parsing.model import ResourceFile
 from robot.parsing.settings import Library, Resource
 from robot.utils.normalizing import NormalizedDict
 from robotide.namespace.cache import LibraryCache
-import os
 
 
 class KeywordSuggestions(object):
@@ -27,7 +27,7 @@ class KeywordSuggestions(object):
     def get_suggestions_for(self, start):
         start_lower = start.lower()
         suggestions = self.namespace.get_keywords()
-        return sorted([sug for sug in suggestions 
+        return sorted([sug for sug in suggestions
                        if sug.name.lower().startswith(start_lower)])
 
 
@@ -78,15 +78,15 @@ class Namespace(object):
         return kws
 
     def _get_datafile_keywords(self, datafile):
-        return [KeywordInfo(kw.name, datafile.source, kw.doc) 
+        return [KeywordInfo(kw.name, datafile.source, kw.doc)
                 for kw in datafile.keywords]
 
     def _get_imported_keywords(self, datafile, vars):
-        return self.__collect_kws_from_imports(datafile, Library, 
+        return self.__collect_kws_from_imports(datafile, Library,
                                                self.__lib_kw_getter, vars)
 
     def __lib_kw_getter(self, imp, vars):
-        return self.lib_cache.get_library_keywords(self._resolve_variable(imp.name, vars), 
+        return self.lib_cache.get_library_keywords(self._resolve_variable(imp.name, vars),
                                                    imp.args)
 
     def _resolve_variable(self, name, vars):
@@ -96,7 +96,7 @@ class Namespace(object):
         return resolved[0] if resolved else ''
 
     def _get_import_resource_keywords(self, datafile, vars):
-        kws = self.__collect_kws_from_imports(datafile, Resource, 
+        kws = self.__collect_kws_from_imports(datafile, Resource,
                                               self.__res_kw_recursive_getter, vars)
         return kws
 
@@ -113,7 +113,7 @@ class Namespace(object):
     def __collect_kws_from_imports(self, datafile, instance_type, getter, vars):
         kws = []
         for imp in self.__collect_import_of_type(datafile, instance_type):
-            kws.extend([KeywordInfo(kw.name, kw.source, kw.doc) 
+            kws.extend([KeywordInfo(kw.name, kw.source, kw.doc)
                         for kw in getter(imp, vars)])
         return kws
 
@@ -147,7 +147,7 @@ class ResourceCache(object):
         self.cache = {}
 
     def get_resource(self, directory, name):
-        path = os.path.join(directory, name) 
+        path = os.path.join(directory, name)
         normalized = os.path.normpath(path)
         if normalized not in self.cache:
             self.cache[normalized] = ResourceFile(normalized)

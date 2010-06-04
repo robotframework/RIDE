@@ -1,3 +1,6 @@
+import os
+import unittest
+
 from robot.parsing.settings import Resource
 from robot.utils import normalizing
 from robot.utils.asserts import assert_true, assert_none, assert_false, \
@@ -5,8 +8,6 @@ from robot.utils.asserts import assert_true, assert_none, assert_false, \
 from robotide.namespace.keyword_suggestions import KeywordSuggestions, Namespace, \
     ResourceCache
 from robotide.robotapi import TestCaseFile
-import os
-import unittest
 
 
 
