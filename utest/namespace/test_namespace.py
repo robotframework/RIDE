@@ -1,4 +1,5 @@
 import os
+import sys
 import unittest
 
 from robot.parsing.settings import Resource
@@ -11,6 +12,9 @@ from robotide.namespace.namespace import VariableStash
 from robotide.robotapi import TestCaseFile
 
 
+
+testlibpath = os.path.join(os.path.dirname(__file__), '..', 'resources', 'robotdata', 'libs')
+sys.path.append(testlibpath)
 
 DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]),
                         '..', 'resources', 'robotdata')
@@ -111,6 +115,11 @@ class TestKeywordSuggestions(_DataFileTest):
     def test_library_from_resourcefile_variable(self):
         sugs = self.ns.get_suggestions_for(self.tcf, 'Execute Manual')
         self._assert_import_kws(sugs, 'Dialogs')
+
+    def test_xml_library(self):
+        everything_tcf = TestCaseFile(source=TESTCASEFILE_WITH_EVERYTHING)
+        sugs = self.ns.get_suggestions_for(everything_tcf, 'Attributeless Keyword')
+        self._assert_import_kws(sugs, 'LibSpecLibrary')
 
     def test_keywords_only_once_per_source(self):
         sugs = self.ns.get_suggestions_for(self.tcf, '')
