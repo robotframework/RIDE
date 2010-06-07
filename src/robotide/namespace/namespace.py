@@ -12,14 +12,14 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import os
+import re
+
 from robot.parsing.model import ResourceFile
 from robot.parsing.settings import Library, Resource
 from robot.utils.match import eq
 from robot.utils.normalizing import NormalizedDict, normalize
 from robotide.namespace.cache import LibraryCache
-import os
-import re
-
 
 
 class KeywordInfo(object):

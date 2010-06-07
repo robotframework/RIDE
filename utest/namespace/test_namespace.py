@@ -1,3 +1,6 @@
+import os
+import unittest
+
 from robot.parsing.settings import Resource
 from robot.utils import normalizing
 from robot.utils.asserts import assert_true, assert_false, assert_not_none, \
@@ -5,8 +8,6 @@ from robot.utils.asserts import assert_true, assert_false, assert_not_none, \
 from robotide.namespace import Namespace
 from robotide.namespace.namespace import VariableStash
 from robotide.robotapi import TestCaseFile
-import os
-import unittest
 from robot.parsing.model import VariableTable
 
 
@@ -126,7 +127,8 @@ class TestKeywordSuggestions(_DataFileTest):
     def _assert_import_kws(self, sugs, source):
         assert_true(len(sugs) > 0)
         for s in sugs:
-            assert_true(s.source.endswith(source), '%s does not end with %s' % (s.source, source))
+            assert_true(s.source.endswith(source),
+                        '%s does not end with %s' % (s.source, source))
 
 
 class TestKeywordSearch(_DataFileTest):
