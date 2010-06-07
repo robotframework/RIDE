@@ -12,6 +12,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import os
+
 from robotide.utils import html_escape
 
 
@@ -85,7 +87,7 @@ class _UserKeywordInfo(_KeywordInfo):
         _KeywordInfo.__init__(self, uk)
 
     def _source(self, item):
-        return item.source
+        return os.path.basename(item.source) if item.source else ''
 
     def _parse_doc(self, doc):
         return doc.value
