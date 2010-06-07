@@ -76,6 +76,26 @@ class TestKeywordSuggestions(_DataFileTest):
         sugs = self.ns.get_suggestions_for(self.tcf, 'sHoUlD')
         assert_true('Should be in keywords Uk' in [s.name for s in sugs])
 
+    def test_userkeyword_details(self):
+        sugs = self.ns.get_suggestions_for(self.tcf, 'Resource Uk')
+        assert_true(len(sugs) == 1)
+        kw_info = sugs[0]
+        assert_equals(kw_info.doc, 'This is a user keyword from resource file')
+        assert_equals(kw_info.shortdoc, 'This is a user keyword from resource file')
+
+    def test_library_keyword_details(self):
+        sugs = self.ns.get_suggestions_for(self.tcf, 'Run Keyword')
+        assert_true(sugs)
+        kw_info = sugs[0]
+        exp_doc = \
+'''Executes the given keyword with the given arguments.
+
+Because the name of the keyword to execute is given as an argument, it
+can be a variable and thus set dynamically, e.g. from a return value of
+another keyword or from the command line.'''
+        assert_equals(kw_info.doc, exp_doc)
+        assert_equals(kw_info.shortdoc, 'Executes the given keyword with the given arguments.')
+
     def test_imported_lib_keywords(self):
         sugs = self.ns.get_suggestions_for(self.tcf, 'create file')
         self._assert_import_kws(sugs, 'OperatingSystem')
