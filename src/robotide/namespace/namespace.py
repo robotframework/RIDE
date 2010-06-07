@@ -137,6 +137,13 @@ class Namespace(object):
                 return result
         return None
 
+    def keyword_details(self, datafile, name):
+        kws = self._get_keywords(datafile)
+        for k in kws:
+            if eq(k.name, name):
+                return k.details
+        return None
+
 
 class ResourceCache(object):
 

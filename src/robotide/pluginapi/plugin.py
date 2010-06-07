@@ -274,14 +274,14 @@ class Plugin(object):
 
     def get_user_keyword(self, name):
         """Returns user keyword instance whose name is ``name`` or None."""
-        return self.__namespace.get_user_keyword(self.datafile, name)
+        return self.__namespace.find_user_keyword(self.datafile, name)
 
     def get_keyword_details(self, name):
         """Returns details (documentatioin, source) of keyword with name ``name``.
 
         Returns None if no matching keyword is found.
         """
-        return self.__namespace.get_keyword_details(self.datafile, name)
+        return self.__namespace.keyword_details(self.datafile, name)
 
     def is_user_keyword(self, name):
         """Returns whether ``name`` is a user keyword of current datafile.
