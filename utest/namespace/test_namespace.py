@@ -2,13 +2,13 @@ import os
 import unittest
 
 from robot.parsing.settings import Resource
+from robot.parsing.model import VariableTable
 from robot.utils import normalizing
 from robot.utils.asserts import assert_true, assert_false, assert_not_none, \
     assert_equals, fail, assert_none
 from robotide.namespace import Namespace
 from robotide.namespace.namespace import VariableStash
 from robotide.robotapi import TestCaseFile
-from robot.parsing.model import VariableTable
 
 
 
@@ -75,26 +75,6 @@ class TestKeywordSuggestions(_DataFileTest):
     def test_user_keywords(self):
         sugs = self.ns.get_suggestions_for(self.tcf, 'sHoUlD')
         assert_true('Should be in keywords Uk' in [s.name for s in sugs])
-
-    def test_userkeyword_details(self):
-        sugs = self.ns.get_suggestions_for(self.tcf, 'Resource Uk')
-        assert_true(len(sugs) == 1)
-        kw_info = sugs[0]
-        assert_equals(kw_info.doc, 'This is a user keyword from resource file')
-        assert_equals(kw_info.shortdoc, 'This is a user keyword from resource file')
-
-    def test_library_keyword_details(self):
-        sugs = self.ns.get_suggestions_for(self.tcf, 'Run Keyword')
-        assert_true(sugs)
-        kw_info = sugs[0]
-        exp_doc = \
-'''Executes the given keyword with the given arguments.
-
-Because the name of the keyword to execute is given as an argument, it
-can be a variable and thus set dynamically, e.g. from a return value of
-another keyword or from the command line.'''
-        assert_equals(kw_info.doc, exp_doc)
-        assert_equals(kw_info.shortdoc, 'Executes the given keyword with the given arguments.')
 
     def test_imported_lib_keywords(self):
         sugs = self.ns.get_suggestions_for(self.tcf, 'create file')
@@ -229,3 +209,7 @@ class TestResourceCache(_DataFileTest):
 
 class ParentMock(object):
     directory = '/tmp/exmaple'
+
+
+if __name__ == "__main__":
+    unittest.main()

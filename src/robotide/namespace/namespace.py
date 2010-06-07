@@ -20,43 +20,7 @@ from robot.parsing.settings import Library, Resource
 from robot.utils.match import eq
 from robot.utils.normalizing import NormalizedDict, normalize
 from robotide.namespace.cache import LibraryCache
-
-
-class _KeywordInfo(object):
-
-    def __init__(self, name, source=None, doc=''):
-        self.name = name
-        self.source = source
-        self.doc = self._parse_doc(doc)
-        self.shortdoc = self.doc.splitlines()[0] if self.doc else ''
-
-    def __str__(self):
-        return 'KeywordInfo[name: %s, source: %s, doc: %s]' %(self.name,
-                                                              self.source,
-                                                              self.doc)
-
-    def __cmp__(self, other):
-        name_cmp = cmp(self.name, other.name)
-        return name_cmp if name_cmp else cmp(self.source, other.source)
-
-    def __eq__(self, other):
-        return not self.__cmp__(other)
-
-    def __hash__(self):
-        # FIXME: is this correct way to combine hashes?
-        return hash(self.name) + hash(self.source)
-
-
-class LibraryKeywordInfo(_KeywordInfo):
-
-    def _parse_doc(self, doc):
-        return doc
-
-
-class UserKeywordInfo(_KeywordInfo):
-
-    def _parse_doc(self, doc):
-        return doc.value
+from robotide.spec.kwinfo import TestCaseUserKeywordInfo, ResourceseUserKeywordInfo
 
 
 class Namespace(object):
@@ -72,10 +36,7 @@ class Namespace(object):
         return list(kws)
 
     def _get_default_keywords(self):
-        kws = []
-        for kw in self.lib_cache.get_default_keywords():
-            kws.append(LibraryKeywordInfo(kw.name, kw.source, kw.doc))
-        return kws
+        return self.lib_cache.get_default_keywords()
 
     def _get_keywords_from(self, datafiles):
         kws = set()
@@ -92,8 +53,7 @@ class Namespace(object):
                         self._get_import_resource_keywords(datafile, vars)))
 
     def _get_datafile_keywords(self, datafile):
-        return [UserKeywordInfo(kw.name, datafile.source, kw.doc)
-                for kw in datafile.keywords]
+        return [TestCaseUserKeywordInfo(kw) for kw in datafile.keywords]
 
     def _get_imported_library_keywords(self, datafile, vars):
         return self.__collect_kws_from_imports(datafile, Library,
@@ -101,8 +61,7 @@ class Namespace(object):
 
     def __lib_kw_getter(self, imp, vars):
         name = vars.replace_variables(imp.name)
-        return [LibraryKeywordInfo(kw.name, kw.source, kw.doc) for kw
-                in self.lib_cache.get_library_keywords(name, imp.args)]
+        return self.lib_cache.get_library_keywords(name, imp.args)
 
     def _get_import_resource_keywords(self, datafile, vars):
         kws = self.__collect_kws_from_imports(datafile, Resource,
@@ -119,7 +78,7 @@ class Namespace(object):
         for child in self.__collect_import_of_type(res, Resource):
             kws.extend(self.__res_kw_recursive_getter(child, vars))
         kws.extend(self._get_imported_library_keywords(res, vars))
-        return [UserKeywordInfo(kw.name, kw.source, kw.doc) for kw in res.keywords] + kws
+        return [ResourceseUserKeywordInfo(kw) for kw in res.keywords] + kws
 
     def __collect_kws_from_imports(self, datafile, instance_type, getter, vars):
         kws = []
