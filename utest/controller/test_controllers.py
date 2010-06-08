@@ -5,9 +5,7 @@ from robot.parsing.settings import Fixture, Documentation, Timeout, Tags
 from robot.utils.asserts import assert_equals, assert_true, assert_false
 from robot.parsing.model import TestDataDirectory
 from robotide.controller.settingcontroller import *
-from robotide.controller.filecontroller import (TestCaseFileController,
-        TestDataDirectoryController, TestCaseController, UserKeywordController,
-        TestCaseTableController, KeywordTableController)
+from robotide.controller.filecontroller import *
 
 
 class _FakeParent(object):
@@ -229,3 +227,30 @@ class UserKeywordControllerTest(unittest.TestCase):
         assert_equals(step.assign, exp_assign)
         assert_equals(step.keyword, exp_keyword)
         assert_equals(step.args, exp_args)
+
+
+class ImportSettingsControllerTest(unittest.TestCase):
+
+    def setUp(self):
+        self.tcf = TestCaseFile()
+        self.ctrl = ImportSettingsController(TestCaseFileController(self.tcf),
+                                             self.tcf.setting_table)
+
+    def test_addding_library(self):
+        self.ctrl.add_library('MyLib | Some | argu | ments')
+        self._assert_import('MyLib', ['Some', 'argu', 'ments'])
+
+    def test_adding_resource(self):
+        self.ctrl.add_resource('/a/path/to/file.txt')
+        self._assert_import('/a/path/to/file.txt')
+
+    def test_adding_variables(self):
+        self.ctrl.add_variables('varfile.py | an arg')
+        self._assert_import('varfile.py', ['an arg'])
+
+    def _assert_import(self, exp_name, exp_args=None):
+        imp = self.tcf.setting_table.imports[-1]
+        assert_equals(imp.name, exp_name)
+        if exp_args is not None:
+            assert_equals(imp.args, exp_args)
+        assert_true(self.ctrl.dirty)

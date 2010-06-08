@@ -303,9 +303,10 @@ class UserKeywordEditor(TestCaseEditor): pass
 
 class _AbstractListEditor(ListEditor, RideEventHandler):
 
-    def __init__(self, parent, tree, data):
-        ListEditor.__init__(self, parent, self._titles, data)
-        self._datafile = data.datafile
+    def __init__(self, parent, tree, controller):
+        ListEditor.__init__(self, parent, self._titles, controller)
+        self._controller = controller
+        self._datafile = controller.datafile
         self._tree = tree
 
     def get_selected_datafile(self):
@@ -316,7 +317,7 @@ class _AbstractListEditor(ListEditor, RideEventHandler):
 
     def update_data(self):
         ListEditor.update_data(self)
-        self._tree.mark_dirty(self._datafile)
+        self._tree.mark_dirty(self._controller)
 
 
 class VariablesListEditor(_AbstractListEditor):
@@ -377,15 +378,15 @@ class ImportSettingListEditor(_AbstractListEditor):
 
     def OnAddLibrary(self, event):
         self._show_import_editor_dialog(LibraryImportDialog,
-                                        self._data.new_library)
+                                        self._data.add_library)
 
     def OnAddResource(self, event):
         self._show_import_editor_dialog(ResourceImportDialog,
-                                        self._data.new_resource)
+                                        self._data.add_resource)
 
     def OnAddVariables(self, event):
         self._show_import_editor_dialog(VariablesImportDialog,
-                                        self._data.new_variables)
+                                        self._data.add_variables)
 
     def _show_import_editor_dialog(self, dialog, creator):
         dlg = dialog(self.GetGrandParent(), self._data.datafile)
