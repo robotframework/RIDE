@@ -19,6 +19,7 @@ from robot.parsing.populator import UserKeywordPopulator
 from robotide.controller.settingcontroller import (DocumentationController,
         FixtureController, TagsController, TimeoutController, TemplateController,
         ArgumentsController, MetadataController, ImportController)
+from robotide import utils
 
 
 def DataController(data):
@@ -65,7 +66,7 @@ class _DataController(object):
 
     @property
     def imports(self):
-        return ImportSettingsController(self.data.setting_table)
+        return ImportSettingsController(self, self.data.setting_table)
 
     @property
     def metadata(self):
@@ -138,15 +139,6 @@ class VariableController(object):
         self.name = var.name
         self.value= var.value
 
-
-class MetadataListController(object):
-    def __init__(self, setting_table):
-        self._table = setting_table
-    def __iter__(self):
-        return iter(MetadataController(m) for m in self._table.metadata)
-    @property
-    def datafile(self):
-        return self._table.parent
 
 
 class TestCaseTableController(_TableController):
@@ -225,10 +217,48 @@ class UserKeywordController(_WithStepsCotroller):
 
 
 class ImportSettingsController(object):
-    def __init__(self, setting_table):
+
+    def __init__(self, parent_controller, setting_table):
+        self._parent = parent_controller
         self._table = setting_table
+
     def __iter__(self):
         return iter(ImportController(imp) for imp in self._table.imports)
+
+    @property
+    def dirty(self):
+        return self._parent.dirty
+
+    @property
+    def datafile(self):
+        return self._table.parent
+
+    def add_library(self, argstr):
+        self._add_import(self._table.add_library, argstr)
+
+    def add_resource(self, name):
+        self._add_import(self._table.add_resource, name)
+
+    def add_variables(self, argstr):
+        self._add_import(self._table.add_variables, argstr)
+
+    def _add_import(self, adder, argstr):
+        adder(*self._split_to_name_and_args(argstr))
+        self._parent.mark_dirty()
+
+    def _split_to_name_and_args(self, argstr):
+        parts = utils.split_value(argstr)
+        return parts[0], parts[1:]
+
+
+class MetadataListController(object):
+
+    def __init__(self, setting_table):
+        self._table = setting_table
+
+    def __iter__(self):
+        return iter(MetadataController(m) for m in self._table.metadata)
+
     @property
     def datafile(self):
         return self._table.parent
