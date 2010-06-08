@@ -125,13 +125,27 @@ class TestKeywordSuggestions(_DataFileTest):
         sugs = self.ns.get_suggestions_for(self.tcf, '')
         kw_set = []
         for kw in sugs:
-            key = 'kw: %s %s' % (kw.name, kw.source)
-            assert_false(key in kw_set)
-            kw_set.append(key)
+            if self._not_variable(kw):
+                key = 'kw: %s %s' % (kw.name, kw.source)
+                assert_false(key in kw_set)
+                kw_set.append(key)
+
+    def _not_variable(self, item):
+        return not (item.name.startswith('$') or item.name.startswith('@'))
 
     def test_resource_with_variable_in_path(self):
         sugs = self.ns.get_suggestions_for(self.tcf, 'Resu UK')
         self._assert_import_kws(sugs, 'resu.txt')
+
+    def test_variable_suggestion(self):
+        scalar_vars = self.ns.get_suggestions_for(self.tcf, '$')
+        assert_true(len(scalar_vars) > 0)
+        assert_true(len(self.ns.get_suggestions_for(self.tcf, '${')) == len(scalar_vars))
+        list_vars = self.ns.get_suggestions_for(self.tcf, '@')
+        assert_true(len(list_vars) > 0)
+        assert_true(len(self.ns.get_suggestions_for(self.tcf, '@{')) == len(list_vars))
+        sug = self.ns.get_suggestions_for(self.tcf, '${lib')
+        assert_true(sug[0].name == '${libname}')
 
     def _assert_import_kws(self, sugs, source):
         assert_true(len(sugs) > 0)

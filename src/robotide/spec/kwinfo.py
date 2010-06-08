@@ -17,23 +17,54 @@ import os
 from robotide.utils import html_escape
 
 
-class _KeywordInfo(object):
+class _ItemInfo(object):
 
     def __init__(self, item):
         self.name = item.name
         self.source = self._source(item)
-        self.doc = self._parse_doc(item.doc)
-        self.shortdoc = self.doc.splitlines()[0] if self.doc else ''
         self.details = self._details(item)
+
+    def _source(self, item):
+        return ''
+
+    def _details(self, item):
+        return None
+
+
+class VariableItem(object):
+    def __init__(self, name, value, source):
+        self.name = name
+        self.source = source
+        self.value = value
+
+
+class VariableInfo(_ItemInfo):
+
+    def __init__(self, name, value, source):
+        _ItemInfo.__init__(self, VariableItem(name, value, source))
+
+    def _details(self, item):
+        prefix = 'Source: %s<br><br>Value: ' % item.source
+        if item.name.startswith('$'):
+            return prefix  + item.value[0]
+        return prefix + ' | '.join(item.value)
+
+    def _source(self, item):
+        return item.source
+
+
+class _KeywordInfo(_ItemInfo):
+
+    def __init__(self, item):
+        self.doc = self._parse_doc(item.doc)
+        _ItemInfo.__init__(self, item)
+        self.shortdoc = self.doc.splitlines()[0] if self.doc else ''
 
     def _details(self, item):
         return 'Source: %s &lt;%s&gt;<br><br>Arguments: %s<br><br>%s' % \
                 (self.source, self._type, 
                  self._format_args(self._parse_args(item)),
                  html_escape(self.doc, formatting=True))
-
-    def _source(self, item):
-        return None
 
     def _format_args(self, args):
         return '[ %s ]' % ' | '.join(args)
@@ -58,9 +89,6 @@ class _KeywordInfo(object):
 class LibraryKeywordInfo(_KeywordInfo):
     _type = 'test library'
 
-    def __init__(self, kw, source):
-        _KeywordInfo.__init__(self, kw)
-
     def _source(self, item):
         return item.library.name
 
@@ -82,9 +110,6 @@ class LibraryKeywordInfo(_KeywordInfo):
 
 
 class _UserKeywordInfo(_KeywordInfo):
-
-    def __init__(self, uk):
-        _KeywordInfo.__init__(self, uk)
 
     def _source(self, item):
         return os.path.basename(item.source) if item.source else ''
