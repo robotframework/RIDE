@@ -254,3 +254,16 @@ class ImportSettingsControllerTest(unittest.TestCase):
         if exp_args is not None:
             assert_equals(imp.args, exp_args)
         assert_true(self.ctrl.dirty)
+
+
+class VariablesControllerTest(unittest.TestCase):
+
+    def setUp(self):
+        self.tcf = TestCaseFile()
+        self.ctrl = VariableTableController(TestCaseFileController(self.tcf),
+                                            self.tcf.variable_table)
+
+    def test_adding_scalar(self):
+        self.ctrl.add_variable('${blaa}', 'value')
+        assert_true(self.ctrl.dirty)
+        assert_equals(self.tcf.variable_table.variables[0].name, '${blaa}')

@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.robotapi import TestCaseFile
+from robotide.robotapi import TestCaseFile, is_list_var, is_scalar_var
 from robot.parsing.datareader import DataRow
 from robot.parsing.populator import UserKeywordPopulator
 
@@ -50,7 +50,7 @@ class _DataController(object):
 
     @property
     def variables(self):
-        return VariableTableController(self.data.variable_table)
+        return VariableTableController(self, self.data.variable_table)
 
     @property
     def tests(self):
@@ -70,7 +70,7 @@ class _DataController(object):
 
     @property
     def metadata(self):
-        return MetadataListController(self.data.setting_table)
+        return MetadataListController(self, self.data.setting_table)
 
     def has_been_modified_on_disk(self):
         return False
@@ -123,14 +123,43 @@ class _TableController(object):
         return self._parent.datafile
 
 
-class VariableTableController(object):
-    def __init__(self, variables):
-        self._variables = variables
+class VariableTableController(_TableController):
+
     def __iter__(self):
-        return iter(VariableController(v) for v in self._variables)
-    @property
-    def datafile(self):
-        return self._variables.parent
+        return iter(VariableController(v) for v in self._table)
+
+    def add_variable(self, name, value):
+        self._table.add(name, value)
+        self.mark_dirty()
+
+    def validate_scalar_variable_name(self, name):
+        return self._validate_name(_ScalarVarValidator(), name)
+
+    def validate_list_variable_name(self, name):
+        return self._validate_name(_ListVarValidator(), name)
+
+    def _validate_name(self, validator, name):
+        # TODO: Should communication be changed to use exceptions?
+        if not validator(name):
+            return '%s variable name must be in format %s{name}' % \
+                    (validator.name, validator.prefix)
+        if self._name_taken(name):
+            return 'Variable with this name already exists.'
+        return None
+
+    def _name_taken(self, name):
+        return any(utils.eq(name, var.name) for var in self._table.variables)
+
+
+class _ScalarVarValidator(object):
+    __call__ = lambda self, name: is_scalar_var(name)
+    name = 'Scalar'
+    prefix = '$'
+
+class _ListVarValidator(object):
+    __call__ = lambda self, name: is_list_var(name)
+    name = 'List'
+    prefix = '@'
 
 
 class VariableController(object):
@@ -216,22 +245,10 @@ class UserKeywordController(_WithStepsCotroller):
                 ArgumentsController(self, self._kw.return_, 'Return Value')]
 
 
-class ImportSettingsController(object):
-
-    def __init__(self, parent_controller, setting_table):
-        self._parent = parent_controller
-        self._table = setting_table
+class ImportSettingsController(_TableController):
 
     def __iter__(self):
         return iter(ImportController(imp) for imp in self._table.imports)
-
-    @property
-    def dirty(self):
-        return self._parent.dirty
-
-    @property
-    def datafile(self):
-        return self._table.parent
 
     def add_library(self, argstr):
         self._add_import(self._table.add_library, argstr)
@@ -251,14 +268,11 @@ class ImportSettingsController(object):
         return parts[0], parts[1:]
 
 
-class MetadataListController(object):
-
-    def __init__(self, setting_table):
-        self._table = setting_table
+class MetadataListController(_TableController):
 
     def __iter__(self):
         return iter(MetadataController(m) for m in self._table.metadata)
 
-    @property
-    def datafile(self):
-        return self._table.parent
+    def add_metadata(self, name, value):
+        self._table.add_metadata(name, value)
+        self._parent.mark_dirty()
