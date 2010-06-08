@@ -69,8 +69,8 @@ class DataModel(object):
         return self._namespace.get_all_keywords([self.data.data] if self.data else [] + self.resources )
 
     def get_files_without_format(self, datafile=None):
-        if not self.suite:
-            return []
+        return []
+        # FIXME: please implement
         if datafile:
             datafiles = [datafile]
         else:
@@ -103,10 +103,11 @@ class DataModel(object):
     def serialize(self, datafile=None):
         # TODO: split to single file save and save all
         errors = []
-        datafiles = self._get_files_to_serialize(datafile)
+        datafiles = [datafile] # FIXME: self._get_files_to_serialize(datafile)
         for df in datafiles:
             try:
-                df.serialize(recursive=datafile is None)
+                serializer = Serializer()
+                serializer.serialize(df)
             except SerializationError, err:
                 errors.append('%s: %s\n' % (df.source, str(err)))
         if errors:

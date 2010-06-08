@@ -20,8 +20,9 @@ from robotide import utils
 import template
 
 
-def FileWriter(path):
-    output = open(path, 'wb')
+def FileWriter(path, output=None):
+    if not output:
+        output = open(path, 'wb')
     ext = os.path.splitext(path)[1].lower()
     try:
         Writer = {'.tsv': TsvFileWriter, '.txt': TxtFileWriter}[ext]
@@ -85,12 +86,12 @@ class _WriterHelper(object):
             self._write_data([self._get_tcuk_name()])
         self._write_empty_row()
 
-    def variable(self, name, value):
-        self._write_data([name] + value)
+    def variable(self, name, value, comment=None):
+        self._write_data([name] + value, comment=comment)
 
-    def keyword(self, keyword):
-        row = [self._get_tcuk_name()] + keyword.get_display_value()
-        self._write_data(row, indent=1)
+    def keyword(self, keyword_list, comment=None):
+        row = [self._get_tcuk_name()] + keyword_list
+        self._write_data(row, indent=1, comment=comment)
 
     def _split_data(self, data, indent=0):
         rows = []
@@ -129,12 +130,12 @@ class TsvFileWriter(_WriterHelper):
         self._writer = csv.writer(self._output, dialect='excel-tab',
                                   lineterminator=os.linesep)
 
-    def _setting_table_setting(self, name, value):
-        self._write_data([name] + value)
+    def _setting_table_setting(self, name, value, comment=None):
+        self._write_data([name] + value, comment=comment)
 
-    def _tcuk_table_setting(self, name, value):
+    def _tcuk_table_setting(self, name, value, comment=None):
         row = [self._get_tcuk_name(), '[%s]' % name] + value
-        self._write_data(row, indent=1)
+        self._write_data(row, indent=1, comment=comment)
 
     def _get_tcuk_name(self):
         name = self._tc_name or self._uk_name
@@ -145,7 +146,7 @@ class TsvFileWriter(_WriterHelper):
         row = self._add_padding(row, padding=row[-1])
         self._writer.writerow(['*%s*' % cell for cell in row])
 
-    def _write_data(self, data, indent=0):
+    def _write_data(self, data, indent=0, comment=None):
         data = self._encode(data)
         for row in self._split_data(data, indent):
             self._writer.writerow(self._add_padding(row))
@@ -160,25 +161,27 @@ class TxtFileWriter(_WriterHelper):
     def __init__(self, output):
         _WriterHelper.__init__(self, output, 8)
 
-    def start_testcase(self, tc):
-        self._write_data([tc.name])
+    def start_testcase(self, tc, comment=None):
+        self._write_data([tc.name], comment=comment)
 
-    def start_keyword(self, uk):
-        self._write_data([uk.name])
+    def start_keyword(self, uk, comment=None):
+        self._write_data([uk.name], comment=comment)
 
-    def _setting_table_setting(self, name, value):
-        self._write_data([name.ljust(14)] + value)
+    def _setting_table_setting(self, name, value, comment=None):
+        self._write_data([name.ljust(14)] + value, comment=comment)
 
-    def _tcuk_table_setting(self, name, value):
-        self._write_data(['[%s]' % name] + value, indent=True)
+    def _tcuk_table_setting(self, name, value, comment=None):
+        self._write_data(['[%s]' % name] + value, indent=True, comment=comment)
 
-    def keyword(self, keyword):
-        self._write_data(keyword.get_display_value(), indent=True)
+    def keyword(self, keyword_list, comment=None):
+        self._write_data(keyword_list, indent=True, comment=comment)
 
     def _write_header(self, title):
         self._write_row('*** %s ***' % title)
 
-    def _write_data(self, data, indent=False):
+    def _write_data(self, data, indent=False, comment=None):
+        if comment:
+            self._write_row("# %s" % comment, indent)
         data[1:] = [ d.strip() or '${EMPTY}' for d in data[1:] ]
         if data and data[0].strip() == '':
             data[0] = '\\' # support FOR and PARALLEL blocks
@@ -190,7 +193,7 @@ class TxtFileWriter(_WriterHelper):
             self._output.write('    ')
         self._output.write(text + os.linesep)
 
-    
+# FIXME: Handle comments
 class HtmlFileWriter(_WriterHelper):
     _setting_titles = ['Setting', 'Value']
     _variable_titles = ['Variable', 'Value']
@@ -240,7 +243,7 @@ class HtmlFileWriter(_WriterHelper):
             self._writer.element('th', cell, self._get_attrs(i, len(titles)))
         self._writer.end('tr')
 
-    def _write_data(self, data, indent=0, colspan=False):
+    def _write_data(self, data, indent=0, colspan=False, comment=None):
         for row in self._split_data(data, indent):
             if not colspan:
                 row = self._add_padding(row)
