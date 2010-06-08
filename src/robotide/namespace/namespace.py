@@ -20,7 +20,7 @@ from robot.parsing.settings import Library, Resource
 from robot.utils.match import eq
 from robot.utils.normalizing import NormalizedDict, normalize
 from robotide.namespace.cache import LibraryCache
-from robotide.spec.kwinfo import TestCaseUserKeywordInfo, ResourceseUserKeywordInfo
+from robotide.spec.kwinfo import TestCaseUserKeywordInfo, ResourceseUserKeywordInfo, VariableInfo
 
 
 class Namespace(object):
@@ -97,6 +97,41 @@ class Namespace(object):
         return parts[0], parts[1:]
 
     def get_suggestions_for(self, datafile, start):
+        if self._blank(start):
+            return self._all_suggestions(datafile)
+        if self._looks_like_variable(start):
+            return self._variable_suggestions(datafile, start)
+        return self._keyword_suggestions(datafile, start)
+
+    def _blank(self, start):
+        return start == ''
+
+    def _all_suggestions(self, datafile):
+        vars = self._variable_suggestions(datafile, '')
+        kws = self._keyword_suggestions(datafile, '')
+        return vars + kws
+
+    def _looks_like_variable(self, start):
+        return (len(start) == 1 and start.startswith('$') or start.startswith('@')) \
+            or (len(start) >= 2 and start.startswith('${') or start.startswith('@{'))
+
+    def _variable_suggestions(self, datafile, start):
+        start_normalized = normalize(start)
+        source = os.path.basename(datafile.source) if datafile.source else ''
+        vars = self._get_vars_recursive(datafile, VariableStash())
+        return [VariableInfo(k, v, source) for k, v in vars.variables.items()
+                if normalize(k).startswith(start_normalized)]
+
+    def _get_vars_recursive(self, datafile, vars):
+        vars.add_vars(datafile.variable_table)
+        for imp in self.__collect_import_of_type(datafile, Resource):
+            resolved_name = vars.replace_variables(imp.name)
+            res = self.res_cache.get_resource(imp.directory, resolved_name)
+            if res:
+                self._get_vars_recursive(res, vars)
+        return vars
+
+    def _keyword_suggestions(self, datafile, start):
         start_normalized = normalize(start)
         suggestions = self._get_keywords(datafile)
         return sorted([sug for sug in suggestions
@@ -164,17 +199,17 @@ class ResourceCache(object):
 class VariableStash(object):
 
     def __init__(self):
-        self._variables = NormalizedDict()
+        self.variables = NormalizedDict()
         self._regexp = re.compile('(\$\{[^{}]*\})')
 
     def add_vars(self, variable_table):
         for v in variable_table.variables:
-            self._variables[v.name] = v.value
+            self.variables[v.name] = v.value
 
     def replace_variables(self, string):
         parts = self._regexp.split(string)
         return ''.join([self._replace_variable(part) for part in parts])
 
     def _replace_variable(self, string):
-        result = self._variables.get(string, None)
+        result = self.variables.get(string, None)
         return result[0] if result else string

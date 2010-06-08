@@ -70,8 +70,7 @@ class LibrarySpec(Spec):
 
     def _init_from_library(self, name, args):
         lib = RobotTestLibrary(name, args)
-        keywords = [ LibraryKeywordInfo(kw, source=name) for
-                     kw in lib.handlers.values() ]
+        keywords = [LibraryKeywordInfo(kw) for kw in lib.handlers.values()]
         return keywords, lib.doc
 
 

@@ -20,8 +20,7 @@ class TestKeywordInfo(unittest.TestCase):
     def test_libkw_arguments_parsing(self):
         libname = 'TestLib'
         lib = TestLibrary(libname)
-        kw_info = LibraryKeywordInfo(lib.handlers['testlib_keyword_with_args'],
-                                     libname)
+        kw_info = LibraryKeywordInfo(lib.handlers['testlib_keyword_with_args'])
         exp_start = 'Source: TestLib &lt;test library&gt;<br><br>Arguments: [ arg1 | arg2=default value | *args ]<br><br>'
         assert_true(kw_info.details.startswith(exp_start), kw_info.details)
 
@@ -29,7 +28,8 @@ class TestKeywordInfo(unittest.TestCase):
         uk = UserKeyword(_FakeTestCaseFile(), 'My User keyword')
         uk.args.value = ['${arg1}', '${arg2}=def', '@{varargs}']
         kw_info = TestCaseUserKeywordInfo(uk)
-        exp_start = 'Source: /path/to/testcase.txt &lt;test case file&gt;<br><br>Arguments: [ arg1 | arg2=def | *varargs ]<br><br>'
+        exp_start = 'Source: testcase.txt &lt;test case file&gt;<br><br>Arguments: [ arg1 | arg2=def | *varargs ]<br><br>'
+        print kw_info.details
         assert_true(kw_info.details.startswith(exp_start), kw_info.details)
 
 
