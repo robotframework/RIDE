@@ -15,7 +15,7 @@
 import time
 import unittest
 
-from robotide.model.files import TestSuiteFactory
+from robotide.robotapi import TestCaseFile
 
 from resources import COMPLEX_SUITE_PATH
 
@@ -24,7 +24,7 @@ class PerformanceTest(unittest.TestCase):
     """Test for performance issue 276"""
 
     def setUp(self):
-        self.suite = TestSuiteFactory(COMPLEX_SUITE_PATH)
+        self.suite = TestCaseFile(COMPLEX_SUITE_PATH)
         self.start_time = time.time()
 
     def run_copy_test(self, collection):
