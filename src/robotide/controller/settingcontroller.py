@@ -39,6 +39,8 @@ class _SettingController(object):
         self._data = data
         self.datafile = parent_controller.datafile
         self.label = data.setting_name
+        if self.label.startswith('['):
+            self.label = self.label[1:-1]
         self._init(data)
 
     @property
