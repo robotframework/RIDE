@@ -12,22 +12,23 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import os
-import csv
 from StringIO import StringIO
-
+from robot.parsing.settings import Documentation
 from robotide import utils
+import csv
+import os
 import template
 
 
-def FileWriter(path, output=None):
+
+def FileWriter(path, output=None, name=None):
     if not output:
         output = open(path, 'wb')
     ext = os.path.splitext(path)[1].lower()
     try:
         Writer = {'.tsv': TsvFileWriter, '.txt': TxtFileWriter}[ext]
     except KeyError:
-        return HtmlFileWriter(output, path)
+        return HtmlFileWriter(output, path, name)
     else:
         return Writer(output)
 
@@ -39,6 +40,7 @@ class _WriterHelper(object):
         self._cols = cols
         self._tc_name = self._uk_name = ''
         self._in_tcuk = False
+        self._in_setting_table = False
 
     def close(self, close_output=True):
         if close_output:
@@ -46,9 +48,11 @@ class _WriterHelper(object):
 
     def start_settings(self):
         self._write_header(self._setting_titles)
+        self._in_setting_table = True
 
     def end_settings(self):
         self._write_empty_row()
+        self._in_setting_table = False
 
     def start_variables(self):
         self._write_header(self._variable_titles)
@@ -88,12 +92,12 @@ class _WriterHelper(object):
         self._write_empty_row()
         self._in_tcuk = False
 
-    def element(self, content, comment=None):
+    def element(self, content):
         if self._in_tcuk:
             self._write_data([self._get_tcuk_name()]+content, 
-                             indent=1, comment=comment)
+                             indent=1)
         else:
-            self._write_data(content, comment=comment)
+            self._write_data(content)
 
     def _split_data(self, data, indent=0):
         rows = []
@@ -141,7 +145,7 @@ class TsvFileWriter(_WriterHelper):
         row = self._add_padding(row, padding=row[-1])
         self._writer.writerow(['*%s*' % cell for cell in row])
 
-    def _write_data(self, data, indent=0, comment=None):
+    def _write_data(self, data, indent=0):
         data = self._encode(data)
         for row in self._split_data(data, indent):
             self._writer.writerow(self._add_padding(row))
@@ -156,34 +160,27 @@ class TxtFileWriter(_WriterHelper):
     def __init__(self, output):
         _WriterHelper.__init__(self, output, 8)
 
-    def start_testcase(self, tc, comment=None):
-        self._write_data([tc.name], comment=comment)
+    def start_testcase(self, tc):
+        self._write_data([tc.name])
         self._in_tcuk = True
 
-    def start_keyword(self, uk, comment=None):
-        self._write_data([uk.name], comment=comment)
+    def start_keyword(self, uk):
+        self._write_data([uk.name])
         self._in_tcuk = True
 
-    def element(self, content, comment=None):
+    def element(self, content):
         if self._in_tcuk:
             self._write_data(content, 
-                             indent=1, comment=comment)
+                             indent=1)
+        elif self._in_setting_table:
+            self._write_data([content[0].ljust(14)] + content[1:])
         else:
-            self._write_data(content, comment=comment)
-
-# FIXME: ljust is gone! Should we add it back?
-#    def _setting_table_setting(self, name, value, comment=None):
-#        self._write_data([name.ljust(14)] + value, comment=comment)
-
-    def keyword(self, keyword_list, comment=None):
-        self._write_data(keyword_list, indent=True, comment=comment)
+            self._write_data(content)
 
     def _write_header(self, title):
         self._write_row('*** %s ***' % title)
 
-    def _write_data(self, data, indent=False, comment=None):
-        if comment:
-            self._write_row("# %s" % comment, indent)
+    def _write_data(self, data, indent=False):
         data[1:] = [ d.strip() or '${EMPTY}' for d in data[1:] ]
         if data and data[0].strip() == '':
             data[0] = '\\' # support FOR and PARALLEL blocks
@@ -202,8 +199,8 @@ class HtmlFileWriter(_WriterHelper):
     _testcase_titles = ['Test Case', 'Action', 'Arguments']
     _keyword_titles = ['Keyword', 'Action', 'Arguments']
 
-    def __init__(self, output, path=None):
-        self._content = template.Template(path)
+    def __init__(self, output, path=None, name=None):
+        self._content = template.Template(path, name)
         _WriterHelper.__init__(self, output, 5)
         self._writer = utils.HtmlWriter(StringIO())
 
@@ -227,12 +224,13 @@ class HtmlFileWriter(_WriterHelper):
         _WriterHelper.end_keywords(self)
         self._end_table(template.keywords_table)
 
-    def _setting_table_setting(self, name, value):
-        self._write_data([name] + value, colspan=name=='Documentation')
-
-    def _tcuk_table_setting(self, name, value):
-        row = [self._get_tcuk_name(), '[%s]' % name] + value
-        self._write_data(row, indent=1, colspan=name=='Documentation')
+    def element(self, content):
+        colspan = isinstance(content, Documentation)
+        if self._in_tcuk:
+            self._write_data([self._get_tcuk_name()]+content, 
+                             indent=1, colspan=colspan)
+        else:
+            self._write_data(content, colspan=colspan)
 
     def _end_table(self, table_replacer):
         table = self._writer.output.getvalue().decode('UTF-8')
@@ -245,7 +243,7 @@ class HtmlFileWriter(_WriterHelper):
             self._writer.element('th', cell, self._get_attrs(i, len(titles)))
         self._writer.end('tr')
 
-    def _write_data(self, data, indent=0, colspan=False, comment=None):
+    def _write_data(self, data, indent=0, colspan=False):
         for row in self._split_data(data, indent):
             if not colspan:
                 row = self._add_padding(row)
