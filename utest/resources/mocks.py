@@ -13,9 +13,9 @@
 #  limitations under the License.
 
 
-from robotide.model.files import TestCaseFile, ResourceFile, InitFile,\
-    _EmptyResourceFile, _EmptyTestSuite
-from robotide.model.tcuk import UserKeyword, TestCase
+from robot.parsing.model import TestCaseFile, ResourceFile, TestDataDirectory,\
+    UserKeyword, TestCase
+
 from robotide.namespace import Namespace
 
 
@@ -74,6 +74,7 @@ class MockSerializer(object):
     def keyword(self, kw):
         self.record.append('KW: %s' % kw.name)
 
+
 class FakeResource(ResourceFile):
     def __init__(self, name='Fake Resource', doc='', path='fake/resource.html'):
         data = _EmptyResourceFile(path)
@@ -92,7 +93,7 @@ class FakeResource(ResourceFile):
     def _get_mtime(self, path):
         return 0
 
-class FakeDirectorySuite(InitFile):
+class FakeDirectorySuite(TestDataDirectory):
     def __init__(self, name='Fake Dir Suite', doc='', path='fake/__init__.html'):
         data = _EmptyTestSuite(path)
         data.doc = doc

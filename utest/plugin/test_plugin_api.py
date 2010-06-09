@@ -1,17 +1,20 @@
 import unittest
 from robot.utils.asserts import assert_equals
-from robotide.pluginapi import Plugin
-from robotide.namespace import Namespace, ContentAssistItem
 
-from resources import FakeApplication, FakeSuite
+from robotide.pluginapi import Plugin
+from robotide.namespace import Namespace
+from robotide.spec.iteminfo import _ItemInfo
+from robotide.robotapi import TestCaseFile
+
+from resources import FakeApplication
 
 
 class ContentAssistPlugin(Plugin):
 
     def _get_content_assist_values(self, item, value):
-        assert_equals(item.name, 'Fake Suite')
+        assert_equals(item.name, None)
         assert_equals(value, 'given')
-        return [ContentAssistItem('foo', 'test')]
+        return [_ItemInfo('foo', 'test', 'quux')]
 
 
 class TestContentAssistHook(unittest.TestCase):
@@ -24,9 +27,7 @@ class TestContentAssistHook(unittest.TestCase):
         self._assert_contains('foo')
 
     def _assert_contains(self, name):
-        for val in self.app.namespace.content_assist_values(FakeSuite(),
-                                                            'given'):
+        for val in self.app.namespace.get_suggestions_for(TestCaseFile(), 'given'):
             if val.name == name:
                 return
         raise AssertionError()
-
