@@ -38,6 +38,7 @@ class _WriterHelper(object):
         self._output = output
         self._cols = cols
         self._tc_name = self._uk_name = ''
+        self._in_tcuk = False
 
     def close(self, close_output=True):
         if close_output:
@@ -45,7 +46,6 @@ class _WriterHelper(object):
 
     def start_settings(self):
         self._write_header(self._setting_titles)
-        self.setting = self._setting_table_setting
 
     def end_settings(self):
         self._write_empty_row()
@@ -58,40 +58,42 @@ class _WriterHelper(object):
 
     def start_testcases(self):
         self._write_header(self._testcase_titles)
-        self.setting = self._tcuk_table_setting
 
     def end_testcases(self):
         pass
 
     def start_keywords(self):
         self._write_header(self._keyword_titles)
-        self.setting = self._tcuk_table_setting
 
     def end_keywords(self):
         pass
 
     def start_testcase(self, tc):
         self._tc_name = tc.name
+        self._in_tcuk = True
 
     def end_testcase(self):
         if self._tc_name:
             self._write_data([self._get_tcuk_name()])
         self._write_empty_row()
+        self._in_tcuk = False
 
     def start_keyword(self, uk):
         self._uk_name = uk.name
+        self._in_tcuk = True
 
     def end_keyword(self):
         if self._uk_name:
             self._write_data([self._get_tcuk_name()])
         self._write_empty_row()
+        self._in_tcuk = False
 
-    def variable(self, name, value, comment=None):
-        self._write_data([name] + value, comment=comment)
-
-    def keyword(self, keyword_list, comment=None):
-        row = [self._get_tcuk_name()] + keyword_list
-        self._write_data(row, indent=1, comment=comment)
+    def element(self, content, comment=None):
+        if self._in_tcuk:
+            self._write_data([self._get_tcuk_name()]+content, 
+                             indent=1, comment=comment)
+        else:
+            self._write_data(content, comment=comment)
 
     def _split_data(self, data, indent=0):
         rows = []
@@ -130,13 +132,6 @@ class TsvFileWriter(_WriterHelper):
         self._writer = csv.writer(self._output, dialect='excel-tab',
                                   lineterminator=os.linesep)
 
-    def _setting_table_setting(self, name, value, comment=None):
-        self._write_data([name] + value, comment=comment)
-
-    def _tcuk_table_setting(self, name, value, comment=None):
-        row = [self._get_tcuk_name(), '[%s]' % name] + value
-        self._write_data(row, indent=1, comment=comment)
-
     def _get_tcuk_name(self):
         name = self._tc_name or self._uk_name
         self._tc_name = self._uk_name = ''
@@ -163,15 +158,22 @@ class TxtFileWriter(_WriterHelper):
 
     def start_testcase(self, tc, comment=None):
         self._write_data([tc.name], comment=comment)
+        self._in_tcuk = True
 
     def start_keyword(self, uk, comment=None):
         self._write_data([uk.name], comment=comment)
+        self._in_tcuk = True
 
-    def _setting_table_setting(self, name, value, comment=None):
-        self._write_data([name.ljust(14)] + value, comment=comment)
+    def element(self, content, comment=None):
+        if self._in_tcuk:
+            self._write_data(content, 
+                             indent=1, comment=comment)
+        else:
+            self._write_data(content, comment=comment)
 
-    def _tcuk_table_setting(self, name, value, comment=None):
-        self._write_data(['[%s]' % name] + value, indent=True, comment=comment)
+# FIXME: ljust is gone! Should we add it back?
+#    def _setting_table_setting(self, name, value, comment=None):
+#        self._write_data([name.ljust(14)] + value, comment=comment)
 
     def keyword(self, keyword_list, comment=None):
         self._write_data(keyword_list, indent=True, comment=comment)
@@ -193,7 +195,7 @@ class TxtFileWriter(_WriterHelper):
             self._output.write('    ')
         self._output.write(text + os.linesep)
 
-# FIXME: Handle comments
+# FIXME: Handle comments, classes for settings
 class HtmlFileWriter(_WriterHelper):
     _setting_titles = ['Setting', 'Value']
     _variable_titles = ['Variable', 'Value']

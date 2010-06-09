@@ -21,13 +21,13 @@ class Serializer(object):
         for setting in table:
             if setting.is_set():
                 setting_list = setting.as_list()
-                writer.setting(setting_list[0], setting_list[1:], comment=setting.comment)
+                writer.element(setting_list, comment=setting.comment)
         writer.end_settings()
 
     def variable_table_handler(self, writer, table):
         writer.start_variables()
         for var in table:
-            writer.variable(var.name, var.value, comment=var.comment)
+            writer.element([var.name]+var.value, comment=var.comment)
         writer.end_variables()
 
     def keyword_table_handler(self, writer, table):
@@ -38,9 +38,20 @@ class Serializer(object):
 
     def handle_keyword(self, writer, kw):
         writer.start_keyword(kw)
-        for step in kw.steps:
-            writer.keyword(step.as_list(), comment=step.comment)
+        for step in kw:
+            if step.is_set():
+                writer.element(step.as_list(), comment=step.comment)
         writer.end_keyword()
 
     def testcase_table_handler(self, writer, table):
-        self._output.write('testcase')
+        writer.start_testcases()
+        for tc in table:
+            self.handle_testcase(writer, tc)
+        writer.end_testcases()
+
+    def handle_testcase(self, writer, tc):
+        writer.start_testcase(tc)
+        for step in tc:
+            if step.is_set():
+                writer.element(step.as_list(), comment=step.comment)
+        writer.end_testcase()
