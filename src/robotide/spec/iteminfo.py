@@ -30,6 +30,9 @@ class _ItemInfo(object):
     def _details(self, item):
         return None
 
+    def __cmp__(self, other):
+        return cmp(self.name, other.name)
+
 
 class VariableItem(object):
     def __init__(self, name, value, source):

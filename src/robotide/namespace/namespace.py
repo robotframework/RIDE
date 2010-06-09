@@ -46,10 +46,13 @@ class Namespace(object):
     def get_suggestions_for(self, datafile, start):
         sugs = self._get_suggestions_from_hooks(datafile, start)
         if self._blank(start):
-            return sugs + self._all_suggestions(datafile)
-        if self._looks_like_variable(start):
-            return sugs + self._variable_suggestions(datafile, start)
-        return sugs + self._keyword_suggestions(datafile, start)
+            sugs = sugs + self._all_suggestions(datafile)
+        elif self._looks_like_variable(start):
+            sugs = sugs + self._variable_suggestions(datafile, start)
+        else:
+            sugs = sugs + self._keyword_suggestions(datafile, start)
+        sugs.sort()
+        return sugs
 
     def _get_suggestions_from_hooks(self, datafile, start):
         sugs = []
@@ -63,7 +66,9 @@ class Namespace(object):
     def _all_suggestions(self, datafile):
         vars = self._variable_suggestions(datafile, '')
         kws = self._keyword_suggestions(datafile, '')
-        return vars + kws
+        all = vars + kws
+        all.sort()
+        return all
 
     def _looks_like_variable(self, start):
         return (len(start) == 1 and start.startswith('$') or start.startswith('@')) \
