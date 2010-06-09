@@ -12,9 +12,10 @@ from robotide.namespace.namespace import VariableStash
 from robotide.robotapi import TestCaseFile
 
 
-
-testlibpath = os.path.join(os.path.dirname(__file__), '..', 'resources', 'robotdata', 'libs')
-sys.path.append(testlibpath)
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'resources',
+                             'robotdata', 'libs'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'resources',
+                             'robotdata', 'put_into_python_path'))
 
 DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]),
                         '..', 'resources', 'robotdata')
@@ -160,6 +161,11 @@ class TestKeywordSuggestions(_DataFileTest):
             if item.name == 'Get Mandatory':
                 return
         fail('Get mandatory not found')
+
+    def test_vars_from_path_resource_file(self):
+        sugs = self.ns.get_suggestions_for(TestCaseFile(source=TESTCASEFILE_WITH_EVERYTHING),
+                                           '${Path RESOURCE var')
+        assert_true(len(sugs) > 0)
 
     def test_variable_file_arguments_are_resolved(self):
         sugs = self.ns.get_suggestions_for(TestCaseFile(source=TESTCASEFILE_WITH_EVERYTHING),

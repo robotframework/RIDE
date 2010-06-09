@@ -22,7 +22,7 @@ from robot.variables import Variables as RobotVariables
 
 from robotide.namespace.cache import LibraryCache
 from robotide.spec.iteminfo import TestCaseUserKeywordInfo, ResourceseUserKeywordInfo, VariableInfo
-
+from robotide import utils
 
 class Namespace(object):
 
@@ -114,11 +114,20 @@ class ResourceCache(object):
 
     def get_resource(self, directory, name):
         path = os.path.join(directory, name)
+        res = self._get_resource(path)
+        if res:
+            return res
+        path_from_pythonpath = utils.find_from_pythonpath(name)
+        if path_from_pythonpath:
+            return self._get_resource(path_from_pythonpath)
+        return None
+
+    def _get_resource(self, path):
         normalized = os.path.normpath(path)
         if normalized not in self.cache:
             try:
-                self.cache[normalized] = ResourceFile(normalized)
-            except:
+                self.cache[normalized] = ResourceFile(path)
+            except Exception:
                 return None
         return self.cache[normalized]
 
