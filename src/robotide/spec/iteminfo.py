@@ -17,55 +17,43 @@ import os
 from robotide.utils import html_escape
 
 
-class _ItemInfo(object):
+class ItemInfo(object):
 
-    def __init__(self, item):
-        self.name = item.name
-        self.source = self._source(item)
-        self.details = self._details(item)
-
-    def _source(self, item):
-        return ''
-
-    def _details(self, item):
-        return None
+    def __init__(self, name, source, details):
+        self.name = name
+        self.source = source
+        self.details = details
 
     def __cmp__(self, other):
         return cmp(self.name, other.name)
 
 
-class VariableItem(object):
-    def __init__(self, name, value, source):
-        self.name = name
-        self.source = source
-        self.value = value
+class VariableInfo(ItemInfo):
 
-
-class VariableInfo(_ItemInfo):
-
-    def __init__(self, name, value, source):
-        _ItemInfo.__init__(self, VariableItem(name, value, source))
+    def __init__(self, name, source, value):
+        ItemInfo.__init__(self, name, source, value)
 
     def _details(self, item):
-        prefix = 'Source: %s<br><br>Value: ' % item.source
-        if item.name.startswith('$'):
+        prefix = 'Source: %s<br><br>Value: ' % self.source
+        if self.name.startswith('$'):
             return prefix  + item.value[0]
-        return prefix + ' | '.join(item.value)
+        return prefix + ' | '.join(self.details)
 
     def _source(self, item):
         return item.source
 
 
-class _KeywordInfo(_ItemInfo):
+class _KeywordInfo(ItemInfo):
 
     def __init__(self, item):
         self.doc = self._parse_doc(item.doc)
-        _ItemInfo.__init__(self, item)
+        ItemInfo.__init__(self, item.name, self._source(item),
+                          self._details(item))
         self.shortdoc = self.doc.splitlines()[0] if self.doc else ''
 
     def _details(self, item):
         return 'Source: %s &lt;%s&gt;<br><br>Arguments: %s<br><br>%s' % \
-                (self.source, self._type, 
+                (self._source(item), self._type,
                  self._format_args(self._parse_args(item)),
                  html_escape(self.doc, formatting=True))
 
