@@ -5,9 +5,7 @@ from robot.parsing.settings import Fixture, Documentation, Timeout, Tags
 from robot.utils.asserts import assert_equals, assert_true, assert_false
 from robot.parsing.model import TestDataDirectory
 from robotide.controller.settingcontroller import *
-from robotide.controller.filecontroller import (TestCaseFileController,
-        TestDataDirectoryController, TestCaseController, UserKeywordController,
-        TestCaseTableController, KeywordTableController)
+from robotide.controller.filecontroller import *
 
 
 class _FakeParent(object):
@@ -21,7 +19,7 @@ class _FakeParent(object):
 class DocumentationControllerTest(unittest.TestCase):
 
     def setUp(self):
-        self.doc = Documentation()
+        self.doc = Documentation('Documentation')
         self.doc.value = 'Initial doc'
         self.parent = _FakeParent()
         self.ctrl = DocumentationController(self.parent, self.doc)
@@ -49,22 +47,28 @@ class DocumentationControllerTest(unittest.TestCase):
         self.ctrl.set_value('Initial doc')
         assert_false(self.ctrl.dirty)
 
+    def test_clear(self):
+        self.ctrl.clear()
+        assert_equals(self.doc.value, '')
+        assert_true(self.ctrl.dirty)
+
 
 class FixtureControllerTest(unittest.TestCase):
 
     def setUp(self):
-        self.fix = Fixture()
+        self.fix = Fixture('Suite Setup')
         self.fix.name = 'My Setup'
         self.fix.args = ['argh', 'urgh']
         self.parent = _FakeParent()
-        self.ctrl = FixtureController(self.parent, self.fix, 'Suite Setup')
+        self.ctrl = FixtureController(self.parent, self.fix)
 
     def test_creation(self):
         assert_equals(self.ctrl.value, 'My Setup | argh | urgh')
+        assert_equals(self.ctrl.label, 'Suite Setup')
         assert_true(self.ctrl.is_set)
 
     def test_value_with_empty_fixture(self):
-        assert_equals(FixtureController(self.parent, Fixture(), '').value, '')
+        assert_equals(FixtureController(self.parent, Fixture('Teardown')).value, '')
 
     def test_setting_value_changes_fixture_state(self):
         self.ctrl.set_value('Blaa')
@@ -98,17 +102,17 @@ class FixtureControllerTest(unittest.TestCase):
 class TagsControllerTest(unittest.TestCase):
 
     def setUp(self):
-        self.tags = Tags()
+        self.tags = Tags('Force Tags')
         self.tags.value = ['f1', 'f2']
         self.parent = _FakeParent()
-        self.ctrl = TagsController(self.parent, self.tags, 'Force Tags')
+        self.ctrl = TagsController(self.parent, self.tags)
 
     def test_creation(self):
         assert_equals(self.ctrl.value, 'f1 | f2')
         assert_true(self.ctrl.is_set)
 
     def test_value_with_empty_fixture(self):
-        assert_equals(TagsController(self.parent, Tags(), '').value, '')
+        assert_equals(TagsController(self.parent, Tags('Tags')).value, '')
 
     def test_setting_value_changes_fixture_state(self):
         self.ctrl.set_value('Blaa')
@@ -133,18 +137,18 @@ class TagsControllerTest(unittest.TestCase):
 class TimeoutControllerTest(unittest.TestCase):
 
     def setUp(self):
-        self.to = Timeout()
+        self.to = Timeout('Timeout')
         self.to.value = '1 s'
         self.to.message = 'message'
         self.parent = _FakeParent()
-        self.ctrl = TimeoutController(self.parent, self.to, 'Suite Setup')
+        self.ctrl = TimeoutController(self.parent, self.to)
 
     def test_creation(self):
         assert_equals(self.ctrl.value, '1 s | message')
         assert_true(self.ctrl.is_set)
 
     def test_value_with_empty_timeout(self):
-        assert_equals(TimeoutController(self.parent, Timeout(), '').value, '')
+        assert_equals(TimeoutController(self.parent, Timeout('Timeout')).value, '')
 
     def test_setting_value_changes_fixture_state(self):
         self.ctrl.set_value('3 s')
@@ -229,3 +233,43 @@ class UserKeywordControllerTest(unittest.TestCase):
         assert_equals(step.assign, exp_assign)
         assert_equals(step.keyword, exp_keyword)
         assert_equals(step.args, exp_args)
+
+
+class ImportSettingsControllerTest(unittest.TestCase):
+
+    def setUp(self):
+        self.tcf = TestCaseFile()
+        self.ctrl = ImportSettingsController(TestCaseFileController(self.tcf),
+                                             self.tcf.setting_table)
+
+    def test_addding_library(self):
+        self.ctrl.add_library('MyLib | Some | argu | ments')
+        self._assert_import('MyLib', ['Some', 'argu', 'ments'])
+
+    def test_adding_resource(self):
+        self.ctrl.add_resource('/a/path/to/file.txt')
+        self._assert_import('/a/path/to/file.txt')
+
+    def test_adding_variables(self):
+        self.ctrl.add_variables('varfile.py | an arg')
+        self._assert_import('varfile.py', ['an arg'])
+
+    def _assert_import(self, exp_name, exp_args=None):
+        imp = self.tcf.setting_table.imports[-1]
+        assert_equals(imp.name, exp_name)
+        if exp_args is not None:
+            assert_equals(imp.args, exp_args)
+        assert_true(self.ctrl.dirty)
+
+
+class VariablesControllerTest(unittest.TestCase):
+
+    def setUp(self):
+        self.tcf = TestCaseFile()
+        self.ctrl = VariableTableController(TestCaseFileController(self.tcf),
+                                            self.tcf.variable_table)
+
+    def test_adding_scalar(self):
+        self.ctrl.add_variable('${blaa}', 'value')
+        assert_true(self.ctrl.dirty)
+        assert_equals(self.tcf.variable_table.variables[0].name, '${blaa}')

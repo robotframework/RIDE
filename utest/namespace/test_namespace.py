@@ -1,16 +1,20 @@
 import os
+import sys
 import unittest
 
 from robot.parsing.settings import Resource
+from robot.parsing.model import VariableTable
 from robot.utils import normalizing
 from robot.utils.asserts import assert_true, assert_false, assert_not_none, \
     assert_equals, fail, assert_none
 from robotide.namespace import Namespace
 from robotide.namespace.namespace import VariableStash
 from robotide.robotapi import TestCaseFile
-from robot.parsing.model import VariableTable
 
 
+
+testlibpath = os.path.join(os.path.dirname(__file__), '..', 'resources', 'robotdata', 'libs')
+sys.path.append(testlibpath)
 
 DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]),
                         '..', 'resources', 'robotdata')
@@ -76,26 +80,6 @@ class TestKeywordSuggestions(_DataFileTest):
         sugs = self.ns.get_suggestions_for(self.tcf, 'sHoUlD')
         assert_true('Should be in keywords Uk' in [s.name for s in sugs])
 
-    def test_userkeyword_details(self):
-        sugs = self.ns.get_suggestions_for(self.tcf, 'Resource Uk')
-        assert_true(len(sugs) == 1)
-        kw_info = sugs[0]
-        assert_equals(kw_info.doc, 'This is a user keyword from resource file')
-        assert_equals(kw_info.shortdoc, 'This is a user keyword from resource file')
-
-    def test_library_keyword_details(self):
-        sugs = self.ns.get_suggestions_for(self.tcf, 'Run Keyword')
-        assert_true(sugs)
-        kw_info = sugs[0]
-        exp_doc = \
-'''Executes the given keyword with the given arguments.
-
-Because the name of the keyword to execute is given as an argument, it
-can be a variable and thus set dynamically, e.g. from a return value of
-another keyword or from the command line.'''
-        assert_equals(kw_info.doc, exp_doc)
-        assert_equals(kw_info.shortdoc, 'Executes the given keyword with the given arguments.')
-
     def test_imported_lib_keywords(self):
         sugs = self.ns.get_suggestions_for(self.tcf, 'create file')
         self._assert_import_kws(sugs, 'OperatingSystem')
@@ -132,17 +116,36 @@ another keyword or from the command line.'''
         sugs = self.ns.get_suggestions_for(self.tcf, 'Execute Manual')
         self._assert_import_kws(sugs, 'Dialogs')
 
+    def test_xml_library(self):
+        everything_tcf = TestCaseFile(source=TESTCASEFILE_WITH_EVERYTHING)
+        sugs = self.ns.get_suggestions_for(everything_tcf, 'Attributeless Keyword')
+        self._assert_import_kws(sugs, 'LibSpecLibrary')
+
     def test_keywords_only_once_per_source(self):
         sugs = self.ns.get_suggestions_for(self.tcf, '')
         kw_set = []
         for kw in sugs:
-            key = 'kw: %s %s' % (kw.name, kw.source)
-            assert_false(key in kw_set)
-            kw_set.append(key)
+            if self._not_variable(kw):
+                key = 'kw: %s %s' % (kw.name, kw.source)
+                assert_false(key in kw_set)
+                kw_set.append(key)
+
+    def _not_variable(self, item):
+        return not (item.name.startswith('$') or item.name.startswith('@'))
 
     def test_resource_with_variable_in_path(self):
         sugs = self.ns.get_suggestions_for(self.tcf, 'Resu UK')
         self._assert_import_kws(sugs, 'resu.txt')
+
+    def test_variable_suggestion(self):
+        scalar_vars = self.ns.get_suggestions_for(self.tcf, '$')
+        assert_true(len(scalar_vars) > 0)
+        assert_true(len(self.ns.get_suggestions_for(self.tcf, '${')) == len(scalar_vars))
+        list_vars = self.ns.get_suggestions_for(self.tcf, '@')
+        assert_true(len(list_vars) > 0)
+        assert_true(len(self.ns.get_suggestions_for(self.tcf, '@{')) == len(list_vars))
+        sug = self.ns.get_suggestions_for(self.tcf, '${lib')
+        assert_true(sug[0].name == '${libname}')
 
     def _assert_import_kws(self, sugs, source):
         assert_true(len(sugs) > 0)
@@ -229,3 +232,7 @@ class TestResourceCache(_DataFileTest):
 
 class ParentMock(object):
     directory = '/tmp/exmaple'
+
+
+if __name__ == "__main__":
+    unittest.main()

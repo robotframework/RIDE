@@ -19,6 +19,8 @@ from robotide.errors import DataError
 from robotide.publish import RideLogMessage
 from robotide import utils
 
+from iteminfo import LibraryKeywordInfo
+
 
 def XMLResource(resource_name):
     specfile = utils.find_from_pythonpath(os.path.splitext(resource_name)[0] + '.xml')
@@ -68,8 +70,7 @@ class LibrarySpec(Spec):
 
     def _init_from_library(self, name, args):
         lib = RobotTestLibrary(name, args)
-        keywords = [ _LibraryKeywordContent(handler, name) for
-                     handler in lib.handlers.values() ]
+        keywords = [LibraryKeywordInfo(kw) for kw in lib.handlers.values()]
         return keywords, lib.doc
 
 
@@ -151,42 +152,4 @@ class _XMLKeywordContent(_KeywordContent):
         args_node = node.get_node('arguments')
         return [ arg_node.text for arg_node in args_node.get_nodes('arg') ]
 
-
-class _LibraryKeywordContent(_KeywordContent):
-
-    def __init__(self, item, source):
-        _KeywordContent.__init__(self, item, source, 'test library')
-
-    def _parse_args(self, handler):
-        if hasattr(handler, 'arguments'):
-            return self._parse_args_with_rf_25_alpha(handler)
-        return self._parse_args_with_ye_olde_rf(handler)
-
-    def _parse_args_with_ye_olde_rf(self, handler):
-        args = []
-        if handler.args:
-            args.extend(list(handler.args))
-        if handler.defaults:
-            for i, value in enumerate(handler.defaults):
-                index = len(handler.args) - len(handler.defaults) + i
-                args[index] = args[index] + '=' + str(value)
-        if handler.varargs:
-            args.append('*%s' % handler.varargs)
-        return args
-
-    def _parse_args_with_rf_25_alpha(self, handler):
-        args = []
-        handler_args = handler.arguments
-        if handler_args.names:
-            args.extend(list(handler_args.names))
-        if handler_args.defaults:
-            for i, value in enumerate(handler_args.defaults):
-                index = len(handler_args.names) - len(handler_args.defaults) + i
-                args[index] = args[index] + '=' + str(value)
-        if handler_args.varargs:
-            args.append('*%s' % handler_args.varargs)
-        return args
-
-    def is_library_keyword(self):
-        return True
 

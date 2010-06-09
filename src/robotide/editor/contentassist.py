@@ -191,9 +191,9 @@ class ContentAssistPopup(object):
     def OnListItemSelected(self, event):
         self._selection = event.GetIndex()
         item = self._choices[self._selection]
-        if item.doc:
+        if item.details:
             self._details_popup.Show()
-            self._details_popup.set_content(item.doc)
+            self._details_popup.set_content(item.details)
         elif self._details_popup.IsShown():
             self._details_popup.Show(False)
 

@@ -15,7 +15,6 @@
 import wx
 
 from robotide import context
-from robotide.model.settings import ResourceImport
 from robotide.utils import RideEventHandler, RideHtmlWindow, ButtonWithHandler
 from robotide import utils
 
@@ -231,7 +230,7 @@ class DocumentationEditor(SettingEditor):
         editor.Destroy()
 
     def OnClear(self, event):
-        self._item.clear()
+        self._controller.clear()
         self._update_and_notify()
 
 
@@ -303,9 +302,10 @@ class UserKeywordEditor(TestCaseEditor): pass
 
 class _AbstractListEditor(ListEditor, RideEventHandler):
 
-    def __init__(self, parent, tree, data):
-        ListEditor.__init__(self, parent, self._titles, data)
-        self._datafile = data.datafile
+    def __init__(self, parent, tree, controller):
+        ListEditor.__init__(self, parent, self._titles, controller)
+        self._controller = controller
+        self._datafile = controller.datafile
         self._tree = tree
 
     def get_selected_datafile(self):
@@ -316,7 +316,7 @@ class _AbstractListEditor(ListEditor, RideEventHandler):
 
     def update_data(self):
         ListEditor.update_data(self)
-        self._tree.mark_dirty(self._datafile)
+        self._tree.mark_dirty(self._controller)
 
 
 class VariablesListEditor(_AbstractListEditor):
@@ -328,16 +328,16 @@ class VariablesListEditor(_AbstractListEditor):
                             else ' | '.join(item.value)]
 
     def OnAddScalar(self, event):
-        dlg = ScalarVariableDialog(self.GetGrandParent(), self._data.datafile)
+        dlg = ScalarVariableDialog(self.GetGrandParent(), self._controller)
         if dlg.ShowModal() == wx.ID_OK:
-            self._data.new_scalar_var(*dlg.get_value())
+            self._controller.add_variable(*dlg.get_value())
             self.update_data()
         dlg.Destroy()
 
     def OnAddList(self, event):
-        dlg = ListVariableDialog(self.GetGrandParent(), self._data.datafile)
+        dlg = ListVariableDialog(self.GetGrandParent(), self._controller)
         if dlg.ShowModal() == wx.ID_OK:
-            self._data.new_list_var(*dlg.get_value())
+            self._controller.add_variable(*dlg.get_value())
             self.update_data()
         dlg.Destroy()
 
@@ -345,19 +345,14 @@ class VariablesListEditor(_AbstractListEditor):
         item = self._data.get_name_and_value(self._selection)
         if item[0].startswith('${'):
             dlg = ScalarVariableDialog(self.GetGrandParent(),
-                                       self._data.datafile, item=item)
+                                       self._controller, item=item)
         else:
             dlg = ListVariableDialog(self.GetGrandParent(),
-                                     self._data.datafile, item=item)
+                                     self._controller, item=item)
         if dlg.ShowModal() == wx.ID_OK:
             self._data.set_name_and_value(self._selection, *dlg.get_value())
             self.update_data()
         dlg.Destroy()
-
-    def update_data(self):
-        self._list.DeleteAllItems()
-        self._list.insert_data([(var.name, var.value) for var in self._data])
-        self._tree.mark_dirty(self._datafile)
 
 
 class ImportSettingListEditor(_AbstractListEditor):
@@ -377,15 +372,15 @@ class ImportSettingListEditor(_AbstractListEditor):
 
     def OnAddLibrary(self, event):
         self._show_import_editor_dialog(LibraryImportDialog,
-                                        self._data.new_library)
+                                        self._data.add_library)
 
     def OnAddResource(self, event):
         self._show_import_editor_dialog(ResourceImportDialog,
-                                        self._data.new_resource)
+                                        self._data.add_resource)
 
     def OnAddVariables(self, event):
         self._show_import_editor_dialog(VariablesImportDialog,
-                                        self._data.new_variables)
+                                        self._data.add_variables)
 
     def _show_import_editor_dialog(self, dialog, creator):
         dlg = dialog(self.GetGrandParent(), self._data.datafile)
@@ -398,7 +393,7 @@ class ImportSettingListEditor(_AbstractListEditor):
         return [item.type, item.name, utils.join_value(item.args)]
 
     def _resource_import_modified(self):
-        return self._get_setting().__class__ == ResourceImport
+        return self._get_setting.type == 'Resource'
 
     def _get_setting(self):
         return self._data[self._selection]
@@ -421,7 +416,7 @@ class MetadataListEditor(_AbstractListEditor):
     def OnAddMetadata(self, event):
         dlg = MetadataDialog(self.GetGrandParent(), self._data.datafile)
         if dlg.ShowModal() == wx.ID_OK:
-            self._data.new_metadata(*dlg.get_value())
+            self._data.add_metadata(*dlg.get_value())
             self.update_data()
         dlg.Destroy()
 

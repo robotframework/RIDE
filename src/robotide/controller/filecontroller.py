@@ -12,13 +12,14 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.robotapi import TestCaseFile
+from robotide.robotapi import TestCaseFile, is_list_var, is_scalar_var
 from robot.parsing.datareader import DataRow
 from robot.parsing.populator import UserKeywordPopulator
 
 from robotide.controller.settingcontroller import (DocumentationController,
         FixtureController, TagsController, TimeoutController, TemplateController,
         ArgumentsController, MetadataController, ImportController)
+from robotide import utils
 
 
 def DataController(data):
@@ -40,16 +41,16 @@ class _DataController(object):
     def _settings(self):
         ss = self.data.setting_table
         return [DocumentationController(self, ss.doc),
-                FixtureController(self, ss.suite_setup, 'Suite Setup'),
-                FixtureController(self, ss.suite_teardown, 'Suite Teardown'),
-                FixtureController(self, ss.test_setup, 'Test Setup'),
-                FixtureController(self, ss.test_teardown, 'Test Teardown'),
-                TagsController(self, ss.force_tags, 'Force Tags'),
+                FixtureController(self, ss.suite_setup),
+                FixtureController(self, ss.suite_teardown),
+                FixtureController(self, ss.test_setup),
+                FixtureController(self, ss.test_teardown),
+                TagsController(self, ss.force_tags),
                 ]
 
     @property
     def variables(self):
-        return VariableTableController(self.data.variable_table)
+        return VariableTableController(self, self.data.variable_table)
 
     @property
     def tests(self):
@@ -65,11 +66,11 @@ class _DataController(object):
 
     @property
     def imports(self):
-        return ImportSettingsController(self.data.setting_table)
+        return ImportSettingsController(self, self.data.setting_table)
 
     @property
     def metadata(self):
-        return MetadataListController(self.data.setting_table)
+        return MetadataListController(self, self.data.setting_table)
 
     def has_been_modified_on_disk(self):
         return False
@@ -92,8 +93,8 @@ class TestCaseFileController(_DataController):
     def _settings(self):
         ss = self.data.setting_table
         return _DataController._settings(self) + \
-                [TimeoutController(self, ss.test_timeout, 'Test Timeout'),
-                 TemplateController(self, ss.test_template, 'Test Template')]
+                [TimeoutController(self, ss.test_timeout),
+                 TemplateController(self, ss.test_template)]
 
 
 class ResourceFileController(_DataController):
@@ -122,14 +123,43 @@ class _TableController(object):
         return self._parent.datafile
 
 
-class VariableTableController(object):
-    def __init__(self, variables):
-        self._variables = variables
+class VariableTableController(_TableController):
+
     def __iter__(self):
-        return iter(VariableController(v) for v in self._variables)
-    @property
-    def datafile(self):
-        return self._variables.parent
+        return iter(VariableController(v) for v in self._table)
+
+    def add_variable(self, name, value):
+        self._table.add(name, value)
+        self.mark_dirty()
+
+    def validate_scalar_variable_name(self, name):
+        return self._validate_name(_ScalarVarValidator(), name)
+
+    def validate_list_variable_name(self, name):
+        return self._validate_name(_ListVarValidator(), name)
+
+    def _validate_name(self, validator, name):
+        # TODO: Should communication be changed to use exceptions?
+        if not validator(name):
+            return '%s variable name must be in format %s{name}' % \
+                    (validator.name, validator.prefix)
+        if self._name_taken(name):
+            return 'Variable with this name already exists.'
+        return None
+
+    def _name_taken(self, name):
+        return any(utils.eq(name, var.name) for var in self._table.variables)
+
+
+class _ScalarVarValidator(object):
+    __call__ = lambda self, name: is_scalar_var(name)
+    name = 'Scalar'
+    prefix = '$'
+
+class _ListVarValidator(object):
+    __call__ = lambda self, name: is_list_var(name)
+    name = 'List'
+    prefix = '@'
 
 
 class VariableController(object):
@@ -137,16 +167,6 @@ class VariableController(object):
         self._var = var
         self.name = var.name
         self.value= var.value
-
-
-class MetadataListController(object):
-    def __init__(self, setting_table):
-        self._table = setting_table
-    def __iter__(self):
-        return iter(MetadataController(m) for m in self._table.metadata)
-    @property
-    def datafile(self):
-        return self._table.parent
 
 
 class TestCaseTableController(_TableController):
@@ -202,11 +222,11 @@ class TestCaseController(_WithStepsCotroller):
     @property
     def settings(self):
         return [DocumentationController(self, self._test.doc),
-                FixtureController(self, self._test.setup, 'Setup'),
-                FixtureController(self, self._test.teardown, 'Teardown'),
-                TagsController(self, self._test.tags, 'Tags'),
-                TimeoutController(self, self._test.timeout, 'Timeout'),
-                TemplateController(self, self._test.template, 'Template')]
+                FixtureController(self, self._test.setup),
+                FixtureController(self, self._test.teardown),
+                TagsController(self, self._test.tags),
+                TimeoutController(self, self._test.timeout),
+                TemplateController(self, self._test.template)]
 
 
 class UserKeywordController(_WithStepsCotroller):
@@ -218,17 +238,40 @@ class UserKeywordController(_WithStepsCotroller):
     @property
     def settings(self):
         return [DocumentationController(self, self._kw.doc),
-                ArgumentsController(self, self._kw.args, 'Arguments'),
-                TimeoutController(self, self._kw.timeout, 'Timeout'),
+                ArgumentsController(self, self._kw.args,),
+                TimeoutController(self, self._kw.timeout,),
                 # TODO: Wrong class, works right though
-                ArgumentsController(self, self._kw.return_, 'Return Value')]
+                ArgumentsController(self, self._kw.return_,)]
 
 
-class ImportSettingsController(object):
-    def __init__(self, setting_table):
-        self._table = setting_table
+class ImportSettingsController(_TableController):
+
     def __iter__(self):
         return iter(ImportController(imp) for imp in self._table.imports)
-    @property
-    def datafile(self):
-        return self._table.parent
+
+    def add_library(self, argstr):
+        self._add_import(self._table.add_library, argstr)
+
+    def add_resource(self, name):
+        self._add_import(self._table.add_resource, name)
+
+    def add_variables(self, argstr):
+        self._add_import(self._table.add_variables, argstr)
+
+    def _add_import(self, adder, argstr):
+        adder(*self._split_to_name_and_args(argstr))
+        self._parent.mark_dirty()
+
+    def _split_to_name_and_args(self, argstr):
+        parts = utils.split_value(argstr)
+        return parts[0], parts[1:]
+
+
+class MetadataListController(_TableController):
+
+    def __iter__(self):
+        return iter(MetadataController(m) for m in self._table.metadata)
+
+    def add_metadata(self, name, value):
+        self._table.add_metadata(name, value)
+        self._parent.mark_dirty()

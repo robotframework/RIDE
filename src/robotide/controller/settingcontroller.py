@@ -24,6 +24,7 @@ class MetadataController(object):
 
 
 class ImportController(object):
+
     def __init__(self, import_):
         self._import = import_
         self.type = self._import.type
@@ -33,12 +34,11 @@ class ImportController(object):
 
 class _SettingController(object):
 
-    def __init__(self, parent_controller, data, label=None):
+    def __init__(self, parent_controller, data):
         self._parent = parent_controller
         self._data = data
         self.datafile = parent_controller.datafile
-        if label:
-            self.label = label
+        self.label = data.setting_name
         self._init(data)
 
     @property
@@ -53,6 +53,10 @@ class _SettingController(object):
         if self._changed(value):
             self._set(value)
             self._mark_dirty()
+
+    def clear(self):
+        self._data.reset()
+        self._mark_dirty()
 
     def _changed(self, value):
         return value != self._data.value
@@ -69,7 +73,6 @@ class _SettingController(object):
 
 class DocumentationController(_SettingController):
     editor = DocumentationEditor
-    label = 'Documentation'
 
     def _init(self, doc):
         self._doc = doc

@@ -141,25 +141,25 @@ class NewSuitePathValidator(_AbstractValidator):
 
 class _NameValidator(_AbstractValidator):
 
-    def __init__(self, datafile, orig_name=None):
+    def __init__(self, controller, orig_name=None):
         _AbstractValidator.__init__(self)
-        self._datafile = datafile
+        self._controller = controller
         self._orig_name = orig_name
 
     def Clone(self):
-        return self.__class__(self._datafile, self._orig_name)
+        return self.__class__(self._controller, self._orig_name)
 
 
 class TestCaseNameValidator(_NameValidator):
 
     def _validate(self, name):
-        return self._datafile.validate_test_name(name)
+        return self._controller.validate_test_name(name)
 
 
 class UserKeywordNameValidator(_NameValidator):
 
     def _validate(self, name):
-        return self._datafile.validate_keyword_name(name)
+        return self._controller.validate_keyword_name(name)
 
 
 class ScalarVariableNameValidator(_NameValidator):
@@ -167,7 +167,7 @@ class ScalarVariableNameValidator(_NameValidator):
     def _validate(self, name):
         if self._orig_name and utils.eq(name, self._orig_name):
             return None
-        return self._datafile.validate_scalar_variable_name(name)
+        return self._controller.validate_scalar_variable_name(name)
 
 
 class ListVariableNameValidator(_NameValidator):
@@ -175,4 +175,4 @@ class ListVariableNameValidator(_NameValidator):
     def _validate(self, name):
         if self._orig_name and utils.eq(name, self._orig_name):
             return None
-        return self._datafile.validate_list_variable_name(name)
+        return self._controller.validate_list_variable_name(name)
