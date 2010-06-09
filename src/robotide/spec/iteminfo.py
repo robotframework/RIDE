@@ -46,7 +46,7 @@ class VariableInfo(ItemInfo):
 class _KeywordInfo(ItemInfo):
 
     def __init__(self, item):
-        self.doc = self._parse_doc(item.doc)
+        self.doc = self._parse_doc(item.doc).strip()
         ItemInfo.__init__(self, item.name, self._source(item),
                           self._details(item))
         self.shortdoc = self.doc.splitlines()[0] if self.doc else ''

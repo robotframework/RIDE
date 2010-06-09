@@ -147,6 +147,20 @@ class TestKeywordSuggestions(_DataFileTest):
         sug = self.ns.get_suggestions_for(self.tcf, '${lib')
         assert_true(sug[0].name == '${libname}')
 
+    def test_vars_from_file(self):
+        sugs = self.ns.get_suggestions_for(TestCaseFile(source=TESTCASEFILE_WITH_EVERYTHING),
+                                           '${var_from_file')
+        assert_true(len(sugs) > 0)
+
+    def test_args_are_passed_to_libraries(self):
+        sugs = self.ns.get_suggestions_for(TestCaseFile(source=TESTCASEFILE_WITH_EVERYTHING),
+                                           '${var_from_file')
+        assert_true(len(sugs) > 0)
+        for item in sugs:
+            if item.name == 'Get Mandatory':
+                return
+        fail('Get mandatory not found')
+
     def _assert_import_kws(self, sugs, source):
         assert_true(len(sugs) > 0)
         for s in sugs:
@@ -193,7 +207,7 @@ class TestVariableStash(unittest.TestCase):
         var_table = VariableTable(None)
         var_table.add('${var1}', 'foo')
         var_table.add('${var2}', 'bar')
-        vars.add_vars(var_table)
+        vars.set_from_variable_table(var_table)
         result = vars.replace_variables('hoo${var1}hii${var2}huu')
         assert_equals('hoofoohiibarhuu',result)
 

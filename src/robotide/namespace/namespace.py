@@ -13,12 +13,13 @@
 #  limitations under the License.
 
 import os
-import re
 
 from robot.parsing.model import ResourceFile
-from robot.parsing.settings import Library, Resource
+from robot.parsing.settings import Library, Resource, Variables
 from robot.utils.match import eq
-from robot.utils.normalizing import NormalizedDict, normalize
+from robot.utils.normalizing import normalize
+from robot.variables import Variables as RobotVariables
+
 from robotide.namespace.cache import LibraryCache
 from robotide.spec.iteminfo import TestCaseUserKeywordInfo, ResourceseUserKeywordInfo, VariableInfo
 
@@ -78,7 +79,7 @@ class Namespace(object):
         start_normalized = normalize(start)
         source = os.path.basename(datafile.source) if datafile.source else ''
         vars = self.retriever.get_variables_from(datafile)
-        return [VariableInfo(k, v, source) for k, v in vars.variables.items()
+        return [VariableInfo(k, v, source) for k, v in vars.items()
                 if normalize(k).startswith(start_normalized)]
 
     def _keyword_suggestions(self, datafile, start):
@@ -122,23 +123,10 @@ class ResourceCache(object):
         return self.cache[normalized]
 
 
-class VariableStash(object):
-
-    def __init__(self):
-        self.variables = NormalizedDict()
-        self._regexp = re.compile('(\$\{[^{}]*\})')
-
-    def add_vars(self, variable_table):
-        for v in variable_table.variables:
-            self.variables[v.name] = v.value
+class VariableStash(RobotVariables):
 
     def replace_variables(self, string):
-        parts = self._regexp.split(string)
-        return ''.join([self._replace_variable(part) for part in parts])
-
-    def _replace_variable(self, string):
-        result = self.variables.get(string, None)
-        return result[0] if result else string
+        return self.replace_string(string, ignore_errors=True)
 
 
 class DatafileRetriever(object):
@@ -157,7 +145,7 @@ class DatafileRetriever(object):
 
     def get_keywords_from(self, datafile):
         vars = VariableStash()
-        vars.add_vars(datafile.variable_table)
+        vars.set_from_variable_table(datafile.variable_table)
         return list(set(self._get_datafile_keywords(datafile) +\
                         self._get_imported_library_keywords(datafile, vars) + \
                         self._get_imported_resource_keywords(datafile, vars)))
@@ -194,7 +182,7 @@ class DatafileRetriever(object):
         res = self.res_cache.get_resource(imp.directory, resolved_name)
         if not res:
             return kws
-        vars.add_vars(res.variable_table)
+        vars.set_from_variable_table(res.variable_table)
         for child in self._collect_import_of_type(res, Resource):
             kws.extend(self._res_kw_recursive_getter(child, vars))
         kws.extend(self._get_imported_library_keywords(res, vars))
@@ -204,7 +192,11 @@ class DatafileRetriever(object):
         return self._get_vars_recursive(datafile, VariableStash())
 
     def _get_vars_recursive(self, datafile, vars):
-        vars.add_vars(datafile.variable_table)
+        vars.set_from_variable_table(datafile.variable_table)
+        for imp in self._collect_import_of_type(datafile, Variables):
+            varfile_path = os.path.join(datafile.directory,
+                                        vars.replace_variables(imp.name))
+            vars.set_from_file(varfile_path, [])
         for imp in self._collect_import_of_type(datafile, Resource):
             resolved_name = vars.replace_variables(imp.name)
             res = self.res_cache.get_resource(imp.directory, resolved_name)
@@ -218,7 +210,7 @@ class DatafileRetriever(object):
     def _get_user_keywords_recursive(self, datafile, vars):
         kws = set()
         kws.update(datafile.keywords)
-        vars.add_vars(datafile.variable_table)
+        vars.set_from_variable_table(datafile.variable_table)
         for imp in self._collect_import_of_type(datafile, Resource):
             resolved_name = vars.replace_variables(imp.name)
             res = self.res_cache.get_resource(imp.directory, resolved_name)
@@ -230,7 +222,7 @@ class DatafileRetriever(object):
 
     def _get_resources_recursive(self, datafile, vars):
         resources = set()
-        vars.add_vars(datafile.variable_table)
+        vars.set_from_variable_table(datafile.variable_table)
         for imp in self._collect_import_of_type(datafile, Resource):
             resolved_name = vars.replace_variables(imp.name)
             res = self.res_cache.get_resource(imp.directory, resolved_name)
