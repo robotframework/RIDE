@@ -19,7 +19,7 @@ class _FakeParent(object):
 class DocumentationControllerTest(unittest.TestCase):
 
     def setUp(self):
-        self.doc = Documentation()
+        self.doc = Documentation('Documentation')
         self.doc.value = 'Initial doc'
         self.parent = _FakeParent()
         self.ctrl = DocumentationController(self.parent, self.doc)
@@ -47,22 +47,28 @@ class DocumentationControllerTest(unittest.TestCase):
         self.ctrl.set_value('Initial doc')
         assert_false(self.ctrl.dirty)
 
+    def test_clear(self):
+        self.ctrl.clear()
+        assert_equals(self.doc.value, '')
+        assert_true(self.ctrl.dirty)
+
 
 class FixtureControllerTest(unittest.TestCase):
 
     def setUp(self):
-        self.fix = Fixture()
+        self.fix = Fixture('Suite Setup')
         self.fix.name = 'My Setup'
         self.fix.args = ['argh', 'urgh']
         self.parent = _FakeParent()
-        self.ctrl = FixtureController(self.parent, self.fix, 'Suite Setup')
+        self.ctrl = FixtureController(self.parent, self.fix)
 
     def test_creation(self):
         assert_equals(self.ctrl.value, 'My Setup | argh | urgh')
+        assert_equals(self.ctrl.label, 'Suite Setup')
         assert_true(self.ctrl.is_set)
 
     def test_value_with_empty_fixture(self):
-        assert_equals(FixtureController(self.parent, Fixture(), '').value, '')
+        assert_equals(FixtureController(self.parent, Fixture('Teardown')).value, '')
 
     def test_setting_value_changes_fixture_state(self):
         self.ctrl.set_value('Blaa')
@@ -96,17 +102,17 @@ class FixtureControllerTest(unittest.TestCase):
 class TagsControllerTest(unittest.TestCase):
 
     def setUp(self):
-        self.tags = Tags()
+        self.tags = Tags('Force Tags')
         self.tags.value = ['f1', 'f2']
         self.parent = _FakeParent()
-        self.ctrl = TagsController(self.parent, self.tags, 'Force Tags')
+        self.ctrl = TagsController(self.parent, self.tags)
 
     def test_creation(self):
         assert_equals(self.ctrl.value, 'f1 | f2')
         assert_true(self.ctrl.is_set)
 
     def test_value_with_empty_fixture(self):
-        assert_equals(TagsController(self.parent, Tags(), '').value, '')
+        assert_equals(TagsController(self.parent, Tags('Tags')).value, '')
 
     def test_setting_value_changes_fixture_state(self):
         self.ctrl.set_value('Blaa')
@@ -131,18 +137,18 @@ class TagsControllerTest(unittest.TestCase):
 class TimeoutControllerTest(unittest.TestCase):
 
     def setUp(self):
-        self.to = Timeout()
+        self.to = Timeout('Timeout')
         self.to.value = '1 s'
         self.to.message = 'message'
         self.parent = _FakeParent()
-        self.ctrl = TimeoutController(self.parent, self.to, 'Suite Setup')
+        self.ctrl = TimeoutController(self.parent, self.to)
 
     def test_creation(self):
         assert_equals(self.ctrl.value, '1 s | message')
         assert_true(self.ctrl.is_set)
 
     def test_value_with_empty_timeout(self):
-        assert_equals(TimeoutController(self.parent, Timeout(), '').value, '')
+        assert_equals(TimeoutController(self.parent, Timeout('Timeout')).value, '')
 
     def test_setting_value_changes_fixture_state(self):
         self.ctrl.set_value('3 s')

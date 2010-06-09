@@ -15,7 +15,6 @@
 import wx
 
 from robotide import context
-from robotide.model.settings import ResourceImport
 from robotide.utils import RideEventHandler, RideHtmlWindow, ButtonWithHandler
 from robotide import utils
 
@@ -231,7 +230,7 @@ class DocumentationEditor(SettingEditor):
         editor.Destroy()
 
     def OnClear(self, event):
-        self._item.clear()
+        self._controller.clear()
         self._update_and_notify()
 
 
@@ -394,7 +393,7 @@ class ImportSettingListEditor(_AbstractListEditor):
         return [item.type, item.name, utils.join_value(item.args)]
 
     def _resource_import_modified(self):
-        return self._get_setting().__class__ == ResourceImport
+        return self._get_setting.type == 'Resource'
 
     def _get_setting(self):
         return self._data[self._selection]

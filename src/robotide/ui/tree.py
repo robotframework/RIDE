@@ -21,9 +21,8 @@ except ImportError:
     from wx.lib.mixins import treemixin
 
 from robotide.action import ActionInfoCollection
-from robotide.model.tcuk import UserKeyword
+from robotide.controller.filecontroller import UserKeywordController
 from robotide.publish import RideTreeSelection
-from robotide.robotapi import TestDataDirectory
 from robotide import utils
 
 from images import TreeImageList
@@ -396,7 +395,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         for node in self._datafile_nodes:
             if self._get_handler(node) == datafilehandler:
                 self._mark_dirty(node)
-                if isinstance(test_or_uk, UserKeyword):
+                if isinstance(test_or_uk, UserKeywordController):
                     self.add_keyword(node, test_or_uk)
                 else:
                     self.add_test(node, test_or_uk)
