@@ -15,7 +15,6 @@
 import wx.html
 from StringIO import StringIO
 
-from robotide.model.tcuk import TestCase, UserKeyword
 from robotide.errors import SerializationError
 from robotide.publish import RideTreeSelection, RideNotebookTabChanged
 from robotide.writer.writer import HtmlFileWriter, TxtFileWriter
