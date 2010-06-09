@@ -19,7 +19,7 @@ from robotide.errors import DataError
 from robotide.publish import RideLogMessage
 from robotide import utils
 
-from kwinfo import LibraryKeywordInfo
+from iteminfo import LibraryKeywordInfo
 
 
 def XMLResource(resource_name):

@@ -5,7 +5,7 @@ from robot.running import TestLibrary
 from robot.parsing.model import UserKeyword
 from robot.utils.asserts import assert_true
 
-from robotide.spec.kwinfo import LibraryKeywordInfo, TestCaseUserKeywordInfo
+from robotide.spec.iteminfo import LibraryKeywordInfo, TestCaseUserKeywordInfo
 
 
 testlibpath = os.path.join(os.path.dirname(__file__), '..', 'resources', 'robotdata', 'libs')
