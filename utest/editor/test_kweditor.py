@@ -1,11 +1,14 @@
 import unittest
-
 from robot.utils.asserts import assert_equals
 
 from robotide.editor.kweditor import KeywordEditor
 from robotide.publish.messages import RideGridCellChanged
 from robotide.publish import PUBLISHER
-from resources import FakeSuite, PYAPP_REFERENCE #Needed to be able to create wx components
+from robotide.controller.filecontroller import TestCaseFileController, TestCaseController
+from robotide.robotapi import TestCaseFile
+
+from resources import PYAPP_REFERENCE as _ #Needed to be able to create wx components
+
 # wx needs to imported last so that robotide can select correct wx version.
 import wx
 
@@ -17,32 +20,10 @@ DATA = [['kw1'],
 class _FakeMainFrame(wx.Frame):
     def __init__(self):
         wx.Frame.__init__(self, None)
-        self.item =  _FakeTest()
         self.plugin = None
 
 class _FakeTree(object):
     mark_dirty = lambda self, datafile: None
-
-class _FakeTest(object):
-    def __init__(self):
-        self.datafile = FakeSuite()
-        self.keywords = _KeywordList(DATA)
-
-class _KeywordList(list):
-    def __init__(self, data):
-        for kw in data:
-            list.append(self, _KeywordData(kw[0], [val for val in kw[1:] if val]))
-
-    def parse_keywords_from_grid(self, kwdata):
-        self.__init__(kwdata)
-
-class _KeywordData(object):
-    def __init__(self, name, args):
-        self.name = name
-        self.args = args
-
-    def get_display_value(self):
-        return [self.name] + self.args
 
 class TestableKwEditor(KeywordEditor):
     def _expand_if_necessary(self, row, col):
@@ -52,7 +33,11 @@ class TestableKwEditor(KeywordEditor):
 class TestCoordinates(unittest.TestCase):
 
     def setUp(self):
-        self._editor = TestableKwEditor(_FakeMainFrame(), None)
+        tcf = TestCaseFile()
+        test = tcf.testcase_table.add('A test')
+        for r in DATA:
+            test.add_step(r)
+        self._editor = TestableKwEditor(_FakeMainFrame(), TestCaseController(test), None)
 
     def test_cell_selection(self):
         self._editor.SelectBlock(2,2,2,2)
@@ -72,7 +57,8 @@ class TestCoordinates(unittest.TestCase):
 class TestClipBoard(unittest.TestCase):
 
     def setUp(self):
-        self._editor = TestableKwEditor(_FakeMainFrame(), _FakeTree())
+        self._editor = TestableKwEditor(_FakeMainFrame(), None,
+                                        _FakeTree())
 
     def test_copy_one_cell(self):
         self._copy_block_and_verify((0,0,0,0), [['kw1']])
@@ -171,7 +157,7 @@ class TestClipBoard(unittest.TestCase):
 class TestEditing(unittest.TestCase):
 
     def setUp(self):
-        self._editor = KeywordEditor(_FakeMainFrame(), None)
+        self._editor = KeywordEditor(_FakeMainFrame(), None, None)
         PUBLISHER.subscribe(self._on_cell_changed, RideGridCellChanged)
 
     def test_correct_event_is_published_during_population(self):

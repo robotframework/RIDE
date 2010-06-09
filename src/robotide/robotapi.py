@@ -12,14 +12,14 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import robot.parsing.datareader
-robot.parsing.datareader.PROCESS_CURDIR = False
+import robot.parsing.populators
+robot.parsing.populators.PROCESS_CURDIR = False
 
 from robot.version import get_version
 from robot.utils import normpath, NormalizedDict
 from robot.common.handlers import UserErrorHandler
 from robot.parsing import (TestCaseFile, ResourceFile, TestDataDirectory,
-                           TestCase, UserKeyword)
+                           TestCase, UserKeyword, DataRow)
 from robot.running import TestLibrary
 from robot.output import LOGGER as ROBOT_LOGGER
 from robot.variables import Variables as RobotVariables

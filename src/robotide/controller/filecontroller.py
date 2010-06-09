@@ -12,9 +12,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.robotapi import TestCaseFile, is_list_var, is_scalar_var
-from robot.parsing.datareader import DataRow
-from robot.parsing.populator import UserKeywordPopulator
+from robotide.robotapi import TestCaseFile, DataRow, is_list_var, is_scalar_var
+from robot.parsing.tablepopulators import UserKeywordPopulator, TestCasePopulator
 
 from robotide.controller.settingcontroller import (DocumentationController,
         FixtureController, TagsController, TimeoutController, TemplateController,
@@ -214,7 +213,7 @@ class _WithStepsCotroller(object):
 
 
 class TestCaseController(_WithStepsCotroller):
-    _populator = UserKeywordPopulator
+    _populator = TestCasePopulator
 
     def _init(self, test):
         self._test = test

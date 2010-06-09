@@ -39,13 +39,13 @@ class TestLibrarySpec(unittest.TestCase):
         assert_equals(len(spec.keywords), 2)
 
     def test_reading_library_from_pythonpath(self):
+        # TODO: IS this test needed or is this tested in kwinfo tests?
         spec = LibrarySpec('TestLib')
-        self._assert_keyword(spec.keywords[0], 'Testlib Keyword')
+        self._assert_keyword(spec.keywords[0], 'Testlib Keyword', args=False)
         exp_doc = 'This keyword requires one argument, has one optional argument'\
                     ' and varargs.\n\nThis is some more documentation'
         self._assert_keyword(spec.keywords[1], 'Testlib Keyword With Args',
-                             exp_doc, exp_doc.splitlines()[0],
-                             '[ arg1 | arg2=default value | *args ]')
+                             exp_doc, exp_doc.splitlines()[0], args=False)
 
     def test_reading_library_from_xml(self):
         spec = LibrarySpec('LibSpecLibrary')
@@ -79,9 +79,10 @@ class TestLibrarySpec(unittest.TestCase):
 
     def _assert_keyword(self, kw, name, doc='', shortdoc='', args='[  ]'):
         assert_equals(kw.name, name)
-        assert_equals(kw.doc, doc)
+        assert_equals(kw.doc, doc, repr(kw.doc))
         assert_equals(kw.shortdoc, shortdoc)
-        assert_equals(kw.args, args)
+        if args:
+            assert_equals(kw.args, args)
 
     def _assert_keyword_in_keywords(self, keywords, name):
         for kw in keywords:
