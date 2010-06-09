@@ -41,11 +41,11 @@ class _DataController(object):
     def _settings(self):
         ss = self.data.setting_table
         return [DocumentationController(self, ss.doc),
-                FixtureController(self, ss.suite_setup, 'Suite Setup'),
-                FixtureController(self, ss.suite_teardown, 'Suite Teardown'),
-                FixtureController(self, ss.test_setup, 'Test Setup'),
-                FixtureController(self, ss.test_teardown, 'Test Teardown'),
-                TagsController(self, ss.force_tags, 'Force Tags'),
+                FixtureController(self, ss.suite_setup),
+                FixtureController(self, ss.suite_teardown),
+                FixtureController(self, ss.test_setup),
+                FixtureController(self, ss.test_teardown),
+                TagsController(self, ss.force_tags),
                 ]
 
     @property
@@ -93,8 +93,8 @@ class TestCaseFileController(_DataController):
     def _settings(self):
         ss = self.data.setting_table
         return _DataController._settings(self) + \
-                [TimeoutController(self, ss.test_timeout, 'Test Timeout'),
-                 TemplateController(self, ss.test_template, 'Test Template')]
+                [TimeoutController(self, ss.test_timeout),
+                 TemplateController(self, ss.test_template)]
 
 
 class ResourceFileController(_DataController):
@@ -169,7 +169,6 @@ class VariableController(object):
         self.value= var.value
 
 
-
 class TestCaseTableController(_TableController):
     def __iter__(self):
         return iter(TestCaseController(self, t) for t in self._table)
@@ -223,11 +222,11 @@ class TestCaseController(_WithStepsCotroller):
     @property
     def settings(self):
         return [DocumentationController(self, self._test.doc),
-                FixtureController(self, self._test.setup, 'Setup'),
-                FixtureController(self, self._test.teardown, 'Teardown'),
-                TagsController(self, self._test.tags, 'Tags'),
-                TimeoutController(self, self._test.timeout, 'Timeout'),
-                TemplateController(self, self._test.template, 'Template')]
+                FixtureController(self, self._test.setup),
+                FixtureController(self, self._test.teardown),
+                TagsController(self, self._test.tags),
+                TimeoutController(self, self._test.timeout),
+                TemplateController(self, self._test.template)]
 
 
 class UserKeywordController(_WithStepsCotroller):
@@ -239,10 +238,10 @@ class UserKeywordController(_WithStepsCotroller):
     @property
     def settings(self):
         return [DocumentationController(self, self._kw.doc),
-                ArgumentsController(self, self._kw.args, 'Arguments'),
-                TimeoutController(self, self._kw.timeout, 'Timeout'),
+                ArgumentsController(self, self._kw.args,),
+                TimeoutController(self, self._kw.timeout,),
                 # TODO: Wrong class, works right though
-                ArgumentsController(self, self._kw.return_, 'Return Value')]
+                ArgumentsController(self, self._kw.return_,)]
 
 
 class ImportSettingsController(_TableController):

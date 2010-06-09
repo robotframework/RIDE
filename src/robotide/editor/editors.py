@@ -230,7 +230,7 @@ class DocumentationEditor(SettingEditor):
         editor.Destroy()
 
     def OnClear(self, event):
-        self._item.clear()
+        self._controller.clear()
         self._update_and_notify()
 
 
