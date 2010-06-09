@@ -24,6 +24,7 @@ from robotide.namespace.cache import LibraryCache
 from robotide.spec.iteminfo import TestCaseUserKeywordInfo, ResourceseUserKeywordInfo, VariableInfo
 from robotide import utils
 
+
 class Namespace(object):
 
     def __init__(self):
