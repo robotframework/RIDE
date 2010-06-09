@@ -36,15 +36,12 @@ class _WriterSerializer(object):
             if element.is_for_loop():
                 self._handle_for_loop(element)
             elif element.is_set():
-                self._writer.element(element.as_list())
+                self._writer.element(element)
 
     def _handle_for_loop(self, loop):
-        self._writer.element(loop.as_list())
-        self._write_for_loop_elements(loop)
-
-    def _write_for_loop_elements(self, elements):
-        for element in elements:
-            self._writer.element(element.as_list(indent=True))
+        self._writer.start_for_loop(loop)
+        self._write_elements(loop)
+        self._writer.end_for_loop()
 
     def _variable_table_handler(self, table):
         self._writer.start_variables()

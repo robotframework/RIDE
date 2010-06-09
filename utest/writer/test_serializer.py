@@ -1,14 +1,11 @@
-'''
-Created on Jun 7, 2010
-
-@author: Jussi Malinen
-'''
-from robot.parsing.model import TestCaseFile, ResourceFile
-from robot.utils.asserts import assert_equals
-from robotide.writer.serializer import Serializer, _WriterSerializer
-from robotide.writer.writer import HtmlFileWriter
 import StringIO
 import unittest
+
+from robot.parsing.model import TestCaseFile, ResourceFile
+from robot.utils.asserts import assert_equals, fail
+from robotide.writer.serializer import Serializer, _WriterSerializer
+from robotide.writer.writer import HtmlFileWriter
+
 
 def assert_repr(first, other):
     return assert_equals(repr(first), repr(other))
@@ -68,6 +65,7 @@ class _TestSerializer(object):
 
     def _populate_testcase_table(self, testcase_table):
         tc = testcase_table.add('My Test Case')
+        tc.doc.populate('This is a long comment that spans several columns')
         tc.add_step(['My TC Step 1', 'my step arg'], comment='step 1 comment')
         tc.add_step(['My TC Step 2', 'my step 2 arg', 'second arg'],
                     comment='step 2 comment')
@@ -83,7 +81,8 @@ class TestTxtSerialization(unittest.TestCase, _TestSerializer):
 
     settings_table = '''*** Settings ***
 Library         MyLibrary  argument  WITH NAME  My Alias  # My library comment
-Variables       MyVariables  args  args 2
+Variables       MyVariables  args  args 2  args 3  args 4  args 5  args 6
+...  args 7  args 8  args 9  args 10  args 11  args 12
 Resource        MyResource args that are part of the name
 
 '''
@@ -97,16 +96,23 @@ MyVar  val1  val2  val3  val4  val5  val6  val6
     keywords_table = '''*** Keywords ***
 My Keyword
     [Documentation]  Documentation  # Comment for doc
-    [Return]  args 1  args 2
     # Comment row
     # Comment row 2
-    My Step 1  my step arg  # step 1 comment
+    My Step 1  args  args 2  args 3  args 4  args 5  args 6  args 7
+    ...  args 8  args 9  # step 1 comment
+    : FOR  ${param1}  ${param2}  IN  ${data 1}  ${data 2}  ${data 3}  ${data 4}
+    ...  ${data 5}  ${data 6}
+    \  Loop Step  args  args 2  args 3  args 4  args 5  args 6
+    ...  args 7  args 8  args 9  # loop step comment
+    \  Loop Step 2
     My Step 2  my step 2 arg  second arg  # step 2 comment
+    [Return]  args 1  args 2
 
 '''
 
     testcase_table = '''*** Test Cases ***
 My Test Case
+    [Documentation]  This is a long comment that spans several columns
     My TC Step 1  my step arg  # step 1 comment
     My TC Step 2  my step 2 arg  second arg  # step 2 comment
     [Teardown]  1 minute  args
@@ -120,7 +126,7 @@ My Test Case
         self.txt_tcf.source = '/tmp/not_real_path/tcf.txt'
 
     def test_serializer_with_txt_resource_file(self):
-        assert_equals(self.get_serialization_output(self.txt_rf),
+        assert_repr(self.get_serialization_output(self.txt_rf),
                       self.settings_table +
                       self.variables_table +
                       self.keywords_table)
@@ -136,35 +142,39 @@ My Test Case
 class TestTsvSerialization(unittest.TestCase, _TestSerializer):
 
     settings_table = '''*Setting*\t*Value*\t*Value*\t*Value*\t*Value*\t*Value*\t*Value*\t*Value*
-# My library comment\t\t\t\t\t\t\t
-Library\tMyLibrary\targument\tWITH NAME\tMy Alias\t\t\t
-Variables\tMyVariables\targs\targs 2\t\t\t\t
+Library\tMyLibrary\targument\tWITH NAME\tMy Alias\t# My library comment\t\t
+Variables\tMyVariables\targs\targs 2\targs 3\targs 4\targs 5\targs 6
+...\targs 7\targs 8\targs 9\targs 10\targs 11\targs 12\t
 Resource\tMyResource args that are part of the name\t\t\t\t\t\t
 \t\t\t\t\t\t\t
 '''
 
     variables_table = '''*Variable*\t*Value*\t*Value*\t*Value*\t*Value*\t*Value*\t*Value*\t*Value*
-# var comment\t\t\t\t\t\t\t
 MyVar\tval1\tval2\tval3\tval4\tval5\tval6\tval6
-...\tval7\tval8\tval9\t\t\t\t\n\t\t\t\t\t\t\t
+...\tval7\tval8\tval9\t# var comment\t\t\t
+\t\t\t\t\t\t\t
 '''
 
     keywords_table = '''*Keyword*\t*Action*\t*Argument*\t*Argument*\t*Argument*\t*Argument*\t*Argument*\t*Argument*
-# Comment for doc\t\t\t\t\t\t\t
-My Keyword\t[Documentation]\tDocumentation\t\t\t\t\t
+My Keyword\t[Documentation]\tDocumentation\t# Comment for doc\t\t\t\t
+\t# Comment row\t\t\t\t\t\t
+\t# Comment row 2\t\t\t\t\t\t
+\tMy Step 1\targs\targs 2\targs 3\targs 4\targs 5\targs 6
+\t...\targs 7\targs 8\targs 9\t# step 1 comment\t\t
+\t: FOR\t${param1}\t${param2}\tIN\t${data 1}\t${data 2}\t${data 3}
+\t...\t${data 4}\t${data 5}\t${data 6}\t\t\t
+\t\tLoop Step\targs\targs 2\targs 3\targs 4\targs 5
+\t...\targs 6\targs 7\targs 8\targs 9\t# loop step comment\t
+\t\tLoop Step 2\t\t\t\t\t
+\tMy Step 2\tmy step 2 arg\tsecond arg\t# step 2 comment\t\t\t
 \t[Return]\targs 1\targs 2\t\t\t\t
-# step 1 comment\t\t\t\t\t\t\t
-\tMy Step 1\tmy step arg\t\t\t\t\t
-# step 2 comment\t\t\t\t\t\t\t
-\tMy Step 2\tmy step 2 arg\tsecond arg\t\t\t\t
 \t\t\t\t\t\t\t
 '''
 
     testcase_table = '''*Test Case*\t*Action*\t*Argument*\t*Argument*\t*Argument*\t*Argument*\t*Argument*\t*Argument*
-# step 1 comment\t\t\t\t\t\t\t
-My Test Case\tMy TC Step 1\tmy step arg\t\t\t\t\t
-# step 2 comment\t\t\t\t\t\t\t
-\tMy TC Step 2\tmy step 2 arg\tsecond arg\t\t\t\t
+My Test Case\t[Documentation]\tThis is a long comment that spans several columns\t\t\t\t\t
+\tMy TC Step 1\tmy step arg\t# step 1 comment\t\t\t\t
+\tMy TC Step 2\tmy step 2 arg\tsecond arg\t# step 2 comment\t\t\t
 \t[Teardown]\t1 minute\targs\t\t\t\t
 \t\t\t\t\t\t\t
 '''
@@ -198,12 +208,17 @@ class TestHTMLSerialization(unittest.TestCase, _TestSerializer):
         self.html_tcf.source = '/tmp/not_real_path/tcf.html'
 
     def test_serializer_with_html_resource_file(self):
-        #assert_repr(self.get_serialization_output(self.html_rf), 'g')
-        #output = StringIO.StringIO()
-        #writer = HtmlFileWriter(output, path=None)
-        #_WriterSerializer(writer).serialize(self.html_rf)
-        #assert_equals(writer._content, 'd')
-        pass
+#        output = StringIO.StringIO()
+#        writer = HtmlFileWriter(output, path=None)
+#        _WriterSerializer(writer).serialize(self.html_rf)
+#        assert_equals(writer._content, 'd')
+        fail('HTML tests not implemented yet.')
+
+#    def test_serializer_with_html_testcase_file(self):
+#        output = StringIO.StringIO()
+#        writer = HtmlFileWriter(output, path=None)
+#        _WriterSerializer(writer).serialize(self.html_tcf)
+#        assert_equals(writer._content, 'd')
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

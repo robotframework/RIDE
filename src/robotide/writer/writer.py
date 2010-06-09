@@ -12,13 +12,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from StringIO import StringIO
-from robot.parsing.settings import Documentation
-from robotide import utils
 import csv
 import os
 import template
 
+from StringIO import StringIO
+from robot.parsing.settings import Documentation
+from robotide import utils
 
 
 def FileWriter(path, output=None, name=None):
@@ -41,6 +41,7 @@ class _WriterHelper(object):
         self._tc_name = self._uk_name = ''
         self._in_tcuk = False
         self._in_setting_table = False
+        self._in_for_loop = False
 
     def close(self, close_output=True):
         if close_output:
@@ -92,12 +93,25 @@ class _WriterHelper(object):
         self._write_empty_row()
         self._in_tcuk = False
 
-    def element(self, content):
+    def start_for_loop(self, loop):
+        self.element(loop)
+        self._in_for_loop = True
+
+    def end_for_loop(self):
+        self._in_for_loop = False
+
+    def element(self, element):
+        content = self._get_element_as_list(element)
         if self._in_tcuk:
-            self._write_data([self._get_tcuk_name()]+content, 
-                             indent=1)
+            self._write_data([self._get_tcuk_name()]+content, indent=1)
         else:
             self._write_data(content)
+
+    def _get_element_as_list(self, element):
+        if not self._in_for_loop:
+            return element.as_list()
+        else:
+            return element.as_list(indent=True)
 
     def _split_data(self, data, indent=0):
         rows = []
@@ -168,10 +182,10 @@ class TxtFileWriter(_WriterHelper):
         self._write_data([uk.name])
         self._in_tcuk = True
 
-    def element(self, content):
+    def element(self, element):
+        content = self._get_element_as_list(element)
         if self._in_tcuk:
-            self._write_data(content, 
-                             indent=1)
+            self._write_data(content, indent=1)
         elif self._in_setting_table:
             self._write_data([content[0].ljust(14)] + content[1:])
         else:
@@ -180,19 +194,19 @@ class TxtFileWriter(_WriterHelper):
     def _write_header(self, title):
         self._write_row('*** %s ***' % title)
 
-    def _write_data(self, data, indent=False):
+    def _write_data(self, data, indent=0):
         data[1:] = [ d.strip() or '${EMPTY}' for d in data[1:] ]
         if data and data[0].strip() == '':
             data[0] = '\\' # support FOR and PARALLEL blocks
         for row in self._split_data(self._encode(data)):
             self._write_row('  '.join(row), indent)
 
-    def _write_row(self, text, indent=False):
+    def _write_row(self, text, indent=0):
         if indent:
             self._output.write('    ')
         self._output.write(text + os.linesep)
 
-# FIXME: Handle comments, classes for settings
+# FIXME: Handle name and do tests
 class HtmlFileWriter(_WriterHelper):
     _setting_titles = ['Setting', 'Value']
     _variable_titles = ['Variable', 'Value']
@@ -224,8 +238,9 @@ class HtmlFileWriter(_WriterHelper):
         _WriterHelper.end_keywords(self)
         self._end_table(template.keywords_table)
 
-    def element(self, content):
-        colspan = isinstance(content, Documentation)
+    def element(self, element):
+        colspan = isinstance(element, Documentation)
+        content = self._get_element_as_list(element)
         if self._in_tcuk:
             self._write_data([self._get_tcuk_name()]+content, 
                              indent=1, colspan=colspan)
