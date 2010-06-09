@@ -18,7 +18,6 @@ import os
 
 from robotide.application import DataModel
 from robotide.namespace import Namespace
-from robotide.model.files import TestCaseFile
 from robot.utils.asserts import assert_none, assert_false, assert_equals,\
     assert_true, assert_raises_with_msg
 from robotide import utils

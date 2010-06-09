@@ -27,7 +27,7 @@ from resources import FakeSuite, FakeDirectorySuite, FakeUserKeyword,\
 from robotide.ui import tree as st
 st.FakeDirectorySuiteHandler = st.FakeUserKeywordHandler = \
     st.FakeSuiteHandler = st.FakeTestCaseHandler = \
-    st.FakeResourceHandler = st.InitFileHandler
+    st.FakeResourceHandler = st.TestDataDirectoryHandler
 st.Editor = lambda *args: _FakeEditor()
 from robotide.ui.tree import Tree
 Tree._show_correct_editor = lambda self, x:None

@@ -3,7 +3,7 @@ from robot.utils.asserts import assert_equals
 
 from robotide.pluginapi import Plugin
 from robotide.namespace import Namespace
-from robotide.spec.iteminfo import _ItemInfo
+from robotide.spec.iteminfo import ItemInfo
 from robotide.robotapi import TestCaseFile
 
 from resources import FakeApplication
@@ -14,7 +14,7 @@ class ContentAssistPlugin(Plugin):
     def _get_content_assist_values(self, item, value):
         assert_equals(item.name, None)
         assert_equals(value, 'given')
-        return [_ItemInfo('foo', 'test', 'quux')]
+        return [ItemInfo('foo', 'test', 'quux')]
 
 
 class TestContentAssistHook(unittest.TestCase):

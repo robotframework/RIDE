@@ -16,9 +16,9 @@ import unittest
 from robot.utils.asserts import assert_equals
 
 from robotide.ui.keywordsearch import _KeywordData
-from robotide.namespace import ContentAssistItem
+from robotide.spec.iteminfo import ItemInfo
 
-test_kws = [ContentAssistItem(name, source, desc) for name, source, desc in
+test_kws = [ItemInfo(name, source, desc) for name, source, desc in
             [ ('Should Be Equal', 'BuiltIn', 'Foo'),
               ('get bar', 'resource.txt', 'getting bar'),
               ('Get File', 'OperatingSystem', 'Bar'),
