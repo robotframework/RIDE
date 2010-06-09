@@ -12,21 +12,23 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import os
-import csv
 from StringIO import StringIO
-
+from robot.parsing.settings import Documentation
 from robotide import utils
+import csv
+import os
 import template
 
 
-def FileWriter(path):
-    output = open(path, 'wb')
+
+def FileWriter(path, output=None, name=None):
+    if not output:
+        output = open(path, 'wb')
     ext = os.path.splitext(path)[1].lower()
     try:
         Writer = {'.tsv': TsvFileWriter, '.txt': TxtFileWriter}[ext]
     except KeyError:
-        return HtmlFileWriter(output, path)
+        return HtmlFileWriter(output, path, name)
     else:
         return Writer(output)
 
@@ -37,6 +39,8 @@ class _WriterHelper(object):
         self._output = output
         self._cols = cols
         self._tc_name = self._uk_name = ''
+        self._in_tcuk = False
+        self._in_setting_table = False
 
     def close(self, close_output=True):
         if close_output:
@@ -44,10 +48,11 @@ class _WriterHelper(object):
 
     def start_settings(self):
         self._write_header(self._setting_titles)
-        self.setting = self._setting_table_setting
+        self._in_setting_table = True
 
     def end_settings(self):
         self._write_empty_row()
+        self._in_setting_table = False
 
     def start_variables(self):
         self._write_header(self._variable_titles)
@@ -57,40 +62,42 @@ class _WriterHelper(object):
 
     def start_testcases(self):
         self._write_header(self._testcase_titles)
-        self.setting = self._tcuk_table_setting
 
     def end_testcases(self):
         pass
 
     def start_keywords(self):
         self._write_header(self._keyword_titles)
-        self.setting = self._tcuk_table_setting
 
     def end_keywords(self):
         pass
 
     def start_testcase(self, tc):
         self._tc_name = tc.name
+        self._in_tcuk = True
 
     def end_testcase(self):
         if self._tc_name:
             self._write_data([self._get_tcuk_name()])
         self._write_empty_row()
+        self._in_tcuk = False
 
     def start_keyword(self, uk):
         self._uk_name = uk.name
+        self._in_tcuk = True
 
     def end_keyword(self):
         if self._uk_name:
             self._write_data([self._get_tcuk_name()])
         self._write_empty_row()
+        self._in_tcuk = False
 
-    def variable(self, name, value):
-        self._write_data([name] + value)
-
-    def keyword(self, keyword):
-        row = [self._get_tcuk_name()] + keyword.get_display_value()
-        self._write_data(row, indent=1)
+    def element(self, content):
+        if self._in_tcuk:
+            self._write_data([self._get_tcuk_name()]+content, 
+                             indent=1)
+        else:
+            self._write_data(content)
 
     def _split_data(self, data, indent=0):
         rows = []
@@ -129,13 +136,6 @@ class TsvFileWriter(_WriterHelper):
         self._writer = csv.writer(self._output, dialect='excel-tab',
                                   lineterminator=os.linesep)
 
-    def _setting_table_setting(self, name, value):
-        self._write_data([name] + value)
-
-    def _tcuk_table_setting(self, name, value):
-        row = [self._get_tcuk_name(), '[%s]' % name] + value
-        self._write_data(row, indent=1)
-
     def _get_tcuk_name(self):
         name = self._tc_name or self._uk_name
         self._tc_name = self._uk_name = ''
@@ -162,18 +162,20 @@ class TxtFileWriter(_WriterHelper):
 
     def start_testcase(self, tc):
         self._write_data([tc.name])
+        self._in_tcuk = True
 
     def start_keyword(self, uk):
         self._write_data([uk.name])
+        self._in_tcuk = True
 
-    def _setting_table_setting(self, name, value):
-        self._write_data([name.ljust(14)] + value)
-
-    def _tcuk_table_setting(self, name, value):
-        self._write_data(['[%s]' % name] + value, indent=True)
-
-    def keyword(self, keyword):
-        self._write_data(keyword.get_display_value(), indent=True)
+    def element(self, content):
+        if self._in_tcuk:
+            self._write_data(content, 
+                             indent=1)
+        elif self._in_setting_table:
+            self._write_data([content[0].ljust(14)] + content[1:])
+        else:
+            self._write_data(content)
 
     def _write_header(self, title):
         self._write_row('*** %s ***' % title)
@@ -190,15 +192,15 @@ class TxtFileWriter(_WriterHelper):
             self._output.write('    ')
         self._output.write(text + os.linesep)
 
-    
+# FIXME: Handle comments, classes for settings
 class HtmlFileWriter(_WriterHelper):
     _setting_titles = ['Setting', 'Value']
     _variable_titles = ['Variable', 'Value']
     _testcase_titles = ['Test Case', 'Action', 'Arguments']
     _keyword_titles = ['Keyword', 'Action', 'Arguments']
 
-    def __init__(self, output, path=None):
-        self._content = template.Template(path)
+    def __init__(self, output, path=None, name=None):
+        self._content = template.Template(path, name)
         _WriterHelper.__init__(self, output, 5)
         self._writer = utils.HtmlWriter(StringIO())
 
@@ -222,12 +224,13 @@ class HtmlFileWriter(_WriterHelper):
         _WriterHelper.end_keywords(self)
         self._end_table(template.keywords_table)
 
-    def _setting_table_setting(self, name, value):
-        self._write_data([name] + value, colspan=name=='Documentation')
-
-    def _tcuk_table_setting(self, name, value):
-        row = [self._get_tcuk_name(), '[%s]' % name] + value
-        self._write_data(row, indent=1, colspan=name=='Documentation')
+    def element(self, content):
+        colspan = isinstance(content, Documentation)
+        if self._in_tcuk:
+            self._write_data([self._get_tcuk_name()]+content, 
+                             indent=1, colspan=colspan)
+        else:
+            self._write_data(content, colspan=colspan)
 
     def _end_table(self, table_replacer):
         table = self._writer.output.getvalue().decode('UTF-8')

@@ -35,13 +35,13 @@ content=["\']?true["\']?\s*
 ''', re.IGNORECASE | re.DOTALL | re.VERBOSE)
 
 
-def Template(data_path):
+def Template(data_path, name):
     # TODO: should the file be closed explicitly? same issue in htmltemplate.
     if data_path and os.path.isfile(data_path):
         tmpl = _get_template(open(data_path), htmltemplate.TEMPLATE)
     else:
         tmpl = htmltemplate.TEMPLATE
-    return tmpl % {'NAME': _get_datafile_name(data_path)}
+    return tmpl % {'NAME': name}
 
 def _get_template(data_file, default_template, resource_file=False):
     content = []
@@ -57,15 +57,6 @@ def _get_template(data_file, default_template, resource_file=False):
     if resource_file:
         tmpl = _testcases_re.sub('', tmpl)
     return tmpl
-
-def _get_datafile_name(path):
-    if not path:
-        return ''
-    dire, base = os.path.split(path)
-    if os.path.splitext(base.lower())[0] == '__init__':
-        path = dire
-    return utils.printable_name_from_path(path)
-
 
 def settings_table(table, content):
     return _table(_settings_re, table, content)
