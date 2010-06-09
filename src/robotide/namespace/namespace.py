@@ -125,8 +125,8 @@ class ResourceCache(object):
 
 class VariableStash(RobotVariables):
 
-    def replace_variables(self, string):
-        return self.replace_string(string, ignore_errors=True)
+    def replace_variables(self, value):
+        return self.replace_string(value, ignore_errors=True)
 
 
 class DatafileRetriever(object):
@@ -155,7 +155,7 @@ class DatafileRetriever(object):
 
     def _get_imported_library_keywords(self, datafile, vars):
         return self._collect_kws_from_imports(datafile, Library,
-                                               self._lib_kw_getter, vars)
+                                              self._lib_kw_getter, vars)
 
     def _collect_kws_from_imports(self, datafile, instance_type, getter, vars):
         kws = []
@@ -165,7 +165,8 @@ class DatafileRetriever(object):
 
     def _lib_kw_getter(self, imp, vars):
         name = vars.replace_variables(imp.name)
-        return self.lib_cache.get_library_keywords(name, imp.args)
+        args = [vars.replace_variables(a) for a in imp.args]
+        return self.lib_cache.get_library_keywords(name, args)
 
     def _collect_import_of_type(self, datafile, instance_type):
         return [imp for imp in datafile.imports
@@ -196,7 +197,8 @@ class DatafileRetriever(object):
         for imp in self._collect_import_of_type(datafile, Variables):
             varfile_path = os.path.join(datafile.directory,
                                         vars.replace_variables(imp.name))
-            vars.set_from_file(varfile_path, [])
+            args = [vars.replace_variables(a) for a in imp.args]
+            vars.set_from_file(varfile_path, args)
         for imp in self._collect_import_of_type(datafile, Resource):
             resolved_name = vars.replace_variables(imp.name)
             res = self.res_cache.get_resource(imp.directory, resolved_name)

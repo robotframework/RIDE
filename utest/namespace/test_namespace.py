@@ -152,14 +152,19 @@ class TestKeywordSuggestions(_DataFileTest):
                                            '${var_from_file')
         assert_true(len(sugs) > 0)
 
-    def test_args_are_passed_to_libraries(self):
+    def test_library_arguments_are_resolved(self):
         sugs = self.ns.get_suggestions_for(TestCaseFile(source=TESTCASEFILE_WITH_EVERYTHING),
-                                           '${var_from_file')
+                                           'Get ')
         assert_true(len(sugs) > 0)
         for item in sugs:
             if item.name == 'Get Mandatory':
                 return
         fail('Get mandatory not found')
+
+    def test_variable_file_arguments_are_resolved(self):
+        sugs = self.ns.get_suggestions_for(TestCaseFile(source=TESTCASEFILE_WITH_EVERYTHING),
+                                           '${dyn ')
+        assert_true(len(sugs) > 0)
 
     def _assert_import_kws(self, sugs, source):
         assert_true(len(sugs) > 0)
