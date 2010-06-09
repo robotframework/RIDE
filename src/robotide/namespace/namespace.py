@@ -29,6 +29,10 @@ class Namespace(object):
         self.lib_cache = LibraryCache()
         self.res_cache = ResourceCache()
         self.retriever = DatafileRetriever(self.lib_cache, self.res_cache)
+        self._content_assist_hooks = []
+
+    def register_content_assist_hook(self, hook):
+        self._content_assist_hooks.append(hook)
 
     def get_all_keywords(self, datafiles):
         kws = set()
@@ -40,11 +44,18 @@ class Namespace(object):
         return self.lib_cache.get_default_keywords()
 
     def get_suggestions_for(self, datafile, start):
+        sugs = self._get_suggestions_from_hooks(datafile, start)
         if self._blank(start):
-            return self._all_suggestions(datafile)
+            return sugs + self._all_suggestions(datafile)
         if self._looks_like_variable(start):
-            return self._variable_suggestions(datafile, start)
-        return self._keyword_suggestions(datafile, start)
+            return sugs + self._variable_suggestions(datafile, start)
+        return sugs + self._keyword_suggestions(datafile, start)
+
+    def _get_suggestions_from_hooks(self, datafile, start):
+        sugs = []
+        for hook in self._content_assist_hooks:
+            sugs.extend(hook(datafile, start))
+        return sugs
 
     def _blank(self, start):
         return start == ''
@@ -169,16 +180,16 @@ class DatafileRetriever(object):
 
     def _get_imported_resource_keywords(self, datafile, vars):
         kws = self._collect_kws_from_imports(datafile, Resource,
-                                              self._res_kw_recursive_getter, vars)
+                                             self._res_kw_recursive_getter, vars)
         return kws
 
     def _res_kw_recursive_getter(self, imp, vars):
+        kws = []
         resolved_name = vars.replace_variables(imp.name)
         res = self.res_cache.get_resource(imp.directory, resolved_name)
         if not res:
-            return []
+            return kws
         vars.add_vars(res.variable_table)
-        kws = []
         for child in self._collect_import_of_type(res, Resource):
             kws.extend(self._res_kw_recursive_getter(child, vars))
         kws.extend(self._get_imported_library_keywords(res, vars))
