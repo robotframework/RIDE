@@ -1,6 +1,6 @@
 import unittest
 from robot.parsing import TestCaseFile
-from robot.parsing.settings import Fixture, Documentation, Timeout, Tags
+from robot.parsing.settings import Fixture, Documentation, Timeout, Tags, Return
 
 from robot.utils.asserts import assert_equals, assert_true, assert_false
 from robot.parsing.model import TestDataDirectory
@@ -27,6 +27,8 @@ class DocumentationControllerTest(unittest.TestCase):
     def test_creation(self):
         assert_equals(self.ctrl.value, 'Initial doc')
         assert_true(self.ctrl.datafile is None)
+        ctrl = DocumentationController(self.parent, Documentation('[Documentation]'))
+        assert_equals(ctrl.label, 'Documentation')
 
     def test_setting_value(self):
         self.ctrl.set_value('Doc changed')
@@ -171,6 +173,13 @@ class TimeoutControllerTest(unittest.TestCase):
     def test_same_value(self):
         self.ctrl.set_value('1 s | message')
         assert_false(self.ctrl.dirty)
+
+
+class ReturnValueControllerTest(unittest.TestCase):
+
+    def test_creation(self):
+        ctrl = ReturnValueController(_FakeParent(), Return('[Return]'))
+        assert_equals(ctrl.label, 'Return Value')
 
 
 class TestCaseFileControllerTest(unittest.TestCase):

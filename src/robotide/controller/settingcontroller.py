@@ -33,15 +33,20 @@ class ImportController(object):
 
 
 class _SettingController(object):
+    editor = SettingEditor
 
     def __init__(self, parent_controller, data):
         self._parent = parent_controller
         self._data = data
         self.datafile = parent_controller.datafile
-        self.label = data.setting_name
-        if self.label.startswith('['):
-            self.label = self.label[1:-1]
+        self.label = self._label(data)
         self._init(data)
+
+    def _label(self, data):
+        label = data.setting_name
+        if label.startswith('['):
+            return label[1:-1]
+        return label
 
     @property
     def is_set(self):
@@ -85,7 +90,6 @@ class DocumentationController(_SettingController):
 
 
 class FixtureController(_SettingController):
-    editor = SettingEditor
 
     def _init(self, fixture):
         self._fixture = fixture
@@ -109,7 +113,6 @@ class FixtureController(_SettingController):
 
 
 class TagsController(_SettingController):
-    editor = SettingEditor
 
     def _init(self, tags):
         self._tags = tags
@@ -126,7 +129,6 @@ class TagsController(_SettingController):
 
 
 class TimeoutController(_SettingController):
-    editor = SettingEditor
 
     def _init(self, timeout):
         self._timeout = timeout
@@ -156,7 +158,6 @@ class TimeoutController(_SettingController):
 
 
 class TemplateController(_SettingController):
-    editor = SettingEditor
 
     def _init(self, template):
         self._template = template
@@ -167,7 +168,6 @@ class TemplateController(_SettingController):
 
 
 class ArgumentsController(_SettingController):
-    editor = SettingEditor
 
     def _init(self, args):
         self._args = args
@@ -181,3 +181,22 @@ class ArgumentsController(_SettingController):
 
     def _set(self, value):
         self._args.value = self._split_from_separators(value)
+
+
+class ReturnValueController(_SettingController):
+
+    def _init(self, return_):
+        self._return = return_
+
+    def _label(self, data):
+        return 'Return Value'
+
+    @property
+    def value(self):
+        return ' | '.join(self._return.value or [])
+
+    def _changed(self, value):
+        return self._return.value != self._split_from_separators(value)
+
+    def _set(self, value):
+        self._return.value = self._split_from_separators(value)

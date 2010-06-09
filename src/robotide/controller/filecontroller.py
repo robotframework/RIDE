@@ -18,7 +18,7 @@ from robot.parsing.populator import UserKeywordPopulator
 
 from robotide.controller.settingcontroller import (DocumentationController,
         FixtureController, TagsController, TimeoutController, TemplateController,
-        ArgumentsController, MetadataController, ImportController)
+        ArgumentsController, MetadataController, ImportController, ReturnValueController)
 from robotide import utils
 
 
@@ -241,7 +241,7 @@ class UserKeywordController(_WithStepsCotroller):
                 ArgumentsController(self, self._kw.args,),
                 TimeoutController(self, self._kw.timeout,),
                 # TODO: Wrong class, works right though
-                ArgumentsController(self, self._kw.return_,)]
+                ReturnValueController(self, self._kw.return_,)]
 
 
 class ImportSettingsController(_TableController):
