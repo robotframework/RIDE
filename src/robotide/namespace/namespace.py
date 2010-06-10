@@ -156,8 +156,8 @@ class DatafileRetriever(object):
     def get_keywords_from(self, datafile):
         vars = VariableStash()
         vars.set_from_variable_table(datafile.variable_table)
-        return list(set(self._get_datafile_keywords(datafile) +\
-                        self._get_imported_library_keywords(datafile, vars) + \
+        return list(set(self._get_datafile_keywords(datafile) +
+                        self._get_imported_library_keywords(datafile, vars) +
                         self._get_imported_resource_keywords(datafile, vars)))
 
     def _get_datafile_keywords(self, datafile):
@@ -204,11 +204,18 @@ class DatafileRetriever(object):
 
     def _get_vars_recursive(self, datafile, vars):
         vars.set_from_variable_table(datafile.variable_table)
+        vars = self._collect_vars_from_variable_files(datafile, vars)
+        vars = self._collect_vars_from_resource_files(datafile, vars)
+        return vars
+
+    def _collect_vars_from_variable_files(self, datafile, vars):
         for imp in self._collect_import_of_type(datafile, Variables):
-            varfile_path = os.path.join(datafile.directory,
-                                        vars.replace_variables(imp.name))
+            varfile_path = os.path.join(datafile.directory, vars.replace_variables(imp.name))
             args = [vars.replace_variables(a) for a in imp.args]
             vars.set_from_file(varfile_path, args)
+        return vars
+
+    def _collect_vars_from_resource_files(self, datafile, vars):
         for imp in self._collect_import_of_type(datafile, Resource):
             resolved_name = vars.replace_variables(imp.name)
             res = self.res_cache.get_resource(imp.directory, resolved_name)
@@ -222,25 +229,33 @@ class DatafileRetriever(object):
     def _get_user_keywords_recursive(self, datafile, vars):
         kws = set()
         kws.update(datafile.keywords)
+        kws_from_res = self._collect_each_res_import(datafile, vars,
+            lambda res, vars, kws: kws.update(self._get_user_keywords_recursive(res, vars)))
+        kws.update(kws_from_res)
+        return kws
+
+    def _collect_each_res_import(self, datafile, vars, collector):
+        items = set()
         vars.set_from_variable_table(datafile.variable_table)
         for imp in self._collect_import_of_type(datafile, Resource):
             resolved_name = vars.replace_variables(imp.name)
             res = self.res_cache.get_resource(imp.directory, resolved_name)
-            kws.update(self._get_user_keywords_recursive(res, vars))
-        return kws
+            if res:
+                collector(res, vars, items)
+        return items
 
     def get_resources_from(self, datafile):
         return list(self._get_resources_recursive(datafile, VariableStash()))
 
     def _get_resources_recursive(self, datafile, vars):
         resources = set()
-        vars.set_from_variable_table(datafile.variable_table)
-        for imp in self._collect_import_of_type(datafile, Resource):
-            resolved_name = vars.replace_variables(imp.name)
-            res = self.res_cache.get_resource(imp.directory, resolved_name)
-            if res:
-                resources.add(res)
-                resources.update(self._get_resources_recursive(res, vars))
+        res = self._collect_each_res_import(datafile, vars, self._add_resource)
+        resources.update(res)
         for child in datafile.children:
             resources.update(self.get_resources_from(child))
         return resources
+
+    def _add_resource(self, res, vars, items):
+        items.add(res)
+        items.update(self._get_resources_recursive(res, vars))
+
