@@ -101,7 +101,7 @@ class Namespace(object):
         return None
 
     def keyword_details(self, datafile, name):
-        kws = self.retirever.get_keywords(datafile)
+        kws = self.retriever.get_keywords(datafile)
         for k in kws:
             if eq(k.name, name):
                 return k.details
@@ -183,9 +183,8 @@ class DatafileRetriever(object):
                 if isinstance(imp, instance_type)]
 
     def _get_imported_resource_keywords(self, datafile, vars):
-        kws = self._collect_kws_from_imports(datafile, Resource,
-                                             self._res_kw_recursive_getter, vars)
-        return kws
+        return self._collect_kws_from_imports(datafile, Resource,
+                                              self._res_kw_recursive_getter, vars)
 
     def _res_kw_recursive_getter(self, imp, vars):
         kws = []
@@ -210,18 +209,18 @@ class DatafileRetriever(object):
 
     def _collect_vars_from_variable_files(self, datafile, vars):
         for imp in self._collect_import_of_type(datafile, Variables):
-            varfile_path = os.path.join(datafile.directory, vars.replace_variables(imp.name))
+            varfile_path = os.path.join(datafile.directory,
+                                        vars.replace_variables(imp.name))
             args = [vars.replace_variables(a) for a in imp.args]
             vars.set_from_file(varfile_path, args)
         return vars
 
     def _collect_vars_from_resource_files(self, datafile, vars):
-        for imp in self._collect_import_of_type(datafile, Resource):
-            resolved_name = vars.replace_variables(imp.name)
-            res = self.res_cache.get_resource(imp.directory, resolved_name)
-            if res:
-                self._get_vars_recursive(res, vars)
+        self._collect_each_res_import(datafile, vars, self._var_collector)
         return vars
+
+    def _var_collector(self, res, vars, items):
+        self._get_vars_recursive(res, vars)
 
     def get_user_keywords_from(self, datafile):
         return list(self._get_user_keywords_recursive(datafile, VariableStash()))
