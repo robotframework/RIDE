@@ -12,12 +12,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import os
-
+from robotide import context
+from robotide.controller import DataController, ResourceFileController
 from robotide.errors import DataError, SerializationError
 from robotide.robotapi import TestDataDirectory, TestCaseFile
-from robotide.controller import DataController, ResourceFileController
-from robotide import context
+from robotide.writer.serializer import Serializer
+import os
+
 
 
 class DataModel(object):
@@ -103,20 +104,50 @@ class DataModel(object):
     def serialize(self, datafile=None):
         # TODO: split to single file save and save all
         errors = []
-        datafiles = [datafile] # FIXME: self._get_files_to_serialize(datafile)
-        for df in datafiles:
+        datacontrollers = self._get_files_to_serialize(datafile)
+        for dc in datacontrollers:
             try:
                 serializer = Serializer()
-                serializer.serialize(df)
+                serializer.serialize(dc.data)
+                # FIXME: there should be a method for this?
+                dc.dirty = False
             except SerializationError, err:
-                errors.append('%s: %s\n' % (df.source, str(err)))
+                errors.append('%s: %s\n' % (dc.data.source, str(err)))
         if errors:
             context.LOG.error('Following file(s) could not be saved:\n\n%s' %
                               '\n'.join(errors))
 
     def _get_files_to_serialize(self, datafile):
         if datafile:
-            return [datafile]
-        if self.suite:
-            return [self.suite] + self.resources
-        return []
+            ret = self._find_datafile_controller(datafile)
+        # FIXME: how should this work?
+        return None
+        return [self.data] + self.resources
+#        if datafile:
+#            return [datafile]
+#        if self.suite:
+#            return [self.suite] + self.resources
+#        return []
+
+    def _find_datafile_controller(self, datafile):
+        ret = self._find_datafile_controller_starting_from_parent(self.data, datafile)
+        if ret:
+            return ret
+        return self._find_datafile_controller_from_resources(datafile)
+
+    def _find_datafile_controller_from_resources(self, datafile):
+        for res in self.resources:
+            print 'comparing %s to %s' % (res.data.source, datafile.source)
+            if res.data == datafile:
+                return res
+        return None
+
+    def _find_datafile_controller_starting_from_parent(self, parent_controller, datafile):
+        print 'comparing %s to %s' % (parent_controller.data.source, datafile.source)
+        if parent_controller.data == datafile:
+            return parent_controller
+        for controller in parent_controller.children:
+            ret = self._find_datafile_controller_starting_from_parent(controller, datafile)
+            if ret:
+                return ret
+        return None

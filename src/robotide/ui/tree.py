@@ -204,8 +204,10 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def unset_dirty(self):
         for node in self._datafile_nodes:
             text = self.GetItemText(node)
-            item = self._get_handler(node).item
-            if text.startswith('*') and not item.dirty:
+            # FIXME: do not access private fields. Refactor.
+            # - tree will keep a reference to controllors!
+            handler = self._get_handler(node)
+            if text.startswith('*') and not handler.controller.dirty:
                 self.SetItemText(node, text[1:])
 
     def select_user_keyword_node(self, uk):
@@ -256,7 +258,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         if not selection:
             return None
         handler = self._get_handler(selection)
-        return handler and handler._controller or None
+        return handler and handler.controller or None
 
     def move_up(self, node):
         prev = self.GetPrevSibling(node)
@@ -420,7 +422,7 @@ class _ActionHandler(wx.Window):
 
     def __init__(self, controller, tree, node):
         wx.Window.__init__(self, tree)
-        self._controller = controller
+        self.controller = controller
         item = controller.data
         self.name = item.name
         self.item = item
@@ -450,11 +452,11 @@ class TestDataDirectoryHandler(_ActionHandler):
 
     @property
     def tests(self):
-        return self._controller.tests
+        return self.controller.tests
 
     @property
     def keywords(self):
-        return self._controller.keywords
+        return self.controller.keywords
 
     def has_been_modified_on_disk(self):
         return self.item.has_been_modified_on_disk()
