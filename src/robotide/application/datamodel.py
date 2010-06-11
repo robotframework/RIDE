@@ -14,6 +14,7 @@
 
 from robotide import context
 from robotide.controller import DataController, ResourceFileController
+from robotide.controller.filecontroller import TestCaseFileController
 from robotide.errors import DataError, SerializationError
 from robotide.robotapi import TestDataDirectory, TestCaseFile
 from robotide.writer.serializer import Serializer
@@ -101,33 +102,62 @@ class DataModel(object):
                 return True
         return False
 
-    def serialize(self, datafile=None):
-        # TODO: split to single file save and save all
+
+    def serialize(self, datafile):
+        if datafile:
+            self.serialize_datafile(datafile)
+        else:
+            self.serialize_all()
+
+    def serialize_all(self):
         errors = []
-        datacontrollers = self._get_files_to_serialize(datafile)
+        # FIXME: HAndle also directories (=init files)
+        datacontrollers = self._get_all_controllers()
         for dc in datacontrollers:
             try:
-                serializer = Serializer()
-                serializer.serialize(dc.data)
-                # FIXME: there should be a method for this?
-                dc.dirty = False
+                self._serialize_file(dc)
             except SerializationError, err:
-                errors.append('%s: %s\n' % (dc.data.source, str(err)))
+                errors.append(self._get_serialization_error(err, dc))
+        self._log_serialization_errors(errors)
+
+    def serialize_datafile(self, datafile):
+        controller = self._find_datafile_controller(datafile)
+        try:
+            self._serialize_file(controller)
+        except SerializationError, err:
+            self._log_serialization_errors([self._get_serialization_error(err, controller)])
+
+    def _log_serialization_errors(self, errors):
         if errors:
             context.LOG.error('Following file(s) could not be saved:\n\n%s' %
                               '\n'.join(errors))
 
+    def _get_serialization_error(self, err, controller):
+        return '%s: %s\n' % (controller.data.source, str(err))
+
+    def _serialize_file(self, controller):
+        serializer = Serializer()
+        serializer.serialize(controller.data)
+        # FIXME: there should be a method for this?
+        controller.dirty = False
+
     def _get_files_to_serialize(self, datafile):
         if datafile:
-            ret = self._find_datafile_controller(datafile)
-        # FIXME: how should this work?
-        return None
-        return [self.data] + self.resources
-#        if datafile:
-#            return [datafile]
-#        if self.suite:
-#            return [self.suite] + self.resources
-#        return []
+            return self._find_datafile_controller(datafile)
+        return self._get_all_controllers()
+
+    def _get_all_controllers(self):
+        return self._get_filecontroller_and_all_child_filecontrollers(self.data)\
+               + self.resources
+
+    def _get_filecontroller_and_all_child_filecontrollers(self, parent_controller):
+        ret = []
+        # FIXME: This should not be necessary. Directories should be saved also.
+        if isinstance(parent_controller, TestCaseFileController):
+            ret.append(parent_controller)
+        for controller in parent_controller.children:
+            ret.extend(self._get_filecontroller_and_all_child_filecontrollers(controller))
+        return ret
 
     def _find_datafile_controller(self, datafile):
         ret = self._find_datafile_controller_starting_from_parent(self.data, datafile)
@@ -137,13 +167,11 @@ class DataModel(object):
 
     def _find_datafile_controller_from_resources(self, datafile):
         for res in self.resources:
-            print 'comparing %s to %s' % (res.data.source, datafile.source)
             if res.data == datafile:
                 return res
         return None
 
     def _find_datafile_controller_starting_from_parent(self, parent_controller, datafile):
-        print 'comparing %s to %s' % (parent_controller.data.source, datafile.source)
         if parent_controller.data == datafile:
             return parent_controller
         for controller in parent_controller.children:

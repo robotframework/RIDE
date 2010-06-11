@@ -25,6 +25,7 @@ class _WriterSerializer(object):
         for table in datafile:
             if table:
                 self.table_handlers[table.type](table)
+        self._writer.close()
 
     def _setting_table_handler(self, table):
         self._writer.start_settings()
