@@ -112,11 +112,11 @@ class RIDE(wx.App):
             return ret == wx.YES
         return True
 
-    def get_files_without_format(self, datafile=None):
-        return self.model.get_files_without_format(datafile)
+    def get_files_without_format(self, controller=None):
+        return self.model.get_files_without_format(controller)
 
-    def save(self, datafile=None):
-        self.model.serialize(datafile)
+    def save(self, controller=None):
+        self.model.serialize(controller)
 
     def register_editor(self, object_class, editor_class, activate):
         self._editor_provider.register_editor(object_class, editor_class,

@@ -70,11 +70,11 @@ class DataModel(object):
     def get_all_keywords(self):
         return self._namespace.get_all_keywords([self.data.data] if self.data else [] + self.resources )
 
-    def get_files_without_format(self, datafile=None):
+    def get_files_without_format(self, controller=None):
         return []
         # FIXME: please implement
-        if datafile:
-            datafiles = [datafile]
+        if controller:
+            datafiles = [controller]
         else:
             datafiles = [self.suite] + self.suite.suites
         return [ df for df in datafiles if df.dirty and not df.has_format() ]
@@ -103,9 +103,9 @@ class DataModel(object):
         return False
 
 
-    def serialize(self, datafile):
-        if datafile:
-            self.serialize_datafile(datafile)
+    def serialize(self, controller):
+        if controller:
+            self.serialize_controller(controller)
         else:
             self.serialize_all()
 
@@ -120,8 +120,7 @@ class DataModel(object):
                 errors.append(self._get_serialization_error(err, dc))
         self._log_serialization_errors(errors)
 
-    def serialize_datafile(self, datafile):
-        controller = self._find_datafile_controller(datafile)
+    def serialize_controller(self, controller):
         try:
             self._serialize_file(controller)
         except SerializationError, err:
@@ -158,24 +157,3 @@ class DataModel(object):
         for controller in parent_controller.children:
             ret.extend(self._get_filecontroller_and_all_child_filecontrollers(controller))
         return ret
-
-    def _find_datafile_controller(self, datafile):
-        ret = self._find_datafile_controller_starting_from_parent(self.data, datafile)
-        if ret:
-            return ret
-        return self._find_datafile_controller_from_resources(datafile)
-
-    def _find_datafile_controller_from_resources(self, datafile):
-        for res in self.resources:
-            if res.data == datafile:
-                return res
-        return None
-
-    def _find_datafile_controller_starting_from_parent(self, parent_controller, datafile):
-        if parent_controller.data == datafile:
-            return parent_controller
-        for controller in parent_controller.children:
-            ret = self._find_datafile_controller_starting_from_parent(controller, datafile)
-            if ret:
-                return ret
-        return None

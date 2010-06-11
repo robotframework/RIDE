@@ -82,6 +82,9 @@ class RideFrame(wx.Frame, RideEventHandler):
     def get_selected_datafile(self):
         return self.tree.get_selected_datafile()
 
+    def _get_selected_datafile_controller(self):
+        return self.tree.get_selected_item()
+
     def OnClose(self, event):
         SETTINGS['mainframe size'] = self.GetSizeTuple()
         SETTINGS['mainframe position'] = self.GetPositionTuple()
@@ -156,18 +159,19 @@ class RideFrame(wx.Frame, RideEventHandler):
             self.open_suite(path)
 
     def OnSave(self, event):
-        self.save(self.get_selected_datafile())
+        self.save(self._get_selected_datafile_controller())
 
     def OnSaveAll(self, event):
         self.save()
         RideSaveAll().publish()
         self.SetStatusText('Saved all files')
 
-    def save(self, datafile=None):
-        files_without_format = self._application.get_files_without_format(datafile)
+    def save(self, controller=None):
+        files_without_format = self._application.get_files_without_format(controller)
         for f in files_without_format:
+            # FIXME: get files without format will return controllers, but show format dialog expects datafiles
             self._show_format_dialog_for(f)
-        self._application.save(datafile)
+        self._application.save(controller)
         self.tree.unset_dirty()
 
     def _show_format_dialog_for(self, file_without_format):
