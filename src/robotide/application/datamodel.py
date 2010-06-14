@@ -22,7 +22,7 @@ import os
 
 
 
-class DataModel(object):
+class ChiefController(object):
 
     def __init__(self, namespace, path=None):
         self.resources = []

@@ -57,12 +57,12 @@ def _run(inpath=None):
 
 
 def _tidy(inpath, outpath):
-    from robotide.application import DataModel
+    from robotide.application import ChiefController
     if not os.path.exists(inpath):
         raise DataError('Given input file does not exist.')
     if not os.path.isfile(inpath):
         raise DataError('Tidy functionality only supports single files.')
-    data = DataModel(inpath)
+    data = ChiefController(inpath)
     if data.suite:
         item = data.suite
     else:

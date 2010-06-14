@@ -25,7 +25,7 @@ from robotide.errors import DataError
 from robotide.ui import RideFrame
 from robotide import context
 
-from datamodel import DataModel
+from datamodel import ChiefController
 from pluginloader import PluginLoader
 from editorprovider import EditorProvider
 
@@ -145,8 +145,8 @@ class _DataLoader(Thread):
 
     def run(self):
         try:
-            self.model = DataModel(self._namespace, self._path)
+            self.model = ChiefController(self._namespace, self._path)
         except DataError, err:
             context.LOG.error(str(err))
-            self.model = DataModel(self._namespace)
+            self.model = ChiefController(self._namespace)
 

@@ -18,7 +18,7 @@ import unittest
 
 from robot.utils.asserts import assert_equals, assert_none
 
-from robotide.application import DataModel
+from robotide.application import ChiefController
 from robotide.ui.actiontriggers import MenuBar, ToolBar, ShortcutRegistry
 from robotide.ui.mainframe import ActionRegisterer
 from resources import FakeSuite, FakeDirectorySuite, FakeUserKeyword,\
@@ -41,7 +41,7 @@ class _FakeMainFrame(wx.Frame):
     def publish(self, *args):
         pass
 
-class _FakeModel(DataModel):
+class _FakeModel(ChiefController):
     def __init__(self, suite=None, resources=[]):
         self.suite = suite
         self.resources = resources
