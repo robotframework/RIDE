@@ -169,8 +169,7 @@ class RideFrame(wx.Frame, RideEventHandler):
     def save(self, controller=None):
         files_without_format = self._application.get_files_without_format(controller)
         for f in files_without_format:
-            # FIXME: get files without format will return controllers, but show format dialog expects datafiles
-            self._show_format_dialog_for(f)
+            self._show_format_dialog_for(f.data)
         self._application.save(controller)
         self.tree.unset_dirty()
 
