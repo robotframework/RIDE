@@ -80,11 +80,16 @@ class _DataController(object):
     def unmark_dirty(self):
         self.dirty = False
 
+    def has_format(self):
+        return True
+
 class TestDataDirectoryController(_DataController):
 
     def _children(self, data):
         return [DataController(child) for child in data.children]
 
+    def has_format(self):
+        return self.dirty and not self.data.initfile
 
 class TestCaseFileController(_DataController):
 

@@ -71,13 +71,11 @@ class ChiefController(object):
         return self._namespace.get_all_keywords([self.data.data] if self.data else [] + self.resources )
 
     def get_files_without_format(self, controller=None):
-        return []
-        # FIXME: please implement
         if controller:
-            datafiles = [controller]
+            controller_list = [controller]
         else:
-            datafiles = [self.suite] + self.suite.suites
-        return [ df for df in datafiles if df.dirty and not df.has_format() ]
+            controller_list = self._get_all_controllers()
+        return [ dc for dc in controller_list if not dc.has_format() ]
 
     def get_root_suite_dir_path(self):
         return self.suite.get_dir_path()
@@ -111,7 +109,7 @@ class ChiefController(object):
 
     def serialize_all(self):
         errors = []
-        # FIXME: HAndle also directories (=init files)
+        # FIXME: Handle also directories (=init files)
         datacontrollers = self._get_all_controllers()
         for dc in datacontrollers:
             try:
@@ -137,8 +135,7 @@ class ChiefController(object):
     def _serialize_file(self, controller):
         serializer = Serializer()
         serializer.serialize(controller.data)
-        # FIXME: there should be a method for this?
-        controller.dirty = False
+        controller.unmark_dirty()
 
     def _get_files_to_serialize(self, datafile):
         if datafile:

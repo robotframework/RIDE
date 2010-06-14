@@ -198,6 +198,13 @@ class TestDataDirectoryControllerTest(unittest.TestCase):
         for st in ctrl.settings:
             assert_true(st is not None)
 
+    def test_has_format(self):
+        ctrl = TestDataDirectoryController(TestDataDirectory())
+        assert_false(ctrl.has_format())
+        ctrl.mark_dirty()
+        assert_true(ctrl.has_format())
+        ctrl.data.initfile = '/tmp/__init__.html'
+        assert_false(ctrl.has_format())
 
 class TestCaseControllerTest(unittest.TestCase):
 
