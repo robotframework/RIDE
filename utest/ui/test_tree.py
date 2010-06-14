@@ -16,13 +16,16 @@
 
 import unittest
 
+from robot.parsing import (TestDataDirectory, TestCaseFile, ResourceFile,
+                           TestCase, UserKeyword)
 from robot.utils.asserts import assert_equals, assert_none
 
 from robotide.application import DataModel
+from robotide.controller.filecontroller import (TestDataDirectoryController,
+                                                ResourceFileController)
 from robotide.ui.actiontriggers import MenuBar, ToolBar, ShortcutRegistry
 from robotide.ui.mainframe import ActionRegisterer
-from resources import FakeSuite, FakeDirectorySuite, FakeUserKeyword,\
-    FakeResource, FakeTestCase, PYAPP_REFERENCE
+from resources import PYAPP_REFERENCE
 
 from robotide.ui import tree as st
 st.FakeDirectorySuiteHandler = st.FakeUserKeywordHandler = \
@@ -40,11 +43,6 @@ class _FakeMainFrame(wx.Frame):
     _editor_panel = None
     def publish(self, *args):
         pass
-
-class _FakeModel(DataModel):
-    def __init__(self, suite=None, resources=[]):
-        self.suite = suite
-        self.resources = resources
 
 class _FakeImageList(wx.ImageList):
     def __init__(self):
@@ -77,26 +75,31 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         self._expand_all()
 
     def _create_model(self):
-        suite = self._create_directory_suite('Top Suite', '/topsuite/__init__.html')
-        suite.suites = [ self._create_file_suite('Sub Suite %d' % i, 'foo.html')
+        suite = self._create_directory_suite('/top_suite')
+        suite.children = [ self._create_file_suite('sub_suite_%d.txt' % i)
                          for i in range(3) ]
-        res = FakeResource()
-        res.keywords.append(FakeUserKeyword(res, 'Resource Keyword'))
-        return _FakeModel(suite, [res])
+        res = ResourceFile()
+        res.source = 'resource.txt'
+        res.keyword_table.keywords.append(UserKeyword(res, 'Resource Keyword'))
+        model = DataModel(None)
+        model.data = TestDataDirectoryController(suite)
+        model.resources.append(ResourceFileController(res))
+        return model
 
-    def _create_directory_suite(self, name, path):
-        return self._create_suite(FakeDirectorySuite, name, path)
+    def _create_directory_suite(self, source):
+        return self._create_suite(TestDataDirectory, source)
 
-    def _create_file_suite(self, name, path):
-        suite = self._create_suite(FakeSuite, name, path)
-        suite.tests.extend([ FakeTestCase(suite, '%s Fake Test %d' % (name, i))
-                             for i in range(5) ])
+    def _create_file_suite(self, source):
+        suite = self._create_suite(TestCaseFile, source)
+        suite.testcase_table.tests  = [TestCase(suite, '%s Fake Test %d' % (suite.name, i))
+                                       for i in range(5)]
         return suite
 
-    def _create_suite(self, suite_class, name, path):
-        suite = suite_class(name=name, path=path)
-        suite.keywords.extend([ FakeUserKeyword(suite, '%s Fake UK %d' % (name, i))
-                                for i in range(5) ])
+    def _create_suite(self, suite_class, source):
+        suite = suite_class()
+        suite.source = source
+        suite.keyword_table.keywords = [ UserKeyword(suite, '%s Fake UK %d' % (suite.name, i))
+                                         for i in range(5) ]
         return suite
 
     def _expand_all(self):
@@ -137,22 +140,22 @@ class TestPopulating(_BaseSuiteTreeTest):
 class TestAddingItems(_BaseSuiteTreeTest):
 
     def test_adding_user_keyword(self):
-        suite = self._model.suite
-        new_uk = FakeUserKeyword(suite, 'New Fake UK', 'Something')
-        self._tree.add_keyword(self._get_node(suite.name), new_uk)
+        suite = self._model.data
+        new_uk = suite.new_keyword('New Fake UK')
+        self._tree.add_keyword(self._get_node(suite.data.name), new_uk)
         assert_equals(self._get_selected_label(), 'New Fake UK')
 
     def test_adding_test(self):
-        suite = self._model.suite.suites[0]
-        new_test = FakeTestCase(suite, 'New Fake Test', 'Test Doc')
+        suite = self._model.data.children[0]
+        new_test = suite.new_test('New Fake Test')
         self._tree.add_test(self._get_node(suite.name), new_test)
         assert_equals(self._get_selected_label(), 'New Fake Test')
 
     def test_adding_suite(self):
-        new_suite = FakeSuite('New Fake Suite')
-        self._tree.add_suite(self._model.suite, new_suite)
+        new_suite = self._model.data.add_suite('new_fake_suite.txt')
+        self._tree.add_suite(self._model.data, new_suite)
         assert_equals(self._get_selected_label(), 'New Fake Suite')
-        new_test = new_suite.tests.new_test('New Fake Test')
+        new_test = new_suite.new_test('New Fake Test')
         node = self._get_node(new_suite.name)
         self._tree.add_test(node, new_test)
         assert_equals(self._get_selected_label(), 'New Fake Test')
@@ -165,8 +168,8 @@ class TestNodeSearchAndSelection(_BaseSuiteTreeTest):
         assert_equals(self._get_selected_label(), 'Top Suite')
 
     def test_searching_matching_uk_node(self):
-        self._select_and_assert_selection(self._model.suite.keywords[0])
-        self._select_and_assert_selection(self._model.suite.suites[1].keywords[2])
+        self._select_and_assert_selection(self._model.data.keywords[0])
+        self._select_and_assert_selection(self._model.data.children[1].keywords[2])
 
     def _select_and_assert_selection(self, uk):
         self._tree.select_user_keyword_node(uk)
@@ -175,7 +178,7 @@ class TestNodeSearchAndSelection(_BaseSuiteTreeTest):
     def test_get_active_suite_or_resource(self):
         exp = [('Top Suite Fake UK 2', 'Top Suite'),
                ('Sub Suite 1 Fake Test 1', 'Sub Suite 1'),
-               ('Resource Keyword', 'Fake Resource')]
+               ('Resource Keyword', 'Resource')]
         for node, parent_name in exp:
             self._select_node_and_assert_parent(node, parent_name)
 
@@ -188,7 +191,7 @@ class TestNodeSearchAndSelection(_BaseSuiteTreeTest):
 class TestNodeRemoval(_BaseSuiteTreeTest):
 
     def test_removing_user_keyword(self):
-        name = self._model.suite.suites[1].keywords[1].name
+        name = self._model.data.children[1].keywords[1].name
         root = self._tree._root
         self._tree.delete_node(self._tree._get_node_with_label(root, name))
         assert_none(self._tree._get_node_with_label(root, name))
@@ -257,7 +260,7 @@ class TestRefreshingDataNode(_BaseSuiteTreeTest):
     def test_refreshing_suite(self):
         orig_node_lenght = len(self._tree._datafile_nodes)
         new_name = 'Modified name'
-        suite = self._model.suite.suites[0]
+        suite = self._model.data.children[0]
         suite.tests[0].rename(new_name)
         self._tree.refresh_datafile(suite, None)
         self._expand_all()

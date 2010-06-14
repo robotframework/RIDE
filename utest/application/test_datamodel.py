@@ -39,7 +39,7 @@ class TestModelInitialization(unittest.TestCase):
         path = tempfile.mktemp('.html')
         assert_false(os.path.exists(path))
         model = DataModel(Namespace(), path)
-        assert_equals(model.suite.name, utils.printable_name_from_path(path))
+        assert_equals(model.data)
         assert_true(isinstance(model.suite, TestCaseFile))
 
     def test_initing_with_nonexisting_path_without_extension_creates_new_dir_suite(self):

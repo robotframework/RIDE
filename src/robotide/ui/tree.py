@@ -13,6 +13,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from filedialogs import AddSuiteDialog, ChangeFormatDialog
+from images import TreeImageList
+from namedialogs import TestCaseNameDialog, UserKeywordNameDialog
+from robotide import utils
+from robotide.action import ActionInfoCollection
+from robotide.controller.filecontroller import UserKeywordController
+from robotide.publish import RideTreeSelection
 import os
 import wx
 try:
@@ -20,14 +27,7 @@ try:
 except ImportError:
     from wx.lib.mixins import treemixin
 
-from robotide.action import ActionInfoCollection
-from robotide.controller.filecontroller import UserKeywordController
-from robotide.publish import RideTreeSelection
-from robotide import utils
 
-from images import TreeImageList
-from filedialogs import AddSuiteDialog, ChangeFormatDialog
-from namedialogs import TestCaseNameDialog, UserKeywordNameDialog
 
 
 tree_actions ="""
@@ -153,7 +153,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         return node
 
     def add_suite(self, parent, suite):
-        snode = self._render_datafile(self._get_datafile_node(parent), suite)
+        snode = self._render_datafile(self._get_datafile_node(parent.data), suite)
         self.SelectItem(snode)
 
     def add_resource(self, resource):
@@ -278,13 +278,13 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
                                               dataitem, second)
         return node
 
-    def refresh_datafile(self, datafile, event):
+    def refresh_datafile(self, controller, event):
         to_be_selected = self._get_pending_selection(event)
-        orig_node = self._get_datafile_node(datafile)
+        orig_node = self._get_datafile_node(controller.datafile)
         insertion_index = self._get_datafile_index(orig_node)
         parent = self._get_parent(orig_node)
         self._remove_datafile_node(orig_node)
-        new_node = self._render_datafile(parent, datafile, insertion_index)
+        new_node = self._render_datafile(parent, controller, insertion_index)
         self._handle_pending_selection(to_be_selected, new_node)
 
     def _get_pending_selection(self, event):
@@ -484,7 +484,7 @@ class TestDataDirectoryHandler(_ActionHandler):
     def OnNewUserKeyword(self, event):
         dlg = UserKeywordNameDialog(self.item)
         if dlg.ShowModal() == wx.ID_OK:
-            kw = self.item.new_keyword(dlg.get_value())
+            kw = self._controller.new_keyword(dlg.get_value())
             self._tree.add_keyword(self._node, kw)
         dlg.Destroy()
 
