@@ -22,7 +22,7 @@ def PluginFactory(application, plugin_class):
     except Exception, err:
         return BrokenPlugin(str(err), plugin_class)
     else:
-        return PluginConnector(application, plugin)
+        return PluginConnector(plugin)
 
 
 class _PluginConnector(object):
@@ -38,7 +38,7 @@ class _PluginConnector(object):
 
 class PluginConnector(_PluginConnector):
 
-    def __init__(self, application, plugin):
+    def __init__(self, plugin):
         _PluginConnector.__init__(self, plugin.name, plugin.doc)
         self._plugin = plugin
         self._settings = SETTINGS['Plugins'].add_section(plugin.name)

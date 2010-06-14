@@ -93,6 +93,9 @@ class Namespace(object):
     def get_resources(self, datafile):
         return self.retriever.get_resources_from(datafile)
 
+    def get_resource(self, path):
+        return self.res_cache.get_resource('', path)
+
     def find_user_keyword(self, datafile, kw_name):
         uks = self.retriever.get_user_keywords_from(datafile)
         for kw in uks:

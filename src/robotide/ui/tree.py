@@ -106,8 +106,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
                                              lambda item: item.is_test_suite)
 
     def _render_datafile(self, parent_node, controller, index=None):
-        node = self._create_node_with_handler(parent_node, controller,
-                                              index)
+        node = self._create_node_with_handler(parent_node, controller, index)
         self.SetItemHasChildren(node, True)
         self._datafile_nodes.append(node)
         for child in controller.children:

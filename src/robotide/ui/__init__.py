@@ -13,3 +13,4 @@
 #  limitations under the License.
 
 from mainframe import RideFrame
+from progress import LoadProgressObserver

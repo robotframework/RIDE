@@ -15,14 +15,12 @@
 import os
 import sys
 import wx
-import time
-from threading import Thread
 
 from robotide.robotapi import ROBOT_VERSION
 from robotide.namespace import Namespace
-from robotide.publish import RideOpenSuite, RideOpenResource
+from robotide.publish import RideOpenResource
 from robotide.errors import DataError
-from robotide.ui import RideFrame
+from robotide.ui import RideFrame, LoadProgressObserver
 from robotide import context
 
 from chiefcontroller import ChiefController
@@ -39,9 +37,9 @@ class RIDE(wx.App):
 
     def OnInit(self):
         self._check_robot_version()
-        self.model = None
         self.frame = RideFrame(self)
         self.namespace = Namespace()
+        self._controller = ChiefController(self.namespace)
         self._editor_provider = EditorProvider()
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),
                                            context.get_core_plugins())
@@ -49,6 +47,10 @@ class RIDE(wx.App):
         self.open_suite(self._initial_path)
         self.frame.tree.populate(self.model)
         return True
+
+    @property
+    def model(self):
+        return self._controller
 
     def _get_plugin_dirs(self):
         return [context.SETTINGS.get_path('plugins'),
@@ -66,21 +68,7 @@ class RIDE(wx.App):
             sys.exit(1)
 
     def open_suite(self, path):
-        self.model = self._load_suite(path)
-        RideOpenSuite(path=path).publish()
-        context.LOG.report_parsing_errors()
-
-    def _load_suite(self, path):
-        progress_dialog = wx.ProgressDialog('RIDE', 'Loading the test data',
-                                            maximum=100, parent=self.frame,
-                                            style = wx.PD_ELAPSED_TIME)
-        loader = _DataLoader(self.namespace, path)
-        loader.start()
-        while loader.isAlive():
-            time.sleep(0.1)
-            progress_dialog.Pulse()
-        progress_dialog.Destroy()
-        return loader.model
+        self._controller.load_data(LoadProgressObserver(self.frame, path), path)
 
     def open_resource(self, path, datafile=None):
         try:
@@ -133,20 +121,3 @@ class RIDE(wx.App):
 
     def get_editor(self, object_class):
         return self._editor_provider.get_editor(object_class)
-
-
-class _DataLoader(Thread):
-
-    def __init__(self, namespace, path):
-        Thread.__init__(self)
-        self._path = path
-        self._namespace = namespace
-        self.model = None
-
-    def run(self):
-        try:
-            self.model = ChiefController(self._namespace, self._path)
-        except DataError, err:
-            context.LOG.error(str(err))
-            self.model = ChiefController(self._namespace)
-

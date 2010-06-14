@@ -12,51 +12,67 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import os
+import time
+from threading import Thread
+
 from robotide import context
 from robotide.controller import DataController, ResourceFileController
 from robotide.controller.filecontroller import TestCaseFileController
 from robotide.errors import DataError, SerializationError
 from robotide.robotapi import TestDataDirectory, TestCaseFile
 from robotide.writer.serializer import Serializer
-import os
-
+from robot.parsing.model import TestData
 
 
 class ChiefController(object):
 
-    def __init__(self, namespace, path=None):
-        self.resources = []
-        self.data = None
+    def __init__(self, namespace):
         self._namespace = namespace
-        self._open(path)
+        self._controller = None
+        self.resources = []
 
-    def _open(self, path):
-        if not path:
-            return
-        try:
-            self._open_suite(path)
-        except DataError:
-            try:
-                self.open_resource(path)
-            except DataError:
-                raise DataError("Given file '%s' is not a valid Robot Framework "
-                                "test case or resource file" % path)
+    @property
+    def data(self):
+        return self._controller
 
-    def _open_suite(self, path):
-        if os.path.isdir(path):
-            self.data = DataController(TestDataDirectory(source=path))
+    def load_data(self, load_observer, path):
+        datafile = self.load_datafile(load_observer, path)
+        if datafile:
+            self._controller = DataController(datafile)
+            self.resources = [ResourceFileController(r) for r
+                              in self._namespace.get_resources(datafile)]
         else:
-            self.data = DataController(TestCaseFile(source=path))
-        self.resources = [ResourceFileController(r) for r in self._namespace.get_resources(self.data.data)]
-        # FIXME:::  self._resolve_imported_resources(self.suite)
+            self.load_resource(path)
+
+    def load_datafile(self, load_observer, path):
+        loader = _DataLoader(path)
+        loader.start()
+        while loader.isAlive():
+            time.sleep(0.1)
+            load_observer.notify()
+        load_observer.finished()
+        return loader.datafile
+
+    def load_resource(self, path):
+        try:
+            self.open_resource(path)
+        except DataError:
+            raise DataError("Given file '%s' is not a valid Robot Framework "
+                            "test case or resource file" % path)
+
+    @property
+    def suite(self):
+        return self._controller.data if self._controller else None
 
     def open_resource(self, path, datafile=None):
-        resource = self._namespace.load_resource(path, datafile)
+        resource = self._namespace.get_resource(path)
         if not resource:
             return None
-        if resource not in self.resources:
-            self.resources.append(resource)
-            return resource
+        controller = ResourceFileController(resource)
+        if controller not in self.resources:
+            self.resources.append(controller)
+            return controller
         return None
 
     def _resolve_imported_resources(self, datafile):
@@ -99,7 +115,6 @@ class ChiefController(object):
             if self._is_suite_dirty(s):
                 return True
         return False
-
 
     def serialize(self, controller):
         if controller:
@@ -154,3 +169,18 @@ class ChiefController(object):
         for controller in parent_controller.children:
             ret.extend(self._get_filecontroller_and_all_child_filecontrollers(controller))
         return ret
+
+
+class _DataLoader(Thread):
+
+    def __init__(self, path):
+        Thread.__init__(self)
+        self._path = path
+        self.datafile = None
+
+    def run(self):
+        try:
+            self.datafile = TestData(source=self._path)
+        except Exception, err:
+            pass
+            #context.LOG.error(str(err))
