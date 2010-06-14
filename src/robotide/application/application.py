@@ -25,7 +25,7 @@ from robotide.errors import DataError
 from robotide.ui import RideFrame
 from robotide import context
 
-from datamodel import ChiefController
+from chiefcontroller import ChiefController
 from pluginloader import PluginLoader
 from editorprovider import EditorProvider
 
