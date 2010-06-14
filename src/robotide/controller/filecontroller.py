@@ -77,6 +77,8 @@ class _DataController(object):
     def mark_dirty(self):
         self.dirty = True
 
+    def unmark_dirty(self):
+        self.dirty = False
 
 class TestDataDirectoryController(_DataController):
 
