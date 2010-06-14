@@ -29,7 +29,6 @@ class TestKeywordInfo(unittest.TestCase):
         uk.args.value = ['${arg1}', '${arg2}=def', '@{varargs}']
         kw_info = TestCaseUserKeywordInfo(uk)
         exp_start = 'Source: testcase.txt &lt;test case file&gt;<br><br>Arguments: [ arg1 | arg2=def | *varargs ]<br><br>'
-        print kw_info.details
         assert_true(kw_info.details.startswith(exp_start), kw_info.details)
 
 

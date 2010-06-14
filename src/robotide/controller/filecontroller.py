@@ -12,9 +12,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.robotapi import TestCaseFile, DataRow, is_list_var, is_scalar_var
+import os
+
 from robot.parsing.tablepopulators import UserKeywordPopulator, TestCasePopulator
 
+from robotide.robotapi import (TestDataDirectory, TestCaseFile, DataRow,
+                               is_list_var, is_scalar_var)
 from robotide.controller.settingcontroller import (DocumentationController,
         FixtureController, TagsController, TimeoutController, TemplateController,
         ArgumentsController, MetadataController, ImportController, ReturnValueController)
@@ -32,6 +35,10 @@ class _DataController(object):
         self.data = data
         self.dirty = False
         self.children = self._children(data)
+
+    @property
+    def name(self):
+        return self.data.name
 
     @property
     def settings(self):
@@ -80,11 +87,15 @@ class _DataController(object):
     def unmark_dirty(self):
         self.dirty = False
 
+    def new_keyword(self, name):
+        return self.keywords.new(name)
+
     def has_format(self):
         return True
 
     def get_source(self):
         return self.data.source
+
 
 class TestDataDirectoryController(_DataController):
 
@@ -94,8 +105,18 @@ class TestDataDirectoryController(_DataController):
     def has_format(self):
         return self.dirty and not self.data.initfile
 
+    def add_suite(self, source):
+        if os.path.isdir(source):
+            d = TestDataDirectory()
+        else:
+            d = TestCaseFile()
+        d.source = source
+        self.data.children.append(d)
+        return DataController(d)
+
     def get_source(self):
         return self.data.initfile
+
 
 class TestCaseFileController(_DataController):
 
@@ -107,6 +128,9 @@ class TestCaseFileController(_DataController):
         return _DataController._settings(self) + \
                 [TimeoutController(self, ss.test_timeout),
                  TemplateController(self, ss.test_template)]
+
+    def new_test(self, name):
+        return self.tests.new(name)
 
 
 class ResourceFileController(_DataController):
@@ -185,10 +209,22 @@ class TestCaseTableController(_TableController):
     def __iter__(self):
         return iter(TestCaseController(self, t) for t in self._table)
 
+    def __getitem__(self, index):
+        return TestCaseController(self, self._table.tests[index])
+
+    def new(self, name):
+        return TestCaseController(self, self._table.add(name))
+
 
 class KeywordTableController(_TableController):
     def __iter__(self):
         return iter(UserKeywordController(self, kw) for kw in self._table)
+
+    def __getitem__(self, index):
+        return UserKeywordController(self, self._table.keywords[index])
+
+    def new(self, name):
+        return UserKeywordController(self, self._table.add(name))
 
 
 class _WithStepsCotroller(object):
@@ -203,7 +239,7 @@ class _WithStepsCotroller(object):
 
     @property
     def datafile(self):
-        return self.data.parent.parent
+        return self._parent.datafile
 
     @property
     def steps(self):
@@ -223,6 +259,9 @@ class _WithStepsCotroller(object):
             r = DataRow([''] + r)
             pop.add(r)
         pop.populate()
+
+    def rename(self, new_name):
+        self.data.name = new_name
 
 
 class TestCaseController(_WithStepsCotroller):

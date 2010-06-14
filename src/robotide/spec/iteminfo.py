@@ -30,17 +30,14 @@ class ItemInfo(object):
 
 class VariableInfo(ItemInfo):
 
-    def __init__(self, name, source, value):
-        ItemInfo.__init__(self, name, source, value)
+    def __init__(self, name, value, source):
+        ItemInfo.__init__(self, name, source, self._details(name, source, value))
 
-    def _details(self, item):
-        prefix = 'Source: %s<br><br>Value: ' % self.source
-        if self.name.startswith('$'):
-            return prefix  + item.value[0]
-        return prefix + ' | '.join(self.details)
-
-    def _source(self, item):
-        return item.source
+    def _details(self, name, source, value):
+        prefix = 'Source: %s<br><br>Value: ' % source
+        if name.startswith('$'):
+            return prefix  + unicode(value)
+        return '%s [ %s ]' % (prefix, ' | '.join(value))
 
 
 class _KeywordInfo(ItemInfo):

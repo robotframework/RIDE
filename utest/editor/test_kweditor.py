@@ -4,7 +4,8 @@ from robot.utils.asserts import assert_equals
 from robotide.editor.kweditor import KeywordEditor
 from robotide.publish.messages import RideGridCellChanged
 from robotide.publish import PUBLISHER
-from robotide.controller.filecontroller import TestCaseFileController, TestCaseController
+from robotide.controller.filecontroller import TestCaseFileController, TestCaseController,\
+    TestCaseTableController
 from robotide.robotapi import TestCaseFile
 
 from resources import PYAPP_REFERENCE as _ #Needed to be able to create wx components
@@ -30,14 +31,19 @@ class TestableKwEditor(KeywordEditor):
         pass
 
 
+def tc_controller():
+    tcf = TestCaseFile()
+    test = tcf.testcase_table.add('A test')
+    for r in DATA:
+        test.add_step(r)
+    return TestCaseController(TestCaseTableController(TestCaseFileController(tcf),
+                                                      tcf.testcase_table), test)
+
+
 class TestCoordinates(unittest.TestCase):
 
     def setUp(self):
-        tcf = TestCaseFile()
-        test = tcf.testcase_table.add('A test')
-        for r in DATA:
-            test.add_step(r)
-        self._editor = TestableKwEditor(_FakeMainFrame(), TestCaseController(test), None)
+        self._editor = TestableKwEditor(_FakeMainFrame(), tc_controller(), None)
 
     def test_cell_selection(self):
         self._editor.SelectBlock(2,2,2,2)
@@ -57,7 +63,7 @@ class TestCoordinates(unittest.TestCase):
 class TestClipBoard(unittest.TestCase):
 
     def setUp(self):
-        self._editor = TestableKwEditor(_FakeMainFrame(), None,
+        self._editor = TestableKwEditor(_FakeMainFrame(), tc_controller(),
                                         _FakeTree())
 
     def test_copy_one_cell(self):
@@ -157,7 +163,7 @@ class TestClipBoard(unittest.TestCase):
 class TestEditing(unittest.TestCase):
 
     def setUp(self):
-        self._editor = KeywordEditor(_FakeMainFrame(), None, None)
+        self._editor = KeywordEditor(_FakeMainFrame(), tc_controller(), None)
         PUBLISHER.subscribe(self._on_cell_changed, RideGridCellChanged)
 
     def test_correct_event_is_published_during_population(self):
