@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 import os
+import copy
 
 from robot.parsing.tablepopulators import UserKeywordPopulator, TestCasePopulator
 
@@ -22,6 +23,7 @@ from robotide.controller.settingcontroller import (DocumentationController,
         FixtureController, TagsController, TimeoutController, TemplateController,
         ArgumentsController, MetadataController, ImportController, ReturnValueController)
 from robotide import utils
+from robot.parsing.model import TestCase, UserKeyword
 
 
 def DataController(data):
@@ -250,7 +252,8 @@ class _WithStepsCotroller(object):
         return self._parent.dirty
 
     def mark_dirty(self):
-        self._parent.mark_dirty()
+        if self._parent:
+            self._parent.mark_dirty()
 
     def parse_steps_from_rows(self, rows):
         self.data.steps = []
@@ -262,6 +265,13 @@ class _WithStepsCotroller(object):
 
     def rename(self, new_name):
         self.data.name = new_name
+
+    def copy(self, name):
+        new = self._create_copy(name)
+        for orig, copied in zip(self.settings, new.settings):
+            copied.set_value(orig.value)
+        new.data.steps = self.data.steps[:]
+        return new
 
 
 class TestCaseController(_WithStepsCotroller):
@@ -279,6 +289,9 @@ class TestCaseController(_WithStepsCotroller):
                 TimeoutController(self, self._test.timeout),
                 TemplateController(self, self._test.template)]
 
+    def _create_copy(self, name):
+        return TestCaseController(self._parent, TestCase(self._test.parent, name))
+
 
 class UserKeywordController(_WithStepsCotroller):
     _populator = UserKeywordPopulator
@@ -293,6 +306,10 @@ class UserKeywordController(_WithStepsCotroller):
                 TimeoutController(self, self._kw.timeout,),
                 # TODO: Wrong class, works right though
                 ReturnValueController(self, self._kw.return_,)]
+
+    def _create_copy(self, name):
+        return UserKeywordController(self._parent,
+                                     UserKeyword(self._kw.parent, name))
 
 
 class ImportSettingsController(_TableController):

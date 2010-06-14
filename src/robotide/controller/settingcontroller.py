@@ -38,7 +38,6 @@ class _SettingController(object):
     def __init__(self, parent_controller, data):
         self._parent = parent_controller
         self._data = data
-        self.datafile = parent_controller.datafile
         self.label = self._label(data)
         self._init(data)
 
@@ -47,6 +46,10 @@ class _SettingController(object):
         if label.startswith('['):
             return label[1:-1]
         return label
+
+    @property
+    def datafile(self):
+        return self._parent.datafile
 
     @property
     def is_set(self):

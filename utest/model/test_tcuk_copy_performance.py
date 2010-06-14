@@ -16,38 +16,51 @@ import time
 import unittest
 
 from robotide.robotapi import TestCaseFile
+from robotide.controller.filecontroller import TestCaseFileController
 
 from resources import COMPLEX_SUITE_PATH
+from robot.utils.asserts import assert_equals, assert_true
 
 
-class PerformanceTest(unittest.TestCase):
-    """Test for performance issue 276"""
+class TestCaseAndUserKeywordCopyingTest(unittest.TestCase):
+    controller = TestCaseFileController(TestCaseFile(source=COMPLEX_SUITE_PATH))
 
-    def setUp(self):
-        self.suite = TestCaseFile(COMPLEX_SUITE_PATH)
-        self.start_time = time.time()
+    def test_test_case_copy(self):
+        test = self.controller.tests[0]
+        copy = test.copy('New Name')
+        assert_equals(copy.name, 'New Name')
+        for orig, copied in zip(test.settings, copy.settings):
+            assert_equals(orig.value, copied.value)
+            assert_true(copied is not orig)
+        assert_equals(test.steps, copy.steps)
+        assert_true(test.steps is not copy.steps)
 
-    def run_copy_test(self, collection):
-        self._test_copy(collection, 10)
-        self._test_copy(collection, 200)
+    def test_keyword_copy(self):
+        test = self.controller.keywords[0]
+        copy = test.copy('New Name')
+        assert_equals(copy.name, 'New Name')
+        for orig, copied in zip(test.settings, copy.settings):
+            assert_equals(orig.value, copied.value)
+            assert_true(copied is not orig)
+        assert_equals(test.steps, copy.steps)
+        assert_true(test.steps is not copy.steps)
 
-    def _test_copy(self, collection, count):
+    def test_test_copy_performance(self):
+        self._run_copy_test(self.controller.tests[0])
+
+    def test_keyword_copy_performance(self):
+        self._run_copy_test(self.controller.keywords[0])
+
+    def _run_copy_test(self, item):
+        self._test_copy(item, 10)
+        self._test_copy(item, 200)
+
+    def _test_copy(self, item, count):
+        start_time = time.time()
         for i in range(0, count):
-            collection.copy(collection[0], str(i))
-        self.assertTrue(time.time() < (self.start_time + 2), 
+            item.copy(str(i))
+        self.assertTrue(time.time() < (start_time + 2), 
                         "Copy operation takes too long time")
-
-
-class TestTestCaseCopyPerformance(PerformanceTest):
-
-    def test_copy_performance(self):
-        self.run_copy_test(self.suite.tests)
-
-
-class TestUserKeywordCopyPerformance(PerformanceTest):
-
-    def test_copy_performance(self):
-        self.run_copy_test(self.suite.keywords)
 
 
 if __name__ == '__main__':
