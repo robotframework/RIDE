@@ -22,6 +22,7 @@ from robotide import utils
 
 
 def FileWriter(path, output=None, name=None):
+    # FIXME: move opening output to serializer
     if not output:
         output = open(path, 'wb')
     ext = os.path.splitext(path)[1].lower()

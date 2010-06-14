@@ -169,16 +169,17 @@ class RideFrame(wx.Frame, RideEventHandler):
     def save(self, controller=None):
         files_without_format = self._application.get_files_without_format(controller)
         for f in files_without_format:
-            self._show_format_dialog_for(f.data)
+            self._show_format_dialog_for(f)
         self._application.save(controller)
         self.tree.unset_dirty()
 
-    def _show_format_dialog_for(self, file_without_format):
+    def _show_format_dialog_for(self, file_controller_without_format):
+        # FIXME: implement source-method and set_format to controller.
         help = 'Please provide format of initialization file for directory suite\n"%s".' %\
-                file_without_format.source
+                file_controller_without_format.source
         dlg = ChangeFormatDialog(self, 'HTML', help_text=help)
         if dlg.ShowModal() == wx.ID_OK:
-            file_without_format.set_format(dlg.get_format())
+            file_controller_without_format.set_format(dlg.get_format())
         dlg.Destroy()
 
     def OnExit(self, event):

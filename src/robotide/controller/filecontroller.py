@@ -83,6 +83,9 @@ class _DataController(object):
     def has_format(self):
         return True
 
+    def get_source(self):
+        return self.data.source
+
 class TestDataDirectoryController(_DataController):
 
     def _children(self, data):
@@ -90,6 +93,9 @@ class TestDataDirectoryController(_DataController):
 
     def has_format(self):
         return self.dirty and not self.data.initfile
+
+    def get_source(self):
+        return self.data.initfile
 
 class TestCaseFileController(_DataController):
 
