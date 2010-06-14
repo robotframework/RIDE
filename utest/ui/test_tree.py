@@ -83,7 +83,7 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         res = ResourceFile()
         res.source = 'resource.txt'
         res.keyword_table.keywords.append(UserKeyword(res, 'Resource Keyword'))
-        model = DataModel(None)
+        model = ChiefController(None)
         model.data = TestDataDirectoryController(suite)
         model.resources.append(ResourceFileController(res))
         return model
