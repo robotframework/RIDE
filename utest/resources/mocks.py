@@ -75,6 +75,15 @@ class MockSerializer(object):
         self.record.append('KW: %s' % kw.name)
 
 
+class FakeLoadObserver(object):
+
+    def notify(self):
+        pass
+
+    def finished(self):
+        self.finished = True
+
+
 class FakeResource(ResourceFile):
     def __init__(self, name='Fake Resource', doc='', path='fake/resource.html'):
         data = _EmptyResourceFile(path)
