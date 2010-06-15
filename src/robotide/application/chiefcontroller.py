@@ -12,7 +12,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import os
 import time
 from threading import Thread
 
@@ -20,9 +19,9 @@ from robotide import context
 from robotide.controller import DataController, ResourceFileController
 from robotide.controller.filecontroller import TestCaseFileController
 from robotide.errors import DataError, SerializationError
-from robotide.robotapi import TestDataDirectory, TestCaseFile
 from robotide.writer.serializer import Serializer
 from robot.parsing.model import TestData
+from robotide.publish.messages import RideOpenResource
 
 
 class ChiefController(object):
@@ -37,18 +36,24 @@ class ChiefController(object):
         return self._controller
 
     def load_data(self, load_observer, path):
-        datafile = self.load_datafile(load_observer, path)
-        if datafile:
-            self._controller = DataController(datafile)
-            self.resources = [ResourceFileController(r) for r
-                              in self._namespace.get_resources(datafile)]
-        else:
-            resource = self.open_resource(path)
+        try:
+            self.load_datafile(load_observer, path)
+        except DataError:
+            resource = self.load_resource(path)
             if not resource:
                 raise DataError("Given file '%s' is not a valid Robot Framework "
                                 "test case or resource file" % path)
 
     def load_datafile(self, load_observer, path):
+        datafile = self._load_datafile(load_observer, path)
+        if datafile:
+            self._controller = DataController(datafile)
+            self.resources = [ResourceFileController(r) for r
+                              in self._namespace.get_resources(datafile)]
+        else:
+            raise DataError()
+
+    def _load_datafile(self, load_observer, path):
         loader = _DataLoader(path)
         loader.start()
         while loader.isAlive():
@@ -61,15 +66,15 @@ class ChiefController(object):
     def suite(self):
         return self._controller.data if self._controller else None
 
-    def open_resource(self, path, datafile=None):
+    def load_resource(self, path, datafile=None):
         resource = self._namespace.get_resource(path)
         if not resource:
-            return None
+            raise DataError()
         controller = ResourceFileController(resource)
+        RideOpenResource(path=resource.source).publish()
         if controller not in self.resources:
             self.resources.append(controller)
-            return controller
-        return None
+        return controller
 
     def _resolve_imported_resources(self, datafile):
         resources = datafile.get_resources()
@@ -104,7 +109,6 @@ class ChiefController(object):
         return False
 
     def _is_suite_dirty(self, suite):
-        return False
         if suite.dirty:
             return True
         for s in suite.suites:
@@ -165,6 +169,9 @@ class ChiefController(object):
         for controller in parent_controller.children:
             ret.extend(self._get_filecontroller_and_all_child_filecontrollers(controller))
         return ret
+
+    def unsaved_modifications(self):
+        return self.is_dirty()
 
 
 class _DataLoader(Thread):

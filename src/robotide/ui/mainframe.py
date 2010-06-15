@@ -25,6 +25,7 @@ from filedialogs import NewProjectDialog, NewResourceDialog, ChangeFormatDialog
 from pluginmanager import PluginManager
 from tree import Tree
 from notebook import NoteBook
+from robotide.ui.progress import LoadProgressObserver
 
 
 _menudata = """
@@ -54,11 +55,12 @@ class RideFrame(wx.Frame, RideEventHandler):
                             lambda self, path: SETTINGS.set('default directory', path))
 
 
-    def __init__(self, application):
+    def __init__(self, application, controller):
         wx.Frame.__init__(self, parent=None, title='RIDE',
                           pos=SETTINGS['mainframe position'],
                           size=SETTINGS['mainframe size'])
         self._application = application
+        self._controller = controller
         self._init_ui()
         self._plugin_manager = PluginManager(self.notebook)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
@@ -115,8 +117,12 @@ class RideFrame(wx.Frame, RideEventHandler):
         dlg.Destroy()
 
     def OnOpen(self, event):
-        if not self._application.ok_to_open_new():
-            return
+        if self._controller.unsaved_modifications():
+            ret = wx.MessageBox('There are unsaved modifications.\n'
+                                'Do you want to proceed without saving?',
+                                'Warning', wx.ICON_WARNING|wx.YES_NO)
+            if ret != wx.YES:
+                return
         path = self._get_path()
         if path:
             self.open_suite(path)
@@ -124,7 +130,9 @@ class RideFrame(wx.Frame, RideEventHandler):
     def OnOpenResource(self, event):
         path = self._get_path()
         if path:
-            self._application.open_resource(path)
+            resource = self._controller.load_resource(path)
+            if resource:
+                self.tree.add_resource(resource)
 
     def _get_path(self):
         wildcard = ('All files|*.*|Robot data (*.html)|*.*htm*|'
@@ -140,14 +148,11 @@ class RideFrame(wx.Frame, RideEventHandler):
         return path
 
     def open_suite(self, path):
-        self._application.open_suite(path)
-        self.tree.populate(self._application.model)
+        self._controller.load_datafile(LoadProgressObserver(self, path), path)
+        self.tree.populate(self._controller)
 
     def refresh_datafile(self, item, event):
         self.tree.refresh_datafile(item, event)
-
-    def add_resource(self, resource):
-        self.tree.add_resource(resource)
 
     def OnOpenDirectory(self, event):
         if not self._application.ok_to_open_new():

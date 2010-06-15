@@ -18,8 +18,6 @@ import wx
 
 from robotide.robotapi import ROBOT_VERSION
 from robotide.namespace import Namespace
-from robotide.publish import RideOpenResource
-from robotide.errors import DataError
 from robotide.ui import RideFrame, LoadProgressObserver
 from robotide import context
 
@@ -37,16 +35,24 @@ class RIDE(wx.App):
 
     def OnInit(self):
         self._check_robot_version()
-        self.frame = RideFrame(self)
         self.namespace = Namespace()
         self._controller = ChiefController(self.namespace)
+        self.frame = RideFrame(self, self._controller)
         self._editor_provider = EditorProvider()
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),
                                            context.get_core_plugins())
         self._plugin_loader.enable_plugins()
-        self.open_suite(self._initial_path)
+        self._load_data()
         self.frame.tree.populate(self.model)
         return True
+
+    def _check_robot_version(self):
+        if ROBOT_VERSION < '2.5':
+            context.LOG.error('You are using an old version (%s) of Robot Framework.\n\n'
+                              'RIDE does not work correctly with this version. '
+                              'Please upgrade to Robot Framework 2.5 or newer from\n'
+                              'http://robotframework.org/.' % ROBOT_VERSION)
+            sys.exit(1)
 
     @property
     def model(self):
@@ -56,33 +62,13 @@ class RIDE(wx.App):
         return [context.SETTINGS.get_path('plugins'),
                 os.path.join(context.SETTINGS['install root'], 'site-plugins')]
 
+    def _load_data(self):
+        if self._initial_path:
+            observer = LoadProgressObserver(self.frame, self._initial_path)
+            self._controller.load_data(observer, self._initial_path)
+
     def get_plugins(self):
         return self._plugin_loader.plugins
-
-    def _check_robot_version(self):
-        if ROBOT_VERSION < '2.1':
-            context.LOG.error('You are using an old version (%s) of Robot Framework.\n\n'
-                              'RIDE does not work correctly with this version. '
-                              'Please upgrade to Robot Framework 2.1 or newer from\n'
-                              'http://robotframework.org/.' % ROBOT_VERSION)
-            sys.exit(1)
-
-    def open_suite(self, path):
-        if path:
-            self._controller.load_data(LoadProgressObserver(self.frame, path), path)
-
-    def open_resource(self, path, datafile=None):
-        try:
-            resource = self.model.open_resource(path, datafile)
-        except DataError, err:
-            context.LOG.error(str(err))
-            resource = None
-        if resource:
-            RideOpenResource(path=resource.source).publish()
-            self.frame.add_resource(resource)
-
-    def import_new_resource(self, datafile, path):
-        self.open_resource(path, datafile)
 
     def ok_to_exit(self):
         if self.model.is_dirty():

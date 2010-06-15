@@ -153,8 +153,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         snode = self._render_datafile(self._get_datafile_node(parent.data), suite)
         self.SelectItem(snode)
 
-    def add_resource(self, resource):
-        self._render_datafile(self._resource_root, resource)
+    def add_resource(self, controller):
+        self._render_datafile(self._resource_root, controller)
 
     def add_test(self, parent_node, test):
         self._add_dataitem(parent_node, test, lambda item: item.is_user_keyword)
