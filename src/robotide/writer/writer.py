@@ -22,17 +22,13 @@ from robot.parsing.settings import Documentation
 from robotide import utils
 
 
-def FileWriter(path, output=None, name=None):
-    # FIXME: move opening output to serializer
-    if not output:
-        output = open(path, 'wb')
+def FileWriter(path, output, name=None):
     ext = os.path.splitext(path)[1].lower()
     try:
         Writer = {'.tsv': TsvFileWriter, '.txt': TxtFileWriter}[ext]
+        return Writer(output)
     except KeyError:
         return HtmlFileWriter(output, path, name)
-    else:
-        return Writer(output)
 
 
 class _WriterHelper(object):
@@ -208,7 +204,7 @@ class TxtFileWriter(_WriterHelper):
             self._output.write('    ')
         self._output.write(text + os.linesep)
 
-# FIXME: Handle name and do tests
+
 class HtmlFileWriter(_WriterHelper):
     _setting_titles = ['Setting', 'Value']
     _variable_titles = ['Variable', 'Value']

@@ -7,9 +7,18 @@ class Serializer(object):
         self._output = output
 
     def serialize(self, controller):
-        writer = FileWriter(controller.source, self._output, name=controller.name)
+        output = self._get_output(controller)
+        writer = FileWriter(controller.source, output, name=controller.name)
         writer_serializer = _WriterSerializer(writer)
         writer_serializer.serialize(controller.data)
+        self._close_output(writer)
+
+    def _get_output(self, controller):
+        if self._output:
+            return self._output
+        return open(controller.source, 'wb')
+
+    def _close_output(self, writer):
         if not self._output:
             writer.close()
 

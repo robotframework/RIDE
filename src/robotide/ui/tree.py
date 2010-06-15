@@ -200,8 +200,6 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def unset_dirty(self):
         for node in self._datafile_nodes:
             text = self.GetItemText(node)
-            # FIXME: do not access private fields. Refactor.
-            # - tree will keep a reference to controllors!
             handler = self._get_handler(node)
             if text.startswith('*') and not handler.controller.dirty:
                 self.SetItemText(node, text[1:])
