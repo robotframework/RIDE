@@ -92,7 +92,7 @@ class ChiefController(object):
             controller_list = [controller]
         else:
             controller_list = self._get_all_controllers()
-        return [ dc for dc in controller_list if not dc.has_format() ]
+        return [ dc for dc in controller_list if dc.dirty and not dc.has_format() ]
 
     def get_root_suite_dir_path(self):
         return self.suite.get_dir_path()
@@ -149,7 +149,7 @@ class ChiefController(object):
 
     def _serialize_file(self, controller):
         serializer = Serializer()
-        serializer.serialize(controller.data)
+        serializer.serialize(controller)
         controller.unmark_dirty()
 
     def _get_files_to_serialize(self, datafile):

@@ -201,9 +201,9 @@ class TestDataDirectoryControllerTest(unittest.TestCase):
         ctrl = TestDataDirectoryController(TestDataDirectory())
         assert_false(ctrl.has_format())
         ctrl.mark_dirty()
-        assert_true(ctrl.has_format())
-        ctrl.data.initfile = '/tmp/__init__.html'
         assert_false(ctrl.has_format())
+        ctrl.data.initfile = '/tmp/__init__.html'
+        assert_true(ctrl.has_format())
 
 
 class TestCaseControllerTest(unittest.TestCase):

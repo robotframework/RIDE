@@ -6,10 +6,10 @@ class Serializer(object):
     def __init__(self, output=None):
         self._output = output
 
-    def serialize(self, datafile):
-        writer = FileWriter(datafile.source, self._output, name=datafile.name)
+    def serialize(self, controller):
+        writer = FileWriter(controller.source, self._output, name=controller.name)
         writer_serializer = _WriterSerializer(writer)
-        writer_serializer.serialize(datafile)
+        writer_serializer.serialize(controller.data)
         if not self._output:
             writer.close()
 

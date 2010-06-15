@@ -95,7 +95,8 @@ class _DataController(object):
     def has_format(self):
         return True
 
-    def get_source(self):
+    @property
+    def source(self):
         return self.data.source
 
 
@@ -105,7 +106,7 @@ class TestDataDirectoryController(_DataController):
         return [DataController(child) for child in data.children]
 
     def has_format(self):
-        return self.dirty and not self.data.initfile
+        return self.data.initfile is not None
 
     def add_suite(self, source):
         if os.path.isdir(source):
@@ -116,7 +117,8 @@ class TestDataDirectoryController(_DataController):
         self.data.children.append(d)
         return DataController(d)
 
-    def get_source(self):
+    @property
+    def source(self):
         return self.data.initfile
 
 
