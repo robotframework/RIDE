@@ -31,6 +31,8 @@ import os
 import wxversion
 wxversion.select('2.8')
 
+# TODO: Remove when robot has been released with this patch
+import robot_patch
 from robotide.errors import DataError
 
 
