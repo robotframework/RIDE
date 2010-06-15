@@ -1,5 +1,4 @@
 import unittest
-from robot.parsing import TestCaseFile
 from robot.parsing.settings import Fixture, Documentation, Timeout, Tags, Return
 
 from robot.utils.asserts import assert_equals, assert_true, assert_false
@@ -206,15 +205,32 @@ class TestDataDirectoryControllerTest(unittest.TestCase):
         ctrl.data.initfile = '/tmp/__init__.html'
         assert_false(ctrl.has_format())
 
+
 class TestCaseControllerTest(unittest.TestCase):
 
+    def setUp(self):
+        self.tcf = TestCaseFile()
+        self.testcase = self.tcf.testcase_table.add('Test')
+        self.tcf.testcase_table.add('Another Test')
+        tctablectrl = TestCaseTableController(TestCaseFileController(self.tcf),
+                                              self.tcf.testcase_table)
+        self.ctrl = TestCaseController(tctablectrl, self.testcase)
+
     def test_creation(self):
-        tcf = TestCaseFile()
-        testcase = tcf.testcase_table.add('Test')
-        ctrl = TestCaseController(TestCaseTableController(TestCaseFileController(tcf), []), testcase)
-        for st in ctrl.settings:
+        for st in self.ctrl.settings:
             assert_true(st is not None)
-        assert_true(ctrl.datafile is tcf, ctrl.datafile)
+        assert_true(self.ctrl.datafile is self.tcf, self.ctrl.datafile)
+
+    def test_rename_validation(self):
+        assert_false(self.ctrl.validate_name('This name is valid'))
+        assert_false(self.ctrl.validate_name('Test'))
+        assert_equals(self.ctrl.validate_name('Another test'),
+                      'Test case with this name already exists.')
+
+    def test_rename(self):
+        self.ctrl.rename('Foo Barness')
+        assert_equals(self.ctrl.name, 'Foo Barness')
+        assert_true(self.ctrl.dirty)
 
 
 class UserKeywordControllerTest(unittest.TestCase):
@@ -223,7 +239,10 @@ class UserKeywordControllerTest(unittest.TestCase):
         self.tcf = TestCaseFile()
         uk = self.tcf.keyword_table.add('UK')
         uk.add_step(['No Operation'])
-        self.ctrl = UserKeywordController(KeywordTableController(TestCaseFileController(self.tcf), []), uk)
+        self.tcf.keyword_table.add('UK 2')
+        tablectrl = KeywordTableController(TestCaseFileController(self.tcf),
+                                           self.tcf.keyword_table)
+        self.ctrl = UserKeywordController(tablectrl, uk)
 
     def test_creation(self):
         for st in self.ctrl.settings:
@@ -234,6 +253,13 @@ class UserKeywordControllerTest(unittest.TestCase):
     def test_dirty(self):
         self.ctrl.mark_dirty()
         assert_true(self.ctrl.dirty)
+
+    def test_rename_validation(self):
+        assert_false(self.ctrl.validate_name('This name is valid'))
+        assert_false(self.ctrl.validate_name('UK'))
+        assert_equals(self.ctrl.validate_name('UK 2'),
+                      'User keyword with this name already exists.')
+
 
     def test_step_parsing(self):
         self.ctrl.parse_steps_from_rows([['Foo']])
@@ -289,3 +315,7 @@ class VariablesControllerTest(unittest.TestCase):
         self.ctrl.add_variable('${blaa}', 'value')
         assert_true(self.ctrl.dirty)
         assert_equals(self.tcf.variable_table.variables[0].name, '${blaa}')
+
+
+if __name__ == "__main__":
+    unittest.main()
