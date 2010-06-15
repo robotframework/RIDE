@@ -28,8 +28,6 @@ except ImportError:
     from wx.lib.mixins import treemixin
 
 
-
-
 tree_actions ="""
 [Navigate]
 !Go &Back | Go back to previous location in tree | Alt-Left | ART_GO_BACK
@@ -522,15 +520,15 @@ class _TestOrUserKeywordHandler(_ActionHandler):
         # new_name is empty also when the value is not changed
         if not new_name.strip():
             return False
-        msg = self._datalist.validate_name(new_name, self.item.name)
+        msg = self.controller.validate_name(new_name)
         if msg:
             wx.MessageBox(msg, 'Validation Error', style=wx.ICON_ERROR)
             return False
-        self.item.rename(new_name)
+        self.controller.rename(new_name)
         return True
 
     def OnCopy(self, event):
-        dlg = self._dialog_class(self.item.datafile, self.item)
+        dlg = self._dialog_class(self.controller, self.item)
         if dlg.ShowModal() == wx.ID_OK:
             copied = self._datalist.copy(self.item, dlg.get_value())
             self._add_copy_to_tree(self._tree.GetItemParent(self._node), copied)

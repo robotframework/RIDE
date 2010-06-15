@@ -13,15 +13,15 @@
 #  limitations under the License.
 
 import os
-import copy
 
 from robot.parsing.tablepopulators import UserKeywordPopulator, TestCasePopulator
 
 from robotide.robotapi import (TestDataDirectory, TestCaseFile, DataRow,
                                is_list_var, is_scalar_var)
 from robotide.controller.settingcontroller import (DocumentationController,
-        FixtureController, TagsController, TimeoutController, TemplateController,
-        ArgumentsController, MetadataController, ImportController, ReturnValueController)
+        FixtureController, TagsController, TimeoutController,
+        TemplateController, ArgumentsController, MetadataController,
+        ImportController, ReturnValueController)
 from robotide import utils
 from robot.parsing.model import TestCase, UserKeyword
 
@@ -217,6 +217,13 @@ class TestCaseTableController(_TableController):
     def new(self, name):
         return TestCaseController(self, self._table.add(name))
 
+    def validate_name(self, test, newname):
+        for t in self._table:
+            if t != test and utils.eq(t.name, newname):
+                return 'Test case with this name already exists.'
+        return None
+
+
 
 class KeywordTableController(_TableController):
     def __iter__(self):
@@ -227,6 +234,12 @@ class KeywordTableController(_TableController):
 
     def new(self, name):
         return UserKeywordController(self, self._table.add(name))
+
+    def validate_name(self, keyword, newname):
+        for uk in self._table:
+            if uk != keyword and utils.eq(uk.name, newname):
+                return 'User keyword with this name already exists.'
+        return None
 
 
 class _WithStepsCotroller(object):
@@ -265,6 +278,7 @@ class _WithStepsCotroller(object):
 
     def rename(self, new_name):
         self.data.name = new_name
+        self.mark_dirty()
 
     def copy(self, name):
         new = self._create_copy(name)
@@ -272,6 +286,9 @@ class _WithStepsCotroller(object):
             copied.set_value(orig.value)
         new.data.steps = self.data.steps[:]
         return new
+
+    def validate_name(self, newname):
+        return self._parent.validate_name(self.data, newname)
 
 
 class TestCaseController(_WithStepsCotroller):

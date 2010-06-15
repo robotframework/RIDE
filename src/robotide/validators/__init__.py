@@ -153,13 +153,13 @@ class _NameValidator(_AbstractValidator):
 class TestCaseNameValidator(_NameValidator):
 
     def _validate(self, name):
-        return self._controller.validate_test_name(name)
+        return self._controller.validate_name(name)
 
 
 class UserKeywordNameValidator(_NameValidator):
 
     def _validate(self, name):
-        return self._controller.validate_keyword_name(name)
+        return self._controller.validate_name(name)
 
 
 class ScalarVariableNameValidator(_NameValidator):
