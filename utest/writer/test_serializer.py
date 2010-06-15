@@ -1,12 +1,19 @@
+import StringIO
+import unittest
+import os
+
 from robot.parsing.model import TestCaseFile, ResourceFile
 from robot.utils.asserts import assert_equals, fail
 from robotide.controller.filecontroller import ResourceFileController, \
     TestCaseFileController
 from robotide.writer.serializer import Serializer, _WriterSerializer
 from robotide.writer.writer import HtmlFileWriter
-import StringIO
-import unittest
 
+
+DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]),
+                        '..', 'resources', 'robotdata')
+GOLDEN_HTML_FILE = os.path.normpath(os.path.join(DATAPATH, 'golden',
+                                                   'tests.html'))
 
 
 def assert_repr(first, other):
@@ -203,25 +210,18 @@ My Test Case\t[Documentation]\tThis is a long comment that spans several columns
 
 class TestHTMLSerialization(unittest.TestCase, _TestSerializer):
 
-    def setUp(self):
-        self.html_rf = self.get_resource_file()
-        self.html_rf.source = '/tmp/not_real_path/rf.html'
-        self.html_tcf = self.get_test_case_file()
-        self.html_tcf.source = '/tmp/not_real_path/tcf.html'
+    def test_serializer_with_html_testcase_file(self):
+        file = open(GOLDEN_HTML_FILE, 'r')
+        original = unicode(file.read(),'UTF-8')
+        file.close()
+        tcf = TestCaseFile(source=GOLDEN_HTML_FILE)
+        tcf.source = '/tmp/not_real_path/tests.html'
+        output = StringIO.StringIO()
+        writer = HtmlFileWriter(output, name=tcf.name)
+        _WriterSerializer(writer).serialize(tcf)
+        writer.close()
+        assert_equals(writer._content, original)
 
-    def test_serializer_with_html_resource_file(self):
-#        output = StringIO.StringIO()
-#        writer = HtmlFileWriter(output, path=None)
-#        _WriterSerializer(writer).serialize(self.html_rf)
-#        assert_equals(writer._content, 'd')
-        fail('HTML tests not implemented yet.')
-
-#    def test_serializer_with_html_testcase_file(self):
-#        output = StringIO.StringIO()
-#        writer = HtmlFileWriter(output, path=None)
-#        _WriterSerializer(writer).serialize(self.html_tcf)
-#        assert_equals(writer._content, 'd')
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

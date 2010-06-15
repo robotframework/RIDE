@@ -14,6 +14,7 @@
 
 import csv
 import os
+import re
 import template
 
 from StringIO import StringIO
@@ -213,6 +214,7 @@ class HtmlFileWriter(_WriterHelper):
     _variable_titles = ['Variable', 'Value']
     _testcase_titles = ['Test Case', 'Action', 'Arguments']
     _keyword_titles = ['Keyword', 'Action', 'Arguments']
+    compiled_regexp = re.compile(r'(\\+)n')
 
     def __init__(self, output, path=None, name=None):
         self._content = template.Template(path, name)
@@ -267,9 +269,18 @@ class HtmlFileWriter(_WriterHelper):
             for i, cell in enumerate(row):
                 if i != 0:
                     cell = utils.html_escape(cell)
+                cell = self._add_br_to_newlines(cell)
                 attrs = self._get_attrs(i, len(row), colspan)
                 self._writer.element('td', cell, attrs, escape=False)
             self._writer.end('tr')
+
+    def _add_br_to_newlines(self, input):
+        def replacer(match):
+            blashes = len(match.group(1))
+            if blashes % 2 == 1:
+                return '%s<br>\n' % match.group()
+            return match.group()
+        return self.compiled_regexp.sub(replacer, input)
 
     def _get_attrs(self, index, rowlength, colspan=True):
         if index == 0:
