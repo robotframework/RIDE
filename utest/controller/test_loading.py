@@ -1,27 +1,18 @@
 import unittest
-from robot.utils.asserts import assert_true, assert_raises
+from robot.utils.asserts import assert_true, assert_raises, assert_raises_with_msg
 
-from robotide.application.chiefcontroller import ChiefController
+from robotide.controller import ChiefController
 from robotide.namespace import Namespace
 
-from resources import MINIMAL_SUITE_PATH, RESOURCE_PATH
+from resources import MINIMAL_SUITE_PATH, RESOURCE_PATH, FakeLoadObserver
 from robot.errors import DataError
-
-
-class _FakeObserver(object):
-
-    def notify(self):
-        pass
-
-    def finished(self):
-        self.finished = True
 
 
 class TestDataLoading(unittest.TestCase):
 
     def setUp(self):
         self.ctrl = ChiefController(Namespace())
-        self.load_observer = _FakeObserver()
+        self.load_observer = FakeLoadObserver()
 
     def test_loading_suite(self):
         self._load(MINIMAL_SUITE_PATH)
@@ -37,6 +28,15 @@ class TestDataLoading(unittest.TestCase):
     def _load(self, path):
         self.ctrl.load_data(self.load_observer, path)
         assert_true(self.load_observer.finished)
+
+    def test_loading_invalid_datafile(self):
+        assert_raises_with_msg(DataError, 'Invalid data file: invalid.',
+                               self.ctrl.load_datafile, FakeLoadObserver(),
+                               'invalid')
+
+    def test_loading_invalid_resource(self):
+        assert_raises_with_msg(DataError, 'Invalid resource file: invalid.',
+                               self.ctrl.load_resource, 'invalid')
 
 
 if __name__ == "__main__":
