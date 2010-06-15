@@ -104,7 +104,7 @@ class Namespace(object):
         return None
 
     def keyword_details(self, datafile, name):
-        kws = self.retriever.get_keywords(datafile)
+        kws = self.retriever.get_keywords_from(datafile)
         for k in kws:
             if eq(k.name, name):
                 return k.details
