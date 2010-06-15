@@ -13,3 +13,4 @@
 #  limitations under the License.
 
 from filecontroller import DataController, ResourceFileController
+from chiefcontroller import ChiefController

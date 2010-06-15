@@ -18,10 +18,10 @@ import wx
 
 from robotide.robotapi import ROBOT_VERSION
 from robotide.namespace import Namespace
+from robotide.controller import ChiefController
 from robotide.ui import RideFrame, LoadProgressObserver
 from robotide import context
 
-from chiefcontroller import ChiefController
 from pluginloader import PluginLoader
 from editorprovider import EditorProvider
 
