@@ -43,7 +43,10 @@ class ChiefController(object):
             self.resources = [ResourceFileController(r) for r
                               in self._namespace.get_resources(datafile)]
         else:
-            self.load_resource(path)
+            resource = self.open_resource(path)
+            if not resource:
+                raise DataError("Given file '%s' is not a valid Robot Framework "
+                                "test case or resource file" % path)
 
     def load_datafile(self, load_observer, path):
         loader = _DataLoader(path)
@@ -53,13 +56,6 @@ class ChiefController(object):
             load_observer.notify()
         load_observer.finished()
         return loader.datafile
-
-    def load_resource(self, path):
-        try:
-            self.open_resource(path)
-        except DataError:
-            raise DataError("Given file '%s' is not a valid Robot Framework "
-                            "test case or resource file" % path)
 
     @property
     def suite(self):
