@@ -21,30 +21,34 @@ This should be removed when next version of Robot is released.
 from robot.parsing.settings import Timeout, _Setting, Fixture, Template
 
 
-def _timeout_data_as_list(self):
-    ret = [self.setting_name]
-    if self.value and self.message:
-        ret.extend([self.value, self.message])
-    elif self.value:
-        ret.append(self.value)
-    elif self.message:
-        ret.extend(['', self.message])
-    return ret
-
 def _setting_data_as_list(self):
     ret = [self.setting_name]
     if self.value:
         ret.extend(self.value)
     return ret
 
+def _extend_from_third_position(self, ret, tail):
+    if len(ret) == 2:
+        ret.extend(tail)
+    elif len(ret) == 1:
+        ret.extend([''] + tail)
+    else:
+        raise ValueError('Illegal length %d' % len(ret))
+
+def _timeout_data_as_list(self):
+    ret = [self.setting_name]
+    if self.value:
+        ret.append(self.value)
+    if self.message:
+        self._extend_from_third_position(ret, [self.message])
+    return ret
+
 def _fixture_data_as_list(self):
     ret = [self.setting_name]
-    if self.name and self.args:
-        ret.extend([self.name] + self.args)
-    elif self.name:
+    if self.name:
         ret.append(self.name)
-    elif self.args:
-        ret.extend(['']+self.args)
+    if self.args:
+        self._extend_from_third_position(ret, self.args)
     return ret
 
 def _template_data_as_list(self):
@@ -53,7 +57,8 @@ def _template_data_as_list(self):
         ret.append(self.value)
     return ret
 
-Timeout._data_as_list = _timeout_data_as_list
 _Setting._data_as_list = _setting_data_as_list
+_Setting._extend_from_third_position = _extend_from_third_position
+Timeout._data_as_list = _timeout_data_as_list
 Fixture._data_as_list = _fixture_data_as_list
 Template._data_as_list = _template_data_as_list
