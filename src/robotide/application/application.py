@@ -68,7 +68,8 @@ class RIDE(wx.App):
             sys.exit(1)
 
     def open_suite(self, path):
-        self._controller.load_data(LoadProgressObserver(self.frame, path), path)
+        if path:
+            self._controller.load_data(LoadProgressObserver(self.frame, path), path)
 
     def open_resource(self, path, datafile=None):
         try:
