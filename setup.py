@@ -31,7 +31,7 @@ def main():
           url          = 'http://code.google.com/p/robotframework-ride/',
           package_dir  = {'' : 'src'},
           packages     = ['robotide', 'robotide.action','robotide.application',
-                          'robotide.context', 'robotide.editor','robotide.model',
+                          'robotide.context', 'robotide.editor','robotide.controller',
                           'robotide.namespace', 'robotide.pluginapi', 'robotide.publish',
                           'robotide.run','robotide.spec', 'robotide.ui', 'robotide.utils',
                           'robotide.validators', 'robotide.writer',
