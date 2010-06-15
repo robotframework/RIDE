@@ -23,10 +23,12 @@ from robot.parsing.settings import Timeout, _Setting, Fixture, Template
 
 def _timeout_data_as_list(self):
     ret = [self.setting_name]
-    if self.value:
+    if self.value and self.message:
+        ret.extend([self.value, self.message])
+    elif self.value:
         ret.append(self.value)
-    if self.message:
-        ret.append(self.message)
+    elif self.message:
+        ret.extend(['', self.message])
     return ret
 
 def _setting_data_as_list(self):

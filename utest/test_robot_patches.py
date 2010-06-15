@@ -9,6 +9,9 @@ class Test(unittest.TestCase):
     def test_timeout_patch(self):
         timeout = Timeout('Timeout')
         assert_equals(timeout.as_list(),['Timeout'])
+        timeout.message='boo'
+        assert_equals(timeout.as_list(),['Timeout', '', 'boo'])
+        timeout.message=''
         timeout.value='1 second'
         assert_equals(timeout.as_list(),['Timeout', '1 second'])
         timeout.message='boo'
