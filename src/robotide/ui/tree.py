@@ -166,11 +166,10 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         if not self.IsExpanded(parent_node):
             self._expand_and_render_children(parent_node)
             node = self._get_node_with_label(parent_node, dataitem.name)
-            self.SelectItem(node)
         else:
             index = self._get_insertion_index(parent_node, predicate)
             node = self._create_node_with_handler(parent_node, dataitem, index)
-            self.SelectItem(node)
+        self.SelectItem(node)
         self._mark_dirty(parent_node)
 
     def _get_insertion_index(self, parent_node, predicate):
@@ -491,9 +490,9 @@ class TestDataDirectoryHandler(_ActionHandler):
         dlg.Destroy()
 
     def OnNewUserKeyword(self, event):
-        dlg = UserKeywordNameDialog(self.item)
+        dlg = UserKeywordNameDialog(self.controller)
         if dlg.ShowModal() == wx.ID_OK:
-            kw = self._controller.new_keyword(dlg.get_value())
+            kw = self.controller.new_keyword(dlg.get_value())
             self._tree.add_keyword(self._node, kw)
         dlg.Destroy()
 

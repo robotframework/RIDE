@@ -19,13 +19,13 @@ from robotide.validators import TestCaseNameValidator, UserKeywordNameValidator
 
 class _NameDialog(wx.TextEntryDialog):
 
-    def __init__(self, datafile, test_or_uk=None):
+    def __init__(self, controller, test_or_uk=None):
         initial_value = test_or_uk and test_or_uk.name or ''
         wx.TextEntryDialog.__init__(self, None, '', self._title, initial_value)
         for child in self.GetChildren():
             if isinstance(child, wx.TextCtrl):
                 if self._validator_class:
-                    child.SetValidator(self._validator_class(datafile))
+                    child.SetValidator(self._validator_class(controller))
                 self._text_ctrl = child
 
     def get_value(self):

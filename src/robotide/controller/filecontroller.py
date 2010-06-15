@@ -90,7 +90,9 @@ class _DataController(object):
         self.dirty = False
 
     def new_keyword(self, name):
-        return self.keywords.new(name)
+        kw = self.keywords.new(name)
+        self.mark_dirty()
+        return kw
 
     def has_format(self):
         return True
@@ -145,6 +147,12 @@ class ResourceFileController(_DataController):
     def _children(self, data):
         return []
 
+    def validate_name(self, name):
+        for uk in self.data.keyword_table.keywords:
+            if uk != name and utils.eq(uk.name, name):
+                return 'User keyword with this name already exists.'
+        return None
+
 
 class _TableController(object):
     def __init__(self, parent_controller, table):
@@ -171,6 +179,17 @@ class VariableTableController(_TableController):
     def add_variable(self, name, value):
         self._table.add(name, value)
         self.mark_dirty()
+
+    def delete_variable(self, index):
+        self._table.variables.pop(index)
+        self.mark_dirty()
+
+    def swap(self, ind1, ind2):
+        self._table.variables.insert(ind1, self._table.variables.pop(ind2))
+        self.mark_dirty()
+
+    def var_count(self):
+        return len(self._table.variables)
 
     def validate_scalar_variable_name(self, name):
         return self._validate_name(_ScalarVarValidator(), name)
