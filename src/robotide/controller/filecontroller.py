@@ -215,7 +215,9 @@ class TestCaseTableController(_TableController):
         return TestCaseController(self, self._table.tests[index])
 
     def new(self, name):
-        return TestCaseController(self, self._table.add(name))
+        tc_controller = TestCaseController(self, self._table.add(name))
+        self.mark_dirty()
+        return tc_controller
 
     def validate_name(self, test, newname):
         for t in self._table:

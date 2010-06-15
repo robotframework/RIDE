@@ -37,7 +37,7 @@ class RIDE(wx.App):
         self._check_robot_version()
         self.namespace = Namespace()
         self._controller = ChiefController(self.namespace)
-        self.frame = RideFrame(self, self._controller)
+        self.frame = RideFrame(self, self._controller, context.LOG)
         self._editor_provider = EditorProvider()
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),
                                            context.get_core_plugins())
@@ -78,13 +78,6 @@ class RIDE(wx.App):
                 return False
             if ret == wx.YES:
                 self.save()
-        return True
-
-    def ok_to_open_new(self):
-        if self.model.is_dirty():
-            ret = wx.MessageBox('There are unsaved modifications.\nDo you want to proceed without saving?',
-                                'Warning', wx.ICON_WARNING|wx.YES_NO)
-            return ret == wx.YES
         return True
 
     def get_files_without_format(self, controller=None):

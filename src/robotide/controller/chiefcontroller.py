@@ -51,7 +51,7 @@ class ChiefController(object):
             self.resources = [ResourceFileController(r) for r
                               in self._namespace.get_resources(datafile)]
         else:
-            raise DataError()
+            raise DataError('Invalid data file: %s.' % path)
 
     def _load_datafile(self, load_observer, path):
         loader = _DataLoader(path)
@@ -69,7 +69,7 @@ class ChiefController(object):
     def load_resource(self, path, datafile=None):
         resource = self._namespace.get_resource(path)
         if not resource:
-            raise DataError()
+            raise DataError('Invalid resource file: %s.' % path)
         controller = ResourceFileController(resource)
         RideOpenResource(path=resource.source).publish()
         if controller not in self.resources:
@@ -101,18 +101,18 @@ class ChiefController(object):
         return self.suite.is_directory_suite
 
     def is_dirty(self):
-        if self.data and self._is_suite_dirty(self.data):
+        if self.data and self._is_datafile_dirty(self.data):
             return True
         for res in self.resources:
             if res.dirty:
                 return True
         return False
 
-    def _is_suite_dirty(self, suite):
-        if suite.dirty:
+    def _is_datafile_dirty(self, datafile):
+        if datafile.dirty:
             return True
-        for s in suite.suites:
-            if self._is_suite_dirty(s):
+        for df in datafile.children:
+            if self._is_datafile_dirty(df):
                 return True
         return False
 
