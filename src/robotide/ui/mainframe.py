@@ -92,11 +92,22 @@ class RideFrame(wx.Frame, RideEventHandler):
     def OnClose(self, event):
         SETTINGS['mainframe size'] = self.GetSizeTuple()
         SETTINGS['mainframe position'] = self.GetPositionTuple()
-        if self._application.ok_to_exit():
+        if self._allowed_to_exit():
             RideClosing().publish()
             self.Destroy()
         else:
             wx.CloseEvent.Veto(event)
+
+    def _allowed_to_exit(self):
+        if self._controller.is_dirty():
+            ret = wx.MessageBox('There are unsaved modifications.\n'
+                                'Do you want to save your changes before exiting?',
+                                'Warning', wx.ICON_WARNING|wx.CANCEL|wx.YES_NO)
+            if ret == wx.CANCEL:
+                return False
+            if ret == wx.YES:
+                self.save()
+        return True
 
     def OnNewProject(self, event):
         if not self._application.ok_to_open_new():
@@ -119,15 +130,18 @@ class RideFrame(wx.Frame, RideEventHandler):
         dlg.Destroy()
 
     def OnOpen(self, event):
+        self._check_unsaved_modifications()
+        path = self._get_path()
+        if path:
+            self._with_error_logging(self.open_suite, path)
+
+    def _check_unsaved_modifications(self):
         if self._controller.unsaved_modifications():
             ret = wx.MessageBox('There are unsaved modifications.\n'
                                 'Do you want to proceed without saving?',
                                 'Warning', wx.ICON_WARNING|wx.YES_NO)
-            if ret != wx.YES:
-                return
-        path = self._get_path()
-        if path:
-            self._with_error_logging(self.open_suite, path)
+            return ret == wx.YES
+        return True
 
     def _with_error_logging(self, function, *args):
         try:
@@ -163,13 +177,12 @@ class RideFrame(wx.Frame, RideEventHandler):
         self.tree.refresh_datafile(item, event)
 
     def OnOpenDirectory(self, event):
-        if not self._application.ok_to_open_new():
-            return
-        path = wx.DirSelector(message='Choose a directory containing Robot files',
-                              defaultPath=self._default_dir)
-        if path:
-            self._default_dir = path
-            self.open_suite(path)
+        if self._check_unsaved_modifications():
+            path = wx.DirSelector(message='Choose a directory containing Robot files',
+                                  defaultPath=self._default_dir)
+            if path:
+                self._default_dir = path
+                self.open_suite(path)
 
     def OnSave(self, event):
         self.save(self._get_selected_datafile_controller())

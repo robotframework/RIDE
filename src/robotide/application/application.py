@@ -70,16 +70,6 @@ class RIDE(wx.App):
     def get_plugins(self):
         return self._plugin_loader.plugins
 
-    def ok_to_exit(self):
-        if self.model.is_dirty():
-            ret = wx.MessageBox('There are unsaved modifications.\nDo you want to save your changes before exiting?',
-                                'Warning', wx.ICON_WARNING|wx.CANCEL|wx.YES_NO)
-            if ret == wx.CANCEL:
-                return False
-            if ret == wx.YES:
-                self.save()
-        return True
-
     def get_files_without_format(self, controller=None):
         return self.model.get_files_without_format(controller)
 
