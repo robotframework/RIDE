@@ -87,7 +87,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         return self.tree.get_selected_datafile()
 
     def _get_selected_datafile_controller(self):
-        return self.tree.get_selected_item()
+        return self.tree.get_selected_datafile_controller()
 
     def OnClose(self, event):
         SETTINGS['mainframe size'] = self.GetSizeTuple()
@@ -193,10 +193,10 @@ class RideFrame(wx.Frame, RideEventHandler):
         self.SetStatusText('Saved all files')
 
     def save(self, controller=None):
-        files_without_format = self._application.get_files_without_format(controller)
+        files_without_format = self._controller.get_files_without_format(controller)
         for f in files_without_format:
             self._show_format_dialog_for(f)
-        self._application.save(controller)
+        self._controller.save(controller)
         self.tree.unset_dirty()
 
     def _show_format_dialog_for(self, file_controller_without_format):

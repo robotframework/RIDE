@@ -255,7 +255,7 @@ class Plugin(object):
         If a test case or a keyword is selected, the data file containing the
         selected item is saved.
         """
-        self.__frame.save(self.get_selected_datafile())
+        self.__frame.save(self.tree.get_selected_datafile_controller())
 
     def get_selected_item(self):
         """Returns the item that is currently selected in the tree.

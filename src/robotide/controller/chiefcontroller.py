@@ -116,7 +116,7 @@ class ChiefController(object):
                 return True
         return False
 
-    def serialize(self, controller):
+    def save(self, controller):
         if controller:
             self.serialize_controller(controller)
         else:

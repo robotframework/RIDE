@@ -70,12 +70,6 @@ class RIDE(wx.App):
     def get_plugins(self):
         return self._plugin_loader.plugins
 
-    def get_files_without_format(self, controller=None):
-        return self.model.get_files_without_format(controller)
-
-    def save(self, controller=None):
-        self.model.serialize(controller)
-
     def register_editor(self, object_class, editor_class, activate):
         self._editor_provider.register_editor(object_class, editor_class,
                                               activate)
