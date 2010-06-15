@@ -3,8 +3,8 @@ from robot.utils.asserts import assert_equals
 import robotide
 import unittest
 
-class Test(unittest.TestCase):
 
+class Test(unittest.TestCase):
 
     def test_timeout_patch(self):
         timeout = Timeout('Timeout')
@@ -28,12 +28,17 @@ class Test(unittest.TestCase):
         assert_equals(fixture.as_list(), ['Teardown'])
         fixture.name = 'Keyword'
         assert_equals(fixture.as_list(), ['Teardown', 'Keyword'])
+        fixture.args = ['arg1', 'arg2']
+        assert_equals(fixture.as_list(), ['Teardown', 'Keyword', 'arg1', 'arg2'])
+        fixture.name = ''
+        assert_equals(fixture.as_list(), ['Teardown', '', 'arg1', 'arg2'])
 
     def test_template_patch(self):
         template = Template('Template')
         assert_equals(template.as_list(),['Template'])
         template.value = 'value'
         assert_equals(template.as_list(),['Template', 'value'])
+
 
 if __name__ == "__main__":
     unittest.main()

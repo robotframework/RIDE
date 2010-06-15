@@ -39,10 +39,12 @@ def _setting_data_as_list(self):
 
 def _fixture_data_as_list(self):
     ret = [self.setting_name]
-    if self.name:
+    if self.name and self.args:
+        ret.extend([self.name] + self.args)
+    elif self.name:
         ret.append(self.name)
-    if self.args:
-        ret.extend(self.args)
+    elif self.args:
+        ret.extend(['']+self.args)
     return ret
 
 def _template_data_as_list(self):
