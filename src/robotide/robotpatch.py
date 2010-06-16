@@ -27,28 +27,20 @@ def _setting_data_as_list(self):
         ret.extend(self.value)
     return ret
 
-def _extend_from_third_position(self, ret, tail):
-    if len(ret) == 2:
-        ret.extend(tail)
-    elif len(ret) == 1:
-        ret.extend([''] + tail)
-    else:
-        raise ValueError('Illegal length %d' % len(ret))
-
 def _timeout_data_as_list(self):
     ret = [self.setting_name]
-    if self.value:
-        ret.append(self.value)
+    if self.value or self.message:
+        ret.append(self.value if self.value else '')
     if self.message:
-        self._extend_from_third_position(ret, [self.message])
+        ret.append(self.message)
     return ret
 
 def _fixture_data_as_list(self):
     ret = [self.setting_name]
-    if self.name:
-        ret.append(self.name)
+    if self.name or self.args:
+        ret.append(self.name if self.name else '')
     if self.args:
-        self._extend_from_third_position(ret, self.args)
+        ret.extend(self.args)
     return ret
 
 def _template_data_as_list(self):
@@ -58,7 +50,6 @@ def _template_data_as_list(self):
     return ret
 
 _Setting._data_as_list = _setting_data_as_list
-_Setting._extend_from_third_position = _extend_from_third_position
 Timeout._data_as_list = _timeout_data_as_list
 Fixture._data_as_list = _fixture_data_as_list
 Template._data_as_list = _template_data_as_list
