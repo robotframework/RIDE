@@ -262,11 +262,17 @@ class UserKeywordControllerTest(unittest.TestCase):
         assert_equals(self.ctrl.validate_name('UK 2'),
                       'User keyword with this name already exists.')
 
-    def test_moving(self):
+    def test_move_up(self):
         assert_false(self.ctrl.move_up())
         self._assert_uk_in(0, 'UK')
         assert_true(self.ctrl2.move_up())
         self._assert_uk_in(0, 'UK 2')
+
+    def test_move_down(self):
+        assert_false(self.ctrl2.move_down())
+        self._assert_uk_in(1, 'UK 2')
+        assert_true(self.ctrl.move_down())
+        self._assert_uk_in(1, 'UK')
 
     def _assert_uk_in(self, index, name):
         assert_equals(self.tcf.keyword_table.keywords[index].name, name)

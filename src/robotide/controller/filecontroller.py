@@ -283,6 +283,15 @@ class KeywordTableController(_TableController):
         kws[upper], kws[idx] = kws[idx], kws[upper]
         return True
 
+    def move_down(self, kw):
+        kws = self._table.keywords
+        idx = kws.index(kw)
+        if idx + 1  == len(kws):
+            return False
+        lower = idx + 1
+        kws[idx], kws[lower] = kws[lower], kws[idx]
+        return True
+
 
 class _WithStepsController(object):
     def __init__(self, parent_controller, data):
@@ -360,6 +369,9 @@ class UserKeywordController(_WithStepsController):
 
     def move_up(self):
         return self._parent.move_up(self._kw)
+
+    def move_down(self):
+        return self._parent.move_down(self._kw)
 
     @property
     def settings(self):
