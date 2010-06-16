@@ -91,7 +91,7 @@ class ChiefController(object):
         if controller:
             controller_list = [controller]
         else:
-            controller_list = self._get_all_controllers()
+            controller_list = self._get_all_dirty_controllers()
         return [ dc for dc in controller_list if dc.dirty and not dc.has_format() ]
 
     def get_root_suite_dir_path(self):
@@ -124,8 +124,7 @@ class ChiefController(object):
 
     def serialize_all(self):
         errors = []
-        # FIXME: Handle also directories (=init files)
-        datacontrollers = self._get_all_controllers()
+        datacontrollers = self._get_all_dirty_controllers()
         for dc in datacontrollers:
             try:
                 self._serialize_file(dc)
@@ -152,10 +151,8 @@ class ChiefController(object):
         serializer.serialize(controller)
         controller.unmark_dirty()
 
-    def _get_files_to_serialize(self, datafile):
-        if datafile:
-            return self._find_datafile_controller(datafile)
-        return self._get_all_controllers()
+    def _get_all_dirty_controllers(self):
+        return [controller for controller in self._get_all_controllers() if controller.dirty]
 
     def _get_all_controllers(self):
         return self._get_filecontroller_and_all_child_filecontrollers(self.data)\
@@ -163,9 +160,7 @@ class ChiefController(object):
 
     def _get_filecontroller_and_all_child_filecontrollers(self, parent_controller):
         ret = []
-        # FIXME: This should not be necessary. Directories should be saved also.
-        if isinstance(parent_controller, TestCaseFileController):
-            ret.append(parent_controller)
+        ret.append(parent_controller)
         for controller in parent_controller.children:
             ret.extend(self._get_filecontroller_and_all_child_filecontrollers(controller))
         return ret
