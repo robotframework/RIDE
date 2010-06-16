@@ -537,16 +537,16 @@ class _TestOrUserKeywordHandler(_ActionHandler):
     def OnCopy(self, event):
         dlg = self._dialog_class(self.controller, self.item)
         if dlg.ShowModal() == wx.ID_OK:
-            copied = self._datalist.copy(self.item, dlg.get_value())
+            copied = self.controller.copy(self.item, dlg.get_value())
             self._add_copy_to_tree(self._tree.GetItemParent(self._node), copied)
         dlg.Destroy()
 
     def OnMoveUp(self, event):
-        if self._datalist.move_up(self.item):
+        if self.controller.move_up(self.item):
             self._tree.move_up(self._node)
 
     def OnMoveDown(self, event):
-        if self._datalist.move_down(self.item):
+        if self.controller.move_down(self.item):
             self._tree.move_down(self._node)
 
     def OnRename(self, event):

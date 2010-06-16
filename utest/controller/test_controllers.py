@@ -240,10 +240,11 @@ class UserKeywordControllerTest(unittest.TestCase):
         self.tcf = TestCaseFile()
         uk = self.tcf.keyword_table.add('UK')
         uk.add_step(['No Operation'])
-        self.tcf.keyword_table.add('UK 2')
+        uk2 = self.tcf.keyword_table.add('UK 2')
         tablectrl = KeywordTableController(TestCaseFileController(self.tcf),
                                            self.tcf.keyword_table)
         self.ctrl = UserKeywordController(tablectrl, uk)
+        self.ctrl2 = UserKeywordController(tablectrl, uk2)
 
     def test_creation(self):
         for st in self.ctrl.settings:
@@ -261,6 +262,14 @@ class UserKeywordControllerTest(unittest.TestCase):
         assert_equals(self.ctrl.validate_name('UK 2'),
                       'User keyword with this name already exists.')
 
+    def test_moving(self):
+        assert_false(self.ctrl.move_up())
+        self._assert_uk_in(0, 'UK')
+        assert_true(self.ctrl2.move_up())
+        self._assert_uk_in(0, 'UK 2')
+
+    def _assert_uk_in(self, index, name):
+        assert_equals(self.tcf.keyword_table.keywords[index].name, name)
 
     def test_step_parsing(self):
         self.ctrl.parse_steps_from_rows([['Foo']])
