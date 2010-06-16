@@ -15,26 +15,19 @@
 import wx.html
 from StringIO import StringIO
 
-from robotide.errors import SerializationError
-from robotide.publish import RideTreeSelection, RideNotebookTabChanged
-from robotide.writer.writer import HtmlFileWriter, TxtFileWriter
-from robotide.pluginapi import Plugin, ActionInfo
 from robotide.context import Font
+from robotide.errors import SerializationError
+from robotide.pluginapi import Plugin, ActionInfo
+from robotide.publish import RideTreeSelection, RideNotebookTabChanged
+from robotide.robotapi import TestCase, UserKeyword
+from robotide.writer.serializer import Serializer
 
 
-class InMemoryHtmlWriter(HtmlFileWriter):
-
-    def _write_empty_row(self):
-        self._write_data(['&nbsp;'])
-
-    def close(self):
-        HtmlFileWriter.close(self, close_output=False)
-
-
-class InMemoryTxtWriter(TxtFileWriter):
-
-    def close(self):
-        TxtFileWriter.close(self, close_output=False)
+class PreviewDatafileController(object):
+    def __init__(self, datafile, format):
+        self.data = datafile
+        self.source = 'preview.' + ('txt' if format == 'Text' else 'html')
+        self.name = datafile.name
 
 
 class PreviewPlugin(Plugin):
@@ -60,8 +53,8 @@ class PreviewPlugin(Plugin):
     def OnShowPreview(self, event):
         if not self._panel:
             self._panel = PreviewPanel(self, self.notebook)
-        self._update_preview(self.datafile)
         self.show_tab(self._panel)
+        self._update_preview(self.datafile)
 
     def OnTreeSelection(self, event):
         self._update_preview(event.item)
@@ -91,7 +84,7 @@ class PreviewPanel(wx.Panel):
         self.Sizer.Add(chooser)
 
     def update_preview(self, item, force_reload=False):
-        datafile = isinstance(item, (TestCase, UserKeyword))and item.datafile or item
+        datafile = self._parent.datafile
         if datafile != self._previous_datafile or force_reload:
             content = datafile and self._get_content(datafile) or ''
             self._view.set_content(content.decode('UTF-8'))
@@ -101,11 +94,9 @@ class PreviewPanel(wx.Panel):
 
     def _get_content(self, datafile):
         output = StringIO()
-        writer = {'HTML': InMemoryHtmlWriter,
-                  'Text': InMemoryTxtWriter}[self._format](output)
+        serializer = Serializer(output)
         try:
-            # TODO: might need a public way to do this
-            datafile._serialize(writer)
+            serializer.serialize(PreviewDatafileController(datafile, self._format))
         except SerializationError, e:
             return "Creating preview of '%s' failed: %s" % (datafile.name, e)
         else:
@@ -146,10 +137,10 @@ class HtmlView(wx.html.HtmlWindow):
             self.Scroll(0,0)
 
     def _get_anchor(self, item):
-        if isinstance(item, TestCase):
-            return 'test_%s' % item.name
         if isinstance(item, UserKeyword):
             return 'keyword_%s' % item.name
+        if isinstance(item, TestCase):
+            return 'test_%s' % item.name
         return ''
 
 
