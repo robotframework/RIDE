@@ -19,8 +19,7 @@ class Serializer(object):
         return open(controller.source, 'wb')
 
     def _close_output(self, writer):
-        if not self._output:
-            writer.close()
+        writer.close(close_output=self._output is None)
 
 
 class _WriterSerializer(object):
