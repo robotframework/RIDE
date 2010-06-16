@@ -200,9 +200,8 @@ class RideFrame(wx.Frame, RideEventHandler):
         self.tree.unset_dirty()
 
     def _show_format_dialog_for(self, file_controller_without_format):
-        # FIXME: implement source-method and set_format to controller.
         help = 'Please provide format of initialization file for directory suite\n"%s".' %\
-                file_controller_without_format.source
+                file_controller_without_format.directory
         dlg = ChangeFormatDialog(self, 'HTML', help_text=help)
         if dlg.ShowModal() == wx.ID_OK:
             file_controller_without_format.set_format(dlg.get_format())

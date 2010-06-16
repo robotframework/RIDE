@@ -119,6 +119,10 @@ class _DataController(object):
     def source(self):
         return self.data.source
 
+    @property
+    def directory(self):
+        return self.data.directory
+
 
 class TestDataDirectoryController(_DataController):
 
@@ -140,6 +144,10 @@ class TestDataDirectoryController(_DataController):
     @property
     def source(self):
         return self.data.initfile
+
+    def set_format(self, format):
+        self.data.initfile=os.path.join(self.data.source,'__init__.%s' % format)
+        self.mark_dirty()
 
 
 class TestCaseFileController(_DataController):
