@@ -114,6 +114,9 @@ class _DataController(object):
     def has_format(self):
         return True
 
+    def validate_keyword_name(self, name):
+        return self.keywords.validate_name(name)
+
     @property
     def source(self):
         return self.data.source
@@ -162,6 +165,9 @@ class TestCaseFileController(_DataController):
 
     def new_test(self, name):
         return self.tests.new(name)
+
+    def validate_test_name(self, name):
+        return self.tests.validate_name(name)
 
 
 class ResourceFileController(_DataController):
@@ -284,9 +290,9 @@ class TestCaseTableController(_TableController, _WithItemMovingOperations):
         self.mark_dirty()
         return tc_controller
 
-    def validate_name(self, test, newname):
+    def validate_name(self, name):
         for t in self._table:
-            if t != test and utils.eq(t.name, newname):
+            if t.name == name:
                 return 'Test case with this name already exists.'
         return None
 
@@ -308,9 +314,9 @@ class KeywordTableController(_TableController, _WithItemMovingOperations):
     def new(self, name):
         return UserKeywordController(self, self._table.add(name))
 
-    def validate_name(self, keyword, newname):
+    def validate_name(self, name):
         for kw in self._table:
-            if kw != keyword and utils.eq(kw.name, newname):
+            if kw.name == name:
                 return 'User keyword with this name already exists.'
         return None
 
@@ -367,8 +373,8 @@ class _WithStepsController(object):
         new.data.steps = self.data.steps[:]
         return new
 
-    def validate_name(self, newname):
-        return self._parent.validate_name(self.data, newname)
+    def validate_name(self, name):
+        return self._parent.validate_name(name)
 
 
 class TestCaseController(_WithStepsController):

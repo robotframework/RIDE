@@ -505,9 +505,9 @@ class TestCaseFileHandler(TestDataDirectoryHandler):
     _actions = ['New Test Case', 'New User Keyword', '---', 'Change Format']
 
     def OnNewTestCase(self, event):
-        dlg = TestCaseNameDialog(self.item)
+        dlg = TestCaseNameDialog(self.controller)
         if dlg.ShowModal() == wx.ID_OK:
-            test = self.item.new_test(dlg.get_value())
+            test = self.controller.new_test(dlg.get_value())
             self._tree.add_test(self._node, test)
         dlg.Destroy()
 
