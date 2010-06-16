@@ -329,6 +329,10 @@ class VariablesControllerTest(unittest.TestCase):
         self._assert_var_in(0, '${bar}')
         self._assert_var_in(1, '${foo}')
 
+    def test_delete(self):
+        self.ctrl.delete(0)
+        self._assert_var_in(0, '${bar}')
+
     def _assert_var_in(self, index, name):
         assert_equals(self.tcf.variable_table.variables[index].name, name)
 
