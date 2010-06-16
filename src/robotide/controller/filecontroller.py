@@ -23,7 +23,6 @@ from robotide.controller.settingcontroller import (DocumentationController,
         TemplateController, ArgumentsController, MetadataController,
         ImportController, ReturnValueController)
 from robotide import utils
-from robot.parsing.model import TestCase, UserKeyword
 
 
 def DataController(data):
@@ -71,8 +70,7 @@ class _DataController(object):
                 FixtureController(self, ss.suite_teardown),
                 FixtureController(self, ss.test_setup),
                 FixtureController(self, ss.test_teardown),
-                TagsController(self, ss.force_tags),
-                ]
+                TagsController(self, ss.force_tags)]
 
     @property
     def variables(self):
