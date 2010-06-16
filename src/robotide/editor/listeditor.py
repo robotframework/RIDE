@@ -81,11 +81,11 @@ class ListEditor(wx.Panel):
     def OnDelete(self, event):
         if self._selection == -1:
             return
-        self._controller.delete_variable(self._selection)
+        self._controller.delete(self._selection)
         self.update_data()
-        var_count = self._controller.var_count()
-        if self._selection >= var_count:
-            self._selection = var_count - 1
+        item_count = self._list.GetItemCount()
+        if self._selection >= item_count:
+            self._selection = item_count - 1
         self._list.Select(self._selection, True)
 
     def update_data(self):

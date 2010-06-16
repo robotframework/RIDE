@@ -180,16 +180,13 @@ class VariableTableController(_TableController):
         self._table.add(name, value)
         self.mark_dirty()
 
-    def delete_variable(self, index):
+    def delete(self, index):
         self._table.variables.pop(index)
         self.mark_dirty()
 
     def swap(self, ind1, ind2):
         self._table.variables.insert(ind1, self._table.variables.pop(ind2))
         self.mark_dirty()
-
-    def var_count(self):
-        return len(self._table.variables)
 
     def validate_scalar_variable_name(self, name):
         return self._validate_name(_ScalarVarValidator(), name)
