@@ -1,7 +1,7 @@
 import unittest
 from robot.parsing.settings import Fixture, Documentation, Timeout, Tags, Return
 
-from robot.utils.asserts import assert_equals, assert_true, assert_false
+from robot.utils.asserts import assert_equals, assert_true, assert_false, assert_none
 from robot.parsing.model import TestDataDirectory
 from robotide.controller.settingcontroller import *
 from robotide.controller.filecontroller import *
@@ -233,8 +233,8 @@ class TestCaseControllerTest(unittest.TestCase):
 
     def test_rename_validation(self):
         assert_false(self.ctrl.validate_name('This name is valid'))
-        assert_false(self.ctrl.validate_name('Test'))
-        assert_equals(self.ctrl.validate_name('Another test'),
+        assert_none(self.ctrl.validate_name('Another test'))
+        assert_equals(self.ctrl.validate_name('Test'),
                       'Test case with this name already exists.')
 
     def test_rename(self):
@@ -267,7 +267,7 @@ class UserKeywordControllerTest(unittest.TestCase):
 
     def test_rename_validation(self):
         assert_false(self.ctrl.validate_name('This name is valid'))
-        assert_false(self.ctrl.validate_name('UK'))
+        assert_true(self.ctrl.validate_name('UK'))
         assert_equals(self.ctrl.validate_name('UK 2'),
                       'User keyword with this name already exists.')
 
