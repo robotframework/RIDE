@@ -5,6 +5,7 @@ from robot.utils.asserts import assert_equals, assert_true, assert_false
 from robot.parsing.model import TestDataDirectory
 from robotide.controller.settingcontroller import *
 from robotide.controller.filecontroller import *
+from robotide.controller.filecontroller import _WithListOperations
 
 
 class _FakeParent(object):
@@ -303,6 +304,9 @@ class ImportSettingsControllerTest(unittest.TestCase):
             assert_equals(imp.args, exp_args)
         assert_true(self.ctrl.dirty)
 
+    def test_creation(self):
+        assert_true(self.ctrl._items is not None)
+
 
 class VariablesControllerTest(unittest.TestCase):
 
@@ -321,20 +325,46 @@ class VariablesControllerTest(unittest.TestCase):
         assert_true(self.ctrl.dirty)
         self._assert_var_in(2, '${blaa}')
 
-    def test_swap(self):
-        self._assert_var_in(0, '${foo}')
-        self._assert_var_in(1, '${bar}')
-        self.ctrl.swap(0, 1)
-        assert_true(self.ctrl.dirty)
-        self._assert_var_in(0, '${bar}')
-        self._assert_var_in(1, '${foo}')
-
-    def test_delete(self):
-        self.ctrl.delete(0)
-        self._assert_var_in(0, '${bar}')
+    def test_creation(self):
+        assert_true(self.ctrl._items is not None)
 
     def _assert_var_in(self, index, name):
         assert_equals(self.tcf.variable_table.variables[index].name, name)
+
+
+class FakeListController(_WithListOperations):
+
+    def __init__(self):
+        self._itemslist = ['foo', 'bar', 'quux']
+        self.dirty = False
+
+    @property
+    def _items(self):
+        return self._itemslist
+
+    def mark_dirty(self):
+        self.dirty = True
+
+
+class WithListOperationsTest(unittest.TestCase):
+
+    def setUp(self):
+        self._list_operations = FakeListController()
+
+    def test_swap(self):
+        self._assert_item_in(0, 'foo')
+        self._assert_item_in(1, 'bar')
+        self._list_operations.swap(0, 1)
+        assert_true(self._list_operations.dirty)
+        self._assert_item_in(0, 'bar')
+        self._assert_item_in(1, 'foo')
+
+    def test_delete(self):
+        self._list_operations.delete(0)
+        self._assert_item_in(0, 'bar')
+
+    def _assert_item_in(self, index, name):
+        assert_equals(self._list_operations._items[index], name)
 
 
 if __name__ == "__main__":

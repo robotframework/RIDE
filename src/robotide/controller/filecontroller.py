@@ -31,6 +31,17 @@ def DataController(data):
         else TestDataDirectoryController(data)
 
 
+class _WithListOperations(object):
+
+    def swap(self, ind1, ind2):
+        self._items[ind1], self._items[ind2] = self._items[ind2], self._items[ind1]
+        self.mark_dirty()
+
+    def delete(self, index):
+        self._items.pop(index)
+        self.mark_dirty()
+
+
 class _DataController(object):
 
     def __init__(self, data):
@@ -171,25 +182,17 @@ class _TableController(object):
         return self._parent.datafile
 
 
-class VariableTableController(_TableController):
-
-    def __init__(self, parent_controller, table):
-        _TableController.__init__(self, parent_controller, table)
-        self._vars = table.variables
+class VariableTableController(_TableController, _WithListOperations):
 
     def __iter__(self):
         return iter(VariableController(v) for v in self._table)
 
+    @property
+    def _items(self):
+        return self._table.variables
+
     def add_variable(self, name, value):
         self._table.add(name, value)
-        self.mark_dirty()
-
-    def delete(self, index):
-        self._vars.pop(index)
-        self.mark_dirty()
-
-    def swap(self, ind1, ind2):
-        self._vars[ind1], self._vars[ind2] = self._vars[ind2], self._vars[ind1]
         self.mark_dirty()
 
     def validate_scalar_variable_name(self, name):
@@ -353,10 +356,14 @@ class UserKeywordController(_WithStepsCotroller):
                                      UserKeyword(self._kw.parent, name))
 
 
-class ImportSettingsController(_TableController):
+class ImportSettingsController(_TableController, _WithListOperations):
 
     def __iter__(self):
-        return iter(ImportController(imp) for imp in self._table.imports)
+        return iter(ImportController(imp) for imp in self._items)
+
+    @property
+    def _items(self):
+        return self._table.imports
 
     def add_library(self, argstr):
         self._add_import(self._table.add_library, argstr)
@@ -376,10 +383,14 @@ class ImportSettingsController(_TableController):
         return parts[0], parts[1:]
 
 
-class MetadataListController(_TableController):
+class MetadataListController(_TableController, _WithListOperations):
 
     def __iter__(self):
-        return iter(MetadataController(m) for m in self._table.metadata)
+        return iter(MetadataController(m) for m in self._items)
+
+    @property
+    def _items(self):
+        return self._table.metadata
 
     def add_metadata(self, name, value):
         self._table.add_metadata(name, value)
