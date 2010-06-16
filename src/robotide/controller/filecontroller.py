@@ -258,7 +258,6 @@ class TestCaseTableController(_TableController):
         return None
 
 
-
 class KeywordTableController(_TableController):
     def __iter__(self):
         return iter(UserKeywordController(self, kw) for kw in self._table)
@@ -270,13 +269,22 @@ class KeywordTableController(_TableController):
         return UserKeywordController(self, self._table.add(name))
 
     def validate_name(self, keyword, newname):
-        for uk in self._table:
-            if uk != keyword and utils.eq(uk.name, newname):
+        for kw in self._table:
+            if kw != keyword and utils.eq(kw.name, newname):
                 return 'User keyword with this name already exists.'
         return None
 
+    def move_up(self, kw):
+        kws = self._table.keywords
+        idx = kws.index(kw)
+        if idx  == 0:
+            return False
+        upper = idx - 1
+        kws[upper], kws[idx] = kws[idx], kws[upper]
+        return True
 
-class _WithStepsCotroller(object):
+
+class _WithStepsController(object):
     def __init__(self, parent_controller, data):
         self._parent = parent_controller
         self.data = data
@@ -325,7 +333,7 @@ class _WithStepsCotroller(object):
         return self._parent.validate_name(self.data, newname)
 
 
-class TestCaseController(_WithStepsCotroller):
+class TestCaseController(_WithStepsController):
     _populator = TestCasePopulator
 
     def _init(self, test):
@@ -344,11 +352,14 @@ class TestCaseController(_WithStepsCotroller):
         return TestCaseController(self._parent, TestCase(self._test.parent, name))
 
 
-class UserKeywordController(_WithStepsCotroller):
+class UserKeywordController(_WithStepsController):
     _populator = UserKeywordPopulator
 
     def _init(self, kw):
         self._kw = kw
+
+    def move_up(self):
+        return self._parent.move_up(self._kw)
 
     @property
     def settings(self):
