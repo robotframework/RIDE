@@ -41,6 +41,13 @@ class _WithListOperations(object):
         self._items.pop(index)
         self.mark_dirty()
 
+    @property
+    def _items(self):
+        raise NotImplementedError(self.__class__)
+
+    def mark_dirty(self):
+        raise NotImplementedError(self.__class__)
+
 
 class _DataController(object):
 
