@@ -147,6 +147,7 @@ class TestDataDirectoryController(_DataController):
 
     def set_format(self, format):
         self.data.initfile=os.path.join(self.data.source,'__init__.%s' % format)
+        self.mark_dirty()
 
 
 class TestCaseFileController(_DataController):
