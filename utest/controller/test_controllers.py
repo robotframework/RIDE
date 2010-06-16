@@ -308,10 +308,13 @@ class VariablesControllerTest(unittest.TestCase):
 
     def setUp(self):
         self.tcf = TestCaseFile()
-        self.tcf.variable_table.add('${foo}', 'foo')
-        self.tcf.variable_table.add('${bar}', 'bar')
+        self._add_var('${foo}', 'foo')
+        self._add_var('${bar}', 'bar')
         self.ctrl = VariableTableController(TestCaseFileController(self.tcf),
                                             self.tcf.variable_table)
+
+    def _add_var(self, name, value):
+        self.tcf.variable_table.add(name, value)
 
     def test_adding_scalar(self):
         self.ctrl.add_variable('${blaa}', 'value')
