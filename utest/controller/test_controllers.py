@@ -316,15 +316,18 @@ class VariablesControllerTest(unittest.TestCase):
     def test_adding_scalar(self):
         self.ctrl.add_variable('${blaa}', 'value')
         assert_true(self.ctrl.dirty)
-        assert_equals(self.tcf.variable_table.variables[2].name, '${blaa}')
+        self._assert_var_in(2, '${blaa}')
 
     def test_swap(self):
-        assert_equals(self.tcf.variable_table.variables[0].name, '${foo}')
-        assert_equals(self.tcf.variable_table.variables[1].name, '${bar}')
+        self._assert_var_in(0, '${foo}')
+        self._assert_var_in(1, '${bar}')
         self.ctrl.swap(0, 1)
         assert_true(self.ctrl.dirty)
-        assert_equals(self.tcf.variable_table.variables[0].name, '${bar}')
-        assert_equals(self.tcf.variable_table.variables[1].name, '${foo}')
+        self._assert_var_in(0, '${bar}')
+        self._assert_var_in(1, '${foo}')
+
+    def _assert_var_in(self, index, name):
+        assert_equals(self.tcf.variable_table.variables[index].name, name)
 
 
 if __name__ == "__main__":
