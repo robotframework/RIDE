@@ -70,7 +70,7 @@ class _KeywordInfo(ItemInfo):
         return not self.__cmp__(other)
 
     def __hash__(self):
-        return hash(self.name) ^ hash(self.source)
+        return hash((self.name, self.source))
 
 
 class LibraryKeywordInfo(_KeywordInfo):
