@@ -14,6 +14,7 @@
 
 import os
 
+from robot.errors import DataError
 from robot.parsing.model import ResourceFile
 from robot.parsing.settings import Library, Resource, Variables
 from robot.utils.match import eq
@@ -104,7 +105,8 @@ class Namespace(object):
         return None
 
     def keyword_details(self, datafile, name):
-        kws = self.retriever.get_keywords_from(datafile)
+        kws = self._get_default_keywords()
+        kws.extend(self.retriever.get_keywords_from(datafile))
         for k in kws:
             if eq(k.name, name):
                 return k.details
@@ -215,7 +217,10 @@ class DatafileRetriever(object):
             varfile_path = os.path.join(datafile.directory,
                                         vars.replace_variables(imp.name))
             args = [vars.replace_variables(a) for a in imp.args]
-            vars.set_from_file(varfile_path, args)
+            try:
+                vars.set_from_file(varfile_path, args)
+            except DataError:
+                pass # TODO: log somewhere
         return vars
 
     def _collect_vars_from_resource_files(self, datafile, vars):
@@ -260,4 +265,3 @@ class DatafileRetriever(object):
     def _add_resource(self, res, vars, items):
         items.add(res)
         items.update(self._get_resources_recursive(res, vars))
-
