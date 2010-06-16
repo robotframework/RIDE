@@ -304,7 +304,6 @@ class _AbstractListEditor(ListEditor, RideEventHandler):
 
     def __init__(self, parent, tree, controller):
         ListEditor.__init__(self, parent, self._titles, controller)
-        self._controller = controller
         self._datafile = controller.datafile
         self._tree = tree
 
@@ -342,7 +341,7 @@ class VariablesListEditor(_AbstractListEditor):
         dlg.Destroy()
 
     def OnEdit(self, event):
-        item = self._data.get_name_and_value(self._selection)
+        item = self._controller.get_name_and_value(self._selection)
         if item[0].startswith('${'):
             dlg = ScalarVariableDialog(self.GetGrandParent(),
                                        self._controller, item=item)
@@ -350,7 +349,7 @@ class VariablesListEditor(_AbstractListEditor):
             dlg = ListVariableDialog(self.GetGrandParent(),
                                      self._controller, item=item)
         if dlg.ShowModal() == wx.ID_OK:
-            self._data.set_name_and_value(self._selection, *dlg.get_value())
+            self._controller.set_name_and_value(self._selection, *dlg.get_value())
             self.update_data()
         dlg.Destroy()
 
@@ -361,29 +360,29 @@ class ImportSettingListEditor(_AbstractListEditor):
 
     def OnEdit(self, event):
         setting = self._get_setting()
-        dlg = EditorDialog(setting)(self.GetGrandParent(), self._data.datafile,
+        dlg = EditorDialog(setting)(self.GetGrandParent(), self._controller.datafile,
                                     item=setting)
         if dlg.ShowModal() == wx.ID_OK:
             setting.set_str_value(dlg.get_value())
             self.update_data()
             if self._resource_import_modified():
-                self._data.resource_updated(self._selection)
+                self._controller.resource_updated(self._selection)
         dlg.Destroy()
 
     def OnAddLibrary(self, event):
         self._show_import_editor_dialog(LibraryImportDialog,
-                                        self._data.add_library)
+                                        self._controller.add_library)
 
     def OnAddResource(self, event):
         self._show_import_editor_dialog(ResourceImportDialog,
-                                        self._data.add_resource)
+                                        self._controller.add_resource)
 
     def OnAddVariables(self, event):
         self._show_import_editor_dialog(VariablesImportDialog,
-                                        self._data.add_variables)
+                                        self._controller.add_variables)
 
     def _show_import_editor_dialog(self, dialog, creator):
-        dlg = dialog(self.GetGrandParent(), self._data.datafile)
+        dlg = dialog(self.GetGrandParent(), self._controller.datafile)
         if dlg.ShowModal() == wx.ID_OK:
             creator(dlg.get_value())
             self.update_data()
@@ -396,7 +395,7 @@ class ImportSettingListEditor(_AbstractListEditor):
         return self._get_setting.type == 'Resource'
 
     def _get_setting(self):
-        return self._data[self._selection]
+        return self._controller[self._selection]
 
 
 class MetadataListEditor(_AbstractListEditor):
@@ -405,8 +404,8 @@ class MetadataListEditor(_AbstractListEditor):
     _sortable = False
 
     def OnEdit(self, event):
-        meta = self._data[self._selection]
-        dlg = MetadataDialog(self.GetGrandParent(), self._data.datafile,
+        meta = self._controller[self._selection]
+        dlg = MetadataDialog(self.GetGrandParent(), self._controller.datafile,
                              item=meta)
         if dlg.ShowModal() == wx.ID_OK:
             meta.set_name_and_value(*dlg.get_value())
@@ -414,9 +413,9 @@ class MetadataListEditor(_AbstractListEditor):
         dlg.Destroy()
 
     def OnAddMetadata(self, event):
-        dlg = MetadataDialog(self.GetGrandParent(), self._data.datafile)
+        dlg = MetadataDialog(self.GetGrandParent(), self._controller.datafile)
         if dlg.ShowModal() == wx.ID_OK:
-            self._data.add_metadata(*dlg.get_value())
+            self._controller.add_metadata(*dlg.get_value())
             self.update_data()
         dlg.Destroy()
 

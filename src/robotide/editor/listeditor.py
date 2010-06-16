@@ -22,11 +22,11 @@ class ListEditor(wx.Panel):
     _menu = ['Edit', 'Move Up', 'Move Down', '---', 'Delete']
     _buttons = []
 
-    def __init__(self, parent, columns, data):
+    def __init__(self, parent, columns, controller):
         wx.Panel.__init__(self, parent)
-        self._data = data
+        self._controller = controller
         self._selection = -1
-        self._create_ui(columns, data)
+        self._create_ui(columns, controller)
         self._make_bindings()
 
     def _create_ui(self, columns, data):
@@ -75,22 +75,22 @@ class ListEditor(wx.Panel):
         self._list.Select(self._selection+1, True)
 
     def _switch_items(self, ind1, ind2):
-        self._data.swap(ind1, ind2)
+        self._controller.swap(ind1, ind2)
         self.update_data()
 
     def OnDelete(self, event):
         if self._selection == -1:
             return
-        self._data.delete_variable(self._selection)
+        self._controller.delete_variable(self._selection)
         self.update_data()
-        var_count = self._data.var_count()
+        var_count = self._controller.var_count()
         if self._selection >= var_count:
             self._selection = var_count - 1
         self._list.Select(self._selection, True)
 
     def update_data(self):
         self._list.DeleteAllItems()
-        self._list.insert_data(self._data)
+        self._list.insert_data(self._controller)
 
     def update_selected_item(self, data):
         self._list.update_item(self._selection, data)
