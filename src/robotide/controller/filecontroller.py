@@ -292,6 +292,9 @@ class KeywordTableController(_TableController):
         kws[idx], kws[lower] = kws[lower], kws[idx]
         return True
 
+    def delete(self, kw):
+        self._table.keywords.remove(kw)
+
 
 class _WithStepsController(object):
     def __init__(self, parent_controller, data):
@@ -372,6 +375,9 @@ class UserKeywordController(_WithStepsController):
 
     def move_down(self):
         return self._parent.move_down(self._kw)
+
+    def delete(self):
+        self._parent.delete(self._kw)
 
     @property
     def settings(self):

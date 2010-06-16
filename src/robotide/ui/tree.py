@@ -553,7 +553,7 @@ class _TestOrUserKeywordHandler(_ActionHandler):
         self._tree.EditLabel(self._node)
 
     def OnDelete(self, event):
-        self.item.delete()
+        self.controller.delete()
         self._tree.delete_node(self._node)
 
 

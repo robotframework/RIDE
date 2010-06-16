@@ -274,6 +274,11 @@ class UserKeywordControllerTest(unittest.TestCase):
         assert_true(self.ctrl.move_down())
         self._assert_uk_in(1, 'UK')
 
+    def test_delete(self):
+        self.ctrl.delete()
+        assert_false('UK' in self.tcf.keyword_table.keywords)
+        self._assert_uk_in(0, 'UK 2')
+
     def _assert_uk_in(self, index, name):
         assert_equals(self.tcf.keyword_table.keywords[index].name, name)
 
