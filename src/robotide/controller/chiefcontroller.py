@@ -17,7 +17,6 @@ from threading import Thread
 
 from robotide import context
 from robotide.controller import DataController, ResourceFileController
-from robotide.controller.filecontroller import TestCaseFileController
 from robotide.errors import DataError, SerializationError
 from robotide.writer.serializer import Serializer
 from robot.parsing.model import TestData
@@ -46,12 +45,11 @@ class ChiefController(object):
 
     def load_datafile(self, load_observer, path):
         datafile = self._load_datafile(load_observer, path)
-        if datafile:
-            self._controller = DataController(datafile)
-            self.resources = [ResourceFileController(r) for r
-                              in self._namespace.get_resources(datafile)]
-        else:
+        if not datafile:
             raise DataError('Invalid data file: %s.' % path)
+        self._controller = DataController(datafile)
+        self.resources = self._load_resources(load_observer, datafile)
+        load_observer.finished()
 
     def _load_datafile(self, load_observer, path):
         loader = _DataLoader(path)
@@ -59,8 +57,15 @@ class ChiefController(object):
         while loader.isAlive():
             time.sleep(0.1)
             load_observer.notify()
-        load_observer.finished()
         return loader.datafile
+
+    def _load_resources(self, load_observer, datafile):
+        loader = _ResourceLoader(datafile, self._namespace.get_resources)
+        loader.start()
+        while loader.isAlive():
+            time.sleep(0.1)
+            load_observer.notify()
+        return [ResourceFileController(r) for r in loader.resources]
 
     @property
     def suite(self):
@@ -85,7 +90,7 @@ class ChiefController(object):
             self._resolve_imported_resources(item)
 
     def get_all_keywords(self):
-        return self._namespace.get_all_keywords([self.data.data] if self.data else [] + self.resources )
+        return self._namespace.get_all_keywords(ctrl.datafile for ctrl in self._get_all_controllers())
 
     def get_files_without_format(self, controller=None):
         if controller:
@@ -182,3 +187,15 @@ class _DataLoader(Thread):
         except Exception, err:
             pass
             #context.LOG.error(str(err))
+
+
+class _ResourceLoader(Thread):
+
+    def __init__(self, datafile, resource_loader):
+        Thread.__init__(self)
+        self._datafile = datafile
+        self._loader = resource_loader
+        self.resources = []
+
+    def run(self):
+        self.resources = self._loader(self._datafile)

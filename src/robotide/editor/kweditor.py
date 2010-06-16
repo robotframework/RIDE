@@ -302,7 +302,7 @@ class KeywordEditor(KeywordEditorUi):
 
     def _navigate_to_matching_user_keyword(self, row, col):
         value = self.GetCellValue(row, col)
-        uk = None #FIXME: self._plugin.get_user_keyword(value)
+        uk = self._plugin.get_user_keyword(value)
         if uk:
             self._toggle_underlined((grid.GridCellCoords(row, col)))
             self._marked_cell = None

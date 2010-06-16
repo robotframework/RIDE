@@ -205,7 +205,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
                 self.SetItemText(node, text[1:])
 
     def select_user_keyword_node(self, uk):
-        parent_node = self._get_datafile_node(uk.datafile)
+        parent_node = self._get_datafile_node(uk.parent.parent)
         if not parent_node:
             return
         if not self.IsExpanded(parent_node):
