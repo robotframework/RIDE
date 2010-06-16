@@ -70,8 +70,7 @@ class _KeywordInfo(ItemInfo):
         return not self.__cmp__(other)
 
     def __hash__(self):
-        # FIXME: is this correct way to combine hashes?
-        return hash(self.name) + hash(self.source)
+        return hash(self.name) ^ hash(self.source)
 
 
 class LibraryKeywordInfo(_KeywordInfo):
