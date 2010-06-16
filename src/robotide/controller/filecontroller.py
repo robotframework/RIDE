@@ -113,6 +113,9 @@ class _DataController(object):
     def has_format(self):
         return True
 
+    def validate_keyword_name(self, name):
+        return self.keywords.validate_name(name)
+
     @property
     def source(self):
         return self.data.source
@@ -161,6 +164,9 @@ class TestCaseFileController(_DataController):
 
     def new_test(self, name):
         return self.tests.new(name)
+
+    def validate_test_name(self, name):
+        return self.tests.validate_name(name)
 
 
 class ResourceFileController(_DataController):
@@ -245,7 +251,33 @@ class VariableController(object):
         self.value= var.value
 
 
-class TestCaseTableController(_TableController):
+class _WithItemMovingOperations(object):
+
+    def move_up(self, item):
+        items = self._items
+        idx = items.index(item)
+        if idx  == 0:
+            return False
+        upper = idx - 1
+        items[upper], items[idx] = items[idx], items[upper]
+        return True
+
+    def move_down(self, item):
+        items = self._items
+        idx = items.index(item)
+        if idx + 1  == len(items):
+            return False
+        lower = idx + 1
+        items[idx], items[lower] = items[lower], items[idx]
+        return True
+
+    @property
+    def _items(self):
+        raise NotImplementedError(self.__class__)
+
+
+class TestCaseTableController(_TableController, _WithItemMovingOperations):
+
     def __iter__(self):
         return iter(TestCaseController(self, t) for t in self._table)
 
@@ -257,14 +289,21 @@ class TestCaseTableController(_TableController):
         self.mark_dirty()
         return tc_controller
 
-    def validate_name(self, test, newname):
+    def validate_name(self, name):
         for t in self._table:
-            if t != test and utils.eq(t.name, newname):
+            if t.name == name:
                 return 'Test case with this name already exists.'
         return None
 
+    def delete(self, test):
+        self._table.tests.remove(test)
 
-class KeywordTableController(_TableController):
+    @property
+    def _items(self):
+        return self._table.tests
+
+
+class KeywordTableController(_TableController, _WithItemMovingOperations):
     def __iter__(self):
         return iter(UserKeywordController(self, kw) for kw in self._table)
 
@@ -274,32 +313,18 @@ class KeywordTableController(_TableController):
     def new(self, name):
         return UserKeywordController(self, self._table.add(name))
 
-    def validate_name(self, keyword, newname):
+    def validate_name(self, name):
         for kw in self._table:
-            if kw != keyword and utils.eq(kw.name, newname):
+            if kw.name == name:
                 return 'User keyword with this name already exists.'
         return None
 
-    def move_up(self, kw):
-        kws = self._table.keywords
-        idx = kws.index(kw)
-        if idx  == 0:
-            return False
-        upper = idx - 1
-        kws[upper], kws[idx] = kws[idx], kws[upper]
-        return True
-
-    def move_down(self, kw):
-        kws = self._table.keywords
-        idx = kws.index(kw)
-        if idx + 1  == len(kws):
-            return False
-        lower = idx + 1
-        kws[idx], kws[lower] = kws[lower], kws[idx]
-        return True
-
     def delete(self, kw):
         self._table.keywords.remove(kw)
+
+    @property
+    def _items(self):
+        return self._table.keywords
 
 
 class _WithStepsController(object):
@@ -347,8 +372,8 @@ class _WithStepsController(object):
         new.data.steps = self.data.steps[:]
         return new
 
-    def validate_name(self, newname):
-        return self._parent.validate_name(self.data, newname)
+    def validate_name(self, name):
+        return self._parent.validate_name(name)
 
 
 class TestCaseController(_WithStepsController):
@@ -365,6 +390,15 @@ class TestCaseController(_WithStepsController):
                 TagsController(self, self._test.tags),
                 TimeoutController(self, self._test.timeout),
                 TemplateController(self, self._test.template)]
+
+    def move_up(self):
+        return self._parent.move_up(self._test)
+
+    def move_down(self):
+        return self._parent.move_down(self._test)
+
+    def delete(self):
+        return self._parent.delete(self._test)
 
 
 class UserKeywordController(_WithStepsController):
