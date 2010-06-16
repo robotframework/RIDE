@@ -173,6 +173,10 @@ class _TableController(object):
 
 class VariableTableController(_TableController):
 
+    def __init__(self, parent_controller, table):
+        _TableController.__init__(self, parent_controller, table)
+        self._vars = table.variables
+
     def __iter__(self):
         return iter(VariableController(v) for v in self._table)
 
@@ -181,11 +185,11 @@ class VariableTableController(_TableController):
         self.mark_dirty()
 
     def delete(self, index):
-        self._table.variables.pop(index)
+        self._vars.pop(index)
         self.mark_dirty()
 
     def swap(self, ind1, ind2):
-        self._table.variables.insert(ind1, self._table.variables.pop(ind2))
+        self._vars[ind1], self._vars[ind2] = self._vars[ind2], self._vars[ind1]
         self.mark_dirty()
 
     def validate_scalar_variable_name(self, name):
@@ -204,7 +208,7 @@ class VariableTableController(_TableController):
         return None
 
     def _name_taken(self, name):
-        return any(utils.eq(name, var.name) for var in self._table.variables)
+        return any(utils.eq(name, var.name) for var in self._table)
 
 
 class _ScalarVarValidator(object):
