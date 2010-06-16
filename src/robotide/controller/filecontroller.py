@@ -246,7 +246,33 @@ class VariableController(object):
         self.value= var.value
 
 
-class TestCaseTableController(_TableController):
+class _WithItemMovingOperations(object):
+
+    def move_up(self, item):
+        items = self._items
+        idx = items.index(item)
+        if idx  == 0:
+            return False
+        upper = idx - 1
+        items[upper], items[idx] = items[idx], items[upper]
+        return True
+
+    def move_down(self, item):
+        items = self._items
+        idx = items.index(item)
+        if idx + 1  == len(items):
+            return False
+        lower = idx + 1
+        items[idx], items[lower] = items[lower], items[idx]
+        return True
+
+    @property
+    def _items(self):
+        raise NotImplementedError(self.__class__)
+
+
+class TestCaseTableController(_TableController, _WithItemMovingOperations):
+
     def __iter__(self):
         return iter(TestCaseController(self, t) for t in self._table)
 
@@ -264,27 +290,15 @@ class TestCaseTableController(_TableController):
                 return 'Test case with this name already exists.'
         return None
 
-    def move_up(self, test):
-        tests = self._table.tests
-        idx = tests.index(test)
-        if idx  == 0:
-            return False
-        upper = idx - 1
-        tests[upper], tests[idx] = tests[idx], tests[upper]
-        return True
+    def delete(self, test):
+        self._table.tests.remove(test)
 
-    def move_down(self, test):
-        tests = self._table.tests
-        idx = tests.index(test)
-        if idx + 1  == len(tests):
-            return False
-        lower = idx + 1
-        tests[idx], tests[lower] = tests[lower], tests[idx]
-        return True
+    @property
+    def _items(self):
+        return self._table.tests
 
 
-
-class KeywordTableController(_TableController):
+class KeywordTableController(_TableController, _WithItemMovingOperations):
     def __iter__(self):
         return iter(UserKeywordController(self, kw) for kw in self._table)
 
@@ -300,26 +314,12 @@ class KeywordTableController(_TableController):
                 return 'User keyword with this name already exists.'
         return None
 
-    def move_up(self, kw):
-        kws = self._table.keywords
-        idx = kws.index(kw)
-        if idx  == 0:
-            return False
-        upper = idx - 1
-        kws[upper], kws[idx] = kws[idx], kws[upper]
-        return True
-
-    def move_down(self, kw):
-        kws = self._table.keywords
-        idx = kws.index(kw)
-        if idx + 1  == len(kws):
-            return False
-        lower = idx + 1
-        kws[idx], kws[lower] = kws[lower], kws[idx]
-        return True
-
     def delete(self, kw):
         self._table.keywords.remove(kw)
+
+    @property
+    def _items(self):
+        return self._table.keywords
 
 
 class _WithStepsController(object):
@@ -371,7 +371,7 @@ class _WithStepsController(object):
         return self._parent.validate_name(self.data, newname)
 
 
-class TestCaseController(_WithStepsController, _WithListOperations):
+class TestCaseController(_WithStepsController):
     _populator = TestCasePopulator
 
     def _init(self, test):
@@ -391,6 +391,9 @@ class TestCaseController(_WithStepsController, _WithListOperations):
 
     def move_down(self):
         return self._parent.move_down(self._test)
+
+    def delete(self):
+        return self._parent.delete(self._test)
 
 
 class UserKeywordController(_WithStepsController):
