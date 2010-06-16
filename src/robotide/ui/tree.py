@@ -278,10 +278,10 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         """Changes the order of given items, first is expected to be directly above the second"""
         parent = self.GetItemParent(first)
         self._mark_dirty(parent)
-        dataitem = self._get_handler(first).item
+        controller = self._get_handler(first).controller
         self.Delete(first)
         node = self._create_node_with_handler(self.GetItemParent(second),
-                                              dataitem, second)
+                                              controller, second)
         return node
 
     def refresh_datafile(self, controller, event):
@@ -542,11 +542,11 @@ class _TestOrUserKeywordHandler(_ActionHandler):
         dlg.Destroy()
 
     def OnMoveUp(self, event):
-        if self.controller.move_up(self.item):
+        if self.controller.move_up():
             self._tree.move_up(self._node)
 
     def OnMoveDown(self, event):
-        if self.controller.move_down(self.item):
+        if self.controller.move_down():
             self._tree.move_down(self._node)
 
     def OnRename(self, event):
