@@ -47,6 +47,7 @@ def _add_settings_table(tcf):
     tcf.setting_table.add_library('${libname}')
     tcf.setting_table.add_library('${libname}')
     tcf.setting_table.add_resource(RESOURCE_WITH_VARIABLE_IN_PATH)
+    tcf.setting_table.add_variables('/this/is/invalid.py')
 
 def _add_variable_table(tcf):
     tcf.variable_table.add('${libname}', 'Collections')
@@ -202,6 +203,12 @@ class TestKeywordSearch(_DataFileTest):
 
     def _in_keywords(self, keywords, kw_name):
         return any([kw_name.lower() == kw.name.lower() for kw in keywords])
+
+
+class TestKeywordDetails(_DataFileTest):
+
+    def test_default_keyword_details(self):
+        assert_not_none(self.ns.keyword_details(self.tcf, 'Log'))
 
 
 class TestFindUserKeyword(_DataFileTest):

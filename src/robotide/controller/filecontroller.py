@@ -23,7 +23,6 @@ from robotide.controller.settingcontroller import (DocumentationController,
         TemplateController, ArgumentsController, MetadataController,
         ImportController, ReturnValueController)
 from robotide import utils
-from robot.parsing.model import TestCase, UserKeyword
 
 
 def DataController(data):
@@ -265,6 +264,25 @@ class TestCaseTableController(_TableController):
                 return 'Test case with this name already exists.'
         return None
 
+    def move_up(self, test):
+        tests = self._table.tests
+        idx = tests.index(test)
+        if idx  == 0:
+            return False
+        upper = idx - 1
+        tests[upper], tests[idx] = tests[idx], tests[upper]
+        return True
+
+    def move_down(self, test):
+        tests = self._table.tests
+        idx = tests.index(test)
+        if idx + 1  == len(tests):
+            return False
+        lower = idx + 1
+        tests[idx], tests[lower] = tests[lower], tests[idx]
+        return True
+
+
 
 class KeywordTableController(_TableController):
     def __iter__(self):
@@ -343,7 +361,7 @@ class _WithStepsController(object):
         self.mark_dirty()
 
     def copy(self, name):
-        new = self._create_copy(name)
+        new = self._parent.new(name)
         for orig, copied in zip(self.settings, new.settings):
             copied.set_value(orig.value)
         new.data.steps = self.data.steps[:]
@@ -353,7 +371,7 @@ class _WithStepsController(object):
         return self._parent.validate_name(self.data, newname)
 
 
-class TestCaseController(_WithStepsController):
+class TestCaseController(_WithStepsController, _WithListOperations):
     _populator = TestCasePopulator
 
     def _init(self, test):
@@ -368,8 +386,11 @@ class TestCaseController(_WithStepsController):
                 TimeoutController(self, self._test.timeout),
                 TemplateController(self, self._test.template)]
 
-    def _create_copy(self, name):
-        return TestCaseController(self._parent, TestCase(self._test.parent, name))
+    def move_up(self):
+        return self._parent.move_up(self._test)
+
+    def move_down(self):
+        return self._parent.move_down(self._test)
 
 
 class UserKeywordController(_WithStepsController):
@@ -394,10 +415,6 @@ class UserKeywordController(_WithStepsController):
                 TimeoutController(self, self._kw.timeout,),
                 # TODO: Wrong class, works right though
                 ReturnValueController(self, self._kw.return_,)]
-
-    def _create_copy(self, name):
-        return UserKeywordController(self._parent,
-                                     UserKeyword(self._kw.parent, name))
 
 
 class ImportSettingsController(_TableController, _WithListOperations):
