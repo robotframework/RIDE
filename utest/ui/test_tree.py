@@ -78,8 +78,8 @@ class _BaseSuiteTreeTest(unittest.TestCase):
 
     def _create_model(self):
         suite = self._create_directory_suite('/top_suite')
-        suite.children = [ self._create_file_suite('sub_suite_%d.txt' % i)
-                         for i in range(3) ]
+        suite.children = [self._create_file_suite('sub_suite_%d.txt' % i)
+                          for i in range(3)]
         res = ResourceFile()
         res.source = 'resource.txt'
         res.keyword_table.keywords.append(UserKeyword(res, 'Resource Keyword'))
@@ -100,7 +100,8 @@ class _BaseSuiteTreeTest(unittest.TestCase):
     def _create_suite(self, suite_class, source):
         suite = suite_class()
         suite.source = source
-        suite.keyword_table.keywords = [ UserKeyword(suite, '%s Fake UK %d' % (suite.name, i))
+        suite.keyword_table.keywords = [ UserKeyword(suite.keyword_table,
+                                                     '%s Fake UK %d' % (suite.name, i))
                                          for i in range(5) ]
         return suite
 
@@ -170,8 +171,8 @@ class TestNodeSearchAndSelection(_BaseSuiteTreeTest):
         assert_equals(self._get_selected_label(), 'Top Suite')
 
     def test_searching_matching_uk_node(self):
-        self._select_and_assert_selection(self._model.data.keywords[0])
-        self._select_and_assert_selection(self._model.data.children[1].keywords[2])
+        self._select_and_assert_selection(self._model.data.keywords[0].data)
+        self._select_and_assert_selection(self._model.data.children[1].keywords[2].data)
 
     def _select_and_assert_selection(self, uk):
         self._tree.select_user_keyword_node(uk)
