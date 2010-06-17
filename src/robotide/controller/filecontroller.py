@@ -150,30 +150,8 @@ class TestDataDirectoryController(_DataController):
         self.data.initfile=os.path.join(self.data.source,'__init__.%s' % format)
         self.mark_dirty()
 
-    def new_datafile(self, path):
-        data = TestCaseFile()
-        data.source = os.path.abspath(path)
-        data.directory = os.path.dirname(data.source)
-        self._create_missing_dirs(data.directory)
-        return self._create_controller(data, [])
-
-    def new_datadirectory(self, path):
-        data = TestDataDirectory()
-        path = os.path.abspath(path)
-        data.source = os.path.dirname(path)
-        data.directory = data.source
-        data.initfile = path
-        self._create_missing_dirs(data.directory)
-        return self._create_controller(data, [])
-
-    def _create_missing_dirs(self, dirpath):
-        if not os.path.isdir(dirpath):
-            os.makedirs(dirpath)
-
-    def _create_controller(self, datafile, resources):
-        controller = DataController(datafile)
+    def new_datafile(self, controller):
         self.children.append(controller)
-        return controller
 
 
 class TestCaseFileController(_DataController):

@@ -12,7 +12,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import os
 import time
 from threading import Thread
 
@@ -20,7 +19,7 @@ from robotide import context
 from robotide.controller import DataController, ResourceFileController
 from robotide.errors import DataError, SerializationError
 from robotide.writer.serializer import Serializer
-from robot.parsing.model import TestData, TestCaseFile, TestDataDirectory
+from robot.parsing.model import TestData
 from robotide.publish.messages import RideOpenResource, RideSaving, RideSaveAll,\
     RideSaved
 
@@ -95,25 +94,9 @@ class ChiefController(object):
         for item in datafile.suites + resources:
             self._resolve_imported_resources(item)
 
-    def new_datafile(self, path):
-        data = TestCaseFile()
-        data.source = os.path.abspath(path)
-        data.directory = os.path.dirname(data.source)
-        self._create_missing_dirs(data.directory)
-        self._create_controllers(data, [])
-
-    def new_datadirectory(self, path):
-        data = TestDataDirectory()
-        path = os.path.abspath(path)
-        data.source = os.path.dirname(path)
-        data.directory = data.source
-        data.initfile = path
-        self._create_missing_dirs(data.directory)
-        self._create_controllers(data, [])
-
-    def _create_missing_dirs(self, dirpath):
-        if not os.path.isdir(dirpath):
-            os.makedirs(dirpath)
+    def new_datafile(self, controller):
+        self._controller = controller
+        self.resources = []
 
     def get_all_keywords(self):
         return self._namespace.get_all_keywords(ctrl.datafile for ctrl in self._get_all_controllers())

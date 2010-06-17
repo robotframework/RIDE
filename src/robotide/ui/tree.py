@@ -13,15 +13,16 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import os
+import wx
+
 from filedialogs import AddSuiteDialog, ChangeFormatDialog
 from images import TreeImageList
 from namedialogs import TestCaseNameDialog, UserKeywordNameDialog
 from robotide import utils
 from robotide.action import ActionInfoCollection
-from robotide.controller.filecontroller import UserKeywordController
+from robotide.controller import UserKeywordController, NewDatafileController
 from robotide.publish import RideTreeSelection
-import os
-import wx
 try:
     import treemixin
 except ImportError:
@@ -149,7 +150,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self.SetItemImage(node, img.expanded, wx.TreeItemIcon_Expanded)
         return node
 
-    def add_suite(self, parent, suite):
+    def add_datafile(self, parent, suite):
         snode = self._render_datafile(self._get_datafile_node(parent.data), suite)
         self.SelectItem(snode)
 
@@ -483,11 +484,9 @@ class TestDataDirectoryHandler(_ActionHandler):
     def OnAddSuite(self, event):
         dlg = AddSuiteDialog(self.controller.directory)
         if dlg.ShowModal() == wx.ID_OK:
-            if dlg.is_dir_type():
-                subsuite = self.controller.new_datadirectory(dlg.get_path())
-            else:
-                subsuite = self.controller.new_datafile(dlg.get_path())
-            self._tree.add_suite(self.controller, subsuite)
+            ctrl = NewDatafileController(dlg.get_path(), dlg.is_dir_type())
+            self.controller.new_datafile(ctrl)
+            self._tree.add_datafile(self.controller, ctrl)
         dlg.Destroy()
 
     def OnNewUserKeyword(self, event):

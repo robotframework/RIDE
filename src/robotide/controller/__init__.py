@@ -12,5 +12,32 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from filecontroller import DataController, ResourceFileController
+import os
+
+from robot.parsing.model import TestCaseFile, TestDataDirectory
+from filecontroller import DataController, ResourceFileController, UserKeywordController
 from chiefcontroller import ChiefController
+
+
+def NewDatafileController(path, is_dir_type):
+    return _new_datadirectory(path) if is_dir_type else _new_datafile(path)
+
+def _new_datadirectory(path):
+    data = TestDataDirectory()
+    path = os.path.abspath(path)
+    data.source = os.path.dirname(path)
+    data.directory = data.source
+    data.initfile = path
+    _create_missing_dirs(data.directory)
+    return DataController(data)
+
+def _new_datafile(path):
+    data = TestCaseFile()
+    data.source = os.path.abspath(path)
+    data.directory = os.path.dirname(data.source)
+    _create_missing_dirs(data.directory)
+    return DataController(data)
+
+def _create_missing_dirs(dirpath):
+    if not os.path.isdir(dirpath):
+        os.makedirs(dirpath)
