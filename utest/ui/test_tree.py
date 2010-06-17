@@ -156,7 +156,7 @@ class TestAddingItems(_BaseSuiteTreeTest):
 
     def test_adding_suite(self):
         new_suite = self._model.data.add_suite('new_fake_suite.txt')
-        self._tree.add_suite(self._model.data, new_suite)
+        self._tree.add_datafile(self._model.data, new_suite)
         assert_equals(self._get_selected_label(), 'New Fake Suite')
         new_test = new_suite.new_test('New Fake Test')
         node = self._get_node(new_suite.name)

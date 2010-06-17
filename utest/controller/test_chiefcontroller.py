@@ -35,28 +35,6 @@ class ChiefControllerTest(unittest.TestCase):
         sub_dir_tcf.new_test('newnessness')
         assert_equals(len(self.ctrl._get_all_dirty_controllers()), 3)
 
-    def test_creating_new_datafile(self):
-        self.ctrl.resources = ['ninja resource']
-        self.ctrl.new_datafile('./foo.txt')
-        assert_equals(self.ctrl._controller.name, 'Foo')
-        assert_equals(self.ctrl.resources, [])
-
-    def test_creating_directory_data(self):
-        dirname = os.path.dirname(os.path.abspath(__file__))
-        initpath = os.path.join(dirname, '__init__.html')
-        self.ctrl.new_datadirectory(initpath)
-        assert_equals(self.ctrl._controller.name, 'Controller')
-        assert_equals(self.ctrl._controller.source, initpath)
-
-    def test_creating_new_data_created_missing_subdirs(self):
-        dirname = os.path.join(tempfile.gettempdir(), 'rideutest-newdirectory')
-        if os.path.isdir(dirname):
-            os.rmdir(dirname)
-        self.ctrl.new_datafile(os.path.join(dirname, 'mynew_tcf.html'))
-        assert_equals(self.ctrl._controller.name, 'Mynew Tcf')
-        assert_true(os.path.isdir(dirname))
-        os.rmdir(dirname)
-
     def _find_suite_by_type(self, suites, type):
         for child in suites:
             if isinstance(child, type):
