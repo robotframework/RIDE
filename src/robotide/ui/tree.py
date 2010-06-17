@@ -483,8 +483,8 @@ class TestDataDirectoryHandler(_ActionHandler):
     def OnAddSuite(self, event):
         dlg = AddSuiteDialog(self.controller.directory)
         if dlg.ShowModal() == wx.ID_OK:
-            subsuite = self.controler.new_datafile(dlg.get_path())
-            self._tree.add_suite(self.item, subsuite)
+            subsuite = self.controller.new_datafile(dlg.get_path())
+            self._tree.add_suite(self.controller, subsuite)
         dlg.Destroy()
 
     def OnNewUserKeyword(self, event):
