@@ -155,13 +155,22 @@ class TestDataDirectoryController(_DataController):
         data.source = os.path.abspath(path)
         data.directory = os.path.dirname(data.source)
         self._create_missing_dirs(data.directory)
-        return self._create_controllers(data, [])
+        return self._create_controller(data, [])
+
+    def new_datadirectory(self, path):
+        data = TestDataDirectory()
+        path = os.path.abspath(path)
+        data.source = os.path.dirname(path)
+        data.directory = data.source
+        data.initfile = path
+        self._create_missing_dirs(data.directory)
+        return self._create_controller(data, [])
 
     def _create_missing_dirs(self, dirpath):
         if not os.path.isdir(dirpath):
             os.makedirs(dirpath)
 
-    def _create_controllers(self, datafile, resources):
+    def _create_controller(self, datafile, resources):
         controller = DataController(datafile)
         self.children.append(controller)
         return controller

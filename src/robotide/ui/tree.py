@@ -483,7 +483,10 @@ class TestDataDirectoryHandler(_ActionHandler):
     def OnAddSuite(self, event):
         dlg = AddSuiteDialog(self.controller.directory)
         if dlg.ShowModal() == wx.ID_OK:
-            subsuite = self.controller.new_datafile(dlg.get_path())
+            if dlg.is_dir_type():
+                subsuite = self.controller.new_datadirectory(dlg.get_path())
+            else:
+                subsuite = self.controller.new_datafile(dlg.get_path())
             self._tree.add_suite(self.controller, subsuite)
         dlg.Destroy()
 
