@@ -340,6 +340,7 @@ class ImportControllerTest(unittest.TestCase):
         cntrl = ImportController(self.parent, self.parent[1]._import)
         cntrl.set_value('foo')
         self._assert_import(1, 'foo')
+        assert_true(self.parent.dirty)
 
     def _assert_import(self, index, exp_value):
         assert_equals(self.parent[index].value, exp_value)
