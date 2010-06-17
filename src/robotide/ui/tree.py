@@ -441,10 +441,12 @@ class _ActionHandler(wx.Window):
 
     def OnChangeFormat(self, event):
         dlg = ChangeFormatDialog(self, self.item.get_format(),
-                                 self.item.is_directory_suite)
+                                 self.item.is_directory_suite())
         if dlg.ShowModal() == wx.ID_OK:
-            self.item.serialize(format=dlg.get_format(),
-                                recursive=dlg.get_recursive())
+            if dlg.get_recursive():
+                self.controller.change_format_recursive(self.item, dlg.get_format())
+            else:
+                self.controller.change_format(self.item, dlg.get_format())
         dlg.Destroy()
 
 

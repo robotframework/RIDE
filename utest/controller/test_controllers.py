@@ -6,6 +6,7 @@ from robot.parsing.model import TestDataDirectory
 from robotide.controller.settingcontroller import *
 from robotide.controller.filecontroller import *
 from robotide.controller.filecontroller import _WithListOperations
+from resources import SUITEPATH
 
 
 class _FakeParent(object):
@@ -189,6 +190,24 @@ class TestCaseFileControllerTest(unittest.TestCase):
         for st in ctrl.settings:
             assert_true(st is not None)
         assert_false(ctrl.dirty)
+
+    def test_has_format(self):
+        ctrl = TestCaseFileController(TestCaseFile())
+        assert_true(ctrl.has_format())
+        ctrl.data.source = '/tmp/.path.with.dots/test.cases.html'
+        assert_true(ctrl.has_format())
+
+    def test_get_format(self):
+        ctrl = TestCaseFileController(TestCaseFile())
+        ctrl.data.source = '/tmp/.path.with.dots/test.cases.html'
+        assert_equals(ctrl.get_format(), 'html')
+
+    def test_set_format(self):
+        ctrl = TestCaseFileController(TestCaseFile())
+        ctrl.data.source = '/tmp/.path.with.dots/test.cases.html'
+        assert_equals(ctrl.source, '/tmp/.path.with.dots/test.cases.html')
+        ctrl.set_format('txt')
+        assert_equals(ctrl.source, '/tmp/.path.with.dots/test.cases.txt')
 
 
 class TestDataDirectoryControllerTest(unittest.TestCase):
@@ -394,6 +413,27 @@ class WithListOperationsTest(unittest.TestCase):
 
     def _assert_item_in(self, index, name):
         assert_equals(self._list_operations._items[index], name)
+
+
+class DatafileIteratorTest(unittest.TestCase):
+
+    def setUp(self):
+        test_data_suite = TestDataDirectory(source=SUITEPATH)
+        self.directory_controller = TestDataDirectoryController(test_data_suite)
+
+    def test_iterate_all(self):
+        class Checker(object):
+            def __init__(self):
+                self.iteration_count = 0
+                self.in_sub_dir = False
+            def __call__(self, controller):
+                self.iteration_count+=1
+                if controller.source and controller.source.endswith('test.txt'):
+                    self.in_sub_dir = True
+        check_count_and_sub_dir = Checker()
+        [check_count_and_sub_dir(df) for df in self.directory_controller.iter_datafiles()]
+        assert_true(check_count_and_sub_dir.iteration_count == 5)
+        assert_true(check_count_and_sub_dir.in_sub_dir)
 
 
 if __name__ == "__main__":

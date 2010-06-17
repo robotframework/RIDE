@@ -114,6 +114,13 @@ class _DataController(object):
     def has_format(self):
         return True
 
+    def get_format(self):
+        return os.path.splitext(self.source)[1].replace('.','')
+
+    def set_format(self, format):
+        base = os.path.splitext(self.source)[0]
+        self.data.source = '%s.%s' % (base, format)
+
     def validate_keyword_name(self, name):
         return self.keywords.validate_name(name)
 
@@ -125,8 +132,17 @@ class _DataController(object):
     def directory(self):
         return self.data.directory
 
+    def is_directory_suite(self):
+        return False
+
     def resource_import_modified(self, path):
         return self._parent.resource_import_modified(os.path.join(self.directory, path))
+
+    def iter_datafiles(self):
+        yield self
+        for child in self.children:
+            for datafile in child.iter_datafiles():
+                yield datafile
 
 
 class TestDataDirectoryController(_DataController):
@@ -156,6 +172,9 @@ class TestDataDirectoryController(_DataController):
 
     def new_datafile(self, datafile):
         self.children.append(DataController(datafile, self._parent))
+
+    def is_directory_suite(self):
+        return True
 
 
 class TestCaseFileController(_DataController):
