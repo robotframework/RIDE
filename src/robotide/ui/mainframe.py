@@ -129,7 +129,8 @@ class RideFrame(wx.Frame, RideEventHandler):
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.get_path()
             self._default_dir = os.path.dirname(path)
-            self._controller.open_resource(path)
+            controller = self._controller.new_resource(path)
+            self.tree.add_resource(controller)
         dlg.Destroy()
 
     def OnOpen(self, event):

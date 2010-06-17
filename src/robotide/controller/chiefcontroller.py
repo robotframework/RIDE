@@ -19,7 +19,7 @@ from robotide import context
 from robotide.controller import DataController, ResourceFileController
 from robotide.errors import DataError, SerializationError
 from robotide.writer.serializer import Serializer
-from robot.parsing.model import TestData
+from robot.parsing.model import TestData, ResourceFile
 from robotide.publish.messages import RideOpenResource, RideSaving, RideSaveAll,\
     RideSaved
 
@@ -47,6 +47,13 @@ class ChiefController(object):
             if not resource:
                 raise DataError("Given file '%s' is not a valid Robot Framework "
                                 "test case or resource file" % path)
+
+    def new_resource(self, path):
+        res = ResourceFile()
+        res.source = path
+        controller = ResourceFileController(res)
+        self.resources.append(controller)
+        return controller
 
     def load_datafile(self, load_observer, path):
         datafile = self._load_datafile(load_observer, path)

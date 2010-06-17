@@ -39,6 +39,10 @@ class ChiefControllerTest(unittest.TestCase):
                 return child
         return None
 
+    def test_resources_opening(self):
+        controller = self.ctrl.new_resource('somepath')
+        assert_equals(controller.name, 'Somepath')
+
 
 if __name__ == "__main__":
     unittest.main()
