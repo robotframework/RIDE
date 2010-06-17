@@ -32,17 +32,17 @@ Give name and value of the variable.
 List Variable
 Give name and value of the variable. Input list variable items into separate cells.
 
-Library Import
+Library
 Give name of the library to import.
 Separate possible arguments with a pipe character like 'MyLibrary | arg 1 | arg 2'.
 %(ESCAPE)s
 
-Variable Import
+Variables
 Give path to the variable file to import. 
 Separate possible arguments with a pipe character like 'some_vars.py | an argument'.
 %(ESCAPE)s
 
-Resource Import
+Resource
 Give path to the resource file to import. 
 Existing resources will be automatically loaded to the resource tree.
 New resources must be created separately.

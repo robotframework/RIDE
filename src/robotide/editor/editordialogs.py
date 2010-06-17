@@ -86,17 +86,17 @@ class ListVariableDialog(_Dialog):
                 ListValueEditor(self, value, 'Value')]
 
 
-class LibraryImportDialog(_Dialog):
+class LibraryDialog(_Dialog):
 
     def _get_editors(self, item):
-        value = item and item.get_str_value() or ''
+        value = item and item.value or ''
         return [ValueEditor(self, value,
                             validator=NonEmptyValidator(self._title))]
 
-class VariablesImportDialog(LibraryImportDialog):
-    _title = 'Variable Import'
+class VariablesDialog(LibraryDialog):
+    pass
 
-class ResourceImportDialog(LibraryImportDialog):
+class ResourceDialog(LibraryDialog):
     pass
 
 

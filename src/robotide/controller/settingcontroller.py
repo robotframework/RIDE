@@ -25,11 +25,36 @@ class MetadataController(object):
 
 class ImportController(object):
 
-    def __init__(self, import_):
+    def __init__(self, parent_controller, import_):
+        self._parent = parent_controller
         self._import = import_
         self.type = self._import.type
-        self.name = self._import.name
-        self.args = self._import.args
+        self.label = self.type
+
+    @property
+    def name(self):
+        return self._import.name
+
+    @property
+    def args(self):
+        return self._import.args
+
+    @property
+    def value(self):
+        return ' | '.join([self.name or ''] + self.args or [])
+
+    @property
+    def dirty(self):
+        return self._parent.dirty
+
+    def set_value(self, value):
+        value = utils.split_value(value)
+        self._import.name = value[0]
+        self._import.args = value[1:]
+        self._parent.mark_dirty()
+        if self.label == 'Resource':
+            return self._parent.resource_import_modified(self.name)
+        return None
 
 
 class _SettingController(object):

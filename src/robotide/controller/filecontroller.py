@@ -25,9 +25,9 @@ from robotide.controller.settingcontroller import (DocumentationController,
 from robotide import utils
 
 
-def DataController(data):
-    return TestCaseFileController(data) if isinstance(data, TestCaseFile) \
-        else TestDataDirectoryController(data)
+def DataController(data, parent):
+    return TestCaseFileController(data, parent) if isinstance(data, TestCaseFile) \
+        else TestDataDirectoryController(data, parent)
 
 
 class _WithListOperations(object):
@@ -50,7 +50,8 @@ class _WithListOperations(object):
 
 class _DataController(object):
 
-    def __init__(self, data):
+    def __init__(self, data, parent=None):
+        self._parent = parent
         self.data = data
         self.dirty = False
         self.children = self._children(data)
@@ -124,11 +125,14 @@ class _DataController(object):
     def directory(self):
         return self.data.directory
 
+    def resource_import_modified(self, path):
+        return self._parent.resource_import_modified(os.path.join(self.directory, path))
+
 
 class TestDataDirectoryController(_DataController):
 
     def _children(self, data):
-        return [DataController(child) for child in data.children]
+        return [DataController(child, self._parent) for child in data.children]
 
     def has_format(self):
         return self.data.initfile is not None
@@ -140,7 +144,7 @@ class TestDataDirectoryController(_DataController):
             d = TestCaseFile()
         d.source = source
         self.data.children.append(d)
-        return DataController(d)
+        return DataController(d, self._parent)
 
     @property
     def source(self):
@@ -150,8 +154,8 @@ class TestDataDirectoryController(_DataController):
         self.data.initfile=os.path.join(self.data.source,'__init__.%s' % format)
         self.mark_dirty()
 
-    def new_datafile(self, controller):
-        self.children.append(controller)
+    def new_datafile(self, datafile):
+        self.children.append(DataController(datafile, self._parent))
 
 
 class TestCaseFileController(_DataController):
@@ -431,7 +435,10 @@ class UserKeywordController(_WithStepsController):
 class ImportSettingsController(_TableController, _WithListOperations):
 
     def __iter__(self):
-        return iter(ImportController(imp) for imp in self._items)
+        return iter(ImportController(self, imp) for imp in self._items)
+
+    def __getitem__(self, index):
+        return ImportController(self, self._items[index])
 
     @property
     def _items(self):
@@ -453,6 +460,9 @@ class ImportSettingsController(_TableController, _WithListOperations):
     def _split_to_name_and_args(self, argstr):
         parts = utils.split_value(argstr)
         return parts[0], parts[1:]
+
+    def resource_import_modified(self, path):
+        return self._parent.resource_import_modified(path)
 
 
 class MetadataListController(_TableController, _WithListOperations):

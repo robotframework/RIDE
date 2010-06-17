@@ -19,7 +19,7 @@ from filecontroller import DataController, ResourceFileController, UserKeywordCo
 from chiefcontroller import ChiefController
 
 
-def NewDatafileController(path, is_dir_type):
+def NewDatafile(path, is_dir_type):
     return _new_datadirectory(path) if is_dir_type else _new_datafile(path)
 
 def _new_datadirectory(path):
@@ -29,14 +29,14 @@ def _new_datadirectory(path):
     data.directory = data.source
     data.initfile = path
     _create_missing_dirs(data.directory)
-    return DataController(data)
+    return data
 
 def _new_datafile(path):
     data = TestCaseFile()
     data.source = os.path.abspath(path)
     data.directory = os.path.dirname(data.source)
     _create_missing_dirs(data.directory)
-    return DataController(data)
+    return data
 
 def _create_missing_dirs(dirpath):
     if not os.path.isdir(dirpath):

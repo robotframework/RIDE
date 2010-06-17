@@ -51,7 +51,7 @@ class ChiefController(object):
     def new_resource(self, path):
         res = ResourceFile()
         res.source = path
-        controller = ResourceFileController(res)
+        controller = ResourceFileController(res, self)
         self.resources.append(controller)
         return controller
 
@@ -72,8 +72,8 @@ class ChiefController(object):
         return loader.datafile
 
     def _create_controllers(self, datafile, resources):
-        self._controller = DataController(datafile)
-        self.resources = [ResourceFileController(r) for r in resources]
+        self._controller = DataController(datafile, self)
+        self.resources = [ResourceFileController(r, self) for r in resources]
 
     def _load_resources(self, datafile, load_observer):
         loader = _ResourceLoader(datafile, self._namespace.get_resources)
@@ -83,11 +83,14 @@ class ChiefController(object):
             load_observer.notify()
         return loader.resources
 
-    def load_resource(self, path, datafile=None):
+    def load_resource(self, path):
         resource = self._namespace.get_resource(path)
         if not resource:
             raise DataError('Invalid resource file: %s.' % path)
-        controller = ResourceFileController(resource)
+        return self._create_resource_controller(resource)
+
+    def _create_resource_controller(self, resource):
+        controller = ResourceFileController(resource, self)
         RideOpenResource(path=resource.source).publish()
         if controller not in self.resources:
             self.resources.append(controller)
@@ -101,8 +104,8 @@ class ChiefController(object):
         for item in datafile.suites + resources:
             self._resolve_imported_resources(item)
 
-    def new_datafile(self, controller):
-        self._controller = controller
+    def new_datafile(self, datafile):
+        self._controller = DataController(datafile, self)
         self.resources = []
 
     def get_all_keywords(self):
@@ -188,6 +191,12 @@ class ChiefController(object):
         for controller in parent_controller.children:
             ret.extend(self._get_filecontroller_and_all_child_filecontrollers(controller))
         return ret
+
+    def resource_import_modified(self, path):
+        resource = self._namespace.get_resource(path)
+        if resource:
+            return self._create_resource_controller(resource)
+        return None
 
 
 class _DataLoader(Thread):

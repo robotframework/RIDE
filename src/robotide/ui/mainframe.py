@@ -15,7 +15,7 @@
 import os
 import wx
 
-from robotide.controller import NewDatafileController
+from robotide.controller import NewDatafile
 from robotide.action import ActionInfoCollection, Action
 from robotide.errors import DataError
 from robotide.publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER
@@ -119,8 +119,8 @@ class RideFrame(wx.Frame, RideEventHandler):
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.get_path()
             self._default_dir = os.path.dirname(path)
-            ctrl = NewDatafileController(path, dlg.is_dir_type())
-            self._controller.new_datafile(ctrl)
+            data = NewDatafile(path, dlg.is_dir_type())
+            self._controller.new_datafile(data)
             self.tree.populate(self._controller)
         dlg.Destroy()
 

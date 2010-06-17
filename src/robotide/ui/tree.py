@@ -21,7 +21,7 @@ from images import TreeImageList
 from namedialogs import TestCaseNameDialog, UserKeywordNameDialog
 from robotide import utils
 from robotide.action import ActionInfoCollection
-from robotide.controller import UserKeywordController, NewDatafileController
+from robotide.controller import UserKeywordController, NewDatafile
 from robotide.publish import RideTreeSelection
 try:
     import treemixin
@@ -484,8 +484,8 @@ class TestDataDirectoryHandler(_ActionHandler):
     def OnAddSuite(self, event):
         dlg = AddSuiteDialog(self.controller.directory)
         if dlg.ShowModal() == wx.ID_OK:
-            ctrl = NewDatafileController(dlg.get_path(), dlg.is_dir_type())
-            self.controller.new_datafile(ctrl)
+            data = NewDatafile(dlg.get_path(), dlg.is_dir_type())
+            ctrl = self.controller.new_datafile(data)
             self._tree.add_datafile(self.controller, ctrl)
         dlg.Destroy()
 

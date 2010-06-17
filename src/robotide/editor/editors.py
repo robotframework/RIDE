@@ -21,8 +21,8 @@ from robotide import utils
 from kweditor import KeywordEditor
 from listeditor import ListEditor
 from editordialogs import EditorDialog, DocumentationDialog,\
-    ScalarVariableDialog, ListVariableDialog, LibraryImportDialog,\
-    ResourceImportDialog, VariablesImportDialog, MetadataDialog
+    ScalarVariableDialog, ListVariableDialog, LibraryDialog,\
+    ResourceDialog, VariablesDialog, MetadataDialog
 
 
 def Editor(plugin, editor_panel, tree):
@@ -363,22 +363,23 @@ class ImportSettingListEditor(_AbstractListEditor):
         dlg = EditorDialog(setting)(self.GetGrandParent(), self._controller.datafile,
                                     item=setting)
         if dlg.ShowModal() == wx.ID_OK:
-            setting.set_str_value(dlg.get_value())
+            # FIXME: Tree should listen to chief controller
+            controller = setting.set_value(dlg.get_value())
+            if controller:
+                self._tree.add_resource(controller)
             self.update_data()
-            if self._resource_import_modified():
-                self._controller.resource_updated(self._selection)
         dlg.Destroy()
 
     def OnAddLibrary(self, event):
-        self._show_import_editor_dialog(LibraryImportDialog,
+        self._show_import_editor_dialog(LibraryDialog,
                                         self._controller.add_library)
 
     def OnAddResource(self, event):
-        self._show_import_editor_dialog(ResourceImportDialog,
+        self._show_import_editor_dialog(ResourceDialog,
                                         self._controller.add_resource)
 
     def OnAddVariables(self, event):
-        self._show_import_editor_dialog(VariablesImportDialog,
+        self._show_import_editor_dialog(VariablesDialog,
                                         self._controller.add_variables)
 
     def _show_import_editor_dialog(self, dialog, creator):
@@ -390,9 +391,6 @@ class ImportSettingListEditor(_AbstractListEditor):
 
     def get_column_values(self, item):
         return [item.type, item.name, utils.join_value(item.args)]
-
-    def _resource_import_modified(self):
-        return self._get_setting.type == 'Resource'
 
     def _get_setting(self):
         return self._controller[self._selection]
