@@ -1,6 +1,4 @@
 import unittest
-import os
-import tempfile
 from robot.utils.asserts import assert_true, assert_equals
 
 from robotide.controller import ChiefController
