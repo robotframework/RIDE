@@ -112,7 +112,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         return True
 
     def OnNewProject(self, event):
-        if not self._application.ok_to_open_new():
+        if not self._check_unsaved_modifications():
             return
         dlg = NewProjectDialog(self, self._default_dir)
         if dlg.ShowModal() == wx.ID_OK:
@@ -120,15 +120,16 @@ class RideFrame(wx.Frame, RideEventHandler):
             if not os.path.isdir(dirname):
                 os.mkdir(dirname)
             self._default_dir = dirname
-            self._application.open_suite(dlg.get_path())
-            self.tree.populate(self._application.model)
+            self._controller.new_datafile(dlg.get_path())
+            self.tree.populate(self._controller)
         dlg.Destroy()
 
     def OnNewResource(self, event):
         dlg = NewResourceDialog(self, self._default_dir)
         if dlg.ShowModal() == wx.ID_OK:
-            self._default_dir = os.path.dirname(dlg.get_path())
-            self._application.open_resource(dlg.get_path())
+            path = dlg.get_path()
+            self._default_dir = os.path.dirname(path)
+            self._controller.open_resource(path)
         dlg.Destroy()
 
     def OnOpen(self, event):
@@ -138,7 +139,7 @@ class RideFrame(wx.Frame, RideEventHandler):
             self._with_error_logging(self.open_suite, path)
 
     def _check_unsaved_modifications(self):
-        if self._controller.unsaved_modifications():
+        if self._controller.is_dirty():
             ret = wx.MessageBox('There are unsaved modifications.\n'
                                 'Do you want to proceed without saving?',
                                 'Warning', wx.ICON_WARNING|wx.YES_NO)
