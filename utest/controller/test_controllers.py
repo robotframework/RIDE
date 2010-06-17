@@ -2,7 +2,6 @@ import unittest
 from robot.parsing.settings import Fixture, Documentation, Timeout, Tags, Return
 
 from robot.utils.asserts import assert_equals, assert_true, assert_false, assert_none
-from robot.parsing.model import TestDataDirectory
 from robotide.controller.settingcontroller import *
 from robotide.controller.filecontroller import *
 from robotide.controller.filecontroller import _WithListOperations
@@ -305,6 +304,45 @@ class UserKeywordControllerTest(unittest.TestCase):
         assert_equals(step.assign, exp_assign)
         assert_equals(step.keyword, exp_keyword)
         assert_equals(step.args, exp_args)
+
+
+class FakeParent(object):
+
+    @property
+    def directory(self):
+        return 'tmp'
+
+    def resource_import_modified(self, path):
+        pass
+
+class ImportControllerTest(unittest.TestCase):
+
+    def setUp(self):
+        self.tcf = TestCaseFile()
+        self.tcf.setting_table.add_library('somelib', ['foo', 'bar'])
+        self.tcf.setting_table.add_resource('resu')
+        tcf_ctrl = TestCaseFileController(self.tcf, FakeParent())
+        tcf_ctrl.data.directory = 'tmp'
+        self.parent = ImportSettingsController(tcf_ctrl, self.tcf.setting_table)
+
+    def test_creation(self):
+        self._assert_import(0, 'somelib | foo | bar')
+        self._assert_import(1, 'resu')
+
+    def test_editing_args(self):
+        cntrl = ImportController(self.parent, self.parent[0]._import)
+        new_value = 'bar | quux'
+        cntrl.set_value(new_value)
+        self._assert_import(0, new_value)
+        assert_true(self.parent.dirty)
+
+    def test_editing(self):
+        cntrl = ImportController(self.parent, self.parent[1]._import)
+        cntrl.set_value('foo')
+        self._assert_import(1, 'foo')
+
+    def _assert_import(self, index, exp_value):
+        assert_equals(self.parent[index].value, exp_value)
 
 
 class ImportSettingsControllerTest(unittest.TestCase):
