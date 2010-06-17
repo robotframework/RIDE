@@ -6,6 +6,7 @@ from robot.parsing.model import TestDataDirectory
 from robotide.controller.settingcontroller import *
 from robotide.controller.filecontroller import *
 from robotide.controller.filecontroller import _WithListOperations
+from resources import SUITEPATH
 
 
 class _FakeParent(object):
@@ -394,6 +395,49 @@ class WithListOperationsTest(unittest.TestCase):
 
     def _assert_item_in(self, index, name):
         assert_equals(self._list_operations._items[index], name)
+
+
+class TreeWalkerTest(unittest.TestCase):
+
+    def setUp(self):
+        test_data_suite = TestDataDirectory(source=SUITEPATH)
+        self.directory_controller = TestDataDirectoryController(test_data_suite)
+
+    def test_iterate_all(self):
+        class Checker(object):
+            
+            def __init__(self):
+                self.iteration_count = 0
+                self.in_sub_dir = False
+
+            def __call__(self, controller):
+                self.iteration_count+=1
+                if controller.source and controller.source.endswith('test.txt'):
+                    self.in_sub_dir = True
+                return False
+        
+        check_count_and_sub_dir = Checker()
+        walker = ControllerTreeWalker(check_count_and_sub_dir)
+        walker.iterate(self.directory_controller)
+        assert_true(check_count_and_sub_dir.iteration_count > 4)
+        assert_true(check_count_and_sub_dir.in_sub_dir)
+
+    def test_stop_iteration(self):
+        class Checker(object):
+            
+            def __init__(self):
+                self.iteration_count = 0
+                self.in_sub_dir = False
+
+            def __call__(self, controller):
+                self.iteration_count+=1
+                return True
+        
+        check_count_and_sub_dir = Checker()
+        walker = ControllerTreeWalker(check_count_and_sub_dir)
+        walker.iterate(self.directory_controller)
+        assert_true(check_count_and_sub_dir.iteration_count == 1)
+        assert_false(check_count_and_sub_dir.in_sub_dir)
 
 
 if __name__ == "__main__":
