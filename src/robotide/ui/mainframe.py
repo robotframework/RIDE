@@ -116,11 +116,12 @@ class RideFrame(wx.Frame, RideEventHandler):
             return
         dlg = NewProjectDialog(self, self._default_dir)
         if dlg.ShowModal() == wx.ID_OK:
-            dirname = os.path.dirname(dlg.get_path())
-            if not os.path.isdir(dirname):
-                os.mkdir(dirname)
-            self._default_dir = dirname
-            self._controller.new_datafile(dlg.get_path())
+            path = dlg.get_path()
+            self._default_dir = os.path.dirname(path)
+            if dlg.is_dir_type():
+                self._controller.new_datadirectory(path)
+            else:
+                self._controller.new_datafile(path)
             self.tree.populate(self._controller)
         dlg.Destroy()
 
