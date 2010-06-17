@@ -191,6 +191,24 @@ class TestCaseFileControllerTest(unittest.TestCase):
             assert_true(st is not None)
         assert_false(ctrl.dirty)
 
+    def test_has_format(self):
+        ctrl = TestCaseFileController(TestCaseFile())
+        assert_true(ctrl.has_format())
+        ctrl.data.source = '/tmp/.path.with.dots/test.cases.html'
+        assert_true(ctrl.has_format())
+
+    def test_get_format(self):
+        ctrl = TestCaseFileController(TestCaseFile())
+        ctrl.data.source = '/tmp/.path.with.dots/test.cases.html'
+        assert_equals(ctrl.get_format(), 'html')
+
+    def test_set_format(self):
+        ctrl = TestCaseFileController(TestCaseFile())
+        ctrl.data.source = '/tmp/.path.with.dots/test.cases.html'
+        assert_equals(ctrl.source, '/tmp/.path.with.dots/test.cases.html')
+        ctrl.set_format('txt')
+        assert_equals(ctrl.source, '/tmp/.path.with.dots/test.cases.txt')
+
 
 class TestDataDirectoryControllerTest(unittest.TestCase):
 
@@ -397,7 +415,7 @@ class WithListOperationsTest(unittest.TestCase):
         assert_equals(self._list_operations._items[index], name)
 
 
-class TreeWalkerTest(unittest.TestCase):
+class DatafileIteratorTest(unittest.TestCase):
 
     def setUp(self):
         test_data_suite = TestDataDirectory(source=SUITEPATH)
@@ -405,39 +423,17 @@ class TreeWalkerTest(unittest.TestCase):
 
     def test_iterate_all(self):
         class Checker(object):
-            
             def __init__(self):
                 self.iteration_count = 0
                 self.in_sub_dir = False
-
             def __call__(self, controller):
                 self.iteration_count+=1
                 if controller.source and controller.source.endswith('test.txt'):
                     self.in_sub_dir = True
-                return False
-        
         check_count_and_sub_dir = Checker()
-        walker = ControllerTreeWalker(check_count_and_sub_dir)
-        walker.iterate(self.directory_controller)
-        assert_true(check_count_and_sub_dir.iteration_count > 4)
+        [check_count_and_sub_dir(df) for df in self.directory_controller.iter_datafiles()]
+        assert_true(check_count_and_sub_dir.iteration_count == 5)
         assert_true(check_count_and_sub_dir.in_sub_dir)
-
-    def test_stop_iteration(self):
-        class Checker(object):
-            
-            def __init__(self):
-                self.iteration_count = 0
-                self.in_sub_dir = False
-
-            def __call__(self, controller):
-                self.iteration_count+=1
-                return True
-        
-        check_count_and_sub_dir = Checker()
-        walker = ControllerTreeWalker(check_count_and_sub_dir)
-        walker.iterate(self.directory_controller)
-        assert_true(check_count_and_sub_dir.iteration_count == 1)
-        assert_false(check_count_and_sub_dir.in_sub_dir)
 
 
 if __name__ == "__main__":

@@ -114,10 +114,10 @@ class _DataController(object):
         return True
 
     def get_format(self):
-        os.path.splitext(self.source)[1].replace('.','')
+        return os.path.splitext(self.source)[1].replace('.','')
 
     def set_format(self, format):
-        base = os.path.splitext(self.data.source)[0]
+        base = os.path.splitext(self.source)[0]
         self.data.source = '%s.%s' % (base, format)
 
     def validate_keyword_name(self, name):
@@ -130,6 +130,15 @@ class _DataController(object):
     @property
     def directory(self):
         return self.data.directory
+
+    def is_directory_suite(self):
+        return False
+
+    def iter_datafiles(self):
+        yield self
+        for child in self.children:
+            for datafile in child.iter_datafiles():
+                yield datafile
 
 
 class TestDataDirectoryController(_DataController):
@@ -159,6 +168,9 @@ class TestDataDirectoryController(_DataController):
 
     def new_datafile(self, controller):
         self.children.append(controller)
+
+    def is_directory_suite(self):
+        return True
 
 
 class TestCaseFileController(_DataController):
@@ -474,26 +486,3 @@ class MetadataListController(_TableController, _WithListOperations):
     def add_metadata(self, name, value):
         self._table.add_metadata(name, value)
         self._parent.mark_dirty()
-
-
-class ControllerTreeWalker(object):
-
-    def __init__(self, function):
-        self._function = function
-
-    def iterate(self, controller):
-        was_stopped = self._call_function(controller)
-        return was_stopped
-
-    def _call_function(self, controller):
-        stop = self._function(controller)
-        if stop:
-            return True
-        return self._iterate_children(controller)
-
-    def _iterate_children(self, controller):
-        for child in controller.children:
-            stop = self._call_function(child)
-            if stop:
-                return True
-        return False

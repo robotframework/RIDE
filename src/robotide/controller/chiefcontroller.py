@@ -22,6 +22,7 @@ from robotide.writer.serializer import Serializer
 from robot.parsing.model import TestData
 from robotide.publish.messages import RideOpenResource, RideSaving, RideSaveAll,\
     RideSaved
+import os
 
 
 class ChiefController(object):
@@ -130,6 +131,21 @@ class ChiefController(object):
                 return True
         return False
 
+    def change_format(self, controller, format):
+        if controller.has_format():
+            old_format = controller.get_format()
+            if format.lower() == old_format.lower():
+                return
+        old_path = controller.source
+        controller.set_format(format)
+        self.serialize_controller(controller)
+        if old_path:
+            os.remove(old_path)
+
+    def change_format_recursive(self, controller, format):
+        for datafile in controller.iter_datafiles():
+            self.change_format(datafile)
+
     def save(self, controller):
         if controller:
             self.serialize_controller(controller)
@@ -172,15 +188,7 @@ class ChiefController(object):
         return [controller for controller in self._get_all_controllers() if controller.dirty]
 
     def _get_all_controllers(self):
-        return self._get_filecontroller_and_all_child_filecontrollers(self.data)\
-               + self.resources
-
-    def _get_filecontroller_and_all_child_filecontrollers(self, parent_controller):
-        ret = []
-        ret.append(parent_controller)
-        for controller in parent_controller.children:
-            ret.extend(self._get_filecontroller_and_all_child_filecontrollers(controller))
-        return ret
+        return list(self.data.iter_datafiles()) + self.resources
 
 
 class _DataLoader(Thread):
