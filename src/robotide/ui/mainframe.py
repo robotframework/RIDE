@@ -68,6 +68,8 @@ class RideFrame(wx.Frame, RideEventHandler):
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         PUBLISHER.subscribe(lambda msg: self.SetStatusText('Saved %s' % msg.path),
                             RideSaved)
+        PUBLISHER.subscribe(lambda msg: self.SetStatusText('Saved all files'),
+                            RideSaveAll)
         self.ensure_on_screen()
         self.Show()
 
@@ -189,8 +191,6 @@ class RideFrame(wx.Frame, RideEventHandler):
 
     def OnSaveAll(self, event):
         self.save()
-        RideSaveAll().publish()
-        self.SetStatusText('Saved all files')
 
     def save(self, controller=None):
         files_without_format = self._controller.get_files_without_format(controller)

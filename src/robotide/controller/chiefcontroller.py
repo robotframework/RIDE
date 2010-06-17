@@ -20,7 +20,8 @@ from robotide.controller import DataController, ResourceFileController
 from robotide.errors import DataError, SerializationError
 from robotide.writer.serializer import Serializer
 from robot.parsing.model import TestData
-from robotide.publish.messages import RideOpenResource
+from robotide.publish.messages import RideOpenResource, RideSaving, RideSaveAll,\
+    RideSaved
 
 
 class ChiefController(object):
@@ -136,6 +137,7 @@ class ChiefController(object):
             except SerializationError, err:
                 errors.append(self._get_serialization_error(err, dc))
         self._log_serialization_errors(errors)
+        RideSaveAll().publish()
 
     def serialize_controller(self, controller):
         try:
@@ -152,9 +154,11 @@ class ChiefController(object):
         return '%s: %s\n' % (controller.data.source, str(err))
 
     def _serialize_file(self, controller):
+        RideSaving(path=controller.source).publish()
         serializer = Serializer()
         serializer.serialize(controller)
         controller.unmark_dirty()
+        RideSaved(path=controller.source).publish()
 
     def _get_all_dirty_controllers(self):
         return [controller for controller in self._get_all_controllers() if controller.dirty]
