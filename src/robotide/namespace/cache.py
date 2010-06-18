@@ -26,6 +26,7 @@ class LibraryCache(object):
     def __init__(self):
         self.libraries = {}
         self._default_libraries = self._get_default_libraries()
+        self._default_kws = self._build_default_kws()
 
     def add_library(self, name, args=None):
         if not self.libraries.has_key(name):
@@ -37,6 +38,9 @@ class LibraryCache(object):
         return self.libraries[name].keywords
 
     def get_default_keywords(self):
+        return self._default_kws
+
+    def _build_default_kws(self):
         kws = []
         for spec in self._default_libraries.values():
             kws.extend(spec.keywords)
