@@ -40,9 +40,9 @@ class ChiefController(object):
     def suite(self):
         return self._controller.data if self._controller else None
 
-    def load_data(self, load_observer, path):
+    def load_data(self, path, load_observer=None):
         try:
-            self.load_datafile(load_observer, path)
+            self.load_datafile(path, load_observer)
         except DataError:
             resource = self.load_resource(path)
             if not resource:
@@ -56,18 +56,20 @@ class ChiefController(object):
         self.resources.append(controller)
         return controller
 
-    def load_datafile(self, load_observer, path):
-        datafile = self._load_datafile(load_observer, path)
+    def load_datafile(self, path, load_observer=None):
+        datafile = self._load_datafile(path, load_observer)
         resources = self._load_resources(datafile, load_observer)
         self._create_controllers(datafile, resources)
-        load_observer.finished()
+        if load_observer:
+            load_observer.finished()
 
-    def _load_datafile(self, load_observer, path):
+    def _load_datafile(self, path, load_observer=None):
         loader = _DataLoader(path)
         loader.start()
         while loader.isAlive():
             time.sleep(0.1)
-            load_observer.notify()
+            if load_observer:
+                load_observer.notify()
         if not loader.datafile:
             raise DataError('Invalid data file: %s.' % path)
         return loader.datafile
@@ -76,12 +78,13 @@ class ChiefController(object):
         self._controller = DataController(datafile, self)
         self.resources = [ResourceFileController(r, self) for r in resources]
 
-    def _load_resources(self, datafile, load_observer):
+    def _load_resources(self, datafile, load_observer=None):
         loader = _ResourceLoader(datafile, self._namespace.get_resources)
         loader.start()
         while loader.isAlive():
             time.sleep(0.1)
-            load_observer.notify()
+            if load_observer:
+                load_observer.notify()
         return loader.resources
 
     def load_resource(self, path):

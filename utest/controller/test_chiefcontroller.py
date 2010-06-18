@@ -15,13 +15,13 @@ class ChiefControllerTest(unittest.TestCase):
         self.ctrl = ChiefController(Namespace())
 
     def test_dirtyness(self):
-        self.ctrl.load_data(FakeLoadObserver(), COMPLEX_SUITE_PATH)
+        self.ctrl.load_data(COMPLEX_SUITE_PATH, FakeLoadObserver())
         assert_true(not self.ctrl.is_dirty())
         self.ctrl.data.new_test('newnessness')
         assert_true(self.ctrl.is_dirty())
 
     def test_load_dirty_controllers(self):
-        self.ctrl.load_data(FakeLoadObserver(), SUITEPATH)
+        self.ctrl.load_data(SUITEPATH, FakeLoadObserver())
         assert_equals(len(self.ctrl._get_all_dirty_controllers()), 0)
         tcf = self._find_suite_by_type(self.ctrl.data.children, TestCaseFileController)
         tcf.new_test('newnessness')
