@@ -99,9 +99,9 @@ class Namespace(object):
 
     def find_user_keyword(self, datafile, kw_name):
         uks = self.retriever.get_user_keywords_from(datafile)
-        return self._find_from(uks, datafile, lambda k: eq(k.name, kw_name))
+        return self._find_from(uks, lambda k: eq(k.name, kw_name))
 
-    def _find_from(self, kws, datafile, predicate):
+    def _find_from(self, kws, predicate):
         for k in kws:
             if predicate(k):
                 return k
@@ -117,7 +117,7 @@ class Namespace(object):
     def _find_from_lib_keywords(self, datafile, predicate):
         kws = self._get_default_keywords()
         kws.extend(self.retriever.get_keywords_from(datafile))
-        return self._find_from(kws, datafile, predicate)
+        return self._find_from(kws, predicate)
 
 
     def is_library_keyword(self, datafile, kw_name):
