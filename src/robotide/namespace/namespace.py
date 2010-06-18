@@ -99,32 +99,32 @@ class Namespace(object):
 
     def find_user_keyword(self, datafile, kw_name):
         uks = self.retriever.get_user_keywords_from(datafile)
-        for kw in uks:
-            if eq(kw_name, kw.name):
-                return kw
+        return self._find_from(uks, datafile, lambda k: eq(k.name, kw_name))
+
+    def _find_from(self, kws, datafile, predicate):
+        for k in kws:
+            if predicate(k):
+                return k
         return None
 
     def is_user_keyword(self, datafile, kw_name):
         return bool(self.find_user_keyword(datafile, kw_name))
 
     def find_library_keyword(self, datafile, kw_name):
-        kws = self.retriever.get_keywords_from(datafile)
-        kws.extend(self._get_default_keywords())
-        for k in kws:
-            if eq(kw_name, k.name) and isinstance(k, LibraryKeywordInfo):
-                return k
-        return None
+        return self._find_from_lib_keywords(datafile,
+            lambda k: eq(k.name, kw_name) and isinstance(k, LibraryKeywordInfo))
+
+    def _find_from_lib_keywords(self, datafile, predicate):
+        kws = self._get_default_keywords()
+        kws.extend(self.retriever.get_keywords_from(datafile))
+        return self._find_from(kws, datafile, predicate)
+
 
     def is_library_keyword(self, datafile, kw_name):
         return bool(self.find_library_keyword(datafile, kw_name))
 
     def keyword_details(self, datafile, name):
-        kws = self._get_default_keywords()
-        kws.extend(self.retriever.get_keywords_from(datafile))
-        for k in kws:
-            if eq(k.name, name):
-                return k.details
-        return None
+        return self._find_from_lib_keywords(datafile, lambda k: eq(k.name, name))
 
 
 class ResourceCache(object):
