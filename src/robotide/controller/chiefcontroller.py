@@ -154,7 +154,7 @@ class ChiefController(object):
 
     def change_format_recursive(self, controller, format):
         for datafile in controller.iter_datafiles():
-            self.change_format(datafile)
+            self.change_format(datafile, format)
 
     def save(self, controller):
         if controller:

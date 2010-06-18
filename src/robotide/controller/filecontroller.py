@@ -50,8 +50,8 @@ class _WithListOperations(object):
 
 class _DataController(object):
 
-    def __init__(self, data, parent=None):
-        self._parent = parent
+    def __init__(self, data, chief_controller=None):
+        self._chief_controller = chief_controller
         self.data = data
         self.dirty = False
         self.children = self._children(data)
@@ -115,11 +115,19 @@ class _DataController(object):
         return True
 
     def get_format(self):
+        if not self.source:
+            return None
         return os.path.splitext(self.source)[1].replace('.','')
 
     def set_format(self, format):
         base = os.path.splitext(self.source)[0]
-        self.data.source = '%s.%s' % (base, format)
+        self.data.source = '%s.%s' % (base, format.lower())
+
+    def save_with_new_format(self, format):
+        self._chief_controller.change_format(self, format)
+
+    def save_with_new_format_recursive(self, format):
+        self._chief_controller.change_format_recursive(self, format)
 
     def validate_keyword_name(self, name):
         return self.keywords.validate_name(name)
@@ -136,7 +144,7 @@ class _DataController(object):
         return False
 
     def resource_import_modified(self, path):
-        return self._parent.resource_import_modified(os.path.join(self.directory, path))
+        return self._chief_controller.resource_import_modified(os.path.join(self.directory, path))
 
     def iter_datafiles(self):
         yield self
@@ -148,7 +156,7 @@ class _DataController(object):
 class TestDataDirectoryController(_DataController):
 
     def _children(self, data):
-        return [DataController(child, self._parent) for child in data.children]
+        return [DataController(child, self._chief_controller) for child in data.children]
 
     def has_format(self):
         return self.data.initfile is not None
@@ -160,18 +168,18 @@ class TestDataDirectoryController(_DataController):
             d = TestCaseFile()
         d.source = source
         self.data.children.append(d)
-        return DataController(d, self._parent)
+        return DataController(d, self._chief_controller)
 
     @property
     def source(self):
         return self.data.initfile
 
     def set_format(self, format):
-        self.data.initfile=os.path.join(self.data.source,'__init__.%s' % format)
+        self.data.initfile=os.path.join(self.data.source,'__init__.%s' % format.lower())
         self.mark_dirty()
 
     def new_datafile(self, datafile):
-        self.children.append(DataController(datafile, self._parent))
+        self.children.append(DataController(datafile, self._chief_controller))
 
     def is_directory_suite(self):
         return True
