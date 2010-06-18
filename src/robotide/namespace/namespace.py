@@ -47,15 +47,17 @@ class Namespace(object):
         return self.lib_cache.get_default_keywords()
 
     def get_suggestions_for(self, datafile, start):
-        sugs = self._get_suggestions_from_hooks(datafile, start)
+        sugs = set()
+        sugs.update(self._get_suggestions_from_hooks(datafile, start))
         if self._blank(start):
-            sugs = sugs + self._all_suggestions(datafile)
+            sugs.update(self._all_suggestions(datafile))
         elif self._looks_like_variable(start):
-            sugs = sugs + self._variable_suggestions(datafile, start)
+            sugs.update(self._variable_suggestions(datafile, start))
         else:
-            sugs = sugs + self._keyword_suggestions(datafile, start)
-        sugs.sort()
-        return sugs
+            sugs.update(self._keyword_suggestions(datafile, start))
+        sugs_list = list(sugs)
+        sugs_list.sort()
+        return sugs_list
 
     def _get_suggestions_from_hooks(self, datafile, start):
         sugs = []
@@ -118,7 +120,6 @@ class Namespace(object):
         kws = self._get_default_keywords()
         kws.extend(self.retriever.get_keywords_from(datafile))
         return self._find_from(kws, predicate)
-
 
     def is_library_keyword(self, datafile, kw_name):
         return bool(self.find_library_keyword(datafile, kw_name))

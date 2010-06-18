@@ -129,7 +129,7 @@ class TestKeywordSuggestions(_DataFileTest):
         for kw in sugs:
             if self._not_variable(kw):
                 key = 'kw: %s %s' % (kw.name, kw.source)
-                assert_false(key in kw_set)
+                assert_false(key in kw_set, key)
                 kw_set.append(key)
 
     def _not_variable(self, item):
