@@ -413,6 +413,31 @@ class VariablesControllerTest(unittest.TestCase):
         assert_equals(self.tcf.variable_table.variables[index].value, value)
 
 
+class MetadataListControllerTest(unittest.TestCase):
+
+    def setUp(self):
+        self.tcf = TestCaseFile()
+        self.tcf.setting_table.add_metadata('Meta name', 'Some value')
+        self.ctrl = MetadataListController(TestCaseFileController(self.tcf),
+                                           self.tcf.setting_table)
+
+    def test_creation(self):
+        self._assert_meta_in_ctrl(0, 'Meta name', 'Some value')
+
+    def test_editing(self):
+        self.ctrl[0].set_value('New name', 'another value')
+        self._assert_meta_in_model(0,'New name', 'another value')
+        assert_true(self.ctrl[0].dirty)
+
+    def _assert_meta_in_ctrl(self, index, name, value):
+        assert_equals(self.ctrl[index].name, name)
+        assert_equals(self.ctrl[index].value, value)
+
+    def _assert_meta_in_model(self, index, name, value):
+        assert_equals(self.tcf.setting_table.metadata[index].name, name)
+        assert_equals(self.tcf.setting_table.metadata[index].value, value)
+
+
 class FakeListController(_WithListOperations):
 
     def __init__(self):
