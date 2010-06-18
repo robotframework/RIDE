@@ -34,29 +34,28 @@ class RideEventHandler(object):
     __metaclass__ = eventhandlertype
 
     def _can_be_edited(self, event):
-        return True
-        item = self.get_selected_datafile()
-        if item and item.has_been_modified_on_disk():
-            return self._show_modified_on_disk_warning(item, event)
+        ctrl = self.get_selected_datafile_controller()
+        if ctrl and ctrl.has_been_modified_on_disk():
+            return self._show_modified_on_disk_warning(ctrl, event)
         return True
 
-    def _show_modified_on_disk_warning(self, item, event):
+    def _show_modified_on_disk_warning(self, ctrl, event):
         msg = ['The file has been changed on the file system.',
                'Do you want to reload the file?',
                'Answering <No> will overwrite the changes on disk.']
-        if item.dirty:
+        if ctrl.dirty:
             msg.insert(2, 'Answering <Yes> will discard unsaved changes.')
         ret = wx.MessageBox('\n'.join(msg), 'File Modified',
                             style=wx.YES_NO|wx.CANCEL|wx.ICON_WARNING)
         if ret == wx.YES:
-            item.reload_from_disk()
-            self.refresh_datafile(item, event)
+            ctrl.reload()
+            self.replace_datafile(ctrl, event)
             return True
         elif ret == wx.NO:
-            item.serialize(force=True)
+            ctrl.serialize(force=True)
             return True
         else:
             return False
 
-    def get_selected_datafile(self):
+    def get_selected_datafile_controller(self):
         raise NotImplementedError(self.__class__.__name__)

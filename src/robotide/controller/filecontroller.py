@@ -17,7 +17,7 @@ import os
 from robot.parsing.tablepopulators import UserKeywordPopulator, TestCasePopulator
 
 from robotide.robotapi import (TestDataDirectory, TestCaseFile, DataRow,
-                               is_list_var, is_scalar_var)
+                               is_list_var, is_scalar_var, ResourceFile)
 from robotide.controller.settingcontroller import (DocumentationController,
         FixtureController, TagsController, TimeoutController,
         TemplateController, ArgumentsController, MetadataController,
@@ -55,6 +55,13 @@ class _DataController(object):
         self.data = data
         self.dirty = False
         self.children = self._children(data)
+        self._stat = self._get_stat(self.source)
+
+    def _get_stat(self, path):
+        if path and os.path.isfile(path):
+            stat = os.stat(path)
+            return (stat.st_mtime, stat.st_size)
+        return (0, 0)
 
     @property
     def name(self):
@@ -98,13 +105,14 @@ class _DataController(object):
         return MetadataListController(self, self.data.setting_table)
 
     def has_been_modified_on_disk(self):
-        return False
+        return self._get_stat(self.source) != self._stat
 
     def mark_dirty(self):
         self.dirty = True
 
     def unmark_dirty(self):
         self.dirty = False
+        self._stat = self._get_stat(self.source)
 
     def new_keyword(self, name):
         kw = self.keywords.new(name)
@@ -152,6 +160,9 @@ class _DataController(object):
             for datafile in child.iter_datafiles():
                 yield datafile
 
+    def save(self):
+        self._chief_controller.serialize_controller(self)
+
 
 class TestDataDirectoryController(_DataController):
 
@@ -184,6 +195,9 @@ class TestDataDirectoryController(_DataController):
     def is_directory_suite(self):
         return True
 
+    def reload(self):
+        self.data = TestDataDirectory(source=self.directory)
+
 
 class TestCaseFileController(_DataController):
 
@@ -202,6 +216,9 @@ class TestCaseFileController(_DataController):
     def validate_test_name(self, name):
         return self.tests.validate_name(name)
 
+    def reload(self):
+        self.__init__(TestCaseFile(source=self.source), self._chief_controller)
+
 
 class ResourceFileController(_DataController):
 
@@ -216,6 +233,9 @@ class ResourceFileController(_DataController):
             if uk != name and utils.eq(uk.name, name):
                 return 'User keyword with this name already exists.'
         return None
+
+    def reload(self):
+        self.data = ResourceFile(source=self.source)
 
 
 class _TableController(object):
@@ -314,6 +334,9 @@ class TestCaseTableController(_TableController, _WithItemMovingOperations):
     def __getitem__(self, index):
         return TestCaseController(self, self._table.tests[index])
 
+    def __len__(self):
+        return len(self._items)
+
     def new(self, name):
         tc_controller = TestCaseController(self, self._table.add(name))
         self.mark_dirty()
@@ -334,11 +357,15 @@ class TestCaseTableController(_TableController, _WithItemMovingOperations):
 
 
 class KeywordTableController(_TableController, _WithItemMovingOperations):
+
     def __iter__(self):
         return iter(UserKeywordController(self, kw) for kw in self._table)
 
     def __getitem__(self, index):
         return UserKeywordController(self, self._table.keywords[index])
+
+    def __len__(self):
+        return len(self._items)
 
     def new(self, name):
         return UserKeywordController(self, self._table.add(name))

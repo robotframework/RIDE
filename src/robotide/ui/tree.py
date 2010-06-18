@@ -1,4 +1,3 @@
-
 #  Copyright 2008-2009 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
@@ -240,16 +239,17 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
         If a test or user keyword node is selected, returns parent of that item.
         """
-        return self._get_handler(self._get_selected_datafle_node()).item
+        return self._get_handler(self._get_selected_datafile_node()).item
 
     def get_selected_datafile_controller(self):
         """Returns controller associated with currently active data file.
 
         If a test or user keyword node is selected, returns parent of that item.
         """
-        return self._get_handler(self._get_selected_datafle_node()).controller
+        dfnode = self._get_selected_datafile_node()
+        return self._get_handler(dfnode).controller if dfnode else None
 
-    def _get_selected_datafle_node(self):
+    def _get_selected_datafile_node(self):
         node = self.GetSelection()
         if not node or node in (self._resource_root, self._root):
             return None
