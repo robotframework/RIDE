@@ -101,7 +101,7 @@ class Namespace(object):
 
     def find_user_keyword(self, datafile, kw_name):
         uks = self.retriever.get_user_keywords_from(datafile)
-        return self._find_from(uks, lambda k: eq(k.name, kw_name))
+        return self._find_from(uks, lambda kw: eq(kw.name, kw_name))
 
     def _find_from(self, kws, predicate):
         for k in kws:
@@ -132,6 +132,7 @@ class ResourceCache(object):
 
     def __init__(self):
         self.cache = {}
+        self.non_existing = []
 
     def get_resource(self, directory, name):
         path = os.path.join(directory, name)
@@ -145,10 +146,13 @@ class ResourceCache(object):
 
     def _get_resource(self, path):
         normalized = os.path.normpath(path)
+        if normalized in self.non_existing:
+            return None
         if normalized not in self.cache:
             try:
                 self.cache[normalized] = ResourceFile(path)
             except Exception:
+                self.non_existing.append(normalized)
                 return None
         return self.cache[normalized]
 

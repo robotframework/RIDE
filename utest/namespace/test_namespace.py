@@ -1,6 +1,5 @@
 import os
 import sys
-import time
 import unittest
 
 from robot.parsing.settings import Resource
@@ -217,14 +216,6 @@ class TestKeywordSearch(_DataFileTest):
         assert_true(self.ns.is_user_keyword(everything_tcf, 'Duplicate UK'))
         assert_not_none(self.ns.find_user_keyword(everything_tcf, 'Another Resource UK'))
         assert_true(self.ns.is_user_keyword(everything_tcf, 'Another Resource UK'))
-
-    def test_keyword_find_performance(self):
-        everything_tcf = TestCaseFile(source=TESTCASEFILE_WITH_EVERYTHING)
-        start_time = time.time()
-        for i in range(100):
-            self.ns.is_user_keyword(everything_tcf, 'hevonen %s' % i)
-        end_time = time.time() - start_time
-        assert_true(end_time < 0.5, 'Checking 1000 kws took too long: %ds.' % end_time)
 
     def assert_in_keywords(self, keywords, *kw_names):
         for kw_name in kw_names:
