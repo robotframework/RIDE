@@ -26,13 +26,13 @@ class TestDataLoading(unittest.TestCase):
         assert_raises(DataError, self._load, 'invalid')
 
     def _load(self, path):
-        self.ctrl.load_data(self.load_observer, path)
+        self.ctrl.load_data(path, self.load_observer)
         assert_true(self.load_observer.finished)
 
     def test_loading_invalid_datafile(self):
         assert_raises_with_msg(DataError, 'Invalid data file: invalid.',
-                               self.ctrl.load_datafile, FakeLoadObserver(),
-                               'invalid')
+                               self.ctrl.load_datafile, 
+                               'invalid', FakeLoadObserver())
 
     def test_loading_invalid_resource(self):
         assert_raises_with_msg(DataError, 'Invalid resource file: invalid.',

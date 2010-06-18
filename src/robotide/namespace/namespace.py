@@ -132,7 +132,6 @@ class ResourceCache(object):
 
     def __init__(self):
         self.cache = {}
-        self.non_existing = []
 
     def get_resource(self, directory, name):
         path = os.path.join(directory, name)
@@ -146,13 +145,11 @@ class ResourceCache(object):
 
     def _get_resource(self, path):
         normalized = os.path.normpath(path)
-        if normalized in self.non_existing:
-            return None
         if normalized not in self.cache:
             try:
                 self.cache[normalized] = ResourceFile(path)
             except Exception:
-                self.non_existing.append(normalized)
+                self.cache[normalized] = None
                 return None
         return self.cache[normalized]
 

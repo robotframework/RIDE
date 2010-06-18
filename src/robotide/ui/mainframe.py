@@ -174,7 +174,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         return path
 
     def open_suite(self, path):
-        self._controller.load_datafile(LoadProgressObserver(self, path), path)
+        self._controller.load_datafile(path, LoadProgressObserver(self, path))
         self.tree.populate(self._controller)
 
     def refresh_datafile(self, item, event):
