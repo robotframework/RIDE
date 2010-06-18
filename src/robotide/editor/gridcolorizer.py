@@ -58,7 +58,13 @@ class Colorizer(Plugin):
         return re.match('[\$\@]{.*?}=?', value)
 
     def _is_commented(self, grid, row):
-        return grid.GetCellValue(row, 0).strip().lower() == "comment"
+        for i in range(grid.NumberCols):
+            cell_val = grid.GetCellValue(row, i).strip().lower()
+            if i == 0 and cell_val == "comment":
+                return True
+            if cell_val.startswith('#'):
+                return True
+        return False
 
     def _handle_comment_or_uncomment(self, grid, row, col, value, previous):
         """If a row is (un)commented, that row need to be re-colorized"""
