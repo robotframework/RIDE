@@ -182,6 +182,11 @@ class TestKeywordSuggestions(_DataFileTest):
 
 class TestKeywordSearch(_DataFileTest):
 
+    def test_is_library_keyword(self):
+        assert_true(self.ns.is_library_keyword(self.tcf, 'Should Be Equal'))
+        assert_false(self.ns.is_library_keyword(self.tcf, 'kameli'))
+        assert_false(self.ns.is_library_keyword(self.tcf, 'UK From Resource from Resource with Variable'))
+
     def test_find_default_keywords(self):
         all_kws = self.ns.get_all_keywords([])
         assert_not_none(all_kws)
@@ -216,6 +221,11 @@ class TestFindUserKeyword(_DataFileTest):
     def test_find_uk(self):
         assert_not_none(self.ns.find_user_keyword(self.tcf, 'UK From Resource from Resource with Variable'))
         assert_none(self.ns.find_user_keyword(self.tcf, 'Copy List'))
+
+    def test_is_user_keyword(self):
+        assert_true(self.ns.is_user_keyword(self.tcf, 'UK From Resource from Resource with Variable'))
+        assert_false(self.ns.is_user_keyword(self.tcf, 'hevoinen'))
+        assert_false(self.ns.is_user_keyword(self.tcf, 'Should Be Equal'))
 
 
 class TestVariableStash(unittest.TestCase):

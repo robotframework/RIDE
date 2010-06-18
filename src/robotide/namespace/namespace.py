@@ -22,7 +22,7 @@ from robot.utils.normalizing import normalize
 from robot.variables import Variables as RobotVariables
 
 from robotide.namespace.cache import LibraryCache
-from robotide.spec.iteminfo import TestCaseUserKeywordInfo, ResourceseUserKeywordInfo, VariableInfo
+from robotide.spec.iteminfo import TestCaseUserKeywordInfo, ResourceseUserKeywordInfo, VariableInfo, LibraryKeywordInfo
 from robotide import utils
 
 
@@ -103,6 +103,20 @@ class Namespace(object):
             if eq(kw_name, kw.name):
                 return kw
         return None
+
+    def is_user_keyword(self, datafile, kw_name):
+        return bool(self.find_user_keyword(datafile, kw_name))
+
+    def find_library_keyword(self, datafile, kw_name):
+        kws = self.retriever.get_keywords_from(datafile)
+        kws.extend(self._get_default_keywords())
+        for k in kws:
+            if eq(kw_name, k.name) and isinstance(k, LibraryKeywordInfo):
+                return k
+        return None
+
+    def is_library_keyword(self, datafile, kw_name):
+        return bool(self.find_library_keyword(datafile, kw_name))
 
     def keyword_details(self, datafile, name):
         kws = self._get_default_keywords()
