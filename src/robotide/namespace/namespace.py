@@ -132,16 +132,24 @@ class ResourceCache(object):
 
     def __init__(self):
         self.cache = {}
+        self.python_path_cache = {}
 
     def get_resource(self, directory, name):
         path = os.path.join(directory, name)
         res = self._get_resource(path)
         if res:
             return res
-        path_from_pythonpath = utils.find_from_pythonpath(name)
+        path_from_pythonpath = self._get_python_path(name)
         if path_from_pythonpath:
             return self._get_resource(path_from_pythonpath)
         return None
+
+    def _get_python_path(self, name):
+        if name in self.python_path_cache:
+            return self.python_path_cache[name]
+        path_from_pythonpath = utils.find_from_pythonpath(name)
+        self.python_path_cache[name] = path_from_pythonpath
+        return self.python_path_cache[name]
 
     def _get_resource(self, path):
         normalized = os.path.normpath(path)
