@@ -229,7 +229,10 @@ class TestKeywordSearch(_DataFileTest):
 class TestKeywordDetails(_DataFileTest):
 
     def test_default_keyword_details(self):
-        assert_not_none(self.ns.keyword_details(self.tcf, 'Log'))
+        details = self.ns.keyword_details(self.tcf, 'Log')
+        assert_not_none(details)
+        exp_details = 'Source: BuiltIn &lt;test library&gt;<br><br>Arguments: [ message | level=INFO ]<br><br>Logs the given message'
+        assert_true(details.startswith(exp_details))
 
 
 class TestVariableStash(unittest.TestCase):
