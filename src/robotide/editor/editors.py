@@ -198,8 +198,8 @@ class SettingEditor(wx.Panel, RideEventHandler):
             self._value_display.Clear()
             self._value_display.SetBackgroundColour('light grey')
 
-    def get_selected_datafile(self):
-        return self._datafile
+    def get_selected_datafile_controller(self):
+        return self._controller.datafile_controller
 
 
 class DocumentationEditor(SettingEditor):
@@ -300,15 +300,15 @@ class TestCaseEditor(_RobotTableEditor):
 class UserKeywordEditor(TestCaseEditor): pass
 
 
-class _AbstractListEditor(ListEditor, RideEventHandler):
+class _AbstractListEditor(ListEditor):
 
     def __init__(self, parent, tree, controller):
         ListEditor.__init__(self, parent, self._titles, controller)
         self._datafile = controller.datafile
         self._tree = tree
 
-    def get_selected_datafile(self):
-        return self._datafile
+    def get_selected_datafile_controller(self):
+        return self._controller.datafile_controller
 
     def refresh_datafile(self, item, event):
         self._tree.refresh_datafile(item, event)

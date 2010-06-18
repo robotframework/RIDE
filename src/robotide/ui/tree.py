@@ -287,7 +287,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def refresh_datafile(self, controller, event):
         to_be_selected = self._get_pending_selection(event)
-        orig_node = self._get_datafile_node(controller.datafile)
+        orig_node = self._get_data_controller_node(controller)
         insertion_index = self._get_datafile_index(orig_node)
         parent = self._get_parent(orig_node)
         self._remove_datafile_node(orig_node)
@@ -305,6 +305,12 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         else:
             return
         return self.GetItemText(item)
+
+    def _get_data_controller_node(self, controller):
+        for node in self._datafile_nodes:
+            if self.GetItemPyData(node).controller == controller:
+                return node
+        return None
 
     def _click_on_item(self, flags):
         return flags & wx.TREE_HITTEST_ONITEM

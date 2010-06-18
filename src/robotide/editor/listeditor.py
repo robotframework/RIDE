@@ -15,10 +15,10 @@
 import wx
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 
-from robotide.utils import ButtonWithHandler, PopupMenu
+from robotide.utils import ButtonWithHandler, PopupMenu, RideEventHandler
 
 
-class ListEditor(wx.Panel):
+class ListEditor(wx.Panel, RideEventHandler):
     _menu = ['Edit', 'Move Up', 'Move Down', '---', 'Delete']
     _buttons = []
 
