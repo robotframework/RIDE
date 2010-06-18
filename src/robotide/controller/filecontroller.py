@@ -211,7 +211,10 @@ class _TableController(object):
 class VariableTableController(_TableController, _WithListOperations):
 
     def __iter__(self):
-        return iter(VariableController(v) for v in self._table)
+        return iter(VariableController(self, v) for v in self._table)
+
+    def __getitem__(self, index):
+        return VariableController(self, self._items[index])
 
     @property
     def _items(self):
@@ -252,10 +255,23 @@ class _ListVarValidator(object):
 
 
 class VariableController(object):
-    def __init__(self, var):
+    def __init__(self, parent_controller, var):
+        self._parent = parent_controller
         self._var = var
-        self.name = var.name
-        self.value= var.value
+
+    @property
+    def name(self):
+        return self._var.name
+
+    @property
+    def value(self):
+        return self._var.value
+
+    def set_value(self, name, value):
+        value = [value] if isinstance(value, basestring) else value
+        self._var.name = name
+        self._var.value = value
+        self._parent.mark_dirty()
 
 
 class _WithItemMovingOperations(object):

@@ -341,15 +341,15 @@ class VariablesListEditor(_AbstractListEditor):
         dlg.Destroy()
 
     def OnEdit(self, event):
-        item = self._controller.get_name_and_value(self._selection)
-        if item[0].startswith('${'):
+        var = self._controller[self._selection]
+        if var.name.startswith('${'):
             dlg = ScalarVariableDialog(self.GetGrandParent(),
-                                       self._controller, item=item)
+                                       self._controller, item=var)
         else:
             dlg = ListVariableDialog(self.GetGrandParent(),
-                                     self._controller, item=item)
+                                     self._controller, item=var)
         if dlg.ShowModal() == wx.ID_OK:
-            self._controller.set_name_and_value(self._selection, *dlg.get_value())
+            var.set_value(*dlg.get_value())
             self.update_data()
         dlg.Destroy()
 

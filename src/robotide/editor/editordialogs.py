@@ -72,7 +72,7 @@ class _Dialog(wx.Dialog):
 class ScalarVariableDialog(_Dialog):
 
     def _get_editors(self, var):
-        name, value = var or ('${}', '')
+        name, value = (var.name, var.value[0]) if var else ('${}', '')
         validator = ScalarVariableNameValidator(self._controller, name)
         return [VariableNameEditor(self, name, 'Name', validator),
                 ValueEditor(self, value, 'Value')]
@@ -80,7 +80,7 @@ class ScalarVariableDialog(_Dialog):
 class ListVariableDialog(_Dialog):
 
     def _get_editors(self, var):
-        name, value = var or ('@{}', '')
+        name, value = (var.name, var.value) if var else ('@{}', '')
         validator = ListVariableNameValidator(self._controller, name)
         return [VariableNameEditor(self, name, 'Name', validator),
                 ListValueEditor(self, value, 'Value')]
