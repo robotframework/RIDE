@@ -29,6 +29,8 @@ class TestFormatChange(unittest.TestCase):
         self._assert_serialized(init_file)
         path_to_sub_init_file = os.path.join(SUITEPATH,'subsuite','__init__.txt')
         self._assert_serialized(path_to_sub_init_file)
+        path_to_old_sub_init_file = os.path.join(SUITEPATH,'subsuite','__init__.tsv')
+        self._assert_removed(path_to_old_sub_init_file)
         path_to_txt_file = os.path.join(SUITEPATH,'subsuite','test.txt')
         self._assert_not_serialized(path_to_txt_file)
         self._assert_not_removed(path_to_txt_file)
