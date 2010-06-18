@@ -440,12 +440,18 @@ class _ActionHandler(wx.Window):
         utils.PopupMenu(self, self._actions)
 
     def OnChangeFormat(self, event):
-        dlg = ChangeFormatDialog(self, self.item.get_format(),
-                                 self.item.is_directory_suite)
+        format =self.controller.get_format() or 'txt'
+        dlg = ChangeFormatDialog(self, format,
+                                 self.controller.is_directory_suite())
         if dlg.ShowModal() == wx.ID_OK:
-            self.item.serialize(format=dlg.get_format(),
-                                recursive=dlg.get_recursive())
+            self._handle_format_change(dlg)
         dlg.Destroy()
+
+    def _handle_format_change(self, dialog):
+        if dialog.get_recursive():
+            self.controller.save_with_new_format_recursive(dialog.get_format())
+        else:
+            self.controller.save_with_new_format(dialog.get_format())
 
 
 class TestDataDirectoryHandler(_ActionHandler):
