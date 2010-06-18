@@ -24,6 +24,7 @@ from robot.variables import Variables as RobotVariables
 from robotide.namespace.cache import LibraryCache
 from robotide.spec.iteminfo import TestCaseUserKeywordInfo, ResourceseUserKeywordInfo, VariableInfo, LibraryKeywordInfo
 from robotide import utils
+import time
 
 
 class Namespace(object):
@@ -31,7 +32,8 @@ class Namespace(object):
     def __init__(self):
         self.lib_cache = LibraryCache()
         self.res_cache = ResourceCache()
-        self.retriever = DatafileRetriever(self.lib_cache, self.res_cache)
+        self.expiring_cache = ExpiringCache()
+        self.retriever = DatafileRetriever(self.lib_cache, self.res_cache, self.expiring_cache)
         self._content_assist_hooks = []
 
     def register_content_assist_hook(self, hook):
@@ -100,7 +102,7 @@ class Namespace(object):
         return self.res_cache.get_resource('', path)
 
     def find_user_keyword(self, datafile, kw_name):
-        uks = self.retriever.get_user_keywords_from(datafile)
+        uks = self.retriever.get_user_keywords_cached(datafile)
         return self._find_from(uks, lambda kw: eq(kw.name, kw_name))
 
     def _find_from(self, kws, predicate):
@@ -168,11 +170,32 @@ class VariableStash(RobotVariables):
         return self.replace_string(value, ignore_errors=True)
 
 
+class ExpiringCache(object):
+
+    def __init__(self, timeout=0.1):
+        self._cache = {}
+        self._timeout = timeout
+
+    def get(self, key):
+        if key in self._cache:
+            key_time, values = self._cache[key]
+            if self._is_valid(key_time):
+                return values
+        return None
+
+    def _is_valid(self, key_time):
+        return (time.time() - key_time) < self._timeout
+
+    def put(self, key, values):
+        self._cache[key] = (time.time(), values)
+
+
 class DatafileRetriever(object):
 
-    def __init__(self, lib_cache, res_cache):
+    def __init__(self, lib_cache, res_cache, uks_cache):
         self.lib_cache = lib_cache
         self.res_cache = res_cache
+        self.uks_cache = uks_cache
         self.default_kws = self.lib_cache.get_default_keywords()
 
     def get_keywords_from_several(self, datafiles):
@@ -254,7 +277,14 @@ class DatafileRetriever(object):
     def _var_collector(self, res, vars, items):
         self._get_vars_recursive(res, vars)
 
-    def get_user_keywords_from(self, datafile):
+    def get_user_keywords_cached(self, datafile):
+        values = self.uks_cache.get(datafile.source)
+        if not values:
+            values = self._get_user_keywords_from(datafile)
+            self.uks_cache.put(datafile.source, values)
+        return values
+
+    def _get_user_keywords_from(self, datafile):
         return list(self._get_user_keywords_recursive(datafile, VariableStash()))
 
     def _get_user_keywords_recursive(self, datafile, vars):
