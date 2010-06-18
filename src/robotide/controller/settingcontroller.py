@@ -17,10 +17,47 @@ from robotide import utils
 
 
 class MetadataController(object):
-    def __init__(self, meta):
+
+    def __init__(self, parent_controller, meta):
+        self._parent = parent_controller
         self._meta = meta
-        self.name = meta.name
-        self.value = meta.value
+
+    @property
+    def name(self):
+        return self._meta.name
+
+    @property
+    def value(self):
+        return self._meta.value
+
+    @property
+    def dirty(self):
+        return self._parent.dirty
+
+    def set_value(self, name, value):
+        self._meta.name = name
+        self._meta.value = value
+        self._parent.mark_dirty()
+
+
+class VariableController(object):
+    def __init__(self, parent_controller, var):
+        self._parent = parent_controller
+        self._var = var
+
+    @property
+    def name(self):
+        return self._var.name
+
+    @property
+    def value(self):
+        return self._var.value
+
+    def set_value(self, name, value):
+        value = [value] if isinstance(value, basestring) else value
+        self._var.name = name
+        self._var.value = value
+        self._parent.mark_dirty()
 
 
 class ImportController(object):
@@ -182,7 +219,6 @@ class TimeoutController(_SettingController):
         val = parts[0].strip() if parts else ''
         msg = parts[1].strip() if len(parts) == 2 else ''
         return val, msg
-
 
 
 class TemplateController(_SettingController):

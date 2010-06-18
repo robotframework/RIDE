@@ -406,7 +406,7 @@ class MetadataListEditor(_AbstractListEditor):
         dlg = MetadataDialog(self.GetGrandParent(), self._controller.datafile,
                              item=meta)
         if dlg.ShowModal() == wx.ID_OK:
-            meta.set_name_and_value(*dlg.get_value())
+            meta.set_value(*dlg.get_value())
             self.update_data()
         dlg.Destroy()
 

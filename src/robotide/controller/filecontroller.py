@@ -21,7 +21,7 @@ from robotide.robotapi import (TestDataDirectory, TestCaseFile, DataRow,
 from robotide.controller.settingcontroller import (DocumentationController,
         FixtureController, TagsController, TimeoutController,
         TemplateController, ArgumentsController, MetadataController,
-        ImportController, ReturnValueController)
+        ImportController, ReturnValueController, VariableController)
 from robotide import utils
 
 
@@ -254,26 +254,6 @@ class _ListVarValidator(object):
     prefix = '@'
 
 
-class VariableController(object):
-    def __init__(self, parent_controller, var):
-        self._parent = parent_controller
-        self._var = var
-
-    @property
-    def name(self):
-        return self._var.name
-
-    @property
-    def value(self):
-        return self._var.value
-
-    def set_value(self, name, value):
-        value = [value] if isinstance(value, basestring) else value
-        self._var.name = name
-        self._var.value = value
-        self._parent.mark_dirty()
-
-
 class _WithItemMovingOperations(object):
 
     def move_up(self, item):
@@ -484,7 +464,10 @@ class ImportSettingsController(_TableController, _WithListOperations):
 class MetadataListController(_TableController, _WithListOperations):
 
     def __iter__(self):
-        return iter(MetadataController(m) for m in self._items)
+        return iter(MetadataController(self, m) for m in self._items)
+
+    def __getitem__(self, index):
+        return MetadataController(self, self._items[index])
 
     @property
     def _items(self):
