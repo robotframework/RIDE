@@ -135,6 +135,11 @@ class _DataController(object):
         base = os.path.splitext(self.source)[0]
         self.data.source = '%s.%s' % (base, format.lower())
 
+    def is_same_format(self, format):
+        if format and self.has_format():
+            return format.lower() == self.get_format().lower()
+        return False
+
     def save_with_new_format(self, format):
         self._chief_controller.change_format(self, format)
 

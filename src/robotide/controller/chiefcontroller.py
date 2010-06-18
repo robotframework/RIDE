@@ -145,15 +145,16 @@ class ChiefController(object):
         return False
 
     def change_format(self, controller, format):
-        if controller.has_format():
-            old_format = controller.get_format()
-            if format.lower() == old_format.lower():
-                return
+        if controller.is_same_format(format):
+            return
         old_path = controller.source
         controller.set_format(format)
         self.serialize_controller(controller)
-        if old_path:
-            os.remove(old_path)
+        self._remove_file(old_path)
+
+    def _remove_file(self, path):
+        if path:
+            os.remove(path)
 
     def change_format_recursive(self, controller, format):
         for datafile in controller.iter_datafiles():
