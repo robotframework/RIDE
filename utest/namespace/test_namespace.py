@@ -201,6 +201,22 @@ class TestKeywordSearch(_DataFileTest):
         self.assert_in_keywords(all_kws, 'My Test Setup',
                                          'My Suite Teardown')
 
+    def test_find_user_keyword(self):
+        assert_not_none(self.ns.find_user_keyword(self.tcf, 'UK From Resource from Resource with Variable'))
+        assert_none(self.ns.find_user_keyword(self.tcf, 'Copy List'))
+
+    def test_is_user_keyword(self):
+        assert_true(self.ns.is_user_keyword(self.tcf, 'UK From Resource from Resource with Variable'))
+        assert_false(self.ns.is_user_keyword(self.tcf, 'hevoinen'))
+        assert_false(self.ns.is_user_keyword(self.tcf, 'Should Be Equal'))
+
+    def test_is_user_keyword_in_resource_file(self):
+        everything_tcf = TestCaseFile(source=TESTCASEFILE_WITH_EVERYTHING)
+        assert_not_none(self.ns.find_user_keyword(everything_tcf, 'Duplicate UK'))
+        assert_true(self.ns.is_user_keyword(everything_tcf, 'Duplicate UK'))
+        assert_not_none(self.ns.find_user_keyword(everything_tcf, 'Another Resource UK'))
+        assert_true(self.ns.is_user_keyword(everything_tcf, 'Another Resource UK'))
+
     def assert_in_keywords(self, keywords, *kw_names):
         for kw_name in kw_names:
             if not self._in_keywords(keywords, kw_name):
@@ -214,18 +230,6 @@ class TestKeywordDetails(_DataFileTest):
 
     def test_default_keyword_details(self):
         assert_not_none(self.ns.keyword_details(self.tcf, 'Log'))
-
-
-class TestFindUserKeyword(_DataFileTest):
-
-    def test_find_uk(self):
-        assert_not_none(self.ns.find_user_keyword(self.tcf, 'UK From Resource from Resource with Variable'))
-        assert_none(self.ns.find_user_keyword(self.tcf, 'Copy List'))
-
-    def test_is_user_keyword(self):
-        assert_true(self.ns.is_user_keyword(self.tcf, 'UK From Resource from Resource with Variable'))
-        assert_false(self.ns.is_user_keyword(self.tcf, 'hevoinen'))
-        assert_false(self.ns.is_user_keyword(self.tcf, 'Should Be Equal'))
 
 
 class TestVariableStash(unittest.TestCase):
