@@ -22,7 +22,7 @@ class TestNamespacePerformance(unittest.TestCase):
         chief.load_datafile(TESTCASEFILE_WITH_EVERYTHING)
         everything_tcf = chief._controller.data
         start_time = time.time()
-        for i in range(1000):
+        for i in range(100):
             ns.is_user_keyword(everything_tcf, 'hevonen %s' % i)
         end_time = time.time() - start_time
         assert_true(end_time < 0.5, 'Checking 1000 kws took too long: %fs.' % end_time)
