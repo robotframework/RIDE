@@ -381,23 +381,36 @@ class VariablesControllerTest(unittest.TestCase):
     def setUp(self):
         self.tcf = TestCaseFile()
         self._add_var('${foo}', 'foo')
-        self._add_var('${bar}', 'bar')
+        self._add_var('@{bar}', ['b', 'a', 'r'])
         self.ctrl = VariableTableController(TestCaseFileController(self.tcf),
                                             self.tcf.variable_table)
 
     def _add_var(self, name, value):
         self.tcf.variable_table.add(name, value)
 
+    def test_creation(self):
+        assert_equals(self.ctrl[0].name, '${foo}')
+        assert_equals(self.ctrl[1].name, '@{bar}')
+
     def test_adding_scalar(self):
         self.ctrl.add_variable('${blaa}', 'value')
         assert_true(self.ctrl.dirty)
-        self._assert_var_in(2, '${blaa}')
+        self._assert_var_in_model(2, '${blaa}', ['value'])
 
-    def test_creation(self):
-        assert_true(self.ctrl._items is not None)
+    def test_editing(self):
+        self.ctrl[0].set_value('${blaa}', 'quux')
+        self._assert_var_in_ctrl(0, '${blaa}', ['quux'])
+        self.ctrl[1].set_value('@{listvar}', ['a', 'b', 'c'])
+        self._assert_var_in_ctrl(1, '@{listvar}', ['a', 'b', 'c'])
+        assert_true(self.ctrl.dirty)
 
-    def _assert_var_in(self, index, name):
+    def _assert_var_in_ctrl(self,index, name, value):
+        assert_equals(self.ctrl[index].name, name)
+        assert_equals(self.ctrl[index].value, value)
+
+    def _assert_var_in_model(self, index, name, value):
         assert_equals(self.tcf.variable_table.variables[index].name, name)
+        assert_equals(self.tcf.variable_table.variables[index].value, value)
 
 
 class FakeListController(_WithListOperations):
