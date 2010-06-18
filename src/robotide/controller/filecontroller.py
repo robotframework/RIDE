@@ -93,6 +93,10 @@ class _DataController(object):
         return self.data
 
     @property
+    def datafile_controller(self):
+        return self
+
+    @property
     def keywords(self):
         return KeywordTableController(self, self.data.keyword_table)
 
@@ -196,7 +200,7 @@ class TestDataDirectoryController(_DataController):
         return True
 
     def reload(self):
-        self.data = TestDataDirectory(source=self.directory)
+        self.__init__(TestDataDirectory(source=self.directory), self._chief_controller)
 
 
 class TestCaseFileController(_DataController):
@@ -235,7 +239,7 @@ class ResourceFileController(_DataController):
         return None
 
     def reload(self):
-        self.data = ResourceFile(source=self.source)
+        self.__init__(ResourceFile(source=self.source), self._chief_controller)
 
 
 class _TableController(object):
@@ -251,6 +255,10 @@ class _TableController(object):
         return self._parent.dirty
 
     @property
+    def datafile_controller(self):
+        return self._parent.datafile_controller
+
+    @property
     def datafile(self):
         return self._parent.datafile
 
@@ -262,6 +270,10 @@ class VariableTableController(_TableController, _WithListOperations):
 
     def __getitem__(self, index):
         return VariableController(self, self._items[index])
+
+    @property
+    def datafile_controller(self):
+        return self._parent.datafile_controller
 
     @property
     def _items(self):
@@ -395,6 +407,10 @@ class _WithStepsController(object):
         return self.data.name
 
     @property
+    def datafile_controller(self):
+        return self._parent.datafile_controller
+
+    @property
     def datafile(self):
         return self._parent.datafile
 
@@ -491,6 +507,10 @@ class ImportSettingsController(_TableController, _WithListOperations):
         return ImportController(self, self._items[index])
 
     @property
+    def datafile_controller(self):
+        return self._parent.datafile_controller
+
+    @property
     def _items(self):
         return self._table.imports
 
@@ -522,6 +542,10 @@ class MetadataListController(_TableController, _WithListOperations):
 
     def __getitem__(self, index):
         return MetadataController(self, self._items[index])
+
+    @property
+    def datafile_controller(self):
+        return self._parent.datafile_controller
 
     @property
     def _items(self):

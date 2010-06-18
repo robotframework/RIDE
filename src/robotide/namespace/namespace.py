@@ -125,7 +125,7 @@ class Namespace(object):
         return bool(self.find_library_keyword(datafile, kw_name))
 
     def keyword_details(self, datafile, name):
-        return self._find_from_lib_keywords(datafile, lambda k: eq(k.name, name))
+        return self._find_from_lib_keywords(datafile, lambda k: eq(k.name, name)).details
 
 
 class ResourceCache(object):

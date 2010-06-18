@@ -18,14 +18,15 @@ import wx
 class eventhandlertype(type):
     def __new__(cls, name, bases, dict):
         def mod_time_wrapper(method):
-            def wrapped(self, event):
+            def wrapped(self, event=None):
                 if self._can_be_edited(event):
                     method(self, event)
             return wrapped
         for attr in dict:
             if attr.startswith('On') and \
                     not (name == 'RideFrame' and attr == 'OnClose') and \
-                    not (name == 'Tree' and attr == 'OnDrop'):
+                    not (name == 'Tree' and attr == 'OnDrop') and \
+                    not (name == 'KeywordEditor' and attr == 'OnIdle'):
                 dict[attr] = mod_time_wrapper(dict[attr])
         return type.__new__(cls, name, bases, dict)
 
@@ -49,10 +50,10 @@ class RideEventHandler(object):
                             style=wx.YES_NO|wx.CANCEL|wx.ICON_WARNING)
         if ret == wx.YES:
             ctrl.reload()
-            self.replace_datafile(ctrl, event)
+            self.refresh_datafile(ctrl, event)
             return True
         elif ret == wx.NO:
-            ctrl.serialize(force=True)
+            ctrl.save()
             return True
         else:
             return False

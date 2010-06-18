@@ -110,6 +110,10 @@ class _SettingController(object):
         return label
 
     @property
+    def datafile_controller(self):
+        return self._parent.datafile_controller
+
+    @property
     def datafile(self):
         return self._parent.datafile
 

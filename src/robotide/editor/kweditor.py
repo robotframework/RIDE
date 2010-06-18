@@ -16,14 +16,14 @@ import wx
 from wx import grid
 
 from robotide.publish import RideGridCellChanged
-from robotide.utils import PopupMenu
+from robotide.utils import PopupMenu, RideEventHandler
 
 from grid import GridEditor
 from contentassist import ExpandingContentAssistTextCtrl
 from popupwindow import RidePopupWindow
 
 
-class KeywordEditorUi(GridEditor):
+class KeywordEditorUi(GridEditor, RideEventHandler):
 
     def __init__(self, parent, num_rows, num_cols):
         GridEditor.__init__(self, parent)
@@ -204,6 +204,9 @@ class KeywordEditor(KeywordEditorUi):
                 for s in step.steps:
                     data.append([''] + s.as_list())
         self._write_data(data, update_history=False)
+
+    def get_selected_datafile_controller(self):
+        return self._controller.datafile_controller
 
     def OnCopy(self, event=None):
         self.copy()
