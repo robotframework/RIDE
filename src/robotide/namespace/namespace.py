@@ -21,10 +21,9 @@ from robot.utils.match import eq
 from robot.utils.normalizing import normalize
 from robot.variables import Variables as RobotVariables
 
-from robotide.namespace.cache import LibraryCache
+from robotide.namespace.cache import LibraryCache, ExpiringCache
 from robotide.spec.iteminfo import TestCaseUserKeywordInfo, ResourceseUserKeywordInfo, VariableInfo, LibraryKeywordInfo
 from robotide import utils
-import time
 
 
 class Namespace(object):
@@ -167,26 +166,6 @@ class VariableStash(RobotVariables):
 
     def replace_variables(self, value):
         return self.replace_string(value, ignore_errors=True)
-
-
-class ExpiringCache(object):
-
-    def __init__(self, timeout=0.01):
-        self._cache = {}
-        self._timeout = timeout
-
-    def get(self, key):
-        if key in self._cache:
-            key_time, values = self._cache[key]
-            if self._is_valid(key_time):
-                return values
-        return None
-
-    def _is_valid(self, key_time):
-        return (time.time() - key_time) < self._timeout
-
-    def put(self, key, values):
-        self._cache[key] = (time.time(), values)
 
 
 class DatafileRetriever(object):

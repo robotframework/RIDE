@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 import os
+import time
 
 from robotide import utils
 from robotide.context import SETTINGS
@@ -130,6 +131,26 @@ class ResourceFileCache(_FileCache):
                     or XMLResource(name)
             self._resource_files[normalized_key] = resource
             return resource
+
+
+class ExpiringCache(object):
+
+    def __init__(self, timeout=0.01):
+        self._cache = {}
+        self._timeout = timeout
+
+    def get(self, key):
+        if key in self._cache:
+            key_time, values = self._cache[key]
+            if self._is_valid(key_time):
+                return values
+        return None
+
+    def _is_valid(self, key_time):
+        return (time.time() - key_time) < self._timeout
+
+    def put(self, key, values):
+        self._cache[key] = (time.time(), values)
 
 
     def _get_from_cache(self, source, name):

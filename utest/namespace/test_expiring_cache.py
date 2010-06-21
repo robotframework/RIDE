@@ -1,5 +1,5 @@
 import unittest
-from robotide.namespace.namespace import ExpiringCache
+from robotide.namespace.cache import ExpiringCache
 from numpy.ma.testutils import assert_equal
 import time
 from robot.utils.asserts import assert_none
