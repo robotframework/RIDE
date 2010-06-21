@@ -101,8 +101,8 @@ class Namespace(object):
         return self.res_cache.get_resource('', path)
 
     def find_user_keyword(self, datafile, kw_name):
-        uks = self.retriever.get_user_keywords_cached(datafile)
-        return kw_name in uks
+        uks = self.retriever.get_user_keywords_dict_cached(datafile)
+        return uks[kw_name] if kw_name in uks else None
 
     def _find_from(self, kws, predicate):
         for k in kws:
@@ -276,7 +276,7 @@ class DatafileRetriever(object):
     def _var_collector(self, res, vars, items):
         self._get_vars_recursive(res, vars)
 
-    def get_user_keywords_cached(self, datafile):
+    def get_user_keywords_dict_cached(self, datafile):
         values = self.user_keyword_cache.get(datafile.source)
         if not values:
             words = self._get_user_keywords_from(datafile)
