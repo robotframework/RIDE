@@ -17,7 +17,6 @@ import wx
 
 from robotide.controller import NewDatafile
 from robotide.action import ActionInfoCollection, Action
-from robotide.errors import DataError
 from robotide.publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER
 from robotide.utils import RideEventHandler, RideHtmlWindow
 from robotide.context import SETTINGS, ABOUT_RIDE
@@ -57,13 +56,12 @@ class RideFrame(wx.Frame, RideEventHandler):
                             lambda self, path: SETTINGS.set('default directory', path))
 
 
-    def __init__(self, application, controller, logger):
+    def __init__(self, application, controller):
         wx.Frame.__init__(self, parent=None, title='RIDE',
                           pos=SETTINGS['mainframe position'],
                           size=SETTINGS['mainframe size'])
         self._application = application
         self._controller = controller
-        self._logger = logger
         self._init_ui()
         self._plugin_manager = PluginManager(self.notebook)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
@@ -137,7 +135,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         self._check_unsaved_modifications()
         path = self._get_path()
         if path:
-            self._with_error_logging(self.open_suite, path)
+            self.open_suite(path)
 
     def _check_unsaved_modifications(self):
         if self._controller.is_dirty():
@@ -147,16 +145,10 @@ class RideFrame(wx.Frame, RideEventHandler):
             return ret == wx.YES
         return True
 
-    def _with_error_logging(self, function, *args):
-        try:
-            return function(*args)
-        except DataError, err:
-            self._logger.error(unicode(err))
-
     def OnOpenResource(self, event):
         path = self._get_path()
         if path:
-            resource = self._with_error_logging(self._controller.load_resource, path)
+            resource = self._controller.load_resource(path)
             if resource:
                 self.tree.add_resource(resource)
 

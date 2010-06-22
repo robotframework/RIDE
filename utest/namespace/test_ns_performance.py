@@ -2,10 +2,8 @@ import os
 import time
 import unittest
 
-from robot.utils.asserts import assert_true, assert_false, assert_not_none, \
-    assert_equals, fail, assert_none
+from robot.utils.asserts import assert_true
 from robotide.namespace import Namespace
-from robotide.robotapi import TestCaseFile
 from robotide.controller.chiefcontroller import ChiefController
 
 
@@ -18,7 +16,7 @@ TESTCASEFILE_WITH_EVERYTHING = os.path.normpath(os.path.join(DATAPATH, 'testsuit
 class TestNamespacePerformance(unittest.TestCase):
     def test_keyword_find_performance(self):
         ns = Namespace()
-        chief = ChiefController(ns)
+        chief = ChiefController(ns, None)
         chief.load_datafile(TESTCASEFILE_WITH_EVERYTHING)
         everything_tcf = chief._controller.data
         start_time = time.time()

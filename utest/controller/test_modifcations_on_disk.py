@@ -45,7 +45,7 @@ class TestModifiedOnDiskWithFileSuite(unittest.TestCase):
 
     def test_overwrite(self):
         ctrl = TestCaseFileController(TestCaseFile(source=FILEPATH),
-                                      ChiefController(None))
+                                      ChiefController(None, None))
         os.utime(FILEPATH, (1,1))
         assert_true(ctrl.has_been_modified_on_disk())
         ctrl.save()

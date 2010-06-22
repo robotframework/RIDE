@@ -27,8 +27,9 @@ from robotide.publish.messages import RideOpenResource, RideSaving, RideSaveAll,
 
 class ChiefController(object):
 
-    def __init__(self, namespace):
+    def __init__(self, namespace, logger):
         self._namespace = namespace
+        self._logger = logger
         self._controller = None
         self.resources = []
 
@@ -44,10 +45,11 @@ class ChiefController(object):
         try:
             self.load_datafile(path, load_observer)
         except DataError:
-            resource = self.load_resource(path)
-            if not resource:
-                raise DataError("Given file '%s' is not a valid Robot Framework "
-                                "test case or resource file" % path)
+            try:
+                resource = self.load_resource(path)
+            except DataError:
+                self._logger.error("Given file '%s' is not a valid Robot Framework "
+                                   "test case or resource file." % path)
 
     def new_resource(self, path):
         res = ResourceFile()
@@ -55,7 +57,7 @@ class ChiefController(object):
         return self._create_resource_controller(res)
 
     def load_datafile(self, path, load_observer=None):
-        self.__init__(self._namespace)
+        self.__init__(self._namespace, self._logger)
         datafile = self._load_datafile(path, load_observer)
         resources = self._load_resources(datafile, load_observer)
         self._create_controllers(datafile, resources)

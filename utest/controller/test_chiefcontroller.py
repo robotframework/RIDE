@@ -12,7 +12,7 @@ from resources import COMPLEX_SUITE_PATH, FakeLoadObserver, SUITEPATH
 class ChiefControllerTest(unittest.TestCase):
 
     def setUp(self):
-        self.ctrl = ChiefController(Namespace())
+        self.ctrl = ChiefController(Namespace(), None)
 
     def test_dirtyness(self):
         self.ctrl.load_data(COMPLEX_SUITE_PATH, FakeLoadObserver())
