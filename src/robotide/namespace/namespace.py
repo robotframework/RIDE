@@ -21,7 +21,7 @@ from robot.utils.match import eq
 from robot.utils.normalizing import normalize
 from robot.variables import Variables as RobotVariables
 
-from robotide.namespace.cache import LibraryCache
+from robotide.namespace.cache import LibraryCache, ExpiringCache
 from robotide.spec.iteminfo import TestCaseUserKeywordInfo, ResourceseUserKeywordInfo, VariableInfo, LibraryKeywordInfo
 from robotide import utils
 
@@ -100,8 +100,8 @@ class Namespace(object):
         return self.res_cache.get_resource('', path)
 
     def find_user_keyword(self, datafile, kw_name):
-        uks = self.retriever.get_user_keywords_from(datafile)
-        return self._find_from(uks, lambda kw: eq(kw.name, kw_name))
+        uks = self.retriever.get_user_keywords_dict_cached(datafile)
+        return uks[kw_name] if kw_name in uks else None
 
     def _find_from(self, kws, predicate):
         for k in kws:
@@ -173,6 +173,7 @@ class DatafileRetriever(object):
     def __init__(self, lib_cache, res_cache):
         self.lib_cache = lib_cache
         self.res_cache = res_cache
+        self.user_keyword_cache = ExpiringCache()
         self.default_kws = self.lib_cache.get_default_keywords()
 
     def get_keywords_from_several(self, datafiles):
@@ -254,7 +255,21 @@ class DatafileRetriever(object):
     def _var_collector(self, res, vars, items):
         self._get_vars_recursive(res, vars)
 
-    def get_user_keywords_from(self, datafile):
+    def get_user_keywords_dict_cached(self, datafile):
+        values = self.user_keyword_cache.get(datafile.source)
+        if not values:
+            words = self._get_user_keywords_from(datafile)
+            values = self._keywords_to_dict(words)
+            self.user_keyword_cache.put(datafile.source, values)
+        return values
+
+    def _keywords_to_dict(self, keywords):
+        ret = {}
+        for kw in keywords:
+            ret[kw.name] = kw
+        return ret
+
+    def _get_user_keywords_from(self, datafile):
         return list(self._get_user_keywords_recursive(datafile, VariableStash()))
 
     def _get_user_keywords_recursive(self, datafile, vars):
