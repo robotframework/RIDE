@@ -76,6 +76,9 @@ class _ContentAssistTextCtrlBase(object):
         if event is not None:
             if event.GetKeyCode() == wx.WXK_BACK:
                 value = value[:-1]
+            elif event.GetKeyCode() == wx.WXK_DELETE:
+                pos = self.GetInsertionPoint()
+                value = value[:pos] + value[pos+1:]
             elif event.GetKeyCode() == wx.WXK_ESCAPE:
                 self.hide()
             else:
