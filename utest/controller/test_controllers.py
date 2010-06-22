@@ -1,4 +1,5 @@
 import unittest
+from robot.parsing import TestCase
 from robot.parsing.settings import Fixture, Documentation, Timeout, Tags, Return
 
 from robot.utils.asserts import assert_equals, assert_true, assert_false, assert_none
@@ -207,6 +208,15 @@ class TestCaseFileControllerTest(unittest.TestCase):
         assert_equals(ctrl.source, '/tmp/.path.with.dots/test.cases.html')
         ctrl.set_format('txt')
         assert_equals(ctrl.source, '/tmp/.path.with.dots/test.cases.txt')
+
+    def test_add_test_or_kw(self):
+        ctrl = TestCaseFileController(TestCaseFile())
+        assert_equals(len(ctrl.tests), 0)
+        new_test = TestCaseController(ctrl, TestCase(TestCaseFile(), 'New test'))
+        ctrl.add_test_or_keyword(new_test)
+        assert_equals(len(ctrl.tests), 1)
+        assert_true(ctrl.tests[0]._test.parent is ctrl.datafile)
+        assert_true(ctrl.dirty)
 
 
 class TestDataDirectoryControllerTest(unittest.TestCase):

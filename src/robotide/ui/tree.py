@@ -402,7 +402,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         target = self._get_handler(target)
         if target and target.accepts_drag(dragged):
             dragged.remove()
-            target.do_drop(dragged.item)
+            target.do_drop(dragged.controller)
 
     def do_drop(self, datafilehandler, test_or_uk):
         for node in self._datafile_nodes:
@@ -478,9 +478,9 @@ class TestDataDirectoryHandler(_ActionHandler):
     def has_been_modified_on_disk(self):
         return self.item.has_been_modified_on_disk()
 
-    def do_drop(self, test_or_kw):
-        self.item.add_test_or_user_keyword(test_or_kw)
-        self._tree.do_drop(self, test_or_kw)
+    def do_drop(self, test_or_kw_ctrl):
+        self.controller.add_test_or_keyword(test_or_kw_ctrl)
+        self._tree.do_drop(self, test_or_kw_ctrl)
 
     def rename(self, new_name):
         return False

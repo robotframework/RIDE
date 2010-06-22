@@ -123,6 +123,12 @@ class _DataController(object):
         self.mark_dirty()
         return kw
 
+    def add_test_or_keyword(self, test_or_kw_ctrl):
+        if isinstance(test_or_kw_ctrl, TestCaseController):
+            self.tests.add(test_or_kw_ctrl)
+        else:
+            self.keywords.add(test_or_kw_ctrl)
+
     def has_format(self):
         return True
 
@@ -354,6 +360,12 @@ class TestCaseTableController(_TableController, _WithItemMovingOperations):
     def __len__(self):
         return len(self._items)
 
+    def add(self, test_ctrl):
+        test = test_ctrl.data
+        test.parent = self.datafile
+        self._table.tests.append(test)
+        self.mark_dirty()
+
     def new(self, name):
         tc_controller = TestCaseController(self, self._table.add(name))
         self.mark_dirty()
@@ -367,6 +379,7 @@ class TestCaseTableController(_TableController, _WithItemMovingOperations):
 
     def delete(self, test):
         self._table.tests.remove(test)
+        self.mark_dirty()
 
     @property
     def _items(self):
@@ -384,6 +397,12 @@ class KeywordTableController(_TableController, _WithItemMovingOperations):
     def __len__(self):
         return len(self._items)
 
+    def add(self, kw_ctrl):
+        kw = kw_ctrl.data
+        kw.parent = self.datafile
+        self._table.keywords.append(kw)
+        self.mark_dirty()
+
     def new(self, name):
         return UserKeywordController(self, self._table.add(name))
 
@@ -395,6 +414,7 @@ class KeywordTableController(_TableController, _WithItemMovingOperations):
 
     def delete(self, kw):
         self._table.keywords.remove(kw)
+        self.mark_dirty()
 
     @property
     def _items(self):
