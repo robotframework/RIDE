@@ -12,6 +12,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import os
+
 from wx import grid
 
 from robotide.utils import PopupMenu
@@ -64,7 +66,8 @@ class GridEditor(grid.Grid):
     def delete(self):
         self._update_history()
         if self.IsCellEditControlShown():
-            self._delete_from_cell_editor()
+            if os.sep == '\\':
+                self._delete_from_cell_editor()
         else:
             self._clear_selected_cells()
 
