@@ -1,9 +1,8 @@
 import unittest
-from robotide.namespace.cache import ExpiringCache
-from numpy.ma.testutils import assert_equal
 import time
-from robot.utils.asserts import assert_none
+from robot.utils.asserts import assert_none, assert_equals
 
+from robotide.namespace.cache import ExpiringCache
 
 
 class TestExpiringCache(unittest.TestCase):
@@ -11,7 +10,7 @@ class TestExpiringCache(unittest.TestCase):
     def test_cache_hit(self):
         cache = ExpiringCache(0.1)
         cache.put('a', 'b')
-        assert_equal('b', cache.get('a'))
+        assert_equals('b', cache.get('a'))
 
     def test_cache_expiration(self):
         cache = ExpiringCache(0.01)
@@ -19,7 +18,7 @@ class TestExpiringCache(unittest.TestCase):
         time.sleep(0.1)
         assert_none(cache.get('a'))
         cache.put('a', 'c')
-        assert_equal('c', cache.get('a'))
+        assert_equals('c', cache.get('a'))
 
 
 if __name__ == "__main__":
