@@ -22,7 +22,9 @@ from robot.utils.normalizing import normalize
 from robot.variables import Variables as RobotVariables
 
 from robotide.namespace.cache import LibraryCache, ExpiringCache
-from robotide.spec.iteminfo import TestCaseUserKeywordInfo, ResourceseUserKeywordInfo, VariableInfo, LibraryKeywordInfo
+from robotide.spec.iteminfo import (TestCaseUserKeywordInfo,
+                                    ResourceseUserKeywordInfo,
+                                    VariableInfo, LibraryKeywordInfo)
 from robotide import utils
 
 
