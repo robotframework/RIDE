@@ -89,7 +89,7 @@ class RideFrame(wx.Frame, RideEventHandler):
     def get_selected_datafile(self):
         return self.tree.get_selected_datafile()
 
-    def _get_selected_datafile_controller(self):
+    def get_selected_datafile_controller(self):
         return self.tree.get_selected_datafile_controller()
 
     def OnClose(self, event):
@@ -189,7 +189,7 @@ class RideFrame(wx.Frame, RideEventHandler):
                 self.open_suite(path)
 
     def OnSave(self, event):
-        self.save(self._get_selected_datafile_controller())
+        self.save(self.get_selected_datafile_controller())
 
     def OnSaveAll(self, event):
         self.save()
