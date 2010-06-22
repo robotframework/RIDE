@@ -535,7 +535,7 @@ class _TestOrUserKeywordHandler(_ActionHandler):
 
     def remove(self):
         self._tree.delete_node(self._node)
-        self.item.delete()
+        self.controller.delete()
 
     def rename(self, new_name):
         # new_name is empty also when the value is not changed
