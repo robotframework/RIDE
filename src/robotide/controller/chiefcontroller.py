@@ -12,6 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import os
 import time
 from threading import Thread
 
@@ -22,7 +23,6 @@ from robotide.writer.serializer import Serializer
 from robot.parsing.model import TestData, ResourceFile
 from robotide.publish.messages import RideOpenResource, RideSaving, RideSaveAll,\
     RideSaved
-import os
 
 
 class ChiefController(object):
@@ -52,11 +52,10 @@ class ChiefController(object):
     def new_resource(self, path):
         res = ResourceFile()
         res.source = path
-        controller = ResourceFileController(res, self)
-        self.resources.append(controller)
-        return controller
+        return self._create_resource_controller(res)
 
     def load_datafile(self, path, load_observer=None):
+        self.__init__(self._namespace)
         datafile = self._load_datafile(path, load_observer)
         resources = self._load_resources(datafile, load_observer)
         self._create_controllers(datafile, resources)
@@ -76,7 +75,8 @@ class ChiefController(object):
 
     def _create_controllers(self, datafile, resources):
         self._controller = DataController(datafile, self)
-        self.resources = [ResourceFileController(r, self) for r in resources]
+        for r in resources:
+            self._create_resource_controller(r)
 
     def _load_resources(self, datafile, load_observer=None):
         loader = _ResourceLoader(datafile, self._namespace.get_resources)
@@ -96,17 +96,11 @@ class ChiefController(object):
     def _create_resource_controller(self, resource):
         controller = ResourceFileController(resource, self)
         RideOpenResource(path=resource.source).publish()
-        if controller not in self.resources:
-            self.resources.append(controller)
+        for other in self.resources:
+            if other.source == controller.source:
+                return None
+        self.resources.append(controller)
         return controller
-
-    def _resolve_imported_resources(self, datafile):
-        resources = datafile.get_resources()
-        for res in resources:
-            if res not in self.resources:
-                self.resources.append(res)
-        for item in datafile.suites + resources:
-            self._resolve_imported_resources(item)
 
     def new_datafile(self, datafile):
         self._controller = DataController(datafile, self)
@@ -236,3 +230,4 @@ class _ResourceLoader(Thread):
 
     def run(self):
         self.resources = self._loader(self._datafile)
+

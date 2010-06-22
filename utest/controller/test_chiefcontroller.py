@@ -43,6 +43,11 @@ class ChiefControllerTest(unittest.TestCase):
         controller = self.ctrl.new_resource('somepath')
         assert_equals(controller.name, 'Somepath')
 
+    def test_resource_with_same_path_is_not_added_twice(self):
+        self.ctrl.new_resource('somepath')
+        self.ctrl.new_resource('somepath')
+        assert_equals(len(self.ctrl.resources), 1)
+
 
 if __name__ == "__main__":
     unittest.main()
