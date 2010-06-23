@@ -18,14 +18,12 @@ import os
 import sys
 import wx
 
-from robot.utils.normalizing import _CASE_INSENSITIVE_FILESYSTEM
+from robot.utils.normalizing import _CASE_INSENSITIVE_FILESYSTEM as CIF
 
-from mocks import MockSerializer, MessageRecordingLoadObserver, FakeSuite, FakeDirectorySuite, FakeTestCase,\
-    FakeUserKeyword, FakeResource, FakeApplication, FakeSettings
+from mocks import MessageRecordingLoadObserver, FakeApplication, FakeSettings
 from setting_utils import TestSettingsHelper
 
-DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]),
-                        'robotdata')
+DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]), 'robotdata')
 sys.path.append(os.path.join(DATAPATH, 'put_into_python_path'))
 SUITEPATH = os.path.join(DATAPATH, 'testsuite')
 COMPLEX_SUITE_PATH = os.path.join(SUITEPATH, 'everything.html')
@@ -35,6 +33,6 @@ NO_RIDE_RESOURCE_PATH = os.path.join(DATAPATH, 'no_ride', 'no_ride_resource.html
 RESOURCE_PATH = os.path.normpath(os.path.join(DATAPATH, 'resources', 'resource.html'))
 INVALID_PATH = os.path.join(SUITEPATH, 'invalid.html')
 
-PATH_RESOURCE_NAME = _CASE_INSENSITIVE_FILESYSTEM and 'pathresource.html' or 'PathResource.html'
+PATH_RESOURCE_NAME = 'pathresource.html' if CIF else 'PathResource.html'
 
 PYAPP_REFERENCE = wx.PySimpleApp()
