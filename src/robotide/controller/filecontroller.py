@@ -498,6 +498,9 @@ class TestCaseController(_WithStepsController):
     def delete(self):
         return self._parent.delete(self._test)
 
+    def validate_test_name(self, name):
+        return self._parent.validate_name(name)
+
 
 class UserKeywordController(_WithStepsController):
     _populator = UserKeywordPopulator
@@ -521,6 +524,9 @@ class UserKeywordController(_WithStepsController):
                 TimeoutController(self, self._kw.timeout,),
                 # TODO: Wrong class, works right though
                 ReturnValueController(self, self._kw.return_,)]
+
+    def validate_keyword_name(self, name):
+        return self._parent.validate_name(name)
 
 
 class ImportSettingsController(_TableController, _WithListOperations):
