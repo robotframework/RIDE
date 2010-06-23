@@ -36,7 +36,7 @@ class RIDE(wx.App):
     def OnInit(self):
         self._check_robot_version()
         self.namespace = Namespace()
-        self._controller = ChiefController(self.namespace, context.LOG)
+        self._controller = ChiefController(self.namespace)
         self.frame = RideFrame(self, self._controller)
         self._editor_provider = EditorProvider()
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),

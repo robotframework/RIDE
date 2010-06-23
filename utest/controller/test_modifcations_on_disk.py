@@ -1,8 +1,7 @@
 import unittest
 import os
 import tempfile
-from robot.utils.asserts import (assert_true, assert_false, assert_equals,
-                                 assert_not_equal)
+from robot.utils.asserts import (assert_true, assert_false, assert_equals)
 from robot.parsing.model import TestCaseFile, TestDataDirectory, ResourceFile
 
 from robotide.controller.filecontroller import (TestCaseFileController,
@@ -45,7 +44,7 @@ class TestModifiedOnDiskWithFileSuite(unittest.TestCase):
 
     def test_overwrite(self):
         ctrl = TestCaseFileController(TestCaseFile(source=FILEPATH),
-                                      ChiefController(None, None))
+                                      ChiefController(None))
         os.utime(FILEPATH, (1,1))
         assert_true(ctrl.has_been_modified_on_disk())
         ctrl.save()

@@ -53,10 +53,10 @@ class TestFormatChange(unittest.TestCase):
 
 class ChiefControllerChecker(ChiefController):
 
-    def __init__(self, namespace, logger=None):
+    def __init__(self, namespace):
         self.removed_files = []
         self.serialized_files = []
-        ChiefController.__init__(self, namespace, logger)
+        ChiefController.__init__(self, namespace)
 
     def serialize_controller(self, controller):
         self.serialized_files.append(controller.source)

@@ -20,7 +20,7 @@ import wx
 
 from robot.utils.normalizing import _CASE_INSENSITIVE_FILESYSTEM
 
-from mocks import MockSerializer, FakeLoadObserver, FakeSuite, FakeDirectorySuite, FakeTestCase,\
+from mocks import MockSerializer, MessageRecordingLoadObserver, FakeSuite, FakeDirectorySuite, FakeTestCase,\
     FakeUserKeyword, FakeResource, FakeApplication, FakeSettings
 from setting_utils import TestSettingsHelper
 

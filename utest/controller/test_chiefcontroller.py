@@ -6,22 +6,22 @@ from robotide.namespace import Namespace
 from robotide.controller.filecontroller import TestCaseFileController,\
     TestDataDirectoryController
 
-from resources import COMPLEX_SUITE_PATH, FakeLoadObserver, SUITEPATH
+from resources import COMPLEX_SUITE_PATH, MessageRecordingLoadObserver, SUITEPATH
 
 
 class ChiefControllerTest(unittest.TestCase):
 
     def setUp(self):
-        self.ctrl = ChiefController(Namespace(), None)
+        self.ctrl = ChiefController(Namespace())
 
     def test_dirtyness(self):
-        self.ctrl.load_data(COMPLEX_SUITE_PATH, FakeLoadObserver())
+        self.ctrl.load_data(COMPLEX_SUITE_PATH, MessageRecordingLoadObserver())
         assert_true(not self.ctrl.is_dirty())
         self.ctrl.data.new_test('newnessness')
         assert_true(self.ctrl.is_dirty())
 
     def test_load_dirty_controllers(self):
-        self.ctrl.load_data(SUITEPATH, FakeLoadObserver())
+        self.ctrl.load_data(SUITEPATH, MessageRecordingLoadObserver())
         assert_equals(len(self.ctrl._get_all_dirty_controllers()), 0)
         tcf = self._find_suite_by_type(self.ctrl.data.children, TestCaseFileController)
         tcf.new_test('newnessness')

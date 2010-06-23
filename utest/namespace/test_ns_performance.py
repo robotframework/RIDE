@@ -16,7 +16,7 @@ TESTCASEFILE_WITH_EVERYTHING = os.path.normpath(os.path.join(DATAPATH, 'testsuit
 class TestNamespacePerformance(unittest.TestCase):
     def test_keyword_find_performance(self):
         ns = Namespace()
-        chief = ChiefController(ns, None)
+        chief = ChiefController(ns)
         chief.load_datafile(TESTCASEFILE_WITH_EVERYTHING)
         everything_tcf = chief._controller.data
         start_time = time.time()

@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-
+from StringIO import StringIO
 from robot.parsing.model import TestCaseFile, ResourceFile, TestDataDirectory,\
     UserKeyword, TestCase
 
@@ -75,13 +75,24 @@ class MockSerializer(object):
         self.record.append('KW: %s' % kw.name)
 
 
-class FakeLoadObserver(object):
+class MessageRecordingLoadObserver(object):
+    def __init__(self):
+        self._log = StringIO()
+        self.finish_called = False
 
     def notify(self):
         pass
 
     def finished(self):
-        self.finished = True
+        self.finish_called = True
+
+    def error(self, msg):
+        self.finished()
+        self._log.write(msg)
+
+    @property
+    def message(self):
+        return self._log.getvalue()
 
 
 class FakeResource(ResourceFile):
