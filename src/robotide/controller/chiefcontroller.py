@@ -50,7 +50,8 @@ class ChiefController(object):
         if res:
             if load_observer:
                     load_observer.finished()
-        load_observer.error("Given file '%s' is not a valid Robot Framework "
+        else:
+            load_observer.error("Given file '%s' is not a valid Robot Framework "
                             "test case or resource file." % path)
 
     def new_resource(self, path):
@@ -67,6 +68,7 @@ class ChiefController(object):
             return None
         resources = self._load_resources(datafile, load_observer)
         self._create_controllers(datafile, resources)
+        return datafile
 
     def _load_datafile(self, path, load_observer=None):
         loader = _DataLoader(path)
