@@ -33,3 +33,7 @@ class LoadProgressObserver(object):
         self._progressbar.Destroy()
         RideOpenSuite(path=self._path).publish()
         context.LOG.report_parsing_errors()
+
+    def error(self, msg):
+        self.finished()
+        context.LOG.error(msg)

@@ -148,7 +148,8 @@ class RideFrame(wx.Frame, RideEventHandler):
     def OnOpenResource(self, event):
         path = self._get_path()
         if path:
-            resource = self._controller.load_resource(path)
+            resource = self._controller.load_resource(path,
+                                                      LoadProgressObserver(self, path))
             if resource:
                 self.tree.add_resource(resource)
 
