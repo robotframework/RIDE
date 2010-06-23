@@ -199,11 +199,23 @@ class KeywordEditor(KeywordEditorUi):
     def _write_keywords(self, keywords):
         data = []
         for step in keywords:
-            data.append(step.as_list())
+            data.append(self._format_comments(step.as_list()))
             if hasattr(step, 'steps'):
                 for s in step.steps:
-                    data.append([''] + s.as_list())
+                    data.append([''] + self._format_comments(s.as_list()))
         self._write_data(data, update_history=False)
+
+    def _format_comments(self, data):
+        # TODO: This should be moved to robot.model
+        in_comment = False
+        ret = []
+        for cell in data:
+            if cell.strip().startswith('#'):
+                in_comment = True
+            if in_comment:
+                cell = cell.replace(' |', '')
+            ret.append(cell)
+        return ret
 
     def get_selected_datafile_controller(self):
         return self._controller.datafile_controller
