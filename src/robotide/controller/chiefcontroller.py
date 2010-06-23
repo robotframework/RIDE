@@ -40,16 +40,14 @@ class ChiefController(object):
     def suite(self):
         return self._controller.data if self._controller else None
 
-    def load_data(self, path, load_observer=None):
+    def load_data(self, path, load_observer):
         df = self.load_datafile(path)
         if df:
-            if load_observer:
-                load_observer.finished()
+            load_observer.finished()
             return
         res = self.load_resource(path)
         if res:
-            if load_observer:
-                    load_observer.finished()
+            load_observer.finished()
         else:
             load_observer.error("Given file '%s' is not a valid Robot Framework "
                             "test case or resource file." % path)
