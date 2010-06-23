@@ -68,6 +68,8 @@ class ChiefController(object):
             return None
         resources = self._load_resources(datafile, load_observer)
         self._create_controllers(datafile, resources)
+        if load_observer:
+            load_observer.finished()
         return datafile
 
     def _load_datafile(self, path, load_observer=None):
@@ -96,6 +98,8 @@ class ChiefController(object):
     def load_resource(self, path, load_observer=None):
         resource = self._namespace.get_resource(path)
         if resource:
+            if load_observer:
+                load_observer.finished()
             return self._create_resource_controller(resource)
         if load_observer:
             load_observer.error("Invalid resource file '%s'." % path)
