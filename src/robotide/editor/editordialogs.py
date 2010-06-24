@@ -147,9 +147,9 @@ class SetupDialog(_FixtureDialog): pass
 class TeardownDialog(_FixtureDialog): pass
 
 
-class TemplateDialog(_SettingDialog): pass
+class TemplateDialog(_FixtureDialog): pass
 
-class TestTemplateDialog(_SettingDialog): pass
+class TestTemplateDialog(_FixtureDialog): pass
 
 
 class ArgumentsDialog(_SettingDialog):
