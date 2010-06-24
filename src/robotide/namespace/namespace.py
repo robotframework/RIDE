@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 import os
+import operator
 
 from robot.errors import DataError
 from robot.parsing.model import ResourceFile
@@ -296,7 +297,9 @@ class DatafileRetriever(object):
         return items
 
     def get_resources_from(self, datafile):
-        return list(self._get_resources_recursive(datafile, VariableStash()))
+        resources = list(self._get_resources_recursive(datafile, VariableStash()))
+        resources.sort(key=operator.attrgetter('name'))
+        return resources
 
     def _get_resources_recursive(self, datafile, vars):
         resources = set()
