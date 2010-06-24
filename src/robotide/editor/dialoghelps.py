@@ -100,10 +100,12 @@ Overrides possible Test Teardown set on the suite level.
 %(ESCAPE)s
 
 Test Template
-FIXME
+Specifies the default template keyword used by tests in this suite.
+The test cases will contain only data to use as arguments to that keyword.
 
 Template
-FIXME
+Specifies the template keyword to use.
+The test itself will contain only data to use as arguments to that keyword.
 
 Arguments
 Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.
