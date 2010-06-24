@@ -84,4 +84,36 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
+<h2>Release notes for 0.25</h2>
+<table border="1">
+<tr>
+<td><b>ID</b></td>
+<td><b>Type</b></td>
+<td><b>Priority</b></td>
+<td><b>Summary</b></td>
+<td><b>AllLabels</b></td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=459">Issue 459</a></td>
+<td>Enhancement</td>
+<td></td>
+<td>Compatibility with Robot Framework 2.5</td>
+<td>Target-0.25, Type-Enhancement</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=460">Issue 460</a></td>
+<td>Enhancement</td>
+<td></td>
+<td>Support test template/template settings</td>
+<td>Type-Enhancement, Target-0.25</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=461">Issue 461</a></td>
+<td>Enhancement</td>
+<td></td>
+<td>Support test case and user keyword comments.</td>
+<td>Type-Enhancement, Target-0.25</td>
+</tr>
+</table>
+<p>Altogether 3 issues.</p>
 """
