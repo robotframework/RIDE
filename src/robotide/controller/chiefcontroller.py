@@ -225,9 +225,9 @@ class _DataLoader(Thread):
     def run(self):
         try:
             self.datafile = TestData(source=self._path)
-        except Exception, err:
+        except Exception:
             pass
-            #context.LOG.error(str(err))
+            # TODO: Log this error somehow
 
 
 class _ResourceLoader(Thread):
