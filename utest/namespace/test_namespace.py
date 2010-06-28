@@ -46,6 +46,7 @@ def _add_settings_table(tcf):
     tcf.setting_table.add_resource('${resname}')
     tcf.setting_table.add_library('${libname}')
     tcf.setting_table.add_library('${libname}')
+    tcf.setting_table.add_library('${unresolvable}')
     tcf.setting_table.add_resource(RESOURCE_WITH_VARIABLE_IN_PATH)
     tcf.setting_table.add_variables('/this/is/invalid.py')
 
@@ -53,6 +54,7 @@ def _add_variable_table(tcf):
     tcf.variable_table.add('${libname}', 'Collections')
     tcf.variable_table.add('${resname}', RESOURCE_WITH_VARS)
     tcf.variable_table.add('${extension}', 'txt')
+    tcf.variable_table.add('${unresolvable}', '${this var does not exist}')
 
 def _add_keyword_table(tcf):
     uk_table = tcf.keyword_table
