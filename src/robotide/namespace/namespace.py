@@ -21,6 +21,7 @@ from robot.parsing.settings import Library, Resource, Variables
 from robot.utils.match import eq
 from robot.utils.normalizing import normalize
 from robot.variables import Variables as RobotVariables
+from robot.variables import GLOBAL_VARIABLES
 
 from robotide.namespace.cache import LibraryCache, ExpiringCache
 from robotide.spec.iteminfo import (TestCaseUserKeywordInfo,
@@ -170,8 +171,22 @@ class ResourceCache(object):
 
 class VariableStash(RobotVariables):
 
+    def __init__(self):
+        RobotVariables.__init__(self)
+        self.update(GLOBAL_VARIABLES)
+
     def replace_variables(self, value):
         return self.replace_string(value, ignore_errors=True)
+
+    def set_from_variable_table(self, variable_table):
+        for variable in variable_table:
+            try:
+                name, value = self._get_var_table_name_and_value(variable.name,
+                                                                 variable.value)
+                if not utils.NormalizedDict.has_key(self, name):
+                    self[name] = value
+            except DataError:
+                pass
 
 
 class DatafileRetriever(object):
