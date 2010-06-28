@@ -50,7 +50,7 @@ class ChiefController(object):
             load_observer.finished()
         else:
             load_observer.error("Given file '%s' is not a valid Robot Framework "
-                            "test case or resource file." % path)
+                                "test case or resource file." % path)
 
     def new_resource(self, path):
         res = ResourceFile()
@@ -240,4 +240,3 @@ class _ResourceLoader(Thread):
 
     def run(self):
         self.resources = self._loader(self._datafile)
-
