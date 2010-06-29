@@ -73,6 +73,10 @@ class ImportController(object):
         return self._import.name
 
     @property
+    def alias(self):
+        return self._import.alias
+
+    @property
     def args(self):
         return self._import.args
 

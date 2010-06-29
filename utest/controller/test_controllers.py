@@ -335,28 +335,29 @@ class UserKeywordControllerTest(unittest.TestCase):
         assert_equals(step.args, exp_args)
 
 
-class FakeParent(object):
-
-    @property
-    def directory(self):
-        return 'tmp'
-
-    def resource_import_modified(self, path):
-        pass
-
 class ImportControllerTest(unittest.TestCase):
+    class FakeParent(object):
+
+        @property
+        def directory(self):
+            return 'tmp'
+
+        def resource_import_modified(self, path):
+            pass
 
     def setUp(self):
         self.tcf = TestCaseFile()
         self.tcf.setting_table.add_library('somelib', ['foo', 'bar'])
         self.tcf.setting_table.add_resource('resu')
-        tcf_ctrl = TestCaseFileController(self.tcf, FakeParent())
+        self.tcf.setting_table.add_library('BuiltIn', ['WITH NAME', 'InBuilt'])
+        tcf_ctrl = TestCaseFileController(self.tcf, ImportControllerTest.FakeParent())
         tcf_ctrl.data.directory = 'tmp'
         self.parent = ImportSettingsController(tcf_ctrl, self.tcf.setting_table)
 
     def test_creation(self):
         self._assert_import(0, 'somelib | foo | bar')
         self._assert_import(1, 'resu')
+        self._assert_import(2, 'BuiltIn', 'InBuilt')
 
     def test_editing_args(self):
         cntrl = ImportController(self.parent, self.parent[0]._import)
@@ -371,8 +372,9 @@ class ImportControllerTest(unittest.TestCase):
         self._assert_import(1, 'foo')
         assert_true(self.parent.dirty)
 
-    def _assert_import(self, index, exp_value):
+    def _assert_import(self, index, exp_value, exp_alias=None):
         assert_equals(self.parent[index].value, exp_value)
+        assert_equals(self.parent[index].alias, exp_alias)
 
 
 class ImportSettingsControllerTest(unittest.TestCase):
