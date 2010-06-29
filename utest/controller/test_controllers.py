@@ -6,6 +6,7 @@ from robot.utils.asserts import assert_equals, assert_true, assert_false, assert
 from robotide.controller.settingcontroller import *
 from robotide.controller.filecontroller import *
 from robotide.controller.filecontroller import _WithListOperations
+from robotide.controller import NewDatafile
 from resources import SUITEPATH
 
 
@@ -242,6 +243,11 @@ class TestDataDirectoryControllerTest(unittest.TestCase):
         ctrl.set_format('txt')
         assert_true(ctrl.has_format())
         assert_equals(ctrl.source, '/tmp/__init__.txt')
+
+    def test_adding_new_child(self):
+        ctrl = TestDataDirectoryController(TestDataDirectory())
+        assert_true(ctrl.new_datafile(NewDatafile('path/to/data.txt',
+                                                  is_dir_type=False)))
 
 
 class TestCaseControllerTest(unittest.TestCase):

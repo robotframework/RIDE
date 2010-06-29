@@ -206,6 +206,7 @@ class TestDataDirectoryController(_DataController):
 
     def new_datafile(self, datafile):
         self.children.append(DataController(datafile, self._chief_controller))
+        return self.children[-1]
 
     def is_directory_suite(self):
         return True
