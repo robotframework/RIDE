@@ -13,10 +13,11 @@
 #  limitations under the License.
 
 import os
-
 from robot.parsing.model import TestCaseFile, TestDataDirectory
-from filecontroller import DataController, ResourceFileController, UserKeywordController
+
 from chiefcontroller import ChiefController
+from dataloader import DataLoader
+from filecontroller import DataController, ResourceFileController, UserKeywordController
 
 
 def NewDatafile(path, is_dir_type):

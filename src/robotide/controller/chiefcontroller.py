@@ -13,15 +13,16 @@
 #  limitations under the License.
 
 import os
+from robot.parsing.model import ResourceFile
 
 from robotide import context
-from robotide.controller import DataController, ResourceFileController
 from robotide.errors import SerializationError
-from robotide.writer.serializer import Serializer
-from robot.parsing.model import ResourceFile
 from robotide.publish.messages import RideOpenResource, RideSaving, RideSaveAll,\
     RideSaved
-from robotide.controller.dataloader import DataLoader
+from robotide.writer.serializer import Serializer
+
+from filecontroller import DataController, ResourceFileController
+from dataloader import DataLoader
 
 
 class ChiefController(object):
