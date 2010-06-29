@@ -74,7 +74,7 @@ class ImportController(object):
 
     @property
     def alias(self):
-        return self._import.alias
+        return self._import.alias or ''
 
     @property
     def args(self):
@@ -82,16 +82,16 @@ class ImportController(object):
 
     @property
     def value(self):
-        return ' | '.join([self.name or ''] + self.args or [])
+        return ' | '.join(self._import.as_list()[2:])
 
     @property
     def dirty(self):
         return self._parent.dirty
 
-    def set_value(self, value):
-        value = utils.split_value(value)
-        self._import.name = value[0]
-        self._import.args = value[1:]
+    def set_value(self, name, args=[], alias=''):
+        self._import.name = name
+        self._import.args = utils.split_value(args)
+        self._import.alias = alias
         self._parent.mark_dirty()
         if self.label == 'Resource':
             return self._parent.resource_import_modified(self.name)

@@ -390,7 +390,7 @@ class ImportSettingListEditor(_AbstractListEditor):
         dlg.Destroy()
 
     def get_column_values(self, item):
-        return [item.type, item.name, utils.join_value(item.args)]
+        return [item.type, item.name, item.value]
 
     def _get_setting(self):
         return self._controller[self._selection]

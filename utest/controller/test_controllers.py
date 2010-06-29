@@ -355,26 +355,34 @@ class ImportControllerTest(unittest.TestCase):
         self.parent = ImportSettingsController(tcf_ctrl, self.tcf.setting_table)
 
     def test_creation(self):
-        self._assert_import(0, 'somelib | foo | bar')
+        self._assert_import(0, 'somelib', 'foo | bar')
         self._assert_import(1, 'resu')
-        self._assert_import(2, 'BuiltIn', 'InBuilt')
-
-    def test_editing_args(self):
-        cntrl = ImportController(self.parent, self.parent[0]._import)
-        new_value = 'bar | quux'
-        cntrl.set_value(new_value)
-        self._assert_import(0, new_value)
-        assert_true(self.parent.dirty)
+        self._assert_import(2, 'BuiltIn', 'WITH NAME | InBuilt')
 
     def test_editing(self):
-        cntrl = ImportController(self.parent, self.parent[1]._import)
-        cntrl.set_value('foo')
+        ctrl = ImportController(self.parent, self.parent[1]._import)
+        ctrl.set_value('foo')
         self._assert_import(1, 'foo')
         assert_true(self.parent.dirty)
 
-    def _assert_import(self, index, exp_value, exp_alias=None):
+    def test_editing_with_args(self):
+        ctrl = ImportController(self.parent, self.parent[0]._import)
+        ctrl.set_value('bar', 'quux')
+        self._assert_import(0, 'bar', 'quux')
+        assert_true(self.parent.dirty)
+        ctrl.set_value('name', 'a1 | a2')
+        self._assert_import(0, 'name', 'a1 | a2')
+
+    def test_editing_with_alias(self):
+        ctrl = ImportController(self.parent, self.parent[0]._import)
+        ctrl.set_value('newname', '', 'namenew')
+        self._assert_import(0, 'newname', 'WITH NAME | namenew')
+        ctrl.set_value('again')
+        self._assert_import(0, 'again')
+
+    def _assert_import(self, index, exp_name, exp_value=''):
+        assert_equals(self.parent[index].name, exp_name)
         assert_equals(self.parent[index].value, exp_value)
-        assert_equals(self.parent[index].alias, exp_alias)
 
 
 class ImportSettingsControllerTest(unittest.TestCase):
@@ -385,8 +393,8 @@ class ImportSettingsControllerTest(unittest.TestCase):
                                              self.tcf.setting_table)
 
     def test_addding_library(self):
-        self.ctrl.add_library('MyLib | Some | argu | ments')
-        self._assert_import('MyLib', ['Some', 'argu', 'ments'])
+        self.ctrl.add_library('MyLib', 'Some | argu | ments', 'alias')
+        self._assert_import('MyLib', ['Some', 'argu', 'ments'], 'alias')
 
     def test_adding_resource(self):
         self.ctrl.add_resource('/a/path/to/file.txt')
@@ -396,11 +404,10 @@ class ImportSettingsControllerTest(unittest.TestCase):
         self.ctrl.add_variables('varfile.py | an arg')
         self._assert_import('varfile.py', ['an arg'])
 
-    def _assert_import(self, exp_name, exp_args=None):
+    def _assert_import(self, exp_name, exp_args=[], exp_alias=None):
         imp = self.tcf.setting_table.imports[-1]
         assert_equals(imp.name, exp_name)
-        if exp_args is not None:
-            assert_equals(imp.args, exp_args)
+        assert_equals(imp.args, exp_args)
         assert_true(self.ctrl.dirty)
 
     def test_creation(self):

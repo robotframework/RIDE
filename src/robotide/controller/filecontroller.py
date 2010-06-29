@@ -545,8 +545,10 @@ class ImportSettingsController(_TableController, _WithListOperations):
     def _items(self):
         return self._table.imports
 
-    def add_library(self, argstr):
-        self._add_import(self._table.add_library, argstr)
+    def add_library(self, name, argstr, alias):
+        import_ = self._table.add_library(name, utils.split_value(argstr))
+        import_.alias = alias
+        self._parent.mark_dirty()
 
     def add_resource(self, name):
         self._add_import(self._table.add_resource, name)
