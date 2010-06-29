@@ -363,7 +363,7 @@ class ImportSettingListEditor(_AbstractListEditor):
         dlg = EditorDialog(setting)(self.GetGrandParent(), self._controller.datafile,
                                     item=setting)
         if dlg.ShowModal() == wx.ID_OK:
-            # FIXME: Tree should listen to chief controller
+            # TODO: Tree should listen to chief controller
             controller = setting.set_value(*dlg.get_value())
             if controller:
                 self._tree.add_resource(controller)
