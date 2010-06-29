@@ -95,9 +95,12 @@ class LibraryDialog(_Dialog):
                 ValueEditor(self, alias, 'Alias')]
 
 class VariablesDialog(LibraryDialog):
-    pass
+    def _get_editors(self, item):
+        value = item.value if item else ''
+        return [ValueEditor(self, value,
+                            validator=NonEmptyValidator(self._title))]
 
-class ResourceDialog(LibraryDialog):
+class ResourceDialog(VariablesDialog):
     pass
 
 
