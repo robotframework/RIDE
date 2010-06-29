@@ -33,6 +33,7 @@ List Variable
 Give name and value of the variable. Input list variable items into separate cells.
 
 Library
+FIXME: arg editing has changed
 Give name of the library to import.
 Separate possible arguments with a pipe character like 'MyLibrary | arg 1 | arg 2'.
 %(ESCAPE)s
