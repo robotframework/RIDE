@@ -6,6 +6,7 @@ from robot.utils.asserts import assert_true
 from robotide.namespace import Namespace
 from robotide.controller.chiefcontroller import ChiefController
 
+from resources import MessageRecordingLoadObserver
 
 
 DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]),
@@ -17,7 +18,8 @@ class TestNamespacePerformance(unittest.TestCase):
     def test_keyword_find_performance(self):
         ns = Namespace()
         chief = ChiefController(ns)
-        chief.load_datafile(TESTCASEFILE_WITH_EVERYTHING)
+        chief.load_datafile(TESTCASEFILE_WITH_EVERYTHING,
+                            MessageRecordingLoadObserver())
         everything_tcf = chief._controller.data
         start_time = time.time()
         for i in range(100):

@@ -3,8 +3,9 @@ import unittest
 
 from robotide.controller.chiefcontroller import ChiefController
 from robotide.namespace.namespace import Namespace
-from resources import MINIMAL_SUITE_PATH, SUITEPATH
 from robot.utils.asserts import assert_not_none, assert_true, assert_false
+
+from resources import MINIMAL_SUITE_PATH, SUITEPATH, MessageRecordingLoadObserver
 
 
 class TestFormatChange(unittest.TestCase):
@@ -35,7 +36,7 @@ class TestFormatChange(unittest.TestCase):
         self.chief = ChiefControllerChecker(ns)
 
     def _get_file_controller(self, path):
-        self.chief.load_datafile(path)
+        self.chief.load_datafile(path, MessageRecordingLoadObserver())
         return self.chief._controller
 
     def _assert_serialized(self, path):
