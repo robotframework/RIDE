@@ -13,22 +13,22 @@
 #  limitations under the License.
 
 import os
-import time
-from threading import Thread
 
 from robotide import context
 from robotide.controller import DataController, ResourceFileController
 from robotide.errors import SerializationError
 from robotide.writer.serializer import Serializer
-from robot.parsing.model import TestData, ResourceFile
+from robot.parsing.model import ResourceFile
 from robotide.publish.messages import RideOpenResource, RideSaving, RideSaveAll,\
     RideSaved
+from robotide.controller.dataloader import DataLoader
 
 
 class ChiefController(object):
 
     def __init__(self, namespace):
         self._namespace = namespace
+        self._loader = DataLoader(namespace)
         self._controller = None
         self.resources = []
 
@@ -59,37 +59,21 @@ class ChiefController(object):
 
     def load_datafile(self, path, load_observer, notify_finish=True):
         self.__init__(self._namespace)
-        datafile = self._load_datafile(path, load_observer)
+        datafile = self._loader.load_datafile(path, load_observer)
         if not datafile:
             if notify_finish:
                 load_observer.error("Invalid data file '%s'." % path)
             return None
-        resources = self._load_resources(datafile, load_observer)
+        resources = self._loader.resources_for(datafile, load_observer)
         self._create_controllers(datafile, resources)
         if notify_finish:
             load_observer.finish()
         return datafile
 
-    def _load_datafile(self, path, load_observer):
-        loader = _DataLoader(path)
-        loader.start()
-        while loader.isAlive():
-            load_observer.notify()
-            time.sleep(0.1)
-        return loader.datafile
-
     def _create_controllers(self, datafile, resources):
         self._controller = DataController(datafile, self)
         for r in resources:
             self._create_resource_controller(r)
-
-    def _load_resources(self, datafile, load_observer):
-        loader = _ResourceLoader(datafile, self._namespace.get_resources)
-        loader.start()
-        while loader.isAlive():
-            time.sleep(0.1)
-            load_observer.notify()
-        return loader.resources
 
     def load_resource(self, path, load_observer, notify_finish=True):
         resource = self._namespace.get_resource(path)
@@ -211,30 +195,3 @@ class ChiefController(object):
         if resource:
             return self._create_resource_controller(resource)
         return None
-
-
-class _DataLoader(Thread):
-
-    def __init__(self, path):
-        Thread.__init__(self)
-        self._path = path
-        self.datafile = None
-
-    def run(self):
-        try:
-            self.datafile = TestData(source=self._path)
-        except Exception:
-            pass
-            # TODO: Log this error somehow
-
-
-class _ResourceLoader(Thread):
-
-    def __init__(self, datafile, resource_loader):
-        Thread.__init__(self)
-        self._datafile = datafile
-        self._loader = resource_loader
-        self.resources = []
-
-    def run(self):
-        self.resources = self._loader(self._datafile)
