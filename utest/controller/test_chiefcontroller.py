@@ -6,7 +6,7 @@ from robotide.namespace import Namespace
 from robotide.controller.filecontroller import TestCaseFileController,\
     TestDataDirectoryController
 
-from resources import (COMPLEX_SUITE_PATH,  MINIMAL_SUITE_PATH, RESOURCE_PATH,
+from resources import (COMPLEX_SUITE_PATH, MINIMAL_SUITE_PATH, RESOURCE_PATH,
                        MessageRecordingLoadObserver, SUITEPATH)
 
 
@@ -26,20 +26,22 @@ class ChiefControllerTest(unittest.TestCase):
 
     def test_loading_invalid_data_at_startup(self):
         msg = "Given file 'invalid' is not a valid Robot Framework test case or resource file."
-        self._load('invalid')
+        self.ctrl.load_data('invalid', self.load_observer)
+        assert_true(self.load_observer.finished)
         assert_equals(self.load_observer.message, msg)
 
     def _load(self, path):
         self.ctrl.load_data(path, self.load_observer)
-        assert_true(self.load_observer.finish_called)
+        assert_true(self.load_observer.notified)
+        assert_true(self.load_observer.finished)
 
     def test_loading_datafile(self):
         self.ctrl.load_datafile(MINIMAL_SUITE_PATH, self.load_observer)
-        assert_true(self.load_observer.finish_called)
+        assert_true(self.load_observer.finished)
 
     def test_loading_resource_file(self):
         self.ctrl.load_resource(RESOURCE_PATH, self.load_observer)
-        assert_true(self.load_observer.finish_called)
+        assert_true(self.load_observer.finished)
 
     def test_loading_invalid_datafile(self):
         self.ctrl.load_datafile('invalid', self.load_observer)

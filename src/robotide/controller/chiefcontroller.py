@@ -41,13 +41,13 @@ class ChiefController(object):
         return self._controller.data if self._controller else None
 
     def load_data(self, path, load_observer):
-        df = self.load_datafile(path)
+        df = self.load_datafile(path, load_observer, notify_finish=False)
         if df:
-            load_observer.finished()
+            load_observer.finish()
             return
-        res = self.load_resource(path)
+        res = self.load_resource(path, load_observer, notify_finish=False)
         if res:
-            load_observer.finished()
+            load_observer.finish()
         else:
             load_observer.error("Given file '%s' is not a valid Robot Framework "
                                 "test case or resource file." % path)
@@ -57,26 +57,25 @@ class ChiefController(object):
         res.source = path
         return self._create_resource_controller(res)
 
-    def load_datafile(self, path, load_observer=None):
+    def load_datafile(self, path, load_observer, notify_finish=True):
         self.__init__(self._namespace)
         datafile = self._load_datafile(path, load_observer)
         if not datafile:
-            if load_observer:
+            if notify_finish:
                 load_observer.error("Invalid data file '%s'." % path)
             return None
         resources = self._load_resources(datafile, load_observer)
         self._create_controllers(datafile, resources)
-        if load_observer:
-            load_observer.finished()
+        if notify_finish:
+            load_observer.finish()
         return datafile
 
-    def _load_datafile(self, path, load_observer=None):
+    def _load_datafile(self, path, load_observer):
         loader = _DataLoader(path)
         loader.start()
         while loader.isAlive():
+            load_observer.notify()
             time.sleep(0.1)
-            if load_observer:
-                load_observer.notify()
         return loader.datafile
 
     def _create_controllers(self, datafile, resources):
@@ -84,28 +83,27 @@ class ChiefController(object):
         for r in resources:
             self._create_resource_controller(r)
 
-    def _load_resources(self, datafile, load_observer=None):
+    def _load_resources(self, datafile, load_observer):
         loader = _ResourceLoader(datafile, self._namespace.get_resources)
         loader.start()
         while loader.isAlive():
             time.sleep(0.1)
-            if load_observer:
-                load_observer.notify()
+            load_observer.notify()
         return loader.resources
 
-    def load_resource(self, path, load_observer=None):
+    def load_resource(self, path, load_observer, notify_finish=True):
         resource = self._namespace.get_resource(path)
         if resource:
-            if load_observer:
-                load_observer.finished()
+            if notify_finish:
+                load_observer.finish()
+            RideOpenResource(path=resource.source).publish()
             return self._create_resource_controller(resource)
-        if load_observer:
+        if notify_finish:
             load_observer.error("Invalid resource file '%s'." % path)
         return None
 
     def _create_resource_controller(self, resource):
         controller = ResourceFileController(resource, self)
-        RideOpenResource(path=resource.source).publish()
         for other in self.resources:
             if other.source == controller.source:
                 return None

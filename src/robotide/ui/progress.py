@@ -29,11 +29,11 @@ class LoadProgressObserver(object):
     def notify(self):
         self._progressbar.Pulse()
 
-    def finished(self):
+    def finish(self):
         self._progressbar.Destroy()
         RideOpenSuite(path=self._path).publish()
         context.LOG.report_parsing_errors()
 
     def error(self, msg):
-        self.finished()
+        self.finish()
         context.LOG.error(msg)

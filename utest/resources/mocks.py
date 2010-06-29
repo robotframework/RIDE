@@ -12,27 +12,30 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from StringIO import StringIO
-
 
 class MessageRecordingLoadObserver(object):
     def __init__(self):
-        self._log = StringIO()
-        self.finish_called = False
+        self._log = ''
+        self.finished = False
+        self.notified = False
 
     def notify(self):
-        pass
+        if self.finished:
+            raise RuntimeError('Notified after finished')
+        self.notified = True
 
-    def finished(self):
-        self.finish_called = True
+    def finish(self):
+        self.finished = True
 
     def error(self, msg):
-        self.finished()
-        self._log.write(msg)
+        if self.finished:
+            raise RuntimeError('Errored after finished')
+        self.finish()
+        self._log = msg
 
     @property
     def message(self):
-        return self._log.getvalue()
+        return self._log
 
 
 class _FakeModel(object):
