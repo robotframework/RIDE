@@ -16,88 +16,6 @@ from robotide.editor.editors import DocumentationEditor, SettingEditor
 from robotide import utils
 
 
-class MetadataController(object):
-
-    def __init__(self, parent_controller, meta):
-        self._parent = parent_controller
-        self._meta = meta
-
-    @property
-    def name(self):
-        return self._meta.name
-
-    @property
-    def value(self):
-        return self._meta.value
-
-    @property
-    def dirty(self):
-        return self._parent.dirty
-
-    def set_value(self, name, value):
-        self._meta.name = name
-        self._meta.value = value
-        self._parent.mark_dirty()
-
-
-class VariableController(object):
-    def __init__(self, parent_controller, var):
-        self._parent = parent_controller
-        self._var = var
-
-    @property
-    def name(self):
-        return self._var.name
-
-    @property
-    def value(self):
-        return self._var.value
-
-    def set_value(self, name, value):
-        value = [value] if isinstance(value, basestring) else value
-        self._var.name = name
-        self._var.value = value
-        self._parent.mark_dirty()
-
-
-class ImportController(object):
-
-    def __init__(self, parent_controller, import_):
-        self._parent = parent_controller
-        self._import = import_
-        self.type = self._import.type
-        self.label = self.type
-
-    @property
-    def name(self):
-        return self._import.name
-
-    @property
-    def alias(self):
-        return self._import.alias or ''
-
-    @property
-    def args(self):
-        return self._import.args or ''
-
-    @property
-    def value(self):
-        return ' | '.join(self._import.as_list()[2:])
-
-    @property
-    def dirty(self):
-        return self._parent.dirty
-
-    def set_value(self, name, args=[], alias=''):
-        self._import.name = name
-        self._import.args = utils.split_value(args)
-        self._import.alias = alias
-        self._parent.mark_dirty()
-        if self.label == 'Resource':
-            return self._parent.resource_import_modified(self.name)
-        return None
-
-
 class _SettingController(object):
     editor = SettingEditor
 
@@ -112,6 +30,10 @@ class _SettingController(object):
         if label.startswith('['):
             return label[1:-1]
         return label
+
+    @property
+    def comment(self):
+        return self._data.comment or ''
 
     @property
     def datafile_controller(self):
@@ -272,3 +194,84 @@ class ReturnValueController(_SettingController):
 
     def _set(self, value):
         self._return.value = self._split_from_separators(value)
+
+
+class MetadataController(_SettingController):
+
+    def _init(self, meta):
+        self._meta = meta
+
+    @property
+    def name(self):
+        return self._meta.name
+
+    @property
+    def value(self):
+        return self._meta.value
+
+    def set_value(self, name, value):
+        self._meta.name = name
+        self._meta.value = value
+        self._parent.mark_dirty()
+
+
+class VariableController(_SettingController):
+
+    def _init(self, var):
+        self._var = var
+
+    def _label(self, data):
+        return ''
+
+    @property
+    def name(self):
+        return self._var.name
+
+    @property
+    def value(self):
+        return self._var.value
+
+    def set_value(self, name, value):
+        value = [value] if isinstance(value, basestring) else value
+        self._var.name = name
+        self._var.value = value
+        self._parent.mark_dirty()
+
+
+class ImportController(_SettingController):
+
+    def _init(self, import_):
+        self._import = import_
+        self.type = self._import.type
+
+    def _label(self, data):
+        return data.type
+
+    @property
+    def name(self):
+        return self._import.name
+
+    @property
+    def alias(self):
+        return self._import.alias or ''
+
+    @property
+    def args(self):
+        return self._import.args or ''
+
+    @property
+    def value(self):
+        return ' | '.join(self._import.as_list()[2:])
+
+    @property
+    def dirty(self):
+        return self._parent.dirty
+
+    def set_value(self, name, args=[], alias=''):
+        self._import.name = name
+        self._import.args = utils.split_value(args)
+        self._import.alias = alias
+        self._parent.mark_dirty()
+        if self.label == 'Resource':
+            return self._parent.resource_import_modified(self.name)
+        return None

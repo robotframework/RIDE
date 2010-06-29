@@ -42,12 +42,16 @@ class _Dialog(wx.Dialog):
         self._editors = self._get_editors(item)
         for editor in self._editors:
             self._sizer.Add(editor, editor.expand_factor, wx.EXPAND)
+        self._add_comment_editor(item)
         self._create_help()
         self._create_line()
         self._create_buttons()
         self.SetSizer(self._sizer)
         self._sizer.Fit(self)
         self._editors[0].set_focus()
+
+    def _add_comment_editor(self, item):
+        self._sizer.Add(ValueEditor(self, item.comment if item else '', 'Comment'))
 
     def _create_line(self):
         line = wx.StaticLine(self, size=(20,-1), style=wx.LI_HORIZONTAL)
@@ -108,6 +112,9 @@ class DocumentationDialog(_Dialog):
 
     def _get_editors(self, doc):
         return [MultiLineEditor(self, doc)]
+
+    def _add_comment_editor(self, item):
+        pass
 
     def get_value(self):
         return _Dialog.get_value(self)
