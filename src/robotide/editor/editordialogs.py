@@ -63,10 +63,7 @@ class _Dialog(wx.Dialog):
         self._sizer.Add(buttons, 0, wx.ALIGN_CENTER|wx.ALL, 5)
 
     def get_value(self):
-        values = [ e.get_value() for e in self._editors ]
-        if len(values) == 1:
-            return values[0]
-        return values
+        return [ e.get_value() for e in self._editors ]
 
 
 class ScalarVariableDialog(_Dialog):

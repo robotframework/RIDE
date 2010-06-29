@@ -171,7 +171,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
         dlg = self._dialog(self.GetGrandParent(), self._datafile, self._plugin,
                            self._controller)
         if dlg.ShowModal() == wx.ID_OK:
-            self._controller.set_value(dlg.get_value())
+            self._controller.set_value(*dlg.get_value())
             self._update_and_notify()
         dlg.Destroy()
         self._editing = False
@@ -225,7 +225,7 @@ class DocumentationEditor(SettingEditor):
         editor = DocumentationDialog(self.GetGrandParent(), self._datafile,
                                      self._plugin, self._controller.value)
         if editor.ShowModal() == wx.ID_OK:
-            self._controller.set_value(editor.get_value())
+            self._controller.set_value(*editor.get_value())
             self._update_and_notify()
         editor.Destroy()
 
@@ -364,7 +364,7 @@ class ImportSettingListEditor(_AbstractListEditor):
                                     item=setting)
         if dlg.ShowModal() == wx.ID_OK:
             # FIXME: Tree should listen to chief controller
-            controller = setting.set_value(dlg.get_value())
+            controller = setting.set_value(*dlg.get_value())
             if controller:
                 self._tree.add_resource(controller)
             self.update_data()
@@ -385,7 +385,7 @@ class ImportSettingListEditor(_AbstractListEditor):
     def _show_import_editor_dialog(self, dialog, creator):
         dlg = dialog(self.GetGrandParent(), self._controller.datafile)
         if dlg.ShowModal() == wx.ID_OK:
-            creator(dlg.get_value())
+            creator(*dlg.get_value())
             self.update_data()
         dlg.Destroy()
 
