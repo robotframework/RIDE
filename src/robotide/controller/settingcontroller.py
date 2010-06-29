@@ -78,7 +78,7 @@ class ImportController(object):
 
     @property
     def args(self):
-        return self._import.args
+        return self._import.args or ''
 
     @property
     def value(self):

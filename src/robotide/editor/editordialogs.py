@@ -87,7 +87,7 @@ class LibraryDialog(_Dialog):
 
     def _get_editors(self, item):
         name = item and item.name or ''
-        args = item and item.args or ''
+        args = item and utils.join_value(item.args) or ''
         alias = item.alias if item else ''
         return [ValueEditor(self, name, 'Name',
                             validator=NonEmptyValidator(self._title)),
