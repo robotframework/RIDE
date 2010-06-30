@@ -420,8 +420,8 @@ class MetadataListEditor(_AbstractListEditor):
     def OnAddMetadata(self, event):
         dlg = MetadataDialog(self.GetGrandParent(), self._controller.datafile)
         if dlg.ShowModal() == wx.ID_OK:
-            self._controller.add_metadata(*dlg.get_value(),
-                                          comment=dlg.get_comment())
+            ctrl = self._controller.add_metadata(dlg.get_value())
+            ctrl.set_comment(dlg.get_comment())
             self.update_data()
         dlg.Destroy()
 

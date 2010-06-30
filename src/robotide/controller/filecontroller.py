@@ -594,3 +594,5 @@ class MetadataListController(_TableController, _WithListOperations):
     def add_metadata(self, name, value, comment=None):
         self._table.add_metadata(name, value, comment)
         self._parent.mark_dirty()
+        return self[-1]
+
