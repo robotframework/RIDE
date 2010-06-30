@@ -18,7 +18,7 @@ from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 from robotide.utils import ButtonWithHandler, PopupMenu, RideEventHandler
 
 
-class ListEditor(wx.Panel, RideEventHandler):
+class ListEditorBase(wx.Panel):
     _menu = ['Edit', 'Move Up', 'Move Down', '---', 'Delete']
     _buttons = []
 
@@ -94,6 +94,9 @@ class ListEditor(wx.Panel, RideEventHandler):
 
     def update_selected_item(self, data):
         self._list.update_item(self._selection, data)
+
+
+class ListEditor(ListEditorBase, RideEventHandler): pass
 
 
 class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):

@@ -15,7 +15,7 @@
 import wx
 from wx.lib.mixins.listctrl import TextEditMixin
 
-from robotide.editor.listeditor import ListEditor, AutoWidthColumnList
+from robotide.editor.listeditor import AutoWidthColumnList, ListEditorBase
 from robotide.context import Font
 
 
@@ -74,12 +74,12 @@ class ConfigManagerDialog(wx.Dialog):
         return self._editor.get_data()
 
 
-class _ConfigListEditor(ListEditor):
+class _ConfigListEditor(ListEditorBase):
     _buttons = ['New']
     _columns = ['Name', 'Command', 'Documentation']
 
     def __init__(self, parent, configs):
-        ListEditor.__init__(self, parent, self._columns, configs)
+        ListEditorBase.__init__(self, parent, self._columns, configs)
 
     def _create_list(self, columns, data):
         return _TextEditListCtrl(self, columns, data, self._new_config)
@@ -97,7 +97,7 @@ class _ConfigListEditor(ListEditor):
         self._list.new_item()
 
     def _new_config(self, data):
-        self._data.add(*data)
+        self._controller.add(*data)
 
 
 class _TextEditListCtrl(AutoWidthColumnList, TextEditMixin):
