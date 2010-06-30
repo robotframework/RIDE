@@ -294,6 +294,7 @@ class VariableTableController(_TableController, _WithListOperations):
     def add_variable(self, name, value, comment=None):
         self._table.add(name, value, comment)
         self.mark_dirty()
+        return self[-1]
 
     def validate_scalar_variable_name(self, name):
         return self._validate_name(_ScalarVarValidator(), name)
@@ -551,12 +552,15 @@ class ImportSettingsController(_TableController, _WithListOperations):
                                           comment)
         import_.alias = alias
         self._parent.mark_dirty()
+        return self[-1]
 
     def add_resource(self, name, comment=None):
         self._add_import(self._table.add_resource, name, comment)
+        return self[-1]
 
     def add_variables(self, argstr, comment=None):
         self._add_import(self._table.add_variables, argstr, comment)
+        return self[-1]
 
     def _add_import(self, adder, argstr, comment):
         adder(*self._split_to_name_and_args(argstr), comment=comment)

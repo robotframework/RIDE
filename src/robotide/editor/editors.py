@@ -330,16 +330,16 @@ class VariablesListEditor(_AbstractListEditor):
     def OnAddScalar(self, event):
         dlg = ScalarVariableDialog(self.GetGrandParent(), self._controller)
         if dlg.ShowModal() == wx.ID_OK:
-            self._controller.add_variable(*dlg.get_value(),
-                                          comment=dlg.get_comment())
+            ctrl = self._controller.add_variable(*dlg.get_value())
+            ctrl.set_comment(dlg.get_comment())
             self.update_data()
         dlg.Destroy()
 
     def OnAddList(self, event):
         dlg = ListVariableDialog(self.GetGrandParent(), self._controller)
         if dlg.ShowModal() == wx.ID_OK:
-            self._controller.add_variable(*dlg.get_value(),
-                                          comment=dlg.get_comment())
+            ctrl = self._controller.add_variable(*dlg.get_value())
+            ctrl.set_comment(dlg.get_comment())
             self.update_data()
         dlg.Destroy()
 
@@ -390,7 +390,8 @@ class ImportSettingListEditor(_AbstractListEditor):
     def _show_import_editor_dialog(self, dialog, creator):
         dlg = dialog(self.GetGrandParent(), self._controller.datafile)
         if dlg.ShowModal() == wx.ID_OK:
-            creator(*dlg.get_value(), comment=dlg.get_comment())
+            ctrl = creator(*dlg.get_value())
+            ctrl.set_comment(dlg.get_comment())
             self.update_data()
         dlg.Destroy()
 
