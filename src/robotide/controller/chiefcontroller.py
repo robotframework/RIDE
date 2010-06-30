@@ -179,6 +179,8 @@ class ChiefController(object):
         return '%s: %s\n' % (controller.data.source, str(err))
 
     def _serialize_file(self, controller):
+        if not controller.has_format():
+            return
         RideSaving(path=controller.source).publish()
         serializer = Serializer()
         serializer.serialize(controller)
