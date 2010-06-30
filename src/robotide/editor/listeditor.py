@@ -108,7 +108,7 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
     def populate(self, columns, data):
         for i, name in enumerate(columns):
             self.InsertColumn(i, name)
-            self.SetColumnWidth(i, 200)
+            #self.SetColumnWidth(i, 150 if i == 0 else 200)
         self.insert_data(data)
 
     def insert_data(self, data):
@@ -118,6 +118,12 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
             for i in range(1, len(rowdata)):
                 data = rowdata[i] is not None and rowdata[i] or ''
                 self.SetStringItem(row, i, data)
+        for i in range(self.ColumnCount):
+            self.SetColumnWidth(i, -1)
+            if self.GetColumnWidth(i) < 120:
+                self.SetColumnWidth(i, 120)
+            if self.GetColumnWidth(i) > 350:
+                self.SetColumnWidth(i, 350)
 
     def update_item(self, index, data):
         self.SetItemText(index, data[0])
