@@ -172,6 +172,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
                            self._controller)
         if dlg.ShowModal() == wx.ID_OK:
             self._controller.set_value(*dlg.get_value())
+            self._controller.set_comment(dlg.get_comment())
             self._update_and_notify()
         dlg.Destroy()
         self._editing = False
@@ -193,7 +194,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
     def _update_value(self):
         if self._controller.is_set:
             self._value_display.SetBackgroundColour('white')
-            self._value_display.SetValue(self._controller.value)
+            self._value_display.SetValue(self._controller.display_value)
         else:
             self._value_display.Clear()
             self._value_display.SetBackgroundColour('light grey')
@@ -218,7 +219,7 @@ class DocumentationEditor(SettingEditor):
         return display
 
     def _update_value(self):
-        value = self._controller.value
+        value = self._controller.display_value
         self._value_display.SetPage(utils.html_escape(value, formatting=True))
 
     def OnEdit(self, event):
@@ -319,24 +320,26 @@ class _AbstractListEditor(ListEditor):
 
 
 class VariablesListEditor(_AbstractListEditor):
-    _titles = ['Variable', 'Value']
+    _titles = ['Variable', 'Value', 'Comment']
     _buttons = ['Add Scalar', 'Add List']
 
     def get_column_values(self, item):
         return [item.name, item.value if isinstance(item.value, basestring)
-                            else ' | '.join(item.value)]
+                            else ' | '.join(item.value), item.comment]
 
     def OnAddScalar(self, event):
         dlg = ScalarVariableDialog(self.GetGrandParent(), self._controller)
         if dlg.ShowModal() == wx.ID_OK:
-            self._controller.add_variable(*dlg.get_value())
+            self._controller.add_variable(*dlg.get_value(),
+                                          comment=dlg.get_comment())
             self.update_data()
         dlg.Destroy()
 
     def OnAddList(self, event):
         dlg = ListVariableDialog(self.GetGrandParent(), self._controller)
         if dlg.ShowModal() == wx.ID_OK:
-            self._controller.add_variable(*dlg.get_value())
+            self._controller.add_variable(*dlg.get_value(),
+                                          comment=dlg.get_comment())
             self.update_data()
         dlg.Destroy()
 
@@ -350,12 +353,13 @@ class VariablesListEditor(_AbstractListEditor):
                                      self._controller, item=var)
         if dlg.ShowModal() == wx.ID_OK:
             var.set_value(*dlg.get_value())
+            var.set_comment(dlg.get_comment())
             self.update_data()
         dlg.Destroy()
 
 
 class ImportSettingListEditor(_AbstractListEditor):
-    _titles = ['Import', 'Name / Path', 'Arguments']
+    _titles = ['Import', 'Name / Path', 'Arguments', 'Comment']
     _buttons = ['Add Library', 'Add Resource', 'Add Variables']
 
     def OnEdit(self, event):
@@ -365,6 +369,7 @@ class ImportSettingListEditor(_AbstractListEditor):
         if dlg.ShowModal() == wx.ID_OK:
             # TODO: Tree should listen to chief controller
             controller = setting.set_value(*dlg.get_value())
+            setting.set_comment(dlg.get_comment())
             if controller:
                 self._tree.add_resource(controller)
             self.update_data()
@@ -385,19 +390,19 @@ class ImportSettingListEditor(_AbstractListEditor):
     def _show_import_editor_dialog(self, dialog, creator):
         dlg = dialog(self.GetGrandParent(), self._controller.datafile)
         if dlg.ShowModal() == wx.ID_OK:
-            creator(*dlg.get_value())
+            creator(*dlg.get_value(), comment=dlg.get_comment())
             self.update_data()
         dlg.Destroy()
 
     def get_column_values(self, item):
-        return [item.type, item.name, item.value]
+        return [item.type, item.name, item.display_value, item.comment]
 
     def _get_setting(self):
         return self._controller[self._selection]
 
 
 class MetadataListEditor(_AbstractListEditor):
-    _titles = ['Metadata', 'Value']
+    _titles = ['Metadata', 'Value', 'Comment']
     _buttons = ['Add Metadata']
     _sortable = False
 
@@ -407,15 +412,17 @@ class MetadataListEditor(_AbstractListEditor):
                              item=meta)
         if dlg.ShowModal() == wx.ID_OK:
             meta.set_value(*dlg.get_value())
+            meta.set_comment(dlg.get_comment())
             self.update_data()
         dlg.Destroy()
 
     def OnAddMetadata(self, event):
         dlg = MetadataDialog(self.GetGrandParent(), self._controller.datafile)
         if dlg.ShowModal() == wx.ID_OK:
-            self._controller.add_metadata(*dlg.get_value())
+            self._controller.add_metadata(*dlg.get_value(),
+                                          comment=dlg.get_comment())
             self.update_data()
         dlg.Destroy()
 
     def get_column_values(self, item):
-        return [item.name, utils.html_escape(item.value)]
+        return [item.name, utils.html_escape(item.value), item.comment]

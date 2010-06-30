@@ -291,8 +291,8 @@ class VariableTableController(_TableController, _WithListOperations):
     def _items(self):
         return self._table.variables
 
-    def add_variable(self, name, value):
-        self._table.add(name, value)
+    def add_variable(self, name, value, comment=None):
+        self._table.add(name, value, comment)
         self.mark_dirty()
 
     def validate_scalar_variable_name(self, name):
@@ -546,19 +546,20 @@ class ImportSettingsController(_TableController, _WithListOperations):
     def _items(self):
         return self._table.imports
 
-    def add_library(self, name, argstr, alias):
-        import_ = self._table.add_library(name, utils.split_value(argstr))
+    def add_library(self, name, argstr, alias, comment=None):
+        import_ = self._table.add_library(name, utils.split_value(argstr),
+                                          comment)
         import_.alias = alias
         self._parent.mark_dirty()
 
-    def add_resource(self, name):
-        self._add_import(self._table.add_resource, name)
+    def add_resource(self, name, comment=None):
+        self._add_import(self._table.add_resource, name, comment)
 
-    def add_variables(self, argstr):
-        self._add_import(self._table.add_variables, argstr)
+    def add_variables(self, argstr, comment=None):
+        self._add_import(self._table.add_variables, argstr, comment)
 
-    def _add_import(self, adder, argstr):
-        adder(*self._split_to_name_and_args(argstr))
+    def _add_import(self, adder, argstr, comment):
+        adder(*self._split_to_name_and_args(argstr), comment=comment)
         self._parent.mark_dirty()
 
     def _split_to_name_and_args(self, argstr):
@@ -585,6 +586,6 @@ class MetadataListController(_TableController, _WithListOperations):
     def _items(self):
         return self._table.metadata
 
-    def add_metadata(self, name, value):
-        self._table.add_metadata(name, value)
+    def add_metadata(self, name, value, comment=None):
+        self._table.add_metadata(name, value, comment)
         self._parent.mark_dirty()

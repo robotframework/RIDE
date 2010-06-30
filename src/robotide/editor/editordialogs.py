@@ -51,7 +51,9 @@ class _Dialog(wx.Dialog):
         self._editors[0].set_focus()
 
     def _add_comment_editor(self, item):
-        self._sizer.Add(ValueEditor(self, item.comment if item else '', 'Comment'))
+        self._comment_editor = ValueEditor(self, item.comment if item else '',
+                                           'Comment')
+        self._sizer.Add(self._comment_editor)
 
     def _create_line(self):
         line = wx.StaticLine(self, size=(20,-1), style=wx.LI_HORIZONTAL)
@@ -68,6 +70,9 @@ class _Dialog(wx.Dialog):
 
     def get_value(self):
         return [ e.get_value() for e in self._editors ]
+
+    def get_comment(self):
+        return self._comment_editor.get_value()
 
 
 class ScalarVariableDialog(_Dialog):

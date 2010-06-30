@@ -27,7 +27,7 @@ class DocumentationControllerTest(unittest.TestCase):
         self.ctrl = DocumentationController(self.parent, self.doc)
 
     def test_creation(self):
-        assert_equals(self.ctrl.value, 'Initial doc')
+        assert_equals(self.ctrl.display_value, 'Initial doc')
         assert_true(self.ctrl.datafile is None)
         ctrl = DocumentationController(self.parent, Documentation('[Documentation]'))
         assert_equals(ctrl.label, 'Documentation')
@@ -67,12 +67,12 @@ class FixtureControllerTest(unittest.TestCase):
         self.ctrl = FixtureController(self.parent, self.fix)
 
     def test_creation(self):
-        assert_equals(self.ctrl.value, 'My Setup | argh | urgh')
+        assert_equals(self.ctrl.display_value, 'My Setup | argh | urgh')
         assert_equals(self.ctrl.label, 'Suite Setup')
         assert_true(self.ctrl.is_set)
 
     def test_value_with_empty_fixture(self):
-        assert_equals(FixtureController(self.parent, Fixture('Teardown')).value, '')
+        assert_equals(FixtureController(self.parent, Fixture('Teardown')).display_value, '')
 
     def test_setting_value_changes_fixture_state(self):
         self.ctrl.set_value('Blaa')
@@ -86,7 +86,7 @@ class FixtureControllerTest(unittest.TestCase):
         self.ctrl.set_value('Name |   a    |    b      |     c')
         assert_equals(self.fix.name, 'Name')
         assert_equals(self.fix.args, ['a', 'b', 'c'])
-        assert_equals(self.ctrl.value, 'Name | a | b | c')
+        assert_equals(self.ctrl.display_value, 'Name | a | b | c')
 
     def test_setting_value_informs_parent_controller_about_dirty_model(self):
         self.ctrl.set_value('Blaa')
@@ -102,6 +102,11 @@ class FixtureControllerTest(unittest.TestCase):
         self.ctrl.set_value('My Setup | argh | urgh')
         assert_false(self.ctrl.dirty)
 
+    def test_setting_comment(self):
+        self.ctrl.set_comment('My comment')
+        assert_equals(self.ctrl.comment, 'My comment')
+        assert_true(self.ctrl.dirty)
+
 
 class TagsControllerTest(unittest.TestCase):
 
@@ -112,11 +117,11 @@ class TagsControllerTest(unittest.TestCase):
         self.ctrl = TagsController(self.parent, self.tags)
 
     def test_creation(self):
-        assert_equals(self.ctrl.value, 'f1 | f2')
+        assert_equals(self.ctrl.display_value, 'f1 | f2')
         assert_true(self.ctrl.is_set)
 
     def test_value_with_empty_fixture(self):
-        assert_equals(TagsController(self.parent, Tags('Tags')).value, '')
+        assert_equals(TagsController(self.parent, Tags('Tags')).display_value, '')
 
     def test_setting_value_changes_fixture_state(self):
         self.ctrl.set_value('Blaa')
@@ -148,11 +153,12 @@ class TimeoutControllerTest(unittest.TestCase):
         self.ctrl = TimeoutController(self.parent, self.to)
 
     def test_creation(self):
-        assert_equals(self.ctrl.value, '1 s | message')
+        assert_equals(self.ctrl.display_value, '1 s | message')
         assert_true(self.ctrl.is_set)
 
     def test_value_with_empty_timeout(self):
-        assert_equals(TimeoutController(self.parent, Timeout('Timeout')).value, '')
+        assert_equals(TimeoutController(self.parent,
+                                        Timeout('Timeout')).display_value, '')
 
     def test_setting_value_changes_fixture_state(self):
         self.ctrl.set_value('3 s')
@@ -361,9 +367,14 @@ class ImportControllerTest(unittest.TestCase):
         self.parent = ImportSettingsController(tcf_ctrl, self.tcf.setting_table)
 
     def test_creation(self):
-        self._assert_import(0, 'somelib', 'foo | bar')
+        self._assert_import(0, 'somelib', ['foo', 'bar'])
         self._assert_import(1, 'resu')
-        self._assert_import(2, 'BuiltIn', 'WITH NAME | InBuilt')
+        self._assert_import(2, 'BuiltIn', exp_alias='InBuilt')
+
+    def test_display_value(self):
+        assert_equals(self.parent[0].display_value, 'foo | bar')
+        assert_equals(self.parent[1].display_value, '')
+        assert_equals(self.parent[2].display_value, 'WITH NAME | InBuilt')
 
     def test_editing(self):
         ctrl = ImportController(self.parent, self.parent[1]._import)
@@ -374,21 +385,23 @@ class ImportControllerTest(unittest.TestCase):
     def test_editing_with_args(self):
         ctrl = ImportController(self.parent, self.parent[0]._import)
         ctrl.set_value('bar', 'quux')
-        self._assert_import(0, 'bar', 'quux')
+        self._assert_import(0, 'bar', ['quux'])
         assert_true(self.parent.dirty)
         ctrl.set_value('name', 'a1 | a2')
-        self._assert_import(0, 'name', 'a1 | a2')
+        self._assert_import(0, 'name', ['a1', 'a2'])
 
     def test_editing_with_alias(self):
         ctrl = ImportController(self.parent, self.parent[0]._import)
         ctrl.set_value('newname', '', 'namenew')
-        self._assert_import(0, 'newname', 'WITH NAME | namenew')
+        self._assert_import(0, 'newname', exp_alias='namenew')
         ctrl.set_value('again')
         self._assert_import(0, 'again')
 
-    def _assert_import(self, index, exp_name, exp_value=''):
-        assert_equals(self.parent[index].name, exp_name)
-        assert_equals(self.parent[index].value, exp_value)
+    def _assert_import(self, index, exp_name, exp_args=[], exp_alias=''):
+        item = self.parent[index]
+        assert_equals(item.name, exp_name)
+        assert_equals(item.args, exp_args)
+        assert_equals(item.alias, exp_alias)
 
 
 class ImportSettingsControllerTest(unittest.TestCase):

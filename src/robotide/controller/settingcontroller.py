@@ -21,15 +21,28 @@ class _SettingController(object):
 
     def __init__(self, parent_controller, data):
         self._parent = parent_controller
+        if data.comment:
+            data.comment = data.comment.strip()
         self._data = data
-        self.label = self._label(data)
-        self._init(data)
+        self.label = self._label(self._data)
+        self._init(self._data)
 
     def _label(self, data):
         label = data.setting_name
         if label.startswith('['):
             return label[1:-1]
         return label
+
+    @property
+    def value(self):
+        value = self._data.as_list()[1:]
+        if self._data.comment:
+            value.pop()
+        return ' | '.join(value)
+
+    @property
+    def display_value(self):
+        return ' | ' .join(self._data.as_list()[1:])
 
     @property
     def comment(self):
@@ -54,6 +67,11 @@ class _SettingController(object):
     def set_value(self, value):
         if self._changed(value):
             self._set(value)
+            self._mark_dirty()
+
+    def set_comment(self, comment):
+        if comment != self.comment:
+            self._data.comment = comment
             self._mark_dirty()
 
     def clear(self):
@@ -89,10 +107,6 @@ class FixtureController(_SettingController):
     def _init(self, fixture):
         self._fixture = fixture
 
-    @property
-    def value(self):
-        return ' | '.join([self._fixture.name or ''] + self._fixture.args or [])
-
     def _changed(self, value):
         name, args = self._parse(value)
         return self._fixture.name != name or self._fixture.args != args
@@ -112,10 +126,6 @@ class TagsController(_SettingController):
     def _init(self, tags):
         self._tags = tags
 
-    @property
-    def value(self):
-        return ' | '.join(self._tags.value or [])
-
     def _changed(self, value):
         return self._tags.value != self._split_from_separators(value)
 
@@ -127,13 +137,6 @@ class TimeoutController(_SettingController):
 
     def _init(self, timeout):
         self._timeout = timeout
-
-    @property
-    def value(self):
-        value, msg = self._timeout.value, self._timeout.message
-        if not value:
-            return ''
-        return value if not msg else value + ' | ' + msg
 
     def _changed(self, value):
         val, msg = self._parse(value)
@@ -156,19 +159,11 @@ class TemplateController(_SettingController):
     def _init(self, template):
         self._template = template
 
-    @property
-    def value(self):
-        return self._template.value or ''
-
 
 class ArgumentsController(_SettingController):
 
     def _init(self, args):
         self._args = args
-
-    @property
-    def value(self):
-        return ' | '.join(self._args.value or [])
 
     def _changed(self, value):
         return self._args.value != self._split_from_separators(value)
@@ -184,10 +179,6 @@ class ReturnValueController(_SettingController):
 
     def _label(self, data):
         return 'Return Value'
-
-    @property
-    def value(self):
-        return ' | '.join(self._return.value or [])
 
     def _changed(self, value):
         return self._return.value != self._split_from_separators(value)
@@ -257,11 +248,12 @@ class ImportController(_SettingController):
 
     @property
     def args(self):
-        return self._import.args or ''
+        return self._import.args or []
 
     @property
-    def value(self):
-        return ' | '.join(self._import.as_list()[2:])
+    def display_value(self):
+        value = self.args + (['WITH NAME' , self.alias] if self.alias else [])
+        return ' | '.join(value)
 
     @property
     def dirty(self):
