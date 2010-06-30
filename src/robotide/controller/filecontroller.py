@@ -563,7 +563,8 @@ class ImportSettingsController(_TableController, _WithListOperations):
         return self[-1]
 
     def _add_import(self, adder, argstr, comment):
-        adder(*self._split_to_name_and_args(argstr), comment=comment)
+        name, args = self._split_to_name_and_args(argstr)
+        adder(name, args, comment=comment)
         self._parent.mark_dirty()
 
     def _split_to_name_and_args(self, argstr):
