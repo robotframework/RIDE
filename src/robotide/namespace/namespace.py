@@ -26,7 +26,8 @@ from robot.variables import GLOBAL_VARIABLES
 from robotide.namespace.cache import LibraryCache, ExpiringCache
 from robotide.spec.iteminfo import (TestCaseUserKeywordInfo,
                                     ResourceseUserKeywordInfo,
-                                    VariableInfo, LibraryKeywordInfo)
+                                    VariableInfo, LibraryKeywordInfo,
+                                    _UserKeywordInfo)
 from robotide import utils
 
 
@@ -104,35 +105,26 @@ class Namespace(object):
         return self.res_cache.get_resource('', path)
 
     def find_user_keyword(self, datafile, kw_name):
-        uks = self.retriever.get_user_keywords_dict_cached(datafile)
-        return uks[kw_name] if kw_name in uks else None
-
-    def _find_from(self, kws, predicate):
-        for k in kws:
-            if predicate(k):
-                return k
-        return None
+        kw = self._find_keyword(datafile, kw_name)
+        return kw if isinstance(kw, _UserKeywordInfo) else None
 
     def is_user_keyword(self, datafile, kw_name):
         return bool(self.find_user_keyword(datafile, kw_name))
 
     def find_library_keyword(self, datafile, kw_name):
-        return self._find_from_lib_keywords(datafile,
-            lambda k: eq(k.name, kw_name) and isinstance(k, LibraryKeywordInfo))
+        kw = self._find_keyword(datafile, kw_name)
+        return kw if isinstance(kw, LibraryKeywordInfo) else None
 
-    def _find_from_lib_keywords(self, datafile, predicate):
-        kws = self._get_default_keywords()
-        kws.extend(self.retriever.get_keywords_from(datafile))
-        return self._find_from(kws, predicate)
+    def _find_keyword(self, datafile, kw_name):
+        kwds = self.retriever.get_keywords_dict_cached(datafile)
+        return kwds[kw_name] if kw_name in kwds else None
 
     def is_library_keyword(self, datafile, kw_name):
         return bool(self.find_library_keyword(datafile, kw_name))
 
     def keyword_details(self, datafile, name):
-        kw = self._find_from_lib_keywords(datafile, lambda k: eq(k.name, name))
-        if kw:
-            return kw.details
-        return None
+        kw = self._find_keyword(datafile, name)
+        return kw.details if kw else None
 
 
 class ResourceCache(object):
@@ -194,7 +186,7 @@ class DatafileRetriever(object):
     def __init__(self, lib_cache, res_cache):
         self.lib_cache = lib_cache
         self.res_cache = res_cache
-        self.user_keyword_cache = ExpiringCache()
+        self.keyword_cache = ExpiringCache()
         self.default_kws = self.lib_cache.get_default_keywords()
 
     def get_keywords_from_several(self, datafiles):
@@ -276,12 +268,13 @@ class DatafileRetriever(object):
     def _var_collector(self, res, vars, items):
         self._get_vars_recursive(res, vars)
 
-    def get_user_keywords_dict_cached(self, datafile):
-        values = self.user_keyword_cache.get(datafile.source)
+    def get_keywords_dict_cached(self, datafile):
+        values = self.keyword_cache.get(datafile.source)
         if not values:
-            words = self._get_user_keywords_from(datafile)
+            words = self.get_keywords_from(datafile)
+            words.extend(self.default_kws)
             values = self._keywords_to_dict(words)
-            self.user_keyword_cache.put(datafile.source, values)
+            self.keyword_cache.put(datafile.source, values)
         return values
 
     def _keywords_to_dict(self, keywords):
