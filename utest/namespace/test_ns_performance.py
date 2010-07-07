@@ -14,15 +14,24 @@ DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]),
 TESTCASEFILE_WITH_EVERYTHING = os.path.normpath(os.path.join(DATAPATH, 'testsuite',
                                                    'everything.html'))
 
+
 class TestNamespacePerformance(unittest.TestCase):
-    def test_keyword_find_performance(self):
+
+    def test_user_keyword_find_performance(self):
+        self._execute_keyword_find_function_n_times('is_user_keyword', 10000)
+
+    def test_library_keyword_find_performance(self):
+        self._execute_keyword_find_function_n_times('is_library_keyword', 10000)
+
+    def _execute_keyword_find_function_n_times(self, function, n):
         ns = Namespace()
         chief = ChiefController(ns)
         chief.load_datafile(TESTCASEFILE_WITH_EVERYTHING,
                             MessageRecordingLoadObserver())
         everything_tcf = chief._controller.data
         start_time = time.time()
-        for i in range(100):
-            ns.is_user_keyword(everything_tcf, 'hevonen %s' % i)
+        for i in range(n):
+            func = getattr(ns, function)
+            func(everything_tcf, 'hevonen %s' % i)
         end_time = time.time() - start_time
-        assert_true(end_time < 0.5, 'Checking 100 kws took too long: %fs.' % end_time)
+        assert_true(end_time < 0.5, 'Checking %d kws took too long: %fs.' % (n, end_time))
