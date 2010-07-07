@@ -135,7 +135,7 @@ class ResourceFileCache(_FileCache):
 
 class ExpiringCache(object):
 
-    def __init__(self, timeout=0.01):
+    def __init__(self, timeout=0.5):
         self._cache = {}
         self._timeout = timeout
 
