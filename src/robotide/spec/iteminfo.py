@@ -47,6 +47,7 @@ class _KeywordInfo(ItemInfo):
         ItemInfo.__init__(self, item.name, self._source(item),
                           self._details(item))
         self.shortdoc = self.doc.splitlines()[0] if self.doc else ''
+        self.item = item
 
     def _details(self, item):
         return 'Source: %s &lt;%s&gt;<br><br>Arguments: %s<br><br>%s' % \
