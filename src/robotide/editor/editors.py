@@ -214,19 +214,19 @@ class DocumentationEditor(SettingEditor):
         self._create_controls()
 
     def _get_value_display(self):
-        display = RideHtmlWindow(self, (-1, 60))
+        display = RideHtmlWindow(self, (-1, 100))
         display.Bind(wx.EVT_LEFT_DOWN, self.OnEdit)
         return display
 
     def _update_value(self):
-        value = self._controller.display_value
-        self._value_display.SetPage(utils.html_escape(value, formatting=True))
+        print "'%s'" % self._controller.visible_value
+        self._value_display.SetPage(self._controller.visible_value)
 
     def OnEdit(self, event):
         editor = DocumentationDialog(self.GetGrandParent(), self._datafile,
-                                     self._plugin, self._controller.value)
+                                     self._plugin, self._controller.editable_value)
         if editor.ShowModal() == wx.ID_OK:
-            self._controller.set_value(*editor.get_value())
+            self._controller.editable_value = editor.get_value()
             self._update_and_notify()
         editor.Destroy()
 

@@ -12,6 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from robot.utils.escaping import unescape
 from robotide.editor.editors import DocumentationEditor, SettingEditor
 from robotide import utils
 
@@ -100,6 +101,28 @@ class DocumentationController(_SettingController):
     @property
     def value(self):
         return self._doc.value
+    
+    @property
+    def editable_value(self):
+        return self.simple_unescape(self._doc.value)
+    
+    @editable_value.setter
+    def editable_value(self, value):
+        self.set_value(self.simple_escape(*value))
+
+    @property
+    def visible_value(self):
+        return utils.html_escape(unescape(self._doc.value), formatting=True)
+
+    def simple_unescape(self, item):
+        item = item.replace('\\r\\n', '\n')
+        item = item.replace('\\n', '\n')
+        return item.replace('\\r', '\n')
+    
+    def simple_escape(self, item):
+        item = item.replace('\r\n', '\\n')
+        item = item.replace('\n', '\\n')
+        return item.replace('\r', '\\n')
 
 
 class FixtureController(_SettingController):
