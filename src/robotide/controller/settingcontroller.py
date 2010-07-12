@@ -108,7 +108,7 @@ class DocumentationController(_SettingController):
     
     @editable_value.setter
     def editable_value(self, value):
-        self.set_value(self.simple_escape(*value))
+        self.set_value(self.simple_escape(value))
 
     @property
     def visible_value(self):

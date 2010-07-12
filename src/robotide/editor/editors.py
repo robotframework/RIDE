@@ -226,7 +226,9 @@ class DocumentationEditor(SettingEditor):
         editor = DocumentationDialog(self.GetGrandParent(), self._datafile,
                                      self._plugin, self._controller.editable_value)
         if editor.ShowModal() == wx.ID_OK:
-            self._controller.editable_value = editor.get_value()
+            value_list = editor.get_value()
+            if value_list:
+                self._controller.editable_value = value_list[0] 
             self._update_and_notify()
         editor.Destroy()
 
