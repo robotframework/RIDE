@@ -102,13 +102,13 @@ class DocumentationController(_SettingController):
     def value(self):
         return self._doc.value
     
-    @property
-    def editable_value(self):
+    def _get_editable_value(self):
         return self.simple_unescape(self._doc.value)
     
-    @editable_value.setter
-    def editable_value(self, value):
+    def _set_editable_value(self, value):
         self.set_value(self.simple_escape(value))
+
+    editable_value = property(_get_editable_value, _set_editable_value)
 
     @property
     def visible_value(self):
