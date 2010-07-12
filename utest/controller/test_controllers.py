@@ -38,6 +38,24 @@ class DocumentationControllerTest(unittest.TestCase):
         self.ctrl.set_value('Doc changed | again')
         assert_equals(self.doc.value, 'Doc changed | again')
 
+    def test_get_editable_value(self):
+        self.doc.value = 'My doc \\n with enters \\n and \t tabs'
+        assert_equals(self.ctrl.editable_value, '''My doc 
+ with enters 
+ and \t tabs''')
+
+    def test_set_editable_value(self):
+        self.ctrl.editable_value = '''My doc 
+ with enters 
+ and \t tabs'''
+        assert_equals(self.doc.value, 'My doc \\n with enters \\n and \t tabs')
+
+    def test_get_visible_value(self):
+        self.doc.value = 'My doc \\n with enters \\n and \t tabs'
+        assert_equals(self.ctrl.visible_value, '''My doc <br />
+with enters <br />
+and &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tabs''')
+
     def test_setting_value_informs_parent_controller_about_dirty_model(self):
         self.ctrl.set_value('Blaa')
         assert_true(self.ctrl.dirty)
