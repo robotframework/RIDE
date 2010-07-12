@@ -219,7 +219,6 @@ class DocumentationEditor(SettingEditor):
         return display
 
     def _update_value(self):
-        print "'%s'" % self._controller.visible_value
         self._value_display.SetPage(self._controller.visible_value)
 
     def OnEdit(self, event):
