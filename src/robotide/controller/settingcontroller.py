@@ -12,7 +12,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.utils.escaping import unescape
 from robotide.editor.editors import DocumentationEditor, SettingEditor
 from robotide import utils
 
@@ -112,7 +111,7 @@ class DocumentationController(_SettingController):
 
     @property
     def visible_value(self):
-        return utils.html_escape(unescape(self._doc.value), formatting=True)
+        return utils.html_escape(utils.unescape(self._doc.value), formatting=True)
 
     def simple_unescape(self, item):
         item = item.replace('\\r\\n', '\n')
