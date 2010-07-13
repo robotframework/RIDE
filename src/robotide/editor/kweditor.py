@@ -52,6 +52,7 @@ class KeywordEditorUi(GridEditor, RideEventHandler):
 
     def _remove_selected_rows(self):
         """If whole row(s) are selected, remove them from the grid"""
+        self._update_history()
         for row in sorted(self.GetSelectedRows(), reverse=True):
             self.DeleteRows(row, 1)
 
@@ -69,9 +70,11 @@ class KeywordEditorUi(GridEditor, RideEventHandler):
         self.Refresh()
 
     def comment(self):
+        self._update_history()
         self._do_action_on_selected_rows(self._comment_row)
 
     def uncomment(self):
+        self._update_history()
         self._do_action_on_selected_rows(self._uncomment_row)
 
     def _comment_row(self, row):
