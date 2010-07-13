@@ -66,6 +66,6 @@ def find_from_pythonpath(name):
         if not os.path.isdir(dirpath):
             continue
         path = os.path.join(dirpath, name)
-        if os.path.isfile(path) and name in os.listdir(dirpath):
+        if os.path.isfile(path):
             return path
     return None
