@@ -20,15 +20,15 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'resources',
 DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]),
                         '..', 'resources', 'robotdata')
 RESOURCE_PATH = os.path.normpath(os.path.join(DATAPATH, 'resources',
-                                              'resource.html'))
+                                              'resource.html')).replace('\\', '/')
 RESOURCE_LIB_PATH = os.path.normpath(os.path.join(DATAPATH, 'resources',
-                                                  'resource_lib_imports.txt'))
+                                                  'resource_lib_imports.txt')).replace('\\', '/')
 RESOURCE_WITH_VARS = os.path.normpath(os.path.join(DATAPATH, 'resources',
-                                                   'resource_with_variables.txt'))
+                                                   'resource_with_variables.txt')).replace('\\', '/')
 TESTCASEFILE_WITH_EVERYTHING = os.path.normpath(os.path.join(DATAPATH, 'testsuite',
-                                                   'everything.html'))
+                                                   'everything.html')).replace('\\', '/')
 RESOURCE_WITH_VARIABLE_IN_PATH = os.path.normpath(os.path.join(DATAPATH, 'resources',
-                                                   'resu.${extension}'))
+                                                   'resu.${extension}')).replace('\\', '/')
 
 
 def _build_test_case_file():
