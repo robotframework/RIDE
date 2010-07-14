@@ -169,7 +169,7 @@ SETTINGS_CONTENT = """
 # Main comment
 string = 'REPLACE_STRING'
 int = 13
-float = 3.1400000000000001
+float = 1.5
 # Main comment 2
 boolean = True
 
