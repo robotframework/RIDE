@@ -134,7 +134,7 @@ class ResourceCache(object):
         self.python_path_cache = {}
 
     def get_resource(self, directory, name):
-        path = os.path.join(directory, name)
+        path = os.path.join(directory, name) if directory else name
         res = self._get_resource(path)
         if res:
             return res
