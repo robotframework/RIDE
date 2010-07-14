@@ -18,8 +18,21 @@ from robotide.utils import html_escape
 
 
 class ItemInfo(object):
+    """Represents an object that can be displayed by content assistant."""
 
     def __init__(self, name, source, details):
+        """Creates an item info.
+
+        :Parameters:
+          name
+            Item name. Is shown in the first column of the content assist popup.
+          source
+            Item source. Is shown in the second column of the content assist popup.
+          details
+            Detailed information for item that is shown in the additional popup
+            besides the list that contains content assist values. Will be
+            displayed as HTML.
+        """
         self.name = name
         self.source = source
         self.details = details

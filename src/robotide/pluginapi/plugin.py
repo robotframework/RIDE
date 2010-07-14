@@ -299,7 +299,7 @@ class Plugin(object):
         """Allows plugin to insert values in content assist dialog.
 
         ``hook`` must be a callable, which should take two arguments and
-        return a list of instances of `ContentAssistItem` class. When content
+        return a list of instances of `ItemInfo` class. When content
         assist is requested by user, ``hook`` will be called with the current
         dataitem and current value of cell as parameters.
         """
