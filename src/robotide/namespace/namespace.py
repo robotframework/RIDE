@@ -18,7 +18,6 @@ import operator
 from robot.errors import DataError
 from robot.parsing.model import ResourceFile
 from robot.parsing.settings import Library, Resource, Variables
-from robot.utils.match import eq
 from robot.utils.normalizing import normalize
 from robot.variables import Variables as RobotVariables
 from robot.variables import GLOBAL_VARIABLES
