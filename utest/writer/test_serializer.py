@@ -17,6 +17,8 @@ GOLDEN_HTML_FILE = os.path.normpath(os.path.join(DATAPATH, 'golden',
 
 
 def assert_repr(first, other):
+    if os.name == 'nt':
+        other = other.replace('\n', '\r\n')
     return assert_equals(repr(first), repr(other))
 
 
@@ -141,7 +143,7 @@ My Test Case
                       self.keywords_table)
 
     def test_serializer_with_txt_test_case_file(self):
-        assert_equals(self.get_serialization_output(TestCaseFileController(self.txt_tcf)),
+        assert_repr(self.get_serialization_output(TestCaseFileController(self.txt_tcf)),
                       self.settings_table +
                       self.variables_table +
                       self.testcase_table + 
