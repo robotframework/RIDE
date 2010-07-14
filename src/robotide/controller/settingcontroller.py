@@ -14,6 +14,7 @@
 
 from robotide.editor.editors import DocumentationEditor, SettingEditor
 from robotide import utils
+import re
 
 
 class _SettingController(object):
@@ -93,6 +94,9 @@ class _SettingController(object):
 
 class DocumentationController(_SettingController):
     editor = DocumentationEditor
+    compiled_regexp_rn = re.compile(r'(\\+)r\\n')
+    compiled_regexp_n = re.compile(r'(\\+)n')
+    compiled_regexp_r = re.compile(r'(\\+)r')    
 
     def _init(self, doc):
         self._doc = doc
@@ -102,10 +106,10 @@ class DocumentationController(_SettingController):
         return self._doc.value
     
     def _get_editable_value(self):
-        return self.simple_unescape(self._doc.value)
+        return self._unescape_newlines_and_handle_escaped_backslashes(self._doc.value)
     
     def _set_editable_value(self, value):
-        self.set_value(self.simple_escape(value))
+        self.set_value(self._escape_newlines(value))
 
     editable_value = property(_get_editable_value, _set_editable_value)
 
@@ -113,12 +117,17 @@ class DocumentationController(_SettingController):
     def visible_value(self):
         return utils.html_escape(utils.unescape(self._doc.value), formatting=True)
 
-    def simple_unescape(self, item):
-        item = item.replace('\\r\\n', '\n')
-        item = item.replace('\\n', '\n')
-        return item.replace('\\r', '\n')
+    def _unescape_newlines_and_handle_escaped_backslashes(self, input):
+        def replacer(match):
+            blashes = len(match.group(1))
+            if blashes % 2 == 1:
+                return '\\'*(blashes-1) + '\n'
+            return match.group()
+        input = self.compiled_regexp_rn.sub(replacer, input)
+        input = self.compiled_regexp_n.sub(replacer, input)
+        return self.compiled_regexp_r.sub(replacer, input)
     
-    def simple_escape(self, item):
+    def _escape_newlines(self, item):
         item = item.replace('\r\n', '\\n')
         item = item.replace('\n', '\\n')
         return item.replace('\r', '\\n')
