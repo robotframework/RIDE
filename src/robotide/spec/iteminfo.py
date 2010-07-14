@@ -14,7 +14,7 @@
 
 import os
 
-from robotide.utils import html_escape
+from robotide.utils import html_escape, unescape
 
 
 class ItemInfo(object):
@@ -116,7 +116,7 @@ class _UserKeywordInfo(_KeywordInfo):
         return os.path.basename(item.source) if item.source else ''
 
     def _parse_doc(self, doc):
-        return doc.value
+        return unescape(doc.value)
 
     def _parse_args(self, uk):
         parsed = []
