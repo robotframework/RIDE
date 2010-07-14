@@ -8,15 +8,18 @@ from robot.utils.asserts import assert_equals, assert_false, assert_true, \
         assert_raises_with_msg
 
 
-SCRIPT = os.path.join(os.path.dirname(__file__), 'process_test_scripts.py')
+SCRIPT = os.path.join(os.path.dirname(__file__), 
+                      'process_test_scripts.py').replace(' ', '<SPACE>')
 
 
 class TestProcess(unittest.TestCase):
 
-    def test_start(self):
-        self.proc = self._create_process(['echo', 'test test'])
-        self._wait_until_finished()
-        self._assert_output('test test\n')
+        # FIXME: Is this test needed? Should it work on windows?
+    if os.name != 'nt':
+        def test_start(self):
+            self.proc = self._create_process(['echo', 'test test'])
+            self._wait_until_finished()
+            self._assert_output('test test\n')
 
     def test_command_as_string(self):
         cmd = 'python %s count_args a1 a2<SPACE>2<SPACE>1 a3<SPACE>' % SCRIPT
@@ -26,8 +29,8 @@ class TestProcess(unittest.TestCase):
 
     if sys.version_info[:2] >= (2,6):
         def test_stopping(self):
-            self.proc = self._create_process(['python', SCRIPT, 'output', '0.8'])
-            time.sleep(0.1)
+            self.proc = self._create_process('python %s output 0.8' % SCRIPT)
+            time.sleep(0.5)
             self.proc.stop()
             time.sleep(0.5)
             assert_true(self.proc.get_output().startswith('start\nrunning '))
@@ -46,7 +49,7 @@ class TestProcess(unittest.TestCase):
         assert_true(proc.is_finished())
 
     def test_output(self):
-        self.proc = self._create_process(['python', SCRIPT, 'output'])
+        self.proc = self._create_process('python %s output' % SCRIPT)
         time.sleep(0.2)
         length = len(self.proc.get_output())
         assert_true(length > 0)
@@ -56,7 +59,7 @@ class TestProcess(unittest.TestCase):
         assert_true(output.endswith('done\n'))
 
     def test_writing_to_stderr(self):
-        self.proc = self._create_process(['python', SCRIPT, 'stderr'])
+        self.proc = self._create_process('python %s stderr' % SCRIPT)
         assert_equals(self.proc.get_output(wait_until_finished=True),
                       'This is stderr\n')
 
