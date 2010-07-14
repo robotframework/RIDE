@@ -9,7 +9,8 @@ from robotide.run.ui import Runner
 from resources import PYAPP_REFERENCE as _
 
 
-SCRIPT = os.path.join(os.path.dirname(__file__), 'process_test_scripts.py')
+SCRIPT = os.path.join(os.path.dirname(__file__), 
+                      'process_test_scripts.py').replace(' ', '<SPACE>')
 
 
 class _TestableRunner(Runner):
@@ -30,10 +31,12 @@ class _FakeOutputWindow(object):
 
 class TestRunAnything(unittest.TestCase):
 
-    def test_run(self):
-        self.runner = self._create_runner('echo test test')
-        self._wait_until_finished()
-        self._assert_output('test test\n')
+    # FIXME: Is this test needed? Should it work on windows?
+    if os.name != 'nt':
+        def test_run(self):
+            self.runner = self._create_runner('echo test test')
+            self._wait_until_finished()
+            self._assert_output('test test\n')
 
     def _assert_output(self, output):
         assert_equals(self.runner.outstr, output)
@@ -42,7 +45,7 @@ class TestRunAnything(unittest.TestCase):
     if sys.version_info[:2] >= (2,6):
         def test_stopping(self):
             self.runner = self._create_runner('python %s output 0.8' % SCRIPT)
-            time.sleep(0.1)
+            time.sleep(0.5)
             self.runner.stop()
             self._sleep_and_log_output(0.5)
             assert_true(self.runner.finished)
