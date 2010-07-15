@@ -39,7 +39,7 @@ class LibraryCache(object):
         return self.libraries[name].keywords
 
     def get_default_keywords(self):
-        return self._default_kws
+        return self._default_kws[:]
 
     def _build_default_kws(self):
         kws = []
