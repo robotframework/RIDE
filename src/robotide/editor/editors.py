@@ -251,6 +251,10 @@ class TestCaseEditor(_RobotTableEditor):
                                     0, wx.ALL, 2)
         sizer.Add(ButtonWithHandler(self, 'Add Column', kweditor.OnInsertCol),
                                     0, wx.ALL, 2)
+        sizer.Add(ButtonWithHandler(self, 'Insert Cell', kweditor.OnInsertCell),
+                                    0, wx.ALL, 2)
+        sizer.Add(ButtonWithHandler(self, 'Delete Cell', kweditor.OnDeleteCell),
+                                    0, wx.ALL, 2)
         self.sizer.Add(sizer)
 
     def _create_kweditor(self):

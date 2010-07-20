@@ -171,6 +171,47 @@ class KeywordEditorUi(GridEditor, RideEventHandler):
         self.GetParent().Sizer.Layout()
         event.Skip()
 
+    def OnInsertCell(self, event):
+        self._update_history()
+        row, col = self.GetGridCursorRow(), self.GetGridCursorCol()
+        if self._has_value_in_max_cell(row):
+            self.InsertCols(self.GetNumberCols(), 1)
+        self._copy_cells_right(row, col)
+        self.SetGridCursor(row, col)
+        self.SetFocus()
+        self.set_dirty()
+        self.GetParent().Sizer.Layout()
+        event.Skip()
+
+    def _has_value_in_max_cell(self, row):
+        col_max = self.GetNumberCols()-1
+        max_col_val = self.GetCellValue(row, col_max)
+        return isinstance(max_col_val, basestring) and max_col_val.strip()
+
+    def _copy_cells_right(self, row, col):
+        col_max = self.GetNumberCols()-1
+        for col_idx in range(col_max-1, col-1, -1):
+            col_val = self.GetCellValue(row, col_idx)
+            self.SetCellValue(row, col_idx+1, col_val)
+        self.SetCellValue(row, col, '')
+
+    def OnDeleteCell(self, event):
+        self._update_history()
+        row, col = self.GetGridCursorRow(), self.GetGridCursorCol()
+        self._copy_cells_left(row, col)
+        self.SetGridCursor(row, col)
+        self.SetFocus()
+        self.set_dirty()
+        self.GetParent().Sizer.Layout()
+        event.Skip()
+
+    def _copy_cells_left(self, row, col):
+        col_max = self.GetNumberCols()-1
+        for col_idx in range(col+1, col_max+1):
+            col_val = self.GetCellValue(row, col_idx)
+            self.SetCellValue(row, col_idx-1, col_val)
+        self.SetCellValue(row, col_max, '')
+
 
 class KeywordEditor(KeywordEditorUi):
     dirty = property(lambda self: self._controller.dirty)
