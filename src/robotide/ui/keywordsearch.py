@@ -75,6 +75,7 @@ class KeywordSearchDialog(wx.Frame):
         self._make_bindings()
         self._sort_up = True
         self._sortcol = 0
+        self.SetBackgroundColour(wx.NullColour)
 
     def _create_components(self, searcher):
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
