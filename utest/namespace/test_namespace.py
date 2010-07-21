@@ -203,12 +203,12 @@ class TestKeywordSearch(_DataFileTest):
         self.assert_in_keywords(all_kws, 'My Test Setup',
                                          'My Suite Teardown')
 
-    def test_find_user_keyword(self):
-        assert_not_none(self.ns.find_user_keyword(self.tcf, 'UK From Resource from Resource with Variable'))
+    def test_find_user_keyword_name_normalized(self):
+        assert_not_none(self.ns.find_user_keyword(self.tcf, 'UK Fromresource from rESOURCE with variaBLE'))
         assert_none(self.ns.find_user_keyword(self.tcf, 'Copy List'))
 
     def test_is_user_keyword(self):
-        assert_true(self.ns.is_user_keyword(self.tcf, 'UK From Resource from Resource with Variable'))
+        assert_true(self.ns.is_user_keyword(self.tcf, 'UKFromResource from ResourcewithVariable'))
         assert_false(self.ns.is_user_keyword(self.tcf, 'hevoinen'))
         assert_false(self.ns.is_user_keyword(self.tcf, 'Should Be Equal'))
 

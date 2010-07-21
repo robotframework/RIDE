@@ -27,6 +27,7 @@ from robotide.spec.iteminfo import (TestCaseUserKeywordInfo,
                                     ResourceseUserKeywordInfo,
                                     VariableInfo, LibraryKeywordInfo,
                                     _UserKeywordInfo)
+from robotide.robotapi import NormalizedDict
 from robotide import utils
 
 
@@ -277,7 +278,7 @@ class DatafileRetriever(object):
         return values
 
     def _keywords_to_dict(self, keywords):
-        ret = {}
+        ret = NormalizedDict()
         for kw in keywords:
             ret[kw.name] = kw
         return ret
