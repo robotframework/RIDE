@@ -35,6 +35,8 @@ class Logger(object):
         self._messages = []
 
     def _format_parsing_error_line(self, line):
+        if ':' not in line:
+            return line
         index = line.index(':') + 1
         return line[:index] + '\n\t' + line[index:]
 
@@ -73,5 +75,5 @@ class ErrorMessageDialog(wx.Dialog):
     def __init__(self, title, message):
         wx.Dialog.__init__(self, None, size=(700, 400), title=title,
                            style=wx.DEFAULT_FRAME_STYLE)
-        area = wx.TextCtrl(self, style=wx.TE_MULTILINE|wx.TE_DONTWRAP|wx.TE_READONLY)
+        area = wx.TextCtrl(self, size=(700,400), style=wx.TE_MULTILINE|wx.TE_DONTWRAP|wx.TE_READONLY)
         area.SetValue(message)
