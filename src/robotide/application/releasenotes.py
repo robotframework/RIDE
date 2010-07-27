@@ -84,22 +84,4 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 0.26.1</h2>
-<table border="1">
-<tr>
-<td><b>ID</b></td>
-<td><b>Type</b></td>
-<td><b>Priority</b></td>
-<td><b>Summary</b></td>
-<td><b>AllLabels</b></td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=483">Issue 483</a></td>
-<td>Defect</td>
-<td>Critical</td>
-<td>RIDE 0.26 crashes when reporting errors</td>
-<td>Type-Defect, Priority-Critical, Target-0.26.1</td>
-</tr>
-</table>
-<p>Altogether 1 issues.</p>
 """
