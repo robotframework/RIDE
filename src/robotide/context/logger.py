@@ -27,6 +27,9 @@ class Logger(object):
     def report_parsing_errors(self):
         errors = [m[0] for m in self._messages]
         if errors:
+            # Warnings from robot.variables.Variables.set_from_variable_table
+            # are present multiple times, issue 486.
+            errors = set(errors)
             dlg = ErrorMessageDialog('Parsing errors',
                                      '\n'.join(self._format_parsing_error_line(line)
                                                for line in errors))
