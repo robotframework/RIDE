@@ -369,6 +369,7 @@ class KeywordEditor(KeywordEditorUi):
 
     def OnIdle(self, evt):
         if not self._is_active_window() or self.IsCellEditControlShown():
+            self._hide_tooltip()
             return
         pos = self.CalcUnscrolledPosition(self.ScreenToClient(wx.GetMousePosition()))
         cell = self.XYToCell(*pos)
