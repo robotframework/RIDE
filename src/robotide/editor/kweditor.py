@@ -101,8 +101,6 @@ class KeywordEditorUi(GridEditor, RideEventHandler):
         if self._row_is_commented(row):
             for col in range(1, self.GetNumberCols()):
                 value = self.GetCellValue(row, col)
-                if self._is_comment(value):
-                    value = ''
                 self.write_cell(row, col-1, value)
             self.write_cell(row, self.GetNumberCols()-1, '')
 

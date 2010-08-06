@@ -177,5 +177,16 @@ class TestEditing(unittest.TestCase):
         self._data = message
 
 
+class TestActions(unittest.TestCase):
+
+    def test_uncommenting_twice_commented_row(self):
+        # issue 445
+        editor = KeywordEditor(_FakeMainFrame(), tc_controller(), None)
+        editor._write_data([['Comment', 'Comment', 'a comment']],
+                                 update_history=False)
+        editor._uncomment_row(0)
+        assert_equals(editor.GetCellValue(0,0), 'Comment')
+
+
 if __name__ == '__main__':
     unittest.main()
