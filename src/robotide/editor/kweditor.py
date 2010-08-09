@@ -329,7 +329,7 @@ class KeywordEditor(KeywordEditorUi):
 
     def OnKey(self, event):
         keycode, control_down = event.GetKeyCode(), event.ControlDown()
-        if control_down and self._tooltip.IsShown():
+        if keycode == wx.WXK_CONTROL and self._tooltip.IsShown():
             return
         self._hide_tooltip()
         self.hide_popup()
@@ -371,8 +371,7 @@ class KeywordEditor(KeywordEditorUi):
         if not self._is_active_window() or self.IsCellEditControlShown():
             self._hide_tooltip()
             return
-        pos = self.CalcUnscrolledPosition(self.ScreenToClient(wx.GetMousePosition()))
-        cell = self.XYToCell(*pos)
+        cell = self._cell_under_cursor()
         if cell == self._no_cell:
             return
         if not wx.GetMouseState().ControlDown():
@@ -387,6 +386,10 @@ class KeywordEditor(KeywordEditorUi):
 
     def _is_active_window(self):
         return self.IsShownOnScreen() and self.FindFocus()
+
+    def _cell_under_cursor(self):
+        pos = self.CalcUnscrolledPosition(self.ScreenToClient(wx.GetMousePosition()))
+        return self.XYToCell(*pos)
 
     def _show_possible_user_keyword_link(self, cell):
         if cell == self._marked_cell:
