@@ -34,6 +34,8 @@ class KeywordEditorUi(GridEditor, RideEventHandler):
         self.SetDefaultRenderer(grid.GridCellAutoWrapStringRenderer())
         self.CreateGrid(num_rows, num_cols)
         self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
+        # This makes it possible to select cell 0,0 without opening editor, issue 479
+        self.SetGridCursor(self.NumberRows -1, self.NumberCols -1)
 
     def write_cell(self, row, col, value, update_history=True):
         previous = self.GetCellValue(row, col)
