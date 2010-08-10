@@ -22,7 +22,6 @@ from popupwindow import RidePopupWindow
 
 
 _PREFERRED_POPUP_SIZE = (450, 200)
-_PREFERRED_DETAILS_SIZE = (500, 200)
 
 
 class _ContentAssistTextCtrlBase(object):
@@ -117,7 +116,7 @@ class ContentAssistPopup(object):
         self._parent = parent
         self._plugin = plugin
         self._main_popup = RidePopupWindow(parent, _PREFERRED_POPUP_SIZE)
-        self._details_popup = RidePopupWindow(parent, _PREFERRED_DETAILS_SIZE)
+        self._details_popup = RidePopupWindow(parent, _PREFERRED_POPUP_SIZE)
         self._selection = -1
         self._list = ContentAssistList(self._main_popup, self.OnListItemSelected,
                                        self.OnListItemActivated)
@@ -147,9 +146,18 @@ class ContentAssistPopup(object):
 
     def show(self, xcoord, ycoord):
         self._main_popup.SetPosition((xcoord, ycoord))
-        self._details_popup.SetPosition((xcoord+450, ycoord))
+        self._details_popup.SetPosition((self._x_coordinate_for_details(xcoord),
+                                         ycoord))
         self._main_popup.Show()
         self._list.SetFocus()
+
+    def _x_coordinate_for_details(self, main_xcoord):
+        """Put details right of main popup is there is room, otherwise to the left"""
+        popup_width = _PREFERRED_POPUP_SIZE[0]
+        max_horizontal = wx.GetDisplaySize()[0]
+        if max_horizontal - main_xcoord < 2 * popup_width:
+            return main_xcoord - popup_width
+        return main_xcoord + popup_width
 
     def is_shown(self):
         return self._main_popup.IsShown()
