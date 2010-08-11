@@ -41,7 +41,7 @@ table {
 }
 th, td {
   border-style: solid;
-  border-width: 0.05em 0.1em;
+  border-width: 0.1em;
   border-color: black;
   padding: 0.1em 0.2em;
   height: 1.5em;
