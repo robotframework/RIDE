@@ -154,21 +154,6 @@ class KeywordEditorUi(GridEditor, RideEventHandler):
         self.uncomment()
         event.Skip()
 
-    def OnInsertCol(self, event):
-        if isinstance(event.EventObject, wx.Button):
-            col = self.GetNumberCols()
-        else:
-            col = self._active_col
-        self.InsertCols(col, 1)
-        self.GetParent().Sizer.Layout()
-        event.Skip()
-
-    def OnDeleteCol(self, event):
-        self.set_dirty()
-        self.DeleteCols(self._active_col, 1)
-        self.GetParent().Sizer.Layout()
-        event.Skip()
-
     def OnInsertCell(self, event):
         self._update_history()
         row, col = self.GetGridCursorRow(), self.GetGridCursorCol()
