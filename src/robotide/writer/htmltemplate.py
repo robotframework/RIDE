@@ -37,12 +37,10 @@ table {
   border-collapse: collapse;
   empty-cells: show;
   margin: 1em 0em;
-  border: 0.1em solid black;
+  border: 1px solid black;
 }
 th, td {
-  border-style: solid;
-  border-width: 0.1em;
-  border-color: black;
+  border: 1px solid black;
   padding: 0.1em 0.2em;
   height: 1.5em;
   width: 12em;
@@ -50,7 +48,7 @@ th, td {
 th {
   background-color: rgb(192, 192, 192);
   color: black;
-  border-width: 0.1em;
+  height: 1.7em;
   font-weight: bold;
   text-align: center;
   letter-spacing: 0.1em;
