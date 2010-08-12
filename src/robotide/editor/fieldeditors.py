@@ -93,6 +93,7 @@ class ListValueEditor(ValueEditor):
 
 
 class _EditorGrid(GridEditor):
+    _col_add_threshold = 0
 
     def __init__(self, parent, value):
         GridEditor.__init__(self, parent)
@@ -129,18 +130,6 @@ class _EditorGrid(GridEditor):
             row, col = divmod(index, self.NumberCols)
             self.SetCellValue(row, col, item)
 
-    def _expand_if_necessary(self, row, col):
-        if row > self.NumberRows-1:
-            self.add_row()
-        if col > self.NumberCols-1:
-            self.add_col()
-
-    def add_row(self):
-        self.AppendRows(1)
-
-    def add_col(self):
-        self.AppendCols(1)
-
     def get_value(self):
         value = []
         for row in range(self.NumberRows):
@@ -164,6 +153,7 @@ class _EditorGrid(GridEditor):
 
     def OnUndo(self, event):
         self.undo()
+
 
 class MultiLineEditor(ValueEditor):
     _sizer_flags_for_editor = wx.ALL|wx.EXPAND

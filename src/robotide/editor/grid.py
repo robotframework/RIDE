@@ -21,6 +21,7 @@ from clipboard import ClipboardHandler
 
 
 class GridEditor(grid.Grid):
+    _col_add_threshold = 1
 
     def __init__(self, parent):
         grid.Grid.__init__(self, parent)
@@ -41,6 +42,12 @@ class GridEditor(grid.Grid):
         self.SetCellValue(row, col, value)
 
     def _expand_if_necessary(self, row, col):
+        while row >= self.NumberRows-1:
+            self.AppendRows(1)
+        while col >= self.NumberCols-self._col_add_threshold:
+            self.AppendCols(1)
+
+    def set_dirty(self):
         pass
 
     def _update_history(self):
@@ -124,7 +131,7 @@ class GridEditor(grid.Grid):
             self.selection.set_from_range_selection(self, event)
 
     def OnCellRightClick(self, event):
-        PopupMenu(self, ['Insert Cells', 'Delete Cells', 'Cut\tCtrl-X',
+        PopupMenu(self, ['Insert Cells', 'Delete Cells', '---', 'Cut\tCtrl-X',
                          'Copy\tCtrl-C', 'Paste\tCtrl-V', '---', 'Delete\tDel'])
 
     def OnInsertCells(self, event):
@@ -155,7 +162,7 @@ class GridEditor(grid.Grid):
         return data + [''] * len(cols)
 
     def _row_data(self, row):
-        return [self.GetCellValue(row, col) for col in range(self.NumberCols-1)]
+        return [self.GetCellValue(row, col) for col in range(self.NumberCols)]
 
     def _write_row(self, row, data):
         for col, value in enumerate(data):

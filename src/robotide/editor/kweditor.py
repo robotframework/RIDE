@@ -43,15 +43,6 @@ class KeywordEditorUi(GridEditor, RideEventHandler):
         RideGridCellChanged(cell=(row, col), value=value, previous=previous,
                             grid=self).publish()
 
-    def _expand_if_necessary(self, row, col):
-        if row >= self.NumberRows-1:
-            self.AppendRows(2)
-            self.SetSize(self.GetBestSize())
-            self.GetParent().GetSizer().Fit(self.GetParent())
-            self.GetGrandParent().GetSizer().Layout()
-        if col >= self.NumberCols-1:
-            self.AppendCols(1)
-
     def _remove_selected_rows(self):
         """If whole row(s) are selected, remove them from the grid"""
         self._update_history()
