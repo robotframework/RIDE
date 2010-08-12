@@ -8,7 +8,7 @@ from robot.utils import normalizing
 from robot.utils.asserts import assert_true, assert_false, assert_not_none, \
     assert_equals, fail, assert_none
 from robotide.namespace import Namespace
-from robotide.namespace.namespace import VariableStash
+from robotide.namespace.namespace import _VariableStash
 from robotide.robotapi import TestCaseFile
 
 
@@ -251,7 +251,7 @@ class TestKeywordDetails(_DataFileTest):
 class TestVariableStash(unittest.TestCase):
 
     def test_variable_resolving(self):
-        vars = VariableStash()
+        vars = _VariableStash()
         var_table = VariableTable(None)
         var_table.add('${var1}', 'foo')
         var_table.add('${var2}', 'bar')
