@@ -125,6 +125,11 @@ class TestKeywordSuggestions(_DataFileTest):
         sugs = self.ns.get_suggestions_for(everything_tcf, 'Attributeless Keyword')
         self._assert_import_kws(sugs, 'LibSpecLibrary')
 
+    def test_variable_path_separator(self):
+        everything_tcf = TestCaseFile(source=TESTCASEFILE_WITH_EVERYTHING)
+        sugs = self.ns.get_suggestions_for(everything_tcf, 'foo')
+        self._assert_import_kws(sugs, 'even_more_resources.txt')
+
     def test_keywords_only_once_per_source(self):
         sugs = self.ns.get_suggestions_for(self.tcf, '')
         kw_set = []

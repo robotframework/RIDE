@@ -14,6 +14,7 @@
 
 import os
 import operator
+import tempfile
 
 from robot.errors import DataError
 from robot.parsing.model import ResourceFile
@@ -163,9 +164,17 @@ class ResourceCache(object):
 
 class VariableStash(RobotVariables):
 
+    # Relevant global variables copied from robot.variables.__init__.py
+    global_variables =  {'${TEMPDIR}': os.path.normpath(tempfile.gettempdir()),
+                         '${EXECDIR}': os.path.abspath('.'),
+                         '${/}': os.sep,
+                         '${:}': os.pathsep,
+                         '${SPACE}': ' ',
+                         '${EMPTY}': ''}
+
     def __init__(self):
         RobotVariables.__init__(self)
-        self.update(GLOBAL_VARIABLES)
+        self.update(self.global_variables)
 
     def replace_variables(self, value):
         return self.replace_string(value, ignore_errors=True)
