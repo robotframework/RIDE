@@ -15,8 +15,6 @@
 import os
 import wx
 
-from robotide import utils
-
 
 _IS_WINDOWS = os.sep == '\\'
 
