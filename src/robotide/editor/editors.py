@@ -227,7 +227,7 @@ class DocumentationEditor(SettingEditor):
         if editor.ShowModal() == wx.ID_OK:
             value_list = editor.get_value()
             if value_list:
-                self._controller.editable_value = value_list[0] 
+                self._controller.editable_value = value_list[0]
             self._update_and_notify()
         editor.Destroy()
 
@@ -245,21 +245,8 @@ class TestCaseEditor(_RobotTableEditor):
         self.sizer.Add((0,10))
         self._create_kweditor()
 
-    def _create_add_buttons(self, kweditor):
-        sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.Add(ButtonWithHandler(self, 'Add Row', kweditor.OnInsertRows),
-                                    0, wx.ALL, 2)
-        sizer.Add(ButtonWithHandler(self, 'Add Column', kweditor.OnInsertCol),
-                                    0, wx.ALL, 2)
-        sizer.Add(ButtonWithHandler(self, 'Insert Cell', kweditor.OnInsertCell),
-                                    0, wx.ALL, 2)
-        sizer.Add(ButtonWithHandler(self, 'Delete Cell', kweditor.OnDeleteCell),
-                                    0, wx.ALL, 2)
-        self.sizer.Add(sizer)
-
     def _create_kweditor(self):
         self.kweditor = KeywordEditor(self, self.controller, self._tree)
-        self._create_add_buttons(self.kweditor)
         self.sizer.Add(self.kweditor, 1, wx.EXPAND|wx.ALL, 2)
 
     def Show(self, show):

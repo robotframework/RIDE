@@ -18,6 +18,9 @@ DATA = [['kw1'],
         ['kw2', 'arg1'],
         ['kw3', 'arg1', 'arg2']]
 
+class _FakeEvent(object):
+    def Skip(self): pass
+
 class _FakeMainFrame(wx.Frame):
     def __init__(self):
         wx.Frame.__init__(self, None)
@@ -28,6 +31,8 @@ class _FakeTree(object):
 
 class TestableKwEditor(KeywordEditor):
     def _expand_if_necessary(self, row, col):
+        pass
+    def _refresh_layout(self):
         pass
 
 
@@ -179,13 +184,56 @@ class TestEditing(unittest.TestCase):
 
 class TestActions(unittest.TestCase):
 
-    def test_uncommenting_twice_commented_row(self):
-        # issue 445
-        editor = KeywordEditor(_FakeMainFrame(), tc_controller(), None)
-        editor._write_data([['Comment', 'Comment', 'a comment']],
+    def setUp(self):
+        self._editor = TestableKwEditor(_FakeMainFrame(), tc_controller(),
+                                        _FakeTree())
+
+    def test_uncommenting_twice_commented_row(self): # issue 445
+        self._editor._write_data([['Comment', 'Comment', 'a comment']],
                                  update_history=False)
-        editor._uncomment_row(0)
-        assert_equals(editor.GetCellValue(0,0), 'Comment')
+        self._editor._uncomment_row(0)
+        assert_equals(self._editor.GetCellValue(0,0), 'Comment')
+
+    def test_inserting_cell(self):
+        self._editor.SelectBlock(0,0,0,0)
+        self._editor.OnInsertCell(_FakeEvent())
+        assert_equals(self._cell_value(0,0), '')
+        assert_equals(self._cell_value(0,1), 'kw1')
+
+    def test_inserting_many_cells_in_single_column(self):
+        self._editor.SelectBlock(0,0,2,0)
+        self._editor.OnInsertCell(_FakeEvent())
+        for row in range(3):
+            assert_equals(self._cell_value(row,0), '')
+        assert_equals(self._cell_value(2,1), 'kw3')
+
+    def test_inserting_area_of_cells(self):
+        self._editor.SelectBlock(0,0,2,2)
+        self._editor.OnInsertCell(_FakeEvent())
+        for row in range(2):
+            for col in range(2):
+                assert_equals(self._cell_value(row, col), '')
+
+    def test_deleting_cell(self):
+        self._editor.SelectBlock(1,0,1,0)
+        self._editor.OnDeleteCell(_FakeEvent())
+        assert_equals(self._cell_value(1,0), 'arg1')
+
+    def test_deleting_many_cells(self):
+        self._editor.SelectBlock(0,0,2,0)
+        self._editor.OnDeleteCell(_FakeEvent())
+        for row, value in zip(range(3), ['', 'arg1','arg1']):
+            assert_equals(self._cell_value(row,0), value)
+
+    def test_deleting_area_of_cells(self):
+        self._editor.SelectBlock(0,0,2,2)
+        self._editor.OnDeleteCell(_FakeEvent())
+        for row in range(2):
+            for col in range(2):
+                assert_equals(self._cell_value(row, col), '')
+
+    def _cell_value(self, x, y):
+        return self._editor.GetCellValue(x,y)
 
 
 if __name__ == '__main__':
