@@ -126,6 +126,7 @@ class _EditorGrid(GridEditor):
         self.CreateGrid(rows, cols)
 
     def _initialize_value(self, value):
+        self.ClearGrid()
         for index, item in enumerate(value):
             row, col = divmod(index, self.NumberCols)
             self.SetCellValue(row, col, item)
@@ -138,6 +139,37 @@ class _EditorGrid(GridEditor):
         while not value[-1]:
             value.pop()
         return value
+
+    def OnInsertCells(self, event):
+        if len(self.selection.rows()) != 1:
+            self._insert_cells_to_multiple_rows(event)
+            return
+        def insert_cells(data, start, end):
+            return data[:start] + [''] * (end-start) + data[start:]
+        self._insert_or_delete_cells_on_single_row(insert_cells, event)
+
+    def OnDeleteCells(self, event):
+        if len(self.selection.rows()) != 1:
+            self._delete_cells_from_multiple_rows(event)
+            return
+        def delete_cells(data, start, end):
+            return data[:start] + data[end:]
+        self._insert_or_delete_cells_on_single_row(delete_cells, event)
+
+    def _insert_or_delete_cells_on_single_row(self, action, event):
+        self._update_history()
+        value = self.get_value()
+        row, col = self.selection.cell
+        start = row*self.NumberCols + col
+        data = action(value, start, start+len(self.selection.cols()))
+        self._initialize_value(data)
+        event.Skip()
+
+    def _insert_cells_to_multiple_rows(self, event):
+        GridEditor.OnInsertCells(self, event)
+
+    def _delete_cells_from_multiple_rows(self, event):
+        GridEditor.OnDeleteCells(self, event)
 
     def OnCopy(self, event):
         self.copy()
