@@ -55,7 +55,7 @@ class Spec(object):
 class LibrarySpec(Spec):
 
     def __init__(self, name, args=None):
-        self.name = name.replace(' ', '')
+        self.name = self._get_library_name(name)
         if args and len(args) >= 2 and args[-2].upper() == 'WITH NAME':
             args = args[:-2]
         try:
@@ -72,6 +72,11 @@ class LibrarySpec(Spec):
         lib = RobotTestLibrary(name, args)
         keywords = [LibraryKeywordInfo(kw) for kw in lib.handlers.values()]
         return keywords, lib.doc
+
+    def _get_library_name(self, name):
+        if os.path.exists(name):
+            return name
+        return name.replace(' ', '')
 
 
 class _XMLResource(Spec):

@@ -29,7 +29,8 @@ TESTCASEFILE_WITH_EVERYTHING = os.path.normpath(os.path.join(DATAPATH, 'testsuit
                                                    'everything.html')).replace('\\', '/')
 RESOURCE_WITH_VARIABLE_IN_PATH = os.path.normpath(os.path.join(DATAPATH, 'resources',
                                                    'resu.${extension}')).replace('\\', '/')
-
+LIBRARY_WITH_SPACES_IN_PATH = os.path.normpath(os.path.join(DATAPATH, 
+                                                   'lib with spaces', 'spacelib.py')).replace('\\', '/')
 
 def _build_test_case_file():
     tcf = TestCaseFile()
@@ -47,6 +48,7 @@ def _add_settings_table(tcf):
     tcf.setting_table.add_library('${libname}')
     tcf.setting_table.add_library('${libname}')
     tcf.setting_table.add_library('${unresolvable}')
+    tcf.setting_table.add_library(LIBRARY_WITH_SPACES_IN_PATH)
     tcf.setting_table.add_resource(RESOURCE_WITH_VARIABLE_IN_PATH)
     tcf.setting_table.add_variables('/this/is/invalid.py')
 
@@ -96,6 +98,10 @@ class TestKeywordSuggestions(_DataFileTest):
         sugs = self.ns.get_suggestions_for(self.tcf, 'Copy List')
         self._assert_import_kws(sugs, 'Collections')
 
+    def test_lib_import_with_spaces(self):
+        sugs = self.ns.get_suggestions_for(self.tcf, 'space')
+        self._assert_import_kws(sugs, 'spacelib')
+
     def test_resource_file_keywords(self):
         sugs = self.ns.get_suggestions_for(self.tcf, 'Resource Uk')
         self._assert_import_kws(sugs, 'resource.html')
@@ -124,6 +130,11 @@ class TestKeywordSuggestions(_DataFileTest):
         everything_tcf = TestCaseFile(source=TESTCASEFILE_WITH_EVERYTHING)
         sugs = self.ns.get_suggestions_for(everything_tcf, 'Attributeless Keyword')
         self._assert_import_kws(sugs, 'LibSpecLibrary')
+
+    def test_variable_path_separator(self):
+        everything_tcf = TestCaseFile(source=TESTCASEFILE_WITH_EVERYTHING)
+        sugs = self.ns.get_suggestions_for(everything_tcf, 'foo')
+        self._assert_import_kws(sugs, 'even_more_resources.txt')
 
     def test_keywords_only_once_per_source(self):
         sugs = self.ns.get_suggestions_for(self.tcf, '')
