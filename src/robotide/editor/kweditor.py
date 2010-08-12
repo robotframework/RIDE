@@ -38,19 +38,11 @@ class KeywordEditorUi(GridEditor, RideEventHandler):
         self.SetGridCursor(self.NumberRows -1, self.NumberCols -1)
 
     def write_cell(self, row, col, value, update_history=True):
-        previous = self.GetCellValue(row, col)
+        previous = self.GetCellValue(row, col) \
+                if (row < self.NumberRows and col < self.NumberCols) else ''
         GridEditor.write_cell(self, row, col, value, update_history)
         RideGridCellChanged(cell=(row, col), value=value, previous=previous,
                             grid=self).publish()
-
-    def _expand_if_necessary(self, row, col):
-        if row >= self.NumberRows-1:
-            self.AppendRows(2)
-            self.SetSize(self.GetBestSize())
-            self.GetParent().GetSizer().Fit(self.GetParent())
-            self.GetGrandParent().GetSizer().Layout()
-        if col >= self.NumberCols-1:
-            self.AppendCols(1)
 
     def _remove_selected_rows(self):
         """If whole row(s) are selected, remove them from the grid"""

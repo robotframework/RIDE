@@ -196,38 +196,38 @@ class TestActions(unittest.TestCase):
 
     def test_inserting_cell(self):
         self._editor.SelectBlock(0,0,0,0)
-        self._editor.OnInsertCell(_FakeEvent())
+        self._editor.OnInsertCells(_FakeEvent())
         assert_equals(self._cell_value(0,0), '')
         assert_equals(self._cell_value(0,1), 'kw1')
 
     def test_inserting_many_cells_in_single_column(self):
         self._editor.SelectBlock(0,0,2,0)
-        self._editor.OnInsertCell(_FakeEvent())
+        self._editor.OnInsertCells(_FakeEvent())
         for row in range(3):
             assert_equals(self._cell_value(row,0), '')
         assert_equals(self._cell_value(2,1), 'kw3')
 
     def test_inserting_area_of_cells(self):
         self._editor.SelectBlock(0,0,2,2)
-        self._editor.OnInsertCell(_FakeEvent())
+        self._editor.OnInsertCells(_FakeEvent())
         for row in range(2):
             for col in range(2):
                 assert_equals(self._cell_value(row, col), '')
 
     def test_deleting_cell(self):
         self._editor.SelectBlock(1,0,1,0)
-        self._editor.OnDeleteCell(_FakeEvent())
+        self._editor.OnDeleteCells(_FakeEvent())
         assert_equals(self._cell_value(1,0), 'arg1')
 
     def test_deleting_many_cells(self):
         self._editor.SelectBlock(0,0,2,0)
-        self._editor.OnDeleteCell(_FakeEvent())
+        self._editor.OnDeleteCells(_FakeEvent())
         for row, value in zip(range(3), ['', 'arg1','arg1']):
             assert_equals(self._cell_value(row,0), value)
 
     def test_deleting_area_of_cells(self):
         self._editor.SelectBlock(0,0,2,2)
-        self._editor.OnDeleteCell(_FakeEvent())
+        self._editor.OnDeleteCells(_FakeEvent())
         for row in range(2):
             for col in range(2):
                 assert_equals(self._cell_value(row, col), '')
