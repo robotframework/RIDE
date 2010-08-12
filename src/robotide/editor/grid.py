@@ -127,6 +127,45 @@ class GridEditor(grid.Grid):
         PopupMenu(self, ['Cut\tCtrl-X', 'Copy\tCtrl-C', 'Paste\tCtrl-V', '---',
                          'Delete\tDel'])
 
+    def OnInsertCell(self, event):
+        self._insert_or_delete_cells(self._insert_cells, event)
+
+    def OnDeleteCell(self, event):
+        self._insert_or_delete_cells(self._delete_cells, event)
+
+    def _insert_or_delete_cells(self, action, event):
+        self._update_history()
+        for index in self.selection.rows():
+            data = action(self._row_data(index))
+            self._write_row(index, data)
+        self.set_dirty()
+        self._refresh_layout()
+        event.Skip()
+
+    def _insert_cells(self, data):
+        cols = self.selection.cols()
+        left = right = cols[0]
+        data[left:right] = [''] * len(cols)
+        return self._strip_trailing_empty_cells(data)
+
+    def _delete_cells(self, data):
+        cols = self.selection.cols()
+        left, right = cols[0], cols[-1]+1
+        data[left:right] = []
+        return data + [''] * len(cols)
+
+    def _row_data(self, row):
+        return [self.GetCellValue(row, col) for col in range(self.NumberCols-1)]
+
+    def _write_row(self, row, data):
+        for col, value in enumerate(data):
+            self.write_cell(row, col, value)
+
+    def _refresh_layout(self):
+        self.SetFocus()
+        self.SetGridCursor(*self.selection.cell)
+        self.GetParent().Sizer.Layout()
+
 
 class _GridSelection(object):
     cell = property(lambda self: (self.topleft.row, self.topleft.col))
