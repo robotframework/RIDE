@@ -124,13 +124,13 @@ class GridEditor(grid.Grid):
             self.selection.set_from_range_selection(self, event)
 
     def OnCellRightClick(self, event):
-        PopupMenu(self, ['Cut\tCtrl-X', 'Copy\tCtrl-C', 'Paste\tCtrl-V', '---',
-                         'Delete\tDel'])
+        PopupMenu(self, ['Insert Cells', 'Delete Cells', 'Cut\tCtrl-X',
+                         'Copy\tCtrl-C', 'Paste\tCtrl-V', '---', 'Delete\tDel'])
 
-    def OnInsertCell(self, event):
+    def OnInsertCells(self, event):
         self._insert_or_delete_cells(self._insert_cells, event)
 
-    def OnDeleteCell(self, event):
+    def OnDeleteCells(self, event):
         self._insert_or_delete_cells(self._delete_cells, event)
 
     def _insert_or_delete_cells(self, action, event):
@@ -159,7 +159,7 @@ class GridEditor(grid.Grid):
 
     def _write_row(self, row, data):
         for col, value in enumerate(data):
-            self.write_cell(row, col, value)
+            self.write_cell(row, col, value, update_history=False)
 
     def _refresh_layout(self):
         self.SetFocus()
