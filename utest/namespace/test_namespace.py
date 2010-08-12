@@ -199,6 +199,7 @@ class TestKeywordSearch(_DataFileTest):
         assert_true(self.ns.is_library_keyword(self.tcf, 'Should Be Equal'))
         assert_false(self.ns.is_library_keyword(self.tcf, 'kameli'))
         assert_false(self.ns.is_library_keyword(self.tcf, 'UK From Resource from Resource with Variable'))
+        assert_true(self.ns.is_library_keyword(self.tcf, 'Builtin.Should Be Equal'))
 
     def test_find_default_keywords(self):
         all_kws = self.ns.get_all_keywords([])

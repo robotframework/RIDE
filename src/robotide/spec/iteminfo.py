@@ -37,6 +37,10 @@ class ItemInfo(object):
         self.source = source
         self.details = details
 
+    @property
+    def longname(self):
+        return '%s.%s' % (self.source, self.name)
+
     def __cmp__(self, other):
         return cmp(self.name, other.name)
 

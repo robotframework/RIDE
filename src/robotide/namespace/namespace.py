@@ -293,6 +293,7 @@ class DatafileRetriever(object):
         ret = NormalizedDict()
         for kw in keywords:
             ret[kw.name] = kw
+            ret[kw.longname] = kw
         return ret
 
     def _get_user_keywords_from(self, datafile):
