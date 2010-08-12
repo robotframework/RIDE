@@ -25,14 +25,16 @@ class DataLoader(object):
     def load_datafile(self, path, load_observer):
         loader = _DataLoader(path)
         loader.start()
+        load_observer.notify()
         while loader.isAlive():
-            load_observer.notify()
             time.sleep(0.1)
+            load_observer.notify()
         return loader.datafile
 
     def resources_for(self, datafile, load_observer):
         loader = _ResourceLoader(datafile, self._namespace.get_resources)
         loader.start()
+        load_observer.notify()
         while loader.isAlive():
             time.sleep(0.1)
             load_observer.notify()
