@@ -20,6 +20,7 @@ from robotide import utils
 
 from kweditor import KeywordEditor
 from listeditor import ListEditor
+from popupwindow import RidePopupWindow
 from editordialogs import EditorDialog, DocumentationDialog,\
     ScalarVariableDialog, ListVariableDialog, LibraryDialog,\
     ResourceDialog, VariablesDialog, MetadataDialog
@@ -149,7 +150,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
         sizer.Add(wx.StaticText(self, label=self._controller.label,
                                 size=(context.SETTING_LABEL_WIDTH,
                                       context.SETTING_ROW_HEIGTH)))
-        self._value_display = self._get_value_display()
+        self._value_display = self._create_value_display()
         self._update_value()
         sizer.Add(self._value_display, 1, wx.EXPAND)
         sizer.Add(ButtonWithHandler(self, 'Edit'), flag=wx.LEFT|wx.RIGHT, border=5)
@@ -157,11 +158,41 @@ class SettingEditor(wx.Panel, RideEventHandler):
         sizer.Layout()
         self.SetSizer(sizer)
 
-    def _get_value_display(self):
-        display = wx.TextCtrl(self, size=(-1, context.SETTING_ROW_HEIGTH))
+    def _create_value_display(self):
+        display = self._value_display_control()
         display.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
-        display.SetEditable(False)
+        display.Bind(wx.EVT_ENTER_WINDOW, self.OnEnterWindow)
+        display.Bind(wx.EVT_LEAVE_WINDOW, self.OnLeaveWindow)
         return display
+
+    def _value_display_control(self):
+        ctrl = wx.TextCtrl(self, size=(-1, context.SETTING_ROW_HEIGTH))
+        ctrl.SetEditable(False)
+        return ctrl
+
+    def OnEnterWindow(self, event):
+        self._tooltip = RidePopupWindow(self, (400, 200))
+        self.popup_timer = wx.CallLater(500, self.OnPopupTimer)
+
+    def OnLeaveWindow(self, event):
+        self.popup_timer.Stop()
+        self._tooltip.hide()
+
+    def OnPopupTimer(self, event):
+        details = self._get_details_for_tooltip()
+        if not details:
+            return
+        self._tooltip.set_content(details)
+        self._tooltip.show_at(self._tooltip_position())
+
+    def _tooltip_position(self):
+        ms = wx.GetMouseState()
+        return ms.x+5, ms.y+5
+
+    def _get_details_for_tooltip(self):
+        # TODO: This only handles fixture keywords for now.
+        val = self._controller.value.split(' | ')[0]
+        return self._plugin.get_keyword_details(val)
 
     def refresh_datafile(self, item, event):
         self._tree.refresh_datafile(item, event)
@@ -213,13 +244,14 @@ class DocumentationEditor(SettingEditor):
         self._tree = tree
         self._create_controls()
 
-    def _get_value_display(self):
-        display = RideHtmlWindow(self, (-1, 100))
-        display.Bind(wx.EVT_LEFT_DOWN, self.OnEdit)
-        return display
+    def _value_display_control(self):
+        return RideHtmlWindow(self, (-1, 100))
 
     def _update_value(self):
         self._value_display.SetPage(self._controller.visible_value)
+
+    def _get_details_for_tooltip(self):
+        return self._controller.visible_value
 
     def OnEdit(self, event):
         editor = DocumentationDialog(self.GetGrandParent(), self._datafile,
