@@ -21,16 +21,31 @@ from robotide.spec.iteminfo import ItemInfo
 test_kws = [ItemInfo(name, source, desc) for name, source, desc in
             [ ('Should Be Equal', 'BuiltIn', 'Foo'),
               ('get bar', 'resource.txt', 'getting bar'),
+              ('get bar2', 'resource2.txt', 'getting bar'),
               ('Get File', 'OperatingSystem', 'Bar'),
+              ('Bar', 'OBarsystem', 'Doc'),
+              ('BarBar', 'OBarBarSystem', 'Doc'),
               ('User Keyword', 'resource.html', 'Quuz'), ]
            ]
 
 
 class TestKeyWordData(unittest.TestCase):
 
+    def test_sort_by_search(self):
+        kw_data = _KeywordData(test_kws, search_criteria='Bar')
+        for index, name in enumerate(['Bar',
+                                      'BarBar',
+                                      'get bar',
+                                      'get bar2',
+                                      'Get File']):
+            assert_equals(kw_data[index].name, name)
+
     def test_sort_by_name(self):
         kw_data = _KeywordData(test_kws)
-        for index, name in enumerate(['get bar',
+        for index, name in enumerate(['Bar',
+                                      'BarBar',
+                                      'get bar',
+                                      'get bar2',
                                       'Get File',
                                       'Should Be Equal',
                                       'User Keyword']):
@@ -40,23 +55,32 @@ class TestKeyWordData(unittest.TestCase):
         kw_data = _KeywordData(test_kws, sort_up=False)
         for index, name in enumerate(['User Keyword',
                                       'Should Be Equal',
-                                      'Get File', 
-                                      'get bar']):
+                                      'Get File',
+                                      'get bar2', 
+                                      'get bar',
+                                      'BarBar',
+                                      'Bar']):
             assert_equals(kw_data[index].name, name)
 
     def test_sort_by_source(self):
         kw_data = _KeywordData(test_kws, 1)
         for index, name in enumerate(['Should Be Equal',
+                                      'BarBar',
+                                      'Bar',
                                       'Get File',
                                       'User Keyword',
-                                      'get bar']):
+                                      'get bar',
+                                      'get bar2']):
             assert_equals(kw_data[index].name, name)
 
     def test_sort_by_source_reversed(self):
         kw_data = _KeywordData(test_kws, 1, False)
-        for index, name in enumerate(['get bar',
+        for index, name in enumerate(['get bar2',
+                                      'get bar',
                                       'User Keyword',
                                       'Get File',
+                                      'Bar',
+                                      'BarBar',
                                       'Should Be Equal']):
             assert_equals(kw_data[index].name, name)
 

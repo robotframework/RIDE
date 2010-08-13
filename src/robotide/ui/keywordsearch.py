@@ -100,12 +100,12 @@ class KeywordSearchDialog(wx.Frame):
 
     def _make_bindings(self):
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected, self._list)
-        self.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.OnSearch,
+        self.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.OnFirstSearch,
                   self._search_control)
-        self.Bind(wx.EVT_TEXT_ENTER, self.OnSearch, self._search_control)
+        self.Bind(wx.EVT_TEXT_ENTER, self.OnFirstSearch, self._search_control)
         self.Bind(wx.EVT_ACTIVATE, self.OnActivate)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
-        self.Bind(wx.EVT_CHECKBOX, self.OnSearch, self._use_doc)
+        self.Bind(wx.EVT_CHECKBOX, self.OnUseDocChange, self._use_doc)
         self.Bind(wx.EVT_LIST_COL_CLICK, self.OnColClick)
 
     def OnColClick(self,event):
@@ -118,7 +118,7 @@ class KeywordSearchDialog(wx.Frame):
         else:
             self._set_sort_up()
         self._sortcol = col
-        self.OnSearch(event)
+        self._populate_search()
         event.Skip()
 
     def _is_not_kw_or_source_col(self, col):
@@ -134,17 +134,26 @@ class KeywordSearchDialog(wx.Frame):
         self._sort_up = True
 
     def OnActivate(self, event):
-        self.OnSearch(event)
+        self._populate_search()
 
-    def OnSearch(self, event):
+    def OnUseDocChange(self, event):
+        self._populate_search()
+
+    def OnFirstSearch(self, event):
+        self._populate_search(self._get_search_text())
+
+    def _populate_search(self, search_criteria=None):
         self._keywords = _KeywordData(self._searcher.search(*self._get_search_criteria()),
-                                      self._sortcol, self._sort_up)
+                                      self._sortcol, self._sort_up, search_criteria)
         self._list.show_keywords(self._keywords)
         self._details.clear()
         self.Refresh()
 
     def _get_search_criteria(self):
-        return self._search_control.GetValue().lower(), self._use_doc.GetValue()
+        return self._get_search_text(), self._use_doc.GetValue()
+
+    def _get_search_text(self):
+        return self._search_control.GetValue().lower()
 
     def OnItemSelected(self, event):
         self._details.SetPage(self._keywords[event.Index].details)
@@ -156,13 +165,27 @@ class KeywordSearchDialog(wx.Frame):
 class _KeywordData(list):
     headers = ['Name', 'Source', 'Description']
 
-    def __init__(self, keywords, sort_col=0, sort_up=True):
-        for kw in self._sort(keywords, sort_col, sort_up):
-            self.append(kw)
+    def __init__(self, keywords, sort_col=0, sort_up=True, search_criteria=None):
+        self.extend(self._sort(keywords, sort_col, sort_up, search_criteria))
 
-    def _sort(self, keywords, sort_col, sort_up):
+    def _sort(self, keywords, sort_col, sort_up, search_criteria=None):
+        if search_criteria:
+            return self._sort_by_search(keywords, search_criteria)
         return self._sort_by_attr(keywords, self.headers[sort_col].lower(),
                                   sort_up)
+
+    def _sort_by_search(self, keywords, search_criteria):
+        search_criteria = search_criteria.lower()
+        starts_with = [kw for kw in keywords if kw.name.lower().startswith(search_criteria)]
+        name_contains = [kw for kw in keywords if (search_criteria in kw.name.lower() 
+                                                   and kw not in starts_with)]
+        doc_contains = [kw for kw in keywords if (search_criteria in kw.details.lower() 
+                                                  and kw not in starts_with 
+                                                  and kw not in name_contains)]
+        result = []
+        for to_sort in (starts_with, name_contains, doc_contains):
+            result.extend(self._sort_by_attr(to_sort, self.headers[0].lower(), True))
+        return result
 
     def _sort_by_attr(self, keywords, attr_name, sort_up):
         return sorted(keywords, cmp=self._get_comparator_for(attr_name),
