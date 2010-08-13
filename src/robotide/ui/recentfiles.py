@@ -15,7 +15,7 @@
 import os.path
 import wx
 
-from robotide.publish import RideOpenSuite
+from robotide.publish import RideOpenSuite, RideChangeFormat
 from robotide.pluginapi import Plugin, ActionInfo, SeparatorInfo
 
 
@@ -36,6 +36,7 @@ class RecentFilesPlugin(Plugin):
         self._save_currently_loaded_suite()
         self._add_recent_files_to_menu()
         self.subscribe(self.OnSuiteOpened, RideOpenSuite)
+        self.subscribe(self.OnFormatChanged, RideChangeFormat)
         # TODO: This plugin doesn't currently support resources
         # self._frame.subscribe(self.OnSuiteOpened, ('core', 'open','resource'))
 
@@ -47,6 +48,15 @@ class RecentFilesPlugin(Plugin):
         # Update menu with CallAfter to ensure ongoing menu selection
         # handling has finished before menu is changed
         wx.CallAfter(self._add_to_recent_files, event.path)
+
+    def OnFormatChanged(self, event):
+        oldpath = normalize_path(event.oldpath)
+        newpath = normalize_path(event.newpath)
+        if oldpath not in self.recent_files:
+            return
+        index = self.recent_files.index(oldpath)
+        self.recent_files[index] = newpath
+        self._save_settings_and_update_file_menu()
 
     def _get_file_menu(self):
         menubar = self.get_menu_bar()
@@ -67,10 +77,10 @@ class RecentFilesPlugin(Plugin):
             self.recent_files.remove(file)
         self.recent_files.insert(0, file)
         self.recent_files = self.recent_files[0:self.max_number_of_files]
-        self.save_setting('recent_files', self.recent_files)
-        self._update_file_menu()
+        self._save_settings_and_update_file_menu()
 
-    def _update_file_menu(self):
+    def _save_settings_and_update_file_menu(self):
+        self.save_setting('recent_files', self.recent_files)
         self.unregister_actions()
         self._add_recent_files_to_menu()
 

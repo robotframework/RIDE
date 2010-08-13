@@ -18,7 +18,7 @@ from robot.parsing.model import ResourceFile
 from robotide import context
 from robotide.errors import SerializationError
 from robotide.publish.messages import RideOpenResource, RideSaving, RideSaveAll,\
-    RideSaved
+    RideSaved, RideChangeFormat
 from robotide.writer.serializer import Serializer
 
 from filecontroller import DataController, ResourceFileController
@@ -138,6 +138,7 @@ class ChiefController(object):
         controller.set_format(format)
         self.serialize_controller(controller)
         self._remove_file(old_path)
+        RideChangeFormat(oldpath=old_path, newpath=controller.source).publish()
 
     def _remove_file(self, path):
         if path:
