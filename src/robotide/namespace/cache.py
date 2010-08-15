@@ -31,20 +31,23 @@ class LibraryCache(object):
         self._default_kws = self._build_default_kws()
 
     def add_library(self, name, args=None):
-        key = (name, tuple(args or ''))
-        if not self.library_keywords.has_key(key):
+        if not self.library_keywords.has_key(self._key(name, args)):
+            kws = []
             try:
-                self.library_keywords[key] = LibrarySpec(name, args).keywords
+                kws = LibrarySpec(name, args).keywords
             except Exception, err:
                 RideLogMessage(message='Importing library %s failed with exception %s.' % (name, err), 
                                level='WARN').publish()
-                self.library_keywords[key] = []
+            finally:
+                self.library_keywords[self._key(name, args)] = kws
+
+    def _key(self, name, args):
+        return (name, tuple(args or ''))
 
     def get_library_keywords(self, name, args=None):
-        key = (name, tuple(args or ''))
-        if not self.library_keywords.has_key(key):
+        if not self.library_keywords.has_key(self._key(name, args)):
             self.add_library(name, args)
-        return self.library_keywords[key]
+        return self.library_keywords[self._key(name, args)]
 
     def get_default_keywords(self):
         return self._default_kws[:]
