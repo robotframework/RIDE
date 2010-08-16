@@ -126,8 +126,10 @@ class _DataController(object):
     def add_test_or_keyword(self, test_or_kw_ctrl):
         if isinstance(test_or_kw_ctrl, TestCaseController):
             self.tests.add(test_or_kw_ctrl)
+            test_or_kw_ctrl._parent = self.tests
         else:
             self.keywords.add(test_or_kw_ctrl)
+            test_or_kw_ctrl._parent = self.keywords
 
     def has_format(self):
         return True

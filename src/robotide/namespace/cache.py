@@ -20,23 +20,34 @@ from robotide.context import SETTINGS
 from robotide.spec import LibrarySpec, XMLResource
 from robotide.robotapi import RobotVariables, normpath
 from robotide.errors import DataError
+from robotide.publish.messages import RideLogMessage
 
 
 class LibraryCache(object):
 
     def __init__(self):
-        self.libraries = {}
+        self.library_keywords = {}
         self._default_libraries = self._get_default_libraries()
         self._default_kws = self._build_default_kws()
 
     def add_library(self, name, args=None):
-        if not self.libraries.has_key(name):
-            self.libraries[name] = LibrarySpec(name, args)
+        if not self.library_keywords.has_key(self._key(name, args)):
+            kws = []
+            try:
+                kws = LibrarySpec(name, args).keywords
+            except Exception, err:
+                RideLogMessage(message='Importing library %s failed with exception %s.' % (name, err), 
+                               level='WARN').publish()
+            finally:
+                self.library_keywords[self._key(name, args)] = kws
+
+    def _key(self, name, args):
+        return (name, tuple(args or ''))
 
     def get_library_keywords(self, name, args=None):
-        if not self.libraries.has_key(name):
+        if not self.library_keywords.has_key(self._key(name, args)):
             self.add_library(name, args)
-        return self.libraries[name].keywords
+        return self.library_keywords[self._key(name, args)]
 
     def get_default_keywords(self):
         return self._default_kws[:]

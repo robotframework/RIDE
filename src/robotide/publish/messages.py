@@ -124,6 +124,11 @@ class RideSaveAll(RideMessage):
     pass
 
 
+class RideChangeFormat(RideMessage):
+    """Sent when user has changed the format of a file."""
+    data = ['oldpath', 'newpath']
+
+
 class RideOpenSuite(RideMessage):
     """Sent when a new suite has finished loading."""
     data = ['path']
