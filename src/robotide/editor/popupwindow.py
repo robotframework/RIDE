@@ -48,8 +48,7 @@ class MacRidePopupWindow(wx.Window):
     def __init__(self, parent, size):
         wx.Window.__init__(self, parent)
 
-    def set_content(self, content):
-        pass
+    set_content = show_at = hide = lambda *args: None
 
     def IsShown(self):
         return False
