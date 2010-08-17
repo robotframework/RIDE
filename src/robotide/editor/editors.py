@@ -160,7 +160,6 @@ class SettingEditor(wx.Panel, RideEventHandler):
 
     def _create_value_display(self):
         display = self._value_display_control()
-        display.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
         display.Bind(wx.EVT_ENTER_WINDOW, self.OnEnterWindow)
         display.Bind(wx.EVT_LEAVE_WINDOW, self.OnLeaveWindow)
         return display
@@ -168,6 +167,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
     def _value_display_control(self):
         ctrl = wx.TextCtrl(self, size=(-1, context.SETTING_ROW_HEIGTH))
         ctrl.SetEditable(False)
+        ctrl.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
         return ctrl
 
     def OnEnterWindow(self, event):
@@ -175,8 +175,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
         self.popup_timer = wx.CallLater(500, self.OnPopupTimer)
 
     def OnLeaveWindow(self, event):
-        self.popup_timer.Stop()
-        self._tooltip.hide()
+        self._hide_tooltip()
 
     def OnPopupTimer(self, event):
         details = self._get_details_for_tooltip()
@@ -187,7 +186,8 @@ class SettingEditor(wx.Panel, RideEventHandler):
 
     def _tooltip_position(self):
         ms = wx.GetMouseState()
-        return ms.x+5, ms.y+5
+        # -1 ensures that the popup gets focus immediately
+        return ms.x-1, ms.y-1
 
     def _get_details_for_tooltip(self):
         # TODO: This only handles fixture keywords for now.
@@ -198,6 +198,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
         self._tree.refresh_datafile(item, event)
 
     def OnEdit(self, event=None):
+        self._hide_tooltip()
         self._editing = True
         dlg = self._dialog(self.GetGrandParent(), self._datafile, self._plugin,
                            self._controller)
@@ -233,6 +234,11 @@ class SettingEditor(wx.Panel, RideEventHandler):
     def get_selected_datafile_controller(self):
         return self._controller.datafile_controller
 
+    def _hide_tooltip(self):
+        if hasattr(self, 'popup_timer'):
+            self.popup_timer.Stop()
+        self._tooltip.hide()
+
 
 class DocumentationEditor(SettingEditor):
 
@@ -245,7 +251,9 @@ class DocumentationEditor(SettingEditor):
         self._create_controls()
 
     def _value_display_control(self):
-        return RideHtmlWindow(self, (-1, 100))
+        ctrl = RideHtmlWindow(self, (-1, 100))
+        ctrl.Bind(wx.EVT_LEFT_DOWN, self.OnEdit)
+        return ctrl
 
     def _update_value(self):
         self._value_display.SetPage(self._controller.visible_value)
@@ -254,6 +262,7 @@ class DocumentationEditor(SettingEditor):
         return self._controller.visible_value
 
     def OnEdit(self, event):
+        self._hide_tooltip()
         editor = DocumentationDialog(self.GetGrandParent(), self._datafile,
                                      self._plugin, self._controller.editable_value)
         if editor.ShowModal() == wx.ID_OK:

@@ -24,6 +24,10 @@ class RidePopupWindow(wx.PopupWindow):
         wx.PopupWindow.__init__(self, parent)
         self.SetSize(size)
         self._details = RideHtmlWindow(self, size=size)
+        self.Bind(wx.EVT_LEAVE_WINDOW, self.OnLeaveWindow)
+
+    def OnLeaveWindow(self, event):
+        self.hide()
 
     def set_content(self, content):
         color = ''.join([hex(item)[2:] for item in context.POPUP_BACKGROUND])
