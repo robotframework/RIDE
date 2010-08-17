@@ -20,7 +20,7 @@ from robotide import utils
 
 from kweditor import KeywordEditor
 from listeditor import ListEditor
-from popupwindow import RidePopupWindow
+from popupwindow import RideToolTipWindow
 from editordialogs import EditorDialog, DocumentationDialog,\
     ScalarVariableDialog, ListVariableDialog, LibraryDialog,\
     ResourceDialog, VariablesDialog, MetadataDialog
@@ -170,20 +170,6 @@ class SettingEditor(wx.Panel, RideEventHandler):
         ctrl.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
         return ctrl
 
-    def OnEnterWindow(self, event):
-        self._tooltip = RidePopupWindow(self, (400, 200))
-        self.popup_timer = wx.CallLater(500, self.OnPopupTimer)
-
-    def OnLeaveWindow(self, event):
-        self._hide_tooltip()
-
-    def OnPopupTimer(self, event):
-        details = self._get_details_for_tooltip()
-        if not details:
-            return
-        self._tooltip.set_content(details)
-        self._tooltip.show_at(self._tooltip_position())
-
     def _tooltip_position(self):
         ms = wx.GetMouseState()
         # -1 ensures that the popup gets focus immediately
@@ -209,6 +195,28 @@ class SettingEditor(wx.Panel, RideEventHandler):
         dlg.Destroy()
         self._editing = False
 
+    def _hide_tooltip(self):
+        self._stop_popup_timer()
+        self._tooltip.hide()
+
+    def _stop_popup_timer(self):
+        if hasattr(self, 'popup_timer'):
+            self.popup_timer.Stop()
+
+    def OnEnterWindow(self, event):
+        self._tooltip = RideToolTipWindow(self, (400, 250))
+        self.popup_timer = wx.CallLater(500, self.OnPopupTimer)
+
+    def OnLeaveWindow(self, event):
+        self._stop_popup_timer()
+
+    def OnPopupTimer(self, event):
+        details = self._get_details_for_tooltip()
+        if not details:
+            return
+        self._tooltip.set_content(details)
+        self._tooltip.show_at(self._tooltip_position())
+
     def OnLeftUp(self, event):
         selection = self._value_display.GetSelection()
         if selection[0] == selection[1] and not self._editing:
@@ -233,11 +241,6 @@ class SettingEditor(wx.Panel, RideEventHandler):
 
     def get_selected_datafile_controller(self):
         return self._controller.datafile_controller
-
-    def _hide_tooltip(self):
-        if hasattr(self, 'popup_timer'):
-            self.popup_timer.Stop()
-        self._tooltip.hide()
 
 
 class DocumentationEditor(SettingEditor):

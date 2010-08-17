@@ -24,10 +24,6 @@ class RidePopupWindow(wx.PopupWindow):
         wx.PopupWindow.__init__(self, parent)
         self.SetSize(size)
         self._details = RideHtmlWindow(self, size=size)
-        self.Bind(wx.EVT_LEAVE_WINDOW, self.OnLeaveWindow)
-
-    def OnLeaveWindow(self, event):
-        self.hide()
 
     def set_content(self, content):
         color = ''.join([hex(item)[2:] for item in context.POPUP_BACKGROUND])
@@ -40,6 +36,21 @@ class RidePopupWindow(wx.PopupWindow):
 
     def hide(self):
         self.Show(False)
+
+
+class RideToolTipWindow(RidePopupWindow):
+
+    def __init__(self, parent, size):
+        RidePopupWindow.__init__(self, parent, size)
+        self.Bind(wx.EVT_LEAVE_WINDOW, self.OnLeaveWindow)
+
+    def OnLeaveWindow(self, event):
+        self.hide()
+
+    def set_content(self, content):
+        color = ''.join([hex(item)[2:] for item in context.POPUP_BACKGROUND])
+        details = '<body bgcolor=#%s>%s</body>' % (color, content)
+        self._details.SetPage(details)
 
 
 class MacRidePopupWindow(wx.Window):
@@ -59,5 +70,5 @@ class MacRidePopupWindow(wx.Window):
 
 
 if wx.PlatformInfo[0] == '__WXMAC__':
-    RidePopupWindow = MacRidePopupWindow
+    RidePopupWindow = RideToolTipWindow = MacRidePopupWindow
 del MacRidePopupWindow
