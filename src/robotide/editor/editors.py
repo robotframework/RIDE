@@ -166,20 +166,16 @@ class SettingEditor(wx.Panel, RideEventHandler):
         return display
 
     def _value_display_control(self):
-        ctrl = wx.TextCtrl(self, size=(-1, context.SETTING_ROW_HEIGTH))
+        ctrl = wx.TextCtrl(self, size=(-1, context.SETTING_ROW_HEIGTH),
+                           style=wx.TE_RICH|wx.TE_MULTILINE)
         ctrl.SetEditable(False)
         ctrl.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
+        ctrl.Bind(wx.EVT_KEY_DOWN, self.OnChar)
         return ctrl
 
-    def _tooltip_position(self):
-        ms = wx.GetMouseState()
-        # -1 ensures that the popup gets focus immediately
-        return ms.x-1, ms.y-1
-
-    def _get_details_for_tooltip(self):
-        # TODO: This only handles fixture keywords for now.
-        val = self._controller.value.split(' | ')[0]
-        return self._plugin.get_keyword_details(val)
+    def OnChar(self, event):
+        self._tooltip.hide()
+        event.Skip()
 
     def refresh_datafile(self, item, event):
         self._tree.refresh_datafile(item, event)
@@ -211,17 +207,38 @@ class SettingEditor(wx.Panel, RideEventHandler):
         self._stop_popup_timer()
 
     def OnPopupTimer(self, event):
+        if wx.GetMouseState().ControlDown():
+            return
         details = self._get_details_for_tooltip()
         if not details:
             return
         self._tooltip.set_content(details)
         self._tooltip.show_at(self._tooltip_position())
+        self._value_display.SetFocus()
+
+    def _get_details_for_tooltip(self):
+        # TODO: This only handles fixture keywords for now.
+        val = self._controller.value.split(' | ')[0]
+        return self._plugin.get_keyword_details(val)
+
+    def _tooltip_position(self):
+        ms = wx.GetMouseState()
+        # -1 ensures that the popup gets focus immediately
+        return ms.x-1, ms.y-1
 
     def OnLeftUp(self, event):
-        selection = self._value_display.GetSelection()
-        if selection[0] == selection[1] and not self._editing:
-            wx.CallAfter(self.OnEdit, event)
-        event.Skip()
+        if event.ControlDown():
+            self._navigate_to_user_keyword()
+        else:
+            selection = self._value_display.GetSelection()
+            if selection[0] == selection[1] and not self._editing:
+                wx.CallAfter(self.OnEdit, event)
+            event.Skip()
+
+    def _navigate_to_user_keyword(self):
+        uk = self._plugin.get_user_keyword(self._controller.value.split(' | ')[0])
+        if uk:
+            self._tree.select_user_keyword_node(uk)
 
     def _update_and_notify(self):
         self._update_value()
@@ -235,6 +252,12 @@ class SettingEditor(wx.Panel, RideEventHandler):
         if self._controller.is_set:
             self._value_display.SetBackgroundColour('white')
             self._value_display.SetValue(self._controller.display_value)
+            keyword = self._controller.display_value.split(' | ')[0]
+            if self._plugin.is_user_keyword(keyword):
+                font = self._value_display.GetFont()
+                font.SetUnderlined(True)
+                self._value_display.SetStyle(0, len(keyword),
+                                             wx.TextAttr('blue', wx.NullColour, font))
         else:
             self._value_display.Clear()
             self._value_display.SetBackgroundColour('light grey')
