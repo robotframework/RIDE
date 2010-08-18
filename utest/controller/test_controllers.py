@@ -302,6 +302,23 @@ class TestCaseControllerTest(unittest.TestCase):
         assert_equals(self.ctrl.name, 'Foo Barness')
         assert_true(self.ctrl.dirty)
 
+    def test_copy_empty(self):
+        for setting in self.ctrl.settings:
+            assert_false(setting.is_set, 'not empty %s' % setting.__class__)
+        new = self.ctrl.copy('new name')
+        for setting in new.settings:
+            assert_false(setting.is_set, 'not empty %s' % setting.__class__)
+
+    def test_copy_content(self):
+        for setting in self.ctrl.settings:
+            assert_false(setting.is_set, 'not empty %s' % setting.__class__)
+            setting.set_value('boo')
+            setting.set_comment('hobo')
+        new = self.ctrl.copy('new name')
+        for setting in new.settings:
+            assert_true(setting.is_set, 'empty %s' % setting.__class__)
+            assert_equals(setting.value, 'boo', 'not boo %s' % setting.__class__)
+            assert_equals(setting.comment, 'hobo', 'comment not copied %s' % setting.__class__)
 
 class UserKeywordControllerTest(unittest.TestCase):
 
