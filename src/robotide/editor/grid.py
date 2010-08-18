@@ -27,6 +27,7 @@ class GridEditor(grid.Grid):
         grid.Grid.__init__(self, parent)
         self._bind_to_events()
         self.selection = _GridSelection()
+        self.SetDefaultRenderer(grid.GridCellAutoWrapStringRenderer())
         self._clipboard_handler = ClipboardHandler(self)
         self._history = _GridState()
 
