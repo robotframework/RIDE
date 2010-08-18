@@ -73,12 +73,13 @@ class _RobotTableEditor(EditorPanel):
             self.sizer.Add(self._create_header(self.title), 0, wx.ALL, 5)
             self.sizer.Add((0,10))
         self._editors = []
-        self._last_shown_tooltip = None
+        self.reset_last_show_tooltip()
         self._populate()
 
     def OnMotion(self, event):
         for editor in self._editors:
             editor.OnMotion(event)
+        self.reset_last_show_tooltip()
 
     def tooltip_allowed(self, editor):
         if wx.GetMouseState().ControlDown() or \
@@ -86,6 +87,9 @@ class _RobotTableEditor(EditorPanel):
             return False
         self._last_shown_tooltip = editor
         return True
+
+    def reset_last_show_tooltip(self):
+        self._last_shown_tooltip = None
 
     def close(self):
         self.Show(False)
@@ -178,7 +182,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
         display = self._value_display_control()
         display.Bind(wx.EVT_ENTER_WINDOW, self.OnEnterWindow)
         display.Bind(wx.EVT_LEAVE_WINDOW, self.OnLeaveWindow)
-        display.Bind(wx.EVT_MOTION, self.OnMotion)
+        display.Bind(wx.EVT_MOTION, self.OnDisplayMotion)
         return display
 
     def _value_display_control(self):
@@ -191,11 +195,13 @@ class SettingEditor(wx.Panel, RideEventHandler):
 
     def OnKey(self, event):
         self._tooltip.hide()
-        event.Skip()
 
     def OnMotion(self, event):
         self._tooltip.hide()
-        event.Skip()
+        self.Parent.reset_last_show_tooltip()
+
+    def OnDisplayMotion(self, event):
+        self._tooltip.hide()
 
     def refresh_datafile(self, item, event):
         self._tree.refresh_datafile(item, event)
