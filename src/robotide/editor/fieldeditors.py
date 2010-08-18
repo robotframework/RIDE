@@ -130,6 +130,7 @@ class _EditorGrid(GridEditor):
         for index, item in enumerate(value):
             row, col = divmod(index, self.NumberCols)
             self.SetCellValue(row, col, item)
+        self.AutoSizeRows()
 
     def get_value(self):
         value = []

@@ -31,7 +31,6 @@ class KeywordEditorUi(GridEditor, RideEventHandler):
         self.SetColLabelSize(0)
         self.SetDefaultColSize(170)
         self.SetDefaultCellOverflow(False)
-        self.SetDefaultRenderer(grid.GridCellAutoWrapStringRenderer())
         self.CreateGrid(num_rows, num_cols)
         self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
         # This makes it possible to select cell 0,0 without opening editor, issue 479
