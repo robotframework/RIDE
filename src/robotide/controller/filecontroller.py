@@ -470,7 +470,9 @@ class _WithStepsController(object):
     def copy(self, name):
         new = self._parent.new(name)
         for orig, copied in zip(self.settings, new.settings):
-            copied.set_value(orig.value)
+            if orig.is_set:
+                copied.set_value(orig.value)
+            copied.set_comment(orig.comment)
         new.data.steps = self.data.steps[:]
         return new
 
