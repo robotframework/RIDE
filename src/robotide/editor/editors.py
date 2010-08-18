@@ -73,11 +73,19 @@ class _RobotTableEditor(EditorPanel):
             self.sizer.Add(self._create_header(self.title), 0, wx.ALL, 5)
             self.sizer.Add((0,10))
         self._editors = []
+        self._last_shown_tooltip = None
         self._populate()
 
     def OnMotion(self, event):
         for editor in self._editors:
             editor.OnMotion(event)
+
+    def tooltip_allowed(self, editor):
+        if wx.GetMouseState().ControlDown() or \
+                self._last_shown_tooltip is editor:
+            return False
+        self._last_shown_tooltip = editor
+        return True
 
     def close(self):
         self.Show(False)
@@ -221,13 +229,11 @@ class SettingEditor(wx.Panel, RideEventHandler):
         self._stop_popup_timer()
 
     def OnPopupTimer(self, event):
-        if wx.GetMouseState().ControlDown():
-            return
-        details = self._get_details_for_tooltip()
-        if not details:
-            return
-        self._tooltip.set_content(details)
-        self._tooltip.show_at(self._tooltip_position())
+        if self.Parent.tooltip_allowed(self):
+            details = self._get_details_for_tooltip()
+            if details:
+                self._tooltip.set_content(details)
+                self._tooltip.show_at(self._tooltip_position())
 
     def _get_details_for_tooltip(self):
         # TODO: This only handles fixture keywords for now.
