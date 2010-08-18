@@ -49,7 +49,6 @@ class RideToolTipWindow(RidePopupWindow):
         self.hide()
 
 
-
 class MacRidePopupWindow(wx.Window):
     """Mac version of RidePopupWindow with very limited functionality.
 

@@ -147,7 +147,6 @@ class SettingEditor(wx.Panel, RideEventHandler):
         self._plugin = plugin
         self._datafile = controller.datafile
         self._create_controls()
-        self._dialog = EditorDialog(controller)
         self._tree = tree
         self._editing = False
         self.Bind(wx.EVT_MOTION, self.OnMotion)
@@ -155,7 +154,6 @@ class SettingEditor(wx.Panel, RideEventHandler):
     def _create_controls(self):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add((5,0))
-        self.Bind(wx.EVT_MOTION, self.OnMotion)
         sizer.Add(wx.StaticText(self, label=self._controller.label,
                                 size=(context.SETTING_LABEL_WIDTH,
                                       context.SETTING_ROW_HEIGTH)))
@@ -172,6 +170,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
         display = self._value_display_control()
         display.Bind(wx.EVT_ENTER_WINDOW, self.OnEnterWindow)
         display.Bind(wx.EVT_LEAVE_WINDOW, self.OnLeaveWindow)
+        display.Bind(wx.EVT_MOTION, self.OnMotion)
         return display
 
     def _value_display_control(self):
@@ -179,15 +178,14 @@ class SettingEditor(wx.Panel, RideEventHandler):
                            style=wx.TE_RICH|wx.TE_MULTILINE)
         ctrl.SetEditable(False)
         ctrl.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
-        ctrl.Bind(wx.EVT_KEY_DOWN, self.OnChar)
+        ctrl.Bind(wx.EVT_KEY_DOWN, self.OnKey)
         return ctrl
 
-    def OnChar(self, event):
+    def OnKey(self, event):
         self._tooltip.hide()
         event.Skip()
 
     def OnMotion(self, event):
-        self._stop_popup_timer()
         self._tooltip.hide()
         event.Skip()
 
@@ -197,8 +195,9 @@ class SettingEditor(wx.Panel, RideEventHandler):
     def OnEdit(self, event=None):
         self._hide_tooltip()
         self._editing = True
-        dlg = self._dialog(self.GetGrandParent(), self._datafile, self._plugin,
-                           self._controller)
+        dlg_class = EditorDialog(self._controller)
+        dlg = dlg_class(self.GetGrandParent(), self._datafile, self._plugin,
+                        self._controller)
         if dlg.ShowModal() == wx.ID_OK:
             self._controller.set_value(*dlg.get_value())
             self._controller.set_comment(dlg.get_comment())
@@ -215,6 +214,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
             self.popup_timer.Stop()
 
     def OnEnterWindow(self, event):
+        self._value_display.SetFocus()
         self.popup_timer = wx.CallLater(500, self.OnPopupTimer)
 
     def OnLeaveWindow(self, event):
@@ -228,7 +228,6 @@ class SettingEditor(wx.Panel, RideEventHandler):
             return
         self._tooltip.set_content(details)
         self._tooltip.show_at(self._tooltip_position())
-        self._value_display.SetFocus()
 
     def _get_details_for_tooltip(self):
         # TODO: This only handles fixture keywords for now.
@@ -238,7 +237,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
     def _tooltip_position(self):
         ms = wx.GetMouseState()
         # -1 ensures that the popup gets focus immediately
-        return ms.x-1, ms.y-1
+        return ms.x-3, ms.y-3
 
     def OnLeftUp(self, event):
         if event.ControlDown():
@@ -281,15 +280,6 @@ class SettingEditor(wx.Panel, RideEventHandler):
 
 
 class DocumentationEditor(SettingEditor):
-
-    def __init__(self, parent, controller, plugin, tree):
-        wx.Panel.__init__(self, parent)
-        self._controller = controller
-        self._plugin = plugin
-        self._datafile = controller.datafile
-        self._tree = tree
-        self._create_controls()
-        self.Bind(wx.EVT_MOTION, self.OnMotion)
 
     def _value_display_control(self):
         ctrl = RideHtmlWindow(self, (-1, 100))
