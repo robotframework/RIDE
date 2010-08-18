@@ -276,7 +276,28 @@ class TestDataDirectoryControllerTest(unittest.TestCase):
                                                   is_dir_type=False)))
 
 
-class TestCaseControllerTest(unittest.TestCase):
+class _BaseWithSteps(unittest.TestCase):
+
+    def _test_copy_empty(self):
+        for setting in self.ctrl.settings:
+            assert_false(setting.is_set, 'not empty %s' % setting.__class__)
+        new = self.ctrl.copy('new name')
+        for setting in new.settings:
+            assert_false(setting.is_set, 'not empty %s' % setting.__class__)
+
+    def _test_copy_content(self):
+        for setting in self.ctrl.settings:
+            assert_false(setting.is_set, 'not empty %s' % setting.__class__)
+            setting.set_value('boo')
+            setting.set_comment('hobo')
+        new = self.ctrl.copy('new name')
+        for setting in new.settings:
+            assert_true(setting.is_set, 'empty %s' % setting.__class__)
+            assert_equals(setting.value, 'boo', 'not boo %s' % setting.__class__)
+            assert_equals(setting.comment, 'hobo', 'comment not copied %s' % setting.__class__)
+
+
+class TestCaseControllerTest(_BaseWithSteps):
 
     def setUp(self):
         self.tcf = TestCaseFile()
@@ -303,24 +324,13 @@ class TestCaseControllerTest(unittest.TestCase):
         assert_true(self.ctrl.dirty)
 
     def test_copy_empty(self):
-        for setting in self.ctrl.settings:
-            assert_false(setting.is_set, 'not empty %s' % setting.__class__)
-        new = self.ctrl.copy('new name')
-        for setting in new.settings:
-            assert_false(setting.is_set, 'not empty %s' % setting.__class__)
+        self._test_copy_empty()
 
     def test_copy_content(self):
-        for setting in self.ctrl.settings:
-            assert_false(setting.is_set, 'not empty %s' % setting.__class__)
-            setting.set_value('boo')
-            setting.set_comment('hobo')
-        new = self.ctrl.copy('new name')
-        for setting in new.settings:
-            assert_true(setting.is_set, 'empty %s' % setting.__class__)
-            assert_equals(setting.value, 'boo', 'not boo %s' % setting.__class__)
-            assert_equals(setting.comment, 'hobo', 'comment not copied %s' % setting.__class__)
+        self._test_copy_content()
 
-class UserKeywordControllerTest(unittest.TestCase):
+
+class UserKeywordControllerTest(_BaseWithSteps):
 
     def setUp(self):
         self.tcf = TestCaseFile()
@@ -382,6 +392,12 @@ class UserKeywordControllerTest(unittest.TestCase):
         assert_equals(step.assign, exp_assign)
         assert_equals(step.keyword, exp_keyword)
         assert_equals(step.args, exp_args)
+
+    def test_copy_empty(self):
+        self._test_copy_empty()
+
+    def test_copy_content(self):
+        self._test_copy_content()
 
 
 class ImportControllerTest(unittest.TestCase):
