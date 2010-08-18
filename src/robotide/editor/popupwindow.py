@@ -31,8 +31,9 @@ class RidePopupWindow(wx.PopupWindow):
         self._details.SetPage(details)
 
     def show_at(self, position):
-        self.SetPosition(position)
-        self.Show()
+        if not self.IsShown():
+            self.SetPosition(position)
+            self.Show()
 
     def hide(self):
         self.Show(False)
@@ -47,10 +48,6 @@ class RideToolTipWindow(RidePopupWindow):
     def OnLeaveWindow(self, event):
         self.hide()
 
-    def set_content(self, content):
-        color = ''.join([hex(item)[2:] for item in context.POPUP_BACKGROUND])
-        details = '<body bgcolor=#%s>%s</body>' % (color, content)
-        self._details.SetPage(details)
 
 
 class MacRidePopupWindow(wx.Window):
