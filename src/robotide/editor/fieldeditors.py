@@ -136,7 +136,7 @@ class _EditorGrid(GridEditor):
         for row in range(self.NumberRows):
             for col in range(self.NumberCols):
                 value.append(self.GetCellValue(row, col))
-        while not value[-1]:
+        while value and not value[-1]:
             value.pop()
         return value
 
