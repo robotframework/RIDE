@@ -21,9 +21,9 @@ from robotide import utils
 from kweditor import KeywordEditor
 from listeditor import ListEditor
 from popupwindow import RideToolTipWindow
-from editordialogs import EditorDialog, DocumentationDialog,\
-    ScalarVariableDialog, ListVariableDialog, LibraryDialog,\
-    ResourceDialog, VariablesDialog, MetadataDialog
+from editordialogs import (EditorDialog, DocumentationDialog, MetadataDialog,
+                           ScalarVariableDialog, ListVariableDialog,
+                           LibraryDialog, ResourceDialog, VariablesDialog)
 
 
 def Editor(plugin, editor_panel, tree):
@@ -167,7 +167,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
                                       context.SETTING_ROW_HEIGTH)))
         self._value_display = self._create_value_display()
         self._update_value()
-        self._tooltip = RideToolTipWindow(self, (400, 250))
+        self._tooltip = RideToolTipWindow(self, (500, 350))
         sizer.Add(self._value_display, 1, wx.EXPAND)
         sizer.Add(ButtonWithHandler(self, 'Edit'), flag=wx.LEFT|wx.RIGHT, border=5)
         sizer.Add(ButtonWithHandler(self, 'Clear'))
