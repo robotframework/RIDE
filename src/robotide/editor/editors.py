@@ -152,6 +152,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
                                       context.SETTING_ROW_HEIGTH)))
         self._value_display = self._create_value_display()
         self._update_value()
+        self._tooltip = RideToolTipWindow(self, (400, 250))
         sizer.Add(self._value_display, 1, wx.EXPAND)
         sizer.Add(ButtonWithHandler(self, 'Edit'), flag=wx.LEFT|wx.RIGHT, border=5)
         sizer.Add(ButtonWithHandler(self, 'Clear'))
@@ -204,7 +205,6 @@ class SettingEditor(wx.Panel, RideEventHandler):
             self.popup_timer.Stop()
 
     def OnEnterWindow(self, event):
-        self._tooltip = RideToolTipWindow(self, (400, 250))
         self.popup_timer = wx.CallLater(500, self.OnPopupTimer)
 
     def OnLeaveWindow(self, event):
