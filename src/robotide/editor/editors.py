@@ -67,11 +67,17 @@ class _RobotTableEditor(EditorPanel):
     def __init__(self, plugin, parent, controller, tree):
         EditorPanel.__init__(self, plugin, parent, controller, tree)
         self.sizer = wx.BoxSizer(wx.VERTICAL)
+        self.Bind(wx.EVT_MOTION, self.OnMotion)
         self.SetSizer(self.sizer)
         if self.title:
             self.sizer.Add(self._create_header(self.title), 0, wx.ALL, 5)
             self.sizer.Add((0,10))
+        self._editors = []
         self._populate()
+
+    def OnMotion(self, event):
+        for editor in self._editors:
+            editor.OnMotion(event)
 
     def close(self):
         self.Show(False)
@@ -85,6 +91,7 @@ class _RobotTableEditor(EditorPanel):
         for setting in self.controller.settings:
             editor = setting.editor(self, setting, self.plugin, self._tree)
             self.sizer.Add(editor, 0, wx.ALL|wx.EXPAND, 1)
+            self._editors.append(editor)
 
 
 class ResourceFileEditor(_RobotTableEditor):
@@ -143,10 +150,12 @@ class SettingEditor(wx.Panel, RideEventHandler):
         self._dialog = EditorDialog(controller)
         self._tree = tree
         self._editing = False
+        self.Bind(wx.EVT_MOTION, self.OnMotion)
 
     def _create_controls(self):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add((5,0))
+        self.Bind(wx.EVT_MOTION, self.OnMotion)
         sizer.Add(wx.StaticText(self, label=self._controller.label,
                                 size=(context.SETTING_LABEL_WIDTH,
                                       context.SETTING_ROW_HEIGTH)))
@@ -174,6 +183,11 @@ class SettingEditor(wx.Panel, RideEventHandler):
         return ctrl
 
     def OnChar(self, event):
+        self._tooltip.hide()
+        event.Skip()
+
+    def OnMotion(self, event):
+        self._stop_popup_timer()
         self._tooltip.hide()
         event.Skip()
 
@@ -275,6 +289,7 @@ class DocumentationEditor(SettingEditor):
         self._datafile = controller.datafile
         self._tree = tree
         self._create_controls()
+        self.Bind(wx.EVT_MOTION, self.OnMotion)
 
     def _value_display_control(self):
         ctrl = RideHtmlWindow(self, (-1, 100))
