@@ -72,25 +72,22 @@ class ListValueEditor(ValueEditor):
 
     def _create_editor(self, value, label):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.Add(self._create_label_and_add_button(label))
+        sizer.Add(self._create_label(label))
         self._editor = _EditorGrid(self, value)
         sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
         self._sizer.Add(sizer, 1, wx.EXPAND)
         self.Bind(wx.EVT_SIZE, self.OnSize)
 
-    def _create_label_and_add_button(self, label):
+    def _create_label(self, label):
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(wx.StaticText(self, label=label, size=(80,-1)), 0, wx.ALL, 5)
-        add_btn = wx.Button(self, label='Add Row')
-        self.Bind(wx.EVT_BUTTON, self.OnAddRow, add_btn)
-        sizer.Add(add_btn)
         return sizer
 
     def OnAddRow(self, event):
         self._editor.add_row()
 
     def OnSize(self, event):
-        self._editor.resize_columns(event.Size[0]-105)
+        self._editor.resize_columns(event.Size[0]-110)
         event.Skip()
 
     def get_value(self):
@@ -105,7 +102,7 @@ class _EditorGrid(GridEditor):
         self._set_default_sizes()
         self._bind_actions()
         self._create_grid(value)
-        self._initialize_value(value)
+        self._write_content(value)
 
     def _set_default_sizes(self):
         self.SetColLabelSize(0)
@@ -130,11 +127,11 @@ class _EditorGrid(GridEditor):
         rows = len(value)/cols + 2
         self.CreateGrid(rows, cols)
 
-    def _initialize_value(self, value):
+    def _write_content(self, value):
         self.ClearGrid()
         for index, item in enumerate(value):
             row, col = divmod(index, self.NumberCols)
-            self.SetCellValue(row, col, item)
+            self.write_cell(row, col, item, False)
         self.AutoSizeRows()
 
     def get_value(self):
@@ -168,7 +165,7 @@ class _EditorGrid(GridEditor):
         row, col = self.selection.cell
         start = row*self.NumberCols + col
         data = action(value, start, start+len(self.selection.cols()))
-        self._initialize_value(data)
+        self._write_content(data)
         event.Skip()
 
     def _insert_cells_to_multiple_rows(self, event):
