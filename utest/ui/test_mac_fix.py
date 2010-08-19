@@ -1,5 +1,5 @@
 import unittest
-from robotide.mac_fix import only_once
+from robotide.mac_localization import only_once
 from robot.utils.asserts import assert_true, assert_false
 
 

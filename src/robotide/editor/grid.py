@@ -17,7 +17,7 @@ import os
 from wx import grid
 
 from robotide.utils import PopupMenu
-from robotide.mac_fix import only_once
+from robotide.mac_localization import only_once
 from clipboard import ClipboardHandler
 
 

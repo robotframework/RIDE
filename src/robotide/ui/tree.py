@@ -22,7 +22,7 @@ from robotide import utils
 from robotide.action import ActionInfoCollection
 from robotide.controller import UserKeywordController, NewDatafile
 from robotide.publish import RideTreeSelection
-from robotide.mac_fix import is_mac
+from robotide.mac_localization import is_mac
 try:
     import treemixin
 except ImportError:

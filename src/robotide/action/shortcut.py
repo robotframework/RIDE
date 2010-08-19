@@ -13,7 +13,7 @@
 #  limitations under the License.
 
 import wx
-from robotide.mac_fix import is_mac, replace_chars_in_mac
+from robotide.mac_localization import is_mac, replace_chars_in_mac
 
 
 class Shortcut(object):

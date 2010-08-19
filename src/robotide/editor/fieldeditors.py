@@ -16,7 +16,7 @@ import wx
 import wx.grid
 
 from robotide.context import SETTINGS, Font
-from robotide.mac_fix import only_once, is_mac
+from robotide.mac_localization import only_once, is_mac
 from contentassist import ContentAssistTextCtrl
 from grid import GridEditor
 

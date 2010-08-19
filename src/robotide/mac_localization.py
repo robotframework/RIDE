@@ -45,6 +45,8 @@ def is_mac():
     return sys.platform == 'darwin'
 
 def only_once(f):
+    '''Decorator that stops event handlers from being 
+    called several times in some OSX versions.'''
     _events = set()
     def new(obj, *args):
         id = args[0].Id
