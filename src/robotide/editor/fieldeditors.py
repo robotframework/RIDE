@@ -15,6 +15,7 @@
 import wx
 import wx.grid
 
+from robotide.context import SETTINGS, Font
 from contentassist import ContentAssistTextCtrl
 from grid import GridEditor
 
@@ -73,23 +74,29 @@ class ListValueEditor(ValueEditor):
 
     def _create_editor(self, value, label):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.Add(self._create_label(label))
-        self._editor = _EditorGrid(self, value)
+        cols = SETTINGS['list variable columns']
+        sizer.Add(self._create_label(label, cols))
+        self._editor = _EditorGrid(self, value, cols)
         sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
         self._sizer.Add(sizer, 1, wx.EXPAND)
         self.Bind(wx.EVT_SIZE, self.OnSize)
 
-    def _create_label(self, label):
+    def _create_label(self, label, cols):
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(wx.StaticText(self, label=label, size=(80,-1)), 0, wx.ALL, 5)
-        sizer.Add(wx.StaticText(self, label='Columns', size=(80,-1)), 0, wx.ALL, 5)
-        combo = wx.ComboBox(self, size=(80, -1), choices=['1', '2', '3', '4', '5'])
+        sizer.Add((-1, 10))
+        col_label = wx.StaticText(self, label='Columns', size=(80, -1))
+        sizer.Add(col_label, 0, wx.ALL, 5)
+        combo = wx.ComboBox(self, value=str(cols), size=(60, 25),
+                            choices=[str(i) for i in range(1,11)])
         self.Bind(wx.EVT_COMBOBOX, self.OnColumns, source=combo)
         sizer.Add(combo)
         return sizer
 
     def OnColumns(self, event):
-        self._editor.set_number_of_columns(int(event.String))
+        num_cols = int(event.String)
+        SETTINGS['list variable columns'] = num_cols
+        self._editor.set_number_of_columns(num_cols)
 
     def OnAddRow(self, event):
         self._editor.add_row()
@@ -105,11 +112,11 @@ class ListValueEditor(ValueEditor):
 class _EditorGrid(GridEditor):
     _col_add_threshold = 0
 
-    def __init__(self, parent, value):
+    def __init__(self, parent, value, num_cols):
         GridEditor.__init__(self, parent)
         self._set_default_sizes()
         self._bind_actions()
-        self._create_grid(value)
+        self._create_grid(value, num_cols)
         self._write_content(value)
 
     def _set_default_sizes(self):
@@ -131,9 +138,9 @@ class _EditorGrid(GridEditor):
         self.SetAcceleratorTable(wx.AcceleratorTable(accelrators))
         self.Bind(wx.grid.EVT_GRID_EDITOR_SHOWN, self.OnEditorShown)
 
-    def _create_grid(self, value, cols=4):
-        rows = len(value)/cols + 2
-        self.CreateGrid(rows, cols)
+    def _create_grid(self, value, num_cols):
+        num_rows = len(value)/num_cols + 2
+        self.CreateGrid(num_rows, num_cols)
 
     def _write_content(self, value):
         self.ClearGrid()
