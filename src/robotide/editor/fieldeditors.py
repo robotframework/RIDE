@@ -76,6 +76,7 @@ class ListValueEditor(ValueEditor):
         self._editor = _EditorGrid(self, value)
         sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
         self._sizer.Add(sizer, 1, wx.EXPAND)
+        self.Bind(wx.EVT_SIZE, self.OnSize)
 
     def _create_label_and_add_button(self, label):
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -87,6 +88,10 @@ class ListValueEditor(ValueEditor):
 
     def OnAddRow(self, event):
         self._editor.add_row()
+
+    def OnSize(self, event):
+        self._editor.resize_columns(event.Size[0]-105)
+        event.Skip()
 
     def get_value(self):
         return self._editor.get_value()
@@ -186,6 +191,9 @@ class _EditorGrid(GridEditor):
 
     def OnUndo(self, event):
         self.undo()
+
+    def resize_columns(self, width):
+        self.SetDefaultColSize(max(width/self.NumberCols, 100), True)
 
 
 class MultiLineEditor(ValueEditor):
