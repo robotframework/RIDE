@@ -82,7 +82,14 @@ class ListValueEditor(ValueEditor):
     def _create_label(self, label):
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(wx.StaticText(self, label=label, size=(80,-1)), 0, wx.ALL, 5)
+        sizer.Add(wx.StaticText(self, label='Columns', size=(80,-1)), 0, wx.ALL, 5)
+        combo = wx.ComboBox(self, size=(80, -1), choices=['1', '2', '3', '4', '5'])
+        self.Bind(wx.EVT_COMBOBOX, self.OnColumns, source=combo)
+        sizer.Add(combo)
         return sizer
+
+    def OnColumns(self, event):
+        self._editor.set_number_of_columns(int(event.String))
 
     def OnAddRow(self, event):
         self._editor.add_row()
@@ -124,8 +131,7 @@ class _EditorGrid(GridEditor):
         self.SetAcceleratorTable(wx.AcceleratorTable(accelrators))
         self.Bind(wx.grid.EVT_GRID_EDITOR_SHOWN, self.OnEditorShown)
 
-    def _create_grid(self, value):
-        cols = 4
+    def _create_grid(self, value, cols=4):
         rows = len(value)/cols + 2
         self.CreateGrid(rows, cols)
 
@@ -197,6 +203,22 @@ class _EditorGrid(GridEditor):
 
     def resize_columns(self, width):
         self.SetDefaultColSize(max(width/self.NumberCols, 100), True)
+
+    def set_number_of_columns(self, columns):
+        new_cols = columns - self.NumberCols
+        if not new_cols:
+            return
+        width = self.NumberCols * self.GetDefaultColSize()
+        data = self.get_value()
+        self._set_cols(new_cols)
+        self.resize_columns(width)
+        self._write_content(data)
+
+    def _set_cols(self, new_cols):
+        if new_cols > 0:
+            self.AppendCols(numCols=new_cols)
+        else:
+            self.DeleteCols(numCols=-new_cols)
 
 
 class MultiLineEditor(ValueEditor):
