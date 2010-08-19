@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 import wx
+import wx.grid
 
 from contentassist import ContentAssistTextCtrl
 from grid import GridEditor
@@ -121,6 +122,7 @@ class _EditorGrid(GridEditor):
             self.Bind(wx.EVT_MENU, handler, id=id)
             accelrators.append((mod, key, id))
         self.SetAcceleratorTable(wx.AcceleratorTable(accelrators))
+        self.Bind(wx.grid.EVT_GRID_EDITOR_SHOWN, self.OnEditorShown)
 
     def _create_grid(self, value):
         cols = 4
@@ -142,6 +144,10 @@ class _EditorGrid(GridEditor):
         while value and not value[-1]:
             value.pop()
         return value
+
+    def OnEditorShown(self, event):
+        if event.Row >= self.NumberRows-1:
+            self.AppendRows(1)
 
     def OnInsertCells(self, event):
         if len(self.selection.rows()) != 1:
