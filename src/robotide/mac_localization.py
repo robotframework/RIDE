@@ -21,7 +21,10 @@ CTRL_CHAR = u'\u2303'
 SPACE_CHAR = u'\u2423'
 LEFT_CHAR = u'\u2190'
 RIGHT_CHAR = u'\u2192'
-DEL_CHAR = u'\u232B'
+DEL_CHAR = u'\u2326'
+ENTER_CHAR = u'\u2324'
+RETURN_CHAR = u'\u21A9'
+ESC_CHAR = u'\u238B'
 
 REPLACE = {'Cmd': CMD_CHAR,
            'Shift': SHIFT_CHAR,
@@ -31,6 +34,9 @@ REPLACE = {'Cmd': CMD_CHAR,
            'Left': LEFT_CHAR,
            'Right': RIGHT_CHAR,
            'Delete': DEL_CHAR,
+           'Enter': ENTER_CHAR,
+           'Return': RETURN_CHAR,
+           'Escape': ESC_CHAR,
            '-': ''}
 
 def replace_chars_in_mac(shortcut):
