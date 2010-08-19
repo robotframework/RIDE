@@ -16,6 +16,7 @@ import wx
 import wx.grid
 
 from robotide.context import SETTINGS, Font
+from robotide.mac_fix import only_once
 from contentassist import ContentAssistTextCtrl
 from grid import GridEditor
 
@@ -162,6 +163,7 @@ class _EditorGrid(GridEditor):
         if event.Row >= self.NumberRows-1:
             self.AppendRows(1)
 
+    @only_once
     def OnInsertCells(self, event):
         if len(self.selection.rows()) != 1:
             self._insert_cells_to_multiple_rows(event)
@@ -170,6 +172,7 @@ class _EditorGrid(GridEditor):
             return data[:start] + [''] * (end-start) + data[start:]
         self._insert_or_delete_cells_on_single_row(insert_cells, event)
 
+    @only_once
     def OnDeleteCells(self, event):
         if len(self.selection.rows()) != 1:
             self._delete_cells_from_multiple_rows(event)
