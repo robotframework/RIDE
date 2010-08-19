@@ -13,7 +13,7 @@
 #  limitations under the License.
 
 import wx
-from robotide.mac_fix import is_mac, CMD_CHAR
+from robotide.mac_fix import is_mac, replace_chars_in_mac
 
 
 class Shortcut(object):
@@ -23,7 +23,7 @@ class Shortcut(object):
         self.printable = self._get_printable(self.value)
 
     def _get_printable(self, value):
-        return value.replace('Cmd', CMD_CHAR) if value else value
+        return replace_chars_in_mac(value)
 
     def __nonzero__(self):
         return bool(self.value)
@@ -36,6 +36,22 @@ class Shortcut(object):
         keys.sort(key=lambda t: t in order and order.index(t) or 42)
         return '-'.join(keys)
 
+    def _split(self, shortcut):
+        return shortcut.replace('+', '-').split('-')
+
+    def _normalize_key(self, key):
+        key = key.title()
+        key = self._handle_ctrlcmd(key)
+        return {'Del': 'Delete', 'Ins': 'Insert',
+                'Enter': 'Return', 'Esc':'Escape'}.get(key, key)
+
+    def _handle_ctrlcmd(self, key):
+        if key != 'Ctrlcmd':
+            return key
+        if is_mac():
+            return 'Cmd'
+        return 'Ctrl'
+
     def parse(self):
         keys = self._split(self.value)
         if len(keys) == 1:
@@ -44,22 +60,6 @@ class Shortcut(object):
             flags = sum(self._get_wx_key_constant('ACCEL', key)
                         for key in keys[:-1])
         return flags, self._get_key(keys[-1])
-
-    def _handle_ctrlcmd(self, key):
-        if key.title() == 'Ctrlcmd':
-            if is_mac():
-                return 'Cmd'
-            return 'Ctrl'
-        return key
-
-    def _normalize_key(self, key):
-        key = key.title()
-        key = self._handle_ctrlcmd(key)
-        return {'Del': 'Delete', 'Ins': 'Insert',
-                'Enter': 'Return', 'Esc':'Escape'}.get(key, key)
-
-    def _split(self, shortcut):
-        return shortcut.replace('+', '-').split('-')
 
     def _get_wx_key_constant(self, prefix, name):
         attr = '%s_%s' % (prefix, name.upper().replace(' ', ''))
