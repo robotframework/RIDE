@@ -64,7 +64,7 @@ class _Action(_Registrable):
         self.doc = action_info.doc
 
     def get_shortcut(self):
-        return self.shortcut.value
+        return self.shortcut.printable
 
     def act(self, event):
         if self.is_active():

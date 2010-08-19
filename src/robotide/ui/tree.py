@@ -22,6 +22,7 @@ from robotide import utils
 from robotide.action import ActionInfoCollection
 from robotide.controller import UserKeywordController, NewDatafile
 from robotide.publish import RideTreeSelection
+from robotide.mac_fix import is_mac
 try:
     import treemixin
 except ImportError:
@@ -57,18 +58,24 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _bind_keys(self):
         accelrators = []
-        for accel, keycode, handler in [
-            (wx.ACCEL_CTRL, wx.WXK_UP, self.OnMoveUp),
-            (wx.ACCEL_CTRL, wx.WXK_DOWN, self.OnMoveDown),
-            (wx.ACCEL_NORMAL, wx.WXK_F2, self.OnLabelEdit),
-            (wx.ACCEL_NORMAL, wx.WXK_LEFT, self.OnLeftArrow),
-            ]:
+        for accel, keycode, handler in self._get_keys():
             if _IS_WINDOWS and keycode == wx.WXK_LEFT:
                 continue
             id = wx.NewId()
             self.Bind(wx.EVT_MENU, handler, id=id)
             accelrators.append((accel, keycode, id))
         self.SetAcceleratorTable(wx.AcceleratorTable(accelrators))
+
+    def _get_keys(self):
+        if is_mac():
+            return [(wx.ACCEL_CMD, wx.WXK_UP, self.OnMoveUp),
+                    (wx.ACCEL_CMD, wx.WXK_DOWN, self.OnMoveDown),
+                    (wx.ACCEL_NORMAL, wx.WXK_F2, self.OnLabelEdit),
+                    (wx.ACCEL_NORMAL, wx.WXK_LEFT, self.OnLeftArrow)]
+        return [(wx.ACCEL_CTRL, wx.WXK_UP, self.OnMoveUp),
+                (wx.ACCEL_CTRL, wx.WXK_DOWN, self.OnMoveDown),
+                (wx.ACCEL_NORMAL, wx.WXK_F2, self.OnLabelEdit),
+                (wx.ACCEL_NORMAL, wx.WXK_LEFT, self.OnLeftArrow)]
 
     def populate(self, model):
         self._clear_tree_data()
