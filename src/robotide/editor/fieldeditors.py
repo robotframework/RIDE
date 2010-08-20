@@ -15,13 +15,13 @@
 import wx
 import wx.grid
 
-from robotide.context import SETTINGS, Font
+from robotide.context import SETTINGS
 from contentassist import ContentAssistTextCtrl
 from grid import GridEditor
 
 
 class ValueEditor(wx.Panel):
-    expand_factor = 1
+    expand_factor = 0
     _sizer_flags_for_editor = wx.ALL
 
     def __init__(self, parent, value, label=None, validator=None):
@@ -69,7 +69,7 @@ class VariableNameEditor(ValueEditor):
 
 
 class ListValueEditor(ValueEditor):
-    expand_factor = 3
+    expand_factor = 1
     _sizer_flags_for_editor = wx.ALL|wx.EXPAND
 
     def _create_editor(self, value, label):
