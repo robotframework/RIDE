@@ -30,7 +30,8 @@ command does not work.'''.replace('\n', ' '),
 '''Examples:
     pybot.bat --include smoke C:\\my_tests
     svn update /home/robot
-    C:\\Program<SPACE>Files\\App\\prg.exe argument<SPACE>with<SPACE>space'''
+    C:\\Program<SPACE>Files\\App\\prg.exe argument<SPACE>with<SPACE>space''',
+'''Run configurations are stored in the RIDE settings file.'''
 ])
 
 
