@@ -81,6 +81,7 @@ class EditorPlugin(Plugin):
 
     def OnTreeItemSelected(self, message):
         self._tab.create_editor(self.tree)
+        self._show_editor()
 
     def OnOpenEditor(self, event):
         self._show_editor()
@@ -112,7 +113,6 @@ class _EditorTab(wx.Panel):
         self.Show()
 
     def create_editor(self, tree):
-        print 'created editro'
         self.Show(False)
         if self.editor:
             self.editor.close()
@@ -121,7 +121,6 @@ class _EditorTab(wx.Panel):
         self.editor = Editor(self._plugin, self, tree)
         self.sizer.Add(self.editor, 1, wx.ALL|wx.EXPAND)
         self.Layout()
-        self.Show()
 
     def OnSave(self, event):
         self._plugin.save_selected_datafile()
