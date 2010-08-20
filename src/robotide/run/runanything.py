@@ -28,16 +28,17 @@ class RunAnything(Plugin):
 
     def __init__(self, app):
         Plugin.__init__(self, app, default_settings={'configs': []})
+        self._configs = RunConfigs(self.configs)
 
     def enable(self):
-        self._create_menu(_RunConfigs(self.configs))
+        self._create_menu(self._configs)
 
     def OnManageConfigurations(self, event):
-        dlg = ConfigManagerDialog(_RunConfigs(self.configs))
+        dlg = ConfigManagerDialog(self._configs)
         if dlg.ShowModal() == wx.ID_OK:
-            configs = _RunConfigs(dlg.get_data())
-            self.save_setting('configs', configs.data_to_save())
-            self._create_menu(configs)
+            self._configs.update(dlg.get_data())
+            self.save_setting('configs', self._configs.data_to_save())
+            self._create_menu(self._configs)
         dlg.Destroy()
 
     def _create_menu(self, configs):
@@ -56,7 +57,7 @@ class RunAnything(Plugin):
         self.register_action(info)
 
 
-class _RunConfigs(object):
+class RunConfigs(object):
 
     def __init__(self, saved_data):
         self._configs = []
@@ -69,17 +70,25 @@ class _RunConfigs(object):
     def __len__(self):
         return len(self._configs)
 
+    def __getitem__(self, index):
+        return self._configs[index]
+
     def add(self, name, command, doc):
-        config = _RunConfig(name, command, doc)
+        config = RunConfig(name, command, doc)
         self._configs.append(config)
         return config
+
+    def update(self, data):
+        for index, datum in enumerate(data):
+            self.edit(index, *datum)
 
     def swap(self, index1, index2):
         self._configs[index1], self._configs[index2] = \
                 self._configs[index2], self._configs[index1]
 
     def edit(self, index, name, command, doc):
-        self._configs[index] = _RunConfig(name, command, doc)
+        config = self._configs[index]
+        config.name, config.command, config.doc = name, command, doc
 
     def delete(self, index):
         self._configs.pop(index)
@@ -88,7 +97,7 @@ class _RunConfigs(object):
         return [ (c.name, c.command, c.doc) for c in self._configs ]
 
 
-class _RunConfig(object):
+class RunConfig(object):
     help = property(lambda self: '%s (%s)' % (self.doc, self.command))
 
     def __init__(self, name, command, doc):

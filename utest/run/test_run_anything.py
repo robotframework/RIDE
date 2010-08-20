@@ -4,12 +4,12 @@ import os
 import sys
 from robot.utils.asserts import assert_equals, assert_true
 
-from robotide.run.runanything import _RunConfig
+from robotide.run.runanything import RunConfig
 from robotide.run.ui import Runner
 from resources import PYAPP_REFERENCE as _
 
 
-SCRIPT = os.path.join(os.path.dirname(__file__), 
+SCRIPT = os.path.join(os.path.dirname(__file__),
                       'process_test_scripts.py').replace(' ', '<SPACE>')
 
 
@@ -67,7 +67,7 @@ class TestRunAnything(unittest.TestCase):
         assert_true(self.runner.outstr.endswith('done\n'))
 
     def _create_runner(self, cmd):
-        runner = _TestableRunner(_RunConfig('test', cmd, ''), None)
+        runner = _TestableRunner(RunConfig('test', cmd, ''), None)
         runner.run()
         return runner
 
