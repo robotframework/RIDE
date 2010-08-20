@@ -119,9 +119,7 @@ class _DataController(object):
         self._stat = self._get_stat(self.source)
 
     def new_keyword(self, name):
-        kw = self.keywords.new(name)
-        self.mark_dirty()
-        return kw
+        return self.keywords.new(name)
 
     def add_test_or_keyword(self, test_or_kw_ctrl):
         if isinstance(test_or_kw_ctrl, TestCaseController):
@@ -408,7 +406,9 @@ class KeywordTableController(_TableController, _WithItemMovingOperations):
         self.mark_dirty()
 
     def new(self, name):
-        return UserKeywordController(self, self._table.add(name))
+        kw_controller = UserKeywordController(self, self._table.add(name))
+        self.mark_dirty()
+        return kw_controller
 
     def validate_name(self, name):
         for kw in self._table:
