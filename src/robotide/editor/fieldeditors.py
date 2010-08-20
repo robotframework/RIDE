@@ -75,20 +75,31 @@ class ListValueEditor(ValueEditor):
     def _create_editor(self, value, label):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         cols = SETTINGS['list variable columns']
-        sizer.Add(self._create_label(label, cols))
+        sizer.Add(self._create_components(label, cols))
         self._editor = _EditorGrid(self, value, cols)
         sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
         self._sizer.Add(sizer, 1, wx.EXPAND)
         self.Bind(wx.EVT_SIZE, self.OnSize)
 
-    def _create_label(self, label, cols):
+    def _create_components(self, label, cols):
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(wx.StaticText(self, label=label, size=(80,-1)), 0, wx.ALL, 5)
+        sizer.Add(self._create_label(label), 0, wx.ALL, 5)
         sizer.Add((-1, 10))
+        sizer.Add(self._create_column_selector(cols))
+        return sizer
+
+    def _create_label(self, label_text):
+        return wx.StaticText(self, label=label_text, size=(80,-1))
+
+    def _create_column_selector(self, cols):
+        sizer = wx.BoxSizer(wx.VERTICAL)
         col_label = wx.StaticText(self, label='Columns', size=(80, -1))
         sizer.Add(col_label, 0, wx.ALL, 5)
         combo = wx.ComboBox(self, value=str(cols), size=(60, 25),
                             choices=[str(i) for i in range(1,11)])
+        combo.SetToolTip(wx.ToolTip('Number of columns that are shown in this '
+                                    'editor. Selected value is stored and used '
+                                    'globally.'))
         self.Bind(wx.EVT_COMBOBOX, self.OnColumns, source=combo)
         sizer.Add(combo)
         return sizer
