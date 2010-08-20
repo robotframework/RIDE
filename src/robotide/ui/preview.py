@@ -18,7 +18,8 @@ from StringIO import StringIO
 from robotide.context import Font
 from robotide.errors import SerializationError
 from robotide.pluginapi import Plugin, ActionInfo
-from robotide.publish import RideTreeSelection, RideNotebookTabChanged
+from robotide.publish import (RideTreeSelection, RideNotebookTabChanged,
+                              RideTestCaseAdded, RideUserKeywordAdded)
 from robotide.robotapi import TestCase, UserKeyword
 from robotide.writer.serializer import Serializer
 
@@ -43,6 +44,8 @@ class PreviewPlugin(Plugin):
                                         doc='Show preview of the current file'))
         self.subscribe(self.OnTreeSelection, RideTreeSelection)
         self.subscribe(self.OnTabChanged, RideNotebookTabChanged)
+        self.subscribe(self._update_preview, RideTestCaseAdded)
+        self.subscribe(self._update_preview, RideUserKeywordAdded)
 
     def disable(self):
         self.unsubscribe_all()
@@ -54,17 +57,18 @@ class PreviewPlugin(Plugin):
         if not self._panel:
             self._panel = PreviewPanel(self, self.notebook)
         self.show_tab(self._panel)
-        self._update_preview(self.datafile)
+        self._update_preview()
 
     def OnTreeSelection(self, event):
-        self._update_preview(event.item)
+        if self.tab_is_visible(self._panel):
+            self._panel.tree_node_selected(event.item)
 
     def OnTabChanged(self, event):
-        self._update_preview(self.datafile)
+        self._update_preview()
 
-    def _update_preview(self, item):
-        if self.tab_is_visible(self._panel) and item:
-            self._panel.update_preview(item)
+    def _update_preview(self):
+        if self.tab_is_visible(self._panel) and self.datafile:
+            self._panel.update_preview()
 
 
 class PreviewPanel(wx.Panel):
@@ -72,7 +76,6 @@ class PreviewPanel(wx.Panel):
     def __init__(self, parent, notebook):
         wx.Panel.__init__(self, notebook)
         self._parent = parent
-        self._previous_datafile = None
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
         self._create_chooser()
         self._set_format('Text')
@@ -83,14 +86,14 @@ class PreviewPanel(wx.Panel):
         self.Bind(wx.EVT_RADIOBOX, self.OnTypeChanged, chooser)
         self.Sizer.Add(chooser)
 
-    def update_preview(self, item, force_reload=False):
+    def update_preview(self):
         datafile = self._parent.datafile
-        if datafile != self._previous_datafile or force_reload:
-            content = datafile and self._get_content(datafile) or ''
-            self._view.set_content(content.decode('UTF-8'))
-        else:
-            self._view.scroll_to_subitem(item)
-        self._previous_datafile = datafile
+        content = datafile and self._get_content(datafile) or ''
+        self._view.set_content(content.decode('UTF-8'))
+
+    def tree_node_selected(self, item):
+        self.update_preview()
+        self._view.scroll_to_subitem(item)
 
     def _get_content(self, datafile):
         output = StringIO()
@@ -104,7 +107,7 @@ class PreviewPanel(wx.Panel):
 
     def OnTypeChanged(self, event):
         self._set_format(event.GetString())
-        self.update_preview(self._previous_datafile, force_reload=True)
+        self.update_preview()
 
     def _set_format(self, format):
         self._format = format

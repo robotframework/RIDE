@@ -22,6 +22,7 @@ from robotide.controller.settingcontroller import (DocumentationController,
         FixtureController, TagsController, TimeoutController,
         TemplateController, ArgumentsController, MetadataController,
         ImportController, ReturnValueController, VariableController)
+from robotide.publish import RideUserKeywordAdded, RideTestCaseAdded
 from robotide import utils
 
 
@@ -371,6 +372,7 @@ class TestCaseTableController(_TableController, _WithItemMovingOperations):
     def new(self, name):
         tc_controller = TestCaseController(self, self._table.add(name))
         self.mark_dirty()
+        RideTestCaseAdded(datafile=self.datafile, name=name).publish()
         return tc_controller
 
     def validate_name(self, name):
@@ -408,6 +410,7 @@ class KeywordTableController(_TableController, _WithItemMovingOperations):
     def new(self, name):
         kw_controller = UserKeywordController(self, self._table.add(name))
         self.mark_dirty()
+        RideUserKeywordAdded(datafile=self.datafile, name=name).publish()
         return kw_controller
 
     def validate_name(self, name):
