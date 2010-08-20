@@ -1,11 +1,11 @@
 #  Copyright 2008-2009 Nokia Siemens Networks Oyj
-#  
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -42,7 +42,7 @@ class ListEditorBase(wx.Panel):
     def _create_list(self, columns, data):
         return AutoWidthColumnList(self, columns, data)
 
-    def _create_buttons(self):  
+    def _create_buttons(self):
         sizer = wx.BoxSizer(wx.VERTICAL)
         for label in self._buttons:
             sizer.Add(ButtonWithHandler(self, label, width=120), 0, wx.ALL, 1)
@@ -102,7 +102,7 @@ class ListEditor(ListEditorBase, RideEventHandler): pass
 class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
 
     def __init__(self, parent, columns, data=[]):
-        wx.ListCtrl.__init__(self, parent, 
+        wx.ListCtrl.__init__(self, parent,
                              style=wx.LC_REPORT|wx.NO_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES)
         ListCtrlAutoWidthMixin.__init__(self)
         self._parent = parent

@@ -82,7 +82,7 @@ class _ConfigListEditor(ListEditorBase):
         ListEditorBase.__init__(self, parent, self._columns, configs)
 
     def _create_list(self, columns, data):
-        return _TextEditListCtrl(self, columns, data, self._new_config)
+        return _TextEditListCtrl(self, columns, data)
 
     def get_column_values(self, config):
         return config.name, config.command, config.doc
@@ -96,18 +96,20 @@ class _ConfigListEditor(ListEditorBase):
     def OnNew(self, event):
         self._list.new_item()
 
-    def _new_config(self, data):
+    def new_config(self, data):
         self._controller.add(*data)
+
+    def edit_config(self, index, data):
+        self._controller.edit(index, *data)
 
 
 class _TextEditListCtrl(AutoWidthColumnList, TextEditMixin):
     last_index = property(lambda self: self.ItemCount-1)
 
-    def __init__(self, parent, columns, data, new_item_callback):
+    def __init__(self, parent, columns, data):
         AutoWidthColumnList.__init__(self, parent, columns, data)
         TextEditMixin.__init__(self)
         self.col_locs = self._calculate_col_locs()
-        self._new_item_callback = new_item_callback
         self._new_item_creation = False
 
     def _calculate_col_locs(self):
@@ -143,8 +145,9 @@ class _TextEditListCtrl(AutoWidthColumnList, TextEditMixin):
         # first time the value may be empty.
         # End new item creation only when there really is a value
         lastrow = self._get_row(self.last_index)
-        if self._new_item_creation and any(lastrow):
-            self._new_item_creation = False
-            self._new_item_callback(lastrow)
-
-
+        if self._new_item_creation:
+            if any(lastrow):
+                self._new_item_creation = False
+                self.Parent.new_config(lastrow)
+        else:
+            self.Parent.edit_config(self.curRow, self._get_row(self.curRow))

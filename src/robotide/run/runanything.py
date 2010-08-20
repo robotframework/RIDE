@@ -78,7 +78,10 @@ class _RunConfigs(object):
         self._configs[index1], self._configs[index2] = \
                 self._configs[index2], self._configs[index1]
 
-    def pop(self, index):
+    def edit(self, index, name, command, doc):
+        self._configs[index] = _RunConfig(name, command, doc)
+
+    def delete(self, index):
         self._configs.pop(index)
 
     def data_to_save(self):
