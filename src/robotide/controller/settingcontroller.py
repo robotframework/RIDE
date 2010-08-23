@@ -50,6 +50,10 @@ class _SettingController(object):
         return self._data.comment or ''
 
     @property
+    def keyword_name(self):
+        return ''
+
+    @property
     def datafile_controller(self):
         return self._parent.datafile_controller
 
@@ -96,7 +100,7 @@ class DocumentationController(_SettingController):
     editor = DocumentationEditor
     compiled_regexp_rn = re.compile(r'(\\+)r\\n')
     compiled_regexp_n = re.compile(r'(\\+)n')
-    compiled_regexp_r = re.compile(r'(\\+)r')    
+    compiled_regexp_r = re.compile(r'(\\+)r')
 
     def _init(self, doc):
         self._doc = doc
@@ -104,10 +108,10 @@ class DocumentationController(_SettingController):
     @property
     def value(self):
         return self._doc.value
-    
+
     def _get_editable_value(self):
         return self._unescape_newlines_and_handle_escaped_backslashes(self._doc.value)
-    
+
     def _set_editable_value(self, value):
         self.set_value(self._escape_newlines(value))
 
@@ -126,7 +130,7 @@ class DocumentationController(_SettingController):
         input = self.compiled_regexp_rn.sub(replacer, input)
         input = self.compiled_regexp_n.sub(replacer, input)
         return self.compiled_regexp_r.sub(replacer, input)
-    
+
     def _escape_newlines(self, item):
         item = item.replace('\r\n', '\\n')
         item = item.replace('\n', '\\n')
@@ -137,6 +141,10 @@ class FixtureController(_SettingController):
 
     def _init(self, fixture):
         self._fixture = fixture
+
+    @property
+    def keyword_name(self):
+        return self._fixture.name
 
     def _changed(self, value):
         name, args = self._parse(value)
@@ -161,7 +169,7 @@ class TagsController(_SettingController):
         return self._tags.value != self._split_from_separators(value)
 
     def _set(self, value):
-        self._tags.value = self._split_from_separators(value) 
+        self._tags.value = self._split_from_separators(value)
 
 
 class TimeoutController(_SettingController):
@@ -189,6 +197,10 @@ class TemplateController(_SettingController):
 
     def _init(self, template):
         self._template = template
+
+    @property
+    def keyword_name(self):
+        return self._template.value
 
 
 class ArgumentsController(_SettingController):

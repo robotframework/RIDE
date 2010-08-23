@@ -242,9 +242,8 @@ class SettingEditor(wx.Panel, RideEventHandler):
                 self._tooltip.show_at(self._tooltip_position())
 
     def _get_details_for_tooltip(self):
-        # TODO: This only handles fixture keywords for now.
-        val = self._controller.value.split(' | ')[0]
-        return self._plugin.get_keyword_details(val)
+        kw = self._controller.keyword_name
+        return self._plugin.get_keyword_details(kw)
 
     def _tooltip_position(self):
         ms = wx.GetMouseState()
@@ -277,11 +276,11 @@ class SettingEditor(wx.Panel, RideEventHandler):
         if self._controller.is_set:
             self._value_display.SetBackgroundColour('white')
             self._value_display.SetValue(self._controller.display_value)
-            keyword = self._controller.display_value.split(' | ')[0]
-            if self._plugin.is_user_keyword(keyword):
+            name = self._controller.keyword_name
+            if self._plugin.is_user_keyword(name):
                 font = self._value_display.GetFont()
                 font.SetUnderlined(True)
-                self._value_display.SetStyle(0, len(keyword),
+                self._value_display.SetStyle(0, len(name),
                                              wx.TextAttr('blue', wx.NullColour, font))
         else:
             self._value_display.Clear()
