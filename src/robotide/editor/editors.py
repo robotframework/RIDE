@@ -186,9 +186,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
         return display
 
     def _value_display_control(self):
-        ctrl = wx.TextCtrl(self, size=(-1, context.SETTING_ROW_HEIGTH),
-                           style=wx.TE_RICH|wx.TE_MULTILINE)
-        ctrl.SetEditable(False)
+        ctrl = SettingValueDisplay(self)
         ctrl.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
         ctrl.Bind(wx.EVT_KEY_DOWN, self.OnKey)
         return ctrl
@@ -260,7 +258,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
             event.Skip()
 
     def _navigate_to_user_keyword(self):
-        uk = self._plugin.get_user_keyword(self._controller.value.split(' | ')[0])
+        uk = self._plugin.get_user_keyword(self._controller.keyword_name)
         if uk:
             self._tree.select_user_keyword_node(uk)
 
@@ -274,20 +272,36 @@ class SettingEditor(wx.Panel, RideEventHandler):
 
     def _update_value(self):
         if self._controller.is_set:
-            self._value_display.SetBackgroundColour('white')
-            self._value_display.SetValue(self._controller.display_value)
-            name = self._controller.keyword_name
-            if self._plugin.is_user_keyword(name):
-                font = self._value_display.GetFont()
-                font.SetUnderlined(True)
-                self._value_display.SetStyle(0, len(name),
-                                             wx.TextAttr('blue', wx.NullColour, font))
+            self._value_display.set_value(self._controller, self._plugin)
         else:
-            self._value_display.Clear()
-            self._value_display.SetBackgroundColour('light grey')
+            self._value_display.clear()
 
     def get_selected_datafile_controller(self):
         return self._controller.datafile_controller
+
+
+class SettingValueDisplay(wx.TextCtrl):
+
+    def __init__(self, parent):
+        wx.TextCtrl.__init__(self, parent, size=(-1, context.SETTING_ROW_HEIGTH),
+                             style=wx.TE_RICH|wx.TE_MULTILINE)
+        self.SetEditable(False)
+
+    def set_value(self, controller, plugin):
+        self.SetBackgroundColour('white')
+        self.SetValue(controller.display_value)
+        name = controller.keyword_name
+        if plugin.is_user_keyword(name):
+            self._style_user_keyword_name(name)
+
+    def _style_user_keyword_name(self, name):
+        font = self.GetFont()
+        font.SetUnderlined(True)
+        self.SetStyle(0, len(name), wx.TextAttr('blue', wx.NullColour, font))
+
+    def clear(self):
+        self.Clear()
+        self.SetBackgroundColour('light grey')
 
 
 class DocumentationEditor(SettingEditor):
