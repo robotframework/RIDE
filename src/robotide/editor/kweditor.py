@@ -21,7 +21,7 @@ from robotide.utils import PopupMenu, RideEventHandler
 from grid import GridEditor
 from contentassist import ExpandingContentAssistTextCtrl
 from popupwindow import RidePopupWindow
-from robotide.mac_localization import only_once
+from robotide.os_localization import only_once
 
 
 class KeywordEditorUi(GridEditor, RideEventHandler):

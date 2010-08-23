@@ -13,7 +13,7 @@
 #  limitations under the License.
 
 import wx
-from robotide.mac_localization import is_mac, replace_chars_in_mac
+from robotide.os_localization import IS_MAC, replace_chars_in_mac
 
 
 class Shortcut(object):
@@ -48,7 +48,7 @@ class Shortcut(object):
     def _handle_ctrlcmd(self, key):
         if key != 'Ctrlcmd':
             return key
-        if is_mac():
+        if IS_MAC:
             return 'Cmd'
         return 'Ctrl'
 

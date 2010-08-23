@@ -22,7 +22,7 @@ from robotide import utils
 from robotide.action import ActionInfoCollection
 from robotide.controller import UserKeywordController, NewDatafile
 from robotide.publish import RideTreeSelection
-from robotide.mac_localization import is_mac
+from robotide.os_localization import ctrl_or_cmd, IS_WINDOWS
 try:
     import treemixin
 except ImportError:
@@ -34,14 +34,13 @@ tree_actions ="""
 !Go &Back | Go back to previous location in tree | Alt-Left | ART_GO_BACK
 !Go &Forward | Go forward to next location in tree | Alt-Right | ART_GO_FORWARD
 """
-_IS_WINDOWS = os.sep == '\\'
 
 
 class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def __init__(self, parent, action_registerer):
         style = wx.TR_DEFAULT_STYLE
-        if _IS_WINDOWS:
+        if IS_WINDOWS:
             style = style|wx.TR_EDIT_LABELS
         treemixin.DragAndDrop.__init__(self, parent, style=style)
         actions = ActionInfoCollection(tree_actions, self, self)
@@ -58,22 +57,17 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _bind_keys(self):
         accelrators = []
-        for accel, keycode, handler in self._get_keys():
-            if _IS_WINDOWS and keycode == wx.WXK_LEFT:
+        for accel, keycode, handler in self._get_bind_keys():
+            if IS_WINDOWS and keycode == wx.WXK_LEFT:
                 continue
             id = wx.NewId()
             self.Bind(wx.EVT_MENU, handler, id=id)
             accelrators.append((accel, keycode, id))
         self.SetAcceleratorTable(wx.AcceleratorTable(accelrators))
 
-    def _get_keys(self):
-        if is_mac():
-            return [(wx.ACCEL_CMD, wx.WXK_UP, self.OnMoveUp),
-                    (wx.ACCEL_CMD, wx.WXK_DOWN, self.OnMoveDown),
-                    (wx.ACCEL_NORMAL, wx.WXK_F2, self.OnLabelEdit),
-                    (wx.ACCEL_NORMAL, wx.WXK_LEFT, self.OnLeftArrow)]
-        return [(wx.ACCEL_CTRL, wx.WXK_UP, self.OnMoveUp),
-                (wx.ACCEL_CTRL, wx.WXK_DOWN, self.OnMoveDown),
+    def _get_bind_keys(self):
+        return [(ctrl_or_cmd(), wx.WXK_UP, self.OnMoveUp),
+                (ctrl_or_cmd(), wx.WXK_DOWN, self.OnMoveDown),
                 (wx.ACCEL_NORMAL, wx.WXK_F2, self.OnLabelEdit),
                 (wx.ACCEL_NORMAL, wx.WXK_LEFT, self.OnLeftArrow)]
 

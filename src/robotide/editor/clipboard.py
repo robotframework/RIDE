@@ -14,9 +14,7 @@
 
 import os
 import wx
-
-
-_IS_WINDOWS = os.sep == '\\'
+from robotide.os_localization import IS_WINDOWS
 
 
 class _ClipboardHandler(object):
@@ -103,7 +101,7 @@ class _WindowsClipboardHandler(_ClipboardHandler):
         self._get_edit_control().Paste()
 
 
-ClipboardHandler = _IS_WINDOWS and _WindowsClipboardHandler\
+ClipboardHandler = IS_WINDOWS and _WindowsClipboardHandler\
                                     or _ClipboardHandler
 
 

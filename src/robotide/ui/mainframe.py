@@ -27,7 +27,7 @@ from pluginmanager import PluginManager
 from tree import Tree
 from notebook import NoteBook
 from robotide.ui.progress import LoadProgressObserver
-from robotide.mac_localization import only_once
+from robotide.os_localization import only_once
 
 
 _menudata = """

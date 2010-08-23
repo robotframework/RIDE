@@ -13,6 +13,11 @@
 #  limitations under the License.
 
 import sys
+import os
+import wx
+
+IS_WINDOWS = os.sep == '\\'
+IS_MAC = sys.platform == 'darwin'
 
 CMD_CHAR = u'\u2318'
 SHIFT_CHAR = u'\u21E7'
@@ -26,7 +31,7 @@ ENTER_CHAR = u'\u2324'
 RETURN_CHAR = u'\u21A9'
 ESC_CHAR = u'\u238B'
 
-REPLACE = {'Cmd': CMD_CHAR,
+_REPLACE = {'Cmd': CMD_CHAR,
            'Shift': SHIFT_CHAR,
            'Alt': OPTION_CHAR,
            'Ctrl': CTRL_CHAR,
@@ -40,15 +45,16 @@ REPLACE = {'Cmd': CMD_CHAR,
            '-': ''}
 
 def replace_chars_in_mac(shortcut):
-    if not is_mac() or not shortcut:
+    if not IS_MAC or not shortcut:
         return shortcut
-    for key, value in REPLACE.items():
+    for key, value in _REPLACE.items():
         shortcut = shortcut.replace(key, value)
     return shortcut
 
-
-def is_mac():
-    return sys.platform == 'darwin'
+def ctrl_or_cmd():
+    if IS_MAC:
+        return wx.ACCEL_CMD
+    return wx.ACCEL_CTRL
 
 def only_once(f):
     '''Decorator that stops event handlers from being 

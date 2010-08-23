@@ -17,7 +17,7 @@ import os
 from wx import grid
 
 from robotide.utils import PopupMenu
-from robotide.mac_localization import only_once
+from robotide.os_localization import only_once, IS_WINDOWS
 from clipboard import ClipboardHandler
 
 
@@ -75,7 +75,7 @@ class GridEditor(grid.Grid):
     def delete(self):
         self._update_history()
         if self.IsCellEditControlShown():
-            if os.sep == '\\':
+            if IS_WINDOWS:
                 self._delete_from_cell_editor()
         else:
             self._clear_selected_cells()

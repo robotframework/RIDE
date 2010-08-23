@@ -16,7 +16,7 @@ import wx
 import wx.grid
 
 from robotide.context import SETTINGS, Font
-from robotide.mac_localization import only_once, is_mac
+from robotide.os_localization import only_once, ctrl_or_cmd
 from contentassist import ContentAssistTextCtrl
 from grid import GridEditor
 
@@ -127,24 +127,18 @@ class _EditorGrid(GridEditor):
 
     def _bind_actions(self):
         accelrators = []
-        for mod, key, handler in self._get_keys():
+        for mod, key, handler in self._get_bind_keys():
             id = wx.NewId()
             self.Bind(wx.EVT_MENU, handler, id=id)
             accelrators.append((mod, key, id))
         self.SetAcceleratorTable(wx.AcceleratorTable(accelrators))
         self.Bind(wx.grid.EVT_GRID_EDITOR_SHOWN, self.OnEditorShown)
 
-    def _get_keys(self):
-        if is_mac():
-            return [(wx.ACCEL_CMD, ord('c'), self.OnCopy),
-                    (wx.ACCEL_CMD, ord('x'), self.OnCut),
-                    (wx.ACCEL_CMD, ord('v'), self.OnPaste),
-                    (wx.ACCEL_CMD, ord('z'), self.OnUndo),
-                    (wx.ACCEL_NORMAL, wx.WXK_DELETE, self.OnDelete)]
-        return [(wx.ACCEL_CTRL, ord('c'), self.OnCopy),
-                (wx.ACCEL_CTRL, ord('x'), self.OnCut),
-                (wx.ACCEL_CTRL, ord('v'), self.OnPaste),
-                (wx.ACCEL_CTRL, ord('z'), self.OnUndo),
+    def _get_bind_keys(self):
+        return [(ctrl_or_cmd(), ord('c'), self.OnCopy),
+                (ctrl_or_cmd(), ord('x'), self.OnCut),
+                (ctrl_or_cmd(), ord('v'), self.OnPaste),
+                (ctrl_or_cmd(), ord('z'), self.OnUndo),
                 (wx.ACCEL_NORMAL, wx.WXK_DELETE, self.OnDelete)]
 
     def _create_grid(self, value, num_cols):

@@ -15,6 +15,7 @@
 import unittest 
 
 from robotide.action.shortcut import Shortcut
+from robotide.os_localization import ctrl_or_cmd
 # wx needs to imported last so that robotide can select correct wx version.
 import wx
 
@@ -40,6 +41,9 @@ class TestShortcutParsing(unittest.TestCase):
         self._test([('Ctrl-Alt-A', (wx.ACCEL_CTRL+wx.ACCEL_ALT, 65)),
                     ('Shift-Ctrl-DEL', (wx.ACCEL_SHIFT+wx.ACCEL_CTRL, wx.WXK_DELETE)),
                     ('Alt-Cmd-DELETE', (wx.ACCEL_ALT+wx.ACCEL_CMD, wx.WXK_DELETE))])
+
+    def test_ctrlcmd(self):
+        self._test([('Ctrlcmd-Alt-A', (ctrl_or_cmd()+wx.ACCEL_ALT, 65))])
 
     def test_invalid_shortcut(self):
         self.assertRaises(ValueError, Shortcut('InvaLid').parse)
