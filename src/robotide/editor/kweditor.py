@@ -21,7 +21,6 @@ from robotide.utils import PopupMenu, RideEventHandler
 from grid import GridEditor
 from contentassist import ExpandingContentAssistTextCtrl
 from popupwindow import RidePopupWindow
-from robotide.os_localization import only_once
 
 
 class KeywordEditorUi(GridEditor, RideEventHandler):
@@ -121,7 +120,6 @@ class KeywordEditorUi(GridEditor, RideEventHandler):
         self._active_row = None
         event.Skip()
 
-    @only_once
     def OnInsertRows(self, event):
         self.InsertRows(*self._get_insertion_position_and_row_count(event))
         self.GetParent().Sizer.Layout()
@@ -133,19 +131,16 @@ class KeywordEditorUi(GridEditor, RideEventHandler):
         rows = self._get_selected_rows()
         return min(rows), len(rows)
 
-    @only_once
     def OnDeleteRows(self, event):
         self.set_dirty()
         self._remove_selected_rows()
         self.GetParent().Sizer.Layout()
         event.Skip()
 
-    @only_once
     def OnCommentRows(self, event):
         self.comment()
         event.Skip()
 
-    @only_once
     def OnUncommentRows(self, event):
         self.uncomment()
         event.Skip()

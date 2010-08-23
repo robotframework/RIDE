@@ -12,7 +12,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import os
 import wx
 
 from filedialogs import AddSuiteDialog, ChangeFormatDialog
@@ -22,7 +21,7 @@ from robotide import utils
 from robotide.action import ActionInfoCollection
 from robotide.controller import UserKeywordController, NewDatafile
 from robotide.publish import RideTreeSelection
-from robotide.os_localization import ctrl_or_cmd, IS_WINDOWS
+from robotide.context import ctrl_or_cmd, IS_WINDOWS
 try:
     import treemixin
 except ImportError:

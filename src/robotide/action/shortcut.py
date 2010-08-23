@@ -13,7 +13,33 @@
 #  limitations under the License.
 
 import wx
-from robotide.os_localization import IS_MAC, replace_chars_in_mac
+from robotide.context import IS_MAC
+
+
+CMD_CHAR = u'\u2318'
+SHIFT_CHAR = u'\u21E7'
+OPTION_CHAR = u'\u2325'
+CTRL_CHAR = u'\u2303'
+SPACE_CHAR = u'\u2423'
+LEFT_CHAR = u'\u2190'
+RIGHT_CHAR = u'\u2192'
+DEL_CHAR = u'\u2326'
+ENTER_CHAR = u'\u2324'
+RETURN_CHAR = u'\u21A9'
+ESC_CHAR = u'\u238B'
+
+_REPLACE = {'Cmd': CMD_CHAR,
+           'Shift': SHIFT_CHAR,
+           'Alt': OPTION_CHAR,
+           'Ctrl': CTRL_CHAR,
+           'Space': SPACE_CHAR,
+           'Left': LEFT_CHAR,
+           'Right': RIGHT_CHAR,
+           'Delete': DEL_CHAR,
+           'Enter': ENTER_CHAR,
+           'Return': RETURN_CHAR,
+           'Escape': ESC_CHAR,
+           '-': ''}
 
 
 class Shortcut(object):
@@ -23,7 +49,14 @@ class Shortcut(object):
         self.printable = self._get_printable(self.value)
 
     def _get_printable(self, value):
-        return replace_chars_in_mac(value)
+        return self._replace_chars_in_mac(value)
+
+    def _replace_chars_in_mac(self, shortcut):
+        if not IS_MAC or not shortcut:
+            return shortcut
+        for key, value in _REPLACE.items():
+            shortcut = shortcut.replace(key, value)
+        return shortcut
 
     def __nonzero__(self):
         return bool(self.value)

@@ -12,8 +12,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import os
 import wx
+
+from robotide.context import IS_WINDOWS
 
 
 class MenuBar(object):
@@ -339,5 +340,5 @@ class ActionDelegator(object):
     def __call__(self, event):
         for action in self._actions:
             action.act(event)
-        if not os.name == 'nt':
+        if not IS_WINDOWS:
             event.Skip()

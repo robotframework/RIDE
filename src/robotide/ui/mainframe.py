@@ -27,7 +27,6 @@ from pluginmanager import PluginManager
 from tree import Tree
 from notebook import NoteBook
 from robotide.ui.progress import LoadProgressObserver
-from robotide.os_localization import only_once
 
 
 _menudata = """
@@ -111,7 +110,6 @@ class RideFrame(wx.Frame, RideEventHandler):
                 self.save()
         return True
 
-    @only_once
     def OnNewProject(self, event):
         if not self._check_unsaved_modifications():
             return
@@ -124,7 +122,6 @@ class RideFrame(wx.Frame, RideEventHandler):
             self.tree.populate(self._controller)
         dlg.Destroy()
 
-    @only_once
     def OnNewResource(self, event):
         dlg = NewResourceDialog(self, self._default_dir)
         if dlg.ShowModal() == wx.ID_OK:
@@ -134,7 +131,6 @@ class RideFrame(wx.Frame, RideEventHandler):
             self.tree.add_resource(controller)
         dlg.Destroy()
 
-    @only_once
     def OnOpen(self, event):
         self._check_unsaved_modifications()
         path = self._get_path()
@@ -149,7 +145,6 @@ class RideFrame(wx.Frame, RideEventHandler):
             return ret == wx.YES
         return True
 
-    @only_once
     def OnOpenResource(self, event):
         path = self._get_path()
         if path:
@@ -178,7 +173,6 @@ class RideFrame(wx.Frame, RideEventHandler):
     def refresh_datafile(self, item, event):
         self.tree.refresh_datafile(item, event)
 
-    @only_once
     def OnOpenDirectory(self, event):
         if self._check_unsaved_modifications():
             path = wx.DirSelector(message='Choose a directory containing Robot files',

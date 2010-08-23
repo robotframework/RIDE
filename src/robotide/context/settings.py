@@ -14,11 +14,12 @@
 
 import os
 import shutil
-
 from configobj import ConfigObj, Section, UnreprError
 
+from robotide.context.platform import IS_WINDOWS
 
-if os.name == 'nt':
+
+if IS_WINDOWS:
     SETTINGS_DIRECTORY = os.path.join(os.environ['APPDATA'], 'RobotFramework')
 else:
     SETTINGS_DIRECTORY = os.path.expanduser('~/.robotframework')

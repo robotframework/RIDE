@@ -15,7 +15,7 @@
 import unittest 
 
 from robotide.action.shortcut import Shortcut
-from robotide.os_localization import ctrl_or_cmd
+from robotide.context import ctrl_or_cmd
 # wx needs to imported last so that robotide can select correct wx version.
 import wx
 

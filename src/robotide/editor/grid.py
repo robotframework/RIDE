@@ -17,7 +17,7 @@ import os
 from wx import grid
 
 from robotide.utils import PopupMenu
-from robotide.os_localization import only_once, IS_WINDOWS
+from robotide.context import IS_WINDOWS
 from clipboard import ClipboardHandler
 
 
@@ -136,11 +136,9 @@ class GridEditor(grid.Grid):
         PopupMenu(self, ['Insert Cells', 'Delete Cells', '---', 'Cut\tCtrl-X',
                          'Copy\tCtrl-C', 'Paste\tCtrl-V', '---', 'Delete\tDel'])
 
-    @only_once
     def OnInsertCells(self, event):
         self._insert_or_delete_cells(self._insert_cells, event)
 
-    @only_once
     def OnDeleteCells(self, event):
         self._insert_or_delete_cells(self._delete_cells, event)
 
