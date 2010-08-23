@@ -30,8 +30,6 @@ class _FakeTree(object):
     mark_dirty = lambda self, datafile: None
 
 class TestableKwEditor(KeywordEditor):
-    def _expand_if_necessary(self, row, col):
-        pass
     def _refresh_layout(self):
         pass
 
