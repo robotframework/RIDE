@@ -207,15 +207,21 @@ class SettingEditor(wx.Panel, RideEventHandler):
     def OnEdit(self, event=None):
         self._hide_tooltip()
         self._editing = True
-        dlg_class = EditorDialog(self._controller)
-        dlg = dlg_class(self.GetGrandParent(), self._datafile, self._plugin,
-                        self._controller)
+        dlg = self._crete_editor_dialog()
         if dlg.ShowModal() == wx.ID_OK:
-            self._controller.set_value(*dlg.get_value())
-            self._controller.set_comment(dlg.get_comment())
+            self._set_value(dlg.get_value(), dlg.get_comment())
             self._update_and_notify()
         dlg.Destroy()
         self._editing = False
+
+    def _crete_editor_dialog(self):
+        dlg_class = EditorDialog(self._controller)
+        return dlg_class(self.GetGrandParent(), self._datafile, self._plugin,
+                         self._controller)
+
+    def _set_value(self, value_list, comment):
+        self._controller.set_value(*value_list)
+        self._controller.set_comment(comment)
 
     def _hide_tooltip(self):
         self._stop_popup_timer()
@@ -317,20 +323,13 @@ class DocumentationEditor(SettingEditor):
     def _get_details_for_tooltip(self):
         return self._controller.visible_value
 
-    def OnEdit(self, event):
-        self._hide_tooltip()
-        editor = DocumentationDialog(self.GetGrandParent(), self._datafile,
-                                     self._plugin, self._controller.editable_value)
-        if editor.ShowModal() == wx.ID_OK:
-            value_list = editor.get_value()
-            if value_list:
-                self._controller.editable_value = value_list[0]
-            self._update_and_notify()
-        editor.Destroy()
+    def _crete_editor_dialog(self):
+        return DocumentationDialog(self.GetGrandParent(), self._datafile,
+                                   self._plugin, self._controller.editable_value)
 
-    def OnClear(self, event):
-        self._controller.clear()
-        self._update_and_notify()
+    def _set_value(self, value_list, comment):
+        if value_list:
+            self._controller.editable_value = value_list[0]
 
 
 class TestCaseEditor(_RobotTableEditor):

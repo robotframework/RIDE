@@ -124,6 +124,9 @@ class DocumentationDialog(_Dialog):
     def get_value(self):
         return _Dialog.get_value(self)
 
+    def get_comment(self):
+        return ''
+
 
 class _SettingDialog(_Dialog):
     _validator = None
