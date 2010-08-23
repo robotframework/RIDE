@@ -25,18 +25,18 @@ from editors import (Editor, TestCaseEditor, UserKeywordEditor,
 
 _EDIT = """
 [File]
-&Save | Save current suite or resource | Ctrl-S | ART_FILE_SAVE
+&Save | Save current suite or resource | Ctrlcmd-S | ART_FILE_SAVE
 
 [Edit]
-&Undo | Undo last modification | Ctrl-Z
+&Undo | Undo last modification | Ctrlcmd-Z
 ---
-Cu&t | Cut | Ctrl-X
-&Copy | Copy | Ctrl-C
-&Paste | Paste | Ctrl-V
+Cu&t | Cut | Ctrlcmd-X
+&Copy | Copy | Ctrlcmd-C
+&Paste | Paste | Ctrlcmd-V
 &Delete | Delete  | Del
 ---
-Comment | Comment selected rows | Ctrl-3
-Uncomment | Uncomment selected rows | Ctrl-4
+Comment | Comment selected rows | Ctrlcmd-3
+Uncomment | Uncomment selected rows | Ctrlcmd-4
 
 [Tools]
 Content Assistance | Show possible keyword and variable completions | Ctrl-Space

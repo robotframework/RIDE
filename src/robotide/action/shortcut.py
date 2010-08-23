@@ -13,41 +13,86 @@
 #  limitations under the License.
 
 import wx
+from robotide.context import IS_MAC
+
+
+CMD_CHAR = u'\u2318'
+SHIFT_CHAR = u'\u21E7'
+OPTION_CHAR = u'\u2325'
+CTRL_CHAR = u'\u2303'
+SPACE_CHAR = u'\u2423'
+LEFT_CHAR = u'\u2190'
+RIGHT_CHAR = u'\u2192'
+DEL_CHAR = u'\u2326'
+ENTER_CHAR = u'\u2324'
+RETURN_CHAR = u'\u21A9'
+ESC_CHAR = u'\u238B'
+
+_REPLACE = {'Cmd': CMD_CHAR,
+           'Shift': SHIFT_CHAR,
+           'Alt': OPTION_CHAR,
+           'Ctrl': CTRL_CHAR,
+           'Space': SPACE_CHAR,
+           'Left': LEFT_CHAR,
+           'Right': RIGHT_CHAR,
+           'Delete': DEL_CHAR,
+           'Enter': ENTER_CHAR,
+           'Return': RETURN_CHAR,
+           'Escape': ESC_CHAR,
+           '-': ''}
 
 
 class Shortcut(object):
 
     def __init__(self, shortcut):
         self.value = self._normalize(shortcut)
-        self._shortcut = shortcut
+        self.printable = self._get_printable(self.value)
+
+    def _get_printable(self, value):
+        return self._replace_chars_in_mac(value)
+
+    def _replace_chars_in_mac(self, shortcut):
+        if not IS_MAC or not shortcut:
+            return shortcut
+        for key, value in _REPLACE.items():
+            shortcut = shortcut.replace(key, value)
+        return shortcut
 
     def __nonzero__(self):
-        return bool(self._shortcut)
+        return bool(self.value)
 
     def _normalize(self, shortcut):
         if not shortcut:
             return None
-        order = ['Shift', 'Ctrl', 'Alt']
+        order = ['Shift', 'Ctrl', 'Cmd', 'Alt']
         keys = [ self._normalize_key(key) for key in self._split(shortcut) ]
         keys.sort(key=lambda t: t in order and order.index(t) or 42)
         return '-'.join(keys)
 
+    def _split(self, shortcut):
+        return shortcut.replace('+', '-').split('-')
+
+    def _normalize_key(self, key):
+        key = key.title()
+        key = self._handle_ctrlcmd(key)
+        return {'Del': 'Delete', 'Ins': 'Insert',
+                'Enter': 'Return', 'Esc':'Escape'}.get(key, key)
+
+    def _handle_ctrlcmd(self, key):
+        if key != 'Ctrlcmd':
+            return key
+        if IS_MAC:
+            return 'Cmd'
+        return 'Ctrl'
+
     def parse(self):
-        keys = self._split(self._shortcut)
+        keys = self._split(self.value)
         if len(keys) == 1:
             flags = wx.ACCEL_NORMAL
         else:
             flags = sum(self._get_wx_key_constant('ACCEL', key)
                         for key in keys[:-1])
         return flags, self._get_key(keys[-1])
-
-    def _normalize_key(self, key):
-        key = key.title()
-        return {'Del': 'Delete', 'Ins': 'Insert',
-                'Enter': 'Return', 'Esc':'Escape'}.get(key, key)
-
-    def _split(self, shortcut):
-        return shortcut.replace('+', '-').split('-')
 
     def _get_wx_key_constant(self, prefix, name):
         attr = '%s_%s' % (prefix, name.upper().replace(' ', ''))

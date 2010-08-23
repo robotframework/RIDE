@@ -16,6 +16,7 @@ import wx
 import wx.grid
 
 from robotide.context import SETTINGS
+from robotide.context import ctrl_or_cmd
 from contentassist import ContentAssistTextCtrl
 from grid import GridEditor
 
@@ -137,17 +138,19 @@ class _EditorGrid(GridEditor):
 
     def _bind_actions(self):
         accelrators = []
-        for mod, key, handler in [
-                 (wx.ACCEL_CTRL, ord('c'), self.OnCopy),
-                 (wx.ACCEL_CTRL, ord('x'), self.OnCut),
-                 (wx.ACCEL_CTRL, ord('v'), self.OnPaste),
-                 (wx.ACCEL_CTRL, ord('z'), self.OnUndo),
-                 (wx.ACCEL_NORMAL, wx.WXK_DELETE, self.OnDelete)]:
+        for mod, key, handler in self._get_bind_keys():
             id = wx.NewId()
             self.Bind(wx.EVT_MENU, handler, id=id)
             accelrators.append((mod, key, id))
         self.SetAcceleratorTable(wx.AcceleratorTable(accelrators))
         self.Bind(wx.grid.EVT_GRID_EDITOR_SHOWN, self.OnEditorShown)
+
+    def _get_bind_keys(self):
+        return [(ctrl_or_cmd(), ord('c'), self.OnCopy),
+                (ctrl_or_cmd(), ord('x'), self.OnCut),
+                (ctrl_or_cmd(), ord('v'), self.OnPaste),
+                (ctrl_or_cmd(), ord('z'), self.OnUndo),
+                (wx.ACCEL_NORMAL, wx.WXK_DELETE, self.OnDelete)]
 
     def _create_grid(self, value, num_cols):
         num_rows = len(value)/num_cols + 2

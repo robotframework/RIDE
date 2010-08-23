@@ -19,6 +19,12 @@ DATA = [['kw1'],
         ['kw3', 'arg1', 'arg2']]
 
 class _FakeEvent(object):
+
+    Id = 0
+
+    def __init__(self):
+        self.__class__.Id = self.Id + 1
+
     def Skip(self): pass
 
 class _FakeMainFrame(wx.Frame):

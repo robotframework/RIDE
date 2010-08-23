@@ -31,17 +31,17 @@ from robotide.ui.progress import LoadProgressObserver
 
 _menudata = """
 [File]
-!&Open | Open file containing tests | Ctrl-O | ART_FILE_OPEN
-!Open &Directory | Open directory containing datafiles | Shift-Ctrl-O | ART_FOLDER_OPEN
-!Open &Resource | Open a resource file | Ctrl-R
+!&Open | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN
+!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN
+!Open &Resource | Open a resource file | Ctrlcmd-R
 ---
-!&New Project | Create a new top level suite | Ctrl-N
-!N&ew Resource | Create New Resource File | Ctrl-Shift-N
+!&New Project | Create a new top level suite | Ctrlcmd-N
+!N&ew Resource | Create New Resource File | Ctrlcmd-Shift-N
 ---
-&Save | Save selected datafile | Ctrl-S | ART_FILE_SAVE
-!Save &All | Save all changes | Ctrl-Shift-S | ART_FILE_SAVE_AS
+&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE
+!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS
 ---
-!E&xit | Exit RIDE | Ctrl-Q
+!E&xit | Exit RIDE | Ctrlcmd-Q
 
 [Tools]
 !Manage Plugins
