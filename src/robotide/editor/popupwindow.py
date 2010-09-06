@@ -38,6 +38,12 @@ class RidePopupWindow(wx.PopupWindow):
     def hide(self):
         self.Show(False)
 
+    def OnLeftUp(self, event):
+        self.Parent.OnLeftUp(event)
+
+    def OnLeftDouble(self, event):
+        self.Parent.OnLeftDouble(event)
+
 
 class RideToolTipWindow(RidePopupWindow):
 

@@ -63,6 +63,12 @@ class _ContentAssistTextCtrlBase(object):
             self.Clear()
         self.hide()
 
+    def OnLeftUp(self, event):
+        self._popup.OnLeftUp(event)
+
+    def OnLeftDouble(self, event):
+        self._popup.OnLeftDouble(event)
+
     def reset(self):
         self._popup.reset()
 
@@ -207,6 +213,14 @@ class ContentAssistPopup(object):
             self._details_popup.set_content(item.details)
         elif self._details_popup.IsShown():
             self._details_popup.Show(False)
+
+    def OnLeftUp(self, event):
+        index, _ = self._list.HitTest(event.Position)
+        if index != -1:
+            self._select_and_scroll(index)
+
+    def OnLeftDouble(self, event):
+        self._parent.OnFocusLost(event)
 
 
 class ContentAssistList(wx.ListCtrl, ListCtrlAutoWidthMixin):
