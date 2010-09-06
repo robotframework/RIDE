@@ -1,0 +1,7 @@
+*** Settings ***
+Variables  myvars.py
+Resource  ${FROM MY VAR}/res.txt
+
+*** Test Cases ***
+Test Case
+  No Operation

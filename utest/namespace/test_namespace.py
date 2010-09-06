@@ -31,6 +31,9 @@ RESOURCE_WITH_VARIABLE_IN_PATH = os.path.normpath(os.path.join(DATAPATH, 'resour
                                                    'resu.${extension}')).replace('\\', '/')
 LIBRARY_WITH_SPACES_IN_PATH = os.path.normpath(os.path.join(DATAPATH, 
                                                    'lib with spaces', 'spacelib.py')).replace('\\', '/')
+TESTCASEFILE_WITH_RESOURCES_WITH_VARIABLES_FROM_VARIABLE_FILE = os.path.normpath(
+                                            os.path.join(DATAPATH, 'var_file_variables',
+                                            'import_resource_with_variable_from_var_file.txt')).replace('\\', '/')
 
 def _build_test_case_file():
     tcf = TestCaseFile()
@@ -185,6 +188,12 @@ class TestKeywordSuggestions(_DataFileTest):
         sugs = self.ns.get_suggestions_for(TestCaseFile(source=TESTCASEFILE_WITH_EVERYTHING),
                                            '${dyn ')
         assert_true(len(sugs) > 0)
+
+    def test_variable_file_variables_are_available_in_resource_imports(self):
+        sugs = self.ns.get_suggestions_for(TestCaseFile(source=TESTCASEFILE_WITH_RESOURCES_WITH_VARIABLES_FROM_VARIABLE_FILE),
+                                           'from resource with variable in pa')
+        self._assert_import_kws(sugs, 'res.txt')
+
 
     def _assert_import_kws(self, sugs, source):
         assert_true(len(sugs) > 0)

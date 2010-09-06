@@ -170,6 +170,15 @@ class RetrieverContext(object):
         self.vars = _VariableStash()
         self.parsed = set()
 
+    def allow_going_through_resources_again(self):
+        """Resets the parsed-cache.
+        Normally all resources that have been handled are added to 'parsed' and
+        then not handled again, to prevent looping forever. If this same context
+        is used for going through the resources again, then you should call
+        this.
+        """
+        self.parsed = set()
+
 
 class _VariableStash(RobotVariables):
 
@@ -216,7 +225,8 @@ class DatafileRetriever(object):
 
     def get_keywords_from(self, datafile):
         ctx = RetrieverContext()
-        ctx.vars.set_from_variable_table(datafile.variable_table)
+        self._get_vars_recursive(datafile, ctx)
+        ctx.allow_going_through_resources_again()
         return list(set(self._get_datafile_keywords(datafile) +
                         self._get_imported_library_keywords(datafile, ctx) +
                         self._get_imported_resource_keywords(datafile, ctx)))
