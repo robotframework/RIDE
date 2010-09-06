@@ -117,6 +117,8 @@ class Namespace(object):
         return kw if isinstance(kw, LibraryKeywordInfo) else None
 
     def _find_keyword(self, datafile, kw_name):
+        if not kw_name:
+            return None
         kwds = self.retriever.get_keywords_dict_cached(datafile)
         return kwds[kw_name] if kw_name in kwds else None
 
