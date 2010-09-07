@@ -23,12 +23,8 @@ class RidePopupWindow(wx.PopupWindow):
     def __init__(self, parent, size):
         wx.PopupWindow.__init__(self, parent)
         self.SetSize(size)
-        self._details = RideHtmlWindow(self, size=size)
-
-    def set_content(self, content):
-        color = ''.join([hex(item)[2:] for item in context.POPUP_BACKGROUND])
-        details = '<body bgcolor=#%s>%s</body>' % (color, content)
-        self._details.SetPage(details)
+        self.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
+        self.Bind(wx.EVT_LEFT_DCLICK, self.OnLeftDouble)
 
     def show_at(self, position):
         if not self.IsShown():
@@ -45,10 +41,22 @@ class RidePopupWindow(wx.PopupWindow):
         self.Parent.OnLeftDouble(event)
 
 
-class RideToolTipWindow(RidePopupWindow):
+class RideHtmlPopupWindow(RidePopupWindow):
 
     def __init__(self, parent, size):
         RidePopupWindow.__init__(self, parent, size)
+        self._details = RideHtmlWindow(self, size=size)
+
+    def set_content(self, content):
+        color = ''.join([hex(item)[2:] for item in context.POPUP_BACKGROUND])
+        details = '<body bgcolor=#%s>%s</body>' % (color, content)
+        self._details.SetPage(details)
+
+
+class RideToolTipWindow(RideHtmlPopupWindow):
+
+    def __init__(self, parent, size):
+        RideHtmlPopupWindow.__init__(self, parent, size)
         self.Bind(wx.EVT_LEAVE_WINDOW, self.OnLeaveWindow)
 
     def OnLeaveWindow(self, event):
