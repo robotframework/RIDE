@@ -142,6 +142,10 @@ class KeywordSearchDialog(wx.Frame):
     def OnFirstSearch(self, event):
         self._populate_search(self._get_search_text())
 
+    def OnKey(self, event):
+        # Needed for HtmlWindow callback
+        pass
+
     def _populate_search(self, search_criteria=None):
         self._keywords = _KeywordData(self._searcher.search(*self._get_search_criteria()),
                                       self._sortcol, self._sort_up, search_criteria)
@@ -177,10 +181,10 @@ class _KeywordData(list):
     def _sort_by_search(self, keywords, search_criteria):
         search_criteria = search_criteria.lower()
         starts_with = [kw for kw in keywords if kw.name.lower().startswith(search_criteria)]
-        name_contains = [kw for kw in keywords if (search_criteria in kw.name.lower() 
+        name_contains = [kw for kw in keywords if (search_criteria in kw.name.lower()
                                                    and kw not in starts_with)]
-        doc_contains = [kw for kw in keywords if (search_criteria in kw.details.lower() 
-                                                  and kw not in starts_with 
+        doc_contains = [kw for kw in keywords if (search_criteria in kw.details.lower()
+                                                  and kw not in starts_with
                                                   and kw not in name_contains)]
         result = []
         for to_sort in (starts_with, name_contains, doc_contains):
