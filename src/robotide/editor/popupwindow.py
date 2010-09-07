@@ -23,8 +23,6 @@ class RidePopupWindow(wx.PopupWindow):
     def __init__(self, parent, size):
         wx.PopupWindow.__init__(self, parent)
         self.SetSize(size)
-        self.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
-        self.Bind(wx.EVT_LEFT_DCLICK, self.OnLeftDouble)
 
     def show_at(self, position):
         if not self.IsShown():
@@ -33,12 +31,6 @@ class RidePopupWindow(wx.PopupWindow):
 
     def hide(self):
         self.Show(False)
-
-    def OnLeftUp(self, event):
-        self.Parent.OnLeftUp(event)
-
-    def OnLeftDouble(self, event):
-        self.Parent.OnLeftDouble(event)
 
 
 class RideHtmlPopupWindow(RidePopupWindow):

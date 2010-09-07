@@ -28,16 +28,6 @@ class RideHtmlWindow(HtmlWindow):
         if text:
             self.SetPage(text)
         self.Bind(wx.EVT_KEY_DOWN, self.OnKey)
-#        self.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
-#        self.Bind(wx.EVT_LEFT_DCLICK, self.OnLeftDouble)
-
-    def OnLeftUp(self, event):
-        self.Parent.OnLeftUp(event)
-        event.Skip()
-
-    def OnLeftDouble(self, event):
-        self.Parent.OnLeftDouble(event)
-        event.Skip()
 
     def OnKey(self, event):
         self.Parent.OnKey(event)
