@@ -48,6 +48,11 @@ def ActionInfoCollection(data, event_handler, container=None):
     name
       The name of the menu entry to be added. If name is ``---``, a 
       `SeparatorInfo` object is created instead of an `ActionInfo` object.
+      If name is post fixed with shortcuts between parenthesis and separated
+      with ' or ', these shortcuts are parsed to machine local presentation
+      and shown after the name. This can be used instead of shotrcut-element
+      if you want to add shortcuts that you want to bind yourself and/or add
+      several shortcuts. 
     documentation
       Documentation for the action.
     shortcut
@@ -66,7 +71,8 @@ def ActionInfoCollection(data, event_handler, container=None):
     specified action names. The mapping is done by prefixing the name with 
     ``On``, removing spaces, and capitalizing all words. For example ``Save``
     and ``My Action`` must have handler methods ``OnSave`` and ``OnMyAction``,
-    respectively.
+    respectively. If name has content between parenthesis at the end, this
+    content is ignored when creating handler mapping.
 
     Specifying container
     --------------------
@@ -89,6 +95,9 @@ def ActionInfoCollection(data, event_handler, container=None):
 
         [Tools]
         !Manage Plugins
+
+        [Content]
+        Content Assist (Ctrl-Space or Ctrl-Alt-Space) | Has two shortcuts.
     """
 
     menu = None
@@ -114,9 +123,24 @@ def _create_action_info(eventhandler, menu, container, row):
     if name.startswith('!'):
         name = name[1:]
         container = None
-    action = getattr(eventhandler, 'On%s' % name.replace(' ', '').replace('&', ''))
+    eventhandler_name, name = _get_eventhandler_name_and_parsed_name(name)
+    action = getattr(eventhandler, eventhandler_name)
     return ActionInfo(menu, name, action, container, shortcut, icon, doc)
 
+def _get_eventhandler_name_and_parsed_name(name):
+    eventhandler_name, name = _parse_shortcuts_from_name(name)
+    return ('On%s' % eventhandler_name.replace(' ', '').replace('&', '') ,
+            name) 
+
+def _parse_shortcuts_from_name(name):
+    if '(' in name:
+        eventhandler_name, shortcuts = name.split('(', 1)
+        shortcuts = shortcuts.split(')')[0]
+        elements = shortcuts.split(' or ')
+        name = '%s (%s)' % (eventhandler_name,
+                            ' or '.join(Shortcut(e).printable for e in elements))
+        return eventhandler_name, name
+    return name, name
 
 class MenuInfo(object):
     """Base class for `ActionInfo` and `SeparatorInfo`."""

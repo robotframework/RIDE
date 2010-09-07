@@ -39,7 +39,7 @@ Comment | Comment selected rows | Ctrlcmd-3
 Uncomment | Uncomment selected rows | Ctrlcmd-4
 
 [Tools]
-Content Assistance | Show possible keyword and variable completions | Ctrl-Space
+Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions
 """
 
 
