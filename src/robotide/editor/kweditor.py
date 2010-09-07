@@ -160,7 +160,6 @@ class KeywordEditor(KeywordEditorUi):
         self._marked_cell = None
         self._idle_mouse_cell = self._no_cell
         self._active_row = self._active_col = None
-        self._popup = RidePopupWindow(self, (500,200))
         self._make_bindings()
         self._write_keywords(self._keywords)
         self._tree = tree
@@ -225,7 +224,7 @@ class KeywordEditor(KeywordEditorUi):
         self._tree.mark_dirty(self._controller)
 
     def save(self):
-        self._hide_tooltip()
+        self.hide_tooltip()
         if self.IsCellEditControlShown():
             cell_editor = self.GetCellEditor(*self.selection.cell)
             cell_editor.EndEdit(self.selection.topleft.row,
@@ -253,10 +252,6 @@ class KeywordEditor(KeywordEditorUi):
         x, y = wx.GetMousePosition()
         return x, y + 20
 
-    def hide_popup(self):
-        if self._popup.IsShown():
-            self._popup.Show(False)
-
     def OnEditor(self, event):
         row_height = self.GetRowSize(self.selection.topleft.row)
         self.GetCellEditor(*self.selection.cell).SetHeight(row_height)
@@ -266,8 +261,7 @@ class KeywordEditor(KeywordEditorUi):
         keycode, control_down = event.GetKeyCode(), event.ControlDown()
         if keycode == wx.WXK_CONTROL and self._tooltip.IsShown():
             return
-        self._hide_tooltip()
-        self.hide_popup()
+        self.hide_tooltip()
         if control_down or keycode not in [wx.WXK_RETURN, wx.WXK_BACK]:
             event.Skip()
             return
@@ -278,8 +272,7 @@ class KeywordEditor(KeywordEditorUi):
             self.MoveCursorLeft(event.ShiftDown())
 
     def OnCellLeftClick(self, event):
-        self._hide_tooltip()
-        self.hide_popup()
+        self.hide_tooltip()
         if event.ControlDown():
             if not self._navigate_to_matching_user_keyword(event.Row, event.Col):
                 event.Skip()
@@ -287,8 +280,7 @@ class KeywordEditor(KeywordEditorUi):
             event.Skip()
 
     def OnCellLeftDClick(self, event):
-        self._hide_tooltip()
-        self.hide_popup()
+        self.hide_tooltip()
         if not self._navigate_to_matching_user_keyword(event.Row, event.Col):
             event.Skip()
 
@@ -304,13 +296,13 @@ class KeywordEditor(KeywordEditorUi):
 
     def OnIdle(self, evt):
         if not self._is_active_window() or self.IsCellEditControlShown():
-            self._hide_tooltip()
+            self.hide_tooltip()
             return
         cell = self._cell_under_cursor()
         if cell == self._no_cell:
             return
         if not wx.GetMouseState().ControlDown():
-            self._hide_tooltip()
+            self.hide_tooltip()
             self._hide_link_if_necessary(cell)
             return
         self._idle_mouse_cell = cell
@@ -354,7 +346,7 @@ class KeywordEditor(KeywordEditorUi):
         self._tooltip.SetPosition(self.ClientToScreen(point))
         self._tooltip.Show()
 
-    def _hide_tooltip(self):
+    def hide_tooltip(self):
         if self._tooltip and self._tooltip.IsShown():
             self._tooltip.Show(False)
 

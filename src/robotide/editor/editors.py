@@ -347,7 +347,7 @@ class TestCaseEditor(_RobotTableEditor):
 
     def Show(self, show):
         if hasattr(self, 'kweditor') and not show:
-            self.kweditor.hide_popup()
+            self.kweditor.hide_tooltip()
         wx.Panel.Show(self, show)
 
     def close(self):
