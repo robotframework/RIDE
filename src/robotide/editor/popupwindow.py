@@ -72,5 +72,5 @@ class MacRidePopupWindow(wx.Window):
 
 
 if wx.PlatformInfo[0] == '__WXMAC__':
-    RidePopupWindow = RideToolTipWindow = MacRidePopupWindow
+    RidePopupWindow = RideToolTipWindow = RideHtmlPopupWindow = MacRidePopupWindow
 del MacRidePopupWindow
