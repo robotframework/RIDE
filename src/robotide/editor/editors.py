@@ -232,8 +232,13 @@ class SettingEditor(wx.Panel, RideEventHandler):
             self.popup_timer.Stop()
 
     def OnEnterWindow(self, event):
-        self._value_display.SetFocus()
-        self.popup_timer = wx.CallLater(500, self.OnPopupTimer)
+        if self._mainframe_has_focus():
+            self._value_display.SetFocus()
+            self.popup_timer = wx.CallLater(500, self.OnPopupTimer)
+
+    def _mainframe_has_focus(self):
+        return wx.GetTopLevelParent(self.FindFocus()) == \
+                wx.GetTopLevelParent(self)
 
     def OnLeaveWindow(self, event):
         self._stop_popup_timer()
