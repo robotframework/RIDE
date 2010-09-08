@@ -1,0 +1,132 @@
+*** Settings ***
+Test Setup  Start RIDE
+Suite Teardown  Remove Test File
+Library  AutoItLibrary
+Library  OperatingSystem
+
+
+*** Variable ***
+${test project} =  test_project
+${test project name} =  Test Project
+${test filename} =  test_project.html
+
+
+*** Test Cases ***
+New Project Dont Save
+  Create New Project  ${test project}
+  Create Documentation  This is My Documentation
+  Create New Test Case  My Test
+  Close RIDE and Dont Save
+
+New Project And Test Case Save
+  Create New Project  ${test project}
+  Create Documentation  This is My Documentation
+  Create New Test Case  My Test
+  Add Keyword To Test Case  Log  My  Cells
+  Select Tree Element  *${test project name} 
+  Window Does Not Have Text  My Test
+  Select Tree Element  *${test project name}|My Test
+  Window Has Text  My Test
+  Close RIDE and Save
+
+Open Previous Project
+  Open Project  ${test filename}
+  Window Has Text  ${test project name}
+  Window Does Not Have Text  My Test
+  Select Tree Element  ${test project name}|My Test
+  Window Has Text  My Test
+  Close Ride
+  
+ 
+ 
+*** Keyword ***
+Start RIDE
+  AutoItLibrary.Run  python rundevel.py
+  Wait For Active Window  RIDE
+  Win Move  RIDE  \   0  0
+
+Remove Test File
+  ${filename} =  Join Path  ${TEMP DIR}  ${test filename}
+  Remove File  ${filename}
+
+Create New Project
+  [arguments]  ${name}
+  Send  ^n
+  Wait For Active Window  New Project
+  Send  ${name}
+  Control Set Text  New Project  \  Edit2  ${TEMP DIR}
+  Control Click  New Project  \   Button11
+  Wait For Active Window  RIDE  Suite Setup
+
+Open Project
+  [arguments]  ${name}
+  Send  ^o
+  Wait For Active Window  Open
+  ${filename} =  Join Path  ${TEMP DIR}  ${name}
+  Control Set Text  Open  \   Edit1  ${filename}
+  Control Click  Open  \  Button2
+  Wait For Active Window  RIDE  Suite Setup
+
+Create Documentation
+  [arguments]  ${text}
+  Control Click  RIDE  \   Button1
+  Wait For Active Window  Documentation
+  Send  ${text}
+  Control Click  Documentation  \  Button1  
+
+Create New Test Case
+  [arguments]  ${name}
+  Win Activate  RIDE
+  Mouse Click  strButton=RIGHT  nX=34  nY=88
+  #Select Tree Element   *${test project name}
+  #Send Key  {APPSKEY}
+  #Control Focus  
+  Sleep  0.2
+  Mouse Click  strButton=LEFT  nX=55  nY=98
+  Wait For Active Window  Test Case Name
+  Send  ${name}
+  Control Click  Test Case Name  \   Button1
+  Wait For Active Window  RIDE  ${name}
+
+Add Keyword To Test Case
+  [arguments]  @{cells}
+  ${len} =  Get Length  ${cells}
+  :for  ${index}  in RANGE  ${len}
+  \   ${x location} =  Evaluate  ${index}*170+10
+#  \   ${x location} =  Set Variable  ${index*170+10}
+  \   Control Click  RIDE  \   wxWindowClass6  nX=${x location}  nY=10
+  \   Send  @{cells}[${index}]
+
+Close RIDE
+  Send  ^q  
+
+Close RIDE and Dont Save
+  Close RIDE
+  Wait For Active Window  Warning
+  Control Click  Warning  \   Button2
+
+Close RIDE and Save
+  Close RIDE
+  Wait For Active Window  Warning
+  Control Click  Warning  \   Button1
+
+Select Tree Element
+  [arguments]  ${element}
+  Win Activate  RIDE
+  Control Tree View  RIDE  \   SysTreeView321  Select  ${element}   \
+
+Get Selected Tree Element Info
+  ${cur_item} =  Control Tree View  RIDE  \   SysTreeView321  GetSelected  \   \
+  Log  ${cur_item}
+  ${cur_item_text} =  Control Tree View  RIDE  \   SysTreeView321  GetText  ${cur_item}  \
+  Log  ${cur_item_text}
+
+Window Has Text
+  [arguments]  ${text}
+  ${result} =  Win Exists  RIDE  ${text}
+  Should Be Equal  ${result}  ${1}
+
+Window Does Not Have Text
+  [arguments]  ${text}
+  ${result} =  Win Exists  RIDE  ${text}
+  Should Be Equal  ${result}  ${0}
