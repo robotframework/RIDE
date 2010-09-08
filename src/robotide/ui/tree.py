@@ -30,9 +30,10 @@ except ImportError:
 
 tree_actions ="""
 [Navigate]
-!Go &Back | Go back to previous location in tree | Alt-Left | ART_GO_BACK
-!Go &Forward | Go forward to next location in tree | Alt-Right | ART_GO_FORWARD
-"""
+!Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK
+!Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD
+""" % (('Left', 'Right') if IS_WINDOWS else ('Z', 'X'))
+# Left and right cannot be overridden in tree on non Windows OSses, issue 354
 
 
 class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
