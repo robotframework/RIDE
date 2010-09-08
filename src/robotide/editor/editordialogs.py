@@ -31,11 +31,10 @@ def EditorDialog(obj):
 class _Dialog(wx.Dialog):
     _title = property(lambda self: utils.name_from_class(self, drop='Dialog'))
 
-    def __init__(self, parent, controller, plugin=None, item=None):
+    def __init__(self, parent, controller, item=None):
         wx.Dialog.__init__(self, parent, -1, self._title,
                            style=wx.DEFAULT_DIALOG_STYLE|wx.THICK_FRAME)
         self.SetExtraStyle(wx.WS_EX_VALIDATE_RECURSIVELY)
-        self.plugin = plugin
         self._controller = controller
         self._item = item
         self._sizer = wx.BoxSizer(wx.VERTICAL)
@@ -73,6 +72,10 @@ class _Dialog(wx.Dialog):
 
     def get_comment(self):
         return self._comment_editor.get_value()
+
+    @property
+    def plugin(self):
+        return self.Parent.plugin
 
 
 class ScalarVariableDialog(_Dialog):

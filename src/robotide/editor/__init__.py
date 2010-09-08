@@ -102,7 +102,7 @@ class _EditorTab(wx.Panel):
 
     def __init__(self, plugin):
         wx.Panel.__init__(self, plugin.notebook, style=wx.SUNKEN_BORDER)
-        self._plugin = plugin
+        self.plugin = plugin
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.SetSizer(self.sizer)
         self.editor = None
@@ -118,12 +118,12 @@ class _EditorTab(wx.Panel):
             self.editor.close()
             self.editor.Destroy()
             self.sizer.Clear()
-        self.editor = Editor(self._plugin, self, tree)
+        self.editor = Editor(self.plugin, self, tree)
         self.sizer.Add(self.editor, 1, wx.ALL|wx.EXPAND)
         self.Layout()
 
     def OnSave(self, event):
-        self._plugin.save_selected_datafile()
+        self.plugin.save_selected_datafile()
 
     def OnUndo(self, event):
         self.editor.undo()

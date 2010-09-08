@@ -156,7 +156,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
     def __init__(self, parent, controller, plugin, tree):
         wx.Panel.__init__(self, parent)
         self._controller = controller
-        self._plugin = plugin
+        self.plugin = plugin
         self._datafile = controller.datafile
         self._create_controls()
         self._tree = tree
@@ -216,8 +216,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
 
     def _crete_editor_dialog(self):
         dlg_class = EditorDialog(self._controller)
-        return dlg_class(self.GetGrandParent(), self._datafile, self._plugin,
-                         self._controller)
+        return dlg_class(self.GetGrandParent(), self._datafile, self._controller)
 
     def _set_value(self, value_list, comment):
         self._controller.set_value(*value_list)
@@ -252,7 +251,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
 
     def _get_details_for_tooltip(self):
         kw = self._controller.keyword_name
-        return self._plugin.get_keyword_details(kw)
+        return self.plugin.get_keyword_details(kw)
 
     def _tooltip_position(self):
         ms = wx.GetMouseState()
@@ -269,7 +268,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
             event.Skip()
 
     def _navigate_to_user_keyword(self):
-        uk = self._plugin.get_user_keyword(self._controller.keyword_name)
+        uk = self.plugin.get_user_keyword(self._controller.keyword_name)
         if uk:
             self._tree.select_user_keyword_node(uk)
 
@@ -283,7 +282,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
 
     def _update_value(self):
         if self._controller.is_set:
-            self._value_display.set_value(self._controller, self._plugin)
+            self._value_display.set_value(self._controller, self.plugin)
         else:
             self._value_display.clear()
 
@@ -330,7 +329,7 @@ class DocumentationEditor(SettingEditor):
 
     def _crete_editor_dialog(self):
         return DocumentationDialog(self.GetGrandParent(), self._datafile,
-                                   self._plugin, self._controller.editable_value)
+                                   self._controller.editable_value)
 
     def _set_value(self, value_list, comment):
         if value_list:
