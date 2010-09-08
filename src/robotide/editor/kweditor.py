@@ -20,7 +20,7 @@ from robotide.utils import PopupMenu, RideEventHandler
 
 from grid import GridEditor
 from contentassist import ExpandingContentAssistTextCtrl
-from popupwindow import RidePopupWindow
+from popupwindow import RideHtmlPopupWindow
 
 
 class KeywordEditorUi(GridEditor, RideEventHandler):
@@ -156,7 +156,7 @@ class KeywordEditor(KeywordEditorUi):
         self.SetDefaultEditor(ContentAssistCellEditor(parent.plugin))
         self._controller = controller
         # TODO: Tooltip may be smaller when the documentation is wrapped correctly
-        self._tooltip = RidePopupWindow(self, (650, 400))
+        self._tooltip = RideHtmlPopupWindow(self, (650, 400))
         self._marked_cell = None
         self._idle_mouse_cell = self._no_cell
         self._active_row = self._active_col = None
