@@ -113,7 +113,7 @@ class Namespace(object):
 
     def find_library_keyword(self, datafile, kw_name):
         kw = self._find_keyword(datafile, kw_name)
-        return kw if isinstance(kw, LibraryKeywordInfo) else None
+        return kw if kw and kw.is_library_keyword() else None
 
     def _find_keyword(self, datafile, kw_name):
         if not kw_name:

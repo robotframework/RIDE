@@ -41,6 +41,9 @@ class ItemInfo(object):
     def longname(self):
         return '%s.%s' % (self.source, self.name)
 
+    def is_library_keyword(self):
+        return False
+
     def __cmp__(self, other):
         return cmp(self.name, other.name)
 
@@ -60,8 +63,8 @@ class VariableInfo(ItemInfo):
 class _KeywordInfo(ItemInfo):
 
     def __init__(self, item):
-        self.doc = self._parse_doc(item.doc).strip()
-        ItemInfo.__init__(self, item.name, self._source(item),
+        self.doc = self._doc(item).strip()
+        ItemInfo.__init__(self, self._name(item), self._source(item),
                           self._details(item))
         self.shortdoc = self.doc.splitlines()[0] if self.doc else ''
         self.item = item
@@ -90,6 +93,31 @@ class _KeywordInfo(ItemInfo):
     def __hash__(self):
         return hash((self.name, self.source))
 
+    def _name(self, item):
+        return item.name
+
+
+class _XMLKeywordContent(_KeywordInfo):
+
+    def __init__(self, item, source, source_type):
+        self._type = source_type
+        self._source = lambda x: source
+        _KeywordInfo.__init__(self, item)
+        self.args = self._format_args(self._parse_args(item))
+
+    def _name(self, node):
+        return node.attrs['name']
+
+    def _doc(self, node):
+        return node.get_node('doc').text
+
+    def _parse_args(self, node):
+        args_node = node.get_node('arguments')
+        return [ arg_node.text for arg_node in args_node.get_nodes('arg') ]
+
+    def is_library_keyword(self):
+        return True
+
 
 class LibraryKeywordInfo(_KeywordInfo):
     _type = 'test library'
@@ -97,8 +125,8 @@ class LibraryKeywordInfo(_KeywordInfo):
     def _source(self, item):
         return item.library.name
 
-    def _parse_doc(self, doc):
-        return doc
+    def _doc(self, item):
+        return item.doc
 
     def _parse_args(self, handler):
         args = []
@@ -113,14 +141,17 @@ class LibraryKeywordInfo(_KeywordInfo):
             args.append('*%s' % handler_args.varargs)
         return args
 
+    def is_library_keyword(self):
+        return True
+
 
 class _UserKeywordInfo(_KeywordInfo):
 
     def _source(self, item):
         return os.path.basename(item.source) if item.source else ''
 
-    def _parse_doc(self, doc):
-        return unescape(doc.value)
+    def _doc(self, item):
+        return unescape(item.doc.value)
 
     def _parse_args(self, uk):
         parsed = []

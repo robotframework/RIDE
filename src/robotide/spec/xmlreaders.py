@@ -19,7 +19,7 @@ from robotide.errors import DataError
 from robotide.publish import RideLogMessage
 from robotide import utils
 
-from iteminfo import LibraryKeywordInfo
+from iteminfo import LibraryKeywordInfo, _XMLKeywordContent
 
 
 def XMLResource(resource_name):
@@ -113,48 +113,4 @@ class _XMLResource(Spec):
 
     def serialize(self):
         pass
-
-
-class _KeywordContent(object):
-    details = property(lambda self: self._get_details())
-
-    def __init__(self, item, source, source_type):
-        self.name = self._get_name(item)
-        self.source = source
-        self.longname = "%s.%s" % (source, self.name)
-        self.doc = self._get_doc(item)
-        self.shortdoc = self.doc and self.doc.splitlines()[0] or ''
-        self.args = self._format_args(self._parse_args(item))
-        self._source_type = source_type
-
-    def _get_details(self):
-        doc = utils.html_escape(self.doc, formatting=True)
-        return 'Source: %s &lt;%s&gt;<br><br>Arguments: %s<br><br>%s' % \
-                (self.source, self._source_type, self.args, doc)
-
-    def _get_name(self, item):
-        return item.name
-
-    def _get_doc(self, item):
-        return item.doc
-
-    def _format_args(self, args):
-        return '[ %s ]' % ' | '.join(args)
-
-    def is_library_keyword(self):
-        return False
-
-
-class _XMLKeywordContent(_KeywordContent):
-
-    def _get_name(self, node):
-        return node.attrs['name']
-
-    def _get_doc(self, node):
-        return node.get_node('doc').text
-
-    def _parse_args(self, node):
-        args_node = node.get_node('arguments')
-        return [ arg_node.text for arg_node in args_node.get_nodes('arg') ]
-
 

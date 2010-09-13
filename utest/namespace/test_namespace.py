@@ -134,6 +134,10 @@ class TestKeywordSuggestions(_DataFileTest):
         sugs = self.ns.get_suggestions_for(everything_tcf, 'Attributeless Keyword')
         self._assert_import_kws(sugs, 'LibSpecLibrary')
 
+    def test_xml_library_is_library_keyword(self):
+        everything_tcf = TestCaseFile(source=TESTCASEFILE_WITH_EVERYTHING)
+        assert_true(self.ns.is_library_keyword(everything_tcf, 'Attributeless Keyword'))
+
     def test_variable_path_separator(self):
         everything_tcf = TestCaseFile(source=TESTCASEFILE_WITH_EVERYTHING)
         sugs = self.ns.get_suggestions_for(everything_tcf, 'foo')
@@ -193,7 +197,6 @@ class TestKeywordSuggestions(_DataFileTest):
         sugs = self.ns.get_suggestions_for(TestCaseFile(source=TESTCASEFILE_WITH_RESOURCES_WITH_VARIABLES_FROM_VARIABLE_FILE),
                                            'from resource with variable in pa')
         self._assert_import_kws(sugs, 'res.txt')
-
 
     def _assert_import_kws(self, sugs, source):
         assert_true(len(sugs) > 0)
