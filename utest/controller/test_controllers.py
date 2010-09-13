@@ -40,16 +40,15 @@ class DocumentationControllerTest(unittest.TestCase):
 
     def test_get_editable_value(self):
         self.doc.value = 'My doc \\n with enters \\\\\\r\\n and \\t tabs and escapes \\\\n \\\\\\\\r'
-        assert_equals(self.ctrl.editable_value, '''My doc 
- with enters \\\\
- and \\t tabs and escapes \\\\n \\\\\\\\r''')
+        assert_equals(self.ctrl.editable_value, 'My doc \n with enters \\\\\n'
+                                                ' and \\t tabs and escapes \\\\n \\\\\\\\r')
 
     def test_set_editable_value(self):
-        test_text = '''My doc 
- with enters 
+        test_text = '''My doc
+ with enters
  and \t tabs'''
         self.ctrl.editable_value = test_text
-        assert_equals(self.doc.value, 'My doc \\n with enters \\n and \t tabs')
+        assert_equals(self.doc.value, 'My doc\\n with enters\\n and \t tabs')
         assert_equals(self.ctrl.editable_value, test_text)
 
     def test_get_visible_value(self):
