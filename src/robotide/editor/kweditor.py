@@ -76,10 +76,11 @@ class KeywordEditorUi(GridEditor, RideEventHandler):
             self.write_cell(row, col, value)
 
     def _get_commented_row(self, row):
-        data = [ self.GetCellValue(row, col) for col in range(self.NumberCols) ]
-        comment_index = self._get_comment_insertion_index(data)
-        data.insert(comment_index, 'Comment')
-        return self._strip_trailing_empty_cells(data)
+        data = self._strip_trailing_empty_cells(self._row_data(row))
+        if not data:
+            return data
+        data.insert(self._get_comment_insertion_index(data), 'Comment')
+        return data
 
     def _get_comment_insertion_index(self, data):
         index = 0
@@ -98,7 +99,7 @@ class KeywordEditorUi(GridEditor, RideEventHandler):
             self.write_cell(row, self.GetNumberCols()-1, '')
 
     def _row_is_commented(self, row):
-        data = [ self.GetCellValue(row, col) for col in range(self.NumberCols) ]
+        data = self._row_data(row)
         while data:
             if self._is_comment(data[0]):
                 return True
