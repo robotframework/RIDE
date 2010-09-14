@@ -170,7 +170,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         else:
             index = self._get_insertion_index(parent_node, predicate)
             node = self._create_node_with_handler(parent_node, dataitem, index)
-        self.SelectItem(node)
+        wx.CallAfter(self.SelectItem, node)
         self._mark_dirty(parent_node)
 
     def _get_insertion_index(self, parent_node, predicate):
@@ -183,6 +183,10 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
                 return index
             item, cookie = self.GetNextChild(parent_node, cookie)
         return None
+
+    def add_keyword_controller(self, controller):
+        parent = self._get_datafile_node(self.get_selected_datafile())
+        self.add_keyword(parent, controller)
 
     def delete_node(self, node):
         parent = self.GetItemParent(node)

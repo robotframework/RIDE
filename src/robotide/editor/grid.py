@@ -21,6 +21,8 @@ from clipboard import ClipboardHandler
 
 class GridEditor(grid.Grid):
     _col_add_threshold = 1
+    _popup_items = ['Insert Cells', 'Delete Cells', '---', 'Cut\tCtrl-X',
+                    'Copy\tCtrl-C', 'Paste\tCtrl-V', '---', 'Delete\tDel']
 
     def __init__(self, parent):
         grid.Grid.__init__(self, parent)
@@ -92,6 +94,9 @@ class GridEditor(grid.Grid):
         return self._get_block_content(self.selection.rows(),
                                        self.selection.cols())
 
+    def _current_cell_value(self):
+        return self.GetCellValue(*self.selection.cell)
+
     def _get_block_content(self, row_range, col_range):
         content = [ [ self.GetCellValue(row, col) for col in col_range ]
                    for row in row_range ]
@@ -131,8 +136,7 @@ class GridEditor(grid.Grid):
             self.selection.set_from_range_selection(self, event)
 
     def OnCellRightClick(self, event):
-        PopupMenu(self, ['Insert Cells', 'Delete Cells', '---', 'Cut\tCtrl-X',
-                         'Copy\tCtrl-C', 'Paste\tCtrl-V', '---', 'Delete\tDel'])
+        PopupMenu(self, self._popup_items)
 
     def OnInsertCells(self, event):
         self._insert_or_delete_cells(self._insert_cells, event)
