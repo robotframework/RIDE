@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 import os
+import re
 import operator
 import tempfile
 
@@ -32,6 +33,8 @@ from robotide import utils
 
 
 class Namespace(object):
+
+    regexp = re.compile("\s*(given|when|then|and)(.*)", re.IGNORECASE)
 
     def __init__(self):
         self.lib_cache = LibraryCache()
@@ -119,7 +122,16 @@ class Namespace(object):
         if not kw_name:
             return None
         kwds = self.retriever.get_keywords_dict_cached(datafile)
-        return kwds[kw_name] if kw_name in kwds else None
+        if kw_name in kwds:
+            return kwds[kw_name]
+        bdd_name = self._get_bdd_name(kw_name)
+        if bdd_name and bdd_name in kwds:
+            return kwds[bdd_name]
+        return None
+
+    def _get_bdd_name(self, kw_name):
+        match = self.regexp.match(kw_name)
+        return match.group(2) if match else None
 
     def is_library_keyword(self, datafile, kw_name):
         return bool(self.find_library_keyword(datafile, kw_name))

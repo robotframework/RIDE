@@ -243,6 +243,13 @@ class TestKeywordSearch(_DataFileTest):
         assert_not_none(self.ns.find_user_keyword(everything_tcf, 'Another Resource UK'))
         assert_true(self.ns.is_user_keyword(everything_tcf, 'Another Resource UK'))
 
+    def test_given_when_then_and_aliases(self):
+        assert_not_none(self.ns.find_user_keyword(self.tcf, '  Given   UK Fromresource from rESOURCE with variaBLE'))
+        assert_not_none(self.ns.find_user_keyword(self.tcf, 'when  UK Fromresource from rESOURCE with variaBLE'))
+        assert_not_none(self.ns.find_user_keyword(self.tcf, '  then UK Fromresource from rESOURCE with variaBLE'))
+        assert_not_none(self.ns.find_user_keyword(self.tcf, 'AND UK Fromresource from rESOURCE with variaBLE'))
+        assert_none(self.ns.find_user_keyword(self.tcf, 'given and UK Fromresource from rESOURCE with variaBLE'))
+
     def assert_in_keywords(self, keywords, *kw_names):
         for kw_name in kw_names:
             if not self._in_keywords(keywords, kw_name):
