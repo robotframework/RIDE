@@ -54,13 +54,14 @@ class Namespace(object):
     def _get_default_keywords(self):
         return self.lib_cache.get_default_keywords()
 
-    def get_suggestions_for(self, datafile, start):
+    def get_suggestions_for(self, controller, start):
+        datafile = controller.datafile
         sugs = set()
         sugs.update(self._get_suggestions_from_hooks(datafile, start))
         if self._blank(start):
-            sugs.update(self._all_suggestions(datafile))
+            sugs.update(self._all_suggestions(controller))
         elif self._looks_like_variable(start):
-            sugs.update(self._variable_suggestions(datafile, start))
+            sugs.update(self._variable_suggestions(controller, start))
         else:
             sugs.update(self._keyword_suggestions(datafile, start))
         sugs_list = list(sugs)
@@ -76,9 +77,9 @@ class Namespace(object):
     def _blank(self, start):
         return start == ''
 
-    def _all_suggestions(self, datafile):
-        vars = self._variable_suggestions(datafile, '')
-        kws = self._keyword_suggestions(datafile, '')
+    def _all_suggestions(self, controller):
+        vars = self._variable_suggestions(controller, '')
+        kws = self._keyword_suggestions(controller.datafile, '')
         all = vars + kws
         all.sort()
         return all
@@ -87,12 +88,19 @@ class Namespace(object):
         return (len(start) == 1 and start.startswith('$') or start.startswith('@')) \
             or (len(start) >= 2 and start.startswith('${') or start.startswith('@{'))
 
-    def _variable_suggestions(self, datafile, start):
+    def _variable_suggestions(self, controller, start):
+        datafile = controller.datafile
         start_normalized = normalize(start)
         source = os.path.basename(datafile.source) if datafile.source else ''
         vars = self.retriever.get_variables_from(datafile)
+        self._add_kw_arg_vars(controller, vars)
         return [VariableInfo(k, v, source) for k, v in vars.items()
                 if normalize(k).startswith(start_normalized)]
+
+    def _add_kw_arg_vars(self, controller, vars):
+        for arg in controller.get_local_variables():
+            arg = arg[:arg.find('}')+1]
+            vars[arg] = ''
 
     def _keyword_suggestions(self, datafile, start):
         start_normalized = normalize(start)
@@ -203,7 +211,8 @@ class _VariableStash(RobotVariables):
 
     def __init__(self):
         RobotVariables.__init__(self)
-        self.update(self.global_variables)
+        for k, v in self.global_variables.iteritems():
+            self[k] = v
 
     def replace_variables(self, value):
         return self.replace_string(value, ignore_errors=True)
