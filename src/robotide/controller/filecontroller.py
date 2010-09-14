@@ -479,6 +479,12 @@ class _WithStepsController(object):
         new.data.steps = self.data.steps[:]
         return new
 
+    def create_user_keyword(self, name, observer):
+        #TODO: name validation semantic is really confusing - returns error message or None
+        if not self.datafile_controller.validate_keyword_name(name):
+            controller = self.datafile_controller.new_keyword(name)
+            observer(controller)
+
     def validate_name(self, name):
         return self._parent.validate_name(name)
 
