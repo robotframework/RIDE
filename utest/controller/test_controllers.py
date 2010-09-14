@@ -40,16 +40,15 @@ class DocumentationControllerTest(unittest.TestCase):
 
     def test_get_editable_value(self):
         self.doc.value = 'My doc \\n with enters \\\\\\r\\n and \\t tabs and escapes \\\\n \\\\\\\\r'
-        assert_equals(self.ctrl.editable_value, '''My doc 
- with enters \\\\
- and \\t tabs and escapes \\\\n \\\\\\\\r''')
+        assert_equals(self.ctrl.editable_value, 'My doc \n with enters \\\\\n'
+                                                ' and \\t tabs and escapes \\\\n \\\\\\\\r')
 
     def test_set_editable_value(self):
-        test_text = '''My doc 
- with enters 
+        test_text = '''My doc
+ with enters
  and \t tabs'''
         self.ctrl.editable_value = test_text
-        assert_equals(self.doc.value, 'My doc \\n with enters \\n and \t tabs')
+        assert_equals(self.doc.value, 'My doc\\n with enters\\n and \t tabs')
         assert_equals(self.ctrl.editable_value, test_text)
 
     def test_get_visible_value(self):
@@ -296,6 +295,28 @@ class _BaseWithSteps(unittest.TestCase):
             assert_equals(setting.value, 'boo', 'not boo %s' % setting.__class__)
             assert_equals(setting.comment, 'hobo', 'comment not copied %s' % setting.__class__)
 
+    def _test_creation(self):
+        observer = self._creation_oberver()
+        num_keywords = len(self.tcf.keywords)
+        self.ctrl.create_user_keyword('New UK', observer.observe)
+        assert_true(isinstance(observer.item, UserKeywordController))
+        assert_equals(len(self.tcf.keywords),  num_keywords + 1)
+
+    def _test_creation_with_conflicting_name(self):
+        self.tcf.keyword_table.add('Duplicate name')
+        num_kws = len(self.tcf.keywords)
+        self.ctrl.create_user_keyword('Duplicate name',
+                                      self._creation_oberver().observe)
+        assert_equals(len(self.tcf.keywords), num_kws)
+        assert_false(self.ctrl.dirty)
+
+    def _creation_oberver(self):
+        class CreationObserver(object):
+            item = None
+            def observe(self, controller):
+                self.item = controller
+        return CreationObserver()
+
 
 class TestCaseControllerTest(_BaseWithSteps):
 
@@ -328,6 +349,12 @@ class TestCaseControllerTest(_BaseWithSteps):
 
     def test_copy_content(self):
         self._test_copy_content()
+
+    def test_create_user_keyword(self):
+        self._test_creation()
+
+    def test_creating_user_keyword_with_conflicting_name_does_nothing(self):
+        self._test_creation_with_conflicting_name()
 
 
 class UserKeywordControllerTest(_BaseWithSteps):
@@ -398,6 +425,12 @@ class UserKeywordControllerTest(_BaseWithSteps):
 
     def test_copy_content(self):
         self._test_copy_content()
+
+    def test_create_user_keyword(self):
+        self._test_creation()
+
+    def test_creating_user_keyword_with_conflicting_name_does_nothing(self):
+        self._test_creation_with_conflicting_name()
 
 
 class ImportControllerTest(unittest.TestCase):

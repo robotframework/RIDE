@@ -150,6 +150,7 @@ class KeywordEditorUi(GridEditor, RideEventHandler):
 class KeywordEditor(KeywordEditorUi):
     dirty = property(lambda self: self._controller.dirty)
     _no_cell = grid.GridCellCoords(-1, -1)
+    _popup_items = GridEditor._popup_items + ['---', 'Create User Keyword']
 
     def __init__(self, parent, controller, tree):
         self._keywords = controller.steps
@@ -165,6 +166,10 @@ class KeywordEditor(KeywordEditorUi):
         self._write_keywords(self._keywords)
         self._tree = tree
         self._plugin = parent.plugin
+
+    def OnCreateUserKeyword(self, event):
+        self._controller.create_user_keyword(self._current_cell_value(),
+                                             self._tree.add_keyword_controller)
 
     def _make_bindings(self):
         self.Bind(grid.EVT_GRID_EDITOR_SHOWN, self.OnEditor)
