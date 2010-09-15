@@ -12,32 +12,48 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import wx
-
-from robotide.validators import TestCaseNameValidator, UserKeywordNameValidator
-
-
-class _NameDialog(wx.TextEntryDialog):
-
-    def __init__(self, parent, controller, test_or_uk=None):
-        initial_value = test_or_uk and test_or_uk.name or ''
-        wx.TextEntryDialog.__init__(self, parent, '', self._title, initial_value)
-        for child in self.GetChildren():
-            if isinstance(child, wx.TextCtrl):
-                if self._validator_class:
-                    child.SetValidator(self._validator_class(controller))
-                self._text_ctrl = child
-
-    def get_value(self):
-        return self._text_ctrl.GetValue()
+from robotide.editor.editordialogs import _Dialog
+from robotide.editor.fieldeditors import ValueEditor
+from robotide.validators import (TestCaseNameValidator, UserKeywordNameValidator,
+                                 ArgumentsValidator)
 
 
-class TestCaseNameDialog(_NameDialog):
-    _validator_class = TestCaseNameValidator
-    _title = 'Test Case Name'
+class TestCaseNameDialog(_Dialog):
+    _title = 'New Test Case'
+
+    def _add_comment_editor(self, item):
+        pass
+
+    def _create_help(self):
+        pass
+
+    def _get_editors(self, name):
+        value = name or ''
+        return [ValueEditor(self, value, 'Name',
+                            TestCaseNameValidator(self._controller))]
+
+    def get_name(self):
+        return _Dialog.get_value(self)[0]
 
 
-class UserKeywordNameDialog(_NameDialog):
-    _validator_class = UserKeywordNameValidator
-    _title = 'User Keyword Name'
+class UserKeywordNameDialog(_Dialog):
+    _title = 'New User Keyword'
+
+    def _add_comment_editor(self, item):
+        pass
+
+    def _create_help(self):
+        pass
+
+    def _get_editors(self, name):
+        value = name or ''
+        return [ValueEditor(self, value, 'Name',
+                            UserKeywordNameValidator(self._controller)),
+                ValueEditor(self, '', 'Arguments', ArgumentsValidator())]
+
+    def get_name(self):
+        return _Dialog.get_value(self)[0]
+
+    def get_args(self):
+        return _Dialog.get_value(self)[1]
 
