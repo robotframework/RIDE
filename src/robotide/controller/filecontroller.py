@@ -119,8 +119,8 @@ class _DataController(object):
         self.dirty = False
         self._stat = self._get_stat(self.source)
 
-    def new_keyword(self, name):
-        return self.keywords.new(name)
+    def new_keyword(self, name, argstr=''):
+        return self.keywords.new(name, argstr)
 
     def add_test_or_keyword(self, test_or_kw_ctrl):
         if isinstance(test_or_kw_ctrl, TestCaseController):
@@ -407,8 +407,9 @@ class KeywordTableController(_TableController, _WithItemMovingOperations):
         self._table.keywords.append(kw)
         self.mark_dirty()
 
-    def new(self, name):
+    def new(self, name, argstr=''):
         kw_controller = UserKeywordController(self, self._table.add(name))
+        kw_controller.arguments.set_value(argstr)
         self.mark_dirty()
         RideUserKeywordAdded(datafile=self.datafile, name=name).publish()
         return kw_controller
@@ -535,10 +536,13 @@ class UserKeywordController(_WithStepsController):
     @property
     def settings(self):
         return [DocumentationController(self, self._kw.doc),
-                ArgumentsController(self, self._kw.args,),
-                TimeoutController(self, self._kw.timeout,),
-                # TODO: Wrong class, works right though
-                ReturnValueController(self, self._kw.return_,)]
+                ArgumentsController(self, self._kw.args),
+                TimeoutController(self, self._kw.timeout),
+                ReturnValueController(self, self._kw.return_)]
+
+    @property
+    def arguments(self):
+        return ArgumentsController(self, self._kw.args)
 
     def validate_keyword_name(self, name):
         return self._parent.validate_name(name)
