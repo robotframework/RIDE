@@ -179,6 +179,9 @@ class _DataController(object):
     def save(self):
         self._chief_controller.serialize_controller(self)
 
+    def get_local_variables(self):
+        return []
+
 
 class TestDataDirectoryController(_DataController):
 
@@ -516,6 +519,9 @@ class TestCaseController(_WithStepsController):
     def validate_test_name(self, name):
         return self._parent.validate_name(name)
 
+    def get_local_variables(self):
+        return []
+
 
 class UserKeywordController(_WithStepsController):
     _populator = UserKeywordPopulator
@@ -542,6 +548,9 @@ class UserKeywordController(_WithStepsController):
 
     def validate_keyword_name(self, name):
         return self._parent.validate_name(name)
+
+    def get_local_variables(self):
+        return self._kw.args.value
 
 
 class ImportSettingsController(_TableController, _WithListOperations):
