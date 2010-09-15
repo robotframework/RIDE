@@ -196,13 +196,11 @@ class MetadataDialog(_Dialog):
         return [ValueEditor(self, name, 'Name'),
                 ValueEditor(self, value, 'Value')]
 
+
 class TestCaseNameDialog(_Dialog):
     _title = 'New Test Case'
 
     def _add_comment_editor(self, item):
-        pass
-
-    def _create_help(self):
         pass
 
     def _get_editors(self, name):
@@ -218,9 +216,6 @@ class UserKeywordNameDialog(_Dialog):
     _title = 'New User Keyword'
 
     def _add_comment_editor(self, item):
-        pass
-
-    def _create_help(self):
         pass
 
     def _get_editors(self, name):

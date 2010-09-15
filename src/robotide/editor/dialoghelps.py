@@ -22,7 +22,10 @@ _EXAMPLES = {
 'TAG': "Separate tags with a pipe character like 'tag | second tag | 3rd'.",
 'FIXTURE': "Separate possible arguments with a pipe character like 'My Keyword | arg 1 | arg 2'.",
 'TIMEOUT': ("Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
-            "Optional message can be specified like '3 minutes | My message here'.")
+            "Optional message can be specified like '3 minutes | My message here'."),
+'ARGUMENTS': ("Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.\n"
+              "Default values are given using equal sign and the last argument can be a list variable.\n"
+              "Example: '${arg1} | ${arg2}=default value | @{rest}'.")
 }
 
 for row in """
@@ -108,9 +111,7 @@ Specifies the template keyword to use.
 The test itself will contain only data to use as arguments to that keyword.
 
 Arguments
-Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.
-Default values are given using equal sign and the last argument can be a list variable.
-Example: '${arg1} | ${arg2}=default value | @{rest}'.
+%(ARGUMENTS)s
 %(ESCAPE)s
 
 Return Value
@@ -129,6 +130,13 @@ With test cases this setting overrides Test Timeout set on the suite level.
 
 Metadata
 Give name and value of the free metadata you want to set to the test suite.
+
+New Test Case
+Give name of the test case to be created.
+
+New User Keyword
+Give name and arguments of the user keyword to be created.
+%(ARGUMENTS)s
 """.splitlines():
     row = row.strip()
     if not row:
