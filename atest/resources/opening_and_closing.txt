@@ -1,0 +1,19 @@
+
+*** Keywords ***
+Start RIDE
+    AutoItLibrary.Run  python ${CURDIR}${/}..${/}..${/}rundevel.py
+    Wait For Active Window  RIDE
+    Win Move  RIDE  ${EMPTY}  0  0
+
+Close RIDE
+    Send  ^q
+
+Close RIDE and Dont Save
+    Close RIDE
+    Wait For Active Window  Warning
+    Control Click  Warning  ${EMPTY}  Button2
+
+Close RIDE and Save
+    Close RIDE
+    Wait For Active Window  Warning
+    Control Click  Warning  ${EMPTY}  Button1

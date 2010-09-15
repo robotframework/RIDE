@@ -1,0 +1,27 @@
+*** Settings ***
+Library  AutoItLibrary
+
+
+*** Keywords ***
+Create New Test Case
+    [Arguments]  ${suite name}  ${name}
+	Select Tree Element  ${suite name}
+    Select Tree Element  *${suite name}
+    Send  {APPSKEY}
+    Send  {DOWN}{ENTER}
+    Wait For Active Window  Test Case Name
+    Send  ${name}
+    Control Click  Test Case Name  ${EMPTY}  Button1
+    Wait For Active Window  RIDE  ${name}
+
+Select Tree Element
+    [Arguments]  ${element}
+    Win Activate  RIDE
+    Control Focus  RIDE  ${EMPTY}  SysTreeView321
+    Control Tree View  RIDE  ${EMPTY}  SysTreeView321  Select  ${element}  ${EMPTY}
+
+Get Selected Tree Element Info
+    ${cur_item} =  Control Tree View  RIDE  ${EMPTY}  SysTreeView321  GetSelected  ${EMPTY}  ${EMPTY}
+    Log  ${cur_item}
+    ${cur_item_text} =  Control Tree View  RIDE  ${EMPTY}  SysTreeView321  GetText  ${cur_item}  ${EMPTY}
+    Log  ${cur_item_text}

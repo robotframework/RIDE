@@ -1,0 +1,18 @@
+*** Settings ***
+Library   AutoItLibrary
+Library   OperatingSystem
+resource  opening_and_closing.txt
+resource  editor.txt
+resource  tree.txt
+
+*** Keywords ***
+Window Has Text
+    [Arguments]  ${text}
+    ${result} =  Win Exists  RIDE  ${text}
+    Should Be Equal  ${result}  ${1}
+
+Window Does Not Have Text
+    [Arguments]  ${text}
+    ${result} =  Win Exists  RIDE  ${text}
+    Should Be Equal  ${result}  ${0}
+

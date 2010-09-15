@@ -1,0 +1,40 @@
+*** Settings ***
+Library  AutoItLibrary
+
+
+
+*** Keywords ***
+
+Add Data To Row
+    [Arguments]  ${row}  @{cells}
+    ${len} =  Get Length  ${cells}
+    : FOR  ${index}  IN RANGE  ${len}
+    \  Click Editor Row And Column  ${row}  ${index+1}
+    \  Send  @{cells}[${index}]
+
+Click Editor Row And Column
+    [Arguments]  ${row}=1  ${column}=1
+    [Documentation]  Row and column start from 1.
+    Win Activate  RIDE
+    Control Focus  RIDE  ${EMPTY}  wxWindowClass6
+    Send  {LEFT 5}
+    Send  {UP 5}
+    ${y} =  Evaluate  (${row}-1)*22+10
+    ${x} =  Evaluate  (${column}-1)*170+10
+    Control Click  RIDE  ${EMPTY}  wxWindowClass6  nX=${x}  nY=${y}
+
+Select Row From Editor
+    [Arguments]  ${row}
+    Comment  Win Activate  RIDE
+    ${y} =  Evaluate  (${row}-1)*22+10
+    Control Click  RIDE  ${EMPTY}  wxWindowClass3  nX=5  nY=${y}
+
+Select Rows From Editor
+    [Arguments]  @{rows}
+	FAIL  Not working
+    Win Activate  RIDE
+    Send  {CTRLDOWN}
+    : FOR  ${row}  IN  @{rows}
+    \  Run Keyword And Continue On Failure  Select Row From Editor  ${row}
+    Send  {CTRLUP}
+
