@@ -16,10 +16,11 @@ import wx
 
 from filedialogs import AddSuiteDialog, ChangeFormatDialog
 from images import TreeImageList
-from namedialogs import TestCaseNameDialog, UserKeywordNameDialog
 from robotide import utils
 from robotide.action import ActionInfoCollection
 from robotide.controller import UserKeywordController, NewDatafile
+from robotide.editor.editordialogs import (TestCaseNameDialog,
+                                           UserKeywordNameDialog)
 from robotide.publish import RideTreeSelection
 from robotide.context import ctrl_or_cmd, IS_WINDOWS
 try:

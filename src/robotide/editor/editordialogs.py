@@ -14,8 +14,10 @@
 
 import wx
 
-from robotide.validators import ScalarVariableNameValidator,\
-    ListVariableNameValidator, TimeoutValidator, NonEmptyValidator, ArgumentsValidator
+from robotide.validators import (ScalarVariableNameValidator,
+                                ListVariableNameValidator, TimeoutValidator, 
+                                NonEmptyValidator, ArgumentsValidator,
+                                TestCaseNameValidator, UserKeywordNameValidator)
 from robotide import utils
 from robotide.context import Font
 
@@ -193,3 +195,42 @@ class MetadataDialog(_Dialog):
         name, value = item and (item.name, item.value) or ('', '')
         return [ValueEditor(self, name, 'Name'),
                 ValueEditor(self, value, 'Value')]
+
+class TestCaseNameDialog(_Dialog):
+    _title = 'New Test Case'
+
+    def _add_comment_editor(self, item):
+        pass
+
+    def _create_help(self):
+        pass
+
+    def _get_editors(self, name):
+        value = name or ''
+        return [ValueEditor(self, value, 'Name',
+                            TestCaseNameValidator(self._controller))]
+
+    def get_name(self):
+        return _Dialog.get_value(self)[0]
+
+
+class UserKeywordNameDialog(_Dialog):
+    _title = 'New User Keyword'
+
+    def _add_comment_editor(self, item):
+        pass
+
+    def _create_help(self):
+        pass
+
+    def _get_editors(self, name):
+        value = name or ''
+        return [ValueEditor(self, value, 'Name',
+                            UserKeywordNameValidator(self._controller)),
+                ValueEditor(self, '', 'Arguments', ArgumentsValidator())]
+
+    def get_name(self):
+        return _Dialog.get_value(self)[0]
+
+    def get_args(self):
+        return _Dialog.get_value(self)[1]
