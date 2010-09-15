@@ -67,7 +67,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def _get_bind_keys(self):
         bindings = [(ctrl_or_cmd(), wx.WXK_UP, self.OnMoveUp),
                     (ctrl_or_cmd(), wx.WXK_DOWN, self.OnMoveDown),
-                    (wx.ACCEL_NORMAL, wx.WXK_F2, self.OnLabelEdit)]
+                    (wx.ACCEL_NORMAL, wx.WXK_F2, self.OnLabelEdit),
+                    (wx.ACCEL_NORMAL, wx.WXK_WINDOWS_MENU, self.OnRightClick)]
         if not IS_WINDOWS:
             bindings.append((wx.ACCEL_NORMAL, wx.WXK_LEFT, self.OnLeftArrow))
         return bindings
