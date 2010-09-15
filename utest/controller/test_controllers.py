@@ -212,37 +212,53 @@ class ReturnValueControllerTest(unittest.TestCase):
 class TestCaseFileControllerTest(unittest.TestCase):
 
     def test_creation(self):
-        ctrl = TestCaseFileController(TestCaseFile())
+        ctrl = self._file_ctrl()
         for st in ctrl.settings:
             assert_true(st is not None)
         assert_false(ctrl.dirty)
 
     def test_has_format(self):
-        ctrl = TestCaseFileController(TestCaseFile())
+        ctrl = self._file_ctrl()
         assert_true(ctrl.has_format())
         ctrl.data.source = '/tmp/.path.with.dots/test.cases.html'
         assert_true(ctrl.has_format())
 
     def test_get_format(self):
-        ctrl = TestCaseFileController(TestCaseFile())
+        ctrl = self._file_ctrl()
         ctrl.data.source = '/tmp/.path.with.dots/test.cases.html'
         assert_equals(ctrl.get_format(), 'html')
 
     def test_set_format(self):
-        ctrl = TestCaseFileController(TestCaseFile())
+        ctrl = self._file_ctrl()
         ctrl.data.source = '/tmp/.path.with.dots/test.cases.html'
         assert_equals(ctrl.source, '/tmp/.path.with.dots/test.cases.html')
         ctrl.set_format('txt')
         assert_equals(ctrl.source, '/tmp/.path.with.dots/test.cases.txt')
 
     def test_add_test_or_kw(self):
-        ctrl = TestCaseFileController(TestCaseFile())
+        ctrl = self._file_ctrl()
         assert_equals(len(ctrl.tests), 0)
         new_test = TestCaseController(ctrl, TestCase(TestCaseFile(), 'New test'))
         ctrl.add_test_or_keyword(new_test)
         assert_equals(len(ctrl.tests), 1)
         assert_true(ctrl.tests[0]._test.parent is ctrl.datafile)
         assert_true(ctrl.dirty)
+
+    def test_new_test(self):
+        test_ctrl = self._file_ctrl().new_test('Foo')
+        assert_equals(test_ctrl.name, 'Foo')
+
+    def test_new_keyword(self):
+        kw_ctrl = self._file_ctrl().new_keyword('An UK')
+        assert_equals(kw_ctrl.name, 'An UK')
+
+    def test_new_keyword_with_args(self):
+        kw_ctrl = self._file_ctrl().new_keyword('UK', '${a1} | ${a2}')
+        assert_equals(kw_ctrl.name, 'UK')
+        assert_equals(kw_ctrl.data.args.value, ['${a1}', '${a2}'])
+
+    def _file_ctrl(self):
+        return TestCaseFileController(TestCaseFile())
 
 
 class TestDataDirectoryControllerTest(unittest.TestCase):

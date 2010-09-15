@@ -513,7 +513,7 @@ class TestDataDirectoryHandler(_ActionHandler):
     def OnNewUserKeyword(self, event):
         dlg = UserKeywordNameDialog(self._mainframe, self.controller)
         if dlg.ShowModal() == wx.ID_OK:
-            kw = self.controller.new_keyword(dlg.get_value())
+            kw = self.controller.new_keyword(dlg.get_name(), dlg.get_args())
             self._tree.add_keyword(self._node, kw)
         dlg.Destroy()
 
@@ -530,7 +530,7 @@ class TestCaseFileHandler(TestDataDirectoryHandler):
     def OnNewTestCase(self, event):
         dlg = TestCaseNameDialog(self._mainframe, self.controller)
         if dlg.ShowModal() == wx.ID_OK:
-            test = self.controller.new_test(dlg.get_value())
+            test = self.controller.new_test(dlg.get_name())
             self._tree.add_test(self._node, test)
         dlg.Destroy()
 
