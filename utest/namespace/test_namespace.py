@@ -10,6 +10,7 @@ from robot.utils.asserts import assert_true, assert_false, assert_not_none, \
 from robotide.namespace import Namespace
 from robotide.namespace.namespace import _VariableStash
 from robotide.robotapi import TestCaseFile
+from robotide.controller.filecontroller import DataController
 
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'resources',
@@ -64,10 +65,13 @@ def _add_variable_table(tcf):
 def _add_keyword_table(tcf):
     uk_table = tcf.keyword_table
     uk_table.add('Should be in keywords Uk')
+    uk_table.keywords[0].args.value = ['${keyword argument}', '${keyword argument with default} = default']
 
 
 class _DataFileTest(unittest.TestCase):
     tcf = _build_test_case_file()
+    tcf_ctrl = DataController(tcf, None)
+    kw = tcf_ctrl.keywords[0]
     ns = Namespace()
 
 
@@ -75,63 +79,62 @@ class TestKeywordSuggestions(_DataFileTest):
 
     def test_getting_suggestions_for_empty_datafile(self):
         start = 'shOulD'
-        sugs = self.ns.get_suggestions_for(self.tcf, start)
+        sugs = self.ns.get_suggestions_for(self.kw, start)
         assert_true(len(sugs) > 0)
         for s in sugs:
             assert_true(s.name.lower().startswith(start.lower()))
 
     def test_getting_suggestions_in_order(self):
-        sugs = self.ns.get_suggestions_for(self.tcf, 'sHoUlD')
+        sugs = self.ns.get_suggestions_for(self.kw, 'sHoUlD')
         assert_true(len(sugs) > 2)
         assert_equals(sugs, sorted(sugs))
 
     def test_user_keywords(self):
-        sugs = self.ns.get_suggestions_for(self.tcf, 'sHoUlD')
+        sugs = self.ns.get_suggestions_for(self.kw, 'sHoUlD')
         assert_true('Should be in keywords Uk' in [s.name for s in sugs])
 
     def test_imported_lib_keywords(self):
-        sugs = self.ns.get_suggestions_for(self.tcf, 'create file')
+        sugs = self.ns.get_suggestions_for(self.kw, 'create file')
         self._assert_import_kws(sugs, 'OperatingSystem')
 
     def test_lib_from_resource_file(self):
-        sugs = self.ns.get_suggestions_for(self.tcf, 'generate random')
+        sugs = self.ns.get_suggestions_for(self.kw, 'generate random')
         self._assert_import_kws(sugs, 'String')
 
     def test_lib_import_from_var(self):
-        sugs = self.ns.get_suggestions_for(self.tcf, 'Copy List')
+        sugs = self.ns.get_suggestions_for(self.kw, 'Copy List')
         self._assert_import_kws(sugs, 'Collections')
 
     def test_lib_import_with_spaces(self):
-        sugs = self.ns.get_suggestions_for(self.tcf, 'space')
+        sugs = self.ns.get_suggestions_for(self.kw, 'space')
         self._assert_import_kws(sugs, 'spacelib')
 
     def test_resource_file_keywords(self):
-        sugs = self.ns.get_suggestions_for(self.tcf, 'Resource Uk')
+        sugs = self.ns.get_suggestions_for(self.kw, 'Resource Uk')
         self._assert_import_kws(sugs, 'resource.html')
 
     def test_keywords_normalization(self):
-        sugs = self.ns.get_suggestions_for(self.tcf, 'Reso   Urceuk')
+        sugs = self.ns.get_suggestions_for(self.kw, 'Reso   Urceuk')
         self._assert_import_kws(sugs, 'resource.html')
 
     def test_uk_from_resource_files_resource_file(self):
-        sugs = self.ns.get_suggestions_for(self.tcf, 'UK From Text Resource')
+        sugs = self.ns.get_suggestions_for(self.kw, 'UK From Text Resource')
         self._assert_import_kws(sugs, 'resource.txt')
 
     def test_resource_file_from_variable(self):
-        sugs = self.ns.get_suggestions_for(self.tcf, 'UK From Variable Resource')
+        sugs = self.ns.get_suggestions_for(self.kw, 'UK From Variable Resource')
         self._assert_import_kws(sugs, 'resource_with_variables.txt')
 
     def test_resource_file_from_resource_file_with_variable(self):
-        sugs = self.ns.get_suggestions_for(self.tcf, 'UK From Resource from Resource with Variable')
+        sugs = self.ns.get_suggestions_for(self.kw, 'UK From Resource from Resource with Variable')
         self._assert_import_kws(sugs, 'resource_from_resource_with_variable.txt')
 
     def test_library_from_resourcefile_variable(self):
-        sugs = self.ns.get_suggestions_for(self.tcf, 'Execute Manual')
+        sugs = self.ns.get_suggestions_for(self.kw, 'Execute Manual')
         self._assert_import_kws(sugs, 'Dialogs')
 
     def test_xml_library(self):
-        everything_tcf = TestCaseFile(source=TESTCASEFILE_WITH_EVERYTHING)
-        sugs = self.ns.get_suggestions_for(everything_tcf, 'Attributeless Keyword')
+        sugs = self.ns.get_suggestions_for(self._get_controller(TESTCASEFILE_WITH_EVERYTHING).keywords[0], 'Attributeless Keyword')
         self._assert_import_kws(sugs, 'LibSpecLibrary')
 
     def test_xml_library_is_library_keyword(self):
@@ -139,12 +142,11 @@ class TestKeywordSuggestions(_DataFileTest):
         assert_true(self.ns.is_library_keyword(everything_tcf, 'Attributeless Keyword'))
 
     def test_variable_path_separator(self):
-        everything_tcf = TestCaseFile(source=TESTCASEFILE_WITH_EVERYTHING)
-        sugs = self.ns.get_suggestions_for(everything_tcf, 'foo')
+        sugs = self.ns.get_suggestions_for(self._get_controller(TESTCASEFILE_WITH_EVERYTHING).keywords[0], 'foo')
         self._assert_import_kws(sugs, 'even_more_resources.txt')
 
     def test_keywords_only_once_per_source(self):
-        sugs = self.ns.get_suggestions_for(self.tcf, '')
+        sugs = self.ns.get_suggestions_for(self.kw, '')
         kw_set = []
         for kw in sugs:
             if self._not_variable(kw):
@@ -156,26 +158,29 @@ class TestKeywordSuggestions(_DataFileTest):
         return not (item.name.startswith('$') or item.name.startswith('@'))
 
     def test_resource_with_variable_in_path(self):
-        sugs = self.ns.get_suggestions_for(self.tcf, 'Resu UK')
+        sugs = self.ns.get_suggestions_for(self.kw, 'Resu UK')
         self._assert_import_kws(sugs, 'resu.txt')
 
     def test_variable_suggestion(self):
-        scalar_vars = self.ns.get_suggestions_for(self.tcf, '$')
+        scalar_vars = self.ns.get_suggestions_for(self.kw, '$')
         assert_true(len(scalar_vars) > 0)
-        assert_true(len(self.ns.get_suggestions_for(self.tcf, '${')) == len(scalar_vars))
-        list_vars = self.ns.get_suggestions_for(self.tcf, '@')
+        assert_true(len(self.ns.get_suggestions_for(self.kw, '${')) == len(scalar_vars))
+        list_vars = self.ns.get_suggestions_for(self.kw, '@')
         assert_true(len(list_vars) > 0)
-        assert_true(len(self.ns.get_suggestions_for(self.tcf, '@{')) == len(list_vars))
-        sug = self.ns.get_suggestions_for(self.tcf, '${lib')
+        assert_true(len(self.ns.get_suggestions_for(self.kw, '@{')) == len(list_vars))
+        sug = self.ns.get_suggestions_for(self.kw, '${lib')
         assert_true(sug[0].name == '${libname}')
 
     def test_vars_from_file(self):
-        sugs = self.ns.get_suggestions_for(TestCaseFile(source=TESTCASEFILE_WITH_EVERYTHING),
+        sugs = self.ns.get_suggestions_for(self._get_controller(TESTCASEFILE_WITH_EVERYTHING).keywords[0],
                                            '${var_from_file')
         assert_true(len(sugs) > 0)
 
+    def _get_controller(self, source):
+        return DataController(TestCaseFile(source=source), None)
+
     def test_library_arguments_are_resolved(self):
-        sugs = self.ns.get_suggestions_for(TestCaseFile(source=TESTCASEFILE_WITH_EVERYTHING),
+        sugs = self.ns.get_suggestions_for(self._get_controller(TESTCASEFILE_WITH_EVERYTHING).keywords[0],
                                            'Get ')
         assert_true(len(sugs) > 0)
         for item in sugs:
@@ -184,19 +189,32 @@ class TestKeywordSuggestions(_DataFileTest):
         fail('Get mandatory not found')
 
     def test_vars_from_path_resource_file(self):
-        sugs = self.ns.get_suggestions_for(TestCaseFile(source=TESTCASEFILE_WITH_EVERYTHING),
+        sugs = self.ns.get_suggestions_for(self._get_controller(TESTCASEFILE_WITH_EVERYTHING).keywords[0],
                                            '${Path RESOURCE var')
         assert_true(len(sugs) > 0)
 
     def test_variable_file_arguments_are_resolved(self):
-        sugs = self.ns.get_suggestions_for(TestCaseFile(source=TESTCASEFILE_WITH_EVERYTHING),
+        sugs = self.ns.get_suggestions_for(self._get_controller(TESTCASEFILE_WITH_EVERYTHING).keywords[0],
                                            '${dyn ')
         assert_true(len(sugs) > 0)
 
     def test_variable_file_variables_are_available_in_resource_imports(self):
-        sugs = self.ns.get_suggestions_for(TestCaseFile(source=TESTCASEFILE_WITH_RESOURCES_WITH_VARIABLES_FROM_VARIABLE_FILE),
+        sugs = self.ns.get_suggestions_for(self._get_controller(TESTCASEFILE_WITH_RESOURCES_WITH_VARIABLES_FROM_VARIABLE_FILE).tests[0],
                                            'from resource with variable in pa')
         self._assert_import_kws(sugs, 'res.txt')
+
+    def test_vars_from_keyword_arguments(self):
+        sugs = self.ns.get_suggestions_for(self.kw, '${keyword argu')
+        assert_equals(len(sugs), 2)
+        sugs = self.ns.get_suggestions_for(self.kw, '${keyword argument with defau')
+        assert_equals(len(sugs), 1)
+
+    def test_suggestions_for_datafile(self):
+        sugs = self.ns.get_suggestions_for(self.tcf_ctrl, 'Execute Manual')
+        self._assert_import_kws(sugs, 'Dialogs')
+        sugs = self.ns.get_suggestions_for(self.tcf_ctrl, '${libna')
+        self._assert_import_kws(sugs, '')
+
 
     def _assert_import_kws(self, sugs, source):
         assert_true(len(sugs) > 0)
@@ -279,6 +297,9 @@ class TestVariableStash(unittest.TestCase):
         result = vars.replace_variables('hoo${var1}hii${var2}huu')
         assert_equals('hoofoohiibarhuu',result)
 
+    def test_has_default_values(self):
+        vars = _VariableStash()
+        assert_equals(vars['${SPACE}'],' ')
 
 class TestResourceGetter(_DataFileTest):
 
