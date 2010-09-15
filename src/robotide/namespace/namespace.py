@@ -26,8 +26,7 @@ from robot.variables import Variables as RobotVariables
 from robotide.namespace.cache import LibraryCache, ExpiringCache
 from robotide.spec.iteminfo import (TestCaseUserKeywordInfo,
                                     ResourceseUserKeywordInfo,
-                                    VariableInfo, LibraryKeywordInfo,
-                                    _UserKeywordInfo)
+                                    VariableInfo, _UserKeywordInfo)
 from robotide.robotapi import NormalizedDict
 from robotide import utils
 
@@ -98,9 +97,8 @@ class Namespace(object):
                 if normalize(k).startswith(start_normalized)]
 
     def _add_kw_arg_vars(self, controller, vars):
-        for arg in controller.get_local_variables():
-            arg = arg[:arg.find('}')+1]
-            vars[arg] = ''
+        for name, value in controller.get_local_variables().iteritems():
+            vars[name] = value
 
     def _keyword_suggestions(self, datafile, start):
         start_normalized = normalize(start)

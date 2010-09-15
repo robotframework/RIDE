@@ -24,6 +24,7 @@ from robotide.controller.settingcontroller import (DocumentationController,
         ImportController, ReturnValueController, VariableController)
 from robotide.publish import RideUserKeywordAdded, RideTestCaseAdded
 from robotide import utils
+from robotide.controller.arguments import parse_arguments_to_var_dict
 
 
 def DataController(data, parent):
@@ -180,7 +181,7 @@ class _DataController(object):
         self._chief_controller.serialize_controller(self)
 
     def get_local_variables(self):
-        return []
+        return {}
 
 
 class TestDataDirectoryController(_DataController):
@@ -520,7 +521,7 @@ class TestCaseController(_WithStepsController):
         return self._parent.validate_name(name)
 
     def get_local_variables(self):
-        return []
+        return {}
 
 
 class UserKeywordController(_WithStepsController):
@@ -550,7 +551,7 @@ class UserKeywordController(_WithStepsController):
         return self._parent.validate_name(name)
 
     def get_local_variables(self):
-        return self._kw.args.value
+        return parse_arguments_to_var_dict(self._kw.args.value)
 
 
 class ImportSettingsController(_TableController, _WithListOperations):
