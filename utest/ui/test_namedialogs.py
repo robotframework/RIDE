@@ -3,7 +3,7 @@ from robot.parsing.model import TestCaseFile
 from robot.utils.asserts import assert_equals
 
 from robotide.controller.filecontroller import TestCaseFileController
-from robotide.ui.namedialogs import TestCaseNameDialog, UserKeywordNameDialog
+from robotide.editor.editordialogs import TestCaseNameDialog, UserKeywordNameDialog
 
 from resources import PYAPP_REFERENCE
 
