@@ -36,6 +36,7 @@ st.Editor = lambda *args: _FakeEditor()
 from robotide.ui.tree import Tree
 Tree._show_correct_editor = lambda self, x:None
 Tree.get_active_datafile = lambda self: None
+Tree._select = lambda self, node: self.SelectItem(node) # CallAfter does not work in unit tests
 # wx needs to imported last so that robotide can select correct wx version.
 import wx
 
