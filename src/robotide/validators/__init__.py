@@ -153,12 +153,16 @@ class _NameValidator(_AbstractValidator):
 class TestCaseNameValidator(_NameValidator):
 
     def _validate(self, name):
+        if not name:
+            return 'Test case name cannot be empty'
         return self._controller.validate_test_name(name)
 
 
 class UserKeywordNameValidator(_NameValidator):
 
     def _validate(self, name):
+        if not name:
+            return 'User keyword name cannot be empty'
         return self._controller.validate_keyword_name(name)
 
 
