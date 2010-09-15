@@ -16,7 +16,7 @@ import wx
 import wx.grid
 
 from robotide.context import SETTINGS
-from robotide.context import ctrl_or_cmd
+from robotide.context import ctrl_or_cmd, bind_keys_to_evt_menu
 from contentassist import ContentAssistTextCtrl
 from grid import GridEditor
 
@@ -137,12 +137,7 @@ class _EditorGrid(GridEditor):
         self.SetDefaultColSize(175)
 
     def _bind_actions(self):
-        accelrators = []
-        for mod, key, handler in self._get_bind_keys():
-            id = wx.NewId()
-            self.Bind(wx.EVT_MENU, handler, id=id)
-            accelrators.append((mod, key, id))
-        self.SetAcceleratorTable(wx.AcceleratorTable(accelrators))
+        bind_keys_to_evt_menu(self, self._get_bind_keys())
         self.Bind(wx.grid.EVT_GRID_EDITOR_SHOWN, self.OnEditorShown)
 
     def _get_bind_keys(self):

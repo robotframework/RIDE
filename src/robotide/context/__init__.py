@@ -22,7 +22,7 @@ from font import Font
 from logger import Logger
 from settings import Settings, initialize_settings
 from coreplugins import get_core_plugins
-from platform import IS_MAC, IS_WINDOWS, ctrl_or_cmd
+from platform import IS_MAC, IS_WINDOWS, ctrl_or_cmd, bind_keys_to_evt_menu
 
 
 class RideSettings(Settings):

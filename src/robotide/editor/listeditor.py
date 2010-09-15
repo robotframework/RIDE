@@ -16,10 +16,11 @@ import wx
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 
 from robotide.utils import ButtonWithHandler, PopupMenu, RideEventHandler
+from robotide.context.platform import ctrl_or_cmd, bind_keys_to_evt_menu
 
 
 class ListEditorBase(wx.Panel):
-    _menu = ['Edit', 'Move Up', 'Move Down', '---', 'Delete']
+    _menu = ['Edit', 'Move Up\tCtrl-Up', 'Move Down\tCtrl-Down', '---', 'Delete']
     _buttons = []
 
     def __init__(self, parent, columns, controller):
@@ -28,6 +29,15 @@ class ListEditorBase(wx.Panel):
         self._selection = -1
         self._create_ui(columns, controller)
         self._make_bindings()
+        self._bind_keys()
+
+    def _bind_keys(self):
+        bind_keys_to_evt_menu(self, self._get_bind_keys())
+
+    def _get_bind_keys(self):
+        return [(ctrl_or_cmd(), wx.WXK_UP, self.OnMoveUp),
+                    (ctrl_or_cmd(), wx.WXK_DOWN, self.OnMoveDown),
+                    (wx.ACCEL_NORMAL, wx.WXK_WINDOWS_MENU, self.OnRightClick)]
 
     def _create_ui(self, columns, data):
         sizer = wx.BoxSizer(wx.HORIZONTAL)

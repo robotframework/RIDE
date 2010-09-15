@@ -22,7 +22,7 @@ from robotide.controller import UserKeywordController, NewDatafile
 from robotide.editor.editordialogs import (TestCaseNameDialog,
                                            UserKeywordNameDialog)
 from robotide.publish import RideTreeSelection
-from robotide.context import ctrl_or_cmd, IS_WINDOWS
+from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
 try:
     import treemixin
 except ImportError:
@@ -57,12 +57,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._bind_keys()
 
     def _bind_keys(self):
-        accelrators = []
-        for accel, keycode, handler in self._get_bind_keys():
-            id = wx.NewId()
-            self.Bind(wx.EVT_MENU, handler, id=id)
-            accelrators.append((accel, keycode, id))
-        self.SetAcceleratorTable(wx.AcceleratorTable(accelrators))
+        bind_keys_to_evt_menu(self, self._get_bind_keys())
 
     def _get_bind_keys(self):
         bindings = [(ctrl_or_cmd(), wx.WXK_UP, self.OnMoveUp),
