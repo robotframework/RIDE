@@ -316,7 +316,7 @@ class _BaseWithSteps(unittest.TestCase):
         num_keywords = len(self.tcf.keywords)
         self.ctrl.create_user_keyword('New UK', observer.observe)
         assert_true(isinstance(observer.item, UserKeywordController))
-        assert_equals(len(self.tcf.keywords),  num_keywords + 1)
+        assert_equals(len(self.tcf.keywords), num_keywords + 1)
 
     def _test_creation_with_conflicting_name(self):
         self.tcf.keyword_table.add('Duplicate name')
@@ -563,7 +563,7 @@ class VariablesControllerTest(unittest.TestCase):
         self._assert_var_in_ctrl(1, '@{listvar}', ['a', 'b', 'c'])
         assert_true(self.ctrl.dirty)
 
-    def _assert_var_in_ctrl(self,index, name, value):
+    def _assert_var_in_ctrl(self, index, name, value):
         assert_equals(self.ctrl[index].name, name)
         assert_equals(self.ctrl[index].value, value)
 
@@ -585,7 +585,7 @@ class MetadataListControllerTest(unittest.TestCase):
 
     def test_editing(self):
         self.ctrl[0].set_value('New name', 'another value')
-        self._assert_meta_in_model(0,'New name', 'another value')
+        self._assert_meta_in_model(0, 'New name', 'another value')
         assert_true(self.ctrl[0].dirty)
 
     def _assert_meta_in_ctrl(self, index, name, value):
@@ -644,7 +644,7 @@ class DatafileIteratorTest(unittest.TestCase):
                 self.iteration_count = 0
                 self.in_sub_dir = False
             def __call__(self, controller):
-                self.iteration_count+=1
+                self.iteration_count += 1
                 if controller.source and controller.source.endswith('test.txt'):
                     self.in_sub_dir = True
         check_count_and_sub_dir = Checker()
