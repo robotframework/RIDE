@@ -22,13 +22,13 @@ from robot.parsing.settings import Documentation
 from robotide import utils
 
 
-def FileWriter(path, output, name=None):
+def FileWriter(path, output, name=None, template=None):
     ext = os.path.splitext(path)[1].lower()
     try:
         Writer = {'.tsv': TsvFileWriter, '.txt': TxtFileWriter}[ext]
         return Writer(output)
     except KeyError:
-        return HtmlFileWriter(output, path, name)
+        return HtmlFileWriter(output, path, name, template)
 
 
 class _WriterHelper(object):
@@ -212,8 +212,8 @@ class HtmlFileWriter(_WriterHelper):
     _keyword_titles = ['Keyword', 'Action', 'Arguments']
     compiled_regexp = re.compile(r'(\\+)n')
 
-    def __init__(self, output, path=None, name=None):
-        self._content = template.Template(path, name)
+    def __init__(self, output, path=None, name=None, tmpl=None):
+        self._content = tmpl
         _WriterHelper.__init__(self, output, 5)
         self._writer = utils.HtmlWriter(StringIO())
 

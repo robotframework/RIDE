@@ -1,4 +1,21 @@
-from robotide.writer.writer import FileWriter
+#  Copyright 2008-2009 Nokia Siemens Networks Oyj
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+import os
+
+from template import Template
+from writer import FileWriter
 
 
 class Serializer(object):
@@ -7,11 +24,18 @@ class Serializer(object):
         self._output = output
 
     def serialize(self, controller):
+        template = self._create_template(controller)
         output = self._get_output(controller)
-        writer = FileWriter(controller.source, output, name=controller.name)
+        writer = FileWriter(controller.source, output, name=controller.name,
+                            template=template)
         writer_serializer = _WriterSerializer(writer)
         writer_serializer.serialize(controller.data)
         self._close_output(writer)
+
+    def _create_template(self, controller):
+        ext = os.path.splitext(controller.source)[1].lower()
+        return Template(controller.source, controller.name) if \
+            ext in ['.html', '.xhtml', '.htm'] else None
 
     def _get_output(self, controller):
         if self._output:
@@ -25,8 +49,8 @@ class Serializer(object):
 class _WriterSerializer(object):
 
     def __init__(self, writer):
-        self._writer=writer
-        self.table_handlers = {'setting': self._setting_table_handler, 
+        self._writer = writer
+        self.table_handlers = {'setting': self._setting_table_handler,
                                'variable': self._variable_table_handler,
                                'keyword': self._keyword_table_handler,
                                'testcase': self._testcase_table_handler}
