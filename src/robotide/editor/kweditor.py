@@ -34,7 +34,7 @@ class KeywordEditorUi(GridEditor, RideEventHandler):
         self.CreateGrid(num_rows, num_cols)
         self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
         # This makes it possible to select cell 0,0 without opening editor, issue 479
-        self.SetGridCursor(self.NumberRows -1, self.NumberCols -1)
+        self.SetGridCursor(self.NumberRows - 1, self.NumberCols - 1)
 
     def write_cell(self, row, col, value, update_history=True):
         previous = self.GetCellValue(row, col) \
@@ -95,8 +95,8 @@ class KeywordEditorUi(GridEditor, RideEventHandler):
         if self._row_is_commented(row):
             for col in range(1, self.GetNumberCols()):
                 value = self.GetCellValue(row, col)
-                self.write_cell(row, col-1, value)
-            self.write_cell(row, self.GetNumberCols()-1, '')
+                self.write_cell(row, col - 1, value)
+            self.write_cell(row, self.GetNumberCols() - 1, '')
 
     def _row_is_commented(self, row):
         data = self._row_data(row)
@@ -154,7 +154,7 @@ class KeywordEditor(KeywordEditorUi):
 
     def __init__(self, parent, controller, tree):
         self._keywords = controller.steps
-        KeywordEditorUi.__init__(self, parent, len(self._keywords)+5, 5)
+        KeywordEditorUi.__init__(self, parent, len(self._keywords) + 5, 5)
         self.SetDefaultEditor(ContentAssistCellEditor(parent.plugin))
         self._controller = controller
         # TODO: Tooltip may be smaller when the documentation is wrapped correctly
@@ -376,7 +376,7 @@ class ContentAssistCellEditor(grid.PyGridCellEditor):
             self._tc.PushEventHandler(evthandler)
 
     def SetSize(self, rect):
-        self._tc.SetDimensions(rect.x, rect.y, rect.width+2, rect.height+2,
+        self._tc.SetDimensions(rect.x, rect.y, rect.width + 2, rect.height + 2,
                                wx.SIZE_ALLOW_MINUS_ONE)
 
     def SetHeight(self, height):
