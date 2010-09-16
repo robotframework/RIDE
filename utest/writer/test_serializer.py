@@ -1,13 +1,14 @@
 import StringIO
 import unittest
+import shutil
+import tempfile
 import os
 
 from robot.parsing.model import TestCaseFile, ResourceFile
-from robot.utils.asserts import assert_equals, fail
+from robot.utils.asserts import assert_equals
 from robotide.controller.filecontroller import ResourceFileController, \
     TestCaseFileController
-from robotide.writer.serializer import Serializer, _WriterSerializer
-from robotide.writer.writer import HtmlFileWriter
+from robotide.writer.serializer import Serializer
 
 
 DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]),
@@ -211,18 +212,24 @@ My Test Case\t[Documentation]\tThis is a long comment that spans several columns
 
 
 class TestHTMLSerialization(unittest.TestCase, _TestSerializer):
+    path = os.path.join(tempfile.gettempdir(), 'ride-golden-tests.html')
+
+    def setUp(self):
+        shutil.copy(GOLDEN_HTML_FILE, self.path)
+
+    def tearDown(self):
+        os.remove(self.path)
 
     def test_serializer_with_html_testcase_file(self):
+        original = self._read_orig()
+        Serializer().serialize(TestCaseFileController(TestCaseFile(source=self.path)))
+        assert_equals(original, open(self.path).read())
+
+    def _read_orig(self):
         file = open(GOLDEN_HTML_FILE, 'r')
-        original = unicode(file.read(),'UTF-8')
+        original = unicode(file.read(), 'UTF-8')
         file.close()
-        tcf = TestCaseFile(source=GOLDEN_HTML_FILE)
-        tcf.source = '/tmp/not_real_path/tests.html'
-        output = StringIO.StringIO()
-        writer = HtmlFileWriter(output, name=tcf.name)
-        _WriterSerializer(writer).serialize(tcf)
-        writer.close()
-        assert_equals(writer._content, original)
+        return original
 
 
 if __name__ == "__main__":
