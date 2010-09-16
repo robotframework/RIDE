@@ -215,6 +215,7 @@ class TestCaseFileControllerTest(unittest.TestCase):
         ctrl = self._file_ctrl()
         for st in ctrl.settings:
             assert_true(st is not None)
+        assert_equals(len(ctrl.settings), 9)
         assert_false(ctrl.dirty)
 
     def test_has_format(self):
@@ -267,6 +268,7 @@ class TestDataDirectoryControllerTest(unittest.TestCase):
         ctrl = TestDataDirectoryController(TestDataDirectory())
         for st in ctrl.settings:
             assert_true(st is not None)
+        assert_equals(len(ctrl.settings), 6)
 
     def test_has_format(self):
         ctrl = TestDataDirectoryController(TestDataDirectory())
