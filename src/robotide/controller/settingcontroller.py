@@ -125,7 +125,7 @@ class DocumentationController(_SettingController):
         def replacer(match):
             blashes = len(match.group(1))
             if blashes % 2 == 1:
-                return '\\'*(blashes-1) + '\n'
+                return '\\' * (blashes - 1) + '\n'
             return match.group()
         input = self.compiled_regexp_rn.sub(replacer, input)
         input = self.compiled_regexp_n.sub(replacer, input)
