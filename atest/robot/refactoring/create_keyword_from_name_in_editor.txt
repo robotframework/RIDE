@@ -1,0 +1,19 @@
+*** Test Cases ***
+Create New Keyword
+    Given Grid Contains Text
+    When User Selects Create New UK from Context Menu on Selection
+    Then UK with Selected Text as Name Is Created to the Same Suite
+    And Created UK Editor Is Opened
+    And History Back Points to the Initial Step
+
+*** Keywords ***
+Given Grid Contains Text
+
+When User Selects Create New UK from Context Menu on Selection
+
+Then UK with Selected Text as Name Is Created to the Same Suite
+
+And Created UK Editor Is Opened
+
+And History Back Points to the Initial Step
+

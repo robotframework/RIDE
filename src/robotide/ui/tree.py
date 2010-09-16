@@ -22,7 +22,7 @@ from robotide.controller import UserKeywordController, NewDatafile
 from robotide.editor.editordialogs import (TestCaseNameDialog,
                                            UserKeywordNameDialog)
 from robotide.publish import RideTreeSelection
-from robotide.context import ctrl_or_cmd, IS_WINDOWS
+from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
 try:
     import treemixin
 except ImportError:
@@ -57,20 +57,16 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._bind_keys()
 
     def _bind_keys(self):
-        accelrators = []
-        for accel, keycode, handler in self._get_bind_keys():
-            if IS_WINDOWS and keycode == wx.WXK_LEFT:
-                continue
-            id = wx.NewId()
-            self.Bind(wx.EVT_MENU, handler, id=id)
-            accelrators.append((accel, keycode, id))
-        self.SetAcceleratorTable(wx.AcceleratorTable(accelrators))
+        bind_keys_to_evt_menu(self, self._get_bind_keys())
 
     def _get_bind_keys(self):
-        return [(ctrl_or_cmd(), wx.WXK_UP, self.OnMoveUp),
-                (ctrl_or_cmd(), wx.WXK_DOWN, self.OnMoveDown),
-                (wx.ACCEL_NORMAL, wx.WXK_F2, self.OnLabelEdit),
-                (wx.ACCEL_NORMAL, wx.WXK_LEFT, self.OnLeftArrow)]
+        bindings = [(ctrl_or_cmd(), wx.WXK_UP, self.OnMoveUp),
+                    (ctrl_or_cmd(), wx.WXK_DOWN, self.OnMoveDown),
+                    (wx.ACCEL_NORMAL, wx.WXK_F2, self.OnLabelEdit),
+                    (wx.ACCEL_NORMAL, wx.WXK_WINDOWS_MENU, self.OnRightClick)]
+        if not IS_WINDOWS:
+            bindings.append((wx.ACCEL_NORMAL, wx.WXK_LEFT, self.OnLeftArrow))
+        return bindings
 
     def populate(self, model):
         self._clear_tree_data()
@@ -402,9 +398,14 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             event.Veto()
 
     def OnRightClick(self, event):
-        handler = self._get_handler(event.Item)
+        handler = self._get_handler(event.Item if hasattr(event, 'Item') else None)
         if handler:
             handler.show_popup()
+
+    def OnNewTestCase(self, event):
+        handler = self._get_handler()
+        if handler:
+            handler.OnNewTestCase(event)
 
     def OnDrop(self, target, dragged):
         dragged = self._get_handler(dragged)

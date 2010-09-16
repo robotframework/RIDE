@@ -23,3 +23,11 @@ def ctrl_or_cmd():
     if IS_MAC:
         return wx.ACCEL_CMD
     return wx.ACCEL_CTRL
+
+def bind_keys_to_evt_menu(target, actions):
+    accelrators = []
+    for accel, keycode, handler in actions:
+        id = wx.NewId()
+        target.Bind(wx.EVT_MENU, handler, id=id)
+        accelrators.append((accel, keycode, id))
+    target.SetAcceleratorTable(wx.AcceleratorTable(accelrators))
