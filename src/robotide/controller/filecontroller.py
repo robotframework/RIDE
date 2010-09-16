@@ -228,7 +228,8 @@ class TestCaseFileController(_DataController):
     def _settings(self):
         ss = self.data.setting_table
         return _DataController._settings(self) + \
-                [TimeoutController(self, ss.test_timeout),
+                [TagsController(self, ss.default_tags),
+                 TimeoutController(self, ss.test_timeout),
                  TemplateController(self, ss.test_template)]
 
     def new_test(self, name):
