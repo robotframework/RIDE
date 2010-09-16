@@ -48,7 +48,7 @@ class _TestSerializer(object):
                                     ['args', 'args 2', 'args 3', 'args 4',
                                      'args 5', 'args 6', 'args 7', 'args 8',
                                      'args 9', 'args 10', 'args 11', 'args 12'])
-        setting_table.add_resource('MyResource', 
+        setting_table.add_resource('MyResource',
                                    ['args that are part of the name'])
 
     def _populate_variable_table(self, variable_table):
@@ -73,7 +73,7 @@ class _TestSerializer(object):
         kw.add_step(['My Step 2', 'my step 2 arg', 'second arg'],
                     comment='step 2 comment')
         kw.doc.populate('Documentation', comment='Comment for doc')
-        kw.return_.populate(['args 1','args 2'])
+        kw.return_.populate(['args 1', 'args 2'])
 
     def _populate_testcase_table(self, testcase_table):
         tc = testcase_table.add('My Test Case')
@@ -81,7 +81,7 @@ class _TestSerializer(object):
         tc.add_step(['My TC Step 1', 'my step arg'], comment='step 1 comment')
         tc.add_step(['My TC Step 2', 'my step 2 arg', 'second arg'],
                     comment='step 2 comment')
-        tc.teardown.populate(['1 minute','args'])
+        tc.teardown.populate(['1 minute', 'args'])
 
     def get_serialization_output(self, datafile):
         output = StringIO.StringIO()
@@ -147,7 +147,7 @@ My Test Case
         assert_repr(self.get_serialization_output(TestCaseFileController(self.txt_tcf)),
                       self.settings_table +
                       self.variables_table +
-                      self.testcase_table + 
+                      self.testcase_table +
                       self.keywords_table)
 
 
@@ -198,13 +198,13 @@ My Test Case\t[Documentation]\tThis is a long comment that spans several columns
         self.tsv_tcf.source = '/tmp/not_real_path/tcf.tsv'
 
     def test_serializer_with_tsv_resource_file(self):
-        assert_repr(self.get_serialization_output(ResourceFileController(self.tsv_rf)), 
+        assert_repr(self.get_serialization_output(ResourceFileController(self.tsv_rf)),
                     self.settings_table +
                     self.variables_table +
                     self.keywords_table)
 
     def test_serializer_with_tsv_testcase_file(self):
-        assert_repr(self.get_serialization_output(TestCaseFileController(self.tsv_tcf)), 
+        assert_repr(self.get_serialization_output(TestCaseFileController(self.tsv_tcf)),
                     self.settings_table +
                     self.variables_table +
                     self.testcase_table +
@@ -221,15 +221,8 @@ class TestHTMLSerialization(unittest.TestCase, _TestSerializer):
         os.remove(self.path)
 
     def test_serializer_with_html_testcase_file(self):
-        original = self._read_orig()
         Serializer().serialize(TestCaseFileController(TestCaseFile(source=self.path)))
-        assert_equals(original, open(self.path).read())
-
-    def _read_orig(self):
-        file = open(GOLDEN_HTML_FILE, 'r')
-        original = unicode(file.read(), 'UTF-8')
-        file.close()
-        return original
+        assert_equals(open(GOLDEN_HTML_FILE).read(), open(self.path).read())
 
 
 if __name__ == "__main__":
