@@ -137,7 +137,7 @@ class _DataController(object):
     def get_format(self):
         if not self.source:
             return None
-        return os.path.splitext(self.source)[1].replace('.','')
+        return os.path.splitext(self.source)[1].replace('.', '')
 
     def set_format(self, format):
         base = os.path.splitext(self.source)[0]
@@ -206,7 +206,7 @@ class TestDataDirectoryController(_DataController):
         return self.data.initfile
 
     def set_format(self, format):
-        self.data.initfile=os.path.join(self.data.source,'__init__.%s' % format.lower())
+        self.data.initfile = os.path.join(self.data.source, '__init__.%s' % format.lower())
         self.mark_dirty()
 
     def new_datafile(self, datafile):
@@ -336,7 +336,7 @@ class _WithItemMovingOperations(object):
     def move_up(self, item):
         items = self._items
         idx = items.index(item)
-        if idx  == 0:
+        if idx == 0:
             return False
         upper = idx - 1
         items[upper], items[idx] = items[idx], items[upper]
@@ -345,7 +345,7 @@ class _WithItemMovingOperations(object):
     def move_down(self, item):
         items = self._items
         idx = items.index(item)
-        if idx + 1  == len(items):
+        if idx + 1 == len(items):
             return False
         lower = idx + 1
         items[idx], items[lower] = items[lower], items[idx]
