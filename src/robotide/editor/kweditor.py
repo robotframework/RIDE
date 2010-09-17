@@ -19,6 +19,7 @@ from robotide.publish import RideGridCellChanged
 from robotide.utils import PopupMenu, RideEventHandler
 
 from grid import GridEditor
+from editordialogs import UserKeywordNameDialog
 from contentassist import ExpandingContentAssistTextCtrl
 from popupwindow import RideHtmlPopupWindow
 
@@ -150,7 +151,8 @@ class KeywordEditorUi(GridEditor, RideEventHandler):
 class KeywordEditor(KeywordEditorUi):
     dirty = property(lambda self: self._controller.dirty)
     _no_cell = grid.GridCellCoords(-1, -1)
-    _popup_items = GridEditor._popup_items + ['---', 'Create User Keyword']
+    _popup_items = GridEditor._popup_items + ['---', 'Create User Keyword',
+                                              'Extract Keyword']
 
     def __init__(self, parent, controller, tree):
         self._keywords = controller.steps
@@ -170,6 +172,12 @@ class KeywordEditor(KeywordEditorUi):
     def OnCreateUserKeyword(self, event):
         self._controller.create_user_keyword(self._current_cell_value(),
                                              self._tree.add_keyword_controller)
+
+    def OnExtractKeyword(self, event):
+        dlg = UserKeywordNameDialog(wx.GetTopLevelParent(self), self._controller)
+        if dlg.ShowModal() == wx.ID_OK:
+            name, args = dlg.get_value()
+        #self._controller.extract_user_keyword()
 
     def _make_bindings(self):
         self.Bind(grid.EVT_GRID_EDITOR_SHOWN, self.OnEditor)
