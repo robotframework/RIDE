@@ -488,7 +488,7 @@ class _WithStepsController(object):
     def create_user_keyword(self, name, arg_values, observer):
         #TODO: name validation semantic is really confusing - returns error message or None
         if name and not self.datafile_controller.validate_keyword_name(name):
-            argstr = ' | '.join(('${arg%s}' % i + 1 for i in range(len(arg_values))))
+            argstr = ' | '.join(('${arg%s}' % (i + 1) for i in range(len(arg_values))))
             controller = self.datafile_controller.new_keyword(name, argstr)
             observer(controller)
 
