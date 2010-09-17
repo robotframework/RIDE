@@ -31,10 +31,13 @@ class Process(object):
         return command
 
     def start(self):
-        self._out_fd, self._out_path \
-                      = tempfile.mkstemp(prefix='rfproc_', suffix='.txt',
+        self._out_fd, self._out_path = \
+                        tempfile.mkstemp(prefix='rfproc_', suffix='.txt',
                                          text=True)
         self._out_file = open(self._out_path)
+        if not self._command:
+            self._error = 'The command is missing from this run configuration.'
+            return
         try:
             self._process = subprocess.Popen(self._command, stdout=self._out_fd,
                                              stderr=subprocess.STDOUT)
@@ -83,5 +86,5 @@ class Process(object):
             if not attempts:
                 raise
             time.sleep(1)
-            self._remove_tempfile(attempts-1)
+            self._remove_tempfile(attempts - 1)
 

@@ -332,7 +332,7 @@ class _ListVarValidator(object):
     prefix = '@'
 
 
-class _WithItemMovingOperations(object):
+class _TcUkBase(object):
 
     def move_up(self, item):
         items = self._items
@@ -352,12 +352,21 @@ class _WithItemMovingOperations(object):
         items[idx], items[lower] = items[lower], items[idx]
         return True
 
+    def validate_name(self, name):
+        if not name:
+            return '%s name cannot be empty.' % self._item_name
+        for t in self._table:
+            if t.name == name:
+                return '%s with this name already exists.' % self._item_name
+        return None
+
     @property
     def _items(self):
         raise NotImplementedError(self.__class__)
 
 
-class TestCaseTableController(_TableController, _WithItemMovingOperations):
+class TestCaseTableController(_TableController, _TcUkBase):
+    _item_name = 'Test case'
 
     def __iter__(self):
         return iter(TestCaseController(self, t) for t in self._table)
@@ -380,11 +389,6 @@ class TestCaseTableController(_TableController, _WithItemMovingOperations):
         RideTestCaseAdded(datafile=self.datafile, name=name).publish()
         return tc_controller
 
-    def validate_name(self, name):
-        for t in self._table:
-            if t.name == name:
-                return 'Test case with this name already exists.'
-        return None
 
     def delete(self, test):
         self._table.tests.remove(test)
@@ -395,7 +399,8 @@ class TestCaseTableController(_TableController, _WithItemMovingOperations):
         return self._table.tests
 
 
-class KeywordTableController(_TableController, _WithItemMovingOperations):
+class KeywordTableController(_TableController, _TcUkBase):
+    _item_name = 'User keyword'
 
     def __iter__(self):
         return iter(UserKeywordController(self, kw) for kw in self._table)
@@ -418,12 +423,6 @@ class KeywordTableController(_TableController, _WithItemMovingOperations):
         self.mark_dirty()
         RideUserKeywordAdded(datafile=self.datafile, name=name).publish()
         return kw_controller
-
-    def validate_name(self, name):
-        for kw in self._table:
-            if kw.name == name:
-                return 'User keyword with this name already exists.'
-        return None
 
     def delete(self, kw):
         self._table.keywords.remove(kw)
@@ -456,6 +455,9 @@ class _WithStepsController(object):
     def steps(self):
         return self.data.steps
 
+    def set_steps(self, steps):
+        self.data.steps = steps
+
     @property
     def dirty(self):
         return self._parent.dirty
@@ -486,11 +488,20 @@ class _WithStepsController(object):
         return new
 
     def create_user_keyword(self, name, arg_values, observer):
-        #TODO: name validation semantic is really confusing - returns error message or None
-        if name and not self.datafile_controller.validate_keyword_name(name):
-            argstr = ' | '.join(('${arg%s}' % (i + 1) for i in range(len(arg_values))))
-            controller = self.datafile_controller.new_keyword(name, argstr)
-            observer(controller)
+        err = self.datafile_controller.validate_keyword_name(name)
+        if err:
+            raise ValueError(err)
+        argstr = ' | '.join(('${arg%s}' % (i + 1) for i in range(len(arg_values))))
+        controller = self.datafile_controller.new_keyword(name, argstr)
+        observer(controller)
+
+    def extract_keyword(self, name, argstr, step_range, observer):
+        rem_start, rem_end = step_range
+        new_steps = self.data.steps[rem_start:rem_end]
+        self.data.steps = self.data.steps[:rem_start] + self.data.steps[rem_end:]
+        controller = self.datafile_controller.new_keyword(name, '')
+        controller.set_steps(new_steps)
+        observer(controller)
 
     def validate_name(self, name):
         return self._parent.validate_name(name)

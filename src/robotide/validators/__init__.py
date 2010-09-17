@@ -88,7 +88,7 @@ class ArgumentsValidator(_AbstractValidator):
             raise ValueError
 
     def _validate_list_args_in_correct_place(self, types):
-        if 3 in types and types.index(3) != len(types)-1:
+        if 3 in types and types.index(3) != len(types) - 1:
             return "List variable allowed only as the last argument"
         return None
 
@@ -153,16 +153,12 @@ class _NameValidator(_AbstractValidator):
 class TestCaseNameValidator(_NameValidator):
 
     def _validate(self, name):
-        if not name:
-            return 'Test case name cannot be empty'
         return self._controller.validate_test_name(name)
 
 
 class UserKeywordNameValidator(_NameValidator):
 
     def _validate(self, name):
-        if not name:
-            return 'User keyword name cannot be empty'
         return self._controller.validate_keyword_name(name)
 
 
