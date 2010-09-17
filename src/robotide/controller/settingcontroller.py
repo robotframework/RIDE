@@ -102,9 +102,9 @@ class _SettingController(object):
 
 class DocumentationController(_SettingController):
     editor = DocumentationEditor
-    compiled_regexp_rn = re.compile(r'(\\+)r\\n')
-    compiled_regexp_n = re.compile(r'(\\+)n')
-    compiled_regexp_r = re.compile(r'(\\+)r')
+    newline_regexps = (re.compile(r'(\\+)r\\n'),
+                       re.compile(r'(\\+)n'),
+                       re.compile(r'(\\+)r'))
 
     def _init(self, doc):
         self._doc = doc
@@ -114,7 +114,7 @@ class DocumentationController(_SettingController):
         return self._doc.value
 
     def _get_editable_value(self):
-        return self._unescape_newlines_and_handle_escaped_backslashes(self._doc.value)
+        return self._unescape_newlines_and_handle_escaped_backslashes(self.value)
 
     def _set_editable_value(self, value):
         self.set_value(self._escape_newlines(value))
@@ -123,22 +123,23 @@ class DocumentationController(_SettingController):
 
     @property
     def visible_value(self):
-        return utils.html_escape(utils.unescape(self._doc.value), formatting=True)
+        return utils.html_escape(utils.unescape(self.value), formatting=True)
 
-    def _unescape_newlines_and_handle_escaped_backslashes(self, input):
-        def replacer(match):
-            blashes = len(match.group(1))
-            if blashes % 2 == 1:
-                return '\\' * (blashes - 1) + '\n'
-            return match.group()
-        input = self.compiled_regexp_rn.sub(replacer, input)
-        input = self.compiled_regexp_n.sub(replacer, input)
-        return self.compiled_regexp_r.sub(replacer, input)
+    def _unescape_newlines_and_handle_escaped_backslashes(self, item):
+        for regexp in self.newline_regexps:
+            item = regexp.sub(self._newline_replacer, item)
+        return item
+
+    def _newline_replacer(self, match):
+        blashes = len(match.group(1))
+        if blashes % 2 == 1:
+            return '\\' * (blashes - 1) + '\n'
+        return match.group()
 
     def _escape_newlines(self, item):
-        item = item.replace('\r\n', '\\n')
-        item = item.replace('\n', '\\n')
-        return item.replace('\r', '\\n')
+        for newline in ('\r\n', '\n', '\r'):
+            item = item.replace(newline, '\\n')
+        return item
 
 
 class FixtureController(_SettingController):
@@ -161,7 +162,7 @@ class FixtureController(_SettingController):
 
     def _parse(self, value):
         value = self._split_from_separators(value)
-        return value[0] if value else '', value[1:] if value else []
+        return (value[0], value[1:]) if value else ('', [])
 
 
 class TagsController(_SettingController):
