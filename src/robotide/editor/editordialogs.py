@@ -203,8 +203,8 @@ class TestCaseNameDialog(_Dialog):
     def _add_comment_editor(self, item):
         pass
 
-    def _get_editors(self, name):
-        value = name or ''
+    def _get_editors(self, test):
+        value = test.name if test else ''
         return [ValueEditor(self, value, 'Name',
                             TestCaseNameValidator(self._controller))]
 
@@ -218,8 +218,8 @@ class UserKeywordNameDialog(_Dialog):
     def _add_comment_editor(self, item):
         pass
 
-    def _get_editors(self, name):
-        value = name or ''
+    def _get_editors(self, uk):
+        value = uk.name if uk else ''
         return [ValueEditor(self, value, 'Name',
                             UserKeywordNameValidator(self._controller)),
                 ValueEditor(self, '', 'Arguments', ArgumentsValidator())]
