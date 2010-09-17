@@ -22,6 +22,7 @@ from robot.parsing.model import ResourceFile
 from robot.parsing.settings import Library, Resource, Variables
 from robot.utils.normalizing import normalize
 from robot.variables import Variables as RobotVariables
+from robot.variables.isvar import is_var
 
 from robotide.namespace.cache import LibraryCache, ExpiringCache
 from robotide.spec.iteminfo import (TestCaseUserKeywordInfo,
@@ -223,7 +224,8 @@ class _VariableStash(RobotVariables):
                 if not utils.NormalizedDict.has_key(self, name):
                     self[name] = value
             except DataError:
-                pass
+                if is_var(variable.name):
+                    self[variable.name] = ''
 
 
 class DatafileRetriever(object):

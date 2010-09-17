@@ -297,6 +297,15 @@ class TestVariableStash(unittest.TestCase):
         result = vars.replace_variables('hoo${var1}hii${var2}huu')
         assert_equals('hoofoohiibarhuu',result)
 
+    def test_variable_resolving_with_unresolvable_value(self):
+        vars = _VariableStash()
+        var_table = VariableTable(None)
+        var_table.add('${var1}', '${unresolvable variable}')
+        var_table.add('${var2}', 'bar')
+        vars.set_from_variable_table(var_table)
+        assert_true('${var1}' in vars)
+        assert_true('${var2}' in vars)
+
     def test_has_default_values(self):
         vars = _VariableStash()
         assert_equals(vars['${SPACE}'],' ')
