@@ -68,6 +68,11 @@ def _add_keyword_table(tcf):
     uk_table.keywords[0].args.value = ['${keyword argument}', '${keyword argument with default} = default']
 
 
+class ParentMock(object):
+    source = '/tmp/example/parentmock'
+    directory = '/tmp/exmaple'
+
+
 class _DataFileTest(unittest.TestCase):
     tcf = _build_test_case_file()
     tcf_ctrl = DataController(tcf, None)
@@ -213,7 +218,7 @@ class TestKeywordSuggestions(_DataFileTest):
         sugs = self.ns.get_suggestions_for(self.tcf_ctrl, 'Execute Manual')
         self._assert_import_kws(sugs, 'Dialogs')
         sugs = self.ns.get_suggestions_for(self.tcf_ctrl, '${libna')
-        self._assert_import_kws(sugs, '')
+        assert_true(len(sugs) == 1)
 
 
     def _assert_import_kws(self, sugs, source):
@@ -290,7 +295,7 @@ class TestVariableStash(unittest.TestCase):
 
     def test_variable_resolving(self):
         vars = _VariableStash()
-        var_table = VariableTable(None)
+        var_table = VariableTable(ParentMock())
         var_table.add('${var1}', 'foo')
         var_table.add('${var2}', 'bar')
         vars.set_from_variable_table(var_table)
@@ -299,16 +304,16 @@ class TestVariableStash(unittest.TestCase):
 
     def test_variable_resolving_with_unresolvable_value(self):
         vars = _VariableStash()
-        var_table = VariableTable(None)
+        var_table = VariableTable(ParentMock())
         var_table.add('${var1}', '${unresolvable variable}')
         var_table.add('${var2}', 'bar')
         vars.set_from_variable_table(var_table)
-        assert_true('${var1}' in vars)
-        assert_true('${var2}' in vars)
+        assert_true('${var1}' in vars._vars)
+        assert_true('${var2}' in vars._vars)
 
     def test_has_default_values(self):
         vars = _VariableStash()
-        assert_equals(vars['${SPACE}'],' ')
+        assert_equals(vars._vars['${SPACE}'],' ')
 
 class TestResourceGetter(_DataFileTest):
 
@@ -340,10 +345,6 @@ class TestResourceCache(_DataFileTest):
     def test_file_with_invalid_path(self):
         imp = Resource(ParentMock(), '${kumikameli}')
         assert_none(self.res_cache.get_resource(imp.directory, imp.name))
-
-
-class ParentMock(object):
-    directory = '/tmp/exmaple'
 
 
 if __name__ == "__main__":
