@@ -36,7 +36,7 @@ command does not work.'''.replace('\n', ' '),
 
 
 class ConfigManagerDialog(wx.Dialog):
-    _style = wx.DEFAULT_DIALOG_STYLE|wx.THICK_FRAME
+    _style = wx.DEFAULT_DIALOG_STYLE | wx.THICK_FRAME
 
     def __init__(self, configs):
         wx.Dialog.__init__(self, wx.GetTopLevelWindows()[0], style=self._style,
@@ -60,16 +60,16 @@ class ConfigManagerDialog(wx.Dialog):
         help = wx.StaticText(self, label=_CONFIG_HELP)
         help.Wrap(700)
         help.SetFont(Font().help)
-        self.Sizer.Add(help, border=5,flag=wx.TOP)
+        self.Sizer.Add(help, border=5, flag=wx.TOP)
 
     def _create_line(self):
-        line = wx.StaticLine(self, size=(20,-1), style=wx.LI_HORIZONTAL)
+        line = wx.StaticLine(self, size=(20, -1), style=wx.LI_HORIZONTAL)
         self.Sizer.Add(line, border=5,
-                       flag=wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.RIGHT|wx.TOP)
+                       flag=wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.RIGHT | wx.TOP)
 
     def _create_buttons(self):
-        self.Sizer.Add(self.CreateStdDialogButtonSizer(wx.OK|wx.CANCEL),
-                       flag=wx.ALIGN_CENTER|wx.ALL, border=5)
+        self.Sizer.Add(self.CreateStdDialogButtonSizer(wx.OK | wx.CANCEL),
+                       flag=wx.ALIGN_CENTER | wx.ALL, border=5)
 
     def get_data(self):
         return self._editor.get_data()
@@ -105,13 +105,17 @@ class _ConfigListEditor(ListEditorBase):
 
 
 class _TextEditListCtrl(AutoWidthColumnList, TextEditMixin):
-    last_index = property(lambda self: self.ItemCount-1)
+    last_index = property(lambda self: self.ItemCount - 1)
 
     def __init__(self, parent, columns, data):
         AutoWidthColumnList.__init__(self, parent, columns, data)
         TextEditMixin.__init__(self)
+        self._set_command_colum_width()
         self.col_locs = self._calculate_col_locs()
         self._new_item_creation = False
+
+    def _set_command_column_width(self):
+        self.SetColumnWidth(1, 250)
 
     def _calculate_col_locs(self):
         """Calculates and returns initial locations of colums.
