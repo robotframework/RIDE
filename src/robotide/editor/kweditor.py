@@ -291,6 +291,9 @@ class KeywordEditor(KeywordEditorUi):
         if keycode == wx.WXK_CONTROL and self._tooltip.IsShown():
             return
         self.hide_tooltip()
+        if keycode == wx.WXK_WINDOWS_MENU:
+            self.OnCellRightClick(event)
+            return  
         if control_down or keycode not in [wx.WXK_RETURN, wx.WXK_BACK]:
             event.Skip()
             return
