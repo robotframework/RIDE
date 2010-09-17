@@ -562,7 +562,7 @@ class _TestOrUserKeywordHandler(_ActionHandler):
     def OnCopy(self, event):
         dlg = self._dialog_class(self._mainframe, self.controller, self.item)
         if dlg.ShowModal() == wx.ID_OK:
-            copied = self.controller.copy(dlg.get_value())
+            copied = self.controller.copy(dlg.get_name())
             self._add_copy_to_tree(self._tree.GetItemParent(self._node), copied)
         dlg.Destroy()
 

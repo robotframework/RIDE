@@ -1,3 +1,5 @@
+*** Settings ***
+Resource        atest_resources.txt
 
 *** Keywords ***
 Start RIDE
@@ -17,3 +19,12 @@ Close RIDE and Save
     Close RIDE
     Wait For Active Window  Warning
     Control Click  Warning  ${EMPTY}  Button1
+
+Start RIDE and Initialize Test Data
+    Start RIDE
+    Initialize Test Data
+
+Initialize Test Data
+    Remove Directory  ${TESTDATA PATH}  recursive
+    Copy Directory  ${TESTDATA PATH FROM VERSION CONTROL}  ${TESTDATA PATH}
+

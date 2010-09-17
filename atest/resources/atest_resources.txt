@@ -1,18 +1,27 @@
 *** Settings ***
-Library   AutoItLibrary
-Library   OperatingSystem
-resource  opening_and_closing.txt
-resource  editor.txt
-resource  tree.txt
+Resource        libraries.txt
+Resource        editor.txt
+Resource        file_menu.txt
+Resource        history.txt
+Resource        opening_and_closing.txt
+Resource        tree.txt
+
+*** Variables ***
+${TESTDATA PATH}  ${TEMP DIR}${/}testdata
+${TESTDATA PATH FROM VERSION CONTROL}  ${CURDIR}${/}..${/}testdata
 
 *** Keywords ***
 Window Has Text
     [Arguments]  ${text}
-    ${result} =  Win Exists  RIDE  ${text}
-    Should Be Equal  ${result}  ${1}
+    Wait For Active Window  RIDE  ${text}
 
 Window Does Not Have Text
     [Arguments]  ${text}
     ${result} =  Win Exists  RIDE  ${text}
     Should Be Equal  ${result}  ${0}
+
+Select From Context Menu
+    [Arguments]  ${count}
+    Send  {APPSKEY}
+    Send  {DOWN ${count}}{ENTER}
 

@@ -12,9 +12,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import re
+
 from robotide.editor.editors import DocumentationEditor, SettingEditor
 from robotide import utils
-import re
 
 
 class _SettingController(object):
@@ -81,6 +82,9 @@ class _SettingController(object):
 
     def clear(self):
         self._data.reset()
+        # Need to clear comments separately due to this bug:
+        # http://code.google.com/p/robotframework/issues/detail?id=647
+        self._data.comment = None
         self._mark_dirty()
 
     def _changed(self, value):
