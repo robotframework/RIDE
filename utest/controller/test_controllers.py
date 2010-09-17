@@ -2,7 +2,8 @@ import unittest
 from robot.parsing import TestCase
 from robot.parsing.settings import Fixture, Documentation, Timeout, Tags, Return
 
-from robot.utils.asserts import assert_equals, assert_true, assert_false, assert_none
+from robot.utils.asserts import assert_equals, assert_true, assert_false, assert_none, \
+    assert_raises_with_msg
 from robotide.controller.settingcontroller import *
 from robotide.controller.filecontroller import *
 from robotide.controller.filecontroller import _WithListOperations
@@ -313,7 +314,7 @@ class _BaseWithSteps(unittest.TestCase):
             assert_equals(setting.value, 'boo', 'not boo %s' % setting.__class__)
             assert_equals(setting.comment, 'hobo', 'comment not copied %s' % setting.__class__)
 
-    def _test_creation(self):
+    def _test_uk_creation(self):
         observer = self._creation_oberver()
         num_keywords = len(self.tcf.keywords)
         self.ctrl.create_user_keyword('New UK', [], observer.observe)
@@ -324,8 +325,9 @@ class _BaseWithSteps(unittest.TestCase):
     def _test_creation_with_conflicting_name(self):
         self.tcf.keyword_table.add('Duplicate name')
         num_kws = len(self.tcf.keywords)
-        self.ctrl.create_user_keyword('Duplicate name', [],
-                                      self._creation_oberver().observe)
+        assert_raises_with_msg(ValueError, 'User keyword with this name already exists.',
+                               self.ctrl.create_user_keyword, 'Duplicate name',
+                               [], self._creation_oberver().observe)
         assert_equals(len(self.tcf.keywords), num_kws)
         assert_false(self.ctrl.dirty)
 
@@ -354,6 +356,8 @@ class TestCaseControllerTest(_BaseWithSteps):
     def setUp(self):
         self.tcf = TestCaseFile()
         self.testcase = self.tcf.testcase_table.add('Test')
+        self.testcase.add_step(['Log', 'Hello'])
+        self.testcase.add_step(['No Operation'])
         self.tcf.testcase_table.add('Another Test')
         tctablectrl = TestCaseTableController(TestCaseFileController(self.tcf),
                                               self.tcf.testcase_table)
@@ -382,7 +386,7 @@ class TestCaseControllerTest(_BaseWithSteps):
         self._test_copy_content()
 
     def test_create_user_keyword(self):
-        self._test_creation()
+        self._test_uk_creation()
 
     def test_creating_user_keyword_with_conflicting_name_does_nothing(self):
         self._test_creation_with_conflicting_name()
@@ -461,7 +465,7 @@ class UserKeywordControllerTest(_BaseWithSteps):
         self._test_copy_content()
 
     def test_create_user_keyword(self):
-        self._test_creation()
+        self._test_uk_creation()
 
     def test_creating_user_keyword_with_conflicting_name_does_nothing(self):
         self._test_creation_with_conflicting_name()
