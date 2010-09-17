@@ -170,8 +170,20 @@ class KeywordEditor(KeywordEditorUi):
         self._plugin = parent.plugin
 
     def OnCreateUserKeyword(self, event):
-        self._controller.create_user_keyword(self._current_cell_value(),
+        name, args = self._name_and_args_for_new_keyword()
+        self._controller.create_user_keyword(name, args,
                                              self._tree.add_keyword_controller)
+
+    def _name_and_args_for_new_keyword(self):
+        currow, curcol = self.selection.cell
+        rowdata = self._remove_comments(self._strip_trailing_empty_cells(self._row_data(currow)))
+        return rowdata[curcol], rowdata[curcol + 1:]
+
+    def _remove_comments(self, data):
+        for index, cell in enumerate(data):
+            if cell.strip().startswith('#'):
+                return data[:index]
+        return data
 
     def OnExtractKeyword(self, event):
         dlg = UserKeywordNameDialog(wx.GetTopLevelParent(self), self._controller)

@@ -4,7 +4,7 @@ from robot.utils.asserts import assert_equals
 from robotide.editor.kweditor import KeywordEditor
 from robotide.publish.messages import RideGridCellChanged
 from robotide.publish import PUBLISHER
-from robotide.controller.filecontroller import TestCaseFileController, TestCaseController,\
+from robotide.controller.filecontroller import TestCaseFileController, TestCaseController, \
     TestCaseTableController
 from robotide.robotapi import TestCaseFile
 
@@ -16,10 +16,11 @@ import wx
 
 DATA = [['kw1'],
         ['kw2', 'arg1'],
-        ['kw3', 'arg1', 'arg2']]
+        ['kw3', 'arg1', 'arg2'],
+        ]
+
 
 class _FakeEvent(object):
-
     Id = 0
 
     def __init__(self):
@@ -55,12 +56,12 @@ class TestCoordinates(unittest.TestCase):
         self._editor = TestableKwEditor(_FakeMainFrame(), tc_controller(), None)
 
     def test_cell_selection(self):
-        self._editor.SelectBlock(2,2,2,2)
-        self._verify_selection(2,2,2,2)
+        self._editor.SelectBlock(2, 2, 2, 2)
+        self._verify_selection(2, 2, 2, 2)
 
     def test_selecting_multiple_cells(self):
-        self._editor.SelectBlock(0,1,3,4)
-        self._verify_selection(0,1,3,4)
+        self._editor.SelectBlock(0, 1, 3, 4)
+        self._verify_selection(0, 1, 3, 4)
 
     def _verify_selection(self, toprow, topcol, botrow, botcol):
         assert_equals(self._editor.selection.topleft.row, toprow)
@@ -76,13 +77,13 @@ class TestClipBoard(unittest.TestCase):
                                         _FakeTree())
 
     def test_copy_one_cell(self):
-        self._copy_block_and_verify((0,0,0,0), [['kw1']])
+        self._copy_block_and_verify((0, 0, 0, 0), [['kw1']])
 
     def test_copy_row(self):
-        self._copy_block_and_verify((1,0,1,1), [[val for val in DATA[1] if val]])
+        self._copy_block_and_verify((1, 0, 1, 1), [[val for val in DATA[1] if val]])
 
     def test_copy_block(self):
-        self._copy_block_and_verify((0,0,2,2), DATA)
+        self._copy_block_and_verify((0, 0, 2, 2), DATA)
 
     def _copy_block_and_verify(self, block, exp_content):
         self._editor.SelectBlock(*block)
@@ -92,14 +93,14 @@ class TestClipBoard(unittest.TestCase):
         self._verify_grid_content(DATA)
 
     def test_cut_one_cell(self):
-        self._cut_block_and_verify((0,0,0,0), [['kw1']],
+        self._cut_block_and_verify((0, 0, 0, 0), [['kw1']],
                                    [['', '', '']] + DATA[1:])
 
     def test_cut_row(self):
-        self._cut_block_and_verify((2,0,2,2), [DATA[2]], DATA[:2])
+        self._cut_block_and_verify((2, 0, 2, 2), [DATA[2]], DATA[:2])
 
     def test_cut_block(self):
-        self._cut_block_and_verify((0,0,2,2), DATA, [])
+        self._cut_block_and_verify((0, 0, 2, 2), DATA, [])
 
     def _cut_block_and_verify(self, block, exp_clipboard, exp_grid):
         self._cut_block(block)
@@ -109,7 +110,7 @@ class TestClipBoard(unittest.TestCase):
 
     def test_undo_with_cut(self):
         #self._cut_undo_and_verify((0,0,0,0), DATA)
-        self._cut_undo_and_verify((0,0,2,2), DATA)
+        self._cut_undo_and_verify((0, 0, 2, 2), DATA)
 
     def _cut_undo_and_verify(self, block, exp_data_after_undo):
         self._cut_block(block)
@@ -117,8 +118,8 @@ class TestClipBoard(unittest.TestCase):
         self._verify_grid_content(exp_data_after_undo)
 
     def test_multiple_levels_of_undo(self):
-        self._cut_block((0,0,0,0))
-        self._cut_block((2,0,2,2))
+        self._cut_block((0, 0, 0, 0))
+        self._cut_block((2, 0, 2, 2))
         self._editor.undo()
         self._verify_grid_content([['', '', '']] + DATA[1:])
         self._editor.undo()
@@ -129,20 +130,20 @@ class TestClipBoard(unittest.TestCase):
         self._editor.OnCut()
 
     def test_paste_one_cell(self):
-        self._copy_and_paste_block((1,0,1,0), (3,0,3,0), DATA + [['kw2']])
+        self._copy_and_paste_block((1, 0, 1, 0), (3, 0, 3, 0), DATA + [['kw2']])
         # These tests are not independent
-        self._copy_and_paste_block((1,0,1,0), (0,3,0,3),
+        self._copy_and_paste_block((1, 0, 1, 0), (0, 3, 0, 3),
                                    [DATA[0] + ['', '', 'kw2']] +
                                     DATA[1:] + [['kw2']])
 
     def test_paste_row(self):
-        self._copy_and_paste_block((2,0,2,2), (3,1,3,1), DATA + [[''] + DATA[2]])
+        self._copy_and_paste_block((2, 0, 2, 2), (3, 1, 3, 1), DATA + [[''] + DATA[2]])
 
     def test_paste_block(self):
-        self._copy_and_paste_block((0,0,2,2), (4,0,4,0), DATA + [['']] + DATA)
+        self._copy_and_paste_block((0, 0, 2, 2), (4, 0, 4, 0), DATA + [['']] + DATA)
 
     def test_paste_over(self):
-        self._copy_and_paste_block((1,0,1,1), (0,0,0,0), [DATA[1]] + DATA[1:])
+        self._copy_and_paste_block((1, 0, 1, 1), (0, 0, 0, 0), [DATA[1]] + DATA[1:])
 
     def _copy_and_paste_block(self, sourceblock, targetblock, exp_content):
         self._editor.SelectBlock(*sourceblock)
@@ -163,7 +164,7 @@ class TestClipBoard(unittest.TestCase):
                     assert_equals(value, '')
 
     def test_simple_undo(self):
-        self._editor.SelectBlock(*(0,0,0,0))
+        self._editor.SelectBlock(*(0, 0, 0, 0))
         self._editor.OnCut()
         self._editor.undo()
         self._verify_grid_content(DATA)
@@ -177,7 +178,7 @@ class TestEditing(unittest.TestCase):
 
     def test_correct_event_is_published_during_population(self):
         self._editor.write_cell(0, 0, 'Hello')
-        assert_equals(self._data.cell, (0,0))
+        assert_equals(self._data.cell, (0, 0))
         assert_equals(self._data.value, 'Hello')
         assert_equals(self._data.previous, 'kw1')
         assert_equals(self._data.grid, self._editor)
@@ -189,55 +190,71 @@ class TestEditing(unittest.TestCase):
 class TestActions(unittest.TestCase):
 
     def setUp(self):
-        self._editor = TestableKwEditor(_FakeMainFrame(), tc_controller(),
-                                        _FakeTree())
+        tc_ctrl = tc_controller()
+        tc_ctrl.parse_steps_from_rows(DATA + [['${res}=', 'kw4', 'a', '#This is comment']])
+        self._editor = TestableKwEditor(_FakeMainFrame(), tc_ctrl, _FakeTree())
 
     def test_uncommenting_twice_commented_row(self): # issue 445
         self._editor._write_data([['Comment', 'Comment', 'a comment']],
                                  update_history=False)
         self._editor._uncomment_row(0)
-        assert_equals(self._editor.GetCellValue(0,0), 'Comment')
+        assert_equals(self._editor.GetCellValue(0, 0), 'Comment')
 
     def test_inserting_cell(self):
-        self._editor.SelectBlock(0,0,0,0)
+        self._editor.SelectBlock(0, 0, 0, 0)
         self._editor.OnInsertCells(_FakeEvent())
-        assert_equals(self._cell_value(0,0), '')
-        assert_equals(self._cell_value(0,1), 'kw1')
+        assert_equals(self._cell_value(0, 0), '')
+        assert_equals(self._cell_value(0, 1), 'kw1')
 
     def test_inserting_many_cells_in_single_column(self):
-        self._editor.SelectBlock(0,0,2,0)
+        self._editor.SelectBlock(0, 0, 2, 0)
         self._editor.OnInsertCells(_FakeEvent())
         for row in range(3):
-            assert_equals(self._cell_value(row,0), '')
-        assert_equals(self._cell_value(2,1), 'kw3')
+            assert_equals(self._cell_value(row, 0), '')
+        assert_equals(self._cell_value(2, 1), 'kw3')
 
     def test_inserting_area_of_cells(self):
-        self._editor.SelectBlock(0,0,2,2)
+        self._editor.SelectBlock(0, 0, 2, 2)
         self._editor.OnInsertCells(_FakeEvent())
         for row in range(2):
             for col in range(2):
                 assert_equals(self._cell_value(row, col), '')
 
     def test_deleting_cell(self):
-        self._editor.SelectBlock(1,0,1,0)
+        self._editor.SelectBlock(1, 0, 1, 0)
         self._editor.OnDeleteCells(_FakeEvent())
-        assert_equals(self._cell_value(1,0), 'arg1')
+        assert_equals(self._cell_value(1, 0), 'arg1')
 
     def test_deleting_many_cells(self):
-        self._editor.SelectBlock(0,0,2,0)
+        self._editor.SelectBlock(0, 0, 2, 0)
         self._editor.OnDeleteCells(_FakeEvent())
-        for row, value in zip(range(3), ['', 'arg1','arg1']):
-            assert_equals(self._cell_value(row,0), value)
+        for row, value in zip(range(3), ['', 'arg1', 'arg1']):
+            assert_equals(self._cell_value(row, 0), value)
 
     def test_deleting_area_of_cells(self):
-        self._editor.SelectBlock(0,0,2,2)
+        self._editor.SelectBlock(0, 0, 2, 2)
         self._editor.OnDeleteCells(_FakeEvent())
         for row in range(2):
             for col in range(2):
                 assert_equals(self._cell_value(row, col), '')
 
     def _cell_value(self, x, y):
-        return self._editor.GetCellValue(x,y)
+        return self._editor.GetCellValue(x, y)
+
+    def test_resolving_name_for_created_keyword(self):
+        self._editor.SelectBlock(0, 0, 0, 0)
+        assert_equals(self._editor._name_and_args_for_new_keyword(),
+                      ('kw1', []))
+
+    def test_resolving_name_and_args_for_created_keyword(self):
+        self._editor.SelectBlock(1, 0, 2, 2)
+        assert_equals(self._editor._name_and_args_for_new_keyword(),
+                      ('kw2', ['arg1']))
+
+    def test_comments_are_ignored_when_keyword_is_created(self):
+        self._editor.SelectBlock(3, 1, 3, 5)
+        assert_equals(self._editor._name_and_args_for_new_keyword(),
+                      ('kw4', ['a']))
 
 
 if __name__ == '__main__':
