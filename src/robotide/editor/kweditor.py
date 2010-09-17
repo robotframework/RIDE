@@ -178,9 +178,15 @@ class KeywordEditor(KeywordEditorUi):
             wx.MessageBox(unicode(err))
 
     def _name_and_args_for_new_keyword(self):
+        data_cells = self._data_cells_from_current_row()
+        if not data_cells:
+            return '', []
+        return data_cells[0], data_cells[1:]
+
+    def _data_cells_from_current_row(self):
         currow, curcol = self.selection.cell
-        rowdata = self._remove_comments(self._strip_trailing_empty_cells(self._row_data(currow)))
-        return rowdata[curcol], rowdata[curcol + 1:]
+        rowdata = self._row_data(currow)
+        return self._strip_trailing_empty_cells(self._remove_comments(rowdata[curcol:]))
 
     def _remove_comments(self, data):
         for index, cell in enumerate(data):
