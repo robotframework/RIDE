@@ -14,6 +14,8 @@
 
 import re
 
+from robotide.robotapi import is_var
+
 
 def parse_arguments_to_var_dict(args):
     result = {}
@@ -25,12 +27,10 @@ def parse_arguments_to_var_dict(args):
 
 default_val_regexp = re.compile(r'([$@]\{.*\})\s*=\s*(.*)')
 
-looks_like_var_regexp = re.compile(r'([$@]\{.*\})')
-
 def parse_argument(argument):
     match = default_val_regexp.match(argument)
     if match:
         return (match.group(1), match.group(2))
-    if looks_like_var_regexp.match(argument):
+    if is_var(argument):
         return (argument, None)
     return None

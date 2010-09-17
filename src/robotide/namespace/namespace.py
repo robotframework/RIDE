@@ -22,13 +22,12 @@ from robot.parsing.model import ResourceFile
 from robot.parsing.settings import Library, Resource, Variables
 from robot.utils.normalizing import normalize
 from robot.variables import Variables as RobotVariables
-from robot.variables.isvar import is_var
 
 from robotide.namespace.cache import LibraryCache, ExpiringCache
 from robotide.spec.iteminfo import (TestCaseUserKeywordInfo,
                                     ResourceseUserKeywordInfo,
                                     VariableInfo, _UserKeywordInfo)
-from robotide.robotapi import NormalizedDict
+from robotide.robotapi import NormalizedDict, is_var
 from robotide import utils
 
 
