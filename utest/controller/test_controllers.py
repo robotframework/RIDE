@@ -316,17 +316,25 @@ class _BaseWithSteps(unittest.TestCase):
     def _test_creation(self):
         observer = self._creation_oberver()
         num_keywords = len(self.tcf.keywords)
-        self.ctrl.create_user_keyword('New UK', observer.observe)
+        self.ctrl.create_user_keyword('New UK', [], observer.observe)
         assert_true(isinstance(observer.item, UserKeywordController))
+        self._check_argument_names(observer.item, 0)
         assert_equals(len(self.tcf.keywords), num_keywords + 1)
 
     def _test_creation_with_conflicting_name(self):
         self.tcf.keyword_table.add('Duplicate name')
         num_kws = len(self.tcf.keywords)
-        self.ctrl.create_user_keyword('Duplicate name',
+        self.ctrl.create_user_keyword('Duplicate name', [],
                                       self._creation_oberver().observe)
         assert_equals(len(self.tcf.keywords), num_kws)
         assert_false(self.ctrl.dirty)
+
+    def _test_creation_with_arguments(self):
+        observer = self._creation_oberver()
+        self.ctrl.create_user_keyword('Uk w args', ['some', 'value'],
+                                      observer.observe)
+        kw_ctrl = observer.item
+        self._check_argument_names(kw_ctrl, 2)
 
     def _creation_oberver(self):
         class CreationObserver(object):
@@ -334,6 +342,11 @@ class _BaseWithSteps(unittest.TestCase):
             def observe(self, controller):
                 self.item = controller
         return CreationObserver()
+
+    def _check_argument_names(self, kw_ctrl, num_args):
+        for exp, act in zip(('${arg%s}' % i for i in range(1, num_args + 1)),
+                            kw_ctrl.data.args.value):
+            assert_equals(exp, act)
 
 
 class TestCaseControllerTest(_BaseWithSteps):
@@ -373,6 +386,9 @@ class TestCaseControllerTest(_BaseWithSteps):
 
     def test_creating_user_keyword_with_conflicting_name_does_nothing(self):
         self._test_creation_with_conflicting_name()
+
+    def test_creation_with_arguments(self):
+        self._test_creation_with_arguments()
 
 
 class UserKeywordControllerTest(_BaseWithSteps):
@@ -449,6 +465,9 @@ class UserKeywordControllerTest(_BaseWithSteps):
 
     def test_creating_user_keyword_with_conflicting_name_does_nothing(self):
         self._test_creation_with_conflicting_name()
+
+    def test_creation_with_arguments(self):
+        self._test_creation_with_arguments()
 
 
 class ImportControllerTest(unittest.TestCase):
