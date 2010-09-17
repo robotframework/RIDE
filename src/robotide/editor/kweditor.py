@@ -171,8 +171,11 @@ class KeywordEditor(KeywordEditorUi):
 
     def OnCreateUserKeyword(self, event):
         name, args = self._name_and_args_for_new_keyword()
-        self._controller.create_user_keyword(name, args,
-                                             self._tree.add_keyword_controller)
+        try:
+            self._controller.create_user_keyword(name, args,
+                                                 self._tree.add_keyword_controller)
+        except ValueError, err:
+            wx.MessageBox(unicode(err))
 
     def _name_and_args_for_new_keyword(self):
         currow, curcol = self.selection.cell
@@ -189,7 +192,7 @@ class KeywordEditor(KeywordEditorUi):
         dlg = UserKeywordNameDialog(wx.GetTopLevelParent(self), self._controller)
         if dlg.ShowModal() == wx.ID_OK:
             name, args = dlg.get_value()
-        #self._controller.extract_user_keyword()
+        self._controller.extract_user_keyword()
 
     def _make_bindings(self):
         self.Bind(grid.EVT_GRID_EDITOR_SHOWN, self.OnEditor)
