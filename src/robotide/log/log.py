@@ -43,8 +43,9 @@ class LogPlugin(Plugin):
         print 'ended log'
 
     def OnViewLog(self, event):
-        self._window = _LogWindow(self.notebook, self._log)
-        self._window.update_log()
+        if not self._window:
+            self._window = _LogWindow(self.notebook, self._log)
+            self._window.update_log()
 
 
 class _LogWindow(wx.ScrolledWindow):
