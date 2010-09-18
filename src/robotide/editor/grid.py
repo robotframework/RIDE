@@ -44,9 +44,9 @@ class GridEditor(grid.Grid):
         self.SetCellValue(row, col, value)
 
     def _expand_if_necessary(self, row, col):
-        while row >= self.NumberRows-1:
+        while row >= self.NumberRows - 1:
             self.AppendRows(1)
-        while col >= self.NumberCols-self._col_add_threshold:
+        while col >= self.NumberCols - self._col_add_threshold:
             self.AppendCols(1)
 
     def set_dirty(self):
@@ -161,7 +161,7 @@ class GridEditor(grid.Grid):
 
     def _delete_cells(self, data):
         cols = self.selection.cols()
-        left, right = cols[0], cols[-1]+1
+        left, right = cols[0], cols[-1] + 1
         data[left:right] = []
         return data + [''] * len(cols)
 
@@ -182,7 +182,7 @@ class _GridSelection(object):
     cell = property(lambda self: (self.topleft.row, self.topleft.col))
 
     def __init__(self):
-        self._set((0,0))
+        self._set((0, 0))
 
     def _set(self, topleft, bottomright=None):
         cell = _Cell(topleft[0], topleft[1])
@@ -199,18 +199,18 @@ class _GridSelection(object):
     def _get_bounding_coordinates(self, grid, event):
         whole_row_selection = grid.SelectedRows
         if whole_row_selection:
-            return (whole_row_selection[0], 0),\
-                   (whole_row_selection[-1], grid.NumberCols-1)
-        return (event.TopLeftCoords.Row,event.TopLeftCoords.Col),\
+            return (whole_row_selection[0], 0), \
+                   (whole_row_selection[-1], grid.NumberCols - 1)
+        return (event.TopLeftCoords.Row, event.TopLeftCoords.Col), \
                (event.BottomRightCoords.Row, event.BottomRightCoords.Col)
 
     def rows(self):
         """Returns a list containing indices of rows currently selected."""
-        return range(self.topleft.row, self.bottomright.row+1)
+        return range(self.topleft.row, self.bottomright.row + 1)
 
     def cols(self):
         """Returns a list containing indices of columns currently selected."""
-        return range(self.topleft.col, self.bottomright.col+1)
+        return range(self.topleft.col, self.bottomright.col + 1)
 
     def cells(self):
         """Return selected cells as a list of tuples (row, column)."""
