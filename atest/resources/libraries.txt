@@ -1,0 +1,4 @@
+*** Settings ***
+Library         AutoItLibrary  ${CURDIR}${/}..${/}results  5
+Library         OperatingSystem
+

@@ -1,17 +1,15 @@
 *** Settings ***
-Library  AutoItLibrary
-
+Resource        atest_resources.txt
 
 *** Keywords ***
 Create New Test Case
     [Arguments]  ${suite name}  ${name}
-	Select Tree Element  ${suite name}
+    Select Tree Element  ${suite name}
     Select Tree Element  *${suite name}
-    Send  {APPSKEY}
-    Send  {DOWN}{ENTER}
-    Wait For Active Window  Test Case Name
+    Select From Context Menu  1
+    Wait For Active Window  New Test Case
     Send  ${name}
-    Control Click  Test Case Name  ${EMPTY}  Button1
+    Control Click  New Test Case  ${EMPTY}  Button1
     Wait For Active Window  RIDE  ${name}
 
 Select Tree Element
@@ -25,3 +23,4 @@ Get Selected Tree Element Info
     Log  ${cur_item}
     ${cur_item_text} =  Control Tree View  RIDE  ${EMPTY}  SysTreeView321  GetText  ${cur_item}  ${EMPTY}
     Log  ${cur_item_text}
+
