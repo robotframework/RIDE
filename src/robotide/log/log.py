@@ -1,4 +1,4 @@
-#  Copyright 2008-2009 Nokia Siemens Networks Oyj
+#  Copyright 2008-2010 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -11,9 +11,10 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+import wx
+
 from robotide.pluginapi import Plugin, ActionInfo
 from robotide.publish.messages import RideLogMessage
-import wx
 from robotide.context.font import Font
 
 
@@ -53,43 +54,29 @@ class LogPlugin(Plugin):
             self.notebook.show_tab(self._window)
 
 
-class _LogWindow(wx.ScrolledWindow):
+class _LogWindow(wx.TextCtrl):
 
     def __init__(self, notebook, log):
-        wx.ScrolledWindow.__init__(self, notebook)
-        self._create_ui()
+        wx.TextCtrl.__init__(self, notebook, style=wx.TE_READONLY | wx.TE_MULTILINE)
         self._log = log
+        self._create_ui()
         self._add_to_notebook(notebook)
+        self.SetFont(Font().fixed_log)
 
     def close(self, notebook):
         notebook.delete_tab(self)
 
     def _create_ui(self):
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self._create_output())
+        sizer.Add(self)
         self.SetSizer(sizer)
-        self.SetScrollRate(20, 20)
-
-    def _create_output(self):
-        self._output = _OutputDisplay(self)
-        return self._output
 
     def _add_to_notebook(self, notebook):
         notebook.add_tab(self, 'Log', allow_closing=True)
         notebook.show_tab(self)
 
     def update_log(self):
-        self._output.update(self._log)
-        self.SetVirtualSize(self._output.Size)
-
-class _OutputDisplay(wx.StaticText):
-
-    def __init__(self, parent):
-        wx.StaticText.__init__(self, parent)
-        self.SetFont(Font().fixed_log)
-
-    def update(self, log):
-        self.SetLabel(self._decode_log(log))
+        self.SetValue(self._decode_log(self._log))
 
     def _decode_log(self, log):
         result = ''
@@ -97,6 +84,4 @@ class _OutputDisplay(wx.StaticText):
             result += '%s [%s]: %s\n' % (msg.timestamp, msg.level, msg.message)
         return result
 
-    def clear(self):
-        self.SetLabel('')
 
