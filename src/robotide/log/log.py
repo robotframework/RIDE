@@ -13,8 +13,7 @@
 #  limitations under the License.
 import wx
 
-from robotide.pluginapi import Plugin, ActionInfo
-from robotide.publish.messages import RideLogMessage
+from robotide.pluginapi import Plugin, ActionInfo, RideLogMessage
 from robotide.context.font import Font
 
 
