@@ -33,6 +33,7 @@ class LogPlugin(Plugin):
 
     def disable(self):
         self.unsubscribe_all()
+        self.unregister_actions()
         if self._window:
             self._window.close(self.notebook)
 
@@ -63,9 +64,6 @@ class _LogWindow(wx.TextCtrl):
         self._add_to_notebook(notebook)
         self.SetFont(Font().fixed_log)
 
-    def close(self, notebook):
-        notebook.delete_tab(self)
-
     def _create_ui(self):
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self)
@@ -75,13 +73,14 @@ class _LogWindow(wx.TextCtrl):
         notebook.add_tab(self, 'Log', allow_closing=True)
         notebook.show_tab(self)
 
+    def close(self, notebook):
+        notebook.delete_tab(self)
+
     def update_log(self):
         self.SetValue(self._decode_log(self._log))
 
     def _decode_log(self, log):
         result = ''
         for msg in log:
-            result += '%s [%s]: %s\n' % (msg.timestamp, msg.level, msg.message)
+            result += '%s [%s]: %s\n\n' % (msg.timestamp, msg.level, msg.message)
         return result
-
-
