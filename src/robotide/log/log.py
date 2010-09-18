@@ -25,18 +25,23 @@ class LogPlugin(Plugin):
         Plugin.__init__(self, app)
         self._log = []
         self._window = None
-        self.subscribe(self._log_message, RideLogMessage)
 
     def enable(self):
         self._create_menu()
+        self.subscribe(self._log_message, RideLogMessage)
+
+    def disable(self):
+        self.unsubscribe_all()
+        if self._window:
+            self._window.close(self.notebook)
 
     def _create_menu(self):
         self.unregister_actions()
         self.register_action(ActionInfo('Tools', 'View Log',
                                         self.OnViewLog))
 
-    def _log_message(self, event):
-        self._log.append(event.message)
+    def _log_message(self, log_event):
+        self._log.append(log_event)
         if self._window:
             self._window.update_log()
 
@@ -55,6 +60,9 @@ class _LogWindow(wx.ScrolledWindow):
         self._create_ui()
         self._log = log
         self._add_to_notebook(notebook)
+
+    def close(self, notebook):
+        notebook.delete_tab(self)
 
     def _create_ui(self):
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -78,7 +86,7 @@ class _OutputDisplay(wx.StaticText):
 
     def __init__(self, parent):
         wx.StaticText.__init__(self, parent)
-        self.SetFont(Font().fixed)
+        self.SetFont(Font().fixed_log)
 
     def update(self, log):
         self.SetLabel(self._decode_log(log))
@@ -86,7 +94,7 @@ class _OutputDisplay(wx.StaticText):
     def _decode_log(self, log):
         result = ''
         for msg in log:
-            result += '%s\n' % msg
+            result += '%s [%s]: %s\n' % (msg.timestamp, msg.level, msg.message)
         return result
 
     def clear(self):
