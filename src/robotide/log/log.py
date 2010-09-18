@@ -37,15 +37,15 @@ class LogPlugin(Plugin):
 
     def _log_message(self, event):
         self._log.append(event.message)
-        print 'logged messages', len(self._log)
         if self._window:
             self._window.update_log()
-        print 'ended log'
 
     def OnViewLog(self, event):
         if not self._window:
             self._window = _LogWindow(self.notebook, self._log)
             self._window.update_log()
+        else:
+            self.notebook.show_tab(self._window)
 
 
 class _LogWindow(wx.ScrolledWindow):
@@ -81,8 +81,6 @@ class _OutputDisplay(wx.StaticText):
         self.SetFont(Font().fixed)
 
     def update(self, log):
-        #self.SetLabel(self.LabelText + addition.decode('UTF-8', 'ignore'))
-        print 'update called with log lenght ', len(log)
         self.SetLabel(self._decode_log(log))
 
     def _decode_log(self, log):
