@@ -215,10 +215,7 @@ class _VariableStash(object):
 
     def set(self, name, value, source):
         self._vars[name] = value
-        self._sources[name] = self._source_name(source)
-
-    def _source_name(self, source):
-        return os.path.basename(source) if source else '-'
+        self._sources[name] = source
 
     def replace_variables(self, value):
         return self._vars.replace_string(value, ignore_errors=True)
@@ -242,7 +239,7 @@ class _VariableStash(object):
 
     def __iter__(self):
         for name, value in self._vars.items():
-            yield VariableInfo(name, list(value or ''), self._source_name(self._sources[name]))
+            yield VariableInfo(name, list(value or ''), self._sources[name])
 
 
 class DatafileRetriever(object):
