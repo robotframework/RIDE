@@ -20,7 +20,8 @@ def get_core_plugins():
     from robotide.ui.keywordsearch import KeywordSearch
     from robotide.editor import EditorPlugin
     from robotide.editor.gridcolorizer import Colorizer
+    from robotide.log.log import LogPlugin
 
     return [ReleaseNotesPlugin, RunAnything, RecentFilesPlugin, PreviewPlugin,
-            Colorizer, EditorPlugin, KeywordSearch]
+            Colorizer, EditorPlugin, KeywordSearch, LogPlugin]
 
