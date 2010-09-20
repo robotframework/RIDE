@@ -358,6 +358,7 @@ class TestCaseControllerTest(_BaseWithSteps):
         self.testcase = self.tcf.testcase_table.add('Test')
         self.testcase.add_step(['Log', 'Hello'])
         self.testcase.add_step(['No Operation'])
+        self.testcase.add_step(['Foo'])
         self.tcf.testcase_table.add('Another Test')
         tctablectrl = TestCaseTableController(TestCaseFileController(self.tcf),
                                               self.tcf.testcase_table)
@@ -393,6 +394,25 @@ class TestCaseControllerTest(_BaseWithSteps):
 
     def test_creation_with_arguments(self):
         self._test_creation_with_arguments()
+
+    def test_extract_kw(self):
+        obs = self._creation_oberver()
+        self.ctrl.extract_keyword('New KW', '${argh}', (0,1), obs.observe)
+        assert_equals(self.testcase.steps[0].keyword, 'New KW')
+        assert_equals(len(self.testcase.steps), 2)
+        assert_equals(obs.item.steps[0].keyword, 'Log')
+        assert_equals(obs.item.steps[1].keyword, 'No Operation')
+        assert_equals(obs.item.arguments.value, '${argh}')
+        assert_true(self.ctrl.dirty)
+
+    def test_extract_kw_from_the_middle(self):
+        obs = self._creation_oberver()
+        self.ctrl.extract_keyword('New KW', '', (1,1), obs.observe)
+        assert_equals(self.testcase.steps[0].keyword, 'Log')
+        assert_equals(self.testcase.steps[1].keyword, 'New KW')
+        assert_equals(self.testcase.steps[2].keyword, 'Foo')
+        assert_equals(len(self.testcase.steps), 3)
+        assert_equals(obs.item.steps[0].keyword, 'No Operation')
 
 
 class UserKeywordControllerTest(_BaseWithSteps):
