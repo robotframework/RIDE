@@ -169,36 +169,6 @@ class KeywordEditor(KeywordEditorUi):
         self._tree = tree
         self._plugin = parent.plugin
 
-    def OnCreateUserKeyword(self, event):
-        name, args = self._name_and_args_for_new_keyword()
-        try:
-            self._controller.create_user_keyword(name, args,
-                                                 self._tree.add_keyword_controller)
-        except ValueError, err:
-            wx.MessageBox(unicode(err))
-
-    def _name_and_args_for_new_keyword(self):
-        currow, curcol = self.selection.cell
-        rowdata = self._remove_comments(self._strip_trailing_empty_cells(self._row_data(currow)))
-        return rowdata[curcol], rowdata[curcol + 1:]
-
-    def _remove_comments(self, data):
-        for index, cell in enumerate(data):
-            if cell.strip().startswith('#'):
-                return data[:index]
-        return data
-
-    def OnExtractKeyword(self, event):
-        self._save_keywords()
-        dlg = UserKeywordNameDialog(wx.GetTopLevelParent(self), self._controller)
-        if dlg.ShowModal() == wx.ID_OK:
-            name, args = dlg.get_value()
-        selected_rows = self.selection.topleft.row, self.selection.bottomright.row
-        self._controller.extract_keyword(name, args, selected_rows,
-                                         self._tree.add_keyword_controller)
-        self.ClearGrid()
-        self._write_keywords(self._controller.steps)
-
     def _make_bindings(self):
         self.Bind(grid.EVT_GRID_EDITOR_SHOWN, self.OnEditor)
         self.Bind(wx.EVT_KEY_DOWN, self.OnKey)
@@ -213,6 +183,7 @@ class KeywordEditor(KeywordEditorUi):
             if hasattr(step, 'steps'):
                 for s in step.steps:
                     data.append([''] + self._format_comments(s.as_list()))
+        self.ClearGrid()
         self._write_data(data, update_history=False)
 
     def _format_comments(self, data):
@@ -298,7 +269,7 @@ class KeywordEditor(KeywordEditorUi):
         self.hide_tooltip()
         if keycode == wx.WXK_WINDOWS_MENU:
             self.OnCellRightClick(event)
-            return  
+            return
         if control_down or keycode not in [wx.WXK_RETURN, wx.WXK_BACK]:
             event.Skip()
             return
@@ -386,6 +357,35 @@ class KeywordEditor(KeywordEditorUi):
     def hide_tooltip(self):
         if self._tooltip and self._tooltip.IsShown():
             self._tooltip.Show(False)
+
+    def OnCreateUserKeyword(self, event):
+        name, args = self._name_and_args_for_new_keyword()
+        try:
+            self._controller.create_user_keyword(name, args,
+                                                 self._tree.add_keyword_controller)
+        except ValueError, err:
+            wx.MessageBox(unicode(err))
+
+    def _name_and_args_for_new_keyword(self):
+        currow, curcol = self.selection.cell
+        rowdata = self._remove_comments(self._strip_trailing_empty_cells(self._row_data(currow)))
+        return rowdata[curcol], rowdata[curcol + 1:]
+
+    def _remove_comments(self, data):
+        for index, cell in enumerate(data):
+            if cell.strip().startswith('#'):
+                return data[:index]
+        return data
+
+    def OnExtractKeyword(self, event):
+        self._save_keywords()
+        dlg = UserKeywordNameDialog(wx.GetTopLevelParent(self), self._controller)
+        if dlg.ShowModal() == wx.ID_OK:
+            name, args = dlg.get_value()
+        selected_rows = self.selection.topleft.row, self.selection.bottomright.row
+        self._controller.extract_keyword(name, args, selected_rows,
+                                         self._tree.add_keyword_controller)
+        self._write_keywords(self._controller.steps)
 
 
 class ContentAssistCellEditor(grid.PyGridCellEditor):
