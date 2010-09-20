@@ -189,10 +189,15 @@ class KeywordEditor(KeywordEditorUi):
         return data
 
     def OnExtractKeyword(self, event):
+        self._save_keywords()
         dlg = UserKeywordNameDialog(wx.GetTopLevelParent(self), self._controller)
         if dlg.ShowModal() == wx.ID_OK:
             name, args = dlg.get_value()
-        self._controller.extract_user_keyword()
+        selected_rows = self.selection.topleft.row, self.selection.bottomright.row
+        self._controller.extract_keyword(name, args, selected_rows,
+                                         self._tree.add_keyword_controller)
+        self.ClearGrid()
+        self._write_keywords(self._controller.steps)
 
     def _make_bindings(self):
         self.Bind(grid.EVT_GRID_EDITOR_SHOWN, self.OnEditor)
