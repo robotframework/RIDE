@@ -117,7 +117,7 @@ class DocumentationController(_SettingController):
         return self._unescape_newlines_and_handle_escaped_backslashes(self.value)
 
     def _set_editable_value(self, value):
-        self.set_value(self._escape_newlines(value))
+        self.set_value(self._escape_newlines_and_leading_hash(value))
 
     editable_value = property(_get_editable_value, _set_editable_value)
 
@@ -136,9 +136,11 @@ class DocumentationController(_SettingController):
             return '\\' * (blashes - 1) + '\n'
         return match.group()
 
-    def _escape_newlines(self, item):
+    def _escape_newlines_and_leading_hash(self, item):
         for newline in ('\r\n', '\n', '\r'):
             item = item.replace(newline, '\\n')
+        if item.strip().startswith('#'):
+            item = '\\' + item
         return item
 
 
