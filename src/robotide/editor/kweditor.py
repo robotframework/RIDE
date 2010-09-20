@@ -263,7 +263,11 @@ class KeywordEditor(KeywordEditorUi):
         event.Skip()
 
     def OnKey(self, event):
+        # TODO: Cleanup
         keycode, control_down = event.GetKeyCode(), event.ControlDown()
+        if keycode == ord('A') and control_down:
+            self.SelectAll()
+            return
         if keycode == wx.WXK_CONTROL and self._tooltip.IsShown():
             return
         self.hide_tooltip()
