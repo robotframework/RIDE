@@ -220,6 +220,17 @@ class TestKeywordSuggestions(_DataFileTest):
         sugs = self.ns.get_suggestions_for(self.tcf_ctrl, '${libna')
         assert_true(len(sugs) == 1)
 
+    def test_variable_sources(self):
+        everything_tcf = self._get_controller(TESTCASEFILE_WITH_EVERYTHING)
+        self._check_source(everything_tcf, '${arg}', 'everything.html')
+        self._check_source(everything_tcf, '@{list}', 'everything.html')
+        self._check_source(everything_tcf, '${dynamic var}', 'dynamic_varz.py')
+        self._check_source(everything_tcf, '${OPERATING SYSTEM}', 'another_resource.html')
+
+    def _check_source(self, controller, name, source):
+        sugs = self.ns.get_suggestions_for(controller, name)
+        assert_equals(len(sugs), 1)
+        assert_equals(sugs[0].source, source)
 
     def _assert_import_kws(self, sugs, source):
         assert_true(len(sugs) > 0)
@@ -308,12 +319,13 @@ class TestVariableStash(unittest.TestCase):
         var_table.add('${var1}', '${unresolvable variable}')
         var_table.add('${var2}', 'bar')
         vars.set_from_variable_table(var_table)
-        assert_true('${var1}' in vars._vars)
-        assert_true('${var2}' in vars._vars)
+        assert_true('${var1}' in [v.name for v in vars])
+        assert_true('${var2}' in [v.name for v in vars])
 
     def test_has_default_values(self):
         vars = _VariableStash()
-        assert_equals(vars._vars['${SPACE}'],' ')
+        assert_true('${SPACE}' in [v.name for v in vars])
+
 
 class TestResourceGetter(_DataFileTest):
 

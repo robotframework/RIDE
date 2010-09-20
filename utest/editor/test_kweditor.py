@@ -252,9 +252,21 @@ class TestActions(unittest.TestCase):
                       ('kw2', ['arg1']))
 
     def test_comments_are_ignored_when_keyword_is_created(self):
-        self._editor.SelectBlock(3, 1, 3, 5)
+        self._editor.SelectBlock(3, 1, 3, 1)
         assert_equals(self._editor._name_and_args_for_new_keyword(),
                       ('kw4', ['a']))
+
+    def test_creating_with_empty_value(self):
+        self._editor.SelectBlock(0, 1, 0, 1)
+        assert_equals(self._editor._name_and_args_for_new_keyword(),
+                      ('', []))
+
+    def test_empty_cell_between_arg_and_col(self):
+        for col, val in enumerate(['Kw name', 'arg', '', '#Comment']):
+            self._editor.write_cell(4, col, val, False)
+        self._editor.SelectBlock(4, 0, 4, 0)
+        assert_equals(self._editor._name_and_args_for_new_keyword(),
+                      ('Kw name', ['arg']))
 
 
 if __name__ == '__main__':
