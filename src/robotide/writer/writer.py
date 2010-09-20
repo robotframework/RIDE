@@ -22,10 +22,10 @@ from robot.parsing.settings import Documentation
 from robotide import utils
 
 
-def FileWriter(path, output, name=None, template=None):
+def FileWriter(path, output, name=None, template=None, pipe_separator=False):
     ext = os.path.splitext(path)[1].lower()
     try:
-        Writer = {'.tsv': TsvFileWriter, '.txt': TxtFileWriter}[ext]
+        Writer = {'.tsv': TsvFileWriter, '.txt': TxtFileWriter(pipe_separator)}[ext]
         return Writer(output)
     except KeyError:
         return HtmlFileWriter(output, path, name, template)
@@ -162,8 +162,10 @@ class TsvFileWriter(_WriterHelper):
         for row in self._split_data(data, indent):
             self._writer.writerow(self._add_padding(row))
 
+def TxtFileWriter(pipe_separator=False):
+    return PipeSeparatedTxtWriter if pipe_separator else SpaceSeparatedTxtWriter
 
-class TxtFileWriter(_WriterHelper):
+class SpaceSeparatedTxtWriter(_WriterHelper):
     _setting_titles = 'Settings'
     _variable_titles = 'Variables'
     _testcase_titles = 'Test Cases'
@@ -190,19 +192,30 @@ class TxtFileWriter(_WriterHelper):
             self._write_data(content)
 
     def _write_header(self, title):
-        self._write_row('*** %s ***' % title)
+        self._write_row([('*** %s ***' % title)])
 
     def _write_data(self, data, indent=0):
         data[1:] = [ d.strip() or '${EMPTY}' for d in data[1:] ]
         if data and data[0].strip() == '':
             data[0] = '\\' # support FOR and PARALLEL blocks
         for row in self._split_data(self._encode(data)):
-            self._write_row('  '.join(row), indent)
+            self._write_row(row, indent)
 
-    def _write_row(self, text, indent=0):
+    def _write_row(self, cells, indent=0):
         if indent:
-            self._output.write('    ')
-        self._output.write(text + os.linesep)
+            cells.insert(0,'  ')
+        self._output.write(self._format_row(cells) + os.linesep)
+
+    def _format_row(self, cells):
+        return '  '.join(cells)
+
+
+class PipeSeparatedTxtWriter(SpaceSeparatedTxtWriter):
+
+    def _format_row(self, cells):
+        if not cells:
+            return ''
+        return '| %s |' % (' | '.join(cells))
 
 
 class HtmlFileWriter(_WriterHelper):

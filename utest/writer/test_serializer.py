@@ -83,9 +83,9 @@ class _TestSerializer(object):
                     comment='step 2 comment')
         tc.teardown.populate(['1 minute', 'args'])
 
-    def get_serialization_output(self, datafile):
+    def get_serialization_output(self, datafile, pipe_separator=False):
         output = StringIO.StringIO()
-        Serializer(output).serialize(datafile)
+        Serializer(output, pipe_separator=pipe_separator).serialize(datafile)
         return output.getvalue()
 
 
@@ -145,6 +145,68 @@ My Test Case
 
     def test_serializer_with_txt_test_case_file(self):
         assert_repr(self.get_serialization_output(TestCaseFileController(self.txt_tcf)),
+                      self.settings_table +
+                      self.variables_table +
+                      self.testcase_table +
+                      self.keywords_table)
+
+
+class TestPipeTxtSerialization(unittest.TestCase, _TestSerializer):
+
+    settings_table = '''| *** Settings *** |
+| Library        | MyLibrary | argument | WITH NAME | My Alias | # My library comment |
+| Variables      | MyVariables | args | args 2 | args 3 | args 4 | args 5 | args 6 |
+| ... | args 7 | args 8 | args 9 | args 10 | args 11 | args 12 |
+| Resource       | MyResource args that are part of the name |
+
+'''
+
+    variables_table = '''| *** Variables *** |
+| MyVar | val1 | val2 | val3 | val4 | val5 | val6 | val6 |
+| ... | val7 | val8 | val9 | # var comment |
+
+'''
+
+    testcase_table = '''| *** Test Cases *** |
+| My Test Case |
+|    | [Documentation] | This is a long comment that spans several columns |
+|    | My TC Step 1 | my step arg | # step 1 comment |
+|    | My TC Step 2 | my step 2 arg | second arg | # step 2 comment |
+|    | [Teardown] | 1 minute | args |
+
+'''
+
+    keywords_table = '''| *** Keywords *** |
+| My Keyword |
+|    | [Documentation] | Documentation | # Comment for doc |
+|    | # Comment row |
+|    | # Comment row 2 |
+|    | My Step 1 | args | args 2 | args 3 | args 4 | args 5 | args 6 | args 7 |
+|    | ... | args 8 | args 9 | # step 1 comment |
+|    | : FOR | ${param1} | ${param2} | IN | ${data 1} | ${data 2} | ${data 3} | ${data 4} |
+|    | ... | ${data 5} | ${data 6} |
+|    | \ | Loop Step | args | args 2 | args 3 | args 4 | args 5 | args 6 |
+|    | ... | args 7 | args 8 | args 9 | # loop step comment |
+|    | \ | Loop Step 2 |
+|    | My Step 2 | my step 2 arg | second arg | # step 2 comment |
+|    | [Return] | args 1 | args 2 |
+
+'''
+
+    def setUp(self):
+        self.txt_rf = self.get_resource_file()
+        self.txt_rf.source = '/tmp/not_real_path/rf.txt'
+        self.txt_tcf = self.get_test_case_file()
+        self.txt_tcf.source = '/tmp/not_real_path/tcf.txt'
+
+    def test_serializer_with_txt_resource_file(self):
+        assert_repr(self.get_serialization_output(ResourceFileController(self.txt_rf), True),
+                      self.settings_table +
+                      self.variables_table +
+                      self.keywords_table)
+
+    def test_serializer_with_txt_test_case_file(self):
+        assert_repr(self.get_serialization_output(TestCaseFileController(self.txt_tcf), True),
                       self.settings_table +
                       self.variables_table +
                       self.testcase_table +

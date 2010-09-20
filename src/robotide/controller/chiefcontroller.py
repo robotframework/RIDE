@@ -183,7 +183,8 @@ class ChiefController(object):
         if not controller.has_format():
             return
         RideSaving(path=controller.source).publish()
-        serializer = Serializer()
+        use_pipe = context.SETTINGS.get('txt format separator', 'space') == 'pipe'
+        serializer = Serializer(pipe_separator=use_pipe)
         serializer.serialize(controller)
         controller.unmark_dirty()
         RideSaved(path=controller.source).publish()
