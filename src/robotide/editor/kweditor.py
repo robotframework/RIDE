@@ -47,15 +47,11 @@ class KeywordEditorUi(GridEditor, RideEventHandler):
     def _remove_selected_rows(self):
         """If whole row(s) are selected, remove them from the grid"""
         self._update_history()
-        for row in sorted(self.GetSelectedRows(), reverse=True):
+        for row in sorted(self.selection.rows(), reverse=True):
             self.DeleteRows(row, 1)
 
     def _get_selected_rows(self):
-        rows = self.GetSelectedRows()
-        if not rows:
-            rows = self._active_row and [self._active_row] or \
-                    [self.selection.topleft.row]
-        return rows
+        return self.selection.rows()
 
     def _toggle_underlined(self, cell):
         font = self.GetCellFont(cell.Row, cell.Col)
