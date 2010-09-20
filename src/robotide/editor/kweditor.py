@@ -264,7 +264,7 @@ class KeywordEditor(KeywordEditorUi):
 
     def OnKey(self, event):
         # TODO: Cleanup
-        keycode, control_down = event.GetKeyCode(), event.ControlDown()
+        keycode, control_down = event.GetKeyCode(), event.CmdDown()
         if keycode == ord('A') and control_down:
             self.SelectAll()
             return
