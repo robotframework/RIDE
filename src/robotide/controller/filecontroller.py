@@ -15,6 +15,7 @@
 import os
 
 from robot.parsing.tablepopulators import UserKeywordPopulator, TestCasePopulator
+from robot.parsing.model import Step
 
 from robotide.robotapi import (TestDataDirectory, TestCaseFile, DataRow,
                                is_list_var, is_scalar_var, ResourceFile)
@@ -496,12 +497,26 @@ class _WithStepsController(object):
         observer(controller)
 
     def extract_keyword(self, name, argstr, step_range, observer):
+        extracted_steps = self._extract_steps(step_range)
+        self._replace_steps_with_kw(name, step_range)
+        observer(self._create_extracted_kw(name, argstr, extracted_steps))
+
+    def _extract_steps(self, step_range):
         rem_start, rem_end = step_range
-        new_steps = self.data.steps[rem_start:rem_end]
-        self.data.steps = self.data.steps[:rem_start] + self.data.steps[rem_end:]
-        controller = self.datafile_controller.new_keyword(name, '')
-        controller.set_steps(new_steps)
-        observer(controller)
+        extracted_steps = self.data.steps[rem_start:rem_end + 1]
+        return extracted_steps
+
+    def _replace_steps_with_kw(self, name, step_range):
+        steps_before_extraction_point = self.data.steps[:step_range[0]]
+        extracted_kw_step = [Step([name])]
+        steps_after_extraction_point = self.data.steps[step_range[1] + 1:]
+        self.set_steps(steps_before_extraction_point + extracted_kw_step + 
+                       steps_after_extraction_point)
+
+    def _create_extracted_kw(self, name, argstr, extracted_steps):
+        controller = self.datafile_controller.new_keyword(name, argstr)
+        controller.set_steps(extracted_steps)
+        return controller
 
     def validate_name(self, name):
         return self._parent.validate_name(name)
@@ -533,6 +548,9 @@ class TestCaseController(_WithStepsController):
 
     def validate_test_name(self, name):
         return self._parent.validate_name(name)
+
+    def validate_keyword_name(self, name):
+        return self.datafile_controller.validate_keyword_name(name)
 
     def get_local_variables(self):
         return {}
