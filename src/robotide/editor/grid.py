@@ -134,6 +134,14 @@ class GridEditor(grid.Grid):
     def OnRangeSelect(self, event):
         if event.Selecting():
             self.selection.set_from_range_selection(self, event)
+            self._ensure_selected_row_is_visible(event.BottomRow)
+
+    def _ensure_selected_row_is_visible(self, bottom_row):
+        if not self.IsVisible(bottom_row , 0) and bottom_row < self.NumberRows:
+            self.MakeCellVisible(bottom_row, 0)
+            self.SelectRow(bottom_row + 1, True)
+            self.selection._set((self.selection.topleft.row, self.selection.topleft.col),
+                                (self.selection.bottomright.row + 1, self.selection.bottomright.col))
 
     def OnCellRightClick(self, event):
         PopupMenu(self, self._popup_items)
