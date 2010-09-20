@@ -51,7 +51,10 @@ class ItemInfo(object):
 class VariableInfo(ItemInfo):
 
     def __init__(self, name, value, source):
-        ItemInfo.__init__(self, name, source, self._details(name, source, value))
+        ItemInfo.__init__(self, name, self._source_name(source), self._details(name, source, value))
+
+    def _source_name(self, source):
+        return os.path.basename(source) if source else ''
 
     def _details(self, name, source, value):
         prefix = 'Source: %s<br><br>Value: ' % source

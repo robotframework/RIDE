@@ -36,14 +36,14 @@ class ValueEditor(wx.Panel):
     def _create_editor(self, value, label):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         if label:
-            sizer.Add(wx.StaticText(self, label=label, size=(80,-1)), 0, wx.ALL, 5)
+            sizer.Add(wx.StaticText(self, label=label, size=(80, -1)), 0, wx.ALL, 5)
         self._editor = self._get_text_ctrl()
         self._editor.AppendText(value)
         sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
         self._sizer.Add(sizer, 1, wx.EXPAND)
 
     def _get_text_ctrl(self):
-        return wx.TextCtrl(self, size=(600,-1))
+        return wx.TextCtrl(self, size=(600, -1))
 
     def set_validator(self, validator):
         self._editor.SetValidator(validator)
@@ -66,12 +66,12 @@ class VariableNameEditor(ValueEditor):
         wx.CallAfter(self.SetSelection, event.GetEventObject())
 
     def SetSelection(self, event):
-        self._editor.SetSelection(2, len(self._editor.Value)-1)
+        self._editor.SetSelection(2, len(self._editor.Value) - 1)
 
 
 class ListValueEditor(ValueEditor):
     expand_factor = 1
-    _sizer_flags_for_editor = wx.ALL|wx.EXPAND
+    _sizer_flags_for_editor = wx.ALL | wx.EXPAND
 
     def _create_editor(self, value, label):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -90,14 +90,14 @@ class ListValueEditor(ValueEditor):
         return sizer
 
     def _create_label(self, label_text):
-        return wx.StaticText(self, label=label_text, size=(80,-1))
+        return wx.StaticText(self, label=label_text, size=(80, -1))
 
     def _create_column_selector(self, cols):
         sizer = wx.BoxSizer(wx.VERTICAL)
         col_label = wx.StaticText(self, label='Columns', size=(80, -1))
         sizer.Add(col_label, 0, wx.ALL, 5)
         combo = wx.ComboBox(self, value=str(cols), size=(60, 25),
-                            choices=[str(i) for i in range(1,11)])
+                            choices=[str(i) for i in range(1, 11)])
         combo.SetToolTip(wx.ToolTip('Number of columns that are shown in this '
                                     'editor. Selected value is stored and used '
                                     'globally.'))
@@ -114,7 +114,7 @@ class ListValueEditor(ValueEditor):
         self._editor.add_row()
 
     def OnSize(self, event):
-        self._editor.resize_columns(event.Size[0]-110)
+        self._editor.resize_columns(event.Size[0] - 110)
         event.Skip()
 
     def get_value(self):
@@ -145,10 +145,11 @@ class _EditorGrid(GridEditor):
                 (ctrl_or_cmd(), ord('x'), self.OnCut),
                 (ctrl_or_cmd(), ord('v'), self.OnPaste),
                 (ctrl_or_cmd(), ord('z'), self.OnUndo),
+                (ctrl_or_cmd(), ord('a'), self.OnSelectAll),
                 (wx.ACCEL_NORMAL, wx.WXK_DELETE, self.OnDelete)]
 
     def _create_grid(self, value, num_cols):
-        num_rows = len(value)/num_cols + 2
+        num_rows = len(value) / num_cols + 2
         self.CreateGrid(num_rows, num_cols)
 
     def _write_content(self, value):
@@ -168,7 +169,7 @@ class _EditorGrid(GridEditor):
         return value
 
     def OnEditorShown(self, event):
-        if event.Row >= self.NumberRows-1:
+        if event.Row >= self.NumberRows - 1:
             self.AppendRows(1)
 
     def OnInsertCells(self, event):
@@ -176,7 +177,7 @@ class _EditorGrid(GridEditor):
             self._insert_cells_to_multiple_rows(event)
             return
         def insert_cells(data, start, end):
-            return data[:start] + [''] * (end-start) + data[start:]
+            return data[:start] + [''] * (end - start) + data[start:]
         self._insert_or_delete_cells_on_single_row(insert_cells, event)
 
     def OnDeleteCells(self, event):
@@ -191,8 +192,8 @@ class _EditorGrid(GridEditor):
         self._update_history()
         value = self.get_value()
         row, col = self.selection.cell
-        start = row*self.NumberCols + col
-        data = action(value, start, start+len(self.selection.cols()))
+        start = row * self.NumberCols + col
+        data = action(value, start, start + len(self.selection.cols()))
         self._write_content(data)
         event.Skip()
 
@@ -217,8 +218,11 @@ class _EditorGrid(GridEditor):
     def OnUndo(self, event):
         self.undo()
 
+    def OnSelectAll(self, event):
+        self.SelectAll()
+
     def resize_columns(self, width):
-        self.SetDefaultColSize(max(width/self.NumberCols, 100), True)
+        self.SetDefaultColSize(max(width / self.NumberCols, 100), True)
 
     def set_number_of_columns(self, columns):
         new_cols = columns - self.NumberCols
@@ -234,11 +238,11 @@ class _EditorGrid(GridEditor):
         if new_cols > 0:
             self.AppendCols(numCols=new_cols)
         else:
-            self.DeleteCols(numCols=-new_cols)
+            self.DeleteCols(numCols= -new_cols)
 
 
 class MultiLineEditor(ValueEditor):
-    _sizer_flags_for_editor = wx.ALL|wx.EXPAND
+    _sizer_flags_for_editor = wx.ALL | wx.EXPAND
 
     def _get_text_ctrl(self):
         return wx.TextCtrl(self, style=wx.TE_MULTILINE, size=(600, 400))

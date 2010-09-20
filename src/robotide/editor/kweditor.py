@@ -175,12 +175,18 @@ class KeywordEditor(KeywordEditorUi):
             self._controller.create_user_keyword(name, args,
                                                  self._tree.add_keyword_controller)
         except ValueError, err:
-            wx.MessageBox(unicode(err))
+            wx.MessageBox(unicode(err), 'Validation Error', style=wx.ICON_ERROR)
 
     def _name_and_args_for_new_keyword(self):
+        data_cells = self._data_cells_from_current_row()
+        if not data_cells:
+            return '', []
+        return data_cells[0], data_cells[1:]
+
+    def _data_cells_from_current_row(self):
         currow, curcol = self.selection.cell
-        rowdata = self._remove_comments(self._strip_trailing_empty_cells(self._row_data(currow)))
-        return rowdata[curcol], rowdata[curcol + 1:]
+        rowdata = self._row_data(currow)
+        return self._strip_trailing_empty_cells(self._remove_comments(rowdata[curcol:]))
 
     def _remove_comments(self, data):
         for index, cell in enumerate(data):
@@ -192,7 +198,7 @@ class KeywordEditor(KeywordEditorUi):
         dlg = UserKeywordNameDialog(wx.GetTopLevelParent(self), self._controller)
         if dlg.ShowModal() == wx.ID_OK:
             name, args = dlg.get_value()
-        self._controller.extract_user_keyword()
+            self._controller.extract_user_keyword(name, args)
 
     def _make_bindings(self):
         self.Bind(grid.EVT_GRID_EDITOR_SHOWN, self.OnEditor)
@@ -287,10 +293,17 @@ class KeywordEditor(KeywordEditorUi):
         event.Skip()
 
     def OnKey(self, event):
+        # TODO: Cleanup
         keycode, control_down = event.GetKeyCode(), event.ControlDown()
+        if keycode == ord('A') and control_down:
+            self.SelectAll()
+            return
         if keycode == wx.WXK_CONTROL and self._tooltip.IsShown():
             return
         self.hide_tooltip()
+        if keycode == wx.WXK_WINDOWS_MENU:
+            self.OnCellRightClick(event)
+            return
         if control_down or keycode not in [wx.WXK_RETURN, wx.WXK_BACK]:
             event.Skip()
             return

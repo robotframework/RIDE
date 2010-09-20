@@ -1,10 +1,7 @@
 *** Settings ***
-Library  AutoItLibrary
-
-
+Resource        atest_resources.txt
 
 *** Keywords ***
-
 Add Data To Row
     [Arguments]  ${row}  @{cells}
     ${len} =  Get Length  ${cells}
@@ -31,10 +28,37 @@ Select Row From Editor
 
 Select Rows From Editor
     [Arguments]  @{rows}
-	FAIL  Not working
+    FAIL  Not working
     Win Activate  RIDE
     Send  {CTRLDOWN}
     : FOR  ${row}  IN  @{rows}
     \  Run Keyword And Continue On Failure  Select Row From Editor  ${row}
     Send  {CTRLUP}
+
+Create User Keyword
+    Select From Context Menu  7
+
+Get Arguments
+    ${value} =  Get From Editor  Button3  Arguments
+    [Return]  ${value}
+
+Set Documentation
+    [Arguments]  ${text}
+    Set To Editor  Button1  Documentation  ${text}
+
+Set To Editor
+    [Arguments]  ${button}  ${dialog name}  ${value}  ${comment}=${NONE}
+    Control Click  RIDE  ${EMPTY}  ${button}
+    Wait For Active Window  ${dialog name}
+    Control Set Text  ${dialog name}  ${EMPTY}  Edit1  ${value}
+    Run Keyword If  """${comment}""" != """None"""  Control Set Text  ${dialog name}  ${EMPTY}  Edit2  ${comment}
+    Control Click  ${dialog name}  ${EMPTY}  Button1
+
+Get From Editor
+    [Arguments]  ${button}  ${dialog name}
+    Control Click  RIDE  ${EMPTY}  ${button}
+    Wait For Active Window  ${dialog name}
+    ${value} =  Control Get Text  ${dialog name}  ${EMPTY}  Edit1
+    Control Click  ${dialog name}  ${EMPTY}  Button2
+    [Return]  ${value}
 

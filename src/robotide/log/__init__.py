@@ -12,25 +12,4 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import re
-
-from robotide.robotapi import is_var
-
-
-def parse_arguments_to_var_dict(args):
-    result = {}
-    for arg in args:
-        parsed = parse_argument(arg)
-        if parsed:
-            result[parsed[0]] = parsed[1]
-    return result
-
-default_val_regexp = re.compile(r'([$@]\{.*\})\s*=\s*(.*)')
-
-def parse_argument(argument):
-    match = default_val_regexp.match(argument)
-    if match:
-        return (match.group(1), match.group(2))
-    if is_var(argument):
-        return (argument, None)
-    return None
+from log import LogPlugin

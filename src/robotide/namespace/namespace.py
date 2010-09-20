@@ -27,7 +27,7 @@ from robotide.namespace.cache import LibraryCache, ExpiringCache
 from robotide.spec.iteminfo import (TestCaseUserKeywordInfo,
                                     ResourceseUserKeywordInfo,
                                     VariableInfo, _UserKeywordInfo)
-from robotide.robotapi import NormalizedDict
+from robotide.robotapi import NormalizedDict, is_var
 from robotide import utils
 
 
@@ -93,12 +93,12 @@ class Namespace(object):
         source = os.path.basename(datafile.source) if datafile.source else ''
         vars = self.retriever.get_variables_from(datafile)
         self._add_kw_arg_vars(controller, vars)
-        return [VariableInfo(k, v, source) for k, v in vars.items()
-                if normalize(k).startswith(start_normalized)]
+        return [v for v in vars
+                if normalize(v.name).startswith(start_normalized)]
 
     def _add_kw_arg_vars(self, controller, vars):
         for name, value in controller.get_local_variables().iteritems():
-            vars[name] = value
+            vars.set(name, value, controller.datafile.source)
 
     def _keyword_suggestions(self, datafile, start):
         start_normalized = normalize(start)
@@ -197,7 +197,7 @@ class RetrieverContext(object):
         self.parsed = set()
 
 
-class _VariableStash(RobotVariables):
+class _VariableStash(object):
 
     # Relevant global variables copied from robot.variables.__init__.py
     global_variables =  {'${TEMPDIR}': os.path.normpath(tempfile.gettempdir()),
@@ -208,22 +208,38 @@ class _VariableStash(RobotVariables):
                          '${EMPTY}': ''}
 
     def __init__(self):
-        RobotVariables.__init__(self)
+        self._vars = RobotVariables()
+        self._sources = {}
         for k, v in self.global_variables.iteritems():
-            self[k] = v
+            self.set(k, v, 'Global')
+
+    def set(self, name, value, source):
+        self._vars[name] = value
+        self._sources[name] = source
 
     def replace_variables(self, value):
-        return self.replace_string(value, ignore_errors=True)
+        return self._vars.replace_string(value, ignore_errors=True)
 
     def set_from_variable_table(self, variable_table):
         for variable in variable_table:
             try:
-                name, value = self._get_var_table_name_and_value(variable.name,
+                name, value = self._vars._get_var_table_name_and_value(variable.name,
                                                                  variable.value)
-                if not utils.NormalizedDict.has_key(self, name):
-                    self[name] = value
+                if not self._vars.has_key(name):
+                    self.set(name, value, variable_table.source)
             except DataError:
-                pass
+                if is_var(variable.name):
+                    self.set(variable.name, '', variable_table.source)
+
+    def set_from_file(self, varfile_path, args):
+        temp = RobotVariables()
+        temp.set_from_file(varfile_path, args)
+        for (name, value) in temp.items():
+            self.set(name, value, varfile_path)
+
+    def __iter__(self):
+        for name, value in self._vars.items():
+            yield VariableInfo(name, list(value or ''), self._sources[name])
 
 
 class DatafileRetriever(object):
