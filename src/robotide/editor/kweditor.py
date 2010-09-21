@@ -147,8 +147,8 @@ class KeywordEditorUi(GridEditor, RideEventHandler):
 class KeywordEditor(KeywordEditorUi):
     dirty = property(lambda self: self._controller.dirty)
     _no_cell = grid.GridCellCoords(-1, -1)
-    _popup_items = GridEditor._popup_items + ['---', 'Create User Keyword',
-                                              'Extract Keyword']
+    _popup_items = ['Create User Keyword', 'Extract Keyword', '---'] + \
+            GridEditor._popup_items
 
     def __init__(self, parent, controller, tree):
         self._keywords = controller.steps
