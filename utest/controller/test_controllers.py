@@ -2,8 +2,8 @@ import unittest
 from robot.parsing import TestCase
 from robot.parsing.settings import Fixture, Documentation, Timeout, Tags, Return
 
-from robot.utils.asserts import assert_equals, assert_true, assert_false, assert_none, \
-    assert_raises_with_msg
+from robot.utils.asserts import (assert_equals, assert_true, assert_false,
+                                 assert_none, assert_raises_with_msg)
 from robotide.controller.settingcontroller import *
 from robotide.controller.filecontroller import *
 from robotide.controller.filecontroller import _WithListOperations
@@ -51,6 +51,11 @@ class DocumentationControllerTest(unittest.TestCase):
         self.ctrl.editable_value = test_text
         assert_equals(self.doc.value, 'My doc\\n with enters\\n and \t tabs')
         assert_equals(self.ctrl.editable_value, test_text)
+
+    def test_set_editable_value_should_escape_leading_hash(self):
+        self.ctrl.editable_value = '# Not # Comment'
+        assert_equals(self.doc.value, '\\# Not # Comment')
+        assert_equals(self.ctrl.editable_value, '\\# Not # Comment')
 
     def test_get_visible_value(self):
         self.doc.value = 'My doc \\n with enters \\n and \t tabs'
