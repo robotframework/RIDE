@@ -110,7 +110,7 @@ class _TextEditListCtrl(AutoWidthColumnList, TextEditMixin):
     def __init__(self, parent, columns, data):
         AutoWidthColumnList.__init__(self, parent, columns, data)
         TextEditMixin.__init__(self)
-        self._set_command_colum_width()
+        self._set_command_column_width()
         self.col_locs = self._calculate_col_locs()
         self._new_item_creation = False
 
