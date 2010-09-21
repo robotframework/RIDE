@@ -216,7 +216,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
 
     def _crete_editor_dialog(self):
         dlg_class = EditorDialog(self._controller)
-        return dlg_class(self.GetGrandParent(), self._datafile, self._controller)
+        return dlg_class(self._datafile, self._controller, self.plugin)
 
     def _set_value(self, value_list, comment):
         self._controller.set_value(*value_list)
@@ -328,7 +328,7 @@ class DocumentationEditor(SettingEditor):
         return self._controller.visible_value
 
     def _crete_editor_dialog(self):
-        return DocumentationDialog(self.GetGrandParent(), self._datafile,
+        return DocumentationDialog(self._datafile,
                                    self._controller.editable_value)
 
     def _set_value(self, value_list, comment):
@@ -420,7 +420,7 @@ class VariablesListEditor(_AbstractListEditor):
                             else ' | '.join(item.value), item.comment]
 
     def OnAddScalar(self, event):
-        dlg = ScalarVariableDialog(self.GetGrandParent(), self._controller)
+        dlg = ScalarVariableDialog(self._controller)
         if dlg.ShowModal() == wx.ID_OK:
             ctrl = self._controller.add_variable(*dlg.get_value())
             ctrl.set_comment(dlg.get_comment())
@@ -428,7 +428,7 @@ class VariablesListEditor(_AbstractListEditor):
         dlg.Destroy()
 
     def OnAddList(self, event):
-        dlg = ListVariableDialog(self.GetGrandParent(), self._controller)
+        dlg = ListVariableDialog(self._controller)
         if dlg.ShowModal() == wx.ID_OK:
             ctrl = self._controller.add_variable(*dlg.get_value())
             ctrl.set_comment(dlg.get_comment())
@@ -438,11 +438,9 @@ class VariablesListEditor(_AbstractListEditor):
     def OnEdit(self, event):
         var = self._controller[self._selection]
         if var.name.startswith('${'):
-            dlg = ScalarVariableDialog(self.GetGrandParent(),
-                                       self._controller, item=var)
+            dlg = ScalarVariableDialog(self._controller, item=var)
         else:
-            dlg = ListVariableDialog(self.GetGrandParent(),
-                                     self._controller, item=var)
+            dlg = ListVariableDialog(self._controller, item=var)
         if dlg.ShowModal() == wx.ID_OK:
             var.set_value(*dlg.get_value())
             var.set_comment(dlg.get_comment())
@@ -456,8 +454,7 @@ class ImportSettingListEditor(_AbstractListEditor):
 
     def OnEdit(self, event):
         setting = self._get_setting()
-        dlg = EditorDialog(setting)(self.GetGrandParent(), self._controller.datafile,
-                                    item=setting)
+        dlg = EditorDialog(setting)(self._controller.datafile, item=setting)
         if dlg.ShowModal() == wx.ID_OK:
             # TODO: Tree should listen to chief controller
             controller = setting.set_value(*dlg.get_value())
@@ -480,7 +477,7 @@ class ImportSettingListEditor(_AbstractListEditor):
                                         self._controller.add_variables)
 
     def _show_import_editor_dialog(self, dialog, creator):
-        dlg = dialog(self.GetGrandParent(), self._controller.datafile)
+        dlg = dialog(self._controller.datafile)
         if dlg.ShowModal() == wx.ID_OK:
             ctrl = creator(*dlg.get_value())
             ctrl.set_comment(dlg.get_comment())
@@ -501,8 +498,7 @@ class MetadataListEditor(_AbstractListEditor):
 
     def OnEdit(self, event):
         meta = self._controller[self._selection]
-        dlg = MetadataDialog(self.GetGrandParent(), self._controller.datafile,
-                             item=meta)
+        dlg = MetadataDialog(self._controller.datafile, item=meta)
         if dlg.ShowModal() == wx.ID_OK:
             meta.set_value(*dlg.get_value())
             meta.set_comment(dlg.get_comment())
@@ -510,7 +506,7 @@ class MetadataListEditor(_AbstractListEditor):
         dlg.Destroy()
 
     def OnAddMetadata(self, event):
-        dlg = MetadataDialog(self.GetGrandParent(), self._controller.datafile)
+        dlg = MetadataDialog(self._controller.datafile)
         if dlg.ShowModal() == wx.ID_OK:
             ctrl = self._controller.add_metadata(dlg.get_value())
             ctrl.set_comment(dlg.get_comment())

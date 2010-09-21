@@ -450,7 +450,6 @@ class _ActionHandler(wx.Window):
         self._tree = tree
         self._node = node
         self._rendered = False
-        self._mainframe = wx.GetTopLevelParent(self._tree)
         self.Show(False)
 
     def show_popup(self):
@@ -458,8 +457,7 @@ class _ActionHandler(wx.Window):
 
     def OnChangeFormat(self, event):
         format =self.controller.get_format() or 'txt'
-        dlg = ChangeFormatDialog(self, format,
-                                 self.controller.is_directory_suite())
+        dlg = ChangeFormatDialog(format, self.controller.is_directory_suite())
         if dlg.ShowModal() == wx.ID_OK:
             self._handle_format_change(dlg)
         dlg.Destroy()
@@ -513,7 +511,7 @@ class TestDataDirectoryHandler(_ActionHandler):
         dlg.Destroy()
 
     def OnNewUserKeyword(self, event):
-        dlg = UserKeywordNameDialog(self._mainframe, self.controller)
+        dlg = UserKeywordNameDialog(self.controller)
         if dlg.ShowModal() == wx.ID_OK:
             kw = self.controller.new_keyword(dlg.get_name(), dlg.get_args())
             self._tree.add_keyword(self._node, kw)
@@ -530,7 +528,7 @@ class TestCaseFileHandler(TestDataDirectoryHandler):
     _actions = ['New Test Case', 'New User Keyword', '---', 'Change Format']
 
     def OnNewTestCase(self, event):
-        dlg = TestCaseNameDialog(self._mainframe, self.controller)
+        dlg = TestCaseNameDialog(self.controller)
         if dlg.ShowModal() == wx.ID_OK:
             test = self.controller.new_test(dlg.get_name())
             self._tree.add_test(self._node, test)
@@ -560,7 +558,7 @@ class _TestOrUserKeywordHandler(_ActionHandler):
         return True
 
     def OnCopy(self, event):
-        dlg = self._dialog_class(self._mainframe, self.controller, self.item)
+        dlg = self._dialog_class(self.controller, self.item)
         if dlg.ShowModal() == wx.ID_OK:
             copied = self.controller.copy(dlg.get_name())
             self._add_copy_to_tree(self._tree.GetItemParent(self._node), copied)

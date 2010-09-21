@@ -16,6 +16,8 @@ import re
 import sys
 import wx
 
+from robotide.widgets import Dialog
+
 
 class Logger(object):
     empty_suite_init_file_warn = re.compile("Test suite directory initialization "
@@ -30,8 +32,7 @@ class Logger(object):
             # Warnings from robot.variables.Variables.set_from_variable_table
             # are present multiple times, issue 486.
             errors = set(errors)
-            dlg = ErrorMessageDialog('Parsing errors',
-                                     '\n'.join(self._format_parsing_error_line(line)
+            dlg = ParsingErrorDialog('\n'.join(self._format_parsing_error_line(line)
                                                for line in errors))
             dlg.ShowModal()
             dlg.Destroy()
@@ -73,10 +74,10 @@ class Logger(object):
             sys.stderr.write('%s: %s\n' % (level, msg))
 
 
-class ErrorMessageDialog(wx.Dialog):
+class ParsingErrorDialog(Dialog):
 
-    def __init__(self, title, message):
-        wx.Dialog.__init__(self, None, size=(700, 400), title=title,
-                           style=wx.DEFAULT_FRAME_STYLE)
+    def __init__(self, message):
+        Dialog.__init__(self, title='Parsing errors', size=(700, 400),
+                        style=wx.DEFAULT_FRAME_STYLE)
         area = wx.TextCtrl(self, size=(700,400), style=wx.TE_MULTILINE|wx.TE_DONTWRAP|wx.TE_READONLY)
         area.SetValue(message)

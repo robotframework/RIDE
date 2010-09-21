@@ -15,12 +15,13 @@
 import wx
 
 from robotide.validators import (ScalarVariableNameValidator,
-                                ListVariableNameValidator, TimeoutValidator, 
+                                ListVariableNameValidator, TimeoutValidator,
                                 NonEmptyValidator, ArgumentsValidator,
                                 TestCaseNameValidator, UserKeywordNameValidator)
 from robotide import utils
 from robotide.context import Font
 
+from robotide.widgets import Dialog
 from fieldeditors import ValueEditor, ListValueEditor, MultiLineEditor,\
     ContentAssistEditor, VariableNameEditor
 from dialoghelps import get_help
@@ -30,15 +31,15 @@ def EditorDialog(obj):
     return globals()[obj.label.replace(' ', '') + 'Dialog']
 
 
-class _Dialog(wx.Dialog):
+class _Dialog(Dialog):
     _title = property(lambda self: utils.name_from_class(self, drop='Dialog'))
 
-    def __init__(self, parent, controller, item=None):
-        wx.Dialog.__init__(self, parent, -1, self._title,
-                           style=wx.DEFAULT_DIALOG_STYLE|wx.THICK_FRAME)
+    def __init__(self, controller, item=None, plugin=None):
+        Dialog.__init__(self, self._title)
         self.SetExtraStyle(wx.WS_EX_VALIDATE_RECURSIVELY)
         self._controller = controller
         self._item = item
+        self.plugin = plugin
         self._sizer = wx.BoxSizer(wx.VERTICAL)
         self._editors = self._get_editors(item)
         for editor in self._editors:
@@ -74,10 +75,6 @@ class _Dialog(wx.Dialog):
 
     def get_comment(self):
         return self._comment_editor.get_value()
-
-    @property
-    def plugin(self):
-        return self.Parent.plugin
 
 
 class ScalarVariableDialog(_Dialog):

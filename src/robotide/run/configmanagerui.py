@@ -16,6 +16,7 @@ import wx
 from wx.lib.mixins.listctrl import TextEditMixin
 
 from robotide.editor.listeditor import AutoWidthColumnList, ListEditorBase
+from robotide.widgets import Dialog
 from robotide.context import Font
 
 
@@ -35,12 +36,10 @@ command does not work.'''.replace('\n', ' '),
 ])
 
 
-class ConfigManagerDialog(wx.Dialog):
-    _style = wx.DEFAULT_DIALOG_STYLE | wx.THICK_FRAME
+class ConfigManagerDialog(Dialog):
 
     def __init__(self, configs):
-        wx.Dialog.__init__(self, wx.GetTopLevelWindows()[0], style=self._style,
-                           title='Manage Run Configurations')
+        Dialog.__init__(self, title='Manage Run Configurations')
         self._create_ui(configs)
 
     def _create_ui(self, configs):

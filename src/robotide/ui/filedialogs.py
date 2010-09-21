@@ -1,11 +1,11 @@
 #  Copyright 2008-2009 Nokia Siemens Networks Oyj
-#  
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,13 +19,14 @@ from wx.lib.filebrowsebutton import DirBrowseButton
 DirBrowseButton.createLabel = lambda self: wx.StaticText(self, size=(110, -1),
                                                          label=self.labelText)
 
+from robotide.widgets import Dialog
 from robotide.validators import NonEmptyValidator, NewSuitePathValidator
 
 
-class _CreationDialog(wx.Dialog):
+class _CreationDialog(Dialog):
 
-    def __init__(self, parent, default_dir, title):
-        sizer = self._init_dialog(parent, title)
+    def __init__(self, default_dir, title):
+        sizer = self._init_dialog(title)
         label_sizer = wx.BoxSizer(wx.VERTICAL)
         self._name_editor = self._create_name_editor(label_sizer)
         self._parent_chooser = self._create_parent_chooser(label_sizer, default_dir)
@@ -40,9 +41,8 @@ class _CreationDialog(wx.Dialog):
         self._finalize_dialog(sizer)
         self._name_editor.SetFocus()
 
-    def _init_dialog(self, parent, title):
-        wx.Dialog.__init__(self, parent, title=title,
-                           style=wx.DEFAULT_DIALOG_STYLE|wx.THICK_FRAME)
+    def _init_dialog(self, title):
+        Dialog.__init__(self, title)
         return wx.BoxSizer(wx.VERTICAL)
 
     def _finalize_dialog(self, sizer):
@@ -150,14 +150,14 @@ class _CreationDialog(wx.Dialog):
 
 class NewProjectDialog(_CreationDialog):
 
-    def __init__(self, parent, default_dir):
-        _CreationDialog.__init__(self, parent, default_dir, 'New Project')
+    def __init__(self, default_dir):
+        _CreationDialog.__init__(self, default_dir, 'New Project')
 
 
 class NewResourceDialog(_CreationDialog):
 
-    def __init__(self, parent, default_dir):
-        _CreationDialog.__init__(self, parent, default_dir, 'New Resource File')
+    def __init__(self, default_dir):
+        _CreationDialog.__init__(self, default_dir, 'New Resource File')
 
     def _create_type_chooser(self, sizer):
         return None
@@ -167,7 +167,7 @@ class AddSuiteDialog(_CreationDialog):
 
     def __init__(self, path):
         self._path = path
-        _CreationDialog.__init__(self, None, path, 'Add Suite')
+        _CreationDialog.__init__(self, path, 'Add Suite')
 
     def _create_parent_chooser(self, sizer, default_dir):
         return self._create_parent_display(sizer, self._path)
@@ -175,9 +175,9 @@ class AddSuiteDialog(_CreationDialog):
 
 class ChangeFormatDialog(_CreationDialog):
 
-    def __init__(self, parent, default_format, allow_recursive=False, 
+    def __init__(self, default_format, allow_recursive=False,
                  help_text=None):
-        sizer = self._init_dialog(parent, title='Data Format')
+        sizer = self._init_dialog('Data Format')
         self._create_help(sizer, help_text)
         self._chooser = self._create_format_chooser(sizer, callback=False)
         self._chooser.SetStringSelection(default_format)

@@ -20,13 +20,14 @@ from robotide.action import ActionInfoCollection, Action
 from robotide.publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER
 from robotide.utils import RideEventHandler, RideHtmlWindow
 from robotide.context import SETTINGS, ABOUT_RIDE
+from robotide.widgets import Dialog
 
 from actiontriggers import MenuBar, ToolBar, ShortcutRegistry
 from filedialogs import NewProjectDialog, NewResourceDialog, ChangeFormatDialog
 from pluginmanager import PluginManager
 from tree import Tree
 from notebook import NoteBook
-from robotide.ui.progress import LoadProgressObserver
+from progress import LoadProgressObserver
 
 
 _menudata = """
@@ -113,7 +114,7 @@ class RideFrame(wx.Frame, RideEventHandler):
     def OnNewProject(self, event):
         if not self._check_unsaved_modifications():
             return
-        dlg = NewProjectDialog(self, self._default_dir)
+        dlg = NewProjectDialog(self._default_dir)
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.get_path()
             self._default_dir = os.path.dirname(path)
@@ -123,7 +124,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         dlg.Destroy()
 
     def OnNewResource(self, event):
-        dlg = NewResourceDialog(self, self._default_dir)
+        dlg = NewResourceDialog(self._default_dir)
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.get_path()
             self._default_dir = os.path.dirname(path)
@@ -197,7 +198,7 @@ class RideFrame(wx.Frame, RideEventHandler):
     def _show_format_dialog_for(self, file_controller_without_format):
         help = 'Please provide format of initialization file for directory suite\n"%s".' %\
                 file_controller_without_format.directory
-        dlg = ChangeFormatDialog(self, 'HTML', help_text=help)
+        dlg = ChangeFormatDialog('HTML', help_text=help)
         if dlg.ShowModal() == wx.ID_OK:
             file_controller_without_format.set_format(dlg.get_format())
         dlg.Destroy()
@@ -209,7 +210,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         self._plugin_manager.show(self._application.get_plugins())
 
     def OnAbout(self, event):
-        dlg = AboutDialog(self)
+        dlg = AboutDialog()
         dlg.ShowModal()
         dlg.Destroy()
 
@@ -262,10 +263,10 @@ class ActionRegisterer(object):
             self.register_action(action)
 
 
-class AboutDialog(wx.Dialog):
+class AboutDialog(Dialog):
 
-    def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, title='RIDE')
+    def __init__(self):
+        Dialog.__init__(self, title='RIDE')
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(RideHtmlWindow(self, (450, 200), ABOUT_RIDE))
         self.SetSizerAndFit(sizer)
