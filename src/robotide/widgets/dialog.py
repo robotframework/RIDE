@@ -22,4 +22,5 @@ class Dialog(wx.Dialog):
         # wx.THICK_FRAME allows resizing
         style = style or wx.DEFAULT_DIALOG_STYLE | wx.THICK_FRAME
         wx.Dialog.__init__(self, parent, title=title, size=size, style=style)
+        self.CenterOnParent()
 
