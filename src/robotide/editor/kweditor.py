@@ -388,11 +388,13 @@ class KeywordEditor(KeywordEditorUi):
 
     def OnExtractKeyword(self, event):
         self._save_keywords()
-        dlg = UserKeywordNameDialog(wx.GetTopLevelParent(self), self._controller)
+        dlg = UserKeywordNameDialog(self._controller)
         if dlg.ShowModal() == wx.ID_OK:
-            name, args = dlg.get_value()
-        selected_rows = self.selection.topleft.row, self.selection.bottomright.row
-        self._controller.extract_keyword(name, args, selected_rows,
+            self._extract_keyword(*dlg.get_value())
+
+    def _extract_keyword(self, name, args):
+        rows = self.selection.topleft.row, self.selection.bottomright.row
+        self._controller.extract_keyword(name, args, rows,
                                          self._tree.add_keyword_controller)
         self._write_keywords(self._controller.steps)
 
