@@ -147,7 +147,7 @@ class KeywordEditorUi(GridEditor, RideEventHandler):
 class KeywordEditor(KeywordEditorUi):
     dirty = property(lambda self: self._controller.dirty)
     _no_cell = grid.GridCellCoords(-1, -1)
-    _popup_items = ['Create User Keyword', 'Extract Keyword', '---'] + \
+    _popup_items = ['Create Keyword', 'Extract Keyword', '---'] + \
             GridEditor._popup_items
 
     def __init__(self, parent, controller, tree):
@@ -361,7 +361,7 @@ class KeywordEditor(KeywordEditorUi):
         if self._tooltip and self._tooltip.IsShown():
             self._tooltip.Show(False)
 
-    def OnCreateUserKeyword(self, event):
+    def OnCreateKeyword(self, event):
         name, args = self._name_and_args_for_new_keyword()
         try:
             self._controller.create_user_keyword(name, args,
