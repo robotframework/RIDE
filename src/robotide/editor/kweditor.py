@@ -262,7 +262,7 @@ class KeywordEditor(KeywordEditorUi):
         # TODO: Cleanup
         keycode, control_down = event.GetKeyCode(), event.CmdDown()
         if keycode == ord('A') and control_down:
-            self.SelectAll()
+            self.OnSelectAll(event)
             return
         if keycode == wx.WXK_CONTROL and self._tooltip.IsShown():
             return
@@ -278,6 +278,9 @@ class KeywordEditor(KeywordEditorUi):
             self.MoveCursorRight(event.ShiftDown())
         else:
             self.MoveCursorLeft(event.ShiftDown())
+
+    def OnSelectAll(self, event):
+        self.SelectAll()
 
     def OnCellLeftClick(self, event):
         self.hide_tooltip()
