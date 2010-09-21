@@ -139,10 +139,9 @@ class GridEditor(grid.Grid):
     def _ensure_selected_row_is_visible(self, bottom_row):
         if not self.IsVisible(bottom_row , 0) and bottom_row < self.NumberRows:
             self.MakeCellVisible(bottom_row, 0)
-            if bottom_row + 1 < self.NumberRows:
-                self.SelectRow(bottom_row + 1, True)
-                self.selection._set((self.selection.topleft.row, self.selection.topleft.col),
-                                    (self.selection.bottomright.row + 1, self.selection.bottomright.col))
+            self.SelectRow(bottom_row + 1, True)
+            self.selection._set((self.selection.topleft.row, self.selection.topleft.col),
+                                (self.selection.bottomright.row + 1, self.selection.bottomright.col))
 
     def OnCellRightClick(self, event):
         PopupMenu(self, self._popup_items)
@@ -195,11 +194,14 @@ class _GridSelection(object):
         self._grid = grid
 
     def _set(self, topleft, bottomright=None):
-        cell = _Cell(topleft[0], topleft[1])
-        self.topleft = cell
-        self.bottomright = bottomright and \
-                _Cell(min(self._grid.NumberRows -1, bottomright[0]),
-                      min(self._grid.NumberCols -1, bottomright[1])) or cell
+        self.topleft = _Cell(topleft[0], topleft[1])
+        self.bottomright = self._count_bottomright(topleft, bottomright)
+
+    def _count_bottomright(self, topleft, bottomright):
+        if not bottomright:
+            return _Cell(topleft[0], topleft[1])
+        return _Cell(min(self._grid.NumberRows - 1, bottomright[0]),
+                     min(self._grid.NumberCols - 1, bottomright[1]))
 
     def set_from_single_selection(self, event):
         self._set((event.Row, event.Col))
