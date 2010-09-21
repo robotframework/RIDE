@@ -37,8 +37,8 @@ class _FakeTree(object):
     mark_dirty = lambda self, datafile: None
 
 class TestableKwEditor(KeywordEditor):
-    def _refresh_layout(self):
-        pass
+    def _refresh_layout(self): pass
+    def _ensure_selected_row_is_visible(self, row): pass
 
 
 def tc_controller():

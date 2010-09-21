@@ -47,15 +47,11 @@ class KeywordEditorUi(GridEditor, RideEventHandler):
     def _remove_selected_rows(self):
         """If whole row(s) are selected, remove them from the grid"""
         self._update_history()
-        for row in sorted(self.GetSelectedRows(), reverse=True):
+        for row in sorted(self.selection.rows(), reverse=True):
             self.DeleteRows(row, 1)
 
     def _get_selected_rows(self):
-        rows = self.GetSelectedRows()
-        if not rows:
-            rows = self._active_row and [self._active_row] or \
-                    [self.selection.topleft.row]
-        return rows
+        return self.selection.rows()
 
     def _toggle_underlined(self, cell):
         font = self.GetCellFont(cell.Row, cell.Col)
@@ -151,8 +147,8 @@ class KeywordEditorUi(GridEditor, RideEventHandler):
 class KeywordEditor(KeywordEditorUi):
     dirty = property(lambda self: self._controller.dirty)
     _no_cell = grid.GridCellCoords(-1, -1)
-    _popup_items = GridEditor._popup_items + ['---', 'Create User Keyword',
-                                              'Extract Keyword']
+    _popup_items = ['Create User Keyword', 'Extract Keyword', '---'] + \
+            GridEditor._popup_items
 
     def __init__(self, parent, controller, tree):
         self._keywords = controller.steps
@@ -169,37 +165,6 @@ class KeywordEditor(KeywordEditorUi):
         self._tree = tree
         self._plugin = parent.plugin
 
-    def OnCreateUserKeyword(self, event):
-        name, args = self._name_and_args_for_new_keyword()
-        try:
-            self._controller.create_user_keyword(name, args,
-                                                 self._tree.add_keyword_controller)
-        except ValueError, err:
-            wx.MessageBox(unicode(err), 'Validation Error', style=wx.ICON_ERROR)
-
-    def _name_and_args_for_new_keyword(self):
-        data_cells = self._data_cells_from_current_row()
-        if not data_cells:
-            return '', []
-        return data_cells[0], data_cells[1:]
-
-    def _data_cells_from_current_row(self):
-        currow, curcol = self.selection.cell
-        rowdata = self._row_data(currow)
-        return self._strip_trailing_empty_cells(self._remove_comments(rowdata[curcol:]))
-
-    def _remove_comments(self, data):
-        for index, cell in enumerate(data):
-            if cell.strip().startswith('#'):
-                return data[:index]
-        return data
-
-    def OnExtractKeyword(self, event):
-        dlg = UserKeywordNameDialog(wx.GetTopLevelParent(self), self._controller)
-        if dlg.ShowModal() == wx.ID_OK:
-            name, args = dlg.get_value()
-            self._controller.extract_user_keyword(name, args)
-
     def _make_bindings(self):
         self.Bind(grid.EVT_GRID_EDITOR_SHOWN, self.OnEditor)
         self.Bind(wx.EVT_KEY_DOWN, self.OnKey)
@@ -214,6 +179,7 @@ class KeywordEditor(KeywordEditorUi):
             if hasattr(step, 'steps'):
                 for s in step.steps:
                     data.append([''] + self._format_comments(s.as_list()))
+        self.ClearGrid()
         self._write_data(data, update_history=False)
 
     def _format_comments(self, data):
@@ -294,9 +260,9 @@ class KeywordEditor(KeywordEditorUi):
 
     def OnKey(self, event):
         # TODO: Cleanup
-        keycode, control_down = event.GetKeyCode(), event.ControlDown()
+        keycode, control_down = event.GetKeyCode(), event.CmdDown()
         if keycode == ord('A') and control_down:
-            self.SelectAll()
+            self.OnSelectAll(event)
             return
         if keycode == wx.WXK_CONTROL and self._tooltip.IsShown():
             return
@@ -312,6 +278,9 @@ class KeywordEditor(KeywordEditorUi):
             self.MoveCursorRight(event.ShiftDown())
         else:
             self.MoveCursorLeft(event.ShiftDown())
+
+    def OnSelectAll(self, event):
+        self.SelectAll()
 
     def OnCellLeftClick(self, event):
         self.hide_tooltip()
@@ -391,6 +360,41 @@ class KeywordEditor(KeywordEditorUi):
     def hide_tooltip(self):
         if self._tooltip and self._tooltip.IsShown():
             self._tooltip.Show(False)
+
+    def OnCreateUserKeyword(self, event):
+        name, args = self._name_and_args_for_new_keyword()
+        try:
+            self._controller.create_user_keyword(name, args,
+                                                 self._tree.add_keyword_controller)
+        except ValueError, err:
+            wx.MessageBox(unicode(err))
+
+    def _name_and_args_for_new_keyword(self):
+        data_cells = self._data_cells_from_current_row()
+        if not data_cells:
+            return '', []
+        return data_cells[0], data_cells[1:]
+
+    def _data_cells_from_current_row(self):
+        currow, curcol = self.selection.cell
+        rowdata = self._row_data(currow)
+        return self._strip_trailing_empty_cells(self._remove_comments(rowdata[curcol:]))
+
+    def _remove_comments(self, data):
+        for index, cell in enumerate(data):
+            if cell.strip().startswith('#'):
+                return data[:index]
+        return data
+
+    def OnExtractKeyword(self, event):
+        self._save_keywords()
+        dlg = UserKeywordNameDialog(wx.GetTopLevelParent(self), self._controller)
+        if dlg.ShowModal() == wx.ID_OK:
+            name, args = dlg.get_value()
+        selected_rows = self.selection.topleft.row, self.selection.bottomright.row
+        self._controller.extract_keyword(name, args, selected_rows,
+                                         self._tree.add_keyword_controller)
+        self._write_keywords(self._controller.steps)
 
 
 class ContentAssistCellEditor(grid.PyGridCellEditor):

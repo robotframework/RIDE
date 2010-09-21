@@ -20,14 +20,15 @@ from writer import FileWriter
 
 class Serializer(object):
 
-    def __init__(self, output=None):
+    def __init__(self, output=None, pipe_separator=False):
         self._output = output
+        self._pipe_separator = pipe_separator
 
     def serialize(self, controller):
         template = self._create_template(controller)
         output = self._get_output(controller)
         writer = FileWriter(controller.source, output, name=controller.name,
-                            template=template)
+                            template=template, pipe_separator=self._pipe_separator)
         writer_serializer = _WriterSerializer(writer)
         writer_serializer.serialize(controller.data)
         self._close_output(writer)

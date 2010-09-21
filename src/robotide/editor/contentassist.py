@@ -37,6 +37,7 @@ class _ContentAssistTextCtrlBase(object):
         # Ctrl-Space handling needed for dialogs
         if keycode == wx.WXK_SPACE and event.ControlDown():
             self.show_content_assist()
+            return
         elif keycode in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN] \
                 and self._popup.is_shown():
             self._popup.select_and_scroll(keycode)

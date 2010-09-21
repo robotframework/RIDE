@@ -21,13 +21,15 @@ from clipboard import ClipboardHandler
 
 class GridEditor(grid.Grid):
     _col_add_threshold = 1
-    _popup_items = ['Insert Cells', 'Delete Cells', '---', 'Cut\tCtrl-X',
-                    'Copy\tCtrl-C', 'Paste\tCtrl-V', '---', 'Delete\tDel']
+    _popup_items = ['Insert Cells', 'Delete Cells',
+                    '---', 'Select All\tCtrl-A',
+                    '---', 'Cut\tCtrl-X', 'Copy\tCtrl-C', 'Paste\tCtrl-V',
+                    '---', 'Delete\tDel']
 
     def __init__(self, parent):
         grid.Grid.__init__(self, parent)
         self._bind_to_events()
-        self.selection = _GridSelection()
+        self.selection = _GridSelection(self)
         self.SetDefaultRenderer(grid.GridCellAutoWrapStringRenderer())
         self._clipboard_handler = ClipboardHandler(self)
         self._history = _GridState()
@@ -134,6 +136,14 @@ class GridEditor(grid.Grid):
     def OnRangeSelect(self, event):
         if event.Selecting():
             self.selection.set_from_range_selection(self, event)
+            self._ensure_selected_row_is_visible(event.BottomRow)
+
+    def _ensure_selected_row_is_visible(self, bottom_row):
+        if not self.IsVisible(bottom_row , 0) and bottom_row < self.NumberRows:
+            self.MakeCellVisible(bottom_row, 0)
+            self.SelectRow(bottom_row + 1, True)
+            self.selection._set((self.selection.topleft.row, self.selection.topleft.col),
+                                (self.selection.bottomright.row + 1, self.selection.bottomright.col))
 
     def OnCellRightClick(self, event):
         PopupMenu(self, self._popup_items)
@@ -181,14 +191,19 @@ class GridEditor(grid.Grid):
 class _GridSelection(object):
     cell = property(lambda self: (self.topleft.row, self.topleft.col))
 
-    def __init__(self):
+    def __init__(self, grid):
         self._set((0, 0))
+        self._grid = grid
 
     def _set(self, topleft, bottomright=None):
-        cell = _Cell(topleft[0], topleft[1])
-        self.topleft = cell
-        self.bottomright = bottomright and \
-                _Cell(bottomright[0], bottomright[1]) or cell
+        self.topleft = _Cell(topleft[0], topleft[1])
+        self.bottomright = self._count_bottomright(topleft, bottomright)
+
+    def _count_bottomright(self, topleft, bottomright):
+        if not bottomright:
+            return _Cell(topleft[0], topleft[1])
+        return _Cell(min(self._grid.NumberRows - 1, bottomright[0]),
+                     min(self._grid.NumberCols - 1, bottomright[1]))
 
     def set_from_single_selection(self, event):
         self._set((event.Row, event.Col))
