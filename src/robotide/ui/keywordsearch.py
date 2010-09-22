@@ -18,6 +18,7 @@ from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 from robotide.pluginapi import Plugin, ActionInfo, RideOpenSuite,\
     RideOpenResource, RideImportSetting, RideUserKeyword
 from robotide import utils
+from robotide import context
 
 
 class KeywordSearch(Plugin):
@@ -70,7 +71,7 @@ class KeywordSearchDialog(wx.Frame):
 
     def __init__(self, parent, searcher):
         wx.Frame.__init__(self, parent, title="Search Keywords")
-        self._searcher = searcher
+        self._plugin = searcher
         self._create_components(searcher)
         self._make_bindings()
         self._sort_up = True
@@ -148,7 +149,7 @@ class KeywordSearchDialog(wx.Frame):
         pass
 
     def _populate_search(self, search_criteria=None):
-        self._keywords = _KeywordData(self._searcher.search(*self._get_search_criteria()),
+        self._keywords = _KeywordData(self._plugin.search(*self._get_search_criteria()),
                                       self._sortcol, self._sort_up, search_criteria)
         self._list.show_keywords(self._keywords)
         self._details.clear()
@@ -161,7 +162,10 @@ class KeywordSearchDialog(wx.Frame):
         return self._search_control.GetValue().lower()
 
     def OnItemSelected(self, event):
-        self._details.SetPage(self._keywords[event.Index].details)
+        kw = self._keywords[event.Index]
+        if wx.GetMouseState().ControlDown() and kw.is_user_keyword():
+            self._plugin.select_user_keyword_node(kw.item)
+        self._details.SetPage(kw.details)
 
     def OnClose(self, event):
         self.Hide()
@@ -211,11 +215,18 @@ class _KeywordList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         wx.ListCtrl.__init__(self, parent, style=style)
         ListCtrlAutoWidthMixin.__init__(self)
         self._create_headers()
+        self._link_attribute = self._create_link_attribute()
 
     def _create_headers(self):
         for col, title in enumerate(_KeywordData.headers):
             self.InsertColumn(col, title)
         self.SetColumnWidth(0, 250)
+
+    def _create_link_attribute(self):
+        attr = wx.ListItemAttr()
+        attr.SetTextColour(wx.BLUE)
+        attr.SetFont(context.Font().underlined)
+        return attr
 
     def show_keywords(self, keywords):
         self._keywords = keywords
@@ -225,3 +236,6 @@ class _KeywordList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         kw = self._keywords[row]
         return [kw.name, kw.source, kw.shortdoc][col]
 
+    def OnGetItemAttr(self, item):
+        return self._link_attribute if self._keywords[item].is_user_keyword() \
+            else None

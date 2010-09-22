@@ -276,6 +276,10 @@ class Plugin(object):
         keyword_info = self.__namespace.find_user_keyword(self.datafile, name)
         return keyword_info.item if keyword_info else None
 
+    def select_user_keyword_node(self, uk):
+        """Selects node containing the given ``uk`` in the tree."""
+        self.tree.select_user_keyword_node(uk)
+
     def get_keyword_details(self, name):
         """Returns details (documentation, source) of keyword with name ``name``.
 

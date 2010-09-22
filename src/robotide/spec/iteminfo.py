@@ -44,6 +44,9 @@ class ItemInfo(object):
     def is_library_keyword(self):
         return False
 
+    def is_user_keyword(self):
+        return not self.is_library_keyword()
+
     def __cmp__(self, other):
         return cmp(self.name, other.name)
 
