@@ -21,8 +21,9 @@ from robotide import context
 
 class SerializationContext(object):
 
-    def __init__(self, output=None, pipe_separated=None):
+    def __init__(self, output=None, format=None, pipe_separated=None):
         self.output = output
+        self.format = format
         self._pipe_separated = pipe_separated
 
     @property
@@ -34,24 +35,30 @@ class SerializationContext(object):
 class Serializer(object):
 
     def __init__(self, context=SerializationContext()):
-        self._ctx = context;
+        self._ctx = context
 
-    def serialize(self, controller):
-        template = self._create_template(controller)
-        output = self._get_output(controller)
-        writer = FileWriter(controller.source, output, name=controller.name,
+    def serialize(self, datafile):
+        template = self._create_template(datafile)
+        output = self._get_output(datafile)
+        writer = FileWriter(output, self._get_format(datafile), name=datafile.name,
                             template=template, pipe_separated=self._ctx.pipe_separated)
         writer_serializer = _WriterSerializer(writer)
-        writer_serializer.serialize(controller.data)
+        writer_serializer.serialize(datafile)
         self._close_output(writer)
 
-    def _create_template(self, controller):
-        ext = os.path.splitext(controller.source)[1].lower()
-        return Template(controller.source, controller.name) if \
-            ext in ['.html', '.xhtml', '.htm'] else None
+    def _create_template(self, datafile):
+        if self._get_format(datafile) in ['html', 'xhtml', 'htm']:
+            return Template(datafile.source, datafile.name)
+        return None
 
-    def _get_output(self, controller):
-        return self._ctx.output or open(controller.source, 'wb')
+    def _get_output(self, datafile):
+        return self._ctx.output or open(self._get_source(datafile), 'wb')
+
+    def _get_source(self, datafile):
+        return getattr(datafile, 'initfile', datafile.source)
+
+    def _get_format(self, datafile):
+        return self._ctx.format or os.path.splitext(self._get_source(datafile))[1][1:].lower()
 
     def _close_output(self, writer):
         writer.close(close_output=self._ctx.output is None)
