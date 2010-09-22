@@ -29,7 +29,7 @@ class PreviewPlugin(Plugin):
     datafile = property(lambda self: self.get_selected_datafile())
 
     def __init__(self, application):
-        Plugin.__init__(self, application)
+        Plugin.__init__(self, application, default_settings={'format': 'HTML'})
         self._panel = None
 
     def enable(self):
@@ -72,25 +72,40 @@ class PreviewPanel(wx.Panel):
         wx.Panel.__init__(self, notebook)
         self._parent = parent
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
-        self._create_chooser()
-        self._format = 'html'
-        self._pipe_separated = False
+        self._format = parent.format
         self.__view = None
+        self._create_chooser()
         notebook.AddPage(self, "Preview")
+
+    @property
+    def _file_format(self):
+        if self._format in ['HTML', 'TSV']:
+            return self._format.lower()
+        return 'txt'
+
+    @property
+    def _pipe_separated(self):
+        return 'Pipes' in self._format
 
     def _create_chooser(self):
         chooser = wx.RadioBox(self, label='Format', choices=self._formats)
+        chooser.SetStringSelection(self._format)
         self.Bind(wx.EVT_RADIOBOX, self.OnTypeChanged, chooser)
         self.Sizer.Add(chooser)
 
     @property
     def _view(self):
-        view_class = HtmlView if self._format == 'html' else TxtView
+        view_class = HtmlView if self._file_format == 'html' else TxtView
         if isinstance(self.__view, view_class):
             return self.__view
         self._remove_current_view()
         self.__view = self._create_view(view_class)
         return self.__view
+
+    def _remove_current_view(self):
+        if self.__view:
+            self.Sizer.Remove(self.__view)
+            self.__view.Destroy()
 
     def _create_view(self, view_class):
         view = view_class(self)
@@ -98,23 +113,18 @@ class PreviewPanel(wx.Panel):
         self.Sizer.Layout()
         return view
 
-    def _remove_current_view(self):
-        if self.__view:
-            self.Sizer.Remove(self.__view)
-            self.__view.Destroy()
+    def tree_node_selected(self, item):
+        self.update_preview()
+        self._view.scroll_to_subitem(item)
 
     def update_preview(self):
         datafile = self._parent.datafile
         content = datafile and self._get_content(datafile) or ''
         self._view.set_content(content.decode('UTF-8'))
 
-    def tree_node_selected(self, item):
-        self.update_preview()
-        self._view.scroll_to_subitem(item)
-
     def _get_content(self, datafile):
         output = StringIO()
-        ctx = SerializationContext(output=output, format=self._format,
+        ctx = SerializationContext(output=output, format=self._file_format,
                                    pipe_separated=self._pipe_separated)
         try:
             Serializer(ctx).serialize(datafile)
@@ -124,16 +134,9 @@ class PreviewPanel(wx.Panel):
             return output.getvalue()
 
     def OnTypeChanged(self, event):
-        self._set_format(event.GetString())
+        self._format = event.String
         self.update_preview()
-
-    def _set_format(self, format):
-        if format in ['HTML', 'TSV']:
-            self._format = format.lower()
-            self._pipe_separated = False
-        else:
-            self._format = 'txt'
-            self._pipe_separated = 'Pipes' in format
+        self._parent.save_setting('format', self._format)
 
 
 class HtmlView(wx.html.HtmlWindow):
