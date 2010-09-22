@@ -30,6 +30,7 @@ class KeywordSearch(Plugin):
 
     def enable(self):
         action = ActionInfo('Tools', 'Search Keywords', self.OnSearch,
+                            shortcut='F5',
                             doc='Search keywords from libraries and resources')
         self.register_action(action)
         self.subscribe(self.refresh, RideOpenSuite, RideOpenResource,
