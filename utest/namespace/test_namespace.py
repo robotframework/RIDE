@@ -326,6 +326,7 @@ class TestVariableStash(unittest.TestCase):
     def test_has_default_values(self):
         vars = _VariableStash()
         assert_true('${SPACE}' in [v.name for v in vars])
+        assert_true('${PREV_TEST_MESSAGE}' in [v.name for v in vars])
 
 
 class TestResourceGetter(_DataFileTest):

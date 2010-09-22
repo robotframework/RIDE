@@ -198,13 +198,26 @@ class RetrieverContext(object):
 
 class _VariableStash(object):
 
-    # Relevant global variables copied from robot.variables.__init__.py
+    # Global variables copied from robot.variables.__init__.py
     global_variables =  {'${TEMPDIR}': os.path.normpath(tempfile.gettempdir()),
                          '${EXECDIR}': os.path.abspath('.'),
                          '${/}': os.sep,
                          '${:}': os.pathsep,
                          '${SPACE}': ' ',
-                         '${EMPTY}': ''}
+                         '${EMPTY}': '',
+                         '${True}': '',
+                         '${False}': '',
+                         '${None}': '',
+                         '${null}': '',
+                         '${OUTPUT_DIR}': '',
+                         '${OUTPUT_FILE}': '',
+                         '${SUMMARY_FILE}': '',
+                         '${REPORT_FILE}': '',
+                         '${LOG_FILE}': '',
+                         '${DEBUG_FILE}': '',
+                         '${PREV_TEST_NAME}': '',
+                         '${PREV_TEST_STATUS}': '',
+                         '${PREV_TEST_MESSAGE}': ''}
 
     def __init__(self):
         self._vars = RobotVariables()
