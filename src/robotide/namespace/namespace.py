@@ -90,7 +90,6 @@ class Namespace(object):
     def _variable_suggestions(self, controller, start):
         datafile = controller.datafile
         start_normalized = normalize(start)
-        source = os.path.basename(datafile.source) if datafile.source else ''
         vars = self.retriever.get_variables_from(datafile)
         self._add_kw_arg_vars(controller, vars)
         return [v for v in vars
@@ -98,7 +97,7 @@ class Namespace(object):
 
     def _add_kw_arg_vars(self, controller, vars):
         for name, value in controller.get_local_variables().iteritems():
-            vars.set(name, value, controller.datafile.source)
+            vars.set(name, value, 'Argument')
 
     def _keyword_suggestions(self, datafile, start):
         start_normalized = normalize(start)
