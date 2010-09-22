@@ -90,7 +90,6 @@ class Namespace(object):
     def _variable_suggestions(self, controller, start):
         datafile = controller.datafile
         start_normalized = normalize(start)
-        source = os.path.basename(datafile.source) if datafile.source else ''
         vars = self.retriever.get_variables_from(datafile)
         self._add_kw_arg_vars(controller, vars)
         return [v for v in vars
@@ -98,7 +97,7 @@ class Namespace(object):
 
     def _add_kw_arg_vars(self, controller, vars):
         for name, value in controller.get_local_variables().iteritems():
-            vars.set(name, value, controller.datafile.source)
+            vars.set(name, value, 'Argument')
 
     def _keyword_suggestions(self, datafile, start):
         start_normalized = normalize(start)
@@ -199,13 +198,26 @@ class RetrieverContext(object):
 
 class _VariableStash(object):
 
-    # Relevant global variables copied from robot.variables.__init__.py
+    # Global variables copied from robot.variables.__init__.py
     global_variables =  {'${TEMPDIR}': os.path.normpath(tempfile.gettempdir()),
                          '${EXECDIR}': os.path.abspath('.'),
                          '${/}': os.sep,
                          '${:}': os.pathsep,
                          '${SPACE}': ' ',
-                         '${EMPTY}': ''}
+                         '${EMPTY}': '',
+                         '${True}': '',
+                         '${False}': '',
+                         '${None}': '',
+                         '${null}': '',
+                         '${OUTPUT_DIR}': '',
+                         '${OUTPUT_FILE}': '',
+                         '${SUMMARY_FILE}': '',
+                         '${REPORT_FILE}': '',
+                         '${LOG_FILE}': '',
+                         '${DEBUG_FILE}': '',
+                         '${PREV_TEST_NAME}': '',
+                         '${PREV_TEST_STATUS}': '',
+                         '${PREV_TEST_MESSAGE}': ''}
 
     def __init__(self):
         self._vars = RobotVariables()

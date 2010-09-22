@@ -184,7 +184,7 @@ class ChiefController(object):
             return
         RideSaving(path=controller.source).publish()
         serializer = Serializer()
-        serializer.serialize(controller)
+        serializer.serialize(controller.datafile)
         controller.unmark_dirty()
         RideSaved(path=controller.source).publish()
 

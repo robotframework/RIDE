@@ -83,7 +83,7 @@ class KeywordSearchDialog(wx.Frame):
     def _create_components(self, searcher):
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
         self._add_search_control('Filter Names: ')
-        self._list = _KeywordList(self)
+        self._list = _KeywordList(self, self._plugin)
         self._list.SetSize(self.Size)
         self.Sizer.Add(self._list, 1, wx.EXPAND| wx.ALL, 3)
         self._details = utils.RideHtmlWindow(self)
@@ -164,8 +164,8 @@ class KeywordSearchDialog(wx.Frame):
 
     def OnItemSelected(self, event):
         kw = self._keywords[event.Index]
-        if wx.GetMouseState().ControlDown() and kw.is_user_keyword():
-            self._plugin.select_user_keyword_node(kw.item)
+#        if wx.GetMouseState().ControlDown() and kw.is_user_keyword():
+#            self._plugin.select_user_keyword_node(kw.item)
         self._details.SetPage(kw.details)
 
     def OnClose(self, event):
@@ -211,12 +211,15 @@ class _KeywordData(list):
 
 class _KeywordList(wx.ListCtrl, ListCtrlAutoWidthMixin):
 
-    def __init__(self, parent):
+    def __init__(self, parent, plugin):
         style = wx.LC_REPORT|wx.NO_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VIRTUAL
         wx.ListCtrl.__init__(self, parent, style=style)
         ListCtrlAutoWidthMixin.__init__(self)
+        self._plugin = plugin
         self._create_headers()
         self._link_attribute = self._create_link_attribute()
+        self._image_list = self._create_image_list()
+        self.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
 
     def _create_headers(self):
         for col, title in enumerate(_KeywordData.headers):
@@ -229,14 +232,27 @@ class _KeywordList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         attr.SetFont(context.Font().underlined)
         return attr
 
+    def _create_image_list(self):
+        imglist = wx.ImageList(16, 16)
+        imglist.Add(wx.ArtProvider_GetBitmap(wx.ART_GO_UP, wx.ART_OTHER, (16, 16)))
+        self.SetImageList(imglist, wx.IMAGE_LIST_SMALL)
+        return imglist
+
     def show_keywords(self, keywords):
         self._keywords = keywords
         self.SetItemCount(len(self._keywords))
+
+    def OnLeftUp(self, event):
+        item, flags = self.HitTest(event.Position)
+        kw = self._keywords[item]
+        if kw.is_user_keyword() and (flags & wx.LIST_HITTEST_ONITEMICON):
+            self._plugin.select_user_keyword_node(kw.item)
 
     def OnGetItemText(self, row, col):
         kw = self._keywords[row]
         return [kw.name, kw.source, kw.shortdoc][col]
 
-    def OnGetItemAttr(self, item):
-        return self._link_attribute if self._keywords[item].is_user_keyword() \
-            else None
+    def OnGetItemImage(self, item):
+        if self._keywords[item].is_user_keyword():
+            return 0 # index in self._image_list
+        return -1 # No image

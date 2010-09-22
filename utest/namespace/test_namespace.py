@@ -213,6 +213,7 @@ class TestKeywordSuggestions(_DataFileTest):
         assert_equals(len(sugs), 2)
         sugs = self.ns.get_suggestions_for(self.kw, '${keyword argument with defau')
         assert_equals(len(sugs), 1)
+        self._check_source(self.kw, '${keyword argument with defau', 'Argument')
 
     def test_suggestions_for_datafile(self):
         sugs = self.ns.get_suggestions_for(self.tcf_ctrl, 'Execute Manual')
@@ -325,6 +326,7 @@ class TestVariableStash(unittest.TestCase):
     def test_has_default_values(self):
         vars = _VariableStash()
         assert_true('${SPACE}' in [v.name for v in vars])
+        assert_true('${PREV_TEST_MESSAGE}' in [v.name for v in vars])
 
 
 class TestResourceGetter(_DataFileTest):

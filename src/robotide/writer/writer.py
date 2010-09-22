@@ -19,16 +19,15 @@ import template
 
 from StringIO import StringIO
 from robot.parsing.settings import Documentation
-from robotide import utils, context
+from robotide import utils
 
 
-def FileWriter(path, output, name=None, template=None, pipe_separated=False):
-    ext = os.path.splitext(path)[1].lower()
+def FileWriter(output, format, name=None, template=None, pipe_separated=False):
     try:
-        Writer = {'.tsv': TsvFileWriter, '.txt': TxtFileWriter(pipe_separated)}[ext]
+        Writer = {'tsv': TsvFileWriter, 'txt': TxtFileWriter(pipe_separated)}[format]
         return Writer(output)
     except KeyError:
-        return HtmlFileWriter(output, path, name, template)
+        return HtmlFileWriter(output, name, template)
 
 
 class _WriterHelper(object):
@@ -225,7 +224,7 @@ class HtmlFileWriter(_WriterHelper):
     _keyword_titles = ['Keyword', 'Action', 'Arguments']
     compiled_regexp = re.compile(r'(\\+)n')
 
-    def __init__(self, output, path=None, name=None, tmpl=None):
+    def __init__(self, output, name=None, tmpl=None):
         self._content = tmpl
         _WriterHelper.__init__(self, output, 5)
         self._writer = utils.HtmlWriter(StringIO())

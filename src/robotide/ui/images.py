@@ -40,7 +40,7 @@ class _TreeImage(object):
 
     def __init__(self, image_list, normal, expanded=None):
         self.normal = self._get_image(image_list, normal)
-        self.expanded = expanded and self._get_image(image_list, expanded) or self.normal
+        self.expanded = self._get_image(image_list, expanded) if expanded else self.normal
 
     def _get_image(self, image_list, source):
         if source.startswith('wx'):
