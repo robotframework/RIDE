@@ -18,9 +18,8 @@ from robotide.context.font import Font
 
 
 class LogPlugin(Plugin):
-    """Log for internal log messages.
-    """
-
+    """Viewer for internal log messages."""
+    
     def __init__(self, app):
         Plugin.__init__(self, app)
         self._log = []
@@ -38,7 +37,7 @@ class LogPlugin(Plugin):
 
     def _create_menu(self):
         self.unregister_actions()
-        self.register_action(ActionInfo('Tools', 'View Log',
+        self.register_action(ActionInfo('Tools', 'View RIDE Log',
                                         self.OnViewLog))
 
     def _log_message(self, log_event):
