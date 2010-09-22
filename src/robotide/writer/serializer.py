@@ -16,19 +16,31 @@ import os
 
 from template import Template
 from writer import FileWriter
+from robotide import context
+
+
+class SerializationContext(object):
+
+    def __init__(self, output=None, pipe_separated=None):
+        self.output = output
+        self._pipe_separated = pipe_separated
+
+    @property
+    def pipe_separated(self):
+        return self._pipe_separated if self._pipe_separated is not None else \
+            context.SETTINGS.get('txt format separator', 'space') == 'pipe'
 
 
 class Serializer(object):
 
-    def __init__(self, output=None, pipe_separator=False):
-        self._output = output
-        self._pipe_separator = pipe_separator
+    def __init__(self, context=SerializationContext()):
+        self._ctx = context;
 
     def serialize(self, controller):
         template = self._create_template(controller)
         output = self._get_output(controller)
         writer = FileWriter(controller.source, output, name=controller.name,
-                            template=template, pipe_separator=self._pipe_separator)
+                            template=template, pipe_separated=self._ctx.pipe_separated)
         writer_serializer = _WriterSerializer(writer)
         writer_serializer.serialize(controller.data)
         self._close_output(writer)
@@ -39,12 +51,10 @@ class Serializer(object):
             ext in ['.html', '.xhtml', '.htm'] else None
 
     def _get_output(self, controller):
-        if self._output:
-            return self._output
-        return open(controller.source, 'wb')
+        return self._ctx.output or open(controller.source, 'wb')
 
     def _close_output(self, writer):
-        writer.close(close_output=self._output is None)
+        writer.close(close_output=self._ctx.output is None)
 
 
 class _WriterSerializer(object):

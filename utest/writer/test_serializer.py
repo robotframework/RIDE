@@ -8,7 +8,7 @@ from robot.parsing.model import TestCaseFile, ResourceFile
 from robot.utils.asserts import assert_equals
 from robotide.controller.filecontroller import ResourceFileController, \
     TestCaseFileController
-from robotide.writer.serializer import Serializer
+from robotide.writer.serializer import Serializer, SerializationContext
 
 
 DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]),
@@ -85,7 +85,7 @@ class _TestSerializer(object):
 
     def get_serialization_output(self, datafile, pipe_separator=False):
         output = StringIO.StringIO()
-        Serializer(output, pipe_separator=pipe_separator).serialize(datafile)
+        Serializer(SerializationContext(output, pipe_separator)).serialize(datafile)
         return output.getvalue()
 
 

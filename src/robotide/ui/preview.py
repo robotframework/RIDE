@@ -21,7 +21,7 @@ from robotide.pluginapi import Plugin, ActionInfo
 from robotide.publish import (RideTreeSelection, RideNotebookTabChanged,
                               RideTestCaseAdded, RideUserKeywordAdded)
 from robotide.robotapi import TestCase, UserKeyword
-from robotide.writer.serializer import Serializer
+from robotide.writer.serializer import Serializer, SerializationContext
 
 
 class PreviewDatafileController(object):
@@ -97,7 +97,7 @@ class PreviewPanel(wx.Panel):
 
     def _get_content(self, datafile):
         output = StringIO()
-        serializer = Serializer(output)
+        serializer = Serializer(SerializationContext(output=output))
         try:
             serializer.serialize(PreviewDatafileController(datafile, self._format))
         except SerializationError, e:

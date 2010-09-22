@@ -19,13 +19,13 @@ import template
 
 from StringIO import StringIO
 from robot.parsing.settings import Documentation
-from robotide import utils
+from robotide import utils, context
 
 
-def FileWriter(path, output, name=None, template=None, pipe_separator=False):
+def FileWriter(path, output, name=None, template=None, pipe_separated=False):
     ext = os.path.splitext(path)[1].lower()
     try:
-        Writer = {'.tsv': TsvFileWriter, '.txt': TxtFileWriter(pipe_separator)}[ext]
+        Writer = {'.tsv': TsvFileWriter, '.txt': TxtFileWriter(pipe_separated)}[ext]
         return Writer(output)
     except KeyError:
         return HtmlFileWriter(output, path, name, template)
