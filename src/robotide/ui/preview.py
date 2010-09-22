@@ -24,13 +24,6 @@ from robotide.robotapi import TestCase, UserKeyword
 from robotide.writer.serializer import Serializer, SerializationContext
 
 
-class PreviewDatafileController(object):
-    def __init__(self, datafile, format):
-        self.data = datafile
-        self.source = 'preview.' + ('txt' if format == 'Text' else 'html')
-        self.name = datafile.name
-
-
 class PreviewPlugin(Plugin):
     """Provides preview of the test data in HTML and TXT formats."""
     datafile = property(lambda self: self.get_selected_datafile())
@@ -41,6 +34,7 @@ class PreviewPlugin(Plugin):
 
     def enable(self):
         self.register_action(ActionInfo('Tools','Preview', self.OnShowPreview,
+                                        shortcut='F6',
                                         doc='Show preview of the current file'))
         self.subscribe(self.OnTreeSelection, RideTreeSelection)
         self.subscribe(self.OnTabChanged, RideNotebookTabChanged)
@@ -72,19 +66,42 @@ class PreviewPlugin(Plugin):
 
 
 class PreviewPanel(wx.Panel):
+    _formats = ['HTML', 'TSV', 'Text (Spaces)', 'Text (Pipes)']
 
     def __init__(self, parent, notebook):
         wx.Panel.__init__(self, notebook)
         self._parent = parent
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
         self._create_chooser()
-        self._set_format('Text')
+        self._format = 'html'
+        self._pipe_separated = False
+        self.__view = None
         notebook.AddPage(self, "Preview")
 
     def _create_chooser(self):
-        chooser = wx.RadioBox(self, label='Format', choices=['Text', 'HTML'])
+        chooser = wx.RadioBox(self, label='Format', choices=self._formats)
         self.Bind(wx.EVT_RADIOBOX, self.OnTypeChanged, chooser)
         self.Sizer.Add(chooser)
+
+    @property
+    def _view(self):
+        view_class = HtmlView if self._format == 'html' else TxtView
+        if isinstance(self.__view, view_class):
+            return self.__view
+        self._remove_current_view()
+        self.__view = self._create_view(view_class)
+        return self.__view
+
+    def _create_view(self, view_class):
+        view = view_class(self)
+        self.Sizer.Add(view, 1, wx.EXPAND|wx.ALL, border=8)
+        self.Sizer.Layout()
+        return view
+
+    def _remove_current_view(self):
+        if self.__view:
+            self.Sizer.Remove(self.__view)
+            self.__view.Destroy()
 
     def update_preview(self):
         datafile = self._parent.datafile
@@ -97,9 +114,10 @@ class PreviewPanel(wx.Panel):
 
     def _get_content(self, datafile):
         output = StringIO()
-        serializer = Serializer(SerializationContext(output=output))
+        ctx = SerializationContext(output=output, format=self._format,
+                                   pipe_separated=self._pipe_separated)
         try:
-            serializer.serialize(PreviewDatafileController(datafile, self._format))
+            Serializer(ctx).serialize(datafile)
         except SerializationError, e:
             return "Creating preview of '%s' failed: %s" % (datafile.name, e)
         else:
@@ -110,16 +128,12 @@ class PreviewPanel(wx.Panel):
         self.update_preview()
 
     def _set_format(self, format):
-        self._format = format
-        if hasattr(self, '_view'):
-            self.Sizer.Remove(self._view)
-            self._view.Destroy()
-        if format == 'HTML':
-            self._view = HtmlView(self)
+        if format in ['HTML', 'TSV']:
+            self._format = format.lower()
+            self._pipe_separated = False
         else:
-            self._view = TxtView(self)
-        self.Sizer.Add(self._view, 1, wx.EXPAND|wx.ALL, border=8)
-        self.Sizer.Layout()
+            self._format = 'txt'
+            self._pipe_separated = 'Pipes' in format
 
 
 class HtmlView(wx.html.HtmlWindow):
@@ -159,4 +173,3 @@ class TxtView(wx.TextCtrl):
 
     def scroll_to_subitem(self, item):
         pass
-

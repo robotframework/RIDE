@@ -6,8 +6,6 @@ import os
 
 from robot.parsing.model import TestCaseFile, ResourceFile
 from robot.utils.asserts import assert_equals
-from robotide.controller.filecontroller import ResourceFileController, \
-    TestCaseFileController
 from robotide.writer.serializer import Serializer, SerializationContext
 
 
@@ -85,7 +83,8 @@ class _TestSerializer(object):
 
     def get_serialization_output(self, datafile, pipe_separator=False):
         output = StringIO.StringIO()
-        Serializer(SerializationContext(output, pipe_separator)).serialize(datafile)
+        Serializer(SerializationContext(output=output,
+                                        pipe_separated=pipe_separator)).serialize(datafile)
         return output.getvalue()
 
 
@@ -138,13 +137,13 @@ My Test Case
         self.txt_tcf.source = '/tmp/not_real_path/tcf.txt'
 
     def test_serializer_with_txt_resource_file(self):
-        assert_repr(self.get_serialization_output(ResourceFileController(self.txt_rf)),
+        assert_repr(self.get_serialization_output(self.txt_rf),
                       self.settings_table +
                       self.variables_table +
                       self.keywords_table)
 
     def test_serializer_with_txt_test_case_file(self):
-        assert_repr(self.get_serialization_output(TestCaseFileController(self.txt_tcf)),
+        assert_repr(self.get_serialization_output(self.txt_tcf),
                       self.settings_table +
                       self.variables_table +
                       self.testcase_table +
@@ -200,13 +199,13 @@ class TestPipeTxtSerialization(unittest.TestCase, _TestSerializer):
         self.txt_tcf.source = '/tmp/not_real_path/tcf.txt'
 
     def test_serializer_with_txt_resource_file(self):
-        assert_repr(self.get_serialization_output(ResourceFileController(self.txt_rf), True),
+        assert_repr(self.get_serialization_output(self.txt_rf, True),
                       self.settings_table +
                       self.variables_table +
                       self.keywords_table)
 
     def test_serializer_with_txt_test_case_file(self):
-        assert_repr(self.get_serialization_output(TestCaseFileController(self.txt_tcf), True),
+        assert_repr(self.get_serialization_output(self.txt_tcf, True),
                       self.settings_table +
                       self.variables_table +
                       self.testcase_table +
@@ -260,13 +259,13 @@ My Test Case\t[Documentation]\tThis is a long comment that spans several columns
         self.tsv_tcf.source = '/tmp/not_real_path/tcf.tsv'
 
     def test_serializer_with_tsv_resource_file(self):
-        assert_repr(self.get_serialization_output(ResourceFileController(self.tsv_rf)),
+        assert_repr(self.get_serialization_output(self.tsv_rf),
                     self.settings_table +
                     self.variables_table +
                     self.keywords_table)
 
     def test_serializer_with_tsv_testcase_file(self):
-        assert_repr(self.get_serialization_output(TestCaseFileController(self.tsv_tcf)),
+        assert_repr(self.get_serialization_output(self.tsv_tcf),
                     self.settings_table +
                     self.variables_table +
                     self.testcase_table +
@@ -283,7 +282,7 @@ class TestHTMLSerialization(unittest.TestCase, _TestSerializer):
         os.remove(self.path)
 
     def test_serializer_with_html_testcase_file(self):
-        Serializer().serialize(TestCaseFileController(TestCaseFile(source=self.path)))
+        Serializer().serialize(TestCaseFile(source=self.path))
         assert_equals(open(GOLDEN_HTML_FILE).read(), open(self.path).read())
 
 
