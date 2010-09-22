@@ -222,7 +222,7 @@ class HtmlFileWriter(_WriterHelper):
     _variable_titles = ['Variable', 'Value']
     _testcase_titles = ['Test Case', 'Action', 'Arguments']
     _keyword_titles = ['Keyword', 'Action', 'Arguments']
-    compiled_regexp = re.compile(r'(\\+)n')
+    compiled_regexp = re.compile(r'(\\+)n ')
 
     def __init__(self, output, name=None, tmpl=None):
         self._content = tmpl
@@ -286,7 +286,7 @@ class HtmlFileWriter(_WriterHelper):
         def replacer(match):
             blashes = len(match.group(1))
             if blashes % 2 == 1:
-                return '%s<br>\n' % match.group()
+                return '%sn<br>\n' % match.group(1)
             return match.group()
         return self.compiled_regexp.sub(replacer, input)
 
