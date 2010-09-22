@@ -19,8 +19,9 @@ class Font(object):
     help = property(lambda self: self._get_font(scale=-2))
     fixed = property(lambda self: self._get_font(family=wx.FONTFAMILY_MODERN))
     fixed_log = property(lambda self: self._get_font(scale=-2, family=wx.FONTFAMILY_MODERN))
+    underlined = property(lambda self: self._get_font(underlined=True))
 
-    def _get_font(self, scale=0, family=wx.FONTFAMILY_DEFAULT):
+    def _get_font(self, scale=0, family=wx.FONTFAMILY_DEFAULT, underlined=False):
         size = wx.SystemSettings.GetFont(wx.SYS_SYSTEM_FIXED_FONT).GetPointSize()
         return wx.Font(size + scale, family, wx.FONTWEIGHT_NORMAL,
-                       wx.FONTSTYLE_NORMAL)
+                       wx.FONTSTYLE_NORMAL, underline=underlined)
