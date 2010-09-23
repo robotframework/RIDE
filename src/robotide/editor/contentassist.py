@@ -84,7 +84,7 @@ class _ContentAssistTextCtrlBase(object):
                 value = value[:-1]
             elif event.GetKeyCode() == wx.WXK_DELETE:
                 pos = self.GetInsertionPoint()
-                value = value[:pos] + value[pos+1:]
+                value = value[:pos] + value[pos + 1:]
             elif event.GetKeyCode() == wx.WXK_ESCAPE:
                 self.hide()
             else:
@@ -172,23 +172,23 @@ class ContentAssistPopup(object):
     def select_and_scroll(self, keycode):
         sel = self._list.GetFirstSelected()
         if keycode == wx.WXK_DOWN :
-            if sel < (self._list.GetItemCount()-1):
-                self._select_and_scroll(sel+1)
+            if sel < (self._list.GetItemCount() - 1):
+                self._select_and_scroll(sel + 1)
             else:
                 self._select_and_scroll(0)
         elif keycode == wx.WXK_UP:
             if sel > 0 :
-                self._select_and_scroll(sel-1)
+                self._select_and_scroll(sel - 1)
             else:
-                self._select_and_scroll(self._list.GetItemCount()-1)
+                self._select_and_scroll(self._list.GetItemCount() - 1)
         elif keycode == wx.WXK_PAGEDOWN:
-            if self._list.ItemCount-self._selection > 14:
-                self._select_and_scroll(self._selection+14)
+            if self._list.ItemCount - self._selection > 14:
+                self._select_and_scroll(self._selection + 14)
             else:
-                self._select_and_scroll(self._list.ItemCount-1)
+                self._select_and_scroll(self._list.ItemCount - 1)
         elif keycode == wx.WXK_PAGEUP:
             if self._selection > 14:
-                self._select_and_scroll(self._selection-14)
+                self._select_and_scroll(self._selection - 14)
             else:
                 self._select_and_scroll(0)
 
@@ -203,7 +203,6 @@ class ContentAssistPopup(object):
         self._details_popup.Show(False)
 
     def OnListItemActivated(self, event):
-        # TODO: should this be implemented with callback?
         self._parent.OnFocusLost(event)
 
     def OnListItemSelected(self, event):
@@ -249,7 +248,7 @@ class ContentAssistList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         for index, colname in enumerate(colnames):
             self.InsertColumn(index, colname)
         self.SetColumnWidth(0, 230)
-        self.resizeLastColumn(_PREFERRED_POPUP_SIZE[0]-230)
+        self.resizeLastColumn(_PREFERRED_POPUP_SIZE[0] - 230)
 
     def get_text(self, index):
         return self.GetItem(index).GetText()
