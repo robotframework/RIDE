@@ -119,7 +119,7 @@ class _EditorTab(wx.Panel):
             self.editor.Destroy()
             self.sizer.Clear()
         self.editor = Editor(self.plugin, self, tree)
-        self.sizer.Add(self.editor, 1, wx.ALL|wx.EXPAND)
+        self.sizer.Add(self.editor, 1, wx.ALL | wx.EXPAND)
         self.Layout()
 
     def OnSave(self, event):

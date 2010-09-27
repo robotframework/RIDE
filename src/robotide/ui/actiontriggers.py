@@ -24,7 +24,7 @@ class MenuBar(object):
         self._name_builder = _NameBuilder()
         self._frame = frame
         self._accelerators = []
-        self._menus =[]
+        self._menus = []
         self._create_default_menus()
         self._frame.SetMenuBar(self._mb)
 
@@ -233,7 +233,7 @@ class ToolBar(object):
     def __init__(self, frame):
         self._frame = frame
         self._wx_toolbar = wx.ToolBar(frame)
-        self._wx_toolbar.SetToolBitmapSize((16,16))
+        self._wx_toolbar.SetToolBitmapSize((16, 16))
         self._frame.SetToolBar(self._wx_toolbar)
         self._buttons = []
 
