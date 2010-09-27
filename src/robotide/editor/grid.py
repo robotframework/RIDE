@@ -89,6 +89,9 @@ class GridEditor(grid.Grid):
             end += 1
         editor.Remove(start, end)
 
+    def _is_whole_row_selection(self):
+        return self.SelectedRows
+
     def get_cell_edit_control(self):
         return self.GetCellEditor(*self.selection.cell).GetControl()
 
@@ -139,7 +142,7 @@ class GridEditor(grid.Grid):
             self._ensure_selected_row_is_visible(event.BottomRow)
 
     def _ensure_selected_row_is_visible(self, bottom_row):
-        if not self.IsVisible(bottom_row , 0) and bottom_row < self.NumberRows:
+        if not self.IsVisible(bottom_row , 0) and bottom_row < self.NumberRows and self._is_whole_row_selection():
             self.MakeCellVisible(bottom_row, 0)
             self.SelectRow(bottom_row + 1, True)
             self.selection._set((self.selection.topleft.row, self.selection.topleft.col),
