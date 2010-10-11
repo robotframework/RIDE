@@ -100,7 +100,8 @@ class ChiefController(object):
         self.resources = []
 
     def get_all_keywords(self):
-        return self._namespace.get_all_keywords(ctrl.datafile for ctrl in self._get_all_controllers())
+        return self._namespace.get_all_keywords(ctrl.datafile for ctrl in
+                                                self.datafiles)
 
     def get_files_without_format(self, controller=None):
         if controller:
@@ -189,9 +190,10 @@ class ChiefController(object):
         RideSaved(path=controller.source).publish()
 
     def _get_all_dirty_controllers(self):
-        return [controller for controller in self._get_all_controllers() if controller.dirty]
+        return [controller for controller in self.datafiles if controller.dirty]
 
-    def _get_all_controllers(self):
+    @property
+    def datafiles(self):
         return list(self.data.iter_datafiles()) + self.resources
 
     def resource_import_modified(self, path):

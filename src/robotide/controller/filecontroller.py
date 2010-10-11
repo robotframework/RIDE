@@ -173,6 +173,7 @@ class _DataController(object):
         return self._chief_controller.resource_import_modified(os.path.join(self.directory, path))
 
     def iter_datafiles(self):
+        # TODO: Not necessarily worthy of a generator
         yield self
         for child in self.children:
             for datafile in child.iter_datafiles():
@@ -454,7 +455,7 @@ class _WithStepsController(object):
 
     @property
     def steps(self):
-        return self.data.steps
+        return [StepController(self, s) for s in self.data.steps]
 
     def set_steps(self, steps):
         self.data.steps = steps
@@ -462,6 +463,9 @@ class _WithStepsController(object):
     @property
     def dirty(self):
         return self._parent.dirty
+
+    def execute(self, command):
+        return command.execute(self)
 
     def mark_dirty(self):
         if self._parent:
@@ -654,3 +658,22 @@ class MetadataListController(_TableController, _WithListOperations):
         self._parent.mark_dirty()
         return self[-1]
 
+
+class StepController(object):
+
+    def __init__(self, parent, step):
+        self._step = step
+        self.parent = parent
+
+    def __eq__(self, other):
+        return self._step == other._step
+
+    def as_list(self):
+        return self._step.as_list()
+
+    def contains_keyword(self, name):
+        return self._step.keyword == name
+
+    @property
+    def logical_name(self):
+        return '%s (Step %d)' % (self.parent.name, self.parent.steps.index(self) + 1)

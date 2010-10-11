@@ -172,9 +172,9 @@ class KeywordEditor(KeywordEditorUi):
         self.Bind(grid.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
         self.Bind(grid.EVT_GRID_CELL_LEFT_DCLICK, self.OnCellLeftDClick)
 
-    def _write_keywords(self, keywords):
+    def _write_keywords(self, steps):
         data = []
-        for step in keywords:
+        for step in steps:
             data.append(self._format_comments(step.as_list()))
             if hasattr(step, 'steps'):
                 for s in step.steps:

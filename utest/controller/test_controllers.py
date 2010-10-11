@@ -7,6 +7,7 @@ from robot.utils.asserts import (assert_equals, assert_true, assert_false,
 from robotide.controller.settingcontroller import *
 from robotide.controller.filecontroller import *
 from robotide.controller.filecontroller import _WithListOperations
+from robotide.controller.chiefcontroller import ChiefController
 from robotide.controller import NewDatafile
 from resources import SUITEPATH
 

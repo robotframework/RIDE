@@ -36,6 +36,10 @@ class _SettingController(object):
         return label
 
     @property
+    def parent(self):
+        return self._parent
+
+    @property
     def value(self):
         value = self._data.as_list()[1:]
         if self._data.comment:
@@ -53,6 +57,13 @@ class _SettingController(object):
     @property
     def keyword_name(self):
         return ''
+
+    def contains_keyword(self, name):
+        return self.keyword_name == name
+
+    @property
+    def logical_name(self):
+        return '%s (%s)' % (self.parent.name, self.label) 
 
     @property
     def datafile_controller(self):
