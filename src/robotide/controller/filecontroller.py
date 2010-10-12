@@ -292,10 +292,6 @@ class VariableTableController(_TableController, _WithListOperations):
         return VariableController(self, self._items[index])
 
     @property
-    def datafile_controller(self):
-        return self._parent.datafile_controller
-
-    @property
     def _items(self):
         return self._table.variables
 
@@ -602,10 +598,6 @@ class ImportSettingsController(_TableController, _WithListOperations):
         return ImportController(self, self._items[index])
 
     @property
-    def datafile_controller(self):
-        return self._parent.datafile_controller
-
-    @property
     def _items(self):
         return self._table.imports
 
@@ -672,7 +664,7 @@ class StepController(object):
         return self._step.as_list()
 
     def contains_keyword(self, name):
-        return self._step.keyword == name
+        return utils.eq(self._step.keyword, name)
 
     @property
     def logical_name(self):
