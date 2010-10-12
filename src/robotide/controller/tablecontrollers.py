@@ -241,7 +241,6 @@ class _WithStepsController(object):
 
     @property
     def steps(self):
-        print self.data.steps
         return [StepController(self, s) for s in self.data.steps]
 
     def set_steps(self, steps):

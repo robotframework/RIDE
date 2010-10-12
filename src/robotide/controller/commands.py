@@ -57,7 +57,6 @@ class RenameOccurrences(_Command):
     def _execute(self, context):
         occurrences = context.execute(FindOccurrences(self._original_name))
         for oc in occurrences:
-            print '==================================================================='
             oc.inform_keyword_name_changed(self._new_name)
 
 class FindOccurrences(_Command):

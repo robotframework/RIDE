@@ -403,7 +403,6 @@ class KeywordEditor(KeywordEditorUi):
         new_name = wx.GetTextFromUser('New name')
         if new_name:
             self._save_keywords()
-            print 'renaming %s -> %s' % (self._current_cell_value(), new_name)
             self._controller.execute(RenameOccurrences(self._current_cell_value(), new_name))
             wx.CallAfter(self._plugin.OnTreeItemSelected)
 
