@@ -400,7 +400,7 @@ class KeywordEditor(KeywordEditorUi):
 
     def OnRenameKeyword(self, event):
         from robotide.controller import RenameOccurrences
-        new_name = wx.GetTextFromUser('New name')
+        new_name = wx.GetTextFromUser('New name', default_value = self._current_cell_value())
         if new_name:
             self._save_keywords()
             self._controller.execute(RenameOccurrences(self._current_cell_value(), new_name))
