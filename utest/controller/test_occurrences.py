@@ -22,29 +22,29 @@ def TestCaseControllerWithSteps(steps):
     return TestCaseController(tctablectrl, testcase)
 
 
-class FindOccurencesTest(unittest.TestCase):
+class FindOccurrencesTest(unittest.TestCase):
 
     def setUp(self):
         self.test_ctrl = TestCaseControllerWithSteps([['Log', 'Hello']])
 
-    def test_no_occurences(self):
-        find_occurences = FindOccurences('Keyword Name')
-        occurences = self.test_ctrl.execute(find_occurences)
-        assert_equals(occurences, [])
+    def test_no_occurrences(self):
+        find_occurrences = FindOccurrences('Keyword Name')
+        occurrences = self.test_ctrl.execute(find_occurrences)
+        assert_equals(occurrences, [])
 
-    def test_occurences_in_steps(self):
-        self._assert_occurence('Log', 'Test (Step 1)')
+    def test_occurrences_in_steps(self):
+        self._assert_occurrence('Log', 'Test (Step 1)')
 
-    def test_occurences_in_test_metadata(self):
-        self._assert_occurence('Setup', 'Test (Setup)')
+    def test_occurrences_in_test_metadata(self):
+        self._assert_occurrence('Setup', 'Test (Setup)')
 
-    def _assert_occurence(self, kw_name, usage):
-        find_occurences = FindOccurences(kw_name)
-        occurences = self.test_ctrl.execute(find_occurences)
-        assert_equals(occurences[0].usage, usage)
+    def _assert_occurrence(self, kw_name, usage):
+        find_occurrences = FindOccurrences(kw_name)
+        occurrences = self.test_ctrl.execute(find_occurrences)
+        assert_equals(occurrences[0].usage, usage)
 
 
-class Occurence(object):
+class Occurrence(object):
 
     def __init__(self, item):
         self._item = item
@@ -54,7 +54,7 @@ class Occurence(object):
         return self._item.logical_name
 
 
-class FindOccurences(object):
+class FindOccurrences(object):
 
     def __init__(self, keyword_name):
         self._keyword_name = keyword_name
@@ -69,5 +69,4 @@ class FindOccurences(object):
     def _find_occurances_in_test(self, test):
         for item in test.steps + test.settings:
             if item.contains_keyword(self._keyword_name):
-                yield Occurence(item)
-        
+                yield Occurrence(item)
