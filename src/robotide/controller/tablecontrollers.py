@@ -456,6 +456,9 @@ class StepController(object):
     def contains_keyword(self, name):
         return utils.eq(self._step.keyword, name)
 
+    def keyword_rename(self, new_name):
+        self._step.keyword = new_name
+
     @property
     def keyword(self):
         return self._step.keyword

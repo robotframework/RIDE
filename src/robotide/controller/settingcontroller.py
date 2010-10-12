@@ -164,6 +164,9 @@ class FixtureController(_SettingController):
     def keyword_name(self):
         return self._fixture.name
 
+    def keyword_rename(self, new_name):
+        self._fixture.name = new_name
+
     def _changed(self, value):
         name, args = self._parse(value)
         return self._fixture.name != name or self._fixture.args != args
@@ -219,6 +222,9 @@ class TemplateController(_SettingController):
     @property
     def keyword_name(self):
         return self._template.value
+
+    def keyword_rename(self, new_name):
+        self._template.value = new_name
 
 
 class ArgumentsController(_SettingController):
