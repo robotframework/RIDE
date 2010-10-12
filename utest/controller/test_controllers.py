@@ -6,7 +6,8 @@ from robot.utils.asserts import (assert_equals, assert_true, assert_false,
                                  assert_none, assert_raises_with_msg)
 from robotide.controller.settingcontroller import *
 from robotide.controller.filecontroller import *
-from robotide.controller.filecontroller import _WithListOperations
+from robotide.controller.tablecontrollers import _WithListOperations
+from robotide.controller.tablecontrollers import *
 from robotide.controller.chiefcontroller import ChiefController
 from robotide.controller import NewDatafile
 from resources import SUITEPATH
@@ -406,6 +407,7 @@ class TestCaseControllerTest(_BaseWithSteps):
         self.ctrl.extract_keyword('New KW', '${argh}', (0,1), obs.observe)
         assert_equals(self.testcase.steps[0].keyword, 'New KW')
         assert_equals(len(self.testcase.steps), 2)
+        
         assert_equals(obs.item.steps[0].keyword, 'Log')
         assert_equals(obs.item.steps[1].keyword, 'No Operation')
         assert_equals(obs.item.arguments.value, '${argh}')

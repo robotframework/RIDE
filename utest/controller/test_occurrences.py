@@ -87,7 +87,7 @@ class FindOccurrences(object):
 
     def execute(self, context):
         result = []
-        for df in context.datafiles:
+        for df in context.all_datafiles:
             result.extend(self._find_occurrences_in(df.settings))
             for test in df.tests:
                 result.extend(self._find_occurrences_in(test.steps + test.settings))

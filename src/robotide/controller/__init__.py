@@ -17,7 +17,8 @@ from robot.parsing.model import TestCaseFile, TestDataDirectory
 
 from chiefcontroller import ChiefController
 from dataloader import DataLoader
-from filecontroller import DataController, ResourceFileController, UserKeywordController
+from filecontroller import DataController, ResourceFileController
+from tablecontrollers import UserKeywordController
 
 
 def NewDatafile(path, is_dir_type):
