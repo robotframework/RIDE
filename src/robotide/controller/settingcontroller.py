@@ -59,7 +59,7 @@ class _SettingController(object):
         return ''
 
     def contains_keyword(self, name):
-        return utils.eq(self.keyword_name, name)
+        return utils.eq(self.keyword_name or '', name)
 
     @property
     def logical_name(self):

@@ -16,6 +16,7 @@ import os
 from robot.parsing.model import TestCaseFile, TestDataDirectory
 
 from chiefcontroller import ChiefController
+from commands import FindOccurrences, RenameOccurrences
 from dataloader import DataLoader
 from filecontroller import DataController, ResourceFileController
 from tablecontrollers import UserKeywordController

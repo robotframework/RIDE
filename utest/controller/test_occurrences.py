@@ -2,7 +2,8 @@ import unittest
 from robot.parsing.model import TestCaseFile
 
 from robot.utils.asserts import assert_equals
-from robotide.controller.chiefcontroller import ChiefController
+from robotide.controller import ChiefController, FindOccurrences, RenameOccurrences
+from robotide.controller.commands import KEYWORD_NAME_FIELD
 from robotide.controller.filecontroller import (TestCaseFileController,
                                                 TestCaseTableController,
                                                 TestCaseController)
@@ -11,12 +12,12 @@ STEP1_KEYWORD = 'Log'
 TEST1_NAME = 'Test'
 UNUSED_KEYWORD_NAME = 'Foo'
 USERKEYWORD1_NAME = 'User Keyword'
-KEYWORD_NAME_FIELD = 'Keyword Name'
 SETUP_KEYWORD = 'Setup Kw'
 TEMPLATE_KEYWORD = 'Template Kw'
 SUITE_SETUP_KEYWORD = 'Suite Setup Kw'
 SUITE_NAME = 'Some Suite'
 KEYWORD_IN_USERKEYWORD1 = 'Some Keyword'
+
 
 def TestCaseControllerWithSteps():
     tcf = TestCaseFile()
@@ -40,6 +41,7 @@ def TestCaseControllerWithSteps():
     tctablectrl = TestCaseTableController(tcf_ctrl,
                                           tcf.testcase_table)
     return TestCaseController(tctablectrl, testcase)
+
 
 def assert_occurrence(test_ctrl, kw_name, source, usage):
     assert_equals(_first_occurrence(test_ctrl, kw_name).usage, '%s (%s)' % (source, usage))
@@ -93,9 +95,7 @@ class RenameOccurrenceTest(unittest.TestCase):
         self.test_ctrl = TestCaseControllerWithSteps()
 
     def _rename(self, original_name, new_name, source, usage):
-        original_occurrences = self.test_ctrl.execute(FindOccurrences(original_name))
-        for occurrence in original_occurrences:
-            occurrence.inform_keyword_name_changed(new_name)
+        self.test_ctrl.execute(RenameOccurrences(original_name, new_name))
         assert_occurrence(self.test_ctrl, new_name, source, usage)
 
     def test_rename_in_steps(self):
@@ -115,54 +115,3 @@ class RenameOccurrenceTest(unittest.TestCase):
 
     def test_rename_in_user_keywords(self):
         self._rename(KEYWORD_IN_USERKEYWORD1, UNUSED_KEYWORD_NAME, USERKEYWORD1_NAME, 'Step 1')
-
-class Occurrence(object):
-
-    def __init__(self, item):
-        self._item = item
-
-    @property
-    def usage(self):
-        return self._item.logical_name
-
-    def inform_keyword_name_changed(self, new_name):
-        self._item.keyword_rename(new_name)
-
-class KeywordNameController(object):
-
-    def __init__(self, keyword):
-        self._keyword = keyword
-
-    def contains_keyword(self, name):
-        return self._keyword.name == name
-
-    def keyword_rename(self, new_name):
-        self._keyword.rename(new_name)
-
-    @property
-    def logical_name(self):
-        return '%s (%s)' % (self._keyword.name, KEYWORD_NAME_FIELD)
-
-class FindOccurrences(object):
-
-
-    def __init__(self, keyword_name):
-        self._keyword_name = keyword_name
-
-    def execute(self, context):
-        return self._find_occurrences_in(self._items_from(context))
-
-    def _items_from(self, context):
-        items = []
-        for df in context.all_datafiles:
-            items.extend(df.settings)
-            for test in df.tests:
-                items.extend(test.steps + test.settings)
-            for kw in df.keywords:
-                items.append(KeywordNameController(kw))
-                items.extend(kw.steps)
-        return items
-
-    def _find_occurrences_in(self, items):
-        return [Occurrence(item) for item in items
-                if item.contains_keyword(self._keyword_name)]

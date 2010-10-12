@@ -241,6 +241,7 @@ class _WithStepsController(object):
 
     @property
     def steps(self):
+        print self.data.steps
         return [StepController(self, s) for s in self.data.steps]
 
     def set_steps(self, steps):
@@ -448,15 +449,25 @@ class StepController(object):
         self.parent = parent
 
     def __eq__(self, other):
-        return self._step == other._step
+        if self is other : return True
+        if not other : return False
+        return self._steps_are_equal(self._step, other._step)
+
+    def _steps_are_equal(self, fst, snd):
+        if fst is snd: return True
+        if not snd: return False
+        return (fst.assign == snd.assign and
+                fst.keyword == snd.keyword and
+                fst.args == snd.args)
 
     def as_list(self):
         return self._step.as_list()
 
     def contains_keyword(self, name):
-        return utils.eq(self._step.keyword, name)
+        return utils.eq(self._step.keyword or '', name)
 
     def keyword_rename(self, new_name):
+        print 'renaming step', self._step
         self._step.keyword = new_name
 
     @property

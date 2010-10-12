@@ -79,7 +79,7 @@ class EditorPlugin(Plugin):
         self.delete_tab(self._tab)
         self._tab = None
 
-    def OnTreeItemSelected(self, message):
+    def OnTreeItemSelected(self, message=None):
         self._tab.create_editor(self.tree)
         self._show_editor()
 

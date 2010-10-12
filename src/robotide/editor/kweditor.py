@@ -147,7 +147,7 @@ class KeywordEditorUi(GridEditor, RideEventHandler):
 class KeywordEditor(KeywordEditorUi):
     dirty = property(lambda self: self._controller.dirty)
     _no_cell = grid.GridCellCoords(-1, -1)
-    _popup_items = ['Create Keyword', 'Extract Keyword', '---'] + \
+    _popup_items = ['Create Keyword', 'Extract Keyword', 'Rename Keyword', '---'] + \
             GridEditor._popup_items
 
     def __init__(self, parent, controller, tree):
@@ -397,6 +397,15 @@ class KeywordEditor(KeywordEditorUi):
         self._controller.extract_keyword(name, args, rows,
                                          self._tree.add_keyword_controller)
         self._write_keywords(self._controller.steps)
+
+    def OnRenameKeyword(self, event):
+        from robotide.controller import RenameOccurrences
+        new_name = wx.GetTextFromUser('New name')
+        if new_name:
+            self._save_keywords()
+            print 'renaming %s -> %s' % (self._current_cell_value(), new_name)
+            self._controller.execute(RenameOccurrences(self._current_cell_value(), new_name))
+            wx.CallAfter(self._plugin.OnTreeItemSelected)
 
 
 class ContentAssistCellEditor(grid.PyGridCellEditor):
