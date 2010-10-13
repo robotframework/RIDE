@@ -400,10 +400,11 @@ class KeywordEditor(KeywordEditorUi):
 
     def OnRenameKeyword(self, event):
         from robotide.controller import RenameOccurrences
-        new_name = wx.GetTextFromUser('New name', default_value = self._current_cell_value())
+        old_name = self._current_cell_value()
+        new_name = wx.GetTextFromUser('New name', default_value = old_name)
         if new_name:
             self._save_keywords()
-            self._controller.execute(RenameOccurrences(self._current_cell_value(), new_name))
+            self._controller.execute(RenameOccurrences(old_name, new_name))
             wx.CallAfter(self._plugin.OnTreeItemSelected)
 
 
