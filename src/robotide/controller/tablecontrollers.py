@@ -239,6 +239,27 @@ class _WithStepsController(ControllerWithParent):
             copied.set_comment(orig.comment)
         new.data.steps = self.data.steps[:]
         return new
+    
+    def remove_empty_steps(self):
+        steps = self.data.steps
+        remove_these = [i for i in range(len(steps)) if self._is_empty_step(steps[i])]
+        remove_these.reverse()
+        for i in remove_these :
+             self.remove_step(i)
+    
+    def _is_empty_step(self, step):
+        return step.as_list() == []
+    
+    def _empty_step(self):
+        return Step([])
+    
+    def remove_step(self, index):
+        steps = self.data.steps
+        self.data.steps = steps[:index]+steps[index+1:]
+
+    def add_step(self, index):
+        steps = self.data.steps
+        self.data.steps = steps[:index]+[self._empty_step()]+steps[index:]
 
     def create_user_keyword(self, name, arg_values, observer):
         err = self.datafile_controller.validate_keyword_name(name)
@@ -417,7 +438,6 @@ class MetadataListController(_TableController, _WithListOperations):
         self._parent.mark_dirty()
         return self[-1]
 
-
 class StepController(object):
 
     def __init__(self, parent, step):
@@ -471,6 +491,13 @@ class StepController(object):
 
     def change(self, col, new_value):
         cells = self._step.as_list(include_comment=False)
+        if col >= len(cells) : 
+            cells = cells + ['' for _ in range(col - len(cells) + 1)]
         cells[col] = new_value
         self._step.__init__(cells, comment=self._step.comment)
-
+    
+    def remove_empty_columns_from_end(self):
+        cells = self._step.as_list(include_comment=False)
+        while cells != [] and cells[-1].strip() == '':
+            cells = cells[:-1]
+        self._step.__init__(cells, comment=self._step.comment)

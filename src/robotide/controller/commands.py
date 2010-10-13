@@ -12,9 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-
 KEYWORD_NAME_FIELD = 'Keyword Name'
-
 
 class Occurrence(object):
 
@@ -81,3 +79,39 @@ class FindOccurrences(_Command):
     def _find_occurrences_in(self, items):
         return [Occurrence(item) for item in items
                 if item.contains_keyword(self._keyword_name)]
+
+class CellValueChanged(_Command):
+    def __init__(self, row, col, value):
+        self._row = row
+        self._col = col
+        self._value = value
+
+    def _execute(self, context):
+        step = context.steps[self._row]
+        step.change(self._col, self._value)
+        context.notify_changed()
+
+class RowDelete(_Command):
+    def __init__(self, row):
+        self._row = row
+    
+    def _execute(self, context):
+        context.remove_step(self._row)
+        context.notify_changed()
+
+class RowAdd(_Command):
+    def __init__(self, row = None):
+        self._row = row
+    
+    def _execute(self, context):
+        row = self._row
+        if row is None: row = len(context.steps)
+        context.add_step(row)
+        context.notify_changed()
+
+class Purify(_Command):
+    def _execute(self, context):
+        for step in context.steps:
+            step.remove_empty_columns_from_end()
+        context.remove_empty_steps()
+        context.notify_changed()
