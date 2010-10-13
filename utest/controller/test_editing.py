@@ -15,6 +15,10 @@ data = '''Test With two Steps
   Step 1
   Step 2
   Foo  # this is a comment
+  :FOR  ${i}  IN  1  2  3
+    Log  ${i}
+  Step bar
+  ${variable}=  some value
 '''
 
 def create():

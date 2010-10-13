@@ -497,7 +497,17 @@ class StepController(object):
         self._step.__init__(cells, comment=self._step.comment)
     
     def remove_empty_columns_from_end(self):
-        cells = self._step.as_list(include_comment=False)
+        cells = self._step.as_list()
         while cells != [] and cells[-1].strip() == '':
             cells = cells[:-1]
-        self._step.__init__(cells, comment=self._step.comment)
+        self._step.__init__(cells)
+    
+    def remove_empty_columns_from_beginning(self):
+        cells = self._step.as_list()
+        while cells != [] and cells[0].strip() == '':
+            cells = cells[1:]
+        self._step.__init__(cells)
+    
+    def has_only_comment(self):
+        none_empty_cells = [cell for cell in self._step.as_list() if cell.strip() != '']
+        return len(none_empty_cells) == 1 and none_empty_cells[0][0] == '#'

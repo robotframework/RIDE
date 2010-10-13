@@ -80,7 +80,13 @@ class FindOccurrences(_Command):
         return [Occurrence(item) for item in items
                 if item.contains_keyword(self._keyword_name)]
 
-class CellValueChanged(_Command):
+class _ValueChangingCommand(_Command):
+    def execute(self, context):
+        result = self._execute(context)
+        context.notify_changed()
+        return result
+
+class CellValueChanged(_ValueChangingCommand):
     def __init__(self, row, col, value):
         self._row = row
         self._col = col
@@ -93,17 +99,15 @@ class CellValueChanged(_Command):
             steps = context.steps
         step = context.steps[self._row]
         step.change(self._col, self._value)
-        context.notify_changed()
 
-class RowDelete(_Command):
+class RowDelete(_ValueChangingCommand):
     def __init__(self, row):
         self._row = row
     
     def _execute(self, context):
         context.remove_step(self._row)
-        context.notify_changed()
 
-class RowAdd(_Command):
+class RowAdd(_ValueChangingCommand):
     def __init__(self, row = None):
         self._row = row
     
@@ -111,11 +115,11 @@ class RowAdd(_Command):
         row = self._row
         if row is None: row = len(context.steps)
         context.add_step(row)
-        context.notify_changed()
 
-class Purify(_Command):
+class Purify(_ValueChangingCommand):
     def _execute(self, context):
         for step in context.steps:
             step.remove_empty_columns_from_end()
+            if step.has_only_comment():
+                step.remove_empty_columns_from_beginning()
         context.remove_empty_steps()
-        context.notify_changed()
