@@ -87,6 +87,10 @@ class CellValueChanged(_Command):
         self._value = value
 
     def _execute(self, context):
+        steps = context.steps
+        while len(steps) <= self._row:
+            context.add_step(len(steps))
+            steps = context.steps
         step = context.steps[self._row]
         step.change(self._col, self._value)
         context.notify_changed()

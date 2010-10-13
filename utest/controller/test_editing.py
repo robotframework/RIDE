@@ -14,6 +14,7 @@ from robotide.controller.commands import RowAdd, Purify, CellValueChanged,\
 data = '''Test With two Steps
   Step 1
   Step 2
+  Foo  # this is a comment
 '''
 
 def create():
@@ -48,9 +49,13 @@ class TestCaseEditingTest(unittest.TestCase):
         self._exec(CellValueChanged(0, 0, 'Changed Step'))
         assert_equals(self._steps[0].keyword, 'Changed Step')
 
-    def test_changing_cell_value_after_last_adds_empty_columns(self):
+    def test_changing_cell_value_after_last_column_adds_empty_columns(self):
         self._exec(CellValueChanged(0, 2, 'Hello'))
         assert_equals(self._steps[0].args, ['', 'Hello'])
+
+    def test_changing_cell_value_after_last_row_adds_empty_rows(self):
+        self._exec(CellValueChanged(10, 0, 'Hello'))
+        assert_equals(self._steps[10].keyword, 'Hello')
 
     def test_deleting_row(self):
         self._exec(RowDelete(0))
@@ -88,6 +93,11 @@ class TestCaseEditingTest(unittest.TestCase):
         self._exec(RowAdd())
         self._exec(CellValueChanged(0, 2, 'HELLO'))
         assert_equals(self._steps[0].args, ['', 'HELLO']) 
+
+    def test_only_comment_is_left(self):
+        self._exec(CellValueChanged(2, 0, ''))
+        self._exec(Purify())
+        assert_equals(self._steps[2].as_list(), ['# this is a comment'])
 
     def _exec(self, command):
         self._ctrl.execute(command)

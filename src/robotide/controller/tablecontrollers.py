@@ -245,7 +245,7 @@ class _WithStepsController(ControllerWithParent):
         remove_these = [i for i in range(len(steps)) if self._is_empty_step(steps[i])]
         remove_these.reverse()
         for i in remove_these :
-             self.remove_step(i)
+            self.remove_step(i)
     
     def _is_empty_step(self, step):
         return step.as_list() == []
