@@ -156,7 +156,6 @@ class TestCaseTableController(_TableController, _TcUkBase):
         RideTestCaseAdded(datafile=self.datafile, name=name).publish()
         return tc_controller
 
-
     def delete(self, test):
         self._table.tests.remove(test)
         self.mark_dirty()
@@ -280,6 +279,7 @@ class TestCaseController(_WithStepsController):
 
     def _init(self, test):
         self._test = test
+        self._listeners = Listeners()
 
     @property
     def settings(self):
@@ -307,6 +307,24 @@ class TestCaseController(_WithStepsController):
 
     def get_local_variables(self):
         return {}
+
+    def add_test_changed_listener(self, listener):
+        self._listeners.add(listener)
+
+    def notify_changed(self):
+        self._listeners.notify(self)
+
+class Listeners(object):
+
+    def __init__(self):
+        self._listeners = []
+
+    def add(self, listener):
+        self._listeners.append(listener)
+
+    def notify(self, data):
+        for l in self._listeners:
+            l(data)
 
 
 class UserKeywordController(_WithStepsController):
@@ -425,7 +443,6 @@ class StepController(object):
         return utils.eq(self._step.keyword or '', name)
 
     def keyword_rename(self, new_name):
-        print 'renaming step', self._step
         self._step.keyword = new_name
 
     @property
@@ -451,3 +468,9 @@ class StepController(object):
     @property
     def logical_name(self):
         return '%s (Step %d)' % (self.parent.name, self.parent.steps.index(self) + 1)
+
+    def change(self, col, new_value):
+        cells = self._step.as_list(include_comment=False)
+        cells[col] = new_value
+        self._step.__init__(cells, comment=self._step.comment)
+
