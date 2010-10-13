@@ -17,6 +17,7 @@ from robot.parsing.tablepopulators import UserKeywordPopulator, TestCasePopulato
 from robot.parsing.model import Step
 
 from robotide.robotapi import DataRow, is_list_var, is_scalar_var
+from robotide.controller.basecontroller import ControllerWithParent
 from robotide.controller.settingcontroller import (DocumentationController,
         FixtureController, TagsController, TimeoutController,
         TemplateController, ArgumentsController, MetadataController,
@@ -44,29 +45,11 @@ class _WithListOperations(object):
         raise NotImplementedError(self.__class__)
 
 
-class _TableController(object):
+class _TableController(ControllerWithParent):
+
     def __init__(self, parent_controller, table):
         self._parent = parent_controller
         self._table = table
-
-    def mark_dirty(self):
-        self._parent.mark_dirty()
-
-    @property
-    def dirty(self):
-        return self._parent.dirty
-
-    @property
-    def datafile_controller(self):
-        return self._parent.datafile_controller
-
-    @property
-    def datafile(self):
-        return self._parent.datafile
-
-    @property
-    def all_datafiles(self):
-        return self._parent.all_datafiles
 
 
 class VariableTableController(_TableController, _WithListOperations):
@@ -217,7 +200,7 @@ class KeywordTableController(_TableController, _TcUkBase):
         return self._table.keywords
 
 
-class _WithStepsController(object):
+class _WithStepsController(ControllerWithParent):
     def __init__(self, parent_controller, data):
         self._parent = parent_controller
         self.data = data
@@ -228,34 +211,14 @@ class _WithStepsController(object):
         return self.data.name
 
     @property
-    def datafile_controller(self):
-        return self._parent.datafile_controller
-
-    @property
-    def datafile(self):
-        return self._parent.datafile
-
-    @property
-    def all_datafiles(self):
-        return self._parent.all_datafiles
-
-    @property
     def steps(self):
         return [StepController(self, s) for s in self.data.steps]
 
     def set_steps(self, steps):
         self.data.steps = steps
 
-    @property
-    def dirty(self):
-        return self._parent.dirty
-
     def execute(self, command):
         return command.execute(self)
-
-    def mark_dirty(self):
-        if self._parent:
-            self._parent.mark_dirty()
 
     def parse_steps_from_rows(self, rows):
         self.data.steps = []
@@ -426,10 +389,6 @@ class MetadataListController(_TableController, _WithListOperations):
 
     def __getitem__(self, index):
         return MetadataController(self, self._items[index])
-
-    @property
-    def datafile_controller(self):
-        return self._parent.datafile_controller
 
     @property
     def _items(self):

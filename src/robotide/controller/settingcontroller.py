@@ -14,11 +14,12 @@
 
 import re
 
+from robotide.controller.basecontroller import ControllerWithParent
 from robotide.editor.editors import DocumentationEditor, SettingEditor
 from robotide import utils
 
 
-class _SettingController(object):
+class _SettingController(ControllerWithParent):
     editor = SettingEditor
 
     def __init__(self, parent_controller, data):
@@ -34,10 +35,6 @@ class _SettingController(object):
         if label.startswith('['):
             return label[1:-1]
         return label
-
-    @property
-    def parent(self):
-        return self._parent
 
     @property
     def value(self):
@@ -63,40 +60,28 @@ class _SettingController(object):
 
     @property
     def logical_name(self):
-        return '%s (%s)' % (self.parent.name, self.label) 
-
-    @property
-    def datafile_controller(self):
-        return self._parent.datafile_controller
-
-    @property
-    def datafile(self):
-        return self._parent.datafile
+        return '%s (%s)' % (self._parent.name, self.label)
 
     @property
     def is_set(self):
         return self._data.is_set()
 
-    @property
-    def dirty(self):
-        return self._parent.dirty
-
     def set_value(self, value):
         if self._changed(value):
             self._set(value)
-            self._mark_dirty()
+            self.mark_dirty()
 
     def set_comment(self, comment):
         if comment != self.comment:
             self._data.comment = comment
-            self._mark_dirty()
+            self.mark_dirty()
 
     def clear(self):
         self._data.reset()
         # Need to clear comments separately due to this bug:
         # http://code.google.com/p/robotframework/issues/detail?id=647
         self._data.comment = None
-        self._mark_dirty()
+        self.mark_dirty()
 
     def _changed(self, value):
         return value != self._data.value
@@ -106,9 +91,6 @@ class _SettingController(object):
 
     def _split_from_separators(self, value):
         return utils.split_value(value)
-
-    def _mark_dirty(self):
-        self._parent.mark_dirty()
 
 
 class DocumentationController(_SettingController):
