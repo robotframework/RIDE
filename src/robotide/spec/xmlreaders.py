@@ -22,13 +22,6 @@ from robotide import utils
 from iteminfo import LibraryKeywordInfo, _XMLKeywordContent
 
 
-def XMLResource(resource_name):
-    specfile = utils.find_from_pythonpath(os.path.splitext(resource_name)[0] + '.xml')
-    if specfile:
-        return _XMLResource(resource_name, specfile)
-    return None
-
-
 class Spec(object):
 
     def _init_from_specfile(self, specfile):
@@ -64,8 +57,7 @@ class LibrarySpec(Spec):
             specfile = utils.find_from_pythonpath(self.name + '.xml')
             self.keywords, self.doc = self._init_from_specfile(specfile)
             if not self.keywords:
-                msg = 'Importing test library "%s" failed: %s' %\
-                      (self.name, err)
+                msg = 'Importing test library "%s" failed: %s' % (self.name, err)
                 RideLogMessage(message=msg, level='WARN').publish()
 
     def _init_from_library(self, name, args):
@@ -77,40 +69,3 @@ class LibrarySpec(Spec):
         if os.path.exists(name):
             return name
         return name.replace(' ', '')
-
-
-class _XMLResource(Spec):
-    type = 'resource'
-    variables = property(lambda self: self)
-    imports = property(lambda self: self)
-    get_library_keywords = lambda self: []
-
-    def __init__(self, name, specfile):
-        self.source = name
-        self.name = utils.printable_name_from_path(name)
-        self.keywords, self.doc = self._init_from_specfile(specfile)
-        self.resources = []
-        self.suites = []
-        self.dirty = False
-
-    def get_keywords(self, library_keywords=True):
-        return self.keywords
-
-    def get_user_keywords(self):
-        return []
-
-    def get_variables(self):
-        return []
-
-    def get_resources(self):
-        return []
-
-    def replace_scalar(self, value):
-        return value
-
-    def replace_variables(self, value):
-        return value
-
-    def serialize(self):
-        pass
-
