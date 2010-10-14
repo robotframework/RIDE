@@ -15,11 +15,9 @@
 import os
 import time
 
-from robotide import utils
 from robotide.context import SETTINGS
-from robotide.spec import LibrarySpec, XMLResource
-from robotide.robotapi import RobotVariables, normpath
-from robotide.errors import DataError
+from robotide.spec import LibrarySpec
+from robotide.robotapi import normpath
 from robotide.publish.messages import RideLogMessage
 
 
@@ -36,7 +34,7 @@ class LibraryCache(object):
             try:
                 kws = LibrarySpec(name, args).keywords
             except Exception, err:
-                RideLogMessage(message='Importing library %s failed with exception %s.' % (name, err), 
+                RideLogMessage(message='Importing library %s failed with exception %s.' % (name, err),
                                level='WARN').publish()
             finally:
                 self.library_keywords[self._key(name, args)] = kws
@@ -70,78 +68,6 @@ class LibraryCache(object):
         if len(parts) == 1:
             return parts[0], None
         return parts[0], parts[1:]
-
-
-class _FileCache(object):
-
-    def _get_name_and_absolute_path(self, source, name):
-        name = name.replace('/', os.sep)
-        if os.path.isfile(name):
-            path = name
-        else:
-            path = os.path.join(os.path.dirname(source), name)
-            if not os.path.isfile(path):
-                path = utils.find_from_pythonpath(name)
-        if path:
-            path = normpath(path)
-        return name, path
-
-
-class VariableFileCache(_FileCache):
-
-    def __init__(self):
-        self._variable_files = {}
-
-    def get_varfile(self, source, name, args):
-        name, path = self._get_name_and_absolute_path(source, name)
-        variable_file_id = (path, tuple(args))
-        try:
-            return self._variable_files[variable_file_id]
-        except KeyError:
-            varfile = self._import_variable_files(path, name,args)
-            if varfile:
-                self._variable_files[variable_file_id] = varfile
-            return varfile
-
-    def _import_variable_files(self, path, name, args):
-        imported = RobotVariables()
-        try:
-            imported.set_from_file(path, args)
-        except DataError:
-            return None
-        imported.source = os.path.basename(name)
-        return imported
-
-
-class ResourceFileCache(_FileCache):
-
-    def __init__(self, namespace):
-        self._resource_files = {}
-        self._namespace = namespace
-
-    def get_resource_file(self, source, name):
-        try:
-            return self._get_from_cache(source, name)
-        except KeyError:
-            pass
-        name, path = self._get_name_and_absolute_path(source, name)
-        return self._get_resource_file(path, name, create_new=False)
-
-    def load_resource(self, path, datafile=None):
-        if datafile:
-            return self.get_resource_file(datafile.source, path)
-        else:
-            return self._get_resource_file(path, None, create_new=True)
-
-    def _get_resource_file(self, path, name, create_new=False):
-        normalized_key = path and normpath(path) or name
-        try:
-            return self._resource_files[normalized_key]
-        except KeyError:
-            resource = ResourceFileFactory(path, self._namespace, create_new)\
-                    or XMLResource(name)
-            self._resource_files[normalized_key] = resource
-            return resource
 
 
 class ExpiringCache(object):
