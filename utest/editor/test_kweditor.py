@@ -14,8 +14,8 @@ from resources import PYAPP_REFERENCE as _ #Needed to be able to create wx compo
 import wx
 
 
-DATA = [['kw1'],
-        ['kw2', 'arg1'],
+DATA = [['kw1', '', ''],
+        ['kw2', 'arg1', ''],
         ['kw3', 'arg1', 'arg2'],
         ]
 

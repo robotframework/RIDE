@@ -103,16 +103,8 @@ class GridEditor(grid.Grid):
         return self.GetCellValue(*self.selection.cell)
 
     def _get_block_content(self, row_range, col_range):
-        content = [ [ self.GetCellValue(row, col) for col in col_range ]
-                   for row in row_range ]
-        return self._remove_trailing_empty_rows_and_cols(content)
-
-    def _remove_trailing_empty_rows_and_cols(self, content):
-        def _is_empty_row(row):
-            return len([cell for cell in row if cell != '']) == 0
-        while content and _is_empty_row(content[-1]):
-            content.pop()
-        return [ self._strip_trailing_empty_cells(row) for row in content ]
+        return [[self.GetCellValue(row, col) for col in col_range]
+                 for row in row_range]
 
     def _strip_trailing_empty_cells(self, rowdata):
         while rowdata and not rowdata[-1]:
