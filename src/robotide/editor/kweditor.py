@@ -15,6 +15,7 @@
 import wx
 from wx import grid
 
+from robotide.controller.commands import ChangeCellValue
 from robotide.publish import RideGridCellChanged
 from robotide.utils import PopupMenu, RideEventHandler
 
@@ -151,17 +152,17 @@ class KeywordEditor(KeywordEditorUi):
             GridEditor._popup_items
 
     def __init__(self, parent, controller, tree):
-        self._keywords = controller.steps
-        KeywordEditorUi.__init__(self, parent, len(self._keywords) + 5, 5)
+        KeywordEditorUi.__init__(self, parent, len(controller.steps) + 5, 5)
         self.SetDefaultEditor(ContentAssistCellEditor(parent.plugin))
         self._controller = controller
+        self._controller.add_change_listener(self._data_changed)
         # TODO: Tooltip may be smaller when the documentation is wrapped correctly
         self._tooltip = RideHtmlPopupWindow(self, (650, 400))
         self._marked_cell = None
         self._idle_mouse_cell = self._no_cell
         self._active_row = self._active_col = None
         self._make_bindings()
-        self._write_keywords(self._keywords)
+        self._write_steps(self._controller)
         self._tree = tree
         self._plugin = parent.plugin
 
@@ -172,9 +173,13 @@ class KeywordEditor(KeywordEditorUi):
         self.Bind(grid.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
         self.Bind(grid.EVT_GRID_CELL_LEFT_DCLICK, self.OnCellLeftDClick)
 
-    def _write_keywords(self, steps):
+    def _data_changed(self, controller):
+        self._write_steps(controller)
+        self.set_dirty()
+
+    def _write_steps(self, controller):
         data = []
-        for step in steps:
+        for step in controller.steps:
             data.append(self._format_comments(step.as_list()))
             if hasattr(step, 'steps'):
                 for s in step.steps:
@@ -193,6 +198,9 @@ class KeywordEditor(KeywordEditorUi):
                 cell = cell.replace(' |', '')
             ret.append(cell)
         return ret
+
+    def cell_value_edited(self, row, col, value):
+        self._controller.execute(ChangeCellValue(row, col, value))
 
     def get_selected_datafile_controller(self):
         return self._controller.datafile_controller
@@ -396,6 +404,7 @@ class KeywordEditor(KeywordEditorUi):
         rows = self.selection.topleft.row, self.selection.bottomright.row
         self._controller.extract_keyword(name, args, rows,
                                          self._tree.add_keyword_controller)
+        raise RuntimeError('Please fix me')
         self._write_keywords(self._controller.steps)
 
     def OnRenameKeyword(self, event):
@@ -414,14 +423,12 @@ class ContentAssistCellEditor(grid.PyGridCellEditor):
         grid.PyGridCellEditor.__init__(self)
         self._plugin = plugin
         self._grid = None
-        self._previous_value = None
 
     def show_content_assist(self):
         self._tc.show_content_assist()
 
     def Create(self, parent, id, evthandler):
         self._tc = ExpandingContentAssistTextCtrl(parent, self._plugin)
-        self._tc.Bind(wx.EVT_TEXT, self.OnText, self._tc)
         self.SetControl(self._tc)
         if evthandler:
             self._tc.PushEventHandler(evthandler)
@@ -435,7 +442,7 @@ class ContentAssistCellEditor(grid.PyGridCellEditor):
 
     def BeginEdit(self, row, col, grid):
         self._tc.SetSize((-1, self._height))
-        self._original_value = self._previous_value = grid.GetCellValue(row, col)
+        self._original_value = grid.GetCellValue(row, col)
         self._grid = grid
         self.StartingClick()
 
@@ -445,9 +452,7 @@ class ContentAssistCellEditor(grid.PyGridCellEditor):
         else:
             value = self._tc.GetValue()
         if value != self._original_value:
-            grid.write_cell(row, col, value)
-            grid.set_dirty()
-        self._previous_value = value
+            grid.cell_value_edited(row, col, value)
         self._tc.hide()
         grid.SetFocus()
         return True
@@ -472,9 +477,3 @@ class ContentAssistCellEditor(grid.PyGridCellEditor):
 
     def Clone(self):
         return ContentAssistCellEditor()
-
-    def OnText(self, event):
-        if self._previous_value != self._tc.GetValue() and self._grid:
-            self._grid.set_dirty()
-        self._previous_value = self._tc.GetValue()
-        event.Skip()
