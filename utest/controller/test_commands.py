@@ -7,8 +7,8 @@ from robot.utils.asserts import assert_equals
 from robotide.controller.filecontroller import TestCaseFileController
 from robotide.controller.tablecontrollers import TestCaseController, \
     TestCaseTableController
-from robotide.controller.commands import RowAdd, Purify, ChangeCellValue,\
-    RowDelete, DeleteRows, ClearArea, PasteArea, InsertCells, DeleteCells
+from robotide.controller.commands import AddRow, Purify, ChangeCellValue,\
+    DeleteRow, DeleteRows, ClearArea, PasteArea, InsertCells, DeleteCells
 
 STEP1 = '  Step 1  arg'
 STEP2 = '  Step 2  a1  a2  a3'
@@ -66,39 +66,39 @@ class TestCaseEditingTest(unittest.TestCase):
         assert_equals(self._steps[len(data)+5].keyword, 'Hello')
 
     def test_deleting_row(self):
-        self._exec(RowDelete(0))
+        self._exec(DeleteRow(0))
         assert_equals(len(self._steps), self._orig_number_of_steps-1)
         self._verify_row_does_not_exist(STEP1)
 
     def test_delete_row_inside_of_for_loop(self):
-        self._exec(RowDelete(self._data_row(FOR_LOOP_STEP1)))
+        self._exec(DeleteRow(self._data_row(FOR_LOOP_STEP1)))
         assert_equals(len(self._steps), self._orig_number_of_steps-1)
         self._verify_row_does_not_exist(FOR_LOOP_STEP1)
 
     def test_delete_for_loop_header_row(self):
-        self._exec(RowDelete(self._data_row(FOR_LOOP_HEADER)))
+        self._exec(DeleteRow(self._data_row(FOR_LOOP_HEADER)))
         assert_equals(len(self._steps), self._orig_number_of_steps-1)
         self._verify_row_does_not_exist(FOR_LOOP_HEADER)
 
     def test_adding_row_last(self):
-        self._exec(RowAdd())
+        self._exec(AddRow())
         assert_equals(len(self._steps), self._orig_number_of_steps+1)
         assert_equals(self._steps[self._orig_number_of_steps].as_list(), [])
     
     def test_adding_row_first(self):
-        self._exec(RowAdd(0))
+        self._exec(AddRow(0))
         assert_equals(len(self._steps), self._orig_number_of_steps+1)
         assert_equals(self._steps[0].as_list(), [])
     
     def test_adding_row_middle(self):
-        self._exec(RowAdd(1))
+        self._exec(AddRow(1))
         assert_equals(len(self._steps), self._orig_number_of_steps+1)
         assert_equals(self._steps[1].as_list(), [])
 
     def test_purify_removes_empty_rows(self):
-        self._exec(RowAdd())
-        self._exec(RowAdd(1))
-        self._exec(RowAdd(2))
+        self._exec(AddRow())
+        self._exec(AddRow(1))
+        self._exec(AddRow(2))
         assert_equals(len(self._steps), self._orig_number_of_steps+3)
         self._exec(Purify())
         assert_equals(len(self._steps), self._orig_number_of_steps)
@@ -110,7 +110,7 @@ class TestCaseEditingTest(unittest.TestCase):
         assert_equals(len(self._steps), self._orig_number_of_steps-1)
 
     def test_can_add_values_to_empty_row(self):
-        self._exec(RowAdd())
+        self._exec(AddRow())
         self._exec(ChangeCellValue(0, 3, 'HELLO'))
         assert_equals(self._steps[0].args, ['arg', '', 'HELLO']) 
 

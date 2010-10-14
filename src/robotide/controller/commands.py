@@ -104,14 +104,14 @@ class ChangeCellValue(_ValueChangingCommand):
         step.change(self._col, self._value)
         step.remove_empty_columns_from_end()
 
-class RowDelete(_ValueChangingCommand):
+class DeleteRow(_ValueChangingCommand):
     def __init__(self, row):
         self._row = row
     
     def execute_with(self, context):
         context.remove_step(self._row)
 
-class RowAdd(_ValueChangingCommand):
+class AddRow(_ValueChangingCommand):
 
     def __init__(self, row = None):
         self._row = row
@@ -158,7 +158,7 @@ class CompositeCommand(_ValueChangingCommand):
             cmd.execute_with(context)
 
 def DeleteRows(start, end):
-    return CompositeCommand(*([RowDelete(start)] * (end + 1 -start)))
+    return CompositeCommand(*([DeleteRow(start)] * (end + 1 -start)))
 
 def ClearArea(top_left, bottom_right):
     row_s, col_s = top_left
