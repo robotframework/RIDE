@@ -23,6 +23,9 @@ class _ClipboardHandler(object):
         self._grid = grid
         self._clipboard = _GridClipboard()
 
+    def clipboard_content(self):
+        return self._clipboard.get_contents()
+
     def copy(self):
         """Copy the contents of the selected cell(s). This does a normal copy
         action if the user is editing a cell, otherwise it places the selected

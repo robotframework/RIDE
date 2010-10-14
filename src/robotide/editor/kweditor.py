@@ -15,7 +15,7 @@
 import wx
 from wx import grid
 
-from robotide.controller.commands import ChangeCellValue, ClearArea
+from robotide.controller.commands import ChangeCellValue, ClearArea, PasteArea
 from robotide.publish import RideGridCellChanged
 from robotide.utils import PopupMenu, RideEventHandler
 
@@ -210,18 +210,17 @@ class KeywordEditor(KeywordEditorUi):
 
     def OnCut(self, event=None):
         self._clipboard_handler.cut()
+        self.OnDelete(event)
+
+    def OnDelete(self, event=None):
         self._controller.execute(ClearArea(self.selection.topleft,
                                            self.selection.bottomright))
 
-    def OnDelete(self, event=None):
-        self.delete()
-        self._save_keywords()
-        self.set_dirty()
-
     def OnPaste(self, event=None):
-        self.paste()
-        self._save_keywords()
-        self.set_dirty()
+        data = self._clipboard_handler.clipboard_content()
+        if data:
+            data = [[data]] if isinstance(data, basestring) else data
+            self._controller.execute(PasteArea(self.selection.topleft, data))
 
     def OnUndo(self, event=None):
         self.undo()
