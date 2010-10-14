@@ -89,7 +89,7 @@ class _ValueChangingCommand(object):
         return result
 
 
-class CellValueChanged(_ValueChangingCommand):
+class ChangeCellValue(_ValueChangingCommand):
     def __init__(self, row, col, value):
         self._row = row
         self._col = col
@@ -154,13 +154,13 @@ def DeleteRows(start, end):
 def ClearArea(top_left, bottom_right):
     row_s, col_s = top_left
     row_e, col_e = bottom_right
-    return CompositeCommand(*[CellValueChanged(row, col, '')
+    return CompositeCommand(*[ChangeCellValue(row, col, '')
                               for row in range(row_s,row_e+1)
                               for col in range(col_s, col_e+1)])
 
 def PasteArea(top_left, content):
     row_s, col_s = top_left
-    return CompositeCommand(*[CellValueChanged(row+row_s, col+col_s, content[row][col])
+    return CompositeCommand(*[ChangeCellValue(row+row_s, col+col_s, content[row][col])
                               for row in range(len(content))
                               for col in range(len(content[0]))])
 

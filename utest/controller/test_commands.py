@@ -7,7 +7,7 @@ from robot.utils.asserts import assert_equals
 from robotide.controller.filecontroller import TestCaseFileController
 from robotide.controller.tablecontrollers import TestCaseController, \
     TestCaseTableController
-from robotide.controller.commands import RowAdd, Purify, CellValueChanged,\
+from robotide.controller.commands import RowAdd, Purify, ChangeCellValue,\
     RowDelete, DeleteRows, ClearArea, PasteArea, InsertCells
 
 STEP1 = '  Step 1  arg'
@@ -54,15 +54,15 @@ class TestCaseEditingTest(unittest.TestCase):
         self._number_of_test_changes = 0
 
     def test_changing_one_cell(self):
-        self._exec(CellValueChanged(0, 0, 'Changed Step'))
+        self._exec(ChangeCellValue(0, 0, 'Changed Step'))
         assert_equals(self._steps[0].keyword, 'Changed Step')
 
     def test_changing_cell_value_after_last_column_adds_empty_columns(self):
-        self._exec(CellValueChanged(0, 2, 'Hello'))
+        self._exec(ChangeCellValue(0, 2, 'Hello'))
         assert_equals(self._steps[0].args, ['arg', 'Hello'])
 
     def test_changing_cell_value_after_last_row_adds_empty_rows(self):
-        self._exec(CellValueChanged(len(data)+5, 0, 'Hello'))
+        self._exec(ChangeCellValue(len(data)+5, 0, 'Hello'))
         assert_equals(self._steps[len(data)+5].keyword, 'Hello')
 
     def test_deleting_row(self):
@@ -104,35 +104,35 @@ class TestCaseEditingTest(unittest.TestCase):
         assert_equals(len(self._steps), self._orig_number_of_steps)
 
     def test_purify_removes_rows_with_no_data(self):
-        self._exec(CellValueChanged(0,0, ''))
-        self._exec(CellValueChanged(0,1, ''))
+        self._exec(ChangeCellValue(0,0, ''))
+        self._exec(ChangeCellValue(0,1, ''))
         self._exec(Purify())
         assert_equals(len(self._steps), self._orig_number_of_steps-1)
 
     def test_can_add_values_to_empty_row(self):
         self._exec(RowAdd())
-        self._exec(CellValueChanged(0, 3, 'HELLO'))
+        self._exec(ChangeCellValue(0, 3, 'HELLO'))
         assert_equals(self._steps[0].args, ['arg', '', 'HELLO']) 
 
     def test_only_comment_is_left(self):
         index = self._data_row(STEP_WITH_COMMENT)
-        self._exec(CellValueChanged(index, 0, ''))
+        self._exec(ChangeCellValue(index, 0, ''))
         self._exec(Purify())
         assert_equals(self._steps[index].as_list(), ['# this is a comment'])
 
     def test_comment_is_changed(self):
         index = self._data_row(STEP_WITH_COMMENT)
-        self._exec(CellValueChanged(index, 1, '# new comment'))
+        self._exec(ChangeCellValue(index, 1, '# new comment'))
         self._verify_step(index, 'Foo', [], '# new comment')
 
     def test_cell_value_after_comment_is_changed(self):
         index = self._data_row(STEP_WITH_COMMENT)
-        self._exec(CellValueChanged(index, 2, 'something'))
+        self._exec(ChangeCellValue(index, 2, 'something'))
         assert_equals(self._steps[index].as_list(), ['Foo', '# this is a comment', 'something'])
 
     def test_change_keyword_value_in_indented_step(self):
         index = self._data_row(FOR_LOOP_STEP1)
-        self._exec(CellValueChanged(index, 1, 'Blog'))
+        self._exec(ChangeCellValue(index, 1, 'Blog'))
         assert_equals(self._steps[index].keyword, 'Blog')
 
     def test_delete_multiple_rows(self):
