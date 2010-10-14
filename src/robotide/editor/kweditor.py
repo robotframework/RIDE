@@ -15,7 +15,7 @@
 import wx
 from wx import grid
 
-from robotide.controller.commands import ChangeCellValue
+from robotide.controller.commands import ChangeCellValue, ClearArea
 from robotide.publish import RideGridCellChanged
 from robotide.utils import PopupMenu, RideEventHandler
 
@@ -209,9 +209,9 @@ class KeywordEditor(KeywordEditorUi):
         self.copy()
 
     def OnCut(self, event=None):
-        self.cut()
-        self._save_keywords()
-        self.set_dirty()
+        self._clipboard_handler.cut()
+        self._controller.execute(ClearArea(self.selection.topleft,
+                                           self.selection.bottomright))
 
     def OnDelete(self, event=None):
         self.delete()
@@ -231,6 +231,10 @@ class KeywordEditor(KeywordEditorUi):
     def set_dirty(self):
         self._controller.mark_dirty()
         self._tree.mark_dirty(self._controller)
+
+    def close(self):
+        self.save()
+        self._controller.remove_change_listener(self._data_changed)
 
     def save(self):
         self.hide_tooltip()

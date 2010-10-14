@@ -307,6 +307,9 @@ class _WithStepsController(ControllerWithParent):
     def add_change_listener(self, listener):
         self._listeners.add(listener)
 
+    def remove_change_listener(self, listener):
+        self._listeners.remove(listener)
+
     def notify_changed(self):
         self._listeners.notify(self)
 
@@ -344,6 +347,7 @@ class TestCaseController(_WithStepsController):
     def get_local_variables(self):
         return {}
 
+
 class Listeners(object):
 
     def __init__(self):
@@ -351,6 +355,9 @@ class Listeners(object):
 
     def add(self, listener):
         self._listeners.append(listener)
+
+    def remove(self, listener):
+        self._listeners.remove(listener)
 
     def notify(self, data):
         for l in self._listeners:
@@ -446,6 +453,7 @@ class MetadataListController(_TableController, _WithListOperations):
         self._table.add_metadata(name, value, comment)
         self._parent.mark_dirty()
         return self[-1]
+
 
 class StepController(object):
 

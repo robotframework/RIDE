@@ -356,7 +356,7 @@ class TestCaseEditor(_RobotTableEditor):
 
     def close(self):
         _RobotTableEditor.close(self)
-        self.kweditor.save()
+        self.kweditor.close()
 
     def save(self):
         self.kweditor.save()

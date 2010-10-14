@@ -242,6 +242,10 @@ class _Cell(object):
         self.row = row
         self.col = col
 
+    def __iter__(self):
+        for item in self.row, self.col:
+            yield item
+
 
 class _GridState(object):
 
