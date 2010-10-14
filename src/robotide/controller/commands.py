@@ -139,6 +139,15 @@ class InsertCell(_ValueChangingCommand):
     def execute_with(self, context):
         context.steps[self._row].shift_right(self._col)
 
+class DeleteCell(_ValueChangingCommand):
+
+    def __init__(self, row, col):
+        self._row = row
+        self._col = col
+
+    def execute_with(self, context):
+        context.steps[self._row].shift_left(self._col)
+
 class CompositeCommand(_ValueChangingCommand):
 
     def __init__(self, *commands):
@@ -170,3 +179,10 @@ def InsertCells(top_left, bottom_right):
     return CompositeCommand(*[InsertCell(row, col)
                               for row in range(row_s,row_e+1)
                               for col in range(col_s, col_e+1)])
+
+def DeleteCells(top_left, bottom_right):
+    row_s, col_s = top_left
+    row_e, col_e = bottom_right
+    return CompositeCommand(*[DeleteCell(row, col_s)
+                              for row in range(row_s,row_e+1)
+                              for _ in range(col_s, col_e+1)])

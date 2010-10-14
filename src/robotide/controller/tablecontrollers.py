@@ -517,6 +517,15 @@ class StepController(object):
             cells = cells[:from_column] + [''] + cells[from_column:]
             self._recreate(cells, comment)
 
+    def shift_left(self, from_column):
+        cells = self.as_list()
+        comment = self._get_comment(cells)
+        if len(cells) > from_column:
+            if comment:
+                cells.pop()
+            cells = cells[:from_column] + cells[from_column+1:]
+            self._recreate(cells, comment)
+
     def remove_empty_columns_from_end(self):
         cells = self._step.as_list()
         while cells != [] and cells[-1].strip() == '':

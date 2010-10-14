@@ -8,7 +8,7 @@ from robotide.controller.filecontroller import TestCaseFileController
 from robotide.controller.tablecontrollers import TestCaseController, \
     TestCaseTableController
 from robotide.controller.commands import RowAdd, Purify, ChangeCellValue,\
-    RowDelete, DeleteRows, ClearArea, PasteArea, InsertCells
+    RowDelete, DeleteRows, ClearArea, PasteArea, InsertCells, DeleteCells
 
 STEP1 = '  Step 1  arg'
 STEP2 = '  Step 2  a1  a2  a3'
@@ -169,6 +169,11 @@ class TestCaseEditingTest(unittest.TestCase):
         self._exec(InsertCells((0,1), (1,2)))
         self._verify_step(0, 'Step 1', ['', '', 'arg'])
         self._verify_step(1, 'Step 2', ['', '', 'a1', 'a2', 'a3'])
+
+    def test_delete_many_cells(self):
+        self._exec(DeleteCells((0,1), (1,2)))
+        self._verify_step(0, 'Step 1', [])
+        self._verify_step(1, 'Step 2', ['a3'])
 
     def _data_row(self, line):
         return data.index(line)-1
