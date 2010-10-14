@@ -211,7 +211,13 @@ class _WithStepsController(ControllerWithParent):
 
     @property
     def steps(self):
-        return [StepController(self, s) for s in self.data.steps]
+        flattened_steps = []
+        for step in self.data.steps:
+            flattened_steps.append(StepController(self, step) if not step.is_for_loop() else ForLoopStepController(self, step))
+            if hasattr(step, 'steps'):
+                for sub_step in step.steps:
+                    flattened_steps.append(IntendedStepController(step, sub_step))
+        return flattened_steps
 
     def set_steps(self, steps):
         self.data.steps = steps
@@ -239,23 +245,25 @@ class _WithStepsController(ControllerWithParent):
             copied.set_comment(orig.comment)
         new.data.steps = self.data.steps[:]
         return new
-    
+
     def remove_empty_steps(self):
-        steps = self.data.steps
-        remove_these = [i for i in range(len(steps)) if self._is_empty_step(steps[i])]
+        steps = self.steps
+        remove_these = [step for step in steps if self._is_empty_step(step)]
         remove_these.reverse()
-        for i in remove_these :
-            self.remove_step(i)
-    
+        for step in remove_these :
+            self._remove_step(step)
+
     def _is_empty_step(self, step):
         return step.as_list() == []
-    
+
     def _empty_step(self):
         return Step([])
-    
+
     def remove_step(self, index):
-        steps = self.data.steps
-        self.data.steps = steps[:index]+steps[index+1:]
+        self._remove_step(self.steps[index])
+
+    def _remove_step(self, step):
+        step.remove()
 
     def add_step(self, index):
         steps = self.data.steps
@@ -490,24 +498,62 @@ class StepController(object):
         return '%s (Step %d)' % (self.parent.name, self.parent.steps.index(self) + 1)
 
     def change(self, col, new_value):
-        cells = self._step.as_list(include_comment=False)
+        cells = self.as_list()
+        comment = self._get_comment()
+        if comment: 
+            cells.pop()
         if col >= len(cells) : 
             cells = cells + ['' for _ in range(col - len(cells) + 1)]
         cells[col] = new_value
-        self._step.__init__(cells, comment=self._step.comment)
-    
+        self._recreate(cells, comment)
+
     def remove_empty_columns_from_end(self):
         cells = self._step.as_list()
         while cells != [] and cells[-1].strip() == '':
-            cells = cells[:-1]
-        self._step.__init__(cells)
-    
+            cells.pop()
+        self._recreate(cells)
+
     def remove_empty_columns_from_beginning(self):
         cells = self._step.as_list()
         while cells != [] and cells[0].strip() == '':
             cells = cells[1:]
-        self._step.__init__(cells)
-    
+        self._recreate(cells)
+
+    def remove(self):
+        self.parent.data.steps.remove(self._step)
+
     def has_only_comment(self):
-        none_empty_cells = [cell for cell in self._step.as_list() if cell.strip() != '']
-        return len(none_empty_cells) == 1 and none_empty_cells[0][0] == '#'
+        non_empty_cells = [cell for cell in self._step.as_list() if cell.strip() != '']
+        return len(non_empty_cells) == 1 and non_empty_cells[0].startswith('#')
+
+    def _get_comment(self):
+        return self._step.comment
+
+    def _recreate(self, cells, comment=None):
+        self._step.__init__(cells, comment)
+
+class ForLoopStepController(StepController):
+    def _get_comment(self):
+        return None
+
+    def _recreate(self, cells, comment=None):
+        self._step.__init__(cells[1:])
+
+    def remove(self):
+        steps = self.parent.data.steps
+        index = steps.index(self._step)
+        steps.remove(self._step)
+        self.parent.data.steps = steps[:index] + self._step.steps + steps[index:]
+
+class IntendedStepController(StepController):
+
+    def as_list(self):
+        return ['']+self._step.as_list()
+
+    def _recreate(self, cells, comment=None):
+        if cells[0] == '' : cells = cells[1:]
+        self._step.__init__(cells)
+        self.parent.steps.append(self._step)
+
+    def remove(self):
+        self.parent.steps.remove(self._step)

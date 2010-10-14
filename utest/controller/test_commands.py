@@ -10,24 +10,27 @@ from robotide.controller.tablecontrollers import TestCaseController, \
 from robotide.controller.commands import RowAdd, Purify, CellValueChanged,\
     RowDelete
 
+STEP1 = '  Step 1'
+FOR_LOOP_HEADER = '  : FOR  ${i}  IN  1  2  3'
+FOR_LOOP_STEP1 = '    Log  ${i}'
+STEP_WITH_COMMENT = '  Foo  # this is a comment'
 
-data = '''Test With two Steps
-  Step 1
-  Step 2
-  Foo  # this is a comment
-  :FOR  ${i}  IN  1  2  3
-    Log  ${i}
-  Step bar
-  ${variable}=  some value
-'''
+data = ['Test With two Steps',
+        STEP1,
+        '  Step 2',
+        STEP_WITH_COMMENT,
+        FOR_LOOP_HEADER,
+        FOR_LOOP_STEP1,
+        '  Step bar'+
+        '  ${variable}=  some value'
+]
 
 def create():
     tcf = TestCaseFile()
     tcf.directory = '/path/to'
     pop = FromFilePopulator(tcf)
     pop.start_table(['Test cases'])
-    lines = data.splitlines()
-    for row in [ [cell for cell in line.split('  ')] for line in lines]:
+    for row in [ [cell for cell in line.split('  ')] for line in data]:
         pop.add(row)
     pop.eof()
     return tcf
@@ -38,7 +41,6 @@ def testcase_controller():
     tctablectrl = TestCaseTableController(TestCaseFileController(tcf),
                                           tcf.testcase_table)
     return TestCaseController(tctablectrl, tcf.testcase_table.tests[0])
-
 
 
 class TestCaseEditingTest(unittest.TestCase):
@@ -58,13 +60,24 @@ class TestCaseEditingTest(unittest.TestCase):
         assert_equals(self._steps[0].args, ['', 'Hello'])
 
     def test_changing_cell_value_after_last_row_adds_empty_rows(self):
-        self._exec(CellValueChanged(10, 0, 'Hello'))
-        assert_equals(self._steps[10].keyword, 'Hello')
+        self._exec(CellValueChanged(len(data)+5, 0, 'Hello'))
+        assert_equals(self._steps[len(data)+5].keyword, 'Hello')
 
     def test_deleting_row(self):
         self._exec(RowDelete(0))
         assert_equals(len(self._steps), self._orig_number_of_steps-1)
-    
+        self._verify_row_does_not_exist(STEP1)
+
+    def test_delete_row_inside_of_for_loop(self):
+        self._exec(RowDelete(self._data_row(FOR_LOOP_STEP1)))
+        assert_equals(len(self._steps), self._orig_number_of_steps-1)
+        self._verify_row_does_not_exist(FOR_LOOP_STEP1)
+
+    def test_delete_for_loop_header_row(self):
+        self._exec(RowDelete(self._data_row(FOR_LOOP_HEADER)))
+        assert_equals(len(self._steps), self._orig_number_of_steps-1)
+        self._verify_row_does_not_exist(FOR_LOOP_HEADER)
+
     def test_adding_row_last(self):
         self._exec(RowAdd())
         assert_equals(len(self._steps), self._orig_number_of_steps+1)
@@ -99,15 +112,30 @@ class TestCaseEditingTest(unittest.TestCase):
         assert_equals(self._steps[0].args, ['', 'HELLO']) 
 
     def test_only_comment_is_left(self):
-        self._exec(CellValueChanged(2, 0, ''))
+        index = self._data_row(STEP_WITH_COMMENT)
+        self._exec(CellValueChanged(index, 0, ''))
         self._exec(Purify())
-        assert_equals(self._steps[2].as_list(), ['# this is a comment'])
+        assert_equals(self._steps[index].as_list(), ['# this is a comment'])
+
+    def test_change_keyword_value_in_indented_step(self):
+        index = self._data_row(FOR_LOOP_STEP1)
+        self._exec(CellValueChanged(index, 1, 'Blog'))
+        assert_equals(self._steps[index].keyword, 'Blog')
+
+    def _data_row(self, line):
+        return data.index(line)-1
 
     def _exec(self, command):
         self._ctrl.execute(command)
 
     def _test_changed(self, new_test):
         self._steps = new_test.steps
+
+    def _verify_row_does_not_exist(self, line):
+        line_as_list = line.split('  ')[1:]
+        for step in self._steps:
+            if step.as_list() == line_as_list:
+                raise AssertionError('Row "%s" exists' % line)
 
 if __name__ == "__main__":
     unittest.main()
