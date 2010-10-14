@@ -80,11 +80,14 @@ class FindOccurrences(_Command):
         return [Occurrence(item) for item in items
                 if item.contains_keyword(self._keyword_name)]
 
-class _ValueChangingCommand(_Command):
+
+class _ValueChangingCommand(object):
+
     def execute(self, context):
-        result = self._execute(context)
+        result = self.execute_with(context)
         context.notify_changed()
         return result
+
 
 class CellValueChanged(_ValueChangingCommand):
     def __init__(self, row, col, value):
@@ -92,34 +95,78 @@ class CellValueChanged(_ValueChangingCommand):
         self._col = col
         self._value = value
 
-    def _execute(self, context):
+    def execute_with(self, context):
         steps = context.steps
         while len(steps) <= self._row:
             context.add_step(len(steps))
             steps = context.steps
         step = context.steps[self._row]
         step.change(self._col, self._value)
+        step.remove_empty_columns_from_end()
 
 class RowDelete(_ValueChangingCommand):
     def __init__(self, row):
         self._row = row
     
-    def _execute(self, context):
+    def execute_with(self, context):
         context.remove_step(self._row)
 
 class RowAdd(_ValueChangingCommand):
+
     def __init__(self, row = None):
         self._row = row
     
-    def _execute(self, context):
+    def execute_with(self, context):
         row = self._row
         if row is None: row = len(context.steps)
         context.add_step(row)
 
 class Purify(_ValueChangingCommand):
-    def _execute(self, context):
+
+    def execute_with(self, context):
         for step in context.steps:
             step.remove_empty_columns_from_end()
             if step.has_only_comment():
                 step.remove_empty_columns_from_beginning()
         context.remove_empty_steps()
+
+class InsertCell(_ValueChangingCommand):
+
+    def __init__(self, row, col):
+        self._row = row
+        self._col = col
+
+    def execute_with(self, context):
+        context.steps[self._row].shift_right(self._col)
+
+class CompositeCommand(_ValueChangingCommand):
+
+    def __init__(self, *commands):
+        self._commands = commands
+
+    def execute_with(self, context):
+        for cmd in self._commands:
+            cmd.execute_with(context)
+
+def DeleteRows(start, end):
+    return CompositeCommand(*([RowDelete(start)] * (end + 1 -start)))
+
+def ClearArea(top_left, bottom_right):
+    row_s, col_s = top_left
+    row_e, col_e = bottom_right
+    return CompositeCommand(*[CellValueChanged(row, col, '')
+                              for row in range(row_s,row_e+1)
+                              for col in range(col_s, col_e+1)])
+
+def PasteArea(top_left, content):
+    row_s, col_s = top_left
+    return CompositeCommand(*[CellValueChanged(row+row_s, col+col_s, content[row][col])
+                              for row in range(len(content))
+                              for col in range(len(content[0]))])
+
+def InsertCells(top_left, bottom_right):
+    row_s, col_s = top_left
+    row_e, col_e = bottom_right
+    return CompositeCommand(*[InsertCell(row, col)
+                              for row in range(row_s,row_e+1)
+                              for col in range(col_s, col_e+1)])

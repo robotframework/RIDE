@@ -200,8 +200,10 @@ class KeywordTableController(_TableController, _TcUkBase):
 
 
 class _WithStepsController(ControllerWithParent):
+
     def __init__(self, parent_controller, data):
         self._parent = parent_controller
+        self._listeners = Listeners()
         self.data = data
         self._init(data)
 
@@ -302,13 +304,18 @@ class _WithStepsController(ControllerWithParent):
     def validate_name(self, name):
         return self._parent.validate_name(name)
 
+    def add_change_listener(self, listener):
+        self._listeners.add(listener)
+
+    def notify_changed(self):
+        self._listeners.notify(self)
+
 
 class TestCaseController(_WithStepsController):
     _populator = TestCasePopulator
 
     def _init(self, test):
         self._test = test
-        self._listeners = Listeners()
 
     @property
     def settings(self):
@@ -336,12 +343,6 @@ class TestCaseController(_WithStepsController):
 
     def get_local_variables(self):
         return {}
-
-    def add_test_changed_listener(self, listener):
-        self._listeners.add(listener)
-
-    def notify_changed(self):
-        self._listeners.notify(self)
 
 class Listeners(object):
 
@@ -499,13 +500,22 @@ class StepController(object):
 
     def change(self, col, new_value):
         cells = self.as_list()
-        comment = self._get_comment()
-        if comment: 
-            cells.pop()
         if col >= len(cells) : 
             cells = cells + ['' for _ in range(col - len(cells) + 1)]
         cells[col] = new_value
+        comment = self._get_comment(cells)
+        if comment: 
+            cells.pop()
         self._recreate(cells, comment)
+
+    def shift_right(self, from_column):
+        cells = self.as_list()
+        comment = self._get_comment(cells)
+        if len(cells) > from_column:
+            if comment: 
+                cells.pop()
+            cells = cells[:from_column] + [''] + cells[from_column:]
+            self._recreate(cells, comment)
 
     def remove_empty_columns_from_end(self):
         cells = self._step.as_list()
@@ -524,10 +534,10 @@ class StepController(object):
 
     def has_only_comment(self):
         non_empty_cells = [cell for cell in self._step.as_list() if cell.strip() != '']
-        return len(non_empty_cells) == 1 and non_empty_cells[0].startswith('#')
+        return len(non_empty_cells) == 1 and non_empty_cells[0].startswith('# ')
 
-    def _get_comment(self):
-        return self._step.comment
+    def _get_comment(self, cells):
+        return cells[-1][2:] if cells[-1].startswith('# ') else None
 
     def _recreate(self, cells, comment=None):
         self._step.__init__(cells, comment)
