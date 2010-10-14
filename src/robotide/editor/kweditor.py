@@ -15,7 +15,8 @@
 import wx
 from wx import grid
 
-from robotide.controller.commands import ChangeCellValue, ClearArea, PasteArea
+from robotide.controller.commands import ChangeCellValue, ClearArea, PasteArea,\
+    DeleteRows
 from robotide.publish import RideGridCellChanged
 from robotide.utils import PopupMenu, RideEventHandler
 
@@ -130,11 +131,6 @@ class KeywordEditorUi(GridEditor, RideEventHandler):
         rows = self._get_selected_rows()
         return min(rows), len(rows)
 
-    def OnDeleteRows(self, event):
-        self.set_dirty()
-        self._remove_selected_rows()
-        self.GetParent().Sizer.Layout()
-        event.Skip()
 
     def OnCommentRows(self, event):
         self.comment()
@@ -221,6 +217,11 @@ class KeywordEditor(KeywordEditorUi):
         if data:
             data = [[data]] if isinstance(data, basestring) else data
             self._controller.execute(PasteArea(self.selection.topleft, data))
+
+    def OnDeleteRows(self, event):
+        rows = self.selection.rows()
+        self._controller.execute(DeleteRows(min(rows), max(rows)))
+        event.Skip()
 
     def OnUndo(self, event=None):
         self.undo()
