@@ -119,36 +119,6 @@ class ChangeCellValue(_ValueChangingCommand):
         return True
 
 
-class _RowChangingCommand(_ValueChangingCommand):
-
-    def change_value(self, context):
-        if len(context.steps) <= self._row:
-            return False
-        self._change_value(context)
-        return True
-
-
-class DeleteRow(_RowChangingCommand):
-
-    def __init__(self, row):
-        self._row = row
-
-    def _change_value(self, context):
-        context.remove_step(self._row)
-
-
-class AddRow(_RowChangingCommand):
-
-    def __init__(self, row=None):
-        self._row = row
-
-    def _change_value(self, context):
-        row = self._row
-        if row is None:
-            row = len(context.steps)
-        context.add_step(row)
-
-
 class Purify(_ValueChangingCommand):
 
     def change_value(self, context):
@@ -182,10 +152,36 @@ class DeleteCell(_ValueChangingCommand):
         return True
 
 
-class CommentRow(_RowChangingCommand):
+class _RowChangingCommand(_ValueChangingCommand):
 
     def __init__(self, row):
+        '''Command that will operate on a given logical `row` of test/user keyword.
+
+        Giving -1 as `row` means that opeartion is done on the last row.
+        '''
         self._row = row
+
+    def change_value(self, context):
+        if len(context.steps) <= self._row:
+            return False
+        self._change_value(context)
+        return True
+
+
+class DeleteRow(_RowChangingCommand):
+
+    def _change_value(self, context):
+        context.remove_step(self._row)
+
+
+class AddRow(_RowChangingCommand):
+
+    def _change_value(self, context):
+        row = self._row if self._row != -1 else len(context.steps)
+        context.add_step(row)
+
+
+class CommentRow(_RowChangingCommand):
 
     def _change_value(self, context):
         self._step(context).comment()
@@ -193,9 +189,6 @@ class CommentRow(_RowChangingCommand):
 
 
 class UncommentRow(_RowChangingCommand):
-
-    def __init__(self, row):
-        self._row = row
 
     def _change_value(self, context):
         self._step(context).uncomment()

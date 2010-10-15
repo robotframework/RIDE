@@ -89,10 +89,10 @@ class TestCaseEditingTest(unittest.TestCase):
         self._verify_row_does_not_exist(FOR_LOOP_HEADER)
 
     def test_adding_row_last(self):
-        self._exec(AddRow())
+        self._exec(AddRow(-1))
         assert_equals(len(self._steps), self._orig_number_of_steps+1)
         assert_equals(self._steps[self._orig_number_of_steps].as_list(), [])
-    
+
     def test_adding_row_first(self):
         self._exec(AddRow(0))
         assert_equals(len(self._steps), self._orig_number_of_steps+1)
@@ -110,7 +110,7 @@ class TestCaseEditingTest(unittest.TestCase):
         self._verify_step(11, 'Step 2', ['a1', 'a2', 'a3'])
 
     def test_purify_removes_empty_rows(self):
-        self._exec(AddRow())
+        self._exec(AddRow(-1))
         self._exec(AddRow(1))
         self._exec(AddRow(2))
         assert_equals(len(self._steps), self._orig_number_of_steps+3)
@@ -124,9 +124,9 @@ class TestCaseEditingTest(unittest.TestCase):
         assert_equals(len(self._steps), self._orig_number_of_steps-1)
 
     def test_can_add_values_to_empty_row(self):
-        self._exec(AddRow())
+        self._exec(AddRow(-1))
         self._exec(ChangeCellValue(0, 3, 'HELLO'))
-        assert_equals(self._steps[0].args, ['arg', '', 'HELLO']) 
+        assert_equals(self._steps[0].args, ['arg', '', 'HELLO'])
 
     def test_only_comment_is_left(self):
         index = self._data_row(STEP_WITH_COMMENT)
