@@ -221,6 +221,12 @@ class _WithStepsController(ControllerWithParent):
                     flattened_steps.append(IntendedStepController(step, sub_step))
         return flattened_steps
 
+    def index_of_step(self, step):
+        return self.data.steps.index(step)
+
+    def replace_step(self, index, new_step):
+        self.data.steps[index] = new_step
+
     def set_steps(self, steps):
         self.data.steps = steps
 
@@ -267,9 +273,10 @@ class _WithStepsController(ControllerWithParent):
     def _remove_step(self, step):
         step.remove()
 
-    def add_step(self, index):
+    def add_step(self, index, step = None):
+        if step == None : step = self._empty_step()
         steps = self.data.steps
-        self.data.steps = steps[:index]+[self._empty_step()]+steps[index:]
+        self.data.steps = steps[:index]+[step]+steps[index:]
 
     def create_user_keyword(self, name, arg_values, observer):
         err = self.datafile_controller.validate_keyword_name(name)
@@ -509,6 +516,14 @@ class StepController(object):
             cells.pop()
         self._recreate(cells, comment)
 
+    def comment(self):
+        self.shift_right(0)
+        self.change(0, 'Comment')
+
+    def uncomment(self):
+        if self._step.keyword == 'Comment':
+            self.shift_left(0)
+
     def shift_right(self, from_column):
         cells = self.as_list()
         comment = self._get_comment(cells)
@@ -552,12 +567,23 @@ class StepController(object):
     def _recreate(self, cells, comment=None):
         self._step.__init__(cells, comment)
 
+
 class ForLoopStepController(StepController):
-    def _get_comment(self):
+
+    def _get_comment(self, cells):
         return None
 
+    def comment(self):
+        self._replace_with_new_cells(['Comment']+self.as_list())
+
+    def uncomment(self):
+        pass
+
     def _recreate(self, cells, comment=None):
-        self._step.__init__(cells[1:])
+        if cells[0] != self.as_list()[0]:
+            self._replace_with_new_cells(cells)
+        else:
+            self._step.__init__(cells[1:])
 
     def remove(self):
         steps = self.parent.data.steps
@@ -565,13 +591,28 @@ class ForLoopStepController(StepController):
         steps.remove(self._step)
         self.parent.data.steps = steps[:index] + self._step.steps + steps[index:]
 
+    def _replace_with_new_cells(self, cells):
+        index = self.parent.index_of_step(self._step)
+        self.parent.replace_step(index, Step(cells))
+        for substep in self._step.steps:
+            self.parent.add_step(index+1, Step(['']+substep.as_list()))
+
+
 class IntendedStepController(StepController):
 
     def as_list(self):
         return ['']+self._step.as_list()
 
+    def comment(self):
+        self._step.__init__(['Comment'] + self._step.as_list())
+
+    def uncomment(self):
+        if self._step.keyword == 'Comment':
+            self._step.__init__(self._step.as_list()[1:])
+
     def _recreate(self, cells, comment=None):
-        if cells[0] == '' : cells = cells[1:]
+        if cells[0] == '':
+            cells = cells[1:]
         self._step.__init__(cells)
         self.parent.steps.append(self._step)
 

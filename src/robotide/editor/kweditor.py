@@ -16,7 +16,7 @@ import wx
 from wx import grid
 
 from robotide.controller.commands import ChangeCellValue, ClearArea, PasteArea,\
-    DeleteRows, AddRows
+    DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells, UncommentRows
 from robotide.publish import RideGridCellChanged
 from robotide.utils import PopupMenu, RideEventHandler
 
@@ -74,58 +74,6 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.SetCellFont(cell.Row, cell.Col, font)
         self.Refresh()
 
-    def comment(self):
-        self._do_action_on_selected_rows(self._comment_row)
-
-    def uncomment(self):
-        self._do_action_on_selected_rows(self._uncomment_row)
-
-    def _comment_row(self, row):
-        rowdata = self._get_commented_row(row)
-        if len(rowdata) > self.NumberCols:
-            self.AppendCols(1)
-        for col, value in enumerate(rowdata):
-            self.write_cell(row, col, value)
-
-    def _get_commented_row(self, row):
-        data = self._strip_trailing_empty_cells(self._row_data(row))
-        if not data:
-            return data
-        data.insert(self._get_comment_insertion_index(data), 'Comment')
-        return data
-
-    def _get_comment_insertion_index(self, data):
-        index = 0
-        while data:
-            if data[0]:
-                break
-            index += 1
-            data = data[1:]
-        return index
-
-    def _uncomment_row(self, row):
-        if self._row_is_commented(row):
-            for col in range(1, self.GetNumberCols()):
-                value = self.GetCellValue(row, col)
-                self.write_cell(row, col - 1, value)
-            self.write_cell(row, self.GetNumberCols() - 1, '')
-
-    def _row_is_commented(self, row):
-        data = self._row_data(row)
-        while data:
-            if self._is_comment(data[0]):
-                return True
-            data = data[1:]
-        return False
-
-    def _is_comment(self, value):
-        return value.lower().strip() == 'comment'
-
-    def _do_action_on_selected_rows(self, action):
-        for row in self.selection.rows():
-            action(row)
-        self.set_dirty()
-
     def OnLabelRightClick(self, event):
         self._active_row = event.GetRow()
         PopupMenu(self, ['Insert Rows', 'Delete Rows\tDel',
@@ -137,12 +85,22 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self._controller.execute(AddRows(self.selection.rows()))
         event.Skip()
 
+    def OnInsertCells(self, event):
+        self._controller.execute(InsertCells(self.selection.topleft,
+                                             self.selection.bottomright))
+        event.Skip()
+
+    def OnDeleteCells(self, event):
+        self._controller.execute(DeleteCells(self.selection.topleft,
+                                             self.selection.bottomright))
+        event.Skip()
+
     def OnCommentRows(self, event):
-        self.comment()
+        self._controller.execute(CommentRows(self.selection.rows()))
         event.Skip()
 
     def OnUncommentRows(self, event):
-        self.uncomment()
+        self._controller.execute(UncommentRows(self.selection.rows()))
         event.Skip()
 
     def _make_bindings(self):
@@ -160,9 +118,6 @@ class KeywordEditor(GridEditor, RideEventHandler):
         data = []
         for step in controller.steps:
             data.append(self._format_comments(step.as_list()))
-            if hasattr(step, 'steps'):
-                for s in step.steps:
-                    data.append([''] + self._format_comments(s.as_list()))
         self.ClearGrid()
         self._write_data(data, update_history=False)
 

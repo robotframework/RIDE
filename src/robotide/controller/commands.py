@@ -97,6 +97,9 @@ class _ValueChangingCommand(object):
         '''Return True if value successfully changed, False otherwise'''
         raise NotImplementedError(self.__class__.__name__)
 
+    def _step(self, context):
+        return context.steps[self._row]
+
 
 class ChangeCellValue(_ValueChangingCommand):
 
@@ -110,7 +113,7 @@ class ChangeCellValue(_ValueChangingCommand):
         while len(steps) <= self._row:
             context.add_step(len(steps))
             steps = context.steps
-        step = context.steps[self._row]
+        step = self._step(context)
         step.change(self._col, self._value)
         step.remove_empty_columns_from_end()
         return True
@@ -123,9 +126,6 @@ class _RowChangingCommand(_ValueChangingCommand):
             return False
         self._change_value(context)
         return True
-
-    def _step_in_row(self, steps):
-        return self._row <= len(steps)
 
 
 class DeleteRow(_RowChangingCommand):
@@ -167,7 +167,7 @@ class InsertCell(_ValueChangingCommand):
         self._col = col
 
     def change_value(self, context):
-        context.steps[self._row].shift_right(self._col)
+        self._step(context).shift_right(self._col)
         return True
 
 
@@ -178,7 +178,27 @@ class DeleteCell(_ValueChangingCommand):
         self._col = col
 
     def change_value(self, context):
-        context.steps[self._row].shift_left(self._col)
+        self._step(context).shift_left(self._col)
+        return True
+
+
+class CommentRow(_RowChangingCommand):
+
+    def __init__(self, row):
+        self._row = row
+
+    def _change_value(self, context):
+        self._step(context).comment()
+        return True
+
+
+class UncommentRow(_RowChangingCommand):
+
+    def __init__(self, row):
+        self._row = row
+
+    def _change_value(self, context):
+        self._step(context).uncomment()
         return True
 
 
@@ -197,6 +217,14 @@ def DeleteRows(rows):
 
 def AddRows(rows):
     return CompositeCommand(*[AddRow(r) for r in sorted(rows)])
+
+
+def CommentRows(rows):
+    return CompositeCommand(*[CommentRow(r) for r in rows])
+
+
+def UncommentRows(rows):
+    return CompositeCommand(*[UncommentRow(r) for r in rows])
 
 
 def ClearArea(top_left, bottom_right):
