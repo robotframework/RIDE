@@ -1,11 +1,11 @@
 #  Copyright 2008-2009 Nokia Siemens Networks Oyj
-#  
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,7 +18,7 @@ def get_help(title):
 
 _HELPS = {}
 _EXAMPLES = {
-'ESCAPE': "Possible pipes in the value must be escaped with a backslash like '\|'.", 
+'ESCAPE': "Possible pipes in the value must be escaped with a backslash like '\|'.",
 'TAG': "Separate tags with a pipe character like 'tag | second tag | 3rd'.",
 'FIXTURE': "Separate possible arguments with a pipe character like 'My Keyword | arg 1 | arg 2'.",
 'TIMEOUT': ("Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
@@ -41,12 +41,12 @@ Separate multiple arguments with a pipe character like 'arg 1 | arg 2'.
 Alias can be used to import same library multiple times with different names.
 
 Variables
-Give path to the variable file to import. 
-Separate possible arguments with a pipe character like 'some_vars.py | an argument'.
+Give path and optional arguments of the variable file to import.
+Separate multiple arguments with a pipe character like 'arg 1 | arg 2'.
 %(ESCAPE)s
 
 Resource
-Give path to the resource file to import. 
+Give path to the resource file to import.
 Existing resources will be automatically loaded to the resource tree.
 New resources must be created separately.
 
@@ -97,7 +97,7 @@ Overrides possible Test Setup set on the suite level.
 %(ESCAPE)s
 
 Teardown
-This keyword is executed after other keywords in this test case even if the test fails. 
+This keyword is executed after other keywords in this test case even if the test fails.
 Overrides possible Test Teardown set on the suite level.
 %(FIXTURE)s
 %(ESCAPE)s

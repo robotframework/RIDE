@@ -574,7 +574,7 @@ class ImportSettingsControllerTest(unittest.TestCase):
         self._assert_import('/a/path/to/file.txt')
 
     def test_adding_variables(self):
-        self.ctrl.add_variables('varfile.py | an arg')
+        self.ctrl.add_variables('varfile.py', 'an arg')
         self._assert_import('varfile.py', ['an arg'])
 
     def _assert_import(self, exp_name, exp_args=[], exp_alias=None):
