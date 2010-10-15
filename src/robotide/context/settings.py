@@ -54,7 +54,7 @@ def _merge_settings(default_path, user_path):
     except UnreprError, err:
         raise ConfigurationError("Invalid config file '%s': %s" % (user_path, err))
     try:
-        f = open(user_path, 'w')
+        f = open(user_path, 'wb')
         settings.write(f)
     finally:
         f.close()
