@@ -126,7 +126,8 @@ class _EditorGrid(GridEditor):
     _col_add_threshold = 0
 
     def __init__(self, parent, value, num_cols):
-        GridEditor.__init__(self, parent)
+        num_rows = len(value) / num_cols + 2
+        GridEditor.__init__(self, parent, num_rows, num_cols)
         self._set_default_sizes()
         self._bind_actions()
         self._create_grid(value, num_cols)
@@ -149,9 +150,6 @@ class _EditorGrid(GridEditor):
                 (ctrl_or_cmd(), ord('a'), self.OnSelectAll),
                 (wx.ACCEL_NORMAL, wx.WXK_DELETE, self.OnDelete)]
 
-    def _create_grid(self, value, num_cols):
-        num_rows = len(value) / num_cols + 2
-        self.CreateGrid(num_rows, num_cols)
 
     def _write_content(self, value):
         self.ClearGrid()

@@ -26,13 +26,14 @@ class GridEditor(grid.Grid):
                     '---', 'Cut\tCtrl-X', 'Copy\tCtrl-C', 'Paste\tCtrl-V',
                     '---', 'Delete\tDel']
 
-    def __init__(self, parent):
+    def __init__(self, parent, num_rows, num_cols):
         grid.Grid.__init__(self, parent)
         self._bind_to_events()
         self.selection = _GridSelection(self)
         self.SetDefaultRenderer(grid.GridCellAutoWrapStringRenderer())
         self._clipboard_handler = ClipboardHandler(self)
         self._history = _GridState()
+        self.CreateGrid(num_rows, num_cols)
 
     def _bind_to_events(self):
         self.Bind(grid.EVT_GRID_SELECT_CELL, self.OnSelectCell)
