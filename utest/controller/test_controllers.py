@@ -8,7 +8,6 @@ from robotide.controller.settingcontroller import *
 from robotide.controller.filecontroller import *
 from robotide.controller.tablecontrollers import _WithListOperations
 from robotide.controller.tablecontrollers import *
-from robotide.controller.chiefcontroller import ChiefController
 from robotide.controller import NewDatafile
 from resources import SUITEPATH
 
@@ -407,7 +406,7 @@ class TestCaseControllerTest(_BaseWithSteps):
         self.ctrl.extract_keyword('New KW', '${argh}', (0,1), obs.observe)
         assert_equals(self.testcase.steps[0].keyword, 'New KW')
         assert_equals(len(self.testcase.steps), 2)
-        
+
         assert_equals(obs.item.steps[0].keyword, 'Log')
         assert_equals(obs.item.steps[1].keyword, 'No Operation')
         assert_equals(obs.item.arguments.value, '${argh}')
@@ -575,7 +574,7 @@ class ImportSettingsControllerTest(unittest.TestCase):
         self._assert_import('/a/path/to/file.txt')
 
     def test_adding_variables(self):
-        self.ctrl.add_variables('varfile.py | an arg')
+        self.ctrl.add_variables('varfile.py', 'an arg')
         self._assert_import('varfile.py', ['an arg'])
 
     def _assert_import(self, exp_name, exp_args=[], exp_alias=None):
