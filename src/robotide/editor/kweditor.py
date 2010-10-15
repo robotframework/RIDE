@@ -26,18 +26,34 @@ from contentassist import ExpandingContentAssistTextCtrl
 from popupwindow import RideHtmlPopupWindow
 
 
-class KeywordEditorUi(GridEditor, RideEventHandler):
+class KeywordEditor(GridEditor, RideEventHandler):
+    dirty = property(lambda self: self._controller.dirty)
+    _no_cell = grid.GridCellCoords(-1, -1)
+    _popup_items = ['Create Keyword', 'Extract Keyword', 'Rename Keyword', '---'] + \
+            GridEditor._popup_items
 
-    def __init__(self, parent, num_rows, num_cols):
+    def __init__(self, parent, controller, tree):
         GridEditor.__init__(self, parent)
         self.SetRowLabelSize(25)
         self.SetColLabelSize(0)
         self.SetDefaultColSize(170)
         self.SetDefaultCellOverflow(False)
-        self.CreateGrid(num_rows, num_cols)
+        self.CreateGrid(len(controller.steps) + 5, 5)
         self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
         # This makes it possible to select cell 0,0 without opening editor, issue 479
         self.SetGridCursor(self.NumberRows - 1, self.NumberCols - 1)
+        self.SetDefaultEditor(ContentAssistCellEditor(parent.plugin))
+        self._controller = controller
+        self._controller.add_change_listener(self._data_changed)
+        # TODO: Tooltip may be smaller when the documentation is wrapped correctly
+        self._tooltip = RideHtmlPopupWindow(self, (650, 400))
+        self._marked_cell = None
+        self._idle_mouse_cell = self._no_cell
+        self._active_row = self._active_col = None
+        self._make_bindings()
+        self._write_steps(self._controller)
+        self._tree = tree
+        self._plugin = parent.plugin
 
     def write_cell(self, row, col, value, update_history=True):
         previous = self.GetCellValue(row, col) \
@@ -128,28 +144,6 @@ class KeywordEditorUi(GridEditor, RideEventHandler):
     def OnUncommentRows(self, event):
         self.uncomment()
         event.Skip()
-
-
-class KeywordEditor(KeywordEditorUi):
-    dirty = property(lambda self: self._controller.dirty)
-    _no_cell = grid.GridCellCoords(-1, -1)
-    _popup_items = ['Create Keyword', 'Extract Keyword', 'Rename Keyword', '---'] + \
-            GridEditor._popup_items
-
-    def __init__(self, parent, controller, tree):
-        KeywordEditorUi.__init__(self, parent, len(controller.steps) + 5, 5)
-        self.SetDefaultEditor(ContentAssistCellEditor(parent.plugin))
-        self._controller = controller
-        self._controller.add_change_listener(self._data_changed)
-        # TODO: Tooltip may be smaller when the documentation is wrapped correctly
-        self._tooltip = RideHtmlPopupWindow(self, (650, 400))
-        self._marked_cell = None
-        self._idle_mouse_cell = self._no_cell
-        self._active_row = self._active_col = None
-        self._make_bindings()
-        self._write_steps(self._controller)
-        self._tree = tree
-        self._plugin = parent.plugin
 
     def _make_bindings(self):
         self.Bind(grid.EVT_GRID_EDITOR_SHOWN, self.OnEditor)
