@@ -16,7 +16,7 @@ import wx
 from wx import grid
 
 from robotide.controller.commands import ChangeCellValue, ClearArea, PasteArea,\
-    DeleteRows
+    DeleteRows, AddRows
 from robotide.publish import RideGridCellChanged
 from robotide.utils import PopupMenu, RideEventHandler
 
@@ -51,9 +51,6 @@ class KeywordEditorUi(GridEditor, RideEventHandler):
         self._update_history()
         for row in sorted(self.selection.rows(), reverse=True):
             self.DeleteRows(row, 1)
-
-    def _get_selected_rows(self):
-        return self.selection.rows()
 
     def _toggle_underlined(self, cell):
         font = self.GetCellFont(cell.Row, cell.Col)
@@ -109,7 +106,7 @@ class KeywordEditorUi(GridEditor, RideEventHandler):
         return value.lower().strip() == 'comment'
 
     def _do_action_on_selected_rows(self, action):
-        for row in self._get_selected_rows():
+        for row in self.selection.rows():
             action(row)
         self.set_dirty()
 
@@ -121,16 +118,8 @@ class KeywordEditorUi(GridEditor, RideEventHandler):
         event.Skip()
 
     def OnInsertRows(self, event):
-        self.InsertRows(*self._get_insertion_position_and_row_count(event))
-        self.GetParent().Sizer.Layout()
+        self._controller.execute(AddRows(self.selection.rows()))
         event.Skip()
-
-    def _get_insertion_position_and_row_count(self, event):
-        if isinstance(event.EventObject, wx.Button):
-            return self.GetNumberRows(), 1
-        rows = self._get_selected_rows()
-        return min(rows), len(rows)
-
 
     def OnCommentRows(self, event):
         self.comment()
@@ -219,13 +208,12 @@ class KeywordEditor(KeywordEditorUi):
             self._controller.execute(PasteArea(self.selection.topleft, data))
 
     def OnDeleteRows(self, event):
-        rows = self.selection.rows()
-        self._controller.execute(DeleteRows(min(rows), max(rows)))
+        self._controller.execute(DeleteRows(self.selection.rows()))
         event.Skip()
 
     def OnUndo(self, event=None):
+        raise NotImplementedError()
         self.undo()
-        self._save_keywords()
         self.set_dirty()
 
     def set_dirty(self):
@@ -242,20 +230,6 @@ class KeywordEditor(KeywordEditorUi):
             cell_editor = self.GetCellEditor(*self.selection.cell)
             cell_editor.EndEdit(self.selection.topleft.row,
                                 self.selection.topleft.col, self)
-        if self.dirty:
-            self._save_keywords()
-
-    def _save_keywords(self):
-        rows = []
-        for i in range(self.GetNumberRows()):
-            rowdata = []
-            for j in range(self.GetNumberCols()):
-                cellvalue = self.GetCellValue(i, j).replace('\n', ' ')
-                rowdata.append(cellvalue)
-            rowdata = self._strip_trailing_empty_cells(rowdata)
-            if rowdata:
-                rows.append(rowdata)
-        self._controller.parse_steps_from_rows(rows)
 
     def show_content_assist(self):
         if self.IsCellEditControlShown():
@@ -399,7 +373,6 @@ class KeywordEditor(KeywordEditorUi):
         return data
 
     def OnExtractKeyword(self, event):
-        self._save_keywords()
         dlg = UserKeywordNameDialog(self._controller)
         if dlg.ShowModal() == wx.ID_OK:
             self._extract_keyword(*dlg.get_value())
@@ -416,7 +389,6 @@ class KeywordEditor(KeywordEditorUi):
         old_name = self._current_cell_value()
         new_name = wx.GetTextFromUser('New name', default_value=old_name)
         if new_name:
-            self._save_keywords()
             self._controller.execute(RenameOccurrences(old_name, new_name))
             wx.CallAfter(self._plugin.OnTreeItemSelected)
 

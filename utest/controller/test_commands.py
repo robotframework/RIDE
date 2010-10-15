@@ -8,7 +8,7 @@ from robotide.controller.filecontroller import TestCaseFileController
 from robotide.controller.tablecontrollers import TestCaseController, \
     TestCaseTableController
 from robotide.controller.commands import AddRow, Purify, ChangeCellValue,\
-    DeleteRow, DeleteRows, ClearArea, PasteArea, InsertCells, DeleteCells
+    DeleteRow, DeleteRows, ClearArea, PasteArea, InsertCells, DeleteCells, AddRows
 
 STEP1 = '  Step 1  arg'
 STEP2 = '  Step 2  a1  a2  a3'
@@ -89,11 +89,17 @@ class TestCaseEditingTest(unittest.TestCase):
         self._exec(AddRow(0))
         assert_equals(len(self._steps), self._orig_number_of_steps+1)
         assert_equals(self._steps[0].as_list(), [])
-    
+
     def test_adding_row_middle(self):
         self._exec(AddRow(1))
         assert_equals(len(self._steps), self._orig_number_of_steps+1)
         assert_equals(self._steps[1].as_list(), [])
+
+    def test_add_multiple_rows(self):
+        self._exec(AddRows([3,2,1,4,5,6,9,8,7,10]))
+        assert_equals(len(self._steps), self._orig_number_of_steps+10)
+        self._verify_step(0, 'Step 1', ['arg'])
+        self._verify_step(11, 'Step 2', ['a1', 'a2', 'a3'])
 
     def test_purify_removes_empty_rows(self):
         self._exec(AddRow())
@@ -136,11 +142,19 @@ class TestCaseEditingTest(unittest.TestCase):
         assert_equals(self._steps[index].keyword, 'Blog')
 
     def test_delete_multiple_rows(self):
-        self._exec(DeleteRows(self._data_row(STEP1), self._data_row(STEP2)))
+        self._exec(DeleteRows([2,0]))
         assert_equals(len(self._steps), self._orig_number_of_steps-2)
         self._verify_row_does_not_exist(STEP1)
-        self._verify_row_does_not_exist(STEP2)
+        self._verify_row_does_not_exist(STEP_WITH_COMMENT)
         self._verify_number_of_test_changes(1)
+
+    def test_deleting_rows_below_existing_steps_should_do_nothing(self):
+        self._exec(DeleteRows([1000, 960]))
+        self._verify_number_of_test_changes(0)
+
+    def test_inserting_rows_below_existing_steps_should_do_nothing(self):
+        self._exec(AddRows([1001, 1002]))
+        self._verify_number_of_test_changes(0)
 
     def test_clear_area(self):
         self._exec(ClearArea((0,1), (1,2)))
