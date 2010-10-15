@@ -15,12 +15,10 @@
 import re
 
 from robotide.controller.basecontroller import ControllerWithParent
-from robotide.editor.editors import DocumentationEditor, SettingEditor
 from robotide import utils
 
 
 class _SettingController(ControllerWithParent):
-    editor = SettingEditor
 
     def __init__(self, parent_controller, data):
         self._parent = parent_controller
@@ -94,7 +92,6 @@ class _SettingController(ControllerWithParent):
 
 
 class DocumentationController(_SettingController):
-    editor = DocumentationEditor
     newline_regexps = (re.compile(r'(\\+)r\\n'),
                        re.compile(r'(\\+)n'),
                        re.compile(r'(\\+)r'))

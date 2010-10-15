@@ -15,8 +15,9 @@
 import wx
 
 from robotide import context
-from robotide.utils import RideEventHandler, RideHtmlWindow, ButtonWithHandler
 from robotide import utils
+from robotide.utils import RideEventHandler, RideHtmlWindow, ButtonWithHandler
+from robotide.controller.settingcontroller import DocumentationController
 
 from kweditor import KeywordEditor
 from listeditor import ListEditor
@@ -101,9 +102,14 @@ class _RobotTableEditor(EditorPanel):
 
     def _add_settings(self):
         for setting in self.controller.settings:
-            editor = setting.editor(self, setting, self.plugin, self._tree)
+            editor = self._create_editor_for(setting)
             self.sizer.Add(editor, 0, wx.ALL|wx.EXPAND, 1)
             self._editors.append(editor)
+
+    def _create_editor_for(self, controller):
+        editor_cls = DocumentationEditor if isinstance(controller, DocumentationController) \
+                else SettingEditor
+        return editor_cls(self, controller, self.plugin, self._tree)
 
 
 class ResourceFileEditor(_RobotTableEditor):
