@@ -16,7 +16,7 @@ import wx
 from wx import grid
 
 from robotide.controller.commands import ChangeCellValue, ClearArea, PasteArea,\
-    DeleteRows
+    DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells, UncommentRows
 from robotide.publish import RideGridCellChanged
 from robotide.utils import PopupMenu, RideEventHandler
 
@@ -26,18 +26,34 @@ from contentassist import ExpandingContentAssistTextCtrl
 from popupwindow import RideHtmlPopupWindow
 
 
-class KeywordEditorUi(GridEditor, RideEventHandler):
+class KeywordEditor(GridEditor, RideEventHandler):
+    dirty = property(lambda self: self._controller.dirty)
+    _no_cell = grid.GridCellCoords(-1, -1)
+    _popup_items = ['Create Keyword', 'Extract Keyword', 'Rename Keyword', '---'] + \
+            GridEditor._popup_items
 
-    def __init__(self, parent, num_rows, num_cols):
+    def __init__(self, parent, controller, tree):
         GridEditor.__init__(self, parent)
         self.SetRowLabelSize(25)
         self.SetColLabelSize(0)
         self.SetDefaultColSize(170)
         self.SetDefaultCellOverflow(False)
-        self.CreateGrid(num_rows, num_cols)
+        self.CreateGrid(len(controller.steps) + 5, 5)
         self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
         # This makes it possible to select cell 0,0 without opening editor, issue 479
         self.SetGridCursor(self.NumberRows - 1, self.NumberCols - 1)
+        self.SetDefaultEditor(ContentAssistCellEditor(parent.plugin))
+        self._controller = controller
+        self._controller.add_change_listener(self._data_changed)
+        # TODO: Tooltip may be smaller when the documentation is wrapped correctly
+        self._tooltip = RideHtmlPopupWindow(self, (650, 400))
+        self._marked_cell = None
+        self._idle_mouse_cell = self._no_cell
+        self._active_row = self._active_col = None
+        self._make_bindings()
+        self._write_steps(self._controller)
+        self._tree = tree
+        self._plugin = parent.plugin
 
     def write_cell(self, row, col, value, update_history=True):
         previous = self.GetCellValue(row, col) \
@@ -52,66 +68,11 @@ class KeywordEditorUi(GridEditor, RideEventHandler):
         for row in sorted(self.selection.rows(), reverse=True):
             self.DeleteRows(row, 1)
 
-    def _get_selected_rows(self):
-        return self.selection.rows()
-
     def _toggle_underlined(self, cell):
         font = self.GetCellFont(cell.Row, cell.Col)
         font.SetUnderlined(not font.Underlined)
         self.SetCellFont(cell.Row, cell.Col, font)
         self.Refresh()
-
-    def comment(self):
-        self._do_action_on_selected_rows(self._comment_row)
-
-    def uncomment(self):
-        self._do_action_on_selected_rows(self._uncomment_row)
-
-    def _comment_row(self, row):
-        rowdata = self._get_commented_row(row)
-        if len(rowdata) > self.NumberCols:
-            self.AppendCols(1)
-        for col, value in enumerate(rowdata):
-            self.write_cell(row, col, value)
-
-    def _get_commented_row(self, row):
-        data = self._strip_trailing_empty_cells(self._row_data(row))
-        if not data:
-            return data
-        data.insert(self._get_comment_insertion_index(data), 'Comment')
-        return data
-
-    def _get_comment_insertion_index(self, data):
-        index = 0
-        while data:
-            if data[0]:
-                break
-            index += 1
-            data = data[1:]
-        return index
-
-    def _uncomment_row(self, row):
-        if self._row_is_commented(row):
-            for col in range(1, self.GetNumberCols()):
-                value = self.GetCellValue(row, col)
-                self.write_cell(row, col - 1, value)
-            self.write_cell(row, self.GetNumberCols() - 1, '')
-
-    def _row_is_commented(self, row):
-        data = self._row_data(row)
-        while data:
-            if self._is_comment(data[0]):
-                return True
-            data = data[1:]
-        return False
-
-    def _is_comment(self, value):
-        return value.lower().strip() == 'comment'
-
-    def _do_action_on_selected_rows(self, action):
-        for row in self._get_selected_rows():
-            action(row)
-        self.set_dirty()
 
     def OnLabelRightClick(self, event):
         self._active_row = event.GetRow()
@@ -121,46 +82,26 @@ class KeywordEditorUi(GridEditor, RideEventHandler):
         event.Skip()
 
     def OnInsertRows(self, event):
-        self.InsertRows(*self._get_insertion_position_and_row_count(event))
-        self.GetParent().Sizer.Layout()
+        self._controller.execute(AddRows(self.selection.rows()))
         event.Skip()
 
-    def _get_insertion_position_and_row_count(self, event):
-        if isinstance(event.EventObject, wx.Button):
-            return self.GetNumberRows(), 1
-        rows = self._get_selected_rows()
-        return min(rows), len(rows)
+    def OnInsertCells(self, event):
+        self._controller.execute(InsertCells(self.selection.topleft,
+                                             self.selection.bottomright))
+        event.Skip()
 
+    def OnDeleteCells(self, event):
+        self._controller.execute(DeleteCells(self.selection.topleft,
+                                             self.selection.bottomright))
+        event.Skip()
 
     def OnCommentRows(self, event):
-        self.comment()
+        self._controller.execute(CommentRows(self.selection.rows()))
         event.Skip()
 
     def OnUncommentRows(self, event):
-        self.uncomment()
+        self._controller.execute(UncommentRows(self.selection.rows()))
         event.Skip()
-
-
-class KeywordEditor(KeywordEditorUi):
-    dirty = property(lambda self: self._controller.dirty)
-    _no_cell = grid.GridCellCoords(-1, -1)
-    _popup_items = ['Create Keyword', 'Extract Keyword', 'Rename Keyword', '---'] + \
-            GridEditor._popup_items
-
-    def __init__(self, parent, controller, tree):
-        KeywordEditorUi.__init__(self, parent, len(controller.steps) + 5, 5)
-        self.SetDefaultEditor(ContentAssistCellEditor(parent.plugin))
-        self._controller = controller
-        self._controller.add_change_listener(self._data_changed)
-        # TODO: Tooltip may be smaller when the documentation is wrapped correctly
-        self._tooltip = RideHtmlPopupWindow(self, (650, 400))
-        self._marked_cell = None
-        self._idle_mouse_cell = self._no_cell
-        self._active_row = self._active_col = None
-        self._make_bindings()
-        self._write_steps(self._controller)
-        self._tree = tree
-        self._plugin = parent.plugin
 
     def _make_bindings(self):
         self.Bind(grid.EVT_GRID_EDITOR_SHOWN, self.OnEditor)
@@ -177,9 +118,6 @@ class KeywordEditor(KeywordEditorUi):
         data = []
         for step in controller.steps:
             data.append(self._format_comments(step.as_list()))
-            if hasattr(step, 'steps'):
-                for s in step.steps:
-                    data.append([''] + self._format_comments(s.as_list()))
         self.ClearGrid()
         self._write_data(data, update_history=False)
 
@@ -219,13 +157,12 @@ class KeywordEditor(KeywordEditorUi):
             self._controller.execute(PasteArea(self.selection.topleft, data))
 
     def OnDeleteRows(self, event):
-        rows = self.selection.rows()
-        self._controller.execute(DeleteRows(min(rows), max(rows)))
+        self._controller.execute(DeleteRows(self.selection.rows()))
         event.Skip()
 
     def OnUndo(self, event=None):
+        raise NotImplementedError()
         self.undo()
-        self._save_keywords()
         self.set_dirty()
 
     def set_dirty(self):
@@ -242,20 +179,6 @@ class KeywordEditor(KeywordEditorUi):
             cell_editor = self.GetCellEditor(*self.selection.cell)
             cell_editor.EndEdit(self.selection.topleft.row,
                                 self.selection.topleft.col, self)
-        if self.dirty:
-            self._save_keywords()
-
-    def _save_keywords(self):
-        rows = []
-        for i in range(self.GetNumberRows()):
-            rowdata = []
-            for j in range(self.GetNumberCols()):
-                cellvalue = self.GetCellValue(i, j).replace('\n', ' ')
-                rowdata.append(cellvalue)
-            rowdata = self._strip_trailing_empty_cells(rowdata)
-            if rowdata:
-                rows.append(rowdata)
-        self._controller.parse_steps_from_rows(rows)
 
     def show_content_assist(self):
         if self.IsCellEditControlShown():
@@ -399,7 +322,6 @@ class KeywordEditor(KeywordEditorUi):
         return data
 
     def OnExtractKeyword(self, event):
-        self._save_keywords()
         dlg = UserKeywordNameDialog(self._controller)
         if dlg.ShowModal() == wx.ID_OK:
             self._extract_keyword(*dlg.get_value())
@@ -416,7 +338,6 @@ class KeywordEditor(KeywordEditorUi):
         old_name = self._current_cell_value()
         new_name = wx.GetTextFromUser('New name', default_value=old_name)
         if new_name:
-            self._save_keywords()
             self._controller.execute(RenameOccurrences(old_name, new_name))
             wx.CallAfter(self._plugin.OnTreeItemSelected)
 

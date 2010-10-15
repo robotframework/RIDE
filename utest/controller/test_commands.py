@@ -1,14 +1,14 @@
 import unittest
-
 from robot.parsing.model import TestCaseFile
 from robot.parsing.populators import FromFilePopulator
 from robot.utils.asserts import assert_equals
 
+from robotide.controller.commands import *
 from robotide.controller.filecontroller import TestCaseFileController
-from robotide.controller.tablecontrollers import TestCaseController, \
-    TestCaseTableController
-from robotide.controller.commands import AddRow, Purify, ChangeCellValue,\
-    DeleteRow, DeleteRows, ClearArea, PasteArea, InsertCells, DeleteCells
+from robotide.controller.tablecontrollers import (TestCaseController,
+                                                  TestCaseTableController)
+
+
 
 STEP1 = '  Step 1  arg'
 STEP2 = '  Step 2  a1  a2  a3'
@@ -22,9 +22,10 @@ data = ['Test With two Steps',
         STEP_WITH_COMMENT,
         FOR_LOOP_HEADER,
         FOR_LOOP_STEP1,
-        '  Step bar'+
+        '  Step bar',
         '  ${variable}=  some value'
 ]
+
 
 def create():
     tcf = TestCaseFile()
@@ -65,6 +66,13 @@ class TestCaseEditingTest(unittest.TestCase):
         self._exec(ChangeCellValue(len(data)+5, 0, 'Hello'))
         assert_equals(self._steps[len(data)+5].keyword, 'Hello')
 
+    def test_changing_for_loop_header_value(self):
+        self._exec(ChangeCellValue(self._data_row(FOR_LOOP_HEADER), 0, 'Keyword'))
+        assert_equals(self._steps[self._data_row(FOR_LOOP_HEADER)].as_list(),
+                      ['Keyword'] + self._data_step_as_list(FOR_LOOP_HEADER)[1:])
+        assert_equals(self._steps[self._data_row(FOR_LOOP_STEP1)].as_list(),
+                      self._data_step_as_list(FOR_LOOP_STEP1))
+
     def test_deleting_row(self):
         self._exec(DeleteRow(0))
         assert_equals(len(self._steps), self._orig_number_of_steps-1)
@@ -89,11 +97,17 @@ class TestCaseEditingTest(unittest.TestCase):
         self._exec(AddRow(0))
         assert_equals(len(self._steps), self._orig_number_of_steps+1)
         assert_equals(self._steps[0].as_list(), [])
-    
+
     def test_adding_row_middle(self):
         self._exec(AddRow(1))
         assert_equals(len(self._steps), self._orig_number_of_steps+1)
         assert_equals(self._steps[1].as_list(), [])
+
+    def test_add_multiple_rows(self):
+        self._exec(AddRows([3,2,1,4,5,6,9,8,7,10]))
+        assert_equals(len(self._steps), self._orig_number_of_steps+10)
+        self._verify_step(0, 'Step 1', ['arg'])
+        self._verify_step(11, 'Step 2', ['a1', 'a2', 'a3'])
 
     def test_purify_removes_empty_rows(self):
         self._exec(AddRow())
@@ -136,11 +150,19 @@ class TestCaseEditingTest(unittest.TestCase):
         assert_equals(self._steps[index].keyword, 'Blog')
 
     def test_delete_multiple_rows(self):
-        self._exec(DeleteRows(self._data_row(STEP1), self._data_row(STEP2)))
+        self._exec(DeleteRows([2,0]))
         assert_equals(len(self._steps), self._orig_number_of_steps-2)
         self._verify_row_does_not_exist(STEP1)
-        self._verify_row_does_not_exist(STEP2)
+        self._verify_row_does_not_exist(STEP_WITH_COMMENT)
         self._verify_number_of_test_changes(1)
+
+    def test_deleting_rows_below_existing_steps_should_do_nothing(self):
+        self._exec(DeleteRows([1000, 960]))
+        self._verify_number_of_test_changes(0)
+
+    def test_inserting_rows_below_existing_steps_should_do_nothing(self):
+        self._exec(AddRows([1001, 1002]))
+        self._verify_number_of_test_changes(0)
 
     def test_clear_area(self):
         self._exec(ClearArea((0,1), (1,2)))
@@ -175,8 +197,64 @@ class TestCaseEditingTest(unittest.TestCase):
         self._verify_step(0, 'Step 1', [])
         self._verify_step(1, 'Step 2', ['a3'])
 
+    def test_commenting(self):
+        self._exec(CommentRows([0]))
+        self._verify_step(0, 'Comment', ['Step 1', 'arg'])
+
+    def test_commenting_many_rows(self):
+        self._exec(CommentRows([1,2,3,4]))
+        assert_equals(self._steps[self._data_row(STEP2)].as_list(),
+                      ['Comment'] + self._data_step_as_list(STEP2))
+        assert_equals(self._steps[self._data_row(STEP_WITH_COMMENT)].as_list(),
+                      ['Comment'] + self._data_step_as_list(STEP_WITH_COMMENT))
+        assert_equals(self._steps[self._data_row(FOR_LOOP_HEADER)].as_list(),
+                      ['Comment'] + self._data_step_as_list(FOR_LOOP_HEADER))
+        assert_equals(self._steps[self._data_row(FOR_LOOP_STEP1)].as_list(),
+                      ['Comment'] + self._data_step_as_list(FOR_LOOP_STEP1))
+
+    def test_commenting_step_in_for_loop(self):
+        row = self._data_row(FOR_LOOP_STEP1)
+        self._exec(CommentRows([row]))
+        assert_equals(self._steps[row].as_list(),
+                      ['', 'Comment'] + self._data_step_as_list(FOR_LOOP_STEP1)[1:])
+
+    def test_uncommenting_single_row(self):
+        self._exec(CommentRows([0]))
+        self._exec(UncommentRows([0]))
+        assert_equals(self._steps[0].as_list(), self._data_step_as_list(STEP1))
+
+    def test_uncommenting_rows(self):
+        self._exec(CommentRows([1,2,3,4]))
+        self._exec(UncommentRows([1,2,3,4]))
+        assert_equals(self._steps[1].as_list(), self._data_step_as_list(STEP2))
+        assert_equals(self._steps[2].as_list(), self._data_step_as_list(STEP_WITH_COMMENT))
+        assert_equals(self._steps[3].as_list(), self._data_step_as_list(FOR_LOOP_HEADER))
+        assert_equals(self._steps[4].as_list(), self._data_step_as_list(FOR_LOOP_STEP1))
+
+    def test_uncommenting_commented_step_in_for_loop(self):
+        row = self._data_row(FOR_LOOP_STEP1)
+        self._exec(CommentRows([row]))
+        self._exec(UncommentRows([row]))
+        assert_equals(self._steps[row].as_list(), self._data_step_as_list(FOR_LOOP_STEP1))
+
+    def test_uncommenting_does_nothing_if_not_commented(self):
+        self._exec(UncommentRows([1,2,3,4]))
+        assert_equals(self._steps[1].as_list(), self._data_step_as_list(STEP2))
+        assert_equals(self._steps[2].as_list(), self._data_step_as_list(STEP_WITH_COMMENT))
+        assert_equals(self._steps[3].as_list(), self._data_step_as_list(FOR_LOOP_HEADER))
+        assert_equals(self._steps[4].as_list(), self._data_step_as_list(FOR_LOOP_STEP1))
+
+    def test_commenting_and_uncommenting_row_with_no_step(self):
+        self._exec(CommentRows([1000]))
+        self._verify_number_of_test_changes(0)
+        self._exec(UncommentRows([10001]))
+        self._verify_number_of_test_changes(0)
+
     def _data_row(self, line):
         return data.index(line)-1
+
+    def _data_step_as_list(self, step_data):
+        return step_data.split('  ')[1:]
 
     def _exec(self, command):
         self._ctrl.execute(command)
@@ -189,9 +267,8 @@ class TestCaseEditingTest(unittest.TestCase):
         assert_equals(self._number_of_test_changes, expected)
 
     def _verify_row_does_not_exist(self, line):
-        line_as_list = line.split('  ')[1:]
         for step in self._steps:
-            if step.as_list() == line_as_list:
+            if step.as_list() == self._data_step_as_list(line):
                 raise AssertionError('Row "%s" exists' % line)
 
     def _verify_step(self, index, exp_name, exp_args=[], exp_comment=None):

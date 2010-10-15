@@ -12,7 +12,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+
 KEYWORD_NAME_FIELD = 'Keyword Name'
+
 
 class Occurrence(object):
 
@@ -25,6 +27,7 @@ class Occurrence(object):
 
     def inform_keyword_name_changed(self, new_name):
         self._item.keyword_rename(new_name)
+
 
 class KeywordNameController(object):
 
@@ -41,10 +44,12 @@ class KeywordNameController(object):
     def logical_name(self):
         return '%s (%s)' % (self._keyword.name, KEYWORD_NAME_FIELD)
 
+
 class _Command(object):
 
     def execute(self, context):
         return self._execute(context)
+
 
 class RenameOccurrences(_Command):
 
@@ -56,6 +61,7 @@ class RenameOccurrences(_Command):
         occurrences = context.execute(FindOccurrences(self._original_name))
         for oc in occurrences:
             oc.inform_keyword_name_changed(self._new_name)
+
 
 class FindOccurrences(_Command):
 
@@ -84,51 +90,75 @@ class FindOccurrences(_Command):
 class _ValueChangingCommand(object):
 
     def execute(self, context):
-        result = self.execute_with(context)
-        context.notify_changed()
-        return result
+        if self.change_value(context):
+            context.notify_changed()
+
+    def change_value(self, context):
+        '''Return True if value successfully changed, False otherwise'''
+        raise NotImplementedError(self.__class__.__name__)
+
+    def _step(self, context):
+        return context.steps[self._row]
 
 
 class ChangeCellValue(_ValueChangingCommand):
+
     def __init__(self, row, col, value):
         self._row = row
         self._col = col
         self._value = value
 
-    def execute_with(self, context):
+    def change_value(self, context):
         steps = context.steps
         while len(steps) <= self._row:
             context.add_step(len(steps))
             steps = context.steps
-        step = context.steps[self._row]
+        step = self._step(context)
         step.change(self._col, self._value)
         step.remove_empty_columns_from_end()
+        return True
 
-class DeleteRow(_ValueChangingCommand):
+
+class _RowChangingCommand(_ValueChangingCommand):
+
+    def change_value(self, context):
+        if len(context.steps) <= self._row:
+            return False
+        self._change_value(context)
+        return True
+
+
+class DeleteRow(_RowChangingCommand):
+
     def __init__(self, row):
         self._row = row
-    
-    def execute_with(self, context):
+
+    def _change_value(self, context):
         context.remove_step(self._row)
 
-class AddRow(_ValueChangingCommand):
 
-    def __init__(self, row = None):
+class AddRow(_RowChangingCommand):
+
+    def __init__(self, row=None):
         self._row = row
-    
-    def execute_with(self, context):
+
+    def _change_value(self, context):
         row = self._row
-        if row is None: row = len(context.steps)
+        if row is None:
+            row = len(context.steps)
         context.add_step(row)
+
 
 class Purify(_ValueChangingCommand):
 
-    def execute_with(self, context):
+    def change_value(self, context):
         for step in context.steps:
             step.remove_empty_columns_from_end()
             if step.has_only_comment():
                 step.remove_empty_columns_from_beginning()
         context.remove_empty_steps()
+        return True
+
 
 class InsertCell(_ValueChangingCommand):
 
@@ -136,8 +166,10 @@ class InsertCell(_ValueChangingCommand):
         self._row = row
         self._col = col
 
-    def execute_with(self, context):
-        context.steps[self._row].shift_right(self._col)
+    def change_value(self, context):
+        self._step(context).shift_right(self._col)
+        return True
+
 
 class DeleteCell(_ValueChangingCommand):
 
@@ -145,20 +177,55 @@ class DeleteCell(_ValueChangingCommand):
         self._row = row
         self._col = col
 
-    def execute_with(self, context):
-        context.steps[self._row].shift_left(self._col)
+    def change_value(self, context):
+        self._step(context).shift_left(self._col)
+        return True
+
+
+class CommentRow(_RowChangingCommand):
+
+    def __init__(self, row):
+        self._row = row
+
+    def _change_value(self, context):
+        self._step(context).comment()
+        return True
+
+
+class UncommentRow(_RowChangingCommand):
+
+    def __init__(self, row):
+        self._row = row
+
+    def _change_value(self, context):
+        self._step(context).uncomment()
+        return True
+
 
 class CompositeCommand(_ValueChangingCommand):
 
     def __init__(self, *commands):
         self._commands = commands
 
-    def execute_with(self, context):
-        for cmd in self._commands:
-            cmd.execute_with(context)
+    def change_value(self, context):
+        return any([cmd.change_value(context) for cmd in self._commands])
 
-def DeleteRows(start, end):
-    return CompositeCommand(*([DeleteRow(start)] * (end + 1 -start)))
+
+def DeleteRows(rows):
+    return CompositeCommand(*[DeleteRow(r) for r in reversed(sorted(rows))])
+
+
+def AddRows(rows):
+    return CompositeCommand(*[AddRow(r) for r in sorted(rows)])
+
+
+def CommentRows(rows):
+    return CompositeCommand(*[CommentRow(r) for r in rows])
+
+
+def UncommentRows(rows):
+    return CompositeCommand(*[UncommentRow(r) for r in rows])
+
 
 def ClearArea(top_left, bottom_right):
     row_s, col_s = top_left
@@ -167,11 +234,13 @@ def ClearArea(top_left, bottom_right):
                               for row in range(row_s,row_e+1)
                               for col in range(col_s, col_e+1)])
 
+
 def PasteArea(top_left, content):
     row_s, col_s = top_left
     return CompositeCommand(*[ChangeCellValue(row+row_s, col+col_s, content[row][col])
                               for row in range(len(content))
                               for col in range(len(content[0]))])
+
 
 def InsertCells(top_left, bottom_right):
     row_s, col_s = top_left
@@ -179,6 +248,7 @@ def InsertCells(top_left, bottom_right):
     return CompositeCommand(*[InsertCell(row, col)
                               for row in range(row_s,row_e+1)
                               for col in range(col_s, col_e+1)])
+
 
 def DeleteCells(top_left, bottom_right):
     row_s, col_s = top_left
