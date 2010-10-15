@@ -416,22 +416,15 @@ class ImportSettingsController(_TableController, _WithListOperations):
         self._parent.mark_dirty()
         return self[-1]
 
-    def add_resource(self, name, comment=None):
-        self._add_import(self._table.add_resource, name, comment)
-        return self[-1]
-
-    def add_variables(self, argstr, comment=None):
-        self._add_import(self._table.add_variables, argstr, comment)
-        return self[-1]
-
-    def _add_import(self, adder, argstr, comment):
-        name, args = self._split_to_name_and_args(argstr)
-        adder(name, args, comment=comment)
+    def add_resource(self, path, comment=None):
+        self._table.add_resource(path, comment)
         self._parent.mark_dirty()
+        return self[-1]
 
-    def _split_to_name_and_args(self, argstr):
-        parts = utils.split_value(argstr)
-        return parts[0], parts[1:]
+    def add_variables(self, path, argstr, comment=None):
+        self._table.add_variables(path, utils.split_value(argstr), comment)
+        self._parent.mark_dirty()
+        return self[-1]
 
     def resource_import_modified(self, path):
         return self._parent.resource_import_modified(path)
