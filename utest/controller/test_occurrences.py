@@ -3,7 +3,7 @@ from robot.parsing.model import TestCaseFile
 
 from robot.utils.asserts import assert_equals
 from robotide.controller import ChiefController, FindOccurrences, RenameOccurrences
-from robotide.controller.commands import KEYWORD_NAME_FIELD
+from robotide.controller.commands import KEYWORD_NAME_FIELD, TESTCASE_NAME_FIELD
 from robotide.controller.filecontroller import (TestCaseFileController,
                                                 TestCaseTableController,
                                                 TestCaseController)
@@ -93,6 +93,9 @@ class FindOccurrencesTest(unittest.TestCase):
     def test_occurrence_in_user_keyword_name(self):
         assert_occurrence(self.test_ctrl, USERKEYWORD1_NAME, USERKEYWORD1_NAME, KEYWORD_NAME_FIELD)
 
+    def test_occurrence_in_test_case_name(self):
+        assert_occurrence(self.test_ctrl, TEST1_NAME, TEST1_NAME, TESTCASE_NAME_FIELD)
+
 
 class RenameOccurrenceTest(unittest.TestCase):
 
@@ -152,3 +155,7 @@ class RenameOccurrenceTest(unittest.TestCase):
     def test_rename_in_user_keywords(self):
         self._rename(KEYWORD_IN_USERKEYWORD1, UNUSED_KEYWORD_NAME, USERKEYWORD1_NAME, 'Step 1')
         self._expected_messages(steps_have_changed=True)
+
+    def test_rename_in_testcase_name(self):
+        self._rename(TEST1_NAME, UNUSED_KEYWORD_NAME, UNUSED_KEYWORD_NAME, TESTCASE_NAME_FIELD)
+        self._expected_messages(keyword_name_has_changed=True)

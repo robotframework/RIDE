@@ -11,7 +11,6 @@ from robotide.controller.tablecontrollers import (TestCaseController,
 from robotide.publish.messages import RideStepsChanged
 
 
-
 STEP1 = '  Step 1  arg'
 STEP2 = '  Step 2  a1  a2  a3'
 STEP_WITH_COMMENT = '  Foo  # this is a comment'
