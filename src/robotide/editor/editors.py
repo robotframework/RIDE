@@ -25,6 +25,8 @@ from popupwindow import RideToolTipWindow
 from editordialogs import (EditorDialog, DocumentationDialog, MetadataDialog,
                            ScalarVariableDialog, ListVariableDialog,
                            LibraryDialog, ResourceDialog, VariablesDialog)
+from robotide.publish.messages import RideItemSettingsChanged,\
+    RideItemNameChanged
 
 
 def Editor(plugin, editor_panel, tree):
@@ -176,7 +178,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
                                 size=(context.SETTING_LABEL_WIDTH,
                                       context.SETTING_ROW_HEIGTH)))
         self._value_display = self._create_value_display()
-        self._update_value()
+        self.update_value()
         self._tooltip = RideToolTipWindow(self, (500, 350))
         sizer.Add(self._value_display, 1, wx.EXPAND)
         sizer.Add(ButtonWithHandler(self, 'Edit'), flag=wx.LEFT|wx.RIGHT, border=5)
@@ -279,14 +281,14 @@ class SettingEditor(wx.Panel, RideEventHandler):
             self._tree.select_user_keyword_node(uk)
 
     def _update_and_notify(self):
-        self._update_value()
+        self.update_value()
         self._tree.mark_dirty(self._controller)
 
     def OnClear(self, event):
         self._controller.clear()
         self._update_and_notify()
 
-    def _update_value(self):
+    def update_value(self):
         if self._controller.is_set:
             self._value_display.set_value(self._controller, self.plugin)
         else:
@@ -327,7 +329,7 @@ class DocumentationEditor(SettingEditor):
         ctrl.Bind(wx.EVT_LEFT_DOWN, self.OnEdit)
         return ctrl
 
-    def _update_value(self):
+    def update_value(self):
         self._value_display.SetPage(self._controller.visible_value)
 
     def _get_details_for_tooltip(self):
@@ -350,10 +352,19 @@ class TestCaseEditor(_RobotTableEditor):
         self._add_settings()
         self.sizer.Add((0,10))
         self._create_kweditor()
+        self.plugin.subscribe(self._settings_changed, RideItemSettingsChanged)
+        self.plugin.subscribe(self._name_changed, RideItemNameChanged)
 
     def _create_kweditor(self):
         self.kweditor = KeywordEditor(self, self.controller, self._tree)
         self.sizer.Add(self.kweditor, 1, wx.EXPAND|wx.ALL, 2)
+
+    def _settings_changed(self, data):
+        for editor in self._editors:
+            editor.update_value()
+
+    def _name_changed(self, data):
+        self.header.SetLabel(data.item.name)
 
     def Show(self, show):
         if hasattr(self, 'kweditor') and not show:
@@ -363,6 +374,8 @@ class TestCaseEditor(_RobotTableEditor):
     def close(self):
         _RobotTableEditor.close(self)
         self.kweditor.close()
+        self.plugin.unsubscribe(self._settings_changed, RideItemSettingsChanged)
+        self.plugin.unsubscribe(self._name_changed, RideItemNameChanged)
 
     def save(self):
         self.kweditor.save()

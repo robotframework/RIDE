@@ -21,8 +21,9 @@ from robotide.action import ActionInfoCollection
 from robotide.controller import UserKeywordController, NewDatafile
 from robotide.editor.editordialogs import (TestCaseNameDialog,
                                            UserKeywordNameDialog)
-from robotide.publish import RideTreeSelection
+from robotide.publish import RideTreeSelection, PUBLISHER
 from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
+from robotide.publish.messages import RideItemNameChanged
 try:
     import treemixin
 except ImportError:
@@ -55,6 +56,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self.SetImageList(self._images)
         self._history = _History()
         self._bind_keys()
+        PUBLISHER.subscribe(self._item_name_changed, RideItemNameChanged)
 
     def _bind_keys(self):
         bind_keys_to_evt_menu(self, self._get_bind_keys())
@@ -226,18 +228,29 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         return None
 
     def _get_node_with_label(self, node, label):
-        if node != self._root and utils.eq(self.GetItemText(node), label):
+        return self._find_node_with_predicate(node,
+                                              lambda n: utils.eq(self.GetItemText(n), label))
+
+    def _find_node_with_predicate(self, node, predicate):
+        if node != self._root and predicate(node):
             return node
         item, cookie = self.GetFirstChild(node)
         while item:
-            if utils.eq(self.GetItemText(item), label):
+            if predicate(item):
                 return item
             if self.ItemHasChildren(item):
-                result = self._get_node_with_label(item, label)
+                result = self._find_node_with_predicate(item, predicate)
                 if result:
                     return result
             item, cookie = self.GetNextChild(node, cookie)
         return None
+
+    def _find_node_by_controller(self, node, controller):
+        def match_handler(n):
+            handler = self._get_handler(n)
+            if not handler : return False
+            return controller == handler.controller
+        return self._find_node_with_predicate(node, match_handler)
 
     def get_selected_datafile(self):
         """Returns currently selected data file.
@@ -435,6 +448,11 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         handler = self._get_handler()
         if handler.is_draggable:
             handler.OnMoveDown(event)
+
+    def _item_name_changed(self, data):
+        node = self._find_node_by_controller(self._root, data.item)
+        if node:
+            self.SetItemText(node, data.item.name)
 
 
 class _ActionHandler(wx.Window):

@@ -331,6 +331,12 @@ class TestCaseController(_WithStepsController):
     def _init(self, test):
         self._test = test
 
+    def __eq__(self, other):
+        if self is other : return True
+        if not other : return False
+        if other.__class__ != self.__class__ : return False
+        return self._test == other._test
+
     @property
     def settings(self):
         return [DocumentationController(self, self._test.doc),
@@ -364,6 +370,12 @@ class UserKeywordController(_WithStepsController):
 
     def _init(self, kw):
         self._kw = kw
+
+    def __eq__(self, other):
+        if self is other : return True
+        if not other : return False
+        if other.__class__ != self.__class__ : return False
+        return self._kw == other._kw
 
     def move_up(self):
         return self._parent.move_up(self._kw)
