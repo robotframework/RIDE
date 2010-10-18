@@ -7,6 +7,9 @@ from robotide.controller.commands import KEYWORD_NAME_FIELD
 from robotide.controller.filecontroller import (TestCaseFileController,
                                                 TestCaseTableController,
                                                 TestCaseController)
+from robotide.publish import PUBLISHER
+from robotide.publish.messages import RideStepsChanged, RideItemSettingsChanged,\
+    RideItemNameChanged
 
 STEP1_KEYWORD = 'Log'
 TEST1_NAME = 'Test'
@@ -95,6 +98,32 @@ class RenameOccurrenceTest(unittest.TestCase):
 
     def setUp(self):
         self.test_ctrl = TestCaseControllerWithSteps()
+        self._steps_have_changed = False
+        self._testcase_settings_have_changed = False
+        self._keyword_name_has_changed = False
+        PUBLISHER.subscribe(self._steps_changed, RideStepsChanged)
+        PUBLISHER.subscribe(self._testcase_settings_changed, RideItemSettingsChanged)
+        PUBLISHER.subscribe(self._keyword_name_changed, RideItemNameChanged)
+
+    def tearDown(self):
+        PUBLISHER.unsubscribe(self._steps_changed, RideStepsChanged)
+        PUBLISHER.unsubscribe(self._testcase_settings_changed, RideItemSettingsChanged)
+        PUBLISHER.unsubscribe(self._keyword_name_changed, RideItemNameChanged)
+
+    def _steps_changed(self, test):
+        self._steps_have_changed = True
+
+    def _testcase_settings_changed(self, test):
+        self._testcase_settings_have_changed = True
+
+    def _keyword_name_changed(self, data):
+        self._keyword_name_has_changed = True
+
+    def _expected_messages(self, steps_have_changed=False, testcase_settings_have_changed=False,
+                           keyword_name_has_changed=False):
+        assert_equals(self._steps_have_changed, steps_have_changed)
+        assert_equals(self._testcase_settings_have_changed, testcase_settings_have_changed)
+        assert_equals(self._keyword_name_has_changed, keyword_name_has_changed)
 
     def _rename(self, original_name, new_name, source, usage):
         self.test_ctrl.execute(RenameOccurrences(original_name, new_name))
@@ -102,18 +131,24 @@ class RenameOccurrenceTest(unittest.TestCase):
 
     def test_rename_in_steps(self):
         self._rename(STEP1_KEYWORD, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Step 1')
+        self._expected_messages(steps_have_changed=True)
 
     def test_user_keyword_rename(self):
         self._rename(USERKEYWORD1_NAME, UNUSED_KEYWORD_NAME, UNUSED_KEYWORD_NAME, KEYWORD_NAME_FIELD)
+        self._expected_messages(keyword_name_has_changed=True)
 
     def test_rename_in_test_setup(self):
         self._rename(SETUP_KEYWORD, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Setup')
+        self._expected_messages(testcase_settings_have_changed=True)
 
     def test_rename_in_test_template(self):
         self._rename(TEMPLATE_KEYWORD, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Template')
+        self._expected_messages(testcase_settings_have_changed=True)
 
     def test_rename_in_suite_metadata(self):
         self._rename(SUITE_SETUP_KEYWORD, UNUSED_KEYWORD_NAME, SUITE_NAME, 'Suite Setup')
+        self._expected_messages()
 
     def test_rename_in_user_keywords(self):
         self._rename(KEYWORD_IN_USERKEYWORD1, UNUSED_KEYWORD_NAME, USERKEYWORD1_NAME, 'Step 1')
+        self._expected_messages(steps_have_changed=True)

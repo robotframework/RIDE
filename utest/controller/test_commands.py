@@ -8,7 +8,7 @@ from robotide.publish import PUBLISHER
 from robotide.controller.filecontroller import TestCaseFileController
 from robotide.controller.tablecontrollers import (TestCaseController,
                                                   TestCaseTableController)
-from robotide.publish.messages import RideTestCaseStepsChanged
+from robotide.publish.messages import RideStepsChanged
 
 
 
@@ -52,7 +52,7 @@ class TestCaseEditingTest(unittest.TestCase):
     def setUp(self):
         self._steps = None
         self._ctrl = testcase_controller()
-        PUBLISHER.subscribe(self._test_changed, RideTestCaseStepsChanged)
+        PUBLISHER.subscribe(self._test_changed, RideStepsChanged)
         self._orig_number_of_steps = len(self._ctrl.steps)
         self._number_of_test_changes = 0
 
@@ -263,7 +263,7 @@ class TestCaseEditingTest(unittest.TestCase):
 
     def _test_changed(self, data):
         self._number_of_test_changes += 1
-        self._steps = data.test.steps
+        self._steps = data.item.steps
 
     def _verify_number_of_test_changes(self, expected):
         assert_equals(self._number_of_test_changes, expected)

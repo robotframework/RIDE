@@ -153,6 +153,9 @@ class _DataController(object):
     def resource_import_modified(self, path):
         return self._chief_controller.resource_import_modified(os.path.join(self.directory, path))
 
+    def notify_settings_changed(self):
+        pass
+
     def iter_datafiles(self):
         # TODO: Not necessarily worthy of a generator
         yield self

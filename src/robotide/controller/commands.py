@@ -11,7 +11,6 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from robotide.publish.messages import RideTestCaseStepsChanged
 
 
 KEYWORD_NAME_FIELD = 'Keyword Name'
@@ -23,11 +22,18 @@ class Occurrence(object):
         self._item = item
 
     @property
+    def item(self):
+        return self._item
+
+    @property
     def usage(self):
         return self._item.logical_name
 
-    def inform_keyword_name_changed(self, new_name):
-        self._item.keyword_rename(new_name)
+    def rename_keyword(self, new_name):
+        self._item.rename_keyword(new_name)
+
+    def notify_value_changed(self, already_informed):
+        self._item.notify_value_changed()
 
 
 class KeywordNameController(object):
@@ -38,8 +44,11 @@ class KeywordNameController(object):
     def contains_keyword(self, name):
         return self._keyword.name == name
 
-    def keyword_rename(self, new_name):
+    def rename_keyword(self, new_name):
         self._keyword.rename(new_name)
+
+    def notify_value_changed(self):
+        self._keyword.notify_value_changed()
 
     @property
     def logical_name(self):
@@ -52,33 +61,33 @@ class _Command(object):
         return self._execute(context)
 
 
-class _ValueChangingCommand(object):
+class _StepsChangingCommand(object):
 
     def execute(self, context):
-        if self.change_value(context):
-            RideTestCaseStepsChanged(test=context).publish()
+        if self.change_steps(context):
+            context.notify_steps_changed()
 
-    def change_value(self, context):
-        '''Return True if value successfully changed, False otherwise'''
+    def change_steps(self, context):
+        '''Return True if steps changed, False otherwise'''
         raise NotImplementedError(self.__class__.__name__)
 
     def _step(self, context):
         return context.steps[self._row]
 
 
-class RenameOccurrences(_ValueChangingCommand):
+class RenameOccurrences(_Command):
 
     def __init__(self, original_name, new_name):
         self._original_name = original_name
         self._new_name = new_name
 
-    def change_value(self, context):
+    def _execute(self, context):
         occurrences = context.execute(FindOccurrences(self._original_name))
-        if not occurrences:
-            return False
+        changed_items = set()
         for oc in occurrences:
-            oc.inform_keyword_name_changed(self._new_name)
-        return True
+            oc.rename_keyword(self._new_name)
+            oc.notify_value_changed(already_informed=changed_items)
+            changed_items.add(oc)
 
 
 class FindOccurrences(_Command):
@@ -105,14 +114,14 @@ class FindOccurrences(_Command):
                 if item.contains_keyword(self._keyword_name)]
 
 
-class ChangeCellValue(_ValueChangingCommand):
+class ChangeCellValue(_StepsChangingCommand):
 
     def __init__(self, row, col, value):
         self._row = row
         self._col = col
         self._value = value
 
-    def change_value(self, context):
+    def change_steps(self, context):
         steps = context.steps
         while len(steps) <= self._row:
             context.add_step(len(steps))
@@ -123,9 +132,9 @@ class ChangeCellValue(_ValueChangingCommand):
         return True
 
 
-class Purify(_ValueChangingCommand):
+class Purify(_StepsChangingCommand):
 
-    def change_value(self, context):
+    def change_steps(self, context):
         for step in context.steps:
             step.remove_empty_columns_from_end()
             if step.has_only_comment():
@@ -134,29 +143,29 @@ class Purify(_ValueChangingCommand):
         return True
 
 
-class InsertCell(_ValueChangingCommand):
+class InsertCell(_StepsChangingCommand):
 
     def __init__(self, row, col):
         self._row = row
         self._col = col
 
-    def change_value(self, context):
+    def change_steps(self, context):
         self._step(context).shift_right(self._col)
         return True
 
 
-class DeleteCell(_ValueChangingCommand):
+class DeleteCell(_StepsChangingCommand):
 
     def __init__(self, row, col):
         self._row = row
         self._col = col
 
-    def change_value(self, context):
+    def change_steps(self, context):
         self._step(context).shift_left(self._col)
         return True
 
 
-class _RowChangingCommand(_ValueChangingCommand):
+class _RowChangingCommand(_StepsChangingCommand):
 
     def __init__(self, row):
         '''Command that will operate on a given logical `row` of test/user keyword.
@@ -165,7 +174,7 @@ class _RowChangingCommand(_ValueChangingCommand):
         '''
         self._row = row
 
-    def change_value(self, context):
+    def change_steps(self, context):
         if len(context.steps) <= self._row:
             return False
         self._change_value(context)
@@ -199,13 +208,13 @@ class UncommentRow(_RowChangingCommand):
         return True
 
 
-class CompositeCommand(_ValueChangingCommand):
+class CompositeCommand(_StepsChangingCommand):
 
     def __init__(self, *commands):
         self._commands = commands
 
-    def change_value(self, context):
-        return any([cmd.change_value(context) for cmd in self._commands])
+    def change_steps(self, context):
+        return any([cmd.change_steps(context) for cmd in self._commands])
 
 
 def DeleteRows(rows):

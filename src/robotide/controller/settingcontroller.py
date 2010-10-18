@@ -74,6 +74,9 @@ class _SettingController(ControllerWithParent):
             self._data.comment = comment
             self.mark_dirty()
 
+    def notify_value_changed(self):
+        self._parent.notify_settings_changed()
+
     def clear(self):
         self._data.reset()
         # Need to clear comments separately due to this bug:
@@ -143,7 +146,7 @@ class FixtureController(_SettingController):
     def keyword_name(self):
         return self._fixture.name
 
-    def keyword_rename(self, new_name):
+    def rename_keyword(self, new_name):
         self._fixture.name = new_name
 
     def _changed(self, value):
@@ -202,7 +205,7 @@ class TemplateController(_SettingController):
     def keyword_name(self):
         return self._template.value
 
-    def keyword_rename(self, new_name):
+    def rename_keyword(self, new_name):
         self._template.value = new_name
 
 

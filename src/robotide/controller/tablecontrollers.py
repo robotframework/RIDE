@@ -25,6 +25,8 @@ from robotide.controller.settingcontroller import (DocumentationController,
 from robotide.publish import RideUserKeywordAdded, RideTestCaseAdded
 from robotide import utils
 from robotide.controller.arguments import parse_arguments_to_var_dict
+from robotide.publish.messages import RideStepsChanged, RideItemNameChanged,\
+    RideItemSettingsChanged
 
 
 class _WithListOperations(object):
@@ -214,10 +216,13 @@ class _WithStepsController(ControllerWithParent):
     def steps(self):
         flattened_steps = []
         for step in self.data.steps:
-            flattened_steps.append(StepController(self, step) if not step.is_for_loop() else ForLoopStepController(self, step))
-            if hasattr(step, 'steps'):
+            if step.is_for_loop():
+                for_loop = ForLoopStepController(self, step)
+                flattened_steps.append(for_loop)
                 for sub_step in step.steps:
-                    flattened_steps.append(IntendedStepController(step, sub_step))
+                    flattened_steps.append(IntendedStepController(for_loop, sub_step))
+            else:
+                flattened_steps.append(StepController(self, step))
         return flattened_steps
 
     def index_of_step(self, step):
@@ -231,6 +236,9 @@ class _WithStepsController(ControllerWithParent):
 
     def execute(self, command):
         return command.execute(self)
+
+    def notify_steps_changed(self):
+        RideStepsChanged(item=self).publish()
 
     def parse_steps_from_rows(self, rows):
         self.data.steps = []
@@ -309,6 +317,12 @@ class _WithStepsController(ControllerWithParent):
 
     def validate_name(self, name):
         return self._parent.validate_name(name)
+
+    def notify_value_changed(self):
+        RideItemNameChanged(item=self).publish()
+
+    def notify_settings_changed(self):
+        RideItemSettingsChanged(item=self).publish()
 
 
 class TestCaseController(_WithStepsController):
@@ -453,7 +467,7 @@ class StepController(object):
     def contains_keyword(self, name):
         return utils.eq(self._step.keyword or '', name)
 
-    def keyword_rename(self, new_name):
+    def rename_keyword(self, new_name):
         self._step.keyword = new_name
 
     @property
@@ -471,10 +485,6 @@ class StepController(object):
     @property
     def vars(self):
         return self._step.vars
-
-    @property
-    def steps(self):
-        return self._step.steps
 
     @property
     def logical_name(self):
@@ -541,8 +551,15 @@ class StepController(object):
     def _recreate(self, cells, comment=None):
         self._step.__init__(cells, comment)
 
+    def notify_value_changed(self):
+        self.parent.notify_steps_changed()
+
 
 class ForLoopStepController(StepController):
+
+    @property
+    def steps(self):
+        return self._step.steps
 
     def _get_comment(self, cells):
         return None
@@ -573,6 +590,9 @@ class ForLoopStepController(StepController):
         self.parent.replace_step(index, Step(cells))
         for substep in self._step.steps:
             self.parent.add_step(index+1, Step(['']+substep.as_list()))
+
+    def notify_steps_changed(self):
+        self.notify_value_changed()
 
 
 class IntendedStepController(StepController):

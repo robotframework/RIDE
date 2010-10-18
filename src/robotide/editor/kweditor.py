@@ -24,7 +24,7 @@ from grid import GridEditor
 from editordialogs import UserKeywordNameDialog
 from contentassist import ExpandingContentAssistTextCtrl
 from popupwindow import RideHtmlPopupWindow
-from robotide.publish.messages import RideTestCaseStepsChanged
+from robotide.publish.messages import RideStepsChanged
 
 
 class KeywordEditor(GridEditor, RideEventHandler):
@@ -38,10 +38,9 @@ class KeywordEditor(GridEditor, RideEventHandler):
             GridEditor.__init__(self, parent, len(controller.steps) + 5, 5)
             self._plugin = parent.plugin
             self._configure_grid()
-            self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
             # This makes it possible to select cell 0,0 without opening editor, issue 479
             self._controller = controller
-            PUBLISHER.subscribe(self._data_changed, RideTestCaseStepsChanged)
+            PUBLISHER.subscribe(self._data_changed, RideStepsChanged)
             # TODO: Tooltip may be smaller when the documentation is wrapped correctly
             self._tooltip = RideHtmlPopupWindow(self, (650, 400))
             self._marked_cell = None
@@ -61,6 +60,14 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.SetDefaultCellOverflow(False)
         self.SetGridCursor(self.NumberRows - 1, self.NumberCols - 1)
         self.SetDefaultEditor(ContentAssistCellEditor(self._plugin))
+
+    def _make_bindings(self):
+        self.Bind(grid.EVT_GRID_EDITOR_SHOWN, self.OnEditor)
+        self.Bind(wx.EVT_KEY_DOWN, self.OnKey)
+        self.Bind(wx.EVT_IDLE, self.OnIdle)
+        self.Bind(grid.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
+        self.Bind(grid.EVT_GRID_CELL_LEFT_DCLICK, self.OnCellLeftDClick)
+        self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
 
     def _execute(self, command):
         self._controller.execute(command)
@@ -113,15 +120,9 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self._execute(UncommentRows(self.selection.rows()))
         event.Skip()
 
-    def _make_bindings(self):
-        self.Bind(grid.EVT_GRID_EDITOR_SHOWN, self.OnEditor)
-        self.Bind(wx.EVT_KEY_DOWN, self.OnKey)
-        self.Bind(wx.EVT_IDLE, self.OnIdle)
-        self.Bind(grid.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
-        self.Bind(grid.EVT_GRID_CELL_LEFT_DCLICK, self.OnCellLeftDClick)
 
     def _data_changed(self, data):
-        self._write_steps(data.test)
+        self._write_steps(data.item)
         self.set_dirty()
 
     def _write_steps(self, controller):
@@ -181,7 +182,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def close(self):
         self.save()
-        PUBLISHER.unsubscribe(self._data_changed, RideTestCaseStepsChanged)
+        PUBLISHER.unsubscribe(self._data_changed, RideStepsChanged)
 
     def save(self):
         self.hide_tooltip()
