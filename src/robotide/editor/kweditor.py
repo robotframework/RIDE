@@ -33,12 +33,11 @@ class KeywordEditor(GridEditor, RideEventHandler):
             GridEditor._popup_items
 
     def __init__(self, parent, controller, tree):
-        GridEditor.__init__(self, parent)
+        GridEditor.__init__(self, parent, len(controller.steps) + 5, 5)
         self.SetRowLabelSize(25)
         self.SetColLabelSize(0)
         self.SetDefaultColSize(170)
         self.SetDefaultCellOverflow(False)
-        self.CreateGrid(len(controller.steps) + 5, 5)
         self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
         # This makes it possible to select cell 0,0 without opening editor, issue 479
         self.SetGridCursor(self.NumberRows - 1, self.NumberCols - 1)
