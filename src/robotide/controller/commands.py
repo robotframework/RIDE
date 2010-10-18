@@ -11,6 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+from robotide.publish.messages import RideTestCaseStepsChanged
 
 
 KEYWORD_NAME_FIELD = 'Keyword Name'
@@ -51,16 +52,33 @@ class _Command(object):
         return self._execute(context)
 
 
-class RenameOccurrences(_Command):
+class _ValueChangingCommand(object):
+
+    def execute(self, context):
+        if self.change_value(context):
+            RideTestCaseStepsChanged(test=context).publish()
+
+    def change_value(self, context):
+        '''Return True if value successfully changed, False otherwise'''
+        raise NotImplementedError(self.__class__.__name__)
+
+    def _step(self, context):
+        return context.steps[self._row]
+
+
+class RenameOccurrences(_ValueChangingCommand):
 
     def __init__(self, original_name, new_name):
         self._original_name = original_name
         self._new_name = new_name
 
-    def _execute(self, context):
+    def change_value(self, context):
         occurrences = context.execute(FindOccurrences(self._original_name))
+        if not occurrences:
+            return False
         for oc in occurrences:
             oc.inform_keyword_name_changed(self._new_name)
+        return True
 
 
 class FindOccurrences(_Command):
@@ -85,20 +103,6 @@ class FindOccurrences(_Command):
     def _find_occurrences_in(self, items):
         return [Occurrence(item) for item in items
                 if item.contains_keyword(self._keyword_name)]
-
-
-class _ValueChangingCommand(object):
-
-    def execute(self, context):
-        if self.change_value(context):
-            context.notify_changed()
-
-    def change_value(self, context):
-        '''Return True if value successfully changed, False otherwise'''
-        raise NotImplementedError(self.__class__.__name__)
-
-    def _step(self, context):
-        return context.steps[self._row]
 
 
 class ChangeCellValue(_ValueChangingCommand):

@@ -30,6 +30,8 @@ def TestCaseControllerWithSteps():
     testcase = tcf.testcase_table.add(TEST1_NAME)
     for step in [[STEP1_KEYWORD, 'Hello'], ['No Operation']]:
         testcase.add_step(step)
+    for_loop = testcase.add_for_loop([': FOR', '${i}', 'IN RANGE', '10'])
+    for_loop.add_step(['Log', '${i}'])
     testcase.setup.name = SETUP_KEYWORD
     testcase.teardown.name = 'Teardown Kw'
     testcase.template.value = TEMPLATE_KEYWORD

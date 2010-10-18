@@ -17,13 +17,14 @@ from wx import grid
 
 from robotide.controller.commands import ChangeCellValue, ClearArea, PasteArea,\
     DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells, UncommentRows
-from robotide.publish import RideGridCellChanged
+from robotide.publish import RideGridCellChanged, PUBLISHER
 from robotide.utils import PopupMenu, RideEventHandler
 
 from grid import GridEditor
 from editordialogs import UserKeywordNameDialog
 from contentassist import ExpandingContentAssistTextCtrl
 from popupwindow import RideHtmlPopupWindow
+from robotide.publish.messages import RideTestCaseStepsChanged
 
 
 class KeywordEditor(GridEditor, RideEventHandler):
@@ -33,26 +34,36 @@ class KeywordEditor(GridEditor, RideEventHandler):
             GridEditor._popup_items
 
     def __init__(self, parent, controller, tree):
-        GridEditor.__init__(self, parent, len(controller.steps) + 5, 5)
+        try:
+            GridEditor.__init__(self, parent, len(controller.steps) + 5, 5)
+            self._plugin = parent.plugin
+            self._configure_grid()
+            self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
+            # This makes it possible to select cell 0,0 without opening editor, issue 479
+            self._controller = controller
+            PUBLISHER.subscribe(self._data_changed, RideTestCaseStepsChanged)
+            # TODO: Tooltip may be smaller when the documentation is wrapped correctly
+            self._tooltip = RideHtmlPopupWindow(self, (650, 400))
+            self._marked_cell = None
+            self._idle_mouse_cell = self._no_cell
+            self._active_row = self._active_col = None
+            self._make_bindings()
+            self._write_steps(self._controller)
+            self._tree = tree
+        except Exception, e:
+            print 'Exception in initing KeywordEditor: %s' % e
+            raise
+
+    def _configure_grid(self):
         self.SetRowLabelSize(25)
         self.SetColLabelSize(0)
         self.SetDefaultColSize(170)
         self.SetDefaultCellOverflow(False)
-        self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
-        # This makes it possible to select cell 0,0 without opening editor, issue 479
         self.SetGridCursor(self.NumberRows - 1, self.NumberCols - 1)
-        self.SetDefaultEditor(ContentAssistCellEditor(parent.plugin))
-        self._controller = controller
-        self._controller.add_change_listener(self._data_changed)
-        # TODO: Tooltip may be smaller when the documentation is wrapped correctly
-        self._tooltip = RideHtmlPopupWindow(self, (650, 400))
-        self._marked_cell = None
-        self._idle_mouse_cell = self._no_cell
-        self._active_row = self._active_col = None
-        self._make_bindings()
-        self._write_steps(self._controller)
-        self._tree = tree
-        self._plugin = parent.plugin
+        self.SetDefaultEditor(ContentAssistCellEditor(self._plugin))
+
+    def _execute(self, command):
+        self._controller.execute(command)
 
     def write_cell(self, row, col, value, update_history=True):
         previous = self.GetCellValue(row, col) \
@@ -81,25 +92,25 @@ class KeywordEditor(GridEditor, RideEventHandler):
         event.Skip()
 
     def OnInsertRows(self, event):
-        self._controller.execute(AddRows(self.selection.rows()))
+        self._execute(AddRows(self.selection.rows()))
         event.Skip()
 
     def OnInsertCells(self, event):
-        self._controller.execute(InsertCells(self.selection.topleft,
+        self._execute(InsertCells(self.selection.topleft,
                                              self.selection.bottomright))
         event.Skip()
 
     def OnDeleteCells(self, event):
-        self._controller.execute(DeleteCells(self.selection.topleft,
+        self._execute(DeleteCells(self.selection.topleft,
                                              self.selection.bottomright))
         event.Skip()
 
     def OnCommentRows(self, event):
-        self._controller.execute(CommentRows(self.selection.rows()))
+        self._execute(CommentRows(self.selection.rows()))
         event.Skip()
 
     def OnUncommentRows(self, event):
-        self._controller.execute(UncommentRows(self.selection.rows()))
+        self._execute(UncommentRows(self.selection.rows()))
         event.Skip()
 
     def _make_bindings(self):
@@ -109,8 +120,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.Bind(grid.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
         self.Bind(grid.EVT_GRID_CELL_LEFT_DCLICK, self.OnCellLeftDClick)
 
-    def _data_changed(self, controller):
-        self._write_steps(controller)
+    def _data_changed(self, data):
+        self._write_steps(data.test)
         self.set_dirty()
 
     def _write_steps(self, controller):
@@ -133,7 +144,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         return ret
 
     def cell_value_edited(self, row, col, value):
-        self._controller.execute(ChangeCellValue(row, col, value))
+        self._execute(ChangeCellValue(row, col, value))
 
     def get_selected_datafile_controller(self):
         return self._controller.datafile_controller
@@ -146,17 +157,17 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.OnDelete(event)
 
     def OnDelete(self, event=None):
-        self._controller.execute(ClearArea(self.selection.topleft,
+        self._execute(ClearArea(self.selection.topleft,
                                            self.selection.bottomright))
 
     def OnPaste(self, event=None):
         data = self._clipboard_handler.clipboard_content()
         if data:
             data = [[data]] if isinstance(data, basestring) else data
-            self._controller.execute(PasteArea(self.selection.topleft, data))
+            self._execute(PasteArea(self.selection.topleft, data))
 
     def OnDeleteRows(self, event):
-        self._controller.execute(DeleteRows(self.selection.rows()))
+        self._execute(DeleteRows(self.selection.rows()))
         event.Skip()
 
     def OnUndo(self, event=None):
@@ -170,7 +181,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def close(self):
         self.save()
-        self._controller.remove_change_listener(self._data_changed)
+        PUBLISHER.unsubscribe(self._data_changed, RideTestCaseStepsChanged)
 
     def save(self):
         self.hide_tooltip()
@@ -327,7 +338,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def _extract_keyword(self, name, args):
         rows = self.selection.topleft.row, self.selection.bottomright.row
-        self._controller.extract_keyword(name, args, rows,
+        self._extract_keyword(name, args, rows,
                                          self._tree.add_keyword_controller)
         raise RuntimeError('Please fix me')
         self._write_keywords(self._controller.steps)
@@ -337,8 +348,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         old_name = self._current_cell_value()
         new_name = wx.GetTextFromUser('New name', default_value=old_name)
         if new_name:
-            self._controller.execute(RenameOccurrences(old_name, new_name))
-            wx.CallAfter(self._plugin.OnTreeItemSelected)
+            self._execute(RenameOccurrences(old_name, new_name))
 
 
 class ContentAssistCellEditor(grid.PyGridCellEditor):

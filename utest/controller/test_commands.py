@@ -4,9 +4,11 @@ from robot.parsing.populators import FromFilePopulator
 from robot.utils.asserts import assert_equals
 
 from robotide.controller.commands import *
+from robotide.publish import PUBLISHER
 from robotide.controller.filecontroller import TestCaseFileController
 from robotide.controller.tablecontrollers import (TestCaseController,
                                                   TestCaseTableController)
+from robotide.publish.messages import RideTestCaseStepsChanged
 
 
 
@@ -50,7 +52,7 @@ class TestCaseEditingTest(unittest.TestCase):
     def setUp(self):
         self._steps = None
         self._ctrl = testcase_controller()
-        self._ctrl.add_change_listener(self._test_changed)
+        PUBLISHER.subscribe(self._test_changed, RideTestCaseStepsChanged)
         self._orig_number_of_steps = len(self._ctrl.steps)
         self._number_of_test_changes = 0
 
@@ -259,9 +261,9 @@ class TestCaseEditingTest(unittest.TestCase):
     def _exec(self, command):
         self._ctrl.execute(command)
 
-    def _test_changed(self, new_test):
+    def _test_changed(self, data):
         self._number_of_test_changes += 1
-        self._steps = new_test.steps
+        self._steps = data.test.steps
 
     def _verify_number_of_test_changes(self, expected):
         assert_equals(self._number_of_test_changes, expected)

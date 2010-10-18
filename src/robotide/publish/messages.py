@@ -173,9 +173,16 @@ class RideImportSettingChanged(RideImportSetting):
 class RideUserKeyword(RideMessage):
     """Base class for all messages about changes to any user keyword."""
 
-class RideUserKeywordAdded(RideUserKeyword):
+class RideUserKeywordAdded(RideMessage):
     """Sent when a new user keyword is added to a suite or resource."""
     data = ['datafile', 'name']
+
+class RideTestCase(RideMessage):
+    """Base class for all messages about changes to any test case."""
+    data = ['test']
+
+class RideTestCaseStepsChanged(RideTestCase):
+    """"""
 
 class RideTestCaseAdded(RideMessage):
     """Sent when a new test case is added to a suite or resource."""

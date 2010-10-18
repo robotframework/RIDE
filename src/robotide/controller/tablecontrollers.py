@@ -203,7 +203,6 @@ class _WithStepsController(ControllerWithParent):
 
     def __init__(self, parent_controller, data):
         self._parent = parent_controller
-        self._listeners = Listeners()
         self.data = data
         self._init(data)
 
@@ -311,15 +310,6 @@ class _WithStepsController(ControllerWithParent):
     def validate_name(self, name):
         return self._parent.validate_name(name)
 
-    def add_change_listener(self, listener):
-        self._listeners.add(listener)
-
-    def remove_change_listener(self, listener):
-        self._listeners.remove(listener)
-
-    def notify_changed(self):
-        self._listeners.notify(self)
-
 
 class TestCaseController(_WithStepsController):
     _populator = TestCasePopulator
@@ -353,22 +343,6 @@ class TestCaseController(_WithStepsController):
 
     def get_local_variables(self):
         return {}
-
-
-class Listeners(object):
-
-    def __init__(self):
-        self._listeners = []
-
-    def add(self, listener):
-        self._listeners.append(listener)
-
-    def remove(self, listener):
-        self._listeners.remove(listener)
-
-    def notify(self, data):
-        for l in self._listeners:
-            l(data)
 
 
 class UserKeywordController(_WithStepsController):
@@ -578,6 +552,9 @@ class ForLoopStepController(StepController):
 
     def uncomment(self):
         pass
+
+    def contains_keyword(self, name):
+        return False
 
     def _recreate(self, cells, comment=None):
         if cells[0] != self.as_list()[0]:
