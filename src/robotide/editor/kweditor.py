@@ -122,8 +122,9 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
 
     def _data_changed(self, data):
-        self._write_steps(data.item)
-        self.set_dirty()
+        if self._controller == data.item:
+            self._write_steps(data.item)
+            self.set_dirty()
 
     def _write_steps(self, controller):
         data = []

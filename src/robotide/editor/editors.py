@@ -360,11 +360,13 @@ class TestCaseEditor(_RobotTableEditor):
         self.sizer.Add(self.kweditor, 1, wx.EXPAND|wx.ALL, 2)
 
     def _settings_changed(self, data):
-        for editor in self._editors:
-            editor.update_value()
+        if data.item == self.controller:
+            for editor in self._editors:
+                editor.update_value()
 
     def _name_changed(self, data):
-        self.header.SetLabel(data.item.name)
+        if data.item == self.controller:
+            self.header.SetLabel(data.item.name)
 
     def Show(self, show):
         if hasattr(self, 'kweditor') and not show:
