@@ -24,6 +24,7 @@ from robotide.editor.editordialogs import (TestCaseNameDialog,
 from robotide.publish import RideTreeSelection, PUBLISHER
 from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
 from robotide.publish.messages import RideItemNameChanged
+from robotide.controller.commands import RenameOccurrences
 try:
     import treemixin
 except ImportError:
@@ -572,7 +573,7 @@ class _TestOrUserKeywordHandler(_ActionHandler):
         if msg:
             wx.MessageBox(msg, 'Validation Error', style=wx.ICON_ERROR)
             return False
-        self.controller.rename(new_name)
+        self.controller.execute(RenameOccurrences(self.controller.name, new_name))
         return True
 
     def OnCopy(self, event):
