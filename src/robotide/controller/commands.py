@@ -32,7 +32,7 @@ class Occurrence(object):
     def rename_keyword(self, new_name):
         self._item.rename_keyword(new_name)
 
-    def notify_value_changed(self, already_informed):
+    def notify_value_changed(self):
         self._item.notify_value_changed()
 
 
@@ -83,11 +83,9 @@ class RenameOccurrences(_Command):
 
     def _execute(self, context):
         occurrences = context.execute(FindOccurrences(self._original_name))
-        changed_items = set()
         for oc in occurrences:
             oc.rename_keyword(self._new_name)
-            oc.notify_value_changed(already_informed=changed_items)
-            changed_items.add(oc)
+            oc.notify_value_changed()
 
 
 class FindOccurrences(_Command):
