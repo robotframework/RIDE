@@ -333,7 +333,6 @@ class TestCaseController(_WithStepsController):
 
     def __eq__(self, other):
         if self is other : return True
-        if not other : return False
         if other.__class__ != self.__class__ : return False
         return self._test == other._test
 
@@ -373,7 +372,6 @@ class UserKeywordController(_WithStepsController):
 
     def __eq__(self, other):
         if self is other : return True
-        if not other : return False
         if other.__class__ != self.__class__ : return False
         return self._kw == other._kw
 
