@@ -64,7 +64,7 @@ class RIDE(wx.App):
 
     def _load_data(self):
         if self._initial_path:
-            observer = LoadProgressObserver(self.frame, self._initial_path)
+            observer = LoadProgressObserver(self.frame)
             self._controller.load_data(self._initial_path, observer)
 
     def get_plugins(self):
