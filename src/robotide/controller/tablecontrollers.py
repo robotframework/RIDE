@@ -324,7 +324,6 @@ class _WithStepsController(ControllerWithParent):
     def notify_settings_changed(self):
         RideItemSettingsChanged(item=self).publish()
 
-
 class TestCaseController(_WithStepsController):
     _populator = TestCasePopulator
 
@@ -461,7 +460,6 @@ class StepController(object):
 
     def __eq__(self, other):
         if self is other : return True
-        if not other : return False
         return self._steps_are_equal(self._step, other._step)
 
     def _steps_are_equal(self, fst, snd):
