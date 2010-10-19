@@ -130,7 +130,6 @@ class _EditorGrid(GridEditor):
         GridEditor.__init__(self, parent, num_rows, num_cols)
         self._set_default_sizes()
         self._bind_actions()
-        self._create_grid(value, num_cols)
         self._write_content(value)
 
     def _set_default_sizes(self):
