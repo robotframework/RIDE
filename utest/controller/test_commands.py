@@ -149,6 +149,7 @@ class TestCaseEditingTest(unittest.TestCase):
         index = self._data_row(FOR_LOOP_STEP1)
         self._exec(ChangeCellValue(index, 1, 'Blog'))
         assert_equals(self._steps[index].keyword, 'Blog')
+        assert_equals(len(self._steps), self._orig_number_of_steps)
 
     def test_delete_multiple_rows(self):
         self._exec(DeleteRows([2,0]))

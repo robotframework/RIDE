@@ -585,6 +585,9 @@ class ForLoopStepController(StepController):
     def contains_keyword(self, name):
         return False
 
+    def add_step(self, step):
+        self.steps.append(step)
+
     def _recreate(self, cells, comment=None):
         if cells[0] != self.as_list()[0]:
             self._replace_with_new_cells(cells)
@@ -623,7 +626,8 @@ class IntendedStepController(StepController):
         if cells[0] == '':
             cells = cells[1:]
         self._step.__init__(cells)
-        self.parent.steps.append(self._step)
+        if self._step not in self.parent.steps:
+            self.parent.add_step(self._step)
 
     def remove(self):
         self.parent.steps.remove(self._step)
