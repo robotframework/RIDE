@@ -17,8 +17,8 @@ from robot.parsing.model import ResourceFile
 
 from robotide import context
 from robotide.errors import SerializationError
-from robotide.publish.messages import RideOpenResource, RideSaving, RideSaveAll,\
-    RideSaved, RideChangeFormat
+from robotide.publish.messages import RideOpenResource, RideSaving, RideSaveAll, \
+    RideSaved, RideChangeFormat, RideOpenSuite
 from robotide.writer.serializer import Serializer
 
 from filecontroller import DataController, ResourceFileController
@@ -42,33 +42,33 @@ class ChiefController(object):
         return self._controller.data if self._controller else None
 
     def load_data(self, path, load_observer):
-        df = self.load_datafile(path, load_observer, notify_finish=False)
-        if df:
-            load_observer.finish()
+        if self._load_datafile(path, load_observer):
             return
-        res = self.load_resource(path, load_observer, notify_finish=False)
-        if res:
-            load_observer.finish()
-        else:
-            load_observer.error("Given file '%s' is not a valid Robot Framework "
-                                "test case or resource file." % path)
+        if self._load_resource(path, load_observer):
+            return
+        load_observer.error("Given file '%s' is not a valid Robot Framework "
+                            "test case or resource file." % path)
 
     def new_resource(self, path):
         res = ResourceFile()
         res.source = path
         return self._create_resource_controller(res)
 
-    def load_datafile(self, path, load_observer, notify_finish=True):
+    def load_datafile(self, path, load_observer):
+        datafile = self._load_datafile(path, load_observer)
+        if datafile:
+            return datafile
+        load_observer.error("Invalid data file '%s'." % path)
+
+    def _load_datafile(self, path, load_observer):
         self.__init__(self._namespace)
         datafile = self._loader.load_datafile(path, load_observer)
         if not datafile:
-            if notify_finish:
-                load_observer.error("Invalid data file '%s'." % path)
             return None
         resources = self._loader.resources_for(datafile, load_observer)
         self._create_controllers(datafile, resources)
-        if notify_finish:
-            load_observer.finish()
+        RideOpenSuite(path=path).publish()
+        load_observer.finish()
         return datafile
 
     def _create_controllers(self, datafile, resources):
@@ -76,16 +76,20 @@ class ChiefController(object):
         for r in resources:
             self._create_resource_controller(r)
 
-    def load_resource(self, path, load_observer, notify_finish=True):
-        resource = self._namespace.get_resource(path)
+    def load_resource(self, path, load_observer):
+        resource = self._load_resource(path, load_observer)
         if resource:
-            if notify_finish:
-                load_observer.finish()
-            RideOpenResource(path=resource.source).publish()
-            return self._create_resource_controller(resource)
-        if notify_finish:
-            load_observer.error("Invalid resource file '%s'." % path)
-        return None
+            return resource
+        load_observer.error("Invalid resource file '%s'." % path)
+
+    def _load_resource(self, path, load_observer):
+        resource = self._namespace.get_resource(path)
+        if not resource:
+            return None
+        controller = self._create_resource_controller(resource)
+        RideOpenResource(path=resource.source).publish()
+        load_observer.finish()
+        return controller
 
     def _create_resource_controller(self, resource):
         controller = ResourceFileController(resource, self)

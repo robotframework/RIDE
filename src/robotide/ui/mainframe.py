@@ -150,7 +150,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         path = self._get_path()
         if path:
             resource = self._controller.load_resource(path,
-                                                      LoadProgressObserver(self, path))
+                                                      LoadProgressObserver(self))
             if resource:
                 self.tree.add_resource(resource)
 
@@ -168,7 +168,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         return path
 
     def open_suite(self, path):
-        self._controller.load_datafile(path, LoadProgressObserver(self, path))
+        self._controller.load_datafile(path, LoadProgressObserver(self))
         self.tree.populate(self._controller)
 
     def refresh_datafile(self, item, event):
@@ -247,7 +247,7 @@ class RideFrame(wx.Frame, RideEventHandler):
 class ActionRegisterer(object):
 
     def __init__(self, menubar, toolbar, shortcut_registry):
-        self._menubar  = menubar
+        self._menubar = menubar
         self._toolbar = toolbar
         self._shortcut_registry = shortcut_registry
 

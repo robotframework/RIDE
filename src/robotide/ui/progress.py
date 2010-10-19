@@ -15,23 +15,20 @@
 import wx
 
 from robotide import context
-from robotide.publish import RideOpenSuite
 
 
 class LoadProgressObserver(object):
 
-    def __init__(self, frame, path):
+    def __init__(self, frame):
         self._progressbar = wx.ProgressDialog('RIDE', 'Loading the test data',
                                               maximum=100, parent=frame,
                                               style=wx.PD_ELAPSED_TIME)
-        self._path = path
 
     def notify(self):
         self._progressbar.Pulse()
 
     def finish(self):
         self._progressbar.Destroy()
-        RideOpenSuite(path=self._path).publish()
         context.LOG.report_parsing_errors()
 
     def error(self, msg):
