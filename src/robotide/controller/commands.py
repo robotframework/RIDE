@@ -32,12 +32,13 @@ class Occurrence(object):
         return self._item.logical_name
 
     def replace_keyword(self, new_name):
-        if self._replaced:
-            old, new = new_name, self._value
-        else:
-            old, new = self._value, new_name
-        self._item.replace_keyword(new, old)
+        self._item.replace_keyword(*self._get_replace_values(new_name))
         self._replaced = not self._replaced
+
+    def _get_replace_values(self, new_name):
+        if self._replaced:
+            return self._value, new_name
+        return new_name, self._value
 
     def notify_value_changed(self):
         self._item.notify_value_changed()
