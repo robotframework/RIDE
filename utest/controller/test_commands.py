@@ -120,6 +120,23 @@ class TestCaseEditingTest(unittest.TestCase):
                       ['Keyword'] + self._data_step_as_list(FOR_LOOP_HEADER)[1:])
         assert_equals(self._steps[self._data_row(FOR_LOOP_STEP1)].as_list(),
                       self._data_step_as_list(FOR_LOOP_STEP1))
+        assert_equals(len(self._steps), self._orig_number_of_steps)
+
+    def test_changing_for_loop_header_argument(self):
+        self._exec(ChangeCellValue(self._data_row(FOR_LOOP_HEADER), 1, 'Keyword'))
+        assert_equals(self._steps[self._data_row(FOR_LOOP_HEADER)].as_list(),
+                      [': FOR', 'Keyword'] + self._data_step_as_list(FOR_LOOP_HEADER)[2:])
+        assert_equals(self._steps[self._data_row(FOR_LOOP_STEP1)].as_list(),
+                      self._data_step_as_list(FOR_LOOP_STEP1))
+        assert_equals(len(self._steps), self._orig_number_of_steps)
+
+    def test_changing_for_loop_header_in_clause(self):
+        self._exec(ChangeCellValue(self._data_row(FOR_LOOP_HEADER), 2, 'Keyword'))
+        assert_equals(self._steps[self._data_row(FOR_LOOP_HEADER)].as_list(),
+                      [': FOR', '${i}', 'Keyword'] + self._data_step_as_list(FOR_LOOP_HEADER)[3:])
+        assert_equals(self._steps[self._data_row(FOR_LOOP_STEP1)].as_list(),
+                      self._data_step_as_list(FOR_LOOP_STEP1))
+        assert_equals(len(self._steps), self._orig_number_of_steps)
 
     def test_deleting_row(self):
         self._exec(DeleteRow(0))

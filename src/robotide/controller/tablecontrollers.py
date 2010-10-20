@@ -634,16 +634,25 @@ class ForLoopStepController(StepController):
         self.steps.append(step)
 
     def _recreate(self, cells, comment=None):
-        if cells[0] != self.as_list()[0]:
+        if not self._represent_valid_for_loop_header(cells):
             self._replace_with_new_cells(cells)
         else:
+            steps = self.steps
             self._step.__init__(cells[1:])
+            self._step.steps = steps
 
     def remove(self):
         steps = self.parent.data.steps
         index = steps.index(self._step)
         steps.remove(self._step)
         self.parent.data.steps = steps[:index] + self._step.steps + steps[index:]
+
+    def _represent_valid_for_loop_header(self, cells):
+        if cells[0] != self.as_list()[0]:
+            return False
+        if cells[2] != self.as_list()[2]:
+            return False
+        return True
 
     def _replace_with_new_cells(self, cells):
         index = self.parent.index_of_step(self._step)
