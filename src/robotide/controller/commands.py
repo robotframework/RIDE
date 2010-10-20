@@ -78,10 +78,40 @@ class _Command(object):
     def execute(self, context):
         return self._execute(context)
 
-
-class _StepsChangingCommand(object):
-
+class _UndoableCommand(object):
+    
     def execute(self, context):
+        result = self._execute_without_redo_clear(context)
+        context.clear_redo()
+        return result
+    
+    def _execute_without_redo_clear(self, context):
+        result = self._execute(context)
+        context.push_to_undo(self._get_undo_command())
+        return result
+    
+    @property
+    def _get_undo_command(self):
+        raise NotImplementedError(self.__class__.__name__)
+
+class Undo(_Command):
+    
+    def execute(self, context):
+        if not context.is_undo_empty():
+            result = context.pop_from_undo()._execute_without_redo_clear(context)
+            redo_command = context.pop_from_undo()
+            context.push_to_redo(redo_command)
+            return result
+
+class Redo(_Command):
+    
+    def execute(self, context):
+        if not context.is_redo_empty():
+            return context.pop_from_redo()._execute_without_redo_clear(context)
+
+class _StepsChangingCommand(_UndoableCommand):
+
+    def _execute(self, context):
         if self.change_steps(context):
             context.notify_steps_changed()
 
@@ -144,9 +174,13 @@ class ChangeCellValue(_StepsChangingCommand):
             context.add_step(len(steps))
             steps = context.steps
         step = self._step(context)
+        self._undo_command = ChangeCellValue(self._row, self._col, step.get_value(self._col))
         step.change(self._col, self._value)
         step.remove_empty_columns_from_end()
         return True
+
+    def _get_undo_command(self):
+        return self._undo_command
 
 
 class Purify(_StepsChangingCommand):
@@ -159,6 +193,9 @@ class Purify(_StepsChangingCommand):
         context.remove_empty_steps()
         return True
 
+    def _get_undo_command(self):
+        return None
+
 
 class InsertCell(_StepsChangingCommand):
 
@@ -170,6 +207,9 @@ class InsertCell(_StepsChangingCommand):
         self._step(context).shift_right(self._col)
         return True
 
+    def _get_undo_command(self):
+        return DeleteCell(self._row, self._col)
+
 
 class DeleteCell(_StepsChangingCommand):
 
@@ -180,6 +220,9 @@ class DeleteCell(_StepsChangingCommand):
     def change_steps(self, context):
         self._step(context).shift_left(self._col)
         return True
+
+    def _get_undo_command(self):
+        return InsertCell(self._row, self._col)
 
 
 class _RowChangingCommand(_StepsChangingCommand):
@@ -197,18 +240,25 @@ class _RowChangingCommand(_StepsChangingCommand):
         self._change_value(context)
         return True
 
-
 class DeleteRow(_RowChangingCommand):
-
     def _change_value(self, context):
+        step = context.steps[self._row]
+        self._undo_command = CompositeCommand(AddRow(self._row), PasteArea((self._row, 0), [step.as_list()]))
         context.remove_step(self._row)
 
+    def _get_undo_command(self):
+        if hasattr(self, '_undo_command'):
+            return self._undo_command
+        return AddRow(self._row)
 
 class AddRow(_RowChangingCommand):
 
     def _change_value(self, context):
         row = self._row if self._row != -1 else len(context.steps)
         context.add_step(row)
+
+    def _get_undo_command(self):
+        return DeleteRow(self._row)
 
 
 class CommentRow(_RowChangingCommand):
@@ -217,12 +267,18 @@ class CommentRow(_RowChangingCommand):
         self._step(context).comment()
         return True
 
+    def _get_undo_command(self):
+        return UncommentRow(self._row)
+
 
 class UncommentRow(_RowChangingCommand):
 
     def _change_value(self, context):
         self._step(context).uncomment()
         return True
+
+    def _get_undo_command(self):
+        return CommentRow(self._row)
 
 
 class CompositeCommand(_StepsChangingCommand):
@@ -231,8 +287,14 @@ class CompositeCommand(_StepsChangingCommand):
         self._commands = commands
 
     def change_steps(self, context):
-        return any([cmd.change_steps(context) for cmd in self._commands])
+        executions = [(cmd.change_steps(context), cmd._get_undo_command()) for cmd in self._commands]
+        undos = [undo for _,undo in executions]
+        undos.reverse()
+        self._undo_command = CompositeCommand(*undos)
+        return any(changed for changed,_ in executions)
 
+    def _get_undo_command(self):
+        return self._undo_command
 
 def DeleteRows(rows):
     return CompositeCommand(*[DeleteRow(r) for r in reversed(sorted(rows))])

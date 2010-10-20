@@ -29,6 +29,7 @@ _EDIT = """
 
 [Edit]
 &Undo | Undo last modification | Ctrlcmd-Z
+&Redo | Redo modification | Ctrlcmd-Y
 ---
 Cu&t | Cut | Ctrlcmd-X
 &Copy | Copy | Ctrlcmd-C
@@ -127,6 +128,9 @@ class _EditorTab(wx.Panel):
 
     def OnUndo(self, event):
         self.editor.undo()
+
+    def OnRedo(self, event):
+        self.editor.redo()
 
     def OnCut(self, event):
         self.editor.cut()

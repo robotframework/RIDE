@@ -201,7 +201,42 @@ class KeywordTableController(_TableController, _TcUkBase):
         return self._table.keywords
 
 
-class _WithStepsController(ControllerWithParent):
+class _WithUndoRedoStacks(object):
+    
+    @property
+    def _undo(self):
+        if not hasattr(self, '_undo_stack'):
+            self._undo_stack = []
+        return self._undo_stack
+
+    @property
+    def _redo(self):
+        if not hasattr(self, '_redo_stack'):
+            self._redo_stack = []
+        return self._redo_stack
+    
+    def is_undo_empty(self):
+        return self._undo == []
+    
+    def pop_from_undo(self):
+        return self._undo.pop()
+    
+    def push_to_undo(self, command):
+        self._undo.append(command)
+
+    def clear_redo(self):
+        self._redo_stack = []
+
+    def is_redo_empty(self):
+        return self._redo == []
+
+    def pop_from_redo(self):
+        return self._redo.pop()
+
+    def push_to_redo(self, command):
+        self._redo.append(command)
+
+class _WithStepsController(ControllerWithParent, _WithUndoRedoStacks):
 
     def __init__(self, parent_controller, data):
         self._parent = parent_controller
@@ -324,7 +359,6 @@ class _WithStepsController(ControllerWithParent):
     def notify_settings_changed(self):
         RideItemSettingsChanged(item=self).publish()
 
-
 class TestCaseController(_WithStepsController):
     _populator = TestCasePopulator
 
@@ -333,7 +367,6 @@ class TestCaseController(_WithStepsController):
 
     def __eq__(self, other):
         if self is other : return True
-        if not other : return False
         if other.__class__ != self.__class__ : return False
         return self._test == other._test
 
@@ -373,7 +406,6 @@ class UserKeywordController(_WithStepsController):
 
     def __eq__(self, other):
         if self is other : return True
-        if not other : return False
         if other.__class__ != self.__class__ : return False
         return self._kw == other._kw
 
@@ -463,7 +495,6 @@ class StepController(object):
 
     def __eq__(self, other):
         if self is other : return True
-        if not other : return False
         return self._steps_are_equal(self._step, other._step)
 
     def _steps_are_equal(self, fst, snd):
@@ -472,6 +503,12 @@ class StepController(object):
         return (fst.assign == snd.assign and
                 fst.keyword == snd.keyword and
                 fst.args == snd.args)
+
+    def get_value(self, col):
+        values = self.as_list()
+        if len(values) <= col :
+            return ''
+        return values[col]
 
     def as_list(self):
         return self._step.as_list()
