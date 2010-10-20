@@ -21,6 +21,7 @@ class Occurrence(object):
     def __init__(self, item, value):
         self._item = item
         self._value = value
+        self._replaced = False
 
     @property
     def item(self):
@@ -31,10 +32,16 @@ class Occurrence(object):
         return self._item.logical_name
 
     def replace_keyword(self, new_name):
-        self._item.replace_keyword(new_name, self._value)
+        if self._replaced:
+            old, new = new_name, self._value
+        else:
+            old, new = self._value, new_name
+        self._item.replace_keyword(new, old)
+        self._replaced = not self._replaced
 
     def notify_value_changed(self):
         self._item.notify_value_changed()
+
 
 class ItemNameController(object):
 
@@ -67,24 +74,26 @@ class _Command(object):
     def execute(self, context):
         return self._execute(context)
 
+
 class _UndoableCommand(object):
-    
+
     def execute(self, context):
         result = self._execute_without_redo_clear(context)
         context.clear_redo()
         return result
-    
+
     def _execute_without_redo_clear(self, context):
         result = self._execute(context)
         context.push_to_undo(self._get_undo_command())
         return result
-    
+
     @property
     def _get_undo_command(self):
         raise NotImplementedError(self.__class__.__name__)
 
+
 class Undo(_Command):
-    
+
     def execute(self, context):
         if not context.is_undo_empty():
             result = context.pop_from_undo()._execute_without_redo_clear(context)
@@ -92,11 +101,13 @@ class Undo(_Command):
             context.push_to_redo(redo_command)
             return result
 
+
 class Redo(_Command):
-    
+
     def execute(self, context):
         if not context.is_redo_empty():
             return context.pop_from_redo()._execute_without_redo_clear(context)
+
 
 class _StepsChangingCommand(_UndoableCommand):
 
@@ -112,17 +123,22 @@ class _StepsChangingCommand(_UndoableCommand):
         return context.steps[self._row]
 
 
-class RenameOccurrences(_Command):
+class RenameOccurrences(_UndoableCommand):
 
     def __init__(self, original_name, new_name):
         self._original_name = original_name
         self._new_name = new_name
+        self._occurrences = None
 
     def _execute(self, context):
-        occurrences = context.execute(FindOccurrences(self._original_name))
-        for oc in occurrences:
+        if self._occurrences is None:
+            self._occurrences = context.execute(FindOccurrences(self._original_name))
+        for oc in self._occurrences:
             oc.replace_keyword(self._new_name)
             oc.notify_value_changed()
+
+    def _get_undo_command(self):
+        return self
 
 
 class FindOccurrences(_Command):

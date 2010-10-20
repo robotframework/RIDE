@@ -3,7 +3,8 @@ from robot.parsing.model import TestCaseFile
 
 from robot.utils.asserts import assert_equals
 from robotide.controller import ChiefController, FindOccurrences, RenameOccurrences
-from robotide.controller.commands import KEYWORD_NAME_FIELD, TESTCASE_NAME_FIELD
+from robotide.controller.commands import KEYWORD_NAME_FIELD, TESTCASE_NAME_FIELD,\
+    Undo
 from robotide.controller.filecontroller import (TestCaseFileController,
                                                 TestCaseTableController,
                                                 TestCaseController)
@@ -139,6 +140,17 @@ class RenameOccurrenceTest(unittest.TestCase):
     def test_rename_in_steps(self):
         self._rename(STEP1_KEYWORD, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Step 1')
         self._expected_messages(steps_have_changed=True)
+
+    def test_undo_rename_in_step(self):
+        self._rename(STEP1_KEYWORD, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Step 1')
+        self.test_ctrl.execute(Undo())
+        assert_equals(self.test_ctrl.steps[0].keyword, STEP1_KEYWORD)
+
+    def test_undo_after_renaming_to_something_that_is_already_there(self):
+        self._rename(STEP1_KEYWORD, STEP2_ARGUMENT, TEST1_NAME, 'Step 1')
+        self.test_ctrl.execute(Undo())
+        assert_equals(self.test_ctrl.steps[1].args[0], STEP2_ARGUMENT)
+
 
     def test_rename_steps_argument(self):
         self._rename(STEP2_ARGUMENT, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Step 2')
