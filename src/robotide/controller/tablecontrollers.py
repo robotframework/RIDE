@@ -518,10 +518,14 @@ class StepController(object):
         return self._step.as_list()
 
     def contains_keyword(self, name):
-        return utils.eq(self._step.keyword or '', name)
+        return any(utils.eq(item, name) for item in [self.keyword or ''] + self.args)
 
-    def rename_keyword(self, new_name):
-        self._step.keyword = new_name
+    def replace_keyword(self, new_name, old_name):
+        if utils.eq(old_name, self.keyword or ''):
+            self._step.keyword = new_name
+        for index, value in enumerate(self.args):
+            if utils.eq(old_name, value):
+                self._step.args[index] = new_name
 
     @property
     def keyword(self):

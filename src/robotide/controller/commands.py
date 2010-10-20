@@ -18,8 +18,9 @@ TESTCASE_NAME_FIELD = 'Test Case Name'
 
 class Occurrence(object):
 
-    def __init__(self, item):
+    def __init__(self, item, value):
         self._item = item
+        self._value = value
 
     @property
     def item(self):
@@ -29,48 +30,36 @@ class Occurrence(object):
     def usage(self):
         return self._item.logical_name
 
-    def rename_keyword(self, new_name):
-        self._item.rename_keyword(new_name)
+    def replace_keyword(self, new_name):
+        self._item.replace_keyword(new_name, self._value)
 
     def notify_value_changed(self):
         self._item.notify_value_changed()
 
+class ItemNameController(object):
 
-class KeywordNameController(object):
-
-    def __init__(self, keyword):
-        self._keyword = keyword
+    def __init__(self, item):
+        self._item = item
 
     def contains_keyword(self, name):
-        return self._keyword.name == name
+        return self._item.name == name
 
-    def rename_keyword(self, new_name):
-        self._keyword.rename(new_name)
+    def replace_keyword(self, new_name, old_value=None):
+        self._item.rename(new_name)
 
     def notify_value_changed(self):
-        self._keyword.notify_value_changed()
+        self._item.notify_value_changed()
 
     @property
     def logical_name(self):
-        return '%s (%s)' % (self._keyword.name, KEYWORD_NAME_FIELD)
+        return '%s (%s)' % (self._item.name, self._name_field)
 
-class TestCaseNameController(object):
 
-    def __init__(self, testcase):
-        self._testcase = testcase
+class KeywordNameController(ItemNameController):
+    _name_field = KEYWORD_NAME_FIELD
 
-    def contains_keyword(self, name):
-        return self._testcase.name == name
-
-    def rename_keyword(self, new_name):
-        self._testcase.rename(new_name)
-
-    def notify_value_changed(self):
-        self._testcase.notify_value_changed()
-
-    @property
-    def logical_name(self):
-        return '%s (%s)' % (self._testcase.name, TESTCASE_NAME_FIELD)
+class TestCaseNameController(ItemNameController):
+    _name_field = TESTCASE_NAME_FIELD
 
 
 class _Command(object):
@@ -132,7 +121,7 @@ class RenameOccurrences(_Command):
     def _execute(self, context):
         occurrences = context.execute(FindOccurrences(self._original_name))
         for oc in occurrences:
-            oc.rename_keyword(self._new_name)
+            oc.replace_keyword(self._new_name)
             oc.notify_value_changed()
 
 
@@ -157,7 +146,7 @@ class FindOccurrences(_Command):
         return items
 
     def _find_occurrences_in(self, items):
-        return [Occurrence(item) for item in items
+        return [Occurrence(item, self._keyword_name) for item in items
                 if item.contains_keyword(self._keyword_name)]
 
 

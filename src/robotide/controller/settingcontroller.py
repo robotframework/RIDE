@@ -146,7 +146,7 @@ class FixtureController(_SettingController):
     def keyword_name(self):
         return self._fixture.name
 
-    def rename_keyword(self, new_name):
+    def replace_keyword(self, new_name, old_value=None):
         self._fixture.name = new_name
 
     def _changed(self, value):
@@ -205,7 +205,7 @@ class TemplateController(_SettingController):
     def keyword_name(self):
         return self._template.value
 
-    def rename_keyword(self, new_name):
+    def replace_keyword(self, new_name, old_name=None):
         self._template.value = new_name
 
 

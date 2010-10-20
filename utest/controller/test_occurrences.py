@@ -12,6 +12,7 @@ from robotide.publish.messages import RideItemStepsChanged, RideItemSettingsChan
     RideItemNameChanged
 
 STEP1_KEYWORD = 'Log'
+STEP2_ARGUMENT = 'No Operation'
 TEST1_NAME = 'Test'
 UNUSED_KEYWORD_NAME = 'Foo'
 USERKEYWORD1_NAME = 'User Keyword'
@@ -31,7 +32,7 @@ def TestCaseControllerWithSteps():
     tcf.setting_table.suite_teardown.name = 'Suite Teardown Kw'
     tcf.setting_table.test_template.value = 'Test Template Kw'
     testcase = tcf.testcase_table.add(TEST1_NAME)
-    for step in [[STEP1_KEYWORD, 'Hello'], ['No Operation']]:
+    for step in [[STEP1_KEYWORD, 'Hello'], ['Run Keyword', STEP2_ARGUMENT]]:
         testcase.add_step(step)
     for_loop = testcase.add_for_loop([': FOR', '${i}', 'IN RANGE', '10'])
     for_loop.add_step(['Log', '${i}'])
@@ -71,8 +72,11 @@ class FindOccurrencesTest(unittest.TestCase):
     def test_occurrences_in_steps(self):
         assert_occurrence(self.test_ctrl, STEP1_KEYWORD, TEST1_NAME, 'Step 1')
 
+    def test_occurrences_in_step_arguments(self):
+        assert_occurrence(self.test_ctrl, STEP2_ARGUMENT, TEST1_NAME, 'Step 2')
+
     def test_occurrences_are_case_and_space_insensitive(self):
-        assert_occurrence(self.test_ctrl, 'no   OpEratioN  ', TEST1_NAME, 'Step 2')
+        assert_occurrence(self.test_ctrl, 'R un KE Y W O rd', TEST1_NAME, 'Step 2')
         assert_occurrence(self.test_ctrl, 'se tu p KW  ', TEST1_NAME, 'Setup')
 
     def test_occurrences_in_test_metadata(self):
@@ -135,6 +139,11 @@ class RenameOccurrenceTest(unittest.TestCase):
     def test_rename_in_steps(self):
         self._rename(STEP1_KEYWORD, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Step 1')
         self._expected_messages(steps_have_changed=True)
+
+    def test_rename_steps_argument(self):
+        self._rename(STEP2_ARGUMENT, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Step 2')
+        self._expected_messages(steps_have_changed=True)
+        assert_equals(self.test_ctrl.steps[1].as_list(), ['Run Keyword', UNUSED_KEYWORD_NAME])
 
     def test_user_keyword_rename(self):
         self._rename(USERKEYWORD1_NAME, UNUSED_KEYWORD_NAME, UNUSED_KEYWORD_NAME, KEYWORD_NAME_FIELD)
