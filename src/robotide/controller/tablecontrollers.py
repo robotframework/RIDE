@@ -224,6 +224,9 @@ class _WithUndoRedoStacks(object):
     def push_to_undo(self, command):
         self._undo.append(command)
 
+    def clear_redo(self):
+        self._redo_stack = []
+
     def is_redo_empty(self):
         return self._redo == []
 

@@ -94,6 +94,15 @@ class TestCaseEditingTest(unittest.TestCase):
         self._exec(Redo())
         assert_equals(self._steps[0].keyword, changed_cell_value_2)
 
+    def test_redo_does_nothing_after_state_changing_command_that_is_not_undo(self):
+        changed_cell_value_1 = 'Changed Step'
+        changed_cell_value_2 = 'Changed Step again'
+        self._exec(ChangeCellValue(0, 0, changed_cell_value_1))
+        self._exec(Undo())
+        self._exec(ChangeCellValue(0, 0, changed_cell_value_2))
+        self._exec(Redo())
+        assert_equals(self._steps[0].keyword, changed_cell_value_2)
+
     def test_changing_cell_value_after_last_column_adds_empty_columns(self):
         self._exec(ChangeCellValue(0, 2, 'Hello'))
         assert_equals(self._steps[0].args, ['arg', 'Hello'])

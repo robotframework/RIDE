@@ -81,6 +81,11 @@ class _Command(object):
 class _UndoableCommand(object):
     
     def execute(self, context):
+        result = self._execute_without_redo_clear(context)
+        context.clear_redo()
+        return result
+    
+    def _execute_without_redo_clear(self, context):
         result = self._execute(context)
         context.push_to_undo(self._get_undo_command())
         return result
@@ -93,7 +98,7 @@ class Undo(_Command):
     
     def execute(self, context):
         if not context.is_undo_empty():
-            result = context.pop_from_undo().execute(context)
+            result = context.pop_from_undo()._execute_without_redo_clear(context)
             redo_command = context.pop_from_undo()
             context.push_to_redo(redo_command)
             return result
@@ -102,7 +107,7 @@ class Redo(_Command):
     
     def execute(self, context):
         if not context.is_redo_empty():
-            return context.pop_from_redo().execute(context)
+            return context.pop_from_redo()._execute_without_redo_clear(context)
 
 class _StepsChangingCommand(_UndoableCommand):
 

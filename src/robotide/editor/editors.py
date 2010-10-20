@@ -385,6 +385,9 @@ class TestCaseEditor(_RobotTableEditor):
     def undo(self):
         self.kweditor.OnUndo()
 
+    def redo(self):
+        self.kweditor.OnRedo()
+
     def cut(self):
         self.kweditor.OnCut()
 
