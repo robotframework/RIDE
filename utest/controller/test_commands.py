@@ -69,6 +69,14 @@ class TestCaseEditingTest(unittest.TestCase):
         self._exec(Redo())
         assert_equals(self._steps[0].keyword, changed_cell_value)
 
+    def test_undo_when_nothing_to_undo(self):
+        self._exec(Undo())
+        assert_equals(self._number_of_test_changes, 0)
+
+    def test_redo_when_nothing_to_redo(self):
+        self._exec(Redo())
+        assert_equals(self._number_of_test_changes, 0)
+
     def test_undo_undo_redo_redo(self):
         original_cell_value = self._data_step_as_list(STEP1)[0]
         changed_cell_value_1 = 'Changed Step'

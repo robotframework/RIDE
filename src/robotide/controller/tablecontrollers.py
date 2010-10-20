@@ -215,11 +215,17 @@ class _WithUndoRedoStacks(object):
             self._redo_stack = []
         return self._redo_stack
     
+    def is_undo_empty(self):
+        return self._undo == []
+    
     def pop_from_undo(self):
         return self._undo.pop()
     
     def push_to_undo(self, command):
         self._undo.append(command)
+
+    def is_redo_empty(self):
+        return self._redo == []
 
     def pop_from_redo(self):
         return self._redo.pop()

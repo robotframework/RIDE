@@ -91,15 +91,17 @@ class _UndoableCommand(object):
 class Undo(_Command):
     
     def execute(self, context):
-        result = context.pop_from_undo().execute(context)
-        redo_command = context.pop_from_undo()
-        context.push_to_redo(redo_command)
-        return result
+        if not context.is_undo_empty():
+            result = context.pop_from_undo().execute(context)
+            redo_command = context.pop_from_undo()
+            context.push_to_redo(redo_command)
+            return result
 
 class Redo(_Command):
     
     def execute(self, context):
-        return context.pop_from_redo().execute(context)
+        if not context.is_redo_empty():
+            return context.pop_from_redo().execute(context)
 
 class _StepsChangingCommand(_UndoableCommand):
 

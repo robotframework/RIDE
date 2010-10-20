@@ -16,7 +16,8 @@ import wx
 from wx import grid
 
 from robotide.controller.commands import ChangeCellValue, ClearArea, PasteArea,\
-    DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells, UncommentRows
+    DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells, UncommentRows, \
+    Undo
 from robotide.publish import RideGridCellChanged, PUBLISHER
 from robotide.utils import PopupMenu, RideEventHandler
 
@@ -173,9 +174,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         event.Skip()
 
     def OnUndo(self, event=None):
-        raise NotImplementedError()
-        self.undo()
-        self.set_dirty()
+        self._execute(Undo())
 
     def set_dirty(self):
         self._controller.mark_dirty()
