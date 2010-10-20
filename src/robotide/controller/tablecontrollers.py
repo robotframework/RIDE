@@ -201,7 +201,33 @@ class KeywordTableController(_TableController, _TcUkBase):
         return self._table.keywords
 
 
-class _WithStepsController(ControllerWithParent):
+class _WithUndoRedoStacks(object):
+    
+    @property
+    def _undo(self):
+        if not hasattr(self, '_undo_stack'):
+            self._undo_stack = []
+        return self._undo_stack
+
+    @property
+    def _redo(self):
+        if not hasattr(self, '_redo_stack'):
+            self._redo_stack = []
+        return self._redo_stack
+    
+    def pop_from_undo(self):
+        return self._undo.pop()
+    
+    def push_to_undo(self, command):
+        self._undo.append(command)
+
+    def pop_from_redo(self):
+        return self._redo.pop()
+
+    def push_to_redo(self, command):
+        self._redo.append(command)
+
+class _WithStepsController(ControllerWithParent, _WithUndoRedoStacks):
 
     def __init__(self, parent_controller, data):
         self._parent = parent_controller
@@ -468,6 +494,12 @@ class StepController(object):
         return (fst.assign == snd.assign and
                 fst.keyword == snd.keyword and
                 fst.args == snd.args)
+
+    def get_value(self, col):
+        values = self.as_list()
+        if len(values) <= col :
+            return ''
+        return values[col]
 
     def as_list(self):
         return self._step.as_list()

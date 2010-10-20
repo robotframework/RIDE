@@ -59,6 +59,33 @@ class TestCaseEditingTest(unittest.TestCase):
         self._exec(ChangeCellValue(0, 0, 'Changed Step'))
         assert_equals(self._steps[0].keyword, 'Changed Step')
 
+    def test_undo_redo(self):
+        original_cell_value = self._data_step_as_list(STEP1)[0]
+        changed_cell_value = 'Changed Step'
+        self._exec(ChangeCellValue(0, 0, changed_cell_value))
+        assert_equals(self._steps[0].keyword, changed_cell_value)
+        self._exec(Undo())
+        assert_equals(self._steps[0].keyword, original_cell_value)
+        self._exec(Redo())
+        assert_equals(self._steps[0].keyword, changed_cell_value)
+
+    def test_undo_undo_redo_redo(self):
+        original_cell_value = self._data_step_as_list(STEP1)[0]
+        changed_cell_value_1 = 'Changed Step'
+        changed_cell_value_2 = 'Again changed Step'
+        self._exec(ChangeCellValue(0, 0, changed_cell_value_1))
+        assert_equals(self._steps[0].keyword, changed_cell_value_1)
+        self._exec(ChangeCellValue(0, 0, changed_cell_value_2))
+        assert_equals(self._steps[0].keyword, changed_cell_value_2)
+        self._exec(Undo())
+        assert_equals(self._steps[0].keyword, changed_cell_value_1)
+        self._exec(Undo())
+        assert_equals(self._steps[0].keyword, original_cell_value)
+        self._exec(Redo())
+        assert_equals(self._steps[0].keyword, changed_cell_value_1)
+        self._exec(Redo())
+        assert_equals(self._steps[0].keyword, changed_cell_value_2)
+
     def test_changing_cell_value_after_last_column_adds_empty_columns(self):
         self._exec(ChangeCellValue(0, 2, 'Hello'))
         assert_equals(self._steps[0].args, ['arg', 'Hello'])
@@ -109,6 +136,12 @@ class TestCaseEditingTest(unittest.TestCase):
         assert_equals(len(self._steps), self._orig_number_of_steps+10)
         self._verify_step(0, 'Step 1', ['arg'])
         self._verify_step(11, 'Step 2', ['a1', 'a2', 'a3'])
+
+    def test_undo_multiple_rows_add(self):
+        self._exec(AddRows([3,2,1,4,5,6,9,8,7,10]))
+        self._exec(Undo())
+        self._verify_step(0, 'Step 1', ['arg'])
+        self._verify_step(1, 'Step 2', ['a1', 'a2', 'a3'])
 
     def test_purify_removes_empty_rows(self):
         self._exec(AddRow(-1))
