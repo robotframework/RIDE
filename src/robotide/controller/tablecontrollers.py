@@ -603,6 +603,8 @@ class StepController(object):
         return len(non_empty_cells) == 1 and non_empty_cells[0].startswith('# ')
 
     def _get_comment(self, cells):
+        if not cells:
+            return None
         return cells[-1][2:] if cells[-1].startswith('# ') else None
 
     def _recreate(self, cells, comment=None):
@@ -650,7 +652,8 @@ class ForLoopStepController(StepController):
     def _represent_valid_for_loop_header(self, cells):
         if cells[0] != self.as_list()[0]:
             return False
-        if cells[2] != self.as_list()[2]:
+        in_token_index = len(self.vars)+1
+        if cells[in_token_index] != self.as_list()[in_token_index]:
             return False
         return True
 
