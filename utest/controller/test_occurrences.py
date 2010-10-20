@@ -8,7 +8,7 @@ from robotide.controller.filecontroller import (TestCaseFileController,
                                                 TestCaseTableController,
                                                 TestCaseController)
 from robotide.publish import PUBLISHER
-from robotide.publish.messages import RideStepsChanged, RideItemSettingsChanged,\
+from robotide.publish.messages import RideItemStepsChanged, RideItemSettingsChanged,\
     RideItemNameChanged
 
 STEP1_KEYWORD = 'Log'
@@ -104,12 +104,12 @@ class RenameOccurrenceTest(unittest.TestCase):
         self._steps_have_changed = False
         self._testcase_settings_have_changed = False
         self._keyword_name_has_changed = False
-        PUBLISHER.subscribe(self._steps_changed, RideStepsChanged)
+        PUBLISHER.subscribe(self._steps_changed, RideItemStepsChanged)
         PUBLISHER.subscribe(self._testcase_settings_changed, RideItemSettingsChanged)
         PUBLISHER.subscribe(self._keyword_name_changed, RideItemNameChanged)
 
     def tearDown(self):
-        PUBLISHER.unsubscribe(self._steps_changed, RideStepsChanged)
+        PUBLISHER.unsubscribe(self._steps_changed, RideItemStepsChanged)
         PUBLISHER.unsubscribe(self._testcase_settings_changed, RideItemSettingsChanged)
         PUBLISHER.unsubscribe(self._keyword_name_changed, RideItemNameChanged)
 

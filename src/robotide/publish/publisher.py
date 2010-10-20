@@ -23,10 +23,7 @@ class Publisher(object):
         self._listeners = {}
 
     def publish(self, topic, data):
-        try:
-            WxPublisher().sendMessage(topic, data)
-        except Exception, err:
-            RideLogMessage(message=str(err), level='ERROR').publish()
+        WxPublisher().sendMessage(topic, data)
 
     def subscribe(self, listener, topic, key=None):
         """Start to listen to messages with the specified ``topic``.
@@ -83,4 +80,9 @@ class _ListenerWrapper:
         WxPublisher().unsubscribe(self, self.topic)
 
     def __call__(self, event):
-        self.listener(event.data)
+        try:
+            self.listener(event.data)
+        except Exception, err:
+            # Prevent infinite recusrion if RideLogMessage listerner is broken,
+            if not isinstance(event.data, RideLogMessage):
+                RideLogMessage(message=unicode(err), level='ERROR').publish()

@@ -25,7 +25,7 @@ from grid import GridEditor
 from editordialogs import UserKeywordNameDialog
 from contentassist import ExpandingContentAssistTextCtrl
 from popupwindow import RideHtmlPopupWindow
-from robotide.publish.messages import RideStepsChanged
+from robotide.publish.messages import RideItemStepsChanged
 
 
 class KeywordEditor(GridEditor, RideEventHandler):
@@ -41,7 +41,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._configure_grid()
             # This makes it possible to select cell 0,0 without opening editor, issue 479
             self._controller = controller
-            PUBLISHER.subscribe(self._data_changed, RideStepsChanged)
+            PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
             # TODO: Tooltip may be smaller when the documentation is wrapped correctly
             self._tooltip = RideHtmlPopupWindow(self, (650, 400))
             self._marked_cell = None
@@ -121,11 +121,9 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self._execute(UncommentRows(self.selection.rows()))
         event.Skip()
 
-
     def _data_changed(self, data):
         if self._controller == data.item:
             self._write_steps(data.item)
-            self.set_dirty()
 
     def _write_steps(self, controller):
         data = []
@@ -185,7 +183,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def close(self):
         self.save()
-        PUBLISHER.unsubscribe(self._data_changed, RideStepsChanged)
+        PUBLISHER.unsubscribe(self._data_changed, RideItemStepsChanged)
 
     def save(self):
         self.hide_tooltip()

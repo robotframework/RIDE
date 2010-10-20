@@ -177,17 +177,17 @@ class RideUserKeywordAdded(RideMessage):
     """Sent when a new user keyword is added to a suite or resource."""
     data = ['datafile', 'name']
 
-class RideItemMessage(RideMessage):
-    """Base class for all messages about changes to any test case."""
+class RideItem(RideMessage):
+    """Base class for all messages about changes to any data item."""
     data = ['item']
 
-class RideStepsChanged(RideItemMessage):
+class RideItemStepsChanged(RideItem):
     """"""
 
-class RideItemNameChanged(RideItemMessage):
+class RideItemNameChanged(RideItem):
     """"""
 
-class RideItemSettingsChanged(RideItemMessage):
+class RideItemSettingsChanged(RideItem):
     """"""
 
 class RideTestCaseAdded(RideMessage):

@@ -8,7 +8,7 @@ from robotide.publish import PUBLISHER
 from robotide.controller.filecontroller import TestCaseFileController
 from robotide.controller.tablecontrollers import (TestCaseController,
                                                   TestCaseTableController)
-from robotide.publish.messages import RideStepsChanged
+from robotide.publish.messages import RideItemStepsChanged
 
 
 STEP1 = '  Step 1  arg'
@@ -51,9 +51,12 @@ class TestCaseEditingTest(unittest.TestCase):
     def setUp(self):
         self._steps = None
         self._ctrl = testcase_controller()
-        PUBLISHER.subscribe(self._test_changed, RideStepsChanged)
+        PUBLISHER.subscribe(self._test_changed, RideItemStepsChanged)
         self._orig_number_of_steps = len(self._ctrl.steps)
         self._number_of_test_changes = 0
+
+    def tearDown(self):
+        PUBLISHER.unsubscribe(self._test_changed, RideItemStepsChanged)
 
     def test_changing_one_cell(self):
         self._exec(ChangeCellValue(0, 0, 'Changed Step'))

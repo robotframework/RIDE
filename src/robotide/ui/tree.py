@@ -23,7 +23,7 @@ from robotide.editor.editordialogs import (TestCaseNameDialog,
                                            UserKeywordNameDialog)
 from robotide.publish import RideTreeSelection, PUBLISHER
 from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
-from robotide.publish.messages import RideItemNameChanged
+from robotide.publish.messages import RideItem
 from robotide.controller.commands import RenameOccurrences
 try:
     import treemixin
@@ -57,7 +57,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self.SetImageList(self._images)
         self._history = _History()
         self._bind_keys()
-        PUBLISHER.subscribe(self._item_name_changed, RideItemNameChanged)
+        PUBLISHER.subscribe(self._item_changed, RideItem)
 
     def _bind_keys(self):
         bind_keys_to_evt_menu(self, self._get_bind_keys())
@@ -450,10 +450,13 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         if handler.is_draggable:
             handler.OnMoveDown(event)
 
-    def _item_name_changed(self, data):
-        node = self._find_node_by_controller(self._root, data.item)
+    def _item_changed(self, data):
+        controller = data.item
+        node = self._find_node_by_controller(self._root, controller)
         if node:
             self.SetItemText(node, data.item.name)
+        if controller.dirty:
+            self._mark_dirty(self._get_datafile_node(controller.datafile))
 
 
 class _ActionHandler(wx.Window):

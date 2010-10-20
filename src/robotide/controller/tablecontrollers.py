@@ -25,7 +25,7 @@ from robotide.controller.settingcontroller import (DocumentationController,
 from robotide.publish import RideUserKeywordAdded, RideTestCaseAdded
 from robotide import utils
 from robotide.controller.arguments import parse_arguments_to_var_dict
-from robotide.publish.messages import RideStepsChanged, RideItemNameChanged,\
+from robotide.publish.messages import RideItemStepsChanged, RideItemNameChanged,\
     RideItemSettingsChanged
 
 
@@ -272,9 +272,6 @@ class _WithStepsController(ControllerWithParent, _WithUndoRedoStacks):
     def execute(self, command):
         return command.execute(self)
 
-    def notify_steps_changed(self):
-        RideStepsChanged(item=self).publish()
-
     def parse_steps_from_rows(self, rows):
         self.data.steps = []
         pop = self._populator(lambda name: self.data)
@@ -342,7 +339,7 @@ class _WithStepsController(ControllerWithParent, _WithUndoRedoStacks):
         steps_before_extraction_point = self.data.steps[:step_range[0]]
         extracted_kw_step = [Step([name])]
         steps_after_extraction_point = self.data.steps[step_range[1] + 1:]
-        self.set_steps(steps_before_extraction_point + extracted_kw_step + 
+        self.set_steps(steps_before_extraction_point + extracted_kw_step +
                        steps_after_extraction_point)
 
     def _create_extracted_kw(self, name, argstr, extracted_steps):
@@ -354,10 +351,17 @@ class _WithStepsController(ControllerWithParent, _WithUndoRedoStacks):
         return self._parent.validate_name(name)
 
     def notify_value_changed(self):
-        RideItemNameChanged(item=self).publish()
+        self._notify(RideItemNameChanged)
 
     def notify_settings_changed(self):
-        RideItemSettingsChanged(item=self).publish()
+        self._notify(RideItemSettingsChanged)
+
+    def notify_steps_changed(self):
+        self._notify(RideItemStepsChanged)
+
+    def _notify(self, messageclass):
+        self.mark_dirty()
+        messageclass(item=self).publish()
 
 class TestCaseController(_WithStepsController):
     _populator = TestCasePopulator
@@ -541,11 +545,11 @@ class StepController(object):
 
     def change(self, col, new_value):
         cells = self.as_list()
-        if col >= len(cells) : 
+        if col >= len(cells) :
             cells = cells + ['' for _ in range(col - len(cells) + 1)]
         cells[col] = new_value
         comment = self._get_comment(cells)
-        if comment: 
+        if comment:
             cells.pop()
         self._recreate(cells, comment)
 
@@ -561,7 +565,7 @@ class StepController(object):
         cells = self.as_list()
         comment = self._get_comment(cells)
         if len(cells) > from_column:
-            if comment: 
+            if comment:
                 cells.pop()
             cells = cells[:from_column] + [''] + cells[from_column:]
             self._recreate(cells, comment)
