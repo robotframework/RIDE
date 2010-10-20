@@ -218,11 +218,14 @@ class DeleteCell(_StepsChangingCommand):
         self._col = col
 
     def change_steps(self, context):
-        self._step(context).shift_left(self._col)
+        step = self._step(context)
+        self._undo_command = CompositeCommand(InsertCell(self._row, self._col), 
+                                              ChangeCellValue(self._row, self._col, step.get_value(self._col)))
+        step.shift_left(self._col)
         return True
 
     def _get_undo_command(self):
-        return InsertCell(self._row, self._col)
+        return self._undo_command
 
 
 class _RowChangingCommand(_StepsChangingCommand):
