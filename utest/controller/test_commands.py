@@ -114,6 +114,12 @@ class TestCaseEditingTest(unittest.TestCase):
         assert_equals(len(self._steps), self._orig_number_of_steps-1)
         self._verify_row_does_not_exist(STEP1)
 
+    def test_undoing_row_delete(self):
+        self._exec(DeleteRow(0))
+        self._exec(Undo())
+        assert_equals(len(self._steps), self._orig_number_of_steps)
+        self._verify_step(0, 'Step 1', ['arg'])
+
     def test_delete_row_inside_of_for_loop(self):
         self._exec(DeleteRow(self._data_row(FOR_LOOP_STEP1)))
         assert_equals(len(self._steps), self._orig_number_of_steps-1)

@@ -85,6 +85,7 @@ class _UndoableCommand(object):
         context.push_to_undo(self._get_undo_command())
         return result
     
+    @property
     def _get_undo_command(self):
         raise NotImplementedError(self.__class__.__name__)
 
@@ -234,13 +235,15 @@ class _RowChangingCommand(_StepsChangingCommand):
         self._change_value(context)
         return True
 
-
 class DeleteRow(_RowChangingCommand):
-
     def _change_value(self, context):
+        step = context.steps[self._row]
+        self._undo_command = CompositeCommand(AddRow(self._row), PasteArea((self._row, 0), [step.as_list()]))
         context.remove_step(self._row)
 
     def _get_undo_command(self):
+        if hasattr(self, '_undo_command'):
+            return self._undo_command
         return AddRow(self._row)
 
 class AddRow(_RowChangingCommand):
