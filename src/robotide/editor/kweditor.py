@@ -80,12 +80,6 @@ class KeywordEditor(GridEditor, RideEventHandler):
         RideGridCellChanged(cell=(row, col), value=value, previous=previous,
                             grid=self).publish()
 
-    def _remove_selected_rows(self):
-        """If whole row(s) are selected, remove them from the grid"""
-        self._update_history()
-        for row in sorted(self.selection.rows(), reverse=True):
-            self.DeleteRows(row, 1)
-
     def _toggle_underlined(self, cell):
         font = self.GetCellFont(cell.Row, cell.Col)
         font.SetUnderlined(not font.Underlined)
