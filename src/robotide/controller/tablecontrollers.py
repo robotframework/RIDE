@@ -217,6 +217,9 @@ class _WithUndoRedoStacks(object):
             self._redo_stack = []
         return self._redo_stack
 
+    def clear_undo(self):
+        self._undo_stack = []
+
     def is_undo_empty(self):
         return self._undo == []
 

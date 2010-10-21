@@ -206,20 +206,17 @@ class RemoveUserScript(_UndoableCommand):
         return RecreateUserScript(self._item)
 
 
-class ExtractKeyword(_StepsChangingCommand):
+class ExtractKeyword(_Command):
 
     def __init__(self, new_kw_name, new_kw_args, step_range):
         self._name = new_kw_name
         self._args = new_kw_args
         self._rows = step_range
 
-    def change_steps(self, context):
+    def _execute(self, context):
         context.extract_keyword(self._name, self._args, self._rows)
-        return True
-
-    def _get_undo_command(self):
-        return self
-
+        context.notify_steps_changed()
+        context.clear_undo()
 
 class ChangeCellValue(_StepsChangingCommand):
 
