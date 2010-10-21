@@ -17,7 +17,7 @@ from wx import grid
 
 from robotide.controller.commands import ChangeCellValue, ClearArea, PasteArea,\
     DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells, UncommentRows, \
-    Undo, Redo
+    Undo, Redo, RenameOccurrences
 from robotide.publish import RideGridCellChanged, PUBLISHER
 from robotide.utils import PopupMenu, RideEventHandler
 
@@ -340,14 +340,15 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def _extract_keyword(self, name, args):
         rows = self.selection.topleft.row, self.selection.bottomright.row
-        self._extract_keyword(name, args, rows,
+        self._controller.extract_keyword(name, args, rows,
                                          self._tree.add_keyword_controller)
-        raise RuntimeError('Please fix me')
-        self._write_keywords(self._controller.steps)
+        #raise RuntimeError('Please fix me')
+        self._write_steps(self._controller)
 
     def OnRenameKeyword(self, event):
-        from robotide.controller import RenameOccurrences
         old_name = self._current_cell_value()
+        if not old_name.strip():
+            return
         new_name = wx.GetTextFromUser('New name', default_value=old_name)
         if new_name:
             self._execute(RenameOccurrences(old_name, new_name))

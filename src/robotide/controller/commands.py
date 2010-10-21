@@ -145,6 +145,8 @@ class RenameOccurrences(_UndoableCommand):
 class FindOccurrences(_Command):
 
     def __init__(self, keyword_name):
+        if keyword_name.strip() == '':
+            raise ValueError('Keyword name can not be "%s"' % keyword_name)
         self._keyword_name = keyword_name
 
     def _execute(self, context):
