@@ -450,16 +450,6 @@ class UserKeywordControllerTest(_BaseWithSteps):
     def _assert_uk_in(self, index, name):
         assert_equals(self.tcf.keyword_table.keywords[index].name, name)
 
-    def test_step_parsing(self):
-        self.ctrl.parse_steps_from_rows([['Foo']])
-        self._assert_step(self.ctrl.steps[0], exp_keyword='Foo')
-        self.ctrl.parse_steps_from_rows([['${var}= ', 'Foo', 'args'],
-                                         [': FOR', '${i}', 'In', '@{bar}'],
-                                         ['', 'blaa']])
-        self._assert_step(self.ctrl.steps[0], ['${var}='], 'Foo', ['args'])
-        assert_equals(self.ctrl.steps[1].vars, ['${i}'])
-        self._assert_step(self.ctrl.steps[1].steps[0], exp_keyword='blaa')
-
     def _assert_step(self, step, exp_assign=[], exp_keyword=None, exp_args=[]):
         assert_equals(step.assign, exp_assign)
         assert_equals(step.keyword, exp_keyword)
