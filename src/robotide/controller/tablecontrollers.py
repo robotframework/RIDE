@@ -26,7 +26,7 @@ from robotide.publish import RideUserKeywordAdded, RideTestCaseAdded
 from robotide import utils
 from robotide.controller.arguments import parse_arguments_to_var_dict
 from robotide.publish.messages import RideItemStepsChanged, RideItemNameChanged,\
-    RideItemSettingsChanged
+    RideItemSettingsChanged, RideUserKeywordRemoved
 
 
 class _WithListOperations(object):
@@ -184,6 +184,7 @@ class KeywordTableController(_TableController, _TcUkBase):
         kw.parent = self.datafile
         self._table.keywords.append(kw)
         self.mark_dirty()
+        RideUserKeywordAdded(datafile=self.datafile, name=kw_ctrl.name, item=kw_ctrl).publish()
 
     def new(self, name, argstr=''):
         ctrl = UserKeywordController(self, self._table.add(name))
@@ -195,6 +196,7 @@ class KeywordTableController(_TableController, _TcUkBase):
     def delete(self, kw):
         self._table.keywords.remove(kw)
         self.mark_dirty()
+        RideUserKeywordRemoved(datafile=self.datafile, name=kw.name, item=kw).publish()
 
     @property
     def _items(self):
@@ -310,13 +312,12 @@ class _WithStepsController(ControllerWithParent, _WithUndoRedoStacks):
         steps = self.data.steps
         self.data.steps = steps[:index]+[step]+steps[index:]
 
-    def create_user_keyword(self, name, arg_values, observer):
+    def create_user_keyword(self, name, arg_values):
         err = self.datafile_controller.validate_keyword_name(name)
         if err:
             raise ValueError(err)
         argstr = ' | '.join(('${arg%s}' % (i + 1) for i in range(len(arg_values))))
-        controller = self.datafile_controller.new_keyword(name, argstr)
-        observer(controller)
+        return self.datafile_controller.new_keyword(name, argstr)
 
     def extract_keyword(self, name, argstr, step_range):
         extracted_steps = self._extract_steps(step_range)
@@ -418,6 +419,9 @@ class UserKeywordController(_WithStepsController):
 
     def delete(self):
         self._parent.delete(self._kw)
+
+    def recreate(self):
+        self._parent.add(self)
 
     @property
     def settings(self):

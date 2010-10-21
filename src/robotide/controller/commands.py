@@ -169,6 +169,43 @@ class FindOccurrences(_Command):
                 if item.contains_keyword(self._keyword_name)]
 
 
+class AddKeyword(_UndoableCommand):
+
+    def __init__(self, new_kw_name, args=None):
+        self._kw_name = new_kw_name
+        self._args = args or []
+
+    def _execute(self, context):
+        kw = context.create_user_keyword(self._kw_name, self._args)
+        self._undo_command = RemoveUserScript(kw)
+
+    def _get_undo_command(self):
+        return self._undo_command
+
+
+class RecreateUserScript(_UndoableCommand):
+
+    def __init__(self, user_script):
+        self._user_script = user_script
+
+    def _execute(self, context):
+        self._user_script.recreate()
+
+    def _get_undo_command(self):
+        return RemoveUserScript(self._user_script)
+
+class RemoveUserScript(_UndoableCommand):
+
+    def __init__(self, item):
+        self._item = item
+
+    def _execute(self, context):
+        self._item.delete()
+
+    def _get_undo_command(self):
+        return RecreateUserScript(self._item)
+
+
 class ExtractKeyword(_StepsChangingCommand):
 
     def __init__(self, new_kw_name, new_kw_args, step_range):

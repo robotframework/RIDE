@@ -17,7 +17,7 @@ from wx import grid
 
 from robotide.controller.commands import ChangeCellValue, ClearArea, PasteArea,\
     DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells, UncommentRows, \
-    Undo, Redo, RenameOccurrences, ExtractKeyword
+    Undo, Redo, RenameOccurrences, ExtractKeyword, AddKeyword
 from robotide.publish import RideGridCellChanged, PUBLISHER
 from robotide.utils import PopupMenu, RideEventHandler
 
@@ -305,8 +305,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
     def OnCreateKeyword(self, event):
         name, args = self._name_and_args_for_new_keyword()
         try:
-            self._controller.create_user_keyword(name, args,
-                                                 self._tree.add_keyword_controller)
+            self._execute(AddKeyword(name, args))
         except ValueError, err:
             wx.MessageBox(unicode(err))
 

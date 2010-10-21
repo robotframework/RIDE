@@ -36,14 +36,17 @@ class _SettingController(ControllerWithParent):
 
     @property
     def value(self):
-        value = self._data.as_list()[1:]
+        value = self.as_list()[1:]
         if self._data.comment:
             value.pop()
         return ' | '.join(value)
 
     @property
     def display_value(self):
-        return ' | ' .join(self._data.as_list()[1:])
+        return ' | ' .join(self.as_list()[1:])
+
+    def as_list(self):
+        return  self._data.as_list()
 
     @property
     def comment(self):

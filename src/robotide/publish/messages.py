@@ -177,6 +177,10 @@ class RideUserKeywordAdded(RideMessage):
     """Sent when a new user keyword is added to a suite or resource."""
     data = ['datafile', 'name', 'item']
 
+class RideUserKeywordRemoved(RideMessage):
+    """Sent when a user keyword is removed from a suite or resource."""
+    data = ['datafile', 'name', 'item']
+
 class RideItem(RideMessage):
     """Base class for all messages about changes to any data item."""
     data = ['item']

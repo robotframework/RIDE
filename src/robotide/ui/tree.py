@@ -25,7 +25,7 @@ from robotide.publish import RideTreeSelection, PUBLISHER
 from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
 from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideTestCaseAdded
-from robotide.controller.commands import RenameOccurrences
+from robotide.controller.commands import RenameOccurrences, RemoveUserScript
 try:
     import treemixin
 except ImportError:
@@ -610,7 +610,7 @@ class _TestOrUserKeywordHandler(_ActionHandler):
         self._tree.EditLabel(self._node)
 
     def OnDelete(self, event):
-        self.controller.delete()
+        self.controller.execute(RemoveUserScript(self.controller))
         self._tree.delete_node(self._node)
 
 
