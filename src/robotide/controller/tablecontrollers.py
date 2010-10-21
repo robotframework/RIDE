@@ -202,7 +202,7 @@ class KeywordTableController(_TableController, _TcUkBase):
 
 
 class _WithUndoRedoStacks(object):
-    
+
     @property
     def _undo(self):
         if not hasattr(self, '_undo_stack'):
@@ -214,13 +214,13 @@ class _WithUndoRedoStacks(object):
         if not hasattr(self, '_redo_stack'):
             self._redo_stack = []
         return self._redo_stack
-    
+
     def is_undo_empty(self):
         return self._undo == []
-    
+
     def pop_from_undo(self):
         return self._undo.pop()
-    
+
     def push_to_undo(self, command):
         self._undo.append(command)
 
@@ -271,14 +271,6 @@ class _WithStepsController(ControllerWithParent, _WithUndoRedoStacks):
 
     def execute(self, command):
         return command.execute(self)
-
-    def parse_steps_from_rows(self, rows):
-        self.data.steps = []
-        pop = self._populator(lambda name: self.data)
-        for r in rows:
-            r = DataRow([''] + r)
-            pop.add(r)
-        pop.populate()
 
     def rename(self, new_name):
         self.data.name = new_name
