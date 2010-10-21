@@ -52,7 +52,7 @@ class Publisher(object):
                 self._listeners[key].remove(wrapper)
                 break
 
-    def unsubscribe_all(self, key):
+    def unsubscribe_all(self, key=None):
         """Unsubscribe all listeners registered with the given ``key``"""
         for wrapper in self._listeners[key]:
             wrapper.unsubscribe()

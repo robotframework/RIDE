@@ -23,7 +23,8 @@ from robotide.editor.editordialogs import (TestCaseNameDialog,
                                            UserKeywordNameDialog)
 from robotide.publish import RideTreeSelection, PUBLISHER
 from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
-from robotide.publish.messages import RideItem
+from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
+    RideTestCaseAdded
 from robotide.controller.commands import RenameOccurrences
 try:
     import treemixin
@@ -57,7 +58,12 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self.SetImageList(self._images)
         self._history = _History()
         self._bind_keys()
+        self._subscribe_to_messages()
+
+    def _subscribe_to_messages(self):
         PUBLISHER.subscribe(self._item_changed, RideItem)
+        PUBLISHER.subscribe(self._keyword_added, RideUserKeywordAdded)
+        PUBLISHER.subscribe(self._keyword_added, RideTestCaseAdded)
 
     def _bind_keys(self):
         bind_keys_to_evt_menu(self, self._get_bind_keys())
@@ -186,6 +192,14 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
                 return index
             item, cookie = self.GetNextChild(parent_node, cookie)
         return None
+
+    def _keyword_added(self, message):
+        self.add_keyword(self._get_datafile_node(self.get_selected_datafile()),
+                         message.item)
+
+    def _test_added(self, message):
+        self.add_test(self._get_datafile_node(self.get_selected_datafile()),
+                      message.item)
 
     def add_keyword_controller(self, controller):
         parent = self._get_datafile_node(self.get_selected_datafile())
@@ -535,8 +549,7 @@ class TestDataDirectoryHandler(_ActionHandler):
     def OnNewUserKeyword(self, event):
         dlg = UserKeywordNameDialog(self.controller)
         if dlg.ShowModal() == wx.ID_OK:
-            kw = self.controller.new_keyword(dlg.get_name(), dlg.get_args())
-            self._tree.add_keyword(self._node, kw)
+            self.controller.new_keyword(dlg.get_name(), dlg.get_args())
         dlg.Destroy()
 
 
@@ -552,8 +565,7 @@ class TestCaseFileHandler(TestDataDirectoryHandler):
     def OnNewTestCase(self, event):
         dlg = TestCaseNameDialog(self.controller)
         if dlg.ShowModal() == wx.ID_OK:
-            test = self.controller.new_test(dlg.get_name())
-            self._tree.add_test(self._node, test)
+            self.controller.new_test(dlg.get_name())
         dlg.Destroy()
 
 

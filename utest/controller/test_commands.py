@@ -86,7 +86,7 @@ class TestCaseEditingTest(TestCaseCommandTest):
 
     def test_deleting_row(self):
         self._exec(DeleteRow(0))
-        assert_equals(len(self._steps), self._orig_number_of_steps-1)
+        self._verify_step_number_change(-1)
         self._verify_row_does_not_exist(STEP1)
 
     def test_undoing_row_delete(self):

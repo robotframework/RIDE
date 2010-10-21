@@ -18,7 +18,7 @@ import unittest
 
 from robot.parsing import (TestDataDirectory, TestCaseFile, ResourceFile,
                            TestCase, UserKeyword)
-from robot.utils.asserts import assert_equals, assert_none
+from robot.utils.asserts import assert_equals, assert_none, assert_not_none
 
 from robotide.application import ChiefController
 from robotide.controller.filecontroller import (TestDataDirectoryController,
@@ -29,6 +29,7 @@ from robotide.ui.mainframe import ActionRegisterer
 from resources import PYAPP_REFERENCE
 
 from robotide.ui import tree as st
+from robotide.publish import PUBLISHER
 st.FakeDirectorySuiteHandler = st.FakeUserKeywordHandler = \
     st.FakeSuiteHandler = st.FakeTestCaseHandler = \
     st.FakeResourceHandler = st.TestDataDirectoryHandler
@@ -76,6 +77,9 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         self._tree.SetImageList(imgs)
         self._tree.populate(self._model)
         self._expand_all()
+
+    def tearDown(self):
+        PUBLISHER.unsubscribe_all()
 
     def _create_model(self):
         suite = self._create_directory_suite('/top_suite')
@@ -145,8 +149,7 @@ class TestAddingItems(_BaseSuiteTreeTest):
 
     def test_adding_user_keyword(self):
         suite = self._model.data
-        new_uk = suite.new_keyword('New Fake UK')
-        self._tree.add_keyword(self._get_node(suite.data.name), new_uk)
+        suite.new_keyword('New Fake UK')
         assert_equals(self._get_selected_label(), 'New Fake UK')
 
     def test_adding_test(self):
@@ -159,11 +162,9 @@ class TestAddingItems(_BaseSuiteTreeTest):
         new_suite = self._model.data.add_suite('new_fake_suite.txt')
         self._tree.add_datafile(self._model.data, new_suite)
         assert_equals(self._get_selected_label(), 'New Fake Suite')
-        new_test = new_suite.new_test('New Fake Test')
-        node = self._get_node(new_suite.name)
-        self._tree.add_test(node, new_test)
+        new_suite.new_test('New Fake Test')
         assert_equals(self._get_selected_label(), 'New Fake Test')
-        assert_equals(self._tree.GetChildrenCount(node), 1)
+        assert_equals(self._tree.GetChildrenCount(self._tree._get_data_controller_node(new_suite)), 1)
 
 
 class TestNodeSearchAndSelection(_BaseSuiteTreeTest):

@@ -15,6 +15,7 @@ STEP2 = '  Step 2  a1  a2  a3'
 STEP_WITH_COMMENT = '  Foo  # this is a comment'
 FOR_LOOP_HEADER = '  : FOR  ${i}  IN  1  2  3'
 FOR_LOOP_STEP1 = '    Log  ${i}'
+FOR_LOOP_STEP2 = '    No Operation'
 
 data = ['Test With two Steps',
         STEP1,
@@ -22,6 +23,7 @@ data = ['Test With two Steps',
         STEP_WITH_COMMENT,
         FOR_LOOP_HEADER,
         FOR_LOOP_STEP1,
+        FOR_LOOP_STEP2,
         '  Step bar',
         '  ${variable}=  some value'
 ]
@@ -43,6 +45,7 @@ def testcase_controller():
     tctablectrl = TestCaseTableController(TestCaseFileController(tcf),
                                           tcf.testcase_table)
     return TestCaseController(tctablectrl, tcf.testcase_table.tests[0])
+
 
 class TestCaseCommandTest(unittest.TestCase):
 
@@ -82,3 +85,6 @@ class TestCaseCommandTest(unittest.TestCase):
         if exp_comment:
             exp += [exp_comment]
         assert_equals(self._steps[index].as_list(), exp)
+
+    def _verify_step_number_change(self, change):
+        assert_equals(len(self._steps), self._orig_number_of_steps + change)

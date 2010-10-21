@@ -16,6 +16,7 @@
 KEYWORD_NAME_FIELD = 'Keyword Name'
 TESTCASE_NAME_FIELD = 'Test Case Name'
 
+
 class Occurrence(object):
 
     def __init__(self, item, value):
@@ -141,7 +142,6 @@ class RenameOccurrences(_UndoableCommand):
     def _get_undo_command(self):
         return self
 
-
 class FindOccurrences(_Command):
 
     def __init__(self, keyword_name):
@@ -167,6 +167,21 @@ class FindOccurrences(_Command):
     def _find_occurrences_in(self, items):
         return [Occurrence(item, self._keyword_name) for item in items
                 if item.contains_keyword(self._keyword_name)]
+
+
+class ExtractKeyword(_StepsChangingCommand):
+
+    def __init__(self, new_kw_name, new_kw_args, step_range):
+        self._name = new_kw_name
+        self._args = new_kw_args
+        self._rows = step_range
+
+    def change_steps(self, context):
+        context.extract_keyword(self._name, self._args, self._rows)
+        return True
+
+    def _get_undo_command(self):
+        return self
 
 
 class ChangeCellValue(_StepsChangingCommand):
@@ -306,6 +321,7 @@ class CompositeCommand(_StepsChangingCommand):
 
     def _get_undo_command(self):
         return self._undo_command
+
 
 def DeleteRows(rows):
     return CompositeCommand(*[DeleteRow(r) for r in reversed(sorted(rows))])

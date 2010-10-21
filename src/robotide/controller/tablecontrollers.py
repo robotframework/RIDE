@@ -155,7 +155,7 @@ class TestCaseTableController(_TableController, _TcUkBase):
     def new(self, name):
         tc_controller = TestCaseController(self, self._table.add(name))
         self.mark_dirty()
-        RideTestCaseAdded(datafile=self.datafile, name=name).publish()
+        RideTestCaseAdded(datafile=self.datafile, name=name, item=tc_controller).publish()
         return tc_controller
 
     def delete(self, test):
@@ -186,11 +186,11 @@ class KeywordTableController(_TableController, _TcUkBase):
         self.mark_dirty()
 
     def new(self, name, argstr=''):
-        kw_controller = UserKeywordController(self, self._table.add(name))
-        kw_controller.arguments.set_value(argstr)
+        ctrl = UserKeywordController(self, self._table.add(name))
+        ctrl.arguments.set_value(argstr)
         self.mark_dirty()
-        RideUserKeywordAdded(datafile=self.datafile, name=name).publish()
-        return kw_controller
+        RideUserKeywordAdded(datafile=self.datafile, name=name, item=ctrl).publish()
+        return ctrl
 
     def delete(self, kw):
         self._table.keywords.remove(kw)
@@ -235,6 +235,7 @@ class _WithUndoRedoStacks(object):
 
     def push_to_redo(self, command):
         self._redo.append(command)
+
 
 class _WithStepsController(ControllerWithParent, _WithUndoRedoStacks):
 
@@ -325,20 +326,23 @@ class _WithStepsController(ControllerWithParent, _WithUndoRedoStacks):
         controller = self.datafile_controller.new_keyword(name, argstr)
         observer(controller)
 
-    def extract_keyword(self, name, argstr, step_range, observer):
+    def extract_keyword(self, name, argstr, step_range):
         extracted_steps = self._extract_steps(step_range)
         self._replace_steps_with_kw(name, step_range)
-        observer(self._create_extracted_kw(name, argstr, extracted_steps))
+        self._create_extracted_kw(name, argstr, extracted_steps)
 
     def _extract_steps(self, step_range):
         rem_start, rem_end = step_range
-        extracted_steps = self.data.steps[rem_start:rem_end + 1]
-        return extracted_steps
+        extracted_steps = self.steps[rem_start:rem_end + 1]
+        return self._convert_controller_to_steps(extracted_steps)
+
+    def _convert_controller_to_steps(self, step_controllers):
+        return [Step(s.as_list()) for s in step_controllers]
 
     def _replace_steps_with_kw(self, name, step_range):
-        steps_before_extraction_point = self.data.steps[:step_range[0]]
+        steps_before_extraction_point = self._convert_controller_to_steps(self.steps[:step_range[0]])
         extracted_kw_step = [Step([name])]
-        steps_after_extraction_point = self.data.steps[step_range[1] + 1:]
+        steps_after_extraction_point = self._convert_controller_to_steps(self.steps[step_range[1] + 1:])
         self.set_steps(steps_before_extraction_point + extracted_kw_step +
                        steps_after_extraction_point)
 
@@ -362,6 +366,7 @@ class _WithStepsController(ControllerWithParent, _WithUndoRedoStacks):
     def _notify(self, messageclass):
         self.mark_dirty()
         messageclass(item=self).publish()
+
 
 class TestCaseController(_WithStepsController):
     _populator = TestCasePopulator
@@ -660,6 +665,7 @@ class ForLoopStepController(StepController):
     def _replace_with_new_cells(self, cells):
         index = self.parent.index_of_step(self._step)
         self.parent.replace_step(index, Step(cells))
+        self._step.steps.reverse()
         for substep in self._step.steps:
             self.parent.add_step(index+1, Step(['']+substep.as_list()))
 
