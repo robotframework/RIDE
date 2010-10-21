@@ -169,6 +169,14 @@ class RideImportSettingChanged(RideImportSetting):
     """
     data = ['datafile', 'type', 'name']
 
+class RideImportSettingRemoved(RideImportSetting):
+    """Sent whenever a value of import setting is removed.
+
+    ``datafile`` is the suite or resource file whose imports have removed,
+    ``type`` is either ``resource``, ``library``, or ``variables``.
+    """
+    data = ['datafile', 'type', 'name']
+
 
 class RideUserKeyword(RideMessage):
     """Base class for all messages about changes to any user keyword."""

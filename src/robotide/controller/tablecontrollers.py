@@ -26,8 +26,7 @@ from robotide.publish import RideUserKeywordAdded, RideTestCaseAdded
 from robotide import utils
 from robotide.controller.arguments import parse_arguments_to_var_dict
 from robotide.publish.messages import RideStepsChanged, RideItemNameChanged,\
-    RideItemSettingsChanged
-
+    RideItemSettingsChanged, RideImportSettingAdded
 
 class _WithListOperations(object):
 
@@ -416,22 +415,34 @@ class ImportSettingsController(_TableController, _WithListOperations):
     def _items(self):
         return self._table.imports
 
+    def delete(self, index):
+        item = self[index]
+        _WithListOperations.delete(self, index)
+        item.publish_removed()
+
     def add_library(self, name, argstr, alias, comment=None):
         import_ = self._table.add_library(name, utils.split_value(argstr),
                                           comment)
         import_.alias = alias
         self._parent.mark_dirty()
+        self._publish_setting_added(name, 'library')
         return self[-1]
 
     def add_resource(self, path, comment=None):
         self._table.add_resource(path, comment)
         self._parent.mark_dirty()
+        self._publish_setting_added(path, 'resource')
         return self[-1]
 
     def add_variables(self, path, argstr, comment=None):
         self._table.add_variables(path, utils.split_value(argstr), comment)
         self._parent.mark_dirty()
+        self._publish_setting_added(path, 'variables')
         return self[-1]
+
+    def _publish_setting_added(self, name, type):
+        RideImportSettingAdded(datafile=self.datafile_controller, name=name, 
+                               type=type).publish()
 
     def resource_import_modified(self, path):
         return self._parent.resource_import_modified(path)
