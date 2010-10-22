@@ -63,7 +63,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def _subscribe_to_messages(self):
         PUBLISHER.subscribe(self._item_changed, RideItem)
         PUBLISHER.subscribe(self._keyword_added, RideUserKeywordAdded)
-        PUBLISHER.subscribe(self._keyword_added, RideTestCaseAdded)
+        PUBLISHER.subscribe(self._test_added, RideTestCaseAdded)
 
     def _bind_keys(self):
         bind_keys_to_evt_menu(self, self._get_bind_keys())
