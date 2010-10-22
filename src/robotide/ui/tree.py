@@ -24,7 +24,7 @@ from robotide.editor.editordialogs import (TestCaseNameDialog,
 from robotide.publish import RideTreeSelection, PUBLISHER
 from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
 from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
-    RideTestCaseAdded
+    RideTestCaseAdded, RideUserKeywordRemoved
 from robotide.controller.commands import RenameOccurrences, RemoveUserScript
 try:
     import treemixin
@@ -61,9 +61,12 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._subscribe_to_messages()
 
     def _subscribe_to_messages(self):
-        PUBLISHER.subscribe(self._item_changed, RideItem)
-        PUBLISHER.subscribe(self._keyword_added, RideUserKeywordAdded)
-        PUBLISHER.subscribe(self._test_added, RideTestCaseAdded)
+        for listener, topic in [(self._item_changed, RideItem),
+                             (self._keyword_added, RideUserKeywordAdded),
+                             (self._test_added, RideTestCaseAdded),
+                             (self._keyword_remove, RideUserKeywordRemoved)]:
+            PUBLISHER.subscribe(listener, topic)
+
 
     def _bind_keys(self):
         bind_keys_to_evt_menu(self, self._get_bind_keys())
@@ -197,6 +200,10 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self.add_keyword(self._get_datafile_node(self.get_selected_datafile()),
                          message.item)
 
+    def _keyword_remove(self, message):
+        node = self._find_node_by_controller(message.item)
+        self.delete_node(node)
+
     def _test_added(self, message):
         self.add_test(self._get_datafile_node(self.get_selected_datafile()),
                       message.item)
@@ -260,12 +267,12 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             item, cookie = self.GetNextChild(node, cookie)
         return None
 
-    def _find_node_by_controller(self, node, controller):
+    def _find_node_by_controller(self, controller):
         def match_handler(n):
             handler = self._get_handler(n)
             if not handler : return False
             return controller == handler.controller
-        return self._find_node_with_predicate(node, match_handler)
+        return self._find_node_with_predicate(self._root, match_handler)
 
     def get_selected_datafile(self):
         """Returns currently selected data file.
@@ -466,7 +473,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _item_changed(self, data):
         controller = data.item
-        node = self._find_node_by_controller(self._root, controller)
+        node = self._find_node_by_controller(controller)
         if node:
             self.SetItemText(node, data.item.name)
         if controller.dirty:
@@ -577,7 +584,6 @@ class _TestOrUserKeywordHandler(_ActionHandler):
                 'Rename\tF2', '---', 'Delete']
 
     def remove(self):
-        self._tree.delete_node(self._node)
         self.controller.delete()
 
     def rename(self, new_name):
@@ -611,7 +617,6 @@ class _TestOrUserKeywordHandler(_ActionHandler):
 
     def OnDelete(self, event):
         self.controller.execute(RemoveUserScript(self.controller))
-        self._tree.delete_node(self._node)
 
 
 class TestCaseHandler(_TestOrUserKeywordHandler):

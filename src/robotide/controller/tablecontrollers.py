@@ -138,10 +138,10 @@ class _UserScriptTable(object):
                 return '%s with this name already exists.' % self._item_name
         return None
 
-    def delete(self, kw):
-        self._items.remove(kw)
+    def delete(self, ctrl):
+        self._items.remove(ctrl.data)
         self.mark_dirty()
-        self._notify_removal(kw)
+        self._notify_removal(ctrl)
 
     def add(self, ctrl):
         item = ctrl.data

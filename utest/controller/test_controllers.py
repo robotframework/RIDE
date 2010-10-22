@@ -321,7 +321,6 @@ class _BaseWithSteps(unittest.TestCase):
             assert_equals(setting.comment, 'hobo', 'comment not copied %s' % setting.__class__)
 
 
-
 class TestCaseControllerTest(_BaseWithSteps):
 
     def setUp(self):

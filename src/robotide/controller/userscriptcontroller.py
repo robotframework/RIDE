@@ -213,7 +213,7 @@ class TestCaseController(_WithStepsController):
         return self._parent.move_down(self._test)
 
     def delete(self):
-        return self._parent.delete(self._test)
+        return self._parent.delete(self)
 
     def validate_test_name(self, name):
         return self._parent.validate_name(name)
@@ -243,7 +243,7 @@ class UserKeywordController(_WithStepsController):
         return self._parent.move_down(self._kw)
 
     def delete(self):
-        self._parent.delete(self._kw)
+        self._parent.delete(self)
 
     def recreate(self):
         self._parent.add(self)
