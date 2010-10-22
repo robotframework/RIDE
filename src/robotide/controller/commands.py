@@ -169,6 +169,15 @@ class FindOccurrences(_Command):
         return [Occurrence(item, self._keyword_name) for item in items
                 if item.contains_keyword(self._keyword_name)]
 
+def AddKeywordFromCells(cells):
+    if not cells:
+        raise ValueError('Keyword can not be empty') 
+    while cells[0] == '':
+        cells.pop(0)
+    name = cells[0]
+    args = cells[1:]
+    argstr = ' | '.join(('${arg%s}' % (i + 1) for i in range(len(args))))
+    return AddKeyword(name, argstr)
 
 class AddKeyword(_UndoableCommand):
 
@@ -178,7 +187,7 @@ class AddKeyword(_UndoableCommand):
 
     def _execute(self, context):
         kw = context.create_keyword(self._kw_name, self._args)
-        self._undo_command = RemoveUserScript(kw)
+        self._undo_command = RemoveMacro(kw)
 
     def _get_undo_command(self):
         return self._undo_command
@@ -193,7 +202,7 @@ class AddTestCase(_Command):
         return context.create_test(self._test_name)
 
 
-class RecreateUserScript(_UndoableCommand):
+class RecreateMacro(_UndoableCommand):
 
     def __init__(self, user_script):
         self._user_script = user_script
@@ -202,9 +211,9 @@ class RecreateUserScript(_UndoableCommand):
         self._user_script.recreate()
 
     def _get_undo_command(self):
-        return RemoveUserScript(self._user_script)
+        return RemoveMacro(self._user_script)
 
-class RemoveUserScript(_UndoableCommand):
+class RemoveMacro(_UndoableCommand):
 
     def __init__(self, item):
         self._item = item
@@ -213,7 +222,7 @@ class RemoveUserScript(_UndoableCommand):
         self._item.delete()
 
     def _get_undo_command(self):
-        return RecreateUserScript(self._item)
+        return RecreateMacro(self._item)
 
 
 class ExtractKeyword(_Command):

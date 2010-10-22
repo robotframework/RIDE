@@ -62,6 +62,9 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
     def execute(self, command):
         return command.execute(self)
 
+    def delete(self):
+        return self._parent.delete(self)
+
     def rename(self, new_name):
         self.data.name = new_name
         self.mark_dirty()
@@ -91,6 +94,9 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
     def remove_step(self, index):
         self._remove_step(self.steps[index])
 
+    def recreate(self):
+        self._parent.add(self)
+
     def _remove_step(self, step):
         step.remove()
 
@@ -99,12 +105,14 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         steps = self.data.steps
         self.data.steps = steps[:index]+[step]+steps[index:]
 
-    def create_keyword(self, name, arg_values):
+    def create_keyword(self, name, argstr):
         err = self.datafile_controller.validate_keyword_name(name)
         if err:
             raise ValueError(err)
-        argstr = ' | '.join(('${arg%s}' % (i + 1) for i in range(len(arg_values))))
         return self.datafile_controller.create_keyword(name, argstr)
+
+    def create_test(self, name):
+        return self.datafile_controller.create_test(name)
 
     def extract_keyword(self, name, argstr, step_range):
         extracted_steps = self._extract_steps(step_range)
@@ -174,9 +182,6 @@ class TestCaseController(_WithStepsController):
     def move_down(self):
         return self._parent.move_down(self._test)
 
-    def delete(self):
-        return self._parent.delete(self)
-
     def validate_test_name(self, name):
         return self._parent.validate_name(name)
 
@@ -203,12 +208,6 @@ class UserKeywordController(_WithStepsController):
 
     def move_down(self):
         return self._parent.move_down(self._kw)
-
-    def delete(self):
-        self._parent.delete(self)
-
-    def recreate(self):
-        self._parent.add(self)
 
     @property
     def settings(self):
