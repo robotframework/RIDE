@@ -14,7 +14,7 @@
 
 import os
 
-from robotide.controller.settingcontroller import DocumentationController, \
+from robotide.controller.settingcontrollers import DocumentationController, \
     FixtureController, TagsController, TimeoutController, TemplateController
 from robotide.controller.tablecontrollers import VariableTableController, \
     TestCaseTableController, KeywordTableController, ImportSettingsController, \

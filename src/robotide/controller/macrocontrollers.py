@@ -16,7 +16,7 @@ from robot.parsing.tablepopulators import UserKeywordPopulator, TestCasePopulato
 from robot.parsing.model import Step
 
 from robotide.controller.basecontroller import ControllerWithParent
-from robotide.controller.settingcontroller import (DocumentationController,
+from robotide.controller.settingcontrollers import (DocumentationController,
         FixtureController, TagsController, TimeoutController,
         TemplateController, ArgumentsController, ReturnValueController)
 from robotide.controller.arguments import parse_arguments_to_var_dict

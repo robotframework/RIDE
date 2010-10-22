@@ -4,7 +4,7 @@ from robot.utils.asserts import assert_true, assert_equals, assert_none
 
 from robotide.controller import ChiefController
 from robotide.namespace import Namespace
-from robotide.controller.filecontroller import TestCaseFileController, \
+from robotide.controller.filecontrollers import TestCaseFileController, \
     TestDataDirectoryController
 from robotide.publish.messages import RideOpenSuite, RideOpenResource
 

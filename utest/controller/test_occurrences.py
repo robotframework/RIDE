@@ -5,9 +5,9 @@ from robot.utils.asserts import assert_equals
 from robotide.controller import ChiefController, FindOccurrences, RenameOccurrences
 from robotide.controller.commands import KEYWORD_NAME_FIELD, TESTCASE_NAME_FIELD,\
     Undo
-from robotide.controller.filecontroller import (TestCaseFileController,
-                                                TestCaseTableController,
-                                                TestCaseController)
+from robotide.controller.filecontrollers import (TestCaseFileController,
+                                                 TestCaseTableController,
+                                                 TestCaseController)
 from robotide.publish import PUBLISHER
 from robotide.publish.messages import RideItemStepsChanged, RideItemSettingsChanged,\
     RideItemNameChanged

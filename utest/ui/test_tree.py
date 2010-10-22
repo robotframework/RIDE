@@ -21,8 +21,8 @@ from robot.parsing import (TestDataDirectory, TestCaseFile, ResourceFile,
 from robot.utils.asserts import assert_equals, assert_none
 
 from robotide.application import ChiefController
-from robotide.controller.filecontroller import (TestDataDirectoryController,
-                                                ResourceFileController)
+from robotide.controller.filecontrollers import (TestDataDirectoryController,
+                                                 ResourceFileController)
 
 from robotide.ui.actiontriggers import MenuBar, ToolBar, ShortcutRegistry
 from robotide.ui.mainframe import ActionRegisterer

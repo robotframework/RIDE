@@ -21,7 +21,7 @@ from robotide.publish.messages import RideOpenResource, RideSaving, RideSaveAll,
     RideSaved, RideChangeFormat, RideOpenSuite
 from robotide.writer.serializer import Serializer
 
-from filecontroller import DataController, ResourceFileController
+from filecontrollers import DataController, ResourceFileController
 from dataloader import DataLoader
 
 

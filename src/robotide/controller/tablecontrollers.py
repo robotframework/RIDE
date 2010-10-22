@@ -22,7 +22,7 @@ from robotide.controller.macrocontrollers import (TestCaseController,
                                                   UserKeywordController)
 from robotide.publish.messages import RideTestCaseRemoved
 
-from robotide.controller.settingcontroller import (MetadataController,
+from robotide.controller.settingcontrollers import (MetadataController,
         ImportController, VariableController)
 from robotide.publish import RideUserKeywordAdded, RideTestCaseAdded
 from robotide import utils

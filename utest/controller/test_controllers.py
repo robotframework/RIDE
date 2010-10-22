@@ -4,14 +4,12 @@ from robot.parsing.settings import Fixture, Documentation, Timeout, Tags, Return
 
 from robot.utils.asserts import (assert_equals, assert_true, assert_false,
                                  assert_none, assert_raises_with_msg)
-from robotide.controller.settingcontroller import *
-from robotide.controller.filecontroller import *
+from robotide.controller.settingcontrollers import *
+from robotide.controller.filecontrollers import *
 from robotide.controller.tablecontrollers import _WithListOperations
 from robotide.controller.tablecontrollers import *
 from robotide.controller import NewDatafile
-from robotide.publish import PUBLISHER
-from robotide.publish.messages import RideImportSettingAdded, \
-      RideImportSettingChanged, RideImportSetting
+from robotide.publish.messages import RideImportSetting
 from resources import SUITEPATH
 from resources.mocks import PublisherListener
 

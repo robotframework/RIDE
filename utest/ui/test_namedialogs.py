@@ -2,7 +2,7 @@ import unittest
 from robot.parsing.model import TestCaseFile
 from robot.utils.asserts import assert_equals
 
-from robotide.controller.filecontroller import TestCaseFileController
+from robotide.controller.filecontrollers import TestCaseFileController
 from robotide.editor.editordialogs import TestCaseNameDialog, UserKeywordNameDialog
 
 from resources import PYAPP_REFERENCE, wx

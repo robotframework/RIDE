@@ -4,7 +4,7 @@ from robot.parsing.populators import FromFilePopulator
 from robot.utils.asserts import assert_equals
 
 from robotide.publish import PUBLISHER
-from robotide.controller.filecontroller import TestCaseFileController
+from robotide.controller.filecontrollers import TestCaseFileController
 from robotide.controller.tablecontrollers import (TestCaseController,
                                                   TestCaseTableController)
 from robotide.publish.messages import RideItemStepsChanged
