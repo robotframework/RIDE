@@ -18,8 +18,8 @@ from robotide.robotapi import is_list_var, is_scalar_var
 from robotide.controller.basecontroller import ControllerWithParent
 
 
-from robotide.controller.userscriptcontroller import (TestCaseController,
-                                                      UserKeywordController)
+from robotide.controller.macrocontrollers import (TestCaseController,
+                                                  UserKeywordController)
 from robotide.publish.messages import RideTestCaseRemoved
 
 from robotide.controller.settingcontroller import (MetadataController,
