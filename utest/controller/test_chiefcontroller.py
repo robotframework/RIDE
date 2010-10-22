@@ -6,30 +6,13 @@ from robotide.controller import ChiefController
 from robotide.namespace import Namespace
 from robotide.controller.filecontroller import TestCaseFileController, \
     TestDataDirectoryController
-from robotide.publish import PUBLISHER
 from robotide.publish.messages import RideOpenSuite, RideOpenResource
 
 from resources import (COMPLEX_SUITE_PATH, MINIMAL_SUITE_PATH, RESOURCE_PATH,
                        MessageRecordingLoadObserver, SUITEPATH)
+from resources.mocks import PublisherListener
 
 
-class NoneData(object):
-    path = None
-
-class PublisherListener(object):
-
-    def __init__(self, topic):
-        PUBLISHER.subscribe(self._listener, topic, self)
-        self._topic = topic
-        self.data = NoneData()
-        self.count = 0
-
-    def _listener(self, data):
-        self.data = data
-        self.count += 1
-
-    def unsuscribe(self):
-        PUBLISHER.unsubscribe(self._listener, self._topic, self)
 
 class ChiefControllerTest(unittest.TestCase):
 
@@ -40,8 +23,8 @@ class ChiefControllerTest(unittest.TestCase):
         self.resource_listener = PublisherListener(RideOpenResource)
 
     def tearDown(self):
-        self.suite_listener.unsuscribe()
-        self.resource_listener.unsuscribe()
+        self.suite_listener.unsubscribe()
+        self.resource_listener.unsubscribe()
 
     def test_loading_suite_at_startup(self):
         self._load(MINIMAL_SUITE_PATH)
@@ -49,10 +32,15 @@ class ChiefControllerTest(unittest.TestCase):
         self._test_listeners(MINIMAL_SUITE_PATH, None)
 
     def _test_listeners(self, suite_path, resource_path):
-        assert_equals(self.suite_listener.data.path, suite_path)
+        assert_equals(self._get_path(self.suite_listener.data), suite_path)
         assert_equals(self.suite_listener.count, 1 if suite_path else 0)
-        assert_equals(self.resource_listener.data.path, resource_path)
+        assert_equals(self._get_path(self.resource_listener.data), resource_path)
         assert_equals(self.resource_listener.count, 1 if resource_path else 0)
+
+    def _get_path(self, item):
+            if item:
+                return item.path
+            return item
 
     def test_loading_resource_at_startup(self):
         self._load(RESOURCE_PATH)

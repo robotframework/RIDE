@@ -16,6 +16,8 @@ import re
 
 from robotide.controller.basecontroller import ControllerWithParent
 from robotide import utils
+from robotide.publish.messages import RideImportSettingChanged, \
+    RideImportSettingRemoved
 
 
 class _SettingController(ControllerWithParent):
@@ -316,6 +318,15 @@ class ImportController(_SettingController):
         self._import.args = utils.split_value(args)
         self._import.alias = alias
         self._parent.mark_dirty()
+        self.publish_edited()
         if self.label == 'Resource':
             return self._parent.resource_import_modified(self.name)
         return None
+
+    def publish_edited(self):
+        RideImportSettingChanged(datafile=self.datafile_controller,
+                                 name=self.name, type=self.type.lower()).publish()
+
+    def publish_removed(self):
+        RideImportSettingRemoved(datafile=self.datafile_controller,
+                                 name=self.name, type=self.type.lower()).publish()
