@@ -14,7 +14,6 @@ class _TestMacroCommands(object):
                                 (self._on_test_deleted, RideTestCaseRemoved)]:
             PUBLISHER.subscribe(listener, topic)
 
-
     def tearDown(self):
         self._new_keyword = None
         self._deleted_keyword = None

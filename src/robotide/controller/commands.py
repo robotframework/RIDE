@@ -213,6 +213,7 @@ class RecreateMacro(_UndoableCommand):
     def _get_undo_command(self):
         return RemoveMacro(self._user_script)
 
+
 class RemoveMacro(_UndoableCommand):
 
     def __init__(self, item):
