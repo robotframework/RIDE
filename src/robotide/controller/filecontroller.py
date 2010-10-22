@@ -19,6 +19,7 @@ from robotide.controller.settingcontroller import DocumentationController, \
 from robotide.controller.tablecontrollers import VariableTableController, \
     TestCaseTableController, KeywordTableController, ImportSettingsController, \
     MetadataListController, TestCaseController
+from robotide.controller.basecontroller import WithUndoRedoStacks
 from robotide.robotapi import TestDataDirectory, TestCaseFile, ResourceFile
 from robotide import utils
 
@@ -28,7 +29,7 @@ def DataController(data, parent):
         else TestDataDirectoryController(data, parent)
 
 
-class _DataController(object):
+class _DataController(WithUndoRedoStacks):
 
     def __init__(self, data, chief_controller=None):
         self._chief_controller = chief_controller
@@ -92,6 +93,9 @@ class _DataController(object):
     def metadata(self):
         return MetadataListController(self, self.data.setting_table)
 
+    def execute(self, command):
+        return command.execute(self)
+
     def has_been_modified_on_disk(self):
         return self._get_stat(self.source) != self._stat
 
@@ -102,7 +106,7 @@ class _DataController(object):
         self.dirty = False
         self._stat = self._get_stat(self.source)
 
-    def new_keyword(self, name, argstr=''):
+    def create_keyword(self, name, argstr=''):
         return self.keywords.new(name, argstr)
 
     def add_test_or_keyword(self, test_or_kw_ctrl):
@@ -170,6 +174,7 @@ class _DataController(object):
         return {}
 
 
+
 class TestDataDirectoryController(_DataController):
 
     def _children(self, data):
@@ -218,7 +223,7 @@ class TestCaseFileController(_DataController):
                  TimeoutController(self, ss.test_timeout),
                  TemplateController(self, ss.test_template)]
 
-    def new_test(self, name):
+    def create_test(self, name):
         return self.tests.new(name)
 
     def validate_test_name(self, name):

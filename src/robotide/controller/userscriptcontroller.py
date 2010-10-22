@@ -20,51 +20,13 @@ from robotide.controller.settingcontroller import (DocumentationController,
         FixtureController, TagsController, TimeoutController,
         TemplateController, ArgumentsController, ReturnValueController)
 from robotide.controller.arguments import parse_arguments_to_var_dict
+from robotide.controller.basecontroller import WithUndoRedoStacks
 from robotide.publish.messages import RideItemStepsChanged, RideItemNameChanged,\
     RideItemSettingsChanged
 from robotide import utils
 
 
-class _WithUndoRedoStacks(object):
-
-    @property
-    def _undo(self):
-        if not hasattr(self, '_undo_stack'):
-            self._undo_stack = []
-        return self._undo_stack
-
-    @property
-    def _redo(self):
-        if not hasattr(self, '_redo_stack'):
-            self._redo_stack = []
-        return self._redo_stack
-
-    def clear_undo(self):
-        self._undo_stack = []
-
-    def is_undo_empty(self):
-        return self._undo == []
-
-    def pop_from_undo(self):
-        return self._undo.pop()
-
-    def push_to_undo(self, command):
-        self._undo.append(command)
-
-    def clear_redo(self):
-        self._redo_stack = []
-
-    def is_redo_empty(self):
-        return self._redo == []
-
-    def pop_from_redo(self):
-        return self._redo.pop()
-
-    def push_to_redo(self, command):
-        self._redo.append(command)
-
-
-class _WithStepsController(ControllerWithParent, _WithUndoRedoStacks):
+class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
 
     def __init__(self, parent_controller, data):
         self._parent = parent_controller
@@ -137,12 +99,12 @@ class _WithStepsController(ControllerWithParent, _WithUndoRedoStacks):
         steps = self.data.steps
         self.data.steps = steps[:index]+[step]+steps[index:]
 
-    def create_user_keyword(self, name, arg_values):
+    def create_keyword(self, name, arg_values):
         err = self.datafile_controller.validate_keyword_name(name)
         if err:
             raise ValueError(err)
         argstr = ' | '.join(('${arg%s}' % (i + 1) for i in range(len(arg_values))))
-        return self.datafile_controller.new_keyword(name, argstr)
+        return self.datafile_controller.create_keyword(name, argstr)
 
     def extract_keyword(self, name, argstr, step_range):
         extracted_steps = self._extract_steps(step_range)
@@ -165,7 +127,7 @@ class _WithStepsController(ControllerWithParent, _WithUndoRedoStacks):
                        steps_after_extraction_point)
 
     def _create_extracted_kw(self, name, argstr, extracted_steps):
-        controller = self.datafile_controller.new_keyword(name, argstr)
+        controller = self.datafile_controller.create_keyword(name, argstr)
         controller.set_steps(extracted_steps)
         return controller
 

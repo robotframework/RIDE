@@ -25,7 +25,8 @@ from robotide.publish import RideTreeSelection, PUBLISHER
 from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
 from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideTestCaseAdded, RideUserKeywordRemoved
-from robotide.controller.commands import RenameOccurrences, RemoveUserScript
+from robotide.controller.commands import RenameOccurrences, RemoveUserScript,\
+    AddKeyword, AddTestCase
 try:
     import treemixin
 except ImportError:
@@ -556,7 +557,7 @@ class TestDataDirectoryHandler(_ActionHandler):
     def OnNewUserKeyword(self, event):
         dlg = UserKeywordNameDialog(self.controller)
         if dlg.ShowModal() == wx.ID_OK:
-            self.controller.new_keyword(dlg.get_name(), dlg.get_args())
+            self.controller.execute(AddKeyword(dlg.get_name(), dlg.get_args()))
         dlg.Destroy()
 
 
@@ -572,7 +573,7 @@ class TestCaseFileHandler(TestDataDirectoryHandler):
     def OnNewTestCase(self, event):
         dlg = TestCaseNameDialog(self.controller)
         if dlg.ShowModal() == wx.ID_OK:
-            self.controller.new_test(dlg.get_name())
+            self.controller.execute(AddTestCase(dlg.get_name()))
         dlg.Destroy()
 
 

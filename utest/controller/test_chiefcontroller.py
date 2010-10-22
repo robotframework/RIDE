@@ -96,20 +96,20 @@ class ChiefControllerTest(unittest.TestCase):
     def test_dirtyness(self):
         self.ctrl.load_data(COMPLEX_SUITE_PATH, MessageRecordingLoadObserver())
         assert_true(not self.ctrl.is_dirty())
-        self.ctrl.data.new_test('newnessness')
+        self.ctrl.data.create_test('newnessness')
         assert_true(self.ctrl.is_dirty())
 
     def test_load_dirty_controllers(self):
         self.ctrl.load_data(SUITEPATH, MessageRecordingLoadObserver())
         assert_equals(len(self.ctrl._get_all_dirty_controllers()), 0)
         tcf = self._find_suite_by_type(self.ctrl.data.children, TestCaseFileController)
-        tcf.new_test('newnessness')
+        tcf.create_test('newnessness')
         assert_equals(len(self.ctrl._get_all_dirty_controllers()), 1)
         self.ctrl.data.set_format('html')
         assert_equals(len(self.ctrl._get_all_dirty_controllers()), 2)
         sub_dir = self._find_suite_by_type(self.ctrl.data.children, TestDataDirectoryController)
         sub_dir_tcf = self._find_suite_by_type(sub_dir.children, TestCaseFileController)
-        sub_dir_tcf.new_test('newnessness')
+        sub_dir_tcf.create_test('newnessness')
         assert_equals(len(self.ctrl._get_all_dirty_controllers()), 3)
 
     def _find_suite_by_type(self, suites, type):

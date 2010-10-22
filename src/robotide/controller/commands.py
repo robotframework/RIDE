@@ -142,6 +142,7 @@ class RenameOccurrences(_UndoableCommand):
     def _get_undo_command(self):
         return self
 
+
 class FindOccurrences(_Command):
 
     def __init__(self, keyword_name):
@@ -176,11 +177,20 @@ class AddKeyword(_UndoableCommand):
         self._args = args or []
 
     def _execute(self, context):
-        kw = context.create_user_keyword(self._kw_name, self._args)
+        kw = context.create_keyword(self._kw_name, self._args)
         self._undo_command = RemoveUserScript(kw)
 
     def _get_undo_command(self):
         return self._undo_command
+
+
+class AddTestCase(_Command):
+
+    def __init__(self, new_test_name):
+        self._test_name = new_test_name
+
+    def _execute(self, context):
+        return context.create_test(self._test_name)
 
 
 class RecreateUserScript(_UndoableCommand):

@@ -253,15 +253,15 @@ class TestCaseFileControllerTest(unittest.TestCase):
         assert_true(ctrl.dirty)
 
     def test_new_test(self):
-        test_ctrl = self._file_ctrl().new_test('Foo')
+        test_ctrl = self._file_ctrl().create_test('Foo')
         assert_equals(test_ctrl.name, 'Foo')
 
-    def test_new_keyword(self):
-        kw_ctrl = self._file_ctrl().new_keyword('An UK')
+    def test_create_keyword(self):
+        kw_ctrl = self._file_ctrl().create_keyword('An UK')
         assert_equals(kw_ctrl.name, 'An UK')
 
-    def test_new_keyword_with_args(self):
-        kw_ctrl = self._file_ctrl().new_keyword('UK', '${a1} | ${a2}')
+    def test_create_keyword_with_args(self):
+        kw_ctrl = self._file_ctrl().create_keyword('UK', '${a1} | ${a2}')
         assert_equals(kw_ctrl.name, 'UK')
         assert_equals(kw_ctrl.data.args.value, ['${a1}', '${a2}'])
 

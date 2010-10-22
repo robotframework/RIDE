@@ -16,7 +16,7 @@ class TestNameDialogTest(unittest.TestCase):
     _frame = wx.Frame(None)
 
     def test_creation(self):
-        test_ctrl = file_controller().new_test('A test')
+        test_ctrl = file_controller().create_test('A test')
         dlg = TestCaseNameDialog(test_ctrl)
         assert_equals(dlg.get_name(), '')
 
@@ -24,11 +24,11 @@ class TestNameDialogTest(unittest.TestCase):
 class UserKeywordNameDialogTest(unittest.TestCase):
 
     def test_creation(self):
-        kw_ctrl = file_controller().new_keyword('Keyword it is')
+        kw_ctrl = file_controller().create_keyword('Keyword it is')
         dlg = UserKeywordNameDialog(kw_ctrl)
         assert_equals(dlg.get_name(), '')
 
     def test_arguments_are_returned(self):
-        kw_ctrl = file_controller().new_keyword('Keyword it is')
+        kw_ctrl = file_controller().create_keyword('Keyword it is')
         dlg = UserKeywordNameDialog(kw_ctrl)
         assert_equals(dlg.get_args(), '')
