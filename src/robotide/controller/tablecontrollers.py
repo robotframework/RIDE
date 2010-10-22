@@ -14,29 +14,21 @@
 
 
 from robotide.robotapi import is_list_var, is_scalar_var
-from robotide.publish import RideUserKeywordAdded, RideTestCaseAdded, RideUserKeywordRemoved
-from robotide import utils
 
 from robotide.controller.basecontroller import ControllerWithParent
-<<<<<<< local
-from robotide.controller.settingcontroller import (MetadataController,
-                                                   ImportController,
-                                                   VariableController)
+
+
 from robotide.controller.userscriptcontroller import (TestCaseController,
                                                       UserKeywordController)
 from robotide.publish.messages import RideTestCaseRemoved
 
-=======
-from robotide.controller.settingcontroller import (DocumentationController,
-        FixtureController, TagsController, TimeoutController,
-        TemplateController, ArgumentsController, MetadataController,
-        ImportController, ReturnValueController, VariableController)
+from robotide.controller.settingcontroller import (MetadataController,
+        ImportController, VariableController)
 from robotide.publish import RideUserKeywordAdded, RideTestCaseAdded
 from robotide import utils
-from robotide.controller.arguments import parse_arguments_to_var_dict
-from robotide.publish.messages import RideStepsChanged, RideItemNameChanged,\
-    RideItemSettingsChanged, RideImportSettingAdded
->>>>>>> other
+from robotide.publish.messages import RideImportSettingAdded, RideUserKeywordRemoved
+
+
 
 class _WithListOperations(object):
 
