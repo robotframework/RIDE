@@ -1,7 +1,7 @@
 from controller.base_command_test import *
 from robotide.publish.messages import RideUserKeywordAdded, RideUserKeywordRemoved,\
     RideTestCaseAdded
-from robotide.controller.commands import AddKeyword, RemoveUserScript, Undo,\
+from robotide.controller.commands import AddKeyword, RemoveMacro, Undo,\
     AddTestCase
 
 
@@ -36,7 +36,7 @@ class TestMacroCommands(TestCaseCommandTest):
         new_kw_name = 'Jiihaa'
         self._exec(AddKeyword(new_kw_name))
         assert_equals(self._new_keyword.name, new_kw_name)
-        self._exec(RemoveUserScript(self._new_keyword))
+        self._exec(RemoveMacro(self._new_keyword))
         assert_equals(self._deleted_keyword.name, new_kw_name)
 
     def test_add_keyword_undo(self):
@@ -49,7 +49,7 @@ class TestMacroCommands(TestCaseCommandTest):
     def test_delete_keyword_undo(self):
         new_kw_name = 'Jiihaa'
         self._exec(AddKeyword(new_kw_name))
-        self._exec(RemoveUserScript(self._new_keyword))
+        self._exec(RemoveMacro(self._new_keyword))
         self._new_keyword = None
         self._exec(Undo())
         assert_equals(self._new_keyword.name, new_kw_name)
