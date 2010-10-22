@@ -21,12 +21,17 @@ from robotide import utils
 from robotide import context
 
 
+ALL_KEYWORDS = '<all keywords>'
+ALL_USER_KEYWORDS = '<all user keywords>'
+ALL_LIBRARY_KEYWORDS = '<all library keywords>'
+
+
 class KeywordSearch(Plugin):
     """A plugin for searching keywords based on name or documentation."""
 
     def __init__(self, app):
         Plugin.__init__(self, app)
-        self._all_keywords = []
+        self.all_keywords = []
         self._criteria = _SearchCriteria()
 
     def enable(self):
@@ -43,26 +48,38 @@ class KeywordSearch(Plugin):
             self._dialog.Show()
 
     def refresh(self, message):
-        self._all_keywords = self.model.get_all_keywords()
+        self.all_keywords = self.model.get_all_keywords()
 
-    def search(self, pattern, search_docs):
-        self._criteria = _SearchCriteria(pattern, search_docs)
+    def search(self, pattern, search_docs, source_filter):
+        self._criteria = _SearchCriteria(pattern, search_docs, source_filter)
         return self._search()
 
     def _search(self):
-        return [ kw for kw in self._all_keywords if self._criteria.matches(kw) ]
+        return [ kw for kw in self.all_keywords if self._criteria.matches(kw) ]
 
 
 class _SearchCriteria(object):
 
-    def __init__(self, pattern='', search_docs=True):
+    def __init__(self, pattern='', search_docs=True, source_filter=ALL_KEYWORDS):
         self._pattern = pattern
         self._search_docs = search_docs
+        self._source_filter = source_filter
 
     def matches(self, kw):
+        if not self._matches_source_filter(kw):
+            return False
         if self._contains(kw.name, self._pattern):
             return True
         return self._search_docs and self._contains(kw.doc, self._pattern)
+
+    def _matches_source_filter(self, kw):
+        if self._source_filter == ALL_KEYWORDS:
+            return True
+        if self._source_filter == ALL_USER_KEYWORDS and kw.is_user_keyword():
+            return True
+        if self._source_filter == ALL_LIBRARY_KEYWORDS and kw.is_library_keyword():
+            return True
+        return self._source_filter == kw.source
 
     def _contains(self, string, pattern):
         return utils.normalize(pattern) in utils.normalize(string)
@@ -73,16 +90,17 @@ class KeywordSearchDialog(wx.Frame):
     def __init__(self, parent, searcher):
         wx.Frame.__init__(self, parent, title="Search Keywords")
         self._plugin = searcher
-        self._create_components(searcher)
+        self._create_components()
         self._make_bindings()
         self._sort_up = True
         self._sortcol = 0
+        self._last_selected_kw = None
         self.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DFACE))
         self.CenterOnParent()
 
-    def _create_components(self, searcher):
+    def _create_components(self):
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
-        self._add_search_control('Filter Names: ')
+        self._add_search_control()
         self._list = _KeywordList(self, self._plugin)
         self._list.SetSize(self.Size)
         self.Sizer.Add(self._list, 1, wx.EXPAND| wx.ALL, 3)
@@ -90,16 +108,43 @@ class KeywordSearchDialog(wx.Frame):
         self.Sizer.Add(self._details, 1, wx.EXPAND | wx.ALL, 3)
         self.SetSize((700,500))
 
-    def _add_search_control(self, label):
-        sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.Add(wx.StaticText(self, label=label))
+    def _add_search_control(self):
+        line1 = wx.BoxSizer(wx.HORIZONTAL)
+        self._add_pattern_filter(line1)
+        self._add_doc_filter(line1)
+        self.Sizer.Add(line1, 0, wx.ALL, 3)
+        line2 = wx.BoxSizer(wx.HORIZONTAL)
+        self._add_source_filter(line2)
+        self.Sizer.Add(line2, 0, wx.ALL, 3)
+
+    def _add_pattern_filter(self, sizer):
+        sizer.Add(wx.StaticText(self, label='Search term: '))
         self._search_control = wx.SearchCtrl(self, size=(200,-1),
                                              style=wx.TE_PROCESS_ENTER)
         sizer.Add(self._search_control)
-        self._use_doc = wx.CheckBox(self, label='Search Documentation')
+
+    def _add_doc_filter(self, sizer):
+        self._use_doc = wx.CheckBox(self, label='Search documentation')
         self._use_doc.SetValue(True)
         sizer.Add(self._use_doc)
-        self.Sizer.Add(sizer, 0, wx.ALL, 3)
+
+    def _add_source_filter(self, sizer):
+        sizer.Add(wx.StaticText(self, label='Source: '))
+        self._source_filter = wx.ComboBox(self, value=ALL_KEYWORDS, size=(300, -1),
+                                          choices=self._get_sources(), style=wx.CB_DROPDOWN)
+        sizer.Add(self._source_filter)
+
+    def _get_sources(self):
+        sources = []
+        for kw in self._plugin.all_keywords:
+            if kw.source not in sources:
+                sources.append(kw.source)
+        return [ALL_KEYWORDS, ALL_USER_KEYWORDS, ALL_LIBRARY_KEYWORDS] + sorted(sources)
+
+    def _update_sources(self):
+        self._source_filter.Clear()
+        for source in self._get_sources():
+            self._source_filter.Append(source)
 
     def _make_bindings(self):
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected, self._list)
@@ -109,6 +154,7 @@ class KeywordSearchDialog(wx.Frame):
         self.Bind(wx.EVT_ACTIVATE, self.OnActivate)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         self.Bind(wx.EVT_CHECKBOX, self.OnUseDocChange, self._use_doc)
+        self.Bind(wx.EVT_COMBOBOX, self.OnSourceFilterChange, self._source_filter)
         self.Bind(wx.EVT_LIST_COL_CLICK, self.OnColClick)
 
     def OnColClick(self,event):
@@ -137,6 +183,7 @@ class KeywordSearchDialog(wx.Frame):
         self._sort_up = True
 
     def OnActivate(self, event):
+        self._update_sources()
         self._populate_search()
 
     def OnUseDocChange(self, event):
@@ -145,31 +192,43 @@ class KeywordSearchDialog(wx.Frame):
     def OnFirstSearch(self, event):
         self._populate_search(self._get_search_text())
 
+    def OnSourceFilterChange(self, event):
+        self._populate_search()
+
     def OnKey(self, event):
         # Needed for HtmlWindow callback
         pass
 
+    def OnItemSelected(self, event):
+        self._last_selected_kw = self._keywords[event.Index]
+        self._update_details()
+
+    def OnClose(self, event):
+        self.Hide()
+
     def _populate_search(self, search_criteria=None):
         self._keywords = _KeywordData(self._plugin.search(*self._get_search_criteria()),
                                       self._sortcol, self._sort_up, search_criteria)
-        self._list.show_keywords(self._keywords)
-        self._details.clear()
+        self._update_keyword_selection()
+        self._list.show_keywords(self._keywords, self._last_selected_kw)
         self.Refresh()
 
     def _get_search_criteria(self):
-        return self._get_search_text(), self._use_doc.GetValue()
+        return self._get_search_text(), self._use_doc.GetValue(), self._source_filter.GetValue()
 
     def _get_search_text(self):
         return self._search_control.GetValue().lower()
 
-    def OnItemSelected(self, event):
-        kw = self._keywords[event.Index]
-#        if wx.GetMouseState().ControlDown() and kw.is_user_keyword():
-#            self._plugin.select_user_keyword_node(kw.item)
-        self._details.SetPage(kw.details)
+    def _update_keyword_selection(self):
+        if not self._last_selected_kw in self._keywords and self._keywords:
+            self._last_selected_kw = self._keywords[0]
+        self._update_details()
 
-    def OnClose(self, event):
-        self.Hide()
+    def _update_details(self):
+        if self._last_selected_kw in self._keywords:
+            self._details.SetPage(self._last_selected_kw.details)
+        else:
+            self._details.clear()
 
 
 class _KeywordData(list):
@@ -238,9 +297,13 @@ class _KeywordList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         self.SetImageList(imglist, wx.IMAGE_LIST_SMALL)
         return imglist
 
-    def show_keywords(self, keywords):
+    def show_keywords(self, keywords, kw_selection):
         self._keywords = keywords
         self.SetItemCount(len(self._keywords))
+        if keywords:
+            index = self._keywords.index(kw_selection)
+            self.Select(index)
+            self.Focus(index)
 
     def OnLeftUp(self, event):
         item, flags = self.HitTest(event.Position)
