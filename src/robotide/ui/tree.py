@@ -24,7 +24,7 @@ from robotide.editor.editordialogs import (TestCaseNameDialog,
 from robotide.publish import RideTreeSelection, PUBLISHER
 from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
 from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
-    RideTestCaseAdded, RideUserKeywordRemoved
+    RideTestCaseAdded, RideUserKeywordRemoved, RideTestCaseRemoved
 from robotide.controller.commands import RenameOccurrences, RemoveMacro,\
     AddKeyword, AddTestCase
 try:
@@ -65,7 +65,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         for listener, topic in [(self._item_changed, RideItem),
                              (self._keyword_added, RideUserKeywordAdded),
                              (self._test_added, RideTestCaseAdded),
-                             (self._keyword_remove, RideUserKeywordRemoved)]:
+                             (self._macro_removed, RideUserKeywordRemoved),
+                             (self._macro_removed, RideTestCaseRemoved)]:
             PUBLISHER.subscribe(listener, topic)
 
 
@@ -201,7 +202,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self.add_keyword(self._get_datafile_node(self.get_selected_datafile()),
                          message.item)
 
-    def _keyword_remove(self, message):
+    def _macro_removed(self, message):
         node = self._find_node_by_controller(message.item)
         self.delete_node(node)
 
@@ -533,7 +534,6 @@ class TestDataDirectoryHandler(_ActionHandler):
 
     def do_drop(self, test_or_kw_ctrl):
         self.controller.add_test_or_keyword(test_or_kw_ctrl)
-        self._tree.do_drop(self, test_or_kw_ctrl)
 
     def rename(self, new_name):
         return False

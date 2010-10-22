@@ -17,7 +17,8 @@ from wx import grid
 
 from robotide.controller.commands import ChangeCellValue, ClearArea, PasteArea,\
     DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells, UncommentRows, \
-    Undo, Redo, RenameOccurrences, ExtractKeyword, AddKeyword
+    Undo, Redo, RenameOccurrences, ExtractKeyword, AddKeyword,\
+    AddKeywordFromCells
 from robotide.publish import RideGridCellChanged, PUBLISHER
 from robotide.utils import PopupMenu, RideEventHandler
 
@@ -303,17 +304,10 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._tooltip.Show(False)
 
     def OnCreateKeyword(self, event):
-        name, args = self._name_and_args_for_new_keyword()
         try:
-            self._execute(AddKeyword(name, args))
+            self._execute(AddKeywordFromCells(self._data_cells_from_current_row()))
         except ValueError, err:
             wx.MessageBox(unicode(err))
-
-    def _name_and_args_for_new_keyword(self):
-        data_cells = self._data_cells_from_current_row()
-        if not data_cells:
-            return '', []
-        return data_cells[0], data_cells[1:]
 
     def _data_cells_from_current_row(self):
         currow, curcol = self.selection.cell

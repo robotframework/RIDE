@@ -169,6 +169,15 @@ class FindOccurrences(_Command):
         return [Occurrence(item, self._keyword_name) for item in items
                 if item.contains_keyword(self._keyword_name)]
 
+def AddKeywordFromCells(cells):
+    if not cells:
+        raise ValueError('Keyword can not be empty') 
+    while cells[0] == '':
+        cells.pop(0)
+    name = cells[0]
+    args = cells[1:]
+    argstr = ' | '.join(('${arg%s}' % (i + 1) for i in range(len(args))))
+    return AddKeyword(name, argstr)
 
 class AddKeyword(_UndoableCommand):
 

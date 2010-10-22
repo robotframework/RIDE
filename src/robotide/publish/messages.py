@@ -195,7 +195,11 @@ class RideItemSettingsChanged(RideItem):
     """"""
 
 class RideTestCaseAdded(RideMessage):
-    """Sent when a new test case is added to a suite or resource."""
+    """Sent when a new test case is added to a suite."""
+    data = ['datafile', 'name', 'item']
+
+class RideTestCaseRemoved(RideMessage):
+    """Sent when a test case is removed from a suite."""
     data = ['datafile', 'name', 'item']
 
 

@@ -23,6 +23,7 @@ from robotide.controller.settingcontroller import (MetadataController,
                                                    VariableController)
 from robotide.controller.userscriptcontroller import (TestCaseController,
                                                       UserKeywordController)
+from robotide.publish.messages import RideTestCaseRemoved
 
 
 class _WithListOperations(object):
@@ -173,7 +174,7 @@ class TestCaseTableController(_TableController, _UserScriptTable):
         RideTestCaseAdded(datafile=self.datafile, name=name, item=ctrl).publish()
 
     def _notify_removal(self, item):
-        pass
+        RideTestCaseRemoved(datafile=self.datafile, name=item.name, item=item).publish()
 
     def new(self, name):
         return self._create_new(name)
