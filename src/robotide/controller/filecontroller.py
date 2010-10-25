@@ -19,6 +19,7 @@ from robotide.controller.settingcontroller import DocumentationController, \
 from robotide.controller.tablecontrollers import VariableTableController, \
     TestCaseTableController, KeywordTableController, ImportSettingsController, \
     MetadataListController, TestCaseController
+from robotide.publish import RideDataFileRemoved, RideInitFileRemoved
 from robotide.robotapi import TestDataDirectory, TestCaseFile, ResourceFile
 from robotide import utils
 
@@ -95,6 +96,9 @@ class _DataController(object):
     def has_been_modified_on_disk(self):
         return self._get_stat(self.source) != self._stat
 
+    def has_been_removed_from_disk(self):
+        return self.source and self._stat != (0, 0) and not os.path.isfile(self.source)
+
     def mark_dirty(self):
         self.dirty = True
 
@@ -157,7 +161,6 @@ class _DataController(object):
         pass
 
     def iter_datafiles(self):
-        # TODO: Not necessarily worthy of a generator
         yield self
         for child in self.children:
             for datafile in child.iter_datafiles():
@@ -173,7 +176,8 @@ class _DataController(object):
 class TestDataDirectoryController(_DataController):
 
     def _children(self, data):
-        return [DataController(child, self._chief_controller) for child in data.children]
+        return [DataController(child, self._chief_controller)
+                for child in data.children]
 
     def has_format(self):
         return self.data.initfile is not None
@@ -192,7 +196,8 @@ class TestDataDirectoryController(_DataController):
         return self.data.initfile
 
     def set_format(self, format):
-        self.data.initfile = os.path.join(self.data.source, '__init__.%s' % format.lower())
+        self.data.initfile = os.path.join(self.data.source, '__init__.%s'
+                                          % format.lower())
         self.mark_dirty()
 
     def new_datafile(self, datafile):
@@ -203,7 +208,21 @@ class TestDataDirectoryController(_DataController):
         return True
 
     def reload(self):
-        self.__init__(TestDataDirectory(source=self.directory), self._chief_controller)
+        self.__init__(TestDataDirectory(source=self.directory),
+                      self._chief_controller)
+
+    def remove(self):
+        path = self.source
+        self.data.initfile = None
+        RideInitFileRemoved(path=path, datafile=self).publish()
+
+    def remove_child(self, controller):
+        if controller in self.children:
+            self.data.children.remove(controller.data)
+            self.children.remove(controller)
+        else:
+            for child in self.children:
+                child.remove_child(controller)
 
 
 class TestCaseFileController(_DataController):
@@ -223,6 +242,10 @@ class TestCaseFileController(_DataController):
 
     def validate_test_name(self, name):
         return self.tests.validate_name(name)
+
+    def remove(self):
+        self._chief_controller.remove_datafile(self)
+        RideDataFileRemoved(path=self.source, datafile=self).publish()
 
     def reload(self):
         self.__init__(TestCaseFile(source=self.source), self._chief_controller)
@@ -244,3 +267,7 @@ class ResourceFileController(_DataController):
 
     def reload(self):
         self.__init__(ResourceFile(source=self.source), self._chief_controller)
+
+    def remove(self):
+        self._chief_controller.remove_resource(self)
+        RideDataFileRemoved(path=self.source, datafile=self).publish()

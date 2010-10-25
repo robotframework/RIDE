@@ -24,7 +24,7 @@ from robotide.editor.editordialogs import (TestCaseNameDialog,
 from robotide.publish import RideTreeSelection, PUBLISHER
 from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
 from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
-    RideTestCaseAdded
+    RideTestCaseAdded, RideDataFileRemoved
 from robotide.controller.commands import RenameOccurrences, RemoveUserScript
 try:
     import treemixin
@@ -64,6 +64,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         PUBLISHER.subscribe(self._item_changed, RideItem)
         PUBLISHER.subscribe(self._keyword_added, RideUserKeywordAdded)
         PUBLISHER.subscribe(self._keyword_added, RideTestCaseAdded)
+        PUBLISHER.subscribe(self._datafile_removed, RideDataFileRemoved)
 
     def _bind_keys(self):
         bind_keys_to_evt_menu(self, self._get_bind_keys())
@@ -200,6 +201,11 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def _test_added(self, message):
         self.add_test(self._get_datafile_node(self.get_selected_datafile()),
                       message.item)
+
+    def _datafile_removed(self, message):
+        dfnode = self._get_datafile_node(message.datafile.data)
+        self.DeleteChildren(dfnode)
+        self.Delete(dfnode)
 
     def add_keyword_controller(self, controller):
         parent = self._get_datafile_node(self.get_selected_datafile())

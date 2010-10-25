@@ -153,6 +153,15 @@ class ChiefController(object):
         for datafile in controller.iter_datafiles():
             self.change_format(datafile, format)
 
+    def remove_datafile(self, controller):
+        if controller is self._controller:
+            self._controller = None
+        else:
+            self._controller.remove_child(controller)
+
+    def remove_resource(self, controller):
+        self.resources.remove(controller)
+
     def save(self, controller):
         if controller:
             self.serialize_controller(controller)

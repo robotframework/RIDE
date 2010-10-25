@@ -25,8 +25,9 @@ from popupwindow import RideToolTipWindow
 from editordialogs import (EditorDialog, DocumentationDialog, MetadataDialog,
                            ScalarVariableDialog, ListVariableDialog,
                            LibraryDialog, ResourceDialog, VariablesDialog)
-from robotide.publish.messages import RideItemSettingsChanged,\
-    RideItemNameChanged
+from robotide.publish.messages import (RideItemSettingsChanged,
+                                       RideItemNameChanged,
+                                       RideInitFileRemoved)
 
 
 def Editor(plugin, editor_panel, tree):
@@ -156,7 +157,14 @@ class TestCaseFileEditor(ResourceFileEditor):
 
 
 class InitFileEditor(TestCaseFileEditor):
-    pass
+
+    def _populate(self):
+        TestCaseFileEditor._populate(self)
+        self.plugin.subscribe(self._init_file_removed, RideInitFileRemoved)
+
+    def _init_file_removed(self, message):
+        for ed in self._editors:
+            ed.update_value()
 
 
 class SettingEditor(wx.Panel, RideEventHandler):

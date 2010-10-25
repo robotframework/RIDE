@@ -139,6 +139,14 @@ class RideOpenResource(RideMessage):
     data = ['path']
 
 
+class RideDataFileRemoved(RideMessage):
+    data = ['path', 'datafile']
+
+
+class RideInitFileRemoved(RideMessage):
+    data = ['path', 'datafile']
+
+
 class RideGridCellChanged(RideMessage):
     """Sent when a value in grid cell has changed.
 

@@ -36,27 +36,39 @@ class RideEventHandler(object):
 
     def _can_be_edited(self, event):
         ctrl = self.get_selected_datafile_controller()
+        if ctrl and ctrl.has_been_removed_from_disk():
+            return self._show_removed_from_disk_warning(ctrl, event)
         if ctrl and ctrl.has_been_modified_on_disk():
             return self._show_modified_on_disk_warning(ctrl, event)
         return True
 
+    def _show_removed_from_disk_warning(self, ctrl, event):
+        msg = ['The file has been removed from the file system.',
+               'Do you want to remove it from the project?',
+               'Answering <No> will rewrite the file on disk.']
+        self._show_warning(msg, ctrl, ctrl.remove)
+
     def _show_modified_on_disk_warning(self, ctrl, event):
+        def reload_datafile():
+            ctrl.reload()
+            self.refresh_datafile(ctrl, event)
         msg = ['The file has been changed on the file system.',
                'Do you want to reload the file?',
                'Answering <No> will overwrite the changes on disk.']
+        self._show_warning(msg, ctrl, reload_datafile)
+
+    def _show_warning(self, msg_lines, ctrl, yes_handler):
         if ctrl.dirty:
-            msg.insert(2, 'Answering <Yes> will discard unsaved changes.')
-        ret = wx.MessageBox('\n'.join(msg), 'File Modified',
+            msg_lines.insert(2, 'Answering <Yes> will discard unsaved changes.')
+        msg_lines.extend(['', 'Changed file is:', ctrl.datafile.source])
+        ret = wx.MessageBox('\n'.join(msg_lines), 'File Changed On Disk',
                             style=wx.YES_NO|wx.CANCEL|wx.ICON_WARNING)
-        if ret == wx.YES:
-            ctrl.reload()
-            self.refresh_datafile(ctrl, event)
-            return True
-        elif ret == wx.NO:
+        if ret == wx.NO:
             ctrl.save()
             return True
-        else:
-            return False
+        if ret == wx.YES:
+            yes_handler()
+        return False
 
     def get_selected_datafile_controller(self):
         raise NotImplementedError(self.__class__.__name__)
