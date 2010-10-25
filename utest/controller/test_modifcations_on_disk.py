@@ -4,9 +4,9 @@ import tempfile
 from robot.utils.asserts import assert_true, assert_false, assert_equals
 from robot.parsing.model import TestCaseFile, TestDataDirectory, ResourceFile
 
-from robotide.controller.filecontroller import (TestCaseFileController,
-                                                TestDataDirectoryController,
-                                                ResourceFileController)
+from robotide.controller.filecontrollers import (TestCaseFileController,
+                                                 TestDataDirectoryController,
+                                                 ResourceFileController)
 from robotide.controller import ChiefController
 from robotide.publish.messages import RideDataFileRemoved
 from robotide.publish import PUBLISHER

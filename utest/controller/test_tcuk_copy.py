@@ -16,7 +16,7 @@ import time
 import unittest
 
 from robotide.robotapi import TestCaseFile
-from robotide.controller.filecontroller import TestCaseFileController
+from robotide.controller.filecontrollers import TestCaseFileController
 
 from resources import COMPLEX_SUITE_PATH
 from robot.utils.asserts import assert_equals, assert_true

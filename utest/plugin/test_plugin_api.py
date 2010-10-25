@@ -5,7 +5,7 @@ from robotide.pluginapi import Plugin
 from robotide.namespace import Namespace
 from robotide.spec.iteminfo import ItemInfo
 from robotide.robotapi import TestCaseFile
-from robotide.controller.filecontroller import DataController
+from robotide.controller.filecontrollers import DataController
 
 from resources import FakeApplication
 

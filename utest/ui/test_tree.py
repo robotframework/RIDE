@@ -18,11 +18,11 @@ import unittest
 
 from robot.parsing import (TestDataDirectory, TestCaseFile, ResourceFile,
                            TestCase, UserKeyword)
-from robot.utils.asserts import assert_equals, assert_none, assert_not_none
+from robot.utils.asserts import assert_equals, assert_none
 
 from robotide.application import ChiefController
-from robotide.controller.filecontroller import (TestDataDirectoryController,
-                                                ResourceFileController)
+from robotide.controller.filecontrollers import (TestDataDirectoryController,
+                                                 ResourceFileController)
 
 from robotide.ui.actiontriggers import MenuBar, ToolBar, ShortcutRegistry
 from robotide.ui.mainframe import ActionRegisterer
@@ -149,20 +149,20 @@ class TestAddingItems(_BaseSuiteTreeTest):
 
     def test_adding_user_keyword(self):
         suite = self._model.data
-        suite.new_keyword('New Fake UK')
+        suite.create_keyword('New Fake UK')
         assert_equals(self._get_selected_label(), 'New Fake UK')
 
     def test_adding_test(self):
         suite = self._model.data.children[0]
-        new_test = suite.new_test('New Fake Test')
-        self._tree.add_test(self._get_node(suite.name), new_test)
+        create_test = suite.create_test('New Fake Test')
+        self._tree.add_test(self._get_node(suite.name), create_test)
         assert_equals(self._get_selected_label(), 'New Fake Test')
 
     def test_adding_suite(self):
         new_suite = self._model.data.add_suite('new_fake_suite.txt')
         self._tree.add_datafile(self._model.data, new_suite)
         assert_equals(self._get_selected_label(), 'New Fake Suite')
-        new_suite.new_test('New Fake Test')
+        new_suite.create_test('New Fake Test')
         assert_equals(self._get_selected_label(), 'New Fake Test')
         assert_equals(self._tree.GetChildrenCount(self._tree._get_data_controller_node(new_suite)), 1)
 

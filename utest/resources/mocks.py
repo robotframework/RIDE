@@ -13,6 +13,9 @@
 #  limitations under the License.
 
 
+from robotide.publish import PUBLISHER
+
+
 class MessageRecordingLoadObserver(object):
     def __init__(self):
         self._log = ''
@@ -66,3 +69,20 @@ class _FakeSetting(object):
     add_section = lambda self, name: _FakeSetting()
     get = lambda self, name, deafault: True
     set = lambda self, name, value: None
+
+class PublisherListener(object):
+
+    def __init__(self, topic):
+        PUBLISHER.subscribe(self._listener, topic, self)
+        self._topic = topic
+        self.data = None
+        self.count = 0
+
+    def _listener(self, data):
+        self.data = data
+        self.count += 1
+
+    def unsubscribe(self):
+        PUBLISHER.unsubscribe(self._listener, self._topic, self)
+
+

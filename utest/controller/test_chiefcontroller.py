@@ -4,32 +4,15 @@ from robot.utils.asserts import assert_true, assert_equals, assert_none
 
 from robotide.controller import ChiefController
 from robotide.namespace import Namespace
-from robotide.controller.filecontroller import TestCaseFileController, \
+from robotide.controller.filecontrollers import TestCaseFileController, \
     TestDataDirectoryController
-from robotide.publish import PUBLISHER
 from robotide.publish.messages import RideOpenSuite, RideOpenResource
 
 from resources import (COMPLEX_SUITE_PATH, MINIMAL_SUITE_PATH, RESOURCE_PATH,
                        MessageRecordingLoadObserver, SUITEPATH)
+from resources.mocks import PublisherListener
 
 
-class NoneData(object):
-    path = None
-
-class PublisherListener(object):
-
-    def __init__(self, topic):
-        PUBLISHER.subscribe(self._listener, topic, self)
-        self._topic = topic
-        self.data = NoneData()
-        self.count = 0
-
-    def _listener(self, data):
-        self.data = data
-        self.count += 1
-
-    def unsuscribe(self):
-        PUBLISHER.unsubscribe(self._listener, self._topic, self)
 
 class ChiefControllerTest(unittest.TestCase):
 
@@ -40,8 +23,8 @@ class ChiefControllerTest(unittest.TestCase):
         self.resource_listener = PublisherListener(RideOpenResource)
 
     def tearDown(self):
-        self.suite_listener.unsuscribe()
-        self.resource_listener.unsuscribe()
+        self.suite_listener.unsubscribe()
+        self.resource_listener.unsubscribe()
 
     def test_loading_suite_at_startup(self):
         self._load(MINIMAL_SUITE_PATH)
@@ -49,10 +32,15 @@ class ChiefControllerTest(unittest.TestCase):
         self._test_listeners(MINIMAL_SUITE_PATH, None)
 
     def _test_listeners(self, suite_path, resource_path):
-        assert_equals(self.suite_listener.data.path, suite_path)
+        assert_equals(self._get_path(self.suite_listener.data), suite_path)
         assert_equals(self.suite_listener.count, 1 if suite_path else 0)
-        assert_equals(self.resource_listener.data.path, resource_path)
+        assert_equals(self._get_path(self.resource_listener.data), resource_path)
         assert_equals(self.resource_listener.count, 1 if resource_path else 0)
+
+    def _get_path(self, item):
+            if item:
+                return item.path
+            return item
 
     def test_loading_resource_at_startup(self):
         self._load(RESOURCE_PATH)
@@ -96,20 +84,20 @@ class ChiefControllerTest(unittest.TestCase):
     def test_dirtyness(self):
         self.ctrl.load_data(COMPLEX_SUITE_PATH, MessageRecordingLoadObserver())
         assert_true(not self.ctrl.is_dirty())
-        self.ctrl.data.new_test('newnessness')
+        self.ctrl.data.create_test('newnessness')
         assert_true(self.ctrl.is_dirty())
 
     def test_load_dirty_controllers(self):
         self.ctrl.load_data(SUITEPATH, MessageRecordingLoadObserver())
         assert_equals(len(self.ctrl._get_all_dirty_controllers()), 0)
         tcf = self._find_suite_by_type(self.ctrl.data.children, TestCaseFileController)
-        tcf.new_test('newnessness')
+        tcf.create_test('newnessness')
         assert_equals(len(self.ctrl._get_all_dirty_controllers()), 1)
         self.ctrl.data.set_format('html')
         assert_equals(len(self.ctrl._get_all_dirty_controllers()), 2)
         sub_dir = self._find_suite_by_type(self.ctrl.data.children, TestDataDirectoryController)
         sub_dir_tcf = self._find_suite_by_type(sub_dir.children, TestCaseFileController)
-        sub_dir_tcf.new_test('newnessness')
+        sub_dir_tcf.create_test('newnessness')
         assert_equals(len(self.ctrl._get_all_dirty_controllers()), 3)
 
     def _find_suite_by_type(self, suites, type):

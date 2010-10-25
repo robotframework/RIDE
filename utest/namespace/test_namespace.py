@@ -10,7 +10,7 @@ from robot.utils.asserts import assert_true, assert_false, assert_not_none, \
 from robotide.namespace import Namespace
 from robotide.namespace.namespace import _VariableStash
 from robotide.robotapi import TestCaseFile
-from robotide.controller.filecontroller import DataController
+from robotide.controller.filecontrollers import DataController
 
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'resources',

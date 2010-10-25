@@ -67,6 +67,7 @@ class ItemNameController(object):
 class KeywordNameController(ItemNameController):
     _name_field = KEYWORD_NAME_FIELD
 
+
 class TestCaseNameController(ItemNameController):
     _name_field = TESTCASE_NAME_FIELD
 
@@ -77,7 +78,7 @@ class _Command(object):
         return self._execute(context)
 
 
-class _UndoableCommand(object):
+class _ReversibleCommand(object):
 
     def execute(self, context):
         result = self._execute_without_redo_clear(context)
@@ -111,7 +112,7 @@ class Redo(_Command):
             return context.pop_from_redo()._execute_without_redo_clear(context)
 
 
-class _StepsChangingCommand(_UndoableCommand):
+class _StepsChangingCommand(_ReversibleCommand):
 
     def _execute(self, context):
         if self.change_steps(context):
@@ -125,7 +126,7 @@ class _StepsChangingCommand(_UndoableCommand):
         return context.steps[self._row]
 
 
-class RenameOccurrences(_UndoableCommand):
+class RenameOccurrences(_ReversibleCommand):
 
     def __init__(self, original_name, new_name):
         self._original_name = original_name
@@ -141,6 +142,7 @@ class RenameOccurrences(_UndoableCommand):
 
     def _get_undo_command(self):
         return self
+
 
 class FindOccurrences(_Command):
 
@@ -169,21 +171,41 @@ class FindOccurrences(_Command):
                 if item.contains_keyword(self._keyword_name)]
 
 
-class AddKeyword(_UndoableCommand):
+def AddKeywordFromCells(cells):
+    if not cells:
+        raise ValueError('Keyword can not be empty') 
+    while cells[0] == '':
+        cells.pop(0)
+    name = cells[0]
+    args = cells[1:]
+    argstr = ' | '.join(('${arg%s}' % (i + 1) for i in range(len(args))))
+    return AddKeyword(name, argstr)
+
+
+class AddKeyword(_ReversibleCommand):
 
     def __init__(self, new_kw_name, args=None):
         self._kw_name = new_kw_name
         self._args = args or []
 
     def _execute(self, context):
-        kw = context.create_user_keyword(self._kw_name, self._args)
-        self._undo_command = RemoveUserScript(kw)
+        kw = context.create_keyword(self._kw_name, self._args)
+        self._undo_command = RemoveMacro(kw)
 
     def _get_undo_command(self):
         return self._undo_command
 
 
-class RecreateUserScript(_UndoableCommand):
+class AddTestCase(_Command):
+
+    def __init__(self, new_test_name):
+        self._test_name = new_test_name
+
+    def _execute(self, context):
+        return context.create_test(self._test_name)
+
+
+class RecreateMacro(_ReversibleCommand):
 
     def __init__(self, user_script):
         self._user_script = user_script
@@ -192,9 +214,10 @@ class RecreateUserScript(_UndoableCommand):
         self._user_script.recreate()
 
     def _get_undo_command(self):
-        return RemoveUserScript(self._user_script)
+        return RemoveMacro(self._user_script)
 
-class RemoveUserScript(_UndoableCommand):
+
+class RemoveMacro(_ReversibleCommand):
 
     def __init__(self, item):
         self._item = item
@@ -203,7 +226,7 @@ class RemoveUserScript(_UndoableCommand):
         self._item.delete()
 
     def _get_undo_command(self):
-        return RecreateUserScript(self._item)
+        return RecreateMacro(self._item)
 
 
 class ExtractKeyword(_Command):
@@ -217,6 +240,7 @@ class ExtractKeyword(_Command):
         context.extract_keyword(self._name, self._args, self._rows)
         context.notify_steps_changed()
         context.clear_undo()
+
 
 class ChangeCellValue(_StepsChangingCommand):
 
@@ -300,6 +324,7 @@ class _RowChangingCommand(_StepsChangingCommand):
         self._change_value(context)
         return True
 
+
 class DeleteRow(_RowChangingCommand):
     def _change_value(self, context):
         step = context.steps[self._row]
@@ -310,6 +335,7 @@ class DeleteRow(_RowChangingCommand):
         if hasattr(self, '_undo_command'):
             return self._undo_command
         return AddRow(self._row)
+
 
 class AddRow(_RowChangingCommand):
 

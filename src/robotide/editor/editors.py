@@ -17,7 +17,7 @@ import wx
 from robotide import context
 from robotide import utils
 from robotide.utils import RideEventHandler, RideHtmlWindow, ButtonWithHandler
-from robotide.controller.settingcontroller import DocumentationController
+from robotide.controller.settingcontrollers import DocumentationController
 
 from kweditor import KeywordEditor
 from listeditor import ListEditor

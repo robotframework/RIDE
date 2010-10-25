@@ -90,6 +90,8 @@ class _KeywordInfo(ItemInfo):
                                                               self.doc)
 
     def __cmp__(self, other):
+        if not (hasattr(other,'name') and hasattr(other,'source')):
+            return -1
         name_cmp = cmp(self.name, other.name)
         return name_cmp if name_cmp else cmp(self.source, other.source)
 

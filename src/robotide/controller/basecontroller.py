@@ -35,3 +35,41 @@ class ControllerWithParent(object):
     def all_datafiles(self):
         return self._parent.all_datafiles
 
+
+class WithUndoRedoStacks(object):
+
+    @property
+    def _undo(self):
+        if not hasattr(self, '_undo_stack'):
+            self._undo_stack = []
+        return self._undo_stack
+
+    @property
+    def _redo(self):
+        if not hasattr(self, '_redo_stack'):
+            self._redo_stack = []
+        return self._redo_stack
+
+    def clear_undo(self):
+        self._undo_stack = []
+
+    def is_undo_empty(self):
+        return self._undo == []
+
+    def pop_from_undo(self):
+        return self._undo.pop()
+
+    def push_to_undo(self, command):
+        self._undo.append(command)
+
+    def clear_redo(self):
+        self._redo_stack = []
+
+    def is_redo_empty(self):
+        return self._redo == []
+
+    def pop_from_redo(self):
+        return self._redo.pop()
+
+    def push_to_redo(self, command):
+        self._redo.append(command)

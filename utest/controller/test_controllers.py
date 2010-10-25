@@ -4,12 +4,14 @@ from robot.parsing.settings import Fixture, Documentation, Timeout, Tags, Return
 
 from robot.utils.asserts import (assert_equals, assert_true, assert_false,
                                  assert_none, assert_raises_with_msg)
-from robotide.controller.settingcontroller import *
-from robotide.controller.filecontroller import *
+from robotide.controller.settingcontrollers import *
+from robotide.controller.filecontrollers import *
 from robotide.controller.tablecontrollers import _WithListOperations
 from robotide.controller.tablecontrollers import *
 from robotide.controller import NewDatafile
+from robotide.publish.messages import RideImportSetting
 from resources import SUITEPATH
+from resources.mocks import PublisherListener
 
 
 class _FakeParent(object):
@@ -253,15 +255,15 @@ class TestCaseFileControllerTest(unittest.TestCase):
         assert_true(ctrl.dirty)
 
     def test_new_test(self):
-        test_ctrl = self._file_ctrl().new_test('Foo')
+        test_ctrl = self._file_ctrl().create_test('Foo')
         assert_equals(test_ctrl.name, 'Foo')
 
-    def test_new_keyword(self):
-        kw_ctrl = self._file_ctrl().new_keyword('An UK')
+    def test_create_keyword(self):
+        kw_ctrl = self._file_ctrl().create_keyword('An UK')
         assert_equals(kw_ctrl.name, 'An UK')
 
-    def test_new_keyword_with_args(self):
-        kw_ctrl = self._file_ctrl().new_keyword('UK', '${a1} | ${a2}')
+    def test_create_keyword_with_args(self):
+        kw_ctrl = self._file_ctrl().create_keyword('UK', '${a1} | ${a2}')
         assert_equals(kw_ctrl.name, 'UK')
         assert_equals(kw_ctrl.data.args.value, ['${a1}', '${a2}'])
 
@@ -319,7 +321,6 @@ class _BaseWithSteps(unittest.TestCase):
             assert_true(setting.is_set, 'empty %s' % setting.__class__)
             assert_equals(setting.value, 'boo', 'not boo %s' % setting.__class__)
             assert_equals(setting.comment, 'hobo', 'comment not copied %s' % setting.__class__)
-
 
 
 class TestCaseControllerTest(_BaseWithSteps):
@@ -433,9 +434,18 @@ class ImportControllerTest(unittest.TestCase):
         self.tcf.setting_table.add_library('somelib', ['foo', 'bar'])
         self.tcf.setting_table.add_resource('resu')
         self.tcf.setting_table.add_library('BuiltIn', ['WITH NAME', 'InBuilt'])
-        tcf_ctrl = TestCaseFileController(self.tcf, ImportControllerTest.FakeParent())
-        tcf_ctrl.data.directory = 'tmp'
-        self.parent = ImportSettingsController(tcf_ctrl, self.tcf.setting_table)
+        self.tcf_ctrl = TestCaseFileController(self.tcf, ImportControllerTest.FakeParent())
+        self.tcf_ctrl.data.directory = 'tmp'
+        self.parent = ImportSettingsController(self.tcf_ctrl, self.tcf.setting_table)
+        self.add_import_listener = PublisherListener(RideImportSettingAdded)
+        self.changed_import_listener = PublisherListener(RideImportSettingChanged)
+        self.removed_import_listener = PublisherListener(RideImportSettingRemoved)
+        self.import_listener = PublisherListener(RideImportSetting)
+
+    def tearDown(self):
+        self.add_import_listener.unsubscribe()
+        self.changed_import_listener.unsubscribe()
+        self.import_listener.unsubscribe()
 
     def test_creation(self):
         self._assert_import(0, 'somelib', ['foo', 'bar'])
@@ -467,6 +477,35 @@ class ImportControllerTest(unittest.TestCase):
         self._assert_import(0, 'newname', exp_alias='namenew')
         ctrl.set_value('again')
         self._assert_import(0, 'again')
+
+    def test_publishing_change(self):
+        ctrl = ImportController(self.parent, self.parent[1]._import)
+        ctrl.set_value('new name')
+        self._test_listener('new name', 'resource', self.changed_import_listener)
+
+    def test_publishing_remove(self):
+        self.parent.delete(1)
+        self._test_listener('resu', 'resource', self.removed_import_listener)
+        self.parent.delete(0)
+        self._test_listener('somelib', 'library', self.removed_import_listener)
+
+    def test_publish_adding_library(self):
+        self.parent.add_library('name', 'argstr', None)
+        self._test_listener('name', 'library', self.add_import_listener)
+
+    def test_publish_adding_resource(self):
+        self.parent.add_resource('path')
+        self._test_listener('path', 'resource', self.add_import_listener)
+
+    def test_publish_adding_variables(self):
+        self.parent.add_variables('path', 'argstr')
+        self._test_listener('path', 'variables', self.add_import_listener)
+
+    def _test_listener(self, name, type, listener):
+        assert_equals(listener.data.name, name)
+        assert_equals(listener.data.type, type)
+        assert_equals(listener.data.datafile, self.tcf_ctrl)
+        assert_equals(self.import_listener.data.name, name)
 
     def _assert_import(self, index, exp_name, exp_args=[], exp_alias=''):
         item = self.parent[index]

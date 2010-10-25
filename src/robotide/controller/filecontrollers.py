@@ -14,7 +14,7 @@
 
 import os
 
-from robotide.controller.settingcontroller import DocumentationController, \
+from robotide.controller.settingcontrollers import DocumentationController, \
     FixtureController, TagsController, TimeoutController, TemplateController
 from robotide.controller.tablecontrollers import VariableTableController, \
     TestCaseTableController, KeywordTableController, ImportSettingsController, \
@@ -29,7 +29,7 @@ def DataController(data, parent):
         else TestDataDirectoryController(data, parent)
 
 
-class _DataController(object):
+class _DataController(WithUndoRedoStacks):
 
     def __init__(self, data, chief_controller=None):
         self._chief_controller = chief_controller
@@ -92,6 +92,9 @@ class _DataController(object):
     @property
     def metadata(self):
         return MetadataListController(self, self.data.setting_table)
+
+    def execute(self, command):
+        return command.execute(self)
 
     def has_been_modified_on_disk(self):
         return self._get_stat(self.source) != self._stat
@@ -161,6 +164,7 @@ class _DataController(object):
         pass
 
     def iter_datafiles(self):
+        # TODO: Not necessarily worthy of a generator
         yield self
         for child in self.children:
             for datafile in child.iter_datafiles():
@@ -171,6 +175,7 @@ class _DataController(object):
 
     def get_local_variables(self):
         return {}
+
 
 
 class TestDataDirectoryController(_DataController):
