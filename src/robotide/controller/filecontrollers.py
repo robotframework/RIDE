@@ -14,6 +14,7 @@
 
 import os
 
+from robotide.controller.basecontroller import WithUndoRedoStacks
 from robotide.controller.settingcontrollers import DocumentationController, \
     FixtureController, TagsController, TimeoutController, TemplateController
 from robotide.controller.tablecontrollers import VariableTableController, \
@@ -109,7 +110,7 @@ class _DataController(WithUndoRedoStacks):
         self.dirty = False
         self._stat = self._get_stat(self.source)
 
-    def new_keyword(self, name, argstr=''):
+    def create_keyword(self, name, argstr=''):
         return self.keywords.new(name, argstr)
 
     def add_test_or_keyword(self, test_or_kw_ctrl):
@@ -242,7 +243,7 @@ class TestCaseFileController(_DataController):
                  TimeoutController(self, ss.test_timeout),
                  TemplateController(self, ss.test_template)]
 
-    def new_test(self, name):
+    def create_test(self, name):
         return self.tests.new(name)
 
     def validate_test_name(self, name):

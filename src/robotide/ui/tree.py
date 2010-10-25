@@ -24,7 +24,7 @@ from robotide.editor.editordialogs import (TestCaseNameDialog,
 from robotide.publish import RideTreeSelection, PUBLISHER
 from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
 from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
-    RideTestCaseAdded, RideUserKeywordRemoved, RideTestCaseRemoved
+    RideTestCaseAdded, RideUserKeywordRemoved, RideTestCaseRemoved, RideDataFileRemoved
 from robotide.controller.commands import RenameOccurrences, RemoveMacro,\
     AddKeyword, AddTestCase
 try:
@@ -66,8 +66,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
                              (self._keyword_added, RideUserKeywordAdded),
                              (self._test_added, RideTestCaseAdded),
                              (self._macro_removed, RideUserKeywordRemoved),
-                             (self._macro_removed, RideTestCaseRemoved,
-                              self._datafile_removed, RideDataFileRemoved)]:
+                             (self._macro_removed, RideTestCaseRemoved),
+                             (self._datafile_removed, RideDataFileRemoved)]:
             PUBLISHER.subscribe(listener, topic)
 
 
