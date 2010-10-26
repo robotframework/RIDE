@@ -13,10 +13,6 @@
 #  limitations under the License.
 
 
-KEYWORD_NAME_FIELD = 'Keyword Name'
-TESTCASE_NAME_FIELD = 'Test Case Name'
-
-
 class Occurrence(object):
 
     def __init__(self, item, value):
@@ -43,33 +39,6 @@ class Occurrence(object):
 
     def notify_value_changed(self):
         self._item.notify_value_changed()
-
-
-class ItemNameController(object):
-
-    def __init__(self, item):
-        self._item = item
-
-    def contains_keyword(self, name):
-        return self._item.name == name
-
-    def replace_keyword(self, new_name, old_value=None):
-        self._item.rename(new_name)
-
-    def notify_value_changed(self):
-        self._item.notify_value_changed()
-
-    @property
-    def logical_name(self):
-        return '%s (%s)' % (self._item.name, self._name_field)
-
-
-class KeywordNameController(ItemNameController):
-    _name_field = KEYWORD_NAME_FIELD
-
-
-class TestCaseNameController(ItemNameController):
-    _name_field = TESTCASE_NAME_FIELD
 
 
 class _Command(object):
@@ -159,10 +128,9 @@ class FindOccurrences(_Command):
         for df in context.all_datafiles:
             items.extend(df.settings)
             for test in df.tests:
-                items.append(TestCaseNameController(test))
                 items.extend(test.steps + test.settings)
             for kw in df.keywords:
-                items.append(KeywordNameController(kw))
+                items.append(kw.keyword_name)
                 items.extend(kw.steps)
         return items
 

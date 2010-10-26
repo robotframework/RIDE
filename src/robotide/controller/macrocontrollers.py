@@ -26,6 +26,37 @@ from robotide.publish.messages import RideItemStepsChanged, RideItemNameChanged,
 from robotide import utils
 
 
+KEYWORD_NAME_FIELD = 'Keyword Name'
+TESTCASE_NAME_FIELD = 'Test Case Name'
+
+
+class ItemNameController(object):
+
+    def __init__(self, item):
+        self._item = item
+
+    def contains_keyword(self, name):
+        return self._item.name == name
+
+    def replace_keyword(self, new_name, old_value=None):
+        self._item.rename(new_name)
+
+    def notify_value_changed(self):
+        self._item.notify_value_changed()
+
+    @property
+    def logical_name(self):
+        return '%s (%s)' % (self._item.name, self._name_field)
+
+
+class KeywordNameController(ItemNameController):
+    _name_field = KEYWORD_NAME_FIELD
+
+
+class TestCaseNameController(ItemNameController):
+    _name_field = TESTCASE_NAME_FIELD
+
+
 class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
 
     def __init__(self, parent_controller, data):
@@ -202,9 +233,15 @@ class UserKeywordController(_WithStepsController):
         self._kw = kw
 
     def __eq__(self, other):
-        if self is other : return True
-        if other.__class__ != self.__class__ : return False
+        if self is other:
+            return True
+        if other.__class__ != self.__class__:
+            return False
         return self._kw == other._kw
+
+    @property
+    def keyword_name(self):
+        return KeywordNameController(self)
 
     def move_up(self):
         return self._parent.move_up(self._kw)
