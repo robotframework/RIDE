@@ -56,6 +56,9 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
     def replace_step(self, index, new_step):
         self.data.steps[index] = new_step
 
+    def move_step_up(self, index):
+        self.data.steps[index-1], self.data.steps[index] = self.data.steps[index], self.data.steps[index-1]
+
     def set_steps(self, steps):
         self.data.steps = steps
 

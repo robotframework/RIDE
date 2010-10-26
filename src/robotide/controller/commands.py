@@ -367,6 +367,16 @@ class UncommentRow(_RowChangingCommand):
         return CommentRow(self._row)
 
 
+class MoveRowUp(_RowChangingCommand):
+
+    def _change_value(self, context):
+        if self._row > 0:
+            context.move_step_up(self._row)
+
+    def _get_undo_command(self):
+        return MoveRowUp(self._row)
+
+
 class CompositeCommand(_StepsChangingCommand):
 
     def __init__(self, *commands):

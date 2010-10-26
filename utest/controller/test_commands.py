@@ -274,6 +274,21 @@ class TestCaseEditingTest(TestCaseCommandTest):
         self._exec(UncommentRows([10001]))
         self._verify_number_of_test_changes(0)
 
+    def test_moving_row_up(self):
+        self._exec(MoveRowUp(1))
+        assert_equals(self._steps[0].as_list(), self._data_step_as_list(STEP2))
+        assert_equals(self._steps[1].as_list(), self._data_step_as_list(STEP1))
+
+    def test_moving_first_row_up_does_nothing(self):
+        self._exec(MoveRowUp(0))
+        assert_equals(self._steps[0].as_list(), self._data_step_as_list(STEP1))
+
+    def test_undo_row_up(self):
+        self._exec(MoveRowUp(1))
+        self._exec(Undo())
+        assert_equals(self._steps[0].as_list(), self._data_step_as_list(STEP1))
+        assert_equals(self._steps[1].as_list(), self._data_step_as_list(STEP2))
+
 
 if __name__ == "__main__":
     unittest.main()
