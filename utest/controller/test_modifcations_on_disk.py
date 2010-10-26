@@ -124,8 +124,10 @@ class TestDataFileRemoval(unittest.TestCase):
     def test_deleting_init_file(self):
         chief = ChiefController(None)
         chief.new_datafile(TestDataDirectory(source=DIRPATH))
+        os.remove(INITPATH)
         chief.data.remove()
-        assert_true(chief.data.has_format() is False)
+        open(INITPATH, 'w').write('*Settings*\nDocumentation  Ride unit testing file\n')
+        assert_true(chief.data.has_format() is False, chief.data.data.initfile)
 
 
 if __name__ == "__main__":
