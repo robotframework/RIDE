@@ -153,6 +153,7 @@ class FixtureController(_SettingController):
 
     def replace_keyword(self, new_name, old_value=None):
         self._fixture.name = new_name
+        self.mark_dirty()
 
     def _changed(self, value):
         name, args = self._parse(value)
@@ -212,6 +213,7 @@ class TemplateController(_SettingController):
 
     def replace_keyword(self, new_name, old_name=None):
         self._template.value = new_name
+        self.mark_dirty()
 
 
 class ArgumentsController(_SettingController):
