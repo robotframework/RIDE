@@ -163,8 +163,8 @@ class InitFileEditor(TestCaseFileEditor):
         self.plugin.subscribe(self._init_file_removed, RideInitFileRemoved)
 
     def _init_file_removed(self, message):
-        for ed in self._editors:
-            ed.update_value()
+        for setting, editor in zip(self.controller.settings, self._editors):
+            editor.refresh(setting)
 
 
 class SettingEditor(wx.Panel, RideEventHandler):
@@ -216,6 +216,10 @@ class SettingEditor(wx.Panel, RideEventHandler):
 
     def OnDisplayMotion(self, event):
         self._tooltip.hide()
+
+    def refresh(self, controller):
+        self._controller = controller
+        self.update_value()
 
     def refresh_datafile(self, item, event):
         self._tree.refresh_datafile(item, event)

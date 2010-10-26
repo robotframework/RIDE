@@ -101,7 +101,7 @@ class _DataController(WithUndoRedoStacks):
         return self._get_stat(self.source) != self._stat
 
     def has_been_removed_from_disk(self):
-        return self.source and self._stat != (0, 0) and not os.path.isfile(self.source)
+        return self._stat != (0, 0) and not os.path.isfile(self.source)
 
     def mark_dirty(self):
         self.dirty = True
@@ -165,7 +165,6 @@ class _DataController(WithUndoRedoStacks):
         pass
 
     def iter_datafiles(self):
-        # TODO: Not necessarily worthy of a generator
         yield self
         for child in self.children:
             for datafile in child.iter_datafiles():
@@ -176,7 +175,6 @@ class _DataController(WithUndoRedoStacks):
 
     def get_local_variables(self):
         return {}
-
 
 
 class TestDataDirectoryController(_DataController):
@@ -220,11 +218,12 @@ class TestDataDirectoryController(_DataController):
     def remove(self):
         path = self.source
         self.data.initfile = None
+        self._stat = self._get_stat(None)
+        self.reload()
         RideInitFileRemoved(path=path, datafile=self).publish()
 
     def remove_child(self, controller):
         if controller in self.children:
-            self.data.children.remove(controller.data)
             self.children.remove(controller)
         else:
             for child in self.children:
