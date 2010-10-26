@@ -44,10 +44,10 @@ class Occurrence(object):
 class _Command(object):
 
     def execute(self, context):
-        return self._execute(context)
+        raise NotImplementedError(self.__class__)
 
 
-class _ReversibleCommand(object):
+class _ReversibleCommand(_Command):
 
     def execute(self, context):
         result = self._execute_without_redo_clear(context)
@@ -120,7 +120,7 @@ class FindOccurrences(_Command):
             raise ValueError('Keyword name can not be "%s"' % keyword_name)
         self._keyword_name = keyword_name
 
-    def _execute(self, context):
+    def execute(self, context):
         return self._find_occurrences_in(self._items_from(context))
 
     def _items_from(self, context):
@@ -169,7 +169,7 @@ class AddTestCase(_Command):
     def __init__(self, new_test_name):
         self._test_name = new_test_name
 
-    def _execute(self, context):
+    def execute(self, context):
         return context.create_test(self._test_name)
 
 
@@ -204,7 +204,7 @@ class ExtractKeyword(_Command):
         self._args = new_kw_args
         self._rows = step_range
 
-    def _execute(self, context):
+    def execute(self, context):
         context.extract_keyword(self._name, self._args, self._rows)
         context.notify_steps_changed()
         context.clear_undo()
@@ -294,6 +294,7 @@ class _RowChangingCommand(_StepsChangingCommand):
 
 
 class DeleteRow(_RowChangingCommand):
+
     def _change_value(self, context):
         step = context.steps[self._row]
         self._undo_command = CompositeCommand(AddRow(self._row), PasteArea((self._row, 0), [step.as_list()]))
