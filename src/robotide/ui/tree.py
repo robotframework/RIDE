@@ -213,6 +213,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _datafile_removed(self, message):
         dfnode = self._get_datafile_node(message.datafile.data)
+        self._datafile_nodes.remove(dfnode)
         self.DeleteChildren(dfnode)
         self.Delete(dfnode)
 
