@@ -13,3 +13,4 @@
 #  limitations under the License.
 
 from dialog import Dialog
+from popupmenu import PopupMenu, PopupMenuItem, PopupMenuItems

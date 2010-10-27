@@ -16,7 +16,7 @@ import unittest
 
 from robot.utils.asserts import assert_equals, assert_none
 
-from robotide.utils.components import PopupMenuItems, PopupMenuItem
+from robotide.widgets.popupmenu import PopupMenuItems, PopupMenuItem
 
 
 class Parent(object):

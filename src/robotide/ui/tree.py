@@ -28,7 +28,7 @@ from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideDataChangedToDirty
 from robotide.controller.commands import RenameOccurrences, RemoveMacro,\
     AddKeyword, AddTestCase
-from robotide.utils.components import PopupMenuItems
+from robotide.widgets import PopupMenu, PopupMenuItems
 try:
     import treemixin
 except ImportError:
@@ -532,7 +532,7 @@ class _ActionHandler(wx.Window):
         return menu_items
 
     def show_popup(self):
-        utils.PopupMenu(self, self._get_all_actions())
+        PopupMenu(self, self._get_all_actions())
 
     def OnChangeFormat(self, event):
         format =self.controller.get_format() or 'txt'

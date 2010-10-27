@@ -15,7 +15,8 @@
 import wx
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 
-from robotide.utils import ButtonWithHandler, PopupMenu, RideEventHandler
+from robotide.utils import ButtonWithHandler, RideEventHandler
+from robotide.widgets import PopupMenu, PopupMenuItems
 from robotide.context.platform import ctrl_or_cmd, bind_keys_to_evt_menu
 
 
@@ -64,7 +65,7 @@ class ListEditorBase(wx.Panel):
         self.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.OnRightClick)
 
     def OnRightClick(self, event):
-        PopupMenu(self, self._menu)
+        PopupMenu(self, PopupMenuItems(self, self._menu))
 
     def OnItemSelected(self, event):
         self._selection = event.GetIndex()

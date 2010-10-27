@@ -20,7 +20,7 @@ from robotide.pluginapi import Plugin, ActionInfo, RideOpenSuite,\
     RideOpenResource, RideImportSetting, RideUserKeyword
 from robotide import utils
 from robotide import context
-from robotide.utils.components import PopupMenuItem
+from robotide.widgets import PopupMenuItem
 
 
 ALL_KEYWORDS = '<all keywords>'
@@ -69,7 +69,8 @@ class KeywordSearch(Plugin):
         return [ kw for kw in self.all_keywords if self._criteria.matches(kw) ]
 
     def _search_resource(self, item):
-        if item.is_directory_suite():
+        #TODO: Update when there is better way to recognize item type 
+        if not item.datafile_controller is item or item.is_directory_suite():
             return []
         callable = lambda x: self._show_resource(os.path.basename(item.source))
         return [PopupMenuItem('Search Keywords', callable=callable)]
