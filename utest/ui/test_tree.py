@@ -118,7 +118,8 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         return self._tree.GetItemText(self._tree.GetSelection())
 
     def _get_node(self, label):
-        return self._tree._get_node_with_label(self._tree._root, label)
+        node = self._tree._get_node_with_label(self._tree._root, label)
+        return node or self._tree._get_node_with_label(self._tree._root, '*' + label)
 
     def _select_node(self, label):
         self._tree.SelectItem(self._get_node(label))

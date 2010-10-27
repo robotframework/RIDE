@@ -185,6 +185,16 @@ class RideImportSettingRemoved(RideImportSetting):
     """
     data = ['datafile', 'type', 'name']
 
+class RideDataChangedToDirty(RideMessage):
+    """Sent when datafile changes from serialized version"""
+    data = ['datafile']
+
+class RideDataDirtyCleared(RideMessage):
+    """Sent when datafiles dirty marking is cleared
+
+    datafile has been saved and datafile in memory equals the serialized one.
+    """
+    data = ['datafile']
 
 class RideUserKeyword(RideMessage):
     """Base class for all messages about changes to any user keyword."""

@@ -3,13 +3,65 @@ from robot.parsing import TestCase
 from robot.parsing.model import TestCaseFile, TestDataDirectory
 from robot.utils.asserts import (assert_equals, assert_true, assert_false)
 
-from robotide.controller.filecontrollers import TestCaseFileController, TestDataDirectoryController
+from robotide.controller.filecontrollers import TestCaseFileController, TestDataDirectoryController,\
+    _DataController
 from robotide.controller.settingcontrollers import *
 from robotide.controller.tablecontrollers import _WithListOperations
 from robotide.controller.tablecontrollers import *
 from robotide.controller import NewDatafile
 
 from resources import SUITEPATH
+from twisted.spread.publish import Publishable
+from robotide.publish import PUBLISHER
+from robotide.publish.messages import RideDataChangedToDirty,\
+    RideDataDirtyCleared
+
+
+class TestMarkUnMarkDirty(unittest.TestCase):
+
+    def setUp(self):
+        class Data(object):
+            @property
+            def source(self):
+                return None
+        self.ctrl = _DataController(Data())
+        self._has_unsaved_changes = False
+        self._saved = False
+        self.messages = [(self._changes, RideDataChangedToDirty),
+                         (self._cleared, RideDataDirtyCleared)]
+        for listener, topic in self.messages:
+            PUBLISHER.subscribe(listener, topic)
+
+    def tearDown(self):
+        for listener, topic in self.messages:
+            PUBLISHER.unsubscribe(listener, topic)
+
+    def _changes(self, payload):
+        self._has_unsaved_changes = payload.datafile
+
+    def _cleared(self, payload):
+        self._saved = payload.datafile
+
+    def test_marking_data_dirty_publishes_data_has_changes_message(self):
+        self.ctrl.mark_dirty()
+        assert_equals(self._has_unsaved_changes, self.ctrl)
+
+    def test_clearing_dirty_mark_publishes_data_saved_message(self):
+        self.ctrl.mark_dirty()
+        self.ctrl.unmark_dirty()
+        assert_equals(self._saved, self.ctrl)
+
+    def test_remarking_data_dirty_does_not_publish_data_has_changes_message(self):
+        self.ctrl.mark_dirty()
+        self._has_unsaved_changes = None
+        self.ctrl.mark_dirty()
+        assert_equals(self._has_unsaved_changes, None)
+
+    def test_reclearing_dirty_mark_does_not_publish_data_saved_message(self):
+        self.ctrl.unmark_dirty()
+        self._saved = None
+        self.ctrl.unmark_dirty()
+        assert_equals(self._saved, None)
 
 
 class TestCaseFileControllerTest(unittest.TestCase):

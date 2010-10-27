@@ -23,6 +23,8 @@ from robotide.controller.tablecontrollers import VariableTableController, \
 from robotide.publish import RideDataFileRemoved, RideInitFileRemoved
 from robotide.robotapi import TestDataDirectory, TestCaseFile, ResourceFile
 from robotide import utils
+from robotide.publish.messages import RideDataChangedToDirty,\
+    RideDataDirtyCleared
 
 
 def DataController(data, parent):
@@ -107,11 +109,15 @@ class _DataController(WithUndoRedoStacks):
         return self._stat != (0, 0) and not os.path.isfile(self.source)
 
     def mark_dirty(self):
-        self.dirty = True
+        if not self.dirty:
+            self.dirty = True
+            RideDataChangedToDirty(datafile=self).publish()
 
     def unmark_dirty(self):
-        self.dirty = False
         self._stat = self._get_stat(self.source)
+        if self.dirty:
+            self.dirty = False
+            RideDataDirtyCleared(datafile=self).publish()
 
     def create_keyword(self, name, argstr=''):
         return self.keywords.new(name, argstr)
