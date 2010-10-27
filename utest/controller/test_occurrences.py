@@ -20,6 +20,8 @@ USERKEYWORD1_NAME = 'User Keyword'
 SETUP_KEYWORD = 'Setup Kw'
 TEMPLATE_KEYWORD = 'Template Kw'
 SUITE_SETUP_KEYWORD = 'Suite Setup Kw'
+SUITE_TEST_SETUP_KEYWORD = 'Test Setup Kw'
+SUITE_TEST_TEMPLATE_KEYWORD = 'Test Template Kw'
 SUITE_NAME = 'Some Suite'
 KEYWORD_IN_USERKEYWORD1 = 'Some Keyword'
 
@@ -28,10 +30,10 @@ def TestCaseControllerWithSteps():
     tcf = TestCaseFile()
     tcf.source = 'some_suite.txt'
     tcf.setting_table.suite_setup.name = 'Suite Setup Kw'
-    tcf.setting_table.test_setup.name = 'Test Setup Kw'
+    tcf.setting_table.test_setup.name = SUITE_TEST_SETUP_KEYWORD
     tcf.setting_table.test_teardown.name = 'Test Teardown Kw'
     tcf.setting_table.suite_teardown.name = 'Suite Teardown Kw'
-    tcf.setting_table.test_template.value = 'Test Template Kw'
+    tcf.setting_table.test_template.value = SUITE_TEST_TEMPLATE_KEYWORD
     testcase = tcf.testcase_table.add(TEST1_NAME)
     for step in [[STEP1_KEYWORD, 'Hello'], ['Run Keyword', STEP2_ARGUMENT]]:
         testcase.add_step(step)
@@ -161,14 +163,27 @@ class RenameOccurrenceTest(unittest.TestCase):
     def test_rename_in_test_setup(self):
         self._rename(SETUP_KEYWORD, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Setup')
         self._expected_messages(testcase_settings_have_changed=True)
+        self.assertTrue(self.test_ctrl.dirty)
 
     def test_rename_in_test_template(self):
         self._rename(TEMPLATE_KEYWORD, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Template')
         self._expected_messages(testcase_settings_have_changed=True)
+        self.assertTrue(self.test_ctrl.dirty)
 
     def test_rename_in_suite_metadata(self):
         self._rename(SUITE_SETUP_KEYWORD, UNUSED_KEYWORD_NAME, SUITE_NAME, 'Suite Setup')
         self._expected_messages()
+        self.assertTrue(self.test_ctrl.dirty)
+
+    def test_rename_in_suite_test_setup(self):
+        self._rename(SUITE_TEST_SETUP_KEYWORD, UNUSED_KEYWORD_NAME, SUITE_NAME, 'Test Setup')
+        self._expected_messages()
+        self.assertTrue(self.test_ctrl.dirty)
+
+    def test_rename_in_suite_test_template(self):
+        self._rename(SUITE_TEST_TEMPLATE_KEYWORD, UNUSED_KEYWORD_NAME, SUITE_NAME, 'Test Template')
+        self._expected_messages()
+        self.assertTrue(self.test_ctrl.dirty)
 
     def test_rename_in_user_keywords(self):
         self._rename(KEYWORD_IN_USERKEYWORD1, UNUSED_KEYWORD_NAME, USERKEYWORD1_NAME, 'Step 1')
