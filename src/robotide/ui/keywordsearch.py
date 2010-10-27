@@ -35,13 +35,14 @@ class KeywordSearch(Plugin):
         Plugin.__init__(self, app)
         self.all_keywords = []
         self._criteria = _SearchCriteria()
+        self.dirty = False
 
     def enable(self):
         action = ActionInfo('Tools', 'Search Keywords', self.OnSearch,
                             shortcut='F5',
                             doc='Search keywords from libraries and resources')
         self.register_action(action)
-        self.subscribe(self.refresh, RideOpenSuite, RideOpenResource,
+        self.subscribe(self.mark_dirty, RideOpenSuite, RideOpenResource,
                        RideImportSetting, RideUserKeyword)
         self._dialog = KeywordSearchDialog(self.frame, self)
         self.tree.register_context_menu_hook(self._search_resource)
@@ -58,8 +59,13 @@ class KeywordSearch(Plugin):
             self._dialog.Show()
         self._dialog.Raise()
 
-    def refresh(self, message):
-        self.all_keywords = self.model.get_all_keywords()
+    def mark_dirty(self, message):
+        self.dirty = True
+
+    def refresh_if_dirty(self):
+        if self.dirty:
+            self.dirty = False
+            self.all_keywords = self.model.get_all_keywords()
 
     def search(self, pattern, search_docs, source_filter):
         self._criteria = _SearchCriteria(pattern, search_docs, source_filter)
@@ -210,6 +216,7 @@ class KeywordSearchDialog(wx.Frame):
         self._sort_up = True
 
     def OnActivate(self, event):
+        self._plugin.refresh_if_dirty()
         self._update_sources()
         self._populate_search()
 
