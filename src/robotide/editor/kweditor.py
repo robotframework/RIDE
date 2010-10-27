@@ -17,7 +17,7 @@ from wx import grid
 
 from robotide.controller.commands import ChangeCellValue, ClearArea, PasteArea,\
     DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells, UncommentRows, \
-    Undo, Redo, RenameOccurrences, ExtractKeyword, AddKeyword,\
+    Undo, Redo, RenameKeywordOccurrences, ExtractKeyword, AddKeyword,\
     AddKeywordFromCells
 from robotide.publish import RideGridCellChanged, PUBLISHER
 from robotide.utils import RideEventHandler
@@ -334,7 +334,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
             return
         new_name = wx.GetTextFromUser('New name', default_value=old_name)
         if new_name:
-            self._execute(RenameOccurrences(old_name, new_name))
+            self._execute(RenameKeywordOccurrences(old_name, new_name))
 
 
 class ContentAssistCellEditor(grid.PyGridCellEditor):
