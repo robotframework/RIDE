@@ -35,13 +35,14 @@ class KeywordSearch(Plugin):
         Plugin.__init__(self, app)
         self.all_keywords = []
         self._criteria = _SearchCriteria()
+        self.dirty = False
 
     def enable(self):
         action = ActionInfo('Tools', 'Search Keywords', self.OnSearch,
                             shortcut='F5',
                             doc='Search keywords from libraries and resources')
         self.register_action(action)
-        self.subscribe(self.refresh, RideOpenSuite, RideOpenResource,
+        self.subscribe(self.mark_dirty, RideOpenSuite, RideOpenResource,
                        RideImportSetting, RideUserKeyword)
         self._dialog = KeywordSearchDialog(self.frame, self)
         self.tree.register_context_menu_hook(self._search_resource)
@@ -58,7 +59,14 @@ class KeywordSearch(Plugin):
             self._dialog.Show()
         self._dialog.Raise()
 
-    def refresh(self, message):
+    def mark_dirty(self, message):
+        self.dirty = True
+
+    def unmark_dirty(self):
+        self.dirty = False
+
+    def refresh(self):
+        self.dirty = False
         self.all_keywords = self.model.get_all_keywords()
 
     def search(self, pattern, search_docs, source_filter):
@@ -114,16 +122,10 @@ class KeywordSearchDialog(wx.Frame):
         self._plugin = searcher
         self._create_components()
         self._make_bindings()
-        self._sort_up = True
-        self._sortcol = 0
+        self._sort_order = _SortOrder()
         self._last_selected_kw = None
         self.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DFACE))
         self.CenterOnParent()
-
-    def set_filters(self, pattern='', search_docs=True, source=ALL_KEYWORDS):
-        self._search_control.SetValue(pattern)
-        self._use_doc.SetValue(search_docs)
-        self._source_filter.SetValue(source)
 
     def _create_components(self):
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
@@ -158,7 +160,7 @@ class KeywordSearchDialog(wx.Frame):
     def _add_source_filter(self, sizer):
         sizer.Add(wx.StaticText(self, label='Source: '))
         self._source_filter = wx.ComboBox(self, value=ALL_KEYWORDS, size=(300, -1),
-                                          choices=self._get_sources(), style=wx.CB_DROPDOWN)
+                                          choices=self._get_sources(), style=wx.CB_READONLY)
         sizer.Add(self._source_filter)
 
     def _get_sources(self):
@@ -168,16 +170,11 @@ class KeywordSearchDialog(wx.Frame):
                 sources.append(kw.source)
         return [ALL_KEYWORDS, ALL_USER_KEYWORDS, ALL_LIBRARY_KEYWORDS] + sorted(sources)
 
-    def _update_sources(self):
-        self._source_filter.Clear()
-        for source in self._get_sources():
-            self._source_filter.Append(source)
-
     def _make_bindings(self):
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected, self._list)
-        self.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.OnFirstSearch,
+        self.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.OnSearch,
                   self._search_control)
-        self.Bind(wx.EVT_TEXT_ENTER, self.OnFirstSearch, self._search_control)
+        self.Bind(wx.EVT_TEXT_ENTER, self.OnSearch, self._search_control)
         self.Bind(wx.EVT_ACTIVATE, self.OnActivate)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         self.Bind(wx.EVT_CHECKBOX, self.OnUseDocChange, self._use_doc)
@@ -186,38 +183,24 @@ class KeywordSearchDialog(wx.Frame):
 
     def OnColClick(self,event):
         col = event.GetColumn()
-        if self._is_not_kw_or_source_col(col):
-            event.Skip()
-            return
-        if self._col_already_selected(col):
-            self._swap_sort_direction()
-        else:
-            self._set_sort_up()
-        self._sortcol = col
-        self._populate_search()
+        if self._sort_order.is_sortable_column(col):
+            self._sort_order.sort(col)
+            self._populate_search()
         event.Skip()
 
-    def _is_not_kw_or_source_col(self, col):
-        return col >= 2
-
-    def _col_already_selected(self, col):
-        return col == self._sortcol
-
-    def _swap_sort_direction(self):
-        self._sort_up = not self._sort_up
-
-    def _set_sort_up(self):
-        self._sort_up = True
-
     def OnActivate(self, event):
-        self._update_sources()
-        self._populate_search()
+        if self._plugin.dirty:
+            self._plugin.unmark_dirty()
+            self._plugin.refresh()
+            self._update_sources()
+            self._populate_search()
 
     def OnUseDocChange(self, event):
         self._populate_search()
 
-    def OnFirstSearch(self, event):
-        self._populate_search(self._get_search_text())
+    def OnSearch(self, event):
+        self._sort_order.searched(self._get_search_text())
+        self._populate_search()
 
     def OnSourceFilterChange(self, event):
         self._populate_search()
@@ -230,12 +213,21 @@ class KeywordSearchDialog(wx.Frame):
         self._last_selected_kw = self._keywords[event.Index]
         self._update_details()
 
+    def _update_sources(self):
+        selection = self._source_filter.GetValue()
+        self._source_filter.Clear()
+        for source in self._get_sources():
+            self._source_filter.Append(source)
+        self._source_filter.SetValue(selection)
+        if self._source_filter.GetValue() != selection:
+            self._source_filter.SetValue(ALL_KEYWORDS)
+
     def OnClose(self, event):
         self.Hide()
 
-    def _populate_search(self, search_criteria=None):
+    def _populate_search(self):
         self._keywords = _KeywordData(self._plugin.search(*self._get_search_criteria()),
-                                      self._sortcol, self._sort_up, search_criteria)
+                                      self._sort_order, self._get_search_text())
         self._update_keyword_selection()
         self._list.show_keywords(self._keywords, self._last_selected_kw)
         self.Refresh()
@@ -257,20 +249,54 @@ class KeywordSearchDialog(wx.Frame):
         else:
             self._details.clear()
 
+    def set_filters(self, pattern='', search_docs=True, source=ALL_KEYWORDS):
+        self._search_control.SetValue(pattern)
+        self._use_doc.SetValue(search_docs)
+        self._source_filter.SetValue(source)
+
+
+class _SortOrder(object):
+
+    def __init__(self):
+        self.sort_up = True
+        self.column = 0
+        self.default_order = False
+
+    def searched(self, term):
+        self.__init__()
+        if term:
+            self.default_order = True
+
+    def swap_direction(self):
+        self.sort_up = not self.sort_up
+
+    def is_sortable_column(self, col):
+        return col < 2
+
+    def sort(self, col):
+        if self._has_been_sorted_by(col):
+            self.swap_direction()
+        else:
+            self.sort_up = True
+            self.column = col
+        self.default_order = False
+
+    def _has_been_sorted_by(self, col):
+        return self.column == col and not self.default_order
+
 
 class _KeywordData(list):
     headers = ['Name', 'Source', 'Description']
 
-    def __init__(self, keywords, sort_col=0, sort_up=True, search_criteria=None):
-        self.extend(self._sort(keywords, sort_col, sort_up, search_criteria))
+    def __init__(self, keywords, sort_order, search_criteria=None):
+        self.extend(self._sort(keywords, sort_order, search_criteria))
 
-    def _sort(self, keywords, sort_col, sort_up, search_criteria=None):
-        if search_criteria:
-            return self._sort_by_search(keywords, search_criteria)
-        return self._sort_by_attr(keywords, self.headers[sort_col].lower(),
-                                  sort_up)
+    def _sort(self, keywords, sort_order, search_criteria=None):
+        if sort_order.default_order:
+            return self._sort_by_search(keywords, sort_order, search_criteria)
+        return self._sort_by_attr(keywords, sort_order)
 
-    def _sort_by_search(self, keywords, search_criteria):
+    def _sort_by_search(self, keywords, sort_order, search_criteria):
         search_criteria = search_criteria.lower()
         starts_with = [kw for kw in keywords if kw.name.lower().startswith(search_criteria)]
         name_contains = [kw for kw in keywords if (search_criteria in kw.name.lower()
@@ -280,12 +306,12 @@ class _KeywordData(list):
                                                   and kw not in name_contains)]
         result = []
         for to_sort in (starts_with, name_contains, doc_contains):
-            result.extend(self._sort_by_attr(to_sort, self.headers[0].lower(), True))
+            result.extend(self._sort_by_attr(to_sort, sort_order))
         return result
 
-    def _sort_by_attr(self, keywords, attr_name, sort_up):
-        return sorted(keywords, cmp=self._get_comparator_for(attr_name),
-                      reverse=not sort_up)
+    def _sort_by_attr(self, keywords, sort_order):
+        return sorted(keywords, cmp=self._get_comparator_for(self.headers[sort_order.column].lower()),
+                      reverse=not sort_order.sort_up)
 
     def _get_comparator_for(self, atrr_name):
         return lambda kw, kw2: cmp(self._value_lowerer(kw, atrr_name),
@@ -334,6 +360,8 @@ class _KeywordList(wx.ListCtrl, ListCtrlAutoWidthMixin):
 
     def OnLeftUp(self, event):
         item, flags = self.HitTest(event.Position)
+        if item == wx.NOT_FOUND:
+            return
         kw = self._keywords[item]
         if kw.is_user_keyword() and (flags & wx.LIST_HITTEST_ONITEMICON):
             self._plugin.select_user_keyword_node(kw.item)

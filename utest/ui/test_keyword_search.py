@@ -16,7 +16,7 @@ import unittest
 from robot.utils.asserts import assert_equals, assert_true
 
 from robotide.ui.keywordsearch import _KeywordData, _SearchCriteria,\
-    ALL_KEYWORDS, ALL_USER_KEYWORDS, ALL_LIBRARY_KEYWORDS
+    ALL_KEYWORDS, ALL_USER_KEYWORDS, ALL_LIBRARY_KEYWORDS, _SortOrder
 from robotide.spec.iteminfo import ItemInfo
 
 test_kws = [ItemInfo(name, source, desc) for name, source, desc in
@@ -91,7 +91,9 @@ class TestSearchCriteria(unittest.TestCase):
 class TestKeyWordData(unittest.TestCase):
 
     def test_sort_by_search(self):
-        kw_data = _KeywordData(test_kws, search_criteria='Bar')
+        order = _SortOrder()
+        order.searched('Bar')
+        kw_data = _KeywordData(test_kws, order, search_criteria='Bar')
         for index, name in enumerate(['Bar',
                                       'BarBar',
                                       'get bar',
@@ -100,7 +102,8 @@ class TestKeyWordData(unittest.TestCase):
             assert_equals(kw_data[index].name, name)
 
     def test_sort_by_name(self):
-        kw_data = _KeywordData(test_kws)
+        order = _SortOrder()
+        kw_data = _KeywordData(test_kws, order)
         for index, name in enumerate(['Bar',
                                       'BarBar',
                                       'get bar',
@@ -111,7 +114,9 @@ class TestKeyWordData(unittest.TestCase):
             assert_equals(kw_data[index].name, name)
 
     def test_sort_by_name_reversed(self):
-        kw_data = _KeywordData(test_kws, sort_up=False)
+        order = _SortOrder()
+        order.sort(0)
+        kw_data = _KeywordData(test_kws, order)
         for index, name in enumerate(['User Keyword',
                                       'Should Be Equal',
                                       'Get File',
@@ -122,7 +127,9 @@ class TestKeyWordData(unittest.TestCase):
             assert_equals(kw_data[index].name, name)
 
     def test_sort_by_source(self):
-        kw_data = _KeywordData(test_kws, 1)
+        order = _SortOrder()
+        order.sort(1)
+        kw_data = _KeywordData(test_kws, order)
         for index, name in enumerate(['Should Be Equal',
                                       'BarBar',
                                       'Bar',
@@ -133,7 +140,10 @@ class TestKeyWordData(unittest.TestCase):
             assert_equals(kw_data[index].name, name)
 
     def test_sort_by_source_reversed(self):
-        kw_data = _KeywordData(test_kws, 1, False)
+        order = _SortOrder()
+        order.sort(1)
+        order.sort(1)
+        kw_data = _KeywordData(test_kws, order)
         for index, name in enumerate(['get bar2',
                                       'get bar',
                                       'User Keyword',
