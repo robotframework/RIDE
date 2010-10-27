@@ -21,7 +21,7 @@ from shortcut import Shortcut
 def ActionInfoCollection(data, event_handler, container=None):
     """Parses the ``data`` into a list of `ActionInfo` and `SeparatorInfo` objects.
 
-    The data is parsed based on the simple DSL documented below. 
+    The data is parsed based on the simple DSL documented below.
 
     :Parameters:
       data
@@ -46,13 +46,13 @@ def ActionInfoCollection(data, event_handler, container=None):
     menu
       The name of the menu under which the entries below it are inserted.
     name
-      The name of the menu entry to be added. If name is ``---``, a 
+      The name of the menu entry to be added. If name is ``---``, a
       `SeparatorInfo` object is created instead of an `ActionInfo` object.
       If name is post fixed with shortcuts between parenthesis and separated
       with ' or ', these shortcuts are parsed to machine local presentation
       and shown after the name. This can be used instead of shotrcut-element
       if you want to add shortcuts that you want to bind yourself and/or add
-      several shortcuts. 
+      several shortcuts.
     documentation
       Documentation for the action.
     shortcut
@@ -67,8 +67,8 @@ def ActionInfoCollection(data, event_handler, container=None):
     Finding handlers
     ----------------
 
-    The given ``event_handler`` must have handler methods that map to the 
-    specified action names. The mapping is done by prefixing the name with 
+    The given ``event_handler`` must have handler methods that map to the
+    specified action names. The mapping is done by prefixing the name with
     ``On``, removing spaces, and capitalizing all words. For example ``Save``
     and ``My Action`` must have handler methods ``OnSave`` and ``OnMyAction``,
     respectively. If name has content between parenthesis at the end, this
@@ -80,7 +80,7 @@ def ActionInfoCollection(data, event_handler, container=None):
     By default the given ``container`` is passed to the `ActionInfo.__init__`
     method directly. This can be altered by prefixing the ``name`` with an
     exclamation mark (e.g. ``!Save`` or ``!My Action``) to make that action
-    global. With these actions the container given to the `ActionInfo.__init__` 
+    global. With these actions the container given to the `ActionInfo.__init__`
     is always ``None``.
 
     Example
@@ -130,7 +130,7 @@ def _create_action_info(eventhandler, menu, container, row):
 def _get_eventhandler_name_and_parsed_name(name):
     eventhandler_name, name = _parse_shortcuts_from_name(name)
     return ('On%s' % eventhandler_name.replace(' ', '').replace('&', '') ,
-            name) 
+            name)
 
 def _parse_shortcuts_from_name(name):
     if '(' in name:
@@ -160,7 +160,7 @@ class MenuInfo(object):
           after
             Place this menu entry after the specified entry.
 
-        Use either ``before`` or ``after`` and give the name without the 
+        Use either ``before`` or ``after`` and give the name without the
         possible shortcut.
         """
         self.insertion_point = _InsertionPoint(before, after)
@@ -193,7 +193,7 @@ class ActionInfo(MenuInfo):
             always active by using ``None`` as the ``container``.
           shortcut
             The keyboard shortcut associated to the ``action``. The ``shortcut``
-            must be a string constructed from optional modifiers (``Ctrl, Shift, 
+            must be a string constructed from optional modifiers (``Ctrl, Shift,
             Alt``) and the actual shortcut key separating the parts with a hyphen.
             The shortcut key can be either a single character or any of the
             `wx keycodes`__ without the ``WXK_`` prefix. Examples: ``Ctrl-C``,
@@ -205,7 +205,7 @@ class ActionInfo(MenuInfo):
           doc
             The documentation shown on the statusbar when selection is on
             the associated menu entry or toolbar button.
-            
+
         __ http://docs.wxwidgets.org/stable/wx_keycodes.html#keycodes
         __ http://www.wxpython.org/docs/api/wx.ArtProvider-class.html
         """
@@ -233,7 +233,7 @@ class SeparatorInfo(MenuInfo):
 
     def __init__(self, menu_name):
         """Initializes information needed to add separators to menus.
-        
+
         :Parameters:
           menu_name
             The name of the menu where the separator will be added. If menu does
@@ -250,11 +250,11 @@ class _InsertionPoint(object):
     _shortcut_remover = re.compile(' {2,}\([^()]+\)$')
 
     def __init__(self, before=None, after=None):
-        self._table = before or after
+        self._item = before or after
         self._insert_before = before is not None
 
     def get_index(self, menu):
-        if not self._table:
+        if not self._item:
             return menu.GetMenuItemCount()
         index = self._find_position_in_menu(menu)
         if not index:
@@ -266,7 +266,7 @@ class _InsertionPoint(object):
     def _find_position_in_menu(self, menu):
         for index in range(0, menu.GetMenuItemCount()):
             item = menu.FindItemByPosition(index)
-            if self._get_menu_item_name(item).lower() == self._table.lower():
+            if self._get_menu_item_name(item).lower() == self._item.lower():
                 return index
         return None
 
