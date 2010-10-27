@@ -60,7 +60,7 @@ class PreviewPlugin(Plugin):
     def OnTabChanged(self, event):
         self._update_preview()
 
-    def _update_preview(self):
+    def _update_preview(self, event=None):
         if self.tab_is_visible(self._panel) and self.datafile:
             self._panel.update_preview()
 
