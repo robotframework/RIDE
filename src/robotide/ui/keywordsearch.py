@@ -126,11 +126,6 @@ class KeywordSearchDialog(wx.Frame):
         self.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DFACE))
         self.CenterOnParent()
 
-    def set_filters(self, pattern='', search_docs=True, source=ALL_KEYWORDS):
-        self._search_control.SetValue(pattern)
-        self._use_doc.SetValue(search_docs)
-        self._source_filter.SetValue(source)
-
     def _create_components(self):
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
         self._add_search_control()
@@ -164,7 +159,7 @@ class KeywordSearchDialog(wx.Frame):
     def _add_source_filter(self, sizer):
         sizer.Add(wx.StaticText(self, label='Source: '))
         self._source_filter = wx.ComboBox(self, value=ALL_KEYWORDS, size=(300, -1),
-                                          choices=self._get_sources(), style=wx.CB_DROPDOWN)
+                                          choices=self._get_sources(), style=wx.CB_READONLY)
         sizer.Add(self._source_filter)
 
     def _get_sources(self):
@@ -173,11 +168,6 @@ class KeywordSearchDialog(wx.Frame):
             if kw.source not in sources:
                 sources.append(kw.source)
         return [ALL_KEYWORDS, ALL_USER_KEYWORDS, ALL_LIBRARY_KEYWORDS] + sorted(sources)
-
-    def _update_sources(self):
-        self._source_filter.Clear()
-        for source in self._get_sources():
-            self._source_filter.Append(source)
 
     def _make_bindings(self):
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected, self._list)
@@ -237,6 +227,15 @@ class KeywordSearchDialog(wx.Frame):
         self._last_selected_kw = self._keywords[event.Index]
         self._update_details()
 
+    def _update_sources(self):
+        selection = self._source_filter.GetValue()
+        self._source_filter.Clear()
+        for source in self._get_sources():
+            self._source_filter.Append(source)
+        self._source_filter.SetValue(selection)
+        if self._source_filter.GetValue() != selection:
+            self._source_filter.SetValue(ALL_KEYWORDS)
+
     def OnClose(self, event):
         self.Hide()
 
@@ -263,6 +262,11 @@ class KeywordSearchDialog(wx.Frame):
             self._details.SetPage(self._last_selected_kw.details)
         else:
             self._details.clear()
+
+    def set_filters(self, pattern='', search_docs=True, source=ALL_KEYWORDS):
+        self._search_control.SetValue(pattern)
+        self._use_doc.SetValue(search_docs)
+        self._source_filter.SetValue(source)
 
 
 class _KeywordData(list):
@@ -341,6 +345,8 @@ class _KeywordList(wx.ListCtrl, ListCtrlAutoWidthMixin):
 
     def OnLeftUp(self, event):
         item, flags = self.HitTest(event.Position)
+        if item == wx.NOT_FOUND:
+            return
         kw = self._keywords[item]
         if kw.is_user_keyword() and (flags & wx.LIST_HITTEST_ONITEMICON):
             self._plugin.select_user_keyword_node(kw.item)
