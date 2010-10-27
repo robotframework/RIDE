@@ -123,7 +123,7 @@ class KeywordSearchDialog(wx.Frame):
         self._create_components()
         self._make_bindings()
         self._sort_up = True
-        self._sortcol = 0
+        self._sortcol = None
         self._last_selected_kw = None
         self.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DFACE))
         self.CenterOnParent()
@@ -173,9 +173,9 @@ class KeywordSearchDialog(wx.Frame):
 
     def _make_bindings(self):
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected, self._list)
-        self.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.OnFirstSearch,
+        self.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.OnSearch,
                   self._search_control)
-        self.Bind(wx.EVT_TEXT_ENTER, self.OnFirstSearch, self._search_control)
+        self.Bind(wx.EVT_TEXT_ENTER, self.OnSearch, self._search_control)
         self.Bind(wx.EVT_ACTIVATE, self.OnActivate)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         self.Bind(wx.EVT_CHECKBOX, self.OnUseDocChange, self._use_doc)
@@ -217,8 +217,9 @@ class KeywordSearchDialog(wx.Frame):
     def OnUseDocChange(self, event):
         self._populate_search()
 
-    def OnFirstSearch(self, event):
-        self._populate_search(self._get_search_text())
+    def OnSearch(self, event):
+        self._sortcol = None
+        self._populate_search()
 
     def OnSourceFilterChange(self, event):
         self._populate_search()
@@ -243,9 +244,10 @@ class KeywordSearchDialog(wx.Frame):
     def OnClose(self, event):
         self.Hide()
 
-    def _populate_search(self, search_criteria=None):
+    def _populate_search(self):
         self._keywords = _KeywordData(self._plugin.search(*self._get_search_criteria()),
-                                      self._sortcol, self._sort_up, search_criteria)
+                                      self._sortcol, self._sort_up, 
+                                      self._get_search_text())
         self._update_keyword_selection()
         self._list.show_keywords(self._keywords, self._last_selected_kw)
         self.Refresh()
@@ -280,9 +282,9 @@ class _KeywordData(list):
         self.extend(self._sort(keywords, sort_col, sort_up, search_criteria))
 
     def _sort(self, keywords, sort_col, sort_up, search_criteria=None):
-        if search_criteria:
+        if sort_col is None and search_criteria:
             return self._sort_by_search(keywords, search_criteria)
-        return self._sort_by_attr(keywords, self.headers[sort_col].lower(),
+        return self._sort_by_attr(keywords, self.headers[sort_col or 0].lower(),
                                   sort_up)
 
     def _sort_by_search(self, keywords, search_criteria):
