@@ -39,6 +39,9 @@ class _DataController(WithUndoRedoStacks):
         self.children = self._children(data)
         self._stat = self._get_stat(self.source)
 
+    def _children(self, data):
+        return []
+
     def _get_stat(self, path):
         if path and os.path.isfile(path):
             stat = os.stat(path)
@@ -232,9 +235,6 @@ class TestDataDirectoryController(_DataController):
 
 class TestCaseFileController(_DataController):
 
-    def _children(self, data):
-        return []
-
     def _settings(self):
         ss = self.data.setting_table
         return _DataController._settings(self) + \
@@ -260,9 +260,6 @@ class ResourceFileController(_DataController):
 
     def _settings(self):
         return [DocumentationController(self, self.data.setting_table.doc)]
-
-    def _children(self, data):
-        return []
 
     def validate_name(self, name):
         for uk in self.data.keyword_table.keywords:
