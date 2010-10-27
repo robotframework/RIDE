@@ -600,12 +600,9 @@ class _TestOrUserKeywordHandler(_ActionHandler):
         self.controller.delete()
 
     def rename(self, new_name):
-        # new_name is empty also when the value is not changed
-        if not new_name.strip():
-            return False
-        msg = self.controller.validate_name(new_name)
-        if msg:
-            wx.MessageBox(msg, 'Validation Error', style=wx.ICON_ERROR)
+        validation = self.controller.validate_name(new_name)
+        if not validation.valid:
+            wx.MessageBox(validation.error_message, 'Validation Error', style=wx.ICON_ERROR)
             return False
         self.controller.execute(RenameOccurrences(self.controller.name, new_name))
         return True

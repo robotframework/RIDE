@@ -38,7 +38,7 @@ class _Dialog(Dialog):
         Dialog.__init__(self, self._title)
         self.SetExtraStyle(wx.WS_EX_VALIDATE_RECURSIVELY)
         self._controller = controller
-        self._item = item
+        self._table = item
         self.plugin = plugin
         self._sizer = wx.BoxSizer(wx.VERTICAL)
         self._editors = self._get_editors(item)

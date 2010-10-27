@@ -217,12 +217,6 @@ class ReturnValueControllerTest(unittest.TestCase):
         assert_equals(ctrl.label, 'Return Value')
 
 
-
-
-
-
-
-
 class _BaseWithSteps(unittest.TestCase):
 
     def _test_copy_empty(self):
@@ -262,14 +256,13 @@ class TestCaseControllerTest(_BaseWithSteps):
             assert_true(st is not None)
         assert_true(self.ctrl.datafile is self.tcf, self.ctrl.datafile)
 
-    def test_rename_validation(self):
-        assert_false(self.ctrl.validate_name('This name is valid'))
-        assert_none(self.ctrl.validate_name('Another test'))
-        assert_equals(self.ctrl.validate_name('Test'),
-                      'Test case with this name already exists.')
-
     def test_rename(self):
         self.ctrl.rename('Foo Barness')
+        assert_equals(self.ctrl.name, 'Foo Barness')
+        assert_true(self.ctrl.dirty)
+
+    def test_rename_strips_whitespace(self):
+        self.ctrl.rename('\t  \n Foo Barness        ')
         assert_equals(self.ctrl.name, 'Foo Barness')
         assert_true(self.ctrl.dirty)
 
@@ -301,12 +294,6 @@ class UserKeywordControllerTest(_BaseWithSteps):
     def test_dirty(self):
         self.ctrl.mark_dirty()
         assert_true(self.ctrl.dirty)
-
-    def test_rename_validation(self):
-        assert_false(self.ctrl.validate_name('This name is valid'))
-        assert_true(self.ctrl.validate_name('UK'))
-        assert_equals(self.ctrl.validate_name('UK 2'),
-                      'User keyword with this name already exists.')
 
     def test_move_up(self):
         assert_false(self.ctrl.move_up())

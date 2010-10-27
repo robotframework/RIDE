@@ -29,7 +29,6 @@ from robotide import utils
 from robotide.publish.messages import RideImportSettingAdded, RideUserKeywordRemoved
 
 
-
 class _WithListOperations(object):
 
     def swap(self, ind1, ind2):
@@ -96,13 +95,33 @@ class _ScalarVarValidator(object):
     name = 'Scalar'
     prefix = '$'
 
+
 class _ListVarValidator(object):
     __call__ = lambda self, name: is_list_var(name)
     name = 'List'
     prefix = '@'
 
 
-class _UserScriptTable(object):
+class MacroNameValidation(object):
+
+    def __init__(self, item, name):
+        self._table = item
+        self._name = name.strip()
+        self.valid = False
+        self._validate()
+
+    def _validate(self): 
+        if not self._name:
+            self.error_message = '%s name cannot be empty.' % self._table.item_type
+            return
+        for item in self._table:
+            if item.name == self._name:
+                self.error_message = '%s with this name already exists.' % self._table.item_type
+                return
+        self.valid = True
+
+
+class _MacroTable(object):
 
     @property
     def _items(self):
@@ -136,12 +155,7 @@ class _UserScriptTable(object):
         return True
 
     def validate_name(self, name):
-        if not name:
-            return '%s name cannot be empty.' % self._item_name
-        for t in self._table:
-            if t.name == name:
-                return '%s with this name already exists.' % self._item_name
-        return None
+        return MacroNameValidation(self, name)
 
     def delete(self, ctrl):
         self._items.remove(ctrl.data)
@@ -156,6 +170,7 @@ class _UserScriptTable(object):
         self._notify_creation(ctrl.name, ctrl)
 
     def _create_new(self, name, config=None):
+        name = name.strip()
         ctrl = self._controller_class(self, self._table.add(name))
         self._configure_controller(ctrl, config)
         self.mark_dirty()
@@ -166,8 +181,8 @@ class _UserScriptTable(object):
         pass
 
 
-class TestCaseTableController(_TableController, _UserScriptTable):
-    _item_name = 'Test case'
+class TestCaseTableController(_TableController, _MacroTable):
+    item_type = 'Test case'
     _controller_class = TestCaseController
 
     @property
@@ -184,8 +199,8 @@ class TestCaseTableController(_TableController, _UserScriptTable):
         return self._create_new(name)
 
 
-class KeywordTableController(_TableController, _UserScriptTable):
-    _item_name = 'User keyword'
+class KeywordTableController(_TableController, _MacroTable):
+    item_type = 'User keyword'
     _controller_class = UserKeywordController
 
     @property

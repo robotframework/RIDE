@@ -33,20 +33,20 @@ TESTCASE_NAME_FIELD = 'Test Case Name'
 class ItemNameController(object):
 
     def __init__(self, item):
-        self._item = item
+        self._table = item
 
     def contains_keyword(self, name):
-        return self._item.name == name
+        return self._table.name == name
 
     def replace_keyword(self, new_name, old_value=None):
-        self._item.rename(new_name)
+        self._table.rename(new_name)
 
     def notify_value_changed(self):
-        self._item.notify_value_changed()
+        self._table.notify_value_changed()
 
     @property
     def logical_name(self):
-        return '%s (%s)' % (self._item.name, self._name_field)
+        return '%s (%s)' % (self._table.name, self._name_field)
 
 
 class KeywordNameController(ItemNameController):
@@ -100,7 +100,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         return self._parent.delete(self)
 
     def rename(self, new_name):
-        self.data.name = new_name
+        self.data.name = new_name.strip()
         self.mark_dirty()
 
     def copy(self, name):
@@ -140,9 +140,9 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self.data.steps = steps[:index]+[step]+steps[index:]
 
     def create_keyword(self, name, argstr):
-        err = self.datafile_controller.validate_keyword_name(name)
-        if err:
-            raise ValueError(err)
+        validation = self.datafile_controller.validate_keyword_name(name)
+        if not validation.valid:
+            raise ValueError(validation.error_message)
         return self.datafile_controller.create_keyword(name, argstr)
 
     def create_test(self, name):

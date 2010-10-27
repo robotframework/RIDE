@@ -250,11 +250,11 @@ class _InsertionPoint(object):
     _shortcut_remover = re.compile(' {2,}\([^()]+\)$')
 
     def __init__(self, before=None, after=None):
-        self._item = before or after
+        self._table = before or after
         self._insert_before = before is not None
 
     def get_index(self, menu):
-        if not self._item:
+        if not self._table:
             return menu.GetMenuItemCount()
         index = self._find_position_in_menu(menu)
         if not index:
@@ -266,7 +266,7 @@ class _InsertionPoint(object):
     def _find_position_in_menu(self, menu):
         for index in range(0, menu.GetMenuItemCount()):
             item = menu.FindItemByPosition(index)
-            if self._get_menu_item_name(item).lower() == self._item.lower():
+            if self._get_menu_item_name(item).lower() == self._table.lower():
                 return index
         return None
 

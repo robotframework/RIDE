@@ -16,20 +16,20 @@
 class Occurrence(object):
 
     def __init__(self, item, value):
-        self._item = item
+        self._table = item
         self._value = value
         self._replaced = False
 
     @property
     def item(self):
-        return self._item
+        return self._table
 
     @property
     def usage(self):
-        return self._item.logical_name
+        return self._table.logical_name
 
     def replace_keyword(self, new_name):
-        self._item.replace_keyword(*self._get_replace_values(new_name))
+        self._table.replace_keyword(*self._get_replace_values(new_name))
         self._replaced = not self._replaced
 
     def _get_replace_values(self, new_name):
@@ -38,7 +38,7 @@ class Occurrence(object):
         return new_name, self._value
 
     def notify_value_changed(self):
-        self._item.notify_value_changed()
+        self._table.notify_value_changed()
 
 
 class _Command(object):
@@ -188,13 +188,13 @@ class RecreateMacro(_ReversibleCommand):
 class RemoveMacro(_ReversibleCommand):
 
     def __init__(self, item):
-        self._item = item
+        self._table = item
 
     def _execute(self, context):
-        self._item.delete()
+        self._table.delete()
 
     def _get_undo_command(self):
-        return RecreateMacro(self._item)
+        return RecreateMacro(self._table)
 
 
 class ExtractKeyword(_Command):
