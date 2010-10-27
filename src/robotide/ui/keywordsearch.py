@@ -14,11 +14,13 @@
 
 import wx
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
+import os.path
 
 from robotide.pluginapi import Plugin, ActionInfo, RideOpenSuite,\
     RideOpenResource, RideImportSetting, RideUserKeyword
 from robotide import utils
 from robotide import context
+from robotide.utils.components import PopupMenuItem
 
 
 ALL_KEYWORDS = '<all keywords>'
@@ -42,10 +44,19 @@ class KeywordSearch(Plugin):
         self.subscribe(self.refresh, RideOpenSuite, RideOpenResource,
                        RideImportSetting, RideUserKeyword)
         self._dialog = KeywordSearchDialog(self.frame, self)
+        self.tree.register_context_menu_hook(self._search_resource)
 
     def OnSearch(self, event):
+        self._clear_search_criteria()
+        self._show_dialog()
+
+    def _clear_search_criteria(self):
+        self._dialog.set_filters()
+
+    def _show_dialog(self):
         if not self._dialog.IsShown():
             self._dialog.Show()
+        self._dialog.Raise()
 
     def refresh(self, message):
         self.all_keywords = self.model.get_all_keywords()
@@ -56,6 +67,16 @@ class KeywordSearch(Plugin):
 
     def _search(self):
         return [ kw for kw in self.all_keywords if self._criteria.matches(kw) ]
+
+    def _search_resource(self, item):
+        if item.is_directory_suite():
+            return []
+        callable = lambda x: self._show_resource(os.path.basename(item.source))
+        return [PopupMenuItem('Search Keywords', callable=callable)]
+
+    def _show_resource(self, resource):
+        self._dialog.set_filters(source=resource)
+        self._show_dialog()
 
 
 class _SearchCriteria(object):
@@ -97,6 +118,11 @@ class KeywordSearchDialog(wx.Frame):
         self._last_selected_kw = None
         self.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DFACE))
         self.CenterOnParent()
+
+    def set_filters(self, pattern='', search_docs=True, source=ALL_KEYWORDS):
+        self._search_control.SetValue(pattern)
+        self._use_doc.SetValue(search_docs)
+        self._source_filter.SetValue(source)
 
     def _create_components(self):
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
