@@ -95,7 +95,7 @@ class _StepsChangingCommand(_ReversibleCommand):
         return context.steps[self._row]
 
 
-class RenameOccurrences(_ReversibleCommand):
+class RenameKeywordOccurrences(_ReversibleCommand):
 
     def __init__(self, original_name, new_name):
         self._original_name = original_name
@@ -108,6 +108,19 @@ class RenameOccurrences(_ReversibleCommand):
         for oc in self._occurrences:
             oc.replace_keyword(self._new_name)
             oc.notify_value_changed()
+
+    def _get_undo_command(self):
+        return self
+
+
+class RenameTest(_ReversibleCommand):
+
+    def __init__(self, new_name):
+        self._new_name = new_name
+
+    def _execute(self, context):
+        context.test_name.rename(self._new_name)
+        context.test_name.notify_value_changed()
 
     def _get_undo_command(self):
         return self

@@ -4,7 +4,7 @@ from robot.parsing.model import TestCaseFile
 from robot.utils.asserts import assert_equals
 from robotide.controller import ChiefController
 from robotide.controller.macrocontrollers import KEYWORD_NAME_FIELD, TESTCASE_NAME_FIELD
-from robotide.controller.commands import Undo, FindOccurrences, RenameOccurrences
+from robotide.controller.commands import Undo, FindOccurrences, RenameKeywordOccurrences
 from robotide.controller.filecontrollers import (TestCaseFileController,
                                                  TestCaseTableController,
                                                  TestCaseController)
@@ -107,15 +107,16 @@ class RenameOccurrenceTest(unittest.TestCase):
         self.test_ctrl = TestCaseControllerWithSteps()
         self._steps_have_changed = False
         self._testcase_settings_have_changed = False
-        self._keyword_name_has_changed = False
-        PUBLISHER.subscribe(self._steps_changed, RideItemStepsChanged)
-        PUBLISHER.subscribe(self._testcase_settings_changed, RideItemSettingsChanged)
-        PUBLISHER.subscribe(self._keyword_name_changed, RideItemNameChanged)
+        self._name_has_changed = False
+        self._listeners_and_topics = [(self._steps_changed, RideItemStepsChanged),
+                                      (self._testcase_settings_changed, RideItemSettingsChanged),
+                                      (self._name_changed, RideItemNameChanged)]
+        for listener, topic in self._listeners_and_topics:
+            PUBLISHER.subscribe(listener, topic)
 
     def tearDown(self):
-        PUBLISHER.unsubscribe(self._steps_changed, RideItemStepsChanged)
-        PUBLISHER.unsubscribe(self._testcase_settings_changed, RideItemSettingsChanged)
-        PUBLISHER.unsubscribe(self._keyword_name_changed, RideItemNameChanged)
+        for listener, topic in self._listeners_and_topics:
+            PUBLISHER.unsubscribe(listener, topic)
 
     def _steps_changed(self, test):
         self._steps_have_changed = True
@@ -123,17 +124,17 @@ class RenameOccurrenceTest(unittest.TestCase):
     def _testcase_settings_changed(self, test):
         self._testcase_settings_have_changed = True
 
-    def _keyword_name_changed(self, data):
-        self._keyword_name_has_changed = True
+    def _name_changed(self, data):
+        self._name_has_changed = True
 
     def _expected_messages(self, steps_have_changed=False, testcase_settings_have_changed=False,
-                           keyword_name_has_changed=False):
+                           name_has_changed=False):
         assert_equals(self._steps_have_changed, steps_have_changed)
         assert_equals(self._testcase_settings_have_changed, testcase_settings_have_changed)
-        assert_equals(self._keyword_name_has_changed, keyword_name_has_changed)
+        assert_equals(self._name_has_changed, name_has_changed)
 
     def _rename(self, original_name, new_name, source, usage):
-        self.test_ctrl.execute(RenameOccurrences(original_name, new_name))
+        self.test_ctrl.execute(RenameKeywordOccurrences(original_name, new_name))
         assert_occurrence(self.test_ctrl, new_name, source, usage)
 
     def test_rename_in_steps(self):
@@ -150,7 +151,6 @@ class RenameOccurrenceTest(unittest.TestCase):
         self.test_ctrl.execute(Undo())
         assert_equals(self.test_ctrl.steps[1].args[0], STEP2_ARGUMENT)
 
-
     def test_rename_steps_argument(self):
         self._rename(STEP2_ARGUMENT, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Step 2')
         self._expected_messages(steps_have_changed=True)
@@ -158,7 +158,7 @@ class RenameOccurrenceTest(unittest.TestCase):
 
     def test_user_keyword_rename(self):
         self._rename(USERKEYWORD1_NAME, UNUSED_KEYWORD_NAME, UNUSED_KEYWORD_NAME, KEYWORD_NAME_FIELD)
-        self._expected_messages(keyword_name_has_changed=True)
+        self._expected_messages(name_has_changed=True)
 
     def test_rename_in_test_setup(self):
         self._rename(SETUP_KEYWORD, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Setup')

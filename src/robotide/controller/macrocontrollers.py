@@ -33,20 +33,23 @@ TESTCASE_NAME_FIELD = 'Test Case Name'
 class ItemNameController(object):
 
     def __init__(self, item):
-        self._table = item
+        self._item = item
 
     def contains_keyword(self, name):
-        return self._table.name == name
+        return self._item.name == name
 
     def replace_keyword(self, new_name, old_value=None):
-        self._table.rename(new_name)
+        self._item.rename(new_name)
+
+    def rename(self, new_name):
+        self._item.rename(new_name)
 
     def notify_value_changed(self):
-        self._table.notify_value_changed()
+        self._item.notify_name_changed()
 
     @property
     def logical_name(self):
-        return '%s (%s)' % (self._table.name, self._name_field)
+        return '%s (%s)' % (self._item.name, self._name_field)
 
 
 class KeywordNameController(ItemNameController):
@@ -176,7 +179,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
     def validate_name(self, name):
         return self._parent.validate_name(name)
 
-    def notify_value_changed(self):
+    def notify_name_changed(self):
         self._notify(RideItemNameChanged)
 
     def notify_settings_changed(self):
@@ -200,6 +203,10 @@ class TestCaseController(_WithStepsController):
         if self is other : return True
         if other.__class__ != self.__class__ : return False
         return self._test == other._test
+
+    @property
+    def test_name(self):
+        return TestCaseNameController(self)
 
     @property
     def settings(self):

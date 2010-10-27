@@ -26,8 +26,8 @@ from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
 from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideTestCaseAdded, RideUserKeywordRemoved, RideTestCaseRemoved, RideDataFileRemoved,\
     RideDataChangedToDirty
-from robotide.controller.commands import RenameOccurrences, RemoveMacro,\
-    AddKeyword, AddTestCase
+from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
+    AddKeyword, AddTestCase, RenameTest
 try:
     import treemixin
 except ImportError:
@@ -604,7 +604,7 @@ class _TestOrUserKeywordHandler(_ActionHandler):
         if not validation.valid:
             wx.MessageBox(validation.error_message, 'Validation Error', style=wx.ICON_ERROR)
             return False
-        self.controller.execute(RenameOccurrences(self.controller.name, new_name))
+        self._rename(new_name)
         return True
 
     def OnCopy(self, event):
@@ -636,6 +636,9 @@ class TestCaseHandler(_TestOrUserKeywordHandler):
     def _add_copy_to_tree(self, parent_node, copied):
         self._tree.add_test(parent_node, copied)
 
+    def _rename(self, new_name):
+        self.controller.execute(RenameTest(new_name))
+
 
 class UserKeywordHandler(_TestOrUserKeywordHandler):
     is_user_keyword = True
@@ -644,6 +647,9 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
 
     def _add_copy_to_tree(self, parent_node, copied):
         self._tree.add_keyword(parent_node, copied)
+
+    def _rename(self, new_name):
+        self.controller.execute(RenameKeywordOccurrences(self.controller.name, new_name))
 
 
 class NoneHandler(object):

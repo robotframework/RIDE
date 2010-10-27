@@ -1,8 +1,8 @@
 from controller.base_command_test import *
 from robotide.publish.messages import RideUserKeywordAdded, RideUserKeywordRemoved,\
-    RideTestCaseAdded, RideTestCaseRemoved
+    RideTestCaseAdded, RideTestCaseRemoved, RideItemNameChanged
 from robotide.controller.commands import AddKeyword, RemoveMacro, Undo,\
-    AddTestCase, AddKeywordFromCells
+    AddTestCase, AddKeywordFromCells, RenameTest
 
 
 class _TestMacroCommands(object):
@@ -99,6 +99,24 @@ class TestMacroCommandsInDataFileContext(_TestMacroCommands, unittest.TestCase):
     def setUp(self):
         _TestMacroCommands.setUp(self)
         self._ctrl = TestCaseFileController(TestCaseFile())
+
+
+class TestCaseRenameCommandTest(unittest.TestCase):
+
+    def setUp(self):
+        self.ctrl = testcase_controller()
+        PUBLISHER.subscribe(self._test_renamed, RideItemNameChanged)
+
+    def tearDown(self):
+        PUBLISHER.unsubscribe(self._test_renamed, RideItemNameChanged)
+
+    def _test_renamed(self, message):
+        self._test = message.item
+
+    def test_(self):
+        new_name = 'New name'
+        self.ctrl.execute(RenameTest(new_name))
+        assert_equals(self._test.name, new_name)
 
 
 if __name__ == "__main__":
