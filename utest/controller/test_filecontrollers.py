@@ -11,7 +11,6 @@ from robotide.controller.tablecontrollers import *
 from robotide.controller import NewDatafile
 
 from resources import SUITEPATH
-from twisted.spread.publish import Publishable
 from robotide.publish import PUBLISHER
 from robotide.publish.messages import RideDataChangedToDirty,\
     RideDataDirtyCleared
