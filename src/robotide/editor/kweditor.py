@@ -20,7 +20,8 @@ from robotide.controller.commands import ChangeCellValue, ClearArea, PasteArea,\
     Undo, Redo, RenameOccurrences, ExtractKeyword, AddKeyword,\
     AddKeywordFromCells
 from robotide.publish import RideGridCellChanged, PUBLISHER
-from robotide.utils import PopupMenu, RideEventHandler
+from robotide.utils import RideEventHandler
+from robotide.widgets import PopupMenu, PopupMenuItems
 
 from grid import GridEditor
 from editordialogs import UserKeywordNameDialog
@@ -89,8 +90,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def OnLabelRightClick(self, event):
         self._active_row = event.GetRow()
-        PopupMenu(self, ['Insert Rows', 'Delete Rows\tDel',
-                         'Comment Rows\tCtrl-3', 'Uncomment Rows\tCtrl-4'])
+        PopupMenu(self, PopupMenuItems(self, ['Insert Rows', 'Delete Rows\tDel',
+                         'Comment Rows\tCtrl-3', 'Uncomment Rows\tCtrl-4']))
         self._active_row = None
         event.Skip()
 

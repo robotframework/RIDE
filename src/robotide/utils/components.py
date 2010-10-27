@@ -43,26 +43,6 @@ class RideHtmlWindow(HtmlWindow):
         self.SetPage('')
 
 
-class PopupMenu(wx.Menu):
-
-    def __init__(self, parent, menu_items):
-        wx.Menu.__init__(self)
-        for name in menu_items:
-            if name == '---':
-                self.AppendSeparator()
-            else:
-                self._add_item(parent, name)
-        parent.PopupMenu(self)
-        self.Destroy()
-
-    def _add_item(self, parent, name):
-        handler_name = name.replace(' ', '').split('\t')[0]  # split shortcut
-        handler = getattr(parent, 'On'+handler_name)
-        id_ = wx.NewId()
-        self.Append(id_, name)
-        parent.Bind(wx.EVT_MENU, handler, id=id_)
-
-
 class ButtonWithHandler(wx.Button):
 
     def __init__(self, parent, label, handler=None, width=-1,
