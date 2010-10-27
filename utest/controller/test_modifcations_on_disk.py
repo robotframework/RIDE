@@ -10,20 +10,37 @@ from robotide.controller.filecontrollers import (TestCaseFileController,
 from robotide.controller import ChiefController
 from robotide.publish.messages import RideDataFileRemoved
 from robotide.publish import PUBLISHER
+import shutil
 
 
 DIRPATH = os.path.join(tempfile.gettempdir(), 'ride_controller_utest_dir')
-if not os.path.exists(DIRPATH):
-    os.mkdir(DIRPATH)
 FILEPATH = os.path.join(DIRPATH, 'tests.txt')
 RESOURCEPATH = os.path.join(DIRPATH, 'resource.txt')
 INITPATH = os.path.join(DIRPATH, '__init__.txt')
 
 
-class TestModifiedOnDiskWithFileSuite(unittest.TestCase):
+def create_test_data():
+    if not os.path.exists(DIRPATH):
+        os.mkdir(DIRPATH)
+    open(FILEPATH, 'w').write('*Test Cases*\nRide Unit Test  No Operation\n')
+    open(RESOURCEPATH, 'w').write('*Keywords*\nUnit Test Keyword  No Operation\n')
+    open(INITPATH, 'w').write('*Settings*\nDocumentation  Ride unit testing file\n')
+
+
+def remove_test_data():
+    shutil.rmtree(DIRPATH)
+
+
+class _DataDependentTest(unittest.TestCase):
 
     def setUp(self):
-        open(FILEPATH, 'w').write('*Test Cases*\nRide Unit Test  No Operation\n')
+        create_test_data()
+
+    def tearDown(self):
+        remove_test_data()
+
+
+class TestModifiedOnDiskWithFileSuite(_DataDependentTest):
 
     def test_mtime(self):
         ctrl = TestCaseFileController(TestCaseFile(source=FILEPATH))
@@ -54,11 +71,7 @@ class TestModifiedOnDiskWithFileSuite(unittest.TestCase):
         assert_false(ctrl.has_been_modified_on_disk())
 
 
-class TestModifiedOnDiskWithDirectorySuite(unittest.TestCase):
-
-    def setUp(self):
-        open(FILEPATH, 'w').write('*Test Cases*\nRide Unit Test  No Operation\n')
-        open(INITPATH, 'w').write('*Settings*\nDocumentation  Ride unit testing file\n')
+class TestModifiedOnDiskWithDirectorySuite(_DataDependentTest):
 
     def test_reload_with_directory_suite(self):
         ctrl = TestDataDirectoryController(TestDataDirectory(source=DIRPATH))
@@ -74,10 +87,7 @@ class TestModifiedOnDiskWithDirectorySuite(unittest.TestCase):
         assert_true(ctrl.has_been_modified_on_disk())
 
 
-class TestModifiedOnDiskWithresource(unittest.TestCase):
-
-    def setUp(self):
-        open(RESOURCEPATH, 'w').write('*Keywords*\nUnit Test Keyword  No Operation\n')
+class TestModifiedOnDiskWithresource(_DataDependentTest):
 
     def test_reload_with_resource(self):
         ctrl = ResourceFileController(ResourceFile(source=RESOURCEPATH))
@@ -88,12 +98,14 @@ class TestModifiedOnDiskWithresource(unittest.TestCase):
         assert_equals(ctrl.keywords[-1].name, 'Ninjaed Keyword')
 
 
-class TestDataFileRemoval(unittest.TestCase):
+class TestDataFileRemoval(_DataDependentTest):
 
     def setUp(self):
+        _DataDependentTest.setUp(self)
         PUBLISHER.subscribe(self._datafile_removed, RideDataFileRemoved)
 
     def tearDown(self):
+        _DataDependentTest.tearDown(self)
         PUBLISHER.unsubscribe(self._datafile_removed, RideDataFileRemoved)
 
     def _datafile_removed(self, message):
