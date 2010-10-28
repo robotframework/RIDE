@@ -17,8 +17,7 @@ from wx import grid
 
 from robotide.controller.commands import ChangeCellValue, ClearArea, PasteArea,\
     DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells, UncommentRows, \
-    Undo, Redo, RenameKeywordOccurrences, ExtractKeyword, AddKeyword,\
-    AddKeywordFromCells
+    Undo, Redo, RenameKeywordOccurrences, ExtractKeyword, AddKeywordFromCells
 from robotide.publish import RideGridCellChanged, PUBLISHER
 from robotide.utils import RideEventHandler
 from robotide.widgets import PopupMenu, PopupMenuItems
@@ -41,7 +40,6 @@ class KeywordEditor(GridEditor, RideEventHandler):
             GridEditor.__init__(self, parent, len(controller.steps) + 5, 5)
             self._plugin = parent.plugin
             self._configure_grid()
-            # This makes it possible to select cell 0,0 without opening editor, issue 479
             self._controller = controller
             PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
             # TODO: Tooltip may be smaller when the documentation is wrapped correctly
@@ -61,6 +59,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.SetColLabelSize(0)
         self.SetDefaultColSize(170)
         self.SetDefaultCellOverflow(False)
+        # This makes it possible to select cell 0,0 without opening editor, issue 479
         self.SetGridCursor(self.NumberRows - 1, self.NumberCols - 1)
         self.SetDefaultEditor(ContentAssistCellEditor(self._plugin))
 
