@@ -142,6 +142,7 @@ class GridEditor(grid.Grid):
                                 (self.selection.bottomright.row + 1, self.selection.bottomright.col))
 
     def OnCellRightClick(self, event):
+        self.selection.cell_right_clicked(event.Row, event.Col)
         PopupMenu(self, PopupMenuItems(self, self._popup_items))
 
     def OnInsertCells(self, event):
@@ -214,6 +215,10 @@ class _GridSelection(object):
                    (whole_row_selection[-1], grid.NumberCols - 1)
         return (event.TopLeftCoords.Row, event.TopLeftCoords.Col), \
                (event.BottomRightCoords.Row, event.BottomRightCoords.Col)
+
+    def cell_right_clicked(self, row, col):
+        if not (row, col) in self.cells():
+            self._set((row, col))
 
     def rows(self):
         """Returns a list containing indices of rows currently selected."""
