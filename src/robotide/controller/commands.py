@@ -16,20 +16,20 @@
 class Occurrence(object):
 
     def __init__(self, item, value):
-        self._table = item
+        self._item = item
         self._value = value
         self._replaced = False
 
     @property
     def item(self):
-        return self._table
+        return self._item
 
     @property
     def usage(self):
-        return self._table.logical_name
+        return self._item.logical_name
 
     def replace_keyword(self, new_name):
-        self._table.replace_keyword(*self._get_replace_values(new_name))
+        self._item.replace_keyword(*self._get_replace_values(new_name))
         self._replaced = not self._replaced
 
     def _get_replace_values(self, new_name):
@@ -38,7 +38,7 @@ class Occurrence(object):
         return new_name, self._value
 
     def notify_value_changed(self):
-        self._table.notify_value_changed()
+        self._item.notify_value_changed()
 
 
 class _Command(object):
@@ -154,7 +154,7 @@ class FindOccurrences(_Command):
 
 def AddKeywordFromCells(cells):
     if not cells:
-        raise ValueError('Keyword can not be empty') 
+        raise ValueError('Keyword can not be empty')
     while cells[0] == '':
         cells.pop(0)
     name = cells[0]
@@ -201,13 +201,13 @@ class RecreateMacro(_ReversibleCommand):
 class RemoveMacro(_ReversibleCommand):
 
     def __init__(self, item):
-        self._table = item
+        self._item = item
 
     def _execute(self, context):
-        self._table.delete()
+        self._item.delete()
 
     def _get_undo_command(self):
-        return RecreateMacro(self._table)
+        return RecreateMacro(self._item)
 
 
 class ExtractKeyword(_Command):
@@ -281,8 +281,9 @@ class DeleteCell(_StepsChangingCommand):
 
     def change_steps(self, context):
         step = self._step(context)
-        self._undo_command = CompositeCommand(InsertCell(self._row, self._col), 
-                                              ChangeCellValue(self._row, self._col, step.get_value(self._col)))
+        self._undo_command = CompositeCommand(InsertCell(self._row, self._col),
+                                              ChangeCellValue(self._row, self._col,
+                                                              step.get_value(self._col)))
         step.shift_left(self._col)
         return True
 
