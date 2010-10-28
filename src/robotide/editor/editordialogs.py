@@ -35,10 +35,10 @@ class _Dialog(Dialog):
     _title = property(lambda self: utils.name_from_class(self, drop='Dialog'))
 
     def __init__(self, controller, item=None, plugin=None):
+        # TODO: Get rid of item, everything should be in controller
         Dialog.__init__(self, self._title)
         self.SetExtraStyle(wx.WS_EX_VALIDATE_RECURSIVELY)
         self._controller = controller
-        self._table = item
         self.plugin = plugin
         self._sizer = wx.BoxSizer(wx.VERTICAL)
         self._editors = self._get_editors(item)
