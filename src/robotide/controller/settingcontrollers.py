@@ -37,15 +37,19 @@ class _SettingController(ControllerWithParent):
         return label
 
     @property
+    def _value(self):
+        return [v.replace('|', '\\|') for v in self.as_list()[1:]]
+
+    @property
     def value(self):
-        value = self.as_list()[1:]
+        value = self._value
         if self._data.comment:
             value.pop()
         return ' | '.join(value)
 
     @property
     def display_value(self):
-        return ' | ' .join(self.as_list()[1:])
+        return ' | ' .join(self._value)
 
     def as_list(self):
         return  self._data.as_list()

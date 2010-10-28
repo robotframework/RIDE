@@ -1,7 +1,6 @@
 import unittest
 from robot.parsing.settings import Fixture, Documentation, Timeout, Tags, Return
-from robot.utils.asserts import (assert_equals, assert_true, assert_false,
-                                 assert_none)
+from robot.utils.asserts import assert_equals, assert_true, assert_false
 from robot.parsing.model import TestCaseFile
 
 from robotide.controller.filecontrollers import TestCaseFileController
@@ -168,6 +167,11 @@ class TagsControllerTest(unittest.TestCase):
     def test_same_value(self):
         self.ctrl.set_value('f1 | f2')
         assert_false(self.ctrl.dirty)
+
+    def test_escaping_pipes_in_value(self):
+        self.ctrl.set_value('first \| second')
+        assert_equals(self.tags.value, ['first | second'])
+        assert_equals(self.ctrl.display_value, 'first \| second')
 
 
 class TimeoutControllerTest(unittest.TestCase):
