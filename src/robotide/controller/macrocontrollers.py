@@ -280,6 +280,12 @@ class StepController(object):
     def __init__(self, parent, step):
         self._step = step
         self.parent = parent
+        self._remove_whitespace_from_comment()
+
+    def _remove_whitespace_from_comment(self):
+        # TODO: This can be removed with RF 2.6
+        if self._step.comment:
+            self._step.comment = self._step.comment.strip()
 
     def __eq__(self, other):
         if self is other : return True
@@ -389,7 +395,7 @@ class StepController(object):
     def _get_comment(self, cells):
         if not cells:
             return None
-        return cells[-1][2:] if cells[-1].startswith('# ') else None
+        return cells[-1][2:].strip() if cells[-1].startswith('# ') else None
 
     def _recreate(self, cells, comment=None):
         self._step.__init__(cells, comment)
@@ -399,6 +405,9 @@ class StepController(object):
 
 
 class ForLoopStepController(StepController):
+
+    def _remove_whitespace_from_comment(self):
+        pass
 
     @property
     def steps(self):
