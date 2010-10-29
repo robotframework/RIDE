@@ -88,7 +88,7 @@ class _ContentAssistTextCtrlBase(object):
             elif event.GetKeyCode() == wx.WXK_ESCAPE:
                 self.hide()
             else:
-                value += chr(event.GetRawKeyCode())
+                value += unichr(event.GetRawKeyCode())
         return self._popup.content_assist_for(value)
 
     def _show_content_assist(self):
