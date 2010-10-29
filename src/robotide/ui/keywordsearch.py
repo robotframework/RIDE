@@ -48,24 +48,18 @@ class KeywordSearch(Plugin):
         self.tree.register_context_menu_hook(self._search_resource)
 
     def OnSearch(self, event):
-        self._clear_search_criteria()
-        self._show_dialog()
-
-    def _clear_search_criteria(self):
-        self._dialog.set_filters()
-
-    def _show_dialog(self):
-        if not self._dialog.IsShown():
-            self._dialog.Show()
-        self._dialog.Raise()
+        self._dialog.show_search_with_criteria()
 
     def mark_dirty(self, message):
         self.dirty = True
 
-    def unmark_dirty(self):
-        self.dirty = False
+    def update_keywords(self):
+        if not self.dirty:
+            return False
+        self._update()
+        return True
 
-    def refresh(self):
+    def _update(self):
         self.dirty = False
         self.all_keywords = self.model.get_all_keywords()
 
@@ -84,8 +78,7 @@ class KeywordSearch(Plugin):
         return [PopupMenuItem('Search Keywords', callable=callable)]
 
     def _show_resource(self, resource):
-        self._dialog.set_filters(source=resource)
-        self._show_dialog()
+        self._dialog.show_search_with_criteria(source=resource)
 
 
 class _SearchCriteria(object):
@@ -189,9 +182,7 @@ class KeywordSearchDialog(wx.Frame):
         event.Skip()
 
     def OnActivate(self, event):
-        if self._plugin.dirty:
-            self._plugin.unmark_dirty()
-            self._plugin.refresh()
+        if self._plugin.update_keywords():
             self._update_sources()
             self._populate_search()
 
@@ -249,10 +240,20 @@ class KeywordSearchDialog(wx.Frame):
         else:
             self._details.clear()
 
-    def set_filters(self, pattern='', search_docs=True, source=ALL_KEYWORDS):
+    def show_search_with_criteria(self, pattern='', search_docs=True, source=ALL_KEYWORDS):
+        self._update_widgets(pattern, search_docs, source)
+        self._populate_search()
+        self._show()
+
+    def _update_widgets(self, pattern, search_docs, source):
         self._search_control.SetValue(pattern)
         self._use_doc.SetValue(search_docs)
         self._source_filter.SetValue(source)
+
+    def _show(self):
+        if not self.IsShown():
+            self.Show()
+        self.Raise()
 
 
 class _SortOrder(object):
