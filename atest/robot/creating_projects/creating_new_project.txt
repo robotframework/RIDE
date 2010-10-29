@@ -1,6 +1,6 @@
 *** Settings ***
-Suite Setup     Close Ride
-Suite Teardown  Run Keywords  Remove Test File  Start Ride
+Suite Setup     Initialize Test Data
+Suite Teardown  Remove Test File
 Test Setup      Start RIDE
 Resource        atest_resources.txt
 

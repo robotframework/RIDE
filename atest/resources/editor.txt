@@ -14,11 +14,14 @@ Click Editor Row And Column
     [Documentation]  Row and column start from 1.
     Win Activate  RIDE
     Control Focus  RIDE  ${EMPTY}  wxWindowClass6
-    Send  {LEFT 5}
-    Send  {UP 5}
-    ${y} =  Evaluate  (${row}-1)*22+10
-    ${x} =  Evaluate  (${column}-1)*170+10
-    Control Click  RIDE  ${EMPTY}  wxWindowClass6  nX=${x}  nY=${y}
+    Send  {LEFT 25}
+    Send  {UP 25}
+    Send  {RIGHT ${column}}
+    Send  {DOWN ${row}}
+    # Column and row start from 1 and these rows remove those extra moves.
+    # Passing value 0 to Send does not work, so indexing columns and rows from 0 is no better.
+    Send  {LEFT 1}
+    Send  {UP 1}
 
 Select Row From Editor
     [Arguments]  ${row}

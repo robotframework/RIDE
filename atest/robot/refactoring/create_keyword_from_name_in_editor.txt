@@ -1,5 +1,6 @@
 *** Settings ***
-Suite Setup     Open  refactoring/create_keyword.txt
+Suite Setup     Start Refactor
+Suite Teardown  Close Ride
 Test Teardown   Save
 Resource        atest_resources.txt
 
@@ -62,3 +63,6 @@ And UK Have Two Arguments
     ${args} =  Get Arguments
     Should Be Equal  ${args}  \${arg1} | \${arg2}
 
+Start refactor
+   Start RIDE and Initialize Test Data
+   Open  refactoring/create_keyword.txt
