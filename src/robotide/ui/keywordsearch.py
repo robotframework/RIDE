@@ -53,7 +53,7 @@ class KeywordSearch(Plugin):
     def mark_dirty(self, message):
         self.dirty = True
 
-    def update_keywords(self):
+    def have_keywords_changed(self):
         if not self.dirty:
             return False
         self._update()
@@ -182,7 +182,7 @@ class KeywordSearchDialog(wx.Frame):
         event.Skip()
 
     def OnActivate(self, event):
-        if self._plugin.update_keywords():
+        if self._plugin.have_keywords_changed():
             self._update_sources()
             self._populate_search()
 
