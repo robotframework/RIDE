@@ -15,6 +15,36 @@
 import wx
 
 
+class PopupCreator(object):
+
+    def __init__(self):
+        self._external_hooks = []
+
+    def add_hook(self, hook):
+        self._external_hooks.append(hook)
+
+    def remove_hook(self, hook):
+        self._external_hooks.remove(hook)
+
+    def _get_all_actions(self, fixed_menu_items, data):
+        menu_items = fixed_menu_items
+        external_items = self._get_external_menu_items(data)
+        if external_items:
+            menu_items.add_separator()
+            for item in external_items:
+                menu_items.add_menu_item(item)
+        return menu_items
+
+    def _get_external_menu_items(self, data):
+        menu_items = []
+        for hook in self._external_hooks:
+            menu_items.extend(hook(data))
+        return menu_items
+
+    def show(self, parent, fixed_menu_items, data):
+        PopupMenu(parent, self._get_all_actions(fixed_menu_items, data))
+
+
 class PopupMenu(wx.Menu):
 
     def __init__(self, parent, menu_items):

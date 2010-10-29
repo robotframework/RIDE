@@ -14,7 +14,7 @@
 
 from wx import grid
 
-from robotide.widgets import PopupMenu, PopupMenuItems
+from robotide.widgets import PopupCreator, PopupMenuItems
 from robotide.context import IS_WINDOWS
 from clipboard import ClipboardHandler
 
@@ -34,6 +34,13 @@ class GridEditor(grid.Grid):
         self._clipboard_handler = ClipboardHandler(self)
         self._history = _GridState()
         self.CreateGrid(num_rows, num_cols)
+        self._popup_creator = PopupCreator()
+
+    def register_context_menu_hook(self, callable):
+        self._popup_creator.add_hook(callable)
+
+    def unregister_context_menu_hook(self, callable):
+        self._popup_creator.remove_hook(callable)
 
     def _bind_to_events(self):
         self.Bind(grid.EVT_GRID_SELECT_CELL, self.OnSelectCell)
@@ -144,7 +151,8 @@ class GridEditor(grid.Grid):
     def OnCellRightClick(self, event):
         if hasattr(event, 'Row') and hasattr(event, 'Col'):
             self.selection.cell_right_clicked(event.Row, event.Col)
-        PopupMenu(self, PopupMenuItems(self, self._popup_items))
+        self._popup_creator.show(self, PopupMenuItems(self, self._popup_items), 
+                                 self.selection)
 
     def OnInsertCells(self, event):
         self._insert_or_delete_cells(self._insert_cells, event)

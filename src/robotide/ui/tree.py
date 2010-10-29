@@ -28,7 +28,7 @@ from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideDataChangedToDirty
 from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
     AddKeyword, AddTestCase, RenameTest
-from robotide.widgets import PopupMenu, PopupMenuItems
+from robotide.widgets import PopupCreator, PopupMenuItems
 try:
     import treemixin
 except ImportError:
@@ -62,13 +62,13 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._history = _History()
         self._bind_keys()
         self._subscribe_to_messages()
-        self._context_menu_hooks = []
+        self._popup_creator = PopupCreator()
 
     def register_context_menu_hook(self, callable):
-        self._context_menu_hooks.append(callable)
+        self._popup_creator.add_hook(callable)
 
     def unregister_context_menu_hook(self, callable):
-        self._context_menu_hooks.remove(callable)
+        self._popup_creator.remove_hook(callable)
 
     def _subscribe_to_messages(self):
         for listener, topic in [(self._item_changed, RideItem),
@@ -515,24 +515,11 @@ class _ActionHandler(wx.Window):
         self._node = node
         self._rendered = False
         self.Show(False)
-
-    def _get_all_actions(self):
-        menu_items = PopupMenuItems(self, self._actions)
-        external_items = self._get_external_menu_items()
-        if external_items:
-            menu_items.add_separator()
-            for item in external_items:
-                menu_items.add_menu_item(item)
-        return menu_items
-
-    def _get_external_menu_items(self):
-        menu_items = []
-        for hook in self._tree._context_menu_hooks:
-            menu_items.extend(hook(self.controller))
-        return menu_items
+        self._popup_creator = tree._popup_creator
 
     def show_popup(self):
-        PopupMenu(self, self._get_all_actions())
+        self._popup_creator.show(self, PopupMenuItems(self, self._actions), 
+                                 self.controller)
 
     def OnChangeFormat(self, event):
         format =self.controller.get_format() or 'txt'
