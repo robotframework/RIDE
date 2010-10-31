@@ -331,7 +331,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         old_name = self._current_cell_value()
         if not old_name.strip():
             return
-        new_name = wx.GetTextFromUser('New name', default_value=old_name)
+        new_name = wx.GetTextFromUser('New name', 'Rename Keyword', default_value=old_name)
         if new_name:
             self._execute(RenameKeywordOccurrences(old_name, new_name))
 
