@@ -25,10 +25,6 @@ Given Grid Contains "${test}" Test
 When User Renames First UK "${original}" to "${new}"
     Click Editor Row And Column  1  1
     Rename User Keyword  ${original}  ${new}
-
-Then UK with Name "${original}" is Renamed to "${new}" in Current Test Case
-    Click Editor Row And Column  1  1
-    Grid Cell Content Should Be  ${new}
     
 The UK is Renamed to "${new}" In "${test}" Case
     Select Tree Element  Rename|${test}
