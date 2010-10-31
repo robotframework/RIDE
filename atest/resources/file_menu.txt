@@ -5,6 +5,9 @@ Resource        atest_resources.txt
 Save
     Send  ^s
 
+Save All
+    Send  ^+s
+
 Open
     [Arguments]  ${path}
     Send  ^o

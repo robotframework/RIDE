@@ -1,0 +1,4 @@
+*** Settings ***
+Suite Setup     Start RIDE and Initialize Test Data
+Suite Teardown  Close Ride
+Resource        atest_resources.txt

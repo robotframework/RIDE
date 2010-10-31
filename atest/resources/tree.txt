@@ -18,6 +18,12 @@ Select Tree Element
     Control Focus  RIDE  ${EMPTY}  SysTreeView321
     Control Tree View  RIDE  ${EMPTY}  SysTreeView321  Select  ${element}  ${EMPTY}
 
+Expand Tree Element
+    [Arguments]  ${element}
+    Win Activate  RIDE
+    Control Focus  RIDE  ${EMPTY}  SysTreeView321
+    Control Tree View  RIDE  ${EMPTY}  SysTreeView321  Expand  ${element}  ${EMPTY}
+
 Get Selected Tree Element Info
     ${cur_item} =  Control Tree View  RIDE  ${EMPTY}  SysTreeView321  GetSelected  ${EMPTY}  ${EMPTY}
     Log  ${cur_item}
