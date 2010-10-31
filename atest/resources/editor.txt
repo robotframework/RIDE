@@ -41,6 +41,24 @@ Select Rows From Editor
 Create User Keyword
     Select From Context Menu  0
 
+Rename User Keyword
+    [Arguments]   ${old name}  ${new name}
+    Select From Context Menu  3
+    Wait For Active Window   Rename Keyword
+    ${old value} =  Control Get Text  Rename Keyword  ${EMPTY}  Edit1
+    Should Be Equal   ${old value}  ${old name}
+    Control Set Text  Rename Keyword  ${EMPTY}  Edit1  ${new name}
+    Control Click   Rename Keyword  ${EMPTY}  Button1
+    
+Grid Cell Content Should Be
+    # Checking cell content by trying to rename it and then cancelling
+    [Arguments]   ${value}
+    Select From Context Menu  3
+    Wait For Active Window   Rename Keyword
+    ${name} =  Control Get Text  Rename Keyword  ${EMPTY}  Edit1
+    Should Be Equal   ${name}  ${value}
+    Control Click   Rename Keyword  ${EMPTY}  Button2
+
 Get Arguments
     ${value} =  Get From Editor  Button3  Arguments
     [Return]  ${value}

@@ -1,0 +1,45 @@
+*** Settings ***
+Suite Setup       Open   refactoring/rename.txt
+Test Teardown     Save All
+Resource          atest_resources.txt
+
+*** Test Cases ***
+Rename Keyword In Same Test Suite File
+     Given Grid Contains "First Test" Test
+     When User Renames First UK "Original" to "Renamed" 
+     Then The UK is Renamed to "Renamed" In "First Test" Case
+     And The UK is Renamed to "Renamed" In "Second Test" Case
+     And The Name of The UK "Original" Is Also Changed to "Renamed" in Keyword Table
+Rename Keyword From Resource
+     Given Grid Contains "From Resource" Test
+     When User Renames First UK "Kw From Resource" to "Renamed From Resource"
+     Then The UK is Renamed to "Renamed From Resource" In "From Resource" Case
+     And The Name of The UK "Kw From Resource" Is Also Changed to "Renamed From Resource" in Resource File
+
+
+
+*** Keywords ***
+Given Grid Contains "${test}" Test
+    Select Tree Element  Rename|${test}
+
+When User Renames First UK "${original}" to "${new}"
+    Click Editor Row And Column  1  1
+    Rename User Keyword  ${original}  ${new}
+
+Then UK with Name "${original}" is Renamed to "${new}" in Current Test Case
+    Click Editor Row And Column  1  1
+    Grid Cell Content Should Be  ${new}
+    
+The UK is Renamed to "${new}" In "${test}" Case
+    Select Tree Element  Rename|${test}
+    Click Editor Row And Column  1  1
+    Grid Cell Content Should Be  ${new}
+
+And The Name of The UK "${original}" Is Also Changed to "${new}" in Keyword Table
+    Select Tree Element  *Rename|${new}
+    Window Has Text  ${new}
+
+And The Name of The UK "${original}" Is Also Changed to "${new}" in Resource File
+    Expand Tree Element  Resources|*Resource
+    Select Tree Element  Resources|*Resource|${new}
+    Window Has Text  ${new}

@@ -1,0 +1,3 @@
+*** keywords ***
+Kw From Resource
+   No Operation

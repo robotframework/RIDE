@@ -1,0 +1,16 @@
+*** Settings ***
+Resource  resource.txt
+
+*** Test Cases ***
+First Test
+    Original
+Second Test
+    Original
+From Resource
+    Kw From Resource
+
+
+
+*** Keywords ***
+Original
+    No Operation
