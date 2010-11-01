@@ -26,7 +26,7 @@ class GridEditor(grid.Grid):
                     '---', 'Cut\tCtrl-X', 'Copy\tCtrl-C', 'Paste\tCtrl-V',
                     '---', 'Delete\tDel']
 
-    def __init__(self, parent, num_rows, num_cols):
+    def __init__(self, parent, num_rows, num_cols, popup_creator=None):
         grid.Grid.__init__(self, parent)
         self._bind_to_events()
         self.selection = _GridSelection(self)
@@ -34,7 +34,7 @@ class GridEditor(grid.Grid):
         self._clipboard_handler = ClipboardHandler(self)
         self._history = _GridState()
         self.CreateGrid(num_rows, num_cols)
-        self._popup_creator = PopupCreator()
+        self._popup_creator = popup_creator or PopupCreator()
 
     def register_context_menu_hook(self, callable):
         self._popup_creator.add_hook(callable)
@@ -152,7 +152,7 @@ class GridEditor(grid.Grid):
         if hasattr(event, 'Row') and hasattr(event, 'Col'):
             self.selection.cell_right_clicked(event.Row, event.Col)
         self._popup_creator.show(self, PopupMenuItems(self, self._popup_items), 
-                                 self.selection)
+                                 self.get_selected_content())
 
     def OnInsertCells(self, event):
         self._insert_or_delete_cells(self._insert_cells, event)

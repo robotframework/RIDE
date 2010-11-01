@@ -37,7 +37,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def __init__(self, parent, controller, tree):
         try:
-            GridEditor.__init__(self, parent, len(controller.steps) + 5, 5)
+            GridEditor.__init__(self, parent, len(controller.steps) + 5, 5, 
+                                parent.plugin._grid_popup_creator)
             self._plugin = parent.plugin
             self._configure_grid()
             self._controller = controller

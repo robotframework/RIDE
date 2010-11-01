@@ -19,6 +19,7 @@ from robotide.robotapi import (ResourceFile, TestCaseFile, TestDataDirectory,
                                TestCase, UserKeyword)
 from robotide.publish import (RideTreeSelection, RideNotebookTabChanging,
                               RideNotebookTabChanged, RideSaving)
+from robotide.widgets import PopupCreator
 from editors import (Editor, TestCaseEditor, UserKeywordEditor,
                      TestCaseFileEditor, ResourceFileEditor, InitFileEditor)
 
@@ -53,6 +54,7 @@ class EditorPlugin(Plugin):
     def __init__(self, application):
         Plugin.__init__(self, application)
         self._tab = None
+        self._grid_popup_creator = PopupCreator()
 
     def enable(self):
         self.register_editor(TestDataDirectory, InitFileEditor)
@@ -79,6 +81,19 @@ class EditorPlugin(Plugin):
         self.unsubscribe_all()
         self.delete_tab(self._tab)
         self._tab = None
+
+    def register_context_menu_hook_to_grid(self, callable):
+        """ Used to register own items to grid's right click context menu
+
+        callable is called with current selection (list of list containing
+        values) and it is expected to return list of PopupMenuItem.
+        If user selects one of the returned PopupMenuItem, related function
+        is called with one argument, the wx event.
+        """
+        self._grid_popup_creator.add_hook(callable)
+
+    def unregister_context_menu_hook_to_grid(self, callable):
+        self._grid_popup_creator.remove_hook(callable)
 
     def OnTreeItemSelected(self, message=None):
         self._tab.create_editor(self.tree)
