@@ -448,7 +448,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def OnLabelEdited(self, event):
         handler = self._get_handler(event.Item)
-        if handler.rename(event.Label):
+        if not event.IsEditCancelled() and handler.rename(event.Label): 
             self._mark_dirty(self.GetItemParent(event.Item))
         else:
             event.Veto()
