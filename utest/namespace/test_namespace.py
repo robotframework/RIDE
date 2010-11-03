@@ -12,25 +12,27 @@ from robotide.namespace.namespace import _VariableStash
 from robotide.robotapi import TestCaseFile
 from robotide.controller.filecontrollers import DataController
 
+RESOURCES_DIR = 'resources'
+RESOURCES_HTML = 'resource.html'
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'resources',
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', RESOURCES_DIR,
                              'robotdata', 'libs'))
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'resources',
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', RESOURCES_DIR,
                              'robotdata', 'put_into_python_path'))
 
 DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]),
-                        '..', 'resources', 'robotdata')
+                        '..', RESOURCES_DIR, 'robotdata')
 
 def _makepath(*elements):
     elements = [DATAPATH]+list(elements)
     return os.path.normpath(os.path.join(*elements)).replace('\\', '/')
 
 
-RESOURCE_PATH = _makepath('resources', 'resource.html')
-RESOURCE_LIB_PATH = _makepath('resources', 'resource_lib_imports.txt')
-RESOURCE_WITH_VARS = _makepath('resources', 'resource_with_variables.txt')
+RESOURCE_PATH = _makepath(RESOURCES_DIR, RESOURCES_HTML)
+RESOURCE_LIB_PATH = _makepath(RESOURCES_DIR, 'resource_lib_imports.txt')
+RESOURCE_WITH_VARS = _makepath(RESOURCES_DIR, 'resource_with_variables.txt')
 TESTCASEFILE_WITH_EVERYTHING = _makepath('testsuite', 'everything.html')
-RESOURCE_WITH_VARIABLE_IN_PATH = _makepath('resources', 'resu.${extension}')
+RESOURCE_WITH_VARIABLE_IN_PATH = _makepath(RESOURCES_DIR, 'resu.${extension}')
 LIBRARY_WITH_SPACES_IN_PATH = _makepath('lib with spaces', 'spacelib.py')
 TESTCASEFILE_WITH_RESOURCES_WITH_VARIABLES_FROM_VARIABLE_FILE = _makepath('var_file_variables',
                                             'import_resource_with_variable_from_var_file.txt')
@@ -127,11 +129,11 @@ class TestKeywordSuggestions(_DataFileTest):
 
     def test_resource_file_keywords(self):
         sugs = self.ns.get_suggestions_for(self.kw, 'Resource Uk')
-        self._assert_import_kws(sugs, 'resource.html')
+        self._assert_import_kws(sugs, RESOURCES_HTML)
 
     def test_keywords_normalization(self):
         sugs = self.ns.get_suggestions_for(self.kw, 'Reso   Urceuk')
-        self._assert_import_kws(sugs, 'resource.html')
+        self._assert_import_kws(sugs, RESOURCES_HTML)
 
     def test_uk_from_resource_files_resource_file(self):
         sugs = self.ns.get_suggestions_for(self.kw, 'UK From Text Resource')
