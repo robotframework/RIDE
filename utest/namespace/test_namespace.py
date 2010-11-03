@@ -20,21 +20,32 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'resources',
 
 DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]),
                         '..', 'resources', 'robotdata')
-RESOURCE_PATH = os.path.normpath(os.path.join(DATAPATH, 'resources',
-                                              'resource.html')).replace('\\', '/')
-RESOURCE_LIB_PATH = os.path.normpath(os.path.join(DATAPATH, 'resources',
-                                                  'resource_lib_imports.txt')).replace('\\', '/')
-RESOURCE_WITH_VARS = os.path.normpath(os.path.join(DATAPATH, 'resources',
-                                                   'resource_with_variables.txt')).replace('\\', '/')
-TESTCASEFILE_WITH_EVERYTHING = os.path.normpath(os.path.join(DATAPATH, 'testsuite',
-                                                   'everything.html')).replace('\\', '/')
-RESOURCE_WITH_VARIABLE_IN_PATH = os.path.normpath(os.path.join(DATAPATH, 'resources',
-                                                   'resu.${extension}')).replace('\\', '/')
-LIBRARY_WITH_SPACES_IN_PATH = os.path.normpath(os.path.join(DATAPATH, 
-                                                   'lib with spaces', 'spacelib.py')).replace('\\', '/')
-TESTCASEFILE_WITH_RESOURCES_WITH_VARIABLES_FROM_VARIABLE_FILE = os.path.normpath(
-                                            os.path.join(DATAPATH, 'var_file_variables',
-                                            'import_resource_with_variable_from_var_file.txt')).replace('\\', '/')
+
+def _makepath(*elements):
+    elements = [DATAPATH]+list(elements)
+    return os.path.normpath(os.path.join(*elements)).replace('\\', '/')
+
+
+RESOURCE_PATH = _makepath('resources', 'resource.html')
+RESOURCE_LIB_PATH = _makepath('resources', 'resource_lib_imports.txt')
+RESOURCE_WITH_VARS = _makepath('resources', 'resource_with_variables.txt')
+TESTCASEFILE_WITH_EVERYTHING = _makepath('testsuite', 'everything.html')
+RESOURCE_WITH_VARIABLE_IN_PATH = _makepath('resources', 'resu.${extension}')
+LIBRARY_WITH_SPACES_IN_PATH = _makepath('lib with spaces', 'spacelib.py')
+TESTCASEFILE_WITH_RESOURCES_WITH_VARIABLES_FROM_VARIABLE_FILE = _makepath('var_file_variables',
+                                            'import_resource_with_variable_from_var_file.txt')
+
+OS_LIB = 'OperatingSystem'
+COLLECTIONS_LIB = 'Collections'
+STRING_LIB = 'String'
+RES_NAME_VARIABLE = '${resname}'
+LIB_NAME_VARIABLE = '${libname}'
+UNRESOLVABLE_VARIABLE = '${unresolvable}'
+UNKNOWN_VARIABLE = '${this var does not exist}'
+EXTENSION_VAR = '${extension}'
+EXTENSION = 'txt'
+INVALID_FILE_PATH = '/this/is/invalid.py'
+EXISTING_USER_KEYWORD = 'Should be in keywords Uk'
 
 def _build_test_case_file():
     tcf = TestCaseFile()
@@ -45,26 +56,26 @@ def _build_test_case_file():
     return tcf
 
 def _add_settings_table(tcf):
-    tcf.setting_table.add_library('Operating System')
+    tcf.setting_table.add_library(OS_LIB)
     tcf.setting_table.add_resource(RESOURCE_PATH)
     tcf.setting_table.add_resource(RESOURCE_LIB_PATH)
-    tcf.setting_table.add_resource('${resname}')
-    tcf.setting_table.add_library('${libname}')
-    tcf.setting_table.add_library('${libname}')
-    tcf.setting_table.add_library('${unresolvable}')
+    tcf.setting_table.add_resource(RES_NAME_VARIABLE)
+    tcf.setting_table.add_library(LIB_NAME_VARIABLE)
+    tcf.setting_table.add_library(LIB_NAME_VARIABLE)
+    tcf.setting_table.add_library(UNRESOLVABLE_VARIABLE)
     tcf.setting_table.add_library(LIBRARY_WITH_SPACES_IN_PATH)
     tcf.setting_table.add_resource(RESOURCE_WITH_VARIABLE_IN_PATH)
-    tcf.setting_table.add_variables('/this/is/invalid.py')
+    tcf.setting_table.add_variables(INVALID_FILE_PATH)
 
 def _add_variable_table(tcf):
-    tcf.variable_table.add('${libname}', 'Collections')
-    tcf.variable_table.add('${resname}', RESOURCE_WITH_VARS)
-    tcf.variable_table.add('${extension}', 'txt')
-    tcf.variable_table.add('${unresolvable}', '${this var does not exist}')
+    tcf.variable_table.add(LIB_NAME_VARIABLE, COLLECTIONS_LIB)
+    tcf.variable_table.add(RES_NAME_VARIABLE, RESOURCE_WITH_VARS)
+    tcf.variable_table.add(EXTENSION_VAR, EXTENSION)
+    tcf.variable_table.add(UNRESOLVABLE_VARIABLE, UNKNOWN_VARIABLE)
 
 def _add_keyword_table(tcf):
     uk_table = tcf.keyword_table
-    uk_table.add('Should be in keywords Uk')
+    uk_table.add(EXISTING_USER_KEYWORD)
     uk_table.keywords[0].args.value = ['${keyword argument}', '${keyword argument with default} = default']
 
 
@@ -96,19 +107,19 @@ class TestKeywordSuggestions(_DataFileTest):
 
     def test_user_keywords(self):
         sugs = self.ns.get_suggestions_for(self.kw, 'sHoUlD')
-        assert_true('Should be in keywords Uk' in [s.name for s in sugs])
+        assert_true(EXISTING_USER_KEYWORD in [s.name for s in sugs])
 
     def test_imported_lib_keywords(self):
         sugs = self.ns.get_suggestions_for(self.kw, 'create file')
-        self._assert_import_kws(sugs, 'OperatingSystem')
+        self._assert_import_kws(sugs, OS_LIB)
 
     def test_lib_from_resource_file(self):
         sugs = self.ns.get_suggestions_for(self.kw, 'generate random')
-        self._assert_import_kws(sugs, 'String')
+        self._assert_import_kws(sugs, STRING_LIB)
 
     def test_lib_import_from_var(self):
         sugs = self.ns.get_suggestions_for(self.kw, 'Copy List')
-        self._assert_import_kws(sugs, 'Collections')
+        self._assert_import_kws(sugs, COLLECTIONS_LIB)
 
     def test_lib_import_with_spaces(self):
         sugs = self.ns.get_suggestions_for(self.kw, 'space')
@@ -174,7 +185,7 @@ class TestKeywordSuggestions(_DataFileTest):
         assert_true(len(list_vars) > 0)
         assert_true(len(self.ns.get_suggestions_for(self.kw, '@{')) == len(list_vars))
         sug = self.ns.get_suggestions_for(self.kw, '${lib')
-        assert_true(sug[0].name == '${libname}')
+        assert_true(sug[0].name == LIB_NAME_VARIABLE)
 
     def test_vars_from_file(self):
         sugs = self.ns.get_suggestions_for(self._get_controller(TESTCASEFILE_WITH_EVERYTHING).keywords[0],
