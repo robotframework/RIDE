@@ -46,6 +46,13 @@ class _Command(object):
     def execute(self, context):
         raise NotImplementedError(self.__class__)
 
+class CopyMacroAs(_Command):
+
+    def __init__(self, new_name):
+        self._new_name = new_name
+
+    def execute(self, context):
+        context.copy(self._new_name)
 
 class _ReversibleCommand(_Command):
 

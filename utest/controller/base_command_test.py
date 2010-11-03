@@ -9,15 +9,16 @@ from robotide.controller.tablecontrollers import (TestCaseController,
                                                   TestCaseTableController)
 from robotide.publish.messages import RideItemStepsChanged
 
-
-STEP1 = '  Step 1  arg'
+TEST_NAME = 'Test With two Steps'
+STEP1_KEYWORD = 'Step 1'
+STEP1 = '  '+STEP1_KEYWORD+'  arg'
 STEP2 = '  Step 2  a1  a2  a3'
 STEP_WITH_COMMENT = '  Foo  # this is a comment'
 FOR_LOOP_HEADER = '  : FOR  ${i}  IN  1  2  3'
 FOR_LOOP_STEP1 = '    Log  ${i}'
 FOR_LOOP_STEP2 = '    No Operation'
 
-data = ['Test With two Steps',
+data = [TEST_NAME,
         STEP1,
         STEP2,
         STEP_WITH_COMMENT,
@@ -58,6 +59,9 @@ class TestCaseCommandTest(unittest.TestCase):
 
     def tearDown(self):
         PUBLISHER.unsubscribe(self._test_changed, RideItemStepsChanged)
+
+    def _get_macros(self):
+        return [m for m in self._ctrl._parent]
 
     def _data_row(self, line):
         return data.index(line)-1

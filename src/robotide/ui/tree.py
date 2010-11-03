@@ -27,7 +27,7 @@ from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideTestCaseAdded, RideUserKeywordRemoved, RideTestCaseRemoved, RideDataFileRemoved,\
     RideDataChangedToDirty
 from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
-    AddKeyword, AddTestCase, RenameTest
+    AddKeyword, AddTestCase, RenameTest, CopyMacroAs
 from robotide.widgets import PopupCreator, PopupMenuItems
 try:
     import treemixin
@@ -619,8 +619,7 @@ class _TestOrUserKeywordHandler(_ActionHandler):
     def OnCopy(self, event):
         dlg = self._dialog_class(self.controller, self.item)
         if dlg.ShowModal() == wx.ID_OK:
-            copied = self.controller.copy(dlg.get_name())
-            self._add_copy_to_tree(self._tree.GetItemParent(self._node), copied)
+            self.controller.execute(CopyMacroAs(dlg.get_name()))
         dlg.Destroy()
 
     def OnMoveUp(self, event):

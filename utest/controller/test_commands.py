@@ -1,6 +1,27 @@
 from robotide.controller.commands import *
 from base_command_test import *
+from robot.utils.asserts import assert_true
 
+class MacroCopyingTest(TestCaseCommandTest):
+
+    def test_copy_macro(self):
+        new_name = self._ctrl.name + '1'
+        original_macro_number = len(self._get_macros())
+        self._exec(CopyMacroAs(new_name))
+        macro_names = [m.name for m in self._get_macros()]
+        assert_true(self._ctrl.name in macro_names)
+        assert_true(new_name in macro_names)
+        assert_equals(len(macro_names), original_macro_number+1)
+
+    def test_copy_does_not_change_original(self):
+        new_name = self._ctrl.name + '2'
+        self._exec(CopyMacroAs(new_name))
+        copies = [m for m in self._get_macros() if m.name == new_name]
+        assert_equals(len(copies), 1)
+        copy = copies[0]
+        copy.execute(ChangeCellValue(0, 0, 'Changed Step'))
+        assert_equals(self._ctrl.steps[0].keyword, STEP1_KEYWORD)
+        assert_equals(copy.steps[0].keyword, 'Changed Step')
 
 class TestCaseEditingTest(TestCaseCommandTest):
 
