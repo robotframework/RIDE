@@ -3,9 +3,9 @@ import os
 import unittest
 from robot.running import TestLibrary
 from robot.parsing.model import UserKeyword
-from robot.utils.asserts import assert_true
+from robot.utils.asserts import assert_true, assert_equals
 
-from robotide.spec.iteminfo import LibraryKeywordInfo, TestCaseUserKeywordInfo
+from robotide.spec.iteminfo import LibraryKeywordInfo, TestCaseUserKeywordInfo, VariableInfo
 
 
 testlibpath = os.path.join(os.path.dirname(__file__), '..', 'resources', 'robotdata', 'libs')
@@ -31,6 +31,40 @@ class TestKeywordInfo(unittest.TestCase):
         exp_start = 'Source: testcase.txt &lt;test case file&gt;<br><br>Arguments: [ arg1 | arg2=def | *varargs ]<br><br>'
         assert_true(kw_info.details.startswith(exp_start), kw_info.details)
 
+
+class TestVariableInfo(unittest.TestCase):
+
+    def test_variable_item_info(self):
+        name = '${foo}'
+        source = 'source'
+        value = True
+        info = VariableInfo(name, value, source)
+        assert_equals(info.name, name)
+        assert_equals(info.details, 'Source: %s<br><br>Value:<br>%s' % (source, value))
+
+    def test_variable_item_info_when_value_none(self):
+        name = '${foo}'
+        source = 'source'
+        value = None
+        info = VariableInfo(name, value, source)
+        assert_equals(info.name, name)
+        assert_equals(info.details, 'Source: %s<br><br>Value:<br>%s' % (source, value))
+
+    def test_list_variable_item_info(self):
+        name = '@{foo}'
+        source = 'source'
+        value = [1,2,3]
+        info = VariableInfo(name, value, source)
+        assert_equals(info.name, name)
+        assert_equals(info.details, 'Source: %s<br><br>Value:<br>[ %s ]' % (source, ' | '.join(str(i) for i in value)))
+    
+    def test_list_variable_item_info_when_value_none(self):
+        name = '@{foo}'
+        source = 'source'
+        value = None
+        info = VariableInfo(name, value, source)
+        assert_equals(info.name, name)
+        assert_equals(info.details, 'Source: %s<br><br>Value:<br>[  ]' % source)
 
 if __name__ == "__main__":
     unittest.main()

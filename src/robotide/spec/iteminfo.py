@@ -60,11 +60,11 @@ class VariableInfo(ItemInfo):
         return os.path.basename(source) if source else ''
 
     def _details(self, name, source, value):
-        prefix = 'Source: %s<br><br>Value: ' % source
-        if name.startswith('$'):
-            return prefix  + unicode(value)
-        return '%s [ %s ]' % (prefix, ' | '.join(value))
-
+        if name.startswith('@'):
+            if value is None:
+                value = []
+            value = '[ %s ]' % ' | '.join(unicode(v) for v in value)
+        return 'Source: %s<br><br>Value:<br>%s' % (source, unicode(value)) 
 
 class _KeywordInfo(ItemInfo):
 
