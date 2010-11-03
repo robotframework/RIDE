@@ -341,6 +341,17 @@ class TestVariableStash(unittest.TestCase):
         assert_true('${SPACE}' in [v.name for v in vars])
         assert_true('${PREV_TEST_MESSAGE}' in [v.name for v in vars])
 
+    def test_global_variable_trues_value_is_replaced_with_true(self):
+        assert_equals(_VariableStash().replace_variables('${True}'), True)
+
+    def test_global_variable_falses_value_is_replaced_with_false(self):
+        assert_equals(_VariableStash().replace_variables('${False}'), False)
+
+    def test_global_variable_nones_value_is_replaced_with_none(self):
+        assert_equals(_VariableStash().replace_variables('${None}'), None)
+
+    def test_global_variable_nulls_value_is_replaced_with_none(self):
+        assert_equals(_VariableStash().replace_variables('${null}'), None)
 
 class TestResourceGetter(_DataFileTest):
 
