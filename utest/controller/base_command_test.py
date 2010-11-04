@@ -66,6 +66,9 @@ class TestCaseCommandTest(unittest.TestCase):
     def _get_macros(self):
         return [m for m in self._ctrl._parent]
 
+    def _get_macro_by_name(self, name):
+        return [m for m in self._get_macros() if m.name == name][0]
+
     def _data_row(self, line):
         return data.index(line)-1
 
