@@ -154,7 +154,10 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.OnDelete(event)
 
     def OnDelete(self, event=None):
-        self._execute(ClearArea(self.selection.topleft,
+        if self.IsCellEditControlShown():
+            self.delete()
+        else:
+            self._execute(ClearArea(self.selection.topleft,
                                            self.selection.bottomright))
 
     def OnPaste(self, event=None):
