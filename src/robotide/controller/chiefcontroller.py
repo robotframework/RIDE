@@ -33,6 +33,9 @@ class ChiefController(object):
         self._controller = None
         self.resources = []
 
+    def execute(self, command):
+        return command.execute(self)
+
     @property
     def data(self):
         return self._controller
