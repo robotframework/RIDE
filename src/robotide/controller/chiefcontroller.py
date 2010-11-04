@@ -149,7 +149,7 @@ class ChiefController(object):
         RideChangeFormat(oldpath=old_path, newpath=controller.source).publish()
 
     def _remove_file(self, path):
-        if path:
+        if path and os.path.isfile(path):
             os.remove(path)
 
     def change_format_recursive(self, controller, format):
