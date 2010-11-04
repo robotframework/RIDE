@@ -25,7 +25,7 @@ from robotide.publish import RideTreeSelection, PUBLISHER
 from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
 from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideTestCaseAdded, RideUserKeywordRemoved, RideTestCaseRemoved, RideDataFileRemoved,\
-    RideDataChangedToDirty
+    RideDataChangedToDirty, RideDataDirtyCleared
 from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
     AddKeyword, AddTestCase, RenameTest, CopyMacroAs
 from robotide.widgets import PopupCreator, PopupMenuItems
@@ -77,7 +77,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
                              (self._macro_removed, RideUserKeywordRemoved),
                              (self._macro_removed, RideTestCaseRemoved),
                              (self._datafile_removed, RideDataFileRemoved),
-                             (self._data_dirty, RideDataChangedToDirty)]:
+                             (self._data_dirty, RideDataChangedToDirty),
+                             (self._data_undirty, RideDataDirtyCleared)]:
             PUBLISHER.subscribe(listener, topic)
 
     def _bind_keys(self):
@@ -237,6 +238,9 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _data_dirty(self, message):
         self.mark_dirty(message.datafile)
+
+    def _data_undirty(self, message):
+        self.unset_dirty()
 
     def mark_dirty(self, controller):
         if controller.dirty:
