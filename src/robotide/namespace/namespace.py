@@ -197,7 +197,6 @@ class RetrieverContext(object):
 
 
 class _VariableStash(object):
-    from robot.variables import GLOBAL_VARIABLES
     # Global variables copied from robot.variables.__init__.py
     global_variables =  {'${TEMPDIR}': os.path.normpath(tempfile.gettempdir()),
                          '${EXECDIR}': os.path.abspath('.'),
