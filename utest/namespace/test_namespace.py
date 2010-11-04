@@ -175,6 +175,11 @@ class TestKeywordSuggestions(_DataFileTest):
     def _not_variable(self, item):
         return not (item.name.startswith('$') or item.name.startswith('@'))
 
+    def test_global_variable_list_suggestions(self):
+        globals = [name for name in _VariableStash.global_variables]
+        for name in globals:
+            assert_true(name in [sug.name for sug in self.ns.get_suggestions_for(self.kw, name)])
+
     def test_resource_with_variable_in_path(self):
         sugs = self.ns.get_suggestions_for(self.kw, 'Resu UK')
         self._assert_import_kws(sugs, 'resu.txt')
