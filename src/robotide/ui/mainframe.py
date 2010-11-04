@@ -28,6 +28,7 @@ from pluginmanager import PluginManager
 from tree import Tree
 from notebook import NoteBook
 from progress import LoadProgressObserver
+from robotide.controller.commands import SaveFile, SaveAll
 
 
 _menudata = """
@@ -183,17 +184,22 @@ class RideFrame(wx.Frame, RideEventHandler):
                 self.open_suite(path)
 
     def OnSave(self, event):
-        self.save(self.get_selected_datafile_controller())
-
-    def OnSaveAll(self, event):
         self.save()
 
+    def OnSaveAll(self, event):
+        self._show_dialog_for_files_without_format()
+        self._controller.execute(SaveAll())
+
     def save(self, controller=None):
+        if controller is None : 
+            controller = self.get_selected_datafile_controller()
+        self._show_dialog_for_files_without_format(controller)
+        controller.execute(SaveFile())
+
+    def _show_dialog_for_files_without_format(self, controller=None):
         files_without_format = self._controller.get_files_without_format(controller)
         for f in files_without_format:
             self._show_format_dialog_for(f)
-        self._controller.save(controller)
-        self.tree.unset_dirty()
 
     def _show_format_dialog_for(self, file_controller_without_format):
         help = 'Please provide format of initialization file for directory suite\n"%s".' %\
