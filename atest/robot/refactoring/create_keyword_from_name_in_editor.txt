@@ -1,5 +1,5 @@
 *** Settings ***
-Suite Setup     Open  refactoring/create_keyword.txt
+Suite Setup     Open  refactoring\\create_keyword.txt
 Test Teardown   Save
 Resource        atest_resources.txt
 

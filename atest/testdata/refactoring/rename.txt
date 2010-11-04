@@ -5,6 +5,7 @@ Resource  resource.txt
 First Test
     Original
 Second Test
+    No Operation
     Original
 From Resource
     Kw From Resource
