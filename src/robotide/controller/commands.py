@@ -11,7 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-
+from itertools import chain
 
 class Occurrence(object):
 
@@ -254,6 +254,9 @@ class ChangeCellValue(_StepsChangingCommand):
 class SaveFile(_Command):
 
     def execute(self, context):
+        datafile_controller = context.datafile_controller
+        for macro_controller in chain(datafile_controller.tests, datafile_controller.keywords):
+            macro_controller.execute(Purify())
         context.datafile_controller.save()
 
 class Purify(_StepsChangingCommand):

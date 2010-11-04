@@ -112,7 +112,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
             if orig.is_set:
                 copied.set_value(orig.value)
             copied.set_comment(orig.comment)
-        new.data.steps = [Step(s.as_list()) for s in self.data.steps]
+        new.data.steps = [Step(s.as_list()) for s in self.steps]
         return new
 
     def remove_empty_steps(self):

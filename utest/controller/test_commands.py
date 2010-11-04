@@ -9,6 +9,24 @@ class FileHandlingCommandsTest(TestCaseCommandTest):
         self._exec(SaveFile())
         assert_true(self._file_saved)
 
+    def test_file_saving_purifies(self):
+        self._add_empty_step_to_macro()
+        other_name = self._ctrl.name + 'foo'
+        self._copy_macro_as(other_name)      
+        
+        self._exec(SaveFile())
+        
+        assert_equals(len(self._ctrl.steps), self._orig_number_of_steps+1)
+        other = self._get_macro_by_name(other_name)
+        assert_equals(len(other.steps), self._orig_number_of_steps+1)
+
+    def _add_empty_step_to_macro(self):
+        self._exec(ChangeCellValue(self._orig_number_of_steps+1, 10, 'A'))
+        self._verify_step_number_change(2)
+
+    def _copy_macro_as(self, name):
+        self._exec(CopyMacroAs(name))
+
 class MacroCopyingTest(TestCaseCommandTest):
 
     def test_copy_macro(self):
@@ -19,6 +37,7 @@ class MacroCopyingTest(TestCaseCommandTest):
         assert_true(self._ctrl.name in macro_names)
         assert_true(new_name in macro_names)
         assert_equals(len(macro_names), original_macro_number+1)
+        assert_equals(len(self._get_macro_by_name(new_name).steps), len(self._ctrl.steps))
 
     def test_copy_does_not_change_original(self):
         new_name = self._ctrl.name + '2'
