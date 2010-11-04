@@ -260,6 +260,12 @@ class SaveFile(_Command):
         datafile_controller.save()
         datafile_controller.unmark_dirty()
 
+class SaveAll(_Command):
+
+    def execute(self, context):
+        for datafile_controller in context._get_all_dirty_controllers():
+            datafile_controller.execute(SaveFile())
+
 class Purify(_StepsChangingCommand):
 
     def change_steps(self, context):
