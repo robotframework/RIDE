@@ -8,6 +8,7 @@ class FileHandlingCommandsTest(TestCaseCommandTest):
         self._file_saved = False
         self._exec(SaveFile())
         assert_true(self._file_saved)
+        assert_false(self._ctrl.datafile_controller.dirty)
 
     def test_file_saving_purifies(self):
         self._add_empty_step_to_macro()

@@ -257,7 +257,8 @@ class SaveFile(_Command):
         datafile_controller = context.datafile_controller
         for macro_controller in chain(datafile_controller.tests, datafile_controller.keywords):
             macro_controller.execute(Purify())
-        context.datafile_controller.save()
+        datafile_controller.save()
+        datafile_controller.unmark_dirty()
 
 class Purify(_StepsChangingCommand):
 
