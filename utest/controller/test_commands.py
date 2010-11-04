@@ -1,6 +1,13 @@
 from robotide.controller.commands import *
 from base_command_test import *
-from robot.utils.asserts import assert_true
+from robot.utils.asserts import assert_true, assert_false
+
+class FileHandlingCommandsTest(TestCaseCommandTest):
+
+    def test_file_saving(self):
+        self._file_saved = False
+        self._exec(SaveFile())
+        assert_true(self._file_saved)
 
 class MacroCopyingTest(TestCaseCommandTest):
 

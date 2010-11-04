@@ -251,6 +251,10 @@ class ChangeCellValue(_StepsChangingCommand):
     def _get_undo_command(self):
         return self._undo_command
 
+class SaveFile(_Command):
+
+    def execute(self, context):
+        context.datafile_controller.save()
 
 class Purify(_StepsChangingCommand):
 

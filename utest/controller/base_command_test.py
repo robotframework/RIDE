@@ -41,9 +41,9 @@ def create():
     return tcf
 
 
-def testcase_controller():
+def testcase_controller(chief=None):
     tcf = create()
-    tctablectrl = TestCaseTableController(TestCaseFileController(tcf),
+    tctablectrl = TestCaseTableController(TestCaseFileController(tcf, chief),
                                           tcf.testcase_table)
     return TestCaseController(tctablectrl, tcf.testcase_table.tests[0])
 
@@ -52,10 +52,13 @@ class TestCaseCommandTest(unittest.TestCase):
 
     def setUp(self):
         self._steps = None
-        self._ctrl = testcase_controller()
+        self._ctrl = testcase_controller(self)
         PUBLISHER.subscribe(self._test_changed, RideItemStepsChanged)
         self._orig_number_of_steps = len(self._ctrl.steps)
         self._number_of_test_changes = 0
+
+    def serialize_controller(self, controller):
+        self._file_saved = (controller == self._ctrl.datafile_controller)
 
     def tearDown(self):
         PUBLISHER.unsubscribe(self._test_changed, RideItemStepsChanged)
