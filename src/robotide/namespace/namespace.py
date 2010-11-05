@@ -368,7 +368,7 @@ class DatafileRetriever(object):
         for kw in keywords:
             # TODO: this hack creates a preference for local keywords over resources and libraries
             # Namespace should be rewritten to handle keyword preference order
-            if not (kw.name in ret and kw.source != datafile.source):
+            if kw.name not in ret:
                 ret[kw.name] = kw
             ret[kw.longname] = kw
         return ret
