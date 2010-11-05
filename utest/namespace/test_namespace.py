@@ -176,8 +176,8 @@ class TestKeywordSuggestions(_DataFileTest):
         return not (item.name.startswith('$') or item.name.startswith('@'))
 
     def test_global_variable_list_suggestions(self):
-        globals = [name for name in _VariableStash.global_variables]
-        for name in globals:
+        global_var_names = [name for name in _VariableStash.global_variables]
+        for name in global_var_names:
             assert_true(name in [sug.name for sug in self.ns.get_suggestions_for(self.kw, name)])
 
     def test_resource_with_variable_in_path(self):
