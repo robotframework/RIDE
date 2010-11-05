@@ -1,30 +1,18 @@
 import unittest
-from robot.parsing.model import TestCaseFile, TestData
+from robot.parsing.model import TestCaseFile
 
 from robot.utils.asserts import assert_equals
 from robotide.controller import ChiefController
-from robotide.controller.macrocontrollers import KEYWORD_NAME_FIELD, TESTCASE_NAME_FIELD
+from robotide.controller.macrocontrollers import KEYWORD_NAME_FIELD
 from robotide.controller.commands import Undo, FindOccurrences, RenameKeywordOccurrences
 from robotide.controller.filecontrollers import (TestCaseFileController,
                                                  TestCaseTableController,
-                                                 TestCaseController,
-    DataController)
+                                                 TestCaseController)
 from robotide.publish import PUBLISHER
 from robotide.publish.messages import RideItemStepsChanged, RideItemSettingsChanged,\
     RideItemNameChanged
-import os
 from robotide.namespace.namespace import Namespace
-
-RESOURCES_DIR = 'resources'
-DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]),
-                        '..', RESOURCES_DIR, 'robotdata')
-
-def _makepath(*elements):
-    elements = [DATAPATH]+list(elements)
-    return os.path.normpath(os.path.join(*elements)).replace('\\', '/')
-
-
-OCCURENCES_PATH = _makepath('occurences')
+import datafilereader
 
 
 STEP1_KEYWORD = 'Log'
@@ -94,14 +82,7 @@ class FindOccurrencesTest(unittest.TestCase):
         self.test_ctrl = TestCaseControllerWithSteps()
 
     def test_finds_only_occurrences_with_same_source(self):
-        ts1 = TestCaseControllerWithSteps()
-        ts2 = TestCaseControllerWithSteps(chief=ts1.datafile_controller._chief_controller, 
-                                          source='source.txt')
-        occurrences = ts2.execute(FindOccurrences(USERKEYWORD1_NAME))
-        assert_equals(len(occurrences), 1)
-
-    def test_finds_only_occurrences_with_same_source2(self):
-        ctrl = self._get_controller(OCCURENCES_PATH)
+        ctrl = self._get_controller(datafilereader.OCCURENCES_PATH)
         ts1 = self._get_ctrl_by_name('TestSuite1', ctrl.datafiles)
         ts2 = self._get_ctrl_by_name('TestSuite2', ctrl.datafiles)
         resu = self._get_ctrl_by_name('Occurences Resource', ctrl.datafiles)
