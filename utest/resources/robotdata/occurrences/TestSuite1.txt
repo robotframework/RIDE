@@ -1,11 +1,14 @@
 *** Settings ***
-Resource    occurences_resource.txt
+Resource    occurrences_resource.txt
 
 *** Test Cases ***
 My Test 
    My Keyword
+   None Keyword
+   Log   From builtin
 
 *** Keywords ***
 My Keyword
    No Operation
-
+None Keyword
+   No Operation

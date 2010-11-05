@@ -65,7 +65,7 @@ def _first_occurrence(test_ctrl, kw_name):
     return occurrences[0]
 
 
-class FindOccurrencesTest(unittest.TestCase):
+class FindOccurrencesWithFiles(unittest.TestCase):
 
     def _get_controller(self, source):
         chief = ChiefController(Namespace())
@@ -78,23 +78,39 @@ class FindOccurrencesTest(unittest.TestCase):
     def finish(self, *args):
         pass
 
-    def setUp(self):
-        self.test_ctrl = TestCaseControllerWithSteps()
-
-    def test_finds_only_occurrences_with_same_source(self):
-        ctrl = self._get_controller(datafilereader.OCCURENCES_PATH)
-        ts1 = self._get_ctrl_by_name('TestSuite1', ctrl.datafiles)
-        ts2 = self._get_ctrl_by_name('TestSuite2', ctrl.datafiles)
-        resu = self._get_ctrl_by_name('Occurences Resource', ctrl.datafiles)
-        assert_equals(len(ts1.execute(FindOccurrences('My Keyword'))), 2)
-        assert_equals(len(ts2.execute(FindOccurrences('My Keyword'))), 2)
-        assert_equals(len(resu.execute(FindOccurrences('My Keyword'))), 2)
-
     def _get_ctrl_by_name(self, name, datafiles):
         for file in datafiles:
             if file.name == name:
                 return file
         return None
+
+    def setUp(self):
+        ctrl = self._get_controller(datafilereader.OCCURRENCES_PATH)
+        self.ts1 = self._get_ctrl_by_name('TestSuite1', ctrl.datafiles)
+        self.ts2 = self._get_ctrl_by_name('TestSuite2', ctrl.datafiles)
+        self.resu = self._get_ctrl_by_name('Occurrences Resource', ctrl.datafiles)
+
+    def test_finds_only_occurrences_with_same_source(self):
+        self.assert_occurrences(self.ts1, 'My Keyword', 2)
+        self.assert_occurrences(self.ts2, 'My Keyword', 3)
+        self.assert_occurrences(self.resu, 'My Keyword', 3)
+
+    def test_finds_occurences_that_are_unrecognized(self):
+        self.assert_occurrences(self.ts1, 'None Keyword', 2)
+        self.assert_occurrences(self.ts2, 'None Keyword', 3)
+
+    def test_finds_occurences_that_override_builtin(self):
+        self.assert_occurrences(self.ts1, 'Log', 1)
+        self.assert_occurrences(self.ts2, 'Log', 2)
+
+    def assert_occurrences(self, ctrl, kw_name, count):
+        assert_equals(len(ctrl.execute(FindOccurrences(kw_name))), count)
+
+
+class FindOccurrencesTest(unittest.TestCase):
+
+    def setUp(self):
+        self.test_ctrl = TestCaseControllerWithSteps()
 
     def test_no_occurrences(self):
         find_occurrences = FindOccurrences('Keyword Name')

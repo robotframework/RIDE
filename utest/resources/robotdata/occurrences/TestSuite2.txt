@@ -1,0 +1,17 @@
+*** Settings ***
+Resource    occurrences_resource.txt
+
+*** Test Cases ***
+My Test
+    My Keyword
+    My Keyword
+    None Keyword
+    Log    Local
+
+My Other Test
+    None Keyword
+    None Keyword
+
+*** Keywords ***
+Log
+    Overrides builtin

@@ -16,4 +16,4 @@ RESOURCE_WITH_VARIABLE_IN_PATH = _makepath(RESOURCES_DIR, 'resu.${extension}')
 LIBRARY_WITH_SPACES_IN_PATH = _makepath('lib with spaces', 'spacelib.py')
 TESTCASEFILE_WITH_RESOURCES_WITH_VARIABLES_FROM_VARIABLE_FILE = _makepath('var_file_variables',
                                             'import_resource_with_variable_from_var_file.txt')
-OCCURENCES_PATH = _makepath('occurences')
+OCCURRENCES_PATH = _makepath('occurrences')
