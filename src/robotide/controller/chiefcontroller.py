@@ -110,6 +110,9 @@ class ChiefController(object):
         return self._namespace.get_all_keywords(ctrl.datafile for ctrl in
                                                 self.datafiles)
 
+    def keyword_info(self, datafile, keyword_name):
+        return self._namespace.find_keyword(datafile, keyword_name)
+
     def get_files_without_format(self, controller=None):
         if controller:
             controller_list = [controller]

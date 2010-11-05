@@ -1,5 +1,5 @@
 import unittest
-from robot.parsing.model import TestCaseFile
+from robot.parsing.model import TestCaseFile, TestData
 
 from robot.utils.asserts import assert_equals
 from robotide.controller import ChiefController
@@ -7,10 +7,25 @@ from robotide.controller.macrocontrollers import KEYWORD_NAME_FIELD, TESTCASE_NA
 from robotide.controller.commands import Undo, FindOccurrences, RenameKeywordOccurrences
 from robotide.controller.filecontrollers import (TestCaseFileController,
                                                  TestCaseTableController,
-                                                 TestCaseController)
+                                                 TestCaseController,
+    DataController)
 from robotide.publish import PUBLISHER
 from robotide.publish.messages import RideItemStepsChanged, RideItemSettingsChanged,\
     RideItemNameChanged
+import os
+from robotide.namespace.namespace import Namespace
+
+RESOURCES_DIR = 'resources'
+DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]),
+                        '..', RESOURCES_DIR, 'robotdata')
+
+def _makepath(*elements):
+    elements = [DATAPATH]+list(elements)
+    return os.path.normpath(os.path.join(*elements)).replace('\\', '/')
+
+
+OCCURENCES_PATH = _makepath('occurences')
+
 
 STEP1_KEYWORD = 'Log'
 STEP2_ARGUMENT = 'No Operation'
@@ -25,10 +40,9 @@ SUITE_TEST_TEMPLATE_KEYWORD = 'Test Template Kw'
 SUITE_NAME = 'Some Suite'
 KEYWORD_IN_USERKEYWORD1 = 'Some Keyword'
 
-
-def TestCaseControllerWithSteps():
+def TestCaseControllerWithSteps(chief=None, source='some_suite.txt'):
     tcf = TestCaseFile()
-    tcf.source = 'some_suite.txt'
+    tcf.source = source
     tcf.setting_table.suite_setup.name = 'Suite Setup Kw'
     tcf.setting_table.test_setup.name = SUITE_TEST_SETUP_KEYWORD
     tcf.setting_table.test_teardown.name = 'Test Teardown Kw'
@@ -44,7 +58,8 @@ def TestCaseControllerWithSteps():
     testcase.template.value = TEMPLATE_KEYWORD
     uk = tcf.keyword_table.add(USERKEYWORD1_NAME)
     uk.add_step([KEYWORD_IN_USERKEYWORD1])
-    chief = ChiefController(None)
+    if chief is None:
+        chief = ChiefController(Namespace())
     tcf_ctrl = TestCaseFileController(tcf, chief)
     chief._controller = tcf_ctrl
     tctablectrl = TestCaseTableController(tcf_ctrl,
@@ -64,8 +79,41 @@ def _first_occurrence(test_ctrl, kw_name):
 
 class FindOccurrencesTest(unittest.TestCase):
 
+    def _get_controller(self, source):
+        chief = ChiefController(Namespace())
+        chief.load_data(source, self)
+        return chief
+
+    def notify(self, *args):
+        pass
+
+    def finish(self, *args):
+        pass
+
     def setUp(self):
         self.test_ctrl = TestCaseControllerWithSteps()
+
+    def test_finds_only_occurrences_with_same_source(self):
+        ts1 = TestCaseControllerWithSteps()
+        ts2 = TestCaseControllerWithSteps(chief=ts1.datafile_controller._chief_controller, 
+                                          source='source.txt')
+        occurrences = ts2.execute(FindOccurrences(USERKEYWORD1_NAME))
+        assert_equals(len(occurrences), 1)
+
+    def test_finds_only_occurrences_with_same_source2(self):
+        ctrl = self._get_controller(OCCURENCES_PATH)
+        ts1 = self._get_ctrl_by_name('TestSuite1', ctrl.datafiles)
+        ts2 = self._get_ctrl_by_name('TestSuite2', ctrl.datafiles)
+        resu = self._get_ctrl_by_name('Occurences Resource', ctrl.datafiles)
+        assert_equals(len(ts1.execute(FindOccurrences('My Keyword'))), 2)
+        assert_equals(len(ts2.execute(FindOccurrences('My Keyword'))), 2)
+        assert_equals(len(resu.execute(FindOccurrences('My Keyword'))), 2)
+
+    def _get_ctrl_by_name(self, name, datafiles):
+        for file in datafiles:
+            if file.name == name:
+                return file
+        return None
 
     def test_no_occurrences(self):
         find_occurrences = FindOccurrences('Keyword Name')

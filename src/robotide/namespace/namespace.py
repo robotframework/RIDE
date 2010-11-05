@@ -113,17 +113,17 @@ class Namespace(object):
         return self.res_cache.get_resource('', path)
 
     def find_user_keyword(self, datafile, kw_name):
-        kw = self._find_keyword(datafile, kw_name)
+        kw = self.find_keyword(datafile, kw_name)
         return kw if isinstance(kw, _UserKeywordInfo) else None
 
     def is_user_keyword(self, datafile, kw_name):
         return bool(self.find_user_keyword(datafile, kw_name))
 
     def find_library_keyword(self, datafile, kw_name):
-        kw = self._find_keyword(datafile, kw_name)
+        kw = self.find_keyword(datafile, kw_name)
         return kw if kw and kw.is_library_keyword() else None
 
-    def _find_keyword(self, datafile, kw_name):
+    def find_keyword(self, datafile, kw_name):
         if not kw_name:
             return None
         kwds = self.retriever.get_keywords_dict_cached(datafile)
@@ -142,7 +142,7 @@ class Namespace(object):
         return bool(self.find_library_keyword(datafile, kw_name))
 
     def keyword_details(self, datafile, name):
-        kw = self._find_keyword(datafile, name)
+        kw = self.find_keyword(datafile, name)
         return kw.details if kw else None
 
 
@@ -355,14 +355,17 @@ class DatafileRetriever(object):
         if not values:
             words = self.get_keywords_from(datafile)
             words.extend(self.default_kws)
-            values = self._keywords_to_dict(words)
+            values = self._keywords_to_dict(words, datafile)
             self.keyword_cache.put(datafile.source, values)
         return values
 
-    def _keywords_to_dict(self, keywords):
+    def _keywords_to_dict(self, keywords, datafile):
         ret = NormalizedDict()
         for kw in keywords:
-            ret[kw.name] = kw
+            # TODO: this hack creates a preference for local keywords over resources and libraries
+            # Namespace should be rewritten to handle keyword preference order
+            if not (kw.name in ret and kw.source != datafile.source):
+               ret[kw.name] = kw 
             ret[kw.longname] = kw
         return ret
 

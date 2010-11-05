@@ -141,11 +141,14 @@ class FindOccurrences(_Command):
         self._keyword_name = keyword_name
 
     def execute(self, context):
+        self._keyword_source = self._find_keyword_source(context.datafile_controller)
         return self._find_occurrences_in(self._items_from(context))
 
     def _items_from(self, context):
         items = []
         for df in context.all_datafiles:
+            if self._find_keyword_source(df) != self._keyword_source:
+                continue
             items.extend(df.settings)
             for test in df.tests:
                 items.extend(test.steps + test.settings)
@@ -153,6 +156,10 @@ class FindOccurrences(_Command):
                 items.append(kw.keyword_name)
                 items.extend(kw.steps)
         return items
+
+    def _find_keyword_source(self, datafile_controller):
+        item_info = datafile_controller.keyword_info(self._keyword_name)
+        return item_info.source if item_info else None
 
     def _find_occurrences_in(self, items):
         return [Occurrence(item, self._keyword_name) for item in items

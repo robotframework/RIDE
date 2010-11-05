@@ -1,0 +1,6 @@
+*** Settings ***
+Resource    occurences_resource.txt
+
+*** Test Cases ***
+My Test
+    My Keyword

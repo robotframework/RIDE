@@ -102,6 +102,9 @@ class _DataController(WithUndoRedoStacks):
     def execute(self, command):
         return command.execute(self)
 
+    def keyword_info(self, keyword_name):
+        return self._chief_controller.keyword_info(self.data, keyword_name)
+
     def has_been_modified_on_disk(self):
         return self._get_stat(self.source) != self._stat
 
