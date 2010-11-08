@@ -63,7 +63,7 @@ class RideMessage(object):
         try:
             self._publish(self)
         except Exception, err:
-            self._publish(RideLogMessage(message=str(err), level='ERROR'))
+            self._publish('Error in publishing message: ' + RideLogMessage(message=str(err), level='ERROR'))
 
     def _publish(self, msg):
         WxPublisher().sendMessage(msg.topic, msg)
