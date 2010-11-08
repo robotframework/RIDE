@@ -50,6 +50,8 @@ class RecentFilesPlugin(Plugin):
         wx.CallAfter(self._add_to_recent_files, event.path)
 
     def OnFormatChanged(self, event):
+        if not event.oldpath:
+            return
         oldpath = normalize_path(event.oldpath)
         newpath = normalize_path(event.newpath)
         if oldpath not in self.recent_files:
