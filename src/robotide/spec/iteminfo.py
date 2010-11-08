@@ -53,7 +53,7 @@ class ItemInfo(object):
 
     def __cmp__(self, other):
         if self._priority == other._priority:
-            name_cmp = cmp(self.name, other.name)
+            name_cmp = cmp(self.name.upper(), other.name.upper())
             return name_cmp if name_cmp else cmp(self.source, other.source)
         return cmp(self._priority, other._priority)
 
