@@ -20,6 +20,10 @@ from robotide.utils import html_escape, unescape
 class ItemInfo(object):
     """Represents an object that can be displayed by content assistant."""
 
+    @property
+    def _priority(self):
+        return PRIORITIES.get(self.__class__, PRIORITIES[ItemInfo])
+
     def __init__(self, name, source, details):
         """Creates an item info.
 
@@ -48,7 +52,10 @@ class ItemInfo(object):
         return not self.is_library_keyword()
 
     def __cmp__(self, other):
-        return cmp(self.name, other.name)
+        if self._priority == other._priority:
+            name_cmp = cmp(self.name, other.name)
+            return name_cmp if name_cmp else cmp(self.source, other.source)
+        return cmp(self._priority, other._priority)
 
 
 class VariableInfo(ItemInfo):
@@ -88,12 +95,6 @@ class _KeywordInfo(ItemInfo):
         return 'KeywordInfo[name: %s, source: %s, doc: %s]' %(self.name,
                                                               self.source,
                                                               self.doc)
-
-    def __cmp__(self, other):
-        if not (hasattr(other,'name') and hasattr(other,'source')):
-            return -1
-        name_cmp = cmp(self.name, other.name)
-        return name_cmp if name_cmp else cmp(self.source, other.source)
 
     def __eq__(self, other):
         return not self.__cmp__(other)
@@ -153,6 +154,7 @@ class LibraryKeywordInfo(_KeywordInfo):
         return True
 
 
+
 class _UserKeywordInfo(_KeywordInfo):
 
     def _source(self, item):
@@ -193,5 +195,14 @@ class _UserKeywordInfo(_KeywordInfo):
 class TestCaseUserKeywordInfo(_UserKeywordInfo):
     _type = 'test case file'
 
-class ResourceseUserKeywordInfo(_UserKeywordInfo):
+
+
+class ResourceUserKeywordInfo(_UserKeywordInfo):
     _type = 'resource file'
+
+
+PRIORITIES = {ItemInfo: 50,
+              LibraryKeywordInfo: 40,
+              ResourceUserKeywordInfo: 30,
+              TestCaseUserKeywordInfo: 20,
+              VariableInfo: 10}

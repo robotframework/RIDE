@@ -25,7 +25,7 @@ from robot.variables import Variables as RobotVariables
 
 from robotide.namespace.cache import LibraryCache, ExpiringCache
 from robotide.spec.iteminfo import (TestCaseUserKeywordInfo,
-                                    ResourceseUserKeywordInfo,
+                                    ResourceUserKeywordInfo,
                                     VariableInfo, _UserKeywordInfo)
 from robotide.robotapi import NormalizedDict, is_var
 from robotide import utils
@@ -285,9 +285,9 @@ class DatafileRetriever(object):
         ctx = RetrieverContext()
         self._get_vars_recursive(datafile, ctx)
         ctx.allow_going_through_resources_again()
-        kws = self._get_datafile_keywords(datafile) +\
-              self._get_imported_library_keywords(datafile, ctx) +\
-              self._get_imported_resource_keywords(datafile, ctx)
+        kws = sorted(self._get_datafile_keywords(datafile) +\
+              self._get_imported_resource_keywords(datafile, ctx) +\
+              self._get_imported_library_keywords(datafile, ctx))
         result_in_order = []
         for k in kws:
             if k not in result_in_order : result_in_order.append(k)
@@ -330,7 +330,7 @@ class DatafileRetriever(object):
         for child in self._collect_import_of_type(res, Resource):
             kws.extend(self._res_kw_recursive_getter(child, ctx))
         kws.extend(self._get_imported_library_keywords(res, ctx))
-        return [ResourceseUserKeywordInfo(kw) for kw in res.keywords] + kws
+        return [ResourceUserKeywordInfo(kw) for kw in res.keywords] + kws
 
     def get_variables_from(self, datafile):
         return self._get_vars_recursive(datafile, RetrieverContext()).vars
