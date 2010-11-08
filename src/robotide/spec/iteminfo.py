@@ -57,6 +57,12 @@ class ItemInfo(object):
             return name_cmp if name_cmp else cmp(self.source, other.source)
         return cmp(self._priority, other._priority)
 
+    def __eq__(self, other):
+        return not self.__cmp__(other) if isinstance(other, ItemInfo) else False
+
+    def __hash__(self):
+        return hash((self.name, self.source))
+
 
 class VariableInfo(ItemInfo):
 
@@ -104,12 +110,6 @@ class _KeywordInfo(ItemInfo):
         return 'KeywordInfo[name: %s, source: %s, doc: %s]' %(self.name,
                                                               self.source,
                                                               self.doc)
-
-    def __eq__(self, other):
-        return not self.__cmp__(other)
-
-    def __hash__(self):
-        return hash((self.name, self.source))
 
     def _name(self, item):
         return item.name
