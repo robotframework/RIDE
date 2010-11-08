@@ -76,8 +76,10 @@ class VariableInfo(ItemInfo):
 
 class ArgumentInfo(VariableInfo):
 
+    SOURCE = 'Argument'
+
     def __init__(self, name, value):
-        VariableInfo.__init__(self, name, value, 'Argument')
+        VariableInfo.__init__(self, name, value, self.SOURCE)
 
 
 class _KeywordInfo(ItemInfo):
