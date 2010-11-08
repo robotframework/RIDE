@@ -73,6 +73,13 @@ class VariableInfo(ItemInfo):
             value = '[ %s ]' % ' | '.join(unicode(v) for v in value)
         return 'Source: %s<br><br>Value:<br>%s' % (source, unicode(value)) 
 
+
+class ArgumentInfo(VariableInfo):
+
+    def __init__(self, name, value):
+        VariableInfo.__init__(self, name, value, 'Argument')
+
+
 class _KeywordInfo(ItemInfo):
 
     def __init__(self, item):
@@ -205,4 +212,5 @@ PRIORITIES = {ItemInfo: 50,
               LibraryKeywordInfo: 40,
               ResourceUserKeywordInfo: 30,
               TestCaseUserKeywordInfo: 20,
-              VariableInfo: 10}
+              VariableInfo: 10,
+              ArgumentInfo: 5}

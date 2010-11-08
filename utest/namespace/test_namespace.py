@@ -216,6 +216,10 @@ class TestKeywordSuggestions(_DataFileTest):
         assert_equals(len(sugs), 1)
         self._check_source(self.kw, '${keyword argument with defau', 'Argument')
 
+    def test_keyword_arguments_are_suggested_first(self):
+        sugs = self.ns.get_suggestions_for(self.kw, '')
+        self._assert_import_kws(sugs[:2], 'Argument')
+
     def test_suggestions_for_datafile(self):
         sugs = self.ns.get_suggestions_for(self.tcf_ctrl, 'Execute Manual')
         self._assert_import_kws(sugs, 'Dialogs')

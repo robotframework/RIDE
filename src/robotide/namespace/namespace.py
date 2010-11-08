@@ -26,7 +26,8 @@ from robot.variables import Variables as RobotVariables
 from robotide.namespace.cache import LibraryCache, ExpiringCache
 from robotide.spec.iteminfo import (TestCaseUserKeywordInfo,
                                     ResourceUserKeywordInfo,
-                                    VariableInfo, _UserKeywordInfo)
+                                    VariableInfo, _UserKeywordInfo,
+    ArgumentInfo)
 from robotide.robotapi import NormalizedDict, is_var
 from robotide import utils
 
@@ -97,7 +98,7 @@ class Namespace(object):
 
     def _add_kw_arg_vars(self, controller, vars):
         for name, value in controller.get_local_variables().iteritems():
-            vars.set(name, value, 'Argument')
+            vars.set_argument(name, value)
 
     def _keyword_suggestions(self, datafile, start):
         start_normalized = normalize(start)
@@ -227,6 +228,7 @@ class _VariableStash(object):
                          '${SUITE_STATUS}': '',
                          '${SUITE_MESSAGE}': ''}
 
+    ARGUMENT_SOURCE = object()
 
     def __init__(self):
         self._vars = RobotVariables()
@@ -237,6 +239,9 @@ class _VariableStash(object):
     def set(self, name, value, source):
         self._vars[name] = value
         self._sources[name] = source
+
+    def set_argument(self, name, value):
+        self.set(name, value, self.ARGUMENT_SOURCE)
 
     def replace_variables(self, value):
         try:
@@ -263,7 +268,11 @@ class _VariableStash(object):
 
     def __iter__(self):
         for name, value in self._vars.items():
-            yield VariableInfo(name, value, self._sources[name])
+            source = self._sources[name]
+            if source == self.ARGUMENT_SOURCE:
+                yield ArgumentInfo(name, value)
+            else:
+                yield VariableInfo(name, value, source)
 
 
 class DatafileRetriever(object):
