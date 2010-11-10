@@ -145,32 +145,20 @@ class FindOccurrences(_Command):
         return self._find_occurrences_in(self._items_from(context))
 
     def _items_from(self, context):
-        for df in context.all_datafiles:
-            if self._find_keyword_source(df) != self._keyword_source:
-                continue
-            for item in self._items_from_datafile(df):
-                yield item
+        return chain(*(self._items_from_datafile(df) 
+                       for df in context.all_datafiles 
+                       if self._find_keyword_source(df) == self._keyword_source))
 
     def _items_from_datafile(self, df):
-        for setting in df.settings:
-            yield setting
-        for test in df.tests:
-            for item in self._items_from_test(test):
-                yield item
-        for kw in df.keywords:
-            for item in self._items_from_keyword(kw):
-                yield item
+        return chain(df.settings,
+                     chain(*(self._items_from_test(test) for test in df.tests)),
+                     chain(*(self._items_from_keyword(kw) for kw in df.keywords)))
 
     def _items_from_keyword(self, kw):
-        yield kw.keyword_name
-        for step in kw.steps:
-            yield step
+        return chain([kw.keyword_name], kw.steps)
 
     def _items_from_test(self, test):
-        for step in test.steps:
-            yield step
-        for setting in test.settings:
-            yield setting
+        return chain(test.steps, test.settings)
 
     def _find_keyword_source(self, datafile_controller):
         item_info = datafile_controller.keyword_info(self._keyword_name)
