@@ -4,9 +4,6 @@ from robot.utils.asserts import assert_true, assert_false
 
 class FileHandlingCommandsTest(TestCaseCommandTest):
 
-    def test_fail_on_purpose(self):
-        fail
-
     def test_file_saving(self):
         self._file_saved = False
         self._exec(SaveFile())
@@ -16,10 +13,10 @@ class FileHandlingCommandsTest(TestCaseCommandTest):
     def test_file_saving_purifies(self):
         self._add_empty_step_to_macro()
         other_name = self._ctrl.name + 'foo'
-        self._copy_macro_as(other_name)      
-        
+        self._copy_macro_as(other_name)
+
         self._exec(SaveFile())
-        
+
         assert_equals(len(self._ctrl.steps), self._orig_number_of_steps+1)
         other = self._get_macro_by_name(other_name)
         assert_equals(len(other.steps), self._orig_number_of_steps+1)
