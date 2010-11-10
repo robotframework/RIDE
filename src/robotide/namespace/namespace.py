@@ -294,13 +294,9 @@ class DatafileRetriever(object):
         ctx = RetrieverContext()
         self._get_vars_recursive(datafile, ctx)
         ctx.allow_going_through_resources_again()
-        kws = sorted(self._get_datafile_keywords(datafile) +\
+        return sorted(list(set(self._get_datafile_keywords(datafile) +\
               self._get_imported_resource_keywords(datafile, ctx) +\
-              self._get_imported_library_keywords(datafile, ctx))
-        result_in_order = []
-        for k in kws:
-            if k not in result_in_order : result_in_order.append(k)
-        return result_in_order
+              self._get_imported_library_keywords(datafile, ctx))))
 
     def _get_datafile_keywords(self, datafile):
         return [TestCaseUserKeywordInfo(kw) for kw in datafile.keywords]
