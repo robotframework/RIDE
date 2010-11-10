@@ -32,7 +32,7 @@ content=["\']?true["\']?\s*
 ){2}/?>          # allows also name or content twice, but that's ok
 .*</head>
 ''', re.IGNORECASE | re.DOTALL | re.VERBOSE)
-charset_re = re.compile('<meta.* content="text/html; charset=(.*)"', re.IGNORECASE)
+charset_re = re.compile('<meta.* content="text/html; charset=(.*?)"', re.IGNORECASE)
 
 
 

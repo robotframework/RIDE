@@ -85,4 +85,4 @@ class _ListenerWrapper:
         except Exception, err:
             # Prevent infinite recusrion if RideLogMessage listerner is broken,
             if not isinstance(event.data, RideLogMessage):
-                RideLogMessage(message=unicode(err), level='ERROR').publish()
+                RideLogMessage(message='Error in listener: ' + unicode(err), level='ERROR').publish()

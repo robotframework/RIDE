@@ -57,6 +57,12 @@ class ItemInfo(object):
             return name_cmp if name_cmp else cmp(self.source, other.source)
         return cmp(self._priority, other._priority)
 
+    def __eq__(self, other):
+        return not self.__cmp__(other) if isinstance(other, ItemInfo) else False
+
+    def __hash__(self):
+        return hash((self.name, self.source))
+
 
 class VariableInfo(ItemInfo):
 
@@ -72,6 +78,15 @@ class VariableInfo(ItemInfo):
                 value = []
             value = '[ %s ]' % ' | '.join(unicode(v) for v in value)
         return 'Source: %s<br><br>Value:<br>%s' % (source, unicode(value)) 
+
+
+class ArgumentInfo(VariableInfo):
+
+    SOURCE = 'Argument'
+
+    def __init__(self, name, value):
+        VariableInfo.__init__(self, name, value, self.SOURCE)
+
 
 class _KeywordInfo(ItemInfo):
 
@@ -95,12 +110,6 @@ class _KeywordInfo(ItemInfo):
         return 'KeywordInfo[name: %s, source: %s, doc: %s]' %(self.name,
                                                               self.source,
                                                               self.doc)
-
-    def __eq__(self, other):
-        return not self.__cmp__(other)
-
-    def __hash__(self):
-        return hash((self.name, self.source))
 
     def _name(self, item):
         return item.name
@@ -205,4 +214,5 @@ PRIORITIES = {ItemInfo: 50,
               LibraryKeywordInfo: 40,
               ResourceUserKeywordInfo: 30,
               TestCaseUserKeywordInfo: 20,
-              VariableInfo: 10}
+              VariableInfo: 10,
+              ArgumentInfo: 5}

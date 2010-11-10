@@ -13,10 +13,10 @@ class FileHandlingCommandsTest(TestCaseCommandTest):
     def test_file_saving_purifies(self):
         self._add_empty_step_to_macro()
         other_name = self._ctrl.name + 'foo'
-        self._copy_macro_as(other_name)      
-        
+        self._copy_macro_as(other_name)
+
         self._exec(SaveFile())
-        
+
         assert_equals(len(self._ctrl.steps), self._orig_number_of_steps+1)
         other = self._get_macro_by_name(other_name)
         assert_equals(len(other.steps), self._orig_number_of_steps+1)

@@ -12,6 +12,7 @@ from robotide.namespace.namespace import _VariableStash
 from robotide.robotapi import TestCaseFile
 from robotide.controller.filecontrollers import DataController
 from datafilereader import *
+from robotide.spec.iteminfo import ArgumentInfo
 
 RESOURCES_DIR = 'resources'
 
@@ -214,7 +215,11 @@ class TestKeywordSuggestions(_DataFileTest):
         assert_equals(len(sugs), 2)
         sugs = self.ns.get_suggestions_for(self.kw, '${keyword argument with defau')
         assert_equals(len(sugs), 1)
-        self._check_source(self.kw, '${keyword argument with defau', 'Argument')
+        self._check_source(self.kw, '${keyword argument with defau', ArgumentInfo.SOURCE)
+
+    def test_keyword_arguments_are_suggested_first(self):
+        sugs = self.ns.get_suggestions_for(self.kw, '')
+        self._assert_import_kws(sugs[:2], ArgumentInfo.SOURCE)
 
     def test_suggestions_for_datafile(self):
         sugs = self.ns.get_suggestions_for(self.tcf_ctrl, 'Execute Manual')

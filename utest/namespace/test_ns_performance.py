@@ -18,10 +18,10 @@ TESTCASEFILE_WITH_EVERYTHING = os.path.normpath(os.path.join(DATAPATH, 'testsuit
 class TestNamespacePerformance(unittest.TestCase):
 
     def test_user_keyword_find_performance(self):
-        self._execute_keyword_find_function_n_times('is_user_keyword', 10000)
+        self._execute_keyword_find_function_n_times('is_user_keyword', 5000)
 
     def test_library_keyword_find_performance(self):
-        self._execute_keyword_find_function_n_times('is_library_keyword', 10000)
+        self._execute_keyword_find_function_n_times('is_library_keyword', 5000)
 
     def _execute_keyword_find_function_n_times(self, function, n):
         ns = Namespace()
