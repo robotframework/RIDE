@@ -111,7 +111,7 @@ class RenameKeywordOccurrences(_ReversibleCommand):
 
     def _execute(self, context):
         if self._occurrences is None:
-            self._occurrences = context.execute(FindOccurrences(self._original_name))
+            self._occurrences = [occ for occ in context.execute(FindOccurrences(self._original_name))]
         for oc in self._occurrences:
             oc.replace_keyword(self._new_name)
             oc.notify_value_changed()
@@ -145,25 +145,28 @@ class FindOccurrences(_Command):
         return self._find_occurrences_in(self._items_from(context))
 
     def _items_from(self, context):
-        items = []
         for df in context.all_datafiles:
             if self._find_keyword_source(df) != self._keyword_source:
                 continue
-            items.extend(df.settings)
+            for setting in df.settings:
+                yield setting
             for test in df.tests:
-                items.extend(test.steps + test.settings)
+                for step in test.steps:
+                    yield step
+                for setting in test.settings:
+                    yield setting
             for kw in df.keywords:
-                items.append(kw.keyword_name)
-                items.extend(kw.steps)
-        return items
+                yield kw.keyword_name
+                for step in kw.steps:
+                    yield step
 
     def _find_keyword_source(self, datafile_controller):
         item_info = datafile_controller.keyword_info(self._keyword_name)
         return item_info.source if item_info else None
 
     def _find_occurrences_in(self, items):
-        return [Occurrence(item, self._keyword_name) for item in items
-                if item.contains_keyword(self._keyword_name)]
+        return (Occurrence(item, self._keyword_name) for item in items
+                if item.contains_keyword(self._keyword_name))
 
 
 def AddKeywordFromCells(cells):

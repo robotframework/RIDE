@@ -62,7 +62,7 @@ def _first_occurrence(test_ctrl, kw_name):
     occurrences = test_ctrl.execute(FindOccurrences(kw_name))
     if not occurrences:
         raise AssertionError('No occurrences found for "%s"' % kw_name)
-    return occurrences[0]
+    return occurrences.next()
 
 
 class FindOccurrencesWithFiles(unittest.TestCase):
@@ -104,7 +104,7 @@ class FindOccurrencesWithFiles(unittest.TestCase):
         self.assert_occurrences(self.ts2, 'Log', 2)
 
     def assert_occurrences(self, ctrl, kw_name, count):
-        assert_equals(len(ctrl.execute(FindOccurrences(kw_name))), count)
+        assert_equals(sum(1 for _ in ctrl.execute(FindOccurrences(kw_name))), count)
 
 
 class FindOccurrencesTest(unittest.TestCase):
@@ -115,7 +115,7 @@ class FindOccurrencesTest(unittest.TestCase):
     def test_no_occurrences(self):
         find_occurrences = FindOccurrences('Keyword Name')
         occurrences = self.test_ctrl.execute(find_occurrences)
-        assert_equals(occurrences, [])
+        assert_equals([i for i in occurrences], [])
 
     def test_occurrences_in_steps(self):
         assert_occurrence(self.test_ctrl, STEP1_KEYWORD, TEST1_NAME, 'Step 1')
