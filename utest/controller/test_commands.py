@@ -4,6 +4,9 @@ from robot.utils.asserts import assert_true, assert_false
 
 class FileHandlingCommandsTest(TestCaseCommandTest):
 
+    def test_fail_on_purpose(self):
+        fail
+
     def test_file_saving(self):
         self._file_saved = False
         self._exec(SaveFile())
