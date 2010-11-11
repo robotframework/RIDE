@@ -1,4 +1,3 @@
-import os
 import time
 import unittest
 
@@ -7,13 +6,7 @@ from robotide.namespace import Namespace
 from robotide.controller.chiefcontroller import ChiefController
 
 from resources import MessageRecordingLoadObserver
-
-
-DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]),
-                        '..', 'resources', 'robotdata')
-TESTCASEFILE_WITH_EVERYTHING = os.path.normpath(os.path.join(DATAPATH, 'testsuite',
-                                                   'everything.html'))
-
+from datafilereader import TESTCASEFILE_WITH_EVERYTHING
 
 class TestNamespacePerformance(unittest.TestCase):
 
