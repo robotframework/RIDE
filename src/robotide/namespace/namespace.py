@@ -16,6 +16,7 @@ import os
 import re
 import operator
 import tempfile
+from itertools import chain
 
 from robot.errors import DataError
 from robot.parsing.model import ResourceFile
@@ -102,10 +103,9 @@ class Namespace(object):
 
     def _keyword_suggestions(self, datafile, start):
         start_normalized = normalize(start)
-        suggestions = self._get_default_keywords()
-        suggestions.extend(self.retriever.get_keywords_from(datafile))
-        return sorted([sug for sug in suggestions
-                       if normalize(sug.name).startswith(start_normalized)])
+        return sorted(sug for sug in chain(self._get_default_keywords(),
+                                           self.retriever.get_keywords_from(datafile))
+                      if normalize(sug.name).startswith(start_normalized))
 
     def get_resources(self, datafile):
         return self.retriever.get_resources_from(datafile)
