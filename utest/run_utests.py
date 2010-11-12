@@ -90,12 +90,9 @@ def parse_args(argv):
 
 def usage_exit(msg=None):
     print __doc__
-    if msg is None:
-        rc = 251
-    else:
+    if msg is not None: 
         print '\nError:', msg
-        rc = 252
-    sys.exit(rc)
+    sys.exit(2)
 
 
 if __name__ == '__main__':
@@ -104,6 +101,6 @@ if __name__ == '__main__':
     suite = unittest.TestSuite(tests)
     runner = unittest.TextTestRunner(descriptions=docs, verbosity=vrbst)
     result = runner.run(suite)
-    rc = len(result.failures) + len(result.errors)
-    if rc > 250: rc = 250
-    sys.exit(rc)
+    if len(result.failures) + len(result.errors) > 0 :
+        sys.exit(1)
+    sys.exit()
