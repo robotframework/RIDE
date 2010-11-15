@@ -109,13 +109,13 @@ class KeywordEditor(GridEditor, RideEventHandler):
                                              self.selection.bottomright))
         event.Skip()
 
-    def OnCommentRows(self, event):
+    def OnCommentRows(self, event = None):
         self._execute(CommentRows(self.selection.rows()))
-        event.Skip()
+        if event is not None: event.Skip()
 
-    def OnUncommentRows(self, event):
+    def OnUncommentRows(self, event = None):
         self._execute(UncommentRows(self.selection.rows()))
-        event.Skip()
+        if event is not None: event.Skip()
 
     def _data_changed(self, data):
         if self._controller == data.item:

@@ -413,10 +413,10 @@ class TestCaseEditor(_RobotTableEditor):
         self.kweditor.OnDelete()
 
     def comment(self):
-        self.kweditor.comment()
+        self.kweditor.OnCommentRows()
 
     def uncomment(self):
-        self.kweditor.uncomment()
+        self.kweditor.OnUncommentRows()
 
     def show_content_assist(self):
         self.kweditor.show_content_assist()
