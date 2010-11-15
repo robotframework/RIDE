@@ -29,6 +29,8 @@ from robotide import utils
 KEYWORD_NAME_FIELD = 'Keyword Name'
 TESTCASE_NAME_FIELD = 'Test Case Name'
 
+def _empty_step():
+    return Step([])
 
 class ItemNameController(object):
 
@@ -84,6 +86,9 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
                 flattened_steps.append(StepController(self, step))
         return flattened_steps
 
+    def step(self, index):
+        return self.steps[index]
+
     def index_of_step(self, step):
         return self.data.steps.index(step)
 
@@ -125,9 +130,6 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
     def _is_empty_step(self, step):
         return step.as_list() == []
 
-    def _empty_step(self):
-        return Step([])
-
     def remove_step(self, index):
         self._remove_step(self.steps[index])
 
@@ -138,9 +140,12 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         step.remove()
 
     def add_step(self, index, step = None):
-        if step == None : step = self._empty_step()
-        steps = self.data.steps
-        self.data.steps = steps[:index]+[step]+steps[index:]
+        if step is None: step = _empty_step()
+        if index == len(self.steps):
+            self.data.steps.append(step)
+        else:
+            previous_step = self.step(index)
+            previous_step.insert_before(step)
 
     def create_keyword(self, name, argstr):
         validation = self.datafile_controller.validate_keyword_name(name)
@@ -155,6 +160,12 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         extracted_steps = self._extract_steps(step_range)
         self._replace_steps_with_kw(name, step_range)
         self._create_extracted_kw(name, argstr, extracted_steps)
+
+    def _get_raw_steps(self):
+        return self.data.steps
+
+    def _set_raw_steps(self, steps):
+        self.data.steps = steps
 
     def _extract_steps(self, step_range):
         rem_start, rem_end = step_range
@@ -373,6 +384,11 @@ class StepController(object):
             cells = cells[:from_column] + cells[from_column+1:]
             self._recreate(cells, comment)
 
+    def insert_before(self, new_step):
+        steps = self.parent._get_raw_steps()
+        index = self.parent._get_raw_steps().index(self._step)
+        self.parent._set_raw_steps(steps[:index]+[new_step]+steps[index:])
+
     def remove_empty_columns_from_end(self):
         cells = self._step.as_list()
         while cells != [] and cells[-1].strip() == '':
@@ -408,6 +424,12 @@ class ForLoopStepController(StepController):
 
     def _remove_whitespace_from_comment(self):
         pass
+
+    def _get_raw_steps(self):
+        return self.steps
+
+    def _set_raw_steps(self, steps):
+        self._step.steps = steps
 
     @property
     def steps(self):

@@ -168,6 +168,12 @@ class TestCaseEditingTest(TestCaseCommandTest):
         assert_equals(len(self._steps), self._orig_number_of_steps+1)
         assert_equals(self._steps[1].as_list(), [])
 
+    def test_adding_row_in_for_loop_body(self):
+        row_in_for_loop = self._data_row(FOR_LOOP_STEP2)
+        self._exec(AddRow(row_in_for_loop))
+        assert_equals(len(self._steps), self._orig_number_of_steps+1)
+        assert_equals(self._steps[row_in_for_loop].as_list(), [''])
+
     def test_add_multiple_rows(self):
         self._exec(AddRows([3,2,1,4,5,6,9,8,7,10]))
         assert_equals(len(self._steps), self._orig_number_of_steps+10)
