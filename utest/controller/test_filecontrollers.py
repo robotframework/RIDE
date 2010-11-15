@@ -14,6 +14,7 @@ from resources import SUITEPATH
 from robotide.publish import PUBLISHER
 from robotide.publish.messages import RideDataChangedToDirty,\
     RideDataDirtyCleared
+import datafilereader
 
 
 class TestMarkUnMarkDirty(unittest.TestCase):
@@ -112,6 +113,19 @@ class TestCaseFileControllerTest(unittest.TestCase):
         assert_equals(kw_ctrl.name, 'UK')
         assert_equals(kw_ctrl.data.args.value, ['${a1}', '${a2}'])
 
+
+class TestResourceFileControllerTest(unittest.TestCase):
+
+    def _get_ctrl_by_name(self, name, datafiles):
+        for file in datafiles:
+            if file.name == name:
+                return file
+        return None
+
+    def test_resource_file_display_name_is_file_name_with_extension(self):
+        chief = datafilereader.construct_chief_controller(datafilereader.OCCURRENCES_PATH)
+        resource_ctrl = self._get_ctrl_by_name(datafilereader.OCCURRENCES_RESOURCE_NAME, chief.datafiles)
+        assert_equals(resource_ctrl.display_name, datafilereader.OCCURRENCES_RESOURCE_FILE)
 
 class TestDataDirectoryControllerTest(unittest.TestCase):
 

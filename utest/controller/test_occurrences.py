@@ -67,17 +67,6 @@ def _first_occurrence(test_ctrl, kw_name):
 
 class FindOccurrencesWithFiles(unittest.TestCase):
 
-    def _get_controller(self, source):
-        chief = ChiefController(Namespace())
-        chief.load_data(source, self)
-        return chief
-
-    def notify(self, *args):
-        pass
-
-    def finish(self, *args):
-        pass
-
     def _get_ctrl_by_name(self, name, datafiles):
         for file in datafiles:
             if file.name == name:
@@ -85,10 +74,10 @@ class FindOccurrencesWithFiles(unittest.TestCase):
         return None
 
     def setUp(self):
-        ctrl = self._get_controller(datafilereader.OCCURRENCES_PATH)
+        ctrl = datafilereader.construct_chief_controller(datafilereader.OCCURRENCES_PATH)
         self.ts1 = self._get_ctrl_by_name('TestSuite1', ctrl.datafiles)
         self.ts2 = self._get_ctrl_by_name('TestSuite2', ctrl.datafiles)
-        self.resu = self._get_ctrl_by_name('Occurrences Resource', ctrl.datafiles)
+        self.resu = self._get_ctrl_by_name(datafilereader.OCCURRENCES_RESOURCE_NAME, ctrl.datafiles)
 
     def test_finds_only_occurrences_with_same_source(self):
         self.assert_occurrences(self.ts1, 'My Keyword', 2)
