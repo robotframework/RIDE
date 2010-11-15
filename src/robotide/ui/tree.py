@@ -136,7 +136,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _create_node_with_handler(self, parent_node, controller, index=None):
         name = controller.data.__class__.__name__
-        node = self._create_node(parent_node, controller.data.name, self._images[name],
+        node = self._create_node(parent_node, controller.display_name, self._images[name],
                                  index)
         handler_class = globals()[name + 'Handler']
         self.SetPyData(node, handler_class(controller, self, node))

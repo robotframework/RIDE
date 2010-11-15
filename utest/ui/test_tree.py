@@ -270,7 +270,7 @@ class TestRefreshingDataNode(_BaseSuiteTreeTest):
         suite.tests[0].rename(new_name)
         self._tree.refresh_datafile(suite, None)
         self._expand_all()
-        snode = self._get_node(suite.name)
+        snode = self._get_node(suite.display_name)
         tnode = self._tree.GetFirstChild(snode)[0]
         assert_equals(self._tree.GetItemText(tnode), new_name)
         assert_equals(orig_node_lenght, len(self._tree._datafile_nodes))
@@ -282,7 +282,7 @@ class TestRefreshingDataNode(_BaseSuiteTreeTest):
         resource.keywords[0].rename(new_name)
         self._tree.refresh_datafile(resource, None)
         self._expand_all()
-        rnode = self._get_node(resource.name)
+        rnode = self._get_node(resource.display_name)
         knode = self._tree.GetFirstChild(rnode)[0]
         assert_equals(self._tree.GetItemText(knode), new_name)
         assert_equals(orig_node_lenght, len(self._tree._datafile_nodes))
