@@ -14,7 +14,8 @@
 
 import os
 
-from robotide.controller.basecontroller import WithUndoRedoStacks
+from robotide.controller.basecontroller import WithUndoRedoStacks,\
+    _BaseController
 from robotide.controller.settingcontrollers import DocumentationController, \
     FixtureController, TagsController, TimeoutController, TemplateController
 from robotide.controller.tablecontrollers import VariableTableController, \
@@ -32,7 +33,7 @@ def DataController(data, parent):
         else TestDataDirectoryController(data, parent)
 
 
-class _DataController(WithUndoRedoStacks):
+class _DataController(_BaseController, WithUndoRedoStacks):
 
     def __init__(self, data, chief_controller=None):
         self._chief_controller = chief_controller
@@ -266,6 +267,11 @@ class TestCaseFileController(_DataController):
 
 
 class ResourceFileController(_DataController):
+
+    @property
+    def display_name(self):
+        _, tail = os.path.split(self.data.source)
+        return tail
 
     def _settings(self):
         return [DocumentationController(self, self.data.setting_table.doc)]

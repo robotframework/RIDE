@@ -15,7 +15,8 @@
 from robot.parsing.tablepopulators import UserKeywordPopulator, TestCasePopulator
 from robot.parsing.model import Step
 
-from robotide.controller.basecontroller import ControllerWithParent
+from robotide.controller.basecontroller import ControllerWithParent,\
+    _BaseController
 from robotide.controller.settingcontrollers import (DocumentationController,
         FixtureController, TagsController, TimeoutController,
         TemplateController, ArgumentsController, ReturnValueController)
@@ -204,7 +205,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         messageclass(item=self).publish()
 
 
-class TestCaseController(_WithStepsController):
+class TestCaseController(_BaseController, _WithStepsController):
     _populator = TestCasePopulator
 
     def _init(self, test):
@@ -244,7 +245,7 @@ class TestCaseController(_WithStepsController):
         return {}
 
 
-class UserKeywordController(_WithStepsController):
+class UserKeywordController(_BaseController, _WithStepsController):
     _populator = UserKeywordPopulator
 
     def _init(self, kw):
