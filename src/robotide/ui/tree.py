@@ -188,7 +188,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def _add_dataitem(self, parent_node, dataitem, predicate):
         if not self.IsExpanded(parent_node):
             self._expand_and_render_children(parent_node)
-            node = self._get_node_with_label(parent_node, dataitem.name)
+            node = self._get_node_with_label(parent_node, dataitem.display_name)
         else:
             index = self._get_insertion_index(parent_node, predicate)
             node = self._create_node_with_handler(parent_node, dataitem, index)
