@@ -24,7 +24,7 @@ class TestNamespacePerformance(unittest.TestCase):
         end_time = self._execute_keyword_find_function_n_times('is_library_keyword', times)
         assert_true(end_time < 0.5, 'Checking %d kws took too long: %fs.' % (times, end_time))
 
-    def test_measure_user_keyword_find_performance(self):
+    def _FLICKERS_measure_user_keyword_find_performance(self):
         times = 1000
         kw1000_result = self._execute_keyword_find_function_n_times('is_user_keyword', times, KW1000_TESTCASEFILE)
         kw2000_result = self._execute_keyword_find_function_n_times('is_user_keyword', times, KW2000_TESTCASEFILE)
