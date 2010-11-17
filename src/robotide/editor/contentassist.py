@@ -153,18 +153,24 @@ class ContentAssistPopup(object):
 
     def show(self, xcoord, ycoord):
         self._main_popup.SetPosition((xcoord, ycoord))
-        self._details_popup.SetPosition((self._x_coordinate_for_details(xcoord),
-                                         ycoord))
+        self._details_popup.SetPosition(*self._coordinates_for_details(xcoord, ycoord))
         self._main_popup.Show()
         self._list.SetFocus()
 
-    def _x_coordinate_for_details(self, main_xcoord):
+    def _coordinates_for_details(self, main_xcoord, main_ycoord):
         """Put details right of main popup is there is room, otherwise to the left"""
-        popup_width = _PREFERRED_POPUP_SIZE[0]
-        max_horizontal = wx.GetDisplaySize()[0]
+        result_x, result_y = (0, 0)
+        popup_width, popup_height = _PREFERRED_POPUP_SIZE
+        max_horizontal, max_vertical = wx.GetDisplaySize()
         if max_horizontal - main_xcoord < 2 * popup_width:
-            return main_xcoord - popup_width
-        return main_xcoord + popup_width
+            result_x = main_xcoord - popup_width
+        else:
+            result_x = main_xcoord + popup_width
+        if max_vertical - main_ycoord < popup_height:
+            result_y = main_ycoord - popup_height - 75
+        else:
+            result_y = main_ycoord
+        return (result_x, result_y)
 
     def is_shown(self):
         return self._main_popup.IsShown()
