@@ -152,8 +152,8 @@ class ContentAssistPopup(object):
         return None
 
     def show(self, xcoord, ycoord):
-        self._main_popup.SetPosition(self._coordinates_for_main(xcoord, ycoord))
-        self._details_popup.SetPosition(self._coordinates_for_details(xcoord, ycoord))
+        self._main_popup.SetPosition((xcoord, self._move_y(ycoord))
+        self._details_popup.SetPosition((self._move_x(xcoord), self._move_y(ycoord)))
         self._main_popup.Show()
         self._list.SetFocus()
 
@@ -180,6 +180,23 @@ class ContentAssistPopup(object):
         else:
             result_y = main_ycoord
         return (result_x, result_y)
+
+    def _move_x(self, start_x):
+        width = _PREFERRED_POPUP_SIZE[0]
+        max_horizontal = wx.GetDisplaySize()[0]
+        free_right = max_horizontal - start_x - width
+        free_left = start_x - width
+        if max_horizontal - start_x < 2 * width:
+            if free_left > free_right:
+                return start_x - width
+        return start_x
+
+    def _move_y(self, start_y):
+        height = _PREFERRED_POPUP_SIZE[1]
+        max_vertical = wx.GetDisplaySize()[1]
+        if max_vertical - start_y < height:
+            return start_y - height - 35
+        return start_y
 
     def is_shown(self):
         return self._main_popup.IsShown()
