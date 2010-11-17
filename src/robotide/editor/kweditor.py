@@ -37,7 +37,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def __init__(self, parent, controller, tree):
         try:
-            GridEditor.__init__(self, parent, len(controller.steps) + 5, 5, 
+            GridEditor.__init__(self, parent, len(controller.steps) + 5, 5,
                                 parent.plugin._grid_popup_creator)
             self._plugin = parent.plugin
             self._configure_grid()
@@ -194,6 +194,9 @@ class KeywordEditor(GridEditor, RideEventHandler):
     def show_content_assist(self):
         if self.IsCellEditControlShown():
             self.GetCellEditor(*self.selection.cell).show_content_assist()
+
+    def refresh_datafile(self, item, event):
+        self._tree.refresh_datafile(item, event)
 
     def _calculate_position(self):
         x, y = wx.GetMousePosition()
