@@ -152,36 +152,13 @@ class ContentAssistPopup(object):
         return None
 
     def show(self, xcoord, ycoord):
-        self._main_popup.SetPosition((xcoord, self._move_y(ycoord)))
-        self._details_popup.SetPosition((self._move_x(xcoord), self._move_y(ycoord)))
+        self._main_popup.SetPosition((xcoord, self._move_y_where_room(ycoord)))
+        self._details_popup.SetPosition((self._move_x_where_room(xcoord),
+                                         self._move_y_where_room(ycoord)))
         self._main_popup.Show()
         self._list.SetFocus()
 
-    def _coordinates_for_main(self, original_x, original_y):
-        """Put details right of main popup is there is room, otherwise to the left"""
-        popup_height = _PREFERRED_POPUP_SIZE[1]
-        max_vertical = wx.GetDisplaySize()[1]
-        if max_vertical - original_y < popup_height:
-            return original_x, original_y - popup_height - 35
-        else:
-            return original_x, original_y
-
-    def _coordinates_for_details(self, main_xcoord, main_ycoord):
-        """Put details right of main popup is there is room, otherwise to the left"""
-        result_x, result_y = (0, 0)
-        popup_width, popup_height = _PREFERRED_POPUP_SIZE
-        max_horizontal, max_vertical = wx.GetDisplaySize()
-        if max_horizontal - main_xcoord < 2 * popup_width:
-            result_x = main_xcoord - popup_width
-        else:
-            result_x = main_xcoord + popup_width
-        if max_vertical - main_ycoord < popup_height:
-            result_y = main_ycoord - popup_height - 35
-        else:
-            result_y = main_ycoord
-        return (result_x, result_y)
-
-    def _move_x(self, start_x):
+    def _move_x_where_room(self, start_x):
         width = _PREFERRED_POPUP_SIZE[0]
         max_horizontal = wx.GetDisplaySize()[0]
         free_right = max_horizontal - start_x - width
@@ -191,7 +168,7 @@ class ContentAssistPopup(object):
                 return start_x - width
         return start_x + width
 
-    def _move_y(self, start_y):
+    def _move_y_where_room(self, start_y):
         height = _PREFERRED_POPUP_SIZE[1]
         max_vertical = wx.GetDisplaySize()[1]
         if max_vertical - start_y < height:
