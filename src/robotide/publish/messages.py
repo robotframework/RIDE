@@ -14,12 +14,11 @@
 
 from wx.lib.pubsub import Publisher as WxPublisher
 import inspect
-
-from robotide import utils
-
 import messagetype
 import sys
 import traceback
+
+from robotide import utils
 
 
 class RideMessage(object):

@@ -15,8 +15,6 @@
 from wx.lib.pubsub import Publisher as WxPublisher
 
 from messages import RideLogException
-import traceback
-import sys
 
 
 class Publisher(object):
