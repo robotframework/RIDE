@@ -153,7 +153,7 @@ class ContentAssistPopup(object):
 
     def show(self, xcoord, ycoord):
         self._main_popup.SetPosition((xcoord, ycoord))
-        self._details_popup.SetPosition(*self._coordinates_for_details(xcoord, ycoord))
+        self._details_popup.SetPosition(self._coordinates_for_details(xcoord, ycoord))
         self._main_popup.Show()
         self._list.SetFocus()
 
