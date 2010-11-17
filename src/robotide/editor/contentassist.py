@@ -189,7 +189,7 @@ class ContentAssistPopup(object):
         if max_horizontal - start_x < 2 * width:
             if free_left > free_right:
                 return start_x - width
-        return start_x
+        return start_x + width
 
     def _move_y(self, start_y):
         height = _PREFERRED_POPUP_SIZE[1]
