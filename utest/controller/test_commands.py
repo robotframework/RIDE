@@ -56,6 +56,13 @@ class TestCaseEditingTest(TestCaseCommandTest):
         self._exec(ChangeCellValue(0, 0, 'Changed Step'))
         assert_equals(self._steps[0].keyword, 'Changed Step')
 
+    def test_changing_one_cell_with_unicode(self):
+        odd_string = '\xc3\xa4'
+        assert_false(isinstance(odd_string, unicode))
+        self._exec(ChangeCellValue(0, 0, odd_string))
+        assert_equals(self._steps[0].keyword, unicode(odd_string, 'UTF-8'))
+        assert_true(isinstance(self._steps[0].keyword, unicode))
+
     def test_undo_redo(self):
         original_cell_value = self._data_step_as_list(STEP1)[0]
         changed_cell_value = 'Changed Step'

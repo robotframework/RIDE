@@ -245,7 +245,7 @@ class ChangeCellValue(_StepsChangingCommand):
     def __init__(self, row, col, value):
         self._row = row
         self._col = col
-        self._value = value
+        self._value = value if isinstance(value, unicode) else unicode(value, 'utf-8')
 
     def change_steps(self, context):
         steps = context.steps
