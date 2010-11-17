@@ -16,7 +16,7 @@ import wx
 from wx.lib.scrolledpanel import ScrolledPanel
 
 from robotide.context import LOG
-from robotide.publish import RideLogMessage
+from robotide.publish import RideLogException
 
 
 class PluginManager(object):
@@ -107,7 +107,7 @@ class _PluginEnablationCheckBox(wx.CheckBox):
             self._plugin.error = err
             self._plugin.doc = msg
             LOG.error(msg)
-            RideLogMessage(message=msg, level='ERROR').publish()
+            RideLogException(message=msg, exception=err, level='ERROR').publish()
 
 
 class _PluginRow(wx.Panel):

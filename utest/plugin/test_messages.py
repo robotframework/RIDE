@@ -15,9 +15,9 @@
 import unittest
 
 from robot.utils.asserts import assert_equals, assert_none, assert_false, \
-    assert_raises_with_msg
+    assert_raises_with_msg, assert_true
 
-from robotide.publish import RideMessage, RideLogMessage, PUBLISHER
+from robotide.publish import RideMessage, RideLog, PUBLISHER
 from robotide.pluginapi import Plugin
 
 
@@ -155,14 +155,14 @@ class TestBrokenMessageListener(unittest.TestCase):
         self.plugin.disable()
 
     def test_broken_listener(self):
-        self.plugin.subscribe(self.plugin.error_listener, RideLogMessage)
+        self.plugin.subscribe(self.plugin.error_listener, RideLog)
         RideTestMessage().publish()
-        assert_equals(self.plugin.error.message, 'Error in listener: ride.test')
-        assert_equals(self.plugin.error.topic, 'ride.log')
+        assert_true(self.plugin.error.message.startswith('Error in listener: ride.test\n\nTraceback (most recent call last):'))
+        assert_equals(self.plugin.error.topic, 'ride.log.exception')
         assert_equals(self.plugin.error.level, 'ERROR')
 
     def test_broken_error_listener_does_not_cause_infinite_recusrion(self):
-        self.plugin.subscribe(self.plugin.broken_listener, RideLogMessage)
+        self.plugin.subscribe(self.plugin.broken_listener, RideLog)
 
 
 class BrokenListenerPlugin(Plugin):

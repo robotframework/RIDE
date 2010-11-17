@@ -16,7 +16,7 @@ import os
 
 from robotide.robotapi import TestLibrary as RobotTestLibrary
 from robotide.errors import DataError
-from robotide.publish import RideLogMessage
+from robotide.publish import RideLogException
 from robotide import utils
 
 from iteminfo import LibraryKeywordInfo, _XMLKeywordContent
@@ -58,7 +58,7 @@ class LibrarySpec(Spec):
             self.keywords, self.doc = self._init_from_specfile(specfile)
             if not self.keywords:
                 msg = 'Importing test library "%s" failed: %s' % (self.name, err)
-                RideLogMessage(message=msg, level='WARN').publish()
+                RideLogException(message=msg, exception=err, level='WARN').publish()
 
     def _init_from_library(self, name, args):
         lib = RobotTestLibrary(name, args)

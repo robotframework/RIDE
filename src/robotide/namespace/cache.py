@@ -18,7 +18,7 @@ import time
 from robotide.context import SETTINGS
 from robotide.spec import LibrarySpec
 from robotide.robotapi import normpath
-from robotide.publish.messages import RideLogMessage
+from robotide.publish.messages import RideLogException
 
 
 class LibraryCache(object):
@@ -34,8 +34,8 @@ class LibraryCache(object):
             try:
                 kws = LibrarySpec(name, args).keywords
             except Exception, err:
-                RideLogMessage(message='Importing library %s failed with exception %s.' % (name, err),
-                               level='WARN').publish()
+                RideLogException(message='Importing library %s failed with exception %s.' % (name, err), 
+                                 exception=err, level='WARN').publish()
             finally:
                 self.library_keywords[self._key(name, args)] = kws
 
