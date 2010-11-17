@@ -20,7 +20,8 @@ from robotide.robotapi import ROBOT_VERSION
 from robotide.namespace import Namespace
 from robotide.controller import ChiefController
 from robotide.ui import RideFrame, LoadProgressObserver
-from robotide import context
+from robotide.pluginapi import RideLogMessage
+from robotide import context, version
 
 from pluginloader import PluginLoader
 from editorprovider import EditorProvider
@@ -44,7 +45,12 @@ class RIDE(wx.App):
         self._plugin_loader.enable_plugins()
         self._load_data()
         self.frame.tree.populate(self.model)
+        self._publish_system_info()
         return True
+
+    def _publish_system_info(self):
+        RideLogMessage("Started RIDE version %s, running on %s, python version %s with wx version %s." % 
+                       (version.VERSION, sys.platform, sys.version, wx.VERSION_STRING)).publish()
 
     def _check_robot_version(self):
         if ROBOT_VERSION < '2.5':

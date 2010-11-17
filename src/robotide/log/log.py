@@ -13,7 +13,7 @@
 #  limitations under the License.
 import wx
 
-from robotide.pluginapi import Plugin, ActionInfo, RideLogMessage
+from robotide.pluginapi import Plugin, ActionInfo, RideLog
 from robotide.context.font import Font
 
 
@@ -27,7 +27,7 @@ class LogPlugin(Plugin):
 
     def enable(self):
         self._create_menu()
-        self.subscribe(self._log_message, RideLogMessage)
+        self.subscribe(self._log_message, RideLog)
 
     def disable(self):
         self.unsubscribe_all()

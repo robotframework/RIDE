@@ -17,7 +17,7 @@ import unittest
 from robot.utils.asserts import assert_equals, assert_raises_with_msg,\
     assert_true
 
-from robotide.publish import RideMessage, RideLogMessage, Publisher
+from robotide.publish import RideMessage, RideLogMessage, RideLogException, Publisher
 
 
 _ARGS_ERROR = "Argument mismatch, expected: ['foo', 'bar']"
@@ -65,6 +65,15 @@ class TestRideLogMessage(unittest.TestCase):
         assert_equals(msg.message, 'Some error text')
         assert_equals(msg.level, 'ERROR')
         assert_true(msg.timestamp.startswith('20'))
+
+    def test_log_exception(self):
+        try:
+            1/0
+        except Exception, err:
+            msg = RideLogException(message='Some error text', exception=err, level='ERROR')
+            assert_true(msg.message.startswith('Some error text\n\nTraceback (most recent call last):'))
+            assert_equals(msg.level, 'ERROR')
+            assert_true(msg.timestamp.startswith('20'))
 
 
 class TestPublisher(unittest.TestCase):
