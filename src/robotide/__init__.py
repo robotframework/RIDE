@@ -29,7 +29,7 @@ release. The most stable, and best documented, module is `robotide.pluginapi`.
 import sys
 import os
 import wxversion
-wxversion.select('2.9')
+wxversion.select('2.8')
 
 # TODO: Remove when robot has been released with this patch
 import robotpatch
