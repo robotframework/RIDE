@@ -220,6 +220,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self.OnCellRightClick(event)
             return
         if control_down or keycode not in [wx.WXK_RETURN, wx.WXK_BACK]:
+            if keycode == wx.WXK_SPACE:
+                self._open_cell_editor_with_tooltip()
             event.Skip()
             return
         self.DisableCellEditControl()
@@ -227,6 +229,13 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self.MoveCursorRight(event.ShiftDown())
         else:
             self.MoveCursorLeft(event.ShiftDown())
+
+    def _open_cell_editor_with_tooltip(self):
+        if not self.IsCellEditControlEnabled():
+            self.EnableCellEditControl()
+        celleditor = self.GetCellEditor(self.GetGridCursorCol(), self.GetGridCursorRow())
+        celleditor.Show(True)
+        wx.CallAfter(celleditor.show_content_assist)
 
     def OnSelectAll(self, event):
         self.SelectAll()
