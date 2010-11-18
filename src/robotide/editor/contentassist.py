@@ -171,7 +171,7 @@ class ContentAssistPopup(object):
     def _move_y_where_room(self, start_y, cell_height):
         height = _PREFERRED_POPUP_SIZE[1]
         max_vertical = wx.GetDisplaySize()[1]
-        if max_vertical - start_y < height:
+        if max_vertical - start_y - cell_height < height:
             return start_y - height
         return start_y + cell_height
 
