@@ -548,7 +548,9 @@ class _ActionHandler(wx.Window):
 
 
 class TestDataDirectoryHandler(_ActionHandler):
-    accepts_drag = lambda self, dragged: isinstance(dragged, UserKeywordHandler)
+    accepts_drag = lambda self, dragged: (isinstance(dragged, UserKeywordHandler) or
+                                          isinstance(dragged, VariableHandler))
+
     is_draggable = False
     is_renameable = False
     is_test_suite = True
@@ -569,8 +571,8 @@ class TestDataDirectoryHandler(_ActionHandler):
     def has_been_modified_on_disk(self):
         return self.item.has_been_modified_on_disk()
 
-    def do_drop(self, test_or_kw_ctrl):
-        self.controller.add_test_or_keyword(test_or_kw_ctrl)
+    def do_drop(self, item):
+        self.controller.add_test_or_keyword(item)
 
     def rename(self, new_name):
         return False
@@ -687,6 +689,9 @@ class VariableHandler(_ActionHandler):
     show_popup = lambda self: None
     accepts_drag = lambda *args: False
     is_draggable = True
+
+    def remove(self):
+        self.controller.delete()
 
 
 class NoneHandler(object):

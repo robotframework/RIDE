@@ -26,6 +26,7 @@ from robotide.robotapi import TestDataDirectory, TestCaseFile, ResourceFile
 from robotide import utils
 from robotide.publish.messages import RideDataChangedToDirty,\
     RideDataDirtyCleared
+from robotide.controller.macrocontrollers import UserKeywordController
 
 
 def DataController(data, parent):
@@ -126,13 +127,15 @@ class _DataController(_BaseController, WithUndoRedoStacks):
     def create_keyword(self, name, argstr=''):
         return self.keywords.new(name, argstr)
 
-    def add_test_or_keyword(self, test_or_kw_ctrl):
-        if isinstance(test_or_kw_ctrl, TestCaseController):
-            self.tests.add(test_or_kw_ctrl)
-            test_or_kw_ctrl._parent = self.tests
+    def add_test_or_keyword(self, item):
+        if isinstance(item, TestCaseController):
+            self.tests.add(item)
+            item._parent = self.tests
+        elif isinstance(item, UserKeywordController):
+            self.keywords.add(item)
+            item._parent = self.keywords
         else:
-            self.keywords.add(test_or_kw_ctrl)
-            test_or_kw_ctrl._parent = self.keywords
+            self.variables.add_variable(item.name, item.value, item.comment)
 
     def has_format(self):
         return True

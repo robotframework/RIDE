@@ -89,6 +89,10 @@ class VariableTableController(_TableController, _WithListOperations):
     def _name_taken(self, name):
         return any(utils.eq(name, var.name) for var in self._table)
 
+    def remove_var(self, var_controller):
+        self._items.remove(var_controller.data)
+        self.mark_dirty()
+
 
 class _ScalarVarValidator(object):
     __call__ = lambda self, name: is_scalar_var(name)
