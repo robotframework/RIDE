@@ -20,7 +20,8 @@ from robotide.controller.basecontroller import ControllerWithParent
 
 from robotide.controller.macrocontrollers import (TestCaseController,
                                                   UserKeywordController)
-from robotide.publish.messages import RideTestCaseRemoved
+from robotide.publish.messages import RideTestCaseRemoved, RideVariableAdded,\
+    RideVariableRemoved
 
 from robotide.controller.settingcontrollers import (MetadataController,
         ImportController, VariableController)
@@ -69,7 +70,9 @@ class VariableTableController(_TableController, _WithListOperations):
     def add_variable(self, name, value, comment=None):
         self._table.add(name, value, comment)
         self.mark_dirty()
-        return self[-1]
+        var_controller = self[-1]
+        self.notify_variable_added(var_controller)
+        return var_controller
 
     def validate_scalar_variable_name(self, name):
         return self._validate_name(_ScalarVarValidator(), name)
@@ -92,6 +95,13 @@ class VariableTableController(_TableController, _WithListOperations):
     def remove_var(self, var_controller):
         self._items.remove(var_controller.data)
         self.mark_dirty()
+        self.notify_variable_removed(var_controller)
+
+    def notify_variable_added(self, ctrl):
+        RideVariableAdded(datafile=self.datafile, name=ctrl.name, item=ctrl).publish()
+
+    def notify_variable_removed(self, ctrl):
+        RideVariableRemoved(datafile=self.datafile, name=ctrl.name, item=ctrl).publish()
 
 
 class _ScalarVarValidator(object):

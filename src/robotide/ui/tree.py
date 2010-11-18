@@ -25,7 +25,8 @@ from robotide.publish import RideTreeSelection, PUBLISHER
 from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
 from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideTestCaseAdded, RideUserKeywordRemoved, RideTestCaseRemoved, RideDataFileRemoved,\
-    RideDataChangedToDirty, RideDataDirtyCleared
+    RideDataChangedToDirty, RideDataDirtyCleared, RideVariableRemoved,\
+    RideVariableAdded
 from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
     AddKeyword, AddTestCase, RenameTest, CopyMacroAs
 from robotide.widgets import PopupCreator, PopupMenuItems
@@ -74,8 +75,10 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         for listener, topic in [(self._item_changed, RideItem),
                              (self._keyword_added, RideUserKeywordAdded),
                              (self._test_added, RideTestCaseAdded),
+                             (self._variable_added, RideVariableAdded),
                              (self._macro_removed, RideUserKeywordRemoved),
                              (self._macro_removed, RideTestCaseRemoved),
+                             (self._macro_removed, RideVariableRemoved),
                              (self._datafile_removed, RideDataFileRemoved),
                              (self._data_dirty, RideDataChangedToDirty),
                              (self._data_undirty, RideDataDirtyCleared)]:
@@ -227,6 +230,10 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def _keyword_added(self, message):
         self.add_keyword(self._get_datafile_node(self.get_selected_datafile()),
                          message.item)
+
+    def _variable_added(self, message):
+        self._add_dataitem(self._get_datafile_node(self.get_selected_datafile()),
+                           message.item, lambda item: item.is_test_suite)
 
     def _macro_removed(self, message):
         node = self._find_node_by_controller(message.item)

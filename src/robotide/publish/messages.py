@@ -265,6 +265,14 @@ class RideTestCaseRemoved(RideMessage):
     """Sent when a test case is removed from a suite."""
     data = ['datafile', 'name', 'item']
 
+class RideVariableAdded(RideMessage):
+    """Sent when a new variable is added to a suite."""
+    data = ['datafile', 'name', 'item']
+
+class RideVariableRemoved(RideMessage):
+    """Sent when a variable is removed from a suite."""
+    data = ['datafile', 'name', 'item']
+
 
 class RideClosing(RideMessage):
     """Sent when user selects ``Quit`` from ``File`` menu or via shortcut."""
