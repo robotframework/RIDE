@@ -14,7 +14,8 @@
 
 import re
 
-from robotide.controller.basecontroller import ControllerWithParent
+from robotide.controller.basecontroller import ControllerWithParent,\
+    _BaseController
 from robotide.publish.messages import RideImportSettingChanged, \
     RideImportSettingRemoved
 from robotide import utils
@@ -266,7 +267,7 @@ class MetadataController(_SettingController):
         self._parent.mark_dirty()
 
 
-class VariableController(_SettingController):
+class VariableController(_BaseController, _SettingController):
 
     def _init(self, var):
         self._var = var
@@ -281,6 +282,10 @@ class VariableController(_SettingController):
     @property
     def value(self):
         return self._var.value
+
+    @property
+    def data(self):
+        return self._data
 
     def set_value(self, name, value):
         value = [value] if isinstance(value, basestring) else value
