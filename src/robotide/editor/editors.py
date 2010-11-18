@@ -552,3 +552,9 @@ class MetadataListEditor(_AbstractListEditor):
 
     def get_column_values(self, item):
         return [item.name, utils.html_escape(item.value), item.comment]
+
+
+def VariableEditorChooser(plugin, parent, controller, tree):
+    controller = controller.datafile_controller
+    editor_class = plugin.get_editor(controller.data.__class__)
+    return editor_class(plugin, parent, controller, tree)

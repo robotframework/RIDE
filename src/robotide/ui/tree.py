@@ -537,15 +537,8 @@ class _ActionHandler(wx.Window):
         self._popup_creator = tree._popup_creator
 
     def show_popup(self):
-        self._popup_creator.show(self, PopupMenuItems(self, self._actions), 
+        self._popup_creator.show(self, PopupMenuItems(self, self._actions),
                                  self.controller)
-
-    def OnChangeFormat(self, event):
-        format =self.controller.get_format() or 'txt'
-        dlg = ChangeFormatDialog(format, self.controller.is_directory_suite())
-        if dlg.ShowModal() == wx.ID_OK:
-            self._handle_format_change(dlg)
-        dlg.Destroy()
 
     def _handle_format_change(self, dialog):
         if dialog.get_recursive():
@@ -589,6 +582,13 @@ class TestDataDirectoryHandler(_ActionHandler):
             self._rendered = True
             return False
         return True
+
+    def OnChangeFormat(self, event):
+        format =self.controller.get_format() or 'txt'
+        dlg = ChangeFormatDialog(format, self.controller.is_directory_suite())
+        if dlg.ShowModal() == wx.ID_OK:
+            self._handle_format_change(dlg)
+        dlg.Destroy()
 
     def OnAddSuite(self, event):
         dlg = AddSuiteDialog(self.controller.directory)
@@ -683,7 +683,7 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
         self.controller.execute(RenameKeywordOccurrences(self.controller.name, new_name))
 
 
-class VariableHandler(UserKeywordHandler):
+class VariableHandler(_ActionHandler):
     pass
 
 

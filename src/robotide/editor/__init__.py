@@ -16,12 +16,13 @@ import wx
 
 from robotide.pluginapi import Plugin, ActionInfoCollection
 from robotide.robotapi import (ResourceFile, TestCaseFile, TestDataDirectory,
-                               TestCase, UserKeyword)
+                               TestCase, UserKeyword, Variable)
 from robotide.publish import (RideTreeSelection, RideNotebookTabChanging,
                               RideNotebookTabChanged, RideSaving)
 from robotide.widgets import PopupCreator
 from editors import (Editor, TestCaseEditor, UserKeywordEditor,
-                     TestCaseFileEditor, ResourceFileEditor, InitFileEditor)
+                     TestCaseFileEditor, ResourceFileEditor, InitFileEditor,
+                     VariableEditorChooser)
 
 
 _EDIT = """
@@ -62,6 +63,7 @@ class EditorPlugin(Plugin):
         self.register_editor(TestCase, TestCaseEditor)
         self.register_editor(TestCaseFile, TestCaseFileEditor)
         self.register_editor(UserKeyword, UserKeywordEditor)
+        self.register_editor(Variable, VariableEditorChooser)
         self._show_editor()
         self.register_actions(ActionInfoCollection(_EDIT, self._tab, self._tab))
         self.subscribe(self.OnTreeItemSelected, RideTreeSelection)
