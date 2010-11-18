@@ -14,6 +14,7 @@
 
 import os
 import wx
+from robot.parsing.model import Variable
 
 
 _SIZE = (16, 16)
@@ -29,7 +30,8 @@ class TreeImageList(wx.ImageList):
             'TestCaseFile': _TreeImage(self, wx.ART_NORMAL_FILE),
             'TestCase': _TreeImage(self, 'robot.png'),
             'UserKeyword': _TreeImage(self, 'process.png'),
-            'ResourceFile': _TreeImage(self, wx.ART_NORMAL_FILE)
+            'ResourceFile': _TreeImage(self, wx.ART_NORMAL_FILE),
+            'Variable': _TreeImage(self, 'process.png')
         }
 
     def __getitem__(self, key):
