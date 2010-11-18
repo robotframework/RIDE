@@ -684,7 +684,9 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
 
 
 class VariableHandler(_ActionHandler):
-    pass
+    show_popup = lambda self: None
+    accepts_drag = lambda *args: False
+    is_draggable = True
 
 
 class NoneHandler(object):
