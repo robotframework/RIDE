@@ -71,11 +71,17 @@ class TestCaseEditingTest(TestCaseCommandTest):
         assert_equals(self._steps[0].keyword, unicode(odd_string, 'UTF-8'))
         assert_true(isinstance(self._steps[0].keyword, unicode))
 
-    def FAILS_test_changing_first_cell_in_for_loop_step(self):
+    def test_changing_first_cell_in_for_loop_step(self):
         step_index = self._data_row(FOR_LOOP_STEP1)
         value = 'Foo'
         self._exec(ChangeCellValue(step_index, 0, value))
         assert_equals(self._steps[step_index].as_list()[0], value)
+
+    def test_empty_second_cell_in_for_loop_step(self):
+        step_index = self._data_row(FOR_LOOP_STEP1)
+        value = ''
+        self._exec(ChangeCellValue(step_index, 1, value))
+        assert_equals(self._steps[step_index].as_list()[1], value)
 
     def test_undo_redo(self):
         original_cell_value = self._data_step_as_list(STEP1)[0]

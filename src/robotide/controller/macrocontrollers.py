@@ -396,7 +396,7 @@ class StepController(object):
         self.parent._set_raw_steps(steps[:index]+[new_step]+steps[index:])
 
     def remove_empty_columns_from_end(self):
-        cells = self._step.as_list()
+        cells = self.as_list()
         while cells != [] and cells[-1].strip() == '':
             cells.pop()
         self._recreate(cells)
@@ -482,8 +482,8 @@ class ForLoopStepController(StepController):
         index = self.parent.index_of_step(self._step)
         self.parent.replace_step(index, Step(cells))
         self._get_raw_steps().reverse()
-        for substep in self._get_raw_steps():
-            self.parent.add_step(index+1, Step(['']+substep.as_list()))
+        for substep in self.steps:
+            self.parent.add_step(index+1, Step(substep.as_list()))
 
     def notify_steps_changed(self):
         self.notify_value_changed()
@@ -504,9 +504,14 @@ class IntendedStepController(StepController):
     def _recreate(self, cells, comment=None):
         if cells[0] == '':
             cells = cells[1:]
-        self._step.__init__(cells)
-        if self._step not in self.parent._get_raw_steps():
-            self.parent.add_step(self._step)
+            self._step.__init__(cells)
+            if self._step not in self.parent._get_raw_steps():
+                self.parent.add_step(self._step)
+        else:
+            index = self.parent._get_raw_steps().index(self._step)
+            index_of_parent = self.parent.parent.index_of_step(self.parent._step)
+            self.parent._replace_with_new_cells(self.parent.as_list())
+            self.parent.parent.replace_step(index+index_of_parent+1, Step(cells))
 
     def remove(self):
         self.parent._get_raw_steps().remove(self._step)
