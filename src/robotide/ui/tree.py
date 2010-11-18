@@ -128,8 +128,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _render_datafile(self, parent_node, controller, index=None):
         node = self._create_node_with_handler(parent_node, controller, index)
-        self.SetItemHasChildren(node, True)
         self._datafile_nodes.append(node)
+        self.SetItemHasChildren(node, True)
         for child in controller.children:
             self._render_datafile(node, child, None)
         return node
@@ -146,18 +146,31 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._render_children(node, predicate)
         self.Expand(node)
 
-    def _render_children(self, node, predicate=None):
-        handler = self._get_handler(node)
-        if not handler or handler.children_rendered():
-            return
+
+    def _create_test_nodes(self, node, handler):
         for test in handler.tests:
             self._create_node_with_handler(node, test)
+
+
+    def _create_keyword_nodes(self, node, predicate, handler):
         for kw in handler.keywords:
             if predicate:
                 index = self._get_insertion_index(node, predicate)
             else:
                 index = None
             self._create_node_with_handler(node, kw, index)
+
+    def _create_variable_nodes(self, node, handler):
+        for var in handler.variables:
+            self._create_node_with_handler(node, var)
+
+    def _render_children(self, node, predicate=None):
+        handler = self._get_handler(node)
+        if not handler or handler.children_rendered():
+            return
+        self._create_test_nodes(node, handler)
+        self._create_keyword_nodes(node, predicate, handler)
+        self._create_variable_nodes(node, handler)
 
     def _create_node(self, parent_node, label, img, index=None):
         if index is not None:
@@ -186,14 +199,16 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._add_dataitem(parent_node, kw, lambda item: item.is_test_suite)
 
     def _add_dataitem(self, parent_node, dataitem, predicate):
-        if not self.IsExpanded(parent_node):
-            self._expand_and_render_children(parent_node)
-            node = self._get_node_with_label(parent_node, dataitem.display_name)
-        else:
-            index = self._get_insertion_index(parent_node, predicate)
-            node = self._create_node_with_handler(parent_node, dataitem, index)
+        node = self._get_or_create_node(parent_node, dataitem, predicate)
         self._select(node)
         self._mark_dirty(parent_node)
+
+    def _get_or_create_node(self, parent_node, dataitem, predicate):
+        if not self.IsExpanded(parent_node):
+            self._expand_and_render_children(parent_node)
+            return self._get_node_with_label(parent_node, dataitem.display_name)
+        index = self._get_insertion_index(parent_node, predicate)
+        return self._create_node_with_handler(parent_node, dataitem, index)
 
     def _select(self, node):
         wx.CallAfter(self.SelectItem, node)
@@ -554,6 +569,10 @@ class TestDataDirectoryHandler(_ActionHandler):
     def keywords(self):
         return self.controller.keywords
 
+    @property
+    def variables(self):
+        return self.controller.variables
+
     def has_been_modified_on_disk(self):
         return self.item.has_been_modified_on_disk()
 
@@ -662,6 +681,10 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
 
     def _rename(self, new_name):
         self.controller.execute(RenameKeywordOccurrences(self.controller.name, new_name))
+
+
+class VariableHandler(UserKeywordHandler):
+    pass
 
 
 class NoneHandler(object):
