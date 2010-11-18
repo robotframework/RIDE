@@ -31,7 +31,7 @@ class TreeImageList(wx.ImageList):
             'TestCase': _TreeImage(self, 'robot.png'),
             'UserKeyword': _TreeImage(self, 'process.png'),
             'ResourceFile': _TreeImage(self, wx.ART_NORMAL_FILE),
-            'Variable': _TreeImage(self, 'process.png')
+            'Variable': _TreeImage(self, 'dollar.png')
         }
 
     def __getitem__(self, key):
