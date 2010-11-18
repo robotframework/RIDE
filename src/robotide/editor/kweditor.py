@@ -17,7 +17,8 @@ from wx import grid
 
 from robotide.controller.commands import ChangeCellValue, ClearArea, PasteArea,\
     DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells, UncommentRows, \
-    Undo, Redo, RenameKeywordOccurrences, ExtractKeyword, AddKeywordFromCells
+    Undo, Redo, RenameKeywordOccurrences, ExtractKeyword, AddKeywordFromCells, \
+    MoveRowsUp, MoveRowsDown
 from robotide.publish import RideGridCellChanged, PUBLISHER
 from robotide.utils import RideEventHandler
 from robotide.widgets import PopupMenu, PopupMenuItems
@@ -90,8 +91,10 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def OnLabelRightClick(self, event):
         self._active_row = event.GetRow()
-        PopupMenu(self, PopupMenuItems(self, ['Insert Rows', 'Delete Rows\tDel',
-                         'Comment Rows\tCtrl-3', 'Uncomment Rows\tCtrl-4']))
+        popupitems = ['Insert Rows', 'Delete Rows\tDel', 'Comment Rows\tCtrl-3',
+                      'Uncomment Rows\tCtrl-4', 'Move Rows Up\tAlt-Up',
+                      'Move Rows Down\tAlt-Down']
+        PopupMenu(self, PopupMenuItems(self, popupitems))
         self._active_row = None
         event.Skip()
 
@@ -109,13 +112,21 @@ class KeywordEditor(GridEditor, RideEventHandler):
                                              self.selection.bottomright))
         event.Skip()
 
-    def OnCommentRows(self, event = None):
+    def OnCommentRows(self, event=None):
         self._execute(CommentRows(self.selection.rows()))
-        if event is not None: event.Skip()
+        if event is not None:
+            event.Skip()
 
-    def OnUncommentRows(self, event = None):
+    def OnUncommentRows(self, event=None):
         self._execute(UncommentRows(self.selection.rows()))
-        if event is not None: event.Skip()
+        if event is not None:
+            event.Skip()
+
+    def OnMoveRowsUp(self, evnet=None):
+        self._execute(MoveRowsUp(self.selection.rows()))
+
+    def OnMoveRowsDown(self, evnet=None):
+        self._execute(MoveRowsDown(self.selection.rows()))
 
     def _data_changed(self, data):
         if self._controller == data.item:
