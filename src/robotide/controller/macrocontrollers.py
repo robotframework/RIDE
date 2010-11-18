@@ -33,6 +33,7 @@ TESTCASE_NAME_FIELD = 'Test Case Name'
 def _empty_step():
     return Step([])
 
+
 class ItemNameController(object):
 
     def __init__(self, item):
@@ -98,6 +99,11 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
 
     def move_step_up(self, index):
         self.data.steps[index-1], self.data.steps[index] = self.data.steps[index], self.data.steps[index-1]
+
+    def move_step_down(self, index):
+        if index + 1 >= len(self.data.steps):
+            self.data.steps.append(_empty_step())
+        self.data.steps[index], self.data.steps[index+1] = self.data.steps[index+1], self.data.steps[index]
 
     def set_steps(self, steps):
         self.data.steps = steps

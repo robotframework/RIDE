@@ -63,7 +63,7 @@ class _PluginPanel(wx.Panel):
         sizer.Add(self._create_label(panel, 'Enabled'), 0, wx.BOTTOM, border=8)
         sizer.Add(self._create_label(panel, 'Plugin'), 0,
                   wx.BOTTOM|wx.EXPAND, border=8)
-        for plugin in plugins:
+        for plugin in sorted(plugins, key=lambda p: p.name):
             sizer.Add(_PluginEnablationCheckBox(panel, plugin, activation_callback),
                       flag=wx.ALIGN_CENTER_HORIZONTAL)
             sizer.Add(_PluginRow(panel, plugin), 0, wx.EXPAND)
@@ -76,7 +76,6 @@ class _PluginPanel(wx.Panel):
         label = wx.StaticText(parent, wx.ID_ANY, text)
         label.SetFont(boldFont)
         return label
-
 
 class _PluginEnablationCheckBox(wx.CheckBox):
 

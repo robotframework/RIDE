@@ -91,3 +91,31 @@ class RIDE(wx.App):
 
     def get_editor(self, object_class):
         return self._editor_provider.get_editor(object_class)
+
+    def highlight(self, tcuk, obj=None, row=-1, column=-1):
+        '''Highlight a specific row/column of a test case or user keyword'''
+        item = self.frame.tree.select_user_keyword_node(tcuk)
+        tab = self._find_edit_tab_for_tcuk(tcuk)
+        if tab is not None:
+            self.frame.notebook.show_tab(tab)
+            editor = tab.editor
+            if editor is not None and hasattr(editor, "highlight"):
+                editor.highlight(obj, row, column)
+            else:
+                # editor doesn't support highlighting
+                # should this be logged?
+                pass
+
+
+    def _find_edit_tab_for_tcuk(self, tcuk):
+        '''Return the edit tab for test cases /  user keywords'''
+        import robotide.editor
+        for page_index in range(0, self.frame.notebook.GetPageCount()):
+            tab = self.frame.notebook.GetPage(page_index)
+            # this assumes there is a single editor tab. Hopefully 
+            # some day in the future there will multiple editor tabs
+            # open. For now though, assume the first one we find is the
+            # one we want
+            if tab.__class__ == robotide.editor._EditorTab:
+                return tab
+        return None

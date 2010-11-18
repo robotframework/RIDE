@@ -280,6 +280,18 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             if text.startswith('*') and not handler.controller.dirty:
                 self.SetItemText(node, text[1:])
 
+    def select_tree_item(self, tcuk):
+        '''Find and select the tree item associated with a test case or user keyword'''
+        parent_node = self._get_datafile_node(tcuk.datafile)
+        if not parent_node:
+            return None
+        if not self.IsExpanded(parent_node):
+            self._expand_and_render_children(parent_node)
+        node = self._get_node_with_label(parent_node, utils.normalize(tcuk.name))
+        if node != self.GetSelection():
+            self.SelectItem(node)
+        return node
+
     def select_user_keyword_node(self, uk):
         parent_node = self._get_datafile_node(uk.parent.parent)
         if not parent_node:
