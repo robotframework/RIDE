@@ -11,7 +11,9 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
 from itertools import chain
+
 
 class Occurrence(object):
 
@@ -46,6 +48,7 @@ class _Command(object):
     def execute(self, context):
         raise NotImplementedError(self.__class__)
 
+
 class CopyMacroAs(_Command):
 
     def __init__(self, new_name):
@@ -53,6 +56,7 @@ class CopyMacroAs(_Command):
 
     def execute(self, context):
         context.copy(self._new_name)
+
 
 class _ReversibleCommand(_Command):
 
@@ -145,8 +149,8 @@ class FindOccurrences(_Command):
         return self._find_occurrences_in(self._items_from(context))
 
     def _items_from(self, context):
-        return chain(*(self._items_from_datafile(df) 
-                       for df in context.all_datafiles 
+        return chain(*(self._items_from_datafile(df)
+                       for df in context.all_datafiles
                        if self._find_keyword_source(df) == self._keyword_source))
 
     def _items_from_datafile(self, df):
@@ -245,7 +249,7 @@ class ChangeCellValue(_StepsChangingCommand):
     def __init__(self, row, col, value):
         self._row = row
         self._col = col
-        self._value = value
+        self._value = value if isinstance(value, unicode) else unicode(value, 'utf-8')
 
     def change_steps(self, context):
         steps = context.steps
@@ -391,6 +395,15 @@ class MoveRowUp(_RowChangingCommand):
         return MoveRowUp(self._row)
 
 
+class MoveRowDown(_RowChangingCommand):
+
+    def _change_value(self, context):
+        context.move_step_down(self._row)
+
+    def _get_undo_command(self):
+        return MoveRowDown(self._row)
+
+
 class CompositeCommand(_StepsChangingCommand):
 
     def __init__(self, *commands):
@@ -452,3 +465,10 @@ def DeleteCells(top_left, bottom_right):
     return CompositeCommand(*[DeleteCell(row, col_s)
                               for row in range(row_s,row_e+1)
                               for _ in range(col_s, col_e+1)])
+
+def MoveRowsUp(rows):
+    return CompositeCommand(*[MoveRowUp(r) for r in rows])
+
+
+def MoveRowsDown(rows):
+    return CompositeCommand(*reversed([MoveRowDown(r) for r in rows]))

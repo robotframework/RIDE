@@ -17,7 +17,8 @@ from wx import grid
 
 from robotide.controller.commands import ChangeCellValue, ClearArea, PasteArea,\
     DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells, UncommentRows, \
-    Undo, Redo, RenameKeywordOccurrences, ExtractKeyword, AddKeywordFromCells
+    Undo, Redo, RenameKeywordOccurrences, ExtractKeyword, AddKeywordFromCells, \
+    MoveRowsUp, MoveRowsDown
 from robotide.publish import RideGridCellChanged, PUBLISHER
 from robotide.utils import RideEventHandler
 from robotide.widgets import PopupMenu, PopupMenuItems
@@ -37,7 +38,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def __init__(self, parent, controller, tree):
         try:
-            GridEditor.__init__(self, parent, len(controller.steps) + 5, 5, 
+            GridEditor.__init__(self, parent, len(controller.steps) + 5, 5,
                                 parent.plugin._grid_popup_creator)
             self._plugin = parent.plugin
             self._configure_grid()
@@ -90,8 +91,10 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def OnLabelRightClick(self, event):
         self._active_row = event.GetRow()
-        PopupMenu(self, PopupMenuItems(self, ['Insert Rows', 'Delete Rows\tDel',
-                         'Comment Rows\tCtrl-3', 'Uncomment Rows\tCtrl-4']))
+        popupitems = ['Insert Rows', 'Delete Rows\tDel', 'Comment Rows\tCtrl-3',
+                      'Uncomment Rows\tCtrl-4', 'Move Rows Up\tAlt-Up',
+                      'Move Rows Down\tAlt-Down']
+        PopupMenu(self, PopupMenuItems(self, popupitems))
         self._active_row = None
         event.Skip()
 
@@ -109,13 +112,21 @@ class KeywordEditor(GridEditor, RideEventHandler):
                                              self.selection.bottomright))
         event.Skip()
 
-    def OnCommentRows(self, event = None):
+    def OnCommentRows(self, event=None):
         self._execute(CommentRows(self.selection.rows()))
-        if event is not None: event.Skip()
+        if event is not None:
+            event.Skip()
 
-    def OnUncommentRows(self, event = None):
+    def OnUncommentRows(self, event=None):
         self._execute(UncommentRows(self.selection.rows()))
-        if event is not None: event.Skip()
+        if event is not None:
+            event.Skip()
+
+    def OnMoveRowsUp(self, evnet=None):
+        self._execute(MoveRowsUp(self.selection.rows()))
+
+    def OnMoveRowsDown(self, evnet=None):
+        self._execute(MoveRowsDown(self.selection.rows()))
 
     def _data_changed(self, data):
         if self._controller == data.item:
@@ -195,6 +206,9 @@ class KeywordEditor(GridEditor, RideEventHandler):
         if self.IsCellEditControlShown():
             self.GetCellEditor(*self.selection.cell).show_content_assist()
 
+    def refresh_datafile(self, item, event):
+        self._tree.refresh_datafile(item, event)
+
     def _calculate_position(self):
         x, y = wx.GetMousePosition()
         return x, y + 20
@@ -217,6 +231,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self.OnCellRightClick(event)
             return
         if control_down or keycode not in [wx.WXK_RETURN, wx.WXK_BACK]:
+            if keycode == wx.WXK_SPACE:
+                self._open_cell_editor_with_tooltip()
             event.Skip()
             return
         self.DisableCellEditControl()
@@ -224,6 +240,13 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self.MoveCursorRight(event.ShiftDown())
         else:
             self.MoveCursorLeft(event.ShiftDown())
+
+    def _open_cell_editor_with_tooltip(self):
+        if not self.IsCellEditControlEnabled():
+            self.EnableCellEditControl()
+        celleditor = self.GetCellEditor(self.GetGridCursorCol(), self.GetGridCursorRow())
+        celleditor.Show(True)
+        wx.CallAfter(celleditor.show_content_assist)
 
     def OnSelectAll(self, event):
         self.SelectAll()

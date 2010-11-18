@@ -14,7 +14,7 @@
 
 from wx.lib.pubsub import Publisher as WxPublisher
 
-from messages import RideLogMessage
+from messages import RideLogException
 
 
 class Publisher(object):
@@ -84,5 +84,6 @@ class _ListenerWrapper:
             self.listener(event.data)
         except Exception, err:
             # Prevent infinite recusrion if RideLogMessage listerner is broken,
-            if not isinstance(event.data, RideLogMessage):
-                RideLogMessage(message='Error in listener: ' + unicode(err), level='ERROR').publish()
+            if not isinstance(event.data, RideLogException):
+                RideLogException(message='Error in listener: ' + unicode(err), 
+                                 exception=err, level='ERROR').publish()

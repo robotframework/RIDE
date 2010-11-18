@@ -18,7 +18,8 @@ This is a monkey patch to robot version 2.5 settings.
 This should be removed when next version of Robot is released.
 '''
 
-from robot.parsing.settings import Timeout, _Setting, Fixture, Template
+from robot.parsing.settings import Timeout, _Setting, Fixture, Template, Metadata
+from robotide.context import SETTINGS
 
 
 def _setting_data_as_list(self):
@@ -49,7 +50,14 @@ def _template_data_as_list(self):
         ret.append(self.value)
     return ret
 
+def _metadata_data_as_list(self):
+    if SETTINGS['metadata style'].lower() == 'old':
+        return ['Meta: %s' % self.name, self.value]
+    return [self.setting_name, self.name, self.value]
+
+
 _Setting._data_as_list = _setting_data_as_list
 Timeout._data_as_list = _timeout_data_as_list
 Fixture._data_as_list = _fixture_data_as_list
 Template._data_as_list = _template_data_as_list
+Metadata._data_as_list = _metadata_data_as_list

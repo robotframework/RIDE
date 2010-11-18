@@ -14,10 +14,11 @@
 
 from wx.lib.pubsub import Publisher as WxPublisher
 import inspect
+import messagetype
+import sys
+import traceback
 
 from robotide import utils
-
-import messagetype
 
 
 class RideMessage(object):
@@ -63,17 +64,26 @@ class RideMessage(object):
         try:
             self._publish(self)
         except Exception, err:
-            self._publish('Error in publishing message: ' + RideLogMessage(message=str(err), level='ERROR'))
+            self._publish(RideLogException(message='Error in publishing message: ' + str(err), 
+                                           exception=err, level='ERROR'))
 
     def _publish(self, msg):
         WxPublisher().sendMessage(msg.topic, msg)
 
+class RideLog(RideMessage):
+    """This class represents a general purpose log message.
 
-class RideLogMessage(RideMessage):
+    Subclasses of this be may used to inform error conditions or to provide
+    some kind of debugging information.
+    """
+    data = ['message', 'level', 'timestamp']
+
+
+class RideLogMessage(RideLog):
     """This class represents a general purpose log message.
 
     This message may used to inform error conditions or to provide
-    some kind of debugging information, mainly to be shown to users.
+    some kind of debugging information.
     """
     data = ['message', 'level', 'timestamp']
 
@@ -85,6 +95,33 @@ class RideLogMessage(RideMessage):
         """
         RideMessage.__init__(self, message=message, level=level,
                              timestamp=utils.get_timestamp())
+
+
+class RideLogException(RideLog):
+    """This class represents a general purpose log message with a traceback
+    appended to message text. Also the original exception is included with 
+    the message.
+
+    This message may used to inform error conditions or to provide
+    some kind of debugging information.
+    """
+    data = ['message', 'level', 'timestamp', 'exception']
+
+    def __init__(self, message, exception, level='INFO'):
+        """Initializes a RIDE log exception.
+
+        The log ``level`` has default value ``INFO`` and the ``timestamp``
+        is generated automatically. Message is automatically appended with
+        a traceback.
+        """
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        if exc_traceback:
+            tb = traceback.extract_tb(exc_traceback)
+            message += '\n\nTraceback (most recent call last):\n' + ''.join(traceback.format_list(tb))
+        RideMessage.__init__(self, message=message, level=level,
+                             timestamp=utils.get_timestamp(),
+                             exception=exception)
+
 
 
 class RideTreeSelection(RideMessage):

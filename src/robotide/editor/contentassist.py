@@ -93,8 +93,8 @@ class _ContentAssistTextCtrlBase(object):
 
     def _show_content_assist(self):
         height = self.GetSizeTuple()[1]
-        x, y = self.ClientToScreenXY(0, height)
-        self._popup.show(x, y)
+        x, y = self.ClientToScreenXY(0, 0)
+        self._popup.show(x, y, height)
 
     def content_assist_value(self):
         return self._popup.content_assist_value(self.Value)
@@ -151,20 +151,29 @@ class ContentAssistPopup(object):
             return self._list.GetItem(self._selection).GetText()
         return None
 
-    def show(self, xcoord, ycoord):
-        self._main_popup.SetPosition((xcoord, ycoord))
-        self._details_popup.SetPosition((self._x_coordinate_for_details(xcoord),
-                                         ycoord))
+    def show(self, xcoord, ycoord, cell_height):
+        self._main_popup.SetPosition((xcoord, self._move_y_where_room(ycoord, cell_height)))
+        self._details_popup.SetPosition((self._move_x_where_room(xcoord),
+                                         self._move_y_where_room(ycoord, cell_height)))
         self._main_popup.Show()
         self._list.SetFocus()
 
-    def _x_coordinate_for_details(self, main_xcoord):
-        """Put details right of main popup is there is room, otherwise to the left"""
-        popup_width = _PREFERRED_POPUP_SIZE[0]
+    def _move_x_where_room(self, start_x):
+        width = _PREFERRED_POPUP_SIZE[0]
         max_horizontal = wx.GetDisplaySize()[0]
-        if max_horizontal - main_xcoord < 2 * popup_width:
-            return main_xcoord - popup_width
-        return main_xcoord + popup_width
+        free_right = max_horizontal - start_x - width
+        free_left = start_x - width
+        if max_horizontal - start_x < 2 * width:
+            if free_left > free_right:
+                return start_x - width
+        return start_x + width
+
+    def _move_y_where_room(self, start_y, cell_height):
+        height = _PREFERRED_POPUP_SIZE[1]
+        max_vertical = wx.GetDisplaySize()[1]
+        if max_vertical - start_y - cell_height < height:
+            return start_y - height
+        return start_y + cell_height
 
     def is_shown(self):
         return self._main_popup.IsShown()

@@ -96,6 +96,7 @@ class _RobotTableEditor(EditorPanel):
         self._last_shown_tooltip = None
 
     def close(self):
+        self.Unbind(wx.EVT_MOTION, handler=self.OnMotion)
         self.Show(False)
 
     def _create_header(self, text):

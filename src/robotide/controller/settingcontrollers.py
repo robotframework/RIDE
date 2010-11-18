@@ -15,9 +15,9 @@
 import re
 
 from robotide.controller.basecontroller import ControllerWithParent
-from robotide import utils
 from robotide.publish.messages import RideImportSettingChanged, \
     RideImportSettingRemoved
+from robotide import utils
 
 
 class _SettingController(ControllerWithParent):
@@ -52,7 +52,7 @@ class _SettingController(ControllerWithParent):
         return ' | ' .join(self._value)
 
     def as_list(self):
-        return  self._data.as_list()
+        return self._data.as_list()
 
     @property
     def comment(self):
