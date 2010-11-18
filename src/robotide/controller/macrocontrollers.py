@@ -82,8 +82,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
             if step.is_for_loop():
                 for_loop = ForLoopStepController(self, step)
                 flattened_steps.append(for_loop)
-                for sub_step in step.steps:
-                    flattened_steps.append(IntendedStepController(for_loop, sub_step))
+                flattened_steps.extend(for_loop.steps)
             else:
                 flattened_steps.append(StepController(self, step))
         return flattened_steps
@@ -433,14 +432,14 @@ class ForLoopStepController(StepController):
         pass
 
     def _get_raw_steps(self):
-        return self.steps
+        return self._step.steps
 
     def _set_raw_steps(self, steps):
         self._step.steps = steps
 
     @property
     def steps(self):
-        return self._step.steps
+        return [IntendedStepController(self, sub_step) for sub_step in self._get_raw_steps()]
 
     def _get_comment(self, cells):
         return None
@@ -455,21 +454,21 @@ class ForLoopStepController(StepController):
         return False
 
     def add_step(self, step):
-        self.steps.append(step)
+        self._get_raw_steps().append(step)
 
     def _recreate(self, cells, comment=None):
         if not self._represent_valid_for_loop_header(cells):
             self._replace_with_new_cells(cells)
         else:
-            steps = self.steps
+            steps = self._get_raw_steps()
             self._step.__init__(cells[1:])
-            self._step.steps = steps
+            self._set_raw_steps(steps)
 
     def remove(self):
         steps = self.parent.data.steps
         index = steps.index(self._step)
         steps.remove(self._step)
-        self.parent.data.steps = steps[:index] + self._step.steps + steps[index:]
+        self.parent.data.steps = steps[:index] + self._get_raw_steps() + steps[index:]
 
     def _represent_valid_for_loop_header(self, cells):
         if cells[0] != self.as_list()[0]:
@@ -482,8 +481,8 @@ class ForLoopStepController(StepController):
     def _replace_with_new_cells(self, cells):
         index = self.parent.index_of_step(self._step)
         self.parent.replace_step(index, Step(cells))
-        self._step.steps.reverse()
-        for substep in self._step.steps:
+        self._get_raw_steps().reverse()
+        for substep in self._get_raw_steps():
             self.parent.add_step(index+1, Step(['']+substep.as_list()))
 
     def notify_steps_changed(self):
@@ -506,8 +505,8 @@ class IntendedStepController(StepController):
         if cells[0] == '':
             cells = cells[1:]
         self._step.__init__(cells)
-        if self._step not in self.parent.steps:
+        if self._step not in self.parent._get_raw_steps():
             self.parent.add_step(self._step)
 
     def remove(self):
-        self.parent.steps.remove(self._step)
+        self.parent._get_raw_steps().remove(self._step)
