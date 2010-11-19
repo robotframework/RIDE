@@ -1,13 +1,13 @@
 import unittest
-
 from robot.utils.asserts import assert_true, assert_false, assert_equals
+from robotide.controller.commands import SaveFile, ChangeCellValue, CopyMacroAs, \
+     Undo, Redo, DeleteRow, AddRow, AddRows, CommentRows, Purify, \
+     UncommentRows, PasteArea, InsertCells, DeleteRows, DeleteCells, ClearArea, \
+     MoveRowsUp, MoveRowsDown
+
+
 from base_command_test import TestCaseCommandTest, STEP1, STEP1_KEYWORD, \
      FOR_LOOP_HEADER, FOR_LOOP_STEP1, FOR_LOOP_STEP2, STEP_WITH_COMMENT, STEP2, data
-
-from robotide.controller.commands import SaveFile, ChangeCellValue, CopyMacroAs, \
-     Undo, Redo, DeleteRow, AddRow, AddRows, MoveRowUp, CommentRows, Purify, \
-     UncommentRows, PasteArea, InsertCells, DeleteRows, DeleteCells, ClearArea, \
-     MoveRowsUp, MoveRowDown, MoveRowsDown
 
 
 class FileHandlingCommandsTest(TestCaseCommandTest):
@@ -359,15 +359,21 @@ class TestCaseEditingTest(TestCaseCommandTest):
 class RowMovingTest(TestCaseCommandTest):
 
     def test_row_up(self):
-        self._exec(MoveRowUp(1))
+        result = self._exec(MoveRowsUp([1]))
+        assert_true(result)
         self._assert_step_order(STEP2, STEP1)
 
     def test_first_row_up_does_nothing(self):
-        self._exec(MoveRowUp(0))
-        self._assert_step_order(STEP1)
+        result = self._exec(MoveRowsUp([0]))
+        assert_true(not result)
+        assert_equals(self._number_of_test_changes, 0)
+
+    def test_moving_block_containing_first_row_up_does_nothing(self):
+        self._exec(MoveRowsUp([0,1,2]))
+        assert_equals(self._number_of_test_changes, 0)
 
     def test_undo_row_up(self):
-        self._exec(MoveRowUp(1))
+        self._exec(MoveRowsUp([1]))
         self._exec(Undo())
         self._assert_step_order(STEP1, STEP2)
 
@@ -381,11 +387,11 @@ class RowMovingTest(TestCaseCommandTest):
         self._assert_step_order(STEP1, STEP2, STEP_WITH_COMMENT)
 
     def test_move_row_down(self):
-        self._exec(MoveRowDown(0))
+        self._exec(MoveRowsDown([0]))
         self._assert_step_order(STEP2, STEP1)
 
     def test_undo_move_row_down(self):
-        self._exec(MoveRowDown(0))
+        self._exec(MoveRowsDown([0]))
         self._exec(Undo())
         self._assert_step_order(STEP1, STEP2)
 
@@ -397,6 +403,7 @@ class RowMovingTest(TestCaseCommandTest):
         for idx, step in enumerate(steps):
             assert_equals(self._steps[idx].as_list(),
                           self._data_step_as_list(step))
+        assert_true(self._ctrl.dirty)
 
 
 if __name__ == "__main__":

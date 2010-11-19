@@ -97,12 +97,15 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self.data.steps[index] = new_step
 
     def move_step_up(self, index):
-        self.data.steps[index-1], self.data.steps[index] = self.data.steps[index], self.data.steps[index-1]
+        self._move_step(index, index-1)
 
     def move_step_down(self, index):
-        if index + 1 >= len(self.data.steps):
-            self.data.steps.append(_empty_step())
-        self.data.steps[index], self.data.steps[index+1] = self.data.steps[index+1], self.data.steps[index]
+        self._move_step(index, index+1)
+
+    def _move_step(self, source, target):
+        source_step = self.step(source)
+        self.remove_step(source)
+        self.add_step(target, source_step._step)
 
     def set_steps(self, steps):
         self.data.steps = steps
@@ -145,8 +148,9 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
     def _remove_step(self, step):
         step.remove()
 
-    def add_step(self, index, step = None):
-        if step is None: step = _empty_step()
+    def add_step(self, index, step=None):
+        if step is None:
+            step = _empty_step()
         if index == len(self.steps):
             self.data.steps.append(step)
         else:

@@ -74,7 +74,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
 
     def _execute(self, command):
-        self._controller.execute(command)
+        return self._controller.execute(command)
 
     def write_cell(self, row, col, value, update_history=True):
         previous = self.GetCellValue(row, col) \
@@ -123,10 +123,16 @@ class KeywordEditor(GridEditor, RideEventHandler):
             event.Skip()
 
     def OnMoveRowsUp(self, evnet=None):
-        self._execute(MoveRowsUp(self.selection.rows()))
+        if self._execute(MoveRowsUp(self.selection.rows())):
+            self.ClearSelection()
+            for r in self.selection.rows():
+                self.SelectRow(r-1, True)
 
     def OnMoveRowsDown(self, evnet=None):
-        self._execute(MoveRowsDown(self.selection.rows()))
+        if self._execute(MoveRowsDown(self.selection.rows())):
+            self.ClearSelection()
+            for r in self.selection.rows():
+                self.SelectRow(r+1, True)
 
     def _data_changed(self, data):
         if self._controller == data.item:

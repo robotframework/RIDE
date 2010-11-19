@@ -76,7 +76,7 @@ class TestCaseCommandTest(unittest.TestCase):
         return step_data.split('  ')[1:]
 
     def _exec(self, command):
-        self._ctrl.execute(command)
+        return self._ctrl.execute(command)
 
     def _test_changed(self, data):
         self._number_of_test_changes += 1

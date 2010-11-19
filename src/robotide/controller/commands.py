@@ -97,6 +97,8 @@ class _StepsChangingCommand(_ReversibleCommand):
     def _execute(self, context):
         if self.change_steps(context):
             context.notify_steps_changed()
+            return True
+        return False
 
     def change_steps(self, context):
         '''Return True if steps changed, False otherwise'''
@@ -385,23 +387,44 @@ class UncommentRow(_RowChangingCommand):
         return CommentRow(self._row)
 
 
-class MoveRowUp(_RowChangingCommand):
+class MoveRowsUp(_StepsChangingCommand):
 
-    def _change_value(self, context):
-        if self._row > 0:
-            context.move_step_up(self._row)
+    def __init__(self, rows):
+        self._rows = rows
+
+    def change_steps(self, context):
+        if self._first_row > 0:
+            for row in self._rows:
+                context.move_step_up(row)
+            return True
+
+    @property
+    def _first_row(self):
+        return self._rows[0]
 
     def _get_undo_command(self):
-        return MoveRowUp(self._row)
+        return MoveRowsDown([r-1 for r in self._rows])
 
 
-class MoveRowDown(_RowChangingCommand):
+class MoveRowsDown(_StepsChangingCommand):
 
-    def _change_value(self, context):
-        context.move_step_down(self._row)
+    def __init__(self, rows):
+        self._rows = rows
+
+    def change_steps(self, context):
+        if self._last_row >= len(context.steps)-1:
+            return False
+        for row in reversed(self._rows):
+            context.move_step_down(row)
+        return True
+
+    @property
+    def _last_row(self):
+        return self._rows[-1]
 
     def _get_undo_command(self):
-        return MoveRowDown(self._row)
+        return MoveRowsUp([r+1 for r in self._rows])
+
 
 
 class CompositeCommand(_StepsChangingCommand):
@@ -465,10 +488,3 @@ def DeleteCells(top_left, bottom_right):
     return CompositeCommand(*[DeleteCell(row, col_s)
                               for row in range(row_s,row_e+1)
                               for _ in range(col_s, col_e+1)])
-
-def MoveRowsUp(rows):
-    return CompositeCommand(*[MoveRowUp(r) for r in rows])
-
-
-def MoveRowsDown(rows):
-    return CompositeCommand(*reversed([MoveRowDown(r) for r in rows]))
