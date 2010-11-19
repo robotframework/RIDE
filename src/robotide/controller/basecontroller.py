@@ -18,6 +18,9 @@ class _BaseController(object):
     def display_name(self):
         return self.data.name
 
+    def execute(self, command):
+        return command.execute(self)
+
 class ControllerWithParent(object):
 
     def mark_dirty(self):
