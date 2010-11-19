@@ -28,7 +28,7 @@ from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideDataChangedToDirty, RideDataDirtyCleared, RideVariableRemoved,\
     RideVariableAdded
 from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
-    AddKeyword, AddTestCase, RenameTest, CopyMacroAs
+    AddKeyword, AddTestCase, RenameTest, CopyMacroAs, MoveTo
 from robotide.widgets import PopupCreator, PopupMenuItems
 try:
     import treemixin
@@ -504,17 +504,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         dragged = self._get_handler(dragged)
         target = self._get_handler(target)
         if target and target.accepts_drag(dragged):
-            dragged.remove()
-            target.do_drop(dragged.controller)
-
-    def do_drop(self, datafilehandler, test_or_uk):
-        for node in self._datafile_nodes:
-            if self._get_handler(node) == datafilehandler:
-                self._mark_dirty(node)
-                if isinstance(test_or_uk, UserKeywordController):
-                    self.add_keyword(node, test_or_uk)
-                else:
-                    self.add_test(node, test_or_uk)
+            dragged.controller.execute(MoveTo(target.controller))
 
     def IsValidDragItem(self, item):
         return self._get_handler(item).is_draggable
@@ -624,8 +614,10 @@ class TestDataHandler(_ActionHandler):
             self.controller.execute(AddKeyword(dlg.get_name(), dlg.get_args()))
         dlg.Destroy()
 
+
 class TestDataDirectoryHandler(TestDataHandler):
     pass
+
 
 class ResourceFileHandler(TestDataHandler):
     is_test_suite = False
