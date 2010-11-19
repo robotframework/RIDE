@@ -106,6 +106,9 @@ class ListEditorBase(wx.Panel):
     def update_selected_item(self, data):
         self._list.update_item(self._selection, data)
 
+    def select(self, text):
+        self._list.select(text)
+
 
 class ListEditor(ListEditorBase, RideEventHandler): pass
 
@@ -122,7 +125,6 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
     def populate(self, columns, data):
         for i, name in enumerate(columns):
             self.InsertColumn(i, name)
-            #self.SetColumnWidth(i, 150 if i == 0 else 200)
         self.insert_data(data)
 
     def insert_data(self, data):
@@ -143,3 +145,10 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         self.SetItemText(index, data[0])
         for col in range(1, len(data)):
             self.SetStringItem(index, col, data[col])
+
+    def select(self, text):
+        item = self.FindItem(-1, text)
+        if item:
+            self.Select(item)
+            # FIXME: EnsureVisible does not seem to work
+            self.EnsureVisible(item)

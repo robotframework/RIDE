@@ -17,7 +17,8 @@ import wx
 from robotide import context
 from robotide import utils
 from robotide.utils import RideEventHandler, RideHtmlWindow, ButtonWithHandler
-from robotide.controller.settingcontrollers import DocumentationController
+from robotide.controller.settingcontrollers import (DocumentationController,
+                                                    VariableController)
 
 from kweditor import KeywordEditor
 from listeditor import ListEditor
@@ -29,6 +30,7 @@ from robotide.publish.messages import (RideItemSettingsChanged,
                                        RideItemNameChanged,
                                        RideInitFileRemoved)
 from robot.parsing.settings import _Setting
+
 
 def Editor(plugin, editor_panel, tree):
     controller = plugin.get_selected_item()
@@ -164,6 +166,9 @@ class ResourceFileEditor(_RobotTableEditor):
     def _add_variable_table(self):
         editor = VariablesListEditor(self, self._tree, self.controller.variables)
         self.sizer.Add(editor, 1, wx.EXPAND)
+        selected_item = self.plugin.get_selected_item()
+        if isinstance(selected_item, VariableController):
+            editor.select(selected_item.name)
 
 
 class TestCaseFileEditor(ResourceFileEditor):
