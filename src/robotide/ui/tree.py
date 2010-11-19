@@ -436,7 +436,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def _handle_pending_selection(self, to_be_selected, parent_node):
         if to_be_selected:
             self._expand_and_render_children(parent_node)
-            self.SelectItem(self._get_node_with_label(parent_node, to_be_selected))
+            wx.CallAfter(self.SelectItem,
+                         self._get_node_with_label(parent_node, to_be_selected))
 
     def OnGoBack(self, event):
         node = self._history.back()
