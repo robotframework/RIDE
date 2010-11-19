@@ -149,11 +149,17 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._render_children(node, predicate)
         self.Expand(node)
 
+    def _render_children(self, node, predicate=None):
+        handler = self._get_handler(node)
+        if not handler or handler.children_rendered():
+            return
+        self._create_variable_nodes(node, handler)
+        self._create_test_nodes(node, handler)
+        self._create_keyword_nodes(node, predicate, handler)
 
     def _create_test_nodes(self, node, handler):
         for test in handler.tests:
             self._create_node_with_handler(node, test)
-
 
     def _create_keyword_nodes(self, node, predicate, handler):
         for kw in handler.keywords:
@@ -166,14 +172,6 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def _create_variable_nodes(self, node, handler):
         for var in handler.variables:
             self._create_node_with_handler(node, var)
-
-    def _render_children(self, node, predicate=None):
-        handler = self._get_handler(node)
-        if not handler or handler.children_rendered():
-            return
-        self._create_test_nodes(node, handler)
-        self._create_keyword_nodes(node, predicate, handler)
-        self._create_variable_nodes(node, handler)
 
     def _create_node(self, parent_node, label, img, index=None):
         if index is not None:
@@ -233,7 +231,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _variable_added(self, message):
         self._add_dataitem(self._get_datafile_node(self.get_selected_datafile()),
-                           message.item, lambda item: item.is_test_suite)
+                           message.item, lambda item: True)
 
     def _macro_removed(self, message):
         node = self._find_node_by_controller(message.item)
@@ -567,7 +565,7 @@ class _ActionHandler(wx.Window):
             self.controller.save_with_new_format(dialog.get_format())
 
 
-class TestDataDirectoryHandler(_ActionHandler):
+class TestDataHandler(_ActionHandler):
     accepts_drag = lambda self, dragged: (isinstance(dragged, UserKeywordHandler) or
                                           isinstance(dragged, VariableHandler))
 
@@ -627,12 +625,12 @@ class TestDataDirectoryHandler(_ActionHandler):
         dlg.Destroy()
 
 
-class ResourceFileHandler(TestDataDirectoryHandler):
+class ResourceFileHandler(TestDataHandler):
     is_test_suite = False
     _actions = ['New User Keyword', '---', 'Change Format']
 
 
-class TestCaseFileHandler(TestDataDirectoryHandler):
+class TestCaseFileHandler(TestDataHandler):
     accepts_drag = lambda *args: True
     _actions = ['New Test Case', 'New User Keyword', '---', 'Change Format']
 
