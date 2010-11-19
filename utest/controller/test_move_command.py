@@ -13,11 +13,19 @@ class TestMoveCommand(unittest.TestCase):
         self.resu = datafilereader.get_ctrl_by_name(datafilereader.OCCURRENCES_RESOURCE_NAME, ctrl.datafiles)
 
     def test_move_variable_from_suite_to_another_suite(self):
-        var_from_suite1 = self.ts1.variables[0]
-        var_from_suite1.execute(MoveTo(self.ts2))
-        name, value = var_from_suite1.name, var_from_suite1.value
-        assert_true((name, value) in [(v.name,v.value) for v in self.ts2.variables])
-        assert_false((name, value) in [(v.name,v.value) for v in self.ts1.variables])
+        self._move_variable(self.ts1.variables[0], self.ts1, self.ts2)
+
+    def test_move_variable_from_suite_to_resource_file(self):
+        self._move_variable(self.ts1.variables[0], self.ts1, self.resu)
+
+    def test_move_variable_from_resource_to_suite(self):
+        self._move_variable(self.resu.variables[0], self.resu, self.ts2)
+
+    def _move_variable(self, what, from_where, to_where):
+        what.execute(MoveTo(to_where))
+        name, value = what.name, what.value
+        assert_true((name, value) in [(v.name,v.value) for v in to_where.variables])
+        assert_false((name, value) in [(v.name,v.value) for v in from_where.variables])
 
     def test_move_testcase_from_suite_to_another_suite(self):
         test_from_suite2 = self.ts2.tests[1]
@@ -30,7 +38,8 @@ class TestMoveCommand(unittest.TestCase):
         kw_from_suite1.execute(MoveTo(self.ts2))
         assert_equals(kw_from_suite1, self.ts2.keywords[1])
         assert_equals(len(self.ts1.keywords), 1)
-        
+
+
 
 if __name__ == "__main__":
     unittest.main()
