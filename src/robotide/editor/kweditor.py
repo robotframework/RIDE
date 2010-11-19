@@ -122,17 +122,18 @@ class KeywordEditor(GridEditor, RideEventHandler):
         if event is not None:
             event.Skip()
 
-    def OnMoveRowsUp(self, evnet=None):
+    def OnMoveRowsUp(self, event=None):
         if self._execute(MoveRowsUp(self.selection.rows())):
-            self.ClearSelection()
-            for r in self.selection.rows():
-                self.SelectRow(r-1, True)
+            self._shift_selection(-1)
 
-    def OnMoveRowsDown(self, evnet=None):
+    def OnMoveRowsDown(self, event=None):
         if self._execute(MoveRowsDown(self.selection.rows())):
-            self.ClearSelection()
-            for r in self.selection.rows():
-                self.SelectRow(r+1, True)
+            self._shift_selection(1)
+
+    def _shift_selection(self, shift):
+        self.ClearSelection()
+        for r in self.selection.rows():
+            self.SelectRow(r+shift, True)
 
     def _data_changed(self, data):
         if self._controller == data.item:
@@ -230,6 +231,13 @@ class KeywordEditor(GridEditor, RideEventHandler):
         if keycode == ord('A') and control_down:
             self.OnSelectAll(event)
             return
+        if event.AltDown():
+            if keycode == wx.WXK_UP:
+                self.OnMoveRowsUp()
+                return
+            elif keycode == wx.WXK_DOWN:
+                self.OnMoveRowsDown()
+                return
         if keycode == wx.WXK_CONTROL and self._tooltip.IsShown():
             return
         self.hide_tooltip()

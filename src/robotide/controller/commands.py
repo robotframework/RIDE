@@ -393,10 +393,15 @@ class MoveRowsUp(_StepsChangingCommand):
         self._rows = rows
 
     def change_steps(self, context):
-        if self._first_row > 0:
-            for row in self._rows:
-                context.move_step_up(row)
-            return True
+        if self._last_row > len(context.steps)-1 or self._first_row == 0:
+            return False
+        for row in self._rows:
+            context.move_step_up(row)
+        return True
+
+    @property
+    def _last_row(self):
+        return self._rows[-1]
 
     @property
     def _first_row(self):
