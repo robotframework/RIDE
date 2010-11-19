@@ -1,0 +1,7 @@
+*** Variables ***
+@{Resource List}  2  34
+${Resource Var}  iadota
+
+*** Keywords ***
+My Keyword
+    No Operation

@@ -92,6 +92,16 @@ class Redo(_Command):
             return context.pop_from_redo()._execute_without_redo_clear(context)
 
 
+class MoveTo(_Command):
+
+    def __init__(self, destination):
+        self._destination = destination
+
+    def execute(self, context):
+        context.delete()
+        self._destination.add_test_or_keyword(context)
+
+
 class _StepsChangingCommand(_ReversibleCommand):
 
     def _execute(self, context):

@@ -23,9 +23,9 @@ LIBRARY_WITH_SPACES_IN_PATH = _makepath('lib with spaces', 'spacelib.py')
 TESTCASEFILE_WITH_RESOURCES_WITH_VARIABLES_FROM_VARIABLE_FILE = _makepath('var_file_variables',
                                             'import_resource_with_variable_from_var_file.txt')
 
-OCCURRENCES_RESOURCE_NAME = 'Occurrences Resource'
-OCCURRENCES_RESOURCE_FILE = 'occurrences_resource.txt'
-OCCURRENCES_PATH = _makepath('occurrences')
+OCCURRENCES_RESOURCE_NAME = 'Testdata Resource'
+OCCURRENCES_RESOURCE_FILE = 'testdata_resource.txt'
+OCCURRENCES_PATH = _makepath('simple_testsuite_with_different_namespaces')
 
 def construct_chief_controller(datapath):
     class NullObserver(object):
@@ -38,3 +38,9 @@ def construct_chief_controller(datapath):
     chief = ChiefController(Namespace())
     chief.load_data(datapath, NullObserver())
     return chief
+
+def get_ctrl_by_name(name, datafiles):
+    for file in datafiles:
+        if file.name == name:
+            return file
+    return None

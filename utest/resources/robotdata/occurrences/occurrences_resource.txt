@@ -1,3 +1,0 @@
-*** Keywords ***
-My Keyword
-    No Operation

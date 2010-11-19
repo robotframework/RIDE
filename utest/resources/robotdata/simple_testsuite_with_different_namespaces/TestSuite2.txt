@@ -1,5 +1,9 @@
 *** Settings ***
-Resource    occurrences_resource.txt
+Resource    testdata_resource.txt
+
+*** Variables ***
+@{Test Suite 2 List}  2  3
+${Test Suite 2 Var}  irobota
 
 *** Test Cases ***
 My Test
