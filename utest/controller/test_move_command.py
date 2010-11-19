@@ -25,5 +25,12 @@ class TestMoveCommand(unittest.TestCase):
         assert_equals(test_from_suite2, self.ts1.tests[1])
         assert_equals(len(self.ts2.tests), 1)
 
+    def test_move_keyword_from_suite_to_another_suite(self):
+        kw_from_suite1 = self.ts1.keywords[1]
+        kw_from_suite1.execute(MoveTo(self.ts2))
+        assert_equals(kw_from_suite1, self.ts2.keywords[1])
+        assert_equals(len(self.ts1.keywords), 1)
+        
+
 if __name__ == "__main__":
     unittest.main()
