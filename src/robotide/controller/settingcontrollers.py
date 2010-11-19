@@ -296,6 +296,14 @@ class VariableController(_BaseController, _SettingController):
     def delete(self):
         self._parent.remove_var(self)
 
+    def __eq__(self, other):
+        if self is other : return True
+        if other.__class__ != self.__class__ : return False
+        return self._var == other._var
+
+    def __hash__(self):
+        return hash(self._var)+1
+
 
 class ImportController(_SettingController):
 

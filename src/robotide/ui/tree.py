@@ -624,6 +624,8 @@ class TestDataHandler(_ActionHandler):
             self.controller.execute(AddKeyword(dlg.get_name(), dlg.get_args()))
         dlg.Destroy()
 
+class TestDataDirectoryHandler(TestDataHandler):
+    pass
 
 class ResourceFileHandler(TestDataHandler):
     is_test_suite = False
