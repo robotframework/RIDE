@@ -26,7 +26,7 @@ from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
 from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideTestCaseAdded, RideUserKeywordRemoved, RideTestCaseRemoved, RideDataFileRemoved,\
     RideDataChangedToDirty, RideDataDirtyCleared, RideVariableRemoved,\
-    RideVariableAdded
+    RideVariableAdded, RideItemSettingsChangedVariableOrder
 from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
     AddKeyword, AddTestCase, RenameTest, CopyMacroAs, MoveTo
 from robotide.widgets import PopupCreator, PopupMenuItems
@@ -81,7 +81,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
                              (self._macro_removed, RideVariableRemoved),
                              (self._datafile_removed, RideDataFileRemoved),
                              (self._data_dirty, RideDataChangedToDirty),
-                             (self._data_undirty, RideDataDirtyCleared)]:
+                             (self._data_undirty, RideDataDirtyCleared),
+                             (self._variable_order_changed, RideItemSettingsChangedVariableOrder)]:
             PUBLISHER.subscribe(listener, topic)
 
     def _bind_keys(self):
@@ -231,7 +232,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _variable_added(self, message):
         self._add_dataitem(self._get_datafile_node(self.get_selected_datafile()),
-                           message.item, lambda item: True)
+                           message.item, lambda item: not item.is_variable)
 
     def _macro_removed(self, message):
         node = self._find_node_by_controller(message.item)
@@ -382,13 +383,17 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
                                               controller, second)
         return node
 
-    def refresh_datafile(self, controller, event):
-        to_be_selected = self._get_pending_selection(event)
+
+    def _refresh_datafile(self, controller):
         orig_node = self._get_data_controller_node(controller)
         insertion_index = self._get_datafile_index(orig_node)
         parent = self._get_parent(orig_node)
         self._remove_datafile_node(orig_node)
-        new_node = self._render_datafile(parent, controller, insertion_index)
+        return self._render_datafile(parent, controller, insertion_index)
+
+    def refresh_datafile(self, controller, event):
+        to_be_selected = self._get_pending_selection(event)
+        new_node = self._refresh_datafile(controller)
         self._handle_pending_selection(to_be_selected, new_node)
 
     def _get_pending_selection(self, event):
@@ -527,10 +532,16 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         if controller.dirty:
             self._mark_dirty(self._get_datafile_node(controller.datafile))
 
+    def _variable_order_changed(self, data):
+        selected = self.get_selected_item()
+        parent = self._refresh_datafile(data.item.datafile_controller)
+        self._handle_pending_selection(selected.display_name, parent)
+
 
 class _ActionHandler(wx.Window):
     is_user_keyword = False
     is_test_suite = False
+    is_variable = False
 
     def __init__(self, controller, tree, node):
         wx.Window.__init__(self, tree)
@@ -701,6 +712,7 @@ class VariableHandler(_ActionHandler):
     show_popup = lambda self: None
     accepts_drag = lambda *args: False
     is_draggable = True
+    is_variable = True
 
     def remove(self):
         self.controller.delete()
