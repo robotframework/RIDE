@@ -115,6 +115,10 @@ class ChiefControllerTest(unittest.TestCase):
         self.ctrl.new_resource('somepath')
         assert_equals(len(self.ctrl.resources), 1)
 
+    def test_datafiles_property_with_resource_file_only(self):
+        resource = self.ctrl.load_resource(RESOURCE_PATH, self.load_observer)
+        assert_equals(self.ctrl.datafiles[0], resource)
+
 
 if __name__ == "__main__":
     unittest.main()

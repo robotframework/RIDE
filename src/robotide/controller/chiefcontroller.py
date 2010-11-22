@@ -216,7 +216,7 @@ class ChiefController(object):
 
     @property
     def datafiles(self):
-        return list(self.data.iter_datafiles()) + self.resources
+        return list(self.data.iter_datafiles() if self.data else []) + self.resources
 
     def resource_import_modified(self, path):
         resource = self._namespace.get_resource(path)
