@@ -204,7 +204,7 @@ class RideFrame(wx.Frame, RideEventHandler):
     def _show_format_dialog_for(self, file_controller_without_format):
         help = 'Please provide format of initialization file for directory suite\n"%s".' %\
                 file_controller_without_format.directory
-        dlg = ChangeFormatDialog('HTML', help_text=help)
+        dlg = ChangeFormatDialog('TXT', help_text=help)
         if dlg.ShowModal() == wx.ID_OK:
             file_controller_without_format.set_format(dlg.get_format())
         dlg.Destroy()
