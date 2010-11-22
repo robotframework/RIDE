@@ -257,7 +257,7 @@ class RideItemNameChanged(RideItem):
 class RideItemSettingsChanged(RideItem):
     """"""
 
-class RideItemSettingsChangedVariableOrder(RideItemSettingsChanged):
+class RideItemSettingsChangedVariables(RideItemSettingsChanged):
     """"""
 
 class RideTestCaseAdded(RideMessage):

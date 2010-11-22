@@ -21,7 +21,7 @@ from robotide.controller.basecontroller import ControllerWithParent
 from robotide.controller.macrocontrollers import (TestCaseController,
                                                   UserKeywordController)
 from robotide.publish.messages import RideTestCaseRemoved, RideVariableAdded,\
-    RideVariableRemoved, RideItemSettingsChangedVariableOrder
+    RideVariableRemoved, RideItemSettingsChangedVariables
 
 from robotide.controller.settingcontrollers import (MetadataController,
         ImportController, VariableController)
@@ -69,7 +69,7 @@ class VariableTableController(_TableController, _WithListOperations):
 
     def swap(self, ind1, ind2):
         _WithListOperations.swap(self, ind1, ind2)
-        RideItemSettingsChangedVariableOrder(item=self).publish()
+        RideItemSettingsChangedVariables(item=self).publish()
 
     def add_variable(self, name, value, comment=None):
         self._table.add(name, value, comment)

@@ -26,7 +26,7 @@ from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
 from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideTestCaseAdded, RideUserKeywordRemoved, RideTestCaseRemoved, RideDataFileRemoved,\
     RideDataChangedToDirty, RideDataDirtyCleared, RideVariableRemoved,\
-    RideVariableAdded, RideItemSettingsChangedVariableOrder
+    RideVariableAdded, RideItemSettingsChangedVariables
 from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
     AddKeyword, AddTestCase, RenameTest, CopyMacroAs, MoveTo
 from robotide.widgets import PopupCreator, PopupMenuItems
@@ -82,7 +82,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
                              (self._datafile_removed, RideDataFileRemoved),
                              (self._data_dirty, RideDataChangedToDirty),
                              (self._data_undirty, RideDataDirtyCleared),
-                             (self._variable_order_changed, RideItemSettingsChangedVariableOrder)]:
+                             (self._variables_changed, RideItemSettingsChangedVariables)]:
             PUBLISHER.subscribe(listener, topic)
 
     def _bind_keys(self):
@@ -532,7 +532,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         if controller.dirty:
             self._mark_dirty(self._get_datafile_node(controller.datafile))
 
-    def _variable_order_changed(self, data):
+    def _variables_changed(self, data):
         selected = self.get_selected_item()
         parent = self._refresh_datafile(data.item.datafile_controller)
         self._handle_pending_selection(selected.display_name, parent)
