@@ -110,8 +110,7 @@ class ChiefController(object):
         self._namespace.update()
 
     def get_all_keywords(self):
-        return self._namespace.get_all_keywords(ctrl.datafile for ctrl in
-                                                self.datafiles)
+        return self._namespace.get_all_keywords(ctrl.datafile for ctrl in self.suites)
 
     def keyword_info(self, datafile, keyword_name):
         return self._namespace.find_keyword(datafile, keyword_name)
@@ -215,8 +214,12 @@ class ChiefController(object):
         return [controller for controller in self.datafiles if controller.dirty]
 
     @property
+    def suites(self):
+        return list(self.data.iter_datafiles() if self.data else [])
+
+    @property
     def datafiles(self):
-        return list(self.data.iter_datafiles() if self.data else []) + self.resources
+        return self.suites + self.resources
 
     def resource_import_modified(self, path):
         resource = self._namespace.get_resource(path)
