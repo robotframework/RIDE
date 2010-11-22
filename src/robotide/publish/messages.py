@@ -257,6 +257,9 @@ class RideItemNameChanged(RideItem):
 class RideItemSettingsChanged(RideItem):
     """"""
 
+class RideItemSettingsChangedVariables(RideItemSettingsChanged):
+    """"""
+
 class RideTestCaseAdded(RideMessage):
     """Sent when a new test case is added to a suite."""
     data = ['datafile', 'name', 'item']

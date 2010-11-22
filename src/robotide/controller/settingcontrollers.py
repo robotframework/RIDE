@@ -17,7 +17,7 @@ import re
 from robotide.controller.basecontroller import ControllerWithParent,\
     _BaseController
 from robotide.publish.messages import RideImportSettingChanged, \
-    RideImportSettingRemoved
+    RideImportSettingRemoved, RideItemSettingsChangedVariables
 from robotide import utils
 
 
@@ -295,6 +295,9 @@ class VariableController(_BaseController, _SettingController):
 
     def delete(self):
         self._parent.remove_var(self)
+
+    def notify_value_changed(self):
+        RideItemSettingsChangedVariables(item=self._parent).publish()
 
     def __eq__(self, other):
         if self is other : return True

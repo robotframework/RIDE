@@ -151,6 +151,19 @@ class RenameTest(_ReversibleCommand):
         return self
 
 
+class UpdateVariable(_Command):
+
+    def __init__(self, new_name, new_value, new_comment):
+        self._new_name = new_name
+        self._new_value = new_value
+        self._new_comment = new_comment
+
+    def execute(self, context):
+        context.set_value(self._new_name, self._new_value)
+        context.set_comment(self._new_comment)
+        context.notify_value_changed()
+
+
 class FindOccurrences(_Command):
 
     def __init__(self, keyword_name):
