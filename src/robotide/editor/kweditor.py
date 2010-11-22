@@ -33,8 +33,8 @@ from robotide.publish.messages import RideItemStepsChanged
 class KeywordEditor(GridEditor, RideEventHandler):
     dirty = property(lambda self: self._controller.dirty)
     _no_cell = grid.GridCellCoords(-1, -1)
-    _popup_items = ['Create Keyword', 'Extract Keyword', 'Rename Keyword', '---'] + \
-            GridEditor._popup_items
+    _popup_items = ['Create Keyword', 'Extract Keyword', 'Rename Keyword',
+                    '---'] + GridEditor._popup_items
 
     def __init__(self, parent, controller, tree):
         try:
@@ -44,8 +44,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._configure_grid()
             self._controller = controller
             PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
-            # TODO: Tooltip may be smaller when the documentation is wrapped correctly
-            self._tooltip = RideHtmlPopupWindow(self, (650, 400))
+            self._tooltip = RideHtmlPopupWindow(self, (450, 300))
             self._marked_cell = None
             self._idle_mouse_cell = self._no_cell
             self._active_row = self._active_col = None
