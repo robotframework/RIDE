@@ -1,7 +1,7 @@
 import unittest
 from robot.parsing.model import TestCaseFile
 
-from robot.utils.asserts import assert_equals
+from robot.utils.asserts import assert_equals, assert_true, assert_false
 from robotide.controller import ChiefController
 from robotide.controller.macrocontrollers import KEYWORD_NAME_FIELD
 from robotide.controller.commands import Undo, FindOccurrences, RenameKeywordOccurrences
@@ -20,6 +20,7 @@ STEP2_ARGUMENT = 'No Operation'
 TEST1_NAME = 'Test'
 UNUSED_KEYWORD_NAME = 'Foo'
 USERKEYWORD1_NAME = 'User Keyword'
+USERKEYWORD2_NAME = 'Juuser kei woord'
 SETUP_KEYWORD = 'Setup Kw'
 TEMPLATE_KEYWORD = 'Template Kw'
 SUITE_SETUP_KEYWORD = 'Suite Setup Kw'
@@ -37,7 +38,7 @@ def TestCaseControllerWithSteps(chief=None, source='some_suite.txt'):
     tcf.setting_table.suite_teardown.name = 'Suite Teardown Kw'
     tcf.setting_table.test_template.value = SUITE_TEST_TEMPLATE_KEYWORD
     testcase = tcf.testcase_table.add(TEST1_NAME)
-    for step in [[STEP1_KEYWORD, 'Hello'], ['Run Keyword', STEP2_ARGUMENT]]:
+    for step in [[STEP1_KEYWORD, 'Hello'], ['Run Keyword', STEP2_ARGUMENT], [USERKEYWORD2_NAME]]:
         testcase.add_step(step)
     for_loop = testcase.add_for_loop([': FOR', '${i}', 'IN RANGE', '10'])
     for_loop.add_step(['Log', '${i}'])
@@ -46,13 +47,15 @@ def TestCaseControllerWithSteps(chief=None, source='some_suite.txt'):
     testcase.template.value = TEMPLATE_KEYWORD
     uk = tcf.keyword_table.add(USERKEYWORD1_NAME)
     uk.add_step([KEYWORD_IN_USERKEYWORD1])
+    uk = tcf.keyword_table.add(USERKEYWORD2_NAME)
+    uk.add_step(['No Operation'])
     if chief is None:
         chief = ChiefController(Namespace())
     tcf_ctrl = TestCaseFileController(tcf, chief)
     chief._controller = tcf_ctrl
     tctablectrl = TestCaseTableController(tcf_ctrl,
                                           tcf.testcase_table)
-    return TestCaseController(tctablectrl, testcase)
+    return TestCaseController(tctablectrl, testcase), chief._namespace
 
 
 def assert_occurrence(test_ctrl, kw_name, source, usage):
@@ -93,7 +96,7 @@ class FindOccurrencesWithFiles(unittest.TestCase):
 class FindOccurrencesTest(unittest.TestCase):
 
     def setUp(self):
-        self.test_ctrl = TestCaseControllerWithSteps()
+        self.test_ctrl, self.namespace = TestCaseControllerWithSteps()
 
     def test_no_occurrences(self):
         find_occurrences = FindOccurrences('Keyword Name')
@@ -132,7 +135,7 @@ class FindOccurrencesTest(unittest.TestCase):
 class RenameOccurrenceTest(unittest.TestCase):
 
     def setUp(self):
-        self.test_ctrl = TestCaseControllerWithSteps()
+        self.test_ctrl, self.namespace = TestCaseControllerWithSteps()
         self._steps_have_changed = False
         self._testcase_settings_have_changed = False
         self._name_has_changed = False
@@ -164,6 +167,30 @@ class RenameOccurrenceTest(unittest.TestCase):
     def _rename(self, original_name, new_name, source, usage):
         self.test_ctrl.execute(RenameKeywordOccurrences(original_name, new_name))
         assert_occurrence(self.test_ctrl, new_name, source, usage)
+
+    def test_rename_updates_namespace(self):
+        assert_true(self.namespace.is_user_keyword(self.test_ctrl.datafile, USERKEYWORD2_NAME))
+        assert_false(self.namespace.is_user_keyword(self.test_ctrl.datafile, UNUSED_KEYWORD_NAME))
+        self._rename(USERKEYWORD2_NAME, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Step 3')
+        assert_true(self.namespace.is_user_keyword(self.test_ctrl.datafile, UNUSED_KEYWORD_NAME))
+        assert_false(self.namespace.is_user_keyword(self.test_ctrl.datafile, USERKEYWORD2_NAME))
+
+    def test_notifies_only_after_transaction_complete(self):
+        datas_ok = {'steps':False, 'name':False}
+        def name_changed_check_that_steps_have_also(data):
+            datas_ok['steps'] = self.test_ctrl.step(2).keyword == UNUSED_KEYWORD_NAME
+        def steps_changed_check_that_name_has_also(data):
+            datas_ok['name'] = any(True for i in self.test_ctrl.datafile_controller.keywords 
+                                   if i.name == UNUSED_KEYWORD_NAME)
+        PUBLISHER.subscribe(name_changed_check_that_steps_have_also, RideItemNameChanged)
+        PUBLISHER.subscribe(steps_changed_check_that_name_has_also, RideItemStepsChanged)
+        try:
+            self._rename(USERKEYWORD2_NAME, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Step 3')
+        finally:
+            PUBLISHER.unsubscribe(name_changed_check_that_steps_have_also, RideItemNameChanged)
+            PUBLISHER.unsubscribe(steps_changed_check_that_name_has_also, RideItemStepsChanged)
+        assert_true(datas_ok['steps'])
+        assert_true(datas_ok['name'])
 
     def test_rename_in_steps(self):
         self._rename(STEP1_KEYWORD, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Step 1')

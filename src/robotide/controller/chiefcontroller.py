@@ -106,6 +106,9 @@ class ChiefController(object):
         self._controller = DataController(datafile, self)
         self.resources = []
 
+    def update_namespace(self):
+        self._namespace.update()
+
     def get_all_keywords(self):
         return self._namespace.get_all_keywords(ctrl.datafile for ctrl in
                                                 self.datafiles)

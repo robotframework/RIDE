@@ -43,6 +43,9 @@ class Namespace(object):
         self.retriever = DatafileRetriever(self.lib_cache, self.res_cache)
         self._content_assist_hooks = []
 
+    def update(self):
+        self.retriever.expire_cache()
+
     def register_content_assist_hook(self, hook):
         self._content_assist_hooks.append(hook)
 
@@ -282,6 +285,9 @@ class DatafileRetriever(object):
         self.res_cache = res_cache
         self.keyword_cache = ExpiringCache()
         self.default_kws = self.lib_cache.get_default_keywords()
+
+    def expire_cache(self):
+        self.keyword_cache = ExpiringCache()
 
     def get_keywords_from_several(self, datafiles):
         kws = set()

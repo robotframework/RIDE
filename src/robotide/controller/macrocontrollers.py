@@ -113,6 +113,9 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
     def execute(self, command):
         return command.execute(self)
 
+    def update_namespace(self):
+        self.datafile_controller.update_namespace()
+
     def delete(self):
         return self._parent.delete(self)
 

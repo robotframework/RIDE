@@ -104,6 +104,9 @@ class _DataController(_BaseController, WithUndoRedoStacks):
     def execute(self, command):
         return command.execute(self)
 
+    def update_namespace(self):
+        self._chief_controller.update_namespace()
+
     def keyword_info(self, keyword_name):
         return self._chief_controller.keyword_info(self.data, keyword_name)
 

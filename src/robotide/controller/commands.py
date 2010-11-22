@@ -130,6 +130,8 @@ class RenameKeywordOccurrences(_ReversibleCommand):
             self._occurrences = [occ for occ in context.execute(FindOccurrences(self._original_name))]
         for oc in self._occurrences:
             oc.replace_keyword(self._new_name)
+        context.update_namespace()
+        for oc in self._occurrences:
             oc.notify_value_changed()
 
     def _get_undo_command(self):
