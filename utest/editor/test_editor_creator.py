@@ -38,12 +38,6 @@ class EditorCreatorTest(unittest.TestCase):
         editor = self.creator.editor_for(plugin, wx.Frame(None), None)
         assert_true(isinstance(editor, TestCaseFileEditor))
 
-    def test_editor_is_not_recreated_when_controller_stays_the_same(self):
-        plugin = self._datafile_plugin()
-        e1 = self.creator.editor_for(plugin, wx.Frame(None), None)
-        e2 = self.creator.editor_for(plugin, wx.Frame(None), None)
-        assert_true(e1 is e2)
-
     def test_editor_is_recreated_when_controller_changes(self):
         p1 = self._datafile_plugin()
         p2 = self._datafile_plugin()
