@@ -19,6 +19,8 @@ from robotide import utils
 from robotide.utils import RideEventHandler, RideHtmlWindow, ButtonWithHandler
 from robotide.controller.settingcontrollers import (DocumentationController,
                                                     VariableController)
+from robotide.robotapi import (ResourceFile, TestCaseFile, TestDataDirectory,
+                               TestCase, UserKeyword, Variable)
 
 from kweditor import KeywordEditor
 from listeditor import ListEditor
@@ -30,14 +32,6 @@ from robotide.publish.messages import (RideItemSettingsChanged,
                                        RideItemNameChanged,
                                        RideInitFileRemoved)
 from robot.parsing.settings import _Setting
-
-
-def Editor(plugin, editor_panel, tree):
-    controller = plugin.get_selected_item()
-    if not controller:
-        return WelcomePage(editor_panel)
-    editor_class = plugin.get_editor(controller.data.__class__)
-    return editor_class(plugin, editor_panel, controller, tree)
 
 
 class WelcomePage(RideHtmlWindow):
@@ -591,3 +585,34 @@ def VariableEditorChooser(plugin, parent, controller, tree):
     controller = controller.datafile_controller
     editor_class = plugin.get_editor(controller.data.__class__)
     return editor_class(plugin, parent, controller, tree)
+
+
+class EditorCreator(object):
+    _EDITORS = ((TestDataDirectory, InitFileEditor),
+                (ResourceFile, ResourceFileEditor),
+                (TestCase, TestCaseEditor),
+                (TestCaseFile, TestCaseFileEditor),
+                (UserKeyword, UserKeywordEditor),
+                (Variable, VariableEditorChooser))
+
+    def __init__(self, editor_registerer):
+        self._editor_registerer = editor_registerer
+        self._editor = None
+        self._last_ctrl = None
+
+    def register_editors(self):
+        for item, editorclass in self._EDITORS:
+            self._editor_registerer(item, editorclass)
+
+    def editor_for(self, plugin, editor_panel, tree):
+        controller = plugin.get_selected_item()
+        if not controller:
+            return WelcomePage(editor_panel)
+        editor_class = plugin.get_editor(controller.data.__class__)
+        if controller is self._last_ctrl:
+            return self._editor
+        if self._editor:
+            self._editor.close()
+        self._editor = editor_class(plugin, editor_panel, controller, tree)
+        self._last_ctrl = controller
+        return self._editor

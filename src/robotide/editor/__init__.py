@@ -15,14 +15,10 @@
 import wx
 
 from robotide.pluginapi import Plugin, ActionInfoCollection
-from robotide.robotapi import (ResourceFile, TestCaseFile, TestDataDirectory,
-                               TestCase, UserKeyword, Variable)
 from robotide.publish import (RideTreeSelection, RideNotebookTabChanging,
                               RideNotebookTabChanged, RideSaving)
 from robotide.widgets import PopupCreator
-from editors import (Editor, TestCaseEditor, UserKeywordEditor,
-                     TestCaseFileEditor, ResourceFileEditor, InitFileEditor,
-                     VariableEditorChooser)
+from editors import EditorCreator
 
 
 _EDIT = """
@@ -56,15 +52,12 @@ class EditorPlugin(Plugin):
         Plugin.__init__(self, application)
         self._tab = None
         self._grid_popup_creator = PopupCreator()
+        self._creator = EditorCreator(self.register_editor)
+        self._editor = None
 
     def enable(self):
-        self.register_editor(TestDataDirectory, InitFileEditor)
-        self.register_editor(ResourceFile, ResourceFileEditor)
-        self.register_editor(TestCase, TestCaseEditor)
-        self.register_editor(TestCaseFile, TestCaseFileEditor)
-        self.register_editor(UserKeyword, UserKeywordEditor)
-        self.register_editor(Variable, VariableEditorChooser)
         self._show_editor()
+        self._creator.register_editors()
         self.register_actions(ActionInfoCollection(_EDIT, self._tab, self._tab))
         self.subscribe(self.OnTreeItemSelected, RideTreeSelection)
         self.subscribe(self.OnTabChanged, RideNotebookTabChanged)
@@ -75,8 +68,13 @@ class EditorPlugin(Plugin):
         if not self._tab:
             self._tab = _EditorTab(self)
             self.add_tab(self._tab, 'Edit', allow_closing=False)
+        if not self._editor:
+            self._editor = self._create_editor()
         if self.tab_is_visible(self._tab):
-            self._tab.show_editor(self.tree)
+            self._tab.show_editor(self._editor)
+
+    def _create_editor(self):
+        return self._creator.editor_for(self, self._tab, self.tree)
 
     def disable(self):
         self.unregister_actions()
@@ -98,7 +96,7 @@ class EditorPlugin(Plugin):
         self._grid_popup_creator.remove_hook(callable)
 
     def OnTreeItemSelected(self, message=None):
-        self._tab.create_editor(self.tree)
+        self._editor = self._create_editor()
         self._show_editor()
 
     def OnOpenEditor(self, event):
@@ -125,18 +123,14 @@ class _EditorTab(wx.Panel):
         self.SetSizer(self.sizer)
         self.editor = None
 
-    def show_editor(self, tree):
-        if not self.editor:
-            self.create_editor(tree)
+    def show_editor(self, editor):
+        self.set_editor(editor)
         self.Show()
 
-    def create_editor(self, tree):
+    def set_editor(self, editor):
         self.Show(False)
-        if self.editor:
-            self.editor.close()
-            self.editor.Destroy()
-            self.sizer.Clear()
-        self.editor = Editor(self.plugin, self, tree)
+        self.sizer.Clear()
+        self.editor = editor
         self.sizer.Add(self.editor, 1, wx.ALL | wx.EXPAND)
         self.Layout()
 
