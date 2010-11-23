@@ -11,6 +11,7 @@ from robotide.publish.messages import RideOpenSuite, RideOpenResource
 from resources import (COMPLEX_SUITE_PATH, MINIMAL_SUITE_PATH, RESOURCE_PATH,
                        MessageRecordingLoadObserver, SUITEPATH)
 from resources.mocks import PublisherListener
+import datafilereader
 
 
 
@@ -118,6 +119,12 @@ class ChiefControllerTest(unittest.TestCase):
     def test_datafiles_property_with_resource_file_only(self):
         resource = self.ctrl.load_resource(RESOURCE_PATH, self.load_observer)
         assert_equals(self.ctrl.datafiles[0], resource)
+
+    def test_get_all_keywords_with_resource_file_only(self):
+        chief = datafilereader.construct_chief_controller(RESOURCE_PATH)
+        all_kws = chief.get_all_keywords()
+        res_kws = [kw for kw in all_kws if kw.name == 'Resource UK']
+        assert_equals(len(res_kws), 1)
 
 
 if __name__ == "__main__":
