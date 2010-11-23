@@ -33,7 +33,7 @@ class EditorCreatorTest(unittest.TestCase):
     def test_registering_editors_for_model_objects(self):
         assert_equals(len(self._registered_editors), 6)
 
-    def test_creating_editor_for_controller(self):
+    def test_creating_editor_for_datafile_controller(self):
         plugin = self._datafile_plugin()
         editor = self.creator.editor_for(plugin, wx.Frame(None), None)
         assert_true(isinstance(editor, TestCaseFileEditor))
@@ -45,11 +45,11 @@ class EditorCreatorTest(unittest.TestCase):
         e2 = self.creator.editor_for(p2, wx.Frame(None), None)
         assert_true(e1 is not e2)
 
-    def test_editor_is_closed_when_new_is_created(self):
+    def test_editor_is_destroyed_when_new_is_created(self):
         ed = self._datafile_editor()
-        ed.close = Mock()
+        ed.destroy = Mock()
         self._datafile_editor()
-        assert_true(ed.close.called)
+        assert_true(ed.destroy.called)
 
     def _datafile_editor(self):
         return self.creator.editor_for(self._datafile_plugin(),
