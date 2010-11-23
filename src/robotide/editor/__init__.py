@@ -56,26 +56,13 @@ class EditorPlugin(Plugin):
         self._editor = None
 
     def enable(self):
-        self._show_editor()
         self._creator.register_editors()
+        self._show_editor()
         self.register_actions(ActionInfoCollection(_EDIT, self._tab, self._tab))
         self.subscribe(self.OnTreeItemSelected, RideTreeSelection)
         self.subscribe(self.OnTabChanged, RideNotebookTabChanged)
         self.subscribe(self.OnTabChanging, RideNotebookTabChanging)
         self.subscribe(self.OnSaveToModel, RideSaving)
-
-    def _show_editor(self):
-        if not self._tab:
-            self._tab = _EditorTab(self)
-            self.add_tab(self._tab, 'Edit', allow_closing=False)
-        if not self._editor:
-            self._editor = self._create_editor()
-        if self.tab_is_visible(self._tab):
-            self._tab.show_editor(self._editor)
-
-    def _create_editor(self):
-        self._tab.hide_editor()
-        return self._creator.editor_for(self, self._tab, self.tree)
 
     def disable(self):
         self.unregister_actions()
@@ -83,21 +70,32 @@ class EditorPlugin(Plugin):
         self.delete_tab(self._tab)
         self._tab = None
 
-    def register_context_menu_hook_to_grid(self, callable):
+    def register_context_menu_hook_to_grid(self, hook):
         """ Used to register own items to grid's right click context menu
 
-        callable is called with current selection (list of list containing
+        hook is called with current selection (list of list containing
         values) and it is expected to return list of PopupMenuItem.
         If user selects one of the returned PopupMenuItem, related function
         is called with one argument, the wx event.
         """
-        self._grid_popup_creator.add_hook(callable)
+        self._grid_popup_creator.add_hook(hook)
 
-    def unregister_context_menu_hook_to_grid(self, callable):
-        self._grid_popup_creator.remove_hook(callable)
+    def unregister_context_menu_hook_to_grid(self, hook):
+        self._grid_popup_creator.remove_hook(hook)
+
+    def _show_editor(self):
+        if not self._tab:
+            self._tab = _EditorTab(self)
+            self.add_tab(self._tab, 'Edit', allow_closing=False)
+        if self.tab_is_visible(self._tab):
+            self._editor = self._create_editor()
+            self._tab.show_editor(self._editor)
+
+    def _create_editor(self):
+        self._tab.hide_editor()
+        return self._creator.editor_for(self, self._tab, self.tree)
 
     def OnTreeItemSelected(self, message=None):
-        self._editor = self._create_editor()
         self._show_editor()
 
     def OnOpenEditor(self, event):
@@ -125,19 +123,17 @@ class _EditorTab(wx.Panel):
         self.editor = None
 
     def show_editor(self, editor):
-        self.set_editor(editor)
-        self.Show()
-
-    def hide_editor(self):
-        self.Show(False)
-
-    def set_editor(self, editor):
         if editor is self.editor:
+            self.Show(True)
             return
         self.sizer.Clear()
         self.editor = editor
         self.sizer.Add(self.editor, 1, wx.ALL | wx.EXPAND)
         self.Layout()
+        self.Show(True)
+
+    def hide_editor(self):
+        self.Show(False)
 
     def OnSave(self, event):
         self.plugin.save_selected_datafile()

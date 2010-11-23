@@ -95,6 +95,9 @@ class _RobotTableEditor(EditorPanel):
     def close(self):
         self.Unbind(wx.EVT_MOTION)
         self.Show(False)
+
+    def destroy(self):
+        self.close()
         self.Destroy()
 
     def _create_header(self, text):
@@ -613,7 +616,6 @@ class EditorCreator(object):
             return self._editor
         editor_class = plugin.get_editor(controller.data.__class__)
         if self._editor:
-            self._editor.close()
+            self._editor.destroy()
         self._editor = editor_class(plugin, editor_panel, controller, tree)
-        self._last_datafile = controller.datafile_controller
         return self._editor
