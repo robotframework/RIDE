@@ -37,8 +37,8 @@ class ListEditorBase(wx.Panel):
 
     def _get_bind_keys(self):
         return [(ctrl_or_cmd(), wx.WXK_UP, self.OnMoveUp),
-                    (ctrl_or_cmd(), wx.WXK_DOWN, self.OnMoveDown),
-                    (wx.ACCEL_NORMAL, wx.WXK_WINDOWS_MENU, self.OnRightClick)]
+                (ctrl_or_cmd(), wx.WXK_DOWN, self.OnMoveDown),
+                (wx.ACCEL_NORMAL, wx.WXK_WINDOWS_MENU, self.OnRightClick)]
 
     def _create_ui(self, columns, data):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -152,3 +152,4 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
             self.Select(item)
             # FIXME: EnsureVisible does not seem to work
             self.EnsureVisible(item)
+
