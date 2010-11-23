@@ -74,6 +74,7 @@ class EditorPlugin(Plugin):
             self._tab.show_editor(self._editor)
 
     def _create_editor(self):
+        self._tab.hide_editor()
         return self._creator.editor_for(self, self._tab, self.tree)
 
     def disable(self):
@@ -127,8 +128,12 @@ class _EditorTab(wx.Panel):
         self.set_editor(editor)
         self.Show()
 
-    def set_editor(self, editor):
+    def hide_editor(self):
         self.Show(False)
+
+    def set_editor(self, editor):
+        if editor is self.editor:
+            return
         self.sizer.Clear()
         self.editor = editor
         self.sizer.Add(self.editor, 1, wx.ALL | wx.EXPAND)

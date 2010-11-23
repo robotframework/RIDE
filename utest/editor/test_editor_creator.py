@@ -1,4 +1,6 @@
+from resources import PYAPP_REFERENCE
 import unittest
+import wx
 from mock import Mock
 from robot.utils.asserts import assert_equals, assert_true
 
@@ -6,8 +8,6 @@ from robotide.controller import NewDatafile, DataController
 from robotide.editor.editors import EditorCreator
 from robotide.editor.editors import TestCaseFileEditor
 TestCaseFileEditor._populate = lambda self: None
-
-from resources import PYAPP_REFERENCE
 
 
 class FakePlugin(object):
@@ -35,20 +35,20 @@ class EditorCreatorTest(unittest.TestCase):
 
     def test_creating_editor_for_controller(self):
         plugin = self._datafile_plugin()
-        editor = self.creator.editor_for(plugin, None, None)
+        editor = self.creator.editor_for(plugin, wx.Frame(None), None)
         assert_true(isinstance(editor, TestCaseFileEditor))
 
     def test_editor_is_not_recreated_when_controller_stays_the_same(self):
         plugin = self._datafile_plugin()
-        e1 = self.creator.editor_for(plugin, None, None)
-        e2 = self.creator.editor_for(plugin, None, None)
+        e1 = self.creator.editor_for(plugin, wx.Frame(None), None)
+        e2 = self.creator.editor_for(plugin, wx.Frame(None), None)
         assert_true(e1 is e2)
 
     def test_editor_is_recreated_when_controller_changes(self):
         p1 = self._datafile_plugin()
         p2 = self._datafile_plugin()
-        e1 = self.creator.editor_for(p1, None, None)
-        e2 = self.creator.editor_for(p2, None, None)
+        e1 = self.creator.editor_for(p1, wx.Frame(None), None)
+        e2 = self.creator.editor_for(p2, wx.Frame(None), None)
         assert_true(e1 is not e2)
 
     def test_editor_is_closed_when_new_is_created(self):
@@ -59,7 +59,7 @@ class EditorCreatorTest(unittest.TestCase):
 
     def _datafile_editor(self):
         return self.creator.editor_for(self._datafile_plugin(),
-                                       None, None)
+                                       wx.Frame(None), None)
 
     def _datafile_plugin(self):
         return FakePlugin(self._registered_editors,

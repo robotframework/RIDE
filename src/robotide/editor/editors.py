@@ -95,6 +95,7 @@ class _RobotTableEditor(EditorPanel):
     def close(self):
         self.Unbind(wx.EVT_MOTION)
         self.Show(False)
+        self.Destroy()
 
     def _create_header(self, text):
         header = wx.StaticText(self, -1, text)
@@ -599,7 +600,7 @@ class EditorCreator(object):
     def __init__(self, editor_registerer):
         self._editor_registerer = editor_registerer
         self._editor = None
-        self._last_ctrl = None
+        self._last_datafile = None
 
     def register_editors(self):
         for item, editorclass in self._EDITORS:
@@ -608,12 +609,11 @@ class EditorCreator(object):
     def editor_for(self, plugin, editor_panel, tree):
         controller = plugin.get_selected_item()
         if not controller:
-            return WelcomePage(editor_panel)
-        editor_class = plugin.get_editor(controller.data.__class__)
-        if controller is self._last_ctrl:
+            self._editor = WelcomePage(editor_panel)
             return self._editor
+        editor_class = plugin.get_editor(controller.data.__class__)
         if self._editor:
             self._editor.close()
         self._editor = editor_class(plugin, editor_panel, controller, tree)
-        self._last_ctrl = controller
+        self._last_datafile = controller.datafile_controller
         return self._editor
