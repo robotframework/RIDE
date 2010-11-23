@@ -7,7 +7,7 @@ Resource        atest_resources.txt
 *** Variables ***
 ${test project}  test_project
 ${test project name}  Test Project
-${test filename}  test_project.html
+${test filename}  test_project.txt
 
 *** Test Cases ***
 New Project Dont Save
