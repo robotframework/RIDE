@@ -45,6 +45,10 @@ class WelcomePage(RideHtmlWindow):
     def close(self):
         self.Show(False)
 
+    def destroy(self):
+        self.close()
+        self.Destroy()
+
 
 class EditorPanel(wx.Panel):
     """Base class for all editor panels"""
