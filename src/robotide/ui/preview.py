@@ -25,7 +25,7 @@ from robotide.writer.serializer import Serializer, SerializationContext
 
 
 class PreviewPlugin(Plugin):
-    """Provides preview of the test data in HTML and TXT formats."""
+    """Provides preview of the test data in HTML, TSV and TXT formats."""
     datafile = property(lambda self: self.get_selected_datafile())
 
     def __init__(self, application):

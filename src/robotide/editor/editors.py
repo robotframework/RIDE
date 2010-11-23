@@ -32,6 +32,7 @@ from robotide.publish.messages import (RideItemSettingsChanged,
                                        RideItemNameChanged,
                                        RideInitFileRemoved)
 from robot.parsing.settings import _Setting
+from robotide.controller.commands import UpdateVariable
 
 
 class WelcomePage(RideHtmlWindow):
@@ -506,8 +507,8 @@ class VariablesListEditor(_AbstractListEditor):
         else:
             dlg = ListVariableDialog(self._controller, item=var)
         if dlg.ShowModal() == wx.ID_OK:
-            var.set_value(*dlg.get_value())
-            var.set_comment(dlg.get_comment())
+            name, value = dlg.get_value()
+            var.execute(UpdateVariable(name, value, dlg.get_comment()))
             self.update_data()
         dlg.Destroy()
 

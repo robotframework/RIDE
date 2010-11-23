@@ -1,13 +1,11 @@
-import os
 import sys
 import unittest
 
 from robot.parsing.settings import Resource
-from robot.parsing.model import VariableTable
+from robot.parsing.model import VariableTable, TestDataDirectory
 from robot.utils import normalizing
 from robot.utils.asserts import assert_true, assert_false, assert_not_none, \
     assert_equals, fail, assert_none
-from robotide.namespace import Namespace
 from robotide.namespace.namespace import _VariableStash
 from robotide.robotapi import TestCaseFile
 from robotide.controller.filecontrollers import DataController
@@ -267,6 +265,21 @@ class TestKeywordSearch(_DataFileTest):
                                          'Uk From Variable Resource')
         self.assert_in_keywords(all_kws, 'My Test Setup',
                                          'My Suite Teardown')
+
+    def test_resource_kws_only_once(self):
+        directory = TestDataDirectory(source=OCCURRENCES_PATH)
+        all_kws = self.ns.get_all_keywords(directory.children)
+        self._check_resource_keyword_only_once(all_kws)
+
+    def test_resource_kws_only_once_through_chief_controller(self):
+        chief = construct_chief_controller(OCCURRENCES_PATH)
+        all_kws = chief.get_all_keywords()
+        self._check_resource_keyword_only_once(all_kws)
+
+    def _check_resource_keyword_only_once(self, all_kws):
+        results = [(kw.name, kw.source) for kw in all_kws if kw.name == "Only From Resource"]
+        assert_equals(len(results), 1)
+        assert_equals(results[0], (u'Only From Resource', u'testdata_resource.txt'))
 
     def test_find_user_keyword_name_normalized(self):
         assert_not_none(self.ns.find_user_keyword(self.tcf, 'UK Fromresource from rESOURCE with variaBLE'))

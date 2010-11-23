@@ -49,10 +49,10 @@ class Namespace(object):
     def register_content_assist_hook(self, hook):
         self._content_assist_hooks.append(hook)
 
-    def get_all_keywords(self, datafiles):
+    def get_all_keywords(self, testsuites):
         kws = set()
         kws.update(self._get_default_keywords())
-        kws.update(self.retriever.get_keywords_from_several(datafiles))
+        kws.update(self.retriever.get_keywords_from_several(testsuites))
         return list(kws)
 
     def _get_default_keywords(self):
@@ -305,6 +305,8 @@ class DatafileRetriever(object):
               self._get_imported_library_keywords(datafile, ctx)))
 
     def _get_datafile_keywords(self, datafile):
+        if isinstance(datafile, ResourceFile):
+            return [ResourceUserKeywordInfo(kw) for kw in datafile.keywords]
         return [TestCaseUserKeywordInfo(kw) for kw in datafile.keywords]
 
     def _get_imported_library_keywords(self, datafile, ctx):
