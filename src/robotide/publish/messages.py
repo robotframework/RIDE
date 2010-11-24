@@ -64,7 +64,7 @@ class RideMessage(object):
         try:
             self._publish(self)
         except Exception, err:
-            self._publish(RideLogException(message='Error in publishing message: ' + str(err), 
+            self._publish(RideLogException(message='Error in publishing message: ' + str(err),
                                            exception=err, level='ERROR'))
 
     def _publish(self, msg):
@@ -99,7 +99,7 @@ class RideLogMessage(RideLog):
 
 class RideLogException(RideLog):
     """This class represents a general purpose log message with a traceback
-    appended to message text. Also the original exception is included with 
+    appended to message text. Also the original exception is included with
     the message.
 
     This message may used to inform error conditions or to provide
@@ -173,7 +173,7 @@ class RideOpenSuite(RideMessage):
 
 class RideOpenResource(RideMessage):
     """Sent when a new resource has finished loading."""
-    data = ['path']
+    data = ['path', 'datafile']
 
 
 class RideDataFileRemoved(RideMessage):
