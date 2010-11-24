@@ -277,11 +277,13 @@ class ImportSettingsController(_TableController, _WithListOperations):
         import_ = self._table.add_library(name, utils.split_value(argstr),
                                           comment)
         import_.alias = alias
+        self._parent.mark_dirty()
         self._publish_setting_added(name, 'library')
         return self[-1]
 
     def add_resource(self, path, comment=None):
         import_ = self._table.add_resource(path, comment)
+        self._parent.mark_dirty()
         self._publish_setting_added(path, 'resource')
         resource = self._parent.resource_import_modified(path)
         import_.resolved_path = resource.source if resource else None
@@ -289,6 +291,7 @@ class ImportSettingsController(_TableController, _WithListOperations):
 
     def add_variables(self, path, argstr, comment=None):
         self._table.add_variables(path, utils.split_value(argstr), comment)
+        self._parent.mark_dirty()
         self._publish_setting_added(path, 'variables')
         return self[-1]
 
