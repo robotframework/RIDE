@@ -23,7 +23,6 @@ import threading
 import time
 import wx
 from robotide.pluginapi import Plugin, ActionInfo
-from robotide.context import SETTINGS
 from robotide.pluginapi import RideLogMessage
 
 from robotide import utils
@@ -35,28 +34,18 @@ SEARCH_CHOICES = ("Search Test Case Keywords", "Search Tags")
 class SearchPlugin(Plugin):
     '''Provides a dialog for searching for strings within tests'''
     def __init__(self, application, initially_active=True):
-
-        Plugin.__init__(self, application, default_settings={})
-
-        self.name = "Search Plugin"
+        defaults = {'match_case':False, 'exact_match':True}
+        Plugin.__init__(self, application, default_settings=defaults,
+                        name='Search Plugin', initially_enabled=False)
         self.version = "1.0"
         self.id = "com.orbitz.SearchPlugin"
         self.metadata = {"url":"http://code.google.com/p/robotframework-ride/wiki/SearchPlugin"}
-
-        self._settings = SETTINGS.add_section(self.id)
-        self._settings.set_defaults(exact_match = True)
-        self._settings.set_defaults(match_case = False)
-
         self._application  = application
         self._dialog = None
         self._request_stop_event = threading.Event()
-        self._save_timer = None
         self._stopped_event = threading.Event()
         self._stopped_event.set()
-
         self.search_string = ""
-        self.match_case = self._settings["match_case"]
-        self.exact_match = self._settings["exact_match"]
 
 
     def enable(self):
@@ -90,9 +79,8 @@ class SearchPlugin(Plugin):
         self.exact_match = self._dialog.exact_match
         self.match_case = self._dialog.match_case
         self._search(event.search_string)
-        self._settings["exact_match"] = self.exact_match
-        self._settings["match_case"] = self.match_case
-        self._save_settings()
+        self.save_setting('exact_match', self.exact_match)
+        self.save_setting('match_case', self.match_case)
 
     def OnSearchCancel(self, event):
         '''Causes the search worker thread to stop'''
@@ -104,35 +92,18 @@ class SearchPlugin(Plugin):
         self._request_stop_event.set()
 
     def OnSearchItemSelected(self, event):
-        self._application.highlight(event.tcuk, event.child, event.row, event.col)
-
-    def OnSaveSettings(self, evt=None):
-        """Does the work of saving the current settings"""
-        self._settings.save()
-        self._save_timer = None
+        self.highlight_cell(event.tcuk, event.child, event.row, event.col)
 
     def _create_dialog(self):
         '''Create the dialog window and apply settings'''
         self._dialog = SearchDialog(self.frame, wx.ID_ANY, "Search Test Cases", 
                                  style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER)
-        self._dialog.set_exact_match((self._settings["exact_match"]))
-        self._dialog.set_match_case((self._settings["match_case"]))
+        self._dialog.set_exact_match((self.exact_match))
+        self._dialog.set_match_case((self.match_case))
         self._dialog.Bind(SearchDialog.EVT_SEARCH_START, self.OnSearchStart)
         self._dialog.Bind(SearchDialog.EVT_SEARCH_CLOSE, self.OnSearchClose)
         self._dialog.Bind(SearchDialog.EVT_SEARCH_ITEM_SELECTED, self.OnSearchItemSelected)
         self._dialog.Bind(SearchDialog.EVT_SEARCH_CANCEL, self.OnSearchCancel)
-
-    def _save_settings(self, delay=2000):
-        """Schedule the settings to be saved after a delay
-
-        The timer will be restarted if this function is called again
-        before the delay is up. This is to prevent saving the settings
-        multiple times (ie: on every keystroke)
-        """
-        if (not self._save_timer):
-            self._save_timer= wx.CallLater(delay, self.OnSaveSettings)
-        else:
-            self._save_timer.Restart(delay)
 
     def _search(self, search_string):
         '''Perform housekeeping and start the search worker thread'''

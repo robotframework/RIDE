@@ -380,3 +380,8 @@ class Plugin(object):
     def get_editor(self, item_class):
         """Return the current editor class for the given model item class"""
         return self.__app.get_editor(item_class)
+
+    def highlight_cell(self, tcuk, obj=None, row=-1, column=-1):
+        '''Highlight a specific row/column of a test case or user keyword'''
+        self.tree.select_user_keyword_node(tcuk)
+        self.__app.editor.highlight(obj, row, column)

@@ -123,26 +123,22 @@ class _RobotTableEditor(EditorPanel):
                 else SettingEditor
         return editor_cls(self, controller, self.plugin, self._tree)
 
-def get_settings_editor(self, setting):
-    '''Return the settings editor for the given setting object'''
-    for child in self.GetChildren():
-        if isinstance(child, SettingEditor):
-            if child._item == setting:
-                return child
-    return None
-
     def highlight(self, obj, row, column):
         '''Highlight the given object at the given row and column'''
-        kweditor = self.kweditor
-
         if obj and isinstance(obj, _Setting):
-            setting_editor = self.get_settings_editor(obj)
+            setting_editor = self._get_settings_editor(obj)
             if setting_editor and hasattr(setting_editor, "highlight"):
                 setting_editor.highlight(column)
         else:
-            kweditor.SelectBlock(row, column, row, column)
-            kweditor.SetGridCursor(row, column)
-            kweditor.MakeCellVisible(row, column)
+            self.kweditor.select(row, column)
+
+    def _get_settings_editor(self, setting):
+        '''Return the settings editor for the given setting object'''
+        for child in self.GetChildren():
+            if isinstance(child, SettingEditor):
+                if child._item == setting:
+                    return child
+        return None
 
 
 class ResourceFileEditor(_RobotTableEditor):

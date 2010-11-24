@@ -70,6 +70,10 @@ class EditorPlugin(Plugin):
         self.delete_tab(self._tab)
         self._tab = None
 
+    def highlight(self, obj, row, column):
+        self.show_tab(self._tab)
+        self._editor.highlight(obj, row, column)
+
     def register_context_menu_hook_to_grid(self, hook):
         """ Used to register own items to grid's right click context menu
 

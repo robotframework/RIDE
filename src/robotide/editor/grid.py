@@ -66,6 +66,11 @@ class GridEditor(grid.Grid):
         self._history.change(self._get_block_content(range(self.NumberRows),
                                                      range(self.NumberCols)))
 
+    def select(self, row, column):
+        self.SelectBlock(row, column, row, column)
+        self.SetGridCursor(row, column)
+        self.MakeCellVisible(row, column)
+
     def copy(self):
         self._clipboard_handler.copy()
 

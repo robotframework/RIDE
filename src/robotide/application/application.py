@@ -21,7 +21,7 @@ from robotide.namespace import Namespace
 from robotide.controller import ChiefController
 from robotide.ui import RideFrame, LoadProgressObserver
 from robotide.pluginapi import RideLogMessage
-from robotide import context, version
+from robotide import context, version, contrib
 
 from pluginloader import PluginLoader
 from editorprovider import EditorProvider
@@ -43,6 +43,7 @@ class RIDE(wx.App):
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),
                                            context.get_core_plugins())
         self._plugin_loader.enable_plugins()
+        self.editor = self._get_editor()
         self._load_data()
         self.frame.tree.populate(self.model)
         self._publish_system_info()
@@ -66,7 +67,14 @@ class RIDE(wx.App):
 
     def _get_plugin_dirs(self):
         return [context.SETTINGS.get_path('plugins'),
-                os.path.join(context.SETTINGS['install root'], 'site-plugins')]
+                os.path.join(context.SETTINGS['install root'], 'site-plugins'),
+                contrib.CONTRIB_PATH]
+
+    def _get_editor(self):
+        from robotide.editor import EditorPlugin
+        for pl in self._plugin_loader.plugins:
+            if isinstance(pl._plugin, EditorPlugin):
+                return pl._plugin
 
     def _load_data(self):
         if self._initial_path:
@@ -92,30 +100,3 @@ class RIDE(wx.App):
     def get_editor(self, object_class):
         return self._editor_provider.get_editor(object_class)
 
-    def highlight(self, tcuk, obj=None, row=-1, column=-1):
-        '''Highlight a specific row/column of a test case or user keyword'''
-        item = self.frame.tree.select_user_keyword_node(tcuk)
-        tab = self._find_edit_tab_for_tcuk(tcuk)
-        if tab is not None:
-            self.frame.notebook.show_tab(tab)
-            editor = tab.editor
-            if editor is not None and hasattr(editor, "highlight"):
-                editor.highlight(obj, row, column)
-            else:
-                # editor doesn't support highlighting
-                # should this be logged?
-                pass
-
-
-    def _find_edit_tab_for_tcuk(self, tcuk):
-        '''Return the edit tab for test cases /  user keywords'''
-        import robotide.editor
-        for page_index in range(0, self.frame.notebook.GetPageCount()):
-            tab = self.frame.notebook.GetPage(page_index)
-            # this assumes there is a single editor tab. Hopefully 
-            # some day in the future there will multiple editor tabs
-            # open. For now though, assume the first one we find is the
-            # one we want
-            if tab.__class__ == robotide.editor._EditorTab:
-                return tab
-        return None
