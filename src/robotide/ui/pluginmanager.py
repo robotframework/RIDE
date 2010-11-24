@@ -77,6 +77,7 @@ class _PluginPanel(wx.Panel):
         label.SetFont(boldFont)
         return label
 
+
 class _PluginEnablationCheckBox(wx.CheckBox):
 
     def __init__(self, parent, plugin, activation_callback):
