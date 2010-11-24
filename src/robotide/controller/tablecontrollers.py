@@ -33,10 +33,12 @@ from robotide.publish.messages import RideImportSettingAdded, RideUserKeywordRem
 class _WithListOperations(object):
 
     def move_up(self, index):
-        self._swap(index-1, index)
+        if index > 0:
+            self._swap(index-1, index)
 
     def move_down(self, index):
-        self._swap(index, index+1)
+        if index < len(self._items)-1:
+            self._swap(index, index+1)
 
     def _swap(self, ind1, ind2):
         self._items[ind1], self._items[ind2] = self._items[ind2], self._items[ind1]
@@ -143,7 +145,7 @@ class MacroNameValidation(object):
         self.valid = False
         self._validate()
 
-    def _validate(self): 
+    def _validate(self):
         if not self._name:
             self.error_message = '%s name cannot be empty.' % self._table.item_type
             return
@@ -292,7 +294,7 @@ class ImportSettingsController(_TableController, _WithListOperations):
         return self[-1]
 
     def _publish_setting_added(self, name, type):
-        RideImportSettingAdded(datafile=self.datafile_controller, name=name, 
+        RideImportSettingAdded(datafile=self.datafile_controller, name=name,
                                type=type).publish()
 
     def resource_import_modified(self, path):

@@ -461,13 +461,27 @@ class WithListOperationsTest(unittest.TestCase):
     def setUp(self):
         self._list_operations = FakeListController()
 
-    def test_swap(self):
-        self._assert_item_in(0, 'foo')
-        self._assert_item_in(1, 'bar')
-        self._list_operations.swap(0, 1)
+    def test_move_up(self):
+        self._list_operations.move_up(1)
         assert_true(self._list_operations.dirty)
         self._assert_item_in(0, 'bar')
         self._assert_item_in(1, 'foo')
+
+    def test_move_down(self):
+        self._list_operations.move_down(0)
+        assert_true(self._list_operations.dirty)
+        self._assert_item_in(0, 'bar')
+        self._assert_item_in(1, 'foo')
+
+    def test_moving_first_item_up_does_nothing(self):
+        self._list_operations.move_up(0)
+        assert_false(self._list_operations.dirty)
+        self._assert_item_in(0, 'foo')
+
+    def test_moving_last_item_down_does_nothing(self):
+        self._list_operations.move_down(2)
+        assert_false(self._list_operations.dirty)
+        self._assert_item_in(2, 'quux')
 
     def test_delete(self):
         self._list_operations.delete(0)
