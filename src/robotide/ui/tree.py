@@ -64,6 +64,11 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._bind_keys()
         self._subscribe_to_messages()
         self._popup_creator = PopupCreator()
+        self._dragging = False
+
+    def OnBeginDrag(self, event):
+        self._dragging = True
+        treemixin.DragAndDrop.OnBeginDrag(self, event)
 
     def register_context_menu_hook(self, callable):
         self._popup_creator.add_hook(callable)
@@ -454,7 +459,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def OnSelChanged(self, event):
         node = event.Item
-        if not node.IsOk():
+        if not node.IsOk() or self._dragging:
             event.Skip()
             return
         self._history.change(node)
@@ -506,6 +511,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             handler.OnNewTestCase(event)
 
     def OnDrop(self, target, dragged):
+        self._dragging = False
         dragged = self._get_handler(dragged)
         target = self._get_handler(target)
         if target and target.accepts_drag(dragged):
