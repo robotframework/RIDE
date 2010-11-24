@@ -1,4 +1,5 @@
 import unittest
+from mock import Mock
 from robot.parsing.settings import Fixture, Documentation, Timeout, Tags, Return
 from robot.utils.asserts import assert_equals, assert_true, assert_false
 from robot.parsing.model import TestCaseFile
@@ -329,8 +330,9 @@ class ImportSettingsControllerTest(unittest.TestCase):
 
     def setUp(self):
         self.tcf = TestCaseFile()
-        self.ctrl = ImportSettingsController(TestCaseFileController(self.tcf),
-                                             self.tcf.setting_table)
+        filectrl = TestCaseFileController(self.tcf)
+        filectrl.resource_import_modified = Mock()
+        self.ctrl = ImportSettingsController(filectrl, self.tcf.setting_table)
 
     def test_addding_library(self):
         self.ctrl.add_library('MyLib', 'Some | argu | ments', 'alias')
