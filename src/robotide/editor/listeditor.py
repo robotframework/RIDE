@@ -103,11 +103,11 @@ class ListEditorBase(wx.Panel):
         self._list.DeleteAllItems()
         self._list.insert_data(self._controller)
 
-    def update_selected_item(self, data):
-        self._list.update_item(self._selection, data)
-
     def select(self, text):
         self._list.select(text)
+
+    def have_link_target(self, controller):
+        return False
 
 
 class ListEditor(ListEditorBase, RideEventHandler): pass
@@ -134,6 +134,7 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
             for i in range(1, len(rowdata)):
                 data = rowdata[i] is not None and rowdata[i] or ''
                 self.SetStringItem(row, i, data)
+            self._add_link_style(row, item)
         for i in range(self.ColumnCount):
             self.SetColumnWidth(i, -1)
             if self.GetColumnWidth(i) < 120:
@@ -141,10 +142,11 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
             if self.GetColumnWidth(i) > 350:
                 self.SetColumnWidth(i, 350)
 
-    def update_item(self, index, data):
-        self.SetItemText(index, data[0])
-        for col in range(1, len(data)):
-            self.SetStringItem(index, col, data[col])
+    def _add_link_style(self, row, item):
+        if self._parent.have_link_target(item):
+            list_item = self.GetItem(row)
+            list_item.SetTextColour(wx.BLUE)
+            self.SetItem(list_item)
 
     def select(self, text):
         item = self.FindItem(0, text)
