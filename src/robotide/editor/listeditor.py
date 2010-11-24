@@ -148,5 +148,4 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         item = self.FindItem(0, text)
         if item >= 0:
             self.Select(item)
-            # FIXME: EnsureVisible does not seem to work
             self.EnsureVisible(item)
