@@ -55,7 +55,7 @@ class ChiefController(object):
     def new_resource(self, path):
         res = ResourceFile()
         res.source = path
-        self._create_resource_controller(res)
+        return self._create_resource_controller(res)
 
     def load_datafile(self, path, load_observer):
         datafile = self._load_datafile(path, load_observer)
