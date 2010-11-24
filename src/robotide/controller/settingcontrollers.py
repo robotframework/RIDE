@@ -314,6 +314,16 @@ class ImportController(_SettingController):
         self._import = import_
         self.type = self._import.type
 
+    @property
+    def resolved_path(self):
+        #TODO: This needs to improved when namespace is refactored
+        if self.type == 'Resource' and hasattr(self._import, "resolved_path"):
+            return self._import.resolved_path
+        return
+
+    def set_resolved_path(self, path):
+        self._import.resolved_path = path
+
     def _label(self, data):
         return data.type
 
@@ -344,9 +354,10 @@ class ImportController(_SettingController):
         self._import.alias = alias
         self._parent.mark_dirty()
         self.publish_edited()
-        if self.label == 'Resource':
-            return self._parent.resource_import_modified(self.name)
-        return None
+        return self
+
+    def resource_import_modified(self):
+        return self._parent.resource_import_modified(self.name)
 
     def publish_edited(self):
         RideImportSettingChanged(datafile=self.datafile_controller,

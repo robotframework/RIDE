@@ -529,17 +529,29 @@ class ImportSettingListEditor(_AbstractListEditor):
     _titles = ['Import', 'Name / Path', 'Arguments', 'Comment']
     _buttons = ['Add Library', 'Add Resource', 'Add Variables']
 
+    def __init__(self, parent, tree, controller):
+        _AbstractListEditor.__init__(self, parent, tree, controller)
+        self._list.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
+
+    def OnLeftUp(self, event):
+        item, flags = self._list.HitTest(event.Position)
+        if item == wx.NOT_FOUND:
+            return
+        if (flags & wx.LIST_HITTEST_ONITEM) and event.ControlDown():
+            self.navigate_to_tree()
+
+    def navigate_to_tree(self):
+        setting = self._get_setting()
+        if self.have_link_target(setting):
+            self._tree.select_resource_node(setting.resolved_path)
+
+    def have_link_target(self, controller):
+        return controller.type == 'Resource' and controller.resolved_path
+
     def OnEdit(self, event):
         setting = self._get_setting()
-        dlg = EditorDialog(setting)(self._controller.datafile, item=setting)
-        if dlg.ShowModal() == wx.ID_OK:
-            # TODO: Tree should listen to chief controller
-            controller = setting.set_value(*dlg.get_value())
-            setting.set_comment(dlg.get_comment())
-            if controller:
-                self._tree.add_resource(controller)
-            self.update_data()
-        dlg.Destroy()
+        self._show_import_editor_dialog(EditorDialog(setting), 
+                                        setting.set_value, setting)
 
     def OnAddLibrary(self, event):
         self._show_import_editor_dialog(LibraryDialog,
@@ -553,19 +565,33 @@ class ImportSettingListEditor(_AbstractListEditor):
         self._show_import_editor_dialog(VariablesDialog,
                                         self._controller.add_variables)
 
-    def _show_import_editor_dialog(self, dialog, creator):
-        dlg = dialog(self._controller.datafile)
+    def _get_setting(self):
+        return self._controller[self._selection]
+
+    def _show_import_editor_dialog(self, dialog, creator_or_setter, item=None):
+        dlg = dialog(self._controller.datafile, item=item)
         if dlg.ShowModal() == wx.ID_OK:
-            ctrl = creator(*dlg.get_value())
+            # TODO: Tree should listen to chief controller
+            ctrl = creator_or_setter(*dlg.get_value())
             ctrl.set_comment(dlg.get_comment())
+            self._update_tree(ctrl)
             self.update_data()
         dlg.Destroy()
 
+    def _update_tree(self, controller):
+        if controller.type != 'Resource':
+            return
+        resource = controller.resource_import_modified()
+        if resource:
+            #TODO: setting resolved path should happen always in namespace
+            #This way, variables could be taken into account.
+            controller.set_resolved_path(resource.source)
+            self._tree.add_resource(resource)
+        else:
+            controller.set_resolved_path(None)
+
     def get_column_values(self, item):
         return [item.type, item.name, item.display_value, item.comment]
-
-    def _get_setting(self):
-        return self._controller[self._selection]
 
 
 class MetadataListEditor(_AbstractListEditor):
