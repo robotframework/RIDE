@@ -76,11 +76,9 @@ class SearchPlugin(Plugin):
 
     def OnSearchStart(self, event):
         '''Start the search thread'''
-        self.exact_match = self._dialog.exact_match
-        self.match_case = self._dialog.match_case
+        self.save_setting('exact_match', self._dialog.exact_match)
+        self.save_setting('match_case', self._dialog.match_case)
         self._search(event.search_string)
-        self.save_setting('exact_match', self.exact_match)
-        self.save_setting('match_case', self.match_case)
 
     def OnSearchCancel(self, event):
         '''Causes the search worker thread to stop'''
