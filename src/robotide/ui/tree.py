@@ -18,7 +18,7 @@ from filedialogs import AddSuiteDialog, ChangeFormatDialog
 from images import TreeImageList
 from robotide import utils
 from robotide.action import ActionInfoCollection
-from robotide.controller import UserKeywordController, NewDatafile
+from robotide.controller import NewDatafile
 from robotide.editor.editordialogs import (TestCaseNameDialog,
                                            UserKeywordNameDialog)
 from robotide.publish import RideTreeSelection, PUBLISHER
@@ -460,7 +460,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._history.change(node)
         handler = self._get_handler(node)
         if handler and handler.item:
-            RideTreeSelection(node=node, item=handler.item,
+            RideTreeSelection(node=node, item=handler.controller,
                               text=self.GetItemText(node)).publish()
         self.SetFocus()
 
@@ -490,7 +490,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def OnLabelEdited(self, event):
         handler = self._get_handler(event.Item)
-        if not event.IsEditCancelled() and handler.rename(event.Label): 
+        if not event.IsEditCancelled() and handler.rename(event.Label):
             self._mark_dirty(self.GetItemParent(event.Item))
         else:
             event.Veto()
