@@ -21,7 +21,7 @@ from robotide.controller.basecontroller import ControllerWithParent
 from robotide.controller.macrocontrollers import (TestCaseController,
                                                   UserKeywordController)
 from robotide.publish.messages import RideTestCaseRemoved, RideVariableAdded,\
-    RideVariableRemoved, RideItemSettingsChangedVariables
+    RideVariableRemoved, RideVariableMovedUp, RideVariableMovedDown
 
 from robotide.controller.settingcontrollers import (MetadataController,
         ImportController, VariableController)
@@ -32,7 +32,13 @@ from robotide.publish.messages import RideImportSettingAdded, RideUserKeywordRem
 
 class _WithListOperations(object):
 
-    def swap(self, ind1, ind2):
+    def move_up(self, index):
+        self._swap(index-1, index)
+
+    def move_down(self, index):
+        self._swap(index, index+1)
+
+    def _swap(self, ind1, ind2):
         self._items[ind1], self._items[ind2] = self._items[ind2], self._items[ind1]
         self.mark_dirty()
 
@@ -67,9 +73,15 @@ class VariableTableController(_TableController, _WithListOperations):
     def _items(self):
         return self._table.variables
 
-    def swap(self, ind1, ind2):
-        _WithListOperations.swap(self, ind1, ind2)
-        RideItemSettingsChangedVariables(item=self).publish()
+    def move_up(self, index):
+        ctrl = self[index]
+        _WithListOperations.move_up(self, index)
+        RideVariableMovedUp(item=ctrl).publish()
+
+    def move_down(self, index):
+        ctrl = self[index]
+        _WithListOperations.move_down(self, index)
+        RideVariableMovedDown(item=ctrl).publish()
 
     def add_variable(self, name, value, comment=None):
         self._table.add(name, value, comment)

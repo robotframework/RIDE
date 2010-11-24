@@ -76,18 +76,16 @@ class ListEditorBase(wx.Panel):
     def OnMoveUp(self, event):
         if self._selection < 1:
             return
-        self._switch_items(self._selection, self._selection-1)
+        self._controller.move_up(self._selection)
+        self.update_data()
         self._list.Select(self._selection-1, True)
 
     def OnMoveDown(self, event):
         if self._selection == self._list.GetItemCount() - 1 or self._selection == -1:
             return
-        self._switch_items(self._selection+1, self._selection)
-        self._list.Select(self._selection+1, True)
-
-    def _switch_items(self, ind1, ind2):
-        self._controller.swap(ind1, ind2)
+        self._controller.move_down(self._selection)
         self.update_data()
+        self._list.Select(self._selection+1, True)
 
     def OnDelete(self, event):
         if self._selection == -1:

@@ -26,7 +26,7 @@ from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
 from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideTestCaseAdded, RideUserKeywordRemoved, RideTestCaseRemoved, RideDataFileRemoved,\
     RideDataChangedToDirty, RideDataDirtyCleared, RideVariableRemoved,\
-    RideVariableAdded, RideItemSettingsChangedVariables
+    RideVariableAdded, RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated
 from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
     AddKeyword, AddTestCase, RenameTest, CopyMacroAs, MoveTo
 from robotide.widgets import PopupCreator, PopupMenuItems
@@ -81,13 +81,15 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
                              (self._keyword_added, RideUserKeywordAdded),
                              (self._test_added, RideTestCaseAdded),
                              (self._variable_added, RideVariableAdded),
-                             (self._macro_removed, RideUserKeywordRemoved),
-                             (self._macro_removed, RideTestCaseRemoved),
-                             (self._macro_removed, RideVariableRemoved),
+                             (self._leaf_item_removed, RideUserKeywordRemoved),
+                             (self._leaf_item_removed, RideTestCaseRemoved),
+                             (self._leaf_item_removed, RideVariableRemoved),
                              (self._datafile_removed, RideDataFileRemoved),
                              (self._data_dirty, RideDataChangedToDirty),
                              (self._data_undirty, RideDataDirtyCleared),
-                             (self._variables_changed, RideItemSettingsChangedVariables)]:
+                             (self._variable_moved_up, RideVariableMovedUp),
+                             (self._variable_moved_down, RideVariableMovedDown),
+                             (self._variable_updated, RideVariableUpdated)]:
             PUBLISHER.subscribe(listener, topic)
 
     def _bind_keys(self):
@@ -239,7 +241,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._add_dataitem(self._get_datafile_node(self.get_selected_datafile()),
                            message.item, lambda item: not item.is_variable)
 
-    def _macro_removed(self, message):
+    def _leaf_item_removed(self, message):
         node = self._find_node_by_controller(message.item)
         self.delete_node(node)
 
@@ -380,14 +382,11 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _switch_items(self, first, second):
         """Changes the order of given items, first is expected to be directly above the second"""
-        parent = self.GetItemParent(first)
-        self._mark_dirty(parent)
         controller = self._get_handler(first).controller
         self.Delete(first)
         node = self._create_node_with_handler(self.GetItemParent(second),
                                               controller, second)
         return node
-
 
     def _refresh_datafile(self, controller):
         orig_node = self._get_data_controller_node(controller)
@@ -538,11 +537,16 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         if controller.dirty:
             self._mark_dirty(self._get_datafile_node(controller.datafile))
 
-    def _variables_changed(self, data):
-        selected = self.get_selected_item()
-        parent = self._refresh_datafile(data.item.datafile_controller)
-        self._handle_pending_selection(selected.display_name, parent)
+    def _variable_moved_up(self, data):
+        node = self._find_node_by_controller(data.item)
+        self.move_up(node)
 
+    def _variable_moved_down(self, data):
+        node = self._find_node_by_controller(data.item)
+        self.move_down(node)
+
+    def _variable_updated(self, data):
+        pass
 
 class _ActionHandler(wx.Window):
     is_user_keyword = False
