@@ -575,7 +575,7 @@ class ImportSettingListEditor(_AbstractListEditor):
     def _update_tree(self, controller):
         if controller.type != 'Resource':
             return
-        resource = controller._parent.resource_import_modified(controller.name)
+        resource = controller.resource_import_modified()
         if resource:
             #TODO: setting resolved path should happen always in namespace
             #This way, variables could be taken into account.

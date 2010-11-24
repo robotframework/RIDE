@@ -356,6 +356,9 @@ class ImportController(_SettingController):
         self.publish_edited()
         return self
 
+    def resource_import_modified(self):
+        return self._parent.resource_import_modified(self.name)
+
     def publish_edited(self):
         RideImportSettingChanged(datafile=self.datafile_controller,
                                  name=self.name, type=self.type.lower()).publish()
