@@ -92,7 +92,6 @@ class EditorPlugin(Plugin):
             self._tab.show_editor(self._editor)
 
     def _create_editor(self):
-        self._tab.hide_editor()
         return self._creator.editor_for(self, self._tab, self.tree)
 
     def OnTreeItemSelected(self, message=None):

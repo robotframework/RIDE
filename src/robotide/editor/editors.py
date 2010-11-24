@@ -627,5 +627,6 @@ class EditorCreator(object):
         editor_class = plugin.get_editor(controller.data.__class__)
         if self._editor:
             self._editor.destroy()
+        editor_panel.Show(False)
         self._editor = editor_class(plugin, editor_panel, controller, tree)
         return self._editor
