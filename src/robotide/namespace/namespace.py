@@ -403,6 +403,9 @@ class DatafileRetriever(object):
         for imp in self._collect_import_of_type(datafile, Resource):
             resolved_name = ctx.vars.replace_variables(imp.name)
             res = self.res_cache.get_resource(imp.directory, resolved_name)
+            imp.resolved_path = None
+            if res:
+                imp.resolved_path = res.source
             if res and res not in ctx.parsed:
                 ctx.parsed.add(res)
                 collector(res, ctx, items)

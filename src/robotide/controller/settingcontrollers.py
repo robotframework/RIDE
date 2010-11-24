@@ -314,6 +314,16 @@ class ImportController(_SettingController):
         self._import = import_
         self.type = self._import.type
 
+    @property
+    def resolved_path(self):
+        #TODO: This needs to improved when namespace is refactored
+        if self.type == 'Resource' and hasattr(self._import, "resolved_path"):
+            return self._import.resolved_path
+        return
+
+    def set_resolved_path(self, path):
+        self._import.resolved_path = path
+
     def _label(self, data):
         return data.type
 
@@ -344,8 +354,16 @@ class ImportController(_SettingController):
         self._import.alias = alias
         self._parent.mark_dirty()
         self.publish_edited()
-        if self.label == 'Resource':
-            self._parent.resource_import_modified(self.name)
+        self._update_link_targets()
+        return self
+
+    def _update_link_targets(self):
+        if self.label != 'Resource':
+            return
+        resource = self._parent.resource_import_modified(self.name)
+        #TODO: setting the resolved path attr should happen always in namespace
+        #This way, variables could be taken into account.
+        self.set_resolved_path(resource.source if resource else None)
 
     def publish_edited(self):
         RideImportSettingChanged(datafile=self.datafile_controller,

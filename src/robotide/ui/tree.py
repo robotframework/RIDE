@@ -207,9 +207,6 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         snode = self._render_datafile(self._get_datafile_node(parent.data), suite)
         self.SelectItem(snode)
 
-    def add_resource(self, controller):
-        self._render_datafile(self._resource_root, controller)
-
     def add_test(self, parent_node, test):
         self._add_dataitem(parent_node, test, lambda item: item.is_user_keyword)
 
@@ -320,6 +317,21 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def _get_datafile_node(self, datafile):
         for node in self._datafile_nodes:
             if self._get_handler(node).item == datafile:
+                return node
+        return None
+
+    def select_resource_node(self, resource_path):
+        node = self._get_resource_node(resource_path)
+        if not node:
+            return
+        if not self.IsExpanded(self._resource_root):
+            self._expand_and_render_children(self._resource_root)
+        if node != self.GetSelection():
+            self.SelectItem(node)
+
+    def _get_resource_node(self, resource_path):
+        for node in self._datafile_nodes:
+            if self._get_handler(node).item.source == resource_path:
                 return node
         return None
 

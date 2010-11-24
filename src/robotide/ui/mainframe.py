@@ -129,8 +129,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.get_path()
             self._default_dir = os.path.dirname(path)
-            controller = self._controller.new_resource(path)
-            self.tree.add_resource(controller)
+            self._controller.new_resource(path)
         dlg.Destroy()
 
     def OnOpen(self, event):
@@ -150,10 +149,7 @@ class RideFrame(wx.Frame, RideEventHandler):
     def OnOpenResource(self, event):
         path = self._get_path()
         if path:
-            resource = self._controller.load_resource(path,
-                                                      LoadProgressObserver(self))
-            if resource:
-                self.tree.add_resource(resource)
+            self._controller.load_resource(path, LoadProgressObserver(self))
 
     def _get_path(self):
         wildcard = ('All files|*.*|Robot data (*.html)|*.*htm*|'
