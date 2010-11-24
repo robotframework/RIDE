@@ -97,6 +97,7 @@ class EditorPlugin(Plugin):
 
     def OnTreeItemSelected(self, message=None):
         self._show_editor()
+        self._editor.tree_item_selected(message.item)
 
     def OnOpenEditor(self, event):
         self._show_editor()

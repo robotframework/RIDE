@@ -64,6 +64,9 @@ class EditorPanel(wx.Panel):
         self.controller = controller
         self._tree = tree
 
+    def tree_item_selected(self, item):
+        pass
+
 
 class _RobotTableEditor(EditorPanel):
     name = 'table'
@@ -144,6 +147,10 @@ def get_settings_editor(self, setting):
 
 class ResourceFileEditor(_RobotTableEditor):
 
+    def tree_item_selected(self, item):
+        if isinstance(item, VariableController):
+            self._var_editor.select(item.name)
+
     def _populate(self):
         datafile = self.controller.data
         self.sizer.Add(self._create_header(datafile.name), 0, wx.ALL, 5)
@@ -167,11 +174,8 @@ class ResourceFileEditor(_RobotTableEditor):
         self.sizer.Add(editor, 1, wx.EXPAND)
 
     def _add_variable_table(self):
-        editor = VariablesListEditor(self, self._tree, self.controller.variables)
-        self.sizer.Add(editor, 1, wx.EXPAND)
-        selected_item = self.plugin.get_selected_item()
-        if isinstance(selected_item, VariableController):
-            editor.select(selected_item.name)
+        self._var_editor = VariablesListEditor(self, self._tree, self.controller.variables)
+        self.sizer.Add(self._var_editor, 1, wx.EXPAND)
 
 
 class TestCaseFileEditor(ResourceFileEditor):
@@ -607,7 +611,6 @@ class EditorCreator(object):
     def __init__(self, editor_registerer):
         self._editor_registerer = editor_registerer
         self._editor = None
-        self._last_datafile = None
 
     def register_editors(self):
         for item, editorclass in self._EDITORS:
@@ -617,6 +620,9 @@ class EditorCreator(object):
         controller = plugin.get_selected_item()
         if not controller:
             self._editor = WelcomePage(editor_panel)
+            return self._editor
+        if self._editor and isinstance(controller, VariableController) and \
+                controller.datafile_controller is self._editor.controller:
             return self._editor
         editor_class = plugin.get_editor(controller.data.__class__)
         if self._editor:
