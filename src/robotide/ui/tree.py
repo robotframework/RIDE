@@ -26,7 +26,8 @@ from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
 from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideTestCaseAdded, RideUserKeywordRemoved, RideTestCaseRemoved, RideDataFileRemoved,\
     RideDataChangedToDirty, RideDataDirtyCleared, RideVariableRemoved,\
-    RideVariableAdded, RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated
+    RideVariableAdded, RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated, \
+    RideOpenResource
 from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
     AddKeyword, AddTestCase, RenameTest, CopyMacroAs, MoveTo
 from robotide.widgets import PopupCreator, PopupMenuItems
@@ -78,6 +79,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _subscribe_to_messages(self):
         for listener, topic in [(self._item_changed, RideItem),
+                                (self._resource_added, RideOpenResource),
                              (self._keyword_added, RideUserKeywordAdded),
                              (self._test_added, RideTestCaseAdded),
                              (self._variable_added, RideVariableAdded),
@@ -127,6 +129,13 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             self._render_datafile(self._root, model.data, 0)
         for res in model.resources:
             self._render_datafile(self._resource_root, res)
+
+    def _resource_added(self, message):
+        ctrl = message.datafile
+        node = self._find_node_by_controller(ctrl)
+        if node:
+            return
+        self._render_datafile(self._resource_root, ctrl)
 
     def _refresh_view(self):
         self.Refresh()

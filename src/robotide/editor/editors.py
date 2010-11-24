@@ -533,11 +533,8 @@ class ImportSettingListEditor(_AbstractListEditor):
         setting = self._get_setting()
         dlg = EditorDialog(setting)(self._controller.datafile, item=setting)
         if dlg.ShowModal() == wx.ID_OK:
-            # TODO: Tree should listen to chief controller
-            controller = setting.set_value(*dlg.get_value())
+            setting.set_value(*dlg.get_value())
             setting.set_comment(dlg.get_comment())
-            if controller:
-                self._tree.add_resource(controller)
             self.update_data()
         dlg.Destroy()
 

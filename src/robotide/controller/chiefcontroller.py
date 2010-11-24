@@ -89,10 +89,9 @@ class ChiefController(object):
         resource = self._namespace.get_resource(path)
         if not resource:
             return None
-        controller = self._create_resource_controller(resource)
-        RideOpenResource(path=resource.source).publish()
+        ctrl = self._create_resource_controller(resource)
         load_observer.finish()
-        return controller
+        return ctrl
 
     def _create_resource_controller(self, resource):
         controller = ResourceFileController(resource, self)
@@ -100,6 +99,7 @@ class ChiefController(object):
             if other.source == controller.source:
                 return None
         self.resources.append(controller)
+        RideOpenResource(path=resource.source, datafile=controller).publish()
         return controller
 
     def new_datafile(self, datafile):
@@ -223,5 +223,4 @@ class ChiefController(object):
     def resource_import_modified(self, path):
         resource = self._namespace.get_resource(path)
         if resource:
-            return self._create_resource_controller(resource)
-        return None
+            self._create_resource_controller(resource)

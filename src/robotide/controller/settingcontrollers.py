@@ -345,8 +345,7 @@ class ImportController(_SettingController):
         self._parent.mark_dirty()
         self.publish_edited()
         if self.label == 'Resource':
-            return self._parent.resource_import_modified(self.name)
-        return None
+            self._parent.resource_import_modified(self.name)
 
     def publish_edited(self):
         RideImportSettingChanged(datafile=self.datafile_controller,

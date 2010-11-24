@@ -285,6 +285,7 @@ class ImportSettingsController(_TableController, _WithListOperations):
         self._table.add_resource(path, comment)
         self._parent.mark_dirty()
         self._publish_setting_added(path, 'resource')
+        self._parent.resource_import_modified(path)
         return self[-1]
 
     def add_variables(self, path, argstr, comment=None):
