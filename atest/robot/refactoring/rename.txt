@@ -36,6 +36,6 @@ And The Name of The UK "${original}" Is Also Changed to "${new}" in Keyword Tabl
     Window Has Text  ${new}
 
 And The Name of The UK "${original}" Is Also Changed to "${new}" in Resource File
-    Expand Tree Element  Resources|*Resource
-    Select Tree Element  Resources|*Resource|${new}
+    Expand Tree Element  Resources|*resource.txt
+    Select Tree Element  Resources|*resource.txt|${new}
     Window Has Text  ${new}
