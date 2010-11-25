@@ -51,7 +51,7 @@ class SearchPlugin(Plugin):
     def enable(self):
         '''Enable the plugin'''
         self.active = True
-        action = ActionInfo('Tools','Search...', 
+        action = ActionInfo('Tools','Search...',
                             self.OnShowTagSearchDialog,
                             shortcut='F3',
                             doc='Search for strings within tests')
@@ -66,7 +66,7 @@ class SearchPlugin(Plugin):
         except Exception, e:
             message = RideLogMessage("SearchPlugin: error while disabling plugin: %s" % str(e))
             message.publish()
-    
+
     def OnShowTagSearchDialog(self, event, search_string=None):
         '''Display the Tag Search Dialog'''
         if self._dialog is None:
@@ -94,7 +94,7 @@ class SearchPlugin(Plugin):
 
     def _create_dialog(self):
         '''Create the dialog window and apply settings'''
-        self._dialog = SearchDialog(self.frame, wx.ID_ANY, "Search Test Cases", 
+        self._dialog = SearchDialog(self.frame, wx.ID_ANY, "Search Test Cases",
                                  style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER)
         self._dialog.set_exact_match((self.exact_match))
         self._dialog.set_match_case((self.match_case))
@@ -112,7 +112,7 @@ class SearchPlugin(Plugin):
 
         # do this via CallAfter, because the worker thread
         # may have queued up an insert that hasn't yet been
-        # processed. This guarantees that the clear will 
+        # processed. This guarantees that the clear will
         # happen after that, but before any new items are
         # added to the lsit
         wx.CallAfter(self._dialog.clear_results)
@@ -129,13 +129,12 @@ class SearchPlugin(Plugin):
 
     def _search_keywords_worker_thread(self):
         '''Perform a search on testcase keywords'''
-
         search_string = unicode(self.search_string.strip())
         try:
-            for i, tcuk in enumerate(self._get_test_cases(self.model.suite)):
-                settings = self._get_settings(tcuk)
+            for i, tcuk in enumerate(self.all_testcases()):
                 ## Search settings
-                for name, value in settings.iteritems():
+                for setting in tcuk.settings:
+                    name, value = setting.label, setting.as_list()
                     if value:
                         for column, field in enumerate(value):
                             if self._request_stop_event.isSet(): return
@@ -172,7 +171,7 @@ class SearchPlugin(Plugin):
         '''Perform a search on testcase tags'''
         search_string = unicode(self.search_string.strip())
         try:
-            for i, test in enumerate(self._get_test_cases(self.model.suite)):
+            for i, test in enumerate(self._get_test_cases(self.model.data)):
                 if test.tags.value:
                     for tag in test.tags.value:
                         if self._match(search_string, tag):
@@ -187,29 +186,6 @@ class SearchPlugin(Plugin):
         finally:
             self._stopped_event.set()
             wx.CallAfter(self._dialog.searching, False)
-
-    def _get_test_cases(self, suite):
-        '''Retrieve all searchable test cases'''
-
-        for test in suite.testcase_table:
-            yield test
-        for child_suite in suite.children:
-            for result in self._get_test_cases(child_suite):
-                yield result
-        return
-
-    def _get_settings(self, tcuk):
-        '''Return a dict of setting values for the given object'''
-        result={}
-        for name in tcuk.__dict__.keys():
-            if tcuk.is_setting(name):
-                # *SIGH* settings don't share a common interface (WTF?) so
-                # we can't always use .value...
-                value = getattr(tcuk, name, None)
-                if value is not None:
-                    result[name] = value.as_list()
-        return result
-
 
     def _match(self, search_string, value):
         '''Return True if the search string matches the value'''
@@ -267,7 +243,7 @@ class StatusCtrl(wx.StatusBar):
                 self.SetStatusText("found only 1 match")
             else:
                 self.SetStatusText("found %s matches" % found)
-    
+
 class SearchDialog(wx.Dialog):
     '''A dialog for searching test cases and tags'''
     SearchStartEvent, EVT_SEARCH_START = wx.lib.newevent.NewEvent()
@@ -283,7 +259,7 @@ class SearchDialog(wx.Dialog):
     def __init__(self, *args, **kwargs):
         wx.Dialog.__init__(self, *args, **kwargs)
 
-        listbox = CustomListCtrl(self, wx.ID_ANY, size=(500, 200), 
+        listbox = CustomListCtrl(self, wx.ID_ANY, size=(500, 200),
                                  style=wx.LC_REPORT|wx.LC_HRULES|wx.LC_VRULES|wx.LC_SINGLE_SEL)
         search_button = wx.Button(self, self.ID_SEARCH, "Search")
         close_button = wx.Button(self, wx.ID_CLOSE)
@@ -321,7 +297,7 @@ class SearchDialog(wx.Dialog):
         search_button.Bind(wx.EVT_BUTTON, self.OnSearch)
         entry.Bind(wx.EVT_TEXT_ENTER, self.OnSearch)
         entry.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
-        listbox.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnListboxSelect)        
+        listbox.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnListboxSelect)
         search_type.Bind(wx.EVT_CHOICE, self.OnSearchType)
         entry.Bind(wx.EVT_SEARCHCTRL_CANCEL_BTN, self.OnCancel)
 
@@ -363,7 +339,7 @@ class SearchDialog(wx.Dialog):
 
     def OnKeyUp(self, event):
         '''Handles processing of escape key
-        
+
         This also enables or disables the search button depending
         on whether the search string is non-null
         '''
@@ -419,7 +395,7 @@ class SearchDialog(wx.Dialog):
             self.listbox.InsertColumn(1, "Keyword", width=200)
         else:
             self.listbox.InsertColumn(1, "Tags", width=200)
-        
+
     def set_exact_match(self, value):
         '''Sets the exact_match bit and updates the checkbox'''
         self.exact_match = value
