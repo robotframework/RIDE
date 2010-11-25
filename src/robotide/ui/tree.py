@@ -250,7 +250,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
                          message.item)
 
     def _variable_added(self, message):
-        self._get_or_create_node(self._get_datafile_node(self.get_selected_datafile()),
+        self._add_dataitem(self._get_datafile_node(self.get_selected_datafile()),
                            message.item, lambda item: not item.is_variable)
 
     def _leaf_item_removed(self, message):
@@ -298,7 +298,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             if text.startswith('*') and not handler.controller.dirty:
                 self.SetItemText(node, text[1:])
 
-    def select_tree_item_by_data(self, controller):
+    def select_node_by_data(self, controller):
         '''Find and select the tree item associated with the given controller.
 
         Controller can be any of the controllers that are represented in the tree.'''

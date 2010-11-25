@@ -387,5 +387,5 @@ class Plugin(object):
 
     def highlight_cell(self, tcuk, obj=None, row=-1, column=-1):
         '''Highlight a specific row/column of a test case or user keyword'''
-        self.tree.select_tree_item_by_data(tcuk)
+        self.tree.select_node_by_data(tcuk)
         self.__app.editor.highlight(obj, row, column)
