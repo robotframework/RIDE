@@ -233,6 +233,10 @@ class TestCaseController(_BaseController, _WithStepsController):
         return TestCaseNameController(self)
 
     @property
+    def tags(self):
+        return TagsController(self, self._test.tags)
+
+    @property
     def settings(self):
         return [DocumentationController(self, self._test.doc),
                 FixtureController(self, self._test.setup),
