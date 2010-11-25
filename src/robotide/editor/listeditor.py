@@ -17,7 +17,7 @@ from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 
 from robotide.utils import ButtonWithHandler, RideEventHandler
 from robotide.widgets import PopupMenu, PopupMenuItems
-from robotide.context.platform import ctrl_or_cmd, bind_keys_to_evt_menu
+from robotide.context.platform import ctrl_or_cmd, bind_keys_to_evt_menu, IS_WINDOWS
 
 
 class ListEditorBase(wx.Panel):
@@ -27,19 +27,11 @@ class ListEditorBase(wx.Panel):
     def __init__(self, parent, columns, controller):
         wx.Panel.__init__(self, parent)
         self._controller = controller
-        self._selection = -1
+        self._selection = wx.NOT_FOUND
         self._create_ui(columns, controller)
         self._make_bindings()
         self._bind_keys()
-
-    def _bind_keys(self):
-        bind_keys_to_evt_menu(self, self._get_bind_keys())
-
-    def _get_bind_keys(self):
-        return [(ctrl_or_cmd(), wx.WXK_UP, self.OnMoveUp),
-                (ctrl_or_cmd(), wx.WXK_DOWN, self.OnMoveDown),
-                (wx.ACCEL_NORMAL, wx.WXK_WINDOWS_MENU, self.OnRightClick)]
-
+    
     def _create_ui(self, columns, data):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         self._list = self._create_list(columns, data)
@@ -61,17 +53,36 @@ class ListEditorBase(wx.Panel):
 
     def _make_bindings(self):
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected)
+        self.Bind(wx.EVT_LIST_ITEM_DESELECTED , self.OnItemDeselected)
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnEdit)
         self.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.OnRightClick)
-
-    def OnRightClick(self, event):
-        PopupMenu(self, PopupMenuItems(self, self._menu))
+        if IS_WINDOWS:
+            self.Bind(wx.EVT_COMMAND_LEFT_CLICK, self.OnLeftClick)
+        else:
+            self._list.Bind(wx.EVT_LEFT_UP, self.OnLeftClick)
 
     def OnItemSelected(self, event):
         self._selection = event.GetIndex()
 
-    def OnItemActivated(self, event):
+    def OnItemDeselected(self, event):
+        self._selection = wx.NOT_FOUND
+    
+    def OnEdit(self, event):
         pass
+
+    def OnRightClick(self, event):
+        PopupMenu(self, PopupMenuItems(self, self._menu))
+
+    def OnLeftClick(self, event):
+        pass
+
+    def _bind_keys(self):
+        bind_keys_to_evt_menu(self, self._get_bind_keys())
+
+    def _get_bind_keys(self):
+        return [(ctrl_or_cmd(), wx.WXK_UP, self.OnMoveUp),
+                (ctrl_or_cmd(), wx.WXK_DOWN, self.OnMoveDown),
+                (wx.ACCEL_NORMAL, wx.WXK_WINDOWS_MENU, self.OnRightClick)]
 
     def OnMoveUp(self, event):
         if self._selection < 1:
@@ -81,14 +92,14 @@ class ListEditorBase(wx.Panel):
         self._list.Select(self._selection-1, True)
 
     def OnMoveDown(self, event):
-        if self._selection == self._list.GetItemCount() - 1 or self._selection == -1:
+        if self._selection == self._list.GetItemCount() - 1 or not self.is_selected:
             return
         self._controller.move_down(self._selection)
         self.update_data()
         self._list.Select(self._selection+1, True)
 
     def OnDelete(self, event):
-        if self._selection == -1:
+        if not self.is_selected:
             return
         self._controller.delete(self._selection)
         self.update_data()
@@ -96,6 +107,10 @@ class ListEditorBase(wx.Panel):
         if self._selection >= item_count:
             self._selection = item_count - 1
         self._list.Select(self._selection, True)
+
+    @property
+    def is_selected(self):
+        return self._selection != wx.NOT_FOUND
 
     def update_data(self):
         self._list.DeleteAllItems()

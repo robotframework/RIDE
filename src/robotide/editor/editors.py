@@ -23,7 +23,7 @@ from robotide.robotapi import (ResourceFile, TestCaseFile, TestDataDirectory,
                                TestCase, UserKeyword, Variable)
 
 from kweditor import KeywordEditor
-from listeditor import ListEditor
+from listeditor import ListEditorBase, ListEditor 
 from popupwindow import RideToolTipWindow
 from editordialogs import (EditorDialog, DocumentationDialog, MetadataDialog,
                            ScalarVariableDialog, ListVariableDialog,
@@ -525,15 +525,10 @@ class ImportSettingListEditor(_AbstractListEditor):
     _titles = ['Import', 'Name / Path', 'Arguments', 'Comment']
     _buttons = ['Add Library', 'Add Resource', 'Add Variables']
 
-    def __init__(self, parent, tree, controller):
-        _AbstractListEditor.__init__(self, parent, tree, controller)
-        self._list.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
-
-    def OnLeftUp(self, event):
-        item, flags = self._list.HitTest(event.Position)
-        if item == wx.NOT_FOUND:
+    def OnLeftClick(self, event):
+        if not self.is_selected:
             return
-        if (flags & wx.LIST_HITTEST_ONITEM) and event.ControlDown():
+        if wx.GetMouseState().ControlDown():
             self.navigate_to_tree()
 
     def navigate_to_tree(self):
