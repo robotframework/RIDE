@@ -503,6 +503,7 @@ class VariablesListEditor(_AbstractListEditor):
     _buttons = ['Add Scalar', 'Add List']
 
     def __init__(self, parent, tree, controller):
+        # TODO: is it kosher to access PUBLISHER from here?
         PUBLISHER.subscribe(self._update_vars, 'ride.variable', key=self)
         _AbstractListEditor.__init__(self, parent, tree, controller)
 
