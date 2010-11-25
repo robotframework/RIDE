@@ -754,6 +754,7 @@ class VariableHandler(_ActionHandler):
     accepts_drag = lambda *args: False
     is_draggable = True
     is_variable = True
+    OnMoveUp = OnMoveDown = lambda *args: None
 
     def remove(self):
         self.controller.delete()
