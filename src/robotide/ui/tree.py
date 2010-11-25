@@ -72,8 +72,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         treemixin.DragAndDrop.OnBeginDrag(self, event)
 
     def OnEndDrag(self, event):
-        self._dragging = False
         treemixin.DragAndDrop.OnEndDrag(self, event)
+        self._dragging = False
 
     def register_context_menu_hook(self, callable):
         self._popup_creator.add_hook(callable)
@@ -172,11 +172,12 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _render_children(self, node, predicate=None):
         handler = self._get_handler(node)
-        if not handler or handler.children_rendered():
+        if not handler or handler.rendered:
             return
         self._create_variable_nodes(node, handler)
         self._create_test_nodes(node, handler)
         self._create_keyword_nodes(node, predicate, handler)
+        handler.set_rendered()
 
     def _create_test_nodes(self, node, handler):
         for test in handler.tests:
@@ -248,7 +249,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
                          message.item)
 
     def _variable_added(self, message):
-        self._add_dataitem(self._get_datafile_node(self.get_selected_datafile()),
+        self._get_or_create_node(self._get_datafile_node(self.get_selected_datafile()),
                            message.item, lambda item: not item.is_variable)
 
     def _leaf_item_removed(self, message):
@@ -632,13 +633,17 @@ class TestDataHandler(_ActionHandler):
     def rename(self, new_name):
         return False
 
-    def children_rendered(self):
-        if not (self.item.keyword_table or self.item.testcase_table):
+    @property
+    def rendered(self):
+        return self._rendered
+        if not (self.item.keyword_table or self.item.testcase_table or self.item.variable_table):
             return True
         elif not self._rendered:
-            self._rendered = True
             return False
         return True
+
+    def set_rendered(self):
+        self._rendered = True
 
     def OnChangeFormat(self, event):
         format =self.controller.get_format() or 'txt'
@@ -749,6 +754,7 @@ class VariableHandler(_ActionHandler):
     accepts_drag = lambda *args: False
     is_draggable = True
     is_variable = True
+    OnMoveUp = OnMoveDown = lambda *args: None
 
     def remove(self):
         self.controller.delete()

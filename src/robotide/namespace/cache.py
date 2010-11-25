@@ -22,6 +22,8 @@ from robotide.publish.messages import RideLogException
 
 
 class LibraryCache(object):
+    _IMPORT_FAILED = 'Importing library %s failed:'
+    _REOSLVE_FAILED = 'Resolving keywords for library %s with args %s failed:'
 
     def __init__(self):
         self.library_keywords = {}
@@ -30,22 +32,29 @@ class LibraryCache(object):
 
     def add_library(self, name, args=None):
         if not self.library_keywords.has_key(self._key(name, args)):
-            kws = []
-            try:
-                kws = LibrarySpec(name, args).keywords
-            except Exception, err:
-                RideLogException(message='Importing library %s failed with exception %s.' % (name, err), 
-                                 exception=err, level='WARN').publish()
-            finally:
-                self.library_keywords[self._key(name, args)] = kws
+            action = lambda: LibrarySpec(name, args).keywords
+            kws = self._with_error_logging(action, [],
+                                           self._IMPORT_FAILED % (name))
+            self.library_keywords[self._key(name, args)] = kws
 
     def _key(self, name, args):
         return (name, tuple(args or ''))
 
     def get_library_keywords(self, name, args=None):
-        if not self.library_keywords.has_key(self._key(name, args)):
-            self.add_library(name, args)
-        return self.library_keywords[self._key(name, args)]
+        def _get_library_keywords():
+            if not self.library_keywords.has_key(self._key(name, args)):
+                self.add_library(name, args)
+            return self.library_keywords[self._key(name, args)]
+        return self._with_error_logging(_get_library_keywords, [],
+                                        self._REOSLVE_FAILED % (name, args))
+
+    def _with_error_logging(self, action, default, errormsg):
+        try:
+            return action()
+        except Exception, err:
+            RideLogException(message=errormsg,
+                             exception=err, level='WARN').publish()
+        return default
 
     def get_default_keywords(self):
         return self._default_kws[:]
