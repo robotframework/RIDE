@@ -18,6 +18,7 @@ from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 from robotide.utils import ButtonWithHandler, RideEventHandler
 from robotide.widgets import PopupMenu, PopupMenuItems
 from robotide.context.platform import ctrl_or_cmd, bind_keys_to_evt_menu, IS_WINDOWS
+from robotide.context import Font
 
 
 class ListEditorBase(wx.Panel):
@@ -31,7 +32,7 @@ class ListEditorBase(wx.Panel):
         self._create_ui(columns, controller)
         self._make_bindings()
         self._bind_keys()
-    
+
     def _create_ui(self, columns, data):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         self._list = self._create_list(columns, data)
@@ -66,7 +67,7 @@ class ListEditorBase(wx.Panel):
 
     def OnItemDeselected(self, event):
         self._selection = wx.NOT_FOUND
-    
+
     def OnEdit(self, event):
         pass
 
@@ -158,6 +159,7 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
     def _add_link_style(self, row, item):
         if self._parent.have_link_target(item):
             list_item = self.GetItem(row)
+            list_item.SetFont(Font().underlined)
             list_item.SetTextColour(wx.BLUE)
             self.SetItem(list_item)
 

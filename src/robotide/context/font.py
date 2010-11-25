@@ -22,6 +22,6 @@ class Font(object):
     underlined = property(lambda self: self._get_font(underlined=True))
 
     def _get_font(self, scale=0, family=wx.FONTFAMILY_DEFAULT, underlined=False):
-        size = wx.SystemSettings.GetFont(wx.SYS_SYSTEM_FIXED_FONT).GetPointSize()
+        size = wx.SystemSettings.GetFont(wx.SYS_SYSTEM_FONT).GetPointSize()
         return wx.Font(size + scale, family, wx.FONTWEIGHT_NORMAL,
                        wx.FONTSTYLE_NORMAL, underline=underlined)
