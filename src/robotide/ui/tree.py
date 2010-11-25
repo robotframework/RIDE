@@ -172,11 +172,12 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _render_children(self, node, predicate=None):
         handler = self._get_handler(node)
-        if not handler or handler.children_rendered():
+        if not handler or handler.rendered:
             return
         self._create_variable_nodes(node, handler)
         self._create_test_nodes(node, handler)
         self._create_keyword_nodes(node, predicate, handler)
+        handler.set_rendered()
 
     def _create_test_nodes(self, node, handler):
         for test in handler.tests:
@@ -632,13 +633,17 @@ class TestDataHandler(_ActionHandler):
     def rename(self, new_name):
         return False
 
-    def children_rendered(self):
-        if not (self.item.keyword_table or self.item.testcase_table):
+    @property
+    def rendered(self):
+        return self._rendered
+        if not (self.item.keyword_table or self.item.testcase_table or self.item.variable_table):
             return True
         elif not self._rendered:
-            self._rendered = True
             return False
         return True
+
+    def set_rendered(self):
+        self._rendered = True
 
     def OnChangeFormat(self, event):
         format =self.controller.get_format() or 'txt'
