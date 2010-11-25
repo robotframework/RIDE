@@ -113,8 +113,8 @@ class Namespace(object):
     def get_resources(self, datafile):
         return self.retriever.get_resources_from(datafile)
 
-    def get_resource(self, path):
-        return self.res_cache.get_resource('', path)
+    def get_resource(self, path, directory=''):
+        return self.res_cache.get_resource(directory, path)
 
     def find_user_keyword(self, datafile, kw_name):
         kw = self.find_keyword(datafile, kw_name)
