@@ -23,7 +23,7 @@ from robotide.robotapi import (ResourceFile, TestCaseFile, TestDataDirectory,
                                TestCase, UserKeyword, Variable)
 
 from kweditor import KeywordEditor
-from listeditor import ListEditorBase, ListEditor 
+from listeditor import ListEditor 
 from popupwindow import RideToolTipWindow
 from editordialogs import (EditorDialog, DocumentationDialog, MetadataDialog,
                            ScalarVariableDialog, ListVariableDialog,
@@ -309,7 +309,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
         return ms.x-3, ms.y-3
 
     def OnLeftUp(self, event):
-        if event.ControlDown():
+        if event.ControlDown() or event.CmdDown():
             self._navigate_to_user_keyword()
         else:
             selection = self._value_display.GetSelection()
@@ -528,7 +528,7 @@ class ImportSettingListEditor(_AbstractListEditor):
     def OnLeftClick(self, event):
         if not self.is_selected:
             return
-        if wx.GetMouseState().ControlDown():
+        if wx.GetMouseState().ControlDown() or wx.GetMouseState().CmdDown():
             self.navigate_to_tree()
 
     def navigate_to_tree(self):
