@@ -14,7 +14,6 @@ from resources.mocks import PublisherListener
 import datafilereader
 
 
-
 class ChiefControllerTest(unittest.TestCase):
 
     def setUp(self):

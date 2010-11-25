@@ -5,9 +5,7 @@ from robot.utils.asserts import (assert_equals, assert_true, assert_false)
 
 from robotide.controller.filecontrollers import TestCaseFileController, TestDataDirectoryController,\
     _DataController
-from robotide.controller.settingcontrollers import *
-from robotide.controller.tablecontrollers import _WithListOperations
-from robotide.controller.tablecontrollers import *
+from robotide.controller.tablecontrollers import TestCaseController
 from robotide.controller import NewDatafile
 
 from resources import SUITEPATH
