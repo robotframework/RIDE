@@ -30,9 +30,12 @@ from editordialogs import (EditorDialog, DocumentationDialog, MetadataDialog,
                            LibraryDialog, ResourceDialog, VariablesDialog)
 from robotide.publish.messages import (RideItemSettingsChanged,
                                        RideItemNameChanged,
-                                       RideInitFileRemoved)
+                                       RideInitFileRemoved, RideVariableAdded,
+                                       RideVariableRemoved, RideVariableMovedUp,
+                                       RideVariableMovedDown)
 from robot.parsing.settings import _Setting
 from robotide.controller.commands import UpdateVariable
+from robotide.publish import PUBLISHER
 
 
 class WelcomePage(RideHtmlWindow):
@@ -166,13 +169,17 @@ class ResourceFileEditor(_RobotTableEditor):
         return sizer
 
     def _add_import_settings(self):
-        editor = ImportSettingListEditor(self, self._tree, self.controller.imports)
-        self.sizer.Add(editor, 1, wx.EXPAND)
+        self._import_editor = ImportSettingListEditor(self, self._tree, self.controller.imports)
+        self.sizer.Add(self._import_editor, 1, wx.EXPAND)
 
     def _add_variable_table(self):
         self._var_editor = VariablesListEditor(self, self._tree, self.controller.variables)
         self.sizer.Add(self._var_editor, 1, wx.EXPAND)
 
+    def close(self):
+        self._import_editor.close()
+        self._var_editor.close()
+        _RobotTableEditor.close(self)
 
 class TestCaseFileEditor(ResourceFileEditor):
 
@@ -182,8 +189,12 @@ class TestCaseFileEditor(ResourceFileEditor):
         self._add_metadata()
 
     def _add_metadata(self):
-        editor = MetadataListEditor(self, self._tree, self.controller.metadata)
-        self.sizer.Add(editor, 1, wx.EXPAND)
+        self._metadata_editor = MetadataListEditor(self, self._tree, self.controller.metadata)
+        self.sizer.Add(self._metadata_editor, 1, wx.EXPAND)
+
+    def close(self):
+        self._metadata_editor.close()
+        ResourceFileEditor.close(self)
 
 
 class InitFileEditor(TestCaseFileEditor):
@@ -483,10 +494,22 @@ class _AbstractListEditor(ListEditor):
         ListEditor.update_data(self)
         self._tree.mark_dirty(self._controller)
 
+    def close(self):
+        pass
+
 
 class VariablesListEditor(_AbstractListEditor):
     _titles = ['Variable', 'Value', 'Comment']
     _buttons = ['Add Scalar', 'Add List']
+
+    def __init__(self, parent, tree, controller):
+        for topic in (RideVariableAdded, RideVariableRemoved, RideVariableMovedUp, RideVariableMovedDown):
+            PUBLISHER.subscribe(self._update_vars, topic, key=self)
+        _AbstractListEditor.__init__(self, parent, tree, controller)
+
+    def _update_vars(self, event):
+        pass
+        #ListEditor.update_data(self)
 
     def get_column_values(self, item):
         return [item.name, item.value if isinstance(item.value, basestring)
@@ -519,6 +542,9 @@ class VariablesListEditor(_AbstractListEditor):
             var.execute(UpdateVariable(name, value, dlg.get_comment()))
             self.update_data()
         dlg.Destroy()
+
+    def close(self):
+        PUBLISHER.unsubscribe_all(key=self)
 
 
 class ImportSettingListEditor(_AbstractListEditor):
