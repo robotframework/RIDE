@@ -249,7 +249,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
                          message.item)
 
     def _variable_added(self, message):
-        self._add_dataitem(self._get_datafile_node(self.get_selected_datafile()),
+        self._get_or_create_node(self._get_datafile_node(self.get_selected_datafile()),
                            message.item, lambda item: not item.is_variable)
 
     def _leaf_item_removed(self, message):
