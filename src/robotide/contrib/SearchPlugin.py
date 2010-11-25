@@ -131,7 +131,7 @@ class SearchPlugin(Plugin):
         '''Perform a search on testcase keywords'''
         search_string = unicode(self.search_string.strip())
         try:
-            for i, tcuk in enumerate(self.all_testcases()):
+            for tcuk in self.all_testcases():
                 ## Search settings
                 for setting in tcuk.settings:
                     name, value = setting.label, setting.as_list()
@@ -171,14 +171,13 @@ class SearchPlugin(Plugin):
         '''Perform a search on testcase tags'''
         search_string = unicode(self.search_string.strip())
         try:
-            for i, test in enumerate(self._get_test_cases(self.model.data)):
-                if test.tags.value:
-                    for tag in test.tags.value:
-                        if self._match(search_string, tag):
-                            result = TagResult(test, test.tags.value)
-                            # N.B. CallAfter is necessary so that we only
-                            # interact with the GUI in the main thread
-                            wx.CallAfter(self._dialog.add_found_item, result)
+            for test in self.all_testcases():
+                for tag in test.tags.as_list():
+                    if self._match(search_string, tag):
+                        result = TagResult(test, test.tags.as_list()[1:])
+                        # N.B. CallAfter is necessary so that we only
+                        # interact with the GUI in the main thread
+                        wx.CallAfter(self._dialog.add_found_item, result)
         except Exception, e:
             message = RideLogMessage("SearchPlugin: unexpected error in worker thread: %s" % str(e))
             message.publish()
