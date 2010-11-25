@@ -269,7 +269,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def OnCellLeftClick(self, event):
         self.hide_tooltip()
-        if event.ControlDown():
+        if event.ControlDown() or event.CmdDown():
             if self._navigate_to_matching_user_keyword(event.Row, event.Col):
                 return
         if self._has_been_clicked:
@@ -299,7 +299,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         cell = self._cell_under_cursor()
         if cell == self._no_cell:
             return
-        if not wx.GetMouseState().ControlDown():
+        if not wx.GetMouseState().ControlDown() and not wx.GetMouseState().CmdDown():
             self.hide_tooltip()
             self._hide_link_if_necessary(cell)
             return

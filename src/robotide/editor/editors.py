@@ -23,7 +23,7 @@ from robotide.robotapi import (ResourceFile, TestCaseFile, TestDataDirectory,
                                TestCase, UserKeyword, Variable)
 
 from kweditor import KeywordEditor
-from listeditor import ListEditorBase, ListEditor 
+from listeditor import ListEditor 
 from popupwindow import RideToolTipWindow
 from editordialogs import (EditorDialog, DocumentationDialog, MetadataDialog,
                            ScalarVariableDialog, ListVariableDialog,
@@ -37,7 +37,7 @@ from robotide.controller.commands import UpdateVariable
 
 class WelcomePage(RideHtmlWindow):
     undo = cut = copy = paste = delete = comment = uncomment = save \
-        = show_content_assist = lambda self: None
+        = show_content_assist = tree_item_selected = lambda *args: None
 
     def __init__(self, parent):
         RideHtmlWindow.__init__(self, parent, text=context.ABOUT_RIDE)
@@ -309,7 +309,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
         return ms.x-3, ms.y-3
 
     def OnLeftUp(self, event):
-        if event.ControlDown():
+        if event.ControlDown() or event.CmdDown():
             self._navigate_to_user_keyword()
         else:
             selection = self._value_display.GetSelection()
@@ -528,15 +528,15 @@ class ImportSettingListEditor(_AbstractListEditor):
     def OnLeftClick(self, event):
         if not self.is_selected:
             return
-        if wx.GetMouseState().ControlDown():
+        if wx.GetMouseState().ControlDown() or wx.GetMouseState().CmdDown():
             self.navigate_to_tree()
 
     def navigate_to_tree(self):
         setting = self._get_setting()
-        if self.have_link_target(setting):
+        if self.has_link_target(setting):
             self._tree.select_resource_node(setting.resolved_path)
 
-    def have_link_target(self, controller):
+    def has_link_target(self, controller):
         return controller.type == 'Resource' and controller.resolved_path
 
     def OnEdit(self, event):

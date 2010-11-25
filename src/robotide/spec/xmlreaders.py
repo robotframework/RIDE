@@ -57,7 +57,7 @@ class LibrarySpec(Spec):
             specfile = utils.find_from_pythonpath(self.name + '.xml')
             self.keywords, self.doc = self._init_from_specfile(specfile)
             if not self.keywords:
-                msg = 'Importing test library "%s" failed: %s' % (self.name, err)
+                msg = 'Importing test library "%s" failed' % self.name
                 RideLogException(message=msg, exception=err, level='WARN').publish()
 
     def _init_from_library(self, name, args):
