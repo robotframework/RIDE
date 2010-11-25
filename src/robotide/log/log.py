@@ -16,12 +16,14 @@ import wx
 from robotide.pluginapi import Plugin, ActionInfo, RideLog
 from robotide.context.font import Font
 
+def _message_to_string(msg):
+    return '%s [%s]: %s\n\n' % (msg.timestamp, msg.level, msg.message)
 
 class LogPlugin(Plugin):
     """Viewer for internal log messages."""
     
     def __init__(self, app):
-        Plugin.__init__(self, app)
+        Plugin.__init__(self, app, default_settings={'log_to_console': False})
         self._log = []
         self._window = None
 
@@ -44,6 +46,8 @@ class LogPlugin(Plugin):
         self._log.append(log_event)
         if self._window:
             self._window.update_log()
+        if self.log_to_console:
+            print _message_to_string(log_event)
 
     def OnViewLog(self, event):
         if not self._window:
@@ -80,5 +84,5 @@ class _LogWindow(wx.TextCtrl):
     def _decode_log(self, log):
         result = ''
         for msg in log:
-            result += '%s [%s]: %s\n\n' % (msg.timestamp, msg.level, msg.message)
+            result += _message_to_string(msg)
         return result
