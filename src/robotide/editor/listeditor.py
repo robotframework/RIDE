@@ -119,7 +119,7 @@ class ListEditorBase(wx.Panel):
     def select(self, text):
         self._list.select(text)
 
-    def have_link_target(self, controller):
+    def has_link_target(self, controller):
         return False
 
 
@@ -156,7 +156,7 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
                 self.SetColumnWidth(i, 350)
 
     def _add_link_style(self, row, item):
-        if self._parent.have_link_target(item):
+        if self._parent.has_link_target(item):
             list_item = self.GetItem(row)
             list_item.SetTextColour(wx.BLUE)
             self.SetItem(list_item)
