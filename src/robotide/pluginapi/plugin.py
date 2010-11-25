@@ -298,6 +298,10 @@ class Plugin(object):
         """Returns whether ``name`` is a keyword imported by current datafile."""
         return self.__namespace.is_library_keyword(self.datafile, name)
 
+    def all_testcases(self):
+        """Returns all test cases from all suites in one, unsorted list"""
+        return self.model.all_testcases()
+
     def register_content_assist_hook(self, hook):
         """Allows plugin to insert values in content assist dialog.
 
@@ -383,5 +387,5 @@ class Plugin(object):
 
     def highlight_cell(self, tcuk, obj=None, row=-1, column=-1):
         '''Highlight a specific row/column of a test case or user keyword'''
-        self.tree.select_user_keyword_node(tcuk)
+        self.tree.select_tree_item_by_data(tcuk)
         self.__app.editor.highlight(obj, row, column)

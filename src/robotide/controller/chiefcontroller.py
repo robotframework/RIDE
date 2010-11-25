@@ -112,6 +112,11 @@ class ChiefController(object):
     def get_all_keywords(self):
         return self._namespace.get_all_keywords(ctrl.datafile for ctrl in self.datafiles)
 
+    def all_testcases(self):
+        for df in self._suites():
+            for test in df.tests:
+                yield test
+
     def keyword_info(self, datafile, keyword_name):
         return self._namespace.find_keyword(datafile, keyword_name)
 
