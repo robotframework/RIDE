@@ -285,7 +285,7 @@ class ImportSettingsController(_TableController, _WithListOperations):
         import_ = self._table.add_resource(path, comment)
         self._parent.mark_dirty()
         self._publish_setting_added(path, 'resource')
-        resource = self._parent.resource_import_modified(path)
+        resource = self.resource_import_modified(path)
         import_.resolved_path = resource.source if resource else None
         return self[-1]
 

@@ -178,7 +178,7 @@ class _DataController(_BaseController, WithUndoRedoStacks):
         return False
 
     def resource_import_modified(self, path):
-        return self._chief_controller.resource_import_modified(os.path.join(self.directory, path))
+        return self._chief_controller.resource_import_modified(path, self.directory)
 
     def notify_settings_changed(self):
         pass

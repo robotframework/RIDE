@@ -225,7 +225,7 @@ class ChiefController(object):
     def _suites(self):
         return list(self.data.iter_datafiles() if self.data else [])
 
-    def resource_import_modified(self, path):
-        resource = self._namespace.get_resource(path)
+    def resource_import_modified(self, path, directory):
+        resource = self._namespace.get_resource(path, directory)
         if resource:
             return self._create_resource_controller(resource)
