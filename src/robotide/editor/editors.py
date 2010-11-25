@@ -169,16 +169,18 @@ class ResourceFileEditor(_RobotTableEditor):
         return sizer
 
     def _add_import_settings(self):
-        self._import_editor = ImportSettingListEditor(self, self._tree, self.controller.imports)
-        self.sizer.Add(self._import_editor, 1, wx.EXPAND)
+        import_editor = ImportSettingListEditor(self, self._tree, self.controller.imports)
+        self.sizer.Add(import_editor, 1, wx.EXPAND)
+        self._editors.append(import_editor)
 
     def _add_variable_table(self):
         self._var_editor = VariablesListEditor(self, self._tree, self.controller.variables)
         self.sizer.Add(self._var_editor, 1, wx.EXPAND)
+        self._editors.append(self._var_editor)
 
     def close(self):
-        self._import_editor.close()
-        self._var_editor.close()
+        for editor in self._editors:
+            editor.close()
         _RobotTableEditor.close(self)
 
 class TestCaseFileEditor(ResourceFileEditor):
@@ -189,12 +191,9 @@ class TestCaseFileEditor(ResourceFileEditor):
         self._add_metadata()
 
     def _add_metadata(self):
-        self._metadata_editor = MetadataListEditor(self, self._tree, self.controller.metadata)
-        self.sizer.Add(self._metadata_editor, 1, wx.EXPAND)
-
-    def close(self):
-        self._metadata_editor.close()
-        ResourceFileEditor.close(self)
+        metadata_editor = MetadataListEditor(self, self._tree, self.controller.metadata)
+        self.sizer.Add(metadata_editor, 1, wx.EXPAND)
+        self._editors.append(metadata_editor)
 
 
 class InitFileEditor(TestCaseFileEditor):
@@ -349,6 +348,9 @@ class SettingEditor(wx.Panel, RideEventHandler):
 
     def get_selected_datafile_controller(self):
         return self._controller.datafile_controller
+
+    def close(self):
+        pass
 
 
 class SettingValueDisplay(wx.TextCtrl):
