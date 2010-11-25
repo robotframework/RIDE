@@ -508,8 +508,7 @@ class VariablesListEditor(_AbstractListEditor):
         _AbstractListEditor.__init__(self, parent, tree, controller)
 
     def _update_vars(self, event):
-        pass
-        #ListEditor.update_data(self)
+        ListEditor.update_data(self)
 
     def get_column_values(self, item):
         return [item.name, item.value if isinstance(item.value, basestring)
