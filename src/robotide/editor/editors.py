@@ -37,7 +37,7 @@ from robotide.controller.commands import UpdateVariable
 
 class WelcomePage(RideHtmlWindow):
     undo = cut = copy = paste = delete = comment = uncomment = save \
-        = show_content_assist = lambda self: None
+        = show_content_assist = tree_item_selected = lambda *args: None
 
     def __init__(self, parent):
         RideHtmlWindow.__init__(self, parent, text=context.ABOUT_RIDE)
