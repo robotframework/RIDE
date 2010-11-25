@@ -18,7 +18,7 @@ from wx import grid
 from robotide.controller.commands import ChangeCellValue, ClearArea, PasteArea,\
     DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells, UncommentRows, \
     Undo, Redo, RenameKeywordOccurrences, ExtractKeyword, AddKeywordFromCells, \
-    MoveRowsUp, MoveRowsDown
+    MoveRowsUp, MoveRowsDown, ExtractScalar
 from robotide.publish import RideGridCellChanged, PUBLISHER
 from robotide.utils import RideEventHandler
 from robotide.widgets import PopupMenu, PopupMenuItems
@@ -28,12 +28,14 @@ from editordialogs import UserKeywordNameDialog
 from contentassist import ExpandingContentAssistTextCtrl
 from popupwindow import RideHtmlPopupWindow
 from robotide.publish.messages import RideItemStepsChanged
+from robotide.editor.editordialogs import ScalarVariableDialog
+from robot.parsing.model import Variable
 
 
 class KeywordEditor(GridEditor, RideEventHandler):
     dirty = property(lambda self: self._controller.dirty)
     _no_cell = grid.GridCellCoords(-1, -1)
-    _popup_items = ['Create Keyword', 'Extract Keyword', 'Rename Keyword',
+    _popup_items = ['Create Keyword', 'Extract Keyword', 'Extract Variable', 'Rename Keyword',
                     '---'] + GridEditor._popup_items
 
     def __init__(self, parent, controller, tree):
@@ -369,6 +371,25 @@ class KeywordEditor(GridEditor, RideEventHandler):
             name, args = dlg.get_value()
             rows = self.selection.topleft.row, self.selection.bottomright.row
             self._execute(ExtractKeyword(name, args, rows))
+
+    def OnExtractVariable(self, event):
+        cells = self.selection.cells()
+        if len(cells) == 1:
+            self._extract_scalar(cells[0])
+        else:
+            self._extract_list(cells)
+
+    def _extract_scalar(self, cell):
+        var = Variable('', self.GetCellValue(*cell), '')
+        dlg = ScalarVariableDialog(self._controller.datafile_controller.variables, var)
+        if dlg.ShowModal() == wx.ID_OK:
+            name, value = dlg.get_value()
+            comment = dlg.get_comment()
+            print name, value, comment
+            self._execute(ExtractScalar(name, value, comment, cell))
+
+    def _extract_list(self, cells):
+        pass
 
     def OnRenameKeyword(self, event):
         old_name = self._current_cell_value()

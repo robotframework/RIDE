@@ -271,6 +271,20 @@ class ExtractKeyword(_Command):
         context.clear_undo()
 
 
+class ExtractScalar(_Command):
+
+    def __init__(self, name, value, comment, cell):
+        self._name = name
+        self._value = value
+        self._comment = comment
+        self._row = cell[0]
+        self._col = cell[1]
+
+    def execute(self, context):
+        context.datafile_controller.\
+            variables.add_variable(self._name, self._value, self._comment)
+        context.execute(ChangeCellValue(self._row, self._col, self._name))
+
 class ChangeCellValue(_StepsChangingCommand):
 
     def __init__(self, row, col, value):
