@@ -66,6 +66,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._subscribe_to_messages()
         self._popup_creator = PopupCreator()
         self._dragging = False
+        self._clear_tree_data()
 
     def OnBeginDrag(self, event):
         self._dragging = True
