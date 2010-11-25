@@ -68,9 +68,9 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._dragging = False
         self._clear_tree_data()
 
-    def OnBeginDrag(self, event):
+    def StartDragging(self):
         self._dragging = True
-        treemixin.DragAndDrop.OnBeginDrag(self, event)
+        treemixin.DragAndDrop.StartDragging(self)
 
     def OnEndDrag(self, event):
         treemixin.DragAndDrop.OnEndDrag(self, event)
