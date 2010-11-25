@@ -30,9 +30,7 @@ from editordialogs import (EditorDialog, DocumentationDialog, MetadataDialog,
                            LibraryDialog, ResourceDialog, VariablesDialog)
 from robotide.publish.messages import (RideItemSettingsChanged,
                                        RideItemNameChanged,
-                                       RideInitFileRemoved, RideVariableAdded,
-                                       RideVariableRemoved, RideVariableMovedUp,
-                                       RideVariableMovedDown)
+                                       RideInitFileRemoved)
 from robot.parsing.settings import _Setting
 from robotide.controller.commands import UpdateVariable
 from robotide.publish import PUBLISHER
@@ -505,8 +503,7 @@ class VariablesListEditor(_AbstractListEditor):
     _buttons = ['Add Scalar', 'Add List']
 
     def __init__(self, parent, tree, controller):
-        for topic in (RideVariableAdded, RideVariableRemoved, RideVariableMovedUp, RideVariableMovedDown):
-            PUBLISHER.subscribe(self._update_vars, topic, key=self)
+        PUBLISHER.subscribe(self._update_vars, 'ride.variable', key=self)
         _AbstractListEditor.__init__(self, parent, tree, controller)
 
     def _update_vars(self, event):
