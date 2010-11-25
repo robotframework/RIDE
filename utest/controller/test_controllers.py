@@ -238,7 +238,7 @@ class ImportControllerTest(unittest.TestCase):
         def directory(self):
             return 'tmp'
 
-        def resource_import_modified(self, path):
+        def resource_import_modified(self, path, directory):
             pass
 
     def setUp(self):
