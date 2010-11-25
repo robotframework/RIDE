@@ -285,6 +285,20 @@ class ExtractScalar(_Command):
             variables.add_variable(self._name, self._value, self._comment)
         context.execute(ChangeCellValue(self._row, self._col, self._name))
 
+class ExtractList(_Command):
+
+    def __init__(self, name, value, comment, cells):
+        self._name = name
+        self._value = value
+        self._comment = comment
+        self._cells = cells
+
+    def execute(self, context):
+        context.datafile_controller.\
+            variables.add_variable(self._name, self._value, self._comment)
+        context.execute(PasteArea(self._cells[0], 
+                                  [[self._name]+['' for _ in range(len(self._cells)-1)]]))
+
 class ChangeCellValue(_StepsChangingCommand):
 
     def __init__(self, row, col, value):

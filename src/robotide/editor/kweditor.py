@@ -18,7 +18,7 @@ from wx import grid
 from robotide.controller.commands import ChangeCellValue, ClearArea, PasteArea,\
     DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells, UncommentRows, \
     Undo, Redo, RenameKeywordOccurrences, ExtractKeyword, AddKeywordFromCells, \
-    MoveRowsUp, MoveRowsDown, ExtractScalar
+    MoveRowsUp, MoveRowsDown, ExtractScalar, ExtractList
 from robotide.publish import RideGridCellChanged, PUBLISHER
 from robotide.utils import RideEventHandler
 from robotide.widgets import PopupMenu, PopupMenuItems
@@ -28,7 +28,8 @@ from editordialogs import UserKeywordNameDialog
 from contentassist import ExpandingContentAssistTextCtrl
 from popupwindow import RideHtmlPopupWindow
 from robotide.publish.messages import RideItemStepsChanged
-from robotide.editor.editordialogs import ScalarVariableDialog
+from robotide.editor.editordialogs import ScalarVariableDialog,\
+    ListVariableDialog
 from robot.parsing.model import Variable
 
 
@@ -376,7 +377,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         cells = self.selection.cells()
         if len(cells) == 1:
             self._extract_scalar(cells[0])
-        else:
+        elif min(row for row, _ in cells) == max(row for row, _ in cells):
             self._extract_list(cells)
 
     def _extract_scalar(self, cell):
@@ -385,11 +386,15 @@ class KeywordEditor(GridEditor, RideEventHandler):
         if dlg.ShowModal() == wx.ID_OK:
             name, value = dlg.get_value()
             comment = dlg.get_comment()
-            print name, value, comment
             self._execute(ExtractScalar(name, value, comment, cell))
 
     def _extract_list(self, cells):
-        pass
+        var = Variable('', [self.GetCellValue(*cell) for cell in cells], '')
+        dlg = ListVariableDialog(self._controller.datafile_controller.variables, var)
+        if dlg.ShowModal() == wx.ID_OK:
+            name, value = dlg.get_value()
+            comment = dlg.get_comment()
+            self._execute(ExtractList(name, value, comment, cells))
 
     def OnRenameKeyword(self, event):
         old_name = self._current_cell_value()

@@ -89,7 +89,8 @@ class ScalarVariableDialog(_Dialog):
 class ListVariableDialog(_Dialog):
 
     def _get_editors(self, var):
-        name, value = (var.name, var.value) if var else ('@{}', '')
+        name = var.name if var and var.name else '@{}'
+        value = var.value if var and var.value else ''
         validator = ListVariableNameValidator(self._controller, name)
         return [VariableNameEditor(self, name, 'Name', validator),
                 ListValueEditor(self, value, 'Value')]
