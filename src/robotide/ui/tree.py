@@ -73,8 +73,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         treemixin.DragAndDrop.StartDragging(self)
 
     def OnEndDrag(self, event):
-        treemixin.DragAndDrop.OnEndDrag(self, event)
         self._dragging = False
+        treemixin.DragAndDrop.OnEndDrag(self, event)
 
     def register_context_menu_hook(self, callable):
         self._popup_creator.add_hook(callable)
