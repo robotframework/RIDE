@@ -173,7 +173,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _render_children(self, node, predicate=None):
         handler = self._get_handler(node)
-        if not handler or handler.rendered:
+        if not handler or not handler.can_be_rendered:
             return
         self._create_variable_nodes(node, handler)
         self._create_test_nodes(node, handler)
@@ -635,13 +635,14 @@ class TestDataHandler(_ActionHandler):
         return False
 
     @property
-    def rendered(self):
-        return self._rendered
-        if not (self.item.keyword_table or self.item.testcase_table or self.item.variable_table):
-            return True
-        elif not self._rendered:
+    def can_be_rendered(self):
+        if not self._has_children():
             return False
-        return True
+        return not self._rendered
+
+    def _has_children(self):
+        return (self.item.keyword_table or self.item.testcase_table or
+                self.item.variable_table)
 
     def set_rendered(self):
         self._rendered = True
