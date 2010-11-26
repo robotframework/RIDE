@@ -321,21 +321,6 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
                 return node
         return None
 
-    def select_resource_node(self, resource_path):
-        node = self._get_resource_node(resource_path)
-        if not node:
-            return
-        if not self.IsExpanded(self._resource_root):
-            self._expand_and_render_children(self._resource_root)
-        if node != self.GetSelection():
-            self.SelectItem(node)
-
-    def _get_resource_node(self, resource_path):
-        for node in self._datafile_nodes:
-            if self._get_handler(node).item.source == resource_path:
-                return node
-        return None
-
     def _get_node_with_label(self, node, label):
         return self._find_node_with_predicate(node,
                                               lambda n: utils.eq(self.GetItemText(n), label))

@@ -360,10 +360,13 @@ class ImportController(_SettingController):
     def _update_link_targets(self):
         if self.label != 'Resource':
             return
-        resource = self._parent.resource_import_modified(self.name)
+        resource = self.get_related_resource_controller()
         #TODO: setting the resolved path attr should happen always in namespace
         #This way, variables could be taken into account.
         self.set_resolved_path(resource.source if resource else None)
+
+    def get_related_resource_controller(self):
+        return self._parent.resource_import_modified(self.name)
 
     def publish_edited(self):
         RideImportSettingChanged(datafile=self.datafile_controller,
