@@ -147,7 +147,7 @@ class RideSaving(RideMessage):
 
     This is used for example to store current changes from editor to data
     model, to guarantee that all changes are really saved."""
-    data = ['path']
+    data = ['path', 'datafile']
 
 
 class RideSaved(RideMessage):
@@ -167,7 +167,7 @@ class RideChangeFormat(RideMessage):
 
 class RideOpenSuite(RideMessage):
     """Sent when a new suite has finished loading."""
-    data = ['path']
+    data = ['path', 'datafile']
 
 
 class RideOpenResource(RideMessage):

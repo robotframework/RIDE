@@ -30,7 +30,8 @@ COMPLEX_SUITE_PATH = os.path.join(SUITEPATH, 'everything.html')
 MINIMAL_SUITE_PATH = os.path.join(SUITEPATH, 'minimal.html')
 NO_RIDE_PATH = os.path.join(DATAPATH, 'no_ride', 'no_ride.html')
 NO_RIDE_RESOURCE_PATH = os.path.join(DATAPATH, 'no_ride', 'no_ride_resource.html')
-RESOURCE_PATH = os.path.normpath(os.path.join(DATAPATH, 'resources', 'resource.html'))
+RELATIVE_PATH_TO_RESOURCE_FILE = os.path.join('resources', 'resource.html')
+RESOURCE_PATH = os.path.normpath(os.path.join(DATAPATH, RELATIVE_PATH_TO_RESOURCE_FILE))
 INVALID_PATH = os.path.join(SUITEPATH, 'invalid.html')
 
 PATH_RESOURCE_NAME = 'pathresource.html' if CIF else 'PathResource.html'
