@@ -67,12 +67,14 @@ class RideFrame(wx.Frame, RideEventHandler):
         self._init_ui()
         self._plugin_manager = PluginManager(self.notebook)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
-        PUBLISHER.subscribe(lambda msg: self.SetStatusText('Saved %s' % msg.path),
-                            RideSaved)
-        PUBLISHER.subscribe(lambda msg: self.SetStatusText('Saved all files'),
-                            RideSaveAll)
+        self._subscribe_messages()
         self.ensure_on_screen()
         self.Show()
+
+    def _subscribe_messages(self):
+        for listener, topic in [(lambda msg: self.SetStatusText('Saved %s' % msg.path), RideSaved),
+                                (lambda msg: self.SetStatusText('Saved all files'), RideSaveAll)]:
+            PUBLISHER.subscribe(listener, topic)
 
     def _init_ui(self):
         splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
