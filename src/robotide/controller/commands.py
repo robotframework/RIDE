@@ -296,8 +296,9 @@ class ExtractList(_Command):
     def execute(self, context):
         context.datafile_controller.\
             variables.add_variable(self._name, self._value, self._comment)
-        context.execute(PasteArea(self._cells[0], 
-                                  [[self._name]+['' for _ in range(len(self._cells)-1)]]))
+        row, col = self._cells[0]
+        commands = [ChangeCellValue(row, col, self._name)]+[DeleteCell(row, col+1) for _ in range(len(self._cells)-1)]
+        context.execute(CompositeCommand(*commands))
 
 class ChangeCellValue(_StepsChangingCommand):
 
