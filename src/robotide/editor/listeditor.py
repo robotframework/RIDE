@@ -159,9 +159,16 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
     def _add_link_style(self, row, item):
         if self._parent.has_link_target(item):
             list_item = self.GetItem(row)
-            list_item.SetFont(Font().underlined)
+            list_item.SetFont(self._underlined_font())
             list_item.SetTextColour(wx.BLUE)
             self.SetItem(list_item)
+
+    def _underlined_font(self):
+        font = Font().underlined
+        if IS_WINDOWS:
+            font.SetPointSize(8)
+        return font
+
 
     def select(self, text):
         item = self.FindItem(0, text)
