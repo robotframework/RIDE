@@ -75,12 +75,14 @@ class PublisherListener(object):
     def __init__(self, topic):
         PUBLISHER.subscribe(self._listener, topic, self)
         self._topic = topic
-        self.data = None
-        self.count = 0
+        self.data = []
 
     def _listener(self, data):
-        self.data = data
-        self.count += 1
+        self.data.append(data)
+
+    @property
+    def count(self):
+        return len(self.data)
 
     def unsubscribe(self):
         PUBLISHER.unsubscribe(self._listener, self._topic, self)

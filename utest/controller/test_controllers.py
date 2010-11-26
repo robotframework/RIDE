@@ -299,7 +299,7 @@ class ImportControllerTest(unittest.TestCase):
         self.parent.delete(1)
         self._test_listener('resu', 'resource', self.removed_import_listener)
         self.parent.delete(0)
-        self._test_listener('somelib', 'library', self.removed_import_listener)
+        self._test_listener('somelib', 'library', self.removed_import_listener, 1)
 
     def test_publish_adding_library(self):
         self.parent.add_library('name', 'argstr', None)
@@ -313,11 +313,12 @@ class ImportControllerTest(unittest.TestCase):
         self.parent.add_variables('path', 'argstr')
         self._test_listener('path', 'variables', self.add_import_listener)
 
-    def _test_listener(self, name, type, listener):
-        assert_equals(listener.data.name, name)
-        assert_equals(listener.data.type, type)
-        assert_equals(listener.data.datafile, self.tcf_ctrl)
-        assert_equals(self.import_listener.data.name, name)
+    def _test_listener(self, name, type, listener, index=0):
+        data = listener.data[index]
+        assert_equals(data.name, name)
+        assert_equals(data.type, type)
+        assert_equals(data.datafile, self.tcf_ctrl)
+        assert_equals(self.import_listener.data[index].name, name)
 
     def _assert_import(self, index, exp_name, exp_args=[], exp_alias=''):
         item = self.parent[index]

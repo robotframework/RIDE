@@ -10,10 +10,13 @@ from robotide.publish.messages import RideOpenSuite, RideOpenResource
 
 from resources import (COMPLEX_SUITE_PATH, MINIMAL_SUITE_PATH, RESOURCE_PATH,
                        MessageRecordingLoadObserver, SUITEPATH,
-                       DATAPATH, RELATIVE_PATH_TO_RESOURCE_FILE)
+                       DATAPATH, RELATIVE_PATH_TO_RESOURCE_FILE,
+                       RESOURCE_PATH2, RESOURCE_PATH3, RESOURCE_PATH_TXT)
 from resources.mocks import PublisherListener
 import datafilereader
 
+
+ALL_RESOURCE_PATH_RELATED_RESOURCE_IMPORTS = [RESOURCE_PATH, RESOURCE_PATH2, RESOURCE_PATH3, RESOURCE_PATH_TXT]
 
 class ChiefControllerTest(unittest.TestCase):
 
@@ -30,30 +33,26 @@ class ChiefControllerTest(unittest.TestCase):
     def test_loading_suite_at_startup(self):
         self._load(MINIMAL_SUITE_PATH)
         assert_true(self.ctrl._controller is not None)
-        self._test_listeners(MINIMAL_SUITE_PATH, None)
+        self._test_listeners([MINIMAL_SUITE_PATH], [])
 
-    def _test_listeners(self, suite_path, resource_path):
-        assert_equals(self._get_path(self.suite_listener.data), suite_path)
-        assert_equals(self.suite_listener.count, 1 if suite_path else 0)
-        assert_equals(self._get_path(self.resource_listener.data), resource_path)
-        assert_equals(self.resource_listener.count, 1 if resource_path else 0)
+    def _test_listeners(self, suite_paths, resource_paths):
+        assert_equals(self._get_paths(self.suite_listener.data), suite_paths)
+        assert_equals(self._get_paths(self.resource_listener.data), resource_paths)
 
-    def _get_path(self, item):
-            if item:
-                return item.path
-            return item
+    def _get_paths(self, data):
+            return [item.path for item in data]
 
     def test_loading_resource_at_startup(self):
         self._load(RESOURCE_PATH)
         assert_true(self.ctrl.resources != [])
-        self._test_listeners(None, RESOURCE_PATH)
+        self._test_listeners([], ALL_RESOURCE_PATH_RELATED_RESOURCE_IMPORTS)
 
     def test_loading_invalid_data_at_startup(self):
         msg = "Given file 'invalid' is not a valid Robot Framework test case or resource file."
         self.ctrl.load_data('invalid', self.load_observer)
         assert_true(self.load_observer.finished)
         assert_equals(self.load_observer.message, msg)
-        self._test_listeners(None, None)
+        self._test_listeners([], [])
 
     def _load(self, path):
         self.ctrl.load_data(path, self.load_observer)
@@ -64,23 +63,23 @@ class ChiefControllerTest(unittest.TestCase):
         data = self.ctrl.load_datafile(MINIMAL_SUITE_PATH, self.load_observer)
         assert_true(self.load_observer.finished)
         assert_true(data is not None)
-        self._test_listeners(MINIMAL_SUITE_PATH, None)
+        self._test_listeners([MINIMAL_SUITE_PATH], [])
 
     def test_loading_resource_file(self):
         resource = self.ctrl.load_resource(RESOURCE_PATH, self.load_observer)
         assert_true(self.load_observer.finished)
         assert_true(resource is not None)
-        self._test_listeners(None, RESOURCE_PATH)
+        self._test_listeners([], ALL_RESOURCE_PATH_RELATED_RESOURCE_IMPORTS)
 
     def test_loading_invalid_datafile(self):
         self.ctrl.load_datafile('invalid', self.load_observer)
         assert_equals(self.load_observer.message, "Invalid data file 'invalid'.")
-        self._test_listeners(None, None)
+        self._test_listeners([], [])
 
     def test_loading_invalid_resource(self):
         assert_none(self.ctrl.load_resource('invalid', self.load_observer))
         assert_equals(self.load_observer.message, "Invalid resource file 'invalid'.")
-        self._test_listeners(None, None)
+        self._test_listeners([], [])
 
     def test_dirtyness(self):
         self.ctrl.load_data(COMPLEX_SUITE_PATH, MessageRecordingLoadObserver())
@@ -128,7 +127,7 @@ class ChiefControllerTest(unittest.TestCase):
 
     def test_resource_import_modified(self):
         self.ctrl.resource_import_modified(RELATIVE_PATH_TO_RESOURCE_FILE, DATAPATH)
-        assert_equals(self.resource_listener.data.path, RESOURCE_PATH)
+        self._test_listeners([], ALL_RESOURCE_PATH_RELATED_RESOURCE_IMPORTS)
 
 
 if __name__ == "__main__":
