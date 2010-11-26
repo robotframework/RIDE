@@ -23,7 +23,7 @@ from robotide.robotapi import (ResourceFile, TestCaseFile, TestDataDirectory,
                                TestCase, UserKeyword, Variable)
 
 from kweditor import KeywordEditor
-from listeditor import ListEditor 
+from listeditor import ListEditor
 from popupwindow import RideToolTipWindow
 from editordialogs import (EditorDialog, DocumentationDialog, MetadataDialog,
                            ScalarVariableDialog, ListVariableDialog,
@@ -497,6 +497,9 @@ class _AbstractListEditor(ListEditor):
     def close(self):
         pass
 
+    def OnMotion(self, event):
+        pass
+
 
 class VariablesListEditor(_AbstractListEditor):
     _titles = ['Variable', 'Value', 'Comment']
@@ -566,7 +569,7 @@ class ImportSettingListEditor(_AbstractListEditor):
 
     def OnEdit(self, event):
         setting = self._get_setting()
-        self._show_import_editor_dialog(EditorDialog(setting), 
+        self._show_import_editor_dialog(EditorDialog(setting),
                                         setting.set_value, setting)
 
     def OnAddLibrary(self, event):
