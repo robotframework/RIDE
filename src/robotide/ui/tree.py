@@ -124,12 +124,11 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._datafile_nodes = []
 
     def _create_resource_root(self):
-        resource_root = self._create_node(self._root, 'Resources',
-                                          self._images['TestDataDirectory'])
-        self.SetPyData(resource_root, NoneHandler())
-        return resource_root
+        return self._create_node(self._root, 'Resources',
+                                 self._images['TestDataDirectory'])
 
     def _populate_model(self, model):
+        self.SetPyData(self._resource_root, ResourceRootHandler(model, self, self._resource_root))
         if model.data:
             self._render_datafile(self._root, model.data, 0)
         for res in model.resources:
@@ -563,7 +562,7 @@ class _ActionHandler(wx.Window):
         wx.Window.__init__(self, tree)
         self.controller = controller
         item = controller.data
-        self.name = item.name
+        #self.name = item.name
         self.item = item
         self._tree = tree
         self._node = node
@@ -575,11 +574,6 @@ class _ActionHandler(wx.Window):
         self._popup_creator.show(self, PopupMenuItems(self, self._actions),
                                  self.controller)
 
-    def _handle_format_change(self, dialog):
-        if dialog.get_recursive():
-            self.controller.save_with_new_format_recursive(dialog.get_format())
-        else:
-            self.controller.save_with_new_format(dialog.get_format())
 
 
 class TestDataHandler(_ActionHandler):
@@ -631,6 +625,12 @@ class TestDataHandler(_ActionHandler):
         if dlg.ShowModal() == wx.ID_OK:
             self._handle_format_change(dlg)
         dlg.Destroy()
+
+    def _handle_format_change(self, dialog):
+        if dialog.get_recursive():
+            self.controller.save_with_new_format_recursive(dialog.get_format())
+        else:
+            self.controller.save_with_new_format(dialog.get_format())
 
     def OnAddSuite(self, event):
         dlg = AddSuiteDialog(self.controller.directory)
@@ -740,14 +740,19 @@ class VariableHandler(_ActionHandler):
         self.controller.delete()
 
 
-class NoneHandler(object):
-    """Null object (pattern)"""
+class ResourceRootHandler(_ActionHandler):
     is_renameable = is_draggable = is_user_keyword = is_test_suite = False
     item = None
-    show_popup = lambda self: None
     rename = lambda self, new_name: False
     accepts_drag = lambda self, dragged: False
-    __len__ = lambda self: 0
+    _actions = ['New Resource']
+
+    @property
+    def can_be_rendered(self):
+        return False
+
+    def OnNewResource(self, event):
+        raise NotImplementedError()
 
 
 class _History(object):
