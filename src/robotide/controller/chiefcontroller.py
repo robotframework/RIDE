@@ -100,7 +100,12 @@ class ChiefController(object):
                 return other
         self.resources.append(controller)
         RideOpenResource(path=resource.source, datafile=controller).publish()
+        self._load_resources_resource_imports(controller)
         return controller
+
+    def _load_resources_resource_imports(self, controller):
+        for _import in [ imp for imp in controller.imports if imp.is_resource ]:
+            _import.import_loaded_or_modified()
 
     def new_datafile(self, datafile):
         self._controller = DataController(datafile, self)
