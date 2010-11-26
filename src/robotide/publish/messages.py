@@ -174,10 +174,6 @@ class RideOpenResource(RideMessage):
     """Sent when a new resource has finished loading."""
     data = ['path', 'datafile']
 
-class RideNewResourceCreated(RideMessage):
-    """Sent when a new resource is created."""
-    data = ['path', 'datafile']
-
 class RideDataFileRemoved(RideMessage):
     data = ['path', 'datafile']
 
