@@ -29,6 +29,7 @@ from tree import Tree
 from notebook import NoteBook
 from progress import LoadProgressObserver
 from robotide.controller.commands import SaveFile, SaveAll, CreateNewResource
+from robotide.publish.messages import RideNewResourceCreated
 
 
 _menudata = """
@@ -73,7 +74,8 @@ class RideFrame(wx.Frame, RideEventHandler):
 
     def _subscribe_messages(self):
         for listener, topic in [(lambda msg: self.SetStatusText('Saved %s' % msg.path), RideSaved),
-                                (lambda msg: self.SetStatusText('Saved all files'), RideSaveAll)]:
+                                (lambda msg: self.SetStatusText('Saved all files'), RideSaveAll),
+                                (self._set_default_dir, RideNewResourceCreated)]:
             PUBLISHER.subscribe(listener, topic)
 
     def _init_ui(self):
@@ -129,10 +131,11 @@ class RideFrame(wx.Frame, RideEventHandler):
     def OnNewResource(self, event):
         dlg = NewResourceDialog(self._default_dir)
         if dlg.ShowModal() == wx.ID_OK:
-            path = dlg.get_path()
-            self._default_dir = os.path.dirname(path)
-            self._controller.execute(CreateNewResource(path))
+            self._controller.execute(CreateNewResource(dlg.get_path()))
         dlg.Destroy()
+
+    def _set_default_dir(self, message):
+        self._default_dir = os.path.dirname(message.path)
 
     def OnOpen(self, event):
         self._check_unsaved_modifications()

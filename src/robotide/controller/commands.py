@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 from itertools import chain
+from robotide.publish.messages import RideNewResourceCreated
 
 
 class Occurrence(object):
@@ -107,7 +108,8 @@ class CreateNewResource(_Command):
         self._path = path
 
     def execute(self, context):
-        context.new_resource(self._path)
+        datafile_cntr = context.new_resource(self._path)
+        RideNewResourceCreated(path=self._path, datafile=datafile_cntr).publish()
 
 
 class _StepsChangingCommand(_ReversibleCommand):
