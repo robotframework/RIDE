@@ -54,9 +54,6 @@ _menudata = """
 
 
 class RideFrame(wx.Frame, RideEventHandler):
-    _default_dir = property(lambda self: os.path.abspath(SETTINGS['default directory']),
-                            lambda self, path: SETTINGS.set('default directory', path))
-
 
     def __init__(self, application, controller):
         wx.Frame.__init__(self, parent=None, title='RIDE',
@@ -152,10 +149,10 @@ class RideFrame(wx.Frame, RideEventHandler):
         wildcard = ('All files|*.*|Robot data (*.html)|*.*htm*|'
                     'Robot data (*.tsv)|*.tsv|Robot data (*txt)|*.txt')
         dlg = wx.FileDialog(self, message='Open', wildcard=wildcard,
-                            defaultDir=self.controller.default_dir, style=wx.OPEN)
+                            defaultDir=self._controller.default_dir, style=wx.OPEN)
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.GetPath()
-            self.controller.default_dir = os.path.dirname(path)
+            self._controller.default_dir = os.path.dirname(path)
         else:
             path = None
         dlg.Destroy()
@@ -171,9 +168,9 @@ class RideFrame(wx.Frame, RideEventHandler):
     def OnOpenDirectory(self, event):
         if self._check_unsaved_modifications():
             path = wx.DirSelector(message='Choose a directory containing Robot files',
-                                  defaultPath=self.controller.default_dir)
+                                  defaultPath=self._controller.default_dir)
             if path:
-                self.controller.default_dir = path
+                self._controller.default_dir = path
                 self.open_suite(path)
 
     def OnSave(self, event):
