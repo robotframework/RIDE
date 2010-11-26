@@ -9,7 +9,8 @@ from robotide.controller.filecontrollers import TestCaseFileController, \
 from robotide.publish.messages import RideOpenSuite, RideOpenResource
 
 from resources import (COMPLEX_SUITE_PATH, MINIMAL_SUITE_PATH, RESOURCE_PATH,
-                       MessageRecordingLoadObserver, SUITEPATH)
+                       MessageRecordingLoadObserver, SUITEPATH,
+                       DATAPATH, RELATIVE_PATH_TO_RESOURCE_FILE)
 from resources.mocks import PublisherListener
 import datafilereader
 
@@ -124,6 +125,10 @@ class ChiefControllerTest(unittest.TestCase):
         all_kws = chief.get_all_keywords()
         res_kws = [kw for kw in all_kws if kw.name == 'Resource UK']
         assert_equals(len(res_kws), 1)
+
+    def test_resource_import_modified(self):
+        self.ctrl.resource_import_modified(RELATIVE_PATH_TO_RESOURCE_FILE, DATAPATH)
+        assert_equals(self.resource_listener.data.path, RESOURCE_PATH)
 
 
 if __name__ == "__main__":
