@@ -175,26 +175,17 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         handler = self._get_handler(node)
         if not handler or not handler.can_be_rendered:
             return
-        self._create_variable_nodes(node, handler)
-        self._create_test_nodes(node, handler)
-        self._create_keyword_nodes(node, predicate, handler)
+        self._create_child_nodes(node, handler, predicate)
         handler.set_rendered()
 
-    def _create_test_nodes(self, node, handler):
-        for test in handler.tests:
-            self._create_node_with_handler(node, test)
+    def _create_child_nodes(self, node, handler, predicate):
+        for childitem in self._children_of(handler):
+            index = self._get_insertion_index(node, predicate)
+            self._create_node_with_handler(node, childitem, index)
 
-    def _create_keyword_nodes(self, node, predicate, handler):
-        for kw in handler.keywords:
-            if predicate:
-                index = self._get_insertion_index(node, predicate)
-            else:
-                index = None
-            self._create_node_with_handler(node, kw, index)
-
-    def _create_variable_nodes(self, node, handler):
-        for var in handler.variables:
-            self._create_node_with_handler(node, var)
+    def _children_of(self, handler):
+        return list(handler.variables) + list(handler.tests) + \
+                list(handler.keywords)
 
     def _create_node(self, parent_node, label, img, index=None):
         if index is not None:
@@ -235,6 +226,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         wx.CallAfter(self.SelectItem, node)
 
     def _get_insertion_index(self, parent_node, predicate):
+        if not predicate:
+            return None
         item, cookie = self.GetFirstChild(parent_node)
         while item:
             if predicate(self._get_handler(item)):
