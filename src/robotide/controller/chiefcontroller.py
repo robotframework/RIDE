@@ -70,7 +70,7 @@ class ChiefController(object):
             return None
         resources = self._loader.resources_for(datafile, load_observer)
         self._create_controllers(datafile, resources)
-        RideOpenSuite(path=path).publish()
+        RideOpenSuite(path=path, datafile=self._controller).publish()
         load_observer.finish()
         return datafile
 
@@ -214,7 +214,8 @@ class ChiefController(object):
     def _serialize_file(self, controller):
         if not controller.has_format():
             return
-        RideSaving(path=controller.source).publish()
+        RideSaving(path=controller.source,
+                   datafile=controller).publish()
         serializer = Serializer()
         serializer.serialize(controller.datafile)
         controller.unmark_dirty()
