@@ -64,6 +64,11 @@ class TestCaseControllerTest(_BaseWithSteps):
     def test_copy_content(self):
         self._test_copy_content()
 
+    def test_add_tag(self):
+        orig_num_tags = len(self.ctrl.tags.as_list())
+        self.ctrl.add_tag('Some tag')
+        assert_true(len(self.ctrl.tags.as_list()) == orig_num_tags + 1)
+
 
 class UserKeywordControllerTest(_BaseWithSteps):
 

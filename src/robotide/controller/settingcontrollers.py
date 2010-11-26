@@ -185,6 +185,11 @@ class TagsController(_SettingController):
     def _set(self, value):
         self._tags.value = self._split_from_separators(value)
 
+    def add(self, tag):
+        if self._tags.value is None:
+            self._tags.value = []
+        self._tags.value.append(tag)
+
 
 class TimeoutController(_SettingController):
 

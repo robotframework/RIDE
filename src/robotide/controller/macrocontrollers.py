@@ -236,6 +236,9 @@ class TestCaseController(_BaseController, _WithStepsController):
     def tags(self):
         return TagsController(self, self._test.tags)
 
+    def add_tag(self, tag):
+        self.tags.add(tag)
+
     @property
     def settings(self):
         return [DocumentationController(self, self._test.doc),

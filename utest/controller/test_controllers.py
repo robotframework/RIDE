@@ -183,6 +183,10 @@ class TagsControllerTest(unittest.TestCase):
         assert_equals(self.tags.value, ['first | second'])
         assert_equals(self.ctrl.display_value, 'first \| second')
 
+    def test_adding_tag(self):
+        self.ctrl.add('new tag')
+        assert_equals(self.tags.value, ['f1', 'f2', 'new tag'])
+
 
 class TimeoutControllerTest(unittest.TestCase):
 
