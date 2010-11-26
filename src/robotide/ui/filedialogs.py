@@ -157,8 +157,8 @@ class NewProjectDialog(_CreationDialog):
 
 class NewResourceDialog(_CreationDialog):
 
-    def __init__(self, default_dir, controller):
-        _CreationDialog.__init__(self, default_dir, 'New Resource File')
+    def __init__(self, controller):
+        _CreationDialog.__init__(self, controller.default_dir, 'New Resource File')
         self._controller = controller
 
     def doit(self):
