@@ -28,7 +28,7 @@ from pluginmanager import PluginManager
 from tree import Tree
 from notebook import NoteBook
 from progress import LoadProgressObserver
-from robotide.controller.commands import SaveFile, SaveAll, CreateNewResource
+from robotide.controller.commands import SaveFile, SaveAll
 from robotide.publish.messages import RideNewResourceCreated
 
 
@@ -129,10 +129,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         dlg.Destroy()
 
     def OnNewResource(self, event):
-        dlg = NewResourceDialog(self._default_dir)
-        if dlg.ShowModal() == wx.ID_OK:
-            self._controller.execute(CreateNewResource(dlg.get_path()))
-        dlg.Destroy()
+        NewResourceDialog(self._default_dir, self._controller).doit()
 
     def _set_default_dir(self, message):
         self._default_dir = os.path.dirname(message.path)
