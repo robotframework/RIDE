@@ -78,9 +78,6 @@ class _RobotTableEditor(EditorPanel):
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.Bind(wx.EVT_MOTION, self.OnMotion)
         self.SetSizer(self.sizer)
-        if self.title:
-            self.sizer.Add(self._create_header(self.title), 0, wx.ALL, 5)
-            self.sizer.Add((0,10))
         self._editors = []
         self.reset_last_show_tooltip()
         self._populate()
@@ -107,11 +104,6 @@ class _RobotTableEditor(EditorPanel):
     def destroy(self):
         self.close()
         self.Destroy()
-
-    def _create_header(self, text):
-        header = wx.StaticText(self, -1, text)
-        header.SetFont(wx.Font(12, wx.SWISS, wx.NORMAL, wx.BOLD))
-        return header
 
     def _add_settings(self):
         for setting in self.controller.settings:
@@ -150,9 +142,8 @@ class ResourceFileEditor(_RobotTableEditor):
 
     def _populate(self):
         datafile = self.controller.data
-        self.sizer.Add(self._create_header(datafile.name), 0, wx.ALL, 5)
         self.sizer.Add(self._create_source_label(datafile.source), 0, wx.ALL, 1)
-        self.sizer.Add((0, 10))
+        self.sizer.Add((0, 5))
         self._add_settings()
         self._add_import_settings()
         self._add_variable_table()
@@ -400,8 +391,6 @@ class DocumentationEditor(SettingEditor):
 class TestCaseEditor(_RobotTableEditor):
 
     def _populate(self):
-        self.header = self._create_header(self.controller.name)
-        self.sizer.Add(self.header, 0, wx.ALL, 5)
         self._add_settings()
         self.sizer.Add((0,10))
         self._create_kweditor()
