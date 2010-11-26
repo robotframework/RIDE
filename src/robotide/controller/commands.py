@@ -101,6 +101,14 @@ class MoveTo(_Command):
         context.delete()
         self._destination.add_test_or_keyword(context)
 
+class CreateNewResource(_Command):
+
+    def __init__(self, path):
+        self._path = path
+
+    def execute(self, context):
+        context.new_resource(self._path)
+
 
 class _StepsChangingCommand(_ReversibleCommand):
 

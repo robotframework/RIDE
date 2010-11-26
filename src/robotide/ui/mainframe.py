@@ -28,7 +28,7 @@ from pluginmanager import PluginManager
 from tree import Tree
 from notebook import NoteBook
 from progress import LoadProgressObserver
-from robotide.controller.commands import SaveFile, SaveAll
+from robotide.controller.commands import SaveFile, SaveAll, CreateNewResource
 
 
 _menudata = """
@@ -131,7 +131,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.get_path()
             self._default_dir = os.path.dirname(path)
-            self._controller.new_resource(path)
+            self._controller.execute(CreateNewResource(path))
         dlg.Destroy()
 
     def OnOpen(self, event):
