@@ -534,7 +534,7 @@ class ImportSettingListEditor(_AbstractListEditor):
     def navigate_to_tree(self):
         setting = self._get_setting()
         if self.has_link_target(setting):
-            self._tree.select_resource_node(setting.resolved_path)
+            self._tree.select_node_by_data(setting.get_related_resource_controller())
 
     def has_link_target(self, controller):
         return controller.type == 'Resource' and controller.resolved_path
