@@ -34,6 +34,7 @@ def main():
                           'robotide.action',
                           'robotide.application',
                           'robotide.context',
+                          'robotide.contrib',
                           'robotide.editor',
                           'robotide.controller',
                           'robotide.log',
