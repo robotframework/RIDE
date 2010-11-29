@@ -222,9 +222,8 @@ class ActionInfo(MenuInfo):
         if not icon:
             return None
         if isinstance(icon, basestring):
-            # TODO: The icon should be created in the client code
-            return wx.ArtProvider.GetBitmap(getattr(wx, icon), wx.ART_TOOLBAR,
-                                            (16, 16))
+            return wx.ArtProvider.GetBitmap(getattr(wx, icon),
+                                            wx.ART_TOOLBAR, (16, 16))
         return icon
 
 
