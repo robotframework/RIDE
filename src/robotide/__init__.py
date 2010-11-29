@@ -14,13 +14,10 @@
 
 """RIDE -- Robot Framework test data editor
 
-Usage: ride.py [inpath] [outpath]
+Usage: ride.py [inpath]
 
 RIDE can be started either without any arguments or by giving a path to a test
-data file or directory to be opened. RIDE can also be used for 'tidying'
-Robot Framework test data by giving both ``inpath`` and ``outpath`` arguments.
-Tidying works for both test case and resource files, but it does not work with
-test data directories. When RIDE is used like this, no GUI is opened.
+data file or directory to be opened.
 
 RIDE's API is still evolving while the project is moving towards the 1.0
 release. The most stable, and best documented, module is `robotide.pluginapi`.
@@ -40,14 +37,11 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'spec'))
 
 
 def main(args):
-    if len(args) > 2 or '--help' in args:
+    if len(args) > 1 or '--help' in args:
         print __doc__
         sys.exit()
     try:
-        if len(args) < 2:
-            _run(*args)
-        else:
-            _tidy(*args)
+        _run(*args)
     except DataError, err:
         print str(err) + '\n\nUse --help to get usage information.'
 
@@ -56,23 +50,6 @@ def _run(inpath=None):
     from robotide.application import RIDE
     ride = RIDE(inpath)
     ride.MainLoop()
-
-
-def _tidy(inpath, outpath):
-    from robotide.application import ChiefController
-    if not os.path.exists(inpath):
-        raise DataError('Given input file does not exist.')
-    if not os.path.isfile(inpath):
-        raise DataError('Tidy functionality only supports single files.')
-    data = ChiefController(inpath)
-    if data.suite:
-        item = data.suite
-    else:
-        item = data.resources[0]
-    item.source = outpath
-    item.dirty = True
-    print 'Tidying %s -> %s' % (inpath, outpath)
-    item.serialize()
 
 
 if __name__ == '__main__':
