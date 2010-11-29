@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 from itertools import chain
+import os
 
 
 class Occurrence(object):
@@ -100,6 +101,15 @@ class MoveTo(_Command):
     def execute(self, context):
         context.delete()
         self._destination.add_test_or_keyword(context)
+
+class CreateNewResource(_Command):
+
+    def __init__(self, path):
+        self._path = path
+
+    def execute(self, context):
+        context.new_resource(self._path)
+        context.default_dir = os.path.dirname(self._path)
 
 
 class _StepsChangingCommand(_ReversibleCommand):

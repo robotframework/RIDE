@@ -15,6 +15,7 @@
 import os
 import wx
 from wx.lib.filebrowsebutton import DirBrowseButton
+from robotide.controller.commands import CreateNewResource
 # This hack needed to set same label width as with other labels
 DirBrowseButton.createLabel = lambda self: wx.StaticText(self, size=(110, -1),
                                                          label=self.labelText)
@@ -156,8 +157,14 @@ class NewProjectDialog(_CreationDialog):
 
 class NewResourceDialog(_CreationDialog):
 
-    def __init__(self, default_dir):
-        _CreationDialog.__init__(self, default_dir, 'New Resource File')
+    def __init__(self, controller):
+        _CreationDialog.__init__(self, controller.default_dir, 'New Resource File')
+        self._controller = controller
+
+    def doit(self):
+        if self.ShowModal() == wx.ID_OK:
+            self._controller.execute(CreateNewResource(self.get_path()))
+        self.Destroy()
 
     def _create_type_chooser(self, sizer):
         return None

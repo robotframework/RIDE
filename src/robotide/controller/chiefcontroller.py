@@ -23,9 +23,12 @@ from robotide.writer.serializer import Serializer
 
 from filecontrollers import DataController, ResourceFileController
 from dataloader import DataLoader
+from robotide.context import SETTINGS
 
 
 class ChiefController(object):
+    default_dir = property(lambda self: os.path.abspath(SETTINGS['default directory']),
+                           lambda self, path: SETTINGS.set('default directory', path))
 
     def __init__(self, namespace):
         self._namespace = namespace

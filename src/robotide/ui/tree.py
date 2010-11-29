@@ -31,6 +31,7 @@ from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
 from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
     AddKeyword, AddTestCase, RenameTest, CopyMacroAs, MoveTo
 from robotide.widgets import PopupCreator, PopupMenuItems
+from robotide.ui.filedialogs import NewResourceDialog
 try:
     import treemixin
 except ImportError:
@@ -752,7 +753,7 @@ class ResourceRootHandler(_ActionHandler):
         return False
 
     def OnNewResource(self, event):
-        raise NotImplementedError()
+        NewResourceDialog(self.controller).doit()
 
 
 class _History(object):

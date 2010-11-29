@@ -54,9 +54,6 @@ _menudata = """
 
 
 class RideFrame(wx.Frame, RideEventHandler):
-    _default_dir = property(lambda self: os.path.abspath(SETTINGS['default directory']),
-                            lambda self, path: SETTINGS.set('default directory', path))
-
 
     def __init__(self, application, controller):
         wx.Frame.__init__(self, parent=None, title='RIDE',
@@ -67,12 +64,14 @@ class RideFrame(wx.Frame, RideEventHandler):
         self._init_ui()
         self._plugin_manager = PluginManager(self.notebook)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
-        PUBLISHER.subscribe(lambda msg: self.SetStatusText('Saved %s' % msg.path),
-                            RideSaved)
-        PUBLISHER.subscribe(lambda msg: self.SetStatusText('Saved all files'),
-                            RideSaveAll)
+        self._subscribe_messages()
         self.ensure_on_screen()
         self.Show()
+
+    def _subscribe_messages(self):
+        for listener, topic in [(lambda msg: self.SetStatusText('Saved %s' % msg.path), RideSaved),
+                                (lambda msg: self.SetStatusText('Saved all files'), RideSaveAll)]:
+            PUBLISHER.subscribe(listener, topic)
 
     def _init_ui(self):
         splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
@@ -115,22 +114,17 @@ class RideFrame(wx.Frame, RideEventHandler):
     def OnNewProject(self, event):
         if not self._check_unsaved_modifications():
             return
-        dlg = NewProjectDialog(self._default_dir)
+        dlg = NewProjectDialog(self._controller.default_dir)
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.get_path()
-            self._default_dir = os.path.dirname(path)
+            self._controller.default_dir = os.path.dirname(path)
             data = NewDatafile(path, dlg.is_dir_type())
             self._controller.new_datafile(data)
             self.tree.populate(self._controller)
         dlg.Destroy()
 
     def OnNewResource(self, event):
-        dlg = NewResourceDialog(self._default_dir)
-        if dlg.ShowModal() == wx.ID_OK:
-            path = dlg.get_path()
-            self._default_dir = os.path.dirname(path)
-            self._controller.new_resource(path)
-        dlg.Destroy()
+        NewResourceDialog(self._controller).doit()
 
     def OnOpen(self, event):
         self._check_unsaved_modifications()
@@ -155,10 +149,10 @@ class RideFrame(wx.Frame, RideEventHandler):
         wildcard = ('All files|*.*|Robot data (*.html)|*.*htm*|'
                     'Robot data (*.tsv)|*.tsv|Robot data (*txt)|*.txt')
         dlg = wx.FileDialog(self, message='Open', wildcard=wildcard,
-                            defaultDir=self._default_dir, style=wx.OPEN)
+                            defaultDir=self._controller.default_dir, style=wx.OPEN)
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.GetPath()
-            self._default_dir = os.path.dirname(path)
+            self._controller.default_dir = os.path.dirname(path)
         else:
             path = None
         dlg.Destroy()
@@ -174,9 +168,9 @@ class RideFrame(wx.Frame, RideEventHandler):
     def OnOpenDirectory(self, event):
         if self._check_unsaved_modifications():
             path = wx.DirSelector(message='Choose a directory containing Robot files',
-                                  defaultPath=self._default_dir)
+                                  defaultPath=self._controller.default_dir)
             if path:
-                self._default_dir = path
+                self._controller.default_dir = path
                 self.open_suite(path)
 
     def OnSave(self, event):
@@ -189,8 +183,9 @@ class RideFrame(wx.Frame, RideEventHandler):
     def save(self, controller=None):
         if controller is None : 
             controller = self.get_selected_datafile_controller()
-        self._show_dialog_for_files_without_format(controller)
-        controller.execute(SaveFile())
+        if controller is not None:
+            self._show_dialog_for_files_without_format(controller)
+            controller.execute(SaveFile())
 
     def _show_dialog_for_files_without_format(self, controller=None):
         files_without_format = self._controller.get_files_without_format(controller)
