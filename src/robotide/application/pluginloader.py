@@ -39,9 +39,16 @@ class PluginLoader(object):
         classes = []
         for path in self._find_python_files(load_dirs):
             for cls in self._import_classes(path):
-                if issubclass(cls, Plugin) and cls is not Plugin:
+                if self._is_plugin_class(path, cls):
                     classes.append(cls)
         return classes
+
+    def _is_plugin_class(self, path, cls):
+        try:
+            return issubclass(cls, Plugin) and cls is not Plugin
+        except Exception, err:
+            msg = "Finding classes from module '%s' failed: %s"
+            self._load_errors.append(msg % (path, err))
 
     def _find_python_files(self, load_dirs):
         for path in load_dirs:
