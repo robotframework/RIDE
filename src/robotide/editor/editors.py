@@ -247,6 +247,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
 
     def OnKey(self, event):
         self._tooltip.hide()
+        event.Skip()
 
     def OnMotion(self, event):
         self._tooltip.hide()
