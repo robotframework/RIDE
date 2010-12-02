@@ -148,8 +148,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             self.Expand(self._resource_root)
         if self._datafile_nodes:
             self.SelectItem(self._datafile_nodes[0])
-            self._expand_and_render_children(self._datafile_nodes[0],
-                                             lambda item: item.is_test_suite)
+            self._expand_and_render_children(self._datafile_nodes[0])
 
     def _render_datafile(self, parent_node, controller, index=None):
         node = self._create_node_with_handler(parent_node, controller, index)
@@ -167,15 +166,15 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self.SetPyData(node, handler_class(controller, self, node))
         return node
 
-    def _expand_and_render_children(self, node, predicate=None):
-        self._render_children(node, predicate)
+    def _expand_and_render_children(self, node):
+        self._render_children(node)
         self.Expand(node)
 
-    def _render_children(self, node, predicate=None):
+    def _render_children(self, node):
         handler = self._get_handler(node)
         if not handler or not handler.can_be_rendered:
             return
-        self._create_child_nodes(node, handler, predicate)
+        self._create_child_nodes(node, handler, lambda item: item.is_test_suite)
         handler.set_rendered()
 
     def _create_child_nodes(self, node, handler, predicate):
