@@ -16,16 +16,22 @@ import re
 
 from robotide.publish import RideGridCellChanged
 from robotide.pluginapi import Plugin
+from robotide.controller.cellinfo import CellInfo, ContentType, CellType
 
 
 class Colorizer(Plugin):
     """Colorizes cells in the keyword editor"""
 
+    TEXT_COLORS = {
+    ContentType.COMMENTED: 'firebrick',
+    ContentType.USER_KEYWORD: 'blue',
+    ContentType.LIBRARY_KEYWORD: 'blue',
+    ContentType.VARIABLE: 'forest green',
+    ContentType.STRING: 'black'
+    }
+
     def __init__(self, application):
-        settings  = {'comment_fg': 'firebrick', 'user_keyword_fg': 'blue',
-                     'library_keyword_fg': 'blue', 'variable_fg':'forest green',
-                     'default_fg':'black'}
-        Plugin.__init__(self, application, default_settings=settings)
+        Plugin.__init__(self, application)
 
     def enable(self):
         self.subscribe(self.OnCellChanged, RideGridCellChanged)
@@ -40,19 +46,20 @@ class Colorizer(Plugin):
                                           event.previous)
 
     def _colorize_cell(self, grid, row, col, value):
-        color = self._get_color(grid, row, value)
+        cell_info = self._get_cell_info(grid, row, value)
+        color = self.TEXT_COLORS[cell_info.content_type]
         grid.SetCellTextColour(row, col, color)
 
-    def _get_color(self, grid, row, value):
+    def _get_cell_info(self, grid, row, value):
         if self._is_commented(grid, row):
-            return self.comment_fg
+            return CellInfo(ContentType.COMMENTED, CellType.UNKNOWN)
         if self._is_variable(value):
-            return self.variable_fg
+            return CellInfo(ContentType.VARIABLE, CellType.UNKNOWN)
         if self.is_user_keyword(value):
-            return self.user_keyword_fg
+            return CellInfo(ContentType.USER_KEYWORD, CellType.UNKNOWN)
         if self.is_library_keyword(value):
-            return self.library_keyword_fg
-        return self.default_fg
+            return CellInfo(ContentType.LIBRARY_KEYWORD, CellType.UNKNOWN)
+        return CellInfo(ContentType.STRING, CellType.UNKNOWN)
 
     def _is_variable(self, value):
         return re.match('[\$\@]{.*?}=?', value)

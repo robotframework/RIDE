@@ -17,6 +17,7 @@ class ContentType:
     USER_KEYWORD = object()
     LIBRARY_KEYWORD = object()
     VARIABLE = object()
+    COMMENTED = object()
     STRING = object()
     EMPTY = object()
 
