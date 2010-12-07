@@ -14,3 +14,5 @@
 
 from dialog import Dialog
 from popupmenu import PopupCreator, PopupMenu, PopupMenuItem, PopupMenuItems
+from list import List
+from sizers import VerticalSizer
