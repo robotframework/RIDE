@@ -29,9 +29,11 @@ from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideVariableAdded, RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated, \
     RideOpenResource
 from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
-    AddKeyword, AddTestCase, RenameTest, CopyMacroAs, MoveTo
+    AddKeyword, AddTestCase, RenameTest, CopyMacroAs, MoveTo, FindOccurrences, FindUsages, FindUsages
 from robotide.widgets import PopupCreator, PopupMenuItems
 from robotide.ui.filedialogs import NewResourceDialog
+from robotide.ui.usagesdialog import UsagesDialog
+
 try:
     import treemixin
 except ImportError:
@@ -721,12 +723,19 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
     is_user_keyword = True
     _datalist = property(lambda self: self.item.datalist)
     _dialog_class = UserKeywordNameDialog
+    _actions = _TestOrUserKeywordHandler._actions + ['Find Occurrences']
 
     def _add_copy_to_tree(self, parent_node, copied):
         self._tree.add_keyword(parent_node, copied)
 
     def _rename(self, new_name):
         self.controller.execute(RenameKeywordOccurrences(self.controller.name, new_name))
+
+    def OnFindOccurrences(self, event):
+        name = self.controller.name
+        dlg = UsagesDialog(name, self.controller.execute(FindUsages(name)))
+        dlg.add_selection_listener(self._tree.select_node_by_data)
+        dlg.Show()
 
 
 class VariableHandler(_ActionHandler):

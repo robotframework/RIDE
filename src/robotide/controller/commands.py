@@ -14,6 +14,7 @@
 
 from itertools import chain
 import os
+from robotide.controller.macrocontrollers import UserKeywordController, KeywordNameController
 
 
 class Occurrence(object):
@@ -26,6 +27,10 @@ class Occurrence(object):
     @property
     def item(self):
         return self._item
+
+    @property
+    def datafile(self):
+        return self._item.datafile
 
     @property
     def usage(self):
@@ -209,7 +214,13 @@ class FindOccurrences(_Command):
         return (Occurrence(item, self._keyword_name) for item in items
                 if item.contains_keyword(self._keyword_name))
 
+    
+class FindUsages(FindOccurrences):
 
+    def execute(self, context):
+        return (occ for occ in FindOccurrences.execute(self, context) if not isinstance(occ.item, KeywordNameController))
+
+    
 def AddKeywordFromCells(cells):
     if not cells:
         raise ValueError('Keyword can not be empty')

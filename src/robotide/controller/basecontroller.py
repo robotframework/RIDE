@@ -23,6 +23,10 @@ class _BaseController(object):
 
 class ControllerWithParent(object):
 
+    @property
+    def parent(self):
+        return self._parent
+
     def mark_dirty(self):
         if self._parent:
             self._parent.mark_dirty()

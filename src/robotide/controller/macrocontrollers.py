@@ -349,6 +349,10 @@ class StepController(object):
                 self._step.args[index] = new_name
 
     @property
+    def datafile(self):
+        return self.parent.datafile
+
+    @property
     def keyword(self):
         return self._step.keyword
 
@@ -366,7 +370,8 @@ class StepController(object):
 
     @property
     def logical_name(self):
-        return '%s (Step %d)' % (self.parent.name, self.parent.steps.index(self) + 1)
+        return '%s (Step %d)' % (self.parent.name,
+                                 self.parent.data.steps.index(self._step) + 1)
 
     def change(self, col, new_value):
         cells = self.as_list()
