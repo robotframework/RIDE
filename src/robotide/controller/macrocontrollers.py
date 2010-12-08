@@ -590,15 +590,7 @@ class IntendedStepController(StepController):
     def _get_cell_type(self, col):
         if col == 0:
             return CellType.MANDATORY_EMPTY
-        info = self.get_keyword_info(self._step.keyword)
-        if not info:
-            return CellType.UNKNOWN
-        if col > len(info.arguments)+1:
-            if self.get_value(col):
-                return CellType.ERROR
-            else:
-                return CellType.MANDATORY_EMPTY
-        return CellType.UNKNOWN
+        return StepController._get_cell_type(self, col-1)
 
     def comment(self):
         self._step.__init__(['Comment'] + self._step.as_list())
