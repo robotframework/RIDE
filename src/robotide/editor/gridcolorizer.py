@@ -30,8 +30,8 @@ class Colorizer(object):
     CellType.UNKNOWN: '#FFFFFF',
     CellType.MANDATORY: '#FFFFFF',
     CellType.MANDATORY_EMPTY: '#C0C0C0',
-    CellType.ERROR: '#CC3300',
-    CellType.OPTIONAL: '#F0F0F0'
+    CellType.ERROR: '#FF9385',
+    CellType.OPTIONAL: '#F5F5F5'
     }
 
     def __init__(self, grid, controller):
