@@ -16,7 +16,7 @@ import wx
 
 class Dialog(wx.Dialog):
 
-    def __init__(self, title, parent=None, size=None, style=None):
+    def __init__(self, title='', parent=None, size=None, style=None):
         parent = parent or wx.GetTopLevelWindows()[0]
         size = size or (-1, -1)
         # wx.THICK_FRAME allows resizing
