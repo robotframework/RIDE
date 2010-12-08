@@ -17,6 +17,7 @@ import unittest
 from robot.utils.asserts import assert_true, assert_false
 
 import robotide.context
+from robotide import utils
 class _Log(object):
     def __init__(self):
         self.log = ''
@@ -28,7 +29,7 @@ robotide.context.LOG = LOGGER
 
 
 from robotide.application.pluginloader import PluginLoader
-from robotide.editor.gridcolorizer import Colorizer
+from robotide.log import LogPlugin
 
 from resources import FakeApplication, FakeSettings
 
@@ -36,13 +37,14 @@ robotide.application.pluginconnector.SETTINGS = FakeSettings()
 
 
 class TestPluginLoader(unittest.TestCase):
+    used_plugin_class = LogPlugin
     expected_plugins = ['Example Plugin 1', 'Example Plugin 2',
-                        'Example Plugin 3', 'Colorizer']
+                        'Example Plugin 3', utils.name_from_class(used_plugin_class, drop='Plugin')]
 
     def setUp(self):
         plugins_dir = [os.path.join(os.path.dirname(__file__), 'plugins_for_loader')]
         app = FakeApplication()
-        self.loader = PluginLoader(app, plugins_dir, [Colorizer])
+        self.loader = PluginLoader(app, plugins_dir, [self.used_plugin_class])
         app.get_plugins = lambda: self.loader.plugins
 
     def tearDown(self):

@@ -44,11 +44,19 @@ class MessageRecordingLoadObserver(object):
 class _FakeModel(object):
     suite = None
 
+class _FakeActions(object):
+    def register_action(self, *args):
+        return self
+
+    def unregister(self, *args):
+        pass
+
 class _FakeUIObject(object):
     Enable = InsertSeparator = Append = Connect = lambda *args: None
     Insert = FindMenu = GetMenuBar = GetMenu = lambda *args: _FakeUIObject()
     GetMenuItemCount = lambda s: 1
     notebook = property(lambda *args: _FakeUIObject())
+    actions = property(lambda *args: _FakeActions())
 
 class FakeApplication(object):
     frame = _FakeUIObject()
