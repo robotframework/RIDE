@@ -119,23 +119,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self.datafile_controller.update_namespace()
 
     def get_cell_info(self, row, col):
-        step = self.step(row)
-        return self._get_cell_info(step, col)
-
-    def _get_cell_info(self, step, col):
-        if step.is_commented():
-            return CellInfo(ContentType.COMMENTED, CellType.UNKNOWN)
-        value = step.get_value(col)
-        if self._is_variable(value):
-            return CellInfo(ContentType.VARIABLE, CellType.UNKNOWN)
-        if self.is_user_keyword(value):
-            return CellInfo(ContentType.USER_KEYWORD, CellType.UNKNOWN)
-        if self.is_library_keyword(value):
-            return CellInfo(ContentType.LIBRARY_KEYWORD, CellType.UNKNOWN)
-        return CellInfo(ContentType.STRING, CellType.UNKNOWN)
-
-    def _is_variable(self, value):
-        return re.match('[\$\@]{.*?}=?', value)
+        return self.step(row).get_cell_info(col)
 
     def is_user_keyword(self, value):
         return self.datafile_controller.is_user_keyword(value)
@@ -362,6 +346,35 @@ class StepController(object):
             return ''
         return values[col]
 
+    def get_cell_info(self, col):
+        cell_type = self._get_cell_type(col)
+        content_type = self._get_content_type(col)
+        return CellInfo(content_type, cell_type)
+
+    def _get_cell_type(self, col):
+        return CellType.UNKNOWN
+
+    def _get_content_type(self, col):
+        if self.is_commented():
+            return ContentType.COMMENTED
+        value = self.get_value(col)
+        if self._is_variable(value):
+            return ContentType.VARIABLE
+        if self.is_user_keyword(value):
+            return ContentType.USER_KEYWORD
+        if self.is_library_keyword(value):
+            return ContentType.LIBRARY_KEYWORD
+        return ContentType.STRING
+
+    def _is_variable(self, value):
+        return re.match('[\$\@]{.*?}=?', value)
+
+    def is_user_keyword(self, value):
+        return self.parent.is_user_keyword(value)
+
+    def is_library_keyword(self, value):
+        return self.parent.is_library_keyword(value)
+
     def as_list(self):
         return self._step.as_list()
 
@@ -548,6 +561,11 @@ class IntendedStepController(StepController):
 
     def as_list(self):
         return ['']+self._step.as_list()
+
+    def _get_cell_type(self, col):
+        if col == 0:
+            return CellType.MANDATORY_EMPTY
+        return StepController._get_cell_type(self, col)
 
     def comment(self):
         self._step.__init__(['Comment'] + self._step.as_list())

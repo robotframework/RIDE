@@ -27,7 +27,8 @@ class Colorizer(object):
     }
 
     BACKGROUND_COLORS = {
-    CellType.UNKNOWN: 'white'
+    CellType.UNKNOWN: 'white',
+    CellType.MANDATORY_EMPTY: 'grey'
     }
 
     def __init__(self, grid, controller):

@@ -134,6 +134,7 @@ class GridEditor(grid.Grid):
         for row_index, row_data in enumerate(data):
             for col_index, cell_value in enumerate(row_data):
                 self.write_cell(row_index, col_index, cell_value, update_history)
+        self.AutoSizeColumns()
         self.AutoSizeRows()
 
     def OnSelectCell(self, event):
