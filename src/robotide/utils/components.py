@@ -22,7 +22,7 @@ from robotide import context
 class RideHtmlWindow(HtmlWindow):
 
     def __init__(self, parent, size=wx.DefaultSize, text=None):
-        HtmlWindow.__init__(self, parent, style=wx.BORDER_SUNKEN, size=size)
+        HtmlWindow.__init__(self, parent, size=size)
         self.SetBorders(2)
         self.SetStandardFonts()
         if text:
