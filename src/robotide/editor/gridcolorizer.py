@@ -12,8 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.controller.cellinfo import CellInfo, ContentType, CellType
-import re
+from robotide.controller.cellinfo import ContentType, CellType
 
 
 class Colorizer(object):
@@ -40,34 +39,11 @@ class Colorizer(object):
         self._handle_comment_or_uncomment(row, col, value, previous)
 
     def _colorize_cell(self, row, col, value):
-        cell_info = self._get_cell_info(row, value)
+        cell_info = self._controller.get_cell_info(row, col)
         text_color = self.TEXT_COLORS[cell_info.content_type]
         self._grid.SetCellTextColour(row, col, text_color)
         background_color = self.BACKGROUND_COLORS[cell_info.cell_type]
         self._grid.SetCellBackgroundColour(row, col, background_color)
-
-    def _get_cell_info(self, row, value):
-        if self._is_commented(row):
-            return CellInfo(ContentType.COMMENTED, CellType.UNKNOWN)
-        if self._is_variable(value):
-            return CellInfo(ContentType.VARIABLE, CellType.UNKNOWN)
-        if self._controller.is_user_keyword(value):
-            return CellInfo(ContentType.USER_KEYWORD, CellType.UNKNOWN)
-        if self._controller.is_library_keyword(value):
-            return CellInfo(ContentType.LIBRARY_KEYWORD, CellType.UNKNOWN)
-        return CellInfo(ContentType.STRING, CellType.UNKNOWN)
-
-    def _is_variable(self, value):
-        return re.match('[\$\@]{.*?}=?', value)
-
-    def _is_commented(self, row):
-        for i in range(self._grid.NumberCols):
-            cell_val = self._grid.GetCellValue(row, i).strip().lower()
-            if i == 0 and cell_val == "comment":
-                return True
-            if cell_val.startswith('#'):
-                return True
-        return False
 
     def _handle_comment_or_uncomment(self, row, col, value, previous):
         """If a row is (un)commented, that row need to be re-colorized"""
