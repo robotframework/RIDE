@@ -30,42 +30,39 @@ class RidePopupWindow(wx.PopupWindow):
             self.SetPosition(position)
             self.Show()
 
-    def hide(self):
+    def hide(self, event=None):
         self.Show(False)
 
-    def _detach(self, event):
-        HtmlDialog(self._current_details).Show()
-        self.hide()
 
+class Tooltip(RidePopupWindow):
 
-class RideHtmlPopupWindow(RidePopupWindow):
-
-    def __init__(self, parent, size):
+    def __init__(self, parent, size, detachable=True, autohide=False):
         RidePopupWindow.__init__(self, parent, size)
+        self._create_ui(size, detachable)
+        if autohide:
+            self.Bind(wx.EVT_LEAVE_WINDOW, self.hide)
+
+    def _create_ui(self, size, detachable):
         panel = wx.Panel(self)
         panel.SetBackgroundColour(context.POPUP_BACKGROUND)
         szr = VerticalSizer()
-        btn = ButtonWithHandler(panel, 'Detach', width=size[0],
-                                handler=self._detach)
-        self._details = RideHtmlWindow(self, size=(size[0], size[1]-25))
+        if detachable:
+            szr.add(ButtonWithHandler(panel, 'Detach', width=size[0],
+                                      handler=self._detach))
+            size = (size[0], size[1]-25)
+        self._details = RideHtmlWindow(self, size=size)
         szr.add_expanding(self._details)
-        szr.add(btn)
         panel.SetSizer(szr)
         panel.Fit()
 
-    def set_content(self, content):
+    def set_content(self, content, title=None):
         color = ''.join(hex(item)[2:] for item in context.POPUP_BACKGROUND)
         self._current_details = '<body bgcolor=#%s>%s</body>' % (color, content)
         self._details.SetPage(self._current_details)
+        self._detached_title = title
 
-
-class RideToolTipWindow(RideHtmlPopupWindow):
-
-    def __init__(self, parent, size):
-        RideHtmlPopupWindow.__init__(self, parent, size)
-        self.Bind(wx.EVT_LEAVE_WINDOW, self.OnLeaveWindow)
-
-    def OnLeaveWindow(self, event):
+    def _detach(self, event):
+        HtmlDialog(self._detached_title, self._current_details).Show()
         self.hide()
 
 
@@ -87,10 +84,11 @@ class MacRidePopupWindow(wx.Window):
 
 class HtmlDialog(Dialog):
 
-    def __init__(self, content):
-        Dialog.__init__(self, '')
+    def __init__(self, title, content):
+        Dialog.__init__(self, title)
         szr = VerticalSizer()
-        szr.add(RideHtmlWindow(self, text=content, size=self.Size))
+        szr.add_expanding(RideHtmlWindow(self, text=content,
+                                         size=self.Size))
         self.SetSizer(szr)
 
     def OnKey(self, event):
@@ -98,5 +96,5 @@ class HtmlDialog(Dialog):
 
 
 if wx.PlatformInfo[0] == '__WXMAC__':
-    RidePopupWindow = RideToolTipWindow = RideHtmlPopupWindow = MacRidePopupWindow
+    RidePopupWindow = ToolTip = MacRidePopupWindow
 del MacRidePopupWindow
