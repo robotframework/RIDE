@@ -31,6 +31,7 @@ from robotide.publish.messages import RideItemStepsChanged
 from robotide.editor.editordialogs import ScalarVariableDialog,\
     ListVariableDialog
 from robot.parsing.model import Variable
+from robotide.editor.gridcolorizer import Colorizer
 
 
 class KeywordEditor(GridEditor, RideEventHandler):
@@ -44,6 +45,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
             GridEditor.__init__(self, parent, len(controller.steps) + 5, 5,
                                 parent.plugin._grid_popup_creator)
             self._plugin = parent.plugin
+            self._colorizer = Colorizer(self, controller)
             self._configure_grid()
             self._controller = controller
             PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
@@ -81,6 +83,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         previous = self.GetCellValue(row, col) \
                 if (row < self.NumberRows and col < self.NumberCols) else ''
         GridEditor.write_cell(self, row, col, value, update_history)
+        self._colorizer.colorize(row, col, value, previous)
         RideGridCellChanged(cell=(row, col), value=value, previous=previous,
                             grid=self).publish()
 

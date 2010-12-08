@@ -107,6 +107,12 @@ class _DataController(_BaseController, WithUndoRedoStacks):
     def update_namespace(self):
         self._chief_controller.update_namespace()
 
+    def is_user_keyword(self, value):
+        return self._chief_controller.is_user_keyword(self.datafile, value)
+
+    def is_library_keyword(self, value):
+        return self._chief_controller.is_library_keyword(self.datafile, value)
+
     def keyword_info(self, keyword_name):
         return self._chief_controller.keyword_info(self.data, keyword_name)
 

@@ -116,6 +116,12 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
     def update_namespace(self):
         self.datafile_controller.update_namespace()
 
+    def is_user_keyword(self, value):
+        return self.datafile_controller.is_user_keyword(value)
+
+    def is_library_keyword(self, value):
+        return self.datafile_controller.is_library_keyword(value)
+
     def delete(self):
         return self._parent.delete(self)
 

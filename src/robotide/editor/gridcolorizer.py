@@ -12,68 +12,71 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from robotide.controller.cellinfo import CellInfo, ContentType, CellType
 import re
 
-from robotide.publish import RideGridCellChanged
-from robotide.pluginapi import Plugin
 
-
-class Colorizer(Plugin):
+class Colorizer(object):
     """Colorizes cells in the keyword editor"""
 
-    def __init__(self, application):
-        settings  = {'comment_fg': 'firebrick', 'user_keyword_fg': 'blue',
-                     'library_keyword_fg': 'blue', 'variable_fg':'forest green',
-                     'default_fg':'black'}
-        Plugin.__init__(self, application, default_settings=settings)
+    TEXT_COLORS = {
+    ContentType.COMMENTED: 'firebrick',
+    ContentType.USER_KEYWORD: 'blue',
+    ContentType.LIBRARY_KEYWORD: 'blue',
+    ContentType.VARIABLE: 'forest green',
+    ContentType.STRING: 'black'
+    }
 
-    def enable(self):
-        self.subscribe(self.OnCellChanged, RideGridCellChanged)
+    BACKGROUND_COLORS = {
+    CellType.UNKNOWN: 'white'
+    }
 
-    def disable(self):
-        self.unsubscribe(self.OnCellChanged, RideGridCellChanged)
+    def __init__(self, grid, controller):
+        self._grid = grid
+        self._controller = controller
 
-    def OnCellChanged(self, event):
-        row, col = event.cell
-        self._colorize_cell(event.grid, row, col, event.value)
-        self._handle_comment_or_uncomment(event.grid, row, col, event.value,
-                                          event.previous)
+    def colorize(self, row, col, value, previous):
+        self._colorize_cell(row, col, value)
+        self._handle_comment_or_uncomment(row, col, value, previous)
 
-    def _colorize_cell(self, grid, row, col, value):
-        color = self._get_color(grid, row, value)
-        grid.SetCellTextColour(row, col, color)
+    def _colorize_cell(self, row, col, value):
+        cell_info = self._get_cell_info(row, value)
+        text_color = self.TEXT_COLORS[cell_info.content_type]
+        self._grid.SetCellTextColour(row, col, text_color)
+        background_color = self.BACKGROUND_COLORS[cell_info.cell_type]
+        self._grid.SetCellBackgroundColour(row, col, background_color)
 
-    def _get_color(self, grid, row, value):
-        if self._is_commented(grid, row):
-            return self.comment_fg
+    def _get_cell_info(self, row, value):
+        if self._is_commented(row):
+            return CellInfo(ContentType.COMMENTED, CellType.UNKNOWN)
         if self._is_variable(value):
-            return self.variable_fg
-        if self.is_user_keyword(value):
-            return self.user_keyword_fg
-        if self.is_library_keyword(value):
-            return self.library_keyword_fg
-        return self.default_fg
+            return CellInfo(ContentType.VARIABLE, CellType.UNKNOWN)
+        if self._controller.is_user_keyword(value):
+            return CellInfo(ContentType.USER_KEYWORD, CellType.UNKNOWN)
+        if self._controller.is_library_keyword(value):
+            return CellInfo(ContentType.LIBRARY_KEYWORD, CellType.UNKNOWN)
+        return CellInfo(ContentType.STRING, CellType.UNKNOWN)
 
     def _is_variable(self, value):
         return re.match('[\$\@]{.*?}=?', value)
 
-    def _is_commented(self, grid, row):
-        for i in range(grid.NumberCols):
-            cell_val = grid.GetCellValue(row, i).strip().lower()
+    def _is_commented(self, row):
+        for i in range(self._grid.NumberCols):
+            cell_val = self._grid.GetCellValue(row, i).strip().lower()
             if i == 0 and cell_val == "comment":
                 return True
             if cell_val.startswith('#'):
                 return True
         return False
 
-    def _handle_comment_or_uncomment(self, grid, row, col, value, previous):
+    def _handle_comment_or_uncomment(self, row, col, value, previous):
         """If a row is (un)commented, that row need to be re-colorized"""
         value, previous = value.strip().lower(), previous.strip().lower()
         if not self._may_be_comment_or_uncomment(col, value, previous):
             return
         if value == "comment" or previous == 'comment':
-            for col in range(0, grid.NumberCols):
-                self._colorize_cell(grid, row, col, value)
+            for col in range(0, self._grid.NumberCols):
+                self._colorize_cell(row, col, value)
 
     def _may_be_comment_or_uncomment(self, col, value, previous):
         return col == 0 and value != previous
