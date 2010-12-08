@@ -25,6 +25,8 @@ from robotide.controller.basecontroller import WithUndoRedoStacks
 from robotide.publish.messages import RideItemStepsChanged, RideItemNameChanged,\
     RideItemSettingsChanged
 from robotide import utils
+import re
+from robotide.controller.cellinfo import CellInfo, CellType, ContentType
 
 
 KEYWORD_NAME_FIELD = 'Keyword Name'
@@ -115,6 +117,25 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
 
     def update_namespace(self):
         self.datafile_controller.update_namespace()
+
+    def get_cell_info(self, row, col):
+        step = self.step(row)
+        return self._get_cell_info(step, col)
+
+    def _get_cell_info(self, step, col):
+        if step.is_commented():
+            return CellInfo(ContentType.COMMENTED, CellType.UNKNOWN)
+        value = step.get_value(col)
+        if self._is_variable(value):
+            return CellInfo(ContentType.VARIABLE, CellType.UNKNOWN)
+        if self.is_user_keyword(value):
+            return CellInfo(ContentType.USER_KEYWORD, CellType.UNKNOWN)
+        if self.is_library_keyword(value):
+            return CellInfo(ContentType.LIBRARY_KEYWORD, CellType.UNKNOWN)
+        return CellInfo(ContentType.STRING, CellType.UNKNOWN)
+
+    def _is_variable(self, value):
+        return re.match('[\$\@]{.*?}=?', value)
 
     def is_user_keyword(self, value):
         return self.datafile_controller.is_user_keyword(value)
@@ -392,6 +413,15 @@ class StepController(object):
     def comment(self):
         self.shift_right(0)
         self.change(0, 'Comment')
+
+    def is_commented(self):
+        for i in range(len(self.as_list())):
+            cell_val = self.get_value(i).strip().lower()
+            if i == 0 and cell_val == "comment":
+                return True
+            if cell_val.startswith('#'):
+                return True
+        return False
 
     def uncomment(self):
         if self._step.keyword == 'Comment':
