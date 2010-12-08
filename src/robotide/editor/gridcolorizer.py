@@ -30,6 +30,10 @@ class Colorizer(Plugin):
     ContentType.STRING: 'black'
     }
 
+    BACKGROUND_COLORS = {
+    CellType.UNKNOWN: 'white'
+    }
+
     def __init__(self, application):
         Plugin.__init__(self, application)
 
@@ -47,8 +51,10 @@ class Colorizer(Plugin):
 
     def _colorize_cell(self, grid, row, col, value):
         cell_info = self._get_cell_info(grid, row, value)
-        color = self.TEXT_COLORS[cell_info.content_type]
-        grid.SetCellTextColour(row, col, color)
+        text_color = self.TEXT_COLORS[cell_info.content_type]
+        grid.SetCellTextColour(row, col, text_color)
+        background_color = self.BACKGROUND_COLORS[cell_info.cell_type]
+        grid.SetCellBackgroundColour(row, col, background_color)
 
     def _get_cell_info(self, grid, row, value):
         if self._is_commented(grid, row):
