@@ -12,6 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from button import ButtonWithHandler
 from dialog import Dialog
 from popupmenu import PopupCreator, PopupMenu, PopupMenuItem, PopupMenuItems
 from list import List

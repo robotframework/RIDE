@@ -16,7 +16,8 @@ import wx
 
 from robotide import context
 from robotide import utils
-from robotide.utils import RideEventHandler, RideHtmlWindow, ButtonWithHandler
+from robotide.utils import RideEventHandler, RideHtmlWindow
+from robotide.widgets import ButtonWithHandler
 from robotide.controller.settingcontrollers import (DocumentationController,
                                                     VariableController)
 from robotide.robotapi import (ResourceFile, TestCaseFile, TestDataDirectory,

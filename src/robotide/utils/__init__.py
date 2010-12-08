@@ -20,7 +20,7 @@ from robot.utils import printable_name, normalize, eq, eq_any, \
     HtmlWriter, NormalizedDict, timestr_to_secs, secs_to_timestr, normpath,\
     DomWrapper, unic, asserts, unescape, html_attr_escape,\
     html_escape, get_timestamp
-from components import RideHtmlWindow, ButtonWithHandler
+from components import RideHtmlWindow
 from eventhandler import RideEventHandler
 
 
