@@ -117,6 +117,12 @@ class ChiefController(object):
     def update_namespace(self):
         self._namespace.update()
 
+    def is_user_keyword(self, datafile, value):
+        return self._namespace.is_user_keyword(datafile, value)
+
+    def is_library_keyword(self, datafile, value):
+        return self._namespace.is_library_keyword(datafile, value)
+
     def get_all_keywords(self):
         return self._namespace.get_all_keywords(ctrl.datafile for ctrl in self.datafiles)
 
