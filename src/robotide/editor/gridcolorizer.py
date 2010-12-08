@@ -23,15 +23,16 @@ class Colorizer(object):
     ContentType.USER_KEYWORD: 'blue',
     ContentType.LIBRARY_KEYWORD: 'blue',
     ContentType.VARIABLE: 'forest green',
-    ContentType.STRING: 'black'
+    ContentType.STRING: 'black',
+    ContentType.EMPTY: 'black'
     }
 
     BACKGROUND_COLORS = {
     CellType.UNKNOWN: '#FFFFFF',
     CellType.MANDATORY: '#FFFFFF',
     CellType.MANDATORY_EMPTY: '#C0C0C0',
-    CellType.ERROR: '#FF9385',
-    CellType.OPTIONAL: '#F5F5F5'
+    CellType.OPTIONAL: '#F5F5F5',
+    'Error': '#FF9385'
     }
 
     def __init__(self, grid, controller):
@@ -45,10 +46,16 @@ class Colorizer(object):
 
     def _colorize_cell(self, row, col):
         cell_info = self._controller.get_cell_info(row, col)
-        text_color = self.TEXT_COLORS[cell_info.content_type]
-        self._grid.SetCellTextColour(row, col, text_color)
-        background_color = self.BACKGROUND_COLORS[cell_info.cell_type]
-        self._grid.SetCellBackgroundColour(row, col, background_color)
+        self._grid.SetCellTextColour(row, col, self._get_text_color(cell_info))
+        self._grid.SetCellBackgroundColour(row, col, self._get_background_color(cell_info))
+
+    def _get_text_color(self, cell_info):
+        return self.TEXT_COLORS[cell_info.content_type]
+
+    def _get_background_color(self, cell_info):
+        if cell_info.has_error():
+            return self.BACKGROUND_COLORS['Error']
+        return self.BACKGROUND_COLORS[cell_info.cell_type]
 
     def _handle_comment_or_uncomment(self, row, col, value, previous):
         """If a row is (un)commented, that row need to be re-colorized"""

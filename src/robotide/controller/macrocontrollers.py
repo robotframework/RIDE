@@ -369,20 +369,17 @@ class StepController(object):
                 return CellType.UNKNOWN
         defaults = [arg for arg in args if '=' in arg]
         if col > len(args):
-            if self.get_value(col):
-                return CellType.ERROR
-            else:
-                return CellType.MANDATORY_EMPTY
+            return CellType.MANDATORY_EMPTY
         if col > len(args)-len(defaults):
             return CellType.OPTIONAL
-        if self.get_value(col):
-            return CellType.MANDATORY
-        return CellType.ERROR
+        return CellType.MANDATORY
 
     def _get_content_type(self, col):
         if self.is_commented():
             return ContentType.COMMENTED
         value = self.get_value(col)
+        if value.strip() == '':
+            return ContentType.EMPTY
         if self._is_variable(value):
             return ContentType.VARIABLE
         if self.is_user_keyword(value):

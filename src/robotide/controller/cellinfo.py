@@ -12,6 +12,15 @@ class CellInfo(object):
     def cell_type(self):
         return self._cell_type
 
+    def has_error(self):
+        if self.cell_type is CellType.MANDATORY \
+            and self.content_type is ContentType.EMPTY:
+            return True
+        if self.cell_type is CellType.MANDATORY_EMPTY \
+            and self.content_type is not ContentType.EMPTY:
+            return True
+        return False
+
 
 class ContentType:
     USER_KEYWORD = object()
@@ -21,9 +30,9 @@ class ContentType:
     STRING = object()
     EMPTY = object()
 
+
 class CellType:
     MANDATORY = object()
     OPTIONAL = object()
     UNKNOWN = object()
-    ERROR = object()
     MANDATORY_EMPTY = object()
