@@ -363,10 +363,10 @@ class StepController(object):
         info = self.get_keyword_info(self._step.keyword)
         if not info:
             return CellType.UNKNOWN
+        col -= len(self._step.assign)
         args = info.arguments
-        if len(args) > 0:
-            if args[-1].startswith('*'):
-                return CellType.UNKNOWN
+        if len(args) > 0 and col >= len(args) and args[-1].startswith('*'):
+            return CellType.UNKNOWN
         defaults = [arg for arg in args if '=' in arg]
         if col > len(args):
             return CellType.MANDATORY_EMPTY
