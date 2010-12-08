@@ -16,6 +16,7 @@ import wx
 
 from robotide import context
 from robotide.utils import RideHtmlWindow
+from robotide.widgets import ButtonWithHandler, Dialog, VerticalSizer
 
 
 class RidePopupWindow(wx.PopupWindow):
@@ -32,17 +33,28 @@ class RidePopupWindow(wx.PopupWindow):
     def hide(self):
         self.Show(False)
 
+    def _detach(self, event):
+        HtmlDialog(self._current_details).Show()
+        self.hide()
+
 
 class RideHtmlPopupWindow(RidePopupWindow):
 
     def __init__(self, parent, size):
         RidePopupWindow.__init__(self, parent, size)
+        panel = wx.Panel(self, size=size)
+        panel.SetSizer(wx.BoxSizer(wx.VERTICAL))
+        panel.SetBackgroundColour(context.POPUP_BACKGROUND)
+        btn = ButtonWithHandler(panel, 'detach', width=size[0],
+                                handler=self._detach)
+        panel.Sizer.Add(btn, border=3)
         self._details = RideHtmlWindow(self, size=size)
+        panel.Sizer.Add(self._details)
 
     def set_content(self, content):
-        color = ''.join([hex(item)[2:] for item in context.POPUP_BACKGROUND])
-        details = '<body bgcolor=#%s>%s</body>' % (color, content)
-        self._details.SetPage(details)
+        color = ''.join(hex(item)[2:] for item in context.POPUP_BACKGROUND)
+        self._current_details = '<body bgcolor=#%s>%s</body>' % (color, content)
+        self._details.SetPage(self._current_details)
 
 
 class RideToolTipWindow(RideHtmlPopupWindow):
@@ -69,6 +81,22 @@ class MacRidePopupWindow(wx.Window):
 
     def IsShown(self):
         return False
+
+
+class HtmlDialog(Dialog):
+
+    def __init__(self, content):
+        Dialog.__init__(self, '')
+        szr = VerticalSizer()
+        szr.add(ButtonWithHandler(self, 'Close', width=self.Size[0]))
+        szr.add(RideHtmlWindow(self, text=content, size=self.Size))
+        self.SetSizer(szr)
+
+    def OnKey(self, event):
+        pass
+
+    def OnClose(self, event):
+        self.Destroy()
 
 
 if wx.PlatformInfo[0] == '__WXMAC__':
