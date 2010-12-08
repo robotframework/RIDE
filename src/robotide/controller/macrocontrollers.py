@@ -121,6 +121,9 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
     def get_cell_info(self, row, col):
         return self.step(row).get_cell_info(col)
 
+    def get_keyword_info(self, kw_name):
+        return self.datafile_controller.keyword_info(kw_name)
+
     def is_user_keyword(self, value):
         return self.datafile_controller.is_user_keyword(value)
 
@@ -329,6 +332,11 @@ class StepController(object):
         if self._step.comment:
             self._step.comment = self._step.comment.strip()
 
+    def get_keyword_info(self, kw):
+        if not kw:
+            return None
+        return self.parent.get_keyword_info(kw)
+
     def __eq__(self, other):
         if self is other : return True
         return self._steps_are_equal(self._step, other._step)
@@ -352,6 +360,14 @@ class StepController(object):
         return CellInfo(content_type, cell_type)
 
     def _get_cell_type(self, col):
+        info = self.get_keyword_info(self._step.keyword)
+        if not info:
+            return CellType.UNKNOWN
+        if col > len(info.arguments):
+            if self.get_value(col):
+                return CellType.ERROR
+            else:
+                return CellType.MANDATORY_EMPTY
         return CellType.UNKNOWN
 
     def _get_content_type(self, col):
@@ -505,6 +521,9 @@ class ForLoopStepController(StepController):
     def _set_raw_steps(self, steps):
         self._step.steps = steps
 
+    def _get_cell_type(self, col):
+        return CellType.UNKNOWN
+
     @property
     def steps(self):
         return [IntendedStepController(self, sub_step) for sub_step in self._get_raw_steps()]
@@ -565,7 +584,15 @@ class IntendedStepController(StepController):
     def _get_cell_type(self, col):
         if col == 0:
             return CellType.MANDATORY_EMPTY
-        return StepController._get_cell_type(self, col)
+        info = self.get_keyword_info(self._step.keyword)
+        if not info:
+            return CellType.UNKNOWN
+        if col > len(info.arguments)+1:
+            if self.get_value(col):
+                return CellType.ERROR
+            else:
+                return CellType.MANDATORY_EMPTY
+        return CellType.UNKNOWN
 
     def comment(self):
         self._step.__init__(['Comment'] + self._step.as_list())

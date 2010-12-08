@@ -28,7 +28,8 @@ class Colorizer(object):
 
     BACKGROUND_COLORS = {
     CellType.UNKNOWN: 'white',
-    CellType.MANDATORY_EMPTY: 'grey'
+    CellType.MANDATORY_EMPTY: 'grey',
+    CellType.ERROR: 'red'
     }
 
     def __init__(self, grid, controller):
@@ -36,10 +37,11 @@ class Colorizer(object):
         self._controller = controller
 
     def colorize(self, row, col, value, previous):
-        self._colorize_cell(row, col, value)
+        for c in range(0, self._grid.NumberCols):
+            self._colorize_cell(row, c)
         self._handle_comment_or_uncomment(row, col, value, previous)
 
-    def _colorize_cell(self, row, col, value):
+    def _colorize_cell(self, row, col):
         cell_info = self._controller.get_cell_info(row, col)
         text_color = self.TEXT_COLORS[cell_info.content_type]
         self._grid.SetCellTextColour(row, col, text_color)

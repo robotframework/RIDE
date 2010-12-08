@@ -97,6 +97,10 @@ class _KeywordInfo(ItemInfo):
         self.shortdoc = self.doc.splitlines()[0] if self.doc else ''
         self.item = item
 
+    @property
+    def arguments(self):
+        return self._parse_args(self.item)
+
     def _details(self, item):
         return 'Source: %s &lt;%s&gt;<br><br>Arguments: %s<br><br>%s' % \
                 (self._source(item), self._type,
