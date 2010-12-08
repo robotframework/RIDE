@@ -42,14 +42,16 @@ class RideHtmlPopupWindow(RidePopupWindow):
 
     def __init__(self, parent, size):
         RidePopupWindow.__init__(self, parent, size)
-        panel = wx.Panel(self, size=size)
-        panel.SetSizer(wx.BoxSizer(wx.VERTICAL))
+        panel = wx.Panel(self)
         panel.SetBackgroundColour(context.POPUP_BACKGROUND)
+        szr = VerticalSizer()
         btn = ButtonWithHandler(panel, 'detach', width=size[0],
                                 handler=self._detach)
-        panel.Sizer.Add(btn, border=3)
+        szr.add(btn)
         self._details = RideHtmlWindow(self, size=size)
-        panel.Sizer.Add(self._details)
+        szr.add(self._details)
+        panel.SetSizer(szr)
+        panel.Fit()
 
     def set_content(self, content):
         color = ''.join(hex(item)[2:] for item in context.POPUP_BACKGROUND)
