@@ -363,12 +363,21 @@ class StepController(object):
         info = self.get_keyword_info(self._step.keyword)
         if not info:
             return CellType.UNKNOWN
-        if col > len(info.arguments):
+        args = info.arguments
+        if len(args) > 0:
+            if args[-1].startswith('*'):
+                return CellType.UNKNOWN
+        defaults = [arg for arg in args if '=' in arg]
+        if col > len(args):
             if self.get_value(col):
                 return CellType.ERROR
             else:
                 return CellType.MANDATORY_EMPTY
-        return CellType.UNKNOWN
+        if col > len(args)-len(defaults):
+            return CellType.OPTIONAL
+        if self.get_value(col):
+            return CellType.MANDATORY
+        return CellType.ERROR
 
     def _get_content_type(self, col):
         if self.is_commented():

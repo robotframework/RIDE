@@ -27,9 +27,11 @@ class Colorizer(object):
     }
 
     BACKGROUND_COLORS = {
-    CellType.UNKNOWN: 'white',
-    CellType.MANDATORY_EMPTY: 'grey',
-    CellType.ERROR: 'red'
+    CellType.UNKNOWN: '#FFFFFF',
+    CellType.MANDATORY: '#FFFFFF',
+    CellType.MANDATORY_EMPTY: '#C0C0C0',
+    CellType.ERROR: '#CC3300',
+    CellType.OPTIONAL: '#F0F0F0'
     }
 
     def __init__(self, grid, controller):
