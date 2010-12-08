@@ -90,7 +90,8 @@ class HtmlDialog(Dialog):
     def __init__(self, content):
         Dialog.__init__(self, '')
         szr = VerticalSizer()
-        szr.add(RideHtmlWindow(self, text=content, size=self.Size))
+        szr.add_expanding(RideHtmlWindow(self, text=content,
+                                         size=self.Size))
         self.SetSizer(szr)
 
     def OnKey(self, event):
