@@ -16,8 +16,6 @@ import webbrowser
 import wx
 from wx.html import HtmlWindow
 
-from robotide import context
-
 
 class RideHtmlWindow(HtmlWindow):
 

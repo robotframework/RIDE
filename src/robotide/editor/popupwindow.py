@@ -45,11 +45,11 @@ class RideHtmlPopupWindow(RidePopupWindow):
         panel = wx.Panel(self)
         panel.SetBackgroundColour(context.POPUP_BACKGROUND)
         szr = VerticalSizer()
-        btn = ButtonWithHandler(panel, 'detach', width=size[0],
+        btn = ButtonWithHandler(panel, 'Detach', width=size[0],
                                 handler=self._detach)
+        self._details = RideHtmlWindow(self, size=(size[0], size[1]-25))
+        szr.add_expanding(self._details)
         szr.add(btn)
-        self._details = RideHtmlWindow(self, size=size)
-        szr.add(self._details)
         panel.SetSizer(szr)
         panel.Fit()
 
@@ -90,15 +90,11 @@ class HtmlDialog(Dialog):
     def __init__(self, content):
         Dialog.__init__(self, '')
         szr = VerticalSizer()
-        szr.add(ButtonWithHandler(self, 'Close', width=self.Size[0]))
         szr.add(RideHtmlWindow(self, text=content, size=self.Size))
         self.SetSizer(szr)
 
     def OnKey(self, event):
         pass
-
-    def OnClose(self, event):
-        self.Destroy()
 
 
 if wx.PlatformInfo[0] == '__WXMAC__':
