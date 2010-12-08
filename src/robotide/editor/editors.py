@@ -25,7 +25,7 @@ from robotide.robotapi import (ResourceFile, TestCaseFile, TestDataDirectory,
 
 from kweditor import KeywordEditor
 from listeditor import ListEditor
-from popupwindow import RideToolTipWindow
+from popupwindow import Tooltip
 from editordialogs import (EditorDialog, DocumentationDialog, MetadataDialog,
                            ScalarVariableDialog, ListVariableDialog,
                            LibraryDialog, ResourceDialog, VariablesDialog)
@@ -226,7 +226,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
                                       context.SETTING_ROW_HEIGTH)))
         self._value_display = self._create_value_display()
         self.update_value()
-        self._tooltip = RideToolTipWindow(self, (500, 350))
+        self._tooltip = self._get_tooltip()
         sizer.Add(self._value_display, 1, wx.EXPAND)
         sizer.Add(ButtonWithHandler(self, 'Edit'), flag=wx.LEFT|wx.RIGHT, border=5)
         sizer.Add(ButtonWithHandler(self, 'Clear'))
@@ -245,6 +245,9 @@ class SettingEditor(wx.Panel, RideEventHandler):
         ctrl.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
         ctrl.Bind(wx.EVT_KEY_DOWN, self.OnKey)
         return ctrl
+
+    def _get_tooltip(self):
+        return Tooltip(self, (500, 350), autohide=True)
 
     def OnKey(self, event):
         self._tooltip.hide()
@@ -304,14 +307,14 @@ class SettingEditor(wx.Panel, RideEventHandler):
 
     def OnPopupTimer(self, event):
         if self.Parent.tooltip_allowed(self):
-            details = self._get_details_for_tooltip()
+            details, title = self._get_details_for_tooltip()
             if details:
-                self._tooltip.set_content(details)
+                self._tooltip.set_content(details, title)
                 self._tooltip.show_at(self._tooltip_position())
 
     def _get_details_for_tooltip(self):
         kw = self._controller.keyword_name
-        return self.plugin.get_keyword_details(kw)
+        return self.plugin.get_keyword_details(kw), kw
 
     def _tooltip_position(self):
         ms = wx.GetMouseState()
@@ -387,8 +390,11 @@ class DocumentationEditor(SettingEditor):
     def update_value(self):
         self._value_display.SetPage(self._controller.visible_value)
 
+    def _get_tooltip(self):
+        return Tooltip(self, (500, 350), detachable=False, autohide=True)
+
     def _get_details_for_tooltip(self):
-        return self._controller.visible_value
+        return self._controller.visible_value, None
 
     def _crete_editor_dialog(self):
         return DocumentationDialog(self._datafile,

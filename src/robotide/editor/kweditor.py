@@ -26,7 +26,7 @@ from robotide.widgets import PopupMenu, PopupMenuItems
 from grid import GridEditor
 from editordialogs import UserKeywordNameDialog
 from contentassist import ExpandingContentAssistTextCtrl
-from popupwindow import RideHtmlPopupWindow
+from popupwindow import Tooltip
 from robotide.publish.messages import RideItemStepsChanged
 from robotide.editor.editordialogs import ScalarVariableDialog,\
     ListVariableDialog
@@ -49,7 +49,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._configure_grid()
             self._controller = controller
             PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
-            self._tooltip = RideHtmlPopupWindow(self, (450, 300))
+            self._tooltip = Tooltip(self, (450, 300))
             self._marked_cell = None
             self._idle_mouse_cell = self._no_cell
             self._active_row = self._active_col = None
@@ -340,7 +340,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         details = self._plugin.get_keyword_details(value)
         if not details:
             return
-        self._tooltip.set_content(details)
+        self._tooltip.set_content(details, value)
         point = self.CellToRect(cell.Row, cell.Col).GetTopRight()
         point.x += self.GetRowLabelSize() + 5
         point = self.CalcScrolledPosition(point)

@@ -18,7 +18,7 @@ from wx.lib.expando import ExpandoTextCtrl
 
 from robotide import context
 
-from popupwindow import RidePopupWindow, RideHtmlPopupWindow
+from popupwindow import RidePopupWindow, Tooltip
 
 
 _PREFERRED_POPUP_SIZE = (450, 200)
@@ -123,7 +123,7 @@ class ContentAssistPopup(object):
         self._parent = parent
         self._plugin = plugin
         self._main_popup = RidePopupWindow(parent, _PREFERRED_POPUP_SIZE)
-        self._details_popup = RideHtmlPopupWindow(parent, _PREFERRED_POPUP_SIZE)
+        self._details_popup = Tooltip(parent, _PREFERRED_POPUP_SIZE)
         self._selection = -1
         self._list = ContentAssistList(self._main_popup, self.OnListItemSelected,
                                        self.OnListItemActivated)
