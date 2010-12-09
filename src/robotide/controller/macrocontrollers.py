@@ -369,15 +369,16 @@ class StepController(object):
         if not info:
             return CellType.UNKNOWN
         args = info.arguments
-        if len(args) > 0:
-            if col >= len(args) and self._last_argument_is_varargs(args):
+        args_amount = len(args)
+        if args_amount > 0:
+            if col >= args_amount and self._last_argument_is_varargs(args):
                 return CellType.OPTIONAL
             if col > 0 and self._has_list_var_value_before(col-1):
                 return CellType.UNKNOWN
-        if col > len(args):
+        if col > args_amount:
             return CellType.MANDATORY_EMPTY
         defaults = [arg for arg in args if '=' in arg]
-        if col > len(args)-len(defaults):
+        if col > args_amount-len(defaults):
             return CellType.OPTIONAL
         return CellType.MANDATORY
 
@@ -478,13 +479,19 @@ class StepController(object):
         self.change(0, 'Comment')
 
     def _is_commented(self, col):
+        if self._has_comment_keyword():
+            return col > self._keyword_column
         for i in range(min(col+1, len(self.as_list()))):
-            cell_val = self.get_value(i).strip().lower()
-            if i == 0 and cell_val == "comment":
-                return True
-            if cell_val.startswith('#'):
+            if self.get_value(i).strip().startswith('#'):
                 return True
         return False
+
+    @property
+    def _keyword_column(self):
+        return 0
+
+    def _has_comment_keyword(self):
+        return self.keyword.strip().lower() == "comment"
 
     def uncomment(self):
         if self._step.keyword == 'Comment':
@@ -548,6 +555,9 @@ class ForLoopStepController(StepController):
 
     def _remove_whitespace_from_comment(self):
         pass
+
+    def _has_comment_keyword(self):
+        return False
 
     def _get_raw_steps(self):
         return self._step.steps
@@ -620,6 +630,10 @@ class ForLoopStepController(StepController):
 
 
 class IntendedStepController(StepController):
+
+    @property
+    def _keyword_column(self):
+        return 1
 
     def as_list(self):
         return ['']+self._step.as_list()

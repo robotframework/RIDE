@@ -14,7 +14,7 @@ class CellInfo(object):
 
     def has_error(self):
         if self.cell_type is CellType.MANDATORY \
-            and self.content_type is ContentType.EMPTY:
+            and self.content_type in [ContentType.EMPTY, ContentType.COMMENTED]:
             return True
         if self.cell_type is CellType.MANDATORY_EMPTY \
             and self.content_type not in [ContentType.EMPTY, ContentType.COMMENTED]:
