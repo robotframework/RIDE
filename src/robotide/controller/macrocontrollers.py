@@ -369,14 +369,28 @@ class StepController(object):
         if not info:
             return CellType.UNKNOWN
         args = info.arguments
-        if len(args) > 0 and col >= len(args) and args[-1].startswith('*'):
-            return CellType.OPTIONAL
+        if len(args) > 0:
+            if col >= len(args) and self._last_argument_is_varargs(args):
+                return CellType.OPTIONAL
+            if col > 0 and self._has_list_var_value_before(col-1):
+                return CellType.UNKNOWN
         if col > len(args):
             return CellType.MANDATORY_EMPTY
         defaults = [arg for arg in args if '=' in arg]
         if col > len(args)-len(defaults):
             return CellType.OPTIONAL
         return CellType.MANDATORY
+
+    def _last_argument_is_varargs(self, args):
+        return args[-1].startswith('*')
+
+    def _has_list_var_value_before(self, arg_index):
+        for idx, value in enumerate(self.args):
+            if idx > arg_index:
+                return False
+            if self._is_list_variable(value):
+                return True
+        return False
 
     def _get_content_type(self, col):
         if self._is_commented(col):
@@ -394,6 +408,9 @@ class StepController(object):
 
     def _is_variable(self, value):
         return re.match('[\$\@]{.*?}=?', value)
+
+    def _is_list_variable(self, value):
+        return re.match('\@{.*}', value)
 
     def is_user_keyword(self, value):
         return self.parent.is_user_keyword(value)
