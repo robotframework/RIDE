@@ -40,13 +40,27 @@ class Colorizer(object):
         self._grid = grid
         self._controller = controller
 
-    def colorize(self, row, col, value, previous):
-        for c in range(0, self._grid.NumberCols):
-            self._colorize_cell(row, c)
-        self._handle_comment_or_uncomment(row, col, value, previous)
+    def colorize(self):
+        for row in range(0, self._grid.NumberRows):
+            for col in range(0, self._grid.NumberCols):
+                self._colorize_cell(row, col)
+
+    def handle_comment_or_uncomment(self, row, col, value, previous):
+        """If a row is (un)commented, that row need to be re-colorized"""
+        value, previous = value.strip().lower(), previous.strip().lower()
+        if not self._may_be_comment_or_uncomment(col, value, previous):
+            return
+        if value == "comment" or previous == 'comment':
+            for col in range(0, self._grid.NumberCols):
+                self._colorize_cell(row, col)
+
+    def _may_be_comment_or_uncomment(self, col, value, previous):
+        return col == 0 and value != previous
 
     def _colorize_cell(self, row, col):
         cell_info = self._controller.get_cell_info(row, col)
+        if cell_info is None:
+            return
         self._grid.SetCellTextColour(row, col, self._get_text_color(cell_info))
         self._grid.SetCellBackgroundColour(row, col, self._get_background_color(cell_info))
 
@@ -58,14 +72,3 @@ class Colorizer(object):
             return self.ERROR_COLOR
         return self.BACKGROUND_COLORS[cell_info.cell_type]
 
-    def _handle_comment_or_uncomment(self, row, col, value, previous):
-        """If a row is (un)commented, that row need to be re-colorized"""
-        value, previous = value.strip().lower(), previous.strip().lower()
-        if not self._may_be_comment_or_uncomment(col, value, previous):
-            return
-        if value == "comment" or previous == 'comment':
-            for col in range(0, self._grid.NumberCols):
-                self._colorize_cell(row, col, value)
-
-    def _may_be_comment_or_uncomment(self, col, value, previous):
-        return col == 0 and value != previous

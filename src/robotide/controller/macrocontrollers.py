@@ -119,6 +119,8 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self.datafile_controller.update_namespace()
 
     def get_cell_info(self, row, col):
+        if len(self.data.steps) <= row:
+            return None
         return self.step(row).get_cell_info(col)
 
     def get_keyword_info(self, kw_name):

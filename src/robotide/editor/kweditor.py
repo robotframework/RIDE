@@ -83,7 +83,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         previous = self.GetCellValue(row, col) \
                 if (row < self.NumberRows and col < self.NumberCols) else ''
         GridEditor.write_cell(self, row, col, value, update_history)
-        self._colorizer.colorize(row, col, value, previous)
+        self._colorizer.handle_comment_or_uncomment(row, col, value, previous)
         RideGridCellChanged(cell=(row, col), value=value, previous=previous,
                             grid=self).publish()
 
@@ -149,6 +149,10 @@ class KeywordEditor(GridEditor, RideEventHandler):
             data.append(self._format_comments(step.as_list()))
         self.ClearGrid()
         self._write_data(data, update_history=False)
+        self._colorize_grid()
+
+    def _colorize_grid(self):
+        self._colorizer.colorize()
 
     def _format_comments(self, data):
         # TODO: This should be moved to robot.model
