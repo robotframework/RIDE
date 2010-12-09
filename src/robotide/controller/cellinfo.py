@@ -17,7 +17,7 @@ class CellInfo(object):
             and self.content_type is ContentType.EMPTY:
             return True
         if self.cell_type is CellType.MANDATORY_EMPTY \
-            and self.content_type is not ContentType.EMPTY:
+            and self.content_type not in [ContentType.EMPTY, ContentType.COMMENTED]:
             return True
         return False
 
