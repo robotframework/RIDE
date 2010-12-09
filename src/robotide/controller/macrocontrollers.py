@@ -395,9 +395,9 @@ class StepController(object):
     def _get_content_type(self, col):
         if self._is_commented(col):
             return ContentType.COMMENTED
-        value = self.get_value(col)
-        if value.strip() == '':
+        if self._get_last_none_empty_col_idx() < col:
             return ContentType.EMPTY
+        value = self.get_value(col)
         if self._is_variable(value):
             return ContentType.VARIABLE
         if self.is_user_keyword(value):
@@ -405,6 +405,13 @@ class StepController(object):
         if self.is_library_keyword(value):
             return ContentType.LIBRARY_KEYWORD
         return ContentType.STRING
+
+    def _get_last_none_empty_col_idx(self):
+        values = self.as_list()
+        for i in reversed(range(len(values))):
+            if values[i].strip() != '':
+                return i
+        return None
 
     def _is_variable(self, value):
         return re.match('[\$\@]{.*?}=?', value)
@@ -621,6 +628,11 @@ class IntendedStepController(StepController):
         if col == 0:
             return CellType.MANDATORY_EMPTY
         return StepController._get_cell_type(self, col-1)
+
+    def _get_content_type(self, col):
+        if col == 0:
+            return ContentType.EMPTY
+        return StepController._get_content_type(self, col)
 
     def comment(self):
         self._step.__init__(['Comment'] + self._step.as_list())
