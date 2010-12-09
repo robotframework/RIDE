@@ -371,9 +371,9 @@ class StepController(object):
         args = info.arguments
         if len(args) > 0 and col >= len(args) and args[-1].startswith('*'):
             return CellType.OPTIONAL
-        defaults = [arg for arg in args if '=' in arg]
         if col > len(args):
             return CellType.MANDATORY_EMPTY
+        defaults = [arg for arg in args if '=' in arg]
         if col > len(args)-len(defaults):
             return CellType.OPTIONAL
         return CellType.MANDATORY
