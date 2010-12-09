@@ -1,6 +1,6 @@
 import unittest
 import datafilereader
-from robotide.controller.commands import ChangeCellValue
+from robotide.controller.commands import ChangeCellValue, CommentRow
 from robot.utils.asserts import assert_equals, assert_true, assert_false,\
     assert_none
 from robotide.controller.cellinfo import CellType, ContentType, CellInfo
@@ -56,6 +56,28 @@ class TestCellInfo(unittest.TestCase):
         self._verify_cell_info(0, 1, ContentType.VARIABLE, CellType.UNKNOWN)
         self._verify_cell_info(0, 2, ContentType.EMPTY, CellType.UNKNOWN)
         self._verify_cell_info(0, 3, ContentType.EMPTY, CellType.UNKNOWN)
+
+    def test_empty_column_before_string_is_string(self):
+        self.test.execute(ChangeCellValue(0, 0, self.keyword1.name))
+        self.test.execute(ChangeCellValue(0, 2, 'something'))
+        self._verify_cell_info(0, 1, ContentType.STRING, CellType.MANDATORY)
+
+    def test_comment(self):
+        self.test.execute(ChangeCellValue(0, 0, self.keyword1.name))
+        self.test.execute(ChangeCellValue(0, 1, '# I have something to say'))
+        self.test.execute(ChangeCellValue(0, 2, 'to you my friend'))
+        self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.MANDATORY)
+        self._verify_cell_info(0, 1, ContentType.COMMENTED, CellType.MANDATORY)
+        self._verify_cell_info(0, 2, ContentType.COMMENTED, CellType.OPTIONAL)
+
+    def test_comment_keyword(self):
+        self.test.execute(ChangeCellValue(0, 0, 'I have nothing to say'))
+        self.test.execute(ChangeCellValue(0, 1, 'to the void of darkness'))
+        self.test.step(0).comment()
+        self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.MANDATORY)
+        self._verify_cell_info(0, 1, ContentType.COMMENTED, CellType.OPTIONAL)
+        self._verify_cell_info(0, 2, ContentType.COMMENTED, CellType.OPTIONAL)
+        self._verify_cell_info(0, 3, ContentType.COMMENTED, CellType.OPTIONAL)
 
     def test_keyword_with_varargs(self):
         self.test.execute(ChangeCellValue(0, 0, self.keyword2.name))
