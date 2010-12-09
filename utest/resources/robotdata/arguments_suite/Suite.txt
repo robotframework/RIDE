@@ -5,3 +5,6 @@ Keissi
 KW1
     [Arguments]  ${mandatory}  ${optional}=
 
+KW2
+    [Arguments]  @{rest}
+
