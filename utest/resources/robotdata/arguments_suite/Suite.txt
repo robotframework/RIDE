@@ -1,0 +1,7 @@
+*** Test Cases ***
+Keissi
+
+*** Keywords ***
+KW1
+    [Arguments]  ${mandatory}  ${optional}=
+
