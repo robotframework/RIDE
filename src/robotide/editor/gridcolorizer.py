@@ -18,6 +18,8 @@ from robotide.controller.cellinfo import ContentType, CellType
 class Colorizer(object):
     """Colorizes cells in the keyword editor"""
 
+    ERROR_COLOR = '#FF9385'
+
     TEXT_COLORS = {
     ContentType.COMMENTED: 'firebrick',
     ContentType.USER_KEYWORD: 'blue',
@@ -31,8 +33,7 @@ class Colorizer(object):
     CellType.UNKNOWN: '#EEFFFF',
     CellType.MANDATORY: '#FFFFFF',
     CellType.MANDATORY_EMPTY: '#C0C0C0',
-    CellType.OPTIONAL: '#F5F5F5',
-    'Error': '#FF9385'
+    CellType.OPTIONAL: '#F5F5F5'
     }
 
     def __init__(self, grid, controller):
@@ -54,7 +55,7 @@ class Colorizer(object):
 
     def _get_background_color(self, cell_info):
         if cell_info.has_error():
-            return self.BACKGROUND_COLORS['Error']
+            return self.ERROR_COLOR
         return self.BACKGROUND_COLORS[cell_info.cell_type]
 
     def _handle_comment_or_uncomment(self, row, col, value, previous):
