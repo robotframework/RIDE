@@ -362,10 +362,12 @@ class StepController(object):
         return CellInfo(content_type, cell_type)
 
     def _get_cell_type(self, col):
+        col -= len(self._step.assign)
+        if col < 0:
+            return CellType.MANDATORY
         info = self.get_keyword_info(self._step.keyword)
         if not info:
             return CellType.UNKNOWN
-        col -= len(self._step.assign)
         args = info.arguments
         if len(args) > 0 and col >= len(args) and args[-1].startswith('*'):
             return CellType.OPTIONAL

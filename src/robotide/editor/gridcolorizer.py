@@ -30,8 +30,8 @@ class Colorizer(object):
     }
 
     BACKGROUND_COLORS = {
-    CellType.UNKNOWN: '#EEFFFF',
-    CellType.MANDATORY: '#FFFFFF',
+    CellType.UNKNOWN: '#FFFFFF',
+    CellType.MANDATORY: '#F8FFFF',
     CellType.MANDATORY_EMPTY: '#C0C0C0',
     CellType.OPTIONAL: '#F5F5F5'
     }
