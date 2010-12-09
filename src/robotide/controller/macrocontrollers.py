@@ -119,7 +119,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self.datafile_controller.update_namespace()
 
     def get_cell_info(self, row, col):
-        if len(self.data.steps) <= row:
+        if len(self.steps) <= row:
             return None
         return self.step(row).get_cell_info(col)
 
@@ -532,7 +532,16 @@ class ForLoopStepController(StepController):
         self._step.steps = steps
 
     def _get_cell_type(self, col):
-        return CellType.UNKNOWN
+        until_range = len(self._step.vars)+1
+        if col <= until_range:
+            return CellType.MANDATORY
+        if not self._step.range:
+            return CellType.OPTIONAL
+        if col <= until_range+2:
+            return CellType.MANDATORY
+        if col == until_range+3:
+            return CellType.OPTIONAL
+        return CellType.MANDATORY_EMPTY
 
     @property
     def steps(self):
