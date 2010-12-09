@@ -83,7 +83,6 @@ class KeywordEditor(GridEditor, RideEventHandler):
         previous = self.GetCellValue(row, col) \
                 if (row < self.NumberRows and col < self.NumberCols) else ''
         GridEditor.write_cell(self, row, col, value, update_history)
-        self._colorizer.handle_comment_or_uncomment(row, col, value, previous)
         RideGridCellChanged(cell=(row, col), value=value, previous=previous,
                             grid=self).publish()
 

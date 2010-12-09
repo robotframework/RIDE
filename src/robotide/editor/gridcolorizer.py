@@ -45,18 +45,6 @@ class Colorizer(object):
             for col in range(0, self._grid.NumberCols):
                 self._colorize_cell(row, col)
 
-    def handle_comment_or_uncomment(self, row, col, value, previous):
-        """If a row is (un)commented, that row need to be re-colorized"""
-        value, previous = value.strip().lower(), previous.strip().lower()
-        if not self._may_be_comment_or_uncomment(col, value, previous):
-            return
-        if value == "comment" or previous == 'comment':
-            for col in range(0, self._grid.NumberCols):
-                self._colorize_cell(row, col)
-
-    def _may_be_comment_or_uncomment(self, col, value, previous):
-        return col == 0 and value != previous
-
     def _colorize_cell(self, row, col):
         cell_info = self._controller.get_cell_info(row, col)
         if cell_info is None:

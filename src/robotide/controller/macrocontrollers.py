@@ -377,7 +377,7 @@ class StepController(object):
         return CellType.MANDATORY
 
     def _get_content_type(self, col):
-        if self.is_commented():
+        if self._is_commented(col):
             return ContentType.COMMENTED
         value = self.get_value(col)
         if value.strip() == '':
@@ -451,8 +451,8 @@ class StepController(object):
         self.shift_right(0)
         self.change(0, 'Comment')
 
-    def is_commented(self):
-        for i in range(len(self.as_list())):
+    def _is_commented(self, col):
+        for i in range(min(col+1, len(self.as_list()))):
             cell_val = self.get_value(i).strip().lower()
             if i == 0 and cell_val == "comment":
                 return True
