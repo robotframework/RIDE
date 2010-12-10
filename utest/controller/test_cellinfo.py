@@ -1,6 +1,6 @@
 import unittest
 import datafilereader
-from robotide.controller.commands import ChangeCellValue, CommentRow
+from robotide.controller.commands import ChangeCellValue
 from robot.utils.asserts import assert_equals, assert_true, assert_false,\
     assert_none
 from robotide.controller.cellinfo import CellType, ContentType, CellInfo
