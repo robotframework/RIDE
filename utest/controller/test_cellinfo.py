@@ -86,6 +86,13 @@ class TestCellInfo(unittest.TestCase):
         self._verify_string_change(0, 2, CellType.OPTIONAL)
         self._verify_string_change(0, 3, CellType.OPTIONAL)
 
+    def test_variable_setting(self):
+        self.test.execute(ChangeCellValue(0, 0, '${my cool var}='))
+        self._verify_cell_info(0, 0, ContentType.VARIABLE, CellType.MANDATORY)
+        self.test.execute(ChangeCellValue(0, 1, 'Set Variable'))
+        self._verify_cell_info(0, 1, ContentType.LIBRARY_KEYWORD, CellType.MANDATORY)
+        self._verify_string_change(0, 2, CellType.OPTIONAL)
+
     def _verify_string_change(self, row, col, celltype):
         self._verify_cell_info(row, col, ContentType.EMPTY, celltype)
         self.test.execute(ChangeCellValue(row, col, 'diipadaapa'))

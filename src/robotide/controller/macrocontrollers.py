@@ -491,6 +491,8 @@ class StepController(object):
         return 0
 
     def _has_comment_keyword(self):
+        if self.keyword is None:
+            return False
         return self.keyword.strip().lower() == "comment"
 
     def uncomment(self):
