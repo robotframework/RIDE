@@ -54,6 +54,10 @@ class Process(object):
             raise AttributeError('Stopping process is possible only with '
                                  'Python 2.6 or newer')
 
+    def wait(self):
+        if self._process is not None:
+            self._process.wait()
+
     def get_output(self, wait_until_finished=False):
         """Returns the output produced by the process.
 

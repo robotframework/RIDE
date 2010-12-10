@@ -72,8 +72,7 @@ class TestRunAnything(unittest.TestCase):
         return runner
 
     def _wait_until_finished(self):
-        while not self.runner._process.is_finished():
-            time.sleep(0.1)
+        self.runner._process.wait()
         self.runner.OnTimer()
 
     def _sleep_and_log_output(self, amount):
