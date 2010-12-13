@@ -113,7 +113,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
     def update_namespace(self):
         self.datafile_controller.update_namespace()
 
-    def get_cell_info(self, row, col, selection_content):
+    def get_cell_info(self, row, col, selection_content=None):
         if len(self.steps) <= row:
             return None
         return self.step(row).get_cell_info(col, selection_content)
@@ -358,7 +358,7 @@ class StepController(object):
 
     def _get_cell_type(self, col, selection_content):
         # TODO: refactor
-        if self._selection_matches(selection_content, self.get_value(col)):
+        if selection_content and self._selection_matches(selection_content, self.get_value(col)):
             return CellType.HIGHLIGHTED
         col -= len(self._step.assign)
         if col < 0:
