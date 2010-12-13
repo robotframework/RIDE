@@ -533,14 +533,13 @@ class StepController(object):
         self.parent.data.steps.remove(self._step)
 
     def move_up(self):
-        idx = self._index()
+        previous_step = self.parent.step(self._index()-1)
         self.remove()
-        self.parent.add_step(idx-1, self._step)
+        previous_step.insert_before(self._step)
 
     def move_down(self):
-        idx = self._index()
-        self.remove()
-        self.parent.add_step(idx+1, self._step)
+        next_step = self.parent.step(self._index()+1)
+        next_step.move_up()
 
     def _index(self):
         return self.parent._get_raw_steps().index(self._step)
@@ -562,6 +561,14 @@ class StepController(object):
 
 
 class ForLoopStepController(StepController):
+
+    def move_up(self):
+        previous_step = self.parent.step(self._index()-1)
+        self._get_raw_steps().insert(0, previous_step._step)
+        previous_step.remove()
+
+    def step(self, index):
+        return self.parent.step(index)
 
     def _remove_whitespace_from_comment(self):
         pass
