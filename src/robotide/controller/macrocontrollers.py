@@ -99,15 +99,10 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self.data.steps[index] = new_step
 
     def move_step_up(self, index):
-        self._move_step(index, index-1)
+        self.step(index).move_up()
 
     def move_step_down(self, index):
-        self._move_step(index, index+1)
-
-    def _move_step(self, source, target):
-        source_step = self.step(source)
-        self.remove_step(source)
-        self.add_step(target, source_step._step)
+        self.step(index).move_down()
 
     def set_steps(self, steps):
         self.data.steps = steps
@@ -519,7 +514,7 @@ class StepController(object):
 
     def insert_before(self, new_step):
         steps = self.parent._get_raw_steps()
-        index = self.parent._get_raw_steps().index(self._step)
+        index = self._index()
         self.parent._set_raw_steps(steps[:index]+[new_step]+steps[index:])
 
     def remove_empty_columns_from_end(self):
@@ -536,6 +531,19 @@ class StepController(object):
 
     def remove(self):
         self.parent.data.steps.remove(self._step)
+
+    def move_up(self):
+        idx = self._index()
+        self.remove()
+        self.parent.add_step(idx-1, self._step)
+
+    def move_down(self):
+        idx = self._index()
+        self.remove()
+        self.parent.add_step(idx+1, self._step)
+
+    def _index(self):
+        return self.parent._get_raw_steps().index(self._step)
 
     def has_only_comment(self):
         non_empty_cells = [cell for cell in self._step.as_list() if cell.strip() != '']
@@ -611,6 +619,7 @@ class ForLoopStepController(StepController):
         index = steps.index(self._step)
         steps.remove(self._step)
         self.parent.data.steps = steps[:index] + self._get_raw_steps() + steps[index:]
+        self._step.steps = []
 
     def _represent_valid_for_loop_header(self, cells):
         if cells[0] != self.as_list()[0]:
