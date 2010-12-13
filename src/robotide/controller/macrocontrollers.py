@@ -573,6 +573,13 @@ class ForLoopStepController(StepController):
         self._get_raw_steps().insert(0, previous_step._step)
         previous_step.remove()
 
+    def move_down(self):
+        next_step = self.step(self._index()+1)
+        next_step.move_up()
+
+    def insert_after(self, new_step):
+        self._get_raw_steps().insert(0, new_step)
+
     def step(self, index):
         return self.parent.step(index)
 

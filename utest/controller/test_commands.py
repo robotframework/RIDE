@@ -393,6 +393,16 @@ class RowMovingTest(TestCaseCommandTest):
                                 FOR_LOOP_STEP2,
                                 STEP_AFTER_FOR_LOOP)
 
+    def test_move_down_step_before_for_loop_header(self):
+        self._exec(MoveRowsDown([self._data_row(STEP_WITH_COMMENT)]))
+        self._assert_step_order(STEP1,
+                                STEP2,
+                                FOR_LOOP_HEADER,
+                                '  '+STEP_WITH_COMMENT,
+                                FOR_LOOP_STEP1,
+                                FOR_LOOP_STEP2,
+                                STEP_AFTER_FOR_LOOP)
+
     def test_move_up_step_after_for_loop(self):
         self._exec(MoveRowsUp([self._data_row(STEP_AFTER_FOR_LOOP)]))
         self._assert_step_order(STEP1,
@@ -412,6 +422,16 @@ class RowMovingTest(TestCaseCommandTest):
                                 FOR_LOOP_STEP1,
                                 STEP_AFTER_FOR_LOOP,
                                 FOR_LOOP_STEP2[2:])
+
+    def test_move_down_for_loop_header(self):
+        self._exec(MoveRowsDown([self._data_row(FOR_LOOP_HEADER)]))
+        self._assert_step_order(STEP1,
+                                STEP2,
+                                STEP_WITH_COMMENT,
+                                FOR_LOOP_STEP1[2:],
+                                FOR_LOOP_HEADER,
+                                FOR_LOOP_STEP2,
+                                STEP_AFTER_FOR_LOOP,)
 
     def test_undo_row_up(self):
         self._exec(MoveRowsUp([1]))
