@@ -43,24 +43,13 @@ class Colorizer(object):
         self._controller = controller
 
     def colorize(self):
-        selection_matcher = self._get_selection_matcher()
+        selection_content = self._grid.get_single_selection_content()
         for row in range(0, self._grid.NumberRows):
             for col in range(0, self._grid.NumberCols):
-                self._colorize_cell(row, col, selection_matcher)
+                self._colorize_cell(row, col, selection_content)
 
-    def _get_selection_matcher(self):
-        cells = self._grid.get_selected_content()
-        if len(cells) != 1 or len(cells[0]) != 1:
-            return lambda x: False
-        cell_content = utils.normalize(cells[0][0])
-        if not cell_content:
-            return lambda x: False
-        def matches(other):
-            return cell_content==utils.normalize(other)
-        return matches
-
-    def _colorize_cell(self, row, col, selection_matcher):
-        cell_info = self._controller.get_cell_info(row, col, selection_matcher)
+    def _colorize_cell(self, row, col, selection_content):
+        cell_info = self._controller.get_cell_info(row, col, selection_content)
         if cell_info is None:
             return
         self._grid.SetCellTextColour(row, col, self._get_text_color(cell_info))
