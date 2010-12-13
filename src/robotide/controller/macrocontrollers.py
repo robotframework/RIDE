@@ -517,6 +517,11 @@ class StepController(object):
         index = steps.index(self._step)
         self.parent._set_raw_steps(steps[:index]+[new_step]+steps[index:])
 
+    def insert_after(self, new_step):
+        steps = self.parent._get_raw_steps()
+        index = steps.index(self._step)+1
+        self.parent._set_raw_steps(steps[:index]+[new_step]+steps[index:])
+
     def remove_empty_columns_from_end(self):
         cells = self.as_list()
         while cells != [] and cells[-1].strip() == '':
@@ -539,7 +544,8 @@ class StepController(object):
 
     def move_down(self):
         next_step = self.parent.step(self._index()+1)
-        next_step.move_up()
+        self.remove()
+        next_step.insert_after(self._step)
 
     def _index(self):
         return self.parent.index_of_step(self._step)
