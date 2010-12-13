@@ -17,6 +17,7 @@ STEP_WITH_COMMENT = '  Foo  # this is a comment'
 FOR_LOOP_HEADER = '  : FOR  ${i}  IN  1  2  3'
 FOR_LOOP_STEP1 = '    Log  ${i}'
 FOR_LOOP_STEP2 = '    No Operation'
+STEP_AFTER_FOR_LOOP = '  Step bar'
 
 data = [TEST_NAME,
         STEP1,
@@ -25,7 +26,7 @@ data = [TEST_NAME,
         FOR_LOOP_HEADER,
         FOR_LOOP_STEP1,
         FOR_LOOP_STEP2,
-        '  Step bar',
+        STEP_AFTER_FOR_LOOP,
         '  ${variable}=  some value'
 ]
 

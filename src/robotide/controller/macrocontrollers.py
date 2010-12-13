@@ -93,21 +93,16 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         return self.steps[index]
 
     def index_of_step(self, step):
-        return self.data.steps.index(step)
+        return [s._step for s in self.steps].index(step)
 
     def replace_step(self, index, new_step):
         self.data.steps[index] = new_step
 
     def move_step_up(self, index):
-        self._move_step(index, index-1)
+        self.step(index).move_up()
 
     def move_step_down(self, index):
-        self._move_step(index, index+1)
-
-    def _move_step(self, source, target):
-        source_step = self.step(source)
-        self.remove_step(source)
-        self.add_step(target, source_step._step)
+        self.step(index).move_down()
 
     def set_steps(self, steps):
         self.data.steps = steps
@@ -519,7 +514,12 @@ class StepController(object):
 
     def insert_before(self, new_step):
         steps = self.parent._get_raw_steps()
-        index = self.parent._get_raw_steps().index(self._step)
+        index = steps.index(self._step)
+        self.parent._set_raw_steps(steps[:index]+[new_step]+steps[index:])
+
+    def insert_after(self, new_step):
+        steps = self.parent._get_raw_steps()
+        index = steps.index(self._step)+1
         self.parent._set_raw_steps(steps[:index]+[new_step]+steps[index:])
 
     def remove_empty_columns_from_end(self):
@@ -536,6 +536,19 @@ class StepController(object):
 
     def remove(self):
         self.parent.data.steps.remove(self._step)
+
+    def move_up(self):
+        previous_step = self.parent.step(self._index()-1)
+        self.remove()
+        previous_step.insert_before(self._step)
+
+    def move_down(self):
+        next_step = self.parent.step(self._index()+1)
+        self.remove()
+        next_step.insert_after(self._step)
+
+    def _index(self):
+        return self.parent.index_of_step(self._step)
 
     def has_only_comment(self):
         non_empty_cells = [cell for cell in self._step.as_list() if cell.strip() != '']
@@ -554,6 +567,21 @@ class StepController(object):
 
 
 class ForLoopStepController(StepController):
+
+    def move_up(self):
+        previous_step = self.parent.step(self._index()-1)
+        self._get_raw_steps().insert(0, previous_step._step)
+        previous_step.remove()
+
+    def move_down(self):
+        next_step = self.step(self._index()+1)
+        next_step.move_up()
+
+    def insert_after(self, new_step):
+        self._get_raw_steps().insert(0, new_step)
+
+    def step(self, index):
+        return self.parent.step(index)
 
     def _remove_whitespace_from_comment(self):
         pass
@@ -583,6 +611,10 @@ class ForLoopStepController(StepController):
     def steps(self):
         return [IntendedStepController(self, sub_step) for sub_step in self._get_raw_steps()]
 
+    def index_of_step(self, step):
+        index_in_for_loop = self._get_raw_steps().index(step)
+        return self._index()+index_in_for_loop+1
+
     def _get_comment(self, cells):
         return None
 
@@ -611,6 +643,7 @@ class ForLoopStepController(StepController):
         index = steps.index(self._step)
         steps.remove(self._step)
         self.parent.data.steps = steps[:index] + self._get_raw_steps() + steps[index:]
+        self._step.steps = []
 
     def _represent_valid_for_loop_header(self, cells):
         if cells[0] != self.as_list()[0]:
