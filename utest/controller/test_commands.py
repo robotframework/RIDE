@@ -8,6 +8,7 @@ from robotide.controller.commands import SaveFile, ChangeCellValue, CopyMacroAs,
 
 from base_command_test import TestCaseCommandTest, STEP1, STEP1_KEYWORD, \
      FOR_LOOP_HEADER, FOR_LOOP_STEP1, FOR_LOOP_STEP2, STEP_WITH_COMMENT, STEP2, data
+from controller.base_command_test import STEP_AFTER_FOR_LOOP
 
 
 class FileHandlingCommandsTest(TestCaseCommandTest):
@@ -371,6 +372,16 @@ class RowMovingTest(TestCaseCommandTest):
     def test_moving_block_containing_first_row_up_does_nothing(self):
         self._exec(MoveRowsUp([0,1,2]))
         assert_equals(self._number_of_test_changes, 0)
+
+    def test_move_for_loop_header_up(self):
+        self._exec(MoveRowsUp([self._data_row(FOR_LOOP_HEADER)]))
+        self._assert_step_order(STEP1,
+                                STEP2,
+                                FOR_LOOP_HEADER,
+                                '  '+STEP_WITH_COMMENT,
+                                FOR_LOOP_STEP1,
+                                FOR_LOOP_STEP2,
+                                STEP_AFTER_FOR_LOOP)
 
     def test_undo_row_up(self):
         self._exec(MoveRowsUp([1]))
