@@ -186,10 +186,11 @@ class KeywordEditor(GridEditor, RideEventHandler):
                                     self.selection.bottomright))
 
     def OnPaste(self, event=None):
-        data = self._clipboard_handler.clipboard_content()
-        if data:
-            data = [[data]] if isinstance(data, basestring) else data
-            self._execute(PasteArea(self.selection.topleft, data))
+        if not self.IsCellEditControlShown():
+            data = self._clipboard_handler.clipboard_content()
+            if data:
+                data = [[data]] if isinstance(data, basestring) else data
+                self._execute(PasteArea(self.selection.topleft, data))
 
     def OnDeleteRows(self, event):
         self._execute(DeleteRows(self.selection.rows()))
