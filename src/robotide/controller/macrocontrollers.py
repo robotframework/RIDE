@@ -514,7 +514,7 @@ class StepController(object):
 
     def insert_before(self, new_step):
         steps = self.parent._get_raw_steps()
-        index = self._index()
+        index = steps.index(self._step)
         self.parent._set_raw_steps(steps[:index]+[new_step]+steps[index:])
 
     def remove_empty_columns_from_end(self):
@@ -542,7 +542,7 @@ class StepController(object):
         next_step.move_up()
 
     def _index(self):
-        return self.parent._get_raw_steps().index(self._step)
+        return self.parent.index_of_step(self._step)
 
     def has_only_comment(self):
         non_empty_cells = [cell for cell in self._step.as_list() if cell.strip() != '']
@@ -597,6 +597,10 @@ class ForLoopStepController(StepController):
     @property
     def steps(self):
         return [IntendedStepController(self, sub_step) for sub_step in self._get_raw_steps()]
+
+    def index_of_step(self, step):
+        index_in_for_loop = self._get_raw_steps().index(step)
+        return self._index()+index_in_for_loop+1
 
     def _get_comment(self, cells):
         return None
