@@ -157,7 +157,7 @@ class GridEditor(grid.Grid):
     def OnCellRightClick(self, event):
         if hasattr(event, 'Row') and hasattr(event, 'Col'):
             self.selection.cell_right_clicked(event.Row, event.Col)
-        self._popup_creator.show(self, PopupMenuItems(self, self._popup_items), 
+        self._popup_creator.show(self, PopupMenuItems(self, self._popup_items),
                                  self.get_selected_content())
 
     def OnInsertCells(self, event):
