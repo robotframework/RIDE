@@ -113,10 +113,10 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
     def update_namespace(self):
         self.datafile_controller.update_namespace()
 
-    def get_cell_info(self, row, col):
+    def get_cell_info(self, row, col, selection_matcher):
         if len(self.steps) <= row:
             return None
-        return self.step(row).get_cell_info(col)
+        return self.step(row).get_cell_info(col, selection_matcher)
 
     def get_keyword_info(self, kw_name):
         return self.datafile_controller.keyword_info(kw_name)
@@ -351,12 +351,14 @@ class StepController(object):
             return ''
         return values[col]
 
-    def get_cell_info(self, col):
-        cell_type = self._get_cell_type(col)
+    def get_cell_info(self, col, selection_matcher):
+        cell_type = self._get_cell_type(col, selection_matcher)
         content_type = self._get_content_type(col)
         return CellInfo(content_type, cell_type)
 
-    def _get_cell_type(self, col):
+    def _get_cell_type(self, col, selection_matcher):
+        if selection_matcher(self.get_value(col)):
+            return CellType.HIGHLIGHTED
         col -= len(self._step.assign)
         if col < 0:
             return CellType.MANDATORY

@@ -75,6 +75,12 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.Bind(grid.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
         self.Bind(grid.EVT_GRID_CELL_LEFT_DCLICK, self.OnCellLeftDClick)
         self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
+        self.Bind(grid.EVT_GRID_SELECT_CELL, self.OnSelectCell)
+
+    def OnSelectCell(self, event):
+        GridEditor.OnSelectCell(self, event)
+        self._colorize_grid()
+        event.Skip()
 
     def _execute(self, command):
         return self._controller.execute(command)
