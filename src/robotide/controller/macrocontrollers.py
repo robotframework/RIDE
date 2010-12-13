@@ -93,7 +93,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         return self.steps[index]
 
     def index_of_step(self, step):
-        return self.data.steps.index(step)
+        return [s._step for s in self.steps].index(step)
 
     def replace_step(self, index, new_step):
         self.data.steps[index] = new_step
