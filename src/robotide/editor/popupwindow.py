@@ -62,8 +62,10 @@ class Tooltip(RidePopupWindow):
         self._detached_title = title
 
     def _detach(self, event):
-        HtmlDialog(self._detached_title, self._current_details).Show()
         self.hide()
+        dlg = HtmlDialog(self._detached_title, self._current_details)
+        dlg.SetPosition(self.GetPosition())
+        dlg.Show()
 
 
 class MacRidePopupWindow(wx.Window):

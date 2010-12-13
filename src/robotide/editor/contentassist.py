@@ -219,7 +219,7 @@ class ContentAssistPopup(object):
         item = self._choices[self._selection]
         if item.details:
             self._details_popup.Show()
-            self._details_popup.set_content(item.details)
+            self._details_popup.set_content(item.details, item.name)
         elif self._details_popup.IsShown():
             self._details_popup.Show(False)
 
