@@ -357,6 +357,7 @@ class StepController(object):
         return CellInfo(content_type, cell_type)
 
     def _get_cell_type(self, col, selection_content):
+        # TODO: refactor
         if self._selection_matches(selection_content, self.get_value(col)):
             return CellType.HIGHLIGHTED
         col -= len(self._step.assign)
@@ -380,6 +381,7 @@ class StepController(object):
         return CellType.MANDATORY
 
     def _selection_matches(self, selection_content, cell_value):
+        # TODO: refactor
         selection = utils.normalize(selection_content, ignore=['_'])
         if not selection:
             return False
