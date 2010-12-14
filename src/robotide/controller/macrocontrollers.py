@@ -626,7 +626,7 @@ class ForLoopStepController(StepController):
     def _set_raw_steps(self, steps):
         self._step.steps = steps
 
-    def _get_cell_type(self, col):
+    def _get_cell_type(self, col, selection_content):
         until_range = len(self._step.vars)+1
         if col <= until_range:
             return CellType.MANDATORY
@@ -704,10 +704,10 @@ class IntendedStepController(StepController):
     def as_list(self):
         return ['']+self._step.as_list()
 
-    def _get_cell_type(self, col):
+    def _get_cell_type(self, col, selection_content):
         if col == 0:
             return CellType.MANDATORY_EMPTY
-        return StepController._get_cell_type(self, col-1)
+        return StepController._get_cell_type(self, col-1, selection_content)
 
     def _get_content_type(self, col):
         if col == 0:

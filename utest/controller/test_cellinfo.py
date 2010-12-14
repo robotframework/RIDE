@@ -35,6 +35,7 @@ class TestCellInfo(unittest.TestCase):
         self.test = self.testsuite.tests[0]
         self.keyword1 = [kw for kw in self.testsuite.keywords if kw.name == 'KW1'][0]
         self.keyword2 = [kw for kw in self.testsuite.keywords if kw.name == 'KW2'][0]
+        self.keyword3 = [kw for kw in self.testsuite.keywords if kw.name == 'KW3'][0]
 
     def test_no_cell_info_if_no_data(self):
         assert_none(self.test.get_cell_info(0, 0))
@@ -93,12 +94,33 @@ class TestCellInfo(unittest.TestCase):
         self._verify_cell_info(0, 1, ContentType.LIBRARY_KEYWORD, CellType.MANDATORY)
         self._verify_string_change(0, 2, CellType.OPTIONAL)
 
+    def test_keyword_without_args(self):
+        self.test.execute(ChangeCellValue(0, 0, self.keyword3.name))
+        self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.MANDATORY)
+        self._verify_cell_info(0, 1, ContentType.EMPTY, CellType.MANDATORY_EMPTY)
+
+    def test_for_loop_header(self):
+        forlooped_case = self.keyword3
+        self._verify_cell_info(0, 0, ContentType.STRING, CellType.MANDATORY, forlooped_case)
+        self._verify_cell_info(0, 1, ContentType.VARIABLE, CellType.MANDATORY, forlooped_case)
+        self._verify_cell_info(0, 2, ContentType.STRING, CellType.MANDATORY, forlooped_case)
+        self._verify_cell_info(0, 3, ContentType.STRING, CellType.OPTIONAL, forlooped_case)
+        self._verify_cell_info(0, 4, ContentType.STRING, CellType.OPTIONAL, forlooped_case)
+        self._verify_cell_info(0, 5, ContentType.EMPTY, CellType.OPTIONAL, forlooped_case)
+
+    def test_step_in_for_loop(self):
+        forlooped_case = self.keyword3
+        self._verify_cell_info(1, 0, ContentType.EMPTY, CellType.MANDATORY_EMPTY, forlooped_case)
+        self._verify_cell_info(1, 1, ContentType.LIBRARY_KEYWORD, CellType.MANDATORY, forlooped_case)
+
     def _verify_string_change(self, row, col, celltype):
         self._verify_cell_info(row, col, ContentType.EMPTY, celltype)
         self.test.execute(ChangeCellValue(row, col, 'diipadaapa'))
         self._verify_cell_info(row, col, ContentType.STRING, celltype)
 
-    def _verify_cell_info(self, row, col, contenttype, celltype):
-        cell_info = self.test.get_cell_info(row, col)
+    def _verify_cell_info(self, row, col, contenttype, celltype, macro=None):
+        if macro == None:
+            macro = self.test
+        cell_info = macro.get_cell_info(row, col)
         assert_equals(cell_info.cell_type, celltype)
         assert_equals(cell_info.content_type, contenttype)
