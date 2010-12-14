@@ -366,19 +366,22 @@ class StepController(object):
         info = self.get_keyword_info(self._step.keyword)
         if not info:
             return CellType.UNKNOWN
+        elif col == 0:
+            return CellType.MANDATORY
         args = info.arguments
         args_amount = len(args)
-        if args_amount > 0:
-            if col >= args_amount and self._last_argument_is_varargs(args):
-                return CellType.OPTIONAL
-            if col > 0 and self._has_list_var_value_before(col-1):
-                return CellType.UNKNOWN
+        if args_amount == 0:
+            return CellType.MANDATORY_EMPTY
+        if col >= args_amount and self._last_argument_is_varargs(args):
+            return CellType.OPTIONAL
+        if self._has_list_var_value_before(col-1):
+            return CellType.UNKNOWN
         if col > args_amount:
             return CellType.MANDATORY_EMPTY
         defaults = [arg for arg in args if '=' in arg]
-        if col > args_amount-len(defaults):
-            return CellType.OPTIONAL
-        return CellType.MANDATORY
+        if col <= args_amount-len(defaults):
+            return CellType.MANDATORY
+        return CellType.OPTIONAL
 
     def _selection_matches(self, selection_content, cell_value):
         # TODO: refactor
