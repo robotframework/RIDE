@@ -285,10 +285,11 @@ class KeywordEditor(GridEditor, RideEventHandler):
         if event.ControlDown() or event.CmdDown():
             if self._navigate_to_matching_user_keyword(event.Row, event.Col):
                 return
-        if self._has_been_clicked:
-            event.Skip()
-        else:
+        if not self._has_been_clicked:
+            self.SetGridCursor(event.Row, event.Col)
             self._has_been_clicked = True
+        else:
+            event.Skip()
 
     def OnCellLeftDClick(self, event):
         self.hide_tooltip()
