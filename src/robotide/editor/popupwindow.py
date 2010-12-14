@@ -75,7 +75,7 @@ class MacRidePopupWindow(wx.Window):
     not be used on that platform at all.
     """
 
-    def __init__(self, parent, size):
+    def __init__(self, parent, size, detachable=True, autohide=False):
         wx.Window.__init__(self, parent)
 
     set_content = show_at = hide = lambda *args: None
@@ -98,5 +98,5 @@ class HtmlDialog(Dialog):
 
 
 if wx.PlatformInfo[0] == '__WXMAC__':
-    RidePopupWindow = ToolTip = MacRidePopupWindow
+    RidePopupWindow = Tooltip = MacRidePopupWindow
 del MacRidePopupWindow
