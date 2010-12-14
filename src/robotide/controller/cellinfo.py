@@ -49,17 +49,17 @@ class CellInfo(object):
 
 
 class ContentType:
-    USER_KEYWORD = object()
-    LIBRARY_KEYWORD = object()
-    VARIABLE = object()
-    COMMENTED = object()
-    STRING = object()
-    EMPTY = object()
+    USER_KEYWORD = 'USER_KEYWORD'
+    LIBRARY_KEYWORD = 'LIBRARY_KEYWORD'
+    VARIABLE = 'VARIABLE'
+    COMMENTED = 'COMMENTED'
+    STRING = 'STRING'
+    EMPTY = 'EMPTY'
 
 
 class CellType:
-    KEYWORD = object()
-    MANDATORY = object()
-    OPTIONAL = object()
-    UNKNOWN = object()
-    MANDATORY_EMPTY = object()
+    KEYWORD = 'KEYWORD'
+    MANDATORY = 'MANDATORY'
+    OPTIONAL = 'OPTIONAL'
+    UNKNOWN = 'UNKNOWN'
+    MANDATORY_EMPTY = 'MANDATORY_EMPTY'

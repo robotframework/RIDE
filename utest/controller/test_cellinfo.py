@@ -99,7 +99,7 @@ class TestCellInfo(unittest.TestCase):
         self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.KEYWORD)
         self._verify_cell_info(0, 1, ContentType.EMPTY, CellType.MANDATORY_EMPTY)
 
-    def test_for_loop_header(self):
+    def test_for_loop_in_header(self):
         forlooped_case = self.keyword3
         self._verify_cell_info(0, 0, ContentType.STRING, CellType.MANDATORY, forlooped_case)
         self._verify_cell_info(0, 1, ContentType.VARIABLE, CellType.MANDATORY, forlooped_case)
@@ -112,6 +112,16 @@ class TestCellInfo(unittest.TestCase):
         forlooped_case = self.keyword3
         self._verify_cell_info(1, 0, ContentType.EMPTY, CellType.MANDATORY_EMPTY, forlooped_case)
         self._verify_cell_info(1, 1, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
+
+    def test_for_loop_in_range_header(self):
+        forlooped_case = self.keyword3
+        self._verify_cell_info(2, 0, ContentType.STRING, CellType.MANDATORY, forlooped_case)
+        self._verify_cell_info(2, 1, ContentType.VARIABLE, CellType.MANDATORY, forlooped_case)
+        self._verify_cell_info(2, 2, ContentType.STRING, CellType.MANDATORY, forlooped_case)
+        self._verify_cell_info(2, 3, ContentType.STRING, CellType.MANDATORY, forlooped_case)
+        self._verify_cell_info(2, 4, ContentType.EMPTY, CellType.OPTIONAL, forlooped_case)
+        self._verify_cell_info(2, 5, ContentType.EMPTY, CellType.OPTIONAL, forlooped_case)
+        self._verify_cell_info(2, 6, ContentType.EMPTY, CellType.MANDATORY_EMPTY, forlooped_case)
 
     def _verify_string_change(self, row, col, celltype):
         self._verify_cell_info(row, col, ContentType.EMPTY, celltype)

@@ -607,9 +607,9 @@ class ForLoopStepController(StepController):
             return CellType.MANDATORY
         if not self._step.range:
             return CellType.OPTIONAL
-        if col <= until_range+2:
+        if col <= until_range+1:
             return CellType.MANDATORY
-        if col == until_range+3:
+        if col <= until_range+3:
             return CellType.OPTIONAL
         return CellType.MANDATORY_EMPTY
 

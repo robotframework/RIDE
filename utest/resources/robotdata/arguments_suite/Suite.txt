@@ -11,4 +11,6 @@ KW2
 KW3
     : FOR  ${i}  IN  1  2
     \  Log  MOI
+    : FOR  ${j}  IN RANGE  200
+    \  Log  moi taas
 
