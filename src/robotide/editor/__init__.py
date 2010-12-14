@@ -99,6 +99,8 @@ class EditorPlugin(Plugin):
         return self._creator.editor_for(self, self._tab, self.tree)
 
     def OnTreeItemSelected(self, message=None):
+        if message and message.text == 'Resources':
+            return
         self._show_editor()
         self._editor.tree_item_selected(message.item)
 
