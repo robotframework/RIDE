@@ -266,6 +266,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self.add_keyword(parent, controller)
 
     def delete_node(self, node):
+        if node is None:
+            return
         parent = self.GetItemParent(node)
         self._mark_dirty(parent)
         self.Delete(node)
