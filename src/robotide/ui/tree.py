@@ -266,6 +266,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self.add_keyword(parent, controller)
 
     def delete_node(self, node):
+        if node is None:
+            return
         parent = self.GetItemParent(node)
         self._mark_dirty(parent)
         self.Delete(node)
@@ -553,7 +555,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self.move_down(node)
 
     def _variable_updated(self, data):
-        self._item_changed(data) 
+        self._item_changed(data)
+
 
 class _ActionHandler(wx.Window):
     is_user_keyword = False

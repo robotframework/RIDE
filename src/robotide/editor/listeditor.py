@@ -83,7 +83,8 @@ class ListEditorBase(wx.Panel):
     def _get_bind_keys(self):
         return [(ctrl_or_cmd(), wx.WXK_UP, self.OnMoveUp),
                 (ctrl_or_cmd(), wx.WXK_DOWN, self.OnMoveDown),
-                (wx.ACCEL_NORMAL, wx.WXK_WINDOWS_MENU, self.OnRightClick)]
+                (wx.ACCEL_NORMAL, wx.WXK_WINDOWS_MENU, self.OnRightClick),
+                (wx.ACCEL_NORMAL, wx.WXK_DELETE, self.OnDelete)]
 
     def OnMoveUp(self, event):
         if self._selection < 1:
@@ -107,7 +108,7 @@ class ListEditorBase(wx.Panel):
         item_count = self._list.GetItemCount()
         if self._selection >= item_count:
             self._selection = item_count - 1
-        self._list.Select(self._selection, True)
+        self._list.select_and_ensure_visibility(self._selection)
 
     @property
     def is_selected(self):
@@ -169,10 +170,13 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
             font.SetPointSize(8)
         return font
 
-
     def select(self, text):
-        item = self.FindItem(0, text)
-        if item >= 0:
-            self.Select(item)
-            self.EnsureVisible(item)
+        index = self.FindItem(0, text)
+        self.select_and_ensure_visibility(index)
+
+    def select_and_ensure_visibility(self, index):
+        if index >= 0:
+            self.Select(index, on=True)
+            self.EnsureVisible(index)
+            self.Focus(index)
 
