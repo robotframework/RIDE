@@ -64,7 +64,7 @@ class Tooltip(RidePopupWindow):
     def _detach(self, event):
         self.hide()
         dlg = HtmlDialog(self._detached_title, self._current_details)
-        dlg.SetPosition(self.GetPosition())
+        dlg.SetPosition((wx.GetMouseState().x, wx.GetMouseState().y))
         dlg.Show()
 
 
