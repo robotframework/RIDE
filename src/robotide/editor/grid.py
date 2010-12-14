@@ -112,6 +112,12 @@ class GridEditor(grid.Grid):
         return self._get_block_content(self.selection.rows(),
                                        self.selection.cols())
 
+    def get_single_selection_content(self):
+        cells = self.get_selected_content()
+        if len(cells) != 1 or len(cells[0]) != 1:
+            return None
+        return cells[0][0]
+
     def _current_cell_value(self):
         return self.GetCellValue(*self.selection.cell)
 

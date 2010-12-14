@@ -8,3 +8,7 @@ KW1
 KW2
     [Arguments]  @{rest}
 
+KW3
+    : FOR  ${i}  IN  1  2
+    \  Log  MOI
+

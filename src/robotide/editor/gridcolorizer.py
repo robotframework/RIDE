@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 from robotide.controller.cellinfo import ContentType, CellType
+from robotide import utils
 
 
 class Colorizer(object):
@@ -30,6 +31,7 @@ class Colorizer(object):
     }
 
     BACKGROUND_COLORS = {
+    CellType.HIGHLIGHTED: '#FFFF77',
     CellType.UNKNOWN: '#FFFFFF',
     CellType.MANDATORY: '#F4FFFF',
     CellType.MANDATORY_EMPTY: '#C0C0C0',
@@ -41,12 +43,13 @@ class Colorizer(object):
         self._controller = controller
 
     def colorize(self):
+        selection_content = self._grid.get_single_selection_content()
         for row in range(0, self._grid.NumberRows):
             for col in range(0, self._grid.NumberCols):
-                self._colorize_cell(row, col)
+                self._colorize_cell(row, col, selection_content)
 
-    def _colorize_cell(self, row, col):
-        cell_info = self._controller.get_cell_info(row, col)
+    def _colorize_cell(self, row, col, selection_content):
+        cell_info = self._controller.get_cell_info(row, col, selection_content)
         if cell_info is None:
             return
         self._grid.SetCellTextColour(row, col, self._get_text_color(cell_info))

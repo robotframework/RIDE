@@ -32,6 +32,7 @@ class ContentType:
 
 
 class CellType:
+    HIGHLIGHTED = object()
     MANDATORY = object()
     OPTIONAL = object()
     UNKNOWN = object()
