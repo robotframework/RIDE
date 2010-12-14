@@ -178,4 +178,5 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         if index >= 0:
             self.Select(index, on=True)
             self.EnsureVisible(index)
+            self.Focus(index)
 
