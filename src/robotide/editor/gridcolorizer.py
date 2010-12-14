@@ -13,13 +13,12 @@
 #  limitations under the License.
 
 from robotide.controller.cellinfo import ContentType, CellType
-from robotide import utils
-
 
 class Colorizer(object):
     """Colorizes cells in the keyword editor"""
 
     ERROR_COLOR = '#FF9385'
+    HIGHLIGHTED_COLOR = '#FFFF77'
 
     TEXT_COLORS = {
     ContentType.COMMENTED: 'firebrick',
@@ -31,7 +30,6 @@ class Colorizer(object):
     }
 
     BACKGROUND_COLORS = {
-    CellType.HIGHLIGHTED: '#FFFF77',
     CellType.UNKNOWN: '#FFFFFF',
     CellType.MANDATORY: '#F4FFFF',
     CellType.MANDATORY_EMPTY: '#C0C0C0',
@@ -49,16 +47,18 @@ class Colorizer(object):
                 self._colorize_cell(row, col, selection_content)
 
     def _colorize_cell(self, row, col, selection_content):
-        cell_info = self._controller.get_cell_info(row, col, selection_content)
+        cell_info = self._controller.get_cell_info(row, col)
         if cell_info is None:
             return
         self._grid.SetCellTextColour(row, col, self._get_text_color(cell_info))
-        self._grid.SetCellBackgroundColour(row, col, self._get_background_color(cell_info))
+        self._grid.SetCellBackgroundColour(row, col, self._get_background_color(cell_info, selection_content))
 
     def _get_text_color(self, cell_info):
         return self.TEXT_COLORS[cell_info.content_type]
 
-    def _get_background_color(self, cell_info):
+    def _get_background_color(self, cell_info, selection_content):
+        if cell_info.matches(selection_content):
+            return self.HIGHLIGHTED_COLOR
         if cell_info.has_error():
             return self.ERROR_COLOR
         return self.BACKGROUND_COLORS[cell_info.cell_type]

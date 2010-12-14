@@ -125,44 +125,5 @@ class UserKeywordControllerTest(_BaseWithSteps):
         self._test_copy_content()
 
 
-class TestStepController(StepController):
-
-    def __init__(self):
-        pass
-
-
-class TestSelectionMatcher(unittest.TestCase):
-
-    def setUp(self):
-        self.ctrl = TestStepController()
-        self.matcher = self.ctrl._selection_matches
-
-    def test_empty_cell_should_not_match(self):
-        assert_false(self.matcher('', ''))
-
-    def test_exact_match(self):
-        assert_true(self.matcher('My Keyword', 'My Keyword'))
-        assert_false(self.matcher('My Keyword', 'Keyword'))
-
-    def test_normalized_match(self):
-        assert_true(self.matcher('MyKeyword', 'My Keyword'))
-        assert_true(self.matcher('mykeyword', 'My Keyword'))
-        assert_true(self.matcher('my_key_word', 'My Keyword'))
-
-    def test_variable_with_equals_sign(self):
-        assert_true(self.matcher('${foo} =', '${foo}'))
-        assert_true(self.matcher('${foo}=', '${foo}'))
-        assert_true(self.matcher('${foo}=', '${  F O O }'))
-        assert_false(self.matcher('${foo}=', '${foo2}'))
-
-    def test_variable_inside_cell_content(self):
-        assert_true(self.matcher('${foo} =', 'some  ${foo} data'))
-        assert_false(self.matcher('${foo}=', 'some not matching ${var}'))
-
-    def test_find_variables(self):
-        assert_equals(self.ctrl._find_variable_basenames('hu ${huhu + 5} pupu ${foo} uhhu ${gugy.gug sdknjs +enedb} {{]{}{}{[[}'),
-                                                ['huhu ', 'foo', 'gugy'])
-
-
 if __name__ == "__main__":
     unittest.main()

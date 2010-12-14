@@ -8,23 +8,23 @@ from robotide.controller.cellinfo import CellType, ContentType, CellInfo
 class TestCellInfoErrors(unittest.TestCase):
 
     def test_empty_mandatory_is_error(self):
-        assert_true(CellInfo(ContentType.EMPTY, CellType.MANDATORY).has_error())
+        assert_true(CellInfo(ContentType.EMPTY, CellType.MANDATORY, '').has_error())
 
     def test_none_empty_mandatory_is_not_error(self):
-        assert_false(CellInfo(ContentType.LIBRARY_KEYWORD, CellType.MANDATORY).has_error())
+        assert_false(CellInfo(ContentType.LIBRARY_KEYWORD, CellType.MANDATORY, '').has_error())
 
     def test_commented_mandatory_is_error(self):
-        assert_true(CellInfo(ContentType.COMMENTED, CellType.MANDATORY).has_error())
+        assert_true(CellInfo(ContentType.COMMENTED, CellType.MANDATORY, '').has_error())
 
     def test_none_empty_mandatory_empty_is_error(self):
-        assert_true(CellInfo(ContentType.STRING, CellType.MANDATORY_EMPTY).has_error())
+        assert_true(CellInfo(ContentType.STRING, CellType.MANDATORY_EMPTY, '').has_error())
 
     def test_empty_mandatory_empty_is_not_error(self):
-        assert_false(CellInfo(ContentType.EMPTY, CellType.MANDATORY_EMPTY).has_error())
+        assert_false(CellInfo(ContentType.EMPTY, CellType.MANDATORY_EMPTY, '').has_error())
 
     def test_optional_has_no_error(self):
-        assert_false(CellInfo(ContentType.EMPTY, CellType.OPTIONAL).has_error())
-        assert_false(CellInfo(ContentType.STRING, CellType.OPTIONAL).has_error())
+        assert_false(CellInfo(ContentType.EMPTY, CellType.OPTIONAL, '').has_error())
+        assert_false(CellInfo(ContentType.STRING, CellType.OPTIONAL, '').has_error())
 
 
 class TestCellInfo(unittest.TestCase):
@@ -124,3 +124,34 @@ class TestCellInfo(unittest.TestCase):
         cell_info = macro.get_cell_info(row, col)
         assert_equals(cell_info.cell_type, celltype)
         assert_equals(cell_info.content_type, contenttype)
+
+
+class TestSelectionMatcher(unittest.TestCase):
+
+    def test_empty_cell_should_not_match(self):
+        assert_false(self.matcher('', ''))
+
+    def test_exact_match(self):
+        assert_true(self.matcher('My Keyword', 'My Keyword'))
+        assert_false(self.matcher('My Keyword', 'Keyword'))
+
+    def test_normalized_match(self):
+        assert_true(self.matcher('MyKeyword', 'My Keyword'))
+        assert_true(self.matcher('mykeyword', 'My Keyword'))
+        assert_true(self.matcher('my_key_word', 'My Keyword'))
+
+    def test_variable_with_equals_sign(self):
+        assert_true(self.matcher('${foo} =', '${foo}'))
+        assert_true(self.matcher('${foo}=', '${foo}'))
+        assert_true(self.matcher('${foo}=', '${  F O O }'))
+        assert_false(self.matcher('${foo}=', '${foo2}'))
+
+    def test_variable_inside_cell_content(self):
+        assert_true(self.matcher('${foo} =', 'some  ${foo} data'))
+        assert_false(self.matcher('some  ${foo} data', '${foo} ='))
+        assert_false(self.matcher('${foo}=', 'some not matching ${var}'))
+        assert_true(self.matcher('${foo} =', 'Jep we have ${var} and ${foo}!'))
+
+    def matcher(self, value, cell):
+        info = CellInfo(None, None, cell)
+        return info.matches(value)

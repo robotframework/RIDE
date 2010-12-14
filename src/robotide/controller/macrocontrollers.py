@@ -113,10 +113,10 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
     def update_namespace(self):
         self.datafile_controller.update_namespace()
 
-    def get_cell_info(self, row, col, selection_content=None):
+    def get_cell_info(self, row, col):
         if len(self.steps) <= row:
             return None
-        return self.step(row).get_cell_info(col, selection_content)
+        return self.step(row).get_cell_info(col)
 
     def get_keyword_info(self, kw_name):
         return self.datafile_controller.keyword_info(kw_name)
@@ -351,15 +351,13 @@ class StepController(object):
             return ''
         return values[col]
 
-    def get_cell_info(self, col, selection_content):
-        cell_type = self._get_cell_type(col, selection_content)
+    def get_cell_info(self, col):
+        cell_type = self._get_cell_type(col)
         content_type = self._get_content_type(col)
-        return CellInfo(content_type, cell_type)
+        return CellInfo(content_type, cell_type, self.get_value(col))
 
-    def _get_cell_type(self, col, selection_content):
+    def _get_cell_type(self, col):
         # TODO: refactor
-        if selection_content and self._selection_matches(selection_content, self.get_value(col)):
-            return CellType.HIGHLIGHTED
         col -= len(self._step.assign)
         if col < 0:
             return CellType.MANDATORY
@@ -383,25 +381,6 @@ class StepController(object):
             return CellType.MANDATORY
         return CellType.OPTIONAL
 
-    def _selection_matches(self, selection_content, cell_value):
-        # TODO: refactor
-        selection = utils.normalize(selection_content, ignore=['_'])
-        if not selection:
-            return False
-        cell = utils.normalize(cell_value, ignore=['_'])
-        if selection == cell:
-            return True
-        match = self._match_variable(selection)
-        if match:
-            if match.groups()[0] in cell:
-                return True
-            vars = self._find_variable_basenames(cell)
-            if vars:
-                for var_basename in vars:
-                    if var_basename == match.groups()[1]:
-                        return True
-        return False
-
     def _last_argument_is_varargs(self, args):
         return args[-1].startswith('*')
 
@@ -409,7 +388,7 @@ class StepController(object):
         for idx, value in enumerate(self.args):
             if idx > arg_index:
                 return False
-            if self._is_list_variable(value):
+            if utils.is_list_variable(value):
                 return True
         return False
 
@@ -419,7 +398,7 @@ class StepController(object):
         if self._get_last_none_empty_col_idx() < col:
             return ContentType.EMPTY
         value = self.get_value(col)
-        if self._is_variable(value):
+        if utils.is_variable(value):
             return ContentType.VARIABLE
         if self.is_user_keyword(value):
             return ContentType.USER_KEYWORD
@@ -434,17 +413,7 @@ class StepController(object):
                 return i
         return None
 
-    def _is_variable(self, value):
-        return self._match_variable(value)
 
-    def _match_variable(self, value):
-        return re.match('([\$\@]{(.*?)})=?', value)
-
-    def _find_variable_basenames(self, value):
-        return re.findall('\${(.+?)[^\s\w]+.*?}?', value)
-
-    def _is_list_variable(self, value):
-        return re.match('\@{.*}', value)
 
     def is_user_keyword(self, value):
         return self.parent.is_user_keyword(value)
@@ -626,7 +595,7 @@ class ForLoopStepController(StepController):
     def _set_raw_steps(self, steps):
         self._step.steps = steps
 
-    def _get_cell_type(self, col, selection_content):
+    def _get_cell_type(self, col):
         until_range = len(self._step.vars)+1
         if col <= until_range:
             return CellType.MANDATORY
@@ -704,10 +673,10 @@ class IntendedStepController(StepController):
     def as_list(self):
         return ['']+self._step.as_list()
 
-    def _get_cell_type(self, col, selection_content):
+    def _get_cell_type(self, col):
         if col == 0:
             return CellType.MANDATORY_EMPTY
-        return StepController._get_cell_type(self, col-1, selection_content)
+        return StepController._get_cell_type(self, col-1)
 
     def _get_content_type(self, col):
         if col == 0:

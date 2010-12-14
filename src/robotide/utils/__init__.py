@@ -22,6 +22,7 @@ from robot.utils import printable_name, normalize, eq, eq_any, \
     html_escape, get_timestamp
 from components import RideHtmlWindow
 from eventhandler import RideEventHandler
+from variablematcher import find_variable_basenames, is_list_variable, is_variable, match_variable
 
 
 def name_from_class(item, drop=None):
