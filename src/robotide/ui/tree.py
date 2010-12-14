@@ -742,14 +742,17 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
 
 
 class VariableHandler(_ActionHandler):
-    show_popup = lambda self: None
     accepts_drag = lambda *args: False
     is_draggable = True
     is_variable = True
     OnMoveUp = OnMoveDown = lambda *args: None
+    _actions = ['Delete']
 
     def remove(self):
         self.controller.delete()
+
+    def OnDelete(self, event):
+        self.remove()
 
 
 class ResourceRootHandler(_ActionHandler):
