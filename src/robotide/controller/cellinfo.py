@@ -58,6 +58,7 @@ class ContentType:
 
 
 class CellType:
+    KEYWORD = object()
     MANDATORY = object()
     OPTIONAL = object()
     UNKNOWN = object()

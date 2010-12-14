@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 from robotide.controller.cellinfo import ContentType, CellType
+from wxPython._gdi import wxFONTWEIGHT_BOLD, wxFONTWEIGHT_NORMAL
 
 class Colorizer(object):
     """Colorizes cells in the keyword editor"""
@@ -31,7 +32,8 @@ class Colorizer(object):
 
     BACKGROUND_COLORS = {
     CellType.UNKNOWN: '#FFFFFF',
-    CellType.MANDATORY: '#F4FFFF',
+    CellType.MANDATORY: '#FFFFFF',
+    CellType.KEYWORD: '#FFFFFF',
     CellType.MANDATORY_EMPTY: '#C0C0C0',
     CellType.OPTIONAL: '#F5F5F5'
     }
@@ -40,8 +42,7 @@ class Colorizer(object):
         self._grid = grid
         self._controller = controller
 
-    def colorize(self):
-        selection_content = self._grid.get_single_selection_content()
+    def colorize(self, selection_content):
         for row in range(0, self._grid.NumberRows):
             for col in range(0, self._grid.NumberCols):
                 self._colorize_cell(row, col, selection_content)
@@ -52,6 +53,7 @@ class Colorizer(object):
             return
         self._grid.SetCellTextColour(row, col, self._get_text_color(cell_info))
         self._grid.SetCellBackgroundColour(row, col, self._get_background_color(cell_info, selection_content))
+        self._grid.SetCellFont(row, col, self._get_cell_font(row, col, cell_info))
 
     def _get_text_color(self, cell_info):
         return self.TEXT_COLORS[cell_info.content_type]
@@ -63,3 +65,12 @@ class Colorizer(object):
             return self.ERROR_COLOR
         return self.BACKGROUND_COLORS[cell_info.cell_type]
 
+    def _get_cell_font(self, row, col, cell_info):
+        font = self._grid.GetCellFont(row, col)
+        font.SetWeight(self._get_weight(cell_info))
+        return font
+
+    def _get_weight(self, cell_info):
+        if cell_info.cell_type == CellType.KEYWORD:
+            return wxFONTWEIGHT_BOLD
+        return wxFONTWEIGHT_NORMAL

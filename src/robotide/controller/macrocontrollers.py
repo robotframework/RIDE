@@ -12,6 +12,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from itertools import chain
+
 from robot.parsing.tablepopulators import UserKeywordPopulator, TestCasePopulator
 from robot.parsing.model import Step
 
@@ -88,6 +90,10 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
             else:
                 flattened_steps.append(StepController(self, step))
         return flattened_steps
+
+    @property
+    def max_columns(self):
+        return max(chain((len(step.as_list()) for step in self.steps) , [0]))
 
     def step(self, index):
         return self.steps[index]
@@ -361,11 +367,11 @@ class StepController(object):
         col -= len(self._step.assign)
         if col < 0:
             return CellType.MANDATORY
+        if col == 0:
+            return CellType.KEYWORD
         info = self.get_keyword_info(self._step.keyword)
         if not info:
             return CellType.UNKNOWN
-        elif col == 0:
-            return CellType.MANDATORY
         args = info.arguments
         args_amount = len(args)
         if args_amount == 0:

@@ -42,9 +42,11 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def __init__(self, parent, controller, tree):
         try:
-            GridEditor.__init__(self, parent, len(controller.steps) + 5, 5,
+            GridEditor.__init__(self, parent, len(controller.steps) + 5, 
+                                max((controller.max_columns + 1), 5),
                                 parent.plugin._grid_popup_creator)
             self._plugin = parent.plugin
+            self._cell_selected = False
             self._colorizer = Colorizer(self, controller)
             self._configure_grid()
             self._controller = controller
@@ -75,9 +77,9 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.Bind(grid.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
         self.Bind(grid.EVT_GRID_CELL_LEFT_DCLICK, self.OnCellLeftDClick)
         self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
-        self.Bind(grid.EVT_GRID_SELECT_CELL, self.OnSelectCell)
 
     def OnSelectCell(self, event):
+        self._cell_selected = True
         GridEditor.OnSelectCell(self, event)
         self._colorize_grid()
         event.Skip()
@@ -157,7 +159,12 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self._colorize_grid()
 
     def _colorize_grid(self):
-        self._colorizer.colorize()
+        selection_content = self._get_single_selection_content_or_none_on_first_call()
+        self._colorizer.colorize(selection_content)
+
+    def _get_single_selection_content_or_none_on_first_call(self):
+        if self._cell_selected:
+            return self.get_single_selection_content()
 
     def _format_comments(self, data):
         # TODO: This should be moved to robot.model

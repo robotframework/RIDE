@@ -45,7 +45,7 @@ class TestCellInfo(unittest.TestCase):
 
     def test_keyword_with_mandatory_and_optional_arguments(self):
         self.test.execute(ChangeCellValue(0, 0, self.keyword1.name))
-        self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.MANDATORY)
+        self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.KEYWORD)
         self._verify_string_change(0, 1, CellType.MANDATORY)
         self._verify_string_change(0, 2, CellType.OPTIONAL)
         self._verify_string_change(0, 3, CellType.MANDATORY_EMPTY)
@@ -53,7 +53,7 @@ class TestCellInfo(unittest.TestCase):
     def test_celltype_is_unknown_if_list_var_given(self):
         self.test.execute(ChangeCellValue(0, 0, self.keyword1.name))
         self.test.execute(ChangeCellValue(0, 1, '@{vars}'))
-        self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.MANDATORY)
+        self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.KEYWORD)
         self._verify_cell_info(0, 1, ContentType.VARIABLE, CellType.UNKNOWN)
         self._verify_cell_info(0, 2, ContentType.EMPTY, CellType.UNKNOWN)
         self._verify_cell_info(0, 3, ContentType.EMPTY, CellType.UNKNOWN)
@@ -67,7 +67,7 @@ class TestCellInfo(unittest.TestCase):
         self.test.execute(ChangeCellValue(0, 0, self.keyword1.name))
         self.test.execute(ChangeCellValue(0, 1, '# I have something to say'))
         self.test.execute(ChangeCellValue(0, 2, 'to you my friend'))
-        self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.MANDATORY)
+        self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.KEYWORD)
         self._verify_cell_info(0, 1, ContentType.COMMENTED, CellType.MANDATORY)
         self._verify_cell_info(0, 2, ContentType.COMMENTED, CellType.OPTIONAL)
 
@@ -75,14 +75,14 @@ class TestCellInfo(unittest.TestCase):
         self.test.execute(ChangeCellValue(0, 0, 'I have nothing to say'))
         self.test.execute(ChangeCellValue(0, 1, 'to the void of darkness'))
         self.test.step(0).comment()
-        self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.MANDATORY)
+        self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD)
         self._verify_cell_info(0, 1, ContentType.COMMENTED, CellType.OPTIONAL)
         self._verify_cell_info(0, 2, ContentType.COMMENTED, CellType.OPTIONAL)
         self._verify_cell_info(0, 3, ContentType.COMMENTED, CellType.OPTIONAL)
 
     def test_keyword_with_varargs(self):
         self.test.execute(ChangeCellValue(0, 0, self.keyword2.name))
-        self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.MANDATORY)
+        self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.KEYWORD)
         self._verify_string_change(0, 1, CellType.OPTIONAL)
         self._verify_string_change(0, 2, CellType.OPTIONAL)
         self._verify_string_change(0, 3, CellType.OPTIONAL)
@@ -91,12 +91,12 @@ class TestCellInfo(unittest.TestCase):
         self.test.execute(ChangeCellValue(0, 0, '${my cool var}='))
         self._verify_cell_info(0, 0, ContentType.VARIABLE, CellType.MANDATORY)
         self.test.execute(ChangeCellValue(0, 1, 'Set Variable'))
-        self._verify_cell_info(0, 1, ContentType.LIBRARY_KEYWORD, CellType.MANDATORY)
+        self._verify_cell_info(0, 1, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD)
         self._verify_string_change(0, 2, CellType.OPTIONAL)
 
     def test_keyword_without_args(self):
         self.test.execute(ChangeCellValue(0, 0, self.keyword3.name))
-        self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.MANDATORY)
+        self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.KEYWORD)
         self._verify_cell_info(0, 1, ContentType.EMPTY, CellType.MANDATORY_EMPTY)
 
     def test_for_loop_header(self):
@@ -111,7 +111,7 @@ class TestCellInfo(unittest.TestCase):
     def test_step_in_for_loop(self):
         forlooped_case = self.keyword3
         self._verify_cell_info(1, 0, ContentType.EMPTY, CellType.MANDATORY_EMPTY, forlooped_case)
-        self._verify_cell_info(1, 1, ContentType.LIBRARY_KEYWORD, CellType.MANDATORY, forlooped_case)
+        self._verify_cell_info(1, 1, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
 
     def _verify_string_change(self, row, col, celltype):
         self._verify_cell_info(row, col, ContentType.EMPTY, celltype)
