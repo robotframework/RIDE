@@ -9,7 +9,6 @@ class List(wx.ListCtrl, ListCtrlAutoWidthMixin):
                              style=wx.LC_REPORT|wx.LC_SINGLE_SEL|wx.LC_HRULES)
         ListCtrlAutoWidthMixin.__init__(self)
         self._selection_listeners = []
-        self._create_headers(headers)
         self._populate(headers, data)
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnListItemSelected)
 
