@@ -45,6 +45,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
             GridEditor.__init__(self, parent, len(controller.steps) + 5, 
                                 max((controller.max_columns + 1), 5),
                                 parent.plugin._grid_popup_creator)
+            self._tooltip_timer = wx.Timer(self.GetGridWindow(), 1234)
             self._plugin = parent.plugin
             self._cell_selected = False
             self._colorizer = Colorizer(self, controller)
@@ -59,6 +60,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._write_steps(self._controller)
             self._tree = tree
             self._has_been_clicked = False
+            self._tooltip_shown = False
+            wx.ToolTip.SetDelay(500)
         except Exception, e:
             print 'Exception in initing KeywordEditor: %s' % e
             raise
@@ -77,6 +80,25 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.Bind(grid.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
         self.Bind(grid.EVT_GRID_CELL_LEFT_DCLICK, self.OnCellLeftDClick)
         self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
+        self.GetGridWindow().Bind(wx.EVT_MOTION, self.OnShowOrHideToolTip)
+        self.GetGridWindow().Bind(wx.EVT_TIMER, self.OnShowEventToolTip)
+
+    def OnShowOrHideToolTip(self, event):
+        if not self._tooltip_shown:
+            self._tooltip_timer.Start(500, True)
+        else:
+            self._hide_small_tooltip()
+        event.Skip()
+
+    def _hide_small_tooltip(self):
+        self.GetGridWindow().SetToolTipString("")
+        self._tooltip_shown = False
+
+    def OnShowEventToolTip(self, event):
+        msg = 'test message'
+        if msg:            
+            self.GetGridWindow().SetToolTipString(msg)
+            self._tooltip_shown = True
 
     def OnSelectCell(self, event):
         self._cell_selected = True
@@ -248,6 +270,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def OnKey(self, event):
         # TODO: Cleanup
+        if self._tooltip_shown:
+            self._hide_small_tooltip()
         keycode, control_down = event.GetKeyCode(), event.CmdDown()
         if keycode == ord('A') and control_down:
             self.OnSelectAll(event)
