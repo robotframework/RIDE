@@ -31,8 +31,9 @@ from robotide.publish.messages import RideItemStepsChanged
 from robotide.editor.editordialogs import ScalarVariableDialog,\
     ListVariableDialog
 from robot.parsing.model import Variable
-from robotide.editor.gridcolorizer import Colorizer
+from robotide.editor.gridcolorizer import Colorizer, ColorizationSettings
 from robotide.controller.cellinfo import TipMessage
+from robotide.context import SETTINGS # TODO: can we avoid direct reference?
 
 
 class KeywordEditor(GridEditor, RideEventHandler):
@@ -49,7 +50,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._tooltip_timer = wx.Timer(self.GetGridWindow(), 1234)
             self._plugin = parent.plugin
             self._cell_selected = False
-            self._colorizer = Colorizer(self, controller)
+            self._colorizer = Colorizer(self, controller, ColorizationSettings(SETTINGS))
             self._configure_grid()
             self._controller = controller
             PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
