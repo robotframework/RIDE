@@ -13,7 +13,10 @@
 #  limitations under the License.
 
 from robotide.controller.cellinfo import ContentType, CellType
-from wxPython._gdi import wxFONTWEIGHT_BOLD, wxFONTWEIGHT_NORMAL
+# this import fails in HUDSON
+# from wxPython._gdi import wxFONTWEIGHT_BOLD, wxFONTWEIGHT_NORMAL
+wxFONTWEIGHT_BOLD = 92
+wxFONTWEIGHT_NORMAL = 90
 
 class Colorizer(object):
     """Colorizes cells in the keyword editor"""
