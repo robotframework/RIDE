@@ -59,7 +59,9 @@ def TestCaseControllerWithSteps(chief=None, source='some_suite.txt'):
 
 
 def assert_occurrence(test_ctrl, kw_name, source, usage):
-    assert_equals(_first_occurrence(test_ctrl, kw_name).usage, '%s (%s)' % (source, usage))
+    occ = _first_occurrence(test_ctrl, kw_name)
+    assert_equals(occ.location, source)
+    assert_equals(occ.usage, usage)
 
 def _first_occurrence(test_ctrl, kw_name):
     occurrences = test_ctrl.execute(FindOccurrences(kw_name))
@@ -104,13 +106,13 @@ class FindOccurrencesTest(unittest.TestCase):
         assert_equals([i for i in occurrences], [])
 
     def test_occurrences_in_steps(self):
-        assert_occurrence(self.test_ctrl, STEP1_KEYWORD, TEST1_NAME, 'Step 1')
+        assert_occurrence(self.test_ctrl, STEP1_KEYWORD, TEST1_NAME, 'Steps')
 
     def test_occurrences_in_step_arguments(self):
-        assert_occurrence(self.test_ctrl, STEP2_ARGUMENT, TEST1_NAME, 'Step 2')
+        assert_occurrence(self.test_ctrl, STEP2_ARGUMENT, TEST1_NAME, 'Steps')
 
     def test_occurrences_are_case_and_space_insensitive(self):
-        assert_occurrence(self.test_ctrl, 'R un KE Y W O rd', TEST1_NAME, 'Step 2')
+        assert_occurrence(self.test_ctrl, 'R un KE Y W O rd', TEST1_NAME, 'Steps')
         assert_occurrence(self.test_ctrl, 'se tu p KW  ', TEST1_NAME, 'Setup')
 
     def test_occurrences_in_test_metadata(self):
@@ -126,7 +128,7 @@ class FindOccurrencesTest(unittest.TestCase):
         assert_occurrence(self.test_ctrl, 'Test Template Kw', SUITE_NAME, 'Test Template')
 
     def test_occurrences_in_user_keywords(self):
-        assert_occurrence(self.test_ctrl, KEYWORD_IN_USERKEYWORD1, USERKEYWORD1_NAME, 'Step 1')
+        assert_occurrence(self.test_ctrl, KEYWORD_IN_USERKEYWORD1, USERKEYWORD1_NAME, 'Steps')
 
     def test_occurrence_in_user_keyword_name(self):
         assert_occurrence(self.test_ctrl, USERKEYWORD1_NAME, USERKEYWORD1_NAME, KEYWORD_NAME_FIELD)
@@ -171,7 +173,7 @@ class RenameOccurrenceTest(unittest.TestCase):
     def test_rename_updates_namespace(self):
         assert_true(self.namespace.is_user_keyword(self.test_ctrl.datafile, USERKEYWORD2_NAME))
         assert_false(self.namespace.is_user_keyword(self.test_ctrl.datafile, UNUSED_KEYWORD_NAME))
-        self._rename(USERKEYWORD2_NAME, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Step 3')
+        self._rename(USERKEYWORD2_NAME, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
         assert_true(self.namespace.is_user_keyword(self.test_ctrl.datafile, UNUSED_KEYWORD_NAME))
         assert_false(self.namespace.is_user_keyword(self.test_ctrl.datafile, USERKEYWORD2_NAME))
 
@@ -180,12 +182,12 @@ class RenameOccurrenceTest(unittest.TestCase):
         def name_changed_check_that_steps_have_also(data):
             datas_ok['steps'] = self.test_ctrl.step(2).keyword == UNUSED_KEYWORD_NAME
         def steps_changed_check_that_name_has_also(data):
-            datas_ok['name'] = any(True for i in self.test_ctrl.datafile_controller.keywords 
+            datas_ok['name'] = any(True for i in self.test_ctrl.datafile_controller.keywords
                                    if i.name == UNUSED_KEYWORD_NAME)
         PUBLISHER.subscribe(name_changed_check_that_steps_have_also, RideItemNameChanged)
         PUBLISHER.subscribe(steps_changed_check_that_name_has_also, RideItemStepsChanged)
         try:
-            self._rename(USERKEYWORD2_NAME, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Step 3')
+            self._rename(USERKEYWORD2_NAME, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
         finally:
             PUBLISHER.unsubscribe(name_changed_check_that_steps_have_also, RideItemNameChanged)
             PUBLISHER.unsubscribe(steps_changed_check_that_name_has_also, RideItemStepsChanged)
@@ -193,21 +195,21 @@ class RenameOccurrenceTest(unittest.TestCase):
         assert_true(datas_ok['name'])
 
     def test_rename_in_steps(self):
-        self._rename(STEP1_KEYWORD, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Step 1')
+        self._rename(STEP1_KEYWORD, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
         self._expected_messages(steps_have_changed=True)
 
     def test_undo_rename_in_step(self):
-        self._rename(STEP1_KEYWORD, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Step 1')
+        self._rename(STEP1_KEYWORD, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
         self.test_ctrl.execute(Undo())
         assert_equals(self.test_ctrl.steps[0].keyword, STEP1_KEYWORD)
 
     def test_undo_after_renaming_to_something_that_is_already_there(self):
-        self._rename(STEP1_KEYWORD, STEP2_ARGUMENT, TEST1_NAME, 'Step 1')
+        self._rename(STEP1_KEYWORD, STEP2_ARGUMENT, TEST1_NAME, 'Steps')
         self.test_ctrl.execute(Undo())
         assert_equals(self.test_ctrl.steps[1].args[0], STEP2_ARGUMENT)
 
     def test_rename_steps_argument(self):
-        self._rename(STEP2_ARGUMENT, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Step 2')
+        self._rename(STEP2_ARGUMENT, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
         self._expected_messages(steps_have_changed=True)
         assert_equals(self.test_ctrl.steps[1].as_list(), ['Run Keyword', UNUSED_KEYWORD_NAME])
 
@@ -241,5 +243,5 @@ class RenameOccurrenceTest(unittest.TestCase):
         self.assertTrue(self.test_ctrl.dirty)
 
     def test_rename_in_user_keywords(self):
-        self._rename(KEYWORD_IN_USERKEYWORD1, UNUSED_KEYWORD_NAME, USERKEYWORD1_NAME, 'Step 1')
+        self._rename(KEYWORD_IN_USERKEYWORD1, UNUSED_KEYWORD_NAME, USERKEYWORD1_NAME, 'Steps')
         self._expected_messages(steps_have_changed=True)

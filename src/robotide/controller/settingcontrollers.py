@@ -67,10 +67,6 @@ class _SettingController(ControllerWithParent):
         return utils.eq(self.keyword_name or '', name)
 
     @property
-    def logical_name(self):
-        return '%s (%s)' % (self._parent.name, self.label)
-
-    @property
     def is_set(self):
         return self._data.is_set()
 

@@ -27,7 +27,6 @@ from robotide.controller.basecontroller import WithUndoRedoStacks
 from robotide.publish.messages import RideItemStepsChanged, RideItemNameChanged,\
     RideItemSettingsChanged
 from robotide import utils
-import re
 from robotide.controller.cellinfo import CellInfo, CellType, ContentType
 
 
@@ -56,8 +55,8 @@ class ItemNameController(object):
         self._item.notify_name_changed()
 
     @property
-    def logical_name(self):
-        return '%s (%s)' % (self._item.name, self._name_field)
+    def parent(self):
+        return self._item
 
 
 class KeywordNameController(ItemNameController):
@@ -322,7 +321,6 @@ class UserKeywordController(_BaseController, _WithStepsController):
         return parse_arguments_to_var_dict(self._kw.args.value)
 
 
-
 class StepController(object):
 
     def __init__(self, parent, step):
@@ -419,8 +417,6 @@ class StepController(object):
                 return i
         return None
 
-
-
     def is_user_keyword(self, value):
         return self.parent.is_user_keyword(value)
 
@@ -459,11 +455,6 @@ class StepController(object):
     @property
     def vars(self):
         return self._step.vars
-
-    @property
-    def logical_name(self):
-        return '%s (Step %d)' % (self.parent.name,
-                                 self.parent.data.steps.index(self._step) + 1)
 
     def change(self, col, new_value):
         cells = self.as_list()
@@ -573,6 +564,10 @@ class StepController(object):
 
 
 class ForLoopStepController(StepController):
+
+    @property
+    def name(self):
+        return self.parent.name
 
     def move_up(self):
         previous_step = self.parent.step(self._index()-1)

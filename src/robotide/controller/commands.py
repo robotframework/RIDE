@@ -16,6 +16,7 @@ from itertools import chain
 import os
 
 from robotide.controller.macrocontrollers import KeywordNameController
+from robotide.controller.settingcontrollers import _SettingController
 
 
 class Occurrence(object):
@@ -24,6 +25,7 @@ class Occurrence(object):
         self._item = item
         self._value = value
         self._replaced = False
+        self.count = 1
 
     @property
     def item(self):
@@ -34,8 +36,16 @@ class Occurrence(object):
         return self._item.datafile
 
     @property
+    def location(self):
+        return self._item.parent.name
+
+    @property
     def usage(self):
-        return self._item.logical_name
+        if isinstance(self._item, _SettingController):
+            return self._item.label
+        elif isinstance(self._item, KeywordNameController):
+            return 'Keyword Name'
+        return 'Steps' if self.count == 1 else 'Steps (%d occurrences)' % self.count
 
     def replace_keyword(self, new_name):
         self._item.replace_keyword(*self._get_replace_values(new_name))
@@ -219,7 +229,16 @@ class FindOccurrences(_Command):
 class FindUsages(FindOccurrences):
 
     def execute(self, context):
-        return (occ for occ in FindOccurrences.execute(self, context) if not isinstance(occ.item, KeywordNameController))
+        usages = {}
+        for occ in FindOccurrences.execute(self, context):
+            if isinstance(occ.item, KeywordNameController):
+                continue
+            key = (occ.location, occ.usage, occ.datafile)
+            if key not in usages:
+                usages[key] = occ
+            else:
+                usages[key].count += 1
+        return usages.values()
 
 
 def AddKeywordFromCells(cells):
