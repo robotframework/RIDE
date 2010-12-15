@@ -20,11 +20,11 @@ class UsagesDialog(Dialog):
     def __init__(self, name, usages):
         self._selection_listeners = []
         self.usages = list(usages)
-        usage_labels = [[u.usage, u.datafile.name] for u in self.usages]
-        Dialog.__init__(self, "'%s' - %d usages"
-                                    % (name, len(usage_labels)))
+        usage_labels = [[u.location,  u.usage] for u in self.usages]
+        count = sum(u.count for u in usages)
+        Dialog.__init__(self, "'%s' - %d usages" % (name, count))
         self.SetSizer(VerticalSizer())
-        usage_list = List(self, ['Usage', 'Source'], usage_labels)
+        usage_list = List(self, ['Location', 'Usage'], usage_labels)
         usage_list.add_selection_listener(self._usage_selected)
         self.Sizer.add_expanding(usage_list)
 
