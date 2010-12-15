@@ -162,6 +162,29 @@ class TestSelectionMatcher(unittest.TestCase):
         assert_false(self.matcher('${foo}=', 'some not matching ${var}'))
         assert_true(self.matcher('${foo} =', 'Jep we have ${var} and ${foo}!'))
 
+    def test_list_variable(self):
+        assert_true(self.matcher('@{foo} =', '@{foo}'))
+
+    def test_list_variable_when_index_is_used(self):
+        assert_true(self.matcher('@{foo}[2]', '@{foo}'))
+        assert_true(self.matcher('@{foo}[2]', '@{foo}[1]'))
+        assert_true(self.matcher('@{foo}[2]', 'some @{foo} data'))
+        assert_false(self.matcher('@{foo}[2]', 'some @{foo2} data'))
+        assert_false(self.matcher('@{foo}123', '@{foo}'))
+
+    def test_extended_variable(self):
+        assert_true(self.matcher('${foo.extended}', '${foo}'))
+        assert_true(self.matcher('${foo + 5}', '${foo}'))
+        assert_true(self.matcher('${foo}', 'some ${foo.extended} data'))
+        assert_true(self.matcher('${foo} =', 'some ${foo.extended} data'))
+        assert_false(self.matcher('${foo + 5}', '${foo2}'))
+
+    def test_list_variable_used_as_scalar(self):
+        assert_true(self.matcher('@{foo}', '${foo}'))
+
     def matcher(self, value, cell):
         info = CellInfo(None, None, cell)
         return info.matches(value)
+
+if __name__ == "__main__":
+    unittest.main()
