@@ -12,38 +12,19 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.controller.cellinfo import ContentType, CellType
+from robotide.controller.cellinfo import CellType
 # this import fails in HUDSON
 # from wxPython._gdi import wxFONTWEIGHT_BOLD, wxFONTWEIGHT_NORMAL
 wxFONTWEIGHT_BOLD = 92
 wxFONTWEIGHT_NORMAL = 90
 
+
 class Colorizer(object):
-    """Colorizes cells in the keyword editor"""
 
-    ERROR_COLOR = '#FF9385'
-    HIGHLIGHTED_COLOR = '#FFFF77'
-
-    TEXT_COLORS = {
-    ContentType.COMMENTED: 'firebrick',
-    ContentType.USER_KEYWORD: 'blue',
-    ContentType.LIBRARY_KEYWORD: 'blue',
-    ContentType.VARIABLE: 'forest green',
-    ContentType.STRING: 'black',
-    ContentType.EMPTY: 'black'
-    }
-
-    BACKGROUND_COLORS = {
-    CellType.UNKNOWN: '#FFFFFF',
-    CellType.MANDATORY: '#FFFFFF',
-    CellType.KEYWORD: '#FFFFFF',
-    CellType.MANDATORY_EMPTY: '#C0C0C0',
-    CellType.OPTIONAL: '#F5F5F5'
-    }
-
-    def __init__(self, grid, controller):
+    def __init__(self, grid, controller, colors):
         self._grid = grid
         self._controller = controller
+        self._colors=colors
 
     def colorize(self, selection_content):
         for row in range(0, self._grid.NumberRows):
@@ -59,14 +40,14 @@ class Colorizer(object):
         self._grid.SetCellFont(row, col, self._get_cell_font(row, col, cell_info))
 
     def _get_text_color(self, cell_info):
-        return self.TEXT_COLORS[cell_info.content_type]
+        return self._colors.get_text_color(cell_info.content_type)
 
     def _get_background_color(self, cell_info, selection_content):
         if cell_info.matches(selection_content):
-            return self.HIGHLIGHTED_COLOR
+            return self._colors.get_highlight_color()
         if cell_info.has_error():
-            return self.ERROR_COLOR
-        return self.BACKGROUND_COLORS[cell_info.cell_type]
+            return self._colors.get_error_color()
+        return self._colors.get_background_color(cell_info.cell_type)
 
     def _get_cell_font(self, row, col, cell_info):
         font = self._grid.GetCellFont(row, col)
@@ -77,3 +58,28 @@ class Colorizer(object):
         if cell_info.cell_type == CellType.KEYWORD:
             return wxFONTWEIGHT_BOLD
         return wxFONTWEIGHT_NORMAL
+
+
+class ColorizationSettings(object):
+
+    def __init__(self, settings=None):
+        self._settings = settings
+
+    def get_background_color(self, type):
+        if not self._settings:
+            return '#FFFFFF'
+        return self._get('background %s' % type)
+
+    def get_text_color(self, type):
+        if not self._settings:
+            return '#000000'
+        return self._get('text %s' % type)
+
+    def get_highlight_color(self):
+        return self.get_background_color('highlight')
+
+    def get_error_color(self):
+        return self.get_background_color('error')
+
+    def _get(self, name):
+        return self._settings['Colors'][name.lower().replace('_',' ')]

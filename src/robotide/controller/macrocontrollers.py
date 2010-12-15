@@ -356,34 +356,37 @@ class StepController(object):
         return values[col]
 
     def get_cell_info(self, col):
-        cell_type = self._get_cell_type(col)
-        content_type = self._get_content_type(col)
-        return CellInfo(content_type, cell_type, self.get_value(col))
+        cell_type, argument = self._get_cell_type(col)
+        content_type, source = self._get_content_type(col)
+        return self._build_cell_info(content_type, cell_type, self.get_value(col), argument, source)
+
+    def _build_cell_info(self, content_type, cell_type, value, argument, source):
+        return CellInfo(content_type, cell_type, value, argument, source)
 
     def _get_cell_type(self, col):
         # TODO: refactor
         col -= len(self._step.assign)
         if col < 0:
-            return CellType.MANDATORY
+            return CellType.ASSIGN, None
         if col == 0:
-            return CellType.KEYWORD
+            return CellType.KEYWORD, None
         info = self.get_keyword_info(self._step.keyword)
         if not info:
-            return CellType.UNKNOWN
+            return CellType.UNKNOWN, None
         args = info.arguments
         args_amount = len(args)
         if args_amount == 0:
-            return CellType.MANDATORY_EMPTY
+            return CellType.MUST_BE_EMPTY, None
         if col >= args_amount and self._last_argument_is_varargs(args):
-            return CellType.OPTIONAL
+            return CellType.OPTIONAL, args[-1]
         if self._has_list_var_value_before(col-1):
-            return CellType.UNKNOWN
+            return CellType.UNKNOWN, None
         if col > args_amount:
-            return CellType.MANDATORY_EMPTY
+            return CellType.MUST_BE_EMPTY, None
         defaults = [arg for arg in args if '=' in arg]
         if col <= args_amount-len(defaults):
-            return CellType.MANDATORY
-        return CellType.OPTIONAL
+            return CellType.MANDATORY, args[col-1]
+        return CellType.OPTIONAL, args[col-1]
 
     def _last_argument_is_varargs(self, args):
         return args[-1].startswith('*')
@@ -398,17 +401,17 @@ class StepController(object):
 
     def _get_content_type(self, col):
         if self._is_commented(col):
-            return ContentType.COMMENTED
+            return ContentType.COMMENTED, None
         if self._get_last_none_empty_col_idx() < col:
-            return ContentType.EMPTY
+            return ContentType.EMPTY, None
         value = self.get_value(col)
         if utils.is_variable(value):
-            return ContentType.VARIABLE
+            return ContentType.VARIABLE, None
         if self.is_user_keyword(value):
-            return ContentType.USER_KEYWORD
+            return ContentType.USER_KEYWORD, self.get_keyword_info(value).source
         if self.is_library_keyword(value):
-            return ContentType.LIBRARY_KEYWORD
-        return ContentType.STRING
+            return ContentType.LIBRARY_KEYWORD, self.get_keyword_info(value).source
+        return ContentType.STRING, None
 
     def _get_last_none_empty_col_idx(self):
         values = self.as_list()
@@ -599,14 +602,17 @@ class ForLoopStepController(StepController):
     def _get_cell_type(self, col):
         until_range = len(self._step.vars)+1
         if col <= until_range:
-            return CellType.MANDATORY
+            return CellType.MANDATORY, None
         if not self._step.range:
-            return CellType.OPTIONAL
+            return CellType.OPTIONAL, None
         if col <= until_range+1:
-            return CellType.MANDATORY
+            return CellType.MANDATORY, None
         if col <= until_range+3:
-            return CellType.OPTIONAL
-        return CellType.MANDATORY_EMPTY
+            return CellType.OPTIONAL, None
+        return CellType.MUST_BE_EMPTY, None
+
+    def _build_cell_info(self, content_type, cell_type, value, argument, source):
+        return CellInfo(content_type, cell_type, value, argument, source, for_loop=True)
 
     @property
     def steps(self):
@@ -676,12 +682,12 @@ class IntendedStepController(StepController):
 
     def _get_cell_type(self, col):
         if col == 0:
-            return CellType.MANDATORY_EMPTY
+            return CellType.MUST_BE_EMPTY, None
         return StepController._get_cell_type(self, col-1)
 
     def _get_content_type(self, col):
         if col == 0:
-            return ContentType.EMPTY
+            return ContentType.EMPTY, None
         return StepController._get_content_type(self, col)
 
     def comment(self):

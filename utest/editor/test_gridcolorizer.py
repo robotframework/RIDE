@@ -7,7 +7,7 @@ from robot.libraries.String import String
 
 from robotide.controller.cellinfo import CellInfo, ContentType, CellType
 from robotide.editor.grid import GridEditor
-from robotide.editor.gridcolorizer import Colorizer
+from robotide.editor.gridcolorizer import Colorizer, ColorizationSettings
 
 from resources import PYAPP_REFERENCE as _ #Needed to be able to create wx components
 
@@ -35,7 +35,7 @@ class ControllerWithCellInfo(object):
 
     def get_cell_info(self, row, column):
         return CellInfo(self._get(self.content_types), self._get(self.cell_types), 
-                        self._get_data())
+                        self._get_data(), None, None)
 
     def _get(self, items):
         return items[random.randint(0, len(items)-1)]
@@ -51,7 +51,7 @@ class TestPerformance(unittest.TestCase):
              '#asdjaskdkjasdkjaskdjkasjd', 'asdasd,asdasd,as asd jasdj asjd asjdj asd']
 
     def test_colorizing_performance(self):
-        colorizer = Colorizer(MockGrid(), ControllerWithCellInfo())
+        colorizer = Colorizer(MockGrid(), ControllerWithCellInfo(), ColorizationSettings())
         for i in range(0, 500):
             colorizer._colorize_cell(1,1, self._data[random.randint(0, 4)])
 
