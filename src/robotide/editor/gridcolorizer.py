@@ -19,26 +19,28 @@ wxFONTWEIGHT_BOLD = 92
 wxFONTWEIGHT_NORMAL = 90
 
 class Colorizer(object):
+    # FIXME: Colors from settings
     """Colorizes cells in the keyword editor"""
 
     ERROR_COLOR = '#FF9385'
     HIGHLIGHTED_COLOR = '#FFFF77'
 
     TEXT_COLORS = {
-    ContentType.COMMENTED: 'firebrick',
-    ContentType.USER_KEYWORD: 'blue',
-    ContentType.LIBRARY_KEYWORD: 'blue',
-    ContentType.VARIABLE: 'forest green',
-    ContentType.STRING: 'black',
-    ContentType.EMPTY: 'black'
+        ContentType.USER_KEYWORD: 'blue',
+        ContentType.LIBRARY_KEYWORD: 'blue',
+        ContentType.VARIABLE: 'forest green',
+        ContentType.COMMENTED: 'firebrick',
+        ContentType.STRING: 'black',
+        ContentType.EMPTY: 'black',
     }
 
     BACKGROUND_COLORS = {
-    CellType.UNKNOWN: '#FFFFFF',
-    CellType.MANDATORY: '#FFFFFF',
-    CellType.KEYWORD: '#FFFFFF',
-    CellType.MANDATORY_EMPTY: '#C0C0C0',
-    CellType.OPTIONAL: '#F5F5F5'
+        CellType.ASSIGN: '#FFFFFF',
+        CellType.KEYWORD: '#FFFFFF',
+        CellType.MANDATORY: '#FFFFFF',
+        CellType.OPTIONAL: '#F5F5F5',
+        CellType.MUST_BE_EMPTY: '#C0C0C0',
+        CellType.UNKNOWN: '#FFFFFF',
     }
 
     def __init__(self, grid, controller):

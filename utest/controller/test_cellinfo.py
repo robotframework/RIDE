@@ -8,23 +8,23 @@ from robotide.controller.cellinfo import CellType, ContentType, CellInfo
 class TestCellInfoErrors(unittest.TestCase):
 
     def test_empty_mandatory_is_error(self):
-        assert_true(CellInfo(ContentType.EMPTY, CellType.MANDATORY, '').has_error())
+        assert_true(CellInfo(ContentType.EMPTY, CellType.MANDATORY, '', None, None).has_error())
 
     def test_none_empty_mandatory_is_not_error(self):
-        assert_false(CellInfo(ContentType.LIBRARY_KEYWORD, CellType.MANDATORY, '').has_error())
+        assert_false(CellInfo(ContentType.LIBRARY_KEYWORD, CellType.MANDATORY, '', None, None).has_error())
 
     def test_commented_mandatory_is_error(self):
-        assert_true(CellInfo(ContentType.COMMENTED, CellType.MANDATORY, '').has_error())
+        assert_true(CellInfo(ContentType.COMMENTED, CellType.MANDATORY, '', None, None).has_error())
 
     def test_none_empty_mandatory_empty_is_error(self):
-        assert_true(CellInfo(ContentType.STRING, CellType.MANDATORY_EMPTY, '').has_error())
+        assert_true(CellInfo(ContentType.STRING, CellType.MUST_BE_EMPTY, '', None, None).has_error())
 
     def test_empty_mandatory_empty_is_not_error(self):
-        assert_false(CellInfo(ContentType.EMPTY, CellType.MANDATORY_EMPTY, '').has_error())
+        assert_false(CellInfo(ContentType.EMPTY, CellType.MUST_BE_EMPTY, '', None, None).has_error())
 
     def test_optional_has_no_error(self):
-        assert_false(CellInfo(ContentType.EMPTY, CellType.OPTIONAL, '').has_error())
-        assert_false(CellInfo(ContentType.STRING, CellType.OPTIONAL, '').has_error())
+        assert_false(CellInfo(ContentType.EMPTY, CellType.OPTIONAL, '', None, None).has_error())
+        assert_false(CellInfo(ContentType.STRING, CellType.OPTIONAL, '', None, None).has_error())
 
 
 class TestCellInfo(unittest.TestCase):
@@ -48,7 +48,7 @@ class TestCellInfo(unittest.TestCase):
         self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.KEYWORD)
         self._verify_string_change(0, 1, CellType.MANDATORY)
         self._verify_string_change(0, 2, CellType.OPTIONAL)
-        self._verify_string_change(0, 3, CellType.MANDATORY_EMPTY)
+        self._verify_string_change(0, 3, CellType.MUST_BE_EMPTY)
 
     def test_celltype_is_unknown_if_list_var_given(self):
         self.test.execute(ChangeCellValue(0, 0, self.keyword1.name))
@@ -89,7 +89,7 @@ class TestCellInfo(unittest.TestCase):
 
     def test_variable_setting(self):
         self.test.execute(ChangeCellValue(0, 0, '${my cool var}='))
-        self._verify_cell_info(0, 0, ContentType.VARIABLE, CellType.MANDATORY)
+        self._verify_cell_info(0, 0, ContentType.VARIABLE, CellType.ASSIGN)
         self.test.execute(ChangeCellValue(0, 1, 'Set Variable'))
         self._verify_cell_info(0, 1, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD)
         self._verify_string_change(0, 2, CellType.OPTIONAL)
@@ -97,7 +97,7 @@ class TestCellInfo(unittest.TestCase):
     def test_keyword_without_args(self):
         self.test.execute(ChangeCellValue(0, 0, self.keyword3.name))
         self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.KEYWORD)
-        self._verify_cell_info(0, 1, ContentType.EMPTY, CellType.MANDATORY_EMPTY)
+        self._verify_cell_info(0, 1, ContentType.EMPTY, CellType.MUST_BE_EMPTY)
 
     def test_for_loop_in_header(self):
         forlooped_case = self.keyword3
@@ -110,7 +110,7 @@ class TestCellInfo(unittest.TestCase):
 
     def test_step_in_for_loop(self):
         forlooped_case = self.keyword3
-        self._verify_cell_info(1, 0, ContentType.EMPTY, CellType.MANDATORY_EMPTY, forlooped_case)
+        self._verify_cell_info(1, 0, ContentType.EMPTY, CellType.MUST_BE_EMPTY, forlooped_case)
         self._verify_cell_info(1, 1, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
 
     def test_for_loop_in_range_header(self):
@@ -121,7 +121,7 @@ class TestCellInfo(unittest.TestCase):
         self._verify_cell_info(2, 3, ContentType.STRING, CellType.MANDATORY, forlooped_case)
         self._verify_cell_info(2, 4, ContentType.EMPTY, CellType.OPTIONAL, forlooped_case)
         self._verify_cell_info(2, 5, ContentType.EMPTY, CellType.OPTIONAL, forlooped_case)
-        self._verify_cell_info(2, 6, ContentType.EMPTY, CellType.MANDATORY_EMPTY, forlooped_case)
+        self._verify_cell_info(2, 6, ContentType.EMPTY, CellType.MUST_BE_EMPTY, forlooped_case)
 
     def _verify_string_change(self, row, col, celltype):
         self._verify_cell_info(row, col, ContentType.EMPTY, celltype)
@@ -163,5 +163,5 @@ class TestSelectionMatcher(unittest.TestCase):
         assert_true(self.matcher('${foo} =', 'Jep we have ${var} and ${foo}!'))
 
     def matcher(self, value, cell):
-        info = CellInfo(None, None, cell)
+        info = CellInfo(None, None, cell, None, None)
         return info.matches(value)

@@ -32,6 +32,7 @@ from robotide.editor.editordialogs import ScalarVariableDialog,\
     ListVariableDialog
 from robot.parsing.model import Variable
 from robotide.editor.gridcolorizer import Colorizer
+from robotide.controller.cellinfo import TipMessage
 
 
 class KeywordEditor(GridEditor, RideEventHandler):
@@ -95,9 +96,13 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self._tooltip_shown = False
 
     def OnShowEventToolTip(self, event):
-        msg = 'test message'
-        if msg:            
-            self.GetGridWindow().SetToolTipString(msg)
+        cell = self._cell_under_cursor()
+        cell_info = self._controller.get_cell_info(cell.Row, cell.Col)
+        if not cell_info:
+            return
+        msg = TipMessage(cell_info)
+        if msg:
+            self.GetGridWindow().SetToolTipString(str(msg))
             self._tooltip_shown = True
 
     def OnSelectCell(self, event):
