@@ -25,7 +25,6 @@ class CellInfo(object):
         return False
 
     def matches(self, value):
-        # TODO: refactor
         if not value or not self._cell_value:
             return False
         selection = utils.normalize(value, ignore=['_'])
@@ -36,16 +35,19 @@ class CellInfo(object):
             return False
         if selection == cell:
             return True
-        match = utils.match_variable(selection)
-        if match:
-            if match.groups()[0] in cell:
-                return True
-            vars = utils.find_variable_basenames(cell)
-            if vars:
-                for var_basename in vars:
-                    if var_basename == match.groups()[1]:
-                        return True
-        return False
+        return self._variable_matches(selection, cell)
+
+    def _variable_matches(self, selection, cell):
+        variable = utils.get_variable_basename(selection)
+        if not variable:
+            return False
+        variables = utils.find_variable_basenames(cell)
+        if variable in variables:
+            return True
+        return self._list_variable_used_as_scalar(variable, variables)
+
+    def _list_variable_used_as_scalar(self, variable, variables):
+        return '$%s' % variable[1:] in variables
 
 
 class ContentType:
