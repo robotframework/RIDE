@@ -51,10 +51,7 @@ class TestPerformance(unittest.TestCase):
              '#asdjaskdkjasdkjaskdjkasjd', 'asdasd,asdasd,as asd jasdj asjd asjdj asd']
 
     def test_colorizing_performance(self):
-        
-        editor = MockGrid()
-        controller = ControllerWithCellInfo()
-        colorizer = Colorizer(editor, controller)
+        colorizer = Colorizer(MockGrid(), ControllerWithCellInfo())
         for i in range(0, 500):
             colorizer._colorize_cell(1,1, self._data[random.randint(0, 4)])
 
