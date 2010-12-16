@@ -313,15 +313,6 @@ class TestKeywordSearch(_DataFileTest):
         return any([kw_name.lower() == kw.name.lower() for kw in keywords])
 
 
-class TestKeywordDetails(_DataFileTest):
-
-    def test_default_keyword_details(self):
-        details = self.ns.keyword_details(self.tcf, 'Log')
-        assert_not_none(details)
-        exp_details = 'Source: BuiltIn &lt;test library&gt;<br><br>Arguments: [ message | level=INFO ]<br><br>Logs the given message'
-        assert_true(details.startswith(exp_details))
-
-
 class TestVariableStash(unittest.TestCase):
 
     def test_variable_resolving(self):
