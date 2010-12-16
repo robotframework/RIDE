@@ -237,7 +237,7 @@ class _VariableStash(object):
         self._vars = RobotVariables()
         self._sources = {}
         for k, v in self.global_variables.iteritems():
-            self.set(k, v, 'Global')
+            self.set(k, v, 'built-in')
 
     def set(self, name, value, source):
         self._vars[name] = value
