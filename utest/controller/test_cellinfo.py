@@ -9,19 +9,29 @@ from robotide.controller.cellinfo import CellType, ContentType, CellInfo,\
 class TestCellInfoErrors(unittest.TestCase):
 
     def test_empty_mandatory_is_error(self):
-        assert_true(CellInfo(CellContent(ContentType.EMPTY, '', ''), CellPosition(CellType.MANDATORY, None)).has_error())
+        cell = CellInfo(CellContent(ContentType.EMPTY, '', ''), CellPosition(CellType.MANDATORY, None))
+        assert_true(cell.has_error())
+        assert_true(cell.argument_missing())
 
     def test_none_empty_mandatory_is_not_error(self):
-        assert_false(CellInfo(CellContent(ContentType.LIBRARY_KEYWORD, '', ''), CellPosition(CellType.MANDATORY, None)).has_error())
+        cell = CellInfo(CellContent(ContentType.LIBRARY_KEYWORD, '', ''), CellPosition(CellType.MANDATORY, None))
+        assert_false(cell.has_error())
+        assert_false(cell.argument_missing())
 
     def test_commented_mandatory_is_error(self):
-        assert_true(CellInfo(CellContent(ContentType.COMMENTED, '', ''), CellPosition(CellType.MANDATORY, None)).has_error())
+        cell = CellInfo(CellContent(ContentType.COMMENTED, '', ''), CellPosition(CellType.MANDATORY, None))
+        assert_true(cell.has_error())
+        assert_true(cell.argument_missing())
 
     def test_none_empty_mandatory_empty_is_error(self):
-        assert_true(CellInfo(CellContent(ContentType.STRING, '', ''), CellPosition(CellType.MUST_BE_EMPTY, None)).has_error())
+        cell = CellInfo(CellContent(ContentType.STRING, '', ''), CellPosition(CellType.MUST_BE_EMPTY, None))
+        assert_true(cell.has_error())
+        assert_true(cell.too_many_arguments())
 
     def test_empty_mandatory_empty_is_not_error(self):
-        assert_false(CellInfo(CellContent(ContentType.EMPTY, '', ''), CellPosition(CellType.MUST_BE_EMPTY, None)).has_error())
+        cell = CellInfo(CellContent(ContentType.EMPTY, '', ''), CellPosition(CellType.MUST_BE_EMPTY, None))
+        assert_false(cell.has_error())
+        assert_false(cell.too_many_arguments())
 
     def test_optional_has_no_error(self):
         assert_false(CellInfo(CellContent(ContentType.EMPTY, '', ''), CellPosition(CellType.OPTIONAL, None)).has_error())
