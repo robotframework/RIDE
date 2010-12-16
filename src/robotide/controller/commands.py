@@ -47,6 +47,10 @@ class Occurrence(object):
             return 'Keyword Name'
         return 'Steps' if self.count == 1 else 'Steps (%d occurrences)' % self.count
 
+    @property
+    def parent(self):
+        return self._item.parent.__class__.__name__
+
     def replace_keyword(self, new_name):
         self._item.replace_keyword(*self._get_replace_values(new_name))
         self._replaced = not self._replaced

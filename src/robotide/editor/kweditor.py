@@ -82,8 +82,9 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.Bind(grid.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
         self.Bind(grid.EVT_GRID_CELL_LEFT_DCLICK, self.OnCellLeftDClick)
         self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
-        self.GetGridWindow().Bind(wx.EVT_MOTION, self.OnShowOrHideToolTip)
-        self.GetGridWindow().Bind(wx.EVT_TIMER, self.OnShowEventToolTip)
+        if '__WXMSW__' in wx.PlatformInfo:
+            self.GetGridWindow().Bind(wx.EVT_MOTION, self.OnShowOrHideToolTip)
+            self.GetGridWindow().Bind(wx.EVT_TIMER, self.OnShowEventToolTip)
 
     def OnShowOrHideToolTip(self, event):
         if not self._tooltip_shown:
@@ -93,7 +94,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         event.Skip()
 
     def _hide_small_tooltip(self):
-        self.GetGridWindow().SetToolTipString("")
+        self.GetGridWindow().SetToolTipString('')
         self._tooltip_shown = False
 
     def OnShowEventToolTip(self, event):
@@ -188,7 +189,10 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def _colorize_grid(self):
         selection_content = self._get_single_selection_content_or_none_on_first_call()
-        self._colorizer.colorize(selection_content)
+        self.highlight(selection_content)
+
+    def highlight(self, text):
+        self._colorizer.colorize(text)
 
     def _get_single_selection_content_or_none_on_first_call(self):
         if self._cell_selected:
