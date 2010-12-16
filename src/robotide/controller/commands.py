@@ -14,10 +14,18 @@
 
 from itertools import chain
 import os
+from robot.parsing.model import ResourceFile
 
-from robotide.controller.macrocontrollers import KeywordNameController
+from robotide.controller.filecontrollers import TestDataDirectoryController, \
+        TestCaseFileController
+from robotide.controller.macrocontrollers import KeywordNameController, \
+        TestCaseController, UserKeywordController
 from robotide.controller.settingcontrollers import _SettingController
 
+cmpmap = {TestDataDirectoryController: 1,
+          TestCaseFileController: 2,
+          TestCaseController: 3,
+          UserKeywordController: 4}
 
 class Occurrence(object):
 
@@ -27,9 +35,41 @@ class Occurrence(object):
         self._replaced = False
         self.count = 1
 
+    def __cmp__(self, other):
+        return self._cmp_by_source(other) or self._cmp_by_type(other) or \
+                self._cmp_by_location(other) or self._cmp_by_usage(other)
+
+    def _cmp_by_source(self, other):
+        if isinstance(self.datafile, ResourceFile):
+            if not isinstance(other.datafile, ResourceFile):
+                return 1
+        if isinstance(other.datafile, ResourceFile):
+            if not isinstance(self.datafile, ResourceFile):
+                return -1
+        return cmp(self.datafile.source, other.datafile.source)
+
+    def _cmp_by_type(self, other):
+        owncls = self._item.parent.__class__
+        othercls = other._item.parent.__class__
+        return cmp(cmpmap[owncls], cmpmap[othercls])
+
+    def _cmp_by_location(self, other):
+        return cmp(self.location, other.location)
+
+    def _cmp_by_usage(self, other):
+        if self.usage.startswith('Steps'):
+            return 1
+        if other.usage.startswith('Steps'):
+            return -1
+        return cmp(self.usage, other.usage)
+
     @property
     def item(self):
         return self._item
+
+    @property
+    def source(self):
+        return self.datafile.source
 
     @property
     def datafile(self):
@@ -242,7 +282,7 @@ class FindUsages(FindOccurrences):
                 usages[key] = occ
             else:
                 usages[key].count += 1
-        return usages.values()
+        return sorted(usages.values())
 
 
 def AddKeywordFromCells(cells):
