@@ -46,6 +46,7 @@ class RIDE(wx.App):
         self.editor = self._get_editor()
         self._load_data()
         self.frame.tree.populate(self.model)
+        self.frame.tree.set_editor(self.editor)
         self._publish_system_info()
         return True
 

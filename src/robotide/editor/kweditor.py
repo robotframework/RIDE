@@ -189,7 +189,10 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def _colorize_grid(self):
         selection_content = self._get_single_selection_content_or_none_on_first_call()
-        self._colorizer.colorize(selection_content)
+        self.highlight(selection_content)
+
+    def highlight(self, text):
+        self._colorizer.colorize(text)
 
     def _get_single_selection_content_or_none_on_first_call(self):
         if self._cell_selected:

@@ -70,6 +70,10 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._popup_creator = PopupCreator()
         self._dragging = False
         self._clear_tree_data()
+        self._editor = None
+
+    def set_editor(self, editor):
+        self._editor = editor
 
     def StartDragging(self):
         self._dragging = True
@@ -557,6 +561,10 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def _variable_updated(self, data):
         self._item_changed(data)
 
+    def highlight(self, data, text):
+        self.select_node_by_data(data)
+        self._editor.highlight(text)
+
 
 class _ActionHandler(wx.Window):
     is_user_keyword = False
@@ -737,7 +745,7 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
     def OnFindOccurrences(self, event):
         name = self.controller.name
         dlg = UsagesDialog(name, self.controller.execute(FindUsages(name)))
-        dlg.add_selection_listener(self._tree.select_node_by_data)
+        dlg.add_selection_listener(self._tree.highlight)
         dlg.Show()
 
 

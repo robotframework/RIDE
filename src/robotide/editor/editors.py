@@ -125,7 +125,7 @@ class _RobotTableEditor(EditorPanel):
                 else SettingEditor
         return editor_cls(self, controller, self.plugin, self._tree)
 
-    def highlight(self, obj, row, column):
+    def highlight_cell(self, obj, row, column):
         '''Highlight the given object at the given row and column'''
         if obj and isinstance(obj, _Setting):
             setting_editor = self._get_settings_editor(obj)
@@ -133,6 +133,9 @@ class _RobotTableEditor(EditorPanel):
                 setting_editor.highlight(column)
         else:
             self.kweditor.select(row, column)
+
+    def highlight(self, text):
+        self.kweditor.highlight(text)
 
     def _get_settings_editor(self, setting):
         '''Return the settings editor for the given setting object'''
@@ -473,13 +476,6 @@ class TestCaseEditor(_RobotTableEditor):
     def view(self):
         _RobotTableEditor.view(self)
         self.kweditor.SetFocus()
-
-    def highlight(self, child, row, column):
-        '''Highlight the given row/column'''
-        kweditor = self.kweditor
-        kweditor.SelectBlock(row, column, row, column)
-        kweditor.SetGridCursor(row, column)
-        kweditor.MakeCellVisible(row, column)
 
 
 class UserKeywordEditor(TestCaseEditor): pass

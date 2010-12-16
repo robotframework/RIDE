@@ -19,6 +19,7 @@ from robotide.widgets import (Dialog, VirtualList, VerticalSizer, ImageList,
 class UsagesDialog(Dialog):
 
     def __init__(self, name, usages):
+        self._name = name
         self._selection_listeners = []
         self.usages = UsagesListModel(usages)
         Dialog.__init__(self, "'%s' - %d usages" %
@@ -30,7 +31,7 @@ class UsagesDialog(Dialog):
 
     def _usage_selected(self, idx):
         for listener in self._selection_listeners:
-            listener(self.usages.usage(idx).item.parent)
+            listener(self.usages.usage(idx).item.parent, self._name)
 
     def add_selection_listener(self, listener):
         self._selection_listeners.append(listener)
