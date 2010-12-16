@@ -3,28 +3,29 @@ import datafilereader
 from robotide.controller.commands import ChangeCellValue, DeleteRows
 from robot.utils.asserts import assert_equals, assert_true, assert_false,\
     assert_none
-from robotide.controller.cellinfo import CellType, ContentType, CellInfo
+from robotide.controller.cellinfo import CellType, ContentType, CellInfo,\
+    CellContent, CellPosition
 
 class TestCellInfoErrors(unittest.TestCase):
 
     def test_empty_mandatory_is_error(self):
-        assert_true(CellInfo(ContentType.EMPTY, CellType.MANDATORY, '', None, None).has_error())
+        assert_true(CellInfo(CellContent(ContentType.EMPTY, '', ''), CellPosition(CellType.MANDATORY, None)).has_error())
 
     def test_none_empty_mandatory_is_not_error(self):
-        assert_false(CellInfo(ContentType.LIBRARY_KEYWORD, CellType.MANDATORY, '', None, None).has_error())
+        assert_false(CellInfo(CellContent(ContentType.LIBRARY_KEYWORD, '', ''), CellPosition(CellType.MANDATORY, None)).has_error())
 
     def test_commented_mandatory_is_error(self):
-        assert_true(CellInfo(ContentType.COMMENTED, CellType.MANDATORY, '', None, None).has_error())
+        assert_true(CellInfo(CellContent(ContentType.COMMENTED, '', ''), CellPosition(CellType.MANDATORY, None)).has_error())
 
     def test_none_empty_mandatory_empty_is_error(self):
-        assert_true(CellInfo(ContentType.STRING, CellType.MUST_BE_EMPTY, '', None, None).has_error())
+        assert_true(CellInfo(CellContent(ContentType.STRING, '', ''), CellPosition(CellType.MUST_BE_EMPTY, None)).has_error())
 
     def test_empty_mandatory_empty_is_not_error(self):
-        assert_false(CellInfo(ContentType.EMPTY, CellType.MUST_BE_EMPTY, '', None, None).has_error())
+        assert_false(CellInfo(CellContent(ContentType.EMPTY, '', ''), CellPosition(CellType.MUST_BE_EMPTY, None)).has_error())
 
     def test_optional_has_no_error(self):
-        assert_false(CellInfo(ContentType.EMPTY, CellType.OPTIONAL, '', None, None).has_error())
-        assert_false(CellInfo(ContentType.STRING, CellType.OPTIONAL, '', None, None).has_error())
+        assert_false(CellInfo(CellContent(ContentType.EMPTY, '', ''), CellPosition(CellType.OPTIONAL, None)).has_error())
+        assert_false(CellInfo(CellContent(ContentType.STRING, '', ''), CellPosition(CellType.OPTIONAL, None)).has_error())
 
 
 class TestCellInfo(unittest.TestCase):
@@ -187,7 +188,7 @@ class TestSelectionMatcher(unittest.TestCase):
         assert_true(self.matcher('@{foo}', '${foo}'))
 
     def matcher(self, value, cell):
-        info = CellInfo(None, None, cell, None, None)
+        info = CellInfo(CellContent(None, cell, None), CellPosition(None, None))
         return info.matches(value)
 
 if __name__ == "__main__":

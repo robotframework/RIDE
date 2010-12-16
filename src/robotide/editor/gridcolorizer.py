@@ -34,10 +34,15 @@ class Colorizer(object):
     def _colorize_cell(self, row, col, selection_content):
         cell_info = self._controller.get_cell_info(row, col)
         if cell_info is None:
+            self._set_default_colors(row, col)
             return
         self._grid.SetCellTextColour(row, col, self._get_text_color(cell_info))
         self._grid.SetCellBackgroundColour(row, col, self._get_background_color(cell_info, selection_content))
         self._grid.SetCellFont(row, col, self._get_cell_font(row, col, cell_info))
+
+    def _set_default_colors(self, row, col):
+        self._grid.SetCellTextColour(row, col, self._colors.DEFAULT_TEXT)
+        self._grid.SetCellBackgroundColour(row, col, self._colors.DEFAULT_BACKGROUND)
 
     def _get_text_color(self, cell_info):
         return self._colors.get_text_color(cell_info.content_type)
@@ -62,17 +67,20 @@ class Colorizer(object):
 
 class ColorizationSettings(object):
 
+    DEFAULT_TEXT = 'black'
+    DEFAULT_BACKGROUND = 'white'
+
     def __init__(self, settings=None):
         self._settings = settings
 
     def get_background_color(self, type):
         if not self._settings:
-            return '#FFFFFF'
+            return self.DEFAULT_BACKGROUND
         return self._get('background %s' % type)
 
     def get_text_color(self, type):
         if not self._settings:
-            return '#000000'
+            return self.DEFAULT_TEXT
         return self._get('text %s' % type)
 
     def get_highlight_color(self):
