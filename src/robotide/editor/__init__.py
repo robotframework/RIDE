@@ -74,9 +74,9 @@ class EditorPlugin(Plugin):
         self.show_tab(self._tab)
         self._editor.highlight_cell(obj, row, column)
 
-    def highlight(self, string):
+    def highlight(self, text):
         self.show_tab(self._tab)
-        self._editor.highlight(string)
+        self._editor.highlight(text)
 
 
     def register_context_menu_hook_to_grid(self, hook):
