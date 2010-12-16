@@ -361,7 +361,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
         pass
 
     def highlight(self, text):
-        self._value_display.highlight(lambda x: text and text in x)
+        self._value_display.highlight(text)
 
 
 class SettingValueDisplay(wx.TextCtrl):
@@ -416,8 +416,8 @@ class SettingValueDisplay(wx.TextCtrl):
         self._empty_values()
         self._colorize_background()
 
-    def highlight(self, matcher):
-        self._highlight_matcher = matcher
+    def highlight(self, text):
+        self._highlight_matcher = lambda content: utils.highlight_matcher(text, content)
         self._colorize_data()
 
 
