@@ -32,6 +32,10 @@ class Occurrence(object):
         return self._item
 
     @property
+    def datafile(self):
+        return self._item.datafile
+
+    @property
     def location(self):
         return self._item.parent.name
 
