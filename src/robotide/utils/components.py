@@ -22,7 +22,7 @@ class RideHtmlWindow(HtmlWindow):
     def __init__(self, parent, size=wx.DefaultSize, text=None):
         HtmlWindow.__init__(self, parent, size=size)
         self.SetBorders(2)
-        self.SetStandardFonts()
+        self.SetStandardFonts(size=9)
         if text:
             self.SetPage(text)
         self.Bind(wx.EVT_KEY_DOWN, self.OnKey)
