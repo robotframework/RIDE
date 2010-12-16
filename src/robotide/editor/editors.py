@@ -23,6 +23,7 @@ from robotide.controller.settingcontrollers import (DocumentationController,
 from robotide.robotapi import (ResourceFile, TestCaseFile, TestDataDirectory,
                                TestCase, UserKeyword, Variable)
 
+from gridcolorizer import ColorizationSettings
 from kweditor import KeywordEditor
 from listeditor import ListEditor
 from popupwindow import Tooltip
@@ -134,9 +135,6 @@ class _RobotTableEditor(EditorPanel):
         else:
             self.kweditor.select(row, column)
 
-    def highlight(self, text):
-        self.kweditor.highlight(text)
-
     def _get_settings_editor(self, setting):
         '''Return the settings editor for the given setting object'''
         for child in self.GetChildren():
@@ -144,6 +142,10 @@ class _RobotTableEditor(EditorPanel):
                 if child._item == setting:
                     return child
         return None
+
+    def highlight(self, text):
+        for editor in self._editors:
+            editor.highlight(text)
 
 
 class ResourceFileEditor(_RobotTableEditor):
@@ -358,6 +360,9 @@ class SettingEditor(wx.Panel, RideEventHandler):
     def close(self):
         pass
 
+    def highlight(self, text):
+        self._value_display.highlight(lambda x: text and text in x)
+
 
 class SettingValueDisplay(wx.TextCtrl):
 
@@ -365,22 +370,55 @@ class SettingValueDisplay(wx.TextCtrl):
         wx.TextCtrl.__init__(self, parent, size=(-1, context.SETTING_ROW_HEIGTH),
                              style=wx.TE_RICH|wx.TE_MULTILINE)
         self.SetEditable(False)
+        self._colour_provider = ColorizationSettings(context.SETTINGS)
+        self._highlight_matcher = lambda x: False
+        self._empty_values()
+
+    def _empty_values(self):
+        self._value = None
+        self._is_user_keyword = False
 
     def set_value(self, controller, plugin):
-        self.SetBackgroundColour('white')
-        self.SetValue(controller.display_value)
-        name = controller.keyword_name
-        if plugin.is_user_keyword(name):
-            self._style_user_keyword_name(name)
+        self._value = controller.display_value
+        self._keyword_name = controller.keyword_name
+        self._is_user_keyword = plugin.is_user_keyword(self._keyword_name)
+        self.SetValue(self._value)
+        self._colorize_data()
 
-    def _style_user_keyword_name(self, name):
+    def _colorize_data(self):
+        self._colorize_background()
+        self._colorize_possible_user_keyword()
+
+    def _colorize_background(self):
+        if self._value is None:
+            self.SetBackgroundColour('light grey')
+        elif self._highlight_matcher(self._value):
+            self.SetBackgroundColour(self._get_highlight_colour())
+        else:
+            self.SetBackgroundColour('white')
+
+    def _get_highlight_colour(self):
+        return self._colour_provider.get_highlight_color()
+
+    def _colorize_possible_user_keyword(self):
+        if not self._is_user_keyword:
+            return
+        if self._highlight_matcher(self._value):
+            background = self._get_highlight_colour()
+        else:
+            background = wx.NullColour
         font = self.GetFont()
         font.SetUnderlined(True)
-        self.SetStyle(0, len(name), wx.TextAttr('blue', wx.NullColour, font))
+        self.SetStyle(0, len(self._keyword_name), wx.TextAttr('blue', background, font))
 
     def clear(self):
         self.Clear()
-        self.SetBackgroundColour('light grey')
+        self._empty_values()
+        self._colorize_background()
+
+    def highlight(self, matcher):
+        self._highlight_matcher = matcher
+        self._colorize_data()
 
 
 class DocumentationEditor(SettingEditor):
@@ -407,6 +445,9 @@ class DocumentationEditor(SettingEditor):
         if value_list:
             self._controller.editable_value = value_list[0]
 
+    def highlight(self, text):
+        pass
+
 
 class TestCaseEditor(_RobotTableEditor):
 
@@ -422,6 +463,7 @@ class TestCaseEditor(_RobotTableEditor):
     def _create_kweditor(self):
         self.kweditor = KeywordEditor(self, self.controller, self._tree)
         self.sizer.Add(self.kweditor, 1, wx.EXPAND|wx.ALL, 2)
+        self._editors.append(self.kweditor)
 
     def _settings_changed(self, data):
         if data.item == self.controller:
@@ -502,6 +544,9 @@ class _AbstractListEditor(ListEditor):
         pass
 
     def OnMotion(self, event):
+        pass
+
+    def highlight(self, text):
         pass
 
 

@@ -48,6 +48,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
                                 max((controller.max_columns + 1), 5),
                                 parent.plugin._grid_popup_creator)
             self._tooltip_timer = wx.Timer(self.GetGridWindow(), 1234)
+            self._parent = parent
             self._plugin = parent.plugin
             self._cell_selected = False
             self._colorizer = Colorizer(self, controller, ColorizationSettings(SETTINGS))
@@ -170,6 +171,9 @@ class KeywordEditor(GridEditor, RideEventHandler):
         if self._execute(MoveRowsDown(self.selection.rows())):
             self._shift_selection(1)
 
+    def OnMotion(self, event):
+        pass
+
     def _shift_selection(self, shift):
         self.ClearSelection()
         for r in self.selection.rows():
@@ -189,7 +193,10 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def _colorize_grid(self):
         selection_content = self._get_single_selection_content_or_none_on_first_call()
-        self.highlight(selection_content)
+        if selection_content is None:
+            self.highlight(selection_content)
+        else:
+            self._parent.highlight(selection_content)
 
     def highlight(self, text):
         self._colorizer.colorize(text)
