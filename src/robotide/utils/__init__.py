@@ -24,6 +24,7 @@ from components import RideHtmlWindow
 from eventhandler import RideEventHandler
 from variablematcher import is_variable, is_scalar_variable, is_list_variable, \
     get_variable, get_variable_basename, find_variable_basenames
+from highlightmatcher import highlight_matcher
 
 
 def name_from_class(item, drop=None):

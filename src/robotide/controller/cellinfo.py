@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide import utils
+from robotide.utils import highlight_matcher
 
 
 class CellInfo(object):
@@ -50,32 +50,7 @@ class CellInfo(object):
             and self.content_type not in [ContentType.EMPTY, ContentType.COMMENTED]
 
     def matches(self, value):
-        return self._matcher(value, self._cell_content.value)
-
-    def _matcher(self, value, content):
-        if not value or not content:
-            return False
-        selection = utils.normalize(value, ignore=['_'])
-        if not selection:
-            return False
-        target = utils.normalize(content, ignore=['_'])
-        if not target:
-            return False
-        if selection == target:
-            return True
-        return self._variable_matches(selection, target)
-
-    def _variable_matches(self, selection, target):
-        variable = utils.get_variable_basename(selection)
-        if not variable:
-            return False
-        variables = utils.find_variable_basenames(target)
-        if variable in variables:
-            return True
-        return self._list_variable_used_as_scalar(variable, variables)
-
-    def _list_variable_used_as_scalar(self, variable, variables):
-        return '$%s' % variable[1:] in variables
+        return highlight_matcher(value, self._cell_content.value)
 
 
 def TipMessage(cell):
