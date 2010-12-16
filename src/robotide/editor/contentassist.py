@@ -13,7 +13,6 @@
 #  limitations under the License.
 
 import wx
-from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 from wx.lib.expando import ExpandoTextCtrl
 
 from robotide import context
@@ -140,7 +139,7 @@ class ContentAssistPopup(object):
             self._list.ClearAll()
             self.hide()
             return False
-        self._list.populate(['name', 'source'], self._choices)
+        self._list.populate(self._choices)
         return True
 
     def _starts(self, val1, val2):
@@ -232,12 +231,11 @@ class ContentAssistPopup(object):
         self._parent.OnFocusLost(event)
 
 
-class ContentAssistList(wx.ListCtrl, ListCtrlAutoWidthMixin):
+class ContentAssistList(wx.ListCtrl):
 
     def __init__(self, parent, selection_callback, activation_callback=None):
         style = wx.LC_REPORT | wx.LC_SINGLE_SEL | wx.LC_NO_HEADER
         wx.ListCtrl.__init__(self, parent, style=style)
-        ListCtrlAutoWidthMixin.__init__(self)
         self._selection_callback = selection_callback
         self._activation_callback = activation_callback
         self.SetSize(parent.GetSize())
@@ -245,19 +243,12 @@ class ContentAssistList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, selection_callback)
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, activation_callback)
 
-    def populate(self, colnames, data):
+    def populate(self, data):
         self.ClearAll()
-        self._create_columns(colnames)
+        self.InsertColumn(0, '', width=self.Size[0])
         for row, item in enumerate(data):
             self.InsertStringItem(row, item.name)
-            self.SetStringItem(row, 1, item.source)
         self.Select(0)
-
-    def _create_columns(self, colnames):
-        for index, colname in enumerate(colnames):
-            self.InsertColumn(index, colname)
-        self.SetColumnWidth(0, 230)
-        self.resizeLastColumn(_PREFERRED_POPUP_SIZE[0] - 230)
 
     def get_text(self, index):
         return self.GetItem(index).GetText()
