@@ -357,14 +357,14 @@ class StepController(object):
         return values[col]
 
     def get_cell_info(self, col):
-        position = self._get_cell_type(col)
-        content = self._get_content_type(col)
+        position = self._get_cell_position(col)
+        content = self._get_content_with_type(col)
         return self._build_cell_info(content, position)
 
     def _build_cell_info(self, content, position):
         return CellInfo(content, position)
 
-    def _get_cell_type(self, col):
+    def _get_cell_position(self, col):
         # TODO: refactor
         col -= len(self._step.assign)
         if col < 0:
@@ -400,7 +400,7 @@ class StepController(object):
                 return True
         return False
 
-    def _get_content_type(self, col):
+    def _get_content_with_type(self, col):
         value = self.get_value(col)
         if self._is_commented(col):
             return CellContent(ContentType.COMMENTED, value, None)
@@ -600,7 +600,7 @@ class ForLoopStepController(StepController):
     def _set_raw_steps(self, steps):
         self._step.steps = steps
 
-    def _get_cell_type(self, col):
+    def _get_cell_position(self, col):
         until_range = len(self._step.vars)+1
         if col <= until_range:
             return CellPosition(CellType.MANDATORY, None)
@@ -681,15 +681,15 @@ class IntendedStepController(StepController):
     def as_list(self):
         return ['']+self._step.as_list()
 
-    def _get_cell_type(self, col):
+    def _get_cell_position(self, col):
         if col == 0:
             return CellPosition(CellType.MUST_BE_EMPTY, None)
-        return StepController._get_cell_type(self, col-1)
+        return StepController._get_cell_position(self, col-1)
 
-    def _get_content_type(self, col):
+    def _get_content_with_type(self, col):
         if col == 0:
             return CellContent(ContentType.EMPTY, None, None)
-        return StepController._get_content_type(self, col)
+        return StepController._get_content_with_type(self, col)
 
     def comment(self):
         self._step.__init__(['Comment'] + self._step.as_list())
