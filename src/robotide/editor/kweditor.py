@@ -44,7 +44,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def __init__(self, parent, controller, tree):
         try:
-            GridEditor.__init__(self, parent, len(controller.steps) + 5, 
+            GridEditor.__init__(self, parent, len(controller.steps) + 5,
                                 max((controller.max_columns + 1), 5),
                                 parent.plugin._grid_popup_creator)
             self._tooltip_timer = wx.Timer(self.GetGridWindow(), 1234)
@@ -368,8 +368,9 @@ class KeywordEditor(GridEditor, RideEventHandler):
         return self.IsShownOnScreen() and self.FindFocus()
 
     def _cell_under_cursor(self):
-        coords = self.ScreenToClient(wx.GetMousePosition())
-        return self.XYToCell(*self.CalcUnscrolledPosition(coords))
+        x, y = self.ScreenToClient(wx.GetMousePosition())
+        x -= self.RowLabelSize
+        return self.XYToCell(*self.CalcUnscrolledPosition(x, y))
 
     def _show_possible_user_keyword_link(self, cell):
         if cell == self._marked_cell:
