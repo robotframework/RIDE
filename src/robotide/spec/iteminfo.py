@@ -77,7 +77,11 @@ class VariableInfo(ItemInfo):
             if value is None:
                 value = []
             value = '[ %s ]' % ' | '.join(unicode(v) for v in value)
-        return 'Source: %s<br><br>Value:<br>%s' % (source, unicode(value)) 
+        return ('<table>'
+                '<tr><td><i>Name:</i></td><td>%s</td></tr>'
+                '<tr><td><i>Source:</i></td><td>%s</td></tr>'
+                '<tr><td valign=top><i>Value:</i></td><td>%s</td></tr>'
+                '</table>') % (name, source, unicode(value))
 
 
 class ArgumentInfo(VariableInfo):
@@ -102,8 +106,15 @@ class _KeywordInfo(ItemInfo):
         return self._parse_args(self.item)
 
     def _details(self, item):
-        return 'Source: %s &lt;%s&gt;<br><br>Arguments: %s<br><br>%s' % \
-                (self._source(item), self._type,
+        return ('<table>'
+                '<tr><td><i>Name:</i></td><td>%s</td></tr>'
+                '<tr><td><i>Source:</i></td><td>%s &lt;%s&gt;</td></tr>'
+                '<tr><td><i>Arguments:</i></td><td>%s</td></tr>'
+                '</table>'
+                '<table>'
+                '<tr><td>%s</td></tr>'
+                '</table>') % \
+                (self._name(item), self._source(item), self._type,
                  self._format_args(self._parse_args(item)),
                  html_escape(self.doc, formatting=True))
 
