@@ -19,6 +19,7 @@ class VirtualList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         for idx, name in enumerate(headers):
             self.InsertColumn(idx, name)
         self.SetColumnWidth(0, 200)
+        self.SetColumnWidth(1, 160)
 
     def add_selection_listener(self, listener):
         self._selection_listeners.append(listener)
