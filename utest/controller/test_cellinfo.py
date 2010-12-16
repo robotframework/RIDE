@@ -1,6 +1,6 @@
 import unittest
 import datafilereader
-from robotide.controller.commands import ChangeCellValue
+from robotide.controller.commands import ChangeCellValue, DeleteRows
 from robot.utils.asserts import assert_equals, assert_true, assert_false,\
     assert_none
 from robotide.controller.cellinfo import CellType, ContentType, CellInfo
@@ -29,13 +29,17 @@ class TestCellInfoErrors(unittest.TestCase):
 
 class TestCellInfo(unittest.TestCase):
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         ctrl = datafilereader.construct_chief_controller(datafilereader.ARGUMENTS_PATH)
-        self.testsuite = datafilereader.get_ctrl_by_name('Suite', ctrl.datafiles)
-        self.test = self.testsuite.tests[0]
-        self.keyword1 = [kw for kw in self.testsuite.keywords if kw.name == 'KW1'][0]
-        self.keyword2 = [kw for kw in self.testsuite.keywords if kw.name == 'KW2'][0]
-        self.keyword3 = [kw for kw in self.testsuite.keywords if kw.name == 'KW3'][0]
+        testsuite = datafilereader.get_ctrl_by_name('Suite', ctrl.datafiles)
+        cls.test = testsuite.tests[0]
+        cls.keyword1 = [kw for kw in testsuite.keywords if kw.name == 'KW1'][0]
+        cls.keyword2 = [kw for kw in testsuite.keywords if kw.name == 'KW2'][0]
+        cls.keyword3 = [kw for kw in testsuite.keywords if kw.name == 'KW3'][0]
+
+    def tearDown(self):
+        self.test.execute(DeleteRows([i for i in range(len(self.test.steps))]))
 
     def test_no_cell_info_if_no_data(self):
         assert_none(self.test.get_cell_info(0, 0))
