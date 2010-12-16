@@ -22,10 +22,11 @@ class UsagesDialog(Dialog):
         self._name = name
         self._selection_listeners = []
         self.usages = UsagesListModel(usages)
-        Dialog.__init__(self, "'%s' - %d usages" %
-                              (name, self.usages.total_usages))
+        title = "'%s' - %d usages" % (name, self.usages.total_usages)
+        Dialog.__init__(self, title=title, size=(650, 400))
         self.SetSizer(VerticalSizer())
-        usage_list = VirtualList(self, ['Location', 'Usage'], self.usages)
+        usage_list = VirtualList(self, ['Location', 'Usage', 'Source'],
+                                 self.usages)
         usage_list.add_selection_listener(self._usage_selected)
         self.Sizer.add_expanding(usage_list)
 
@@ -54,7 +55,7 @@ class UsagesListModel(object):
 
     def item_text(self, row, col):
         u = self._usages[row]
-        return [u.location,  u.usage][col]
+        return [u.location,  u.usage, u.source][col]
 
     def image(self, item):
         # TODO: better mechanism for item type recognition
