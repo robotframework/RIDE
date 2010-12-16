@@ -20,7 +20,7 @@ from robotide import context
 from popupwindow import RidePopupWindow, Tooltip
 
 
-_PREFERRED_POPUP_SIZE = (450, 200)
+_PREFERRED_POPUP_SIZE = (400, 200)
 
 
 class _ContentAssistTextCtrlBase(object):
