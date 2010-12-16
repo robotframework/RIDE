@@ -3,21 +3,26 @@ from robotide import utils
 
 class CellInfo(object):
 
-    def __init__(self, content_type, cell_type, cell_value, arg_name, source, for_loop=False):
-        self._content_type = content_type
-        self._cell_type = cell_type
-        self._cell_value = cell_value
-        self.arg_name = arg_name
-        self.source = source
+    def __init__(self, cell_content, cell_position, for_loop=False):
+        self._cell_content = cell_content
+        self._cell_position = cell_position
         self.for_loop = for_loop
 
     @property
     def content_type(self):
-        return self._content_type
+        return self._cell_content.type
 
     @property
     def cell_type(self):
-        return self._cell_type
+        return self._cell_position.type
+
+    @property
+    def source(self):
+        return self._cell_content.source
+
+    @property
+    def arg_name(self):
+        return self._cell_position.argument_name
 
     def has_error(self):
         return self.argument_missing() or self.too_many_arguments()
@@ -31,13 +36,12 @@ class CellInfo(object):
             and self.content_type not in [ContentType.EMPTY, ContentType.COMMENTED]
 
     def matches(self, value):
-        # TODO: refactor
-        if not value or not self._cell_value:
+        if not value or not self._cell_content.value:
             return False
         selection = utils.normalize(value, ignore=['_'])
         if not selection:
             return False
-        cell = utils.normalize(self._cell_value, ignore=['_'])
+        cell = utils.normalize(self._cell_content.value, ignore=['_'])
         if not cell:
             return False
         if selection == cell:
@@ -118,6 +122,21 @@ class _ForLoopTooltipMessage(_TooltipMessage):
         if cell.too_many_arguments():
             return "Too many parameters in for loop"
         return ''
+
+
+class CellContent(object):
+
+    def __init__(self, type, value, source):
+        self.type = type
+        self.value = value
+        self.source = source
+
+
+class CellPosition(object):
+
+    def __init__(self, type, argument_name):
+        self.type= type
+        self.argument_name = argument_name
 
 
 class ContentType:
