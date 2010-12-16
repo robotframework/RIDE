@@ -69,6 +69,16 @@ def TipMessage(cell):
 
 class _TooltipMessage(object):
 
+    TOO_MANY_ARGUMENTS = "Too many arguments"
+    KEYWORD_NOT_FOUND = "Keyword not found"
+    VARIABLE_ASSIGMENT = 'Variable assignment'
+
+    ARGUMENT = "Argument:  %s"
+    OPTIONAL_ARGUMENT = "Optional argument:  %s"
+    MISSING_ARGUMENT = "Missing argument:  %s"
+
+    KEYWORD = "Keyword from:  %s\n\nPress <ctrl> for details"
+
     def __init__(self, cell):
         self.message = self._get_message(cell)
 
@@ -85,26 +95,26 @@ class _TooltipMessage(object):
 
     def _must_be_empty(self, cell):
         if cell.too_many_arguments():
-            return "Too many arguments"
+            return self.TOO_MANY_ARGUMENTS
         return ''
 
     def _mandatory(self, cell):
         if cell.argument_missing():
-            return "Missing argument:  %s" % cell.arg_name
-        return "Argument:  %s" % cell.arg_name
+            return self.MISSING_ARGUMENT % cell.arg_name
+        return self.ARGUMENT % cell.arg_name
 
     def _optional(self, cell):
-        return "Optional argument:  %s" % cell.arg_name
+        return self.OPTIONAL_ARGUMENT % cell.arg_name
 
     def _keyword(self, cell):
         if cell.content_type == ContentType.STRING:
-            return "Keyword not found"
+            return self.KEYWORD_NOT_FOUND
         if cell.content_type in ContentType.KEYWORDS:
-            return "Keyword from:  %s\n\nPress <ctrl> for details" % cell.source
+            return self.KEYWORD % cell.source
         return ''
 
     def _assign(self, cell):
-        return 'Variable assignment'
+        return self.VARIABLE_ASSIGMENT
 
     def _unknown(self, cell):
         return ''
@@ -118,9 +128,11 @@ class _TooltipMessage(object):
 
 class _ForLoopTooltipMessage(_TooltipMessage):
 
+    TOO_MANY_ARGUMENTS = "Too many parameters in for loop"
+
     def _get_message(self, cell):
         if cell.too_many_arguments():
-            return "Too many parameters in for loop"
+            return self.TOO_MANY_ARGUMENTS
         return ''
 
 
