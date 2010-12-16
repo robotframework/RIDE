@@ -50,23 +50,26 @@ class CellInfo(object):
             and self.content_type not in [ContentType.EMPTY, ContentType.COMMENTED]
 
     def matches(self, value):
-        if not value or not self._cell_content.value:
+        return self._matcher(value, self._cell_content.value)
+
+    def _matcher(self, value, content):
+        if not value or not content:
             return False
         selection = utils.normalize(value, ignore=['_'])
         if not selection:
             return False
-        cell = utils.normalize(self._cell_content.value, ignore=['_'])
-        if not cell:
+        target = utils.normalize(content, ignore=['_'])
+        if not target:
             return False
-        if selection == cell:
+        if selection == target:
             return True
-        return self._variable_matches(selection, cell)
+        return self._variable_matches(selection, target)
 
-    def _variable_matches(self, selection, cell):
+    def _variable_matches(self, selection, target):
         variable = utils.get_variable_basename(selection)
         if not variable:
             return False
-        variables = utils.find_variable_basenames(cell)
+        variables = utils.find_variable_basenames(target)
         if variable in variables:
             return True
         return self._list_variable_used_as_scalar(variable, variables)
