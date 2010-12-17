@@ -120,7 +120,7 @@ class _RobotTableEditor(EditorPanel):
     def _add_settings(self):
         for setting in self.controller.settings:
             editor = self._create_editor_for(setting)
-            self.sizer.Add(editor, 0, wx.ALL|wx.EXPAND, 1)
+            self.sizer.Add(editor, 0, wx.ALL|wx.EXPAND, 2)
             self._editors.append(editor)
 
     def _create_editor_for(self, controller):
@@ -405,7 +405,7 @@ class SettingValueDisplay(wx.TextCtrl):
             return
         font = self.GetFont()
         font.SetUnderlined(True)
-        self.SetStyle(0, len(self._keyword_name), 
+        self.SetStyle(0, len(self._keyword_name),
                       wx.TextAttr('blue', self._get_background_colour(), font))
 
     def clear(self):
