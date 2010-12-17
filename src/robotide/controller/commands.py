@@ -62,7 +62,7 @@ class Occurrence(object):
             return self._item.label
         elif self._in_kw_name():
             return 'Keyword Name'
-        return 'Steps' if self.count == 1 else 'Steps (%d occurrences)' % self.count
+        return 'Steps' if self.count == 1 else 'Steps (%d usages)' % self.count
 
     def _in_settings(self):
         return isinstance(self._item, _SettingController)
@@ -259,15 +259,15 @@ class FindUsages(FindOccurrences):
 
     def execute(self, context):
         prev = None
-        for u in FindOccurrences.execute(self, context):
-            if isinstance(u.item, KeywordNameController):
+        for occ in FindOccurrences.execute(self, context):
+            if isinstance(occ.item, KeywordNameController):
                 continue
-            if prev == u:
+            if prev == occ:
                 prev.count += 1
             else:
                 if prev:
                     yield prev
-                prev = u
+                prev = occ
         if prev:
             yield prev
 
