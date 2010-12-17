@@ -21,6 +21,7 @@ class UsagesDialog(Dialog):
     def __init__(self, name, usages):
         self._name = name
         self._selection_listeners = []
+        usages = list(usages)
         self.usages = UsagesListModel(usages)
         title = "'%s' - %d usages" % (name, self.usages.total_usages)
         Dialog.__init__(self, title=title, size=(650, 400))
@@ -59,7 +60,7 @@ class UsagesListModel(object):
 
     def image(self, item):
         # TODO: better mechanism for item type recognition
-        parent_type = self._usages[item].parent
+        parent_type = self._usages[item].parent.__class__.__name__
         return {'TestCaseController': 0,
                 'UserKeywordController': 1,
                 'TestCaseFileController': 2,
