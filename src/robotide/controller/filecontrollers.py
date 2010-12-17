@@ -281,6 +281,8 @@ class TestCaseFileController(_DataController):
     def reload(self):
         self.__init__(TestCaseFile(source=self.source), self._chief_controller)
 
+    def get_template(self):
+        return self.data.setting_table.test_template
 
 class ResourceFileController(_DataController):
 

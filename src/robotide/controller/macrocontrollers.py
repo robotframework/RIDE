@@ -95,6 +95,9 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
     def max_columns(self):
         return max(chain((len(step.as_list()) for step in self.steps) , [0]))
 
+    def has_template(self):
+        return False
+
     def step(self, index):
         return self.steps[index]
 
@@ -280,6 +283,18 @@ class TestCaseController(_BaseController, _WithStepsController):
     def get_local_variables(self):
         return {}
 
+    def has_template(self):
+        template = self._get_template()
+        if not template:
+            return False
+        return bool(template.value)
+
+    def _get_template(self):
+        template = self._test.template
+        if template.value is not None:
+            return template 
+        return self.datafile_controller.get_template()
+
 
 class UserKeywordController(_BaseController, _WithStepsController):
     _populator = UserKeywordPopulator
@@ -366,6 +381,8 @@ class StepController(object):
 
     def _get_cell_position(self, col):
         # TODO: refactor
+        if self.parent.has_template():
+            return CellPosition(CellType.UNKNOWN, None)
         col -= len(self._step.assign)
         if col < 0:
             return CellPosition(CellType.ASSIGN, None)
@@ -670,6 +687,9 @@ class ForLoopStepController(StepController):
 
     def notify_steps_changed(self):
         self.notify_value_changed()
+
+    def has_template(self):
+        return self.parent.has_template()
 
 
 class IntendedStepController(StepController):
