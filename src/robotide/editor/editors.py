@@ -258,9 +258,6 @@ class SettingEditor(wx.Panel, RideEventHandler):
 
     def OnKey(self, event):
         self._tooltip.hide()
-        char = unichr(event.GetUnicodeKey())
-        if char.isalnum() or char.isspace() and not self._editing:
-            wx.CallAfter(self.OnEdit, event)
         event.Skip()
 
     def OnMotion(self, event):
