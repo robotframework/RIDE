@@ -19,13 +19,14 @@ from robot.parsing.model import ResourceFile
 from robotide.controller.filecontrollers import TestDataDirectoryController, \
         TestCaseFileController
 from robotide.controller.macrocontrollers import KeywordNameController, \
-        TestCaseController, UserKeywordController
+        TestCaseController, UserKeywordController, ForLoopStepController
 from robotide.controller.settingcontrollers import _SettingController
 
 cmpmap = {TestDataDirectoryController: 1,
           TestCaseFileController: 2,
           TestCaseController: 3,
-          UserKeywordController: 4}
+          UserKeywordController: 4,
+          ForLoopStepController: 5}
 
 class Occurrence(object):
 
