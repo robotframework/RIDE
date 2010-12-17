@@ -17,7 +17,7 @@ import wx
 from robotide import context
 from robotide import utils
 from robotide.utils import RideEventHandler, RideHtmlWindow
-from robotide.widgets import ButtonWithHandler
+from robotide.widgets import ButtonWithHandler, HorizontalSizer
 from robotide.controller.settingcontrollers import (DocumentationController,
                                                     VariableController)
 from robotide.robotapi import (ResourceFile, TestCaseFile, TestDataDirectory,
@@ -34,8 +34,9 @@ from robotide.publish.messages import (RideItemSettingsChanged,
                                        RideItemNameChanged,
                                        RideInitFileRemoved)
 from robot.parsing.settings import _Setting
-from robotide.controller.commands import UpdateVariable
+from robotide.controller.commands import UpdateVariable, FindUsages
 from robotide.publish import PUBLISHER
+from robotide.ui.usagesdialog import UsagesDialog
 
 
 class WelcomePage(RideHtmlWindow):
@@ -81,7 +82,8 @@ class _RobotTableEditor(EditorPanel):
         self.Bind(wx.EVT_MOTION, self.OnMotion)
         self.SetSizer(self.sizer)
         if self.title:
-            self.sizer.Add(self._create_header(self.title), 0, wx.ALL, 5)
+            self.sizer.Add(self._create_header(self.title),
+                           0, wx.EXPAND|wx.ALL, 5)
             self.sizer.Add((0,10))
         self._editors = []
         self.reset_last_show_tooltip()
@@ -156,7 +158,7 @@ class ResourceFileEditor(_RobotTableEditor):
 
     def _populate(self):
         datafile = self.controller.data
-        self.sizer.Add(self._create_header(datafile.name), 0, wx.ALL, 5)
+        self.sizer.Add(self._create_header(datafile.name), 0, wx.EXPAND|wx.ALL, 5)
         self.sizer.Add(self._create_source_label(datafile.source), 0, wx.ALL, 1)
         self.sizer.Add((0, 10))
         self._add_settings()
@@ -233,8 +235,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
         self.update_value()
         self._tooltip = self._get_tooltip()
         sizer.Add(self._value_display, 1, wx.EXPAND)
-        sizer.Add(ButtonWithHandler(self, 'Edit'), flag=wx.LEFT|wx.RIGHT, border=5)
-        sizer.Add(ButtonWithHandler(self, 'Clear'))
+        sizer.Add(ButtonWithHandler(self, 'Clear'), 0, wx.RIGHT, 5)
         sizer.Layout()
         self.SetSizer(sizer)
 
@@ -453,7 +454,7 @@ class TestCaseEditor(_RobotTableEditor):
 
     def _populate(self):
         self.header = self._create_header(self.controller.name)
-        self.sizer.Add(self.header, 0, wx.ALL, 5)
+        self.sizer.Add(self.header, 0, wx.EXPAND|wx.ALL, 5)
         self._add_settings()
         self.sizer.Add((0,10))
         self._create_kweditor()
@@ -520,7 +521,19 @@ class TestCaseEditor(_RobotTableEditor):
         self.kweditor.SetFocus()
 
 
-class UserKeywordEditor(TestCaseEditor): pass
+class UserKeywordEditor(TestCaseEditor):
+
+    def _create_header(self, name):
+        sizer = HorizontalSizer()
+        sizer.add_expanding(_RobotTableEditor._create_header(self, name))
+        sizer.add(ButtonWithHandler(self, 'Find Usages', self._on_show_usages))
+        return sizer
+
+    def _on_show_usages(self, event):
+        name = self.controller.name
+        dlg = UsagesDialog(name, self.controller.execute(FindUsages(name)))
+        dlg.add_selection_listener(self._tree.highlight)
+        dlg.Show()
 
 
 class _AbstractListEditor(ListEditor):
