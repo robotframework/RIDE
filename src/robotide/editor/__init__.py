@@ -78,7 +78,6 @@ class EditorPlugin(Plugin):
         self.show_tab(self._tab)
         self._editor.highlight(text)
 
-
     def register_context_menu_hook_to_grid(self, hook):
         """ Used to register own items to grid's right click context menu
 

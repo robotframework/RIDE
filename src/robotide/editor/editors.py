@@ -32,7 +32,7 @@ from editordialogs import (EditorDialog, DocumentationDialog, MetadataDialog,
                            LibraryDialog, ResourceDialog, VariablesDialog)
 from robotide.publish.messages import (RideItemSettingsChanged,
                                        RideItemNameChanged,
-                                       RideInitFileRemoved)
+                                       RideInitFileRemoved, RideImportSetting)
 from robot.parsing.settings import _Setting
 from robotide.controller.commands import UpdateVariable, FindUsages
 from robotide.publish import PUBLISHER
@@ -224,6 +224,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
         self._tree = tree
         self._editing = False
         self.Bind(wx.EVT_MOTION, self.OnMotion)
+        self.plugin.subscribe(self.update_value, RideImportSetting)
 
     def _create_controls(self):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -349,7 +350,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
         self._controller.clear()
         self._update_and_notify()
 
-    def update_value(self):
+    def update_value(self, event=None):
         if self._controller.is_set:
             self._value_display.set_value(self._controller, self.plugin)
         else:
@@ -359,7 +360,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
         return self._controller.datafile_controller
 
     def close(self):
-        pass
+        self.plugin.unsubscribe(self.update_value, RideImportSetting)
 
     def highlight(self, text):
         self._value_display.highlight(text)
@@ -425,7 +426,7 @@ class DocumentationEditor(SettingEditor):
         ctrl.Bind(wx.EVT_LEFT_DOWN, self.OnEdit)
         return ctrl
 
-    def update_value(self):
+    def update_value(self, event=None):
         self._value_display.SetPage(self._controller.visible_value)
 
     def _get_tooltip(self):
@@ -708,6 +709,8 @@ class EditorCreator(object):
     def editor_for(self, plugin, editor_panel, tree):
         controller = plugin.get_selected_item()
         if not controller:
+            if self._editor:
+                return self._editor
             self._editor = WelcomePage(editor_panel)
             return self._editor
         if self._editor and isinstance(controller, VariableController) and \
