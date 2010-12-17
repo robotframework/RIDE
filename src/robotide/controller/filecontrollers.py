@@ -270,6 +270,10 @@ class TestCaseFileController(_DataController):
     def validate_test_name(self, name):
         return self.tests.validate_name(name)
 
+    def remove_child(self, controller):
+        if controller is self:
+            self.remove()
+
     def remove(self):
         self._chief_controller.remove_datafile(self)
         RideDataFileRemoved(path=self.source, datafile=self).publish()
