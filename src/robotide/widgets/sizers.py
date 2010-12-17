@@ -1,10 +1,10 @@
 import wx
 
 
-class VerticalSizer(wx.BoxSizer):
+class _BoxSizer(wx.BoxSizer):
 
     def __init__(self):
-        wx.BoxSizer.__init__(self, wx.VERTICAL)
+        wx.BoxSizer.__init__(self, self.direction)
 
     def add(self, component):
         self.Add(component)
@@ -14,3 +14,15 @@ class VerticalSizer(wx.BoxSizer):
 
     def add_expanding(self, component):
         self.Add(component, 1, wx.EXPAND)
+
+
+class VerticalSizer(_BoxSizer):
+    direction = wx.VERTICAL
+
+
+class HorizontalSizer(_BoxSizer):
+    direction = wx.HORIZONTAL
+
+    def add_to_end(self, component):
+        self.Add(component, flag=wx.ALIGN_RIGHT)
+
