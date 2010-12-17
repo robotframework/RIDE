@@ -258,6 +258,9 @@ class SettingEditor(wx.Panel, RideEventHandler):
 
     def OnKey(self, event):
         self._tooltip.hide()
+        char = unichr(event.GetUnicodeKey())
+        if char.isalnum() or char.isspace() and not self._editing:
+            wx.CallAfter(self.OnEdit, event)
         event.Skip()
 
     def OnMotion(self, event):
@@ -332,10 +335,13 @@ class SettingEditor(wx.Panel, RideEventHandler):
         if event.ControlDown() or event.CmdDown():
             self._navigate_to_user_keyword()
         else:
-            selection = self._value_display.GetSelection()
-            if selection[0] == selection[1] and not self._editing:
+            if self._has_selected_area() and not self._editing:
                 wx.CallAfter(self.OnEdit, event)
             event.Skip()
+
+    def _has_selected_area(self):
+        selection = self._value_display.GetSelection()
+        return selection[0] == selection[1]
 
     def _navigate_to_user_keyword(self):
         uk = self.plugin.get_user_keyword(self._controller.keyword_name)
