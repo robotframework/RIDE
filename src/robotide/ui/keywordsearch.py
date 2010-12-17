@@ -124,11 +124,8 @@ class KeywordSearchDialog(wx.Frame):
     def _create_components(self):
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
         self._add_search_control()
-        self._list = _KeywordList(self, self._plugin)
-        self._list.SetSize(self.Size)
-        self.Sizer.Add(self._list, 1, wx.EXPAND| wx.ALL, 3)
-        self._details = utils.RideHtmlWindow(self)
-        self.Sizer.Add(self._details, 1, wx.EXPAND | wx.ALL, 3)
+        self._add_keyword_list()
+        self._add_keyword_details()
         self.SetSize((700,500))
 
     def _add_search_control(self):
@@ -163,6 +160,15 @@ class KeywordSearchDialog(wx.Frame):
             if kw.source not in sources:
                 sources.append(kw.source)
         return [ALL_KEYWORDS, ALL_USER_KEYWORDS, ALL_LIBRARY_KEYWORDS] + sorted(sources)
+
+    def _add_keyword_list(self):
+        self._list = _KeywordList(self, self._plugin)
+        self._list.SetSize(self.Size)
+        self.Sizer.Add(self._list, 1, wx.EXPAND| wx.ALL, 3)
+
+    def _add_keyword_details(self):
+        self._details = utils.RideHtmlWindow(self)
+        self.Sizer.Add(self._details, 1, wx.EXPAND | wx.ALL, 3)
 
     def _make_bindings(self):
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected, self._list)
