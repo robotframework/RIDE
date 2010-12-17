@@ -390,26 +390,22 @@ class SettingValueDisplay(wx.TextCtrl):
         self._colorize_possible_user_keyword()
 
     def _colorize_background(self):
-        if self._value is None:
-            self.SetBackgroundColour('light grey')
-        elif self._highlight_matcher(self._value):
-            self.SetBackgroundColour(self._get_highlight_colour())
-        else:
-            self.SetBackgroundColour('white')
+        self.SetBackgroundColour(self._get_background_colour())
 
-    def _get_highlight_colour(self):
-        return self._colour_provider.get_highlight_color()
+    def _get_background_colour(self):
+        if self._value is None:
+            return 'light grey'
+        if self._highlight_matcher(self._value):
+            return self._colour_provider.get_highlight_color()
+        return 'white'
 
     def _colorize_possible_user_keyword(self):
         if not self._is_user_keyword:
             return
-        if self._highlight_matcher(self._value):
-            background = self._get_highlight_colour()
-        else:
-            background = wx.NullColour
         font = self.GetFont()
         font.SetUnderlined(True)
-        self.SetStyle(0, len(self._keyword_name), wx.TextAttr('blue', background, font))
+        self.SetStyle(0, len(self._keyword_name), 
+                      wx.TextAttr('blue', self._get_background_colour(), font))
 
     def clear(self):
         self.Clear()
