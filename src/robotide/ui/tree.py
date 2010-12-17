@@ -734,7 +734,7 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
     is_user_keyword = True
     _datalist = property(lambda self: self.item.datalist)
     _dialog_class = UserKeywordNameDialog
-    _actions = _TestOrUserKeywordHandler._actions + ['Find Occurrences']
+    _actions = _TestOrUserKeywordHandler._actions + ['Find Usages']
 
     def _add_copy_to_tree(self, parent_node, copied):
         self._tree.add_keyword(parent_node, copied)
@@ -742,7 +742,7 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
     def _rename(self, new_name):
         self.controller.execute(RenameKeywordOccurrences(self.controller.name, new_name))
 
-    def OnFindOccurrences(self, event):
+    def OnFindUsages(self, event):
         name = self.controller.name
         dlg = UsagesDialog(name, self.controller.execute(FindUsages(name)))
         dlg.add_selection_listener(self._tree.highlight)
