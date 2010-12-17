@@ -54,6 +54,8 @@ class PreviewPlugin(Plugin):
         self._update_preview()
 
     def OnTreeSelection(self, event):
+        if event and event.text == 'Resources':
+            return
         if self.tab_is_visible(self._panel):
             self._panel.tree_node_selected(event.item)
 
