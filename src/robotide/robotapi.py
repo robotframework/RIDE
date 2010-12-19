@@ -24,7 +24,7 @@ from robot.parsing.model import Variable
 from robot.running import TestLibrary
 from robot.output import LOGGER as ROBOT_LOGGER
 from robot.variables import Variables as RobotVariables
-from robot.variables import is_scalar_var, is_list_var, is_var
+from robot.variables import is_scalar_var, is_list_var, is_var, VariableSplitter
 
 
 ROBOT_VERSION = get_version()

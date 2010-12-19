@@ -31,11 +31,11 @@ from robotide.spec.iteminfo import (TestCaseUserKeywordInfo,
     ArgumentInfo)
 from robotide.robotapi import NormalizedDict, is_var
 from robotide import utils
+from robotide.namespace.embeddedargs import EmbeddedArgsHandler
 
 
 class Namespace(object):
 
-    regexp = re.compile("\s*(given|when|then|and)(.*)", re.IGNORECASE)
 
     def __init__(self):
         self.lib_cache = LibraryCache()
@@ -130,17 +130,8 @@ class Namespace(object):
     def find_keyword(self, datafile, kw_name):
         if not kw_name:
             return None
-        kwds = self.retriever.get_keywords_dict_cached(datafile)
-        if kw_name in kwds:
-            return kwds[kw_name]
-        bdd_name = self._get_bdd_name(kw_name)
-        if bdd_name and bdd_name in kwds:
-            return kwds[bdd_name]
-        return None
-
-    def _get_bdd_name(self, kw_name):
-        match = self.regexp.match(kw_name)
-        return match.group(2) if match else None
+        kwds = self.retriever.get_keywords_cached(datafile)
+        return kwds.get(kw_name)
 
     def is_library_keyword(self, datafile, kw_name):
         return bool(self.find_library_keyword(datafile, kw_name))
@@ -367,24 +358,14 @@ class DatafileRetriever(object):
     def _var_collector(self, res, ctx, items):
         self._get_vars_recursive(res, ctx)
 
-    def get_keywords_dict_cached(self, datafile):
+    def get_keywords_cached(self, datafile):
         values = self.keyword_cache.get(datafile.source)
         if not values:
             words = self.get_keywords_from(datafile)
             words.extend(self.default_kws)
-            values = self._keywords_to_dict(words, datafile)
+            values = _Keywords(words)
             self.keyword_cache.put(datafile.source, values)
         return values
-
-    def _keywords_to_dict(self, keywords, datafile):
-        ret = NormalizedDict()
-        for kw in keywords:
-            # TODO: this hack creates a preference for local keywords over resources and libraries
-            # Namespace should be rewritten to handle keyword preference order
-            if kw.name not in ret:
-                ret[kw.name] = kw
-            ret[kw.longname] = kw
-        return ret
 
     def _get_user_keywords_from(self, datafile):
         return list(self._get_user_keywords_recursive(datafile, RetrieverContext()))
@@ -427,3 +408,49 @@ class DatafileRetriever(object):
     def _add_resource(self, res, ctx, items):
         items.add(res)
         items.update(self._get_resources_recursive(res, ctx))
+
+
+class _Keywords(object):
+
+    regexp = re.compile("\s*(given|when|then|and)\s*(.*)", re.IGNORECASE)
+
+    def __init__(self, keywords):
+        self.keywords = NormalizedDict()
+        self.embedded_keywords = {}
+        self._add_keywords(keywords)
+
+    def _add_keywords(self, keywords):
+        for kw in keywords:
+            self._add_keyword(kw)
+
+    def _add_keyword(self, kw):
+        # TODO: this hack creates a preference for local keywords over resources and libraries
+        # Namespace should be rewritten to handle keyword preference order
+        if kw.name not in self.keywords:
+            self.keywords[kw.name] = kw
+            self._add_embedded(kw)
+        self.keywords[kw.longname] = kw
+
+    def _add_embedded(self, kw):
+        if '$' not in kw.name:
+            return
+        try:
+            handler = EmbeddedArgsHandler(kw)
+            self.embedded_keywords[handler.name_regexp] = kw
+        except Exception, e:
+            pass
+
+    def get(self, kw_name):
+        if kw_name in self.keywords:
+            return self.keywords[kw_name]
+        bdd_name = self._get_bdd_name(kw_name)
+        if bdd_name and bdd_name in self.keywords:
+            return self.keywords[bdd_name]
+        for regexp in self.embedded_keywords:
+            if regexp.match(kw_name) or (bdd_name and regexp.match(bdd_name)):
+                return self.embedded_keywords[regexp]
+        return None
+
+    def _get_bdd_name(self, kw_name):
+        match = self.regexp.match(kw_name)
+        return match.group(2) if match else None
