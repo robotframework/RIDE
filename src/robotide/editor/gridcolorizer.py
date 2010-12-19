@@ -18,21 +18,29 @@ from robotide.controller.cellinfo import CellType
 wxFONTWEIGHT_BOLD = 92
 wxFONTWEIGHT_NORMAL = 90
 
+def parse_info_grid(grid, controller):
+    result = []
+    for row in range(0, grid.NumberRows):
+        step = []
+        for col in range(0, grid.NumberCols):
+            cell_info = controller.get_cell_info(row, col)
+            step.append(cell_info)
+        result.append(step)
+    return result
+
 
 class Colorizer(object):
 
-    def __init__(self, grid, controller, colors):
+    def __init__(self, grid, colors):
         self._grid = grid
-        self._controller = controller
         self._colors=colors
 
-    def colorize(self, selection_content):
-        for row in range(0, self._grid.NumberRows):
-            for col in range(0, self._grid.NumberCols):
-                self._colorize_cell(row, col, selection_content)
+    def colorize(self, info_grid, selection_content):
+        for row_index, row in enumerate(info_grid):
+            for col_index, cell in enumerate(row):
+                self._colorize_cell(cell, selection_content, row_index, col_index)
 
-    def _colorize_cell(self, row, col, selection_content):
-        cell_info = self._controller.get_cell_info(row, col)
+    def _colorize_cell(self, cell_info, selection_content, row, col):
         if cell_info is None:
             self._set_default_colors(row, col)
             return

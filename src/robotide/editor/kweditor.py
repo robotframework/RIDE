@@ -31,7 +31,8 @@ from robotide.publish.messages import RideItemStepsChanged
 from robotide.editor.editordialogs import ScalarVariableDialog,\
     ListVariableDialog
 from robot.parsing.model import Variable
-from robotide.editor.gridcolorizer import Colorizer, ColorizationSettings
+from robotide.editor.gridcolorizer import Colorizer, ColorizationSettings,\
+    parse_info_grid
 from robotide.controller.cellinfo import TipMessage
 from robotide.context import SETTINGS # TODO: can we avoid direct reference?
 
@@ -51,7 +52,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._parent = parent
             self._plugin = parent.plugin
             self._cell_selected = False
-            self._colorizer = Colorizer(self, controller, ColorizationSettings(SETTINGS))
+            self._colorizer = Colorizer(self, ColorizationSettings(SETTINGS))
+            self._info_grid = None
             self._configure_grid()
             self._controller = controller
             PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
@@ -189,17 +191,21 @@ class KeywordEditor(GridEditor, RideEventHandler):
             data.append(self._format_comments(step.as_list()))
         self.ClearGrid()
         self._write_data(data, update_history=False)
+        self._update_info_grid()
         self._colorize_grid()
+
+    def _update_info_grid(self):
+        self._info_grid = parse_info_grid(self, self._controller)
 
     def _colorize_grid(self):
         selection_content = self._get_single_selection_content_or_none_on_first_call()
         if selection_content is None:
-            self.highlight(selection_content)
+            self.highlight(None)
         else:
             self._parent.highlight(selection_content)
 
     def highlight(self, text):
-        self._colorizer.colorize(text)
+        self._colorizer.colorize(self._info_grid, text)
 
     def _get_single_selection_content_or_none_on_first_call(self):
         if self._cell_selected:
