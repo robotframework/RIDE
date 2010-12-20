@@ -28,6 +28,9 @@ class Colorizer(object):
         self._current_task_id = 0
         self._timer = None
 
+    def close(self):
+        self._grid = None
+
     def colorize(self, selection_content):
         self._current_task_id += 1
         if self._timer:
@@ -36,7 +39,7 @@ class Colorizer(object):
             self._timer = wx.CallLater(50, self._coloring_task, self._current_task_id, selection_content)
 
     def _coloring_task(self, task_index, selection_content, row=0, col=0):
-        if task_index != self._current_task_id:
+        if task_index != self._current_task_id or self._grid is None:
             return
         if row >= self._grid.NumberRows:
             self._grid.ForceRefresh()

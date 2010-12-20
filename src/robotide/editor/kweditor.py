@@ -241,6 +241,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self._tree.mark_dirty(self._controller)
 
     def close(self):
+        self._colorizer.close()
         self.save()
         PUBLISHER.unsubscribe(self._data_changed, RideItemStepsChanged)
 
