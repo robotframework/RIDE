@@ -78,6 +78,7 @@ class ChiefController(object):
         return datafile
 
     def _create_controllers(self, datafile, resources):
+        self._namespace.clear_update_listeners()
         self._controller = DataController(datafile, self)
         for r in resources:
             self._create_resource_controller(r)
@@ -116,6 +117,12 @@ class ChiefController(object):
 
     def update_namespace(self):
         self._namespace.update()
+
+    def register_for_namespace_updates(self, listener):
+        self._namespace.register_update_listener(listener)
+
+    def unregister_namespace_updates(self, listener):
+        self._namespace.unregister_update_listener(listener)
 
     def is_user_keyword(self, datafile, value):
         return self._namespace.is_user_keyword(datafile, value)

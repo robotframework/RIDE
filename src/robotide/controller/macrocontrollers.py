@@ -74,8 +74,9 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self._parent = parent_controller
         self.data = data
         self._init(data)
-        self._steps_cached = None
         self._has_steps_changed = True
+        self._steps_cached = None
+        self.datafile_controller.register_for_namespace_updates(self._clear_cached_steps)
 
     @property
     def name(self):
@@ -98,6 +99,10 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
                 flattened_steps.append(StepController(self, step))
         self._steps_cached = flattened_steps
         self._has_steps_changed = False
+
+    def _clear_cached_steps(self):
+        self._has_steps_changed = True
+        self._steps_cached = None
 
     @property
     def max_columns(self):
@@ -150,6 +155,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         return self.datafile_controller.is_library_keyword(value)
 
     def delete(self):
+        self.datafile_controller.unregister_namespace_updates(self._clear_cached_steps)
         return self._parent.delete(self)
 
     def rename(self, new_name):

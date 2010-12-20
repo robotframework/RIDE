@@ -119,9 +119,11 @@ class VariableTableController(_TableController, _WithListOperations):
         self.notify_variable_removed(var_controller)
 
     def notify_variable_added(self, ctrl):
+        self.datafile_controller.update_namespace()
         RideVariableAdded(datafile=self.datafile, name=ctrl.name, item=ctrl).publish()
 
     def notify_variable_removed(self, ctrl):
+        self.datafile_controller.update_namespace()
         RideVariableRemoved(datafile=self.datafile, name=ctrl.name, item=ctrl).publish()
 
 
@@ -205,6 +207,7 @@ class _MacroTable(object):
 
     def delete(self, ctrl):
         self._items.remove(ctrl.data)
+        self.datafile_controller.update_namespace()
         self.mark_dirty()
         self._notify_removal(ctrl)
 
@@ -212,6 +215,7 @@ class _MacroTable(object):
         item = ctrl.data
         item.parent = self.datafile
         self._items.append(item)
+        self.datafile_controller.update_namespace()
         self.mark_dirty()
         self._notify_creation(ctrl.name, ctrl)
 
@@ -219,6 +223,7 @@ class _MacroTable(object):
         name = name.strip()
         ctrl = self._create_controller(self._table.add(name))
         self._configure_controller(ctrl, config)
+        self.datafile_controller.update_namespace()
         self.mark_dirty()
         self._notify_creation(name, ctrl)
         return ctrl
@@ -283,6 +288,7 @@ class ImportSettingsController(_TableController, _WithListOperations):
         item = self[index]
         _WithListOperations.delete(self, index)
         item.publish_removed()
+        self.datafile_controller.update_namespace()
 
     def add_library(self, name, argstr, alias, comment=None):
         import_ = self._table.add_library(name, utils.split_value(argstr),
@@ -290,6 +296,7 @@ class ImportSettingsController(_TableController, _WithListOperations):
         import_.alias = alias
         self._parent.mark_dirty()
         self._publish_setting_added(name, 'library')
+        self.datafile_controller.update_namespace()
         return self[-1]
 
     def add_resource(self, path, comment=None):
@@ -298,6 +305,7 @@ class ImportSettingsController(_TableController, _WithListOperations):
         self._publish_setting_added(path, 'resource')
         resource = self.resource_import_modified(path)
         import_.resolved_path = resource.source if resource else None
+        self.datafile_controller.update_namespace()
         return self[-1]
 
     def add_variables(self, path, argstr, comment=None):

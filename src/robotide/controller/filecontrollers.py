@@ -111,7 +111,16 @@ class _DataController(_BaseController, WithUndoRedoStacks):
         return command.execute(self)
 
     def update_namespace(self):
-        self._chief_controller.update_namespace()
+        if self._chief_controller is not None:
+            self._chief_controller.update_namespace()
+
+    def register_for_namespace_updates(self, listener):
+        if self._chief_controller is not None:
+            self._chief_controller.register_for_namespace_updates(listener)
+
+    def unregister_namespace_updates(self, listener):
+        if self._chief_controller is not None:
+            self._chief_controller.unregister_namespace_updates(listener)
 
     def is_user_keyword(self, value):
         return self._chief_controller.is_user_keyword(self.datafile, value)

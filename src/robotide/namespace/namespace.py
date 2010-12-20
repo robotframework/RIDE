@@ -42,9 +42,21 @@ class Namespace(object):
         self.res_cache = ResourceCache()
         self.retriever = DatafileRetriever(self.lib_cache, self.res_cache)
         self._content_assist_hooks = []
+        self._update_listeners = []
 
     def update(self):
         self.retriever.expire_cache()
+        for listener in self._update_listeners:
+            listener()
+
+    def register_update_listener(self, listener):
+        self._update_listeners.append(listener)
+
+    def unregister_update_listener(self, listener):
+        self._update_listeners.remove(listener)
+
+    def clear_update_listeners(self):
+        self._update_listeners = []
 
     def register_content_assist_hook(self, hook):
         self._content_assist_hooks.append(hook)

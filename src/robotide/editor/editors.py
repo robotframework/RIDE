@@ -354,6 +354,8 @@ class SettingEditor(wx.Panel, RideEventHandler):
         self._update_and_notify()
 
     def update_value(self, event=None):
+        if self._controller is None:
+            return
         if self._controller.is_set:
             self._value_display.set_value(self._controller, self.plugin)
         else:
@@ -363,6 +365,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
         return self._controller.datafile_controller
 
     def close(self):
+        self._controller = None
         self.plugin.unsubscribe(self.update_value, RideImportSetting)
 
     def highlight(self, text):
