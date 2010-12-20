@@ -200,7 +200,7 @@ class TestNodeRemoval(_BaseSuiteTreeTest):
         name = self._model.data.children[1].keywords[1].name
         root = self._tree._root
         self._tree.delete_node(self._tree._get_node_with_label(root, name))
-        assert_none(self._tree._get_node_with_label(root, name))
+        assert_none(wx.CallAfter(self._tree._get_node_with_label, root, name))
 
 
 class TestNavigationHistory(_BaseSuiteTreeTest):
