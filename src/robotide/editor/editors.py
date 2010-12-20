@@ -475,11 +475,6 @@ class TestCaseEditor(_RobotTableEditor):
         if data.item == self.controller:
             self.header.SetLabel(data.item.name)
 
-    def Show(self, show):
-        if hasattr(self, 'kweditor') and not show:
-            self.kweditor.hide_tooltip()
-        wx.Panel.Show(self, show)
-
     def close(self):
         _RobotTableEditor.close(self)
         self.kweditor.close()

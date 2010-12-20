@@ -82,6 +82,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.Bind(grid.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
         self.Bind(grid.EVT_GRID_CELL_LEFT_DCLICK, self.OnCellLeftDClick)
         self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
+        self.Bind(wx.EVT_KILL_FOCUS, lambda evt: self._tooltips.hide())
 
     def get_tooltip_content(self):
         if self.IsCellEditControlShown() or self._popup_menu_shown:
@@ -187,9 +188,6 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def highlight(self, text):
         self._colorizer.colorize(self._info_grid, text)
-
-    def hide_tooltip(self):
-        self._tooltips.hide()
 
     def _get_single_selection_content_or_none_on_first_call(self):
         if self._cell_selected:
