@@ -1,59 +1,58 @@
 #!/usr/bin/env python
 
-#  Copyright 2008 Nokia Siemens Networks Oyj
-#
-#  Licensed under the Apache License, Version 2.0 (the "License");
-#  you may not use this file except in compliance with the License.
-#  You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-#  Unless required by applicable law or agreed to in writing, software
-#  distributed under the License is distributed on an "AS IS" BASIS,
-#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#  See the License for the specific language governing permissions and
-#  limitations under the License.
-
-
-import sys
 import os
 from distutils.core import setup
-sys.path.insert(0, os.path.join('src','robotide'))
-from version import VERSION
 
 
-def main():
-    setup(name         = 'robotide',
-          version      = VERSION,
-          description  = 'Robot Framework test data editor',
-          author       = 'Robot Framework Developers',
-          author_email = 'robotframework-ride@googlegroups,com',
-          url          = 'http://code.google.com/p/robotframework-ride/',
-          package_dir  = {'' : 'src'},
-          packages     = ['robotide',
-                          'robotide.action',
-                          'robotide.application',
-                          'robotide.context',
-                          'robotide.contrib',
-                          'robotide.editor',
-                          'robotide.controller',
-                          'robotide.log',
-                          'robotide.namespace',
-                          'robotide.pluginapi',
-                          'robotide.publish',
-                          'robotide.run',
-                          'robotide.spec',
-                          'robotide.ui',
-                          'robotide.utils',
-                          'robotide.validators',
-                          'robotide.widgets',
-                          'robotide.writer',
-                          ],
-          package_data = {'robotide': ['spec/*.xml' , 'ui/*.png',
-                                       'context/*.cfg']},
-          scripts = ['src/bin/ride.py']
-          )
+# Get VERSION
+execfile(os.path.join('src','robotide','version.py'))
+
+# Maximum width in Windows installer seems to be 70 characters ------|
+DESCRIPTION = """
+Robot Framework is a generic test automation framework for acceptance
+level testing. RIDE is a lightweight and intuitive editor for Robot
+Framework test data.
+"""[1:-1]
+CLASSIFIERS = """
+Development Status :: 4 - Beta
+License :: OSI Approved :: Apache Software License
+Operating System :: OS Independent
+Programming Language :: Python
+Topic :: Software Development :: Testing
+"""[1:-1]
 
 
-if __name__ == "__main__":
-    main()
+setup(name         = 'robotframework-ride',
+      version      = VERSION,
+      description  = 'RIDE :: Robot Framework Test Data Editor',
+      long_description = DESCRIPTION,
+      license      = 'Apache License 2.0',
+      keywords     = 'robotframework testing testautomation',
+      platforms    = 'any',
+      classifiers  = CLASSIFIERS.splitlines(),
+      author       = 'Robot Framework Developers',
+      author_email = 'robotframework-devel@googlegroups,com',
+      url          = 'http://code.google.com/p/robotframework-ride',
+      package_dir  = {'' : 'src'},
+      packages     = ['robotide',
+                      'robotide.action',
+                      'robotide.application',
+                      'robotide.context',
+                      'robotide.contrib',
+                      'robotide.editor',
+                      'robotide.controller',
+                      'robotide.log',
+                      'robotide.namespace',
+                      'robotide.pluginapi',
+                      'robotide.publish',
+                      'robotide.run',
+                      'robotide.spec',
+                      'robotide.ui',
+                      'robotide.utils',
+                      'robotide.validators',
+                      'robotide.widgets',
+                      'robotide.writer',
+                      ],
+      package_data = {'robotide': ['ui/*.png', 'context/*.cfg']},
+      scripts = ['src/bin/ride.py']
+      )

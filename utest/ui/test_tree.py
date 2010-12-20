@@ -199,8 +199,9 @@ class TestNodeRemoval(_BaseSuiteTreeTest):
     def test_removing_user_keyword(self):
         name = self._model.data.children[1].keywords[1].name
         root = self._tree._root
-        self._tree.delete_node(self._tree._get_node_with_label(root, name))
-        assert_none(self._tree._get_node_with_label(root, name))
+        count = self._tree.GetChildrenCount(self._tree._root)
+        self._tree.Delete(self._tree._get_node_with_label(root, name))
+        assert_equals(count -1, self._tree.GetChildrenCount(self._tree._root))
 
 
 class TestNavigationHistory(_BaseSuiteTreeTest):
