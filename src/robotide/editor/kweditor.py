@@ -24,9 +24,9 @@ from robotide.utils import RideEventHandler
 from robotide.widgets import PopupMenu, PopupMenuItems
 
 from grid import GridEditor
+from tooltips import GridToolTips
 from editordialogs import UserKeywordNameDialog
 from contentassist import ExpandingContentAssistTextCtrl
-from popupwindow import Tooltip
 from robotide.publish.messages import RideItemStepsChanged
 from robotide.editor.editordialogs import ScalarVariableDialog,\
     ListVariableDialog
@@ -38,8 +38,8 @@ from robotide.context import SETTINGS # TODO: can we avoid direct reference?
 
 
 class KeywordEditor(GridEditor, RideEventHandler):
+    _no_cell = (-1,-1)
     dirty = property(lambda self: self._controller.dirty)
-    _no_cell = grid.GridCellCoords(-1, -1)
     _popup_items = ['Create Keyword', 'Extract Keyword', 'Extract Variable', 'Rename Keyword',
                     '---'] + GridEditor._popup_items
 
@@ -48,7 +48,6 @@ class KeywordEditor(GridEditor, RideEventHandler):
             GridEditor.__init__(self, parent, len(controller.steps) + 5,
                                 max((controller.max_columns + 1), 5),
                                 parent.plugin._grid_popup_creator)
-            self._tooltip_timer = wx.Timer(self.GetGridWindow(), 1234)
             self._parent = parent
             self._plugin = parent.plugin
             self._cell_selected = False
@@ -57,16 +56,13 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._configure_grid()
             self._controller = controller
             PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
-            self._tooltip = Tooltip(self, (450, 300))
+            self._tooltips = GridToolTips(self)
             self._marked_cell = None
-            self._idle_mouse_cell = self._no_cell
             self._active_row = self._active_col = None
             self._make_bindings()
             self._write_steps(self._controller)
             self._tree = tree
             self._has_been_clicked = False
-            self._tooltip_shown = False
-            wx.ToolTip.SetDelay(500)
         except Exception, e:
             print 'Exception in initing KeywordEditor: %s' % e
             raise
@@ -80,35 +76,20 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def _make_bindings(self):
         self.Bind(grid.EVT_GRID_EDITOR_SHOWN, self.OnEditor)
-        self.Bind(wx.EVT_KEY_DOWN, self.OnKey)
-        self.Bind(wx.EVT_IDLE, self.OnIdle)
+        self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
+        self.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
         self.Bind(grid.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
         self.Bind(grid.EVT_GRID_CELL_LEFT_DCLICK, self.OnCellLeftDClick)
         self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
-        if '__WXMSW__' in wx.PlatformInfo:
-            self.GetGridWindow().Bind(wx.EVT_MOTION, self.OnShowOrHideToolTip)
-            self.GetGridWindow().Bind(wx.EVT_TIMER, self.OnShowEventToolTip)
 
-    def OnShowOrHideToolTip(self, event):
-        if not self._tooltip_shown:
-            self._tooltip_timer.Start(500, True)
-        else:
-            self._hide_small_tooltip()
-        event.Skip()
-
-    def _hide_small_tooltip(self):
-        self.GetGridWindow().SetToolTipString('')
-        self._tooltip_shown = False
-
-    def OnShowEventToolTip(self, event):
+    def get_tooltip_content(self):
+        if self.IsCellEditControlShown():
+            return None
         cell = self._cell_under_cursor()
         cell_info = self._controller.get_cell_info(cell.Row, cell.Col)
         if not cell_info:
-            return
-        msg = TipMessage(cell_info)
-        if msg:
-            self.GetGridWindow().SetToolTipString(str(msg))
-            self._tooltip_shown = True
+            return None
+        return TipMessage(cell_info)
 
     def OnSelectCell(self, event):
         self._cell_selected = True
@@ -207,6 +188,9 @@ class KeywordEditor(GridEditor, RideEventHandler):
     def highlight(self, text):
         self._colorizer.colorize(self._info_grid, text)
 
+    def hide_tooltip(self):
+        self._tooltips.hide()
+
     def _get_single_selection_content_or_none_on_first_call(self):
         if self._cell_selected:
             return self.get_single_selection_content()
@@ -269,7 +253,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         PUBLISHER.unsubscribe(self._data_changed, RideItemStepsChanged)
 
     def save(self):
-        self.hide_tooltip()
+        self._tooltips.hide()
         if self.IsCellEditControlShown():
             cell_editor = self.GetCellEditor(*self.selection.cell)
             cell_editor.EndEdit(self.selection.topleft.row,
@@ -287,43 +271,75 @@ class KeywordEditor(GridEditor, RideEventHandler):
         return x, y + 20
 
     def OnEditor(self, event):
+        self._tooltips.hide()
         row_height = self.GetRowSize(self.selection.topleft.row)
         self.GetCellEditor(*self.selection.cell).SetHeight(row_height)
         event.Skip()
 
-    def OnKey(self, event):
-        # TODO: Cleanup
-        if self._tooltip_shown:
-            self._hide_small_tooltip()
+    def OnKeyDown(self, event):
+        self._tooltips.hide()
         keycode, control_down = event.GetKeyCode(), event.CmdDown()
-        if keycode == ord('A') and control_down:
+        if keycode == wx.WXK_CONTROL:
+            self._show_cell_information()
+        elif keycode == ord('A') and control_down:
             self.OnSelectAll(event)
-            return
-        if event.AltDown():
-            if keycode == wx.WXK_UP:
-                self.OnMoveRowsUp()
-                return
-            elif keycode == wx.WXK_DOWN:
-                self.OnMoveRowsDown()
-                return
-        if keycode == wx.WXK_CONTROL and self._tooltip.IsShown():
-            return
-        self.hide_tooltip()
-        if keycode == wx.WXK_WINDOWS_MENU:
+        elif event.AltDown():
+            self._move_rows(keycode)
+        elif keycode == wx.WXK_WINDOWS_MENU:
             self.OnCellRightClick(event)
-            return
-        if control_down or keycode not in [wx.WXK_RETURN, wx.WXK_BACK]:
+        elif control_down or keycode not in [wx.WXK_RETURN, wx.WXK_BACK]:
             if keycode == wx.WXK_SPACE:
-                self._open_cell_editor_with_tooltip()
+                self._open_cell_editor_with_content_assist()
             event.Skip()
-            return
+        else:
+            self._move_grid_cursor(event, keycode)
+
+    def _show_cell_information(self):
+        cell = self._cell_under_cursor()
+        value = self._cell_value(cell)
+        if value:
+            self._show_user_keyword_link(cell, value)
+            self._show_keyword_details(cell, value)
+
+    def _cell_value(self, cell):
+        if cell == self._no_cell:
+            return None
+        return self.GetCellValue(cell.Row, cell.Col)
+
+    def _show_user_keyword_link(self, cell, value):
+        if cell != self._marked_cell and self._plugin.get_user_keyword(value):
+            self._toggle_underlined(cell)
+            self._marked_cell = cell
+
+    def _show_keyword_details(self, cell, value):
+        details = self._plugin.get_keyword_details(value)
+        if details:
+            self._tooltips.set_info_content(details, value)
+            self._tooltips.show_info_at(self._cell_to_screen_coordinates(cell))
+
+    def _cell_to_screen_coordinates(self, cell):
+        point = self.CellToRect(cell.Row, cell.Col).GetTopRight()
+        point.x += self.GetRowLabelSize() + 5
+        return self.ClientToScreen(self.CalcScrolledPosition(point))
+
+    def _move_rows(self, keycode):
+        if keycode == wx.WXK_UP:
+            self.OnMoveRowsUp()
+        elif keycode == wx.WXK_DOWN:
+            self.OnMoveRowsDown()
+
+    def _move_grid_cursor(self, event, keycode):
         self.DisableCellEditControl()
         if keycode == wx.WXK_RETURN:
             self.MoveCursorRight(event.ShiftDown())
         else:
             self.MoveCursorLeft(event.ShiftDown())
 
-    def _open_cell_editor_with_tooltip(self):
+    def OnKeyUp(self, event):
+        self._tooltips.hide_information()
+        self._hide_link_if_necessary()
+
+    def _open_cell_editor_with_content_assist(self):
         if not self.IsCellEditControlEnabled():
             self.EnableCellEditControl()
         celleditor = self.GetCellEditor(self.GetGridCursorCol(),
@@ -331,11 +347,15 @@ class KeywordEditor(GridEditor, RideEventHandler):
         celleditor.Show(True)
         wx.CallAfter(celleditor.show_content_assist)
 
+    def OnCellRightClick(self, event):
+        self._tooltips.hide()
+        GridEditor.OnCellRightClick(self, event)
+
     def OnSelectAll(self, event):
         self.SelectAll()
 
     def OnCellLeftClick(self, event):
-        self.hide_tooltip()
+        self._tooltips.hide()
         if event.ControlDown() or event.CmdDown():
             if self._navigate_to_matching_user_keyword(event.Row, event.Col):
                 return
@@ -346,7 +366,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
             event.Skip()
 
     def OnCellLeftDClick(self, event):
-        self.hide_tooltip()
+        self._tooltips.hide()
         if not self._navigate_to_matching_user_keyword(event.Row, event.Col):
             event.Skip()
 
@@ -360,23 +380,6 @@ class KeywordEditor(GridEditor, RideEventHandler):
             return True
         return False
 
-    def OnIdle(self, evt):
-        if not self._is_active_window() or self.IsCellEditControlShown():
-            self.hide_tooltip()
-            return
-        cell = self._cell_under_cursor()
-        if cell == self._no_cell:
-            return
-        if not wx.GetMouseState().ControlDown() and not wx.GetMouseState().CmdDown():
-            self.hide_tooltip()
-            self._hide_link_if_necessary(cell)
-            return
-        self._idle_mouse_cell = cell
-        self._hide_link_if_necessary(cell)
-        self._show_possible_user_keyword_link(cell)
-        if not self._tooltip.IsShown():
-            self._show_kw_tooltip(cell)
-
     def _is_active_window(self):
         return self.IsShownOnScreen() and self.FindFocus()
 
@@ -385,37 +388,11 @@ class KeywordEditor(GridEditor, RideEventHandler):
         x -= self.RowLabelSize
         return self.XYToCell(*self.CalcUnscrolledPosition(x, y))
 
-    def _show_possible_user_keyword_link(self, cell):
-        if cell == self._marked_cell:
-            return
-        value = self.GetCellValue(cell.Row, cell.Col)
-        if not self._plugin.get_user_keyword(value):
-            return
-        self._toggle_underlined(cell)
-        self._marked_cell = cell
-
-    def _hide_link_if_necessary(self, cell):
+    def _hide_link_if_necessary(self):
         if not self._marked_cell:
             return
-        if cell != self._marked_cell:
-            self._toggle_underlined(self._marked_cell)
-            self._marked_cell = None
-
-    def _show_kw_tooltip(self, cell):
-        value = self.GetCellValue(cell.Row, cell.Col)
-        details = self._plugin.get_keyword_details(value)
-        if not details:
-            return
-        self._tooltip.set_content(details, value)
-        point = self.CellToRect(cell.Row, cell.Col).GetTopRight()
-        point.x += self.GetRowLabelSize() + 5
-        point = self.CalcScrolledPosition(point)
-        self._tooltip.SetPosition(self.ClientToScreen(point))
-        self._tooltip.Show()
-
-    def hide_tooltip(self):
-        if self._tooltip and self._tooltip.IsShown():
-            self._tooltip.Show(False)
+        self._toggle_underlined(self._marked_cell)
+        self._marked_cell = None
 
     def OnCreateKeyword(self, event):
         cmd = AddKeywordFromCells(self._data_cells_from_current_row())
