@@ -171,7 +171,6 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.ClearGrid()
         self._write_data(data, update_history=False)
         self._colorize_grid()
-        self.AutoSizeRows()
 
     def _colorize_grid(self):
         selection_content = self._get_single_selection_content_or_none_on_first_call()
