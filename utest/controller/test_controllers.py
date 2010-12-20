@@ -20,9 +20,10 @@ from robotide.publish.messages import (RideImportSetting, RideImportSettingRemov
                                        RideImportSettingChanged)
 from robotide.context import SETTINGS
 from resources.mocks import PublisherListener
+from controller.base_command_test import _FakeChief
 
 
-class _FakeParent(object):
+class _FakeParent(_FakeChief):
     def __init__(self):
         self.dirty = False
         self.datafile = None
@@ -236,7 +237,7 @@ class ReturnValueControllerTest(unittest.TestCase):
 
 
 class ImportControllerTest(unittest.TestCase):
-    class FakeParent(object):
+    class FakeParent(_FakeChief):
 
         @property
         def directory(self):

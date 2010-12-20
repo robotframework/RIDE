@@ -30,6 +30,16 @@ data = [TEST_NAME,
         '  ${variable}=  some value'
 ]
 
+class _FakeChief(object):
+
+    def update_namespace(self):
+        pass
+
+    def register_for_namespace_updates(self, listener):
+        pass
+
+    def unregister_namespace_updates(self, listener):
+        pass
 
 def create():
     tcf = TestCaseFile()
@@ -49,7 +59,7 @@ def testcase_controller(chief=None):
     return tctablectrl[0]
 
 
-class TestCaseCommandTest(unittest.TestCase):
+class TestCaseCommandTest(unittest.TestCase, _FakeChief):
 
     def setUp(self):
         self._steps = None
