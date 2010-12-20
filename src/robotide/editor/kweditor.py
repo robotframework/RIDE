@@ -187,9 +187,6 @@ class KeywordEditor(GridEditor, RideEventHandler):
     def highlight(self, text):
         self._colorizer.colorize(self._info_grid, text)
 
-    def hide_tooltip(self):
-        self._tooltips.hide()
-
     def _get_single_selection_content_or_none_on_first_call(self):
         if self._cell_selected:
             return self.get_single_selection_content()
