@@ -39,6 +39,7 @@ from robotide.context import SETTINGS # TODO: can we avoid direct reference?
 
 class KeywordEditor(GridEditor, RideEventHandler):
     _no_cell = (-1,-1)
+    _popup_menu_shown = False
     dirty = property(lambda self: self._controller.dirty)
     _popup_items = ['Create Keyword', 'Extract Keyword', 'Extract Variable', 'Rename Keyword',
                     '---'] + GridEditor._popup_items
@@ -83,12 +84,10 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
 
     def get_tooltip_content(self):
-        if self.IsCellEditControlShown():
-            return None
+        if self.IsCellEditControlShown() or self._popup_menu_shown:
+            return ''
         cell = self._cell_under_cursor()
         cell_info = self._controller.get_cell_info(cell.Row, cell.Col)
-        if not cell_info:
-            return None
         return TipMessage(cell_info)
 
     def OnSelectCell(self, event):
@@ -314,8 +313,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
     def _show_keyword_details(self, cell, value):
         details = self._plugin.get_keyword_details(value)
         if details:
-            self._tooltips.set_info_content(details, value)
-            self._tooltips.show_info_at(self._cell_to_screen_coordinates(cell))
+            self._tooltips.show_info_at(details, value,
+                                        self._cell_to_screen_coordinates(cell))
 
     def _cell_to_screen_coordinates(self, cell):
         point = self.CellToRect(cell.Row, cell.Col).GetTopRight()
@@ -349,7 +348,9 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def OnCellRightClick(self, event):
         self._tooltips.hide()
+        self._popup_menu_shown = True
         GridEditor.OnCellRightClick(self, event)
+        self._popup_menu_shown = False
 
     def OnSelectAll(self, event):
         self.SelectAll()

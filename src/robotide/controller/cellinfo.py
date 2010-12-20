@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.utils import highlight_matcher
+from robotide.utils import highlight_matcher, html_escape
 
 
 class CellInfo(object):
@@ -54,9 +54,11 @@ class CellInfo(object):
 
 
 def TipMessage(cell):
-    if cell.for_loop:
-        return _ForLoopTooltipMessage(cell)
-    return _TooltipMessage(cell)
+    if not cell:
+        return ''
+    tip = _TooltipMessage(cell) if not cell.for_loop \
+            else _ForLoopTooltipMessage(cell)
+    return html_escape(str(tip))
 
 
 class _TooltipMessage(object):

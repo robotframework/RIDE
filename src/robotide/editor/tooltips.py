@@ -28,46 +28,37 @@ class GridToolTips(object):
         grid.GetGridWindow().Bind(wx.EVT_TIMER, self.OnShowToolTip)
 
     def OnMouseMotion(self, event):
-        self.hide_tooltip()
+        self._hide_tooltip()
         self._tooltip_timer.Start(500, True)
         event.Skip()
 
     def OnShowToolTip(self, event):
-        self.hide_tooltip()
-        msg = self._grid.get_tooltip_content()
-        if msg:
-            self.set_tooltip_content(str(msg), html=False)
-            x, y = wx.GetMousePosition()
-            self.show_tooltip_at((x+5, y+5))
+        self._hide_tooltip()
+        content = self._grid.get_tooltip_content()
+        if content:
+            self._show_tooltip_at(content, self._calculate_tooltip_position())
             self._grid.SetFocus()
 
-    def hide_tooltip(self):
+    def _show_tooltip_at(self, content, position):
+        if not self._information_popup.IsShown():
+            self._tooltip.set_content(content)
+            self._tooltip.show_at(position)
+
+    def _calculate_tooltip_position(self):
+        x, y = wx.GetMousePosition()
+        return x+5, y+5
+
+    def _hide_tooltip(self):
         self._tooltip.hide()
 
     def hide_information(self):
         self._information_popup.hide()
 
     def hide(self):
-        self.hide_tooltip()
+        self._hide_tooltip()
         self.hide_information()
 
-    def set_tooltip_content(self, content, html):
-        self._tooltip.set_content(content, html)
-
-    def show_tooltip_at(self, position):
-        if not self._information_popup.IsShown():
-            self._tooltip.show_at(position)
-
-    def info_shown(self):
-        return self._information_popup.IsShown()
-
-    def set_info_content(self, content, title):
-        self._information_popup.set_content(content, title)
-
-    def show_info_at(self, position):
+    def show_info_at(self, info, title, position):
         self._tooltip.hide()
+        self._information_popup.set_content(info, title)
         self._information_popup.show_at(position)
-
-    def tooltip_shown(self):
-        return self._tooltip.IsShown()
-
