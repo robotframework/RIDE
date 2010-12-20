@@ -67,28 +67,12 @@ class TestLibrarySpec(unittest.TestCase):
         self._assert_keyword(spec.keywords[2], 'Multiarg Keyword',
                              args='[ arg1 | arg2=default value | *args ]')
 
-    def test_auto_importing_libraries(self):
-        cache.SETTINGS = {'auto imports': ['TestLib']}
-        self._assert_keyword_in_keywords(cache.LibraryCache().get_default_keywords(),
-                                         'Testlib Keyword')
-
-    def test_auto_importing_libraries_with_arguments(self):
-        cache.SETTINGS = {'auto imports': ['ArgLib|foo']}
-        self._assert_keyword_in_keywords(cache.LibraryCache().get_default_keywords(),
-                                         'Get Mandatory')
-
     def _assert_keyword(self, kw, name, doc='', shortdoc='', args='[  ]'):
         assert_equals(kw.name, name)
         assert_equals(kw.doc, doc, repr(kw.doc))
         assert_equals(kw.shortdoc, shortdoc)
         if args:
             assert_equals(kw.args, args)
-
-    def _assert_keyword_in_keywords(self, keywords, name):
-        for kw in keywords:
-            if kw.name == name:
-                return
-        raise AssertionError('Keyword %s not found in default keywords' % name)
 
 
 if __name__ == '__main__':
