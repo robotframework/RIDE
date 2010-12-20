@@ -354,7 +354,7 @@ class UserKeywordController(_BaseController, _WithStepsController):
         return self._parent.validate_name(name)
 
     def get_local_variables(self):
-        return parse_arguments_to_var_dict(self._kw.args.value)
+        return parse_arguments_to_var_dict(self._kw.args.value, self._kw.name)
 
 
 class StepController(object):
