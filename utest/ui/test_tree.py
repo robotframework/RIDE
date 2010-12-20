@@ -30,6 +30,7 @@ from resources import PYAPP_REFERENCE
 
 from robotide.ui import tree as st
 from robotide.publish import PUBLISHER
+from robotide.namespace.namespace import Namespace
 st.FakeDirectorySuiteHandler = st.FakeUserKeywordHandler = \
     st.FakeSuiteHandler = st.FakeTestCaseHandler = \
     st.FakeResourceHandler = st.TestDataDirectoryHandler
@@ -88,7 +89,7 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         res = ResourceFile()
         res.source = 'resource.txt'
         res.keyword_table.keywords.append(UserKeyword(res, 'Resource Keyword'))
-        model = ChiefController(None)
+        model = ChiefController(Namespace())
         model._controller = TestDataDirectoryController(suite)
         model.resources.append(ResourceFileController(res))
         return model

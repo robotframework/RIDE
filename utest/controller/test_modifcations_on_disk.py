@@ -11,6 +11,7 @@ from robotide.controller import ChiefController
 from robotide.publish.messages import RideDataFileRemoved
 from robotide.publish import PUBLISHER
 import shutil
+from robotide.namespace.namespace import Namespace
 
 
 DIRPATH = os.path.join(tempfile.gettempdir(), 'ride_controller_utest_dir')
@@ -64,7 +65,7 @@ class TestModifiedOnDiskWithFileSuite(_DataDependentTest):
 
     def test_overwrite(self):
         ctrl = TestCaseFileController(TestCaseFile(source=FILEPATH),
-                                      ChiefController(None))
+                                      ChiefController(Namespace()))
         os.utime(FILEPATH, (1,1))
         assert_true(ctrl.has_been_modified_on_disk())
         ctrl.save()
@@ -112,7 +113,7 @@ class TestDataFileRemoval(_DataDependentTest):
         self._removed_datafile = message.datafile
 
     def test_deleting_source_should_remove_it_from_model(self):
-        chief = ChiefController(None)
+        chief = ChiefController(Namespace())
         chief.new_datafile(TestCaseFile(source=FILEPATH))
         os.remove(FILEPATH)
         ctrl = chief.data
@@ -121,20 +122,20 @@ class TestDataFileRemoval(_DataDependentTest):
         assert_true(self._removed_datafile is ctrl)
 
     def test_deleting_file_suite_under_dir_suite(self):
-        chief = ChiefController(None)
+        chief = ChiefController(Namespace())
         chief.new_datafile(TestDataDirectory(source=DIRPATH))
         file_suite = chief.data.children[0]
         file_suite.remove()
         assert_true(len(chief.data.children) == 0, 'Child suite was not removed')
 
     def test_deleting_resource_file(self):
-        chief = ChiefController(None)
+        chief = ChiefController(Namespace())
         res = chief.new_resource(RESOURCEPATH)
         res.remove()
         assert_true(len(chief.resources) == 0, 'Resource was not removed')
 
     def test_deleting_init_file(self):
-        chief = ChiefController(None)
+        chief = ChiefController(Namespace())
         chief.new_datafile(TestDataDirectory(source=DIRPATH))
         os.remove(INITPATH)
         chief.data.remove()

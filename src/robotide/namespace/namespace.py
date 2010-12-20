@@ -49,6 +49,11 @@ class Namespace(object):
         for listener in self._update_listeners:
             listener()
 
+    def reset_resource_and_library_cache(self):
+        self.lib_cache.reset()
+        self.res_cache.reset()
+        self.retriever.reset()
+
     def register_update_listener(self, listener):
         self._update_listeners.append(listener)
 
@@ -158,6 +163,9 @@ class ResourceCache(object):
     def __init__(self):
         self.cache = {}
         self.python_path_cache = {}
+
+    def reset(self):
+        self.__init__()
 
     def get_resource(self, directory, name):
         path = os.path.join(directory, name) if directory else name
@@ -288,6 +296,9 @@ class DatafileRetriever(object):
         self.res_cache = res_cache
         self.keyword_cache = ExpiringCache()
         self.default_kws = self.lib_cache.get_default_keywords()
+
+    def reset(self):
+        self.__init__(self.lib_cache, self.res_cache)
 
     def expire_cache(self):
         self.keyword_cache = ExpiringCache()

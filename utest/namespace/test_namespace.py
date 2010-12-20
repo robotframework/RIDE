@@ -5,7 +5,7 @@ from robot.parsing.settings import Resource
 from robot.parsing.model import VariableTable, TestDataDirectory
 from robot.utils import normalizing
 from robot.utils.asserts import assert_true, assert_false, assert_not_none, \
-    assert_equals, fail, assert_none
+    assert_equals, fail, assert_none, fail_if_equal
 from robotide.namespace.namespace import _VariableStash
 from robotide.robotapi import TestCaseFile
 from robotide.controller.filecontrollers import DataController
@@ -243,6 +243,14 @@ class TestKeywordSuggestions(_DataFileTest):
             assert_true(s.source.endswith(source),
                         '%s does not end with %s' % (s.source, source))
 
+    def test_reset(self):
+        sugs  = self.ns.get_suggestions_for(self.kw, 'generate random')
+        sugs2 = self.ns.get_suggestions_for(self.kw, 'generate random')
+        assert_true(sugs[0] is sugs2[0])
+        self.ns.reset_resource_and_library_cache()
+        sugs3 = self.ns.get_suggestions_for(self.kw, 'generate random')
+        assert_false(sugs[0] is sugs3[0])
+
 
 class TestKeywordSearch(_DataFileTest):
 
@@ -350,6 +358,7 @@ class TestVariableStash(unittest.TestCase):
     def test_global_variable_nulls_value_is_replaced_with_none(self):
         assert_equals(_VariableStash().replace_variables('${null}'), None)
 
+
 class TestResourceGetter(_DataFileTest):
 
     def test_resource_getter(self):
@@ -380,6 +389,13 @@ class TestResourceCache(_DataFileTest):
     def test_file_with_invalid_path(self):
         imp = Resource(ParentMock(), '${kumikameli}')
         assert_none(self.res_cache.get_resource(imp.directory, imp.name))
+
+    def test_reset(self):
+        imp = Resource(None, RESOURCE_PATH)
+        first = self.res_cache.get_resource(imp.directory, imp.name)
+        self.res_cache.reset()
+        second = self.res_cache.get_resource(imp.directory, imp.name)
+        assert_true(first is not second)
 
 
 if __name__ == "__main__":

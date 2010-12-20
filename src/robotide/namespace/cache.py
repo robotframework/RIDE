@@ -30,6 +30,9 @@ class LibraryCache(object):
         self._default_libraries = self._get_default_libraries()
         self._default_kws = self._build_default_kws()
 
+    def reset(self):
+        self.__init__()
+
     def add_library(self, name, args=None):
         if not self.library_keywords.has_key(self._key(name, args)):
             action = lambda: LibrarySpec(name, args).keywords

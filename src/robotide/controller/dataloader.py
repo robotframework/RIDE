@@ -21,6 +21,7 @@ from robot.parsing.model import TestData
 class DataLoader(object):
     def __init__(self, namespace):
         self._namespace = namespace
+        self._namespace.reset_resource_and_library_cache()
 
     def load_datafile(self, path, load_observer):
         loader = _DataLoader(path)
