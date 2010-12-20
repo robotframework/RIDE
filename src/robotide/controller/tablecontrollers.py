@@ -163,13 +163,24 @@ class _MacroTable(object):
         raise NotImplementedError(self.__class__)
 
     def __iter__(self):
-        return iter(self._controller_class(self, item) for item in self._table)
+        return iter(self._create_controller(item) for item in self._table)
+
+    def _create_controller(self, item):
+        if item not in self._item_to_controller:
+            self._item_to_controller[item] = self._controller_class(self, item)
+        return self._item_to_controller[item]
+
+    @property
+    def _item_to_controller(self):
+        if not hasattr(self, '_item_to_controller_attribute'):
+            self._item_to_controller_attribute = {}
+        return self._item_to_controller_attribute
 
     def __len__(self):
         return len(self._items)
 
     def __getitem__(self, index):
-        return self._controller_class(self, self._items[index])
+        return self._create_controller(self._items[index])
 
     def move_up(self, item):
         items = self._items
@@ -206,7 +217,7 @@ class _MacroTable(object):
 
     def _create_new(self, name, config=None):
         name = name.strip()
-        ctrl = self._controller_class(self, self._table.add(name))
+        ctrl = self._create_controller(self._table.add(name))
         self._configure_controller(ctrl, config)
         self.mark_dirty()
         self._notify_creation(name, ctrl)

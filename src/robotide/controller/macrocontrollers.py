@@ -74,6 +74,8 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self._parent = parent_controller
         self.data = data
         self._init(data)
+        self._steps_cached = None
+        self._has_steps_changed = True
 
     @property
     def name(self):
@@ -81,6 +83,11 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
 
     @property
     def steps(self):
+        if self._has_steps_changed:
+            self._recreate_steps()
+        return self._steps_cached
+
+    def _recreate_steps(self):
         flattened_steps = []
         for step in self.data.steps:
             if step.is_for_loop():
@@ -89,7 +96,8 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
                 flattened_steps.extend(for_loop.steps)
             else:
                 flattened_steps.append(StepController(self, step))
-        return flattened_steps
+        self._steps_cached = flattened_steps
+        self._has_steps_changed = False
 
     @property
     def max_columns(self):
@@ -106,15 +114,19 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
 
     def replace_step(self, index, new_step):
         self.data.steps[index] = new_step
+        self._has_steps_changed = True
 
     def move_step_up(self, index):
         self.step(index).move_up()
+        self._has_steps_changed = True
 
     def move_step_down(self, index):
         self.step(index).move_down()
+        self._has_steps_changed = True
 
     def set_steps(self, steps):
         self.data.steps = steps
+        self._has_steps_changed = True
 
     def execute(self, command):
         return command.execute(self)
@@ -123,9 +135,10 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self.datafile_controller.update_namespace()
 
     def get_cell_info(self, row, col):
-        if row < 0 or len(self.steps) <= row:
+        steps = self.steps
+        if row < 0 or len(steps) <= row:
             return None
-        return self.step(row).get_cell_info(col)
+        return steps[row].get_cell_info(col)
 
     def get_keyword_info(self, kw_name):
         return self.datafile_controller.keyword_info(kw_name)
@@ -158,18 +171,21 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         remove_these.reverse()
         for step in remove_these :
             self._remove_step(step)
+        self._has_steps_changed = True
 
     def _is_empty_step(self, step):
         return step.as_list() == []
 
     def remove_step(self, index):
         self._remove_step(self.steps[index])
+        self._has_steps_changed = True
 
     def recreate(self):
         self._parent.add(self)
 
     def _remove_step(self, step):
         step.remove()
+        self._has_steps_changed = True
 
     def add_step(self, index, step=None):
         if step is None:
@@ -179,6 +195,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         else:
             previous_step = self.step(index)
             previous_step.insert_before(step)
+        self._has_steps_changed = True
 
     def create_keyword(self, name, argstr):
         validation = self.datafile_controller.validate_keyword_name(name)
@@ -195,10 +212,12 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self._create_extracted_kw(name, argstr, extracted_steps)
 
     def _get_raw_steps(self):
+        self._has_steps_changed = True # Reviels inner state so can't be sure if cache is up to date
         return self.data.steps
 
     def _set_raw_steps(self, steps):
         self.data.steps = steps
+        self._has_steps_changed = True
 
     def _extract_steps(self, step_range):
         rem_start, rem_end = step_range
@@ -230,6 +249,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self._notify(RideItemSettingsChanged)
 
     def notify_steps_changed(self):
+        self._has_steps_changed = True
         self._notify(RideItemStepsChanged)
 
     def _notify(self, messageclass):

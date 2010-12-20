@@ -42,6 +42,8 @@ class _DataController(_BaseController, WithUndoRedoStacks):
         self.dirty = False
         self.children = self._children(data)
         self._stat = self._get_stat(self.source)
+        self._variables_table_controller = None
+        self._testcase_table_controller = None
 
     def _children(self, data):
         return []
@@ -71,11 +73,15 @@ class _DataController(_BaseController, WithUndoRedoStacks):
 
     @property
     def variables(self):
-        return VariableTableController(self, self.data.variable_table)
+        if self._variables_table_controller is None:
+            self._variables_table_controller = VariableTableController(self, self.data.variable_table)
+        return self._variables_table_controller
 
     @property
     def tests(self):
-        return TestCaseTableController(self, self.data.testcase_table)
+        if self._testcase_table_controller is None:
+            self._testcase_table_controller = TestCaseTableController(self, self.data.testcase_table)
+        return self._testcase_table_controller
 
     @property
     def datafile(self):
