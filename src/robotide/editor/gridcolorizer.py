@@ -13,34 +13,33 @@
 #  limitations under the License.
 
 from robotide.controller.cellinfo import CellType
+import wx
 # this import fails in HUDSON
 # from wxPython._gdi import wxFONTWEIGHT_BOLD, wxFONTWEIGHT_NORMAL
 wxFONTWEIGHT_BOLD = 92
 wxFONTWEIGHT_NORMAL = 90
 
-def parse_info_grid(grid, controller):
-    result = []
-    for row in range(0, grid.NumberRows):
-        step = []
-        for col in range(0, grid.NumberCols):
-            cell_info = controller.get_cell_info(row, col)
-            step.append(cell_info)
-        result.append(step)
-    return result
-
-
 class Colorizer(object):
 
-    def __init__(self, grid, colors):
+    def __init__(self, grid, controller, colors):
         self._grid = grid
+        self._controller = controller
         self._colors=colors
 
-    def colorize(self, info_grid, selection_content):
-        for row_index, row in enumerate(info_grid):
-            for col_index, cell in enumerate(row):
-                self._colorize_cell(cell, selection_content, row_index, col_index)
+    def colorize(self, selection_content):
+        wx.CallAfter(self._color_me_task, 0, 0, selection_content)
 
-    def _colorize_cell(self, cell_info, selection_content, row, col):
+    def _color_me_task(self, row, col, selection_content):
+        if row >= self._grid.NumberRows:
+            self._grid.ForceRefresh()
+        elif col < self._grid.NumberCols:
+            self._colorize_cell(row, col, selection_content)
+            wx.CallAfter(self._color_me_task, row, col+1, selection_content)
+        else:
+            self._color_me_task(row+1, 0, selection_content)
+
+    def _colorize_cell(self, row, col, selection_content):
+        cell_info = self._controller.get_cell_info(row, col)
         if cell_info is None:
             self._set_default_colors(row, col)
             return
