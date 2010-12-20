@@ -363,6 +363,7 @@ class StepController(object):
         self._step = step
         self.parent = parent
         self._remove_whitespace_from_comment()
+        self._cell_info_cache = {}
 
     def _remove_whitespace_from_comment(self):
         # TODO: This can be removed with RF 2.6
@@ -392,9 +393,11 @@ class StepController(object):
         return values[col]
 
     def get_cell_info(self, col):
-        position = self._get_cell_position(col)
-        content = self._get_content_with_type(col)
-        return self._build_cell_info(content, position)
+        if col not in self._cell_info_cache:
+            position = self._get_cell_position(col)
+            content = self._get_content_with_type(col)
+            self._cell_info_cache[col] = self._build_cell_info(content, position)
+        return self._cell_info_cache[col]
 
     def _build_cell_info(self, content, position):
         return CellInfo(content, position)

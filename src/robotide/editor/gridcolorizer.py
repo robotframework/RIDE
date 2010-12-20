@@ -13,11 +13,11 @@
 #  limitations under the License.
 
 from robotide.controller.cellinfo import CellType
+import wx
 # this import fails in HUDSON
 # from wxPython._gdi import wxFONTWEIGHT_BOLD, wxFONTWEIGHT_NORMAL
 wxFONTWEIGHT_BOLD = 92
 wxFONTWEIGHT_NORMAL = 90
-
 
 class Colorizer(object):
 
@@ -27,9 +27,16 @@ class Colorizer(object):
         self._colors=colors
 
     def colorize(self, selection_content):
-        for row in range(0, self._grid.NumberRows):
-            for col in range(0, self._grid.NumberCols):
-                self._colorize_cell(row, col, selection_content)
+        wx.CallAfter(self._color_me_task, 0, 0, selection_content)
+
+    def _color_me_task(self, row, col, selection_content):
+        if row >= self._grid.NumberRows:
+            self._grid.ForceRefresh()
+        elif col < self._grid.NumberCols:
+            self._colorize_cell(row, col, selection_content)
+            wx.CallAfter(self._color_me_task, row, col+1, selection_content)
+        else:
+            self._color_me_task(row+1, 0, selection_content)
 
     def _colorize_cell(self, row, col, selection_content):
         cell_info = self._controller.get_cell_info(row, col)
