@@ -16,6 +16,7 @@ import wx
 
 from robotide import context
 from robotide.utils import RideHtmlWindow
+from robotide import utils
 from robotide.widgets import ButtonWithHandler, Dialog, VerticalSizer
 
 
@@ -55,8 +56,10 @@ class Tooltip(RidePopupWindow):
         panel.SetSizer(szr)
         panel.Fit()
 
-    def set_content(self, content, title=None):
+    def set_content(self, content, title=None, html=True):
         color = ''.join(hex(item)[2:] for item in context.POPUP_BACKGROUND)
+        if not html:
+            content = utils.html_escape(content, formatting=True)
         self._current_details = '<body bgcolor=#%s>%s</body>' % (color, content)
         self._details.SetPage(self._current_details)
         self._detached_title = title
