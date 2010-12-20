@@ -1,4 +1,3 @@
-include src/robotide/spec/*.xml
 include src/robotide/ui/*.png
 include src/robotide/context/*.cfg
 include MANIFEST.in
