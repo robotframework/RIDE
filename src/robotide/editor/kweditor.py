@@ -173,6 +173,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self._write_data(data, update_history=False)
         self._update_info_grid()
         self._colorize_grid()
+        self.AutoSizeRows()
 
     def _update_info_grid(self):
         self._info_grid = parse_info_grid(self, self._controller)
