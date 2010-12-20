@@ -34,7 +34,7 @@ class Colorizer(object):
     def colorize(self, selection_content):
         self._current_task_id += 1
         if self._timer is None:
-            self._timer = wx.CallLater(0, self._coloring_task, self._current_task_id, selection_content)
+            self._timer = wx.CallLater(1, self._coloring_task, self._current_task_id, selection_content)
         else:
             self._timer.Restart(50, self._current_task_id, selection_content)
 
