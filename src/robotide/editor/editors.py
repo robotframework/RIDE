@@ -189,6 +189,7 @@ class ResourceFileEditor(_RobotTableEditor):
             editor.close()
         _RobotTableEditor.close(self)
 
+
 class TestCaseFileEditor(ResourceFileEditor):
 
     def _populate(self):
@@ -479,6 +480,8 @@ class TestCaseEditor(_RobotTableEditor):
             self.header.SetLabel(data.item.name)
 
     def close(self):
+        for editor in self._editors:
+            editor.close()
         _RobotTableEditor.close(self)
         self.kweditor.close()
         self.plugin.unsubscribe(self._settings_changed, RideItemSettingsChanged)
