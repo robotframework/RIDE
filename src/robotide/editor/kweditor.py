@@ -15,25 +15,28 @@
 import wx
 from wx import grid
 
-from robotide.controller.commands import ChangeCellValue, ClearArea, PasteArea,\
-    DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells, UncommentRows, \
-    Undo, Redo, RenameKeywordOccurrences, ExtractKeyword, AddKeywordFromCells, \
-    MoveRowsUp, MoveRowsDown, ExtractScalar, ExtractList
-from robotide.publish import RideGridCellChanged, PUBLISHER
+from robotide.controller.commands import (ChangeCellValue, ClearArea, PasteArea,
+                                          DeleteRows, AddRows, CommentRows,
+                                          InsertCells, DeleteCells,
+                                          UncommentRows, Undo, Redo,
+                                          RenameKeywordOccurrences,
+                                          ExtractKeyword, AddKeywordFromCells,
+                                          MoveRowsUp, MoveRowsDown,
+                                          ExtractScalar, ExtractList)
+from robotide.controller.cellinfo import TipMessage
+from robotide.publish import RideGridCellChanged, RideItemStepsChanged, PUBLISHER
 from robotide.utils import RideEventHandler
 from robotide.widgets import PopupMenu, PopupMenuItems
-
-from grid import GridEditor
-from tooltips import GridToolTips
-from editordialogs import UserKeywordNameDialog
-from contentassist import ExpandingContentAssistTextCtrl
-from robotide.publish.messages import RideItemStepsChanged
-from robotide.editor.editordialogs import ScalarVariableDialog,\
-    ListVariableDialog
-from robot.parsing.model import Variable
-from robotide.editor.gridcolorizer import Colorizer, ColorizationSettings
-from robotide.controller.cellinfo import TipMessage
 from robotide.context import SETTINGS # TODO: can we avoid direct reference?
+from robot.parsing.model import Variable
+
+from robotide.editor.grid import GridEditor
+from robotide.editor.tooltips import GridToolTips
+from robotide.editor.editordialogs import (UserKeywordNameDialog,
+                                           ScalarVariableDialog,
+                                           ListVariableDialog)
+from robotide.editor.contentassist import ExpandingContentAssistTextCtrl
+from robotide.editor.gridcolorizer import Colorizer, ColorizationSettings
 
 
 class KeywordEditor(GridEditor, RideEventHandler):
