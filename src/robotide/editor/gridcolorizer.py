@@ -25,18 +25,26 @@ class Colorizer(object):
         self._grid = grid
         self._controller = controller
         self._colors=colors
+        self._current_task_id = 0
+        self._timer = None
 
     def colorize(self, selection_content):
-        wx.CallAfter(self._color_me_task, 0, 0, selection_content)
+        self._current_task_id += 1
+        if self._timer:
+            self._timer.Restart(50, self._current_task_id, selection_content)
+        else:
+            self._timer = wx.CallLater(50, self._coloring_task, self._current_task_id, selection_content)
 
-    def _color_me_task(self, row, col, selection_content):
+    def _coloring_task(self, task_index, selection_content, row=0, col=0):
+        if task_index != self._current_task_id:
+            return
         if row >= self._grid.NumberRows:
             self._grid.ForceRefresh()
         elif col < self._grid.NumberCols:
             self._colorize_cell(row, col, selection_content)
-            wx.CallAfter(self._color_me_task, row, col+1, selection_content)
+            wx.CallAfter(self._coloring_task, task_index, selection_content, row, col+1)
         else:
-            self._color_me_task(row+1, 0, selection_content)
+            self._coloring_task(task_index, selection_content, row+1, 0)
 
     def _colorize_cell(self, row, col, selection_content):
         cell_info = self._controller.get_cell_info(row, col)
