@@ -44,9 +44,9 @@ def create():
 
 def testcase_controller(chief=None):
     tcf = create()
-    tctablectrl = TestCaseTableController(TestCaseFileController(tcf, chief),
-                                          tcf.testcase_table)
-    return TestCaseController(tctablectrl, tcf.testcase_table.tests[0])
+    tcf_controller = TestCaseFileController(tcf, chief)
+    tctablectrl = tcf_controller.tests
+    return tctablectrl[0]
 
 
 class TestCaseCommandTest(unittest.TestCase):
