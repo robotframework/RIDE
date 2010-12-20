@@ -274,7 +274,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             return
         parent = self.GetItemParent(node)
         self._mark_dirty(parent)
-        self.Delete(node)
+        wx.CallAfter(self.SelectItem, parent)
+        wx.CallAfter(self.Delete, node)
 
     def _data_dirty(self, message):
         self.mark_dirty(message.datafile)
