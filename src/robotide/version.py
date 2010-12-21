@@ -2,7 +2,7 @@
 
 VERSION = 'trunk'
 RELEASE = '20101221'
-TIMESTAMP = '20101221-141759'
+TIMESTAMP = '20101221-141806'
 
 def get_version(sep=' '):
     if RELEASE == 'final':
