@@ -39,6 +39,7 @@ class ChiefController(object):
     def execute(self, command):
         return command.execute(self)
 
+    # TODO: in all other controllers data returns a robot data model object.
     @property
     def data(self):
         return self._controller
