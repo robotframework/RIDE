@@ -18,7 +18,7 @@ from robot.parsing.model import Variable
 
 
 _SIZE = (16, 16)
-_BASE = os.path.dirname(__file__)
+_BASE = os.path.join(os.path.dirname(__file__), '..', 'widgets')
 
 
 class TreeImageList(wx.ImageList):
