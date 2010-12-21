@@ -5,8 +5,6 @@ from robot.utils.asserts import assert_equals
 
 from robotide.publish import PUBLISHER
 from robotide.controller.filecontrollers import TestCaseFileController
-from robotide.controller.tablecontrollers import (TestCaseController,
-                                                  TestCaseTableController)
 from robotide.publish.messages import RideItemStepsChanged
 
 TEST_NAME = 'Test With two Steps'
