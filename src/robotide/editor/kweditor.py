@@ -65,7 +65,6 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._write_steps(self._controller)
             self._tree = tree
             self._has_been_clicked = False
-            self._is_key_down = False
         except Exception, e:
             print 'Exception in initing KeywordEditor: %s' % e
             raise
@@ -273,10 +272,6 @@ class KeywordEditor(GridEditor, RideEventHandler):
         event.Skip()
 
     def OnKeyDown(self, event):
-        if self._is_key_down:
-            return
-        self._is_key_down = True
-        self._tooltips.hide()
         keycode, control_down = event.GetKeyCode(), event.CmdDown()
         if keycode == wx.WXK_CONTROL:
             self._show_cell_information()
@@ -335,9 +330,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self.MoveCursorLeft(event.ShiftDown())
 
     def OnKeyUp(self, event):
-        self._tooltips.hide_information()
+        self._tooltips.hide()
         self._hide_link_if_necessary()
-        self._is_key_down = False
 
     def _open_cell_editor_with_content_assist(self):
         if not self.IsCellEditControlEnabled():
