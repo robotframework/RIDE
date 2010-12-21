@@ -712,7 +712,8 @@ class EditorCreator(object):
 
     def editor_for(self, plugin, editor_panel, tree):
         controller = plugin.get_selected_item()
-        if not controller:
+        print controller
+        if not controller or not controller.data:
             if self._editor:
                 return self._editor
             self._editor = WelcomePage(editor_panel)
