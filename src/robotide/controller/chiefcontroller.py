@@ -18,7 +18,7 @@ from robot.parsing.model import ResourceFile
 from robotide import context
 from robotide.errors import SerializationError
 from robotide.publish.messages import RideOpenResource, RideSaving, RideSaveAll, \
-    RideSaved, RideChangeFormat, RideOpenSuite
+    RideSaved, RideChangeFormat, RideOpenSuite, RideNewProject
 from robotide.writer.serializer import Serializer
 
 from filecontrollers import DataController, ResourceFileController
@@ -111,9 +111,10 @@ class ChiefController(object):
         for _import in [ imp for imp in controller.imports if imp.is_resource ]:
             _import.import_loaded_or_modified()
 
-    def new_datafile(self, datafile):
+    def new_project(self, datafile):
         self._controller = DataController(datafile, self)
         self.resources = []
+        RideNewProject(path=datafile.source, datafile=datafile).publish()
 
     def update_namespace(self):
         self._namespace.update()

@@ -17,7 +17,7 @@ from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 import os.path
 
 from robotide.pluginapi import Plugin, ActionInfo, RideOpenSuite,\
-    RideOpenResource, RideImportSetting, RideUserKeyword
+    RideOpenResource, RideImportSetting, RideUserKeyword, RideNewProject
 from robotide.controller.filecontrollers import (ResourceFileController,
                                                  TestCaseFileController)
 from robotide.widgets import PopupMenuItem
@@ -45,7 +45,7 @@ class KeywordSearch(Plugin):
                             doc='Search keywords from libraries and resources')
         self.register_action(action)
         self.subscribe(self.mark_dirty, RideOpenSuite, RideOpenResource,
-                       RideImportSetting, RideUserKeyword)
+                       RideImportSetting, RideUserKeyword, RideNewProject)
         self._dialog = KeywordSearchDialog(self.frame, self)
         self.tree.register_context_menu_hook(self._search_resource)
 

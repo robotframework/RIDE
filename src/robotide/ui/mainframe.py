@@ -17,7 +17,7 @@ import wx
 
 from robotide.controller import NewDatafile
 from robotide.action import ActionInfoCollection, Action
-from robotide.publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER
+from robotide.publish import RideSaveAll, RideClosing, RideSaved, RideNewProject, PUBLISHER
 from robotide.utils import RideEventHandler, RideHtmlWindow
 from robotide.context import SETTINGS, ABOUT_RIDE
 from robotide.widgets import Dialog
@@ -119,7 +119,7 @@ class RideFrame(wx.Frame, RideEventHandler):
             path = dlg.get_path()
             self._controller.default_dir = os.path.dirname(path)
             data = NewDatafile(path, dlg.is_dir_type())
-            self._controller.new_datafile(data)
+            self._controller.new_project(data)
             self.tree.populate(self._controller)
         dlg.Destroy()
 

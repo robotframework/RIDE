@@ -165,6 +165,11 @@ class RideChangeFormat(RideMessage):
     data = ['oldpath', 'newpath']
 
 
+class RideNewProject(RideMessage):
+    """Sent when a new project has been created."""
+    data = ['path', 'datafile']
+
+
 class RideOpenSuite(RideMessage):
     """Sent when a new suite has finished loading."""
     data = ['path', 'datafile']
@@ -173,6 +178,7 @@ class RideOpenSuite(RideMessage):
 class RideOpenResource(RideMessage):
     """Sent when a new resource has finished loading."""
     data = ['path', 'datafile']
+
 
 class RideDataFileRemoved(RideMessage):
     data = ['path', 'datafile']
@@ -196,6 +202,7 @@ class RideGridCellChanged(RideMessage):
 class RideImportSetting(RideMessage):
     """Base class for all messages about changes to import settings."""
 
+
 class RideImportSettingAdded(RideImportSetting):
     """Sent whenever an import setting is added.
 
@@ -203,6 +210,7 @@ class RideImportSettingAdded(RideImportSetting):
     ``type`` is either ``resource``, ``library``, or ``variables``.
     """
     data = ['datafile', 'type', 'name']
+
 
 class RideImportSettingChanged(RideImportSetting):
     """Sent whenever a value of import setting is changed.
@@ -212,6 +220,7 @@ class RideImportSettingChanged(RideImportSetting):
     """
     data = ['datafile', 'type', 'name']
 
+
 class RideImportSettingRemoved(RideImportSetting):
     """Sent whenever a value of import setting is removed.
 
@@ -220,9 +229,11 @@ class RideImportSettingRemoved(RideImportSetting):
     """
     data = ['datafile', 'type', 'name']
 
+
 class RideDataChangedToDirty(RideMessage):
     """Sent when datafile changes from serialized version"""
     data = ['datafile']
+
 
 class RideDataDirtyCleared(RideMessage):
     """Sent when datafiles dirty marking is cleared
@@ -231,57 +242,72 @@ class RideDataDirtyCleared(RideMessage):
     """
     data = ['datafile']
 
+
 class RideUserKeyword(RideMessage):
     """Base class for all messages about changes to any user keyword."""
+
 
 class RideUserKeywordAdded(RideMessage):
     """Sent when a new user keyword is added to a suite or resource."""
     data = ['datafile', 'name', 'item']
 
+
 class RideUserKeywordRemoved(RideMessage):
     """Sent when a user keyword is removed from a suite or resource."""
     data = ['datafile', 'name', 'item']
+
 
 class RideItem(RideMessage):
     """Base class for all messages about changes to any data item."""
     data = ['item']
 
+
 class RideItemStepsChanged(RideItem):
     """"""
+
 
 class RideItemNameChanged(RideItem):
     """"""
 
+
 class RideItemSettingsChanged(RideItem):
     """"""
+
 
 class RideTestCaseAdded(RideMessage):
     """Sent when a new test case is added to a suite."""
     data = ['datafile', 'name', 'item']
 
+
 class RideTestCaseRemoved(RideMessage):
     """Sent when a test case is removed from a suite."""
     data = ['datafile', 'name', 'item']
+
 
 class RideVariableAdded(RideMessage):
     """Sent when a new variable is added to a suite."""
     data = ['datafile', 'name', 'item']
 
+
 class RideVariableRemoved(RideMessage):
     """Sent when a variable is removed from a suite."""
     data = ['datafile', 'name', 'item']
+
 
 class RideVariableMovedUp(RideMessage):
     """Sent when a variable is moved up"""
     data = ['item']
 
+
 class RideVariableMovedDown(RideMessage):
     """Sent when a variable is moved down"""
     data = ['item']
 
+
 class RideVariableUpdated(RideMessage):
     """Sent when the state of a variable is changed"""
     data = ['item']
+
 
 class RideClosing(RideMessage):
     """Sent when user selects ``Quit`` from ``File`` menu or via shortcut."""
