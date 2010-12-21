@@ -53,6 +53,6 @@ setup(name         = 'robotframework-ride',
                       'robotide.widgets',
                       'robotide.writer',
                       ],
-      package_data = {'robotide': ['ui/*.png', 'context/*.cfg']},
+      package_data = {'robotide': ['widgets/*.png', 'context/*.cfg']},
       scripts = ['src/bin/ride.py']
       )
