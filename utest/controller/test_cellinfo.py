@@ -1,6 +1,7 @@
 import unittest
 import datafilereader
-from robotide.controller.commands import ChangeCellValue, DeleteRows
+from robotide.controller.commands import ChangeCellValue, DeleteRows, AddKeyword,\
+    Undo
 from robot.utils.asserts import assert_equals, assert_true, assert_false,\
     assert_none
 from robotide.controller.cellinfo import CellType, ContentType, CellInfo,\
@@ -43,11 +44,11 @@ class TestCellInfo(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         ctrl = datafilereader.construct_chief_controller(datafilereader.ARGUMENTS_PATH)
-        testsuite = datafilereader.get_ctrl_by_name('Suite', ctrl.datafiles)
-        cls.test = testsuite.tests[0]
-        cls.keyword1 = [kw for kw in testsuite.keywords if kw.name == 'KW1'][0]
-        cls.keyword2 = [kw for kw in testsuite.keywords if kw.name == 'KW2'][0]
-        cls.keyword3 = [kw for kw in testsuite.keywords if kw.name == 'KW3'][0]
+        cls.testsuite = datafilereader.get_ctrl_by_name('Suite', ctrl.datafiles)
+        cls.test = cls.testsuite.tests[0]
+        cls.keyword1 = [kw for kw in cls.testsuite.keywords if kw.name == 'KW1'][0]
+        cls.keyword2 = [kw for kw in cls.testsuite.keywords if kw.name == 'KW2'][0]
+        cls.keyword3 = [kw for kw in cls.testsuite.keywords if kw.name == 'KW3'][0]
 
     def tearDown(self):
         self.test.execute(DeleteRows([i for i in range(len(self.test.steps))]))
@@ -137,6 +138,29 @@ class TestCellInfo(unittest.TestCase):
         self._verify_cell_info(2, 4, ContentType.EMPTY, CellType.OPTIONAL, forlooped_case)
         self._verify_cell_info(2, 5, ContentType.EMPTY, CellType.OPTIONAL, forlooped_case)
         self._verify_cell_info(2, 6, ContentType.EMPTY, CellType.MUST_BE_EMPTY, forlooped_case)
+
+    def test_library_import(self):
+        self.test.execute(ChangeCellValue(0, 0, 'Get File'))
+        self.test.execute(ChangeCellValue(0, 1, 'reaktor.txt'))
+        self._verify_cell_info(0, 0, ContentType.STRING, CellType.KEYWORD)
+        self._verify_cell_info(0, 1, ContentType.STRING, CellType.UNKNOWN)
+        self.testsuite.imports.add_library('OperatingSystem', [], '')
+        self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD)
+        self._verify_cell_info(0, 1, ContentType.STRING, CellType.MANDATORY)
+        self.testsuite.imports.delete(-1)
+        self._verify_cell_info(0, 0, ContentType.STRING, CellType.KEYWORD)
+        self._verify_cell_info(0, 1, ContentType.STRING, CellType.UNKNOWN)
+
+    def test_create_new_keyword(self):
+        kw_name = 'Super Keyword'
+        self.test.execute(ChangeCellValue(0, 0, kw_name))
+        self._verify_cell_info(0, 0, ContentType.STRING, CellType.KEYWORD)
+        self.test.execute(AddKeyword(kw_name, '${argh}'))
+        self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.KEYWORD)
+        self._verify_cell_info(0, 1, ContentType.EMPTY, CellType.MANDATORY)
+        self.test.execute(Undo())
+        self._verify_cell_info(0, 0, ContentType.STRING, CellType.KEYWORD)
+        self._verify_cell_info(0, 1, ContentType.EMPTY, CellType.UNKNOWN)
 
     def _verify_string_change(self, row, col, celltype):
         self._verify_cell_info(row, col, ContentType.EMPTY, celltype)

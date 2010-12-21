@@ -20,7 +20,7 @@ from robotide.controller.basecontroller import ControllerWithParent
 
 from robotide.controller.macrocontrollers import (TestCaseController,
                                                   UserKeywordController)
-from robotide.publish.messages import RideTestCaseRemoved, RideVariableAdded,\
+from robotide.publish.messages import RideTestCaseRemoved, RideVariableAdded, \
     RideVariableRemoved, RideVariableMovedUp, RideVariableMovedDown
 
 from robotide.controller.settingcontrollers import (MetadataController,
@@ -34,11 +34,11 @@ class _WithListOperations(object):
 
     def move_up(self, index):
         if index > 0:
-            self._swap(index-1, index)
+            self._swap(index - 1, index)
 
     def move_down(self, index):
-        if index < len(self._items)-1:
-            self._swap(index, index+1)
+        if index < len(self._items) - 1:
+            self._swap(index, index + 1)
 
     def _swap(self, ind1, ind2):
         self._items[ind1], self._items[ind2] = self._items[ind2], self._items[ind1]
