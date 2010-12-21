@@ -26,28 +26,25 @@ class LibraryCache(object):
     _REOSLVE_FAILED = 'Resolving keywords for library %s with args %s failed:'
 
     def __init__(self):
-        self.library_keywords = {}
+        self._library_keywords = {}
         self._default_libraries = self._get_default_libraries()
         self._default_kws = self._build_default_kws()
 
-    def reset(self):
-        self.__init__()
-
     def add_library(self, name, args=None):
-        if not self.library_keywords.has_key(self._key(name, args)):
+        if not self._library_keywords.has_key(self._key(name, args)):
             action = lambda: LibrarySpec(name, args).keywords
             kws = self._with_error_logging(action, [],
                                            self._IMPORT_FAILED % (name))
-            self.library_keywords[self._key(name, args)] = kws
+            self._library_keywords[self._key(name, args)] = kws
 
     def _key(self, name, args):
         return (name, tuple(args or ''))
 
     def get_library_keywords(self, name, args=None):
         def _get_library_keywords():
-            if not self.library_keywords.has_key(self._key(name, args)):
+            if not self._library_keywords.has_key(self._key(name, args)):
                 self.add_library(name, args)
-            return self.library_keywords[self._key(name, args)]
+            return self._library_keywords[self._key(name, args)]
         return self._with_error_logging(_get_library_keywords, [],
                                         self._REOSLVE_FAILED % (name, args))
 

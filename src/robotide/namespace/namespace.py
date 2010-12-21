@@ -38,21 +38,22 @@ class Namespace(object):
 
 
     def __init__(self):
-        self.lib_cache = LibraryCache()
-        self.res_cache = ResourceCache()
-        self.retriever = DatafileRetriever(self.lib_cache, self.res_cache)
+        self._init_caches()
         self._content_assist_hooks = []
         self._update_listeners = []
 
+    def _init_caches(self):
+        self._lib_cache = LibraryCache()
+        self._res_cache = ResourceCache()
+        self._retriever = DatafileRetriever(self._lib_cache, self._res_cache)
+
     def update(self):
-        self.retriever.expire_cache()
+        self._retriever.expire_cache()
         for listener in self._update_listeners:
             listener()
 
     def reset_resource_and_library_cache(self):
-        self.lib_cache.reset()
-        self.res_cache.reset()
-        self.retriever.reset()
+        self._init_caches()
 
     def register_update_listener(self, listener):
         self._update_listeners.append(listener)
@@ -69,11 +70,11 @@ class Namespace(object):
     def get_all_keywords(self, testsuites):
         kws = set()
         kws.update(self._get_default_keywords())
-        kws.update(self.retriever.get_keywords_from_several(testsuites))
+        kws.update(self._retriever.get_keywords_from_several(testsuites))
         return list(kws)
 
     def _get_default_keywords(self):
-        return self.lib_cache.get_default_keywords()
+        return self._lib_cache.get_default_keywords()
 
     def get_suggestions_for(self, controller, start):
         datafile = controller.datafile
@@ -112,7 +113,7 @@ class Namespace(object):
     def _variable_suggestions(self, controller, start):
         datafile = controller.datafile
         start_normalized = normalize(start)
-        vars = self.retriever.get_variables_from(datafile)
+        vars = self._retriever.get_variables_from(datafile)
         self._add_kw_arg_vars(controller, vars)
         return [v for v in vars
                 if normalize(v.name).startswith(start_normalized)]
@@ -124,14 +125,14 @@ class Namespace(object):
     def _keyword_suggestions(self, datafile, start):
         start_normalized = normalize(start)
         return sorted(sug for sug in chain(self._get_default_keywords(),
-                                           self.retriever.get_keywords_from(datafile))
+                                           self._retriever.get_keywords_from(datafile))
                       if normalize(sug.name).startswith(start_normalized))
 
     def get_resources(self, datafile):
-        return self.retriever.get_resources_from(datafile)
+        return self._retriever.get_resources_from(datafile)
 
     def get_resource(self, path, directory=''):
-        return self.res_cache.get_resource(directory, path)
+        return self._res_cache.get_resource(directory, path)
 
     def find_user_keyword(self, datafile, kw_name):
         kw = self.find_keyword(datafile, kw_name)
@@ -147,7 +148,7 @@ class Namespace(object):
     def find_keyword(self, datafile, kw_name):
         if not kw_name:
             return None
-        kwds = self.retriever.get_keywords_cached(datafile)
+        kwds = self._retriever.get_keywords_cached(datafile)
         return kwds.get(kw_name)
 
     def is_library_keyword(self, datafile, kw_name):
@@ -163,9 +164,6 @@ class ResourceCache(object):
     def __init__(self):
         self.cache = {}
         self.python_path_cache = {}
-
-    def reset(self):
-        self.__init__()
 
     def get_resource(self, directory, name):
         path = os.path.join(directory, name) if directory else name
@@ -292,13 +290,10 @@ class _VariableStash(object):
 class DatafileRetriever(object):
 
     def __init__(self, lib_cache, res_cache):
-        self.lib_cache = lib_cache
-        self.res_cache = res_cache
+        self._lib_cache = lib_cache
+        self._res_cache = res_cache
         self.keyword_cache = ExpiringCache()
-        self.default_kws = self.lib_cache.get_default_keywords()
-
-    def reset(self):
-        self.__init__(self.lib_cache, self.res_cache)
+        self.default_kws = self._lib_cache.get_default_keywords()
 
     def expire_cache(self):
         self.keyword_cache = ExpiringCache()
@@ -336,7 +331,7 @@ class DatafileRetriever(object):
     def _lib_kw_getter(self, imp, ctx):
         name = ctx.vars.replace_variables(imp.name)
         args = [ctx.vars.replace_variables(a) for a in imp.args]
-        return self.lib_cache.get_library_keywords(name, args)
+        return self._lib_cache.get_library_keywords(name, args)
 
     def _collect_import_of_type(self, datafile, instance_type):
         return [imp for imp in datafile.imports
@@ -349,7 +344,7 @@ class DatafileRetriever(object):
     def _res_kw_recursive_getter(self, imp, ctx):
         kws = []
         resolved_name = ctx.vars.replace_variables(imp.name)
-        res = self.res_cache.get_resource(imp.directory, resolved_name)
+        res = self._res_cache.get_resource(imp.directory, resolved_name)
         if not res or res in ctx.parsed:
             return kws
         ctx.parsed.add(res)
@@ -406,7 +401,7 @@ class DatafileRetriever(object):
         ctx.vars.set_from_variable_table(datafile.variable_table)
         for imp in self._collect_import_of_type(datafile, Resource):
             resolved_name = ctx.vars.replace_variables(imp.name)
-            res = self.res_cache.get_resource(imp.directory, resolved_name)
+            res = self._res_cache.get_resource(imp.directory, resolved_name)
             imp.resolved_path = None
             if res:
                 imp.resolved_path = res.source

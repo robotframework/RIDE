@@ -374,28 +374,21 @@ class TestResourceGetter(_DataFileTest):
 class TestResourceCache(_DataFileTest):
 
     def setUp(self):
-        self.res_cache = self.ns.res_cache
+        self._res_cache = self.ns._res_cache
 
     def test_file_read_only_once(self):
         imp = Resource(None, RESOURCE_PATH)
-        first = self.res_cache.get_resource(imp.directory, imp.name)
-        second = self.res_cache.get_resource(imp.directory, imp.name)
+        first = self._res_cache.get_resource(imp.directory, imp.name)
+        second = self._res_cache.get_resource(imp.directory, imp.name)
         assert_true(first is second)
 
     def test_file_with_absolute_path(self):
         imp = Resource(ParentMock(), RESOURCE_PATH)
-        assert_true(self.res_cache.get_resource(imp.directory, imp.name))
+        assert_true(self._res_cache.get_resource(imp.directory, imp.name))
 
     def test_file_with_invalid_path(self):
         imp = Resource(ParentMock(), '${kumikameli}')
-        assert_none(self.res_cache.get_resource(imp.directory, imp.name))
-
-    def test_reset(self):
-        imp = Resource(None, RESOURCE_PATH)
-        first = self.res_cache.get_resource(imp.directory, imp.name)
-        self.res_cache.reset()
-        second = self.res_cache.get_resource(imp.directory, imp.name)
-        assert_true(first is not second)
+        assert_none(self._res_cache.get_resource(imp.directory, imp.name))
 
 
 if __name__ == "__main__":
