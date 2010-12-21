@@ -30,6 +30,7 @@ class _ContentAssistTextCtrlBase(object):
         self.Bind(wx.EVT_KEY_DOWN, self.OnKey)
         self.Bind(wx.EVT_KILL_FOCUS, self.OnFocusLost)
         self.Bind(wx.EVT_MOVE, self.OnFocusLost)
+        self._showing_content_assist = False
 
     def OnKey(self, event):
         keycode = event.GetKeyCode()
@@ -65,8 +66,12 @@ class _ContentAssistTextCtrlBase(object):
 
     def reset(self):
         self._popup.reset()
+        self._showing_content_assist = False
 
     def show_content_assist(self):
+        if self._showing_content_assist:
+            return
+        self._showing_content_assist = True
         if self._populate_content_assist():
             self._show_content_assist()
 
@@ -80,6 +85,7 @@ class _ContentAssistTextCtrlBase(object):
                 value = value[:pos] + value[pos + 1:]
             elif event.GetKeyCode() == wx.WXK_ESCAPE:
                 self.hide()
+                return False
             else:
                 value += unichr(event.GetRawKeyCode())
         return self._popup.content_assist_for(value)
@@ -94,6 +100,7 @@ class _ContentAssistTextCtrlBase(object):
 
     def hide(self):
         self._popup.hide()
+        self._showing_content_assist = False
 
 
 class ExpandingContentAssistTextCtrl(_ContentAssistTextCtrlBase, ExpandoTextCtrl):
@@ -131,7 +138,7 @@ class ContentAssistPopup(object):
         self._choices = self._plugin.content_assist_values(value)
         if not self._choices:
             self._list.ClearAll()
-            self.hide()
+            self._parent.hide()
             return False
         self._list.populate(self._choices)
         return True
