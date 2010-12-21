@@ -1,7 +1,7 @@
 import unittest
 import datafilereader
 from robotide.controller.commands import ChangeCellValue, DeleteRows, AddKeyword,\
-    Undo
+    Undo, PasteArea
 from robot.utils.asserts import assert_equals, assert_true, assert_false,\
     assert_none
 from robotide.controller.cellinfo import CellType, ContentType, CellInfo,\
@@ -139,9 +139,8 @@ class TestCellInfo(unittest.TestCase):
         self._verify_cell_info(2, 5, ContentType.EMPTY, CellType.OPTIONAL, forlooped_case)
         self._verify_cell_info(2, 6, ContentType.EMPTY, CellType.MUST_BE_EMPTY, forlooped_case)
 
-    def test_library_import(self):
-        self.test.execute(ChangeCellValue(0, 0, 'Get File'))
-        self.test.execute(ChangeCellValue(0, 1, 'reaktor.txt'))
+    def test_library_import_add_and_remove(self):
+        self.test.execute(PasteArea((0, 0), [['Get File', 'reaktor.txt']]))
         self._verify_cell_info(0, 0, ContentType.STRING, CellType.KEYWORD)
         self._verify_cell_info(0, 1, ContentType.STRING, CellType.UNKNOWN)
         self.testsuite.imports.add_library('OperatingSystem', [], '')
@@ -151,7 +150,7 @@ class TestCellInfo(unittest.TestCase):
         self._verify_cell_info(0, 0, ContentType.STRING, CellType.KEYWORD)
         self._verify_cell_info(0, 1, ContentType.STRING, CellType.UNKNOWN)
 
-    def test_create_new_keyword(self):
+    def test_create_and_remove_keyword(self):
         kw_name = 'Super Keyword'
         self.test.execute(ChangeCellValue(0, 0, kw_name))
         self._verify_cell_info(0, 0, ContentType.STRING, CellType.KEYWORD)
