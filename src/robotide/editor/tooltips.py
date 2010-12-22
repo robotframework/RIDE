@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 import wx
+import wx.grid
 
 from popupwindow import Tooltip
 
@@ -26,11 +27,15 @@ class GridToolTips(object):
         self._tooltip_timer = wx.Timer(grid.GetGridWindow())
         grid.GetGridWindow().Bind(wx.EVT_MOTION, self.OnMouseMotion)
         grid.GetGridWindow().Bind(wx.EVT_TIMER, self.OnShowToolTip)
+        grid.Bind(wx.grid.EVT_GRID_EDITOR_HIDDEN, self.OnGridEditorHidden)
 
     def OnMouseMotion(self, event):
         self._hide_tooltip()
-        self._tooltip_timer.Start(500, True)
+        self._start_tooltip_timer()
         event.Skip()
+
+    def _start_tooltip_timer(self):
+        self._tooltip_timer.Start(500, True)
 
     def OnShowToolTip(self, event):
         self._hide_tooltip()
@@ -38,6 +43,11 @@ class GridToolTips(object):
         if content:
             self._show_tooltip_at(content, self._calculate_tooltip_position())
             self._grid.SetFocus()
+
+    def OnGridEditorHidden(self, event):
+        cell = event.Row, event.Col
+        if cell == self._grid.cell_under_cursor:
+            self._start_tooltip_timer()
 
     def _show_tooltip_at(self, content, position):
         if not self._information_popup.IsShown():
