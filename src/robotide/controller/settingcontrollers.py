@@ -232,6 +232,7 @@ class ArgumentsController(_SettingController):
 
     def _set(self, value):
         self._args.value = self._split_from_separators(value)
+        self._parent.notify_settings_changed()
 
 
 class ReturnValueController(_SettingController):

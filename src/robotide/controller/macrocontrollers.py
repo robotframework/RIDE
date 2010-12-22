@@ -253,9 +253,11 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         return self._parent.validate_name(name)
 
     def notify_name_changed(self):
+        self.update_namespace()
         self._notify(RideItemNameChanged)
 
     def notify_settings_changed(self):
+        self.update_namespace()
         self._notify(RideItemSettingsChanged)
 
     def notify_steps_changed(self):
