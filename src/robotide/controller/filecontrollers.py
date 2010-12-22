@@ -204,6 +204,10 @@ class _DataController(_BaseController, WithUndoRedoStacks):
     def notify_settings_changed(self):
         pass
 
+    def notify_steps_changed(self):
+        for test in self.tests:
+            test.notify_steps_changed()
+
     def iter_datafiles(self):
         yield self
         for child in self.children:
