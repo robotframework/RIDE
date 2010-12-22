@@ -36,16 +36,16 @@ class GridEditor(grid.Grid):
         self.CreateGrid(num_rows, num_cols)
         self._popup_creator = popup_creator or PopupCreator()
 
+    def _bind_to_events(self):
+        self.Bind(grid.EVT_GRID_SELECT_CELL, self.OnSelectCell)
+        self.Bind(grid.EVT_GRID_RANGE_SELECT, self.OnRangeSelect)
+        self.Bind(grid.EVT_GRID_CELL_RIGHT_CLICK, self.OnCellRightClick)
+
     def register_context_menu_hook(self, callable):
         self._popup_creator.add_hook(callable)
 
     def unregister_context_menu_hook(self, callable):
         self._popup_creator.remove_hook(callable)
-
-    def _bind_to_events(self):
-        self.Bind(grid.EVT_GRID_SELECT_CELL, self.OnSelectCell)
-        self.Bind(grid.EVT_GRID_RANGE_SELECT, self.OnRangeSelect)
-        self.Bind(grid.EVT_GRID_CELL_RIGHT_CLICK, self.OnCellRightClick)
 
     def write_cell(self, row, col, value, update_history=True):
         if update_history:
@@ -59,8 +59,8 @@ class GridEditor(grid.Grid):
         while col >= self.NumberCols - self._col_add_threshold:
             self.AppendCols(1)
 
-    def set_dirty(self):
-        pass
+    def has_focus(self):
+        return self.FindFocus() == self.GridWindow
 
     def _update_history(self):
         self._history.change(self._get_block_content(range(self.NumberRows),
@@ -177,7 +177,6 @@ class GridEditor(grid.Grid):
         for index in self.selection.rows():
             data = action(self._row_data(index))
             self._write_row(index, data)
-        self.set_dirty()
         self._refresh_layout()
         event.Skip()
 
