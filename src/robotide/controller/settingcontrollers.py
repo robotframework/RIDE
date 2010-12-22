@@ -213,6 +213,14 @@ class TemplateController(_SettingController):
     def _init(self, template):
         self._template = template
 
+    def _set(self, value):
+        _SettingController._set(self, value)
+        self._parent.notify_steps_changed()
+
+    def clear(self):
+        _SettingController.clear(self)
+        self._parent.notify_steps_changed()
+
     @property
     def keyword_name(self):
         return self._template.value
@@ -234,6 +242,9 @@ class ArgumentsController(_SettingController):
         self._args.value = self._split_from_separators(value)
         self._parent.notify_settings_changed()
 
+    def clear(self):
+        _SettingController.clear(self)
+        self._parent.notify_settings_changed()
 
 class ReturnValueController(_SettingController):
 
