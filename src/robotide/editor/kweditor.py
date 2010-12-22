@@ -235,6 +235,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def OnDeleteRows(self, event):
         self._execute(DeleteRows(self.selection.rows()))
+        self.ClearSelection()
         event.Skip()
 
     def OnUndo(self, event=None):
