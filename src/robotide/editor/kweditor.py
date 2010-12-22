@@ -277,7 +277,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._show_cell_information()
         elif keycode == ord('A') and control_down:
             self.OnSelectAll(event)
-        elif event.AltDown():
+        elif event.AltDown() and keycode in [wx.WXK_DOWN, wx.WXK_UP]:
             self._move_rows(keycode)
         elif keycode == wx.WXK_WINDOWS_MENU:
             self.OnCellRightClick(event)
@@ -317,10 +317,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         return self.ClientToScreen(self.CalcScrolledPosition(point))
 
     def _move_rows(self, keycode):
-        if keycode == wx.WXK_UP:
-            self.OnMoveRowsUp()
-        elif keycode == wx.WXK_DOWN:
-            self.OnMoveRowsDown()
+        self.OnMoveRowsUp() if keycode == wx.WXK_UP else self.OnMoveRowsDown()
 
     def _move_grid_cursor(self, event, keycode):
         self.DisableCellEditControl()
