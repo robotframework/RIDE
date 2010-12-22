@@ -154,10 +154,10 @@ class _DataController(_BaseController, WithUndoRedoStacks):
     def add_test_or_keyword(self, item):
         if isinstance(item, TestCaseController):
             self.tests.add(item)
-            item._parent = self.tests
+            item.set_parent(self.tests)
         elif isinstance(item, UserKeywordController):
             self.keywords.add(item)
-            item._parent = self.keywords
+            item.set_parent(self.keywords)
         else:
             self.variables.add_variable(item.name, item.value, item.comment)
 

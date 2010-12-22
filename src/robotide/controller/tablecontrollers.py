@@ -207,6 +207,7 @@ class _MacroTable(object):
 
     def delete(self, ctrl):
         self._items.remove(ctrl.data)
+        del self._item_to_controller[ctrl.data]
         self.datafile_controller.update_namespace()
         self.mark_dirty()
         self._notify_removal(ctrl)
@@ -215,9 +216,10 @@ class _MacroTable(object):
         item = ctrl.data
         item.parent = self.datafile
         self._items.append(item)
+        new_controller = self._create_controller(item)
         self.datafile_controller.update_namespace()
         self.mark_dirty()
-        self._notify_creation(ctrl.name, ctrl)
+        self._notify_creation(new_controller.name, new_controller)
 
     def _create_new(self, name, config=None):
         name = name.strip()
