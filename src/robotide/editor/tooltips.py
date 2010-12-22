@@ -20,7 +20,7 @@ from popupwindow import Tooltip
 class GridToolTips(object):
 
     def __init__(self, grid):
-        self._tooltip = Tooltip(grid, (210, 70), False, True)
+        self._tooltip = Tooltip(grid, (250, 80), False, True)
         self._information_popup = Tooltip(grid, (450, 300))
         self._grid = grid
         self._tooltip_timer = wx.Timer(grid.GetGridWindow())
