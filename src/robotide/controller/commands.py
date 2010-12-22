@@ -408,18 +408,15 @@ class SaveAll(_Command):
         for datafile_controller in context._get_all_dirty_controllers():
             datafile_controller.execute(SaveFile())
 
-class Purify(_StepsChangingCommand):
+class Purify(_Command):
 
-    def change_steps(self, context):
+    def execute(self, context):
         for step in context.steps:
             step.remove_empty_columns_from_end()
             if step.has_only_comment():
                 step.remove_empty_columns_from_beginning()
         context.remove_empty_steps()
-        return True
-
-    def _get_undo_command(self):
-        return None
+        context.notify_steps_changed()
 
 
 class InsertCell(_StepsChangingCommand):
