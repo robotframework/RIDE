@@ -150,6 +150,18 @@ class TestCellInfo(unittest.TestCase):
         self._verify_cell_info(0, 0, ContentType.STRING, CellType.KEYWORD)
         self._verify_cell_info(0, 1, ContentType.STRING, CellType.UNKNOWN)
 
+    def test_library_import_modify(self):
+        self.test.execute(PasteArea((0, 0), [['Get File', 'reaktor.txt']]))
+        lib = self.testsuite.imports.add_library('WrongOperatingSystem', [], '')
+        self._verify_cell_info(0, 0, ContentType.STRING, CellType.KEYWORD)
+        self._verify_cell_info(0, 1, ContentType.STRING, CellType.UNKNOWN)
+        lib.set_value('OperatingSystem', [], '')
+        self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD)
+        self._verify_cell_info(0, 1, ContentType.STRING, CellType.MANDATORY)
+        self.testsuite.imports.delete(-1)
+        self._verify_cell_info(0, 0, ContentType.STRING, CellType.KEYWORD)
+        self._verify_cell_info(0, 1, ContentType.STRING, CellType.UNKNOWN)
+
     def test_create_and_remove_keyword(self):
         kw_name = 'Super Keyword'
         self.test.execute(ChangeCellValue(0, 0, kw_name))
