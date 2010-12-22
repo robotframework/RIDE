@@ -83,7 +83,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.Bind(grid.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
         self.Bind(grid.EVT_GRID_CELL_LEFT_DCLICK, self.OnCellLeftDClick)
         self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
-        self.Bind(wx.EVT_KILL_FOCUS, lambda evt: self._tooltips.hide())
+        self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
 
     def get_tooltip_content(self):
         if self.IsCellEditControlShown() or self._popup_menu_shown:
@@ -97,6 +97,10 @@ class KeywordEditor(GridEditor, RideEventHandler):
         GridEditor.OnSelectCell(self, event)
         self._colorize_grid()
         event.Skip()
+
+    def OnKillFocus(self, event):
+        self._tooltips.hide()
+        self._hide_link_if_necessary()
 
     def _execute(self, command):
         return self._controller.execute(command)
