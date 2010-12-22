@@ -88,6 +88,10 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
             self._recreate_steps()
         return self._steps_cached
 
+    def set_parent(self, new_parent):
+        self._clear_cached_steps()
+        ControllerWithParent.set_parent(self, new_parent)
+
     def _recreate_steps(self):
         flattened_steps = []
         for step in self.data.steps:

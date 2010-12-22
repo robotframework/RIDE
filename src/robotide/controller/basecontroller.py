@@ -27,6 +27,9 @@ class ControllerWithParent(object):
     def parent(self):
         return self._parent
 
+    def set_parent(self, new_parent):
+        self._parent = new_parent
+
     def mark_dirty(self):
         if self._parent:
             self._parent.mark_dirty()
