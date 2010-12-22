@@ -242,10 +242,6 @@ class KeywordEditor(GridEditor, RideEventHandler):
     def OnRedo(self, event=None):
         self._execute(Redo())
 
-    def set_dirty(self):
-        self._controller.mark_dirty()
-        self._tree.mark_dirty(self._controller)
-
     def close(self):
         self._colorizer.close()
         self.save()
