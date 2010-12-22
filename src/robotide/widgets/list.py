@@ -1,5 +1,8 @@
+import os
 import wx
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
+
+IS_WINDOWS = os.sep == '\\'
 
 
 class VirtualList(wx.ListCtrl, ListCtrlAutoWidthMixin):
@@ -12,8 +15,22 @@ class VirtualList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         self._selection_listeners = []
         self._create_headers(headers)
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnListItemSelected)
+        if IS_WINDOWS:
+            self.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDown)
         self.SetItemCount(model.count)
         self.SetImageList(model.images, wx.IMAGE_LIST_SMALL)
+
+    def OnLeftDown(self, event):
+        item, flags =  self.HitTest(event.Position)
+        if flags | wx.LIST_HITTEST_ONITEM:
+            wx.CallAfter(self._force_item_selection, item)
+        event.Skip()
+
+    def _force_item_selection(self, item):
+        # On Windows, wx.EVT_LIST_ITEM_SELECTED is not generated when
+        # already selected item is selected again.
+        self.Select(item, False)
+        self.Select(item, True)
 
     def _create_headers(self, headers):
         for idx, name in enumerate(headers):
