@@ -187,6 +187,7 @@ class ResourceFileEditor(_RobotTableEditor):
     def close(self):
         for editor in self._editors:
             editor.close()
+        self._editors = []
         _RobotTableEditor.close(self)
 
 
