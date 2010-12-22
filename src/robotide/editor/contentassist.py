@@ -27,18 +27,19 @@ class _ContentAssistTextCtrlBase(object):
 
     def __init__(self, plugin):
         self._popup = ContentAssistPopup(self, plugin)
-        self.Bind(wx.EVT_KEY_DOWN, self.OnKey)
+        self.Bind(wx.EVT_CHAR, self.OnChar)
         self.Bind(wx.EVT_KILL_FOCUS, self.OnFocusLost)
         self.Bind(wx.EVT_MOVE, self.OnFocusLost)
         self._showing_content_assist = False
 
-    def OnKey(self, event):
+    def OnChar(self, event):
+        # TODO: This might benefit from some cleanup
         keycode = event.GetKeyCode()
         # Ctrl-Space handling needed for dialogs
         if keycode == wx.WXK_SPACE and event.ControlDown():
             self.show_content_assist()
             return
-        elif keycode in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN] \
+        if keycode in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN] \
                 and self._popup.is_shown():
             self._popup.select_and_scroll(keycode)
         elif keycode == wx.WXK_RETURN and self._popup.is_shown():

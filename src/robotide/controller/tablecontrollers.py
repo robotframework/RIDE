@@ -288,7 +288,7 @@ class ImportSettingsController(_TableController, _WithListOperations):
         item = self[index]
         _WithListOperations.delete(self, index)
         item.publish_removed()
-        self.datafile_controller.update_namespace()
+        self.notify_imports_modified()
 
     def add_library(self, name, argstr, alias, comment=None):
         import_ = self._table.add_library(name, utils.split_value(argstr),
@@ -296,7 +296,7 @@ class ImportSettingsController(_TableController, _WithListOperations):
         import_.alias = alias
         self._parent.mark_dirty()
         self._publish_setting_added(name, 'library')
-        self.datafile_controller.update_namespace()
+        self.notify_imports_modified()
         return self[-1]
 
     def add_resource(self, path, comment=None):
@@ -305,7 +305,7 @@ class ImportSettingsController(_TableController, _WithListOperations):
         self._publish_setting_added(path, 'resource')
         resource = self.resource_import_modified(path)
         import_.resolved_path = resource.source if resource else None
-        self.datafile_controller.update_namespace()
+        self.notify_imports_modified()
         return self[-1]
 
     def add_variables(self, path, argstr, comment=None):
@@ -317,6 +317,9 @@ class ImportSettingsController(_TableController, _WithListOperations):
     def _publish_setting_added(self, name, type):
         RideImportSettingAdded(datafile=self.datafile_controller, name=name,
                                type=type).publish()
+
+    def notify_imports_modified(self):
+        self.datafile_controller.update_namespace()
 
     def resource_import_modified(self, path):
         return self._parent.resource_import_modified(path)

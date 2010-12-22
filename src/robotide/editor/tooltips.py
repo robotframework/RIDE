@@ -34,6 +34,8 @@ class GridToolTips(object):
 
     def OnShowToolTip(self, event):
         self._hide_tooltip()
+        if not self._grid.has_focus():
+            return
         content = self._grid.get_tooltip_content()
         if content:
             self._show_tooltip_at(content, self._calculate_tooltip_position())

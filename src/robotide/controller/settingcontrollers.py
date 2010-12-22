@@ -360,6 +360,7 @@ class ImportController(_SettingController):
         return self
 
     def import_loaded_or_modified(self):
+        self._parent.notify_imports_modified()
         if not self.is_resource:
             return
         resource = self.get_target_controller()

@@ -18,6 +18,7 @@ from robotide import context
 from robotide import utils
 from robotide.utils import RideEventHandler, RideHtmlWindow
 from robotide.widgets import ButtonWithHandler, HorizontalSizer
+from robotide.controller.chiefcontroller import ChiefController
 from robotide.controller.settingcontrollers import (DocumentationController,
                                                     VariableController)
 from robotide.robotapi import (ResourceFile, TestCaseFile, TestDataDirectory,
@@ -187,6 +188,7 @@ class ResourceFileEditor(_RobotTableEditor):
     def close(self):
         for editor in self._editors:
             editor.close()
+        self._editors = []
         _RobotTableEditor.close(self)
 
 
@@ -695,6 +697,7 @@ def VariableEditorChooser(plugin, parent, controller, tree):
 
 
 class EditorCreator(object):
+    # TODO: Should not use robot.model classes here
     _EDITORS = ((TestDataDirectory, InitFileEditor),
                 (ResourceFile, ResourceFileEditor),
                 (TestCase, TestCaseEditor),
@@ -712,7 +715,8 @@ class EditorCreator(object):
 
     def editor_for(self, plugin, editor_panel, tree):
         controller = plugin.get_selected_item()
-        if not controller or not controller.data:
+        if not controller or not controller.data or \
+                isinstance(controller, ChiefController):
             if self._editor:
                 return self._editor
             self._editor = WelcomePage(editor_panel)

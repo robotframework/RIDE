@@ -83,7 +83,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.Bind(grid.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
         self.Bind(grid.EVT_GRID_CELL_LEFT_DCLICK, self.OnCellLeftDClick)
         self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
-        self.Bind(wx.EVT_KILL_FOCUS, lambda evt: self._tooltips.hide())
+        self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
 
     def get_tooltip_content(self):
         if self.IsCellEditControlShown() or self._popup_menu_shown:
@@ -97,6 +97,10 @@ class KeywordEditor(GridEditor, RideEventHandler):
         GridEditor.OnSelectCell(self, event)
         self._colorize_grid()
         event.Skip()
+
+    def OnKillFocus(self, event):
+        self._tooltips.hide()
+        self._hide_link_if_necessary()
 
     def _execute(self, command):
         return self._controller.execute(command)
@@ -238,10 +242,6 @@ class KeywordEditor(GridEditor, RideEventHandler):
     def OnRedo(self, event=None):
         self._execute(Redo())
 
-    def set_dirty(self):
-        self._controller.mark_dirty()
-        self._tree.mark_dirty(self._controller)
-
     def close(self):
         self._colorizer.close()
         self.save()
@@ -281,12 +281,12 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._move_rows(keycode)
         elif keycode == wx.WXK_WINDOWS_MENU:
             self.OnCellRightClick(event)
-        elif control_down or keycode not in [wx.WXK_RETURN, wx.WXK_BACK]:
-            if keycode == wx.WXK_SPACE:
-                self._open_cell_editor_with_content_assist()
-            event.Skip()
-        else:
+        elif keycode in [wx.WXK_RETURN, wx.WXK_BACK]:
             self._move_grid_cursor(event, keycode)
+        elif control_down and keycode == wx.WXK_SPACE:
+            self._open_cell_editor_with_content_assist()
+        else:
+            event.Skip()
 
     def _show_cell_information(self):
         cell = self._cell_under_cursor()
@@ -332,6 +332,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
     def OnKeyUp(self, event):
         self._tooltips.hide()
         self._hide_link_if_necessary()
+        event.Skip()
 
     def _open_cell_editor_with_content_assist(self):
         if not self.IsCellEditControlEnabled():
