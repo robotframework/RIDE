@@ -12,6 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import wx
 from wx import grid
 
 from robotide.widgets import PopupCreator, PopupMenuItems
@@ -65,6 +66,12 @@ class GridEditor(grid.Grid):
     def _update_history(self):
         self._history.change(self._get_block_content(range(self.NumberRows),
                                                      range(self.NumberCols)))
+
+    @property
+    def cell_under_cursor(self):
+        x, y = self.ScreenToClient(wx.GetMousePosition())
+        x -= self.RowLabelSize
+        return self.XYToCell(*self.CalcUnscrolledPosition(x, y))
 
     def select(self, row, column):
         self.SelectBlock(row, column, row, column)

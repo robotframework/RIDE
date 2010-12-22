@@ -88,7 +88,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
     def get_tooltip_content(self):
         if self.IsCellEditControlShown() or self._popup_menu_shown:
             return ''
-        cell = self._cell_under_cursor()
+        cell = self.cell_under_cursor
         cell_info = self._controller.get_cell_info(cell.Row, cell.Col)
         return TipMessage(cell_info)
 
@@ -289,7 +289,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
             event.Skip()
 
     def _show_cell_information(self):
-        cell = self._cell_under_cursor()
+        cell = self.cell_under_cursor
         value = self._cell_value(cell)
         if value:
             self._show_user_keyword_link(cell, value)
@@ -376,11 +376,6 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def _is_active_window(self):
         return self.IsShownOnScreen() and self.FindFocus()
-
-    def _cell_under_cursor(self):
-        x, y = self.ScreenToClient(wx.GetMousePosition())
-        x -= self.RowLabelSize
-        return self.XYToCell(*self.CalcUnscrolledPosition(x, y))
 
     def _hide_link_if_necessary(self):
         if not self._marked_cell:
