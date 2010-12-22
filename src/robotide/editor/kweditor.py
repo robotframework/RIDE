@@ -43,6 +43,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
     _no_cell = (-1,-1)
     _popup_menu_shown = False
     dirty = property(lambda self: self._controller.dirty)
+    update_value = lambda *args: None
     _popup_items = ['Create Keyword', 'Extract Keyword', 'Extract Variable', 'Rename Keyword',
                     '---'] + GridEditor._popup_items
 
