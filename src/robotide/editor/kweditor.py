@@ -332,6 +332,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
     def OnKeyUp(self, event):
         self._tooltips.hide()
         self._hide_link_if_necessary()
+        event.Skip()
 
     def _open_cell_editor_with_content_assist(self):
         if not self.IsCellEditControlEnabled():
