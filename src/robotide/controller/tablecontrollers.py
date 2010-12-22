@@ -207,7 +207,8 @@ class _MacroTable(object):
 
     def delete(self, ctrl):
         self._items.remove(ctrl.data)
-        del self._item_to_controller[ctrl.data]
+        if ctrl.data in self._item_to_controller: 
+            del self._item_to_controller[ctrl.data]
         self.datafile_controller.update_namespace()
         self.mark_dirty()
         self._notify_removal(ctrl)
