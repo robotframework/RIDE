@@ -63,12 +63,12 @@ Grid Cell Content Should Be
     Control Click   Rename Keyword  ${EMPTY}  Button2
 
 Get Arguments
-    ${value} =  Get From Editor  Button3  Arguments
+    ${value} =  Get From Editor  RICHEDIT50W1  Arguments
     [Return]  ${value}
 
 Set Documentation
     [Arguments]  ${text}
-    Set To Editor  Button1  Documentation  ${text}
+    Set To Editor  wxWindowClassNR5  Documentation  ${text}
 
 Set To Editor
     [Arguments]  ${button}  ${dialog name}  ${value}  ${comment}=${NONE}

@@ -28,6 +28,10 @@ class FileHandlingCommandsTest(TestCaseCommandTest):
         other = self._get_macro_by_name(other_name)
         assert_equals(len(other.steps), self._orig_number_of_steps+1)
 
+    def test_undo_after_file_save_does_not_brake(self):
+        self._exec(SaveFile())
+        self._exec(Undo())
+
     def _add_empty_step_to_macro(self):
         self._exec(ChangeCellValue(self._orig_number_of_steps+1, 10, 'A'))
         self._verify_step_number_change(2)
