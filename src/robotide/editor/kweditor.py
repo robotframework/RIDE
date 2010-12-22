@@ -281,12 +281,12 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._move_rows(keycode)
         elif keycode == wx.WXK_WINDOWS_MENU:
             self.OnCellRightClick(event)
-        elif control_down or keycode not in [wx.WXK_RETURN, wx.WXK_BACK]:
-            if keycode == wx.WXK_SPACE:
-                self._open_cell_editor_with_content_assist()
-            event.Skip()
-        else:
+        elif keycode in [wx.WXK_RETURN, wx.WXK_BACK]:
             self._move_grid_cursor(event, keycode)
+        elif control_down and keycode == wx.WXK_SPACE:
+            self._open_cell_editor_with_content_assist()
+        else:
+            event.Skip()
 
     def _show_cell_information(self):
         cell = self._cell_under_cursor()
