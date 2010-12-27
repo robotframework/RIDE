@@ -22,10 +22,10 @@ from robot.parsing.settings import Documentation
 from robotide import utils
 
 
-def FileWriter(output, format, name=None, template=None, pipe_separated=False):
+def FileWriter(output, format, name=None, template=None, pipe_separated=False, line_separator=os.linesep):
     try:
         Writer = {'tsv': TsvFileWriter, 'txt': TxtFileWriter(pipe_separated)}[format]
-        return Writer(output)
+        return Writer(output, line_separator)
     except KeyError:
         return HtmlFileWriter(output, name, template)
 
@@ -142,10 +142,10 @@ class TsvFileWriter(_WriterHelper):
     _testcase_titles = ['Test Case', 'Action', 'Argument']
     _keyword_titles = ['Keyword', 'Action', 'Argument']
 
-    def __init__(self, output):
+    def __init__(self, output, line_separator):
         _WriterHelper.__init__(self, output, 8)
         self._writer = csv.writer(self._output, dialect='excel-tab',
-                                  lineterminator=os.linesep)
+                                  lineterminator=line_separator)
 
     def _get_tcuk_name(self):
         name = self._tc_name or self._uk_name
@@ -170,8 +170,9 @@ class SpaceSeparatedTxtWriter(_WriterHelper):
     _testcase_titles = 'Test Cases'
     _keyword_titles = 'Keywords'
 
-    def __init__(self, output):
+    def __init__(self, output, line_separator):
         _WriterHelper.__init__(self, output, 8)
+        self._line_separator = line_separator
 
     def start_testcase(self, tc):
         self._write_data([tc.name])
@@ -203,7 +204,7 @@ class SpaceSeparatedTxtWriter(_WriterHelper):
     def _write_row(self, cells, indent=0):
         if indent:
             cells.insert(0,'  ')
-        self._output.write(self._format_row(cells) + os.linesep)
+        self._output.write(self._format_row(cells) + self._line_separator)
 
     def _format_row(self, cells):
         return '  '.join(cells)

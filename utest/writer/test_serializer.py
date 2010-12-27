@@ -14,10 +14,11 @@ DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]),
 GOLDEN_HTML_FILE = os.path.normpath(os.path.join(DATAPATH, 'golden',
                                                    'tests.html'))
 
+def assert_repr_with_native_line_separator(first, other):
+    assert_repr(first, other, os.linesep)
 
-def assert_repr(first, other):
-    if os.name == 'nt':
-        other = other.replace('\n', '\r\n')
+def assert_repr(first, other, linesep):
+    other = other.replace('\n', linesep)
     return assert_equals(repr(first), repr(other))
 
 
@@ -81,10 +82,11 @@ class _TestSerializer(object):
                     comment='step 2 comment')
         tc.teardown.populate(['1 minute', 'args'])
 
-    def get_serialization_output(self, datafile, pipe_separator=False):
+    def get_serialization_output(self, datafile, pipe_separator=False, line_separator=os.linesep):
         output = StringIO.StringIO()
         Serializer(SerializationContext(output=output,
-                                        pipe_separated=pipe_separator)).serialize(datafile)
+                                        pipe_separated=pipe_separator,
+                                        line_separator=line_separator)).serialize(datafile)
         return output.getvalue()
 
 
@@ -137,17 +139,29 @@ My Test Case
         self.txt_tcf.source = '/tmp/not_real_path/tcf.txt'
 
     def test_serializer_with_txt_resource_file(self):
-        assert_repr(self.get_serialization_output(self.txt_rf),
+        assert_repr_with_native_line_separator(self.get_serialization_output(self.txt_rf),
                       self.settings_table +
                       self.variables_table +
                       self.keywords_table)
 
     def test_serializer_with_txt_test_case_file(self):
-        assert_repr(self.get_serialization_output(self.txt_tcf),
+        assert_repr_with_native_line_separator(self.get_serialization_output(self.txt_tcf),
                       self.settings_table +
                       self.variables_table +
                       self.testcase_table +
                       self.keywords_table)
+
+    def test_serializer_with_different_line_separators(self):
+        tables = (self.settings_table +
+                  self.variables_table +
+                  self.testcase_table +
+                  self.keywords_table)
+        assert_repr(self.get_serialization_output(self.txt_tcf, line_separator='\n'),
+                      tables,
+                      '\n')
+        assert_repr(self.get_serialization_output(self.txt_tcf, line_separator='\r\n'),
+                      tables,
+                      '\r\n')
 
 
 class TestPipeTxtSerialization(unittest.TestCase, _TestSerializer):
@@ -199,17 +213,29 @@ class TestPipeTxtSerialization(unittest.TestCase, _TestSerializer):
         self.txt_tcf.source = '/tmp/not_real_path/tcf.txt'
 
     def test_serializer_with_txt_resource_file(self):
-        assert_repr(self.get_serialization_output(self.txt_rf, True),
+        assert_repr_with_native_line_separator(self.get_serialization_output(self.txt_rf, True),
                       self.settings_table +
                       self.variables_table +
                       self.keywords_table)
 
     def test_serializer_with_txt_test_case_file(self):
-        assert_repr(self.get_serialization_output(self.txt_tcf, True),
+        assert_repr_with_native_line_separator(self.get_serialization_output(self.txt_tcf, True),
                       self.settings_table +
                       self.variables_table +
                       self.testcase_table +
                       self.keywords_table)
+
+    def test_serializer_with_different_line_separators(self):
+        tables = (self.settings_table +
+                  self.variables_table +
+                  self.testcase_table +
+                  self.keywords_table)
+        assert_repr(self.get_serialization_output(self.txt_tcf, True, line_separator='\n'),
+                      tables,
+                      '\n')
+        assert_repr(self.get_serialization_output(self.txt_tcf, True, line_separator='\r\n'),
+                      tables,
+                      '\r\n')
 
 
 class TestTsvSerialization(unittest.TestCase, _TestSerializer):
@@ -259,17 +285,29 @@ My Test Case\t[Documentation]\tThis is a long comment that spans several columns
         self.tsv_tcf.source = '/tmp/not_real_path/tcf.tsv'
 
     def test_serializer_with_tsv_resource_file(self):
-        assert_repr(self.get_serialization_output(self.tsv_rf),
+        assert_repr_with_native_line_separator(self.get_serialization_output(self.tsv_rf),
                     self.settings_table +
                     self.variables_table +
                     self.keywords_table)
 
     def test_serializer_with_tsv_testcase_file(self):
-        assert_repr(self.get_serialization_output(self.tsv_tcf),
+        assert_repr_with_native_line_separator(self.get_serialization_output(self.tsv_tcf),
                     self.settings_table +
                     self.variables_table +
                     self.testcase_table +
                     self.keywords_table)
+
+    def test_serializer_with_different_line_separators(self):
+        tables = (self.settings_table +
+                  self.variables_table +
+                  self.testcase_table +
+                  self.keywords_table)
+        assert_repr(self.get_serialization_output(self.tsv_tcf, line_separator='\n'),
+                      tables,
+                      '\n')
+        assert_repr(self.get_serialization_output(self.tsv_tcf, line_separator='\r\n'),
+                      tables,
+                      '\r\n')
 
 
 class TestHTMLSerialization(unittest.TestCase, _TestSerializer):

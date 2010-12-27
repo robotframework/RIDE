@@ -21,15 +21,30 @@ from robotide import context
 
 class SerializationContext(object):
 
-    def __init__(self, output=None, format=None, pipe_separated=None):
+    def __init__(self, output=None, format=None, pipe_separated=None, line_separator=None):
         self.output = output
         self.format = format
         self._pipe_separated = pipe_separated
+        self._line_separator = line_separator
 
     @property
     def pipe_separated(self):
         return self._pipe_separated if self._pipe_separated is not None else \
             context.SETTINGS.get('txt format separator', 'space') == 'pipe'
+
+    @property
+    def line_separator(self):
+        return self._line_separator if self._line_separator else \
+            self._get_line_separator_setting()
+            
+    def _get_line_separator_setting(self):
+            setting = context.SETTINGS.get('line separator', 'native')
+            setting = setting.lower()
+            if setting in ('crlf', 'windows'):
+                return '\r\n'
+            if setting in ('lf', 'unix'):
+                return '\n'
+            return os.linesep
 
 
 class Serializer(object):
@@ -41,7 +56,9 @@ class Serializer(object):
         template = self._create_template(datafile)
         output = self._get_output(datafile)
         writer = FileWriter(output, self._get_format(datafile), name=datafile.name,
-                            template=template, pipe_separated=self._ctx.pipe_separated)
+                            template=template, 
+                            pipe_separated=self._ctx.pipe_separated,
+                            line_separator=self._ctx.line_separator)
         writer_serializer = _WriterSerializer(writer)
         writer_serializer.serialize(datafile)
         self._close_output(writer)
