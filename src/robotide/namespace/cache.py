@@ -23,7 +23,7 @@ from robotide.publish.messages import RideLogException
 
 class LibraryCache(object):
     _IMPORT_FAILED = 'Importing library %s failed:'
-    _REOSLVE_FAILED = 'Resolving keywords for library %s with args %s failed:'
+    _RESOLVE_FAILED = 'Resolving keywords for library %s with args %s failed:'
 
     def __init__(self):
         self._library_keywords = {}
@@ -46,7 +46,7 @@ class LibraryCache(object):
                 self.add_library(name, args)
             return self._library_keywords[self._key(name, args)]
         return self._with_error_logging(_get_library_keywords, [],
-                                        self._REOSLVE_FAILED % (name, args))
+                                        self._RESOLVE_FAILED % (name, args))
 
     def _with_error_logging(self, action, default, errormsg):
         try:
