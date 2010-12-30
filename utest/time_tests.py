@@ -30,9 +30,10 @@ def _test_module_execution_time(tmodule):
 
 def write_results(exectimes, write):
     total = 0.0
+    writes = []
     for record in reversed(sorted(exectimes, key=lambda record: record[1])):
-        write('%s%.02f s\n' % (record[0].ljust(70), record[1]))
         total += record[1]
+        write('%s%.02f s (%.02f s)\n' % (record[0].ljust(70), record[1], total))
     write('\nTotal test execution time: %.02f seconds\n' % total)
 
 def main():
