@@ -45,9 +45,9 @@ class TestRunAnything(unittest.TestCase):
     if sys.version_info[:2] >= (2,6):
         def test_stopping(self):
             self.runner = self._create_runner('python %s output 0.8' % SCRIPT)
-            time.sleep(0.2)
+            time.sleep(0.1)
             self.runner.stop()
-            self._sleep_and_log_output(0.2)
+            self._sleep_and_log_output(0.1)
             assert_true(self.runner.finished)
             assert_true(self.runner.outstr.startswith('start\nrunning '))
 

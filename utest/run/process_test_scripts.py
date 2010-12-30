@@ -4,7 +4,7 @@ import time
 
 def output(sleep=0.1):
     print 'start'
-    for i in range(5):
+    for i in range(2):
         print 'running iteration %d' % i * 500
         time.sleep(float(sleep))
     print 'done'
