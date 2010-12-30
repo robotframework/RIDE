@@ -27,8 +27,20 @@ class LibraryCache(object):
 
     def __init__(self):
         self._library_keywords = {}
-        self._default_libraries = self._get_default_libraries()
-        self._default_kws = self._build_default_kws()
+        self.__default_libraries = None
+        self.__default_kws = None
+
+    @property
+    def _default_libraries(self):
+        if self.__default_libraries is None:
+            self.__default_libraries = self._get_default_libraries()
+        return self.__default_libraries
+
+    @property
+    def _default_kws(self):
+        if self.__default_kws is None:
+            self.__default_kws = self._build_default_kws()
+        return self.__default_kws
 
     def add_library(self, name, args=None):
         if not self._library_keywords.has_key(self._key(name, args)):
