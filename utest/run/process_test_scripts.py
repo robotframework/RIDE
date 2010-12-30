@@ -2,7 +2,7 @@ import sys
 import time
 
 
-def output(sleep=0.2):
+def output(sleep=0.1):
     print 'start'
     for i in range(5):
         print 'running iteration %d' % i * 500
