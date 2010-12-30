@@ -29,10 +29,10 @@ from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideVariableAdded, RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated, \
     RideOpenResource
 from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
-    AddKeyword, AddTestCase, RenameTest, CopyMacroAs, MoveTo, FindUsages
+    AddKeyword, AddTestCase, RenameTest, CopyMacroAs, MoveTo
 from robotide.widgets import PopupCreator, PopupMenuItems
 from robotide.ui.filedialogs import NewResourceDialog
-from robotide.usages.usagesdialog import UsagesDialog
+from robotide.usages.UsageRunner import Usages
 
 try:
     import treemixin
@@ -744,10 +744,7 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
         self.controller.execute(RenameKeywordOccurrences(self.controller.name, new_name))
 
     def OnFindUsages(self, event):
-        name = self.controller.name
-        dlg = UsagesDialog(name, self.controller.execute(FindUsages(name)))
-        dlg.add_selection_listener(self._tree.highlight)
-        dlg.Show()
+        Usages(self.controller, self._tree.highlight).show()
 
 
 class VariableHandler(_ActionHandler):

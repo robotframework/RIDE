@@ -38,6 +38,7 @@ from robot.parsing.settings import _Setting
 from robotide.controller.commands import UpdateVariable, FindUsages
 from robotide.publish import PUBLISHER
 from robotide.usages.usagesdialog import UsagesDialog
+from robotide.usages.UsageRunner import Usages
 
 
 class WelcomePage(RideHtmlWindow):
@@ -533,10 +534,7 @@ class UserKeywordEditor(TestCaseEditor):
         return sizer
 
     def _on_show_usages(self, event):
-        name = self.controller.name
-        dlg = UsagesDialog(name, self.controller.execute(FindUsages(name)))
-        dlg.add_selection_listener(self._tree.highlight)
-        dlg.Show()
+        Usages(self.controller, self._tree.highlight).show()
 
 
 class _AbstractListEditor(ListEditor):
