@@ -18,6 +18,7 @@ import os
 from robotide.controller.macrocontrollers import KeywordNameController, \
         ForLoopStepController
 from robotide.controller.settingcontrollers import _SettingController
+import time
 
 
 class Occurrence(object):
@@ -236,14 +237,17 @@ class FindOccurrences(_Command):
                        if self._find_keyword_source(df) == self._keyword_source))
 
     def _items_from_datafile(self, df):
+        self._yield_for_other_threads()
         return chain(df.settings,
                      chain(*(self._items_from_test(test) for test in df.tests)),
                      chain(*(self._items_from_keyword(kw) for kw in df.keywords)))
 
     def _items_from_keyword(self, kw):
+        self._yield_for_other_threads()
         return chain([kw.keyword_name], kw.steps)
 
     def _items_from_test(self, test):
+        self._yield_for_other_threads()
         return chain(test.settings, test.steps)
 
     def _find_keyword_source(self, datafile_controller):
@@ -252,7 +256,16 @@ class FindOccurrences(_Command):
 
     def _find_occurrences_in(self, items):
         return (Occurrence(item, self._keyword_name) for item in items
-                if item.contains_keyword(self._keyword_name))
+                if self._contains_keyword(item))
+
+    def _contains_keyword(self, item):
+        self._yield_for_other_threads()
+        return item.contains_keyword(self._keyword_name)
+
+    def _yield_for_other_threads(self):
+        # GLOBAL LOCK...
+        # THIS IS TO ENSURE THAT OTHER THREADS WILL GET SOME SPACE ALSO
+        time.sleep(0)
 
 
 class FindUsages(FindOccurrences):

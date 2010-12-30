@@ -14,22 +14,40 @@
 
 from robotide.widgets import (Dialog, VirtualList, VerticalSizer, ImageList,
                               ImageProvider)
+import wx
 
 
 class UsagesDialog(Dialog):
 
-    def __init__(self, name, usages):
+    def __init__(self, name):
         self._name = name
         self._selection_listeners = []
-        usages = list(usages)
-        self.usages = UsagesListModel(usages)
-        title = "'%s' - %d usages" % (name, self.usages.total_usages)
+        self.usages = UsagesListModel([])
+        title = "'%s'" % (name)
         Dialog.__init__(self, title=title, size=(650, 400))
         self.SetSizer(VerticalSizer())
-        usage_list = VirtualList(self, ['Location', 'Usage', 'Source'],
+        self.usage_list = VirtualList(self, ['Location', 'Usage', 'Source'],
                                  self.usages)
-        usage_list.add_selection_listener(self._usage_selected)
-        self.Sizer.add_expanding(usage_list)
+        self.usage_list.add_selection_listener(self._usage_selected)
+        self.Sizer.add_expanding(self.usage_list)
+
+    def add_usage(self, usage):
+        self.usages.add_usage(usage)
+        self.usage_list.refresh()
+
+    def begin_searching(self):
+        self._timer = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self._update_searching)
+        self._dots = 0
+        self._timer.Start(1000)
+
+    def _update_searching(self, event):
+        self._dots = (self._dots + 1) % 5
+        self.SetTitle("'%s' - %d usages found - Searching%s" % (self._name, self.usages.total_usages, '.'*self._dots))
+
+    def end_searching(self):
+        self._timer.Stop()
+        self.SetTitle("'%s' - %d usages" % (self._name, self.usages.total_usages))
 
     def _usage_selected(self, idx):
         for listener in self._selection_listeners:
@@ -53,6 +71,9 @@ class UsagesListModel(object):
         images.add(provider.DATAFILEIMG)
         images.add(provider.DATADIRIMG)
         return images
+
+    def add_usage(self, usage):
+        self._usages.append(usage)
 
     def item_text(self, row, col):
         u = self._usages[row]

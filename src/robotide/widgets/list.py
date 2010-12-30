@@ -38,6 +38,10 @@ class VirtualList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         self.SetColumnWidth(0, 200)
         self.SetColumnWidth(1, 160)
 
+    def refresh(self):
+        self.SetItemCount(self._model.count)
+        self.SetImageList(self._model.images, wx.IMAGE_LIST_SMALL)
+
     def add_selection_listener(self, listener):
         self._selection_listeners.append(listener)
 
