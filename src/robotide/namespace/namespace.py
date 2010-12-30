@@ -293,7 +293,13 @@ class DatafileRetriever(object):
         self._lib_cache = lib_cache
         self._res_cache = res_cache
         self.keyword_cache = ExpiringCache()
-        self.default_kws = self._lib_cache.get_default_keywords()
+        self._default_kws = None
+
+    @property
+    def default_kws(self):
+        if self._default_kws is None:
+            self._default_kws = self._lib_cache.get_default_keywords()
+        return self._default_kws
 
     def expire_cache(self):
         self.keyword_cache = ExpiringCache()
