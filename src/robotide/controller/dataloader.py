@@ -12,7 +12,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import time
 from threading import Thread
 
 from robot.parsing.model import TestData
@@ -28,7 +27,7 @@ class DataLoader(object):
         loader.start()
         load_observer.notify()
         while loader.isAlive():
-            time.sleep(0.1)
+            loader.join(0.1)
             load_observer.notify()
         return loader.datafile
 
@@ -37,7 +36,7 @@ class DataLoader(object):
         loader.start()
         load_observer.notify()
         while loader.isAlive():
-            time.sleep(0.1)
+            loader.join(0.1)
             load_observer.notify()
         return loader.resources
 
