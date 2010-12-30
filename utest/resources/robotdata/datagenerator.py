@@ -12,7 +12,8 @@ Resource    resource.txt
 %TESTCASES%
 
 *** Keywords ***
-%KEYWORDS%
+Test Keyword
+    Log jee
 """
 
 RESOURCE=\
@@ -30,6 +31,22 @@ KEYWORD_TEMPLATE=\
 TEST_CASE_TEMPLATE=\
 """My Test %TEST_ID%
     My Keyword %KW_ID%
+    Log  moi
+    Test Keyword
+    Log  moi
+    Test Keyword
+    Log  moi
+    Test Keyword
+    Log  moi
+    Test Keyword
+    Log  moi
+    Test Keyword
+    My Keyword %KW_ID%
+    Test Keyword
+    Log  moi
+    Test Keyword
+    Log  moi
+    Test Keyword
     Log  moi"""
 
 
