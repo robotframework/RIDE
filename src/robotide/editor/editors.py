@@ -37,7 +37,7 @@ from robotide.publish.messages import (RideItemSettingsChanged,
 from robot.parsing.settings import _Setting
 from robotide.controller.commands import UpdateVariable, FindUsages
 from robotide.publish import PUBLISHER
-from robotide.ui.usagesdialog import UsagesDialog
+from robotide.usages.usagesdialog import UsagesDialog
 
 
 class WelcomePage(RideHtmlWindow):

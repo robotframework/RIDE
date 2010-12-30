@@ -32,7 +32,7 @@ from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
     AddKeyword, AddTestCase, RenameTest, CopyMacroAs, MoveTo, FindUsages
 from robotide.widgets import PopupCreator, PopupMenuItems
 from robotide.ui.filedialogs import NewResourceDialog
-from robotide.ui.usagesdialog import UsagesDialog
+from robotide.usages.usagesdialog import UsagesDialog
 
 try:
     import treemixin
