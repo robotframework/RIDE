@@ -6,11 +6,14 @@ from robotide.controller.commands import MoveTo
 
 class TestMoveCommand(unittest.TestCase):
 
-    def setUp(self):
+    # NOTE! The data is shared among tests and they change the data
+    # This is for performance reasons but be warned when you add tests!
+    @classmethod
+    def setUpClass(cls):
         ctrl = datafilereader.construct_chief_controller(datafilereader.OCCURRENCES_PATH)
-        self.ts1 = datafilereader.get_ctrl_by_name('TestSuite1', ctrl.datafiles)
-        self.ts2 = datafilereader.get_ctrl_by_name('TestSuite2', ctrl.datafiles)
-        self.resu = datafilereader.get_ctrl_by_name(datafilereader.OCCURRENCES_RESOURCE_NAME, ctrl.datafiles)
+        cls.ts1 = datafilereader.get_ctrl_by_name('TestSuite1', ctrl.datafiles)
+        cls.ts2 = datafilereader.get_ctrl_by_name('TestSuite2', ctrl.datafiles)
+        cls.resu = datafilereader.get_ctrl_by_name(datafilereader.OCCURRENCES_RESOURCE_NAME, ctrl.datafiles)
 
     def test_move_variable_from_suite_to_another_suite(self):
         self._move_variable(self.ts1.variables[0], self.ts1, self.ts2)
