@@ -28,16 +28,20 @@ def _test_module_execution_time(tmodule):
     return time.time() - starttime
 
 
-def write_results(exectimes):
+def write_results(exectimes, write):
     total = 0.0
-    with open('testtimes.txt', 'w') as output:
-        for record in reversed(sorted(exectimes, key=lambda record: record[1])):
-            output.write('%s%.02f s\n' % (record[0].ljust(70), record[1]))
-            total += record[1]
-        output.write('\nTotal test execution time: %.02f seconds\n' % total)
+    for record in reversed(sorted(exectimes, key=lambda record: record[1])):
+        write('%s%.02f s\n' % (record[0].ljust(70), record[1]))
+        total += record[1]
+    write('\nTotal test execution time: %.02f seconds\n' % total)
 
+def main():
+    exectimes = collect_execution_times(test_modules())
+    with open('testtimes.txt', 'w') as output:
+        def write(txt):
+            output.write(txt)
+            sys.stdout.write(txt)
+        write_results(exectimes, write)
 
 if __name__ == '__main__':
-    exectimes = collect_execution_times(test_modules())
-    write_results(exectimes)
-
+    main()
