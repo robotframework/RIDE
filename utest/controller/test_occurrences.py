@@ -72,11 +72,12 @@ def _first_occurrence(test_ctrl, kw_name):
 
 class FindOccurrencesWithFiles(unittest.TestCase):
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         ctrl = datafilereader.construct_chief_controller(datafilereader.OCCURRENCES_PATH)
-        self.ts1 = datafilereader.get_ctrl_by_name('TestSuite1', ctrl.datafiles)
-        self.ts2 = datafilereader.get_ctrl_by_name('TestSuite2', ctrl.datafiles)
-        self.resu = datafilereader.get_ctrl_by_name(datafilereader.OCCURRENCES_RESOURCE_NAME, ctrl.datafiles)
+        cls.ts1 = datafilereader.get_ctrl_by_name('TestSuite1', ctrl.datafiles)
+        cls.ts2 = datafilereader.get_ctrl_by_name('TestSuite2', ctrl.datafiles)
+        cls.resu = datafilereader.get_ctrl_by_name(datafilereader.OCCURRENCES_RESOURCE_NAME, ctrl.datafiles)
 
     def test_finds_only_occurrences_with_same_source(self):
         self.assert_occurrences(self.ts1, 'My Keyword', 2)
@@ -97,8 +98,9 @@ class FindOccurrencesWithFiles(unittest.TestCase):
 
 class FindOccurrencesTest(unittest.TestCase):
 
-    def setUp(self):
-        self.test_ctrl, self.namespace = TestCaseControllerWithSteps()
+    @classmethod
+    def setUpClass(cls):
+        cls.test_ctrl, cls.namespace = TestCaseControllerWithSteps()
 
     def test_no_occurrences(self):
         find_occurrences = FindOccurrences('Keyword Name')
