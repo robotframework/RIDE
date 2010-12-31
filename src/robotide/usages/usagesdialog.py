@@ -33,21 +33,22 @@ class UsagesDialog(Dialog):
 
     def add_usage(self, usage):
         self.usages.add_usage(usage)
-        self.usage_list.refresh()
 
     def begin_searching(self):
         self._timer = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self._update_searching)
         self._dots = 0
-        self._timer.Start(1000)
+        self._timer.Start(500)
 
     def _update_searching(self, event):
         self._dots = (self._dots + 1) % 5
         self.SetTitle("'%s' - %d usages found - Searching%s" % (self._name, self.usages.total_usages, '.'*self._dots))
+        self.usage_list.refresh()
 
     def end_searching(self):
         self._timer.Stop()
         self.SetTitle("'%s' - %d usages" % (self._name, self.usages.total_usages))
+        self.usage_list.refresh()
 
     def _usage_selected(self, idx):
         for listener in self._selection_listeners:
