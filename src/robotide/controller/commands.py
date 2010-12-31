@@ -232,9 +232,10 @@ class FindOccurrences(_Command):
         return self._find_occurrences_in(self._items_from(context))
 
     def _items_from(self, context):
-        return chain(*(self._items_from_datafile(df)
-                       for df in context.all_datafiles
-                       if self._find_keyword_source(df) == self._keyword_source))
+        for df in context.all_datafiles:
+            if self._find_keyword_source(df) == self._keyword_source:
+                for item in self._items_from_datafile(df):
+                    yield item
 
     def _items_from_datafile(self, df):
         self._yield_for_other_threads()
