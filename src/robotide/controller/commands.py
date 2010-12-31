@@ -233,22 +233,25 @@ class FindOccurrences(_Command):
 
     def _items_from(self, context):
         for df in context.all_datafiles:
+            self._yield_for_other_threads()
             if self._find_keyword_source(df) == self._keyword_source:
                 for item in self._items_from_datafile(df):
                     yield item
 
     def _items_from_datafile(self, df):
-        self._yield_for_other_threads()
-        return chain(df.settings,
-                     chain(*(self._items_from_test(test) for test in df.tests)),
-                     chain(*(self._items_from_keyword(kw) for kw in df.keywords)))
+        for setting in df.settings:
+            yield setting
+        for items_from_test in (self._items_from_test(test) for test in df.tests):
+            for item in items_from_test:
+                yield item
+        for items_from_keyword in (self._items_from_keyword(kw) for kw in df.keywords):
+            for item in items_from_keyword:
+                yield item
 
     def _items_from_keyword(self, kw):
-        self._yield_for_other_threads()
         return chain([kw.keyword_name], kw.steps)
 
     def _items_from_test(self, test):
-        self._yield_for_other_threads()
         return chain(test.settings, test.steps)
 
     def _find_keyword_source(self, datafile_controller):
@@ -264,7 +267,7 @@ class FindOccurrences(_Command):
         return item.contains_keyword(self._keyword_name)
 
     def _yield_for_other_threads(self):
-        # GLOBAL LOCK...
+        # GIL !?#!!!
         # THIS IS TO ENSURE THAT OTHER THREADS WILL GET SOME SPACE ALSO
         time.sleep(0)
 
