@@ -35,9 +35,8 @@ from robotide.publish.messages import (RideItemSettingsChanged,
                                        RideItemNameChanged,
                                        RideInitFileRemoved, RideImportSetting)
 from robot.parsing.settings import _Setting
-from robotide.controller.commands import UpdateVariable, FindUsages
+from robotide.controller.commands import UpdateVariable
 from robotide.publish import PUBLISHER
-from robotide.usages.usagesdialog import UsagesDialog
 from robotide.usages.UsageRunner import Usages
 
 

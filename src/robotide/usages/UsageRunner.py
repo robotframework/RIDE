@@ -1,4 +1,4 @@
-from robotide.controller.commands import FindUsages
+from robotide.usages.commands import FindUsages
 from robotide.usages.usagesdialog import UsagesDialog
 from threading import Thread
 import wx

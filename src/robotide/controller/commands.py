@@ -272,23 +272,6 @@ class FindOccurrences(_Command):
         time.sleep(0)
 
 
-class FindUsages(FindOccurrences):
-
-    def execute(self, context):
-        prev = None
-        for occ in FindOccurrences.execute(self, context):
-            if isinstance(occ.item, KeywordNameController):
-                continue
-            if prev == occ:
-                prev.count += 1
-            else:
-                if prev:
-                    yield prev
-                prev = occ
-        if prev:
-            yield prev
-
-
 def AddKeywordFromCells(cells):
     if not cells:
         raise ValueError('Keyword can not be empty')
