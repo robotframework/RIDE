@@ -146,7 +146,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         node = self._find_node_by_controller(ctrl)
         if node:
             return
-        self._render_datafile(self._resource_root, ctrl)
+        node = self._render_datafile(self._resource_root, ctrl)
+        self.SelectItem(node)
 
     def _refresh_view(self):
         self.Refresh()
