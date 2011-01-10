@@ -292,6 +292,7 @@ class AddKeyword(_ReversibleCommand):
     def _execute(self, context):
         kw = context.create_keyword(self._kw_name, self._args)
         self._undo_command = RemoveMacro(kw)
+        return kw
 
     def _get_undo_command(self):
         return self._undo_command
