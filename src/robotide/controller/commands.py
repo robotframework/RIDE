@@ -154,8 +154,9 @@ class CreateNewResource(_Command):
         self._path = path
 
     def execute(self, context):
-        context.new_resource(self._path)
+        res = context.new_resource(self._path)
         context.default_dir = os.path.dirname(self._path)
+        return res
 
 
 class _StepsChangingCommand(_ReversibleCommand):
