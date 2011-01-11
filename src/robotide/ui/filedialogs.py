@@ -126,8 +126,8 @@ class _CreationDialog(Dialog):
         return self._parent_chooser.GetValue()
 
     def get_path(self):
-        path = os.path.join(self._parent_chooser.GetValue(),
-                            self._name_editor.GetValue().replace(' ', '_'))
+        path = os.path.join(self.get_directory(),
+                            self.get_name().replace(' ', '_'))
         if self.is_dir_type():
             path = os.path.join(path, '__init__')
         return path + '.' + self._get_extension()
