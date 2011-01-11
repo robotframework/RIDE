@@ -120,8 +120,11 @@ class RideFrame(wx.Frame, RideEventHandler):
             self._controller.default_dir = os.path.dirname(path)
             data = NewDatafile(path, dlg.is_dir_type())
             self._controller.new_project(data)
-            self.tree.populate(self._controller)
+            self._populate_tree()
         dlg.Destroy()
+
+    def _populate_tree(self):
+        self.tree.populate(self._controller)
 
     def OnNewResource(self, event):
         NewResourceDialog(self._controller).doit()
@@ -159,8 +162,9 @@ class RideFrame(wx.Frame, RideEventHandler):
         return path
 
     def open_suite(self, path):
+        self._controller.default_dir = path
         self._controller.load_datafile(path, LoadProgressObserver(self))
-        self.tree.populate(self._controller)
+        self._populate_tree()
 
     def refresh_datafile(self, item, event):
         self.tree.refresh_datafile(item, event)
@@ -170,7 +174,6 @@ class RideFrame(wx.Frame, RideEventHandler):
             path = wx.DirSelector(message='Choose a directory containing Robot files',
                                   defaultPath=self._controller.default_dir)
             if path:
-                self._controller.default_dir = path
                 self.open_suite(path)
 
     def OnSave(self, event):
