@@ -57,8 +57,7 @@ class ChiefController(object):
                             "test case or resource file." % path)
 
     def new_resource(self, path):
-        res = ResourceFile()
-        res.source = path
+        res = self._namespace.new_resource(path)
         return self._create_resource_controller(res)
 
     def load_datafile(self, path, load_observer):

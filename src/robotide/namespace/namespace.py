@@ -134,6 +134,9 @@ class Namespace(object):
     def get_resource(self, path, directory=''):
         return self._res_cache.get_resource(directory, path)
 
+    def new_resource(self, path, directory=''):
+        return self._res_cache.new_resource(directory, path)
+
     def find_user_keyword(self, datafile, kw_name):
         kw = self.find_keyword(datafile, kw_name)
         return kw if isinstance(kw, _UserKeywordInfo) else None
@@ -174,6 +177,13 @@ class ResourceCache(object):
         if path_from_pythonpath:
             return self._get_resource(path_from_pythonpath)
         return None
+
+    def new_resource(self, directory, name):
+        path = os.path.join(directory, name) if directory else name
+        resource = ResourceFile()
+        resource.source = path
+        self.cache[os.path.normpath(path)] = resource
+        return resource
 
     def _get_python_path(self, name):
         if name in self.python_path_cache:
