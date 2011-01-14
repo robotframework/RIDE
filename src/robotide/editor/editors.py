@@ -524,11 +524,24 @@ class TestCaseEditor(_RobotTableEditor):
         self.kweditor.SetFocus()
 
 
+class UserKeywordHeader(HorizontalSizer):
+
+    def __init__(self):
+        HorizontalSizer.__init__(self)
+
+    def SetLabel(self, label):
+        self._header.SetLabel(label)
+
+    def add_header(self, header):
+        self._header = header
+        self.add_expanding(self._header)
+
+
 class UserKeywordEditor(TestCaseEditor):
 
     def _create_header(self, name):
-        sizer = HorizontalSizer()
-        sizer.add_expanding(_RobotTableEditor._create_header(self, name))
+        sizer = UserKeywordHeader()
+        sizer.add_header(_RobotTableEditor._create_header(self, name))
         sizer.add(ButtonWithHandler(self, 'Find Usages', self._on_show_usages))
         return sizer
 
