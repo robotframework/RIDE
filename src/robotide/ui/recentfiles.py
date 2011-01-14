@@ -17,6 +17,7 @@ import wx
 
 from robotide.publish import RideOpenSuite, RideChangeFormat
 from robotide.pluginapi import Plugin, ActionInfo, SeparatorInfo
+from robotide.publish.messages import RideNewProject, RideSaved
 
 
 def normalize_path(path):
@@ -35,21 +36,28 @@ class RecentFilesPlugin(Plugin):
     def enable(self):
         self._save_currently_loaded_suite()
         self._add_recent_files_to_menu()
+        self._new_project_path = None
         self.subscribe(self.OnSuiteOpened, RideOpenSuite)
         self.subscribe(self.OnFormatChanged, RideChangeFormat)
+        self.subscribe(self.OnNewProjectOpened, RideNewProject)
+        self.subscribe(self.OnSaved, RideSaved)
         # TODO: This plugin doesn't currently support resources
         # self._frame.subscribe(self.OnSuiteOpened, ('core', 'open','resource'))
 
     def disable(self):
         self.unregister_actions()
         self.unsubscribe(self.OnSuiteOpened, RideOpenSuite)
+        self.unsubscribe(self.OnNewProjectOpened, RideNewProject)
+        self.unsubscribe(self.OnSaved, RideSaved)
 
     def OnSuiteOpened(self, event):
         # Update menu with CallAfter to ensure ongoing menu selection
         # handling has finished before menu is changed
         wx.CallAfter(self._add_to_recent_files, event.path)
+        self._new_project_path = None
 
     def OnFormatChanged(self, event):
+        self._new_project_path = None
         if not event.oldpath:
             return
         oldpath = normalize_path(event.oldpath)
@@ -59,6 +67,14 @@ class RecentFilesPlugin(Plugin):
         index = self.recent_files.index(oldpath)
         self.recent_files[index] = newpath
         self._save_settings_and_update_file_menu()
+
+    def OnNewProjectOpened(self, event):
+        self._new_project_path = event.path
+
+    def OnSaved(self, event):
+        if self._new_project_path is not None:
+            wx.CallAfter(self._add_to_recent_files, self._new_project_path)
+            self._new_project_path = None
 
     def _get_file_menu(self):
         menubar = self.get_menu_bar()
