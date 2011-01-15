@@ -1,0 +1,1 @@
+from robotide.recentfiles.recentfiles import RecentFilesPlugin

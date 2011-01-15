@@ -15,7 +15,7 @@
 def get_core_plugins():
     from robotide.application.releasenotes import ReleaseNotesPlugin
     from robotide.run import RunAnything
-    from robotide.ui.recentfiles import RecentFilesPlugin
+    from robotide.recentfiles import RecentFilesPlugin
     from robotide.ui.preview import PreviewPlugin
     from robotide.ui.keywordsearch import KeywordSearch
     from robotide.editor import EditorPlugin
