@@ -424,7 +424,7 @@ class SettingValueDisplay(wx.TextCtrl):
         self._colorize_background()
 
     def highlight(self, text):
-        self._highlight_matcher = lambda content: utils.highlight_matcher(text, content)
+        self._highlight_matcher = lambda content: [ item for item in content.split(' | ') if utils.highlight_matcher(text, item) ]
         self._colorize_data()
 
 
