@@ -239,7 +239,8 @@ class SettingEditor(wx.Panel, RideEventHandler):
         self.update_value()
         self._tooltip = self._get_tooltip()
         sizer.Add(self._value_display, 1, wx.EXPAND)
-        sizer.Add(ButtonWithHandler(self, 'Clear'), 0, wx.RIGHT, 5)
+        sizer.Add(ButtonWithHandler(self, 'Edit'), flag=wx.LEFT|wx.RIGHT, border=5)
+        sizer.Add(ButtonWithHandler(self, 'Clear'))
         sizer.Layout()
         self.SetSizer(sizer)
 
@@ -424,7 +425,7 @@ class SettingValueDisplay(wx.TextCtrl):
         self._colorize_background()
 
     def highlight(self, text):
-        self._highlight_matcher = lambda content: utils.highlight_matcher(text, content)
+        self._highlight_matcher = lambda content: [ item for item in content.split(' | ') if utils.highlight_matcher(text, item) ]
         self._colorize_data()
 
 
