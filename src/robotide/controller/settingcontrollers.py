@@ -297,6 +297,10 @@ class VariableController(_BaseController, _SettingController):
         return self._var.value
 
     @property
+    def comment(self):
+        return self._var.comment
+
+    @property
     def data(self):
         return self._data
 
