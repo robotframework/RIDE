@@ -42,12 +42,12 @@ class UsagesDialog(Dialog):
 
     def _update_searching(self, event):
         self._dots = (self._dots + 1) % 5
-        self.SetTitle("'%s' - %d usages found - Searching%s" % (self._name, self.usages.total_usages, '.'*self._dots))
+        self.SetTitle("'%s' - %d matches found - Searching%s" % (self._name, self.usages.total_usages, '.'*self._dots))
         self.usage_list.refresh()
 
     def end_searching(self):
         self._timer.Stop()
-        self.SetTitle("'%s' - %d usages" % (self._name, self.usages.total_usages))
+        self.SetTitle("'%s' - %d matches" % (self._name, self.usages.total_usages))
         self.usage_list.refresh()
 
     def _usage_selected(self, idx):
