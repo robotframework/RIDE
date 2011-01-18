@@ -99,7 +99,6 @@ class VariableTableController(_TableController, _WithListOperations):
         return self._validate_name(_ListVarValidator(), name)
 
     def _validate_name(self, validator, name):
-        # TODO: Should communication be changed to use exceptions?
         if not validator(name):
             return '%s variable name must be in format %s{name}' % \
                     (validator.name, validator.prefix)
