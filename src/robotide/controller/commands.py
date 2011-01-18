@@ -312,8 +312,8 @@ class RemoveVariable(_ReversibleCommand):
 
     def __init__(self, var_controller):
         self._var_controller = var_controller
-        self._undo_command = AddVariable(var_controller.name, \
-                                         var_controller.value, \
+        self._undo_command = AddVariable(var_controller.name,
+                                         var_controller.value,
                                          var_controller.comment)
 
     def _execute(self, context):
