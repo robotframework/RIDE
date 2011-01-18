@@ -21,12 +21,12 @@ class Usages():
         self._worker.start()
 
     def _run(self):
-        wx.CallAfter(self._dlg.begin_searching)
+        wx.CallAfter(self._begin_search)
         for usage in self._controller.execute(FindUsages(self._name)):
             time.sleep(0) # GIVE SPACE TO OTHER TRHEADS -- Thread.yield in Java
             if self._dialog_closed: return
-            wx.CallAfter(self._dlg.add_usage, usage)
-        wx.CallAfter(self._dlg.end_searching)
+            wx.CallAfter(self._add_usage, usage)
+        wx.CallAfter(self._end_search)
 
     def _begin_search(self):
         if not self._dialog_closed:
