@@ -90,20 +90,20 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._popup_creator.remove_hook(callable)
 
     def _subscribe_to_messages(self):
-        for listener, topic in [(self._item_changed, RideItem),
-                                (self._resource_added, RideOpenResource),
-                             (self._keyword_added, RideUserKeywordAdded),
-                             (self._test_added, RideTestCaseAdded),
-                             (self._variable_added, RideVariableAdded),
-                             (self._leaf_item_removed, RideUserKeywordRemoved),
-                             (self._leaf_item_removed, RideTestCaseRemoved),
-                             (self._leaf_item_removed, RideVariableRemoved),
-                             (self._datafile_removed, RideDataFileRemoved),
-                             (self._data_dirty, RideDataChangedToDirty),
-                             (self._data_undirty, RideDataDirtyCleared),
-                             (self._variable_moved_up, RideVariableMovedUp),
-                             (self._variable_moved_down, RideVariableMovedDown),
-                             (self._variable_updated, RideVariableUpdated)]:
+        for listener, topic in [ (self._item_changed, RideItem),
+                                 (self._resource_added, RideOpenResource),
+                                 (self._keyword_added, RideUserKeywordAdded),
+                                 (self._test_added, RideTestCaseAdded),
+                                 (self._variable_added, RideVariableAdded),
+                                 (self._leaf_item_removed, RideUserKeywordRemoved),
+                                 (self._leaf_item_removed, RideTestCaseRemoved),
+                                 (self._leaf_item_removed, RideVariableRemoved),
+                                 (self._datafile_removed, RideDataFileRemoved),
+                                 (self._data_dirty, RideDataChangedToDirty),
+                                 (self._data_undirty, RideDataDirtyCleared),
+                                 (self._variable_moved_up, RideVariableMovedUp),
+                                 (self._variable_moved_down, RideVariableMovedDown),
+                                 (self._variable_updated, RideVariableUpdated) ]:
             PUBLISHER.subscribe(listener, topic)
 
     def _bind_keys(self):
@@ -275,7 +275,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             return
         parent = self.GetItemParent(node)
         self._mark_dirty(parent)
-        wx.CallAfter(self.SelectItem, parent)
+        if self.IsSelected(node):
+            wx.CallAfter(self.SelectItem, parent)
         wx.CallAfter(self.Delete, node)
 
     def _data_dirty(self, message):
