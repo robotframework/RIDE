@@ -378,33 +378,17 @@ class ExtractKeyword(_Command):
         context.clear_undo()
 
 
-class ExtractScalar(_Command):
+def ExtractScalar(name, value, comment, cell):
+    return CompositeCommand(AddVariable(name, value, comment),
+                            ChangeCellValue(cell[0], cell[1], name))
 
-    def __init__(self, name, value, comment, cell):
-        self._name = name
-        self._value = value
-        self._comment = comment
-        self._row = cell[0]
-        self._col = cell[1]
 
-    def execute(self, context):
-        context.execute(AddVariable(self._name, self._value, self._comment))
-        context.execute(ChangeCellValue(self._row, self._col, self._name))
+def ExtractList(name, value, comment, cells):
+    row, col = cells[0]
+    return CompositeCommand(AddVariable(name, value, comment),
+                            ChangeCellValue(row, col, name),
+                            DeleteCells((row, col+1), (row, col+len(cells)-1)))
 
-class ExtractList(_Command):
-
-    def __init__(self, name, value, comment, cells):
-        self._name = name
-        self._value = value
-        self._comment = comment
-        self._cells = cells
-
-    def execute(self, context):
-        context.datafile_controller.\
-            variables.add_variable(self._name, self._value, self._comment)
-        row, col = self._cells[0]
-        commands = [ChangeCellValue(row, col, self._name)]+[DeleteCell(row, col+1) for _ in range(len(self._cells)-1)]
-        context.execute(StepsChangingCompositeCommand(*commands))
 
 class ChangeCellValue(_StepsChangingCommand):
 
@@ -588,20 +572,44 @@ class MoveRowsDown(_StepsChangingCommand):
         return MoveRowsUp([r+1 for r in self._rows])
 
 
-class StepsChangingCompositeCommand(_StepsChangingCommand):
+class CompositeCommand(_ReversibleCommand):
+
+    def __init__(self, *commands):
+        self._commands = commands
+
+    def _execute(self, context):
+        executions = self._executions(context)
+        undos = [undo for _, undo in executions]
+        undos.reverse()
+        self._undo_command = self._create_undo_command(undos)
+        return [result for result, _ in executions]
+
+    def _get_undo_command(self):
+        return self._undo_command
+
+    def _create_undo_command(self, undos):
+        return CompositeCommand(*undos)
+
+    def _executions(self, context):
+        return [(cmd._execute(context), cmd._get_undo_command()) for cmd in self._commands]
+
+
+class StepsChangingCompositeCommand(_StepsChangingCommand, CompositeCommand):
 
     def __init__(self, *commands):
         self._commands = commands
 
     def change_steps(self, context):
-        executions = [(cmd.change_steps(context), cmd._get_undo_command()) for cmd in self._commands]
-        undos = [undo for _,undo in executions]
-        undos.reverse()
-        self._undo_command = StepsChangingCompositeCommand(*undos)
-        return any(changed for changed,_ in executions)
+        return any(changed for changed in CompositeCommand._execute(self, context))
 
     def _get_undo_command(self):
         return self._undo_command
+
+    def _create_undo_command(self, undos):
+        return StepsChangingCompositeCommand(*undos)
+
+    def _executions(self, context):
+        return [(cmd.change_steps(context), cmd._get_undo_command()) for cmd in self._commands]
 
 
 def DeleteRows(rows):
