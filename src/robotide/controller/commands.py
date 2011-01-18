@@ -308,6 +308,39 @@ class AddTestCase(_Command):
         return context.create_test(self._test_name)
 
 
+class RemoveVariable(_ReversibleCommand):
+
+    def __init__(self, var_controller):
+        self._var_controller = var_controller
+        self._undo_command = AddVariable(var_controller.name, \
+                                         var_controller.value, \
+                                         var_controller.comment)
+
+    def _execute(self, context):
+        context.datafile_controller.\
+            variables.remove_var(self._var_controller)
+
+    def _get_undo_command(self):
+        return self._undo_command
+
+
+class AddVariable(_ReversibleCommand):
+
+    def __init__(self, name, value, comment):
+        self._name = name
+        self._value = value
+        self._comment = comment
+
+    def _execute(self, context):
+        var_controller = context.datafile_controller.\
+            variables.add_variable(self._name, self._value, self._comment)
+        self._undo_command = RemoveVariable(var_controller)
+        return var_controller
+
+    def _get_undo_command(self):
+        return self._undo_command
+
+
 class RecreateMacro(_ReversibleCommand):
 
     def __init__(self, user_script):
@@ -355,8 +388,7 @@ class ExtractScalar(_Command):
         self._col = cell[1]
 
     def execute(self, context):
-        context.datafile_controller.\
-            variables.add_variable(self._name, self._value, self._comment)
+        context.execute(AddVariable(self._name, self._value, self._comment))
         context.execute(ChangeCellValue(self._row, self._col, self._name))
 
 class ExtractList(_Command):
@@ -554,7 +586,6 @@ class MoveRowsDown(_StepsChangingCommand):
 
     def _get_undo_command(self):
         return MoveRowsUp([r+1 for r in self._rows])
-
 
 
 class CompositeCommand(_StepsChangingCommand):
