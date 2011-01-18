@@ -7,15 +7,23 @@ from robotide.controller.cellinfo import CellPosition, CellType, CellInfo,\
 class StepController(object):
 
     def __init__(self, parent, step):
-        self._step = step
+        self._init(parent, step)
+        self._step.args = self._change_last_empty_to_empty_var(self._step.args, self._step.comment)
+        self._step.comment = self._remove_whitespace(self._step.comment)
+
+    def _init(self, parent, step):
         self.parent = parent
-        self._remove_whitespace_from_comment()
+        self._step = step
         self._cell_info_cache = {}
 
-    def _remove_whitespace_from_comment(self):
+    def _change_last_empty_to_empty_var(self, args, comment):
+        if comment:
+            return args
+        return args[:-1] + ['${EMPTY}'] if args and args[-1] == '' else args
+
+    def _remove_whitespace(self, comment):
         # TODO: This can be removed with RF 2.6
-        if self._step.comment:
-            self._step.comment = self._step.comment.strip()
+        return comment.strip() if comment else comment
 
     def get_keyword_info(self, kw):
         if not kw:
@@ -256,6 +264,9 @@ class StepController(object):
 
 class ForLoopStepController(StepController):
 
+    def __init__(self, parent, step):
+        self._init(parent, step)
+
     @property
     def name(self):
         return self.parent.name
@@ -274,9 +285,6 @@ class ForLoopStepController(StepController):
 
     def step(self, index):
         return self.parent.step(index)
-
-    def _remove_whitespace_from_comment(self):
-        pass
 
     def _has_comment_keyword(self):
         return False
