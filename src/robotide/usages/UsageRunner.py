@@ -4,10 +4,10 @@ from threading import Thread
 import wx
 import time
 
-class Usages():
+class Usages(object):
 
-    def __init__(self, controller, highlight):
-        self._name = controller.name
+    def __init__(self, controller, highlight, name=None):
+        self._name = name or controller.name
         self._controller = controller
         self._highlight = highlight
         self._dlg = UsagesDialog(self._name)

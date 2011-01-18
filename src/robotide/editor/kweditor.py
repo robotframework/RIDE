@@ -37,6 +37,7 @@ from robotide.editor.editordialogs import (UserKeywordNameDialog,
                                            ListVariableDialog)
 from robotide.editor.contentassist import ExpandingContentAssistTextCtrl
 from robotide.editor.gridcolorizer import Colorizer, ColorizationSettings
+from robotide.usages.UsageRunner import Usages
 
 
 class KeywordEditor(GridEditor, RideEventHandler):
@@ -44,7 +45,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
     _popup_menu_shown = False
     dirty = property(lambda self: self._controller.dirty)
     update_value = lambda *args: None
-    _popup_items = ['Create Keyword', 'Extract Keyword', 'Extract Variable', 'Rename Keyword',
+    _popup_items = ['Create Keyword', 'Extract Keyword', 'Extract Variable', 'Rename Keyword', 'Find Where Used',
                     '---'] + GridEditor._popup_items
 
     def __init__(self, parent, controller, tree):
@@ -416,6 +417,9 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._extract_scalar(cells[0])
         elif min(row for row, _ in cells) == max(row for row, _ in cells):
             self._extract_list(cells)
+
+    def OnFindWhereUsed(self, event):
+        Usages(self._controller, self._tree.highlight, self.GetCellValue(*self.selection.cells()[0])).show()
 
     def _extract_scalar(self, cell):
         var = Variable('', self.GetCellValue(*cell), '')
