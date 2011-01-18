@@ -404,7 +404,7 @@ class ExtractList(_Command):
             variables.add_variable(self._name, self._value, self._comment)
         row, col = self._cells[0]
         commands = [ChangeCellValue(row, col, self._name)]+[DeleteCell(row, col+1) for _ in range(len(self._cells)-1)]
-        context.execute(CompositeCommand(*commands))
+        context.execute(StepsChangingCompositeCommand(*commands))
 
 class ChangeCellValue(_StepsChangingCommand):
 
@@ -475,7 +475,7 @@ class DeleteCell(_StepsChangingCommand):
 
     def change_steps(self, context):
         step = self._step(context)
-        self._undo_command = CompositeCommand(InsertCell(self._row, self._col),
+        self._undo_command = StepsChangingCompositeCommand(InsertCell(self._row, self._col),
                                               ChangeCellValue(self._row, self._col,
                                                               step.get_value(self._col)))
         step.shift_left(self._col)
@@ -505,7 +505,7 @@ class DeleteRow(_RowChangingCommand):
 
     def _change_value(self, context):
         step = context.steps[self._row]
-        self._undo_command = CompositeCommand(AddRow(self._row), PasteArea((self._row, 0), [step.as_list()]))
+        self._undo_command = StepsChangingCompositeCommand(AddRow(self._row), PasteArea((self._row, 0), [step.as_list()]))
         context.remove_step(self._row)
 
     def _get_undo_command(self):
@@ -588,7 +588,7 @@ class MoveRowsDown(_StepsChangingCommand):
         return MoveRowsUp([r+1 for r in self._rows])
 
 
-class CompositeCommand(_StepsChangingCommand):
+class StepsChangingCompositeCommand(_StepsChangingCommand):
 
     def __init__(self, *commands):
         self._commands = commands
@@ -597,7 +597,7 @@ class CompositeCommand(_StepsChangingCommand):
         executions = [(cmd.change_steps(context), cmd._get_undo_command()) for cmd in self._commands]
         undos = [undo for _,undo in executions]
         undos.reverse()
-        self._undo_command = CompositeCommand(*undos)
+        self._undo_command = StepsChangingCompositeCommand(*undos)
         return any(changed for changed,_ in executions)
 
     def _get_undo_command(self):
@@ -605,32 +605,32 @@ class CompositeCommand(_StepsChangingCommand):
 
 
 def DeleteRows(rows):
-    return CompositeCommand(*[DeleteRow(r) for r in reversed(sorted(rows))])
+    return StepsChangingCompositeCommand(*[DeleteRow(r) for r in reversed(sorted(rows))])
 
 
 def AddRows(rows):
-    return CompositeCommand(*[AddRow(r) for r in sorted(rows)])
+    return StepsChangingCompositeCommand(*[AddRow(r) for r in sorted(rows)])
 
 
 def CommentRows(rows):
-    return CompositeCommand(*[CommentRow(r) for r in rows])
+    return StepsChangingCompositeCommand(*[CommentRow(r) for r in rows])
 
 
 def UncommentRows(rows):
-    return CompositeCommand(*[UncommentRow(r) for r in rows])
+    return StepsChangingCompositeCommand(*[UncommentRow(r) for r in rows])
 
 
 def ClearArea(top_left, bottom_right):
     row_s, col_s = top_left
     row_e, col_e = bottom_right
-    return CompositeCommand(*[ChangeCellValue(row, col, '')
+    return StepsChangingCompositeCommand(*[ChangeCellValue(row, col, '')
                               for row in range(row_s,row_e+1)
                               for col in range(col_s, col_e+1)])
 
 
 def PasteArea(top_left, content):
     row_s, col_s = top_left
-    return CompositeCommand(*[ChangeCellValue(row+row_s, col+col_s, content[row][col])
+    return StepsChangingCompositeCommand(*[ChangeCellValue(row+row_s, col+col_s, content[row][col])
                               for row in range(len(content))
                               for col in range(len(content[0]))])
 
@@ -638,7 +638,7 @@ def PasteArea(top_left, content):
 def InsertCells(top_left, bottom_right):
     row_s, col_s = top_left
     row_e, col_e = bottom_right
-    return CompositeCommand(*[InsertCell(row, col)
+    return StepsChangingCompositeCommand(*[InsertCell(row, col)
                               for row in range(row_s,row_e+1)
                               for col in range(col_s, col_e+1)])
 
@@ -646,6 +646,6 @@ def InsertCells(top_left, bottom_right):
 def DeleteCells(top_left, bottom_right):
     row_s, col_s = top_left
     row_e, col_e = bottom_right
-    return CompositeCommand(*[DeleteCell(row, col_s)
+    return StepsChangingCompositeCommand(*[DeleteCell(row, col_s)
                               for row in range(row_s,row_e+1)
                               for _ in range(col_s, col_e+1)])
