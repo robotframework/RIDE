@@ -51,12 +51,18 @@ class PluginLoader(object):
             self._load_errors.append(msg % (path, err))
 
     def _find_python_files(self, load_dirs):
+        files = []
         for path in load_dirs:
-            if os.path.exists(path):
-                for filename in os.listdir(path):
-                    if filename[0].isalpha() and \
-                            os.path.splitext(filename)[1].lower() == ".py":
-                        yield os.path.join(path, filename)
+            if not os.path.exists(path):
+                continue
+            for filename in os.listdir(path):
+                full_path = os.path.join(path, filename)
+                if filename[0].isalpha() and \
+                        os.path.splitext(filename)[1].lower() == ".py":
+                    files.append(full_path)
+                elif os.path.isdir(full_path):
+                    files.extend(self._find_python_files([full_path]))
+        return files
 
     def _import_classes(self, path):
         dirpath, filename = os.path.split(path)
