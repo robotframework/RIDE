@@ -186,7 +186,7 @@ class RenameKeywordOccurrences(_ReversibleCommand):
     def _execute(self, context):
         self._observer.notify()
         if self._occurrences is None:
-            self._occurrences = [occ for occ in context.execute(FindOccurrences(self._original_name))]
+            self._occurrences = [occ for occ in context.execute(FindOccurrences(self._original_name, observer=self._observer))]
             self._observer.notify()
         for oc in self._occurrences:
             oc.replace_keyword(self._new_name)
@@ -229,11 +229,12 @@ class UpdateVariable(_Command):
 
 class FindOccurrences(_Command):
 
-    def __init__(self, keyword_name, keyword_info=None):
+    def __init__(self, keyword_name, keyword_info=None, observer=None):
         if keyword_name.strip() == '':
             raise ValueError('Keyword name can not be "%s"' % keyword_name)
         self._keyword_name = keyword_name
         self._keyword_info = keyword_info
+        self._observer = observer
 
     def execute(self, context):
         self._keyword_source = self._keyword_info and self._keyword_info.source or \
@@ -272,6 +273,8 @@ class FindOccurrences(_Command):
                 if self._contains_keyword(item))
 
     def _contains_keyword(self, item):
+        if self._observer:
+            self._observer.notify()
         self._yield_for_other_threads()
         return item.contains_keyword(self._keyword_name)
 
