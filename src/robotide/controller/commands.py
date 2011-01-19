@@ -223,13 +223,15 @@ class UpdateVariable(_Command):
 
 class FindOccurrences(_Command):
 
-    def __init__(self, keyword_name):
+    def __init__(self, keyword_name, keyword_info=None):
         if keyword_name.strip() == '':
             raise ValueError('Keyword name can not be "%s"' % keyword_name)
         self._keyword_name = keyword_name
+        self._keyword_info = keyword_info
 
     def execute(self, context):
-        self._keyword_source = self._find_keyword_source(context.datafile_controller)
+        self._keyword_source = self._keyword_info and self._keyword_info.source or \
+                               self._find_keyword_source(context.datafile_controller)
         return self._find_occurrences_in(self._items_from(context))
 
     def _items_from(self, context):
