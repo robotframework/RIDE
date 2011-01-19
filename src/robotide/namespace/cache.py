@@ -123,18 +123,27 @@ class _LibraryCache:
     """Cache for libs/resources that doesn't require mutable keys like dicts"""
 
     def __init__(self):
-        self._keys = []
-        self._libs = []
+        self._libs = {}
 
     def __setitem__(self, key, library):
-        self._keys.append(key)
-        self._libs.append(library)
+        ide = id(key)
+        if ide not in self._libs:
+            for id_in_lib, val in self._libs.items():
+                if key == val[0]:
+                    del self._libs[id_in_lib]
+        self._libs[id] = (key, library)
 
     def __getitem__(self, key):
-        try:
-            return self._libs[self._keys.index(key)]
-        except ValueError:
-            raise KeyError
+        ide = id(key)
+        if ide in self._libs:
+            return self._libs[ide]
+        for key_in_lib, val in self._libs.values():
+            if key_in_lib == key:
+                return val
+        raise KeyError
 
     def has_key(self, key):
-        return key in self._keys
+        ide = id(key)
+        if ide in self._libs:
+            return True
+        return any(key == k for k,_ in self._libs.values())
