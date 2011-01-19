@@ -38,6 +38,7 @@ from robotide.editor.editordialogs import (UserKeywordNameDialog,
 from robotide.editor.contentassist import ExpandingContentAssistTextCtrl
 from robotide.editor.gridcolorizer import Colorizer, ColorizationSettings
 from robotide.usages.UsageRunner import Usages
+from robotide.ui.progress import RenameProgressObserver
 
 
 class KeywordEditor(GridEditor, RideEventHandler):
@@ -444,7 +445,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
         new_name = wx.GetTextFromUser('New name', 'Rename Keyword',
                                       default_value=old_name)
         if new_name:
-            self._execute(RenameKeywordOccurrences(old_name, new_name))
+            self._execute(RenameKeywordOccurrences(old_name, new_name,
+                                                   RenameProgressObserver(self.GetParent())))
 
 
 class ContentAssistCellEditor(grid.PyGridCellEditor):

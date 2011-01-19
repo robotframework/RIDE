@@ -135,6 +135,9 @@ class FindOccurrencesTest(unittest.TestCase):
     def test_occurrence_in_user_keyword_name(self):
         assert_occurrence(self.test_ctrl, USERKEYWORD1_NAME, USERKEYWORD1_NAME, KEYWORD_NAME_FIELD)
 
+class NullObserver(object):
+
+    notify = finish = lambda x:None
 
 class RenameOccurrenceTest(unittest.TestCase):
 
@@ -169,7 +172,7 @@ class RenameOccurrenceTest(unittest.TestCase):
         assert_equals(self._name_has_changed, name_has_changed)
 
     def _rename(self, original_name, new_name, source, usage):
-        self.test_ctrl.execute(RenameKeywordOccurrences(original_name, new_name))
+        self.test_ctrl.execute(RenameKeywordOccurrences(original_name, new_name, NullObserver()))
         assert_occurrence(self.test_ctrl, new_name, source, usage)
 
     def test_rename_updates_namespace(self):

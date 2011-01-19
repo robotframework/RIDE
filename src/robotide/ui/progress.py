@@ -13,14 +13,15 @@
 #  limitations under the License.
 
 import wx
+import time
 
 from robotide import context
 
 
-class LoadProgressObserver(object):
+class ProgressObserver(object):
 
-    def __init__(self, frame):
-        self._progressbar = wx.ProgressDialog('RIDE', 'Loading the test data',
+    def __init__(self, frame, title, message):
+        self._progressbar = wx.ProgressDialog(title, message,
                                               maximum=100, parent=frame,
                                               style=wx.PD_ELAPSED_TIME)
 
@@ -34,3 +35,21 @@ class LoadProgressObserver(object):
     def error(self, msg):
         self.finish()
         context.LOG.error(msg)
+
+
+class LoadProgressObserver(ProgressObserver):
+
+    def __init__(self, frame):
+        ProgressObserver.__init__(self, frame, 'RIDE', 'Loading the test data')
+
+
+class RenameProgressObserver(ProgressObserver):
+
+    def __init__(self, frame):
+        ProgressObserver.__init__(self, frame, 'RIDE', 'Renaming')
+        self._notification_occured = 0
+
+    def notify(self):
+        if time.time() - self._notification_occured > 0.1:
+            self._progressbar.Pulse()
+            self._notification_occured = time.time()
