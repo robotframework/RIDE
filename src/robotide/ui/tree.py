@@ -20,7 +20,8 @@ from robotide import utils
 from robotide.action import ActionInfoCollection
 from robotide.controller import NewDatafile
 from robotide.editor.editordialogs import (TestCaseNameDialog,
-                                           UserKeywordNameDialog)
+                                           UserKeywordNameDialog,
+    ScalarVariableDialog, ListVariableDialog)
 from robotide.publish import RideTreeSelection, PUBLISHER
 from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
 from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
@@ -29,7 +30,8 @@ from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideVariableAdded, RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated, \
     RideOpenResource
 from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
-    AddKeyword, AddTestCase, RenameTest, CopyMacroAs, MoveTo
+    AddKeyword, AddTestCase, RenameTest, CopyMacroAs, MoveTo, ExtractScalar,\
+    AddVariable
 from robotide.widgets import PopupCreator, PopupMenuItems
 from robotide.ui.filedialogs import NewResourceDialog
 from robotide.usages.UsageRunner import Usages
@@ -599,7 +601,7 @@ class TestDataHandler(_ActionHandler):
     is_draggable = False
     is_renameable = False
     is_test_suite = True
-    _actions = ['Add Suite', 'New User Keyword', '---', 'Change Format']
+    _actions = ['Add Suite', 'New User Keyword', 'New Scalar', 'New List Variable', '---', 'Change Format']
 
     @property
     def tests(self):
@@ -662,6 +664,20 @@ class TestDataHandler(_ActionHandler):
             self.controller.execute(AddKeyword(dlg.get_name(), dlg.get_args()))
         dlg.Destroy()
 
+    def OnNewScalar(self, event):
+        dlg = ScalarVariableDialog(self.controller.datafile_controller.variables)
+        if dlg.ShowModal() == wx.ID_OK:
+            name, value = dlg.get_value()
+            comment = dlg.get_comment()
+            self.controller.execute(AddVariable(name, value, comment))
+
+    def OnNewListVariable(self, event):
+        dlg = ListVariableDialog(self.controller.datafile_controller.variables)
+        if dlg.ShowModal() == wx.ID_OK:
+            name, value = dlg.get_value()
+            comment = dlg.get_comment()
+            self.controller.execute(AddVariable(name, value, comment))
+
 
 class TestDataDirectoryHandler(TestDataHandler):
     pass
@@ -669,12 +685,12 @@ class TestDataDirectoryHandler(TestDataHandler):
 
 class ResourceFileHandler(TestDataHandler):
     is_test_suite = False
-    _actions = ['New User Keyword', '---', 'Change Format']
+    _actions = ['New User Keyword', 'New Scalar', 'New List Variable', '---', 'Change Format']
 
 
 class TestCaseFileHandler(TestDataHandler):
     accepts_drag = lambda *args: True
-    _actions = ['New Test Case', 'New User Keyword', '---', 'Change Format']
+    _actions = ['New Test Case', 'New User Keyword', 'New Scalar', 'New List Variable', '---', 'Change Format']
 
     def OnNewTestCase(self, event):
         dlg = TestCaseNameDialog(self.controller)
