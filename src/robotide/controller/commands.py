@@ -14,7 +14,6 @@
 
 from itertools import chain
 import os
-from threading import Thread
 
 from robotide.controller.macrocontrollers import KeywordNameController, \
         ForLoopStepController
