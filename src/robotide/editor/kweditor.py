@@ -46,7 +46,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
     _popup_menu_shown = False
     dirty = property(lambda self: self._controller.dirty)
     update_value = lambda *args: None
-    _popup_items = ['Create Keyword', 'Extract Keyword', 'Extract Variable', 'Rename Occurrences', 'Find Where Used',
+    _popup_items = ['Create Keyword', 'Extract Keyword', 'Extract Variable', 'Rename Keyword', 'Find Where Used',
                     '---'] + GridEditor._popup_items
 
     def __init__(self, parent, controller, tree):
@@ -438,7 +438,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
             comment = dlg.get_comment()
             self._execute(ExtractList(name, value, comment, cells))
 
-    def OnRenameOccurrences(self, event):
+    def OnRenameKeyword(self, event):
         old_name = self._current_cell_value()
         if not old_name.strip():
             return

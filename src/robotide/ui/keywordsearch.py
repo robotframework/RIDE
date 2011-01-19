@@ -23,6 +23,8 @@ from robotide.controller.filecontrollers import (ResourceFileController,
 from robotide.widgets import PopupMenuItem
 from robotide import utils
 from robotide import context
+from robotide.widgets.button import ButtonWithHandler
+from robotide.usages.UsageRunner import Usages
 
 
 ALL_KEYWORDS = '<all keywords>'
@@ -129,13 +131,16 @@ class KeywordSearchDialog(wx.Frame):
         self.SetSize((700,500))
 
     def _add_search_control(self):
-        line1 = wx.BoxSizer(wx.HORIZONTAL)
+        line1 = self._horizontal_sizer()
         self._add_pattern_filter(line1)
         self._add_doc_filter(line1)
         self.Sizer.Add(line1, 0, wx.ALL, 3)
-        line2 = wx.BoxSizer(wx.HORIZONTAL)
+        line2 = self._horizontal_sizer()
         self._add_source_filter(line2)
         self.Sizer.Add(line2, 0, wx.ALL, 3)
+
+    def _horizontal_sizer(self):
+        return wx.BoxSizer(wx.HORIZONTAL)
 
     def _add_pattern_filter(self, sizer):
         sizer.Add(wx.StaticText(self, label='Search term: '))
@@ -164,11 +169,19 @@ class KeywordSearchDialog(wx.Frame):
     def _add_keyword_list(self):
         self._list = _KeywordList(self, self._plugin)
         self._list.SetSize(self.Size)
-        self.Sizer.Add(self._list, 1, wx.EXPAND| wx.ALL, 3)
+        self._add_to_sizer(self._list)
 
     def _add_keyword_details(self):
         self._details = utils.RideHtmlWindow(self)
-        self.Sizer.Add(self._details, 1, wx.EXPAND | wx.ALL, 3)
+        self._add_to_sizer(self._details)
+        self._find_usages_button = ButtonWithHandler(self, 'Find Usages')
+        self.Sizer.Add(self._find_usages_button, 0, wx.ALL, 3)
+
+    def _add_to_sizer(self, component):
+        self.Sizer.Add(component, 1, wx.EXPAND | wx.ALL, 3)
+
+    def OnFindUsages(self, event):
+        Usages(self._plugin.model, self._plugin.tree.highlight, self._last_selected_kw.name,  self._last_selected_kw).show()
 
     def _make_bindings(self):
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected, self._list)
@@ -244,8 +257,10 @@ class KeywordSearchDialog(wx.Frame):
     def _update_details(self):
         if self._last_selected_kw in self._keywords:
             self._details.SetPage(self._last_selected_kw.details)
+            self._find_usages_button.Enable()
         else:
             self._details.clear()
+            self._find_usages_button.Disable()
 
     def show_search_with_criteria(self, pattern='', search_docs=True, source=ALL_KEYWORDS):
         self._update_widgets(pattern, search_docs, source)

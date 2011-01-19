@@ -245,6 +245,10 @@ class ChiefController(object):
     def datafiles(self):
         return self._suites() + self.resources
 
+    @property
+    def all_datafiles(self):
+        return self.datafiles
+
     def _suites(self):
         return list(self.data.iter_datafiles() if self.data else [])
 
