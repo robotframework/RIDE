@@ -26,7 +26,7 @@ class LibraryCache(object):
     _RESOLVE_FAILED = 'Resolving keywords for library %s with args %s failed:'
 
     def __init__(self):
-        self._library_keywords = {}
+        self._library_keywords = _LibraryCache()
         self.__default_libraries = None
         self.__default_kws = None
 
@@ -118,3 +118,23 @@ class ExpiringCache(object):
             path = normpath(os.path.join(os.path.dirname(source), name))
             return self._resource_files[path]
 
+
+class _LibraryCache:
+    """Cache for libs/resources that doesn't require mutable keys like dicts"""
+
+    def __init__(self):
+        self._keys = []
+        self._libs = []
+
+    def __setitem__(self, key, library):
+        self._keys.append(key)
+        self._libs.append(library)
+
+    def __getitem__(self, key):
+        try:
+            return self._libs[self._keys.index(key)]
+        except ValueError:
+            raise KeyError
+
+    def has_key(self, key):
+        return key in self._keys
