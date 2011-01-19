@@ -86,7 +86,8 @@ def main(args):
         usage()
         sys.exit(2)
     if len(opts) != 4:
-        print opts
+        if opts:
+            print opts
         usage()
         sys.exit(2)
     for opt, arg in opts:
