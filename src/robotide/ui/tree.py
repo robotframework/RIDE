@@ -665,18 +665,21 @@ class TestDataHandler(_ActionHandler):
         dlg.Destroy()
 
     def OnNewScalar(self, event):
-        dlg = ScalarVariableDialog(self.controller.datafile_controller.variables)
+        self._new_var(ScalarVariableDialog)
+
+    def OnNewListVariable(self, event):
+        self._new_var(ListVariableDialog)
+
+    def _new_var(self, dialog_class):
+        dlg = dialog_class(self._var_controller)
         if dlg.ShowModal() == wx.ID_OK:
             name, value = dlg.get_value()
             comment = dlg.get_comment()
             self.controller.execute(AddVariable(name, value, comment))
 
-    def OnNewListVariable(self, event):
-        dlg = ListVariableDialog(self.controller.datafile_controller.variables)
-        if dlg.ShowModal() == wx.ID_OK:
-            name, value = dlg.get_value()
-            comment = dlg.get_comment()
-            self.controller.execute(AddVariable(name, value, comment))
+    @property
+    def _var_controller(self):
+        return self.controller.datafile_controller.variables
 
 
 class TestDataDirectoryHandler(TestDataHandler):
