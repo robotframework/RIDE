@@ -14,6 +14,7 @@
 
 from itertools import chain
 import os
+from threading import Thread
 
 from robotide.controller.macrocontrollers import KeywordNameController, \
         ForLoopStepController
@@ -177,19 +178,25 @@ class _StepsChangingCommand(_ReversibleCommand):
 
 class RenameKeywordOccurrences(_ReversibleCommand):
 
-    def __init__(self, original_name, new_name):
+    def __init__(self, original_name, new_name, observer):
         self._original_name = original_name
         self._new_name = new_name
+        self._observer = observer
         self._occurrences = None
 
     def _execute(self, context):
+        self._observer.notify()
         if self._occurrences is None:
             self._occurrences = [occ for occ in context.execute(FindOccurrences(self._original_name))]
+            self._observer.notify()
         for oc in self._occurrences:
             oc.replace_keyword(self._new_name)
+            self._observer.notify()
         context.update_namespace()
         for oc in self._occurrences:
             oc.notify_value_changed()
+            self._observer.notify()
+        self._observer.finish()
 
     def _get_undo_command(self):
         return self
