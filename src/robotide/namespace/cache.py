@@ -50,7 +50,17 @@ class LibraryCache(object):
             self._library_keywords[self._key(name, args)] = kws
 
     def _key(self, name, args):
-        return (name, tuple(args or ''))
+        return (name, tuple(self._to_hashables(args) or ''))
+
+    def _to_hashables(self, args):
+        return [self._to_hashable(arg) for arg in args]
+
+    def _to_hashable(self, arg):
+        if isinstance(arg, dict):
+            return frozenset(arg.items())
+        if isinstance(arg, list):
+            return frozenset(arg)
+        return arg
 
     def get_library_keywords(self, name, args=None):
         def _get_library_keywords():
