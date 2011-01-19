@@ -35,6 +35,7 @@ from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
 from robotide.widgets import PopupCreator, PopupMenuItems
 from robotide.ui.filedialogs import NewResourceDialog
 from robotide.usages.UsageRunner import Usages
+from robotide.ui.progress import RenameProgressObserver
 
 try:
     import treemixin
@@ -762,7 +763,8 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
         self._tree.add_keyword(parent_node, copied)
 
     def _rename(self, new_name):
-        self.controller.execute(RenameKeywordOccurrences(self.controller.name, new_name))
+        self.controller.execute(RenameKeywordOccurrences(self.controller.name, 
+            new_name, RenameProgressObserver(self.GetParent().GetParent())))
 
     def OnFindUsages(self, event):
         Usages(self.controller, self._tree.highlight).show()
