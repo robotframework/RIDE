@@ -74,6 +74,12 @@ import runprofiles
 import asyncproc
 sys.path.pop(0)
 
+
+def _RunProfile(name, run_prefix):
+    return type('Profile', (runprofiles.BaseProfile,),
+                {'name': name, 'get_command_prefix': lambda self: [run_prefix]})
+
+
 class TestRunnerPlugin(Plugin):
     """A plugin for running tests from within RIDE"""
 
@@ -162,7 +168,7 @@ class TestRunnerPlugin(Plugin):
 
     def _read_run_profiles_from_config(self):
         #Have to keep reference so that these classes are not garbage collected
-        self._profile_classes_from_config = [runprofiles.RunProfile(name, run_prefix)
+        self._profile_classes_from_config = [_RunProfile(name, run_prefix)
                                              for name, run_prefix in self.settings["runprofiles"]]
 
     def disable(self):

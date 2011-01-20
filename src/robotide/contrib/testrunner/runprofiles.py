@@ -140,8 +140,3 @@ class BaseProfile(object):
             self.set_setting("exclude_tags", value)
             exclude = [s.strip() for s in re.split("[,|]", value)]
             self.exclude_tags = filter(lambda x: len(x) > 0, exclude)
-
-
-def RunProfile(name, run_prefix):
-    return type('Profile', (BaseProfile,),
-                {'name': name, 'get_command_prefix': lambda self: [run_prefix]})
