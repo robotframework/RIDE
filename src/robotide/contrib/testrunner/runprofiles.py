@@ -140,3 +140,16 @@ class BaseProfile(object):
             self.set_setting("exclude_tags", value)
             exclude = [s.strip() for s in re.split("[,|]", value)]
             self.exclude_tags = filter(lambda x: len(x) > 0, exclude)
+
+
+class PybotProfile(BaseProfile):
+    '''A runner profile which uses pybot
+
+    It is assumed that these programs are on the path
+    '''
+    name = "pybot"
+    def get_command_prefix(self):
+        if os.name == "nt":
+            return ["pybot.bat"]
+        else:
+            return ["pybot"]

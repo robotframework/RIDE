@@ -106,7 +106,7 @@ class TestRunnerPlugin(Plugin):
                                    apply_exclude_tags = True,
                                    port = 5010,
                                    sash = 200,
-                                   runprofiles = [(name, name + ('.bat' if os.name == 'nt' else '')) for name in ['pybot', 'jybot']]
+                                   runprofiles = [('jybot', 'jybot' + ('.bat' if os.name == 'nt' else ''))]
                                    )
         self._controls = {}
         self._save_timer = None
