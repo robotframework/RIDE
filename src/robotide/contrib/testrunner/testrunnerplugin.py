@@ -100,6 +100,7 @@ class TestRunnerPlugin(Plugin):
                                    apply_exclude_tags = True,
                                    port = 5010,
                                    sash = 200,
+                                   runprofiles = [(name, name + ('.bat' if os.name == 'nt' else '')) for name in ['pybot', 'jybot']]
                                    )
         self._controls = {}
         self._save_timer = None
@@ -111,6 +112,7 @@ class TestRunnerPlugin(Plugin):
 
     def enable(self):
         '''Enable the plugin'''
+        self._read_run_profiles_from_config()
         for profile in runprofiles.BaseProfile.__subclasses__():
             self.profiles[profile.name] = profile(plugin=self)
 
@@ -157,6 +159,11 @@ class TestRunnerPlugin(Plugin):
         # place to check for temporary directories that match the
         # signature and delete them if they are more than a few
         # days old...
+
+    def _read_run_profiles_from_config(self):
+        #Have to keep reference so that these classes are not garbage collected
+        self._profile_classes_from_config = [runprofiles.RunProfile(name, run_prefix)
+                                             for name, run_prefix in self.settings["runprofiles"]]
 
     def disable(self):
         '''Disable the plugin'''

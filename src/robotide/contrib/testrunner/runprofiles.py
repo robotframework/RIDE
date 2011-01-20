@@ -145,5 +145,3 @@ class BaseProfile(object):
 def RunProfile(name, run_prefix):
     return type('Profile', (BaseProfile,),
                 {'name': name, 'get_command_prefix': lambda self: [run_prefix]})
-
-basic_profiles = [RunProfile(name, name+('.bat' if os.name == 'nt' else '')) for name in ['pybot', 'jybot']]
