@@ -141,27 +141,9 @@ class BaseProfile(object):
             exclude = [s.strip() for s in re.split("[,|]", value)]
             self.exclude_tags = filter(lambda x: len(x) > 0, exclude)
 
-class PybotProfile(BaseProfile):
-    '''A runner profile which uses pybot
 
-    It is assumed that these programs are on the path
-    '''
-    name = "pybot"
-    def get_command_prefix(self):
-        if os.name == "nt":
-            return ["pybot.bat"]
-        else:
-            return ["pybot"]
+def RunProfile(name, run_prefix):
+    return type('Profile', (BaseProfile,),
+                {'name': name, 'get_command_prefix': lambda self: [run_prefix]})
 
-class JybotProfile(BaseProfile):
-    '''A runner profile which uses jybot
-
-    It is assumed that these programs are on the path
-    '''
-    name = "jybot"
-    def get_command_prefix(self):
-        if os.name == "nt":
-            return ["jybot.bat"]
-        else:
-            return ["jybot"]
-    
+basic_profiles = [RunProfile(name, name+('.bat' if os.name == 'nt' else '')) for name in ['pybot', 'jybot']]
