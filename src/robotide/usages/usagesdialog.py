@@ -13,21 +13,21 @@
 #  limitations under the License.
 
 from robotide.widgets import (Dialog, VirtualList, VerticalSizer, ImageList,
-                              ImageProvider)
+                              ImageProvider, ButtonWithHandler)
 import wx
-
 
 class UsagesDialog(Dialog):
 
     def __init__(self, name):
         self._name = name
         self._selection_listeners = []
-        self.usages = UsagesListModel([])
         title = "'%s'" % (name)
         Dialog.__init__(self, title=title, size=(650, 400))
         self.SetSizer(VerticalSizer())
+        self._add_view_components()
+        self.usages = UsagesListModel([])
         self.usage_list = VirtualList(self, ['Location', 'Usage', 'Source'],
-                                 self.usages)
+                                      self.usages)
         self.usage_list.add_selection_listener(self._usage_selected)
         self.Sizer.add_expanding(self.usage_list)
 
@@ -56,6 +56,19 @@ class UsagesDialog(Dialog):
 
     def add_selection_listener(self, listener):
         self._selection_listeners.append(listener)
+
+    def _add_view_components(self):
+        pass
+
+
+class UsagesDialogWithUserKwNavigation(UsagesDialog):
+
+    def __init__(self, name, highlight, controller):
+        self.OnGotodefinition = lambda evt: highlight(controller, name)
+        UsagesDialog.__init__(self, name)
+
+    def _add_view_components(self):
+        self.Sizer.Add(ButtonWithHandler(self, 'Go to definition'), 0, wx.ALL, 3)
 
 
 class UsagesListModel(object):

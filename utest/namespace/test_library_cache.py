@@ -21,6 +21,9 @@ class TestLibraryCache(unittest.TestCase):
         self._assert_keyword_in_keywords(cache.LibraryCache().get_default_keywords(),
                                          'Get Mandatory')
 
+    def test_importing_library_with_dictionary_arg(self):
+        cache.LibraryCache().add_library('ArgLib', [{'moi':'hoi'}, []])
+
     def _assert_keyword_in_keywords(self, keywords, name):
         for kw in keywords:
             if kw.name == name:
