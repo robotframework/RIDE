@@ -34,6 +34,7 @@ class ChiefController(object):
         self._namespace = namespace
         self._loader = DataLoader(namespace)
         self._controller = None
+        self.name = None
         self.resources = []
 
     def execute(self, command):
