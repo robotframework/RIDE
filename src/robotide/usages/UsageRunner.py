@@ -1,5 +1,5 @@
 from robotide.usages.commands import FindUsages
-from robotide.usages.usagesdialog import UsagesDialog
+from robotide.usages.usagesdialog import UsagesDialogWithUserKwNavigation
 from threading import Thread
 import wx
 import time
@@ -11,7 +11,7 @@ class Usages(object):
         self._kw_info = kw_info
         self._controller = controller
         self._highlight = highlight
-        self._dlg = UsagesDialog(self._name)
+        self._dlg = UsagesDialogWithUserKwNavigation(self._name)
         self._worker = Thread(target=self._run)
         self._dialog_closed = False
 
