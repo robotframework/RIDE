@@ -57,10 +57,15 @@ globally or so that it is called only when the plugin is considered active
 (i.e. it has focus).
 
 The registering mechanism allows multiple handlers to be registered to the same
-menu entry, button, or shortcut. It is thus possible that, for example, one
-keyboard shortcut calls multiple handlers. 
+menu entry, toolbar button, or shortcut. It is thus possible that, for example,
+one keyboard shortcut calls multiple handlers. 
+
+It is also possible to enable/disable action's menu entry, toolbar button,
+and shortcut by enabling/disabling those with `action.Action.enable` and 
+`action.Action.disable` methods. Action is returned by 
+`pluginapi.Plugin.register_action` method.
 """
 
 
 from actioninfo import ActionInfoCollection, SeparatorInfo, ActionInfo
-from action import Action
+from action import ActionFactory

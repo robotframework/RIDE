@@ -12,10 +12,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-def Action(action_info):
+def ActionFactory(action_info):
     if action_info.is_separator():
         return _MenuSeparator(action_info)
-    return _Action(action_info)
+    return Action(action_info)
 
 
 class _Registrable(object):
@@ -26,6 +26,10 @@ class _Registrable(object):
         self.shortcut = None
         self.icon = None
         self._insertion_point = action_info.insertion_point
+        self._enabled = True
+        self._enabled_status_listeners = []
+
+    disable = enable = lambda event: None
 
     def is_separator(self):
         return False
@@ -50,8 +54,19 @@ class _Registrable(object):
     def has_icon(self):
         return self.icon is not None
 
+    def inform_changes_in_enabled_status(self, listener):
+        self._enabled_status_listeners.append(listener)
 
-class _Action(_Registrable):
+
+class Action(_Registrable):
+    """Acts based on user actions if action is enabled. Created from `ActionInfo`.
+
+    If `ActionInfo` contains container, acts and allows to select related UI
+    widgets (menu item, toolbar button) and shortcuts only if the focus is in the given 
+    container or its children.
+    Action can be set enabled or disabled which enables/disables also related UI
+    widgets and shortcut.
+    """
 
     def __init__(self, action_info):
         _Registrable.__init__(self, action_info)
@@ -70,8 +85,22 @@ class _Action(_Registrable):
         if self.is_active():
             self.action(event)
 
+    def disable(self):
+        """Disables action and related menu item, toolbar button and shortcut"""
+        self._enabled = False
+        self._inform_changes_in_enabled_status()
+
+    def enable(self):
+        """Enables action and related menu item, toolbar button and shortcut"""
+        self._enabled = True
+        self._inform_changes_in_enabled_status()
+
+    def _inform_changes_in_enabled_status(self):
+        for listener in self._enabled_status_listeners:
+            listener.enabled_status_changed(self)
+
     def is_active(self):
-        if self._is_always_inactive():
+        if self._is_always_inactive() or not self._enabled:
             return False
         if self._is_always_active():
             return True

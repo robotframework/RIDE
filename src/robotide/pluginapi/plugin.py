@@ -176,18 +176,22 @@ class Plugin(object):
         If register action is used in menu event handler and it modifies the
         menu that triggered the event, it is safest to wrap register action
         call inside wx.CallAfter function.
+
+        Returns created `Action` object.
         """
         action = self.__frame.actions.register_action(action_info)
         self.__actions.append(action)
+        return action
 
     def register_actions(self, action_infos):
         """Registers multiple menu entries and shortcuts/icons.
 
         ``action_infos`` is a list of same `ActionInfo` objects that
         `register_action` method accepts.
+
+        Returns list of created `Action` objects.
         """
-        for action_info in action_infos:
-            self.register_action(action_info)
+        return [self.register_action(info) for info in action_infos]
 
     def unregister_actions(self):
         """Unregisters all actions registered by this plugin."""

@@ -250,6 +250,9 @@ class ToolBar(object):
                 return button
         return None
 
+    def enabled_status_changed(self, id, action):
+        self._wx_toolbar.EnableTool(id, action.is_active())
+
     def _create_button(self, action):
         button = ToolBarButton(self._frame, self, action)
         name = action.name.replace('&', '')
@@ -276,10 +279,14 @@ class ToolBarButton(object):
     def register(self, action):
         self._action_delegator.add(action)
         action.register(self)
+        action.inform_changes_in_enabled_status(self)
 
     def unregister(self, action):
         if self._action_delegator.remove(action):
             self._toolbar.remove_toolbar_button(self)
+
+    def enabled_status_changed(self, action):
+        self._toolbar.enabled_status_changed(self.id, action)
 
 
 class ShortcutRegistry(object):

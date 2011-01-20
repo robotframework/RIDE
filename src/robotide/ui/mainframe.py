@@ -16,7 +16,7 @@ import os
 import wx
 
 from robotide.controller import NewDatafile
-from robotide.action import ActionInfoCollection, Action
+from robotide.action import ActionInfoCollection, ActionFactory
 from robotide.publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER
 from robotide.utils import RideEventHandler, RideHtmlWindow
 from robotide.context import SETTINGS, ABOUT_RIDE
@@ -252,7 +252,7 @@ class ActionRegisterer(object):
         self._shortcut_registry = shortcut_registry
 
     def register_action(self, action_info):
-        action = Action(action_info)
+        action = ActionFactory(action_info)
         self._shortcut_registry.register(action)
         self._menubar.register(action)
         self._toolbar.register(action)
