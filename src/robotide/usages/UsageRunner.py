@@ -11,7 +11,7 @@ class Usages(object):
         self._kw_info = kw_info
         self._controller = controller
         self._highlight = highlight
-        self._dlg = UsagesDialogWithUserKwNavigation(self._name)
+        self._dlg = UsagesDialogWithUserKwNavigation(self._name, highlight, controller)
         self._worker = Thread(target=self._run)
         self._dialog_closed = False
 

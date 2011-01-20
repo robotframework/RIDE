@@ -63,11 +63,12 @@ class UsagesDialog(Dialog):
 
 class UsagesDialogWithUserKwNavigation(UsagesDialog):
 
+    def __init__(self, name, highlight, controller):
+        self.OnGotodefinition = lambda evt: highlight(controller, name)
+        UsagesDialog.__init__(self, name)
+
     def _add_view_components(self):
         self.Sizer.Add(ButtonWithHandler(self, 'Go to definition'), 0, wx.ALL, 3)
-
-    def OnGotodefinition(self, evt):
-        print '', evt
 
 
 class UsagesListModel(object):
