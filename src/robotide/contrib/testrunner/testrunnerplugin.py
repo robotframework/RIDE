@@ -44,7 +44,8 @@ from robotide.pluginapi import Plugin, ActionInfo
 from robotide.context import SETTINGS
 from robotide.publish import (RideNotebookTabChanged, RideUserKeywordAdded,
                               RideTestCaseAdded, RideOpenSuite, RideOpenResource,
-                              RideSaved, RideNotebookTabChanged)
+                              RideSaved, RideNotebookTabChanged, 
+                              RideItemNameChanged, RideTestCaseRemoved)
 import wx
 import wx.stc
 from wx.lib.embeddedimage import PyEmbeddedImage
@@ -136,6 +137,8 @@ class TestRunnerPlugin(Plugin):
         self.subscribe(self.OnModelChanged, RideTestCaseAdded)
         self.subscribe(self.OnModelChanged, RideOpenSuite)
         self.subscribe(self.OnModelChanged, RideOpenResource)
+        self.subscribe(self.OnModelChanged, RideItemNameChanged)
+        self.subscribe(self.OnModelChanged, RideTestCaseRemoved)
         # the above events don't always fire at the appropriate time;
         # (or, at least, they didn't when I first wrote this code)
         # this attempts to make sure the tree is always up-to-date
