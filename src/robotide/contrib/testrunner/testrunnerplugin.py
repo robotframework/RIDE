@@ -437,6 +437,8 @@ class TestRunnerPlugin(Plugin):
         notebook = self._frame.notebook
         if not self.panel:
             self._build_notebook_tab()
+            self._reload_model()
+
         self._frame.notebook.SetSelection(self._frame.notebook.GetPageIndex(self.panel))
 
     def _associate(self, group, control):
