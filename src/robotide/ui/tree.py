@@ -28,7 +28,7 @@ from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideTestCaseAdded, RideUserKeywordRemoved, RideTestCaseRemoved, RideDataFileRemoved,\
     RideDataChangedToDirty, RideDataDirtyCleared, RideVariableRemoved,\
     RideVariableAdded, RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated, \
-    RideOpenResource
+    RideOpenResource, RideSuiteAdded
 from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
     AddKeyword, AddTestCase, RenameTest, CopyMacroAs, MoveTo, ExtractScalar,\
     AddVariable, AddSuite
@@ -95,6 +95,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def _subscribe_to_messages(self):
         for listener, topic in [ (self._item_changed, RideItem),
                                  (self._resource_added, RideOpenResource),
+                                 (self._suite_added, RideSuiteAdded),
                                  (self._keyword_added, RideUserKeywordAdded),
                                  (self._test_added, RideTestCaseAdded),
                                  (self._variable_added, RideVariableAdded),
@@ -151,6 +152,9 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             return
         node = self._render_datafile(self._resource_root, ctrl)
         self.SelectItem(node)
+
+    def _suite_added(self, message):
+        self.add_datafile(message.parent, message.suite)
 
     def _refresh_view(self):
         self.Refresh()
@@ -655,8 +659,7 @@ class TestDataHandler(_ActionHandler):
         dlg = AddSuiteDialog(self.controller.directory)
         if dlg.ShowModal() == wx.ID_OK:
             data = NewDatafile(dlg.get_path(), dlg.is_dir_type())
-            ctrl = self.controller.execute(AddSuite(data))
-            self._tree.add_datafile(self.controller, ctrl)
+            self.controller.execute(AddSuite(data))
         dlg.Destroy()
 
     def OnNewUserKeyword(self, event):

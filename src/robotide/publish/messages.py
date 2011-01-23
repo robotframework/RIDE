@@ -184,6 +184,10 @@ class RideDataFileRemoved(RideMessage):
     data = ['path', 'datafile']
 
 
+class RideSuiteAdded(RideMessage):
+    data = ['parent', 'suite']
+
+
 class RideInitFileRemoved(RideMessage):
     data = ['path', 'datafile']
 

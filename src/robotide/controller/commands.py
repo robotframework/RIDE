@@ -325,7 +325,8 @@ class AddSuite(_Command):
         self._data = data
 
     def execute(self, context):
-        return context.new_datafile(self._data)
+        ctrl = context.new_datafile(self._data)
+        context.notify_suite_added(ctrl)
 
 
 class RemoveVariable(_ReversibleCommand):

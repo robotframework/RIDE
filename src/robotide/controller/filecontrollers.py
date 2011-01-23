@@ -25,7 +25,7 @@ from robotide.publish import RideDataFileRemoved, RideInitFileRemoved
 from robotide.robotapi import TestDataDirectory, TestCaseFile, ResourceFile
 from robotide import utils
 from robotide.publish.messages import RideDataChangedToDirty,\
-    RideDataDirtyCleared
+    RideDataDirtyCleared, RideSuiteAdded
 from robotide.controller.macrocontrollers import UserKeywordController
 
 
@@ -252,6 +252,9 @@ class TestDataDirectoryController(_DataController):
         self.children.append(DataController(datafile, self._chief_controller))
         return self.children[-1]
 
+    def notify_suite_added(self, suite):
+        RideSuiteAdded(parent=self, suite=suite).publish()
+
     def is_directory_suite(self):
         return True
 
@@ -302,6 +305,7 @@ class TestCaseFileController(_DataController):
 
     def get_template(self):
         return self.data.setting_table.test_template
+
 
 class ResourceFileController(_DataController):
 
