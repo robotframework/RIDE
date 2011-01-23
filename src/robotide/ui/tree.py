@@ -31,7 +31,7 @@ from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideOpenResource
 from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
     AddKeyword, AddTestCase, RenameTest, CopyMacroAs, MoveTo, ExtractScalar,\
-    AddVariable
+    AddVariable, AddSuite
 from robotide.widgets import PopupCreator, PopupMenuItems
 from robotide.ui.filedialogs import NewResourceDialog
 from robotide.usages.UsageRunner import Usages
@@ -655,7 +655,7 @@ class TestDataHandler(_ActionHandler):
         dlg = AddSuiteDialog(self.controller.directory)
         if dlg.ShowModal() == wx.ID_OK:
             data = NewDatafile(dlg.get_path(), dlg.is_dir_type())
-            ctrl = self.controller.new_datafile(data)
+            ctrl = self.controller.execute(AddSuite(data))
             self._tree.add_datafile(self.controller, ctrl)
         dlg.Destroy()
 

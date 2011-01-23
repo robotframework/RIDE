@@ -319,6 +319,15 @@ class AddTestCase(_Command):
         return context.create_test(self._test_name)
 
 
+class AddSuite(_Command):
+
+    def __init__(self, data):
+        self._data = data
+
+    def execute(self, context):
+        return context.new_datafile(self._data)
+
+
 class RemoveVariable(_ReversibleCommand):
 
     def __init__(self, var_controller):
