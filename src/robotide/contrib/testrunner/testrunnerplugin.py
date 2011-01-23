@@ -133,12 +133,12 @@ class TestRunnerPlugin(Plugin):
             self.SetProfile(default)
 
         self.active = True
-        self.subscribe(self.OnModelChanged, RideUserKeywordAdded)
-        self.subscribe(self.OnModelChanged, RideTestCaseAdded)
-        self.subscribe(self.OnModelChanged, RideOpenSuite)
-        self.subscribe(self.OnModelChanged, RideOpenResource)
-        self.subscribe(self.OnModelChanged, RideItemNameChanged)
-        self.subscribe(self.OnModelChanged, RideTestCaseRemoved)
+        self.subscribe(self.OnModelChanged, *[RideUserKeywordAdded,
+                                              RideTestCaseAdded,
+                                              RideOpenSuite,
+                                              RideOpenResource,
+                                              RideItemNameChanged,
+                                              RideTestCaseRemoved])
         # the above events don't always fire at the appropriate time;
         # (or, at least, they didn't when I first wrote this code)
         # this attempts to make sure the tree is always up-to-date
