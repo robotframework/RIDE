@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from robotide.publish.messages import RideSuiteAdded
 
 
 '''A plugin for running tests from within RIDE
@@ -139,7 +140,8 @@ class TestRunnerPlugin(Plugin):
                                               RideOpenSuite,
                                               RideOpenResource,
                                               RideItemNameChanged,
-                                              RideTestCaseRemoved])
+                                              RideTestCaseRemoved,
+                                              RideSuiteAdded])
 
     def _start_listener_server(self):
         port = self.port

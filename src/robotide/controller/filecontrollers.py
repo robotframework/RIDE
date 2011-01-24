@@ -249,6 +249,7 @@ class TestDataDirectoryController(_DataController):
         self.mark_dirty()
 
     def new_datafile(self, datafile):
+        self.data.children.append(datafile)
         self.children.append(DataController(datafile, self._chief_controller))
         return self.children[-1]
 
