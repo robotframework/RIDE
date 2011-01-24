@@ -40,12 +40,12 @@ import atexit
 import shutil
 import signal
 from robot.parsing.model import TestCase
-from robotide.pluginapi import Plugin, ActionInfo
+from robotide.pluginapi import Plugin
 from robotide.context import SETTINGS
-from robotide.publish import (RideNotebookTabChanged, RideUserKeywordAdded,
-                              RideTestCaseAdded, RideOpenSuite, RideOpenResource,
-                              RideSaved, RideNotebookTabChanged, 
-                              RideItemNameChanged, RideTestCaseRemoved)
+from robotide.publish import (RideUserKeywordAdded, RideTestCaseAdded,
+                              RideOpenSuite, RideOpenResource,
+                              RideNotebookTabChanged, RideItemNameChanged,
+                              RideTestCaseRemoved)
 import wx
 import wx.stc
 from wx.lib.embeddedimage import PyEmbeddedImage
@@ -86,8 +86,6 @@ class TestRunnerPlugin(Plugin):
 
     def __init__(self, application=None):
         Plugin.__init__(self, application, initially_enabled=True)
-        self.name = "Test Runner"
-        self.id = "com.orbitz.testrunner"
         self.version = "3.0"
         self.metadata = {"url": "http://code.google.com/p/robotframework-ride/wiki/TestRunnerPlugin"}
 
@@ -98,7 +96,7 @@ class TestRunnerPlugin(Plugin):
         self._report_file = None
         self._log_file = None
         self.profiles = {}
-        self.settings = SETTINGS.add_section(self.id)
+        self.settings = SETTINGS.add_section("com.orbitz.testrunner")
         self.settings.set_defaults(auto_save = False, 
                                    profile = "Service Testing",
                                    include_tags = "",
@@ -263,7 +261,6 @@ class TestRunnerPlugin(Plugin):
         self._tree.Reset()
         command = self._get_command()
         self._clear()
-        now = datetime.datetime.now()
         self.out.SetReadOnly(False)
         self._output("working directory: %s\n" % os.getcwd())
         self._output("command: %s\n" % self._format_command(command))
@@ -297,10 +294,6 @@ class TestRunnerPlugin(Plugin):
         if pos > 10:
             self.settings["sash"] = self.splitter.GetSashPosition()
             self.save_settings()
-
-    def OnAutoSaveCheckbox(self, event):
-        self.settings["auto_save"] = event.IsChecked()
-        self.save_settings()
 
     def OnProfileSelection(self, event):
         profile = event.GetString()
@@ -346,7 +339,7 @@ class TestRunnerPlugin(Plugin):
     def OnMenuButton(self, event):
         '''Show the menu associated with the menu button'''
         (x,y) = self._menubutton.GetPosition()
-        (w,h) = self._menubutton.GetSize()
+        (_,h) = self._menubutton.GetSize()
         self._tree.PopupMenu(self._tree_menu, (x,y+h))
 
     def OnPageClosing(self, event):
@@ -357,7 +350,7 @@ class TestRunnerPlugin(Plugin):
             # thing is to slap the users hand and say "don't do that!"
             dialog = wx.MessageDialog(None, "This tab cannot be deleted while a test is running.",
                                       style=wx.OK|wx.CENTRE|wx.ICON_INFORMATION)
-            result=dialog.ShowModal()
+            dialog.ShowModal()
             dialog.Destroy()
             event.Veto()
 
@@ -434,7 +427,7 @@ class TestRunnerPlugin(Plugin):
         self.out.SetReadOnly(False)
         self.out.ClearAll()
         self.out.SetReadOnly(True)
-        
+
     def _show_notebook_tab(self):
         '''Show the Run notebook tab'''
         notebook = self._frame.notebook
@@ -442,7 +435,7 @@ class TestRunnerPlugin(Plugin):
             self._build_notebook_tab()
             self._reload_model()
 
-        self._frame.notebook.SetSelection(self._frame.notebook.GetPageIndex(self.panel))
+        notebook.SetSelection(notebook.GetPageIndex(self.panel))
 
     def _associate(self, group, control):
         controls = self._controls.get(group, [])
@@ -469,7 +462,7 @@ class TestRunnerPlugin(Plugin):
             return
 
         try:
-            width, height = self.out.GetTextExtent(string)
+            width, _ = self.out.GetTextExtent(string)
             if self.out.GetScrollWidth() < width+50:
                 self.out.SetScrollWidth(width+50)
         except UnicodeDecodeError:
@@ -511,7 +504,7 @@ class TestRunnerPlugin(Plugin):
         custom_args = profile.get_custom_args()
 
         argfile = os.path.join(self._tmpdir, "argfile.txt")
-        test_suite = self._relpath(self.model.suite.source)
+        self._relpath(self.model.suite.source)
         command.extend(["--argumentfile", argfile])
         command.extend(["--listener", listener])
         command.append(self._relpath(self.model.suite.source))
@@ -519,7 +512,7 @@ class TestRunnerPlugin(Plugin):
         # robot wants to know a fixed size for output, so calculate the
         # width of the window based on average width of a character. A
         # little is subtracted just to make sure there's a little margin
-        out_width, out_height = self.out.GetSizeTuple()
+        out_width, _ = self.out.GetSizeTuple()
         char_width = self.out.GetCharWidth()
         monitorwidth = int(out_width/char_width)-10
 
@@ -582,7 +575,7 @@ class TestRunnerPlugin(Plugin):
         """Remove the tab for this plugin from the notebook"""
         notebook = self._frame.notebook
         if notebook:
-            self._frame.notebook.DeletePage(self._frame.notebook.GetPageIndex(self.panel))
+            notebook.DeletePage(notebook.GetPageIndex(self.panel))
 
     def _remove_from_menubar(self):
         """Remove the menubar item from the menubar for this plugin"""
@@ -599,18 +592,17 @@ class TestRunnerPlugin(Plugin):
             self.toolbar.RemoveTool(ID_STOP)
             self.toolbar.Realize()
 
-
     def _add_to_menubar(self):
         tools_menu_pos = self.menubar.FindMenu("Tools")
         tools_menu = self.menubar.GetMenu(tools_menu_pos)
-        runItem = tools_menu.Append(ID_RUN, "Run Test Suite\tF8", "Runs the test suite")
+        tools_menu.Append(ID_RUN, "Run Test Suite\tF8", "Runs the test suite")
         wx.EVT_MENU(self._frame, ID_RUN, self.OnRun)
         self._associate("run",(tools_menu, ID_RUN))
 
-        stopitem = tools_menu.Append(ID_STOP, "Stop Running\tCtrl+F8", "Stops a currently running suite")
+        tools_menu.Append(ID_STOP, "Stop Running\tCtrl+F8", "Stops a currently running suite")
         wx.EVT_MENU(self._frame, ID_STOP, self.OnStop)
         self._associate("stop", (tools_menu, ID_STOP))
-            
+
     def _build_config_panel(self, parent):
         """Builds the configuration panel for this plugin"""
         panel = wx.Panel(parent, wx.ID_ANY, style=wx.BORDER_NONE|wx.TAB_TRAVERSAL)
@@ -619,7 +611,7 @@ class TestRunnerPlugin(Plugin):
         self.config_panel = panel
 
         return panel
-        
+
     def _output(self, string, source="stdout"):
         '''Put output to the text control'''
         self._AppendText(string, source)
@@ -841,15 +833,15 @@ class TestRunnerPlugin(Plugin):
         tree)
         '''
         (menubutton_width, _) = self._menubutton.GetSize()
-        (vw, vh)  = self._tree.GetVirtualSize()
-        (cw, ch) = client_size = self._tree.GetClientSize()
+        (_, vh)  = self._tree.GetVirtualSize()
+        (_, ch) = self._tree.GetClientSize()
         # N.B. add a little extra offset for margins/borderwidths 
         offset = menubutton_width + 4
         if (ch != vh):
             # scrollbar is visible
             scrollbar_width = wx.SystemSettings_GetMetric(wx.SYS_VSCROLL_X)
             offset += scrollbar_width
-        (w,h) = self._tree.GetSize()
+        (w,_) = self._tree.GetSize()
         self._menubutton.SetPosition((w-offset, 0))
 
     def _set_splitter_size(self, size):
@@ -868,12 +860,12 @@ class TestRunnerPlugin(Plugin):
             return
 
         if event == "start_test" or event == "start_suite":
-            name, attrs = args
+            _, attrs = args
             longname = attrs["longname"]
             self._tree.SetState(longname, "running")
             
         if event == "end_test" or event == "end_suite":
-            name, attrs = args
+            _, attrs = args
             longname = attrs["longname"]
             if attrs["status"] == "PASS":
                 self._tree.SetState(longname, "pass")
