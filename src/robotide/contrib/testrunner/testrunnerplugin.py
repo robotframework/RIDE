@@ -106,12 +106,10 @@ class TestRunnerPlugin(Plugin):
         self._log_file = None
         self.profiles = {}
         self._controls = {}
-        self._save_timer = None
         self._server = None
         self._server_thread = None
         self._port = None
         self._running = False
-        self._output_dir = "."
 
     def enable(self):
         self._read_run_profiles()
