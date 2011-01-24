@@ -117,23 +117,19 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
 
     def GetUncheckedTests(self):
         result = []
-        for (_, item) in self._nodes.iteritems():
+        for item in self._nodes.values():
             pydata = self.GetItemPyData(item)
             if isinstance(pydata.tcuk, TestCase) and not self.IsItemChecked(item):
                 result.append(pydata.name)
         return result
 
     def GetCheckedTests(self):
-        result = []
-        for (_, item) in self._nodes.iteritems():
-            if self.IsItemChecked(item):
-                result.append(self.GetItemPyData(item).name)
-        return result
+        return [self.GetItemPyData(item).name for item in self._nodes.values() if self.IsItemChecked(item)]
 
     def GetCheckedTestsByName(self):
         '''Return a list of (suite name, test name) tuples for all checked tests'''
         result = []
-        for (_, item) in self._nodes.iteritems():
+        for item in self._nodes.values():
             if self.IsItemChecked(item):
                 item_name = self.GetItemPyData(item).name
                 parent_item = self.GetItemParent(item)
