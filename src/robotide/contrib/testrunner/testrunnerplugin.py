@@ -300,18 +300,6 @@ class TestRunnerPlugin(Plugin):
         (_,h) = self._menubutton.GetSize()
         self._tree.PopupMenu(self._tree_menu, (x,y+h))
 
-    def OnPageClosing(self, event):
-        page = self.notebook.GetCurrentPage()
-        if page == self.panel and self._running:
-            # I think I'd rather just allow the deleting but wxPython
-            # segfaults when I do that. Weird, huh? So the next best 
-            # thing is to slap the users hand and say "don't do that!"
-            dialog = wx.MessageDialog(None, "This tab cannot be deleted while a test is running.",
-                                      style=wx.OK|wx.CENTRE|wx.ICON_INFORMATION)
-            dialog.ShowModal()
-            dialog.Destroy()
-            event.Veto()
-
     def GetLastOutputChar(self):
         '''Return the last character in the output window'''
         pos = self.out.PositionBefore(self.out.GetLength())
@@ -713,8 +701,7 @@ class TestRunnerPlugin(Plugin):
         self.panel.Bind(wx.EVT_WINDOW_DESTROY, self.OnClose)
 
         # whitespace added to label just so label isn't so tiny
-        self.notebook.AddPage(panel, "Run    ", select=False)
-        self.notebook.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CLOSING, self.OnPageClosing)
+        self.add_tab(panel, "Run    ", allow_closing=False)
 
         self._tree_menu = wx.Menu()
         select_all = self._tree_menu.Append(wx.ID_ANY, "Select All")
