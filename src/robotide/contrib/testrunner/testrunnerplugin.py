@@ -40,12 +40,11 @@ import atexit
 import shutil
 import signal
 from robot.parsing.model import TestCase
-from robotide.pluginapi import Plugin, ActionInfo
-from robotide.context import SETTINGS
-from robotide.publish import (RideNotebookTabChanged, RideUserKeywordAdded,
-                              RideTestCaseAdded, RideOpenSuite, RideOpenResource,
-                              RideSaved, RideNotebookTabChanged, 
-                              RideItemNameChanged, RideTestCaseRemoved)
+from robotide.pluginapi import Plugin
+from robotide.publish import (RideUserKeywordAdded, RideTestCaseAdded,
+                              RideOpenSuite, RideOpenResource,
+                              RideNotebookTabChanged, RideItemNameChanged,
+                              RideTestCaseRemoved)
 import wx
 import wx.stc
 from wx.lib.embeddedimage import PyEmbeddedImage
@@ -83,11 +82,19 @@ def _RunProfile(name, run_prefix):
 
 class TestRunnerPlugin(Plugin):
     """A plugin for running tests from within RIDE"""
+    defaults = { "auto_save": False,
+                "profile": "pybot",
+                "include_tags": "",
+                "exclude_tags": "",
+                "apply_include_tags": False,
+                "apply_exclude_tags": False,
+                "port": 5010,
+                "sash_position": 200,
+                "runprofiles": [('jybot', 'jybot' + ('.bat' if os.name == 'nt' else ''))]}
 
     def __init__(self, application=None):
-        Plugin.__init__(self, application, initially_enabled=True)
-        self.name = "Test Runner"
-        self.id = "com.orbitz.testrunner"
+        Plugin.__init__(self, application, initially_enabled=True,
+                        default_settings=self.defaults)
         self.version = "3.0"
         self.metadata = {"url": "http://code.google.com/p/robotframework-ride/wiki/TestRunnerPlugin"}
 
@@ -98,41 +105,35 @@ class TestRunnerPlugin(Plugin):
         self._report_file = None
         self._log_file = None
         self.profiles = {}
-        self.settings = SETTINGS.add_section(self.id)
-        self.settings.set_defaults(auto_save = False, 
-                                   profile = "Service Testing",
-                                   include_tags = "",
-                                   exclude_tags = "",
-                                   apply_include_tags = True,
-                                   apply_exclude_tags = True,
-                                   port = 5010,
-                                   sash = 200,
-                                   runprofiles = [('jybot', 'jybot' + ('.bat' if os.name == 'nt' else ''))]
-                                   )
         self._controls = {}
-        self._save_timer = None
         self._server = None
         self._server_thread = None
         self._port = None
         self._running = False
-        self._output_dir = "."
 
     def enable(self):
-        '''Enable the plugin'''
+        self._read_run_profiles()
+        self._build_ui()
+        self.SetProfile(self.profile)
+        self._subscribe_to_events()
+        self._start_listener_server()
+        self._load_tree_if_data_is_open()
+        self._create_temporary_directory()
+
+    def _read_run_profiles(self):
         self._read_run_profiles_from_config()
+        self._read_run_profiles_from_classes()
+
+    def _read_run_profiles_from_config(self):
+        #Have to keep reference so that these classes are not garbage collected
+        self._profile_classes_from_config = [_RunProfile(name, run_prefix)
+                                             for name, run_prefix in self.runprofiles]
+
+    def _read_run_profiles_from_classes(self):
         for profile in runprofiles.BaseProfile.__subclasses__():
             self.profiles[profile.name] = profile(plugin=self)
 
-        self._build_ui()
-
-        if self.settings["profile"] in self.profiles:
-            self.SetProfile(self.settings["profile"])
-        else:
-            # "should never happen"
-            default = sorted(self.profiles.keys())[0]
-            self.SetProfile(default)
-
-        self.active = True
+    def _subscribe_to_events(self):
         self.subscribe(self.OnModelChanged, *[RideUserKeywordAdded,
                                               RideTestCaseAdded,
                                               RideOpenSuite,
@@ -144,11 +145,12 @@ class TestRunnerPlugin(Plugin):
         # this attempts to make sure the tree is always up-to-date
         self.subscribe(self.OnTabChanged, RideNotebookTabChanged)
 
-        port = self.settings["port"]
-        max_port = port+10
-        while not self._server and port <= max_port:
+    def _start_listener_server(self):
+        port = self.port
+        while not self._server and port <= port+10:
             try:
-                self._server = RideListenerServer(("",port), RideListenerHandler, self._post_result)
+                self._server = RideListenerServer(("",port), RideListenerHandler,
+                                                  self._post_result)
             except socket.error:
                 port += 1
                 continue
@@ -156,12 +158,16 @@ class TestRunnerPlugin(Plugin):
             self._server_thread.setDaemon(True)
             self._server_thread.start()
             self._port = port
+        if not self._server:
+            raise RuntimeError("Cannot start the RideListenerServer.")
+
+    def _load_tree_if_data_is_open(self):
         if self.model is not None and self.model.suite is not None:
             self.OnModelChanged()
-        
+
+    def _create_temporary_directory(self):
         self._tmpdir = tempfile.mkdtemp(".d", "RIDE")
         atexit.register(lambda: shutil.rmtree(self._tmpdir))
-
         # this plugin creates a temporary directory which _should_
         # get reaped at exit. Sometimes things happen which might
         # cause it to not get deleted. Maybe this would be a good 
@@ -169,14 +175,7 @@ class TestRunnerPlugin(Plugin):
         # signature and delete them if they are more than a few
         # days old...
 
-    def _read_run_profiles_from_config(self):
-        #Have to keep reference so that these classes are not garbage collected
-        self._profile_classes_from_config = [_RunProfile(name, run_prefix)
-                                             for name, run_prefix in self.settings["runprofiles"]]
-
     def disable(self):
-        '''Disable the plugin'''
-        self.active = False
         self._remove_from_notebook()
         self._remove_from_menubar()
         self._remove_from_toolbar()
@@ -209,37 +208,9 @@ class TestRunnerPlugin(Plugin):
         if self._process_timer:
             self._process_timer.Stop()
 
-    def OnSaveSettings(self, evt=None):
-        """Does the work of saving the current settings"""
-        self.settings.save()
-        self._save_timer = None
-        
-    def OnIncludeTagsChanged(self, evt):
-        '''Called when the user changes the data in the include tags text control'''
-        text = evt.GetString()
-        self.settings["include_tags"] = text
-        self.save_settings()
-
-    def OnExcludeTagsChanged(self, evt):
-        '''Called when the user changes the data in the exclude tags text control'''
-        text = evt.GetString()
-        self.settings["exclude_tags"] = text
-        self.save_settings()
-        
-    def OnExcludeCheckbox(self, evt):
-        '''Called when the user clicks on the "Exclude Tags" checkbox'''
-        self.settings["apply_exclude_tags"] = evt.IsChecked()
-        self.save_settings()
-
-    def OnIncludeCheckbox(self, evt):
-        '''Called when the user clicks on the "Include Tags" checkbox'''
-        self.settings["apply_include_tags"] = evt.IsChecked()
-        self.save_settings()
-
     def OnAutoSaveCheckbox(self, evt):
         '''Called when the user clicks on the "Auto Save" checkbox'''
-        self.settings["auto_save"] = evt.IsChecked()
-        self.save_settings()
+        self.save_setting("auto_save", evt.IsChecked())
 
     def OnStop(self, event):
         '''Called when the user clicks the "Stop" button
@@ -254,7 +225,7 @@ class TestRunnerPlugin(Plugin):
 
     def OnRun(self, event):
         '''Called when the user clicks the "Run" button'''
-        if self.settings["auto_save"]:
+        if self.auto_save:
             self._frame.OnSave(None)
 
         self._show_notebook_tab()
@@ -263,7 +234,6 @@ class TestRunnerPlugin(Plugin):
         self._tree.Reset()
         command = self._get_command()
         self._clear()
-        now = datetime.datetime.now()
         self.out.SetReadOnly(False)
         self._output("working directory: %s\n" % os.getcwd())
         self._output("command: %s\n" % self._format_command(command))
@@ -290,23 +260,16 @@ class TestRunnerPlugin(Plugin):
         if self._log_file:
             wx.LaunchDefaultBrowser("file:%s" % os.path.abspath(self._log_file))
 
-    def OnSplitterSashChanged(self,evt):
-        pos = self.splitter.GetSashPosition()
+    def OnSplitterSashChanged(self, evt):
+        sash_position = self.splitter.GetSashPosition()
         # this is a gross hack. For some reason yet to be determined, sometimes
         # a value of 7 is getting saved. Weird.
-        if pos > 10:
-            self.settings["sash"] = self.splitter.GetSashPosition()
-            self.save_settings()
-
-    def OnAutoSaveCheckbox(self, event):
-        self.settings["auto_save"] = event.IsChecked()
-        self.save_settings()
+        if sash_position > 10:
+            self.save_setting("sash_position", sash_position)
 
     def OnProfileSelection(self, event):
-        profile = event.GetString()
-        self.SetProfile(profile)
-        self.settings["profile"] = profile
-        self.save_settings()
+        self.save_setting("profile", event.GetString())
+        self.SetProfile(self.profile)
 
     def OnDoubleClick(self, event):
         '''Handle double-click events on the tree
@@ -346,7 +309,7 @@ class TestRunnerPlugin(Plugin):
     def OnMenuButton(self, event):
         '''Show the menu associated with the menu button'''
         (x,y) = self._menubutton.GetPosition()
-        (w,h) = self._menubutton.GetSize()
+        (_,h) = self._menubutton.GetSize()
         self._tree.PopupMenu(self._tree_menu, (x,y+h))
 
     def OnPageClosing(self, event):
@@ -357,7 +320,7 @@ class TestRunnerPlugin(Plugin):
             # thing is to slap the users hand and say "don't do that!"
             dialog = wx.MessageDialog(None, "This tab cannot be deleted while a test is running.",
                                       style=wx.OK|wx.CENTRE|wx.ICON_INFORMATION)
-            result=dialog.ShowModal()
+            dialog.ShowModal()
             dialog.Destroy()
             event.Veto()
 
@@ -417,24 +380,12 @@ class TestRunnerPlugin(Plugin):
             self._set_state("stopped")
             self._process = None
 
-    def save_settings(self, delay=2000):
-        """Schedule the settings to be saved after a delay
-
-        The timer will be restarted if this function is called again
-        before the delay is up. This is to prevent saving the settings
-        multiple times (ie: on every keystroke)
-        """
-        if (not self._save_timer):
-            self._save_timer= wx.CallLater(delay, self.OnSaveSettings)
-        else:
-            self._save_timer.Restart(delay)
-
     def _clear(self):
         '''Clear the output window'''
         self.out.SetReadOnly(False)
         self.out.ClearAll()
         self.out.SetReadOnly(True)
-        
+
     def _show_notebook_tab(self):
         '''Show the Run notebook tab'''
         notebook = self._frame.notebook
@@ -442,7 +393,7 @@ class TestRunnerPlugin(Plugin):
             self._build_notebook_tab()
             self._reload_model()
 
-        self._frame.notebook.SetSelection(self._frame.notebook.GetPageIndex(self.panel))
+        notebook.SetSelection(notebook.GetPageIndex(self.panel))
 
     def _associate(self, group, control):
         controls = self._controls.get(group, [])
@@ -469,7 +420,7 @@ class TestRunnerPlugin(Plugin):
             return
 
         try:
-            width, height = self.out.GetTextExtent(string)
+            width, _ = self.out.GetTextExtent(string)
             if self.out.GetScrollWidth() < width+50:
                 self.out.SetScrollWidth(width+50)
         except UnicodeDecodeError:
@@ -511,7 +462,7 @@ class TestRunnerPlugin(Plugin):
         custom_args = profile.get_custom_args()
 
         argfile = os.path.join(self._tmpdir, "argfile.txt")
-        test_suite = self._relpath(self.model.suite.source)
+        self._relpath(self.model.suite.source)
         command.extend(["--argumentfile", argfile])
         command.extend(["--listener", listener])
         command.append(self._relpath(self.model.suite.source))
@@ -519,7 +470,7 @@ class TestRunnerPlugin(Plugin):
         # robot wants to know a fixed size for output, so calculate the
         # width of the window based on average width of a character. A
         # little is subtracted just to make sure there's a little margin
-        out_width, out_height = self.out.GetSizeTuple()
+        out_width, _ = self.out.GetSizeTuple()
         char_width = self.out.GetCharWidth()
         monitorwidth = int(out_width/char_width)-10
 
@@ -582,7 +533,7 @@ class TestRunnerPlugin(Plugin):
         """Remove the tab for this plugin from the notebook"""
         notebook = self._frame.notebook
         if notebook:
-            self._frame.notebook.DeletePage(self._frame.notebook.GetPageIndex(self.panel))
+            notebook.DeletePage(notebook.GetPageIndex(self.panel))
 
     def _remove_from_menubar(self):
         """Remove the menubar item from the menubar for this plugin"""
@@ -599,18 +550,17 @@ class TestRunnerPlugin(Plugin):
             self.toolbar.RemoveTool(ID_STOP)
             self.toolbar.Realize()
 
-
     def _add_to_menubar(self):
         tools_menu_pos = self.menubar.FindMenu("Tools")
         tools_menu = self.menubar.GetMenu(tools_menu_pos)
-        runItem = tools_menu.Append(ID_RUN, "Run Test Suite\tF8", "Runs the test suite")
+        tools_menu.Append(ID_RUN, "Run Test Suite\tF8", "Runs the test suite")
         wx.EVT_MENU(self._frame, ID_RUN, self.OnRun)
         self._associate("run",(tools_menu, ID_RUN))
 
-        stopitem = tools_menu.Append(ID_STOP, "Stop Running\tCtrl+F8", "Stops a currently running suite")
+        tools_menu.Append(ID_STOP, "Stop Running\tCtrl+F8", "Stops a currently running suite")
         wx.EVT_MENU(self._frame, ID_STOP, self.OnStop)
         self._associate("stop", (tools_menu, ID_STOP))
-            
+
     def _build_config_panel(self, parent):
         """Builds the configuration panel for this plugin"""
         panel = wx.Panel(parent, wx.ID_ANY, style=wx.BORDER_NONE|wx.TAB_TRAVERSAL)
@@ -619,7 +569,7 @@ class TestRunnerPlugin(Plugin):
         self.config_panel = panel
 
         return panel
-        
+
     def _output(self, string, source="stdout"):
         '''Put output to the text control'''
         self._AppendText(string, source)
@@ -656,7 +606,7 @@ class TestRunnerPlugin(Plugin):
 
         toolbar.EnableTool(ID_SHOW_LOG, False)
         toolbar.EnableTool(ID_SHOW_REPORT, False)
-        self.savecb.SetValue(bool(self.settings["auto_save"]))
+        self.savecb.SetValue(bool(self.auto_save))
 
         toolbar.Realize()
         toolbar.Bind(wx.EVT_TOOL, self.OnRun, id=ID_RUN)
@@ -767,7 +717,7 @@ class TestRunnerPlugin(Plugin):
         self.splitter.SplitVertically(self._left_panel, self._right_panel, 200)
         # I don't know why but the sash position is being ignored; setting
         # it via CallAfter seems to work
-        wx.CallAfter(self._set_splitter_size, self.settings["sash"])
+        wx.CallAfter(self._set_splitter_size, self.sash_position)
 
         self._process_timer = wx.Timer(self.panel)
 
@@ -841,15 +791,15 @@ class TestRunnerPlugin(Plugin):
         tree)
         '''
         (menubutton_width, _) = self._menubutton.GetSize()
-        (vw, vh)  = self._tree.GetVirtualSize()
-        (cw, ch) = client_size = self._tree.GetClientSize()
+        (_, vh)  = self._tree.GetVirtualSize()
+        (_, ch) = self._tree.GetClientSize()
         # N.B. add a little extra offset for margins/borderwidths 
         offset = menubutton_width + 4
         if (ch != vh):
             # scrollbar is visible
             scrollbar_width = wx.SystemSettings_GetMetric(wx.SYS_VSCROLL_X)
             offset += scrollbar_width
-        (w,h) = self._tree.GetSize()
+        (w,_) = self._tree.GetSize()
         self._menubutton.SetPosition((w-offset, 0))
 
     def _set_splitter_size(self, size):
@@ -868,12 +818,12 @@ class TestRunnerPlugin(Plugin):
             return
 
         if event == "start_test" or event == "start_suite":
-            name, attrs = args
+            _, attrs = args
             longname = attrs["longname"]
             self._tree.SetState(longname, "running")
             
         if event == "end_test" or event == "end_suite":
-            name, attrs = args
+            _, attrs = args
             longname = attrs["longname"]
             if attrs["status"] == "PASS":
                 self._tree.SetState(longname, "pass")
