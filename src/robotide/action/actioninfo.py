@@ -181,7 +181,7 @@ class ActionInfo(MenuInfo):
             The name of the new menu entry. The name may contain an accelerator
             key prefixed by an ampersand like ``New &Action``. If an accelerator
             is not specified, or the one requested is already taken, the next
-            free key is selectd.
+            free key is selected.
           action
             The callable which will be called when a user does any of the
             associated UI actions.
@@ -197,7 +197,7 @@ class ActionInfo(MenuInfo):
             Alt``) and the actual shortcut key separating the parts with a hyphen.
             The shortcut key can be either a single character or any of the
             `wx keycodes`__ without the ``WXK_`` prefix. Examples: ``Ctrl-C``,
-            ``Shight-Ctrl-6``, ``Alt-Left``, ``F6``.
+            ``Shift-Ctrl-6``, ``Alt-Left``, ``F6``.
           icon
             The icon added to the toolbar as a toolbar button. It can be either
             a 16x16 bitmap or a string presenting one of the icons provided by
