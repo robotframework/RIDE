@@ -180,8 +180,7 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
         self._root = self.AddRoot("root")
         if self._suite is not None:
             try:
-                self._addSuite(self._root, self._suite)
-                self.ExpandAll()
+                self._addSuite(self._root, self._suite, self.ExpandAll)
             except Exception, e:
                 print "error adding a suite:", e
             self.RestoreState(saved_state)
@@ -220,11 +219,10 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
         node = self._nodes[testId]
         self.SetItemImage(node, image)
 
-    def _addSuite(self, parent_node, suite):
-        '''Add a suite and all its children to the tree'''
+    def _addSuite(self, parent_node, suite, call_after=None):
         suite_node = self._add_suite_node(parent_node, suite)
-        self._add_tests(suite_node, suite.testcase_table)
-        self._add_subsuites(suite_node, suite.children)
+        wx.CallAfter(self._add_tests, suite_node, suite.testcase_table)
+        wx.CallAfter(self._add_subsuites, suite_node, suite.children, call_after)
 
     def _add_suite_node(self, parent_node, suite):
         suite_node = self._suite_node(parent_node, suite.name)
@@ -240,9 +238,23 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
         for test in testcases:
             self._addTest(suite_node, test)
 
-    def _add_subsuites(self, suite_node, children):
-        for child in children:
-            self._addSuite(suite_node, child)
+    def _add_subsuites(self, suite_node, children, call_after):
+        number_of_children = len(children)
+        if number_of_children > 0:
+            delayed_call_after = self._call_when_called(number_of_children, call_after)
+            for child in children:
+                self._addSuite(suite_node, child, delayed_call_after)
+        else:
+            call_after()
+
+    def _call_when_called(self, times, call_after):
+        counter = range(times-1)
+        def callable():
+            if counter == []:
+                call_after()
+            else:
+                counter.pop()
+        return callable
 
     def _get_longname(self, obj):
         longname = []
