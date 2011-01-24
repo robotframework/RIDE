@@ -175,15 +175,23 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
             return
         self._is_redrawing = True
         saved_state = self.SaveState()
+        self._reset_tree_state()
+        def redraw_ready():
+            self._is_redrawing = False
+        self._draw_current_suite(saved_state, redraw_ready)
+
+    def _draw_current_suite(self, saved_state, call_when_ready):
+        if self._suite is not None:
+            def call_after():
+                self.RestoreState(saved_state, call_when_ready)
+            self._addSuite(self._root, self._suite, call_after)
+        else:
+            call_when_ready()
+
+    def _reset_tree_state(self):
         self.DeleteAllItems()
         self._nodes = {}
         self._root = self.AddRoot("root")
-        if self._suite is not None:
-            def call_after():
-                def redraw_ready():
-                    self._is_redrawing = False
-                self.RestoreState(saved_state, redraw_ready)
-            self._addSuite(self._root, self._suite, call_after)
 
     def RestoreState(self, state, call_after):
         '''Restore the checked and expanded state of all known nodes in the tree'''
