@@ -127,8 +127,8 @@ class TestRunnerPlugin(Plugin):
         run_action_info = ActionInfo("Tools", "Run Test Suite", self.OnRun, None,
                                      "F8", getRobotBitmap(), "Run the selected tests")
         self._run_action = self.register_action(run_action_info)
-        stop_action_info = ActionInfo("Tools", "Stop Running", self.OnRun, None,
-                                      "Ctrl+F8", getProcessStopBitmap(), "Stop a running test")
+        stop_action_info = ActionInfo("Tools", "Stop Running", self.OnStop, None,
+                                      "Ctrl-F8", getProcessStopBitmap(), "Stop a running test")
         self._stop_action = self.register_action(stop_action_info)
 
     def _read_run_profiles(self):
