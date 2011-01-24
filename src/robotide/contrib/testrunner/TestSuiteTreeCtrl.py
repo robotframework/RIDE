@@ -76,6 +76,7 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
         self._nodes = {}
         self._model = None
         self._suite = None
+        self._is_redrawing = False
 
     def CollapseAll(self):
         '''Collapse all test suite files
@@ -174,30 +175,36 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
     def Redraw(self):
         '''Redraw the whole tree'''
         # before doing this I need to save state (checked/unchecked, open/closed)
+        if self._is_redrawing:
+            return
+        self._is_redrawing = True
         saved_state = self.SaveState()
         self.DeleteAllItems()
         self._nodes = {}
         self._root = self.AddRoot("root")
         if self._suite is not None:
-            try:
-                self._addSuite(self._root, self._suite, self.ExpandAll)
-            except Exception, e:
-                print "error adding a suite:", e
-            self.RestoreState(saved_state)
+            def call_after():
+                def redraw_ready():
+                    self._is_redrawing = False
+                self.RestoreState(saved_state, redraw_ready)
+            self._addSuite(self._root, self._suite, call_after)
 
-    def RestoreState(self, state):
+    def RestoreState(self, state, call_after):
         '''Restore the checked and expanded state of all known nodes in the tree'''
         for node in self._nodes.values():
-            pydata = self.GetItemPyData(node)
-            tcuk = pydata.tcuk
-            # if we find a node for which there is no state information,
-            # default to unchecked, expanded
-            (checked, expanded) = state.get(tcuk, (False, True))
-            self.CheckItem(node, checked)
-            if expanded:
-                self.Expand(node)
-            else:
-                self.Collapse(node)
+            def func():
+                pydata = self.GetItemPyData(node)
+                tcuk = pydata.tcuk
+                # if we find a node for which there is no state information,
+                # default to unchecked, expanded
+                (checked, expanded) = state.get(tcuk, (False, True))
+                self.CheckItem(node, checked)
+                if expanded:
+                    self.Expand(node)
+                else:
+                    self.Collapse(node)
+            wx.CallAfter(func)
+        wx.CallAfter(call_after)
 
     def SaveState(self):
         '''Return a dictionary of checked/expanded states for each node in the tree
@@ -219,10 +226,13 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
         node = self._nodes[testId]
         self.SetItemImage(node, image)
 
-    def _addSuite(self, parent_node, suite, call_after=None):
+    def _addSuite(self, parent_node, suite, call_after):
         suite_node = self._add_suite_node(parent_node, suite)
-        wx.CallAfter(self._add_tests, suite_node, suite.testcase_table)
-        wx.CallAfter(self._add_subsuites, suite_node, suite.children, call_after)
+        self._add_tests(suite_node, suite.testcase_table)
+        def expand_and_call_after():
+            self.Expand(suite_node)
+            call_after()
+        wx.CallAfter(self._add_subsuites, suite_node, suite.children, expand_and_call_after)
 
     def _add_suite_node(self, parent_node, suite):
         suite_node = self._suite_node(parent_node, suite.name)
@@ -236,7 +246,7 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
 
     def _add_tests(self, suite_node, testcases):
         for test in testcases:
-            self._addTest(suite_node, test)
+            wx.CallAfter(self._addTest, suite_node, test)
 
     def _add_subsuites(self, suite_node, children, call_after):
         number_of_children = len(children)
