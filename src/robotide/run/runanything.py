@@ -39,6 +39,7 @@ class RunAnything(Plugin):
             self._configs.update(dlg.get_data())
             self.save_setting('configs', self._configs.data_to_save())
             self._create_menu(self._configs)
+        self._configs = RunConfigs(self.configs)
         dlg.Destroy()
 
     def _create_menu(self, configs):
