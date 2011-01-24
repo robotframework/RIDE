@@ -25,7 +25,6 @@ import wx
 from robotide.pluginapi import Plugin, ActionInfo
 from robotide.pluginapi import RideLogMessage
 
-from robotide import utils
 
 SEARCH_KEYWORDS = 0
 SEARCH_TAGS = 1
