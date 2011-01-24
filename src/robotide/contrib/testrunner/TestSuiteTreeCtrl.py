@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
+import time
 import wx
 
 '''TestSuiteTreeCtrl
@@ -208,9 +208,14 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
                 else:
                     self.Collapse(node)
             return func
-        for node in self._nodes.values():
-            wx.CallAfter(create_func(node))
-        wx.CallAfter(call_after)
+        self._call_in_sequence([create_func(node) for node in self._nodes.values()]+[call_after])
+
+    def _call_in_sequence(self, funcs):
+        if funcs == []:
+            return
+        funcs[0]()
+        time.sleep(0)
+        wx.CallAfter(self._call_in_sequence, funcs[1:])
 
     def SaveState(self):
         '''Return a dictionary of checked/expanded states for each node in the tree
@@ -234,11 +239,19 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
 
     def _addSuite(self, parent_node, suite, call_after):
         suite_node = self._add_suite_node(parent_node, suite)
-        self._add_tests(suite_node, suite.testcase_table)
         def expand_and_call_after():
             self.Expand(suite_node)
             call_after()
-        wx.CallAfter(self._add_subsuites, suite_node, suite.children, expand_and_call_after)
+        def create_add_test(test):
+            def add_test():
+                self._addTest(suite_node, test)
+            return add_test
+        def create_add_subsuites(children, call_after):
+            def add_suites():
+                self._add_subsuites(suite_node, children, expand_and_call_after)
+            return add_suites
+        self._call_in_sequence([create_add_test(test) for test in suite.testcase_table]+
+                               [create_add_subsuites(suite.children, expand_and_call_after)])
 
     def _add_suite_node(self, parent_node, suite):
         suite_node = self._suite_node(parent_node, suite.name)
