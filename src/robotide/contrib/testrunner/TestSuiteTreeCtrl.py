@@ -191,7 +191,7 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
 
     def RestoreState(self, state, call_after):
         '''Restore the checked and expanded state of all known nodes in the tree'''
-        for node in self._nodes.values():
+        def create_func(node):
             def func():
                 pydata = self.GetItemPyData(node)
                 tcuk = pydata.tcuk
@@ -203,7 +203,9 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
                     self.Expand(node)
                 else:
                     self.Collapse(node)
-            wx.CallAfter(func)
+            return func
+        for node in self._nodes.values():
+            wx.CallAfter(create_func(node))
         wx.CallAfter(call_after)
 
     def SaveState(self):
