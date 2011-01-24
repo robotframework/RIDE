@@ -41,7 +41,7 @@ import atexit
 import shutil
 import signal
 from robot.parsing.model import TestCase
-from robotide.pluginapi import Plugin
+from robotide.pluginapi import Plugin, ActionInfo
 from robotide.publish import (RideUserKeywordAdded, RideTestCaseAdded,
                               RideOpenSuite, RideOpenResource,
                               RideNotebookTabChanged, RideItemNameChanged,
@@ -114,12 +114,22 @@ class TestRunnerPlugin(Plugin):
 
     def enable(self):
         self._read_run_profiles()
+        self._register_actions()
         self._build_ui()
         self.SetProfile(self.profile)
         self._subscribe_to_events()
         self._start_listener_server()
         self._load_tree_if_data_is_open()
         self._create_temporary_directory()
+        self._set_state("stopped")
+
+    def _register_actions(self):
+        run_action_info = ActionInfo("Tools", "Run Test Suite", self.OnRun, None,
+                                     "F8", getRobotBitmap(), "Run the selected tests")
+        self._run_action = self.register_action(run_action_info)
+        stop_action_info = ActionInfo("Tools", "Stop Running", self.OnRun, None,
+                                      "Ctrl+F8", getProcessStopBitmap(), "Stop a running test")
+        self._stop_action = self.register_action(stop_action_info)
 
     def _read_run_profiles(self):
         self._read_run_profiles_from_config()
@@ -165,7 +175,7 @@ class TestRunnerPlugin(Plugin):
 
     def _create_temporary_directory(self):
         self._tmpdir = tempfile.mkdtemp(".d", "RIDE")
-        atexit.register(lambda: shutil.rmtree(self._tmpdir))
+        atexit.register(self._remove_temporary_directory)
         # this plugin creates a temporary directory which _should_
         # get reaped at exit. Sometimes things happen which might
         # cause it to not get deleted. Maybe this would be a good 
@@ -173,12 +183,15 @@ class TestRunnerPlugin(Plugin):
         # signature and delete them if they are more than a few
         # days old...
 
+    def _remove_temporary_directory(self):
+        if os.path.exists(self._tmpdir): 
+            shutil.rmtree(self._tmpdir)
+
     def disable(self):
         self._remove_from_notebook()
-        self._remove_from_menubar()
-        self._remove_from_toolbar()
         self._server = None
         self.unsubscribe_all()
+        self.unregister_actions()
 
     def OnModelChanged(self, *args):
         '''Update the display to reflect a changed model'''
@@ -192,6 +205,7 @@ class TestRunnerPlugin(Plugin):
     def OnClose(self, evt):
         '''Shut down the running services and processes'''
         if self._process:
+            #FIXME: There is no Destroy method in Process class
             self._process.Destroy()
         if self._process_timer:
             self._process_timer.Stop()
@@ -207,6 +221,7 @@ class TestRunnerPlugin(Plugin):
         same effect as typing control-c when running from the
         command line. 
         '''
+        #TODO: Check does this work on Windows
         if self._process:
             self._process.kill(signal.SIGINT)
             self._output("process %s killed\n" % self._process.pid())
@@ -293,7 +308,7 @@ class TestRunnerPlugin(Plugin):
         '''Reposition the little menubutton with the tree is resized'''
         event.Skip()
         self._reposition_menubutton()
-        
+
     def OnMenuButton(self, event):
         '''Show the menu associated with the menu button'''
         (x,y) = self._menubutton.GetPosition()
@@ -328,10 +343,10 @@ class TestRunnerPlugin(Plugin):
             else:
                 result.append(arg)
         return " ".join(result)
-        
+
     def _poll_process_output(self):
         '''Periodically display output from the process'''
-        (stdout, stderr) = self._process.readboth()
+        stdout, stderr = self._process.readboth()
         if stdout:
             self._output(stdout, source="stdout")
         if stderr:
@@ -371,26 +386,6 @@ class TestRunnerPlugin(Plugin):
 
         notebook.SetSelection(notebook.GetPageIndex(self.panel))
 
-    def _associate(self, group, control):
-        controls = self._controls.get(group, [])
-        controls.append(control)
-        self._controls[group] = controls
-
-    def _disable(self, group):
-        '''Disable a group of controls'''
-        self._enable(group, False)
-            
-    def _enable(self, group, enabled=True):
-        '''Enable a group of controls'''
-        controls = self._controls.get(group, [])
-        for item in controls:
-            if len(item) == 2:
-                control, id = item
-                if isinstance(control, wx.ToolBar):
-                    control.EnableTool(id,enabled)
-                elif isinstance(control, wx.Menu):
-                    control.Enable(id, enabled)
-
     def _AppendText(self, string, source="stdout"):
         if not self.panel:
             return
@@ -418,7 +413,7 @@ class TestRunnerPlugin(Plugin):
             pass
 
         new_text_end = self.out.GetLength()
-        
+
         self.out.StartStyling(new_text_start, 0x1f)
         if source == "stderr":
             self.out.SetStyling(new_text_end-new_text_start, STYLE_STDERR)
@@ -427,7 +422,7 @@ class TestRunnerPlugin(Plugin):
         if lastVisibleLine >= linecount-4:
             linecount = self.out.GetLineCount()
             self.out.ScrollToLine(linecount)
-        
+
     def _get_command(self):
         '''Return the command (as a list) used to run the test'''
         listener = os.path.join(os.path.dirname(__file__), 
@@ -442,7 +437,7 @@ class TestRunnerPlugin(Plugin):
         command.extend(["--argumentfile", argfile])
         command.extend(["--listener", listener])
         command.append(self._relpath(self.model.suite.source))
-        
+
         # robot wants to know a fixed size for output, so calculate the
         # width of the window based on average width of a character. A
         # little is subtracted just to make sure there's a little margin
@@ -481,61 +476,12 @@ class TestRunnerPlugin(Plugin):
     def _build_ui(self):
         """Creates the UI for this plugin"""
         self._build_notebook_tab()
-        self._add_to_menubar()
-        self._add_to_toolbar()
 
-    def _add_to_toolbar(self):
-        toolbar = self._frame.GetToolBar()
-        if toolbar:
-            runImage = getRobotBitmap()
-            stopImage = getProcessStopBitmap()
-            if toolbar.GetToolsCount() > 0:
-                toolbar.AddSeparator()
-            toolbar.AddLabelTool(ID_RUN,"Start",runImage, 
-                                 shortHelp="Start robot", 
-                                 longHelp="Run the entire suite of tests")
-            toolbar.AddLabelTool(ID_STOP,"Stop",stopImage, 
-                                 shortHelp="Stop a running test", 
-                                 longHelp="Stop a running test")
-            toolbar.Realize()
-            toolbar.Bind(wx.EVT_TOOL, self.OnRun, id=ID_RUN)
-            toolbar.Bind(wx.EVT_TOOL, self.OnStop, id=ID_STOP)
-            self._associate("run", (toolbar, ID_RUN))
-            self._associate("stop", (toolbar, ID_STOP))
-
-            self._set_state("stoppped")
-            
     def _remove_from_notebook(self):
         """Remove the tab for this plugin from the notebook"""
         notebook = self._frame.notebook
         if notebook:
             notebook.DeletePage(notebook.GetPageIndex(self.panel))
-
-    def _remove_from_menubar(self):
-        """Remove the menubar item from the menubar for this plugin"""
-        try:
-            self.unregister_actions()
-        except:
-            pass
-
-    def _remove_from_toolbar(self):
-        """Remove the button for this plugin from the toolbar"""
-        if self.toolbar:
-            # what about the separator?
-            self.toolbar.RemoveTool(ID_RUN)
-            self.toolbar.RemoveTool(ID_STOP)
-            self.toolbar.Realize()
-
-    def _add_to_menubar(self):
-        tools_menu_pos = self.menubar.FindMenu("Tools")
-        tools_menu = self.menubar.GetMenu(tools_menu_pos)
-        tools_menu.Append(ID_RUN, "Run Test Suite\tF8", "Runs the test suite")
-        wx.EVT_MENU(self._frame, ID_RUN, self.OnRun)
-        self._associate("run",(tools_menu, ID_RUN))
-
-        tools_menu.Append(ID_STOP, "Stop Running\tCtrl+F8", "Stops a currently running suite")
-        wx.EVT_MENU(self._frame, ID_STOP, self.OnStop)
-        self._associate("stop", (tools_menu, ID_STOP))
 
     def _build_config_panel(self, parent):
         """Builds the configuration panel for this plugin"""
@@ -543,7 +489,6 @@ class TestRunnerPlugin(Plugin):
         self.config_sizer = wx.BoxSizer(wx.VERTICAL)
         panel.SetSizer(self.config_sizer)
         self.config_panel = panel
-
         return panel
 
     def _output(self, string, source="stdout"):
@@ -552,13 +497,12 @@ class TestRunnerPlugin(Plugin):
 
     def _build_local_toolbar(self):
         toolbar = wx.ToolBar(self.panel, wx.ID_ANY, style=wx.TB_HORIZONTAL|wx.TB_HORZ_TEXT)
-        runImage = getRobotBitmap()
-        stopImage = getProcessStopBitmap()
         reportImage = getReportIconBitmap()
         logImage = getLogIconBitmap()
-        toolbar.AddLabelTool(ID_RUN,"Start",runImage, shortHelp="Start robot", 
+        toolbar.AddLabelTool(ID_RUN,"Start", getRobotBitmap(), shortHelp="Start robot",
                              longHelp="Start running the robot test suite")
-        toolbar.AddLabelTool(ID_STOP,"Stop",stopImage, shortHelp="Stop a running test", 
+        toolbar.AddLabelTool(ID_STOP,"Stop", getProcessStopBitmap(), 
+                             shortHelp="Stop a running test",
                              longHelp="Stop a running test")
         toolbar.AddSeparator()
         toolbar.AddLabelTool(ID_SHOW_REPORT, " Report", reportImage, 
@@ -572,17 +516,17 @@ class TestRunnerPlugin(Plugin):
         profileLabel = wx.StaticText(toolbar, label="Execution Profile:  ")
         choices = sorted(self.profiles.keys())
         self.choice = wx.Choice(toolbar, wx.ID_ANY, choices=choices)
+        self.choice.SetToolTip(wx.ToolTip("Choose which method to use for running the tests"))
         toolbar.AddControl(profileLabel)
         toolbar.AddControl(self.choice)
         toolbar.AddSeparator()
         self.savecb = wx.CheckBox(toolbar, ID_AUTOSAVE, "Autosave")
         self.savecb.SetToolTip(wx.ToolTip("Automatically save all changes before running"))
-        self.choice.SetToolTip(wx.ToolTip("Choose which method to use for running the tests"))
+        self.savecb.SetValue(self.auto_save)
         toolbar.AddControl(self.savecb)
 
         toolbar.EnableTool(ID_SHOW_LOG, False)
         toolbar.EnableTool(ID_SHOW_REPORT, False)
-        self.savecb.SetValue(bool(self.auto_save))
 
         toolbar.Realize()
         toolbar.Bind(wx.EVT_TOOL, self.OnRun, id=ID_RUN)
@@ -591,13 +535,6 @@ class TestRunnerPlugin(Plugin):
         toolbar.Bind(wx.EVT_TOOL, self.OnShowLog, id=ID_SHOW_LOG)
         toolbar.Bind(wx.EVT_CHECKBOX, self.OnAutoSaveCheckbox, self.savecb)
         toolbar.Bind(wx.EVT_CHOICE, self.OnProfileSelection, self.choice)
-
-        # these associations let me enable or disable a group of buttons
-        # at once.
-#        self._associate("run", (toolbar, ID_SHOW_REPORT))
-#        self._associate("run", (toolbar, ID_SHOW_LOG))
-        self._associate("run", (toolbar, ID_RUN))
-        self._associate("stop", (toolbar, ID_STOP))
 
         return toolbar
 
@@ -820,15 +757,19 @@ class TestRunnerPlugin(Plugin):
 
     def _set_state(self, state):
         if state == "running":
-            self._enable("stop")
-            self._disable("run")
+            self._run_action.disable()
+            self._stop_action.enable()
+            self.local_toolbar.EnableTool(ID_RUN, False)
+            self.local_toolbar.EnableTool(ID_STOP, True)
             self._running = True
         else:
-            self._enable("run")
-            self._disable("stop")
+            self._run_action.enable()
+            self._stop_action.disable()
+            self.local_toolbar.EnableTool(ID_RUN, True)
+            self.local_toolbar.EnableTool(ID_STOP, False)
             self._running = False
 
-            
+
 class ProgressBar(wx.Panel):
     '''A progress bar for the test runner plugin'''
     def __init__(self, parent):

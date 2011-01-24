@@ -76,24 +76,24 @@ class BaseProfile(object):
         '''Create a panel to input include/exclude tags'''
         panel = wx.Panel(parent, wx.ID_ANY)
         include_cb = self._create_checkbox(panel, self.plugin.apply_include_tags,
-                                          "Only run tests with these tags")
+                                           "Only run tests with these tags")
         exclude_cb = self._create_checkbox(panel, self.plugin.apply_exclude_tags,
-                                          "Skip tests with these tags")
-        include_tags = wx.TextCtrl(panel, wx.ID_ANY, size=(150,-1),
-                                       value=self.plugin.include_tags)
-        exclude_tags = wx.TextCtrl(panel, wx.ID_ANY, size=(150,-1),
-                                       value=self.plugin.exclude_tags)
+                                           "Skip tests with these tags")
+        self._include_tags = wx.TextCtrl(panel, wx.ID_ANY, size=(150,-1),
+                                         value=self.plugin.include_tags)
+        self._exclude_tags = wx.TextCtrl(panel, wx.ID_ANY, size=(150,-1),
+                                         value=self.plugin.exclude_tags)
 
         panel.Bind(wx.EVT_CHECKBOX, self.OnIncludeCheckbox, include_cb)
         panel.Bind(wx.EVT_CHECKBOX, self.OnExcludeCheckbox, exclude_cb)
-        include_tags.Bind(wx.EVT_TEXT, self.OnIncludeTagsChanged)
-        exclude_tags.Bind(wx.EVT_TEXT, self.OnExcludeTagsChanged)
+        self._include_tags.Bind(wx.EVT_TEXT, self.OnIncludeTagsChanged)
+        self._exclude_tags.Bind(wx.EVT_TEXT, self.OnExcludeTagsChanged)
 
         panelsizer = wx.GridBagSizer(2,2)
         panelsizer.Add(include_cb, (0,0), flag=wx.EXPAND)
         panelsizer.Add(exclude_cb, (0,1), flag=wx.EXPAND)
-        panelsizer.Add(include_tags, (1,0), flag=wx.EXPAND)
-        panelsizer.Add(exclude_tags, (1,1), flag=wx.EXPAND)
+        panelsizer.Add(self._include_tags, (1,0), flag=wx.EXPAND)
+        panelsizer.Add(self._exclude_tags, (1,1), flag=wx.EXPAND)
         panelsizer.AddGrowableCol(0)
         panelsizer.AddGrowableCol(1)
         panel.SetSizerAndFit(panelsizer)
@@ -115,10 +115,10 @@ class BaseProfile(object):
         self.set_setting("apply_include_tags", evt.IsChecked())
 
     def OnIncludeTagsChanged(self, evt):
-        self.set_setting("include_tags", self.includeTags.GetValue())
+        self.set_setting("include_tags", self._include_tags.GetValue())
 
     def OnExcludeTagsChanged(self, evt):
-        self.set_setting("exclude_tags", self.excludeTags.GetValue())
+        self.set_setting("exclude_tags", self._exclude_tags.GetValue())
 
 
 class PybotProfile(BaseProfile):
