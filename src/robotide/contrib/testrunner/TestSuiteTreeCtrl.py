@@ -181,6 +181,7 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
         if self._suite is not None:
             try:
                 self._addSuite(self._root, self._suite)
+                self.ExpandAll()
             except Exception, e:
                 print "error adding a suite:", e
             self.RestoreState(saved_state)
@@ -221,17 +222,27 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
 
     def _addSuite(self, parent_node, suite):
         '''Add a suite and all its children to the tree'''
-        # Note to self; ct_type 1 == checkbox, ct_type 2 == radiobutton
-        suite_node = self.AppendItem(parent_node, suite.name, image=self._images["default"])
+        suite_node = self._add_suite_node(parent_node, suite)
+        self._add_tests(suite_node, suite.testcase_table)
+        self._add_subsuites(suite_node, suite.children)
+
+    def _add_suite_node(self, parent_node, suite):
+        suite_node = self._suite_node(parent_node, suite.name)
         fullname = self._get_longname(suite)
         self._nodes[fullname] = suite_node
         self.SetItemPyData(suite_node, TreeNode(fullname, suite))
-        for test in suite.testcase_table:
+        return suite_node
+
+    def _suite_node(self, parent_node, suite_name):
+        return self.AppendItem(parent_node, suite_name, image=self._images["default"])
+
+    def _add_tests(self, suite_node, testcases):
+        for test in testcases:
             self._addTest(suite_node, test)
 
-        for child in suite.children:
+    def _add_subsuites(self, suite_node, children):
+        for child in children:
             self._addSuite(suite_node, child)
-        self.Expand(suite_node)
 
     def _get_longname(self, obj):
         longname = []
