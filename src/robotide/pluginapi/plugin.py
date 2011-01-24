@@ -221,7 +221,7 @@ class Plugin(object):
 
     def disallow_tab_closing(self, tab):
         """Disallows closing a tab by user"""
-        self.notebook.allow_closing(tab)
+        self.notebook.disallow_closing(tab)
 
     def tab_is_visible(self, tab):
         """Returns is the ``tab`` added using `add_tab` visible or not."""
