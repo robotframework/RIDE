@@ -12,6 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import wx
 import inspect
 
 from robotide.context import SETTINGS
@@ -105,6 +106,7 @@ class Plugin(object):
         self.doc = self._get_doc(doc)
         self.metadata = metadata or {}
         self.initially_enabled = initially_enabled
+        self._save_timer = None
         self.__app = application
         self.__frame = application.frame
         self.__namespace = application.namespace
@@ -129,14 +131,31 @@ class Plugin(object):
             return self.__settings[name]
         raise AttributeError("No attribute or settings with name '%s' found" % name)
 
-    def save_setting(self, name, value, override=True):
+    def save_setting(self, name, value, override=True, delay=0):
         """Saves the specified setting into the RIDE configuration file.
 
         ``override`` controls whether a possibly already existing value is
         overridden or not. Saved settings can be accessed using direct attribute
         access via `__getattr__`.
+        ``delay`` is number defining how many seconds is waited before setting
+        is saved. This can be used to prevent saving the value while user is 
+        typing it.
         """
-        self.__settings.set(name, value, override=override)
+        self.__settings.set(name, value, autosave=delay == 0, override=override)
+        self._delay_saving(delay)
+
+    def _delay_saving(self, delay):
+        if not delay:
+            return
+        delay = delay * 1000
+        if not self._save_timer:
+            self._save_timer = wx.CallLater(delay, self._save_setting_after_delay)
+        else:
+            self._save_timer.Restart(delay)
+
+    def _save_setting_after_delay(self):
+        self.__settings.save()
+        self._save_timer = None
 
     def enable(self):
         """This method is called by RIDE when the plugin is enabled.
