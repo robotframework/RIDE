@@ -116,7 +116,7 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
 
     def GetUncheckedTests(self):
         result = []
-        for (testId, item) in self._nodes.iteritems():
+        for (_, item) in self._nodes.iteritems():
             pydata = self.GetItemPyData(item)
             if isinstance(pydata.tcuk, TestCase) and not self.IsItemChecked(item):
                 result.append(pydata.name)
@@ -124,7 +124,7 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
 
     def GetCheckedTests(self):
         result = []
-        for (testId, item) in self._nodes.iteritems():
+        for (_, item) in self._nodes.iteritems():
             if self.IsItemChecked(item):
                 result.append(self.GetItemPyData(item).name)
         return result
@@ -132,7 +132,7 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
     def GetCheckedTestsByName(self):
         '''Return a list of (suite name, test name) tuples for all checked tests'''
         result = []
-        for (testId, item) in self._nodes.iteritems():
+        for (_, item) in self._nodes.iteritems():
             if self.IsItemChecked(item):
                 item_name = self.GetItemPyData(item).name
                 parent_item = self.GetItemParent(item)
@@ -218,7 +218,7 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
         '''Set the state and associated image for a test'''
         image = self._images[state]
         node = self._nodes[testId]
-        self.SetItemImage(node, self._images[state])
+        self.SetItemImage(node, image)
 
     def _addSuite(self, parent_node, suite):
         '''Add a suite and all its children to the tree'''
