@@ -140,10 +140,6 @@ class TestRunnerPlugin(Plugin):
                                               RideOpenResource,
                                               RideItemNameChanged,
                                               RideTestCaseRemoved])
-        # the above events don't always fire at the appropriate time;
-        # (or, at least, they didn't when I first wrote this code)
-        # this attempts to make sure the tree is always up-to-date
-        self.subscribe(self.OnTabChanged, RideNotebookTabChanged)
 
     def _start_listener_server(self):
         port = self.port
@@ -181,16 +177,6 @@ class TestRunnerPlugin(Plugin):
         self._remove_from_toolbar()
         self._server = None
         self.unsubscribe_all()
-
-    def OnTabChanged(self, *args):
-        '''Update the tree if our tab is selected
-        
-        This is necessary because the ModelChanged events don't
-        always come after the model has changed. Updating the tree
-        here hopefully guarantees the tree reflects the model
-        '''
-        if not self._running and self.tab_is_visible(self.panel):
-            self._reload_model()
 
     def OnModelChanged(self, *args):
         '''Update the display to reflect a changed model'''
