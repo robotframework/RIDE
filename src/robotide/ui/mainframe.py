@@ -101,7 +101,7 @@ class RideFrame(wx.Frame, RideEventHandler):
             wx.CloseEvent.Veto(event)
 
     def _allowed_to_exit(self):
-        if self._controller.is_dirty():
+        if self.has_unsaved_changes():
             ret = wx.MessageBox('There are unsaved modifications.\n'
                                 'Do you want to save your changes before exiting?',
                                 'Warning', wx.ICON_WARNING|wx.CANCEL|wx.YES_NO)
@@ -110,6 +110,9 @@ class RideFrame(wx.Frame, RideEventHandler):
             if ret == wx.YES:
                 self.save()
         return True
+
+    def has_unsaved_changes(self):
+        return self._controller.is_dirty()
 
     def OnNewProject(self, event):
         if not self._check_unsaved_modifications():
@@ -136,7 +139,7 @@ class RideFrame(wx.Frame, RideEventHandler):
             self.open_suite(path)
 
     def _check_unsaved_modifications(self):
-        if self._controller.is_dirty():
+        if self.has_unsaved_changes():
             ret = wx.MessageBox('There are unsaved modifications.\n'
                                 'Do you want to proceed without saving?',
                                 'Warning', wx.ICON_WARNING|wx.YES_NO)
@@ -180,6 +183,9 @@ class RideFrame(wx.Frame, RideEventHandler):
         self.save()
 
     def OnSaveAll(self, event):
+        self.save_all()
+
+    def save_all(self):
         self._show_dialog_for_files_without_format()
         self._controller.execute(SaveAll())
 

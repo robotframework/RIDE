@@ -14,6 +14,7 @@
 
 import time
 import wx
+import os
 
 '''TestSuiteTreeCtrl
 
@@ -50,6 +51,11 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
         style |= customtreectrl.TR_HAS_VARIABLE_ROW_HEIGHT
         style |= customtreectrl.TR_FULL_ROW_HIGHLIGHT
 
+    DEFAULT_IMAGE_KEY = 'default'
+    RUNNING_IMAGE_KEY = 'running'
+    PASSED_IMAGE_KEY = 'pass'
+    FAILED_IMAGE_KEY = 'failed'
+
     def __init__(self, parent, id=wx.ID_ANY, size=(-1,-1)):
         try:
             # older versions of customtreectrl don't support agwStyle
@@ -64,10 +70,10 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
 
         self._image_list = wx.ImageList(16,16)
         self._images = {
-            "default": self._image_list.Add(getWhiteBulletBitmap()),
-            "running": self._image_list.Add(getBlueBulletBitmap()),
-            "pass":    self._image_list.Add(getGreenBulletBitmap()),
-            "fail":    self._image_list.Add(getRedBulletBitmap()),
+            self.DEFAULT_IMAGE_KEY: self._image_list.Add(getWhiteBulletBitmap()),
+            self.RUNNING_IMAGE_KEY: self._image_list.Add(getBlueBulletBitmap()),
+            self.PASSED_IMAGE_KEY:  self._image_list.Add(getGreenBulletBitmap()),
+            self.FAILED_IMAGE_KEY:  self._image_list.Add(getRedBulletBitmap()),
             }
         self.SetImageList(self._image_list)
 
@@ -106,14 +112,20 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
         result = []
         for item in self._nodes.values():
             image = self.GetItemImage(item)
-            if image == self._images["fail"]:
+            if image == self._images[self.FAILED_IMAGE_KEY]:
                 result.append(item)
         return result
 
-    def GetNode(self, longname):
-        item = self._nodes[longname]
-        node = self.GetItemPyData(item)
-        return  node
+    def _convert_test_longname_key(self, longname):
+        if os.name == 'nt':
+            parts = longname.split('.')
+            return '.'.join([parent.lower() for parent in parts[:-1]]+[parts[-1]])
+        return longname
+
+    def _convert_suite_longname_key(self, longname):
+        if os.name == 'nt':
+            return longname.lower()
+        return longname
 
     def GetUncheckedTests(self):
         result = []
@@ -146,22 +158,16 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
         '''Select all tests that have a "fail" icon'''
         for item in self._nodes.values():
             image = self.GetItemImage(item)
-            self.CheckItem(item, image == self._images["fail"])
+            self.CheckItem(item, image == self._images[self.FAILED_IMAGE_KEY])
 
     def SelectChildren(self):
         item = self.GetSelection()
         self.AutoCheckChild(item, True)
 
-    def SelectNodeByName(self, longname):
-        '''Select an item in the tree, given the longname of a test'''
-        if longname in self._nodes:
-            item = self._nodes[longname]
-            self.SelectItem(item, True)
-
     def Reset(self):
         '''Reset the running/pass/fail state of all nodes'''
         for node in self._nodes.values():
-            self.SetItemImage(node, self._images["default"])
+            self.SetItemImage(node, self._images[self.DEFAULT_IMAGE_KEY])
 
     def SetDataModel(self, model):
         '''Set the internal data model used by the tree control'''
@@ -234,8 +240,29 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
     def SetState(self, testId, state):
         '''Set the state and associated image for a test'''
         image = self._images[state]
-        node = self._nodes[testId]
+        node = self._nodes[self._convert_test_longname_key(testId)]
         self.SetItemImage(node, image)
+
+    def running_test(self, testId):
+        self.SetState(testId, self.RUNNING_IMAGE_KEY)
+
+    def running_suite(self, suiteId):
+        suiteId = suiteId.lower() if os.name == 'nt' else suiteId
+        self.SetState(suiteId, self.RUNNING_IMAGE_KEY)
+
+    def suite_passed(self, suiteId):
+        suiteId = suiteId.lower() if os.name == 'nt' else suiteId
+        self.SetState(suiteId, self.PASSED_IMAGE_KEY)
+
+    def test_passed(self, testId):
+        self.SetState(testId, self.PASSED_IMAGE_KEY)
+
+    def suite_failed(self, suiteId):
+        suiteId = suiteId.lower() if os.name == 'nt' else suiteId
+        self.SetState(suiteId, self.FAILED_IMAGE_KEY)
+
+    def test_failed(self, testId):
+        self.SetState(testId, self.FAILED_IMAGE_KEY)
 
     def _addSuite(self, parent_node, suite, call_after):
         suite_node = self._add_suite_node(parent_node, suite)
@@ -256,7 +283,7 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
     def _add_suite_node(self, parent_node, suite):
         suite_node = self._suite_node(parent_node, suite.name)
         fullname = self._get_longname(suite)
-        self._nodes[fullname] = suite_node
+        self._nodes[self._convert_suite_longname_key(fullname)] = suite_node
         self.SetItemPyData(suite_node, TreeNode(fullname, suite))
         return suite_node
 
@@ -299,14 +326,13 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
                 isinstance(obj, TestCase)):
                 longname.append(obj.name)
             obj = obj.parent
-        name = ".".join(reversed(longname))
-        return name
+        return '.'.join(reversed(longname))
 
     def _addTest(self, parent_node, test):
         item = self.AppendItem(parent_node, test.name, ct_type=1, image=self._images["default"])
         fullname = self._get_longname(test)
         self.SetItemPyData(item, TreeNode(fullname, test))
-        self._nodes[fullname] = item
+        self._nodes[self._convert_test_longname_key(fullname)] = item
 
 
 class TreeNode:

@@ -44,8 +44,7 @@ from robot.parsing.model import TestCase
 from robotide.pluginapi import Plugin, ActionInfo
 from robotide.publish import (RideUserKeywordAdded, RideTestCaseAdded,
                               RideOpenSuite, RideOpenResource,
-                              RideNotebookTabChanged, RideItemNameChanged,
-                              RideTestCaseRemoved)
+                              RideItemNameChanged, RideTestCaseRemoved)
 import wx
 import wx.stc
 from wx.lib.embeddedimage import PyEmbeddedImage
@@ -54,11 +53,6 @@ try:
     import cPickle as pickle
 except ImportError, e:
     import pickle as pickle
-
-try:
-    from wx.lib.agw import flatnotebook as fnb
-except ImportError:
-    from wx.lib import flatnotebook as fnb
 
 
 ID_RUN = wx.NewId()
@@ -219,39 +213,57 @@ class TestRunnerPlugin(Plugin):
 
         This sends a SIGINT to the running process, with the
         same effect as typing control-c when running from the
-        command line. 
+        command line.
         '''
-        #TODO: Check does this work on Windows
+        #FIXME: On Ubuntu this is not working
         if self._process:
             self._process.kill(signal.SIGINT)
             self._output("process %s killed\n" % self._process.pid())
 
     def OnRun(self, event):
         '''Called when the user clicks the "Run" button'''
-        if self.auto_save:
-            self._frame.OnSaveAll(None)
-
-        self._show_notebook_tab()
-        self._current_index = -1
-
-        self._tree.Reset()
+        if not self._can_start_running_tests():
+            return
+        self._initialize_ui_for_running()
         command = self._get_command()
-        self._clear()
-        self.out.SetReadOnly(False)
         self._output("working directory: %s\n" % os.getcwd())
         self._output("command: %s\n" % self._format_command(command))
-
         try:
             self._process = asyncproc.Process(command)
             self._set_state("running")
             self._progress_bar.Start()
             wx.CallAfter(self._poll_process_output)
-
         except Exception, e:
             self._set_state("stopped")
             self._output(str(e))
-            dialog = wx.MessageDialog(self._frame, "Could not start test")
-            dialog.ShowModal()
+            wx.MessageBox("Could not start running tests.", "Error", wx.ICON_ERROR)
+
+    def _can_start_running_tests(self):
+        if self._running or self.model.suite is None:
+            return False
+        if not self.is_unsaved_changes():
+            return True
+        if self.auto_save or self._ask_user_to_save_before_running():
+            self.save_all_unsaved_changes()
+            return True
+        return False
+
+    def _ask_user_to_save_before_running(self):
+        ret = wx.MessageBox('There are unsaved modifications.\n'
+                            'Do you want to save all changes and run the tests?',
+                            'Unsaved Modifications', 
+                            wx.ICON_QUESTION|wx.YES_NO)
+        return ret == wx.YES
+
+    def _initialize_ui_for_running(self):
+        self._show_notebook_tab()
+        self._tree.Reset()
+        self._clear_output_window()
+
+    def _clear_output_window(self):
+        self.out.SetReadOnly(False)
+        self.out.ClearAll()
+        self.out.SetReadOnly(True)
 
     def OnShowReport(self, evt):
         '''Called when the user clicks on the "Report" button'''
@@ -371,20 +383,12 @@ class TestRunnerPlugin(Plugin):
             self._set_state("stopped")
             self._process = None
 
-    def _clear(self):
-        '''Clear the output window'''
-        self.out.SetReadOnly(False)
-        self.out.ClearAll()
-        self.out.SetReadOnly(True)
-
     def _show_notebook_tab(self):
         '''Show the Run notebook tab'''
-        notebook = self._frame.notebook
         if not self.panel:
             self._build_notebook_tab()
             self._reload_model()
-
-        notebook.SetSelection(notebook.GetPageIndex(self.panel))
+        self.show_tab(self.panel)
 
     def _AppendText(self, string, source="stdout"):
         if not self.panel:
@@ -593,7 +597,7 @@ class TestRunnerPlugin(Plugin):
         self.out.SetMarginWidth(2,0)
         self.out.SetMarginWidth(3,0)
         self.out.SetReadOnly(True)
-        self._clear()
+        self._clear_output_window()
 
         self._progress_bar = ProgressBar(self._right_panel)
 
@@ -729,27 +733,35 @@ class TestRunnerPlugin(Plugin):
             # Binks, "How rude!"
             return
 
-        if event == "start_test" or event == "start_suite":
+        if event == 'start_test':
             _, attrs = args
-            longname = attrs["longname"]
-            self._tree.SetState(longname, "running")
-            
-        if event == "end_test" or event == "end_suite":
+            longname = attrs['longname']
+            self._tree.running_test(longname)
+        if event == 'start_suite':
             _, attrs = args
-            longname = attrs["longname"]
-            if attrs["status"] == "PASS":
-                self._tree.SetState(longname, "pass")
-                if event == "end_test":
-                    self._progress_bar.Pass()
+            longname = attrs['longname']
+            self._tree.running_suite(longname)
+        if event == 'end_test':
+            _, attrs = args
+            longname = attrs['longname']
+            if attrs['status'] == 'PASS':
+                self._tree.test_passed(longname)
+                self._progress_bar.Pass()
             else:
-                self._tree.SetState(longname, "fail")
-                if event == "end_test":
-                    self._progress_bar.Fail()
-        if event == "report_file":
+                self._tree.test_failed(longname)
+                self._progress_bar.Fail()
+        if event == 'end_suite':
+            _, attrs = args
+            longname = attrs['longname']
+            if attrs['status'] == 'PASS':
+                self._tree.suite_passed(longname)
+            else:
+                self._tree.suite_failed(longname)
+        if event == 'report_file':
             self._report_file = args[0]
             self.local_toolbar.EnableTool(ID_SHOW_REPORT, True)
 
-        if event == "log_file":
+        if event == 'log_file':
             self._log_file = args[0]
             self.local_toolbar.EnableTool(ID_SHOW_LOG, True)
 
