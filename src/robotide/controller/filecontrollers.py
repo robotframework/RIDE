@@ -250,6 +250,7 @@ class TestDataDirectoryController(_DataController):
 
     def new_datafile(self, datafile):
         self.data.children.append(datafile)
+        datafile.parent = self.data
         self.children.append(DataController(datafile, self._chief_controller))
         return self.children[-1]
 
