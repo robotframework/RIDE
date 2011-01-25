@@ -150,18 +150,12 @@ class TestRunnerPlugin(Plugin):
     def _start_listener_server(self):
         port = self.port
         self._handle = {
-            'start_test': 
-                lambda args: self._tree.running_test(self._longname(args)),
-            'start_suite': 
-                lambda args: self._tree.running_suite(self._longname(args)),
-            'end_test': 
-                lambda args: self._test_passed(args) if self._status_passed(args) else self._test_failed(args),
-            'end_suite': 
-                lambda args: self._suite_passed(args) if self._status_passed(args) else self._suite_failed(args),
-            'report_file': 
-                lambda args: self._report_results('_report_file', args, ID_SHOW_REPORT),
-            'log_file': 
-                lambda args: self._report_results('_log_file', args, ID_SHOW_LOG)
+            'start_test': lambda args: self._tree.running_test(self._longname(args)),
+            'start_suite': lambda args: self._tree.running_suite(self._longname(args)),
+            'end_test': lambda args: self._execute_based_on_status(args, self._test_passed, self._test_failed),
+            'end_suite': lambda args: self._execute_based_on_status(args, self._suite_passed, self._suite_failed),
+            'report_file': lambda args: self._report_results('_report_file', args, ID_SHOW_REPORT),
+            'log_file': lambda args: self._report_results('_log_file', args, ID_SHOW_LOG)
         }
         while not self._server and port <= port+10:
             try:
@@ -188,20 +182,23 @@ class TestRunnerPlugin(Plugin):
         if event in self._handle:
             self._handle[event](args)
 
-    def _longname(self, args):
-        return args[1]['longname']
-
-    def _status_passed(self, args):
-        return args[1]['status'] == 'PASS'
-
     def _suite_passed(self, args):
-        self._tree.suite_passed(self._longname(args))
+        self._handle_with_longname(self._tree.suite_passed, args) 
 
     def _suite_failed(self, args):
-        self._tree.suite_failed(self._longname(args))
+        self._handle_with_longname(self._tree.suite_failed, args)
 
     def _handle_with_longname(self, func, args):
         return func(self._longname(args))
+
+    def _longname(self, args):
+        return args[1]['longname']
+
+    def _execute_based_on_status(self, args, pass_func, fail_func):
+        if args[1]['status'] == 'PASS':
+            pass_func(args)
+        else:
+            fail_func(args)
 
     def _test_passed(self, args):
         self._tree.test_passed(self._longname(args))
@@ -211,9 +208,9 @@ class TestRunnerPlugin(Plugin):
         self._tree.test_failed(self._longname(args))
         self._progress_bar.Fail()
 
-    def _report_results(self, file_field_name, args, tool_id):
+    def _report_results(self, file_field_name, args, status):
         setattr(self, file_field_name, args[0])
-        self.local_toolbar.EnableTool(tool_id, True)
+        self.local_toolbar.EnableTool(status, True)
 
     def _load_tree_if_data_is_open(self):
         if self.model is not None and self.model.suite is not None:
