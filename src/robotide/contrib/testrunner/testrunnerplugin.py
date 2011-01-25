@@ -229,7 +229,7 @@ class TestRunnerPlugin(Plugin):
     def OnRun(self, event):
         '''Called when the user clicks the "Run" button'''
         if self.auto_save:
-            self._frame.OnSave(None)
+            self._frame.OnSaveAll(None)
 
         self._show_notebook_tab()
         self._current_index = -1
