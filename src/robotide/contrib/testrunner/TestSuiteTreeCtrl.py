@@ -14,6 +14,7 @@
 
 import time
 import wx
+import os
 
 '''TestSuiteTreeCtrl
 
@@ -111,9 +112,15 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
         return result
 
     def GetNode(self, longname):
-        item = self._nodes[longname]
+        item = self._nodes[self._convert_to_longname_key(longname)]
         node = self.GetItemPyData(item)
         return  node
+
+    def _convert_to_longname_key(self, longname):
+        if os.name == 'nt':
+            parts = longname.split('.')
+            return '.'.join([parent.lower() for parent in parts[:-1]]+[parts[-1]])
+        return longname
 
     def GetUncheckedTests(self):
         result = []
@@ -154,6 +161,7 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
 
     def SelectNodeByName(self, longname):
         '''Select an item in the tree, given the longname of a test'''
+        longname = self._convert_to_longname_key
         if longname in self._nodes:
             item = self._nodes[longname]
             self.SelectItem(item, True)
@@ -234,7 +242,7 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
     def SetState(self, testId, state):
         '''Set the state and associated image for a test'''
         image = self._images[state]
-        node = self._nodes[testId]
+        node = self._nodes[self._convert_to_longname_key(testId)]
         self.SetItemImage(node, image)
 
     def _addSuite(self, parent_node, suite, call_after):
@@ -256,7 +264,7 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
     def _add_suite_node(self, parent_node, suite):
         suite_node = self._suite_node(parent_node, suite.name)
         fullname = self._get_longname(suite)
-        self._nodes[fullname] = suite_node
+        self._nodes[self._convert_to_longname_key(fullname)] = suite_node
         self.SetItemPyData(suite_node, TreeNode(fullname, suite))
         return suite_node
 
@@ -299,14 +307,13 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
                 isinstance(obj, TestCase)):
                 longname.append(obj.name)
             obj = obj.parent
-        name = ".".join(reversed(longname))
-        return name
+        return '.'.join(reversed(longname))
 
     def _addTest(self, parent_node, test):
         item = self.AppendItem(parent_node, test.name, ct_type=1, image=self._images["default"])
         fullname = self._get_longname(test)
         self.SetItemPyData(item, TreeNode(fullname, test))
-        self._nodes[fullname] = item
+        self._nodes[self._convert_to_longname_key(fullname)] = item
 
 
 class TreeNode:

@@ -733,27 +733,35 @@ class TestRunnerPlugin(Plugin):
             # Binks, "How rude!"
             return
 
-        if event == "start_test" or event == "start_suite":
+        if event == 'start_test':
             _, attrs = args
-            longname = attrs["longname"]
-            self._tree.SetState(longname, "running")
-            
-        if event == "end_test" or event == "end_suite":
+            longname = attrs['longname']
+            self._tree.SetState(longname, 'running')
+        if event == 'start_suite':
             _, attrs = args
-            longname = attrs["longname"]
-            if attrs["status"] == "PASS":
-                self._tree.SetState(longname, "pass")
-                if event == "end_test":
-                    self._progress_bar.Pass()
+            longname = attrs['longname']
+            self._tree.SetState(longname, 'running')
+        if event == 'end_test':
+            _, attrs = args
+            longname = attrs['longname']
+            if attrs['status'] == 'PASS':
+                self._tree.SetState(longname, 'pass')
+                self._progress_bar.Pass()
             else:
-                self._tree.SetState(longname, "fail")
-                if event == "end_test":
-                    self._progress_bar.Fail()
-        if event == "report_file":
+                self._tree.SetState(longname, 'fail')
+                self._progress_bar.Fail()
+        if event == 'end_suite':
+            _, attrs = args
+            longname = attrs['longname']
+            if attrs['status'] == 'PASS':
+                self._tree.SetState(longname, 'pass')
+            else:
+                self._tree.SetState(longname, 'fail')
+        if event == 'report_file':
             self._report_file = args[0]
             self.local_toolbar.EnableTool(ID_SHOW_REPORT, True)
 
-        if event == "log_file":
+        if event == 'log_file':
             self._log_file = args[0]
             self.local_toolbar.EnableTool(ID_SHOW_LOG, True)
 
