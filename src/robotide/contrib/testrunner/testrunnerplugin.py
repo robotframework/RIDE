@@ -44,8 +44,7 @@ from robot.parsing.model import TestCase
 from robotide.pluginapi import Plugin, ActionInfo
 from robotide.publish import (RideUserKeywordAdded, RideTestCaseAdded,
                               RideOpenSuite, RideOpenResource,
-                              RideNotebookTabChanged, RideItemNameChanged,
-                              RideTestCaseRemoved)
+                              RideItemNameChanged, RideTestCaseRemoved)
 import wx
 import wx.stc
 from wx.lib.embeddedimage import PyEmbeddedImage
@@ -54,11 +53,6 @@ try:
     import cPickle as pickle
 except ImportError, e:
     import pickle as pickle
-
-try:
-    from wx.lib.agw import flatnotebook as fnb
-except ImportError:
-    from wx.lib import flatnotebook as fnb
 
 
 ID_RUN = wx.NewId()
