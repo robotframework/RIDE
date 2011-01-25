@@ -152,7 +152,7 @@ class TestRunnerPlugin(Plugin):
         while not self._server and port <= port+10:
             try:
                 self._server = RideListenerServer(("",port), RideListenerHandler,
-                                                  self._handle_testing_event)
+                                                  self._post_result)
             except socket.error:
                 port += 1
                 continue
@@ -721,65 +721,51 @@ class TestRunnerPlugin(Plugin):
     def _set_splitter_size(self, size):
         self.splitter.SetSashPosition(size)
 
-    def _handle_testing_event(self, event, *args):
+    def _post_result(self, event, *args):
         '''Endpoint of the listener interface
 
         This is called via the listener interface. It has an event such as "start_suite",
         "start_test", etc, along with metadata about the event. We use this data to update
         the tree and statusbar.'''
         if not self.panel:
+            # this should only happen if the notebook tab got deleted
+            # out from under us. In the immortal words of Jar Jar
+            # Binks, "How rude!"
             return
-        self._handle_start_testing(event, args)
-        self._handle_end_testing(event, args)
-        self._handle_report_testing(event, args)
 
-    def _handle_start_testing(self, event, args):
         if event == 'start_test':
-            self._tree.running_test(self._longname(args))
+            _, attrs = args
+            longname = attrs['longname']
+            self._tree.running_test(longname)
         if event == 'start_suite':
-            self._tree.running_suite(self._longname(args))
-
-    def _handle_end_testing(self, event, args):
+            _, attrs = args
+            longname = attrs['longname']
+            self._tree.running_suite(longname)
         if event == 'end_test':
-            self._execute_based_on_status(args, self._test_passed, self._test_failed)
+            _, attrs = args
+            longname = attrs['longname']
+            if attrs['status'] == 'PASS':
+                self._tree.test_passed(longname)
+                self._progress_bar.Pass()
+            else:
+                self._tree.test_failed(longname)
+                self._progress_bar.Fail()
         if event == 'end_suite':
-            self._execute_based_on_status(args, self._suite_passed, self._suite_failed)
-
-    def _suite_passed(self, args):
-        self._handle_with_longname(self._tree.suite_passed, args) 
-
-    def _suite_failed(self, args):
-        self._handle_with_longname(self._tree.suite_failed, args)
-
-    def _handle_with_longname(self, func, args):
-        return func(self._longname(args))
-
-    def _longname(self, args):
-        return args[1]['longname']
-
-    def _execute_based_on_status(self, args, pass_func, fail_func):
-        if args[1]['status'] == 'PASS':
-            pass_func(args)
-        else:
-            fail_func(args)
-
-    def _test_passed(self, args):
-        self._tree.test_passed(self._longname(args))
-        self._progress_bar.Pass()
-
-    def _test_failed(self, args):
-        self._tree.test_failed(self._longname(args))
-        self._progress_bar.Fail()
-
-    def _handle_report_testing(self, event, args):
+            _, attrs = args
+            longname = attrs['longname']
+            if attrs['status'] == 'PASS':
+                self._tree.suite_passed(longname)
+            else:
+                self._tree.suite_failed(longname)
         if event == 'report_file':
-            self._report_results('_report_file', args, ID_SHOW_REPORT)
-        if event == 'log_file':
-            self._report_results('_log_file', args, ID_SHOW_LOG)
+            self._report_file = args[0]
+            self.local_toolbar.EnableTool(ID_SHOW_REPORT, True)
 
-    def _report_results(self, file_field_name, args, status):
-        setattr(self, file_field_name, args[0])
-        self.local_toolbar.EnableTool(status, True)
+        if event == 'log_file':
+            self._log_file = args[0]
+            self.local_toolbar.EnableTool(ID_SHOW_LOG, True)
+
+        return
 
     def _set_state(self, state):
         if state == "running":
