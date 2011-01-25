@@ -101,6 +101,12 @@ class ListEditorBase(wx.Panel):
         self._list.Select(self._selection+1, True)
 
     def OnDelete(self, event):
+        self._with_column_width_preservation(self._delete_selected)
+
+    def delete_selected(self):
+        self._with_column_width_preservation(self._delete_selected)
+
+    def _delete_selected(self):
         if not self.is_selected:
             return
         self._controller.delete(self._selection)
@@ -109,6 +115,14 @@ class ListEditorBase(wx.Panel):
         if self._selection >= item_count:
             self._selection = item_count - 1
         self._list.select_and_ensure_visibility(self._selection)
+
+    def _with_column_width_preservation(self, func):
+        widths = []
+        for i in range(self._list.GetColumnCount()):
+            widths.append(self._list.GetColumnWidth(i))
+        func()
+        for i in range(self._list.GetColumnCount()):
+            self._list.SetColumnWidth(i, widths[i])
 
     @property
     def is_selected(self):

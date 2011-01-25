@@ -75,7 +75,7 @@ class ConfigManagerDialog(Dialog):
 
 
 class _ConfigListEditor(ListEditorBase):
-    _buttons = ['New']
+    _buttons = ['New', 'Remove']
     _columns = ['Name', 'Command', 'Documentation']
 
     def __init__(self, parent, configs):
@@ -95,6 +95,12 @@ class _ConfigListEditor(ListEditorBase):
 
     def OnNew(self, event):
         self._list.new_item()
+
+    def OnRemove(self, event):
+        self.delete_selected()
+
+    def OnDelete(self, event):
+        pass
 
     def new_config(self, data):
         self._controller.add(*data)
