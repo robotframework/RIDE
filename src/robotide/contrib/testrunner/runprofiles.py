@@ -54,16 +54,20 @@ class BaseProfile(object):
         '''Return a list of arguments unique to this profile'''
         args = []
         if self.plugin.apply_include_tags and self.plugin.include_tags:
-            for include in self.plugin.include_tags.split(","):
-                include = include.strip()
-                if len(include) > 0:
-                    args.append("--include=%s" % include)
+            for include in self._get_tags_from_string(self.plugin.include_tags):
+                args.append("--include=%s" % include)
         if self.plugin.apply_exclude_tags and self.plugin.exclude_tags:
-            for exclude in self.plugin.exclude_tags.split(","):
-                exclude = exclude.strip()
-                if len(exclude) > 0:
-                    args.append("--exclude=%s" % exclude)
+            for exclude in self._get_tags_from_string(self.plugin.exclude_tags):
+                args.append("--exclude=%s" % exclude)
         return args
+
+    def _get_tags_from_string(self, tag_string):
+        tags = []
+        for tag in tag_string.split(","):
+            tag = tag.strip().replace(' ', '')
+            if len(tag) > 0:
+                tags.append(tag)
+        return tags
 
     def get_command_prefix(self):
         '''Returns a command and any special arguments for this profile'''
