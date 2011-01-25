@@ -13,6 +13,7 @@ from robotide.publish import PUBLISHER
 from robotide.publish.messages import RideDataChangedToDirty,\
     RideDataDirtyCleared
 import datafilereader
+from robotide.controller.commands import AddSuite
 
 
 class TestMarkUnMarkDirty(unittest.TestCase):
@@ -154,6 +155,11 @@ class TestDataDirectoryControllerTest(unittest.TestCase):
     def test_adding_new_child(self):
         assert_true(self.ctrl.new_datafile(NewDatafile('path/to/data.txt',
                                                   is_dir_type=False)))
+
+    def test_adding_new_suite_with_command(self):
+        suite = self.ctrl.execute(AddSuite(NewDatafile('path/to/suite.txt',
+                                                  is_dir_type=False)))
+        assert_equals(suite.data.parent, self.ctrl.data)
 
 
 class DatafileIteratorTest(unittest.TestCase):
