@@ -149,6 +149,14 @@ class TestRunnerPlugin(Plugin):
 
     def _start_listener_server(self):
         port = self.port
+        self._handle = {
+            'start_test': lambda args: self._tree.running_test(self._longname(args)),
+            'start_suite': lambda args: self._tree.running_suite(self._longname(args)),
+            'end_test': lambda args: self._execute_based_on_status(args, self._test_passed, self._test_failed),
+            'end_suite': lambda args: self._execute_based_on_status(args, self._suite_passed, self._suite_failed),
+            'report_file': lambda args: self._report_results('_report_file', args, ID_SHOW_REPORT),
+            'log_file': lambda args: self._report_results('_log_file', args, ID_SHOW_LOG)
+        }
         while not self._server and port <= port+10:
             try:
                 self._server = RideListenerServer(("",port), RideListenerHandler,
@@ -162,6 +170,47 @@ class TestRunnerPlugin(Plugin):
             self._port = port
         if not self._server:
             raise RuntimeError("Cannot start the RideListenerServer.")
+
+    def _handle_testing_event(self, event, *args):
+        '''Endpoint of the listener interface
+
+        This is called via the listener interface. It has an event such as "start_suite",
+        "start_test", etc, along with metadata about the event. We use this data to update
+        the tree and statusbar.'''
+        if not self.panel:
+            return
+        if event in self._handle:
+            self._handle[event](args)
+
+    def _suite_passed(self, args):
+        self._handle_with_longname(self._tree.suite_passed, args) 
+
+    def _suite_failed(self, args):
+        self._handle_with_longname(self._tree.suite_failed, args)
+
+    def _handle_with_longname(self, func, args):
+        return func(self._longname(args))
+
+    def _longname(self, args):
+        return args[1]['longname']
+
+    def _execute_based_on_status(self, args, pass_func, fail_func):
+        if args[1]['status'] == 'PASS':
+            pass_func(args)
+        else:
+            fail_func(args)
+
+    def _test_passed(self, args):
+        self._tree.test_passed(self._longname(args))
+        self._progress_bar.Pass()
+
+    def _test_failed(self, args):
+        self._tree.test_failed(self._longname(args))
+        self._progress_bar.Fail()
+
+    def _report_results(self, file_field_name, args, status):
+        setattr(self, file_field_name, args[0])
+        self.local_toolbar.EnableTool(status, True)
 
     def _load_tree_if_data_is_open(self):
         if self.model is not None and self.model.suite is not None:
@@ -720,66 +769,6 @@ class TestRunnerPlugin(Plugin):
 
     def _set_splitter_size(self, size):
         self.splitter.SetSashPosition(size)
-
-    def _handle_testing_event(self, event, *args):
-        '''Endpoint of the listener interface
-
-        This is called via the listener interface. It has an event such as "start_suite",
-        "start_test", etc, along with metadata about the event. We use this data to update
-        the tree and statusbar.'''
-        if not self.panel:
-            return
-        self._handle_start_testing(event, args)
-        self._handle_end_testing(event, args)
-        self._handle_report_testing(event, args)
-
-    def _handle_start_testing(self, event, args):
-        if event == 'start_test':
-            self._tree.running_test(self._longname(args))
-        if event == 'start_suite':
-            self._tree.running_suite(self._longname(args))
-
-    def _handle_end_testing(self, event, args):
-        if event == 'end_test':
-            self._execute_based_on_status(args, self._test_passed, self._test_failed)
-        if event == 'end_suite':
-            self._execute_based_on_status(args, self._suite_passed, self._suite_failed)
-
-    def _suite_passed(self, args):
-        self._handle_with_longname(self._tree.suite_passed, args) 
-
-    def _suite_failed(self, args):
-        self._handle_with_longname(self._tree.suite_failed, args)
-
-    def _handle_with_longname(self, func, args):
-        return func(self._longname(args))
-
-    def _longname(self, args):
-        return args[1]['longname']
-
-    def _execute_based_on_status(self, args, pass_func, fail_func):
-        if args[1]['status'] == 'PASS':
-            pass_func(args)
-        else:
-            fail_func(args)
-
-    def _test_passed(self, args):
-        self._tree.test_passed(self._longname(args))
-        self._progress_bar.Pass()
-
-    def _test_failed(self, args):
-        self._tree.test_failed(self._longname(args))
-        self._progress_bar.Fail()
-
-    def _handle_report_testing(self, event, args):
-        if event == 'report_file':
-            self._report_results('_report_file', args, ID_SHOW_REPORT)
-        if event == 'log_file':
-            self._report_results('_log_file', args, ID_SHOW_LOG)
-
-    def _report_results(self, file_field_name, args, status):
-        setattr(self, file_field_name, args[0])
-        self.local_toolbar.EnableTool(status, True)
 
     def _set_state(self, state):
         if state == "running":
