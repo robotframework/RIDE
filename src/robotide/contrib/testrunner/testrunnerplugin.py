@@ -239,7 +239,7 @@ class TestRunnerPlugin(Plugin):
             wx.MessageBox("Could not start running tests.", "Error", wx.ICON_ERROR)
 
     def _can_start_running_tests(self):
-        if self._running:
+        if self._running or self.model.suite is None:
             return False
         if not self.is_unsaved_changes():
             return True
