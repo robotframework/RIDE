@@ -736,27 +736,27 @@ class TestRunnerPlugin(Plugin):
         if event == 'start_test':
             _, attrs = args
             longname = attrs['longname']
-            self._tree.SetState(longname, 'running')
+            self._tree.running_test(longname)
         if event == 'start_suite':
             _, attrs = args
             longname = attrs['longname']
-            self._tree.SetState(longname, 'running')
+            self._tree.running_suite(longname)
         if event == 'end_test':
             _, attrs = args
             longname = attrs['longname']
             if attrs['status'] == 'PASS':
-                self._tree.SetState(longname, 'pass')
+                self._tree.test_passed(longname)
                 self._progress_bar.Pass()
             else:
-                self._tree.SetState(longname, 'fail')
+                self._tree.test_failed(longname)
                 self._progress_bar.Fail()
         if event == 'end_suite':
             _, attrs = args
             longname = attrs['longname']
             if attrs['status'] == 'PASS':
-                self._tree.SetState(longname, 'pass')
+                self._tree.suite_passed(longname)
             else:
-                self._tree.SetState(longname, 'fail')
+                self._tree.suite_failed(longname)
         if event == 'report_file':
             self._report_file = args[0]
             self.local_toolbar.EnableTool(ID_SHOW_REPORT, True)
