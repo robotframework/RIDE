@@ -280,6 +280,15 @@ class Plugin(object):
         """
         self.__frame.save(self.tree.get_selected_datafile_controller())
 
+    def is_unsaved_changes(self):
+        """Returns True if there is any unsaved changes, otherwise False"""
+        return self.__frame.has_unsaved_changes()
+
+    def save_all_unsaved_changes(self):
+        """Saves all the data files that are modified."""
+        self.__frame.save_all()
+
+
     def get_selected_item(self):
         """Returns the item that is currently selected in the tree.
 
