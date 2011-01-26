@@ -195,7 +195,13 @@ class Process(object):
 	    # Throwing ECHILD is perhaps not the most kosher thing to do...
 	    # ESRCH might be considered more proper.
 	    raise OSError(errno.ECHILD, os.strerror(errno.ECHILD))
-	os.kill(self.pid(), signal)
+	if os.name == 'nt':
+		import ctypes
+		kernel32 = ctypes.windll.kernel32
+		handle = kernel32.OpenProcess(1, 0, self.pid())
+		kernel32.TerminateProcess(handle, 0)
+	else:
+		os.kill(self.pid(), signal)
 
     def wait(self, flags=0):
 	"""Return the process' termination status.
