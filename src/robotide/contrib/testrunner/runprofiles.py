@@ -24,6 +24,7 @@ any additional arguments.
 '''
 
 import wx
+from wx.lib.filebrowsebutton import FileBrowseButton
 import os
 
 class BaseProfile(object):
@@ -47,8 +48,11 @@ class BaseProfile(object):
     def get_toolbar(self, parent):
         '''Returns a panel with toolbar controls to be shown for this profile'''
         if self.toolbar is None:
-            self.toolbar = self.TagsPanel(parent)
+            self.toolbar = self._get_toolbar(parent)
         return self.toolbar
+
+    def _get_toolbar(self, parent):
+        return self.TagsPanel(parent)
 
     def get_custom_args(self):
         '''Return a list of arguments unique to this profile'''
@@ -136,3 +140,33 @@ class PybotProfile(BaseProfile):
             return ["pybot.bat"]
         else:
             return ["pybot"]
+
+class CustomScriptProfile(BaseProfile):
+    '''A runner profile which uses script given by the user'''
+
+    name = "custom script .."
+
+    def get_command_prefix(self):
+        return [self.plugin.custom_script]
+
+    def _get_toolbar(self, parent):
+        panel = wx.Panel(parent, wx.ID_ANY)
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(self._create_run_script_panel(panel))
+        sizer.Add(self.TagsPanel(panel), 0, wx.ALL|wx.EXPAND)
+        panel.SetSizerAndFit(sizer)
+        return panel
+
+    def _create_run_script_panel(self, parent):
+        panel = wx.Panel(parent, wx.ID_ANY)
+        self._browser = FileBrowseButton(panel, labelText="Script to run tests:",
+                                         size=(600, -1), fileMask="*",
+                                         changeCallback=self.OnCustomScriptChanged)
+        self._browser.SetValue(self.plugin.custom_script)
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer.Add(self._browser)
+        panel.SetSizerAndFit(sizer)
+        return panel
+
+    def OnCustomScriptChanged(self, evt):
+        self.set_setting("custom_script", self._browser.GetValue())

@@ -79,6 +79,7 @@ class TestRunnerPlugin(Plugin):
     """A plugin for running tests from within RIDE"""
     defaults = { "auto_save": False,
                 "profile": "pybot",
+                "custom_script": "",
                 "include_tags": "",
                 "exclude_tags": "",
                 "apply_include_tags": False,
@@ -343,7 +344,7 @@ class TestRunnerPlugin(Plugin):
         '''Quote a list as if it were a command line command
 
         This is purely for aesthetics -- it takes a list of arguments
-        and quotes them as you probably would have to do if you ran this
+        and quotes them as you probably would have to do if you ran this        toolbar.AddControl(self.choice)
         from a command line
         '''
         result = []
@@ -501,6 +502,13 @@ class TestRunnerPlugin(Plugin):
 
     def _build_local_toolbar(self):
         toolbar = wx.ToolBar(self.panel, wx.ID_ANY, style=wx.TB_HORIZONTAL|wx.TB_HORZ_TEXT)
+        profileLabel = wx.StaticText(toolbar, label="Execution Profile:  ")
+        choices = sorted(self.profiles.keys())
+        self.choice = wx.Choice(toolbar, wx.ID_ANY, choices=choices)
+        self.choice.SetToolTip(wx.ToolTip("Choose which method to use for running the tests"))
+        toolbar.AddControl(profileLabel)
+        toolbar.AddControl(self.choice)
+        toolbar.AddSeparator()
         reportImage = getReportIconBitmap()
         logImage = getLogIconBitmap()
         toolbar.AddLabelTool(ID_RUN,"Start", getRobotBitmap(), shortHelp="Start robot",
@@ -517,13 +525,6 @@ class TestRunnerPlugin(Plugin):
         # the toolbar API doesn't give us a way to specify padding which
         # is why the label has a couple spaces after the colon. gross, 
         # but effective.
-        profileLabel = wx.StaticText(toolbar, label="Execution Profile:  ")
-        choices = sorted(self.profiles.keys())
-        self.choice = wx.Choice(toolbar, wx.ID_ANY, choices=choices)
-        self.choice.SetToolTip(wx.ToolTip("Choose which method to use for running the tests"))
-        toolbar.AddControl(profileLabel)
-        toolbar.AddControl(self.choice)
-        toolbar.AddSeparator()
         self.savecb = wx.CheckBox(toolbar, ID_AUTOSAVE, "Autosave")
         self.savecb.SetToolTip(wx.ToolTip("Automatically save all changes before running"))
         self.savecb.SetValue(self.auto_save)
