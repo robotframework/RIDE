@@ -206,7 +206,13 @@ class TestRunnerPlugin(Plugin):
 
     def _kill_process(self):
         if self._pid_to_kill:
-            os.kill(self._pid_to_kill, signal.SIGINT)
+            if os.name == 'nt' and sys.version_info < (2,7):
+                import ctypes
+                kernel32 = ctypes.windll.kernel32
+                handle = kernel32.OpenProcess(1, 0, self._pid_to_kill)
+                kernel32.TerminateProcess(handle, 0)
+            else:
+                os.kill(self._pid_to_kill, signal.SIGINT)
             self._output("process %s killed\n" % self._pid_to_kill)
         self._pid_to_kill = None
 
