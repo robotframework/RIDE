@@ -97,6 +97,7 @@ class TestRunnerPlugin(Plugin):
         self._application = application
         self._frame = application.frame
         self._process = None
+        self._pid_to_kill = None
         self._tmpdir = None
         self._report_file = None
         self._log_file = None
@@ -206,15 +207,18 @@ class TestRunnerPlugin(Plugin):
 
     def _kill_process(self):
         if self._pid_to_kill:
-            if os.name == 'nt' and sys.version_info < (2,7):
-                import ctypes
-                kernel32 = ctypes.windll.kernel32
-                handle = kernel32.OpenProcess(1, 0, self._pid_to_kill)
-                kernel32.TerminateProcess(handle, 0)
-            else:
-                os.kill(self._pid_to_kill, signal.SIGINT)
-            self._output("process %s killed\n" % self._pid_to_kill)
-        self._pid_to_kill = None
+            try:
+                if os.name == 'nt' and sys.version_info < (2,7):
+                    import ctypes
+                    kernel32 = ctypes.windll.kernel32
+                    handle = kernel32.OpenProcess(1, 0, self._pid_to_kill)
+                    kernel32.TerminateProcess(handle, 0)
+                else:
+                    os.kill(self._pid_to_kill, signal.SIGINT)
+                self._output("process %s killed\n" % self._pid_to_kill)
+                self._pid_to_kill = None
+            except OSError:
+                pass
 
     def OnAutoSaveCheckbox(self, evt):
         '''Called when the user clicks on the "Auto Save" checkbox'''
