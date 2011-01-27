@@ -144,7 +144,7 @@ class PybotProfile(BaseProfile):
 class CustomScriptProfile(BaseProfile):
     '''A runner profile which uses script given by the user'''
 
-    name = "custom script .."
+    name = "custom script"
 
     def get_command_prefix(self):
         return [self.plugin.custom_script]
