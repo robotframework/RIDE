@@ -195,7 +195,7 @@ class Process(object):
 	    # Throwing ECHILD is perhaps not the most kosher thing to do...
 	    # ESRCH might be considered more proper.
 	    raise OSError(errno.ECHILD, os.strerror(errno.ECHILD))
-	if os.name == 'nt':
+	if os.name == 'nt' and sys.version_info < (2,7):
 		import ctypes
 		kernel32 = ctypes.windll.kernel32
 		handle = kernel32.OpenProcess(1, 0, self.pid())
