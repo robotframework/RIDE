@@ -101,8 +101,7 @@ class SocketListener:
             self.sock.connect((HOST, self.port))
             self.filehandler = self.sock.makefile('w')
             self.pickler = pickle.Pickler(self.filehandler)
-
-        except Exception,e:
+        except socket.error, e:
             print "unable to open socket:",str(e)
             self.sock = None
 
