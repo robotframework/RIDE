@@ -20,6 +20,7 @@ listening server. It should probably be refactored to call an
 XMLRPC server.
 '''
 
+import os
 import socket
 import sys
 try:
@@ -48,6 +49,10 @@ class SocketListener:
             self.host = args[0]
             self.port = int(args[1])
         self._connect()
+        self._send_pid()
+
+    def _send_pid(self):
+        self._send_socket("pid", os.getpid())
 
     def start_test(self, name, attrs):
         self._send_socket("start_test", name, attrs)

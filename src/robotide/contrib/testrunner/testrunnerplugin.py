@@ -216,9 +216,8 @@ class TestRunnerPlugin(Plugin):
         same effect as typing control-c when running from the
         command line.
         '''
-        #FIXME: On Ubuntu this is not working
         if self._process:
-            self._process.kill(signal.SIGINT)
+            os.kill(self._pid_to_kill, signal.SIGINT)
             self._output("process %s killed\n" % self._process.pid())
 
     def OnRun(self, event):
@@ -734,6 +733,8 @@ class TestRunnerPlugin(Plugin):
             # Binks, "How rude!"
             return
 
+        if event == 'pid':
+            self._pid_to_kill = int(args[0])
         if event == 'start_test':
             _, attrs = args
             longname = attrs['longname']
