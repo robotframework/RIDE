@@ -4,7 +4,7 @@ from robot.parsing.model import TestCaseFile
 from robot.utils.asserts import assert_equals, assert_true, assert_false
 from robotide.controller import ChiefController
 from robotide.controller.macrocontrollers import KEYWORD_NAME_FIELD
-from robotide.controller.commands import Undo, FindOccurrences, RenameKeywordOccurrences
+from robotide.controller.commands import Undo, FindOccurrences, NullObserver, RenameKeywordOccurrences
 from robotide.controller.filecontrollers import (TestCaseFileController,
                                                  TestCaseTableController,
                                                  TestCaseController)
@@ -135,9 +135,6 @@ class FindOccurrencesTest(unittest.TestCase):
     def test_occurrence_in_user_keyword_name(self):
         assert_occurrence(self.test_ctrl, USERKEYWORD1_NAME, USERKEYWORD1_NAME, KEYWORD_NAME_FIELD)
 
-class NullObserver(object):
-
-    notify = finish = lambda x:None
 
 class RenameOccurrenceTest(unittest.TestCase):
 

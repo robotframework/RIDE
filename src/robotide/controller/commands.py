@@ -175,6 +175,11 @@ class _StepsChangingCommand(_ReversibleCommand):
         return context.steps[self._row]
 
 
+class NullObserver(object):
+
+    notify = finish = lambda x:None
+
+
 class RenameKeywordOccurrences(_ReversibleCommand):
 
     def __init__(self, original_name, new_name, observer):
@@ -198,6 +203,7 @@ class RenameKeywordOccurrences(_ReversibleCommand):
         self._observer.finish()
 
     def _get_undo_command(self):
+        self._observer = NullObserver()
         return self
 
 
