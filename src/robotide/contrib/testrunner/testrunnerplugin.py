@@ -205,7 +205,10 @@ class TestRunnerPlugin(Plugin):
             self._process_timer.Stop()
 
     def _kill_process(self):
-        os.kill(self._pid_to_kill, signal.SIGINT)
+        if self._pid_to_kill:
+            os.kill(self._pid_to_kill, signal.SIGINT)
+            self._output("process %s killed\n" % self._pid_to_kill)
+        self._pid_to_kill = None
 
     def OnAutoSaveCheckbox(self, evt):
         '''Called when the user clicks on the "Auto Save" checkbox'''
@@ -220,7 +223,6 @@ class TestRunnerPlugin(Plugin):
         '''
         if self._process:
             self._kill_process()
-            self._output("process %s killed\n" % self._process.pid())
 
     def OnRun(self, event):
         '''Called when the user clicks the "Run" button'''
@@ -360,30 +362,46 @@ class TestRunnerPlugin(Plugin):
 
     def _poll_process_output(self):
         '''Periodically display output from the process'''
-        stdout, stderr = self._process.readboth()
+        stdout = self._consume_stdout()
         if stdout:
             self._output(stdout, source="stdout")
+        stderr = self._consume_stderr()
         if stderr:
-            if self.GetLastOutputChar() != "\n":
-                # Robot prints partial lines to stdout to make the
-                # interactive experience better. It all goes to
-                # heck in a handbasket if something shows up on
-                # stderr. So, to fix that we'll add a newline if
-                # the previous character isn't a newline.
-                self._output("\n", source="stdout")
-            self._output(stderr, source="stderr")
-
-        result = self._process.poll()
-        if result is None:
-            # process is still running
+            self._output_with_ensured_newline(stderr, source="stderr")
+        if self._is_process_alive():
             wx.CallLater(500, self._poll_process_output)
         else:
-            # process has died
-            self._progress_bar.Stop()
-            now = datetime.datetime.now()
-            self._output("\ntest finished %s" % now.strftime("%c"))
-            self._set_state("stopped")
-            self._process = None
+            self._finish_process_output()
+
+    def _finish_process_output(self):
+        self._progress_bar.Stop()
+        now = datetime.datetime.now()
+        self._output("\ntest finished %s" % now.strftime("%c"))
+        self._set_state("stopped")
+        self._process = None
+
+    def _consume_stdout(self):
+        return self._process.read()
+
+    def _consume_stderr(self):
+        return self._process.readerr()
+
+    @property
+    def _output_with_ensured_newline(self):
+        self._ensure_newline_in_output()
+        return self._output
+
+    def _ensure_newline_in_output(self):
+        if self.GetLastOutputChar() != "\n":
+            # Robot prints partial lines to stdout to make the
+            # interactive experience better. It all goes to
+            # heck in a handbasket if something shows up on
+            # stderr. So, to fix that we'll add a newline if
+            # the previous character isn't a newline.
+            self._output("\n", source="stdout")
+
+    def _is_process_alive(self):
+        return self._process.poll() is None
 
     def _show_notebook_tab(self):
         '''Show the Run notebook tab'''
