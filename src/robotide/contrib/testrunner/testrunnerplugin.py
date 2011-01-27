@@ -200,10 +200,12 @@ class TestRunnerPlugin(Plugin):
     def OnClose(self, evt):
         '''Shut down the running services and processes'''
         if self._process:
-            #FIXME: There is no Destroy method in Process class
-            self._process.Destroy()
+            self._kill_process()
         if self._process_timer:
             self._process_timer.Stop()
+
+    def _kill_process(self):
+        os.kill(self._pid_to_kill, signal.SIGINT)
 
     def OnAutoSaveCheckbox(self, evt):
         '''Called when the user clicks on the "Auto Save" checkbox'''
@@ -217,7 +219,7 @@ class TestRunnerPlugin(Plugin):
         command line.
         '''
         if self._process:
-            os.kill(self._pid_to_kill, signal.SIGINT)
+            self._kill_process()
             self._output("process %s killed\n" % self._process.pid())
 
     def OnRun(self, event):
