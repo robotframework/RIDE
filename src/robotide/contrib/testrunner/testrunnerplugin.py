@@ -45,6 +45,7 @@ from robotide.pluginapi import Plugin, ActionInfo
 from robotide.publish import (RideUserKeywordAdded, RideTestCaseAdded,
                               RideOpenSuite, RideOpenResource,
                               RideItemNameChanged, RideTestCaseRemoved)
+from robotide.run.process import Process
 import wx
 import wx.stc
 from wx.lib.embeddedimage import PyEmbeddedImage
@@ -66,7 +67,6 @@ STYLE_STDERR=2
 sys.path.insert(0, os.path.dirname(__file__))
 from TestSuiteTreeCtrl import TestSuiteTreeCtrl
 import runprofiles
-import asyncproc
 sys.path.pop(0)
 
 
@@ -233,7 +233,8 @@ class TestRunnerPlugin(Plugin):
         self._output("working directory: %s\n" % os.getcwd())
         self._output("command: %s\n" % self._format_command(command))
         try:
-            self._process = asyncproc.Process(command)
+            self._process = Process(command)
+            self._process.start()
             self._set_state("running")
             self._progress_bar.Start()
             wx.CallAfter(self._poll_process_output)
@@ -368,7 +369,7 @@ class TestRunnerPlugin(Plugin):
         stderr = self._consume_stderr()
         if stderr:
             self._output_with_ensured_newline(stderr, source="stderr")
-        if self._is_process_alive():
+        if self._process_is_alive():
             wx.CallLater(500, self._poll_process_output)
         else:
             self._finish_process_output()
@@ -381,10 +382,10 @@ class TestRunnerPlugin(Plugin):
         self._process = None
 
     def _consume_stdout(self):
-        return self._process.read()
+        return self._process.get_output()
 
     def _consume_stderr(self):
-        return self._process.readerr()
+        return None
 
     @property
     def _output_with_ensured_newline(self):
@@ -400,8 +401,8 @@ class TestRunnerPlugin(Plugin):
             # the previous character isn't a newline.
             self._output("\n", source="stdout")
 
-    def _is_process_alive(self):
-        return self._process.poll() is None
+    def _process_is_alive(self):
+        return not self._process.is_finished()
 
     def _show_notebook_tab(self):
         '''Show the Run notebook tab'''
