@@ -27,7 +27,7 @@ from robotide.context import SETTINGS
 
 
 class ChiefController(object):
-    default_dir = property(lambda self: os.path.abspath(SETTINGS['default directory']),
+    _default_dir = property(lambda self: os.path.abspath(SETTINGS['default directory']),
                            lambda self, path: SETTINGS.set('default directory', path))
 
     def __init__(self, namespace):
@@ -36,6 +36,13 @@ class ChiefController(object):
         self._controller = None
         self.name = None
         self.resources = []
+
+    @property
+    def default_dir(self):
+        return ChiefController._default_dir
+
+    def update_default_dir(self, path):
+        ChiefController._default_dir = path if os.path.isdir(path) else os.path.dirname(path)
 
     def execute(self, command):
         return command.execute(self)

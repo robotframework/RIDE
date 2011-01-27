@@ -120,7 +120,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         dlg = NewProjectDialog(self._controller.default_dir)
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.get_path()
-            self._controller.default_dir = os.path.dirname(path)
+            self._controller.update_default_dir(path)
             data = NewDatafile(path, dlg.is_dir_type())
             self._controller.new_project(data)
             self._populate_tree()
@@ -158,14 +158,14 @@ class RideFrame(wx.Frame, RideEventHandler):
                             defaultDir=self._controller.default_dir, style=wx.OPEN)
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.GetPath()
-            self._controller.default_dir = os.path.dirname(path)
+            self._controller.update_default_dir(path)
         else:
             path = None
         dlg.Destroy()
         return path
 
     def open_suite(self, path):
-        self._controller.default_dir = path
+        self._controller.update_default_dir(path)
         self._controller.load_datafile(path, LoadProgressObserver(self))
         self._populate_tree()
 
