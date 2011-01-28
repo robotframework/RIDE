@@ -21,6 +21,15 @@ Programming Language :: Python
 Topic :: Software Development :: Testing
 """[1:-1]
 
+PACKAGE_DIR = 'src'
+
+def with_subpackages(parent_package):
+    packages = ['.'.join(parent_package)]
+    for item in os.listdir(os.path.join(PACKAGE_DIR, *parent_package)):
+        items_package = parent_package+[item]
+        if os.path.isdir(os.path.join(PACKAGE_DIR, *items_package)):
+            packages += with_subpackages(items_package)
+    return packages
 
 setup(name         = 'robotframework-ride',
       version      = VERSION,
@@ -33,29 +42,8 @@ setup(name         = 'robotframework-ride',
       author       = 'Robot Framework Developers',
       author_email = 'robotframework-devel@googlegroups,com',
       url          = 'http://code.google.com/p/robotframework-ride',
-      package_dir  = {'' : 'src'},
-      packages     = ['robotide',
-                      'robotide.action',
-                      'robotide.application',
-                      'robotide.context',
-                      'robotide.contrib',
-                      'robotide.contrib.testrunner',
-                      'robotide.editor',
-                      'robotide.controller',
-                      'robotide.log',
-                      'robotide.namespace',
-                      'robotide.pluginapi',
-                      'robotide.publish',
-                      'robotide.recentfiles',
-                      'robotide.run',
-                      'robotide.spec',
-                      'robotide.ui',
-                      'robotide.usages',
-                      'robotide.utils',
-                      'robotide.validators',
-                      'robotide.widgets',
-                      'robotide.writer',
-                      ],
+      package_dir  = {'' : PACKAGE_DIR},
+      packages     = with_subpackages(['robotide']),
       package_data = {'robotide': ['widgets/*.png', 'context/*.cfg']},
       scripts = ['src/bin/ride.py']
       )
