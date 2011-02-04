@@ -307,6 +307,16 @@ class TestCaseEditingTest(TestCaseCommandTest):
         self._verify_step(0, 'Step 1', [])
         self._verify_step(1, 'Step 2', ['a3'])
 
+    def test_delete_cells_in_for_loop_and_undo(self):
+        start_row = self._data_row(FOR_LOOP_STEP1)
+        end_row = self._data_row(FOR_LOOP_STEP2)
+        self._exec(DeleteCells((start_row, 1), (end_row, 10)))
+        assert_equals(self._steps[start_row].as_list(), [''])
+        assert_equals(self._steps[end_row].as_list(), [''])
+        self._exec(Undo())
+        self._verify_step_unchanged(FOR_LOOP_STEP1)
+        self._verify_step_unchanged(FOR_LOOP_STEP2)
+
     def test_commenting(self):
         self._exec(CommentRows([0]))
         self._verify_step(0, 'Comment', ['Step 1', 'arg'])
@@ -336,10 +346,10 @@ class TestCaseEditingTest(TestCaseCommandTest):
     def test_uncommenting_rows(self):
         self._exec(CommentRows([1,2,3,4]))
         self._exec(UncommentRows([1,2,3,4]))
-        assert_equals(self._steps[1].as_list(), self._data_step_as_list(STEP2))
-        assert_equals(self._steps[2].as_list(), self._data_step_as_list(STEP_WITH_COMMENT))
-        assert_equals(self._steps[3].as_list(), self._data_step_as_list(FOR_LOOP_HEADER))
-        assert_equals(self._steps[4].as_list(), self._data_step_as_list(FOR_LOOP_STEP1))
+        self._verify_step_unchanged(STEP2)
+        self._verify_step_unchanged(STEP_WITH_COMMENT)
+        self._verify_step_unchanged(FOR_LOOP_HEADER)
+        self._verify_step_unchanged(FOR_LOOP_STEP1)
 
     def test_uncommenting_commented_step_in_for_loop(self):
         row = self._data_row(FOR_LOOP_STEP1)
