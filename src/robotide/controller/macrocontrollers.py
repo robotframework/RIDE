@@ -27,7 +27,7 @@ from robotide.controller.basecontroller import WithUndoRedoStacks
 from robotide.publish.messages import RideItemStepsChanged, RideItemNameChanged,\
     RideItemSettingsChanged
 from robotide.controller.stepcontrollers import ForLoopStepController,\
-    StepController
+    StepController, IntendedStepController
 
 
 KEYWORD_NAME_FIELD = 'Keyword Name'
@@ -121,7 +121,11 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         return [s._step for s in self.steps].index(step)
 
     def replace_step(self, index, new_step):
-        self.data.steps[index] = new_step
+        corrected_index = index
+        for i in range(index):
+            if isinstance(self.step(i), IntendedStepController):
+                corrected_index -= 1
+        self.data.steps[corrected_index] = new_step
         self._has_steps_changed = True
 
     def move_step_up(self, index):

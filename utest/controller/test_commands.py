@@ -357,6 +357,27 @@ class TestCaseEditingTest(TestCaseCommandTest):
         self._verify_number_of_test_changes(0)
 
 
+_TEST_WITH_TWO_FOR_LOOPS = ['Test With Two For Loops',
+                            '  : FOR  ${i}  IN  1  2',
+                            '    Log  ${i}',
+                            '  : FOR  ${j}  IN  1  2',
+                            '    Log  ${j}']
+
+class ForLoopCases(TestCaseCommandTest):
+
+    def _create_data(self):
+        return _TEST_WITH_TWO_FOR_LOOPS[:]
+
+    def test_remove_second_for_header(self):
+        self._exec(DeleteCells((2,0), (2,0)))
+        self._verify_step(2, '${j}', ['IN', '1', '2'])
+
+    def test_remove_first_step_in_for_loop(self):
+        self._exec(DeleteCells((1,1), (1,10)))
+        self._verify_step_unchanged('  : FOR  ${i}  IN  1  2')
+        self._verify_step(1, '')
+        self._verify_step_unchanged('  : FOR  ${j}  IN  1  2')
+
 class RowMovingTest(TestCaseCommandTest):
 
     def test_row_up(self):
