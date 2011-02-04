@@ -7,7 +7,7 @@ from robotide.controller.commands import SaveFile, ChangeCellValue, CopyMacroAs,
 
 
 from base_command_test import TestCaseCommandTest, STEP1, STEP1_KEYWORD, \
-     FOR_LOOP_HEADER, FOR_LOOP_STEP1, FOR_LOOP_STEP2, STEP_WITH_COMMENT, STEP2, data
+     FOR_LOOP_HEADER, FOR_LOOP_STEP1, FOR_LOOP_STEP2, STEP_WITH_COMMENT, STEP2
 from controller.base_command_test import STEP_AFTER_FOR_LOOP
 
 
@@ -137,8 +137,8 @@ class TestCaseEditingTest(TestCaseCommandTest):
         assert_equals(self._steps[0].args, ['arg', 'Hello'])
 
     def test_changing_cell_value_after_last_row_adds_empty_rows(self):
-        self._exec(ChangeCellValue(len(data)+5, 0, 'Hello'))
-        assert_equals(self._steps[len(data)+5].keyword, 'Hello')
+        self._exec(ChangeCellValue(len(self._data)+5, 0, 'Hello'))
+        assert_equals(self._steps[len(self._data)+5].keyword, 'Hello')
 
     def test_changing_for_loop_header_value(self):
         self._exec(ChangeCellValue(self._data_row(FOR_LOOP_HEADER), 0, 'Keyword'))

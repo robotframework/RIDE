@@ -17,7 +17,7 @@ FOR_LOOP_STEP1 = '    Log  ${i}'
 FOR_LOOP_STEP2 = '    No Operation'
 STEP_AFTER_FOR_LOOP = '  Step bar'
 
-data = [TEST_NAME,
+_base_data = [TEST_NAME,
         STEP1,
         STEP2,
         STEP_WITH_COMMENT,
@@ -39,7 +39,7 @@ class _FakeChief(object):
     def unregister_namespace_updates(self, listener):
         pass
 
-def create():
+def create(data):
     tcf = TestCaseFile()
     tcf.directory = '/path/to'
     pop = FromFilePopulator(tcf)
@@ -50,8 +50,10 @@ def create():
     return tcf
 
 
-def testcase_controller(chief=None):
-    tcf = create()
+def testcase_controller(chief=None, data=None):
+    if data is None:
+        data = _base_data[:]
+    tcf = create(data)
     tcf_controller = TestCaseFileController(tcf, chief)
     tctablectrl = tcf_controller.tests
     return tctablectrl[0]
@@ -61,10 +63,14 @@ class TestCaseCommandTest(unittest.TestCase, _FakeChief):
 
     def setUp(self):
         self._steps = None
-        self._ctrl = testcase_controller(self)
+        self._data = self._create_data()
+        self._ctrl = testcase_controller(self, data=self._data)
         PUBLISHER.subscribe(self._test_changed, RideItemStepsChanged)
         self._orig_number_of_steps = len(self._ctrl.steps)
         self._number_of_test_changes = 0
+
+    def _create_data(self):
+        return _base_data[:]
 
     def serialize_controller(self, controller):
         self._file_saved = (controller == self._ctrl.datafile_controller)
@@ -79,7 +85,7 @@ class TestCaseCommandTest(unittest.TestCase, _FakeChief):
         return [m for m in self._get_macros() if m.name == name][0]
 
     def _data_row(self, line):
-        return data.index(line)-1
+        return self._data.index(line)-1
 
     def _data_step_as_list(self, step_data):
         return step_data.split('  ')[1:]
