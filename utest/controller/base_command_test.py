@@ -95,6 +95,10 @@ class TestCaseCommandTest(unittest.TestCase, _FakeChief):
         row = self._data_row(step_data)
         assert_equals(self._steps[row].as_list(), self._data_step_as_list(step_data))
 
+    def _verify_steps_unchanged(self, *steps):
+        for step in steps:
+            self._verify_step_unchanged(step)
+
     def _verify_number_of_test_changes(self, expected):
         assert_equals(self._number_of_test_changes, expected)
 

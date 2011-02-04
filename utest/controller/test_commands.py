@@ -144,16 +144,14 @@ class TestCaseEditingTest(TestCaseCommandTest):
         self._exec(ChangeCellValue(self._data_row(FOR_LOOP_HEADER), 0, 'Keyword'))
         assert_equals(self._steps[self._data_row(FOR_LOOP_HEADER)].as_list(),
                       ['Keyword'] + self._data_step_as_list(FOR_LOOP_HEADER)[1:])
-        assert_equals(self._steps[self._data_row(FOR_LOOP_STEP1)].as_list(),
-                      self._data_step_as_list(FOR_LOOP_STEP1))
+        self._verify_step_unchanged(FOR_LOOP_STEP1)
         assert_equals(len(self._steps), self._orig_number_of_steps)
 
     def test_changing_for_loop_header_argument(self):
         self._exec(ChangeCellValue(self._data_row(FOR_LOOP_HEADER), 1, 'Keyword'))
         assert_equals(self._steps[self._data_row(FOR_LOOP_HEADER)].as_list(),
                       [': FOR', 'Keyword'] + self._data_step_as_list(FOR_LOOP_HEADER)[2:])
-        assert_equals(self._steps[self._data_row(FOR_LOOP_STEP1)].as_list(),
-                      self._data_step_as_list(FOR_LOOP_STEP1))
+        self._verify_step_unchanged(FOR_LOOP_STEP1)
         assert_equals(len(self._steps), self._orig_number_of_steps)
 
     def test_changing_for_loop_header_in_clause(self):
@@ -314,8 +312,7 @@ class TestCaseEditingTest(TestCaseCommandTest):
         assert_equals(self._steps[start_row].as_list(), [''])
         assert_equals(self._steps[end_row].as_list(), [''])
         self._exec(Undo())
-        self._verify_step_unchanged(FOR_LOOP_STEP1)
-        self._verify_step_unchanged(FOR_LOOP_STEP2)
+        self._verify_steps_unchanged(FOR_LOOP_STEP1, FOR_LOOP_STEP2)
 
     def test_commenting(self):
         self._exec(CommentRows([0]))
@@ -323,14 +320,9 @@ class TestCaseEditingTest(TestCaseCommandTest):
 
     def test_commenting_many_rows(self):
         self._exec(CommentRows([1,2,3,4]))
-        assert_equals(self._steps[self._data_row(STEP2)].as_list(),
-                      ['Comment'] + self._data_step_as_list(STEP2))
-        assert_equals(self._steps[self._data_row(STEP_WITH_COMMENT)].as_list(),
-                      ['Comment'] + self._data_step_as_list(STEP_WITH_COMMENT))
-        assert_equals(self._steps[self._data_row(FOR_LOOP_HEADER)].as_list(),
-                      ['Comment'] + self._data_step_as_list(FOR_LOOP_HEADER))
-        assert_equals(self._steps[self._data_row(FOR_LOOP_STEP1)].as_list(),
-                      ['Comment'] + self._data_step_as_list(FOR_LOOP_STEP1))
+        for row_data in [STEP2, STEP_WITH_COMMENT, FOR_LOOP_HEADER, FOR_LOOP_STEP1]:
+            assert_equals(self._steps[self._data_row(row_data)].as_list(),
+                          ['Comment'] + self._data_step_as_list(row_data))
 
     def test_commenting_step_in_for_loop(self):
         row = self._data_row(FOR_LOOP_STEP1)
@@ -346,23 +338,17 @@ class TestCaseEditingTest(TestCaseCommandTest):
     def test_uncommenting_rows(self):
         self._exec(CommentRows([1,2,3,4]))
         self._exec(UncommentRows([1,2,3,4]))
-        self._verify_step_unchanged(STEP2)
-        self._verify_step_unchanged(STEP_WITH_COMMENT)
-        self._verify_step_unchanged(FOR_LOOP_HEADER)
-        self._verify_step_unchanged(FOR_LOOP_STEP1)
+        self._verify_steps_unchanged(STEP2, STEP_WITH_COMMENT, FOR_LOOP_HEADER, FOR_LOOP_STEP1)
 
     def test_uncommenting_commented_step_in_for_loop(self):
         row = self._data_row(FOR_LOOP_STEP1)
         self._exec(CommentRows([row]))
         self._exec(UncommentRows([row]))
-        assert_equals(self._steps[row].as_list(), self._data_step_as_list(FOR_LOOP_STEP1))
+        self._verify_step_unchanged(FOR_LOOP_STEP1)
 
     def test_uncommenting_does_nothing_if_not_commented(self):
         self._exec(UncommentRows([1,2,3,4]))
-        assert_equals(self._steps[1].as_list(), self._data_step_as_list(STEP2))
-        assert_equals(self._steps[2].as_list(), self._data_step_as_list(STEP_WITH_COMMENT))
-        assert_equals(self._steps[3].as_list(), self._data_step_as_list(FOR_LOOP_HEADER))
-        assert_equals(self._steps[4].as_list(), self._data_step_as_list(FOR_LOOP_STEP1))
+        self._verify_steps_unchanged(STEP2, STEP_WITH_COMMENT, FOR_LOOP_HEADER, FOR_LOOP_STEP1)
 
     def test_commenting_and_uncommenting_row_with_no_step(self):
         self._exec(CommentRows([1000]))
