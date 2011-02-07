@@ -40,9 +40,12 @@ class GridToolTips(object):
     def OnShowToolTip(self, event):
         self._hide_tooltip()
         content = self._grid.get_tooltip_content()
-        if content:
+        if content and self._application_has_focus():
             self._show_tooltip_at(content, self._calculate_tooltip_position())
             self._grid.SetFocus()
+
+    def _application_has_focus(self):
+        return wx.Window.FindFocus() is not None
 
     def OnGridEditorHidden(self, event):
         cell = event.Row, event.Col
