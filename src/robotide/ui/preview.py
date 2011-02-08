@@ -22,6 +22,8 @@ from robotide.publish import (RideTreeSelection, RideNotebookTabChanged,
                               RideTestCaseAdded, RideUserKeywordAdded)
 from robotide.robotapi import TestCase, UserKeyword
 from robotide.writer.serializer import Serializer, SerializationContext
+from robotide.widgets.button import ButtonWithHandler
+from robotide.utils import Printing
 
 
 class PreviewPlugin(Plugin):
@@ -76,8 +78,15 @@ class PreviewPanel(wx.Panel):
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
         self._format = parent.format
         self.__view = None
+        self._printing = Printing()
         self._create_chooser()
+        self.Sizer.Add(ButtonWithHandler(self, 'Print'))
         notebook.AddPage(self, "Preview")
+
+    def OnPrint(self, evt):
+        datafile = self._parent.datafile
+        content = datafile and self._get_content(datafile) or ''
+        self._printing.preview_text(content)
 
     @property
     def _file_format(self):
