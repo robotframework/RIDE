@@ -75,12 +75,15 @@ class PreviewPanel(wx.Panel):
     def __init__(self, parent, notebook):
         wx.Panel.__init__(self, notebook)
         self._parent = parent
-        self.SetSizer(wx.BoxSizer(wx.VERTICAL))
+        main_sizer = wx.BoxSizer(wx.VERTICAL)
+        self.SetSizer(main_sizer)
         self._format = parent.format
         self.__view = None
         self._printing = Printing()
-        self._create_chooser()
-        self.Sizer.Add(ButtonWithHandler(self, 'Print'))
+        box = wx.BoxSizer(wx.HORIZONTAL)
+        box.Add(self._chooser())
+        box.Add(self._print_button(), 1, wx.ALIGN_CENTER_VERTICAL)
+        self.Sizer.Add(box)
         notebook.AddPage(self, "Preview")
 
     def OnPrint(self, evt):
@@ -98,11 +101,14 @@ class PreviewPanel(wx.Panel):
     def _pipe_separated(self):
         return 'Pipes' in self._format
 
-    def _create_chooser(self):
+    def _chooser(self):
         chooser = wx.RadioBox(self, label='Format', choices=self._formats)
         chooser.SetStringSelection(self._format)
         self.Bind(wx.EVT_RADIOBOX, self.OnTypeChanged, chooser)
-        self.Sizer.Add(chooser)
+        return chooser
+
+    def _print_button(self):
+        return ButtonWithHandler(self, 'Print')
 
     @property
     def _view(self):
