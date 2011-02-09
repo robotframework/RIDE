@@ -82,7 +82,7 @@ class PreviewPanel(wx.Panel):
         self._printing = Printing()
         box = wx.BoxSizer(wx.HORIZONTAL)
         box.Add(self._chooser())
-        box.Add(self._print_button(), 1, wx.ALIGN_CENTER_VERTICAL)
+        box.Add(self._print_button(), 1, wx.ALIGN_CENTER_VERTICAL | wx.EXPAND)
         self.Sizer.Add(box)
         notebook.AddPage(self, "Preview")
 
