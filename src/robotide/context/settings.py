@@ -69,11 +69,11 @@ class ConfigurationError(Exception):
 
 
 class _Section:
-    
+
     def __init__(self, section, parent):
         self._config_obj = section
         self._parent = parent
-        
+
     def save(self):
         self._parent.save()
 
