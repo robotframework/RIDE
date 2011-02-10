@@ -155,20 +155,23 @@ class KeywordEditor(GridEditor, RideEventHandler):
             event.Skip()
 
     def OnMoveRowsUp(self, event=None):
-        if self._execute(MoveRowsUp(self.GetSelectedRows())):
-            self._shift_selection(-1)
+        self._row_move(MoveRowsUp, -1)
 
     def OnMoveRowsDown(self, event=None):
-        if self._execute(MoveRowsDown(self.GetSelectedRows())):
-            self._shift_selection(1)
+        self._row_move(MoveRowsDown, 1)
+
+    def _row_move(self, command, change):
+        rows = self.GetSelectedRows()
+        if self._execute(command(rows)):
+            wx.CallAfter(self._select_rows, [r+change for r in rows])
+
+    def _select_rows(self, rows):
+        self.ClearSelection()
+        for r in rows:
+            self.SelectRow(r, True)
 
     def OnMotion(self, event):
         pass
-
-    def _shift_selection(self, shift):
-        self.ClearSelection()
-        for r in self.selection.rows():
-            self.SelectRow(r+shift, True)
 
     def _data_changed(self, data):
         if self._controller == data.item:
