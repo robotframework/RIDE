@@ -131,7 +131,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         event.Skip()
 
     def OnInsertRows(self, event):
-        self._execute(AddRows(self.selection.rows()))
+        self._execute(AddRows(self.GetSelectedRows()))
         event.Skip()
 
     def OnInsertCells(self, event):
@@ -145,21 +145,21 @@ class KeywordEditor(GridEditor, RideEventHandler):
         event.Skip()
 
     def OnCommentRows(self, event=None):
-        self._execute(CommentRows(self.selection.rows()))
+        self._execute(CommentRows(self.GetSelectedRows()))
         if event is not None:
             event.Skip()
 
     def OnUncommentRows(self, event=None):
-        self._execute(UncommentRows(self.selection.rows()))
+        self._execute(UncommentRows(self.GetSelectedRows()))
         if event is not None:
             event.Skip()
 
     def OnMoveRowsUp(self, event=None):
-        if self._execute(MoveRowsUp(self.selection.rows())):
+        if self._execute(MoveRowsUp(self.GetSelectedRows())):
             self._shift_selection(-1)
 
     def OnMoveRowsDown(self, event=None):
-        if self._execute(MoveRowsDown(self.selection.rows())):
+        if self._execute(MoveRowsDown(self.GetSelectedRows())):
             self._shift_selection(1)
 
     def OnMotion(self, event):
@@ -236,7 +236,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
                 self._execute(PasteArea(self.selection.topleft, data))
 
     def OnDeleteRows(self, event):
-        self._execute(DeleteRows(self.selection.rows()))
+        self._execute(DeleteRows(self.GetSelectedRows()))
         self.ClearSelection()
         event.Skip()
 
