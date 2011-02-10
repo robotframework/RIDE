@@ -113,6 +113,9 @@ class TestCaseCommandTest(unittest.TestCase, _FakeChief):
             if step.as_list() == self._data_step_as_list(line):
                 raise AssertionError('Row "%s" exists' % line)
 
+    def _verify_step_is_empty(self, index):
+        assert_equals(self._steps[index].as_list(), [])
+
     def _verify_step(self, index, exp_name, exp_args=[], exp_comment=None):
         exp = [exp_name] + exp_args
         if exp_comment:

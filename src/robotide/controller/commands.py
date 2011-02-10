@@ -645,7 +645,7 @@ def DeleteRows(rows):
 
 
 def AddRows(rows):
-    return StepsChangingCompositeCommand(*[AddRow(r) for r in sorted(rows)])
+    return StepsChangingCompositeCommand(*[AddRow(r) for r in reversed(sorted(rows))])
 
 
 def CommentRows(rows):

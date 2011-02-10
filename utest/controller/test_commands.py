@@ -205,10 +205,22 @@ class TestCaseEditingTest(TestCaseCommandTest):
         assert_equals(self._steps[row_in_for_loop].as_list(), [''])
 
     def test_add_multiple_rows(self):
-        self._exec(AddRows([3,2,1,4,5,6,9,8,7,10]))
-        assert_equals(len(self._steps), self._orig_number_of_steps+10)
+        self._exec(AddRows([1,2]))
+        self._verify_step_number_change(2)
         self._verify_step(0, 'Step 1', ['arg'])
-        self._verify_step(11, 'Step 2', ['a1', 'a2', 'a3'])
+        self._verify_step_is_empty(1)
+        self._verify_step(2, 'Step 2', ['a1', 'a2', 'a3'])
+        self._verify_step_is_empty(3)
+
+    def test_add_two_rows_in_different_places(self):
+        smaller_row_index = self._data_row(STEP2)
+        bigger_row_index = self._data_row(STEP_AFTER_FOR_LOOP)
+        self._exec(AddRows([bigger_row_index, smaller_row_index]))
+        self._verify_step_number_change(2)
+        self._verify_step_is_empty(smaller_row_index)
+        self._verify_step(smaller_row_index+1, 'Step 2', ['a1', 'a2', 'a3'])
+        self._verify_step_is_empty(bigger_row_index+1)
+        self._verify_step(bigger_row_index+2, 'Step bar')
 
     def test_undo_multiple_rows_add(self):
         self._exec(AddRows([3,2,1,4,5,6,9,8,7,10]))
