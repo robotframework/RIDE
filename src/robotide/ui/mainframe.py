@@ -12,7 +12,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import os
 import wx
 
 from robotide.controller import NewDatafile
@@ -75,7 +74,6 @@ class RideFrame(wx.Frame, RideEventHandler):
 
     def _init_ui(self):
         splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
-        splitter.SetMinimumPaneSize(200)
         self.notebook = NoteBook(splitter, self._application)
         self.actions = ActionRegisterer(MenuBar(self), ToolBar(self),
                                         ShortcutRegistry(self))
