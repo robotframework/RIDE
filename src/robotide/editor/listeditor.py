@@ -18,7 +18,7 @@ from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 from robotide.utils import RideEventHandler
 from robotide.widgets import PopupMenu, PopupMenuItems, ButtonWithHandler
 from robotide.context.platform import ctrl_or_cmd, bind_keys_to_evt_menu, IS_WINDOWS
-from robotide.context import Font
+from robotide.context import Font, SETTINGS
 
 
 class ListEditorBase(wx.Panel):
@@ -157,6 +157,10 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         self.insert_data(data)
 
     def insert_data(self, data):
+        self._insert_data(data)
+        self._set_column_widths()
+
+    def _insert_data(self, data):
         for row, item in enumerate(data):
             rowdata = self._parent.get_column_values(item)
             self.InsertStringItem(row, rowdata[0])
@@ -164,12 +168,16 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
                 data = rowdata[i] is not None and rowdata[i] or ''
                 self.SetStringItem(row, i, data)
             self._add_link_style(row, item)
+
+    def _set_column_widths(self):
+        min_width = SETTINGS['list col min width']
+        max_width = SETTINGS['list col max width']
         for i in range(self.ColumnCount):
             self.SetColumnWidth(i, -1)
-            if self.GetColumnWidth(i) < 120:
-                self.SetColumnWidth(i, 120)
-            if self.GetColumnWidth(i) > 350:
-                self.SetColumnWidth(i, 350)
+            if self.GetColumnWidth(i) < min_width:
+                self.SetColumnWidth(i, min_width)
+            if self.GetColumnWidth(i) > max_width:
+                self.SetColumnWidth(i, max_width)
 
     def _add_link_style(self, row, item):
         if self._parent.has_link_target(item):
