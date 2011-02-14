@@ -92,6 +92,11 @@ class FindOccurrencesWithFiles(unittest.TestCase):
         self.assert_occurrences(self.ts1, 'Log', 1)
         self.assert_occurrences(self.ts2, 'Log', 2)
 
+    def test_ignores_definition_in_base_resource(self):
+        self.assert_occurrences(self.resu, 'Keyword In Both Resources', 1)
+        occ = _first_occurrence(self.resu, 'Keyword In Both Resources')
+        assert_equals(occ.item.parent.source, 'inner_resource.txt')
+
     def assert_occurrences(self, ctrl, kw_name, count):
         assert_equals(sum(1 for _ in ctrl.execute(FindOccurrences(kw_name))), count)
 

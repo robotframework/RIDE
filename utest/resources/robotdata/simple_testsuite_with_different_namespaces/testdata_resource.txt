@@ -1,3 +1,6 @@
+*** Settings ***
+Resource    inner_resource.txt
+
 *** Variables ***
 @{Resource List}  2  34
 ${Resource Var}  iadota
@@ -6,4 +9,6 @@ ${Resource Var}  iadota
 My Keyword
     No Operation
 Only From Resource
+    No Operation
+Keyword In Both Resources
     No Operation
