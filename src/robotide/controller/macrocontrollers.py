@@ -28,6 +28,7 @@ from robotide.publish.messages import RideItemStepsChanged, RideItemNameChanged,
     RideItemSettingsChanged
 from robotide.controller.stepcontrollers import ForLoopStepController,\
     StepController, IntendedStepController
+import os
 
 
 KEYWORD_NAME_FIELD = 'Keyword Name'
@@ -76,6 +77,10 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self._has_steps_changed = True
         self._steps_cached = None
         self.datafile_controller.register_for_namespace_updates(self._clear_cached_steps)
+
+    @property
+    def source(self):
+        return os.path.basename(self.data.source) if self.data.source else ''
 
     @property
     def name(self):

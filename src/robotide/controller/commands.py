@@ -13,7 +13,6 @@
 #  limitations under the License.
 
 from itertools import chain
-import os
 
 from robotide.controller.macrocontrollers import KeywordNameController, \
         ForLoopStepController
@@ -265,7 +264,8 @@ class FindOccurrences(_Command):
                 yield item
 
     def _items_from_keyword(self, kw):
-        return chain([kw.keyword_name], kw.steps)
+        return chain([kw.keyword_name] if kw.source == self._keyword_source else [],
+                     kw.steps)
 
     def _items_from_test(self, test):
         return chain(test.settings, test.steps)
