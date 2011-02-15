@@ -189,17 +189,30 @@ class RenameKeywordOccurrences(_ReversibleCommand):
 
     def _execute(self, context):
         self._observer.notify()
-        if self._occurrences is None:
-            self._occurrences = [occ for occ in context.execute(FindOccurrences(self._original_name, observer=self._observer))]
+        self._occurrences = self._find_occurrences(context) if self._occurrences is None \
+                            else self._occurrences
+        self._replace_keywords_in(self._occurrences)
+        context.update_namespace()
+        self._notify_values_changed(self._occurrences)
+        self._observer.finish()
+
+    def _find_occurrences(self, context):
+        occurrences = []
+        for occ in context.execute(FindOccurrences(self._original_name)):
             self._observer.notify()
-        for oc in self._occurrences:
+            occurrences.append(occ)
+        self._observer.notify()
+        return occurrences
+
+    def _replace_keywords_in(self, occurrences):
+        for oc in occurrences:
             oc.replace_keyword(self._new_name)
             self._observer.notify()
-        context.update_namespace()
-        for oc in self._occurrences:
+
+    def _notify_values_changed(self, occurrences):
+        for oc in occurrences:
             oc.notify_value_changed()
             self._observer.notify()
-        self._observer.finish()
 
     def _get_undo_command(self):
         self._observer = NullObserver()
@@ -234,12 +247,11 @@ class UpdateVariable(_Command):
 
 class FindOccurrences(_Command):
 
-    def __init__(self, keyword_name, keyword_info=None, observer=None):
+    def __init__(self, keyword_name, keyword_info=None):
         if keyword_name.strip() == '':
             raise ValueError('Keyword name can not be "%s"' % keyword_name)
         self._keyword_name = keyword_name
         self._keyword_info = keyword_info
-        self._observer = observer
 
     def execute(self, context):
         self._keyword_source = self._keyword_info and self._keyword_info.source or \
@@ -279,8 +291,6 @@ class FindOccurrences(_Command):
                 if self._contains_keyword(item))
 
     def _contains_keyword(self, item):
-        if self._observer:
-            self._observer.notify()
         self._yield_for_other_threads()
         return item.contains_keyword(self._keyword_name)
 
