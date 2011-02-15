@@ -268,7 +268,7 @@ class FindOccurrences(_Command):
                     yield item
 
     def _items_from_datafile_should_be_checked(self, datafile):
-        if datafile.source and os.path.basename(datafile.source) == self._keyword_source:
+        if datafile.short_source and os.path.basename(datafile.short_source) == self._keyword_source:
             return True
         return self._find_keyword_source(datafile) == self._keyword_source
 

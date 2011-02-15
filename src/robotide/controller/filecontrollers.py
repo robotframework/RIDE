@@ -58,7 +58,7 @@ class _DataController(_BaseController, WithUndoRedoStacks):
         return self.data.name
 
     @property
-    def source(self):
+    def short_source(self):
         return os.path.basename(self.data.source)
 
     @property
