@@ -97,6 +97,13 @@ class FindOccurrencesWithFiles(unittest.TestCase):
         occ = _first_occurrence(self.resu, 'Keyword In Both Resources')
         assert_equals(occ.item.parent.source, 'inner_resource.txt')
 
+    def test_rename_resu_occurrence_in_case_of_double_definition(self):
+        old_name = 'Keyword In Both Resources'
+        new_name = 'FiiFaa'
+        for kw in [k for k in self.resu.keywords if k.name == old_name]:
+            self.resu.execute(RenameKeywordOccurrences(kw.name, new_name, NullObserver(), kw.info))
+            assert_equals(kw.name, new_name)
+
     def assert_occurrences(self, ctrl, kw_name, count):
         assert_equals(sum(1 for _ in ctrl.execute(FindOccurrences(kw_name))), count)
 

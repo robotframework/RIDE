@@ -30,7 +30,7 @@ from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideVariableAdded, RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated, \
     RideOpenResource, RideSuiteAdded
 from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
-    AddKeyword, AddTestCase, RenameTest, CopyMacroAs, MoveTo, ExtractScalar,\
+    AddKeyword, AddTestCase, RenameTest, CopyMacroAs, MoveTo,\
     AddVariable, AddSuite
 from robotide.widgets import PopupCreator, PopupMenuItems
 from robotide.ui.filedialogs import NewResourceDialog
@@ -767,7 +767,8 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
 
     def _rename(self, new_name):
         self.controller.execute(RenameKeywordOccurrences(self.controller.name, 
-            new_name, RenameProgressObserver(self.GetParent().GetParent())))
+            new_name, RenameProgressObserver(self.GetParent().GetParent()),
+            self.controller.info))
 
     def OnFindUsages(self, event):
         Usages(self.controller, self._tree.highlight).show()

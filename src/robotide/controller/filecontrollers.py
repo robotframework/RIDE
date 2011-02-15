@@ -28,7 +28,6 @@ from robotide.publish.messages import RideDataChangedToDirty,\
     RideDataDirtyCleared, RideSuiteAdded
 from robotide.controller.macrocontrollers import UserKeywordController
 
-
 def DataController(data, parent):
     return TestCaseFileController(data, parent) if isinstance(data, TestCaseFile) \
         else TestDataDirectoryController(data, parent)
@@ -57,6 +56,10 @@ class _DataController(_BaseController, WithUndoRedoStacks):
     @property
     def name(self):
         return self.data.name
+
+    @property
+    def source(self):
+        return os.path.basename(self.data.source)
 
     @property
     def settings(self):

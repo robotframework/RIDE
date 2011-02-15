@@ -15,7 +15,7 @@
 from itertools import chain
 
 from robot.parsing.tablepopulators import UserKeywordPopulator, TestCasePopulator
-from robot.parsing.model import Step
+from robot.parsing.model import Step, ResourceFile
 
 from robotide.controller.basecontroller import ControllerWithParent,\
     _BaseController
@@ -29,6 +29,7 @@ from robotide.publish.messages import RideItemStepsChanged, RideItemNameChanged,
 from robotide.controller.stepcontrollers import ForLoopStepController,\
     StepController, IntendedStepController
 import os
+from robotide.spec.iteminfo import ResourceUserKeywordInfo, TestCaseUserKeywordInfo
 
 
 KEYWORD_NAME_FIELD = 'Keyword Name'
@@ -348,6 +349,12 @@ class UserKeywordController(_BaseController, _WithStepsController):
         if other.__class__ != self.__class__:
             return False
         return self._kw == other._kw
+
+    @property
+    def info(self):
+        if isinstance(self.datafile, ResourceFile):
+            return ResourceUserKeywordInfo(self.data)
+        return TestCaseUserKeywordInfo(self.data)
 
     @property
     def keyword_name(self):

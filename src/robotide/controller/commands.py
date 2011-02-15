@@ -18,6 +18,7 @@ from robotide.controller.macrocontrollers import KeywordNameController, \
         ForLoopStepController
 from robotide.controller.settingcontrollers import _SettingController
 import time
+import os
 
 
 class Occurrence(object):
@@ -181,10 +182,11 @@ class NullObserver(object):
 
 class RenameKeywordOccurrences(_ReversibleCommand):
 
-    def __init__(self, original_name, new_name, observer):
+    def __init__(self, original_name, new_name, observer, keyword_info=None):
         self._original_name = original_name
         self._new_name = new_name
         self._observer = observer
+        self._keyword_info = keyword_info
         self._occurrences = None
 
     def _execute(self, context):
@@ -198,7 +200,7 @@ class RenameKeywordOccurrences(_ReversibleCommand):
 
     def _find_occurrences(self, context):
         occurrences = []
-        for occ in context.execute(FindOccurrences(self._original_name)):
+        for occ in context.execute(FindOccurrences(self._original_name, keyword_info=self._keyword_info)):
             self._observer.notify()
             occurrences.append(occ)
         self._observer.notify()
@@ -261,9 +263,14 @@ class FindOccurrences(_Command):
     def _items_from(self, context):
         for df in context.all_datafiles:
             self._yield_for_other_threads()
-            if self._find_keyword_source(df) == self._keyword_source:
+            if self._items_from_datafile_should_be_checked(df):
                 for item in self._items_from_datafile(df):
                     yield item
+
+    def _items_from_datafile_should_be_checked(self, datafile):
+        if datafile.source and os.path.basename(datafile.source) == self._keyword_source:
+            return True
+        return self._find_keyword_source(datafile) == self._keyword_source
 
     def _items_from_datafile(self, df):
         for setting in df.settings:
