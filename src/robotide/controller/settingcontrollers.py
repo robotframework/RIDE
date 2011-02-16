@@ -202,7 +202,7 @@ class TagsController(_SettingController):
 
     @property
     def display_value(self):
-        return ' | ' .join(tag.name for tag in self)
+        return ' | ' .join(tag.name.replace('|', '\\|') for tag in self)
 
 
 class DefaultTagsController(TagsController):

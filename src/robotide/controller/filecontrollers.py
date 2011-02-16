@@ -17,7 +17,7 @@ import os
 from robotide.controller.basecontroller import WithUndoRedoStacks,\
     _BaseController
 from robotide.controller.settingcontrollers import DocumentationController, \
-    FixtureController, TagsController, TimeoutController, TemplateController,\
+    FixtureController, TimeoutController, TemplateController,\
     DefaultTagsController, ForceTagsController
 from robotide.controller.tablecontrollers import VariableTableController, \
     TestCaseTableController, KeywordTableController, ImportSettingsController, \
@@ -73,7 +73,11 @@ class _DataController(_BaseController, WithUndoRedoStacks):
                 FixtureController(self, ss.suite_teardown),
                 FixtureController(self, ss.test_setup),
                 FixtureController(self, ss.test_teardown),
-                ForceTagsController(self, ss.force_tags)]
+                self.force_tags]
+
+    @property
+    def _setting_table(self):
+        return self.data.setting_table
 
     @property
     def force_tags(self):
@@ -295,10 +299,6 @@ class TestCaseFileController(_DataController):
                 [self.default_tags,
                  TimeoutController(self, ss.test_timeout),
                  TemplateController(self, ss.test_template)]
-
-    @property
-    def _setting_table(self):
-        return self.data.setting_table
 
     @property
     def default_tags(self):
