@@ -196,6 +196,15 @@ class TagsController(_SettingController):
         return chain(forced,
                 (Tag(t) for t in self._tags.value)).__iter__()
 
+    @property
+    def is_set(self):
+        return any(self)
+
+    @property
+    def display_value(self):
+        return ' | ' .join(tag.name for tag in self)
+
+
 class DefaultTagsController(TagsController):
 
     def __iter__(self):

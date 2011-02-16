@@ -73,7 +73,11 @@ class _DataController(_BaseController, WithUndoRedoStacks):
                 FixtureController(self, ss.suite_teardown),
                 FixtureController(self, ss.test_setup),
                 FixtureController(self, ss.test_teardown),
-                TagsController(self, ss.force_tags)]
+                ForceTagsController(self, ss.force_tags)]
+
+    @property
+    def force_tags(self):
+        return ForceTagsController(self, self._setting_table.force_tags)
 
     @property
     def variables(self):
@@ -288,7 +292,7 @@ class TestCaseFileController(_DataController):
     def _settings(self):
         ss = self._setting_table
         return _DataController._settings(self) + \
-                [TagsController(self, ss.default_tags),
+                [self.default_tags,
                  TimeoutController(self, ss.test_timeout),
                  TemplateController(self, ss.test_template)]
 
@@ -299,10 +303,6 @@ class TestCaseFileController(_DataController):
     @property
     def default_tags(self):
         return DefaultTagsController(self, self._setting_table.default_tags)
-
-    @property
-    def force_tags(self):
-        return ForceTagsController(self, self._setting_table.force_tags)
 
     def create_test(self, name):
         return self.tests.new(name)
