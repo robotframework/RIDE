@@ -6,9 +6,9 @@ from robotide.controller.commands import SaveFile, ChangeCellValue, CopyMacroAs,
      MoveRowsUp, MoveRowsDown
 
 
-from base_command_test import TestCaseCommandTest, STEP1, STEP1_KEYWORD, \
-     FOR_LOOP_HEADER, FOR_LOOP_STEP1, FOR_LOOP_STEP2, STEP_WITH_COMMENT, STEP2
-from controller.base_command_test import STEP_AFTER_FOR_LOOP
+from base_command_test import TestCaseCommandTest
+from controller_creator import STEP1, STEP1_KEYWORD, \
+     FOR_LOOP_HEADER, FOR_LOOP_STEP1, FOR_LOOP_STEP2, STEP_WITH_COMMENT, STEP2, STEP_AFTER_FOR_LOOP
 
 
 class FileHandlingCommandsTest(TestCaseCommandTest):

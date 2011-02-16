@@ -6,57 +6,8 @@ from robot.utils.asserts import assert_equals
 from robotide.publish import PUBLISHER
 from robotide.controller.filecontrollers import TestCaseFileController
 from robotide.publish.messages import RideItemStepsChanged
-
-TEST_NAME = 'Test With two Steps'
-STEP1_KEYWORD = 'Step 1'
-STEP1 = '  '+STEP1_KEYWORD+'  arg'
-STEP2 = '  Step 2  a1  a2  a3'
-STEP_WITH_COMMENT = '  Foo  # this is a comment'
-FOR_LOOP_HEADER = '  : FOR  ${i}  IN  1  2  3'
-FOR_LOOP_STEP1 = '    Log  ${i}'
-FOR_LOOP_STEP2 = '    No Operation'
-STEP_AFTER_FOR_LOOP = '  Step bar'
-
-_base_data = [TEST_NAME,
-        STEP1,
-        STEP2,
-        STEP_WITH_COMMENT,
-        FOR_LOOP_HEADER,
-        FOR_LOOP_STEP1,
-        FOR_LOOP_STEP2,
-        STEP_AFTER_FOR_LOOP,
-        '  ${variable}=  some value'
-]
-
-class _FakeChief(object):
-
-    def update_namespace(self):
-        pass
-
-    def register_for_namespace_updates(self, listener):
-        pass
-
-    def unregister_namespace_updates(self, listener):
-        pass
-
-def create(data):
-    tcf = TestCaseFile()
-    tcf.directory = '/path/to'
-    pop = FromFilePopulator(tcf)
-    pop.start_table(['Test cases'])
-    for row in [ [cell for cell in line.split('  ')] for line in data]:
-        pop.add(row)
-    pop.eof()
-    return tcf
-
-
-def testcase_controller(chief=None, data=None):
-    if data is None:
-        data = _base_data[:]
-    tcf = create(data)
-    tcf_controller = TestCaseFileController(tcf, chief)
-    tctablectrl = tcf_controller.tests
-    return tctablectrl[0]
+from controller.controller_creator import _FakeChief, testcase_controller,\
+   BASE_DATA
 
 
 class TestCaseCommandTest(unittest.TestCase, _FakeChief):
@@ -70,7 +21,7 @@ class TestCaseCommandTest(unittest.TestCase, _FakeChief):
         self._number_of_test_changes = 0
 
     def _create_data(self):
-        return _base_data[:]
+        return BASE_DATA[:]
 
     def serialize_controller(self, controller):
         self._file_saved = (controller == self._ctrl.datafile_controller)
