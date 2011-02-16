@@ -10,7 +10,8 @@ from robotide.controller.settingcontrollers import (DocumentationController,
                                                     TagsController, ImportController,
                                                     ReturnValueController,
                                                     TimeoutController,
-                                                    )
+                                                    ForceTagsController,
+    DefaultTagsController)
 from robotide.controller.tablecontrollers import (VariableTableController,
                                                   MetadataListController,
                                                   ImportSettingsController,
@@ -28,8 +29,8 @@ class _FakeParent(_FakeChief):
     def __init__(self):
         self.dirty = False
         self.datafile = None
-        self.force_tags = []
-        self.default_tags = []
+        self.force_tags = ForceTagsController(self, Tags('Force Tags'))
+        self.default_tags = DefaultTagsController(self, Tags('Default Tags'))
     def mark_dirty(self):
         self.dirty = True
 
