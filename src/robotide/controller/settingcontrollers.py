@@ -19,6 +19,7 @@ from robotide.controller.basecontroller import ControllerWithParent,\
 from robotide.publish.messages import RideImportSettingChanged, \
     RideImportSettingRemoved, RideVariableUpdated
 from robotide import utils
+from robotide.controller.tags import Tag
 
 
 class _SettingController(ControllerWithParent):
@@ -184,10 +185,12 @@ class TagsController(_SettingController):
     def add(self, tag):
         if self._tags.value is None:
             self._tags.value = []
-        self._tags.value.append(tag)
+        self._tags.value.append(tag.name)
 
     def __iter__(self):
-        return self._tags.value.__iter__()
+        if self._tags.value is None:
+            return (self._parent.forced_tags+self._parent.default_tags).__iter__()
+        return (self._parent.forced_tags+[Tag(t) for t in self._tags.value]).__iter__()
 
 
 class TimeoutController(_SettingController):

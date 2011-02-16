@@ -21,6 +21,7 @@ from robotide.publish.messages import (RideImportSetting, RideImportSettingRemov
 from robotide.context import SETTINGS
 from resources.mocks import PublisherListener
 from controller.base_command_test import _FakeChief
+from robotide.controller.tags import Tag
 
 
 class _FakeParent(_FakeChief):
@@ -185,7 +186,7 @@ class TagsControllerTest(unittest.TestCase):
         assert_equals(self.ctrl.display_value, 'first \| second')
 
     def test_adding_tag(self):
-        self.ctrl.add('new tag')
+        self.ctrl.add(Tag('new tag'))
         assert_equals(self.tags.value, ['f1', 'f2', 'new tag'])
 
 

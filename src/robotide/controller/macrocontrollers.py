@@ -30,6 +30,7 @@ from robotide.controller.stepcontrollers import ForLoopStepController,\
     StepController, IntendedStepController
 import os
 from robotide.spec.iteminfo import ResourceUserKeywordInfo, TestCaseUserKeywordInfo
+from robotide.controller.tags import Tag
 
 
 KEYWORD_NAME_FIELD = 'Keyword Name'
@@ -297,8 +298,12 @@ class TestCaseController(_BaseController, _WithStepsController):
     def tags(self):
         return TagsController(self, self._test.tags)
 
-    def add_tag(self, tag):
-        self.tags.add(tag)
+    @property
+    def forced_tags(self):
+        return []
+
+    def add_tag(self, name):
+        self.tags.add(Tag(name))
 
     @property
     def settings(self):
