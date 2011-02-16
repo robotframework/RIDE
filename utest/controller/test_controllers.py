@@ -28,6 +28,8 @@ class _FakeParent(_FakeChief):
     def __init__(self):
         self.dirty = False
         self.datafile = None
+        self.force_tags = []
+        self.default_tags = []
     def mark_dirty(self):
         self.dirty = True
 
