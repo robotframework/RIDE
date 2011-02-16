@@ -8,7 +8,6 @@ class Tag(object):
         return self._name
 
     def __eq__(self, other):
-        print other
         return self._name == other._name
 
     def __str__(self):

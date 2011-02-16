@@ -14,12 +14,13 @@
 
 import re
 
+from itertools import chain
 from robotide.controller.basecontroller import ControllerWithParent,\
     _BaseController
 from robotide.publish.messages import RideImportSettingChanged, \
     RideImportSettingRemoved, RideVariableUpdated
 from robotide import utils
-from robotide.controller.tags import Tag
+from robotide.controller.tags import Tag, ForcedTag, DefaultTag
 
 
 class _SettingController(ControllerWithParent):
@@ -188,9 +189,27 @@ class TagsController(_SettingController):
         self._tags.value.append(tag.name)
 
     def __iter__(self):
+        forced = self._parent.force_tags
         if self._tags.value is None:
-            return (self._parent.forced_tags+self._parent.default_tags).__iter__()
-        return (self._parent.forced_tags+[Tag(t) for t in self._tags.value]).__iter__()
+            return chain(forced,
+                    self._parent.default_tags).__iter__()
+        return chain(forced,
+                (Tag(t) for t in self._tags.value)).__iter__()
+
+class DefaultTagsController(TagsController):
+
+    def __iter__(self):
+        if self._tags.value is None:
+            return [].__iter__()
+        return (DefaultTag(t) for t in self._tags.value).__iter__()
+
+
+class ForceTagsController(TagsController):
+
+    def __iter__(self):
+        if self._tags.value is None:
+            return [].__iter__()
+        return (ForcedTag(t) for t in self._tags.value).__iter__()
 
 
 class TimeoutController(_SettingController):

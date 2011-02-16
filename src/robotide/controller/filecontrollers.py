@@ -17,7 +17,8 @@ import os
 from robotide.controller.basecontroller import WithUndoRedoStacks,\
     _BaseController
 from robotide.controller.settingcontrollers import DocumentationController, \
-    FixtureController, TagsController, TimeoutController, TemplateController
+    FixtureController, TagsController, TimeoutController, TemplateController,\
+    DefaultTagsController, ForceTagsController
 from robotide.controller.tablecontrollers import VariableTableController, \
     TestCaseTableController, KeywordTableController, ImportSettingsController, \
     MetadataListController, TestCaseController
@@ -285,11 +286,23 @@ class TestDataDirectoryController(_DataController):
 class TestCaseFileController(_DataController):
 
     def _settings(self):
-        ss = self.data.setting_table
+        ss = self._setting_table
         return _DataController._settings(self) + \
                 [TagsController(self, ss.default_tags),
                  TimeoutController(self, ss.test_timeout),
                  TemplateController(self, ss.test_template)]
+
+    @property
+    def _setting_table(self):
+        return self.data.setting_table
+
+    @property
+    def default_tags(self):
+        return DefaultTagsController(self, self._setting_table.default_tags)
+
+    @property
+    def force_tags(self):
+        return ForceTagsController(self, self._setting_table.force_tags)
 
     def create_test(self, name):
         return self.tests.new(name)

@@ -299,8 +299,12 @@ class TestCaseController(_BaseController, _WithStepsController):
         return TagsController(self, self._test.tags)
 
     @property
-    def forced_tags(self):
-        return []
+    def force_tags(self):
+        return self.datafile_controller.force_tags
+
+    @property
+    def default_tags(self):
+        return self.datafile_controller.default_tags
 
     def add_tag(self, name):
         self.tags.add(Tag(name))
