@@ -186,6 +186,9 @@ class TagsController(_SettingController):
             self._tags.value = []
         self._tags.value.append(tag)
 
+    def __iter__(self):
+        return self._tags.value.__iter__()
+
 
 class TimeoutController(_SettingController):
 
