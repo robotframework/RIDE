@@ -24,7 +24,8 @@ from robotide.controller.commands import (ChangeCellValue, ClearArea, PasteArea,
                                           MoveRowsUp, MoveRowsDown,
                                           ExtractScalar, ExtractList)
 from robotide.controller.cellinfo import TipMessage
-from robotide.publish import RideGridCellChanged, RideItemStepsChanged, PUBLISHER
+from robotide.publish import (RideGridCellChanged, RideItemStepsChanged, 
+                              RideSettingsChanged, PUBLISHER)
 from robotide.utils import RideEventHandler
 from robotide.widgets import PopupMenu, PopupMenuItems
 from robotide.context import SETTINGS # TODO: can we avoid direct reference?
@@ -61,6 +62,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._configure_grid()
             self._controller = controller
             PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
+            PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
             self._tooltips = GridToolTips(self)
             self._marked_cell = None
             self._active_row = self._active_col = None
@@ -94,6 +96,11 @@ class KeywordEditor(GridEditor, RideEventHandler):
         cell = self.cell_under_cursor
         cell_info = self._controller.get_cell_info(cell.Row, cell.Col)
         return TipMessage(cell_info)
+
+    def OnSettingsChanged(self, data):
+        '''Redraw the colors if the color settings are modified'''
+        if data.keys[0] == "Colors":
+            self._colorize_grid()
 
     def OnSelectCell(self, event):
         self._cell_selected = True
