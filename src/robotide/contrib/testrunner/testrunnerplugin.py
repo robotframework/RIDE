@@ -91,7 +91,7 @@ class TestRunnerPlugin(Plugin):
     def __init__(self, application=None):
         Plugin.__init__(self, application, initially_enabled=True,
                         default_settings=self.defaults)
-        self.version = "3.0"
+        self.version = "3.01"
         self.metadata = {"url": "http://code.google.com/p/robotframework-ride/wiki/TestRunnerPlugin"}
 
         self._application = application
@@ -243,11 +243,13 @@ class TestRunnerPlugin(Plugin):
         self._output("working directory: %s\n" % os.getcwd())
         self._output("command: %s\n" % self._format_command(command))
         try:
-            self._process = Process(command)
-            self._process.start()
+            self._process = wx.Process(self.panel)
+            self._process.Redirect()
+            self._pid_to_kill = wx.Execute(self._format_command(command), wx.EXEC_ASYNC, self._process)
+            self._process_timer.Start(41) # roughly 24fps
+
             self._set_state("running")
             self._progress_bar.Start()
-            wx.CallAfter(self._poll_process_output)
         except Exception, e:
             self._set_state("stopped")
             self._output(str(e))
@@ -342,6 +344,53 @@ class TestRunnerPlugin(Plugin):
         (_,h) = self._menubutton.GetSize()
         self._tree.PopupMenu(self._tree_menu, (x,y+h))
 
+    def OnProcessEnded(self, evt):
+        stream = self._process.GetInputStream()
+        while stream.CanRead():
+            text = stream.read()
+            self._output(text)
+
+        stream = self._process.GetErrorStream()
+        while stream.CanRead():
+            text = stream.read()
+            if len(text) > 0:
+                self._output("unexpected error: " + text)
+
+        self._progress_bar.Stop()
+        if self._process_timer:
+            self._process_timer.Stop()
+
+        now = datetime.datetime.now()
+        self._output("\ntest finished %s" % now.strftime("%c"))
+        self._set_state("stopped")
+        self._process.Destroy()
+        self._process = None
+
+    def OnTimer(self, evt):
+        '''Get process output'''
+        if self._process is not None:
+            stdout = self._process.GetInputStream()
+            stderr = self._process.GetErrorStream()
+
+            text_buffer = ""
+            while self._process.IsInputAvailable():
+                text_buffer += stdout.read()
+            if len(text_buffer) > 0:
+                self._output(text_buffer, source="stdout")
+
+            text_buffer = ""
+            while self._process.IsErrorAvailable():
+                text_buffer += stderr.read()
+            if len(text_buffer) > 0:
+                if self.GetLastOutputChar() != "\n":
+                    # Robot prints partial lines to stdout to make the
+                    # interactive experience better. It all goes to
+                    # heck in a handbasket if something shows up on
+                    # stderr. So, to fix that we'll add a newline if
+                    # the previous character isn't a newline.
+                    self._output("\n", source="stdout")
+                self._output(text_buffer, source="stderr")
+        
     def GetLastOutputChar(self):
         '''Return the last character in the output window'''
         pos = self.out.PositionBefore(self.out.GetLength())
@@ -357,62 +406,22 @@ class TestRunnerPlugin(Plugin):
     def _format_command(self, argv):
         '''Quote a list as if it were a command line command
 
-        This is purely for aesthetics -- it takes a list of arguments
-        and quotes them as you probably would have to do if you ran this        toolbar.AddControl(self.choice)
-        from a command line
+        This isn't perfect but seems to work for the normal use
+        cases. I'm not entirely sure what the perfect algorithm
+        is since *nix and windows have different quoting 
+        behaviors.
         '''
         result = []
         for arg in argv:
-            if "'" in arg:
+            if "'" in arg or " " in arg:
+                # for windows, if there are spaces we need to use 
+                # double quotes. Single quotes cause problems 
                 result.append('"%s"' % arg)
-            elif '"' in arg or " " in arg:
+            elif '"' in arg:
                 result.append("'%s'" % arg)
             else:
                 result.append(arg)
         return " ".join(result)
-
-    def _poll_process_output(self):
-        '''Periodically display output from the process'''
-        stdout = self._consume_stdout()
-        if stdout:
-            self._output(stdout, source="stdout")
-        stderr = self._consume_stderr()
-        if stderr:
-            self._output_with_ensured_newline(stderr, source="stderr")
-        if self._process_is_alive():
-            wx.CallLater(500, self._poll_process_output)
-        else:
-            self._finish_process_output()
-
-    def _finish_process_output(self):
-        self._progress_bar.Stop()
-        now = datetime.datetime.now()
-        self._output("\ntest finished %s" % now.strftime("%c"))
-        self._set_state("stopped")
-        self._process = None
-
-    def _consume_stdout(self):
-        return self._process.get_output()
-
-    def _consume_stderr(self):
-        return None
-
-    @property
-    def _output_with_ensured_newline(self):
-        self._ensure_newline_in_output()
-        return self._output
-
-    def _ensure_newline_in_output(self):
-        if self.GetLastOutputChar() != "\n":
-            # Robot prints partial lines to stdout to make the
-            # interactive experience better. It all goes to
-            # heck in a handbasket if something shows up on
-            # stderr. So, to fix that we'll add a newline if
-            # the previous character isn't a newline.
-            self._output("\n", source="stdout")
-
-    def _process_is_alive(self):
-        return not self._process.is_finished()
 
     def _show_notebook_tab(self):
         '''Show the Run notebook tab'''
@@ -668,6 +677,8 @@ class TestRunnerPlugin(Plugin):
         wx.CallAfter(self._set_splitter_size, self.sash_position)
 
         self._process_timer = wx.Timer(self.panel)
+        self.panel.Bind(wx.EVT_TIMER, self.OnTimer)
+        self.panel.Bind(wx.EVT_END_PROCESS, self.OnProcessEnded)
 
         self.splitter.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.OnSplitterSashChanged)
         self.panel.Bind(wx.EVT_WINDOW_DESTROY, self.OnClose)
@@ -875,6 +886,9 @@ class ProgressBar(wx.Panel):
             self.SetBackgroundColour("#FF8E8E")
         elif self._pass > 0:
             self.SetBackgroundColour("#9FCC9F")
+        # not sure why this is required, but without it the background
+        # colors don't look right on Windows
+        self.Refresh()
 
 
 # The following two classes implement a small line-buffered socket
