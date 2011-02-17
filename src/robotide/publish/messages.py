@@ -123,6 +123,16 @@ class RideLogException(RideLog):
                              exception=exception)
 
 
+class RideSettingsChanged(RideMessage):
+    """Sent when settings are changed
+
+    keys is a tuple of key names. For example, if the "Colors" section
+    was modified the keys would be ("Colors"), or a specific plugin
+    setting might be ("Plugin", "Preview", "format").
+    """
+    data = ['keys']
+
+
 class RideTreeSelection(RideMessage):
     """Sent whenever user selects a node from the tree."""
     data = ['node', 'item', 'text']
