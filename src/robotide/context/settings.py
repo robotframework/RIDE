@@ -89,6 +89,9 @@ class _Section:
     def __iter__(self):
         return iter(self._config_obj)
 
+    def __len__(self):
+        return len(self._config_obj)
+
     def iteritems(self):
         '''Returns an iterator over the (key,value) items of the section'''
         return self._config_obj.iteritems()
