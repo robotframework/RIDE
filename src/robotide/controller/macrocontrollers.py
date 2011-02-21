@@ -314,7 +314,7 @@ class TestCaseController(_BaseController, _WithStepsController):
         return [DocumentationController(self, self._test.doc),
                 FixtureController(self, self._test.setup),
                 FixtureController(self, self._test.teardown),
-                TagsController(self, self._test.tags),
+                self.tags,
                 TimeoutController(self, self._test.timeout),
                 TemplateController(self, self._test.template)]
 
