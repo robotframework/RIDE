@@ -20,7 +20,8 @@ from robotide.utils import RideEventHandler, RideHtmlWindow
 from robotide.widgets import ButtonWithHandler, HorizontalSizer
 from robotide.controller.chiefcontroller import ChiefController
 from robotide.controller.settingcontrollers import (DocumentationController,
-                                                    VariableController)
+                                                    VariableController,
+    TagsController)
 from robotide.robotapi import (ResourceFile, TestCaseFile, TestDataDirectory,
                                TestCase, UserKeyword, Variable)
 
@@ -125,9 +126,15 @@ class _RobotTableEditor(EditorPanel):
             self._editors.append(editor)
 
     def _create_editor_for(self, controller):
-        editor_cls = DocumentationEditor if isinstance(controller, DocumentationController) \
-                else SettingEditor
+        editor_cls = self._get_editor_class(controller)
         return editor_cls(self, controller, self.plugin, self._tree)
+
+    def _get_editor_class(self, controller):
+        if isinstance(controller, DocumentationController):
+            return DocumentationEditor
+        if isinstance(controller, TagsController):
+            return TagsEditor
+        return SettingEditor
 
     def highlight_cell(self, obj, row, column):
         '''Highlight the given object at the given row and column'''
@@ -456,6 +463,28 @@ class DocumentationEditor(SettingEditor):
     def highlight(self, text):
         pass
 
+
+class TagsEditor(SettingEditor):
+
+    def _value_display_control(self):
+        ctrl = TagsValueDisplay(self)
+        ctrl.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
+        ctrl.Bind(wx.EVT_KEY_DOWN, self.OnKey)
+        return ctrl
+
+
+class TagsValueDisplay(wx.Panel):
+
+    def set_value(self, controller, plugin):
+        self.SetSizer(wx.BoxSizer(wx.HORIZONTAL))
+        for label in [TagLabel(self, tag) for tag in controller]:
+            self.Sizer.Add(label, 0, wx.EXPAND|wx.ALL, 5)
+
+
+def TagLabel(parent, tag):
+    ctrl = wx.TextCtrl(parent, value=tag.name, size=(-1, context.SETTING_ROW_HEIGTH))
+    ctrl.SetEditable(False)
+    return ctrl
 
 class TestCaseEditor(_RobotTableEditor):
 
