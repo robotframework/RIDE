@@ -13,7 +13,6 @@
 #  limitations under the License.
 
 import os
-from robot.parsing.model import ResourceFile
 
 from robotide import context
 from robotide.errors import SerializationError

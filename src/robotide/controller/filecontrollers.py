@@ -29,9 +29,9 @@ from robotide.publish.messages import RideDataChangedToDirty,\
     RideDataDirtyCleared, RideSuiteAdded
 from robotide.controller.macrocontrollers import UserKeywordController
 
-def DataController(data, parent):
-    return TestCaseFileController(data, parent) if isinstance(data, TestCaseFile) \
-        else TestDataDirectoryController(data, parent)
+def DataController(data, chief, parent=None):
+    return TestCaseFileController(data, chief, parent) if isinstance(data, TestCaseFile) \
+        else TestDataDirectoryController(data, chief, parent)
 
 
 class _DataController(_BaseController, WithUndoRedoStacks):
@@ -241,7 +241,7 @@ class _DataController(_BaseController, WithUndoRedoStacks):
 class TestDataDirectoryController(_DataController):
 
     def _children(self, data):
-        return [DataController(child, self._chief_controller)
+        return [DataController(child, self._chief_controller, self)
                 for child in data.children]
 
     def has_format(self):
@@ -254,7 +254,7 @@ class TestDataDirectoryController(_DataController):
             d = TestCaseFile()
         d.source = source
         self.data.children.append(d)
-        return DataController(d, self._chief_controller)
+        return DataController(d, self._chief_controller, self)
 
     @property
     def source(self):
@@ -268,7 +268,7 @@ class TestDataDirectoryController(_DataController):
     def new_datafile(self, datafile):
         self.data.children.append(datafile)
         datafile.parent = self.data
-        self.children.append(DataController(datafile, self._chief_controller))
+        self.children.append(DataController(datafile, self._chief_controller, self))
         return self.children[-1]
 
     def notify_suite_added(self, suite):
