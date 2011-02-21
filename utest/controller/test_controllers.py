@@ -27,10 +27,12 @@ from robotide.controller.tags import Tag
 
 class _FakeParent(_FakeChief):
     def __init__(self):
+        self.parent = None
         self.dirty = False
         self.datafile = None
         self.force_tags = ForceTagsController(self, Tags('Force Tags'))
         self.default_tags = DefaultTagsController(self, Tags('Default Tags'))
+        self._setting_table = self
     def mark_dirty(self):
         self.dirty = True
 

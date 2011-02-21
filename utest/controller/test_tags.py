@@ -36,11 +36,19 @@ class Test(unittest.TestCase):
         suite.force_tags.add(force_tag)
         assert_true(force_tag in test.tags)
 
-    def FIXME_IMPLEMENT_test_force_tag_from_suites_parent_directory(self):
-        fail()
+    def test_force_tag_from_suites_parent_directory(self):
+        force_tag = ForcedTag('forced from directory')
+        test = testcase_controller()
+        directory = test.datafile_controller.parent
+        directory.force_tags.add(force_tag)
+        assert_true(force_tag in test.tags)
 
-    def FIXME_IMPLEMENT_test_force_tag_from_suites_parents_parent_directory(self):
-        fail()
+    def test_force_tag_from_suites_parents_parent_directory(self):
+        force_tag = ForcedTag('forced from directory')
+        test = testcase_controller()
+        directory = test.datafile_controller.parent.parent
+        directory.force_tags.add(force_tag)
+        assert_true(force_tag in test.tags)
 
 
 if __name__ == "__main__":

@@ -216,9 +216,19 @@ class DefaultTagsController(TagsController):
 class ForceTagsController(TagsController):
 
     def __iter__(self):
-        if self._tags.value is None:
-            return [].__iter__()
-        return (ForcedTag(t) for t in self._tags.value).__iter__()
+        return self._recursive_gather_from(self.parent, []).__iter__()
+
+    def _recursive_gather_from(self, obj, result):
+        if obj is None:
+            return result
+        return self._recursive_gather_from(obj.parent,
+                                           result+
+                                           self._gather_from_data(obj._setting_table.force_tags))
+
+    def _gather_from_data(self, tags):
+        if tags.value is None:
+            return []
+        return [ForcedTag(t) for t in tags.value]
 
 
 class TimeoutController(_SettingController):

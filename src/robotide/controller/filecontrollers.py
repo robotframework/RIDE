@@ -36,8 +36,9 @@ def DataController(data, parent):
 
 class _DataController(_BaseController, WithUndoRedoStacks):
 
-    def __init__(self, data, chief_controller=None):
+    def __init__(self, data, chief_controller=None, parent=None):
         self._chief_controller = chief_controller
+        self._parent = parent
         self.data = data
         self.dirty = False
         self.children = self._children(data)
@@ -61,6 +62,10 @@ class _DataController(_BaseController, WithUndoRedoStacks):
     @property
     def short_source(self):
         return os.path.basename(self.data.source)
+
+    @property
+    def parent(self):
+        return self._parent
 
     @property
     def settings(self):

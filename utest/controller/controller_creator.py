@@ -1,6 +1,7 @@
-from robot.parsing.model import TestCaseFile
+from robot.parsing.model import TestCaseFile, TestDataDirectory
 from robot.parsing.populators import FromFilePopulator
-from robotide.controller.filecontrollers import TestCaseFileController
+from robotide.controller.filecontrollers import TestCaseFileController,\
+    TestDataDirectoryController
 
 TEST_NAME = 'Test With two Steps'
 STEP1_KEYWORD = 'Step 1'
@@ -48,7 +49,8 @@ def create(data):
 def testcase_controller(chief=None, data=None):
     if data is None:
         data = BASE_DATA[:]
-    tcf = create(data)
-    tcf_controller = TestCaseFileController(tcf, chief)
+    base_directory_controller = TestDataDirectoryController(TestDataDirectory(), chief)
+    directory_controller = TestDataDirectoryController(TestDataDirectory(), chief, base_directory_controller)
+    tcf_controller = TestCaseFileController(create(data), chief, directory_controller)
     tctablectrl = tcf_controller.tests
     return tctablectrl[0]
