@@ -473,6 +473,8 @@ class TagsEditor(SettingEditor):
         ctrl.Bind(wx.EVT_KEY_DOWN, self.OnKey)
         return ctrl
 
+    def highlight(self, text):
+        pass
 
 class TestCaseEditor(_RobotTableEditor):
 

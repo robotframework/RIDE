@@ -13,9 +13,6 @@ class TagsDisplay(wx.Panel):
         tag_component = TagBox(self, tag)
         self._sizer.Add(tag_component)
 
-    def add_tag_componen_adder(self):
-        self._sizer.Add(TagAdder(self))
-
     def build(self):
         self.SetSizer(self._sizer)
         self._sizer.SetSizeHints(self)
@@ -23,7 +20,6 @@ class TagsDisplay(wx.Panel):
     def set_value(self, tags, *args):
         for tag in tags:
             self.add_tag(tag)
-        self.add_tag_componen_adder()
         self.build()
 
 class TagBox(wx.TextCtrl):
@@ -42,18 +38,6 @@ class TagBox(wx.TextCtrl):
 
     def _colorize(self, tag):
         self.SetForegroundColour(tag.choose({Tag:'black', ForcedTag:'red', DefaultTag:'gray'}))
-
-
-class TagAdder(wx.Panel):
-
-    def __init__(self, parent):
-        wx.Panel.__init__(self, parent, wx.ID_ANY)
-        sizer = wx.BoxSizer()
-        txt = wx.TextCtrl(self, wx.ID_ANY)
-        sizer.Add(txt)
-        button = wx.Button(self, wx.ID_ANY, 'Add')
-        sizer.Add(button)
-        self.SetSizer(sizer)
 
 if __name__ == '__main__':
     class MyFrame(wx.Frame):
