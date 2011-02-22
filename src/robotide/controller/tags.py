@@ -13,6 +13,8 @@ class Tag(object):
     def __str__(self):
         return self._name
 
+    def choose(self, mapping):
+        return mapping[self.__class__]
 
 class ForcedTag(Tag):
     pass

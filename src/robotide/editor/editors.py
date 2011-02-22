@@ -39,6 +39,7 @@ from robot.parsing.settings import _Setting
 from robotide.controller.commands import UpdateVariable
 from robotide.publish import PUBLISHER
 from robotide.usages.UsageRunner import Usages
+from robotide.editor.tags import TagsDisplay
 
 
 class WelcomePage(RideHtmlWindow):
@@ -467,24 +468,11 @@ class DocumentationEditor(SettingEditor):
 class TagsEditor(SettingEditor):
 
     def _value_display_control(self):
-        ctrl = TagsValueDisplay(self)
+        ctrl = TagsDisplay(self)
         ctrl.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
         ctrl.Bind(wx.EVT_KEY_DOWN, self.OnKey)
         return ctrl
 
-
-class TagsValueDisplay(wx.Panel):
-
-    def set_value(self, controller, plugin):
-        self.SetSizer(wx.BoxSizer(wx.HORIZONTAL))
-        for label in [TagLabel(self, tag) for tag in controller]:
-            self.Sizer.Add(label, 0, wx.EXPAND|wx.ALL, 5)
-
-
-def TagLabel(parent, tag):
-    ctrl = wx.TextCtrl(parent, value=tag.name, size=(-1, context.SETTING_ROW_HEIGTH))
-    ctrl.SetEditable(False)
-    return ctrl
 
 class TestCaseEditor(_RobotTableEditor):
 
