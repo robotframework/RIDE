@@ -312,6 +312,10 @@ class Plugin(object):
         """Selects node containing the given ``uk`` in the tree."""
         self.tree.select_user_keyword_node(uk)
 
+    def get_keyword(self, name):
+        """Returns the keyword object with the given name or None"""
+        return self.__namespace.find_keyword(self.datafile, name)
+
     def get_keyword_details(self, name):
         """Returns details (documentation, source) of keyword with name ``name``.
 
