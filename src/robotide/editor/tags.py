@@ -16,6 +16,9 @@ class TagsDisplay(wx.Panel):
 
     def build(self):
         self._sizer.SetSizeHints(self)
+        parent_sizer = self.GetParent().GetSizer()
+        if parent_sizer is not None:
+            parent_sizer.Layout()
 
     def set_value(self, tags, plugin):
         self.clear()
