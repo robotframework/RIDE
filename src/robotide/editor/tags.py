@@ -8,19 +8,28 @@ class TagsDisplay(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, wx.ID_ANY)
         self._sizer = FlowSizer()
+        self.SetSizer(self._sizer)
 
     def add_tag(self, tag):
         tag_component = TagBox(self, tag)
         self._sizer.Add(tag_component)
 
     def build(self):
-        self.SetSizer(self._sizer)
         self._sizer.SetSizeHints(self)
 
-    def set_value(self, tags, *args):
+    def set_value(self, tags, plugin):
+        print tags
+        self.clear()
         for tag in tags:
+            print tag
             self.add_tag(tag)
         self.build()
+
+    def clear(self):
+        self._sizer.Clear(True)
+
+    def get_height(self):
+        return self._sizer.height
 
 class TagBox(wx.TextCtrl):
 

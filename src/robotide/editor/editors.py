@@ -467,11 +467,19 @@ class DocumentationEditor(SettingEditor):
 
 class TagsEditor(SettingEditor):
 
+    def __init__(self, parent, controller, plugin, tree):
+        SettingEditor.__init__(self, parent, controller, plugin, tree)
+        self.Bind(wx.EVT_SIZE, self.OnSize)
+
+    def OnSize(self, event):
+        self.SetSizeHints(-1, self._tags_display.get_height())
+        event.Skip()
+
     def _value_display_control(self):
-        ctrl = TagsDisplay(self)
-        ctrl.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
-        ctrl.Bind(wx.EVT_KEY_DOWN, self.OnKey)
-        return ctrl
+        self._tags_display = TagsDisplay(self)
+        self._tags_display.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
+        self._tags_display.Bind(wx.EVT_KEY_DOWN, self.OnKey)
+        return self._tags_display
 
     def highlight(self, text):
         pass

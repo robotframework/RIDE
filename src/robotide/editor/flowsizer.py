@@ -22,6 +22,7 @@ class FlowSizer(wx.PySizer):
         self._orient       = orient
         self._frozen       = False
         self._needed_size  = None
+        self.height = 0
 
     def CalcMin(self):
         """
@@ -57,17 +58,10 @@ class FlowSizer(wx.PySizer):
         x0, y0     = x, y
         ex         = x + dx
         ey         = y + dy
-        mdx = mdy  = sdx = sdy = i = 0
+        mdx = mdy  = sdx = sdy = 0
         visible = True
         cur_max = 0
-        while True:
-            try:
-                item = self.GetItem(i)
-                if item is None:
-                    break
-                i += 1
-            except:
-                break
+        for item in self.GetChildren():
             idx, idy  = item.CalcMin()
             expand    = item.GetFlag() & wx.EXPAND
             if horizontal:
@@ -88,6 +82,7 @@ class FlowSizer(wx.PySizer):
                 item.Show(visible)
                 x  += idx
                 mdy = max(mdy, idy)
+                self.height = y+idy
             else:
                 if (y > y0) and ((y + idy) > ey):
                     y   = y0
