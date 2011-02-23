@@ -18,10 +18,8 @@ class TagsDisplay(wx.Panel):
         self._sizer.SetSizeHints(self)
 
     def set_value(self, tags, plugin):
-        print tags
         self.clear()
         for tag in tags:
-            print tag
             self.add_tag(tag)
         self.build()
 

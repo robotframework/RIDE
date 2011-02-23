@@ -472,7 +472,7 @@ class TagsEditor(SettingEditor):
         self.Bind(wx.EVT_SIZE, self.OnSize)
 
     def OnSize(self, event):
-        self.SetSizeHints(-1, self._tags_display.get_height())
+        self.SetSizeHints(-1, max(self._tags_display.get_height(), 25))
         event.Skip()
 
     def _value_display_control(self):
