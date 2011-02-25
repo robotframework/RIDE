@@ -131,7 +131,8 @@ class _RobotTableEditor(EditorPanel):
         settings.GetPane().SetSizer(sizeri)
         settings.Expand()
         sizeri.SetSizeHints(settings.GetPane())
-        self.sizer.Add(settings, 0, wx.ALL|wx.EXPAND|wx.GROW, 2)
+        self.sizer.Add(settings, 0, wx.ALL|wx.EXPAND, 2)
+        self._settings = settings
 
     def _collabsible_changed(self, event):
         self.GetSizer().Layout()
@@ -179,6 +180,7 @@ class Settings(wx.CollapsiblePane):
         pane.reset_last_show_tooltip = self.GetParent().reset_last_show_tooltip
         pane.tooltip_allowed = self.GetParent().tooltip_allowed
         return pane
+
 
 class ResourceFileEditor(_RobotTableEditor):
 
@@ -504,6 +506,7 @@ class TagsEditor(SettingEditor):
 
     def highlight(self, text):
         pass
+
 
 class TestCaseEditor(_RobotTableEditor):
 

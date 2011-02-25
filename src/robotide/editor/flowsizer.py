@@ -8,104 +8,64 @@
 #-------------------------------------------------------------------------------
 import wx
 
-class FlowSizer(wx.PySizer):
+class HorizontalFlowSizer(wx.PySizer):
     """
     A sizer which lays out component left to right top to bottom. Java uses
     these quite heavily
     """
 
-    def __init__(self, orient = wx.HORIZONTAL):
+    def __init__(self):
         '''
         Initializes the object:
         '''
-        super(FlowSizer, self).__init__()
-        self._orient       = orient
+        wx.PySizer.__init__(self)
         self._frozen       = False
         self._needed_size  = None
-        self.height = 0
+        self._height = 20
 
     def CalcMin(self):
         """
         Calculates the minimum size needed by the sizer.
         """
-        if self._needed_size is not None:
-            return self._needed_size
-        horizontal  = (self._orient == wx.HORIZONTAL)
-        dx = dy = 0
-        for item in self.GetChildren():
-            idx, idy = item.CalcMin()
-            if horizontal:
-                dy = max(dy, idy)
-            else:
-                dx = max(dx, idx)
-        return wx.Size(dx, dy)
+        return wx.Size(0, 0)
 
     def RecalcSizes(self):
         """
         Layout the contents of the sizer based on the sizer's current size
         and position.
         """
-        horizontal = (self._orient == wx.HORIZONTAL)
-        x,   y     = self.GetPosition()
-        dx, dy     = self.GetSize()
-        x0, y0     = x, y
-        ex         = x + dx
-        ey         = y + dy
-        mdx = mdy  = sdx = sdy = 0
+        x0, y0 = self.GetPosition()
+        dx, dy = self.GetSize()
+        x_border = x0 + dx
+        y_border = y0 + dy
+        x, y = x0, y0
+        mdy = sdy = 0
         visible = True
         cur_max = 0
         for item in self.GetChildren():
-            idx, idy  = item.CalcMin()
-            expand    = item.GetFlag() & wx.EXPAND
-            if horizontal:
-                if (x > x0) and ((x + idx) > ex):
-                    x   = x0
-                    y  += (mdy + sdy)
-                    mdy = sdy = 0
-                    if y >= ey:
-                        visible = False
-                cur_max = max(idy, cur_max)
-                if expand:
-                    idy = cur_max
-                if item.IsSpacer():
-                    sdy = max(sdy, idy)
-                    if x == x0:
-                        idx = 0
-                item.SetDimension(wx.Point(x, y), wx.Size(idx, idy))
-                item.Show(visible)
-                x  += idx
-                mdy = max(mdy, idy)
-                self.height = y+idy
-            else:
-                if (y > y0) and ((y + idy) > ey):
-                    y   = y0
-                    x  += (mdx + sdx)
-                    mdx = sdx = 0
-                    if x >= ex:
-                        visible = False
-                cur_max = max(idx, cur_max)
-                if expand:
-                    idx = cur_max
-                if item.IsSpacer():
-                    sdx = max(sdx, idx)
-                    if y == y0:
-                        idy = 0
-                item.SetDimension(wx.Point(x, y), wx.Size(idx, idy))
-                item.Show(visible)
-                y  += idy
-                mdx = max(mdx, idx)
-        if (not visible) and (self._needed_size is None):
-            max_dx = max_dy = 0
-            if horizontal:
-                max_dy = max(dy, y + mdy + sdy - y0)
-            else:
-                max_dx = max(dx, x + mdx + sdx - x0)
-            self._needed_size = wx.Size(max_dx, max_dy)
-            if not self._frozen:
-                self._do_parent(self._freeze)
-            do_later(self._do_parent, self._thaw)
-        else:
-            self._needed_size = None
+            idx, idy = item.CalcMin()
+            expand  = item.GetFlag() & wx.EXPAND
+            if (x > x0) and ((x + idx) > x_border):
+                x   = x0
+                y  += (mdy + sdy)
+                mdy = sdy = 0
+                visible &= (y < y_border)
+            cur_max = max(idy, cur_max)
+            if expand:
+                idy = cur_max
+            if item.IsSpacer():
+                sdy = max(sdy, idy)
+                if x == x0:
+                    idx = 0
+            item.SetDimension(wx.Point(x, y), wx.Size(idx, idy))
+            item.Show(visible)
+            x += idx
+            mdy = max(mdy, idy)
+        self._height = y + mdy + sdy - y0
+
+    @property
+    def height(self):
+        return self._height
 
     def _freeze(self, window):
         """

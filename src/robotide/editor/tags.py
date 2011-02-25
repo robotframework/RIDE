@@ -1,13 +1,13 @@
 from robotide.controller.tags import ForcedTag, DefaultTag, Tag
 import wx
-from robotide.editor.flowsizer import FlowSizer
+from robotide.editor.flowsizer import HorizontalFlowSizer
 
 
 class TagsDisplay(wx.Panel):
 
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, wx.ID_ANY)
-        self._sizer = FlowSizer()
+        self._sizer = HorizontalFlowSizer()
         self.SetSizer(self._sizer)
 
     def add_tag(self, tag):
