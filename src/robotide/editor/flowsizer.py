@@ -31,15 +31,8 @@ class FlowSizer(wx.PySizer):
         if self._needed_size is not None:
             return self._needed_size
         horizontal  = (self._orient == wx.HORIZONTAL)
-        dx = dy = i = 0
-        while True:
-            try:
-                item = self.GetItem(i)
-                if item is None:
-                    break
-                i += 1
-            except:
-                break
+        dx = dy = 0
+        for item in self.GetChildren():
             idx, idy = item.CalcMin()
             if horizontal:
                 dy = max(dy, idy)
@@ -135,15 +128,7 @@ class FlowSizer(wx.PySizer):
         """
         Does a specified operation on the sizer's parent window.
         """
-        i = 0
-        while True:
-            try:
-                item = self.GetItem(i)
-                if item is None:
-                    break
-                i += 1
-            except:
-                return
+        for item in self.GetChildren():
             if item.IsWindow():
                 getattr(self, method)(item.GetWindow().GetParent())
                 return
