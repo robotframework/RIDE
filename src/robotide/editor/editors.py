@@ -121,14 +121,24 @@ class _RobotTableEditor(EditorPanel):
         return header
 
     def _add_settings(self):
+        settings = Settings(self)
+        settings.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self._collabsible_changed)
+        sizeri = wx.BoxSizer(wx.VERTICAL)
         for setting in self.controller.settings:
-            editor = self._create_editor_for(setting)
-            self.sizer.Add(editor, 0, wx.ALL|wx.EXPAND, 2)
+            editor = self._create_editor_for(settings.GetPane(), setting)
+            sizeri.Add(editor, 0, wx.ALL|wx.EXPAND, 2)
             self._editors.append(editor)
+        settings.GetPane().SetSizer(sizeri)
+        settings.Expand()
+        sizeri.SetSizeHints(settings.GetPane())
+        self.sizer.Add(settings, 0, wx.ALL|wx.EXPAND|wx.GROW, 2)
 
-    def _create_editor_for(self, controller):
+    def _collabsible_changed(self, event):
+        self.GetSizer().Layout()
+
+    def _create_editor_for(self, parent, controller):
         editor_cls = self._get_editor_class(controller)
-        return editor_cls(self, controller, self.plugin, self._tree)
+        return editor_cls(parent, controller, self.plugin, self._tree)
 
     def _get_editor_class(self, controller):
         if isinstance(controller, DocumentationController):
@@ -158,6 +168,19 @@ class _RobotTableEditor(EditorPanel):
         for editor in self._editors:
             editor.highlight(text)
 
+
+class Settings(wx.CollapsiblePane):
+
+    def __init__(self, parent):
+        wx.CollapsiblePane.__init__(self, parent, wx.ID_ANY, 'Settings')
+
+    def reset_last_show_tooltip(self):
+        self.GetParent().reset_last_show_tooltip()
+
+    def GetPane(self):
+        pane = wx.CollapsiblePane.GetPane(self)
+        pane.reset_last_show_tooltip = self.reset_last_show_tooltip
+        return pane
 
 class ResourceFileEditor(_RobotTableEditor):
 
