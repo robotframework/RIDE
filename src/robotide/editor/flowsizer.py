@@ -102,8 +102,8 @@ class FlowSizer(wx.PySizer):
                 max_dx = max(dx, x + mdx + sdx - x0)
             self._needed_size = wx.Size(max_dx, max_dy)
             if not self._frozen:
-                self._do_parent('_freeze')
-            do_later(self._do_parent, '_thaw')
+                self._do_parent(self._freeze)
+            do_later(self._do_parent, self._thaw)
         else:
             self._needed_size = None
 
@@ -124,13 +124,13 @@ class FlowSizer(wx.PySizer):
             self._frozen = False
             window.Thaw()
 
-    def _do_parent(self, method):
+    def _do_parent(self, func):
         """
         Does a specified operation on the sizer's parent window.
         """
         for item in self.GetChildren():
             if item.IsWindow():
-                getattr(self, method)(item.GetWindow().GetParent())
+                func(item.GetWindow().GetParent())
                 return
 
 #-------------------------------------------------------------------------------
