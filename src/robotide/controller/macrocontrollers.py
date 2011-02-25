@@ -314,9 +314,9 @@ class TestCaseController(_BaseController, _WithStepsController):
         return [DocumentationController(self, self._test.doc),
                 FixtureController(self, self._test.setup),
                 FixtureController(self, self._test.teardown),
-                self.tags,
                 TimeoutController(self, self._test.timeout),
-                TemplateController(self, self._test.template)]
+                TemplateController(self, self._test.template),
+                self.tags]
 
     def move_up(self):
         return self._parent.move_up(self._test)

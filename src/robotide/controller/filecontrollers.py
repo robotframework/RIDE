@@ -300,10 +300,10 @@ class TestCaseFileController(_DataController):
 
     def _settings(self):
         ss = self._setting_table
-        return _DataController._settings(self) + \
-                [self.default_tags,
-                 TimeoutController(self, ss.test_timeout),
-                 TemplateController(self, ss.test_template)]
+        sett = _DataController._settings(self)
+        sett.insert(-1, TemplateController(self, ss.test_template))
+        sett.insert(-1, TimeoutController(self, ss.test_timeout))
+        return sett + [self.default_tags]
 
     @property
     def default_tags(self):
