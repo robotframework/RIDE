@@ -174,12 +174,10 @@ class Settings(wx.CollapsiblePane):
     def __init__(self, parent):
         wx.CollapsiblePane.__init__(self, parent, wx.ID_ANY, 'Settings')
 
-    def reset_last_show_tooltip(self):
-        self.GetParent().reset_last_show_tooltip()
-
     def GetPane(self):
         pane = wx.CollapsiblePane.GetPane(self)
-        pane.reset_last_show_tooltip = self.reset_last_show_tooltip
+        pane.reset_last_show_tooltip = self.GetParent().reset_last_show_tooltip
+        pane.tooltip_allowed = self.GetParent().tooltip_allowed
         return pane
 
 class ResourceFileEditor(_RobotTableEditor):

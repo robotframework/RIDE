@@ -29,6 +29,9 @@ class TagsDisplay(wx.Panel):
     def clear(self):
         self._sizer.Clear(True)
 
+    def GetSelection(self):
+        return None
+
     def get_height(self):
         return self._sizer.height
 
