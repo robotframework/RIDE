@@ -105,6 +105,21 @@ class CopyMacroAs(_Command):
         context.copy(self._new_name)
 
 
+class ChangeTag(_Command):
+
+    def __init__(self, tag, value):
+        self._tag = tag
+        self._value = value.strip()
+
+    def execute(self, context):
+        context.set_value(self._create_value(context.value))
+        context.notify_value_changed()
+
+    def _create_value(self, old_value):
+        val = old_value.replace(self._tag.name, self._value)
+        return ' | '.join(value for value in val.split(' | ') if value != '')
+
+
 class _ReversibleCommand(_Command):
 
     def execute(self, context):

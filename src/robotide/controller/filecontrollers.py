@@ -16,7 +16,7 @@ import os
 
 from robotide.controller.basecontroller import WithUndoRedoStacks,\
     _BaseController
-from robotide.controller.settingcontrollers import DocumentationController, \
+from robotide.controller.settingcontrollers import DocumentationController,\
     FixtureController, TimeoutController, TemplateController,\
     DefaultTagsController, ForceTagsController
 from robotide.controller.tablecontrollers import VariableTableController, \

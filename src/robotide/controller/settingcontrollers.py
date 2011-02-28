@@ -177,6 +177,9 @@ class TagsController(_SettingController):
     def _init(self, tags):
         self._tags = tags
 
+    def execute(self, command):
+        return command.execute(self)
+
     def _changed(self, value):
         return self._tags.value != self._split_from_separators(value)
 
@@ -194,7 +197,7 @@ class TagsController(_SettingController):
             return chain(forced,
                     self._parent.default_tags).__iter__()
         return chain(forced,
-                (Tag(t) for t in self._tags.value)).__iter__()
+                (Tag(t, self) for t in self._tags.value)).__iter__()
 
     @property
     def is_set(self):
@@ -210,7 +213,7 @@ class DefaultTagsController(TagsController):
     def __iter__(self):
         if self._tags.value is None:
             return [].__iter__()
-        return (DefaultTag(t) for t in self._tags.value).__iter__()
+        return (DefaultTag(t, self) for t in self._tags.value).__iter__()
 
 
 class ForceTagsController(TagsController):
@@ -228,7 +231,7 @@ class ForceTagsController(TagsController):
     def _gather_from_data(self, tags):
         if tags.value is None:
             return []
-        return [ForcedTag(t) for t in tags.value]
+        return [ForcedTag(t, self) for t in tags.value]
 
 
 class TimeoutController(_SettingController):

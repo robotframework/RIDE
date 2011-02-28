@@ -232,6 +232,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.OnDelete(event)
 
     def OnDelete(self, event=None):
+        if not self.has_focus():
+            return
         if self.IsCellEditControlShown():
             self.delete()
         else:
@@ -331,7 +333,10 @@ class KeywordEditor(GridEditor, RideEventHandler):
         return self.ClientToScreen(self.CalcScrolledPosition(point))
 
     def _move_rows(self, keycode):
-        self.OnMoveRowsUp() if keycode == wx.WXK_UP else self.OnMoveRowsDown()
+        if keycode == wx.WXK_UP:
+            self.OnMoveRowsUp()
+        else:
+            self.OnMoveRowsDown()
 
     def _move_grid_cursor(self, event, keycode):
         self.DisableCellEditControl()

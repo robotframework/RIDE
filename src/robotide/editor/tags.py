@@ -1,6 +1,7 @@
 from robotide.controller.tags import ForcedTag, DefaultTag, Tag
 import wx
 from robotide.editor.flowsizer import HorizontalFlowSizer
+from robotide.controller.commands import ChangeTag
 
 
 class TagsDisplay(wx.Panel):
@@ -10,8 +11,9 @@ class TagsDisplay(wx.Panel):
         self._sizer = HorizontalFlowSizer()
         self.SetSizer(self._sizer)
 
-    def add_tag(self, tag):
+    def add_tag(self, tag, editable):
         tag_component = TagBox(self, tag)
+        tag_component.SetEditable(editable)
         self._sizer.Add(tag_component)
 
     def build(self):
@@ -23,7 +25,7 @@ class TagsDisplay(wx.Panel):
     def set_value(self, tags, plugin):
         self.clear()
         for tag in tags:
-            self.add_tag(tag)
+            self.add_tag(tag, tag.controller == tags)
         self.build()
 
     def clear(self):
@@ -39,9 +41,25 @@ class TagBox(wx.TextCtrl):
 
     def __init__(self, parent, tag):
         wx.TextCtrl.__init__(self, parent, wx.ID_ANY, tag.name)
+        self.Bind(wx.EVT_KILL_FOCUS, self._focus_lost)
+        self.Bind(wx.EVT_KEY_UP, self._key_up)
+        self._tag = tag
         self._to_text_size(tag.name)
         self._colorize(tag)
-        self.SetEditable(False)
+
+    def _key_up(self, event):
+        if not self.IsEditable():
+            return
+        if event.GetKeyCode() == wx.WXK_ESCAPE:
+            self.SetValue(self._tag.name)
+
+    def _focus_lost(self, event):
+        if not self.IsEditable():
+            return
+        value = self.GetValue()
+        if value == self._tag.name:
+            return
+        self._tag.controller.execute(ChangeTag(self._tag, value))
 
     def _to_text_size(self, text):
         size = self.GetTextExtent(text)

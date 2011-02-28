@@ -20,8 +20,7 @@ from robotide.utils import RideEventHandler, RideHtmlWindow
 from robotide.widgets import ButtonWithHandler, HorizontalSizer
 from robotide.controller.chiefcontroller import ChiefController
 from robotide.controller.settingcontrollers import (DocumentationController,
-                                                    VariableController,
-    TagsController)
+                                                    VariableController, TagsController)
 from robotide.robotapi import (ResourceFile, TestCaseFile, TestDataDirectory,
                                TestCase, UserKeyword, Variable)
 
@@ -177,6 +176,10 @@ class Settings(wx.CollapsiblePane):
     def close(self):
         for editor in self._editors:
             editor.close()
+
+    def update_value(self):
+        for editor in self._editors:
+            editor.update_value()
 
     def create_editor_for(self, controller):
         editor_cls = self._get_editor_class(controller)
@@ -401,6 +404,8 @@ class SettingEditor(wx.Panel, RideEventHandler):
 
     def _has_selected_area(self):
         selection = self._value_display.GetSelection()
+        if selection is None:
+            return False
         return selection[0] == selection[1]
 
     def _navigate_to_user_keyword(self):
