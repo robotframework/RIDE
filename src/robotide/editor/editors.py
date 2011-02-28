@@ -126,10 +126,9 @@ class _RobotTableEditor(EditorPanel):
         for setting in self.controller.settings:
             editor = settings.create_editor_for(setting)
             settings.add(editor)
-            self._editors.append(editor)
         settings.build()
+        self._editors.append(settings)
         self.sizer.Add(settings, 0, wx.ALL|wx.EXPAND, 2)
-        self._settings = settings
 
     def _collabsible_changed(self, event):
         self.GetSizer().Layout()
@@ -163,12 +162,21 @@ class Settings(wx.CollapsiblePane):
         self._sizer = wx.BoxSizer(wx.VERTICAL)
         self._plugin = plugin
         self._tree = tree
+        self._editors = []
 
     def GetPane(self):
         pane = wx.CollapsiblePane.GetPane(self)
         pane.reset_last_show_tooltip = self.GetParent().reset_last_show_tooltip
         pane.tooltip_allowed = self.GetParent().tooltip_allowed
         return pane
+
+    def OnMotion(self, event):
+        for editor in self._editors:
+            editor.OnMotion(event)
+
+    def close(self):
+        for editor in self._editors:
+            editor.close()
 
     def create_editor_for(self, controller):
         editor_cls = self._get_editor_class(controller)
@@ -183,12 +191,22 @@ class Settings(wx.CollapsiblePane):
 
     def add(self, editor):
         self._sizer.Add(editor, 0, wx.ALL|wx.EXPAND, 2)
+        self._editors.append(editor)
 
     def build(self):
         self.GetPane().SetSizer(self._sizer)
         self.Collapse()
         self._sizer.SetSizeHints(self.GetPane())
 
+    def highlight(self, text):
+        match = False
+        for editor in self._editors:
+            if editor.contains(text):
+                editor.highlight(text)
+                match = True
+        if match:
+            self.Expand()
+            self.Parent.GetSizer().Layout()
 
 class ResourceFileEditor(_RobotTableEditor):
 
@@ -412,7 +430,10 @@ class SettingEditor(wx.Panel, RideEventHandler):
         self.plugin.unsubscribe(self.update_value, RideImportSetting)
 
     def highlight(self, text):
-        self._value_display.highlight(text)
+        return self._value_display.highlight(text)
+
+    def contains(self, text):
+        return self._value_display.contains(text)
 
 
 class SettingValueDisplay(wx.TextCtrl):
@@ -422,7 +443,6 @@ class SettingValueDisplay(wx.TextCtrl):
                              style=wx.TE_RICH|wx.TE_MULTILINE)
         self.SetEditable(False)
         self._colour_provider = ColorizationSettings(context.SETTINGS)
-        self._highlight_matcher = lambda x: False
         self._empty_values()
 
     def _empty_values(self):
@@ -436,17 +456,17 @@ class SettingValueDisplay(wx.TextCtrl):
         self.SetValue(self._value)
         self._colorize_data()
 
-    def _colorize_data(self):
-        self._colorize_background()
+    def _colorize_data(self, match=None):
+        self._colorize_background(match)
         self._colorize_possible_user_keyword()
 
-    def _colorize_background(self):
-        self.SetBackgroundColour(self._get_background_colour())
+    def _colorize_background(self, match=None):
+        self.SetBackgroundColour(self._get_background_colour(match))
 
-    def _get_background_colour(self):
+    def _get_background_colour(self, match=None):
         if self._value is None:
             return 'light grey'
-        if self._highlight_matcher(self._value):
+        if match is not None and self.contains(match):
             return self._colour_provider.get_highlight_color()
         return 'white'
 
@@ -463,9 +483,13 @@ class SettingValueDisplay(wx.TextCtrl):
         self._empty_values()
         self._colorize_background()
 
+    def contains(self, text):
+        if self._value is None:
+            return False
+        return [item for item in self._value.split(' | ') if utils.highlight_matcher(text, item)] != []
+
     def highlight(self, text):
-        self._highlight_matcher = lambda content: [ item for item in content.split(' | ') if utils.highlight_matcher(text, item) ]
-        self._colorize_data()
+        self._colorize_data(match=text)
 
 
 class DocumentationEditor(SettingEditor):
@@ -492,6 +516,9 @@ class DocumentationEditor(SettingEditor):
         if value_list:
             self._controller.editable_value = value_list[0]
 
+    def contains(self, text):
+        return False
+
     def highlight(self, text):
         pass
 
@@ -511,6 +538,9 @@ class TagsEditor(SettingEditor):
         self._tags_display.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
         self._tags_display.Bind(wx.EVT_KEY_DOWN, self.OnKey)
         return self._tags_display
+
+    def contains(self, text):
+        return False
 
     def highlight(self, text):
         pass
