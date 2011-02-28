@@ -1,6 +1,6 @@
 class Tag(object):
 
-    def __init__(self, name, controller):
+    def __init__(self, name, controller=None):
         self._name = name
         self._controller = controller
 
