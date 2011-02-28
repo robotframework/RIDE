@@ -197,9 +197,9 @@ class KeywordEditor(GridEditor, RideEventHandler):
         if selection_content is None:
             self.highlight(selection_content)
         else:
-            self._parent.highlight(selection_content)
+            self._parent.highlight(selection_content, expand=False)
 
-    def highlight(self, text):
+    def highlight(self, text, expand=True):
         self._colorizer.colorize(text)
 
     def _get_single_selection_content_or_none_on_first_call(self):

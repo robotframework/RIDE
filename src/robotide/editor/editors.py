@@ -150,9 +150,9 @@ class _RobotTableEditor(EditorPanel):
                     return child
         return None
 
-    def highlight(self, text):
+    def highlight(self, text, expand=True):
         for editor in self._editors:
-            editor.highlight(text)
+            editor.highlight(text, expand=expand)
 
 
 class Settings(wx.CollapsiblePane):
@@ -198,13 +198,15 @@ class Settings(wx.CollapsiblePane):
         self.Collapse()
         self._sizer.SetSizeHints(self.GetPane())
 
-    def highlight(self, text):
+    def highlight(self, text, expand=True):
         match = False
         for editor in self._editors:
             if editor.contains(text):
                 editor.highlight(text)
                 match = True
-        if match:
+            else:
+                editor.clear_highlight()
+        if match and expand:
             self.Expand()
             self.Parent.GetSizer().Layout()
 
@@ -432,6 +434,9 @@ class SettingEditor(wx.Panel, RideEventHandler):
     def highlight(self, text):
         return self._value_display.highlight(text)
 
+    def clear_highlight(self):
+        return self._value_display.clear_highlight()
+
     def contains(self, text):
         return self._value_display.contains(text)
 
@@ -491,6 +496,9 @@ class SettingValueDisplay(wx.TextCtrl):
     def highlight(self, text):
         self._colorize_data(match=text)
 
+    def clear_highlight(self):
+        self._colorize_data()
+
 
 class DocumentationEditor(SettingEditor):
 
@@ -522,6 +530,9 @@ class DocumentationEditor(SettingEditor):
     def highlight(self, text):
         pass
 
+    def clear_highlight(self):
+        pass
+
 
 class TagsEditor(SettingEditor):
 
@@ -543,6 +554,9 @@ class TagsEditor(SettingEditor):
         return False
 
     def highlight(self, text):
+        pass
+
+    def clear_highlight(self):
         pass
 
 
