@@ -121,32 +121,18 @@ class _RobotTableEditor(EditorPanel):
         return header
 
     def _add_settings(self):
-        settings = Settings(self)
+        settings = Settings(self, self.plugin, self._tree)
         settings.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self._collabsible_changed)
-        sizeri = wx.BoxSizer(wx.VERTICAL)
         for setting in self.controller.settings:
-            editor = self._create_editor_for(settings.GetPane(), setting)
-            sizeri.Add(editor, 0, wx.ALL|wx.EXPAND, 2)
+            editor = settings.create_editor_for(setting)
+            settings.add(editor)
             self._editors.append(editor)
-        settings.GetPane().SetSizer(sizeri)
-        settings.Expand()
-        sizeri.SetSizeHints(settings.GetPane())
+        settings.build()
         self.sizer.Add(settings, 0, wx.ALL|wx.EXPAND, 2)
         self._settings = settings
 
     def _collabsible_changed(self, event):
         self.GetSizer().Layout()
-
-    def _create_editor_for(self, parent, controller):
-        editor_cls = self._get_editor_class(controller)
-        return editor_cls(parent, controller, self.plugin, self._tree)
-
-    def _get_editor_class(self, controller):
-        if isinstance(controller, DocumentationController):
-            return DocumentationEditor
-        if isinstance(controller, TagsController):
-            return TagsEditor
-        return SettingEditor
 
     def highlight_cell(self, obj, row, column):
         '''Highlight the given object at the given row and column'''
@@ -172,14 +158,36 @@ class _RobotTableEditor(EditorPanel):
 
 class Settings(wx.CollapsiblePane):
 
-    def __init__(self, parent):
+    def __init__(self, parent, plugin, tree):
         wx.CollapsiblePane.__init__(self, parent, wx.ID_ANY, 'Settings')
+        self._sizer = wx.BoxSizer(wx.VERTICAL)
+        self._plugin = plugin
+        self._tree = tree
 
     def GetPane(self):
         pane = wx.CollapsiblePane.GetPane(self)
         pane.reset_last_show_tooltip = self.GetParent().reset_last_show_tooltip
         pane.tooltip_allowed = self.GetParent().tooltip_allowed
         return pane
+
+    def create_editor_for(self, controller):
+        editor_cls = self._get_editor_class(controller)
+        return editor_cls(self.GetPane(), controller, self._plugin, self._tree)
+
+    def _get_editor_class(self, controller):
+        if isinstance(controller, DocumentationController):
+            return DocumentationEditor
+        if isinstance(controller, TagsController):
+            return TagsEditor
+        return SettingEditor
+
+    def add(self, editor):
+        self._sizer.Add(editor, 0, wx.ALL|wx.EXPAND, 2)
+
+    def build(self):
+        self.GetPane().SetSizer(self._sizer)
+        self.Collapse()
+        self._sizer.SetSizeHints(self.GetPane())
 
 
 class ResourceFileEditor(_RobotTableEditor):
