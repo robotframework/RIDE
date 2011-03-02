@@ -1,4 +1,5 @@
 from robotide.controller.tags import ForcedTag, DefaultTag, Tag
+import os
 import wx
 from robotide.editor.flowsizer import HorizontalFlowSizer
 from robotide.controller.commands import ChangeTag
@@ -35,6 +36,8 @@ class TagsDisplay(wx.Panel):
         return None
 
     def get_height(self):
+        if os.name == 'nt':
+          return 80
         return self._sizer.height
 
 class TagBox(wx.TextCtrl):
