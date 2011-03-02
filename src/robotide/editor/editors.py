@@ -131,6 +131,7 @@ class _RobotTableEditor(EditorPanel):
 
     def _collabsible_changed(self, event):
         self.GetSizer().Layout()
+        event.Skip()
 
     def highlight_cell(self, obj, row, column):
         '''Highlight the given object at the given row and column'''
@@ -155,6 +156,8 @@ class _RobotTableEditor(EditorPanel):
 
 
 class Settings(wx.CollapsiblePane):
+
+    BORDER = 2
 
     def __init__(self, parent, plugin, tree):
         wx.CollapsiblePane.__init__(self, parent, wx.ID_ANY, 'Settings')
@@ -193,13 +196,21 @@ class Settings(wx.CollapsiblePane):
         return SettingEditor
 
     def add(self, editor):
-        self._sizer.Add(editor, 0, wx.ALL|wx.EXPAND, 2)
+        self._sizer.Add(editor, 0, wx.ALL|wx.EXPAND, self.BORDER)
         self._editors.append(editor)
 
     def build(self):
         self.GetPane().SetSizer(self._sizer)
         self.Collapse()
         self._sizer.SetSizeHints(self.GetPane())
+        self.Bind(wx.EVT_SIZE, self._recalc_size)
+
+    def _recalc_size(self, event):
+        if self.IsExpanded():
+            diff_to_pane = self.Size[1]-self.GetPane().Size[1]
+            height = sum(editor.Size[1]+2*self.BORDER for editor in self._editors)+diff_to_pane
+            self.SetSizeHints(-1, height)
+        event.Skip()
 
     def highlight(self, text, expand=True):
         match = False
