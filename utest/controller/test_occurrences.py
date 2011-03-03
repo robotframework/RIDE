@@ -168,8 +168,9 @@ class RenameOccurrenceTest(unittest.TestCase):
     def _steps_changed(self, test):
         self._steps_have_changed = True
 
-    def _testcase_settings_changed(self, test):
-        self._testcase_settings_have_changed = True
+    def _testcase_settings_changed(self, message):
+        if self.test_ctrl == message.item:
+            self._testcase_settings_have_changed = True
 
     def _name_changed(self, data):
         self._name_has_changed = True
