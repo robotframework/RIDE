@@ -10,12 +10,14 @@ class TagsDisplay(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, wx.ID_ANY)
         self._sizer = HorizontalFlowSizer()
+        self._tag_boxes = []
         self.SetSizer(self._sizer)
 
     def add_tag(self, tag, editable):
         tag_component = TagBox(self, tag)
         tag_component.SetEditable(editable)
         self._sizer.Add(tag_component)
+        self._tag_boxes.append(tag_component)
 
     def build(self):
         self._sizer.SetSizeHints(self)
@@ -24,20 +26,55 @@ class TagsDisplay(wx.Panel):
             parent_sizer.Layout()
 
     def set_value(self, tags, plugin):
-        self.clear()
-        for tag in tags:
-            self.add_tag(tag, tag.controller == tags)
+        if self._tag_boxes == []:
+            self._create_values(tags)
+        else:
+            #in GNOME you can have focus in a dead object
+            #  .. this causes Segmentation Faults
+            # Thus instead of clearing old values and adding new ones
+            # modify the ones that exist
+            self._modify_values(tags)
         self.build()
 
-    def clear(self):
-        self._sizer.Clear(True)
+    def _create_values(self, tags):
+        for tag in tags:
+            self.add_tag(tag, tag.controller == tags)
+
+    def _modify_values(self, tags):
+        self._recursive_tag_set([t for t in tags], self._tag_boxes, tags)
+
+    def _recursive_tag_set(self, tags, tbs, controller):
+        if tags == []:
+            return self._destroy_tagboxes(tbs)
+        if tbs == []:
+            return self._add_tags(tags, controller)
+        tagbox = tbs[0]
+        if tagbox.GetValue().strip() == '':
+            self._destroy_tagbox(tagbox)
+            return self._recursive_tag_set(tags, tbs[1:], controller)
+        t = tags[0]
+        tagbox.set_tag(t)
+        tagbox.SetEditable(t.controller == controller)
+        return self._recursive_tag_set(tags[1:], tbs[1:], controller)
+
+    def _destroy_tagboxes(self, tbs):
+        for tagbox in tbs:
+            self._destroy_tagbox(tagbox)
+
+    def _destroy_tagbox(self, tagbox):
+        tagbox.Destroy()
+        self._tag_boxes.remove(tagbox)
+
+    def _add_tags(self, tags, controller):
+        for tag in tags:
+            self.add_tag(tag, tag.controller == controller)
 
     def GetSelection(self):
         return None
 
     def get_height(self):
         if os.name == 'nt':
-          return 80
+            return 80
         return self._sizer.height
 
 class TagBox(wx.TextCtrl):
@@ -46,7 +83,12 @@ class TagBox(wx.TextCtrl):
         wx.TextCtrl.__init__(self, parent, wx.ID_ANY, tag.name)
         self.Bind(wx.EVT_KILL_FOCUS, self._focus_lost)
         self.Bind(wx.EVT_KEY_UP, self._key_up)
+        self.set_tag(tag)
+
+    def set_tag(self, tag):
         self._tag = tag
+        if self.GetValue() != tag.name:
+            self.SetValue(tag.name)
         self._to_text_size(tag.name)
         self._colorize(tag)
 
