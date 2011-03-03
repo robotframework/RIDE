@@ -18,6 +18,10 @@ class FakePlugin(object):
         return self._item
     def get_editor(self, itemclass):
         return self._editors[itemclass]
+    def subscribe(self, *args):
+        pass
+    def unsubscribe(self, *args):
+        pass
 
 
 class EditorCreatorTest(unittest.TestCase):
