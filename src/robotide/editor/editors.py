@@ -90,6 +90,12 @@ class _RobotTableEditor(EditorPanel):
         self._editors = []
         self.reset_last_show_tooltip()
         self._populate()
+        self.plugin.subscribe(self._settings_changed, RideItemSettingsChanged)
+
+    def _settings_changed(self, data):
+        if data.item == self.controller:
+            for editor in self._editors:
+                editor.update_value()
 
     def OnMotion(self, event):
         for editor in self._editors:
@@ -107,6 +113,7 @@ class _RobotTableEditor(EditorPanel):
         self._last_shown_tooltip = None
 
     def close(self):
+        self.plugin.unsubscribe(self._settings_changed, RideItemSettingsChanged)
         self.Unbind(wx.EVT_MOTION)
         self.Show(False)
 
@@ -584,18 +591,12 @@ class TestCaseEditor(_RobotTableEditor):
         self._add_settings()
         self.sizer.Add((0,10))
         self._create_kweditor()
-        self.plugin.subscribe(self._settings_changed, RideItemSettingsChanged)
         self.plugin.subscribe(self._name_changed, RideItemNameChanged)
 
     def _create_kweditor(self):
         self.kweditor = KeywordEditor(self, self.controller, self._tree)
         self.sizer.Add(self.kweditor, 1, wx.EXPAND|wx.ALL, 2)
         self._editors.append(self.kweditor)
-
-    def _settings_changed(self, data):
-        if data.item == self.controller:
-            for editor in self._editors:
-                editor.update_value()
 
     def _name_changed(self, data):
         if data.item == self.controller:
@@ -606,7 +607,6 @@ class TestCaseEditor(_RobotTableEditor):
             editor.close()
         _RobotTableEditor.close(self)
         self.kweditor.close()
-        self.plugin.unsubscribe(self._settings_changed, RideItemSettingsChanged)
         self.plugin.unsubscribe(self._name_changed, RideItemNameChanged)
 
     def save(self):
@@ -685,6 +685,9 @@ class _AbstractListEditor(ListEditor):
     def update_data(self):
         ListEditor.update_data(self)
         self._tree.mark_dirty(self._controller)
+
+    def update_value(self):
+        pass
 
     def close(self):
         pass

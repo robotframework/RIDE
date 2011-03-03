@@ -26,7 +26,7 @@ from robotide.publish import RideDataFileRemoved, RideInitFileRemoved
 from robotide.robotapi import TestDataDirectory, TestCaseFile, ResourceFile
 from robotide import utils
 from robotide.publish.messages import RideDataChangedToDirty,\
-    RideDataDirtyCleared, RideSuiteAdded
+    RideDataDirtyCleared, RideSuiteAdded, RideItemSettingsChanged
 from robotide.controller.macrocontrollers import UserKeywordController
 
 def DataController(data, chief, parent=None):
@@ -219,7 +219,7 @@ class _DataController(_BaseController, WithUndoRedoStacks):
         return self._chief_controller.resource_import_modified(path, self.directory)
 
     def notify_settings_changed(self):
-        pass
+        RideItemSettingsChanged(item=self).publish()
 
     def notify_steps_changed(self):
         for test in self.tests:

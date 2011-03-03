@@ -36,6 +36,9 @@ class TagsDisplay(wx.Panel):
             self._modify_values(tags)
         self.build()
 
+    def clear(self):
+        self._destroy_tagboxes(self._tag_boxes[:])
+
     def _create_values(self, tags):
         for tag in tags:
             self.add_tag(tag, tag.controller == tags)
