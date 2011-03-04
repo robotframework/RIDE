@@ -254,7 +254,7 @@ class HtmlFileWriter(_WriterHelper):
         colspan = isinstance(element, Documentation)
         content = self._get_element_as_list(element)
         if self._in_tcuk:
-            self._write_data([self._get_tcuk_name()]+content, 
+            self._write_data([self._get_tcuk_name()]+content,
                              indent=1, colspan=colspan)
         else:
             self._write_data(content, colspan=colspan)
@@ -306,4 +306,5 @@ class HtmlFileWriter(_WriterHelper):
         else:
             return ''
         self._tc_name = self._uk_name = ''
-        return '<a name="%s_%s">%s</a>' % (t, utils.html_attr_escape(n), n)
+        return '<a name="%s_%s">%s</a>' % (t, utils.html_attr_escape(n),
+                                           utils.html_escape(n))
