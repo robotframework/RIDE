@@ -41,13 +41,11 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
         style=wx.SIMPLE_BORDER
         style |= wx.TR_HIDE_ROOT
         style |= wx.TR_HAS_BUTTONS
-        style |= wx.TR_AUTO_CHECK_CHILD
         style |= wx.TR_HAS_VARIABLE_ROW_HEIGHT
         style |= wx.TR_FULL_ROW_HIGHLIGHT
     else:
         style = customtreectrl.TR_HIDE_ROOT
         style |= customtreectrl.TR_HAS_BUTTONS
-        style |= customtreectrl.TR_AUTO_CHECK_CHILD
         style |= customtreectrl.TR_HAS_VARIABLE_ROW_HEIGHT
         style |= customtreectrl.TR_FULL_ROW_HIGHLIGHT
 
