@@ -130,7 +130,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def OnLabelRightClick(self, event):
         self._active_row = event.GetRow()
-        popupitems = ['Insert Rows', 'Delete Rows\tDel',
+        popupitems = ['Insert Rows', 'Delete Rows',
                       'Comment Rows\tCtrl-3', 'Uncomment Rows\tCtrl-4',
                       'Move Rows Up\tAlt-Up', 'Move Rows Down\tAlt-Down']
         PopupMenu(self, PopupMenuItems(self, popupitems))
