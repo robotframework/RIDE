@@ -141,10 +141,8 @@ class TestRunnerPlugin(Plugin):
             self.profiles[profile.name] = profile(plugin=self)
 
     def _subscribe_to_events(self):
-        self.subscribe(self.OnModelChanged, *[RideUserKeywordAdded,
-                                              RideTestCaseAdded,
+        self.subscribe(self.OnModelChanged, *[RideTestCaseAdded,
                                               RideOpenSuite,
-                                              RideOpenResource,
                                               RideItemNameChanged,
                                               RideTestCaseRemoved,
                                               RideSuiteAdded])
