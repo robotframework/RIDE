@@ -95,6 +95,10 @@ class TagBox(wx.TextCtrl):
         self._to_text_size(tag.name)
         self._colorize(tag)
 
+    def SetEditable(self, editable):
+        wx.TextCtrl.SetEditable(self, editable)
+        self._colorize(self._tag)
+
     def _key_up(self, event):
         if not self.IsEditable():
             return
@@ -116,7 +120,10 @@ class TagBox(wx.TextCtrl):
         self.SetMinSize(new_size)
 
     def _colorize(self, tag):
-        self.SetForegroundColour(tag.choose({Tag:'black', ForcedTag:'red', DefaultTag:'gray'}))
+        if not self.IsEditable():
+            self.SetForegroundColour(tag.choose({Tag:'black', ForcedTag:'red', DefaultTag:'gray'}))
+        else:
+            self.SetForegroundColour('black')
 
 if __name__ == '__main__':
     class MyFrame(wx.Frame):
