@@ -45,7 +45,6 @@ from robotide.pluginapi import Plugin, ActionInfo
 from robotide.publish import (RideUserKeywordAdded, RideTestCaseAdded,
                               RideOpenSuite, RideOpenResource,
                               RideItemNameChanged, RideTestCaseRemoved)
-from robotide.run.process import Process
 import wx
 import wx.stc
 from wx.lib.embeddedimage import PyEmbeddedImage
@@ -523,9 +522,9 @@ class TestRunnerPlugin(Plugin):
 
     def _remove_from_notebook(self):
         """Remove the tab for this plugin from the notebook"""
-        notebook = self._frame.notebook
-        if notebook:
-            notebook.DeletePage(notebook.GetPageIndex(self.panel))
+        if self.notebook:
+            self.notebook.allow_closing(self.panel)
+            self.notebook.delete_tab(self.panel)
 
     def _build_config_panel(self, parent):
         """Builds the configuration panel for this plugin"""
