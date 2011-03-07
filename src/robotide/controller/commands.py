@@ -19,6 +19,7 @@ from robotide.controller.macrocontrollers import KeywordNameController, \
 from robotide.controller.settingcontrollers import _SettingController
 import time
 import os
+from robotide.publish.messages import RideSelectResource
 
 
 class Occurrence(object):
@@ -171,6 +172,7 @@ class CreateNewResource(_Command):
     def execute(self, context):
         res = context.new_resource(self._path)
         context.update_default_dir(self._path)
+        RideSelectResource(item=res).publish()
         return res
 
 

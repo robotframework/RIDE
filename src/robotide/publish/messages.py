@@ -189,6 +189,9 @@ class RideOpenResource(RideMessage):
     """Sent when a new resource has finished loading."""
     data = ['path', 'datafile']
 
+class RideSelectResource(RideMessage):
+    """Sent when a resource should be selected."""
+    data = ['item']
 
 class RideDataFileRemoved(RideMessage):
     data = ['path', 'datafile']
