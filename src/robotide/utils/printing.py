@@ -21,9 +21,11 @@ class Printing(HtmlEasyPrinting):
         HtmlEasyPrinting.__init__(self)
 
     def GetHtmlText(self,text):
-        html_text = text.replace('\n\n','<p>')
-        html_text = html_text.replace('\n', '<br>')
-        return html_text
+        text = text.replace('\t', '&nbsp;&nbsp;&nbsp;&nbsp;')
+        text = text.replace(' ', '&nbsp;')
+        text = text.replace('\n\n','<p>')
+        text = text.replace('\n', '<br>')
+        return text
 
     def preview_text(self, text):
         if not '<html>' in text:
