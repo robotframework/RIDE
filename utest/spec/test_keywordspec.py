@@ -38,6 +38,11 @@ class TestLibrarySpec(unittest.TestCase):
         spec = LibrarySpec('ArgLib', ['val', 'WITH NAME', 'MyLib'])
         assert_equals(len(spec.keywords), 2)
 
+    def test_importing_library_with_mutable_objects(self):
+        spec = LibrarySpec('ArgLib', [[1,2], {1:3}])
+        assert_equals(len(spec.keywords), 2)
+
+
     def test_reading_library_from_pythonpath(self):
         # TODO: IS this test needed or is this tested in kwinfo tests?
         spec = LibrarySpec('TestLib')

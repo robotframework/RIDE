@@ -87,9 +87,7 @@ class PreviewPanel(wx.Panel):
         notebook.AddPage(self, "Preview")
 
     def OnPrint(self, evt):
-        datafile = self._parent.datafile
-        content = datafile and self._get_content(datafile) or ''
-        self._printing.preview_text(content)
+        self._printing.preview_text(self._get_content())
 
     @property
     def _file_format(self):
@@ -135,11 +133,12 @@ class PreviewPanel(wx.Panel):
         self._view.scroll_to_subitem(item)
 
     def update_preview(self):
-        datafile = self._parent.datafile
-        content = datafile and self._get_content(datafile) or ''
-        self._view.set_content(content.decode('UTF-8'))
+        self._view.set_content(self._get_content().decode('UTF-8'))
 
-    def _get_content(self, datafile):
+    def _get_content(self):
+        datafile = self._parent.datafile
+        if not datafile:
+            return ''
         output = StringIO()
         ctx = SerializationContext(output=output, format=self._file_format,
                                    pipe_separated=self._pipe_separated)
