@@ -40,6 +40,8 @@ import threading
 import atexit
 import shutil
 import signal
+import posixpath
+from posixpath import curdir, sep, pardir, join
 from robot.parsing.model import TestCase
 from robotide.pluginapi import Plugin, ActionInfo
 from robotide.publish import (RideUserKeywordAdded, RideTestCaseAdded,
@@ -474,7 +476,6 @@ class TestRunnerPlugin(Plugin):
         custom_args = profile.get_custom_args()
 
         argfile = os.path.join(self._tmpdir, "argfile.txt")
-        self._relpath(self.model.suite.source)
         command.extend(["--argumentfile", argfile])
         command.extend(["--listener", listener])
         command.append(self._relpath(self.model.suite.source))
@@ -503,16 +504,19 @@ class TestRunnerPlugin(Plugin):
 
     # the python 2.6 os.path package provides a relpath() function,
     # but we're running 2.5 so we have to roll our own
-    def _relpath(self, path):
-        """Generate a relative path"""
-        path = path.rstrip("/")
-        start = os.getcwd()
-        if path == start:
-            return "."
-        elif path.find(start) == 0:
-            return path[len(start)+1:]
-        else:
-            return path
+    def _relpath(self, path, start=curdir):
+        """Return a relative version of a path"""
+        if not path:
+            raise ValueError("no path specified")
+        start_list = posixpath.abspath(start).split(sep)
+        path_list = posixpath.abspath(path).split(sep)
+        # Work out how much of the filepath is shared by start and path.
+        i = len(posixpath.commonprefix([start_list, path_list]))
+        rel_list = [pardir] * (len(start_list)-i) + path_list[i:]
+        if not rel_list:
+            return curdir
+        return join(*rel_list)
+
 
     def _build_ui(self):
         """Creates the UI for this plugin"""
