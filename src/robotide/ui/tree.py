@@ -28,7 +28,7 @@ from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideTestCaseAdded, RideUserKeywordRemoved, RideTestCaseRemoved, RideDataFileRemoved,\
     RideDataChangedToDirty, RideDataDirtyCleared, RideVariableRemoved,\
     RideVariableAdded, RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated, \
-    RideOpenResource, RideSuiteAdded
+    RideOpenResource, RideSuiteAdded, RideSelectResource
 from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
     AddKeyword, AddTestCase, RenameTest, CopyMacroAs, MoveTo,\
     AddVariable, AddSuite
@@ -95,6 +95,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def _subscribe_to_messages(self):
         for listener, topic in [ (self._item_changed, RideItem),
                                  (self._resource_added, RideOpenResource),
+                                 (self._select_resource, RideSelectResource),
                                  (self._suite_added, RideSuiteAdded),
                                  (self._keyword_added, RideUserKeywordAdded),
                                  (self._test_added, RideTestCaseAdded),
@@ -147,10 +148,12 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _resource_added(self, message):
         ctrl = message.datafile
-        node = self._find_node_by_controller(ctrl)
-        if node:
+        if self._find_node_by_controller(ctrl):
             return
-        node = self._render_datafile(self._resource_root, ctrl)
+        self._render_datafile(self._resource_root, ctrl)
+
+    def _select_resource(self, message):
+        node = self._find_node_by_controller(message.item)
         self.SelectItem(node)
 
     def _suite_added(self, message):
