@@ -49,7 +49,7 @@ class LibrarySpec(Spec):
 
     def __init__(self, name, args=None):
         self.name = self._get_library_name(name)
-        if args and len(args) >= 2 and args[-2].upper() == 'WITH NAME':
+        if args and len(args) >= 2 and isinstance(args[-2], basestring) and args[-2].upper() == 'WITH NAME':
             args = args[:-2]
         try:
             self.keywords, self.doc = self._init_from_library(self.name, args)
