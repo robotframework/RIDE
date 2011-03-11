@@ -695,7 +695,7 @@ class _AbstractListEditor(ListEditor):
     def OnMotion(self, event):
         pass
 
-    def highlight(self, text):
+    def highlight(self, text, expand=False):
         pass
 
 
