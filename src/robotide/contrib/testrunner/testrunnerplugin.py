@@ -44,8 +44,7 @@ import posixpath
 from posixpath import curdir, sep, pardir, join
 from robot.parsing.model import TestCase
 from robotide.pluginapi import Plugin, ActionInfo
-from robotide.publish import (RideUserKeywordAdded, RideTestCaseAdded,
-                              RideOpenSuite, RideOpenResource,
+from robotide.publish import (RideTestCaseAdded, RideOpenSuite,
                               RideItemNameChanged, RideTestCaseRemoved)
 import wx
 import wx.stc
