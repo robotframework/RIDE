@@ -138,8 +138,11 @@ class KeywordEditor(GridEditor, RideEventHandler):
         event.Skip()
 
     def OnInsertRows(self, event):
-        self._execute(AddRows(self.GetSelectedRows()))
+        self._execute(AddRows(self.GetSelectedRowsOrRowsOnGrid()))
         event.Skip()
+
+    def GetSelectedRowsOrRowsOnGrid(self):
+        return self.GetSelectedRows() or self.selection.rows()
 
     def OnInsertCells(self, event):
         self._execute(InsertCells(self.selection.topleft,
@@ -152,12 +155,12 @@ class KeywordEditor(GridEditor, RideEventHandler):
         event.Skip()
 
     def OnCommentRows(self, event=None):
-        self._execute(CommentRows(self.GetSelectedRows()))
+        self._execute(CommentRows(self.GetSelectedRowsOrRowsOnGrid()))
         if event is not None:
             event.Skip()
 
     def OnUncommentRows(self, event=None):
-        self._execute(UncommentRows(self.GetSelectedRows()))
+        self._execute(UncommentRows(self.GetSelectedRowsOrRowsOnGrid()))
         if event is not None:
             event.Skip()
 
@@ -168,7 +171,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self._row_move(MoveRowsDown, 1)
 
     def _row_move(self, command, change):
-        rows = self.GetSelectedRows()
+        rows = self.GetSelectedRowsOrRowsOnGrid()
         if self._execute(command(rows)):
             wx.CallAfter(self._select_rows, [r+change for r in rows])
 
@@ -248,7 +251,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
                 self._execute(PasteArea(self.selection.topleft, data))
 
     def OnDeleteRows(self, event):
-        self._execute(DeleteRows(self.GetSelectedRows()))
+        self._execute(DeleteRows(self.GetSelectedRowsOrRowsOnGrid()))
         self.ClearSelection()
         event.Skip()
 
