@@ -536,7 +536,7 @@ class _RowChangingCommand(_StepsChangingCommand):
     def __init__(self, row):
         '''Command that will operate on a given logical `row` of test/user keyword.
 
-        Giving -1 as `row` means that opeartion is done on the last row.
+        Giving -1 as `row` means that operation is done on the last row.
         '''
         self._row = row
 
