@@ -11,4 +11,6 @@ except ImportError:
 if __name__ == '__main__':
     if run:
         sys.argv.append('--m=^test')
-        run(defaultTest=os.path.dirname(__file__))
+        tests_passed = run(defaultTest=os.path.dirname(__file__))
+        retcode = 0 if tests_passed else 1
+        sys.exit(retcode)
