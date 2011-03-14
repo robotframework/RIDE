@@ -106,7 +106,8 @@ class EditorPlugin(Plugin):
         if message and message.text == 'Resources':
             return
         self._show_editor()
-        self._editor.tree_item_selected(message.item)
+        if self._editor:
+            self._editor.tree_item_selected(message.item)
 
     def OnOpenEditor(self, event):
         self._show_editor()
