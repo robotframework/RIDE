@@ -462,39 +462,41 @@ class TestRunnerPlugin(Plugin):
 
     def _get_command(self):
         '''Return the command (as a list) used to run the test'''
-        listener = os.path.join(os.path.dirname(__file__), 
-                                "SocketListener.py")+ ":%s" % self._port
-
         profile = self.get_current_profile()
-        command = profile.get_command_prefix()
-        custom_args = profile.get_custom_args()
+        command = profile.get_command_prefix()[:]
 
         argfile = os.path.join(self._tmpdir, "argfile.txt")
+        command.extend(profile.get_commandline_arguments())
         command.extend(["--argumentfile", argfile])
-        command.extend(["--listener", listener])
+        command.extend(["--listener", self._get_listener_to_cmd()])
         command.append(self._relpath(self.model.suite.source))
 
-        # robot wants to know a fixed size for output, so calculate the
-        # width of the window based on average width of a character. A
-        # little is subtracted just to make sure there's a little margin
-        out_width, _ = self.out.GetSizeTuple()
-        char_width = self.out.GetCharWidth()
-        monitorwidth = int(out_width/char_width)-10
-
         standard_args = []
+        standard_args.extend(profile.get_robot_arguments())
         standard_args.extend(["--outputdir",self._tmpdir])
         standard_args.extend(["--monitorcolors","off"])
-        standard_args.extend(["--monitorwidth",str(monitorwidth)])
+        standard_args.extend(["--monitorwidth", self._get_monitor_width()])
 
         for (suite, test) in self._tree.GetCheckedTestsByName():
             standard_args.extend(["--suite", suite, "--test", test])
 
         f = open(argfile, "w")
-        f.write("\n".join(custom_args) + "\n")
         f.write("\n".join(standard_args))
         f.close()
 
         return command
+
+    def _get_listener_to_cmd(self):
+        return os.path.join(os.path.dirname(__file__),
+                            "SocketListener.py") + ":%s" % self._port
+
+    def _get_monitor_width(self):
+        # robot wants to know a fixed size for output, so calculate the
+        # width of the window based on average width of a character. A
+        # little is subtracted just to make sure there's a little margin
+        out_width, _ = self.out.GetSizeTuple()
+        char_width = self.out.GetCharWidth()
+        return str(int(out_width/char_width)-10)
 
     # the python 2.6 os.path package provides a relpath() function,
     # but we're running 2.5 so we have to roll our own

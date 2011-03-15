@@ -54,7 +54,7 @@ class BaseProfile(object):
         self.toolbar = None
 
     def __getattr__(self, name):
-        """Provides attribute access to profiles settings"""
+        """Provides attribute access to profile's settings"""
         try:
             return getattr(self.plugin, self._get_setting_name(name))
         except AttributeError:
@@ -78,10 +78,25 @@ class BaseProfile(object):
         return self.toolbar
 
     def _get_toolbar(self, parent):
-        return self.TagsPanel(parent)
+        panel = wx.Panel(parent, wx.ID_ANY)
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(self.ArgumentsPanel(panel), 0, wx.ALL|wx.EXPAND)
+        sizer.Add(self.TagsPanel(panel), 0, wx.ALL|wx.EXPAND)
+        panel.SetSizerAndFit(sizer)
+        return panel
 
-    def get_custom_args(self):
-        '''Return a list of arguments unique to this profile'''
+    def get_commandline_arguments(self):
+        return self.arguments.split()
+
+    def get_robot_arguments(self):
+        '''Return a list of arguments unique to this profile
+
+        Returned arguments are in format accepted by Robot Framework's argument
+        file.
+        '''
+        if hasattr(self, "get_custom_args"): # Support for old interface
+            print "Please update your Test Runner profile's get_custom_args method to get_robot_arguments."
+            return self.get_custom_args()
         args = []
         if self.apply_include_tags and self.include_tags:
             for include in self._get_tags_from_string(self.include_tags):
@@ -105,6 +120,19 @@ class BaseProfile(object):
             return ["pybot.bat"]
         else:
             return ["pybot"]
+
+    def ArgumentsPanel(self, parent):
+        panel = wx.Panel(parent, wx.ID_ANY)
+        label = wx.StaticText(panel, label="Arguments: ")
+        self._arguments = wx.TextCtrl(panel, wx.ID_ANY, size=(-1,-1),
+                                     value=self.arguments)
+        self._arguments.SetToolTipString("Arguments for the test run. Arguments are space separated list.")
+        self._arguments.Bind(wx.EVT_TEXT, self.OnArgumentsChanged)
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer.Add(label, 0, wx.ALL|wx.EXPAND)
+        sizer.Add(self._arguments, 1, wx.ALL|wx.EXPAND)
+        panel.SetSizerAndFit(sizer)
+        return panel
 
     def TagsPanel(self, parent):
         '''Create a panel to input include/exclude tags'''
@@ -137,6 +165,9 @@ class BaseProfile(object):
         checkbox = wx.CheckBox(parent, wx.ID_ANY, title)
         checkbox.SetValue(value)
         return checkbox
+
+    def OnArgumentsChanged(self, evt):
+        self.set_setting("arguments", self._arguments.GetValue())
 
     def OnExcludeCheckbox(self, evt):
         self.set_setting("apply_exclude_tags", evt.IsChecked())
@@ -176,6 +207,7 @@ class CustomScriptProfile(BaseProfile):
         panel = wx.Panel(parent, wx.ID_ANY)
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self._create_run_script_panel(panel), 0, wx.ALL|wx.EXPAND)
+        sizer.Add(self.ArgumentsPanel(panel), 0, wx.ALL|wx.EXPAND)
         sizer.Add(self.TagsPanel(panel), 0, wx.ALL|wx.EXPAND)
         panel.SetSizerAndFit(sizer)
         return panel
