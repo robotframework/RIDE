@@ -1,4 +1,5 @@
 import unittest
+import os
 from robot.parsing.model import TestCaseFile
 from robot.parsing.populators import FromFilePopulator
 from robot.utils.asserts import assert_equals
@@ -19,6 +20,10 @@ class TestCaseCommandTest(unittest.TestCase, _FakeChief):
         PUBLISHER.subscribe(self._test_changed, RideItemStepsChanged)
         self._orig_number_of_steps = len(self._ctrl.steps)
         self._number_of_test_changes = 0
+
+    def tearDown(self):
+        if os.path.exists('path'):
+            os.removedirs('path')
 
     def _create_data(self):
         return BASE_DATA[:]

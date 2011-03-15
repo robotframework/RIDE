@@ -206,7 +206,7 @@ class _DataController(_BaseController, WithUndoRedoStacks):
 
     @property
     def source(self):
-        return self.data.source
+        return self.data.source if self.data else None
 
     @property
     def directory(self):
