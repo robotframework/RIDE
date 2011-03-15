@@ -1,12 +1,16 @@
 from resources import PYAPP_REFERENCE
 import unittest
 import wx
+import os
 from mock import Mock
 from robot.utils.asserts import assert_equals, assert_true
 
 from robotide.controller import NewDatafile, DataController
 from robotide.editor.editors import EditorCreator
 from robotide.editor.editors import TestCaseFileEditor
+
+DATADIR = 'fake'
+DATAPATH = '%s/path' % DATADIR
 TestCaseFileEditor._populate = lambda self: None
 
 
@@ -30,6 +34,10 @@ class EditorCreatorTest(unittest.TestCase):
         self._registered_editors = {}
         self.creator = EditorCreator(self._register)
         self.creator.register_editors()
+
+    def tearDown(self):
+        if os.path.exists(DATADIR):
+            os.rmdir(DATADIR)
 
     def _register(self, iclass, eclass):
         self._registered_editors[iclass] = eclass
@@ -64,4 +72,4 @@ class EditorCreatorTest(unittest.TestCase):
                           self._datafile_controller())
 
     def _datafile_controller(self):
-        return DataController(NewDatafile('fake/path', False), None)
+        return DataController(NewDatafile(DATAPATH, False), None)

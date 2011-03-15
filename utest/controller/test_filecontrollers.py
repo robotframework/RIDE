@@ -1,4 +1,6 @@
 import unittest
+import os
+import shutil
 from robot.parsing import TestCase
 from robot.parsing.model import TestCaseFile, TestDataDirectory
 from robot.utils.asserts import (assert_equals, assert_true, assert_false)
@@ -34,6 +36,8 @@ class TestMarkUnMarkDirty(unittest.TestCase):
     def tearDown(self):
         for listener, topic in self.messages:
             PUBLISHER.unsubscribe(listener, topic)
+        if os.path.exists('path'):
+            shutil.rmtree('path')
 
     def _changes(self, payload):
         self._has_unsaved_changes = payload.datafile
