@@ -78,6 +78,9 @@ class _RobotTableEditor(EditorPanel):
     name = 'table'
     doc = 'table editor'
 
+    SETTINGS_OPEN = False
+
+
     def __init__(self, plugin, parent, controller, tree):
         EditorPanel.__init__(self, plugin, parent, controller, tree)
         self.sizer = wx.BoxSizer(wx.VERTICAL)
@@ -237,8 +240,6 @@ class Settings(wx.CollapsiblePane):
             self.Parent.GetSizer().Layout()
 
 class ResourceFileEditor(_RobotTableEditor):
-
-    SETTINGS_OPEN = False
 
     def tree_item_selected(self, item):
         if isinstance(item, VariableController):
@@ -591,8 +592,6 @@ class TagsEditor(SettingEditor):
 
 
 class TestCaseEditor(_RobotTableEditor):
-
-    SETTINGS_OPEN = False
 
     def _populate(self):
         self.header = self._create_header(self.controller.name)
