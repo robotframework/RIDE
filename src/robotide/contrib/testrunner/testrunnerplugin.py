@@ -71,8 +71,8 @@ sys.path.pop(0)
 
 
 def _RunProfile(name, run_prefix):
-    return type('Profile', (runprofiles.BaseProfile,),
-                {'name': name, 'get_command_prefix': lambda self: [run_prefix]})
+    return type('Profile', (runprofiles.PybotProfile,),
+                {'name': name, 'get_command': lambda self: run_prefix})
 
 
 class TestRunnerPlugin(Plugin):
@@ -132,8 +132,14 @@ class TestRunnerPlugin(Plugin):
                                              for name, run_prefix in self.runprofiles]
 
     def _read_run_profiles_from_classes(self):
-        for profile in runprofiles.BaseProfile.__subclasses__():
+        for profile in self._get_all_subclasses(runprofiles.BaseProfile):
             self.profiles[profile.name] = profile(plugin=self)
+
+    def _get_all_subclasses(self, class_):
+        classes = []
+        for sub_class in class_.__subclasses__():
+            classes += [sub_class] + self._get_all_subclasses(sub_class)
+        return classes
 
     def _subscribe_to_events(self):
         self.subscribe(self.OnModelChanged, *[RideTestCaseAdded,
@@ -466,13 +472,12 @@ class TestRunnerPlugin(Plugin):
         command = profile.get_command_prefix()[:]
 
         argfile = os.path.join(self._tmpdir, "argfile.txt")
-        command.extend(profile.get_commandline_arguments())
         command.extend(["--argumentfile", argfile])
         command.extend(["--listener", self._get_listener_to_cmd()])
         command.append(self._relpath(self.model.suite.source))
 
         standard_args = []
-        standard_args.extend(profile.get_robot_arguments())
+        standard_args.extend(profile.get_custom_args())
         standard_args.extend(["--outputdir",self._tmpdir])
         standard_args.extend(["--monitorcolors","off"])
         standard_args.extend(["--monitorwidth", self._get_monitor_width()])

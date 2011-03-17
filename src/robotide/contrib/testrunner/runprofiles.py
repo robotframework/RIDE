@@ -27,6 +27,7 @@ import wx
 from wx.lib.filebrowsebutton import FileBrowseButton
 import os
 
+
 class BaseProfile(object):
     '''Base class for all test runner profiles
 
@@ -42,6 +43,64 @@ class BaseProfile(object):
 
     # this will be set to the plugin instance at runtime
     plugin = None
+    default_settings = {}
+
+    def __init__(self, plugin):
+        '''plugin is required so that the profiles can save their settings'''
+        self.plugin = plugin
+
+    def get_toolbar(self, parent):
+        '''Returns a panel with toolbar controls to be shown for this profile'''
+        return wx.Panel(parent, wx.ID_ANY)
+
+    def get_custom_args(self):
+        '''Return a list of arguments unique to this profile.
+
+        Returned arguments are in format accepted by Robot Framework's argument
+        file.
+        '''
+        return []
+
+    def get_command_prefix(self):
+        '''Returns a command and any special arguments for this profile'''
+        return ["pybot.bat" if os.name == "nt" else "pybot"]
+
+    def set_setting(self, name, value):
+        '''Sets a plugin setting
+        
+        setting is automatically prefixed with profile's name and it can be 
+        accessed with direct attribute access. See also __getattr__.
+        '''
+        self.plugin.save_setting(self._get_setting_name(name), value, delay=2)
+
+    def __getattr__(self, name):
+        """Provides attribute access to profile's settings
+        
+        If for example default_settings = {'setting1' = ""} is defined
+        then setting1 value can be used like self.setting1
+        set_setting is used to store the value.
+        """
+        try:
+            return getattr(self.plugin, self._get_setting_name(name))
+        except AttributeError:
+            try:
+                return getattr(self.plugin, name) #Support users old saved values
+            except AttributeError:
+                if self.default_settings.has_key(name):
+                    return self.default_settings[name]
+                raise
+
+    def _get_setting_name(self, name):
+        """Adds profile's name to the setting."""
+        return "%s_%s" % (self.name.replace(' ', '_'), name)
+
+
+class PybotProfile(BaseProfile):
+    '''A runner profile which uses pybot
+
+    It is assumed that pybot is on the path
+    '''
+    name = "pybot"
     default_settings = {"arguments": "",
                         "include_tags": "",
                         "exclude_tags": "",
@@ -49,54 +108,17 @@ class BaseProfile(object):
                         "apply_exclude_tags": False}
 
     def __init__(self, plugin):
-        '''plugin is required so that the profiles can save their settings'''
-        self.plugin = plugin
-        self.toolbar = None
+        BaseProfile.__init__(self, plugin)
+        self._toolbar = None
 
-    def __getattr__(self, name):
-        """Provides attribute access to profile's settings"""
-        try:
-            return getattr(self.plugin, self._get_setting_name(name))
-        except AttributeError:
-            try:
-                return getattr(self.plugin, name) #Support users old saved values
-            except AttributeError:
-                return self.default_settings[name]
+    def get_command_prefix(self):
+        '''Returns a command and any special arguments for this profile'''
+        return [self.get_command()] + self.arguments.split()
 
-    def _get_setting_name(self, name):
-        """Adds profile's name to the setting."""
-        return "%s_%s" % (self.name.replace(' ', '_'), name)
+    def get_command(self):
+        return "pybot.bat" if os.name == "nt" else "pybot"
 
-    def set_setting(self, name, value):
-        '''Sets a plugin setting'''
-        self.plugin.save_setting(self._get_setting_name(name), value, delay=2)
-
-    def get_toolbar(self, parent):
-        '''Returns a panel with toolbar controls to be shown for this profile'''
-        if self.toolbar is None:
-            self.toolbar = self._get_toolbar(parent)
-        return self.toolbar
-
-    def _get_toolbar(self, parent):
-        panel = wx.Panel(parent, wx.ID_ANY)
-        sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self.ArgumentsPanel(panel), 0, wx.ALL|wx.EXPAND)
-        sizer.Add(self.TagsPanel(panel), 0, wx.ALL|wx.EXPAND)
-        panel.SetSizerAndFit(sizer)
-        return panel
-
-    def get_commandline_arguments(self):
-        return self.arguments.split()
-
-    def get_robot_arguments(self):
-        '''Return a list of arguments unique to this profile
-
-        Returned arguments are in format accepted by Robot Framework's argument
-        file.
-        '''
-        if hasattr(self, "get_custom_args"): # Support for old interface
-            print "Please update your Test Runner profile's get_custom_args method to get_robot_arguments."
-            return self.get_custom_args()
+    def get_custom_args(self):
         args = []
         if self.apply_include_tags and self.include_tags:
             for include in self._get_tags_from_string(self.include_tags):
@@ -114,12 +136,21 @@ class BaseProfile(object):
                 tags.append(tag)
         return tags
 
-    def get_command_prefix(self):
-        '''Returns a command and any special arguments for this profile'''
-        if os.name == "nt":
-            return ["pybot.bat"]
-        else:
-            return ["pybot"]
+    def get_toolbar(self, parent):
+        if self._toolbar is None:
+            self._toolbar = self._get_toolbar(parent)
+        return self._toolbar
+
+    def _get_toolbar(self, parent):
+        panel = wx.Panel(parent, wx.ID_ANY)
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        for item in self.get_toolbar_items():
+            sizer.Add(item(panel), 0, wx.ALL|wx.EXPAND)
+        panel.SetSizerAndFit(sizer)
+        return panel
+
+    def get_toolbar_items(self):
+        return [self.ArgumentsPanel, self.TagsPanel]
 
     def ArgumentsPanel(self, parent):
         panel = wx.Panel(parent, wx.ID_ANY)
@@ -182,37 +213,19 @@ class BaseProfile(object):
         self.set_setting("exclude_tags", self._exclude_tags.GetValue())
 
 
-class PybotProfile(BaseProfile):
-    '''A runner profile which uses pybot
-
-    It is assumed that these programs are on the path
-    '''
-    name = "pybot"
-    def get_command_prefix(self):
-        if os.name == "nt":
-            return ["pybot.bat"]
-        else:
-            return ["pybot"]
-
-class CustomScriptProfile(BaseProfile):
+class CustomScriptProfile(PybotProfile):
     '''A runner profile which uses script given by the user'''
 
     name = "custom script"
-    default_settings = dict(BaseProfile.default_settings, runner_script="")
+    default_settings = dict(PybotProfile.default_settings, runner_script="")
 
-    def get_command_prefix(self):
-        return [self.runner_script]
+    def get_command(self):
+        return self.runner_script
 
-    def _get_toolbar(self, parent):
-        panel = wx.Panel(parent, wx.ID_ANY)
-        sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self._create_run_script_panel(panel), 0, wx.ALL|wx.EXPAND)
-        sizer.Add(self.ArgumentsPanel(panel), 0, wx.ALL|wx.EXPAND)
-        sizer.Add(self.TagsPanel(panel), 0, wx.ALL|wx.EXPAND)
-        panel.SetSizerAndFit(sizer)
-        return panel
+    def get_toolbar_items(self):
+        return [self.RunScript, self.ArgumentsPanel, self.TagsPanel]
 
-    def _create_run_script_panel(self, parent):
+    def RunScriptPanel(self, parent):
         panel = wx.Panel(parent, wx.ID_ANY)
         self._script = FileBrowseButton(panel, labelText="Script to run tests:",
                                         size=(-1, -1), fileMask="*",
