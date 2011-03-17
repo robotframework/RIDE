@@ -223,7 +223,7 @@ class CustomScriptProfile(PybotProfile):
         return self.runner_script
 
     def get_toolbar_items(self):
-        return [self.RunScript, self.ArgumentsPanel, self.TagsPanel]
+        return [self.RunScriptPanel, self.ArgumentsPanel, self.TagsPanel]
 
     def RunScriptPanel(self, parent):
         panel = wx.Panel(parent, wx.ID_ANY)
