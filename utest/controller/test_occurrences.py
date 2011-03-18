@@ -84,11 +84,17 @@ class FindOccurrencesWithFiles(unittest.TestCase):
         self.assert_occurrences(self.ts2, 'My Keyword', 3)
         self.assert_occurrences(self.resu, 'My Keyword', 3)
 
-    def test_finds_occurences_that_are_unrecognized(self):
+    def test_first_occurrences_are_from_the_same_file(self):
+        occ = self.resu.execute(FindOccurrences('My Keyword'))
+        assert_true(self.resu.source.endswith(occ.next().item.parent.source))
+        assert_equals(occ.next().source, self.ts2.source)
+        assert_equals(occ.next().source, self.ts2.source)
+
+    def test_finds_occurrences_that_are_unrecognized(self):
         self.assert_occurrences(self.ts1, 'None Keyword', 2)
         self.assert_occurrences(self.ts2, 'None Keyword', 3)
 
-    def test_finds_occurences_that_override_builtin(self):
+    def test_finds_occurrences_that_override_builtin(self):
         self.assert_occurrences(self.ts1, 'Log', 1)
         self.assert_occurrences(self.ts2, 'Log', 2)
 

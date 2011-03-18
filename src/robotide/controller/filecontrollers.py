@@ -13,7 +13,7 @@
 #  limitations under the License.
 
 import os
-
+from itertools import chain
 from robotide.controller.basecontroller import WithUndoRedoStacks,\
     _BaseController
 from robotide.controller.settingcontrollers import DocumentationController,\
@@ -106,7 +106,7 @@ class _DataController(_BaseController, WithUndoRedoStacks):
 
     @property
     def all_datafiles(self):
-        return self._chief_controller.datafiles
+        return chain([self], (df for df in self._chief_controller.datafiles if df != self))
 
     @property
     def datafile_controller(self):
