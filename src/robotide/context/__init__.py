@@ -57,4 +57,6 @@ ABOUT_RIDE = '''<h3>RIDE -- Robot Framework Test Data Editor</h3>
 <a href="http://code.google.com/p/robotframework-ride">http://code.google.com/p/robotframework-ride</a>.
 ''' % (VERSION, pyversion, ROBOT_VERSION)
 
+is_windows = os.sep == '\\'
+
 APP = None
