@@ -3,6 +3,7 @@ from robot.utils.asserts import fail, assert_true, assert_false
 from controller_creator import testcase_controller
 from robotide.controller.tags import Tag, DefaultTag, ForcedTag
 from robotide.controller.commands import ChangeTag
+from robotide.controller.settingcontrollers import TagsController
 
 
 class Test(unittest.TestCase):
@@ -58,6 +59,12 @@ class Test(unittest.TestCase):
         test.tags.execute(ChangeTag(tag, 'foo'))
         assert_true(any(t for t in test.tags if t.name == 'foo'))
         assert_false(any(t for t in test.tags if t.name == 'tag'))
+
+    def test_changing_empty_tag_adds_tag(self):
+        name = 'sometag'
+        test = testcase_controller()
+        test.tags.execute(ChangeTag(test.tags.empty_tag(), name))
+        assert_true(any(t for t in test.tags if t.name == name))
 
     def test_changing_partial_tag(self):
         test = testcase_controller()

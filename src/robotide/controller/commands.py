@@ -117,7 +117,10 @@ class ChangeTag(_Command):
         context.notify_value_changed()
 
     def _create_value(self, old_values):
-        vals = [v if v != self._tag.name else self._value for v in old_values]
+        if self._tag.name.strip() != '':
+            vals = [v if v != self._tag.name else self._value for v in old_values]
+        else:
+            vals = old_values+[self._value]
         return ' | '.join(value for value in vals if value != '')
 
 

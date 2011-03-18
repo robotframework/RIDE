@@ -1,6 +1,7 @@
 from robotide.controller.tags import ForcedTag, DefaultTag, Tag
 import os
 import wx
+from itertools import chain
 from robotide.editor.flowsizer import HorizontalFlowSizer
 from robotide.controller.commands import ChangeTag
 
@@ -36,15 +37,17 @@ class TagsDisplay(wx.Panel):
             self._modify_values(tags)
         self.build()
 
+    def _add_new_tag(self, tags):
+        self.add_tag(tags.empty_tag(), True)
+
     def clear(self):
         self._destroy_tagboxes(self._tag_boxes[:])
 
     def _create_values(self, tags):
-        for tag in tags:
-            self.add_tag(tag, tag.controller == tags)
+        self._add_tags(chain(tags, [tags.empty_tag()]), tags)
 
     def _modify_values(self, tags):
-        self._recursive_tag_set([t for t in tags], self._tag_boxes, tags)
+        self._recursive_tag_set([t for t in tags]+[tags.empty_tag()], self._tag_boxes, tags)
 
     def _recursive_tag_set(self, tags, tbs, controller):
         if tags == []:
@@ -52,7 +55,7 @@ class TagsDisplay(wx.Panel):
         if tbs == []:
             return self._add_tags(tags, controller)
         tagbox = tbs[0]
-        if tagbox.GetValue().strip() == '':
+        if tagbox.GetValue().strip() == '' and len(tbs) > 1:
             self._destroy_tagbox(tagbox)
             return self._recursive_tag_set(tags, tbs[1:], controller)
         t = tags[0]
