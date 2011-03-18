@@ -8,8 +8,9 @@ from robotide.controller.commands import ChangeTag
 
 class TagsDisplay(wx.Panel):
 
-    def __init__(self, parent):
+    def __init__(self, parent, controller):
         wx.Panel.__init__(self, parent, wx.ID_ANY)
+        self._controller = controller
         self._sizer = HorizontalFlowSizer()
         self._tag_boxes = []
         self.SetSizer(self._sizer)
@@ -26,7 +27,7 @@ class TagsDisplay(wx.Panel):
         if parent_sizer is not None:
             parent_sizer.Layout()
 
-    def set_value(self, tags, plugin):
+    def set_value(self, tags, plugin=None):
         if self._tag_boxes == []:
             self._create_values(tags)
         else:
@@ -41,7 +42,7 @@ class TagsDisplay(wx.Panel):
         self.add_tag(tags.empty_tag(), True)
 
     def clear(self):
-        self._destroy_tagboxes(self._tag_boxes[:])
+        self.set_value(self._controller)
 
     def _create_values(self, tags):
         self._add_tags(chain(tags, [tags.empty_tag()]), tags)

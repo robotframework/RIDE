@@ -595,7 +595,7 @@ class TagsEditor(SettingEditor):
         event.Skip()
 
     def _value_display_control(self):
-        self._tags_display = TagsDisplay(self)
+        self._tags_display = TagsDisplay(self, self._controller)
         self._tags_display.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
         self._tags_display.Bind(wx.EVT_KEY_DOWN, self.OnKey)
         return self._tags_display
