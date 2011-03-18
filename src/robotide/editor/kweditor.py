@@ -24,7 +24,7 @@ from robotide.controller.commands import (ChangeCellValue, ClearArea, PasteArea,
                                           MoveRowsUp, MoveRowsDown,
                                           ExtractScalar, ExtractList)
 from robotide.controller.cellinfo import TipMessage
-from robotide.publish import (RideGridCellChanged, RideItemStepsChanged, 
+from robotide.publish import (RideGridCellChanged, RideItemStepsChanged,
                               RideSettingsChanged, PUBLISHER)
 from robotide.utils import RideEventHandler
 from robotide.widgets import PopupMenu, PopupMenuItems
@@ -235,11 +235,10 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.OnDelete(event)
 
     def OnDelete(self, event=None):
-        if not self.has_focus():
-            return
         if self.IsCellEditControlShown():
+            # On Windows, Delete key does not work in TextCtrl automatically
             self.delete()
-        else:
+        elif self.has_focus():
             self._execute(ClearArea(self.selection.topleft,
                                     self.selection.bottomright))
 
