@@ -400,20 +400,21 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def move_up(self, node):
         prev = self.GetPrevSibling(node)
         if prev.IsOk():
-            self._switch_items(prev, node)
+            self._switch_items(prev, node, node)
 
     def move_down(self, node):
         next = self.GetNextSibling(node)
         if next.IsOk():
-            self.SelectItem(self._switch_items(node, next))
+            self._switch_items(node, next, node)
 
-    def _switch_items(self, first, second):
+    def _switch_items(self, first, second, currently_selected):
         """Changes the order of given items, first is expected to be directly above the second"""
+        selection = self.GetItemPyData(currently_selected).controller
         controller = self._get_handler(first).controller
         self.Delete(first)
-        node = self._create_node_with_handler(self.GetItemParent(second),
+        self._create_node_with_handler(self.GetItemParent(second),
                                               controller, second)
-        return node
+        self.select_node_by_data(selection)
 
     def _refresh_datafile(self, controller):
         orig_node = self._get_data_controller_node(controller)
@@ -564,12 +565,15 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             self._mark_dirty(self._get_datafile_node(controller.datafile))
 
     def _variable_moved_up(self, data):
-        node = self._find_node_by_controller(data.item)
-        self.move_up(node)
+        self._do_action_if_datafile_node_is_expanded(self.move_up, data)
 
     def _variable_moved_down(self, data):
-        node = self._find_node_by_controller(data.item)
-        self.move_down(node)
+        self._do_action_if_datafile_node_is_expanded(self.move_down, data)
+
+    def _do_action_if_datafile_node_is_expanded(self, action, data):
+        if self.IsExpanded(self._get_datafile_node(data.item.datafile)):
+            node = self._find_node_by_controller(data.item)
+            action(node)
 
     def _variable_updated(self, data):
         self._item_changed(data)
@@ -769,7 +773,7 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
         self._tree.add_keyword(parent_node, copied)
 
     def _rename(self, new_name):
-        self.controller.execute(RenameKeywordOccurrences(self.controller.name, 
+        self.controller.execute(RenameKeywordOccurrences(self.controller.name,
             new_name, RenameProgressObserver(self.GetParent().GetParent()),
             self.controller.info))
 

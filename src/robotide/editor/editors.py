@@ -704,8 +704,8 @@ class VariablesListEditor(_AbstractListEditor):
     _buttons = ['Add Scalar', 'Add List']
 
     def __init__(self, parent, tree, controller):
-        # TODO: is it kosher to access PUBLISHER from here?
-        PUBLISHER.subscribe(self._update_vars, 'ride.variable', key=self)
+        PUBLISHER.subscribe(self._update_vars, 'ride.variable.added', key=self)
+        PUBLISHER.subscribe(self._update_vars, 'ride.variable.removed', key=self)
         _AbstractListEditor.__init__(self, parent, tree, controller)
 
     def _update_vars(self, event):
@@ -714,6 +714,14 @@ class VariablesListEditor(_AbstractListEditor):
     def get_column_values(self, item):
         return [item.name, item.value if isinstance(item.value, basestring)
                             else ' | '.join(item.value), item.comment]
+
+    def OnMoveUp(self, event):
+        _AbstractListEditor.OnMoveUp(self, event)
+        self._list.SetFocus()
+
+    def OnMoveDown(self, event):
+        _AbstractListEditor.OnMoveDown(self, event)
+        self._list.SetFocus()
 
     def OnAddScalar(self, event):
         dlg = ScalarVariableDialog(self._controller)
@@ -744,7 +752,7 @@ class VariablesListEditor(_AbstractListEditor):
         dlg.Destroy()
 
     def close(self):
-        PUBLISHER.unsubscribe_all(key=self)
+         PUBLISHER.unsubscribe_all(key=self)
 
 
 class ImportSettingListEditor(_AbstractListEditor):
