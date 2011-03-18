@@ -39,6 +39,7 @@ from robotide.controller.commands import UpdateVariable
 from robotide.publish import PUBLISHER
 from robotide.usages.UsageRunner import Usages
 from robotide.editor.tags import TagsDisplay
+from robotide.context import SETTINGS
 
 
 class WelcomePage(RideHtmlWindow):
@@ -78,8 +79,7 @@ class _RobotTableEditor(EditorPanel):
     name = 'table'
     doc = 'table editor'
 
-    SETTINGS_OPEN = False
-
+    _settings_open_id = 'robot table settings open'
 
     def __init__(self, plugin, parent, controller, tree):
         EditorPanel.__init__(self, plugin, parent, controller, tree)
@@ -94,6 +94,14 @@ class _RobotTableEditor(EditorPanel):
         self.reset_last_show_tooltip()
         self._populate()
         self.plugin.subscribe(self._settings_changed, RideItemSettingsChanged)
+
+    def _should_settings_be_open(self):
+        if self._settings_open_id not in SETTINGS:
+            return False
+        return SETTINGS[self._settings_open_id]
+
+    def _store_settings_open_status(self):
+        SETTINGS[self._settings_open_id] = self._settings.IsExpanded()
 
     def _settings_changed(self, data):
         if data.item == self.controller:
@@ -130,18 +138,28 @@ class _RobotTableEditor(EditorPanel):
         return header
 
     def _add_settings(self):
+        self._settings = self._create_settings()
+        self._restore_settings_open_status()
+        self._editors.append(self._settings)
+        self.sizer.Add(self._settings, 0, wx.ALL|wx.EXPAND, 2)
+
+    def _create_settings(self):
         settings = Settings(self, self.plugin, self._tree)
         settings.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self._collabsible_changed)
         for setting in self.controller.settings:
             editor = settings.create_editor_for(setting)
             settings.add(editor)
         settings.build()
-        self._settings = settings
-        self._editors.append(settings)
-        self.sizer.Add(settings, 0, wx.ALL|wx.EXPAND, 2)
+        return settings
+
+    def _restore_settings_open_status(self):
+        if self._should_settings_be_open():
+            self._settings.Expand()
+        else:
+            self._settings.Collapse()
 
     def _collabsible_changed(self, event):
-        self.__class__.SETTINGS_OPEN = self._settings.IsExpanded()
+        self._store_settings_open_status()
         self.GetSizer().Layout()
         event.Skip()
 
@@ -214,10 +232,6 @@ class Settings(wx.CollapsiblePane):
     def build(self):
         self.GetPane().SetSizer(self._sizer)
         self._sizer.SetSizeHints(self.GetPane())
-        if self.Parent.__class__.SETTINGS_OPEN:
-            self.Expand()
-        else:
-            self.Collapse()
         self.Bind(wx.EVT_SIZE, self._recalc_size)
 
     def _recalc_size(self, event):
@@ -240,6 +254,8 @@ class Settings(wx.CollapsiblePane):
             self.Parent.GetSizer().Layout()
 
 class ResourceFileEditor(_RobotTableEditor):
+
+    _settings_open_id = 'resource file settings open'
 
     def tree_item_selected(self, item):
         if isinstance(item, VariableController):
@@ -282,6 +298,8 @@ class ResourceFileEditor(_RobotTableEditor):
 
 class TestCaseFileEditor(ResourceFileEditor):
 
+    _settings_open_id = 'test case file settings open'
+
     def _populate(self):
         ResourceFileEditor._populate(self)
         self.sizer.Add((0, 10))
@@ -294,6 +312,8 @@ class TestCaseFileEditor(ResourceFileEditor):
 
 
 class InitFileEditor(TestCaseFileEditor):
+
+    _settings_open_id = 'init file settings open'
 
     def _populate(self):
         TestCaseFileEditor._populate(self)
@@ -592,6 +612,8 @@ class TagsEditor(SettingEditor):
 
 
 class TestCaseEditor(_RobotTableEditor):
+
+    _settings_open_id = 'macro settings open'
 
     def _populate(self):
         self.header = self._create_header(self.controller.name)
