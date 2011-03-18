@@ -81,7 +81,7 @@ class TagsDisplay(wx.Panel):
 
     def get_height(self):
         if os.name == 'nt':
-            return 80
+            return 50
         return self._sizer.height
 
 class TagBox(wx.TextCtrl):
@@ -119,7 +119,7 @@ class TagBox(wx.TextCtrl):
 
     def _to_text_size(self, text):
         size = self.GetTextExtent(text)
-        new_size = wx.Size(size[0]+10, size[1]+3)
+        new_size = wx.Size(size[0]+10, max(size[1]+3, 25))
         self.SetMaxSize(new_size)
         self.SetMinSize(new_size)
 
