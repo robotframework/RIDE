@@ -78,6 +78,9 @@ class _RobotTableEditor(EditorPanel):
     name = 'table'
     doc = 'table editor'
 
+    SETTINGS_OPEN = False
+
+
     def __init__(self, plugin, parent, controller, tree):
         EditorPanel.__init__(self, plugin, parent, controller, tree)
         self.sizer = wx.BoxSizer(wx.VERTICAL)
@@ -133,10 +136,12 @@ class _RobotTableEditor(EditorPanel):
             editor = settings.create_editor_for(setting)
             settings.add(editor)
         settings.build()
+        self._settings = settings
         self._editors.append(settings)
         self.sizer.Add(settings, 0, wx.ALL|wx.EXPAND, 2)
 
     def _collabsible_changed(self, event):
+        self.__class__.SETTINGS_OPEN = self._settings.IsExpanded()
         self.GetSizer().Layout()
         event.Skip()
 
@@ -175,8 +180,8 @@ class Settings(wx.CollapsiblePane):
 
     def GetPane(self):
         pane = wx.CollapsiblePane.GetPane(self)
-        pane.reset_last_show_tooltip = self.GetParent().reset_last_show_tooltip
         pane.tooltip_allowed = self.GetParent().tooltip_allowed
+        pane.reset_last_show_tooltip = self.GetParent().reset_last_show_tooltip
         return pane
 
     def OnMotion(self, event):
@@ -208,8 +213,11 @@ class Settings(wx.CollapsiblePane):
 
     def build(self):
         self.GetPane().SetSizer(self._sizer)
-        self.Collapse()
         self._sizer.SetSizeHints(self.GetPane())
+        if self.Parent.__class__.SETTINGS_OPEN:
+            self.Expand()
+        else:
+            self.Collapse()
         self.Bind(wx.EVT_SIZE, self._recalc_size)
 
     def _recalc_size(self, event):
