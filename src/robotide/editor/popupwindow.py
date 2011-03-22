@@ -39,11 +39,9 @@ class Tooltip(RidePopupWindow):
 
     def __init__(self, parent, size, detachable=True, autohide=False):
         RidePopupWindow.__init__(self, parent, size)
-        self._create_ui(size, detachable)
-        if autohide:
-            self.Bind(wx.EVT_LEAVE_WINDOW, self.hide)
+        self._create_ui(size, detachable, autohide)
 
-    def _create_ui(self, size, detachable):
+    def _create_ui(self, size, detachable, autohide):
         panel = wx.Panel(self)
         panel.SetBackgroundColour(context.POPUP_BACKGROUND)
         szr = VerticalSizer()
@@ -55,6 +53,12 @@ class Tooltip(RidePopupWindow):
         szr.add_expanding(self._details)
         panel.SetSizer(szr)
         panel.Fit()
+        if autohide:
+            self._get_autohide_component(panel).Bind(wx.EVT_LEAVE_WINDOW,
+                                                     self.hide)
+
+    def _get_autohide_component(self, panel):
+        return panel if context.is_windows else self
 
     def set_content(self, content, title=None, html=True):
         color = ''.join(hex(item)[2:] for item in context.POPUP_BACKGROUND)
