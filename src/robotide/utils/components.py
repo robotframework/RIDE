@@ -25,11 +25,21 @@ class RideHtmlWindow(HtmlWindow):
         self.SetStandardFonts(size=9)
         if text:
             self.SetPage(text)
-        self.Bind(wx.EVT_KEY_DOWN, self.OnKey)
+        self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
 
-    def OnKey(self, event):
+    def OnKeyDown(self, event):
+        if self._is_copy(event):
+            self._add_selection_to_clipboard()
         self.Parent.OnKey(event)
         event.Skip()
+
+    def _is_copy(self, event):
+        return event.GetKeyCode() == ord('C') and event.CmdDown()
+    
+    def _add_selection_to_clipboard(self):
+        wx.TheClipboard.Open()
+        wx.TheClipboard.SetData(wx.TextDataObject(self.SelectionToText()))
+        wx.TheClipboard.Close()
 
     def OnLinkClicked(self, link):
         webbrowser.open(link.Href)
