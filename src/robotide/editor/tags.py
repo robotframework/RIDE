@@ -48,7 +48,7 @@ class TagsDisplay(wx.Panel):
         self._add_tags(chain(tags, [tags.empty_tag()]), tags)
 
     def _modify_values(self, tags):
-        self._recursive_tag_set([t for t in tags]+[tags.empty_tag()], self._tag_boxes, tags)
+        self._recursive_tag_set([t for t in tags]+[tags.empty_tag()], self._tag_boxes[:], tags)
 
     def _recursive_tag_set(self, tags, tbs, controller):
         if tags == []:
