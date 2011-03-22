@@ -118,8 +118,11 @@ class TagBox(wx.TextCtrl):
         self._tag.controller.execute(ChangeTag(self._tag, value))
 
     def _to_text_size(self, text):
-        size = self.GetTextExtent(text)
-        new_size = wx.Size(size[0]+10, max(size[1]+3, 25))
+        if text == '':
+            new_size = wx.Size(75, 25)
+        else:
+            size = self.GetTextExtent(text)
+            new_size = wx.Size(size[0]+10, max(size[1]+3, 25))
         self.SetMaxSize(new_size)
         self.SetMinSize(new_size)
 
