@@ -113,15 +113,19 @@ class ChangeTag(_Command):
         self._value = value.strip()
 
     def execute(self, context):
-        context.set_value(self._create_value([tag.name for tag in context if tag.controller == context]))
+        context.set_value(self._create_value([tag for tag in context if tag.controller == context]))
         context.notify_value_changed()
 
     def _create_value(self, old_values):
-        if self._tag.name.strip() != '':
-            vals = [v if v != self._tag.name else self._value for v in old_values]
+        return ' | '.join(value for value in
+                          self._create_value_list(old_values)
+                          if value != '')
+
+    def _create_value_list(self, old_values):
+        if self._tag.is_empty():
+            return [v.name for v in old_values]+[self._value]
         else:
-            vals = old_values+[self._value]
-        return ' | '.join(value for value in vals if value != '')
+            return [v.name if v != self._tag else self._value for v in old_values]
 
 
 class _ReversibleCommand(_Command):

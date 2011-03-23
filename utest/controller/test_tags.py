@@ -8,83 +8,103 @@ from robotide.controller.settingcontrollers import TagsController
 
 class Test(unittest.TestCase):
 
+    def setUp(self):
+        self._test = testcase_controller()
+
+    @property
+    def tags(self):
+        return self._test.tags
+
     def test_tests_tag_is_shown(self):
         tag = Tag('tag')
-        test = testcase_controller()
-        test.tags.add(tag)
-        assert_true(tag in test.tags)
+        self.tags.add(tag)
+        assert_true(tag in self.tags)
 
     def test_default_from_suite(self):
         tag = DefaultTag('suite tag')
-        test = testcase_controller()
-        suite = test.datafile_controller
+        suite = self._test.datafile_controller
         suite.default_tags.add(tag)
-        assert_true(tag in test.tags)
+        assert_true(tag in self.tags)
 
     def test_overwriting_default(self):
         tag_to_overwrite = DefaultTag('suite tag')
         tag = Tag('overwriter')
-        test = testcase_controller()
-        suite = test.datafile_controller
+        suite = self._test.datafile_controller
         suite.default_tags.add(tag_to_overwrite)
-        test.tags.add(tag)
-        assert_true(tag_to_overwrite not in test.tags)
-        assert_true(tag in test.tags)
+        self.tags.add(tag)
+        assert_true(tag_to_overwrite not in self.tags)
+        assert_true(tag in self.tags)
 
     def test_force_tag_from_suite(self):
         force_tag = ForcedTag('force tag')
-        test = testcase_controller()
-        suite = test.datafile_controller
+        suite = self._test.datafile_controller
         suite.force_tags.add(force_tag)
-        assert_true(force_tag in test.tags)
+        assert_true(force_tag in self.tags)
 
     def test_force_tag_from_suites_parent_directory(self):
         force_tag = ForcedTag('forced from directory')
-        test = testcase_controller()
-        directory = test.datafile_controller.parent
+        directory = self._test.datafile_controller.parent
         directory.force_tags.add(force_tag)
-        assert_true(force_tag in test.tags)
+        assert_true(force_tag in self.tags)
 
     def test_force_tag_from_suites_parents_parent_directory(self):
         force_tag = ForcedTag('forced from directory')
-        test = testcase_controller()
-        directory = test.datafile_controller.parent.parent
+        directory = self._test.datafile_controller.parent.parent
         directory.force_tags.add(force_tag)
-        assert_true(force_tag in test.tags)
+        assert_true(force_tag in self.tags)
 
     def test_changing_tag(self):
         tag = Tag('tag')
-        test = testcase_controller()
-        test.tags.add(tag)
-        test.tags.execute(ChangeTag(tag, 'foo'))
-        assert_true(any(t for t in test.tags if t.name == 'foo'))
-        assert_false(any(t for t in test.tags if t.name == 'tag'))
+        self.tags.add(tag)
+        self.tags.execute(ChangeTag(tag, 'foo'))
+        self._tag_with_name_exists('foo')
+        assert_false(any(t for t in self.tags if t.name == 'tag'))
 
     def test_changing_empty_tag_adds_tag(self):
         name = 'sometag'
-        test = testcase_controller()
-        test.tags.execute(ChangeTag(test.tags.empty_tag(), name))
-        assert_true(any(t for t in test.tags if t.name == name))
+        self.tags.add(Tag('tag'))
+        self.tags.execute(ChangeTag(self.tags.empty_tag(), name))
+        self._tag_with_name_exists(name)
+
+    def test_changing_tag_to_empty_removes_tag(self):
+        tag = Tag('tag')
+        self.tags.add(tag)
+        self.tags.execute(ChangeTag(tag, ''))
+        self._verify_number_of_tags(0)
+
+    def test_removing_one_tag_when_multiple_with_same_name(self):
+        name = 'tag'
+        tag = Tag(name)
+        tag2 = Tag(name)
+        self.tags.add(tag)
+        self.tags.add(tag2)
+        self.tags.execute(ChangeTag(tag, ''))
+        self._verify_number_of_tags(1)
+        self._tag_with_name_exists(tag2.name)
 
     def test_changing_partial_tag(self):
-        test = testcase_controller()
-        test.tags.add(Tag('tag'))
+        self.tags.add(Tag('tag'))
         partial = Tag('ag')
-        test.tags.add(partial)
-        test.tags.execute(ChangeTag(partial, 'foo'))
-        assert_true(any(t for t in test.tags if t.name == 'foo'))
-        assert_true(any(t for t in test.tags if t.name == 'tag'))
-        assert_false(any(t for t in test.tags if t.name == 'ag'))
+        self.tags.add(partial)
+        self.tags.execute(ChangeTag(partial, 'foo'))
+        self._tag_with_name_exists('foo')
+        self._tag_with_name_exists('tag')
+        assert_false(any(t for t in self.tags if t.name == 'ag'))
 
     def test_changing_tags_does_not_change_total_number_of_tags(self):
         tag_to_change = Tag('tagistano')
-        test = testcase_controller()
-        test.tags.add(tag_to_change)
-        test.datafile_controller.force_tags.add(ForcedTag('suite'))
-        test.datafile_controller.parent.force_tags.add(ForcedTag('directory'))
-        assert_true(3 == sum(1 for _ in test.tags))
-        test.tags.execute(ChangeTag(tag_to_change, 'foobar'))
-        assert_true(3 == sum(1 for _ in test.tags))
+        self.tags.add(tag_to_change)
+        self._test.datafile_controller.force_tags.add(ForcedTag('suite'))
+        self._test.datafile_controller.parent.force_tags.add(ForcedTag('directory'))
+        self._verify_number_of_tags(3)
+        self._test.tags.execute(ChangeTag(tag_to_change, 'foobar'))
+        self._verify_number_of_tags(3)
+
+    def _verify_number_of_tags(self, number):
+        assert_true(number == sum(1 for _ in self.tags))
+
+    def _tag_with_name_exists(self, name):
+        assert_true(any(t for t in self.tags if t.name == name))
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
