@@ -48,26 +48,31 @@ class TestTagsModifications(unittest.TestCase):
         self._cntrl = tc()
         self._tags_display = _PartialTagsDisplay(self._cntrl.tags)
 
+    @property
+    def tagboxes(self):
+        return self._tags_display._tag_boxes
+
     def test_set_empty_value(self):
         self._tags_display.set_value(self._cntrl.tags)
-        assert_equals(len(self._tags_display._tag_boxes), 1)
-        self._is_empty(self._tags_display._tag_boxes[0])
+        assert_equals(len(self.tagboxes), 1)
+        self._is_empty(self.tagboxes[0])
+        assert_true(self.tagboxes[0].editable)
 
     def test_set_none_empty_value(self):
         t = Tag('moro')
         self._cntrl.tags.add(t)
         self._tags_display.set_value(self._cntrl.tags)
-        assert_equals(len(self._tags_display._tag_boxes), 2)
-        assert_equals(self._tags_display._tag_boxes[0]._tag, t)
-        self._is_empty(self._tags_display._tag_boxes[1])
+        assert_equals(len(self.tagboxes), 2)
+        assert_equals(self.tagboxes[0]._tag, t)
+        self._is_empty(self.tagboxes[1])
 
     def test_remove_only_tag(self):
         self.test_set_none_empty_value()
         self._cntrl.tags.clear()
-        self._tags_display._tag_boxes[0].set_tag(self._cntrl.tags.empty_tag())
+        self.tagboxes[0].set_tag(self._cntrl.tags.empty_tag())
         self._tags_display.clear()
-        assert_equals(len(self._tags_display._tag_boxes), 1)
-        self._is_empty(self._tags_display._tag_boxes[0])
+        assert_equals(len(self.tagboxes), 1)
+        self._is_empty(self.tagboxes[0])
 
     def _is_empty(self, tag_info):
         assert_true(tag_info.editable)

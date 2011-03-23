@@ -181,7 +181,7 @@ class TagsController(_SettingController):
         return command.execute(self)
 
     def empty_tag(self):
-        return Tag('', self)
+        return Tag('', controller=self)
 
     def _changed(self, value):
         return self._tags.value != self._split_from_separators(value)
@@ -192,6 +192,7 @@ class TagsController(_SettingController):
     def add(self, tag):
         if self._tags.value is None:
             self._tags.value = []
+        tag.set_index(len(self._tags.value))
         self._tags.value.append(tag.name)
 
     def __iter__(self):
@@ -200,7 +201,7 @@ class TagsController(_SettingController):
             return chain(forced,
                     self._parent.default_tags).__iter__()
         return chain(forced,
-                (Tag(t, self) for t in self._tags.value)).__iter__()
+                (Tag(t, index, self) for index, t in enumerate(self._tags.value))).__iter__()
 
     @property
     def is_set(self):
@@ -214,18 +215,18 @@ class TagsController(_SettingController):
 class DefaultTagsController(TagsController):
 
     def empty_tag(self):
-        return DefaultTag('', self)
+        return DefaultTag('', controller=self)
 
     def __iter__(self):
         if self._tags.value is None:
             return [].__iter__()
-        return (DefaultTag(t, self) for t in self._tags.value).__iter__()
+        return (DefaultTag(t, index, self) for index, t in enumerate(self._tags.value)).__iter__()
 
 
 class ForceTagsController(TagsController):
 
     def empty_tag(self):
-        return ForcedTag('', self)
+        return ForcedTag('', controller=self)
 
     def __iter__(self):
         return self._recursive_gather_from(self.parent, []).__iter__()
@@ -250,7 +251,7 @@ class ForceTagsController(TagsController):
     def _gather_from_data(self, tags, parent):
         if tags.value is None:
             return []
-        return [ForcedTag(t, parent) for t in tags.value]
+        return [ForcedTag(t, index, parent) for index, t in enumerate(tags.value)]
 
 
 class TimeoutController(_SettingController):
