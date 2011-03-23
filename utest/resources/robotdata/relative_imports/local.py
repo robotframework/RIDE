@@ -1,0 +1,2 @@
+def local():
+    print 'Hello'

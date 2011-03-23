@@ -3,7 +3,6 @@ import sys
 import os
 
 from robotide.namespace import cache
-from robot.utils.asserts import assert_true, assert_false
 
 from resources import DATAPATH
 sys.path.append(os.path.join(DATAPATH, 'libs'))
