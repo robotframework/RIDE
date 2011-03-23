@@ -5,7 +5,7 @@ from robot.parsing.settings import Resource
 from robot.parsing.model import VariableTable, TestDataDirectory
 from robot.utils import normalizing
 from robot.utils.asserts import assert_true, assert_false, assert_not_none, \
-    assert_equals, fail, assert_none, fail_if_equal
+    assert_equals, fail, assert_none
 from robotide.namespace.namespace import _VariableStash
 from robotide.robotapi import TestCaseFile
 from robotide.controller.filecontrollers import DataController
@@ -33,6 +33,7 @@ EXISTING_USER_KEYWORD = 'Should be in keywords Uk'
 
 def _build_test_case_file():
     tcf = TestCaseFile()
+    tcf.source = 'tmp.txt'
     tcf.directory = '/tmp/'
     _add_settings_table(tcf)
     _add_variable_table(tcf)
@@ -235,6 +236,10 @@ class TestKeywordSuggestions(_DataFileTest):
         self._check_source(everything_tcf, '@{list}', 'everything.html')
         self._check_source(everything_tcf, '${dynamic var}', 'dynamic_varz.py')
         self._check_source(everything_tcf, '${OPERATING SYSTEM}', 'another_resource.html')
+
+    def test_relative_imports(self):
+        relative_tcf = self._get_controller(RELATIVE_IMPORTS)
+        self._check_source(relative_tcf, 'local', 'local')
 
     def _check_source(self, controller, name, source):
         sugs = self.ns.get_suggestions_for(controller, name)

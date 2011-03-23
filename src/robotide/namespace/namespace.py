@@ -346,8 +346,15 @@ class DatafileRetriever(object):
 
     def _lib_kw_getter(self, imp, ctx):
         name = ctx.vars.replace_variables(imp.name)
+        name = self._convert_to_absolute_path(name, imp)
         args = [ctx.vars.replace_variables(a) for a in imp.args]
         return self._lib_cache.get_library_keywords(name, args)
+
+    def _convert_to_absolute_path(self, name, import_):
+        full_name = os.path.join(os.path.dirname(import_.source), name)
+        if os.path.exists(full_name):
+            return full_name
+        return name
 
     def _collect_import_of_type(self, datafile, instance_type):
         return [imp for imp in datafile.imports
@@ -471,7 +478,7 @@ class _Keywords(object):
         try:
             handler = EmbeddedArgsHandler(kw)
             self.embedded_keywords[handler.name_regexp] = kw
-        except Exception, e:
+        except Exception:
             pass
 
     def get(self, kw_name):
