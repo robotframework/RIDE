@@ -70,7 +70,7 @@ class VariableInfo(ItemInfo):
         ItemInfo.__init__(self, name, self._source_name(source), self._details(name, source, value))
 
     def _source_name(self, source):
-        return os.path.basename(source) if source else ''
+        return unicode(os.path.basename(source)) if source else ''
 
     def _details(self, name, source, value):
         if name.startswith('@'):
@@ -169,7 +169,7 @@ class LibraryKeywordInfo(_KeywordInfo):
         if handler_args.defaults:
             for i, value in enumerate(handler_args.defaults):
                 index = len(handler_args.names) - len(handler_args.defaults) + i
-                args[index] = args[index] + '=' + str(value)
+                args[index] = args[index] + '=' + unicode(value)
         if handler_args.varargs:
             args.append('*%s' % handler_args.varargs)
         return args
@@ -182,7 +182,7 @@ class LibraryKeywordInfo(_KeywordInfo):
 class _UserKeywordInfo(_KeywordInfo):
 
     def _source(self, item):
-        return os.path.basename(item.source) if item.source else ''
+        return unicode(os.path.basename(item.source)) if item.source else ''
 
     def _doc(self, item):
         return unescape(item.doc.value)

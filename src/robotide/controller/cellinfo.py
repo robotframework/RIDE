@@ -58,7 +58,7 @@ def TipMessage(cell):
         return ''
     tip = _TooltipMessage(cell) if not cell.for_loop \
             else _ForLoopTooltipMessage(cell)
-    return html_escape(str(tip))
+    return html_escape(unicode(tip))
 
 
 class _TooltipMessage(object):
