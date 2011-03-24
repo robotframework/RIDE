@@ -166,6 +166,7 @@ class _RobotTableEditor(EditorPanel):
     def _collabsible_changed(self, event):
         self._store_settings_open_status()
         self.GetSizer().Layout()
+        self.Refresh()
         event.Skip()
 
     def highlight_cell(self, obj, row, column):
