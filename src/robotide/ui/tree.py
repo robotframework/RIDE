@@ -64,7 +64,9 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self.Bind(wx.EVT_TREE_ITEM_EXPANDING, self.OnTreeItemExpanding)
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnRightClick)
         self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnItemActivated)
+        self.Bind(wx.EVT_TREE_BEGIN_LABEL_EDIT, self.OnBeginLabelEdit)
         self.Bind(wx.EVT_TREE_END_LABEL_EDIT, self.OnLabelEdited)
+        self.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDown)
         self._images = TreeImageList()
         self.SetImageList(self._images)
         self._history = _History()
@@ -74,6 +76,17 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._dragging = False
         self._clear_tree_data()
         self._editor = None
+        self._editing_label = False
+
+    def OnBeginLabelEdit(self, event):
+        #See http://code.google.com/p/robotframework-ride/issues/detail?id=756
+        self._editing_label = True
+    
+    def OnLeftDown(self, event):
+        #See http://code.google.com/p/robotframework-ride/issues/detail?id=756
+        if self._editing_label:
+            return
+        event.Skip()
 
     def set_editor(self, editor):
         self._editor = editor
@@ -521,6 +534,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             self.EditLabel(self.Selection)
 
     def OnLabelEdited(self, event):
+        self._editing_label = False
         handler = self._get_handler(event.Item)
         if not event.IsEditCancelled() and handler.rename(event.Label):
             self._mark_dirty(self.GetItemParent(event.Item))
