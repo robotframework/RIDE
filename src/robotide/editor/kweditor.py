@@ -65,7 +65,6 @@ class KeywordEditor(GridEditor, RideEventHandler):
             PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
             self._tooltips = GridToolTips(self)
             self._marked_cell = None
-            self._active_row = self._active_col = None
             self._make_bindings()
             self._write_steps(self._controller)
             self._tree = tree
@@ -129,12 +128,14 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.Refresh()
 
     def OnLabelRightClick(self, event):
-        self._active_row = event.GetRow()
+        selected_row = event.GetRow()
+        selected_rows = self.GetSelectedRows()
+        if not selected_rows or selected_row not in selected_rows:
+            self.SelectRow(selected_row)
         popupitems = ['Insert Rows', 'Delete Rows',
                       'Comment Rows\tCtrl-3', 'Uncomment Rows\tCtrl-4',
                       'Move Rows Up\tAlt-Up', 'Move Rows Down\tAlt-Down']
         PopupMenu(self, PopupMenuItems(self, popupitems))
-        self._active_row = None
         event.Skip()
 
     def OnInsertRows(self, event):
