@@ -17,7 +17,7 @@ class Tag(object):
         self._index = index
 
     def is_empty(self):
-        return self.name.strip() == ''
+        return self.name is None
 
     def __eq__(self, other):
         return self._name == other._name and self._index == other._index

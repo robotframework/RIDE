@@ -117,6 +117,8 @@ class ChangeTag(_Command):
         context.notify_value_changed()
 
     def _create_value(self, old_values):
+        if old_values == [] and self._tag.is_empty():
+            return self._value
         return ' | '.join(value for value in
                           self._create_value_list(old_values)
                           if value != '')

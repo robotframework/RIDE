@@ -91,7 +91,7 @@ class TagBox(wx.TextCtrl):
     NOT_EDITABLE_BACKGROUND = '#D3D3D3'
 
     def __init__(self, parent, tag):
-        wx.TextCtrl.__init__(self, parent, wx.ID_ANY, tag.name, style=wx.TE_CENTER)
+        wx.TextCtrl.__init__(self, parent, wx.ID_ANY, self._get_text_value(tag), style=wx.TE_CENTER)
         self.Bind(wx.EVT_SET_FOCUS, self._focus_received)
         self.Bind(wx.EVT_KILL_FOCUS, self._focus_lost)
         self.Bind(wx.EVT_KEY_UP, self._key_up)
@@ -101,7 +101,7 @@ class TagBox(wx.TextCtrl):
         self._tag = tag
         if tag.is_empty() or self.GetValue() != tag.name:
             self.SetValue(self._get_text_value())
-        self._to_text_size(tag.name)
+        self._to_text_size(self._get_text_value())
         self._colorize(tag)
 
     def SetEditable(self, editable):
@@ -117,10 +117,12 @@ class TagBox(wx.TextCtrl):
                 self.SetEditable(False)
                 self._colorize(self._tag)
 
-    def _get_text_value(self):
-        if self._tag.is_empty():
+    def _get_text_value(self, tag=None):
+        if tag is None:
+            tag = self._tag
+        if tag.is_empty():
             return TagBox.ADD_TEXT
-        return self._tag.name
+        return tag.name
 
     def _focus_lost(self, event):
         if not self.IsEditable():

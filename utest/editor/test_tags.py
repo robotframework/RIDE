@@ -1,7 +1,7 @@
 import unittest
 from robotide.editor.tags import TagsDisplay
 from controller.controller_creator import testcase_controller as tc
-from robot.utils.asserts import assert_equals, assert_true
+from robot.utils.asserts import assert_equals, assert_true, assert_false
 from robotide.controller.tags import Tag
 
 class _PartialTagsDisplay(TagsDisplay):
@@ -31,6 +31,7 @@ class _TagInfo(object):
         return self._tag.name
 
     def GetValue(self):
+        if self._tag.is_empty(): return ''
         return self.value
 
     def set_tag(self, tag):
@@ -56,7 +57,7 @@ class TestTagsModifications(unittest.TestCase):
         self._tags_display.set_value(self._cntrl.tags)
         assert_equals(len(self.tagboxes), 1)
         self._is_empty(self.tagboxes[0])
-        assert_true(self.tagboxes[0].editable)
+        assert_false(self.tagboxes[0].editable)
 
     def test_set_none_empty_value(self):
         t = Tag('moro')
@@ -75,5 +76,5 @@ class TestTagsModifications(unittest.TestCase):
         self._is_empty(self.tagboxes[0])
 
     def _is_empty(self, tag_info):
-        assert_true(tag_info.editable)
-        assert_equals(tag_info.value, '')
+        assert_false(tag_info.editable)
+        assert_equals(tag_info.value, None)

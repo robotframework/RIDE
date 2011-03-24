@@ -3,7 +3,6 @@ from robot.utils.asserts import fail, assert_true, assert_false
 from controller_creator import testcase_controller
 from robotide.controller.tags import Tag, DefaultTag, ForcedTag
 from robotide.controller.commands import ChangeTag
-from robotide.controller.settingcontrollers import TagsController
 
 
 class Test(unittest.TestCase):
@@ -25,6 +24,14 @@ class Test(unittest.TestCase):
         suite = self._test.datafile_controller
         suite.default_tags.add(tag)
         assert_true(tag in self.tags)
+
+    def test_adding_empty_tag_will_remove_default(self):
+        self.test_default_from_suite()
+        self._verify_number_of_tags(1)
+        t = self.tags.empty_tag()
+        self.tags.execute(ChangeTag(t, ''))
+        self._verify_number_of_tags(1)
+        self._tag_with_name_exists('')
 
     def test_overwriting_default(self):
         tag_to_overwrite = DefaultTag('suite tag')
@@ -70,7 +77,9 @@ class Test(unittest.TestCase):
         tag = Tag('tag')
         self.tags.add(tag)
         self.tags.execute(ChangeTag(tag, ''))
-        self._verify_number_of_tags(0)
+        self._verify_number_of_tags(1)
+        self._tag_with_name_does_not_exists('tag')
+        self._tag_with_name_exists('')
 
     def test_removing_one_tag_when_multiple_with_same_name(self):
         name = 'tag'
@@ -89,7 +98,7 @@ class Test(unittest.TestCase):
         self.tags.execute(ChangeTag(partial, 'foo'))
         self._tag_with_name_exists('foo')
         self._tag_with_name_exists('tag')
-        assert_false(any(t for t in self.tags if t.name == 'ag'))
+        self._tag_with_name_does_not_exists('ag')
 
     def test_changing_tags_does_not_change_total_number_of_tags(self):
         tag_to_change = Tag('tagistano')
@@ -105,6 +114,9 @@ class Test(unittest.TestCase):
 
     def _tag_with_name_exists(self, name):
         assert_true(any(t for t in self.tags if t.name == name))
+
+    def _tag_with_name_does_not_exists(self, name):
+        assert_false(any(t for t in self.tags if t.name == name))
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
