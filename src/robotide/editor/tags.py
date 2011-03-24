@@ -16,7 +16,7 @@ class TagsDisplay(wx.Panel):
         self.SetSizer(self._sizer)
 
     def add_tag(self, tag, editable):
-        tag_component = TagBox(self, tag)
+        tag_component = TagBox(self, tag) if not tag.is_empty() else AddTagBox(self, tag)
         tag_component.SetEditable(editable)
         self._sizer.Add(tag_component)
         self._tag_boxes.append(tag_component)
@@ -132,6 +132,9 @@ class TagBox(wx.TextCtrl):
         else:
             self.SetForegroundColour('black')
 
+class AddTagBox(TagBox):
+    pass
+
 if __name__ == '__main__':
     class MyFrame(wx.Frame):
         def __init__(self, parent, id, title):
@@ -140,12 +143,12 @@ if __name__ == '__main__':
         def OnInit(self):
             frame = MyFrame(None , -1, 'Frame Window Demo')
             sz = wx.BoxSizer()
-            display = TagsDisplay(frame)
-            display.add_tag(ForcedTag('forced'))
-            display.add_tag(DefaultTag('default'))
+            display = TagsDisplay(frame, None)
+            display.add_tag(ForcedTag('forced'), False)
+            display.add_tag(DefaultTag('default'), False)
             for name in ['foo', 'bar', 'foobo', 'jee', 'huu', 'asb', 'sdfajkd', 'Sprint-1']:
-                display.add_tag(Tag(name))
-            display.add_tag_componen_adder()
+                display.add_tag(Tag(name), True)
+            display.add_tag(Tag(''), True)
             display.build()
             sz.Add(display, 0, wx.GROW|wx.ALL, 5)
             frame.Show(True)
