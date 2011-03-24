@@ -78,20 +78,19 @@ class EditorPanel(wx.Panel):
 class _RobotTableEditor(EditorPanel):
     name = 'table'
     doc = 'table editor'
-
     _settings_open_id = 'robot table settings open'
 
     def __init__(self, plugin, parent, controller, tree):
         EditorPanel.__init__(self, plugin, parent, controller, tree)
         self.sizer = wx.BoxSizer(wx.VERTICAL)
-        self.Bind(wx.EVT_MOTION, self.OnMotion)
+        self.Bind(wx.EVT_IDLE, self.OnIdle)
         self.SetSizer(self.sizer)
         if self.title:
             self.sizer.Add(self._create_header(self.title),
                            0, wx.EXPAND|wx.ALL, 5)
             self.sizer.Add((0,10))
         self._editors = []
-        self.reset_last_show_tooltip()
+        self._reset_last_show_tooltip()
         self._populate()
         self.plugin.subscribe(self._settings_changed, RideItemSettingsChanged)
 
@@ -108,19 +107,25 @@ class _RobotTableEditor(EditorPanel):
             for editor in self._editors:
                 editor.update_value()
 
-    def OnMotion(self, event):
-        for editor in self._editors:
-            editor.OnMotion(event)
-        self.reset_last_show_tooltip()
+    def OnIdle(self, event):
+        if self._last_shown_tooltip and self._mouse_outside_tooltip():
+            self._last_shown_tooltip.hide()
+            self._reset_last_show_tooltip()
 
-    def tooltip_allowed(self, editor):
+    def _mouse_outside_tooltip(self):
+        mx, my = wx.GetMousePosition()
+        tx, ty = self._last_shown_tooltip.screen_position
+        dx, dy = self._last_shown_tooltip.size
+        return (mx<tx or mx>tx+dx) or (my<ty or my>ty+dy)
+
+    def tooltip_allowed(self, tooltip):
         if wx.GetMouseState().ControlDown() or \
-                self._last_shown_tooltip is editor:
+                self._last_shown_tooltip is tooltip:
             return False
-        self._last_shown_tooltip = editor
+        self._last_shown_tooltip = tooltip
         return True
 
-    def reset_last_show_tooltip(self):
+    def _reset_last_show_tooltip(self):
         self._last_shown_tooltip = None
 
     def close(self):
@@ -161,6 +166,7 @@ class _RobotTableEditor(EditorPanel):
     def _collabsible_changed(self, event):
         self._store_settings_open_status()
         self.GetSizer().Layout()
+        self.Refresh()
         event.Skip()
 
     def highlight_cell(self, obj, row, column):
@@ -199,12 +205,7 @@ class Settings(wx.CollapsiblePane):
     def GetPane(self):
         pane = wx.CollapsiblePane.GetPane(self)
         pane.tooltip_allowed = self.GetParent().tooltip_allowed
-        pane.reset_last_show_tooltip = self.GetParent().reset_last_show_tooltip
         return pane
-
-    def OnMotion(self, event):
-        for editor in self._editors:
-            editor.OnMotion(event)
 
     def close(self):
         for editor in self._editors:
@@ -334,7 +335,6 @@ class SettingEditor(wx.Panel, RideEventHandler):
         self._create_controls()
         self._tree = tree
         self._editing = False
-        self.Bind(wx.EVT_MOTION, self.OnMotion)
         self.plugin.subscribe(self.update_value, RideImportSetting)
 
     def _create_controls(self):
@@ -369,15 +369,11 @@ class SettingEditor(wx.Panel, RideEventHandler):
         return ctrl
 
     def _get_tooltip(self):
-        return Tooltip(self, (500, 350), autohide=True)
+        return Tooltip(self, (500, 350))
 
     def OnKey(self, event):
         self._tooltip.hide()
         event.Skip()
-
-    def OnMotion(self, event):
-        self._tooltip.hide()
-        self.Parent.reset_last_show_tooltip()
 
     def OnDisplayMotion(self, event):
         self._tooltip.hide()
@@ -427,7 +423,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
         self._stop_popup_timer()
 
     def OnPopupTimer(self, event):
-        if self.Parent.tooltip_allowed(self):
+        if self.Parent.tooltip_allowed(self._tooltip):
             details, title = self._get_details_for_tooltip()
             if details:
                 self._tooltip.set_content(details, title)
@@ -564,7 +560,7 @@ class DocumentationEditor(SettingEditor):
         self._value_display.SetPage(self._controller.visible_value)
 
     def _get_tooltip(self):
-        return Tooltip(self, (500, 350), detachable=False, autohide=True)
+        return Tooltip(self, (500, 350), detachable=False)
 
     def _get_details_for_tooltip(self):
         return self._controller.visible_value, None
@@ -725,9 +721,6 @@ class _AbstractListEditor(ListEditor):
         pass
 
     def close(self):
-        pass
-
-    def OnMotion(self, event):
         pass
 
     def highlight(self, text, expand=False):
