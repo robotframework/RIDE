@@ -169,7 +169,9 @@ class GridEditor(grid.Grid):
 
     def OnCellRightClick(self, event):
         if hasattr(event, 'Row') and hasattr(event, 'Col'):
-            self.selection.cell_right_clicked(event.Row, event.Col)
+            if not (event.Row, event.Col) in self.selection.cells():
+                self.select(event.Row, event.Col)
+                self.selection.set_from_single_selection(event)
         self._popup_creator.show(self, PopupMenuItems(self, self._popup_items),
                                  self.get_selected_content())
 
@@ -242,10 +244,6 @@ class _GridSelection(object):
                    (whole_row_selection[-1], grid.NumberCols - 1)
         return (event.TopLeftCoords.Row, event.TopLeftCoords.Col), \
                (event.BottomRightCoords.Row, event.BottomRightCoords.Col)
-
-    def cell_right_clicked(self, row, col):
-        if not (row, col) in self.cells():
-            self._set((row, col))
 
     def rows(self):
         """Returns a list containing indices of rows currently selected."""
