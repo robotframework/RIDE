@@ -130,7 +130,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
     def OnLabelRightClick(self, event):
         selected_row = event.GetRow()
         selected_rows = self.GetSelectedRows()
-        if not selected_rows or selected_row not in selected_rows:
+        if selected_row not in selected_rows:
             self.SelectRow(selected_row)
         popupitems = ['Insert Rows', 'Delete Rows',
                       'Comment Rows\tCtrl-3', 'Uncomment Rows\tCtrl-4',
