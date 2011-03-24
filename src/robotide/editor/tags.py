@@ -86,7 +86,7 @@ class TagsDisplay(wx.Panel):
 
 class TagBox(wx.TextCtrl):
 
-    ADD_TEXT = '[add]'
+    ADD_TEXT = ' Add '
     ADD_BACKGROUND = '#C2DFFF'
     NOT_EDITABLE_BACKGROUND = '#D3D3D3'
 
@@ -95,6 +95,7 @@ class TagBox(wx.TextCtrl):
         self.Bind(wx.EVT_SET_FOCUS, self._focus_received)
         self.Bind(wx.EVT_KILL_FOCUS, self._focus_lost)
         self.Bind(wx.EVT_KEY_UP, self._key_up)
+        self.Bind(wx.EVT_KEY_DOWN, self._key_down)
         self.set_tag(tag)
 
     def set_tag(self, tag):
@@ -109,6 +110,7 @@ class TagBox(wx.TextCtrl):
         self._colorize(self._tag)
 
     def _key_up(self, event):
+        event.Skip()
         if not self.IsEditable():
             return
         if event.GetKeyCode() == wx.WXK_ESCAPE:
@@ -116,6 +118,11 @@ class TagBox(wx.TextCtrl):
             if self._tag.is_empty():
                 self.SetEditable(False)
                 self._colorize(self._tag)
+
+    def _key_down(self, event):
+        if not self.IsEditable():
+            self._focus_received(event)
+        event.Skip()
 
     def _get_text_value(self, tag=None):
         if tag is None:
@@ -125,6 +132,7 @@ class TagBox(wx.TextCtrl):
         return tag.name
 
     def _focus_lost(self, event):
+        event.Skip()
         if not self.IsEditable():
             return
         value = self.GetValue()
@@ -133,6 +141,7 @@ class TagBox(wx.TextCtrl):
         self._tag.controller.execute(ChangeTag(self._tag, value))
 
     def _focus_received(self, event):
+        event.Skip()
         if self._tag.is_empty():
             self.SetEditable(True)
             self.SetValue('')
