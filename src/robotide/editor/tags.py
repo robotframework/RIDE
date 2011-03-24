@@ -16,7 +16,7 @@ class TagsDisplay(wx.Panel):
         self.SetSizer(self._sizer)
 
     def add_tag(self, tag, editable):
-        tag_component = TagBox(self, tag) if not tag.is_empty() else AddTagBox(self, tag)
+        tag_component = TagBox(self, tag)
         tag_component.SetEditable(editable)
         self._sizer.Add(tag_component)
         self._tag_boxes.append(tag_component)
@@ -61,7 +61,7 @@ class TagsDisplay(wx.Panel):
             return self._recursive_tag_set(tags, tbs[1:], controller)
         t = tags[0]
         tagbox.set_tag(t)
-        tagbox.SetEditable(t.controller == controller)
+        tagbox.SetEditable(t.controller == controller and not t.is_empty())
         return self._recursive_tag_set(tags[1:], tbs[1:], controller)
 
     def _destroy_tagboxes(self, tbs):
@@ -74,7 +74,7 @@ class TagsDisplay(wx.Panel):
 
     def _add_tags(self, tags, controller):
         for tag in tags:
-            self.add_tag(tag, tag.controller == controller)
+            self.add_tag(tag, tag.controller == controller and not tag.is_empty())
 
     def GetSelection(self):
         return None
@@ -86,16 +86,21 @@ class TagsDisplay(wx.Panel):
 
 class TagBox(wx.TextCtrl):
 
+    ADD_TEXT = '[add]'
+    ADD_BACKGROUND = '#C2DFFF'
+    NOT_EDITABLE_BACKGROUND = '#D3D3D3'
+
     def __init__(self, parent, tag):
-        wx.TextCtrl.__init__(self, parent, wx.ID_ANY, tag.name)
+        wx.TextCtrl.__init__(self, parent, wx.ID_ANY, tag.name, style=wx.TE_CENTER)
+        self.Bind(wx.EVT_SET_FOCUS, self._focus_received)
         self.Bind(wx.EVT_KILL_FOCUS, self._focus_lost)
         self.Bind(wx.EVT_KEY_UP, self._key_up)
         self.set_tag(tag)
 
     def set_tag(self, tag):
         self._tag = tag
-        if self.GetValue() != tag.name:
-            self.SetValue(tag.name)
+        if tag.is_empty() or self.GetValue() != tag.name:
+            self.SetValue(self._get_text_value())
         self._to_text_size(tag.name)
         self._colorize(tag)
 
@@ -107,7 +112,15 @@ class TagBox(wx.TextCtrl):
         if not self.IsEditable():
             return
         if event.GetKeyCode() == wx.WXK_ESCAPE:
-            self.SetValue(self._tag.name)
+            self.SetValue(self._get_text_value())
+            if self._tag.is_empty():
+                self.SetEditable(False)
+                self._colorize(self._tag)
+
+    def _get_text_value(self):
+        if self._tag.is_empty():
+            return TagBox.ADD_TEXT
+        return self._tag.name
 
     def _focus_lost(self, event):
         if not self.IsEditable():
@@ -116,6 +129,12 @@ class TagBox(wx.TextCtrl):
         if value == self._tag.name:
             return
         self._tag.controller.execute(ChangeTag(self._tag, value))
+
+    def _focus_received(self, event):
+        if self._tag.is_empty():
+            self.SetEditable(True)
+            self.SetValue('')
+            self._colorize(self._tag)
 
     def _to_text_size(self, text):
         if text == '':
@@ -128,12 +147,15 @@ class TagBox(wx.TextCtrl):
 
     def _colorize(self, tag):
         if not self.IsEditable():
-            self.SetForegroundColour(tag.choose({Tag:'black', ForcedTag:'red', DefaultTag:'gray'}))
+            if tag.is_empty():
+                self.SetForegroundColour('black')
+                self.SetBackgroundColour(TagBox.ADD_BACKGROUND)
+            else:
+                self.SetForegroundColour(tag.choose({Tag:'black', ForcedTag:'red', DefaultTag:'#666666'}))
+                self.SetBackgroundColour(TagBox.NOT_EDITABLE_BACKGROUND)
         else:
             self.SetForegroundColour('black')
-
-class AddTagBox(TagBox):
-    pass
+            self.SetBackgroundColour('white')
 
 if __name__ == '__main__':
     class MyFrame(wx.Frame):
@@ -148,7 +170,7 @@ if __name__ == '__main__':
             display.add_tag(DefaultTag('default'), False)
             for name in ['foo', 'bar', 'foobo', 'jee', 'huu', 'asb', 'sdfajkd', 'Sprint-1']:
                 display.add_tag(Tag(name), True)
-            display.add_tag(Tag(''), True)
+            display.add_tag(Tag(''), False)
             display.build()
             sz.Add(display, 0, wx.GROW|wx.ALL, 5)
             frame.Show(True)

@@ -347,10 +347,13 @@ class SettingEditor(wx.Panel, RideEventHandler):
         self.update_value()
         self._tooltip = self._get_tooltip()
         sizer.Add(self._value_display, 1, wx.EXPAND)
-        sizer.Add(ButtonWithHandler(self, 'Edit'), flag=wx.LEFT|wx.RIGHT, border=5)
+        self._add_edit(sizer)
         sizer.Add(ButtonWithHandler(self, 'Clear'))
         sizer.Layout()
         self.SetSizer(sizer)
+
+    def _add_edit(self, sizer):
+        sizer.Add(ButtonWithHandler(self, 'Edit'), flag=wx.LEFT|wx.RIGHT, border=5)
 
     def _create_value_display(self):
         display = self._value_display_control()
@@ -599,6 +602,9 @@ class TagsEditor(SettingEditor):
         self._tags_display.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
         self._tags_display.Bind(wx.EVT_KEY_DOWN, self.OnKey)
         return self._tags_display
+
+    def _add_edit(self, sizer):
+        pass
 
     def contains(self, text):
         return False
