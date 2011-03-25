@@ -27,6 +27,9 @@ class TagsDisplay(wx.Panel):
         if parent_sizer is not None:
             parent_sizer.Layout()
 
+    def clear(self):
+        self.set_value(self._controller)
+
     def set_value(self, tags, plugin=None):
         if self._tag_boxes == []:
             self._create_values(tags)
@@ -37,12 +40,6 @@ class TagsDisplay(wx.Panel):
             # modify the ones that exist
             self._modify_values(tags)
         self.build()
-
-    def _add_new_tag(self, tags):
-        self.add_tag(tags.empty_tag(), True)
-
-    def clear(self):
-        self.set_value(self._controller)
 
     def _create_values(self, tags):
         self._add_tags(chain(tags, [tags.empty_tag()]), tags)
@@ -84,6 +81,7 @@ class TagsDisplay(wx.Panel):
             return 50
         return self._sizer.height
 
+
 class TagBox(wx.TextCtrl):
 
     ADD_TEXT = ' Add '
@@ -91,11 +89,12 @@ class TagBox(wx.TextCtrl):
     NOT_EDITABLE_BACKGROUND = '#D3D3D3'
 
     def __init__(self, parent, tag):
-        wx.TextCtrl.__init__(self, parent, wx.ID_ANY, self._get_text_value(tag), style=wx.TE_CENTER)
-        self.Bind(wx.EVT_SET_FOCUS, self._focus_received)
-        self.Bind(wx.EVT_KILL_FOCUS, self._focus_lost)
-        self.Bind(wx.EVT_KEY_UP, self._key_up)
-        self.Bind(wx.EVT_KEY_DOWN, self._key_down)
+        wx.TextCtrl.__init__(self, parent, wx.ID_ANY, self._get_text_value(tag),
+                             style=wx.TE_CENTER)
+        self.Bind(wx.EVT_SET_FOCUS, self.OnSetFocus)
+        self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
+        self.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
+        self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
         self.set_tag(tag)
 
     def set_tag(self, tag):
@@ -109,19 +108,24 @@ class TagBox(wx.TextCtrl):
         wx.TextCtrl.SetEditable(self, editable)
         self._colorize(self._tag)
 
-    def _key_up(self, event):
+    def OnKeyUp(self, event):
+        if self.IsEditable():
+            if event.GetKeyCode() == wx.WXK_ESCAPE:
+                self._cancel_editing()
+            elif event.GetKeyCode() == wx.WXK_RETURN:
+                self._update_value()
+                return #Crashes RIDE on Linux if event.Skip is called
         event.Skip()
-        if not self.IsEditable():
-            return
-        if event.GetKeyCode() == wx.WXK_ESCAPE:
-            self.SetValue(self._get_text_value())
-            if self._tag.is_empty():
-                self.SetEditable(False)
-                self._colorize(self._tag)
 
-    def _key_down(self, event):
+    def _cancel_editing(self):
+        self.SetValue(self._get_text_value())
+        if self._tag.is_empty():
+            self.SetEditable(False)
+            self._colorize(self._tag)
+
+    def OnKeyDown(self, event):
         if not self.IsEditable():
-            self._focus_received(event)
+            self.OnSetFocus(event)
         event.Skip()
 
     def _get_text_value(self, tag=None):
@@ -131,21 +135,22 @@ class TagBox(wx.TextCtrl):
             return TagBox.ADD_TEXT
         return tag.name
 
-    def _focus_lost(self, event):
-        event.Skip()
-        if not self.IsEditable():
-            return
-        value = self.GetValue()
-        if value == self._tag.name:
-            return
-        self._tag.controller.execute(ChangeTag(self._tag, value))
+    def OnKillFocus(self, event):
+        if self.IsEditable():
+            self._update_value()
+        # event.Skip() Can't skip on Linux as this causes crash
 
-    def _focus_received(self, event):
-        event.Skip()
+    def _update_value(self):
+        value = self.GetValue()
+        if value != self._tag.name:
+            self._tag.controller.execute(ChangeTag(self._tag, value))
+
+    def OnSetFocus(self, event):
         if self._tag.is_empty():
             self.SetEditable(True)
             self.SetValue('')
             self._colorize(self._tag)
+        event.Skip()
 
     def _to_text_size(self, text):
         if text == '':
@@ -167,6 +172,7 @@ class TagBox(wx.TextCtrl):
         else:
             self.SetForegroundColour('black')
             self.SetBackgroundColour('white')
+
 
 if __name__ == '__main__':
     class MyFrame(wx.Frame):
