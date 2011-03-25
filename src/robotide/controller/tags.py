@@ -1,4 +1,5 @@
 class Tag(object):
+    tooltip = "Test case's tag"
 
     def __init__(self, name, index=None, controller=None):
         self._name = name
@@ -31,8 +32,10 @@ class Tag(object):
     def choose(self, mapping):
         return mapping[self.__class__]
 
+
 class ForcedTag(Tag):
-    pass
+    tooltip = "Force tag"
+
 
 class DefaultTag(Tag):
-    pass
+    tooltip = "Default tag"

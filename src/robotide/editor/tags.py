@@ -103,6 +103,8 @@ class TagBox(wx.TextCtrl):
             self.SetValue(self._get_text_value())
         self._to_text_size(self._get_text_value())
         self._colorize(tag)
+        tooltip = "Click to add new tag" if tag.is_empty() else tag.tooltip
+        self.SetToolTipString(tooltip)
 
     def SetEditable(self, editable):
         wx.TextCtrl.SetEditable(self, editable)
