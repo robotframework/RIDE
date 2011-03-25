@@ -198,7 +198,15 @@ class _StepsChangingCommand(_ReversibleCommand):
         raise NotImplementedError(self.__class__.__name__)
 
     def _step(self, context):
-        return context.steps[self._row]
+        try:
+            return context.steps[self._row]
+        except IndexError:
+            return NonExistingStep()
+
+
+class NonExistingStep(object):
+    def __getattr__(self, name):
+        return lambda *args: ''
 
 
 class NullObserver(object):
