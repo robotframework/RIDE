@@ -1,7 +1,7 @@
 import unittest
 from robotide.editor.tags import TagsDisplay
 from controller.controller_creator import testcase_controller as tc
-from robot.utils.asserts import assert_equals, assert_true, assert_false
+from robot.utils.asserts import assert_equals, assert_false
 from robotide.controller.tags import Tag
 
 class _PartialTagsDisplay(TagsDisplay):
@@ -78,3 +78,7 @@ class TestTagsModifications(unittest.TestCase):
     def _is_empty(self, tag_info):
         assert_false(tag_info.editable)
         assert_equals(tag_info.value, None)
+
+
+if __name__ == '__main__':
+    unittest.main()
