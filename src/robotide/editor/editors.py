@@ -615,7 +615,7 @@ class TagsEditor(SettingEditor):
 
 class TestCaseEditor(_RobotTableEditor):
 
-    _settings_open_id = 'macro settings open'
+    _settings_open_id = 'test case settings open'
 
     def _populate(self):
         self.header = self._create_header(self.controller.name)
@@ -690,6 +690,8 @@ class UserKeywordHeader(HorizontalSizer):
 
 
 class UserKeywordEditor(TestCaseEditor):
+
+    _settings_open_id = 'user keyword settings open'
 
     def _create_header(self, name):
         sizer = UserKeywordHeader()
