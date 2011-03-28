@@ -218,6 +218,21 @@ class TestCaseNameDialog(_Dialog):
         return _Dialog.get_value(self)[0]
 
 
+class CopyUserKeywordDialog(_Dialog):
+    _title = 'Copy User Keyword'
+
+    def _add_comment_editor(self, item):
+        pass
+
+    def _get_editors(self, uk):
+        value = uk.name if uk else ''
+        return [ValueEditor(self, value, 'Name',
+                            UserKeywordNameValidator(self._controller))]
+
+    def get_name(self):
+        return _Dialog.get_value(self)[0]
+
+
 class UserKeywordNameDialog(_Dialog):
     _title = 'New User Keyword'
 

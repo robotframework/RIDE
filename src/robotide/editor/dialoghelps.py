@@ -129,14 +129,17 @@ With test cases this setting overrides Test Timeout set on the suite level.
 %(TIMEOUT)s
 
 Metadata
-Give name and value of the free metadata you want to set to the test suite.
+Give a name and a value for the suite metadata.
 
 New Test Case
-Give name of the test case to be created.
+Give a name for the new test case.
 
 New User Keyword
-Give name and arguments of the user keyword to be created.
+Give a name and arguments for the new user keyword.
 %(ARGUMENTS)s
+
+Copy User Keyword
+Give a name for the new user keyword.
 """.splitlines():
     row = row.strip()
     if not row:

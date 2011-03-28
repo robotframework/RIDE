@@ -21,7 +21,7 @@ from robotide.action import ActionInfoCollection
 from robotide.controller import NewDatafile
 from robotide.editor.editordialogs import (TestCaseNameDialog,
                                            UserKeywordNameDialog,
-    ScalarVariableDialog, ListVariableDialog)
+    ScalarVariableDialog, ListVariableDialog, CopyUserKeywordDialog)
 from robotide.publish import RideTreeSelection, PUBLISHER
 from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
 from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
@@ -746,7 +746,7 @@ class _TestOrUserKeywordHandler(_ActionHandler):
         return True
 
     def OnCopy(self, event):
-        dlg = self._dialog_class(self.controller, self.item)
+        dlg = self._copy_name_dialog_class(self.controller, self.item)
         if dlg.ShowModal() == wx.ID_OK:
             self.controller.execute(CopyMacroAs(dlg.get_name()))
         dlg.Destroy()
@@ -768,7 +768,7 @@ class _TestOrUserKeywordHandler(_ActionHandler):
 
 class TestCaseHandler(_TestOrUserKeywordHandler):
     _datalist = property(lambda self: self.item.datalist)
-    _dialog_class = TestCaseNameDialog
+    _copy_name_dialog_class = TestCaseNameDialog
 
     def _add_copy_to_tree(self, parent_node, copied):
         self._tree.add_test(parent_node, copied)
@@ -780,7 +780,7 @@ class TestCaseHandler(_TestOrUserKeywordHandler):
 class UserKeywordHandler(_TestOrUserKeywordHandler):
     is_user_keyword = True
     _datalist = property(lambda self: self.item.datalist)
-    _dialog_class = UserKeywordNameDialog
+    _copy_name_dialog_class = CopyUserKeywordDialog
     _actions = _TestOrUserKeywordHandler._actions + ['Find Usages']
 
     def _add_copy_to_tree(self, parent_node, copied):
