@@ -203,6 +203,8 @@ class TestRunnerPlugin(Plugin):
             self._kill_process()
         if self._process_timer:
             self._process_timer.Stop()
+        if self._server:
+            self._server.shutdown()
 
     def _kill_process(self):
         if self._pid_to_kill:
