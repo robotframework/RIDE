@@ -196,7 +196,8 @@ class Settings(wx.CollapsiblePane):
     BORDER = 2
 
     def __init__(self, parent, plugin, tree):
-        wx.CollapsiblePane.__init__(self, parent, wx.ID_ANY, 'Settings')
+        wx.CollapsiblePane.__init__(self, parent, wx.ID_ANY, 'Settings',
+                                    style=wx.CP_DEFAULT_STYLE|wx.CP_NO_TLW_RESIZE)
         self._sizer = wx.BoxSizer(wx.VERTICAL)
         self._plugin = plugin
         self._tree = tree
