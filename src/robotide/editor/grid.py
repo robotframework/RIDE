@@ -64,8 +64,11 @@ class GridEditor(grid.Grid):
         return self.FindFocus() == self.GridWindow
 
     def _update_history(self):
-        self._history.change(self._get_block_content(range(self.NumberRows),
-                                                     range(self.NumberCols)))
+        self._history.change(self._get_all_content())
+
+    def _get_all_content(self):
+        return self._get_block_content(range(self.NumberRows),
+                                       range(self.NumberCols))
 
     @property
     def cell_under_cursor(self):
@@ -157,6 +160,7 @@ class GridEditor(grid.Grid):
 
     def OnRangeSelect(self, event):
         if not event.Selecting():
+            self.selection.clear()
             return
         if event.ControlDown():
             self.SetGridCursor(event.TopRow, event.LeftCol)
@@ -169,9 +173,6 @@ class GridEditor(grid.Grid):
     def _ensure_selected_row_is_visible(self, bottom_row):
         if not self.IsVisible(bottom_row , 0) and bottom_row < self.NumberRows and self._is_whole_row_selection():
             self.MakeCellVisible(bottom_row, 0)
-            self.SelectRow(bottom_row + 1, True)
-            self.selection._set((self.selection.topleft.row, self.selection.topleft.col),
-                                (self.selection.bottomright.row + 1, self.selection.bottomright.col))
 
     def OnCellRightClick(self, event):
         if hasattr(event, 'Row') and hasattr(event, 'Col'):
@@ -220,6 +221,7 @@ class GridEditor(grid.Grid):
         self.GetParent().Sizer.Layout()
 
 
+# TODO: refactor this internal state away if possible
 class _GridSelection(object):
     cell = property(lambda self: (self.topleft.row, self.topleft.col))
 
@@ -242,6 +244,10 @@ class _GridSelection(object):
 
     def set_from_range_selection(self, grid, event):
         self._set(*self._get_bounding_coordinates(grid, event))
+
+    def clear(self):
+        selection = (self._grid.GetGridCursorRow(), self._grid.GetGridCursorCol())
+        self._set(selection)
 
     def _get_bounding_coordinates(self, grid, event):
         whole_row_selection = sorted(grid.SelectedRows)

@@ -154,6 +154,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def OnInsertRows(self, event):
         self._execute(AddRows(self.selection.rows()))
+        self.ClearSelection()
         event.Skip()
 
     def OnInsertCells(self, event):
