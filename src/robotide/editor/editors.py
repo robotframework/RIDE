@@ -196,7 +196,8 @@ class Settings(wx.CollapsiblePane):
     BORDER = 2
 
     def __init__(self, parent, plugin, tree):
-        wx.CollapsiblePane.__init__(self, parent, wx.ID_ANY, 'Settings')
+        wx.CollapsiblePane.__init__(self, parent, wx.ID_ANY, 'Settings',
+                                    style=wx.CP_DEFAULT_STYLE|wx.CP_NO_TLW_RESIZE)
         self._sizer = wx.BoxSizer(wx.VERTICAL)
         self._plugin = plugin
         self._tree = tree
@@ -614,7 +615,7 @@ class TagsEditor(SettingEditor):
 
 class TestCaseEditor(_RobotTableEditor):
 
-    _settings_open_id = 'macro settings open'
+    _settings_open_id = 'test case settings open'
 
     def _populate(self):
         self.header = self._create_header(self.controller.name)
@@ -689,6 +690,8 @@ class UserKeywordHeader(HorizontalSizer):
 
 
 class UserKeywordEditor(TestCaseEditor):
+
+    _settings_open_id = 'user keyword settings open'
 
     def _create_header(self, name):
         sizer = UserKeywordHeader()

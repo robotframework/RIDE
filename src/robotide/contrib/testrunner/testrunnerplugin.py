@@ -112,7 +112,7 @@ class TestRunnerPlugin(Plugin):
         self._start_listener_server()
         self._load_tree_if_data_is_open()
         self._create_temporary_directory()
-        self._set_state("stopped")
+        self._set_stopped()
 
     def _register_actions(self):
         run_action_info = ActionInfo("Tools", "Run Test Suite", self.OnRun, None,
@@ -203,6 +203,8 @@ class TestRunnerPlugin(Plugin):
             self._kill_process()
         if self._process_timer:
             self._process_timer.Stop()
+        if self._server:
+            self._server.shutdown()
 
     def _kill_process(self):
         if self._pid_to_kill:
@@ -232,6 +234,8 @@ class TestRunnerPlugin(Plugin):
         '''
         if self._process:
             self._kill_process()
+            self._set_stopped()
+            self._progress_bar.Stop()
 
     def OnRun(self, event):
         '''Called when the user clicks the "Run" button'''
@@ -245,12 +249,15 @@ class TestRunnerPlugin(Plugin):
             self._process = wx.Process(self.panel)
             self._process.Redirect()
             self._pid_to_kill = wx.Execute(self._format_command(command), wx.EXEC_ASYNC, self._process)
+            if self._pid_to_kill == 0:
+                self._set_stopped()
+                return
             self._process_timer.Start(41) # roughly 24fps
-
-            self._set_state("running")
+            self._set_running()
             self._progress_bar.Start()
         except Exception, e:
-            self._set_state("stopped")
+            #FIXME: Dead code?
+            self._set_stopped()
             self._output(str(e))
             wx.MessageBox("Could not start running tests.", "Error", wx.ICON_ERROR)
 
@@ -361,7 +368,7 @@ class TestRunnerPlugin(Plugin):
 
         now = datetime.datetime.now()
         self._output("\ntest finished %s" % now.strftime("%c"))
-        self._set_state("stopped")
+        self._set_stopped()
         self._process.Destroy()
         self._process = None
 
@@ -815,17 +822,23 @@ class TestRunnerPlugin(Plugin):
 
     def _set_state(self, state):
         if state == "running":
-            self._run_action.disable()
-            self._stop_action.enable()
-            self.local_toolbar.EnableTool(ID_RUN, False)
-            self.local_toolbar.EnableTool(ID_STOP, True)
-            self._running = True
+            self._set_running()
         else:
-            self._run_action.enable()
-            self._stop_action.disable()
-            self.local_toolbar.EnableTool(ID_RUN, True)
-            self.local_toolbar.EnableTool(ID_STOP, False)
-            self._running = False
+            self._set_stopped()
+
+    def _set_running(self):
+        self._run_action.disable()
+        self._stop_action.enable()
+        self.local_toolbar.EnableTool(ID_RUN, False)
+        self.local_toolbar.EnableTool(ID_STOP, True)
+        self._running = True
+
+    def _set_stopped(self):
+        self._run_action.enable()
+        self._stop_action.disable()
+        self.local_toolbar.EnableTool(ID_RUN, True)
+        self.local_toolbar.EnableTool(ID_STOP, False)
+        self._running = False
 
 
 class ProgressBar(wx.Panel):

@@ -85,7 +85,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def OnLeftDown(self, event):
         #See http://code.google.com/p/robotframework-ride/issues/detail?id=756
         if self._editing_label:
-            return
+            self.EndEditLabel(self.Selection, discardChanges=True)
         event.Skip()
 
     def set_editor(self, editor):
