@@ -84,7 +84,9 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     
     def OnLeftDown(self, event):
         #See http://code.google.com/p/robotframework-ride/issues/detail?id=756
-        if self._editing_label:
+        if IS_WINDOWS and self._editing_label:
+            # This method works only on Windows, luckily the issue 756 exists 
+            # only on Windows
             self.EndEditLabel(self.Selection, discardChanges=True)
         event.Skip()
 
