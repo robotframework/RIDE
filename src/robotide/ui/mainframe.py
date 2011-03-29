@@ -80,6 +80,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         self.tree = Tree(splitter, self.actions)
         self.actions.register_actions(ActionInfoCollection(_menudata, self,
                                                            self.tree))
+        splitter.SetMinimumPaneSize(100)
         splitter.SplitVertically(self.tree, self.notebook, 300)
         self.CreateStatusBar()
 
@@ -188,7 +189,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         self._controller.execute(SaveAll())
 
     def save(self, controller=None):
-        if controller is None : 
+        if controller is None :
             controller = self.get_selected_datafile_controller()
         if controller is not None:
             self._show_dialog_for_files_without_format(controller)
