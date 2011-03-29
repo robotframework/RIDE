@@ -57,7 +57,7 @@ from robotide.pluginapi import Plugin, ActionInfo
 from robotide.publish import (RideTestCaseAdded, RideOpenSuite, RideSuiteAdded,
                               RideItemNameChanged, RideTestCaseRemoved)
 
-from TestSuiteTreeCtrl import TestSuiteTreeCtrl
+from robotide.contrib.testrunner.TestSuiteTreeCtrl import TestSuiteTreeCtrl
 import runprofiles
 
 
