@@ -47,8 +47,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
     _popup_menu_shown = False
     dirty = property(lambda self: self._controller.dirty)
     update_value = lambda *args: None
-    _popup_items = ['Create Keyword', 'Extract Keyword', 'Extract Variable', 'Rename Keyword', 'Find Where Used',
-                    '---'] + GridEditor._popup_items
+    _popup_items = ['Create Keyword', 'Extract Keyword', 'Extract Variable',
+                    'Rename Keyword', 'Find Where Used', '---'] + GridEditor._popup_items
 
     def __init__(self, parent, controller, tree):
         try:
@@ -151,7 +151,6 @@ class KeywordEditor(GridEditor, RideEventHandler):
         else:
             self.SelectRow(event.Row, addToSelected=False)
             self.SetGridCursor(event.Row, 0)
-        
 
     def OnInsertRows(self, event):
         self._execute(AddRows(self.selection.rows()))
