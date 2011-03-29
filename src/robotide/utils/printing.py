@@ -17,8 +17,8 @@ from wx.html import HtmlEasyPrinting
 
 class Printing(HtmlEasyPrinting):
 
-    def __init__(self):
-        HtmlEasyPrinting.__init__(self)
+    def __init__(self, parent):
+        HtmlEasyPrinting.__init__(self, parentWindow=parent)
 
     def GetHtmlText(self,text):
         text = text.replace('\t', '&nbsp;&nbsp;&nbsp;&nbsp;')

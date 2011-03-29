@@ -79,7 +79,7 @@ class PreviewPanel(wx.Panel):
         self.SetSizer(main_sizer)
         self._format = parent.format
         self.__view = None
-        self._printing = Printing()
+        self._printing = Printing(self)
         box = wx.BoxSizer(wx.HORIZONTAL)
         box.Add(self._chooser())
         box.Add(self._print_button(), 1, wx.ALIGN_CENTER_VERTICAL | wx.EXPAND)
