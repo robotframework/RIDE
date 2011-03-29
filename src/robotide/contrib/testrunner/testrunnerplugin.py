@@ -58,7 +58,7 @@ from robotide.publish import (RideTestCaseAdded, RideOpenSuite, RideSuiteAdded,
                               RideItemNameChanged, RideTestCaseRemoved)
 
 from robotide.contrib.testrunner.TestSuiteTreeCtrl import TestSuiteTreeCtrl
-import runprofiles
+from robotide.contrib.testrunner import runprofiles
 
 
 ID_RUN = wx.NewId()
@@ -76,7 +76,7 @@ def _RunProfile(name, run_prefix):
 
 class TestRunnerPlugin(Plugin):
     """A plugin for running tests from within RIDE"""
-    defaults = { "auto_save": False,
+    defaults = {"auto_save": False,
                 "profile": "pybot",
                 "port": 5010,
                 "sash_position": 200,
