@@ -87,6 +87,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.Bind(grid.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
         self.Bind(grid.EVT_GRID_CELL_LEFT_DCLICK, self.OnCellLeftDClick)
         self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
+        self.Bind(grid.EVT_GRID_LABEL_LEFT_CLICK, self.OnLabelLeftClick)
         self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
 
     def get_tooltip_content(self):
@@ -129,21 +130,32 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def OnLabelRightClick(self, event):
         selected_row = event.GetRow()
-        selected_rows = self.GetSelectedRows()
+        selected_rows = self.selection.rows()
         if selected_row not in selected_rows:
-            self.SelectRow(selected_row)
+            self.SelectRow(selected_row, addToSelected=False)
+            self.SetGridCursor(event.Row, 0)
         popupitems = ['Insert Rows', 'Delete Rows',
                       'Comment Rows\tCtrl-3', 'Uncomment Rows\tCtrl-4',
                       'Move Rows Up\tAlt-Up', 'Move Rows Down\tAlt-Down']
         PopupMenu(self, PopupMenuItems(self, popupitems))
         event.Skip()
 
-    def OnInsertRows(self, event):
-        self._execute(AddRows(self.GetSelectedRowsOrRowsOnGrid()))
-        event.Skip()
+    def OnLabelLeftClick(self, event):
+        if event.ShiftDown() or event.ControlDown():
+            self.ClearSelection()
+            cursor_row = self.GetGridCursorRow()
+            event_row = event.Row
+            start, end = (cursor_row, event_row) if cursor_row < event_row else (event_row, cursor_row)
+            for row in range(start, end+1):
+                self.SelectRow(row, addToSelected=True)
+        else:
+            self.SelectRow(event.Row, addToSelected=False)
+            self.SetGridCursor(event.Row, 0)
+        
 
-    def GetSelectedRowsOrRowsOnGrid(self):
-        return self.GetSelectedRows() or self.selection.rows()
+    def OnInsertRows(self, event):
+        self._execute(AddRows(self.selection.rows()))
+        event.Skip()
 
     def OnInsertCells(self, event):
         self._execute(InsertCells(self.selection.topleft,
@@ -156,12 +168,12 @@ class KeywordEditor(GridEditor, RideEventHandler):
         event.Skip()
 
     def OnCommentRows(self, event=None):
-        self._execute(CommentRows(self.GetSelectedRowsOrRowsOnGrid()))
+        self._execute(CommentRows(self.selection.rows()))
         if event is not None:
             event.Skip()
 
     def OnUncommentRows(self, event=None):
-        self._execute(UncommentRows(self.GetSelectedRowsOrRowsOnGrid()))
+        self._execute(UncommentRows(self.selection.rows()))
         if event is not None:
             event.Skip()
 
@@ -172,7 +184,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self._row_move(MoveRowsDown, 1)
 
     def _row_move(self, command, change):
-        rows = self.GetSelectedRowsOrRowsOnGrid()
+        rows = self.selection.rows()
         if self._execute(command(rows)):
             wx.CallAfter(self._select_rows, [r+change for r in rows])
 
@@ -251,7 +263,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
                 self._execute(PasteArea(self.selection.topleft, data))
 
     def OnDeleteRows(self, event):
-        self._execute(DeleteRows(self.GetSelectedRowsOrRowsOnGrid()))
+        self._execute(DeleteRows(self.selection.rows()))
         self.ClearSelection()
         event.Skip()
 

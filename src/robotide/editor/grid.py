@@ -156,7 +156,13 @@ class GridEditor(grid.Grid):
         event.Skip()
 
     def OnRangeSelect(self, event):
-        if event.Selecting():
+        if not event.Selecting():
+            return
+        if event.ControlDown():
+            self.SetGridCursor(event.TopRow, event.LeftCol)
+            self.SelectBlock(event.TopRow, event.LeftCol,
+                             event.BottomRow, event.RightCol, addToSelected=False)
+        else:
             self.selection.set_from_range_selection(self, event)
             self._ensure_selected_row_is_visible(event.BottomRow)
 
@@ -238,7 +244,7 @@ class _GridSelection(object):
         self._set(*self._get_bounding_coordinates(grid, event))
 
     def _get_bounding_coordinates(self, grid, event):
-        whole_row_selection = grid.SelectedRows
+        whole_row_selection = sorted(grid.SelectedRows)
         if whole_row_selection:
             return (whole_row_selection[0], 0), \
                    (whole_row_selection[-1], grid.NumberCols - 1)
