@@ -87,7 +87,7 @@ class PreviewPanel(wx.Panel):
         notebook.AddPage(self, "Preview")
 
     def OnPrint(self, evt):
-        self._printing.preview_text(self._get_content())
+        self._printing.preview_text(self._get_content().decode('UTF-8'))
 
     @property
     def _file_format(self):
