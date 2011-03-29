@@ -386,7 +386,10 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
         If a test or user keyword node is selected, returns parent of that item.
         """
-        return self._get_handler(self._get_selected_datafile_node()).item
+        datafile = self._get_selected_datafile_node()
+        if not datafile:
+            return None
+        return self._get_handler(datafile).item
 
     def get_selected_datafile_controller(self):
         """Returns controller associated with currently active data file.
