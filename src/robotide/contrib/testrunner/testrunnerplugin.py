@@ -11,7 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from robotide.publish.messages import RideSuiteAdded
 
 
 '''A plugin for running tests from within RIDE
@@ -31,7 +30,8 @@ being used for a currently running test.
 '''
 
 import tempfile
-import datetime, time
+import datetime
+import time
 import SocketServer
 import socket
 import os
@@ -41,19 +41,24 @@ import atexit
 import shutil
 import signal
 import posixpath
+import re
 from posixpath import curdir, sep, pardir, join
-from robot.parsing.model import TestCase
-from robotide.pluginapi import Plugin, ActionInfo
-from robotide.publish import (RideTestCaseAdded, RideOpenSuite,
-                              RideItemNameChanged, RideTestCaseRemoved)
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle as pickle
+
 import wx
 import wx.stc
 from wx.lib.embeddedimage import PyEmbeddedImage
 
-try:
-    import cPickle as pickle
-except ImportError, e:
-    import pickle as pickle
+from robot.parsing.model import TestCase
+from robotide.pluginapi import Plugin, ActionInfo
+from robotide.publish import (RideTestCaseAdded, RideOpenSuite, RideSuiteAdded,
+                              RideItemNameChanged, RideTestCaseRemoved)
+
+from TestSuiteTreeCtrl import TestSuiteTreeCtrl
+import runprofiles
 
 
 ID_RUN = wx.NewId()
@@ -61,13 +66,7 @@ ID_STOP = wx.NewId()
 ID_SHOW_REPORT = wx.NewId()
 ID_SHOW_LOG = wx.NewId()
 ID_AUTOSAVE = wx.NewId()
-
-STYLE_STDERR=2
-
-sys.path.insert(0, os.path.dirname(__file__))
-from TestSuiteTreeCtrl import TestSuiteTreeCtrl
-import runprofiles
-sys.path.pop(0)
+STYLE_STDERR = 2
 
 
 def _RunProfile(name, run_prefix):
@@ -82,6 +81,8 @@ class TestRunnerPlugin(Plugin):
                 "port": 5010,
                 "sash_position": 200,
                 "runprofiles": [('jybot', 'jybot' + ('.bat' if os.name == 'nt' else ''))]}
+    report_regex = re.compile("^Report: {2}(.*\.html)$", re.MULTILINE)
+    log_regex = re.compile("^Log: {5}(.*\.html)$", re.MULTILINE)
 
     def __init__(self, application=None):
         Plugin.__init__(self, application, initially_enabled=True,
@@ -173,13 +174,13 @@ class TestRunnerPlugin(Plugin):
         atexit.register(self._remove_temporary_directory)
         # this plugin creates a temporary directory which _should_
         # get reaped at exit. Sometimes things happen which might
-        # cause it to not get deleted. Maybe this would be a good 
+        # cause it to not get deleted. Maybe this would be a good
         # place to check for temporary directories that match the
         # signature and delete them if they are more than a few
         # days old...
 
     def _remove_temporary_directory(self):
-        if os.path.exists(self._tmpdir): 
+        if os.path.exists(self._tmpdir):
             shutil.rmtree(self._tmpdir)
 
     def disable(self):
@@ -274,7 +275,7 @@ class TestRunnerPlugin(Plugin):
     def _ask_user_to_save_before_running(self):
         ret = wx.MessageBox('There are unsaved modifications.\n'
                             'Do you want to save all changes and run the tests?',
-                            'Unsaved Modifications', 
+                            'Unsaved Modifications',
                             wx.ICON_QUESTION|wx.YES_NO)
         return ret == wx.YES
 
@@ -282,6 +283,9 @@ class TestRunnerPlugin(Plugin):
         self._show_notebook_tab()
         self._tree.Reset()
         self._clear_output_window()
+        self.local_toolbar.EnableTool(ID_SHOW_REPORT, False)
+        self.local_toolbar.EnableTool(ID_SHOW_LOG, False)
+        self._report_file = self._log_file = None
 
     def _clear_output_window(self):
         self.out.SetReadOnly(False)
@@ -356,6 +360,8 @@ class TestRunnerPlugin(Plugin):
             text = stream.read()
             self._output(text)
 
+        self._read_report_and_log_from_stdout_if_needed()
+
         stream = self._process.GetErrorStream()
         while stream.CanRead():
             text = stream.read()
@@ -371,6 +377,21 @@ class TestRunnerPlugin(Plugin):
         self._set_stopped()
         self._process.Destroy()
         self._process = None
+
+    def _read_report_and_log_from_stdout_if_needed(self):
+        output = self.out.GetText()
+        if not self._report_file:
+            self._report_file = self._get_report_or_log(output, self.report_regex)
+            if self._report_file:
+                self.local_toolbar.EnableTool(ID_SHOW_REPORT, True)
+        if not self._log_file:
+            self._log_file = self._get_report_or_log(output, self.log_regex)
+            if self._log_file:
+                self.local_toolbar.EnableTool(ID_SHOW_LOG, True)
+
+    def _get_report_or_log(self, output, regex):
+        res = regex.search(output)
+        return res.group(1) if res and os.path.isfile(res.group(1)) else None
 
     def OnTimer(self, evt):
         '''Get process output'''
@@ -396,7 +417,7 @@ class TestRunnerPlugin(Plugin):
                     # the previous character isn't a newline.
                     self._output("\n", source="stdout")
                 self._output(text_buffer, source="stderr")
-        
+
     def GetLastOutputChar(self):
         '''Return the last character in the output window'''
         pos = self.out.PositionBefore(self.out.GetLength())
@@ -414,14 +435,14 @@ class TestRunnerPlugin(Plugin):
 
         This isn't perfect but seems to work for the normal use
         cases. I'm not entirely sure what the perfect algorithm
-        is since *nix and windows have different quoting 
+        is since *nix and windows have different quoting
         behaviors.
         '''
         result = []
         for arg in argv:
             if "'" in arg or " " in arg:
-                # for windows, if there are spaces we need to use 
-                # double quotes. Single quotes cause problems 
+                # for windows, if there are spaces we need to use
+                # double quotes. Single quotes cause problems
                 result.append('"%s"' % arg)
             elif '"' in arg:
                 result.append("'%s'" % arg)
@@ -561,17 +582,17 @@ class TestRunnerPlugin(Plugin):
         logImage = getLogIconBitmap()
         toolbar.AddLabelTool(ID_RUN,"Start", getRobotBitmap(), shortHelp="Start robot",
                              longHelp="Start running the robot test suite")
-        toolbar.AddLabelTool(ID_STOP,"Stop", getProcessStopBitmap(), 
+        toolbar.AddLabelTool(ID_STOP,"Stop", getProcessStopBitmap(),
                              shortHelp="Stop a running test",
                              longHelp="Stop a running test")
         toolbar.AddSeparator()
-        toolbar.AddLabelTool(ID_SHOW_REPORT, " Report", reportImage, 
+        toolbar.AddLabelTool(ID_SHOW_REPORT, " Report", reportImage,
                              shortHelp = "View Robot Report in Browser")
-        toolbar.AddLabelTool(ID_SHOW_LOG, " Log", logImage, 
+        toolbar.AddLabelTool(ID_SHOW_LOG, " Log", logImage,
                              shortHelp = "View Robot Log in Browser")
         toolbar.AddSeparator()
         # the toolbar API doesn't give us a way to specify padding which
-        # is why the label has a couple spaces after the colon. gross, 
+        # is why the label has a couple spaces after the colon. gross,
         # but effective.
         self.savecb = wx.CheckBox(toolbar, ID_AUTOSAVE, "Autosave")
         self.savecb.SetToolTip(wx.ToolTip("Automatically save all changes before running"))
@@ -609,7 +630,7 @@ class TestRunnerPlugin(Plugin):
             self.config_sizer.Remove(child.GetWindow())
         toolbar = p.get_toolbar(self.config_panel)
 
-        if toolbar: 
+        if toolbar:
             self.config_sizer.Add(toolbar, 0, wx.EXPAND)
             self.config_sizer.ShowItems(True)
             self.config_sizer.Layout()
@@ -631,7 +652,7 @@ class TestRunnerPlugin(Plugin):
         font=wx.SystemSettings.GetFont(wx.SYS_SYSTEM_FIXED_FONT)
         if not font.IsFixedWidth():
             # fixed width fonts are typically a little bigger than their variable width
-            # peers so subtract one from the point size. 
+            # peers so subtract one from the point size.
             font = wx.Font(font.GetPointSize()-1, wx.FONTFAMILY_MODERN, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL)
         face = font.GetFaceName()
         size = font.GetPointSize()
@@ -735,7 +756,7 @@ class TestRunnerPlugin(Plugin):
     def OnCollapseAll(self, event):
         '''Called when the user chooses "Collapse All" from the menu'''
         self._tree.CollapseAll()
-    
+
     def OnSelectChildren(self, event):
         '''Called when the user chooses "Select All Children" from the menu'''
         self._tree.SelectChildren()
@@ -760,7 +781,7 @@ class TestRunnerPlugin(Plugin):
         (menubutton_width, _) = self._menubutton.GetSize()
         (_, vh)  = self._tree.GetVirtualSize()
         (_, ch) = self._tree.GetClientSize()
-        # N.B. add a little extra offset for margins/borderwidths 
+        # N.B. add a little extra offset for margins/borderwidths
         offset = menubutton_width + 4
         if (ch != vh):
             # scrollbar is visible
@@ -908,7 +929,7 @@ class ProgressBar(wx.Panel):
 
 # The following two classes implement a small line-buffered socket
 # server. It is designed to run in a separate thread, read data
-# from the given port and update the UI -- hopefully all in a 
+# from the given port and update the UI -- hopefully all in a
 # thread-safe manner.
 class RideListenerServer(SocketServer.TCPServer):
     """Implements a simple line-buffered socket server"""
@@ -936,7 +957,7 @@ def secondsToString(t):
             [(t,),60, 60])
 
 
-    
+
 Robot = PyEmbeddedImage(
     "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAnNJ"
     "REFUOI2Vkb1Pk3EQxz/PW6EvUN6sEQFBIwUlMBgTMZFZJzcXEzeJiXE1MXFi4g8gGhjcHDA4"
