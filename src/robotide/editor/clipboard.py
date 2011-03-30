@@ -141,25 +141,24 @@ class _GridClipboard(object):
         return self._split_string_from_tabs_and_newlines(self._get_contents())
 
     def _get_contents(self):
-        wx.TheClipboard.Open()
-        try:
-            return self._get_value_from_clipboard()
-        finally:
-            wx.TheClipboard.Close()
+        data = self._get_bytes_from_clipboard()
+        return self._decode_clipboard_data(data)
 
-    def _get_value_from_clipboard(self):
-        # TODO: This method can be inlined with the previous, when
-        # try-except-finally works.
+    def _get_bytes_from_clipboard(self):
+        wx.TheClipboard.Open()
         try:
             do = wx.TextDataObject()
             wx.TheClipboard.GetData(do)
-            data =  do.GetDataHere()
+            return do.GetDataHere() or ''
         except TypeError:
             return ''
-        # For some reason, when getting string contents from the
-        # clipboard on Windows '\x00' is inserted between each char.
-        # WTF?!?!?!?
-        return data and data.replace('\x00', '') or ''
+        finally:
+            wx.TheClipboard.Close()
+
+    def _decode_clipboard_data(self, data):
+        # FIXME: Should decode data here and not corrupt it:
+        # http://code.google.com/p/robotframework-ride/issues/detail?id=770 
+        return data.replace('\x00', '')
 
     def _split_string_from_tabs_and_newlines(self, string):
-        return [ line.split('\t') for line in string.splitlines()]
+        return [line.split('\t') for line in string.splitlines()]
