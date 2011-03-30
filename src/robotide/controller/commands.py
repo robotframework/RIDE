@@ -474,7 +474,7 @@ class ChangeCellValue(_StepsChangingCommand):
     def __init__(self, row, col, value):
         self._row = row
         self._col = col
-        self._value = value if isinstance(value, unicode) else unicode(value, 'utf-8')
+        self._value = value
 
     def change_steps(self, context):
         steps = context.steps
@@ -490,6 +490,7 @@ class ChangeCellValue(_StepsChangingCommand):
     def _get_undo_command(self):
         return self._undo_command
 
+
 class SaveFile(_Command):
 
     def execute(self, context):
@@ -499,11 +500,13 @@ class SaveFile(_Command):
         datafile_controller.save()
         datafile_controller.unmark_dirty()
 
+
 class SaveAll(_Command):
 
     def execute(self, context):
         for datafile_controller in context._get_all_dirty_controllers():
             datafile_controller.execute(SaveFile())
+
 
 class Purify(_Command):
 

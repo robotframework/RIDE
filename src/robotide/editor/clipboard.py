@@ -118,13 +118,14 @@ class _GridClipboard(object):
         grid data. Other data is ignored
         """
         data = self._format_data(data)
-        if not data:
+        if not (data and wx.TheClipboard.Open()):
             return
-        dataobject = wx.TextDataObject()
-        dataobject.SetText(data)
-        wx.TheClipboard.Open()
-        wx.TheClipboard.SetData(dataobject)
-        wx.TheClipboard.Close()
+        try:
+            tdo = wx.TextDataObject()
+            tdo.SetText(data)
+            wx.TheClipboard.SetData(tdo)
+        finally:
+            wx.TheClipboard.Close()
 
     def _format_data(self, data):
         if isinstance(data, list):
@@ -141,24 +142,14 @@ class _GridClipboard(object):
         return self._split_string_from_tabs_and_newlines(self._get_contents())
 
     def _get_contents(self):
-        data = self._get_bytes_from_clipboard()
-        return self._decode_clipboard_data(data)
-
-    def _get_bytes_from_clipboard(self):
-        wx.TheClipboard.Open()
-        try:
-            do = wx.TextDataObject()
-            wx.TheClipboard.GetData(do)
-            return do.GetDataHere() or ''
-        except TypeError:
+        if not wx.TheClipboard.Open():
             return ''
+        try:
+            tdo = wx.TextDataObject()
+            wx.TheClipboard.GetData(tdo)
+            return tdo.GetText() or ''
         finally:
             wx.TheClipboard.Close()
-
-    def _decode_clipboard_data(self, data):
-        # FIXME: Should decode data here and not corrupt it:
-        # http://code.google.com/p/robotframework-ride/issues/detail?id=770 
-        return data.replace('\x00', '')
 
     def _split_string_from_tabs_and_newlines(self, string):
         return [line.split('\t') for line in string.splitlines()]
