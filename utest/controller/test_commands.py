@@ -1,14 +1,9 @@
 import unittest
 from robot.utils.asserts import assert_true, assert_false, assert_equals
-from robotide.controller.commands import SaveFile, ChangeCellValue, CopyMacroAs, \
-     Undo, Redo, DeleteRow, AddRow, AddRows, CommentRows, Purify, \
-     UncommentRows, PasteArea, InsertCells, DeleteRows, DeleteCells, ClearArea, \
-     MoveRowsUp, MoveRowsDown
-
+from robotide.controller.commands import *
 
 from base_command_test import TestCaseCommandTest
-from controller_creator import STEP1, STEP1_KEYWORD, \
-     FOR_LOOP_HEADER, FOR_LOOP_STEP1, FOR_LOOP_STEP2, STEP_WITH_COMMENT, STEP2, STEP_AFTER_FOR_LOOP
+from controller_creator import *
 
 
 class FileHandlingCommandsTest(TestCaseCommandTest):
@@ -28,7 +23,7 @@ class FileHandlingCommandsTest(TestCaseCommandTest):
         other = self._get_macro_by_name(other_name)
         assert_equals(len(other.steps), self._orig_number_of_steps+1)
 
-    def test_undo_after_file_save_does_not_brake(self):
+    def test_undo_after_file_save_does_not_break(self):
         self._exec(SaveFile())
         self._exec(Undo())
 
@@ -50,7 +45,8 @@ class MacroCopyingTest(TestCaseCommandTest):
         assert_true(self._ctrl.name in macro_names)
         assert_true(new_name in macro_names)
         assert_equals(len(macro_names), original_macro_number+1)
-        assert_equals(len(self._get_macro_by_name(new_name).steps), len(self._ctrl.steps))
+        assert_equals(len(self._get_macro_by_name(new_name).steps), 
+                      len(self._ctrl.steps))
 
     def test_copy_does_not_change_original(self):
         new_name = self._ctrl.name + '2'
@@ -68,13 +64,6 @@ class TestCaseEditingTest(TestCaseCommandTest):
     def test_changing_one_cell(self):
         self._exec(ChangeCellValue(0, 0, 'Changed Step'))
         assert_equals(self._steps[0].keyword, 'Changed Step')
-
-    def test_changing_one_cell_with_unicode(self):
-        odd_string = '\xc3\xa4'
-        assert_false(isinstance(odd_string, unicode))
-        self._exec(ChangeCellValue(0, 0, odd_string))
-        assert_equals(self._steps[0].keyword, unicode(odd_string, 'UTF-8'))
-        assert_true(isinstance(self._steps[0].keyword, unicode))
 
     def test_changing_first_cell_in_for_loop_step(self):
         step_index = self._data_row(FOR_LOOP_STEP1)
