@@ -30,6 +30,10 @@ class TagsDisplay(wx.Panel):
     def clear(self):
         self.set_value(self._controller)
 
+    def close(self):
+        for tag_box in self._tag_boxes:
+            tag_box.close()
+
     def set_value(self, tags, plugin=None):
         if self._tag_boxes == []:
             self._create_values(tags)
@@ -109,6 +113,10 @@ class TagBox(wx.TextCtrl):
     def SetEditable(self, editable):
         wx.TextCtrl.SetEditable(self, editable)
         self._colorize(self._tag)
+
+    def close(self):
+        if self.IsEditable():
+            self._update_value()
 
     def OnKeyUp(self, event):
         if self.IsEditable():

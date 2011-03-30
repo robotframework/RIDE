@@ -612,6 +612,10 @@ class TagsEditor(SettingEditor):
     def clear_highlight(self):
         pass
 
+    def close(self):
+        self._tags_display.close()
+        SettingEditor.close(self)
+
 
 class TestCaseEditor(_RobotTableEditor):
 
