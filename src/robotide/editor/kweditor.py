@@ -42,6 +42,13 @@ from robotide.usages.UsageRunner import Usages
 from robotide.ui.progress import RenameProgressObserver
 
 
+def requires_focus(function):
+    def decorated_function(self, *args):
+        if self.has_focus():
+            function(self, *args)
+    return decorated_function
+
+
 class KeywordEditor(GridEditor, RideEventHandler):
     _no_cell = (-1,-1)
     _popup_menu_shown = False
@@ -167,11 +174,13 @@ class KeywordEditor(GridEditor, RideEventHandler):
                                   self.selection.bottomright))
         event.Skip()
 
+    @requires_focus
     def OnCommentRows(self, event=None):
         self._execute(CommentRows(self.selection.rows()))
         if event is not None:
             event.Skip()
 
+    @requires_focus
     def OnUncommentRows(self, event=None):
         self._execute(UncommentRows(self.selection.rows()))
         if event is not None:
@@ -240,9 +249,11 @@ class KeywordEditor(GridEditor, RideEventHandler):
     def get_selected_datafile_controller(self):
         return self._controller.datafile_controller
 
+    @requires_focus
     def OnCopy(self, event=None):
         self.copy()
 
+    @requires_focus
     def OnCut(self, event=None):
         self._clipboard_handler.cut()
         self.OnDelete(event)
@@ -255,6 +266,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._execute(ClearArea(self.selection.topleft,
                                     self.selection.bottomright))
 
+    @requires_focus
     def OnPaste(self, event=None):
         if not self.IsCellEditControlShown():
             data = self._clipboard_handler.clipboard_content()
@@ -267,9 +279,11 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.ClearSelection()
         event.Skip()
 
+    @requires_focus
     def OnUndo(self, event=None):
         self._execute(Undo())
 
+    @requires_focus
     def OnRedo(self, event=None):
         self._execute(Redo())
 
