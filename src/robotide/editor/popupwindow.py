@@ -14,7 +14,7 @@
 
 import wx
 
-from robotide import context
+from robotide.context import POPUP_BACKGROUND, IS_WINDOWS
 from robotide.utils import RideHtmlWindow
 from robotide import utils
 from robotide.widgets import ButtonWithHandler, Dialog, VerticalSizer
@@ -51,7 +51,7 @@ class Tooltip(RidePopupWindow):
 
     def _create_ui(self, size, detachable, autohide):
         panel = wx.Panel(self)
-        panel.SetBackgroundColour(context.POPUP_BACKGROUND)
+        panel.SetBackgroundColour(POPUP_BACKGROUND)
         szr = VerticalSizer()
         if detachable:
             szr.add(ButtonWithHandler(panel, 'Detach', width=size[0],
@@ -66,10 +66,10 @@ class Tooltip(RidePopupWindow):
                                                      self.hide)
 
     def _get_autohide_component(self, panel):
-        return panel if context.is_windows else self
+        return panel if IS_WINDOWS else self
 
     def set_content(self, content, title=None, html=True):
-        color = ''.join(hex(item)[2:] for item in context.POPUP_BACKGROUND)
+        color = ''.join(hex(item)[2:] for item in POPUP_BACKGROUND)
         if not html:
             content = utils.html_escape(content, formatting=True)
         self._current_details = '<body bgcolor=#%s>%s</body>' % (color, content)
