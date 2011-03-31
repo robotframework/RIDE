@@ -30,6 +30,10 @@ class TagsDisplay(wx.Panel):
     def clear(self):
         self.set_value(self._controller)
 
+    def close(self):
+        for tag_box in self._tag_boxes:
+            tag_box.close()
+
     def set_value(self, tags, plugin=None):
         if self._tag_boxes == []:
             self._create_values(tags)
@@ -84,7 +88,7 @@ class TagsDisplay(wx.Panel):
 
 class TagBox(wx.TextCtrl):
 
-    ADD_TEXT = ' Add '
+    ADD_TEXT = ' Add a new tag '
     ADD_BACKGROUND = '#C2DFFF'
     NOT_EDITABLE_BACKGROUND = '#D3D3D3'
 
@@ -103,12 +107,16 @@ class TagBox(wx.TextCtrl):
             self.SetValue(self._get_text_value())
         self._to_text_size(self._get_text_value())
         self._colorize(tag)
-        tooltip = "Click to add new tag" if tag.is_empty() else tag.tooltip
+        tooltip = 'Click to add new tag' if tag.is_empty() else tag.tooltip
         self.SetToolTipString(tooltip)
 
     def SetEditable(self, editable):
         wx.TextCtrl.SetEditable(self, editable)
         self._colorize(self._tag)
+
+    def close(self):
+        if self.IsEditable():
+            self._update_value()
 
     def OnKeyUp(self, event):
         if self.IsEditable():

@@ -31,21 +31,16 @@ class _FakeOutputWindow(object):
 
 class TestRunAnything(unittest.TestCase):
 
-    # FIXME: Is this test needed? Should it work on windows?
-    if os.name != 'nt':
-        def test_run(self):
-            self.runner = self._create_runner('echo test test')
-            self._wait_until_finished()
-            self._assert_output('test test\n')
-
-    def _assert_output(self, output):
-        assert_equals(self.runner.outstr, output)
+    def test_run(self):
+        self.runner = self._create_runner('python %s count_args a b c' % SCRIPT)
+        self._wait_until_finished()
         assert_true(self.runner.finished)
+        assert_equals(self.runner.outstr, '3\n')
 
     if sys.version_info[:2] >= (2,6):
         def test_stopping(self):
             self.runner = self._create_runner('python %s output 0.8' % SCRIPT)
-            time.sleep(0.1)
+            time.sleep(0.3)
             self.runner.stop()
             self._sleep_and_log_output(0.1)
             assert_true(self.runner.finished)
@@ -54,15 +49,22 @@ class TestRunAnything(unittest.TestCase):
     def test_error(self):
         self.runner = self._create_runner('invalid command')
         self._wait_until_finished()
-        assert_true(self.runner.outstr)
         assert_true(self.runner.finished)
+        assert_true(self.runner.outstr)
 
-    def test_output(self):
+    def test_stderr(self):
+        self.runner = self._create_runner('python %s stderr' % SCRIPT)
+        self._wait_until_finished()
+        assert_true(self.runner.finished)
+        assert_equals(self.runner.outstr, 'This is stderr\n')
+
+    def test_output_is_updated_while_process_is_running(self):
         self.runner = self._create_runner('python %s output' % SCRIPT)
         self._sleep_and_log_output(0.2)
         length = len(self.runner.outstr)
         assert_true(length > 0)
         self._wait_until_finished()
+        assert_true(self.runner.finished)
         assert_true(len(self.runner.outstr) > length)
         assert_true(self.runner.outstr.endswith('done\n'))
 
@@ -78,4 +80,3 @@ class TestRunAnything(unittest.TestCase):
     def _sleep_and_log_output(self, amount):
         time.sleep(amount)
         self.runner.OnTimer()
-
