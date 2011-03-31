@@ -44,7 +44,7 @@ from robotide.ui.progress import RenameProgressObserver
 
 def requires_focus(function):
     def decorated_function(self, *args):
-        if self.has_focus():
+        if self.has_focus() or self.IsCellEditControlShown():
             function(self, *args)
     return decorated_function
 
