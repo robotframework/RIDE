@@ -165,18 +165,18 @@ class HtmlView(wx.html.HtmlWindow):
         self.SetPage(content)
 
     def scroll_to_subitem(self, item):
-        anchor = self._get_anchor(item)
+        anchor = self._get_anchor(item.data)
         if self.HasAnchor(anchor):
             self.ScrollToAnchor(anchor)
             self.ScrollLines(-1)
         else:
             self.Scroll(0,0)
 
-    def _get_anchor(self, item):
-        if isinstance(item, UserKeyword):
-            return 'keyword_%s' % item.name
-        if isinstance(item, TestCase):
-            return 'test_%s' % item.name
+    def _get_anchor(self, data):
+        if isinstance(data, UserKeyword):
+            return 'keyword_%s' % data.name
+        if isinstance(data, TestCase):
+            return 'test_%s' % data.name
         return ''
 
 
