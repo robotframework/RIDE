@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>robotide.editor.tooltips</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="robotide-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://code.google.com/p/robotframework-ride">RIDE</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="robotide-module.html">Package&nbsp;robotide</a> ::
+        <a href="robotide.editor-module.html">Package&nbsp;editor</a> ::
+        Module&nbsp;tooltips
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="robotide.editor.tooltips-module.html">Module robotide.editor.tooltips</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-comment">#  Copyright 2008-2009 Nokia Siemens Networks Oyj</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-comment">#  Licensed under the Apache License, Version 2.0 (the "License");</tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-comment">#  you may not use this file except in compliance with the License.</tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"><tt class="py-comment">#  You may obtain a copy of the License at</tt> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"><tt class="py-comment">#      http://www.apache.org/licenses/LICENSE-2.0</tt> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"><tt class="py-comment">#  Unless required by applicable law or agreed to in writing, software</tt> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"><tt class="py-comment">#  distributed under the License is distributed on an "AS IS" BASIS,</tt> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line"><tt class="py-comment">#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</tt> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line"><tt class="py-comment">#  See the License for the specific language governing permissions and</tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line"><tt class="py-comment">#  limitations under the License.</tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line"> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">wx</tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">wx</tt><tt class="py-op">.</tt><tt id="link-0" class="py-name" targets="Module robotide.editor.grid=robotide.editor.grid-module.html"><a title="robotide.editor.grid" class="py-name" href="#" onclick="return doclink('link-0', 'grid', 'link-0');">grid</a></tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line"> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-1" class="py-name" targets="Module robotide.editor.popupwindow=robotide.editor.popupwindow-module.html"><a title="robotide.editor.popupwindow" class="py-name" href="#" onclick="return doclink('link-1', 'popupwindow', 'link-1');">popupwindow</a></tt> <tt class="py-keyword">import</tt> <tt id="link-2" class="py-name" targets="Class robotide.editor.popupwindow.Tooltip=robotide.editor.popupwindow.Tooltip-class.html"><a title="robotide.editor.popupwindow.Tooltip" class="py-name" href="#" onclick="return doclink('link-2', 'Tooltip', 'link-2');">Tooltip</a></tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line"> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line"> </tt>
+<a name="GridToolTips"></a><div id="GridToolTips-def"><a name="L21"></a><tt class="py-lineno">21</tt> <a class="py-toggle" href="#" id="GridToolTips-toggle" onclick="return toggle('GridToolTips');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="robotide.editor.tooltips.GridToolTips-class.html">GridToolTips</a><tt class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GridToolTips-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="GridToolTips-expanded"><a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line"> </tt>
+<a name="GridToolTips.__init__"></a><div id="GridToolTips.__init__-def"><a name="L23"></a><tt class="py-lineno">23</tt> <a class="py-toggle" href="#" id="GridToolTips.__init__-toggle" onclick="return toggle('GridToolTips.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.tooltips.GridToolTips-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">grid</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GridToolTips.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="GridToolTips.__init__-expanded"><a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_tooltip</tt> <tt class="py-op">=</tt> <tt id="link-3" class="py-name"><a title="robotide.editor.popupwindow.Tooltip" class="py-name" href="#" onclick="return doclink('link-3', 'Tooltip', 'link-2');">Tooltip</a></tt><tt class="py-op">(</tt><tt id="link-4" class="py-name"><a title="robotide.editor.grid" class="py-name" href="#" onclick="return doclink('link-4', 'grid', 'link-0');">grid</a></tt><tt class="py-op">,</tt> <tt class="py-op">(</tt><tt class="py-number">250</tt><tt class="py-op">,</tt> <tt class="py-number">80</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">False</tt><tt class="py-op">,</tt> <tt class="py-name">True</tt><tt class="py-op">)</tt> </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_information_popup</tt> <tt class="py-op">=</tt> <tt id="link-5" class="py-name"><a title="robotide.editor.popupwindow.Tooltip" class="py-name" href="#" onclick="return doclink('link-5', 'Tooltip', 'link-2');">Tooltip</a></tt><tt class="py-op">(</tt><tt id="link-6" class="py-name"><a title="robotide.editor.grid" class="py-name" href="#" onclick="return doclink('link-6', 'grid', 'link-0');">grid</a></tt><tt class="py-op">,</tt> <tt class="py-op">(</tt><tt class="py-number">450</tt><tt class="py-op">,</tt> <tt class="py-number">300</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_grid</tt> <tt class="py-op">=</tt> <tt id="link-7" class="py-name"><a title="robotide.editor.grid" class="py-name" href="#" onclick="return doclink('link-7', 'grid', 'link-0');">grid</a></tt> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_tooltip_timer</tt> <tt class="py-op">=</tt> <tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">Timer</tt><tt class="py-op">(</tt><tt id="link-8" class="py-name"><a title="robotide.editor.grid" class="py-name" href="#" onclick="return doclink('link-8', 'grid', 'link-0');">grid</a></tt><tt class="py-op">.</tt><tt class="py-name">GetGridWindow</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line">        <tt id="link-9" class="py-name"><a title="robotide.editor.grid" class="py-name" href="#" onclick="return doclink('link-9', 'grid', 'link-0');">grid</a></tt><tt class="py-op">.</tt><tt class="py-name">GetGridWindow</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">Bind</tt><tt class="py-op">(</tt><tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">EVT_MOTION</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Method robotide.editor.tooltips.GridToolTips.OnMouseMotion()=robotide.editor.tooltips.GridToolTips-class.html#OnMouseMotion"><a title="robotide.editor.tooltips.GridToolTips.OnMouseMotion" class="py-name" href="#" onclick="return doclink('link-10', 'OnMouseMotion', 'link-10');">OnMouseMotion</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line">        <tt id="link-11" class="py-name"><a title="robotide.editor.grid" class="py-name" href="#" onclick="return doclink('link-11', 'grid', 'link-0');">grid</a></tt><tt class="py-op">.</tt><tt class="py-name">GetGridWindow</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">Bind</tt><tt class="py-op">(</tt><tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">EVT_TIMER</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-12" class="py-name" targets="Method robotide.editor.tooltips.GridToolTips.OnShowToolTip()=robotide.editor.tooltips.GridToolTips-class.html#OnShowToolTip"><a title="robotide.editor.tooltips.GridToolTips.OnShowToolTip" class="py-name" href="#" onclick="return doclink('link-12', 'OnShowToolTip', 'link-12');">OnShowToolTip</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line">        <tt id="link-13" class="py-name"><a title="robotide.editor.grid" class="py-name" href="#" onclick="return doclink('link-13', 'grid', 'link-0');">grid</a></tt><tt class="py-op">.</tt><tt class="py-name">Bind</tt><tt class="py-op">(</tt><tt class="py-name">wx</tt><tt class="py-op">.</tt><tt id="link-14" class="py-name"><a title="robotide.editor.grid" class="py-name" href="#" onclick="return doclink('link-14', 'grid', 'link-0');">grid</a></tt><tt class="py-op">.</tt><tt class="py-name">EVT_GRID_EDITOR_HIDDEN</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-15" class="py-name" targets="Method robotide.editor.tooltips.GridToolTips.OnGridEditorHidden()=robotide.editor.tooltips.GridToolTips-class.html#OnGridEditorHidden"><a title="robotide.editor.tooltips.GridToolTips.OnGridEditorHidden" class="py-name" href="#" onclick="return doclink('link-15', 'OnGridEditorHidden', 'link-15');">OnGridEditorHidden</a></tt><tt class="py-op">)</tt> </tt>
+</div><a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line"> </tt>
+<a name="GridToolTips.OnMouseMotion"></a><div id="GridToolTips.OnMouseMotion-def"><a name="L32"></a><tt class="py-lineno">32</tt> <a class="py-toggle" href="#" id="GridToolTips.OnMouseMotion-toggle" onclick="return toggle('GridToolTips.OnMouseMotion');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.tooltips.GridToolTips-class.html#OnMouseMotion">OnMouseMotion</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">event</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GridToolTips.OnMouseMotion-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="GridToolTips.OnMouseMotion-expanded"><a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_hide_tooltip</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_start_tooltip_timer</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line">        <tt class="py-name">event</tt><tt class="py-op">.</tt><tt class="py-name">Skip</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line"> </tt>
+<a name="GridToolTips._start_tooltip_timer"></a><div id="GridToolTips._start_tooltip_timer-def"><a name="L37"></a><tt class="py-lineno">37</tt> <a class="py-toggle" href="#" id="GridToolTips._start_tooltip_timer-toggle" onclick="return toggle('GridToolTips._start_tooltip_timer');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.tooltips.GridToolTips-class.html#_start_tooltip_timer">_start_tooltip_timer</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GridToolTips._start_tooltip_timer-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="GridToolTips._start_tooltip_timer-expanded"><a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_tooltip_timer</tt><tt class="py-op">.</tt><tt id="link-16" class="py-name" targets="Method robotide.contrib.SearchPlugin.StatusCtrl.Start()=robotide.contrib.SearchPlugin.StatusCtrl-class.html#Start,Method robotide.contrib.testrunner.testrunnerplugin.ProgressBar.Start()=robotide.contrib.testrunner.testrunnerplugin.ProgressBar-class.html#Start"><a title="robotide.contrib.SearchPlugin.StatusCtrl.Start
+robotide.contrib.testrunner.testrunnerplugin.ProgressBar.Start" class="py-name" href="#" onclick="return doclink('link-16', 'Start', 'link-16');">Start</a></tt><tt class="py-op">(</tt><tt class="py-number">500</tt><tt class="py-op">,</tt> <tt class="py-name">True</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line"> </tt>
+<a name="GridToolTips.OnShowToolTip"></a><div id="GridToolTips.OnShowToolTip-def"><a name="L40"></a><tt class="py-lineno">40</tt> <a class="py-toggle" href="#" id="GridToolTips.OnShowToolTip-toggle" onclick="return toggle('GridToolTips.OnShowToolTip');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.tooltips.GridToolTips-class.html#OnShowToolTip">OnShowToolTip</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">event</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GridToolTips.OnShowToolTip-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="GridToolTips.OnShowToolTip-expanded"><a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_hide_tooltip</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line">        <tt class="py-name">content</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_grid</tt><tt class="py-op">.</tt><tt id="link-17" class="py-name" targets="Method robotide.editor.kweditor.KeywordEditor.get_tooltip_content()=robotide.editor.kweditor.KeywordEditor-class.html#get_tooltip_content"><a title="robotide.editor.kweditor.KeywordEditor.get_tooltip_content" class="py-name" href="#" onclick="return doclink('link-17', 'get_tooltip_content', 'link-17');">get_tooltip_content</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">content</tt> <tt class="py-keyword">and</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_application_has_focus</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_show_tooltip_at</tt><tt class="py-op">(</tt><tt class="py-name">content</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_calculate_tooltip_position</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L45"></a><tt class="py-lineno">45</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_grid</tt><tt class="py-op">.</tt><tt class="py-name">SetFocus</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line"> </tt>
+<a name="GridToolTips._application_has_focus"></a><div id="GridToolTips._application_has_focus-def"><a name="L47"></a><tt class="py-lineno">47</tt> <a class="py-toggle" href="#" id="GridToolTips._application_has_focus-toggle" onclick="return toggle('GridToolTips._application_has_focus');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.tooltips.GridToolTips-class.html#_application_has_focus">_application_has_focus</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GridToolTips._application_has_focus-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="GridToolTips._application_has_focus-expanded"><a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">Window</tt><tt class="py-op">.</tt><tt class="py-name">FindFocus</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt> </tt>
+</div><a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line"> </tt>
+<a name="GridToolTips.OnGridEditorHidden"></a><div id="GridToolTips.OnGridEditorHidden-def"><a name="L50"></a><tt class="py-lineno">50</tt> <a class="py-toggle" href="#" id="GridToolTips.OnGridEditorHidden-toggle" onclick="return toggle('GridToolTips.OnGridEditorHidden');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.tooltips.GridToolTips-class.html#OnGridEditorHidden">OnGridEditorHidden</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">event</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GridToolTips.OnGridEditorHidden-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="GridToolTips.OnGridEditorHidden-expanded"><a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line">        <tt class="py-name">cell</tt> <tt class="py-op">=</tt> <tt class="py-name">event</tt><tt class="py-op">.</tt><tt class="py-name">Row</tt><tt class="py-op">,</tt> <tt class="py-name">event</tt><tt class="py-op">.</tt><tt class="py-name">Col</tt> </tt>
+<a name="L52"></a><tt class="py-lineno">52</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">cell</tt> <tt class="py-op">==</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_grid</tt><tt class="py-op">.</tt><tt id="link-18" class="py-name" targets="Variable robotide.editor.grid.GridEditor.cell_under_cursor=robotide.editor.grid.GridEditor-class.html#cell_under_cursor"><a title="robotide.editor.grid.GridEditor.cell_under_cursor" class="py-name" href="#" onclick="return doclink('link-18', 'cell_under_cursor', 'link-18');">cell_under_cursor</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L53"></a><tt class="py-lineno">53</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_start_tooltip_timer</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L54"></a><tt class="py-lineno">54</tt>  <tt class="py-line"> </tt>
+<a name="GridToolTips._show_tooltip_at"></a><div id="GridToolTips._show_tooltip_at-def"><a name="L55"></a><tt class="py-lineno">55</tt> <a class="py-toggle" href="#" id="GridToolTips._show_tooltip_at-toggle" onclick="return toggle('GridToolTips._show_tooltip_at');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.tooltips.GridToolTips-class.html#_show_tooltip_at">_show_tooltip_at</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">content</tt><tt class="py-op">,</tt> <tt class="py-param">position</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GridToolTips._show_tooltip_at-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="GridToolTips._show_tooltip_at-expanded"><a name="L56"></a><tt class="py-lineno">56</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_information_popup</tt><tt class="py-op">.</tt><tt class="py-name">IsShown</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L57"></a><tt class="py-lineno">57</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_tooltip</tt><tt class="py-op">.</tt><tt id="link-19" class="py-name" targets="Method robotide.editor.popupwindow.Tooltip.set_content()=robotide.editor.popupwindow.Tooltip-class.html#set_content,Method robotide.ui.preview.HtmlView.set_content()=robotide.ui.preview.HtmlView-class.html#set_content,Method robotide.ui.preview.TxtView.set_content()=robotide.ui.preview.TxtView-class.html#set_content"><a title="robotide.editor.popupwindow.Tooltip.set_content
+robotide.ui.preview.HtmlView.set_content
+robotide.ui.preview.TxtView.set_content" class="py-name" href="#" onclick="return doclink('link-19', 'set_content', 'link-19');">set_content</a></tt><tt class="py-op">(</tt><tt class="py-name">content</tt><tt class="py-op">)</tt> </tt>
+<a name="L58"></a><tt class="py-lineno">58</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_tooltip</tt><tt class="py-op">.</tt><tt id="link-20" class="py-name" targets="Method robotide.editor.popupwindow.RidePopupWindow.show_at()=robotide.editor.popupwindow.RidePopupWindow-class.html#show_at,Variable robotide.editor.popupwindow.Tooltip.show_at=robotide.editor.popupwindow.Tooltip-class.html#show_at"><a title="robotide.editor.popupwindow.RidePopupWindow.show_at
+robotide.editor.popupwindow.Tooltip.show_at" class="py-name" href="#" onclick="return doclink('link-20', 'show_at', 'link-20');">show_at</a></tt><tt class="py-op">(</tt><tt class="py-name">position</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L59"></a><tt class="py-lineno">59</tt>  <tt class="py-line"> </tt>
+<a name="GridToolTips._calculate_tooltip_position"></a><div id="GridToolTips._calculate_tooltip_position-def"><a name="L60"></a><tt class="py-lineno">60</tt> <a class="py-toggle" href="#" id="GridToolTips._calculate_tooltip_position-toggle" onclick="return toggle('GridToolTips._calculate_tooltip_position');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.tooltips.GridToolTips-class.html#_calculate_tooltip_position">_calculate_tooltip_position</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GridToolTips._calculate_tooltip_position-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="GridToolTips._calculate_tooltip_position-expanded"><a name="L61"></a><tt class="py-lineno">61</tt>  <tt class="py-line">        <tt class="py-name">x</tt><tt class="py-op">,</tt> <tt class="py-name">y</tt> <tt class="py-op">=</tt> <tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">GetMousePosition</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">x</tt><tt class="py-op">+</tt><tt class="py-number">5</tt><tt class="py-op">,</tt> <tt class="py-name">y</tt><tt class="py-op">+</tt><tt class="py-number">5</tt> </tt>
+</div><a name="L63"></a><tt class="py-lineno">63</tt>  <tt class="py-line"> </tt>
+<a name="GridToolTips._hide_tooltip"></a><div id="GridToolTips._hide_tooltip-def"><a name="L64"></a><tt class="py-lineno">64</tt> <a class="py-toggle" href="#" id="GridToolTips._hide_tooltip-toggle" onclick="return toggle('GridToolTips._hide_tooltip');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.tooltips.GridToolTips-class.html#_hide_tooltip">_hide_tooltip</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GridToolTips._hide_tooltip-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="GridToolTips._hide_tooltip-expanded"><a name="L65"></a><tt class="py-lineno">65</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_tooltip</tt><tt class="py-op">.</tt><tt id="link-21" class="py-name" targets="Method robotide.editor.contentassist.ContentAssistPopup.hide()=robotide.editor.contentassist.ContentAssistPopup-class.html#hide,Method robotide.editor.popupwindow.RidePopupWindow.hide()=robotide.editor.popupwindow.RidePopupWindow-class.html#hide,Variable robotide.editor.popupwindow.Tooltip.hide=robotide.editor.popupwindow.Tooltip-class.html#hide,Method robotide.editor.tooltips.GridToolTips.hide()=robotide.editor.tooltips.GridToolTips-class.html#hide"><a title="robotide.editor.contentassist.ContentAssistPopup.hide
+robotide.editor.popupwindow.RidePopupWindow.hide
+robotide.editor.popupwindow.Tooltip.hide
+robotide.editor.tooltips.GridToolTips.hide" class="py-name" href="#" onclick="return doclink('link-21', 'hide', 'link-21');">hide</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L66"></a><tt class="py-lineno">66</tt>  <tt class="py-line"> </tt>
+<a name="GridToolTips.hide_information"></a><div id="GridToolTips.hide_information-def"><a name="L67"></a><tt class="py-lineno">67</tt> <a class="py-toggle" href="#" id="GridToolTips.hide_information-toggle" onclick="return toggle('GridToolTips.hide_information');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.tooltips.GridToolTips-class.html#hide_information">hide_information</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GridToolTips.hide_information-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="GridToolTips.hide_information-expanded"><a name="L68"></a><tt class="py-lineno">68</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_information_popup</tt><tt class="py-op">.</tt><tt id="link-22" class="py-name"><a title="robotide.editor.contentassist.ContentAssistPopup.hide
+robotide.editor.popupwindow.RidePopupWindow.hide
+robotide.editor.popupwindow.Tooltip.hide
+robotide.editor.tooltips.GridToolTips.hide" class="py-name" href="#" onclick="return doclink('link-22', 'hide', 'link-21');">hide</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L69"></a><tt class="py-lineno">69</tt>  <tt class="py-line"> </tt>
+<a name="GridToolTips.hide"></a><div id="GridToolTips.hide-def"><a name="L70"></a><tt class="py-lineno">70</tt> <a class="py-toggle" href="#" id="GridToolTips.hide-toggle" onclick="return toggle('GridToolTips.hide');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.tooltips.GridToolTips-class.html#hide">hide</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GridToolTips.hide-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="GridToolTips.hide-expanded"><a name="L71"></a><tt class="py-lineno">71</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_hide_tooltip</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L72"></a><tt class="py-lineno">72</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-23" class="py-name" targets="Method robotide.editor.tooltips.GridToolTips.hide_information()=robotide.editor.tooltips.GridToolTips-class.html#hide_information"><a title="robotide.editor.tooltips.GridToolTips.hide_information" class="py-name" href="#" onclick="return doclink('link-23', 'hide_information', 'link-23');">hide_information</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L73"></a><tt class="py-lineno">73</tt>  <tt class="py-line"> </tt>
+<a name="GridToolTips.show_info_at"></a><div id="GridToolTips.show_info_at-def"><a name="L74"></a><tt class="py-lineno">74</tt> <a class="py-toggle" href="#" id="GridToolTips.show_info_at-toggle" onclick="return toggle('GridToolTips.show_info_at');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.tooltips.GridToolTips-class.html#show_info_at">show_info_at</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">info</tt><tt class="py-op">,</tt> <tt class="py-param">title</tt><tt class="py-op">,</tt> <tt class="py-param">position</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GridToolTips.show_info_at-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="GridToolTips.show_info_at-expanded"><a name="L75"></a><tt class="py-lineno">75</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_tooltip</tt><tt class="py-op">.</tt><tt id="link-24" class="py-name"><a title="robotide.editor.contentassist.ContentAssistPopup.hide
+robotide.editor.popupwindow.RidePopupWindow.hide
+robotide.editor.popupwindow.Tooltip.hide
+robotide.editor.tooltips.GridToolTips.hide" class="py-name" href="#" onclick="return doclink('link-24', 'hide', 'link-21');">hide</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L76"></a><tt class="py-lineno">76</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_information_popup</tt><tt class="py-op">.</tt><tt id="link-25" class="py-name"><a title="robotide.editor.popupwindow.Tooltip.set_content
+robotide.ui.preview.HtmlView.set_content
+robotide.ui.preview.TxtView.set_content" class="py-name" href="#" onclick="return doclink('link-25', 'set_content', 'link-19');">set_content</a></tt><tt class="py-op">(</tt><tt id="link-26" class="py-name" targets="Variable robotide.controller.macrocontrollers.UserKeywordController.info=robotide.controller.macrocontrollers.UserKeywordController-class.html#info"><a title="robotide.controller.macrocontrollers.UserKeywordController.info" class="py-name" href="#" onclick="return doclink('link-26', 'info', 'link-26');">info</a></tt><tt class="py-op">,</tt> <tt id="link-27" class="py-name" targets="Variable robotide.editor.editors.EditorPanel.title=robotide.editor.editors.EditorPanel-class.html#title"><a title="robotide.editor.editors.EditorPanel.title" class="py-name" href="#" onclick="return doclink('link-27', 'title', 'link-27');">title</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L77"></a><tt class="py-lineno">77</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_information_popup</tt><tt class="py-op">.</tt><tt id="link-28" class="py-name"><a title="robotide.editor.popupwindow.RidePopupWindow.show_at
+robotide.editor.popupwindow.Tooltip.show_at" class="py-name" href="#" onclick="return doclink('link-28', 'show_at', 'link-20');">show_at</a></tt><tt class="py-op">(</tt><tt class="py-name">position</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L78"></a><tt class="py-lineno">78</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="robotide-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://code.google.com/p/robotframework-ride">RIDE</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Mar 31 14:48:11 2011
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

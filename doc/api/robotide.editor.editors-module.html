@@ -83,6 +83,13 @@
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
+        <a href="robotide.editor.editors.Settings-class.html" class="summary-name">Settings</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
         <a href="robotide.editor.editors.ResourceFileEditor-class.html" class="summary-name">ResourceFileEditor</a>
     </td>
   </tr>
@@ -104,7 +111,42 @@
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
+        <a href="robotide.editor.editors.SettingEditor-class.html" class="summary-name">SettingEditor</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.editor.editors.SettingValueDisplay-class.html" class="summary-name">SettingValueDisplay</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.editor.editors.DocumentationEditor-class.html" class="summary-name">DocumentationEditor</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.editor.editors.TagsEditor-class.html" class="summary-name">TagsEditor</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
         <a href="robotide.editor.editors.TestCaseEditor-class.html" class="summary-name">TestCaseEditor</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.editor.editors.UserKeywordHeader-class.html" class="summary-name">UserKeywordHeader</a>
     </td>
   </tr>
 <tr>
@@ -135,6 +177,13 @@
         <a href="robotide.editor.editors.MetadataListEditor-class.html" class="summary-name">MetadataListEditor</a>
     </td>
   </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.editor.editors.EditorCreator-class.html" class="summary-name">EditorCreator</a>
+    </td>
+  </tr>
 </table>
 <!-- ==================== FUNCTIONS ==================== -->
 <a name="section-Functions"></a>
@@ -150,11 +199,12 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.editor.editors-module.html#Editor" class="summary-sig-name">Editor</a>(<span class="summary-sig-arg">plugin</span>,
-        <span class="summary-sig-arg">editor_panel</span>,
+          <td><span class="summary-sig"><a href="robotide.editor.editors-module.html#VariableEditorChooser" class="summary-sig-name">VariableEditorChooser</a>(<span class="summary-sig-arg">plugin</span>,
+        <span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">controller</span>,
         <span class="summary-sig-arg">tree</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.editors-pysrc.html#Editor">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.editor.editors-pysrc.html#VariableEditorChooser">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -182,22 +232,42 @@
 <p class="indent-wrapped-lines"><b>Imports:</b>
   <span title="wx">wx</span>,
   <a href="robotide.context-module.html" title="robotide.context">context</a>,
-  <a href="robotide.model.settings.Documentation-class.html" title="robotide.model.settings.Documentation">Documentation</a>,
-  <a href="robotide.model.settings.ResourceImport-class.html" title="robotide.model.settings.ResourceImport">ResourceImport</a>,
+  <a href="robotide.utils-module.html" title="robotide.utils">utils</a>,
   <a href="robotide.utils.eventhandler.RideEventHandler-class.html" title="robotide.utils.RideEventHandler">RideEventHandler</a>,
   <a href="robotide.utils.components.RideHtmlWindow-class.html" title="robotide.utils.RideHtmlWindow">RideHtmlWindow</a>,
-  <a href="robotide.utils.components.ButtonWithHandler-class.html" title="robotide.utils.ButtonWithHandler">ButtonWithHandler</a>,
-  <a href="robotide.utils-module.html" title="robotide.utils">utils</a>,
+  <a href="robotide.widgets.button.ButtonWithHandler-class.html" title="robotide.widgets.ButtonWithHandler">ButtonWithHandler</a>,
+  <a href="robotide.widgets.sizers.HorizontalSizer-class.html" title="robotide.widgets.HorizontalSizer">HorizontalSizer</a>,
+  <a href="robotide.controller.chiefcontroller.ChiefController-class.html" title="robotide.controller.chiefcontroller.ChiefController">ChiefController</a>,
+  <a href="robotide.controller.settingcontrollers.DocumentationController-class.html" title="robotide.controller.settingcontrollers.DocumentationController">DocumentationController</a>,
+  <a href="robotide.controller.settingcontrollers.VariableController-class.html" title="robotide.controller.settingcontrollers.VariableController">VariableController</a>,
+  <a href="robotide.controller.settingcontrollers.TagsController-class.html" title="robotide.controller.settingcontrollers.TagsController">TagsController</a>,
+  <span title="robotide.robotapi.ResourceFile">ResourceFile</span>,
+  <span title="robotide.robotapi.TestCaseFile">TestCaseFile</span>,
+  <span title="robotide.robotapi.TestDataDirectory">TestDataDirectory</span>,
+  <span title="robotide.robotapi.TestCase">TestCase</span>,
+  <span title="robotide.robotapi.UserKeyword">UserKeyword</span>,
+  <span title="robotide.robotapi.Variable">Variable</span>,
+  <a href="robotide.editor.gridcolorizer.ColorizationSettings-class.html" title="robotide.editor.gridcolorizer.ColorizationSettings">ColorizationSettings</a>,
   <a href="robotide.editor.kweditor.KeywordEditor-class.html" title="robotide.editor.kweditor.KeywordEditor">KeywordEditor</a>,
   <a href="robotide.editor.listeditor.ListEditor-class.html" title="robotide.editor.listeditor.ListEditor">ListEditor</a>,
+  <a href="robotide.editor.popupwindow.Tooltip-class.html" title="robotide.editor.popupwindow.Tooltip">Tooltip</a>,
   <a href="robotide.editor.editordialogs-module.html#EditorDialog" title="robotide.editor.editordialogs.EditorDialog">EditorDialog</a>,
   <a href="robotide.editor.editordialogs.DocumentationDialog-class.html" title="robotide.editor.editordialogs.DocumentationDialog">DocumentationDialog</a>,
+  <a href="robotide.editor.editordialogs.MetadataDialog-class.html" title="robotide.editor.editordialogs.MetadataDialog">MetadataDialog</a>,
   <a href="robotide.editor.editordialogs.ScalarVariableDialog-class.html" title="robotide.editor.editordialogs.ScalarVariableDialog">ScalarVariableDialog</a>,
   <a href="robotide.editor.editordialogs.ListVariableDialog-class.html" title="robotide.editor.editordialogs.ListVariableDialog">ListVariableDialog</a>,
-  <a href="robotide.editor.editordialogs.LibraryImportDialog-class.html" title="robotide.editor.editordialogs.LibraryImportDialog">LibraryImportDialog</a>,
-  <a href="robotide.editor.editordialogs.ResourceImportDialog-class.html" title="robotide.editor.editordialogs.ResourceImportDialog">ResourceImportDialog</a>,
-  <a href="robotide.editor.editordialogs.VariablesImportDialog-class.html" title="robotide.editor.editordialogs.VariablesImportDialog">VariablesImportDialog</a>,
-  <a href="robotide.editor.editordialogs.MetadataDialog-class.html" title="robotide.editor.editordialogs.MetadataDialog">MetadataDialog</a>
+  <a href="robotide.editor.editordialogs.LibraryDialog-class.html" title="robotide.editor.editordialogs.LibraryDialog">LibraryDialog</a>,
+  <a href="robotide.editor.editordialogs.ResourceDialog-class.html" title="robotide.editor.editordialogs.ResourceDialog">ResourceDialog</a>,
+  <a href="robotide.editor.editordialogs.VariablesDialog-class.html" title="robotide.editor.editordialogs.VariablesDialog">VariablesDialog</a>,
+  <a href="robotide.publish.messages.RideItemSettingsChanged-class.html" title="robotide.publish.messages.RideItemSettingsChanged">RideItemSettingsChanged</a>,
+  <a href="robotide.publish.messages.RideItemNameChanged-class.html" title="robotide.publish.messages.RideItemNameChanged">RideItemNameChanged</a>,
+  <a href="robotide.publish.messages.RideInitFileRemoved-class.html" title="robotide.publish.messages.RideInitFileRemoved">RideInitFileRemoved</a>,
+  <a href="robotide.publish.messages.RideImportSetting-class.html" title="robotide.publish.messages.RideImportSetting">RideImportSetting</a>,
+  <a href="robotide.controller.commands.UpdateVariable-class.html" title="robotide.controller.commands.UpdateVariable">UpdateVariable</a>,
+  <span title="robotide.publish.PUBLISHER">PUBLISHER</span>,
+  <a href="robotide.usages.UsageRunner.Usages-class.html" title="robotide.usages.UsageRunner.Usages">Usages</a>,
+  <a href="robotide.editor.tags.TagsDisplay-class.html" title="robotide.editor.tags.TagsDisplay">TagsDisplay</a>,
+  <span title="robotide.context.SETTINGS">SETTINGS</span>
 </p><br />
 <!-- ==================== FUNCTION DETAILS ==================== -->
 <a name="section-FunctionDetails"></a>
@@ -208,19 +278,20 @@
     <span class="table-header">Function Details</span></td>
 </tr>
 </table>
-<a name="Editor"></a>
+<a name="VariableEditorChooser"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">Editor</span>(<span class="sig-arg">plugin</span>,
-        <span class="sig-arg">editor_panel</span>,
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">VariableEditorChooser</span>(<span class="sig-arg">plugin</span>,
+        <span class="sig-arg">parent</span>,
+        <span class="sig-arg">controller</span>,
         <span class="sig-arg">tree</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.editor.editors-pysrc.html#Editor">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="robotide.editor.editors-pysrc.html#VariableEditorChooser">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
@@ -289,7 +360,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:41 2010
+    Generated by Epydoc 3.0.1 on Thu Mar 31 14:47:50 2011
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

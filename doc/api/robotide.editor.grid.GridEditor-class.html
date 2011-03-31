@@ -78,7 +78,7 @@ wx._core.EvtHandler --+
 <dl><dt>Known Subclasses:</dt>
 <dd>
       <ul class="subclass-list">
-<li><a href="robotide.editor.kweditor.KeywordEditorUi-class.html">kweditor.KeywordEditorUi</a></li><li class="private">, fieldeditors._EditorGrid</li>  </ul>
+<li><a href="robotide.editor.kweditor.KeywordEditor-class.html">kweditor.KeywordEditor</a></li><li class="private">, fieldeditors._EditorGrid</li>  </ul>
 </dd></dl>
 
 <hr />
@@ -92,67 +92,107 @@ wx._core.EvtHandler --+
 </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="robotide.editor.grid.GridEditor-class.html#OnCellRightClick" class="summary-sig-name">OnCellRightClick</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">event</span>)</span></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.OnCellRightClick">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="robotide.editor.grid.GridEditor-class.html#OnRangeSelect" class="summary-sig-name">OnRangeSelect</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">event</span>)</span></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.OnRangeSelect">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="robotide.editor.grid.GridEditor-class.html#OnSelectCell" class="summary-sig-name">OnSelectCell</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">event</span>)</span></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.OnSelectCell">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">EvtHandler</span>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="robotide.editor.grid.GridEditor-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">parent</span>)</span><br />
+        <span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">num_rows</span>,
+        <span class="summary-sig-arg">num_cols</span>,
+        <span class="summary-sig-arg">popup_creator</span>=<span class="summary-sig-default">None</span>)</span><br />
       Size size=DefaultSize, long style=WANTS_CHARS,
 String name=wxPyGridNameStr) -&gt; Grid</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.grid.GridEditor-class.html#register_context_menu_hook" class="summary-sig-name">register_context_menu_hook</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">callable</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.register_context_menu_hook">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.grid.GridEditor-class.html#unregister_context_menu_hook" class="summary-sig-name">unregister_context_menu_hook</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">callable</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.unregister_context_menu_hook">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.grid.GridEditor-class.html#write_cell" class="summary-sig-name">write_cell</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">row</span>,
+        <span class="summary-sig-arg">col</span>,
+        <span class="summary-sig-arg">value</span>,
+        <span class="summary-sig-arg">update_history</span>=<span class="summary-sig-default">True</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.write_cell">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.grid.GridEditor-class.html#has_focus" class="summary-sig-name">has_focus</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.has_focus">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.grid.GridEditor-class.html#select" class="summary-sig-name">select</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">row</span>,
+        <span class="summary-sig-arg">column</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.select">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -185,6 +225,22 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
           <td><span class="summary-sig"><a href="robotide.editor.grid.GridEditor-class.html#cut" class="summary-sig-name">cut</a>(<span class="summary-sig-arg">self</span>)</span></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.cut">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.grid.GridEditor-class.html#paste" class="summary-sig-name">paste</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.paste">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -246,9 +302,9 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.editor.grid.GridEditor-class.html#paste" class="summary-sig-name">paste</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td><span class="summary-sig"><a href="robotide.editor.grid.GridEditor-class.html#get_single_selection_content" class="summary-sig-name">get_single_selection_content</a>(<span class="summary-sig-arg">self</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.paste">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.get_single_selection_content">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -278,13 +334,78 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.editor.grid.GridEditor-class.html#write_cell" class="summary-sig-name">write_cell</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">row</span>,
-        <span class="summary-sig-arg">col</span>,
-        <span class="summary-sig-arg">value</span>,
-        <span class="summary-sig-arg">update_history</span>=<span class="summary-sig-default">True</span>)</span></td>
+          <td><span class="summary-sig"><a href="robotide.editor.grid.GridEditor-class.html#OnSelectCell" class="summary-sig-name">OnSelectCell</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.write_cell">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.OnSelectCell">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.grid.GridEditor-class.html#OnRangeSelect" class="summary-sig-name">OnRangeSelect</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.OnRangeSelect">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.grid.GridEditor-class.html#OnCellRightClick" class="summary-sig-name">OnCellRightClick</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.OnCellRightClick">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.grid.GridEditor-class.html#OnInsertCells" class="summary-sig-name">OnInsertCells</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.OnInsertCells">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.grid.GridEditor-class.html#OnDeleteCells" class="summary-sig-name">OnDeleteCells</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.OnDeleteCells">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -783,6 +904,19 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
       <code>GetClassName</code>,
       <code>IsSameAs</code>
       </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
     </td>
   </tr>
 </table>
@@ -838,6 +972,13 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
   <td align="left" colspan="2" class="table-header">
     <span class="table-header">Properties</span></td>
 </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.editor.grid.GridEditor-class.html#cell_under_cursor" class="summary-name">cell_under_cursor</a>
+    </td>
+  </tr>
   <tr>
     <td colspan="2" class="summary">
     <p class="indent-wrapped-lines"><b>Inherited from <code>wx.grid.Grid</code></b>:
@@ -964,6 +1105,9 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
     <p class="indent-wrapped-lines"><b>Inherited from <code>wx._core.Object</code></b>:
       <code>ClassName</code>
       </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
     </td>
   </tr>
 </table>
@@ -976,66 +1120,6 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
     <span class="table-header">Method Details</span></td>
 </tr>
 </table>
-<a name="OnCellRightClick"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnCellRightClick</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">event</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.OnCellRightClick">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  
-  <dl class="fields">
-  </dl>
-</td></tr></table>
-</div>
-<a name="OnRangeSelect"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnRangeSelect</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">event</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.OnRangeSelect">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  
-  <dl class="fields">
-  </dl>
-</td></tr></table>
-</div>
-<a name="OnSelectCell"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnSelectCell</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">event</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.OnSelectCell">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  
-  <dl class="fields">
-  </dl>
-</td></tr></table>
-</div>
 <a name="__init__"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -1044,7 +1128,10 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">parent</span>)</span>
+        <span class="sig-arg">parent</span>,
+        <span class="sig-arg">num_rows</span>,
+        <span class="sig-arg">num_cols</span>,
+        <span class="sig-arg">popup_creator</span>=<span class="sig-default">None</span>)</span>
     <br /><em class="fname">(Constructor)</em>
   </h3>
   </td><td align="right" valign="top"
@@ -1060,8 +1147,112 @@ String name=wxPyGridNameStr) -&gt; Grid</dd>
   <dl class="fields">
     <dt>Returns: EvtHandler</dt>
     <dt>Overrides:
-        wx._core.Object.__init__
+        object.__init__
+        <dd><em class="note">(inherited documentation)</em></dd>
     </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="register_context_menu_hook"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">register_context_menu_hook</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">callable</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.register_context_menu_hook">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="unregister_context_menu_hook"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">unregister_context_menu_hook</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">callable</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.unregister_context_menu_hook">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="write_cell"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">write_cell</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">row</span>,
+        <span class="sig-arg">col</span>,
+        <span class="sig-arg">value</span>,
+        <span class="sig-arg">update_history</span>=<span class="sig-default">True</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.write_cell">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="has_focus"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">has_focus</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.has_focus">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="select"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">select</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">row</span>,
+        <span class="sig-arg">column</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.select">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
   </dl>
 </td></tr></table>
 </div>
@@ -1095,6 +1286,25 @@ String name=wxPyGridNameStr) -&gt; Grid</dd>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.cut">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="paste"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">paste</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.paste">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
@@ -1160,17 +1370,17 @@ String name=wxPyGridNameStr) -&gt; Grid</dd>
   </dl>
 </td></tr></table>
 </div>
-<a name="paste"></a>
+<a name="get_single_selection_content"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">paste</span>(<span class="sig-arg">self</span>)</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_single_selection_content</span>(<span class="sig-arg">self</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.paste">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.get_single_selection_content">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
@@ -1198,26 +1408,127 @@ String name=wxPyGridNameStr) -&gt; Grid</dd>
   </dl>
 </td></tr></table>
 </div>
-<a name="write_cell"></a>
+<a name="OnSelectCell"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">write_cell</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">row</span>,
-        <span class="sig-arg">col</span>,
-        <span class="sig-arg">value</span>,
-        <span class="sig-arg">update_history</span>=<span class="sig-default">True</span>)</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnSelectCell</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.write_cell">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.OnSelectCell">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
   
   <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="OnRangeSelect"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnRangeSelect</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.OnRangeSelect">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="OnCellRightClick"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnCellRightClick</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.OnCellRightClick">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="OnInsertCells"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnInsertCells</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.OnInsertCells">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="OnDeleteCells"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnDeleteCells</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.OnDeleteCells">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== PROPERTY DETAILS ==================== -->
+<a name="section-PropertyDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Property Details</span></td>
+</tr>
+</table>
+<a name="cell_under_cursor"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">cell_under_cursor</h3>
+  
+  <dl class="fields">
+    <dt>Get Method:</dt>
+    <dd class="value"><span class="summary-sig"><i>unreachable</i>.cell_under_cursor(<span class="summary-sig-arg">self</span>)</span>
+    </dd>
   </dl>
 </td></tr></table>
 </div>
@@ -1253,7 +1564,7 @@ String name=wxPyGridNameStr) -&gt; Grid</dd>
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:43 2010
+    Generated by Epydoc 3.0.1 on Thu Mar 31 14:47:59 2011
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

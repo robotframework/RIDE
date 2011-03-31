@@ -1,0 +1,641 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>robotide.contrib.testrunner.testrunnerplugin</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="robotide-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://code.google.com/p/robotframework-ride">RIDE</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="robotide-module.html">Package&nbsp;robotide</a> ::
+        <a href="robotide.contrib-module.html">Package&nbsp;contrib</a> ::
+        <a href="robotide.contrib.testrunner-module.html">Package&nbsp;testrunner</a> ::
+        Module&nbsp;testrunnerplugin
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== MODULE DESCRIPTION ==================== -->
+<h1 class="epydoc">Module testrunnerplugin</h1><p class="nomargin-top"><span class="codelink"><a href="robotide.contrib.testrunner.testrunnerplugin-pysrc.html">source&nbsp;code</a></span></p>
+<p>A plugin for running tests from within RIDE</p>
+<p>Some icons courtesy Mark James and provided under a creative commons
+license.  See <a class="rst-reference external" href="http://www.famfamfam.com/lab/icons/silk" target="_top">http://www.famfamfam.com/lab/icons/silk</a></p>
+<p>Note: this plugin creates a temporary directory for use while a test
+is running. This directory is normally removed when RIDE exists. If
+RIDE is shut down abnormally this directory may not get removed. The
+directories that are created match the pattern RIDE*.d and are in a
+temporary directory appropriate for the platform (for example, on
+linux it's /tmp).</p>
+<p>You can safely manually remove these directories, except for the one
+being used for a currently running test.</p>
+
+<!-- ==================== CLASSES ==================== -->
+<a name="section-Classes"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Classes</span></td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.contrib.testrunner.testrunnerplugin.TestRunnerPlugin-class.html" class="summary-name">TestRunnerPlugin</a><br />
+      A plugin for running tests from within RIDE
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.contrib.testrunner.testrunnerplugin.ProgressBar-class.html" class="summary-name">ProgressBar</a><br />
+      A progress bar for the test runner plugin
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.contrib.testrunner.testrunnerplugin.RideListenerServer-class.html" class="summary-name">RideListenerServer</a><br />
+      Implements a simple line-buffered socket server
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.contrib.testrunner.testrunnerplugin.RideListenerHandler-class.html" class="summary-name">RideListenerHandler</a>
+    </td>
+  </tr>
+</table>
+<!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Functions</span></td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.contrib.testrunner.testrunnerplugin-module.html#secondsToString" class="summary-sig-name">secondsToString</a>(<span class="summary-sig-arg">t</span>)</span><br />
+      Convert a number of seconds to a string of the form HH:MM:SS</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.contrib.testrunner.testrunnerplugin-pysrc.html#secondsToString">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES ==================== -->
+<a name="section-Variables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Variables</span></td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.contrib.testrunner.testrunnerplugin-module.html#ID_RUN" class="summary-name">ID_RUN</a> = <code title="100">100</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.contrib.testrunner.testrunnerplugin-module.html#ID_STOP" class="summary-name">ID_STOP</a> = <code title="101">101</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.contrib.testrunner.testrunnerplugin-module.html#ID_SHOW_REPORT" class="summary-name">ID_SHOW_REPORT</a> = <code title="102">102</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.contrib.testrunner.testrunnerplugin-module.html#ID_SHOW_LOG" class="summary-name">ID_SHOW_LOG</a> = <code title="103">103</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.contrib.testrunner.testrunnerplugin-module.html#ID_AUTOSAVE" class="summary-name">ID_AUTOSAVE</a> = <code title="104">104</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.contrib.testrunner.testrunnerplugin-module.html#STYLE_STDERR" class="summary-name">STYLE_STDERR</a> = <code title="2">2</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.contrib.testrunner.testrunnerplugin-module.html#Robot" class="summary-name">Robot</a> = <code title="PyEmbeddedImage(&quot;iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCS\
+VQICAgIfAhkiAAAAnNJ&quot; &quot;REFUOI2Vkb1Pk3EQxz/PW6EvUN6sEQFBIwUlMBgTMZFZJzcX\
+EzeJiXE1MXFi4g8gGhjcHDA4&quot; &quot;iFGDKNFojBoJaqQItgrlpYUW0ZZSaJ/ndw5INQZIvMt\
+td5/73vcQEbYrpRSPes5K7NsrUaK2&quot; &quot;7RERdHaJnLeV4tL9u7XsDNA0qKhrw19erf0nQA\
+BBRBEeGyT86YUgIKjtF4nIP+PC0tsRGb11&quot; &quot;g+hcnAqvl6ZjrQQ7r664ygIV/8opAATIp\
+r53fui53psZfoqsZcn5TEyXjlrPQcNBvMdO0XG5&quot; &quot;S4M/GPNvWnQ23Ptg4hW1xxsxLAss\
+E0MHHIWgM/f+Me35a1iWmy1IASCOw+f+XhwMQuML/Eik&quot; &quot;WVA6mlLU6A7+AwEqKxSjN7v\
+lxJUubUtEwcTJ8XF5PfAA23ZIJTMkppdoathLS7CO5EyS1M8M&quot; &quot;GjpDdwcR/vhWUHAo2K\
+...">PyEmbeddedImage(&quot;iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAA<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.contrib.testrunner.testrunnerplugin-module.html#MenuButton" class="summary-name">MenuButton</a> = <code title="PyEmbeddedImage(&quot;iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCS\
+VQICAgIfAhkiAAAAKxJ&quot; &quot;REFUOI3t0jEKg0AUBNAxhmXX9QD2adLnJt7E2luIeB/PkCoQ\
+CG5lK8ifdZtNHyQRLGwy5Yd5&quot; &quot;/GKSGCP25LSr/QcAAOfPQ9/3MYSAZVngvQdJiAhEhFV\
+VZT8BkpKmaZbnOZRS0FojhIBpmh6b&quot; &quot;Ppjn+ULyqZSyxhiM44hhGEiyXAOStSG1bVuIyM\
+taq51zJHltmsZtBgCgruuC5N17f+u6brX8&quot; &quot;Fdia43dwPPAGncZYbvceeuMAAAAASUVOR\
+K5CYII=&quot;)">PyEmbeddedImage(&quot;iVBORw0KGgoAAAANSUhEUgAAABAAAAAQ<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.contrib.testrunner.testrunnerplugin-module.html#ProcessStop" class="summary-name">ProcessStop</a> = <code title="PyEmbeddedImage(&quot;iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBT\
+UEAAK/INwWK6QAAABl0&quot; &quot;RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJJ\
+SURBVDjLpZNNbxJRFIb7A/wF&quot; &quot;/A5YunRDovsmRk3cmLAxcdG0uiFuXDSmkBlLFNOmtYF\
+KgibUtqlJG6UjiGksU0oZPgQs0KEw&quot; &quot;Mw4Dw8dQjnPuMCNq48abvJub87zn4547BQBTk7\
+q2CDZdDl1OXdNjOcd3tj/jJ8Eruuxzb2RX&quot; &quot;+NMpHT/MMUfHJwKbSgv7Bxnm9YciPRMSX\
+RiDsb8ZjOGrwWjNzZ4UOL4pg6IOQLsYEbU6fajW&quot; &quot;RYgdpLilnYIbY00T08COcCrzTen2\
+NMCj9ocgKgMQdLV7Q3KnqH3YTyQV/1YWTezEAPvCsjGz&quot; &quot;CTfkPtR/9IGXDNWkHlTFnmW\
+ysxfj7q/x2I4NDRxh5juNZf8LPm12ifBkimdAheI0smjgjH3N&quot; &quot;MtgzlmqCNx5tGnq4Ab\
+...">PyEmbeddedImage(&quot;iVBORw0KGgoAAAANSUhEUgAAABAAAAA<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.contrib.testrunner.testrunnerplugin-module.html#ReportIcon" class="summary-name">ReportIcon</a> = <code title="PyEmbeddedImage(&quot;iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBT\
+UEAAK/INwWK6QAAABl0&quot; &quot;RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAC4\
+SURBVCjPdZFbDsIgEEWnrsMm&quot; &quot;7oGGfZrohxvU+Iq1TyjU60Bf1pac4Yc5YS4ZAtGWBMk\
+/drQBOVwJlZrWYkLhsB8UV9K0BUrP&quot; &quot;Gy9cWbng2CtEEUmLGppPjRwpbixUKHBiZRS0p+\
+ZGhvs4irNEvWD8heHpbsyDXznPhYFOyTjJ&quot; &quot;c13olIqzZCHBouE0FRMUjA+s1gTjaRgVF\
+pqRwC8mfoXPPEVPS7LbRaJL2y7bOifRCTEli3U7&quot; &quot;BMWgLzKlW/CuebZPAAAAAElFTkSu\
+QmCC&quot;)">PyEmbeddedImage(&quot;iVBORw0KGgoAAAANSUhEUgAAABAAAAAQ<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.contrib.testrunner.testrunnerplugin-module.html#LogIcon" class="summary-name">LogIcon</a> = <code title="PyEmbeddedImage(&quot;iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBT\
+UEAAK/INwWK6QAAABl0&quot; &quot;RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADo\
+SURBVBgZBcExblNBGAbA2cee&quot; &quot;gTRBuIKOgiihSZNTcC5LUHAihNJR0kGKCDcYJY6D3/7\
+7MdOinTvzAgCw8ysThIvn/VojIyMj&quot; &quot;IyPP+bS1sUQIV2s95pBDDvmbP/mdkft83tpYgu\
+Zq5Jh/OeaYh+yzy8hTHvNlaxNNczm+la9O&quot; &quot;Tlar1UdA/+C2A4trRCnD3jS8BB1obq2Gk\
+6GU6QbQAS4BUaYSQAf4bhhKKTFdAzrAOwAxEUAH&quot; &quot;+KEM01SY3gM6wBsEAQB0gJ+maZoC\
+3gI6iPYaAIBJsiRmHU0AALOeFC3aK2cWAACUXe7+AwO0&quot; &quot;lc9eTHYTAAAAAElFTkSuQmC\
+C&quot;)">PyEmbeddedImage(&quot;iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQ<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.contrib.testrunner.testrunnerplugin-module.html#__package__" class="summary-name">__package__</a> = <code title="'robotide.contrib.testrunner'"><code class="variable-quote">'</code><code class="variable-string">robotide.contrib.testrunner</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+</table>
+<p class="indent-wrapped-lines"><b>Imports:</b>
+  <span title="tempfile">tempfile</span>,
+  <span title="datetime">datetime</span>,
+  <span title="time">time</span>,
+  <span title="SocketServer">SocketServer</span>,
+  <span title="socket">socket</span>,
+  <span title="os">os</span>,
+  <span title="sys">sys</span>,
+  <span title="threading">threading</span>,
+  <span title="atexit">atexit</span>,
+  <span title="shutil">shutil</span>,
+  <span title="signal">signal</span>,
+  <span title="posixpath">posixpath</span>,
+  <span title="re">re</span>,
+  <span title="posixpath.curdir">curdir</span>,
+  <span title="posixpath.sep">sep</span>,
+  <span title="posixpath.pardir">pardir</span>,
+  <span title="posixpath.join">join</span>,
+  <span title="pickle">pickle</span>,
+  <span title="wx">wx</span>,
+  <span title="wx.lib.embeddedimage.PyEmbeddedImage">PyEmbeddedImage</span>,
+  <span title="robot.parsing.model.TestCase">TestCase</span>,
+  <a href="robotide.pluginapi.plugin.Plugin-class.html" title="robotide.pluginapi.Plugin">Plugin</a>,
+  <a href="robotide.action.actioninfo.ActionInfo-class.html" title="robotide.pluginapi.ActionInfo">ActionInfo</a>,
+  <a href="robotide.publish.messages.RideTestCaseAdded-class.html" title="robotide.publish.RideTestCaseAdded">RideTestCaseAdded</a>,
+  <a href="robotide.publish.messages.RideOpenSuite-class.html" title="robotide.publish.RideOpenSuite">RideOpenSuite</a>,
+  <a href="robotide.publish.messages.RideSuiteAdded-class.html" title="robotide.publish.RideSuiteAdded">RideSuiteAdded</a>,
+  <a href="robotide.publish.messages.RideItemNameChanged-class.html" title="robotide.publish.RideItemNameChanged">RideItemNameChanged</a>,
+  <a href="robotide.publish.messages.RideTestCaseRemoved-class.html" title="robotide.publish.RideTestCaseRemoved">RideTestCaseRemoved</a>,
+  <a href="robotide.contrib.testrunner.TestSuiteTreeCtrl.TestSuiteTreeCtrl-class.html" title="robotide.contrib.testrunner.TestSuiteTreeCtrl.TestSuiteTreeCtrl">TestSuiteTreeCtrl</a>,
+  <a href="robotide.contrib.testrunner.runprofiles-module.html" title="robotide.contrib.testrunner.runprofiles">runprofiles</a>,
+  getRobotBitmap,
+  getMenuButtonBitmap,
+  getProcessStopBitmap,
+  getReportIconBitmap,
+  getLogIconBitmap
+</p><br />
+<!-- ==================== FUNCTION DETAILS ==================== -->
+<a name="section-FunctionDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Function Details</span></td>
+</tr>
+</table>
+<a name="secondsToString"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">secondsToString</span>(<span class="sig-arg">t</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.contrib.testrunner.testrunnerplugin-pysrc.html#secondsToString">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Convert a number of seconds to a string of the form HH:MM:SS
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== VARIABLES DETAILS ==================== -->
+<a name="section-VariablesDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Variables Details</span></td>
+</tr>
+</table>
+<a name="ID_RUN"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">ID_RUN</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+100
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="ID_STOP"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">ID_STOP</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+101
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="ID_SHOW_REPORT"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">ID_SHOW_REPORT</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+102
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="ID_SHOW_LOG"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">ID_SHOW_LOG</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+103
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="ID_AUTOSAVE"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">ID_AUTOSAVE</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+104
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="STYLE_STDERR"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">STYLE_STDERR</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+2
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="Robot"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">Robot</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+PyEmbeddedImage(&quot;iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCS<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+VQICAgIfAhkiAAAAnNJ&quot; &quot;REFUOI2Vkb1Pk3EQxz/PW6EvUN6sEQFBIwUlMBgTMZFZJzcX<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+EzeJiXE1MXFi4g8gGhjcHDA4&quot; &quot;iFGDKNFojBoJaqQItgrlpYUW0ZZSaJ/ndw5INQZIvMt<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+td5/73vcQEbYrpRSPes5K7NsrUaK2&quot; &quot;7RERdHaJnLeV4tL9u7XsDNA0qKhrw19erf0nQA<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+BBRBEeGyT86YUgIKjtF4nIP+PC0tsRGb11&quot; &quot;g+hcnAqvl6ZjrQQ7r664ygIV/8opAATIp<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+r53fui53psZfoqsZcn5TEyXjlrPQcNBvMdO0XG5&quot; &quot;S4M/GPNvWnQ23Ptg4hW1xxsxLAss<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+E0MHHIWgM/f+Me35a1iWmy1IASCOw+f+XhwMQuML/Eik&quot; &quot;WVA6mlLU6A7+AwEqKxSjN7v<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+lxJUubUtEwcTJ8XF5PfAA23ZIJTMkppdoathLS7CO5EyS1M8M&quot; &quot;GjpDdwcR/vhWUHAo2K<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-ellipsis">...</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="MenuButton"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">MenuButton</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+PyEmbeddedImage(&quot;iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCS<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+VQICAgIfAhkiAAAAKxJ&quot; &quot;REFUOI3t0jEKg0AUBNAxhmXX9QD2adLnJt7E2luIeB/PkCoQ<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+CG5lK8ifdZtNHyQRLGwy5Yd5&quot; &quot;/GKSGCP25LSr/QcAAOfPQ9/3MYSAZVngvQdJiAhEhFV<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+VZT8BkpKmaZbnOZRS0FojhIBpmh6b&quot; &quot;Ppjn+ULyqZSyxhiM44hhGEiyXAOStSG1bVuIyM<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+taq51zJHltmsZtBgCgruuC5N17f+u6brX8&quot; &quot;Fdia43dwPPAGncZYbvceeuMAAAAASUVOR<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+K5CYII=&quot;)
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="ProcessStop"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">ProcessStop</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+PyEmbeddedImage(&quot;iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBT<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+UEAAK/INwWK6QAAABl0&quot; &quot;RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJJ<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+SURBVDjLpZNNbxJRFIb7A/wF&quot; &quot;/A5YunRDovsmRk3cmLAxcdG0uiFuXDSmkBlLFNOmtYF<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+KgibUtqlJG6UjiGksU0oZPgQs0KEw&quot; &quot;Mw4Dw8dQjnPuMCNq48abvJub87zn4547BQBTk7<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+q2CDZdDl1OXdNjOcd3tj/jJ8Eruuxzb2RX&quot; &quot;+NMpHT/MMUfHJwKbSgv7Bxnm9YciPRMSX<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+RiDsb8ZjOGrwWjNzZ4UOL4pg6IOQLsYEbU6fajW&quot; &quot;RYgdpLilnYIbY00T08COcCrzTen2<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+NMCj9ocgKgMQdLV7Q3KnqH3YTyQV/1YWTezEAPvCsjGz&quot; &quot;CTfkPtR/9IGXDNWkHlTFnmW<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+ysxfj7q/x2I4NDRxh5juNZf8LPm12ifBkimdAheI0smjgjH3N&quot; &quot;MtgzlmqCNx5tGnq4Ab<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-ellipsis">...</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="ReportIcon"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">ReportIcon</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+PyEmbeddedImage(&quot;iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBT<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+UEAAK/INwWK6QAAABl0&quot; &quot;RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAC4<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+SURBVCjPdZFbDsIgEEWnrsMm&quot; &quot;7oGGfZrohxvU+Iq1TyjU60Bf1pac4Yc5YS4ZAtGWBMk<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+/drQBOVwJlZrWYkLhsB8UV9K0BUrP&quot; &quot;Gy9cWbng2CtEEUmLGppPjRwpbixUKHBiZRS0p+<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+ZGhvs4irNEvWD8heHpbsyDXznPhYFOyTjJ&quot; &quot;c13olIqzZCHBouE0FRMUjA+s1gTjaRgVF<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+pqRwC8mfoXPPEVPS7LbRaJL2y7bOifRCTEli3U7&quot; &quot;BMWgLzKlW/CuebZPAAAAAElFTkSu<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+QmCC&quot;)
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="LogIcon"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">LogIcon</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+PyEmbeddedImage(&quot;iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBT<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+UEAAK/INwWK6QAAABl0&quot; &quot;RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADo<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+SURBVBgZBcExblNBGAbA2cee&quot; &quot;gTRBuIKOgiihSZNTcC5LUHAihNJR0kGKCDcYJY6D3/7<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+7MdOinTvzAgCw8ysThIvn/VojIyMj&quot; &quot;IyPP+bS1sUQIV2s95pBDDvmbP/mdkft83tpYgu<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+Zq5Jh/OeaYh+yzy8hTHvNlaxNNczm+la9O&quot; &quot;Tlar1UdA/+C2A4trRCnD3jS8BB1obq2Gk<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+6GU6QbQAS4BUaYSQAf4bhhKKTFdAzrAOwAxEUAH&quot; &quot;+KEM01SY3gM6wBsEAQB0gJ+maZoC<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+3gI6iPYaAIBJsiRmHU0AALOeFC3aK2cWAACUXe7+AwO0&quot; &quot;lc9eTHYTAAAAAElFTkSuQmC<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+C&quot;)
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="__package__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">__package__</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-quote">'</code><code class="variable-string">robotide.contrib.testrunner</code><code class="variable-quote">'</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="robotide-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://code.google.com/p/robotframework-ride">RIDE</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Mar 31 14:47:49 2011
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

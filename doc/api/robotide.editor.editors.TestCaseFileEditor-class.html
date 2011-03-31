@@ -98,6 +98,23 @@ wx._core.EvtHandler --+
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.editors.ResourceFileEditor-class.html#close" class="summary-sig-name">close</a>(<span class="summary-sig-arg">self</span>)</span>
+      <em>(Inherited from <a href="robotide.editor.editors.ResourceFileEditor-class.html">robotide.editor.editors.ResourceFileEditor</a>)</em></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.editor.editors-pysrc.html#ResourceFileEditor.close">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a href="robotide.editor.editors.EditorPanel-class.html#comment" class="summary-sig-name">comment</a>(<span class="summary-sig-arg">self</span>)</span>
       <em>(Inherited from <a href="robotide.editor.editors.EditorPanel-class.html">robotide.editor.editors.EditorPanel</a>)</em></td>
           <td align="right" valign="top">
@@ -217,6 +234,24 @@ wx._core.EvtHandler --+
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.editors.ResourceFileEditor-class.html#tree_item_selected" class="summary-sig-name">tree_item_selected</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">item</span>)</span>
+      <em>(Inherited from <a href="robotide.editor.editors.ResourceFileEditor-class.html">robotide.editor.editors.ResourceFileEditor</a>)</em></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.editor.editors-pysrc.html#ResourceFileEditor.tree_item_selected">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a href="robotide.editor.editors.EditorPanel-class.html#uncomment" class="summary-sig-name">uncomment</a>(<span class="summary-sig-arg">self</span>)</span>
       <em>(Inherited from <a href="robotide.editor.editors.EditorPanel-class.html">robotide.editor.editors.EditorPanel</a>)</em></td>
           <td align="right" valign="top">
@@ -248,8 +283,12 @@ wx._core.EvtHandler --+
   <tr>
     <td colspan="2" class="summary">
     <p class="indent-wrapped-lines"><b>Inherited from <code>_RobotTableEditor</code></b>:
+      <code>OnIdle</code>,
       <code>__init__</code>,
-      <code>close</code>
+      <code>destroy</code>,
+      <code>highlight</code>,
+      <code>highlight_cell</code>,
+      <code>tooltip_allowed</code>
       </p>
     <p class="indent-wrapped-lines"><b>Inherited from <code>wx._windows.Panel</code></b>:
       <code>Create</code>,
@@ -505,6 +544,19 @@ wx._core.EvtHandler --+
       <code>GetClassName</code>,
       <code>IsSameAs</code>
       </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
     </td>
   </tr>
 </table>
@@ -543,7 +595,8 @@ wx._core.EvtHandler --+
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="robotide.editor.editors.EditorPanel-class.html#title" class="summary-name">title</a> = <code title="None">None</code>
+        <a href="robotide.editor.editors.EditorPanel-class.html#title" class="summary-name">title</a> = <code title="None">None</code><br />
+      hash(x)
       <em>(Inherited from <a href="robotide.editor.editors.EditorPanel-class.html">robotide.editor.editors.EditorPanel</a>)</em>
     </td>
   </tr>
@@ -637,6 +690,9 @@ wx._core.EvtHandler --+
     <p class="indent-wrapped-lines"><b>Inherited from <code>wx._core.Object</code></b>:
       <code>ClassName</code>
       </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
     </td>
   </tr>
 </table>
@@ -671,7 +727,7 @@ wx._core.EvtHandler --+
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:43 2010
+    Generated by Epydoc 3.0.1 on Thu Mar 31 14:47:58 2011
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

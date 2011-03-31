@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>robotide.namespace.embeddedargs</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="robotide-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://code.google.com/p/robotframework-ride">RIDE</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="robotide-module.html">Package&nbsp;robotide</a> ::
+        <a href="robotide.namespace-module.html">Package&nbsp;namespace</a> ::
+        Module&nbsp;embeddedargs
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="robotide.namespace.embeddedargs-module.html">Module robotide.namespace.embeddedargs</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-comment">#  Copyright 2008-2009 Nokia Siemens Networks Oyj</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-comment">#  Licensed under the Apache License, Version 2.0 (the "License");</tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-comment">#  you may not use this file except in compliance with the License.</tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"><tt class="py-comment">#  You may obtain a copy of the License at</tt> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"><tt class="py-comment">#      http://www.apache.org/licenses/LICENSE-2.0</tt> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"><tt class="py-comment">#  Unless required by applicable law or agreed to in writing, software</tt> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"><tt class="py-comment">#  distributed under the License is distributed on an "AS IS" BASIS,</tt> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line"><tt class="py-comment">#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</tt> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line"><tt class="py-comment">#  See the License for the specific language governing permissions and</tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line"><tt class="py-comment">#  limitations under the License.</tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line"> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">re</tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line"> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package robotide=robotide-module.html"><a title="robotide" class="py-name" href="#" onclick="return doclink('link-0', 'robotide', 'link-0');">robotide</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Module robotide.robotapi=robotide.robotapi-module.html"><a title="robotide.robotapi" class="py-name" href="#" onclick="return doclink('link-1', 'robotapi', 'link-1');">robotapi</a></tt> <tt class="py-keyword">import</tt> <tt class="py-name">VariableSplitter</tt> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line"> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line"> </tt>
+<a name="EmbeddedArgsHandler"></a><div id="EmbeddedArgsHandler-def"><a name="L20"></a><tt class="py-lineno">20</tt> <a class="py-toggle" href="#" id="EmbeddedArgsHandler-toggle" onclick="return toggle('EmbeddedArgsHandler');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="robotide.namespace.embeddedargs.EmbeddedArgsHandler-class.html">EmbeddedArgsHandler</a><tt class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="EmbeddedArgsHandler-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="EmbeddedArgsHandler-expanded"><a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line"> </tt>
+<a name="EmbeddedArgsHandler.__init__"></a><div id="EmbeddedArgsHandler.__init__-def"><a name="L22"></a><tt class="py-lineno">22</tt> <a class="py-toggle" href="#" id="EmbeddedArgsHandler.__init__-toggle" onclick="return toggle('EmbeddedArgsHandler.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.namespace.embeddedargs.EmbeddedArgsHandler-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">keyword</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="EmbeddedArgsHandler.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="EmbeddedArgsHandler.__init__-expanded"><a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt id="link-2" class="py-name" targets="Variable robotide.controller.stepcontrollers.StepController.keyword=robotide.controller.stepcontrollers.StepController-class.html#keyword"><a title="robotide.controller.stepcontrollers.StepController.keyword" class="py-name" href="#" onclick="return doclink('link-2', 'keyword', 'link-2');">keyword</a></tt><tt class="py-op">.</tt><tt id="link-3" class="py-name" targets="Module robotide.controller.arguments=robotide.controller.arguments-module.html,Variable robotide.controller.macrocontrollers.UserKeywordController.arguments=robotide.controller.macrocontrollers.UserKeywordController-class.html#arguments"><a title="robotide.controller.arguments
+robotide.controller.macrocontrollers.UserKeywordController.arguments" class="py-name" href="#" onclick="return doclink('link-3', 'arguments', 'link-3');">arguments</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line">            <tt class="py-keyword">raise</tt> <tt class="py-name">TypeError</tt><tt class="py-op">(</tt><tt class="py-string">'Cannot have normal arguments'</tt><tt class="py-op">)</tt> </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">embedded_args</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">name_regexp</tt> \ </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line">                <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_read_embedded_args_and_regexp</tt><tt class="py-op">(</tt><tt id="link-4" class="py-name"><a title="robotide.controller.stepcontrollers.StepController.keyword" class="py-name" href="#" onclick="return doclink('link-4', 'keyword', 'link-2');">keyword</a></tt><tt class="py-op">.</tt><tt id="link-5" class="py-name" targets="Variable robotide.contrib.testrunner.TestSuiteTreeCtrl.TreeNode.name=robotide.contrib.testrunner.TestSuiteTreeCtrl.TreeNode-class.html#name,Variable robotide.contrib.testrunner.runprofiles.CustomScriptProfile.name=robotide.contrib.testrunner.runprofiles.CustomScriptProfile-class.html#name,Variable robotide.contrib.testrunner.runprofiles.PybotProfile.name=robotide.contrib.testrunner.runprofiles.PybotProfile-class.html#name,Variable robotide.controller.settingcontrollers.ImportController.name=robotide.controller.settingcontrollers.ImportController-class.html#name,Variable robotide.controller.settingcontrollers.MetadataController.name=robotide.controller.settingcontrollers.MetadataController-class.html#name,Variable robotide.controller.settingcontrollers.VariableController.name=robotide.controller.settingcontrollers.VariableController-class.html#name,Variable robotide.controller.stepcontrollers.ForLoopStepController.name=robotide.controller.stepcontrollers.ForLoopStepController-class.html#name,Variable robotide.controller.tags.Tag.name=robotide.controller.tags.Tag-class.html#name,Variable robotide.editor.editors.EditorPanel.name=robotide.editor.editors.EditorPanel-class.html#name,Variable robotide.publish.messages.name=robotide.publish.messages-module.html#name"><a title="robotide.contrib.testrunner.TestSuiteTreeCtrl.TreeNode.name
+robotide.contrib.testrunner.runprofiles.CustomScriptProfile.name
+robotide.contrib.testrunner.runprofiles.PybotProfile.name
+robotide.controller.settingcontrollers.ImportController.name
+robotide.controller.settingcontrollers.MetadataController.name
+robotide.controller.settingcontrollers.VariableController.name
+robotide.controller.stepcontrollers.ForLoopStepController.name
+robotide.controller.tags.Tag.name
+robotide.editor.editors.EditorPanel.name
+robotide.publish.messages.name" class="py-name" href="#" onclick="return doclink('link-5', 'name', 'link-5');">name</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">embedded_args</tt><tt class="py-op">:</tt> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line">            <tt class="py-keyword">raise</tt> <tt class="py-name">TypeError</tt><tt class="py-op">(</tt><tt class="py-string">'Must have embedded arguments'</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line"> </tt>
+<a name="EmbeddedArgsHandler._read_embedded_args_and_regexp"></a><div id="EmbeddedArgsHandler._read_embedded_args_and_regexp-def"><a name="L30"></a><tt class="py-lineno">30</tt> <a class="py-toggle" href="#" id="EmbeddedArgsHandler._read_embedded_args_and_regexp-toggle" onclick="return toggle('EmbeddedArgsHandler._read_embedded_args_and_regexp');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.namespace.embeddedargs.EmbeddedArgsHandler-class.html#_read_embedded_args_and_regexp">_read_embedded_args_and_regexp</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">string</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="EmbeddedArgsHandler._read_embedded_args_and_regexp-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="EmbeddedArgsHandler._read_embedded_args_and_regexp-expanded"><a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line">        <tt id="link-6" class="py-name" targets="Variable robotide.controller.settingcontrollers.ImportController.args=robotide.controller.settingcontrollers.ImportController-class.html#args,Variable robotide.controller.stepcontrollers.StepController.args=robotide.controller.stepcontrollers.StepController-class.html#args"><a title="robotide.controller.settingcontrollers.ImportController.args
+robotide.controller.stepcontrollers.StepController.args" class="py-name" href="#" onclick="return doclink('link-6', 'args', 'link-6');">args</a></tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line">        <tt class="py-name">regexp</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-string">'^'</tt><tt class="py-op">]</tt> </tt>
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line">        <tt class="py-keyword">while</tt> <tt class="py-name">True</tt><tt class="py-op">:</tt> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line">            <tt class="py-name">before</tt><tt class="py-op">,</tt> <tt class="py-name">variable</tt><tt class="py-op">,</tt> <tt class="py-name">rest</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_split_from_variable</tt><tt class="py-op">(</tt><tt class="py-name">string</tt><tt class="py-op">)</tt> </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">before</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line">                <tt class="py-keyword">break</tt> </tt>
+<a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line">            <tt id="link-7" class="py-name"><a title="robotide.controller.settingcontrollers.ImportController.args
+robotide.controller.stepcontrollers.StepController.args" class="py-name" href="#" onclick="return doclink('link-7', 'args', 'link-6');">args</a></tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">variable</tt><tt class="py-op">)</tt> </tt>
+<a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line">            <tt class="py-name">regexp</tt><tt class="py-op">.</tt><tt class="py-name">extend</tt><tt class="py-op">(</tt><tt class="py-op">[</tt><tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">escape</tt><tt class="py-op">(</tt><tt class="py-name">before</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-string">'(.*?)'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line">            <tt class="py-name">string</tt> <tt class="py-op">=</tt> <tt class="py-name">rest</tt> </tt>
+<a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line">        <tt class="py-name">regexp</tt><tt class="py-op">.</tt><tt class="py-name">extend</tt><tt class="py-op">(</tt><tt class="py-op">[</tt><tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">escape</tt><tt class="py-op">(</tt><tt class="py-name">rest</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-string">'$'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt id="link-8" class="py-name"><a title="robotide.controller.settingcontrollers.ImportController.args
+robotide.controller.stepcontrollers.StepController.args" class="py-name" href="#" onclick="return doclink('link-8', 'args', 'link-6');">args</a></tt><tt class="py-op">,</tt> <tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">compile</tt><tt class="py-op">(</tt><tt class="py-string">''</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">regexp</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">IGNORECASE</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line"> </tt>
+<a name="EmbeddedArgsHandler._split_from_variable"></a><div id="EmbeddedArgsHandler._split_from_variable-def"><a name="L43"></a><tt class="py-lineno">43</tt> <a class="py-toggle" href="#" id="EmbeddedArgsHandler._split_from_variable-toggle" onclick="return toggle('EmbeddedArgsHandler._split_from_variable');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.namespace.embeddedargs.EmbeddedArgsHandler-class.html#_split_from_variable">_split_from_variable</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">string</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="EmbeddedArgsHandler._split_from_variable-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="EmbeddedArgsHandler._split_from_variable-expanded"><a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line">        <tt class="py-name">var</tt> <tt class="py-op">=</tt> <tt class="py-name">VariableSplitter</tt><tt class="py-op">(</tt><tt class="py-name">string</tt><tt class="py-op">,</tt> <tt class="py-name">identifiers</tt><tt class="py-op">=</tt><tt class="py-op">[</tt><tt class="py-string">'$'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L45"></a><tt class="py-lineno">45</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">var</tt><tt class="py-op">.</tt><tt class="py-name">identifier</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-name">string</tt> </tt>
+<a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">string</tt><tt class="py-op">[</tt><tt class="py-op">:</tt><tt class="py-name">var</tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Method robotide.run.process.Process.start()=robotide.run.process.Process-class.html#start"><a title="robotide.run.process.Process.start" class="py-name" href="#" onclick="return doclink('link-9', 'start', 'link-9');">start</a></tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-name">string</tt><tt class="py-op">[</tt><tt class="py-name">var</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name"><a title="robotide.run.process.Process.start" class="py-name" href="#" onclick="return doclink('link-10', 'start', 'link-9');">start</a></tt><tt class="py-op">:</tt><tt class="py-name">var</tt><tt class="py-op">.</tt><tt class="py-name">end</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-name">string</tt><tt class="py-op">[</tt><tt class="py-name">var</tt><tt class="py-op">.</tt><tt class="py-name">end</tt><tt class="py-op">:</tt><tt class="py-op">]</tt> </tt>
+</div></div><a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="robotide-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://code.google.com/p/robotframework-ride">RIDE</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Mar 31 14:48:10 2011
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

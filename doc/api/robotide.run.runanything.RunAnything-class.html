@@ -160,10 +160,28 @@ separate tab.</p>
         <span class="summary-sig-arg">tab</span>,
         <span class="summary-sig-arg">title</span>,
         <span class="summary-sig-arg">allow_closing</span>=<span class="summary-sig-default">True</span>)</span><br />
-      Adds the <tt class="rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">tab</span></tt> with the <tt class="rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">title</span></tt> to the tabbed notebook and shows it.
+      Adds the <tt class="rst-rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal">tab</tt> with the <tt class="rst-rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal">title</tt> to the tabbed notebook and shows it.
       <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.add_tab">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#all_testcases" class="summary-sig-name">all_testcases</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Returns all test cases from all suites in one, unsorted list
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.all_testcases">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -236,7 +254,7 @@ separate tab.</p>
         <tr>
           <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#delete_tab" class="summary-sig-name">delete_tab</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">tab</span>)</span><br />
-      Deletes the <tt class="rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">tab</span></tt> added using <a href="robotide.pluginapi.plugin.Plugin-class.html#add_tab" class="link">add_tab</a>.
+      Deletes the <tt class="rst-rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal">tab</tt> added using <a href="robotide.pluginapi.plugin.Plugin-class.html#add_tab" class="link">add_tab</a>.
       <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.delete_tab">source&nbsp;code</a></span>
@@ -328,9 +346,28 @@ separate tab.</p>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#get_keyword" class="summary-sig-name">get_keyword</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>)</span><br />
+      Returns the keyword object with the given name or None
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.get_keyword">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#get_keyword_details" class="summary-sig-name">get_keyword_details</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">name</span>)</span><br />
-      Returns details (documentatioin, source) of keyword with name <tt class="rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">name</span></tt>.
+      Returns details (documentation, source) of keyword with name <tt class="rst-rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal">name</tt>.
       <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.get_keyword_details">source&nbsp;code</a></span>
@@ -361,7 +398,7 @@ separate tab.</p>
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type"><a href="robotide.model.files.InitFile-class.html" class="link">InitFile</a>, <a href="robotide.model.files.TestCaseFile-class.html" class="link">TestCaseFile</a> or <a href="robotide.model.files.ResourceFile-class.html" class="link">ResourceFile</a></span>
+      <span class="summary-type"><code class="link">InitFile</code>, <code class="link">TestCaseFile</code> or <code class="link">ResourceFile</code></span>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
@@ -379,7 +416,7 @@ separate tab.</p>
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type"><a href="robotide.model.files.InitFile-class.html" class="link">InitFile</a>, <a href="robotide.model.files.TestCaseFile-class.html" class="link">TestCaseFile</a>, <a href="robotide.model.files.ResourceFile-class.html" class="link">ResourceFile</a>, <a href="robotide.model.tcuk.TestCase-class.html" class="link">TestCase</a> or <a href="robotide.model.tcuk.UserKeyword-class.html" class="link">UserKeyword</a></span>
+      <span class="summary-type"><code class="link">InitFile</code>, <code class="link">TestCaseFile</code>, <code class="link">ResourceFile</code>, <code class="link">TestCase</code> or <code class="link">UserKeyword</code></span>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
@@ -403,7 +440,7 @@ separate tab.</p>
         <tr>
           <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#get_user_keyword" class="summary-sig-name">get_user_keyword</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">name</span>)</span><br />
-      Returns user keyword instance whose name is <tt class="rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">name</span></tt> or None.
+      Returns user keyword instance whose name is <tt class="rst-rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal">name</tt> or None.
       <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.get_user_keyword">source&nbsp;code</a></span>
@@ -420,9 +457,51 @@ separate tab.</p>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#highlight" class="summary-sig-name">highlight</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">text</span>)</span><br />
+      Highlight a specific text of a given data's editor
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.highlight">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#highlight_cell" class="summary-sig-name">highlight_cell</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">tcuk</span>,
+        <span class="summary-sig-arg">obj</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">row</span>=<span class="summary-sig-default">-1</span>,
+        <span class="summary-sig-arg">column</span>=<span class="summary-sig-default">-1</span>)</span><br />
+      Highlight a specific row/column of a test case or user keyword
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.highlight_cell">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#is_library_keyword" class="summary-sig-name">is_library_keyword</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">name</span>)</span><br />
-      Returns whether <tt class="rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">name</span></tt> is a keyword imported by current datafile.
+      Returns whether <tt class="rst-rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal">name</tt> is a keyword imported by current datafile.
       <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.is_library_keyword">source&nbsp;code</a></span>
@@ -439,9 +518,27 @@ separate tab.</p>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#is_unsaved_changes" class="summary-sig-name">is_unsaved_changes</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Returns True if there is any unsaved changes, otherwise False
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.is_unsaved_changes">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#is_user_keyword" class="summary-sig-name">is_user_keyword</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">name</span>)</span><br />
-      Returns whether <tt class="rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">name</span></tt> is a user keyword of current datafile.
+      Returns whether <tt class="rst-rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal">name</tt> is a user keyword of current datafile.
       <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.is_user_keyword">source&nbsp;code</a></span>
@@ -478,7 +575,7 @@ separate tab.</p>
         <tr>
           <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#open_suite" class="summary-sig-name">open_suite</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">path</span>)</span><br />
-      Opens a test suite specified by the <tt class="rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">path</span></tt>.
+      Opens a test suite specified by the <tt class="rst-rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal">path</tt>.
       <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.open_suite">source&nbsp;code</a></span>
@@ -576,10 +673,28 @@ separate tab.</p>
         <span class="summary-sig-arg">item_class</span>,
         <span class="summary-sig-arg">editor_class</span>,
         <span class="summary-sig-arg">activate</span>=<span class="summary-sig-default">True</span>)</span><br />
-      Register <tt class="rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">editor_class</span></tt> as an editor class for model items of type <tt class="rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">item_class</span></tt>
+      Register <tt class="rst-rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal">editor_class</tt> as an editor class for model items of type <tt class="rst-rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal">item_class</tt>
       <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.register_editor">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#save_all_unsaved_changes" class="summary-sig-name">save_all_unsaved_changes</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Saves all the data files that are modified.
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.save_all_unsaved_changes">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -614,11 +729,31 @@ separate tab.</p>
           <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#save_setting" class="summary-sig-name">save_setting</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">name</span>,
         <span class="summary-sig-arg">value</span>,
-        <span class="summary-sig-arg">override</span>=<span class="summary-sig-default">True</span>)</span><br />
+        <span class="summary-sig-arg">override</span>=<span class="summary-sig-default">True</span>,
+        <span class="summary-sig-arg">delay</span>=<span class="summary-sig-default">0</span>)</span><br />
       Saves the specified setting into the RIDE configuration file.
       <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.save_setting">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#select_user_keyword_node" class="summary-sig-name">select_user_keyword_node</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">uk</span>)</span><br />
+      Selects node containing the given <tt class="rst-rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal">uk</tt> in the tree.
+      <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.select_user_keyword_node">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -654,7 +789,7 @@ separate tab.</p>
         <tr>
           <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#show_tab" class="summary-sig-name">show_tab</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">tab</span>)</span><br />
-      Makes the <tt class="rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">tab</span></tt> added using <a href="robotide.pluginapi.plugin.Plugin-class.html#add_tab" class="link">add_tab</a> visible.
+      Makes the <tt class="rst-rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal">tab</tt> added using <a href="robotide.pluginapi.plugin.Plugin-class.html#add_tab" class="link">add_tab</a> visible.
       <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.show_tab">source&nbsp;code</a></span>
@@ -674,7 +809,7 @@ separate tab.</p>
           <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#subscribe" class="summary-sig-name">subscribe</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">listener</span>,
         <span class="summary-sig-arg">*topics</span>)</span><br />
-      Start to listen to messages with the given <tt class="rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">topics</span></tt>.
+      Start to listen to messages with the given <tt class="rst-rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal">topics</tt>.
       <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.subscribe">source&nbsp;code</a></span>
@@ -693,7 +828,7 @@ separate tab.</p>
         <tr>
           <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#tab_is_visible" class="summary-sig-name">tab_is_visible</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">tab</span>)</span><br />
-      Returns is the <tt class="rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">tab</span></tt> added using <a href="robotide.pluginapi.plugin.Plugin-class.html#add_tab" class="link">add_tab</a> visible or not.
+      Returns is the <tt class="rst-rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal">tab</tt> added using <a href="robotide.pluginapi.plugin.Plugin-class.html#add_tab" class="link">add_tab</a> visible or not.
       <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.tab_is_visible">source&nbsp;code</a></span>
@@ -731,7 +866,7 @@ separate tab.</p>
           <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#unregister_editor" class="summary-sig-name">unregister_editor</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">item_class</span>,
         <span class="summary-sig-arg">editor_class</span>)</span><br />
-      Unregisters <tt class="rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">editor_class</span></tt> as an editor class for model items of type <tt class="rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">item_class</span></tt>
+      Unregisters <tt class="rst-rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal">editor_class</tt> as an editor class for model items of type <tt class="rst-rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal">item_class</tt>
       <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.unregister_editor">source&nbsp;code</a></span>
@@ -751,7 +886,7 @@ separate tab.</p>
           <td><span class="summary-sig"><a href="robotide.pluginapi.plugin.Plugin-class.html#unsubscribe" class="summary-sig-name">unsubscribe</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">listener</span>,
         <span class="summary-sig-arg">*topics</span>)</span><br />
-      Stops listening to messages with the given <tt class="rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">topics</span></tt>.
+      Stops listening to messages with the given <tt class="rst-rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal">topics</tt>.
       <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.pluginapi.plugin-pysrc.html#Plugin.unsubscribe">source&nbsp;code</a></span>
@@ -780,6 +915,24 @@ separate tab.</p>
       
     </td>
   </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__repr__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
+    </td>
+  </tr>
 </table>
 <!-- ==================== INSTANCE VARIABLES ==================== -->
 <a name="section-InstanceVariables"></a>
@@ -794,7 +947,8 @@ separate tab.</p>
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
         <a href="robotide.pluginapi.plugin.Plugin-class.html#doc" class="summary-name">doc</a><br />
-      Plugin documentation.
+      Plugin documentation. Set in <a href="robotide.pluginapi.plugin.Plugin-class.html#__init__" class="link">__init__</a> based on the given doc or
+the class docstring.
       <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em>
     </td>
   </tr>
@@ -804,6 +958,7 @@ separate tab.</p>
     </td><td class="summary">
         <a href="robotide.pluginapi.plugin.Plugin-class.html#initially_enabled" class="summary-name">initially_enabled</a><br />
       Specifies should the plugin be enabled when first loaded.
+Set in <a href="robotide.pluginapi.plugin.Plugin-class.html#__init__" class="link">__init__</a>.
       <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em>
     </td>
   </tr>
@@ -812,7 +967,7 @@ separate tab.</p>
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
         <a href="robotide.pluginapi.plugin.Plugin-class.html#metadata" class="summary-name">metadata</a><br />
-      Plugin metadata.
+      Plugin metadata. Set in <a href="robotide.pluginapi.plugin.Plugin-class.html#__init__" class="link">__init__</a> based on the given metadata.
       <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em>
     </td>
   </tr>
@@ -821,7 +976,7 @@ separate tab.</p>
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
         <a href="robotide.pluginapi.plugin.Plugin-class.html#name" class="summary-name">name</a><br />
-      Plugin name.
+      Plugin name. Set in <a href="robotide.pluginapi.plugin.Plugin-class.html#__init__" class="link">__init__</a> based on the given name or the class name.
       <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em>
     </td>
   </tr>
@@ -897,6 +1052,13 @@ separate tab.</p>
       <em>(Inherited from <a href="robotide.pluginapi.plugin.Plugin-class.html">robotide.pluginapi.plugin.Plugin</a>)</em>
     </td>
   </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
 </table>
 <!-- ==================== METHOD DETAILS ==================== -->
 <a name="section-MethodDetails"></a>
@@ -927,7 +1089,7 @@ separate tab.</p>
 <p>The provided information is mainly used by the plugin manager. Simple
 plugins are often fine with the defaults. If this method is overridden,
 the plugin must call it explicitly:</p>
-<pre class="rst-rst-rst-rst-rst-literal-block rst-rst-rst-rst-literal-block rst-rst-rst-literal-block rst-rst-literal-block rst-literal-block">
+<pre class="rst-rst-rst-rst-rst-rst-rst-rst-literal-block rst-rst-rst-rst-rst-rst-rst-literal-block rst-rst-rst-rst-rst-rst-literal-block rst-rst-rst-rst-rst-literal-block rst-rst-rst-rst-literal-block rst-rst-rst-literal-block rst-rst-literal-block rst-literal-block">
 from robotide.pluginapi import Plugin
 
 class MyCoolPluginExample(Plugin):
@@ -943,7 +1105,7 @@ wait until the <a href="robotide.run.runanything.RunAnything-class.html#enable" 
     <dd><ul class="nomargin-top">
         <li><strong class="pname"><code>application</code></strong> - RIDE application reference.</li>
         <li><strong class="pname"><code>name</code></strong> - Name of the plugin. If not specified, the name is got from the
-plugin class name dropping possible <tt class="rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal"><span class="pre">Plugin</span></tt> from the end.</li>
+plugin class name dropping possible <tt class="rst-rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-rst-docutils literal rst-rst-rst-rst-docutils literal rst-rst-rst-docutils literal rst-rst-docutils literal rst-docutils literal">Plugin</tt> from the end.</li>
         <li><strong class="pname"><code>doc</code></strong> - Plugin documentation. If not specified, the doc is got from the
 plugin class docstring.</li>
         <li><strong class="pname"><code>metadata</code></strong> - A dictionary of free metadata shown on the plugin manager. Values
@@ -956,7 +1118,7 @@ settings can be saved using <a href="robotide.pluginapi.plugin.Plugin-class.html
 time. Users can change the status later from the plugin manager.</li>
     </ul></dd>
     <dt>Overrides:
-        <a href="robotide.pluginapi.plugin.Plugin-class.html#__init__">pluginapi.plugin.Plugin.__init__</a>
+        object.__init__
         <dd><em class="note">(inherited documentation)</em></dd>
     </dt>
   </dl>
@@ -1039,7 +1201,7 @@ when the <a href="robotide.pluginapi.plugin.Plugin-class.html#disable" class="li
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:44 2010
+    Generated by Epydoc 3.0.1 on Thu Mar 31 14:48:04 2011
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

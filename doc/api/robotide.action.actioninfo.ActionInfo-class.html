@@ -137,6 +137,40 @@ Used to create menu entries, keyboard shortcuts and/or toolbar buttons.
       
     </td>
   </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__repr__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Properties</span></td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
 </table>
 <!-- ==================== METHOD DETAILS ==================== -->
 <a name="section-MethodDetails"></a>
@@ -176,30 +210,30 @@ Used to create menu entries, keyboard shortcuts and/or toolbar buttons.
         <li><strong class="pname"><code>menu_name</code></strong> - The name of the menu where the new entry will be added. The menu is
 created if it does not exist.</li>
         <li><strong class="pname"><code>name</code></strong> - The name of the new menu entry. The name may contain an accelerator
-key prefixed by an ampersand like <tt class="rst-docutils literal"><span class="pre">New</span> <span class="pre">&amp;Action</span></tt>. If an accelerator
+key prefixed by an ampersand like <tt class="rst-docutils literal">New &amp;Action</tt>. If an accelerator
 is not specified, or the one requested is already taken, the next
-free key is selectd.</li>
+free key is selected.</li>
         <li><strong class="pname"><code>action</code></strong> - The callable which will be called when a user does any of the
 associated UI actions.</li>
         <li><strong class="pname"><code>container</code></strong> - The wxPython element containing the UI components associated with
-the <tt class="rst-docutils literal"><span class="pre">action</span></tt>. When any of the registered UI actions is executed,
-the <tt class="rst-docutils literal"><span class="pre">action</span></tt> is called only if the <tt class="rst-docutils literal"><span class="pre">container</span></tt> or any of its
-child components has focus. It is possible to make the <tt class="rst-docutils literal"><span class="pre">action</span></tt>
-always active by using <tt class="rst-docutils literal"><span class="pre">None</span></tt> as the <tt class="rst-docutils literal"><span class="pre">container</span></tt>.</li>
-        <li><strong class="pname"><code>shortcut</code></strong> - The keyboard shortcut associated to the <tt class="rst-docutils literal"><span class="pre">action</span></tt>. The <tt class="rst-docutils literal"><span class="pre">shortcut</span></tt>
-must be a string constructed from optional modifiers (<tt class="rst-docutils literal"><span class="pre">Ctrl,</span> <span class="pre">Shift,</span>
-<span class="pre">Alt</span></tt>) and the actual shortcut key separating the parts with a hyphen.
+the <tt class="rst-docutils literal">action</tt>. When any of the registered UI actions is executed,
+the <tt class="rst-docutils literal">action</tt> is called only if the <tt class="rst-docutils literal">container</tt> or any of its
+child components has focus. It is possible to make the <tt class="rst-docutils literal">action</tt>
+always active by using <tt class="rst-docutils literal">None</tt> as the <tt class="rst-docutils literal">container</tt>.</li>
+        <li><strong class="pname"><code>shortcut</code></strong> - The keyboard shortcut associated to the <tt class="rst-docutils literal">action</tt>. The <tt class="rst-docutils literal">shortcut</tt>
+must be a string constructed from optional modifiers (<tt class="rst-docutils literal">Ctrl, Shift,
+Alt</tt>) and the actual shortcut key separating the parts with a hyphen.
 The shortcut key can be either a single character or any of the
-<a class="rst-reference external" href="http://docs.wxwidgets.org/stable/wx_keycodes.html#keycodes" target="_top">wx keycodes</a> without the <tt class="rst-docutils literal"><span class="pre">WXK_</span></tt> prefix. Examples: <tt class="rst-docutils literal"><span class="pre">Ctrl-C</span></tt>,
-<tt class="rst-docutils literal"><span class="pre">Shight-Ctrl-6</span></tt>, <tt class="rst-docutils literal"><span class="pre">Alt-Left</span></tt>, <tt class="rst-docutils literal"><span class="pre">F6</span></tt>.</li>
+<a class="rst-reference external" href="http://docs.wxwidgets.org/stable/wx_keycodes.html#keycodes" target="_top">wx keycodes</a> without the <tt class="rst-docutils literal">WXK_</tt> prefix. Examples: <tt class="rst-docutils literal"><span class="pre">Ctrl-C</span></tt>,
+<tt class="rst-docutils literal"><span class="pre">Shift-Ctrl-6</span></tt>, <tt class="rst-docutils literal"><span class="pre">Alt-Left</span></tt>, <tt class="rst-docutils literal">F6</tt>.</li>
         <li><strong class="pname"><code>icon</code></strong> - The icon added to the toolbar as a toolbar button. It can be either
 a 16x16 bitmap or a string presenting one of the icons provided by
-<a class="rst-reference external" href="http://www.wxpython.org/docs/api/wx.ArtProvider-class.html" target="_top">wxPython's ArtProvider</a> like <tt class="rst-docutils literal"><span class="pre">ART_FILE_OPEN</span></tt>.</li>
+<a class="rst-reference external" href="http://www.wxpython.org/docs/api/wx.ArtProvider-class.html" target="_top">wxPython's ArtProvider</a> like <tt class="rst-docutils literal">ART_FILE_OPEN</tt>.</li>
         <li><strong class="pname"><code>doc</code></strong> - The documentation shown on the statusbar when selection is on
 the associated menu entry or toolbar button.</li>
     </ul></dd>
     <dt>Overrides:
-        <a href="robotide.action.actioninfo.MenuInfo-class.html#__init__">MenuInfo.__init__</a>
+        object.__init__
     </dt>
   </dl>
 </td></tr></table>
@@ -236,7 +270,7 @@ the associated menu entry or toolbar button.</li>
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:41 2010
+    Generated by Epydoc 3.0.1 on Thu Mar 31 14:47:50 2011
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

@@ -58,19 +58,21 @@
 <!-- ==================== CLASS DESCRIPTION ==================== -->
 <h1 class="epydoc">Class AboutDialog</h1><p class="nomargin-top"><span class="codelink"><a href="robotide.ui.mainframe-pysrc.html#AboutDialog">source&nbsp;code</a></span></p>
 <pre class="base-tree">
-     object --+                    
-              |                    
-wx._core.Object --+                
-                  |                
-wx._core.EvtHandler --+            
-                      |            
-        wx._core.Window --+        
-                          |        
- wx._windows.TopLevelWindow --+    
-                              |    
-             wx._windows.Dialog --+
-                                  |
-                                 <strong class="uidshort">AboutDialog</strong>
+     object --+                        
+              |                        
+wx._core.Object --+                    
+                  |                    
+wx._core.EvtHandler --+                
+                      |                
+        wx._core.Window --+            
+                          |            
+ wx._windows.TopLevelWindow --+        
+                              |        
+             wx._windows.Dialog --+    
+                                  |    
+              <a href="robotide.widgets.dialog.Dialog-class.html">widgets.dialog.Dialog</a> --+
+                                      |
+                                     <strong class="uidshort">AboutDialog</strong>
 </pre>
 
 <hr />
@@ -88,8 +90,7 @@ wx._core.EvtHandler --+
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.ui.mainframe.AboutDialog-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">parent</span>)</span><br />
+          <td><span class="summary-sig"><a href="robotide.ui.mainframe.AboutDialog-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>)</span><br />
       Point pos=DefaultPosition, Size size=DefaultSize,
 long style=DEFAULT_DIALOG_STYLE, String name=DialogNameStr) -&gt; Dialog</td>
           <td align="right" valign="top">
@@ -117,7 +118,9 @@ long style=DEFAULT_DIALOG_STYLE, String name=DialogNameStr) -&gt; Dialog</td>
       <code>SetAffirmativeId</code>,
       <code>SetEscapeId</code>,
       <code>SetReturnCode</code>,
-      <code>ShowModal</code>
+      <code>ShowModal</code>,
+      <code>__enter__</code>,
+      <code>__exit__</code>
       </p>
     <p class="indent-wrapped-lines"><b>Inherited from <code>wx._windows.TopLevelWindow</code></b>:
       <code>CenterOnScreen</code>,
@@ -398,6 +401,19 @@ long style=DEFAULT_DIALOG_STYLE, String name=DialogNameStr) -&gt; Dialog</td>
       <code>GetClassName</code>,
       <code>IsSameAs</code>
       </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
     </td>
   </tr>
 </table>
@@ -530,6 +546,9 @@ long style=DEFAULT_DIALOG_STYLE, String name=DialogNameStr) -&gt; Dialog</td>
     <p class="indent-wrapped-lines"><b>Inherited from <code>wx._core.Object</code></b>:
       <code>ClassName</code>
       </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
     </td>
   </tr>
 </table>
@@ -549,8 +568,7 @@ long style=DEFAULT_DIALOG_STYLE, String name=DialogNameStr) -&gt; Dialog</td>
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">parent</span>)</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>)</span>
     <br /><em class="fname">(Constructor)</em>
   </h3>
   </td><td align="right" valign="top"
@@ -558,16 +576,17 @@ long style=DEFAULT_DIALOG_STYLE, String name=DialogNameStr) -&gt; Dialog</td>
     </td>
   </tr></table>
   
-  <dl class="rst-rst-rst-rst-rst-rst-docutils rst-rst-rst-rst-rst-docutils rst-rst-rst-rst-docutils rst-rst-rst-docutils rst-rst-docutils rst-docutils">
+  <dl class="rst-rst-rst-rst-rst-rst-rst-rst-docutils rst-rst-rst-rst-rst-rst-rst-docutils rst-rst-rst-rst-rst-rst-docutils rst-rst-rst-rst-rst-docutils rst-rst-rst-rst-docutils rst-rst-rst-docutils rst-rst-docutils rst-docutils">
 <dt>__init__(self, Window parent, int id=-1, String title=EmptyString,</dt>
-<dd><p class="rst-rst-rst-rst-rst-first rst-rst-rst-rst-rst-last rst-rst-rst-rst-rst-first rst-rst-rst-rst-rst-last rst-rst-rst-rst-first rst-rst-rst-rst-last rst-rst-rst-first rst-rst-rst-last rst-rst-first rst-rst-last rst-first rst-last">Point pos=DefaultPosition, Size size=DefaultSize,
+<dd><p class="rst-rst-rst-rst-rst-rst-rst-first rst-rst-rst-rst-rst-rst-rst-last rst-rst-rst-rst-rst-rst-rst-first rst-rst-rst-rst-rst-rst-rst-last rst-rst-rst-rst-rst-rst-first rst-rst-rst-rst-rst-rst-last rst-rst-rst-rst-rst-first rst-rst-rst-rst-rst-last rst-rst-rst-rst-first rst-rst-rst-rst-last rst-rst-rst-first rst-rst-rst-last rst-rst-first rst-rst-last rst-first rst-last">Point pos=DefaultPosition, Size size=DefaultSize,
 long style=DEFAULT_DIALOG_STYLE, String name=DialogNameStr) -&gt; Dialog</p>
 </dd>
 </dl>
   <dl class="fields">
     <dt>Returns: EvtHandler</dt>
     <dt>Overrides:
-        wx._core.Object.__init__
+        object.__init__
+        <dd><em class="note">(inherited documentation)</em></dd>
     </dt>
   </dl>
 </td></tr></table>
@@ -604,7 +623,7 @@ long style=DEFAULT_DIALOG_STYLE, String name=DialogNameStr) -&gt; Dialog</p>
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:45 2010
+    Generated by Epydoc 3.0.1 on Thu Mar 31 14:48:05 2011
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

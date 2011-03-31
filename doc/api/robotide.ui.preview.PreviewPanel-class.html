@@ -106,9 +106,41 @@ String name=PanelNameStr) -&gt; Panel</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.ui.preview.PreviewPanel-class.html#update_preview" class="summary-sig-name">update_preview</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">item</span>,
-        <span class="summary-sig-arg">force_reload</span>=<span class="summary-sig-default">False</span>)</span></td>
+          <td><span class="summary-sig"><a href="robotide.ui.preview.PreviewPanel-class.html#OnPrint" class="summary-sig-name">OnPrint</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">evt</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.ui.preview-pysrc.html#PreviewPanel.OnPrint">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.ui.preview.PreviewPanel-class.html#tree_node_selected" class="summary-sig-name">tree_node_selected</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">item</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.ui.preview-pysrc.html#PreviewPanel.tree_node_selected">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.ui.preview.PreviewPanel-class.html#update_preview" class="summary-sig-name">update_preview</a>(<span class="summary-sig-arg">self</span>)</span></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.ui.preview-pysrc.html#PreviewPanel.update_preview">source&nbsp;code</a></span>
             
@@ -391,6 +423,19 @@ String name=PanelNameStr) -&gt; Panel</td>
       <code>GetClassName</code>,
       <code>IsSameAs</code>
       </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
     </td>
   </tr>
 </table>
@@ -498,6 +543,9 @@ String name=PanelNameStr) -&gt; Panel</td>
     <p class="indent-wrapped-lines"><b>Inherited from <code>wx._core.Object</code></b>:
       <code>ClassName</code>
       </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
     </td>
   </tr>
 </table>
@@ -527,17 +575,58 @@ String name=PanelNameStr) -&gt; Panel</td>
     </td>
   </tr></table>
   
-  <dl class="rst-rst-rst-rst-docutils rst-rst-rst-docutils rst-rst-docutils rst-docutils">
+  <dl class="rst-rst-rst-rst-rst-rst-rst-rst-rst-docutils rst-rst-rst-rst-rst-rst-rst-rst-docutils rst-rst-rst-rst-rst-rst-rst-docutils rst-rst-rst-rst-rst-rst-docutils rst-rst-rst-rst-rst-docutils rst-rst-rst-rst-docutils rst-rst-rst-docutils rst-rst-docutils rst-docutils">
 <dt>__init__(self, Window parent, int id=-1, Point pos=DefaultPosition,</dt>
-<dd><p class="rst-rst-rst-first rst-rst-rst-last rst-rst-rst-first rst-rst-rst-last rst-rst-first rst-rst-last rst-first rst-last">Size size=DefaultSize, long style=wxTAB_TRAVERSAL|wxNO_BORDER,
+<dd><p class="rst-rst-rst-rst-rst-rst-rst-rst-first rst-rst-rst-rst-rst-rst-rst-rst-last rst-rst-rst-rst-rst-rst-rst-rst-first rst-rst-rst-rst-rst-rst-rst-rst-last rst-rst-rst-rst-rst-rst-rst-first rst-rst-rst-rst-rst-rst-rst-last rst-rst-rst-rst-rst-rst-first rst-rst-rst-rst-rst-rst-last rst-rst-rst-rst-rst-first rst-rst-rst-rst-rst-last rst-rst-rst-rst-first rst-rst-rst-rst-last rst-rst-rst-first rst-rst-rst-last rst-rst-first rst-rst-last rst-first rst-last">Size size=DefaultSize, long style=wxTAB_TRAVERSAL|wxNO_BORDER,
 String name=PanelNameStr) -&gt; Panel</p>
 </dd>
 </dl>
   <dl class="fields">
     <dt>Returns: EvtHandler</dt>
     <dt>Overrides:
-        wx._core.Object.__init__
+        object.__init__
+        <dd><em class="note">(inherited documentation)</em></dd>
     </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="OnPrint"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnPrint</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">evt</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.ui.preview-pysrc.html#PreviewPanel.OnPrint">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="tree_node_selected"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">tree_node_selected</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">item</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.ui.preview-pysrc.html#PreviewPanel.tree_node_selected">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
   </dl>
 </td></tr></table>
 </div>
@@ -548,9 +637,7 @@ String name=PanelNameStr) -&gt; Panel</p>
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">update_preview</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">item</span>,
-        <span class="sig-arg">force_reload</span>=<span class="sig-default">False</span>)</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">update_preview</span>(<span class="sig-arg">self</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="robotide.ui.preview-pysrc.html#PreviewPanel.update_preview">source&nbsp;code</a></span>&nbsp;
@@ -614,7 +701,7 @@ String name=PanelNameStr) -&gt; Panel</p>
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:45 2010
+    Generated by Epydoc 3.0.1 on Thu Mar 31 14:48:05 2011
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

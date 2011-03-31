@@ -75,7 +75,14 @@
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="robotide.ui.tree.InitFileHandler-class.html" class="summary-name">InitFileHandler</a>
+        <a href="robotide.ui.tree.TestDataHandler-class.html" class="summary-name">TestDataHandler</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.ui.tree.TestDataDirectoryHandler-class.html" class="summary-name">TestDataDirectoryHandler</a>
     </td>
   </tr>
 <tr>
@@ -110,8 +117,14 @@
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="robotide.ui.tree.NoneHandler-class.html" class="summary-name">NoneHandler</a><br />
-      Null object (pattern)
+        <a href="robotide.ui.tree.VariableHandler-class.html" class="summary-name">VariableHandler</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.ui.tree.ResourceRootHandler-class.html" class="summary-name">ResourceRootHandler</a>
     </td>
   </tr>
 </table>
@@ -129,10 +142,9 @@
     </td><td class="summary">
         <a href="robotide.ui.tree-module.html#tree_actions" class="summary-name">tree_actions</a> = <code title="'''
 [Navigate]
-!Go &amp;Back | Go back to previous location in tree | Alt-Left | ART_GO_B\
-ACK
-!Go &amp;Forward | Go forward to next location in tree | Alt-Right | ART_G\
-O_FORWARD
+!Go &amp;Back | Go back to previous location in tree | Alt-Z | ART_GO_BACK
+!Go &amp;Forward | Go forward to next location in tree | Alt-X | ART_GO_FO\
+RWARD
 '''"><code class="variable-quote">'</code><code class="variable-string">\n[Navigate]\n!Go &amp;Back | Go back to previous </code><code class="variable-ellipsis">...</code></code>
     </td>
   </tr>
@@ -146,16 +158,53 @@ O_FORWARD
 </table>
 <p class="indent-wrapped-lines"><b>Imports:</b>
   <span title="wx">wx</span>,
-  <span title="wx.lib.mixins.treemixin">treemixin</span>,
-  <a href="robotide.action.actioninfo-module.html#ActionInfoCollection" title="robotide.action.ActionInfoCollection">ActionInfoCollection</a>,
-  <a href="robotide.model.tcuk.UserKeyword-class.html" title="robotide.model.tcuk.UserKeyword">UserKeyword</a>,
-  <a href="robotide.publish.messages.RideTreeSelection-class.html" title="robotide.publish.RideTreeSelection">RideTreeSelection</a>,
-  <a href="robotide.utils-module.html" title="robotide.utils">utils</a>,
-  <a href="robotide.ui.images.TreeImageList-class.html" title="robotide.ui.images.TreeImageList">TreeImageList</a>,
   <a href="robotide.ui.filedialogs.AddSuiteDialog-class.html" title="robotide.ui.filedialogs.AddSuiteDialog">AddSuiteDialog</a>,
   <a href="robotide.ui.filedialogs.ChangeFormatDialog-class.html" title="robotide.ui.filedialogs.ChangeFormatDialog">ChangeFormatDialog</a>,
-  <a href="robotide.ui.namedialogs.TestCaseNameDialog-class.html" title="robotide.ui.namedialogs.TestCaseNameDialog">TestCaseNameDialog</a>,
-  <a href="robotide.ui.namedialogs.UserKeywordNameDialog-class.html" title="robotide.ui.namedialogs.UserKeywordNameDialog">UserKeywordNameDialog</a>
+  <a href="robotide.ui.images.TreeImageList-class.html" title="robotide.ui.images.TreeImageList">TreeImageList</a>,
+  <a href="robotide.utils-module.html" title="robotide.utils">utils</a>,
+  <a href="robotide.action.actioninfo-module.html#ActionInfoCollection" title="robotide.action.ActionInfoCollection">ActionInfoCollection</a>,
+  <a href="robotide.controller-module.html#NewDatafile" title="robotide.controller.NewDatafile">NewDatafile</a>,
+  <a href="robotide.editor.editordialogs.TestCaseNameDialog-class.html" title="robotide.editor.editordialogs.TestCaseNameDialog">TestCaseNameDialog</a>,
+  <a href="robotide.editor.editordialogs.UserKeywordNameDialog-class.html" title="robotide.editor.editordialogs.UserKeywordNameDialog">UserKeywordNameDialog</a>,
+  <a href="robotide.editor.editordialogs.ScalarVariableDialog-class.html" title="robotide.editor.editordialogs.ScalarVariableDialog">ScalarVariableDialog</a>,
+  <a href="robotide.editor.editordialogs.ListVariableDialog-class.html" title="robotide.editor.editordialogs.ListVariableDialog">ListVariableDialog</a>,
+  <a href="robotide.editor.editordialogs.CopyUserKeywordDialog-class.html" title="robotide.editor.editordialogs.CopyUserKeywordDialog">CopyUserKeywordDialog</a>,
+  <a href="robotide.publish.messages.RideTreeSelection-class.html" title="robotide.publish.RideTreeSelection">RideTreeSelection</a>,
+  <span title="robotide.publish.PUBLISHER">PUBLISHER</span>,
+  <a href="robotide.context.platform-module.html#ctrl_or_cmd" title="robotide.context.ctrl_or_cmd">ctrl_or_cmd</a>,
+  <span title="robotide.context.IS_WINDOWS">IS_WINDOWS</span>,
+  <a href="robotide.context.platform-module.html#bind_keys_to_evt_menu" title="robotide.context.bind_keys_to_evt_menu">bind_keys_to_evt_menu</a>,
+  <a href="robotide.publish.messages.RideItem-class.html" title="robotide.publish.messages.RideItem">RideItem</a>,
+  <a href="robotide.publish.messages.RideUserKeywordAdded-class.html" title="robotide.publish.messages.RideUserKeywordAdded">RideUserKeywordAdded</a>,
+  <a href="robotide.publish.messages.RideTestCaseAdded-class.html" title="robotide.publish.messages.RideTestCaseAdded">RideTestCaseAdded</a>,
+  <a href="robotide.publish.messages.RideUserKeywordRemoved-class.html" title="robotide.publish.messages.RideUserKeywordRemoved">RideUserKeywordRemoved</a>,
+  <a href="robotide.publish.messages.RideTestCaseRemoved-class.html" title="robotide.publish.messages.RideTestCaseRemoved">RideTestCaseRemoved</a>,
+  <a href="robotide.publish.messages.RideDataFileRemoved-class.html" title="robotide.publish.messages.RideDataFileRemoved">RideDataFileRemoved</a>,
+  <a href="robotide.publish.messages.RideDataChangedToDirty-class.html" title="robotide.publish.messages.RideDataChangedToDirty">RideDataChangedToDirty</a>,
+  <a href="robotide.publish.messages.RideDataDirtyCleared-class.html" title="robotide.publish.messages.RideDataDirtyCleared">RideDataDirtyCleared</a>,
+  <a href="robotide.publish.messages.RideVariableRemoved-class.html" title="robotide.publish.messages.RideVariableRemoved">RideVariableRemoved</a>,
+  <a href="robotide.publish.messages.RideVariableAdded-class.html" title="robotide.publish.messages.RideVariableAdded">RideVariableAdded</a>,
+  <a href="robotide.publish.messages.RideVariableMovedUp-class.html" title="robotide.publish.messages.RideVariableMovedUp">RideVariableMovedUp</a>,
+  <a href="robotide.publish.messages.RideVariableMovedDown-class.html" title="robotide.publish.messages.RideVariableMovedDown">RideVariableMovedDown</a>,
+  <a href="robotide.publish.messages.RideVariableUpdated-class.html" title="robotide.publish.messages.RideVariableUpdated">RideVariableUpdated</a>,
+  <a href="robotide.publish.messages.RideOpenResource-class.html" title="robotide.publish.messages.RideOpenResource">RideOpenResource</a>,
+  <a href="robotide.publish.messages.RideSuiteAdded-class.html" title="robotide.publish.messages.RideSuiteAdded">RideSuiteAdded</a>,
+  <a href="robotide.publish.messages.RideSelectResource-class.html" title="robotide.publish.messages.RideSelectResource">RideSelectResource</a>,
+  <a href="robotide.controller.commands.RenameKeywordOccurrences-class.html" title="robotide.controller.commands.RenameKeywordOccurrences">RenameKeywordOccurrences</a>,
+  <a href="robotide.controller.commands.RemoveMacro-class.html" title="robotide.controller.commands.RemoveMacro">RemoveMacro</a>,
+  <a href="robotide.controller.commands.AddKeyword-class.html" title="robotide.controller.commands.AddKeyword">AddKeyword</a>,
+  <a href="robotide.controller.commands.AddTestCase-class.html" title="robotide.controller.commands.AddTestCase">AddTestCase</a>,
+  <a href="robotide.controller.commands.RenameTest-class.html" title="robotide.controller.commands.RenameTest">RenameTest</a>,
+  <a href="robotide.controller.commands.CopyMacroAs-class.html" title="robotide.controller.commands.CopyMacroAs">CopyMacroAs</a>,
+  <a href="robotide.controller.commands.MoveTo-class.html" title="robotide.controller.commands.MoveTo">MoveTo</a>,
+  <a href="robotide.controller.commands.AddVariable-class.html" title="robotide.controller.commands.AddVariable">AddVariable</a>,
+  <a href="robotide.controller.commands.AddSuite-class.html" title="robotide.controller.commands.AddSuite">AddSuite</a>,
+  <a href="robotide.widgets.popupmenu.PopupCreator-class.html" title="robotide.widgets.PopupCreator">PopupCreator</a>,
+  <a href="robotide.widgets.popupmenu.PopupMenuItems-class.html" title="robotide.widgets.PopupMenuItems">PopupMenuItems</a>,
+  <a href="robotide.ui.filedialogs.NewResourceDialog-class.html" title="robotide.ui.filedialogs.NewResourceDialog">NewResourceDialog</a>,
+  <a href="robotide.usages.UsageRunner.Usages-class.html" title="robotide.usages.UsageRunner.Usages">Usages</a>,
+  <a href="robotide.ui.progress.RenameProgressObserver-class.html" title="robotide.ui.progress.RenameProgressObserver">RenameProgressObserver</a>,
+  <span title="wx.lib.mixins.treemixin">treemixin</span>
 </p><br />
 <!-- ==================== VARIABLES DETAILS ==================== -->
 <a name="section-VariablesDetails"></a>
@@ -180,10 +229,9 @@ O_FORWARD
       <dd><table><tr><td><pre class="variable">
 <code class="variable-quote">'''</code><code class="variable-string"></code>
 <code class="variable-string">[Navigate]</code>
-<code class="variable-string">!Go &amp;Back | Go back to previous location in tree | Alt-Left | ART_GO_B</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
-<code class="variable-string">ACK</code>
-<code class="variable-string">!Go &amp;Forward | Go forward to next location in tree | Alt-Right | ART_G</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
-<code class="variable-string">O_FORWARD</code>
+<code class="variable-string">!Go &amp;Back | Go back to previous location in tree | Alt-Z | ART_GO_BACK</code>
+<code class="variable-string">!Go &amp;Forward | Go forward to next location in tree | Alt-X | ART_GO_FO</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">RWARD</code>
 <code class="variable-string"></code><code class="variable-quote">'''</code>
 </pre></td></tr></table>
 </dd>
@@ -240,7 +288,7 @@ O_FORWARD
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:41 2010
+    Generated by Epydoc 3.0.1 on Thu Mar 31 14:47:50 2011
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

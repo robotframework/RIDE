@@ -83,7 +83,7 @@ following directories for plugins:</p>
 <li><tt class="rst-docutils literal"><span class="pre">&lt;RIDE_INSTALLATION_DIR&gt;/site-plugins</span></tt></li>
 <li><tt class="rst-docutils literal"><span class="pre">&lt;USER_DATA&gt;/plugins</span></tt></li>
 </ul>
-<p>Location of the <tt class="rst-docutils literal"><span class="pre">&lt;USER_DATA&gt;</span></tt> directory will vary depending on your platform.
+<p>Location of the <tt class="rst-docutils literal">&lt;USER_DATA&gt;</tt> directory will vary depending on your platform.
 On Linux and OSX this will be <tt class="rst-docutils literal"><span class="pre">~/.robotframework/ride</span></tt> while on Windows the
 location is <tt class="rst-docutils literal"><span class="pre">%APPDATA%\RobotFramework\ride</span></tt>.</p>
 <p>Each Python file that is found in these directories is dynamically imported and
@@ -114,7 +114,7 @@ error message is shown to the user and the plugin is disabled.</p>
 <h1 class="heading"><a class="rst-toc-backref" href="#rst-id4">Enabling and disabling</a></h1>
 <p>Plugins can control are they enabled by default when they are loaded for the
 first time. Afterwards users can enable and disable plugins from the plugin
-manager, which is available from the menu through <tt class="rst-docutils literal"><span class="pre">Tools</span> <span class="pre">&gt;</span> <span class="pre">Manage</span> <span class="pre">Plugins</span></tt>.
+manager, which is available from the menu through <tt class="rst-docutils literal">Tools &gt; Manage Plugins</tt>.
 Plugins' enabled/disabled state is stored into RIDE's settings file and read
 from there when plugins are loaded again later.</p>
 <p>When the plugin is enabled, the <a href="robotide.pluginapi.plugin.Plugin-class.html#enable" class="link">Plugin.enable</a> method is called. This is the
@@ -154,9 +154,9 @@ from robotide.pluginapi import RideTreeSelection, RideSaved
 values can be given to the <a href="robotide.pluginapi.plugin.Plugin-class.html#__init__" class="link">Plugin.__init__</a> method and new values saved using
 <a href="robotide.pluginapi.plugin.Plugin-class.html#save_setting" class="link">Plugin.save_setting</a>. Saved settings can be accessed using direct attribute
 access via <a href="robotide.pluginapi.plugin.Plugin-class.html#__getattr__" class="link">Plugin.__getattr__</a>.</p>
-<p>Settings are stored into the setting file under <tt class="rst-docutils literal"><span class="pre">[Plugins]</span></tt> section into
+<p>Settings are stored into the setting file under <tt class="rst-docutils literal">[Plugins]</tt> section into
 plugin specific subsections. Settings names starting with an underscore
-(currently only <tt class="rst-docutils literal"><span class="pre">_enabled</span></tt>) are reserved for RIDE's internal usage. The saved
+(currently only <tt class="rst-docutils literal">_enabled</tt>) are reserved for RIDE's internal usage. The saved
 settings may look something like this:</p>
 <pre class="rst-literal-block">
 [Plugins]
@@ -206,23 +206,47 @@ _enabled = False
   <a href="robotide.action.actioninfo.ActionInfo-class.html" title="robotide.action.ActionInfo">ActionInfo</a>,
   <a href="robotide.action.actioninfo.SeparatorInfo-class.html" title="robotide.action.SeparatorInfo">SeparatorInfo</a>,
   <a href="robotide.pluginapi.plugin.Plugin-class.html" title="robotide.pluginapi.plugin.Plugin">Plugin</a>,
+  <a href="robotide.publish.messages.RideChangeFormat-class.html" title="robotide.publish.messages.RideChangeFormat">RideChangeFormat</a>,
   <a href="robotide.publish.messages.RideClosing-class.html" title="robotide.publish.messages.RideClosing">RideClosing</a>,
+  <a href="robotide.publish.messages.RideDataChangedToDirty-class.html" title="robotide.publish.messages.RideDataChangedToDirty">RideDataChangedToDirty</a>,
+  <a href="robotide.publish.messages.RideDataDirtyCleared-class.html" title="robotide.publish.messages.RideDataDirtyCleared">RideDataDirtyCleared</a>,
+  <a href="robotide.publish.messages.RideDataFileRemoved-class.html" title="robotide.publish.messages.RideDataFileRemoved">RideDataFileRemoved</a>,
   <a href="robotide.publish.messages.RideGridCellChanged-class.html" title="robotide.publish.messages.RideGridCellChanged">RideGridCellChanged</a>,
   <a href="robotide.publish.messages.RideImportSetting-class.html" title="robotide.publish.messages.RideImportSetting">RideImportSetting</a>,
   <a href="robotide.publish.messages.RideImportSettingAdded-class.html" title="robotide.publish.messages.RideImportSettingAdded">RideImportSettingAdded</a>,
   <a href="robotide.publish.messages.RideImportSettingChanged-class.html" title="robotide.publish.messages.RideImportSettingChanged">RideImportSettingChanged</a>,
+  <a href="robotide.publish.messages.RideImportSettingRemoved-class.html" title="robotide.publish.messages.RideImportSettingRemoved">RideImportSettingRemoved</a>,
+  <a href="robotide.publish.messages.RideInitFileRemoved-class.html" title="robotide.publish.messages.RideInitFileRemoved">RideInitFileRemoved</a>,
+  <a href="robotide.publish.messages.RideItem-class.html" title="robotide.publish.messages.RideItem">RideItem</a>,
+  <a href="robotide.publish.messages.RideItemNameChanged-class.html" title="robotide.publish.messages.RideItemNameChanged">RideItemNameChanged</a>,
+  <a href="robotide.publish.messages.RideItemSettingsChanged-class.html" title="robotide.publish.messages.RideItemSettingsChanged">RideItemSettingsChanged</a>,
+  <a href="robotide.publish.messages.RideItemStepsChanged-class.html" title="robotide.publish.messages.RideItemStepsChanged">RideItemStepsChanged</a>,
+  <a href="robotide.publish.messages.RideLog-class.html" title="robotide.publish.messages.RideLog">RideLog</a>,
+  <a href="robotide.publish.messages.RideLogException-class.html" title="robotide.publish.messages.RideLogException">RideLogException</a>,
   <a href="robotide.publish.messages.RideLogMessage-class.html" title="robotide.publish.messages.RideLogMessage">RideLogMessage</a>,
   <a href="robotide.publish.messages.RideMessage-class.html" title="robotide.publish.messages.RideMessage">RideMessage</a>,
+  <a href="robotide.publish.messages.RideNewProject-class.html" title="robotide.publish.messages.RideNewProject">RideNewProject</a>,
   <a href="robotide.publish.messages.RideNotebookTabChanged-class.html" title="robotide.publish.messages.RideNotebookTabChanged">RideNotebookTabChanged</a>,
   <a href="robotide.publish.messages.RideNotebookTabChanging-class.html" title="robotide.publish.messages.RideNotebookTabChanging">RideNotebookTabChanging</a>,
-  <a href="robotide.publish.messages.RideOpenResource-class.html" onclick="show_private();" title="robotide.publish.messages.RideOpenResource">RideOpenResource</a>,
+  <a href="robotide.publish.messages.RideOpenResource-class.html" title="robotide.publish.messages.RideOpenResource">RideOpenResource</a>,
   <a href="robotide.publish.messages.RideOpenSuite-class.html" title="robotide.publish.messages.RideOpenSuite">RideOpenSuite</a>,
   <a href="robotide.publish.messages.RideSaveAll-class.html" title="robotide.publish.messages.RideSaveAll">RideSaveAll</a>,
   <a href="robotide.publish.messages.RideSaved-class.html" title="robotide.publish.messages.RideSaved">RideSaved</a>,
   <a href="robotide.publish.messages.RideSaving-class.html" title="robotide.publish.messages.RideSaving">RideSaving</a>,
+  <a href="robotide.publish.messages.RideSelectResource-class.html" title="robotide.publish.messages.RideSelectResource">RideSelectResource</a>,
+  <a href="robotide.publish.messages.RideSettingsChanged-class.html" title="robotide.publish.messages.RideSettingsChanged">RideSettingsChanged</a>,
+  <a href="robotide.publish.messages.RideSuiteAdded-class.html" title="robotide.publish.messages.RideSuiteAdded">RideSuiteAdded</a>,
+  <a href="robotide.publish.messages.RideTestCaseAdded-class.html" onclick="show_private();" title="robotide.publish.messages.RideTestCaseAdded">RideTestCaseAdded</a>,
+  <a href="robotide.publish.messages.RideTestCaseRemoved-class.html" title="robotide.publish.messages.RideTestCaseRemoved">RideTestCaseRemoved</a>,
   <a href="robotide.publish.messages.RideTreeSelection-class.html" title="robotide.publish.messages.RideTreeSelection">RideTreeSelection</a>,
   <a href="robotide.publish.messages.RideUserKeyword-class.html" title="robotide.publish.messages.RideUserKeyword">RideUserKeyword</a>,
   <a href="robotide.publish.messages.RideUserKeywordAdded-class.html" title="robotide.publish.messages.RideUserKeywordAdded">RideUserKeywordAdded</a>,
+  <a href="robotide.publish.messages.RideUserKeywordRemoved-class.html" title="robotide.publish.messages.RideUserKeywordRemoved">RideUserKeywordRemoved</a>,
+  <a href="robotide.publish.messages.RideVariableAdded-class.html" title="robotide.publish.messages.RideVariableAdded">RideVariableAdded</a>,
+  <a href="robotide.publish.messages.RideVariableMovedDown-class.html" title="robotide.publish.messages.RideVariableMovedDown">RideVariableMovedDown</a>,
+  <a href="robotide.publish.messages.RideVariableMovedUp-class.html" title="robotide.publish.messages.RideVariableMovedUp">RideVariableMovedUp</a>,
+  <a href="robotide.publish.messages.RideVariableRemoved-class.html" title="robotide.publish.messages.RideVariableRemoved">RideVariableRemoved</a>,
+  <a href="robotide.publish.messages.RideVariableUpdated-class.html" title="robotide.publish.messages.RideVariableUpdated">RideVariableUpdated</a>,
   <a href="robotide.pluginapi.plugin-module.html" title="robotide.pluginapi.plugin">plugin</a>
 </p><br />
 <!-- ==================== VARIABLES DETAILS ==================== -->
@@ -284,7 +308,7 @@ _enabled = False
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:41 2010
+    Generated by Epydoc 3.0.1 on Thu Mar 31 14:47:50 2011
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

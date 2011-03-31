@@ -81,6 +81,7 @@
     </td><td class="summary">
         <a href="robotide.context.configobj.ConfigObjError-class.html" class="summary-name">ConfigObjError</a><br />
       This is the base class for all errors that ConfigObj raises.
+It is a subclass of SyntaxError.
     </td>
   </tr>
 <tr>
@@ -97,6 +98,8 @@
     </td><td class="summary">
         <a href="robotide.context.configobj.ParseError-class.html" class="summary-name">ParseError</a><br />
       This error indicates that a line is badly written.
+It is neither a valid <tt class="rst-rst-docutils literal rst-docutils literal">key = value</tt> line,
+nor a valid section marker line.
     </td>
   </tr>
 <tr>
@@ -105,6 +108,7 @@
     </td><td class="summary">
         <a href="robotide.context.configobj.ReloadError-class.html" class="summary-name">ReloadError</a><br />
       A 'reload' operation failed.
+This exception is a subclass of <tt class="rst-rst-docutils literal rst-docutils literal">IOError</tt>.
     </td>
   </tr>
 <tr>
@@ -145,7 +149,7 @@
     </td><td class="summary">
         <a href="robotide.context.configobj.RepeatSectionError-class.html" class="summary-name">RepeatSectionError</a><br />
       This error indicates additional sections in a section with a
-<tt class="rst-rst-docutils literal rst-docutils literal"><span class="pre">__many__</span></tt> (repeated) section.
+<tt class="rst-rst-docutils literal rst-docutils literal">__many__</tt> (repeated) section.
     </td>
   </tr>
 <tr>
@@ -178,6 +182,7 @@
     </td><td class="summary">
         <a href="robotide.context.configobj.SimpleVal-class.html" class="summary-name">SimpleVal</a><br />
       A simple validator.
+Can be used to check that all members expected are present.
     </td>
   </tr>
 </table>
@@ -200,7 +205,7 @@
         <span class="summary-sig-arg">levels</span>=<span class="summary-sig-default">None</span>,
         <span class="summary-sig-arg">results</span>=<span class="summary-sig-default">None</span>)</span><br />
       An example function that will turn a nested dictionary of results
-(as returned by <tt class="rst-docutils literal"><span class="pre">ConfigObj.validate</span></tt>) into a flat list.</td>
+(as returned by <tt class="rst-docutils literal">ConfigObj.validate</tt>) into a flat list.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.context.configobj-pysrc.html#flatten_errors">source&nbsp;code</a></span>
             
@@ -261,24 +266,24 @@
   </tr></table>
   
   <p>An example function that will turn a nested dictionary of results
-(as returned by <tt class="rst-rst-docutils literal rst-docutils literal"><span class="pre">ConfigObj.validate</span></tt>) into a flat list.</p>
-<p><tt class="rst-docutils literal"><span class="pre">cfg</span></tt> is the ConfigObj instance being checked, <tt class="rst-docutils literal"><span class="pre">res</span></tt> is the results
-dictionary returned by <tt class="rst-docutils literal"><span class="pre">validate</span></tt>.</p>
-<p>(This is a recursive function, so you shouldn't use the <tt class="rst-docutils literal"><span class="pre">levels</span></tt> or
-<tt class="rst-docutils literal"><span class="pre">results</span></tt> arguments - they are used by the function.)</p>
+(as returned by <tt class="rst-rst-docutils literal rst-docutils literal">ConfigObj.validate</tt>) into a flat list.</p>
+<p><tt class="rst-docutils literal">cfg</tt> is the ConfigObj instance being checked, <tt class="rst-docutils literal">res</tt> is the results
+dictionary returned by <tt class="rst-docutils literal">validate</tt>.</p>
+<p>(This is a recursive function, so you shouldn't use the <tt class="rst-docutils literal">levels</tt> or
+<tt class="rst-docutils literal">results</tt> arguments - they are used by the function.)</p>
 <p>Returns a list of keys that failed. Each member of the list is a tuple :</p>
 <pre class="rst-literal-block">
 ([list of sections...], key, result)
 </pre>
-<p>If <tt class="rst-docutils literal"><span class="pre">validate</span></tt> was called with <tt class="rst-docutils literal"><span class="pre">preserve_errors=False</span></tt> (the default)
-then <tt class="rst-docutils literal"><span class="pre">result</span></tt> will always be <tt class="rst-docutils literal"><span class="pre">False</span></tt>.</p>
+<p>If <tt class="rst-docutils literal">validate</tt> was called with <tt class="rst-docutils literal">preserve_errors=False</tt> (the default)
+then <tt class="rst-docutils literal">result</tt> will always be <tt class="rst-docutils literal">False</tt>.</p>
 <p><em>list of sections</em> is a flattened list of sections that the key was found
 in.</p>
 <p>If the section was missing (or a section was expected and a scalar provided
-- or vice-versa) then key will be <tt class="rst-docutils literal"><span class="pre">None</span></tt>.</p>
-<p>If the value (or section) was missing then <tt class="rst-docutils literal"><span class="pre">result</span></tt> will be <tt class="rst-docutils literal"><span class="pre">False</span></tt>.</p>
-<p>If <tt class="rst-docutils literal"><span class="pre">validate</span></tt> was called with <tt class="rst-docutils literal"><span class="pre">preserve_errors=True</span></tt> and a value
-was present, but failed the check, then <tt class="rst-docutils literal"><span class="pre">result</span></tt> will be the exception
+- or vice-versa) then key will be <tt class="rst-docutils literal">None</tt>.</p>
+<p>If the value (or section) was missing then <tt class="rst-docutils literal">result</tt> will be <tt class="rst-docutils literal">False</tt>.</p>
+<p>If <tt class="rst-docutils literal">validate</tt> was called with <tt class="rst-docutils literal">preserve_errors=True</tt> and a value
+was present, but failed the check, then <tt class="rst-docutils literal">result</tt> will be the exception
 object returned. You can use this as a string that describes the failure.</p>
 <p>For example <em>The value &quot;3&quot; is of the wrong type</em>.</p>
 <pre class="py-doctest">
@@ -426,7 +431,7 @@ object returned. You can use this as a string that describes the failure.</p>
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:41 2010
+    Generated by Epydoc 3.0.1 on Thu Mar 31 14:47:49 2011
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

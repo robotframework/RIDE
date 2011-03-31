@@ -72,285 +72,431 @@
 <a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"> </tt>
 <a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">os</tt> </tt>
 <a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">wx</tt> </tt>
-<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"> </tt>
-<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package robotide=robotide-module.html"><a title="robotide" class="py-name" href="#" onclick="return doclink('link-0', 'robotide', 'link-0');">robotide</a></tt> <tt class="py-keyword">import</tt> <tt id="link-1" class="py-name" targets="Package robotide.utils=robotide.utils-module.html"><a title="robotide.utils" class="py-name" href="#" onclick="return doclink('link-1', 'utils', 'link-1');">utils</a></tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package robotide=robotide-module.html"><a title="robotide" class="py-name" href="#" onclick="return doclink('link-0', 'robotide', 'link-0');">robotide</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Package robotide.context=robotide.context-module.html"><a title="robotide.context" class="py-name" href="#" onclick="return doclink('link-1', 'context', 'link-1');">context</a></tt> <tt class="py-keyword">import</tt> <tt id="link-2" class="py-name" targets="Variable robotide.context.platform.IS_WINDOWS=robotide.context.platform-module.html#IS_WINDOWS,Variable robotide.widgets.list.IS_WINDOWS=robotide.widgets.list-module.html#IS_WINDOWS"><a title="robotide.context.platform.IS_WINDOWS
+robotide.widgets.list.IS_WINDOWS" class="py-name" href="#" onclick="return doclink('link-2', 'IS_WINDOWS', 'link-2');">IS_WINDOWS</a></tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"> </tt>
 <a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"> </tt>
-<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"> </tt>
-<a name="_ClipboardHandler"></a><div id="_ClipboardHandler-def"><a name="L21"></a><tt class="py-lineno"> 21</tt> <a class="py-toggle" href="#" id="_ClipboardHandler-toggle" onclick="return toggle('_ClipboardHandler');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="robotide.editor.clipboard._ClipboardHandler-class.html">_ClipboardHandler</a><tt class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="_ClipboardHandler-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="_ClipboardHandler-expanded"><a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"> </tt>
-<a name="_ClipboardHandler.__init__"></a><div id="_ClipboardHandler.__init__-def"><a name="L23"></a><tt class="py-lineno"> 23</tt> <a class="py-toggle" href="#" id="_ClipboardHandler.__init__-toggle" onclick="return toggle('_ClipboardHandler.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._ClipboardHandler-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">grid</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="_ClipboardHandler.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_ClipboardHandler.__init__-expanded"><a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_grid</tt> <tt class="py-op">=</tt> <tt id="link-2" class="py-name" targets="Module robotide.editor.grid=robotide.editor.grid-module.html"><a title="robotide.editor.grid" class="py-name" href="#" onclick="return doclink('link-2', 'grid', 'link-2');">grid</a></tt> </tt>
-<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_clipboard</tt> <tt class="py-op">=</tt> <tt class="py-name">_GridClipboard</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-</div><a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line"> </tt>
-<a name="_ClipboardHandler.copy"></a><div id="_ClipboardHandler.copy-def"><a name="L27"></a><tt class="py-lineno"> 27</tt> <a class="py-toggle" href="#" id="_ClipboardHandler.copy-toggle" onclick="return toggle('_ClipboardHandler.copy');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._ClipboardHandler-class.html#copy">copy</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="_ClipboardHandler.copy-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_ClipboardHandler.copy-expanded"><a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line">        <tt class="py-docstring">"""Copy the contents of the selected cell(s). This does a normal copy</tt> </tt>
-<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"><tt class="py-docstring">        action if the user is editing a cell, otherwise it places the selected</tt> </tt>
-<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line"><tt class="py-docstring">        range of cells on the data.</tt> </tt>
-<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
-<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_add_selected_data_to_clipboard</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-</div><a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line"> </tt>
-<a name="_ClipboardHandler.cut"></a><div id="_ClipboardHandler.cut-def"><a name="L34"></a><tt class="py-lineno"> 34</tt> <a class="py-toggle" href="#" id="_ClipboardHandler.cut-toggle" onclick="return toggle('_ClipboardHandler.cut');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._ClipboardHandler-class.html#cut">cut</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="_ClipboardHandler.cut-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_ClipboardHandler.cut-expanded"><a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line">        <tt class="py-docstring">"""Cuts the contents of the selected cell(s). This does a normal cut</tt> </tt>
-<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line"><tt class="py-docstring">        action if the user is editing a cell, otherwise it places the selected</tt> </tt>
-<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line"><tt class="py-docstring">        range of cells on the clipboard.</tt> </tt>
-<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
-<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_add_selected_data_to_clipboard</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-</div><a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line"> </tt>
-<a name="_ClipboardHandler._add_selected_data_to_clipboard"></a><div id="_ClipboardHandler._add_selected_data_to_clipboard-def"><a name="L41"></a><tt class="py-lineno"> 41</tt> <a class="py-toggle" href="#" id="_ClipboardHandler._add_selected_data_to_clipboard-toggle" onclick="return toggle('_ClipboardHandler._add_selected_data_to_clipboard');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._ClipboardHandler-class.html#_add_selected_data_to_clipboard">_add_selected_data_to_clipboard</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="_ClipboardHandler._add_selected_data_to_clipboard-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_ClipboardHandler._add_selected_data_to_clipboard-expanded"><a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_clipboard</tt><tt class="py-op">.</tt><tt class="py-name">set_contents</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_grid</tt><tt class="py-op">.</tt><tt id="link-3" class="py-name" targets="Method robotide.editor.grid.GridEditor.get_selected_content()=robotide.editor.grid.GridEditor-class.html#get_selected_content"><a title="robotide.editor.grid.GridEditor.get_selected_content" class="py-name" href="#" onclick="return doclink('link-3', 'get_selected_content', 'link-3');">get_selected_content</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="_ClipboardHandler"></a><div id="_ClipboardHandler-def"><a name="L20"></a><tt class="py-lineno"> 20</tt> <a class="py-toggle" href="#" id="_ClipboardHandler-toggle" onclick="return toggle('_ClipboardHandler');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="robotide.editor.clipboard._ClipboardHandler-class.html">_ClipboardHandler</a><tt class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_ClipboardHandler-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="_ClipboardHandler-expanded"><a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"> </tt>
+<a name="_ClipboardHandler.__init__"></a><div id="_ClipboardHandler.__init__-def"><a name="L22"></a><tt class="py-lineno"> 22</tt> <a class="py-toggle" href="#" id="_ClipboardHandler.__init__-toggle" onclick="return toggle('_ClipboardHandler.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._ClipboardHandler-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">grid</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_ClipboardHandler.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_ClipboardHandler.__init__-expanded"><a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_grid</tt> <tt class="py-op">=</tt> <tt id="link-3" class="py-name" targets="Module robotide.editor.grid=robotide.editor.grid-module.html"><a title="robotide.editor.grid" class="py-name" href="#" onclick="return doclink('link-3', 'grid', 'link-3');">grid</a></tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_clipboard</tt> <tt class="py-op">=</tt> <tt class="py-name">_GridClipboard</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line"> </tt>
+<a name="_ClipboardHandler.clipboard_content"></a><div id="_ClipboardHandler.clipboard_content-def"><a name="L26"></a><tt class="py-lineno"> 26</tt> <a class="py-toggle" href="#" id="_ClipboardHandler.clipboard_content-toggle" onclick="return toggle('_ClipboardHandler.clipboard_content');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._ClipboardHandler-class.html#clipboard_content">clipboard_content</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_ClipboardHandler.clipboard_content-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_ClipboardHandler.clipboard_content-expanded"><a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_clipboard</tt><tt class="py-op">.</tt><tt class="py-name">get_contents</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"> </tt>
+<a name="_ClipboardHandler.copy"></a><div id="_ClipboardHandler.copy-def"><a name="L29"></a><tt class="py-lineno"> 29</tt> <a class="py-toggle" href="#" id="_ClipboardHandler.copy-toggle" onclick="return toggle('_ClipboardHandler.copy');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._ClipboardHandler-class.html#copy">copy</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_ClipboardHandler.copy-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_ClipboardHandler.copy-expanded"><a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line">        <tt class="py-docstring">"""Copy the contents of the selected cell(s). This does a normal copy</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line"><tt class="py-docstring">        action if the user is editing a cell, otherwise it places the selected</tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line"><tt class="py-docstring">        range of cells on the data.</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_edit_control_shown</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_add_selected_data_to_clipboard</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line"> </tt>
+<a name="_ClipboardHandler.cut"></a><div id="_ClipboardHandler.cut-def"><a name="L37"></a><tt class="py-lineno"> 37</tt> <a class="py-toggle" href="#" id="_ClipboardHandler.cut-toggle" onclick="return toggle('_ClipboardHandler.cut');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._ClipboardHandler-class.html#cut">cut</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_ClipboardHandler.cut-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_ClipboardHandler.cut-expanded"><a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line">        <tt class="py-docstring">"""Cuts the contents of the selected cell(s). This does a normal cut</tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line"><tt class="py-docstring">        action if the user is editing a cell, otherwise it places the selected</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line"><tt class="py-docstring">        range of cells on the clipboard.</tt> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_add_selected_data_to_clipboard</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
 </div><a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line"> </tt>
-<a name="_ClipboardHandler.paste"></a><div id="_ClipboardHandler.paste-def"><a name="L44"></a><tt class="py-lineno"> 44</tt> <a class="py-toggle" href="#" id="_ClipboardHandler.paste-toggle" onclick="return toggle('_ClipboardHandler.paste');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._ClipboardHandler-class.html#paste">paste</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="_ClipboardHandler.paste-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_ClipboardHandler.paste-expanded"><a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line">        <tt class="py-docstring">"""Paste the contents of the clipboard. If a cell is being edited just</tt> </tt>
-<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line"><tt class="py-docstring">        do a normal paste. If a cell is not being edited, paste whole rows.</tt> </tt>
-<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
-<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_edit_control_shown</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_paste_to_cell_editor</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
-<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_paste_to_grid</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-</div><a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line"> </tt>
-<a name="_ClipboardHandler._paste_to_cell_editor"></a><div id="_ClipboardHandler._paste_to_cell_editor-def"><a name="L53"></a><tt class="py-lineno"> 53</tt> <a class="py-toggle" href="#" id="_ClipboardHandler._paste_to_cell_editor-toggle" onclick="return toggle('_ClipboardHandler._paste_to_cell_editor');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._ClipboardHandler-class.html#_paste_to_cell_editor">_paste_to_cell_editor</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="_ClipboardHandler._paste_to_cell_editor-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_ClipboardHandler._paste_to_cell_editor-expanded"><a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line">        <tt id="link-4" class="py-name" targets="Module robotide.editor.clipboard=robotide.editor.clipboard-module.html"><a title="robotide.editor.clipboard" class="py-name" href="#" onclick="return doclink('link-4', 'clipboard', 'link-4');">clipboard</a></tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_clipboard</tt><tt class="py-op">.</tt><tt class="py-name">get_contents</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt id="link-5" class="py-name"><a title="robotide.editor.clipboard" class="py-name" href="#" onclick="return doclink('link-5', 'clipboard', 'link-4');">clipboard</a></tt><tt class="py-op">,</tt> <tt class="py-name">list</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">            <tt class="py-name">cells_as_text</tt> <tt class="py-op">=</tt> <tt class="py-string">' '</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-op">[</tt><tt class="py-string">' '</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt id="link-6" class="py-name" targets="Variable robotide.editor.dialoghelps.row=robotide.editor.dialoghelps-module.html#row"><a title="robotide.editor.dialoghelps.row" class="py-name" href="#" onclick="return doclink('link-6', 'row', 'link-6');">row</a></tt><tt class="py-op">)</tt> <tt class="py-keyword">for</tt> <tt id="link-7" class="py-name"><a title="robotide.editor.dialoghelps.row" class="py-name" href="#" onclick="return doclink('link-7', 'row', 'link-6');">row</a></tt> <tt class="py-keyword">in</tt> <tt id="link-8" class="py-name"><a title="robotide.editor.clipboard" class="py-name" href="#" onclick="return doclink('link-8', 'clipboard', 'link-4');">clipboard</a></tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
-<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_get_edit_control</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">WriteText</tt><tt class="py-op">(</tt><tt class="py-name">cells_as_text</tt><tt class="py-op">)</tt> </tt>
-</div><a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line"> </tt>
-<a name="_ClipboardHandler._paste_to_grid"></a><div id="_ClipboardHandler._paste_to_grid-def"><a name="L59"></a><tt class="py-lineno"> 59</tt> <a class="py-toggle" href="#" id="_ClipboardHandler._paste_to_grid-toggle" onclick="return toggle('_ClipboardHandler._paste_to_grid');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._ClipboardHandler-class.html#_paste_to_grid">_paste_to_grid</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="_ClipboardHandler._paste_to_grid-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_ClipboardHandler._paste_to_grid-expanded"><a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">        <tt id="link-9" class="py-name"><a title="robotide.editor.clipboard" class="py-name" href="#" onclick="return doclink('link-9', 'clipboard', 'link-4');">clipboard</a></tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_clipboard</tt><tt class="py-op">.</tt><tt class="py-name">get_contents</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt id="link-10" class="py-name"><a title="robotide.editor.clipboard" class="py-name" href="#" onclick="return doclink('link-10', 'clipboard', 'link-4');">clipboard</a></tt><tt class="py-op">:</tt> </tt>
-<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> </tt>
-<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">        <tt class="py-name">cell</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_get_starting_cell</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt id="link-11" class="py-name"><a title="robotide.editor.clipboard" class="py-name" href="#" onclick="return doclink('link-11', 'clipboard', 'link-4');">clipboard</a></tt><tt class="py-op">,</tt> <tt class="py-name">list</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_write_cell</tt><tt class="py-op">(</tt><tt class="py-name">cell</tt><tt class="py-op">.</tt><tt id="link-12" class="py-name"><a title="robotide.editor.dialoghelps.row" class="py-name" href="#" onclick="return doclink('link-12', 'row', 'link-6');">row</a></tt><tt class="py-op">,</tt> <tt class="py-name">cell</tt><tt class="py-op">.</tt><tt class="py-name">col</tt><tt class="py-op">,</tt> <tt id="link-13" class="py-name"><a title="robotide.editor.clipboard" class="py-name" href="#" onclick="return doclink('link-13', 'clipboard', 'link-4');">clipboard</a></tt><tt class="py-op">)</tt> </tt>
-<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
-<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">            <tt id="link-14" class="py-name"><a title="robotide.editor.dialoghelps.row" class="py-name" href="#" onclick="return doclink('link-14', 'row', 'link-6');">row</a></tt> <tt class="py-op">=</tt> <tt class="py-name">cell</tt><tt class="py-op">.</tt><tt id="link-15" class="py-name"><a title="robotide.editor.dialoghelps.row" class="py-name" href="#" onclick="return doclink('link-15', 'row', 'link-6');">row</a></tt> </tt>
-<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">            <tt class="py-keyword">for</tt> <tt class="py-name">datarow</tt> <tt class="py-keyword">in</tt> <tt id="link-16" class="py-name"><a title="robotide.editor.clipboard" class="py-name" href="#" onclick="return doclink('link-16', 'clipboard', 'link-4');">clipboard</a></tt><tt class="py-op">:</tt> </tt>
-<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">                <tt class="py-name">col</tt> <tt class="py-op">=</tt> <tt class="py-name">cell</tt><tt class="py-op">.</tt><tt class="py-name">col</tt> </tt>
-<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">                <tt class="py-keyword">for</tt> <tt class="py-name">value</tt> <tt class="py-keyword">in</tt> <tt class="py-name">datarow</tt><tt class="py-op">:</tt> </tt>
-<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">                    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_write_cell</tt><tt class="py-op">(</tt><tt id="link-17" class="py-name"><a title="robotide.editor.dialoghelps.row" class="py-name" href="#" onclick="return doclink('link-17', 'row', 'link-6');">row</a></tt><tt class="py-op">,</tt> <tt class="py-name">col</tt><tt class="py-op">,</tt> <tt class="py-name">value</tt><tt class="py-op">)</tt> </tt>
-<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">                    <tt class="py-name">col</tt> <tt class="py-op">+=</tt> <tt class="py-number">1</tt> </tt>
-<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">                <tt id="link-18" class="py-name"><a title="robotide.editor.dialoghelps.row" class="py-name" href="#" onclick="return doclink('link-18', 'row', 'link-6');">row</a></tt> <tt class="py-op">+=</tt> <tt class="py-number">1</tt> </tt>
-</div><a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line"> </tt>
-<a name="_ClipboardHandler._get_starting_cell"></a><div id="_ClipboardHandler._get_starting_cell-def"><a name="L75"></a><tt class="py-lineno"> 75</tt> <a class="py-toggle" href="#" id="_ClipboardHandler._get_starting_cell-toggle" onclick="return toggle('_ClipboardHandler._get_starting_cell');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._ClipboardHandler-class.html#_get_starting_cell">_get_starting_cell</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="_ClipboardHandler._get_starting_cell-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_ClipboardHandler._get_starting_cell-expanded"><a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_grid</tt><tt class="py-op">.</tt><tt class="py-name">selection</tt><tt class="py-op">.</tt><tt class="py-name">topleft</tt> </tt>
-</div><a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line"> </tt>
-<a name="_ClipboardHandler._write_cell"></a><div id="_ClipboardHandler._write_cell-def"><a name="L78"></a><tt class="py-lineno"> 78</tt> <a class="py-toggle" href="#" id="_ClipboardHandler._write_cell-toggle" onclick="return toggle('_ClipboardHandler._write_cell');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._ClipboardHandler-class.html#_write_cell">_write_cell</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">row</tt><tt class="py-op">,</tt> <tt class="py-param">col</tt><tt class="py-op">,</tt> <tt class="py-param">value</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="_ClipboardHandler._write_cell-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_ClipboardHandler._write_cell-expanded"><a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_grid</tt><tt class="py-op">.</tt><tt id="link-19" class="py-name" targets="Method robotide.editor.grid.GridEditor.write_cell()=robotide.editor.grid.GridEditor-class.html#write_cell,Method robotide.editor.kweditor.KeywordEditorUi.write_cell()=robotide.editor.kweditor.KeywordEditorUi-class.html#write_cell"><a title="robotide.editor.grid.GridEditor.write_cell
-robotide.editor.kweditor.KeywordEditorUi.write_cell" class="py-name" href="#" onclick="return doclink('link-19', 'write_cell', 'link-19');">write_cell</a></tt><tt class="py-op">(</tt><tt id="link-20" class="py-name"><a title="robotide.editor.dialoghelps.row" class="py-name" href="#" onclick="return doclink('link-20', 'row', 'link-6');">row</a></tt><tt class="py-op">,</tt> <tt class="py-name">col</tt><tt class="py-op">,</tt> <tt class="py-name">value</tt><tt class="py-op">,</tt> <tt class="py-name">update_history</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">)</tt> </tt>
-</div><a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line"> </tt>
-<a name="_ClipboardHandler._get_edit_control"></a><div id="_ClipboardHandler._get_edit_control-def"><a name="L81"></a><tt class="py-lineno"> 81</tt> <a class="py-toggle" href="#" id="_ClipboardHandler._get_edit_control-toggle" onclick="return toggle('_ClipboardHandler._get_edit_control');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._ClipboardHandler-class.html#_get_edit_control">_get_edit_control</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="_ClipboardHandler._get_edit_control-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_ClipboardHandler._get_edit_control-expanded"><a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_grid</tt><tt class="py-op">.</tt><tt id="link-21" class="py-name" targets="Method robotide.editor.grid.GridEditor.get_cell_edit_control()=robotide.editor.grid.GridEditor-class.html#get_cell_edit_control"><a title="robotide.editor.grid.GridEditor.get_cell_edit_control" class="py-name" href="#" onclick="return doclink('link-21', 'get_cell_edit_control', 'link-21');">get_cell_edit_control</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-</div><a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line"> </tt>
-<a name="_ClipboardHandler._edit_control_shown"></a><div id="_ClipboardHandler._edit_control_shown-def"><a name="L84"></a><tt class="py-lineno"> 84</tt> <a class="py-toggle" href="#" id="_ClipboardHandler._edit_control_shown-toggle" onclick="return toggle('_ClipboardHandler._edit_control_shown');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._ClipboardHandler-class.html#_edit_control_shown">_edit_control_shown</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="_ClipboardHandler._edit_control_shown-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_ClipboardHandler._edit_control_shown-expanded"><a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_grid</tt><tt class="py-op">.</tt><tt class="py-name">IsCellEditControlShown</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-</div></div><a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line"> </tt>
-<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line"> </tt>
-<a name="_WindowsClipboardHandler"></a><div id="_WindowsClipboardHandler-def"><a name="L88"></a><tt class="py-lineno"> 88</tt> <a class="py-toggle" href="#" id="_WindowsClipboardHandler-toggle" onclick="return toggle('_WindowsClipboardHandler');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="robotide.editor.clipboard._WindowsClipboardHandler-class.html">_WindowsClipboardHandler</a><tt class="py-op">(</tt><tt class="py-base-class">_ClipboardHandler</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="_WindowsClipboardHandler-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="_WindowsClipboardHandler-expanded"><a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line"> </tt>
-<a name="_WindowsClipboardHandler.copy"></a><div id="_WindowsClipboardHandler.copy-def"><a name="L90"></a><tt class="py-lineno"> 90</tt> <a class="py-toggle" href="#" id="_WindowsClipboardHandler.copy-toggle" onclick="return toggle('_WindowsClipboardHandler.copy');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._WindowsClipboardHandler-class.html#copy">copy</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="_WindowsClipboardHandler.copy-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_WindowsClipboardHandler.copy-expanded"><a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_edit_control_shown</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_get_edit_control</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">Copy</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
-<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">            <tt id="link-22" class="py-name" targets="Class robotide.editor.clipboard._ClipboardHandler=robotide.editor.clipboard._ClipboardHandler-class.html"><a title="robotide.editor.clipboard._ClipboardHandler" class="py-name" href="#" onclick="return doclink('link-22', '_ClipboardHandler', 'link-22');">_ClipboardHandler</a></tt><tt class="py-op">.</tt><tt id="link-23" class="py-name" targets="Method robotide.editor.clipboard._ClipboardHandler.copy()=robotide.editor.clipboard._ClipboardHandler-class.html#copy,Method robotide.editor.editors.TestCaseEditor.copy()=robotide.editor.editors.TestCaseEditor-class.html#copy,Method robotide.editor.grid.GridEditor.copy()=robotide.editor.grid.GridEditor-class.html#copy,Method robotide.model.tcuk.KeywordList.copy()=robotide.model.tcuk.KeywordList-class.html#copy"><a title="robotide.editor.clipboard._ClipboardHandler.copy
+<a name="_ClipboardHandler._add_selected_data_to_clipboard"></a><div id="_ClipboardHandler._add_selected_data_to_clipboard-def"><a name="L44"></a><tt class="py-lineno"> 44</tt> <a class="py-toggle" href="#" id="_ClipboardHandler._add_selected_data_to_clipboard-toggle" onclick="return toggle('_ClipboardHandler._add_selected_data_to_clipboard');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._ClipboardHandler-class.html#_add_selected_data_to_clipboard">_add_selected_data_to_clipboard</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_ClipboardHandler._add_selected_data_to_clipboard-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_ClipboardHandler._add_selected_data_to_clipboard-expanded"><a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_clipboard</tt><tt class="py-op">.</tt><tt class="py-name">set_contents</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_grid</tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Method robotide.editor.grid.GridEditor.get_selected_content()=robotide.editor.grid.GridEditor-class.html#get_selected_content"><a title="robotide.editor.grid.GridEditor.get_selected_content" class="py-name" href="#" onclick="return doclink('link-4', 'get_selected_content', 'link-4');">get_selected_content</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line"> </tt>
+<a name="_ClipboardHandler.paste"></a><div id="_ClipboardHandler.paste-def"><a name="L47"></a><tt class="py-lineno"> 47</tt> <a class="py-toggle" href="#" id="_ClipboardHandler.paste-toggle" onclick="return toggle('_ClipboardHandler.paste');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._ClipboardHandler-class.html#paste">paste</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_ClipboardHandler.paste-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_ClipboardHandler.paste-expanded"><a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">        <tt class="py-docstring">"""Paste the contents of the clipboard. If a cell is being edited just</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line"><tt class="py-docstring">        do a normal paste. If a cell is not being edited, paste whole rows.</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_edit_control_shown</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_paste_to_grid</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line"> </tt>
+<a name="_ClipboardHandler._paste_to_cell_editor"></a><div id="_ClipboardHandler._paste_to_cell_editor-def"><a name="L54"></a><tt class="py-lineno"> 54</tt> <a class="py-toggle" href="#" id="_ClipboardHandler._paste_to_cell_editor-toggle" onclick="return toggle('_ClipboardHandler._paste_to_cell_editor');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._ClipboardHandler-class.html#_paste_to_cell_editor">_paste_to_cell_editor</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_ClipboardHandler._paste_to_cell_editor-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_ClipboardHandler._paste_to_cell_editor-expanded"><a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line">        <tt id="link-5" class="py-name" targets="Module robotide.editor.clipboard=robotide.editor.clipboard-module.html"><a title="robotide.editor.clipboard" class="py-name" href="#" onclick="return doclink('link-5', 'clipboard', 'link-5');">clipboard</a></tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_clipboard</tt><tt class="py-op">.</tt><tt class="py-name">get_contents</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt id="link-6" class="py-name"><a title="robotide.editor.clipboard" class="py-name" href="#" onclick="return doclink('link-6', 'clipboard', 'link-5');">clipboard</a></tt><tt class="py-op">,</tt> <tt id="link-7" class="py-name" targets="Module robotide.widgets.list=robotide.widgets.list-module.html"><a title="robotide.widgets.list" class="py-name" href="#" onclick="return doclink('link-7', 'list', 'link-7');">list</a></tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">            <tt class="py-name">cells_as_text</tt> <tt class="py-op">=</tt> <tt class="py-string">' '</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-op">[</tt><tt class="py-string">' '</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt id="link-8" class="py-name" targets="Variable robotide.editor.dialoghelps.row=robotide.editor.dialoghelps-module.html#row"><a title="robotide.editor.dialoghelps.row" class="py-name" href="#" onclick="return doclink('link-8', 'row', 'link-8');">row</a></tt><tt class="py-op">)</tt> <tt class="py-keyword">for</tt> <tt id="link-9" class="py-name"><a title="robotide.editor.dialoghelps.row" class="py-name" href="#" onclick="return doclink('link-9', 'row', 'link-8');">row</a></tt> <tt class="py-keyword">in</tt> <tt id="link-10" class="py-name"><a title="robotide.editor.clipboard" class="py-name" href="#" onclick="return doclink('link-10', 'clipboard', 'link-5');">clipboard</a></tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_get_edit_control</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">WriteText</tt><tt class="py-op">(</tt><tt class="py-name">cells_as_text</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line"> </tt>
+<a name="_ClipboardHandler._paste_to_grid"></a><div id="_ClipboardHandler._paste_to_grid-def"><a name="L60"></a><tt class="py-lineno"> 60</tt> <a class="py-toggle" href="#" id="_ClipboardHandler._paste_to_grid-toggle" onclick="return toggle('_ClipboardHandler._paste_to_grid');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._ClipboardHandler-class.html#_paste_to_grid">_paste_to_grid</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_ClipboardHandler._paste_to_grid-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_ClipboardHandler._paste_to_grid-expanded"><a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">        <tt id="link-11" class="py-name"><a title="robotide.editor.clipboard" class="py-name" href="#" onclick="return doclink('link-11', 'clipboard', 'link-5');">clipboard</a></tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_clipboard</tt><tt class="py-op">.</tt><tt class="py-name">get_contents</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt id="link-12" class="py-name"><a title="robotide.editor.clipboard" class="py-name" href="#" onclick="return doclink('link-12', 'clipboard', 'link-5');">clipboard</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">        <tt class="py-name">cell</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_get_starting_cell</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt id="link-13" class="py-name"><a title="robotide.editor.clipboard" class="py-name" href="#" onclick="return doclink('link-13', 'clipboard', 'link-5');">clipboard</a></tt><tt class="py-op">,</tt> <tt id="link-14" class="py-name"><a title="robotide.widgets.list" class="py-name" href="#" onclick="return doclink('link-14', 'list', 'link-7');">list</a></tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_write_cell</tt><tt class="py-op">(</tt><tt class="py-name">cell</tt><tt class="py-op">.</tt><tt id="link-15" class="py-name"><a title="robotide.editor.dialoghelps.row" class="py-name" href="#" onclick="return doclink('link-15', 'row', 'link-8');">row</a></tt><tt class="py-op">,</tt> <tt class="py-name">cell</tt><tt class="py-op">.</tt><tt class="py-name">col</tt><tt class="py-op">,</tt> <tt id="link-16" class="py-name"><a title="robotide.editor.clipboard" class="py-name" href="#" onclick="return doclink('link-16', 'clipboard', 'link-5');">clipboard</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">            <tt id="link-17" class="py-name"><a title="robotide.editor.dialoghelps.row" class="py-name" href="#" onclick="return doclink('link-17', 'row', 'link-8');">row</a></tt> <tt class="py-op">=</tt> <tt class="py-name">cell</tt><tt class="py-op">.</tt><tt id="link-18" class="py-name"><a title="robotide.editor.dialoghelps.row" class="py-name" href="#" onclick="return doclink('link-18', 'row', 'link-8');">row</a></tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">            <tt class="py-keyword">for</tt> <tt class="py-name">datarow</tt> <tt class="py-keyword">in</tt> <tt id="link-19" class="py-name"><a title="robotide.editor.clipboard" class="py-name" href="#" onclick="return doclink('link-19', 'clipboard', 'link-5');">clipboard</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">                <tt class="py-name">col</tt> <tt class="py-op">=</tt> <tt class="py-name">cell</tt><tt class="py-op">.</tt><tt class="py-name">col</tt> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">                <tt class="py-keyword">for</tt> <tt id="link-20" class="py-name" targets="Variable robotide.controller.settingcontrollers.DocumentationController.value=robotide.controller.settingcontrollers.DocumentationController-class.html#value,Variable robotide.controller.settingcontrollers.MetadataController.value=robotide.controller.settingcontrollers.MetadataController-class.html#value,Variable robotide.controller.settingcontrollers.VariableController.value=robotide.controller.settingcontrollers.VariableController-class.html#value"><a title="robotide.controller.settingcontrollers.DocumentationController.value
+robotide.controller.settingcontrollers.MetadataController.value
+robotide.controller.settingcontrollers.VariableController.value" class="py-name" href="#" onclick="return doclink('link-20', 'value', 'link-20');">value</a></tt> <tt class="py-keyword">in</tt> <tt class="py-name">datarow</tt><tt class="py-op">:</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">                    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_write_cell</tt><tt class="py-op">(</tt><tt id="link-21" class="py-name"><a title="robotide.editor.dialoghelps.row" class="py-name" href="#" onclick="return doclink('link-21', 'row', 'link-8');">row</a></tt><tt class="py-op">,</tt> <tt class="py-name">col</tt><tt class="py-op">,</tt> <tt id="link-22" class="py-name"><a title="robotide.controller.settingcontrollers.DocumentationController.value
+robotide.controller.settingcontrollers.MetadataController.value
+robotide.controller.settingcontrollers.VariableController.value" class="py-name" href="#" onclick="return doclink('link-22', 'value', 'link-20');">value</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">                    <tt class="py-name">col</tt> <tt class="py-op">+=</tt> <tt class="py-number">1</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">                <tt id="link-23" class="py-name"><a title="robotide.editor.dialoghelps.row" class="py-name" href="#" onclick="return doclink('link-23', 'row', 'link-8');">row</a></tt> <tt class="py-op">+=</tt> <tt class="py-number">1</tt> </tt>
+</div><a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line"> </tt>
+<a name="_ClipboardHandler._get_starting_cell"></a><div id="_ClipboardHandler._get_starting_cell-def"><a name="L76"></a><tt class="py-lineno"> 76</tt> <a class="py-toggle" href="#" id="_ClipboardHandler._get_starting_cell-toggle" onclick="return toggle('_ClipboardHandler._get_starting_cell');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._ClipboardHandler-class.html#_get_starting_cell">_get_starting_cell</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_ClipboardHandler._get_starting_cell-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_ClipboardHandler._get_starting_cell-expanded"><a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_grid</tt><tt class="py-op">.</tt><tt class="py-name">selection</tt><tt class="py-op">.</tt><tt class="py-name">topleft</tt> </tt>
+</div><a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line"> </tt>
+<a name="_ClipboardHandler._write_cell"></a><div id="_ClipboardHandler._write_cell-def"><a name="L79"></a><tt class="py-lineno"> 79</tt> <a class="py-toggle" href="#" id="_ClipboardHandler._write_cell-toggle" onclick="return toggle('_ClipboardHandler._write_cell');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._ClipboardHandler-class.html#_write_cell">_write_cell</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">row</tt><tt class="py-op">,</tt> <tt class="py-param">col</tt><tt class="py-op">,</tt> <tt class="py-param">value</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_ClipboardHandler._write_cell-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_ClipboardHandler._write_cell-expanded"><a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_grid</tt><tt class="py-op">.</tt><tt id="link-24" class="py-name" targets="Method robotide.editor.grid.GridEditor.write_cell()=robotide.editor.grid.GridEditor-class.html#write_cell,Method robotide.editor.kweditor.KeywordEditor.write_cell()=robotide.editor.kweditor.KeywordEditor-class.html#write_cell"><a title="robotide.editor.grid.GridEditor.write_cell
+robotide.editor.kweditor.KeywordEditor.write_cell" class="py-name" href="#" onclick="return doclink('link-24', 'write_cell', 'link-24');">write_cell</a></tt><tt class="py-op">(</tt><tt id="link-25" class="py-name"><a title="robotide.editor.dialoghelps.row" class="py-name" href="#" onclick="return doclink('link-25', 'row', 'link-8');">row</a></tt><tt class="py-op">,</tt> <tt class="py-name">col</tt><tt class="py-op">,</tt> <tt id="link-26" class="py-name"><a title="robotide.controller.settingcontrollers.DocumentationController.value
+robotide.controller.settingcontrollers.MetadataController.value
+robotide.controller.settingcontrollers.VariableController.value" class="py-name" href="#" onclick="return doclink('link-26', 'value', 'link-20');">value</a></tt><tt class="py-op">,</tt> <tt class="py-name">update_history</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line"> </tt>
+<a name="_ClipboardHandler._get_edit_control"></a><div id="_ClipboardHandler._get_edit_control-def"><a name="L82"></a><tt class="py-lineno"> 82</tt> <a class="py-toggle" href="#" id="_ClipboardHandler._get_edit_control-toggle" onclick="return toggle('_ClipboardHandler._get_edit_control');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._ClipboardHandler-class.html#_get_edit_control">_get_edit_control</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_ClipboardHandler._get_edit_control-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_ClipboardHandler._get_edit_control-expanded"><a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_grid</tt><tt class="py-op">.</tt><tt id="link-27" class="py-name" targets="Method robotide.editor.grid.GridEditor.get_cell_edit_control()=robotide.editor.grid.GridEditor-class.html#get_cell_edit_control"><a title="robotide.editor.grid.GridEditor.get_cell_edit_control" class="py-name" href="#" onclick="return doclink('link-27', 'get_cell_edit_control', 'link-27');">get_cell_edit_control</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line"> </tt>
+<a name="_ClipboardHandler._edit_control_shown"></a><div id="_ClipboardHandler._edit_control_shown-def"><a name="L85"></a><tt class="py-lineno"> 85</tt> <a class="py-toggle" href="#" id="_ClipboardHandler._edit_control_shown-toggle" onclick="return toggle('_ClipboardHandler._edit_control_shown');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._ClipboardHandler-class.html#_edit_control_shown">_edit_control_shown</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_ClipboardHandler._edit_control_shown-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_ClipboardHandler._edit_control_shown-expanded"><a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_grid</tt><tt class="py-op">.</tt><tt class="py-name">IsCellEditControlShown</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line"> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line"> </tt>
+<a name="_WindowsClipboardHandler"></a><div id="_WindowsClipboardHandler-def"><a name="L89"></a><tt class="py-lineno"> 89</tt> <a class="py-toggle" href="#" id="_WindowsClipboardHandler-toggle" onclick="return toggle('_WindowsClipboardHandler');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="robotide.editor.clipboard._WindowsClipboardHandler-class.html">_WindowsClipboardHandler</a><tt class="py-op">(</tt><tt class="py-base-class">_ClipboardHandler</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_WindowsClipboardHandler-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="_WindowsClipboardHandler-expanded"><a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line"> </tt>
+<a name="_WindowsClipboardHandler.copy"></a><div id="_WindowsClipboardHandler.copy-def"><a name="L91"></a><tt class="py-lineno"> 91</tt> <a class="py-toggle" href="#" id="_WindowsClipboardHandler.copy-toggle" onclick="return toggle('_WindowsClipboardHandler.copy');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._WindowsClipboardHandler-class.html#copy">copy</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_WindowsClipboardHandler.copy-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_WindowsClipboardHandler.copy-expanded"><a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_edit_control_shown</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_get_edit_control</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">Copy</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">            <tt id="link-28" class="py-name" targets="Class robotide.editor.clipboard._ClipboardHandler=robotide.editor.clipboard._ClipboardHandler-class.html"><a title="robotide.editor.clipboard._ClipboardHandler" class="py-name" href="#" onclick="return doclink('link-28', '_ClipboardHandler', 'link-28');">_ClipboardHandler</a></tt><tt class="py-op">.</tt><tt id="link-29" class="py-name" targets="Method robotide.editor.clipboard._ClipboardHandler.copy()=robotide.editor.clipboard._ClipboardHandler-class.html#copy,Method robotide.editor.editors.TestCaseEditor.copy()=robotide.editor.editors.TestCaseEditor-class.html#copy,Method robotide.editor.grid.GridEditor.copy()=robotide.editor.grid.GridEditor-class.html#copy"><a title="robotide.editor.clipboard._ClipboardHandler.copy
 robotide.editor.editors.TestCaseEditor.copy
-robotide.editor.grid.GridEditor.copy
-robotide.model.tcuk.KeywordList.copy" class="py-name" href="#" onclick="return doclink('link-23', 'copy', 'link-23');">copy</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
-</div><a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line"> </tt>
-<a name="_WindowsClipboardHandler.cut"></a><div id="_WindowsClipboardHandler.cut-def"><a name="L96"></a><tt class="py-lineno"> 96</tt> <a class="py-toggle" href="#" id="_WindowsClipboardHandler.cut-toggle" onclick="return toggle('_WindowsClipboardHandler.cut');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._WindowsClipboardHandler-class.html#cut">cut</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="_WindowsClipboardHandler.cut-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_WindowsClipboardHandler.cut-expanded"><a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_edit_control_shown</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_get_edit_control</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">Cut</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
-<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">            <tt id="link-24" class="py-name"><a title="robotide.editor.clipboard._ClipboardHandler" class="py-name" href="#" onclick="return doclink('link-24', '_ClipboardHandler', 'link-22');">_ClipboardHandler</a></tt><tt class="py-op">.</tt><tt id="link-25" class="py-name"><a title="robotide.editor.clipboard._ClipboardHandler.copy
+robotide.editor.grid.GridEditor.copy" class="py-name" href="#" onclick="return doclink('link-29', 'copy', 'link-29');">copy</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line"> </tt>
+<a name="_WindowsClipboardHandler.cut"></a><div id="_WindowsClipboardHandler.cut-def"><a name="L97"></a><tt class="py-lineno"> 97</tt> <a class="py-toggle" href="#" id="_WindowsClipboardHandler.cut-toggle" onclick="return toggle('_WindowsClipboardHandler.cut');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._WindowsClipboardHandler-class.html#cut">cut</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_WindowsClipboardHandler.cut-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_WindowsClipboardHandler.cut-expanded"><a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_edit_control_shown</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_get_edit_control</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">Cut</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line">            <tt id="link-30" class="py-name"><a title="robotide.editor.clipboard._ClipboardHandler" class="py-name" href="#" onclick="return doclink('link-30', '_ClipboardHandler', 'link-28');">_ClipboardHandler</a></tt><tt class="py-op">.</tt><tt id="link-31" class="py-name"><a title="robotide.editor.clipboard._ClipboardHandler.copy
 robotide.editor.editors.TestCaseEditor.copy
-robotide.editor.grid.GridEditor.copy
-robotide.model.tcuk.KeywordList.copy" class="py-name" href="#" onclick="return doclink('link-25', 'copy', 'link-23');">copy</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
-</div><a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line"> </tt>
-<a name="_WindowsClipboardHandler._paste_to_cell_editor"></a><div id="_WindowsClipboardHandler._paste_to_cell_editor-def"><a name="L102"></a><tt class="py-lineno">102</tt> <a class="py-toggle" href="#" id="_WindowsClipboardHandler._paste_to_cell_editor-toggle" onclick="return toggle('_WindowsClipboardHandler._paste_to_cell_editor');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._WindowsClipboardHandler-class.html#_paste_to_cell_editor">_paste_to_cell_editor</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="_WindowsClipboardHandler._paste_to_cell_editor-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_WindowsClipboardHandler._paste_to_cell_editor-expanded"><a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_get_edit_control</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">Paste</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-</div></div><a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line"> </tt>
-<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line"> </tt>
-<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line"><tt class="py-name">ClipboardHandler</tt> <tt class="py-op">=</tt> <tt id="link-26" class="py-name"><a title="robotide.utils" class="py-name" href="#" onclick="return doclink('link-26', 'utils', 'link-1');">utils</a></tt><tt class="py-op">.</tt><tt class="py-name">is_windows</tt> <tt class="py-keyword">and</tt> <tt class="py-name">_WindowsClipboardHandler</tt>\ </tt>
-<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line">                                    <tt class="py-keyword">or</tt> <tt id="link-27" class="py-name"><a title="robotide.editor.clipboard._ClipboardHandler" class="py-name" href="#" onclick="return doclink('link-27', '_ClipboardHandler', 'link-22');">_ClipboardHandler</a></tt> </tt>
-<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line"> </tt>
+robotide.editor.grid.GridEditor.copy" class="py-name" href="#" onclick="return doclink('link-31', 'copy', 'link-29');">copy</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line"> </tt>
+<a name="_WindowsClipboardHandler._paste_to_cell_editor"></a><div id="_WindowsClipboardHandler._paste_to_cell_editor-def"><a name="L103"></a><tt class="py-lineno">103</tt> <a class="py-toggle" href="#" id="_WindowsClipboardHandler._paste_to_cell_editor-toggle" onclick="return toggle('_WindowsClipboardHandler._paste_to_cell_editor');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._WindowsClipboardHandler-class.html#_paste_to_cell_editor">_paste_to_cell_editor</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_WindowsClipboardHandler._paste_to_cell_editor-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_WindowsClipboardHandler._paste_to_cell_editor-expanded"><a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_get_edit_control</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">Paste</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line"> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line"> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line"><tt class="py-name">ClipboardHandler</tt> <tt class="py-op">=</tt> <tt id="link-32" class="py-name"><a title="robotide.context.platform.IS_WINDOWS
+robotide.widgets.list.IS_WINDOWS" class="py-name" href="#" onclick="return doclink('link-32', 'IS_WINDOWS', 'link-2');">IS_WINDOWS</a></tt> <tt class="py-keyword">and</tt> <tt class="py-name">_WindowsClipboardHandler</tt>\ </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line">                                    <tt class="py-keyword">or</tt> <tt id="link-33" class="py-name"><a title="robotide.editor.clipboard._ClipboardHandler" class="py-name" href="#" onclick="return doclink('link-33', '_ClipboardHandler', 'link-28');">_ClipboardHandler</a></tt> </tt>
 <a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line"> </tt>
-<a name="_GridClipboard"></a><div id="_GridClipboard-def"><a name="L110"></a><tt class="py-lineno">110</tt> <a class="py-toggle" href="#" id="_GridClipboard-toggle" onclick="return toggle('_GridClipboard');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="robotide.editor.clipboard._GridClipboard-class.html">_GridClipboard</a><tt class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="_GridClipboard-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="_GridClipboard-expanded"><a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line">    <tt class="py-docstring">"""Implements a "smart" clipboard."""</tt> </tt>
-<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line"> </tt>
-<a name="_GridClipboard.set_contents"></a><div id="_GridClipboard.set_contents-def"><a name="L113"></a><tt class="py-lineno">113</tt> <a class="py-toggle" href="#" id="_GridClipboard.set_contents-toggle" onclick="return toggle('_GridClipboard.set_contents');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._GridClipboard-class.html#set_contents">set_contents</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">data</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="_GridClipboard.set_contents-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_GridClipboard.set_contents-expanded"><a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line">        <tt class="py-docstring">"""Insert `data` to the system clipboard</tt> </tt>
-<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
-<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line"><tt class="py-docstring">        `data` may be either a string or list of lists representing rows of</tt> </tt>
-<a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line"><tt class="py-docstring">        grid data. Other data is ignored</tt> </tt>
-<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
-<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line">        <tt id="link-28" class="py-name" targets="Variable robotide.publish.messages.RideGridCellChanged.data=robotide.publish.messages.RideGridCellChanged-class.html#data,Variable robotide.publish.messages.RideImportSettingAdded.data=robotide.publish.messages.RideImportSettingAdded-class.html#data,Variable robotide.publish.messages.RideImportSettingChanged.data=robotide.publish.messages.RideImportSettingChanged-class.html#data,Variable robotide.publish.messages.RideLogMessage.data=robotide.publish.messages.RideLogMessage-class.html#data,Variable robotide.publish.messages.RideMessage.data=robotide.publish.messages.RideMessage-class.html#data,Variable robotide.publish.messages.RideNotebookTabChanging.data=robotide.publish.messages.RideNotebookTabChanging-class.html#data,Variable robotide.publish.messages.RideOpenResource.data=robotide.publish.messages.RideOpenResource-class.html#data,Variable robotide.publish.messages.RideOpenSuite.data=robotide.publish.messages.RideOpenSuite-class.html#data,Variable robotide.publish.messages.RideSaved.data=robotide.publish.messages.RideSaved-class.html#data,Variable robotide.publish.messages.RideSaving.data=robotide.publish.messages.RideSaving-class.html#data,Variable robotide.publish.messages.RideTreeSelection.data=robotide.publish.messages.RideTreeSelection-class.html#data,Variable robotide.publish.messages.RideUserKeywordAdded.data=robotide.publish.messages.RideUserKeywordAdded-class.html#data"><a title="robotide.publish.messages.RideGridCellChanged.data
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line"> </tt>
+<a name="_GridClipboard"></a><div id="_GridClipboard-def"><a name="L111"></a><tt class="py-lineno">111</tt> <a class="py-toggle" href="#" id="_GridClipboard-toggle" onclick="return toggle('_GridClipboard');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="robotide.editor.clipboard._GridClipboard-class.html">_GridClipboard</a><tt class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_GridClipboard-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="_GridClipboard-expanded"><a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line">    <tt class="py-docstring">"""Implements a "smart" clipboard."""</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line"> </tt>
+<a name="_GridClipboard.set_contents"></a><div id="_GridClipboard.set_contents-def"><a name="L114"></a><tt class="py-lineno">114</tt> <a class="py-toggle" href="#" id="_GridClipboard.set_contents-toggle" onclick="return toggle('_GridClipboard.set_contents');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._GridClipboard-class.html#set_contents">set_contents</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">data</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_GridClipboard.set_contents-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_GridClipboard.set_contents-expanded"><a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line">        <tt class="py-docstring">"""Insert `data` to the system clipboard</tt> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line"><tt class="py-docstring">        `data` may be either a string or list of lists representing rows of</tt> </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line"><tt class="py-docstring">        grid data. Other data is ignored</tt> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line">        <tt id="link-34" class="py-name" targets="Variable robotide.controller.chiefcontroller.ChiefController.data=robotide.controller.chiefcontroller.ChiefController-class.html#data,Variable robotide.controller.settingcontrollers.VariableController.data=robotide.controller.settingcontrollers.VariableController-class.html#data,Variable robotide.publish.messages.RideChangeFormat.data=robotide.publish.messages.RideChangeFormat-class.html#data,Variable robotide.publish.messages.RideDataChangedToDirty.data=robotide.publish.messages.RideDataChangedToDirty-class.html#data,Variable robotide.publish.messages.RideDataDirtyCleared.data=robotide.publish.messages.RideDataDirtyCleared-class.html#data,Variable robotide.publish.messages.RideDataFileRemoved.data=robotide.publish.messages.RideDataFileRemoved-class.html#data,Variable robotide.publish.messages.RideGridCellChanged.data=robotide.publish.messages.RideGridCellChanged-class.html#data,Variable robotide.publish.messages.RideImportSettingAdded.data=robotide.publish.messages.RideImportSettingAdded-class.html#data,Variable robotide.publish.messages.RideImportSettingChanged.data=robotide.publish.messages.RideImportSettingChanged-class.html#data,Variable robotide.publish.messages.RideImportSettingRemoved.data=robotide.publish.messages.RideImportSettingRemoved-class.html#data,Variable robotide.publish.messages.RideInitFileRemoved.data=robotide.publish.messages.RideInitFileRemoved-class.html#data,Variable robotide.publish.messages.RideItem.data=robotide.publish.messages.RideItem-class.html#data,Variable robotide.publish.messages.RideLog.data=robotide.publish.messages.RideLog-class.html#data,Variable robotide.publish.messages.RideLogException.data=robotide.publish.messages.RideLogException-class.html#data,Variable robotide.publish.messages.RideLogMessage.data=robotide.publish.messages.RideLogMessage-class.html#data,Variable robotide.publish.messages.RideMessage.data=robotide.publish.messages.RideMessage-class.html#data,Variable robotide.publish.messages.RideNewProject.data=robotide.publish.messages.RideNewProject-class.html#data,Variable robotide.publish.messages.RideNotebookTabChanging.data=robotide.publish.messages.RideNotebookTabChanging-class.html#data,Variable robotide.publish.messages.RideOpenResource.data=robotide.publish.messages.RideOpenResource-class.html#data,Variable robotide.publish.messages.RideOpenSuite.data=robotide.publish.messages.RideOpenSuite-class.html#data,Variable robotide.publish.messages.RideSaved.data=robotide.publish.messages.RideSaved-class.html#data,Variable robotide.publish.messages.RideSaving.data=robotide.publish.messages.RideSaving-class.html#data,Variable robotide.publish.messages.RideSelectResource.data=robotide.publish.messages.RideSelectResource-class.html#data,Variable robotide.publish.messages.RideSettingsChanged.data=robotide.publish.messages.RideSettingsChanged-class.html#data,Variable robotide.publish.messages.RideSuiteAdded.data=robotide.publish.messages.RideSuiteAdded-class.html#data,Variable robotide.publish.messages.RideTestCaseAdded.data=robotide.publish.messages.RideTestCaseAdded-class.html#data,Variable robotide.publish.messages.RideTestCaseRemoved.data=robotide.publish.messages.RideTestCaseRemoved-class.html#data,Variable robotide.publish.messages.RideTreeSelection.data=robotide.publish.messages.RideTreeSelection-class.html#data,Variable robotide.publish.messages.RideUserKeywordAdded.data=robotide.publish.messages.RideUserKeywordAdded-class.html#data,Variable robotide.publish.messages.RideUserKeywordRemoved.data=robotide.publish.messages.RideUserKeywordRemoved-class.html#data,Variable robotide.publish.messages.RideVariableAdded.data=robotide.publish.messages.RideVariableAdded-class.html#data,Variable robotide.publish.messages.RideVariableMovedDown.data=robotide.publish.messages.RideVariableMovedDown-class.html#data,Variable robotide.publish.messages.RideVariableMovedUp.data=robotide.publish.messages.RideVariableMovedUp-class.html#data,Variable robotide.publish.messages.RideVariableRemoved.data=robotide.publish.messages.RideVariableRemoved-class.html#data,Variable robotide.publish.messages.RideVariableUpdated.data=robotide.publish.messages.RideVariableUpdated-class.html#data"><a title="robotide.controller.chiefcontroller.ChiefController.data
+robotide.controller.settingcontrollers.VariableController.data
+robotide.publish.messages.RideChangeFormat.data
+robotide.publish.messages.RideDataChangedToDirty.data
+robotide.publish.messages.RideDataDirtyCleared.data
+robotide.publish.messages.RideDataFileRemoved.data
+robotide.publish.messages.RideGridCellChanged.data
 robotide.publish.messages.RideImportSettingAdded.data
 robotide.publish.messages.RideImportSettingChanged.data
+robotide.publish.messages.RideImportSettingRemoved.data
+robotide.publish.messages.RideInitFileRemoved.data
+robotide.publish.messages.RideItem.data
+robotide.publish.messages.RideLog.data
+robotide.publish.messages.RideLogException.data
 robotide.publish.messages.RideLogMessage.data
 robotide.publish.messages.RideMessage.data
+robotide.publish.messages.RideNewProject.data
 robotide.publish.messages.RideNotebookTabChanging.data
 robotide.publish.messages.RideOpenResource.data
 robotide.publish.messages.RideOpenSuite.data
 robotide.publish.messages.RideSaved.data
 robotide.publish.messages.RideSaving.data
+robotide.publish.messages.RideSelectResource.data
+robotide.publish.messages.RideSettingsChanged.data
+robotide.publish.messages.RideSuiteAdded.data
+robotide.publish.messages.RideTestCaseAdded.data
+robotide.publish.messages.RideTestCaseRemoved.data
 robotide.publish.messages.RideTreeSelection.data
-robotide.publish.messages.RideUserKeywordAdded.data" class="py-name" href="#" onclick="return doclink('link-28', 'data', 'link-28');">data</a></tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_format_data</tt><tt class="py-op">(</tt><tt id="link-29" class="py-name"><a title="robotide.publish.messages.RideGridCellChanged.data
+robotide.publish.messages.RideUserKeywordAdded.data
+robotide.publish.messages.RideUserKeywordRemoved.data
+robotide.publish.messages.RideVariableAdded.data
+robotide.publish.messages.RideVariableMovedDown.data
+robotide.publish.messages.RideVariableMovedUp.data
+robotide.publish.messages.RideVariableRemoved.data
+robotide.publish.messages.RideVariableUpdated.data" class="py-name" href="#" onclick="return doclink('link-34', 'data', 'link-34');">data</a></tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_format_data</tt><tt class="py-op">(</tt><tt id="link-35" class="py-name"><a title="robotide.controller.chiefcontroller.ChiefController.data
+robotide.controller.settingcontrollers.VariableController.data
+robotide.publish.messages.RideChangeFormat.data
+robotide.publish.messages.RideDataChangedToDirty.data
+robotide.publish.messages.RideDataDirtyCleared.data
+robotide.publish.messages.RideDataFileRemoved.data
+robotide.publish.messages.RideGridCellChanged.data
 robotide.publish.messages.RideImportSettingAdded.data
 robotide.publish.messages.RideImportSettingChanged.data
+robotide.publish.messages.RideImportSettingRemoved.data
+robotide.publish.messages.RideInitFileRemoved.data
+robotide.publish.messages.RideItem.data
+robotide.publish.messages.RideLog.data
+robotide.publish.messages.RideLogException.data
 robotide.publish.messages.RideLogMessage.data
 robotide.publish.messages.RideMessage.data
+robotide.publish.messages.RideNewProject.data
 robotide.publish.messages.RideNotebookTabChanging.data
 robotide.publish.messages.RideOpenResource.data
 robotide.publish.messages.RideOpenSuite.data
 robotide.publish.messages.RideSaved.data
 robotide.publish.messages.RideSaving.data
+robotide.publish.messages.RideSelectResource.data
+robotide.publish.messages.RideSettingsChanged.data
+robotide.publish.messages.RideSuiteAdded.data
+robotide.publish.messages.RideTestCaseAdded.data
+robotide.publish.messages.RideTestCaseRemoved.data
 robotide.publish.messages.RideTreeSelection.data
-robotide.publish.messages.RideUserKeywordAdded.data" class="py-name" href="#" onclick="return doclink('link-29', 'data', 'link-28');">data</a></tt><tt class="py-op">)</tt> </tt>
-<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt id="link-30" class="py-name"><a title="robotide.publish.messages.RideGridCellChanged.data
+robotide.publish.messages.RideUserKeywordAdded.data
+robotide.publish.messages.RideUserKeywordRemoved.data
+robotide.publish.messages.RideVariableAdded.data
+robotide.publish.messages.RideVariableMovedDown.data
+robotide.publish.messages.RideVariableMovedUp.data
+robotide.publish.messages.RideVariableRemoved.data
+robotide.publish.messages.RideVariableUpdated.data" class="py-name" href="#" onclick="return doclink('link-35', 'data', 'link-34');">data</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-op">(</tt><tt id="link-36" class="py-name"><a title="robotide.controller.chiefcontroller.ChiefController.data
+robotide.controller.settingcontrollers.VariableController.data
+robotide.publish.messages.RideChangeFormat.data
+robotide.publish.messages.RideDataChangedToDirty.data
+robotide.publish.messages.RideDataDirtyCleared.data
+robotide.publish.messages.RideDataFileRemoved.data
+robotide.publish.messages.RideGridCellChanged.data
 robotide.publish.messages.RideImportSettingAdded.data
 robotide.publish.messages.RideImportSettingChanged.data
+robotide.publish.messages.RideImportSettingRemoved.data
+robotide.publish.messages.RideInitFileRemoved.data
+robotide.publish.messages.RideItem.data
+robotide.publish.messages.RideLog.data
+robotide.publish.messages.RideLogException.data
 robotide.publish.messages.RideLogMessage.data
 robotide.publish.messages.RideMessage.data
+robotide.publish.messages.RideNewProject.data
 robotide.publish.messages.RideNotebookTabChanging.data
 robotide.publish.messages.RideOpenResource.data
 robotide.publish.messages.RideOpenSuite.data
 robotide.publish.messages.RideSaved.data
 robotide.publish.messages.RideSaving.data
+robotide.publish.messages.RideSelectResource.data
+robotide.publish.messages.RideSettingsChanged.data
+robotide.publish.messages.RideSuiteAdded.data
+robotide.publish.messages.RideTestCaseAdded.data
+robotide.publish.messages.RideTestCaseRemoved.data
 robotide.publish.messages.RideTreeSelection.data
-robotide.publish.messages.RideUserKeywordAdded.data" class="py-name" href="#" onclick="return doclink('link-30', 'data', 'link-28');">data</a></tt><tt class="py-op">:</tt> </tt>
-<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> </tt>
-<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line">        <tt class="py-name">dataobject</tt> <tt class="py-op">=</tt> <tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">TextDataObject</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line">        <tt class="py-name">dataobject</tt><tt class="py-op">.</tt><tt class="py-name">SetText</tt><tt class="py-op">(</tt><tt id="link-31" class="py-name"><a title="robotide.publish.messages.RideGridCellChanged.data
+robotide.publish.messages.RideUserKeywordAdded.data
+robotide.publish.messages.RideUserKeywordRemoved.data
+robotide.publish.messages.RideVariableAdded.data
+robotide.publish.messages.RideVariableMovedDown.data
+robotide.publish.messages.RideVariableMovedUp.data
+robotide.publish.messages.RideVariableRemoved.data
+robotide.publish.messages.RideVariableUpdated.data" class="py-name" href="#" onclick="return doclink('link-36', 'data', 'link-34');">data</a></tt> <tt class="py-keyword">and</tt> <tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">TheClipboard</tt><tt class="py-op">.</tt><tt class="py-name">Open</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line">        <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line">            <tt class="py-name">tdo</tt> <tt class="py-op">=</tt> <tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">TextDataObject</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line">            <tt class="py-name">tdo</tt><tt class="py-op">.</tt><tt class="py-name">SetText</tt><tt class="py-op">(</tt><tt id="link-37" class="py-name"><a title="robotide.controller.chiefcontroller.ChiefController.data
+robotide.controller.settingcontrollers.VariableController.data
+robotide.publish.messages.RideChangeFormat.data
+robotide.publish.messages.RideDataChangedToDirty.data
+robotide.publish.messages.RideDataDirtyCleared.data
+robotide.publish.messages.RideDataFileRemoved.data
+robotide.publish.messages.RideGridCellChanged.data
 robotide.publish.messages.RideImportSettingAdded.data
 robotide.publish.messages.RideImportSettingChanged.data
+robotide.publish.messages.RideImportSettingRemoved.data
+robotide.publish.messages.RideInitFileRemoved.data
+robotide.publish.messages.RideItem.data
+robotide.publish.messages.RideLog.data
+robotide.publish.messages.RideLogException.data
 robotide.publish.messages.RideLogMessage.data
 robotide.publish.messages.RideMessage.data
+robotide.publish.messages.RideNewProject.data
 robotide.publish.messages.RideNotebookTabChanging.data
 robotide.publish.messages.RideOpenResource.data
 robotide.publish.messages.RideOpenSuite.data
 robotide.publish.messages.RideSaved.data
 robotide.publish.messages.RideSaving.data
+robotide.publish.messages.RideSelectResource.data
+robotide.publish.messages.RideSettingsChanged.data
+robotide.publish.messages.RideSuiteAdded.data
+robotide.publish.messages.RideTestCaseAdded.data
+robotide.publish.messages.RideTestCaseRemoved.data
 robotide.publish.messages.RideTreeSelection.data
-robotide.publish.messages.RideUserKeywordAdded.data" class="py-name" href="#" onclick="return doclink('link-31', 'data', 'link-28');">data</a></tt><tt class="py-op">)</tt> </tt>
-<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line">        <tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">TheClipboard</tt><tt class="py-op">.</tt><tt class="py-name">Open</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line">        <tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">TheClipboard</tt><tt class="py-op">.</tt><tt class="py-name">SetData</tt><tt class="py-op">(</tt><tt class="py-name">dataobject</tt><tt class="py-op">)</tt> </tt>
-<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line">        <tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">TheClipboard</tt><tt class="py-op">.</tt><tt class="py-name">Close</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-</div><a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line"> </tt>
-<a name="_GridClipboard._format_data"></a><div id="_GridClipboard._format_data-def"><a name="L128"></a><tt class="py-lineno">128</tt> <a class="py-toggle" href="#" id="_GridClipboard._format_data-toggle" onclick="return toggle('_GridClipboard._format_data');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._GridClipboard-class.html#_format_data">_format_data</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">data</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="_GridClipboard._format_data-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_GridClipboard._format_data-expanded"><a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt id="link-32" class="py-name"><a title="robotide.publish.messages.RideGridCellChanged.data
+robotide.publish.messages.RideUserKeywordAdded.data
+robotide.publish.messages.RideUserKeywordRemoved.data
+robotide.publish.messages.RideVariableAdded.data
+robotide.publish.messages.RideVariableMovedDown.data
+robotide.publish.messages.RideVariableMovedUp.data
+robotide.publish.messages.RideVariableRemoved.data
+robotide.publish.messages.RideVariableUpdated.data" class="py-name" href="#" onclick="return doclink('link-37', 'data', 'link-34');">data</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line">            <tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">TheClipboard</tt><tt class="py-op">.</tt><tt class="py-name">SetData</tt><tt class="py-op">(</tt><tt class="py-name">tdo</tt><tt class="py-op">)</tt> </tt>
+<a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line">        <tt class="py-keyword">finally</tt><tt class="py-op">:</tt> </tt>
+<a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line">            <tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">TheClipboard</tt><tt class="py-op">.</tt><tt class="py-name">Close</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line"> </tt>
+<a name="_GridClipboard._format_data"></a><div id="_GridClipboard._format_data-def"><a name="L130"></a><tt class="py-lineno">130</tt> <a class="py-toggle" href="#" id="_GridClipboard._format_data-toggle" onclick="return toggle('_GridClipboard._format_data');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._GridClipboard-class.html#_format_data">_format_data</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">data</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_GridClipboard._format_data-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_GridClipboard._format_data-expanded"><a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt id="link-38" class="py-name"><a title="robotide.controller.chiefcontroller.ChiefController.data
+robotide.controller.settingcontrollers.VariableController.data
+robotide.publish.messages.RideChangeFormat.data
+robotide.publish.messages.RideDataChangedToDirty.data
+robotide.publish.messages.RideDataDirtyCleared.data
+robotide.publish.messages.RideDataFileRemoved.data
+robotide.publish.messages.RideGridCellChanged.data
 robotide.publish.messages.RideImportSettingAdded.data
 robotide.publish.messages.RideImportSettingChanged.data
+robotide.publish.messages.RideImportSettingRemoved.data
+robotide.publish.messages.RideInitFileRemoved.data
+robotide.publish.messages.RideItem.data
+robotide.publish.messages.RideLog.data
+robotide.publish.messages.RideLogException.data
 robotide.publish.messages.RideLogMessage.data
 robotide.publish.messages.RideMessage.data
+robotide.publish.messages.RideNewProject.data
 robotide.publish.messages.RideNotebookTabChanging.data
 robotide.publish.messages.RideOpenResource.data
 robotide.publish.messages.RideOpenSuite.data
 robotide.publish.messages.RideSaved.data
 robotide.publish.messages.RideSaving.data
+robotide.publish.messages.RideSelectResource.data
+robotide.publish.messages.RideSettingsChanged.data
+robotide.publish.messages.RideSuiteAdded.data
+robotide.publish.messages.RideTestCaseAdded.data
+robotide.publish.messages.RideTestCaseRemoved.data
 robotide.publish.messages.RideTreeSelection.data
-robotide.publish.messages.RideUserKeywordAdded.data" class="py-name" href="#" onclick="return doclink('link-32', 'data', 'link-28');">data</a></tt><tt class="py-op">,</tt> <tt class="py-name">list</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-<a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">linesep</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-string">'\t'</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt id="link-33" class="py-name"><a title="robotide.editor.dialoghelps.row" class="py-name" href="#" onclick="return doclink('link-33', 'row', 'link-6');">row</a></tt><tt class="py-op">)</tt> <tt class="py-keyword">for</tt> <tt id="link-34" class="py-name"><a title="robotide.editor.dialoghelps.row" class="py-name" href="#" onclick="return doclink('link-34', 'row', 'link-6');">row</a></tt> <tt class="py-keyword">in</tt> <tt id="link-35" class="py-name"><a title="robotide.publish.messages.RideGridCellChanged.data
+robotide.publish.messages.RideUserKeywordAdded.data
+robotide.publish.messages.RideUserKeywordRemoved.data
+robotide.publish.messages.RideVariableAdded.data
+robotide.publish.messages.RideVariableMovedDown.data
+robotide.publish.messages.RideVariableMovedUp.data
+robotide.publish.messages.RideVariableRemoved.data
+robotide.publish.messages.RideVariableUpdated.data" class="py-name" href="#" onclick="return doclink('link-38', 'data', 'link-34');">data</a></tt><tt class="py-op">,</tt> <tt id="link-39" class="py-name"><a title="robotide.widgets.list" class="py-name" href="#" onclick="return doclink('link-39', 'list', 'link-7');">list</a></tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">linesep</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-string">'\t'</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt id="link-40" class="py-name"><a title="robotide.editor.dialoghelps.row" class="py-name" href="#" onclick="return doclink('link-40', 'row', 'link-8');">row</a></tt><tt class="py-op">)</tt> <tt class="py-keyword">for</tt> <tt id="link-41" class="py-name"><a title="robotide.editor.dialoghelps.row" class="py-name" href="#" onclick="return doclink('link-41', 'row', 'link-8');">row</a></tt> <tt class="py-keyword">in</tt> <tt id="link-42" class="py-name"><a title="robotide.controller.chiefcontroller.ChiefController.data
+robotide.controller.settingcontrollers.VariableController.data
+robotide.publish.messages.RideChangeFormat.data
+robotide.publish.messages.RideDataChangedToDirty.data
+robotide.publish.messages.RideDataDirtyCleared.data
+robotide.publish.messages.RideDataFileRemoved.data
+robotide.publish.messages.RideGridCellChanged.data
 robotide.publish.messages.RideImportSettingAdded.data
 robotide.publish.messages.RideImportSettingChanged.data
+robotide.publish.messages.RideImportSettingRemoved.data
+robotide.publish.messages.RideInitFileRemoved.data
+robotide.publish.messages.RideItem.data
+robotide.publish.messages.RideLog.data
+robotide.publish.messages.RideLogException.data
 robotide.publish.messages.RideLogMessage.data
 robotide.publish.messages.RideMessage.data
+robotide.publish.messages.RideNewProject.data
 robotide.publish.messages.RideNotebookTabChanging.data
 robotide.publish.messages.RideOpenResource.data
 robotide.publish.messages.RideOpenSuite.data
 robotide.publish.messages.RideSaved.data
 robotide.publish.messages.RideSaving.data
+robotide.publish.messages.RideSelectResource.data
+robotide.publish.messages.RideSettingsChanged.data
+robotide.publish.messages.RideSuiteAdded.data
+robotide.publish.messages.RideTestCaseAdded.data
+robotide.publish.messages.RideTestCaseRemoved.data
 robotide.publish.messages.RideTreeSelection.data
-robotide.publish.messages.RideUserKeywordAdded.data" class="py-name" href="#" onclick="return doclink('link-35', 'data', 'link-28');">data</a></tt><tt class="py-op">)</tt> </tt>
-<a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt id="link-36" class="py-name"><a title="robotide.publish.messages.RideGridCellChanged.data
+robotide.publish.messages.RideUserKeywordAdded.data
+robotide.publish.messages.RideUserKeywordRemoved.data
+robotide.publish.messages.RideVariableAdded.data
+robotide.publish.messages.RideVariableMovedDown.data
+robotide.publish.messages.RideVariableMovedUp.data
+robotide.publish.messages.RideVariableRemoved.data
+robotide.publish.messages.RideVariableUpdated.data" class="py-name" href="#" onclick="return doclink('link-42', 'data', 'link-34');">data</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt id="link-43" class="py-name"><a title="robotide.controller.chiefcontroller.ChiefController.data
+robotide.controller.settingcontrollers.VariableController.data
+robotide.publish.messages.RideChangeFormat.data
+robotide.publish.messages.RideDataChangedToDirty.data
+robotide.publish.messages.RideDataDirtyCleared.data
+robotide.publish.messages.RideDataFileRemoved.data
+robotide.publish.messages.RideGridCellChanged.data
 robotide.publish.messages.RideImportSettingAdded.data
 robotide.publish.messages.RideImportSettingChanged.data
+robotide.publish.messages.RideImportSettingRemoved.data
+robotide.publish.messages.RideInitFileRemoved.data
+robotide.publish.messages.RideItem.data
+robotide.publish.messages.RideLog.data
+robotide.publish.messages.RideLogException.data
 robotide.publish.messages.RideLogMessage.data
 robotide.publish.messages.RideMessage.data
+robotide.publish.messages.RideNewProject.data
 robotide.publish.messages.RideNotebookTabChanging.data
 robotide.publish.messages.RideOpenResource.data
 robotide.publish.messages.RideOpenSuite.data
 robotide.publish.messages.RideSaved.data
 robotide.publish.messages.RideSaving.data
+robotide.publish.messages.RideSelectResource.data
+robotide.publish.messages.RideSettingsChanged.data
+robotide.publish.messages.RideSuiteAdded.data
+robotide.publish.messages.RideTestCaseAdded.data
+robotide.publish.messages.RideTestCaseRemoved.data
 robotide.publish.messages.RideTreeSelection.data
-robotide.publish.messages.RideUserKeywordAdded.data" class="py-name" href="#" onclick="return doclink('link-36', 'data', 'link-28');">data</a></tt><tt class="py-op">,</tt> <tt class="py-name">basestring</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-<a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt id="link-37" class="py-name"><a title="robotide.publish.messages.RideGridCellChanged.data
+robotide.publish.messages.RideUserKeywordAdded.data
+robotide.publish.messages.RideUserKeywordRemoved.data
+robotide.publish.messages.RideVariableAdded.data
+robotide.publish.messages.RideVariableMovedDown.data
+robotide.publish.messages.RideVariableMovedUp.data
+robotide.publish.messages.RideVariableRemoved.data
+robotide.publish.messages.RideVariableUpdated.data" class="py-name" href="#" onclick="return doclink('link-43', 'data', 'link-34');">data</a></tt><tt class="py-op">,</tt> <tt class="py-name">basestring</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt id="link-44" class="py-name"><a title="robotide.controller.chiefcontroller.ChiefController.data
+robotide.controller.settingcontrollers.VariableController.data
+robotide.publish.messages.RideChangeFormat.data
+robotide.publish.messages.RideDataChangedToDirty.data
+robotide.publish.messages.RideDataDirtyCleared.data
+robotide.publish.messages.RideDataFileRemoved.data
+robotide.publish.messages.RideGridCellChanged.data
 robotide.publish.messages.RideImportSettingAdded.data
 robotide.publish.messages.RideImportSettingChanged.data
+robotide.publish.messages.RideImportSettingRemoved.data
+robotide.publish.messages.RideInitFileRemoved.data
+robotide.publish.messages.RideItem.data
+robotide.publish.messages.RideLog.data
+robotide.publish.messages.RideLogException.data
 robotide.publish.messages.RideLogMessage.data
 robotide.publish.messages.RideMessage.data
+robotide.publish.messages.RideNewProject.data
 robotide.publish.messages.RideNotebookTabChanging.data
 robotide.publish.messages.RideOpenResource.data
 robotide.publish.messages.RideOpenSuite.data
 robotide.publish.messages.RideSaved.data
 robotide.publish.messages.RideSaving.data
+robotide.publish.messages.RideSelectResource.data
+robotide.publish.messages.RideSettingsChanged.data
+robotide.publish.messages.RideSuiteAdded.data
+robotide.publish.messages.RideTestCaseAdded.data
+robotide.publish.messages.RideTestCaseRemoved.data
 robotide.publish.messages.RideTreeSelection.data
-robotide.publish.messages.RideUserKeywordAdded.data" class="py-name" href="#" onclick="return doclink('link-37', 'data', 'link-28');">data</a></tt> </tt>
-<a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">None</tt> </tt>
-</div><a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line"> </tt>
-<a name="_GridClipboard.get_contents"></a><div id="_GridClipboard.get_contents-def"><a name="L135"></a><tt class="py-lineno">135</tt> <a class="py-toggle" href="#" id="_GridClipboard.get_contents-toggle" onclick="return toggle('_GridClipboard.get_contents');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._GridClipboard-class.html#get_contents">get_contents</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="_GridClipboard.get_contents-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_GridClipboard.get_contents-expanded"><a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line">        <tt class="py-docstring">"""Gets contents of the clipboard.</tt> </tt>
-<a name="L137"></a><tt class="py-lineno">137</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
-<a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line"><tt class="py-docstring">        Returns either a string or a list of rows to be pasted into clipboard.</tt> </tt>
-<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
-<a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_split_string_from_tabs_and_newlines</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_get_contents</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
-</div><a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line"> </tt>
-<a name="_GridClipboard._get_contents"></a><div id="_GridClipboard._get_contents-def"><a name="L142"></a><tt class="py-lineno">142</tt> <a class="py-toggle" href="#" id="_GridClipboard._get_contents-toggle" onclick="return toggle('_GridClipboard._get_contents');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._GridClipboard-class.html#_get_contents">_get_contents</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="_GridClipboard._get_contents-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_GridClipboard._get_contents-expanded"><a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line">        <tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">TheClipboard</tt><tt class="py-op">.</tt><tt class="py-name">Open</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-<a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line">        <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
-<a name="L145"></a><tt class="py-lineno">145</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_get_value_from_clipboard</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-<a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line">        <tt class="py-keyword">finally</tt><tt class="py-op">:</tt> </tt>
-<a name="L147"></a><tt class="py-lineno">147</tt>  <tt class="py-line">            <tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">TheClipboard</tt><tt class="py-op">.</tt><tt class="py-name">Close</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-</div><a name="L148"></a><tt class="py-lineno">148</tt>  <tt class="py-line"> </tt>
-<a name="_GridClipboard._get_value_from_clipboard"></a><div id="_GridClipboard._get_value_from_clipboard-def"><a name="L149"></a><tt class="py-lineno">149</tt> <a class="py-toggle" href="#" id="_GridClipboard._get_value_from_clipboard-toggle" onclick="return toggle('_GridClipboard._get_value_from_clipboard');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._GridClipboard-class.html#_get_value_from_clipboard">_get_value_from_clipboard</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="_GridClipboard._get_value_from_clipboard-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_GridClipboard._get_value_from_clipboard-expanded"><a name="L150"></a><tt class="py-lineno">150</tt>  <tt class="py-line">        <tt class="py-comment"># TODO: This method can be inlined with the previous, when</tt> </tt>
-<a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line">        <tt class="py-comment"># try-except-finally works.</tt> </tt>
-<a name="L152"></a><tt class="py-lineno">152</tt>  <tt class="py-line">        <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
-<a name="L153"></a><tt class="py-lineno">153</tt>  <tt class="py-line">            <tt class="py-name">do</tt> <tt class="py-op">=</tt> <tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">TextDataObject</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-<a name="L154"></a><tt class="py-lineno">154</tt>  <tt class="py-line">            <tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">TheClipboard</tt><tt class="py-op">.</tt><tt class="py-name">GetData</tt><tt class="py-op">(</tt><tt class="py-name">do</tt><tt class="py-op">)</tt> </tt>
-<a name="L155"></a><tt class="py-lineno">155</tt>  <tt class="py-line">            <tt id="link-38" class="py-name"><a title="robotide.publish.messages.RideGridCellChanged.data
-robotide.publish.messages.RideImportSettingAdded.data
-robotide.publish.messages.RideImportSettingChanged.data
-robotide.publish.messages.RideLogMessage.data
-robotide.publish.messages.RideMessage.data
-robotide.publish.messages.RideNotebookTabChanging.data
-robotide.publish.messages.RideOpenResource.data
-robotide.publish.messages.RideOpenSuite.data
-robotide.publish.messages.RideSaved.data
-robotide.publish.messages.RideSaving.data
-robotide.publish.messages.RideTreeSelection.data
-robotide.publish.messages.RideUserKeywordAdded.data" class="py-name" href="#" onclick="return doclink('link-38', 'data', 'link-28');">data</a></tt> <tt class="py-op">=</tt>  <tt class="py-name">do</tt><tt class="py-op">.</tt><tt class="py-name">GetDataHere</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-<a name="L156"></a><tt class="py-lineno">156</tt>  <tt class="py-line">        <tt class="py-keyword">except</tt> <tt class="py-name">TypeError</tt><tt class="py-op">:</tt> </tt>
-<a name="L157"></a><tt class="py-lineno">157</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-string">''</tt> </tt>
-<a name="L158"></a><tt class="py-lineno">158</tt>  <tt class="py-line">        <tt class="py-comment"># For some reason, when getting string contents from the</tt> </tt>
-<a name="L159"></a><tt class="py-lineno">159</tt>  <tt class="py-line">        <tt class="py-comment"># clipboard on Windows '\x00' is inserted between each char.</tt> </tt>
-<a name="L160"></a><tt class="py-lineno">160</tt>  <tt class="py-line">        <tt class="py-comment"># WTF?!?!?!?</tt> </tt>
-<a name="L161"></a><tt class="py-lineno">161</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt id="link-39" class="py-name"><a title="robotide.publish.messages.RideGridCellChanged.data
-robotide.publish.messages.RideImportSettingAdded.data
-robotide.publish.messages.RideImportSettingChanged.data
-robotide.publish.messages.RideLogMessage.data
-robotide.publish.messages.RideMessage.data
-robotide.publish.messages.RideNotebookTabChanging.data
-robotide.publish.messages.RideOpenResource.data
-robotide.publish.messages.RideOpenSuite.data
-robotide.publish.messages.RideSaved.data
-robotide.publish.messages.RideSaving.data
-robotide.publish.messages.RideTreeSelection.data
-robotide.publish.messages.RideUserKeywordAdded.data" class="py-name" href="#" onclick="return doclink('link-39', 'data', 'link-28');">data</a></tt> <tt class="py-keyword">and</tt> <tt id="link-40" class="py-name"><a title="robotide.publish.messages.RideGridCellChanged.data
-robotide.publish.messages.RideImportSettingAdded.data
-robotide.publish.messages.RideImportSettingChanged.data
-robotide.publish.messages.RideLogMessage.data
-robotide.publish.messages.RideMessage.data
-robotide.publish.messages.RideNotebookTabChanging.data
-robotide.publish.messages.RideOpenResource.data
-robotide.publish.messages.RideOpenSuite.data
-robotide.publish.messages.RideSaved.data
-robotide.publish.messages.RideSaving.data
-robotide.publish.messages.RideTreeSelection.data
-robotide.publish.messages.RideUserKeywordAdded.data" class="py-name" href="#" onclick="return doclink('link-40', 'data', 'link-28');">data</a></tt><tt class="py-op">.</tt><tt class="py-name">replace</tt><tt class="py-op">(</tt><tt class="py-string">'\x00'</tt><tt class="py-op">,</tt> <tt class="py-string">''</tt><tt class="py-op">)</tt> <tt class="py-keyword">or</tt> <tt class="py-string">''</tt> </tt>
-</div><a name="L162"></a><tt class="py-lineno">162</tt>  <tt class="py-line"> </tt>
-<a name="_GridClipboard._split_string_from_tabs_and_newlines"></a><div id="_GridClipboard._split_string_from_tabs_and_newlines-def"><a name="L163"></a><tt class="py-lineno">163</tt> <a class="py-toggle" href="#" id="_GridClipboard._split_string_from_tabs_and_newlines-toggle" onclick="return toggle('_GridClipboard._split_string_from_tabs_and_newlines');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._GridClipboard-class.html#_split_string_from_tabs_and_newlines">_split_string_from_tabs_and_newlines</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">string</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="_GridClipboard._split_string_from_tabs_and_newlines-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_GridClipboard._split_string_from_tabs_and_newlines-expanded"><a name="L164"></a><tt class="py-lineno">164</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-string">'\t'</tt> <tt class="py-keyword">in</tt> <tt class="py-name">string</tt><tt class="py-op">:</tt> </tt>
-<a name="L165"></a><tt class="py-lineno">165</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">string</tt> </tt>
-<a name="L166"></a><tt class="py-lineno">166</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-op">[</tt> <tt class="py-name">line</tt><tt class="py-op">.</tt><tt class="py-name">split</tt><tt class="py-op">(</tt><tt class="py-string">'\t'</tt><tt class="py-op">)</tt> <tt class="py-keyword">for</tt> <tt class="py-name">line</tt> <tt class="py-keyword">in</tt> <tt class="py-name">string</tt><tt class="py-op">.</tt><tt class="py-name">splitlines</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">]</tt> </tt>
-</div></div><a name="L167"></a><tt class="py-lineno">167</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+robotide.publish.messages.RideUserKeywordAdded.data
+robotide.publish.messages.RideUserKeywordRemoved.data
+robotide.publish.messages.RideVariableAdded.data
+robotide.publish.messages.RideVariableMovedDown.data
+robotide.publish.messages.RideVariableMovedUp.data
+robotide.publish.messages.RideVariableRemoved.data
+robotide.publish.messages.RideVariableUpdated.data" class="py-name" href="#" onclick="return doclink('link-44', 'data', 'link-34');">data</a></tt> </tt>
+<a name="L135"></a><tt class="py-lineno">135</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">None</tt> </tt>
+</div><a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line"> </tt>
+<a name="_GridClipboard.get_contents"></a><div id="_GridClipboard.get_contents-def"><a name="L137"></a><tt class="py-lineno">137</tt> <a class="py-toggle" href="#" id="_GridClipboard.get_contents-toggle" onclick="return toggle('_GridClipboard.get_contents');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._GridClipboard-class.html#get_contents">get_contents</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_GridClipboard.get_contents-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_GridClipboard.get_contents-expanded"><a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line">        <tt class="py-docstring">"""Gets contents of the clipboard.</tt> </tt>
+<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line"><tt class="py-docstring">        Returns either a string or a list of rows to be pasted into clipboard.</tt> </tt>
+<a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L142"></a><tt class="py-lineno">142</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_split_string_from_tabs_and_newlines</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_get_contents</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line"> </tt>
+<a name="_GridClipboard._get_contents"></a><div id="_GridClipboard._get_contents-def"><a name="L144"></a><tt class="py-lineno">144</tt> <a class="py-toggle" href="#" id="_GridClipboard._get_contents-toggle" onclick="return toggle('_GridClipboard._get_contents');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._GridClipboard-class.html#_get_contents">_get_contents</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_GridClipboard._get_contents-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_GridClipboard._get_contents-expanded"><a name="L145"></a><tt class="py-lineno">145</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">TheClipboard</tt><tt class="py-op">.</tt><tt class="py-name">Open</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-string">''</tt> </tt>
+<a name="L147"></a><tt class="py-lineno">147</tt>  <tt class="py-line">        <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L148"></a><tt class="py-lineno">148</tt>  <tt class="py-line">            <tt class="py-name">tdo</tt> <tt class="py-op">=</tt> <tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">TextDataObject</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L149"></a><tt class="py-lineno">149</tt>  <tt class="py-line">            <tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">TheClipboard</tt><tt class="py-op">.</tt><tt class="py-name">GetData</tt><tt class="py-op">(</tt><tt class="py-name">tdo</tt><tt class="py-op">)</tt> </tt>
+<a name="L150"></a><tt class="py-lineno">150</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">tdo</tt><tt class="py-op">.</tt><tt class="py-name">GetText</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-keyword">or</tt> <tt class="py-string">''</tt> </tt>
+<a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line">        <tt class="py-keyword">finally</tt><tt class="py-op">:</tt> </tt>
+<a name="L152"></a><tt class="py-lineno">152</tt>  <tt class="py-line">            <tt class="py-name">wx</tt><tt class="py-op">.</tt><tt class="py-name">TheClipboard</tt><tt class="py-op">.</tt><tt class="py-name">Close</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L153"></a><tt class="py-lineno">153</tt>  <tt class="py-line"> </tt>
+<a name="_GridClipboard._split_string_from_tabs_and_newlines"></a><div id="_GridClipboard._split_string_from_tabs_and_newlines-def"><a name="L154"></a><tt class="py-lineno">154</tt> <a class="py-toggle" href="#" id="_GridClipboard._split_string_from_tabs_and_newlines-toggle" onclick="return toggle('_GridClipboard._split_string_from_tabs_and_newlines');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.editor.clipboard._GridClipboard-class.html#_split_string_from_tabs_and_newlines">_split_string_from_tabs_and_newlines</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">string</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_GridClipboard._split_string_from_tabs_and_newlines-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="_GridClipboard._split_string_from_tabs_and_newlines-expanded"><a name="L155"></a><tt class="py-lineno">155</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-op">[</tt><tt class="py-name">line</tt><tt class="py-op">.</tt><tt class="py-name">split</tt><tt class="py-op">(</tt><tt class="py-string">'\t'</tt><tt class="py-op">)</tt> <tt class="py-keyword">for</tt> <tt class="py-name">line</tt> <tt class="py-keyword">in</tt> <tt class="py-name">string</tt><tt class="py-op">.</tt><tt class="py-name">splitlines</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">]</tt> </tt>
+</div></div><a name="L156"></a><tt class="py-lineno">156</tt>  <tt class="py-line"> </tt><script type="text/javascript">
 <!--
 expandto(location.href);
 // -->
@@ -388,7 +534,7 @@ expandto(location.href);
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:46 2010
+    Generated by Epydoc 3.0.1 on Thu Mar 31 14:48:23 2011
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

@@ -243,6 +243,13 @@ new empty dictionary
       <code>fromkeys</code>,
       <code>has_key</code>
       </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__setattr__</code>,
+      <code>__subclasshook__</code>
+      </p>
     </td>
   </tr>
 </table>
@@ -258,6 +265,22 @@ new empty dictionary
     <td colspan="2" class="summary">
     <p class="indent-wrapped-lines"><b>Inherited from <code>dict</code></b>:
       <code>__hash__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Properties</span></td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
       </p>
     </td>
   </tr>
@@ -291,14 +314,14 @@ new empty dictionary
   </tr></table>
   
   <p>Parse a config file or create a config file object.</p>
-<p><tt class="rst-docutils literal"><span class="pre">ConfigObj(infile=None,</span> <span class="pre">options=None,</span> <span class="pre">**kwargs)</span></tt></p>
+<p><tt class="rst-docutils literal">ConfigObj(infile=None, options=None, **kwargs)</tt></p>
   <dl class="fields">
     <dt>Returns: <pre class="literalblock">
 new empty dictionary
 
 </pre></dt>
     <dt>Overrides:
-        dict.__init__
+        object.__init__
     </dt>
   </dl>
 </td></tr></table>
@@ -321,7 +344,7 @@ new empty dictionary
   str(x)
   <dl class="fields">
     <dt>Overrides:
-        dict.__repr__
+        object.__repr__
         <dd><em class="note">(inherited documentation)</em></dd>
     </dt>
   </dl>
@@ -374,28 +397,28 @@ new empty dictionary
   </tr></table>
   
   <p>Test the ConfigObj against a configspec.</p>
-<p>It uses the <tt class="rst-docutils literal"><span class="pre">validator</span></tt> object from <em>validate.py</em>.</p>
-<p>To run <tt class="rst-docutils literal"><span class="pre">validate</span></tt> on the current ConfigObj, call:</p>
+<p>It uses the <tt class="rst-docutils literal">validator</tt> object from <em>validate.py</em>.</p>
+<p>To run <tt class="rst-docutils literal">validate</tt> on the current ConfigObj, call:</p>
 <pre class="rst-literal-block">
 test = config.validate(validator)
 </pre>
 <p>(Normally having previously passed in the configspec when the ConfigObj
 was created - you can dynamically assign a dictionary of checks to the
-<tt class="rst-docutils literal"><span class="pre">configspec</span></tt> attribute of a section though).</p>
-<p>It returns <tt class="rst-docutils literal"><span class="pre">True</span></tt> if everything passes, or a dictionary of
+<tt class="rst-docutils literal">configspec</tt> attribute of a section though).</p>
+<p>It returns <tt class="rst-docutils literal">True</tt> if everything passes, or a dictionary of
 pass/fails (True/False). If every member of a subsection passes, it
-will just have the value <tt class="rst-docutils literal"><span class="pre">True</span></tt>. (It also returns <tt class="rst-docutils literal"><span class="pre">False</span></tt> if all
+will just have the value <tt class="rst-docutils literal">True</tt>. (It also returns <tt class="rst-docutils literal">False</tt> if all
 members fail).</p>
 <p>In addition, it converts the values from strings to their native
-types if their checks pass (and <tt class="rst-docutils literal"><span class="pre">stringify</span></tt> is set).</p>
-<p>If <tt class="rst-docutils literal"><span class="pre">preserve_errors</span></tt> is <tt class="rst-docutils literal"><span class="pre">True</span></tt> (<tt class="rst-docutils literal"><span class="pre">False</span></tt> is default) then instead
-of a marking a fail with a <tt class="rst-docutils literal"><span class="pre">False</span></tt>, it will preserve the actual
+types if their checks pass (and <tt class="rst-docutils literal">stringify</tt> is set).</p>
+<p>If <tt class="rst-docutils literal">preserve_errors</tt> is <tt class="rst-docutils literal">True</tt> (<tt class="rst-docutils literal">False</tt> is default) then instead
+of a marking a fail with a <tt class="rst-docutils literal">False</tt>, it will preserve the actual
 exception object. This can contain info about the reason for failure.
-For example the <tt class="rst-docutils literal"><span class="pre">VdtValueTooSmallError</span></tt> indicates that the value
+For example the <tt class="rst-docutils literal">VdtValueTooSmallError</tt> indicates that the value
 supplied was too small. If a value (or section) is missing it will
-still be marked as <tt class="rst-docutils literal"><span class="pre">False</span></tt>.</p>
-<p>You must have the validate module to use <tt class="rst-docutils literal"><span class="pre">preserve_errors=True</span></tt>.</p>
-<p>You can then use the <tt class="rst-docutils literal"><span class="pre">flatten_errors</span></tt> function to turn your nested
+still be marked as <tt class="rst-docutils literal">False</tt>.</p>
+<p>You must have the validate module to use <tt class="rst-docutils literal">preserve_errors=True</tt>.</p>
+<p>You can then use the <tt class="rst-docutils literal">flatten_errors</tt> function to turn your nested
 results dictionary into a flattened list of failures - useful for
 displaying meaningful error messages.</p>
   <dl class="fields">
@@ -436,7 +459,7 @@ displaying meaningful error messages.</p>
   </tr></table>
   
   <p>Reload a ConfigObj from file.</p>
-<p>This method raises a <tt class="rst-docutils literal"><span class="pre">ReloadError</span></tt> if the ConfigObj doesn't have
+<p>This method raises a <tt class="rst-docutils literal">ReloadError</tt> if the ConfigObj doesn't have
 a filename attribute pointing to a file.</p>
   <dl class="fields">
   </dl>
@@ -474,7 +497,7 @@ a filename attribute pointing to a file.</p>
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:41 2010
+    Generated by Epydoc 3.0.1 on Thu Mar 31 14:47:51 2011
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

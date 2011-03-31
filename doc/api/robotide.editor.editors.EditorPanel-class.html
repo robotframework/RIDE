@@ -241,12 +241,29 @@ Base class for all editor panels
           <td><span class="summary-sig"><a href="robotide.editor.editors.EditorPanel-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">plugin</span>,
         <span class="summary-sig-arg">parent</span>,
-        <span class="summary-sig-arg">item</span>,
+        <span class="summary-sig-arg">controller</span>,
         <span class="summary-sig-arg">tree</span>)</span><br />
       Size size=DefaultSize, long style=wxTAB_TRAVERSAL|wxNO_BORDER,
 String name=PanelNameStr) -&gt; Panel</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.editor.editors-pysrc.html#EditorPanel.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.editors.EditorPanel-class.html#tree_item_selected" class="summary-sig-name">tree_item_selected</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">item</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.editor.editors-pysrc.html#EditorPanel.tree_item_selected">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -510,6 +527,19 @@ String name=PanelNameStr) -&gt; Panel</td>
       <code>GetClassName</code>,
       <code>IsSameAs</code>
       </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
     </td>
   </tr>
 </table>
@@ -562,7 +592,8 @@ String name=PanelNameStr) -&gt; Panel</td>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="robotide.editor.editors.EditorPanel-class.html#title" class="summary-name">title</a> = <code title="None">None</code>
+        <a href="robotide.editor.editors.EditorPanel-class.html#title" class="summary-name">title</a> = <code title="None">None</code><br />
+      hash(x)
     </td>
   </tr>
 </table>
@@ -646,6 +677,9 @@ String name=PanelNameStr) -&gt; Panel</td>
       </p>
     <p class="indent-wrapped-lines"><b>Inherited from <code>wx._core.Object</code></b>:
       <code>ClassName</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
       </p>
     </td>
   </tr>
@@ -840,7 +874,7 @@ String name=PanelNameStr) -&gt; Panel</td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
         <span class="sig-arg">plugin</span>,
         <span class="sig-arg">parent</span>,
-        <span class="sig-arg">item</span>,
+        <span class="sig-arg">controller</span>,
         <span class="sig-arg">tree</span>)</span>
     <br /><em class="fname">(Constructor)</em>
   </h3>
@@ -849,16 +883,38 @@ String name=PanelNameStr) -&gt; Panel</td>
     </td>
   </tr></table>
   
-  <dl class="rst-docutils">
+  <dl class="rst-rst-docutils rst-docutils">
 <dt>__init__(self, Window parent, int id=-1, Point pos=DefaultPosition,</dt>
-<dd>Size size=DefaultSize, long style=wxTAB_TRAVERSAL|wxNO_BORDER,
-String name=PanelNameStr) -&gt; Panel</dd>
+<dd><p class="rst-first rst-last rst-first rst-last">Size size=DefaultSize, long style=wxTAB_TRAVERSAL|wxNO_BORDER,
+String name=PanelNameStr) -&gt; Panel</p>
+</dd>
 </dl>
   <dl class="fields">
     <dt>Returns: EvtHandler</dt>
     <dt>Overrides:
-        wx._core.Object.__init__
+        object.__init__
+        <dd><em class="note">(inherited documentation)</em></dd>
     </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="tree_item_selected"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">tree_item_selected</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">item</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.editor.editors-pysrc.html#EditorPanel.tree_item_selected">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
   </dl>
 </td></tr></table>
 </div>
@@ -914,7 +970,7 @@ String name=PanelNameStr) -&gt; Panel</dd>
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <h3 class="epydoc">title</h3>
-  
+  hash(x)
   <dl class="fields">
   </dl>
   <dl class="fields">
@@ -958,7 +1014,7 @@ None
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:42 2010
+    Generated by Epydoc 3.0.1 on Thu Mar 31 14:47:57 2011
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

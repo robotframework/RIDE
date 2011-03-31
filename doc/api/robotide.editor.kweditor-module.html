@@ -68,13 +68,6 @@
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="robotide.editor.kweditor.KeywordEditorUi-class.html" class="summary-name">KeywordEditorUi</a>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
         <a href="robotide.editor.kweditor.KeywordEditor-class.html" class="summary-name">KeywordEditor</a>
     </td>
   </tr>
@@ -83,6 +76,31 @@
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
         <a href="robotide.editor.kweditor.ContentAssistCellEditor-class.html" class="summary-name">ContentAssistCellEditor</a>
+    </td>
+  </tr>
+</table>
+<!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Functions</span></td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor-module.html#requires_focus" class="summary-sig-name">requires_focus</a>(<span class="summary-sig-arg">function</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#requires_focus">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
     </td>
   </tr>
 </table>
@@ -105,12 +123,74 @@
 <p class="indent-wrapped-lines"><b>Imports:</b>
   <span title="wx">wx</span>,
   <span title="wx.grid">grid</span>,
+  <a href="robotide.controller.commands.ChangeCellValue-class.html" title="robotide.controller.commands.ChangeCellValue">ChangeCellValue</a>,
+  <a href="robotide.controller.commands-module.html#ClearArea" title="robotide.controller.commands.ClearArea">ClearArea</a>,
+  <a href="robotide.controller.commands-module.html#PasteArea" title="robotide.controller.commands.PasteArea">PasteArea</a>,
+  <a href="robotide.controller.commands-module.html#DeleteRows" title="robotide.controller.commands.DeleteRows">DeleteRows</a>,
+  <a href="robotide.controller.commands-module.html#AddRows" title="robotide.controller.commands.AddRows">AddRows</a>,
+  <a href="robotide.controller.commands-module.html#CommentRows" title="robotide.controller.commands.CommentRows">CommentRows</a>,
+  <a href="robotide.controller.commands-module.html#InsertCells" title="robotide.controller.commands.InsertCells">InsertCells</a>,
+  <a href="robotide.controller.commands-module.html#DeleteCells" title="robotide.controller.commands.DeleteCells">DeleteCells</a>,
+  <a href="robotide.controller.commands-module.html#UncommentRows" title="robotide.controller.commands.UncommentRows">UncommentRows</a>,
+  <a href="robotide.controller.commands.Undo-class.html" title="robotide.controller.commands.Undo">Undo</a>,
+  <a href="robotide.controller.commands.Redo-class.html" title="robotide.controller.commands.Redo">Redo</a>,
+  <a href="robotide.controller.commands.RenameKeywordOccurrences-class.html" title="robotide.controller.commands.RenameKeywordOccurrences">RenameKeywordOccurrences</a>,
+  <a href="robotide.controller.commands.ExtractKeyword-class.html" title="robotide.controller.commands.ExtractKeyword">ExtractKeyword</a>,
+  <a href="robotide.controller.commands-module.html#AddKeywordFromCells" title="robotide.controller.commands.AddKeywordFromCells">AddKeywordFromCells</a>,
+  <a href="robotide.controller.commands.MoveRowsUp-class.html" title="robotide.controller.commands.MoveRowsUp">MoveRowsUp</a>,
+  <a href="robotide.controller.commands.MoveRowsDown-class.html" title="robotide.controller.commands.MoveRowsDown">MoveRowsDown</a>,
+  <a href="robotide.controller.commands-module.html#ExtractScalar" title="robotide.controller.commands.ExtractScalar">ExtractScalar</a>,
+  <a href="robotide.controller.commands-module.html#ExtractList" title="robotide.controller.commands.ExtractList">ExtractList</a>,
+  <a href="robotide.controller.cellinfo-module.html#TipMessage" title="robotide.controller.cellinfo.TipMessage">TipMessage</a>,
   <a href="robotide.publish.messages.RideGridCellChanged-class.html" title="robotide.publish.RideGridCellChanged">RideGridCellChanged</a>,
-  <a href="robotide.utils.components.PopupMenu-class.html" title="robotide.utils.PopupMenu">PopupMenu</a>,
+  <a href="robotide.publish.messages.RideItemStepsChanged-class.html" title="robotide.publish.RideItemStepsChanged">RideItemStepsChanged</a>,
+  <a href="robotide.publish.messages.RideSettingsChanged-class.html" title="robotide.publish.RideSettingsChanged">RideSettingsChanged</a>,
+  <span title="robotide.publish.PUBLISHER">PUBLISHER</span>,
+  <a href="robotide.utils.eventhandler.RideEventHandler-class.html" title="robotide.utils.RideEventHandler">RideEventHandler</a>,
+  <a href="robotide.widgets.popupmenu.PopupMenu-class.html" title="robotide.widgets.PopupMenu">PopupMenu</a>,
+  <a href="robotide.widgets.popupmenu.PopupMenuItems-class.html" title="robotide.widgets.PopupMenuItems">PopupMenuItems</a>,
+  <span title="robotide.context.SETTINGS">SETTINGS</span>,
+  <span title="robot.parsing.model.Variable">Variable</span>,
   <a href="robotide.editor.grid.GridEditor-class.html" title="robotide.editor.grid.GridEditor">GridEditor</a>,
+  <a href="robotide.editor.tooltips.GridToolTips-class.html" title="robotide.editor.tooltips.GridToolTips">GridToolTips</a>,
+  <a href="robotide.editor.editordialogs.UserKeywordNameDialog-class.html" title="robotide.editor.editordialogs.UserKeywordNameDialog">UserKeywordNameDialog</a>,
+  <a href="robotide.editor.editordialogs.ScalarVariableDialog-class.html" title="robotide.editor.editordialogs.ScalarVariableDialog">ScalarVariableDialog</a>,
+  <a href="robotide.editor.editordialogs.ListVariableDialog-class.html" title="robotide.editor.editordialogs.ListVariableDialog">ListVariableDialog</a>,
   <a href="robotide.editor.contentassist.ExpandingContentAssistTextCtrl-class.html" title="robotide.editor.contentassist.ExpandingContentAssistTextCtrl">ExpandingContentAssistTextCtrl</a>,
-  <a href="robotide.editor.popupwindow.RidePopupWindow-class.html" title="robotide.editor.popupwindow.RidePopupWindow">RidePopupWindow</a>
+  <a href="robotide.editor.gridcolorizer.Colorizer-class.html" title="robotide.editor.gridcolorizer.Colorizer">Colorizer</a>,
+  <a href="robotide.editor.gridcolorizer.ColorizationSettings-class.html" title="robotide.editor.gridcolorizer.ColorizationSettings">ColorizationSettings</a>,
+  <a href="robotide.usages.UsageRunner.Usages-class.html" title="robotide.usages.UsageRunner.Usages">Usages</a>,
+  <a href="robotide.ui.progress.RenameProgressObserver-class.html" title="robotide.ui.progress.RenameProgressObserver">RenameProgressObserver</a>
 </p><br />
+<!-- ==================== FUNCTION DETAILS ==================== -->
+<a name="section-FunctionDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Function Details</span></td>
+</tr>
+</table>
+<a name="requires_focus"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">requires_focus</span>(<span class="sig-arg">function</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#requires_focus">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
 <!-- ==================== VARIABLES DETAILS ==================== -->
 <a name="section-VariablesDetails"></a>
 <table class="details" border="1" cellpadding="3"
@@ -170,7 +250,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:41 2010
+    Generated by Epydoc 3.0.1 on Thu Mar 31 14:47:50 2011
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

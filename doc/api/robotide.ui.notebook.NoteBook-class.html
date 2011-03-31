@@ -288,6 +288,7 @@ wx.lib.agw.flatnotebook.FlatNotebook --+
       <code>DoGetBestSize</code>,
       <code>EnableTab</code>,
       <code>EnsureVisible</code>,
+      <code>GetAGWWindowStyleFlag</code>,
       <code>GetActiveTabColour</code>,
       <code>GetActiveTabTextColour</code>,
       <code>GetBorderColour</code>,
@@ -306,15 +307,18 @@ wx.lib.agw.flatnotebook.FlatNotebook --+
       <code>GetPageIndex</code>,
       <code>GetPageShapeAngle</code>,
       <code>GetPageText</code>,
+      <code>GetPageTextColour</code>,
       <code>GetPreviousSelection</code>,
       <code>GetSelection</code>,
       <code>GetTabArea</code>,
       <code>GetTabAreaColour</code>,
+      <code>HasAGWFlag</code>,
       <code>Init</code>,
       <code>InsertPage</code>,
       <code>OnDropTarget</code>,
       <code>OnNavigationKey</code>,
       <code>RemovePage</code>,
+      <code>SetAGWWindowStyleFlag</code>,
       <code>SetActiveTabColour</code>,
       <code>SetActiveTabTextColour</code>,
       <code>SetAllPagesShapeAngle</code>,
@@ -329,10 +333,10 @@ wx.lib.agw.flatnotebook.FlatNotebook --+
       <code>SetPageImage</code>,
       <code>SetPageShapeAngle</code>,
       <code>SetPageText</code>,
+      <code>SetPageTextColour</code>,
       <code>SetRightClickMenu</code>,
       <code>SetSelection</code>,
-      <code>SetTabAreaColour</code>,
-      <code>SetWindowStyleFlag</code>
+      <code>SetTabAreaColour</code>
       </p>
     <p class="indent-wrapped-lines"><b>Inherited from <code>wx._windows.PyPanel</code></b>:
       <code>DoEraseBackground</code>,
@@ -588,6 +592,7 @@ wx.lib.agw.flatnotebook.FlatNotebook --+
       <code>SetVirtualSizeHintsSz</code>,
       <code>SetVirtualSizeWH</code>,
       <code>SetWindowStyle</code>,
+      <code>SetWindowStyleFlag</code>,
       <code>SetWindowVariant</code>,
       <code>ShouldInheritColours</code>,
       <code>Show</code>,
@@ -621,6 +626,19 @@ wx.lib.agw.flatnotebook.FlatNotebook --+
     <p class="indent-wrapped-lines"><b>Inherited from <code>wx._core.Object</code></b>:
       <code>GetClassName</code>,
       <code>IsSameAs</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
       </p>
     </td>
   </tr>
@@ -729,6 +747,9 @@ wx.lib.agw.flatnotebook.FlatNotebook --+
     <p class="indent-wrapped-lines"><b>Inherited from <code>wx._core.Object</code></b>:
       <code>ClassName</code>
       </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
     </td>
   </tr>
 </table>
@@ -758,14 +779,53 @@ wx.lib.agw.flatnotebook.FlatNotebook --+
     </td>
   </tr></table>
   
-  <p>Default class constructor.</p>
-  <p>All the parameters are as in wxPython class construction, except the 
-  'style': this can be assigned to whatever combination of FNB_* 
-  styles.</p>
+  <pre class="literalblock">
+
+Default class constructor.
+
+:param `parent`: the L{FlatNotebook} parent;
+:param `id`: an identifier for the control: a value of -1 is taken to mean a default;
+:param `pos`: the control position. A value of (-1, -1) indicates a default position,
+ chosen by either the windowing system or wxPython, depending on platform;
+:param `size`: the control size. A value of (-1, -1) indicates a default size,
+ chosen by either the windowing system or wxPython, depending on platform;
+:param `style`: the underlying `wx.PyPanel` window style;
+:param `agwStyle`: the AGW-specific window style. This can be a combination of the
+ following bits:
+
+ ================================ =========== ==================================================
+ Window Styles                    Hex Value   Description
+ ================================ =========== ==================================================
+ ``FNB_VC71``                             0x1 Use Visual Studio 2003 (VC7.1) style for tabs.
+ ``FNB_FANCY_TABS``                       0x2 Use fancy style - square tabs filled with gradient colouring.
+ ``FNB_TABS_BORDER_SIMPLE``               0x4 Draw thin border around the page.
+ ``FNB_NO_X_BUTTON``                      0x8 Do not display the 'X' button.
+ ``FNB_NO_NAV_BUTTONS``                  0x10 Do not display the right/left arrows.
+ ``FNB_MOUSE_MIDDLE_CLOSES_TABS``        0x20 Use the mouse middle button for cloing tabs.
+ ``FNB_BOTTOM``                          0x40 Place tabs at bottom - the default is to place them at top.
+ ``FNB_NODRAG``                          0x80 Disable dragging of tabs.
+ ``FNB_VC8``                            0x100 Use Visual Studio 2005 (VC8) style for tabs.
+ ``FNB_X_ON_TAB``                       0x200 Place 'X' close button on the active tab.
+ ``FNB_BACKGROUND_GRADIENT``            0x400 Use gradients to paint the tabs background.
+ ``FNB_COLOURFUL_TABS``                 0x800 Use colourful tabs (VC8 style only).
+ ``FNB_DCLICK_CLOSES_TABS``            0x1000 Style to close tab using double click.
+ ``FNB_SMART_TABS``                    0x2000 Use `Smart Tabbing`, like ``Alt`` + ``Tab`` on Windows.
+ ``FNB_DROPDOWN_TABS_LIST``            0x4000 Use a dropdown menu on the left in place of the arrows.
+ ``FNB_ALLOW_FOREIGN_DND``             0x8000 Allows drag 'n' drop operations between different FlatNotebooks.
+ ``FNB_HIDE_ON_SINGLE_TAB``           0x10000 Hides the Page Container when there is one or fewer tabs.
+ ``FNB_DEFAULT_STYLE``                0x10020 FlatNotebook default style.
+ ``FNB_FF2``                          0x20000 Use Firefox 2 style for tabs.
+ ``FNB_NO_TAB_FOCUS``                 0x40000 Does not allow tabs to have focus.
+ ================================ =========== ==================================================
+
+:param `name`: the window name. 
+
+</pre>
   <dl class="fields">
     <dt>Returns: EvtHandler</dt>
     <dt>Overrides:
-        wx._core.Object.__init__
+        object.__init__
+        <dd><em class="note">(inherited documentation)</em></dd>
     </dt>
   </dl>
 </td></tr></table>
@@ -1005,7 +1065,7 @@ wx.lib.agw.flatnotebook.FlatNotebook --+
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:45 2010
+    Generated by Epydoc 3.0.1 on Thu Mar 31 14:48:05 2011
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

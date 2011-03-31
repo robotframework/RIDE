@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>robotide.controller.basecontroller</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="robotide-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://code.google.com/p/robotframework-ride">RIDE</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="robotide-module.html">Package&nbsp;robotide</a> ::
+        <a href="robotide.controller-module.html">Package&nbsp;controller</a> ::
+        Module&nbsp;basecontroller
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="robotide.controller.basecontroller-module.html">Module robotide.controller.basecontroller</a></h1>
+<pre class="py-src">
+<a name="_BaseController"></a><div id="_BaseController-def"><a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-comment">#  Copyright 2008-2009 Nokia Siemens Networks Oyj</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-comment">#  Licensed under the Apache License, Version 2.0 (the "License");</tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-comment">#  you may not use this file except in compliance with the License.</tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"><tt class="py-comment">#  You may obtain a copy of the License at</tt> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"><tt class="py-comment">#      http://www.apache.org/licenses/LICENSE-2.0</tt> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"><tt class="py-comment">#  Unless required by applicable law or agreed to in writing, software</tt> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"><tt class="py-comment">#  distributed under the License is distributed on an "AS IS" BASIS,</tt> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line"><tt class="py-comment">#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</tt> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line"><tt class="py-comment">#  See the License for the specific language governing permissions and</tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line"><tt class="py-comment">#  limitations under the License.</tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line"> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt> <a class="py-toggle" href="#" id="_BaseController-toggle" onclick="return toggle('_BaseController');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="robotide.controller.basecontroller._BaseController-class.html">_BaseController</a><tt class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_BaseController-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="_BaseController-expanded"><a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line"> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="_BaseController.display_name"></a><div id="_BaseController.display_name-def"><a name="L18"></a><tt class="py-lineno">18</tt> <a class="py-toggle" href="#" id="_BaseController.display_name-toggle" onclick="return toggle('_BaseController.display_name');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.controller.basecontroller._BaseController-class.html#display_name">display_name</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_BaseController.display_name-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="_BaseController.display_name-expanded"><a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-0" class="py-name" targets="Variable robotide.controller.chiefcontroller.ChiefController.data=robotide.controller.chiefcontroller.ChiefController-class.html#data,Variable robotide.controller.settingcontrollers.VariableController.data=robotide.controller.settingcontrollers.VariableController-class.html#data,Variable robotide.publish.messages.RideChangeFormat.data=robotide.publish.messages.RideChangeFormat-class.html#data,Variable robotide.publish.messages.RideDataChangedToDirty.data=robotide.publish.messages.RideDataChangedToDirty-class.html#data,Variable robotide.publish.messages.RideDataDirtyCleared.data=robotide.publish.messages.RideDataDirtyCleared-class.html#data,Variable robotide.publish.messages.RideDataFileRemoved.data=robotide.publish.messages.RideDataFileRemoved-class.html#data,Variable robotide.publish.messages.RideGridCellChanged.data=robotide.publish.messages.RideGridCellChanged-class.html#data,Variable robotide.publish.messages.RideImportSettingAdded.data=robotide.publish.messages.RideImportSettingAdded-class.html#data,Variable robotide.publish.messages.RideImportSettingChanged.data=robotide.publish.messages.RideImportSettingChanged-class.html#data,Variable robotide.publish.messages.RideImportSettingRemoved.data=robotide.publish.messages.RideImportSettingRemoved-class.html#data,Variable robotide.publish.messages.RideInitFileRemoved.data=robotide.publish.messages.RideInitFileRemoved-class.html#data,Variable robotide.publish.messages.RideItem.data=robotide.publish.messages.RideItem-class.html#data,Variable robotide.publish.messages.RideLog.data=robotide.publish.messages.RideLog-class.html#data,Variable robotide.publish.messages.RideLogException.data=robotide.publish.messages.RideLogException-class.html#data,Variable robotide.publish.messages.RideLogMessage.data=robotide.publish.messages.RideLogMessage-class.html#data,Variable robotide.publish.messages.RideMessage.data=robotide.publish.messages.RideMessage-class.html#data,Variable robotide.publish.messages.RideNewProject.data=robotide.publish.messages.RideNewProject-class.html#data,Variable robotide.publish.messages.RideNotebookTabChanging.data=robotide.publish.messages.RideNotebookTabChanging-class.html#data,Variable robotide.publish.messages.RideOpenResource.data=robotide.publish.messages.RideOpenResource-class.html#data,Variable robotide.publish.messages.RideOpenSuite.data=robotide.publish.messages.RideOpenSuite-class.html#data,Variable robotide.publish.messages.RideSaved.data=robotide.publish.messages.RideSaved-class.html#data,Variable robotide.publish.messages.RideSaving.data=robotide.publish.messages.RideSaving-class.html#data,Variable robotide.publish.messages.RideSelectResource.data=robotide.publish.messages.RideSelectResource-class.html#data,Variable robotide.publish.messages.RideSettingsChanged.data=robotide.publish.messages.RideSettingsChanged-class.html#data,Variable robotide.publish.messages.RideSuiteAdded.data=robotide.publish.messages.RideSuiteAdded-class.html#data,Variable robotide.publish.messages.RideTestCaseAdded.data=robotide.publish.messages.RideTestCaseAdded-class.html#data,Variable robotide.publish.messages.RideTestCaseRemoved.data=robotide.publish.messages.RideTestCaseRemoved-class.html#data,Variable robotide.publish.messages.RideTreeSelection.data=robotide.publish.messages.RideTreeSelection-class.html#data,Variable robotide.publish.messages.RideUserKeywordAdded.data=robotide.publish.messages.RideUserKeywordAdded-class.html#data,Variable robotide.publish.messages.RideUserKeywordRemoved.data=robotide.publish.messages.RideUserKeywordRemoved-class.html#data,Variable robotide.publish.messages.RideVariableAdded.data=robotide.publish.messages.RideVariableAdded-class.html#data,Variable robotide.publish.messages.RideVariableMovedDown.data=robotide.publish.messages.RideVariableMovedDown-class.html#data,Variable robotide.publish.messages.RideVariableMovedUp.data=robotide.publish.messages.RideVariableMovedUp-class.html#data,Variable robotide.publish.messages.RideVariableRemoved.data=robotide.publish.messages.RideVariableRemoved-class.html#data,Variable robotide.publish.messages.RideVariableUpdated.data=robotide.publish.messages.RideVariableUpdated-class.html#data"><a title="robotide.controller.chiefcontroller.ChiefController.data
+robotide.controller.settingcontrollers.VariableController.data
+robotide.publish.messages.RideChangeFormat.data
+robotide.publish.messages.RideDataChangedToDirty.data
+robotide.publish.messages.RideDataDirtyCleared.data
+robotide.publish.messages.RideDataFileRemoved.data
+robotide.publish.messages.RideGridCellChanged.data
+robotide.publish.messages.RideImportSettingAdded.data
+robotide.publish.messages.RideImportSettingChanged.data
+robotide.publish.messages.RideImportSettingRemoved.data
+robotide.publish.messages.RideInitFileRemoved.data
+robotide.publish.messages.RideItem.data
+robotide.publish.messages.RideLog.data
+robotide.publish.messages.RideLogException.data
+robotide.publish.messages.RideLogMessage.data
+robotide.publish.messages.RideMessage.data
+robotide.publish.messages.RideNewProject.data
+robotide.publish.messages.RideNotebookTabChanging.data
+robotide.publish.messages.RideOpenResource.data
+robotide.publish.messages.RideOpenSuite.data
+robotide.publish.messages.RideSaved.data
+robotide.publish.messages.RideSaving.data
+robotide.publish.messages.RideSelectResource.data
+robotide.publish.messages.RideSettingsChanged.data
+robotide.publish.messages.RideSuiteAdded.data
+robotide.publish.messages.RideTestCaseAdded.data
+robotide.publish.messages.RideTestCaseRemoved.data
+robotide.publish.messages.RideTreeSelection.data
+robotide.publish.messages.RideUserKeywordAdded.data
+robotide.publish.messages.RideUserKeywordRemoved.data
+robotide.publish.messages.RideVariableAdded.data
+robotide.publish.messages.RideVariableMovedDown.data
+robotide.publish.messages.RideVariableMovedUp.data
+robotide.publish.messages.RideVariableRemoved.data
+robotide.publish.messages.RideVariableUpdated.data" class="py-name" href="#" onclick="return doclink('link-0', 'data', 'link-0');">data</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Variable robotide.contrib.testrunner.TestSuiteTreeCtrl.TreeNode.name=robotide.contrib.testrunner.TestSuiteTreeCtrl.TreeNode-class.html#name,Variable robotide.contrib.testrunner.runprofiles.CustomScriptProfile.name=robotide.contrib.testrunner.runprofiles.CustomScriptProfile-class.html#name,Variable robotide.contrib.testrunner.runprofiles.PybotProfile.name=robotide.contrib.testrunner.runprofiles.PybotProfile-class.html#name,Variable robotide.controller.settingcontrollers.ImportController.name=robotide.controller.settingcontrollers.ImportController-class.html#name,Variable robotide.controller.settingcontrollers.MetadataController.name=robotide.controller.settingcontrollers.MetadataController-class.html#name,Variable robotide.controller.settingcontrollers.VariableController.name=robotide.controller.settingcontrollers.VariableController-class.html#name,Variable robotide.controller.stepcontrollers.ForLoopStepController.name=robotide.controller.stepcontrollers.ForLoopStepController-class.html#name,Variable robotide.controller.tags.Tag.name=robotide.controller.tags.Tag-class.html#name,Variable robotide.editor.editors.EditorPanel.name=robotide.editor.editors.EditorPanel-class.html#name,Variable robotide.publish.messages.name=robotide.publish.messages-module.html#name"><a title="robotide.contrib.testrunner.TestSuiteTreeCtrl.TreeNode.name
+robotide.contrib.testrunner.runprofiles.CustomScriptProfile.name
+robotide.contrib.testrunner.runprofiles.PybotProfile.name
+robotide.controller.settingcontrollers.ImportController.name
+robotide.controller.settingcontrollers.MetadataController.name
+robotide.controller.settingcontrollers.VariableController.name
+robotide.controller.stepcontrollers.ForLoopStepController.name
+robotide.controller.tags.Tag.name
+robotide.editor.editors.EditorPanel.name
+robotide.publish.messages.name" class="py-name" href="#" onclick="return doclink('link-1', 'name', 'link-1');">name</a></tt> </tt>
+</div><a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line"> </tt>
+<a name="_BaseController.execute"></a><div id="_BaseController.execute-def"><a name="L21"></a><tt class="py-lineno">21</tt> <a class="py-toggle" href="#" id="_BaseController.execute-toggle" onclick="return toggle('_BaseController.execute');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.controller.basecontroller._BaseController-class.html#execute">execute</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">command</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_BaseController.execute-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="_BaseController.execute-expanded"><a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">command</tt><tt class="py-op">.</tt><tt id="link-2" class="py-name" targets="Method robotide.controller.chiefcontroller.ChiefController.execute()=robotide.controller.chiefcontroller.ChiefController-class.html#execute,Method robotide.controller.commands.AddSuite.execute()=robotide.controller.commands.AddSuite-class.html#execute,Method robotide.controller.commands.AddTestCase.execute()=robotide.controller.commands.AddTestCase-class.html#execute,Method robotide.controller.commands.ChangeTag.execute()=robotide.controller.commands.ChangeTag-class.html#execute,Method robotide.controller.commands.CopyMacroAs.execute()=robotide.controller.commands.CopyMacroAs-class.html#execute,Method robotide.controller.commands.CreateNewResource.execute()=robotide.controller.commands.CreateNewResource-class.html#execute,Method robotide.controller.commands.ExtractKeyword.execute()=robotide.controller.commands.ExtractKeyword-class.html#execute,Method robotide.controller.commands.FindOccurrences.execute()=robotide.controller.commands.FindOccurrences-class.html#execute,Method robotide.controller.commands.MoveTo.execute()=robotide.controller.commands.MoveTo-class.html#execute,Method robotide.controller.commands.Purify.execute()=robotide.controller.commands.Purify-class.html#execute,Method robotide.controller.commands.Redo.execute()=robotide.controller.commands.Redo-class.html#execute,Method robotide.controller.commands.SaveAll.execute()=robotide.controller.commands.SaveAll-class.html#execute,Method robotide.controller.commands.SaveFile.execute()=robotide.controller.commands.SaveFile-class.html#execute,Method robotide.controller.commands.Undo.execute()=robotide.controller.commands.Undo-class.html#execute,Method robotide.controller.commands.UpdateVariable.execute()=robotide.controller.commands.UpdateVariable-class.html#execute,Method robotide.controller.settingcontrollers.TagsController.execute()=robotide.controller.settingcontrollers.TagsController-class.html#execute,Method robotide.usages.commands.FindUsages.execute()=robotide.usages.commands.FindUsages-class.html#execute"><a title="robotide.controller.chiefcontroller.ChiefController.execute
+robotide.controller.commands.AddSuite.execute
+robotide.controller.commands.AddTestCase.execute
+robotide.controller.commands.ChangeTag.execute
+robotide.controller.commands.CopyMacroAs.execute
+robotide.controller.commands.CreateNewResource.execute
+robotide.controller.commands.ExtractKeyword.execute
+robotide.controller.commands.FindOccurrences.execute
+robotide.controller.commands.MoveTo.execute
+robotide.controller.commands.Purify.execute
+robotide.controller.commands.Redo.execute
+robotide.controller.commands.SaveAll.execute
+robotide.controller.commands.SaveFile.execute
+robotide.controller.commands.Undo.execute
+robotide.controller.commands.UpdateVariable.execute
+robotide.controller.settingcontrollers.TagsController.execute
+robotide.usages.commands.FindUsages.execute" class="py-name" href="#" onclick="return doclink('link-2', 'execute', 'link-2');">execute</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line"> </tt>
+<a name="ControllerWithParent"></a><div id="ControllerWithParent-def"><a name="L24"></a><tt class="py-lineno">24</tt> <a class="py-toggle" href="#" id="ControllerWithParent-toggle" onclick="return toggle('ControllerWithParent');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="robotide.controller.basecontroller.ControllerWithParent-class.html">ControllerWithParent</a><tt class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ControllerWithParent-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="ControllerWithParent-expanded"><a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line"> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="ControllerWithParent.parent"></a><div id="ControllerWithParent.parent-def"><a name="L27"></a><tt class="py-lineno">27</tt> <a class="py-toggle" href="#" id="ControllerWithParent.parent-toggle" onclick="return toggle('ControllerWithParent.parent');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.controller.basecontroller.ControllerWithParent-class.html#parent">parent</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ControllerWithParent.parent-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="ControllerWithParent.parent-expanded"><a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_parent</tt> </tt>
+</div><a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line"> </tt>
+<a name="ControllerWithParent.set_parent"></a><div id="ControllerWithParent.set_parent-def"><a name="L30"></a><tt class="py-lineno">30</tt> <a class="py-toggle" href="#" id="ControllerWithParent.set_parent-toggle" onclick="return toggle('ControllerWithParent.set_parent');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.controller.basecontroller.ControllerWithParent-class.html#set_parent">set_parent</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">new_parent</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ControllerWithParent.set_parent-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="ControllerWithParent.set_parent-expanded"><a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_parent</tt> <tt class="py-op">=</tt> <tt class="py-name">new_parent</tt> </tt>
+</div><a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line"> </tt>
+<a name="ControllerWithParent.mark_dirty"></a><div id="ControllerWithParent.mark_dirty-def"><a name="L33"></a><tt class="py-lineno">33</tt> <a class="py-toggle" href="#" id="ControllerWithParent.mark_dirty-toggle" onclick="return toggle('ControllerWithParent.mark_dirty');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.controller.basecontroller.ControllerWithParent-class.html#mark_dirty">mark_dirty</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ControllerWithParent.mark_dirty-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="ControllerWithParent.mark_dirty-expanded"><a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_parent</tt><tt class="py-op">:</tt> </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_parent</tt><tt class="py-op">.</tt><tt id="link-3" class="py-name" targets="Method robotide.controller.basecontroller.ControllerWithParent.mark_dirty()=robotide.controller.basecontroller.ControllerWithParent-class.html#mark_dirty,Method robotide.ui.keywordsearch.KeywordSearch.mark_dirty()=robotide.ui.keywordsearch.KeywordSearch-class.html#mark_dirty,Method robotide.ui.tree.Tree.mark_dirty()=robotide.ui.tree.Tree-class.html#mark_dirty"><a title="robotide.controller.basecontroller.ControllerWithParent.mark_dirty
+robotide.ui.keywordsearch.KeywordSearch.mark_dirty
+robotide.ui.tree.Tree.mark_dirty" class="py-name" href="#" onclick="return doclink('link-3', 'mark_dirty', 'link-3');">mark_dirty</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line"> </tt>
+<a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="ControllerWithParent.dirty"></a><div id="ControllerWithParent.dirty-def"><a name="L38"></a><tt class="py-lineno">38</tt> <a class="py-toggle" href="#" id="ControllerWithParent.dirty-toggle" onclick="return toggle('ControllerWithParent.dirty');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.controller.basecontroller.ControllerWithParent-class.html#dirty">dirty</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ControllerWithParent.dirty-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="ControllerWithParent.dirty-expanded"><a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_parent</tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Variable robotide.controller.basecontroller.ControllerWithParent.dirty=robotide.controller.basecontroller.ControllerWithParent-class.html#dirty,Variable robotide.controller.settingcontrollers.ImportController.dirty=robotide.controller.settingcontrollers.ImportController-class.html#dirty,Variable robotide.editor.kweditor.KeywordEditor.dirty=robotide.editor.kweditor.KeywordEditor-class.html#dirty"><a title="robotide.controller.basecontroller.ControllerWithParent.dirty
+robotide.controller.settingcontrollers.ImportController.dirty
+robotide.editor.kweditor.KeywordEditor.dirty" class="py-name" href="#" onclick="return doclink('link-4', 'dirty', 'link-4');">dirty</a></tt> </tt>
+</div><a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line"> </tt>
+<a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="ControllerWithParent.datafile_controller"></a><div id="ControllerWithParent.datafile_controller-def"><a name="L42"></a><tt class="py-lineno">42</tt> <a class="py-toggle" href="#" id="ControllerWithParent.datafile_controller-toggle" onclick="return toggle('ControllerWithParent.datafile_controller');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.controller.basecontroller.ControllerWithParent-class.html#datafile_controller">datafile_controller</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ControllerWithParent.datafile_controller-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="ControllerWithParent.datafile_controller-expanded"><a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_parent</tt><tt class="py-op">.</tt><tt id="link-5" class="py-name" targets="Variable robotide.controller.basecontroller.ControllerWithParent.datafile_controller=robotide.controller.basecontroller.ControllerWithParent-class.html#datafile_controller"><a title="robotide.controller.basecontroller.ControllerWithParent.datafile_controller" class="py-name" href="#" onclick="return doclink('link-5', 'datafile_controller', 'link-5');">datafile_controller</a></tt> </tt>
+</div><a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line"> </tt>
+<a name="L45"></a><tt class="py-lineno">45</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="ControllerWithParent.datafile"></a><div id="ControllerWithParent.datafile-def"><a name="L46"></a><tt class="py-lineno">46</tt> <a class="py-toggle" href="#" id="ControllerWithParent.datafile-toggle" onclick="return toggle('ControllerWithParent.datafile');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.controller.basecontroller.ControllerWithParent-class.html#datafile">datafile</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ControllerWithParent.datafile-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="ControllerWithParent.datafile-expanded"><a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_parent</tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Variable robotide.controller.basecontroller.ControllerWithParent.datafile=robotide.controller.basecontroller.ControllerWithParent-class.html#datafile,Variable robotide.controller.commands.Occurrence.datafile=robotide.controller.commands.Occurrence-class.html#datafile,Variable robotide.controller.stepcontrollers.StepController.datafile=robotide.controller.stepcontrollers.StepController-class.html#datafile,Variable robotide.pluginapi.plugin.Plugin.datafile=robotide.pluginapi.plugin.Plugin-class.html#datafile,Variable robotide.ui.preview.PreviewPlugin.datafile=robotide.ui.preview.PreviewPlugin-class.html#datafile"><a title="robotide.controller.basecontroller.ControllerWithParent.datafile
+robotide.controller.commands.Occurrence.datafile
+robotide.controller.stepcontrollers.StepController.datafile
+robotide.pluginapi.plugin.Plugin.datafile
+robotide.ui.preview.PreviewPlugin.datafile" class="py-name" href="#" onclick="return doclink('link-6', 'datafile', 'link-6');">datafile</a></tt> </tt>
+</div><a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line"> </tt>
+<a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="ControllerWithParent.all_datafiles"></a><div id="ControllerWithParent.all_datafiles-def"><a name="L50"></a><tt class="py-lineno">50</tt> <a class="py-toggle" href="#" id="ControllerWithParent.all_datafiles-toggle" onclick="return toggle('ControllerWithParent.all_datafiles');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.controller.basecontroller.ControllerWithParent-class.html#all_datafiles">all_datafiles</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ControllerWithParent.all_datafiles-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="ControllerWithParent.all_datafiles-expanded"><a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_parent</tt><tt class="py-op">.</tt><tt id="link-7" class="py-name" targets="Variable robotide.controller.basecontroller.ControllerWithParent.all_datafiles=robotide.controller.basecontroller.ControllerWithParent-class.html#all_datafiles,Variable robotide.controller.chiefcontroller.ChiefController.all_datafiles=robotide.controller.chiefcontroller.ChiefController-class.html#all_datafiles"><a title="robotide.controller.basecontroller.ControllerWithParent.all_datafiles
+robotide.controller.chiefcontroller.ChiefController.all_datafiles" class="py-name" href="#" onclick="return doclink('link-7', 'all_datafiles', 'link-7');">all_datafiles</a></tt> </tt>
+</div></div><a name="L52"></a><tt class="py-lineno">52</tt>  <tt class="py-line"> </tt>
+<a name="WithUndoRedoStacks"></a><div id="WithUndoRedoStacks-def"><a name="L53"></a><tt class="py-lineno">53</tt>  <tt class="py-line"> </tt>
+<a name="L54"></a><tt class="py-lineno">54</tt> <a class="py-toggle" href="#" id="WithUndoRedoStacks-toggle" onclick="return toggle('WithUndoRedoStacks');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="robotide.controller.basecontroller.WithUndoRedoStacks-class.html">WithUndoRedoStacks</a><tt class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="WithUndoRedoStacks-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="WithUndoRedoStacks-expanded"><a name="L55"></a><tt class="py-lineno">55</tt>  <tt class="py-line"> </tt>
+<a name="L56"></a><tt class="py-lineno">56</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="WithUndoRedoStacks._undo"></a><div id="WithUndoRedoStacks._undo-def"><a name="L57"></a><tt class="py-lineno">57</tt> <a class="py-toggle" href="#" id="WithUndoRedoStacks._undo-toggle" onclick="return toggle('WithUndoRedoStacks._undo');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.controller.basecontroller.WithUndoRedoStacks-class.html#_undo">_undo</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="WithUndoRedoStacks._undo-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="WithUndoRedoStacks._undo-expanded"><a name="L58"></a><tt class="py-lineno">58</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">hasattr</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-string">'_undo_stack'</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L59"></a><tt class="py-lineno">59</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_undo_stack</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L60"></a><tt class="py-lineno">60</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_undo_stack</tt> </tt>
+</div><a name="L61"></a><tt class="py-lineno">61</tt>  <tt class="py-line"> </tt>
+<a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="WithUndoRedoStacks._redo"></a><div id="WithUndoRedoStacks._redo-def"><a name="L63"></a><tt class="py-lineno">63</tt> <a class="py-toggle" href="#" id="WithUndoRedoStacks._redo-toggle" onclick="return toggle('WithUndoRedoStacks._redo');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.controller.basecontroller.WithUndoRedoStacks-class.html#_redo">_redo</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="WithUndoRedoStacks._redo-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="WithUndoRedoStacks._redo-expanded"><a name="L64"></a><tt class="py-lineno">64</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">hasattr</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-string">'_redo_stack'</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L65"></a><tt class="py-lineno">65</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_redo_stack</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L66"></a><tt class="py-lineno">66</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_redo_stack</tt> </tt>
+</div><a name="L67"></a><tt class="py-lineno">67</tt>  <tt class="py-line"> </tt>
+<a name="WithUndoRedoStacks.clear_undo"></a><div id="WithUndoRedoStacks.clear_undo-def"><a name="L68"></a><tt class="py-lineno">68</tt> <a class="py-toggle" href="#" id="WithUndoRedoStacks.clear_undo-toggle" onclick="return toggle('WithUndoRedoStacks.clear_undo');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.controller.basecontroller.WithUndoRedoStacks-class.html#clear_undo">clear_undo</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="WithUndoRedoStacks.clear_undo-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="WithUndoRedoStacks.clear_undo-expanded"><a name="L69"></a><tt class="py-lineno">69</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_undo_stack</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+</div><a name="L70"></a><tt class="py-lineno">70</tt>  <tt class="py-line"> </tt>
+<a name="WithUndoRedoStacks.is_undo_empty"></a><div id="WithUndoRedoStacks.is_undo_empty-def"><a name="L71"></a><tt class="py-lineno">71</tt> <a class="py-toggle" href="#" id="WithUndoRedoStacks.is_undo_empty-toggle" onclick="return toggle('WithUndoRedoStacks.is_undo_empty');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.controller.basecontroller.WithUndoRedoStacks-class.html#is_undo_empty">is_undo_empty</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="WithUndoRedoStacks.is_undo_empty-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="WithUndoRedoStacks.is_undo_empty-expanded"><a name="L72"></a><tt class="py-lineno">72</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_undo</tt> <tt class="py-op">==</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+</div><a name="L73"></a><tt class="py-lineno">73</tt>  <tt class="py-line"> </tt>
+<a name="WithUndoRedoStacks.pop_from_undo"></a><div id="WithUndoRedoStacks.pop_from_undo-def"><a name="L74"></a><tt class="py-lineno">74</tt> <a class="py-toggle" href="#" id="WithUndoRedoStacks.pop_from_undo-toggle" onclick="return toggle('WithUndoRedoStacks.pop_from_undo');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.controller.basecontroller.WithUndoRedoStacks-class.html#pop_from_undo">pop_from_undo</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="WithUndoRedoStacks.pop_from_undo-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="WithUndoRedoStacks.pop_from_undo-expanded"><a name="L75"></a><tt class="py-lineno">75</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_undo</tt><tt class="py-op">.</tt><tt class="py-name">pop</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L76"></a><tt class="py-lineno">76</tt>  <tt class="py-line"> </tt>
+<a name="WithUndoRedoStacks.push_to_undo"></a><div id="WithUndoRedoStacks.push_to_undo-def"><a name="L77"></a><tt class="py-lineno">77</tt> <a class="py-toggle" href="#" id="WithUndoRedoStacks.push_to_undo-toggle" onclick="return toggle('WithUndoRedoStacks.push_to_undo');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.controller.basecontroller.WithUndoRedoStacks-class.html#push_to_undo">push_to_undo</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">command</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="WithUndoRedoStacks.push_to_undo-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="WithUndoRedoStacks.push_to_undo-expanded"><a name="L78"></a><tt class="py-lineno">78</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_undo</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">command</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L79"></a><tt class="py-lineno">79</tt>  <tt class="py-line"> </tt>
+<a name="WithUndoRedoStacks.clear_redo"></a><div id="WithUndoRedoStacks.clear_redo-def"><a name="L80"></a><tt class="py-lineno">80</tt> <a class="py-toggle" href="#" id="WithUndoRedoStacks.clear_redo-toggle" onclick="return toggle('WithUndoRedoStacks.clear_redo');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.controller.basecontroller.WithUndoRedoStacks-class.html#clear_redo">clear_redo</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="WithUndoRedoStacks.clear_redo-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="WithUndoRedoStacks.clear_redo-expanded"><a name="L81"></a><tt class="py-lineno">81</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_redo_stack</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+</div><a name="L82"></a><tt class="py-lineno">82</tt>  <tt class="py-line"> </tt>
+<a name="WithUndoRedoStacks.is_redo_empty"></a><div id="WithUndoRedoStacks.is_redo_empty-def"><a name="L83"></a><tt class="py-lineno">83</tt> <a class="py-toggle" href="#" id="WithUndoRedoStacks.is_redo_empty-toggle" onclick="return toggle('WithUndoRedoStacks.is_redo_empty');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.controller.basecontroller.WithUndoRedoStacks-class.html#is_redo_empty">is_redo_empty</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="WithUndoRedoStacks.is_redo_empty-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="WithUndoRedoStacks.is_redo_empty-expanded"><a name="L84"></a><tt class="py-lineno">84</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_redo</tt> <tt class="py-op">==</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+</div><a name="L85"></a><tt class="py-lineno">85</tt>  <tt class="py-line"> </tt>
+<a name="WithUndoRedoStacks.pop_from_redo"></a><div id="WithUndoRedoStacks.pop_from_redo-def"><a name="L86"></a><tt class="py-lineno">86</tt> <a class="py-toggle" href="#" id="WithUndoRedoStacks.pop_from_redo-toggle" onclick="return toggle('WithUndoRedoStacks.pop_from_redo');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.controller.basecontroller.WithUndoRedoStacks-class.html#pop_from_redo">pop_from_redo</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="WithUndoRedoStacks.pop_from_redo-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="WithUndoRedoStacks.pop_from_redo-expanded"><a name="L87"></a><tt class="py-lineno">87</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_redo</tt><tt class="py-op">.</tt><tt class="py-name">pop</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L88"></a><tt class="py-lineno">88</tt>  <tt class="py-line"> </tt>
+<a name="WithUndoRedoStacks.push_to_redo"></a><div id="WithUndoRedoStacks.push_to_redo-def"><a name="L89"></a><tt class="py-lineno">89</tt> <a class="py-toggle" href="#" id="WithUndoRedoStacks.push_to_redo-toggle" onclick="return toggle('WithUndoRedoStacks.push_to_redo');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="robotide.controller.basecontroller.WithUndoRedoStacks-class.html#push_to_redo">push_to_redo</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">command</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="WithUndoRedoStacks.push_to_redo-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="WithUndoRedoStacks.push_to_redo-expanded"><a name="L90"></a><tt class="py-lineno">90</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_redo</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">command</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L91"></a><tt class="py-lineno">91</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="robotide-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://code.google.com/p/robotframework-ride">RIDE</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Mar 31 14:48:17 2011
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

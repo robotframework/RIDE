@@ -58,28 +58,47 @@
 <!-- ==================== CLASS DESCRIPTION ==================== -->
 <h1 class="epydoc">Class KeywordEditor</h1><p class="nomargin-top"><span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor">source&nbsp;code</a></span></p>
 <pre class="base-tree">
-     object --+                                
-              |                                
-wx._core.Object --+                            
-                  |                            
-wx._core.EvtHandler --+                        
-                      |                        
-        wx._core.Window --+                    
-                          |                    
-          wx._windows.Panel --+                
-                              |                
-     wx._windows.ScrolledWindow --+            
-                                  |            
-                       wx.grid.Grid --+        
-                                      |        
-                        <a href="robotide.editor.grid.GridEditor-class.html">grid.GridEditor</a> --+    
-                                          |    
-                            <a href="robotide.editor.kweditor.KeywordEditorUi-class.html">KeywordEditorUi</a> --+
-                                              |
-                                             <strong class="uidshort">KeywordEditor</strong>
+     object --+                            
+              |                            
+wx._core.Object --+                        
+                  |                        
+wx._core.EvtHandler --+                    
+                      |                    
+        wx._core.Window --+                
+                          |                
+          wx._windows.Panel --+            
+                              |            
+     wx._windows.ScrolledWindow --+        
+                                  |        
+                       wx.grid.Grid --+    
+                                      |    
+                        <a href="robotide.editor.grid.GridEditor-class.html">grid.GridEditor</a> --+
+                                          |
+                             object --+   |
+                                      |   |
+    <a href="robotide.utils.eventhandler.RideEventHandler-class.html">utils.eventhandler.RideEventHandler</a> --+
+                                          |
+                                         <strong class="uidshort">KeywordEditor</strong>
 </pre>
 
 <hr />
+<!-- ==================== NESTED CLASSES ==================== -->
+<a name="section-NestedClasses"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Nested Classes</span></td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.utils.eventhandler.eventhandlertype-class.html" class="summary-name">__metaclass__</a>
+      <em>(Inherited from <a href="robotide.utils.eventhandler.RideEventHandler-class.html">robotide.utils.eventhandler.RideEventHandler</a>)</em>
+    </td>
+  </tr>
+</table>
 <!-- ==================== INSTANCE METHODS ==================== -->
 <a name="section-InstanceMethods"></a>
 <table class="summary" border="1" cellpadding="3"
@@ -90,12 +109,29 @@ wx._core.EvtHandler --+
 </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#update_value" class="summary-sig-name">update_value</a>(<span class="summary-sig-arg">*args</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.update_value">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">EvtHandler</span>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">controller</span>,
         <span class="summary-sig-arg">tree</span>)</span><br />
       Size size=DefaultSize, long style=WANTS_CHARS,
 String name=wxPyGridNameStr) -&gt; Grid</td>
@@ -114,10 +150,321 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#get_tooltip_content" class="summary-sig-name">get_tooltip_content</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.get_tooltip_content">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnSettingsChanged" class="summary-sig-name">OnSettingsChanged</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Redraw the colors if the color settings are modified</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnSelectCell" class="summary-sig-name">OnSelectCell</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnKillFocus" class="summary-sig-name">OnKillFocus</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#write_cell" class="summary-sig-name">write_cell</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">row</span>,
+        <span class="summary-sig-arg">col</span>,
+        <span class="summary-sig-arg">value</span>,
+        <span class="summary-sig-arg">update_history</span>=<span class="summary-sig-default">True</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.write_cell">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnLabelRightClick" class="summary-sig-name">OnLabelRightClick</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnLabelLeftClick" class="summary-sig-name">OnLabelLeftClick</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnInsertRows" class="summary-sig-name">OnInsertRows</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnInsertCells" class="summary-sig-name">OnInsertCells</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnDeleteCells" class="summary-sig-name">OnDeleteCells</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnCommentRows" class="summary-sig-name">OnCommentRows</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnUncommentRows" class="summary-sig-name">OnUncommentRows</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnMoveRowsUp" class="summary-sig-name">OnMoveRowsUp</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnMoveRowsDown" class="summary-sig-name">OnMoveRowsDown</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnMotion" class="summary-sig-name">OnMotion</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#highlight" class="summary-sig-name">highlight</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">text</span>,
+        <span class="summary-sig-arg">expand</span>=<span class="summary-sig-default">True</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.highlight">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#cell_value_edited" class="summary-sig-name">cell_value_edited</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">row</span>,
+        <span class="summary-sig-arg">col</span>,
+        <span class="summary-sig-arg">value</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.cell_value_edited">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#get_selected_datafile_controller" class="summary-sig-name">get_selected_datafile_controller</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.get_selected_datafile_controller">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnCopy" class="summary-sig-name">OnCopy</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.OnCopy">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -134,7 +481,7 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
           <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnCut" class="summary-sig-name">OnCut</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.OnCut">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -151,7 +498,7 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
           <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnDelete" class="summary-sig-name">OnDelete</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.OnDelete">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -168,7 +515,24 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
           <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnPaste" class="summary-sig-name">OnPaste</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.OnPaste">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnDeleteRows" class="summary-sig-name">OnDeleteRows</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -185,7 +549,7 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
           <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnUndo" class="summary-sig-name">OnUndo</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.OnUndo">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -199,9 +563,26 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#set_dirty" class="summary-sig-name">set_dirty</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnRedo" class="summary-sig-name">OnRedo</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.set_dirty">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#close" class="summary-sig-name">close</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.close">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -247,9 +628,11 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#hide_popup" class="summary-sig-name">hide_popup</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#refresh_datafile" class="summary-sig-name">refresh_datafile</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">item</span>,
+        <span class="summary-sig-arg">event</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.hide_popup">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.refresh_datafile">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -264,9 +647,9 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnEditor" class="summary-sig-name">OnEditor</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">event</span>)</span></td>
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.OnEditor">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -280,10 +663,61 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnKey" class="summary-sig-name">OnKey</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">event</span>)</span></td>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnKeyDown" class="summary-sig-name">OnKeyDown</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.OnKey">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnKeyUp" class="summary-sig-name">OnKeyUp</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnCellRightClick" class="summary-sig-name">OnCellRightClick</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnSelectAll" class="summary-sig-name">OnSelectAll</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -298,9 +732,9 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnCellLeftClick" class="summary-sig-name">OnCellLeftClick</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">event</span>)</span></td>
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.OnCellLeftClick">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -315,9 +749,9 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnCellLeftDClick" class="summary-sig-name">OnCellLeftDClick</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">event</span>)</span></td>
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.OnCellLeftDClick">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -331,10 +765,10 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnIdle" class="summary-sig-name">OnIdle</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">evt</span>)</span></td>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnCreateKeyword" class="summary-sig-name">OnCreateKeyword</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.OnIdle">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -348,11 +782,10 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.editor.grid.GridEditor-class.html#OnCellRightClick" class="summary-sig-name">OnCellRightClick</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">event</span>)</span>
-      <em>(Inherited from <a href="robotide.editor.grid.GridEditor-class.html">robotide.editor.grid.GridEditor</a>)</em></td>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnExtractKeyword" class="summary-sig-name">OnExtractKeyword</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.OnCellRightClick">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -366,11 +799,10 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditorUi-class.html#OnCommentRows" class="summary-sig-name">OnCommentRows</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">event</span>)</span>
-      <em>(Inherited from <a href="robotide.editor.kweditor.KeywordEditorUi-class.html">robotide.editor.kweditor.KeywordEditorUi</a>)</em></td>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnExtractVariable" class="summary-sig-name">OnExtractVariable</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditorUi.OnCommentRows">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -384,11 +816,10 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditorUi-class.html#OnDeleteCol" class="summary-sig-name">OnDeleteCol</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">event</span>)</span>
-      <em>(Inherited from <a href="robotide.editor.kweditor.KeywordEditorUi-class.html">robotide.editor.kweditor.KeywordEditorUi</a>)</em></td>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnFindWhereUsed" class="summary-sig-name">OnFindWhereUsed</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditorUi.OnDeleteCol">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -402,65 +833,10 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditorUi-class.html#OnDeleteRows" class="summary-sig-name">OnDeleteRows</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">event</span>)</span>
-      <em>(Inherited from <a href="robotide.editor.kweditor.KeywordEditorUi-class.html">robotide.editor.kweditor.KeywordEditorUi</a>)</em></td>
+          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditor-class.html#OnRenameKeyword" class="summary-sig-name">OnRenameKeyword</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditorUi.OnDeleteRows">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditorUi-class.html#OnInsertCol" class="summary-sig-name">OnInsertCol</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">event</span>)</span>
-      <em>(Inherited from <a href="robotide.editor.kweditor.KeywordEditorUi-class.html">robotide.editor.kweditor.KeywordEditorUi</a>)</em></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditorUi.OnInsertCol">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditorUi-class.html#OnInsertRows" class="summary-sig-name">OnInsertRows</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">event</span>)</span>
-      <em>(Inherited from <a href="robotide.editor.kweditor.KeywordEditorUi-class.html">robotide.editor.kweditor.KeywordEditorUi</a>)</em></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditorUi.OnInsertRows">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditorUi-class.html#OnLabelRightClick" class="summary-sig-name">OnLabelRightClick</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">event</span>)</span>
-      <em>(Inherited from <a href="robotide.editor.kweditor.KeywordEditorUi-class.html">robotide.editor.kweditor.KeywordEditorUi</a>)</em></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditorUi.OnLabelRightClick">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -479,59 +855,6 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
       <em>(Inherited from <a href="robotide.editor.grid.GridEditor-class.html">robotide.editor.grid.GridEditor</a>)</em></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.OnRangeSelect">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="robotide.editor.grid.GridEditor-class.html#OnSelectCell" class="summary-sig-name">OnSelectCell</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">event</span>)</span>
-      <em>(Inherited from <a href="robotide.editor.grid.GridEditor-class.html">robotide.editor.grid.GridEditor</a>)</em></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.OnSelectCell">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditorUi-class.html#OnUncommentRows" class="summary-sig-name">OnUncommentRows</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">event</span>)</span>
-      <em>(Inherited from <a href="robotide.editor.kweditor.KeywordEditorUi-class.html">robotide.editor.kweditor.KeywordEditorUi</a>)</em></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditorUi.OnUncommentRows">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditorUi-class.html#comment" class="summary-sig-name">comment</a>(<span class="summary-sig-arg">self</span>)</span>
-      <em>(Inherited from <a href="robotide.editor.kweditor.KeywordEditorUi-class.html">robotide.editor.kweditor.KeywordEditorUi</a>)</em></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditorUi.comment">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -630,6 +953,40 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.grid.GridEditor-class.html#get_single_selection_content" class="summary-sig-name">get_single_selection_content</a>(<span class="summary-sig-arg">self</span>)</span>
+      <em>(Inherited from <a href="robotide.editor.grid.GridEditor-class.html">robotide.editor.grid.GridEditor</a>)</em></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.get_single_selection_content">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.grid.GridEditor-class.html#has_focus" class="summary-sig-name">has_focus</a>(<span class="summary-sig-arg">self</span>)</span>
+      <em>(Inherited from <a href="robotide.editor.grid.GridEditor-class.html">robotide.editor.grid.GridEditor</a>)</em></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.has_focus">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a href="robotide.editor.grid.GridEditor-class.html#paste" class="summary-sig-name">paste</a>(<span class="summary-sig-arg">self</span>)</span>
       <em>(Inherited from <a href="robotide.editor.grid.GridEditor-class.html">robotide.editor.grid.GridEditor</a>)</em></td>
           <td align="right" valign="top">
@@ -647,10 +1004,30 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditorUi-class.html#uncomment" class="summary-sig-name">uncomment</a>(<span class="summary-sig-arg">self</span>)</span>
-      <em>(Inherited from <a href="robotide.editor.kweditor.KeywordEditorUi-class.html">robotide.editor.kweditor.KeywordEditorUi</a>)</em></td>
+          <td><span class="summary-sig"><a href="robotide.editor.grid.GridEditor-class.html#register_context_menu_hook" class="summary-sig-name">register_context_menu_hook</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">callable</span>)</span>
+      <em>(Inherited from <a href="robotide.editor.grid.GridEditor-class.html">robotide.editor.grid.GridEditor</a>)</em></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditorUi.uncomment">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.register_context_menu_hook">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.editor.grid.GridEditor-class.html#select" class="summary-sig-name">select</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">row</span>,
+        <span class="summary-sig-arg">column</span>)</span>
+      <em>(Inherited from <a href="robotide.editor.grid.GridEditor-class.html">robotide.editor.grid.GridEditor</a>)</em></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.select">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -681,14 +1058,11 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.editor.kweditor.KeywordEditorUi-class.html#write_cell" class="summary-sig-name">write_cell</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">row</span>,
-        <span class="summary-sig-arg">col</span>,
-        <span class="summary-sig-arg">value</span>,
-        <span class="summary-sig-arg">update_history</span>=<span class="summary-sig-default">True</span>)</span>
-      <em>(Inherited from <a href="robotide.editor.kweditor.KeywordEditorUi-class.html">robotide.editor.kweditor.KeywordEditorUi</a>)</em></td>
+          <td><span class="summary-sig"><a href="robotide.editor.grid.GridEditor-class.html#unregister_context_menu_hook" class="summary-sig-name">unregister_context_menu_hook</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">callable</span>)</span>
+      <em>(Inherited from <a href="robotide.editor.grid.GridEditor-class.html">robotide.editor.grid.GridEditor</a>)</em></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditorUi.write_cell">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.editor.grid-pysrc.html#GridEditor.unregister_context_menu_hook">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -1187,6 +1561,19 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
       <code>GetClassName</code>,
       <code>IsSameAs</code>
       </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
     </td>
   </tr>
 </table>
@@ -1247,6 +1634,14 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
         <a href="robotide.editor.kweditor.KeywordEditor-class.html#dirty" class="summary-name">dirty</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.editor.grid.GridEditor-class.html#cell_under_cursor" class="summary-name">cell_under_cursor</a>
+      <em>(Inherited from <a href="robotide.editor.grid.GridEditor-class.html">robotide.editor.grid.GridEditor</a>)</em>
     </td>
   </tr>
   <tr>
@@ -1375,6 +1770,9 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
     <p class="indent-wrapped-lines"><b>Inherited from <code>wx._core.Object</code></b>:
       <code>ClassName</code>
       </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
     </td>
   </tr>
 </table>
@@ -1387,6 +1785,25 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
     <span class="table-header">Method Details</span></td>
 </tr>
 </table>
+<a name="update_value"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">update_value</span>(<span class="sig-arg">*args</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.update_value">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
 <a name="__init__"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -1396,6 +1813,7 @@ String name=wxPyGridNameStr) -&gt; Grid</td>
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
         <span class="sig-arg">parent</span>,
+        <span class="sig-arg">controller</span>,
         <span class="sig-arg">tree</span>)</span>
     <br /><em class="fname">(Constructor)</em>
   </h3>
@@ -1413,7 +1831,395 @@ String name=wxPyGridNameStr) -&gt; Grid</p>
   <dl class="fields">
     <dt>Returns: EvtHandler</dt>
     <dt>Overrides:
-        wx._core.Object.__init__
+        object.__init__
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_tooltip_content"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_tooltip_content</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.get_tooltip_content">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="OnSettingsChanged"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnSettingsChanged</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Redraw the colors if the color settings are modified
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="OnSelectCell"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnSelectCell</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="robotide.editor.grid.GridEditor-class.html#OnSelectCell">grid.GridEditor.OnSelectCell</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="OnKillFocus"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnKillFocus</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="write_cell"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">write_cell</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">row</span>,
+        <span class="sig-arg">col</span>,
+        <span class="sig-arg">value</span>,
+        <span class="sig-arg">update_history</span>=<span class="sig-default">True</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.write_cell">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="robotide.editor.grid.GridEditor-class.html#write_cell">grid.GridEditor.write_cell</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="OnLabelRightClick"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnLabelRightClick</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="OnLabelLeftClick"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnLabelLeftClick</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="OnInsertRows"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnInsertRows</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="OnInsertCells"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnInsertCells</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="robotide.editor.grid.GridEditor-class.html#OnInsertCells">grid.GridEditor.OnInsertCells</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="OnDeleteCells"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnDeleteCells</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="robotide.editor.grid.GridEditor-class.html#OnDeleteCells">grid.GridEditor.OnDeleteCells</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="OnCommentRows"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnCommentRows</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@requires_focus</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="OnUncommentRows"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnUncommentRows</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@requires_focus</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="OnMoveRowsUp"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnMoveRowsUp</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="OnMoveRowsDown"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnMoveRowsDown</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="OnMotion"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnMotion</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="highlight"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">highlight</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">text</span>,
+        <span class="sig-arg">expand</span>=<span class="sig-default">True</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.highlight">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="cell_value_edited"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">cell_value_edited</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">row</span>,
+        <span class="sig-arg">col</span>,
+        <span class="sig-arg">value</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.cell_value_edited">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_selected_datafile_controller"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_selected_datafile_controller</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.get_selected_datafile_controller">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="robotide.utils.eventhandler.RideEventHandler-class.html#get_selected_datafile_controller">utils.eventhandler.RideEventHandler.get_selected_datafile_controller</a>
     </dt>
   </dl>
 </td></tr></table>
@@ -1429,12 +2235,16 @@ String name=wxPyGridNameStr) -&gt; Grid</p>
         <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.OnCopy">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
   
   <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@requires_focus</code></li>
+    </ul></dd>
   </dl>
 </td></tr></table>
 </div>
@@ -1449,12 +2259,16 @@ String name=wxPyGridNameStr) -&gt; Grid</p>
         <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.OnCut">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
   
   <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@requires_focus</code></li>
+    </ul></dd>
   </dl>
 </td></tr></table>
 </div>
@@ -1469,7 +2283,7 @@ String name=wxPyGridNameStr) -&gt; Grid</p>
         <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.OnDelete">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
@@ -1489,7 +2303,31 @@ String name=wxPyGridNameStr) -&gt; Grid</p>
         <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.OnPaste">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@requires_focus</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="OnDeleteRows"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnDeleteRows</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
@@ -1509,26 +2347,54 @@ String name=wxPyGridNameStr) -&gt; Grid</p>
         <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.OnUndo">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
   
   <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@requires_focus</code></li>
+    </ul></dd>
   </dl>
 </td></tr></table>
 </div>
-<a name="set_dirty"></a>
+<a name="OnRedo"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">set_dirty</span>(<span class="sig-arg">self</span>)</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnRedo</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.set_dirty">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@requires_focus</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="close"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">close</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.close">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
@@ -1575,17 +2441,19 @@ String name=wxPyGridNameStr) -&gt; Grid</p>
   </dl>
 </td></tr></table>
 </div>
-<a name="hide_popup"></a>
+<a name="refresh_datafile"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">hide_popup</span>(<span class="sig-arg">self</span>)</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">refresh_datafile</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">item</span>,
+        <span class="sig-arg">event</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.hide_popup">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.refresh_datafile">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
@@ -1602,10 +2470,10 @@ String name=wxPyGridNameStr) -&gt; Grid</p>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">OnEditor</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">event</span>)</span>
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.OnEditor">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
@@ -1614,18 +2482,81 @@ String name=wxPyGridNameStr) -&gt; Grid</p>
   </dl>
 </td></tr></table>
 </div>
-<a name="OnKey"></a>
+<a name="OnKeyDown"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnKey</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">event</span>)</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnKeyDown</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.OnKey">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="OnKeyUp"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnKeyUp</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="OnCellRightClick"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnCellRightClick</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="robotide.editor.grid.GridEditor-class.html#OnCellRightClick">grid.GridEditor.OnCellRightClick</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="OnSelectAll"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnSelectAll</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
@@ -1642,10 +2573,10 @@ String name=wxPyGridNameStr) -&gt; Grid</p>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">OnCellLeftClick</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">event</span>)</span>
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.OnCellLeftClick">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
@@ -1662,10 +2593,10 @@ String name=wxPyGridNameStr) -&gt; Grid</p>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">OnCellLeftDClick</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">event</span>)</span>
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.OnCellLeftDClick">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
@@ -1674,18 +2605,98 @@ String name=wxPyGridNameStr) -&gt; Grid</p>
   </dl>
 </td></tr></table>
 </div>
-<a name="OnIdle"></a>
+<a name="OnCreateKeyword"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnIdle</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">evt</span>)</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnCreateKeyword</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.editor.kweditor-pysrc.html#KeywordEditor.OnIdle">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="OnExtractKeyword"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnExtractKeyword</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="OnExtractVariable"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnExtractVariable</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="OnFindWhereUsed"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnFindWhereUsed</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="OnRenameKeyword"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnRenameKeyword</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
@@ -1750,7 +2761,7 @@ String name=wxPyGridNameStr) -&gt; Grid</p>
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:43 2010
+    Generated by Epydoc 3.0.1 on Thu Mar 31 14:47:59 2011
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

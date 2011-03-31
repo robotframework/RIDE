@@ -71,11 +71,13 @@ wx._core.EvtHandler --+
                              <strong class="uidshort">RidePopupWindow</strong>
 </pre>
 
-<hr />
-<p>Mac version of RidePopupWindow with very limited functionality.</p>
-<p>wx.PopupWindow does not work on Mac and without this hack RIDE could
-not be used on that platform at all.</p>
+<dl><dt>Known Subclasses:</dt>
+<dd>
+      <ul class="subclass-list">
+<li><a href="robotide.editor.popupwindow.Tooltip-class.html">Tooltip</a></li>  </ul>
+</dd></dl>
 
+<hr />
 <!-- ==================== INSTANCE METHODS ==================== -->
 <a name="section-InstanceMethods"></a>
 <table class="summary" border="1" cellpadding="3"
@@ -95,7 +97,7 @@ not be used on that platform at all.</p>
         <span class="summary-sig-arg">size</span>)</span><br />
       __init__(self, Window parent, int flags=BORDER_NONE) -&gt; PopupWindow</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.popupwindow-pysrc.html#MacRidePopupWindow.__init__">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.editor.popupwindow-pysrc.html#RidePopupWindow.__init__">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -109,10 +111,10 @@ not be used on that platform at all.</p>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.editor.popupwindow.RidePopupWindow-class.html#set_content" class="summary-sig-name">set_content</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">content</span>)</span></td>
+          <td><span class="summary-sig"><a href="robotide.editor.popupwindow.RidePopupWindow-class.html#hide" class="summary-sig-name">hide</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.popupwindow-pysrc.html#MacRidePopupWindow.set_content">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.editor.popupwindow-pysrc.html#RidePopupWindow.hide">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -122,14 +124,14 @@ not be used on that platform at all.</p>
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">bool</span>
+      <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.editor.popupwindow.RidePopupWindow-class.html#IsShown" class="summary-sig-name">IsShown</a>(<span class="summary-sig-arg">self</span>)</span><br />
-      Returns true if the window is shown, false if it has been hidden.</td>
+          <td><span class="summary-sig"><a href="robotide.editor.popupwindow.RidePopupWindow-class.html#show_at" class="summary-sig-name">show_at</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">position</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.popupwindow-pysrc.html#MacRidePopupWindow.IsShown">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.editor.popupwindow-pysrc.html#RidePopupWindow.show_at">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -270,6 +272,7 @@ not be used on that platform at all.</p>
       <code>IsExposedRect</code>,
       <code>IsFrozen</code>,
       <code>IsRetained</code>,
+      <code>IsShown</code>,
       <code>IsShownOnScreen</code>,
       <code>IsTopLevel</code>,
       <code>Layout</code>,
@@ -392,6 +395,19 @@ not be used on that platform at all.</p>
       <code>GetClassName</code>,
       <code>IsSameAs</code>
       </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
     </td>
   </tr>
 </table>
@@ -424,6 +440,20 @@ not be used on that platform at all.</p>
   <td align="left" colspan="2" class="table-header">
     <span class="table-header">Properties</span></td>
 </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.editor.popupwindow.RidePopupWindow-class.html#screen_position" class="summary-name">screen_position</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.editor.popupwindow.RidePopupWindow-class.html#size" class="summary-name">size</a>
+    </td>
+  </tr>
   <tr>
     <td colspan="2" class="summary">
     <p class="indent-wrapped-lines"><b>Inherited from <code>wx._windows.PopupWindow</code></b>:
@@ -496,6 +526,9 @@ not be used on that platform at all.</p>
     <p class="indent-wrapped-lines"><b>Inherited from <code>wx._core.Object</code></b>:
       <code>ClassName</code>
       </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
     </td>
   </tr>
 </table>
@@ -521,7 +554,7 @@ not be used on that platform at all.</p>
     <br /><em class="fname">(Constructor)</em>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.editor.popupwindow-pysrc.html#MacRidePopupWindow.__init__">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="robotide.editor.popupwindow-pysrc.html#RidePopupWindow.__init__">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
@@ -529,52 +562,87 @@ not be used on that platform at all.</p>
   <dl class="fields">
     <dt>Returns: EvtHandler</dt>
     <dt>Overrides:
-        wx._core.Object.__init__
-    </dt>
-  </dl>
-</td></tr></table>
-</div>
-<a name="set_content"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">set_content</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">content</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.editor.popupwindow-pysrc.html#MacRidePopupWindow.set_content">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  
-  <dl class="fields">
-  </dl>
-</td></tr></table>
-</div>
-<a name="IsShown"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">IsShown</span>(<span class="sig-arg">self</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.editor.popupwindow-pysrc.html#MacRidePopupWindow.IsShown">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  Returns true if the window is shown, false if it has been hidden.
-  <dl class="fields">
-    <dt>Returns: bool</dt>
-    <dt>Overrides:
-        wx._core.Window.IsShown
+        object.__init__
         <dd><em class="note">(inherited documentation)</em></dd>
     </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="hide"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">hide</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.editor.popupwindow-pysrc.html#RidePopupWindow.hide">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="show_at"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">show_at</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">position</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.editor.popupwindow-pysrc.html#RidePopupWindow.show_at">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== PROPERTY DETAILS ==================== -->
+<a name="section-PropertyDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Property Details</span></td>
+</tr>
+</table>
+<a name="screen_position"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">screen_position</h3>
+  
+  <dl class="fields">
+    <dt>Get Method:</dt>
+    <dd class="value"><span class="summary-sig"><i>unreachable</i>.screen_position(<span class="summary-sig-arg">self</span>)</span>
+    </dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="size"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">size</h3>
+  
+  <dl class="fields">
+    <dt>Get Method:</dt>
+    <dd class="value"><span class="summary-sig"><i>unreachable</i>.size(<span class="summary-sig-arg">self</span>)</span>
+    </dd>
   </dl>
 </td></tr></table>
 </div>
@@ -610,7 +678,7 @@ not be used on that platform at all.</p>
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:44 2010
+    Generated by Epydoc 3.0.1 on Thu Mar 31 14:47:59 2011
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

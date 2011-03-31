@@ -110,7 +110,8 @@
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="robotide.ui.mainframe.RideFrame-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">application</span>)</span><br />
+        <span class="summary-sig-arg">application</span>,
+        <span class="summary-sig-arg">controller</span>)</span><br />
       Point pos=DefaultPosition, Size size=DefaultSize,
 long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</td>
           <td align="right" valign="top">
@@ -144,6 +145,22 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a href="robotide.ui.mainframe.RideFrame-class.html#get_selected_datafile_controller" class="summary-sig-name">get_selected_datafile_controller</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.ui.mainframe-pysrc.html#RideFrame.get_selected_datafile_controller">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a href="robotide.ui.mainframe.RideFrame-class.html#OnClose" class="summary-sig-name">OnClose</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">event</span>)</span></td>
           <td align="right" valign="top">
@@ -161,8 +178,24 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a href="robotide.ui.mainframe.RideFrame-class.html#has_unsaved_changes" class="summary-sig-name">has_unsaved_changes</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.ui.mainframe-pysrc.html#RideFrame.has_unsaved_changes">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a href="robotide.ui.mainframe.RideFrame-class.html#OnNewProject" class="summary-sig-name">OnNewProject</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">event</span>)</span></td>
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
             
@@ -179,7 +212,7 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</td>
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="robotide.ui.mainframe.RideFrame-class.html#OnNewResource" class="summary-sig-name">OnNewResource</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">event</span>)</span></td>
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
             
@@ -196,7 +229,7 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</td>
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="robotide.ui.mainframe.RideFrame-class.html#OnOpen" class="summary-sig-name">OnOpen</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">event</span>)</span></td>
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
             
@@ -213,7 +246,7 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</td>
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="robotide.ui.mainframe.RideFrame-class.html#OnOpenResource" class="summary-sig-name">OnOpenResource</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">event</span>)</span></td>
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
             
@@ -264,25 +297,8 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.ui.mainframe.RideFrame-class.html#add_resource" class="summary-sig-name">add_resource</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">resource</span>)</span></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.ui.mainframe-pysrc.html#RideFrame.add_resource">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
           <td><span class="summary-sig"><a href="robotide.ui.mainframe.RideFrame-class.html#OnOpenDirectory" class="summary-sig-name">OnOpenDirectory</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">event</span>)</span></td>
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
             
@@ -299,7 +315,7 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</td>
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="robotide.ui.mainframe.RideFrame-class.html#OnSave" class="summary-sig-name">OnSave</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">event</span>)</span></td>
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
             
@@ -316,7 +332,7 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</td>
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="robotide.ui.mainframe.RideFrame-class.html#OnSaveAll" class="summary-sig-name">OnSaveAll</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">event</span>)</span></td>
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
             
@@ -332,8 +348,24 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a href="robotide.ui.mainframe.RideFrame-class.html#save_all" class="summary-sig-name">save_all</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.ui.mainframe-pysrc.html#RideFrame.save_all">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a href="robotide.ui.mainframe.RideFrame-class.html#save" class="summary-sig-name">save</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">datafile</span>=<span class="summary-sig-default">None</span>)</span></td>
+        <span class="summary-sig-arg">controller</span>=<span class="summary-sig-default">None</span>)</span></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.ui.mainframe-pysrc.html#RideFrame.save">source&nbsp;code</a></span>
             
@@ -350,7 +382,7 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</td>
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="robotide.ui.mainframe.RideFrame-class.html#OnExit" class="summary-sig-name">OnExit</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">event</span>)</span></td>
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
             
@@ -367,7 +399,7 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</td>
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="robotide.ui.mainframe.RideFrame-class.html#OnManagePlugins" class="summary-sig-name">OnManagePlugins</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">event</span>)</span></td>
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
             
@@ -384,7 +416,7 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</td>
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="robotide.ui.mainframe.RideFrame-class.html#OnAbout" class="summary-sig-name">OnAbout</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">event</span>)</span></td>
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>
             
@@ -712,6 +744,19 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</td>
       <code>GetClassName</code>,
       <code>IsSameAs</code>
       </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
     </td>
   </tr>
 </table>
@@ -829,6 +874,9 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</td>
     <p class="indent-wrapped-lines"><b>Inherited from <code>wx._core.Object</code></b>:
       <code>ClassName</code>
       </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
     </td>
   </tr>
 </table>
@@ -849,7 +897,8 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">application</span>)</span>
+        <span class="sig-arg">application</span>,
+        <span class="sig-arg">controller</span>)</span>
     <br /><em class="fname">(Constructor)</em>
   </h3>
   </td><td align="right" valign="top"
@@ -866,7 +915,8 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</p>
   <dl class="fields">
     <dt>Returns: EvtHandler</dt>
     <dt>Overrides:
-        wx._core.Object.__init__
+        object.__init__
+        <dd><em class="note">(inherited documentation)</em></dd>
     </dt>
   </dl>
 </td></tr></table>
@@ -887,8 +937,27 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</p>
   
   
   <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_selected_datafile_controller"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_selected_datafile_controller</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.ui.mainframe-pysrc.html#RideFrame.get_selected_datafile_controller">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
     <dt>Overrides:
-        <a href="robotide.utils.eventhandler.RideEventHandler-class.html#get_selected_datafile">utils.eventhandler.RideEventHandler.get_selected_datafile</a>
+        <a href="robotide.utils.eventhandler.RideEventHandler-class.html#get_selected_datafile_controller">utils.eventhandler.RideEventHandler.get_selected_datafile_controller</a>
     </dt>
   </dl>
 </td></tr></table>
@@ -913,6 +982,25 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</p>
   </dl>
 </td></tr></table>
 </div>
+<a name="has_unsaved_changes"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">has_unsaved_changes</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.ui.mainframe-pysrc.html#RideFrame.has_unsaved_changes">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
 <a name="OnNewProject"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -921,7 +1009,7 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</p>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">OnNewProject</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">event</span>)</span>
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
@@ -941,7 +1029,7 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</p>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">OnNewResource</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">event</span>)</span>
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
@@ -961,7 +1049,7 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</p>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">OnOpen</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">event</span>)</span>
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
@@ -981,7 +1069,7 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</p>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">OnOpenResource</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">event</span>)</span>
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
@@ -1034,26 +1122,6 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</p>
   </dl>
 </td></tr></table>
 </div>
-<a name="add_resource"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">add_resource</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">resource</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.ui.mainframe-pysrc.html#RideFrame.add_resource">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  
-  <dl class="fields">
-  </dl>
-</td></tr></table>
-</div>
 <a name="OnOpenDirectory"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -1062,7 +1130,7 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</p>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">OnOpenDirectory</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">event</span>)</span>
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
@@ -1082,7 +1150,7 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</p>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">OnSave</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">event</span>)</span>
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
@@ -1102,10 +1170,29 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</p>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">OnSaveAll</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">event</span>)</span>
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="save_all"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">save_all</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.ui.mainframe-pysrc.html#RideFrame.save_all">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
@@ -1122,7 +1209,7 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</p>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">save</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">datafile</span>=<span class="sig-default">None</span>)</span>
+        <span class="sig-arg">controller</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="robotide.ui.mainframe-pysrc.html#RideFrame.save">source&nbsp;code</a></span>&nbsp;
@@ -1142,7 +1229,7 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</p>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">OnExit</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">event</span>)</span>
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
@@ -1162,7 +1249,7 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</p>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">OnManagePlugins</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">event</span>)</span>
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
@@ -1182,7 +1269,7 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</p>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">OnAbout</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">event</span>)</span>
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="robotide.utils.eventhandler-pysrc.html">source&nbsp;code</a></span>&nbsp;
@@ -1245,7 +1332,7 @@ long style=DEFAULT_FRAME_STYLE, String name=FrameNameStr) -&gt; Frame</p>
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:45 2010
+    Generated by Epydoc 3.0.1 on Thu Mar 31 14:48:05 2011
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

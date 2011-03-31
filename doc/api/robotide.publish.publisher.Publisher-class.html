@@ -78,7 +78,8 @@ object --+
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.publish.publisher.Publisher-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td><span class="summary-sig"><a href="robotide.publish.publisher.Publisher-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      x.__init__(...) initializes x; see x.__class__.__doc__ for signature</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.publish.publisher-pysrc.html#Publisher.__init__">source&nbsp;code</a></span>
             
@@ -116,7 +117,7 @@ object --+
         <span class="summary-sig-arg">listener</span>,
         <span class="summary-sig-arg">topic</span>,
         <span class="summary-sig-arg">key</span>=<span class="summary-sig-default">None</span>)</span><br />
-      Start to listen to messages with the specified <tt class="rst-docutils literal"><span class="pre">topic</span></tt>.</td>
+      Start to listen to messages with the specified <tt class="rst-docutils literal">topic</tt>.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.publish.publisher-pysrc.html#Publisher.subscribe">source&nbsp;code</a></span>
             
@@ -136,7 +137,7 @@ object --+
         <span class="summary-sig-arg">listener</span>,
         <span class="summary-sig-arg">topic</span>,
         <span class="summary-sig-arg">key</span>=<span class="summary-sig-default">None</span>)</span><br />
-      Stop listening for messages with the specified <tt class="rst-docutils literal"><span class="pre">topic</span></tt>.</td>
+      Stop listening for messages with the specified <tt class="rst-docutils literal">topic</tt>.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.publish.publisher-pysrc.html#Publisher.unsubscribe">source&nbsp;code</a></span>
             
@@ -153,8 +154,8 @@ object --+
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="robotide.publish.publisher.Publisher-class.html#unsubscribe_all" class="summary-sig-name">unsubscribe_all</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">key</span>)</span><br />
-      Unsubscribe all listeners registered with the given <tt class="rst-docutils literal"><span class="pre">key</span></tt></td>
+        <span class="summary-sig-arg">key</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Unsubscribe all listeners registered with the given <tt class="rst-docutils literal">key</tt></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.publish.publisher-pysrc.html#Publisher.unsubscribe_all">source&nbsp;code</a></span>
             
@@ -162,6 +163,40 @@ object --+
         </tr>
       </table>
       
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__repr__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Properties</span></td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
     </td>
   </tr>
 </table>
@@ -189,8 +224,12 @@ object --+
     </td>
   </tr></table>
   
-  
+  x.__init__(...) initializes x; see x.__class__.__doc__ for signature
   <dl class="fields">
+    <dt>Overrides:
+        object.__init__
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
   </dl>
 </td></tr></table>
 </div>
@@ -232,14 +271,14 @@ object --+
     </td>
   </tr></table>
   
-  <p>Start to listen to messages with the specified <tt class="rst-rst-docutils literal rst-docutils literal"><span class="pre">topic</span></tt>.</p>
-<p>The <tt class="rst-docutils literal"><span class="pre">topic</span></tt> can be either a message class or a dot separated topic
-string, and the <tt class="rst-docutils literal"><span class="pre">listener</span></tt> must be a callable accepting a message
+  <p>Start to listen to messages with the specified <tt class="rst-rst-docutils literal rst-docutils literal">topic</tt>.</p>
+<p>The <tt class="rst-docutils literal">topic</tt> can be either a message class or a dot separated topic
+string, and the <tt class="rst-docutils literal">listener</tt> must be a callable accepting a message
 instance. See the generic documentation of the <a href="robotide.publish-module.html" class="link">robotide.publish</a>
 module for more details.</p>
-<p>The <tt class="rst-docutils literal"><span class="pre">key</span></tt> is used for keeping a reference of the listener so that
+<p>The <tt class="rst-docutils literal">key</tt> is used for keeping a reference of the listener so that
 all listeners with the same key can be unsubscribed at once using
-<tt class="rst-docutils literal"><span class="pre">unsubscribe_all</span></tt>.</p>
+<tt class="rst-docutils literal">unsubscribe_all</tt>.</p>
   <dl class="fields">
   </dl>
 </td></tr></table>
@@ -261,8 +300,8 @@ all listeners with the same key can be unsubscribed at once using
     </td>
   </tr></table>
   
-  <p>Stop listening for messages with the specified <tt class="rst-rst-docutils literal rst-docutils literal"><span class="pre">topic</span></tt>.</p>
-<p>The <tt class="rst-docutils literal"><span class="pre">topic</span></tt>, the <tt class="rst-docutils literal"><span class="pre">listener</span></tt>, and the <tt class="rst-docutils literal"><span class="pre">key</span></tt> must match the
+  <p>Stop listening for messages with the specified <tt class="rst-rst-docutils literal rst-docutils literal">topic</tt>.</p>
+<p>The <tt class="rst-docutils literal">topic</tt>, the <tt class="rst-docutils literal">listener</tt>, and the <tt class="rst-docutils literal">key</tt> must match the
 values passed to <a href="robotide.publish.publisher.Publisher-class.html#subscribe" class="link">subscribe</a> earlier.</p>
   <dl class="fields">
   </dl>
@@ -276,14 +315,14 @@ values passed to <a href="robotide.publish.publisher.Publisher-class.html#subscr
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">unsubscribe_all</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">key</span>)</span>
+        <span class="sig-arg">key</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="robotide.publish.publisher-pysrc.html#Publisher.unsubscribe_all">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
-  Unsubscribe all listeners registered with the given <tt class="rst-rst-docutils literal rst-docutils literal"><span class="pre">key</span></tt>
+  Unsubscribe all listeners registered with the given <tt class="rst-rst-docutils literal rst-docutils literal">key</tt>
   <dl class="fields">
   </dl>
 </td></tr></table>
@@ -320,7 +359,7 @@ values passed to <a href="robotide.publish.publisher.Publisher-class.html#subscr
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:44 2010
+    Generated by Epydoc 3.0.1 on Thu Mar 31 14:48:03 2011
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

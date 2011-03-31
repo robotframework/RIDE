@@ -92,6 +92,27 @@
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
+        <a href="robotide.ui.keywordsearch-module.html#ALL_KEYWORDS" class="summary-name">ALL_KEYWORDS</a> = <code title="'&lt;all keywords&gt;'"><code class="variable-quote">'</code><code class="variable-string">&lt;all keywords&gt;</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.ui.keywordsearch-module.html#ALL_USER_KEYWORDS" class="summary-name">ALL_USER_KEYWORDS</a> = <code title="'&lt;all user keywords&gt;'"><code class="variable-quote">'</code><code class="variable-string">&lt;all user keywords&gt;</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.ui.keywordsearch-module.html#ALL_LIBRARY_KEYWORDS" class="summary-name">ALL_LIBRARY_KEYWORDS</a> = <code title="'&lt;all library keywords&gt;'"><code class="variable-quote">'</code><code class="variable-string">&lt;all library keywords&gt;</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
         <a href="robotide.ui.keywordsearch-module.html#__package__" class="summary-name">__package__</a> = <code title="'robotide.ui'"><code class="variable-quote">'</code><code class="variable-string">robotide.ui</code><code class="variable-quote">'</code></code>
     </td>
   </tr>
@@ -99,13 +120,21 @@
 <p class="indent-wrapped-lines"><b>Imports:</b>
   <span title="wx">wx</span>,
   <span title="wx.lib.mixins.listctrl.ListCtrlAutoWidthMixin">ListCtrlAutoWidthMixin</span>,
+  <span title="os">os</span>,
   <a href="robotide.pluginapi.plugin.Plugin-class.html" title="robotide.pluginapi.Plugin">Plugin</a>,
   <a href="robotide.action.actioninfo.ActionInfo-class.html" title="robotide.pluginapi.ActionInfo">ActionInfo</a>,
   <a href="robotide.publish.messages.RideOpenSuite-class.html" title="robotide.pluginapi.RideOpenSuite">RideOpenSuite</a>,
   <a href="robotide.publish.messages.RideOpenResource-class.html" title="robotide.pluginapi.RideOpenResource">RideOpenResource</a>,
   <a href="robotide.publish.messages.RideImportSetting-class.html" title="robotide.pluginapi.RideImportSetting">RideImportSetting</a>,
   <a href="robotide.publish.messages.RideUserKeyword-class.html" title="robotide.pluginapi.RideUserKeyword">RideUserKeyword</a>,
-  <a href="robotide.utils-module.html" title="robotide.utils">utils</a>
+  <a href="robotide.publish.messages.RideNewProject-class.html" title="robotide.pluginapi.RideNewProject">RideNewProject</a>,
+  <a href="robotide.controller.filecontrollers.ResourceFileController-class.html" title="robotide.controller.filecontrollers.ResourceFileController">ResourceFileController</a>,
+  <a href="robotide.controller.filecontrollers.TestCaseFileController-class.html" title="robotide.controller.filecontrollers.TestCaseFileController">TestCaseFileController</a>,
+  <a href="robotide.widgets.popupmenu.PopupMenuItem-class.html" title="robotide.widgets.PopupMenuItem">PopupMenuItem</a>,
+  <a href="robotide.utils-module.html" title="robotide.utils">utils</a>,
+  <a href="robotide.context-module.html" title="robotide.context">context</a>,
+  <a href="robotide.widgets.button.ButtonWithHandler-class.html" title="robotide.widgets.button.ButtonWithHandler">ButtonWithHandler</a>,
+  <a href="robotide.usages.UsageRunner.Usages-class.html" title="robotide.usages.UsageRunner.Usages">Usages</a>
 </p><br />
 <!-- ==================== VARIABLES DETAILS ==================== -->
 <a name="section-VariablesDetails"></a>
@@ -116,6 +145,60 @@
     <span class="table-header">Variables Details</span></td>
 </tr>
 </table>
+<a name="ALL_KEYWORDS"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">ALL_KEYWORDS</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-quote">'</code><code class="variable-string">&lt;all keywords&gt;</code><code class="variable-quote">'</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="ALL_USER_KEYWORDS"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">ALL_USER_KEYWORDS</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-quote">'</code><code class="variable-string">&lt;all user keywords&gt;</code><code class="variable-quote">'</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="ALL_LIBRARY_KEYWORDS"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">ALL_LIBRARY_KEYWORDS</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-quote">'</code><code class="variable-string">&lt;all library keywords&gt;</code><code class="variable-quote">'</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
 <a name="__package__"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -166,7 +249,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:41 2010
+    Generated by Epydoc 3.0.1 on Thu Mar 31 14:47:50 2011
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

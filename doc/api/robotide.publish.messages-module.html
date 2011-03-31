@@ -76,8 +76,34 @@
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
+        <a href="robotide.publish.messages.RideLog-class.html" class="summary-name">RideLog</a><br />
+      This class represents a general purpose log message.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
         <a href="robotide.publish.messages.RideLogMessage-class.html" class="summary-name">RideLogMessage</a><br />
       This class represents a general purpose log message.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.publish.messages.RideLogException-class.html" class="summary-name">RideLogException</a><br />
+      This class represents a general purpose log message with a traceback
+appended to message text. Also the original exception is included with
+the message.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.publish.messages.RideSettingsChanged-class.html" class="summary-name">RideSettingsChanged</a><br />
+      Sent when settings are changed
     </td>
   </tr>
 <tr>
@@ -125,7 +151,23 @@
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
         <a href="robotide.publish.messages.RideSaveAll-class.html" class="summary-name">RideSaveAll</a><br />
-      Sent when user selects <tt class="rst-rst-docutils literal rst-docutils literal"><span class="pre">Save</span> <span class="pre">All</span></tt> from <tt class="rst-rst-docutils literal rst-docutils literal"><span class="pre">File</span></tt> menu or via shortcut.
+      Sent when user selects <tt class="rst-rst-docutils literal rst-docutils literal">Save All</tt> from <tt class="rst-rst-docutils literal rst-docutils literal">File</tt> menu or via shortcut.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.publish.messages.RideChangeFormat-class.html" class="summary-name">RideChangeFormat</a><br />
+      Sent when user has changed the format of a file.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.publish.messages.RideNewProject-class.html" class="summary-name">RideNewProject</a><br />
+      Sent when a new project has been created.
     </td>
   </tr>
 <tr>
@@ -142,6 +184,35 @@
     </td><td class="summary">
         <a href="robotide.publish.messages.RideOpenResource-class.html" class="summary-name">RideOpenResource</a><br />
       Sent when a new resource has finished loading.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.publish.messages.RideSelectResource-class.html" class="summary-name">RideSelectResource</a><br />
+      Sent when a resource should be selected.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.publish.messages.RideDataFileRemoved-class.html" class="summary-name">RideDataFileRemoved</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.publish.messages.RideSuiteAdded-class.html" class="summary-name">RideSuiteAdded</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.publish.messages.RideInitFileRemoved-class.html" class="summary-name">RideInitFileRemoved</a>
     </td>
   </tr>
 <tr>
@@ -180,6 +251,30 @@
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
+        <a href="robotide.publish.messages.RideImportSettingRemoved-class.html" class="summary-name">RideImportSettingRemoved</a><br />
+      Sent whenever a value of import setting is removed.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.publish.messages.RideDataChangedToDirty-class.html" class="summary-name">RideDataChangedToDirty</a><br />
+      Sent when datafile changes from serialized version
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.publish.messages.RideDataDirtyCleared-class.html" class="summary-name">RideDataDirtyCleared</a><br />
+      Sent when datafiles dirty marking is cleared
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
         <a href="robotide.publish.messages.RideUserKeyword-class.html" class="summary-name">RideUserKeyword</a><br />
       Base class for all messages about changes to any user keyword.
     </td>
@@ -196,8 +291,101 @@
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
+        <a href="robotide.publish.messages.RideUserKeywordRemoved-class.html" class="summary-name">RideUserKeywordRemoved</a><br />
+      Sent when a user keyword is removed from a suite or resource.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.publish.messages.RideItem-class.html" class="summary-name">RideItem</a><br />
+      Base class for all messages about changes to any data item.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.publish.messages.RideItemStepsChanged-class.html" class="summary-name">RideItemStepsChanged</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.publish.messages.RideItemNameChanged-class.html" class="summary-name">RideItemNameChanged</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.publish.messages.RideItemSettingsChanged-class.html" class="summary-name">RideItemSettingsChanged</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.publish.messages.RideTestCaseAdded-class.html" class="summary-name">RideTestCaseAdded</a><br />
+      Sent when a new test case is added to a suite.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.publish.messages.RideTestCaseRemoved-class.html" class="summary-name">RideTestCaseRemoved</a><br />
+      Sent when a test case is removed from a suite.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.publish.messages.RideVariableAdded-class.html" class="summary-name">RideVariableAdded</a><br />
+      Sent when a new variable is added to a suite.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.publish.messages.RideVariableRemoved-class.html" class="summary-name">RideVariableRemoved</a><br />
+      Sent when a variable is removed from a suite.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.publish.messages.RideVariableMovedUp-class.html" class="summary-name">RideVariableMovedUp</a><br />
+      Sent when a variable is moved up
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.publish.messages.RideVariableMovedDown-class.html" class="summary-name">RideVariableMovedDown</a><br />
+      Sent when a variable is moved down
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.publish.messages.RideVariableUpdated-class.html" class="summary-name">RideVariableUpdated</a><br />
+      Sent when the state of a variable is changed
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
         <a href="robotide.publish.messages.RideClosing-class.html" class="summary-name">RideClosing</a><br />
-      Sent when user selects <tt class="rst-rst-docutils literal rst-docutils literal"><span class="pre">Quit</span></tt> from <tt class="rst-rst-docutils literal rst-docutils literal"><span class="pre">File</span></tt> menu or via shortcut.
+      Sent when user selects <tt class="rst-rst-docutils literal rst-docutils literal">Quit</tt> from <tt class="rst-rst-docutils literal rst-docutils literal">File</tt> menu or via shortcut.
     </td>
   </tr>
 </table>
@@ -232,7 +420,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:41 2010
+    Generated by Epydoc 3.0.1 on Thu Mar 31 14:47:50 2011
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

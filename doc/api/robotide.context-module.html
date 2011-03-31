@@ -69,6 +69,7 @@
     <li> <strong class="uidlink"><a href="robotide.context.coreplugins-module.html">robotide.context.coreplugins</a></strong>    </li>
     <li> <strong class="uidlink"><a href="robotide.context.font-module.html">robotide.context.font</a></strong>    </li>
     <li> <strong class="uidlink"><a href="robotide.context.logger-module.html">robotide.context.logger</a></strong>    </li>
+    <li> <strong class="uidlink"><a href="robotide.context.platform-module.html">robotide.context.platform</a></strong>    </li>
     <li> <strong class="uidlink"><a href="robotide.context.settings-module.html">robotide.context.settings</a></strong>    </li>
   </ul></td></tr>
 </table>
@@ -144,7 +145,7 @@
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="robotide.context-module.html#pyversion" class="summary-name">pyversion</a> = <code title="'2.6.4'"><code class="variable-quote">'</code><code class="variable-string">2.6.4</code><code class="variable-quote">'</code></code>
+        <a href="robotide.context-module.html#pyversion" class="summary-name">pyversion</a> = <code title="'2.6.6'"><code class="variable-quote">'</code><code class="variable-string">2.6.6</code><code class="variable-quote">'</code></code>
     </td>
   </tr>
 <tr>
@@ -152,7 +153,8 @@
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
         <a href="robotide.context-module.html#ABOUT_RIDE" class="summary-name">ABOUT_RIDE</a> = <code title="'''&lt;h3&gt;RIDE -- Robot Framework Test Data Editor&lt;/h3&gt;
-&lt;p&gt;Version trunk running on Python 2.6.4.&lt;/p&gt;
+&lt;p&gt;Version trunk running on Python 2.6.6 using Robot Framework trunk 2\
+0110316.&lt;/p&gt;
 &lt;p&gt;Documentation, issue tracker and other information can be found fro\
 m the project pages at
 &lt;a href=&quot;http://code.google.com/p/robotframework-ride&quot;&gt;http://code.goo\
@@ -164,7 +166,8 @@ gle.com/p/robotframework-ride&lt;/a&gt;.
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="robotide.context-module.html#APP" class="summary-name">APP</a> = <code title="None">None</code>
+        <a href="robotide.context-module.html#APP" class="summary-name">APP</a> = <code title="None">None</code><br />
+      hash(x)
     </td>
   </tr>
 <tr>
@@ -178,25 +181,30 @@ gle.com/p/robotframework-ride&lt;/a&gt;.
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="robotide.context-module.html#v" class="summary-name">v</a> = <code title="4">4</code>
+        <a href="robotide.context-module.html#v" class="summary-name">v</a> = <code title="6">6</code>
     </td>
   </tr>
 </table>
 <p class="indent-wrapped-lines"><b>Imports:</b>
-  <span title="wx">wx</span>,
   <span title="os">os</span>,
   <span title="sys">sys</span>,
   <span title="robotide.version.VERSION">VERSION</span>,
   <span title="robotide.robotapi.ROBOT_LOGGER">ROBOT_LOGGER</span>,
+  <span title="robotide.robotapi.ROBOT_VERSION">ROBOT_VERSION</span>,
   <a href="robotide.context.font.Font-class.html" title="robotide.context.font.Font">Font</a>,
   <a href="robotide.context.logger.Logger-class.html" title="robotide.context.logger.Logger">Logger</a>,
   <a href="robotide.context.settings.Settings-class.html" title="robotide.context.settings.Settings">Settings</a>,
   <a href="robotide.context.settings-module.html#initialize_settings" title="robotide.context.settings.initialize_settings">initialize_settings</a>,
   <a href="robotide.context.coreplugins-module.html#get_core_plugins" title="robotide.context.coreplugins.get_core_plugins">get_core_plugins</a>,
+  <span title="robotide.context.platform.IS_MAC">IS_MAC</span>,
+  <span title="robotide.context.platform.IS_WINDOWS">IS_WINDOWS</span>,
+  <a href="robotide.context.platform-module.html#ctrl_or_cmd" title="robotide.context.platform.ctrl_or_cmd">ctrl_or_cmd</a>,
+  <a href="robotide.context.platform-module.html#bind_keys_to_evt_menu" title="robotide.context.platform.bind_keys_to_evt_menu">bind_keys_to_evt_menu</a>,
   <a href="robotide.context.configobj-module.html" title="robotide.context.configobj">configobj</a>,
   <a href="robotide.context.coreplugins-module.html" title="robotide.context.coreplugins">coreplugins</a>,
   <a href="robotide.context.font-module.html" title="robotide.context.font">font</a>,
   <a href="robotide.context.logger-module.html" title="robotide.context.logger">logger</a>,
+  <a href="robotide.context.platform-module.html" title="robotide.context.platform">platform</a>,
   <a href="robotide.context.settings-module.html" title="robotide.context.settings">settings</a>
 </p><br />
 <!-- ==================== VARIABLES DETAILS ==================== -->
@@ -328,7 +336,7 @@ Logger()
   <dl class="fields">
     <dt>Value:</dt>
       <dd><table><tr><td><pre class="variable">
-<code class="variable-quote">'</code><code class="variable-string">2.6.4</code><code class="variable-quote">'</code>
+<code class="variable-quote">'</code><code class="variable-string">2.6.6</code><code class="variable-quote">'</code>
 </pre></td></tr></table>
 </dd>
   </dl>
@@ -347,7 +355,8 @@ Logger()
     <dt>Value:</dt>
       <dd><table><tr><td><pre class="variable">
 <code class="variable-quote">'''</code><code class="variable-string">&lt;h3&gt;RIDE -- Robot Framework Test Data Editor&lt;/h3&gt;</code>
-<code class="variable-string">&lt;p&gt;Version trunk running on Python 2.6.4.&lt;/p&gt;</code>
+<code class="variable-string">&lt;p&gt;Version trunk running on Python 2.6.6 using Robot Framework trunk 2</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">0110316.&lt;/p&gt;</code>
 <code class="variable-string">&lt;p&gt;Documentation, issue tracker and other information can be found fro</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
 <code class="variable-string">m the project pages at</code>
 <code class="variable-string">&lt;a href=&quot;http://code.google.com/p/robotframework-ride&quot;&gt;http://code.goo</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
@@ -364,7 +373,7 @@ Logger()
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <h3 class="epydoc">APP</h3>
-  
+  hash(x)
   <dl class="fields">
   </dl>
   <dl class="fields">
@@ -406,7 +415,7 @@ None
   <dl class="fields">
     <dt>Value:</dt>
       <dd><table><tr><td><pre class="variable">
-4
+6
 </pre></td></tr></table>
 </dd>
   </dl>
@@ -444,7 +453,7 @@ None
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:41 2010
+    Generated by Epydoc 3.0.1 on Thu Mar 31 14:47:49 2011
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

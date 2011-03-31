@@ -106,7 +106,7 @@
           <td><span class="summary-sig"><a href="robotide.action.actioninfo-module.html#ActionInfoCollection" class="summary-sig-name">ActionInfoCollection</a>(<span class="summary-sig-arg">data</span>,
         <span class="summary-sig-arg">event_handler</span>,
         <span class="summary-sig-arg">container</span>=<span class="summary-sig-default">None</span>)</span><br />
-      Parses the <tt class="rst-docutils literal"><span class="pre">data</span></tt> into a list of <a href="robotide.action.actioninfo.ActionInfo-class.html" class="link">ActionInfo</a> and <a href="robotide.action.actioninfo.SeparatorInfo-class.html" class="link">SeparatorInfo</a> objects.</td>
+      Parses the <tt class="rst-docutils literal">data</tt> into a list of <a href="robotide.action.actioninfo.ActionInfo-class.html" class="link">ActionInfo</a> and <a href="robotide.action.actioninfo.SeparatorInfo-class.html" class="link">SeparatorInfo</a> objects.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.action.actioninfo-pysrc.html#ActionInfoCollection">source&nbsp;code</a></span>
             
@@ -163,7 +163,7 @@
     </td>
   </tr></table>
   
-  <p>Parses the <tt class="rst-rst-docutils literal rst-docutils literal"><span class="pre">data</span></tt> into a list of <a href="robotide.action.actioninfo.ActionInfo-class.html" class="link">ActionInfo</a> and <a href="robotide.action.actioninfo.SeparatorInfo-class.html" class="link">SeparatorInfo</a> objects.</p>
+  <p>Parses the <tt class="rst-rst-docutils literal rst-docutils literal">data</tt> into a list of <a href="robotide.action.actioninfo.ActionInfo-class.html" class="link">ActionInfo</a> and <a href="robotide.action.actioninfo.SeparatorInfo-class.html" class="link">SeparatorInfo</a> objects.</p>
 <p>The data is parsed based on the simple DSL documented below.</p>
 <div class="rst-section" id="rst-dsl-syntax">
 <h1 class="heading">DSL syntax</h1>
@@ -179,7 +179,12 @@ name | documentation | shortcut | icon
 <dd>The name of the menu under which the entries below it are inserted.</dd>
 <dt>name</dt>
 <dd>The name of the menu entry to be added. If name is <tt class="rst-docutils literal"><span class="pre">---</span></tt>, a
-<a href="robotide.action.actioninfo.SeparatorInfo-class.html" class="link">SeparatorInfo</a> object is created instead of an <a href="robotide.action.actioninfo.ActionInfo-class.html" class="link">ActionInfo</a> object.</dd>
+<a href="robotide.action.actioninfo.SeparatorInfo-class.html" class="link">SeparatorInfo</a> object is created instead of an <a href="robotide.action.actioninfo.ActionInfo-class.html" class="link">ActionInfo</a> object.
+If name is post fixed with shortcuts between parenthesis and separated
+with ' or ', these shortcuts are parsed to machine local presentation
+and shown after the name. This can be used instead of shotrcut-element
+if you want to add shortcuts that you want to bind yourself and/or add
+several shortcuts.</dd>
 <dt>documentation</dt>
 <dd>Documentation for the action.</dd>
 <dt>shortcut</dt>
@@ -193,19 +198,20 @@ last fields are optional.</p>
 </div>
 <div class="rst-section" id="rst-finding-handlers">
 <h1 class="heading">Finding handlers</h1>
-<p>The given <tt class="rst-docutils literal"><span class="pre">event_handler</span></tt> must have handler methods that map to the
+<p>The given <tt class="rst-docutils literal">event_handler</tt> must have handler methods that map to the
 specified action names. The mapping is done by prefixing the name with
-<tt class="rst-docutils literal"><span class="pre">On</span></tt>, removing spaces, and capitalizing all words. For example <tt class="rst-docutils literal"><span class="pre">Save</span></tt>
-and <tt class="rst-docutils literal"><span class="pre">My</span> <span class="pre">Action</span></tt> must have handler methods <tt class="rst-docutils literal"><span class="pre">OnSave</span></tt> and <tt class="rst-docutils literal"><span class="pre">OnMyAction</span></tt>,
-respectively.</p>
+<tt class="rst-docutils literal">On</tt>, removing spaces, and capitalizing all words. For example <tt class="rst-docutils literal">Save</tt>
+and <tt class="rst-docutils literal">My Action</tt> must have handler methods <tt class="rst-docutils literal">OnSave</tt> and <tt class="rst-docutils literal">OnMyAction</tt>,
+respectively. If name has content between parenthesis at the end, this
+content is ignored when creating handler mapping.</p>
 </div>
 <div class="rst-section" id="rst-specifying-container">
 <h1 class="heading">Specifying container</h1>
-<p>By default the given <tt class="rst-docutils literal"><span class="pre">container</span></tt> is passed to the <a href="robotide.action.actioninfo.ActionInfo-class.html#__init__" class="link">ActionInfo.__init__</a>
-method directly. This can be altered by prefixing the <tt class="rst-docutils literal"><span class="pre">name</span></tt> with an
-exclamation mark (e.g. <tt class="rst-docutils literal"><span class="pre">!Save</span></tt> or <tt class="rst-docutils literal"><span class="pre">!My</span> <span class="pre">Action</span></tt>) to make that action
+<p>By default the given <tt class="rst-docutils literal">container</tt> is passed to the <a href="robotide.action.actioninfo.ActionInfo-class.html#__init__" class="link">ActionInfo.__init__</a>
+method directly. This can be altered by prefixing the <tt class="rst-docutils literal">name</tt> with an
+exclamation mark (e.g. <tt class="rst-docutils literal">!Save</tt> or <tt class="rst-docutils literal">!My Action</tt>) to make that action
 global. With these actions the container given to the <a href="robotide.action.actioninfo.ActionInfo-class.html#__init__" class="link">ActionInfo.__init__</a>
-is always <tt class="rst-docutils literal"><span class="pre">None</span></tt>.</p>
+is always <tt class="rst-docutils literal">None</tt>.</p>
 </div>
 <div class="rst-section" id="rst-example">
 <h1 class="heading">Example</h1>
@@ -218,6 +224,9 @@ is always <tt class="rst-docutils literal"><span class="pre">None</span></tt>.</
 
 [Tools]
 !Manage Plugins
+
+[Content]
+Content Assist (Ctrl-Space or Ctrl-Alt-Space) | Has two shortcuts.
 </pre>
 </div>
   <dl class="fields">
@@ -292,7 +301,7 @@ the <a href="robotide.action.actioninfo.ActionInfo-class.html" class="link">Acti
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:41 2010
+    Generated by Epydoc 3.0.1 on Thu Mar 31 14:47:49 2011
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

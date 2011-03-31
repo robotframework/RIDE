@@ -114,15 +114,20 @@
 <a name="L57"></a><tt class="py-lineno">57</tt>  <tt class="py-line"><tt class="py-docstring">(i.e. it has focus).</tt> </tt>
 <a name="L58"></a><tt class="py-lineno">58</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
 <a name="L59"></a><tt class="py-lineno">59</tt>  <tt class="py-line"><tt class="py-docstring">The registering mechanism allows multiple handlers to be registered to the same</tt> </tt>
-<a name="L60"></a><tt class="py-lineno">60</tt>  <tt class="py-line"><tt class="py-docstring">menu entry, button, or shortcut. It is thus possible that, for example, one</tt> </tt>
-<a name="L61"></a><tt class="py-lineno">61</tt>  <tt class="py-line"><tt class="py-docstring">keyboard shortcut calls multiple handlers. </tt> </tt>
-<a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
-<a name="L63"></a><tt class="py-lineno">63</tt>  <tt class="py-line"> </tt>
-<a name="L64"></a><tt class="py-lineno">64</tt>  <tt class="py-line"> </tt>
-<a name="L65"></a><tt class="py-lineno">65</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Module robotide.action.actioninfo=robotide.action.actioninfo-module.html"><a title="robotide.action.actioninfo" class="py-name" href="#" onclick="return doclink('link-0', 'actioninfo', 'link-0');">actioninfo</a></tt> <tt class="py-keyword">import</tt> <tt id="link-1" class="py-name" targets="Function robotide.action.actioninfo.ActionInfoCollection()=robotide.action.actioninfo-module.html#ActionInfoCollection"><a title="robotide.action.actioninfo.ActionInfoCollection" class="py-name" href="#" onclick="return doclink('link-1', 'ActionInfoCollection', 'link-1');">ActionInfoCollection</a></tt><tt class="py-op">,</tt> <tt id="link-2" class="py-name" targets="Class robotide.action.actioninfo.SeparatorInfo=robotide.action.actioninfo.SeparatorInfo-class.html"><a title="robotide.action.actioninfo.SeparatorInfo" class="py-name" href="#" onclick="return doclink('link-2', 'SeparatorInfo', 'link-2');">SeparatorInfo</a></tt><tt class="py-op">,</tt> <tt id="link-3" class="py-name" targets="Class robotide.action.actioninfo.ActionInfo=robotide.action.actioninfo.ActionInfo-class.html"><a title="robotide.action.actioninfo.ActionInfo" class="py-name" href="#" onclick="return doclink('link-3', 'ActionInfo', 'link-3');">ActionInfo</a></tt> </tt>
-<a name="L66"></a><tt class="py-lineno">66</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-4" class="py-name" targets="Package robotide.action=robotide.action-module.html,Module robotide.action.action=robotide.action.action-module.html"><a title="robotide.action
-robotide.action.action" class="py-name" href="#" onclick="return doclink('link-4', 'action', 'link-4');">action</a></tt> <tt class="py-keyword">import</tt> <tt id="link-5" class="py-name" targets="Function robotide.action.action.Action()=robotide.action.action-module.html#Action"><a title="robotide.action.action.Action" class="py-name" href="#" onclick="return doclink('link-5', 'Action', 'link-5');">Action</a></tt> </tt>
-<a name="L67"></a><tt class="py-lineno">67</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<a name="L60"></a><tt class="py-lineno">60</tt>  <tt class="py-line"><tt class="py-docstring">menu entry, toolbar button, or shortcut. It is thus possible that, for example,</tt> </tt>
+<a name="L61"></a><tt class="py-lineno">61</tt>  <tt class="py-line"><tt class="py-docstring">one keyboard shortcut calls multiple handlers. </tt> </tt>
+<a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L63"></a><tt class="py-lineno">63</tt>  <tt class="py-line"><tt class="py-docstring">It is also possible to enable/disable action's menu entry, toolbar button,</tt> </tt>
+<a name="L64"></a><tt class="py-lineno">64</tt>  <tt class="py-line"><tt class="py-docstring">and shortcut by enabling/disabling those with `action.Action.enable` and </tt> </tt>
+<a name="L65"></a><tt class="py-lineno">65</tt>  <tt class="py-line"><tt class="py-docstring">`action.Action.disable` methods. Action is returned by </tt> </tt>
+<a name="L66"></a><tt class="py-lineno">66</tt>  <tt class="py-line"><tt class="py-docstring">`pluginapi.Plugin.register_action` method.</tt> </tt>
+<a name="L67"></a><tt class="py-lineno">67</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
+<a name="L68"></a><tt class="py-lineno">68</tt>  <tt class="py-line"> </tt>
+<a name="L69"></a><tt class="py-lineno">69</tt>  <tt class="py-line"> </tt>
+<a name="L70"></a><tt class="py-lineno">70</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Module robotide.action.actioninfo=robotide.action.actioninfo-module.html"><a title="robotide.action.actioninfo" class="py-name" href="#" onclick="return doclink('link-0', 'actioninfo', 'link-0');">actioninfo</a></tt> <tt class="py-keyword">import</tt> <tt id="link-1" class="py-name" targets="Function robotide.action.actioninfo.ActionInfoCollection()=robotide.action.actioninfo-module.html#ActionInfoCollection"><a title="robotide.action.actioninfo.ActionInfoCollection" class="py-name" href="#" onclick="return doclink('link-1', 'ActionInfoCollection', 'link-1');">ActionInfoCollection</a></tt><tt class="py-op">,</tt> <tt id="link-2" class="py-name" targets="Class robotide.action.actioninfo.SeparatorInfo=robotide.action.actioninfo.SeparatorInfo-class.html"><a title="robotide.action.actioninfo.SeparatorInfo" class="py-name" href="#" onclick="return doclink('link-2', 'SeparatorInfo', 'link-2');">SeparatorInfo</a></tt><tt class="py-op">,</tt> <tt id="link-3" class="py-name" targets="Class robotide.action.actioninfo.ActionInfo=robotide.action.actioninfo.ActionInfo-class.html"><a title="robotide.action.actioninfo.ActionInfo" class="py-name" href="#" onclick="return doclink('link-3', 'ActionInfo', 'link-3');">ActionInfo</a></tt> </tt>
+<a name="L71"></a><tt class="py-lineno">71</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-4" class="py-name" targets="Package robotide.action=robotide.action-module.html,Module robotide.action.action=robotide.action.action-module.html"><a title="robotide.action
+robotide.action.action" class="py-name" href="#" onclick="return doclink('link-4', 'action', 'link-4');">action</a></tt> <tt class="py-keyword">import</tt> <tt id="link-5" class="py-name" targets="Function robotide.action.action.ActionFactory()=robotide.action.action-module.html#ActionFactory"><a title="robotide.action.action.ActionFactory" class="py-name" href="#" onclick="return doclink('link-5', 'ActionFactory', 'link-5');">ActionFactory</a></tt> </tt>
+<a name="L72"></a><tt class="py-lineno">72</tt>  <tt class="py-line"> </tt><script type="text/javascript">
 <!--
 expandto(location.href);
 // -->
@@ -160,7 +165,7 @@ expandto(location.href);
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:49 2010
+    Generated by Epydoc 3.0.1 on Thu Mar 31 14:48:10 2011
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

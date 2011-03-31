@@ -93,13 +93,13 @@ the <a href="robotide.publish-module.html#PUBLISHER" class="link">PUBLISHER</a> 
 Topics can be specified using the actual message classes in
 <a href="robotide.publish.messages-module.html" class="link">robotide.publish.messages</a> module or with their dot separated topic strings.
 It is, for example, equivalent to use the <a href="robotide.publish.messages.RideTreeSelection-class.html" class="link">RideTreeSelection</a> class and a
-string <tt class="rst-docutils literal"><span class="pre">ride.tree.selection</span></tt>. Topic strings can normally, but not always, be
+string <tt class="rst-docutils literal">ride.tree.selection</tt>. Topic strings can normally, but not always, be
 mapped directly to the class names.</p>
 <p>The topic strings represents a hierarchy where the dots separate the hierarchy
 levels. All messages with a topic at or below the given level will match the
-subscribed topic. For example, subscribing to the <tt class="rst-docutils literal"><span class="pre">ride.notebook</span></tt> topic means
+subscribed topic. For example, subscribing to the <tt class="rst-docutils literal">ride.notebook</tt> topic means
 that <a href="robotide.publish.messages.RideNotebookTabChanged-class.html" class="link">RideNotebookTabChanged</a> or any other message with a topic starting with
-<tt class="rst-docutils literal"><span class="pre">ride.notebook</span></tt> will match.</p>
+<tt class="rst-docutils literal">ride.notebook</tt> will match.</p>
 </div>
 <div class="rst-section" id="rst-listeners">
 <h2 class="heading"><a class="rst-toc-backref" href="#rst-id4">Listeners</a></h2>
@@ -108,8 +108,8 @@ accepting one argument. When the corresponding message is published, the listene
 will be called with an instance of the message class as an argument. That instance
 contains the topic and possibly some additional information in its attributes.</p>
 <p>The following example demonstrates how a plugin can subscribe to an event.
-In this example the <tt class="rst-docutils literal"><span class="pre">OnTreeSelection</span></tt> method is the listener and the
-<tt class="rst-docutils literal"><span class="pre">message</span></tt> it receives is an instance of the <a href="robotide.publish.messages.RideTreeSelection-class.html" class="link">RideTreeSelection</a> class.</p>
+In this example the <tt class="rst-docutils literal">OnTreeSelection</tt> method is the listener and the
+<tt class="rst-docutils literal">message</tt> it receives is an instance of the <a href="robotide.publish.messages.RideTreeSelection-class.html" class="link">RideTreeSelection</a> class.</p>
 <pre class="rst-literal-block">
 from robotide.pluginapi import Plugin, RideTreeSelection
 
@@ -133,7 +133,7 @@ all listeners registered by someone.</p>
 <h1 class="heading"><a class="rst-toc-backref" href="#rst-id6">Publishing messages</a></h1>
 <p>Both the core application and plugins can publish messages using message
 classes in the <a href="robotide.publish.messages-module.html" class="link">publish.messages</a> module directly. Sending a message is as easy
-as creating an instance of the class and calling its <tt class="rst-docutils literal"><span class="pre">publish</span></tt> method. What
+as creating an instance of the class and calling its <tt class="rst-docutils literal">publish</tt> method. What
 parameters are need when the instance is created depends on the message.</p>
 <div class="rst-section" id="rst-custom-messages">
 <h2 class="heading"><a class="rst-toc-backref" href="#rst-id7">Custom messages</a></h2>
@@ -153,8 +153,8 @@ class MyFancyPlugin(Plugin):
         MyImportantMessage(importance='HIGH').publish()
 </pre>
 <p>Plugins interested about this message can subscribe to it using either
-the class <tt class="rst-docutils literal"><span class="pre">FancyImportantMessage</span></tt> or its automatically generated title
-<tt class="rst-docutils literal"><span class="pre">fancy.important</span></tt>. Notice also that all the messages are exposed also through
+the class <tt class="rst-docutils literal">FancyImportantMessage</tt> or its automatically generated title
+<tt class="rst-docutils literal">fancy.important</tt>. Notice also that all the messages are exposed also through
 the <a href="robotide.pluginapi-module.html" class="link">robotide.pluginapi</a> module and plugins should import them there.</p>
 </div>
 </div>
@@ -202,23 +202,47 @@ the <a href="robotide.pluginapi-module.html" class="link">robotide.pluginapi</a>
 </table>
 <p class="indent-wrapped-lines"><b>Imports:</b>
   <a href="robotide.publish.publisher.Publisher-class.html" title="robotide.publish.publisher.Publisher">Publisher</a>,
+  <a href="robotide.publish.messages.RideChangeFormat-class.html" title="robotide.publish.messages.RideChangeFormat">RideChangeFormat</a>,
   <a href="robotide.publish.messages.RideClosing-class.html" title="robotide.publish.messages.RideClosing">RideClosing</a>,
+  <a href="robotide.publish.messages.RideDataChangedToDirty-class.html" title="robotide.publish.messages.RideDataChangedToDirty">RideDataChangedToDirty</a>,
+  <a href="robotide.publish.messages.RideDataDirtyCleared-class.html" title="robotide.publish.messages.RideDataDirtyCleared">RideDataDirtyCleared</a>,
+  <a href="robotide.publish.messages.RideDataFileRemoved-class.html" title="robotide.publish.messages.RideDataFileRemoved">RideDataFileRemoved</a>,
   <a href="robotide.publish.messages.RideGridCellChanged-class.html" title="robotide.publish.messages.RideGridCellChanged">RideGridCellChanged</a>,
   <a href="robotide.publish.messages.RideImportSetting-class.html" title="robotide.publish.messages.RideImportSetting">RideImportSetting</a>,
   <a href="robotide.publish.messages.RideImportSettingAdded-class.html" title="robotide.publish.messages.RideImportSettingAdded">RideImportSettingAdded</a>,
   <a href="robotide.publish.messages.RideImportSettingChanged-class.html" title="robotide.publish.messages.RideImportSettingChanged">RideImportSettingChanged</a>,
+  <a href="robotide.publish.messages.RideImportSettingRemoved-class.html" title="robotide.publish.messages.RideImportSettingRemoved">RideImportSettingRemoved</a>,
+  <a href="robotide.publish.messages.RideInitFileRemoved-class.html" title="robotide.publish.messages.RideInitFileRemoved">RideInitFileRemoved</a>,
+  <a href="robotide.publish.messages.RideItem-class.html" title="robotide.publish.messages.RideItem">RideItem</a>,
+  <a href="robotide.publish.messages.RideItemNameChanged-class.html" title="robotide.publish.messages.RideItemNameChanged">RideItemNameChanged</a>,
+  <a href="robotide.publish.messages.RideItemSettingsChanged-class.html" title="robotide.publish.messages.RideItemSettingsChanged">RideItemSettingsChanged</a>,
+  <a href="robotide.publish.messages.RideItemStepsChanged-class.html" title="robotide.publish.messages.RideItemStepsChanged">RideItemStepsChanged</a>,
+  <a href="robotide.publish.messages.RideLog-class.html" title="robotide.publish.messages.RideLog">RideLog</a>,
+  <a href="robotide.publish.messages.RideLogException-class.html" title="robotide.publish.messages.RideLogException">RideLogException</a>,
   <a href="robotide.publish.messages.RideLogMessage-class.html" title="robotide.publish.messages.RideLogMessage">RideLogMessage</a>,
   <a href="robotide.publish.messages.RideMessage-class.html" title="robotide.publish.messages.RideMessage">RideMessage</a>,
+  <a href="robotide.publish.messages.RideNewProject-class.html" title="robotide.publish.messages.RideNewProject">RideNewProject</a>,
   <a href="robotide.publish.messages.RideNotebookTabChanged-class.html" title="robotide.publish.messages.RideNotebookTabChanged">RideNotebookTabChanged</a>,
   <a href="robotide.publish.messages.RideNotebookTabChanging-class.html" title="robotide.publish.messages.RideNotebookTabChanging">RideNotebookTabChanging</a>,
-  <a href="robotide.publish.messages.RideOpenResource-class.html" onclick="show_private();" title="robotide.publish.messages.RideOpenResource">RideOpenResource</a>,
+  <a href="robotide.publish.messages.RideOpenResource-class.html" title="robotide.publish.messages.RideOpenResource">RideOpenResource</a>,
   <a href="robotide.publish.messages.RideOpenSuite-class.html" title="robotide.publish.messages.RideOpenSuite">RideOpenSuite</a>,
   <a href="robotide.publish.messages.RideSaveAll-class.html" title="robotide.publish.messages.RideSaveAll">RideSaveAll</a>,
   <a href="robotide.publish.messages.RideSaved-class.html" title="robotide.publish.messages.RideSaved">RideSaved</a>,
   <a href="robotide.publish.messages.RideSaving-class.html" title="robotide.publish.messages.RideSaving">RideSaving</a>,
+  <a href="robotide.publish.messages.RideSelectResource-class.html" title="robotide.publish.messages.RideSelectResource">RideSelectResource</a>,
+  <a href="robotide.publish.messages.RideSettingsChanged-class.html" title="robotide.publish.messages.RideSettingsChanged">RideSettingsChanged</a>,
+  <a href="robotide.publish.messages.RideSuiteAdded-class.html" title="robotide.publish.messages.RideSuiteAdded">RideSuiteAdded</a>,
+  <a href="robotide.publish.messages.RideTestCaseAdded-class.html" onclick="show_private();" title="robotide.publish.messages.RideTestCaseAdded">RideTestCaseAdded</a>,
+  <a href="robotide.publish.messages.RideTestCaseRemoved-class.html" title="robotide.publish.messages.RideTestCaseRemoved">RideTestCaseRemoved</a>,
   <a href="robotide.publish.messages.RideTreeSelection-class.html" title="robotide.publish.messages.RideTreeSelection">RideTreeSelection</a>,
   <a href="robotide.publish.messages.RideUserKeyword-class.html" title="robotide.publish.messages.RideUserKeyword">RideUserKeyword</a>,
   <a href="robotide.publish.messages.RideUserKeywordAdded-class.html" title="robotide.publish.messages.RideUserKeywordAdded">RideUserKeywordAdded</a>,
+  <a href="robotide.publish.messages.RideUserKeywordRemoved-class.html" title="robotide.publish.messages.RideUserKeywordRemoved">RideUserKeywordRemoved</a>,
+  <a href="robotide.publish.messages.RideVariableAdded-class.html" title="robotide.publish.messages.RideVariableAdded">RideVariableAdded</a>,
+  <a href="robotide.publish.messages.RideVariableMovedDown-class.html" title="robotide.publish.messages.RideVariableMovedDown">RideVariableMovedDown</a>,
+  <a href="robotide.publish.messages.RideVariableMovedUp-class.html" title="robotide.publish.messages.RideVariableMovedUp">RideVariableMovedUp</a>,
+  <a href="robotide.publish.messages.RideVariableRemoved-class.html" title="robotide.publish.messages.RideVariableRemoved">RideVariableRemoved</a>,
+  <a href="robotide.publish.messages.RideVariableUpdated-class.html" title="robotide.publish.messages.RideVariableUpdated">RideVariableUpdated</a>,
   <a href="robotide.publish.messages-module.html" title="robotide.publish.messages">messages</a>,
   <a href="robotide.publish.messagetype-module.html" title="robotide.publish.messagetype">messagetype</a>,
   <a href="robotide.publish.publisher-module.html" title="robotide.publish.publisher">publisher</a>
@@ -300,7 +324,7 @@ Publisher()
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Mar 24 17:43:41 2010
+    Generated by Epydoc 3.0.1 on Thu Mar 31 14:47:50 2011
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
