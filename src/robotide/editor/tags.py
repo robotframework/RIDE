@@ -13,7 +13,8 @@
 #  limitations under the License.
 
 # Configure wx version to allow running test app in __main__
-import robotide
+if __name__ == '__main__':
+    import robotide as _
 
 import os
 import wx
@@ -108,9 +109,9 @@ class TagsDisplay(wx.Panel):
 
 class TagBox(wx.TextCtrl):
 
-    ADD_TEXT = ' Add a new tag '
-    ADD_BACKGROUND = '#C2DFFF'
+    ADD_TEXT = '<Add New>'
     NOT_EDITABLE_BACKGROUND = '#D3D3D3'
+    TAG_COLORS = {Tag:'black', ForcedTag:'red', DefaultTag:'#666666'}
 
     def __init__(self, parent, tag):
         wx.TextCtrl.__init__(self, parent, wx.ID_ANY, self._get_text_value(tag),
@@ -194,10 +195,10 @@ class TagBox(wx.TextCtrl):
     def _colorize(self, tag):
         if not self.IsEditable():
             if tag.is_empty():
-                self.SetForegroundColour('black')
-                self.SetBackgroundColour(TagBox.ADD_BACKGROUND)
+                self.SetForegroundColour('gray')
+                self.SetBackgroundColour('white')
             else:
-                self.SetForegroundColour(tag.choose({Tag:'black', ForcedTag:'red', DefaultTag:'#666666'}))
+                self.SetForegroundColour(tag.choose(TagBox.TAG_COLORS))
                 self.SetBackgroundColour(TagBox.NOT_EDITABLE_BACKGROUND)
         else:
             self.SetForegroundColour('black')
