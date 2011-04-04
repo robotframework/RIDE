@@ -43,8 +43,10 @@ from robotide.ui.progress import RenameProgressObserver
 
 
 def requires_focus(function):
+    def _row_header_selected_on_linux(self):
+        return self.FindFocus() is None
     def decorated_function(self, *args):
-        if self.has_focus() or self.IsCellEditControlShown():
+        if self.has_focus() or self.IsCellEditControlShown() or _row_header_selected_on_linux(self):
             function(self, *args)
     return decorated_function
 
