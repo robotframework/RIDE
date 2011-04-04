@@ -34,7 +34,7 @@ class TagsDisplay(wx.Panel):
         self.SetSizer(self._sizer)
 
     def add_tag(self, tag, editable):
-        tag_component = TagBox(self, tag)
+        tag_component = TagBox(self, tag, self._controller)
         tag_component.SetEditable(editable)
         self._sizer.Add(tag_component)
         self._tag_boxes.append(tag_component)
@@ -109,27 +109,41 @@ class TagsDisplay(wx.Panel):
 
 class TagBox(wx.TextCtrl):
 
-    ADD_TEXT = '<Add New>'
-    NOT_EDITABLE_BACKGROUND = '#D3D3D3'
-    TAG_COLORS = {Tag:'black', ForcedTag:'red', DefaultTag:'#666666'}
-
-    def __init__(self, parent, tag):
-        wx.TextCtrl.__init__(self, parent, wx.ID_ANY, self._get_text_value(tag),
-                             style=wx.TE_CENTER)
+    def __init__(self, parent, tag, controller):
+        wx.TextCtrl.__init__(self, parent, wx.ID_ANY, '', style=wx.TE_CENTER)
         self.Bind(wx.EVT_SET_FOCUS, self.OnSetFocus)
         self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
         self.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
+        self._controller = controller
         self.set_tag(tag)
 
     def set_tag(self, tag):
         self._tag = tag
-        if tag.is_empty() or self.GetValue() != tag.name:
-            self.SetValue(self._get_text_value())
-        self._to_text_size(self._get_text_value())
+        self._properties = self._get_properties(tag)(tag)
+        self.SetValue(self._properties.text)
+        size = self._get_size()
+        self.SetMaxSize(size)
+        self.SetMinSize(size)
         self._colorize(tag)
-        tooltip = 'Click to add new tag' if tag.is_empty() else tag.tooltip
-        self.SetToolTipString(tooltip)
+        self.SetToolTipString(self._properties.tooltip)
+
+    def _get_properties(self, tag):
+        if tag.is_empty():
+            return AddTagBoxProperties
+        if tag.controller == self._controller:
+            return TagBoxProperties
+        return tag.choose({ForcedTag: ForcedTagBoxProperties,
+                           DefaultTag: DefaultTagBoxProperties,
+                           Tag: TagBoxProperties})
+
+    def _get_size(self):
+        size = self.GetTextExtent(self.GetValue())
+        return wx.Size(max(size[0]+10, 70), max(size[1]+3, 25))
+
+    def _colorize(self, tag):
+        self.SetForegroundColour(self._properties.foreground_color)
+        self.SetBackgroundColour(self._properties.background_color)
 
     def SetEditable(self, editable):
         wx.TextCtrl.SetEditable(self, editable)
@@ -149,7 +163,7 @@ class TagBox(wx.TextCtrl):
         event.Skip()
 
     def _cancel_editing(self):
-        self.SetValue(self._get_text_value())
+        self.SetValue(self._properties.text)
         if self._tag.is_empty():
             self.SetEditable(False)
             self._colorize(self._tag)
@@ -158,13 +172,6 @@ class TagBox(wx.TextCtrl):
         if not self.IsEditable():
             self.OnSetFocus(event)
         event.Skip()
-
-    def _get_text_value(self, tag=None):
-        if tag is None:
-            tag = self._tag
-        if tag.is_empty():
-            return TagBox.ADD_TEXT
-        return tag.name
 
     def OnKillFocus(self, event):
         if self.IsEditable():
@@ -183,26 +190,38 @@ class TagBox(wx.TextCtrl):
             self._colorize(self._tag)
         event.Skip()
 
-    def _to_text_size(self, text):
-        if text == '':
-            new_size = wx.Size(75, 25)
-        else:
-            size = self.GetTextExtent(text)
-            new_size = wx.Size(size[0]+10, max(size[1]+3, 25))
-        self.SetMaxSize(new_size)
-        self.SetMinSize(new_size)
 
-    def _colorize(self, tag):
-        if not self.IsEditable():
-            if tag.is_empty():
-                self.SetForegroundColour('gray')
-                self.SetBackgroundColour('white')
-            else:
-                self.SetForegroundColour(tag.choose(TagBox.TAG_COLORS))
-                self.SetBackgroundColour(TagBox.NOT_EDITABLE_BACKGROUND)
-        else:
-            self.SetForegroundColour('black')
-            self.SetBackgroundColour('white')
+class _TagBoxProperties(object):
+    foreground_color = 'black'
+    background_color = 'white'
+
+    def __init__(self, tag=None):
+        self._tag = tag
+
+    @property
+    def text(self):
+        return self._tag.name
+
+    @property
+    def tooltip(self):
+        #TODO: Move to GUI layer and show were tag came from if possible
+        return self._tag.tooltip
+
+class TagBoxProperties(_TagBoxProperties):
+    pass
+
+class AddTagBoxProperties(_TagBoxProperties):
+    foreground_color = 'gray'
+    text = '<Add New>'
+    tooltip = 'Click to add new tag'
+
+class ForcedTagBoxProperties(_TagBoxProperties):
+    foreground_color = 'red'
+    background_color = '#D3D3D3'
+
+class DefaultTagBoxProperties(_TagBoxProperties):
+    foreground_color = '#666666'
+    background_color = '#D3D3D3'
 
 
 if __name__ == '__main__':
