@@ -12,12 +12,15 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.controller.tags import ForcedTag, DefaultTag, Tag
+# Configure wx version to allow running test app in __main__
+import robotide
+
 import os
 import wx
-from itertools import chain
+
 from robotide.editor.flowsizer import HorizontalFlowSizer
 from robotide.controller.commands import ChangeTag
+from robotide.controller.tags import ForcedTag, DefaultTag, Tag
 
 
 class TagsDisplay(wx.Panel):
@@ -60,24 +63,27 @@ class TagsDisplay(wx.Panel):
         self.build()
 
     def _create_values(self, tags):
-        self._add_tags(chain(tags, [tags.empty_tag()]), tags)
+        self._add_tags(list(tags) + [tags.empty_tag()], tags)
 
     def _modify_values(self, tags):
-        self._recursive_tag_set([t for t in tags]+[tags.empty_tag()], self._tag_boxes[:], tags)
+        self._recursive_tag_set(list(tags)+[tags.empty_tag()], self._tag_boxes[:], tags)
 
     def _recursive_tag_set(self, tags, tbs, controller):
         if tags == []:
-            return self._destroy_tagboxes(tbs)
+            self._destroy_tagboxes(tbs)
+            return
         if tbs == []:
-            return self._add_tags(tags, controller)
+            self._add_tags(tags, controller)
+            return
         tagbox = tbs[0]
-        if tagbox.GetValue().strip() == '' and len(tbs) > 1:
+        if tagbox.GetValue().strip() and len(tbs) > 1:
             self._destroy_tagbox(tagbox)
-            return self._recursive_tag_set(tags, tbs[1:], controller)
+            self._recursive_tag_set(tags, tbs[1:], controller)
+            return
         t = tags[0]
         tagbox.set_tag(t)
         tagbox.SetEditable(t.controller == controller and not t.is_empty())
-        return self._recursive_tag_set(tags[1:], tbs[1:], controller)
+        self._recursive_tag_set(tags[1:], tbs[1:], controller)
 
     def _destroy_tagboxes(self, tbs):
         for tagbox in tbs:
