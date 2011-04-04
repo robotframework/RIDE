@@ -192,7 +192,6 @@ class _RobotTableEditor(EditorPanel):
 
 
 class Settings(wx.CollapsiblePane):
-
     BORDER = 2
 
     def __init__(self, parent, plugin, tree):
@@ -255,8 +254,8 @@ class Settings(wx.CollapsiblePane):
             self.Expand()
             self.Parent.GetSizer().Layout()
 
-class ResourceFileEditor(_RobotTableEditor):
 
+class ResourceFileEditor(_RobotTableEditor):
     _settings_open_id = 'resource file settings open'
 
     def tree_item_selected(self, item):
@@ -299,7 +298,6 @@ class ResourceFileEditor(_RobotTableEditor):
 
 
 class TestCaseFileEditor(ResourceFileEditor):
-
     _settings_open_id = 'test case file settings open'
 
     def _populate(self):
@@ -314,7 +312,6 @@ class TestCaseFileEditor(ResourceFileEditor):
 
 
 class InitFileEditor(TestCaseFileEditor):
-
     _settings_open_id = 'init file settings open'
 
     def _populate(self):
@@ -618,7 +615,6 @@ class TagsEditor(SettingEditor):
 
 
 class TestCaseEditor(_RobotTableEditor):
-
     _settings_open_id = 'test case settings open'
 
     def _populate(self):
@@ -694,7 +690,6 @@ class UserKeywordHeader(HorizontalSizer):
 
 
 class UserKeywordEditor(TestCaseEditor):
-
     _settings_open_id = 'user keyword settings open'
 
     def _create_header(self, name):
@@ -787,7 +782,7 @@ class VariablesListEditor(_AbstractListEditor):
         dlg.Destroy()
 
     def close(self):
-         PUBLISHER.unsubscribe_all(key=self)
+        PUBLISHER.unsubscribe_all(key=self)
 
 
 class ImportSettingListEditor(_AbstractListEditor):
