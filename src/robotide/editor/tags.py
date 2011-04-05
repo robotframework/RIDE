@@ -34,9 +34,12 @@ class TagsDisplay(wx.Panel):
         self.SetSizer(self._sizer)
 
     def add_tag(self, tag):
-        tag_component = TagBox(self, Properties(tag, self._controller))
-        self._sizer.Add(tag_component)
-        self._tag_boxes.append(tag_component)
+        self._add_tagbox(Properties(tag, self._controller))
+
+    def _add_tagbox(self, properties):
+        tagbox = TagBox(self, properties)
+        self._sizer.Add(tagbox)
+        self._tag_boxes.append(tagbox)
 
     def build(self):
         self._sizer.SetSizeHints(self)
@@ -51,49 +54,57 @@ class TagsDisplay(wx.Panel):
         for tag_box in self._tag_boxes:
             tag_box.close()
 
-    def set_value(self, tags, plugin=None):
-        if self._tag_boxes == []:
-            self._create_values(tags)
+    def set_value(self, controller, plugin=None):
+        if not self._tag_boxes:
+            self._create_values(controller)
         else:
-            #in GNOME you can have focus in a dead object
+            #in GTK you can have focus in a dead object
             #  .. this causes Segmentation Faults
             # Thus instead of clearing old values and adding new ones
             # modify the ones that exist
-            self._modify_values(tags)
+            self._modify_values(controller)
         self.build()
 
-    def _create_values(self, tags):
-        self._add_tags(list(tags) + [tags.empty_tag()], tags)
+    def _create_values(self, controller):
+        self._add_tags(list(controller))
+        self._add_new_tag_tagbox()
 
-    def _modify_values(self, tags):
-        self._recursive_tag_set(list(tags)+[tags.empty_tag()], self._tag_boxes[:], tags)
+    def _add_new_tag_tagbox(self):
+        self._add_tagbox(AddTagBoxProperties(self._controller.empty_tag(), self))
+        self.build()
 
-    def _recursive_tag_set(self, tags, tbs, controller):
-        if tags == []:
-            self._destroy_tagboxes(tbs)
-            return
-        if tbs == []:
-            self._add_tags(tags, controller)
-            return
-        tagbox = tbs[0]
-        if tagbox.GetValue().strip() and len(tbs) > 1:
-            self._destroy_tagbox(tagbox)
-            self._recursive_tag_set(tags, tbs[1:], controller)
-            return
-        tagbox.set_properties(Properties(tags[0], self._controller))
-        self._recursive_tag_set(tags[1:], tbs[1:], controller)
+    def _add_tags(self, tags):
+        for tag in tags:
+            self.add_tag(tag)
 
-    def _destroy_tagboxes(self, tbs):
-        for tagbox in tbs:
-            self._destroy_tagbox(tagbox)
+    def _modify_values(self, controller):
+        self._remove_empty_tagboxes()
+        self._set_tags(list(controller),
+                       self._tag_boxes[:], controller)
+
+    def _remove_empty_tagboxes(self):
+        for tb in self._tag_boxes[:]:
+            if tb.value == '':
+                self._destroy_tagbox(tb)
+
+    def _set_tags(self, tags, tagboxes, controller):
+        if not tags:
+            self._destroy_tagboxes(tagboxes)
+        elif not tagboxes:
+            self._add_tags(tags)
+        else:
+            tagboxes[0].set_properties(Properties(tags[0], controller))
+            self._set_tags(tags[1:], tagboxes[1:], controller)
+
+    def _destroy_tagboxes(self, tagboxes):
+        for tb in tagboxes:
+            if tb.destroyable:
+                self._destroy_tagbox(tb)
 
     def _destroy_tagbox(self, tagbox):
         tagbox.Destroy()
         self._tag_boxes.remove(tagbox)
 
-    def _add_tags(self, tags, controller):
-        for tag in tags:
-            self.add_tag(tag)
 
     def GetSelection(self):
         return None
@@ -128,7 +139,7 @@ class TagBox(wx.TextCtrl):
         self._colorize()
 
     def _get_size(self):
-        size = self.GetTextExtent(self.GetValue())
+        size = self.GetTextExtent(self.value)
         return wx.Size(max(size[0]+10, 70), max(size[1]+3, 25))
 
     def _colorize(self):
@@ -161,13 +172,19 @@ class TagBox(wx.TextCtrl):
         # event.Skip() Can't skip on Linux as this causes crash
 
     def _update_value(self):
-        value = self.GetValue()
-        if self._properties.modifiable and value != self._properties.text:
-            self._properties.change_value(value)
+        self._properties.change_value(self.value)
 
     def OnSetFocus(self, event):
         self._properties.set_focus(self)
         event.Skip()
+
+    @property
+    def value(self):
+        return self.GetValue().strip()
+
+    @property
+    def destroyable(self):
+        return self._properties.destroyable
 
 
 def Properties(tag, controller):
@@ -183,8 +200,9 @@ class _TagBoxProperties(object):
     foreground_color = 'black'
     background_color = 'white'
     enabled = True
+    destroyable = True
 
-    def __init__(self, tag=None):
+    def __init__(self, tag):
         self._tag = tag
 
     @property
@@ -200,8 +218,9 @@ class _TagBoxProperties(object):
     def modifiable(self):
         return self.enabled
 
-    def change_value(self, new_value):
-        self._tag.controller.execute(ChangeTag(self._tag, new_value))
+    def change_value(self, value):
+        if self.modifiable and value != self.text:
+            self._tag.controller.execute(ChangeTag(self._tag, value))
 
     def set_focus(self, tagbox):
         pass
@@ -216,9 +235,15 @@ class AddTagBoxProperties(_TagBoxProperties):
     text = '<Add New>'
     tooltip = 'Click to add new tag'
     modifiable = False
+    destroyable = False
+
+    def __init__(self, tag, display):
+        _TagBoxProperties.__init__(self, tag)
+        self._display = display
 
     def set_focus(self, tagbox):
         tagbox.set_properties(TagBoxProperties(self._tag))
+        self._display._add_new_tag_tagbox()  # FIXME: Calling private method
 
 
 class ForcedTagBoxProperties(_TagBoxProperties):
