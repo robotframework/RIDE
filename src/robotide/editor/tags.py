@@ -34,7 +34,7 @@ class TagsDisplay(wx.Panel):
         self.SetSizer(self._sizer)
 
     def add_tag(self, tag):
-        tag_component = TagBox(self, tag, self._controller)
+        tag_component = TagBox(self, Properties(tag, self._controller))
         self._sizer.Add(tag_component)
         self._tag_boxes.append(tag_component)
 
@@ -80,8 +80,7 @@ class TagsDisplay(wx.Panel):
             self._destroy_tagbox(tagbox)
             self._recursive_tag_set(tags, tbs[1:], controller)
             return
-        t = tags[0]
-        tagbox.set_tag(t)
+        tagbox.set_properties(Properties(tags[0], self._controller))
         self._recursive_tag_set(tags[1:], tbs[1:], controller)
 
     def _destroy_tagboxes(self, tbs):
@@ -107,21 +106,19 @@ class TagsDisplay(wx.Panel):
 
 class TagBox(wx.TextCtrl):
 
-    def __init__(self, parent, tag, controller):
+    def __init__(self, parent, properties):
         wx.TextCtrl.__init__(self, parent, wx.ID_ANY, '', style=wx.TE_CENTER)
         self.Bind(wx.EVT_SET_FOCUS, self.OnSetFocus)
         self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
         self.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
-        self._controller = controller
-        self.set_tag(tag)
+        self.set_properties(properties)
 
-    def set_tag(self, tag):
-        self._tag = tag
-        self._set_properties()
+    def set_properties(self, properties):
+        self._properties = properties
+        self._apply_properties()
 
-    def _set_properties(self, properties=None):
-        self._properties = properties or self._create_properties()
+    def _apply_properties(self):
         self.SetValue(self._properties.text)
         self.SetToolTipString(self._properties.tooltip)
         self.SetEditable(self._properties.enabled)
@@ -129,17 +126,6 @@ class TagBox(wx.TextCtrl):
         self.SetMaxSize(size)
         self.SetMinSize(size)
         self._colorize()
-
-    def _create_properties(self):
-        return self._get_property_class()(self._tag)
-
-    def _get_property_class(self):
-        if self._tag.is_empty():
-            return AddTagBoxProperties
-        if self._tag.controller == self._controller:
-            return TagBoxProperties
-        return self._tag.choose({ForcedTag: ForcedTagBoxProperties,
-                                 DefaultTag: DefaultTagBoxProperties})
 
     def _get_size(self):
         size = self.GetTextExtent(self.GetValue())
@@ -176,13 +162,21 @@ class TagBox(wx.TextCtrl):
 
     def _update_value(self):
         value = self.GetValue()
-        if self._properties.modifiable and value != self._tag.name:
-            self._tag.controller.execute(ChangeTag(self._tag, value))
+        if self._properties.modifiable and value != self._properties.text:
+            self._properties.change_value(value)
 
     def OnSetFocus(self, event):
-        if isinstance(self._properties, AddTagBoxProperties):
-            self._set_properties(TagBoxProperties(self._tag))
+        self._properties.set_focus(self)
         event.Skip()
+
+
+def Properties(tag, controller):
+    if tag.is_empty():
+        return AddTagBoxProperties(tag)
+    if tag.controller == controller:
+        return TagBoxProperties(tag)
+    return tag.choose({ForcedTag: ForcedTagBoxProperties,
+                       DefaultTag: DefaultTagBoxProperties})(tag)
 
 
 class _TagBoxProperties(object):
@@ -206,10 +200,16 @@ class _TagBoxProperties(object):
     def modifiable(self):
         return self.enabled
 
+    def change_value(self, new_value):
+        self._tag.controller.execute(ChangeTag(self._tag, new_value))
+
+    def set_focus(self, tagbox):
+        pass
 
 
 class TagBoxProperties(_TagBoxProperties):
     pass
+
 
 class AddTagBoxProperties(_TagBoxProperties):
     foreground_color = 'gray'
@@ -217,10 +217,15 @@ class AddTagBoxProperties(_TagBoxProperties):
     tooltip = 'Click to add new tag'
     modifiable = False
 
+    def set_focus(self, tagbox):
+        tagbox.set_properties(TagBoxProperties(self._tag))
+
+
 class ForcedTagBoxProperties(_TagBoxProperties):
     foreground_color = 'red'
     background_color = '#D3D3D3'
     enabled = False
+
 
 class DefaultTagBoxProperties(_TagBoxProperties):
     foreground_color = '#666666'
