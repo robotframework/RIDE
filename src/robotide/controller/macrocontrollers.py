@@ -186,8 +186,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         return new
 
     def remove_empty_steps(self):
-        steps = self.steps
-        remove_these = [step for step in steps if self._is_empty_step(step)]
+        remove_these = [step for step in self.steps if self._is_empty_step(step)]
         remove_these.reverse()
         for step in remove_these :
             self._remove_step(step)
