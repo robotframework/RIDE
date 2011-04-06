@@ -124,7 +124,7 @@ class TagBox(wx.TextCtrl):
                                (wx.EVT_KILL_FOCUS, self.OnKillFocus),
                                (wx.EVT_LEFT_UP, self.OnSetFocus),
                                (wx.EVT_KEY_UP, self.OnKeyUp),
-                               (wx.EVT_KEY_DOWN, self.OnKeyDown)]:
+                               (wx.EVT_CHAR, self.OnChar)]:
             self.Bind(event, handler)
 
     def set_properties(self, properties):
@@ -157,15 +157,21 @@ class TagBox(wx.TextCtrl):
                 self._cancel_editing()
             elif event.GetKeyCode() == wx.WXK_RETURN:
                 self._update_value()
-                return #Crashes RIDE on Linux if event.Skip is called
+                # FIXME: Is this needed?
+                return # Crashes RIDE on Linux if event.Skip is called
+            elif event.GetKeyCode() == wx.WXK_DELETE:
+                self.SetValue('')
         event.Skip()
 
     def _cancel_editing(self):
         self.SetValue(self._properties.text)
         self._colorize()
 
-    def OnKeyDown(self, event):
-        self._properties.activate(self)
+    def OnChar(self, event):
+        # For some reason at least ESC and F<num> keys are considered chars.
+        # We only special case ESC, though.
+        if event.GetKeyCode() != wx.WXK_ESCAPE:
+            self._properties.activate(self)
         event.Skip()
 
     def OnKillFocus(self, event):
