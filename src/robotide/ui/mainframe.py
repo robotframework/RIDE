@@ -192,7 +192,10 @@ class RideFrame(wx.Frame, RideEventHandler):
         if controller is None :
             controller = self.get_selected_datafile_controller()
         if controller is not None:
-            self._show_dialog_for_files_without_format(controller)
+            if not controller.has_format():
+                self._show_dialog_for_files_without_format(controller)
+            else:
+                controller.execute(SaveFile())
 
     def _show_dialog_for_files_without_format(self, controller=None):
         files_without_format = self._controller.get_files_without_format(controller)
