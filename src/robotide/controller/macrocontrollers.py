@@ -185,12 +185,8 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         new.data.steps = [Step(s.as_list()) for s in self.steps]
         return new
 
-    def remove_empty_steps(self):
-        remove_these = [step for step in self.steps if self._is_empty_step(step)]
-        remove_these.reverse()
-        for step in remove_these :
-            self._remove_step(step)
-        self._has_steps_changed = True
+    def get_empty_rows(self):
+        return [index for index, step in enumerate(self.steps) if self._is_empty_step(step)]
 
     def _is_empty_step(self, step):
         return step.as_list() == []

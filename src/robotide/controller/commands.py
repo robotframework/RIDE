@@ -516,7 +516,7 @@ class Purify(_Command):
             step.remove_empty_columns_from_end()
             if step.has_only_comment():
                 step.remove_empty_columns_from_beginning()
-        context.remove_empty_steps()
+        context.execute(DeleteRows(context.get_empty_rows()))
         context.notify_steps_changed()
 
 

@@ -215,6 +215,15 @@ class TestCaseEditingTest(TestCaseCommandTest):
         self._exec(Purify())
         assert_equals(len(self._steps), self._orig_number_of_steps)
 
+    def test_purify_can_be_undone(self):
+        self._exec(AddRow(1))
+        self._exec(AddRow(2))
+        assert_equals(len(self._steps), self._orig_number_of_steps+2)
+        self._exec(Purify())
+        assert_equals(len(self._steps), self._orig_number_of_steps)
+        self._exec(Undo())
+        assert_equals(len(self._steps), self._orig_number_of_steps+2)
+
     def test_purify_removes_rows_with_no_data(self):
         self._exec(ChangeCellValue(0,0, ''))
         self._exec(ChangeCellValue(0,1, ''))
