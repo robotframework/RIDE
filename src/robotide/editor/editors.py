@@ -735,6 +735,7 @@ class VariablesListEditor(_AbstractListEditor):
 
     def __init__(self, parent, tree, controller):
         PUBLISHER.subscribe(self._update_vars, 'ride.variable.added', key=self)
+        PUBLISHER.subscribe(self._update_vars, 'ride.variable.updated', key=self)
         PUBLISHER.subscribe(self._update_vars, 'ride.variable.removed', key=self)
         _AbstractListEditor.__init__(self, parent, tree, controller)
 
