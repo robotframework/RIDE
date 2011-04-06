@@ -114,7 +114,7 @@ class _SearchCriteria(object):
 class KeywordSearchDialog(wx.Frame):
 
     def __init__(self, parent, searcher):
-        wx.Frame.__init__(self, parent, title="Search Keywords")
+        wx.Frame.__init__(self, parent, title="Search Keywords", style=wx.DEFAULT_FRAME_STYLE|wx.FRAME_FLOAT_ON_PARENT)
         self._plugin = searcher
         self._create_components()
         self._make_bindings()
