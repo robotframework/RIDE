@@ -33,7 +33,9 @@ from editordialogs import (EditorDialog, DocumentationDialog, MetadataDialog,
                            LibraryDialog, ResourceDialog, VariablesDialog)
 from robotide.publish.messages import (RideItemSettingsChanged,
                                        RideItemNameChanged,
-                                       RideInitFileRemoved, RideImportSetting)
+                                       RideInitFileRemoved, 
+                                       RideImportSetting,
+                                       RideChangeFormat)
 from robot.parsing.settings import _Setting
 from robotide.controller.commands import UpdateVariable
 from robotide.publish import PUBLISHER
@@ -258,6 +260,13 @@ class Settings(wx.CollapsiblePane):
 class ResourceFileEditor(_RobotTableEditor):
     _settings_open_id = 'resource file settings open'
 
+    def __init__(self, *args):
+        _RobotTableEditor.__init__(self, *args)
+        self.plugin.subscribe(self._update_source, RideChangeFormat)
+
+    def _update_source(self, message):
+        self._source.SetLabel(self.controller.data.source)
+
     def tree_item_selected(self, item):
         if isinstance(item, VariableController):
             self._var_editor.select(item.name)
@@ -277,7 +286,8 @@ class ResourceFileEditor(_RobotTableEditor):
         sizer.Add(wx.StaticText(self, label='Source',
                                 size=(context.SETTING_LABEL_WIDTH,
                                       context.SETTING_ROW_HEIGTH)))
-        sizer.Add(wx.StaticText(self, label=source))
+        self._source = wx.StaticText(self, label=source)
+        sizer.Add(self._source)
         return sizer
 
     def _add_import_settings(self):
@@ -291,6 +301,7 @@ class ResourceFileEditor(_RobotTableEditor):
         self._editors.append(self._var_editor)
 
     def close(self):
+        self.plugin.unsubscribe(self._update_source, RideChangeFormat)
         for editor in self._editors:
             editor.close()
         self._editors = []
