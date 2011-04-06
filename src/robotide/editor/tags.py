@@ -42,9 +42,11 @@ class TagsDisplay(wx.Panel):
         self._tag_boxes.append(tagbox)
 
     def build(self):
+        if not (self._tag_boxes and self._tag_boxes[-1].add_new):
+            self._add_new_tag_tagbox(rebuild=False)
         self._sizer.SetSizeHints(self)
         parent_sizer = self.GetParent().GetSizer()
-        if parent_sizer is not None:
+        if parent_sizer:
             parent_sizer.Layout()
 
     def clear(self):
@@ -56,7 +58,7 @@ class TagsDisplay(wx.Panel):
 
     def set_value(self, controller, plugin=None):
         if not self._tag_boxes:
-            self._create_values(controller)
+            self._add_tags(list(controller))
         else:
             #in GTK you can have focus in a dead object
             #  .. this causes Segmentation Faults
@@ -65,13 +67,10 @@ class TagsDisplay(wx.Panel):
             self._modify_values(controller)
         self.build()
 
-    def _create_values(self, controller):
-        self._add_tags(list(controller))
-        self._add_new_tag_tagbox()
-
-    def _add_new_tag_tagbox(self):
+    def _add_new_tag_tagbox(self, rebuild=True):
         self._add_tagbox(AddTagBoxProperties(self._controller.empty_tag(), self))
-        self.build()
+        if rebuild:
+            self.build()
 
     def _add_tags(self, tags):
         for tag in tags:
@@ -79,8 +78,7 @@ class TagsDisplay(wx.Panel):
 
     def _modify_values(self, controller):
         self._remove_empty_tagboxes()
-        self._set_tags(list(controller),
-                       self._tag_boxes[:], controller)
+        self._set_tags(list(controller), self._tag_boxes[:], controller)
 
     def _remove_empty_tagboxes(self):
         for tb in self._tag_boxes[:]:
@@ -98,13 +96,12 @@ class TagsDisplay(wx.Panel):
 
     def _destroy_tagboxes(self, tagboxes):
         for tb in tagboxes:
-            if tb.destroyable:
+            if not tb.add_new:
                 self._destroy_tagbox(tb)
 
     def _destroy_tagbox(self, tagbox):
         tagbox.Destroy()
         self._tag_boxes.remove(tagbox)
-
 
     def GetSelection(self):
         return None
@@ -179,7 +176,7 @@ class TagBox(wx.TextCtrl):
         self._properties.change_value(self.value)
 
     def OnSetFocus(self, event):
-        if self._properties.select_all:
+        if self._properties.add_new:
             wx.CallAfter(self.SelectAll)
         event.Skip()
 
@@ -188,8 +185,8 @@ class TagBox(wx.TextCtrl):
         return self.GetValue().strip()
 
     @property
-    def destroyable(self):
-        return self._properties.destroyable
+    def add_new(self):
+        return self._properties.add_new
 
 
 def Properties(tag, controller):
@@ -205,8 +202,7 @@ class _TagBoxProperties(object):
     foreground_color = 'black'
     background_color = 'white'
     enabled = True
-    destroyable = True
-    select_all = False
+    add_new = False
 
     def __init__(self, tag):
         self._tag = tag
@@ -241,8 +237,7 @@ class AddTagBoxProperties(_TagBoxProperties):
     text = '<Add New>'
     tooltip = 'Click to add new tag'
     modifiable = False
-    destroyable = False
-    select_all = True
+    add_new = True
 
     def __init__(self, tag, display):
         _TagBoxProperties.__init__(self, tag)
