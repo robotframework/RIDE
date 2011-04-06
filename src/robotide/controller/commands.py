@@ -505,7 +505,8 @@ class SaveAll(_Command):
 
     def execute(self, context):
         for datafile_controller in context._get_all_dirty_controllers():
-            datafile_controller.execute(SaveFile())
+            if datafile_controller.has_format():
+                datafile_controller.execute(SaveFile())
 
 
 class Purify(_Command):
