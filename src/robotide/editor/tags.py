@@ -33,16 +33,20 @@ class TagsDisplay(wx.Panel):
         self._tag_boxes = []
         self.SetSizer(self._sizer)
 
-    def add_tag(self, tag, editable):
-        tag_component = TagBox(self, tag)
-        tag_component.SetEditable(editable)
-        self._sizer.Add(tag_component)
-        self._tag_boxes.append(tag_component)
+    def add_tag(self, tag):
+        self._add_tagbox(Properties(tag, self._controller))
+
+    def _add_tagbox(self, properties):
+        tagbox = TagBox(self, properties)
+        self._sizer.Add(tagbox)
+        self._tag_boxes.append(tagbox)
 
     def build(self):
+        if not (self._tag_boxes and self._tag_boxes[-1].add_new):
+            self._add_new_tag_tagbox(rebuild=False)
         self._sizer.SetSizeHints(self)
         parent_sizer = self.GetParent().GetSizer()
-        if parent_sizer is not None:
+        if parent_sizer:
             parent_sizer.Layout()
 
     def clear(self):
@@ -52,51 +56,52 @@ class TagsDisplay(wx.Panel):
         for tag_box in self._tag_boxes:
             tag_box.close()
 
-    def set_value(self, tags, plugin=None):
-        if self._tag_boxes == []:
-            self._create_values(tags)
+    def set_value(self, controller, plugin=None):
+        if not self._tag_boxes:
+            self._add_tags(list(controller))
         else:
-            #in GNOME you can have focus in a dead object
+            #in GTK you can have focus in a dead object
             #  .. this causes Segmentation Faults
             # Thus instead of clearing old values and adding new ones
             # modify the ones that exist
-            self._modify_values(tags)
+            self._modify_values(controller)
         self.build()
 
-    def _create_values(self, tags):
-        self._add_tags(list(tags) + [tags.empty_tag()], tags)
+    def _add_new_tag_tagbox(self, rebuild=True):
+        self._add_tagbox(AddTagBoxProperties(self._controller.empty_tag(), self))
+        if rebuild:
+            self.build()
 
-    def _modify_values(self, tags):
-        self._recursive_tag_set(list(tags)+[tags.empty_tag()], self._tag_boxes[:], tags)
+    def _add_tags(self, tags):
+        for tag in tags:
+            self.add_tag(tag)
 
-    def _recursive_tag_set(self, tags, tbs, controller):
-        if tags == []:
-            self._destroy_tagboxes(tbs)
-            return
-        if tbs == []:
-            self._add_tags(tags, controller)
-            return
-        tagbox = tbs[0]
-        if tagbox.GetValue().strip() and len(tbs) > 1:
-            self._destroy_tagbox(tagbox)
-            self._recursive_tag_set(tags, tbs[1:], controller)
-            return
-        t = tags[0]
-        tagbox.set_tag(t)
-        tagbox.SetEditable(t.controller == controller and not t.is_empty())
-        self._recursive_tag_set(tags[1:], tbs[1:], controller)
+    def _modify_values(self, controller):
+        self._remove_empty_tagboxes()
+        self._set_tags(list(controller), self._tag_boxes[:], controller)
 
-    def _destroy_tagboxes(self, tbs):
-        for tagbox in tbs:
-            self._destroy_tagbox(tagbox)
+    def _remove_empty_tagboxes(self):
+        for tb in self._tag_boxes[:]:
+            if tb.value == '':
+                self._destroy_tagbox(tb)
+
+    def _set_tags(self, tags, tagboxes, controller):
+        if not tags:
+            self._destroy_tagboxes(tagboxes)
+        elif not tagboxes:
+            self._add_tags(tags)
+        else:
+            tagboxes[0].set_properties(Properties(tags[0], controller))
+            self._set_tags(tags[1:], tagboxes[1:], controller)
+
+    def _destroy_tagboxes(self, tagboxes):
+        for tb in tagboxes:
+            if not tb.add_new:
+                self._destroy_tagbox(tb)
 
     def _destroy_tagbox(self, tagbox):
         tagbox.Destroy()
         self._tag_boxes.remove(tagbox)
-
-    def _add_tags(self, tags, controller):
-        for tag in tags:
-            self.add_tag(tag, tag.controller == controller and not tag.is_empty())
 
     def GetSelection(self):
         return None
@@ -109,100 +114,156 @@ class TagsDisplay(wx.Panel):
 
 class TagBox(wx.TextCtrl):
 
-    ADD_TEXT = '<Add New>'
-    NOT_EDITABLE_BACKGROUND = '#D3D3D3'
-    TAG_COLORS = {Tag:'black', ForcedTag:'red', DefaultTag:'#666666'}
+    def __init__(self, parent, properties):
+        wx.TextCtrl.__init__(self, parent, wx.ID_ANY, '', style=wx.TE_CENTER)
+        self._bind()
+        self.set_properties(properties)
 
-    def __init__(self, parent, tag):
-        wx.TextCtrl.__init__(self, parent, wx.ID_ANY, self._get_text_value(tag),
-                             style=wx.TE_CENTER)
-        self.Bind(wx.EVT_SET_FOCUS, self.OnSetFocus)
-        self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
-        self.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
-        self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
-        self.set_tag(tag)
+    def _bind(self):
+        for event, handler in [(wx.EVT_SET_FOCUS, self.OnSetFocus),
+                               (wx.EVT_KILL_FOCUS, self.OnKillFocus),
+                               (wx.EVT_LEFT_UP, self.OnSetFocus),
+                               (wx.EVT_KEY_UP, self.OnKeyUp),
+                               (wx.EVT_CHAR, self.OnChar)]:
+            self.Bind(event, handler)
 
-    def set_tag(self, tag):
-        self._tag = tag
-        if tag.is_empty() or self.GetValue() != tag.name:
-            self.SetValue(self._get_text_value())
-        self._to_text_size(self._get_text_value())
-        self._colorize(tag)
-        tooltip = 'Click to add new tag' if tag.is_empty() else tag.tooltip
-        self.SetToolTipString(tooltip)
+    def set_properties(self, properties):
+        self._properties = properties
+        self._apply_properties()
 
-    def SetEditable(self, editable):
-        wx.TextCtrl.SetEditable(self, editable)
-        self._colorize(self._tag)
+    def _apply_properties(self):
+        self.SetValue(self._properties.text)
+        self.SetToolTipString(self._properties.tooltip)
+        self.SetEditable(self._properties.enabled)
+        size = self._get_size()
+        self.SetMaxSize(size)
+        self.SetMinSize(size)
+        self._colorize()
+
+    def _get_size(self):
+        size = self.GetTextExtent(self.value)
+        return wx.Size(max(size[0]+10, 70), max(size[1]+3, 25))
+
+    def _colorize(self):
+        self.SetForegroundColour(self._properties.foreground_color)
+        self.SetBackgroundColour(self._properties.background_color)
 
     def close(self):
-        if self.IsEditable():
-            self._update_value()
+        self._update_value()
 
     def OnKeyUp(self, event):
-        if self.IsEditable():
+        if self._properties.modifiable:
             if event.GetKeyCode() == wx.WXK_ESCAPE:
                 self._cancel_editing()
             elif event.GetKeyCode() == wx.WXK_RETURN:
                 self._update_value()
-                return #Crashes RIDE on Linux if event.Skip is called
+                # FIXME: Is this needed?
+                return # Crashes RIDE on Linux if event.Skip is called
+            elif event.GetKeyCode() == wx.WXK_DELETE:
+                self.SetValue('')
         event.Skip()
 
     def _cancel_editing(self):
-        self.SetValue(self._get_text_value())
-        if self._tag.is_empty():
-            self.SetEditable(False)
-            self._colorize(self._tag)
+        self.SetValue(self._properties.text)
+        self._colorize()
 
-    def OnKeyDown(self, event):
-        if not self.IsEditable():
-            self.OnSetFocus(event)
+    def OnChar(self, event):
+        # For some reason at least ESC and F<num> keys are considered chars.
+        # We only special case ESC, though.
+        if event.GetKeyCode() != wx.WXK_ESCAPE:
+            self._properties.activate(self)
         event.Skip()
 
-    def _get_text_value(self, tag=None):
-        if tag is None:
-            tag = self._tag
-        if tag.is_empty():
-            return TagBox.ADD_TEXT
-        return tag.name
-
     def OnKillFocus(self, event):
-        if self.IsEditable():
-            self._update_value()
+        self._update_value()
         # event.Skip() Can't skip on Linux as this causes crash
 
     def _update_value(self):
-        value = self.GetValue()
-        if value != self._tag.name:
-            self._tag.controller.execute(ChangeTag(self._tag, value))
+        self._properties.change_value(self.value)
 
     def OnSetFocus(self, event):
-        if self._tag.is_empty():
-            self.SetEditable(True)
-            self.SetValue('')
-            self._colorize(self._tag)
+        if self._properties.add_new:
+            wx.CallAfter(self.SelectAll)
         event.Skip()
 
-    def _to_text_size(self, text):
-        if text == '':
-            new_size = wx.Size(75, 25)
-        else:
-            size = self.GetTextExtent(text)
-            new_size = wx.Size(size[0]+10, max(size[1]+3, 25))
-        self.SetMaxSize(new_size)
-        self.SetMinSize(new_size)
+    @property
+    def value(self):
+        return self.GetValue().strip()
 
-    def _colorize(self, tag):
-        if not self.IsEditable():
-            if tag.is_empty():
-                self.SetForegroundColour('gray')
-                self.SetBackgroundColour('white')
-            else:
-                self.SetForegroundColour(tag.choose(TagBox.TAG_COLORS))
-                self.SetBackgroundColour(TagBox.NOT_EDITABLE_BACKGROUND)
-        else:
-            self.SetForegroundColour('black')
-            self.SetBackgroundColour('white')
+    @property
+    def add_new(self):
+        return self._properties.add_new
+
+
+def Properties(tag, controller):
+    if tag.is_empty():
+        return AddTagBoxProperties(tag)
+    if tag.controller == controller:
+        return TagBoxProperties(tag)
+    return tag.choose({ForcedTag: ForcedTagBoxProperties,
+                       DefaultTag: DefaultTagBoxProperties})(tag)
+
+
+class _TagBoxProperties(object):
+    foreground_color = 'black'
+    background_color = 'white'
+    enabled = True
+    add_new = False
+
+    def __init__(self, tag):
+        self._tag = tag
+
+    @property
+    def text(self):
+        return self._tag.name or ''
+
+    @property
+    def tooltip(self):
+        #TODO: Move to GUI layer and show were tag came from if possible
+        return self._tag.tooltip
+
+    @property
+    def modifiable(self):
+        return self.enabled
+
+    def change_value(self, value):
+        if self.modifiable and value != self.text:
+            self._tag.controller.execute(ChangeTag(self._tag, value))
+
+    def activate(self, tagbox):
+        pass
+
+
+class TagBoxProperties(_TagBoxProperties):
+    pass
+
+
+class AddTagBoxProperties(_TagBoxProperties):
+    foreground_color = 'gray'
+    text = '<Add New>'
+    tooltip = 'Click to add new tag'
+    modifiable = False
+    add_new = True
+
+    def __init__(self, tag, display):
+        _TagBoxProperties.__init__(self, tag)
+        self._display = display
+
+    def activate(self, tagbox):
+        tagbox.set_properties(TagBoxProperties(self._tag))
+        self._display._add_new_tag_tagbox()  # FIXME: Calling private method
+
+
+class ForcedTagBoxProperties(_TagBoxProperties):
+    foreground_color = 'red'
+    background_color = '#D3D3D3'
+    enabled = False
+
+
+class DefaultTagBoxProperties(_TagBoxProperties):
+    foreground_color = '#666666'
+    background_color = '#D3D3D3'
+    enabled = False
 
 
 if __name__ == '__main__':
