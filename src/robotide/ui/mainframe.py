@@ -193,7 +193,6 @@ class RideFrame(wx.Frame, RideEventHandler):
             controller = self.get_selected_datafile_controller()
         if controller is not None:
             self._show_dialog_for_files_without_format(controller)
-            controller.execute(SaveFile())
 
     def _show_dialog_for_files_without_format(self, controller=None):
         files_without_format = self._controller.get_files_without_format(controller)
@@ -206,6 +205,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         dlg = ChangeFormatDialog('TXT', help_text=help)
         if dlg.ShowModal() == wx.ID_OK:
             file_controller_without_format.set_format(dlg.get_format())
+            file_controller_without_format.execute(SaveFile())
         dlg.Destroy()
 
     def OnExit(self, event):
