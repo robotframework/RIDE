@@ -119,11 +119,16 @@ class TagBox(wx.TextCtrl):
 
     def __init__(self, parent, properties):
         wx.TextCtrl.__init__(self, parent, wx.ID_ANY, '', style=wx.TE_CENTER)
-        self.Bind(wx.EVT_SET_FOCUS, self.OnSetFocus)
-        self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
-        self.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
-        self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
+        self._bind()
         self.set_properties(properties)
+
+    def _bind(self):
+        for event, handler in [(wx.EVT_SET_FOCUS, self.OnSetFocus),
+                               (wx.EVT_KILL_FOCUS, self.OnKillFocus),
+                               (wx.EVT_LEFT_UP, self.OnSetFocus),
+                               (wx.EVT_KEY_UP, self.OnKeyUp),
+                               (wx.EVT_KEY_DOWN, self.OnKeyDown)]:
+            self.Bind(event, handler)
 
     def set_properties(self, properties):
         self._properties = properties
@@ -163,8 +168,7 @@ class TagBox(wx.TextCtrl):
         self._colorize()
 
     def OnKeyDown(self, event):
-        if not self._properties.modifiable:
-            self.OnSetFocus(event)
+        self._properties.activate(self)
         event.Skip()
 
     def OnKillFocus(self, event):
@@ -175,7 +179,8 @@ class TagBox(wx.TextCtrl):
         self._properties.change_value(self.value)
 
     def OnSetFocus(self, event):
-        self._properties.set_focus(self)
+        if self._properties.select_all:
+            wx.CallAfter(self.SelectAll)
         event.Skip()
 
     @property
@@ -201,6 +206,7 @@ class _TagBoxProperties(object):
     background_color = 'white'
     enabled = True
     destroyable = True
+    select_all = False
 
     def __init__(self, tag):
         self._tag = tag
@@ -222,7 +228,7 @@ class _TagBoxProperties(object):
         if self.modifiable and value != self.text:
             self._tag.controller.execute(ChangeTag(self._tag, value))
 
-    def set_focus(self, tagbox):
+    def activate(self, tagbox):
         pass
 
 
@@ -236,12 +242,13 @@ class AddTagBoxProperties(_TagBoxProperties):
     tooltip = 'Click to add new tag'
     modifiable = False
     destroyable = False
+    select_all = True
 
     def __init__(self, tag, display):
         _TagBoxProperties.__init__(self, tag)
         self._display = display
 
-    def set_focus(self, tagbox):
+    def activate(self, tagbox):
         tagbox.set_properties(TagBoxProperties(self._tag))
         self._display._add_new_tag_tagbox()  # FIXME: Calling private method
 
