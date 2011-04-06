@@ -98,6 +98,14 @@ class MacRidePopupWindow(wx.Window):
     def IsShown(self):
         return False
 
+    @property
+    def screen_position(self):
+        return self.ScreenPosition
+
+    @property
+    def size(self):
+        return self.Size
+
 
 class HtmlDialog(Dialog):
 
