@@ -201,6 +201,7 @@ class Settings(wx.CollapsiblePane):
         self._plugin = plugin
         self._tree = tree
         self._editors = []
+        self.Bind(wx.EVT_SIZE, self._recalc_size)
 
     def GetPane(self):
         pane = wx.CollapsiblePane.GetPane(self)
@@ -233,13 +234,12 @@ class Settings(wx.CollapsiblePane):
     def build(self):
         self.GetPane().SetSizer(self._sizer)
         self._sizer.SetSizeHints(self.GetPane())
-        self.Bind(wx.EVT_SIZE, self._recalc_size)
 
     def _recalc_size(self, event):
         if self.IsExpanded():
-            diff_to_pane = self.Size[1]-self.GetPane().Size[1]
-            height = sum(editor.Size[1]+2*self.BORDER for editor in self._editors)+diff_to_pane
-            self.SetSizeHints(-1, height)
+            expand_button_height = 32  # good guess...
+            height = sum(editor.Size[1]+2*self.BORDER for editor in self._editors)
+            self.SetSizeHints(-1, height + expand_button_height)
         event.Skip()
 
     def highlight(self, text, expand=True):
