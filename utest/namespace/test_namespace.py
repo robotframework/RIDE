@@ -30,6 +30,8 @@ EXTENSION_VAR = '${extension}'
 EXTENSION = 'txt'
 INVALID_FILE_PATH = '/this/is/invalid.py'
 EXISTING_USER_KEYWORD = 'Should be in keywords Uk'
+COLLIDING_ARGUMENT = '${colliding argument}'
+COLLIDING_CONSTANT = COLLIDING_ARGUMENT.upper()
 
 def _build_test_case_file():
     tcf = TestCaseFile()
@@ -57,11 +59,12 @@ def _add_variable_table(tcf):
     tcf.variable_table.add(RES_NAME_VARIABLE, RESOURCE_WITH_VARS)
     tcf.variable_table.add(EXTENSION_VAR, EXTENSION)
     tcf.variable_table.add(UNRESOLVABLE_VARIABLE, UNKNOWN_VARIABLE)
+    tcf.variable_table.add(COLLIDING_CONSTANT, 'collision')
 
 def _add_keyword_table(tcf):
     uk_table = tcf.keyword_table
     uk_table.add(EXISTING_USER_KEYWORD)
-    uk_table.keywords[0].args.value = ['${keyword argument}', '${keyword argument with default} = default']
+    uk_table.keywords[0].args.value = ['${keyword argument}', '${colliding argument}', '${keyword argument with default} = default']
 
 
 class ParentMock(object):
@@ -219,6 +222,10 @@ class TestKeywordSuggestions(_DataFileTest):
         sugs = self.ns.get_suggestions_for(self.kw, '${keyword argument with defau')
         assert_equals(len(sugs), 1)
         self._check_source(self.kw, '${keyword argument with defau', ArgumentInfo.SOURCE)
+
+    def test_argument_is_superior_to_variable_from_variable_table(self):
+        sugs = self.ns.get_suggestions_for(self.kw, COLLIDING_ARGUMENT[0:4])
+        assert_true(any(True for s in sugs if s.source == ArgumentInfo.SOURCE))
 
     def test_keyword_arguments_are_suggested_first(self):
         sugs = self.ns.get_suggestions_for(self.kw, '')
