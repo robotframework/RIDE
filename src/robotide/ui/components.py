@@ -14,6 +14,12 @@
 
 import wx
 
+
 class StaticText(wx.StaticText):
+
+
     def __init__(self, parent, id=-1, label='', **args):
-        wx.StaticText.__init__(self, parent=parent, id=id, label=label, **args)
+        wx.StaticText.__init__(self, parent=parent, id=id, label=label.replace('&', '&&'), **args)
+
+    def SetLabel(self, label):
+        wx.StaticText.SetLabel(self, label.replace('&', '&&'))
