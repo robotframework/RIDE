@@ -20,6 +20,7 @@ from robotide.validators import (ScalarVariableNameValidator,
                                 TestCaseNameValidator, UserKeywordNameValidator)
 from robotide import utils
 from robotide.context import Font
+from robotide.ui.components import StaticText
 
 from robotide.widgets import Dialog
 from fieldeditors import ValueEditor, ListValueEditor, MultiLineEditor,\
@@ -62,7 +63,7 @@ class _Dialog(Dialog):
         self._sizer.Add(line, 0, wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.RIGHT|wx.TOP, 5)
 
     def _create_help(self):
-        text = wx.StaticText(self, label=get_help(self._title))
+        text = StaticText(self, label=get_help(self._title))
         text.SetFont(Font().help)
         self._sizer.Add(text, flag=wx.ALL, border=2)
 

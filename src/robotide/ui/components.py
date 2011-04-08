@@ -14,5 +14,6 @@
 
 import wx
 
-def StaticText(parent, id, pos, size, style, validator, name):
-    return wx.StaticText(parent, id, pos, size, style, validator, name)
+class StaticText(wx.StaticText):
+    def __init__(self, parent, id=-1, label='', **args):
+        wx.StaticText.__init__(self, parent=parent, id=id, label=label, **args)

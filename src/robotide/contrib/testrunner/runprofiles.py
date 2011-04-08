@@ -26,6 +26,7 @@ any additional arguments.
 import wx
 from wx.lib.filebrowsebutton import FileBrowseButton
 import os
+from robotide.ui.components import StaticText
 
 
 class BaseProfile(object):
@@ -154,7 +155,7 @@ class PybotProfile(BaseProfile):
 
     def ArgumentsPanel(self, parent):
         panel = wx.Panel(parent, wx.ID_ANY)
-        label = wx.StaticText(panel, label="Arguments: ")
+        label = StaticText(panel, label="Arguments: ")
         self._arguments = wx.TextCtrl(panel, wx.ID_ANY, size=(-1,-1),
                                      value=self.arguments)
         self._arguments.SetToolTipString("Arguments for the test run. Arguments are space separated list.")

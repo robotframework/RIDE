@@ -16,6 +16,7 @@ import wx
 
 from robotide import context
 from robotide import utils
+from robotide.ui.components import StaticText
 from robotide.utils import RideEventHandler, RideHtmlWindow
 from robotide.widgets import ButtonWithHandler, HorizontalSizer
 from robotide.controller.chiefcontroller import ChiefController
@@ -140,7 +141,7 @@ class _RobotTableEditor(EditorPanel):
         self.Destroy()
 
     def _create_header(self, text):
-        header = wx.StaticText(self, -1, text)
+        header = StaticText(self, -1, text)
         header.SetFont(wx.Font(12, wx.SWISS, wx.NORMAL, wx.BOLD))
         return header
 
@@ -283,10 +284,10 @@ class ResourceFileEditor(_RobotTableEditor):
     def _create_source_label(self, source):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add((5,0))
-        sizer.Add(wx.StaticText(self, label='Source',
+        sizer.Add(StaticText(self, label='Source',
                                 size=(context.SETTING_LABEL_WIDTH,
                                       context.SETTING_ROW_HEIGTH)))
-        self._source = wx.StaticText(self, label=source)
+        self._source = StaticText(self, label=source)
         sizer.Add(self._source)
         return sizer
 
@@ -349,7 +350,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
     def _create_controls(self):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add((5,0))
-        sizer.Add(wx.StaticText(self, label=self._controller.label,
+        sizer.Add(StaticText(self, label=self._controller.label,
                                 size=(context.SETTING_LABEL_WIDTH,
                                       context.SETTING_ROW_HEIGTH)))
         self._value_display = self._create_value_display()
