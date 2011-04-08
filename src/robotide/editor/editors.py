@@ -275,7 +275,7 @@ class ResourceFileEditor(_RobotTableEditor):
     def _populate(self):
         datafile = self.controller.data
         self.sizer.Add(self._create_header(datafile.name), 0, wx.EXPAND|wx.ALL, 5)
-        self.sizer.Add(self._create_source_label(datafile.source), 0, wx.ALL, 1)
+        self.sizer.Add(self._create_source_label(datafile.source), 0, wx.EXPAND|wx.ALL, 1)
         self.sizer.Add((0, 10))
         self._add_settings()
         self._add_import_settings()
@@ -287,8 +287,10 @@ class ResourceFileEditor(_RobotTableEditor):
         sizer.Add(StaticText(self, label='Source',
                                 size=(context.SETTING_LABEL_WIDTH,
                                       context.SETTING_ROW_HEIGTH)))
-        self._source = StaticText(self, label=source)
-        sizer.Add(self._source)
+        self._source = wx.TextCtrl(self, style=wx.TE_READONLY)
+        self._source.SetValue(source)
+        self._source.SetMaxSize(wx.Size(-1, context.SETTING_ROW_HEIGTH))
+        sizer.Add(self._source, 1, wx.EXPAND)
         return sizer
 
     def _add_import_settings(self):
