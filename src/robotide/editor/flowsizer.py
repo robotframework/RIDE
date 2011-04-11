@@ -42,9 +42,7 @@ class HorizontalFlowSizer(wx.PySizer):
             dx = HorizontalFlowSizer._DEFAUL_WIDTH
         else:
             HorizontalFlowSizer._DEFAUL_WIDTH = dx
-        print x0, dx
         x_border = x0 + dx
-        print x_border
         x, y = x0, y0
         mdy = sdy = 0
         cur_max = 0
@@ -69,10 +67,10 @@ class HorizontalFlowSizer(wx.PySizer):
         self._height = y + mdy + sdy - y0
 
     def _is_error_width(self, dx):
-		if dx in [0, 94, 100]:
-		   print 'error code', dx
-		   return True
-		return False
+        # 94 in windows xp
+        # 100 in windows 7
+        # 0 everywhere..
+        return dx in [0, 94, 100]
 
     @property
     def height(self):
