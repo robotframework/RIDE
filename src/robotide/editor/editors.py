@@ -577,7 +577,8 @@ class DocumentationEditor(SettingEditor):
         return ctrl
 
     def update_value(self, event=None):
-        self._value_display.SetPage(self._controller.visible_value)
+        if self._controller:
+            self._value_display.SetPage(self._controller.visible_value)
 
     def _get_tooltip(self):
         return Tooltip(self, (500, 350), detachable=False)
