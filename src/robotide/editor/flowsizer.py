@@ -13,7 +13,7 @@ class HorizontalFlowSizer(wx.PySizer):
     A sizer which lays out component left to right top to bottom. Java uses
     these quite heavily
     """
-    _DEFAUL_WIDTH = 100
+    _DEFAUL_WIDTH = 200
 
     def __init__(self):
         '''
@@ -38,11 +38,13 @@ class HorizontalFlowSizer(wx.PySizer):
         x0, y0 = self.GetPosition()
         dx, dy = self.GetSize()
         dy = self._height or dy
-        if dx == 0:
+        if self._is_error_width(dx):
             dx = HorizontalFlowSizer._DEFAUL_WIDTH
         else:
             HorizontalFlowSizer._DEFAUL_WIDTH = dx
+        print x0, dx
         x_border = x0 + dx
+        print x_border
         x, y = x0, y0
         mdy = sdy = 0
         cur_max = 0
@@ -65,6 +67,9 @@ class HorizontalFlowSizer(wx.PySizer):
             x += idx
             mdy = max(mdy, idy)
         self._height = y + mdy + sdy - y0
+
+    def _is_error_width(self, dx):
+        return dx in [0, 94]
 
     @property
     def height(self):

@@ -210,8 +210,6 @@ class Settings(wx.CollapsiblePane):
 
     def Expand(self):
         wx.CollapsiblePane.Expand(self)
-        self._recalc_size()
-        wx.CallLater(200, self._recalc_size)
 
     def GetPane(self):
         pane = wx.CollapsiblePane.GetPane(self)
