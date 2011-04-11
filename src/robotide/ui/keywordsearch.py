@@ -25,7 +25,7 @@ from robotide import utils
 from robotide import context
 from robotide.widgets.button import ButtonWithHandler
 from robotide.usages.UsageRunner import Usages
-
+from robotide.ui.components import StaticText
 
 ALL_KEYWORDS = '<all keywords>'
 ALL_USER_KEYWORDS = '<all user keywords>'
@@ -114,7 +114,7 @@ class _SearchCriteria(object):
 class KeywordSearchDialog(wx.Frame):
 
     def __init__(self, parent, searcher):
-        wx.Frame.__init__(self, parent, title="Search Keywords")
+        wx.Frame.__init__(self, parent, title="Search Keywords", style=wx.DEFAULT_FRAME_STYLE|wx.FRAME_FLOAT_ON_PARENT)
         self._plugin = searcher
         self._create_components()
         self._make_bindings()
@@ -143,7 +143,7 @@ class KeywordSearchDialog(wx.Frame):
         return wx.BoxSizer(wx.HORIZONTAL)
 
     def _add_pattern_filter(self, sizer):
-        sizer.Add(wx.StaticText(self, label='Search term: '))
+        sizer.Add(StaticText(self, label='Search term: '))
         self._search_control = wx.SearchCtrl(self, size=(200,-1),
                                              style=wx.TE_PROCESS_ENTER)
         sizer.Add(self._search_control)
@@ -154,7 +154,7 @@ class KeywordSearchDialog(wx.Frame):
         sizer.Add(self._use_doc)
 
     def _add_source_filter(self, sizer):
-        sizer.Add(wx.StaticText(self, label='Source: '))
+        sizer.Add(StaticText(self, label='Source: '))
         self._source_filter = wx.ComboBox(self, value=ALL_KEYWORDS, size=(300, -1),
                                           choices=self._get_sources(), style=wx.CB_READONLY)
         sizer.Add(self._source_filter)

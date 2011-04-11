@@ -131,6 +131,7 @@ class ListEditorBase(wx.Panel):
     def update_data(self):
         self._list.DeleteAllItems()
         self._list.insert_data(self._controller)
+        self._list.select_and_ensure_visibility(self._selection)
 
     def select(self, text):
         self._list.select(text)

@@ -113,8 +113,9 @@ class Namespace(object):
     def _variable_suggestions(self, controller, start):
         datafile = controller.datafile
         start_normalized = normalize(start)
-        vars = self._retriever.get_variables_from(datafile)
-        self._add_kw_arg_vars(controller, vars)
+        ctx = RetrieverContext()
+        self._add_kw_arg_vars(controller, ctx.vars)
+        vars = self._retriever.get_variables_from(datafile, ctx)
         return [v for v in vars
                 if normalize(v.name).startswith(start_normalized)]
 
@@ -377,8 +378,8 @@ class DatafileRetriever(object):
         kws.extend(self._get_imported_library_keywords(res, ctx))
         return [ResourceUserKeywordInfo(kw) for kw in res.keywords] + kws
 
-    def get_variables_from(self, datafile):
-        return self._get_vars_recursive(datafile, RetrieverContext()).vars
+    def get_variables_from(self, datafile, ctx=None):
+        return self._get_vars_recursive(datafile, ctx or RetrieverContext()).vars
 
     def _get_vars_recursive(self, datafile, ctx):
         ctx.vars.set_from_variable_table(datafile.variable_table)

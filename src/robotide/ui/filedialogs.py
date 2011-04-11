@@ -17,8 +17,9 @@ import wx
 from wx.lib.filebrowsebutton import DirBrowseButton
 from robotide.controller.commands import CreateNewResource
 # This hack needed to set same label width as with other labels
-DirBrowseButton.createLabel = lambda self: wx.StaticText(self, size=(110, -1),
-                                                         label=self.labelText)
+from robotide.ui.components import StaticText
+DirBrowseButton.createLabel = lambda self: StaticText(self, size=(110, -1),
+                                                      label=self.labelText)
 
 from robotide.widgets import Dialog
 from robotide.validators import NonEmptyValidator, NewSuitePathValidator
@@ -63,7 +64,7 @@ class _CreationDialog(Dialog):
         return name_editor
 
     def _add_label(self, sizer, text):
-        label = wx.StaticText(self, label=text, size=(110, -1))
+        label = StaticText(self, label=text, size=(110, -1))
         sizer.Add(label, flag=wx.CENTER|wx.ALL, border=3)
 
     def _create_type_chooser(self, sizer):
@@ -193,7 +194,7 @@ class ChangeFormatDialog(_CreationDialog):
 
     def _create_help(self, sizer, help_text):
         if help_text:
-            help = wx.StaticText(self, label=help_text)
+            help = StaticText(self, label=help_text)
             sizer.Add(help, flag=wx.ALL, border=5)
 
     def _create_recursion_selector(self, sizer, recursive):

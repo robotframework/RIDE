@@ -31,7 +31,7 @@ from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideOpenResource, RideSuiteAdded, RideSelectResource
 from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
     AddKeyword, AddTestCase, RenameTest, CopyMacroAs, MoveTo,\
-    AddVariable, AddSuite
+    AddVariable, AddSuite, UpdateVariable
 from robotide.widgets import PopupCreator, PopupMenuItems
 from robotide.ui.filedialogs import NewResourceDialog
 from robotide.usages.UsageRunner import Usages
@@ -804,14 +804,31 @@ class VariableHandler(_ActionHandler):
     accepts_drag = lambda *args: False
     is_draggable = True
     is_variable = True
+    is_renameable = True
     OnMoveUp = OnMoveDown = lambda *args: None
-    _actions = ['Delete']
+    _actions = ['Rename', 'Delete']
+
+    def OnDelete(self, event):
+        self.remove()
 
     def remove(self):
         self.controller.delete()
 
-    def OnDelete(self, event):
-        self.remove()
+    def OnRename(self, event):
+        self._tree.EditLabel(self._node)
+
+    def rename(self, new_name):
+        if self._is_valid(new_name):
+            var = self.controller
+            var.execute(UpdateVariable(new_name, var.value, var.comment))
+
+    def _is_valid(self, new_name):
+        validation_error = self.controller.validate_name(new_name)
+        if validation_error:
+            wx.MessageBox(validation_error, 'Validation Error', 
+                          style=wx.ICON_ERROR)
+            return False
+        return True
 
 
 class ResourceRootHandler(_ActionHandler):

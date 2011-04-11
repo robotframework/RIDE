@@ -16,6 +16,7 @@ import wx
 
 from robotide import context
 from robotide import utils
+from robotide.ui.components import StaticText
 from robotide.utils import RideEventHandler, RideHtmlWindow
 from robotide.widgets import ButtonWithHandler, HorizontalSizer
 from robotide.controller.chiefcontroller import ChiefController
@@ -33,7 +34,9 @@ from editordialogs import (EditorDialog, DocumentationDialog, MetadataDialog,
                            LibraryDialog, ResourceDialog, VariablesDialog)
 from robotide.publish.messages import (RideItemSettingsChanged,
                                        RideItemNameChanged,
-                                       RideInitFileRemoved, RideImportSetting)
+                                       RideInitFileRemoved, 
+                                       RideImportSetting,
+                                       RideChangeFormat)
 from robot.parsing.settings import _Setting
 from robotide.controller.commands import UpdateVariable
 from robotide.publish import PUBLISHER
@@ -138,7 +141,7 @@ class _RobotTableEditor(EditorPanel):
         self.Destroy()
 
     def _create_header(self, text):
-        header = wx.StaticText(self, -1, text)
+        header = StaticText(self, -1, text)
         header.SetFont(wx.Font(12, wx.SWISS, wx.NORMAL, wx.BOLD))
         return header
 
@@ -266,6 +269,13 @@ class Settings(wx.CollapsiblePane):
 class ResourceFileEditor(_RobotTableEditor):
     _settings_open_id = 'resource file settings open'
 
+    def __init__(self, *args):
+        _RobotTableEditor.__init__(self, *args)
+        self.plugin.subscribe(self._update_source, RideChangeFormat)
+
+    def _update_source(self, message):
+        self._source.SetLabel(self.controller.data.source)
+
     def tree_item_selected(self, item):
         if isinstance(item, VariableController):
             self._var_editor.select(item.name)
@@ -273,7 +283,7 @@ class ResourceFileEditor(_RobotTableEditor):
     def _populate(self):
         datafile = self.controller.data
         self.sizer.Add(self._create_header(datafile.name), 0, wx.EXPAND|wx.ALL, 5)
-        self.sizer.Add(self._create_source_label(datafile.source), 0, wx.ALL, 1)
+        self.sizer.Add(self._create_source_label(datafile.source), 0, wx.EXPAND|wx.ALL, 1)
         self.sizer.Add((0, 10))
         self._add_settings()
         self._add_import_settings()
@@ -282,10 +292,13 @@ class ResourceFileEditor(_RobotTableEditor):
     def _create_source_label(self, source):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add((5,0))
-        sizer.Add(wx.StaticText(self, label='Source',
+        sizer.Add(StaticText(self, label='Source',
                                 size=(context.SETTING_LABEL_WIDTH,
                                       context.SETTING_ROW_HEIGTH)))
-        sizer.Add(wx.StaticText(self, label=source))
+        self._source = wx.TextCtrl(self, style=wx.TE_READONLY)
+        self._source.SetValue(source)
+        self._source.SetMaxSize(wx.Size(-1, context.SETTING_ROW_HEIGTH))
+        sizer.Add(self._source, 1, wx.EXPAND)
         return sizer
 
     def _add_import_settings(self):
@@ -299,6 +312,7 @@ class ResourceFileEditor(_RobotTableEditor):
         self._editors.append(self._var_editor)
 
     def close(self):
+        self.plugin.unsubscribe(self._update_source, RideChangeFormat)
         for editor in self._editors:
             editor.close()
         self._editors = []
@@ -346,7 +360,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
     def _create_controls(self):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add((5,0))
-        sizer.Add(wx.StaticText(self, label=self._controller.label,
+        sizer.Add(StaticText(self, label=self._controller.label,
                                 size=(context.SETTING_LABEL_WIDTH,
                                       context.SETTING_ROW_HEIGTH)))
         self._value_display = self._create_value_display()
@@ -743,6 +757,7 @@ class VariablesListEditor(_AbstractListEditor):
 
     def __init__(self, parent, tree, controller):
         PUBLISHER.subscribe(self._update_vars, 'ride.variable.added', key=self)
+        PUBLISHER.subscribe(self._update_vars, 'ride.variable.updated', key=self)
         PUBLISHER.subscribe(self._update_vars, 'ride.variable.removed', key=self)
         _AbstractListEditor.__init__(self, parent, tree, controller)
 

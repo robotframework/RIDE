@@ -1,7 +1,7 @@
 import unittest
 from robotide.editor.tags import TagsDisplay
 from controller.controller_creator import testcase_controller as tc
-from robot.utils.asserts import assert_equals, assert_false, assert_true
+from robot.utils.asserts import assert_equals
 from robotide.controller.tags import Tag
 
 class _PartialTagsDisplay(TagsDisplay):

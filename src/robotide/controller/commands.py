@@ -505,7 +505,8 @@ class SaveAll(_Command):
 
     def execute(self, context):
         for datafile_controller in context._get_all_dirty_controllers():
-            datafile_controller.execute(SaveFile())
+            if datafile_controller.has_format():
+                datafile_controller.execute(SaveFile())
 
 
 class Purify(_Command):
@@ -515,7 +516,7 @@ class Purify(_Command):
             step.remove_empty_columns_from_end()
             if step.has_only_comment():
                 step.remove_empty_columns_from_beginning()
-        context.remove_empty_steps()
+        context.execute(DeleteRows(context.get_empty_rows()))
         context.notify_steps_changed()
 
 
