@@ -160,14 +160,16 @@ class _RobotTableEditor(EditorPanel):
     def _restore_settings_open_status(self):
         if self._should_settings_be_open():
             self._settings.Expand()
+            wx.CallLater(200, self._collabsible_changed)
         else:
             self._settings.Collapse()
 
-    def _collabsible_changed(self, event):
+    def _collabsible_changed(self, event=None):
         self._store_settings_open_status()
         self.GetSizer().Layout()
         self.Refresh()
-        event.Skip()
+        if event:
+            event.Skip()
 
     def highlight_cell(self, obj, row, column):
         '''Highlight the given object at the given row and column'''
@@ -203,6 +205,11 @@ class Settings(wx.CollapsiblePane):
         self._editors = []
         self.Bind(wx.EVT_SIZE, self._recalc_size)
 
+    def Expand(self):
+        wx.CollapsiblePane.Expand(self)
+        self._recalc_size()
+        wx.CallLater(200, self._recalc_size)
+
     def GetPane(self):
         pane = wx.CollapsiblePane.GetPane(self)
         pane.tooltip_allowed = self.GetParent().tooltip_allowed
@@ -235,12 +242,13 @@ class Settings(wx.CollapsiblePane):
         self.GetPane().SetSizer(self._sizer)
         self._sizer.SetSizeHints(self.GetPane())
 
-    def _recalc_size(self, event):
+    def _recalc_size(self, event=None):
         if self.IsExpanded():
             expand_button_height = 32  # good guess...
             height = sum(editor.Size[1]+2*self.BORDER for editor in self._editors)
             self.SetSizeHints(-1, height + expand_button_height)
-        event.Skip()
+        if event:
+            event.Skip()
 
     def highlight(self, text, expand=True):
         match = False

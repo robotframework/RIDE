@@ -22,7 +22,7 @@ class HorizontalFlowSizer(wx.PySizer):
         wx.PySizer.__init__(self)
         self._frozen       = False
         self._needed_size  = None
-        self._height = 20
+        self._height = 0
 
     def CalcMin(self):
         """
@@ -37,15 +37,14 @@ class HorizontalFlowSizer(wx.PySizer):
         """
         x0, y0 = self.GetPosition()
         dx, dy = self.GetSize()
+        dy = self._height or dy
         if dx == 0:
             dx = HorizontalFlowSizer._DEFAUL_WIDTH
         else:
             HorizontalFlowSizer._DEFAUL_WIDTH = dx
         x_border = x0 + dx
-        y_border = y0 + dy
         x, y = x0, y0
         mdy = sdy = 0
-        visible = True
         cur_max = 0
         for item in self.GetChildren():
             idx, idy = item.CalcMin()
@@ -54,7 +53,6 @@ class HorizontalFlowSizer(wx.PySizer):
                 x   = x0
                 y  += (mdy + sdy)
                 mdy = sdy = 0
-                visible &= (y < y_border)
             cur_max = max(idy, cur_max)
             if expand:
                 idy = cur_max
@@ -63,11 +61,11 @@ class HorizontalFlowSizer(wx.PySizer):
                 if x == x0:
                     idx = 0
             item.SetDimension(wx.Point(x, y), wx.Size(idx, idy))
-            item.Show(visible)
+            item.Show(True)
             x += idx
             mdy = max(mdy, idy)
         self._height = y + mdy + sdy - y0
 
     @property
     def height(self):
-        return self._height
+        return self._height or 20

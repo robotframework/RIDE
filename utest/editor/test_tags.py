@@ -18,6 +18,8 @@ class _PartialTagsDisplay(TagsDisplay):
 
 class _TagInfo(object):
 
+    add_new = False
+
     def __init__(self, tag, editable):
         self.set_tag(tag)
         self.SetEditable(editable)
@@ -58,23 +60,20 @@ class TestTagsModifications(unittest.TestCase):
 
     def test_set_empty_value(self):
         self._tags_display.set_value(self._cntrl.tags)
-        assert_equals(len(self.tagboxes), 1)
-        assert_true(self.tagboxes[0].is_empty())
+        assert_equals(len(self.tagboxes), 0)
 
     def test_set_non_empty_value(self):
         tag = Tag('moro')
         self._cntrl.tags.add(tag)
         self._tags_display.set_value(self._cntrl.tags)
-        assert_equals(len(self.tagboxes), 2)
+        assert_equals(len(self.tagboxes), 1)
         assert_equals(self.tagboxes[0]._tag, tag)
-        assert_true(self.tagboxes[1].is_empty())
 
     def test_remove_only_tag(self):
         self.test_set_non_empty_value()
         self._cntrl.tags.clear()
         self._tags_display.clear()
-        assert_equals(len(self.tagboxes), 1)
-        assert_true(self.tagboxes[0].is_empty())
+        assert_equals(len(self.tagboxes), 0)
 
 
 if __name__ == '__main__':

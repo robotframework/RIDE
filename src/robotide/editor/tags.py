@@ -107,8 +107,6 @@ class TagsDisplay(wx.Panel):
         return None
 
     def get_height(self):
-        if os.name == 'nt':
-            return 50
         return self._sizer.height
 
 
