@@ -620,9 +620,6 @@ class TagsEditor(SettingEditor):
         self._tags_display.Bind(wx.EVT_KEY_DOWN, self.OnKey)
         return self._tags_display
 
-    def _add_edit(self, sizer):
-        pass
-
     def contains(self, text):
         return False
 
