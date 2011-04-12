@@ -83,7 +83,13 @@ class RunConfigs(object):
         for index, datum in enumerate(data):
             self.edit(index, *datum)
 
-    def swap(self, index1, index2):
+    def move_up(self, index):
+        self._swap(index-1, index)
+
+    def move_down(self, index):
+        self._swap(index, index+1)
+
+    def _swap(self, index1, index2):
         self._configs[index1], self._configs[index2] = \
                 self._configs[index2], self._configs[index1]
 
