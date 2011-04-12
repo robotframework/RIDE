@@ -57,6 +57,7 @@ Additionally, URLs are converted to clickable links.
 
 Force Tags
 These tags are set to all test cases in this test suite.
+Inherited tags are not shown in this view.
 %(TAG)s
 %(ESCAPE)s
 
@@ -66,7 +67,8 @@ These tags are set to all test cases in this test suite unless test cases have t
 %(ESCAPE)s
 
 Tags
-These tags are set to this test cases in addition to Force Tags and they override possible Default Tags.
+These tags are set to this test case in addition to Force Tags and they override possible Default Tags.
+Inherited tags are not shown in this view.
 %(TAG)s
 %(ESCAPE)s
 
