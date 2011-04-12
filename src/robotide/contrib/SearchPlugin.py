@@ -345,7 +345,6 @@ class SearchDialog(wx.Dialog):
             self.OnClose(event)
             return
         event.Skip()
-        self.search_button.Enable(len(self.entry.GetValue()) > 0)
 
     def OnListboxSelect(self, event):
         '''Causes the selected item to be shown in the editor'''
@@ -381,7 +380,6 @@ class SearchDialog(wx.Dialog):
             new_event = self.SearchStartEvent(search_string=search_string)
             wx.CallAfter(wx.PostEvent, self, new_event)
 
-        self.search_button.Enable(len(self.entry.GetValue()) > 0)
         wx.Dialog.Show(self, visible)
         self.entry.SetFocus()
 
