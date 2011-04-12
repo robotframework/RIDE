@@ -100,9 +100,6 @@ class _ConfigListEditor(ListEditorBase):
     def OnRemove(self, event):
         self.delete_selected()
 
-    def OnDelete(self, event):
-        pass
-
     def new_config(self, data):
         self._controller.add(*data)
 
@@ -142,6 +139,7 @@ class _TextEditListCtrl(AutoWidthColumnList, TextEditMixin):
     def new_item(self):
         self._new_item_creation = True
         self.InsertStringItem(self.ItemCount, '')
+        self.Select(self.ItemCount-1, True)
         self.open_editor(self.last_index)
 
     def get_data(self):
@@ -162,3 +160,4 @@ class _TextEditListCtrl(AutoWidthColumnList, TextEditMixin):
                 self.Parent.new_config(lastrow)
         else:
             self.Parent.edit_config(self.curRow, self._get_row(self.curRow))
+            self.Select(self.curRow)
