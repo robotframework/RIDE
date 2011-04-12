@@ -6,6 +6,10 @@
 #  (c) Copyright 2006 by Enthought, Inc.
 #  License: BSD Style.
 #-------------------------------------------------------------------------------
+
+# This code has been modified after inclusion and is no longer generic.
+# You should probably not use this in your own projects.
+
 import wx
 
 class HorizontalFlowSizer(wx.PySizer):
@@ -64,14 +68,24 @@ class HorizontalFlowSizer(wx.PySizer):
             item.Show(True)
             x += idx
             mdy = max(mdy, idy)
-        self._height = y + mdy + sdy - y0
+        newheight = y + mdy + sdy - y0
+        if newheight != self._height:
+            self._height = newheight
+            # Enforce that the parent window recalculates needed height
+            self._send_resize_event()
+
+    def _send_resize_event(self):
+        frame = self.GetContainingWindow().GetTopLevelParent()
+        frame.ProcessEvent(wx.SizeEvent(frame.Size, frame.Id))
 
     def _is_error_width(self, dx):
+        # It seems that there are several widths that notify that the width
+        # calculation was unsuccessful. The erroneous widths are:
         # 94 in windows xp
         # 100 in windows 7
-        # 0 everywhere..
+        # 0 everywhere
         return dx in [0, 94, 100]
 
     @property
     def height(self):
-        return self._height or 20
+        return self._height + 25
