@@ -134,6 +134,23 @@ wx._core.EvtHandler --+
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a href="robotide.ui.tree.VariableHandler-class.html#OnDelete" class="summary-sig-name">OnDelete</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.ui.tree-pysrc.html#VariableHandler.OnDelete">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a href="robotide.ui.tree.VariableHandler-class.html#remove" class="summary-sig-name">remove</a>(<span class="summary-sig-arg">self</span>)</span></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="robotide.ui.tree-pysrc.html#VariableHandler.remove">source&nbsp;code</a></span>
@@ -150,10 +167,27 @@ wx._core.EvtHandler --+
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.ui.tree.VariableHandler-class.html#OnDelete" class="summary-sig-name">OnDelete</a>(<span class="summary-sig-arg">self</span>,
+          <td><span class="summary-sig"><a href="robotide.ui.tree.VariableHandler-class.html#OnRename" class="summary-sig-name">OnRename</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">event</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.ui.tree-pysrc.html#VariableHandler.OnDelete">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.ui.tree-pysrc.html#VariableHandler.OnRename">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="robotide.ui.tree.VariableHandler-class.html#rename" class="summary-sig-name">rename</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">new_name</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="robotide.ui.tree-pysrc.html#VariableHandler.rename">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -477,6 +511,13 @@ wx._core.EvtHandler --+
         <a href="robotide.ui.tree.VariableHandler-class.html#is_variable" class="summary-name">is_variable</a> = <code title="True">True</code>
     </td>
   </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.ui.tree.VariableHandler-class.html#is_renameable" class="summary-name">is_renameable</a> = <code title="True">True</code>
+    </td>
+  </tr>
   <tr>
     <td colspan="2" class="summary">
     <p class="indent-wrapped-lines"><b>Inherited from <code>_ActionHandler</code></b>:
@@ -637,6 +678,26 @@ wx._core.EvtHandler --+
   </dl>
 </td></tr></table>
 </div>
+<a name="OnDelete"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnDelete</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.ui.tree-pysrc.html#VariableHandler.OnDelete">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
 <a name="remove"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -656,18 +717,38 @@ wx._core.EvtHandler --+
   </dl>
 </td></tr></table>
 </div>
-<a name="OnDelete"></a>
+<a name="OnRename"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnDelete</span>(<span class="sig-arg">self</span>,
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnRename</span>(<span class="sig-arg">self</span>,
         <span class="sig-arg">event</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.ui.tree-pysrc.html#VariableHandler.OnDelete">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="robotide.ui.tree-pysrc.html#VariableHandler.OnRename">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="rename"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">rename</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">new_name</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="robotide.ui.tree-pysrc.html#VariableHandler.rename">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
@@ -722,6 +803,24 @@ True
   </dl>
 </td></tr></table>
 </div>
+<a name="is_renameable"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">is_renameable</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+True
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
 <br />
 <!-- ==================== NAVIGATION BAR ==================== -->
 <table class="navbar" border="0" width="100%" cellpadding="0"
@@ -754,7 +853,7 @@ True
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Mar 31 14:48:06 2011
+    Generated by Epydoc 3.0.1 on Wed Apr 13 15:09:46 2011
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

@@ -90,7 +90,7 @@ wx._core.EvtHandler --+
         <tr>
           <td><span class="summary-sig"><a href="robotide.editor.tags.TagBox-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">parent</span>,
-        <span class="summary-sig-arg">tag</span>)</span><br />
+        <span class="summary-sig-arg">properties</span>)</span><br />
       Point pos=DefaultPosition, Size size=DefaultSize,
 long style=0, Validator validator=DefaultValidator,
 String name=TextCtrlNameStr) -&gt; TextCtrl</td>
@@ -109,28 +109,10 @@ String name=TextCtrlNameStr) -&gt; TextCtrl</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.editor.tags.TagBox-class.html#set_tag" class="summary-sig-name">set_tag</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">tag</span>)</span></td>
+          <td><span class="summary-sig"><a href="robotide.editor.tags.TagBox-class.html#set_properties" class="summary-sig-name">set_properties</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">properties</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.tags-pysrc.html#TagBox.set_tag">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="robotide.editor.tags.TagBox-class.html#SetEditable" class="summary-sig-name">SetEditable</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">editable</span>)</span><br />
-      SetEditable(self, bool editable)</td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.tags-pysrc.html#TagBox.SetEditable">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.editor.tags-pysrc.html#TagBox.set_properties">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -177,10 +159,10 @@ String name=TextCtrlNameStr) -&gt; TextCtrl</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="robotide.editor.tags.TagBox-class.html#OnKeyDown" class="summary-sig-name">OnKeyDown</a>(<span class="summary-sig-arg">self</span>,
+          <td><span class="summary-sig"><a href="robotide.editor.tags.TagBox-class.html#OnChar" class="summary-sig-name">OnChar</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">event</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="robotide.editor.tags-pysrc.html#TagBox.OnKeyDown">source&nbsp;code</a></span>
+            <span class="codelink"><a href="robotide.editor.tags-pysrc.html#TagBox.OnChar">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -269,6 +251,7 @@ String name=TextCtrlNameStr) -&gt; TextCtrl</td>
       <code>SelectAll</code>,
       <code>SendTextUpdatedEvent</code>,
       <code>SetDefaultStyle</code>,
+      <code>SetEditable</code>,
       <code>SetInsertionPoint</code>,
       <code>SetInsertionPointEnd</code>,
       <code>SetMaxLength</code>,
@@ -575,36 +558,6 @@ String name=TextCtrlNameStr) -&gt; TextCtrl</td>
     </td>
   </tr>
 </table>
-<!-- ==================== CLASS VARIABLES ==================== -->
-<a name="section-ClassVariables"></a>
-<table class="summary" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr bgcolor="#70b0f0" class="table-header">
-  <td align="left" colspan="2" class="table-header">
-    <span class="table-header">Class Variables</span></td>
-</tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a href="robotide.editor.tags.TagBox-class.html#ADD_TEXT" class="summary-name">ADD_TEXT</a> = <code title="' Add a new tag '"><code class="variable-quote">'</code><code class="variable-string"> Add a new tag </code><code class="variable-quote">'</code></code>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a href="robotide.editor.tags.TagBox-class.html#ADD_BACKGROUND" class="summary-name">ADD_BACKGROUND</a> = <code title="'#C2DFFF'"><code class="variable-quote">'</code><code class="variable-string">#C2DFFF</code><code class="variable-quote">'</code></code>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a href="robotide.editor.tags.TagBox-class.html#NOT_EDITABLE_BACKGROUND" class="summary-name">NOT_EDITABLE_BACKGROUND</a> = <code title="'#D3D3D3'"><code class="variable-quote">'</code><code class="variable-string">#D3D3D3</code><code class="variable-quote">'</code></code>
-    </td>
-  </tr>
-</table>
 <!-- ==================== PROPERTIES ==================== -->
 <a name="section-Properties"></a>
 <table class="summary" border="1" cellpadding="3"
@@ -613,6 +566,20 @@ String name=TextCtrlNameStr) -&gt; TextCtrl</td>
   <td align="left" colspan="2" class="table-header">
     <span class="table-header">Properties</span></td>
 </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.editor.tags.TagBox-class.html#value" class="summary-name">value</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="robotide.editor.tags.TagBox-class.html#add_new" class="summary-name">add_new</a>
+    </td>
+  </tr>
   <tr>
     <td colspan="2" class="summary">
     <p class="indent-wrapped-lines"><b>Inherited from <code>wx._controls.TextCtrl</code></b>:
@@ -721,7 +688,7 @@ String name=TextCtrlNameStr) -&gt; TextCtrl</td>
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
         <span class="sig-arg">parent</span>,
-        <span class="sig-arg">tag</span>)</span>
+        <span class="sig-arg">properties</span>)</span>
     <br /><em class="fname">(Constructor)</em>
   </h3>
   </td><td align="right" valign="top"
@@ -745,47 +712,23 @@ String name=TextCtrlNameStr) -&gt; TextCtrl</p>
   </dl>
 </td></tr></table>
 </div>
-<a name="set_tag"></a>
+<a name="set_properties"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">set_tag</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">tag</span>)</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">set_properties</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">properties</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.editor.tags-pysrc.html#TagBox.set_tag">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="robotide.editor.tags-pysrc.html#TagBox.set_properties">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
   
   <dl class="fields">
-  </dl>
-</td></tr></table>
-</div>
-<a name="SetEditable"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">SetEditable</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">editable</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.editor.tags-pysrc.html#TagBox.SetEditable">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  SetEditable(self, bool editable)
-  <dl class="fields">
-    <dt>Overrides:
-        wx._controls.TextCtrl.SetEditable
-        <dd><em class="note">(inherited documentation)</em></dd>
-    </dt>
   </dl>
 </td></tr></table>
 </div>
@@ -828,18 +771,18 @@ String name=TextCtrlNameStr) -&gt; TextCtrl</p>
   </dl>
 </td></tr></table>
 </div>
-<a name="OnKeyDown"></a>
+<a name="OnChar"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnKeyDown</span>(<span class="sig-arg">self</span>,
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">OnChar</span>(<span class="sig-arg">self</span>,
         <span class="sig-arg">event</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="robotide.editor.tags-pysrc.html#TagBox.OnKeyDown">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="robotide.editor.tags-pysrc.html#TagBox.OnChar">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
@@ -889,66 +832,40 @@ String name=TextCtrlNameStr) -&gt; TextCtrl</p>
 </td></tr></table>
 </div>
 <br />
-<!-- ==================== CLASS VARIABLE DETAILS ==================== -->
-<a name="section-ClassVariableDetails"></a>
+<!-- ==================== PROPERTY DETAILS ==================== -->
+<a name="section-PropertyDetails"></a>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr bgcolor="#70b0f0" class="table-header">
   <td align="left" colspan="2" class="table-header">
-    <span class="table-header">Class Variable Details</span></td>
+    <span class="table-header">Property Details</span></td>
 </tr>
 </table>
-<a name="ADD_TEXT"></a>
+<a name="value"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
-  <h3 class="epydoc">ADD_TEXT</h3>
+  <h3 class="epydoc">value</h3>
   
   <dl class="fields">
-  </dl>
-  <dl class="fields">
-    <dt>Value:</dt>
-      <dd><table><tr><td><pre class="variable">
-<code class="variable-quote">'</code><code class="variable-string"> Add a new tag </code><code class="variable-quote">'</code>
-</pre></td></tr></table>
-</dd>
+    <dt>Get Method:</dt>
+    <dd class="value"><span class="summary-sig"><i>unreachable</i>.value(<span class="summary-sig-arg">self</span>)</span>
+    </dd>
   </dl>
 </td></tr></table>
 </div>
-<a name="ADD_BACKGROUND"></a>
+<a name="add_new"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
-  <h3 class="epydoc">ADD_BACKGROUND</h3>
+  <h3 class="epydoc">add_new</h3>
   
   <dl class="fields">
-  </dl>
-  <dl class="fields">
-    <dt>Value:</dt>
-      <dd><table><tr><td><pre class="variable">
-<code class="variable-quote">'</code><code class="variable-string">#C2DFFF</code><code class="variable-quote">'</code>
-</pre></td></tr></table>
-</dd>
-  </dl>
-</td></tr></table>
-</div>
-<a name="NOT_EDITABLE_BACKGROUND"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <h3 class="epydoc">NOT_EDITABLE_BACKGROUND</h3>
-  
-  <dl class="fields">
-  </dl>
-  <dl class="fields">
-    <dt>Value:</dt>
-      <dd><table><tr><td><pre class="variable">
-<code class="variable-quote">'</code><code class="variable-string">#D3D3D3</code><code class="variable-quote">'</code>
-</pre></td></tr></table>
-</dd>
+    <dt>Get Method:</dt>
+    <dd class="value"><span class="summary-sig"><i>unreachable</i>.add_new(<span class="summary-sig-arg">self</span>)</span>
+    </dd>
   </dl>
 </td></tr></table>
 </div>
@@ -984,7 +901,7 @@ String name=TextCtrlNameStr) -&gt; TextCtrl</p>
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Mar 31 14:48:00 2011
+    Generated by Epydoc 3.0.1 on Wed Apr 13 15:09:42 2011
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
