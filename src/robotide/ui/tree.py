@@ -714,7 +714,7 @@ class _TestOrUserKeywordHandler(_ActionHandler):
         self.controller.delete()
 
     def rename(self, new_name):
-        self._rename(new_name)
+        self.controller.execute(self._create_rename_command(new_name))
 
     def OnCopy(self, event):
         dlg = self._copy_name_dialog_class(self.controller, self.item)
@@ -744,8 +744,8 @@ class TestCaseHandler(_TestOrUserKeywordHandler):
     def _add_copy_to_tree(self, parent_node, copied):
         self._tree.add_test(parent_node, copied)
 
-    def _rename(self, new_name):
-        self.controller.execute(RenameTest(new_name))
+    def _create_rename_command(self, new_name):
+        return RenameTest(new_name)
 
 
 class UserKeywordHandler(_TestOrUserKeywordHandler):
@@ -757,10 +757,10 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
     def _add_copy_to_tree(self, parent_node, copied):
         self._tree.add_keyword(parent_node, copied)
 
-    def _rename(self, new_name):
-        self.controller.execute(RenameKeywordOccurrences(self.controller.name,
-            new_name, RenameProgressObserver(self.GetParent().GetParent()),
-            self.controller.info))
+    def _create_rename_command(self, new_name):
+        return RenameKeywordOccurrences(self.controller.name, new_name,
+                                        RenameProgressObserver(self.GetParent().GetParent()),
+                                        self.controller.info)
 
     def OnFindUsages(self, event):
         Usages(self.controller, self._tree.highlight).show()
@@ -841,7 +841,7 @@ class LabelEditor(object):
         if IS_WINDOWS and self._editing_label:
             # This method works only on Windows, luckily the issue 756 exists
             # only on Windows
-            self._tree.EndEditLabel(self.Selection, discardChanges=True)
+            self._tree.EndEditLabel(self._tree.Selection, discardChanges=True)
         event.Skip()
 
     def _get_handler(self, item=None):

@@ -43,7 +43,7 @@ class TagsDisplay(wx.Panel):
 
     def build(self):
         if not (self._tag_boxes and self._tag_boxes[-1].add_new):
-            self._add_new_tag_tagbox(rebuild=False)
+            self.add_new_tag_tagbox(rebuild=False)
         self._sizer.SetSizeHints(self)
         parent_sizer = self.GetParent().GetSizer()
         if parent_sizer:
@@ -67,7 +67,7 @@ class TagsDisplay(wx.Panel):
             self._modify_values(controller)
         self.build()
 
-    def _add_new_tag_tagbox(self, rebuild=True):
+    def add_new_tag_tagbox(self, rebuild=True):
         self._add_tagbox(AddTagBoxProperties(self._controller.empty_tag(), self))
         if rebuild:
             self.build()
@@ -217,7 +217,6 @@ class _TagBoxProperties(object):
 
     @property
     def tooltip(self):
-        #TODO: Move to GUI layer and show were tag came from if possible
         return self._tag.tooltip
 
     @property
@@ -249,7 +248,7 @@ class AddTagBoxProperties(_TagBoxProperties):
 
     def activate(self, tagbox):
         tagbox.set_properties(TagBoxProperties(self._tag))
-        self._display._add_new_tag_tagbox()  # FIXME: Calling private method
+        self._display.add_new_tag_tagbox()
 
 
 class ForcedTagBoxProperties(_TagBoxProperties):
