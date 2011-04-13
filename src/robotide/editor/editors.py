@@ -176,11 +176,11 @@ class _RobotTableEditor(EditorPanel):
 
     def highlight_cell(self, obj, row, column):
         '''Highlight the given object at the given row and column'''
-        if obj and isinstance(obj, _Setting):
+        if isinstance(obj, _Setting):
             setting_editor = self._get_settings_editor(obj)
             if setting_editor and hasattr(setting_editor, "highlight"):
                 setting_editor.highlight(column)
-        else:
+        elif row >= 0 and column >= 0:
             self.kweditor.select(row, column)
 
     def _get_settings_editor(self, setting):
