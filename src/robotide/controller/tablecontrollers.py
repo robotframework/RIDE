@@ -99,15 +99,7 @@ class VariableTableController(_TableController, _WithListOperations):
         return self._validate_name(_ListVarValidator(), name)
 
     def _validate_name(self, validator, name):
-        if not validator(name):
-            return '%s variable name must be in format %s{name}' % \
-                    (validator.name, validator.prefix)
-        if self._name_taken(name):
-            return 'Variable with this name already exists.'
-        return None
-
-    def _name_taken(self, name):
-        return any(utils.eq(name, var.name) for var in self._table)
+        return VariableNameValidation(self, validator, name)
 
     def delete(self, index):
         self.remove_var(self[index])
@@ -119,11 +111,13 @@ class VariableTableController(_TableController, _WithListOperations):
 
     def notify_variable_added(self, ctrl):
         self.datafile_controller.update_namespace()
-        RideVariableAdded(datafile=self.datafile, name=ctrl.name, item=ctrl).publish()
+        RideVariableAdded(datafile=self.datafile,
+                          name=ctrl.name, item=ctrl).publish()
 
     def notify_variable_removed(self, ctrl):
         self.datafile_controller.update_namespace()
-        RideVariableRemoved(datafile=self.datafile, name=ctrl.name, item=ctrl).publish()
+        RideVariableRemoved(datafile=self.datafile,
+                            name=ctrl.name, item=ctrl).publish()
 
 
 class _ScalarVarValidator(object):
@@ -138,23 +132,41 @@ class _ListVarValidator(object):
     prefix = '@'
 
 
-class MacroNameValidation(object):
+class _NameValidation(object):
 
-    def __init__(self, item, name):
-        self._table = item
-        self._name = name.strip()
-        self.valid = False
-        self._validate()
+    def __init__(self, table, name):
+        self._table = table
+        self.error_message = ''
+        self._validate(name.strip())
 
-    def _validate(self):
-        if not self._name:
-            self.error_message = '%s name cannot be empty.' % self._table.item_type
-            return
+
+class VariableNameValidation(_NameValidation):
+
+    def __init__(self, table, validator, name):
+        self._validator = validator
+        _NameValidation.__init__(self, table, name)
+
+    def _validate(self, name):
+        if not self._validator(name):
+            self.error_message = '%s variable name must be in format %s{name}' % \
+                    (self._validator.name, self._validator.prefix)
+        if self._name_taken(name):
+            self.error_message = 'Variable with this name already exists.'
+
+    def _name_taken(self, name):
+        return any(utils.eq(name, var.name) for var in self._table)
+
+
+class MacroNameValidation(_NameValidation):
+
+    def _validate(self, name):
+        if not name:
+            self.error_message = '%s name cannot be empty.' % \
+                    self._table.item_type
         for item in self._table:
-            if item.name == self._name:
-                self.error_message = '%s with this name already exists.' % self._table.item_type
-                return
-        self.valid = True
+            if item.name == name:
+                self.error_message = '%s with this name already exists.' % \
+                        self._table.item_type
 
 
 class _MacroTable(object):
@@ -206,7 +218,7 @@ class _MacroTable(object):
 
     def delete(self, ctrl):
         self._items.remove(ctrl.data)
-        if ctrl.data in self._item_to_controller: 
+        if ctrl.data in self._item_to_controller:
             del self._item_to_controller[ctrl.data]
         self.datafile_controller.update_namespace()
         self.mark_dirty()
