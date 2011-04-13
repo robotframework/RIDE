@@ -98,7 +98,7 @@ class _ConfigListEditor(ListEditorBase):
         self._list.new_item()
 
     def OnRemove(self, event):
-        self.delete_selected()
+        self.OnDelete(event)
 
     def new_config(self, data):
         self._controller.add(*data)
