@@ -16,17 +16,9 @@ class Tag(object):
     tooltip = "Test case's tag"
 
     def __init__(self, name, index=None, controller=None):
-        self._name = name
+        self.name = name
+        self.controller = controller
         self._index = index
-        self._controller = controller
-
-    @property
-    def name(self):
-        return self._name
-
-    @property
-    def controller(self):
-        return self._controller
 
     def set_index(self, index):
         self._index = index
@@ -35,13 +27,13 @@ class Tag(object):
         return self.name is None
 
     def __eq__(self, other):
-        return self._name == other._name and self._index == other._index
+        return self.name == other.name and self._index == other._index
 
     def __ne__(self, other):
         return not (self == other)
 
     def __str__(self):
-        return self._name
+        return self.name
 
     def choose(self, mapping):
         return mapping[self.__class__]
@@ -51,11 +43,10 @@ class ForcedTag(Tag):
 
     @property
     def tooltip(self):
-        return 'Force tag from '+self._controller.source
-
+        return 'Force tag from suite '+self.controller.datafile_controller.name
 
 class DefaultTag(Tag):
 
     @property
     def tooltip(self):
-        return 'Default tag from '+self._controller.source
+        return 'Default tag from suite '+self.controller.datafile_controller.name
