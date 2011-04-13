@@ -457,7 +457,7 @@ class _Keywords(object):
     regexp = re.compile("\s*(given|when|then|and)\s*(.*)", re.IGNORECASE)
 
     def __init__(self, keywords):
-        self.keywords = NormalizedDict()
+        self.keywords = NormalizedDict(ignore=['_'])
         self.embedded_keywords = {}
         self._add_keywords(keywords)
 

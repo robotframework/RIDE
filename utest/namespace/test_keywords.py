@@ -27,6 +27,10 @@ class TestKeywords(unittest.TestCase):
         assert_true(self.kws.get('M Y     KW'))
         assert_false(self.kws.get('my kw?'))
 
+    def test_underscore_normalization(self):
+        assert_true(self.kws.get('m_ykw'))
+        assert_true(self.kws.get('_mY_kw_'))
+
     def test_longname(self):
         assert_true(self.kws.get('source.my kw'))
 
