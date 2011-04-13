@@ -48,8 +48,14 @@ class Tag(object):
 
 
 class ForcedTag(Tag):
-    tooltip = "Force tag"
+
+    @property
+    def tooltip(self):
+        return 'Force tag from '+self._controller.source
 
 
 class DefaultTag(Tag):
-    tooltip = "Default tag"
+
+    @property
+    def tooltip(self):
+        return 'Default tag from '+self._controller.source
