@@ -336,11 +336,7 @@ class SearchDialog(wx.Dialog):
         self.exact_match = event.IsChecked()
 
     def OnKeyUp(self, event):
-        '''Handles processing of escape key
-
-        This also enables or disables the search button depending
-        on whether the search string is non-null
-        '''
+        '''Handles processing of escape key'''
         if event.GetKeyCode() == wx.WXK_ESCAPE:
             self.OnClose(event)
             return
