@@ -24,6 +24,8 @@ class TestCaseNameValidationTest(unittest.TestCase):
     def test_duplicate_name(self):
         self.ctrl.new(VALID_NAME)
         self._validate_name(VALID_NAME, False)
+        self._validate_name(VALID_NAME.upper(), False)
+        self._validate_name(VALID_NAME.replace(' ', '_'), False)
 
     def _validate_name(self, name, expected_valid):
         valid = not bool(self.ctrl.validate_name(name).error_message)

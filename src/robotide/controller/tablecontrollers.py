@@ -139,6 +139,10 @@ class _NameValidation(object):
         self.error_message = ''
         self._validate(name.strip())
 
+    def _name_taken(self, name):
+        return any(utils.eq(name, item.name, ignore=['_'])
+                   for item in self._table)
+
 
 class VariableNameValidation(_NameValidation):
 
@@ -153,9 +157,6 @@ class VariableNameValidation(_NameValidation):
         if self._name_taken(name):
             self.error_message = 'Variable with this name already exists.'
 
-    def _name_taken(self, name):
-        return any(utils.eq(name, var.name) for var in self._table)
-
 
 class MacroNameValidation(_NameValidation):
 
@@ -163,10 +164,9 @@ class MacroNameValidation(_NameValidation):
         if not name:
             self.error_message = '%s name cannot be empty.' % \
                     self._table.item_type
-        for item in self._table:
-            if item.name == name:
-                self.error_message = '%s with this name already exists.' % \
-                        self._table.item_type
+        if self._name_taken(name):
+            self.error_message = '%s with this name already exists.' % \
+                    self._table.item_type
 
 
 class _MacroTable(object):
