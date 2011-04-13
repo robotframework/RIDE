@@ -34,7 +34,7 @@ from editordialogs import (EditorDialog, DocumentationDialog, MetadataDialog,
                            LibraryDialog, ResourceDialog, VariablesDialog)
 from robotide.publish.messages import (RideItemSettingsChanged,
                                        RideItemNameChanged,
-                                       RideInitFileRemoved, 
+                                       RideInitFileRemoved,
                                        RideImportSetting,
                                        RideChangeFormat)
 from robot.parsing.settings import _Setting
@@ -272,7 +272,7 @@ class ResourceFileEditor(_RobotTableEditor):
         self.plugin.subscribe(self._update_source, RideChangeFormat)
 
     def _update_source(self, message):
-        self._source.SetLabel(self.controller.data.source)
+        self._source.SetValue(self.controller.data.source)
 
     def tree_item_selected(self, item):
         if isinstance(item, VariableController):
@@ -291,9 +291,10 @@ class ResourceFileEditor(_RobotTableEditor):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add((5,0))
         sizer.Add(StaticText(self, label='Source',
-                                size=(context.SETTING_LABEL_WIDTH,
-                                      context.SETTING_ROW_HEIGTH)))
-        self._source = wx.TextCtrl(self, style=wx.TE_READONLY)
+                             size=(context.SETTING_LABEL_WIDTH,
+                                   context.SETTING_ROW_HEIGTH)))
+        self._source = wx.TextCtrl(self, style=wx.TE_READONLY|wx.NO_BORDER)
+        self._source.SetBackgroundColour(self.BackgroundColour)
         self._source.SetValue(source)
         self._source.SetMaxSize(wx.Size(-1, context.SETTING_ROW_HEIGTH))
         sizer.Add(self._source, 1, wx.EXPAND)
