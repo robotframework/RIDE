@@ -841,7 +841,7 @@ class LabelEditor(object):
         if IS_WINDOWS and self._editing_label:
             # This method works only on Windows, luckily the issue 756 exists
             # only on Windows
-            self._tree.EndEditLabel(self.Selection, discardChanges=True)
+            self._tree.EndEditLabel(self._tree.Selection, discardChanges=True)
         event.Skip()
 
     def _get_handler(self, item=None):
