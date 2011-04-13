@@ -281,6 +281,16 @@ class UpdateVariable(_Command):
         context.notify_value_changed()
 
 
+class UpdateVariableName(_Command):
+
+    def __init__(self, new_name):
+        self._new_name = new_name
+
+    def execute(self, context):
+        context.execute(UpdateVariable(self._new_name, context.value,
+                                       context.comment))
+
+
 class FindOccurrences(_Command):
 
     def __init__(self, keyword_name, keyword_info=None):

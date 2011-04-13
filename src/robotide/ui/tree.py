@@ -31,7 +31,7 @@ from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideOpenResource, RideSuiteAdded, RideSelectResource
 from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
     AddKeyword, AddTestCase, RenameTest, CopyMacroAs, MoveTo,\
-    AddVariable, AddSuite, UpdateVariable
+    AddVariable, AddSuite, UpdateVariableName
 from robotide.widgets import PopupCreator, PopupMenuItems
 from robotide.ui.filedialogs import NewResourceDialog
 from robotide.usages.UsageRunner import Usages
@@ -64,31 +64,16 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self.Bind(wx.EVT_TREE_ITEM_EXPANDING, self.OnTreeItemExpanding)
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnRightClick)
         self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnItemActivated)
-        self.Bind(wx.EVT_TREE_BEGIN_LABEL_EDIT, self.OnBeginLabelEdit)
-        self.Bind(wx.EVT_TREE_END_LABEL_EDIT, self.OnLabelEdited)
-        self.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDown)
         self._images = TreeImageList()
         self.SetImageList(self._images)
         self._history = _History()
+        self._label_editor = LabelEditor(self)
         self._bind_keys()
         self._subscribe_to_messages()
         self._popup_creator = PopupCreator()
         self._dragging = False
         self._clear_tree_data()
         self._editor = None
-        self._editing_label = False
-
-    def OnBeginLabelEdit(self, event):
-        #See http://code.google.com/p/robotframework-ride/issues/detail?id=756
-        self._editing_label = True
-    
-    def OnLeftDown(self, event):
-        #See http://code.google.com/p/robotframework-ride/issues/detail?id=756
-        if IS_WINDOWS and self._editing_label:
-            # This method works only on Windows, luckily the issue 756 exists 
-            # only on Windows
-            self.EndEditLabel(self.Selection, discardChanges=True)
-        event.Skip()
 
     def set_editor(self, editor):
         self._editor = editor
@@ -132,7 +117,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def _get_bind_keys(self):
         bindings = [(ctrl_or_cmd(), wx.WXK_UP, self.OnMoveUp),
                     (ctrl_or_cmd(), wx.WXK_DOWN, self.OnMoveDown),
-                    (wx.ACCEL_NORMAL, wx.WXK_F2, self.OnLabelEdit),
+                    (wx.ACCEL_NORMAL, wx.WXK_F2, self._label_editor.OnLabelEdit),
                     (wx.ACCEL_NORMAL, wx.WXK_WINDOWS_MENU, self.OnRightClick)]
         if not IS_WINDOWS:
             bindings.append((wx.ACCEL_NORMAL, wx.WXK_LEFT, self.OnLeftArrow))
@@ -533,19 +518,6 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         else:
             event.Skip()
 
-    def OnLabelEdit(self, event):
-        handler = self._get_handler()
-        if handler and handler.is_renameable:
-            self.EditLabel(self.Selection)
-
-    def OnLabelEdited(self, event):
-        self._editing_label = False
-        handler = self._get_handler(event.Item)
-        if not event.IsEditCancelled() and handler.rename(event.Label):
-            self._mark_dirty(self.GetItemParent(event.Item))
-        else:
-            event.Veto()
-
     def OnRightClick(self, event):
         handler = self._get_handler(event.Item if hasattr(event, 'Item') else None)
         if handler:
@@ -622,7 +594,6 @@ class _ActionHandler(wx.Window):
     def show_popup(self):
         self._popup_creator.show(self, PopupMenuItems(self, self._actions),
                                  self.controller)
-
 
 
 class TestDataHandler(_ActionHandler):
@@ -743,12 +714,7 @@ class _TestOrUserKeywordHandler(_ActionHandler):
         self.controller.delete()
 
     def rename(self, new_name):
-        validation = self.controller.validate_name(new_name)
-        if not validation.valid:
-            wx.MessageBox(validation.error_message, 'Validation Error', style=wx.ICON_ERROR)
-            return False
         self._rename(new_name)
-        return True
 
     def OnCopy(self, event):
         dlg = self._copy_name_dialog_class(self.controller, self.item)
@@ -818,17 +784,7 @@ class VariableHandler(_ActionHandler):
         self._tree.EditLabel(self._node)
 
     def rename(self, new_name):
-        if self._is_valid(new_name):
-            var = self.controller
-            var.execute(UpdateVariable(new_name, var.value, var.comment))
-
-    def _is_valid(self, new_name):
-        validation_error = self.controller.validate_name(new_name)
-        if validation_error:
-            wx.MessageBox(validation_error, 'Validation Error', 
-                          style=wx.ICON_ERROR)
-            return False
-        return True
+        self.controller.execute(UpdateVariableName(new_name))
 
 
 class ResourceRootHandler(_ActionHandler):
@@ -844,6 +800,55 @@ class ResourceRootHandler(_ActionHandler):
 
     def OnNewResource(self, event):
         NewResourceDialog(self.controller).doit()
+
+
+class LabelEditor(object):
+
+    def __init__(self, tree):
+        self._tree = tree
+        tree.Bind(wx.EVT_TREE_BEGIN_LABEL_EDIT, self.OnBeginLabelEdit)
+        tree.Bind(wx.EVT_TREE_END_LABEL_EDIT, self.OnLabelEdited)
+        tree.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDown)
+        self._editing_label = False
+
+    def OnBeginLabelEdit(self, event):
+        #See http://code.google.com/p/robotframework-ride/issues/detail?id=756
+        self._editing_label = True
+
+    def OnLabelEdit(self, event):
+        handler = self._get_handler()
+        if handler and handler.is_renameable:
+            self._tree.EditLabel(self._tree.Selection)
+
+    def OnLabelEdited(self, event):
+        self._editing_label = False
+        handler = self._get_handler(event.Item)
+        if event.IsEditCancelled() or \
+                not self._is_valid_rename(handler.controller, event.Label):
+            event.Veto()
+        else:
+            handler.rename(event.Label)
+
+    def _is_valid_rename(self, controller, label):
+        validation = controller.validate_name(label)
+        if validation.error_message:
+            self._show_validation_error(validation.error_message)
+            return False
+        return True
+
+    def OnLeftDown(self, event):
+        #See http://code.google.com/p/robotframework-ride/issues/detail?id=756
+        if IS_WINDOWS and self._editing_label:
+            # This method works only on Windows, luckily the issue 756 exists
+            # only on Windows
+            self._tree.EndEditLabel(self.Selection, discardChanges=True)
+        event.Skip()
+
+    def _get_handler(self, item=None):
+        return self._tree._get_handler(item)
+
+    def _show_validation_error(self, err_msg):
+        wx.MessageBox(err_msg, 'Validation Error', style=wx.ICON_ERROR)
 
 
 class _History(object):

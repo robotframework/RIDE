@@ -149,32 +149,29 @@ class _NameValidator(_AbstractValidator):
     def Clone(self):
         return self.__class__(self._controller, self._orig_name)
 
+    def _validate(self, name):
+        return self._validation_method(name).error_message
+
 
 class TestCaseNameValidator(_NameValidator):
-
-    def _validate(self, name):
-        validation = self._controller.validate_test_name(name)
-        return '' if validation.valid else validation.error_message
+    @property
+    def _validation_method(self):
+        return self._controller.validate_test_name
 
 
 class UserKeywordNameValidator(_NameValidator):
-
-    def _validate(self, name):
-        validation = self._controller.validate_keyword_name(name)
-        return '' if validation.valid else validation.error_message
+    @property
+    def _validation_method(self):
+        return self._controller.validate_keyword_name
 
 
 class ScalarVariableNameValidator(_NameValidator):
-
-    def _validate(self, name):
-        if self._orig_name and utils.eq(name, self._orig_name):
-            return None
-        return self._controller.validate_scalar_variable_name(name)
+    @property
+    def _validation_method(self):
+        return self._controller.validate_scalar_variable_name
 
 
 class ListVariableNameValidator(_NameValidator):
-
-    def _validate(self, name):
-        if self._orig_name and utils.eq(name, self._orig_name):
-            return None
-        return self._controller.validate_list_variable_name(name)
+    @property
+    def _validation_method(self):
+        return self._controller.validate_list_variable_name
