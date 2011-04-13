@@ -26,7 +26,8 @@ class TestCaseNameValidationTest(unittest.TestCase):
         self._validate_name(VALID_NAME, False)
 
     def _validate_name(self, name, expected_valid):
-        assert_equals(self.ctrl.validate_name(name).valid, expected_valid)
+        valid = not bool(self.ctrl.validate_name(name).error_message)
+        assert_equals(valid, expected_valid)
 
 
 class TestCaseCreationTest(unittest.TestCase):

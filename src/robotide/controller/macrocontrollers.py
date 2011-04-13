@@ -214,7 +214,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
 
     def create_keyword(self, name, argstr):
         validation = self.datafile_controller.validate_keyword_name(name)
-        if not validation.valid:
+        if validation.error_message:
             raise ValueError(validation.error_message)
         return self.datafile_controller.create_keyword(name, argstr)
 
@@ -337,7 +337,7 @@ class TestCaseController(_BaseController, _WithStepsController):
     def _get_template(self):
         template = self._test.template
         if template.value is not None:
-            return template 
+            return template
         return self.datafile_controller.get_template()
 
 
