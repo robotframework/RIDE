@@ -18,10 +18,16 @@ import os
 import sys
 import wx
 
-from robot.utils.normalizing import _CASE_INSENSITIVE_FILESYSTEM as CIF
-
 from mocks import MessageRecordingLoadObserver, FakeApplication, FakeSettings
 from setting_utils import TestSettingsHelper
+
+if os.sep == '\\':
+    CIF = True
+else:
+    try:
+        CIF = os.listdir('/tmp') == os.listdir('/TMP')
+    except OSError:
+        CIF = False
 
 DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]), 'robotdata')
 sys.path.append(os.path.join(DATAPATH, 'put_into_python_path'))

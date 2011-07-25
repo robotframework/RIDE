@@ -3,7 +3,7 @@ import unittest
 
 from robot.parsing.settings import Resource
 from robot.parsing.model import VariableTable, TestDataDirectory
-from robot.utils import normalizing
+from robot.utils import robotpath
 from robot.utils.asserts import assert_true, assert_false, assert_not_none, \
     assert_equals, fail, assert_none
 from robotide.namespace.namespace import _VariableStash
@@ -382,7 +382,7 @@ class TestResourceGetter(_DataFileTest):
         assert_equals(len(resources),8)
         paths = []
         for res in resources:
-            normalized = normalizing.normpath(res.source)
+            normalized = robotpath.normpath(res.source)
             assert_false(normalized in paths)
             paths.append(normalized)
 
