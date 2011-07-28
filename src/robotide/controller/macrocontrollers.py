@@ -375,6 +375,7 @@ class UserKeywordController(_BaseController, _WithStepsController):
         return [DocumentationController(self, self._kw.doc),
                 ArgumentsController(self, self._kw.args),
                 TimeoutController(self, self._kw.timeout),
+                FixtureController(self, self._kw.teardown),
                 ReturnValueController(self, self._kw.return_)]
 
     @property
