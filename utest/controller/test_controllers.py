@@ -77,9 +77,9 @@ class DocumentationControllerTest(unittest.TestCase):
 
     def test_get_visible_value(self):
         self.doc.value = 'My doc \\n with enters \\n and \t tabs'
-        assert_equals(self.ctrl.visible_value, '''My doc <br />
-with enters <br />
-and &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tabs''')
+        assert_equals(self.ctrl.visible_value, '''<pre>My doc 
+with enters 
+and \t tabs</pre>''')
 
     def test_setting_value_informs_parent_controller_about_dirty_model(self):
         self.ctrl.set_value('Blaa')
