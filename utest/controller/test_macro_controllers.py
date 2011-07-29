@@ -83,6 +83,14 @@ class UserKeywordControllerTest(_BaseWithSteps):
         self.ctrl = UserKeywordController(tablectrl, uk)
         self.ctrl2 = UserKeywordController(tablectrl, uk2)
 
+    def test_keyword_settings(self):
+        labels = [setting.label for setting in self.ctrl.settings]
+        assert_true('Documentation' in labels)
+        assert_true('Arguments' in labels)
+        assert_true('Teardown' in labels)
+        assert_true('Return Value' in labels)
+        assert_true('Timeout' in labels)
+
     def test_creation(self):
         for st in self.ctrl.settings:
             assert_true(st is not None)
