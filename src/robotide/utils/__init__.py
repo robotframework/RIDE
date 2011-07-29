@@ -19,7 +19,8 @@ import inspect
 from robot.utils import printable_name, normalize, eq, eq_any, \
     HtmlWriter, NormalizedDict, timestr_to_secs, secs_to_timestr, normpath,\
     DomWrapper, unic, asserts, unescape, html_attr_escape,\
-    html_escape, get_timestamp
+    get_timestamp, html_format
+from robot.utils import html_escape as original_html_escape
 from components import RideHtmlWindow
 from eventhandler import RideEventHandler
 from variablematcher import is_variable, is_scalar_variable, is_list_variable, \
@@ -27,6 +28,10 @@ from variablematcher import is_variable, is_scalar_variable, is_list_variable, \
 from highlightmatcher import highlight_matcher
 from printing import Printing
 
+def html_escape(text, formatting=False):
+    if formatting:
+        return '<pre>%s</pre>' % html_format(text).replace('</td>\n', '</td>').replace('</tr>\n', '</tr>').replace('<tr>\n', '<tr>')
+    return original_html_escape(text)
 
 def name_from_class(item, drop=None):
     cls = inspect.isclass(item) and item or item.__class__
