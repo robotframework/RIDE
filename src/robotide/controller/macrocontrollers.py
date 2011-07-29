@@ -372,11 +372,14 @@ class UserKeywordController(_BaseController, _WithStepsController):
 
     @property
     def settings(self):
-        return [DocumentationController(self, self._kw.doc),
-                ArgumentsController(self, self._kw.args),
-                TimeoutController(self, self._kw.timeout),
-                FixtureController(self, self._kw.teardown),
-                ReturnValueController(self, self._kw.return_)]
+        result = [DocumentationController(self, self._kw.doc),
+                  ArgumentsController(self, self._kw.args),
+                  TimeoutController(self, self._kw.timeout),
+                  ReturnValueController(self, self._kw.return_)]
+        if hasattr(self._kw, 'teardown'):
+            result = result[:2] + \
+                     [FixtureController(self, self._kw.teardown)] + result[2:]
+        return result
 
     @property
     def arguments(self):
