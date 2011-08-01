@@ -507,7 +507,8 @@ class TestRunnerPlugin(Plugin):
 
         standard_args = []
         standard_args.extend(profile.get_custom_args())
-        standard_args.extend(["--outputdir",self._tmpdir])
+        if "--outputdir" not in command and "-d" not in command:
+            standard_args.extend(["--outputdir",self._tmpdir])
         standard_args.extend(["--monitorcolors","off"])
         standard_args.extend(["--monitorwidth", self._get_monitor_width()])
 
