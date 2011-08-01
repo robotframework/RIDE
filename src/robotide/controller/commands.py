@@ -737,6 +737,11 @@ def PasteArea(top_left, content):
                               for row in range(len(content))
                               for col in range(len(content[0]))])
 
+def InsertArea(selection, content):
+    selected = selection[0]
+    if len(selection) == 1 and (len(content) > 1 or len(content[0]) > 1):
+        return StepsChangingCompositeCommand(AddRows([selected[0]+i for i in range(len(content))]), PasteArea(selected, content))
+    return PasteArea(selected, content)
 
 def InsertCells(top_left, bottom_right):
     row_s, col_s = top_left

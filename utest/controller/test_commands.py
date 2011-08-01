@@ -295,6 +295,25 @@ class TestCaseEditingTest(TestCaseCommandTest):
         self._verify_step(0, 'Changed Step 1')
         self._verify_step(1, 'Changed Step 2', ['', 'ca2', 'a3'])
 
+    def test_insert_area_inserts_cells_before_selected_cell(self):
+        self._exec(InsertArea([(0, 0)], [['Changed Step 1', '', ''],
+                                      ['Changed Step 2', '', 'ca2']]))
+        self._verify_step(0, 'Changed Step 1')
+        self._verify_step(1, 'Changed Step 2', ['', 'ca2'])
+        self._verify_step(2, 'Step 1', ['arg'])
+
+    def test_insert_area_pastes_one_cell_to_one_cell(self):
+        self._exec(InsertArea([(1, 1)], [['New Value']]))
+        self._verify_step(0, 'Step 1', ['arg'])
+        self._verify_step(1, 'Step 2', ['New Value', 'a2', 'a3'])
+        self._verify_step(2, 'Foo', ['# this is a comment'])
+
+    def test_insert_area_pastes_same_size_areas(self):
+        self._exec(InsertArea([(0, 1), (0, 2), (1, 1), (1, 2)],
+            [['a', 'b'], ['c', 'd']]))
+        self._verify_step(0, 'Step 1', ['a', 'b'])
+        self._verify_step(1, 'Step 2', ['c', 'd', 'a3'])
+
     def test_insert_cell(self):
         self._exec(InsertCells((0,1), (0,1)))
         self._verify_step(0, 'Step 1', ['', 'arg'])

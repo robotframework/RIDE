@@ -22,7 +22,7 @@ from robotide.controller.commands import (ChangeCellValue, ClearArea, PasteArea,
                                           RenameKeywordOccurrences,
                                           ExtractKeyword, AddKeywordFromCells,
                                           MoveRowsUp, MoveRowsDown,
-                                          ExtractScalar, ExtractList)
+                                          ExtractScalar, ExtractList, InsertArea)
 from robotide.controller.cellinfo import TipMessage
 from robotide.publish import (RideGridCellChanged, RideItemStepsChanged,
                               RideSettingsChanged, PUBLISHER)
@@ -274,7 +274,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
             data = self._clipboard_handler.clipboard_content()
             if data:
                 data = [[data]] if isinstance(data, basestring) else data
-                self._execute(PasteArea(self.selection.topleft, data))
+                self._execute(InsertArea(self.selection.cells(), data))
 
     def OnDeleteRows(self, event):
         self._execute(DeleteRows(self.selection.rows()))
