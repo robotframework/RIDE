@@ -283,7 +283,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     @requires_focus
     def OnUndo(self, event=None):
-        self._execute(Undo())
+        if not self.IsCellEditControlShown():
+            self._execute(Undo())
 
     @requires_focus
     def OnRedo(self, event=None):
