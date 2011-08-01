@@ -72,6 +72,11 @@ class _SettingController(ControllerWithParent):
     def is_set(self):
         return self._data.is_set()
 
+    def set_from(self, other):
+        if other.is_set:
+            self.set_value(other.value)
+        self.set_comment(other.comment)
+
     def set_value(self, value):
         if self._changed(value):
             self._set(value)
@@ -185,6 +190,11 @@ class TagsController(_SettingController):
 
     def _changed(self, value):
         return self._tags.value != self._split_from_separators(value)
+
+    def set_from(self, other):
+        if other.is_set and other._tags.value is not None:
+            self.set_value(other.value)
+        self.set_comment(other.comment)
 
     def _set(self, value):
         self._tags.value = self._split_from_separators(value)

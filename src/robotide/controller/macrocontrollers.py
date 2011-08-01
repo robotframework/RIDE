@@ -179,9 +179,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
     def copy(self, name):
         new = self._parent.new(name)
         for orig, copied in zip(self.settings, new.settings):
-            if orig.is_set:
-                copied.set_value(orig.value)
-            copied.set_comment(orig.comment)
+            copied.set_from(orig)
         new.data.steps = [Step(s.as_list()) for s in self.steps]
         return new
 

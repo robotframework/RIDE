@@ -1,5 +1,6 @@
 import unittest
 from robot.utils.asserts import assert_true, assert_false, assert_equals
+from robotide.controller.tags import DefaultTag
 from robotide.controller.commands import *
 
 from base_command_test import TestCaseCommandTest
@@ -51,13 +52,24 @@ class MacroCopyingTest(TestCaseCommandTest):
     def test_copy_does_not_change_original(self):
         new_name = self._ctrl.name + '2'
         self._exec(CopyMacroAs(new_name))
-        copies = [m for m in self._get_macros() if m.name == new_name]
-        assert_equals(len(copies), 1)
-        copy = copies[0]
+        copy = self._get_copy(new_name)
         copy.execute(ChangeCellValue(0, 0, 'Changed Step'))
         assert_equals(self._ctrl.steps[0].keyword, STEP1_KEYWORD)
         assert_equals(copy.steps[0].keyword, 'Changed Step')
 
+    def _get_copy(self,name):
+        copies = [m for m in self._get_macros() if m.name == name]
+        assert_equals(len(copies), 1)
+        return copies[0]
+
+    def test_copy_macro_inherits_default_tag(self):
+        suite = self._ctrl.datafile_controller
+        tag_name = 'konsukiepre'
+        suite.default_tags.add(DefaultTag(tag_name))
+        assert_true(any(True for tag in self._ctrl.tags if tag.name == tag_name))
+        new_name = self._ctrl.name + '3'
+        self._exec(CopyMacroAs(new_name))
+        assert_true(any(True for tag in self._get_copy(new_name).tags if tag.name == tag_name))
 
 class TestCaseEditingTest(TestCaseCommandTest):
 
