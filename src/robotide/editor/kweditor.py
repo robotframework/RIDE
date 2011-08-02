@@ -285,6 +285,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
     def OnUndo(self, event=None):
         if not self.IsCellEditControlShown():
             self._execute(Undo())
+        else:
+            self.GetCellEditor(*self.selection.cell).Reset()
 
     @requires_focus
     def OnRedo(self, event=None):
