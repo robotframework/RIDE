@@ -51,8 +51,8 @@ class RIDE(wx.App):
         return True
 
     def _publish_system_info(self):
-        RideLogMessage("Started RIDE version %s, running on %s, python version %s with wx version %s." % 
-                       (version.VERSION, sys.platform, sys.version, wx.VERSION_STRING)).publish()
+        RideLogMessage("Started RIDE %s with Robot Framework %s, running on %s, python version %s with wx version %s." %
+                       (version.VERSION, ROBOT_VERSION, sys.platform, sys.version, wx.VERSION_STRING)).publish()
 
     def _check_robot_version(self):
         if ROBOT_VERSION < '2.5':
