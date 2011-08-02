@@ -367,6 +367,18 @@ class VariableController(_BaseController, _SettingController):
     def _label(self, data):
         return ''
 
+    def __eq__(self, other):
+        if not other:
+            return False
+        if self is other:
+            return True
+        if self._var == other._var:
+            return True
+        return False
+
+    def __ne__(self, other):
+        return not (self == other)
+
     @property
     def name(self):
         return self._var.name
@@ -397,8 +409,8 @@ class VariableController(_BaseController, _SettingController):
 
     def validate_name(self, new_name):
         if utils.is_scalar_variable(self.name):
-            return self.parent.validate_scalar_variable_name(new_name)
-        return self.parent.validate_list_variable_name(new_name)
+            return self.parent.validate_scalar_variable_name(new_name, self)
+        return self.parent.validate_list_variable_name(new_name, self)
 
     def __eq__(self, other):
         if self is other : return True

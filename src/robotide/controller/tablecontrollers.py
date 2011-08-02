@@ -92,14 +92,14 @@ class VariableTableController(_TableController, _WithListOperations):
         self.notify_variable_added(var_controller)
         return var_controller
 
-    def validate_scalar_variable_name(self, name):
-        return self._validate_name(_ScalarVarValidator(), name)
+    def validate_scalar_variable_name(self, name, item):
+        return self._validate_name(_ScalarVarValidator(), name, item)
 
-    def validate_list_variable_name(self, name):
-        return self._validate_name(_ListVarValidator(), name)
+    def validate_list_variable_name(self, name, item):
+        return self._validate_name(_ListVarValidator(), name, item)
 
-    def _validate_name(self, validator, name):
-        return VariableNameValidation(self, validator, name)
+    def _validate_name(self, validator, name, item):
+        return VariableNameValidation(self, validator, name, item)
 
     def delete(self, index):
         self.remove_var(self[index])
@@ -134,21 +134,22 @@ class _ListVarValidator(object):
 
 class _NameValidation(object):
 
-    def __init__(self, table, name):
+    def __init__(self, table, name, named_ctrl=None):
         self._table = table
         self.error_message = ''
+        self._named_ctrl = named_ctrl
         self._validate(name.strip())
 
     def _name_taken(self, name):
         return any(utils.eq(name, item.name, ignore=['_'])
-                   for item in self._table)
+                   for item in self._table if item != self._named_ctrl)
 
 
 class VariableNameValidation(_NameValidation):
 
-    def __init__(self, table, validator, name):
+    def __init__(self, table, validator, name, named_ctrl=None):
         self._validator = validator
-        _NameValidation.__init__(self, table, name)
+        _NameValidation.__init__(self, table, name, named_ctrl)
 
     def _validate(self, name):
         if not self._validator(name):
@@ -213,8 +214,8 @@ class _MacroTable(object):
         items[idx], items[lower] = items[lower], items[idx]
         return True
 
-    def validate_name(self, name):
-        return MacroNameValidation(self, name)
+    def validate_name(self, name, named_ctrl=None):
+        return MacroNameValidation(self, name, named_ctrl)
 
     def delete(self, ctrl):
         self._items.remove(ctrl.data)

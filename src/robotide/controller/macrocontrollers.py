@@ -253,7 +253,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         return controller
 
     def validate_name(self, name):
-        return self._parent.validate_name(name)
+        return self._parent.validate_name(name, self)
 
     def notify_name_changed(self):
         self.update_namespace()
