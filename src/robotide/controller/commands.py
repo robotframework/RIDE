@@ -737,11 +737,25 @@ def PasteArea(top_left, content):
                               for row in range(len(content))
                               for col in range(len(content[0]))])
 
-def InsertArea(selection, content):
-    selected = selection[0]
-    if len(selection) == 1 and (len(content) > 1 or len(content[0]) > 1):
-        return StepsChangingCompositeCommand(AddRows([selected[0]+i for i in range(len(content))]), PasteArea(selected, content))
-    return PasteArea(selected, content)
+def InsertArea(top_left, content):
+    row, _ = top_left
+    return StepsChangingCompositeCommand(
+        AddRows([row+i for i in range(len(content))]),
+            PasteArea(top_left, content))
+
+def _rows_from_selection(selection):
+    res = []
+    for row, col in selection:
+        if row not in res:
+            res += [row]
+    return res
+
+def _cols_from_selection(selection):
+    res = []
+    for row, col in selection:
+        if col not in res:
+            res += [col]
+    return res
 
 def InsertCells(top_left, bottom_right):
     row_s, col_s = top_left

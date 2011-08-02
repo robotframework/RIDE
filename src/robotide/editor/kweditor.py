@@ -50,7 +50,6 @@ def requires_focus(function):
             function(self, *args)
     return decorated_function
 
-
 class KeywordEditor(GridEditor, RideEventHandler):
     _no_cell = (-1,-1)
     _popup_menu_shown = False
@@ -270,11 +269,18 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     @requires_focus
     def OnPaste(self, event=None):
+        self._execute_clipboard_command(PasteArea)
+
+    def _execute_clipboard_command(self, command_class):
         if not self.IsCellEditControlShown():
             data = self._clipboard_handler.clipboard_content()
             if data:
                 data = [[data]] if isinstance(data, basestring) else data
-                self._execute(InsertArea(self.selection.cells(), data))
+                self._execute(command_class(self.selection.topleft, data))
+
+    @requires_focus
+    def OnInsert(self, event=None):
+        self._execute_clipboard_command(InsertArea)
 
     def OnDeleteRows(self, event):
         self._execute(DeleteRows(self.selection.rows()))

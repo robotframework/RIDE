@@ -678,6 +678,9 @@ class TestCaseEditor(_RobotTableEditor):
     def paste(self):
         self.kweditor.OnPaste()
 
+    def insert(self):
+        self.kweditor.OnInsert()
+
     def delete(self):
         self.kweditor.OnDelete()
 

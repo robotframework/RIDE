@@ -32,6 +32,7 @@ _EDIT = """
 Cu&t | Cut | Ctrlcmd-X
 &Copy | Copy | Ctrlcmd-C
 &Paste | Paste | Ctrlcmd-V
+&Insert | Insert | Shift-Ctrl-V
 &Delete | Delete  | Del
 ---
 Comment | Comment selected rows | Ctrlcmd-3
@@ -163,6 +164,9 @@ class _EditorTab(wx.Panel):
 
     def OnPaste(self, event):
         self.editor.paste()
+
+    def OnInsert(self, event):
+        self.editor.insert()
 
     def OnDelete(self, event):
         self.editor.delete()

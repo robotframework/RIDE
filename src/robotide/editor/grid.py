@@ -24,7 +24,9 @@ class GridEditor(grid.Grid):
     _col_add_threshold = 1
     _popup_items = ['Insert Cells', 'Delete Cells',
                     '---', 'Select All\tCtrl-A',
-                    '---', 'Cut\tCtrl-X', 'Copy\tCtrl-C', 'Paste\tCtrl-V',
+                    '---', 'Cut\tCtrl-X', 'Copy\tCtrl-C',
+                    'Paste\tCtrl-V',
+                    'Insert\tCtrl-Shift-V',
                     '---', 'Delete\tDel']
 
     def __init__(self, parent, num_rows, num_cols, popup_creator=None):
