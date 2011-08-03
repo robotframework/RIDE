@@ -49,6 +49,8 @@ BUILD_PATH = os.path.join(ROOT_PATH, 'build')
 RIDE_PATH = os.path.join(ROOT_PATH, 'src', 'robotide')
 SETUP_PATH = os.path.join(ROOT_PATH, 'setup.py')
 VERSION_PATH = os.path.join(RIDE_PATH, 'version.py')
+ROBOT_PATH = os.path.join(ROOT_PATH, 'bundled','robotframework','src','robot')
+BUNDLING_PATH = os.path.join(ROOT_PATH, 'src','robotide','bundled','robot')
 VERSIONS = [re.compile('^\d+\.\d+(\.\d+)?$'), 'trunk', 'keep']
 RELEASES = [re.compile('^alpha\d*$'), re.compile('^beta\d*$'),
             re.compile('^rc\d*$'), 'final']
@@ -196,11 +198,11 @@ def _announce():
 
 def _copy_bundled_robot():
     print 'Bundling robot to sources'
-    shutil.copytree(os.path.join('bundled','robotframework','src','robot'), os.path.join('src','robotide','bundled','robot'))
+    shutil.copytree(ROBOT_PATH, BUNDLING_PATH)
 
 def _remove_bundled_robot():
     print 'Removing bundled robot'
-    shutil.rmtree(os.path.join('src','robotide','bundled','robot'), ignore_errors=True)
+    shutil.rmtree(BUNDLING_PATH, ignore_errors=True)
 
 if __name__ == '__main__':
     try:
