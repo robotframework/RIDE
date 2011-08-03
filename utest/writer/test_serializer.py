@@ -18,8 +18,8 @@ def assert_repr_with_native_line_separator(first, other):
     assert_repr(first, other, os.linesep)
 
 def assert_repr(first, other, linesep):
-    other = other.replace('\n', linesep)
-    return assert_equals(repr(first), repr(other))
+    for line1, line2 in zip(first.split(linesep), other.split('\n')):
+        assert_equals(repr(line1), repr(line2))
 
 
 class _TestSerializer(object):
@@ -78,7 +78,7 @@ class _TestSerializer(object):
         tc = testcase_table.add('My Test Case')
         tc.doc.populate('This is a long comment that spans several columns')
         tc.add_step(['My TC Step 1', 'my step arg'], comment='step 1 comment')
-        tc.add_step(['My TC Step 2', 'my step 2 arg', 'second arg'],
+        tc.add_step(['My TC Step 2', 'my step  2 arg', 'second arg'],
                     comment='step 2 comment')
         tc.teardown.populate(['1 minute', 'args'])
 
@@ -127,7 +127,7 @@ My Keyword
 My Test Case
     [Documentation]  This is a long comment that spans several columns
     My TC Step 1  my step arg  # step 1 comment
-    My TC Step 2  my step 2 arg  second arg  # step 2 comment
+    My TC Step 2  my step \ 2 arg  second arg  # step 2 comment
     [Teardown]  1 minute  args
 
 '''
@@ -184,7 +184,7 @@ class TestPipeTxtSerialization(unittest.TestCase, _TestSerializer):
 | My Test Case |
 |    | [Documentation] | This is a long comment that spans several columns |
 |    | My TC Step 1 | my step arg | # step 1 comment |
-|    | My TC Step 2 | my step 2 arg | second arg | # step 2 comment |
+|    | My TC Step 2 | my step  2 arg | second arg | # step 2 comment |
 |    | [Teardown] | 1 minute | args |
 
 '''
@@ -273,7 +273,7 @@ My Keyword\t[Documentation]\tDocumentation\t# Comment for doc\t\t\t\t
     testcase_table = '''*Test Case*\t*Action*\t*Argument*\t*Argument*\t*Argument*\t*Argument*\t*Argument*\t*Argument*
 My Test Case\t[Documentation]\tThis is a long comment that spans several columns\t\t\t\t\t
 \tMy TC Step 1\tmy step arg\t# step 1 comment\t\t\t\t
-\tMy TC Step 2\tmy step 2 arg\tsecond arg\t# step 2 comment\t\t\t
+\tMy TC Step 2\tmy step  2 arg\tsecond arg\t# step 2 comment\t\t\t
 \t[Teardown]\t1 minute\targs\t\t\t\t
 \t\t\t\t\t\t\t
 '''

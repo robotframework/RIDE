@@ -212,7 +212,7 @@ class SpaceSeparatedTxtWriter(_WriterHelper):
         return [d.strip() or '${EMPTY}' for d in data]
 
     def _escape_whitespaces(self, data):
-        return [re.sub('\s\s+(?!$)', lambda match: '\\'.join(match.group(0)), item) for item in data]
+        return [re.sub('\s\s+(?=[^\s])', lambda match: '\\'.join(match.group(0)), item) for item in data]
 
     def _write_row(self, cells, indent=0):
         if indent:
@@ -224,6 +224,9 @@ class SpaceSeparatedTxtWriter(_WriterHelper):
 
 
 class PipeSeparatedTxtWriter(SpaceSeparatedTxtWriter):
+
+    def _escape_whitespaces(self, data):
+        return data #FIXME: PipeSeparatedTxtWriter is not a SpaceSeparatedTxtWriter
 
     def _format_row(self, cells):
         if not cells:
