@@ -27,9 +27,12 @@ def with_subpackages(parent_package):
     packages = ['.'.join(parent_package)]
     for item in os.listdir(os.path.join(PACKAGE_DIR, *parent_package)):
         items_package = parent_package+[item]
-        if os.path.isdir(os.path.join(PACKAGE_DIR, *items_package)):
+        if _is_package(PACKAGE_DIR, *items_package):
             packages += with_subpackages(items_package)
     return packages
+
+def _is_package(*path_parts):
+    return os.path.isdir(os.path.join(*path_parts)) and os.path.isfile(os.path.join(*(path_parts+('__init__.py',))))
 
 setup(name         = 'robotframework-ride',
       version      = VERSION,
@@ -44,6 +47,8 @@ setup(name         = 'robotframework-ride',
       url          = 'http://code.google.com/p/robotframework-ride',
       package_dir  = {'' : PACKAGE_DIR},
       packages     = with_subpackages(['robotide']),
-      package_data = {'robotide': ['widgets/*.png', 'context/*.cfg']},
+      package_data = {'robotide': ['widgets/*.png', 'context/*.cfg', 'bundled/robot/*.py', 'bundled/robot/*/*.py',
+                                   'bundled/robot/*/*.html', 'bundled/robot/*/*.css', 'bundled/robot/*/*.js'
+                                    'bundled/robot/*/*/*.js']},
       scripts = ['src/bin/ride.py']
       )

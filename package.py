@@ -67,22 +67,28 @@ def get_version(sep=' '):
 def sdist(*version_info):
     version(*version_info)
     _clean()
+    _copy_bundled_robot()
     _create_sdist()
+    _remove_bundled_robot()
     _announce()
 
 def wininst(*version_info):
     version(*version_info)
     _clean()
     if _verify_platform(*version_info):
+        _copy_bundled_robot()
         _create_wininst()
+        _remove_bundled_robot()
         _announce()
 
 def all(*version_info):
     version(*version_info)
     _clean()
+    _copy_bundled_robot()
     _create_sdist()
     if _verify_platform(*version_info):
         _create_wininst()
+    _remove_bundled_robot()
     _announce()
 
 def version(version_number, release_tag=None):
@@ -157,6 +163,7 @@ def _clean():
     for path in [DIST_PATH, BUILD_PATH]:
         if os.path.exists(path):
             shutil.rmtree(path)
+    _remove_bundled_robot()
 
 def _verify_platform(version_number, release_tag=None):
     if release_tag == 'final' and os.sep != '\\':
@@ -187,6 +194,13 @@ def _announce():
     for path in os.listdir(DIST_PATH):
         print os.path.abspath(os.path.join(DIST_PATH, path))
 
+def _copy_bundled_robot():
+    print 'Bundling robot to sources'
+    shutil.copytree(os.path.join('bundled','robotframework','src','robot'), os.path.join('src','robotide','bundled','robot'))
+
+def _remove_bundled_robot():
+    print 'Removing bundled robot'
+    shutil.rmtree(os.path.join('src','robotide','bundled','robot'), ignore_errors=True)
 
 if __name__ == '__main__':
     try:

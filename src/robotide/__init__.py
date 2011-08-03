@@ -28,6 +28,9 @@ import os
 import wxversion
 wxversion.select('2.8')
 
+# Insert bundled robot to path before anything else
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'bundled'))
+
 # TODO: Remove when robot has been released with this patch
 import robotpatch
 from robotide.errors import DataError

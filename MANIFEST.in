@@ -1,4 +1,7 @@
 include src/robotide/widgets/*.png
 include src/robotide/context/*.cfg
+recursive-include src/robotide/bundled/robot *.py *.html *.css *.js
+prune src/robotide/bundled/robot/webcontent/testdata
+
 include MANIFEST.in
 include COPYRIGHT.txt LICENSE.txt
