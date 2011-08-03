@@ -92,6 +92,26 @@ class _TestMacroCommands(object):
         assert_equals(self._new_keyword.name, new_kw_name)
         assert_equals(self._new_keyword.arguments.value, '')
 
+    def test_add_keyword_with_bdd_given(self):
+        self._bdd_test('Given', 'george is a dog')
+        self._bdd_test('given', 'steve is a cat')
+
+    def _bdd_test(self, prefix, new_kw_name):
+        self._exec(AddKeyword(prefix + ' ' + new_kw_name))
+        assert_equals(self._new_keyword.name, self._bdd_name(prefix, new_kw_name))
+        assert_equals(self._new_keyword.arguments.value, '')
+
+    def test_add_keyword_with_bdd_when(self):
+        self._bdd_test('When', 'george runs')
+        self._bdd_test('when', 'steve says hello')
+
+    def test_add_keyword_with_bdd_then(self):
+        self._bdd_test('Then', 'george sleeps')
+        self._bdd_test('then', 'steve goes home')
+
+    def test_add_keyword_with_bdd_and(self):
+        self._bdd_test('And', 'the end')
+        self._bdd_test('and', 'really no more')
 
 class TestMacroCommandsInTestCaseContext(_TestMacroCommands, unittest.TestCase):
 
@@ -99,12 +119,18 @@ class TestMacroCommandsInTestCaseContext(_TestMacroCommands, unittest.TestCase):
         _TestMacroCommands.setUp(self)
         self._ctrl = testcase_controller()
 
+    def _bdd_name(self, prefix, name):
+        return name
+
 
 class TestMacroCommandsInDataFileContext(_TestMacroCommands, unittest.TestCase):
 
     def setUp(self):
         _TestMacroCommands.setUp(self)
         self._ctrl = TestCaseFileController(TestCaseFile())
+
+    def _bdd_name(self, prefix, name):
+        return prefix + ' ' + name
 
 
 class TestCaseRenameCommandTest(unittest.TestCase):

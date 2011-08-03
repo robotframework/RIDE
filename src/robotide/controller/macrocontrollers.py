@@ -211,10 +211,18 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self._has_steps_changed = True
 
     def create_keyword(self, name, argstr):
+        name = self._remove_bdd_prefix(name)
         validation = self.datafile_controller.validate_keyword_name(name)
         if validation.error_message:
             raise ValueError(validation.error_message)
         return self.datafile_controller.create_keyword(name, argstr)
+
+    def _remove_bdd_prefix(self, name):
+        matcher = name.lower()
+        for match in ['given ', 'when ', 'then ', 'and ']:
+            if matcher.startswith(match):
+                return name[len(match):]
+        return name
 
     def create_test(self, name):
         return self.datafile_controller.create_test(name)
