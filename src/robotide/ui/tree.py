@@ -521,6 +521,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def OnRightClick(self, event):
         handler = self._get_handler(event.Item if hasattr(event, 'Item') else None)
         if handler:
+            if not self.IsExpanded(handler.node):
+                self.Expand(handler.node)
             handler.show_popup()
 
     def OnNewTestCase(self, event):
@@ -590,6 +592,10 @@ class _ActionHandler(wx.Window):
         self._rendered = False
         self.Show(False)
         self._popup_creator = tree._popup_creator
+
+    @property
+    def node(self):
+        return self._node
 
     def show_popup(self):
         self._popup_creator.show(self, PopupMenuItems(self, self._actions),
