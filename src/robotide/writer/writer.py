@@ -195,11 +195,24 @@ class SpaceSeparatedTxtWriter(_WriterHelper):
         self._write_row([('*** %s ***' % title)])
 
     def _write_data(self, data, indent=0):
-        data[1:] = [ d.strip() or '${EMPTY}' for d in data[1:] ]
-        if data and data[0].strip() == '':
-            data[0] = '\\' # support FOR and PARALLEL blocks
+        data = self._escape_space_separated_format_specific_data(data)
         for row in self._split_data(self._encode(data)):
             self._write_row(row, indent)
+
+    def _escape_space_separated_format_specific_data(self, data):
+        data[1:] = self._escape_empty_elements(data[1:])
+        self._escape_empty_first_element(data)
+        return self._escape_whitespaces(data)
+
+    def _escape_empty_first_element(self, data):
+        if data and data[0].strip() == '':
+            data[0] = '\\' # support FOR and PARALLEL blocks
+
+    def _escape_empty_elements(self, data):
+        return [d.strip() or '${EMPTY}' for d in data]
+
+    def _escape_whitespaces(self, data):
+        return [re.sub('\s\s+(?!$)', lambda match: '\\'.join(match.group(0)), item) for item in data]
 
     def _write_row(self, cells, indent=0):
         if indent:
