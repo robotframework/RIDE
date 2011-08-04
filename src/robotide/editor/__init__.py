@@ -107,6 +107,10 @@ class EditorPlugin(Plugin):
         if message and message.text == 'Resources':
             return
         self._show_editor()
+        if not self.tab_is_visible(self._tab):
+            self._editor = self._create_editor()
+            self._tab.show_editor(self._editor)
+            self.show_tab(self._tab)
         if self._editor:
             self._editor.tree_item_selected(message.item)
 
