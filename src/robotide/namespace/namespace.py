@@ -181,9 +181,10 @@ class ResourceCache(object):
 
     def new_resource(self, directory, name):
         path = os.path.join(directory, name) if directory else name
+        path = self._normalize(path)
         resource = ResourceFile()
         resource.source = path
-        self.cache[os.path.normpath(path)] = resource
+        self.cache[path] = resource
         return resource
 
     def _get_python_path(self, name):
@@ -194,7 +195,7 @@ class ResourceCache(object):
         return self.python_path_cache[name]
 
     def _get_resource(self, path):
-        normalized = os.path.normpath(path)
+        normalized = self._normalize(path)
         if normalized not in self.cache:
             try:
                 self.cache[normalized] = ResourceFile(path)
@@ -203,6 +204,8 @@ class ResourceCache(object):
                 return None
         return self.cache[normalized]
 
+    def _normalize(self, path):
+        return os.path.normcase(os.path.normpath(path))
 
 class RetrieverContext(object):
 

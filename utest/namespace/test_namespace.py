@@ -11,6 +11,7 @@ from robotide.robotapi import TestCaseFile
 from robotide.controller.filecontrollers import DataController
 from datafilereader import *
 from robotide.spec.iteminfo import ArgumentInfo
+from robotide.context import IS_WINDOWS
 
 RESOURCES_DIR = 'resources'
 
@@ -406,6 +407,12 @@ class TestResourceCache(_DataFileTest):
         imp = Resource(ParentMock(), '${kumikameli}')
         assert_none(self._res_cache.get_resource(imp.directory, imp.name))
 
+    if IS_WINDOWS:
+        def test_case_sensetive_filenames(self):
+            imp = Resource(None, RESOURCE_PATH)
+            first = self._res_cache.get_resource(imp.directory, imp.name.lower())
+            second = self._res_cache.get_resource(imp.directory, imp.name.upper())
+            assert_true(first is second)
 
 if __name__ == "__main__":
     unittest.main()
