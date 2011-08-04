@@ -92,13 +92,13 @@ class VariableTableController(_TableController, _WithListOperations):
         self.notify_variable_added(var_controller)
         return var_controller
 
-    def validate_scalar_variable_name(self, name, item):
+    def validate_scalar_variable_name(self, name, item=None):
         return self._validate_name(_ScalarVarValidator(), name, item)
 
-    def validate_list_variable_name(self, name, item):
+    def validate_list_variable_name(self, name, item=None):
         return self._validate_name(_ListVarValidator(), name, item)
 
-    def _validate_name(self, validator, name, item):
+    def _validate_name(self, validator, name, item=None):
         return VariableNameValidation(self, validator, name, item)
 
     def delete(self, index):
