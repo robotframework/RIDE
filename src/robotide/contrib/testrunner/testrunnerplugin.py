@@ -42,6 +42,7 @@ import shutil
 import signal
 import posixpath
 import re
+import codecs
 from posixpath import curdir, sep, pardir, join
 try:
     import cPickle as pickle
@@ -515,7 +516,7 @@ class TestRunnerPlugin(Plugin):
         for (suite, test) in self._tree.GetCheckedTestsByName():
             standard_args.extend(["--suite", suite, "--test", test])
 
-        f = open(argfile, "w")
+        f = codecs.open(argfile, "w", "utf-8")
         f.write("\n".join(standard_args))
         f.close()
 
