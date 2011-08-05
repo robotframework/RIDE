@@ -103,8 +103,7 @@ class LibraryDialog(_Dialog):
         name = item and item.name or ''
         args = item and utils.join_value(item.args) or ''
         alias = item.alias if item else ''
-        return [ValueEditor(self, name, 'Name',
-                            validator=NonEmptyValidator(self._title)),
+        return [ValueEditor(self, name, 'Name'),
                 ValueEditor(self, args, 'Args'),
                 ValueEditor(self, alias, 'Alias')]
 
@@ -113,16 +112,14 @@ class VariablesDialog(LibraryDialog):
     def _get_editors(self, item):
         path = item and item.name or ''
         args = item and utils.join_value(item.args) or ''
-        return [ValueEditor(self, path, 'Path',
-                            validator=NonEmptyValidator(self._title)),
+        return [ValueEditor(self, path, 'Path'),
                ValueEditor(self, args, 'Args')]
 
 class ResourceDialog(_Dialog):
 
     def _get_editors(self, item):
         name = item and item.name or ''
-        return [ValueEditor(self, name, 'Path',
-                            validator=NonEmptyValidator(self._title))]
+        return [ValueEditor(self, name, 'Path')]
 
 
 class DocumentationDialog(_Dialog):

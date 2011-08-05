@@ -829,7 +829,8 @@ class ImportSettingListEditor(_AbstractListEditor):
     def OnEdit(self, event):
         setting = self._get_setting()
         self._show_import_editor_dialog(EditorDialog(setting),
-                                        setting.set_value, setting)
+                                        setting.set_value, setting,
+                                        on_empty=self._delete_selected)
 
     def OnAddLibrary(self, event):
         self._show_import_editor_dialog(LibraryDialog,
@@ -846,13 +847,20 @@ class ImportSettingListEditor(_AbstractListEditor):
     def _get_setting(self):
         return self._controller[self._selection]
 
-    def _show_import_editor_dialog(self, dialog, creator_or_setter, item=None):
+    def _show_import_editor_dialog(self, dialog, creator_or_setter, item=None, on_empty=None):
         dlg = dialog(self._controller.datafile, item=item)
         if dlg.ShowModal() == wx.ID_OK:
-            ctrl = creator_or_setter(*dlg.get_value())
-            ctrl.set_comment(dlg.get_comment())
+            value = dlg.get_value()
+            if not self._empty_name(value):
+                ctrl = creator_or_setter(*value)
+                ctrl.set_comment(dlg.get_comment())
+            elif on_empty:
+                on_empty()
             self.update_data()
         dlg.Destroy()
+
+    def _empty_name(self, value):
+        return not value[0]
 
     def get_column_values(self, item):
         return [item.type, item.name, item.display_value, item.comment]
