@@ -16,9 +16,8 @@ import wx.html
 from StringIO import StringIO
 
 from robotide.context import Font
-from robotide.editor.tree_aware_plugin_mixin import TreeAwarePluginMixin
 from robotide.errors import SerializationError
-from robotide.pluginapi import Plugin, ActionInfo
+from robotide.pluginapi import Plugin, ActionInfo, TreeAwarePluginMixin
 from robotide.publish import (RideTreeSelection, RideNotebookTabChanged,
                               RideTestCaseAdded, RideUserKeywordAdded)
 from robotide.robotapi import TestCase, UserKeyword

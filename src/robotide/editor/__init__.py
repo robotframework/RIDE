@@ -13,10 +13,10 @@
 #  limitations under the License.
 
 import wx
-from robotide.editor.tree_aware_plugin_mixin import TreeAwarePluginMixin
 from robotide.publish.messages import RideMessage
 
-from robotide.pluginapi import Plugin, ActionInfoCollection
+from robotide.pluginapi import (Plugin, ActionInfoCollection,
+                                TreeAwarePluginMixin)
 from robotide.publish import (RideTreeSelection, RideNotebookTabChanging,
                               RideNotebookTabChanged, RideSaving)
 from robotide.widgets import PopupCreator
