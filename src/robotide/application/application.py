@@ -35,7 +35,6 @@ class RIDE(wx.App):
         wx.App.__init__(self, redirect=False)
 
     def OnInit(self):
-        self._check_robot_version()
         self.namespace = Namespace()
         self._controller = ChiefController(self.namespace)
         self.frame = RideFrame(self, self._controller)
@@ -53,14 +52,6 @@ class RIDE(wx.App):
     def _publish_system_info(self):
         RideLogMessage("Started RIDE %s with Robot Framework %s, running on %s, python version %s with wx version %s." %
                        (version.VERSION, ROBOT_VERSION, sys.platform, sys.version, wx.VERSION_STRING)).publish()
-
-    def _check_robot_version(self):
-        if ROBOT_VERSION < '2.5':
-            context.LOG.error('You are using an old version (%s) of Robot Framework.\n\n'
-                              'RIDE does not work correctly with this version. '
-                              'Please upgrade to Robot Framework 2.5 or newer from\n'
-                              'http://robotframework.org/.' % ROBOT_VERSION)
-            sys.exit(1)
 
     @property
     def model(self):
