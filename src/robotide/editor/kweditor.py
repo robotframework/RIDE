@@ -142,7 +142,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         if selected_row not in selected_rows:
             self.SelectRow(selected_row, addToSelected=False)
             self.SetGridCursor(event.Row, 0)
-        popupitems = ['Insert Rows', 'Delete Rows',
+        popupitems = ['Insert Rows\tCtrl-Shift-D', 'Delete Rows\tCtrl-D',
                       'Comment Rows\tCtrl-3', 'Uncomment Rows\tCtrl-4',
                       'Move Rows Up\tAlt-Up', 'Move Rows Down\tAlt-Down']
         PopupMenu(self, PopupMenuItems(self, popupitems))
@@ -163,7 +163,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
     def OnInsertRows(self, event):
         self._execute(AddRows(self.selection.rows()))
         self.ClearSelection()
-        event.Skip()
+        if event:
+            event.Skip()
 
     def OnInsertCells(self, event):
         self._execute(InsertCells(self.selection.topleft,
@@ -285,7 +286,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
     def OnDeleteRows(self, event):
         self._execute(DeleteRows(self.selection.rows()))
         self.ClearSelection()
-        event.Skip()
+        if event:
+            event.Skip()
 
     @requires_focus
     def OnUndo(self, event=None):

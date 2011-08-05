@@ -681,6 +681,12 @@ class TestCaseEditor(_RobotTableEditor):
     def insert(self):
         self.kweditor.OnInsert()
 
+    def insert_rows(self):
+        self.kweditor.OnInsertRows()
+
+    def delete_rows(self):
+        self.kweditor.OnDeleteRows()
+
     def delete(self):
         self.kweditor.OnDelete()
 
