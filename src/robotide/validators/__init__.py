@@ -150,6 +150,8 @@ class _NameValidator(_AbstractValidator):
         return self.__class__(self._controller, self._orig_name)
 
     def _validate(self, name):
+        if self._orig_name is not None and utils.eq(name, self._orig_name, ignore=['_']):
+            return ''
         return self._validation_method(name).error_message
 
 
@@ -165,20 +167,13 @@ class UserKeywordNameValidator(_NameValidator):
         return self._controller.validate_keyword_name
 
 
-class _VariableNameValidator(_NameValidator):
-    def _validate(self, name):
-        if utils.eq(name, self._orig_name, ignore=['_']):
-            return ''
-        return self._validation_method(name).error_message
-
-
-class ScalarVariableNameValidator(_VariableNameValidator):
+class ScalarVariableNameValidator(_NameValidator):
     @property
     def _validation_method(self):
         return self._controller.validate_scalar_variable_name
 
 
-class ListVariableNameValidator(_VariableNameValidator):
+class ListVariableNameValidator(_NameValidator):
     @property
     def _validation_method(self):
         return self._controller.validate_list_variable_name
