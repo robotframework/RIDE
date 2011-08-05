@@ -118,10 +118,26 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         bindings = [(ctrl_or_cmd(), wx.WXK_UP, self.OnMoveUp),
                     (ctrl_or_cmd(), wx.WXK_DOWN, self.OnMoveDown),
                     (wx.ACCEL_NORMAL, wx.WXK_F2, self._label_editor.OnLabelEdit),
-                    (wx.ACCEL_NORMAL, wx.WXK_WINDOWS_MENU, self.OnRightClick)]
+                    (wx.ACCEL_NORMAL, wx.WXK_WINDOWS_MENU, self.OnRightClick),
+                    (ctrl_or_cmd(), ord('k'), self.OnNewUserKeyword),
+                    (ctrl_or_cmd(), ord('t'), self.OnNewTestCase),
+                    (wx.ACCEL_ALT, ord('s'), self.OnNewScalar),
+                    (wx.ACCEL_ALT, ord('l'), self.OnNewListVariable)]
         if not IS_WINDOWS:
             bindings.append((wx.ACCEL_NORMAL, wx.WXK_LEFT, self.OnLeftArrow))
         return bindings
+
+    def OnNewUserKeyword(self, event):
+        self._get_handler().OnNewUserKeyword(event)
+
+    def OnNewTestCase(self, event):
+        self._get_handler().OnNewTestCase(event)
+
+    def OnNewScalar(self, event):
+        self._get_handler().OnNewScalar(event)
+
+    def OnNewListVariable(self, event):
+        self._get_handler().OnNewListVariable(event)
 
     def populate(self, model):
         self._clear_tree_data()
@@ -581,6 +597,13 @@ class _ActionHandler(wx.Window):
     is_test_suite = False
     is_variable = False
 
+    _label_add_suite = 'Add Suite'
+    _label_new_test_case = 'New Test Case\tCtrl-T'
+    _label_new_user_keyword = 'New User Keyword\tCtrl-K'
+    _label_new_scalar = 'New Scalar\tAlt-S'
+    _label_new_list_variable = 'New List Variable\tAlt-L'
+    _label_change_format = 'Change Format'
+
     def __init__(self, controller, tree, node):
         wx.Window.__init__(self, tree)
         self.controller = controller
@@ -601,6 +624,18 @@ class _ActionHandler(wx.Window):
         self._popup_creator.show(self, PopupMenuItems(self, self._actions),
                                  self.controller)
 
+    def OnNewUserKeyword(self, event):
+        pass
+
+    def OnNewTestCase(self, event):
+        pass
+
+    def OnNewScalar(self, event):
+        pass
+
+    def OnNewListVariable(self, event):
+        pass
+
 
 class TestDataHandler(_ActionHandler):
     accepts_drag = lambda self, dragged: (isinstance(dragged, UserKeywordHandler) or
@@ -609,7 +644,11 @@ class TestDataHandler(_ActionHandler):
     is_draggable = False
     is_renameable = False
     is_test_suite = True
-    _actions = ['Add Suite', 'New User Keyword', 'New Scalar', 'New List Variable', '---', 'Change Format']
+    _actions = [_ActionHandler._label_add_suite,
+                _ActionHandler._label_new_user_keyword,
+                _ActionHandler._label_new_scalar,
+                _ActionHandler._label_new_list_variable, '---',
+                _ActionHandler._label_change_format]
 
     @property
     def tests(self):
@@ -695,12 +734,19 @@ class TestDataDirectoryHandler(TestDataHandler):
 
 class ResourceFileHandler(TestDataHandler):
     is_test_suite = False
-    _actions = ['New User Keyword', 'New Scalar', 'New List Variable', '---', 'Change Format']
+    _actions = [_ActionHandler._label_new_user_keyword,
+                _ActionHandler._label_new_scalar,
+                _ActionHandler._label_new_list_variable, '---',
+                _ActionHandler._label_change_format]
 
 
 class TestCaseFileHandler(TestDataHandler):
     accepts_drag = lambda *args: True
-    _actions = ['New Test Case', 'New User Keyword', 'New Scalar', 'New List Variable', '---', 'Change Format']
+    _actions = [_ActionHandler._label_new_test_case,
+                _ActionHandler._label_new_user_keyword,
+                _ActionHandler._label_new_scalar,
+                _ActionHandler._label_new_list_variable, '---',
+                _ActionHandler._label_change_format]
 
     def OnNewTestCase(self, event):
         dlg = TestCaseNameDialog(self.controller)
