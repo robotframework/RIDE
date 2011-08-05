@@ -25,8 +25,20 @@ release. The most stable, and best documented, module is `robotide.pluginapi`.
 
 import sys
 import os
-import wxversion
-wxversion.select('2.8')
+try:
+    import wxversion
+    from wxversion import VersionError
+    wxversion.select('2.8')
+except ImportError:
+    print """wxPython not found.
+You need to install wxPython 2.8 toolkit with unicode support to run RIDE.
+See http://wxpython.org for more information."""
+    sys.exit(1)
+except VersionError:
+    print """Wrong wxPython version.
+You need to install wxPython 2.8 toolkit with unicode support to run RIDE.
+See http://wxpython.org for more information."""
+    sys.exit(1)
 
 # Insert bundled robot to path before anything else
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'bundled'))
