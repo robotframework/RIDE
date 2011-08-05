@@ -21,7 +21,7 @@ class TreeAwarePluginMixin(object):
 
     _tree_aware_plugins_set = None
 
-    def focus_on_tree_aware_plugin(self):
+    def is_focus_on_tree_aware_plugin(self):
         return any(twb.is_focused() for twb in self._tree_aware_plugins)
 
     def add_self_as_tree_aware_plugin(self):

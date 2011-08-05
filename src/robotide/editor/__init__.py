@@ -113,7 +113,7 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
         if message and message.text == 'Resources':
             return
         self._show_editor()
-        if not self.is_focused() and not self.focus_on_tree_aware_plugin():
+        if not self.is_focused() and not self.is_focus_on_tree_aware_plugin():
             self._editor = self._create_editor()
             self._tab.show_editor(self._editor)
             self.show_tab(self._tab)
