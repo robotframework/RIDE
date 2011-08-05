@@ -18,6 +18,24 @@ class RideTreeAwarePluginAdded(RideMessage):
     data = ['plugin']
 
 class TreeAwarePluginMixin(object):
+    """
+    Mixin to help solve if tree aware plugin has focus
+
+    The plugin that inherits this Mixin must be a Plugin and also it must
+    offer a method #is_focused -> bool
+
+    To properly initialize this Mixin the Plugin in question must
+    #add_self_as_tree_aware_plugin
+
+    To properly teardown this Mixin the Plugin in question must
+    #remove_self_from_tree_aware_plugins
+
+    To check if one of the other three aware plugins has focus
+    #is_focus_on_tree_aware_plugin
+
+    NOTE: Could be used for more generic purpose for grouping
+    plugins and interacting with them
+    """
 
     _tree_aware_plugins_set = None
 
