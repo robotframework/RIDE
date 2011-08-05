@@ -13,6 +13,8 @@
 #  limitations under the License.
 
 import wx
+from robotide.editor.tree_aware_plugin_mixin import TreeAwarePluginMixin
+from robotide.publish.messages import RideMessage
 
 from robotide.pluginapi import Plugin, ActionInfoCollection
 from robotide.publish import (RideTreeSelection, RideNotebookTabChanging,
@@ -42,8 +44,7 @@ Uncomment | Uncomment selected rows | Ctrlcmd-4
 Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions
 """
 
-
-class EditorPlugin(Plugin):
+class EditorPlugin(Plugin, TreeAwarePluginMixin):
     """The default editor plugin.
 
     This plugin implements editors for the various items of Robot Framework
@@ -64,12 +65,17 @@ class EditorPlugin(Plugin):
         self.subscribe(self.OnTabChanged, RideNotebookTabChanged)
         self.subscribe(self.OnTabChanging, RideNotebookTabChanging)
         self.subscribe(self.OnSaveToModel, RideSaving)
+        self.add_self_as_tree_aware_plugin()
 
     def disable(self):
+        self.remove_self_from_tree_aware_plugins()
         self.unregister_actions()
         self.unsubscribe_all()
         self.delete_tab(self._tab)
         self._tab = None
+
+    def is_focused(self):
+        return self.tab_is_visible(self._tab)
 
     def highlight_cell(self, obj, row, column):
         self.show_tab(self._tab)
@@ -96,7 +102,7 @@ class EditorPlugin(Plugin):
         if not self._tab:
             self._tab = _EditorTab(self)
             self.add_tab(self._tab, 'Edit', allow_closing=False)
-        if self.tab_is_visible(self._tab):
+        if self.is_focused():
             self._editor = self._create_editor()
             self._tab.show_editor(self._editor)
 
@@ -107,7 +113,7 @@ class EditorPlugin(Plugin):
         if message and message.text == 'Resources':
             return
         self._show_editor()
-        if not self.tab_is_visible(self._tab):
+        if not self.is_focused() and not self.focus_on_tree_aware_plugin():
             self._editor = self._create_editor()
             self._tab.show_editor(self._editor)
             self.show_tab(self._tab)

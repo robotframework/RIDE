@@ -16,6 +16,7 @@ import wx.html
 from StringIO import StringIO
 
 from robotide.context import Font
+from robotide.editor.tree_aware_plugin_mixin import TreeAwarePluginMixin
 from robotide.errors import SerializationError
 from robotide.pluginapi import Plugin, ActionInfo
 from robotide.publish import (RideTreeSelection, RideNotebookTabChanged,
@@ -26,7 +27,7 @@ from robotide.widgets.button import ButtonWithHandler
 from robotide.utils import Printing
 
 
-class PreviewPlugin(Plugin):
+class PreviewPlugin(Plugin, TreeAwarePluginMixin):
     """Provides preview of the test data in HTML, TSV and TXT formats."""
     datafile = property(lambda self: self.get_selected_datafile())
 
@@ -42,12 +43,17 @@ class PreviewPlugin(Plugin):
         self.subscribe(self.OnTabChanged, RideNotebookTabChanged)
         self.subscribe(self._update_preview, RideTestCaseAdded)
         self.subscribe(self._update_preview, RideUserKeywordAdded)
+        self.add_self_as_tree_aware_plugin()
 
     def disable(self):
+        self.remove_self_from_tree_aware_plugins()
         self.unsubscribe_all()
         self.unregister_actions()
         self.delete_tab(self._panel)
         self._panel = None
+
+    def is_focused(self):
+        return self.tab_is_visible(self._panel)
 
     def OnShowPreview(self, event):
         if not self._panel:
@@ -58,14 +64,14 @@ class PreviewPlugin(Plugin):
     def OnTreeSelection(self, event):
         if event and event.text == 'Resources':
             return
-        if self.tab_is_visible(self._panel):
+        if self.is_focused():
             self._panel.tree_node_selected(event.item)
 
     def OnTabChanged(self, event):
         self._update_preview()
 
     def _update_preview(self, event=None):
-        if self.tab_is_visible(self._panel) and self.datafile:
+        if self.is_focused() and self.datafile:
             self._panel.update_preview()
 
 
