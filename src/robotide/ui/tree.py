@@ -119,10 +119,10 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
                     (ctrl_or_cmd(), wx.WXK_DOWN, self.OnMoveDown),
                     (wx.ACCEL_NORMAL, wx.WXK_F2, self._label_editor.OnLabelEdit),
                     (wx.ACCEL_NORMAL, wx.WXK_WINDOWS_MENU, self.OnRightClick),
-                    (ctrl_or_cmd(), ord('k'), self.OnNewUserKeyword),
-                    (ctrl_or_cmd(), ord('t'), self.OnNewTestCase),
-                    (wx.ACCEL_ALT, ord('s'), self.OnNewScalar),
-                    (wx.ACCEL_ALT, ord('l'), self.OnNewListVariable)]
+                    (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('k'), self.OnNewUserKeyword),
+                    (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('t'), self.OnNewTestCase),
+                    (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('s'), self.OnNewScalar),
+                    (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('l'), self.OnNewListVariable)]
         if not IS_WINDOWS:
             bindings.append((wx.ACCEL_NORMAL, wx.WXK_LEFT, self.OnLeftArrow))
         return bindings
@@ -598,10 +598,10 @@ class _ActionHandler(wx.Window):
     is_variable = False
 
     _label_add_suite = 'Add Suite'
-    _label_new_test_case = 'New Test Case\tCtrl-T'
-    _label_new_user_keyword = 'New User Keyword\tCtrl-K'
-    _label_new_scalar = 'New Scalar\tAlt-S'
-    _label_new_list_variable = 'New List Variable\tAlt-L'
+    _label_new_test_case = 'New Test Case\tCtrl-Shift-T'
+    _label_new_user_keyword = 'New User Keyword\tCtrl-Shift-K'
+    _label_new_scalar = 'New Scalar\tCtrl-Shift-S'
+    _label_new_list_variable = 'New List Variable\tCtrl-Shift-L'
     _label_change_format = 'Change Format'
 
     def __init__(self, controller, tree, node):
