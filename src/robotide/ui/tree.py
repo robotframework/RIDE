@@ -612,6 +612,7 @@ class _ActionHandler(wx.Window):
     _label_new_list_variable = 'New List Variable\tCtrl-Shift-L'
     _label_change_format = 'Change Format'
     _label_copy_macro = 'Copy\tCtrl-Shift-C'
+    _label_rename = 'Rename\tF2'
 
     def __init__(self, controller, tree, node):
         wx.Window.__init__(self, tree)
@@ -651,6 +652,8 @@ class _ActionHandler(wx.Window):
     def OnCopy(self, event):
         pass
 
+    def OnRename(self, event):
+        pass
 
 class TestDataHandler(_ActionHandler):
     accepts_drag = lambda self, dragged: (isinstance(dragged, UserKeywordHandler) or
@@ -774,7 +777,7 @@ class _TestOrUserKeywordHandler(_ActionHandler):
     is_draggable = True
     is_renameable = True
     _actions = [_ActionHandler._label_copy_macro, 'Move Up\tCtrl-Up', 'Move Down\tCtrl-Down',
-                'Rename\tF2', '---', 'Delete']
+                _ActionHandler._label_rename, '---', 'Delete']
 
     def remove(self):
         self.controller.delete()
@@ -838,7 +841,7 @@ class VariableHandler(_ActionHandler):
     is_variable = True
     is_renameable = True
     OnMoveUp = OnMoveDown = lambda *args: None
-    _actions = ['Rename', 'Delete']
+    _actions = [_ActionHandler._label_rename, 'Delete']
 
     def OnDelete(self, event):
         self.remove()
