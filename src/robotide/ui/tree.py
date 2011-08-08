@@ -119,14 +119,18 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
                     (ctrl_or_cmd(), wx.WXK_DOWN, self.OnMoveDown),
                     (wx.ACCEL_NORMAL, wx.WXK_F2, self._label_editor.OnLabelEdit),
                     (wx.ACCEL_NORMAL, wx.WXK_WINDOWS_MENU, self.OnRightClick),
+                    (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('s'), self.OnAddSuite),
                     (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('k'), self.OnNewUserKeyword),
                     (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('t'), self.OnNewTestCase),
-                    (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('s'), self.OnNewScalar),
+                    (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('v'), self.OnNewScalar),
                     (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('l'), self.OnNewListVariable),
                     (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('c'), self.OnCopy)]
         if not IS_WINDOWS:
             bindings.append((wx.ACCEL_NORMAL, wx.WXK_LEFT, self.OnLeftArrow))
         return bindings
+
+    def OnAddSuite(self, event):
+        self._get_handler().OnAddSuite(event)
 
     def OnNewUserKeyword(self, event):
         self._get_handler().OnNewUserKeyword(event)
@@ -601,10 +605,10 @@ class _ActionHandler(wx.Window):
     is_test_suite = False
     is_variable = False
 
-    _label_add_suite = 'Add Suite'
+    _label_add_suite = 'Add Suite\tCtrl-Shift-S'
     _label_new_test_case = 'New Test Case\tCtrl-Shift-T'
     _label_new_user_keyword = 'New User Keyword\tCtrl-Shift-K'
-    _label_new_scalar = 'New Scalar\tCtrl-Shift-S'
+    _label_new_scalar = 'New Scalar\tCtrl-Shift-V'
     _label_new_list_variable = 'New List Variable\tCtrl-Shift-L'
     _label_change_format = 'Change Format'
     _label_copy_macro = 'Copy\tCtrl-Shift-C'
@@ -628,6 +632,9 @@ class _ActionHandler(wx.Window):
     def show_popup(self):
         self._popup_creator.show(self, PopupMenuItems(self, self._actions),
                                  self.controller)
+
+    def OnAddSuite(self, event):
+        pass
 
     def OnNewUserKeyword(self, event):
         pass
@@ -705,13 +712,6 @@ class TestDataHandler(_ActionHandler):
         else:
             self.controller.save_with_new_format(dialog.get_format())
 
-    def OnAddSuite(self, event):
-        dlg = AddSuiteDialog(self.controller.directory)
-        if dlg.ShowModal() == wx.ID_OK:
-            data = NewDatafile(dlg.get_path(), dlg.is_dir_type())
-            self.controller.execute(AddSuite(data))
-        dlg.Destroy()
-
     def OnNewUserKeyword(self, event):
         dlg = UserKeywordNameDialog(self.controller)
         if dlg.ShowModal() == wx.ID_OK:
@@ -737,7 +737,13 @@ class TestDataHandler(_ActionHandler):
 
 
 class TestDataDirectoryHandler(TestDataHandler):
-    pass
+
+    def OnAddSuite(self, event):
+        dlg = AddSuiteDialog(self.controller.directory)
+        if dlg.ShowModal() == wx.ID_OK:
+            data = NewDatafile(dlg.get_path(), dlg.is_dir_type())
+            self.controller.execute(AddSuite(data))
+        dlg.Destroy()
 
 
 class ResourceFileHandler(TestDataHandler):
