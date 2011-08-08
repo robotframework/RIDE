@@ -119,33 +119,21 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
                     (ctrl_or_cmd(), wx.WXK_DOWN, self.OnMoveDown),
                     (wx.ACCEL_NORMAL, wx.WXK_F2, self._label_editor.OnLabelEdit),
                     (wx.ACCEL_NORMAL, wx.WXK_WINDOWS_MENU, self.OnRightClick),
-                    (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('s'), self.OnAddSuite),
-                    (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('k'), self.OnNewUserKeyword),
-                    (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('t'), self.OnNewTestCase),
-                    (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('v'), self.OnNewScalar),
-                    (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('l'), self.OnNewListVariable),
-                    (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('c'), self.OnCopy)]
+                    (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('s'), lambda event: self._expand_and_call('OnAddSuite', event)),
+                    (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('k'), lambda event: self._expand_and_call('OnNewUserKeyword', event)),
+                    (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('t'), lambda event: self._expand_and_call('OnNewTestCase', event)),
+                    (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('v'), lambda event: self._expand_and_call('OnNewScalar', event)),
+                    (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('l'), lambda event: self._expand_and_call('OnNewListVariable', event)),
+                    (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('c'), lambda event: self._expand_and_call('OnCopy', event))]
         if not IS_WINDOWS:
             bindings.append((wx.ACCEL_NORMAL, wx.WXK_LEFT, self.OnLeftArrow))
         return bindings
 
-    def OnAddSuite(self, event):
-        self._get_handler().OnAddSuite(event)
-
-    def OnNewUserKeyword(self, event):
-        self._get_handler().OnNewUserKeyword(event)
-
-    def OnNewTestCase(self, event):
-        self._get_handler().OnNewTestCase(event)
-
-    def OnNewScalar(self, event):
-        self._get_handler().OnNewScalar(event)
-
-    def OnNewListVariable(self, event):
-        self._get_handler().OnNewListVariable(event)
-
-    def OnCopy(self, event):
-        self._get_handler().OnCopy(event)
+    def _expand_and_call(self, method, event):
+        handler = self._get_handler()
+        if not self.IsExpanded(handler.node):
+            self.Expand(handler.node)
+        getattr(handler, method)(event)
 
     def populate(self, model):
         self._clear_tree_data()
