@@ -39,7 +39,9 @@ Cu&t | Cut | Ctrlcmd-X
 ---
 Comment | Comment selected rows | Ctrlcmd-3
 Uncomment | Uncomment selected rows | Ctrlcmd-4
-
+---
+Insert Rows | Insert Rows | Ctrlcmd-I
+Delete Rows | Delete Rows | Ctrlcmd-D
 [Tools]
 Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions
 """
@@ -177,6 +179,12 @@ class _EditorTab(wx.Panel):
 
     def OnInsert(self, event):
         self.editor.insert()
+
+    def OnInsertRows(self, event):
+        self.editor.insert_rows()
+
+    def OnDeleteRows(self, event):
+        self.editor.delete_rows()
 
     def OnDelete(self, event):
         self.editor.delete()
