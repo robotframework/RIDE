@@ -133,9 +133,12 @@ class RideSettingsChanged(RideMessage):
     data = ['keys']
 
 
-class RideTreeSelection(RideMessage):
+class  RideTreeSelection(RideMessage):
     """Sent whenever user selects a node from the tree."""
     data = ['node', 'item', 'text']
+
+    def is_resources_node(self):
+        return self.text == 'Resources'
 
 
 class RideNotebookTabChanging(RideMessage):

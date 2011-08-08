@@ -75,7 +75,7 @@ class RideFrame(wx.Frame, RideEventHandler):
             PUBLISHER.subscribe(listener, topic)
 
     def _set_label(self, message):
-        if not message or message.text == 'Resources':
+        if not message or message.is_resources_node():
             self.SetLabel('RIDE')
         else:
             self.SetLabel('RIDE - %s' % message.item.datafile.name)
