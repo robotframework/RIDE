@@ -142,7 +142,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         if selected_row not in selected_rows:
             self.SelectRow(selected_row, addToSelected=False)
             self.SetGridCursor(event.Row, 0)
-        popupitems = ['Insert Rows\tCtrl-Shift-D', 'Delete Rows\tCtrl-D',
+        popupitems = ['Insert Rows\tCtrl-I', 'Delete Rows\tCtrl-D',
                       'Comment Rows\tCtrl-3', 'Uncomment Rows\tCtrl-4',
                       'Move Rows Up\tAlt-Up', 'Move Rows Down\tAlt-Down']
         PopupMenu(self, PopupMenuItems(self, popupitems))
