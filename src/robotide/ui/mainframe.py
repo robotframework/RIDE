@@ -102,6 +102,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         SETTINGS['mainframe size'] = self.GetSizeTuple()
         SETTINGS['mainframe position'] = self.GetPositionTuple()
         if self._allowed_to_exit():
+            PUBLISHER.unsubscribe(self._set_label, RideTreeSelection)
             RideClosing().publish()
             self.Destroy()
         else:
