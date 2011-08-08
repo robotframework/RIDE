@@ -76,9 +76,9 @@ class RideFrame(wx.Frame, RideEventHandler):
 
     def _set_label(self, message):
         if not message or message.is_resources_node():
-            self.SetLabel('RIDE')
+            self.SetTitle('RIDE')
         else:
-            self.SetLabel('RIDE - %s' % message.item.datafile.name)
+            self.SetTitle('RIDE - %s' % message.item.datafile.name)
 
     def _init_ui(self):
         splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
