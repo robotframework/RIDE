@@ -122,7 +122,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
                     (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('k'), self.OnNewUserKeyword),
                     (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('t'), self.OnNewTestCase),
                     (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('s'), self.OnNewScalar),
-                    (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('l'), self.OnNewListVariable)]
+                    (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('l'), self.OnNewListVariable),
+                    (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('c'), self.OnCopy)]
         if not IS_WINDOWS:
             bindings.append((wx.ACCEL_NORMAL, wx.WXK_LEFT, self.OnLeftArrow))
         return bindings
@@ -138,6 +139,9 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def OnNewListVariable(self, event):
         self._get_handler().OnNewListVariable(event)
+
+    def OnCopy(self, event):
+        self._get_handler().OnCopy(event)
 
     def populate(self, model):
         self._clear_tree_data()
@@ -603,6 +607,7 @@ class _ActionHandler(wx.Window):
     _label_new_scalar = 'New Scalar\tCtrl-Shift-S'
     _label_new_list_variable = 'New List Variable\tCtrl-Shift-L'
     _label_change_format = 'Change Format'
+    _label_copy_macro = 'Copy\tCtrl-Shift-C'
 
     def __init__(self, controller, tree, node):
         wx.Window.__init__(self, tree)
@@ -634,6 +639,9 @@ class _ActionHandler(wx.Window):
         pass
 
     def OnNewListVariable(self, event):
+        pass
+
+    def OnCopy(self, event):
         pass
 
 
@@ -759,7 +767,7 @@ class _TestOrUserKeywordHandler(_ActionHandler):
     accepts_drag = lambda *args: False
     is_draggable = True
     is_renameable = True
-    _actions = ['Copy', 'Move Up\tCtrl-Up', 'Move Down\tCtrl-Down',
+    _actions = [_ActionHandler._label_copy_macro, 'Move Up\tCtrl-Up', 'Move Down\tCtrl-Down',
                 'Rename\tF2', '---', 'Delete']
 
     def remove(self):
