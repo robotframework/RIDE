@@ -119,7 +119,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
                     (ctrl_or_cmd(), wx.WXK_DOWN, self.OnMoveDown),
                     (wx.ACCEL_NORMAL, wx.WXK_F2, self._label_editor.OnLabelEdit),
                     (wx.ACCEL_NORMAL, wx.WXK_WINDOWS_MENU, self.OnRightClick),
-                    (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('s'), lambda event: self._expand_and_call('OnAddSuite', event)),
+                    (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('f'), lambda event: self._expand_and_call('OnAddSuite', event)),
                     (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('k'), lambda event: self._expand_and_call('OnNewUserKeyword', event)),
                     (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('t'), lambda event: self._expand_and_call('OnNewTestCase', event)),
                     (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('v'), lambda event: self._expand_and_call('OnNewScalar', event)),
@@ -593,7 +593,7 @@ class _ActionHandler(wx.Window):
     is_test_suite = False
     is_variable = False
 
-    _label_add_suite = 'Add Suite\tCtrl-Shift-S'
+    _label_add_suite = 'Add Suite\tCtrl-Shift-F'
     _label_new_test_case = 'New Test Case\tCtrl-Shift-T'
     _label_new_user_keyword = 'New User Keyword\tCtrl-Shift-K'
     _label_new_scalar = 'New Scalar\tCtrl-Shift-V'
