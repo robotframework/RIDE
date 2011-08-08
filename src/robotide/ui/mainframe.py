@@ -28,6 +28,7 @@ from tree import Tree
 from notebook import NoteBook
 from progress import LoadProgressObserver
 from robotide.controller.commands import SaveFile, SaveAll
+from robotide.publish.messages import RideTreeSelection
 
 
 _menudata = """
@@ -69,8 +70,15 @@ class RideFrame(wx.Frame, RideEventHandler):
 
     def _subscribe_messages(self):
         for listener, topic in [(lambda msg: self.SetStatusText('Saved %s' % msg.path), RideSaved),
-                                (lambda msg: self.SetStatusText('Saved all files'), RideSaveAll)]:
+                                (lambda msg: self.SetStatusText('Saved all files'), RideSaveAll),
+                                (self._set_label, RideTreeSelection )]:
             PUBLISHER.subscribe(listener, topic)
+
+    def _set_label(self, message):
+        if not message or message.text == 'Resources':
+            self.SetLabel('RIDE')
+        else:
+            self.SetLabel('RIDE - %s' % message.item.datafile.name)
 
     def _init_ui(self):
         splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
