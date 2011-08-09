@@ -244,6 +244,9 @@ class TestDataDirectoryController(_DataController):
         return [DataController(child, self._chief_controller, self)
                 for child in data.children]
 
+    def add_child(self, controller):
+        self.children.append(controller)
+
     def has_format(self):
         return self.data.initfile is not None
 
@@ -331,6 +334,11 @@ class TestCaseFileController(_DataController):
 
 
 class ResourceFileController(_DataController):
+
+    def __init__(self, data, chief_controller=None, parent=None):
+        _DataController.__init__(self, data, chief_controller, parent)
+        if parent:
+            parent.add_child(self)
 
     @property
     def display_name(self):

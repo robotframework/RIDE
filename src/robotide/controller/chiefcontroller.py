@@ -104,12 +104,10 @@ class ChiefController(object):
         return ctrl
 
     def _create_resource_controller(self, resource):
-        controller = ResourceFileController(resource, self, parent=self._find_parent_for(resource.source))
         for other in self.resources:
-            if other.source == controller.source:
+            if other.source == resource.source:
                 return other
-        if controller.parent:
-            controller.parent.children += [controller]
+        controller = ResourceFileController(resource, self, parent=self._find_parent_for(resource.source))
         self.resources.append(controller)
         RideOpenResource(path=resource.source, datafile=controller).publish()
         self._load_resources_resource_imports(controller)
