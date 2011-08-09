@@ -265,7 +265,9 @@ class ChiefController(object):
         return self.datafiles
 
     def _suites(self):
-        return list(self.data.iter_datafiles() if self.data else [])
+        if not self.data:
+            return []
+        return [df for df in self.data.iter_datafiles() if not isinstance(df, ResourceFileController)]
 
     def resource_import_modified(self, path, directory):
         resource = self._namespace.get_resource(path, directory)
