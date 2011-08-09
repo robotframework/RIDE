@@ -250,15 +250,6 @@ class TestDataDirectoryController(_DataController):
     def has_format(self):
         return self.data.initfile is not None
 
-    def add_suite(self, source):
-        if os.path.isdir(source):
-            d = TestDataDirectory()
-        else:
-            d = TestCaseFile()
-        d.source = source
-        self.data.children.append(d)
-        return DataController(d, self._chief_controller, self)
-
     @property
     def source(self):
         return self.data.initfile

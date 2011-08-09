@@ -160,14 +160,6 @@ class TestAddingItems(_BaseSuiteTreeTest):
         self._tree.add_test(self._get_node(suite.name), create_test)
         assert_equals(self._get_selected_label(), 'New Fake Test')
 
-    def test_adding_suite(self):
-        new_suite = self._model.data.add_suite('new_fake_suite.txt')
-        self._tree.add_datafile(self._model.data, new_suite)
-        assert_equals(self._get_selected_label(), 'New Fake Suite')
-        new_suite.create_test('New Fake Test')
-        assert_equals(self._get_selected_label(), 'New Fake Test')
-        assert_equals(self._tree.GetChildrenCount(self._tree._get_data_controller_node(new_suite)), 1)
-
 
 class TestNodeSearchAndSelection(_BaseSuiteTreeTest):
 
