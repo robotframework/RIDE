@@ -19,16 +19,20 @@ class TestParents(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.chief = datafilereader.construct_chief_controller(datafilereader.OCCURRENCES_PATH)
-        cls.test = datafilereader.get_ctrl_by_name('TestSuite1', cls.chief.datafiles)
-        cls.resource = datafilereader.get_ctrl_by_name(datafilereader.OCCURRENCES_RESOURCE_NAME, cls.chief.datafiles)
-        cls.external_resource = datafilereader.get_ctrl_by_name('Resu', cls.chief.datafiles)
+        chief = datafilereader.construct_chief_controller(datafilereader.OCCURRENCES_PATH)
+        cls.directory = chief.data
+        cls.test = datafilereader.get_ctrl_by_name('TestSuite1', chief.datafiles)
+        cls.resource = datafilereader.get_ctrl_by_name(datafilereader.OCCURRENCES_RESOURCE_NAME, chief.datafiles)
+        cls.external_resource = datafilereader.get_ctrl_by_name('Resu', chief.datafiles)
 
     def test_test_suite_parent_is_directory(self):
-        self.assertEquals(self.test.parent, self.chief.data)
+        self.assertEquals(self.test.parent, self.directory)
 
     def test_local_resource_parent_is_directory(self):
-        self.assertEquals(self.resource.parent, self.chief.data)
+        self.assertEquals(self.resource.parent, self.directory)
 
     def test_external_resource_parent_is_undefined(self):
         self.assertEquals(self.external_resource.parent, None)
+
+if __name__ == '__main__':
+    unittest.main()
