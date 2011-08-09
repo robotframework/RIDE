@@ -163,7 +163,12 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         ctrl = message.datafile
         if self._find_node_by_controller(ctrl):
             return
-        self._render_datafile(ctrl.parent or self._resource_root, ctrl)
+        parent_node = self._get_datafile_node(ctrl.parent.data) if ctrl.parent else self._resource_root
+        if parent_node is None:
+            parents_parent = self._get_datafile_node(ctrl.parent.parent) if ctrl.parent.parent else self._root
+            self._render_datafile(parents_parent, ctrl.parent)
+            parent_node = self._get_datafile_node(ctrl.parent.data)
+        self._render_datafile(parent_node, ctrl)
 
     def _select_resource(self, message):
         node = self._find_node_by_controller(message.item)
