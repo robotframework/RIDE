@@ -30,7 +30,7 @@ class TreeImageList(wx.ImageList):
             'TestCaseFile': _TreeImage(self, wx.ART_NORMAL_FILE),
             'TestCase': _TreeImage(self, 'robot.png'),
             'UserKeyword': _TreeImage(self, 'process.png'),
-            'ResourceFile': _TreeImage(self, wx.ART_NORMAL_FILE),
+            'ResourceFile': _TreeImage(self, wx.ART_EXECUTABLE_FILE),
             'Variable': _TreeImage(self, 'dollar.png')
         }
 
