@@ -156,13 +156,14 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         if model.data:
             self._render_datafile(self._root, model.data, 0)
         for res in model.resources:
-            self._render_datafile(self._resource_root, res)
+            if not res.parent:
+                self._render_datafile(self._resource_root, res)
 
     def _resource_added(self, message):
         ctrl = message.datafile
         if self._find_node_by_controller(ctrl):
             return
-        self._render_datafile(self._resource_root, ctrl)
+        self._render_datafile(ctrl.parent or self._resource_root, ctrl)
 
     def _select_resource(self, message):
         node = self._find_node_by_controller(message.item)

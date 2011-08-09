@@ -108,6 +108,8 @@ class ChiefController(object):
         for other in self.resources:
             if other.source == controller.source:
                 return other
+        if controller.parent:
+            controller.parent.children += [controller]
         self.resources.append(controller)
         RideOpenResource(path=resource.source, datafile=controller).publish()
         self._load_resources_resource_imports(controller)
