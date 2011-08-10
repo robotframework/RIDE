@@ -15,6 +15,9 @@
 import os
 import wx
 from robot.parsing.model import Variable
+from robotide.controller.settingcontrollers import VariableController
+from robotide.controller.macrocontrollers import TestCaseController, UserKeywordController
+from robotide.controller.filecontrollers import TestDataDirectoryController, TestCaseFileController, ResourceFileController
 
 
 _SIZE = (16, 16)
@@ -26,12 +29,12 @@ class TreeImageList(wx.ImageList):
     def __init__(self):
         wx.ImageList.__init__(self, *_SIZE)
         self._images = {
-            'TestDataDirectory': self.directory,
-            'TestCaseFile': _TreeImage(self, wx.ART_NORMAL_FILE),
-            'TestCase': _TreeImage(self, 'robot.png'),
-            'UserKeyword': _TreeImage(self, 'process.png'),
-            'ResourceFile': _TreeImage(self, wx.ART_EXECUTABLE_FILE),
-            'Variable': _TreeImage(self, 'dollar.png')
+            TestDataDirectoryController: self.directory,
+            TestCaseFileController: _TreeImage(self, wx.ART_NORMAL_FILE),
+            TestCaseController: _TreeImage(self, 'robot.png'),
+            UserKeywordController: _TreeImage(self, 'process.png'),
+            ResourceFileController: _TreeImage(self, wx.ART_EXECUTABLE_FILE),
+            VariableController: _TreeImage(self, 'dollar.png')
         }
 
     @property
@@ -39,7 +42,7 @@ class TreeImageList(wx.ImageList):
         return _TreeImage(self, wx.ART_FOLDER, wx.ART_FOLDER_OPEN)
 
     def __getitem__(self, controller):
-        return self._images[controller.data.__class__.__name__]
+        return self._images[controller.__class__]
 
 
 class _TreeImage(object):
