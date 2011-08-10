@@ -56,6 +56,8 @@ tree_actions ="""
 
 class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
+    _RESOURCES_NODE_LABEL = 'External Resources'
+
     def __init__(self, parent, action_registerer):
         style = wx.TR_DEFAULT_STYLE
         if IS_WINDOWS:
@@ -151,7 +153,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._datafile_nodes = []
 
     def _create_resource_root(self):
-        return self._create_node(self._root, 'Resources',
+        return self._create_node(self._root, self._RESOURCES_NODE_LABEL,
                                  self._images.directory)
 
     def _populate_model(self, model):
@@ -516,7 +518,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         if handler and handler.item:
             RideTreeSelection(node=node,
                               item=handler.controller,
-                              resources_node=(self.GetItemText(node) == 'Resources')).publish()
+                              resources_node=(self.GetItemText(node) == self._RESOURCES_NODE_LABEL)
+            ).publish()
         self.SetFocus()
 
     def OnTreeItemExpanding(self, event):
