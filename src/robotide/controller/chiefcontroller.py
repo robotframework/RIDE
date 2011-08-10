@@ -54,6 +54,10 @@ class ChiefController(object):
     def suite(self):
         return self._controller.data if self._controller else None
 
+    @property
+    def datafiles(self):
+        return self._suites() + self.resources
+
     def load_data(self, path, load_observer):
         if self._load_datafile(path, load_observer):
             return
@@ -107,18 +111,11 @@ class ChiefController(object):
         for other in self.resources:
             if other.source == resource.source:
                 return other
-        controller = ResourceFileController(resource, self, parent=self._find_parent_for(resource.source))
+        controller = ResourceFileController(resource, self)
         self.resources.append(controller)
         RideOpenResource(path=resource.source, datafile=controller).publish()
         self._load_resources_resource_imports(controller)
         return controller
-
-    def _find_parent_for(self, source):
-        dir = os.path.dirname(source)
-        for ctrl in self.datafiles:
-            if ctrl.data.source == dir:
-                return ctrl
-        return None
 
     def _load_resources_resource_imports(self, controller):
         for _import in [ imp for imp in controller.imports if imp.is_resource ]:
@@ -254,18 +251,10 @@ class ChiefController(object):
     def _get_all_dirty_controllers(self):
         return [controller for controller in self.datafiles if controller.dirty]
 
-    @property
-    def datafiles(self):
-        return self._suites() + self.resources
-
-    @property
-    def all_datafiles(self):
-        return self.datafiles
-
     def _suites(self):
         if not self.data:
             return []
-        return [df for df in self.data.iter_datafiles() if not isinstance(df, ResourceFileController)]
+        return [df for df in self.data.iter_datafiles() if not df in self.resources]
 
     def resource_import_modified(self, path, directory):
         resource = self._namespace.get_resource(path, directory)

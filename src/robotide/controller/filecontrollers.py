@@ -105,7 +105,7 @@ class _DataController(_BaseController, WithUndoRedoStacks):
         return self.data
 
     @property
-    def all_datafiles(self):
+    def datafiles(self):
         return chain([self], (df for df in self._chief_controller.datafiles if df != self))
 
     @property
@@ -326,10 +326,20 @@ class TestCaseFileController(_DataController):
 
 class ResourceFileController(_DataController):
 
-    def __init__(self, data, chief_controller=None, parent=None):
-        _DataController.__init__(self, data, chief_controller, parent)
-        if parent:
-            parent.add_child(self)
+    def __init__(self, data, chief_controller=None):
+        _DataController.__init__(self, data, chief_controller,
+                                 self._find_parent_for(chief_controller, data.source))
+        if self.parent:
+            self.parent.add_child(self)
+
+    def _find_parent_for(self, chief_controller, source):
+        if not chief_controller:
+            return None
+        dir = os.path.dirname(source)
+        for ctrl in chief_controller.datafiles:
+            if ctrl.data.source == dir:
+                return ctrl
+        return None
 
     @property
     def display_name(self):
