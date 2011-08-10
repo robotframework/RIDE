@@ -238,7 +238,11 @@ class _DataController(_BaseController, WithUndoRedoStacks):
         return {}
 
 
-class TestDataDirectoryController(_DataController):
+class DirectoryController(_DataController):
+    pass
+
+
+class TestDataDirectoryController(DirectoryController):
 
     def _children(self, data):
         return [DataController(child, self._chief_controller, self)
