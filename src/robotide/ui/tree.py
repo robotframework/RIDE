@@ -514,8 +514,9 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._history.change(node)
         handler = self._get_handler(node)
         if handler and handler.item:
-            RideTreeSelection(node=node, item=handler.controller,
-                              text=self.GetItemText(node)).publish()
+            RideTreeSelection(node=node,
+                              item=handler.controller,
+                              resources_node=(self.GetItemText(node) == 'Resources')).publish()
         self.SetFocus()
 
     def OnTreeItemExpanding(self, event):
