@@ -13,6 +13,9 @@
 #  limitations under the License.
 
 import wx
+from robotide.controller.settingcontrollers import VariableController
+from robotide.controller.macrocontrollers import TestCaseController, UserKeywordController
+from robotide.controller.filecontrollers import TestDataDirectoryController, ResourceFileController, TestCaseFileController
 
 from filedialogs import AddSuiteDialog, ChangeFormatDialog
 from images import TreeImageList
@@ -594,9 +597,13 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
 
 def handler(controller, tree, node):
-    name = controller.data.__class__.__name__
-    handler_class = globals()[name + 'Handler']
-    return handler_class(controller, tree, node)
+    return {TestDataDirectoryController:TestDataDirectoryHandler,
+     ResourceFileController:ResourceFileHandler,
+     TestCaseFileController:TestCaseFileHandler,
+     TestCaseController:TestCaseHandler,
+     UserKeywordController:UserKeywordHandler,
+     VariableController:VariableHandler
+     }[controller.__class__](controller, tree, node)
 
 
 class _ActionHandler(wx.Window):
