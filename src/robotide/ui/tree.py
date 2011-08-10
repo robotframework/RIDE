@@ -197,8 +197,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         name = controller.data.__class__.__name__
         node = self._create_node(parent_node, controller.display_name, self._images[name],
                                  index)
-        handler_class = globals()[name + 'Handler']
-        self.SetPyData(node, handler_class(controller, self, node))
+        self.SetPyData(node, handler(controller, self, node))
         return node
 
     def _expand_and_render_children(self, node):
@@ -592,6 +591,12 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def highlight(self, data, text):
         self.select_node_by_data(data)
         self._editor.highlight(text)
+
+
+def handler(controller, tree, node):
+    name = controller.data.__class__.__name__
+    handler_class = globals()[name + 'Handler']
+    return handler_class(controller, tree, node)
 
 
 class _ActionHandler(wx.Window):
