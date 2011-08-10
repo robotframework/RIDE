@@ -152,7 +152,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _create_resource_root(self):
         return self._create_node(self._root, 'Resources',
-                                 self._images['TestDataDirectory'])
+                                 self._images.directory)
 
     def _populate_model(self, model):
         self.SetPyData(self._resource_root, ResourceRootHandler(model, self, self._resource_root))

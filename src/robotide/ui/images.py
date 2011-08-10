@@ -26,13 +26,17 @@ class TreeImageList(wx.ImageList):
     def __init__(self):
         wx.ImageList.__init__(self, *_SIZE)
         self._images = {
-            'TestDataDirectory': _TreeImage(self, wx.ART_FOLDER, wx.ART_FOLDER_OPEN),
+            'TestDataDirectory': self.directory,
             'TestCaseFile': _TreeImage(self, wx.ART_NORMAL_FILE),
             'TestCase': _TreeImage(self, 'robot.png'),
             'UserKeyword': _TreeImage(self, 'process.png'),
             'ResourceFile': _TreeImage(self, wx.ART_EXECUTABLE_FILE),
             'Variable': _TreeImage(self, 'dollar.png')
         }
+
+    @property
+    def directory(self):
+        return _TreeImage(self, wx.ART_FOLDER, wx.ART_FOLDER_OPEN)
 
     def __getitem__(self, key):
         return self._images[key]
