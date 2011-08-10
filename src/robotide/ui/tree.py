@@ -772,6 +772,8 @@ class TestDataHandler(_ActionHandler):
 
 class TestDataDirectoryHandler(TestDataHandler):
 
+    _actions = TestDataHandler._actions[:] + [_ActionHandler._label_new_resource]
+
     def OnAddSuite(self, event):
         dlg = AddSuiteDialog(self.controller.directory)
         if dlg.ShowModal() == wx.ID_OK:
@@ -779,6 +781,8 @@ class TestDataDirectoryHandler(TestDataHandler):
             self.controller.execute(AddSuite(data))
         dlg.Destroy()
 
+    def OnNewResource(self, event):
+        NewResourceDialog(self.controller).doit()
 
 class ResourceFileHandler(TestDataHandler):
     is_test_suite = False

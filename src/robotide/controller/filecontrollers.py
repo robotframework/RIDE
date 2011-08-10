@@ -244,6 +244,10 @@ class DirectoryController(_DataController):
 
 class TestDataDirectoryController(DirectoryController):
 
+    @property
+    def default_dir(self):
+        return self.data.source
+
     def _children(self, data):
         return [DataController(child, self._chief_controller, self)
                 for child in data.children]

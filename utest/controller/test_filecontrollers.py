@@ -147,6 +147,11 @@ class TestDataDirectoryControllerTest(unittest.TestCase):
         self.ctrl.data.initfile = '/tmp/__init__.html'
         assert_true(self.ctrl.has_format())
 
+    def test_default_dir_is_source(self):
+        self.ctrl.data.initfile = '/foo/bar/__init__.html'
+        self.ctrl.data.source = '/foo/bar/'
+        assert_true(self.ctrl.default_dir, os.path.dirname(self.ctrl.source))
+
     def test_set_format(self):
         dir = TestDataDirectory()
         dir.source = '/tmp/'
