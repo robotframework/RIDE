@@ -19,6 +19,7 @@ import unittest
 from robot.parsing import (TestDataDirectory, TestCaseFile, ResourceFile,
                            TestCase, UserKeyword)
 from robot.utils.asserts import assert_equals, assert_none
+from robotide.ui.images import TreeImageList
 
 from robotide.application import ChiefController
 from robotide.controller.filecontrollers import (TestDataDirectoryController,
@@ -73,7 +74,7 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         self._model = self._create_model()
         self._tree = Tree(frame, ActionRegisterer(MenuBar(frame), ToolBar(frame),
                                                   ShortcutRegistry(frame)))
-        imgs =  _FakeImageList()
+        imgs =  TreeImageList()
         self._tree._images = imgs
         self._tree.SetImageList(imgs)
         self._tree.populate(self._model)
