@@ -361,3 +361,16 @@ class ResourceFileController(_DataController):
     def remove(self):
         self._chief_controller.remove_resource(self)
         RideDataFileRemoved(path=self.source, datafile=self).publish()
+
+
+class DirectoryController(object):
+
+    def __init__(self, dirpath):
+        self.directory = dirpath
+        self.children = []
+
+    def add_child(self, child):
+        self.children.append(child)
+
+    def iter_datafiles(self):
+        return iter([])

@@ -1,11 +1,12 @@
 import unittest
+from robot.parsing.model import TestDataDirectory, ResourceFile
 from robot.utils.asserts import assert_true, assert_equals, assert_none
 
 
 from robotide.controller import ChiefController
 from robotide.namespace import Namespace
 from robotide.controller.filecontrollers import TestCaseFileController, \
-    TestDataDirectoryController
+    TestDataDirectoryController, ResourceFileController
 from robotide.publish.messages import RideOpenSuite, RideOpenResource
 
 from resources import (COMPLEX_SUITE_PATH, MINIMAL_SUITE_PATH, RESOURCE_PATH,
@@ -17,6 +18,7 @@ import datafilereader
 
 
 ALL_RESOURCE_PATH_RELATED_RESOURCE_IMPORTS = [RESOURCE_PATH, RESOURCE_PATH2, RESOURCE_PATH3, RESOURCE_PATH_TXT]
+
 
 class ChiefControllerTest(unittest.TestCase):
 
@@ -128,6 +130,35 @@ class ChiefControllerTest(unittest.TestCase):
     def test_resource_import_modified(self):
         self.ctrl.resource_import_modified(RELATIVE_PATH_TO_RESOURCE_FILE, DATAPATH)
         self._test_listeners([], ALL_RESOURCE_PATH_RELATED_RESOURCE_IMPORTS)
+
+
+class TestCreatingResourceDirectories(unittest.TestCase):
+
+    def test_resource_file_in_own_directory_is_added_to_top_suite(self):
+        ctrl = ChiefController(Namespace())
+        data = TestDataDirectory()
+        data.source = data.directory = '/foo'
+        ctrl._controller = TestDataDirectoryController(data)
+        res_data = ResourceFile()
+        res_data.source = '/foo/bar/quux.txt'
+        ctrl.resources = [ResourceFileController(res_data)]
+        ctrl.resolve_resource_directories()
+        assert_equals(len(ctrl.data.children), 1)
+        assert_equals(ctrl.data.children[0].children, [ctrl.resources[0]])
+
+    def test_two_resource_in_same_directory_get_same_parent(self):
+        ctrl = ChiefController(Namespace())
+        data = TestDataDirectory()
+        data.source = data.directory = '/foo'
+        ctrl._controller = TestDataDirectoryController(data)
+        res_data1 = ResourceFile()
+        res_data1.source = '/foo/bar/quux.txt'
+        res_data2 = ResourceFile()
+        res_data2.source = '/foo/bar/quux.txt'
+        ctrl.resources = [ResourceFileController(res_data1), ResourceFileController(res_data2)]
+        ctrl.resolve_resource_directories()
+        assert_equals(len(ctrl.data.children), 1)
+        assert_equals(ctrl.data.children[0].children, [ctrl.resources[0], ctrl.resources[1]])
 
 
 if __name__ == "__main__":

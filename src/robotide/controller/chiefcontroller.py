@@ -15,6 +15,7 @@
 import os
 
 from robotide import context
+from robotide.controller.filecontrollers import DirectoryController
 from robotide.errors import SerializationError
 from robotide.publish.messages import RideOpenResource, RideSaving, RideSaveAll, \
     RideSaved, RideChangeFormat, RideOpenSuite, RideNewProject
@@ -120,6 +121,22 @@ class ChiefController(object):
     def _load_resources_resource_imports(self, controller):
         for _import in [ imp for imp in controller.imports if imp.is_resource ]:
             _import.import_loaded_or_modified()
+
+    def resolve_resource_directories(self):
+        self._dir_controllers = {}
+        for res in self.resources:
+            if res.source.startswith(self._controller.directory):
+                redir = os.path.dirname(res.source)
+                for s in  self._suites():
+                    if s.directory == redir:
+                        return
+                if redir in self._dir_controllers:
+                    self._dir_controllers[redir].add_child(res)
+                else:
+                    dir_ctrl = DirectoryController(redir)
+                    self._dir_controllers[redir] = dir_ctrl
+                    dir_ctrl.add_child(res)
+                    self._controller.add_child(dir_ctrl)
 
     def new_project(self, datafile):
         self._controller = DataController(datafile, self)
