@@ -15,6 +15,7 @@
 import os
 
 from robotide import context
+from robotide.controller.filecontrollers import DirectoryController
 from robotide.errors import SerializationError
 from robotide.publish.messages import RideOpenResource, RideSaving, RideSaveAll, \
     RideSaved, RideChangeFormat, RideOpenSuite, RideNewProject
@@ -53,6 +54,10 @@ class ChiefController(object):
     @property
     def suite(self):
         return self._controller.data if self._controller else None
+
+    @property
+    def datafiles(self):
+        return self._suites() + self.resources
 
     def load_data(self, path, load_observer):
         if self._load_datafile(path, load_observer):
@@ -107,22 +112,31 @@ class ChiefController(object):
         for other in self.resources:
             if other.source == resource.source:
                 return other
-        controller = ResourceFileController(resource, self, parent=self._find_parent_for(resource.source))
+        controller = ResourceFileController(resource, self)
         self.resources.append(controller)
         RideOpenResource(path=resource.source, datafile=controller).publish()
         self._load_resources_resource_imports(controller)
         return controller
 
-    def _find_parent_for(self, source):
-        dir = os.path.dirname(source)
-        for ctrl in self.datafiles:
-            if ctrl.data.source == dir:
-                return ctrl
-        return None
-
     def _load_resources_resource_imports(self, controller):
         for _import in [ imp for imp in controller.imports if imp.is_resource ]:
             _import.import_loaded_or_modified()
+
+    def resolve_resource_directories(self):
+        self._dir_controllers = {}
+        for res in self.resources:
+            if res.source.startswith(self._controller.directory):
+                redir = os.path.dirname(res.source)
+                for s in  self._suites():
+                    if s.directory == redir:
+                        return
+                if redir in self._dir_controllers:
+                    self._dir_controllers[redir].add_child(res)
+                else:
+                    dir_ctrl = DirectoryController(redir)
+                    self._dir_controllers[redir] = dir_ctrl
+                    dir_ctrl.add_child(res)
+                    self._controller.add_child(dir_ctrl)
 
     def new_project(self, datafile):
         self._controller = DataController(datafile, self)
@@ -254,18 +268,10 @@ class ChiefController(object):
     def _get_all_dirty_controllers(self):
         return [controller for controller in self.datafiles if controller.dirty]
 
-    @property
-    def datafiles(self):
-        return self._suites() + self.resources
-
-    @property
-    def all_datafiles(self):
-        return self.datafiles
-
     def _suites(self):
         if not self.data:
             return []
-        return [df for df in self.data.iter_datafiles() if not isinstance(df, ResourceFileController)]
+        return [df for df in self.data.iter_datafiles() if not df in self.resources]
 
     def resource_import_modified(self, path, directory):
         resource = self._namespace.get_resource(path, directory)

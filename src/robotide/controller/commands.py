@@ -305,7 +305,7 @@ class FindOccurrences(_Command):
         return self._find_occurrences_in(self._items_from(context))
 
     def _items_from(self, context):
-        for df in context.all_datafiles:
+        for df in context.datafiles:
             self._yield_for_other_threads()
             if self._items_from_datafile_should_be_checked(df):
                 for item in self._items_from_datafile(df):

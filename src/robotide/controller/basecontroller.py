@@ -47,8 +47,8 @@ class ControllerWithParent(object):
         return self._parent.datafile
 
     @property
-    def all_datafiles(self):
-        return self._parent.all_datafiles
+    def datafiles(self):
+        return self._parent.datafiles
 
 
 class WithUndoRedoStacks(object):
