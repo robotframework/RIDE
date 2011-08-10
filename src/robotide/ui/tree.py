@@ -618,6 +618,7 @@ class _ActionHandler(wx.Window):
     _label_change_format = 'Change Format'
     _label_copy_macro = 'Copy\tCtrl-Shift-C'
     _label_rename = 'Rename\tF2'
+    _label_new_resource = 'New Resource'
 
     def __init__(self, controller, tree, node):
         wx.Window.__init__(self, tree)
@@ -642,6 +643,9 @@ class _ActionHandler(wx.Window):
     def OnAddSuite(self, event):
         pass
 
+    def OnNewResource(self, event):
+        pass
+
     def OnNewUserKeyword(self, event):
         pass
 
@@ -659,6 +663,24 @@ class _ActionHandler(wx.Window):
 
     def OnRename(self, event):
         pass
+
+
+class DirectoryHandler(_ActionHandler):
+    is_draggable = False
+    is_renameable = False
+    is_test_suite = False
+    _actions = [_ActionHandler._label_add_suite, _ActionHandler._label_new_resource]
+
+    def OnAddSuite(self, event):
+        dlg = AddSuiteDialog(self.controller.directory)
+        if dlg.ShowModal() == wx.ID_OK:
+            data = NewDatafile(dlg.get_path(), dlg.is_dir_type())
+            self.controller.execute(AddSuite(data))
+        dlg.Destroy()
+
+    def OnNewResource(self, event):
+        NewResourceDialog(self.controller).doit()
+
 
 class TestDataHandler(_ActionHandler):
     accepts_drag = lambda self, dragged: (isinstance(dragged, UserKeywordHandler) or
@@ -866,7 +888,7 @@ class ResourceRootHandler(_ActionHandler):
     item = None
     rename = lambda self, new_name: False
     accepts_drag = lambda self, dragged: False
-    _actions = ['New Resource']
+    _actions = [_ActionHandler._label_new_resource]
 
     @property
     def can_be_rendered(self):
