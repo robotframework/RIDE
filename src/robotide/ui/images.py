@@ -38,8 +38,8 @@ class TreeImageList(wx.ImageList):
     def directory(self):
         return _TreeImage(self, wx.ART_FOLDER, wx.ART_FOLDER_OPEN)
 
-    def __getitem__(self, key):
-        return self._images[key]
+    def __getitem__(self, controller):
+        return self._images[controller.data.__class__.__name__]
 
 
 class _TreeImage(object):

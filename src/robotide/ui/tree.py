@@ -15,7 +15,7 @@
 import wx
 from robotide.controller.settingcontrollers import VariableController
 from robotide.controller.macrocontrollers import TestCaseController, UserKeywordController
-from robotide.controller.filecontrollers import TestDataDirectoryController, ResourceFileController, TestCaseFileController
+from robotide.controller.filecontrollers import TestDataDirectoryController, ResourceFileController, TestCaseFileController, DirectoryController
 
 from filedialogs import AddSuiteDialog, ChangeFormatDialog
 from images import TreeImageList
@@ -197,8 +197,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         return node
 
     def _create_node_with_handler(self, parent_node, controller, index=None):
-        name = controller.data.__class__.__name__
-        node = self._create_node(parent_node, controller.display_name, self._images[name],
+        node = self._create_node(parent_node, controller.display_name, self._images[controller],
                                  index)
         self.SetPyData(node, action_handler(controller, self, node))
         return node
