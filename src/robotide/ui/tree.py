@@ -673,14 +673,7 @@ class DirectoryHandler(_ActionHandler):
     is_renameable = False
     is_test_suite = False
     can_be_rendered = False
-    _actions = [_ActionHandler._label_add_suite, _ActionHandler._label_new_resource]
-
-    def OnAddSuite(self, event):
-        dlg = AddSuiteDialog(self.controller.directory)
-        if dlg.ShowModal() == wx.ID_OK:
-            data = NewDatafile(dlg.get_path(), dlg.is_dir_type())
-            self.controller.execute(AddSuite(data))
-        dlg.Destroy()
+    _actions = [_ActionHandler._label_new_resource]
 
     def OnNewResource(self, event):
         NewResourceDialog(self.controller).doit()
