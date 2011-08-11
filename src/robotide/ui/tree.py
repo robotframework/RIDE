@@ -160,7 +160,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self.SetPyData(self._resource_root, ResourceRootHandler(model, self, self._resource_root))
         if model.data:
             self._render_datafile(self._root, model.data, 0)
-        for res in model.resources:
+        for res in model.external_resources:
             if not res.parent:
                 self._render_datafile(self._resource_root, res)
 
@@ -601,11 +601,12 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
 def action_handler(controller, tree, node):
     return {TestDataDirectoryController:TestDataDirectoryHandler,
-     ResourceFileController:ResourceFileHandler,
-     TestCaseFileController:TestCaseFileHandler,
-     TestCaseController:TestCaseHandler,
-     UserKeywordController:UserKeywordHandler,
-     VariableController:VariableHandler
+         ResourceFileController:ResourceFileHandler,
+         TestCaseFileController:TestCaseFileHandler,
+         TestCaseController:TestCaseHandler,
+         UserKeywordController:UserKeywordHandler,
+         VariableController:VariableHandler,
+         DirectoryController: DirectoryHandler
      }[controller.__class__](controller, tree, node)
 
 
@@ -673,6 +674,7 @@ class DirectoryHandler(_ActionHandler):
     is_draggable = False
     is_renameable = False
     is_test_suite = False
+    can_be_rendered = False
     _actions = [_ActionHandler._label_add_suite, _ActionHandler._label_new_resource]
 
     def OnAddSuite(self, event):
@@ -783,6 +785,7 @@ class TestDataDirectoryHandler(TestDataHandler):
 
     def OnNewResource(self, event):
         NewResourceDialog(self.controller).doit()
+
 
 class ResourceFileHandler(TestDataHandler):
     is_test_suite = False

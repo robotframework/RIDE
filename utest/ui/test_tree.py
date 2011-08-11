@@ -74,9 +74,9 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         self._model = self._create_model()
         self._tree = Tree(frame, ActionRegisterer(MenuBar(frame), ToolBar(frame),
                                                   ShortcutRegistry(frame)))
-        imgs =  TreeImageList()
-        self._tree._images = imgs
-        self._tree.SetImageList(imgs)
+        images =  TreeImageList()
+        self._tree._images = images
+        self._tree.SetImageList(images)
         self._tree.populate(self._model)
         self._expand_all()
 
@@ -93,10 +93,11 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         model = ChiefController(Namespace())
         model._controller = TestDataDirectoryController(suite)
         model.resources.append(ResourceFileController(res))
+        model.resolve_resource_directories()
         return model
 
     def _create_directory_suite(self, source):
-        return self._create_suite(TestDataDirectory, source)
+        return self._create_suite(TestDataDirectory, source, is_dir=True)
 
     def _create_file_suite(self, source):
         suite = self._create_suite(TestCaseFile, source)
@@ -104,9 +105,11 @@ class _BaseSuiteTreeTest(unittest.TestCase):
                                        for i in range(5)]
         return suite
 
-    def _create_suite(self, suite_class, source):
+    def _create_suite(self, suite_class, source, is_dir=False):
         suite = suite_class()
         suite.source = source
+        if is_dir:
+            suite.directory = source
         suite.keyword_table.keywords = [ UserKeyword(suite.keyword_table,
                                                      '%s Fake UK %d' % (suite.name, i))
                                          for i in range(5) ]
