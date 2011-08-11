@@ -134,31 +134,46 @@ class ChiefControllerTest(unittest.TestCase):
 
 class TestCreatingResourceDirectories(unittest.TestCase):
 
+    def setUp(self):
+        self.chief = ChiefController(Namespace())
+
     def test_resource_file_in_own_directory_is_added_to_top_suite(self):
-        ctrl = ChiefController(Namespace())
-        data = TestDataDirectory()
-        data.source = data.directory = '/foo'
-        ctrl._controller = TestDataDirectoryController(data)
-        res_data = ResourceFile()
-        res_data.source = '/foo/bar/quux.txt'
-        ctrl.resources = [ResourceFileController(res_data)]
-        ctrl.resolve_resource_directories()
-        assert_equals(len(ctrl.data.children), 1)
-        assert_equals(ctrl.data.children[0].children, [ctrl.resources[0]])
+        self.chief._controller = TestDataDirectoryController(self._data_directory('/foo'))
+        self._set_resources('/foo/bar/quux.txt')
+        self._assert_resource_dir_was_created_as_child_of(self.chief.data)
+        self._assert_resource_dir_contains_resources()
 
     def test_two_resource_in_same_directory_get_same_parent(self):
-        ctrl = ChiefController(Namespace())
+        self.chief._controller = TestDataDirectoryController(self._data_directory('/foo'))
+        self._set_resources('/foo/bar/quux.txt', '/foo/bar/zap.txt')
+        self._assert_resource_dir_was_created_as_child_of(self.chief.data)
+        self._assert_resource_dir_contains_resources()
+
+    def test_resource_directory_gets_nearest_possible_parent(self):
+        self.chief._controller = TestDataDirectoryController(self._data_directory('/tmp'))
+        self.chief.data.add_child(TestDataDirectoryController(self._data_directory('/tmp/some')))
+        self._set_resources('/tmp/some/resoruces/res.txt')
+        assert_equals(len(self.chief.data.children), 1)
+        assert_equals(len(self.chief.data.children[0].children), 1)
+        assert_equals(self.chief.data.children[0].children[0].children, [self.chief.resources[0]])
+
+    def _data_directory(self, path):
         data = TestDataDirectory()
-        data.source = data.directory = '/foo'
-        ctrl._controller = TestDataDirectoryController(data)
-        res_data1 = ResourceFile()
-        res_data1.source = '/foo/bar/quux.txt'
-        res_data2 = ResourceFile()
-        res_data2.source = '/foo/bar/quux.txt'
-        ctrl.resources = [ResourceFileController(res_data1), ResourceFileController(res_data2)]
-        ctrl.resolve_resource_directories()
-        assert_equals(len(ctrl.data.children), 1)
-        assert_equals(ctrl.data.children[0].children, [ctrl.resources[0], ctrl.resources[1]])
+        data.source = data.directory = path
+        return data
+
+    def _set_resources(self, *paths):
+        for p in paths:
+            res_data = ResourceFile()
+            res_data.source = p
+            self.chief.resources.append(ResourceFileController(res_data))
+        self.chief.resolve_resource_directories()
+
+    def _assert_resource_dir_was_created_as_child_of(self, ctrl):
+        assert_equals(len(ctrl.children), 1)
+
+    def _assert_resource_dir_contains_resources(self):
+        assert_equals(self.chief.data.children[0].children, self.chief.resources)
 
 
 if __name__ == "__main__":
