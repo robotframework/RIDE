@@ -516,10 +516,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._history.change(node)
         handler = self._get_handler(node)
         if handler and handler.item:
-            RideTreeSelection(node=node,
-                              item=handler.controller,
-                              resources_node=(self.GetItemText(node) == self._RESOURCES_NODE_LABEL)
-            ).publish()
+            RideTreeSelection(node=node, item=handler.controller).publish()
         self.SetFocus()
 
     def OnTreeItemExpanding(self, event):
@@ -628,14 +625,15 @@ class _ActionHandler(wx.Window):
     def __init__(self, controller, tree, node):
         wx.Window.__init__(self, tree)
         self.controller = controller
-        item = controller.data
-        #self.name = item.name
-        self.item = item
         self._tree = tree
         self._node = node
         self._rendered = False
         self.Show(False)
         self._popup_creator = tree._popup_creator
+
+    @property
+    def item(self):
+        return self.controller.data
 
     @property
     def node(self):
@@ -895,15 +893,14 @@ class VariableHandler(_ActionHandler):
 
 
 class ResourceRootHandler(_ActionHandler):
-    is_renameable = is_draggable = is_user_keyword = is_test_suite = False
-    item = None
+    can_be_rendered = is_renameable = is_draggable = is_user_keyword = is_test_suite = False
     rename = lambda self, new_name: False
     accepts_drag = lambda self, dragged: False
     _actions = [_ActionHandler._label_new_resource]
 
     @property
-    def can_be_rendered(self):
-        return False
+    def item(self):
+        return None
 
     def OnNewResource(self, event):
         NewResourceDialog(self.controller).doit()

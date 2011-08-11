@@ -112,8 +112,6 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
         return self._creator.editor_for(self, self._tab, self.tree)
 
     def OnTreeItemSelected(self, message=None):
-        if message and message.is_resources_node():
-            return
         self._show_editor()
         if not self.is_focused() and not self.is_focus_on_tree_aware_plugin():
             self._editor = self._create_editor()

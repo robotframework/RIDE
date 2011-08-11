@@ -61,8 +61,6 @@ class PreviewPlugin(Plugin, TreeAwarePluginMixin):
         self._update_preview()
 
     def OnTreeSelection(self, event):
-        if event and event.is_resources_node():
-            return
         if self.is_focused():
             self._panel.tree_node_selected(event.item)
 

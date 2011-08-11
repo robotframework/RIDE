@@ -253,7 +253,7 @@ class DirectoryController(_FileSystemElement):
         _FileSystemElement.__init__(self, path)
         self.directory = self.source = path
         self.children = []
-        self.display_name = 'Resources'
+        self.display_name = os.path.split(path)[1]
         self.data = None
         self.dirty = False
         self._dir_controllers = {}
