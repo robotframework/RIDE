@@ -68,9 +68,10 @@ class ChiefController(object):
         load_observer.error("Given file '%s' is not a valid Robot Framework "
                             "test case or resource file." % path)
 
-    def new_resource(self, path):
+    def new_resource(self, path, parent=None):
         res = self._namespace.new_resource(path)
-        return self._create_resource_controller(res)
+        self.update_default_dir(path)
+        return self._create_resource_controller(res, parent)
 
     def load_datafile(self, path, load_observer):
         datafile = self._load_datafile(path, load_observer)
@@ -110,11 +111,11 @@ class ChiefController(object):
         load_observer.finish()
         return ctrl
 
-    def _create_resource_controller(self, resource):
+    def _create_resource_controller(self, resource, parent=None):
         for other in self.resources:
             if other.source == resource.source:
                 return other
-        controller = ResourceFileController(resource, self)
+        controller = ResourceFileController(resource, self, parent=parent)
         self.resources.append(controller)
         RideOpenResource(path=resource.source, datafile=controller).publish()
         self._load_resources_resource_imports(controller)

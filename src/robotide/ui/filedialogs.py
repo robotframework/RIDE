@@ -150,13 +150,19 @@ class _CreationDialog(Dialog):
         event.Skip()
 
 
+class _WithImmutableParent(object):
+
+    def _create_parent_chooser(self, sizer, default_dir):
+        return self._create_parent_display(sizer, self._path)
+
+
 class NewProjectDialog(_CreationDialog):
 
     def __init__(self, default_dir):
         _CreationDialog.__init__(self, default_dir, 'New Project')
 
 
-class NewResourceDialog(_CreationDialog):
+class _NewResourceDialog(_CreationDialog):
 
     def __init__(self, controller):
         _CreationDialog.__init__(self, controller.default_dir, 'New Resource File')
@@ -171,14 +177,17 @@ class NewResourceDialog(_CreationDialog):
         return None
 
 
-class AddSuiteDialog(_CreationDialog):
+class NewExternalResourceDialog(_NewResourceDialog): pass
+
+
+class NewResourceDialog(_NewResourceDialog, _WithImmutableParent): pass
+
+
+class AddSuiteDialog(_CreationDialog, _WithImmutableParent):
 
     def __init__(self, path):
         self._path = path
         _CreationDialog.__init__(self, path, 'Add Suite')
-
-    def _create_parent_chooser(self, sizer, default_dir):
-        return self._create_parent_display(sizer, self._path)
 
 
 class ChangeFormatDialog(_CreationDialog):

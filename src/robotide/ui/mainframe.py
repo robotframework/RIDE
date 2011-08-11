@@ -22,7 +22,7 @@ from robotide.context import SETTINGS, ABOUT_RIDE
 from robotide.widgets import Dialog
 
 from actiontriggers import MenuBar, ToolBar, ShortcutRegistry
-from filedialogs import NewProjectDialog, NewResourceDialog, ChangeFormatDialog
+from filedialogs import NewProjectDialog, NewExternalResourceDialog, ChangeFormatDialog
 from pluginmanager import PluginManager
 from tree import Tree
 from notebook import NoteBook
@@ -138,7 +138,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         self.tree.populate(self._controller)
 
     def OnNewResource(self, event):
-        NewResourceDialog(self._controller).doit()
+        NewExternalResourceDialog(self._controller).doit()
 
     def OnOpen(self, event):
         self._check_unsaved_modifications()

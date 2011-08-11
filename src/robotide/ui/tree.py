@@ -36,7 +36,7 @@ from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
     AddKeyword, AddTestCase, RenameTest, CopyMacroAs, MoveTo,\
     AddVariable, AddSuite, UpdateVariableName
 from robotide.widgets import PopupCreator, PopupMenuItems
-from robotide.ui.filedialogs import NewResourceDialog
+from robotide.ui.filedialogs import NewExternalResourceDialog, NewResourceDialog
 from robotide.usages.UsageRunner import Usages
 from robotide.ui.progress import RenameProgressObserver
 
@@ -903,7 +903,7 @@ class ResourceRootHandler(_ActionHandler):
         return None
 
     def OnNewResource(self, event):
-        NewResourceDialog(self.controller).doit()
+        NewExternalResourceDialog(self.controller).doit()
 
 
 class LabelEditor(object):

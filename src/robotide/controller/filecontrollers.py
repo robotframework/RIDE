@@ -56,7 +56,7 @@ class _DataController(_FileSystemElement, _BaseController, WithUndoRedoStacks):
 
     def __init__(self, data, chief_controller=None, parent=None):
         self._chief_controller = chief_controller
-        self._parent = parent
+        self.parent = parent
         self.data = data
         _FileSystemElement.__init__(self, self.source)
         self.dirty = False
@@ -78,10 +78,6 @@ class _DataController(_FileSystemElement, _BaseController, WithUndoRedoStacks):
     @property
     def short_source(self):
         return os.path.basename(self.data.source)
-
-    @property
-    def parent(self):
-        return self._parent
 
     @property
     def settings(self):
@@ -139,9 +135,6 @@ class _DataController(_FileSystemElement, _BaseController, WithUndoRedoStacks):
     @property
     def metadata(self):
         return MetadataListController(self, self.data.setting_table)
-
-    def execute(self, command):
-        return command.execute(self)
 
     def update_namespace(self):
         if self._chief_controller is not None:
@@ -247,22 +240,36 @@ class _DataController(_FileSystemElement, _BaseController, WithUndoRedoStacks):
         return False
 
 
-class DirectoryController(_FileSystemElement):
+class DirectoryController(_FileSystemElement, _BaseController):
 
-    def __init__(self, path):
+    def __init__(self, path, chief_controller):
         _FileSystemElement.__init__(self, path)
         self.directory = self.source = path
+        self._chief_controller = chief_controller
         self.children = []
-        self.display_name = os.path.split(path)[1]
         self.data = None
         self.dirty = False
         self._dir_controllers = {}
+
+    def is_directory_suite(self):
+        return False
 
     def add_child(self, child):
         self.children.append(child)
 
     def iter_datafiles(self):
         yield self
+
+    @property
+    def display_name(self):
+        return os.path.split(self.directory)[1]
+
+    @property
+    def default_dir(self):
+        return self.directory
+
+    def new_resource(self, path):
+        return self._chief_controller.new_resource(path, parent=self)
 
 
 class TestDataDirectoryController(_DataController, DirectoryController):
@@ -274,6 +281,10 @@ class TestDataDirectoryController(_DataController, DirectoryController):
     @property
     def default_dir(self):
         return self.data.source
+
+    @property
+    def display_name(self):
+        return self.data.name
 
     def _children(self, data):
         return [DataController(child, self._chief_controller, self)
@@ -334,18 +345,14 @@ class TestDataDirectoryController(_DataController, DirectoryController):
         if res_dir in self._dir_controllers:
             self._dir_controllers[res_dir].add_child(res)
         else:
-            dir_ctrl = DirectoryController(res_dir)
+            dir_ctrl = DirectoryController(res_dir, self._chief_controller)
             self._dir_controllers[res_dir] = dir_ctrl
             dir_ctrl.add_child(res)
             self._find_closest_directory(res).add_child(dir_ctrl)
 
     def _is_inside_test_data_directory(self, directory):
-        for s in [self] + self.children:
-            if not isinstance(s, TestDataDirectoryController):
-                continue
-            if s.directory == directory:
-                return True
-        return False
+        return any(True for s in [self] + self.children
+                   if s.is_directory_suite() and s.directory == directory)
 
     def _find_closest_directory(self, res):
         target = self
@@ -355,6 +362,7 @@ class TestDataDirectoryController(_DataController, DirectoryController):
             if res.source.startswith(s.directory):
                 target = s
         return target
+
 
 class TestCaseFileController(_DataController):
 
@@ -392,9 +400,9 @@ class TestCaseFileController(_DataController):
 
 class ResourceFileController(_DataController):
 
-    def __init__(self, data, chief_controller=None):
+    def __init__(self, data, chief_controller=None, parent=None):
         _DataController.__init__(self, data, chief_controller,
-                                 self._find_parent_for(chief_controller, data.source))
+                                 parent or self._find_parent_for(chief_controller, data.source))
         if self.parent:
             self.parent.add_child(self)
 
@@ -403,7 +411,7 @@ class ResourceFileController(_DataController):
             return None
         dir = os.path.dirname(source)
         for ctrl in chief_controller.datafiles:
-            if ctrl.data.source == dir:
+            if ctrl.is_directory_suite() and ctrl.directory == dir:
                 return ctrl
         return None
 
