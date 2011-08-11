@@ -15,7 +15,7 @@
 import os
 
 from robotide import context
-from robotide.controller.filecontrollers import DirectoryController
+from robotide.controller.filecontrollers import DirectoryController, TestDataDirectoryController
 from robotide.errors import SerializationError
 from robotide.publish.messages import RideOpenResource, RideSaving, RideSaveAll, \
     RideSaved, RideChangeFormat, RideOpenSuite, RideNewProject
@@ -34,6 +34,8 @@ class ChiefController(object):
         self._controller = None
         self.name = None
         self.resources = []
+        self._dir_controllers = {}
+        self.external_resources = []
 
     @property
     def default_dir(self):
@@ -85,6 +87,7 @@ class ChiefController(object):
         resources = self._loader.resources_for(datafile, load_observer)
         self._create_controllers(datafile, resources)
         RideOpenSuite(path=path, datafile=self._controller).publish()
+        self.resolve_resource_directories()
         load_observer.finish()
         return datafile
 
@@ -123,20 +126,43 @@ class ChiefController(object):
             _import.import_loaded_or_modified()
 
     def resolve_resource_directories(self):
-        self._dir_controllers = {}
         for res in self.resources:
-            if res.source.startswith(self._controller.directory):
-                redir = os.path.dirname(res.source)
-                for s in  self._suites():
-                    if s.directory == redir:
-                        return
-                if redir in self._dir_controllers:
-                    self._dir_controllers[redir].add_child(res)
-                else:
-                    dir_ctrl = DirectoryController(redir)
-                    self._dir_controllers[redir] = dir_ctrl
-                    dir_ctrl.add_child(res)
-                    self._controller.add_child(dir_ctrl)
+            if self._is_inside_top_suite(res):
+                self._insert_to_test_data_directory(res)
+            else:
+                self.external_resources.append(res)
+
+    def _is_inside_top_suite(self, ctrl):
+        return ctrl.source.startswith(self._controller.directory)
+
+    def _insert_to_test_data_directory(self, res):
+        res_dir = os.path.dirname(res.source)
+        if self._is_inside_test_data_directory(res_dir):
+            return
+        if res_dir in self._dir_controllers:
+            self._dir_controllers[res_dir].add_child(res)
+        else:
+            dir_ctrl = DirectoryController(res_dir)
+            self._dir_controllers[res_dir] = dir_ctrl
+            dir_ctrl.add_child(res)
+            self._find_closest_test_data_directory(res).add_child(dir_ctrl)
+
+    def _is_inside_test_data_directory(self, directory):
+        for s in  self._suites():
+            if not isinstance(s, TestDataDirectoryController):
+                continue
+            if s.directory == directory:
+                return True
+        return False
+
+    def _find_closest_test_data_directory(self, res):
+        target = self._controller
+        for s in self._suites():
+            if not isinstance(s, TestDataDirectoryController):
+                continue
+            if res.source.startswith(s.directory):
+                target = s
+        return target
 
     def new_project(self, datafile):
         self._controller = DataController(datafile, self)

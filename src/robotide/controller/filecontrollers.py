@@ -34,20 +34,10 @@ def DataController(data, chief, parent=None):
         else TestDataDirectoryController(data, chief, parent)
 
 
-class _DataController(_BaseController, WithUndoRedoStacks):
+class _FileSystemElement(object):
 
-    def __init__(self, data, chief_controller=None, parent=None):
-        self._chief_controller = chief_controller
-        self._parent = parent
-        self.data = data
-        self.dirty = False
-        self.children = self._children(data)
-        self._stat = self._get_stat(self.source)
-        self._variables_table_controller = None
-        self._testcase_table_controller = None
-
-    def _children(self, data):
-        return []
+    def __init__(self, source):
+        self._stat = self._get_stat(source)
 
     def _get_stat(self, path):
         if path and os.path.isfile(path):
@@ -55,9 +45,35 @@ class _DataController(_BaseController, WithUndoRedoStacks):
             return (stat.st_mtime, stat.st_size)
         return (0, 0)
 
+    def has_been_modified_on_disk(self):
+        return self._get_stat(self.source) != self._stat
+
+    def has_been_removed_from_disk(self):
+        return self._stat != (0, 0) and not os.path.isfile(self.source)
+
+
+class _DataController(_FileSystemElement, _BaseController, WithUndoRedoStacks):
+
+    def __init__(self, data, chief_controller=None, parent=None):
+        self._chief_controller = chief_controller
+        self._parent = parent
+        self.data = data
+        _FileSystemElement.__init__(self, self.source)
+        self.dirty = False
+        self.children = self._children(data)
+        self._variables_table_controller = None
+        self._testcase_table_controller = None
+
+    def _children(self, data):
+        return []
+
     @property
     def name(self):
         return self.data.name
+
+    @property
+    def source(self):
+        return self.data.source if self.data else None
 
     @property
     def short_source(self):
@@ -148,12 +164,6 @@ class _DataController(_BaseController, WithUndoRedoStacks):
     def keyword_info(self, keyword_name):
         return self._chief_controller.keyword_info(self.data, keyword_name)
 
-    def has_been_modified_on_disk(self):
-        return self._get_stat(self.source) != self._stat
-
-    def has_been_removed_from_disk(self):
-        return self._stat != (0, 0) and not os.path.isfile(self.source)
-
     def mark_dirty(self):
         if not self.dirty:
             self.dirty = True
@@ -205,10 +215,6 @@ class _DataController(_BaseController, WithUndoRedoStacks):
         return self.keywords.validate_name(name)
 
     @property
-    def source(self):
-        return self.data.source if self.data else None
-
-    @property
     def directory(self):
         return self.data.directory
 
@@ -238,11 +244,24 @@ class _DataController(_BaseController, WithUndoRedoStacks):
         return {}
 
 
-class DirectoryController(_DataController):
-    pass
+class DirectoryController(_FileSystemElement):
+
+    def __init__(self, path):
+        _FileSystemElement.__init__(self, path)
+        self.directory = self.source = path
+        self.children = []
+        self.display_name = 'Resources'
+        self.data = None
+        self.dirty = False
+
+    def add_child(self, child):
+        self.children.append(child)
+
+    def iter_datafiles(self):
+        return iter([])
 
 
-class TestDataDirectoryController(DirectoryController):
+class TestDataDirectoryController(_DataController, DirectoryController):
 
     @property
     def default_dir(self):
@@ -369,16 +388,3 @@ class ResourceFileController(_DataController):
     def remove(self):
         self._chief_controller.remove_resource(self)
         RideDataFileRemoved(path=self.source, datafile=self).publish()
-
-
-class DirectoryController(object):
-
-    def __init__(self, dirpath):
-        self.directory = dirpath
-        self.children = []
-
-    def add_child(self, child):
-        self.children.append(child)
-
-    def iter_datafiles(self):
-        return iter([])
