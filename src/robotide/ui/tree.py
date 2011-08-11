@@ -612,7 +612,7 @@ class _ActionHandler(wx.Window):
     is_test_suite = False
     is_variable = False
 
-    _label_add_suite = 'Add Suite\tCtrl-Shift-F'
+    _label_add_suite = 'New Suite\tCtrl-Shift-F'
     _label_new_test_case = 'New Test Case\tCtrl-Shift-T'
     _label_new_user_keyword = 'New User Keyword\tCtrl-Shift-K'
     _label_new_scalar = 'New Scalar\tCtrl-Shift-V'
@@ -643,7 +643,7 @@ class _ActionHandler(wx.Window):
         self._popup_creator.show(self, PopupMenuItems(self, self._actions),
                                  self.controller)
 
-    def OnAddSuite(self, event):
+    def OnNewSuite(self, event):
         pass
 
     def OnNewResource(self, event):
@@ -767,7 +767,7 @@ class TestDataDirectoryHandler(TestDataHandler):
 
     _actions = TestDataHandler._actions[:] + [_ActionHandler._label_new_resource]
 
-    def OnAddSuite(self, event):
+    def OnNewSuite(self, event):
         dlg = AddSuiteDialog(self.controller.directory)
         if dlg.ShowModal() == wx.ID_OK:
             data = NewDatafile(dlg.get_path(), dlg.is_dir_type())
