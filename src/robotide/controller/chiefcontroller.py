@@ -34,7 +34,6 @@ class ChiefController(object):
         self._controller = None
         self.name = None
         self.resources = []
-        self._dir_controllers = {}
         self.external_resources = []
 
     @property
@@ -127,42 +126,10 @@ class ChiefController(object):
 
     def resolve_resource_directories(self):
         for res in self.resources:
-            if self._is_inside_top_suite(res):
-                self._insert_to_test_data_directory(res)
+            if self._controller and self._controller.is_inside_top_suite(res):
+                self._controller.insert_to_test_data_directory(res)
             else:
                 self.external_resources.append(res)
-
-    def _is_inside_top_suite(self, ctrl):
-        return ctrl.source.startswith(self._controller.directory)
-
-    def _insert_to_test_data_directory(self, res):
-        res_dir = os.path.dirname(res.source)
-        if self._is_inside_test_data_directory(res_dir):
-            return
-        if res_dir in self._dir_controllers:
-            self._dir_controllers[res_dir].add_child(res)
-        else:
-            dir_ctrl = DirectoryController(res_dir)
-            self._dir_controllers[res_dir] = dir_ctrl
-            dir_ctrl.add_child(res)
-            self._find_closest_test_data_directory(res).add_child(dir_ctrl)
-
-    def _is_inside_test_data_directory(self, directory):
-        for s in  self._suites():
-            if not isinstance(s, TestDataDirectoryController):
-                continue
-            if s.directory == directory:
-                return True
-        return False
-
-    def _find_closest_test_data_directory(self, res):
-        target = self._controller
-        for s in self._suites():
-            if not isinstance(s, TestDataDirectoryController):
-                continue
-            if res.source.startswith(s.directory):
-                target = s
-        return target
 
     def new_project(self, datafile):
         self._controller = DataController(datafile, self)

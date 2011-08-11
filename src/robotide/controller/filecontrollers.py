@@ -243,6 +243,9 @@ class _DataController(_FileSystemElement, _BaseController, WithUndoRedoStacks):
     def get_local_variables(self):
         return {}
 
+    def is_inside_top_suite(self, res):
+        return False
+
 
 class DirectoryController(_FileSystemElement):
 
@@ -253,15 +256,20 @@ class DirectoryController(_FileSystemElement):
         self.display_name = 'Resources'
         self.data = None
         self.dirty = False
+        self._dir_controllers = {}
 
     def add_child(self, child):
         self.children.append(child)
 
     def iter_datafiles(self):
-        return iter([])
+        yield self
 
 
 class TestDataDirectoryController(_DataController, DirectoryController):
+
+    def __init__(self, data, chief_controller=None, parent=None):
+        _DataController.__init__(self, data, chief_controller, parent)
+        self._dir_controllers = {}
 
     @property
     def default_dir(self):
@@ -316,6 +324,37 @@ class TestDataDirectoryController(_DataController, DirectoryController):
             for child in self.children:
                 child.remove_child(controller)
 
+    def is_inside_top_suite(self, ctrl):
+        return ctrl.source.startswith(self.directory)
+
+    def insert_to_test_data_directory(self, res):
+        res_dir = os.path.dirname(res.source)
+        if self._is_inside_test_data_directory(res_dir):
+            return
+        if res_dir in self._dir_controllers:
+            self._dir_controllers[res_dir].add_child(res)
+        else:
+            dir_ctrl = DirectoryController(res_dir)
+            self._dir_controllers[res_dir] = dir_ctrl
+            dir_ctrl.add_child(res)
+            self._find_closest_directory(res).add_child(dir_ctrl)
+
+    def _is_inside_test_data_directory(self, directory):
+        for s in [self] + self.children:
+            if not isinstance(s, TestDataDirectoryController):
+                continue
+            if s.directory == directory:
+                return True
+        return False
+
+    def _find_closest_directory(self, res):
+        target = self
+        for s in self.iter_datafiles():
+            if not isinstance(s, DirectoryController):
+                continue
+            if res.source.startswith(s.directory):
+                target = s
+        return target
 
 class TestCaseFileController(_DataController):
 

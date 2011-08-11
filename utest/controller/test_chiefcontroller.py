@@ -157,6 +157,13 @@ class TestCreatingResourceDirectories(unittest.TestCase):
         assert_equals(len(self.chief.data.children[0].children), 1)
         assert_equals(self.chief.data.children[0].children[0].children, [self.chief.resources[0]])
 
+    def test_nested_resource_directories(self):
+        self.chief._controller = TestDataDirectoryController(self._data_directory('/tmp'))
+        self._set_resources('/tmp/resoruces/res.txt', '/tmp/resoruces/more/res.txt')
+        assert_equals(len(self.chief.data.children), 1)
+        assert_equals(len(self.chief.data.children[0].children), 2)
+        assert_equals(self.chief.data.children[0].children[1].children, [self.chief.resources[1]])
+
     def _data_directory(self, path):
         data = TestDataDirectory()
         data.source = data.directory = path
