@@ -29,18 +29,18 @@ class TreeImageList(wx.ImageList):
     def __init__(self):
         wx.ImageList.__init__(self, *_SIZE)
         self._images = {
-            TestDataDirectoryController: self.directory,
-            DirectoryController: self.directory,
-            TestCaseFileController: _TreeImage(self, wx.ART_NORMAL_FILE),
+            TestDataDirectoryController: _TreeImage(self, 'folder.png'),
+            DirectoryController: _TreeImage(self, 'bricks.png'),
+            TestCaseFileController: _TreeImage(self, 'page_white.png'),
             TestCaseController: _TreeImage(self, 'robot.png'),
-            UserKeywordController: _TreeImage(self, 'process.png'),
-            ResourceFileController: _TreeImage(self, wx.ART_EXECUTABLE_FILE),
+            UserKeywordController: _TreeImage(self, 'cog.png'),
+            ResourceFileController: _TreeImage(self, 'page_white_gear.png'),
             VariableController: _TreeImage(self, 'dollar.png')
         }
 
     @property
     def directory(self):
-        return _TreeImage(self, wx.ART_FOLDER, wx.ART_FOLDER_OPEN)
+        return self._images[DirectoryController]
 
     def __getitem__(self, controller):
         return self._images[controller.__class__]
