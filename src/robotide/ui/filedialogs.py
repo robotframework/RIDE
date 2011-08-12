@@ -180,10 +180,14 @@ class _NewResourceDialog(_CreationDialog):
 class NewExternalResourceDialog(_NewResourceDialog): pass
 
 
-class NewResourceDialog(_NewResourceDialog, _WithImmutableParent): pass
+class NewResourceDialog(_WithImmutableParent, _NewResourceDialog):
+
+    def __init__(self, controller):
+        self._path = controller.directory
+        _NewResourceDialog.__init__(self, controller)
 
 
-class AddSuiteDialog(_CreationDialog, _WithImmutableParent):
+class AddSuiteDialog(_WithImmutableParent, _CreationDialog):
 
     def __init__(self, path):
         self._path = path
