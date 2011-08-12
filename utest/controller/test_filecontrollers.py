@@ -174,7 +174,7 @@ class TestDataDirectoryControllerTest(unittest.TestCase):
 class DatafileIteratorTest(unittest.TestCase):
 
     def setUp(self):
-        test_data_suite = TestDataDirectory(source=SUITEPATH)
+        test_data_suite = TestDataDirectory(source=SUITEPATH).populate()
         self.directory_controller = TestDataDirectoryController(test_data_suite)
 
     def test_iterate_all(self):

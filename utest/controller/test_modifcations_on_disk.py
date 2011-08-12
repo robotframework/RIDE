@@ -44,19 +44,19 @@ class _DataDependentTest(unittest.TestCase):
 class TestModifiedOnDiskWithFileSuite(_DataDependentTest):
 
     def test_mtime(self):
-        ctrl = TestCaseFileController(TestCaseFile(source=FILEPATH))
+        ctrl = TestCaseFileController(TestCaseFile(source=FILEPATH).populate())
         assert_false(ctrl.has_been_modified_on_disk())
         os.utime(FILEPATH, (1,1))
         assert_true(ctrl.has_been_modified_on_disk())
 
     def test_size_change(self):
         os.utime(FILEPATH, None)
-        ctrl = TestCaseFileController(TestCaseFile(source=FILEPATH))
+        ctrl = TestCaseFileController(TestCaseFile(source=FILEPATH).populate())
         open(FILEPATH, 'a').write('#Ninja edit\n')
         assert_true(ctrl.has_been_modified_on_disk())
 
     def test_reload(self):
-        ctrl = TestCaseFileController(TestCaseFile(source=FILEPATH))
+        ctrl = TestCaseFileController(TestCaseFile(source=FILEPATH).populate())
         assert_equals(len(ctrl.tests), 1)
         open(FILEPATH, 'a').write('Second Test  Log  Hello World!\n')
         ctrl.reload()
@@ -64,7 +64,7 @@ class TestModifiedOnDiskWithFileSuite(_DataDependentTest):
         assert_equals(ctrl.tests[-1].name, 'Second Test')
 
     def test_overwrite(self):
-        ctrl = TestCaseFileController(TestCaseFile(source=FILEPATH),
+        ctrl = TestCaseFileController(TestCaseFile(source=FILEPATH).populate(),
                                       ChiefController(Namespace()))
         os.utime(FILEPATH, (1,1))
         assert_true(ctrl.has_been_modified_on_disk())
@@ -75,14 +75,14 @@ class TestModifiedOnDiskWithFileSuite(_DataDependentTest):
 class TestModifiedOnDiskWithDirectorySuite(_DataDependentTest):
 
     def test_reload_with_directory_suite(self):
-        ctrl = TestDataDirectoryController(TestDataDirectory(source=DIRPATH))
+        ctrl = TestDataDirectoryController(TestDataDirectory(source=DIRPATH).populate())
         open(INITPATH, 'a').write('...  ninjaed more documentation')
         ctrl.reload()
         assert_equals(ctrl.settings[0].value,
                       'Ride unit testing file ninjaed more documentation')
 
     def test_mtime_with_directory_suite(self):
-        ctrl = TestDataDirectoryController(TestDataDirectory(source=DIRPATH))
+        ctrl = TestDataDirectoryController(TestDataDirectory(source=DIRPATH).populate())
         assert_false(ctrl.has_been_modified_on_disk())
         os.utime(INITPATH, (1,1))
         assert_true(ctrl.has_been_modified_on_disk())
@@ -91,7 +91,7 @@ class TestModifiedOnDiskWithDirectorySuite(_DataDependentTest):
 class TestModifiedOnDiskWithresource(_DataDependentTest):
 
     def test_reload_with_resource(self):
-        ctrl = ResourceFileController(ResourceFile(source=RESOURCEPATH))
+        ctrl = ResourceFileController(ResourceFile(source=RESOURCEPATH).populate())
         assert_equals(len(ctrl.keywords), 1)
         open(RESOURCEPATH, 'a').write('Ninjaed Keyword  Log  I am taking over!\n')
         ctrl.reload()
@@ -123,7 +123,7 @@ class TestDataFileRemoval(_DataDependentTest):
 
     def test_deleting_file_suite_under_dir_suite(self):
         chief = ChiefController(Namespace())
-        chief.new_project(TestDataDirectory(source=DIRPATH))
+        chief.new_project(TestDataDirectory(source=DIRPATH).populate())
         file_suite = chief.data.children[0]
         file_suite.remove()
         assert_true(len(chief.data.children) == 0, 'Child suite was not removed')
@@ -136,7 +136,7 @@ class TestDataFileRemoval(_DataDependentTest):
 
     def test_deleting_init_file(self):
         chief = ChiefController(Namespace())
-        chief.new_project(TestDataDirectory(source=DIRPATH))
+        chief.new_project(TestDataDirectory(source=DIRPATH).populate())
         os.remove(INITPATH)
         chief.data.remove()
         open(INITPATH, 'w').write('*Settings*\nDocumentation  Ride unit testing file\n')

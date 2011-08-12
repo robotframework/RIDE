@@ -143,7 +143,7 @@ class TestKeywordSuggestions(_DataFileTest):
         self._assert_import_kws(sugs, 'LibSpecLibrary')
 
     def test_xml_library_is_library_keyword(self):
-        everything_tcf = TestCaseFile(source=TESTCASEFILE_WITH_EVERYTHING)
+        everything_tcf = TestCaseFile(source=TESTCASEFILE_WITH_EVERYTHING).populate()
         assert_true(self.ns.is_library_keyword(everything_tcf, 'Attributeless Keyword'))
 
     def test_variable_path_separator(self):
@@ -191,7 +191,7 @@ class TestKeywordSuggestions(_DataFileTest):
         assert_true(len(sugs) > 0)
 
     def _get_controller(self, source):
-        return DataController(TestCaseFile(source=source), None)
+        return DataController(TestCaseFile(source=source).populate(), None)
 
     def test_library_arguments_are_resolved(self):
         sugs = self.ns.get_suggestions_for(self._get_controller(TESTCASEFILE_WITH_EVERYTHING).keywords[0],
@@ -283,7 +283,7 @@ class TestKeywordSearch(_DataFileTest):
         self.assert_in_keywords(all_kws, 'Should Be Equal')
 
     def test_find_suite_keywords(self):
-        everything_tcf = TestCaseFile(source=TESTCASEFILE_WITH_EVERYTHING)
+        everything_tcf = TestCaseFile(source=TESTCASEFILE_WITH_EVERYTHING).populate()
         all_kws = self.ns.get_all_keywords([self.tcf, everything_tcf])
         self.assert_in_keywords(all_kws, 'Should be in keywords Uk',
                                          'Copy List',
@@ -292,7 +292,7 @@ class TestKeywordSearch(_DataFileTest):
                                          'My Suite Teardown')
 
     def test_resource_kws_only_once(self):
-        directory = TestDataDirectory(source=OCCURRENCES_PATH)
+        directory = TestDataDirectory(source=OCCURRENCES_PATH).populate()
         all_kws = self.ns.get_all_keywords(directory.children)
         self._check_resource_keyword_only_once(all_kws)
 
@@ -316,7 +316,7 @@ class TestKeywordSearch(_DataFileTest):
         assert_false(self.ns.is_user_keyword(self.tcf, 'Should Be Equal'))
 
     def test_is_user_keyword_in_resource_file(self):
-        everything_tcf = TestCaseFile(source=TESTCASEFILE_WITH_EVERYTHING)
+        everything_tcf = TestCaseFile(source=TESTCASEFILE_WITH_EVERYTHING).populate()
         assert_not_none(self.ns.find_user_keyword(everything_tcf, 'Duplicate UK'))
         assert_true(self.ns.is_user_keyword(everything_tcf, 'Duplicate UK'))
         assert_not_none(self.ns.find_user_keyword(everything_tcf, 'Another Resource UK'))

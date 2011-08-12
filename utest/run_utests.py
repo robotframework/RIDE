@@ -9,8 +9,10 @@ except ImportError:
     run = None
 
 if __name__ == '__main__':
+    basedir = os.path.dirname(__file__)
     if run:
+        sys.path.insert(0, os.path.join(basedir, '..', 'bundled', 'robotframework', 'src'))
         sys.argv.append('--m=^test')
-        tests_passed = run(defaultTest=os.path.dirname(__file__))
+        tests_passed = run(defaultTest=basedir)
         retcode = 0 if tests_passed else 1
         sys.exit(retcode)

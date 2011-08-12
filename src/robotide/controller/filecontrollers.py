@@ -318,7 +318,7 @@ class TestDataDirectoryController(_DataController, DirectoryController):
         return True
 
     def reload(self):
-        self.__init__(TestDataDirectory(source=self.directory),
+        self.__init__(TestDataDirectory(source=self.directory).populate(),
                       self._chief_controller)
 
     def remove(self):
@@ -392,7 +392,8 @@ class TestCaseFileController(_DataController):
         RideDataFileRemoved(path=self.source, datafile=self).publish()
 
     def reload(self):
-        self.__init__(TestCaseFile(source=self.source), self._chief_controller)
+        self.__init__(TestCaseFile(source=self.source).populate(),
+                      self._chief_controller)
 
     def get_template(self):
         return self.data.setting_table.test_template
@@ -430,7 +431,8 @@ class ResourceFileController(_DataController):
         return None
 
     def reload(self):
-        self.__init__(ResourceFile(source=self.source), self._chief_controller)
+        self.__init__(ResourceFile(source=self.source).populate(),
+                      self._chief_controller)
 
     def remove(self):
         self._chief_controller.remove_resource(self)

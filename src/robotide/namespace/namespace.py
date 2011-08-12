@@ -198,7 +198,7 @@ class ResourceCache(object):
         normalized = self._normalize(path)
         if normalized not in self.cache:
             try:
-                self.cache[normalized] = ResourceFile(path)
+                self.cache[normalized] = ResourceFile(path).populate()
             except Exception:
                 self.cache[normalized] = None
                 return None

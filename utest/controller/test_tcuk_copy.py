@@ -1,11 +1,11 @@
 #  Copyright 2008 Nokia Siemens Networks Oyj
-#  
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,7 +23,7 @@ from robot.utils.asserts import assert_equals, assert_true
 
 
 class TestCaseAndUserKeywordCopyingTest(unittest.TestCase):
-    controller = TestCaseFileController(TestCaseFile(source=COMPLEX_SUITE_PATH))
+    controller = TestCaseFileController(TestCaseFile(source=COMPLEX_SUITE_PATH).populate())
 
     def test_test_case_copy(self):
         test = self.controller.tests[0]
@@ -59,7 +59,7 @@ class TestCaseAndUserKeywordCopyingTest(unittest.TestCase):
         start_time = time.time()
         for i in range(0, count):
             item.copy(str(i))
-        self.assertTrue(time.time() < (start_time + 2), 
+        self.assertTrue(time.time() < (start_time + 2),
                         "Copy operation takes too long time")
 
 
