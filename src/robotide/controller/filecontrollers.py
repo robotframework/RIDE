@@ -271,6 +271,29 @@ class DirectoryController(_FileSystemElement, _BaseController):
     def new_resource(self, path):
         return self._chief_controller.new_resource(path, parent=self)
 
+    def insert_to_test_data_directory(self, res):
+        res_dir = os.path.dirname(res.source)
+        if res_dir in self._dir_controllers:
+            self._dir_controllers[res_dir].add_child(res)
+        else:
+            target = self._find_closest_directory(res)
+            if target is self:
+                dir_ctrl = DirectoryController(res_dir, self._chief_controller)
+                self._dir_controllers[res_dir] = dir_ctrl
+                dir_ctrl.add_child(res)
+                target.add_child(dir_ctrl)
+            else:
+                target.insert_to_test_data_directory(res)
+
+    def _find_closest_directory(self, res):
+        target = self
+        for s in self.iter_datafiles():
+            if not isinstance(s, DirectoryController):
+                continue
+            if res.source.startswith(s.directory):
+                target = s
+        return target
+
 
 class TestDataDirectoryController(_DataController, DirectoryController):
 
@@ -339,33 +362,13 @@ class TestDataDirectoryController(_DataController, DirectoryController):
         return ctrl.source.startswith(self.directory)
 
     def insert_to_test_data_directory(self, res):
-        res_dir = os.path.dirname(res.source)
-        if self._is_inside_test_data_directory(res_dir):
+        if self._is_inside_test_data_directory(os.path.dirname(res.source)):
             return
-        if res_dir in self._dir_controllers:
-            self._dir_controllers[res_dir].add_child(res)
-        else:
-            target = self._find_closest_directory(res)
-            if target is self:
-                dir_ctrl = DirectoryController(res_dir, self._chief_controller)
-                self._dir_controllers[res_dir] = dir_ctrl
-                dir_ctrl.add_child(res)
-                target.add_child(dir_ctrl)
-            else:
-                target.insert_to_test_data_directory(res)
+        DirectoryController.insert_to_test_data_directory(self, res)
 
     def _is_inside_test_data_directory(self, directory):
         return any(True for s in [self] + self.children
                    if s.is_directory_suite() and s.directory == directory)
-
-    def _find_closest_directory(self, res):
-        target = self
-        for s in self.iter_datafiles():
-            if not isinstance(s, DirectoryController):
-                continue
-            if res.source.startswith(s.directory):
-                target = s
-        return target
 
 
 class TestCaseFileController(_DataController):
