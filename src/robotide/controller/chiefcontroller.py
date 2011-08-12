@@ -60,7 +60,14 @@ class ChiefController(object):
     def datafiles(self):
         return self._suites() + self.resources
 
+    def new_resource(self, path, parent=None):
+        res = self._namespace.new_resource(path)
+        self.update_default_dir(path)
+        return self._create_resource_controller(res, parent)
+
     def load_data(self, path, load_observer):
+        if self._load_initfile(path, load_observer):
+            return
         if self._load_datafile(path, load_observer):
             return
         if self._load_resource(path, load_observer):
@@ -68,10 +75,14 @@ class ChiefController(object):
         load_observer.error("Given file '%s' is not a valid Robot Framework "
                             "test case or resource file." % path)
 
-    def new_resource(self, path, parent=None):
-        res = self._namespace.new_resource(path)
-        self.update_default_dir(path)
-        return self._create_resource_controller(res, parent)
+    def _load_initfile(self, path, load_observer):
+        if not os.path.splitext(os.path.split(path)[1])[0] == '__init__':
+            return None
+        initfile = self._loader.load_initfile(path, load_observer)
+        if not initfile:
+            return None
+        self._populate_from_datafile(path, initfile, load_observer)
+        return initfile
 
     def load_datafile(self, path, load_observer):
         datafile = self._load_datafile(path, load_observer)
@@ -80,16 +91,19 @@ class ChiefController(object):
         load_observer.error("Invalid data file '%s'." % path)
 
     def _load_datafile(self, path, load_observer):
-        self.__init__(self._namespace)
         datafile = self._loader.load_datafile(path, load_observer)
         if not datafile:
             return None
+        self._populate_from_datafile(path, datafile, load_observer)
+        return datafile
+
+    def _populate_from_datafile(self, path, datafile, load_observer):
+        self.__init__(self._namespace)
         resources = self._loader.resources_for(datafile, load_observer)
         self._create_controllers(datafile, resources)
         RideOpenSuite(path=path, datafile=self._controller).publish()
         self.resolve_resource_directories()
         load_observer.finish()
-        return datafile
 
     def _create_controllers(self, datafile, resources):
         self._namespace.clear_update_listeners()

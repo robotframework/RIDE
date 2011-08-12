@@ -12,33 +12,40 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import os
 from threading import Thread
 
-from robot.parsing.model import TestData
+from robot.parsing.model import TestData, TestDataDirectory
+from robot.parsing.populators import FromFilePopulator
 
 
 class DataLoader(object):
+
     def __init__(self, namespace):
         self._namespace = namespace
         self._namespace.reset_resource_and_library_cache()
 
     def load_datafile(self, path, load_observer):
-        loader = _DataLoader(path)
-        loader.start()
-        load_observer.notify()
-        while loader.isAlive():
-            loader.join(0.1)
-            load_observer.notify()
-        return loader.datafile
+        return self._load(_DataLoader(path), load_observer)
+
+    def load_initfile(self, path, load_observer):
+        res = self._load(_InitFileLoader(path), load_observer)
+        return res
 
     def resources_for(self, datafile, load_observer):
-        loader = _ResourceLoader(datafile, self._namespace.get_resources)
+        return self._load(_ResourceLoader(datafile, self._namespace.get_resources),
+                          load_observer)
+
+    def _load(self, loader, load_observer):
+        self._wait_until_loaded(loader, load_observer)
+        return loader.result
+
+    def _wait_until_loaded(self, loader, load_observer):
         loader.start()
         load_observer.notify()
         while loader.isAlive():
             loader.join(0.1)
             load_observer.notify()
-        return loader.resources
 
 
 class _DataLoader(Thread):
@@ -46,14 +53,30 @@ class _DataLoader(Thread):
     def __init__(self, path):
         Thread.__init__(self)
         self._path = path
-        self.datafile = None
+        self.result = None
 
     def run(self):
         try:
-            self.datafile = TestData(source=self._path)
+            self.result = TestData(source=self._path)
         except Exception:
             pass
             # TODO: Log this error somehow
+
+
+class _InitFileLoader(Thread):
+
+    def __init__(self, path):
+        Thread.__init__(self)
+        self._path = path
+        self.result = None
+
+    def run(self):
+        try:
+            self.result = TestDataDirectory(source=os.path.dirname(self._path))
+            self.result.initfile = self._path
+            FromFilePopulator(self.result).populate(self._path)
+        except Exception, err:
+            pass
 
 
 class _ResourceLoader(Thread):
@@ -62,7 +85,7 @@ class _ResourceLoader(Thread):
         Thread.__init__(self)
         self._datafile = datafile
         self._loader = resource_loader
-        self.resources = []
+        self.result = []
 
     def run(self):
-        self.resources = self._loader(self._datafile)
+        self.result = self._loader(self._datafile)
