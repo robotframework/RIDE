@@ -345,10 +345,14 @@ class TestDataDirectoryController(_DataController, DirectoryController):
         if res_dir in self._dir_controllers:
             self._dir_controllers[res_dir].add_child(res)
         else:
-            dir_ctrl = DirectoryController(res_dir, self._chief_controller)
-            self._dir_controllers[res_dir] = dir_ctrl
-            dir_ctrl.add_child(res)
-            self._find_closest_directory(res).add_child(dir_ctrl)
+            target = self._find_closest_directory(res)
+            if target is self:
+                dir_ctrl = DirectoryController(res_dir, self._chief_controller)
+                self._dir_controllers[res_dir] = dir_ctrl
+                dir_ctrl.add_child(res)
+                target.add_child(dir_ctrl)
+            else:
+                target.insert_to_test_data_directory(res)
 
     def _is_inside_test_data_directory(self, directory):
         return any(True for s in [self] + self.children
