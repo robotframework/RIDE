@@ -30,7 +30,7 @@ class TreeImageList(wx.ImageList):
         wx.ImageList.__init__(self, *_SIZE)
         self._images = {
             TestDataDirectoryController: _TreeImage(self, 'folder.png'),
-            DirectoryController: _TreeImage(self, 'bricks.png'),
+            DirectoryController: _TreeImage(self, 'folder_wrench.png'),
             TestCaseFileController: _TreeImage(self, 'page_white.png'),
             TestCaseController: _TreeImage(self, 'robot.png'),
             UserKeywordController: _TreeImage(self, 'cog.png'),
