@@ -258,7 +258,7 @@ class TestSections(TestSettingsHelper):
         self.settings.add_section('Plugin 1')
         self.settings['Plugin 1'].add_section('Plugin 1.1')
         self.settings['Plugin 1']['Plugin 1.1']['foo'] = 'bar'
-        self.assertEquals(self.settings['Plugin 1']['Plugin 1.1']._config_obj, 
+        self.assertEquals(self.settings['Plugin 1']['Plugin 1.1']._config_obj,
                           {'foo':'bar'})
 
     def test_using_section_separately_and_saving(self):
@@ -345,6 +345,15 @@ class TestMergeSettings(TestSettingsHelper):
         _merge_settings(self.settings_path, self.user_settings_path)
         self._check_content({'foo':'new value', 'hello' : 'world', 'new':'value'},
                             False)
+
+    def test_merge_fails_reasonably_when_settings_file_is_read_only(self):
+        try:
+            _merge_settings(self.settings_path, self.read_only_path)
+        except RuntimeError, e:
+            self.assertTrue(str(e).startswith('Could not open'))
+        else:
+            raise AssertionError('merging read-only file succeeded')
+
 
 
 if __name__ == "__main__":

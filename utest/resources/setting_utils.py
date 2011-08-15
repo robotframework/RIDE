@@ -17,6 +17,8 @@ class TestSettingsHelper(unittest.TestCase):
                                           'settings.cfg')
         self.user_settings_path = os.path.join(os.path.dirname(__file__),
                                           'user.cfg')
+        self.read_only_path = os.path.join(os.path.dirname(__file__), 'read-only.cfg')
+
 
     def tearDown(self):
         for path in [self.settings_path, self.user_settings_path]:

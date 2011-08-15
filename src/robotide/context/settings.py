@@ -1,11 +1,11 @@
 #  Copyright 2008-2009 Nokia Siemens Networks Oyj
-#  
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,7 +29,7 @@ if not os.path.exists(SETTINGS_DIRECTORY):
 
 def initialize_settings(tool_name, source_path, dest_file_name=None):
     """ Creates settings directory and copies or merges the source to there.
-    
+
     In case source already exists, merge is done.
     Destination file name is the source_path's file name unless dest_file_name
     is given.
@@ -48,16 +48,30 @@ def initialize_settings(tool_name, source_path, dest_file_name=None):
 
 
 def _merge_settings(default_path, user_path):
+    settings = _create_merged_settings(default_path, user_path)
+    _write_merged_settings(settings, user_path)
+
+def _create_merged_settings(default_path, user_path):
     settings = ConfigObj(default_path, unrepr=True)
     try:
         settings.merge(ConfigObj(user_path, unrepr=True))
     except UnreprError, err:
-        raise ConfigurationError("Invalid config file '%s': %s" % (user_path, err))
+        raise ConfigurationError("Invalid config file '%s': %s" %
+                (user_path, err))
+    return settings
+
+def _write_merged_settings(settings, path):
+    outfile = None
     try:
-        f = open(user_path, 'wb')
-        settings.write(f)
+        outfile = open(path, 'wb')
+        settings.write(outfile)
+    except IOError:
+        raise RuntimeError('Could not open settings file "%s" for writing' %
+                           path)
     finally:
-        f.close()
+        if outfile:
+            outfile.close()
+
 
 
 class SectionError(Exception):
@@ -109,9 +123,9 @@ class _Section:
 
     def set(self, name, value, autosave=True, override=True):
         """Sets setting 'name' value to 'value'.
-        
+
         'autosave' can be used to define whether to save or not after values are
-        changed. 'override' can be used to specify whether to override existing 
+        changed. 'override' can be used to specify whether to override existing
         value or not. Setting which does not exist is anyway always created.
         """
         if self._is_section(name) and not isinstance(value, _Section):
@@ -128,7 +142,7 @@ class _Section:
 
     def set_values(self, settings, autosave=True, override=True):
         """Set values from settings. 'settings' needs to be a dictionary.
-        
+
         See method set for more info about 'autosave' and 'override'.
         """
         if settings:
