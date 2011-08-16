@@ -1,4 +1,5 @@
 import os
+import stat
 import unittest
 
 from robotide.context.settings import Settings
@@ -18,6 +19,7 @@ class TestSettingsHelper(unittest.TestCase):
         self.user_settings_path = os.path.join(os.path.dirname(__file__),
                                           'user.cfg')
         self.read_only_path = os.path.join(os.path.dirname(__file__), 'read-only.cfg')
+        os.chmod(self.read_only_path, stat.S_IRUSR)
 
 
     def tearDown(self):
