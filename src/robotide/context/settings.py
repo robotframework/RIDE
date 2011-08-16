@@ -73,7 +73,6 @@ def _write_merged_settings(settings, path):
             outfile.close()
 
 
-
 class SectionError(Exception):
     """Used when section is tried to replace with normal value or vice versa."""
 

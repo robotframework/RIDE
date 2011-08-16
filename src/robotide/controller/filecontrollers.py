@@ -259,6 +259,9 @@ class DirectoryController(_FileSystemElement, _BaseController):
 
     def iter_datafiles(self):
         yield self
+        for child in self.children:
+            for datafile in child.iter_datafiles():
+                yield datafile
 
     @property
     def display_name(self):
@@ -278,10 +281,7 @@ class DirectoryController(_FileSystemElement, _BaseController):
         else:
             target = self._find_closest_directory(res)
             if target is self:
-                dir_ctrl = DirectoryController(res_dir, self._chief_controller)
-                self._dir_controllers[res_dir] = dir_ctrl
-                dir_ctrl.add_child(res)
-                target.add_child(dir_ctrl)
+                self._create_target_dir_controller(res, res_dir, target)
             else:
                 target.insert_to_test_data_directory(res)
 
@@ -293,6 +293,18 @@ class DirectoryController(_FileSystemElement, _BaseController):
             if res.source.startswith(s.directory):
                 target = s
         return target
+
+    def _create_target_dir_controller(self, res, res_dir, target):
+        for dirname in res_dir[len(self.directory):].split('/'):
+            if not dirname:
+                continue
+            target_dir = os.path.join(target.directory, dirname)
+            dir_ctrl = DirectoryController(target_dir, self._chief_controller)
+            target._dir_controllers[res_dir] = dir_ctrl
+            target.add_child(dir_ctrl)
+            if target_dir == res_dir:
+                dir_ctrl.add_child(res)
+            target = dir_ctrl
 
 
 class TestDataDirectoryController(_DataController, DirectoryController):
