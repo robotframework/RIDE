@@ -33,13 +33,13 @@ try:
     ride._open_test_dir()
     ride._create_suite()
     ride.create_test()
-    for j in range(584):
-        ride_runner.skip_step()
-    ride_runner.step()
-    for k in range(17):
-        ride_runner.skip_step()
-    ride_runner.step()
-    ride_runner.skip_step()
+    #for j in range(584):
+    #    ride_runner.skip_step()
+    #ride_runner.step()
+    #for k in range(17):
+    #    ride_runner.skip_step()
+    #ride_runner.step()
+    #ride_runner.skip_step()
     for i in range(10000):
         ride_runner.step()
 except :
