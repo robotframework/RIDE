@@ -304,11 +304,14 @@ class DirectoryController(_FileSystemElement, _BaseController):
                 continue
             target_dir = os.path.join(target.directory, dirname)
             dir_ctrl = DirectoryController(target_dir, self._chief_controller)
-            target._dir_controllers[res_dir] = dir_ctrl
+            target._dir_controllers[target.directory] = dir_ctrl
             target.add_child(dir_ctrl)
             if target_dir == res_dir:
                 dir_ctrl.add_child(res)
+                return
             target = dir_ctrl
+        self.add_child(res)
+
 
 
 class TestDataDirectoryController(_DataController, DirectoryController):
