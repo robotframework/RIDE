@@ -132,16 +132,22 @@ class ChiefControllerTest(unittest.TestCase):
         self._test_listeners([], ALL_RESOURCE_PATH_RELATED_RESOURCE_IMPORTS)
 
 
-class TestCreatingResourceDirectories(unittest.TestCase):
+class TestResolvingResourceDirectories(unittest.TestCase):
 
     def setUp(self):
         self.chief = ChiefController(Namespace())
+
+    def test_resource_file_outside_of_topsuite_is_an_external_resource(self):
+        self.chief._controller = TestDataDirectoryController(self._data_directory('/suite'))
+        self._set_resources('/foo/resource.txt')
+        assert_equals(self.chief.external_resources, self.chief.resources)
 
     def test_resource_file_in_own_directory_is_added_to_top_suite(self):
         self.chief._controller = TestDataDirectoryController(self._data_directory('/foo'))
         self._set_resources('/foo/bar/quux.txt')
         self._assert_resource_dir_was_created_as_child_of(self.chief.data)
         self._assert_resource_dir_contains_resources()
+        assert_true(len(self.chief.external_resources)==  0)
 
     def test_two_resource_in_same_directory_get_same_parent(self):
         self.chief._controller = TestDataDirectoryController(self._data_directory('/foo'))

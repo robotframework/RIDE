@@ -1,30 +1,29 @@
 import unittest
 import os
 import shutil
+
 from robot.parsing import TestCase
 from robot.parsing.model import TestCaseFile, TestDataDirectory
 from robot.utils.asserts import (assert_equals, assert_true, assert_false)
 
-from robotide.controller.filecontrollers import TestCaseFileController, TestDataDirectoryController,\
-    _DataController
+from robotide.controller.filecontrollers import TestCaseFileController, \
+    TestDataDirectoryController, _DataController
 from robotide.controller.tablecontrollers import TestCaseController
+from robotide.controller.commands import AddSuite
 from robotide.controller import NewDatafile
-
-from resources import SUITEPATH
 from robotide.publish import PUBLISHER
 from robotide.publish.messages import RideDataChangedToDirty,\
-    RideDataDirtyCleared
+RideDataDirtyCleared
+
+from resources import SUITEPATH
 import datafilereader
-from robotide.controller.commands import AddSuite
 
 
 class TestMarkUnMarkDirty(unittest.TestCase):
 
     def setUp(self):
         class Data(object):
-            @property
-            def source(self):
-                return None
+            source = directory = None
         self.ctrl = _DataController(Data())
         self._has_unsaved_changes = False
         self._saved = False
@@ -68,13 +67,11 @@ class TestMarkUnMarkDirty(unittest.TestCase):
 
 
 class TestCaseFileControllerTest(unittest.TestCase):
-
     SOURCE_HTML = '/tmp/.path.with.dots/test.cases.html'
     SOURCE_TXT = SOURCE_HTML.replace('.html', '.txt')
 
     def setUp(self):
-        self.ctrl = TestCaseFileController(TestCaseFile())
-        self.ctrl.data.source = self.SOURCE_HTML
+        self.ctrl = TestCaseFileController(TestCaseFile(source=self.SOURCE_HTML))
 
     def test_creation(self):
         for st in self.ctrl.settings:
@@ -89,11 +86,11 @@ class TestCaseFileControllerTest(unittest.TestCase):
         assert_equals(self.ctrl.get_format(), 'html')
 
     def test_source(self):
-        assert_equals(self.ctrl.source, self.SOURCE_HTML)
+        assert_equals(self.ctrl.filename, self.SOURCE_HTML)
 
     def test_set_format(self):
         self.ctrl.set_format('txt')
-        assert_equals(self.ctrl.source, self.SOURCE_TXT)
+        assert_equals(self.ctrl.filename, self.SOURCE_TXT)
 
     def test_add_test_or_kw(self):
         assert_equals(len(self.ctrl.tests), 0)
@@ -133,42 +130,44 @@ class TestResourceFileControllerTest(unittest.TestCase):
 class TestDataDirectoryControllerTest(unittest.TestCase):
 
     def setUp(self):
-        self.ctrl = TestDataDirectoryController(TestDataDirectory())
+        self.data = TestDataDirectory(source='/source')
 
     def test_creation(self):
-        for st in self.ctrl.settings:
+        ctrl = TestDataDirectoryController(self.data)
+        for st in ctrl.settings:
             assert_true(st is not None)
-        assert_equals(len(self.ctrl.settings), 6)
+        assert_equals(len(ctrl.settings), 6)
 
     def test_has_format(self):
-        assert_false(self.ctrl.has_format())
-        self.ctrl.mark_dirty()
-        assert_false(self.ctrl.has_format())
-        self.ctrl.data.initfile = '/tmp/__init__.html'
-        assert_true(self.ctrl.has_format())
+        ctrl = TestDataDirectoryController(self.data)
+        assert_false(ctrl.has_format())
+        ctrl.mark_dirty()
+        assert_false(ctrl.has_format())
+        ctrl.data.initfile = '/tmp/__init__.html'
+        assert_true(ctrl.has_format())
 
     def test_default_dir_is_source(self):
-        self.ctrl.data.initfile = '/foo/bar/__init__.html'
-        self.ctrl.data.source = '/foo/bar/'
-        assert_true(self.ctrl.default_dir, os.path.dirname(self.ctrl.source))
+        self.data.initfile = '/source/__init__.html'
+        ctrl = TestDataDirectoryController(self.data)
+        assert_true(ctrl.default_dir, os.path.dirname(ctrl.source))
 
     def test_set_format(self):
-        dir = TestDataDirectory()
-        dir.source = '/tmp/'
-        ctrl = TestDataDirectoryController(dir)
+        ctrl = TestDataDirectoryController(self.data)
         assert_false(ctrl.has_format())
         ctrl.set_format('txt')
         assert_true(ctrl.has_format())
-        assert_equals(ctrl.source, '/tmp/__init__.txt')
+        assert_equals(ctrl.source, '/source/__init__.txt')
 
     def test_adding_new_child(self):
-        assert_true(self.ctrl.new_datafile(NewDatafile('path/to/data.txt',
+        ctrl = TestDataDirectoryController(self.data)
+        assert_true(ctrl.new_datafile(NewDatafile('path/to/data.txt',
                                                   is_dir_type=False)))
 
     def test_adding_new_suite_with_command(self):
-        suite = self.ctrl.execute(AddSuite(NewDatafile('path/to/suite.txt',
+        ctrl = TestDataDirectoryController(self.data)
+        suite = ctrl.execute(AddSuite(NewDatafile('path/to/suite.txt',
                                                   is_dir_type=False)))
-        assert_equals(suite.data.parent, self.ctrl.data)
+        assert_equals(suite.data.parent, ctrl.data)
 
 
 class DatafileIteratorTest(unittest.TestCase):
