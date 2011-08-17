@@ -19,17 +19,28 @@ class Runner(object):
         self._model = model
         self._random = random
         self._actions = self._actions_from_model()
+        self._count = 0
 
     def _actions_from_model(self):
         return [name for name,_ in inspect.getmembers(self._model, inspect.ismethod) if not name.startswith('_')]
 
     def step(self):
+        self._count += 1
         self._model._do_not_skip()
         action = self._random.choice(self._actions)
         print action
         getattr(self._model, action)()
 
     def skip_step(self):
+        self._count += 1
         self._model._skip_until_notified()
         action = self._random.choice(self._actions)
         getattr(self._model, action)()
+
+    def skip_steps(self, count):
+        for i in range(count):
+            self.skip_step()
+
+    @property
+    def count(self):
+        return self._count
