@@ -299,7 +299,7 @@ class DirectoryController(_FileSystemElement, _BaseController):
         return target
 
     def _create_target_dir_controller(self, res, res_dir, target):
-        for dirname in res_dir[len(self.directory):].split('/'):
+        for dirname in res_dir[len(self.directory):].split(os.sep):
             if not dirname:
                 continue
             target_dir = os.path.join(target.directory, dirname)
