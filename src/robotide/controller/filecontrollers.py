@@ -76,10 +76,6 @@ class _DataController(_FileSystemElement, _BaseController, WithUndoRedoStacks):
         return self.data.source if self.data else None
 
     @property
-    def short_source(self):
-        return os.path.basename(self.data.source)
-
-    @property
     def settings(self):
         return self._settings()
 
