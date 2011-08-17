@@ -241,9 +241,11 @@ class DirectoryController(_FileSystemElement, _BaseController):
     def __init__(self, path, chief_controller):
         _FileSystemElement.__init__(self, path)
         self.directory = self.source = path
+        self.settings = self.tests = self.keywords = ()
         self._chief_controller = chief_controller
         self.children = []
         self.data = None
+        self.datafile = None
         self.dirty = False
         self._dir_controllers = {}
 
@@ -264,11 +266,18 @@ class DirectoryController(_FileSystemElement, _BaseController):
         return os.path.split(self.directory)[1]
 
     @property
+    def name(self):
+        return self.display_name
+
+    @property
     def default_dir(self):
         return self.directory
 
     def new_resource(self, path):
         return self._chief_controller.new_resource(path, parent=self)
+
+    def keyword_info(self, name):
+        return None
 
     def insert_to_test_data_directory(self, res):
         res_dir = os.path.dirname(res.source)

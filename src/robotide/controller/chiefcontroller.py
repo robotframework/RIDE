@@ -167,7 +167,7 @@ class ChiefController(object):
         return self._namespace.is_library_keyword(datafile, value)
 
     def get_all_keywords(self):
-        return self._namespace.get_all_keywords(ctrl.datafile for ctrl in self.datafiles)
+        return self._namespace.get_all_keywords(ctrl.datafile for ctrl in self.datafiles if ctrl.datafile)
 
     def all_testcases(self):
         for df in self._suites():
