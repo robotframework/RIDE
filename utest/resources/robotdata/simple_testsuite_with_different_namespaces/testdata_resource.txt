@@ -1,5 +1,5 @@
 *** Settings ***
-Resource    inner_resource.txt
+Resource    resources${/}inner_resource.txt
 
 *** Variables ***
 @{Resource List}  2  34
