@@ -156,6 +156,12 @@ class TestResolvingResourceDirectories(unittest.TestCase):
         self._assert_resource_dir_was_created_as_child_of(self.chief.data)
         self._assert_resource_dir_contains_resources()
 
+    def test_two_nested_resources_in_same_directory_get_same_parent(self):
+        self.chief._controller = TestDataDirectoryController(self._data_directory('/suite'))
+        self._set_resources('/suite/foo/bar/quux.txt', '/suite/foo/bar/zap.txt')
+        assert_equals(self.chief.data.children[0].children[0].children,
+                      self.chief.resources)
+
     def test_resource_directory_gets_nearest_possible_parent(self):
         self.chief._controller = TestDataDirectoryController(self._data_directory('/tmp'))
         self.chief.data.add_child(TestDataDirectoryController(self._data_directory('/tmp/some')))
