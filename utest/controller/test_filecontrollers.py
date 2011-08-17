@@ -67,7 +67,7 @@ class TestMarkUnMarkDirty(unittest.TestCase):
 
 
 class TestCaseFileControllerTest(unittest.TestCase):
-    SOURCE_HTML = '/tmp/.path.with.dots/test.cases.html'
+    SOURCE_HTML = os.path.abspath(os.path.join('tmp', '.path.with.dots', 'test.cases.html'))
     SOURCE_TXT = SOURCE_HTML.replace('.html', '.txt')
 
     def setUp(self):
@@ -130,7 +130,7 @@ class TestResourceFileControllerTest(unittest.TestCase):
 class TestDataDirectoryControllerTest(unittest.TestCase):
 
     def setUp(self):
-        self.data = TestDataDirectory(source='/source')
+        self.data = TestDataDirectory(source='source')
 
     def test_creation(self):
         ctrl = TestDataDirectoryController(self.data)
@@ -143,11 +143,11 @@ class TestDataDirectoryControllerTest(unittest.TestCase):
         assert_false(ctrl.has_format())
         ctrl.mark_dirty()
         assert_false(ctrl.has_format())
-        ctrl.data.initfile = '/tmp/__init__.html'
+        ctrl.data.initfile = os.path.join('source', '__init__.html')
         assert_true(ctrl.has_format())
 
     def test_default_dir_is_source(self):
-        self.data.initfile = '/source/__init__.html'
+        self.data.initfile = os.path.join('source', '__init__.html')
         ctrl = TestDataDirectoryController(self.data)
         assert_true(ctrl.default_dir, os.path.dirname(ctrl.source))
 
@@ -156,7 +156,7 @@ class TestDataDirectoryControllerTest(unittest.TestCase):
         assert_false(ctrl.has_format())
         ctrl.set_format('txt')
         assert_true(ctrl.has_format())
-        assert_equals(ctrl.source, '/source/__init__.txt')
+        assert_equals(ctrl.source, os.path.abspath(os.path.join('source', '__init__.txt')))
 
     def test_adding_new_child(self):
         ctrl = TestDataDirectoryController(self.data)

@@ -1,7 +1,8 @@
+import os
 import unittest
+
 from robot.parsing.model import TestDataDirectory, ResourceFile
 from robot.utils.asserts import assert_true, assert_equals, assert_none
-
 
 from robotide.controller import ChiefController
 from robotide.namespace import Namespace
@@ -180,13 +181,12 @@ class TestResolvingResourceDirectories(unittest.TestCase):
 
     def _data_directory(self, path):
         data = TestDataDirectory()
-        data.source = data.directory = path
+        data.source = data.directory = os.path.normpath(path)
         return data
 
     def _set_resources(self, *paths):
         for p in paths:
-            res_data = ResourceFile()
-            res_data.source = p
+            res_data = ResourceFile(os.path.normpath(p))
             self.chief.resources.append(ResourceFileController(res_data))
         self.chief.resolve_resource_directories()
 
