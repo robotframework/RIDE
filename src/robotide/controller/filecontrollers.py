@@ -73,6 +73,7 @@ class _DataController(_BaseController, WithUndoRedoStacks):
         self.children = self._children(data)
         self._variables_table_controller = None
         self._testcase_table_controller = None
+        self._keywords_table_controller = None
 
     def _children(self, data):
         return []
@@ -128,7 +129,9 @@ class _DataController(_BaseController, WithUndoRedoStacks):
 
     @property
     def keywords(self):
-        return KeywordTableController(self, self.data.keyword_table)
+        if self._keywords_table_controller is None:
+            self._keywords_table_controller = KeywordTableController(self, self.data.keyword_table)
+        return self._keywords_table_controller
 
     @property
     def imports(self):
