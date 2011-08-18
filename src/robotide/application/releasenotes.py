@@ -84,4 +84,36 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
+<h2>Release notes for 0.37</h2>
+<table border="1">
+<tr>
+<td><b>ID</b></td>
+<td><b>Type</b></td>
+<td><b>Priority</b></td>
+<td><b>Summary</b></td>
+<td><b>AllLabels</b></td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=476">Issue 476</a></td>
+<td>Enhancement</td>
+<td>High</td>
+<td>Resources in the RIDE tree should be grouped or hierarchical</td>
+<td>Priority-High, Target-0.37, Type-Enhancement</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=717">Issue 717</a></td>
+<td>Defect</td>
+<td>Medium</td>
+<td>When I use RIDE to open __init__.html, it always report "invalid syntax" error </td>
+<td>Priority-Medium, Target-0.37, Type-Defect</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=823">Issue 823</a></td>
+<td>Defect</td>
+<td>Medium</td>
+<td>Starting RIDE fails with bad error message when settings.cfg is read-only</td>
+<td>Priority-Medium, Target-0.37, Type-Defect</td>
+</tr>
+</table>
+<p>Altogether 3 issues.</p>
 """
