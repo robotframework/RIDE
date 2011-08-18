@@ -96,6 +96,20 @@ class _Command(object):
     def execute(self, context):
         raise NotImplementedError(self.__class__)
 
+    def __str__(self):
+        return '%s(%s)' % (self.__class__.__name__, self._params_str())
+
+    def _params_str(self):
+        return ', '.join(self._format_param(p) for p in self._params())
+
+    def _format_param(self, param):
+        if isinstance(param, basestring):
+            return '"%s"' % param
+        return str(param)
+
+    def _params(self):
+        return []
+
 
 class CopyMacroAs(_Command):
 
@@ -105,12 +119,18 @@ class CopyMacroAs(_Command):
     def execute(self, context):
         context.copy(self._new_name)
 
+    def _params(self):
+        return [self._new_name]
+
 
 class ChangeTag(_Command):
 
     def __init__(self, tag, value):
         self._tag = tag
         self._value = value.strip()
+
+    def _params(self):
+        return (self._tag, self._value)
 
     def execute(self, context):
         context.set_value(self._create_value([tag for tag in context if tag.controller == context]))
@@ -169,6 +189,9 @@ class MoveTo(_Command):
     def __init__(self, destination):
         self._destination = destination
 
+    def _params(self):
+        return [self._destination]
+
     def execute(self, context):
         context.delete()
         self._destination.add_test_or_keyword(context)
@@ -222,6 +245,9 @@ class RenameKeywordOccurrences(_ReversibleCommand):
         self._keyword_info = keyword_info
         self._occurrences = None
 
+    def _params(self):
+        return (self._original_name, self._new_name, self._observer, self._keyword_info)
+
     def _execute(self, context):
         self._observer.notify()
         self._occurrences = self._find_occurrences(context) if self._occurrences is None \
@@ -258,6 +284,9 @@ class RenameTest(_ReversibleCommand):
 
     def __init__(self, new_name):
         self._new_name = new_name
+
+    def _params(self):
+        return (self._new_name)
 
     def _execute(self, context):
         context.test_name.rename(self._new_name)
@@ -460,6 +489,9 @@ class ExtractKeyword(_Command):
         self._args = new_kw_args
         self._rows = step_range
 
+    def _params(self):
+        return (self._name, self._args, self._rows)
+
     def execute(self, context):
         context.extract_keyword(self._name, self._args, self._rows)
         context.notify_steps_changed()
@@ -499,6 +531,9 @@ class ChangeCellValue(_StepsChangingCommand):
     def _get_undo_command(self):
         return self._undo_command
 
+    def __str__(self):
+        return '%s(%s, %s, "%s")' % (self.__class__.__name__, self._row, self._col, self._value)
+
 
 class SaveFile(_Command):
 
@@ -535,6 +570,9 @@ class InsertCell(_StepsChangingCommand):
         self._row = row
         self._col = col
 
+    def _params_str(self):
+        return '%s, %s' % (self._row, self._col)
+
     def change_steps(self, context):
         self._step(context).shift_right(self._col)
         return True
@@ -548,6 +586,9 @@ class DeleteCell(_StepsChangingCommand):
     def __init__(self, row, col):
         self._row = row
         self._col = col
+
+    def _params(self):
+        return (self._row, self._col)
 
     def change_steps(self, context):
         step = self._step(context)
@@ -575,6 +616,9 @@ class _RowChangingCommand(_StepsChangingCommand):
             return False
         self._change_value(context)
         return True
+
+    def __str__(self):
+        return '%s(%s)' % (self.__class__.__name__, self._row)
 
 
 class DeleteRow(_RowChangingCommand):
@@ -625,6 +669,9 @@ class MoveRowsUp(_StepsChangingCommand):
     def __init__(self, rows):
         self._rows = rows
 
+    def _params(self):
+        return [self._rows]
+
     def change_steps(self, context):
         if self._last_row > len(context.steps)-1 or self._first_row == 0:
             return False
@@ -641,7 +688,7 @@ class MoveRowsUp(_StepsChangingCommand):
         return self._rows[0]
 
     def _get_undo_command(self):
-        return MoveRowsDown([r-1 for r in self._rows])
+        return MoveRowsDown([r-1 for r in self._rows if r > 0])
 
 
 class MoveRowsDown(_StepsChangingCommand):
@@ -649,8 +696,11 @@ class MoveRowsDown(_StepsChangingCommand):
     def __init__(self, rows):
         self._rows = rows
 
+    def _params(self):
+        return [self._rows]
+
     def change_steps(self, context):
-        if self._last_row >= len(context.steps)-1:
+        if len(self._rows) == 0 or self._last_row >= len(context.steps)-1:
             return False
         for row in reversed(self._rows):
             context.move_step_down(row)

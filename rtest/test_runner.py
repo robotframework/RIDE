@@ -28,7 +28,6 @@ class Runner(object):
         self._count += 1
         self._model._do_not_skip()
         action = self._random.choice(self._actions)
-        print action
         getattr(self._model, action)()
 
     def skip_step(self):

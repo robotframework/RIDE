@@ -16,7 +16,9 @@ import os
 import random
 import time
 import sys
-import traceback
+ROOT = os.path.dirname(__file__)
+src = os.path.join(ROOT, '..', 'src')
+sys.path.insert(0, src)
 
 from model import RIDE
 from test_runner import Runner
@@ -36,10 +38,10 @@ def do_test(seed, path):
             ride_runner.step()
         return 'PASS', seed, i, path
     except Exception, err:
+        print err
         print 'i = ', i
         print 'seed was', str(seed)
         print 'path was', path
-        print err
         return 'FAIL', seed, i, path
 
 def init_ride_runner(seed, path):
@@ -105,5 +107,6 @@ if __name__ == '__main__':
         print '#'*80
         print trace
         print '%'*80
+        print 'seed = ', seed
         run_trace(init_ride_runner(seed, path), trace)
 

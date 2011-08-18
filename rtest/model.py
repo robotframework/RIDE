@@ -21,6 +21,7 @@ from robotide.controller.chiefcontroller import ChiefController
 class RIDE(object):
 
     def __init__(self, random, path):
+        print 'chief = ChiefController(Namespace())'
         self._chief = ChiefController(Namespace())
         self._path = path
         self._suite = None
@@ -45,17 +46,21 @@ class RIDE(object):
 
             def error(self, *args):
                 print args
-
+        print 'chief.load_data("%s", NullObserver())' % self._path
         self._chief.load_data(self._path, NullObserver())
 
     def _create_suite(self):
-        self._suite = self._chief.data.execute(AddSuite(NewDatafile(os.path.join(self._path,'path_to_foo%s.txt' % str(self._rand())), False)))
+        filename = os.path.join(self._path,'path_to_foo%s.txt' % str(self._rand()))
+        print 'suite = chief.data.execute(AddSuite(NewDatafile("%s", False)))' % filename
+        self._suite = self._chief.data.execute(AddSuite(NewDatafile(filename, False)))
 
     def create_test(self):
         if self._skip:
             self._rand()
             return
-        self._test = self._suite.execute(AddTestCase('foobar'+str(self._rand())))
+        testname = 'foobar'+str(self._rand())
+        print 'test = suite.execute(AddTestCase("%s"))' % testname
+        self._test = self._suite.execute(AddTestCase(testname))
 
     def _rand(self):
         return self._random.random()
@@ -69,14 +74,19 @@ class RIDE(object):
     def create_keyword(self):
         if self._skip:
             self._rand()
-        self._keyword = self._suite.execute(AddKeyword('kwFoobar'+str(self._rand())))
+            return
+        keyword_name = 'kwFoobar'+str(self._rand())
+        print 'keyword = suite.execute(AddKeyword("%s"))' % keyword_name
+        self._keyword = self._suite.execute(AddKeyword(keyword_name))
 
     def add_variable(self):
         if self._skip:
             self._rand()
             self._rand()
             return
-        self._suite.execute(AddVariable('${var%s}' % str(self._rand()), str(self._rand()), 'comment'))
+        command = AddVariable('${var%s}' % str(self._rand()), str(self._rand()), 'comment')
+        print 'suite.execute(%s)' % str(command)
+        self._suite.execute(command)
 
     def write_cell_data(self):
         self._macro_execute(ChangeCellValue(self._rand_row(), self._rand_col(), 'foobar%s' % str(self._rand())))
@@ -84,8 +94,13 @@ class RIDE(object):
     def _macro_execute(self, command):
         macro = self._random.choice([c for c in [self._test, self._keyword] if c])
         if not self._skip:
-            print macro
+            print '%s.execute(%s)' % (self._name(macro), str(command))
             macro.execute(command)
+
+    def _name(self, macro):
+        if macro == self._test:
+            return 'test'
+        return 'keyword'
 
     def add_row(self):
         self._macro_execute(AddRow(self._rand_row()))
@@ -132,4 +147,6 @@ class RIDE(object):
     def save(self):
         if self._skip:
             return
-        self._suite.execute(SaveFile())
+        command = SaveFile()
+        print 'suite.execute(%s)' % str(command)
+        self._suite.execute(command)
