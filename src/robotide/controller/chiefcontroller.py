@@ -102,7 +102,6 @@ class ChiefController(object):
         resources = self._loader.resources_for(datafile, load_observer)
         self._create_controllers(datafile, resources)
         RideOpenSuite(path=path, datafile=self._controller).publish()
-        self.resolve_resource_directories()
         load_observer.finish()
 
     def _create_controllers(self, datafile, resources):
@@ -130,21 +129,21 @@ class ChiefController(object):
             if other.source == resource.source:
                 return other
         controller = ResourceFileController(resource, self, parent=parent)
-        self.resources.append(controller)
+        self._insert_into_suite_structure(controller)
         RideOpenResource(path=resource.source, datafile=controller).publish()
         self._load_resources_resource_imports(controller)
         return controller
 
+    def _insert_into_suite_structure(self, resource):
+        self.resources.append(resource)
+        if self._controller and self._controller.is_inside_top_suite(resource):
+            self._controller.insert_to_test_data_directory(resource)
+        else:
+            self.external_resources.append(resource)
+
     def _load_resources_resource_imports(self, controller):
         for _import in [ imp for imp in controller.imports if imp.is_resource ]:
             _import.import_loaded_or_modified()
-
-    def resolve_resource_directories(self):
-        for res in self.resources:
-            if self._controller and self._controller.is_inside_top_suite(res):
-                self._controller.insert_to_test_data_directory(res)
-            else:
-                self.external_resources.append(res)
 
     def new_project(self, datafile):
         self._controller = DataController(datafile, self)
