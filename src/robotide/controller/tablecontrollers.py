@@ -319,7 +319,7 @@ class ImportSettingsController(_TableController, _WithListOperations):
         self._parent.mark_dirty()
         self._publish_setting_added(path, 'resource')
         resource = self.resource_import_modified(path)
-        import_.resolved_path = resource.source if resource else None
+        import_.resolved_path = resource.filename if resource else None
         self.notify_imports_modified()
         return self[-1]
 

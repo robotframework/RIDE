@@ -86,7 +86,7 @@ class FindOccurrencesWithFiles(unittest.TestCase):
 
     def test_first_occurrences_are_from_the_same_file(self):
         occ = self.resu.execute(FindOccurrences('My Keyword'))
-        assert_true(self.resu.source.endswith(occ.next().item.parent.source))
+        assert_true(self.resu.filename.endswith(occ.next().item.parent.source))
         assert_equals(occ.next().source, self.ts2.source)
         assert_equals(occ.next().source, self.ts2.source)
 

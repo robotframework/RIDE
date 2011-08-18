@@ -24,7 +24,7 @@ class TestMarkUnMarkDirty(unittest.TestCase):
     def setUp(self):
         class Data(object):
             source = directory = None
-        self.ctrl = _DataController(Data())
+        self.ctrl = TestCaseFileController(Data())
         self._has_unsaved_changes = False
         self._saved = False
         self.messages = [(self._changes, RideDataChangedToDirty),
@@ -149,7 +149,7 @@ class TestDataDirectoryControllerTest(unittest.TestCase):
     def test_default_dir_is_source(self):
         self.data.initfile = os.path.join('source', '__init__.html')
         ctrl = TestDataDirectoryController(self.data)
-        assert_true(ctrl.default_dir, os.path.dirname(ctrl.source))
+        assert_true(ctrl.default_dir, os.path.dirname(ctrl.filename))
 
     def test_set_format(self):
         ctrl = TestDataDirectoryController(self.data)
@@ -183,7 +183,7 @@ class DatafileIteratorTest(unittest.TestCase):
                 self.in_sub_dir = False
             def __call__(self, controller):
                 self.iteration_count += 1
-                if controller.source and controller.source.endswith('test.txt'):
+                if controller.filename and controller.filename.endswith('test.txt'):
                     self.in_sub_dir = True
         check_count_and_sub_dir = Checker()
         [check_count_and_sub_dir(df) for df in self.directory_controller.iter_datafiles()]

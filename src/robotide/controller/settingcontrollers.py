@@ -478,7 +478,7 @@ class ImportController(_SettingController):
         resource = self.get_target_controller()
         #TODO: setting the resolved path attr should happen always in namespace
         #This way, variables could be taken into account.
-        self._import.resolved_path = resource.source if resource else None
+        self._import.resolved_path = resource.filename if resource else None
 
     def get_target_controller(self):
         return self._parent.resource_import_modified(self.name)

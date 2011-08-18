@@ -38,15 +38,17 @@ class _FileSystemElement(object):
 
     def __init__(self, filename, directory):
         self.filename = filename
-        self.source = filename
         self.directory = directory
         self._stat = self._get_stat(filename)
 
     def _get_stat(self, path):
         if path and os.path.isfile(path):
             stat = os.stat(path)
-            return (stat.st_mtime, stat.st_size)
-        return (0, 0)
+            return stat.st_mtime, stat.st_size
+        return 0, 0
+
+    def refresh_stat(self):
+        self._stat = self._get_stat(self.filename)
 
     def has_been_modified_on_disk(self):
         return self._get_stat(self.filename) != self._stat
@@ -54,11 +56,16 @@ class _FileSystemElement(object):
     def has_been_removed_from_disk(self):
         return self._stat != (0, 0) and not os.path.isfile(self.filename)
 
+    @property
+    def source(self):
+        """Deprecated, use ``filename`` or ``directory`` instead."""
+        # Todo: remove when backwards compatibility with plugin API can break
+        return self.filename or self.directory
 
-class _DataController(_FileSystemElement, _BaseController, WithUndoRedoStacks):
+
+class _DataController(_BaseController, WithUndoRedoStacks):
 
     def __init__(self, data, chief_controller=None, parent=None):
-        _FileSystemElement.__init__(self, self._filename(data), data.directory)
         self._chief_controller = chief_controller
         self.parent = parent
         self.data = data
@@ -66,9 +73,6 @@ class _DataController(_FileSystemElement, _BaseController, WithUndoRedoStacks):
         self.children = self._children(data)
         self._variables_table_controller = None
         self._testcase_table_controller = None
-
-    def _filename(self, data):
-        return data.source if data else None
 
     def _children(self, data):
         return []
@@ -161,7 +165,7 @@ class _DataController(_FileSystemElement, _BaseController, WithUndoRedoStacks):
             RideDataChangedToDirty(datafile=self).publish()
 
     def unmark_dirty(self):
-        self._stat = self._get_stat(self.filename)
+        self.refresh_stat()
         if self.dirty:
             self.dirty = False
             RideDataDirtyCleared(datafile=self).publish()
@@ -190,7 +194,7 @@ class _DataController(_FileSystemElement, _BaseController, WithUndoRedoStacks):
     def set_format(self, format):
         base = os.path.splitext(self.filename)[0]
         self.data.source = '%s.%s' % (base, format.lower())
-        self.source = self.filename = self.data.source
+        self.filename = self.data.source
 
     def is_same_format(self, format):
         if format and self.has_format():
@@ -239,7 +243,7 @@ class DirectoryController(_FileSystemElement, _BaseController):
 
     def __init__(self, path, chief_controller):
         _FileSystemElement.__init__(self, path, path)
-        self.directory = self.source = path
+        self.directory = path
         self.settings = self.tests = self.keywords = ()
         self._chief_controller = chief_controller
         self.children = []
@@ -279,7 +283,7 @@ class DirectoryController(_FileSystemElement, _BaseController):
         return None
 
     def insert_to_test_data_directory(self, res):
-        res_dir = os.path.dirname(res.source)
+        res_dir = os.path.dirname(res.filename)
         if res_dir in self._dir_controllers:
             self._dir_controllers[res_dir].add_child(res)
         else:
@@ -294,7 +298,7 @@ class DirectoryController(_FileSystemElement, _BaseController):
         for s in self.iter_datafiles():
             if not isinstance(s, DirectoryController):
                 continue
-            if res.source.startswith(s.directory):
+            if res.filename.startswith(s.directory):
                 target = s
         return target
 
@@ -313,10 +317,10 @@ class DirectoryController(_FileSystemElement, _BaseController):
         self.add_child(res)
 
 
-
 class TestDataDirectoryController(_DataController, DirectoryController):
 
     def __init__(self, data, chief_controller=None, parent=None):
+        _FileSystemElement.__init__(self, self._filename(data), data.directory)
         _DataController.__init__(self, data, chief_controller, parent)
         self._dir_controllers = {}
 
@@ -344,7 +348,7 @@ class TestDataDirectoryController(_DataController, DirectoryController):
     def set_format(self, format):
         self.data.initfile = os.path.join(self.data.source, '__init__.%s'
                                           % format.lower())
-        self.source = self.data.initfile
+        self.filename = self.data.initfile
         self.mark_dirty()
 
     def new_datafile(self, datafile):
@@ -364,7 +368,7 @@ class TestDataDirectoryController(_DataController, DirectoryController):
                       self._chief_controller)
 
     def remove(self):
-        path = self.source
+        path = self.filename
         self.data.initfile = None
         self._stat = self._get_stat(None)
         self.reload()
@@ -378,10 +382,10 @@ class TestDataDirectoryController(_DataController, DirectoryController):
                 child.remove_child(controller)
 
     def is_inside_top_suite(self, ctrl):
-        return ctrl.source.startswith(self.directory)
+        return ctrl.filename.startswith(self.directory)
 
     def insert_to_test_data_directory(self, res):
-        if self._is_inside_test_data_directory(os.path.dirname(res.source)):
+        if self._is_inside_test_data_directory(os.path.dirname(res.filename)):
             return
         DirectoryController.insert_to_test_data_directory(self, res)
 
@@ -390,7 +394,11 @@ class TestDataDirectoryController(_DataController, DirectoryController):
                    if s.is_directory_suite() and s.directory == directory)
 
 
-class TestCaseFileController(_DataController):
+class TestCaseFileController(_FileSystemElement, _DataController):
+
+    def __init__(self, data, chief_controller=None, parent=None):
+        _FileSystemElement.__init__(self, data.source if data else None, data.directory)
+        _DataController.__init__(self, data, chief_controller, parent)
 
     def _settings(self):
         ss = self._setting_table
@@ -425,9 +433,10 @@ class TestCaseFileController(_DataController):
         return self.data.setting_table.test_template
 
 
-class ResourceFileController(_DataController):
+class ResourceFileController(_FileSystemElement, _DataController):
 
     def __init__(self, data, chief_controller=None, parent=None):
+        _FileSystemElement.__init__(self, data.source if data else None, data.directory)
         _DataController.__init__(self, data, chief_controller,
                                  parent or self._find_parent_for(chief_controller, data.source))
         if self.parent:

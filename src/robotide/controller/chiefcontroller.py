@@ -124,13 +124,13 @@ class ChiefController(object):
         load_observer.finish()
         return ctrl
 
-    def _create_resource_controller(self, resource, parent=None):
+    def _create_resource_controller(self, parsed_resource, parent=None):
         for other in self.resources:
-            if other.source == resource.source:
+            if other.filename == parsed_resource.source:
                 return other
-        controller = ResourceFileController(resource, self, parent=parent)
+        controller = ResourceFileController(parsed_resource, self, parent=parent)
         self._insert_into_suite_structure(controller)
-        RideOpenResource(path=resource.source, datafile=controller).publish()
+        RideOpenResource(path=parsed_resource.source, datafile=controller).publish()
         self._load_resources_resource_imports(controller)
         return controller
 
@@ -208,7 +208,7 @@ class ChiefController(object):
     def change_format(self, controller, format):
         if controller.is_same_format(format):
             return
-        old_path = controller.source
+        old_path = controller.filename
         controller.set_format(format)
         self.serialize_controller(controller)
         self._remove_file(old_path)
@@ -265,12 +265,11 @@ class ChiefController(object):
     def _serialize_file(self, controller):
         if not controller.has_format():
             return
-        RideSaving(path=controller.source,
-                   datafile=controller).publish()
+        RideSaving(path=controller.filename, datafile=controller).publish()
         serializer = Serializer()
         serializer.serialize(controller.datafile)
         controller.unmark_dirty()
-        RideSaved(path=controller.source).publish()
+        RideSaved(path=controller.filename).publish()
 
     def _get_all_dirty_controllers(self):
         return [controller for controller in self.datafiles if controller.dirty]
