@@ -13,7 +13,7 @@
 #  limitations under the License.
 import os
 from robotide.controller.robotdata import NewTestCaseFile
-from robotide.controller.commands import AddTestCaseFile, AddTestCase, AddKeyword, AddVariable, ChangeCellValue, AddRow, DeleteRow, InsertCell, DeleteCell, MoveRowsUp, MoveRowsDown, ExtractKeyword, RenameKeywordOccurrences, RenameTest, Undo, Redo, SaveFile
+from robotide.controller.commands import AddTestCaseFile, AddTestCase, AddKeyword, AddVariable, ChangeCellValue, AddRow, DeleteRow, InsertCell, DeleteCell, MoveRowsUp, MoveRowsDown, ExtractKeyword, RenameKeywordOccurrences, RenameTest, Undo, Redo, SaveFile, NullObserver
 from robotide.namespace import Namespace
 from robotide.controller.chiefcontroller import ChiefController
 
@@ -37,17 +37,29 @@ class RIDE(object):
         self._skip = False
 
     def _open_test_dir(self):
-        class NullObserver(object):
-            def notify(self, *args):
-                pass
+        self._open(os.path.join(self._path, 'testdir'))
+        print 'suite = chief.data.children[0]'
+        self._suite = self._chief.data.children[0]
+        print 'test = list(t for t in suite.tests)[0]'
+        self._test = list(t for t in self._suite.tests)[0]
+        print 'keyword = list(k for k in suite.keywords)[0]'
+        self._keyword = list(k for k in self._suite.keywords)[0]
 
-            def finish(self, *args):
-                pass
+    def _open_suite_file(self):
+        self._open(os.path.join(self._path, 'testdir', 'Suite.txt'))
+        self._suite = self._chief.data
+        self._test = list(t for t in self._suite.tests)[0]
+        self._keyword = list(k for k in self._suite.keywords)[0]
 
-            def error(self, *args):
-                print args
-        print 'chief.load_data("%s", NullObserver())' % self._path
-        self._chief.load_data(self._path, NullObserver())
+    def _open_resource_file(self):
+        self._open(os.path.join(self._path, 'testdir', 'resources', 'resu.txt'))
+        self._suite = None
+        self._test = None
+        self._keyword = None
+
+    def _open(self, path):
+        print 'chief.load_data("%s", NullObserver())' % path
+        self._chief.load_data(path, NullObserver())
 
     def _create_suite(self):
         filename = os.path.join(self._path,'path_to_foo%s.txt' % str(self._rand()))

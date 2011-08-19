@@ -14,6 +14,7 @@
 from math import ceil
 import os
 import random
+import shutil
 import time
 import sys
 ROOT = os.path.dirname(__file__)
@@ -27,13 +28,6 @@ from test_runner import Runner
 def do_test(seed, path):
     try:
         ride_runner = init_ride_runner(seed, path)
-        #for j in range(584):
-        #    ride_runner.skip_step()
-        #ride_runner.step()
-        #for k in range(17):
-        #    ride_runner.skip_step()
-        #ride_runner.step()
-        #ride_runner.skip_step()
         for i in range(10000):
             ride_runner.step()
         return 'PASS', seed, i, path
@@ -45,13 +39,15 @@ def do_test(seed, path):
         return 'FAIL', seed, i, path
 
 def init_ride_runner(seed, path):
-    os.system('rm %s/*.*' % path)
+    shutil.rmtree(path, ignore_errors=True)
+    shutil.copytree(os.path.join(ROOT, 'testdir'), os.path.join(path, 'testdir'))
     random.seed(seed)
     ride = RIDE(random, path)
     ride_runner = Runner(ride, random)
-    ride._open_test_dir()
-    ride._create_suite()
-    ride.create_test()
+    if random.random() > 0.5:
+        ride._open_test_dir()
+    else:
+        ride._open_suite_file()
     return ride_runner
 
 
@@ -109,4 +105,5 @@ if __name__ == '__main__':
         print '%'*80
         print 'seed = ', seed
         run_trace(init_ride_runner(seed, path), trace)
+        print 'error occurred!'
 
