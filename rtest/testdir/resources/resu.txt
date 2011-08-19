@@ -1,0 +1,10 @@
+*** Keywords ***
+Some keyword from resource file
+    [Arguments]  ${argument}
+    [Documentation]  This is documentation
+    [Timeout]  1 second
+    No Operation
+    Log  Something
+    Log  ${argument}
+    [Teardown]  Log  teardown
+
