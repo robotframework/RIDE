@@ -409,6 +409,7 @@ class RowMovingTest(TestCaseCommandTest):
         assert_true(not result)
         assert_equals(self._number_of_test_changes, 0)
         self._exec(Undo())
+        self._exec(Redo())
 
     def test_moving_block_containing_first_row_up_does_nothing(self):
         self._exec(MoveRowsUp([0,1,2]))
