@@ -13,7 +13,7 @@
 #  limitations under the License.
 import os
 from robotide.controller import NewDatafile
-from robotide.controller.commands import AddSuite, AddTestCase, AddKeyword, AddVariable, ChangeCellValue, AddRow, DeleteRow, InsertCell, DeleteCell, MoveRowsUp, MoveRowsDown, ExtractKeyword, RenameKeywordOccurrences, RenameTest, Undo, Redo, SaveFile, NullObserver, SaveAll, CommentRow, UncommentRow
+from robotide.controller.commands import AddSuite, AddTestCase, AddKeyword, AddVariable, ChangeCellValue, AddRow, DeleteRow, InsertCell, DeleteCell, MoveRowsUp, MoveRowsDown, ExtractKeyword, RenameKeywordOccurrences, RenameTest, Undo, Redo, SaveFile, NullObserver, SaveAll, CommentRow, UncommentRow, CopyMacroAs
 from robotide.namespace import Namespace
 from robotide.controller.chiefcontroller import ChiefController
 
@@ -175,3 +175,18 @@ class RIDE(object):
         command = SaveAll()
         print 'chief.execute(%s)' % str(command)
         self._chief.execute(command)
+
+    def copy_test(self):
+        if self._skip:
+            self._rand()
+            return
+        command = CopyMacroAs('name test %s' % str(self._rand()))
+        print 'test.execute(%s)' % str(command)
+        self._test.execute(command)
+
+    def copy_keyword(self):
+        if self._skip:
+            return
+        command = CopyMacroAs('name keyword %s' % str(self._rand()))
+        print 'test.execute(%s)' % str(command)
+        self._keyword.execute(command)
