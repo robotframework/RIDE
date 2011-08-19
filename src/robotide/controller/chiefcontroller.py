@@ -16,6 +16,7 @@ import os
 
 from robotide import context
 from robotide.controller.filecontrollers import DirectoryController, TestDataDirectoryController
+from robotide.controller.robotdata import NewTestCaseFile, NewTestDataDirectory
 from robotide.errors import SerializationError
 from robotide.publish.messages import RideOpenResource, RideSaving, RideSaveAll, \
     RideSaved, RideChangeFormat, RideOpenSuite, RideNewProject
@@ -59,6 +60,17 @@ class ChiefController(object):
     @property
     def datafiles(self):
         return self._suites() + self.resources
+
+    def new_directory_project(self, path):
+        self._new_project(NewTestDataDirectory(path))
+
+    def new_file_project(self, path):
+        self._new_project(NewTestCaseFile(path))
+
+    def _new_project(self, datafile):
+        self._controller = DataController(datafile, self)
+        self.resources = []
+        RideNewProject(path=datafile.source, datafile=datafile).publish()
 
     def new_resource(self, path, parent=None):
         res = self._namespace.new_resource(path)
@@ -144,11 +156,6 @@ class ChiefController(object):
     def _load_resources_resource_imports(self, controller):
         for _import in [ imp for imp in controller.imports if imp.is_resource ]:
             _import.import_loaded_or_modified()
-
-    def new_project(self, datafile):
-        self._controller = DataController(datafile, self)
-        self.resources = []
-        RideNewProject(path=datafile.source, datafile=datafile).publish()
 
     def update_namespace(self):
         self._namespace.update()

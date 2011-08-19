@@ -5,7 +5,8 @@ import os
 from mock import Mock
 from robot.utils.asserts import assert_equals, assert_true
 
-from robotide.controller import NewDatafile, DataController
+from robotide.controller import DataController
+from robotide.controller.robotdata import NewTestCaseFile
 from robotide.editor.editors import EditorCreator
 from robotide.editor.editors import TestCaseFileEditor
 
@@ -72,4 +73,4 @@ class EditorCreatorTest(unittest.TestCase):
                           self._datafile_controller())
 
     def _datafile_controller(self):
-        return DataController(NewDatafile(DATAPATH, False), None)
+        return DataController(NewTestCaseFile(DATAPATH), None)

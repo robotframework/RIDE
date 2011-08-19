@@ -13,32 +13,35 @@
 #  limitations under the License.
 
 import wx
-from robotide.controller.settingcontrollers import VariableController
-from robotide.controller.macrocontrollers import TestCaseController, UserKeywordController
-from robotide.controller.filecontrollers import TestDataDirectoryController, ResourceFileController, TestCaseFileController, DirectoryController
 
-from filedialogs import AddSuiteDialog, ChangeFormatDialog
-from images import TreeImageList
+from robotide.controller.settingcontrollers import VariableController
+from robotide.controller.macrocontrollers import (TestCaseController,
+                                                  UserKeywordController)
+from robotide.controller.filecontrollers import (TestDataDirectoryController,
+    ResourceFileController, TestCaseFileController, DirectoryController)
+
 from robotide import utils
 from robotide.action import ActionInfoCollection
-from robotide.controller import NewDatafile
 from robotide.editor.editordialogs import (TestCaseNameDialog,
-                                           UserKeywordNameDialog,
-    ScalarVariableDialog, ListVariableDialog, CopyUserKeywordDialog)
+    UserKeywordNameDialog, ScalarVariableDialog, ListVariableDialog,
+    CopyUserKeywordDialog)
 from robotide.publish import RideTreeSelection, PUBLISHER
 from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
 from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideTestCaseAdded, RideUserKeywordRemoved, RideTestCaseRemoved, RideDataFileRemoved,\
     RideDataChangedToDirty, RideDataDirtyCleared, RideVariableRemoved,\
-    RideVariableAdded, RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated, \
+    RideVariableAdded, RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated,\
     RideOpenResource, RideSuiteAdded, RideSelectResource
 from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
     AddKeyword, AddTestCase, RenameTest, CopyMacroAs, MoveTo,\
-    AddVariable, AddSuite, UpdateVariableName
+    AddVariable, UpdateVariableName
 from robotide.widgets import PopupCreator, PopupMenuItems
 from robotide.ui.filedialogs import NewExternalResourceDialog, NewResourceDialog
 from robotide.usages.UsageRunner import Usages
-from robotide.ui.progress import RenameProgressObserver
+
+from progress import RenameProgressObserver
+from filedialogs import AddSuiteDialog, ChangeFormatDialog
+from images import TreeImageList
 
 try:
     import treemixin
@@ -98,47 +101,58 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._popup_creator.remove_hook(callable)
 
     def _subscribe_to_messages(self):
-        for listener, topic in [ (self._item_changed, RideItem),
-                                 (self._resource_added, RideOpenResource),
-                                 (self._select_resource, RideSelectResource),
-                                 (self._suite_added, RideSuiteAdded),
-                                 (self._keyword_added, RideUserKeywordAdded),
-                                 (self._test_added, RideTestCaseAdded),
-                                 (self._variable_added, RideVariableAdded),
-                                 (self._leaf_item_removed, RideUserKeywordRemoved),
-                                 (self._leaf_item_removed, RideTestCaseRemoved),
-                                 (self._leaf_item_removed, RideVariableRemoved),
-                                 (self._datafile_removed, RideDataFileRemoved),
-                                 (self._data_dirty, RideDataChangedToDirty),
-                                 (self._data_undirty, RideDataDirtyCleared),
-                                 (self._variable_moved_up, RideVariableMovedUp),
-                                 (self._variable_moved_down, RideVariableMovedDown),
-                                 (self._variable_updated, RideVariableUpdated) ]:
+        subscriptions = [
+            (self._item_changed, RideItem),
+            (self._resource_added, RideOpenResource),
+            (self._select_resource, RideSelectResource),
+            (self._suite_added, RideSuiteAdded),
+            (self._keyword_added, RideUserKeywordAdded),
+            (self._test_added, RideTestCaseAdded),
+            (self._variable_added, RideVariableAdded),
+            (self._leaf_item_removed, RideUserKeywordRemoved),
+            (self._leaf_item_removed, RideTestCaseRemoved),
+            (self._leaf_item_removed, RideVariableRemoved),
+            (self._datafile_removed, RideDataFileRemoved),
+            (self._data_dirty, RideDataChangedToDirty),
+            (self._data_undirty, RideDataDirtyCleared),
+            (self._variable_moved_up, RideVariableMovedUp),
+            (self._variable_moved_down, RideVariableMovedDown),
+            (self._variable_updated, RideVariableUpdated)
+        ]
+        for listener, topic in subscriptions:
             PUBLISHER.subscribe(listener, topic)
 
     def _bind_keys(self):
         bind_keys_to_evt_menu(self, self._get_bind_keys())
 
     def _get_bind_keys(self):
-        bindings = [(ctrl_or_cmd(), wx.WXK_UP, self.OnMoveUp),
-                    (ctrl_or_cmd(), wx.WXK_DOWN, self.OnMoveDown),
-                    (wx.ACCEL_NORMAL, wx.WXK_F2, self._label_editor.OnLabelEdit),
-                    (wx.ACCEL_NORMAL, wx.WXK_WINDOWS_MENU, self.OnRightClick),
-                    (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('f'), lambda event: self._expand_and_call('OnAddSuite', event)),
-                    (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('k'), lambda event: self._expand_and_call('OnNewUserKeyword', event)),
-                    (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('t'), lambda event: self._expand_and_call('OnNewTestCase', event)),
-                    (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('v'), lambda event: self._expand_and_call('OnNewScalar', event)),
-                    (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('l'), lambda event: self._expand_and_call('OnNewListVariable', event)),
-                    (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('c'), lambda event: self._expand_and_call('OnCopy', event))]
+        bindings = [
+            (ctrl_or_cmd(), wx.WXK_UP, self.OnMoveUp),
+            (ctrl_or_cmd(), wx.WXK_DOWN, self.OnMoveDown),
+            (wx.ACCEL_NORMAL, wx.WXK_F2, self._label_editor.OnLabelEdit),
+            (wx.ACCEL_NORMAL, wx.WXK_WINDOWS_MENU, self.OnRightClick),
+            (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('f'),
+                lambda event: self._expanded_handler().OnNewSuite(event)),
+            (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('k'),
+                lambda event: self._expanded_handler().OnNewUserKeyword(event)),
+            (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('t'),
+                lambda event: self._expanded_handler().OnNewTestCase(event)),
+            (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('v'),
+                lambda event: self._expanded_handler().OnNewScalar(event)),
+            (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('l'),
+                lambda event: self._expanded_handler().OnNewListVariable(event)),
+            (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('c'),
+                lambda event: self._expanded_handler().OnCopy(event))
+        ]
         if not IS_WINDOWS:
             bindings.append((wx.ACCEL_NORMAL, wx.WXK_LEFT, self.OnLeftArrow))
         return bindings
 
-    def _expand_and_call(self, method, event):
+    def _expanded_handler(self):
         handler = self._get_handler()
         if not self.IsExpanded(handler.node):
             self.Expand(handler.node)
-        getattr(handler, method)(event)
+        return handler
 
     def populate(self, model):
         self._clear_tree_data()
@@ -764,15 +778,10 @@ class TestDataHandler(_ActionHandler):
 
 
 class TestDataDirectoryHandler(TestDataHandler):
-
     _actions = TestDataHandler._actions[:] + [_ActionHandler._label_new_resource]
 
     def OnNewSuite(self, event):
-        dlg = AddSuiteDialog(self.controller.directory)
-        if dlg.ShowModal() == wx.ID_OK:
-            data = NewDatafile(dlg.get_path(), dlg.is_dir_type())
-            self.controller.execute(AddSuite(data))
-        dlg.Destroy()
+        AddSuiteDialog(self.controller).doit()
 
     def OnNewResource(self, event):
         NewResourceDialog(self.controller).doit()

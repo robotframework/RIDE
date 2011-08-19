@@ -7,10 +7,9 @@ from robot.parsing.model import TestCaseFile, TestDataDirectory
 from robot.utils.asserts import (assert_equals, assert_true, assert_false)
 
 from robotide.controller.filecontrollers import TestCaseFileController, \
-    TestDataDirectoryController, _DataController
+    TestDataDirectoryController
 from robotide.controller.tablecontrollers import TestCaseController
-from robotide.controller.commands import AddSuite
-from robotide.controller import NewDatafile
+from robotide.controller.commands import AddTestCaseFile, AddTestDataDirectory
 from robotide.publish import PUBLISHER
 from robotide.publish.messages import RideDataChangedToDirty,\
 RideDataDirtyCleared
@@ -127,7 +126,11 @@ class TestResourceFileControllerTest(unittest.TestCase):
         resource_ctrl = self._get_ctrl_by_name(datafilereader.OCCURRENCES_RESOURCE_NAME, chief.datafiles)
         assert_equals(resource_ctrl.display_name, datafilereader.OCCURRENCES_RESOURCE_FILE)
 
+
 class TestDataDirectoryControllerTest(unittest.TestCase):
+    TEST_CASE_FILE_PATH = os.path.abspath('path/to/suite.txt')
+    INIT_FILE_PATH = os.path.abspath('path/to/__init__.txt')
+    DATA_DIRECTORY_NAME = os.path.split(os.path.dirname(INIT_FILE_PATH))[-1].title()
 
     def setUp(self):
         self.data = TestDataDirectory(source='source')
@@ -158,15 +161,27 @@ class TestDataDirectoryControllerTest(unittest.TestCase):
         assert_true(ctrl.has_format())
         assert_equals(ctrl.source, os.path.abspath(os.path.join('source', '__init__.txt')))
 
-    def test_adding_new_child(self):
-        ctrl = TestDataDirectoryController(self.data)
-        assert_true(ctrl.new_datafile(NewDatafile('path/to/data.txt',
-                                                  is_dir_type=False)))
+    def test_adding_test_case_file(self):
+        new_data = TestDataDirectoryController(self.data).\
+                    new_test_case_file(self.TEST_CASE_FILE_PATH)
+        assert_true(isinstance(new_data, TestCaseFileController))
+        assert_equals(new_data.filename, self.TEST_CASE_FILE_PATH)
 
-    def test_adding_new_suite_with_command(self):
+    def test_adding_test_suite_directory(self):
+        new_data = TestDataDirectoryController(self.data).\
+                        new_test_data_directory(self.INIT_FILE_PATH)
+        assert_true(isinstance(new_data, TestDataDirectoryController))
+        assert_equals(new_data.name, self.DATA_DIRECTORY_NAME)
+        assert_equals(new_data.filename, self.INIT_FILE_PATH)
+
+    def test_adding_test_case_file_using_command(self):
         ctrl = TestDataDirectoryController(self.data)
-        suite = ctrl.execute(AddSuite(NewDatafile('path/to/suite.txt',
-                                                  is_dir_type=False)))
+        suite = ctrl.execute(AddTestCaseFile(self.TEST_CASE_FILE_PATH))
+        assert_equals(suite.data.parent, ctrl.data)
+
+    def test_adding_test_data_directory_using_command(self):
+        ctrl = TestDataDirectoryController(self.data)
+        suite = ctrl.execute(AddTestDataDirectory(self.INIT_FILE_PATH))
         assert_equals(suite.data.parent, ctrl.data)
 
 

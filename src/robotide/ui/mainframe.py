@@ -14,7 +14,6 @@
 
 import wx
 
-from robotide.controller import NewDatafile
 from robotide.action import ActionInfoCollection, ActionFactory
 from robotide.publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER
 from robotide.utils import RideEventHandler, RideHtmlWindow
@@ -125,14 +124,8 @@ class RideFrame(wx.Frame, RideEventHandler):
     def OnNewProject(self, event):
         if not self._check_unsaved_modifications():
             return
-        dlg = NewProjectDialog(self._controller.default_dir)
-        if dlg.ShowModal() == wx.ID_OK:
-            path = dlg.get_path()
-            self._controller.update_default_dir(path)
-            data = NewDatafile(path, dlg.is_dir_type())
-            self._controller.new_project(data)
-            self._populate_tree()
-        dlg.Destroy()
+        NewProjectDialog(self._controller).doit()
+        self._populate_tree()
 
     def _populate_tree(self):
         self.tree.populate(self._controller)

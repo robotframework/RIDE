@@ -114,7 +114,7 @@ class TestDataFileRemoval(_DataDependentTest):
 
     def test_deleting_source_should_remove_it_from_model(self):
         chief = ChiefController(Namespace())
-        chief.new_project(TestCaseFile(source=FILEPATH))
+        chief._controller = TestCaseFileController(TestCaseFile(source=FILEPATH), chief)
         os.remove(FILEPATH)
         ctrl = chief.data
         ctrl.remove()
@@ -123,7 +123,7 @@ class TestDataFileRemoval(_DataDependentTest):
 
     def test_deleting_file_suite_under_dir_suite(self):
         chief = ChiefController(Namespace())
-        chief.new_project(TestDataDirectory(source=DIRPATH).populate())
+        chief._controller = TestDataDirectoryController(TestDataDirectory(source=DIRPATH).populate(), chief)
         file_suite = chief.data.children[0]
         file_suite.remove()
         assert_true(len(chief.data.children) == 0, 'Child suite was not removed')
@@ -136,7 +136,7 @@ class TestDataFileRemoval(_DataDependentTest):
 
     def test_deleting_init_file(self):
         chief = ChiefController(Namespace())
-        chief.new_project(TestDataDirectory(source=DIRPATH).populate())
+        chief._controller = TestDataDirectoryController(TestDataDirectory(source=DIRPATH).populate(), chief)
         os.remove(INITPATH)
         chief.data.remove()
         open(INITPATH, 'w').write('*Settings*\nDocumentation  Ride unit testing file\n')

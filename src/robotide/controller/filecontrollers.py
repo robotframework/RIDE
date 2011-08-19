@@ -14,6 +14,7 @@
 
 import os
 from itertools import chain
+
 from robotide.controller.basecontroller import WithUndoRedoStacks,\
     _BaseController
 from robotide.controller.settingcontrollers import DocumentationController,\
@@ -27,7 +28,10 @@ from robotide.robotapi import TestDataDirectory, TestCaseFile, ResourceFile
 from robotide import utils
 from robotide.publish.messages import RideDataChangedToDirty,\
     RideDataDirtyCleared, RideSuiteAdded, RideItemSettingsChanged
+
 from robotide.controller.macrocontrollers import UserKeywordController
+from robotide.controller.robotdata import NewTestCaseFile, NewTestDataDirectory
+
 
 def DataController(data, chief, parent=None):
     return TestCaseFileController(data, chief, parent) if isinstance(data, TestCaseFile) \
@@ -354,7 +358,13 @@ class TestDataDirectoryController(_DataController, DirectoryController):
         self.filename = self.data.initfile
         self.mark_dirty()
 
-    def new_datafile(self, datafile):
+    def new_test_case_file(self, path):
+        return self._new_data_controller(NewTestCaseFile(path))
+
+    def new_test_data_directory(self, path):
+        return self._new_data_controller(NewTestDataDirectory(path))
+
+    def _new_data_controller(self, datafile):
         self.data.children.append(datafile)
         datafile.parent = self.data
         self.children.append(DataController(datafile, self._chief_controller, self))

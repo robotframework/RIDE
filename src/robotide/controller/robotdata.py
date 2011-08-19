@@ -12,8 +12,25 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from chiefcontroller import ChiefController
-from commands import FindOccurrences, RenameKeywordOccurrences
-from dataloader import DataLoader
-from filecontrollers import DataController, ResourceFileController
-from tablecontrollers import UserKeywordController
+import os
+
+from robot.parsing.model import TestCaseFile, TestDataDirectory
+
+
+def NewTestCaseFile(path):
+    datafile = TestCaseFile(source=path)
+    _create_missing_directories(datafile.directory)
+    return datafile
+
+
+def NewTestDataDirectory(path):
+    dirname = os.path.dirname(path)
+    datafile = TestDataDirectory(source=dirname)
+    datafile.initfile = path
+    _create_missing_directories(dirname)
+    return datafile
+
+
+def _create_missing_directories(dirname):
+    if not os.path.isdir(dirname):
+        os.makedirs(dirname)

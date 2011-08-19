@@ -15,7 +15,7 @@
 import os
 import wx
 from wx.lib.filebrowsebutton import DirBrowseButton
-from robotide.controller.commands import CreateNewResource
+from robotide.controller.commands import CreateNewResource, AddTestDataDirectory, AddTestCaseFile
 # This hack needed to set same label width as with other labels
 from robotide.ui.components import StaticText
 DirBrowseButton.createLabel = lambda self: StaticText(self, size=(110, -1),
@@ -158,8 +158,19 @@ class _WithImmutableParent(object):
 
 class NewProjectDialog(_CreationDialog):
 
-    def __init__(self, default_dir):
-        _CreationDialog.__init__(self, default_dir, 'New Project')
+    def __init__(self, chief_controller):
+        self._controller = chief_controller
+        _CreationDialog.__init__(self, chief_controller.default_dir, 'New Project')
+
+    def doit(self):
+        if self.ShowModal() == wx.ID_OK:
+            path = self.get_path()
+            self._controller.update_default_dir(path)
+            if self.is_dir_type():
+                self._controller.new_directory_project(path)
+            else:
+                self._controller.new_file_project(path)
+        self.Destroy()
 
 
 class _NewResourceDialog(_CreationDialog):
@@ -189,9 +200,16 @@ class NewResourceDialog(_WithImmutableParent, _NewResourceDialog):
 
 class AddSuiteDialog(_WithImmutableParent, _CreationDialog):
 
-    def __init__(self, path):
-        self._path = path
-        _CreationDialog.__init__(self, path, 'Add Suite')
+    def __init__(self, controller):
+        self._controller = controller
+        self._path = controller.directory
+        _CreationDialog.__init__(self, self._path, 'Add Suite')
+
+    def doit(self):
+        if self.ShowModal() == wx.ID_OK:
+            cmd = AddTestDataDirectory if self.is_dir_type() else AddTestCaseFile
+            self._controller.execute(cmd(self.get_path()))
+        self.Destroy()
 
 
 class ChangeFormatDialog(_CreationDialog):

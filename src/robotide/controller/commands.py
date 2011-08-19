@@ -415,15 +415,28 @@ class AddTestCase(_Command):
         return context.create_test(self._test_name)
 
 
-class AddSuite(_Command):
+class _AddDataFile(_Command):
 
-    def __init__(self, data):
-        self._data = data
+    def __init__(self, path):
+        self._path = path
 
     def execute(self, context):
-        ctrl = context.new_datafile(self._data)
+        ctrl = self._add_data_file(context)
         context.notify_suite_added(ctrl)
         return ctrl
+
+    def _add_data_file(self, context):
+        raise NotImplementedError(self.__class__.__name__)
+
+class AddTestCaseFile(_AddDataFile):
+
+    def _add_data_file(self, context):
+        return context.new_test_case_file(self._path)
+
+class AddTestDataDirectory(_AddDataFile):
+
+    def _add_data_file(self, context):
+        return context.new_test_data_directory(self._path)
 
 
 class RemoveVariable(_ReversibleCommand):

@@ -182,8 +182,7 @@ class ResourceCache(object):
     def new_resource(self, directory, name):
         path = os.path.join(directory, name) if directory else name
         path = self._normalize(path)
-        resource = ResourceFile()
-        resource.source = path
+        resource = ResourceFile(source=path)
         self.cache[path] = resource
         return resource
 

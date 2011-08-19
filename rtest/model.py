@@ -12,8 +12,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 import os
-from robotide.controller import NewDatafile
-from robotide.controller.commands import AddSuite, AddTestCase, AddKeyword, AddVariable, ChangeCellValue, AddRow, DeleteRow, InsertCell, DeleteCell, MoveRowsUp, MoveRowsDown, ExtractKeyword, RenameKeywordOccurrences, RenameTest, Undo, Redo, SaveFile
+from robotide.controller.robotdata import NewTestCaseFile
+from robotide.controller.commands import AddTestCaseFile, AddTestCase, AddKeyword, AddVariable, ChangeCellValue, AddRow, DeleteRow, InsertCell, DeleteCell, MoveRowsUp, MoveRowsDown, ExtractKeyword, RenameKeywordOccurrences, RenameTest, Undo, Redo, SaveFile
 from robotide.namespace import Namespace
 from robotide.controller.chiefcontroller import ChiefController
 
@@ -51,8 +51,8 @@ class RIDE(object):
 
     def _create_suite(self):
         filename = os.path.join(self._path,'path_to_foo%s.txt' % str(self._rand()))
-        print 'suite = chief.data.execute(AddSuite(NewDatafile("%s", False)))' % filename
-        self._suite = self._chief.data.execute(AddSuite(NewDatafile(filename, False)))
+        print 'suite = chief.data.execute(AddSuite(NewDatafile("%s")))' % filename
+        self._suite = self._chief.data.execute(AddTestCaseFile(filename))
 
     def create_test(self):
         if self._skip:
