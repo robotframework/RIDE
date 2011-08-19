@@ -12,8 +12,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 import os
+from robotide.controller.tags import Tag
 from robotide.controller import NewDatafile
-from robotide.controller.commands import AddSuite, AddTestCase, AddKeyword, AddVariable, ChangeCellValue, AddRow, DeleteRow, InsertCell, DeleteCell, MoveRowsUp, MoveRowsDown, ExtractKeyword, RenameKeywordOccurrences, RenameTest, Undo, Redo, SaveFile, NullObserver, SaveAll, CommentRow, UncommentRow, CopyMacroAs
+from robotide.controller.commands import AddSuite, AddTestCase, AddKeyword, AddVariable, ChangeCellValue, AddRow, DeleteRow, InsertCell, DeleteCell, MoveRowsUp, MoveRowsDown, ExtractKeyword, RenameKeywordOccurrences, RenameTest, Undo, Redo, SaveFile, NullObserver, SaveAll, CommentRow, UncommentRow, CopyMacroAs, ChangeTag
 from robotide.namespace import Namespace
 from robotide.controller.chiefcontroller import ChiefController
 
@@ -186,7 +187,16 @@ class RIDE(object):
 
     def copy_keyword(self):
         if self._skip:
+            self._rand()
             return
         command = CopyMacroAs('name keyword %s' % str(self._rand()))
         print 'test.execute(%s)' % str(command)
         self._keyword.execute(command)
+
+    def add_tag_to_test(self):
+        if self._skip:
+            self._rand()
+            return
+        tag_name = 'tag%s' % str(self._rand())
+        print 'test.tags.execute(ChangeTag(Tag(""), "%s"))' % tag_name
+        self._test.tags.execute(ChangeTag(Tag(""), tag_name))
