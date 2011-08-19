@@ -36,7 +36,9 @@ class RIDE(object):
     def _do_not_skip(self):
         self._skip = False
 
-    def _open_test_dir(self):
+    def open_test_dir(self):
+        if self._skip:
+            return
         self._open(os.path.join(self._path, 'testdir'))
         print 'suite = chief.data.children[0]'
         self._suite = self._chief.data.children[0]
@@ -45,10 +47,15 @@ class RIDE(object):
         print 'keyword = list(k for k in suite.keywords)[0]'
         self._keyword = list(k for k in self._suite.keywords)[0]
 
-    def _open_suite_file(self):
+    def open_suite_file(self):
+        if self._skip:
+            return
         self._open(os.path.join(self._path, 'testdir', 'Suite.txt'))
+        print 'suite = chief.data'
         self._suite = self._chief.data
+        print 'test = list(t for t in suite.tests)[0]'
         self._test = list(t for t in self._suite.tests)[0]
+        print 'keyword = list(k for k in suite.keywords)[0]'
         self._keyword = list(k for k in self._suite.keywords)[0]
 
     def _open_resource_file(self):
@@ -101,7 +108,8 @@ class RIDE(object):
         self._suite.execute(command)
 
     def write_cell_data(self):
-        self._macro_execute(ChangeCellValue(self._rand_row(), self._rand_col(), 'foobar%s' % str(self._rand())))
+        prefix = self._random.choice(['# something', 'foobar', ': FOR', '${var}', 'No Operation', '\\'])
+        self._macro_execute(ChangeCellValue(self._rand_row(), self._rand_col(), prefix + str(self._rand())))
 
     def _macro_execute(self, command):
         macro = self._random.choice([c for c in [self._test, self._keyword] if c])
@@ -162,3 +170,10 @@ class RIDE(object):
         command = SaveFile()
         print 'suite.execute(%s)' % str(command)
         self._suite.execute(command)
+
+    def get_cell_info(self):
+        macro = self._random.choice([c for c in [self._test, self._keyword] if c])
+        row = self._rand_row()
+        col = self._rand_col()
+        print '%s.get_cell_info(%s, %s)' % (self._name(macro), row, col)
+        macro.get_cell_info(row, col)

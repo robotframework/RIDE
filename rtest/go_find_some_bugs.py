@@ -45,9 +45,9 @@ def init_ride_runner(seed, path):
     ride = RIDE(random, path)
     ride_runner = Runner(ride, random)
     if random.random() > 0.5:
-        ride._open_test_dir()
+        ride.open_test_dir()
     else:
-        ride._open_suite_file()
+        ride.open_suite_file()
     return ride_runner
 
 
