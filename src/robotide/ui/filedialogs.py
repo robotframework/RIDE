@@ -162,7 +162,7 @@ class NewProjectDialog(_CreationDialog):
         self._controller = chief_controller
         _CreationDialog.__init__(self, chief_controller.default_dir, 'New Project')
 
-    def doit(self):
+    def execute(self):
         if self.ShowModal() == wx.ID_OK:
             path = self.get_path()
             self._controller.update_default_dir(path)
@@ -179,7 +179,7 @@ class _NewResourceDialog(_CreationDialog):
         _CreationDialog.__init__(self, controller.default_dir, 'New Resource File')
         self._controller = controller
 
-    def doit(self):
+    def execute(self):
         if self.ShowModal() == wx.ID_OK:
             self._controller.execute(CreateNewResource(self.get_path()))
         self.Destroy()
@@ -205,7 +205,7 @@ class AddSuiteDialog(_WithImmutableParent, _CreationDialog):
         self._path = controller.directory
         _CreationDialog.__init__(self, self._path, 'Add Suite')
 
-    def doit(self):
+    def execute(self):
         if self.ShowModal() == wx.ID_OK:
             cmd = AddTestDataDirectory if self.is_dir_type() else AddTestCaseFile
             self._controller.execute(cmd(self.get_path()))

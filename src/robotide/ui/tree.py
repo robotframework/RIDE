@@ -690,7 +690,7 @@ class DirectoryHandler(_ActionHandler):
     _actions = [_ActionHandler._label_new_resource]
 
     def OnNewResource(self, event):
-        NewResourceDialog(self.controller).doit()
+        NewResourceDialog(self.controller).execute()
 
 
 class TestDataHandler(_ActionHandler):
@@ -781,10 +781,10 @@ class TestDataDirectoryHandler(TestDataHandler):
     _actions = TestDataHandler._actions[:] + [_ActionHandler._label_new_resource]
 
     def OnNewSuite(self, event):
-        AddSuiteDialog(self.controller).doit()
+        AddSuiteDialog(self.controller).execute()
 
     def OnNewResource(self, event):
-        NewResourceDialog(self.controller).doit()
+        NewResourceDialog(self.controller).execute()
 
 
 class ResourceFileHandler(TestDataHandler):
@@ -905,7 +905,7 @@ class ResourceRootHandler(_ActionHandler):
         return None
 
     def OnNewResource(self, event):
-        NewExternalResourceDialog(self.controller).doit()
+        NewExternalResourceDialog(self.controller).execute()
 
 
 class LabelEditor(object):

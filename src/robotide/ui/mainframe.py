@@ -124,14 +124,14 @@ class RideFrame(wx.Frame, RideEventHandler):
     def OnNewProject(self, event):
         if not self._check_unsaved_modifications():
             return
-        NewProjectDialog(self._controller).doit()
+        NewProjectDialog(self._controller).execute()
         self._populate_tree()
 
     def _populate_tree(self):
         self.tree.populate(self._controller)
 
     def OnNewResource(self, event):
-        NewExternalResourceDialog(self._controller).doit()
+        NewExternalResourceDialog(self._controller).execute()
 
     def OnOpen(self, event):
         self._check_unsaved_modifications()
