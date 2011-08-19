@@ -120,20 +120,15 @@ class _CreationDialog(Dialog):
         buttons = self.CreateStdDialogButtonSizer(wx.OK|wx.CANCEL)
         sizer.Add(buttons, flag=wx.ALIGN_CENTER|wx.ALL, border=5)
 
-    def get_name(self):
-        return self._name_editor.GetValue()
-
-    def get_directory(self):
-        return self._parent_chooser.GetValue()
-
-    def get_path(self):
-        path = os.path.join(self.get_directory(),
-                            self.get_name().replace(' ', '_'))
-        if self.is_dir_type():
+    def _get_path(self):
+        name = self._name_editor.GetValue()
+        directory = self._parent_chooser.GetValue()
+        path = os.path.join(self.directory, name.replace(' ', '_'))
+        if self._is_dir_type():
             path = os.path.join(path, '__init__')
         return path + '.' + self._get_extension()
 
-    def is_dir_type(self):
+    def _is_dir_type(self):
         if not self._type_chooser:
             return False
         return self._type_chooser.GetStringSelection() == 'Directory'
@@ -146,7 +141,7 @@ class _CreationDialog(Dialog):
     def OnPathChanged(self, event):
         if not hasattr(self, '_path_display'):
             return
-        self._path_display.SetValue(self.get_path())
+        self._path_display.SetValue(self._get_path())
         event.Skip()
 
 
@@ -164,9 +159,9 @@ class NewProjectDialog(_CreationDialog):
 
     def execute(self):
         if self.ShowModal() == wx.ID_OK:
-            path = self.get_path()
+            path = self._get_path()
             self._controller.update_default_dir(path)
-            if self.is_dir_type():
+            if self._is_dir_type():
                 self._controller.new_directory_project(path)
             else:
                 self._controller.new_file_project(path)
@@ -181,7 +176,7 @@ class _NewResourceDialog(_CreationDialog):
 
     def execute(self):
         if self.ShowModal() == wx.ID_OK:
-            self._controller.execute(CreateNewResource(self.get_path()))
+            self._controller.execute(CreateNewResource(self._get_path()))
         self.Destroy()
 
     def _create_type_chooser(self, sizer):
@@ -207,8 +202,8 @@ class AddSuiteDialog(_WithImmutableParent, _CreationDialog):
 
     def execute(self):
         if self.ShowModal() == wx.ID_OK:
-            cmd = AddTestDataDirectory if self.is_dir_type() else AddTestCaseFile
-            self._controller.execute(cmd(self.get_path()))
+            cmd = AddTestDataDirectory if self._is_dir_type() else AddTestCaseFile
+            self._controller.execute(cmd(self._get_path()))
         self.Destroy()
 
 
