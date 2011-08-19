@@ -13,7 +13,7 @@
 #  limitations under the License.
 import os
 from robotide.controller import NewDatafile
-from robotide.controller.commands import AddSuite, AddTestCase, AddKeyword, AddVariable, ChangeCellValue, AddRow, DeleteRow, InsertCell, DeleteCell, MoveRowsUp, MoveRowsDown, ExtractKeyword, RenameKeywordOccurrences, RenameTest, Undo, Redo, SaveFile
+from robotide.controller.commands import AddSuite, AddTestCase, AddKeyword, AddVariable, ChangeCellValue, AddRow, DeleteRow, InsertCell, DeleteCell, MoveRowsUp, MoveRowsDown, ExtractKeyword, RenameKeywordOccurrences, RenameTest, Undo, Redo, SaveFile, NullObserver, SaveAll, CommentRow, UncommentRow
 from robotide.namespace import Namespace
 from robotide.controller.chiefcontroller import ChiefController
 
@@ -37,18 +37,30 @@ class RIDE(object):
         self._skip = False
 
     def _open_test_dir(self):
-        class NullObserver(object):
-            def notify(self, *args):
-                pass
+        self._open(os.path.join(self._path, 'testdir'))
+        print 'suite = chief.data.children[0]'
+        self._suite = self._chief.data.children[0]
+        print 'test = list(t for t in suite.tests)[0]'
+        self._test = list(t for t in self._suite.tests)[0]
+        print 'keyword = list(k for k in suite.keywords)[0]'
+        self._keyword = list(k for k in self._suite.keywords)[0]
 
-            def finish(self, *args):
-                pass
+    def _open_suite_file(self):
+        self._open(os.path.join(self._path, 'testdir', 'Suite.txt'))
+        self._suite = self._chief.data
+        self._test = list(t for t in self._suite.tests)[0]
+        self._keyword = list(k for k in self._suite.keywords)[0]
 
-            def error(self, *args):
-                print args
-        print 'chief.load_data("%s", NullObserver())' % self._path
-        self._chief.load_data(self._path, NullObserver())
+    def _open_resource_file(self):
+        self._open(os.path.join(self._path, 'testdir', 'resources', 'resu.txt'))
+        self._suite = None
+        self._test = None
+        self._keyword = None
 
+    def _open(self, path):
+        print 'chief.load_data("%s", NullObserver())' % path
+        self._chief.load_data(path, NullObserver())
+        
     def _create_suite(self):
         filename = os.path.join(self._path,'path_to_foo%s.txt' % str(self._rand()))
         print 'suite = chief.data.execute(AddSuite(NewDatafile("%s", False)))' % filename
@@ -120,6 +132,12 @@ class RIDE(object):
     def move_row_down(self):
         self._macro_execute(MoveRowsDown([self._rand_row()]))
 
+    def comment_row(self):
+        self._macro_execute(CommentRow(self._rand_row()))
+
+    def uncomment_row(self):
+        self._macro_execute(UncommentRow(self._rand_row()))
+
     def extract_keyword(self):
         first_row = self._rand_row()
         self._macro_execute(ExtractKeyword('foo', '', [first_row, first_row+self._random.randint(1,10)]))
@@ -150,3 +168,10 @@ class RIDE(object):
         command = SaveFile()
         print 'suite.execute(%s)' % str(command)
         self._suite.execute(command)
+
+    def save_all(self):
+        if self._skip:
+            return
+        command = SaveAll()
+        print 'chief.execute(%s)' % str(command)
+        self._chief.execute(command)

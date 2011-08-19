@@ -1,0 +1,25 @@
+*** Settings ***
+Resource        resources${/}resu.txt
+Library         String
+
+*** Test Cases ***
+Test Case 1
+    Some local keyword  with  arguments
+    No Operation
+    Some keyword from resource file  2
+    Should Be Empty  ${EMPTY}  5
+    None Existing Keyword
+
+Templated Test Case
+    [Template]  Log
+    Hello
+    World
+
+*** Keywords ***
+Some local keyword
+    [Arguments]  ${arg1}  ${arg2}
+    Log  This is local ${arg1} for ${arg2}
+    ${value}=  Set Variable  4
+    Replace String Using Regexp  ${arg1}  ${arg2}  replacee  7
+    [Return]  65
+
