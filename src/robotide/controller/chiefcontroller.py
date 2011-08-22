@@ -194,9 +194,6 @@ class ChiefController(object):
     def get_root_suite_dir_path(self):
         return self.suite.get_dir_path()
 
-    def is_directory_suite(self):
-        return self.suite.is_directory_suite
-
     def is_dirty(self):
         if self.data and self._is_datafile_dirty(self.data):
             return True
