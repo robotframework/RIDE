@@ -24,3 +24,10 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, title=title, size=size, style=style)
         self.CenterOnParent()
 
+    def execute(self):
+        if self.ShowModal() == wx.ID_OK:
+            self._execute()
+        self.Destroy()
+
+    def _execute(self):
+        raise NotImplementedError(self.__class__.__name__)
