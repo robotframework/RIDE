@@ -741,17 +741,7 @@ class TestDataHandler(_ActionHandler):
         self._rendered = True
 
     def OnChangeFormat(self, event):
-        format =self.controller.get_format() or 'txt'
-        dlg = ChangeFormatDialog(format, self.controller.is_directory_suite())
-        if dlg.ShowModal() == wx.ID_OK:
-            self._handle_format_change(dlg)
-        dlg.Destroy()
-
-    def _handle_format_change(self, dialog):
-        if dialog.get_recursive():
-            self.controller.save_with_new_format_recursive(dialog.get_format())
-        else:
-            self.controller.save_with_new_format(dialog.get_format())
+        ChangeFormatDialog(self.controller).execute()
 
     def OnNewUserKeyword(self, event):
         dlg = UserKeywordNameDialog(self.controller)

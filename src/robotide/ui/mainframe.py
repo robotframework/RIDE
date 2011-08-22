@@ -21,7 +21,7 @@ from robotide.context import SETTINGS, ABOUT_RIDE
 from robotide.widgets import Dialog
 
 from actiontriggers import MenuBar, ToolBar, ShortcutRegistry
-from filedialogs import NewProjectDialog, NewExternalResourceDialog, ChangeFormatDialog
+from filedialogs import NewProjectDialog, NewExternalResourceDialog, InitFileFormatDialog
 from pluginmanager import PluginManager
 from tree import Tree
 from notebook import NoteBook
@@ -205,13 +205,7 @@ class RideFrame(wx.Frame, RideEventHandler):
             self._show_format_dialog_for(f)
 
     def _show_format_dialog_for(self, file_controller_without_format):
-        help = 'Please provide format of initialization file for directory suite\n"%s".' %\
-                file_controller_without_format.directory
-        dlg = ChangeFormatDialog('TXT', help_text=help)
-        if dlg.ShowModal() == wx.ID_OK:
-            file_controller_without_format.set_format(dlg.get_format())
-            file_controller_without_format.execute(SaveFile())
-        dlg.Destroy()
+        InitFileFormatDialog(file_controller_without_format).execute()
 
     def OnExit(self, event):
         self.Close()

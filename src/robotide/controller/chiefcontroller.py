@@ -68,6 +68,7 @@ class ChiefController(object):
         self._new_project(NewTestCaseFile(path))
 
     def _new_project(self, datafile):
+        self.update_default_dir(datafile.directory)
         self._controller = DataController(datafile, self)
         self.resources = []
         RideNewProject(path=datafile.source, datafile=datafile).publish()

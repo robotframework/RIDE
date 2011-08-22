@@ -439,6 +439,24 @@ class AddTestDataDirectory(_AddDataFile):
         return context.new_test_data_directory(self._path)
 
 
+class CreateNewFileProject(_Command):
+
+    def __init__(self, path):
+        self._path = path
+
+    def execute(self, context):
+        context.new_file_project(self._path)
+
+
+class CreateNewDirectoryProject(_Command):
+
+    def __init__(self, path):
+        self._path = path
+
+    def execute(self, context):
+        context.new_directory_project(self._path)
+
+
 class RemoveVariable(_ReversibleCommand):
 
     def __init__(self, var_controller):
