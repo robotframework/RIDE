@@ -17,7 +17,7 @@ import wx
 from wx.lib.filebrowsebutton import DirBrowseButton
 from robotide.controller.commands import (CreateNewResource,
     AddTestDataDirectory, AddTestCaseFile, CreateNewDirectoryProject,
-    CreateNewFileProject, SaveFile)
+    CreateNewFileProject, SaveFile, SetFileFormat, SetFileFormatRecuresively)
 # This hack needed to set same label width as with other labels
 from robotide.ui.components import StaticText
 DirBrowseButton.createLabel = lambda self: StaticText(self, size=(110, -1),
@@ -231,13 +231,12 @@ class ChangeFormatDialog(_FileFormatDialog):
         return selector
 
     def _execute(self):
-        if self._get_recursive():
-            self._controller.save_with_new_format_recursive(self._get_format())
-        else:
-            self._controller.save_with_new_format(self._get_format())
+        cmd = SetFileFormat if not self._get_recursive() \
+                else SetFileFormatRecuresively
+        self._controller.execute(cmd(self._get_format()))
 
     def _get_recursive(self):
-        return self._recursive.IsChecked()
+        return self._recursive and self._recursive.IsChecked()
 
 
 class InitFileFormatDialog(_FileFormatDialog):
@@ -248,5 +247,4 @@ class InitFileFormatDialog(_FileFormatDialog):
         sizer.Add(StaticText(self, label=help), flag=wx.ALL, border=5)
 
     def _execute(self):
-        self._controller.set_format(self._get_format())
-        self._controller.execute(SaveFile())
+        self._controller.execute(SetFileFormat(self._get_format()))

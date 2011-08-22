@@ -356,7 +356,6 @@ class TestDataDirectoryController(_DataController, DirectoryController):
         self.data.initfile = os.path.join(self.data.source, '__init__.%s'
                                           % format.lower())
         self.filename = self.data.initfile
-        self.mark_dirty()
 
     def new_test_case_file(self, path):
         return self._new_data_controller(NewTestCaseFile(path))

@@ -457,6 +457,24 @@ class CreateNewDirectoryProject(_Command):
         context.new_directory_project(self._path)
 
 
+class SetFileFormat(_Command):
+
+    def __init__(self, format):
+        self._format = format
+
+    def execute(self, context):
+        context.save_with_new_format(self._format)
+
+
+class SetFileFormatRecuresively(_Command):
+
+    def __init__(self, format):
+        self._format = format
+
+    def execute(self, context):
+        context.save_with_new_format_recursive(self._format)
+
+
 class RemoveVariable(_ReversibleCommand):
 
     def __init__(self, var_controller):
