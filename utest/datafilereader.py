@@ -29,6 +29,8 @@ OCCURRENCES_RESOURCE_NAME = 'Testdata Resource'
 OCCURRENCES_RESOURCE_FILE = 'testdata_resource.txt'
 OCCURRENCES_PATH = _makepath('simple_testsuite_with_different_namespaces')
 
+FOR_LOOP_PATH = _makepath('forloop')
+
 ARGUMENTS_PATH = _makepath('arguments_suite')
 
 def construct_chief_controller(datapath):

@@ -1,0 +1,6 @@
+*** Test Cases ***
+Test
+    : FOR  ${i}  IN RANGE  1  10
+    \  Log  joo
+    : FOR  ${j}  IN  1  2
+    \  Log  jee

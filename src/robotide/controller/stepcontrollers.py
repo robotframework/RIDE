@@ -279,6 +279,8 @@ class ForLoopStepController(StepController):
     def move_down(self):
         next_step = self.step(self._index()+1)
         next_step.move_up()
+        if len(self._step.steps) == 0:
+            self._replace_with_new_cells(cells=self.as_list())
 
     def insert_after(self, new_step):
         self._get_raw_steps().insert(0, new_step)
