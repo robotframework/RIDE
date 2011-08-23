@@ -96,7 +96,7 @@ class ChiefControllerTest(unittest.TestCase):
         tcf = self._find_suite_by_type(self.ctrl.data.children, TestCaseFileController)
         tcf.create_test('newnessness')
         assert_equals(len(self.ctrl._get_all_dirty_controllers()), 1)
-        self.ctrl.data.set_format('html')
+        self.ctrl.data.mark_dirty()
         assert_equals(len(self.ctrl._get_all_dirty_controllers()), 2)
         sub_dir = self._find_suite_by_type(self.ctrl.data.children, TestDataDirectoryController)
         sub_dir_tcf = self._find_suite_by_type(sub_dir.children, TestCaseFileController)

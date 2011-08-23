@@ -1,4 +1,4 @@
-#  Copyright 2008-2009 Nokia Siemens Networks Oyj
+#  Copyright 2008-2011 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -15,7 +15,9 @@
 import os
 import wx
 from wx.lib.filebrowsebutton import DirBrowseButton
-from robotide.controller.commands import CreateNewResource, AddTestDataDirectory, AddTestCaseFile
+from robotide.controller.commands import (CreateNewResource,
+    AddTestDataDirectory, AddTestCaseFile, CreateNewDirectoryProject,
+    CreateNewFileProject, SaveFile, SetFileFormat, SetFileFormatRecuresively)
 # This hack needed to set same label width as with other labels
 from robotide.ui.components import StaticText
 DirBrowseButton.createLabel = lambda self: StaticText(self, size=(110, -1),
@@ -120,20 +122,15 @@ class _CreationDialog(Dialog):
         buttons = self.CreateStdDialogButtonSizer(wx.OK|wx.CANCEL)
         sizer.Add(buttons, flag=wx.ALIGN_CENTER|wx.ALL, border=5)
 
-    def get_name(self):
-        return self._name_editor.GetValue()
-
-    def get_directory(self):
-        return self._parent_chooser.GetValue()
-
-    def get_path(self):
-        path = os.path.join(self.get_directory(),
-                            self.get_name().replace(' ', '_'))
-        if self.is_dir_type():
+    def _get_path(self):
+        name = self._name_editor.GetValue()
+        directory = self._parent_chooser.GetValue()
+        path = os.path.join(self.directory, name.replace(' ', '_'))
+        if self._is_dir_type():
             path = os.path.join(path, '__init__')
         return path + '.' + self._get_extension()
 
-    def is_dir_type(self):
+    def _is_dir_type(self):
         if not self._type_chooser:
             return False
         return self._type_chooser.GetStringSelection() == 'Directory'
@@ -146,7 +143,7 @@ class _CreationDialog(Dialog):
     def OnPathChanged(self, event):
         if not hasattr(self, '_path_display'):
             return
-        self._path_display.SetValue(self.get_path())
+        self._path_display.SetValue(self._get_path())
         event.Skip()
 
 
@@ -162,15 +159,9 @@ class NewProjectDialog(_CreationDialog):
         self._controller = chief_controller
         _CreationDialog.__init__(self, chief_controller.default_dir, 'New Project')
 
-    def doit(self):
-        if self.ShowModal() == wx.ID_OK:
-            path = self.get_path()
-            self._controller.update_default_dir(path)
-            if self.is_dir_type():
-                self._controller.new_directory_project(path)
-            else:
-                self._controller.new_file_project(path)
-        self.Destroy()
+    def _execute(self):
+        cmd = CreateNewDirectoryProject if self._is_dir_type() else CreateNewFileProject
+        cmd(self._get_path()).execute(self._controller )
 
 
 class _NewResourceDialog(_CreationDialog):
@@ -179,10 +170,8 @@ class _NewResourceDialog(_CreationDialog):
         _CreationDialog.__init__(self, controller.default_dir, 'New Resource File')
         self._controller = controller
 
-    def doit(self):
-        if self.ShowModal() == wx.ID_OK:
-            self._controller.execute(CreateNewResource(self.get_path()))
-        self.Destroy()
+    def _execute(self):
+        self._controller.execute(CreateNewResource(self._get_path()))
 
     def _create_type_chooser(self, sizer):
         return None
@@ -205,41 +194,57 @@ class AddSuiteDialog(_WithImmutableParent, _CreationDialog):
         self._path = controller.directory
         _CreationDialog.__init__(self, self._path, 'Add Suite')
 
-    def doit(self):
-        if self.ShowModal() == wx.ID_OK:
-            cmd = AddTestDataDirectory if self.is_dir_type() else AddTestCaseFile
-            self._controller.execute(cmd(self.get_path()))
-        self.Destroy()
+    def _execute(self):
+        cmd = AddTestDataDirectory if self._is_dir_type() else AddTestCaseFile
+        self._controller.execute(cmd(self._get_path()))
 
 
-class ChangeFormatDialog(_CreationDialog):
+class _FileFormatDialog(_CreationDialog):
 
-    def __init__(self, default_format, allow_recursive=False,
-                 help_text=None):
-        sizer = self._init_dialog('Data Format')
-        self._create_help(sizer, help_text)
+    def __init__(self, controller):
+        sizer = self._init_dialog('Set Data Format')
+        self._controller = controller
+        self._create_help(sizer)
         self._chooser = self._create_format_chooser(sizer, callback=False)
-        self._chooser.SetStringSelection(default_format)
-        self._recursive = self._create_recursion_selector(sizer, allow_recursive)
+        self._chooser.SetStringSelection(controller.get_format() or 'TXT')
+        self._recursive = self._create_recursion_selector(sizer)
         self._finalize_dialog(sizer)
 
-    def _create_help(self, sizer, help_text):
-        if help_text:
-            help = StaticText(self, label=help_text)
-            sizer.Add(help, flag=wx.ALL, border=5)
+    def _create_help(self, sizer):
+        pass
 
-    def _create_recursion_selector(self, sizer, recursive):
-        if not recursive:
+    def _create_recursion_selector(self, sizer):
+        return None
+
+    def _get_format(self):
+        return self._chooser.GetStringSelection()
+
+
+class ChangeFormatDialog(_FileFormatDialog):
+
+    def _create_recursion_selector(self, sizer):
+        if not self._controller.is_directory_suite():
             return None
         selector = wx.CheckBox(self, label='Change recursively')
         selector.SetValue(True)
         sizer.Add(selector, flag=wx.ALL, border=5)
         return selector
 
-    def get_format(self):
-        return self._chooser.GetStringSelection()
+    def _execute(self):
+        cmd = SetFileFormat if not self._get_recursive() \
+                else SetFileFormatRecuresively
+        self._controller.execute(cmd(self._get_format()))
 
-    def get_recursive(self):
-        if not self._recursive:
-            return False
-        return self._recursive.IsChecked()
+    def _get_recursive(self):
+        return self._recursive and self._recursive.IsChecked()
+
+
+class InitFileFormatDialog(_FileFormatDialog):
+
+    def _create_help(self, sizer):
+        help = 'Provide format for initialization file in directory\n"%s".' % \
+                    self._controller.directory
+        sizer.Add(StaticText(self, label=help), flag=wx.ALL, border=5)
+
+    def _execute(self):
+        self._controller.execute(SetFileFormat(self._get_format()))

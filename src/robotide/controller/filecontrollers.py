@@ -1,4 +1,4 @@
-#  Copyright 2008-2009 Nokia Siemens Networks Oyj
+#  Copyright 2008-2011 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -356,7 +356,6 @@ class TestDataDirectoryController(_DataController, DirectoryController):
         self.data.initfile = os.path.join(self.data.source, '__init__.%s'
                                           % format.lower())
         self.filename = self.data.initfile
-        self.mark_dirty()
 
     def new_test_case_file(self, path):
         return self._new_data_controller(NewTestCaseFile(path))

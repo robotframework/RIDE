@@ -1,4 +1,4 @@
-#  Copyright 2008-2009 Nokia Siemens Networks Oyj
+#  Copyright 2008-2011 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -24,3 +24,10 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, title=title, size=size, style=style)
         self.CenterOnParent()
 
+    def execute(self):
+        if self.ShowModal() == wx.ID_OK:
+            self._execute()
+        self.Destroy()
+
+    def _execute(self):
+        raise NotImplementedError(self.__class__.__name__)

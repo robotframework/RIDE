@@ -1,4 +1,4 @@
-#  Copyright 2008-2009 Nokia Siemens Networks Oyj
+#  Copyright 2008-2011 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -690,7 +690,7 @@ class DirectoryHandler(_ActionHandler):
     _actions = [_ActionHandler._label_new_resource]
 
     def OnNewResource(self, event):
-        NewResourceDialog(self.controller).doit()
+        NewResourceDialog(self.controller).execute()
 
 
 class TestDataHandler(_ActionHandler):
@@ -741,17 +741,7 @@ class TestDataHandler(_ActionHandler):
         self._rendered = True
 
     def OnChangeFormat(self, event):
-        format =self.controller.get_format() or 'txt'
-        dlg = ChangeFormatDialog(format, self.controller.is_directory_suite())
-        if dlg.ShowModal() == wx.ID_OK:
-            self._handle_format_change(dlg)
-        dlg.Destroy()
-
-    def _handle_format_change(self, dialog):
-        if dialog.get_recursive():
-            self.controller.save_with_new_format_recursive(dialog.get_format())
-        else:
-            self.controller.save_with_new_format(dialog.get_format())
+        ChangeFormatDialog(self.controller).execute()
 
     def OnNewUserKeyword(self, event):
         dlg = UserKeywordNameDialog(self.controller)
@@ -781,10 +771,10 @@ class TestDataDirectoryHandler(TestDataHandler):
     _actions = TestDataHandler._actions[:] + [_ActionHandler._label_new_resource]
 
     def OnNewSuite(self, event):
-        AddSuiteDialog(self.controller).doit()
+        AddSuiteDialog(self.controller).execute()
 
     def OnNewResource(self, event):
-        NewResourceDialog(self.controller).doit()
+        NewResourceDialog(self.controller).execute()
 
 
 class ResourceFileHandler(TestDataHandler):
@@ -905,7 +895,7 @@ class ResourceRootHandler(_ActionHandler):
         return None
 
     def OnNewResource(self, event):
-        NewExternalResourceDialog(self.controller).doit()
+        NewExternalResourceDialog(self.controller).execute()
 
 
 class LabelEditor(object):

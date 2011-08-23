@@ -1,4 +1,4 @@
-#  Copyright 2008-2009 Nokia Siemens Networks Oyj
+#  Copyright 2008-2011 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -437,6 +437,42 @@ class AddTestDataDirectory(_AddDataFile):
 
     def _add_data_file(self, context):
         return context.new_test_data_directory(self._path)
+
+
+class CreateNewFileProject(_Command):
+
+    def __init__(self, path):
+        self._path = path
+
+    def execute(self, context):
+        context.new_file_project(self._path)
+
+
+class CreateNewDirectoryProject(_Command):
+
+    def __init__(self, path):
+        self._path = path
+
+    def execute(self, context):
+        context.new_directory_project(self._path)
+
+
+class SetFileFormat(_Command):
+
+    def __init__(self, format):
+        self._format = format
+
+    def execute(self, context):
+        context.save_with_new_format(self._format)
+
+
+class SetFileFormatRecuresively(_Command):
+
+    def __init__(self, format):
+        self._format = format
+
+    def execute(self, context):
+        context.save_with_new_format_recursive(self._format)
 
 
 class RemoveVariable(_ReversibleCommand):

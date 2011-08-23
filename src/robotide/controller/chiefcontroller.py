@@ -1,4 +1,4 @@
-#  Copyright 2008-2009 Nokia Siemens Networks Oyj
+#  Copyright 2008-2011 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -68,6 +68,7 @@ class ChiefController(object):
         self._new_project(NewTestCaseFile(path))
 
     def _new_project(self, datafile):
+        self.update_default_dir(datafile.directory)
         self._controller = DataController(datafile, self)
         self.resources = []
         RideNewProject(path=datafile.source, datafile=datafile).publish()
@@ -193,9 +194,6 @@ class ChiefController(object):
     def get_root_suite_dir_path(self):
         return self.suite.get_dir_path()
 
-    def is_directory_suite(self):
-        return self.suite.is_directory_suite
-
     def is_dirty(self):
         if self.data and self._is_datafile_dirty(self.data):
             return True
@@ -218,8 +216,9 @@ class ChiefController(object):
         old_path = controller.filename
         controller.set_format(format)
         self.serialize_controller(controller)
-        self._remove_file(old_path)
-        RideChangeFormat(oldpath=old_path, newpath=controller.source).publish()
+        if old_path:
+            self._remove_file(old_path)
+            RideChangeFormat(oldpath=old_path, newpath=controller.source).publish()
 
     def _remove_file(self, path):
         if path and os.path.isfile(path):
