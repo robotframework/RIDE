@@ -14,6 +14,7 @@
 
 import os
 
+from robot.utils.normalizing import normalize
 from robotide.utils import html_escape, unescape
 
 
@@ -44,6 +45,12 @@ class ItemInfo(object):
     @property
     def longname(self):
         return '%s.%s' % (self.source, self.name)
+
+    def name_begins_with(self, prefix):
+        return normalize(self.name).startswith(prefix)
+
+    def longname_begins_with(self, prefix):
+        return normalize(self.longname).startswith(prefix)
 
     def is_library_keyword(self):
         return False
@@ -219,6 +226,9 @@ class _UserKeywordInfo(_KeywordInfo):
 class TestCaseUserKeywordInfo(_UserKeywordInfo):
     _type = 'test case file'
 
+    @property
+    def longname(self):
+        return self.name
 
 
 class ResourceUserKeywordInfo(_UserKeywordInfo):

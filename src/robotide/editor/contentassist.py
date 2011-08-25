@@ -14,6 +14,7 @@
 
 import wx
 from wx.lib.expando import ExpandoTextCtrl
+from robot.utils.normalizing import normalize
 
 from robotide import context
 
@@ -117,6 +118,33 @@ class ContentAssistTextCtrl(_ContentAssistTextCtrlBase, wx.TextCtrl):
         wx.TextCtrl.__init__(self, parent, size=size, style=wx.WANTS_CHARS)
         _ContentAssistTextCtrlBase.__init__(self, plugin)
 
+class Suggestions(object):
+
+    def __init__(self, plugin):
+        self._plugin = plugin
+        self._previous_value = None
+        self._previous_choices = []
+
+    def get_for(self, value):
+        self._previous_choices = self._get_choices(value)
+        self._previous_value = value
+        return sorted(self._previous_choices.keys())
+
+    def get_item(self, name):
+        return self._previous_choices[name]
+
+    def _get_choices(self, value):
+        if self._previous_value and value.startswith(self._previous_value):
+            return dict([(key, val) for key, val in self._previous_choices.items()
+                                    if normalize(key).startswith(normalize(value))])
+        return self._format_choices(self._plugin.content_assist_values(value), value)
+
+    def _format_choices(self, data, prefix):
+        return dict([(self._format(val, prefix), val) for val in data])
+
+    def _format(self, choice, prefix):
+        return choice.name if normalize(choice.name).startswith(normalize(prefix)) else choice.longname
+
 
 class ContentAssistPopup(object):
 
@@ -128,6 +156,7 @@ class ContentAssistPopup(object):
         self._selection = -1
         self._list = ContentAssistList(self._main_popup, self.OnListItemSelected,
                                        self.OnListItemActivated)
+        self._suggestions = Suggestions(self._plugin)
 
     def reset(self):
         self._selection = -1
@@ -136,7 +165,7 @@ class ContentAssistPopup(object):
         return self._selection != -1 and self._list.get_text(self._selection) or None
 
     def content_assist_for(self, value):
-        self._choices = self._plugin.content_assist_values(value)
+        self._choices = self._suggestions.get_for(value)
         if not self._choices:
             self._list.ClearAll()
             self._parent.hide()
@@ -217,7 +246,7 @@ class ContentAssistPopup(object):
 
     def OnListItemSelected(self, event):
         self._selection = event.GetIndex()
-        item = self._choices[self._selection]
+        item = self._suggestions.get_item(event.GetText())
         if item.details:
             self._details_popup.Show()
             self._details_popup.set_content(item.details, item.name)
@@ -241,7 +270,7 @@ class ContentAssistList(wx.ListCtrl):
         self.ClearAll()
         self.InsertColumn(0, '', width=self.Size[0])
         for row, item in enumerate(data):
-            self.InsertStringItem(row, item.name)
+            self.InsertStringItem(row, item)
         self.Select(0)
 
     def get_text(self, index):

@@ -127,7 +127,8 @@ class Namespace(object):
         start_normalized = normalize(start)
         return sorted(sug for sug in chain(self._get_default_keywords(),
                                            self._retriever.get_keywords_from(datafile))
-                      if normalize(sug.name).startswith(start_normalized))
+                      if sug.name_begins_with(start_normalized) or
+                         sug.longname_begins_with(start_normalized))
 
     def get_resources(self, datafile):
         return self._retriever.get_resources_from(datafile)
@@ -498,3 +499,4 @@ class _Keywords(object):
     def _get_bdd_name(self, kw_name):
         match = self.regexp.match(kw_name)
         return match.group(2) if match else None
+
