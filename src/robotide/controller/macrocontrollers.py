@@ -24,6 +24,7 @@ from robotide.controller.settingcontrollers import (DocumentationController,
         TemplateController, ArgumentsController, ReturnValueController)
 from robotide.controller.arguments import parse_arguments_to_var_dict
 from robotide.controller.basecontroller import WithUndoRedoStacks
+from robotide.namespace.local_namespace import LocalNamespace
 from robotide.publish.messages import RideItemStepsChanged, RideItemNameChanged,\
     RideItemSettingsChanged
 from robotide.controller.stepcontrollers import ForLoopStepController,\
@@ -152,6 +153,12 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
 
     def update_namespace(self):
         self.datafile_controller.update_namespace()
+
+    def get_local_namespace(self):
+        return LocalNamespace(self, self.datafile_controller._chief_controller._namespace)
+
+    def get_local_namespace_for_row(self, row):
+        return LocalNamespace(self, self.datafile_controller._chief_controller._namespace, row)
 
     def get_cell_info(self, row, col):
         steps = self.steps

@@ -33,6 +33,8 @@ FOR_LOOP_PATH = _makepath('forloop')
 
 ARGUMENTS_PATH = _makepath('arguments_suite')
 
+SIMPLE_PROJECT = _makepath('simple', 'test.txt')
+
 def construct_chief_controller(datapath):
     class NullObserver(object):
         def notify(self, *args):
