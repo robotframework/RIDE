@@ -234,6 +234,10 @@ class TestCaseUserKeywordInfo(_UserKeywordInfo):
 class ResourceUserKeywordInfo(_UserKeywordInfo):
     _type = 'resource file'
 
+    @property
+    def longname(self):
+        return self.item.parent.parent.name + '.' + self.name
+
 
 PRIORITIES = {ItemInfo: 50,
               LibraryKeywordInfo: 40,

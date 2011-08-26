@@ -118,6 +118,10 @@ class TestKeywordSuggestions(_DataFileTest):
         sugs = self.ns.get_suggestions_for(self.kw, 'Resource Uk')
         self._assert_import_kws(sugs, RESOURCES_HTML)
 
+    def test_resource_file_keyword_with_longname(self):
+        sugs = self.ns.get_suggestions_for(self.kw, RESOURCES_HTML.replace('.html', '') + '.Resource Uk')
+        self._assert_import_kws(sugs, RESOURCES_HTML)
+
     def test_keywords_normalization(self):
         sugs = self.ns.get_suggestions_for(self.kw, 'Reso   Urceuk')
         self._assert_import_kws(sugs, RESOURCES_HTML)
