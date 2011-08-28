@@ -16,7 +16,7 @@ import os
 from itertools import chain
 
 from robotide.controller.basecontroller import WithUndoRedoStacks,\
-    _BaseController
+    _BaseController, WithNamespace
 from robotide.controller.settingcontrollers import DocumentationController,\
     FixtureController, TimeoutController, TemplateController,\
     DefaultTagsController, ForceTagsController
@@ -67,10 +67,12 @@ class _FileSystemElement(object):
         return self.filename or self.directory
 
 
-class _DataController(_BaseController, WithUndoRedoStacks):
+class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
 
     def __init__(self, data, chief_controller=None, parent=None):
         self._chief_controller = chief_controller
+        if chief_controller:
+            self._set_namespace_from(chief_controller)
         self.parent = parent
         self.data = data
         self.dirty = False
@@ -145,26 +147,14 @@ class _DataController(_BaseController, WithUndoRedoStacks):
     def metadata(self):
         return MetadataListController(self, self.data.setting_table)
 
-    def update_namespace(self):
-        if self._chief_controller is not None:
-            self._chief_controller.update_namespace()
-
-    def register_for_namespace_updates(self, listener):
-        if self._chief_controller is not None:
-            self._chief_controller.register_for_namespace_updates(listener)
-
-    def unregister_namespace_updates(self, listener):
-        if self._chief_controller is not None:
-            self._chief_controller.unregister_namespace_updates(listener)
-
     def is_user_keyword(self, value):
-        return self._chief_controller.is_user_keyword(self.datafile, value)
+        return WithNamespace.is_user_keyword(self, self.datafile, value)
 
     def is_library_keyword(self, value):
-        return self._chief_controller.is_library_keyword(self.datafile, value)
+        return WithNamespace.is_library_keyword(self, self.datafile, value)
 
     def keyword_info(self, keyword_name):
-        return self._chief_controller.keyword_info(self.data, keyword_name)
+        return WithNamespace.keyword_info(self, self.data, keyword_name)
 
     def mark_dirty(self):
         if not self.dirty:

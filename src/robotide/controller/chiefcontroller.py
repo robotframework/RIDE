@@ -31,7 +31,7 @@ from robotide.context import SETTINGS
 class ChiefController(_BaseController, WithNamespace):
 
     def __init__(self, namespace):
-        self._namespace = namespace
+        self._set_namespace(namespace)
         self._loader = DataLoader(namespace)
         self._controller = None
         self.name = None

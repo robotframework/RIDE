@@ -52,17 +52,27 @@ class ControllerWithParent(object):
 
 
 class WithNamespace(object):
+    _namespace = None # Ensure namespace exists
 
-    def set_namespace(self, namespace):
-        self._namespaces = namespace
+    def _set_namespace_from(self, controller):
+        self._set_namespace(controller._namespace)
+
+    def _set_namespace(self, namespace):
+        self._namespace = namespace
 
     def update_namespace(self):
+        if not self._namespace:
+            return
         self._namespace.update()
 
     def register_for_namespace_updates(self, listener):
+        if not self._namespace:
+            return
         self._namespace.register_update_listener(listener)
 
     def unregister_namespace_updates(self, listener):
+        if not self._namespace:
+            return
         self._namespace.unregister_update_listener(listener)
 
     def clear_namespace_update_listeners(self):

@@ -1,5 +1,6 @@
 from robot.parsing.model import TestCaseFile, TestDataDirectory
 from robot.parsing.populators import FromFilePopulator
+from robotide.controller.basecontroller import WithNamespace
 from robotide.controller.filecontrollers import TestCaseFileController,\
     TestDataDirectoryController
 
@@ -24,7 +25,7 @@ BASE_DATA = [TEST_NAME,
         '  ${variable}=  some value'
 ]
 
-class _FakeChief(object):
+class _FakeChief(WithNamespace):
 
     def update_namespace(self):
         pass

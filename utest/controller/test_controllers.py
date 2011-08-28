@@ -245,6 +245,8 @@ class ReturnValueControllerTest(unittest.TestCase):
 class ImportControllerTest(unittest.TestCase):
     class FakeParent(_FakeChief):
 
+        _namespace = None
+
         @property
         def directory(self):
             return 'tmp'

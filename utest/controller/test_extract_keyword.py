@@ -9,6 +9,8 @@ from controller.controller_creator import FOR_LOOP_HEADER, FOR_LOOP_STEP2,\
 
 class TestExtractKeyword(TestCaseCommandTest):
 
+    _namespace = None
+
     def setUp(self):
         TestCaseCommandTest.setUp(self)
         PUBLISHER.subscribe(self._on_keyword_added, RideUserKeywordAdded)
