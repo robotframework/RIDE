@@ -15,7 +15,7 @@
 import os
 
 from robotide import context
-from robotide.controller.basecontroller import WithNamespace
+from robotide.controller.basecontroller import WithNamespace, _BaseController
 from robotide.controller.filecontrollers import DirectoryController, TestDataDirectoryController
 from robotide.controller.robotdata import NewTestCaseFile, NewTestDataDirectory
 from robotide.errors import SerializationError
@@ -28,7 +28,7 @@ from dataloader import DataLoader
 from robotide.context import SETTINGS
 
 
-class ChiefController(WithNamespace):
+class ChiefController(_BaseController, WithNamespace):
 
     def __init__(self, namespace):
         self._namespace = namespace
@@ -39,15 +39,16 @@ class ChiefController(WithNamespace):
         self.external_resources = []
 
     @property
+    def display_name(self):
+        return 'Chief'
+
+    @property
     def default_dir(self):
         return os.path.abspath(SETTINGS['default directory'])
 
     def update_default_dir(self, path):
         default_dir = path if os.path.isdir(path) else os.path.dirname(path)
         SETTINGS.set('default directory', default_dir)
-
-    def execute(self, command):
-        return command.execute(self)
 
     # TODO: in all other controllers data returns a robot data model object.
     @property
