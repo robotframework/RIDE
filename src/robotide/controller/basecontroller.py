@@ -51,6 +51,36 @@ class ControllerWithParent(object):
         return self._parent.datafiles
 
 
+class WithNamespace(object):
+
+    def set_namespace(self, namespace):
+        self._namespaces = namespace
+
+    def update_namespace(self):
+        self._namespace.update()
+
+    def register_for_namespace_updates(self, listener):
+        self._namespace.register_update_listener(listener)
+
+    def unregister_namespace_updates(self, listener):
+        self._namespace.unregister_update_listener(listener)
+
+    def clear_namespace_update_listeners(self):
+        self._namespace.clear_update_listeners()
+
+    def is_user_keyword(self, datafile, value):
+        return self._namespace.is_user_keyword(datafile, value)
+
+    def is_library_keyword(self, datafile, value):
+        return self._namespace.is_library_keyword(datafile, value)
+
+    def get_all_keywords_from(self, *datafiles):
+        return self._namespace.get_all_keywords(*datafiles)
+
+    def keyword_info(self, datafile, keyword_name):
+        return self._namespace.find_keyword(datafile, keyword_name)
+
+
 class WithUndoRedoStacks(object):
 
     @property

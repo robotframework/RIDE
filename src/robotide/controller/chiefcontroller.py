@@ -15,6 +15,7 @@
 import os
 
 from robotide import context
+from robotide.controller.basecontroller import WithNamespace
 from robotide.controller.filecontrollers import DirectoryController, TestDataDirectoryController
 from robotide.controller.robotdata import NewTestCaseFile, NewTestDataDirectory
 from robotide.errors import SerializationError
@@ -27,7 +28,7 @@ from dataloader import DataLoader
 from robotide.context import SETTINGS
 
 
-class ChiefController(object):
+class ChiefController(WithNamespace):
 
     def __init__(self, namespace):
         self._namespace = namespace
@@ -118,7 +119,7 @@ class ChiefController(object):
         load_observer.finish()
 
     def _create_controllers(self, datafile, resources):
-        self._namespace.clear_update_listeners()
+        self.clear_namespace_update_listeners()
         self._controller = DataController(datafile, self)
         for r in resources:
             self._create_resource_controller(r)
@@ -158,31 +159,13 @@ class ChiefController(object):
         for _import in [ imp for imp in controller.imports if imp.is_resource ]:
             _import.import_loaded_or_modified()
 
-    def update_namespace(self):
-        self._namespace.update()
-
-    def register_for_namespace_updates(self, listener):
-        self._namespace.register_update_listener(listener)
-
-    def unregister_namespace_updates(self, listener):
-        self._namespace.unregister_update_listener(listener)
-
-    def is_user_keyword(self, datafile, value):
-        return self._namespace.is_user_keyword(datafile, value)
-
-    def is_library_keyword(self, datafile, value):
-        return self._namespace.is_library_keyword(datafile, value)
-
     def get_all_keywords(self):
-        return self._namespace.get_all_keywords(ctrl.datafile for ctrl in self.datafiles if ctrl.datafile)
+        return self.get_all_keywords_from(ctrl.datafile for ctrl in self.datafiles if ctrl.datafile)
 
     def all_testcases(self):
         for df in self._suites():
             for test in df.tests:
                 yield test
-
-    def keyword_info(self, datafile, keyword_name):
-        return self._namespace.find_keyword(datafile, keyword_name)
 
     def get_files_without_format(self, controller=None):
         if controller:
