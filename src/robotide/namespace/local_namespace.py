@@ -12,11 +12,27 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-class LocalNamespace(object):
+def LocalNamespace(controller, namespace, row=None):
+   if row is not None: # can be 0!
+       return LocalRowNamespace(controller, namespace, row)
+   return LocalMacroNamespace(controller, namespace)
 
-    def __init__(self, controller, namespace, row=None):
+class LocalMacroNamespace(object):
+
+    def __init__(self, controller, namespace):
         self._controller = controller
         self._namespace = namespace
+
+    def has_name(self, value):
+        for sug in self._namespace.get_suggestions_for(self._controller, value):
+            if sug.name == value:
+                return True
+        return False
+
+class LocalRowNamespace(LocalMacroNamespace):
+
+    def __init__(self, controller, namespace, row):
+        LocalMacroNamespace.__init__(self, controller, namespace)
         self._row = row
 
     def has_name(self, value):
@@ -24,10 +40,6 @@ class LocalNamespace(object):
             for row, step in enumerate(self._controller.steps):
                 if self._row == row:
                     break
-                for assignment in step._step.assign:
-                    if assignment.replace('=', '').strip() == value:
-                        return True
-        for sug in self._namespace.get_suggestions_for(self._controller, value):
-            if sug.name == value:
-                return True
-        return False
+                if step.is_assigning(value):
+                    return True
+        return LocalMacroNamespace.has_name(self, value)

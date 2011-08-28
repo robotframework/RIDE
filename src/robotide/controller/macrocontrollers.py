@@ -155,10 +155,10 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self.datafile_controller.update_namespace()
 
     def get_local_namespace(self):
-        return LocalNamespace(self, self.datafile_controller._chief_controller._namespace)
+        return LocalNamespace(self, self.datafile_controller._namespace)
 
     def get_local_namespace_for_row(self, row):
-        return LocalNamespace(self, self.datafile_controller._chief_controller._namespace, row)
+        return LocalNamespace(self, self.datafile_controller._namespace, row)
 
     def get_cell_info(self, row, col):
         steps = self.steps
