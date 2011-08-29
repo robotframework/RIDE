@@ -32,6 +32,10 @@ class _ContentAssistTextCtrlBase(object):
         self.Bind(wx.EVT_KILL_FOCUS, self.OnFocusLost)
         self.Bind(wx.EVT_MOVE, self.OnFocusLost)
         self._showing_content_assist = False
+        self._row = None
+
+    def set_row(self, row):
+        self._row = row
 
     def OnChar(self, event):
         # TODO: This might benefit from some cleanup
@@ -70,14 +74,14 @@ class _ContentAssistTextCtrlBase(object):
         self._popup.reset()
         self._showing_content_assist = False
 
-    def show_content_assist(self, row=None):
+    def show_content_assist(self):
         if self._showing_content_assist:
             return
         self._showing_content_assist = True
-        if self._populate_content_assist(row=row):
+        if self._populate_content_assist():
             self._show_content_assist()
 
-    def _populate_content_assist(self, event=None, row=None):
+    def _populate_content_assist(self, event=None):
         value = self.GetValue()
         if event is not None:
             if event.GetKeyCode() == wx.WXK_BACK:
@@ -90,7 +94,7 @@ class _ContentAssistTextCtrlBase(object):
                 return False
             else:
                 value += unichr(event.GetRawKeyCode())
-        return self._popup.content_assist_for(value, row=row)
+        return self._popup.content_assist_for(value, row=self._row)
 
     def _show_content_assist(self):
         height = self.GetSizeTuple()[1]
@@ -139,7 +143,7 @@ class Suggestions(object):
 
     def _get_choices(self, value, row):
         if self._previous_value and value.startswith(self._previous_value):
-            return [(key, val) for key, val in self._previous_choices.items()
+            return [(key, val) for key, val in self._previous_choices
                                     if normalize(key).startswith(normalize(value))]
         if self._controller and row:
             choices = self._controller.get_local_namespace_for_row(row).get_suggestions(value)

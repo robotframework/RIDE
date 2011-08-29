@@ -398,7 +398,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         row = self.GetGridCursorRow()
         celleditor = self.GetCellEditor(self.GetGridCursorCol(), row)
         celleditor.Show(True)
-        wx.CallAfter(celleditor.show_content_assist, row)
+        wx.CallAfter(celleditor.show_content_assist)
 
     def OnCellRightClick(self, event):
         self._tooltips.hide()
@@ -514,8 +514,8 @@ class ContentAssistCellEditor(grid.PyGridCellEditor):
         self._controller = controller
         self._grid = None
 
-    def show_content_assist(self, row=None):
-        self._tc.show_content_assist(row)
+    def show_content_assist(self):
+        self._tc.show_content_assist()
 
     def Create(self, parent, id, evthandler):
         self._tc = ExpandingContentAssistTextCtrl(parent, self._plugin, self._controller)
@@ -532,6 +532,7 @@ class ContentAssistCellEditor(grid.PyGridCellEditor):
 
     def BeginEdit(self, row, col, grid):
         self._tc.SetSize((-1, self._height))
+        self._tc.set_row(row)
         self._original_value = grid.GetCellValue(row, col)
         self._grid = grid
         self.StartingClick()
