@@ -26,8 +26,8 @@ _PREFERRED_POPUP_SIZE = (400, 200)
 
 class _ContentAssistTextCtrlBase(object):
 
-    def __init__(self, plugin):
-        self._popup = ContentAssistPopup(self, plugin)
+    def __init__(self, plugin, controller=None):
+        self._popup = ContentAssistPopup(self, plugin, controller=controller)
         self.Bind(wx.EVT_CHAR, self.OnChar)
         self.Bind(wx.EVT_KILL_FOCUS, self.OnFocusLost)
         self.Bind(wx.EVT_MOVE, self.OnFocusLost)
@@ -109,7 +109,7 @@ class ExpandingContentAssistTextCtrl(_ContentAssistTextCtrlBase, ExpandoTextCtrl
 
     def __init__(self, parent, plugin, controller):
         ExpandoTextCtrl.__init__(self, parent, size=wx.DefaultSize, style=wx.WANTS_CHARS)
-        _ContentAssistTextCtrlBase.__init__(self, plugin)
+        _ContentAssistTextCtrlBase.__init__(self, plugin, controller=controller)
 
 
 class ContentAssistTextCtrl(_ContentAssistTextCtrlBase, wx.TextCtrl):
@@ -120,8 +120,9 @@ class ContentAssistTextCtrl(_ContentAssistTextCtrlBase, wx.TextCtrl):
 
 class Suggestions(object):
 
-    def __init__(self, plugin):
+    def __init__(self, plugin, controller):
         self._plugin = plugin
+        self._controller = controller
         self._previous_value = None
         self._previous_choices = []
 
@@ -137,7 +138,11 @@ class Suggestions(object):
         if self._previous_value and value.startswith(self._previous_value):
             return dict([(key, val) for key, val in self._previous_choices.items()
                                     if normalize(key).startswith(normalize(value))])
-        return self._format_choices(self._plugin.content_assist_values(value), value)
+        if self._controller:
+            choices = self._controller.get_local_namespace().get_suggestions(value)
+        else:
+            choices = self._plugin.content_assist_values(value)
+        return self._format_choices(choices, value)
 
     def _format_choices(self, data, prefix):
         return dict([(self._format(val, prefix), val) for val in data])
@@ -148,7 +153,7 @@ class Suggestions(object):
 
 class ContentAssistPopup(object):
 
-    def __init__(self, parent, plugin):
+    def __init__(self, parent, plugin, controller=None):
         self._parent = parent
         self._plugin = plugin
         self._main_popup = RidePopupWindow(parent, _PREFERRED_POPUP_SIZE)
@@ -156,7 +161,7 @@ class ContentAssistPopup(object):
         self._selection = -1
         self._list = ContentAssistList(self._main_popup, self.OnListItemSelected,
                                        self.OnListItemActivated)
-        self._suggestions = Suggestions(self._plugin)
+        self._suggestions = Suggestions(self._plugin, controller)
 
     def reset(self):
         self._selection = -1
