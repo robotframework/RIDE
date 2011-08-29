@@ -67,8 +67,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._plugin = parent.plugin
             self._cell_selected = False
             self._colorizer = Colorizer(self, controller, ColorizationSettings(SETTINGS))
-            self._configure_grid()
             self._controller = controller
+            self._configure_grid()
             PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
             PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
             self._tooltips = GridToolTips(self)
@@ -86,7 +86,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.SetColLabelSize(0)
         self.SetDefaultColSize(170)
         self.SetDefaultCellOverflow(False)
-        self.SetDefaultEditor(ContentAssistCellEditor(self._plugin))
+        self.SetDefaultEditor(ContentAssistCellEditor(self._plugin, self._controller))
 
     def _make_bindings(self):
         self.Bind(grid.EVT_GRID_EDITOR_SHOWN, self.OnEditor)
@@ -508,16 +508,17 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
 class ContentAssistCellEditor(grid.PyGridCellEditor):
 
-    def __init__(self, plugin):
+    def __init__(self, plugin, controller):
         grid.PyGridCellEditor.__init__(self)
         self._plugin = plugin
+        self._controller = controller
         self._grid = None
 
     def show_content_assist(self):
         self._tc.show_content_assist()
 
     def Create(self, parent, id, evthandler):
-        self._tc = ExpandingContentAssistTextCtrl(parent, self._plugin)
+        self._tc = ExpandingContentAssistTextCtrl(parent, self._plugin, self._controller)
         self.SetControl(self._tc)
         if evthandler:
             self._tc.PushEventHandler(evthandler)

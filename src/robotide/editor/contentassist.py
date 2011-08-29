@@ -107,8 +107,8 @@ class _ContentAssistTextCtrlBase(object):
 
 class ExpandingContentAssistTextCtrl(_ContentAssistTextCtrlBase, ExpandoTextCtrl):
 
-    def __init__(self, parent, plugin, size=wx.DefaultSize):
-        ExpandoTextCtrl.__init__(self, parent, size=size, style=wx.WANTS_CHARS)
+    def __init__(self, parent, plugin, controller):
+        ExpandoTextCtrl.__init__(self, parent, size=wx.DefaultSize, style=wx.WANTS_CHARS)
         _ContentAssistTextCtrlBase.__init__(self, plugin)
 
 
