@@ -51,7 +51,7 @@ class LocalRowNamespace(LocalMacroNamespace):
                 suggestions = sorted(suggestions + [LocalVariableInfo(name) for name in matching_assignments])
         return suggestions
 
-    def could_be_variable(self, start):
+    def _could_be_variable(self, start):
         return len(start) == 0 or start.startswith('$') or start.startswith('@')
 
     def has_name(self, value):
