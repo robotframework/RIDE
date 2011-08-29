@@ -54,8 +54,12 @@ class StepController(object):
             self._cell_info_cache[col] = self._build_cell_info(content, position)
         return self._cell_info_cache[col]
 
+    @property
+    def assignments(self):
+        return self._step.assign
+
     def is_assigning(self, value):
-        for assignment in self._step.assign:
+        for assignment in self.assignments:
             if assignment.replace('=', '').strip() == value:
                 return True
         return False

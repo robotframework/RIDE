@@ -37,6 +37,24 @@ class TestLocalNamespace(unittest.TestCase):
             if i >= 5:
                 assert_true(local_namespace.has_name('${bar}'))
 
+    def test_keyword_steps_suggestions_with_local_variables(self):
+        self._verify_suggestions_on_row(0, contains=['${argument}'], does_not_contain=['${foo}', '${bar}'])
+        self._verify_suggestions_on_row(3, contains=['${argument}', '${foo}'], does_not_contain=['${bar}'])
+        self._verify_suggestions_on_row(5, contains=['${argument}', '${foo}', '${bar}'])
+
+    def _verify_suggestions_on_row(self, row, contains=None, does_not_contain=None):
+        suggestion_names = [suggestion.name for suggestion in self._keyword.get_local_namespace_for_row(row).get_suggestions('${')]
+        if contains:
+            for name in contains:
+                if name not in suggestion_names:
+                    raise AssertionError('Suggestions on row (%s) did not contain expected value "%s"' % (str(row), name))
+        if does_not_contain:
+            for name in does_not_contain:
+                if name in suggestion_names:
+                    raise AssertionError('Suggestions on row (%s) did contain illegal value "%s"' % (str(row), name))
+
+
+
 
 if __name__ == '__main__':
     unittest.main()
