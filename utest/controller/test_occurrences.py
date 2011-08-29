@@ -4,7 +4,7 @@ from robot.parsing.model import TestCaseFile
 from robot.utils.asserts import assert_equals, assert_true, assert_false
 from robotide.controller import ChiefController
 from robotide.controller.macrocontrollers import KEYWORD_NAME_FIELD
-from robotide.controller.commands import Undo, FindOccurrences, NullObserver, RenameKeywordOccurrences
+from robotide.controller.commands import Undo, FindOccurrences, NullObserver, RenameKeywordOccurrences, ChangeCellValue
 from robotide.controller.filecontrollers import (TestCaseFileController,
                                                  TestCaseTableController,
                                                  TestCaseController)
@@ -266,3 +266,38 @@ class RenameOccurrenceTest(unittest.TestCase):
     def test_rename_in_user_keywords(self):
         self._rename(KEYWORD_IN_USERKEYWORD1, UNUSED_KEYWORD_NAME, USERKEYWORD1_NAME, 'Steps')
         self._expected_messages(steps_have_changed=True)
+
+    def test_rename_given_prefixed_keywords(self):
+        kw = 'BLOdkajasdj'
+        self._add_step('Given '+kw)
+        self._rename(kw, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
+        self._expected_messages(steps_have_changed=True)
+
+    def test_rename_when_prefixed_keywords(self):
+        kw = 'fjsdklhf37849'
+        self._add_step('wHEn '+kw)
+        self._rename(kw, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
+        self._expected_messages(steps_have_changed=True)
+
+    def test_rename_then_prefixed_keywords(self):
+        kw = 'djkfsekrhnbdxcvzo dsjah'
+        self._add_step('THen '+kw)
+        self._rename(kw, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
+        self._expected_messages(steps_have_changed=True)
+
+    def test_rename_and_prefixed_keywords(self):
+        kw = 'mmxznbfje uiriweyi yr iu fjkdhzxck'
+        self._add_step('AND '+kw)
+        self._rename(kw, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
+        self._expected_messages(steps_have_changed=True)
+
+    def test_rename_when_keyword_begins_with_prefix(self):
+        kw = 'When I say so'
+        self._add_step(kw)
+        self._rename(kw, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
+        self._expected_messages(steps_have_changed=True)
+
+    def _add_step(self, keyword):
+        self.test_ctrl.execute(ChangeCellValue(100, 100, keyword))
+        self._steps_have_changed = False
+

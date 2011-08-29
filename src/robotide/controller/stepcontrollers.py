@@ -139,22 +139,18 @@ class StepController(object):
         return self._step.as_list()
 
     def contains_keyword(self, name):
-        kws = [self.keyword or ''] + self.args
-        return any(utils.eq(item, name) for item in self._remove_given_when_then_and_prefix(kws))
+        return any(self._kw_name_match(item, name) for item in [self.keyword or ''] + self.args)
 
-    def _remove_given_when_then_and_prefix(self, keywords):
-        result = []
-        for keyword in keywords:
-            if self._GIVEN_WHEN_THEN_MATCHER.match(keyword):
-                result += [self._GIVEN_WHEN_THEN_MATCHER.sub('', keyword)]
-            result += [keyword]
-        return result
+    def _kw_name_match(self, item, expected):
+        return utils.eq(item, expected) or (
+            self._GIVEN_WHEN_THEN_MATCHER.match(item) and
+            utils.eq(self._GIVEN_WHEN_THEN_MATCHER.sub('', item), expected))
 
     def replace_keyword(self, new_name, old_name):
-        if utils.eq(old_name, self.keyword or ''):
+        if self._kw_name_match(self.keyword or '', old_name):
             self._step.keyword = new_name
         for index, value in enumerate(self.args):
-            if utils.eq(old_name, value):
+            if self._kw_name_match(value, old_name):
                 self._step.args[index] = new_name
 
     @property
