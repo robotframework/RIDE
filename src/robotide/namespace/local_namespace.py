@@ -42,11 +42,11 @@ class LocalRowNamespace(LocalMacroNamespace):
     def get_suggestions(self, start):
         suggestions = LocalMacroNamespace.get_suggestions(self, start)
         if len(start) == 0 or start.startswith('$') or start.startswith('@'):
-            matching_assignments = []
+            matching_assignments = set()
             for row, step in enumerate(self._controller.steps):
                 if self._row == row:
                     break
-                matching_assignments += [val.replace('=', '').strip() for val in step.assignments if val.startswith(start)]
+                matching_assignments = matching_assignments.union(val.replace('=', '').strip() for val in step.assignments if val.startswith(start))
             if matching_assignments:
                 suggestions = suggestions + [LocalVariableInfo(name) for name in matching_assignments]
                 suggestions = sorted(suggestions)
