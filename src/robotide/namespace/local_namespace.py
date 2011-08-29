@@ -42,13 +42,21 @@ class LocalRowNamespace(LocalMacroNamespace):
     def get_suggestions(self, start):
         suggestions = LocalMacroNamespace.get_suggestions(self, start)
         if self._could_be_variable(start):
-            matching_assignments = set()
-            for row, step in enumerate(self._controller.steps):
-                if self._row == row:
-                    break
-                matching_assignments = matching_assignments.union(val.replace('=', '').strip() for val in step.assignments if val.startswith(start))
-            if matching_assignments:
-                suggestions = sorted(suggestions + [LocalVariableInfo(name) for name in matching_assignments])
+            suggestions = self._harvest_local_variables(start, suggestions)
+        return suggestions
+
+    def _harvest_local_variables(self, start, suggestions):
+        matching_assignments = set()
+        for row, step in enumerate(self._controller.steps):
+            if self._row == row:
+                break
+            matching_assignments = matching_assignments.union(
+                val.replace('=','').strip() for val in step.assignments if
+                val.startswith(start))
+        if matching_assignments:
+            suggestions = sorted(
+                suggestions + [LocalVariableInfo(name) for name in
+                               matching_assignments])
         return suggestions
 
     def _could_be_variable(self, start):

@@ -1,3 +1,4 @@
+import re
 from robot.parsing.model import Step
 from robotide import utils
 from robotide.controller.cellinfo import CellPosition, CellType, CellInfo,\
@@ -5,6 +6,8 @@ from robotide.controller.cellinfo import CellPosition, CellType, CellInfo,\
 
 
 class StepController(object):
+
+    _GIVEN_WHEN_THEN_MATCHER = re.compile(r'^(given|when|then|and)\s*', re.I)
 
     def __init__(self, parent, step):
         self._init(parent, step)
@@ -136,7 +139,16 @@ class StepController(object):
         return self._step.as_list()
 
     def contains_keyword(self, name):
-        return any(utils.eq(item, name) for item in [self.keyword or ''] + self.args)
+        kws = [self.keyword or ''] + self.args
+        return any(utils.eq(item, name) for item in self._remove_given_when_then_and_prefix(kws))
+
+    def _remove_given_when_then_and_prefix(self, keywords):
+        result = []
+        for keyword in keywords:
+            if self._GIVEN_WHEN_THEN_MATCHER.match(keyword):
+                result += [self._GIVEN_WHEN_THEN_MATCHER.sub('', keyword)]
+            result += [keyword]
+        return result
 
     def replace_keyword(self, new_name, old_name):
         if utils.eq(old_name, self.keyword or ''):
