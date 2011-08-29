@@ -23,6 +23,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', RESOURCES_DIR,
 OS_LIB = 'OperatingSystem'
 COLLECTIONS_LIB = 'Collections'
 STRING_LIB = 'String'
+STRING_LIB_ALIAS = 'Str'
 RES_NAME_VARIABLE = '${resname}'
 LIB_NAME_VARIABLE = '${libname}'
 UNRESOLVABLE_VARIABLE = '${unresolvable}'
@@ -52,6 +53,7 @@ def _add_settings_table(tcf):
     tcf.setting_table.add_library(LIB_NAME_VARIABLE)
     tcf.setting_table.add_library(UNRESOLVABLE_VARIABLE)
     tcf.setting_table.add_library(LIBRARY_WITH_SPACES_IN_PATH)
+    tcf.setting_table.add_library(STRING_LIB, ['WITH NAME', STRING_LIB_ALIAS])
     tcf.setting_table.add_resource(RESOURCE_WITH_VARIABLE_IN_PATH)
     tcf.setting_table.add_variables(INVALID_FILE_PATH)
 
@@ -279,7 +281,12 @@ class TestKeywordSearch(_DataFileTest):
         assert_true(self.ns.is_library_keyword(self.tcf, 'Should Be Equal'))
         assert_false(self.ns.is_library_keyword(self.tcf, 'kameli'))
         assert_false(self.ns.is_library_keyword(self.tcf, 'UK From Resource from Resource with Variable'))
+
+    def test_is_library_keyword_longname(self):
         assert_true(self.ns.is_library_keyword(self.tcf, 'Builtin.Should Be Equal'))
+
+    def test_is_library_keyword_longname_with_alias(self):
+        assert_true(self.ns.is_library_keyword(self.tcf, STRING_LIB_ALIAS+'.Get Line'))
 
     def test_find_default_keywords(self):
         all_kws = self.ns.get_all_keywords([])
