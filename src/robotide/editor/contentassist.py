@@ -70,14 +70,14 @@ class _ContentAssistTextCtrlBase(object):
         self._popup.reset()
         self._showing_content_assist = False
 
-    def show_content_assist(self):
+    def show_content_assist(self, row=None):
         if self._showing_content_assist:
             return
         self._showing_content_assist = True
-        if self._populate_content_assist():
+        if self._populate_content_assist(row=row):
             self._show_content_assist()
 
-    def _populate_content_assist(self, event=None):
+    def _populate_content_assist(self, event=None, row=None):
         value = self.GetValue()
         if event is not None:
             if event.GetKeyCode() == wx.WXK_BACK:
@@ -90,7 +90,7 @@ class _ContentAssistTextCtrlBase(object):
                 return False
             else:
                 value += unichr(event.GetRawKeyCode())
-        return self._popup.content_assist_for(value)
+        return self._popup.content_assist_for(value, row=row)
 
     def _show_content_assist(self):
         height = self.GetSizeTuple()[1]
@@ -126,26 +126,29 @@ class Suggestions(object):
         self._previous_value = None
         self._previous_choices = []
 
-    def get_for(self, value):
-        self._previous_choices = self._get_choices(value)
+    def get_for(self, value, row=None):
+        self._previous_choices = self._get_choices(value, row)
         self._previous_value = value
-        return sorted(self._previous_choices.keys())
+        return [k for k,_ in self._previous_choices]
 
     def get_item(self, name):
-        return self._previous_choices[name]
+        for k, v in self._previous_choices:
+            if k == name:
+                return v
+        raise Exception('Item not in choices "%s"' % (name))
 
-    def _get_choices(self, value):
+    def _get_choices(self, value, row):
         if self._previous_value and value.startswith(self._previous_value):
-            return dict([(key, val) for key, val in self._previous_choices.items()
-                                    if normalize(key).startswith(normalize(value))])
-        if self._controller:
-            choices = self._controller.get_local_namespace().get_suggestions(value)
+            return [(key, val) for key, val in self._previous_choices.items()
+                                    if normalize(key).startswith(normalize(value))]
+        if self._controller and row:
+            choices = self._controller.get_local_namespace_for_row(row).get_suggestions(value)
         else:
-            choices = self._plugin.content_assist_values(value)
+            choices = self._plugin.content_assist_values(value) # TODO: Remove old functionality when no more needed
         return self._format_choices(choices, value)
 
     def _format_choices(self, data, prefix):
-        return dict([(self._format(val, prefix), val) for val in data])
+        return [(self._format(val, prefix), val) for val in data]
 
     def _format(self, choice, prefix):
         return choice.name if normalize(choice.name).startswith(normalize(prefix)) else choice.longname
@@ -169,8 +172,8 @@ class ContentAssistPopup(object):
     def get_value(self):
         return self._selection != -1 and self._list.get_text(self._selection) or None
 
-    def content_assist_for(self, value):
-        self._choices = self._suggestions.get_for(value)
+    def content_assist_for(self, value, row=None):
+        self._choices = self._suggestions.get_for(value, row=row)
         if not self._choices:
             self._list.ClearAll()
             self._parent.hide()

@@ -11,7 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from robotide.spec.iteminfo import VariableInfo
+from robotide.spec.iteminfo import LocalVariableInfo
 
 def LocalNamespace(controller, namespace, row=None):
    if row is not None: # can be 0!
@@ -41,14 +41,14 @@ class LocalRowNamespace(LocalMacroNamespace):
 
     def get_suggestions(self, start):
         suggestions = LocalMacroNamespace.get_suggestions(self, start)
-        if start.startswith('$') or start.startswith('@'):
+        if len(start) == 0 or start.startswith('$') or start.startswith('@'):
             matching_assignments = []
             for row, step in enumerate(self._controller.steps):
                 if self._row == row:
                     break
                 matching_assignments += [val.replace('=', '').strip() for val in step.assignments if val.startswith(start)]
             if matching_assignments:
-                suggestions = suggestions + [VariableInfo(name, '?', self._controller.display_name) for name in matching_assignments]
+                suggestions = suggestions + [LocalVariableInfo(name) for name in matching_assignments]
                 suggestions = sorted(suggestions)
         return suggestions
 

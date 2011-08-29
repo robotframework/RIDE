@@ -314,7 +314,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def show_content_assist(self):
         if self.IsCellEditControlShown():
-            self.GetCellEditor(*self.selection.cell).show_content_assist()
+            self.GetCellEditor(*self.selection.cell).show_content_assist(self.selection.topleft.row)
 
     def refresh_datafile(self, item, event):
         self._tree.refresh_datafile(item, event)
@@ -395,10 +395,10 @@ class KeywordEditor(GridEditor, RideEventHandler):
     def _open_cell_editor_with_content_assist(self):
         if not self.IsCellEditControlEnabled():
             self.EnableCellEditControl()
-        celleditor = self.GetCellEditor(self.GetGridCursorCol(),
-                                        self.GetGridCursorRow())
+        row = self.GetGridCursorRow()
+        celleditor = self.GetCellEditor(self.GetGridCursorCol(), row)
         celleditor.Show(True)
-        wx.CallAfter(celleditor.show_content_assist)
+        wx.CallAfter(celleditor.show_content_assist, row)
 
     def OnCellRightClick(self, event):
         self._tooltips.hide()
@@ -514,8 +514,8 @@ class ContentAssistCellEditor(grid.PyGridCellEditor):
         self._controller = controller
         self._grid = None
 
-    def show_content_assist(self):
-        self._tc.show_content_assist()
+    def show_content_assist(self, row=None):
+        self._tc.show_content_assist(row)
 
     def Create(self, parent, id, evthandler):
         self._tc = ExpandingContentAssistTextCtrl(parent, self._plugin, self._controller)

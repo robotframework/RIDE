@@ -98,6 +98,12 @@ class ArgumentInfo(VariableInfo):
     def __init__(self, name, value):
         VariableInfo.__init__(self, name, value, self.SOURCE)
 
+class LocalVariableInfo(VariableInfo):
+
+    SOURCE = 'Local variable'
+
+    def __init__(self, name):
+        VariableInfo.__init__(self, name, '', self.SOURCE)
 
 class _KeywordInfo(ItemInfo):
 
@@ -244,4 +250,5 @@ PRIORITIES = {ItemInfo: 50,
               ResourceUserKeywordInfo: 30,
               TestCaseUserKeywordInfo: 20,
               VariableInfo: 10,
-              ArgumentInfo: 5}
+              ArgumentInfo: 5,
+              LocalVariableInfo: 5}
