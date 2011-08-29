@@ -148,10 +148,20 @@ class StepController(object):
 
     def replace_keyword(self, new_name, old_name):
         if self._kw_name_match(self.keyword or '', old_name):
-            self._step.keyword = new_name
+            self._step.keyword = self._kw_name_replace(self.keyword, new_name, old_name)
         for index, value in enumerate(self.args):
             if self._kw_name_match(value, old_name):
-                self._step.args[index] = new_name
+                self._step.args[index] = self._kw_name_replace(value, new_name, old_name)
+
+    def _kw_name_replace(self, old_value, new_match, old_match):
+        old_prefix_matcher = self._GIVEN_WHEN_THEN_MATCHER.match(old_value)
+        if not old_prefix_matcher:
+            return new_match
+        old_prefix = old_prefix_matcher.group(0)
+        old_match_matcher = self._GIVEN_WHEN_THEN_MATCHER.match(old_match)
+        if old_match_matcher and old_match_matcher.group(0) == old_prefix:
+            return new_match
+        return old_prefix+new_match
 
     @property
     def datafile(self):

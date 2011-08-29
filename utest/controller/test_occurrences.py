@@ -272,30 +272,35 @@ class RenameOccurrenceTest(unittest.TestCase):
         self._add_step('Given '+kw)
         self._rename(kw, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
         self._expected_messages(steps_have_changed=True)
+        self.assertEquals(self.test_ctrl.step(100).as_list()[100], 'Given '+UNUSED_KEYWORD_NAME)
 
     def test_rename_when_prefixed_keywords(self):
         kw = 'fjsdklhf37849'
-        self._add_step('wHEn '+kw)
+        self._add_step('wHEn   '+kw)
         self._rename(kw, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
         self._expected_messages(steps_have_changed=True)
+        self.assertEquals(self.test_ctrl.step(100).as_list()[100], 'wHEn   '+UNUSED_KEYWORD_NAME)
 
     def test_rename_then_prefixed_keywords(self):
         kw = 'djkfsekrhnbdxcvzo dsjah'
         self._add_step('THen '+kw)
         self._rename(kw, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
         self._expected_messages(steps_have_changed=True)
+        self.assertEquals(self.test_ctrl.step(100).as_list()[100], 'THen '+UNUSED_KEYWORD_NAME)
 
     def test_rename_and_prefixed_keywords(self):
         kw = 'mmxznbfje uiriweyi yr iu fjkdhzxck'
         self._add_step('AND '+kw)
         self._rename(kw, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
         self._expected_messages(steps_have_changed=True)
+        self.assertEquals(self.test_ctrl.step(100).as_list()[100], 'AND '+UNUSED_KEYWORD_NAME)
 
     def test_rename_when_keyword_begins_with_prefix(self):
         kw = 'When I say so'
         self._add_step(kw)
         self._rename(kw, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
         self._expected_messages(steps_have_changed=True)
+        self.assertEquals(self.test_ctrl.step(100).as_list()[100], UNUSED_KEYWORD_NAME)
 
     def _add_step(self, keyword):
         self.test_ctrl.execute(ChangeCellValue(100, 100, keyword))
