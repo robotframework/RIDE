@@ -21,26 +21,31 @@ class TestLocalNamespace(unittest.TestCase):
         assert_false(self._test.get_local_namespace().has_name('${argument}'))
 
     def test_keyword_steps_local_namespace_does_not_contain_local_variables_before_definition(self):
-        for i in range(5):
+        for i in range(8):
             local_namespace = self._keyword.get_local_namespace_for_row(i)
             if i < 3:
                 assert_false(local_namespace.has_name('${foo}'))
             if i < 5:
                 assert_false(local_namespace.has_name('${bar}'))
+            if i < 7:
+                assert_false(local_namespace.has_name('${i}'))
 
     def test_keyword_steps_local_namespace_does_contain_local_variables_after_definition(self):
-        for i in range(5):
+        for i in range(8):
             local_namespace = self._keyword.get_local_namespace_for_row(i)
             assert_true(local_namespace.has_name('${argument}'))
             if i >= 3:
                 assert_true(local_namespace.has_name('${foo}'))
             if i >= 5:
                 assert_true(local_namespace.has_name('${bar}'))
+            if i >= 7:
+                assert_true(local_namespace.has_name('${i}'))
 
     def test_keyword_steps_suggestions_with_local_variables(self):
-        self._verify_suggestions_on_row(0, contains=['${argument}'], does_not_contain=['${foo}', '${bar}'])
-        self._verify_suggestions_on_row(3, contains=['${argument}', '${foo}'], does_not_contain=['${bar}'])
-        self._verify_suggestions_on_row(5, contains=['${argument}', '${foo}', '${bar}'])
+        self._verify_suggestions_on_row(0, contains=['${argument}'], does_not_contain=['${foo}', '${bar}', '${i}'])
+        self._verify_suggestions_on_row(3, contains=['${argument}', '${foo}'], does_not_contain=['${bar}', '${i}'])
+        self._verify_suggestions_on_row(5, contains=['${argument}', '${foo}', '${bar}'], does_not_contain=['${i}'])
+        self._verify_suggestions_on_row(7, contains=['${argument}', '${foo}', '${bar}', '${i}'])
 
     def test_suggestions_when_empty_text(self):
         self._verify_suggestions_on_row(4, start='', contains=['${argument}', '${foo}'], does_not_contain=['${bar}'])

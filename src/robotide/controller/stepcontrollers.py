@@ -299,6 +299,10 @@ class ForLoopStepController(StepController):
     def name(self):
         return self.parent.name
 
+    @property
+    def assignments(self):
+        return self._step.vars
+
     def move_up(self):
         previous_step = self.parent.step(self._index()-1)
         self._get_raw_steps().insert(0, previous_step._step)
