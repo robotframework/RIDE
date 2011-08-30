@@ -18,7 +18,7 @@ from robotide.action import ActionInfoCollection, ActionFactory
 from robotide.publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER
 from robotide.utils import RideEventHandler, RideHtmlWindow
 from robotide.context import SETTINGS, ABOUT_RIDE
-from robotide.widgets import Dialog
+from robotide.widgets import Dialog, ImageProvider
 
 from actiontriggers import MenuBar, ToolBar, ShortcutRegistry
 from filedialogs import NewProjectDialog, NewExternalResourceDialog, InitFileFormatDialog
@@ -90,6 +90,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         splitter.SetMinimumPaneSize(100)
         splitter.SplitVertically(self.tree, self.notebook, 300)
         self.CreateStatusBar()
+        self.SetIcons(ImageProvider().PROGICONS)
 
     def get_selected_datafile(self):
         return self.tree.get_selected_datafile()
