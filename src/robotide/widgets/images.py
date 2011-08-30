@@ -34,10 +34,20 @@ class ImageProvider(object):
         self.KEYWORDIMG = self._load_image('process.png')
         self.DATADIRIMG = self._img_from_art_provider(wx.ART_FOLDER)
         self.DATAFILEIMG = self._img_from_art_provider(wx.ART_NORMAL_FILE)
+        self.PROGICONS = self._load_prog_icons()
 
-    def _load_image(self, source):
-        path = os.path.join(self._BASE, source)
+    def _load_image(self, name):
+        path = self._get_img_path(name)
         return wx.Image(path, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
+
+    def _get_img_path(self, name):
+        return os.path.join(self._BASE, name)
 
     def _img_from_art_provider(self, source):
         return wx.ArtProvider_GetBitmap(source, wx.ART_OTHER, self._size)
+
+    def _load_prog_icons(self):
+        icons = wx.IconBundle()
+        icons.AddIconFromFile(self._get_img_path('robot.ico'),
+                             wx.BITMAP_TYPE_ANY)
+        return icons
