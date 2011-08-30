@@ -47,6 +47,7 @@ class _ContentAssistTextCtrlBase(object):
         if keycode in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN] \
                 and self._popup.is_shown():
             self._popup.select_and_scroll(keycode)
+            return
         elif keycode == wx.WXK_RETURN and self._popup.is_shown():
             self.OnFocusLost(event)
             return
