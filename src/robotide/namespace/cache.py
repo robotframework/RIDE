@@ -52,13 +52,22 @@ class LibraryCache(object):
     def _key(self, name, args):
         return (name, tuple(args or ''))
 
-    def get_library_keywords(self, name, args=None):
+    def get_library_keywords(self, name, args=None, alias=None):
+        args = self._alias_to_args(alias, args)
         def _get_library_keywords():
             if not self._library_keywords.has_key(self._key(name, args)):
                 self.add_library(name, args)
             return self._library_keywords[self._key(name, args)]
         return self._with_error_logging(_get_library_keywords, [],
                                         self._RESOLVE_FAILED % (name, args))
+
+    def _alias_to_args(self, alias, args):
+        if alias:
+            if args:
+                args = args + ('WITH NAME', alias)
+            else:
+                args = ('WITH NAME', alias)
+        return args
 
     def _with_error_logging(self, action, default, errormsg):
         try:

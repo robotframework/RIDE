@@ -47,9 +47,13 @@ class Spec(object):
 
 class LibrarySpec(Spec):
 
+    _alias = None
+    keywords = tuple()
+
     def __init__(self, name, args=None):
         self.name = self._get_library_name(name)
         if args and len(args) >= 2 and isinstance(args[-2], basestring) and args[-2].upper() == 'WITH NAME':
+            self._alias = args[-1]
             args = args[:-2]
         try:
             self.keywords, self.doc = self._init_from_library(self.name, args)
@@ -62,10 +66,12 @@ class LibrarySpec(Spec):
 
     def _init_from_library(self, name, args):
         lib = RobotTestLibrary(name, args)
-        keywords = [LibraryKeywordInfo(kw) for kw in lib.handlers.values()]
+        keywords = [LibraryKeywordInfo(kw).with_alias(self._alias) for kw in lib.handlers.values()]
         return keywords, lib.doc
 
     def _get_library_name(self, name):
+        if self._alias:
+            return self._alias
         if os.path.exists(name):
             return name
         return name.replace(' ', '')

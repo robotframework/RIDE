@@ -352,7 +352,8 @@ class DatafileRetriever(object):
         name = ctx.vars.replace_variables(imp.name)
         name = self._convert_to_absolute_path(name, imp)
         args = [ctx.vars.replace_variables(a) for a in imp.args]
-        return self._lib_cache.get_library_keywords(name, args)
+        alias = ctx.vars.replace_variables(imp.alias) if imp.alias else None
+        return self._lib_cache.get_library_keywords(name, args, alias)
 
     def _convert_to_absolute_path(self, name, import_):
         full_name = os.path.join(os.path.dirname(import_.source), name)

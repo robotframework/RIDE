@@ -167,8 +167,16 @@ class _XMLKeywordContent(_KeywordInfo):
 
 class LibraryKeywordInfo(_KeywordInfo):
     _type = 'test library'
+    _library_alias = None
+
+    def with_alias(self, alias):
+        self._library_alias = alias
+        self.source = self._source(self.item)
+        return self
 
     def _source(self, item):
+        if self._library_alias:
+            return self._library_alias
         return item.library.name
 
     def _doc(self, item):
