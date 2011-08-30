@@ -47,8 +47,14 @@ setup(name         = 'robotframework-ride',
       url          = 'http://code.google.com/p/robotframework-ride',
       package_dir  = {'' : PACKAGE_DIR},
       packages     = with_subpackages(['robotide']),
-      package_data = {'robotide': ['widgets/*.png', 'context/*.cfg', 'bundled/robot/*.py', 'bundled/robot/*/*.py',
-                                   'bundled/robot/*/*.html', 'bundled/robot/*/*.css', 'bundled/robot/*/*.js'
-                                    'bundled/robot/*/*/*.js']},
+      package_data = {'robotide': ['widgets/*.png',
+                                   'widgets/*.ico',
+                                   'context/*.cfg',
+                                   'bundled/robot/*.py',
+                                   'bundled/robot/*/*.py',
+                                   'bundled/robot/webcontent/*.html',
+                                   'bundled/robot/webcontent/*.css',
+                                   'bundled/robot/webcontent/*.js',
+                                   'bundled/robot/webcontent/lib/*.js']},
       scripts = ['src/bin/ride.py']
       )
