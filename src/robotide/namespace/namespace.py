@@ -78,14 +78,15 @@ class Namespace(object):
 
     def get_suggestions_for(self, controller, start):
         datafile = controller.datafile
+        ctx = RetrieverContext()
         sugs = set()
         sugs.update(self._get_suggestions_from_hooks(datafile, start))
         if self._blank(start):
-            sugs.update(self._all_suggestions(controller))
+            sugs.update(self._all_suggestions(controller, ctx))
         elif self._looks_like_variable(start):
-            sugs.update(self._variable_suggestions(controller, start))
+            sugs.update(self._variable_suggestions(controller, start, ctx))
         else:
-            sugs.update(self._keyword_suggestions(datafile, start))
+            sugs.update(self._keyword_suggestions(datafile, start, ctx))
         sugs_list = list(sugs)
         sugs_list.sort()
         return sugs_list
@@ -99,9 +100,9 @@ class Namespace(object):
     def _blank(self, start):
         return start == ''
 
-    def _all_suggestions(self, controller):
-        vars = self._variable_suggestions(controller, '')
-        kws = self._keyword_suggestions(controller.datafile, '')
+    def _all_suggestions(self, controller, ctx):
+        vars = self._variable_suggestions(controller, '', ctx)
+        kws = self._keyword_suggestions(controller.datafile, '', ctx)
         all = vars + kws
         all.sort()
         return all
@@ -110,10 +111,9 @@ class Namespace(object):
         return (len(start) == 1 and start.startswith('$') or start.startswith('@')) \
             or (len(start) >= 2 and start.startswith('${') or start.startswith('@{'))
 
-    def _variable_suggestions(self, controller, start):
+    def _variable_suggestions(self, controller, start, ctx):
         datafile = controller.datafile
         start_normalized = normalize(start)
-        ctx = RetrieverContext()
         self._add_kw_arg_vars(controller, ctx.vars)
         vars = self._retriever.get_variables_from(datafile, ctx)
         return [v for v in vars
@@ -123,10 +123,10 @@ class Namespace(object):
         for name, value in controller.get_local_variables().iteritems():
             vars.set_argument(name, value)
 
-    def _keyword_suggestions(self, datafile, start):
+    def _keyword_suggestions(self, datafile, start, ctx):
         start_normalized = normalize(start)
         return sorted(sug for sug in chain(self._get_default_keywords(),
-                                           self._retriever.get_keywords_from(datafile))
+                                           self._retriever.get_keywords_from(datafile, ctx))
                       if sug.name_begins_with(start_normalized) or
                          sug.longname_begins_with(start_normalized))
 
@@ -278,10 +278,11 @@ class _VariableStash(object):
     def set_from_variable_table(self, variable_table):
         for variable in variable_table:
             try:
-                name, value = self._vars._get_var_table_name_and_value(variable.name,
-                                                                 variable.value)
-                if not self._vars.has_key(name):
-                    self.set(name, value, variable_table.source)
+                if not self._vars.has_key(variable.name):
+                    _, value = self._vars._get_var_table_name_and_value(
+                        variable.name,
+                        variable.value)
+                    self.set(variable.name, value, variable_table.source)
             except DataError:
                 if is_var(variable.name):
                     self.set(variable.name, '', variable_table.source)
@@ -322,11 +323,10 @@ class DatafileRetriever(object):
         kws = set()
         kws.update(self.default_kws)
         for df in datafiles:
-            kws.update(self.get_keywords_from(df))
+            kws.update(self.get_keywords_from(df, RetrieverContext()))
         return kws
 
-    def get_keywords_from(self, datafile):
-        ctx = RetrieverContext()
+    def get_keywords_from(self, datafile, ctx):
         self._get_vars_recursive(datafile, ctx)
         ctx.allow_going_through_resources_again()
         return sorted(set(self._get_datafile_keywords(datafile) +\
@@ -407,7 +407,7 @@ class DatafileRetriever(object):
     def get_keywords_cached(self, datafile):
         values = self.keyword_cache.get(datafile.source)
         if not values:
-            words = self.get_keywords_from(datafile)
+            words = self.get_keywords_from(datafile, RetrieverContext())
             words.extend(self.default_kws)
             values = _Keywords(words)
             self.keyword_cache.put(datafile.source, values)
