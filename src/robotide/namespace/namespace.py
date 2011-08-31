@@ -72,7 +72,7 @@ class Namespace(object):
     def get_all_keywords(self, testsuites):
         kws = set()
         kws.update(self._get_default_keywords())
-        kws.update(self._retriever.get_keywords_from_several(testsuites, self._context_cache))
+        kws.update(self._retriever.get_keywords_from_several(testsuites))
         return list(kws)
 
     def _get_default_keywords(self):
