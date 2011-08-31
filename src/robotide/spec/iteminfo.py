@@ -36,7 +36,8 @@ class ItemInfo(object):
         """
         self.name = name
         self.source = source
-        self.details = details
+        if details != None:
+            self.details = details
         self._priority = PRIORITIES.get(self.__class__, PRIORITIES[ItemInfo])
 
     @property
@@ -71,13 +72,17 @@ class ItemInfo(object):
 class VariableInfo(ItemInfo):
 
     def __init__(self, name, value, source):
-        ItemInfo.__init__(self, name, self._source_name(source), self._details(name, source, value))
+        ItemInfo.__init__(self, name, self._source_name(source), None)
+        self._original_source = source
+        self._value = value
 
     def _source_name(self, source):
         return unicode(os.path.basename(source)) if source else ''
 
-    def _details(self, name, source, value):
-        if name.startswith('@'):
+    @property
+    def details(self):
+        value = self._value
+        if self.name.startswith('@'):
             if value is None:
                 value = []
             value = '[ %s ]' % ' | '.join(unicode(v) for v in value)
@@ -85,7 +90,7 @@ class VariableInfo(ItemInfo):
                 '<tr><td><i>Name:</i></td><td>%s</td></tr>'
                 '<tr><td><i>Source:</i></td><td>%s</td></tr>'
                 '<tr><td valign=top><i>Value:</i></td><td>%s</td></tr>'
-                '</table>') % (name, source, unicode(value))
+                '</table>') % (self.name, self._original_source, unicode(value))
 
 
 class ArgumentInfo(VariableInfo):
@@ -107,7 +112,7 @@ class _KeywordInfo(ItemInfo):
     def __init__(self, item):
         self.doc = self._doc(item).strip()
         ItemInfo.__init__(self, self._name(item), self._source(item),
-                          self._details(item))
+                          None)
         self.shortdoc = self.doc.splitlines()[0] if self.doc else ''
         self.item = item
 
@@ -115,7 +120,8 @@ class _KeywordInfo(ItemInfo):
     def arguments(self):
         return self._parse_args(self.item)
 
-    def _details(self, item):
+    @property
+    def details(self):
         return ('<table>'
                 '<tr><td><i>Name:</i></td><td>%s</td></tr>'
                 '<tr><td><i>Source:</i></td><td>%s &lt;%s&gt;</td></tr>'
@@ -124,8 +130,8 @@ class _KeywordInfo(ItemInfo):
                 '<table>'
                 '<tr><td>%s</td></tr>'
                 '</table>') % \
-                (self._name(item), self._source(item), self._type,
-                 self._format_args(self._parse_args(item)),
+                (self._name(self.item), self._source(self.item), self._type,
+                 self._format_args(self._parse_args(self.item)),
                  html_escape(self.doc, formatting=True))
 
     def _format_args(self, args):
