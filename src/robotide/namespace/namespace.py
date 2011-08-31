@@ -46,11 +46,11 @@ class Namespace(object):
         self._lib_cache = LibraryCache()
         self._res_cache = ResourceCache()
         self._retriever = DatafileRetriever(self._lib_cache, self._res_cache)
-        self._context_cache = {}
+        self._context_factory = _RetrieverContextFactory()
 
     def update(self):
         self._retriever.expire_cache()
-        self._context_cache = {}
+        self._context_factory = _RetrieverContextFactory()
         for listener in self._update_listeners:
             listener()
 
@@ -80,7 +80,7 @@ class Namespace(object):
 
     def get_suggestions_for(self, controller, start):
         datafile = controller.datafile
-        ctx = self._context_for(controller)
+        ctx = self._context_factory.ctx_for_controller(controller)
         sugs = set()
         sugs.update(self._get_suggestions_from_hooks(datafile, start))
         if self._blank(start) or self._looks_like_variable(start):
@@ -90,17 +90,6 @@ class Namespace(object):
         sugs_list = list(sugs)
         sugs_list.sort()
         return sugs_list
-
-    def _context_for(self, controller):
-        if controller not in self._context_cache:
-            self._context_cache[controller] = RetrieverContext()
-        return self._context_cache[controller]
-
-    def _context_for_datafile(self, datafile):
-        for controller in self._context_cache:
-            if controller.datafile == datafile:
-                return self._context_cache[controller]
-        return RetrieverContext()
 
     def _get_suggestions_from_hooks(self, datafile, start):
         sugs = []
@@ -157,7 +146,8 @@ class Namespace(object):
     def find_keyword(self, datafile, kw_name):
         if not kw_name:
             return None
-        kwds = self._retriever.get_keywords_cached(datafile, self._context_for_datafile(datafile))
+        kwds = self._retriever.get_keywords_cached(datafile,
+                                                   self._context_factory)
         return kwds.get(kw_name)
 
     def is_library_keyword(self, datafile, kw_name):
@@ -210,6 +200,23 @@ class ResourceCache(object):
 
     def _normalize(self, path):
         return os.path.normcase(os.path.normpath(path))
+
+class _RetrieverContextFactory(object):
+
+    def __init__(self):
+        self._context_cache = {}
+
+    def ctx_for_controller(self, controller):
+        if controller not in self._context_cache:
+            self._context_cache[controller] = RetrieverContext()
+            self._context_cache[controller.datafile] = self._context_cache[controller]
+        return self._context_cache[controller]
+
+    def ctx_for_datafile(self, datafile):
+        if datafile not in self._context_cache:
+            self._context_cache[datafile] = RetrieverContext()
+        return self._context_cache[datafile]
+
 
 class RetrieverContext(object):
 
@@ -408,10 +415,10 @@ class DatafileRetriever(object):
     def _var_collector(self, res, ctx, items):
         self._get_vars_recursive(res, ctx)
 
-    def get_keywords_cached(self, datafile, context):
+    def get_keywords_cached(self, datafile, context_factory):
         values = self.keyword_cache.get(datafile.source)
         if not values:
-            words = self.get_keywords_from(datafile, context)
+            words = self.get_keywords_from(datafile, context_factory.ctx_for_datafile(datafile))
             words.extend(self.default_kws)
             values = _Keywords(words)
             self.keyword_cache.put(datafile.source, values)
