@@ -96,6 +96,12 @@ class Namespace(object):
             self._context_cache[controller] = RetrieverContext()
         return self._context_cache[controller]
 
+    def _context_for_datafile(self, datafile):
+        for controller in self._context_cache:
+            if controller.datafile == datafile:
+                return self._context_cache[controller]
+        return RetrieverContext()
+
     def _get_suggestions_from_hooks(self, datafile, start):
         sugs = []
         for hook in self._content_assist_hooks:
@@ -151,7 +157,7 @@ class Namespace(object):
     def find_keyword(self, datafile, kw_name):
         if not kw_name:
             return None
-        kwds = self._retriever.get_keywords_cached(datafile)
+        kwds = self._retriever.get_keywords_cached(datafile, self._context_for_datafile(datafile))
         return kwds.get(kw_name)
 
     def is_library_keyword(self, datafile, kw_name):
@@ -402,10 +408,10 @@ class DatafileRetriever(object):
     def _var_collector(self, res, ctx, items):
         self._get_vars_recursive(res, ctx)
 
-    def get_keywords_cached(self, datafile):
+    def get_keywords_cached(self, datafile, context):
         values = self.keyword_cache.get(datafile.source)
         if not values:
-            words = self.get_keywords_from(datafile, RetrieverContext())
+            words = self.get_keywords_from(datafile, context)
             words.extend(self.default_kws)
             values = _Keywords(words)
             self.keyword_cache.put(datafile.source, values)
