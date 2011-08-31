@@ -83,11 +83,9 @@ class Namespace(object):
         ctx = self._context_for(controller)
         sugs = set()
         sugs.update(self._get_suggestions_from_hooks(datafile, start))
-        if self._blank(start):
-            sugs.update(self._all_suggestions(controller, ctx))
-        elif self._looks_like_variable(start):
+        if self._blank(start) or self._looks_like_variable(start):
             sugs.update(self._variable_suggestions(controller, start, ctx))
-        else:
+        if self._blank(start) or not self._looks_like_variable(start):
             sugs.update(self._keyword_suggestions(datafile, start, ctx))
         sugs_list = list(sugs)
         sugs_list.sort()
@@ -107,13 +105,6 @@ class Namespace(object):
     def _blank(self, start):
         return start == ''
 
-    def _all_suggestions(self, controller, ctx):
-        vars = self._variable_suggestions(controller, '', ctx)
-        kws = self._keyword_suggestions(controller.datafile, '', ctx)
-        all = vars + kws
-        all.sort()
-        return all
-
     def _looks_like_variable(self, start):
         return (len(start) == 1 and start.startswith('$') or start.startswith('@')) \
             or (len(start) >= 2 and start.startswith('${') or start.startswith('@{'))
@@ -123,8 +114,8 @@ class Namespace(object):
         start_normalized = normalize(start)
         self._add_kw_arg_vars(controller, ctx.vars)
         vars = self._retriever.get_variables_from(datafile, ctx)
-        return [v for v in vars
-                if normalize(v.name).startswith(start_normalized)]
+        return (v for v in vars
+                if normalize(v.name).startswith(start_normalized))
 
     def _add_kw_arg_vars(self, controller, vars):
         for name, value in controller.get_local_variables().iteritems():
@@ -132,7 +123,7 @@ class Namespace(object):
 
     def _keyword_suggestions(self, datafile, start, ctx):
         start_normalized = normalize(start)
-        return sorted(sug for sug in chain(self._get_default_keywords(),
+        return (sug for sug in chain(self._get_default_keywords(),
                                            self._retriever.get_keywords_from(datafile, ctx))
                       if sug.name_begins_with(start_normalized) or
                          sug.longname_begins_with(start_normalized))

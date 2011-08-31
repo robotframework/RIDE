@@ -21,10 +21,6 @@ from robotide.utils import html_escape, unescape
 class ItemInfo(object):
     """Represents an object that can be displayed by content assistant."""
 
-    @property
-    def _priority(self):
-        return PRIORITIES.get(self.__class__, PRIORITIES[ItemInfo])
-
     def __init__(self, name, source, details):
         """Creates an item info.
 
@@ -41,6 +37,7 @@ class ItemInfo(object):
         self.name = name
         self.source = source
         self.details = details
+        self._priority = PRIORITIES.get(self.__class__, PRIORITIES[ItemInfo])
 
     @property
     def longname(self):
