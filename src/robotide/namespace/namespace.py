@@ -46,9 +46,11 @@ class Namespace(object):
         self._lib_cache = LibraryCache()
         self._res_cache = ResourceCache()
         self._retriever = DatafileRetriever(self._lib_cache, self._res_cache)
+        self._context_cache = {}
 
     def update(self):
         self._retriever.expire_cache()
+        self._context_cache = {}
         for listener in self._update_listeners:
             listener()
 
@@ -70,7 +72,7 @@ class Namespace(object):
     def get_all_keywords(self, testsuites):
         kws = set()
         kws.update(self._get_default_keywords())
-        kws.update(self._retriever.get_keywords_from_several(testsuites))
+        kws.update(self._retriever.get_keywords_from_several(testsuites, self._context_cache))
         return list(kws)
 
     def _get_default_keywords(self):
@@ -78,7 +80,7 @@ class Namespace(object):
 
     def get_suggestions_for(self, controller, start):
         datafile = controller.datafile
-        ctx = RetrieverContext()
+        ctx = self._context_for(controller)
         sugs = set()
         sugs.update(self._get_suggestions_from_hooks(datafile, start))
         if self._blank(start):
@@ -90,6 +92,11 @@ class Namespace(object):
         sugs_list = list(sugs)
         sugs_list.sort()
         return sugs_list
+
+    def _context_for(self, controller):
+        if controller not in self._context_cache:
+            self._context_cache[controller] = RetrieverContext()
+        return self._context_cache[controller]
 
     def _get_suggestions_from_hooks(self, datafile, start):
         sugs = []
