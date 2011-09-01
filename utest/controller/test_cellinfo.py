@@ -150,6 +150,24 @@ class TestCellInfo(unittest.TestCase):
         self._verify_cell_info(0, 0, ContentType.STRING, CellType.KEYWORD)
         self._verify_cell_info(0, 1, ContentType.STRING, CellType.UNKNOWN)
 
+    def test_library_import_with_name_and_arguments(self):
+        self.test.execute(ChangeCellValue(0,0, 'alias.Onething'))
+        self._verify_cell_info(0, 0, ContentType.STRING, CellType.KEYWORD)
+        self.testsuite.imports.add_library('libi.py', 'a | b', 'alias')
+        self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD)
+
+    def test_library_import_with_name_and_one_argument(self):
+        self.test.execute(ChangeCellValue(0,0, 'alias2.Onething'))
+        self._verify_cell_info(0, 0, ContentType.STRING, CellType.KEYWORD)
+        self.testsuite.imports.add_library('libi.py', '1', 'alias2')
+        self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD)
+
+    def test_library_import_with_name(self):
+        self.test.execute(ChangeCellValue(0,0, 'alias3.Onething'))
+        self._verify_cell_info(0, 0, ContentType.STRING, CellType.KEYWORD)
+        self.testsuite.imports.add_library('libi.py', [], 'alias3')
+        self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD)
+
     def test_library_import_modify(self):
         self.test.execute(PasteArea((0, 0), [['Get File', 'reaktor.txt']]))
         lib = self.testsuite.imports.add_library('WrongOperatingSystem', [], '')

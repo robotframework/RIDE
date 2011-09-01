@@ -64,7 +64,7 @@ class LibraryCache(object):
     def _alias_to_args(self, alias, args):
         if alias:
             if args:
-                args = args + ('WITH NAME', alias)
+                args = tuple(args) + ('WITH NAME', alias)
             else:
                 args = ('WITH NAME', alias)
         return args
