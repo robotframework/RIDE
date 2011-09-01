@@ -84,4 +84,71 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
+<h2>Release notes for 0.38</h2>
+<table border="1">
+<tr>
+<td><b>ID</b></td>
+<td><b>Type</b></td>
+<td><b>Priority</b></td>
+<td><b>Summary</b></td>
+<td><b>AllLabels</b></td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=737">Issue 737</a></td>
+<td>Defect</td>
+<td>High</td>
+<td>Delete rows causes traceback</td>
+<td>Priority-High, Target-0.38, Type-Defect</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=851">Issue 851</a></td>
+<td>Defect</td>
+<td>High</td>
+<td>Content Assitant: Perfomance issues when huge number of variables</td>
+<td>Performance, Priority-High, Target-0.38, Type-Defect</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=84">Issue 84</a></td>
+<td>Enhancement</td>
+<td>High</td>
+<td>Keyword completion should support long names</td>
+<td>Priority-High, Target-0.38, Type-Enhancement</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=849">Issue 849</a></td>
+<td>Enhancement</td>
+<td>High</td>
+<td>Program icon</td>
+<td>Priority-High, Target-0.38, Type-Enhancement</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=641">Issue 641</a></td>
+<td>Defect</td>
+<td>Medium</td>
+<td>Arrowing through keyword completion available makes annoying system beep</td>
+<td>Priority-Medium, Target-0.38, Type-Defect</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=764">Issue 764</a></td>
+<td>Defect</td>
+<td>Medium</td>
+<td>Model is broken after 2 for-loop move operation</td>
+<td>Priority-Medium, Target-0.38, Type-Defect</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=832">Issue 832</a></td>
+<td>Defect</td>
+<td>Medium</td>
+<td>Rename Keyword doesn't rename from GWT steps</td>
+<td>Priority-Medium, Target-0.38, Type-Defect</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=848">Issue 848</a></td>
+<td>Enhancement</td>
+<td>Medium</td>
+<td>Local variables to suggestions</td>
+<td>Priority-Medium, Target-0.38, Type-Enhancement</td>
+</tr>
+</table>
+<p>Altogether 8 issues.</p>
 """
