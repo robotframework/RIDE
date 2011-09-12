@@ -1,3 +1,4 @@
+import os
 import re
 
 
@@ -18,8 +19,11 @@ def report_diffs(diff):
                 sys.exit(1)
 
 def is_covered(filename, start_line, number_of_lines):
+    cover_file_name = filename+',cover'
+    if not os.path.is_file(cover_file_name):
+        return False
     start_line -= 1
-    with open(filename+',cover') as annotation:
+    with open(cover_file_name) as annotation:
         lines = annotation.readlines()[start_line:start_line+number_of_lines]
     for line in lines:
         if not line.startswith('>'):
