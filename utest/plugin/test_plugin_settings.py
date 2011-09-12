@@ -31,27 +31,27 @@ class TestPluginSettings(TestSettingsHelper):
         TestSettingsHelper.tearDown(self)
         plugin.SETTINGS = self.orig_plugin_settings
 
-    def testSettingDefaultSettingsWhenNoSettingsExist(self):
+    def test_setting_default_settings_when_no_settings_exist(self):
         self.assertEquals(self.App().foo, 'bar')
 
-    def testSetDefaultSettingsWhenSettingsExist(self):
+    def test_set_default_settings_when_settings_exist(self):
         self.settings['Plugins'].add_section('MyPlug')['foo'] = 'zip'
         self.assertEquals(self.App().foo, 'zip')
 
-    def testSaveSettingWithOverride(self):
+    def test_save_setting_with_override(self):
         p = self.App()
         p.save_setting('foo', 'new')
         self.assertEquals(p.foo, 'new')
 
-    def testSaveSettingWithoutOverride(self):
+    def test_save_setting_without_override(self):
         p = self.App()
         p.save_setting('foo', 'new', override=False)
         self.assertEquals(p.foo, 'bar')
 
-    def testDirectAttributeAccessWithExistingSetting(self):
+    def test_direct_attribute_access_with_existing_setting(self):
         self.assertEquals(self.App().foo, 'bar')
 
-    def testDirectAttributeAccessWithNonExistingSetting(self):
+    def test_direct_attribute_access_with_non_existing_setting(self):
         try:
             self.App().non_existing
         except AttributeError:

@@ -12,7 +12,7 @@ if __name__ == '__main__':
     basedir = os.path.dirname(__file__)
     if run:
         sys.path.insert(0, os.path.join(basedir, '..', 'bundled', 'robotframework', 'src'))
-        sys.argv.append('--m=^test')
+        sys.argv.append('--m=^test_')
         tests_passed = run(defaultTest=basedir)
         retcode = 0 if tests_passed else 1
         sys.exit(retcode)
