@@ -2,10 +2,10 @@ import sys
 import os
 import unittest
 from robot.running import TestLibrary
-from robot.parsing.model import UserKeyword
+from robot.parsing.model import UserKeyword, KeywordTable
 from robot.utils.asserts import assert_true, assert_equals
 
-from robotide.spec.iteminfo import LibraryKeywordInfo, TestCaseUserKeywordInfo, VariableInfo
+from robotide.spec.iteminfo import LibraryKeywordInfo, TestCaseUserKeywordInfo, VariableInfo, ResourceUserKeywordInfo
 
 
 testlibpath = os.path.join(os.path.dirname(__file__), '..', 'resources', 'robotdata', 'libs')
@@ -14,6 +14,10 @@ sys.path.append(testlibpath)
 
 class _FakeTestCaseFile(object):
     source = '/path/to/testcase.txt'
+
+class _FakeResourceFile(object):
+    source = '/path/to/my/resource.html'
+    name = 'resource'
 
 def assert_in_details(kw_info, *expecteds):
     details = kw_info.details
@@ -37,6 +41,11 @@ class TestKeywordInfo(unittest.TestCase):
         exp_source = 'testcase.txt'
         exp_args = '[ arg1 | arg2=def | *varargs ]'
         assert_in_details(kw_info, exp_source, exp_args)
+
+    def test_resource_uk_longname(self):
+        uk = UserKeyword(KeywordTable(_FakeResourceFile()), 'UK')
+        kw_info = ResourceUserKeywordInfo(uk)
+        self.assertEquals(kw_info.longname, 'resource.UK')
 
 
 class TestVariableInfo(unittest.TestCase):
