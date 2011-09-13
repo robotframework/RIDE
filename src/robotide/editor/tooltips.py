@@ -45,7 +45,11 @@ class GridToolTips(object):
             self._grid.SetFocus()
 
     def _application_has_focus(self):
-        return wx.Window.FindFocus() is not None
+        window = wx.Window.FindFocus()
+        if window is None:
+            return False
+        rect = window.GetTopLevelParent().GetScreenRect()
+        return rect.Inside(wx.GetMousePosition())
 
     def OnGridEditorHidden(self, event):
         cell = event.Row, event.Col
