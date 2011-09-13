@@ -227,7 +227,7 @@ class _MacroTable(object):
 
     def add(self, ctrl):
         item = ctrl.data
-        item.parent = self.datafile
+        item.parent = self._table
         self._items.append(item)
         new_controller = self._create_controller(item)
         self.datafile_controller.update_namespace()
