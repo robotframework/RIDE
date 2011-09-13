@@ -20,7 +20,7 @@ def report_diffs(diff):
 
 def is_covered(filename, start_line, number_of_lines):
     cover_file_name = filename+',cover'
-    if not os.path.is_file(cover_file_name):
+    if not os.path.isfile(cover_file_name):
         return False
     start_line -= 1
     with open(cover_file_name) as annotation:
