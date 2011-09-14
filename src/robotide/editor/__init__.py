@@ -20,7 +20,7 @@ from robotide.pluginapi import (Plugin, ActionInfoCollection,
 from robotide.publish import (RideTreeSelection, RideNotebookTabChanging,
                               RideNotebookTabChanged, RideSaving)
 from robotide.widgets import PopupCreator
-from editors import EditorCreator
+from editorcreator import EditorCreator
 
 
 _EDIT = """
