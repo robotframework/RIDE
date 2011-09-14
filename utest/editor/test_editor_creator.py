@@ -1,3 +1,4 @@
+from editor.fakeplugin import FakePlugin
 from resources import PYAPP_REFERENCE
 import unittest
 import wx
@@ -17,21 +18,6 @@ from robotide.editor.editors import TestCaseFileEditor, WelcomePage
 DATADIR = 'fake'
 DATAPATH = '%s/path' % DATADIR
 TestCaseFileEditor._populate = lambda self: None
-
-
-class FakePlugin(object):
-    def __init__(self, editors, item):
-        self._editors = editors
-        self._item = item
-    def get_selected_item(self):
-        return self._item
-    def get_editor(self, itemclass):
-        return self._editors[itemclass]
-    def subscribe(self, *args):
-        pass
-    def unsubscribe(self, *args):
-        pass
-
 
 class EditorCreatorTest(unittest.TestCase):
 

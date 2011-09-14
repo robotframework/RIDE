@@ -14,7 +14,8 @@
 from robot.parsing.model import TestCase, TestDataDirectory, ResourceFile, TestCaseFile, UserKeyword, Variable
 from robotide.controller.chiefcontroller import ChiefController
 from robotide.controller.settingcontrollers import VariableController
-from robotide.editor.editors import InitFileEditor, ResourceFileEditor, TestCaseEditor, TestCaseFileEditor, UserKeywordEditor, WelcomePage
+from robotide.editor.editors import InitFileEditor, TestCaseFileEditor, WelcomePage, ResourceFileEditor
+from robotide.editor.macroeditors import TestCaseEditor, UserKeywordEditor
 
 
 def VariableEditorChooser(plugin, parent, controller, tree):

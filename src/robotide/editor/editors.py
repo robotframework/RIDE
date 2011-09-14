@@ -19,28 +19,22 @@ from robotide import utils
 from robotide.ui.components import StaticText
 from robotide.utils import RideEventHandler, RideHtmlWindow
 from robotide.widgets import ButtonWithHandler, HorizontalSizer
-from robotide.controller.chiefcontroller import ChiefController
 from robotide.controller.settingcontrollers import (DocumentationController,
                                                     VariableController, TagsController)
-from robotide.robotapi import (ResourceFile, TestCaseFile, TestDataDirectory,
-                               TestCase, UserKeyword, Variable)
 
 from gridcolorizer import ColorizationSettings
-from kweditor import KeywordEditor
 from listeditor import ListEditor
 from popupwindow import Tooltip
 from editordialogs import (EditorDialog, DocumentationDialog, MetadataDialog,
                            ScalarVariableDialog, ListVariableDialog,
                            LibraryDialog, ResourceDialog, VariablesDialog)
 from robotide.publish.messages import (RideItemSettingsChanged,
-                                       RideItemNameChanged,
                                        RideInitFileRemoved,
                                        RideImportSetting,
                                        RideChangeFormat)
 from robot.parsing.settings import _Setting
 from robotide.controller.commands import UpdateVariable
 from robotide.publish import PUBLISHER
-from robotide.usages.UsageRunner import Usages
 from robotide.editor.tags import TagsDisplay
 from robotide.context import SETTINGS
 
@@ -631,103 +625,6 @@ class TagsEditor(SettingEditor):
     def close(self):
         self._tags_display.close()
         SettingEditor.close(self)
-
-
-class TestCaseEditor(_RobotTableEditor):
-    _settings_open_id = 'test case settings open'
-
-    def _populate(self):
-        self.header = self._create_header(self.controller.name)
-        self.sizer.Add(self.header, 0, wx.EXPAND|wx.ALL, 5)
-        self._add_settings()
-        self.sizer.Add((0,10))
-        self._create_kweditor()
-        self.plugin.subscribe(self._name_changed, RideItemNameChanged)
-
-    def _create_kweditor(self):
-        self.kweditor = KeywordEditor(self, self.controller, self._tree)
-        self.sizer.Add(self.kweditor, 1, wx.EXPAND|wx.ALL, 2)
-        self._editors.append(self.kweditor)
-
-    def _name_changed(self, data):
-        if data.item == self.controller:
-            self.header.SetLabel(data.item.name)
-
-    def close(self):
-        for editor in self._editors:
-            editor.close()
-        _RobotTableEditor.close(self)
-        self.kweditor.close()
-        self.plugin.unsubscribe(self._name_changed, RideItemNameChanged)
-
-    def save(self):
-        self.kweditor.save()
-
-    def undo(self):
-        self.kweditor.OnUndo()
-
-    def redo(self):
-        self.kweditor.OnRedo()
-
-    def cut(self):
-        self.kweditor.OnCut()
-
-    def copy(self):
-        self.kweditor.OnCopy()
-
-    def paste(self):
-        self.kweditor.OnPaste()
-
-    def insert(self):
-        self.kweditor.OnInsert()
-
-    def insert_rows(self):
-        self.kweditor.OnInsertRows()
-
-    def delete_rows(self):
-        self.kweditor.OnDeleteRows()
-
-    def delete(self):
-        self.kweditor.OnDelete()
-
-    def comment(self):
-        self.kweditor.OnCommentRows()
-
-    def uncomment(self):
-        self.kweditor.OnUncommentRows()
-
-    def show_content_assist(self):
-        self.kweditor.show_content_assist()
-
-    def view(self):
-        _RobotTableEditor.view(self)
-        self.kweditor.SetFocus()
-
-
-class UserKeywordHeader(HorizontalSizer):
-
-    def __init__(self):
-        HorizontalSizer.__init__(self)
-
-    def SetLabel(self, label):
-        self._header.SetLabel(label)
-
-    def add_header(self, header):
-        self._header = header
-        self.add_expanding(self._header)
-
-
-class UserKeywordEditor(TestCaseEditor):
-    _settings_open_id = 'user keyword settings open'
-
-    def _create_header(self, name):
-        sizer = UserKeywordHeader()
-        sizer.add_header(_RobotTableEditor._create_header(self, name))
-        sizer.add(ButtonWithHandler(self, 'Find Usages', self._on_show_usages))
-        return sizer
-
-    def _on_show_usages(self, event):
-        Usages(self.controller, self._tree.highlight).show()
 
 
 class _AbstractListEditor(ListEditor):
