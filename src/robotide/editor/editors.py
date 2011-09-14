@@ -246,9 +246,7 @@ class Settings(wx.CollapsiblePane):
             self.Expand()
             self.Parent.GetSizer().Layout()
 
-
-class ResourceFileEditor(_RobotTableEditor):
-    _settings_open_id = 'resource file settings open'
+class _FileEditor(_RobotTableEditor):
 
     def __init__(self, *args):
         _RobotTableEditor.__init__(self, *args)
@@ -301,11 +299,15 @@ class ResourceFileEditor(_RobotTableEditor):
         _RobotTableEditor.close(self)
 
 
-class TestCaseFileEditor(ResourceFileEditor):
+class ResourceFileEditor(_FileEditor):
+    _settings_open_id = 'resource file settings open'
+
+
+class TestCaseFileEditor(_FileEditor):
     _settings_open_id = 'test case file settings open'
 
     def _populate(self):
-        ResourceFileEditor._populate(self)
+        _FileEditor._populate(self)
         self.sizer.Add((0, 10))
         self._add_metadata()
 
