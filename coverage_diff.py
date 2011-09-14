@@ -1,7 +1,7 @@
 import os
 import re
 
-
+comment_line_matcher = re.compile(r'^\s*#[^$]*$')
 filename_matcher = re.compile(r'^\+\+\+ b/([\w/\._]+)\s+.+$')
 diff_line_matcher = re.compile(r'^@@ -\d+,\d+ \+(\d+),(\d+) @@$')
 
@@ -25,11 +25,18 @@ def is_covered(filename, start_line, number_of_lines):
     start_line -= 1
     with open(cover_file_name) as annotation:
         lines = annotation.readlines()[start_line:start_line+number_of_lines]
-    for line in lines:
-        if not line.startswith('>'):
-            print 'Line not covered %r in file "%s"!!' % (line, filename)
-            return False
-    return True
+    lines_not_covered = []
+    for index, line in enumerate(lines):
+        if not line.startswith('>') and \
+           not comment_line_matcher.match(line) and \
+           line.strip():
+            lines_not_covered += [(index, line)]
+    if not lines_not_covered:
+        return True
+    print 'In file %s all lines not covered!' % filename
+    for index, line in lines_not_covered:
+        print index+1, line.replace('\n','')
+    return False
 
 if __name__ == '__main__':
     import sys
