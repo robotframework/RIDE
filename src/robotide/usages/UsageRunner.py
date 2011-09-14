@@ -43,7 +43,7 @@ class Usages(object):
     def _run(self):
         wx.CallAfter(self._begin_search)
         for usage in self._controller.execute(FindUsages(self._name, self._kw_info)):
-            time.sleep(0) # GIVE SPACE TO OTHER TRHEADS -- Thread.yield in Java
+            time.sleep(0) # GIVE SPACE TO OTHER THREADS -- Thread.yield in Java
             if self._dialog_closed: return
             wx.CallAfter(self._add_usage, usage)
         wx.CallAfter(self._end_search)
@@ -63,3 +63,8 @@ class Usages(object):
     def _stop(self, event):
         self._dialog_closed = True
         event.Skip()
+
+class ResourceFileUsages(Usages):
+
+    def __init__(self, controller):
+        Usages.__init__(self, controller, None)

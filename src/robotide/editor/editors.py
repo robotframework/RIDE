@@ -17,6 +17,7 @@ import wx
 from robotide import context
 from robotide.editor.settingeditors import DocumentationEditor, SettingEditor, TagsEditor, ImportSettingListEditor, VariablesListEditor, MetadataListEditor
 from robotide.ui.components import StaticText
+from robotide.usages.UsageRunner import ResourceFileUsages
 from robotide.utils import RideHtmlWindow
 from robotide.controller.settingcontrollers import (DocumentationController,
                                                     VariableController, TagsController)
@@ -26,6 +27,8 @@ from robotide.publish.messages import (RideItemSettingsChanged,
                                        RideChangeFormat)
 from robot.parsing.settings import _Setting
 from robotide.context import SETTINGS
+from robotide.widgets.button import ButtonWithHandler
+from robotide.widgets.sizers import HorizontalSizer
 
 
 class WelcomePage(RideHtmlWindow):
@@ -302,6 +305,14 @@ class _FileEditor(_RobotTableEditor):
 class ResourceFileEditor(_FileEditor):
     _settings_open_id = 'resource file settings open'
 
+    def _create_header(self, text):
+        sizer = HorizontalSizer()
+        sizer.add_expanding(_FileEditor._create_header(self, text))
+        sizer.add(ButtonWithHandler(self, 'Find Usages', self._on_show_usages))
+        return sizer
+
+    def _on_show_usages(self, event):
+        ResourceFileUsages(self.controller).show()
 
 class TestCaseFileEditor(_FileEditor):
     _settings_open_id = 'test case file settings open'
