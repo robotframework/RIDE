@@ -312,7 +312,7 @@ class ResourceFileEditor(_FileEditor):
         return sizer
 
     def _on_show_usages(self, event):
-        ResourceFileUsages(self.controller).show()
+        ResourceFileUsages(self.controller, self._tree.highlight).show()
 
 class TestCaseFileEditor(_FileEditor):
     _settings_open_id = 'test case file settings open'

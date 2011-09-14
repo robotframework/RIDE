@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.controller.commands import FindOccurrences
+from robotide.controller.commands import FindOccurrences, _Command
 from robotide.controller.macrocontrollers import KeywordNameController
 
 
@@ -31,3 +31,8 @@ class FindUsages(FindOccurrences):
                 prev = occ
         if prev:
             yield prev
+
+class FindResourceUsages(_Command):
+
+    def execute(self, context):
+        return []

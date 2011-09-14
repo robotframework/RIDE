@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.usages.commands import FindUsages
+from robotide.usages.commands import FindUsages, FindResourceUsages
 from robotide.usages.usagesdialog import UsagesDialog, UsagesDialogWithUserKwNavigation
 from threading import Thread
 import wx
@@ -42,11 +42,14 @@ class Usages(object):
 
     def _run(self):
         wx.CallAfter(self._begin_search)
-        for usage in self._controller.execute(FindUsages(self._name, self._kw_info)):
+        for usage in self._find_usages():
             time.sleep(0) # GIVE SPACE TO OTHER THREADS -- Thread.yield in Java
             if self._dialog_closed: return
             wx.CallAfter(self._add_usage, usage)
         wx.CallAfter(self._end_search)
+
+    def _find_usages(self):
+        return self._controller.execute(FindUsages(self._name, self._kw_info))
 
     def _begin_search(self):
         if not self._dialog_closed:
@@ -66,5 +69,8 @@ class Usages(object):
 
 class ResourceFileUsages(Usages):
 
-    def __init__(self, controller):
-        Usages.__init__(self, controller, None)
+    def __init__(self, controller, highlight):
+        Usages.__init__(self, controller, highlight)
+
+    def _find_usages(self):
+        return self._controller.execute(FindResourceUsages())
