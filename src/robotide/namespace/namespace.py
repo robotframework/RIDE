@@ -25,7 +25,7 @@ from robot.utils.normalizing import normalize
 from robot.variables import Variables as RobotVariables
 
 from robotide.namespace.cache import LibraryCache, ExpiringCache
-from robotide.namespace.resourcecache import ResourceCache
+from robotide.namespace.resourcefactory import ResourceFactory
 from robotide.spec.iteminfo import (TestCaseUserKeywordInfo,
                                     ResourceUserKeywordInfo,
                                     VariableInfo, _UserKeywordInfo,
@@ -44,7 +44,7 @@ class Namespace(object):
 
     def _init_caches(self):
         self._lib_cache = LibraryCache()
-        self._res_cache = ResourceCache()
+        self._res_cache = ResourceFactory()
         self._retriever = DatafileRetriever(self._lib_cache, self._res_cache)
         self._context_factory = _RetrieverContextFactory()
 

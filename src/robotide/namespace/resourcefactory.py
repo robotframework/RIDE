@@ -16,7 +16,7 @@ from robot.parsing.model import ResourceFile
 from robotide import utils
 
 
-class ResourceCache(object):
+class ResourceFactory(object):
 
     def __init__(self):
         self.cache = {}
@@ -40,10 +40,9 @@ class ResourceCache(object):
         return resource
 
     def _get_python_path(self, name):
-        if name in self.python_path_cache:
-            return self.python_path_cache[name]
-        path_from_pythonpath = utils.find_from_pythonpath(name)
-        self.python_path_cache[name] = path_from_pythonpath
+        if name not in self.python_path_cache:
+            path_from_pythonpath = utils.find_from_pythonpath(name)
+            self.python_path_cache[name] = path_from_pythonpath
         return self.python_path_cache[name]
 
     def _get_resource(self, path):
