@@ -403,7 +403,7 @@ class TestResourceGetter(_DataFileTest):
 class TestResourceCache(_DataFileTest):
 
     def setUp(self):
-        self._res_cache = self.ns._res_cache
+        self._res_cache = self.ns._resource_factory
 
     def test_file_read_only_once(self):
         imp = Resource(None, RESOURCE_PATH)

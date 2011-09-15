@@ -44,8 +44,8 @@ class Namespace(object):
 
     def _init_caches(self):
         self._lib_cache = LibraryCache()
-        self._res_cache = ResourceFactory()
-        self._retriever = DatafileRetriever(self._lib_cache, self._res_cache)
+        self._resource_factory = ResourceFactory()
+        self._retriever = DatafileRetriever(self._lib_cache, self._resource_factory)
         self._context_factory = _RetrieverContextFactory()
 
     def update(self):
@@ -127,10 +127,10 @@ class Namespace(object):
         return self._retriever.get_resources_from(datafile)
 
     def get_resource(self, path, directory=''):
-        return self._res_cache.get_resource(directory, path)
+        return self._resource_factory.get_resource(directory, path)
 
     def new_resource(self, path, directory=''):
-        return self._res_cache.new_resource(directory, path)
+        return self._resource_factory.new_resource(directory, path)
 
     def find_user_keyword(self, datafile, kw_name):
         kw = self.find_keyword(datafile, kw_name)
