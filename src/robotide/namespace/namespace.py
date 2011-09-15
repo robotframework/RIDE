@@ -25,12 +25,12 @@ from robot.utils.normalizing import normalize
 from robot.variables import Variables as RobotVariables
 
 from robotide.namespace.cache import LibraryCache, ExpiringCache
+from robotide.namespace.resourcecache import ResourceCache
 from robotide.spec.iteminfo import (TestCaseUserKeywordInfo,
                                     ResourceUserKeywordInfo,
                                     VariableInfo, _UserKeywordInfo,
     ArgumentInfo)
 from robotide.robotapi import NormalizedDict, is_var
-from robotide import utils
 from robotide.namespace.embeddedargs import EmbeddedArgsHandler
 
 
@@ -157,49 +157,6 @@ class Namespace(object):
         kw = self.find_keyword(datafile, name)
         return kw.details if kw else None
 
-
-class ResourceCache(object):
-
-    def __init__(self):
-        self.cache = {}
-        self.python_path_cache = {}
-
-    def get_resource(self, directory, name):
-        path = os.path.join(directory, name) if directory else name
-        res = self._get_resource(path)
-        if res:
-            return res
-        path_from_pythonpath = self._get_python_path(name)
-        if path_from_pythonpath:
-            return self._get_resource(path_from_pythonpath)
-        return None
-
-    def new_resource(self, directory, name):
-        path = os.path.join(directory, name) if directory else name
-        path = self._normalize(path)
-        resource = ResourceFile(source=path)
-        self.cache[path] = resource
-        return resource
-
-    def _get_python_path(self, name):
-        if name in self.python_path_cache:
-            return self.python_path_cache[name]
-        path_from_pythonpath = utils.find_from_pythonpath(name)
-        self.python_path_cache[name] = path_from_pythonpath
-        return self.python_path_cache[name]
-
-    def _get_resource(self, path):
-        normalized = self._normalize(path)
-        if normalized not in self.cache:
-            try:
-                self.cache[normalized] = ResourceFile(path).populate()
-            except Exception:
-                self.cache[normalized] = None
-                return None
-        return self.cache[normalized]
-
-    def _normalize(self, path):
-        return os.path.normcase(os.path.normpath(path))
 
 class _RetrieverContextFactory(object):
 
