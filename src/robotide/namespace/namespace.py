@@ -272,9 +272,9 @@ class _VariableStash(object):
 
 class DatafileRetriever(object):
 
-    def __init__(self, lib_cache, res_cache):
+    def __init__(self, lib_cache, resource_factory):
         self._lib_cache = lib_cache
-        self._res_cache = res_cache
+        self._resource_factory = resource_factory
         self.keyword_cache = ExpiringCache()
         self._default_kws = None
 
@@ -340,7 +340,7 @@ class DatafileRetriever(object):
     def _res_kw_recursive_getter(self, imp, ctx):
         kws = []
         resolved_name = ctx.vars.replace_variables(imp.name)
-        res = self._res_cache.get_resource(imp.directory, resolved_name)
+        res = self._resource_factory.get_resource(imp.directory, resolved_name)
         if not res or res in ctx.parsed:
             return kws
         ctx.parsed.add(res)
@@ -397,7 +397,7 @@ class DatafileRetriever(object):
         ctx.vars.set_from_variable_table(datafile.variable_table)
         for imp in self._collect_import_of_type(datafile, Resource):
             resolved_name = ctx.vars.replace_variables(imp.name)
-            res = self._res_cache.get_resource(imp.directory, resolved_name)
+            res = self._resource_factory.get_resource(imp.directory, resolved_name)
             imp.resolved_path = None
             if res:
                 imp.resolved_path = res.source
