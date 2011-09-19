@@ -18,10 +18,10 @@ class ResourceUsageTests(unittest.TestCase):
     def test_resource_usages_finding(self):
         assert_equals(self.resu, self.ts1.imports[0].get_imported_resource_file_controller())
         assert_equals(self.resu, self.ts2.imports[0].get_imported_resource_file_controller())
-        usages = list(self.resu.execute(FindResourceUsages()))
+        usages = [u.item for u in self.resu.execute(FindResourceUsages())]
         assert_equals(len(usages), 2)
-        assert_true(self.ts1 in usages)
-        assert_true(self.ts2 in usages)
+        assert_true(self.ts1.imports in usages)
+        assert_true(self.ts2.imports in usages)
 
 
 if __name__ == '__main__':

@@ -11,6 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+import os
 
 from robotide.controller.commands import FindOccurrences, _Command
 from robotide.controller.macrocontrollers import KeywordNameController
@@ -41,4 +42,17 @@ class FindResourceUsages(_Command):
             for import_ in df.imports:
                 if import_.is_resource and \
                     context == import_.get_imported_resource_file_controller():
-                    yield df
+                    yield ResourceUsage(df)
+
+class ResourceUsage(object):
+
+    count = 1
+
+    def __init__(self, user):
+        self._user = user
+        self.name = os.path.basename(user.display_name)
+        self.location = user.source
+        self.usage = 'import'
+        self.source = user.source
+        self.parent = user.imports
+        self.item = user.imports
