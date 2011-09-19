@@ -92,7 +92,9 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         res.keyword_table.keywords.append(UserKeyword(res, 'Resource Keyword'))
         model = ChiefController(Namespace())
         model._controller = TestDataDirectoryController(suite)
-        model._insert_into_suite_structure(ResourceFileController(res))
+        rfc = ResourceFileController(res)
+        model.resources.append(rfc)
+        model._insert_into_suite_structure(rfc)
         return model
 
     def _create_directory_suite(self, source):

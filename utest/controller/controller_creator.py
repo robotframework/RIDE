@@ -36,6 +36,8 @@ class _FakeChief(WithNamespace):
     def unregister_namespace_updates(self, listener):
         pass
 
+    resource_file_controller_factory = None
+
 def create(data):
     tcf = TestCaseFile()
     tcf.directory = '/path/to'

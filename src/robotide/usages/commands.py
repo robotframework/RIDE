@@ -35,4 +35,4 @@ class FindUsages(FindOccurrences):
 class FindResourceUsages(_Command):
 
     def execute(self, context):
-        return []
+        return context.get_where_used()

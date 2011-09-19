@@ -289,6 +289,10 @@ class KeywordTableController(_TableController, _MacroTable):
 
 class ImportSettingsController(_TableController, _WithListOperations):
 
+    def __init__(self, parent_controller, table, resource_file_controller_factory=None):
+        _TableController.__init__(self, parent_controller, table)
+        self._resource_file_controller_factory = resource_file_controller_factory
+
     def __iter__(self):
         return iter(ImportController(self, imp) for imp in self._items)
 
@@ -298,6 +302,10 @@ class ImportSettingsController(_TableController, _WithListOperations):
     @property
     def _items(self):
         return self._table.imports
+
+    @property
+    def resource_file_controller_factory(self):
+        return self._resource_file_controller_factory
 
     def delete(self, index):
         item = self[index]

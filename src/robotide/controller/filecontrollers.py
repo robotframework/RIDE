@@ -73,6 +73,10 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         self._chief_controller = chief_controller
         if chief_controller:
             self._set_namespace_from(chief_controller)
+            self._resource_file_controller_factory =\
+                chief_controller.resource_file_controller_factory
+        else:
+            self._resource_file_controller_factory = None
         self.parent = parent
         self.data = data
         self.dirty = False
@@ -80,6 +84,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         self._variables_table_controller = None
         self._testcase_table_controller = None
         self._keywords_table_controller = None
+        self._imports = None
 
     def _children(self, data):
         return []
@@ -141,7 +146,9 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
 
     @property
     def imports(self):
-        return ImportSettingsController(self, self.data.setting_table)
+        if not self._imports:
+            self._imports = ImportSettingsController(self, self.data.setting_table, self._resource_file_controller_factory)
+        return self._imports
 
     @property
     def metadata(self):
@@ -435,6 +442,35 @@ class TestCaseFileController(_FileSystemElement, _DataController):
         return self.data.setting_table.test_template
 
 
+class ResourceFileControllerFactory(object):
+
+    def __init__(self):
+        self._resources = []
+
+    @property
+    def resources(self):
+        return self._resources
+
+    def find(self, data):
+        return self._find_with_source(data.source)
+
+    def _find_with_source(self, source):
+        for other in self.resources:
+            if other.filename == source:
+                return other
+        return None
+
+    def find_with_import(self, import_):
+        return self._find_with_source(os.path.join(os.path.dirname(import_.source), import_.name))
+
+    def create(self, data, chief_controller=None, parent=None):
+        rfc = ResourceFileController(data, chief_controller, parent)
+        self.resources.append(rfc)
+        return rfc
+
+    def remove(self, controller):
+        self._resources.remove(controller)
+
 class ResourceFileController(_FileSystemElement, _DataController):
 
     def __init__(self, data, chief_controller=None, parent=None):
@@ -474,3 +510,6 @@ class ResourceFileController(_FileSystemElement, _DataController):
     def remove(self):
         self._chief_controller.remove_resource(self)
         RideDataFileRemoved(path=self.filename, datafile=self).publish()
+
+    def get_where_used(self):
+        return set()

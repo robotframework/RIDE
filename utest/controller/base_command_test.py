@@ -13,6 +13,8 @@ from controller.controller_creator import _FakeChief, testcase_controller,\
 
 class TestCaseCommandTest(unittest.TestCase, _FakeChief):
 
+    resource_file_controller_factory = None
+
     def setUp(self):
         self._steps = None
         self._data = self._create_data()

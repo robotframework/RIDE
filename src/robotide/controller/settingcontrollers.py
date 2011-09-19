@@ -420,16 +420,16 @@ class VariableController(_BaseController, _SettingController):
     def __hash__(self):
         return hash(self._var)+1
 
+def ImportController(parent, import_):
+    if import_.type == 'Resource':
+        return ResourceImportController(parent, import_)
+    return LibraryImportController(parent, import_)
 
-class ImportController(_SettingController):
+class _ImportController(_SettingController):
 
     def _init(self, import_):
         self._import = import_
         self.type = self._import.type
-
-    @property
-    def is_resource(self):
-        return self.type == 'Resource'
 
     @property
     def resolved_path(self):
@@ -490,3 +490,14 @@ class ImportController(_SettingController):
     def publish_removed(self):
         RideImportSettingRemoved(datafile=self.datafile_controller,
                                  name=self.name, type=self.type.lower()).publish()
+
+class ResourceImportController(_ImportController):
+
+    is_resource = True
+
+    def get_imported_resource_file_controller(self):
+        return self.parent.resource_file_controller_factory.find_with_import(self._import)
+
+class LibraryImportController(_ImportController):
+
+    is_resource = False

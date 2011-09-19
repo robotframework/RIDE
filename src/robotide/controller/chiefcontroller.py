@@ -16,7 +16,7 @@ import os
 
 from robotide import context
 from robotide.controller.basecontroller import WithNamespace, _BaseController
-from robotide.controller.filecontrollers import DirectoryController, TestDataDirectoryController
+from robotide.controller.filecontrollers import DirectoryController, TestDataDirectoryController, ResourceFileControllerFactory
 from robotide.controller.robotdata import NewTestCaseFile, NewTestDataDirectory
 from robotide.errors import SerializationError
 from robotide.publish.messages import RideOpenResource, RideSaving, RideSaveAll, \
@@ -35,8 +35,8 @@ class ChiefController(_BaseController, WithNamespace):
         self._loader = DataLoader(namespace)
         self._controller = None
         self.name = None
-        self.resources = []
         self.external_resources = []
+        self._resource_file_controller_factory = ResourceFileControllerFactory()
 
     @property
     def display_name(self):
@@ -63,6 +63,14 @@ class ChiefController(_BaseController, WithNamespace):
     def datafiles(self):
         return self._suites() + self.resources
 
+    @property
+    def resources(self):
+        return self._resource_file_controller_factory.resources
+
+    @property
+    def resource_file_controller_factory(self):
+        return self._resource_file_controller_factory
+
     def new_directory_project(self, path):
         self._new_project(NewTestDataDirectory(path))
 
@@ -72,7 +80,7 @@ class ChiefController(_BaseController, WithNamespace):
     def _new_project(self, datafile):
         self.update_default_dir(datafile.directory)
         self._controller = DataController(datafile, self)
-        self.resources = []
+        self._resource_file_controller_factory = ResourceFileControllerFactory()
         RideNewProject(path=datafile.source, datafile=datafile).publish()
 
     def new_resource(self, path, parent=None):
@@ -140,17 +148,16 @@ class ChiefController(_BaseController, WithNamespace):
         return ctrl
 
     def _create_resource_controller(self, parsed_resource, parent=None):
-        for other in self.resources:
-            if other.filename == parsed_resource.source:
-                return other
-        controller = ResourceFileController(parsed_resource, self, parent=parent)
+        old = self._resource_file_controller_factory.find(parsed_resource)
+        if old:
+            return old
+        controller = self._resource_file_controller_factory.create(parsed_resource, self, parent=parent)
         self._insert_into_suite_structure(controller)
         RideOpenResource(path=parsed_resource.source, datafile=controller).publish()
         self._load_resources_resource_imports(controller)
         return controller
 
     def _insert_into_suite_structure(self, resource):
-        self.resources.append(resource)
         if self._controller and self._controller.is_inside_top_suite(resource):
             self._controller.insert_to_test_data_directory(resource)
         else:
@@ -219,7 +226,7 @@ class ChiefController(_BaseController, WithNamespace):
             self._controller.remove_child(controller)
 
     def remove_resource(self, controller):
-        self.resources.remove(controller)
+        self._resource_file_controller_factory.remove(controller)
 
     def save(self, controller):
         if controller:
