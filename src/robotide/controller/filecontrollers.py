@@ -444,8 +444,9 @@ class TestCaseFileController(_FileSystemElement, _DataController):
 
 class ResourceFileControllerFactory(object):
 
-    def __init__(self):
+    def __init__(self, namespace):
         self._resources = []
+        self._namespace = namespace
 
     @property
     def resources(self):
@@ -461,7 +462,10 @@ class ResourceFileControllerFactory(object):
         return None
 
     def find_with_import(self, import_):
-        return self._find_with_source(os.path.join(os.path.dirname(import_.source), import_.name))
+        resource_model = self._namespace.find_resource_with_import(import_)
+        if not resource_model:
+            return None
+        return self.find(resource_model)
 
     def create(self, data, chief_controller=None, parent=None):
         rfc = ResourceFileController(data, chief_controller, parent)

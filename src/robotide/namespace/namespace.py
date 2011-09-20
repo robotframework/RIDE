@@ -129,6 +129,10 @@ class Namespace(object):
     def get_resource(self, path, directory=''):
         return self._resource_factory.get_resource(directory, path)
 
+    def find_resource_with_import(self, imp):
+        ctx = self._context_factory.ctx_for_datafile(imp.parent.parent)
+        return self._resource_factory.get_resource_from_import(imp, ctx)
+
     def new_resource(self, path, directory=''):
         return self._resource_factory.new_resource(directory, path)
 
@@ -395,8 +399,7 @@ class DatafileRetriever(object):
         items = set()
         ctx.vars.set_from_variable_table(datafile.variable_table)
         for imp in self._collect_import_of_type(datafile, Resource):
-            resolved_name = ctx.vars.replace_variables(imp.name)
-            res = self._resource_factory.get_resource(imp.directory, resolved_name)
+            res = self._resource_factory.get_resource_from_import(imp, ctx)
             imp.resolved_path = None
             if res:
                 imp.resolved_path = res.source

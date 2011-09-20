@@ -68,6 +68,13 @@ class ChiefControllerTest(unittest.TestCase):
         assert_true(data is not None)
         self._test_listeners([MINIMAL_SUITE_PATH], [])
 
+    def test_reloading(self):
+        self.ctrl.new_file_project(MINIMAL_SUITE_PATH)
+        files1 = self.ctrl.datafiles
+        self.ctrl.new_file_project(MINIMAL_SUITE_PATH)
+        files2 = self.ctrl.datafiles
+        assert_true(files1 != files2)
+
     def test_loading_resource_file(self):
         resource = self.ctrl.load_resource(RESOURCE_PATH, self.load_observer)
         assert_true(self.load_observer.finished)

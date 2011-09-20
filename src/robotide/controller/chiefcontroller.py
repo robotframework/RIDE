@@ -36,7 +36,7 @@ class ChiefController(_BaseController, WithNamespace):
         self._controller = None
         self.name = None
         self.external_resources = []
-        self._resource_file_controller_factory = ResourceFileControllerFactory()
+        self._resource_file_controller_factory = ResourceFileControllerFactory(namespace)
 
     @property
     def display_name(self):
@@ -80,7 +80,7 @@ class ChiefController(_BaseController, WithNamespace):
     def _new_project(self, datafile):
         self.update_default_dir(datafile.directory)
         self._controller = DataController(datafile, self)
-        self._resource_file_controller_factory = ResourceFileControllerFactory()
+        self._resource_file_controller_factory = ResourceFileControllerFactory(self._namespace)
         RideNewProject(path=datafile.source, datafile=datafile).publish()
 
     def new_resource(self, path, parent=None):

@@ -15,14 +15,31 @@ class ResourceUsageTests(unittest.TestCase):
         cls.ts2 = datafilereader.get_ctrl_by_name('TestSuite2', ctrl.datafiles)
         cls.resu = datafilereader.get_ctrl_by_name(datafilereader.OCCURRENCES_RESOURCE_NAME, ctrl.datafiles)
 
-    def test_resource_usages_finding(self):
+    def test_resource_import_knows_imported_resource_controller(self):
         assert_equals(self.resu, self.ts1.imports[0].get_imported_resource_file_controller())
         assert_equals(self.resu, self.ts2.imports[0].get_imported_resource_file_controller())
-        usages = [u.item for u in self.resu.execute(FindResourceUsages())]
-        assert_equals(len(usages), 2)
-        assert_true(self.ts1.imports in usages)
-        assert_true(self.ts2.imports in usages)
 
+    def test_resource_usages_finding(self):
+        usages = [u.item for u in self.resu.execute(FindResourceUsages())]
+        self._verify_length(2, usages)
+        self._verify_that_contains(self.ts1, usages)
+        self._verify_that_contains(self.ts2, usages)
+
+    def _verify_length(self, expected, usages):
+        assert_equals(len(usages), expected)
+
+    def _verify_that_contains(self, item, usages):
+        assert_true(item.imports in usages)
+
+    def test_import_in_resource_file(self):
+        inner_resu = self.resu.imports[0].get_imported_resource_file_controller()
+        usages = [u.item for u in inner_resu.execute(FindResourceUsages())]
+        self._verify_length(1, usages)
+        self._verify_that_contains(self.resu, usages)
+
+    def test_none_existing_import(self):
+        imp = self.ts1.imports.add_resource('this_does_not_exists.txt')
+        assert_equals(imp.get_imported_resource_file_controller(), None)
 
 if __name__ == '__main__':
     unittest.main()
