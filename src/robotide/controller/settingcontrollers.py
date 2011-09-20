@@ -468,10 +468,7 @@ class _ImportController(_SettingController):
         self._parent.notify_imports_modified()
         if not self.is_resource:
             return
-        self.get_target_controller()
-
-    def get_target_controller(self):
-        return self._parent.resource_import_modified(self.name)
+        self._parent.resource_import_modified(self.name)
 
     def publish_edited(self):
         RideImportSettingChanged(datafile=self.datafile_controller,
