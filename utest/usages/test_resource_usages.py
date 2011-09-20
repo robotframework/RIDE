@@ -20,7 +20,7 @@ class ResourceUsageTests(unittest.TestCase):
         assert_equals(self.resu, self.ts2.imports[0].get_imported_resource_file_controller())
 
     def test_resource_usages_finding(self):
-        usages = [u.item for u in self.resu.execute(FindResourceUsages())]
+        usages = list(self.resu.execute(FindResourceUsages()))
         self._verify_length(2, usages)
         self._verify_that_contains(self.ts1, usages)
         self._verify_that_contains(self.ts2, usages)
@@ -29,11 +29,16 @@ class ResourceUsageTests(unittest.TestCase):
         assert_equals(len(usages), expected)
 
     def _verify_that_contains(self, item, usages):
-        assert_true(item.imports in usages)
+        for u in usages:
+            if u.item == item.imports:
+                if item.display_name != u.location:
+                    raise AssertionError('location "%s" was not expected "%s"!' % (u.location, item.display_name))
+                return
+        raise AssertionError('Item %r not in usages %r!' % (item, usages))
 
     def test_import_in_resource_file(self):
         inner_resu = self.resu.imports[0].get_imported_resource_file_controller()
-        usages = [u.item for u in inner_resu.execute(FindResourceUsages())]
+        usages = list(inner_resu.execute(FindResourceUsages()))
         self._verify_length(1, usages)
         self._verify_that_contains(self.resu, usages)
 

@@ -50,8 +50,7 @@ class ResourceUsage(object):
 
     def __init__(self, user):
         self._user = user
-        self.name = os.path.basename(user.display_name)
-        self.location = user.source
+        self.location = user.display_name
         self.usage = 'import'
         self.source = user.source
         self.parent = user.imports
