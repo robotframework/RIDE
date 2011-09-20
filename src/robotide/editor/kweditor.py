@@ -28,7 +28,7 @@ from robotide.publish import (RideGridCellChanged, RideItemStepsChanged,
                               RideSettingsChanged, PUBLISHER)
 from robotide.utils import RideEventHandler
 from robotide.widgets import PopupMenu, PopupMenuItems
-from robotide.context import SETTINGS # TODO: can we avoid direct reference?
+from robotide.context import IS_MAC, SETTINGS # TODO: can we avoid direct reference?
 from robot.parsing.model import Variable
 
 from robotide.editor.grid import GridEditor
@@ -163,30 +163,31 @@ class KeywordEditor(GridEditor, RideEventHandler):
     def OnInsertRows(self, event):
         self._execute(AddRows(self.selection.rows()))
         self.ClearSelection()
-        if event:
+        self._skip_except_on_mac(event)
+
+    def _skip_except_on_mac(self, event):
+        if event is not None and not IS_MAC:
             event.Skip()
 
     def OnInsertCells(self, event):
         self._execute(InsertCells(self.selection.topleft,
                                   self.selection.bottomright))
-        event.Skip()
+        self._skip_except_on_mac(event)
 
     def OnDeleteCells(self, event):
         self._execute(DeleteCells(self.selection.topleft,
                                   self.selection.bottomright))
-        event.Skip()
+        self._skip_except_on_mac(event)
 
     @requires_focus
     def OnCommentRows(self, event=None):
         self._execute(CommentRows(self.selection.rows()))
-        if event is not None:
-            event.Skip()
+        self._skip_except_on_mac(event)
 
     @requires_focus
     def OnUncommentRows(self, event=None):
         self._execute(UncommentRows(self.selection.rows()))
-        if event is not None:
-            event.Skip()
+        self._skip_except_on_mac(event)
 
     def OnMoveRowsUp(self, event=None):
         self._row_move(MoveRowsUp, -1)
@@ -286,8 +287,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
     def OnDeleteRows(self, event):
         self._execute(DeleteRows(self.selection.rows()))
         self.ClearSelection()
-        if event:
-            event.Skip()
+        self._skip_except_on_mac(event)
 
     @requires_focus
     def OnUndo(self, event=None):
