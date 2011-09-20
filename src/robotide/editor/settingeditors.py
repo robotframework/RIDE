@@ -419,7 +419,7 @@ class ImportSettingListEditor(_AbstractListEditor):
             self._tree.select_node_by_data(setting.get_imported_resource_file_controller())
 
     def has_link_target(self, controller):
-        return controller.type == 'Resource' and controller.get_imported_resource_file_controller()
+        return controller.is_resource and controller.get_imported_resource_file_controller()
 
     def OnEdit(self, event):
         setting = self._get_setting()
