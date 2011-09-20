@@ -37,7 +37,7 @@ from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
     AddVariable, UpdateVariableName
 from robotide.widgets import PopupCreator, PopupMenuItems
 from robotide.ui.filedialogs import NewExternalResourceDialog, NewResourceDialog
-from robotide.usages.UsageRunner import Usages
+from robotide.usages.UsageRunner import Usages, ResourceFileUsages
 
 from progress import RenameProgressObserver
 from filedialogs import AddSuiteDialog, ChangeFormatDialog
@@ -635,6 +635,7 @@ class _ActionHandler(wx.Window):
     _label_copy_macro = 'Copy\tCtrl-Shift-C'
     _label_rename = 'Rename\tF2'
     _label_new_resource = 'New Resource'
+    _label_find_usages = 'Find Usages'
 
     def __init__(self, controller, tree, node):
         wx.Window.__init__(self, tree)
@@ -679,6 +680,9 @@ class _ActionHandler(wx.Window):
         pass
 
     def OnRename(self, event):
+        pass
+
+    def OnFindUsages(self, event):
         pass
 
 
@@ -782,7 +786,11 @@ class ResourceFileHandler(TestDataHandler):
     _actions = [_ActionHandler._label_new_user_keyword,
                 _ActionHandler._label_new_scalar,
                 _ActionHandler._label_new_list_variable, '---',
-                _ActionHandler._label_change_format]
+                _ActionHandler._label_change_format,
+                _ActionHandler._label_find_usages]
+
+    def OnFindUsages(self, event):
+        ResourceFileUsages(self.controller, self._tree.highlight).show()
 
 
 class TestCaseFileHandler(TestDataHandler):
@@ -849,7 +857,7 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
     is_user_keyword = True
     _datalist = property(lambda self: self.item.datalist)
     _copy_name_dialog_class = CopyUserKeywordDialog
-    _actions = _TestOrUserKeywordHandler._actions + ['Find Usages']
+    _actions = _TestOrUserKeywordHandler._actions + [_ActionHandler._label_find_usages]
 
     def _add_copy_to_tree(self, parent_node, copied):
         self._tree.add_keyword(parent_node, copied)
