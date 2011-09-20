@@ -15,6 +15,7 @@
 import wx
 
 from robotide.context import IS_WINDOWS
+from robotide.context.platform import IS_MAC
 
 
 class MenuBar(object):
@@ -347,5 +348,5 @@ class ActionDelegator(object):
     def __call__(self, event):
         for action in self._actions:
             action.act(event)
-        if not IS_WINDOWS:
+        if not (IS_WINDOWS or IS_MAC):
             event.Skip()
