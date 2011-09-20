@@ -32,6 +32,10 @@ class ResourceFactory(object):
             return self._get_resource(path_from_pythonpath)
         return None
 
+    def get_resource_from_import(self, import_, retriever_context):
+        resolved_name = retriever_context.vars.replace_variables(import_.name)
+        return self.get_resource(import_.directory, resolved_name)
+
     def new_resource(self, directory, name):
         path = os.path.join(directory, name) if directory else name
         path = self._normalize(path)
