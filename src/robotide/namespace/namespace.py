@@ -400,9 +400,6 @@ class DatafileRetriever(object):
         ctx.vars.set_from_variable_table(datafile.variable_table)
         for imp in self._collect_import_of_type(datafile, Resource):
             res = self._resource_factory.get_resource_from_import(imp, ctx)
-            imp.resolved_path = None
-            if res:
-                imp.resolved_path = res.source
             if res and res not in ctx.parsed:
                 ctx.parsed.add(res)
                 collector(res, ctx, items)

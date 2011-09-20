@@ -431,13 +431,6 @@ class _ImportController(_SettingController):
         self._import = import_
         self.type = self._import.type
 
-    @property
-    def resolved_path(self):
-        #TODO: This needs to improved when namespace is refactored
-        if self.is_resource and hasattr(self._import, "resolved_path"):
-            return self._import.resolved_path
-        return
-
     def _label(self, data):
         return data.type
 
@@ -475,10 +468,7 @@ class _ImportController(_SettingController):
         self._parent.notify_imports_modified()
         if not self.is_resource:
             return
-        resource = self.get_target_controller()
-        #TODO: setting the resolved path attr should happen always in namespace
-        #This way, variables could be taken into account.
-        self._import.resolved_path = resource.filename if resource else None
+        self.get_target_controller()
 
     def get_target_controller(self):
         return self._parent.resource_import_modified(self.name)
