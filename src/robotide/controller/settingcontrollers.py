@@ -494,9 +494,13 @@ class _ImportController(_SettingController):
 class ResourceImportController(_ImportController):
 
     is_resource = True
+    _resolved_import = False
 
     def get_imported_resource_file_controller(self):
-        return self.parent.resource_file_controller_factory.find_with_import(self._import)
+        if not self._resolved_import:
+            self._imported_resource_controller = self.parent.resource_file_controller_factory.find_with_import(self._import)
+            self._resolved_import = True
+        return self._imported_resource_controller
 
 class LibraryImportController(_ImportController):
 
