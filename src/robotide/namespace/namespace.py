@@ -339,8 +339,7 @@ class DatafileRetriever(object):
 
     def _res_kw_recursive_getter(self, imp, ctx):
         kws = []
-        resolved_name = ctx.vars.replace_variables(imp.name)
-        res = self._resource_factory.get_resource(imp.directory, resolved_name)
+        res = self._get_resource_from_import(ctx, imp)
         if not res or res in ctx.parsed:
             return kws
         ctx.parsed.add(res)
@@ -349,6 +348,10 @@ class DatafileRetriever(object):
             kws.extend(self._res_kw_recursive_getter(child, ctx))
         kws.extend(self._get_imported_library_keywords(res, ctx))
         return [ResourceUserKeywordInfo(kw) for kw in res.keywords] + kws
+
+    def _get_resource_from_import(self, ctx, imp):
+        resolved_name = ctx.vars.replace_variables(imp.name)
+        return self._resource_factory.get_resource(imp.directory, resolved_name)
 
     def get_variables_from(self, datafile, ctx=None):
         return self._get_vars_recursive(datafile, ctx or RetrieverContext()).vars
