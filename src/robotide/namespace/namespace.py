@@ -175,7 +175,9 @@ class _RetrieverContextFactory(object):
 
     def ctx_for_datafile(self, datafile):
         if datafile not in self._context_cache:
-            self._context_cache[datafile] = RetrieverContext()
+            ctx = RetrieverContext()
+            ctx.vars.set_from_variable_table(datafile.variable_table)
+            self._context_cache[datafile] = ctx
         return self._context_cache[datafile]
 
 
