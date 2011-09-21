@@ -259,6 +259,9 @@ class DirectoryController(_FileSystemElement, _BaseController):
     def is_directory_suite(self):
         return False
 
+    def is_same_format(self, other):
+        return True
+
     def add_child(self, child):
         self.children.append(child)
 
