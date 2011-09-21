@@ -46,12 +46,8 @@ class FindResourceUsages(_Command):
 
 class ResourceUsage(object):
 
-    count = 1
-
     def __init__(self, user):
-        self._user = user
-        self.location = user.display_name
-        self.usage = 'import'
-        self.source = user.source
-        self.parent = user.imports
+        self.location = user.source
+        self.name = user.display_name
         self.item = user.imports
+        self.parent = user

@@ -31,8 +31,8 @@ class ResourceUsageTests(unittest.TestCase):
     def _verify_that_contains(self, item, usages):
         for u in usages:
             if u.item == item.imports:
-                if item.display_name != u.location:
-                    raise AssertionError('location "%s" was not expected "%s"!' % (u.location, item.display_name))
+                if item.display_name != u.name:
+                    raise AssertionError('Name "%s" was not expected "%s"!' % (u.name, item.display_name))
                 return
         raise AssertionError('Item %r not in usages %r!' % (item, usages))
 
