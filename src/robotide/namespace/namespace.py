@@ -176,7 +176,7 @@ class _RetrieverContextFactory(object):
     def ctx_for_datafile(self, datafile):
         if datafile not in self._context_cache:
             ctx = RetrieverContext()
-            ctx.vars.set_from_variable_table(datafile.variable_table)
+            ctx.set_variables_from_datafile_variable_table(datafile)
             self._context_cache[datafile] = ctx
         return self._context_cache[datafile]
 
@@ -186,6 +186,9 @@ class RetrieverContext(object):
     def __init__(self):
         self.vars = _VariableStash()
         self.parsed = set()
+
+    def set_variables_from_datafile_variable_table(self, datafile):
+        self.vars.set_from_variable_table(datafile.variable_table)
 
     def allow_going_through_resources_again(self):
         """Resets the parsed-cache.
@@ -349,7 +352,7 @@ class DatafileRetriever(object):
         if not res or res in ctx.parsed:
             return kws
         ctx.parsed.add(res)
-        ctx.vars.set_from_variable_table(res.variable_table)
+        ctx.set_variables_from_datafile_variable_table(res)
         for child in self._collect_import_of_type(res, Resource):
             kws.extend(self._res_kw_recursive_getter(child, ctx))
         kws.extend(self._get_imported_library_keywords(res, ctx))
@@ -359,7 +362,7 @@ class DatafileRetriever(object):
         return self._get_vars_recursive(datafile, ctx or RetrieverContext()).vars
 
     def _get_vars_recursive(self, datafile, ctx):
-        ctx.vars.set_from_variable_table(datafile.variable_table)
+        ctx.set_variables_from_datafile_variable_table(datafile)
         self._collect_vars_from_variable_files(datafile, ctx)
         self._collect_each_res_import(datafile, ctx, self._var_collector)
         return ctx
@@ -399,7 +402,7 @@ class DatafileRetriever(object):
 
     def _collect_each_res_import(self, datafile, ctx, collector):
         items = set()
-        ctx.vars.set_from_variable_table(datafile.variable_table)
+        ctx.set_variables_from_datafile_variable_table(datafile)
         for imp in self._collect_import_of_type(datafile, Resource):
             res = self._resource_factory.get_resource_from_import(imp, ctx)
             if res and res not in ctx.parsed:
