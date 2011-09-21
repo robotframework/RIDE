@@ -190,6 +190,9 @@ class RetrieverContext(object):
     def set_variables_from_datafile_variable_table(self, datafile):
         self.vars.set_from_variable_table(datafile.variable_table)
 
+    def replace_variables(self, text):
+        return self.vars.replace_variables(text)
+
     def allow_going_through_resources_again(self):
         """Resets the parsed-cache.
         Normally all resources that have been handled are added to 'parsed' and
@@ -326,10 +329,10 @@ class DatafileRetriever(object):
         return kws
 
     def _lib_kw_getter(self, imp, ctx):
-        name = ctx.vars.replace_variables(imp.name)
+        name = ctx.replace_variables(imp.name)
         name = self._convert_to_absolute_path(name, imp)
-        args = [ctx.vars.replace_variables(a) for a in imp.args]
-        alias = ctx.vars.replace_variables(imp.alias) if imp.alias else None
+        args = [ctx.replace_variables(a) for a in imp.args]
+        alias = ctx.replace_variables(imp.alias) if imp.alias else None
         return self._lib_cache.get_library_keywords(name, args, alias)
 
     def _convert_to_absolute_path(self, name, import_):
@@ -370,8 +373,8 @@ class DatafileRetriever(object):
     def _collect_vars_from_variable_files(self, datafile, ctx):
         for imp in self._collect_import_of_type(datafile, Variables):
             varfile_path = os.path.join(datafile.directory,
-                                        ctx.vars.replace_variables(imp.name))
-            args = [ctx.vars.replace_variables(a) for a in imp.args]
+                                        ctx.replace_variables(imp.name))
+            args = [ctx.replace_variables(a) for a in imp.args]
             try:
                 ctx.vars.set_from_file(varfile_path, args)
             except DataError:
