@@ -18,15 +18,15 @@ import wx
 
 class UsagesDialog(Dialog):
 
-    def __init__(self, name):
+    def __init__(self, name, usages=None):
         self._name = name
         self._selection_listeners = []
         title = "'%s'" % (name)
         Dialog.__init__(self, title=title, size=(650, 400))
         self.SetSizer(VerticalSizer())
         self._add_view_components()
-        self.usages = UsagesListModel([])
-        self.usage_list = VirtualList(self, ['Location', 'Usage', 'Source'],
+        self.usages = usages or UsagesListModel([])
+        self.usage_list = VirtualList(self, self.usages.headers,
                                       self.usages)
         self.usage_list.add_selection_listener(self._usage_selected)
         self.Sizer.add_expanding(self.usage_list)
@@ -63,15 +63,18 @@ class UsagesDialog(Dialog):
 
 class UsagesDialogWithUserKwNavigation(UsagesDialog):
 
-    def __init__(self, name, highlight, controller):
+    def __init__(self, name, highlight, controller, usages=None):
         self.OnGotodefinition = lambda evt: highlight(controller, name)
-        UsagesDialog.__init__(self, name)
+        UsagesDialog.__init__(self, name, usages=usages)
 
     def _add_view_components(self):
         self.Sizer.Add(ButtonWithHandler(self, 'Go to definition'), 0, wx.ALL, 3)
 
 
-class UsagesListModel(object):
+def ResourceImportUsageDialog(name, highlight, controller):
+    return UsagesDialogWithUserKwNavigation(name, highlight, controller, usages=ResourceImportListModel([]))
+
+class _UsagesListModel(object):
 
     def __init__(self, usages):
         self._usages = usages
@@ -86,13 +89,6 @@ class UsagesListModel(object):
         images.add(provider.DATADIRIMG)
         return images
 
-    def add_usage(self, usage):
-        self._usages.append(usage)
-
-    def item_text(self, row, col):
-        u = self._usages[row]
-        return [u.location,  u.usage, u.source][col]
-
     def image(self, item):
         # TODO: better mechanism for item type recognition
         parent_type = self._usages[item].parent.__class__.__name__
@@ -101,6 +97,9 @@ class UsagesListModel(object):
                 'TestCaseFileController': 2,
                 'ResourceFileController': 2,
                 'TestDataDirectoryController': 3}.get(parent_type, -1)
+
+    def add_usage(self, usage):
+        self._usages.append(usage)
 
     def usage(self, idx):
         return self._usages[idx]
@@ -111,4 +110,29 @@ class UsagesListModel(object):
 
     @property
     def count(self):
+        return len(self._usages)
+
+
+class UsagesListModel(_UsagesListModel):
+
+    def __init__(self, usages):
+        _UsagesListModel.__init__(self, usages)
+        self.headers = ['Location', 'Usage', 'Source']
+
+    def item_text(self, row, col):
+        u = self.usage(row)
+        return [u.location,  u.usage, u.source][col]
+
+class ResourceImportListModel(_UsagesListModel):
+
+    def __init__(self, usages):
+        _UsagesListModel.__init__(self, usages)
+        self.headers = ['Name', 'Location']
+
+    def item_text(self, row, col):
+        u = self.usage(row)
+        return [u.name, u.location][col]
+
+    @property
+    def total_usages(self):
         return len(self._usages)

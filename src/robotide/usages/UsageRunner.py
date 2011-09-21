@@ -13,7 +13,7 @@
 #  limitations under the License.
 
 from robotide.usages.commands import FindUsages, FindResourceUsages
-from robotide.usages.usagesdialog import UsagesDialog, UsagesDialogWithUserKwNavigation
+from robotide.usages.usagesdialog import UsagesDialog, UsagesDialogWithUserKwNavigation, ResourceImportUsageDialog
 from threading import Thread
 import wx
 import time
@@ -72,6 +72,11 @@ class ResourceFileUsages(Usages):
 
     def __init__(self, controller, highlight):
         Usages.__init__(self, controller, highlight)
+
+    def _usages_dialog(self):
+        return ResourceImportUsageDialog(self._controller.display_name,
+                                         self._highlight,
+                                         self._controller)
 
     def _find_usages(self):
         return self._controller.execute(FindResourceUsages())
