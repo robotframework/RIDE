@@ -88,7 +88,7 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
         This collapses all test suite files, leaving test suite
         directories expanded. The net effect is you see a list
         of suites with no test cases. I *think* that makes more
-        sense than collapsing everyting, leaving only the root 
+        sense than collapsing everything, leaving only the root
         '''
         for item in self._nodes.values():
             tcuk = self.GetItemPyData(item).tcuk
@@ -204,8 +204,8 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
                 pydata = self.GetItemPyData(node)
                 tcuk = pydata.tcuk
                 # if we find a node for which there is no state information,
-                # default to unchecked, expanded
-                (checked, expanded) = state.get(tcuk, (False, True))
+                # default to unchecked, collapsed for test case files and expanded for others
+                (checked, expanded) = state.get(tcuk, (False, not isinstance(tcuk, TestCaseFile)))
                 self.CheckItem(node, checked)
                 if expanded:
                     self.Expand(node)
