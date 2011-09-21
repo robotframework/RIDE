@@ -67,6 +67,7 @@ class Usages(object):
         self._dialog_closed = True
         event.Skip()
 
+
 class ResourceFileUsages(Usages):
 
     def __init__(self, controller, highlight):
