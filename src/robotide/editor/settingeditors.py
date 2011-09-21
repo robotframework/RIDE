@@ -416,10 +416,10 @@ class ImportSettingListEditor(_AbstractListEditor):
     def navigate_to_tree(self):
         setting = self._get_setting()
         if self.has_link_target(setting):
-            self._tree.select_node_by_data(setting.get_imported_resource_file_controller())
+            self._tree.select_node_by_data(setting.get_imported_controller())
 
     def has_link_target(self, controller):
-        return controller.is_resource and controller.get_imported_resource_file_controller()
+        return controller.is_resource and controller.get_imported_controller()
 
     def OnEdit(self, event):
         setting = self._get_setting()

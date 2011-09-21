@@ -73,3 +73,8 @@ def find_from_pythonpath(name):
         if os.path.isfile(path):
             return path
     return None
+
+
+def replace_extension(path, new_extension):
+    base = os.path.splitext(path)[0]
+    return '%s.%s' % (base, new_extension.lower())

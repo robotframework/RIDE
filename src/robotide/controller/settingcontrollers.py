@@ -420,10 +420,12 @@ class VariableController(_BaseController, _SettingController):
     def __hash__(self):
         return hash(self._var)+1
 
+
 def ImportController(parent, import_):
     if import_.type == 'Resource':
         return ResourceImportController(parent, import_)
     return LibraryImportController(parent, import_)
+
 
 class _ImportController(_SettingController):
 
@@ -455,6 +457,9 @@ class _ImportController(_SettingController):
     def dirty(self):
         return self._parent.dirty
 
+    def get_imported_controller(self):
+        return None
+
     def set_value(self, name, args=[], alias=''):
         self._import.name = name
         self._import.args = utils.split_value(args)
@@ -476,19 +481,32 @@ class _ImportController(_SettingController):
 
     def publish_removed(self):
         RideImportSettingRemoved(datafile=self.datafile_controller,
-                                 name=self.name, type=self.type.lower()).publish()
+                                 name=self.name,
+                                 type=self.type.lower()).publish()
+
 
 class ResourceImportController(_ImportController):
-
     is_resource = True
     _resolved_import = False
 
-    def get_imported_resource_file_controller(self):
+    def get_imported_controller(self):
         if not self._resolved_import:
-            self._imported_resource_controller = self.parent.resource_file_controller_factory.find_with_import(self._import)
+            self._imported_resource_controller = \
+                self.parent.resource_file_controller_factory.find_with_import(self._import)
             self._resolved_import = True
         return self._imported_resource_controller
 
-class LibraryImportController(_ImportController):
+    def change_format(self, format):
+        if self._has_format():
+            self.set_value(utils.replace_extension(self.name, format),
+                           self.args, self.alias)
 
+    def _has_format(self):
+        parts = self.name.rsplit('.', 1)
+        if len(parts) == 1:
+            return False
+        return parts[-1].lower() in ['html', 'txt', 'tsv']
+
+
+class LibraryImportController(_ImportController):
     is_resource = False

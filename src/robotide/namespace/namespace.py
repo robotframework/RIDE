@@ -36,7 +36,6 @@ from robotide.namespace.embeddedargs import EmbeddedArgsHandler
 
 class Namespace(object):
 
-
     def __init__(self):
         self._init_caches()
         self._content_assist_hooks = []
@@ -53,6 +52,9 @@ class Namespace(object):
         self._context_factory = _RetrieverContextFactory()
         for listener in self._update_listeners:
             listener()
+
+    def resource_filename_changed(self, old_name, new_name):
+        self._resource_factory.resource_filename_changed(old_name, new_name)
 
     def reset_resource_and_library_cache(self):
         self._init_caches()

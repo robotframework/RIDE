@@ -43,6 +43,10 @@ class ResourceFactory(object):
         self.cache[path] = resource
         return resource
 
+    def resource_filename_changed(self, old_name, new_name):
+        self.cache[self._normalize(new_name)] = self._get_resource(old_name)
+        del self.cache[self._normalize(old_name)]
+
     def _get_python_path(self, name):
         if name not in self.python_path_cache:
             path_from_pythonpath = utils.find_from_pythonpath(name)

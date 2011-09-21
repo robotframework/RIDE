@@ -196,8 +196,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         return os.path.splitext(self.filename)[1].replace('.', '')
 
     def set_format(self, format):
-        base = os.path.splitext(self.filename)[0]
-        self.data.source = '%s.%s' % (base, format.lower())
+        self.data.source = utils.replace_extension(self.filename, format)
         self.filename = self.data.source
 
     def is_same_format(self, format):
@@ -469,7 +468,8 @@ class ResourceFileControllerFactory(object):
         resource_model = self._namespace.find_resource_with_import(import_)
         if not resource_model:
             return None
-        return self.find(resource_model)
+        res = self.find(resource_model)
+        return res
 
     def create(self, data, chief_controller=None, parent=None):
         rfc = ResourceFileController(data, chief_controller, parent)
@@ -503,6 +503,13 @@ class ResourceFileController(_FileSystemElement, _DataController):
         _, tail = os.path.split(self.data.source)
         return tail
 
+    def set_format(self, format):
+        old = self.filename
+        _DataController.set_format(self, format)
+        for resource_import in self._usages_in_imports():
+            resource_import.change_format(format)
+        self._namespace.resource_filename_changed(old, self.filename)
+
     def _settings(self):
         return [DocumentationController(self, self.data.setting_table.doc)]
 
@@ -521,8 +528,15 @@ class ResourceFileController(_FileSystemElement, _DataController):
         RideDataFileRemoved(path=self.filename, datafile=self).publish()
 
     def get_where_used(self):
+        for resource_import in self._usages_in_imports():
+            yield resource_import.datafile_controller
+
+    def _usages_in_imports(self):
+        for imp in self._all_imports():
+            if imp.get_imported_controller() is self:
+                yield imp
+
+    def _all_imports(self):
         for df in self.datafiles:
-            for import_ in df.imports:
-                if import_.is_resource and \
-                    import_.get_imported_resource_file_controller() is self:
-                        yield df
+            for imp in df.imports:
+                yield imp
