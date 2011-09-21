@@ -302,17 +302,23 @@ class _FileEditor(_RobotTableEditor):
         _RobotTableEditor.close(self)
 
 
-class ResourceFileEditor(_FileEditor):
+class WithFindUsages(object):
+
+    def _usage_button_header(self, header, usages_class):
+        def on_show_usages(event):
+            usages_class(self.controller, self._tree.highlight).show()
+        sizer = HorizontalSizer()
+        sizer.add_expanding(header)
+        sizer.add(ButtonWithHandler(self, 'Find Usages', on_show_usages))
+        return sizer
+
+
+class ResourceFileEditor(_FileEditor, WithFindUsages):
     _settings_open_id = 'resource file settings open'
 
     def _create_header(self, text):
-        sizer = HorizontalSizer()
-        sizer.add_expanding(_FileEditor._create_header(self, text))
-        sizer.add(ButtonWithHandler(self, 'Find Usages', self._on_show_usages))
-        return sizer
+        return self._usage_button_header(_FileEditor._create_header(self, text), ResourceFileUsages)
 
-    def _on_show_usages(self, event):
-        ResourceFileUsages(self.controller, self._tree.highlight).show()
 
 class TestCaseFileEditor(_FileEditor):
     _settings_open_id = 'test case file settings open'

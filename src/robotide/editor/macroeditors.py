@@ -14,7 +14,7 @@
 import wx
 from robotide.usages.UsageRunner import Usages
 from robotide.editor.kweditor import KeywordEditor
-from robotide.editor.editors import _RobotTableEditor
+from robotide.editor.editors import _RobotTableEditor, WithFindUsages
 from robotide.publish.messages import RideItemNameChanged
 from robotide.widgets.button import ButtonWithHandler
 from robotide.widgets.sizers import HorizontalSizer
@@ -104,14 +104,8 @@ class UserKeywordHeader(HorizontalSizer):
         self.add_expanding(self._header)
 
 
-class UserKeywordEditor(TestCaseEditor):
+class UserKeywordEditor(TestCaseEditor, WithFindUsages):
     _settings_open_id = 'user keyword settings open'
 
     def _create_header(self, name):
-        sizer = UserKeywordHeader()
-        sizer.add_header(_RobotTableEditor._create_header(self, name))
-        sizer.add(ButtonWithHandler(self, 'Find Usages', self._on_show_usages))
-        return sizer
-
-    def _on_show_usages(self, event):
-        Usages(self.controller, self._tree.highlight).show()
+        return self._usage_button_header(_RobotTableEditor._create_header(self, name), Usages)
