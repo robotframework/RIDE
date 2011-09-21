@@ -252,6 +252,7 @@ class DirectoryController(_FileSystemElement, _BaseController):
         self._chief_controller = chief_controller
         self.children = []
         self.data = None
+        self.imports = ()
         self.datafile = None
         self.dirty = False
         self._dir_controllers = {}
@@ -521,8 +522,6 @@ class ResourceFileController(_FileSystemElement, _DataController):
 
     def get_where_used(self):
         for df in self.datafiles:
-            if not hasattr(df, 'imports'):
-                    continue
             for import_ in df.imports:
                 if import_.is_resource and \
                     import_.get_imported_resource_file_controller() is self:
