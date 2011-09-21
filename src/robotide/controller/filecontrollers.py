@@ -475,6 +475,7 @@ class ResourceFileControllerFactory(object):
     def remove(self, controller):
         self._resources.remove(controller)
 
+
 class ResourceFileController(_FileSystemElement, _DataController):
 
     def __init__(self, data, chief_controller=None, parent=None):
@@ -516,4 +517,10 @@ class ResourceFileController(_FileSystemElement, _DataController):
         RideDataFileRemoved(path=self.filename, datafile=self).publish()
 
     def get_where_used(self):
-        return set()
+        for df in self.datafiles:
+            if not hasattr(df, 'imports'):
+                    continue
+            for import_ in df.imports:
+                if import_.is_resource and \
+                    import_.get_imported_resource_file_controller() is self:
+                        yield df

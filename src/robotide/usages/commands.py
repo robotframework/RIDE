@@ -33,16 +33,13 @@ class FindUsages(FindOccurrences):
         if prev:
             yield prev
 
+
 class FindResourceUsages(_Command):
 
     def execute(self, context):
-        for df in context.datafiles:
-            if not hasattr(df, 'imports'):
-                continue
-            for import_ in df.imports:
-                if import_.is_resource and \
-                    context == import_.get_imported_resource_file_controller():
-                    yield ResourceUsage(df)
+        for df in context.get_where_used():
+            yield ResourceUsage(df)
+
 
 class ResourceUsage(object):
 
