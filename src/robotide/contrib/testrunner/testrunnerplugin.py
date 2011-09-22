@@ -326,13 +326,13 @@ class TestRunnerPlugin(Plugin):
 
         '''
         item = self._tree.GetSelection()
-        tcuk = self._tree.GetItemPyData(item).tcuk
+        data = self._tree.GetItemPyData(item).data
         # the select_user_keyword_node works for keywords and
         # test cases, but it doesn't always work for test suites
-        if isinstance(tcuk, TestCase):
+        if isinstance(data, TestCase):
             try:
-                self._frame.tree.select_user_keyword_node(tcuk)
-                tab = self._application._find_edit_tab_for_tcuk(tcuk)
+                self._frame.tree.select_user_keyword_node(data)
+                tab = self._application._find_edit_tab_for_tcuk(data)
                 if tab is not None:
                     self._frame.notebook.show_tab(tab)
             except Exception, e:

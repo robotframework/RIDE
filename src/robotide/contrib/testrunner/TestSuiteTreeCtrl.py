@@ -19,11 +19,11 @@ import os
 '''TestSuiteTreeCtrl
 
 This is a tree control specifically for working with Robot test
-suites.  
+suites.
 
 Each test in the tree will have a checkbox next to it, as well as
 an icon. The icon can be changed to different colors depending on
-state ("default", "run", "pass", "fail"). 
+state ("default", "run", "pass", "fail").
 
 '''
 
@@ -57,12 +57,12 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
     def __init__(self, parent, id=wx.ID_ANY, size=(-1,-1)):
         try:
             # older versions of customtreectrl don't support agwStyle
-            customtreectrl.CustomTreeCtrl.__init__(self, parent, id=id, 
-                                                   size=size, 
+            customtreectrl.CustomTreeCtrl.__init__(self, parent, id=id,
+                                                   size=size,
                                                    style=wx.SIMPLE_BORDER,
                                                    agwStyle=self.style)
         except TypeError:
-            customtreectrl.CustomTreeCtrl.__init__(self, parent, id=wx.ID_ANY, 
+            customtreectrl.CustomTreeCtrl.__init__(self, parent, id=wx.ID_ANY,
                                                    size=size,
                                                    style=self.style)
 
@@ -91,15 +91,15 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
         sense than collapsing everything, leaving only the root
         '''
         for item in self._nodes.values():
-            tcuk = self.GetItemPyData(item).tcuk
-            if isinstance(tcuk, TestCaseFile):
+            data = self.GetItemPyData(item).data
+            if isinstance(data, TestCaseFile):
                 self.Collapse(item)
 
     def DeselectAll(self):
         '''De-select all items with checkboxes'''
         for item in self._nodes.values():
             self.CheckItem(item, False)
-            
+
     def DeselectChildren(self):
         '''De-select all child items with checkboxes'''
         item = self.GetSelection()
@@ -129,7 +129,7 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
         result = []
         for item in self._nodes.values():
             pydata = self.GetItemPyData(item)
-            if isinstance(pydata.tcuk, TestCase) and not self.IsItemChecked(item):
+            if isinstance(pydata.data, TestCase) and not self.IsItemChecked(item):
                 result.append(pydata.name)
         return result
 
@@ -202,10 +202,10 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
         def create_func(node):
             def func():
                 pydata = self.GetItemPyData(node)
-                tcuk = pydata.tcuk
+                data = pydata.data
                 # if we find a node for which there is no state information,
                 # default to unchecked, collapsed for test case files and expanded for others
-                (checked, expanded) = state.get(tcuk, (False, not isinstance(tcuk, TestCaseFile)))
+                (checked, expanded) = state.get(data, (False, not isinstance(data, TestCaseFile)))
                 self.CheckItem(node, checked)
                 if expanded:
                     self.Expand(node)
@@ -229,10 +229,10 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
         '''
         state = {}
         for node in self._nodes.values():
-            tcuk = self.GetItemPyData(node).tcuk
+            data = self.GetItemPyData(node).data
             checked = self.IsItemChecked(node)
             expanded = self.IsExpanded(node)
-            state[tcuk] = (checked, expanded)
+            state[data] = (checked, expanded)
         return state
 
     def SetState(self, testId, state):
@@ -271,12 +271,12 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
             def add_test():
                 self._addTest(suite_node, test)
             return add_test
-        def create_add_subsuites(children, call_after):
+        def create_add_subsuites(children):
             def add_suites():
                 self._add_subsuites(suite_node, children, expand_and_call_after)
-            return add_suites
+            return add_suites if len(children) > 0 else call_after
         self._call_in_sequence([create_add_test(test) for test in suite.testcase_table]+
-                               [create_add_subsuites(suite.children, expand_and_call_after)])
+                               [create_add_subsuites(suite.children)])
 
     def _add_suite_node(self, parent_node, suite):
         suite_node = self._suite_node(parent_node, suite.name)
@@ -319,8 +319,8 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
             # than a test suite. Go figure. So, only keep track of the
             # names of suites and test cases and not the intermediate
             # objects
-            if (isinstance(obj, TestDataDirectory) or 
-                isinstance(obj, TestCaseFile) or 
+            if (isinstance(obj, TestDataDirectory) or
+                isinstance(obj, TestCaseFile) or
                 isinstance(obj, TestCase)):
                 longname.append(obj.name)
             obj = obj.parent
@@ -334,13 +334,13 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
 
 
 class TreeNode:
-    def __init__(self, longname, tcuk):
+    def __init__(self, longname, data):
         self.longname= longname
-        self.tcuk = tcuk
+        self.data = data
 
     @property
     def name(self):
-        return self.tcuk.name
+        return self.data.name
 
 GreenBullet = PyEmbeddedImage(
     "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAM1J"
