@@ -75,7 +75,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._images = TreeImageList()
         self.SetImageList(self._images)
         self._history = _History()
-        self._label_editor = LabelEditor(self)
+        self._label_editor = TreeLabelEditListener(self)
         self._bind_keys()
         self._subscribe_to_messages()
         self._popup_creator = PopupCreator()
@@ -662,6 +662,8 @@ class _ActionHandler(wx.Window):
     def show_popup(self):
         self._popup_creator.show(self, PopupMenuItems(self, self._actions),
                                  self.controller)
+    def begin_label_edit(self):
+        pass
 
     def OnNewSuite(self, event):
         pass
@@ -684,16 +686,38 @@ class _ActionHandler(wx.Window):
     def OnCopy(self, event):
         pass
 
-    def OnRename(self, event):
-        pass
-
     def OnFindUsages(self, event):
         pass
 
 
+class _CanBeRenamed(object):
+
+    def OnRename(self, event):
+        self._tree.EditLabel(self._node)
+
+    def begin_label_edit(self):
+        self._tree.EditLabel(self._tree.Selection)
+
+    def end_label_edit(self, event):
+        if event.IsEditCancelled() or \
+                not self._is_valid_rename(event.Label):
+            event.Veto()
+        else:
+            self.rename(event.Label)
+
+    def _is_valid_rename(self, label):
+        validation = self.controller.validate_name(label)
+        if validation.error_message:
+            self._show_validation_error(validation.error_message)
+            return False
+        return True
+
+    def _show_validation_error(self, err_msg):
+        wx.MessageBox(err_msg, 'Validation Error', style=wx.ICON_ERROR)
+
+
 class DirectoryHandler(_ActionHandler):
     is_draggable = False
-    is_renameable = False
     is_test_suite = False
     can_be_rendered = False
     _actions = [_ActionHandler._label_new_resource]
@@ -707,7 +731,6 @@ class TestDataHandler(_ActionHandler):
                                           isinstance(dragged, VariableHandler))
 
     is_draggable = False
-    is_renameable = False
     is_test_suite = True
     _actions = [_ActionHandler._label_add_suite,
                 _ActionHandler._label_new_user_keyword,
@@ -813,10 +836,9 @@ class TestCaseFileHandler(TestDataHandler):
         dlg.Destroy()
 
 
-class _TestOrUserKeywordHandler(_ActionHandler):
+class _TestOrUserKeywordHandler(_CanBeRenamed, _ActionHandler):
     accepts_drag = lambda *args: False
     is_draggable = True
-    is_renameable = True
     _actions = [_ActionHandler._label_copy_macro, 'Move Up\tCtrl-Up', 'Move Down\tCtrl-Down',
                 _ActionHandler._label_rename, '---', 'Delete']
 
@@ -839,9 +861,6 @@ class _TestOrUserKeywordHandler(_ActionHandler):
     def OnMoveDown(self, event):
         if self.controller.move_down():
             self._tree.move_down(self._node)
-
-    def OnRename(self, event):
-        self._tree.EditLabel(self._node)
 
     def OnDelete(self, event):
         self.controller.execute(RemoveMacro(self.controller))
@@ -876,11 +895,10 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
         Usages(self.controller, self._tree.highlight).show()
 
 
-class VariableHandler(_ActionHandler):
+class VariableHandler(_CanBeRenamed, _ActionHandler):
     accepts_drag = lambda *args: False
     is_draggable = True
     is_variable = True
-    is_renameable = True
     OnMoveUp = OnMoveDown = lambda *args: None
     _actions = [_ActionHandler._label_rename, 'Delete']
 
@@ -890,15 +908,12 @@ class VariableHandler(_ActionHandler):
     def remove(self):
         self.controller.delete()
 
-    def OnRename(self, event):
-        self._tree.EditLabel(self._node)
-
     def rename(self, new_name):
         self.controller.execute(UpdateVariableName(new_name))
 
 
 class ResourceRootHandler(_ActionHandler):
-    can_be_rendered = is_renameable = is_draggable = is_user_keyword = is_test_suite = False
+    can_be_rendered = is_draggable = is_user_keyword = is_test_suite = False
     rename = lambda self, new_name: False
     accepts_drag = lambda self, dragged: False
     _actions = [_ActionHandler._label_new_resource]
@@ -911,7 +926,7 @@ class ResourceRootHandler(_ActionHandler):
         NewExternalResourceDialog(self.controller).execute()
 
 
-class LabelEditor(object):
+class TreeLabelEditListener(object):
 
     def __init__(self, tree):
         self._tree = tree
@@ -926,24 +941,12 @@ class LabelEditor(object):
 
     def OnLabelEdit(self, event):
         handler = self._get_handler()
-        if handler and handler.is_renameable:
-            self._tree.EditLabel(self._tree.Selection)
+        if handler:
+            handler.begin_label_edit()
 
     def OnLabelEdited(self, event):
         self._editing_label = False
-        handler = self._get_handler(event.Item)
-        if event.IsEditCancelled() or \
-                not self._is_valid_rename(handler.controller, event.Label):
-            event.Veto()
-        else:
-            handler.rename(event.Label)
-
-    def _is_valid_rename(self, controller, label):
-        validation = controller.validate_name(label)
-        if validation.error_message:
-            self._show_validation_error(validation.error_message)
-            return False
-        return True
+        self._get_handler(event.Item).end_label_edit(event)
 
     def OnLeftDown(self, event):
         #See http://code.google.com/p/robotframework-ride/issues/detail?id=756
@@ -955,9 +958,6 @@ class LabelEditor(object):
 
     def _get_handler(self, item=None):
         return self._tree._get_handler(item)
-
-    def _show_validation_error(self, err_msg):
-        wx.MessageBox(err_msg, 'Validation Error', style=wx.ICON_ERROR)
 
 
 class _History(object):
