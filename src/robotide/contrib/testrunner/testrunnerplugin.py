@@ -316,28 +316,11 @@ class TestRunnerPlugin(Plugin):
         self.SetProfile(self.profile)
 
     def OnDoubleClick(self, event):
-        '''Handle double-click events on the tree
-
-        Ideally this would always open the object in the editor
-        but it uses a method that doesn't quite work. It works
-        on test cases by accident, and test suites that are two
-        levels deep, but it won't work on suites one level deep.
-        *sigh*
-
-        '''
-        item = self._tree.GetSelection()
-        data = self._tree.GetItemPyData(item).data
-        # the select_user_keyword_node works for keywords and
-        # test cases, but it doesn't always work for test suites
+        '''Handle double-click events on the leaf nodes'''
+        data = self._tree.GetItemPyData(self._tree.GetSelection()).data
+        # the select_user_keyword_node works also for test cases
         if isinstance(data, TestCase):
-            try:
-                self._frame.tree.select_user_keyword_node(data)
-                tab = self._application._find_edit_tab_for_tcuk(data)
-                if tab is not None:
-                    self._frame.notebook.show_tab(tab)
-            except Exception, e:
-                # <shrug> oh well.
-                pass
+            self.tree.select_user_keyword_node(data)
         event.Skip()
 
     def OnTreePaint(self, event):
