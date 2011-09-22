@@ -209,7 +209,8 @@ class ChiefController(_BaseController, WithNamespace):
         self.serialize_controller(controller)
         if old_path:
             self._remove_file(old_path)
-            RideChangeFormat(oldpath=old_path, newpath=controller.source).publish()
+            RideChangeFormat(oldpath=old_path, newpath=controller.source,
+                             datafile=controller).publish()
 
     def _remove_file(self, path):
         if path and os.path.isfile(path):

@@ -25,7 +25,7 @@ from robotide.action import ActionInfoCollection
 from robotide.editor.editordialogs import (TestCaseNameDialog,
     UserKeywordNameDialog, ScalarVariableDialog, ListVariableDialog,
     CopyUserKeywordDialog)
-from robotide.publish import RideTreeSelection, PUBLISHER
+from robotide.publish import RideTreeSelection, PUBLISHER, RideChangeFormat
 from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
 from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideTestCaseAdded, RideUserKeywordRemoved, RideTestCaseRemoved, RideDataFileRemoved,\
@@ -117,7 +117,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             (self._data_undirty, RideDataDirtyCleared),
             (self._variable_moved_up, RideVariableMovedUp),
             (self._variable_moved_down, RideVariableMovedDown),
-            (self._variable_updated, RideVariableUpdated)
+            (self._variable_updated, RideVariableUpdated),
+            (self._filename_changed, RideChangeFormat)
         ]
         for listener, topic in subscriptions:
             PUBLISHER.subscribe(listener, topic)
@@ -310,6 +311,10 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._datafile_nodes.remove(dfnode)
         self.DeleteChildren(dfnode)
         self.Delete(dfnode)
+
+    def _filename_changed(self, message):
+        df = message.datafile
+        self.SetItemText(self._find_node_by_controller(df), df.display_name)
 
     def add_keyword_controller(self, controller):
         parent = self._get_datafile_node(self.get_selected_datafile())
