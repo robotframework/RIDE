@@ -16,6 +16,7 @@ import wx
 
 from robotide import context
 from robotide.editor.settingeditors import DocumentationEditor, SettingEditor, TagsEditor, ImportSettingListEditor, VariablesListEditor, MetadataListEditor
+from robotide.publish import RideFileNameChanged
 from robotide.ui.components import StaticText
 from robotide.usages.UsageRunner import ResourceFileUsages
 from robotide.utils import RideHtmlWindow
@@ -127,9 +128,9 @@ class _RobotTableEditor(EditorPanel):
         self.Destroy()
 
     def _create_header(self, text):
-        header = StaticText(self, -1, text)
-        header.SetFont(wx.Font(12, wx.SWISS, wx.NORMAL, wx.BOLD))
-        return header
+        self._title_display = StaticText(self, -1, text)
+        self._title_display.SetFont(wx.Font(12, wx.SWISS, wx.NORMAL, wx.BOLD))
+        return self._title_display
 
     def _add_settings(self):
         self._settings = self._create_settings()
@@ -249,14 +250,20 @@ class Settings(wx.CollapsiblePane):
             self.Expand()
             self.Parent.GetSizer().Layout()
 
+
 class _FileEditor(_RobotTableEditor):
 
     def __init__(self, *args):
         _RobotTableEditor.__init__(self, *args)
         self.plugin.subscribe(self._update_source, RideChangeFormat)
+        self.plugin.subscribe(self._update_source_and_name, RideFileNameChanged)
 
-    def _update_source(self, message):
+    def _update_source(self, message=None):
         self._source.SetValue(self.controller.data.source)
+
+    def _update_source_and_name(self, message):
+        self._title_display.SetLabel(self.controller.name)
+        self._update_source()
 
     def tree_item_selected(self, item):
         if isinstance(item, VariableController):
@@ -296,6 +303,7 @@ class _FileEditor(_RobotTableEditor):
 
     def close(self):
         self.plugin.unsubscribe(self._update_source, RideChangeFormat)
+        self.plugin.unsubscribe(self._update_source_and_name, RideFileNameChanged)
         for editor in self._editors:
             editor.close()
         self._editors = []

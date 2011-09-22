@@ -19,7 +19,7 @@ from robotide.controller.macrocontrollers import KeywordNameController, \
 from robotide.controller.settingcontrollers import _SettingController
 import time
 import os
-from robotide.publish.messages import RideSelectResource
+from robotide.publish.messages import RideSelectResource, RideFileNameChanged
 
 
 class Occurrence(object):
@@ -294,6 +294,16 @@ class RenameTest(_ReversibleCommand):
 
     def _get_undo_command(self):
         return self
+
+
+class RenameFile(_Command):
+
+    def __init__(self, new_basename):
+        self._new_basename = new_basename
+
+    def execute(self, context):
+        context.set_basename(self._new_basename)
+        RideFileNameChanged(datafile=context).publish()
 
 
 class UpdateVariable(_Command):

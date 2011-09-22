@@ -25,7 +25,7 @@ from robotide.action import ActionInfoCollection
 from robotide.editor.editordialogs import (TestCaseNameDialog,
     UserKeywordNameDialog, ScalarVariableDialog, ListVariableDialog,
     CopyUserKeywordDialog)
-from robotide.publish import RideTreeSelection, PUBLISHER, RideChangeFormat
+from robotide.publish import RideTreeSelection, PUBLISHER, RideChangeFormat, RideFileNameChanged
 from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
 from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideTestCaseAdded, RideUserKeywordRemoved, RideTestCaseRemoved, RideDataFileRemoved,\
@@ -34,7 +34,7 @@ from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideOpenResource, RideSuiteAdded, RideSelectResource
 from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
     AddKeyword, AddTestCase, RenameTest, CopyMacroAs, MoveTo,\
-    AddVariable, UpdateVariableName
+    AddVariable, UpdateVariableName, RenameFile
 from robotide.widgets import PopupCreator, PopupMenuItems
 from robotide.ui.filedialogs import NewExternalResourceDialog, NewResourceDialog
 from robotide.usages.UsageRunner import Usages, ResourceFileUsages
@@ -118,7 +118,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             (self._variable_moved_up, RideVariableMovedUp),
             (self._variable_moved_down, RideVariableMovedDown),
             (self._variable_updated, RideVariableUpdated),
-            (self._filename_changed, RideChangeFormat)
+            (self._filename_changed, RideChangeFormat),
+            (self._filename_changed, RideFileNameChanged)
         ]
         for listener, topic in subscriptions:
             PUBLISHER.subscribe(listener, topic)
@@ -693,10 +694,10 @@ class _ActionHandler(wx.Window):
 class _CanBeRenamed(object):
 
     def OnRename(self, event):
-        self._tree.EditLabel(self._node)
+        self.begin_label_edit()
 
     def begin_label_edit(self):
-        self._tree.EditLabel(self._tree.Selection)
+        self._tree.EditLabel(self._node)
 
     def end_label_edit(self, event):
         if event.IsEditCancelled() or \
@@ -821,12 +822,13 @@ class ResourceFileHandler(TestDataHandler):
         ResourceFileUsages(self.controller, self._tree.highlight).show()
 
 
-class TestCaseFileHandler(TestDataHandler):
+class TestCaseFileHandler(_CanBeRenamed, TestDataHandler):
     accepts_drag = lambda *args: True
     _actions = [_ActionHandler._label_new_test_case,
                 _ActionHandler._label_new_user_keyword,
                 _ActionHandler._label_new_scalar,
                 _ActionHandler._label_new_list_variable, '---',
+                _ActionHandler._label_rename,
                 _ActionHandler._label_change_format]
 
     def OnNewTestCase(self, event):
@@ -834,6 +836,19 @@ class TestCaseFileHandler(TestDataHandler):
         if dlg.ShowModal() == wx.ID_OK:
             self.controller.execute(AddTestCase(dlg.get_name()))
         dlg.Destroy()
+
+    def begin_label_edit(self):
+        self._tree.SetItemText(self._node, self.controller.basename)
+        _CanBeRenamed.begin_label_edit(self)
+
+    def end_label_edit(self, event):
+        if event.IsEditCancelled():
+            self._tree.SetItemText(self._node, self.controller.name)
+        else:
+            wx.CallAfter(self.rename, event.Label)
+
+    def rename(self, new_basename):
+        self.controller.execute(RenameFile(new_basename))
 
 
 class _TestOrUserKeywordHandler(_CanBeRenamed, _ActionHandler):

@@ -174,6 +174,10 @@ class RideChangeFormat(RideMessage):
     """Sent when user has changed the format of a file."""
     data = ['oldpath', 'newpath', 'datafile']
 
+class RideFileNameChanged(RideMessage):
+    """Sent after test case or resource file is renamed"""
+    data = ['datafile']
+
 
 class RideNewProject(RideMessage):
     """Sent when a new project has been created."""

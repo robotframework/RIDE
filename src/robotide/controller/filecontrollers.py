@@ -54,11 +54,18 @@ class _FileSystemElement(object):
     def refresh_stat(self):
         self._stat = self._get_stat(self.filename)
 
+    def remove_from_filesystem(self):
+        os.remove(self.filename)
+
     def has_been_modified_on_disk(self):
         return self._get_stat(self.filename) != self._stat
 
     def has_been_removed_from_disk(self):
         return self._stat != (0, 0) and not os.path.isfile(self.filename)
+
+    @property
+    def basename(self):
+        return os.path.splitext(os.path.basename(self.filename))[0]
 
     @property
     def source(self):
@@ -96,6 +103,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
     @property
     def settings(self):
         return self._settings()
+
 
     def _settings(self):
         ss = self.data.setting_table
@@ -203,6 +211,12 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         if format and self.has_format():
             return format.lower() == self.get_format().lower()
         return False
+
+    def set_basename(self, basename):
+        self.remove_from_filesystem()
+        self.data.source = os.path.join(self.directory, '%s.%s' % (basename, self.get_format()))
+        self.filename = self.data.source
+        self.save()
 
     def save_with_new_format(self, format):
         self._chief_controller.change_format(self, format)
