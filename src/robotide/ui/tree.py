@@ -809,16 +809,30 @@ class TestDataDirectoryHandler(TestDataHandler):
         NewResourceDialog(self.controller).execute()
 
 
-class ResourceFileHandler(TestDataHandler):
+class ResourceFileHandler(_CanBeRenamed, TestDataHandler):
     is_test_suite = False
     _actions = [_ActionHandler._label_new_user_keyword,
                 _ActionHandler._label_new_scalar,
                 _ActionHandler._label_new_list_variable, '---',
+                _ActionHandler._label_rename,
                 _ActionHandler._label_change_format,
                 _ActionHandler._label_find_usages]
 
     def OnFindUsages(self, event):
         ResourceFileUsages(self.controller, self._tree.highlight).show()
+
+
+    def begin_label_edit(self):
+        self._set_node_label(self.controller.basename)
+        _CanBeRenamed.begin_label_edit(self)
+
+    def end_label_edit(self, event):
+        if not event.IsEditCancelled():
+            self.controller.execute(RenameFile(event.Label))
+        wx.CallAfter(self._set_node_label, self.controller.display_name)
+
+    def _set_node_label(self, label):
+        self._tree.SetItemText(self._node, label)
 
 
 class TestCaseFileHandler(_CanBeRenamed, TestDataHandler):

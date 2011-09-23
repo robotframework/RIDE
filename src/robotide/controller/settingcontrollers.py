@@ -496,6 +496,9 @@ class ResourceImportController(_ImportController):
             self._resolved_import = True
         return self._imported_resource_controller
 
+    def unresolve(self):
+        self._resolved_import = False
+
     def change_format(self, format):
         if self._has_format():
             self.set_value(utils.replace_extension(self.name, format),
