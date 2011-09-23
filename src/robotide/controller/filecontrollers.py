@@ -525,6 +525,11 @@ class ResourceFileController(_FileSystemElement, _DataController):
         self._modify_file_name(lambda: _DataController.set_basename(self, basename),
                                lambda imp: imp.unresolve())
 
+    def set_basename_and_modify_imports(self, basename):
+        old = self.filename
+        self._modify_file_name(lambda: _DataController.set_basename(self, basename),
+                               lambda imp: imp.change_name(os.path.basename(old), os.path.basename(self.filename)))
+
     def _modify_file_name(self, modification, notification):
         old = self.filename
         modification()

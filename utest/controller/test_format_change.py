@@ -5,7 +5,7 @@ from robot.parsing.model import TestCaseFile, ResourceFile
 from robotide.controller import ResourceFileController
 
 from robotide.controller.chiefcontroller import ChiefController
-from robotide.controller.commands import RenameFile
+from robotide.controller.commands import RenameFile, RenameResourceFile
 from robotide.controller.filecontrollers import TestCaseFileController
 from robotide.namespace.namespace import Namespace
 from robot.utils.asserts import assert_not_none, assert_true, assert_false, assert_equals, assert_none
@@ -108,13 +108,39 @@ class TestResourceFileRename(_UnitTestsWithWorkingResourceImports):
     def test_import_is_invalidated_when_resource_file_name_changes(self):
         self._create_data('resource.txt', '${path}')
         self._verify_import_reference_exists()
-        self._rename_resource('resu')
+        self._rename_resource('resu', False)
         self._verify_import_reference_is_not_resolved()
+        assert_equals(self.import_setting.name, '${path}')
 
-    def _rename_resource(self, new_basename):
+    def test_import_is_modified_when_resource_file_name_changes_and_habaa(self):
+        self._create_data('fooo.txt', 'fooo.txt')
+        self._verify_import_reference_exists()
+        self._rename_resource('gooo', True)
+        self._verify_import_reference_exists()
+        assert_equals(self.import_setting.name, 'gooo.txt')
+
+    def test_cancel_execute_when_modify_imports_is_canceled(self):
+        self._create_data('fooo.txt', 'fooo.txt')
+        self._verify_import_reference_exists()
+        self._execute_rename_resource('gooo', None)
+        assert_false(self.res_controller.remove_from_filesystem.called)
+        assert_false(self.res_controller.save.called)
+
+
+    def test_import_is_invalidated_when_resource_file_name_changes_and_hubaa(self):
+        self._create_data('resource.txt', '${path}')
+        self._verify_import_reference_exists()
+        self._rename_resource('resu', True)
+        self._verify_import_reference_is_not_resolved()
+        assert_equals(self.import_setting.name, '${path}')
+
+    def _execute_rename_resource(self, new_basename, boolean_variable):
         self.res_controller.remove_from_filesystem = Mock()
         self.res_controller.save = Mock()
-        self.res_controller.execute(RenameFile(new_basename))
+        self.res_controller.execute(RenameResourceFile(new_basename, lambda : boolean_variable))
+
+    def _rename_resource(self, new_basename, boolean_variable):
+        self._execute_rename_resource(new_basename, boolean_variable)
         assert_true(self.res_controller.remove_from_filesystem.called)
         assert_true(self.res_controller.save.called)
 

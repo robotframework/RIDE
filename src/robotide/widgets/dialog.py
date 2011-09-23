@@ -24,10 +24,21 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, title=title, size=size, style=style)
         self.CenterOnParent()
 
+    def _create_buttons(self, sizer):
+        buttons = self.CreateStdDialogButtonSizer(wx.OK|wx.CANCEL)
+        sizer.Add(buttons, flag=wx.ALIGN_CENTER|wx.ALL, border=5)
+
+    def _create_horizontal_line(self, sizer):
+        line = wx.StaticLine(self, size=(20,-1), style=wx.LI_HORIZONTAL)
+        sizer.Add(line, flag=wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.RIGHT|wx.TOP,
+                  border=5)
+
     def execute(self):
+        retval = None
         if self.ShowModal() == wx.ID_OK:
-            self._execute()
+            retval = self._execute()
         self.Destroy()
+        return retval
 
     def _execute(self):
         raise NotImplementedError(self.__class__.__name__)

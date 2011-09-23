@@ -308,6 +308,24 @@ class RenameFile(_Command):
             RideFileNameChanged(datafile=context).publish()
 
 
+class RenameResourceFile(_Command):
+
+    def __init__(self, new_basename, get_should_modify_imports):
+        self._new_basename = new_basename
+        self._should_modify_imports = get_should_modify_imports
+
+    def execute(self, context):
+        if BaseNameValidator(self._new_basename).validate(context):
+            modify_imports = self._should_modify_imports()
+            if modify_imports is None:
+                return
+            if modify_imports:
+                context.set_basename_and_modify_imports(self._new_basename)
+            else:
+                context.set_basename(self._new_basename)
+            RideFileNameChanged(datafile=context).publish()
+
+
 class UpdateVariable(_Command):
 
     def __init__(self, new_name, new_value, new_comment):

@@ -460,9 +460,9 @@ class _ImportController(_SettingController):
     def get_imported_controller(self):
         return None
 
-    def set_value(self, name, args=[], alias=''):
+    def set_value(self, name, args=None, alias=''):
         self._import.name = name
-        self._import.args = utils.split_value(args)
+        self._import.args = utils.split_value(args or [])
         self._import.alias = alias
         self._parent.mark_dirty()
         self.publish_edited()
@@ -499,10 +499,13 @@ class ResourceImportController(_ImportController):
     def unresolve(self):
         self._resolved_import = False
 
+    def change_name(self, oldname, newname):
+        if self.name.endswith(oldname):
+            self.set_value(self.name[:-len(oldname)] + newname)
+
     def change_format(self, format):
         if self._has_format():
-            self.set_value(utils.replace_extension(self.name, format),
-                           self.args, self.alias)
+            self.set_value(utils.replace_extension(self.name, format))
 
     def _has_format(self):
         parts = self.name.rsplit('.', 1)

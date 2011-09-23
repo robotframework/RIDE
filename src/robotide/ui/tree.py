@@ -34,7 +34,7 @@ from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideOpenResource, RideSuiteAdded, RideSelectResource
 from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
     AddKeyword, AddTestCase, RenameTest, CopyMacroAs, MoveTo,\
-    AddVariable, UpdateVariableName, RenameFile
+    AddVariable, UpdateVariableName, RenameFile, RenameResourceFile
 from robotide.widgets import PopupCreator, PopupMenuItems
 from robotide.ui.filedialogs import NewExternalResourceDialog, NewResourceDialog
 from robotide.usages.UsageRunner import Usages, ResourceFileUsages
@@ -42,6 +42,8 @@ from robotide.usages.UsageRunner import Usages, ResourceFileUsages
 from progress import RenameProgressObserver
 from filedialogs import AddSuiteDialog, ChangeFormatDialog
 from images import TreeImageList
+from robotide.widgets.dialog import Dialog
+from robotide.widgets.sizers import HorizontalSizer, VerticalSizer
 
 try:
     import treemixin
@@ -809,6 +811,23 @@ class TestDataDirectoryHandler(TestDataHandler):
         NewResourceDialog(self.controller).execute()
 
 
+class ResourceRenameDialog(Dialog):
+
+    def __init__(self):
+        Dialog.__init__(self, 'Rename resource')
+        sizer = VerticalSizer()
+        self._checkbox = wx.CheckBox(self, label='Rename also resource imports')
+        self._checkbox.SetValue(True)
+        sizer.add_with_padding(self._checkbox, 5)
+        self._create_horizontal_line(sizer)
+        self._create_buttons(sizer)
+        sizer.Fit(self)
+        self.SetSizer(sizer)
+
+    def _execute(self):
+        return self._checkbox.IsChecked()
+
+
 class ResourceFileHandler(_CanBeRenamed, TestDataHandler):
     is_test_suite = False
     _actions = [_ActionHandler._label_new_user_keyword,
@@ -828,8 +847,11 @@ class ResourceFileHandler(_CanBeRenamed, TestDataHandler):
 
     def end_label_edit(self, event):
         if not event.IsEditCancelled():
-            self.controller.execute(RenameFile(event.Label))
+            self.controller.execute(RenameResourceFile(event.Label, self._check_should_rename_static_imports))
         wx.CallAfter(self._set_node_label, self.controller.display_name)
+
+    def _check_should_rename_static_imports(self):
+        return ResourceRenameDialog().execute()
 
     def _set_node_label(self, label):
         self._tree.SetItemText(self._node, label)
