@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import os.path
+import os
 import sys
 
 from robotide.version import VERSION
@@ -41,7 +41,7 @@ class RideSettings(Settings):
 
 SETTINGS = RideSettings()
 for path in SETTINGS['pythonpath']:
-    sys.path.insert(0, path)
+    sys.path.insert(0, path.replace('/', os.sep))
 
 LOG = Logger()
 ROBOT_LOGGER.disable_automatic_console_logger()
