@@ -530,6 +530,12 @@ class ResourceFileController(_FileSystemElement, _DataController):
         self._modify_file_name(lambda: _DataController.set_basename(self, basename),
                                lambda imp: imp.change_name(os.path.basename(old), os.path.basename(self.filename)))
 
+    def remove_static_imports_to_this(self):
+        name = os.path.basename(self.filename)
+        for resource_import in self._usages_in_imports():
+            if resource_import.name.endswith(name):
+                resource_import.remove()
+
     def _modify_file_name(self, modification, notification):
         old = self.filename
         modification()
