@@ -119,7 +119,6 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             (self._variable_moved_down, RideVariableMovedDown),
             (self._variable_updated, RideVariableUpdated),
             (self._filename_changed, RideChangeFormat),
-            (self._filename_changed, RideFileNameChanged)
         ]
         for listener, topic in subscriptions:
             PUBLISHER.subscribe(listener, topic)
@@ -838,17 +837,16 @@ class TestCaseFileHandler(_CanBeRenamed, TestDataHandler):
         dlg.Destroy()
 
     def begin_label_edit(self):
-        self._tree.SetItemText(self._node, self.controller.basename)
+        self._set_node_label(self.controller.basename)
         _CanBeRenamed.begin_label_edit(self)
 
     def end_label_edit(self, event):
-        if event.IsEditCancelled():
-            self._tree.SetItemText(self._node, self.controller.name)
-        else:
-            wx.CallAfter(self.rename, event.Label)
+        if not event.IsEditCancelled():
+            self.controller.execute(RenameFile(event.Label))
+        wx.CallAfter(self._set_node_label, self.controller.name)
 
-    def rename(self, new_basename):
-        self.controller.execute(RenameFile(new_basename))
+    def _set_node_label(self, label):
+        self._tree.SetItemText(self._node, label)
 
 
 class _TestOrUserKeywordHandler(_CanBeRenamed, _ActionHandler):

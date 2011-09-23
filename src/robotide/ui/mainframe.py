@@ -15,7 +15,7 @@
 import wx
 
 from robotide.action import ActionInfoCollection, ActionFactory
-from robotide.publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER
+from robotide.publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER, RideInputValidationError
 from robotide.utils import RideEventHandler, RideHtmlWindow
 from robotide.context import SETTINGS, ABOUT_RIDE
 from robotide.widgets import Dialog, ImageProvider
@@ -70,7 +70,8 @@ class RideFrame(wx.Frame, RideEventHandler):
     def _subscribe_messages(self):
         for listener, topic in [(lambda msg: self.SetStatusText('Saved %s' % msg.path), RideSaved),
                                 (lambda msg: self.SetStatusText('Saved all files'), RideSaveAll),
-                                (self._set_label, RideTreeSelection )]:
+                                (self._set_label, RideTreeSelection),
+                                (self._show_validation_error, RideInputValidationError)]:
             PUBLISHER.subscribe(listener, topic)
 
     def _set_label(self, message):
@@ -78,6 +79,9 @@ class RideFrame(wx.Frame, RideEventHandler):
             self.SetTitle('RIDE')
         else:
             self.SetTitle('RIDE - %s' % message.item.datafile.name)
+
+    def _show_validation_error(self, message):
+        wx.MessageBox(message.message, 'Validation Error', style=wx.ICON_ERROR)
 
     def _init_ui(self):
         splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)

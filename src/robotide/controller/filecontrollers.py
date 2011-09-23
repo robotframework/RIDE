@@ -213,6 +213,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         return False
 
     def set_basename(self, basename):
+
         self.remove_from_filesystem()
         self.data.source = os.path.join(self.directory, '%s.%s' % (basename, self.get_format()))
         self.filename = self.data.source

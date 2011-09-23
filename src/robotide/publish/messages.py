@@ -335,5 +335,10 @@ class RideClosing(RideMessage):
     pass
 
 
+class RideInputValidationError(RideMessage):
+    """Sent whenever user input is invalid."""
+    data = ['message']
+
+
 __all__ = [ name for name, cls in globals().items()
             if inspect.isclass(cls) and issubclass(cls, RideMessage) ]

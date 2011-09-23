@@ -13,12 +13,13 @@
 #  limitations under the License.
 
 from itertools import chain
+import time
+import os
 
 from robotide.controller.macrocontrollers import KeywordNameController, \
         ForLoopStepController
 from robotide.controller.settingcontrollers import _SettingController
-import time
-import os
+from robotide.controller.validators import BaseNameValidator
 from robotide.publish.messages import RideSelectResource, RideFileNameChanged
 
 
@@ -302,8 +303,9 @@ class RenameFile(_Command):
         self._new_basename = new_basename
 
     def execute(self, context):
-        context.set_basename(self._new_basename)
-        RideFileNameChanged(datafile=context).publish()
+        if BaseNameValidator(self._new_basename).validate(context):
+            context.set_basename(self._new_basename)
+            RideFileNameChanged(datafile=context).publish()
 
 
 class UpdateVariable(_Command):
