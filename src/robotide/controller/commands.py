@@ -326,6 +326,13 @@ class RenameResourceFile(_Command):
             RideFileNameChanged(datafile=context).publish()
 
 
+class DeleteFile(_Command):
+
+    def execute(self, context):
+        context.remove_from_filesystem()
+        context.remove()
+
+
 class UpdateVariable(_Command):
 
     def __init__(self, new_name, new_value, new_comment):
