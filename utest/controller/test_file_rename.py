@@ -20,12 +20,12 @@ class TestRenameTestCaseFile(unittest.TestCase):
 
     def test_rename_changes_basename_but_keeps_extension(self):
         RenameFile('quux').execute(self._create_controller())
-        assert_equals(self.ctrl.filename, 'quux.txt')
-        assert_equals(self.ctrl.data.source, 'quux.txt')
+        assert_true(self.ctrl.filename.endswith('quux.txt'))
+        assert_equals(self.ctrl.data.source, self.ctrl.filename)
 
     def test_rename_preserves_directory_path(self):
         RenameFile('quux').execute(self._create_controller('foo/bar.html'))
-        assert_equals(self.ctrl.filename, 'foo/quux.html')
+        assert_true(self.ctrl.filename.endswith('foo/quux.html'))
 
     def test_rename_deletes_old_path(self):
         RenameFile('quux').execute(self._create_controller())
