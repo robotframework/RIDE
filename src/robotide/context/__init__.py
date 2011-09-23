@@ -40,6 +40,8 @@ class RideSettings(Settings):
 
 
 SETTINGS = RideSettings()
+for path in SETTINGS['pythonpath']:
+    sys.path.insert(0, path)
 
 LOG = Logger()
 ROBOT_LOGGER.disable_automatic_console_logger()
@@ -50,7 +52,7 @@ SETTING_LABEL_WIDTH = 150
 SETTING_ROW_HEIGTH = 25
 POPUP_BACKGROUND = (255, 255, 187)
 
-pyversion = '.'.join([ str(v) for v in sys.version_info[:3] ])
+pyversion = '.'.join(str(v) for v in sys.version_info[:3])
 ABOUT_RIDE = '''<h3>RIDE -- Robot Framework Test Data Editor</h3>
 <p>Version %s running on Python %s using Robot Framework %s.</p>
 <p>Documentation, issue tracker and other information can be found from the project pages at
