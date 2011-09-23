@@ -25,7 +25,7 @@ from robotide.action import ActionInfoCollection
 from robotide.editor.editordialogs import (TestCaseNameDialog,
     UserKeywordNameDialog, ScalarVariableDialog, ListVariableDialog,
     CopyUserKeywordDialog)
-from robotide.publish import RideTreeSelection, PUBLISHER, RideChangeFormat, RideFileNameChanged
+from robotide.publish import RideTreeSelection, PUBLISHER, RideChangeFormat
 from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
 from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideTestCaseAdded, RideUserKeywordRemoved, RideTestCaseRemoved, RideDataFileRemoved,\
@@ -34,7 +34,7 @@ from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideOpenResource, RideSuiteAdded, RideSelectResource
 from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
     AddKeyword, AddTestCase, RenameTest, CopyMacroAs, MoveTo,\
-    AddVariable, UpdateVariableName, RenameFile
+    AddVariable, UpdateVariableName, RenameFile, RenameResourceFile, DeleteFile
 from robotide.widgets import PopupCreator, PopupMenuItems
 from robotide.ui.filedialogs import NewExternalResourceDialog, NewResourceDialog
 from robotide.usages.UsageRunner import Usages, ResourceFileUsages
@@ -42,6 +42,8 @@ from robotide.usages.UsageRunner import Usages, ResourceFileUsages
 from progress import RenameProgressObserver
 from filedialogs import AddSuiteDialog, ChangeFormatDialog
 from images import TreeImageList
+from robotide.widgets.dialog import Dialog
+from robotide.widgets.sizers import VerticalSizer
 
 try:
     import treemixin
@@ -132,6 +134,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             (ctrl_or_cmd(), wx.WXK_DOWN, self.OnMoveDown),
             (wx.ACCEL_NORMAL, wx.WXK_F2, self._label_editor.OnLabelEdit),
             (wx.ACCEL_NORMAL, wx.WXK_WINDOWS_MENU, self.OnRightClick),
+            (wx.ACCEL_NORMAL, wx.WXK_DELETE, lambda event: self._expanded_handler().OnSafeDelete(event)),
             (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('f'),
                 lambda event: self._expanded_handler().OnNewSuite(event)),
             (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('k'),
@@ -689,6 +692,9 @@ class _ActionHandler(wx.Window):
     def OnFindUsages(self, event):
         pass
 
+    def OnSafeDelete(self, event):
+        pass
+
 
 class _CanBeRenamed(object):
 
@@ -809,16 +815,58 @@ class TestDataDirectoryHandler(TestDataHandler):
         NewResourceDialog(self.controller).execute()
 
 
-class ResourceFileHandler(TestDataHandler):
+class ResourceRenameDialog(Dialog):
+
+    def __init__(self):
+        Dialog.__init__(self, 'Rename resource')
+        sizer = VerticalSizer()
+        self._checkbox = wx.CheckBox(self, label='Rename also resource imports')
+        self._checkbox.SetValue(True)
+        sizer.add_with_padding(self._checkbox, 5)
+        self._create_horizontal_line(sizer)
+        self._create_buttons(sizer)
+        sizer.Fit(self)
+        self.SetSizer(sizer)
+
+    def _execute(self):
+        return self._checkbox.IsChecked()
+
+
+class ResourceFileHandler(_CanBeRenamed, TestDataHandler):
     is_test_suite = False
     _actions = [_ActionHandler._label_new_user_keyword,
                 _ActionHandler._label_new_scalar,
                 _ActionHandler._label_new_list_variable, '---',
+                _ActionHandler._label_rename,
                 _ActionHandler._label_change_format,
-                _ActionHandler._label_find_usages]
+                _ActionHandler._label_find_usages,
+                'Delete\tDel']
 
     def OnFindUsages(self, event):
         ResourceFileUsages(self.controller, self._tree.highlight).show()
+
+    def OnDelete(self, event):
+        if wx.MessageBox('Delete resource file', caption='Confirm',
+                         style=wx.YES_NO | wx.ICON_QUESTION) == wx.YES:
+            self.controller.execute(DeleteFile())
+
+    def OnSafeDelete(self, event):
+        return self.OnDelete(event)
+
+    def begin_label_edit(self):
+        self._set_node_label(self.controller.basename)
+        _CanBeRenamed.begin_label_edit(self)
+
+    def end_label_edit(self, event):
+        if not event.IsEditCancelled():
+            self.controller.execute(RenameResourceFile(event.Label, self._check_should_rename_static_imports))
+        wx.CallAfter(self._set_node_label, self.controller.display_name)
+
+    def _check_should_rename_static_imports(self):
+        return ResourceRenameDialog().execute()
+
+    def _set_node_label(self, label):
+        self._tree.SetItemText(self._node, label)
 
 
 class TestCaseFileHandler(_CanBeRenamed, TestDataHandler):
@@ -828,13 +876,22 @@ class TestCaseFileHandler(_CanBeRenamed, TestDataHandler):
                 _ActionHandler._label_new_scalar,
                 _ActionHandler._label_new_list_variable, '---',
                 _ActionHandler._label_rename,
-                _ActionHandler._label_change_format]
+                _ActionHandler._label_change_format,
+                'Delete\tDel']
 
     def OnNewTestCase(self, event):
         dlg = TestCaseNameDialog(self.controller)
         if dlg.ShowModal() == wx.ID_OK:
             self.controller.execute(AddTestCase(dlg.get_name()))
         dlg.Destroy()
+
+    def OnDelete(self, event):
+        if wx.MessageBox('Delete test case file', caption='Confirm',
+                         style=wx.YES_NO | wx.ICON_QUESTION) == wx.YES:
+            self.controller.execute(DeleteFile())
+
+    def OnSafeDelete(self, event):
+        return self.OnDelete(event)
 
     def begin_label_edit(self):
         self._set_node_label(self.controller.basename)

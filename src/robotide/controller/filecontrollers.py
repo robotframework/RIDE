@@ -213,7 +213,6 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         return False
 
     def set_basename(self, basename):
-
         self.remove_from_filesystem()
         self.data.source = os.path.join(self.directory, '%s.%s' % (basename, self.get_format()))
         self.filename = self.data.source
@@ -519,10 +518,23 @@ class ResourceFileController(_FileSystemElement, _DataController):
         return tail
 
     def set_format(self, format):
+        self._modify_file_name(lambda: _DataController.set_format(self, format),
+                               lambda imp: imp.change_format(format))
+
+    def set_basename(self, basename):
+        self._modify_file_name(lambda: _DataController.set_basename(self, basename),
+                               lambda imp: imp.unresolve())
+
+    def set_basename_and_modify_imports(self, basename):
         old = self.filename
-        _DataController.set_format(self, format)
+        self._modify_file_name(lambda: _DataController.set_basename(self, basename),
+                               lambda imp: imp.change_name(os.path.basename(old), os.path.basename(self.filename)))
+
+    def _modify_file_name(self, modification, notification):
+        old = self.filename
+        modification()
         for resource_import in self._usages_in_imports():
-            resource_import.change_format(format)
+            notification(resource_import)
         self._namespace.resource_filename_changed(old, self.filename)
 
     def _settings(self):

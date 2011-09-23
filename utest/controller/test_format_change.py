@@ -1,9 +1,11 @@
 import os
 import unittest
+from mock import Mock
 from robot.parsing.model import TestCaseFile, ResourceFile
 from robotide.controller import ResourceFileController
 
 from robotide.controller.chiefcontroller import ChiefController
+from robotide.controller.commands import RenameFile, RenameResourceFile
 from robotide.controller.filecontrollers import TestCaseFileController
 from robotide.namespace.namespace import Namespace
 from robot.utils.asserts import assert_not_none, assert_true, assert_false, assert_equals, assert_none
@@ -68,8 +70,82 @@ class ChiefControllerChecker(ChiefController):
     def _remove_file(self, path):
         self.removed_files.append(path)
 
+class _UnitTestsWithWorkingResourceImports(unittest.TestCase):
 
-class TestResourceFormatChange(unittest.TestCase):
+    def _create_data(self, resource_name, resource_import):
+        res_path = os.path.abspath(resource_name)
+        tcf = TestCaseFile(source=os.path.abspath('test.txt'))
+        tcf.setting_table.add_resource(resource_import)
+        tcf.variable_table.add('${dirname}', os.path.abspath('.'))
+        tcf.variable_table.add('${path}', os.path.abspath(resource_name))
+        self.chef = ChiefController(namespace=Namespace())
+        self.chef._controller = TestCaseFileController(tcf, self.chef)
+        res = ResourceFile(source=res_path)
+        self.res_controller = \
+            self.chef._resource_file_controller_factory.create(res, self.chef)
+        self.chef._namespace._resource_factory.cache[res_path] = res
+
+    @property
+    def import_setting(self):
+        return self.chef._controller.imports[0]
+
+    def _verify_import_reference(self, imp_is_resolved):
+        if imp_is_resolved:
+            self._verify_import_reference_exists()
+        else:
+            self._verify_import_reference_is_not_resolved()
+
+    def _verify_import_reference_exists(self):
+        assert_equals(self.import_setting.get_imported_controller(),
+                          self.res_controller)
+
+    def _verify_import_reference_is_not_resolved(self):
+        assert_none(self.import_setting.get_imported_controller())
+
+
+class TestResourceFileRename(_UnitTestsWithWorkingResourceImports):
+
+    def test_import_is_invalidated_when_resource_file_name_changes(self):
+        self._create_data('resource.txt', '${path}')
+        self._verify_import_reference_exists()
+        self._rename_resource('resu', False)
+        self._verify_import_reference_is_not_resolved()
+        assert_equals(self.import_setting.name, '${path}')
+
+    def test_import_is_modified_when_resource_file_name_changes_and_habaa(self):
+        self._create_data('fooo.txt', 'fooo.txt')
+        self._verify_import_reference_exists()
+        self._rename_resource('gooo', True)
+        self._verify_import_reference_exists()
+        assert_equals(self.import_setting.name, 'gooo.txt')
+
+    def test_cancel_execute_when_modify_imports_is_canceled(self):
+        self._create_data('fooo.txt', 'fooo.txt')
+        self._verify_import_reference_exists()
+        self._execute_rename_resource('gooo', None)
+        assert_false(self.res_controller.remove_from_filesystem.called)
+        assert_false(self.res_controller.save.called)
+
+
+    def test_import_is_invalidated_when_resource_file_name_changes_and_hubaa(self):
+        self._create_data('resource.txt', '${path}')
+        self._verify_import_reference_exists()
+        self._rename_resource('resu', True)
+        self._verify_import_reference_is_not_resolved()
+        assert_equals(self.import_setting.name, '${path}')
+
+    def _execute_rename_resource(self, new_basename, boolean_variable):
+        self.res_controller.remove_from_filesystem = Mock()
+        self.res_controller.save = Mock()
+        self.res_controller.execute(RenameResourceFile(new_basename, lambda : boolean_variable))
+
+    def _rename_resource(self, new_basename, boolean_variable):
+        self._execute_rename_resource(new_basename, boolean_variable)
+        assert_true(self.res_controller.remove_from_filesystem.called)
+        assert_true(self.res_controller.save.called)
+
+
+class TestResourceFormatChange(_UnitTestsWithWorkingResourceImports):
 
     def test_imports_are_updated(self):
         self._create_data('name.txt', 'name.txt')
@@ -86,33 +162,15 @@ class TestResourceFormatChange(unittest.TestCase):
         self._change_format('zap')
         self._assert_format_change('${path}', 'res.zap', imp_is_resolved=False)
 
-    def _create_data(self, resource_name, resource_import):
-        res_path = os.path.abspath(resource_name)
-        tcf = TestCaseFile(source=os.path.abspath('test.txt'))
-        tcf.setting_table.add_resource(resource_import)
-        tcf.variable_table.add('${dirname}', os.path.abspath('.'))
-        tcf.variable_table.add('${path}', os.path.abspath(resource_name))
-        self.chef = ChiefController(namespace=Namespace())
-        self.chef._controller = TestCaseFileController(tcf, self.chef)
-        res = ResourceFile(source=res_path)
-        self.res_controller = \
-            self.chef._resource_file_controller_factory.create(res, self.chef)
-        self.chef._namespace._resource_factory.cache[res_path] = res
-
     def _change_format(self, format):
         self.res_controller.set_format(format)
 
     def _assert_format_change(self, import_name, resource_path,
                               imp_is_resolved=True):
-        imp = self.chef._controller.imports[0]
+        imp = self.import_setting
         assert_equals(imp.name, import_name)
         assert_equals(self.res_controller.filename, os.path.abspath(resource_path))
-        if imp_is_resolved:
-            assert_equals(imp.get_imported_controller(),
-                          self.res_controller)
-        else:
-            assert_none(imp.get_imported_controller())
-
+        self._verify_import_reference(imp_is_resolved)
 
 if __name__ == "__main__":
     unittest.main()

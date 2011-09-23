@@ -50,7 +50,7 @@ class _CreationDialog(Dialog):
         return wx.BoxSizer(wx.VERTICAL)
 
     def _finalize_dialog(self, sizer):
-        self._create_line(sizer)
+        self._create_horizontal_line(sizer)
         self._create_buttons(sizer)
         sizer.Fit(self)
         self.SetSizer(sizer)
@@ -112,15 +112,6 @@ class _CreationDialog(Dialog):
         disp_sizer.Add(disp, 1, wx.ALL|wx.EXPAND, 3)
         sizer.Add(disp_sizer, 1, wx.EXPAND)
         return disp
-
-    def _create_line(self, sizer):
-        line = wx.StaticLine(self, size=(20,-1), style=wx.LI_HORIZONTAL)
-        sizer.Add(line, flag=wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.RIGHT|wx.TOP,
-                  border=5)
-
-    def _create_buttons(self, sizer):
-        buttons = self.CreateStdDialogButtonSizer(wx.OK|wx.CANCEL)
-        sizer.Add(buttons, flag=wx.ALIGN_CENTER|wx.ALL, border=5)
 
     def _get_path(self):
         name = self._name_editor.GetValue()
