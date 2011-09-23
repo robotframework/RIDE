@@ -34,7 +34,7 @@ from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideOpenResource, RideSuiteAdded, RideSelectResource
 from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
     AddKeyword, AddTestCase, RenameTest, CopyMacroAs, MoveTo,\
-    AddVariable, UpdateVariableName, RenameFile, RenameResourceFile, DeleteFile
+    AddVariable, UpdateVariableName, RenameFile, RenameResourceFile, DeleteFile, DeleteResourceAndImports
 from robotide.widgets import PopupCreator, PopupMenuItems
 from robotide.ui.filedialogs import NewExternalResourceDialog, NewResourceDialog
 from robotide.usages.UsageRunner import Usages, ResourceFileUsages
@@ -815,12 +815,12 @@ class TestDataDirectoryHandler(TestDataHandler):
         NewResourceDialog(self.controller).execute()
 
 
-class ResourceRenameDialog(Dialog):
+class _ConfirmationWithCheckbox(Dialog):
 
-    def __init__(self):
-        Dialog.__init__(self, 'Rename resource')
+    def __init__(self, title, checkbox_label):
+        Dialog.__init__(self, title)
         sizer = VerticalSizer()
-        self._checkbox = wx.CheckBox(self, label='Rename also resource imports')
+        self._checkbox = wx.CheckBox(self, label=checkbox_label)
         self._checkbox.SetValue(True)
         sizer.add_with_padding(self._checkbox, 5)
         self._create_horizontal_line(sizer)
@@ -828,8 +828,27 @@ class ResourceRenameDialog(Dialog):
         sizer.Fit(self)
         self.SetSizer(sizer)
 
+
+class ResourceRenameDialog(_ConfirmationWithCheckbox):
+
+    def __init__(self):
+        _ConfirmationWithCheckbox.__init__(self, 'Rename resource', 'Rename also resource imports')
+
     def _execute(self):
         return self._checkbox.IsChecked()
+
+
+class ResourceDeleteDialog(_ConfirmationWithCheckbox):
+
+    def __init__(self, controller):
+        _ConfirmationWithCheckbox.__init__(self, 'Delete resource', 'Delete also resource imports')
+        self._controller = controller
+
+    def _execute(self):
+        if self._checkbox.IsChecked():
+            self._controller.execute(DeleteResourceAndImports())
+        else:
+            self._controller.execute(DeleteFile())
 
 
 class ResourceFileHandler(_CanBeRenamed, TestDataHandler):
@@ -846,9 +865,7 @@ class ResourceFileHandler(_CanBeRenamed, TestDataHandler):
         ResourceFileUsages(self.controller, self._tree.highlight).show()
 
     def OnDelete(self, event):
-        if wx.MessageBox('Delete resource file', caption='Confirm',
-                         style=wx.YES_NO | wx.ICON_QUESTION) == wx.YES:
-            self.controller.execute(DeleteFile())
+        ResourceDeleteDialog(self.controller).execute()
 
     def OnSafeDelete(self, event):
         return self.OnDelete(event)
