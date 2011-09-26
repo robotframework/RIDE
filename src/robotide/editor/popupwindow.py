@@ -83,20 +83,26 @@ class Tooltip(RidePopupWindow):
         dlg.Show()
 
 
-class MacRidePopupWindow(wx.Window):
-    """Mac version of RidePopupWindow with very limited functionality.
-
-    wx.PopupWindow does not work on Mac and without this hack RIDE could
-    not be used on that platform at all.
+class MacRidePopupWindow(wx.Frame):
+    """This class in now an exact copy of RidePopupWindow except that it takes
+    wx.Frame instead of wx.PopupWindow and that it has a style of wx.SIMPLE_BORDER.
+    This violates the DRY principal but
+    I'm not skilled enough in python yet to know how to fix it.  Someone who
+    knows better should feel free to encapsulate this
     """
 
     def __init__(self, parent, size, detachable=True, autohide=False):
-        wx.Window.__init__(self, parent)
+        wx.Frame.__init__(self, parent, style=wx.SIMPLE_BORDER)
+        self._create_ui(size, detachable, autohide)
+        self.hide()
 
-    set_content = show_at = hide = lambda *args: None
+    def show_at(self, position):
+        if not self.IsShown():
+            self.SetPosition(position)
+            self.Show()
 
-    def IsShown(self):
-        return False
+    def hide(self, event=None):
+        self.Show(False)
 
     @property
     def screen_position(self):
@@ -105,6 +111,39 @@ class MacRidePopupWindow(wx.Window):
     @property
     def size(self):
         return self.Size
+
+    def _create_ui(self, size, detachable, autohide):
+        panel = wx.Panel(self)
+        panel.SetBackgroundColour(POPUP_BACKGROUND)
+        szr = VerticalSizer()
+        if detachable:
+            szr.add(ButtonWithHandler(panel, 'Detach', width=size[0],
+                                      handler=self._detach))
+            size = (size[0], size[1]-25)
+        self._details = RideHtmlWindow(self, size=size)
+        szr.add_expanding(self._details)
+        panel.SetSizer(szr)
+        panel.Fit()
+        if autohide:
+            self._get_autohide_component(panel).Bind(wx.EVT_LEAVE_WINDOW,
+                                                     self.hide)
+
+    def _get_autohide_component(self, panel):
+        return panel
+
+    def set_content(self, content, title=None, html=True):
+        color = ''.join(hex(item)[2:] for item in POPUP_BACKGROUND)
+        if not html:
+            content = utils.html_escape(content, formatting=True)
+        self._current_details = '<body bgcolor=#%s>%s</body>' % (color, content)
+        self._details.SetPage(self._current_details)
+        self._detached_title = title
+
+    def _detach(self, event):
+        self.hide()
+        dlg = HtmlDialog(self._detached_title, self._current_details)
+        dlg.SetPosition((wx.GetMouseState().x, wx.GetMouseState().y))
+        dlg.Show()
 
 
 class HtmlDialog(Dialog):
