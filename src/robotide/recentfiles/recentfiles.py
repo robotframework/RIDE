@@ -87,14 +87,14 @@ class RecentFilesPlugin(Plugin):
         if model and model.suite:
             self._add_to_recent_files(model.suite.source)
 
-    def _add_to_recent_files(self, file):
-        if not file:
+    def _add_to_recent_files(self, path):
+        if not path:
             return
-        file = normalize_path(file)
-        if file in self.recent_files:
-            self.recent_files.remove(file)
-        self.recent_files.insert(0, file)
-        self.recent_files = self.recent_files[0:self.max_number_of_files]
+        path = normalize_path(path)
+        if path in self.recent_files:
+            self.recent_files.remove(path)
+        self.recent_files.insert(0, path)
+        self.recent_files = self.recent_files[:self.max_number_of_files]
         self._save_settings_and_update_file_menu()
 
     def _save_settings_and_update_file_menu(self):
@@ -103,19 +103,19 @@ class RecentFilesPlugin(Plugin):
         self._add_recent_files_to_menu()
 
     def _add_recent_files_to_menu(self):
-        if len(self.recent_files) == 0:
+        if not self.recent_files:
             action = ActionInfo('File', 'No recent files')
             action.set_menu_position(before='Exit')
             self.register_action(action)
         else:
-            for n, file in enumerate(self.recent_files):
-                self._add_file_to_menu(file, n)
+            for n, path in enumerate(self.recent_files):
+                self._add_file_to_menu(path, n)
         sep = SeparatorInfo('File')
         sep.set_menu_position(before='Exit')
         self.register_action(sep)
 
-    def _add_file_to_menu(self, file, n):
-        entry = RecentFileEntry(n+1, file, self)
+    def _add_file_to_menu(self, path, n):
+        entry = RecentFileEntry(n+1, path, self)
         self.register_action(entry.get_action_info())
 
 
