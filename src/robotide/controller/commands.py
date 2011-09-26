@@ -304,8 +304,10 @@ class RenameFile(_Command):
 
     def execute(self, context):
         if BaseNameValidator(self._new_basename).validate(context):
+            old_filename = context.filename
             context.set_basename(self._new_basename)
-            RideFileNameChanged(datafile=context).publish()
+            RideFileNameChanged(datafile=context,
+                                old_filename=old_filename).publish()
 
 
 class RenameResourceFile(_Command):
@@ -316,6 +318,7 @@ class RenameResourceFile(_Command):
 
     def execute(self, context):
         if BaseNameValidator(self._new_basename).validate(context):
+            old_filename = context.filename
             modify_imports = self._should_modify_imports()
             if modify_imports is None:
                 return
@@ -323,7 +326,8 @@ class RenameResourceFile(_Command):
                 context.set_basename_and_modify_imports(self._new_basename)
             else:
                 context.set_basename(self._new_basename)
-            RideFileNameChanged(datafile=context).publish()
+            RideFileNameChanged(datafile=context,
+                                old_filename=old_filename).publish()
 
 
 class DeleteFile(_Command):

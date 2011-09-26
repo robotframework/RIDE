@@ -15,7 +15,7 @@
 import os.path
 import wx
 
-from robotide.publish import RideOpenSuite, RideChangeFormat
+from robotide.publish import RideOpenSuite, RideFileNameChanged
 from robotide.pluginapi import Plugin, ActionInfo, SeparatorInfo
 from robotide.publish.messages import RideNewProject, RideSaved
 
@@ -38,7 +38,7 @@ class RecentFilesPlugin(Plugin):
         self._add_recent_files_to_menu()
         self._new_project_path = None
         self.subscribe(self.OnSuiteOpened, RideOpenSuite)
-        self.subscribe(self.OnFormatChanged, RideChangeFormat)
+        self.subscribe(self.OnFileNameChanged, RideFileNameChanged)
         self.subscribe(self.OnNewProjectOpened, RideNewProject)
         self.subscribe(self.OnSaved, RideSaved)
         # TODO: This plugin doesn't currently support resources
@@ -56,16 +56,16 @@ class RecentFilesPlugin(Plugin):
         wx.CallAfter(self._add_to_recent_files, event.path)
         self._new_project_path = None
 
-    def OnFormatChanged(self, event):
+    def OnFileNameChanged(self, event):
         self._new_project_path = None
         if not event.oldpath:
             return
-        oldpath = normalize_path(event.oldpath)
-        newpath = normalize_path(event.newpath)
-        if oldpath not in self.recent_files:
+        old_filename = normalize_path(event.old_filename)
+        new_filename = normalize_path(event.datafile.filename)
+        if old_filename not in self.recent_files:
             return
-        index = self.recent_files.index(oldpath)
-        self.recent_files[index] = newpath
+        index = self.recent_files.index(old_filename)
+        self.recent_files[index] = new_filename
         self._save_settings_and_update_file_menu()
 
     def OnNewProjectOpened(self, event):

@@ -22,12 +22,12 @@ from robotide.controller.filecontrollers import (TestDataDirectoryController,
 
 from robotide import utils
 from robotide.action import ActionInfoCollection
+from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
 from robotide.editor.editordialogs import (TestCaseNameDialog,
     UserKeywordNameDialog, ScalarVariableDialog, ListVariableDialog,
     CopyUserKeywordDialog)
-from robotide.publish import RideTreeSelection, PUBLISHER, RideChangeFormat
-from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
-from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
+from robotide.publish import RideTreeSelection, PUBLISHER, RideFileNameChanged,\
+    RideItem, RideUserKeywordAdded,\
     RideTestCaseAdded, RideUserKeywordRemoved, RideTestCaseRemoved, RideDataFileRemoved,\
     RideDataChangedToDirty, RideDataDirtyCleared, RideVariableRemoved,\
     RideVariableAdded, RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated,\
@@ -119,7 +119,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             (self._variable_moved_up, RideVariableMovedUp),
             (self._variable_moved_down, RideVariableMovedDown),
             (self._variable_updated, RideVariableUpdated),
-            (self._filename_changed, RideChangeFormat),
+            (self._filename_changed, RideFileNameChanged),
         ]
         for listener, topic in subscriptions:
             PUBLISHER.subscribe(listener, topic)

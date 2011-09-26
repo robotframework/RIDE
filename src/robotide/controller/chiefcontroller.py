@@ -16,14 +16,14 @@ import os
 
 from robotide import context
 from robotide.controller.basecontroller import WithNamespace, _BaseController
-from robotide.controller.filecontrollers import DirectoryController, TestDataDirectoryController, ResourceFileControllerFactory
+from robotide.controller.filecontrollers import ResourceFileControllerFactory
 from robotide.controller.robotdata import NewTestCaseFile, NewTestDataDirectory
 from robotide.errors import SerializationError
 from robotide.publish.messages import RideOpenResource, RideSaving, RideSaveAll, \
-    RideSaved, RideChangeFormat, RideOpenSuite, RideNewProject
+    RideSaved, RideOpenSuite, RideNewProject, RideFileNameChanged
 from robotide.writer.serializer import Serializer
 
-from filecontrollers import DataController, ResourceFileController
+from filecontrollers import DataController
 from dataloader import DataLoader
 from robotide.context import SETTINGS
 
@@ -209,8 +209,8 @@ class ChiefController(_BaseController, WithNamespace):
         self.serialize_controller(controller)
         if old_path:
             self._remove_file(old_path)
-            RideChangeFormat(oldpath=old_path, newpath=controller.source,
-                             datafile=controller).publish()
+            RideFileNameChanged(old_filename=old_path,
+                                datafile=controller).publish()
 
     def _remove_file(self, path):
         if path and os.path.isfile(path):
