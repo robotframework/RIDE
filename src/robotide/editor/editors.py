@@ -16,16 +16,14 @@ import wx
 
 from robotide import context
 from robotide.editor.settingeditors import DocumentationEditor, SettingEditor, TagsEditor, ImportSettingListEditor, VariablesListEditor, MetadataListEditor
-from robotide.publish import RideFileNameChanged
 from robotide.ui.components import StaticText
 from robotide.usages.UsageRunner import ResourceFileUsages
 from robotide.utils import RideHtmlWindow
 from robotide.controller.settingcontrollers import (DocumentationController,
                                                     VariableController, TagsController)
-
-from robotide.publish.messages import (RideItemSettingsChanged,
-                                       RideInitFileRemoved,
-                                       RideChangeFormat)
+from robotide.publish import (RideItemSettingsChanged,
+                              RideInitFileRemoved,
+                              RideFileNameChanged)
 from robot.parsing.settings import _Setting
 from robotide.context import SETTINGS
 from robotide.widgets.button import ButtonWithHandler
@@ -255,7 +253,6 @@ class _FileEditor(_RobotTableEditor):
 
     def __init__(self, *args):
         _RobotTableEditor.__init__(self, *args)
-        self.plugin.subscribe(self._update_source, RideChangeFormat)
         self.plugin.subscribe(self._update_source_and_name, RideFileNameChanged)
 
     def _update_source(self, message=None):
@@ -302,7 +299,6 @@ class _FileEditor(_RobotTableEditor):
         self._editors.append(self._var_editor)
 
     def close(self):
-        self.plugin.unsubscribe(self._update_source, RideChangeFormat)
         self.plugin.unsubscribe(self._update_source_and_name, RideFileNameChanged)
         for editor in self._editors:
             editor.close()
