@@ -23,7 +23,7 @@ class _BoxSizer(wx.BoxSizer):
     def add(self, component):
         self.Add(component)
 
-    def add_with_padding(self, component, padding):
+    def add_with_padding(self, component, padding=5):
         self.Add(component, flag=wx.ALL, border=padding)
 
     def add_expanding(self, component):
