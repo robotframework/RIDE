@@ -37,14 +37,16 @@ class FindUsages(FindOccurrences):
 class FindResourceUsages(_Command):
 
     def execute(self, context):
-        for df in context.get_where_used():
-            yield ResourceUsage(df)
+        for imp in context.get_where_used():
+            yield ResourceUsage(context, imp)
 
 
 class ResourceUsage(object):
 
-    def __init__(self, user):
-        self.location = user.source
+    def __init__(self, resource, imp):
+        user = imp.datafile_controller
+        self.location = user.filename
         self.name = user.display_name
         self.item = user.imports
         self.parent = user
+        self.can_be_renamed = imp.contains_filename(os.path.basename(resource.filename))

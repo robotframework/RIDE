@@ -532,14 +532,14 @@ class ResourceFileController(_FileSystemElement, _DataController):
 
     def remove_static_imports_to_this(self):
         name = os.path.basename(self.filename)
-        for resource_import in self._usages_in_imports():
+        for resource_import in self.get_where_used():
             if resource_import.name.endswith(name):
                 resource_import.remove()
 
     def _modify_file_name(self, modification, notification):
         old = self.filename
         modification()
-        for resource_import in self._usages_in_imports():
+        for resource_import in self.get_where_used():
             notification(resource_import)
         self._namespace.resource_filename_changed(old, self.filename)
 
@@ -561,10 +561,6 @@ class ResourceFileController(_FileSystemElement, _DataController):
         RideDataFileRemoved(path=self.filename, datafile=self).publish()
 
     def get_where_used(self):
-        for resource_import in self._usages_in_imports():
-            yield resource_import.datafile_controller
-
-    def _usages_in_imports(self):
         for imp in self._all_imports():
             if imp.get_imported_controller() is self:
                 yield imp

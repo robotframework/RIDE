@@ -502,9 +502,12 @@ class ResourceImportController(_ImportController):
     def unresolve(self):
         self._resolved_import = False
 
-    def change_name(self, oldname, newname):
-        if self.name.endswith(oldname):
-            self.set_value(self.name[:-len(oldname)] + newname)
+    def contains_filename(self, filename):
+        return self.name.endswith(filename)
+
+    def change_name(self, old_name, new_name):
+        if self.contains_filename(old_name):
+            self.set_value(self.name[:-len(old_name)] + new_name)
 
     def change_format(self, format):
         if self._has_format():
