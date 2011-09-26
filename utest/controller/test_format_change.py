@@ -76,14 +76,14 @@ class _UnitTestsWithWorkingResourceImports(unittest.TestCase):
         res_path = os.path.abspath(resource_name)
         tcf = TestCaseFile(source=os.path.abspath('test.txt'))
         tcf.setting_table.add_resource(resource_import)
-        tcf.variable_table.add('${dirname}', os.path.abspath('.'))
-        tcf.variable_table.add('${path}', os.path.abspath(resource_name))
+        tcf.variable_table.add('${dirname}', os.path.abspath('.').replace('\\', '\\\\'))
+        tcf.variable_table.add('${path}', os.path.abspath(resource_name).replace('\\', '\\\\'))
         self.chef = ChiefController(namespace=Namespace())
         self.chef._controller = TestCaseFileController(tcf, self.chef)
         res = ResourceFile(source=res_path)
         self.res_controller = \
             self.chef._resource_file_controller_factory.create(res, self.chef)
-        self.chef._namespace._resource_factory.cache[res_path] = res
+        self.chef._namespace._resource_factory.cache[os.path.normcase(res_path)] = res
 
     @property
     def import_setting(self):
@@ -153,9 +153,9 @@ class TestResourceFormatChange(_UnitTestsWithWorkingResourceImports):
         self._assert_format_change('name.bar', 'name.bar')
 
     def test_imports_with_variables_and_path_are_updated(self):
-        self._create_data('name.txt', '${dirname}/name.txt')
+        self._create_data('name.txt', '${dirname}${/}name.txt')
         self._change_format('cock')
-        self._assert_format_change('${dirname}/name.cock', 'name.cock')
+        self._assert_format_change('${dirname}${/}name.cock', 'name.cock')
 
     def test_imports_with_only_variables(self):
         self._create_data('res.txt', '${path}')
