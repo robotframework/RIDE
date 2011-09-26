@@ -34,7 +34,8 @@ from robotide.publish.messages import RideItem, RideUserKeywordAdded,\
     RideOpenResource, RideSuiteAdded, RideSelectResource
 from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
     AddKeyword, AddTestCase, RenameTest, CopyMacroAs, MoveTo,\
-    AddVariable, UpdateVariableName, RenameFile, RenameResourceFile, DeleteFile, DeleteResourceAndImports
+    AddVariable, UpdateVariableName, RenameFile, RenameResourceFile, DeleteFile
+from robotide.ui.resourcedialogs import ResourceRenameDialog, ResourceDeleteDialog
 from robotide.widgets import PopupCreator, PopupMenuItems
 from robotide.ui.filedialogs import NewExternalResourceDialog, NewResourceDialog
 from robotide.usages.UsageRunner import Usages, ResourceFileUsages
@@ -42,8 +43,6 @@ from robotide.usages.UsageRunner import Usages, ResourceFileUsages
 from progress import RenameProgressObserver
 from filedialogs import AddSuiteDialog, ChangeFormatDialog
 from images import TreeImageList
-from robotide.widgets.dialog import Dialog
-from robotide.widgets.sizers import VerticalSizer
 
 try:
     import treemixin
@@ -815,42 +814,6 @@ class TestDataDirectoryHandler(TestDataHandler):
         NewResourceDialog(self.controller).execute()
 
 
-class _ConfirmationWithCheckbox(Dialog):
-
-    def __init__(self, title, checkbox_label):
-        Dialog.__init__(self, title)
-        sizer = VerticalSizer()
-        self._checkbox = wx.CheckBox(self, label=checkbox_label)
-        self._checkbox.SetValue(True)
-        sizer.add_with_padding(self._checkbox, 5)
-        self._create_horizontal_line(sizer)
-        self._create_buttons(sizer)
-        sizer.Fit(self)
-        self.SetSizer(sizer)
-
-
-class ResourceRenameDialog(_ConfirmationWithCheckbox):
-
-    def __init__(self):
-        _ConfirmationWithCheckbox.__init__(self, 'Rename resource', 'Rename also resource imports')
-
-    def _execute(self):
-        return self._checkbox.IsChecked()
-
-
-class ResourceDeleteDialog(_ConfirmationWithCheckbox):
-
-    def __init__(self, controller):
-        _ConfirmationWithCheckbox.__init__(self, 'Delete resource', 'Delete also resource imports')
-        self._controller = controller
-
-    def _execute(self):
-        if self._checkbox.IsChecked():
-            self._controller.execute(DeleteResourceAndImports())
-        else:
-            self._controller.execute(DeleteFile())
-
-
 class ResourceFileHandler(_CanBeRenamed, TestDataHandler):
     is_test_suite = False
     _actions = [_ActionHandler._label_new_user_keyword,
@@ -880,7 +843,7 @@ class ResourceFileHandler(_CanBeRenamed, TestDataHandler):
         wx.CallAfter(self._set_node_label, self.controller.display_name)
 
     def _check_should_rename_static_imports(self):
-        return ResourceRenameDialog().execute()
+        return ResourceRenameDialog(self.controller).execute()
 
     def _set_node_label(self, label):
         self._tree.SetItemText(self._node, label)

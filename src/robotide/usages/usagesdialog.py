@@ -15,6 +15,7 @@
 from robotide.widgets import (Dialog, VirtualList, VerticalSizer, ImageList,
                               ImageProvider, ButtonWithHandler)
 import wx
+from robotide.widgets.list import ListModel
 
 class UsagesDialog(Dialog):
 
@@ -74,11 +75,12 @@ class UsagesDialogWithUserKwNavigation(UsagesDialog):
 def ResourceImportUsageDialog(name, highlight, controller):
     return UsagesDialogWithUserKwNavigation(name, highlight, controller, usages=ResourceImportListModel([]))
 
-class _UsagesListModel(object):
+
+class _UsagesListModel(ListModel):
 
     def __init__(self, usages):
         self._usages = usages
-        self.images = self._create_image_list()
+        self._create_image_list()
 
     def _create_image_list(self):
         images = ImageList(16, 16)
@@ -87,7 +89,11 @@ class _UsagesListModel(object):
         images.add(provider.KEYWORDIMG)
         images.add(provider.DATAFILEIMG)
         images.add(provider.DATADIRIMG)
-        return images
+        self._images = images
+
+    @property
+    def images(self):
+        return self._images
 
     def image(self, item):
         # TODO: better mechanism for item type recognition
@@ -123,15 +129,23 @@ class UsagesListModel(_UsagesListModel):
         u = self.usage(row)
         return [u.location,  u.usage, u.source][col]
 
+
 class ResourceImportListModel(_UsagesListModel):
 
     def __init__(self, usages):
         _UsagesListModel.__init__(self, usages)
         self.headers = ['Name', 'Location']
+        self._cannot_rename_item_attr = wx.ListItemAttr()
+        self._cannot_rename_item_attr.SetBackgroundColour(wx.Colour(255, 64, 64))
 
     def item_text(self, row, col):
         u = self.usage(row)
         return [u.name, u.location][col]
+
+    def item_attributes(self, idx):
+        if self._usages[idx].can_be_renamed:
+            return None
+        return self._cannot_rename_item_attr
 
     @property
     def total_usages(self):

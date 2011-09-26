@@ -34,6 +34,7 @@ class VirtualList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         self.SetItemCount(model.count)
         self.SetImageList(model.images, wx.IMAGE_LIST_SMALL)
 
+
     def OnLeftDown(self, event):
         item, flags =  self.HitTest(event.Position)
         if flags | wx.LIST_HITTEST_ONITEM:
@@ -68,3 +69,27 @@ class VirtualList(wx.ListCtrl, ListCtrlAutoWidthMixin):
 
     def OnGetItemImage(self, item):
         return self._model.image(item)
+
+    def OnGetItemAttr(self, item):
+        return self._model.item_attributes(item)
+
+
+class ListModel(object):
+
+    @property
+    def count(self):
+        return 0
+
+    @property
+    def images(self):
+        return None
+
+    def item_text(self, row, col):
+        return ''
+
+    def image(self, row):
+        return None
+
+    def item_attributes(self, row):
+        return None
+
