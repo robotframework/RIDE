@@ -63,6 +63,8 @@ def main(args):
 
 def _run(inpath=None):
     from robotide.application import RIDE
+    if inpath:
+        inpath = unicode(inpath, sys.getfilesystemencoding())
     ride = RIDE(inpath)
     ride.MainLoop()
 
