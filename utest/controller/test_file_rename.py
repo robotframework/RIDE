@@ -1,3 +1,4 @@
+import os
 import unittest
 from robot.parsing.model import TestCaseFile
 
@@ -25,7 +26,7 @@ class TestRenameTestCaseFile(unittest.TestCase):
 
     def test_rename_preserves_directory_path(self):
         RenameFile('quux').execute(self._create_controller('foo/bar.html'))
-        assert_true(self.ctrl.filename.endswith('foo/quux.html'))
+        assert_true(self.ctrl.filename.endswith(os.path.join('foo', 'quux.html')))
 
     def test_rename_deletes_old_path(self):
         RenameFile('quux').execute(self._create_controller())
