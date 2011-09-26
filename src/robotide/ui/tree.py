@@ -133,7 +133,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             (ctrl_or_cmd(), wx.WXK_DOWN, self.OnMoveDown),
             (wx.ACCEL_NORMAL, wx.WXK_F2, self._label_editor.OnLabelEdit),
             (wx.ACCEL_NORMAL, wx.WXK_WINDOWS_MENU, self.OnRightClick),
-            (wx.ACCEL_NORMAL, wx.WXK_DELETE, lambda event: self._expanded_handler().OnSafeDelete(event)),
+            (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('d'), lambda event: self._expanded_handler().OnSafeDelete(event)),
             (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('f'),
                 lambda event: self._expanded_handler().OnNewSuite(event)),
             (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('k'),
@@ -822,7 +822,7 @@ class ResourceFileHandler(_CanBeRenamed, TestDataHandler):
                 _ActionHandler._label_rename,
                 _ActionHandler._label_change_format,
                 _ActionHandler._label_find_usages,
-                'Delete\tDel']
+                'Delete\tCtrl-Shift-D']
 
     def OnFindUsages(self, event):
         ResourceFileUsages(self.controller, self._tree.highlight).show()
@@ -857,7 +857,7 @@ class TestCaseFileHandler(_CanBeRenamed, TestDataHandler):
                 _ActionHandler._label_new_list_variable, '---',
                 _ActionHandler._label_rename,
                 _ActionHandler._label_change_format,
-                'Delete\tDel']
+                'Delete\tCtrl-Shift-D']
 
     def OnNewTestCase(self, event):
         dlg = TestCaseNameDialog(self.controller)
