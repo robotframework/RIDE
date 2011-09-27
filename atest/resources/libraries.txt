@@ -1,6 +1,0 @@
-*** Settings ***
-Library         AutoItLibrary  ${CURDIR}${/}..${/}results  ${AUTOIT_TIMEOUT}
-Library         OperatingSystem
-
-*** Variables ***
-${AUTOIT_TIMEOUT}  30

@@ -1,7 +1,0 @@
-*** Settings ***
-Resource        atest_resources.txt
-
-*** Keywords ***
-Go Back In History
-    Send  !{LEFT}
-
