@@ -58,16 +58,6 @@ class TestRunAnything(unittest.TestCase):
         assert_true(self.runner.finished)
         assert_equals(self.runner.outstr, 'This is stderr\n')
 
-    def test_output_is_updated_while_process_is_running(self):
-        self.runner = self._create_runner('python %s output' % SCRIPT)
-        self._sleep_and_log_output(0.2)
-        length = len(self.runner.outstr)
-        assert_true(length > 0)
-        self._wait_until_finished()
-        assert_true(self.runner.finished)
-        assert_true(len(self.runner.outstr) > length)
-        assert_true(self.runner.outstr.endswith('done\n'))
-
     def _create_runner(self, cmd):
         runner = _TestableRunner(RunConfig('test', cmd, ''), None)
         runner.run()
