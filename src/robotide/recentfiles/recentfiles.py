@@ -58,7 +58,7 @@ class RecentFilesPlugin(Plugin):
 
     def OnFileNameChanged(self, event):
         self._new_project_path = None
-        if not event.oldpath:
+        if not event.old_filename:
             return
         old_filename = normalize_path(event.old_filename)
         new_filename = normalize_path(event.datafile.filename)
