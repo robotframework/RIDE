@@ -2,7 +2,7 @@
 
 VERSION = '0.39.1'
 RELEASE = 'final'
-TIMESTAMP = '20110927-134422'
+TIMESTAMP = '20110927-134628'
 
 def get_version(sep=' '):
     if RELEASE == 'final':
