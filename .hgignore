@@ -1,9 +1,0 @@
-syntax: glob
-
-tmp
-build
-dist
-.idea
-.*project
-*.pyc
-results
