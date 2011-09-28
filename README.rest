@@ -1,0 +1,11 @@
+RIDE
+====
+
+RIDE is a light-weight and intuitive editor for Robot Framework test case files.
+
+For usage instructions, please refer to the Wiki_
+
+For development information, refer to the `HACKING.rest`_
+
+.. _Wiki: https://github.com/robotframework/RIDE/wiki
+.. _HACKING.rest: https://github.com/robotframework/RIDE/blob/master/HACKING.rest
