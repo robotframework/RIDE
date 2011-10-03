@@ -1,50 +1,55 @@
-= General =
+BUILD
+=====
 
-This document describes the technical process of contributing code in the RIDE
-project.
+This document describes the technical details of the RIDE project:
 
-In general, sending patches is the way to start contributing. Patches should
-follow the guidelines described below. After submitting some number of accepted
-patches, commit rights may be given.
-
-
-= Project information =
-
-RIDE is hosted in Google Code service [1]. All information about commits, code
-reviews and changes in issue tracker are sent to ride-code mailing list [2].
-For development discussion, robotframework-devel mailing list [3] is used.
+ * What's in the source
+ * How it is built
+ * How to contribute
 
 
-= Source code =
+Repository contents
+===================
 
-Source code is hosted in the Google Code Mercurial repository [4], which
-also supports read-only anonymous checkouts.
+Repository contains source code, unit tests, and some helper scripts for
+development and package generation.
 
-Note that if you need to go through a proxy to access internet, Mercurial
-1.3.1 is required.
+Source code
+-----------
 
-== Configuring Mercurial ==
-
-User settings for mercurial can be found ~/.hgrc on Linux and %HOME%\.hgrc in Windows.
-If the file does not exists, it must be created.
-
-This is the minimum amount of information to be able to commit back to the repository:
-
-[auth]
-ride.prefix = robotframework-ride.googlecode.com/hg
-ride.username = GoogleCode Username
-ride.password = GoogleCode Password
-
-[ui]
-username = Your Name <address@domain>
+Source code is located in `src` directory. `src/bin` contains installed start
+scripts and `src/robotide` contains the actual source code.
 
 
-= Coding guidelines =
+Unit tests
+----------
+
+Unit tests are in `utest` directory. They can be executed with
+`utest/run_utests.py`
+
+
+Building
+========
+
+Distributions are build using `package.py` script. Invoke `package.py`
+without arguments to get help.
+
+
+Contributing
+============
+
+Fork and send a pull request! To enhance the possibility of getting the pull
+request merged, read guidelines below.
+
+
+Coding guidelines
+=================
 
 In general, all the code should be written according to Style Guide for Python
 Code [5] However, as stated in the Zen of Python, practicality beats purity.
 
-== Method names ==
+Method names
+------------
 
 Typically, we use `lowercase_with_underscore` style for method names. Of
 course, when overriding wx methods, `AllCapitalized` style must be used.
@@ -52,7 +57,8 @@ Additionally, there's a special case when writing event handler methods. We
 have chosen to name event handlers following this pattern: `OnEventName` (e.g.
 `OnMouseClick`).
 
-== Variable names ==
+Variable names
+--------------
 
 Instance variables also follow the `lowercase_with_underscore` naming
 convention.  Additionally, a leading underscore indicates that the variable is
@@ -61,30 +67,11 @@ considered private.
 Global variables (provided there's really a need for such) use `ALL_CAPS`
 style.
 
-== Getters and setters ==
+Getters and setters
+-------------------
 
 We follow the Pythonic way of not implementing getters and setters in the case
 where direct attribute access is sufficient
 
 
-= Tests =
-
-Unfortunately we do not currently have high level automated test cases.
-However, all new code should have unit test written for it. These unit tests
-are included in the `utest` directory. To execute all unit tests, run
-
-	python utest/run_utests.py
-
-The `atest` folder contains some tests for serialization. These tests read data
-in RIDE and serialize it right back. Then both the original and modified suite
-is executed, and results compared. These test may be run with command (in atest
-directory)
-
-	python test_golden.py golden
-
-
-[1] http://code.google.com/p/robotframework-ride/
-[2] http://groups.google.com/group/robotframework-ride-code
-[3] http://groups.google.com/group/robotframework-devel
-[4] http://code.google.com/p/robotframework-ride/source/browse/ 
-[5] http://www.python.org/dev/peps/pep-0008/
+ http://www.python.org/dev/peps/pep-0008/
