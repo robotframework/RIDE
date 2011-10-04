@@ -41,7 +41,7 @@ See http://wxpython.org for more information."""
     sys.exit(1)
 
 # Insert bundled robot to path before anything else
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'bundled'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'lib'))
 
 # TODO: Remove when robot has been released with this patch
 import robotpatch

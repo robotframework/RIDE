@@ -8,4 +8,4 @@ dist
 *.pyc
 results
 bundled
-
+src/robotframework_ride.egg-info

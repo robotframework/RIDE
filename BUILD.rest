@@ -3,9 +3,23 @@ BUILD
 
 This document describes the technical details of the RIDE project:
 
+ * How to build, run and test RIDE
  * What's in the source
- * How it is built
  * How to contribute
+ * How to make a release
+
+
+Developing
+==========
+
+RIDE uses Paver__ as it's build tool. Packaging, testing, and running a
+development version without installation can all be done using Paver. Install
+Paver and run::
+
+    paver help
+
+for more information.
+__ http://paver.github.com/paver
 
 
 Repository contents
@@ -24,15 +38,10 @@ scripts and `src/robotide` contains the actual source code.
 Unit tests
 ----------
 
-Unit tests are in `utest` directory. They can be executed with
-`utest/run_utests.py`
+Unit tests are in `utest` directory. They can be executed with::
 
+  paver test
 
-Building
-========
-
-Distributions are build using `package.py` script. Invoke `package.py`
-without arguments to get help.
 
 
 Contributing
@@ -75,3 +84,15 @@ where direct attribute access is sufficient
 
 
  http://www.python.org/dev/peps/pep-0008/
+
+
+Releasing
+=========
+TODO: These are incomplete
+
+::
+
+  > version=0.xx
+  > echo $version > VERSION.txt
+  > git commit VERSION.txt -m 'Version $version'
+  > git tag v$version

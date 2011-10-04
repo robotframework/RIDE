@@ -1,0 +1,144 @@
+/* Summary links */
+a.summary_fail {
+    color: red !important;
+    font-weight: bold;
+}
+a.summary_pass {
+    color: #009900 !important;
+}
+/* Generic table styles */
+table {
+    background: white;
+    border: 1px solid black;
+    border-collapse: collapse;
+    empty-cells: show;
+    margin: 0 1px;
+}
+th {
+    background: #DCDCF0;
+    color: black;
+}
+/* Summary and total/tag/suite details */
+table.details {
+    clear: both;
+    width: 58em;
+    margin-bottom: 1em;
+}
+table.details th {
+    background: white;
+    width: 10em;
+    white-space: nowrap;
+    text-align: left;
+    vertical-align: top;
+    padding: 0.2em 0.4em;
+}
+table.details td {
+    vertical-align: top;
+    padding: 0.2em 0.4em;
+    white-space: pre-wrap;
+}
+table.details #selector th, table.details #selector td {
+    padding-top: 0.5em;
+    padding-bottom: 1em;
+    white-space: normal;
+}
+#print_selector {
+    display: none;
+}
+/* Tabs - adapted from http://www.htmldog.com/articles/tabs */
+#detail_tabs {
+    list-style: none;
+    padding: 0;
+    margin: 0 1em;
+}
+#detail_tabs li {
+    float: left;
+    background: #DCDCF0;
+    border: 1px solid black;
+    border-bottom-width: 0;
+    margin: 0 0.5em 0 0;
+    padding-top: 0.1em;
+    border-radius: 3px 3px 0 0;
+}
+#detail_tabs li:hover {
+    background: yellow;
+}
+#detail_tabs li a {
+    color: black;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 0 1em;
+}
+#detail_tabs li.tab_selected {
+    position: relative;
+    top: 1px;
+    background: white;
+}
+#detail_tabs li.tab_selected:hover {
+    background: white;
+}
+/* Test details table */
+table#test_details {
+    width: 100%;
+}
+table#test_details tr:hover {
+    background: #F4F4FF;
+}
+table#test_details th, table#test_details td {
+    border: 1px solid black;
+    padding: 0 0.2em;
+}
+table#test_details th {
+    white-space: nowrap;
+}
+table#test_details th.col_crit, table#test_details th.col_status {
+    padding-right: 1.5em;
+}
+table#test_details .col_name {
+    min-width: 13em;
+    font-weight: bold;
+    white-space: pre-wrap;
+}
+table#test_details .col_doc {
+    min-width: 13em;
+    white-space: pre-wrap;
+}
+table#test_details .col_tags {
+    min-width: 10em;
+    white-space: pre-wrap;
+}
+table#test_details .col_crit {
+    width: 2em;
+    text-align: center;
+}
+table#test_details .col_status {
+    width: 3em;
+    text-align: center;
+}
+table#test_details .col_msg {
+    min-width: 13em;
+    white-space: pre-wrap;
+}
+table#test_details .col_times {
+    width: 9em;
+    white-space: nowrap;
+}
+table#test_details td.col_times {
+    text-align: right;
+}
+/* Tablesorter - adapted from Blue Skin available at http://tablesorter.com */
+table#test_details thead tr .header {
+    background-image: url(data:imge/gif;base64,R0lGODlhFQAJAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAkAAAIXjI+AywnaYnhUMoqt3gZXPmVg94yJVQAAOw==);
+    background-repeat: no-repeat;
+    background-position: center right;
+    cursor: pointer;
+}
+table#test_details thead tr .headerSortUp {
+    background-image: url(data:imge/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjB+gC+jP2ptn0WskLQA7);
+    background-color: #8DBDD8;
+}
+table#test_details thead tr .headerSortDown {
+    background-image: url(data:imge/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7);
+    background-color: #8DBDD8;
+}
+
