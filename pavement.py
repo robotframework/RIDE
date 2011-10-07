@@ -15,6 +15,7 @@ BUILD_DIR = ROOT_DIR/'build'
 ROBOTIDE_PACKAGE = ROOT_DIR/'src'/'robotide'
 LIB_TARGET = ROBOTIDE_PACKAGE/'lib'
 LIB_SOURCE = ROOT_DIR/'lib'
+MANIFEST = ROOT_DIR/'MANIFEST.in'
 
 VERSION = open(ROOT_DIR/'VERSION.txt').read().strip()
 FINAL_RELEASE = re.match('^\d.\d*$', VERSION)
@@ -108,8 +109,9 @@ def _windows():
 
 @task
 def _prepare_build():
-    _update_version()
     _clean()
+    _create_manifest()
+    _update_version()
     _release_notes()
     LIB_SOURCE.copytree(LIB_TARGET)
 
@@ -118,12 +120,18 @@ def _clean(keep_dist=False):
         DIST_DIR.rmtree()
     BUILD_DIR.rmtree()
     LIB_TARGET.rmtree()
+    for name in 'setup.py', 'paver-minilib.zip', 'MANIFEST.in':
+        path(name).remove()
 
 def _run_nose(args):
     from nose import run as noserun
     _set_development_path()
     return noserun(defaultTest=os.path.join(ROOT_DIR, 'utest'),
                    argv=['', '--m=^test_'] + args)
+
+def _create_manifest():
+    with open(MANIFEST, 'w') as output:
+        output.write('recursive-include lib *.*')
 
 def _update_version():
     _log('Using version %s from VERSION.txt' % VERSION)
