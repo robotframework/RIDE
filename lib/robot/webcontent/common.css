@@ -1,0 +1,168 @@
+/* Generic and misc styles */
+body {
+    font-family: sans-serif;
+    font-size: 0.8em;
+    color: black;
+    padding: 6px;
+    background: white;
+}
+br {
+    mso-data-placement: same-cell; /* maintain line breaks in Excel */
+}
+a:link, a:visited {
+    text-decoration: none;
+    color: blue;
+}
+a:hover, a:active {
+    text-decoration: underline;
+    color: purple;
+}
+.parent_name {
+    font-size: 0.7em;
+    letter-spacing: -0.07em;
+}
+/* Headers */
+.header {
+    width: 58em;
+    margin: 6px 0;
+}
+h1 {
+    margin: 0;
+    width: 70%;
+}
+#generated {
+    width : 29%;
+    float: right;
+    text-align: right;
+    font-size: 0.9em;
+    white-space: nowrap;
+}
+/* Status text colors */
+.error, .fail {
+    color: red;
+}
+.pass {
+    color: #009900;
+}
+.warn {
+    color: #FFCC00;
+}
+.not_run {
+    color: #663300;
+}
+/* JavaScript disabled box */
+#javascript_disabled {
+    width: 600px;
+    margin: 100px auto 0 auto;
+    padding: 20px;
+    color: #2A2A2E;
+    border: 1px solid #9A9A9E;
+    background: #FAFAFF;
+}
+#javascript_disabled h1 {
+    width: 100%;
+}
+#javascript_disabled ul {
+    font-size: 1.2em;
+}
+#javascript_disabled li {
+    margin: 0.5em 0;
+}
+#javascript_disabled b {
+    font-style: italic;
+}
+/* Report/log link */
+#report_or_log_link {
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    right: 0;
+    background: black;
+    border-radius: 0 0 0 4px;
+    width: 8em;
+    text-align: center;
+}
+#report_or_log_link a {
+    display: block;
+    width: 100%;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    letter-spacing: 0.1em;
+}
+#report_or_log_link a:hover {
+    color: yellow;
+}
+/* Statistics table */
+table.statistics {
+    width: 58em;
+    border-collapse: collapse;
+    empty-cells: show;
+    margin-bottom: 1em;
+}
+table.statistics tr:hover {
+    background: #F4F4FF;
+}
+table.statistics td, table.statistics th {
+    border: 1px solid black;
+    padding: 1px 4px;
+    margin: 0;
+}
+table.statistics th {
+    background: #DCDCF0;
+}
+.col_stat {
+    width: 3em;
+    text-align: center;
+}
+.col_graph {
+   width: 11em;
+}
+.stat_name {
+    float: left;
+}
+.stat_name a, .stat_name span {
+    font-weight: bold;
+}
+.tag_links {
+    font-size: 0.9em;
+    float: right;
+    margin-top: 0.05em;
+}
+.tag_links span {
+    margin-left: 0.2em;
+}
+/* Statistics graph */
+.pass_bar {
+    background: #00F000;
+}
+.fail_bar {
+    background: red;
+}
+.graph {
+    border: 1px solid black;
+    width: 100%;
+    height: 0.75em;
+    padding: 0;
+    background: #E9E9E9;
+}
+.graph div {
+    position: relative;
+    float: left;
+    height: 100%;
+}
+/* HTML in users' suite documentation etc. */
+table.doc {
+    background: transparent;
+    border-collapse: collapse;
+    empty-cells: show;
+    font-size: 0.9em;
+}
+table.doc td {
+    border: 1px solid gray;
+    padding: 0.1em 0.3em;
+    height: 1.2em;
+}
+hr {
+    margin-right: 10em;
+}
