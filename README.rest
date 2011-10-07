@@ -8,4 +8,4 @@ For usage instructions, please refer to the Wiki_
 For development information, refer to the `BUILD.rest`_
 
 .. _Wiki: https://github.com/robotframework/RIDE/wiki
-.. _BUILD.rest: https://github.com/robotframework/RIDE/blob/master/HACKING.rest
+.. _BUILD.rest: https://github.com/robotframework/RIDE/blob/master/BUILD.rest
