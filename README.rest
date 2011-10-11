@@ -1,11 +1,16 @@
 RIDE
 ====
 
-RIDE is a light-weight and intuitive editor for Robot Framework test case files.
+RIDE is a light-weight and intuitive editor for Robot Framework test case
+files. This project was originally hosted at Google Code, and the `issue
+tracker`_ is still there.
 
-For usage instructions, please refer to the Wiki_
+  * Usage instructions and some tips and tricks can be found from the Wiki_
+  * Bug report/enhancement request? Use the Google Code `issue trakcer`_.
+  * Any questions? Do not hesitate to use the `mailing list`_.
+  * Development information is in `BUILD`_ file.
 
-For development information, refer to the `BUILD.rest`_
-
+.. _issue tracker: http://code.google.com/p/robotframework-ride/issues/list
 .. _Wiki: https://github.com/robotframework/RIDE/wiki
-.. _BUILD.rest: https://github.com/robotframework/RIDE/blob/master/BUILD.rest
+.. _BUILD: https://github.com/robotframework/RIDE/blob/master/BUILD.rest
+.. _mailing list: http://groups.google.com/group/robotframework-users/
