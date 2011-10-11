@@ -103,11 +103,11 @@ class SocketListener:
         '''Establish a connection for sending pickles'''
         try:
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.sock.connect((HOST, self.port))
+            self.sock.connect((self.host, self.port))
             self.filehandler = self.sock.makefile('w')
             self.pickler = pickle.Pickler(self.filehandler)
         except socket.error, e:
-            print "unable to open socket:",str(e)
+            print 'unable to open socket to "%s:%s" error: %s' % (self.host, self.port, str(e))
             self.sock = None
 
     def _send_socket(self, name, *args):
