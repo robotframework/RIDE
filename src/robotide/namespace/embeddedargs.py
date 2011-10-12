@@ -12,12 +12,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import re
-
-from robotide.robotapi import VariableSplitter
+from robot.running.userkeyword import EmbeddedArgsTemplate
 
 
-class EmbeddedArgsHandler(object):
+class EmbeddedArgsHandler(EmbeddedArgsTemplate):
 
     def __init__(self, keyword):
         if keyword.arguments:
@@ -26,22 +24,3 @@ class EmbeddedArgsHandler(object):
                 = self._read_embedded_args_and_regexp(keyword.name)
         if not self.embedded_args:
             raise TypeError('Must have embedded arguments')
-
-    def _read_embedded_args_and_regexp(self, string):
-        args = []
-        regexp = ['^']
-        while True:
-            before, variable, rest = self._split_from_variable(string)
-            if before is None:
-                break
-            args.append(variable)
-            regexp.extend([re.escape(before), '(.*?)'])
-            string = rest
-        regexp.extend([re.escape(rest), '$'])
-        return args, re.compile(''.join(regexp), re.IGNORECASE)
-
-    def _split_from_variable(self, string):
-        var = VariableSplitter(string, identifiers=['$'])
-        if var.identifier is None:
-            return None, None, string
-        return string[:var.start], string[var.start:var.end], string[var.end:]
