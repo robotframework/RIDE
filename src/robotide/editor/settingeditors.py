@@ -345,6 +345,7 @@ class _AbstractListEditor(ListEditor):
     def highlight(self, text, expand=False):
         pass
 
+from formatters import ListToStringFormatter
 
 class VariablesListEditor(_AbstractListEditor):
     _titles = ['Variable', 'Value', 'Comment']
@@ -361,7 +362,7 @@ class VariablesListEditor(_AbstractListEditor):
 
     def get_column_values(self, item):
         return [item.name, item.value if isinstance(item.value, basestring)
-                            else ' | '.join(item.value), item.comment]
+                            else ' | '.join(item.value), ListToStringFormatter(item.comment).value]
 
     def OnMoveUp(self, event):
         _AbstractListEditor.OnMoveUp(self, event)
@@ -458,7 +459,7 @@ class ImportSettingListEditor(_AbstractListEditor):
         return not value[0]
 
     def get_column_values(self, item):
-        return [item.type, item.name, item.display_value, item.comment]
+        return [item.type, item.name, item.display_value, ListToStringFormatter(item.comment).value]
 
 
 class MetadataListEditor(_AbstractListEditor):
@@ -484,4 +485,4 @@ class MetadataListEditor(_AbstractListEditor):
         dlg.Destroy()
 
     def get_column_values(self, item):
-        return [item.name, utils.html_escape(item.value), item.comment]
+        return [item.name, utils.html_escape(item.value), ListToStringFormatter(item.comment).value]

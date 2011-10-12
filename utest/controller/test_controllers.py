@@ -146,8 +146,8 @@ class FixtureControllerTest(unittest.TestCase):
         assert_false(self.ctrl.dirty)
 
     def test_setting_comment(self):
-        self.ctrl.set_comment('My comment')
-        assert_equals(self.ctrl.comment, 'My comment')
+        self.ctrl.set_comment(['My comment'])
+        assert_equals(self.ctrl.comment.as_list(), ['# My comment'])
         assert_true(self.ctrl.dirty)
 
 
@@ -438,24 +438,6 @@ class MetadataListControllerTest(unittest.TestCase):
 
     def _get_metadata(self, index):
         return self.tcf.setting_table.metadata[index]
-
-
-class TestOldStyleMetadata(unittest.TestCase):
-
-    def setUp(self):
-        self.tcf = TestCaseFile()
-        self.tcf.setting_table.add_metadata('Meta name', 'Some value')
-        self.ctrl = MetadataListController(TestCaseFileController(self.tcf),
-                                           self.tcf.setting_table)
-        SETTINGS['metadata style'] = 'old'
-
-    def tearDown(self):
-        SETTINGS['metadata style'] = 'new'
-
-    def test_old_style_serialization(self):
-        assert_equals(self.tcf.setting_table.metadata[0].as_list(),
-                      ['Meta: Meta name', 'Some value'])
-
 
 
 class FakeListController(_WithListOperations):

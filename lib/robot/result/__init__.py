@@ -12,5 +12,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from testsuite import TestSuite
+from testcase import TestCase
+from keyword import Keyword
+from message import Message
 
-from resultwriter import ResultWriter

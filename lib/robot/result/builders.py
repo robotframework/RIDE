@@ -13,248 +13,276 @@
 #  limitations under the License.
 
 from __future__ import with_statement
-import os
-import os.path
-import re
-import sys
-import tempfile
-import codecs
 
-from robot.output import LOGGER
-from robot.result.jsondatamodel import SeparatingWriter
-from robot.version import get_full_version
-from robot import utils
+from robot.errors import DataError
+from robot.utils import ET, XmlSource
 
-try:
-    from org.robotframework.RobotRunner import getResourceAsStream
-except ImportError:  # Occurs unless using robotframework.jar
-    JarReader = None
-else:
-    from java.io import BufferedReader, InputStreamReader
-    def JarReader(path):
-        return BufferedReader(InputStreamReader(getResourceAsStream(path)))
+from executionresult import ExecutionResult, CombinedExecutionResult
+from suiteteardownfailed import SuiteTeardownFailureHandler
 
 
-class _Builder(object):
-
-    def __init__(self, context):
-        self._settings = context.settings
-        self._context = context
-        self._path = self._parse_file(self._type)
-
-    def build(self):
-        raise NotImplementedError(self.__class__.__name__)
-
-    def _parse_file(self, name):
-        value = self._settings[name]
-        return value if value != 'NONE' else None
+def ResultFromXML(*sources):
+    if not sources:
+        raise DataError('One or more data source needed.')
+    if len(sources) > 1:
+        return CombinedExecutionResult(*[ResultFromXML(src) for src in sources])
+    source = XmlSource(sources[0])
+    try:
+        return ExecutionResultBuilder(source).build(ExecutionResult())
+    except DataError, err:
+        raise DataError("Reading XML source '%s' failed: %s"
+                        % (source, unicode(err)))
 
 
-class OutputBuilder(_Builder):
-    _type = 'Output'
-    _temp_file = None
+class ExecutionResultBuilder(object):
 
-    def build(self):
-        output_file = self._output_file()
-        self._context.result_from_xml.serialize_output(output_file, log=not self._temp_file)
-        return output_file
+    def __init__(self, source):
+        self._source = source
 
-    def _output_file(self):
-        if self._path:
-            return self._path
-        handle, output_file = tempfile.mkstemp(suffix='.xml', prefix='rebot-')
-        os.close(handle)
-        self._temp_file = output_file
-        return output_file
-
-    def finalize(self):
-        if self._temp_file:
-            os.remove(self._temp_file)
+    def build(self, result):
+        elements = ElementStack(RootElement())
+        with self._source as source:
+            for action, elem in ET.iterparse(source, events=('start', 'end')):
+               result = getattr(elements, action)(elem, result)
+        SuiteTeardownFailureHandler(result.generator).visit_suite(result.suite)
+        return result
 
 
-class XUnitBuilder(_Builder):
-    _type = 'XUnitFile'
+class ElementStack(object):
 
-    def build(self):
-        if self._path:
-            self._context.result_from_xml.serialize_xunit(self._path)
+    def __init__(self, root_element):
+        self._elements = [root_element]
 
+    @property
+    def _current(self):
+        return self._elements[-1]
 
-class _HTMLFileBuilder(_Builder):
-    _type = NotImplemented
-    _template = NotImplemented
+    def start(self, elem, result):
+        self._elements.append(self._current.child_element(elem.tag))
+        return self._current.start(elem, result)
 
-    def build(self):
-        if self._path:
-            self._context.data_model.set_settings(self._get_settings())
-            self._format_data()
-            if self._write_file():
-                LOGGER.output_file(self._type, self._path)
-
-    def _url_from_path(self, source, destination):
-        if not destination:
-            return None
-        return utils.get_link_path(destination, os.path.dirname(source))
-
-    def _write_file(self):
-        try:
-            with codecs.open(self._path, 'w', encoding='UTF-8') as outfile:
-                writer = HTMLFileWriter(outfile, self._context.data_model)
-                for line in _WebContentFile(self._template):
-                    writer.line(line)
-        except EnvironmentError, err:
-            LOGGER.error("Opening '%s' failed: %s"
-                         % (err.filename, err.strerror))
-            return False
-        return True
+    def end(self, elem, result):
+        result = self._current.end(elem, result)
+        elem.clear()
+        self._elements.pop()
+        return result
 
 
-class LogBuilder(_HTMLFileBuilder):
-    _type = 'Log'
-    _template = 'log.html'
+class _Element(object):
+    tag = ''
 
-    def _format_data(self):
-        if self._context.data_model._split_results:
-            self._write_split_tests()
+    def start(self, elem, result):
+        return result
 
-    def _write_split_tests(self):
-        basename = os.path.splitext(self._path)[0]
-        for index, (keywords, strings) in enumerate(self._context.data_model._split_results):
-            index += 1  # enumerate accepts start index only in Py 2.6+
-            self._write_test(index, keywords, strings, '%s-%d.js' % (basename, index))
+    def end(self, elem, result):
+        return result
 
-    def _write_test(self, index, keywords, strings, path):
-        # TODO: Refactor heavily - ask Jussi or Peke for more details
-        with codecs.open(path, 'w', encoding='UTF-8') as outfile:
-            writer = SeparatingWriter(outfile, '')
-            writer.dump_json('window.keywords%d = ' % index, keywords)
-            writer.dump_json('window.strings%d = ' % index, strings)
-            writer.write('window.fileLoading.notify("%s");\n' % os.path.basename(path))
+    def child_element(self, tag):
+        # TODO: replace _children() list with dict
+        for child_type in self._children():
+            if child_type.tag == tag:
+                return child_type()
+        raise DataError("Incompatible XML element '%s'" % tag)
 
-    def _get_settings(self):
-        return  {
-            'title': self._settings['LogTitle'],
-            'reportURL': self._url_from_path(self._path,
-                                             self._parse_file('Report')),
-            'splitLogBase': os.path.basename(os.path.splitext(self._path)[0])
-        }
+    def _children(self):
+        return []
 
 
-class ReportBuilder(_HTMLFileBuilder):
-    _type = 'Report'
-    _template = 'report.html'
+class _CollectionElement(_Element):
 
-    def _format_data(self):
-        self._context.data_model.remove_errors()
-        self._context.data_model.remove_keywords()
-
-    def _get_settings(self):
-        return {
-            'title': self._settings['ReportTitle'],
-            'background' : self._resolve_background_colors(),
-            'logURL': self._url_from_path(self._path,
-                                          self._parse_file('Log'))
-        }
-
-    def _resolve_background_colors(self):
-        colors = self._settings['ReportBackground']
-        return {'pass': colors[0], 'nonCriticalFail': colors[1], 'fail': colors[2]}
+    def end(self, elem, result):
+        return result.parent
 
 
-class HTMLFileWriter(object):
-    _js_file_matcher = re.compile('src=\"([^\"]+)\"')
-    _css_file_matcher = re.compile('href=\"([^\"]+)\"')
-    _css_media_matcher = re.compile('media=\"([^\"]+)\"')
+class RootElement(_Element):
 
-    def __init__(self, outfile, output):
-        self._outfile = outfile
-        self._output = output
-
-    def line(self, line):
-        if self._is_output_js(line):
-            self._write_output_js()
-        elif self._is_js_line(line):
-            self._inline_js_file(line)
-        elif self._is_css_line(line):
-            self._inline_css_file(line)
-        elif self._is_meta_generator_line(line):
-            self._write_meta_generator()
-        else:
-            self._write(line)
-
-    def _is_output_js(self, line):
-        return line.startswith('<!-- OUTPUT JS -->')
-
-    def _is_css_line(self, line):
-        return line.startswith('<link rel="stylesheet"')
-
-    def _is_js_line(self, line):
-        return line.startswith('<script type="text/javascript" src=')
-
-    def _is_meta_generator_line(self, line):
-        return line.startswith('<meta name="Generator" content=')
-
-    def _write_meta_generator(self):
-        self._write('<meta name="Generator" content="%s">\n'
-                    % get_full_version('Robot Framework'))
-
-    def _write_output_js(self):
-        separator = '</script>\n<script type="text/javascript">\n'
-        self._write_tag('script', 'type="text/javascript"',
-                        lambda: self._output.write_to(self._outfile, separator))
-
-    def _inline_js_file(self, line):
-        self._write_tag('script', 'type="text/javascript"',
-                        lambda: self._inline_file(line, self._js_file_matcher))
-
-    def _inline_css_file(self, line):
-        attrs = 'type="text/css" media="%s"' % self._parse_css_media_type(line)
-        self._write_tag('style', attrs,
-                        lambda: self._inline_file(line, self._css_file_matcher))
-
-    def _parse_css_media_type(self, line):
-        return self._css_media_matcher.search(line).group(1)
-
-    def _inline_file(self, line, filename_matcher):
-        self._write_file_content(filename_matcher.search(line).group(1))
-
-    def _write(self, content):
-        self._outfile.write(content)
-
-    def _write_tag(self, tag_name, attrs, content_writer):
-        # TODO: Use utils.HtmlWriter instead. It also eases giving attrs here.
-        self._write('<%s %s>\n' % (tag_name, attrs))
-        content_writer()
-        self._write('</%s>\n\n' % tag_name)
-
-    def _write_file_content(self, source):
-        for line in _WebContentFile(source):
-            self._write(line)
-        self._write('\n')
+    def _children(self):
+        return [RobotElement]
 
 
-class _WebContentFile(object):
-    _fs_base = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                            '..', 'webcontent')
-    _jar_base = '/Lib/robot/webcontent/'
+class RobotElement(_Element):
+    tag = 'robot'
 
-    def __init__(self, filename):
-        self._filename = filename
+    def start(self, elem, result):
+        result.generator = elem.get('generator', 'unknown').split()[0].upper()
+        return result
 
-    def __iter__(self):
-        if JarReader:
-            return self._iterate_file_in_jar()
-        return self._iterate_file_in_filesystem()
+    def _children(self):
+        return [RootSuiteElement, StatisticsElement, ErrorsElement]
 
-    def _iterate_file_in_filesystem(self):
-        path = os.path.join(self._fs_base, self._filename)
-        with codecs.open(path, 'r', encoding='UTF-8') as file:
-            for line in file:
-                yield line
 
-    def _iterate_file_in_jar(self):
-        file = JarReader(self._jar_base + self._filename)
-        line = file.readLine()
-        while line is not None:
-            yield line + '\n'
-            line = file.readLine()
+class SuiteElement(_CollectionElement):
+    tag = 'suite'
+
+    def start(self, elem, result):
+        return result.suites.create(name=elem.get('name'),
+                                    source=elem.get('source'))
+
+    def _children(self):
+        return [SuiteElement, DocElement, SuiteStatusElement,
+                KeywordElement, TestCaseElement, MetadataElement]
+
+
+class RootSuiteElement(SuiteElement):
+
+    def start(self, elem, result):
+        self._result = result
+        self._result.suite.name = elem.get('name')
+        self._result.suite.source = elem.get('source')
+        return self._result.suite
+
+    def end(self, elem, result):
+        return self._result
+
+
+class TestCaseElement(_CollectionElement):
+    tag = 'test'
+
+    def start(self, elem, result):
+        return result.tests.create(name=elem.get('name'),
+                                   timeout=elem.get('timeout'))
+
+    def _children(self):
+        return [KeywordElement, TagsElement, DocElement, TestStatusElement]
+
+
+class KeywordElement(_CollectionElement):
+    tag = 'kw'
+
+    def start(self, elem, result):
+        return result.keywords.create(name=elem.get('name'),
+                                      timeout=elem.get('timeout'),
+                                      type=elem.get('type'))
+
+    def _children(self):
+        return [DocElement, ArgumentsElement, KeywordElement, MessageElement,
+                KeywordStatusElement]
+
+
+class MessageElement(_Element):
+    tag = 'msg'
+
+    def end(self, elem, result):
+        html = elem.get('html', 'no') == 'yes'
+        linkable = elem.get('linkable', 'no') == 'yes'
+        result.messages.create(elem.text or '', elem.get('level'),
+                               html, elem.get('timestamp'), linkable)
+        return result
+
+
+class _StatusElement(_Element):
+    tag = 'status'
+
+    # TODO: Could elements handle default values themselves?
+
+    def _set_status(self, elem, result):
+        result.status = elem.get('status', 'FAIL').upper()
+
+    def _set_message(self, elem, result):
+        result.message = elem.text or ''
+
+    def _set_times(self, elem, result):
+        result.starttime = elem.get('starttime', 'N/A')
+        result.endtime = elem.get('endtime', 'N/A')
+
+
+class KeywordStatusElement(_StatusElement):
+
+    def end(self, elem, result):
+        self._set_status(elem, result)
+        self._set_times(elem, result)
+        return result
+
+
+class SuiteStatusElement(_StatusElement):
+
+    def end(self, elem, result):
+        self._set_message(elem, result)
+        self._set_times(elem, result)
+        return result
+
+
+class TestStatusElement(_StatusElement):
+
+    def end(self, elem, result):
+        self._set_status(elem, result)
+        self._set_message(elem, result)
+        self._set_times(elem, result)
+        return result
+
+
+class DocElement(_Element):
+    tag = 'doc'
+
+    def end(self, elem, result):
+        result.doc = elem.text or ''
+        return result
+
+
+class MetadataElement(_Element):
+    tag = 'metadata'
+
+    def _children(self):
+        return [MetadataItemElement]
+
+
+class MetadataItemElement(_Element):
+    tag = 'item'
+
+    def _children(self):
+        return [MetadataItemElement]
+
+    def end(self, elem, result):
+        result.metadata[elem.get('name')] = elem.text or ''
+        return result
+
+
+class TagsElement(_Element):
+    tag = 'tags'
+
+    def _children(self):
+        return [TagElement]
+
+
+class TagElement(_Element):
+    tag = 'tag'
+
+    def end(self, elem, result):
+        result.tags.add(elem.text or '')
+        return result
+
+
+class ArgumentsElement(_Element):
+    tag = 'arguments'
+
+    def _children(self):
+        return [ArgumentElement]
+
+
+class ArgumentElement(_Element):
+    tag = 'arg'
+
+    def end(self, elem, result):
+        result.args.append(elem.text or '')
+        return result
+
+
+class ErrorsElement(_Element):
+    tag = 'errors'
+
+    def start(self, elem, result):
+        self._result = result
+        return self._result.errors
+
+    def end(self, elem, result):
+        return self._result
+
+    def _children(self):
+        return [MessageElement]
+
+
+class StatisticsElement(_Element):
+    tag = 'statistics'
+
+    def child_element(self, tag):
+        return self

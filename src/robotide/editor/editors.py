@@ -24,7 +24,7 @@ from robotide.controller.settingcontrollers import (DocumentationController,
 from robotide.publish import (RideItemSettingsChanged,
                               RideInitFileRemoved,
                               RideFileNameChanged)
-from robot.parsing.settings import _Setting
+from robot.parsing.settings import Setting
 from robotide.context import SETTINGS
 from robotide.widgets.button import ButtonWithHandler
 from robotide.widgets.sizers import HorizontalSizer
@@ -161,7 +161,7 @@ class _RobotTableEditor(EditorPanel):
 
     def highlight_cell(self, obj, row, column):
         '''Highlight the given object at the given row and column'''
-        if isinstance(obj, _Setting):
+        if isinstance(obj, Setting):
             setting_editor = self._get_settings_editor(obj)
             if setting_editor and hasattr(setting_editor, "highlight"):
                 setting_editor.highlight(column)

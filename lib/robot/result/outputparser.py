@@ -13,27 +13,11 @@
 #  limitations under the License.
 
 from __future__ import with_statement
-try:
-  from lxml import etree
-except ImportError:
-  try:
-    # Python 2.5
-    import xml.etree.cElementTree as etree
-  except ImportError:
-    try:
-      # Python 2.5
-      import xml.etree.ElementTree as etree
-    except ImportError:
-      try:
-        # normal cElementTree install
-        import cElementTree as etree
-      except ImportError:
-        # normal ElementTree install
-        import elementtree.ElementTree as etree
+from robot.utils.etreewrapper import ET
 
-from robot.result.elementhandlers import RootHandler
+from robot.result.elementhandlers import RootHandler, CombiningRobotHandler
 from robot.result.parsingcontext import Context
-from robot.result.jsondatamodel import DataModel
+from robot.result.jsondatamodel import DataModelWriter
 
 
 class OutputParser(object):
@@ -45,21 +29,35 @@ class OutputParser(object):
 
     def parse(self, path):
         with open(path, 'r') as outputfile:
-            return self._parse_fileobj(outputfile)
+            self._parse_fileobj(outputfile)
+            return self._get_data_model()
 
     def _parse_fileobj(self, outputfile):
-        for action, elem in etree.iterparse(outputfile, events=('start', 'end')):
+        for action, elem in ET.iterparse(outputfile, events=('start', 'end')):
             if action == 'start':
                 self.startElement(elem.tag, elem.attrib)
             elif action == 'end':
                 self.endElement(elem.text or '')
-        return DataModel(self._root_handler.data, self._context.split_results)
+                elem.clear()
+
+    def _get_data_model(self):
+        return DataModelWriter(self._root_handler.data, self._context.split_results)
 
     def startElement(self, name, attrs):
-        self._text = []
         handler = self._handler_stack[-1].get_handler_for(name, attrs)
         self._handler_stack.append(handler)
 
     def endElement(self, text):
         handler = self._handler_stack.pop()
         self._handler_stack[-1].add_child_data(handler.end_element(text))
+
+
+class CombiningOutputParser(OutputParser):
+
+    def __init__(self,log_path='NONE', split_log=False):
+        OutputParser.__init__(self, log_path, split_log)
+        self._handler_stack.append(CombiningRobotHandler(self._context))
+
+    def _get_data_model(self):
+        self.endElement('')
+        return DataModelWriter(self._root_handler.data, self._context.split_results)

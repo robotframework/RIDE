@@ -15,6 +15,8 @@
 import re
 
 from itertools import chain
+from robot.parsing.settings import Comment
+
 from robotide.controller.basecontroller import ControllerWithParent,\
     _BaseController
 from robotide.publish.messages import RideImportSettingChanged, \
@@ -27,8 +29,6 @@ class _SettingController(ControllerWithParent):
 
     def __init__(self, parent_controller, data):
         self._parent = parent_controller
-        if data.comment:
-            data.comment = data.comment.strip()
         self._data = data
         self.label = self._label(self._data)
         self._init(self._data)
@@ -59,7 +59,7 @@ class _SettingController(ControllerWithParent):
 
     @property
     def comment(self):
-        return self._data.comment or ''
+        return self._data.comment
 
     @property
     def keyword_name(self):
@@ -84,6 +84,8 @@ class _SettingController(ControllerWithParent):
 
     def set_comment(self, comment):
         if comment != self.comment:
+            if not isinstance(comment, Comment):
+                comment = Comment(comment)
             self._data.comment = comment
             self.mark_dirty()
 

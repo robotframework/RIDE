@@ -12,15 +12,28 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-"""Module to configure Python's standard `logging` module.
-
-After this module is imported, messages logged with `logging` module
-are, by default, propagated to Robot's log file.
-"""
-
 import logging
 
 from robot.api import logger
+
+
+LEVELS = {'TRACE': logging.NOTSET,
+          'DEBUG': logging.DEBUG,
+          'INFO': logging.INFO,
+          'WARN': logging.WARNING}
+
+
+def initialize(level):
+    logging.getLogger().addHandler(RobotHandler())
+    set_level(level)
+
+
+def set_level(level):
+    try:
+        level = LEVELS[level.upper()]
+    except KeyError:
+        return
+    logging.getLogger().setLevel(level)
 
 
 class RobotHandler(logging.Handler):
@@ -32,22 +45,8 @@ class RobotHandler(logging.Handler):
     def _get_logger_method(self, level):
         if level >= logging.WARNING:
             return logger.warn
-        if level <= logging.DEBUG:
+        if level >= logging.INFO:
+            return logger.info
+        if level >= logging.DEBUG:
             return logger.debug
-        return logger.info
-
-
-class NullStream(object):
-
-    def write(self, message):
-        pass
-
-    def close(self):
-        pass
-
-    def flush(self):
-        pass
-
-
-logging.basicConfig(level=logging.NOTSET, stream=NullStream())
-logging.getLogger().addHandler(RobotHandler())
+        return logger.trace

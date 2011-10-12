@@ -12,7 +12,6 @@ class StepController(object):
     def __init__(self, parent, step):
         self._init(parent, step)
         self._step.args = self._change_last_empty_to_empty_var(self._step.args, self._step.comment)
-        self._step.comment = self._remove_whitespace(self._step.comment)
 
     def _init(self, parent, step):
         self.parent = parent
@@ -23,10 +22,6 @@ class StepController(object):
         if comment:
             return args
         return args[:-1] + ['${EMPTY}'] if args and args[-1] == '' else args
-
-    def _remove_whitespace(self, comment):
-        # TODO: This can be removed with RF 2.6
-        return comment.strip() if comment else comment
 
     def get_keyword_info(self, kw):
         if not kw:

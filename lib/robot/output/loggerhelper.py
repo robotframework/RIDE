@@ -12,9 +12,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-
 from robot import utils
 from robot.errors import DataError
+from robot.model import Message as BaseMessage
 
 
 LEVELS = {
@@ -61,15 +61,17 @@ class AbstractLogger:
         raise NotImplementedError(self.__class__)
 
 
-class Message(object):
+class Message(BaseMessage):
+    __slots__ = []
 
-    def __init__(self, message, level='INFO', html=False, timestamp=None, linkable=False):
-        self.message = self._get_message(message)
-        self.level, self.html = self._get_level_and_html(level, html)
-        self.timestamp = self._get_timestamp(timestamp)
-        self.linkable = linkable
+    def __init__(self, message, level='INFO', html=False, timestamp=None,
+                 linkable=False):
+        message = self._normalize_message(message)
+        level, html = self._get_level_and_html(level, html)
+        timestamp = self._get_timestamp(timestamp)
+        BaseMessage.__init__(self, message, level, html, timestamp, linkable)
 
-    def _get_message(self, msg):
+    def _normalize_message(self, msg):
         if not isinstance(msg, basestring):
             msg = utils.unic(msg)
         return msg.replace('\r\n', '\n')
@@ -87,15 +89,6 @@ class Message(object):
             return timestamp
         return utils.get_timestamp(daysep='', daytimesep=' ',
                                    timesep=':', millissep='.')
-
-    def get_timestamp(self, sep=' '):
-        return self.timestamp.replace(' ', sep)
-
-    @property
-    def time(self):
-        if ' ' not in self.timestamp:
-            return self.timestamp
-        return self.timestamp.split()[1]
 
 
 class IsLogged:
@@ -121,16 +114,17 @@ class IsLogged:
 
 class AbstractLoggerProxy:
     _methods = NotImplemented
+    _no_method = lambda *args: None
 
     def __init__(self, logger):
         self.logger = logger
-        default = lambda *args: None
         for name in self._methods:
-            try:
-                method = getattr(logger, name)
-            except AttributeError:
-                method = getattr(logger, self._toCamelCase(name), default)
-            setattr(self, name, method)
+            setattr(self, name, self._get_method(logger, name))
+
+    def _get_method(self, logger, name):
+        if hasattr(logger, name):
+            return getattr(logger, name)
+        return getattr(logger, self._toCamelCase(name), self._no_method)
 
     def _toCamelCase(self, name):
         parts = name.split('_')

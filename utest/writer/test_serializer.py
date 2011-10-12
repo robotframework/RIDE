@@ -44,7 +44,7 @@ class _TestSerializer(object):
     def _populate_setting_table(self, setting_table):
         setting_table.add_library('MyLibrary',
                                   ['argument', 'WITH NAME', 'My Alias'],
-                                  comment='My library comment')
+                                  comment=['My library comment'])
         setting_table.add_variables('MyVariables',
                                     ['args', 'args 2', 'args 3', 'args 4',
                                      'args 5', 'args 6', 'args 7', 'args 8',
@@ -55,34 +55,34 @@ class _TestSerializer(object):
     def _populate_variable_table(self, variable_table):
         variable_table.add('MyVar', ['val1', 'val2', 'val3', 'val4', 'val5',
                                      'val6', 'val6', 'val7', 'val8', 'val9'],
-                           comment='var comment')
+                           comment=['var comment'])
 
     def _populate_keyword_table(self, keyword_table):
         kw = keyword_table.add('My Keyword')
-        kw.add_step([], comment='Comment row')
-        kw.add_step([], comment='Comment row 2')
+        kw.add_step([], comment=['Comment row'])
+        kw.add_step([], comment=['Comment row 2'])
         kw.add_step(['My Step 1', 'args', 'args 2', 'args 3', 'args 4',
                                  'args 5', 'args 6', 'args 7', 'args 8',
-                                 'args 9'], comment='step 1 comment')
+                                 'args 9'], comment=['step 1 comment'])
         loop = kw.add_for_loop(['${param1}', '${param2}', 'IN',
                                 '${data 1}', '${data 2}', '${data 3}',
                                 '${data 4}', '${data 5}', '${data 6}'])
         loop.add_step(['Loop Step', 'args', 'args 2', 'args 3', 'args 4',
                                  'args 5', 'args 6', 'args 7', 'args 8',
-                                 'args 9'], comment='loop step comment')
+                                 'args 9'], comment=['loop step comment'])
         loop.add_step(['Loop Step 2'])
         kw.add_step(['My Step 2', 'my step 2 arg', 'second arg'],
-                    comment='step 2 comment')
-        kw.doc.populate('Documentation', comment='Comment for doc')
+                    comment=['step 2 comment'])
+        kw.doc.populate('Documentation', comment=['Comment for doc'])
         kw.return_.populate(['args 1', 'args 2'])
 
     def _populate_testcase_table(self, testcase_table):
         testcase_table.header = ['Test Cases', 'header1', 'header2']
         tc = testcase_table.add('My Test Case')
         tc.doc.populate('This is a long comment that spans several columns')
-        tc.add_step(['My TC Step 1', 'my step arg'], comment='step 1 comment')
+        tc.add_step(['My TC Step 1', 'my step arg'], comment=['step 1 comment'])
         tc.add_step(['My TC Step 2', 'my step  2 arg', 'second arg'],
-                    comment='step 2 comment')
+                    comment=['step 2 comment'])
         tc.teardown.populate(['1 minute', 'args'])
 
     def get_serialization_output(self, datafile, pipe_separator=False, line_separator=os.linesep):

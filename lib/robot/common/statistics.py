@@ -15,6 +15,7 @@
 import re
 
 from robot import utils
+from robot.model.tags import TagPatterns
 
 
 class Statistics:
@@ -28,12 +29,16 @@ class Statistics:
         self.total = TotalStatistics(self.suite)
         self.tags.sort()
 
+    #TODO: Replace with visit
     def serialize(self, serializer):
         serializer.start_statistics(self)
         self.total.serialize(serializer)
         self.tags.serialize(serializer)
         self.suite.serialize(serializer)
         serializer.end_statistics(self)
+
+    def visit(self, visitor):
+        self.serialize(visitor)
 
 
 class Stat:
@@ -61,11 +66,43 @@ class Stat:
         self.failed += self.passed
         self.passed = 0
 
+    def add_suite(self, suite):
+        for test in suite.tests:
+            if self._is_included(test):
+                self.add_test(test)
+        for suite in suite.suites:
+            self.add_stat(self._subsuite_stats(suite))
+
+    def _is_included(self, test):
+        return True
+
+    def _subsuite_stats(self, suite):
+        return suite.all_stats
+
     def __cmp__(self, other):
         return cmp(self.name, other.name)
 
     def __nonzero__(self):
         return self.failed == 0
+
+
+class CriticalStats(Stat):
+
+    def __init__(self, suite):
+        Stat.__init__(self)
+        self.add_suite(suite)
+
+    def _is_included(self, test):
+        return test.critical == 'yes'
+
+    def _subsuite_stats(self, suite):
+        return suite.critical_stats
+
+class AllStats(Stat):
+
+    def __init__(self, suite):
+        Stat.__init__(self)
+        self.add_suite(suite)
 
 
 class SuiteStat(Stat):
@@ -197,7 +234,7 @@ class TagStatistics:
                 self.stats[name] = TagStat(name, self._get_doc(name),
                                            self._get_links(name),
                                            combined=pattern)
-            if test.is_included([pattern], []):
+            if TagPatterns(pattern).match(test.tags):
                 self.stats[name].add_test(test)
 
     def serialize(self, serializer):

@@ -120,9 +120,6 @@ class BaseTestSuite(_TestAndSuiteHelper):
         for name, value in metalist:
             self.metadata[name] = value
 
-    def get_metadata(self):
-        return self.metadata.items()
-
     def get_test_count(self):
         count = len(self.tests)
         for suite in self.suites:
@@ -419,3 +416,6 @@ class _Critical:
             if self.is_critical(tag):
                 return True
         return not self.tags
+
+    def __nonzero__(self):
+        return bool(self.tags or self.nons)

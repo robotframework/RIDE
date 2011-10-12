@@ -25,15 +25,6 @@ class UpdatingArgumentsTest(unittest.TestCase):
         self.assertEqual(FakeStep()._change_last_empty_to_empty_var([''], 'comment'),
                          [''])
 
-class UpdatingCommentsTest(unittest.TestCase):
-
-    def test_stripping_comments(self):
-        self.assertEqual(FakeStep()._remove_whitespace(' comment '),
-                         'comment')
-
-    def test_stripping_empty_comment(self):
-        self.assertEqual(FakeStep()._remove_whitespace(None), None)
-
 
 class StepContainsKeywordTest(unittest.TestCase, FakeStep):
 

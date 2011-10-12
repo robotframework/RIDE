@@ -57,6 +57,7 @@ class _BaseSettings(object):
 
     def __init__(self, options={}, log=True):
         self._opts = {}
+        self._cli_opts = self._cli_opts.copy()
         self._cli_opts.update(self._extra_cli_opts)
         self._process_cli_opts(options, log)
         if log: LOGGER.info('Settings:\n%s' % unicode(self))
@@ -101,7 +102,7 @@ class _BaseSettings(object):
             return [self._process_tag_stat_combine(v) for v in value]
         if name == 'TagStatLink':
             return [v for v in [self._process_tag_stat_link(v) for v in value] if v]
-        if name == 'RemoveKeywords':
+        if name in ['RemoveKeywords', 'LogLevel']:
             return value.upper()
         if name in ['SplitOutputs', 'Summary', 'SummaryTitle']:
             return self._removed_in_26(name, log)
@@ -281,3 +282,22 @@ class RebotSettings(_BaseSettings):
 
     def _escape(self, value):
         return value
+
+    def result_configuration(self):
+        opts = dict((opt, self[setting]) for opt, setting in
+                [('name', 'Name'),
+                 ('doc', 'Doc'),
+                 ('metadata', 'Metadata'),
+                 ('set_tags', 'SetTag'),
+                 ('include_tags', 'Include'),
+                 ('exclude_tags', 'Exclude'),
+                 ('include_suites', 'SuiteNames'),
+                 ('include_tests', 'TestNames'),
+                 ('remove_keywords', 'RemoveKeywords'),
+                 ('log_level', 'LogLevel'),
+                 ('critical', 'Critical'),
+                 ('noncritical', 'NonCritical'),
+                 ('starttime', 'StartTime'),
+                 ('endtime', 'EndTime')])
+        opts['metadata'] = dict(opts['metadata'])
+        return opts

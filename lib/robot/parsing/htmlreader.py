@@ -89,8 +89,13 @@ class HtmlReader(HTMLParser.HTMLParser):
         self.handle_data(value, decode=False)
 
     def _handle_charref(self, number):
+        if number.lower().startswith('x'):
+            number = number[1:]
+            base = 16
+        else:
+            base = 10
         try:
-            return unichr(int(number))
+            return unichr(int(number, base))
         except ValueError:
             return '&#'+number+';'
 

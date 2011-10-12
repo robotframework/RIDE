@@ -15,16 +15,16 @@
 import wx
 
 from robotide.validators import (ScalarVariableNameValidator,
-                                ListVariableNameValidator, TimeoutValidator,
-                                NonEmptyValidator, ArgumentsValidator,
-                                TestCaseNameValidator, UserKeywordNameValidator)
+    ListVariableNameValidator, TimeoutValidator, ArgumentsValidator,
+    TestCaseNameValidator, UserKeywordNameValidator)
 from robotide import utils
 from robotide.context import Font
 from robotide.ui.components import StaticText
-
 from robotide.widgets import Dialog
+
 from fieldeditors import ValueEditor, ListValueEditor, MultiLineEditor,\
     ContentAssistEditor, VariableNameEditor
+from formatters import ListToStringFormatter
 from dialoghelps import get_help
 
 
@@ -54,8 +54,8 @@ class _Dialog(Dialog):
         self._editors[0].set_focus()
 
     def _add_comment_editor(self, item):
-        self._comment_editor = ValueEditor(self, item.comment if item else '',
-                                           'Comment')
+        comment = ListToStringFormatter(item.comment).value if item else ''
+        self._comment_editor = ValueEditor(self, comment, 'Comment')
         self._sizer.Add(self._comment_editor)
 
     def _create_line(self):

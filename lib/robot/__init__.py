@@ -15,6 +15,7 @@
 import sys
 import os
 
+
 if __name__ == '__main__':
     sys.stderr.write("Use 'runner' or 'rebot' for executing.\n")
     sys.exit(252)  # 252 == DATA_ERROR
@@ -45,7 +46,7 @@ import utils
 from output import Output, LOGGER, pyloggingconf
 from conf import RobotSettings, RebotSettings
 from running import TestSuite, STOP_SIGNAL_MONITOR
-from robot.result import ResultWriter
+from robot.reporting import RobotResultWriter, RebotResultWriter
 from errors import (DataError, Information, INFO_PRINTED, DATA_ERROR,
                     STOPPED_BY_USER, FRAMEWORK_ERROR)
 from variables import init_global_variables
@@ -85,7 +86,7 @@ def _parse_arguments(cliargs, usage, **argparser_config):
 
 def _execute(method, datasources, options):
     try:
-        suite = method(*datasources, **options)
+        suite, rc = method(*datasources, **options)
     except DataError, err:
         _report_error(unicode(err), help=True)
         return DATA_ERROR
@@ -97,7 +98,7 @@ def _execute(method, datasources, options):
         _report_error('Unexpected error: %s' % error, details)
         return FRAMEWORK_ERROR
     else:
-        return suite.return_code
+        return rc
 
 
 def run(*datasources, **options):
@@ -117,6 +118,7 @@ def run(*datasources, **options):
     """
     STOP_SIGNAL_MONITOR.start()
     settings = RobotSettings(options)
+    pyloggingconf.initialize(settings['LogLevel'])
     LOGGER.register_console_logger(settings['MonitorWidth'],
                                    settings['MonitorColors'])
     init_global_variables(settings)
@@ -128,9 +130,9 @@ def run(*datasources, **options):
     output.close(suite)
     if settings.is_rebot_needed():
         output, settings = settings.get_rebot_datasource_and_settings()
-        ResultWriter(settings).write_robot_results(output)
+        RobotResultWriter(settings).write_results(output)
     LOGGER.close()
-    return suite
+    return suite, suite.return_code
 
 
 def run_rebot(*datasources, **options):
@@ -151,9 +153,9 @@ def run_rebot(*datasources, **options):
     settings = RebotSettings(options)
     LOGGER.register_console_logger(colors=settings['MonitorColors'])
     LOGGER.disable_message_cache()
-    suite = ResultWriter(settings).write_rebot_results(*datasources)
+    result = RebotResultWriter(settings).write_results(*datasources)
     LOGGER.close()
-    return suite
+    return result.suite, result.return_code
 
 
 def _report_error(message, details=None, help=False):
