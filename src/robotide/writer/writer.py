@@ -58,8 +58,8 @@ class _WriterHelper(object):
     def end_variables(self):
         self._write_empty_row()
 
-    def start_testcases(self):
-        self._write_header(self._testcase_titles)
+    def start_testcases(self, testcase_table):
+        self._write_header(self._testcase_titles, testcase_table.header)
 
     def end_testcases(self):
         pass
@@ -152,7 +152,7 @@ class TsvFileWriter(_WriterHelper):
         self._tc_name = self._uk_name = ''
         return name
 
-    def _write_header(self, row):
+    def _write_header(self, row, headers=None):
         row = self._add_padding(row, padding=row[-1])
         self._writer.writerow(['*%s*' % cell for cell in row])
 
@@ -191,8 +191,9 @@ class SpaceSeparatedTxtWriter(_WriterHelper):
         else:
             self._write_data(content)
 
-    def _write_header(self, title):
-        self._write_row([('*** %s ***' % title)])
+    def _write_header(self, title, headers=None):
+        additional_headers = headers or []
+        self._write_row(['*** %s ***' % title]+additional_headers[1:])
 
     def _write_data(self, data, indent=0):
         data = self._escape_space_separated_format_specific_data(data)
@@ -280,7 +281,7 @@ class HtmlFileWriter(_WriterHelper):
         self._content = table_replacer(table, self._content)
         self._writer = utils.HtmlWriter(StringIO())
 
-    def _write_header(self, titles):
+    def _write_header(self, titles, header=None):
         self._writer.start('tr')
         for i, cell in enumerate(titles):
             self._writer.element('th', cell, self._get_attrs(i, len(titles)))

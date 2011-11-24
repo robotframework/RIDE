@@ -129,7 +129,7 @@ class _WriterSerializer(object):
         self._writer.end_keyword()
 
     def _testcase_table_handler(self, table):
-        self._writer.start_testcases()
+        self._writer.start_testcases(table)
         for tc in table:
             self._handle_testcase(tc)
         self._writer.end_testcases()
