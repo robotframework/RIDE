@@ -174,6 +174,7 @@ class SpaceSeparatedTxtWriter(_WriterHelper):
     def __init__(self, output, line_separator):
         _WriterHelper.__init__(self, output, 8)
         self._line_separator = line_separator
+        self._indent_separator = self._separator
 
     def start_testcase(self, tc):
         self._write_data([tc.name])
@@ -195,6 +196,10 @@ class SpaceSeparatedTxtWriter(_WriterHelper):
     def _write_header(self, title, headers=None):
         additional_headers = headers or []
         self._write_row(['*** %s ***' % title]+additional_headers[1:])
+        if additional_headers[1:]:
+            self._indent_separator = ' '*(len(title)+4)+self._separator
+        else:
+            self._indent_separator = self._separator
 
     def _write_data(self, data, indent=0):
         data = self._escape_space_separated_format_specific_data(data)
@@ -218,7 +223,7 @@ class SpaceSeparatedTxtWriter(_WriterHelper):
 
     def _write_row(self, cells, indent=0):
         if indent:
-            cells.insert(0,self._separator)
+            cells.insert(0,self._indent_separator)
         self._output.write(self._format_row(cells) + self._line_separator)
 
     def _format_row(self, cells):
