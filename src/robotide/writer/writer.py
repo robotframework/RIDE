@@ -197,7 +197,7 @@ class SpaceSeparatedTxtWriter(_WriterHelper):
         additional_headers = headers or []
         self._write_row(['*** %s ***' % title]+additional_headers[1:])
         if additional_headers[1:]:
-            self._indent_separator = ' '*(len(title)+4)+self._separator
+            self._indent_separator = ' '*(len(title)+8)
         else:
             self._indent_separator = self._separator
 
