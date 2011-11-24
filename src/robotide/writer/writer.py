@@ -40,6 +40,9 @@ class _WriterHelper(object):
         self._in_setting_table = False
         self._in_for_loop = False
 
+    def _write(self, data):
+        self._output.write(data)
+
     def close(self, close_output=True):
         if close_output:
             self._output.close()
@@ -196,6 +199,9 @@ class SpaceSeparatedTxtWriter(_WriterHelper):
     def _write_header(self, title, headers=None):
         additional_headers = headers or []
         self._write_row(['*** %s ***' % title]+additional_headers[1:])
+        self._set_indent_separator(title, additional_headers)
+
+    def _set_indent_separator(self, title, additional_headers):
         if additional_headers[1:]:
             self._indent_separator = ' '*(len(title)+8)
         else:
@@ -224,7 +230,7 @@ class SpaceSeparatedTxtWriter(_WriterHelper):
     def _write_row(self, cells, indent=0):
         if indent:
             cells.insert(0,self._indent_separator)
-        self._output.write(self._format_row(cells) + self._line_separator)
+        self._write(self._format_row(cells) + self._line_separator)
 
     def _format_row(self, cells):
         return self._separator.join(cells)
