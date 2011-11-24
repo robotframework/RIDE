@@ -169,6 +169,7 @@ class SpaceSeparatedTxtWriter(_WriterHelper):
     _variable_titles = 'Variables'
     _testcase_titles = 'Test Cases'
     _keyword_titles = 'Keywords'
+    _separator = ' '*4
 
     def __init__(self, output, line_separator):
         _WriterHelper.__init__(self, output, 8)
@@ -217,11 +218,11 @@ class SpaceSeparatedTxtWriter(_WriterHelper):
 
     def _write_row(self, cells, indent=0):
         if indent:
-            cells.insert(0,'  ')
+            cells.insert(0,self._separator)
         self._output.write(self._format_row(cells) + self._line_separator)
 
     def _format_row(self, cells):
-        return '  '.join(cells)
+        return self._separator.join(cells)
 
 
 class PipeSeparatedTxtWriter(SpaceSeparatedTxtWriter):
