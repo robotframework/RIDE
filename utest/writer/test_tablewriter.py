@@ -44,6 +44,17 @@ class TableWriterTest(unittest.TestCase):
             '                      Something else    jeps                   heps'
         )
 
+    def test_ignore_first_column_length_when_only_one_element_in_row(self):
+        self._writer.add_headers(['*** Test Cases ***', 'h1', 'h2'])
+        self._writer.add_row(['Test Case with very long title that should be ignored'])
+        self._writer.add_row(['', 'something', 'something else'])
+        self._writer.write()
+        self._data_should_equal(
+            '*** Test Cases ***    h1           h2',
+            'Test Case with very long title that should be ignored',
+            '                      something    something else'
+        )
+
     def _data_should_equal(self, *expected):
         for exp, act in zip(expected, self._data.split('\n')):
             assert_equals(exp, act)
