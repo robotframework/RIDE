@@ -15,10 +15,17 @@
 
 class TableWriter(object):
 
-    def __init__(self, output, cell_separator, line_separator):
+    def __init__(self,
+                 output,
+                 cell_separator,
+                 line_separator,
+                 line_prefix='',
+                 line_postfix=''):
         self._output = output
         self._cell_separator = cell_separator
         self._line_separator = line_separator
+        self._line_prefix = line_prefix
+        self._line_postfix = line_postfix
         self._headers = None
         self._data = []
 
@@ -31,11 +38,17 @@ class TableWriter(object):
     def write(self):
         separators = self._compute_cell_separators()
         for row, col_separators in zip([self._headers]+self._data, separators):
-            while col_separators:
-                self._output.write(row.pop(0))
-                self._output.write(col_separators.pop(0))
-            self._output.write(row.pop(0))
-            self._output.write(self._line_separator)
+            if row == []:
+                self._output.write(self._line_separator)
+            else:
+                if self._line_prefix:
+                    self._output.write(self._line_prefix)
+                while col_separators and len(row) > 1:
+                    self._output.write(row.pop(0))
+                    self._output.write(col_separators.pop(0))
+                if row:
+                    self._output.write(row.pop(0))
+                self._output.write(self._line_postfix+self._line_separator)
 
     def _compute_cell_separators(self):
         if len(self._headers) < 2:

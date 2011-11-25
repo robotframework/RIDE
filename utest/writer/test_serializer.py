@@ -109,28 +109,28 @@ MyVar    val1    val2    val3    val4    val5    val6    val6
 
     keywords_table = '''*** Keywords ***
 My Keyword
-        [Documentation]    Documentation    # Comment for doc
-        # Comment row
-        # Comment row 2
-        My Step 1    args    args 2    args 3    args 4    args 5    args 6    args 7
-        ...    args 8    args 9    # step 1 comment
-        : FOR    ${param1}    ${param2}    IN    ${data 1}    ${data 2}    ${data 3}    ${data 4}
-        ...    ${data 5}    ${data 6}
-        \    Loop Step    args    args 2    args 3    args 4    args 5    args 6
-        ...    args 7    args 8    args 9    # loop step comment
-        \    Loop Step 2
-        My Step 2    my step 2 arg    second arg    # step 2 comment
-        [Return]    args 1    args 2
+    [Documentation]    Documentation    # Comment for doc
+    # Comment row
+    # Comment row 2
+    My Step 1    args    args 2    args 3    args 4    args 5    args 6    args 7
+    ...    args 8    args 9    # step 1 comment
+    : FOR    ${param1}    ${param2}    IN    ${data 1}    ${data 2}    ${data 3}    ${data 4}
+    ...    ${data 5}    ${data 6}
+    \    Loop Step    args    args 2    args 3    args 4    args 5    args 6
+    ...    args 7    args 8    args 9    # loop step comment
+    \    Loop Step 2
+    My Step 2    my step 2 arg    second arg    # step 2 comment
+    [Return]    args 1    args 2
 
 '''
 
     testcase_table = \
-    '''*** Test Cases ***    header1    header2
+    '''*** Test Cases ***    header1            header2
 My Test Case
                       [Documentation]    This is a long comment that spans several columns
-                      My TC Step 1    my step arg    # step 1 comment
-                      My TC Step 2    my step \ 2 arg    second arg    # step 2 comment
-                      [Teardown]    1 minute    args
+                      My TC Step 1       my step arg                                          # step 1 comment
+                      My TC Step 2       my step \ 2 arg                                      second arg          # step 2 comment
+                      [Teardown]         1 minute                                             args
 
 '''
 
@@ -182,29 +182,29 @@ class TestPipeTxtSerialization(unittest.TestCase, _TestSerializer):
 
 '''
 
-    testcase_table = '''| *** Test Cases *** | header1 | header2 |
+    testcase_table = '''| *** Test Cases *** | header1         | header2 |
 | My Test Case |
 |                    | [Documentation] | This is a long comment that spans several columns |
-|                    | My TC Step 1 | my step arg | # step 1 comment |
-|                    | My TC Step 2 | my step  2 arg | second arg | # step 2 comment |
-|                    | [Teardown] | 1 minute | args |
+|                    | My TC Step 1    | my step arg                                       | # step 1 comment |
+|                    | My TC Step 2    | my step  2 arg                                    | second arg       | # step 2 comment |
+|                    | [Teardown]      | 1 minute                                          | args |
 
 '''
 
     keywords_table = '''| *** Keywords *** |
 | My Keyword |
-|      | [Documentation] | Documentation | # Comment for doc |
-|      | # Comment row |
-|      | # Comment row 2 |
-|      | My Step 1 | args | args 2 | args 3 | args 4 | args 5 | args 6 | args 7 |
-|      | ... | args 8 | args 9 | # step 1 comment |
-|      | : FOR | ${param1} | ${param2} | IN | ${data 1} | ${data 2} | ${data 3} | ${data 4} |
-|      | ... | ${data 5} | ${data 6} |
-|      | \ | Loop Step | args | args 2 | args 3 | args 4 | args 5 | args 6 |
-|      | ... | args 7 | args 8 | args 9 | # loop step comment |
-|      | \ | Loop Step 2 |
-|      | My Step 2 | my step 2 arg | second arg | # step 2 comment |
-|      | [Return] | args 1 | args 2 |
+|  | [Documentation] | Documentation | # Comment for doc |
+|  | # Comment row |
+|  | # Comment row 2 |
+|  | My Step 1 | args | args 2 | args 3 | args 4 | args 5 | args 6 | args 7 |
+|  | ... | args 8 | args 9 | # step 1 comment |
+|  | : FOR | ${param1} | ${param2} | IN | ${data 1} | ${data 2} | ${data 3} | ${data 4} |
+|  | ... | ${data 5} | ${data 6} |
+|  | \ | Loop Step | args | args 2 | args 3 | args 4 | args 5 | args 6 |
+|  | ... | args 7 | args 8 | args 9 | # loop step comment |
+|  | \ | Loop Step 2 |
+|  | My Step 2 | my step 2 arg | second arg | # step 2 comment |
+|  | [Return] | args 1 | args 2 |
 
 '''
 

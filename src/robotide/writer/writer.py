@@ -15,6 +15,7 @@
 import csv
 import os
 import re
+from robotide.writer.tablewriter import TableWriter
 import template
 
 from StringIO import StringIO
@@ -179,6 +180,22 @@ class SpaceSeparatedTxtWriter(_WriterHelper):
         self._line_separator = line_separator
         self._indent_separator = self._separator
 
+    def end_testcases(self):
+        _WriterHelper.end_testcases(self)
+        self._table_writer.write()
+
+    def end_keywords(self):
+        _WriterHelper.end_keywords(self)
+        self._table_writer.write()
+
+    def end_variables(self):
+        _WriterHelper.end_variables(self)
+        self._table_writer.write()
+
+    def end_settings(self):
+        _WriterHelper.end_settings(self)
+        self._table_writer.write()
+
     def start_testcase(self, tc):
         self._write_data([tc.name])
         self._in_tcuk = True
@@ -198,14 +215,8 @@ class SpaceSeparatedTxtWriter(_WriterHelper):
 
     def _write_header(self, title, headers=None):
         additional_headers = headers or []
-        self._write_row(['*** %s ***' % title]+additional_headers[1:])
-        self._set_indent_separator(title, additional_headers)
-
-    def _set_indent_separator(self, title, additional_headers):
-        if additional_headers[1:]:
-            self._indent_separator = ' '*(len(title)+8)
-        else:
-            self._indent_separator = self._separator
+        self._table_writer = TableWriter(self._output, self._separator, self._line_separator)
+        self._table_writer.add_headers(['*** %s ***' % title]+additional_headers[1:])
 
     def _write_data(self, data, indent=0):
         data = self._escape_space_separated_format_specific_data(data)
@@ -229,14 +240,24 @@ class SpaceSeparatedTxtWriter(_WriterHelper):
 
     def _write_row(self, cells, indent=0):
         if indent:
-            cells.insert(0,self._indent_separator)
-        self._write(self._format_row(cells) + self._line_separator)
+            cells.insert(0,'')
+        self._table_writer.add_row(cells)
 
     def _format_row(self, cells):
         return self._separator.join(cells)
 
 
 class PipeSeparatedTxtWriter(SpaceSeparatedTxtWriter):
+
+    _separator = ' | '
+
+    def _write_header(self, title, headers=None):
+        additional_headers = headers or []
+        self._table_writer = TableWriter(self._output, self._separator,
+                                         line_separator=self._line_separator,
+                                         line_prefix='| ',
+                                         line_postfix=' |')
+        self._table_writer.add_headers(['*** %s ***' % title]+additional_headers[1:])
 
     def _escape_whitespaces(self, data):
         return data #FIXME: PipeSeparatedTxtWriter is not a SpaceSeparatedTxtWriter
