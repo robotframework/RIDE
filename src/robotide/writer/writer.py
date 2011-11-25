@@ -141,10 +141,10 @@ class _WriterHelper(object):
 
 
 class TsvFileWriter(_WriterHelper):
-    _setting_titles = ['Setting', 'Value']
-    _variable_titles = ['Variable', 'Value']
-    _testcase_titles = ['Test Case', 'Action', 'Argument']
-    _keyword_titles = ['Keyword', 'Action', 'Argument']
+    _setting_titles = ['Setting']
+    _variable_titles = ['Variable']
+    _testcase_titles = ['Test Case']
+    _keyword_titles = ['Keyword']
 
     def __init__(self, output, line_separator):
         _WriterHelper.__init__(self, output, 8)
@@ -157,7 +157,6 @@ class TsvFileWriter(_WriterHelper):
         return name
 
     def _write_header(self, row, headers=None):
-        row = self._add_padding(row, padding=row[-1])
         self._writer.writerow(['*%s*' % cell for cell in row])
 
     def _write_data(self, data, indent=0):
@@ -269,10 +268,10 @@ class PipeSeparatedTxtWriter(SpaceSeparatedTxtWriter):
 
 
 class HtmlFileWriter(_WriterHelper):
-    _setting_titles = ['Setting', 'Value']
-    _variable_titles = ['Variable', 'Value']
-    _testcase_titles = ['Test Case', 'Action', 'Arguments']
-    _keyword_titles = ['Keyword', 'Action', 'Arguments']
+    _setting_titles = ['Setting']
+    _variable_titles = ['Variable']
+    _testcase_titles = ['Test Case']
+    _keyword_titles = ['Keyword']
     compiled_regexp = re.compile(r'(\\+)n ')
 
     def __init__(self, output, name=None, tmpl=None):

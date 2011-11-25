@@ -242,7 +242,7 @@ class TestPipeTxtSerialization(unittest.TestCase, _TestSerializer):
 
 class TestTsvSerialization(unittest.TestCase, _TestSerializer):
 
-    settings_table = '''*Setting*\t*Value*\t*Value*\t*Value*\t*Value*\t*Value*\t*Value*\t*Value*
+    settings_table = '''*Setting*
 Library\tMyLibrary\targument\tWITH NAME\tMy Alias\t# My library comment\t\t
 Variables\tMyVariables\targs\targs 2\targs 3\targs 4\targs 5\targs 6
 ...\targs 7\targs 8\targs 9\targs 10\targs 11\targs 12\t
@@ -250,13 +250,13 @@ Resource\tMyResource args that are part of the name\t\t\t\t\t\t
 \t\t\t\t\t\t\t
 '''
 
-    variables_table = '''*Variable*\t*Value*\t*Value*\t*Value*\t*Value*\t*Value*\t*Value*\t*Value*
+    variables_table = '''*Variable*
 MyVar\tval1\tval2\tval3\tval4\tval5\tval6\tval6
 ...\tval7\tval8\tval9\t# var comment\t\t\t
 \t\t\t\t\t\t\t
 '''
 
-    keywords_table = '''*Keyword*\t*Action*\t*Argument*\t*Argument*\t*Argument*\t*Argument*\t*Argument*\t*Argument*
+    keywords_table = '''*Keyword*
 My Keyword\t[Documentation]\tDocumentation\t# Comment for doc\t\t\t\t
 \t# Comment row\t\t\t\t\t\t
 \t# Comment row 2\t\t\t\t\t\t
@@ -272,7 +272,7 @@ My Keyword\t[Documentation]\tDocumentation\t# Comment for doc\t\t\t\t
 \t\t\t\t\t\t\t
 '''
 
-    testcase_table = '''*Test Case*\t*Action*\t*Argument*\t*Argument*\t*Argument*\t*Argument*\t*Argument*\t*Argument*
+    testcase_table = '''*Test Case*
 My Test Case\t[Documentation]\tThis is a long comment that spans several columns\t\t\t\t\t
 \tMy TC Step 1\tmy step arg\t# step 1 comment\t\t\t\t
 \tMy TC Step 2\tmy step  2 arg\tsecond arg\t# step 2 comment\t\t\t
