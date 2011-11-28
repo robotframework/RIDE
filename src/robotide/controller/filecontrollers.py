@@ -508,9 +508,12 @@ class ResourceFileController(_FileSystemElement, _DataController):
             return None
         dir = os.path.dirname(source)
         for ctrl in chief_controller.datafiles:
-            if ctrl.is_directory_suite() and ctrl.directory == dir:
+            if ctrl.is_directory_suite() and self._to_os_style(ctrl.directory) == dir:
                 return ctrl
         return None
+
+    def _to_os_style(self, path):
+        return path.replace('/', os.sep)
 
     @property
     def display_name(self):
