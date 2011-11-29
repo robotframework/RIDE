@@ -15,12 +15,13 @@
 import wx
 
 from robotide import context
-from robotide.editor.settingeditors import DocumentationEditor, SettingEditor, TagsEditor, ImportSettingListEditor, VariablesListEditor, MetadataListEditor
+from robotide.editor.settingeditors import (DocumentationEditor, SettingEditor,
+    TagsEditor, ImportSettingListEditor, VariablesListEditor, MetadataListEditor)
 from robotide.ui.components import StaticText
 from robotide.usages.UsageRunner import ResourceFileUsages
 from robotide.utils import RideHtmlWindow
 from robotide.controller.settingcontrollers import (DocumentationController,
-                                                    VariableController, TagsController)
+    VariableController, TagsController)
 from robotide.publish import (RideItemSettingsChanged,
                               RideInitFileRemoved,
                               RideFileNameChanged)
