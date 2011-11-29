@@ -27,22 +27,22 @@ class Spec(object):
     def _init_from_specfile(self, specfile):
         try:
             return self._parse_xml(specfile)
-        except:
+        except Exception:
             # TODO: which exception to catch?
             return [], ''
 
     def _parse_xml(self, file):
-        root = utils.DomWrapper(file)
-        if root.name != 'keywordspec':
+        root = utils.ET.parse(file).getroot()
+        if root.tag != 'keywordspec':
             # TODO: XML validation errors should be logged
             return [], ''
-        kw_nodes = root.get_nodes('keywords/kw') + root.get_nodes('kw')
-        source_type = root.attrs['type']
+        kw_nodes = root.findall('keywords/kw') + root.findall('kw')
+        source_type = root.get('type')
         if source_type == 'resource':
             source_type += ' file'
-        keywords = [ _XMLKeywordContent(node, self.name, source_type)
-                     for node in kw_nodes ]
-        return keywords, root.doc
+        keywords = [_XMLKeywordContent(node, self.name, source_type)
+                     for node in kw_nodes]
+        return keywords, root.find('doc').text or ''
 
 
 class LibrarySpec(Spec):

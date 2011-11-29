@@ -155,14 +155,14 @@ class _XMLKeywordContent(_KeywordInfo):
         self.args = self._format_args(self._parse_args(item))
 
     def _name(self, node):
-        return node.attrs['name']
+        return node.get('name')
 
     def _doc(self, node):
-        return node.get_node('doc').text
+        return node.find('doc').text or ''
 
     def _parse_args(self, node):
-        args_node = node.get_node('arguments')
-        return [ arg_node.text for arg_node in args_node.get_nodes('arg') ]
+        args_node = node.find('arguments')
+        return [arg_node.text for arg_node in args_node.findall('arg')]
 
     def is_library_keyword(self):
         return True

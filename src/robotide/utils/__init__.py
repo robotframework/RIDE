@@ -16,9 +16,9 @@ import os
 import sys
 import inspect
 
-from robot.utils import printable_name, normalize, eq, eq_any, \
+from robot.utils import printable_name, normalize, eq, ET, \
     HtmlWriter, NormalizedDict, timestr_to_secs, secs_to_timestr, normpath,\
-    DomWrapper, unic, asserts, unescape, html_attr_escape,\
+    unic, asserts, unescape, html_attr_escape,\
     get_timestamp
 from components import RideHtmlWindow
 from eventhandler import RideEventHandler
