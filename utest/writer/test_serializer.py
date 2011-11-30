@@ -19,7 +19,9 @@ def assert_repr_with_native_line_separator(first, other):
 
 def assert_repr(first, other, linesep):
     for line1, line2 in zip(first.split(linesep), other.split('\n')):
-        assert_equals(repr(line1), repr(line2))
+        if repr(line1) != repr(line2):
+            msg = "\n%s\n!=\n%s\n\n%s\n!=\n%s" % (first, other, repr(line1), repr(line2))
+            raise AssertionError(msg)
 
 
 class _TestSerializer(object):
@@ -125,12 +127,11 @@ My Keyword
 '''
 
     testcase_table = \
-    '''*** Test Cases ***    header1            header2
-My Test Case
-                      [Documentation]    This is a long comment that spans several columns
-                      My TC Step 1       my step arg                                          # step 1 comment
-                      My TC Step 2       my step \ 2 arg                                      second arg          # step 2 comment
-                      [Teardown]         1 minute                                             args
+    '''*** Test Cases ***  header1          header2
+My Test Case        [Documentation]  This is a long comment that spans several columns
+                    My TC Step 1     my step arg                                        # step 1 comment
+                    My TC Step 2     my step \ 2 arg                                    second arg        # step 2 comment
+                    [Teardown]       1 minute                                           args
 
 '''
 
@@ -183,8 +184,7 @@ class TestPipeTxtSerialization(unittest.TestCase, _TestSerializer):
 '''
 
     testcase_table = '''| *** Test Cases *** | header1         | header2 |
-| My Test Case |
-|                    | [Documentation] | This is a long comment that spans several columns |
+| My Test Case       | [Documentation] | This is a long comment that spans several columns |
 |                    | My TC Step 1    | my step arg                                       | # step 1 comment |
 |                    | My TC Step 2    | my step  2 arg                                    | second arg       | # step 2 comment |
 |                    | [Teardown]      | 1 minute                                          | args |

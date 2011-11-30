@@ -17,66 +17,135 @@ class TableWriter(object):
 
     def __init__(self,
                  output,
+                 separator):
+        self._output = output
+        self._separator = separator
+        self._has_headers = False
+
+    def add_headers(self, headers):
+        self._col_writer = ColumnWriter(self._output, headers, self._separator)
+
+    def add_tcuk_name(self, name):
+        self._col_writer.add_tcuk_name(name)
+
+    def add_row(self, row):
+        self._col_writer.add_row(row)
+
+    def write(self):
+        self._col_writer.write()
+
+
+def SpaceSeparator(line_separator='\n',
+                   number_of_spaces=4):
+    return _Separator(' '*number_of_spaces,
+                      line_separator,
+                      align_separator='  ')
+
+def PipeSeparator(line_separator='\n'):
+    return _Separator(' | ',
+                      line_separator,
+                      line_prefix='| ',
+                      line_postfix=' |',
+                      align_separator=' | ')
+
+
+def ColumnWriter(output, headers, separator):
+    if headers[1:]:
+        return _AlignedColumnWriter(output, headers, separator)
+    else:
+        return _FixedColumnWriter(output, headers, separator)
+
+
+class _Separator(object):
+
+    def __init__(self,
                  cell_separator,
                  line_separator,
                  line_prefix='',
-                 line_postfix=''):
-        self._output = output
-        self._cell_separator = cell_separator
-        self._line_separator = line_separator
-        self._line_prefix = line_prefix
-        self._line_postfix = line_postfix
-        self._headers = None
-        self._data = []
+                 line_postfix='',
+                 align_separator=''):
+        self.cell_separator = cell_separator
+        self.line_separator = line_separator
+        self.line_prefix = line_prefix
+        self.line_postfix = line_postfix
+        self.align_separator=align_separator
 
-    def add_headers(self, headers):
+class _TableColumnWriter(object):
+
+    def __init__(self,
+                 output,
+                 headers,
+                 separator):
+        self._output = output
+        self._separator = separator
         self._headers = headers
+        self._data = []
 
     def add_row(self, row):
         self._data += [row]
 
     def write(self):
-        separators = self._compute_cell_separators()
-        for row, col_separators in zip([self._headers]+self._data, separators):
-            if row == []:
-                self._output.write(self._line_separator)
-            else:
-                self._write_row(row, col_separators)
+        for row in [self._headers]+self._data:
+            self._write_row(row, self._separator.cell_separator)
 
-    def _write_row(self, row, col_separators):
-        if self._line_prefix:
-            self._output.write(self._line_prefix)
-        while col_separators and len(row) > 1:
-            self._output.write(row.pop(0))
-            self._output.write(col_separators.pop(0))
+    def add_tcuk_name(self, name):
+        self.add_row([name])
+
+
+class _FixedColumnWriter(_TableColumnWriter):
+
+    def _write_row(self, row, col_separator):
         if row:
-            self._output.write(row.pop(0))
-        self._output.write(self._line_postfix+self._line_separator)
+            self._output.write(self._separator.line_prefix)
+            self._output.write(col_separator.join(row))
+            self._output.write(self._separator.line_postfix)
+        self._output.write(self._separator.line_separator)
 
-    def _compute_cell_separators(self):
-        if len(self._headers) < 2:
-            return [[self._cell_separator for _ in range(len(row)-1)] for row in [self._headers]+self._data]
-        lengths = self._max_column_item_lengths_ignore_rows_with_one_column()
-        separators = []
+
+class _AlignedColumnWriter(_TableColumnWriter):
+
+    _tcuk_name_in_cache = None
+
+    def _write_row(self, row, col_separator):
+        if row:
+            self._output.write(self._separator.line_prefix)
+            for column, value in enumerate(row[:-1]):
+                self._output.write(value.ljust(self._get_column_justifications(column)))
+                self._output.write(self._separator.align_separator)
+            self._output.write(row[-1])
+            self._output.write(self._separator.line_postfix)
+            self._output.write(self._separator.line_separator)
+
+    def _get_column_justifications(self, col):
+        result = 0
         for row in [self._headers]+self._data:
-            col_separators = []
-            for i, col in enumerate(row[:-1]):
-                col_separators += [' '*(lengths[i]-len(col))+self._cell_separator]
-            separators += [col_separators]
-        return separators
-
-
-    def _max_column_item_lengths_ignore_rows_with_one_column(self):
-        lengths = {}
-        for row in [self._headers]+self._data:
-            if len(row) < 2:
+            if len(row) <= max(col, 1):
                 continue
-            for i, item in enumerate(row):
-                lengths[i] = max(lengths.get(i, 0), len(item))
-        return lengths
+            result = max(len(row[col]), result)
+        return result
 
-    def _unify_first_two_columns_with(self, cell_separator):
-        for row in self._data:
-            if len(row) > 1:
-                row[0] = row[0]+cell_separator+row[1]
-                row.pop(1)
+    def add_tcuk_name(self, name):
+        if self._tcuk_name_in_cache:
+            self.add_row([])
+        self._tcuk_name_in_cache = name
+
+    def add_row(self, row):
+        if self._tcuk_name_in_cache:
+            self._add_name_row(row)
+        else:
+            self._data += [row]
+
+    def write(self):
+        if self._tcuk_name_in_cache:
+            self.add_row([])
+        _TableColumnWriter.write(self)
+        self._output.write(self._separator.line_separator)
+
+    def _add_name_row(self, row):
+        name = self._tcuk_name_in_cache
+        self._tcuk_name_in_cache = None
+        if len(name) > 24:
+            self.add_row([name])
+            self.add_row(row)
+        else:
+            self.add_row([name]+row[1:])

@@ -15,7 +15,8 @@
 import csv
 import os
 import re
-from robotide.writer.tablewriter import TableWriter
+from robotide.writer.tablewriter import _TableColumnWriter, SpaceSeparator,\
+    TableWriter, PipeSeparator
 import template
 
 from StringIO import StringIO
@@ -196,11 +197,11 @@ class SpaceSeparatedTxtWriter(_WriterHelper):
         self._table_writer.write()
 
     def start_testcase(self, tc):
-        self._write_data([tc.name])
+        self._table_writer.add_tcuk_name(tc.name)
         self._in_tcuk = True
 
     def start_keyword(self, uk):
-        self._write_data([uk.name])
+        self._table_writer.add_tcuk_name(uk.name)
         self._in_tcuk = True
 
     def element(self, element):
@@ -214,7 +215,7 @@ class SpaceSeparatedTxtWriter(_WriterHelper):
 
     def _write_header(self, title, headers=None):
         additional_headers = headers or []
-        self._table_writer = TableWriter(self._output, self._separator, self._line_separator)
+        self._table_writer = TableWriter(self._output, SpaceSeparator(self._line_separator, len(self._separator)))
         self._table_writer.add_headers(['*** %s ***' % title]+additional_headers[1:])
 
     def _write_data(self, data, indent=0):
@@ -252,10 +253,7 @@ class PipeSeparatedTxtWriter(SpaceSeparatedTxtWriter):
 
     def _write_header(self, title, headers=None):
         additional_headers = headers or []
-        self._table_writer = TableWriter(self._output, self._separator,
-                                         line_separator=self._line_separator,
-                                         line_prefix='| ',
-                                         line_postfix=' |')
+        self._table_writer = TableWriter(self._output, PipeSeparator(self._line_separator))
         self._table_writer.add_headers(['*** %s ***' % title]+additional_headers[1:])
 
     def _escape_whitespaces(self, data):
