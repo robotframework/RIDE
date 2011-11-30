@@ -137,6 +137,12 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.Refresh()
 
     def OnLabelRightClick(self, event):
+        if event.Col == -1:
+            self._row_label_right_click(event)
+        else:
+            self._col_label_right_click(event)
+
+    def _row_label_right_click(self, event):
         selected_row = event.GetRow()
         selected_rows = self.selection.rows()
         if selected_row not in selected_rows:
@@ -148,7 +154,16 @@ class KeywordEditor(GridEditor, RideEventHandler):
         PopupMenu(self, PopupMenuItems(self, popupitems))
         event.Skip()
 
+    def _col_label_right_click(self, event):
+        pass
+
     def OnLabelLeftClick(self, event):
+        if event.Col == -1:
+            self._row_label_left_click(event)
+        else:
+            self._col_label_left_click(event)
+
+    def _row_label_left_click(self, event):
         if event.ShiftDown() or event.ControlDown():
             self.ClearSelection()
             cursor_row = self.GetGridCursorRow()
@@ -159,6 +174,9 @@ class KeywordEditor(GridEditor, RideEventHandler):
         else:
             self.SelectRow(event.Row, addToSelected=False)
             self.SetGridCursor(event.Row, 0)
+
+    def _col_label_left_click(self, event):
+        pass
 
     def OnInsertRows(self, event):
         self._execute(AddRows(self.selection.rows()))
@@ -214,11 +232,23 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def _write_steps(self, controller):
         data = []
+        self._write_headers(controller)
         for step in controller.steps:
             data.append(self._format_comments(step.as_list()))
         self.ClearGrid()
         self._write_data(data, update_history=False)
         self._colorize_grid()
+
+    def _write_headers(self, controller):
+        headers = controller.data.parent.header[1:]
+        if not headers:
+            self.SetColLabelSize(0)
+            return
+        self.SetColLabelSize(25)
+        for col, header in enumerate(headers):
+            self.SetColLabelValue(col, header)
+        for empty_col in range(col+1, self.NumberCols+1):
+            self.SetColLabelValue(empty_col, '')
 
     def _colorize_grid(self):
         selection_content = self._get_single_selection_content_or_none_on_first_call()
