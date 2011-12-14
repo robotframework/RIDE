@@ -30,9 +30,9 @@ class XmlLogger:
     def _get_writer(self, path, generator):
         try:
             writer = utils.XmlWriter(path)
-        except:
-            raise DataError("Opening output file '%s' for writing failed: %s"
-                            % (path, utils.get_error_message()))
+        except EnvironmentError, err:
+            raise DataError("Opening output file '%s' failed: %s"
+                            % (path, err.strerror))
         writer.start('robot', {'generator': get_full_version(generator),
                                'generated': utils.get_timestamp()})
         return writer
@@ -60,8 +60,6 @@ class XmlLogger:
         attrs = {'timestamp': msg.timestamp, 'level': msg.level}
         if msg.html:
             attrs['html'] = 'yes'
-        if msg.linkable:
-            attrs['linkable'] = 'yes'
         self._writer.element('msg', msg.message, attrs)
 
     def start_keyword(self, kw):
@@ -127,8 +125,7 @@ class XmlLogger:
         self._stat(stat)
 
     def suite_stat(self, stat):
-        # Cannot use 'id' attribute in XML due to http://bugs.jython.org/issue1768
-        self._stat(stat, stat.longname, attrs={'idx': stat.id, 'name': stat.name})
+        self._stat(stat, stat.longname, attrs={'id': stat.id, 'name': stat.name})
 
     def tag_stat(self, stat):
         self._stat(stat, attrs={'info': self._get_tag_stat_info(stat),

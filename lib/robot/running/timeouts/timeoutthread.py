@@ -12,6 +12,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from robot.errors import TimeoutError
+
 import sys
 from threading import Event
 
@@ -24,8 +26,8 @@ else:
 
 class ThreadedRunner(Runnable):
 
-    def __init__(self, runnable, args=None, kwargs=None, notifier=None):
-        self._runnable = lambda: runnable(*(args or ()), **(kwargs or {}))
+    def __init__(self, runnable):
+        self._runnable = runnable
         self._notifier = Event()
         self._result = None
         self._error = None
@@ -55,3 +57,19 @@ class ThreadedRunner(Runnable):
 
     def stop_thread(self):
         self._thread.stop()
+
+
+class Timeout(object):
+
+    def __init__(self, timeout, error):
+        self._timeout = timeout
+        self._error = error
+
+    def execute(self, runnable):
+        runner = ThreadedRunner(runnable)
+        if runner.run_in_thread(self._timeout):
+            return runner.get_result()
+        runner.stop_thread()
+        raise TimeoutError(self._error)
+
+

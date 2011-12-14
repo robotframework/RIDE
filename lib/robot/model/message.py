@@ -12,19 +12,26 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from modelobject import ModelObject
+from robot.utils import html_escape
+
+from .modelobject import ModelObject
 
 
 class Message(ModelObject):
-    __slots__ = ['message', 'level', 'html', 'timestamp', 'linkable']
+    __slots__ = ['message', 'level', 'html', 'timestamp', 'parent']
 
-    def __init__(self, message='', level='INFO', html=False, timestamp=None,
-                 linkable=False):
+    # TODO: Use None instead of N/A with all timestamps in model
+    def __init__(self, message='', level='INFO', html=False, timestamp='N/A',
+                 parent=None):
         self.message = message
         self.level = level
         self.html = html
         self.timestamp = timestamp
-        self.linkable = linkable
+        self.parent = parent
+
+    @property
+    def html_message(self):
+        return self.message if self.html else html_escape(self.message)
 
     def visit(self, visitor):
         visitor.visit_message(self)

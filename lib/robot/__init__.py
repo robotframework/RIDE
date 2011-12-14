@@ -42,15 +42,15 @@ if sys.platform.startswith('java') and os.sep == '\\' and sys.version_info < (2,
 
 if 'pythonpathsetter' not in sys.modules:
     import pythonpathsetter
-import utils
-from output import Output, LOGGER, pyloggingconf
-from conf import RobotSettings, RebotSettings
-from running import TestSuite, STOP_SIGNAL_MONITOR
-from robot.reporting import RobotResultWriter, RebotResultWriter
-from errors import (DataError, Information, INFO_PRINTED, DATA_ERROR,
-                    STOPPED_BY_USER, FRAMEWORK_ERROR)
-from variables import init_global_variables
-from version import get_version, get_full_version
+from robot.conf import RobotSettings, RebotSettings
+from robot.errors import (DataError, Information, INFO_PRINTED, DATA_ERROR,
+                          STOPPED_BY_USER, FRAMEWORK_ERROR)
+from robot.reporting import ResultWriter
+from robot.running import TestSuite, STOP_SIGNAL_MONITOR
+from robot.output import Output, LOGGER, pyloggingconf
+from robot.variables import init_global_variables
+from robot.version import get_version, get_full_version
+from robot import utils
 
 
 __version__ = get_version()
@@ -86,7 +86,7 @@ def _parse_arguments(cliargs, usage, **argparser_config):
 
 def _execute(method, datasources, options):
     try:
-        suite, rc = method(*datasources, **options)
+        rc = method(*datasources, **options)
     except DataError, err:
         _report_error(unicode(err), help=True)
         return DATA_ERROR
@@ -99,6 +99,8 @@ def _execute(method, datasources, options):
         return FRAMEWORK_ERROR
     else:
         return rc
+    finally:
+        LOGGER.close()
 
 
 def run(*datasources, **options):
@@ -130,9 +132,8 @@ def run(*datasources, **options):
     output.close(suite)
     if settings.is_rebot_needed():
         output, settings = settings.get_rebot_datasource_and_settings()
-        RobotResultWriter(settings).write_results(output)
-    LOGGER.close()
-    return suite, suite.return_code
+        ResultWriter(output).write_results(settings)
+    return suite.return_code
 
 
 def run_rebot(*datasources, **options):
@@ -153,9 +154,10 @@ def run_rebot(*datasources, **options):
     settings = RebotSettings(options)
     LOGGER.register_console_logger(colors=settings['MonitorColors'])
     LOGGER.disable_message_cache()
-    result = RebotResultWriter(settings).write_results(*datasources)
-    LOGGER.close()
-    return result.suite, result.return_code
+    rc = ResultWriter(*datasources).write_results(settings)
+    if rc < 0:
+        raise DataError('No outputs created.')
+    return rc
 
 
 def _report_error(message, details=None, help=False):

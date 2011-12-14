@@ -165,9 +165,9 @@ class _BaseSettings(object):
         try:
             if not os.path.exists(path):
                 os.makedirs(path)
-        except:
-            raise DataError("Can't create %s file's parent directory '%s': %s"
-                            % (type_.lower(), path, utils.get_error_message()))
+        except EnvironmentError, err:
+            raise DataError("Creating %s file directory '%s' failed: %s"
+                            % (type_.lower(), path, err.strerror))
 
     def _process_metadata_or_tagdoc(self, value):
         value = value.replace('_', ' ')
@@ -232,6 +232,34 @@ class _BaseSettings(object):
         return '\n'.join('%s: %s' % (name, self._opts[name])
                          for name in sorted(self._opts))
 
+    @property
+    def output(self):
+        return self._get_file('Output')
+
+    @property
+    def log(self):
+        return self._get_file('Log')
+
+    @property
+    def report(self):
+        return self._get_file('Report')
+
+    @property
+    def xunit(self):
+        return self._get_file('XUnitFile')
+
+    def _get_file(self, name):
+        value = self[name]
+        return value if value != 'NONE' else None
+
+    @property
+    def split_log(self):
+        return self['SplitLog']
+
+    @property
+    def status_rc(self):
+        return not self['NoStatusRC']
+
 
 class RobotSettings(_BaseSettings):
     _extra_cli_opts = {'Output'        : ('output', 'output.xml'),
@@ -283,21 +311,61 @@ class RebotSettings(_BaseSettings):
     def _escape(self, value):
         return value
 
-    def result_configuration(self):
-        opts = dict((opt, self[setting]) for opt, setting in
-                [('name', 'Name'),
-                 ('doc', 'Doc'),
-                 ('metadata', 'Metadata'),
-                 ('set_tags', 'SetTag'),
-                 ('include_tags', 'Include'),
-                 ('exclude_tags', 'Exclude'),
-                 ('include_suites', 'SuiteNames'),
-                 ('include_tests', 'TestNames'),
-                 ('remove_keywords', 'RemoveKeywords'),
-                 ('log_level', 'LogLevel'),
-                 ('critical', 'Critical'),
-                 ('noncritical', 'NonCritical'),
-                 ('starttime', 'StartTime'),
-                 ('endtime', 'EndTime')])
-        opts['metadata'] = dict(opts['metadata'])
-        return opts
+    @property
+    def suite_config(self):
+        return {
+            'name': self['Name'],
+            'doc': self['Doc'],
+            'metadata': dict(self['Metadata']),
+            'set_tags': self['SetTag'],
+            'include_tags': self['Include'],
+            'exclude_tags': self['Exclude'],
+            'include_suites': self['SuiteNames'],
+            'include_tests': self['TestNames'],
+            'remove_keywords': self['RemoveKeywords'],
+            'log_level': self['LogLevel'],
+            'critical': self['Critical'],
+            'noncritical': self['NonCritical'],
+            'starttime': self['StartTime'],
+            'endtime': self['EndTime']
+        }
+
+    @property
+    def statistics_config(self):
+        return {
+            'suite_stat_level': self['SuiteStatLevel'],
+            'tag_stat_include': self['TagStatInclude'],
+            'tag_stat_exclude': self['TagStatExclude'],
+            'tag_stat_combine': self['TagStatCombine'],
+            'tag_stat_link': self['TagStatLink'],
+            'tag_doc': self['TagDoc'],
+        }
+
+    @property
+    def log_config(self):
+        if not self.log:
+            return {}
+        return {
+            'title': self['LogTitle'],
+            'reportURL': self._url_from_path(self.log, self.report),
+            'splitLogBase': os.path.basename(os.path.splitext(self.log)[0])
+        }
+
+    @property
+    def report_config(self):
+        if not self.report:
+            return {}
+        return {
+            'title': self['ReportTitle'],
+            'logURL': self._url_from_path(self.report, self.log),
+            'background' : self._resolve_background_colors(),
+        }
+
+    def _url_from_path(self, source, destination):
+        if not destination:
+            return None
+        return utils.get_link_path(destination, os.path.dirname(source))
+
+    def _resolve_background_colors(self):
+        colors = self['ReportBackground']
+        return {'pass': colors[0], 'nonCriticalFail': colors[1], 'fail': colors[2]}

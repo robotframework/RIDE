@@ -2,10 +2,9 @@ import os
 import unittest
 from mock import Mock
 from robot.parsing.model import TestCaseFile, ResourceFile
-from robotide.controller import ResourceFileController
 
 from robotide.controller.chiefcontroller import ChiefController
-from robotide.controller.commands import RenameFile, RenameResourceFile
+from robotide.controller.commands import RenameResourceFile
 from robotide.controller.filecontrollers import TestCaseFileController
 from robotide.namespace.namespace import Namespace
 from robot.utils.asserts import assert_not_none, assert_true, assert_false, assert_equals, assert_none
@@ -64,11 +63,12 @@ class ChiefControllerChecker(ChiefController):
         self.serialized_files = []
         ChiefController.__init__(self, namespace)
 
-    def serialize_controller(self, controller):
+    def save(self, controller):
         self.serialized_files.append(controller.source)
 
     def _remove_file(self, path):
         self.removed_files.append(path)
+
 
 class _UnitTestsWithWorkingResourceImports(unittest.TestCase):
 

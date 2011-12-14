@@ -12,14 +12,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from unic import unic
+import re
 
-
-_ILLEGAL_CHARS_IN_XML = u'\x00\x01\x02\x03\x04\x05\x06\x07\x08\x0b\x0c\x0e' \
-    + u'\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f\ufffe'
+from .unic import unic
 
 
 class AbstractXmlWriter:
+    _illegal_chars = re.compile(u'[\x00-\x08\x0B\x0C\x0E-\x1F\uFFFE\uFFFF]')
 
     def start(self, name, attributes={}, newline=True):
         self._start(name, self._escape_attrs(attributes))
@@ -33,12 +32,9 @@ class AbstractXmlWriter:
         return dict((n, self._escape(v)) for n, v in attrs.items())
 
     def _escape(self, content):
-        content = unic(content)
-        for char in _ILLEGAL_CHARS_IN_XML:
-            # Avoid bug http://ironpython.codeplex.com/workitem/29402
-            if char in content:
-                content = content.replace(char, '')
-        return content
+        # TODO: Test is the IPY bug below still valid with new implementation:
+        # http://ironpython.codeplex.com/workitem/29402
+        return self._illegal_chars.sub('', unic(content))
 
     def content(self, content):
         if content is not None:
@@ -61,8 +57,9 @@ class AbstractXmlWriter:
         self.end(name, newline)
 
     def close(self):
-        self._close()
-        self.closed = True
+        if not self.closed:
+            self._close()
+            self.closed = True
 
     def _close(self):
         self._writer.endDocument()

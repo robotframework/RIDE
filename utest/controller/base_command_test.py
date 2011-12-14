@@ -30,7 +30,7 @@ class TestCaseCommandTest(unittest.TestCase, _FakeChief):
     def _create_data(self):
         return BASE_DATA[:]
 
-    def serialize_controller(self, controller):
+    def save(self, controller):
         self._file_saved = (controller == self._ctrl.datafile_controller)
 
     def tearDown(self):

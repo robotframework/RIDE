@@ -14,18 +14,14 @@
 
 import os
 
-from robotide import context
-from robotide.controller.basecontroller import WithNamespace, _BaseController
-from robotide.controller.filecontrollers import ResourceFileControllerFactory
-from robotide.controller.robotdata import NewTestCaseFile, NewTestDataDirectory
-from robotide.errors import SerializationError
+from robotide.context import LOG, SETTINGS
 from robotide.publish.messages import RideOpenResource, RideSaving, RideSaveAll, \
     RideSaved, RideOpenSuite, RideNewProject, RideFileNameChanged
-from robotide.writer.serializer import Serializer
 
-from filecontrollers import DataController
-from dataloader import DataLoader
-from robotide.context import SETTINGS
+from .basecontroller import WithNamespace, _BaseController
+from .dataloader import DataLoader
+from .filecontrollers import DataController, ResourceFileControllerFactory
+from .robotdata import NewTestCaseFile, NewTestDataDirectory
 
 
 class ChiefController(_BaseController, WithNamespace):
@@ -37,6 +33,7 @@ class ChiefController(_BaseController, WithNamespace):
         self.name = None
         self.external_resources = []
         self._resource_file_controller_factory = ResourceFileControllerFactory(namespace)
+        self._serializer = Serializer(SETTINGS, LOG)
 
     @property
     def display_name(self):
@@ -206,7 +203,7 @@ class ChiefController(_BaseController, WithNamespace):
             return
         old_path = controller.filename
         controller.set_format(format)
-        self.serialize_controller(controller)
+        self.save(controller)
         if old_path:
             self._remove_file(old_path)
             RideFileNameChanged(old_filename=old_path,
@@ -231,43 +228,9 @@ class ChiefController(_BaseController, WithNamespace):
 
     def save(self, controller):
         if controller:
-            self.serialize_controller(controller)
+            self._serializer.serialize_file(controller)
         else:
-            self.serialize_all()
-
-    def serialize_all(self):
-        errors = []
-        datacontrollers = self._get_all_dirty_controllers()
-        for dc in datacontrollers:
-            try:
-                self._serialize_file(dc)
-            except SerializationError, err:
-                errors.append(self._get_serialization_error(err, dc))
-        self._log_serialization_errors(errors)
-        RideSaveAll().publish()
-
-    def serialize_controller(self, controller):
-        try:
-            self._serialize_file(controller)
-        except SerializationError, err:
-            self._log_serialization_errors([self._get_serialization_error(err, controller)])
-
-    def _log_serialization_errors(self, errors):
-        if errors:
-            context.LOG.error('Following file(s) could not be saved:\n\n%s' %
-                              '\n'.join(errors))
-
-    def _get_serialization_error(self, err, controller):
-        return '%s: %s\n' % (controller.data.source, str(err))
-
-    def _serialize_file(self, controller):
-        if not controller.has_format():
-            return
-        RideSaving(path=controller.filename, datafile=controller).publish()
-        serializer = Serializer()
-        serializer.serialize(controller.datafile)
-        controller.unmark_dirty()
-        RideSaved(path=controller.filename).publish()
+            self._serializer.serialize_files(self._get_all_dirty_controllers())
 
     def _get_all_dirty_controllers(self):
         return [controller for controller in self.datafiles if controller.dirty]
@@ -281,3 +244,53 @@ class ChiefController(_BaseController, WithNamespace):
         resource = self._namespace.get_resource(path, directory)
         if resource:
             return self._create_resource_controller(resource)
+
+
+class Serializer(object):
+
+    def __init__(self, settings, logger):
+        self._settings = settings
+        self._logger = logger
+        self._errors = []
+
+    def serialize_files(self, controllers):
+        for data in controllers:
+            self._serialize_file(data)
+        RideSaveAll().publish()
+        self._log_errors()
+
+    def serialize_file(self, controller):
+        self._serialize_file(controller)
+        self._log_errors()
+
+    def _serialize_file(self, controller):
+        RideSaving(path=controller.filename, datafile=controller).publish()
+        try:
+            controller.datafile.save(**self._get_options())
+        except Exception, err:
+            self._cache_error(controller, err)
+        controller.unmark_dirty()
+        RideSaved(path=controller.filename).publish()
+
+    def _get_options(self):
+        return {'line_separator': self._resolve_line_separator(),
+                'pipe_separated': self._resolve_pipe_separated()}
+
+    def _resolve_line_separator(self):
+        setting = self._settings.get('line separator', 'native').lower()
+        if setting in ('crlf', 'windows'):
+            return '\r\n'
+        if setting in ('lf', 'unix'):
+            return '\n'
+        return os.linesep
+
+    def _resolve_pipe_separated(self):
+        return self._settings.get('txt format separator', 'space') == 'pipe'
+
+    def _cache_error(self, data, error):
+        self._errors.append("Error in serializing '%s':\n%s"
+                            % (data.data.source, unicode(error)))
+
+    def _log_errors(self):
+        if self._errors:
+            self._logger.error('\n\n'.join(self._errors))

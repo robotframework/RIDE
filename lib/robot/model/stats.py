@@ -22,10 +22,13 @@ class Stat(object):
         self.passed = 0
         self.failed = 0
 
-    @property
-    def attrs(self):
-        attrs = {'pass': str(self.passed), 'fail': str(self.failed)}
+    def get_attributes(self, include_label=False, exclude_empty=False):
+        attrs =  {'pass': self.passed, 'fail': self.failed}
         attrs.update(self._get_custom_attrs())
+        if include_label:
+            attrs['label'] = self.name
+        if exclude_empty:
+            attrs = dict((k, v) for k, v in attrs.items() if v != '')
         return attrs
 
     def _get_custom_attrs(self):
@@ -68,7 +71,7 @@ class SuiteStat(Stat):
         self._name = suite.name
 
     def _get_custom_attrs(self):
-        return {'idx': self.id, 'name': self._name}  # TODO: isx -> id
+        return {'id': self.id, 'name': self._name}
 
 
 class TagStat(Stat):

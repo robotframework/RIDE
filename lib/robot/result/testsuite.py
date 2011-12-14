@@ -12,6 +12,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from itertools import chain
+
 from robot.model import TotalStatisticsBuilder
 from robot import model, utils
 
@@ -26,48 +28,32 @@ class TestSuite(model.TestSuite):
     test_class = TestCase
     keyword_class = Keyword
 
-    def __init__(self, source='', name='', doc='', metadata=None):
+    def __init__(self, source='', name='', doc='', metadata=None,
+                 message='', starttime='N/A', endtime='N/A'):
         model.TestSuite.__init__(self, source, name, doc, metadata)
-        self.message = ''
-        self.starttime = 'N/A'
-        self.endtime = 'N/A'
+        self.message = message
+        self.starttime = starttime
+        self.endtime = endtime
 
     @property
     def status(self):
-        return 'PASS' if not self.critical_stats.failed else 'FAIL'
+        return 'FAIL' if self.statistics.critical.failed else 'PASS'
 
     @property
     def statistics(self):
         return TotalStatisticsBuilder(self).stats
 
-    # TODO:
-    # 1) Remove critical_stats and all_stats in favor of new self.statistics.xxx
-    # 2) Consider removing stat_message in favor of unicode(self.statistics)
-
-    @property
-    def stat_message(self):
-        return unicode(self.statistics)
-
     @property
     def full_message(self):
-        stat_msg = unicode(self.statistics)
         if not self.message:
-            return stat_msg
-        return '%s\n\n%s' % (self.message, stat_msg)
-
-    @property
-    def critical_stats(self):
-        return self.statistics.critical
-
-    @property
-    def all_stats(self):
-        return self.statistics.all
+            return self.statistics.message
+        return '%s\n\n%s' % (self.message, self.statistics.message)
 
     @property
     def elapsedtime(self):
         if self.starttime == 'N/A' or self.endtime == 'N/A':
-            children = list(self.suites) + list(self.tests) + list(self.keywords)
-            return sum(item.elapsedtime for item in children)
+            return sum(child.elapsedtime for child in
+                       chain(self.suites, self.tests, self.keywords))
         return utils.get_elapsed_time(self.starttime, self.endtime)
 
     def remove_keywords(self, how):

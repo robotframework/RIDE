@@ -12,39 +12,72 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.model.statistics import Statistics
+from __future__ import with_statement
 
-from configurer import SuiteConfigurer
-from testsuite import TestSuite
-from executionerrors import ExecutionErrors
+from robot.errors import DataError
+from robot.model import Statistics
+from robot.utils import ET, ETSource
+
+from .executionerrors import ExecutionErrors
+from .configurer import SuiteConfigurer
+from .suiteteardownfailed import SuiteTeardownFailureHandler
+from .testsuite import TestSuite
+from .xmlelementhandlers import XmlElementHandler
+
+
+def ResultFromXml(*sources):
+    if not sources:
+        raise DataError('One or more data source needed.')
+    if len(sources) > 1:
+        return CombinedExecutionResult(*[ResultFromXml(src) for src in sources])
+    source = ETSource(sources[0])
+    try:
+        return ExecutionResultBuilder(source).build(ExecutionResult())
+    except DataError, err:
+        raise DataError("Reading XML source '%s' failed: %s"
+                        % (unicode(source), unicode(err)))
+
+
+class ExecutionResultBuilder(object):
+
+    def __init__(self, source):
+        self._source = source \
+            if isinstance(source, ETSource) else ETSource(source)
+
+    def build(self, result):
+        handler = XmlElementHandler(result)
+        # Faster attribute lookup inside for loop
+        start, end = handler.start, handler.end
+        with self._source as source:
+            for event, elem in ET.iterparse(source, events=('start', 'end')):
+                start(elem) if event == 'start' else end(elem)
+        SuiteTeardownFailureHandler(result.generator).visit_suite(result.suite)
+        return result
 
 
 class ExecutionResult(object):
 
-    def __init__(self):
-        self.suite = TestSuite()
-        self.errors = ExecutionErrors()
+    def __init__(self, root_suite=None, errors=None):
+        self.suite = root_suite or TestSuite()
+        self.errors = errors or ExecutionErrors()
         self.generator = None
-        self.should_return_status_rc = True
-        self._stat_opts = ()
+        self._status_rc = True
+        self._stat_config = {}
 
     @property
     def statistics(self):
-        return Statistics(self.suite, *self._stat_opts)
+        return Statistics(self.suite, **self._stat_config)
 
     @property
     def return_code(self):
-        if self.should_return_status_rc:
-            return min(self.suite.critical_stats.failed, 250)
+        if self._status_rc:
+            return min(self.suite.statistics.critical.failed, 250)
         return 0
 
-    def configure(self, status_rc=True, **suite_opts):
-        self.should_return_status_rc = status_rc
-        SuiteConfigurer(**suite_opts).configure(self.suite)
-
-    # TODO: 1) Use **kwargs. 2) Combine with configure?
-    def configure_statistics(self, *stat_opts):
-        self._stat_opts = stat_opts
+    def configure(self, status_rc=True, suite_config={}, stat_config={}):
+        SuiteConfigurer(**suite_config).configure(self.suite)
+        self._status_rc = status_rc
+        self._stat_config = stat_config
 
     def visit(self, visitor):
         visitor.visit_result(self)

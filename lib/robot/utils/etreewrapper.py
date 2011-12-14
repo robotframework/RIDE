@@ -12,45 +12,87 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import os
 import sys
 from StringIO import StringIO
 
-try:
-    from xml.etree import cElementTree as ET
-except ImportError:
+from robot.errors import DataError
+
+
+_IRONPYTHON = sys.platform == 'cli'
+_ERROR = 'No valid ElementTree XML parser module found'
+
+
+if not _IRONPYTHON:
     try:
-        import cElementTree as ET
+        from xml.etree import cElementTree as ET
     except ImportError:
         try:
-            from xml.etree import ElementTree as ET
-            # Raises ImportError due to missing expat on IronPython < 2.7.1
-            # by default http://ironpython.codeplex.com/workitem/21407
-            ET.parse(StringIO('<test/>'))
+            import cElementTree as ET
         except ImportError:
             try:
-                from elementtree import ElementTree as ET
+                from xml.etree import ElementTree as ET
             except ImportError:
-                raise ImportError('No valid ElementTree XML parser module found')
-
-def get_root(path=None, string=None, node=None):
-    # This should NOT be changed to 'if not node:'. See chapter Truth Testing
-    # from http://effbot.org/zone/element.htm#the-element-type
-    if node is not None:
-        return node
-    source = _get_source(path, string)
+                try:
+                    from elementtree import ElementTree as ET
+                except ImportError:
+                    raise ImportError(_ERROR)
+else:
+    # Cannot use standard ET available on IronPython because it is broken
+    # both in 2.7.0 and 2.7.1:
+    # http://ironpython.codeplex.com/workitem/31923
+    # http://ironpython.codeplex.com/workitem/21407
     try:
-        return ET.parse(source).getroot()
-    finally:
-        if hasattr(source, 'close'):
-            source.close()
+        from elementtree import ElementTree as ET
+    except ImportError:
+        raise ImportError(_ERROR)
 
-def _get_source(path, string):
-    if not path:
-        return StringIO(string)
-    # ElementTree 1.2.7 preview (first ET with IronPython support) doesn't
-    # handler non-ASCII chars correctly if an open file given to it.
-    if sys.platform == 'cli':
-        return path
-    # ET.parse doesn't close files it opens, which causes serious problems
-    # with Jython 2.5(.1) on Windows: http://bugs.jython.org/issue1598
-    return open(path, 'rb')
+
+class ETSource(object):
+
+    def __init__(self, source):
+        self._source = source
+        self._opened = None
+
+    def __enter__(self):
+        if self._source_file_does_not_exist():
+            raise DataError("Source file '%s' does not exist." % self._source)
+        self._opened = self._open_source_if_necessary()
+        return self._opened or self._source
+
+    def __exit__(self, exc_type, exc_value, exc_trace):
+        if self._opened:
+            self._opened.close()
+        if exc_type is None or exc_type is DataError:
+            return False
+        raise DataError(exc_value)
+
+    def __str__(self):
+        if self._source_is_file_name():
+            return self._source
+        if hasattr(self._source, 'name'):
+            return self._source.name
+        return '<in-memory file>'
+
+    def _source_file_does_not_exist(self):
+        return self._source_is_file_name() and not os.path.isfile(self._source)
+
+    def _source_is_file_name(self):
+        return isinstance(self._source, basestring) \
+                and not self._source.startswith('<')
+
+    def _open_source_if_necessary(self):
+        if self._source_is_file_name():
+            return self._open_source_file()
+        if isinstance(self._source, basestring):
+            return StringIO(self._source)
+        return None
+
+    def _open_source_file(self):
+        # File is opened, and later closed, because ElementTree had a bug that
+        # it didn't close files it had opened. This caused problems with Jython
+        # especially on Windows: http://bugs.jython.org/issue1598
+        # The bug has now been fixed in ET and worked around in Jython 2.5.2.
+        # File cannot be opened on IronPython, though, as on IronPython ET
+        # doesn't handle non-ASCII characters correctly in that case.
+        return open(self._source, 'rb') if not _IRONPYTHON else None

@@ -64,15 +64,14 @@ class AbstractLogger:
 class Message(BaseMessage):
     __slots__ = []
 
-    def __init__(self, message, level='INFO', html=False, timestamp=None,
-                 linkable=False):
+    def __init__(self, message, level='INFO', html=False, timestamp=None):
         message = self._normalize_message(message)
         level, html = self._get_level_and_html(level, html)
-        timestamp = self._get_timestamp(timestamp)
-        BaseMessage.__init__(self, message, level, html, timestamp, linkable)
+        timestamp = timestamp or utils.get_timestamp()
+        BaseMessage.__init__(self, message, level, html, timestamp)
 
     def _normalize_message(self, msg):
-        if not isinstance(msg, basestring):
+        if not isinstance(msg, unicode):
             msg = utils.unic(msg)
         return msg.replace('\r\n', '\n')
 
@@ -83,12 +82,6 @@ class Message(BaseMessage):
         if level not in LEVELS:
             raise DataError("Invalid log level '%s'" % level)
         return level, html
-
-    def _get_timestamp(self, timestamp):
-        if timestamp:
-            return timestamp
-        return utils.get_timestamp(daysep='', daytimesep=' ',
-                                   timesep=':', millissep='.')
 
 
 class IsLogged:

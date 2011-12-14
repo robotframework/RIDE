@@ -15,22 +15,21 @@
 import os
 from itertools import chain
 
-from robotide.controller.basecontroller import WithUndoRedoStacks,\
-    _BaseController, WithNamespace
-from robotide.controller.settingcontrollers import DocumentationController,\
-    FixtureController, TimeoutController, TemplateController,\
-    DefaultTagsController, ForceTagsController
-from robotide.controller.tablecontrollers import VariableTableController, \
-    TestCaseTableController, KeywordTableController, ImportSettingsController, \
-    MetadataListController, TestCaseController
-from robotide.publish import RideDataFileRemoved, RideInitFileRemoved
+from robotide.publish import (RideDataFileRemoved, RideInitFileRemoved,
+        RideDataChangedToDirty, RideDataDirtyCleared, RideSuiteAdded,
+        RideItemSettingsChanged)
 from robotide.robotapi import TestDataDirectory, TestCaseFile, ResourceFile
 from robotide import utils
-from robotide.publish.messages import RideDataChangedToDirty,\
-    RideDataDirtyCleared, RideSuiteAdded, RideItemSettingsChanged
 
-from robotide.controller.macrocontrollers import UserKeywordController
-from robotide.controller.robotdata import NewTestCaseFile, NewTestDataDirectory
+from .basecontroller import WithUndoRedoStacks, _BaseController, WithNamespace
+from .macrocontrollers import UserKeywordController
+from .robotdata import NewTestCaseFile, NewTestDataDirectory
+from .settingcontrollers import (DocumentationController, FixtureController,
+        TimeoutController, TemplateController, DefaultTagsController,
+        ForceTagsController)
+from .tablecontrollers import (VariableTableController, TestCaseTableController,
+        KeywordTableController, ImportSettingsController,
+        MetadataListController, TestCaseController)
 
 
 def DataController(data, chief, parent=None):
@@ -247,7 +246,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
                 yield datafile
 
     def save(self):
-        self._chief_controller.serialize_controller(self)
+        self._chief_controller.save(self)
 
     def get_local_variables(self):
         return {}

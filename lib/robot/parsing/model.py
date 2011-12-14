@@ -103,7 +103,7 @@ class _TestData(object):
 
         See also :py:meth:`robot.writer.serializer.Serializer.serialize`
         """
-        Serializer().serialize(self, **options)
+        return Serializer().serialize(self, **options)
 
 
 class TestCaseFile(_TestData):
@@ -219,10 +219,14 @@ class _Table(object):
 
     def __init__(self, parent):
         self.parent = parent
-        self.header = None
+        self._header = None
 
     def set_header(self, header):
-        self.header = header
+        self._header = header
+
+    @property
+    def header(self):
+        return self._header or [self.type.title() + 's']
 
     @property
     def name(self):
@@ -384,7 +388,7 @@ class VariableTable(_Table):
 
 
 class TestCaseTable(_Table):
-    type = 'testcase'
+    type = 'test case'
 
     def __init__(self, parent):
         _Table.__init__(self, parent)
@@ -401,7 +405,7 @@ class TestCaseTable(_Table):
         return bool(self.tests)
 
     def is_started(self):
-        return bool(self.header)
+        return bool(self._header)
 
 
 class KeywordTable(_Table):
@@ -572,6 +576,9 @@ class ForLoop(_WithSteps):
 
     def __iter__(self):
         return iter(self.steps)
+
+    def is_set(self):
+        return True
 
 
 class Step(object):

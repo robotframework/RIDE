@@ -12,14 +12,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-
-TEMPLATE = """
+TEMPLATE_START = """
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="RIDE" />
-<meta name="rf-template" content="False" />
 <style type="text/css">
 html {
   font-family: Arial,Helvetica,sans-serif;
@@ -67,10 +64,7 @@ td.name, th.name {
 </head>
 <body>
 <h1>%(NAME)s</h1>
-<table id="settings" border="1"></table>
-<table id="variables" border="1"></table>
-<table id="testcases" border="1"></table>
-<table id="keywords" border="1"></table>
-</body>
+"""
+TEMPLATE_END = """</body>
 </html>
 """

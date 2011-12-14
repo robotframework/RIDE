@@ -12,11 +12,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.result.visitor import SuiteVisitor
+import os
+
+from robot.result.visitor import ResultVisitor
 from robot import utils
 
 
-class XUnitWriter(SuiteVisitor):
+class XUnitWriter(ResultVisitor):
     """Provides an xUnit-compatible result file.
 
     Attempts to adhere to the de facto schema guessed by Peter Reilly, see:
@@ -26,19 +28,15 @@ class XUnitWriter(SuiteVisitor):
     def __init__(self, output):
         self._writer = utils.XmlWriter(output)
         self._root_suite = None
-        self._detail_serializer = _NopSerializer()
-
-    def close(self):
-        self._writer.close()
 
     def start_suite(self, suite):
         if self._root_suite:
             return
         self._root_suite = suite
         attrs = {'name': suite.name,
-                 'tests': suite.all_stats.total,
+                 'tests': suite.statistics.all.total,
                  'errors': 0,
-                 'failures': suite.all_stats.failed,
+                 'failures': suite.statistics.all.failed,
                  'skip': 0}
         self._writer.start('testsuite', attrs)
 
@@ -52,38 +50,34 @@ class XUnitWriter(SuiteVisitor):
                  'time': self._time_as_seconds(test.elapsedtime)}
         self._writer.start('testcase', attrs)
         if test.status == 'FAIL':
-            self._detail_serializer = _FailedTestSerializer(self._writer, test)
+            test.visit(TestFailureWriter(self._writer))
 
     def _time_as_seconds(self, millis):
         return int(round(millis, -3) / 1000)
 
     def end_test(self, test):
-        self._detail_serializer.end_test()
-        self._detail_serializer = _NopSerializer()
         self._writer.end('testcase')
 
-    def start_keyword(self, kw):
+    def visit_keyword(self, kw):
         pass
 
-    def end_keyword(self, kw):
-        pass
-
-    def message(self, msg):
-        self._detail_serializer.message(msg)
+    def end_result(self, result):
+        self._writer.close()
 
 
-class _FailedTestSerializer:
-    """Specific policy to serialize a failed test case details"""
+class TestFailureWriter(ResultVisitor):
 
-    def __init__(self, writer, test):
+    def __init__(self, writer):
         self._writer = writer
-        self._writer.start('failure',
-                           {'message': test.message, 'type': 'AssertionError'})
 
-    def end_test(self):
+    def start_test(self, test):
+        self._writer.start('failure', {'message': test.message,
+                                       'type': 'AssertionError'})
+
+    def end_test(self, test):
         self._writer.end('failure')
 
-    def message(self, msg):
+    def visit_message(self, msg):
         """Populates the <failure> section, normally only with a 'Stacktrace'.
 
         There is a weakness here because filtering is based on message level:
@@ -92,14 +86,4 @@ class _FailedTestSerializer:
         - first FAIL message is already reported as <failure> attribute
         """
         if msg.level == 'DEBUG':
-            self._writer.content(msg.message)
-
-
-class _NopSerializer:
-    """Default policy when there's no detail to serialize"""
-
-    def end_test(self):
-        pass
-
-    def message(self, msg):
-        pass
+            self._writer.content(msg.message + os.linesep)
