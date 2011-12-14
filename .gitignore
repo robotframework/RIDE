@@ -4,6 +4,7 @@ dist
 .idea
 .*project
 *.pyc
+*$py.class
 results
 src/robotframework_ride.egg-info
 wiki
