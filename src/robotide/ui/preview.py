@@ -16,12 +16,10 @@ import wx.html
 from StringIO import StringIO
 
 from robotide.context import Font
-from robotide.errors import SerializationError
 from robotide.pluginapi import Plugin, ActionInfo, TreeAwarePluginMixin
 from robotide.publish import (RideTreeSelection, RideNotebookTabChanged,
                               RideTestCaseAdded, RideUserKeywordAdded)
 from robotide.robotapi import TestCase, UserKeyword
-from robotide.writer.serializer import Serializer, SerializationContext
 from robotide.widgets.button import ButtonWithHandler
 from robotide.utils import Printing
 
@@ -143,11 +141,10 @@ class PreviewPanel(wx.Panel):
         if not datafile:
             return ''
         output = StringIO()
-        ctx = SerializationContext(output=output, format=self._file_format,
-                                   pipe_separated=self._pipe_separated)
         try:
-            Serializer(ctx).serialize(datafile)
-        except SerializationError, e:
+            datafile.save(output=output, format=self._file_format,
+                          pipe_separated=self._pipe_separated)
+        except Exception, e:
             return "Creating preview of '%s' failed: %s" % (datafile.name, e)
         else:
             return output.getvalue()
