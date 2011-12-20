@@ -6,10 +6,12 @@ from string import Template
 from StringIO import StringIO
 from paver.easy import *
 from paver.setuputils import setup, find_packages, find_package_data
+from paver import tasks
 
 
-SOURCE_DIR = 'src'
 ROOT_DIR = path(__file__).dirname()
+SOURCE_DIR = ROOT_DIR/'src'
+TEST_DIR = ROOT_DIR/'utest'
 DIST_DIR = ROOT_DIR/'dist'
 BUILD_DIR = ROOT_DIR/'build'
 ROBOTIDE_PACKAGE = ROOT_DIR/'src'/'robotide'
@@ -62,11 +64,13 @@ def run(args):
 @consume_args
 def test(args):
     """Run unit tests (requires nose and mock)"""
+    _remove_bytecode_files()
     assert _run_nose(args) is True
 
 @task
 def test_parallel():
     """Run tests with --processes 4"""
+    _remove_bytecode_files()
     excluded_packages = ['^ui', '^settings', '^editor']
     excluded_files = [os.path.join('utest', 'controller', 'test_resource_import'),
                       os.path.join('utest', 'controller', 'test_filecontrollers'),
@@ -123,10 +127,17 @@ def _clean(keep_dist=False):
     for name in 'setup.py', 'paver-minilib.zip', 'MANIFEST.in':
         path(name).remove()
 
+def _remove_bytecode_files():
+    tasks.environment.quiet = True
+    for d in SOURCE_DIR, TEST_DIR:
+        for f in d.walkfiles(pattern='*.pyc'):
+            f.remove()
+    tasks.environment.quiet = False
+
 def _run_nose(args):
     from nose import run as noserun
     _set_development_path()
-    return noserun(defaultTest=os.path.join(ROOT_DIR, 'utest'),
+    return noserun(defaultTest=TEST_DIR,
                    argv=['', '--m=^test_'] + args)
 
 def _create_manifest():
