@@ -14,8 +14,8 @@
 
 import os
 import wx
+from robot.errors import DataError
 
-from robotide.errors import DataError
 from robotide.robotapi import is_scalar_var, is_list_var
 from robotide import utils
 

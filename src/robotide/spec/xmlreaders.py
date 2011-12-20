@@ -13,9 +13,9 @@
 #  limitations under the License.
 
 import os
+from robot.errors import DataError
 
 from robotide.robotapi import TestLibrary as RobotTestLibrary
-from robotide.errors import DataError
 from robotide.publish import RideLogException
 from robotide import utils
 

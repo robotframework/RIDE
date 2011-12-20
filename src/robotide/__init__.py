@@ -43,7 +43,7 @@ See http://wxpython.org for more information."""
 # Insert bundled robot to path before anything else
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'lib'))
 
-from robotide.errors import DataError
+from robot.errors import DataError
 
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'spec'))
