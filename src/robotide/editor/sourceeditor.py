@@ -1,7 +1,6 @@
 import wx
 from wx import stc
 from StringIO import StringIO
-from robot.parsing.model import TestCaseFile
 from robot.parsing.populators import FromFilePopulator
 from robot.parsing.txtreader import TxtReader
 from robotide.publish.messages import RideItemNameChanged
