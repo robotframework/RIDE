@@ -30,6 +30,7 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.subscribe(self.OnTreeSelection, RideTreeSelection)
         self.subscribe(self.OnTreeSelection, RideItemNameChanged)
         self.subscribe(self.OnTabChange, RideNotebookTabChanging)
+        self._open()
 
     def disable(self):
         self.unsubscribe_all()
@@ -55,7 +56,7 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
 
     def OnTabChange(self, message):
         if message.newtab == self.title:
-            self.open()
+            self._open()
         if message.oldtab == self.title:
             if self._editor.dirty:
                 self._ask_and_apply()
@@ -91,10 +92,11 @@ class SourceEditor(wx.Panel):
         return self._dirty
 
     def open(self, data_controller):
-        output = StringIO()
-        data_controller.datafile.save(output=output, format='txt')
-        self._editor.set_text(output.getvalue())
-        self._data = data_controller
+        if data_controller:
+            output = StringIO()
+            data_controller.datafile.save(output=output, format='txt')
+            self._editor.set_text(output.getvalue())
+            self._data = data_controller
 
     def reset(self):
         self._dirty = False
