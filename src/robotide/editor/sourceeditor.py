@@ -83,7 +83,7 @@ class SourceEditor(wx.Panel):
 
     def open(self, data_controller):
         output = StringIO()
-        data_controller.datafile.save(output=output)
+        data_controller.datafile.save(output=output, format='txt')
         self._editor.set_text(output.getvalue())
         self._data = data_controller
 
