@@ -207,6 +207,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _render_datafile(self, parent_node, controller, index=None):
         node = self._create_node_with_handler(parent_node, controller, index)
+        if controller.dirty:
+            self._mark_dirty(node)
         self._datafile_nodes.append(node)
         self.SetItemHasChildren(node, True)
         for child in controller.children:
@@ -337,7 +339,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def mark_dirty(self, controller):
         if controller.dirty:
-            self._mark_dirty(self._get_datafile_node(controller.datafile))
+            self._mark_dirty(self._find_node_by_controller(controller))
 
     def _mark_dirty(self, node):
         text = self.GetItemText(node)

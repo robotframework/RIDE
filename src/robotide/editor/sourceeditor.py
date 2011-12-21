@@ -97,6 +97,7 @@ class SourceEditor(wx.Panel):
             target = self._create_target()
             FromStringIOPopulator(target).populate(src)
             self._data.set_datafile(target)
+            self._data.mark_dirty()
             self._editor.dirty = False
 
     def _create_target(self):
