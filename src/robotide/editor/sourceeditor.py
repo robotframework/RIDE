@@ -46,7 +46,7 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.show_tab(self._editor)
 
     def OnSaving(self, message):
-        if self._editor_component:
+        if self._editor_component and self.is_focused():
             self._editor.save()
             self.tree.refresh_current_datafile()
 
