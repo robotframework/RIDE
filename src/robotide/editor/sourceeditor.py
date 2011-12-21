@@ -52,6 +52,8 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
 
     def OnTreeSelection(self, message):
         if self.is_focused():
+            if self._editor.dirty:
+                self._ask_and_apply()
             self._editor.open(self.tree.get_selected_datafile_controller())
 
     def OnTabChange(self, message):
