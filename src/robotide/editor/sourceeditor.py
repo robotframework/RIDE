@@ -38,29 +38,27 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
         self._editor_component = None
 
     def OnOpen(self, event):
-        self.open()
+        self._open()
 
-    def open(self):
+    def _open(self):
         self._editor.open(self.tree.get_selected_datafile_controller())
         self.show_tab(self._editor)
 
     def OnSaving(self, message):
-        if self._editor_component and self.is_focused():
+        if self.is_focused():
             self._editor.save()
             self.tree.refresh_current_datafile()
 
     def OnTreeSelection(self, message):
-        if self._editor_component and self.is_focused():
+        if self.is_focused():
             self._editor.open(self.tree.get_selected_datafile_controller())
 
     def OnTabChange(self, message):
         if message.newtab == self.title:
             self.open()
-            return
-        if message.oldtab != self.title:
-            return
-        if self._editor._editor.dirty:
-            self._ask_and_apply()
+        if message.oldtab == self.title:
+            if self._editor.dirty:
+                self._ask_and_apply()
 
     def _ask_and_apply(self):
         # TODO: use widgets.Dialog
@@ -69,9 +67,10 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
         if ret == wx.ID_YES:
             self._editor.save()
             self.tree.refresh_current_datafile()
+        self._editor.reset()
 
     def is_focused(self):
-        return self.tab_is_visible(self._editor)
+        return self.notebook.current_page_title == self.title
 
 
 class SourceEditor(wx.Panel):
@@ -83,7 +82,13 @@ class SourceEditor(wx.Panel):
         self._editor = RobotDataEditor(self)
         self.Sizer.add_expanding(self._editor)
         self._parent.AddPage(self, title)
+        self._editor.Bind(wx.EVT_KEY_DOWN, self.OnEditorKey)
         self._data = None
+        self._dirty = False
+
+    @property
+    def dirty(self):
+        return self._dirty
 
     def open(self, data_controller):
         output = StringIO()
@@ -91,41 +96,38 @@ class SourceEditor(wx.Panel):
         self._editor.set_text(output.getvalue())
         self._data = data_controller
 
+    def reset(self):
+        self._dirty = False
+
     def save(self):
-        if self._editor.dirty:
+        if self.dirty:
             src = StringIO(self._editor.GetText().encode('UTF-8'))
             target = self._create_target()
             FromStringIOPopulator(target).populate(src)
             self._data.set_datafile(target)
             self._data.mark_dirty()
-            self._editor.dirty = False
+        self.reset()
 
     def _create_target(self):
         datafile_class = type(self._data.data)
         target = datafile_class(source=self._data.source)
         return target
 
+    def OnEditorKey(self, event):
+        self._dirty = True
+        event.Skip()
+
 
 class RobotDataEditor(stc.StyledTextCtrl):
 
     def __init__(self, parent):
         stc.StyledTextCtrl.__init__(self, parent)
-        self.Bind(wx.EVT_KEY_DOWN, self.OnKey)
-        self.dirty = False
 
     def set_text(self, text):
         self.SetText(text)
-
-    def OnKey(self, event):
-        self.dirty = True
-        event.Skip()
 
 
 class FromStringIOPopulator(FromFilePopulator):
 
     def populate(self, content):
         TxtReader().read(content, self)
-
-
-
-
