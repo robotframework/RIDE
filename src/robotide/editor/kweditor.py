@@ -14,32 +14,28 @@
 
 import wx
 from wx import grid
+from robot.parsing.model import Variable
 
+from robotide.context import IS_MAC, SETTINGS # TODO: can we avoid direct reference?
 from robotide.controller.commands import (ChangeCellValue, ClearArea, PasteArea,
-                                          DeleteRows, AddRows, CommentRows,
-                                          InsertCells, DeleteCells,
-                                          UncommentRows, Undo, Redo,
-                                          RenameKeywordOccurrences,
-                                          ExtractKeyword, AddKeywordFromCells,
-                                          MoveRowsUp, MoveRowsDown,
-                                          ExtractScalar, ExtractList, InsertArea)
+        DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells,
+        UncommentRows, Undo, Redo, RenameKeywordOccurrences, ExtractKeyword,
+        AddKeywordFromCells, MoveRowsUp, MoveRowsDown, ExtractScalar, ExtractList,
+        InsertArea)
 from robotide.controller.cellinfo import TipMessage
 from robotide.publish import (RideGridCellChanged, RideItemStepsChanged,
                               RideSettingsChanged, PUBLISHER)
-from robotide.utils import RideEventHandler
-from robotide.widgets import PopupMenu, PopupMenuItems
-from robotide.context import IS_MAC, SETTINGS # TODO: can we avoid direct reference?
-from robot.parsing.model import Variable
-
-from robotide.editor.grid import GridEditor
-from robotide.editor.tooltips import GridToolTips
-from robotide.editor.editordialogs import (UserKeywordNameDialog,
-                                           ScalarVariableDialog,
-                                           ListVariableDialog)
-from robotide.editor.contentassist import ExpandingContentAssistTextCtrl
-from robotide.editor.gridcolorizer import Colorizer, ColorizationSettings
 from robotide.usages.UsageRunner import Usages
 from robotide.ui.progress import RenameProgressObserver
+from robotide.utils import RideEventHandler
+from robotide.widgets import PopupMenu, PopupMenuItems
+
+from .grid import GridEditor
+from .tooltips import GridToolTips
+from .editordialogs import (UserKeywordNameDialog, ScalarVariableDialog,
+        ListVariableDialog)
+from .contentassist import ExpandingContentAssistTextCtrl
+from .gridcolorizer import Colorizer, ColorizationSettings
 
 
 def requires_focus(function):
@@ -49,6 +45,7 @@ def requires_focus(function):
         if self.has_focus() or self.IsCellEditControlShown() or _row_header_selected_on_linux(self):
             function(self, *args)
     return decorated_function
+
 
 class KeywordEditor(GridEditor, RideEventHandler):
     _no_cell = (-1,-1)

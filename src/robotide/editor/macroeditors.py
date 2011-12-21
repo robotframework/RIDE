@@ -11,13 +11,16 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
+
 import wx
+
 from robotide.usages.UsageRunner import Usages
-from robotide.editor.kweditor import KeywordEditor
-from robotide.editor.editors import _RobotTableEditor, WithFindUsages
 from robotide.publish.messages import RideItemNameChanged
-from robotide.widgets.button import ButtonWithHandler
 from robotide.widgets.sizers import HorizontalSizer
+
+from .kweditor import KeywordEditor
+from .editors import _RobotTableEditor, WithFindUsages
 
 
 class TestCaseEditor(_RobotTableEditor):
