@@ -294,3 +294,4 @@ class Serializer(object):
     def _log_errors(self):
         if self._errors:
             self._logger.error('\n\n'.join(self._errors))
+            self._errors = []
