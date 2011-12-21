@@ -84,9 +84,12 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         else:
             self._resource_file_controller_factory = None
         self.parent = parent
-        self.data = data
+        self.set_datafile(data)
         self.dirty = False
         self.children = self._children(data)
+
+    def set_datafile(self, datafile):
+        self.data = datafile
         self._variables_table_controller = None
         self._testcase_table_controller = None
         self._keywords_table_controller = None
@@ -102,7 +105,6 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
     @property
     def settings(self):
         return self._settings()
-
 
     def _settings(self):
         ss = self.data.setting_table
@@ -124,13 +126,15 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
     @property
     def variables(self):
         if self._variables_table_controller is None:
-            self._variables_table_controller = VariableTableController(self, self.data.variable_table)
+            self._variables_table_controller = \
+                    VariableTableController(self, self.data.variable_table)
         return self._variables_table_controller
 
     @property
     def tests(self):
         if self._testcase_table_controller is None:
-            self._testcase_table_controller = TestCaseTableController(self, self.data.testcase_table)
+            self._testcase_table_controller = \
+                    TestCaseTableController(self, self.data.testcase_table)
         return self._testcase_table_controller
 
     @property
@@ -139,7 +143,8 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
 
     @property
     def datafiles(self):
-        return chain([self], (df for df in self._chief_controller.datafiles if df != self))
+        return chain([self], (df for df in self._chief_controller.datafiles
+                              if df != self))
 
     @property
     def datafile_controller(self):
@@ -148,13 +153,15 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
     @property
     def keywords(self):
         if self._keywords_table_controller is None:
-            self._keywords_table_controller = KeywordTableController(self, self.data.keyword_table)
+            self._keywords_table_controller = \
+                    KeywordTableController(self, self.data.keyword_table)
         return self._keywords_table_controller
 
     @property
     def imports(self):
         if not self._imports:
-            self._imports = ImportSettingsController(self, self.data.setting_table, self._resource_file_controller_factory)
+            self._imports = ImportSettingsController(self, self.data.setting_table,
+                                    self._resource_file_controller_factory)
         return self._imports
 
     @property
