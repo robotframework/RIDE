@@ -12,8 +12,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import os
-
 from robot import utils
 from robot.common import BaseTestSuite, BaseTestCase
 from robot.parsing import TestData
@@ -21,14 +19,14 @@ from robot.errors import ExecutionFailed, DataError
 from robot.variables import GLOBAL_VARIABLES
 from robot.output import LOGGER
 
-from fixture import (Setup, Teardown, SuiteSetupListener, SuiteTearDownListener,
-                     TestSetupListener, TestTeardownListener)
-from keywords import Keywords
-from namespace import Namespace
-from runerrors import SuiteRunErrors, TestRunErrors
-from userkeyword import UserLibrary
-from context import ExecutionContext
-from defaultvalues import DefaultValues
+from .fixture import (Setup, Teardown, SuiteSetupListener, SuiteTearDownListener,
+                      TestSetupListener, TestTeardownListener)
+from .keywords import Keywords
+from .namespace import Namespace
+from .runerrors import SuiteRunErrors, TestRunErrors
+from .userkeyword import UserLibrary
+from .context import EXECUTION_CONTEXTS
+from .defaultvalues import DefaultValues
 
 
 def TestSuite(datasources, settings):
@@ -125,8 +123,10 @@ class RunnableTestSuite(BaseTestSuite):
         self.status = 'RUNNING'
         self.starttime = utils.get_timestamp()
         parent_vars = parent.context.get_current_vars() if parent else None
-        ns = Namespace(self, parent_vars, skip_imports=errors.exit)
-        self.context = ExecutionContext(ns, output, self._run_mode_dry_run)
+        ns = Namespace(self, parent_vars)
+        self.context = EXECUTION_CONTEXTS.start_suite(ns, output, self._run_mode_dry_run)
+        if not errors.exit:
+            ns.handle_imports()
         self._set_variable_dependent_metadata(self.context)
         output.start_suite(self)
         return self.context
