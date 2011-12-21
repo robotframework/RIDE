@@ -64,6 +64,10 @@ class NoteBook(fnb.FlatNotebook):
     def tab_is_visible(self, tab):
         return tab == self.GetCurrentPage()
 
+    @property
+    def current_page_title(self):
+        return self.GetPageText(self.GetSelection())
+
     def OnTabClosing(self, event):
         if self.GetPage(event.GetSelection()) in self._uncloseable:
             event.Veto()
