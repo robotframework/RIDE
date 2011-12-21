@@ -4,6 +4,7 @@ from StringIO import StringIO
 from robot.parsing.model import TestCaseFile
 from robot.parsing.populators import FromFilePopulator
 from robot.parsing.txtreader import TxtReader
+from robotide.publish.messages import RideItemNameChanged
 
 from robotide.widgets import VerticalSizer
 from robotide.pluginapi import (Plugin, ActionInfo, RideSaving,
@@ -28,6 +29,7 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.add_self_as_tree_aware_plugin()
         self.subscribe(self.OnSaving, RideSaving)
         self.subscribe(self.OnTreeSelection, RideTreeSelection)
+        self.subscribe(self.OnTreeSelection, RideItemNameChanged)
         self.subscribe(self.OnTabChange, RideNotebookTabChanging)
 
     def disable(self):
