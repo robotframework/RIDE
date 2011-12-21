@@ -124,6 +124,7 @@ class RobotDataEditor(stc.StyledTextCtrl):
 
     def __init__(self, parent):
         stc.StyledTextCtrl.__init__(self, parent)
+        self.StyleSetSpec(stc.STC_STYLE_DEFAULT, 'fore:#000000,back:#FFFFFF,face:MonoSpace,size:9')
 
     def set_text(self, text):
         self.SetText(text)
