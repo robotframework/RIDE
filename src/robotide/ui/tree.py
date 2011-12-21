@@ -13,41 +13,39 @@
 #  limitations under the License.
 
 import wx
+try:
+    import treemixin
+except ImportError:
+    from wx.lib.mixins import treemixin
 
+from robotide.action import ActionInfoCollection
+from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
+from robotide.controller.commands import (RenameKeywordOccurrences, RemoveMacro,
+    AddKeyword, AddTestCase, RenameTest, CopyMacroAs, MoveTo, AddVariable,
+    UpdateVariableName, RenameFile, RenameResourceFile, DeleteFile)
 from robotide.controller.settingcontrollers import VariableController
 from robotide.controller.macrocontrollers import (TestCaseController,
                                                   UserKeywordController)
 from robotide.controller.filecontrollers import (TestDataDirectoryController,
     ResourceFileController, TestCaseFileController, DirectoryController)
-
-from robotide import utils
-from robotide.action import ActionInfoCollection
-from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
 from robotide.editor.editordialogs import (TestCaseNameDialog,
     UserKeywordNameDialog, ScalarVariableDialog, ListVariableDialog,
     CopyUserKeywordDialog)
-from robotide.publish import RideTreeSelection, PUBLISHER, RideFileNameChanged,\
-    RideItem, RideUserKeywordAdded,\
-    RideTestCaseAdded, RideUserKeywordRemoved, RideTestCaseRemoved, RideDataFileRemoved,\
-    RideDataChangedToDirty, RideDataDirtyCleared, RideVariableRemoved,\
-    RideVariableAdded, RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated,\
-    RideOpenResource, RideSuiteAdded, RideSelectResource
-from robotide.controller.commands import RenameKeywordOccurrences, RemoveMacro,\
-    AddKeyword, AddTestCase, RenameTest, CopyMacroAs, MoveTo,\
-    AddVariable, UpdateVariableName, RenameFile, RenameResourceFile, DeleteFile
-from robotide.ui.resourcedialogs import ResourceRenameDialog, ResourceDeleteDialog
-from robotide.widgets import PopupCreator, PopupMenuItems
-from robotide.ui.filedialogs import NewExternalResourceDialog, NewResourceDialog
+from robotide.publish import (PUBLISHER, RideTreeSelection, RideFileNameChanged,
+    RideItem, RideUserKeywordAdded, RideTestCaseAdded, RideUserKeywordRemoved,
+    RideTestCaseRemoved, RideDataFileRemoved, RideDataChangedToDirty,
+    RideDataDirtyCleared, RideVariableRemoved, RideVariableAdded,
+    RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated,
+    RideOpenResource, RideSuiteAdded, RideSelectResource)
 from robotide.usages.UsageRunner import Usages, ResourceFileUsages
+from robotide import utils
+from robotide.widgets import PopupCreator, PopupMenuItems
 
-from progress import RenameProgressObserver
-from filedialogs import AddSuiteDialog, ChangeFormatDialog
-from images import TreeImageList
-
-try:
-    import treemixin
-except ImportError:
-    from wx.lib.mixins import treemixin
+from .filedialogs import (AddSuiteDialog, ChangeFormatDialog,
+    NewExternalResourceDialog, NewResourceDialog)
+from .images import TreeImageList
+from .progress import RenameProgressObserver
+from .resourcedialogs import ResourceRenameDialog, ResourceDeleteDialog
 
 
 tree_actions ="""
@@ -404,8 +402,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def _find_node_by_controller(self, controller):
         def match_handler(n):
             handler = self._get_handler(n)
-            if not handler : return False
-            return controller == handler.controller
+            return handler and controller is handler.controller
         return self._find_node_with_predicate(self._root, match_handler)
 
     def get_selected_datafile(self):
@@ -461,17 +458,22 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
                                               controller, second)
         self.select_node_by_data(selection)
 
+    def refresh_current_datafile(self):
+        controller = self.get_selected_datafile_controller()
+        self._refresh_datafile(controller)
+        self.SelectItem(self._find_node_by_controller(controller))
+
+    def refresh_datafile(self, controller, event):
+        to_be_selected = self._get_pending_selection(event)
+        new_node = self._refresh_datafile(controller)
+        self._handle_pending_selection(to_be_selected, new_node)
+
     def _refresh_datafile(self, controller):
         orig_node = self._get_data_controller_node(controller)
         insertion_index = self._get_datafile_index(orig_node)
         parent = self._get_parent(orig_node)
         self._remove_datafile_node(orig_node)
         return self._render_datafile(parent, controller, insertion_index)
-
-    def refresh_datafile(self, controller, event):
-        to_be_selected = self._get_pending_selection(event)
-        new_node = self._refresh_datafile(controller)
-        self._handle_pending_selection(to_be_selected, new_node)
 
     def _get_pending_selection(self, event):
         if hasattr(event, 'Item'):
