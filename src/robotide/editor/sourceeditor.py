@@ -61,12 +61,15 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
         if message.oldtab != self.title:
             return
         if self._editor._editor.dirty:
-            # TODO: use widgets.Dialog
-            ret = wx.MessageDialog(self._editor, 'Apply changes?', 'Source changed',
-                                   style=wx.YES_NO|wx.ICON_QUESTION).ShowModal()
-            if ret == wx.ID_YES:
-                self._editor.save()
-                self.tree.refresh_current_datafile()
+            self._ask_and_apply()
+
+    def _ask_and_apply(self):
+        # TODO: use widgets.Dialog
+        ret = wx.MessageDialog(self._editor, 'Apply changes?', 'Source changed',
+                               style=wx.YES_NO | wx.ICON_QUESTION).ShowModal()
+        if ret == wx.ID_YES:
+            self._editor.save()
+            self.tree.refresh_current_datafile()
 
     def is_focused(self):
         return self.tab_is_visible(self._editor)
@@ -92,11 +95,15 @@ class SourceEditor(wx.Panel):
     def save(self):
         if self._editor.dirty:
             src = StringIO(self._editor.GetText().encode('UTF-8'))
-            datafile_class = type(self._data.data)
-            target = datafile_class(source=self._data.source)
+            target = self._create_target()
             FromStringIOPopulator(target).populate(src)
             self._data.set_datafile(target)
             self._editor.dirty = False
+
+    def _create_target(self):
+        datafile_class = type(self._data.data)
+        target = datafile_class(source=self._data.source)
+        return target
 
 
 class RobotDataEditor(stc.StyledTextCtrl):
