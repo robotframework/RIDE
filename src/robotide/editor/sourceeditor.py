@@ -4,7 +4,7 @@ from StringIO import StringIO
 from robot.parsing.model import TestDataDirectory
 from robot.parsing.populators import FromFilePopulator
 from robot.parsing.txtreader import TxtReader
-from robotide.publish.messages import RideMessage, RideOpenSuite
+from robotide.publish.messages import RideMessage, RideOpenSuite, RideDataChangedToDirty
 
 from robotide.widgets import VerticalSizer
 from robotide.pluginapi import (Plugin, ActionInfo, RideSaving,
@@ -52,6 +52,8 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
             self.tree.refresh_current_datafile()
 
     def OnTreeSelection(self, message):
+        if isinstance(message, RideDataChangedToDirty):
+            return
         if self.is_focused():
             if isinstance(message, RideOpenSuite):
                 self._editor.reset()
@@ -95,6 +97,9 @@ class DataFileWrapper(object): # TODO: bad class name
         target = self._create_target()
         FromStringIOPopulator(target).populate(src)
         self._data.set_datafile(target)
+        self.mark_data_dirty()
+
+    def mark_data_dirty(self):
         self._data.mark_dirty()
 
     def _create_target(self):
@@ -142,8 +147,13 @@ class SourceEditor(wx.Panel):
         self.reset()
 
     def OnEditorKey(self, event):
-        self._dirty = True
+        if not self.dirty:
+            self._mark_file_dirty()
         event.Skip()
+
+    def _mark_file_dirty(self):
+        self._dirty = True
+        self._data.mark_data_dirty()
 
 
 class RobotDataEditor(stc.StyledTextCtrl):
