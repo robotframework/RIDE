@@ -92,14 +92,15 @@ class DataFileWrapper(object): # TODO: bad class name
         src = StringIO(content)
         target = self._create_target()
         FromStringIOPopulator(target).populate(src)
+        # this is to prevent parsing errors from spoiling all data
         self._sanity_check(target, content)
         self._data.set_datafile(target)
         self.mark_data_dirty()
 
     def _sanity_check(self, candidate, current):
         candidate_txt = self._txt_data(candidate).encode('UTF-8')
-        c = self._remove_all(candidate_txt, ' ', '\n', '...')
-        e = self._remove_all(current, ' ', '\n', '...')
+        c = self._remove_all(candidate_txt, ' ', '\n', '...', '\r')
+        e = self._remove_all(current, ' ', '\n', '...', '\r')
         if len(c) != len(e):
             raise AssertionError('Sanity Check Failed')
 
