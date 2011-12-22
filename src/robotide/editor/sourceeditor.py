@@ -4,7 +4,7 @@ from StringIO import StringIO
 from robot.parsing.model import TestDataDirectory
 from robot.parsing.populators import FromFilePopulator
 from robot.parsing.txtreader import TxtReader
-from robotide.publish.messages import RideItemNameChanged
+from robotide.publish.messages import RideMessage
 
 from robotide.widgets import VerticalSizer
 from robotide.pluginapi import (Plugin, ActionInfo, RideSaving,
@@ -29,7 +29,7 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.add_self_as_tree_aware_plugin()
         self.subscribe(self.OnSaving, RideSaving)
         self.subscribe(self.OnTreeSelection, RideTreeSelection)
-        self.subscribe(self.OnTreeSelection, RideItemNameChanged)
+        self.subscribe(self.OnTreeSelection, RideMessage)
         self.subscribe(self.OnTabChange, RideNotebookTabChanging)
         self._open()
 
