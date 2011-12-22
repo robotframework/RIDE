@@ -96,8 +96,19 @@ class DataFileWrapper(object): # TODO: bad class name
         src = StringIO(content)
         target = self._create_target()
         FromStringIOPopulator(target).populate(src)
+        self._sanity_check(target, content)
         self._data.set_datafile(target)
         self.mark_data_dirty()
+
+    def _sanity_check(self, candidate, current):
+        candidate_txt = self._txt_data(candidate)
+        current_none_empty_lines = self._none_empty_lines(current)
+        candidate_none_empty_lines = self._none_empty_lines(candidate_txt)
+        if current_none_empty_lines > candidate_none_empty_lines:
+            raise AssertionError('Sanity Check Failed')
+
+    def _none_empty_lines(self, txt):
+        return sum(1 for t in txt.splitlines() if t.strip() and not t.strip().startswith('... '))
 
     def mark_data_dirty(self):
         self._data.mark_dirty()
@@ -112,8 +123,11 @@ class DataFileWrapper(object): # TODO: bad class name
 
     @property
     def content(self):
+        return self._txt_data(self._data.data)
+
+    def _txt_data(self, data):
         output = StringIO()
-        self._data.data.save(output=output, format='txt')
+        data.save(output=output, format='txt')
         return output.getvalue()
 
 
