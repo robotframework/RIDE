@@ -158,7 +158,9 @@ class SourceEditor(wx.Panel):
             except AssertionError:
                 # TODO: use widgets.Dialog
                 wx.MessageDialog(self._editor,
-                                 'ERROR: Data sanity check failed!',
+                                 'ERROR: Data sanity check failed!\n'\
+                                 'All changes made in Txt Editor\n'\
+                                 'since last save are disregarded',
                                  'Can not apply changes from Txt Editor',
                                   style=wx.OK).ShowModal()
                 return
