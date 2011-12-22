@@ -1,6 +1,7 @@
 import wx
 from wx import stc
 from StringIO import StringIO
+from robot.parsing.model import TestDataDirectory
 from robot.parsing.populators import FromFilePopulator
 from robot.parsing.txtreader import TxtReader
 from robotide.publish.messages import RideItemNameChanged
@@ -42,7 +43,7 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
         self._open()
 
     def _open(self):
-        self._editor.open(self.tree.get_selected_datafile_controller())
+        self._open_data_in_editor()
         self.show_tab(self._editor)
 
     def OnSaving(self, message):
@@ -54,7 +55,13 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
         if self.is_focused():
             if self._editor.dirty:
                 self._ask_and_apply()
-            self._editor.open(self.tree.get_selected_datafile_controller())
+            self._open_data_in_editor()
+
+    def _open_data_in_editor(self):
+        datafile_controller = self.tree.get_selected_datafile_controller()
+        if datafile_controller:
+            data = DataFileWrapper(datafile_controller)
+            self._editor.open(data)
 
     def OnTabChange(self, message):
         if message.newtab == self.title:
@@ -76,6 +83,33 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
         return self.notebook.current_page_title == self.title
 
 
+class DataFileWrapper(object): # TODO: bad class name
+
+    def __init__(self, data):
+        self._data = data
+
+    def update_from(self, content):
+        src = StringIO(content)
+        target = self._create_target()
+        FromStringIOPopulator(target).populate(src)
+        self._data.set_datafile(target)
+        self._data.mark_dirty()
+
+    def _create_target(self):
+        target_class = type(self._data.data)
+        if target_class is TestDataDirectory:
+            target = TestDataDirectory(source=self._data.directory)
+            target.initfie = self._data.data.initfile
+            return target
+        return target_class(source=self._data.source)
+
+    @property
+    def content(self):
+        output = StringIO()
+        self._data.data.save(output=output, format='txt')
+        return output.getvalue()
+
+
 class SourceEditor(wx.Panel):
 
     def __init__(self, parent, title):
@@ -93,29 +127,17 @@ class SourceEditor(wx.Panel):
     def dirty(self):
         return self._dirty
 
-    def open(self, data_controller):
-        if data_controller:
-            output = StringIO()
-            data_controller.datafile.save(output=output, format='txt')
-            self._editor.set_text(output.getvalue())
-            self._data = data_controller
+    def open(self, data):
+        self._data = data
+        self._editor.set_text(self._data.content)
 
     def reset(self):
         self._dirty = False
 
     def save(self):
         if self.dirty:
-            src = StringIO(self._editor.GetText().encode('UTF-8'))
-            target = self._create_target()
-            FromStringIOPopulator(target).populate(src)
-            self._data.set_datafile(target)
-            self._data.mark_dirty()
+            self._data.update_from(self._editor.utf8_text)
         self.reset()
-
-    def _create_target(self):
-        datafile_class = type(self._data.data)
-        target = datafile_class(source=self._data.source)
-        return target
 
     def OnEditorKey(self, event):
         self._dirty = True
@@ -130,6 +152,10 @@ class RobotDataEditor(stc.StyledTextCtrl):
 
     def set_text(self, text):
         self.SetText(text)
+
+    @property
+    def utf8_text(self):
+        return self.GetText().encode('UTF-8')
 
 
 class FromStringIOPopulator(FromFilePopulator):
