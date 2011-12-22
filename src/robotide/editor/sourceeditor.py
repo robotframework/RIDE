@@ -183,7 +183,7 @@ class RobotDataEditor(stc.StyledTextCtrl):
 
     def __init__(self, parent):
         stc.StyledTextCtrl.__init__(self, parent)
-        self.StyleSetSpec(stc.STC_STYLE_DEFAULT, 'fore:#000000,back:#FFFFFF,face:MonoSpace,size:9')
+        self.StyleSetSpec(stc.STC_STYLE_DEFAULT, 'fore:#000000,back:#FFFFFF,face:Courier New,size:12')
         self.SetMarginType(0, stc.STC_MARGIN_NUMBER)
         self.SetMarginWidth(0, self.TextWidth(stc.STC_STYLE_LINENUMBER,'1234'))
 
