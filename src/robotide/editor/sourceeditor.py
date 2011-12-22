@@ -12,7 +12,7 @@ from robotide.pluginapi import (Plugin, ActionInfo, RideSaving,
 
 
 class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
-    title = 'Edit Source'
+    title = 'Txt Edit'
 
     def __init__(self, application):
         Plugin.__init__(self, application)
