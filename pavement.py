@@ -128,11 +128,9 @@ def _clean(keep_dist=False):
         path(name).remove()
 
 def _remove_bytecode_files():
-    tasks.environment.quiet = True
     for d in SOURCE_DIR, TEST_DIR:
         for f in d.walkfiles(pattern='*.pyc'):
-            f.remove()
-    tasks.environment.quiet = False
+            os.remove(f)
 
 def _run_nose(args):
     from nose import run as noserun
