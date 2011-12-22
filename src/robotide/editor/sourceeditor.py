@@ -97,14 +97,17 @@ class DataFileWrapper(object): # TODO: bad class name
         self.mark_data_dirty()
 
     def _sanity_check(self, candidate, current):
-        candidate_txt = self._txt_data(candidate)
-        current_none_empty_lines = self._none_empty_lines(current)
-        candidate_none_empty_lines = self._none_empty_lines(candidate_txt)
-        if current_none_empty_lines > candidate_none_empty_lines:
+        candidate_txt = self._txt_data(candidate).encode('UTF-8')
+        c = self._remove_all(candidate_txt, ' ', '\n', '...')
+        e = current.replace(' ', '').replace('\n', '').replace('...', '')
+        if len(c) != len(e):
             raise AssertionError('Sanity Check Failed')
 
-    def _none_empty_lines(self, txt):
-        return sum(1 for t in txt.splitlines() if t.strip() and not t.strip().startswith('... '))
+    def _remove_all(self, original_txt, *to_remove):
+        txt = original_txt
+        for item in to_remove:
+            txt = txt.replace(item, '')
+        return txt
 
     def mark_data_dirty(self):
         self._data.mark_dirty()
