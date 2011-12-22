@@ -300,6 +300,13 @@ class RideTestCaseRemoved(RideMessage):
     """Sent when a test case is removed from a suite."""
     data = ['datafile', 'name', 'item']
 
+class RideItemMovedUp(RideMessage):
+    """Sent when an item (test, keyword, variable) is moved up."""
+    data = ['item']
+
+class RideItemMovedDown(RideMessage):
+    """Sent when an item (test, keyword, variable) is moved down."""
+    data = ['item']
 
 class RideVariableAdded(RideMessage):
     """Sent when a new variable is added to a suite."""
@@ -311,14 +318,12 @@ class RideVariableRemoved(RideMessage):
     data = ['datafile', 'name', 'item']
 
 
-class RideVariableMovedUp(RideMessage):
+class RideVariableMovedUp(RideItemMovedUp):
     """Sent when a variable is moved up"""
-    data = ['item']
 
 
-class RideVariableMovedDown(RideMessage):
+class RideVariableMovedDown(RideItemMovedDown):
     """Sent when a variable is moved down"""
-    data = ['item']
 
 
 class RideVariableUpdated(RideMessage):

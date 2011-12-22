@@ -16,6 +16,7 @@ from robotide.publish import (RideTestCaseRemoved, RideVariableAdded,
         RideVariableRemoved, RideVariableMovedUp, RideVariableMovedDown,
         RideImportSettingAdded, RideUserKeywordRemoved, RideUserKeywordAdded,
         RideTestCaseAdded)
+from robotide.publish.messages import RideItemMovedUp, RideItemMovedDown
 from robotide.robotapi import is_list_var, is_scalar_var
 from robotide import utils
 
@@ -73,11 +74,13 @@ class VariableTableController(_TableController, _WithListOperations):
     def move_up(self, index):
         ctrl = self[index]
         _WithListOperations.move_up(self, index)
+        self.mark_dirty()
         RideVariableMovedUp(item=ctrl).publish()
 
     def move_down(self, index):
         ctrl = self[index]
         _WithListOperations.move_down(self, index)
+        self.mark_dirty()
         RideVariableMovedDown(item=ctrl).publish()
 
     def add_variable(self, name, value, comment=None):
@@ -216,6 +219,8 @@ class _MacroTable(_TableController):
             return False
         upper = idx - 1
         items[upper], items[idx] = items[idx], items[upper]
+        self.mark_dirty()
+        RideItemMovedUp(item=item).publish()
         return True
 
     def move_down(self, item):
@@ -225,6 +230,8 @@ class _MacroTable(_TableController):
             return False
         lower = idx + 1
         items[idx], items[lower] = items[lower], items[idx]
+        self.mark_dirty()
+        RideItemMovedDown(item=item).publish()
         return True
 
     def validate_name(self, name, named_ctrl=None):
