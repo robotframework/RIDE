@@ -272,12 +272,13 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def _get_or_create_node(self, parent_node, dataitem, predicate):
         if not self.IsExpanded(parent_node):
             self._expand_and_render_children(parent_node)
-            return self._get_node_with_label(parent_node, dataitem.display_name)
+            return self._find_node_with_label(parent_node, dataitem.display_name)
         index = self._get_insertion_index(parent_node, predicate)
         return self._create_node_with_handler(parent_node, dataitem, index)
 
     def _select(self, node):
-        wx.CallAfter(self.SelectItem, node)
+        if node:
+            wx.CallAfter(self.SelectItem, node)
 
     def _get_insertion_index(self, parent_node, predicate):
         if not predicate:
@@ -373,7 +374,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             return
         if not self.IsExpanded(parent_node):
             self._expand_and_render_children(parent_node)
-        node = self._get_node_with_label(parent_node, utils.normalize(uk.name))
+        node = self._find_node_with_label(parent_node, utils.normalize(uk.name))
         if node != self.GetSelection():
             self.SelectItem(node)
 
@@ -383,9 +384,10 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
                 return node
         return None
 
-    def _get_node_with_label(self, node, label):
-        return self._find_node_with_predicate(node,
-                                              lambda n: utils.eq(self.GetItemText(n), label))
+    def _find_node_with_label(self, node, label):
+        matcher = lambda n: utils.eq(self.GetItemText(n), label)
+        return self._find_node_with_predicate(node, matcher)
+
 
     def _find_node_with_predicate(self, node, predicate):
         if node != self._root and predicate(node):
@@ -461,9 +463,10 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self.select_node_by_data(selection)
 
     def refresh_current_datafile(self):
-        controller = self.get_selected_datafile_controller()
-        self._refresh_datafile(controller)
-        self.SelectItem(self._find_node_by_controller(controller))
+        selection = self.GetItemText(self.GetSelection())
+        node = self._refresh_datafile(self.get_selected_datafile_controller())
+        self._expand_and_render_children(node)
+        self._select(self._find_node_with_label(node, selection))
 
     def refresh_datafile(self, controller, event):
         to_be_selected = self._get_pending_selection(event)
@@ -521,7 +524,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         if to_be_selected:
             self._expand_and_render_children(parent_node)
             wx.CallAfter(self.SelectItem,
-                         self._get_node_with_label(parent_node, to_be_selected))
+                         self._find_node_with_label(parent_node, to_be_selected))
 
     def OnGoBack(self, event):
         node = self._history.back()
