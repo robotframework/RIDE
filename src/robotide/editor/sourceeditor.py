@@ -99,7 +99,7 @@ class DataFileWrapper(object): # TODO: bad class name
         target_class = type(self._data.data)
         if target_class is TestDataDirectory:
             target = TestDataDirectory(source=self._data.directory)
-            target.initfie = self._data.data.initfile
+            target.initfile = self._data.data.initfile
             return target
         return target_class(source=self._data.source)
 
