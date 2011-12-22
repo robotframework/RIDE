@@ -48,44 +48,82 @@ class DataLoader(object):
             load_observer.notify()
 
 
-class _DataLoader(Thread):
+class _DataLoaderThread(Thread):
 
-    def __init__(self, path):
+    def __init__(self):
         Thread.__init__(self)
-        self._path = path
         self.result = None
+        self._sanitizer = DataSanitizer()
 
     def run(self):
         try:
-            self.result = TestData(source=self._path)
+            self.result = self._sanitize(self._run())
         except Exception:
-            pass
-            # TODO: Log this error somehow
+            pass # TODO: Log this error somehow
+
+    def _sanitize(self, result):
+        return self._sanitizer.sanitize(result)
 
 
-class _InitFileLoader(Thread):
+class _DataLoader(_DataLoaderThread):
 
     def __init__(self, path):
-        Thread.__init__(self)
+        _DataLoaderThread.__init__(self)
         self._path = path
-        self.result = None
 
-    def run(self):
-        try:
-            self.result = TestDataDirectory(source=os.path.dirname(self._path))
-            self.result.initfile = self._path
-            FromFilePopulator(self.result).populate(self._path)
-        except Exception, err:
-            pass
+    def _run(self):
+        return TestData(source=self._path)
 
 
-class _ResourceLoader(Thread):
+class _InitFileLoader(_DataLoaderThread):
+
+    def __init__(self, path):
+        _DataLoaderThread.__init__(self)
+        self._path = path
+
+    def _run(self):
+        result = TestDataDirectory(source=os.path.dirname(self._path))
+        result.initfile = self._path
+        FromFilePopulator(result).populate(self._path)
+        return result
+
+
+class _ResourceLoader(_DataLoaderThread):
 
     def __init__(self, datafile, resource_loader):
-        Thread.__init__(self)
+        _DataLoaderThread.__init__(self)
         self._datafile = datafile
         self._loader = resource_loader
-        self.result = []
 
-    def run(self):
-        self.result = self._loader(self._datafile)
+    def _run(self):
+        return self._loader(self._datafile)
+
+    def _sanitize(self, results):
+        return [self._sanitizer.sanitize(r) for r in results]
+
+
+class DataSanitizer(object):
+
+    def sanitize(self, datafile):
+        self._sanitize_headers(datafile)
+        return datafile
+
+    def _sanitize_headers(self, datafile):
+        # Black magic warning:
+        # Older RIDE versions wrote headers like
+        #   ['Test Cases', 'Action', 'Argument, 'Argument', 'Argument']
+        # Since currently column aligning works based on custome headers,
+        # the old default headers need be removed.
+        for table in datafile.testcase_table, datafile.keyword_table:
+            if self._is_old_style_header(table.header):
+                table.set_header([table.header[0]])
+
+    def _is_old_style_header(self, header):
+        if len(header) < 3:
+            return False
+        if header[1].lower() != 'action':
+            return False
+        for h in header[2:]:
+            if not h.lower().startswith('arg'):
+                return False
+        return True

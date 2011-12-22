@@ -170,24 +170,6 @@ class MacroNameValidation(_NameValidation):
 
 class _MacroTable(_TableController):
 
-    def __init__(self, parent_controller, table):
-        _TableController.__init__(self, parent_controller, table)
-        self._remove_old_default_headers()
-
-    def _remove_old_default_headers(self):
-        if self._is_old_style_header(self._table.header):
-            self._table.set_header([self._table.header[0]])
-
-    def _is_old_style_header(self, header):
-        if len(header) < 3:
-            return False
-        if header[1].lower() != 'action':
-            return False
-        for h in header[2:]:
-            if not h.lower().startswith('arg'):
-                return False
-        return True
-
     @property
     def _items(self):
         raise NotImplementedError(self.__class__)
