@@ -46,3 +46,12 @@ class TestCaseCreationTest(unittest.TestCase):
     def test_whitespace_is_stripped(self):
         test = self.ctrl.new('   ' + VALID_NAME + '\t   \n')
         assert_equals(test.name, VALID_NAME)
+
+
+class TestCaseTableParsingTest(unittest.TestCase):
+
+    def test_default_headers_are_ignored(self):
+        data = TestCaseFile()
+        data.testcase_table.set_header(['Test Cases', 'Action', 'Argument'])
+        ctrl = TestCaseFileController(data).tests
+        assert_equals(ctrl._table.header, ['Test Cases'])

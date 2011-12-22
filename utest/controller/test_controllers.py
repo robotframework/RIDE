@@ -6,19 +6,13 @@ from robot.parsing.model import TestCaseFile
 
 from robotide.controller.filecontrollers import TestCaseFileController
 from robotide.controller.settingcontrollers import (DocumentationController,
-                                                    FixtureController,
-                                                    TagsController, ImportController,
-                                                    ReturnValueController,
-                                                    TimeoutController,
-                                                    ForceTagsController,
-    DefaultTagsController)
+        FixtureController, TagsController, ImportController,
+        ReturnValueController, TimeoutController, ForceTagsController,
+        DefaultTagsController)
 from robotide.controller.tablecontrollers import (VariableTableController,
-                                                  MetadataListController,
-                                                  ImportSettingsController,
-                                                  _WithListOperations)
+        MetadataListController, ImportSettingsController, _WithListOperations)
 from robotide.publish.messages import (RideImportSetting, RideImportSettingRemoved,
-                                       RideImportSettingAdded,
-                                       RideImportSettingChanged)
+        RideImportSettingAdded, RideImportSettingChanged)
 from robotide.context import SETTINGS
 from resources.mocks import PublisherListener
 from controller.base_command_test import _FakeChief

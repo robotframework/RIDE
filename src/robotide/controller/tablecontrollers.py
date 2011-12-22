@@ -12,22 +12,17 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-
+from robotide.publish import (RideTestCaseRemoved, RideVariableAdded,
+        RideVariableRemoved, RideVariableMovedUp, RideVariableMovedDown,
+        RideImportSettingAdded, RideUserKeywordRemoved, RideUserKeywordAdded,
+        RideTestCaseAdded)
 from robotide.robotapi import is_list_var, is_scalar_var
-
-from robotide.controller.basecontroller import ControllerWithParent
-
-
-from robotide.controller.macrocontrollers import (TestCaseController,
-                                                  UserKeywordController)
-from robotide.publish.messages import RideTestCaseRemoved, RideVariableAdded, \
-    RideVariableRemoved, RideVariableMovedUp, RideVariableMovedDown
-
-from robotide.controller.settingcontrollers import (MetadataController,
-        ImportController, VariableController)
-from robotide.publish import RideUserKeywordAdded, RideTestCaseAdded
 from robotide import utils
-from robotide.publish.messages import RideImportSettingAdded, RideUserKeywordRemoved
+
+from .basecontroller import ControllerWithParent
+from .macrocontrollers import TestCaseController, UserKeywordController
+from .settingcontrollers import (MetadataController, ImportController,
+        VariableController)
 
 
 class _WithListOperations(object):
@@ -170,7 +165,25 @@ class MacroNameValidation(_NameValidation):
                     self._table.item_type
 
 
-class _MacroTable(object):
+class _MacroTable(_TableController):
+
+    def __init__(self, parent_controller, table):
+        _TableController.__init__(self, parent_controller, table)
+        self._remove_old_default_headers()
+
+    def _remove_old_default_headers(self):
+        if self._is_old_style_header(self._table.header):
+            self._table.set_header([self._table.header[0]])
+
+    def _is_old_style_header(self, header):
+        if len(header) < 3:
+            return False
+        if header[1].lower() != 'action':
+            return False
+        for h in header[2:]:
+            if not h.lower().startswith('arg'):
+                return False
+        return True
 
     @property
     def _items(self):
@@ -247,7 +260,7 @@ class _MacroTable(object):
         pass
 
 
-class TestCaseTableController(_TableController, _MacroTable):
+class TestCaseTableController(_MacroTable):
     item_type = 'Test case'
     _controller_class = TestCaseController
 
@@ -265,7 +278,7 @@ class TestCaseTableController(_TableController, _MacroTable):
         return self._create_new(name)
 
 
-class KeywordTableController(_TableController, _MacroTable):
+class KeywordTableController(_MacroTable):
     item_type = 'User keyword'
     _controller_class = UserKeywordController
 
