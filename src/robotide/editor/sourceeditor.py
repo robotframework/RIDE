@@ -25,7 +25,7 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
         return self._editor_component
 
     def enable(self):
-        self.register_action(ActionInfo('Edit', 'Edit Source', self.OnOpen))
+        self.register_action(ActionInfo('Tools', 'Txt Edit', self.OnOpen))
         self.add_self_as_tree_aware_plugin()
         self.subscribe(self.OnSaving, RideSaving)
         self.subscribe(self.OnTreeSelection, RideTreeSelection)
