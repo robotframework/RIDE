@@ -4,7 +4,7 @@ from StringIO import StringIO
 from robot.parsing.model import TestDataDirectory
 from robot.parsing.populators import FromFilePopulator
 from robot.parsing.txtreader import TxtReader
-from robotide.publish.messages import RideMessage
+from robotide.publish.messages import RideMessage, RideOpenSuite
 
 from robotide.widgets import VerticalSizer
 from robotide.pluginapi import (Plugin, ActionInfo, RideSaving,
@@ -53,6 +53,8 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
 
     def OnTreeSelection(self, message):
         if self.is_focused():
+            if isinstance(message, RideOpenSuite):
+                self._editor.reset()
             if self._editor.dirty:
                 self._ask_and_apply()
             self._open_data_in_editor()
