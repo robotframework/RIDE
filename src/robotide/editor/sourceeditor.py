@@ -58,7 +58,7 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
             if isinstance(message, RideOpenSuite):
                 self._editor.reset()
             if self._editor.dirty:
-                self._ask_and_apply()
+                self._apply_txt_changes_to_model()
             self._open_data_in_editor()
 
     def _open_data_in_editor(self):
@@ -72,15 +72,11 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
             self._open()
         if message.oldtab == self.title:
             if self._editor.dirty:
-                self._ask_and_apply()
+                self._apply_txt_changes_to_model()
 
-    def _ask_and_apply(self):
-        # TODO: use widgets.Dialog
-        ret = wx.MessageDialog(self._editor, 'Apply changes?', 'Source changed',
-                               style=wx.YES_NO | wx.ICON_QUESTION).ShowModal()
-        if ret == wx.ID_YES:
-            self._editor.save()
-            self.tree.refresh_current_datafile()
+    def _apply_txt_changes_to_model(self):
+        self._editor.save()
+        self.tree.refresh_current_datafile()
         self._editor.reset()
 
     def is_focused(self):
@@ -157,7 +153,15 @@ class SourceEditor(wx.Panel):
 
     def save(self):
         if self.dirty:
-            self._data.update_from(self._editor.utf8_text)
+            try:
+                self._data.update_from(self._editor.utf8_text)
+            except AssertionError:
+                # TODO: use widgets.Dialog
+                wx.MessageDialog(self._editor,
+                                 'ERROR: Data sanity check failed!',
+                                 'Can not apply changes from Txt Editor',
+                                  style=wx.OK).ShowModal()
+                return
         self.reset()
 
     def OnEditorKey(self, event):
