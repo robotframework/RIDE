@@ -259,6 +259,10 @@ class RideDataDirtyCleared(RideMessage):
     """
     data = ['datafile']
 
+class RideDataFileSet(RideMessage):
+    """Set when a whole datafile is replaced with new one in a controller
+    """
+    data = ['item']
 
 class RideUserKeyword(RideMessage):
     """Base class for all messages about changes to any user keyword."""

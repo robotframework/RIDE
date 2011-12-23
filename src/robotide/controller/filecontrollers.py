@@ -18,6 +18,7 @@ from itertools import chain
 from robotide.publish import (RideDataFileRemoved, RideInitFileRemoved,
         RideDataChangedToDirty, RideDataDirtyCleared, RideSuiteAdded,
         RideItemSettingsChanged)
+from robotide.publish.messages import RideDataFileSet
 from robotide.robotapi import TestDataDirectory, TestCaseFile, ResourceFile
 from robotide import utils
 
@@ -94,6 +95,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         self._testcase_table_controller = None
         self._keywords_table_controller = None
         self._imports = None
+        RideDataFileSet(item=self).publish()
 
     def _children(self, data):
         return []

@@ -50,7 +50,6 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
     def OnSaving(self, message):
         if self.is_focused():
             self._editor.save()
-            self.tree.refresh_current_datafile()
 
     def OnTreeSelection(self, message):
         if isinstance(message, RideDataChangedToDirty):
@@ -77,7 +76,6 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
 
     def _apply_txt_changes_to_model(self):
         self._editor.save()
-        self.tree.refresh_current_datafile()
         self._editor.reset()
 
     def is_focused(self):
