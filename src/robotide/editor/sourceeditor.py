@@ -165,6 +165,7 @@ class SourceEditor(wx.Panel):
 
     def save(self):
         if self.dirty:
+            self.reset()
             try:
                 self._data.update_from(self._editor.utf8_text)
             except AssertionError:
@@ -175,8 +176,6 @@ class SourceEditor(wx.Panel):
                                  'since last save are disregarded',
                                  'Can not apply changes from Txt Editor',
                                   style=wx.OK).ShowModal()
-                return
-        self.reset()
 
     def OnEditorKey(self, event):
         if not self.dirty:
