@@ -4,6 +4,7 @@ from StringIO import StringIO
 from robot.parsing.model import TestDataDirectory
 from robot.parsing.populators import FromFilePopulator
 from robot.parsing.txtreader import TxtReader
+from robotide.controller.commands import _Command
 from robotide.publish.messages import RideMessage, RideOpenSuite, RideDataChangedToDirty
 
 from robotide.widgets import VerticalSizer
@@ -83,6 +84,16 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
         return self.notebook.current_page_title == self.title
 
 
+class SetDataFile(_Command):
+
+    def __init__(self, datafile):
+        self._datafile = datafile
+
+    def execute(self, context):
+        context.set_datafile(self._datafile)
+        context.mark_dirty()
+
+
 class DataFileWrapper(object): # TODO: bad class name
 
     def __init__(self, data):
@@ -94,8 +105,7 @@ class DataFileWrapper(object): # TODO: bad class name
         FromStringIOPopulator(target).populate(src)
         # this is to prevent parsing errors from spoiling all data
         self._sanity_check(target, content)
-        self._data.set_datafile(target)
-        self.mark_data_dirty()
+        self._data.execute(SetDataFile(target))
 
     def _sanity_check(self, candidate, current):
         candidate_txt = self._txt_data(candidate).encode('UTF-8')
