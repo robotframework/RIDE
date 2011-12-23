@@ -72,6 +72,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnRightClick)
         self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnItemActivated)
         self._images = TreeImageList()
+        self._silent_node = None
         self.SetImageList(self._images)
         self._history = _History()
         self._label_editor = TreeLabelEditListener(self)
@@ -280,6 +281,11 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         if node:
             wx.CallAfter(self.SelectItem, node)
 
+    def _select_silently(self, node):
+        if node:
+            self._silent_node = node
+            wx.CallAfter(self.SelectItem, node)
+
     def _get_insertion_index(self, parent_node, predicate):
         if not predicate:
             return None
@@ -466,7 +472,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         selection = self.GetItemText(self.GetSelection())
         node = self._refresh_datafile(self.get_selected_datafile_controller())
         self._expand_and_render_children(node)
-        self._select(self._find_node_with_label(node, selection))
+        self._select_silently(self._find_node_with_label(node, selection))
 
     def refresh_datafile(self, controller, event):
         to_be_selected = self._get_pending_selection(event)
@@ -542,9 +548,13 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             event.Skip()
             return
         self._history.change(node)
-        handler = self._get_handler(node)
-        if handler and handler.item:
-            RideTreeSelection(node=node, item=handler.controller).publish()
+        #FIXME: _silent_node mechanism is too complex
+        if node != self._silent_node:
+            handler = self._get_handler(node)
+            if handler and handler.item:
+                RideTreeSelection(node=node, item=handler.controller).publish()
+        else:
+            self._silent_node = None
         self.SetFocus()
 
     def OnTreeItemExpanding(self, event):
