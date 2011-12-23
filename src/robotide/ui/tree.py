@@ -116,7 +116,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             (self._leaf_item_removed, RideTestCaseRemoved),
             (self._leaf_item_removed, RideVariableRemoved),
             (self._datafile_removed, RideDataFileRemoved),
-            (self.refresh_current_datafile, RideDataFileSet),
+            (self._datafile_set, RideDataFileSet),
             (self._data_dirty, RideDataChangedToDirty),
             (self._data_undirty, RideDataDirtyCleared),
             (self._variable_moved_up, RideVariableMovedUp),
@@ -324,6 +324,9 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._datafile_nodes.remove(dfnode)
         self.DeleteChildren(dfnode)
         self.Delete(dfnode)
+
+    def _datafile_set(self, message):
+        wx.CallAfter(self.refresh_current_datafile)
 
     def _filename_changed(self, message):
         df = message.datafile
