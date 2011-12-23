@@ -90,8 +90,8 @@ class SetDataFile(_Command):
         self._datafile = datafile
 
     def execute(self, context):
-        context.set_datafile(self._datafile)
         context.mark_dirty()
+        context.set_datafile(self._datafile)
 
 
 class DataFileWrapper(object): # TODO: bad class name
