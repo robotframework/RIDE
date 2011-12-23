@@ -552,12 +552,10 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             event.Skip()
             return
         self._history.change(node)
-        #FIXME: _silent_node mechanism is too complex
-        if node != self._silent_node:
-            handler = self._get_handler(node)
-            if handler and handler.item:
-                RideTreeSelection(node=node, item=handler.controller).publish()
-        else:
+        handler = self._get_handler(node)
+        if handler and handler.item:
+            RideTreeSelection(node=node, item=handler.controller, silent=bool(self._silent_node == node)).publish()
+        if self._silent_node == node:
             self._silent_node = None
         self.SetFocus()
 

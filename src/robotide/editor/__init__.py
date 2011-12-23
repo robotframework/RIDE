@@ -13,7 +13,7 @@
 #  limitations under the License.
 
 import wx
-from robotide.publish.messages import RideMessage
+from robotide.publish.messages import RideMessage, RideDataFileSet
 
 from robotide.pluginapi import (Plugin, ActionInfoCollection,
                                 TreeAwarePluginMixin)
@@ -113,7 +113,9 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
 
     def OnTreeItemSelected(self, message=None):
         self._show_editor()
-        if not self.is_focused() and not self.is_focus_on_tree_aware_plugin():
+        if not self.is_focused() and \
+           not self.is_focus_on_tree_aware_plugin() and \
+           (not message or not message.silent):
             self._editor = self._create_editor()
             self._tab.show_editor(self._editor)
             self.show_tab(self._tab)

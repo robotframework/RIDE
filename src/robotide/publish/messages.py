@@ -135,7 +135,7 @@ class RideSettingsChanged(RideMessage):
 
 class  RideTreeSelection(RideMessage):
     """Sent whenever user selects a node from the tree."""
-    data = ['node', 'item']
+    data = ['node', 'item', 'silent']
 
 
 class RideNotebookTabChanging(RideMessage):
