@@ -474,9 +474,11 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def refresh_current_datafile(self, *args):
         selection = self.GetItemText(self.GetSelection())
-        node = self._refresh_datafile(self.get_selected_datafile_controller())
-        self._expand_and_render_children(node)
-        self._select_silently(self._find_node_with_label(node, selection))
+        controller = self.get_selected_datafile_controller()
+        if controller:
+            node = self._refresh_datafile(controller)
+            self._expand_and_render_children(node)
+            self._select_silently(self._find_node_with_label(node, selection))
 
     def refresh_datafile(self, controller, event):
         to_be_selected = self._get_pending_selection(event)
