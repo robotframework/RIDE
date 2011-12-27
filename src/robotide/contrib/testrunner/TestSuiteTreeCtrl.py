@@ -280,7 +280,7 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
 
     def _add_suite_node(self, parent_node, suite):
         suite_node = self._suite_node(parent_node, suite.name)
-        fullname = suite.source
+        fullname = suite.longname
         self._nodes[self._convert_suite_longname_key(fullname)] = suite_node
         self.SetItemPyData(suite_node, TreeNode(fullname, suite))
         return suite_node
@@ -312,7 +312,7 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
 
     def _addTest(self, parent_node, test):
         item = self.AppendItem(parent_node, test.name, ct_type=1, image=self._images["default"])
-        fullname = test.source + '.' + test.name
+        fullname = test.longname
         self.SetItemPyData(item, TreeNode(fullname, test))
         self._nodes[self._convert_test_longname_key(fullname)] = item
 

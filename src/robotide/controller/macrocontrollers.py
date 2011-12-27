@@ -299,6 +299,10 @@ class TestCaseController(_BaseController, _WithStepsController):
         return self._test == other._test
 
     @property
+    def longname(self):
+        return self.parent.parent.longname+'.'+self.data.name
+
+    @property
     def test_name(self):
         return TestCaseNameController(self)
 

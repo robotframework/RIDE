@@ -364,6 +364,10 @@ class TestDataDirectoryController(_DataController, DirectoryController):
     def display_name(self):
         return self.data.name
 
+    @property
+    def longname(self):
+        return self.display_name
+
     def _children(self, data):
         return [DataController(child, self._chief_controller, self)
                 for child in data.children]
@@ -440,6 +444,12 @@ class TestCaseFileController(_FileSystemElement, _DataController):
         sett.insert(-1, TemplateController(self, ss.test_template))
         sett.insert(-1, TimeoutController(self, ss.test_timeout))
         return sett + [self.default_tags]
+
+    @property
+    def longname(self):
+        if self.parent:
+            return self.parent.longname + '.' + self.name
+        return self.name
 
     @property
     def default_tags(self):
