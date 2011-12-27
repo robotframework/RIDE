@@ -1008,18 +1008,24 @@ class TreeLabelEditListener(object):
         tree.Bind(wx.EVT_TREE_END_LABEL_EDIT, self.OnLabelEdited)
         tree.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDown)
         self._editing_label = False
+        self._on_label_edit_called = False
 
     def OnBeginLabelEdit(self, event):
         #See http://code.google.com/p/robotframework-ride/issues/detail?id=756
         self._editing_label = True
+        if not self._on_label_edit_called:
+            self.OnLabelEdit(None)
 
     def OnLabelEdit(self, event):
-        handler = self._get_handler()
-        if handler:
-            handler.begin_label_edit()
+        if not self._on_label_edit_called:
+            self._on_label_edit_called = True
+            handler = self._get_handler()
+            if handler:
+                handler.begin_label_edit()
 
     def OnLabelEdited(self, event):
         self._editing_label = False
+        self._on_label_edit_called = False
         self._get_handler(event.Item).end_label_edit(event)
 
     def OnLeftDown(self, event):
