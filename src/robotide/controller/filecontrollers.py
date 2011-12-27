@@ -368,6 +368,12 @@ class TestDataDirectoryController(_DataController, DirectoryController):
     def longname(self):
         return self.display_name
 
+    @property
+    def suites(self):
+        return [child for child in self.children if
+                    isinstance(child, TestDataDirectoryController) or
+                    isinstance(child, TestCaseFileController)]
+
     def _children(self, data):
         return [DataController(child, self._chief_controller, self)
                 for child in data.children]
@@ -450,6 +456,10 @@ class TestCaseFileController(_FileSystemElement, _DataController):
         if self.parent:
             return self.parent.longname + '.' + self.name
         return self.name
+
+    @property
+    def suites(self):
+        return ()
 
     @property
     def default_tags(self):

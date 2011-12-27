@@ -276,7 +276,7 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
                 self._add_subsuites(suite_node, children, expand_and_call_after)
             return add_suites if len(children) > 0 else call_after
         self._call_in_sequence([create_add_test(test) for test in suite.tests]+
-                               [create_add_subsuites(suite.children)])
+                               [create_add_subsuites(suite.suites)])
 
     def _add_suite_node(self, parent_node, suite):
         suite_node = self._suite_node(parent_node, suite.name)
