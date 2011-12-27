@@ -134,6 +134,8 @@ class DataFileWrapper(object): # TODO: bad class name
         return self._txt_data(self._data.data)
 
     def _txt_data(self, data):
+        if isinstance(data, TestDataDirectory) and not data.initfile:
+            return ''
         output = StringIO()
         data.save(output=output, format='txt')
         return output.getvalue()
