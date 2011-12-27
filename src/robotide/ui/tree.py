@@ -326,7 +326,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self.Delete(dfnode)
 
     def _datafile_set(self, message):
-        wx.CallAfter(self.refresh_current_datafile)
+        wx.CallAfter(self._refresh_datafile_when_file_set, message.item)
 
     def _filename_changed(self, message):
         df = message.datafile
@@ -475,13 +475,15 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
                                               controller, second)
         self.select_node_by_data(selection)
 
-    def refresh_current_datafile(self, *args):
-        selection = self.GetItemText(self.GetSelection())
-        controller = self.get_selected_datafile_controller()
-        if controller:
-            node = self._refresh_datafile(controller)
-            self._expand_and_render_children(node)
-            self._select_silently(self._find_node_with_label(node, selection) or node)
+    def _refresh_datafile_when_file_set(self, controller):
+        current = self.get_selected_datafile_controller()
+        current_txt = self.GetItemText(self.GetSelection())
+        # after refresh current and current_txt might have been changed
+        node = self._refresh_datafile(controller)
+        self._expand_and_render_children(node)
+        if current == controller:
+            self._select_silently(self._find_node_with_label(node, current_txt) or node)
+
 
     def refresh_datafile(self, controller, event):
         to_be_selected = self._get_pending_selection(event)
