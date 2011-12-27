@@ -170,7 +170,7 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
     def SetDataModel(self, model):
         '''Set the internal data model used by the tree control'''
         self._model = model
-        self._suite = model.suite
+        self._suite = model.data
 
     def Redraw(self):
         '''Redraw the whole tree'''
@@ -275,12 +275,12 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
             def add_suites():
                 self._add_subsuites(suite_node, children, expand_and_call_after)
             return add_suites if len(children) > 0 else call_after
-        self._call_in_sequence([create_add_test(test) for test in suite.testcase_table]+
+        self._call_in_sequence([create_add_test(test) for test in suite.tests]+
                                [create_add_subsuites(suite.children)])
 
     def _add_suite_node(self, parent_node, suite):
         suite_node = self._suite_node(parent_node, suite.name)
-        fullname = self._get_longname(suite)
+        fullname = suite.source
         self._nodes[self._convert_suite_longname_key(fullname)] = suite_node
         self.SetItemPyData(suite_node, TreeNode(fullname, suite))
         return suite_node
@@ -310,25 +310,9 @@ class TestSuiteTreeCtrl(customtreectrl.CustomTreeCtrl):
                 counter.pop()
         return callable
 
-    def _get_longname(self, obj):
-        longname = []
-        while obj is not None:
-            # The darn robot object model doesn't have a simple
-            # parent/child relationship between suites and test cases.
-            # The parent of a test case is a test case table rather
-            # than a test suite. Go figure. So, only keep track of the
-            # names of suites and test cases and not the intermediate
-            # objects
-            if (isinstance(obj, TestDataDirectory) or
-                isinstance(obj, TestCaseFile) or
-                isinstance(obj, TestCase)):
-                longname.append(obj.name)
-            obj = obj.parent
-        return '.'.join(reversed(longname))
-
     def _addTest(self, parent_node, test):
         item = self.AppendItem(parent_node, test.name, ct_type=1, image=self._images["default"])
-        fullname = self._get_longname(test)
+        fullname = test.source + '.' + test.name
         self.SetItemPyData(item, TreeNode(fullname, test))
         self._nodes[self._convert_test_longname_key(fullname)] = item
 

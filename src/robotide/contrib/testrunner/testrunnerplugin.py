@@ -44,6 +44,9 @@ import posixpath
 import re
 import codecs
 from posixpath import curdir, sep, pardir, join
+from robotide.publish.messages import RideDataFileSet
+
+
 try:
     import cPickle as pickle
 except ImportError:
@@ -145,11 +148,12 @@ class TestRunnerPlugin(Plugin):
         return classes
 
     def _subscribe_to_events(self):
-        self.subscribe(self.OnModelChanged, *[RideTestCaseAdded,
-                                              RideOpenSuite,
-                                              RideItemNameChanged,
-                                              RideTestCaseRemoved,
-                                              RideSuiteAdded])
+        self.subscribe(self.OnModelChanged, RideTestCaseAdded,
+                                            RideOpenSuite,
+                                            RideItemNameChanged,
+                                            RideTestCaseRemoved,
+                                            RideSuiteAdded,
+                                            RideDataFileSet)
 
     def _start_listener_server(self):
         port = self.port
