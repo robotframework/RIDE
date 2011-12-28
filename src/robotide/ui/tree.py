@@ -75,7 +75,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnRightClick)
         self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnItemActivated)
         self._images = TreeImageList()
-        self._silent_node = None
+        self._silent_mode = False
         self.SetImageList(self._images)
         self._history = _History()
         self._label_editor = TreeLabelEditListener(self)
@@ -285,11 +285,6 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         if node:
             wx.CallAfter(self.SelectItem, node)
 
-    def _select_silently(self, node):
-        if node:
-            self._silent_node = node
-            wx.CallAfter(self.SelectItem, node)
-
     def _get_insertion_index(self, parent_node, predicate):
         if not predicate:
             return None
@@ -476,14 +471,21 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self.select_node_by_data(selection)
 
     def _refresh_datafile_when_file_set(self, controller):
+        self._start_silent_mode()
         current = self.get_selected_datafile_controller()
         current_txt = self.GetItemText(self.GetSelection())
         # after refresh current and current_txt might have been changed
         node = self._refresh_datafile(controller)
         self._expand_and_render_children(node)
         if current == controller:
-            self._select_silently(self._find_node_with_label(node, current_txt) or node)
+            wx.CallAfter(self.SelectItem, self._find_node_with_label(node, current_txt) or node)
+            wx.CallAfter(self._end_silent_mode)
 
+    def _start_silent_mode(self):
+        self._silent_mode = True
+
+    def _end_silent_mode(self):
+        self._silent_mode = False
 
     def refresh_datafile(self, controller, event):
         to_be_selected = self._get_pending_selection(event)
@@ -561,9 +563,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._history.change(node)
         handler = self._get_handler(node)
         if handler and handler.item:
-            RideTreeSelection(node=node, item=handler.controller, silent=bool(self._silent_node == node)).publish()
-        if self._silent_node == node:
-            self._silent_node = None
+            RideTreeSelection(node=node, item=handler.controller, silent=self._silent_mode).publish()
         self.SetFocus()
 
     def OnTreeItemExpanding(self, event):
