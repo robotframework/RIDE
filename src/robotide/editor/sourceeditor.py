@@ -5,7 +5,7 @@ from robot.parsing.model import TestDataDirectory
 from robot.parsing.populators import FromFilePopulator
 from robot.parsing.txtreader import TxtReader
 from robotide.controller.commands import _Command
-from robotide.publish.messages import RideMessage, RideOpenSuite, RideDataChangedToDirty
+from robotide.publish.messages import RideMessage, RideOpenSuite, RideDataChangedToDirty, RideSaved
 
 from robotide.widgets import VerticalSizer
 from robotide.pluginapi import (Plugin, ActionInfo, RideSaving,
@@ -97,6 +97,11 @@ class DataFileWrapper(object): # TODO: bad class name
     def __init__(self, data):
         self._data = data
 
+    def __eq__(self, other):
+        if other is None:
+            return False
+        return self._data == other._data
+
     def update_from(self, content):
         src = StringIO(content)
         target = self._create_target()
@@ -153,12 +158,16 @@ class SourceEditor(wx.Panel):
         self._editor.Bind(wx.EVT_KEY_DOWN, self.OnEditorKey)
         self._data = None
         self._dirty = False
+        self._skip_open_while_same_data = False
 
     @property
     def dirty(self):
         return self._dirty
 
     def open(self, data):
+        if self._skip_open_while_same_data and self._data == data:
+            return
+        self._skip_open_while_same_data = False
         self._data = data
         self._editor.set_text(self._data.content)
 
@@ -168,16 +177,21 @@ class SourceEditor(wx.Panel):
     def save(self):
         if self.dirty:
             self.reset()
+            editor_txt = self._editor.utf8_text
             try:
-                self._data.update_from(self._editor.utf8_text)
+                self._data.update_from(editor_txt)
             except AssertionError:
                 # TODO: use widgets.Dialog
-                wx.MessageDialog(self._editor,
+                id = wx.MessageDialog(self._editor,
                                  'ERROR: Data sanity check failed!\n'\
-                                 'All changes made in Txt Editor\n'\
-                                 'since last save are disregarded',
+                                 'Reset changes?',
                                  'Can not apply changes from Txt Editor',
-                                  style=wx.OK).ShowModal()
+                                  style=wx.YES|wx.NO).ShowModal()
+                if id == wx.ID_NO:
+                    self._mark_file_dirty()
+                    self._skip_open_while_same_data = True
+                else:
+                    self._skip_open_while_same_data = False
 
     def OnEditorKey(self, event):
         if not self.dirty:
