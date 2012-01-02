@@ -6,7 +6,7 @@ from robot.parsing.populators import FromFilePopulator
 from robot.parsing.txtreader import TxtReader
 
 from robotide.controller.commands import SetDataFile
-from robotide.widgets import VerticalSizer
+from robotide.widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler
 from robotide.pluginapi import (Plugin, ActionInfo, RideSaving,
         TreeAwarePluginMixin, RideTreeSelection, RideNotebookTabChanging,
         RideMessage, RideOpenSuite, RideDataChangedToDirty)
@@ -137,18 +137,26 @@ class DataFileWrapper(object): # TODO: bad class name
 
 
 class SourceEditor(wx.Panel):
+    OnRevert = lambda *args: None
 
     def __init__(self, parent, title):
         wx.Panel.__init__(self, parent)
         self._parent = parent
-        self.SetSizer(VerticalSizer())
-        self._editor = RobotDataEditor(self)
-        self.Sizer.add_expanding(self._editor)
-        self._parent.AddPage(self, title)
+        self._create_ui(title)
         self._editor.Bind(wx.EVT_KEY_DOWN, self.OnEditorKey)
         self._data = None
         self._dirty = False
         self._skip_open_while_same_data = False
+
+    def _create_ui(self, title):
+        button_sizer = HorizontalSizer()
+        button_sizer.add(ButtonWithHandler(self, 'Apply'))
+        button_sizer.add(ButtonWithHandler(self, 'Revert'))
+        self.SetSizer(VerticalSizer())
+        self.Sizer.add(button_sizer)
+        self._editor = RobotDataEditor(self)
+        self.Sizer.add_expanding(self._editor)
+        self._parent.AddPage(self, title)
 
     @property
     def dirty(self):
@@ -187,6 +195,9 @@ class SourceEditor(wx.Panel):
         if not self.dirty:
             self._mark_file_dirty()
         event.Skip()
+
+    def OnApply(self, event):
+        self.save()
 
     def _mark_file_dirty(self):
         self._dirty = True
