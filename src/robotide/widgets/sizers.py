@@ -27,7 +27,7 @@ class _BoxSizer(wx.BoxSizer):
         self.Add(component, flag=wx.ALL, border=padding)
 
     def add_expanding(self, component):
-        self.Add(component, 1, wx.EXPAND)
+        self.Add(component, proportion=1, flag=wx.EXPAND)
 
 
 class VerticalSizer(_BoxSizer):
