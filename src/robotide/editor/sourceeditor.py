@@ -13,7 +13,7 @@ from robotide.pluginapi import (Plugin, ActionInfo, RideSaving,
 
 
 class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
-    title = 'Txt Edit'
+    title = 'Text Edit'
 
     def __init__(self, application):
         Plugin.__init__(self, application)
@@ -137,7 +137,6 @@ class DataFileWrapper(object): # TODO: bad class name
 
 
 class SourceEditor(wx.Panel):
-    OnRevert = lambda *args: None
 
     def __init__(self, parent, title):
         wx.Panel.__init__(self, parent)
@@ -150,8 +149,10 @@ class SourceEditor(wx.Panel):
 
     def _create_ui(self, title):
         button_sizer = HorizontalSizer()
-        button_sizer.add(ButtonWithHandler(self, 'Apply'))
-        button_sizer.add(ButtonWithHandler(self, 'Revert'))
+        button_sizer.add_with_padding(ButtonWithHandler(self, 'Apply Changes',
+                                      handler=lambda e: self.save()))
+        button_sizer.add_with_padding(ButtonWithHandler(self, 'Revert Changes',
+                                      handler=lambda e: self._revert()))
         self.SetSizer(VerticalSizer())
         self.Sizer.add(button_sizer)
         self._editor = RobotDataEditor(self)
@@ -203,12 +204,6 @@ class SourceEditor(wx.Panel):
         if not self.dirty:
             self._mark_file_dirty()
         event.Skip()
-
-    def OnApply(self, event):
-        self.save()
-
-    def OnRevert(self, event):
-        self._revert()
 
     def _mark_file_dirty(self):
         self._dirty = True
