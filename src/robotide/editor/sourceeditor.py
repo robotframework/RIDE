@@ -128,8 +128,6 @@ class DataFileWrapper(object): # TODO: bad class name
         return self._txt_data(self._data.data)
 
     def _txt_data(self, data):
-        if isinstance(data, TestDataDirectory) and not data.initfile:
-            return ''
         output = StringIO()
         data.save(output=output, format='txt')
         return output.getvalue()
@@ -195,9 +193,10 @@ class SourceEditor(wx.Panel):
             self._revert()
 
     def _revert(self):
-        self._dirty = False
-        self._skip_open_while_same_data = False
-        self._editor.set_text(self._data.content)
+        if self._data:
+            self._dirty = False
+            self._skip_open_while_same_data = False
+            self._editor.set_text(self._data.content)
 
     def OnEditorKey(self, event):
         if not self.dirty:
@@ -205,8 +204,9 @@ class SourceEditor(wx.Panel):
         event.Skip()
 
     def _mark_file_dirty(self):
-        self._dirty = True
-        self._data.mark_data_dirty()
+        if self._data:
+            self._dirty = True
+            self._data.mark_data_dirty()
 
 
 class RobotDataEditor(stc.StyledTextCtrl):
@@ -216,8 +216,10 @@ class RobotDataEditor(stc.StyledTextCtrl):
         self.StyleSetSpec(stc.STC_STYLE_DEFAULT, 'fore:#000000,back:#FFFFFF,face:Courier New,size:12')
         self.SetMarginType(0, stc.STC_MARGIN_NUMBER)
         self.SetMarginWidth(0, self.TextWidth(stc.STC_STYLE_LINENUMBER,'1234'))
+        self.SetReadOnly(True)
 
     def set_text(self, text):
+        self.SetReadOnly(False)
         self.SetText(text)
 
     @property
