@@ -228,17 +228,6 @@ class RideInitFileRemoved(RideDataChanged):
     data = ['path', 'datafile']
 
 
-class RideGridCellChanged(RideMessage):
-    """Sent when a value in grid cell has changed.
-
-    This message is sent both with regular edits and with cut, paste or delete
-    operations.  If a single cut, paste or delete operation affects multiple
-    cells, this message is sent individually for each cell.
-    """
-    topic = 'ride.grid.cell changed'
-    data = ['cell', 'value', 'previous', 'grid']
-
-
 class RideImportSetting(RideDataChanged):
     """Base class for all messages about changes to import settings."""
 

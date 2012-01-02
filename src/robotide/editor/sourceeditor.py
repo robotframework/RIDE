@@ -7,9 +7,9 @@ from robot.parsing.txtreader import TxtReader
 
 from robotide.controller.commands import SetDataFile
 from robotide.widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler
-from robotide.pluginapi import (Plugin, ActionInfo, RideSaving,
-        TreeAwarePluginMixin, RideTreeSelection, RideNotebookTabChanging,
-        RideDataChanged, RideOpenSuite, RideDataChangedToDirty)
+from robotide.pluginapi import (Plugin, RideSaving, TreeAwarePluginMixin,
+        RideTreeSelection, RideNotebookTabChanging, RideDataChanged,
+        RideOpenSuite, RideDataChangedToDirty)
 
 
 class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
@@ -26,7 +26,6 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
         return self._editor_component
 
     def enable(self):
-        self.register_action(ActionInfo('Tools', 'Txt Edit', self.OnOpen))
         self.add_self_as_tree_aware_plugin()
         self.subscribe(self.OnSaving, RideSaving)
         self.subscribe(self.OnTreeSelection, RideTreeSelection)
@@ -157,7 +156,7 @@ class SourceEditor(wx.Panel):
         self.Sizer.add(button_sizer)
         self._editor = RobotDataEditor(self)
         self.Sizer.add_expanding(self._editor)
-        self._parent.AddPage(self, title)
+        self._parent.add_tab(self, title, allow_closing=False)
 
     @property
     def dirty(self):

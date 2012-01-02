@@ -23,7 +23,7 @@ from robotide.controller.commands import (ChangeCellValue, ClearArea, PasteArea,
         AddKeywordFromCells, MoveRowsUp, MoveRowsDown, ExtractScalar, ExtractList,
         InsertArea)
 from robotide.controller.cellinfo import TipMessage
-from robotide.publish import (RideGridCellChanged, RideItemStepsChanged,
+from robotide.publish import (RideItemStepsChanged,
                               RideSettingsChanged, PUBLISHER)
 from robotide.usages.UsageRunner import Usages
 from robotide.ui.progress import RenameProgressObserver
@@ -119,13 +119,6 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def _execute(self, command):
         return self._controller.execute(command)
-
-    def write_cell(self, row, col, value, update_history=True):
-        previous = self.GetCellValue(row, col) \
-                if (row < self.NumberRows and col < self.NumberCols) else ''
-        GridEditor.write_cell(self, row, col, value, update_history)
-        RideGridCellChanged(cell=(row, col), value=value, previous=previous,
-                            grid=self).publish()
 
     def _toggle_underlined(self, cell):
         font = self.GetCellFont(cell.Row, cell.Col)
