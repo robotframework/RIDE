@@ -70,6 +70,7 @@ class RideMessage(object):
     def _publish(self, msg):
         WxPublisher().sendMessage(msg.topic, msg)
 
+
 class RideLog(RideMessage):
     """This class represents a general purpose log message.
 
@@ -123,6 +124,11 @@ class RideLogException(RideLog):
                              exception=exception)
 
 
+class RideInputValidationError(RideMessage):
+    """Sent whenever user input is invalid."""
+    data = ['message']
+
+
 class RideSettingsChanged(RideMessage):
     """Sent when settings are changed
 
@@ -149,7 +155,6 @@ class RideNotebookTabChanging(RideMessage):
 
 class RideNotebookTabChanged(RideMessage):
     """Sent after the notebook tab change has completed."""
-    pass
 
 
 class RideSaving(RideMessage):
@@ -167,17 +172,24 @@ class RideSaved(RideMessage):
 
 class RideSaveAll(RideMessage):
     """Sent when user selects ``Save All`` from ``File`` menu or via shortcut."""
-    pass
 
 
-class RideFileNameChanged(RideMessage):
-    """Sent after test case or resource file is renamed"""
-    data = ['datafile', 'old_filename']
+class RideDataDirtyCleared(RideMessage):
+    """Sent when datafiles dirty marking is cleared
+
+    datafile has been saved and datafile in memory equals the serialized one.
+    """
+    data = ['datafile']
 
 
 class RideNewProject(RideMessage):
     """Sent when a new project has been created."""
     data = ['path', 'datafile']
+
+
+class RideClosing(RideMessage):
+    """Sent when user selects ``Quit`` from ``File`` menu or via shortcut."""
+    pass
 
 
 class RideOpenSuite(RideMessage):
@@ -189,19 +201,30 @@ class RideOpenResource(RideMessage):
     """Sent when a new resource has finished loading."""
     data = ['path', 'datafile']
 
+
 class RideSelectResource(RideMessage):
     """Sent when a resource should be selected."""
     data = ['item']
 
-class RideDataFileRemoved(RideMessage):
+
+class RideDataChanged(RideMessage):
+    """Base class for all messages notifying that data in model has changed."""
+
+
+class RideFileNameChanged(RideDataChanged):
+    """Sent after test case or resource file is renamed"""
+    data = ['datafile', 'old_filename']
+
+
+class RideDataFileRemoved(RideDataChanged):
     data = ['path', 'datafile']
 
 
-class RideSuiteAdded(RideMessage):
+class RideSuiteAdded(RideDataChanged):
     data = ['parent', 'suite']
 
 
-class RideInitFileRemoved(RideMessage):
+class RideInitFileRemoved(RideDataChanged):
     data = ['path', 'datafile']
 
 
@@ -216,7 +239,7 @@ class RideGridCellChanged(RideMessage):
     data = ['cell', 'value', 'previous', 'grid']
 
 
-class RideImportSetting(RideMessage):
+class RideImportSetting(RideDataChanged):
     """Base class for all messages about changes to import settings."""
 
 
@@ -247,38 +270,32 @@ class RideImportSettingRemoved(RideImportSetting):
     data = ['datafile', 'type', 'name']
 
 
-class RideDataChangedToDirty(RideMessage):
+class RideDataChangedToDirty(RideDataChanged):
     """Sent when datafile changes from serialized version"""
     data = ['datafile']
 
 
-class RideDataDirtyCleared(RideMessage):
-    """Sent when datafiles dirty marking is cleared
-
-    datafile has been saved and datafile in memory equals the serialized one.
-    """
-    data = ['datafile']
-
-class RideDataFileSet(RideMessage):
+class RideDataFileSet(RideDataChanged):
     """Set when a whole datafile is replaced with new one in a controller
     """
     data = ['item']
 
-class RideUserKeyword(RideMessage):
+
+class RideUserKeyword(RideDataChanged):
     """Base class for all messages about changes to any user keyword."""
 
 
-class RideUserKeywordAdded(RideMessage):
+class RideUserKeywordAdded(RideUserKeyword):
     """Sent when a new user keyword is added to a suite or resource."""
     data = ['datafile', 'name', 'item']
 
 
-class RideUserKeywordRemoved(RideMessage):
+class RideUserKeywordRemoved(RideUserKeyword):
     """Sent when a user keyword is removed from a suite or resource."""
     data = ['datafile', 'name', 'item']
 
 
-class RideItem(RideMessage):
+class RideItem(RideDataChanged):
     """Base class for all messages about changes to any data item."""
     data = ['item']
 
@@ -295,29 +312,32 @@ class RideItemSettingsChanged(RideItem):
     """"""
 
 
-class RideTestCaseAdded(RideMessage):
+class RideTestCaseAdded(RideDataChanged):
     """Sent when a new test case is added to a suite."""
     data = ['datafile', 'name', 'item']
 
 
-class RideTestCaseRemoved(RideMessage):
+class RideTestCaseRemoved(RideDataChanged):
     """Sent when a test case is removed from a suite."""
     data = ['datafile', 'name', 'item']
 
-class RideItemMovedUp(RideMessage):
+
+class RideItemMovedUp(RideDataChanged):
     """Sent when an item (test, keyword, variable) is moved up."""
     data = ['item']
 
-class RideItemMovedDown(RideMessage):
+
+class RideItemMovedDown(RideDataChanged):
     """Sent when an item (test, keyword, variable) is moved down."""
     data = ['item']
 
-class RideVariableAdded(RideMessage):
+
+class RideVariableAdded(RideDataChanged):
     """Sent when a new variable is added to a suite."""
     data = ['datafile', 'name', 'item']
 
 
-class RideVariableRemoved(RideMessage):
+class RideVariableRemoved(RideDataChanged):
     """Sent when a variable is removed from a suite."""
     data = ['datafile', 'name', 'item']
 
@@ -330,19 +350,9 @@ class RideVariableMovedDown(RideItemMovedDown):
     """Sent when a variable is moved down"""
 
 
-class RideVariableUpdated(RideMessage):
+class RideVariableUpdated(RideDataChanged):
     """Sent when the state of a variable is changed"""
     data = ['item']
-
-
-class RideClosing(RideMessage):
-    """Sent when user selects ``Quit`` from ``File`` menu or via shortcut."""
-    pass
-
-
-class RideInputValidationError(RideMessage):
-    """Sent whenever user input is invalid."""
-    data = ['message']
 
 
 __all__ = [ name for name, cls in globals().items()

@@ -9,7 +9,7 @@ from robotide.controller.commands import SetDataFile
 from robotide.widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler
 from robotide.pluginapi import (Plugin, ActionInfo, RideSaving,
         TreeAwarePluginMixin, RideTreeSelection, RideNotebookTabChanging,
-        RideMessage, RideOpenSuite, RideDataChangedToDirty)
+        RideDataChanged, RideOpenSuite, RideDataChangedToDirty)
 
 
 class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
@@ -30,7 +30,7 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.add_self_as_tree_aware_plugin()
         self.subscribe(self.OnSaving, RideSaving)
         self.subscribe(self.OnTreeSelection, RideTreeSelection)
-        self.subscribe(self.OnTreeSelection, RideMessage)
+        self.subscribe(self.OnTreeSelection, RideDataChanged)
         self.subscribe(self.OnTabChange, RideNotebookTabChanging)
         self._open()
 
