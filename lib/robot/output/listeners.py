@@ -13,11 +13,13 @@
 #  limitations under the License.
 
 import inspect
+import os.path
 
 from robot import utils
 from robot.errors import DataError
-from loggerhelper import AbstractLoggerProxy
-from logger import LOGGER
+
+from .loggerhelper import AbstractLoggerProxy
+from .logger import LOGGER
 
 if utils.is_jython:
     from java.lang import Object
@@ -215,13 +217,12 @@ class _ListenerProxy(AbstractLoggerProxy):
         self.is_java = utils.is_jython and isinstance(listener, Object)
 
     def _import_listener(self, name, args):
-        listener, source = utils.import_(name, 'listener')
+        importer = utils.Importer('listener', logger=LOGGER)
+        listener = importer.import_class_or_module(os.path.normpath(name))
         if not inspect.ismodule(listener):
             listener = listener(*args)
         elif args:
             raise DataError("Listeners implemented as modules do not take arguments")
-        LOGGER.info("Imported listener '%s' with arguments %s (source %s)"
-                    % (name, utils.seq2str2(args), source))
         return listener
 
     def _get_version(self, listener):
