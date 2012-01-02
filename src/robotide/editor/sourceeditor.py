@@ -179,17 +179,21 @@ class SourceEditor(wx.Panel):
             try:
                 self._data.update_from(editor_txt)
             except AssertionError:
-                # TODO: use widgets.Dialog
-                id = wx.MessageDialog(self._editor,
-                                 'ERROR: Data sanity check failed!\n'\
-                                 'Reset changes?',
-                                 'Can not apply changes from Txt Editor',
-                                  style=wx.YES|wx.NO).ShowModal()
-                if id == wx.ID_NO:
-                    self._mark_file_dirty()
-                    self._skip_open_while_same_data = True
-                else:
-                    self._skip_open_while_same_data = False
+                self._handle_sanity_check_failure()
+
+    def _handle_sanity_check_failure(self):
+        # TODO: use widgets.Dialog
+        id = wx.MessageDialog(self._editor,
+                         'ERROR: Data sanity check failed!\n'\
+                         'Reset changes?',
+                         'Can not apply changes from Txt Editor',
+                          style=wx.YES|wx.NO).ShowModal()
+        if id == wx.ID_NO:
+            self._mark_file_dirty()
+            self._skip_open_while_same_data = True
+        else:
+            self._skip_open_while_same_data = False
+            self._editor.set_text(self._data.content)
 
     def OnEditorKey(self, event):
         if not self.dirty:
