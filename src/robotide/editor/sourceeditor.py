@@ -192,8 +192,12 @@ class SourceEditor(wx.Panel):
             self._mark_file_dirty()
             self._skip_open_while_same_data = True
         else:
-            self._skip_open_while_same_data = False
-            self._editor.set_text(self._data.content)
+            self._revert()
+
+    def _revert(self):
+        self._dirty = False
+        self._skip_open_while_same_data = False
+        self._editor.set_text(self._data.content)
 
     def OnEditorKey(self, event):
         if not self.dirty:
@@ -202,6 +206,9 @@ class SourceEditor(wx.Panel):
 
     def OnApply(self, event):
         self.save()
+
+    def OnRevert(self, event):
+        self._revert()
 
     def _mark_file_dirty(self):
         self._dirty = True
