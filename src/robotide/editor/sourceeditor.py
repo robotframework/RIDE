@@ -4,12 +4,12 @@ from StringIO import StringIO
 from robot.parsing.model import TestDataDirectory
 from robot.parsing.populators import FromFilePopulator
 from robot.parsing.txtreader import TxtReader
-from robotide.controller.commands import _Command
-from robotide.publish.messages import RideMessage, RideOpenSuite, RideDataChangedToDirty, RideSaved
 
+from robotide.controller.commands import SetDataFile
 from robotide.widgets import VerticalSizer
 from robotide.pluginapi import (Plugin, ActionInfo, RideSaving,
-        TreeAwarePluginMixin, RideTreeSelection, RideNotebookTabChanging)
+        TreeAwarePluginMixin, RideTreeSelection, RideNotebookTabChanging,
+        RideMessage, RideOpenSuite, RideDataChangedToDirty)
 
 
 class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
@@ -80,16 +80,6 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
 
     def is_focused(self):
         return self.notebook.current_page_title == self.title
-
-
-class SetDataFile(_Command):
-
-    def __init__(self, datafile):
-        self._datafile = datafile
-
-    def execute(self, context):
-        context.mark_dirty()
-        context.set_datafile(self._datafile)
 
 
 class DataFileWrapper(object): # TODO: bad class name

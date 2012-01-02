@@ -16,11 +16,11 @@ from itertools import chain
 import time
 import os
 
-from robotide.controller.macrocontrollers import KeywordNameController, \
-        ForLoopStepController
-from robotide.controller.settingcontrollers import _SettingController
-from robotide.controller.validators import BaseNameValidator
 from robotide.publish.messages import RideSelectResource, RideFileNameChanged
+
+from .macrocontrollers import KeywordNameController, ForLoopStepController
+from .settingcontrollers import _SettingController
+from .validators import BaseNameValidator
 
 
 class Occurrence(object):
@@ -134,7 +134,8 @@ class ChangeTag(_Command):
         return (self._tag, self._value)
 
     def execute(self, context):
-        context.set_value(self._create_value([tag for tag in context if tag.controller == context]))
+        tags = [tag for tag in context if tag.controller == context]
+        context.set_value(self._create_value(tags))
         context.notify_value_changed()
 
     def _create_value(self, old_values):
@@ -197,6 +198,7 @@ class MoveTo(_Command):
         context.delete()
         self._destination.add_test_or_keyword(context)
 
+
 class CreateNewResource(_Command):
 
     def __init__(self, path):
@@ -206,6 +208,16 @@ class CreateNewResource(_Command):
         res = context.new_resource(self._path)
         RideSelectResource(item=res).publish()
         return res
+
+
+class SetDataFile(_Command):
+
+    def __init__(self, datafile):
+        self._datafile = datafile
+
+    def execute(self, context):
+        context.mark_dirty()
+        context.set_datafile(self._datafile)
 
 
 class _StepsChangingCommand(_ReversibleCommand):
@@ -233,7 +245,6 @@ class NonExistingStep(object):
 
 
 class NullObserver(object):
-
     notify = finish = lambda x:None
 
 
