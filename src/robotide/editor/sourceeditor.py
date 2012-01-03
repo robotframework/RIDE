@@ -6,6 +6,7 @@ from robot.parsing.populators import FromFilePopulator
 from robot.parsing.txtreader import TxtReader
 
 from robotide.controller.commands import SetDataFile
+from robotide.publish.messages import RideMessage
 from robotide.widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler
 from robotide.pluginapi import (Plugin, RideSaving, TreeAwarePluginMixin,
         RideTreeSelection, RideNotebookTabChanging, RideDataChanged,
@@ -29,7 +30,7 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.add_self_as_tree_aware_plugin()
         self.subscribe(self.OnSaving, RideSaving)
         self.subscribe(self.OnTreeSelection, RideTreeSelection)
-        self.subscribe(self.OnTreeSelection, RideDataChanged)
+        self.subscribe(self.OnDataChanged, RideMessage)
         self.subscribe(self.OnTabChange, RideNotebookTabChanging)
         self._open()
 
@@ -50,21 +51,35 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
         if self.is_focused():
             self._editor.save()
 
-    def OnTreeSelection(self, message):
-        if isinstance(message, RideDataChangedToDirty):
-            return
-        if self.is_focused():
+    def OnDataChanged(self, message):
+        if self._should_process_data_changed_message(message):
             if isinstance(message, RideOpenSuite):
                 self._editor.reset()
             if self._editor.dirty:
                 self._apply_txt_changes_to_model()
             self._open_data_in_editor()
 
+    def _should_process_data_changed_message(self, message):
+        return self.is_focused() and \
+               isinstance(message, RideDataChanged) and \
+               not isinstance(message, RideDataChangedToDirty)
+
+    def OnTreeSelection(self, message):
+        if self.is_focused():
+            if self._editor.dirty:
+                self._apply_txt_changes_to_model()
+            self._open_from_tree_selection(message.item and message.item.datafile_controller)
+
     def _open_data_in_editor(self):
         datafile_controller = self.tree.get_selected_datafile_controller()
         if datafile_controller:
             data = DataFileWrapper(datafile_controller)
             self._editor.open(data)
+
+    def _open_from_tree_selection(self, datafile_controller):
+        if datafile_controller:
+            data = DataFileWrapper(datafile_controller)
+            self._editor.selected(data)
 
     def OnTabChange(self, message):
         if message.newtab == self.title:
@@ -142,7 +157,6 @@ class SourceEditor(wx.Panel):
         self._editor.Bind(wx.EVT_KEY_DOWN, self.OnEditorKey)
         self._data = None
         self._dirty = False
-        self._skip_open_while_same_data = False
 
     def _create_ui(self, title):
         button_sizer = HorizontalSizer()
@@ -159,11 +173,13 @@ class SourceEditor(wx.Panel):
         return self._dirty
 
     def open(self, data):
-        if self._skip_open_while_same_data and self._data == data:
-            return
-        self._skip_open_while_same_data = False
         self._data = data
         self._editor.set_text(self._data.content)
+
+    def selected(self, data):
+        if self._data == data:
+            return
+        self.open(data)
 
     def reset(self):
         self._dirty = False
@@ -186,15 +202,12 @@ class SourceEditor(wx.Panel):
                           style=wx.YES|wx.NO).ShowModal()
         if id == wx.ID_NO:
             self._mark_file_dirty()
-            self._skip_open_while_same_data = True
         else:
             self._revert()
 
     def _revert(self):
-        if self._data:
-            self._dirty = False
-            self._skip_open_while_same_data = False
-            self._editor.set_text(self._data.content)
+        self._dirty = False
+        self._editor.set_text(self._data.content)
 
     def OnEditorKey(self, event):
         if not self.dirty:
