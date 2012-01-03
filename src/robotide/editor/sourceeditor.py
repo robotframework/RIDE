@@ -155,6 +155,7 @@ class SourceEditor(wx.Panel):
         self._parent = parent
         self._create_ui(title)
         self._editor.Bind(wx.EVT_KEY_DOWN, self.OnEditorKey)
+        self._editor.Bind(wx.EVT_KILL_FOCUS, self.save)
         self._data = None
         self._dirty = False
 
@@ -184,7 +185,7 @@ class SourceEditor(wx.Panel):
     def reset(self):
         self._dirty = False
 
-    def save(self):
+    def save(self, *args):
         if self.dirty:
             self.reset()
             editor_txt = self._editor.utf8_text

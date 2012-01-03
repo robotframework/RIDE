@@ -723,11 +723,25 @@ class _ActionHandler(wx.Window):
 
 class _CanBeRenamed(object):
 
+    _begin_label_edit_started = False
+
     def OnRename(self, event):
         self.begin_label_edit()
 
     def begin_label_edit(self):
-        self._tree.EditLabel(self._node)
+        # This prevents looping in windows
+        if self._begin_label_edit_started:
+            return
+        self._begin_label_edit_started = True
+        def label_edit():
+            node = self._tree._find_node_by_controller(self.controller)
+            if node:
+                self._tree.EditLabel(node)
+            self._begin_label_edit_started = False
+        # Must handle pending events before label edit
+        # This is a fix for situations where there is a pending action
+        # that will change this label (Text Editor all changing actions)
+        wx.CallAfter(label_edit)
 
     def end_label_edit(self, event):
         if event.IsEditCancelled() or \
