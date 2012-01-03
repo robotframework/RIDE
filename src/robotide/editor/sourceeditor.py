@@ -116,8 +116,8 @@ class DataFileWrapper(object): # TODO: bad class name
 
     def _sanity_check(self, candidate, current):
         candidate_txt = self._txt_data(candidate).encode('UTF-8')
-        c = self._remove_all(candidate_txt, ' ', '\n', '...', '\r')
-        e = self._remove_all(current, ' ', '\n', '...', '\r')
+        c = self._remove_all(candidate_txt, ' ', '\n', '...', '\r', '*')
+        e = self._remove_all(current, ' ', '\n', '...', '\r', '*')
         if len(c) != len(e):
             raise AssertionError('Sanity Check Failed')
 
