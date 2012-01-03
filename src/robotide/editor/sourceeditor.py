@@ -148,8 +148,6 @@ class SourceEditor(wx.Panel):
         button_sizer = HorizontalSizer()
         button_sizer.add_with_padding(ButtonWithHandler(self, 'Apply Changes',
                                       handler=lambda e: self.save()))
-        button_sizer.add_with_padding(ButtonWithHandler(self, 'Revert Changes',
-                                      handler=lambda e: self._revert()))
         self.SetSizer(VerticalSizer())
         self.Sizer.add(button_sizer)
         self._editor = RobotDataEditor(self)
