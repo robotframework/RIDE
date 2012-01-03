@@ -28,6 +28,7 @@ from robotide.publish import (RideItemSettingsChanged,
 from robot.parsing.settings import Setting
 from robotide.context import SETTINGS
 from robotide.widgets.button import ButtonWithHandler
+from robotide.widgets.label import HeaderText
 from robotide.widgets.sizers import HorizontalSizer
 
 
@@ -127,8 +128,7 @@ class _RobotTableEditor(EditorPanel):
         self.Destroy()
 
     def _create_header(self, text):
-        self._title_display = StaticText(self, -1, text)
-        self._title_display.SetFont(wx.Font(12, wx.SWISS, wx.NORMAL, wx.BOLD))
+        self._title_display = HeaderText(self, text)
         return self._title_display
 
     def _add_settings(self):
@@ -307,22 +307,26 @@ class _FileEditor(_RobotTableEditor):
         _RobotTableEditor.close(self)
 
 
-class WithFindUsages(object):
+class FindUsagesHeader(HorizontalSizer):
 
-    def _usage_button_header(self, header, usages_class):
-        def on_show_usages(event):
-            usages_class(self.controller, self._tree.highlight).show()
-        sizer = HorizontalSizer()
-        sizer.add_expanding(header)
-        sizer.add(ButtonWithHandler(self, 'Find Usages', on_show_usages))
-        return sizer
+    def __init__(self, parent, header, usages_callback):
+        HorizontalSizer.__init__(self)
+        self._header = HeaderText(parent, header)
+        self.add_expanding(self._header)
+        self.add(ButtonWithHandler(parent, 'Find Usages', usages_callback))
+
+    def SetLabel(self, label):
+        self._header.SetLabel(label)
 
 
-class ResourceFileEditor(_FileEditor, WithFindUsages):
+class ResourceFileEditor(_FileEditor):
     _settings_open_id = 'resource file settings open'
 
     def _create_header(self, text):
-        return self._usage_button_header(_FileEditor._create_header(self, text), ResourceFileUsages)
+        def cb(event):
+            ResourceFileUsages(self.controller, self._tree.highlight).show()
+        self._title_display = FindUsagesHeader(self, text, cb)
+        return self._title_display
 
 
 class TestCaseFileEditor(_FileEditor):
