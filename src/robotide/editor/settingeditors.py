@@ -11,24 +11,27 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
 import wx
 
 from robotide import context
 from robotide import utils
-from robotide.ui.components import StaticText
 from robotide.publish.messages import RideImportSetting
 from robotide.utils import RideEventHandler
 from robotide.utils.components import RideHtmlWindow
 from robotide.widgets import ButtonWithHandler
-from gridcolorizer import ColorizationSettings
-from listeditor import ListEditor
-from popupwindow import Tooltip
-from editordialogs import (EditorDialog, DocumentationDialog, MetadataDialog,
-                           ScalarVariableDialog, ListVariableDialog,
-                           LibraryDialog, ResourceDialog, VariablesDialog)
 from robotide.controller.commands import UpdateVariable
 from robotide.publish import PUBLISHER
-from robotide.editor.tags import TagsDisplay
+
+from .formatters import ListToStringFormatter
+from .gridcolorizer import ColorizationSettings
+from .editordialogs import (EditorDialog, DocumentationDialog, MetadataDialog,
+        ScalarVariableDialog, ListVariableDialog, LibraryDialog,
+        ResourceDialog, VariablesDialog)
+from .listeditor import ListEditor
+from .popupwindow import Tooltip
+from .tags import TagsDisplay
+
 
 class SettingEditor(wx.Panel, RideEventHandler):
 
@@ -45,7 +48,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
     def _create_controls(self):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add((5,0))
-        sizer.Add(StaticText(self, label=self._controller.label,
+        sizer.Add(wx.StaticText(self, label=self._controller.label,
                                 size=(context.SETTING_LABEL_WIDTH,
                                       context.SETTING_ROW_HEIGTH)))
         self._value_display = self._create_value_display()
@@ -334,7 +337,6 @@ class _AbstractListEditor(ListEditor):
 
     def update_data(self):
         ListEditor.update_data(self)
-        self._tree.mark_dirty(self._controller)
 
     def update_value(self):
         pass
@@ -345,7 +347,6 @@ class _AbstractListEditor(ListEditor):
     def highlight(self, text, expand=False):
         pass
 
-from formatters import ListToStringFormatter
 
 class VariablesListEditor(_AbstractListEditor):
     _titles = ['Variable', 'Value', 'Comment']
