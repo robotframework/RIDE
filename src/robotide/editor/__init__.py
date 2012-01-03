@@ -80,12 +80,15 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
         return self.tab_is_visible(self._tab)
 
     def highlight_cell(self, obj, row, column):
-        self.show_tab(self._tab)
+        self.show()
         self._editor.highlight_cell(obj, row, column)
 
     def highlight(self, text):
-        self.show_tab(self._tab)
+        self.show()
         self._editor.highlight(text)
+
+    def show(self):
+        self.show_tab(self._tab)
 
     def register_context_menu_hook_to_grid(self, hook):
         """ Used to register own items to grid's right click context menu
@@ -118,7 +121,7 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
            (not message or not message.silent):
             self._editor = self._create_editor()
             self._tab.show_editor(self._editor)
-            self.show_tab(self._tab)
+            self.show()
         if self._editor:
             self._editor.tree_item_selected(message.item)
 
