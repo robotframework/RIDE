@@ -30,11 +30,12 @@ from robotide.ui.mainframe import ActionRegisterer
 from resources import PYAPP_REFERENCE
 
 from robotide.ui import tree as st
+from robotide.ui import treenodehandlers as th
 from robotide.publish import PUBLISHER
 from robotide.namespace.namespace import Namespace
-st.FakeDirectorySuiteHandler = st.FakeUserKeywordHandler = \
-    st.FakeSuiteHandler = st.FakeTestCaseHandler = \
-    st.FakeResourceHandler = st.TestDataDirectoryHandler
+th.FakeDirectorySuiteHandler = th.FakeUserKeywordHandler = \
+    th.FakeSuiteHandler = th.FakeTestCaseHandler = \
+    th.FakeResourceHandler = th.TestDataDirectoryHandler
 st.Editor = lambda *args: _FakeEditor()
 from robotide.ui.tree import Tree
 Tree._show_correct_editor = lambda self, x:None
