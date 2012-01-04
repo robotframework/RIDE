@@ -68,28 +68,31 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
 
     def OnTreeSelection(self, message):
         if self.is_focused():
+            next_datafile_controller = message.item and message.item.datafile_controller
             if self._editor.dirty:
-                self._apply_txt_changes_to_model()
-            self._open_from_tree_selection(message.item and message.item.datafile_controller)
+                if not self._apply_txt_changes_to_model():
+                    self.tree.select_controller_node(self._editor._data._data)
+                    return
+            if next_datafile_controller:
+                self._open_from_tree_selection(next_datafile_controller)
 
     def _open_data_in_editor(self):
         datafile_controller = self.tree.get_selected_datafile_controller()
         if datafile_controller:
-            data = DataFileWrapper(datafile_controller)
-            self._editor.open(data)
+            self._editor.open(DataFileWrapper(datafile_controller))
 
     def _open_from_tree_selection(self, datafile_controller):
-        if datafile_controller:
-            data = DataFileWrapper(datafile_controller)
-            self._editor.selected(data)
+        self._editor.selected(DataFileWrapper(datafile_controller))
 
     def OnTabChange(self, message):
         if message.newtab == self.title:
             self._open()
 
     def _apply_txt_changes_to_model(self):
-        self._editor.save()
+        if not self._editor.save():
+            return False
         self._editor.reset()
+        return True
 
     def is_focused(self):
         return self.notebook.current_page_title == self.title
@@ -106,9 +109,11 @@ class DataValidationHandler(object):
     def validate_and_update(self, data, text):
         if not self._sanity_check(data, text):
             self._handle_sanity_check_failure()
+            return False
         else:
             self._editor.reset()
             data.update_from(text)
+            return True
 
     def _sanity_check(self, data, text):
         formatted_text = data.format_text(text)
@@ -222,8 +227,10 @@ class SourceEditor(wx.Panel):
 
     def save(self, *args):
         if self.dirty:
-            self._data_validator.validate_and_update(self._data,
-                                                     self._editor.utf8_text)
+            if not self._data_validator.validate_and_update(self._data,
+                                                     self._editor.utf8_text):
+                return False
+        return True
 
     def _revert(self):
         self.reset()

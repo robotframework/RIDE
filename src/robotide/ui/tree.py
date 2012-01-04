@@ -186,8 +186,10 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._render_datafile(parent_node, ctrl)
 
     def _select_resource(self, message):
-        node = self._find_node.by_controller(message.item)
-        self.SelectItem(node)
+        self.select_controller_node(message.item)
+
+    def select_controller_node(self, controller):
+        self.SelectItem(self._find_node.by_controller(controller))
 
     def _suite_added(self, message):
         self.add_datafile(message.parent, message.suite)
