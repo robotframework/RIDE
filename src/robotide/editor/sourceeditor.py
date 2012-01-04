@@ -46,7 +46,9 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
         self._open()
 
     def _open(self):
-        self._open_tree_selection_in_editor()
+        datafile_controller = self.tree.get_selected_datafile_controller()
+        if datafile_controller:
+            self._open_data_for_controller(datafile_controller)
         self.show_tab(self._editor)
 
     def OnSaving(self, message):
@@ -62,8 +64,7 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
             self._open_tree_selection_in_editor()
 
     def _should_process_data_changed_message(self, message):
-        return self.is_focused() and \
-               isinstance(message, RideDataChanged) and \
+        return isinstance(message, RideDataChanged) and \
                not isinstance(message, RideDataChangedToDirty)
 
     def OnTreeSelection(self, message):
