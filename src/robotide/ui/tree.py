@@ -438,6 +438,9 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def _refresh_datafile_when_file_set(self, controller):
         self._start_silent_mode() #Prevent tab selections based on tree item selected events
         current = self.get_selected_datafile_controller()
+        if not current: # If tree is not yet in use - do not expand anything.
+            self._end_silent_mode()
+            return
         item = self.GetSelection()
         current_txt = self.GetItemText(item) if item.IsOk() else ''
         # after refresh current and current_txt might have been changed
@@ -446,6 +449,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         if current == controller:
             wx.CallAfter(self.SelectItem, self._find_node.with_label(node, current_txt) or node)
             wx.CallAfter(self._end_silent_mode)
+        else:
+            self._end_silent_mode()
 
     def _start_silent_mode(self):
         self._silent_mode = True
