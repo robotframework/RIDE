@@ -207,6 +207,7 @@ class SourceEditor(wx.Panel):
         return self._dirty
 
     def open(self, data):
+        self.reset()
         self._data = data
         self._editor.set_text(self._data.content)
 
