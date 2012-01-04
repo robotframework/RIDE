@@ -46,7 +46,7 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
         self._open()
 
     def _open(self):
-        self._open_data_in_editor()
+        self._open_tree_selection_in_editor()
         self.show_tab(self._editor)
 
     def OnSaving(self, message):
@@ -59,7 +59,7 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
                 self._editor.reset()
             if self._editor.dirty:
                 self._apply_txt_changes_to_model()
-            self._open_data_in_editor()
+            self._open_tree_selection_in_editor()
 
     def _should_process_data_changed_message(self, message):
         return self.is_focused() and \
@@ -74,14 +74,14 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
                     self.tree.select_controller_node(self._editor._data._data)
                     return
             if next_datafile_controller:
-                self._open_from_tree_selection(next_datafile_controller)
+                self._open_data_for_controller(next_datafile_controller)
 
-    def _open_data_in_editor(self):
+    def _open_tree_selection_in_editor(self):
         datafile_controller = self.tree.get_selected_datafile_controller()
         if datafile_controller:
             self._editor.open(DataFileWrapper(datafile_controller))
 
-    def _open_from_tree_selection(self, datafile_controller):
+    def _open_data_for_controller(self, datafile_controller):
         self._editor.selected(DataFileWrapper(datafile_controller))
 
     def OnTabChange(self, message):
