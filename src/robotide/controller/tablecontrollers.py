@@ -202,7 +202,7 @@ class _MacroTable(_TableController):
         upper = idx - 1
         items[upper], items[idx] = items[idx], items[upper]
         self.mark_dirty()
-        RideItemMovedUp(item=item).publish()
+        RideItemMovedUp(item=self._create_controller(item)).publish()
         return True
 
     def move_down(self, item):
@@ -213,7 +213,7 @@ class _MacroTable(_TableController):
         lower = idx + 1
         items[idx], items[lower] = items[lower], items[idx]
         self.mark_dirty()
-        RideItemMovedDown(item=item).publish()
+        RideItemMovedDown(item=self._create_controller(item)).publish()
         return True
 
     def validate_name(self, name, named_ctrl=None):
