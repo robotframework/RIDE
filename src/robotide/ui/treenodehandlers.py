@@ -124,7 +124,7 @@ class _CanBeRenamed(object):
             return
         self._begin_label_edit_started = True
         def label_edit():
-            node = self._tree._find_node_by_controller(self.controller)
+            node = self._tree._find_node.by_controller(self.controller)
             if node:
                 self._tree.EditLabel(node)
             self._begin_label_edit_started = False

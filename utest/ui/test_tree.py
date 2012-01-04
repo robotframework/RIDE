@@ -125,8 +125,8 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         return self._tree.GetItemText(self._tree.GetSelection())
 
     def _get_node(self, label):
-        node = self._tree._find_node_with_label(self._tree._root, label)
-        return node or self._tree._find_node_with_label(self._tree._root, '*' + label)
+        node = self._tree._find_node.with_label(self._tree._root, label)
+        return node or self._tree._find_node.with_label(self._tree._root, '*' + label)
 
     def _select_node(self, label):
         self._tree.SelectItem(self._get_node(label))
@@ -199,7 +199,7 @@ class TestNodeRemoval(_BaseSuiteTreeTest):
         name = self._model.data.children[1].keywords[1].name
         root = self._tree._root
         count = self._tree.GetChildrenCount(self._tree._root)
-        self._tree.Delete(self._tree._find_node_with_label(root, name))
+        self._tree.Delete(self._tree._find_node.with_label(root, name))
         assert_equals(count -1, self._tree.GetChildrenCount(self._tree._root))
 
 

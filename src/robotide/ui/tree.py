@@ -56,6 +56,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         treemixin.DragAndDrop.__init__(self, parent, style=style)
         actions = ActionInfoCollection(tree_actions, self, self)
         action_registerer.register_actions(actions)
+        self._find_node = _FindNode(self)
         self._bind_tree_events()
         self._images = TreeImageList()
         self._silent_mode = False
@@ -175,7 +176,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _resource_added(self, message):
         ctrl = message.datafile
-        if self._find_node_by_controller(ctrl):
+        if self._find_node.by_controller(ctrl):
             return
         parent_node = self._get_datafile_node(ctrl.parent.data) if ctrl.parent else self._resource_root
         if parent_node is None:
@@ -185,7 +186,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._render_datafile(parent_node, ctrl)
 
     def _select_resource(self, message):
-        node = self._find_node_by_controller(message.item)
+        node = self._find_node.by_controller(message.item)
         self.SelectItem(node)
 
     def _suite_added(self, message):
@@ -266,7 +267,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def _get_or_create_node(self, parent_node, dataitem, predicate):
         if not self.IsExpanded(parent_node):
             self._expand_and_render_children(parent_node)
-            return self._find_node_with_label(parent_node, dataitem.display_name)
+            return self._find_node.with_label(parent_node, dataitem.display_name)
         index = self._get_insertion_index(parent_node, predicate)
         return self._create_node_with_handler(parent_node, dataitem, index)
 
@@ -296,7 +297,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
                            message.item, lambda item: not item.is_variable)
 
     def _leaf_item_removed(self, message):
-        node = self._find_node_by_controller(message.item)
+        node = self._find_node.by_controller(message.item)
         self.delete_node(node)
 
     def _test_added(self, message):
@@ -314,7 +315,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _filename_changed(self, message):
         df = message.datafile
-        self.SetItemText(self._find_node_by_controller(df), df.display_name)
+        self.SetItemText(self._find_node.by_controller(df), df.display_name)
 
     def add_keyword_controller(self, controller):
         parent = self._get_datafile_node(self.get_selected_datafile())
@@ -337,7 +338,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def mark_dirty(self, controller):
         if controller.dirty:
-            self._mark_dirty(self._find_node_by_controller(controller))
+            self._mark_dirty(self._find_node.by_controller(controller))
 
     def _mark_dirty(self, node):
         text = self.GetItemText(node)
@@ -360,7 +361,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             return None
         if not self.IsExpanded(parent_node):
             self._expand_and_render_children(parent_node)
-        node = self._find_node_by_controller(controller)
+        node = self._find_node.by_controller(controller)
         if node != self.GetSelection():
             self.SelectItem(node)
         return node
@@ -371,7 +372,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             return
         if not self.IsExpanded(parent_node):
             self._expand_and_render_children(parent_node)
-        node = self._find_node_with_label(parent_node, utils.normalize(uk.name))
+        node = self._find_node.with_label(parent_node, utils.normalize(uk.name))
         if node != self.GetSelection():
             self.SelectItem(node)
 
@@ -380,30 +381,6 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             if self._get_handler(node).item == datafile:
                 return node
         return None
-
-    def _find_node_with_label(self, node, label):
-        matcher = lambda n: utils.eq(self.GetItemText(n), label)
-        return self._find_node_with_predicate(node, matcher)
-
-    def _find_node_with_predicate(self, node, predicate):
-        if node != self._root and predicate(node):
-            return node
-        item, cookie = self.GetFirstChild(node)
-        while item:
-            if predicate(item):
-                return item
-            if self.ItemHasChildren(item):
-                result = self._find_node_with_predicate(item, predicate)
-                if result:
-                    return result
-            item, cookie = self.GetNextChild(node, cookie)
-        return None
-
-    def _find_node_by_controller(self, controller):
-        def match_handler(n):
-            handler = self._get_handler(n)
-            return handler and controller is handler.controller
-        return self._find_node_with_predicate(self._root, match_handler)
 
     def get_selected_datafile(self):
         """Returns currently selected data file.
@@ -467,7 +444,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         node = self._refresh_datafile(controller)
         self._expand_and_render_children(node)
         if current == controller:
-            wx.CallAfter(self.SelectItem, self._find_node_with_label(node, current_txt) or node)
+            wx.CallAfter(self.SelectItem, self._find_node.with_label(node, current_txt) or node)
             wx.CallAfter(self._end_silent_mode)
 
     def _start_silent_mode(self):
@@ -532,7 +509,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         if to_be_selected:
             self._expand_and_render_children(parent_node)
             wx.CallAfter(self.SelectItem,
-                         self._find_node_with_label(parent_node, to_be_selected))
+                         self._find_node.with_label(parent_node, to_be_selected))
 
     def OnGoBack(self, event):
         node = self._history.back()
@@ -607,7 +584,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _item_changed(self, data):
         controller = data.item
-        node = self._find_node_by_controller(controller)
+        node = self._find_node.by_controller(controller)
         if node:
             self.SetItemText(node, data.item.name)
         if controller.dirty:
@@ -621,7 +598,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _do_action_if_datafile_node_is_expanded(self, action, data):
         if self.IsExpanded(self._get_datafile_node(data.item.datafile)):
-            node = self._find_node_by_controller(data.item)
+            node = self._find_node.by_controller(data.item)
             action(node)
 
     def _variable_updated(self, data):
@@ -699,3 +676,33 @@ class _History(object):
 
     def top(self):
         return self._back and self._back[-1] or None
+
+
+class _FindNode(object):
+
+    def __init__(self, tree):
+        self._tree = tree
+
+    def by_controller(self, controller):
+        def match_handler(n):
+            handler = self._tree._get_handler(n)
+            return handler and controller is handler.controller
+        return self._find_node_with_predicate(self._tree._root, match_handler)
+
+    def with_label(self, node, label):
+        matcher = lambda n: utils.eq(self._tree.GetItemText(n), label)
+        return self._find_node_with_predicate(node, matcher)
+
+    def _find_node_with_predicate(self, node, predicate):
+        if node != self._tree._root and predicate(node):
+            return node
+        item, cookie = self._tree.GetFirstChild(node)
+        while item:
+            if predicate(item):
+                return item
+            if self._tree.ItemHasChildren(item):
+                result = self._find_node_with_predicate(item, predicate)
+                if result:
+                    return result
+            item, cookie = self._tree.GetNextChild(node, cookie)
+        return None
