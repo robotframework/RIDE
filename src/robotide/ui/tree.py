@@ -396,7 +396,6 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         matcher = lambda n: utils.eq(self.GetItemText(n), label)
         return self._find_node_with_predicate(node, matcher)
 
-
     def _find_node_with_predicate(self, node, predicate):
         if node != self._root and predicate(node):
             return node
@@ -473,7 +472,8 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def _refresh_datafile_when_file_set(self, controller):
         self._start_silent_mode()
         current = self.get_selected_datafile_controller()
-        current_txt = self.GetItemText(self.GetSelection())
+        item = self.GetSelection()
+        current_txt = self.GetItemText(item) if item.IsOk() else ''
         # after refresh current and current_txt might have been changed
         node = self._refresh_datafile(controller)
         self._expand_and_render_children(node)
