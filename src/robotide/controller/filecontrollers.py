@@ -349,7 +349,8 @@ class DirectoryController(_FileSystemElement, _BaseController):
 class TestDataDirectoryController(_DataController, DirectoryController):
 
     def __init__(self, data, chief_controller=None, parent=None):
-        _FileSystemElement.__init__(self, self._filename(data), data.directory)
+        _FileSystemElement.__init__(self, self._filename(data),
+                                    os.path.abspath(data.directory))
         _DataController.__init__(self, data, chief_controller, parent)
         self._dir_controllers = {}
 

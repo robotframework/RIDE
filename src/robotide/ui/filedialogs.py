@@ -15,11 +15,12 @@
 import os
 import wx
 from wx.lib.filebrowsebutton import DirBrowseButton
+
 from robotide.controller.commands import (CreateNewResource,
     AddTestDataDirectory, AddTestCaseFile, CreateNewDirectoryProject,
-    CreateNewFileProject, SaveFile, SetFileFormat, SetFileFormatRecuresively)
-# This hack needed to set same label width as with other labels
+    CreateNewFileProject, SetFileFormat, SetFileFormatRecuresively)
 from robotide.ui.components import StaticText
+# This hack needed to set same label width as with other labels
 DirBrowseButton.createLabel = lambda self: StaticText(self, size=(110, -1),
                                                       label=self.labelText)
 
