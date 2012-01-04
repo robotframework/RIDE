@@ -23,7 +23,9 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
     @property
     def _editor(self):
         if not self._editor_component:
-            self._editor_component = SourceEditor(self.notebook, self.title)
+            self._editor_component = SourceEditor(self.notebook,
+                                                  self.title,
+                                                  DataValidationHandler(self))
         return self._editor_component
 
     def enable(self):
@@ -93,6 +95,46 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
         return self.notebook.current_page_title == self.title
 
 
+class DataValidationHandler(object):
+
+    def __init__(self, plugin):
+        self._plugin = plugin
+
+    def set_editor(self, editor):
+        self._editor = editor
+
+    def validate_and_update(self, data, text):
+        if not self._sanity_check(data, text):
+            self._handle_sanity_check_failure()
+        else:
+            self._editor.reset()
+            data.update_from(text)
+
+    def _sanity_check(self, data, text):
+        formatted_text = data.format_text(text)
+        c = self._remove_all(formatted_text, ' ', '\n', '...', '\r', '*')
+        e = self._remove_all(text, ' ', '\n', '...', '\r', '*')
+        return len(c) == len(e)
+
+    def _remove_all(self, original_txt, *to_remove):
+        txt = original_txt
+        for item in to_remove:
+            txt = txt.replace(item, '')
+        return txt
+
+    def _handle_sanity_check_failure(self):
+        # TODO: use widgets.Dialog
+        id = wx.MessageDialog(self._editor,
+                         'ERROR: Data sanity check failed!\n'\
+                         'Reset changes?',
+                         'Can not apply changes from Txt Editor',
+                          style=wx.YES|wx.NO).ShowModal()
+        if id == wx.ID_NO:
+            self._editor._mark_file_dirty()
+        else:
+            self._editor._revert()
+
+
 class DataFileWrapper(object): # TODO: bad class name
 
     def __init__(self, data):
@@ -104,25 +146,16 @@ class DataFileWrapper(object): # TODO: bad class name
         return self._data == other._data
 
     def update_from(self, content):
+        self._data.execute(SetDataFile(self._create_target_from(content)))
+
+    def _create_target_from(self, content):
         src = StringIO(content)
         target = self._create_target()
         FromStringIOPopulator(target).populate(src)
-        # this is to prevent parsing errors from spoiling all data
-        self._sanity_check(target, content)
-        self._data.execute(SetDataFile(target))
+        return target
 
-    def _sanity_check(self, candidate, current):
-        candidate_txt = self._txt_data(candidate).encode('UTF-8')
-        c = self._remove_all(candidate_txt, ' ', '\n', '...', '\r', '*')
-        e = self._remove_all(current, ' ', '\n', '...', '\r', '*')
-        if len(c) != len(e):
-            raise AssertionError('Sanity Check Failed')
-
-    def _remove_all(self, original_txt, *to_remove):
-        txt = original_txt
-        for item in to_remove:
-            txt = txt.replace(item, '')
-        return txt
+    def format_text(self, text):
+        return self._txt_data(self._create_target_from(text)).encode('UTF-8')
 
     def mark_data_dirty(self):
         self._data.mark_dirty()
@@ -147,8 +180,10 @@ class DataFileWrapper(object): # TODO: bad class name
 
 class SourceEditor(wx.Panel):
 
-    def __init__(self, parent, title):
+    def __init__(self, parent, title, data_validator):
         wx.Panel.__init__(self, parent)
+        self._data_validator = data_validator
+        self._data_validator.set_editor(self)
         self._parent = parent
         self._create_ui(title)
         self._editor.Bind(wx.EVT_KEY_DOWN, self.OnEditorKey)
@@ -186,24 +221,8 @@ class SourceEditor(wx.Panel):
 
     def save(self, *args):
         if self.dirty:
-            self.reset()
-            editor_txt = self._editor.utf8_text
-            try:
-                self._data.update_from(editor_txt)
-            except AssertionError:
-                self._handle_sanity_check_failure()
-
-    def _handle_sanity_check_failure(self):
-        # TODO: use widgets.Dialog
-        id = wx.MessageDialog(self._editor,
-                         'ERROR: Data sanity check failed!\n'\
-                         'Reset changes?',
-                         'Can not apply changes from Txt Editor',
-                          style=wx.YES|wx.NO).ShowModal()
-        if id == wx.ID_NO:
-            self._mark_file_dirty()
-        else:
-            self._revert()
+            self._data_validator.validate_and_update(self._data,
+                                                     self._editor.utf8_text)
 
     def _revert(self):
         self.reset()
