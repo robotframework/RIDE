@@ -161,8 +161,9 @@ class SourceEditor(wx.Panel):
 
     def _create_ui(self, title):
         button_sizer = HorizontalSizer()
-        button_sizer.add_with_padding(ButtonWithHandler(self, 'Apply Changes',
-                                      handler=lambda e: self.save()))
+        self._button = ButtonWithHandler(self, 'Apply Changes', handler=lambda e: self.save())
+        self._button.Enable(False)
+        button_sizer.add_with_padding(self._button)
         self.SetSizer(VerticalSizer())
         self.Sizer.add(button_sizer)
         self._editor = RobotDataEditor(self)
@@ -184,6 +185,7 @@ class SourceEditor(wx.Panel):
 
     def reset(self):
         self._dirty = False
+        self._button.Enable(False)
 
     def save(self, *args):
         if self.dirty:
@@ -207,7 +209,7 @@ class SourceEditor(wx.Panel):
             self._revert()
 
     def _revert(self):
-        self._dirty = False
+        self.reset()
         self._editor.set_text(self._data.content)
 
     def OnEditorKey(self, event):
@@ -218,6 +220,7 @@ class SourceEditor(wx.Panel):
     def _mark_file_dirty(self):
         if self._data:
             self._dirty = True
+            self._button.Enable()
             self._data.mark_data_dirty()
 
 
