@@ -28,7 +28,7 @@ import os
 try:
     import wxversion
     from wxversion import VersionError
-    wxversion.select('2.8')
+    wxversion.select(['2.8', '2.9'])
 except ImportError:
     print """wxPython not found.
 You need to install wxPython 2.8 toolkit with unicode support to run RIDE.
