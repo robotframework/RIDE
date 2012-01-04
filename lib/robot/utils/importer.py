@@ -22,13 +22,11 @@ if sys.platform.startswith('java'):
 from robot.errors import DataError
 
 from .error import get_error_details
-from .robotpath import abspath
+from .robotpath import abspath, normpath
 
 
 # TODO:
-# - test and possibly prune tracebacks
-# - test PYTHONPATH and CLASSPATH
-# - acceptance tests for issue 979
+# - don't import test library modules if library is in cache
 # - test can variable files be implemented with java/python classes nowadays
 #   (possibly returning class when importing by path is bwic anyway)
 
@@ -36,9 +34,13 @@ from .robotpath import abspath
 class Importer(object):
 
     def __init__(self, type=None, logger=None):
+        if not logger:
+            from robot.output import LOGGER as logger
         self._type = type or ''
         self._logger = logger
-        self._importers = [ByPathImporter(), NonDottedImporter(), DottedImporter()]
+        self._importers = (ByPathImporter(logger),
+                           NonDottedImporter(logger),
+                           DottedImporter(logger))
         self._by_path_importer = self._importers[0]
 
     def import_class_or_module(self, name):
@@ -93,28 +95,31 @@ class Importer(object):
         msg = "Importing %s'%s' failed: %s" % (import_type, name, error.message)
         if not error.details:
             raise DataError(msg)
-        msg = [msg, '', error.details]
+        msg = [msg, error.details]
         msg.extend(self._get_items_in('PYTHONPATH', sys.path))
         if sys.platform.startswith('java'):
             classpath = getProperty('java.class.path').split(os.path.pathsep)
             msg.extend(self._get_items_in('CLASSPATH', classpath))
         raise DataError('\n'.join(msg))
 
-    def _log_import_succeeded(self, item, name, source):
-        if self._logger:
-            import_type = '%s ' % self._type if self._type else ''
-            item_type = 'module' if inspect.ismodule(item) else 'class'
-            location = ("'%s'" % source) if source else 'unknown location'
-            self._logger.info("Imported %s%s '%s' from %s."
-                              % (import_type, item_type, name, location))
-
     def _get_items_in(self, type, items):
-        yield '\n%s:' % type
+        yield '%s:' % type
         for item in items:
-            yield '  %s' % item
+            if item:
+                yield '  %s' % item
+
+    def _log_import_succeeded(self, item, name, source):
+        import_type = '%s ' % self._type if self._type else ''
+        item_type = 'module' if inspect.ismodule(item) else 'class'
+        location = ("'%s'" % source) if source else 'unknown location'
+        self._logger.info("Imported %s%s '%s' from %s."
+                          % (import_type, item_type, name, location))
 
 
 class _Importer(object):
+
+    def __init__(self, logger):
+        self._logger = logger
 
     def _import(self, name, fromlist=None, retry=True):
         try:
@@ -145,37 +150,66 @@ class _Importer(object):
 
 
 class ByPathImporter(_Importer):
-    _import_path_endings = ('.py', '.java', '.class', '/', os.sep)
+    _valid_import_extensions = ('.py', '.java', '.class', '')
 
     def handles(self, path):
-        return os.path.exists(path) and path.endswith(self._import_path_endings)
+        return os.path.isabs(path)
 
     def import_(self, path):
         self._verify_import_path(path)
+        self._remove_wrong_module_from_sys_modules(path)
         module = self._import_by_path(path)
         imported = self._get_class_from_module(module) or module
         return self._verify_type(imported), path
 
-    def _import_by_path(self, path):
-        module_dir, module_name = self._split_path_to_module(path)
-        sys.path.insert(0, module_dir)
-        if module_name in sys.modules:
-            del sys.modules[module_name]
-        try:
-            return self._import(module_name)
-        finally:
-            sys.path.pop(0)
-
     def _verify_import_path(self, path):
         if not os.path.exists(path):
             raise DataError('File or directory does not exist.')
-        if not path.endswith(self._import_path_endings):
+        if not os.path.isabs(path):
+            raise DataError('Import path must be absolute.')
+        if not os.path.splitext(path)[1] in self._valid_import_extensions:
             raise DataError('Not a valid file or directory to import.')
+
+    def _remove_wrong_module_from_sys_modules(self, path):
+        importing_from, name = self._split_path_to_module(path)
+        importing_package = os.path.splitext(path)[1] == ''
+        if self._wrong_module_imported(name, importing_from, importing_package):
+            del sys.modules[name]
+            self._logger.info("Removed module '%s' from sys.modules to import "
+                              "fresh module." % name)
 
     def _split_path_to_module(self, path):
         module_dir, module_file = os.path.split(abspath(path))
         module_name = os.path.splitext(module_file)[0]
+        if module_name.endswith('$py'):
+            module_name = module_name[:-3]
         return module_dir, module_name
+
+    def _wrong_module_imported(self, name, importing_from, importing_package):
+        module = sys.modules.get(name)
+        if not module:
+            return False
+        source = getattr(module, '__file__', None)
+        if not source:  # play safe (occurs at least with java based modules)
+            return True
+        imported_from, imported_package = self._get_import_information(source)
+        return ((normpath(importing_from), importing_package) !=
+                (normpath(imported_from), imported_package))
+
+    def _get_import_information(self, source):
+        imported_from, imported_file = self._split_path_to_module(source)
+        imported_package = imported_file == '__init__'
+        if imported_package:
+            imported_from = os.path.dirname(imported_from)
+        return imported_from, imported_package
+
+    def _import_by_path(self, path):
+        module_dir, module_name = self._split_path_to_module(path)
+        sys.path.insert(0, module_dir)
+        try:
+            return self._import(module_name)
+        finally:
+            sys.path.pop(0)
 
 
 class NonDottedImporter(_Importer):
