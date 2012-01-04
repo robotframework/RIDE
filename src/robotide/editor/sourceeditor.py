@@ -84,9 +84,6 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
     def OnTabChange(self, message):
         if message.newtab == self.title:
             self._open()
-        if message.oldtab == self.title:
-            if self._editor.dirty:
-                self._apply_txt_changes_to_model()
 
     def _apply_txt_changes_to_model(self):
         self._editor.save()
