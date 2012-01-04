@@ -56,10 +56,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         treemixin.DragAndDrop.__init__(self, parent, style=style)
         actions = ActionInfoCollection(tree_actions, self, self)
         action_registerer.register_actions(actions)
-        self.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnSelChanged)
-        self.Bind(wx.EVT_TREE_ITEM_EXPANDING, self.OnTreeItemExpanding)
-        self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnRightClick)
-        self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnItemActivated)
+        self._bind_tree_events()
         self._images = TreeImageList()
         self._silent_mode = False
         self.SetImageList(self._images)
@@ -71,6 +68,12 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self._dragging = False
         self._clear_tree_data()
         self._editor = None
+
+    def _bind_tree_events(self):
+        self.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnSelChanged)
+        self.Bind(wx.EVT_TREE_ITEM_EXPANDING, self.OnTreeItemExpanding)
+        self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnRightClick)
+        self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnItemActivated)
 
     def set_editor(self, editor):
         self._editor = editor
@@ -456,7 +459,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self.select_node_by_data(selection)
 
     def _refresh_datafile_when_file_set(self, controller):
-        self._start_silent_mode()
+        self._start_silent_mode() #Prevent tab selections based on tree item selected events
         current = self.get_selected_datafile_controller()
         item = self.GetSelection()
         current_txt = self.GetItemText(item) if item.IsOk() else ''
