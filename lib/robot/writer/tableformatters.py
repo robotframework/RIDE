@@ -66,22 +66,31 @@ class RowSplittingFormatter(_Formatter):
 
 
 class _Aligner(_Formatter):
+
+    def __init__(self, widths, align_last_column=False):
+        self._widths = widths
+        self._align_last_column = align_last_column
+
     def align_rows(self, rows):
         return [self.align_row(r) for r in rows]
 
     def align_row(self, row):
-        for index, col in enumerate(row[:-1]):
+        for index, col in enumerate(row[:self._last_aligned_column(row)]):
             if len(self._widths) <= index:
                 continue
             row[index] = row[index].ljust(self._widths[index])
         return row
 
 
+    def _last_aligned_column(self, row):
+        return len(row) if self._align_last_column else -1
+
+
 class SettingTableAligner(_Aligner):
 
     def __init__(self, cols, first_column_width):
         self._row_splitter = RowSplitter(cols)
-        self._widths = [first_column_width]
+        _Aligner.__init__(self, [first_column_width])
 
     def format_simple_table(self, table):
         return self.align_rows(self._rows_from_simple_table(table))
@@ -92,12 +101,13 @@ class SettingTableAligner(_Aligner):
 
 class ColumnAligner(_Aligner):
 
-    def __init__(self, max_name_length, table):
+    def __init__(self, max_name_length, table, align_last_column):
         self._max_name_length = max_name_length
-        self._widths = self._count_justifications(table)
+        _Aligner.__init__(self, self._count_justifications(table),
+                          align_last_column)
 
     def _count_justifications(self, table):
-        result = [18] + [len(header) for header in table.header]
+        result = [self._max_name_length] + [len(header) for header in table.header]
         for element in [list(kw) for kw in list(table)]:
             for step in element:
                 for index, col in enumerate(step.as_list()):
@@ -178,6 +188,48 @@ class SplittingHtmlFormatter(RowSplittingFormatter):
         return row + [HtmlCell()] * (self._cols - len(row) - indent)
 
 
+class SingleLineHtmlFormatter(_Formatter):
+
+    def __init__(self, cols):
+        self._cols = cols
+
+    def format_indented_table(self, table):
+        items = list(table)
+        for i, item in enumerate(items):
+            rows = list(self._rows_from_item(item, 1))
+            yield self._pad(self._first_row(item, rows[0]))
+            for row in rows[1:]:
+                yield self._pad(row)
+            if i < len(items) - 1:
+                yield self._pad([NameCell()])
+
+    def _pad(self, row):
+        return row + [HtmlCell()] * (self._cols - len(row))
+
+    def _first_row(self, item, row):
+        return [self._format_name(item)] + row[1:]
+
+    def _format_name(self, item):
+        from robot.parsing.model import UserKeyword
+        type_ = 'keyword' if isinstance(item, UserKeyword) else 'test'
+        return AnchorNameCell(item.name, type_)
+
+    def _format_model_item(self, item, indent):
+        if isinstance(item, Documentation):
+            return self._format_documentation(item, indent)
+        data = [''] * indent + item.as_list()
+        return [[NameCell(data[0])] + [HtmlCell(c) for c in data[1:]]]
+
+    def _format_documentation(self, doc, indent):
+        if indent:
+            start = [NameCell(), HtmlCell(doc.setting_name)]
+            value = doc.as_list()[1:]
+            if len(value) == 1:
+                return [start + [DocumentationCell(doc.value, 1)]]
+            return [start + [HtmlCell(v) for v in value]]
+        return [[NameCell(doc.setting_name), DocumentationCell(doc.value, 1)]]
+
+
 class HtmlCell(object):
     _backslash_matcher = re.compile(r'(\\+)n ')
 
@@ -224,7 +276,7 @@ class DocumentationCell(HtmlCell):
 
 class HeaderCell(HtmlCell):
 
-    def __init__(self, name, span):
+    def __init__(self, name, span=1):
         HtmlCell.__init__(self, name, {'class': 'name', 'colspan': '%d' % span},
                           tag='th')
 

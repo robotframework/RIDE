@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 import re
+from robot.writer.tableformatters import SingleLineHtmlFormatter
 
 from .tableformatters import (RowSplittingFormatter, SplittingHtmlFormatter,
     ColumnAligner, SettingTableAligner, NameCell, HeaderCell, HtmlCell)
@@ -75,12 +76,13 @@ class TsvFormatter(_TestDataFileFormatter):
 class TxtFormatter(_TestDataFileFormatter):
     _FIRST_ROW_LENGTH = 18
     _SETTING_NAME_WIDTH = 14
+    _align_last_column = False
 
     def __init__(self, cols=8):
         self._cols = cols
 
     def _variable_table_formatter(self):
-        return RowSplittingFormatter(self._cols)
+        return SettingTableAligner(self._cols, self._SETTING_NAME_WIDTH)
 
     def _setting_table_formatter(self):
         return SettingTableAligner(self._cols, self._SETTING_NAME_WIDTH)
@@ -94,12 +96,12 @@ class TxtFormatter(_TestDataFileFormatter):
     def header_row(self, table):
         header = ['*** %s ***' % table.header[0]] + table.header[1:]
         if self._should_align_columns(table):
-            return ColumnAligner(self._FIRST_ROW_LENGTH, table).align_row(header)
+            return ColumnAligner(self._FIRST_ROW_LENGTH, table, self._align_last_column).align_row(header)
         return header
 
     def _indented_table_formatter(self, table):
         if self._should_align_columns(table):
-            return ColumnAligner(self._FIRST_ROW_LENGTH, table)
+            return ColumnAligner(self._FIRST_ROW_LENGTH, table, self._align_last_column)
         return RowSplittingFormatter(self._cols)
 
     def _should_align_columns(self, table):
@@ -123,6 +125,7 @@ class TxtFormatter(_TestDataFileFormatter):
 
 
 class PipeFormatter(TxtFormatter):
+    _align_last_column = True
 
     def _escape(self, row):
         row = self._format_empty_cells(row)
@@ -146,23 +149,46 @@ class PipeFormatter(TxtFormatter):
 class HtmlFormatter(_TestDataFileFormatter):
 
     def __init__(self):
-        self._cols = 5
-        self._formatter = SplittingHtmlFormatter(self._cols)
+        self._default_cols = 5
+        self._cols = self._default_cols
+        self._formatter = SplittingHtmlFormatter(self._default_cols)
 
     def empty_row(self):
         return [NameCell('')] + [HtmlCell('') for _ in range(self._cols-1)]
 
     def _setting_table_formatter(self):
+        self._cols = self._default_cols
         return self._formatter
 
     def _variable_table_formatter(self):
+        self._cols = self._default_cols
         return self._formatter
 
     def _test_table_formatter(self, tests):
-        return self._formatter
+        return self._dynamic_width_formatter(tests)
 
     def _keyword_table_formatter(self, keywords):
-        return self._formatter
+        return self._dynamic_width_formatter(keywords)
+
+    def _dynamic_width_formatter(self, table):
+        if len(table.header) == 1:
+            self._cols = self._default_cols
+            return SplittingHtmlFormatter(self._cols)
+        self._cols = max(self._max_column_count(table), len(table.header))
+        return SingleLineHtmlFormatter(self._cols)
 
     def header_row(self, table):
-        return [HeaderCell(table.header[0], self._cols)]
+        if len(table.header) == 1:
+            return [HeaderCell(table.header[0], self._default_cols)]
+        headers = self._pad_header(table)
+        return [HeaderCell(hdr) for hdr in headers]
+
+    def _pad_header(self, table):
+        return table.header + [''] * (self._max_column_count(table) - len(table.header))
+
+    def _max_column_count(self, table):
+        count = 0
+        for item in table:
+            for child in item:
+                count = max(count, len(child.as_list()) + 1)
+        return count
