@@ -97,7 +97,7 @@ class _SettingController(ControllerWithParent):
         self._data.reset()
         # Need to clear comments separately due to this bug:
         # http://code.google.com/p/robotframework/issues/detail?id=647
-        self._data.comment = None
+        self._data.comment = Comment([])
         self.mark_dirty()
 
     def _changed(self, value):
