@@ -20,7 +20,7 @@ from robot.parsing.settings import Comment
 from robotide.controller.basecontroller import ControllerWithParent,\
     _BaseController
 from robotide.publish.messages import RideImportSettingChanged, \
-    RideImportSettingRemoved, RideVariableUpdated
+    RideImportSettingRemoved, RideVariableUpdated, RideSettingsChanged, RideItemSettingsChanged
 from robotide import utils
 from robotide.controller.tags import Tag, ForcedTag, DefaultTag
 
@@ -81,6 +81,7 @@ class _SettingController(ControllerWithParent):
         if self._changed(value):
             self._set(value)
             self.mark_dirty()
+            RideItemSettingsChanged(item=self._parent).publish()
 
     def set_comment(self, comment):
         if comment != self.comment:
