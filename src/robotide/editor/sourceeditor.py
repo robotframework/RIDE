@@ -1,3 +1,4 @@
+from time import time
 import wx
 from wx import stc
 from StringIO import StringIO
@@ -72,7 +73,8 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
             next_datafile_controller = message.item and message.item.datafile_controller
             if self._editor.dirty:
                 if not self._apply_txt_changes_to_model():
-                    self.tree.select_controller_node(self._editor._data._data)
+                    if self._editor._data._data != next_datafile_controller:
+                        self.tree.select_controller_node(self._editor._data._data)
                     return
             if next_datafile_controller:
                 self._open_data_for_controller(next_datafile_controller)
@@ -103,6 +105,8 @@ class DataValidationHandler(object):
 
     def __init__(self, plugin):
         self._plugin = plugin
+        self._last_answer = None
+        self._last_answer_time = 0
 
     def set_editor(self, editor):
         self._editor = editor
@@ -129,12 +133,18 @@ class DataValidationHandler(object):
         return txt
 
     def _handle_sanity_check_failure(self):
+        if self._last_answer == wx.ID_NO and \
+            time() - self._last_answer_time <= 0.2:
+            self._editor._mark_file_dirty()
+            return
         # TODO: use widgets.Dialog
         id = wx.MessageDialog(self._editor,
                          'ERROR: Data sanity check failed!\n'\
                          'Reset changes?',
                          'Can not apply changes from Txt Editor',
                           style=wx.YES|wx.NO).ShowModal()
+        self._last_answer = id
+        self._last_answer_time = time()
         if id == wx.ID_NO:
             self._editor._mark_file_dirty()
         else:
