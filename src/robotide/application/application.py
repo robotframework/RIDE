@@ -13,15 +13,13 @@
 #  limitations under the License.
 
 import os
-import sys
 import wx
 
-from robotide.robotapi import ROBOT_VERSION
 from robotide.namespace import Namespace
 from robotide.controller import ChiefController
 from robotide.ui import RideFrame, LoadProgressObserver
 from robotide.pluginapi import RideLogMessage
-from robotide import context, version, contrib
+from robotide import context, contrib
 
 from pluginloader import PluginLoader
 from editorprovider import EditorProvider
@@ -51,8 +49,7 @@ class RIDE(wx.App):
         return True
 
     def _publish_system_info(self):
-        RideLogMessage("Started RIDE %s with Robot Framework %s, running on %s, python version %s with wx version %s." %
-                       (version.VERSION, ROBOT_VERSION, sys.platform, sys.version, wx.VERSION_STRING)).publish()
+        RideLogMessage(context.SYSTEM_INFO).publish()
 
     @property
     def model(self):

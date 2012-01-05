@@ -21,7 +21,8 @@ from robotide.robotapi import ROBOT_LOGGER
 from logger import Logger
 from settings import Settings, initialize_settings
 from coreplugins import get_core_plugins
-from platform import IS_MAC, IS_WINDOWS, ctrl_or_cmd, bind_keys_to_evt_menu
+from platform import (IS_MAC, IS_WINDOWS, WX_VERSION, ctrl_or_cmd,
+        bind_keys_to_evt_menu)
 
 
 class RideSettings(Settings):
@@ -52,6 +53,8 @@ SETTING_ROW_HEIGTH = 25
 POPUP_BACKGROUND = (255, 255, 187)
 
 pyversion = '.'.join(str(v) for v in sys.version_info[:3])
+SYSTEM_INFO = "Started RIDE %s using python version %s with wx version %s." % \
+        (VERSION, pyversion, WX_VERSION)
 ABOUT_RIDE = '''<h3>RIDE -- Robot Framework Test Data Editor</h3>
 <p>RIDE %s running on Python %s.</p>
 <p>RIDE is a test data editor for <a href="http://robotframework.org">Robot Framework</a>.
