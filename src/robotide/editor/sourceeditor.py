@@ -73,8 +73,8 @@ class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
             next_datafile_controller = message.item and message.item.datafile_controller
             if self._editor.dirty:
                 if not self._apply_txt_changes_to_model():
-                    if self._editor._data._data != next_datafile_controller:
-                        self.tree.select_controller_node(self._editor._data._data)
+                    if self._editor.datafile_controller != next_datafile_controller:
+                        self.tree.select_controller_node(self._editor.datafile_controller)
                     return
             if next_datafile_controller:
                 self._open_data_for_controller(next_datafile_controller)
@@ -221,6 +221,10 @@ class SourceEditor(wx.Panel):
     @property
     def dirty(self):
         return self._dirty
+
+    @property
+    def datafile_controller(self):
+        return self._data._data
 
     def open(self, data):
         self.reset()
