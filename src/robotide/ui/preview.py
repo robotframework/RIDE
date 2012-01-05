@@ -70,7 +70,7 @@ class PreviewPlugin(Plugin, TreeAwarePluginMixin):
 
 
 class PreviewPanel(wx.Panel):
-    _formats = ['HTML', 'TSV', 'Text (Spaces)', 'Text (Pipes)']
+    _formats = ['HTML', 'Text (Spaces)', 'Text (Pipes)']
 
     def __init__(self, parent, notebook):
         wx.Panel.__init__(self, notebook)
@@ -87,11 +87,11 @@ class PreviewPanel(wx.Panel):
         notebook.AddPage(self, "Preview")
 
     def OnPrint(self, evt):
-        self._printing.preview_text(self._get_content().decode('UTF-8'))
+        self._printing.preview_text(self._get_content())
 
     @property
     def _file_format(self):
-        if self._format in ['HTML', 'TSV']:
+        if self._format == 'HTML':
             return self._format.lower()
         return 'txt'
 
