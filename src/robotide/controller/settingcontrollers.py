@@ -13,16 +13,15 @@
 #  limitations under the License.
 
 import re
-
 from itertools import chain
 from robot.parsing.settings import Comment
 
-from robotide.controller.basecontroller import ControllerWithParent,\
-    _BaseController
-from robotide.publish.messages import RideImportSettingChanged, \
-    RideImportSettingRemoved, RideVariableUpdated, RideSettingsChanged, RideItemSettingsChanged
+from robotide.publish.messages import (RideImportSettingChanged,
+        RideImportSettingRemoved, RideVariableUpdated, RideItemSettingsChanged)
 from robotide import utils
-from robotide.controller.tags import Tag, ForcedTag, DefaultTag
+
+from .tags import Tag, ForcedTag, DefaultTag
+from .basecontroller import ControllerWithParent, _BaseController
 
 
 class _SettingController(ControllerWithParent):
@@ -95,9 +94,6 @@ class _SettingController(ControllerWithParent):
 
     def clear(self):
         self._data.reset()
-        # Need to clear comments separately due to this bug:
-        # http://code.google.com/p/robotframework/issues/detail?id=647
-        self._data.comment = Comment([])
         self.mark_dirty()
 
     def _changed(self, value):
