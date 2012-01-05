@@ -188,6 +188,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         for orig, copied in zip(self.settings, new.settings):
             copied.set_from(orig)
         new.data.steps = [Step(s.as_list()) for s in self.steps]
+        new.notify_steps_changed()
         return new
 
     def get_empty_rows(self):
