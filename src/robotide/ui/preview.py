@@ -133,7 +133,7 @@ class PreviewPanel(wx.Panel):
         self._view.scroll_to_subitem(item)
 
     def update_preview(self):
-        self._view.set_content(self._get_content().decode('UTF-8'))
+        self._view.set_content(self._get_content())
 
     def _get_content(self):
         datafile = self._parent.datafile
