@@ -18,7 +18,6 @@ import sys
 from robotide.version import VERSION
 from robotide.robotapi import ROBOT_LOGGER
 
-from font import Font
 from logger import Logger
 from settings import Settings, initialize_settings
 from coreplugins import get_core_plugins

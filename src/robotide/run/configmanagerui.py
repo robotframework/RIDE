@@ -16,8 +16,7 @@ import wx
 from wx.lib.mixins.listctrl import TextEditMixin
 
 from robotide.editor.listeditor import AutoWidthColumnList, ListEditorBase
-from robotide.widgets import Dialog, Label
-from robotide.context import Font
+from robotide.widgets import Dialog, Label, Font
 
 
 _CONFIG_HELP = '\n\n'.join([ txt for txt in

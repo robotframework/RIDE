@@ -15,12 +15,11 @@
 import wx.html
 from StringIO import StringIO
 
-from robotide.context import Font
 from robotide.pluginapi import Plugin, ActionInfo, TreeAwarePluginMixin
 from robotide.publish import (RideTreeSelection, RideNotebookTabChanged,
                               RideTestCaseAdded, RideUserKeywordAdded)
 from robotide.robotapi import TestCase, UserKeyword
-from robotide.widgets.button import ButtonWithHandler
+from robotide.widgets import ButtonWithHandler, Font
 from robotide.utils import Printing
 
 

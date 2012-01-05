@@ -18,8 +18,7 @@ from robotide.validators import (ScalarVariableNameValidator,
     ListVariableNameValidator, TimeoutValidator, ArgumentsValidator,
     TestCaseNameValidator, UserKeywordNameValidator)
 from robotide import utils
-from robotide.context import Font
-from robotide.widgets import Label, Dialog
+from robotide.widgets import Label, Dialog, Font
 
 from fieldeditors import ValueEditor, ListValueEditor, MultiLineEditor,\
     ContentAssistEditor, VariableNameEditor

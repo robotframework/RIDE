@@ -16,9 +16,9 @@ import wx
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 
 from robotide.utils import RideEventHandler
-from robotide.widgets import PopupMenu, PopupMenuItems, ButtonWithHandler
+from robotide.widgets import PopupMenu, PopupMenuItems, ButtonWithHandler, Font
 from robotide.context.platform import ctrl_or_cmd, bind_keys_to_evt_menu, IS_WINDOWS
-from robotide.context import Font, SETTINGS
+from robotide.context import SETTINGS
 
 
 class ListEditorBase(wx.Panel):

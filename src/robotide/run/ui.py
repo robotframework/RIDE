@@ -16,8 +16,7 @@ import wx
 import sys
 
 from robotide.run.process import Process
-from robotide.context import Font
-from robotide.widgets import Label
+from robotide.widgets import Label, Font
 
 
 class Runner(wx.EvtHandler):

@@ -16,14 +16,13 @@ import wx
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 import os.path
 
-from robotide import context
 from robotide.controller.filecontrollers import (ResourceFileController,
                                                  TestCaseFileController)
 from robotide.pluginapi import (Plugin, ActionInfo, RideOpenSuite,
         RideOpenResource, RideImportSetting, RideUserKeyword, RideNewProject)
 from robotide.usages.UsageRunner import Usages
 from robotide import utils
-from robotide.widgets import (PopupMenuItem, ButtonWithHandler, Label,
+from robotide.widgets import (PopupMenuItem, ButtonWithHandler, Label, Font,
         HtmlWindow)
 
 ALL_KEYWORDS = '<all keywords>'
@@ -363,7 +362,7 @@ class _KeywordList(wx.ListCtrl, ListCtrlAutoWidthMixin):
     def _create_link_attribute(self):
         attr = wx.ListItemAttr()
         attr.SetTextColour(wx.BLUE)
-        attr.SetFont(context.Font().underlined)
+        attr.SetFont(Font().underlined)
         return attr
 
     def _create_image_list(self):

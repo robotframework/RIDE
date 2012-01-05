@@ -14,14 +14,14 @@
 import wx
 
 from robotide.pluginapi import Plugin, ActionInfo, RideLog
-from robotide.context.font import Font
+from robotide.widgets import Font
 
 def _message_to_string(msg):
     return '%s [%s]: %s\n\n' % (msg.timestamp, msg.level, msg.message)
 
 class LogPlugin(Plugin):
     """Viewer for internal log messages."""
-    
+
     def __init__(self, app):
         Plugin.__init__(self, app, default_settings={'log_to_console': False})
         self._log = []

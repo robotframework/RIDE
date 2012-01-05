@@ -18,7 +18,8 @@ import wx
 class Font(object):
     help = property(lambda self: self._get_font(scale=-2))
     fixed = property(lambda self: self._get_font(family=wx.FONTFAMILY_MODERN))
-    fixed_log = property(lambda self: self._get_font(scale=-2, family=wx.FONTFAMILY_MODERN))
+    fixed_log = property(lambda self:
+            self._get_font(scale=-2, family=wx.FONTFAMILY_MODERN))
     underlined = property(lambda self: self._get_font(underlined=True))
 
     def _get_font(self, scale=0, family=wx.FONTFAMILY_DEFAULT, underlined=False):
