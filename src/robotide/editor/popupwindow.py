@@ -15,9 +15,9 @@
 import wx
 
 from robotide.context import POPUP_BACKGROUND, IS_WINDOWS
-from robotide.utils import RideHtmlWindow
 from robotide import utils
-from robotide.widgets import ButtonWithHandler, Dialog, VerticalSizer
+from robotide.widgets import (ButtonWithHandler, Dialog, VerticalSizer,
+        HtmlWindow)
 
 
 class RidePopupWindow(wx.PopupWindow):
@@ -57,7 +57,7 @@ class Tooltip(RidePopupWindow):
             szr.add(ButtonWithHandler(panel, 'Detach', width=size[0],
                                       handler=self._detach))
             size = (size[0], size[1]-25)
-        self._details = RideHtmlWindow(self, size=size)
+        self._details = HtmlWindow(self, size=size)
         szr.add_expanding(self._details)
         panel.SetSizer(szr)
         panel.Fit()
@@ -120,7 +120,7 @@ class MacRidePopupWindow(wx.Frame):
             szr.add(ButtonWithHandler(panel, 'Detach', width=size[0],
                                       handler=self._detach))
             size = (size[0], size[1]-25)
-        self._details = RideHtmlWindow(self, size=size)
+        self._details = HtmlWindow(self, size=size)
         szr.add_expanding(self._details)
         panel.SetSizer(szr)
         panel.Fit()
@@ -151,8 +151,7 @@ class HtmlDialog(Dialog):
     def __init__(self, title, content):
         Dialog.__init__(self, title)
         szr = VerticalSizer()
-        szr.add_expanding(RideHtmlWindow(self, text=content,
-                                         size=self.Size))
+        szr.add_expanding(HtmlWindow(self, text=content, size=self.Size))
         self.SetSizer(szr)
 
     def OnKey(self, event):

@@ -14,13 +14,13 @@
 
 import webbrowser
 import wx
-from wx.html import HtmlWindow
+from wx import html
 
 
-class RideHtmlWindow(HtmlWindow):
+class HtmlWindow(html.HtmlWindow):
 
     def __init__(self, parent, size=wx.DefaultSize, text=None):
-        HtmlWindow.__init__(self, parent, size=size)
+        html.HtmlWindow.__init__(self, parent, size=size)
         self.SetBorders(2)
         self.SetStandardFonts(size=9)
         if text:
@@ -35,7 +35,7 @@ class RideHtmlWindow(HtmlWindow):
 
     def _is_copy(self, event):
         return event.GetKeyCode() == ord('C') and event.CmdDown()
-    
+
     def _add_selection_to_clipboard(self):
         wx.TheClipboard.Open()
         wx.TheClipboard.SetData(wx.TextDataObject(self.SelectionToText()))
@@ -49,3 +49,4 @@ class RideHtmlWindow(HtmlWindow):
 
     def clear(self):
         self.SetPage('')
+

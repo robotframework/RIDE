@@ -19,11 +19,12 @@ import os.path
 from robotide import context
 from robotide.controller.filecontrollers import (ResourceFileController,
                                                  TestCaseFileController)
-from robotide.pluginapi import Plugin, ActionInfo, RideOpenSuite,\
-    RideOpenResource, RideImportSetting, RideUserKeyword, RideNewProject
+from robotide.pluginapi import (Plugin, ActionInfo, RideOpenSuite,
+        RideOpenResource, RideImportSetting, RideUserKeyword, RideNewProject)
 from robotide.usages.UsageRunner import Usages
 from robotide import utils
-from robotide.widgets import PopupMenuItem, ButtonWithHandler, Label
+from robotide.widgets import (PopupMenuItem, ButtonWithHandler, Label,
+        HtmlWindow)
 
 ALL_KEYWORDS = '<all keywords>'
 ALL_USER_KEYWORDS = '<all user keywords>'
@@ -170,7 +171,7 @@ class KeywordSearchDialog(wx.Frame):
         self._add_to_sizer(self._list)
 
     def _add_keyword_details(self):
-        self._details = utils.RideHtmlWindow(self)
+        self._details = HtmlWindow(self)
         self._add_to_sizer(self._details)
         self._find_usages_button = ButtonWithHandler(self, 'Find Usages')
         self.Sizer.Add(self._find_usages_button, 0, wx.ALL, 3)

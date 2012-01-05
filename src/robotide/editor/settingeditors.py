@@ -17,7 +17,7 @@ import wx
 from robotide import context
 from robotide.controller.commands import UpdateVariable
 from robotide.publish.messages import RideImportSetting
-from robotide.widgets import ButtonWithHandler, Label
+from robotide.widgets import ButtonWithHandler, Label, HtmlWindow
 from robotide.publish import PUBLISHER
 from robotide import utils
 
@@ -258,7 +258,7 @@ class SettingValueDisplay(wx.TextCtrl):
 class DocumentationEditor(SettingEditor):
 
     def _value_display_control(self):
-        ctrl = utils.RideHtmlWindow(self, (-1, 100))
+        ctrl = HtmlWindow(self, (-1, 100))
         ctrl.Bind(wx.EVT_LEFT_DOWN, self.OnEdit)
         return ctrl
 

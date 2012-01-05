@@ -16,9 +16,9 @@ import wx
 
 from robotide.action import ActionInfoCollection, ActionFactory
 from robotide.publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER, RideInputValidationError
-from robotide.utils import RideEventHandler, RideHtmlWindow
+from robotide.utils import RideEventHandler
 from robotide.context import SETTINGS, ABOUT_RIDE
-from robotide.widgets import Dialog, ImageProvider
+from robotide.widgets import Dialog, ImageProvider, HtmlWindow
 
 from actiontriggers import MenuBar, ToolBar, ShortcutRegistry
 from filedialogs import NewProjectDialog, NewExternalResourceDialog, InitFileFormatDialog
@@ -277,5 +277,5 @@ class AboutDialog(Dialog):
     def __init__(self):
         Dialog.__init__(self, title='RIDE')
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(RideHtmlWindow(self, (450, 200), ABOUT_RIDE))
+        sizer.Add(HtmlWindow(self, (450, 200), ABOUT_RIDE))
         self.SetSizerAndFit(sizer)

@@ -19,22 +19,21 @@ from robotide import context
 from robotide.controller.settingcontrollers import (DocumentationController,
     VariableController, TagsController)
 from robotide.usages.UsageRunner import ResourceFileUsages
-from robotide.utils import RideHtmlWindow
 from robotide.publish import (RideItemSettingsChanged, RideInitFileRemoved,
                               RideFileNameChanged)
 from robotide.widgets import (ButtonWithHandler, Label, HeaderLabel,
-        HorizontalSizer)
+        HorizontalSizer, HtmlWindow)
 
 from .settingeditors import (DocumentationEditor, SettingEditor, TagsEditor,
         ImportSettingListEditor, VariablesListEditor, MetadataListEditor)
 
 
-class WelcomePage(RideHtmlWindow):
+class WelcomePage(HtmlWindow):
     undo = cut = copy = paste = delete = comment = uncomment = save \
         = show_content_assist = tree_item_selected = lambda *args: None
 
     def __init__(self, parent):
-        RideHtmlWindow.__init__(self, parent, text=context.ABOUT_RIDE)
+        HtmlWindow.__init__(self, parent, text=context.ABOUT_RIDE)
 
     def close(self):
         self.Show(False)

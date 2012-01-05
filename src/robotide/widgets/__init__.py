@@ -14,6 +14,7 @@
 
 from button import ButtonWithHandler
 from dialog import Dialog
+from htmlwindow import HtmlWindow
 from images import ImageList, ImageProvider
 from popupmenu import PopupCreator, PopupMenu, PopupMenuItem, PopupMenuItems
 from label import Label, HeaderLabel
