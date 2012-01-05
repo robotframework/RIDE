@@ -44,7 +44,7 @@ import posixpath
 import re
 import codecs
 from posixpath import curdir, sep, pardir, join
-from robotide.publish.messages import RideDataFileSet, RideDataFileRemoved
+from robotide.publish.messages import RideDataFileSet, RideDataFileRemoved, RideFileNameChanged
 
 
 try:
@@ -153,7 +153,8 @@ class TestRunnerPlugin(Plugin):
                                             RideTestCaseRemoved,
                                             RideSuiteAdded,
                                             RideDataFileRemoved,
-                                            RideDataFileSet)
+                                            RideDataFileSet,
+                                            RideFileNameChanged)
 
     def _start_listener_server(self):
         port = self.port
