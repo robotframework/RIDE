@@ -470,10 +470,11 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _refresh_datafile(self, controller):
         orig_node = self._get_data_controller_node(controller)
-        insertion_index = self._get_datafile_index(orig_node)
-        parent = self._get_parent(orig_node)
-        self._remove_datafile_node(orig_node)
-        return self._render_datafile(parent, controller, insertion_index)
+        if orig_node is not None:
+            insertion_index = self._get_datafile_index(orig_node)
+            parent = self._get_parent(orig_node)
+            self._remove_datafile_node(orig_node)
+            return self._render_datafile(parent, controller, insertion_index)
 
     def _get_pending_selection(self, event):
         if hasattr(event, 'Item'):
