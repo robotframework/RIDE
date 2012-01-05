@@ -16,5 +16,6 @@ from button import ButtonWithHandler
 from dialog import Dialog
 from images import ImageList, ImageProvider
 from popupmenu import PopupCreator, PopupMenu, PopupMenuItem, PopupMenuItems
+from label import Label, HeaderLabel
 from list import VirtualList
 from sizers import VerticalSizer, HorizontalSizer

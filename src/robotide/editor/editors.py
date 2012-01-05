@@ -13,23 +13,20 @@
 #  limitations under the License.
 
 import wx
+from robot.parsing.settings import Setting
 
 from robotide import context
-from robotide.editor.settingeditors import (DocumentationEditor, SettingEditor,
-    TagsEditor, ImportSettingListEditor, VariablesListEditor, MetadataListEditor)
-from robotide.ui.components import StaticText
-from robotide.usages.UsageRunner import ResourceFileUsages
-from robotide.utils import RideHtmlWindow
 from robotide.controller.settingcontrollers import (DocumentationController,
     VariableController, TagsController)
-from robotide.publish import (RideItemSettingsChanged,
-                              RideInitFileRemoved,
+from robotide.usages.UsageRunner import ResourceFileUsages
+from robotide.utils import RideHtmlWindow
+from robotide.publish import (RideItemSettingsChanged, RideInitFileRemoved,
                               RideFileNameChanged)
-from robot.parsing.settings import Setting
-from robotide.context import SETTINGS
-from robotide.widgets.button import ButtonWithHandler
-from robotide.widgets.label import HeaderText
-from robotide.widgets.sizers import HorizontalSizer
+from robotide.widgets import (ButtonWithHandler, Label, HeaderLabel,
+        HorizontalSizer)
+
+from .settingeditors import (DocumentationEditor, SettingEditor, TagsEditor,
+        ImportSettingListEditor, VariablesListEditor, MetadataListEditor)
 
 
 class WelcomePage(RideHtmlWindow):
@@ -85,12 +82,12 @@ class _RobotTableEditor(EditorPanel):
         self.plugin.subscribe(self._settings_changed, RideItemSettingsChanged)
 
     def _should_settings_be_open(self):
-        if self._settings_open_id not in SETTINGS:
+        if self._settings_open_id not in context.SETTINGS:
             return False
-        return SETTINGS[self._settings_open_id]
+        return context.SETTINGS[self._settings_open_id]
 
     def _store_settings_open_status(self):
-        SETTINGS[self._settings_open_id] = self._settings.IsExpanded()
+        context.SETTINGS[self._settings_open_id] = self._settings.IsExpanded()
 
     def _settings_changed(self, data):
         if data.item == self.controller:
@@ -128,7 +125,7 @@ class _RobotTableEditor(EditorPanel):
         self.Destroy()
 
     def _create_header(self, text):
-        self._title_display = HeaderText(self, text)
+        self._title_display = HeaderLabel(self, text)
         return self._title_display
 
     def _add_settings(self):
@@ -279,9 +276,9 @@ class _FileEditor(_RobotTableEditor):
     def _create_source_label(self, source):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add((5,0))
-        sizer.Add(StaticText(self, label='Source',
-                             size=(context.SETTING_LABEL_WIDTH,
-                                   context.SETTING_ROW_HEIGTH)))
+        sizer.Add(Label(self, label='Source',
+                        size=(context.SETTING_LABEL_WIDTH,
+                              context.SETTING_ROW_HEIGTH)))
         self._source = wx.TextCtrl(self, style=wx.TE_READONLY|wx.NO_BORDER)
         self._source.SetBackgroundColour(self.BackgroundColour)
         self._source.SetValue(source)
@@ -311,7 +308,7 @@ class FindUsagesHeader(HorizontalSizer):
 
     def __init__(self, parent, header, usages_callback):
         HorizontalSizer.__init__(self)
-        self._header = HeaderText(parent, header)
+        self._header = HeaderLabel(parent, header)
         self.add_expanding(self._header)
         self.add(ButtonWithHandler(parent, 'Find Usages', usages_callback))
 

@@ -19,7 +19,7 @@ from robotide.context import SETTINGS
 from robotide.context import ctrl_or_cmd, bind_keys_to_evt_menu
 from contentassist import ContentAssistTextCtrl
 from grid import GridEditor
-from robotide.ui.components import StaticText
+from robotide.widgets import Label
 
 
 class ValueEditor(wx.Panel):
@@ -37,7 +37,7 @@ class ValueEditor(wx.Panel):
     def _create_editor(self, value, label):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         if label:
-            sizer.Add(StaticText(self, label=label, size=(80, -1)), 0, wx.ALL, 5)
+            sizer.Add(Label(self, label=label, size=(80, -1)), 0, wx.ALL, 5)
         self._editor = self._get_text_ctrl()
         self._editor.AppendText(value)
         sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
@@ -92,11 +92,11 @@ class ListValueEditor(ValueEditor):
         return sizer
 
     def _create_label(self, label_text):
-        return StaticText(self, label=label_text, size=(80, -1))
+        return Label(self, label=label_text, size=(80, -1))
 
     def _create_column_selector(self, cols):
         sizer = wx.BoxSizer(wx.VERTICAL)
-        col_label = StaticText(self, label='Columns', size=(80, -1))
+        col_label = Label(self, label='Columns', size=(80, -1))
         sizer.Add(col_label, 0, wx.ALL, 5)
         combo = wx.ComboBox(self, value=str(cols), size=(60, 25),
                             choices=[str(i) for i in range(1, 11)])

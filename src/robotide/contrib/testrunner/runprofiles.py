@@ -26,7 +26,8 @@ any additional arguments.
 import wx
 from wx.lib.filebrowsebutton import FileBrowseButton
 import os
-from robotide.ui.components import StaticText
+
+from robotide.widgets import Label
 
 
 class BaseProfile(object):
@@ -68,15 +69,15 @@ class BaseProfile(object):
 
     def set_setting(self, name, value):
         '''Sets a plugin setting
-        
-        setting is automatically prefixed with profile's name and it can be 
+
+        setting is automatically prefixed with profile's name and it can be
         accessed with direct attribute access. See also __getattr__.
         '''
         self.plugin.save_setting(self._get_setting_name(name), value, delay=2)
 
     def __getattr__(self, name):
         """Provides attribute access to profile's settings
-        
+
         If for example default_settings = {'setting1' = ""} is defined
         then setting1 value can be used like self.setting1
         set_setting is used to store the value.
@@ -155,7 +156,7 @@ class PybotProfile(BaseProfile):
 
     def ArgumentsPanel(self, parent):
         panel = wx.Panel(parent, wx.ID_ANY)
-        label = StaticText(panel, label="Arguments: ")
+        label = Label(panel, label="Arguments: ")
         self._arguments = wx.TextCtrl(panel, wx.ID_ANY, size=(-1,-1),
                                      value=self.arguments)
         self._arguments.SetToolTipString("Arguments for the test run. Arguments are space separated list.")

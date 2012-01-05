@@ -15,13 +15,11 @@
 import wx
 
 from robotide import context
-from robotide import utils
-from robotide.publish.messages import RideImportSetting
-from robotide.utils import RideEventHandler
-from robotide.utils.components import RideHtmlWindow
-from robotide.widgets import ButtonWithHandler
 from robotide.controller.commands import UpdateVariable
+from robotide.publish.messages import RideImportSetting
+from robotide.widgets import ButtonWithHandler, Label
 from robotide.publish import PUBLISHER
+from robotide import utils
 
 from .formatters import ListToStringFormatter
 from .gridcolorizer import ColorizationSettings
@@ -33,7 +31,7 @@ from .popupwindow import Tooltip
 from .tags import TagsDisplay
 
 
-class SettingEditor(wx.Panel, RideEventHandler):
+class SettingEditor(wx.Panel, utils.RideEventHandler):
 
     def __init__(self, parent, controller, plugin, tree):
         wx.Panel.__init__(self, parent)
@@ -48,7 +46,7 @@ class SettingEditor(wx.Panel, RideEventHandler):
     def _create_controls(self):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add((5,0))
-        sizer.Add(wx.StaticText(self, label=self._controller.label,
+        sizer.Add(Label(self, label=self._controller.label,
                                 size=(context.SETTING_LABEL_WIDTH,
                                       context.SETTING_ROW_HEIGTH)))
         self._value_display = self._create_value_display()
@@ -260,7 +258,7 @@ class SettingValueDisplay(wx.TextCtrl):
 class DocumentationEditor(SettingEditor):
 
     def _value_display_control(self):
-        ctrl = RideHtmlWindow(self, (-1, 100))
+        ctrl = utils.RideHtmlWindow(self, (-1, 100))
         ctrl.Bind(wx.EVT_LEFT_DOWN, self.OnEdit)
         return ctrl
 

@@ -17,7 +17,7 @@ from wx.lib.scrolledpanel import ScrolledPanel
 
 from robotide.context import LOG
 from robotide.publish import RideLogException
-from robotide.ui.components import StaticText
+from robotide.widgets import Label
 
 
 class PluginManager(object):
@@ -49,7 +49,7 @@ class _PluginPanel(wx.Panel):
 
     def _create_header(self):
         header_panel = wx.Panel(self, wx.ID_ANY)
-        header = StaticText(header_panel, wx.ID_ANY, "Installed Plugins")
+        header = Label(header_panel, wx.ID_ANY, "Installed Plugins")
         header.SetFont(wx.Font(14, wx.SWISS, wx.NORMAL, wx.BOLD))
         return header
 
@@ -74,7 +74,7 @@ class _PluginPanel(wx.Panel):
     def _create_label(self, parent, text):
         boldFont = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
         boldFont.SetWeight(wx.FONTWEIGHT_BOLD)
-        label = StaticText(parent, wx.ID_ANY, text)
+        label = Label(parent, wx.ID_ANY, text)
         label.SetFont(boldFont)
         return label
 
@@ -126,19 +126,19 @@ class _PluginRow(wx.Panel):
         self.SetSizer(sizer)
 
     def _get_name(self, plugin):
-        return StaticText(self, label=plugin.name)
+        return Label(self, label=plugin.name)
 
     def _get_metadata(self, name, value):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.Add(StaticText(self, label='%s: ' % name))
+        sizer.Add(Label(self, label='%s: ' % name))
         if value.split('://')[0] in ['http', 'https']:
             sizer.Add(wx.HyperlinkCtrl(self, -1, label=value, url=value))
         else:
-            sizer.Add(StaticText(self, label=value))
+            sizer.Add(Label(self, label=value))
         return sizer
 
     def _get_description(self, plugin):
-        desc = StaticText(self, label=plugin.doc)
+        desc = Label(self, label=plugin.doc)
         if plugin.error:
             desc.SetForegroundColour("firebrick")
         return desc

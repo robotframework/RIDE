@@ -17,7 +17,7 @@ import sys
 
 from robotide.run.process import Process
 from robotide.context import Font
-from robotide.ui.components import StaticText
+from robotide.widgets import Label
 
 
 class Runner(wx.EvtHandler):
@@ -104,10 +104,10 @@ class _OutputWindow(wx.ScrolledWindow):
         self.Parent.rename_tab(self, name)
 
 
-class _OutputDisplay(StaticText):
+class _OutputDisplay(Label):
 
     def __init__(self, parent):
-        StaticText.__init__(self, parent)
+        Label.__init__(self, parent)
         self.SetFont(Font().fixed)
 
     def update(self, addition):

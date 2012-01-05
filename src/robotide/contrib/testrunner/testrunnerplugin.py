@@ -60,10 +60,9 @@ from robot.parsing.model import TestCase
 from robotide.pluginapi import Plugin, ActionInfo
 from robotide.publish import (RideTestCaseAdded, RideOpenSuite, RideSuiteAdded,
                               RideItemNameChanged, RideTestCaseRemoved)
-
 from robotide.contrib.testrunner.TestSuiteTreeCtrl import TestSuiteTreeCtrl
 from robotide.contrib.testrunner import runprofiles
-from robotide.ui.components import StaticText
+from robotide.widgets import Label
 
 
 ID_RUN = wx.NewId()
@@ -562,7 +561,7 @@ class TestRunnerPlugin(Plugin):
 
     def _build_local_toolbar(self):
         toolbar = wx.ToolBar(self.panel, wx.ID_ANY, style=wx.TB_HORIZONTAL|wx.TB_HORZ_TEXT)
-        profileLabel = StaticText(toolbar, label="Execution Profile:  ")
+        profileLabel = Label(toolbar, label="Execution Profile:  ")
         choices = sorted(self.profiles.keys())
         self.choice = wx.Choice(toolbar, wx.ID_ANY, choices=choices)
         self.choice.SetToolTip(wx.ToolTip("Choose which method to use for running the tests"))
@@ -859,7 +858,7 @@ class ProgressBar(wx.Panel):
         wx.Panel.__init__(self, parent, wx.ID_ANY)
         self._sizer = wx.BoxSizer(wx.HORIZONTAL)
         self._gauge = wx.Gauge(self, size=(100, 10))
-        self._label = StaticText(self)
+        self._label = Label(self)
         self._sizer.Add(self._label, 1, wx.EXPAND|wx.LEFT, 10)
         self._sizer.Add(self._gauge, 0, wx.ALIGN_CENTER_VERTICAL|wx.RIGHT, 10)
         self._sizer.Layout()

@@ -14,7 +14,17 @@
 
 import wx
 
-class HeaderText(wx.StaticText):
+
+class Label(wx.StaticText):
+
+    def __init__(self, parent, id=-1, label='', **args):
+        wx.StaticText.__init__(self, parent=parent, id=id, label=label.replace('&', '&&'), **args)
+
+    def SetLabel(self, label):
+        wx.StaticText.SetLabel(self, label.replace('&', '&&'))
+
+
+class HeaderLabel(wx.StaticText):
 
     def __init__(self, parent, text):
         wx.StaticText.__init__(self, parent, -1, text)

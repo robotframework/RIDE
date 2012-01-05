@@ -16,16 +16,14 @@ import wx
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 import os.path
 
-from robotide.pluginapi import Plugin, ActionInfo, RideOpenSuite,\
-    RideOpenResource, RideImportSetting, RideUserKeyword, RideNewProject
+from robotide import context
 from robotide.controller.filecontrollers import (ResourceFileController,
                                                  TestCaseFileController)
-from robotide.widgets import PopupMenuItem
-from robotide import utils
-from robotide import context
-from robotide.widgets.button import ButtonWithHandler
+from robotide.pluginapi import Plugin, ActionInfo, RideOpenSuite,\
+    RideOpenResource, RideImportSetting, RideUserKeyword, RideNewProject
 from robotide.usages.UsageRunner import Usages
-from robotide.ui.components import StaticText
+from robotide import utils
+from robotide.widgets import PopupMenuItem, ButtonWithHandler, Label
 
 ALL_KEYWORDS = '<all keywords>'
 ALL_USER_KEYWORDS = '<all user keywords>'
@@ -143,7 +141,7 @@ class KeywordSearchDialog(wx.Frame):
         return wx.BoxSizer(wx.HORIZONTAL)
 
     def _add_pattern_filter(self, sizer):
-        sizer.Add(StaticText(self, label='Search term: '))
+        sizer.Add(Label(self, label='Search term: '))
         self._search_control = wx.SearchCtrl(self, size=(200,-1),
                                              style=wx.TE_PROCESS_ENTER)
         sizer.Add(self._search_control)
@@ -154,7 +152,7 @@ class KeywordSearchDialog(wx.Frame):
         sizer.Add(self._use_doc)
 
     def _add_source_filter(self, sizer):
-        sizer.Add(StaticText(self, label='Source: '))
+        sizer.Add(Label(self, label='Source: '))
         self._source_filter = wx.ComboBox(self, value=ALL_KEYWORDS, size=(300, -1),
                                           choices=self._get_sources(), style=wx.CB_READONLY)
         sizer.Add(self._source_filter)
