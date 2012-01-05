@@ -343,7 +343,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             return
         node = self._find_node.by_controller(controller)
         if node:
-            self._mark_dirty()
+            self._mark_dirty(node)
 
     def _mark_dirty(self, node):
         text = self.GetItemText(node)
