@@ -11,9 +11,12 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
 import os
 from robot.parsing.model import ResourceFile
+
 from robotide import utils
+from robotide.controller.dataloader import DataSanitizer
 
 
 class ResourceFactory(object):
@@ -57,11 +60,14 @@ class ResourceFactory(object):
         normalized = self._normalize(path)
         if normalized not in self.cache:
             try:
-                self.cache[normalized] = ResourceFile(path).populate()
+                self.cache[normalized] = self._load_resource(path)
             except Exception:
                 self.cache[normalized] = None
                 return None
         return self.cache[normalized]
+
+    def _load_resource(self, path):
+        return DataSanitizer().sanitize(ResourceFile(path).populate())
 
     def _normalize(self, path):
         return os.path.normcase(os.path.normpath(path))

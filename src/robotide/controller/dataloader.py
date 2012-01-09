@@ -112,13 +112,16 @@ class DataSanitizer(object):
         # Black magic warning:
         # Older RIDE versions wrote headers like
         #   ['Test Cases', 'Action', 'Argument, 'Argument', 'Argument']
-        # Since currently column aligning works based on custome headers,
+        # Since currently column aligning works based on custom headers,
         # the old default headers need be removed.
+        for table in datafile.setting_table, datafile.variable_table:
+            if self._is_old_style_setting_or_variable_header(table.header):
+                self._reset_header(table)
         for table in datafile.testcase_table, datafile.keyword_table:
-            if self._is_old_style_header(table.header):
-                table.set_header([table.header[0]])
+            if self._is_old_style_test_or_keyword_header(table.header):
+                self._reset_header(table)
 
-    def _is_old_style_header(self, header):
+    def _is_old_style_test_or_keyword_header(self, header):
         if len(header) < 3:
             return False
         if header[1].lower() != 'action':
@@ -127,3 +130,11 @@ class DataSanitizer(object):
             if not h.lower().startswith('arg'):
                 return False
         return True
+
+    def _is_old_style_setting_or_variable_header(self, header):
+        if len(header) < 3:
+            return False
+        return all((True if e.lower() == 'value' else False) for e in header[1:])
+
+    def _reset_header(self, table):
+        table.set_header([table.header[0]])
