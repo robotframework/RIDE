@@ -17,8 +17,13 @@ import random
 import shutil
 import time
 import sys
+
+
 ROOT = os.path.dirname(__file__)
+lib = os.path.join(ROOT, '..', 'lib')
 src = os.path.join(ROOT, '..', 'src')
+
+sys.path.insert(0, lib)
 sys.path.insert(0, src)
 
 from model import RIDE
