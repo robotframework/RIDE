@@ -82,7 +82,6 @@ class TestRunnerPlugin(Plugin):
     """A plugin for running tests from within RIDE"""
     defaults = {"auto_save": False,
                 "profile": "pybot",
-                "port": 5010,
                 "sash_position": 200,
                 "runprofiles": [('jybot', 'jybot' + ('.bat' if os.name == 'nt' else ''))]}
     report_regex = re.compile("^Report: {2}(.*\.html)$", re.MULTILINE)
@@ -157,20 +156,12 @@ class TestRunnerPlugin(Plugin):
                                             RideFileNameChanged)
 
     def _start_listener_server(self):
-        port = self.port
-        while not self._server and port <= port+10:
-            try:
-                self._server = RideListenerServer(("",port), RideListenerHandler,
-                                                  self._post_result)
-            except socket.error:
-                port += 1
-                continue
-            self._server_thread = threading.Thread(target=self._server.serve_forever)
-            self._server_thread.setDaemon(True)
-            self._server_thread.start()
-            self._port = port
-        if not self._server:
-            raise RuntimeError("Cannot start the RideListenerServer.")
+        self._server = RideListenerServer(RideListenerHandler,
+                                          self._post_result)
+        self._server_thread = threading.Thread(target=self._server.serve_forever)
+        self._server_thread.setDaemon(True)
+        self._server_thread.start()
+        self._port = self._server.server_address[1]
 
     def _load_tree_if_data_is_open(self):
         if self.model is not None and self.model.suite is not None:
@@ -925,8 +916,8 @@ class ProgressBar(wx.Panel):
 class RideListenerServer(SocketServer.TCPServer):
     """Implements a simple line-buffered socket server"""
     allow_reuse_address = True
-    def __init__(self, server_address, RequestHandlerClass, callback):
-        SocketServer.TCPServer.__init__(self, server_address, RequestHandlerClass)
+    def __init__(self, RequestHandlerClass, callback):
+        SocketServer.TCPServer.__init__(self, ("",0), RequestHandlerClass)
         self.callback = callback
 
 class RideListenerHandler(SocketServer.StreamRequestHandler):
