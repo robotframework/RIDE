@@ -6,7 +6,6 @@ from string import Template
 from StringIO import StringIO
 from paver.easy import *
 from paver.setuputils import setup, find_packages, find_package_data
-from paver import tasks
 
 
 ROOT_DIR = path(__file__).dirname()
@@ -43,11 +42,11 @@ Topic :: Software Development :: Testing
       author       = 'Robot Framework Developers',
       author_email = 'robotframework-devel@googlegroups,com',
       url          = 'http://code.google.com/p/robotframework-ride',
-      package_dir  = {'' : SOURCE_DIR},
-      packages     = find_packages(SOURCE_DIR) + \
+      package_dir  = {'' : str(SOURCE_DIR)},
+      packages     = find_packages(str(SOURCE_DIR)) + \
                         ['robotide.lib.%s' % str(name) for name
                          in find_packages(LIB_SOURCE)],
-      package_data = find_package_data(SOURCE_DIR),
+      package_data = find_package_data(str(SOURCE_DIR)),
       # Robot Framework package data is not included, but RIDE does not need it.
       scripts      = ['src/bin/ride.py']
       )
@@ -89,13 +88,13 @@ def test_parallel():
 @needs('_prepare_build', 'setuptools.command.install')
 def install():
     """Installs development version and dependencies"""
-    _clean()
     pass
 
 @task
 @needs('_prepare_build', 'generate_setup', 'minilib', 'setuptools.command.sdist')
 def sdist():
     """Creates source distribution with bundled dependencies"""
+    _release_notes()
     _announce()
     _clean(keep_dist=True)
 
@@ -103,6 +102,7 @@ def sdist():
 @needs('_windows', '_prepare_build', 'setuptools.command.bdist_wininst')
 def wininst():
     """Creates Windows installer with bundled dependencies"""
+    _release_notes()
     _announce()
     _clean(keep_dist=True)
 
@@ -114,9 +114,7 @@ def _windows():
 @task
 def _prepare_build():
     _clean()
-    _create_manifest()
     _update_version()
-    _release_notes()
     LIB_SOURCE.copytree(LIB_TARGET)
 
 def _clean(keep_dist=False):
@@ -124,8 +122,6 @@ def _clean(keep_dist=False):
         DIST_DIR.rmtree()
     BUILD_DIR.rmtree()
     LIB_TARGET.rmtree()
-    for name in 'setup.py', 'paver-minilib.zip', 'MANIFEST.in':
-        path(name).remove()
 
 def _remove_bytecode_files():
     for d in SOURCE_DIR, TEST_DIR:
@@ -137,10 +133,6 @@ def _run_nose(args):
     _set_development_path()
     return noserun(defaultTest=TEST_DIR,
                    argv=['', '--m=^test_'] + args)
-
-def _create_manifest():
-    with open(MANIFEST, 'w') as output:
-        output.write('recursive-include lib *.*')
 
 def _update_version():
     _log('Using version %s from VERSION.txt' % VERSION)
