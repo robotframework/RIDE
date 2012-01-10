@@ -33,6 +33,7 @@ class eventhandlertype(type):
 
 class RideEventHandler(object):
     __metaclass__ = eventhandlertype
+    _SHOWING_MODIFIED_ON_DISK_CONTROLLERS_ = set()
 
     def _can_be_edited(self, event):
         ctrl = self.get_selected_datafile_controller()
@@ -48,14 +49,21 @@ class RideEventHandler(object):
                'Answering <No> will rewrite the file on disk.']
         self._show_warning(msg, ctrl, ctrl.remove)
 
+    #TODO: Not a very good mechanism to control the number of shown dialogs
     def _show_modified_on_disk_warning(self, ctrl, event):
-        def reload_datafile():
-            ctrl.reload()
-            self.refresh_datafile(ctrl, event)
-        msg = ['The file has been changed on the file system.',
-               'Do you want to reload the file?',
-               'Answering <No> will overwrite the changes on disk.']
-        self._show_warning(msg, ctrl, reload_datafile)
+        if ctrl in RideEventHandler._SHOWING_MODIFIED_ON_DISK_CONTROLLERS_:
+            return
+        RideEventHandler._SHOWING_MODIFIED_ON_DISK_CONTROLLERS_.add(ctrl)
+        try:
+            def reload_datafile():
+                ctrl.reload()
+                self.refresh_datafile(ctrl, event)
+            msg = ['The file has been changed on the file system.',
+                   'Do you want to reload the file?',
+                   'Answering <No> will overwrite the changes on disk.']
+            self._show_warning(msg, ctrl, reload_datafile)
+        finally:
+            RideEventHandler._SHOWING_MODIFIED_ON_DISK_CONTROLLERS_.remove(ctrl)
 
     def _show_warning(self, msg_lines, ctrl, yes_handler):
         if ctrl.dirty:
