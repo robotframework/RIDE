@@ -57,9 +57,9 @@ Topic :: Software Development :: Testing
       author_email = 'robotframework-devel@googlegroups,com',
       url          = 'http://code.google.com/p/robotframework-ride',
       package_dir  = {'' : str(SOURCE_DIR)},
-      packages     = find_packages(SOURCE_DIR) + \
+      packages     = find_packages(str(SOURCE_DIR)) + \
                         ['robotide.lib.%s' % str(name) for name
-                         in find_packages(LIB_SOURCE)],
+                         in find_packages(str(LIB_SOURCE))],
       package_data = find_package_data(str(SOURCE_DIR)),
       # Robot Framework package data is not included, but RIDE does not need it.
       scripts      = ['src/bin/ride.py']
