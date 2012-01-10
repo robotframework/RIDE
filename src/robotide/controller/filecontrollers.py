@@ -54,9 +54,6 @@ class _FileSystemElement(object):
     def refresh_stat(self):
         self._stat = self._get_stat(self.filename)
 
-    def remove_from_filesystem(self):
-        os.remove(self.filename)
-
     def has_been_modified_on_disk(self):
         return self._get_stat(self.filename) != self._stat
 
@@ -221,10 +218,12 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         return False
 
     def set_basename(self, basename):
-        self.remove_from_filesystem()
+        old_file = self.filename
         self.data.source = os.path.join(self.directory, '%s.%s' % (basename, self.get_format()))
         self.filename = self.data.source
         self.save()
+        if old_file != self.filename:
+            os.remove(old_file)
 
     def save_with_new_format(self, format):
         self._chief_controller.change_format(self, format)
