@@ -12,8 +12,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from __future__ import with_statement
 import os
 import wx
+from contextlib import contextmanager
 
 from robotide.namespace import Namespace
 from robotide.controller import ChiefController
@@ -68,8 +70,9 @@ class RIDE(wx.App):
 
     def _load_data(self):
         if self._initial_path:
-            observer = LoadProgressObserver(self.frame)
-            self._controller.load_data(self._initial_path, observer)
+            with self.active_event_loop():
+                observer = LoadProgressObserver(self.frame)
+                self._controller.load_data(self._initial_path, observer)
 
     def get_plugins(self):
         return self._plugin_loader.plugins
@@ -90,3 +93,12 @@ class RIDE(wx.App):
     def get_editor(self, object_class):
         return self._editor_provider.get_editor(object_class)
 
+    @contextmanager
+    def active_event_loop(self):
+        # With wxPython 2.9.1, ProgressBar.Pulse breaks if there's no active
+        # event loop.
+        # See http://code.google.com/p/robotframework-ride/issues/detail?id=798
+        loop = wx.EventLoop()
+        wx.EventLoop.SetActive(loop)
+        yield
+        del loop
