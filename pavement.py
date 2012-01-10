@@ -1,11 +1,12 @@
 import os
+from os.path import join, isdir, isfile
 import csv
 import re
 from urllib2 import urlopen
 from string import Template
 from StringIO import StringIO
 from paver.easy import *
-from paver.setuputils import setup, find_packages, find_package_data
+from paver.setuputils import setup, find_package_data
 
 
 ROOT_DIR = path(__file__).dirname()
@@ -20,6 +21,19 @@ MANIFEST = ROOT_DIR/'MANIFEST.in'
 
 VERSION = open(ROOT_DIR/'VERSION.txt').read().strip()
 FINAL_RELEASE = re.match('^\d.\d*$', VERSION)
+
+
+def find_packages(where):
+    def is_package(path):
+        return isdir(path) and isfile(join(path ,'__init__.py'))
+    pkgs = []
+    for dirpath, dirs, _ in os.walk(where):
+        for dirname in dirs:
+            pkg_path = join(dirpath, dirname)
+            if is_package(pkg_path):
+                pkgs.append('.'.join((pkg_path.split(os.sep)[1:])))
+    return pkgs
+
 
 setup(name         = 'robotframework-ride',
       version      = VERSION,
@@ -43,7 +57,7 @@ Topic :: Software Development :: Testing
       author_email = 'robotframework-devel@googlegroups,com',
       url          = 'http://code.google.com/p/robotframework-ride',
       package_dir  = {'' : str(SOURCE_DIR)},
-      packages     = find_packages(str(SOURCE_DIR)) + \
+      packages     = find_packages(SOURCE_DIR) + \
                         ['robotide.lib.%s' % str(name) for name
                          in find_packages(LIB_SOURCE)],
       package_data = find_package_data(str(SOURCE_DIR)),
