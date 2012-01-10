@@ -327,9 +327,7 @@ class Backup(object):
     def __exit__(self, *args):
         if any(args):
             self._restore_backup()
-            return False
         self._remove_backup()
-        return True
 
     def _remove_backup(self):
         if self._backup:
