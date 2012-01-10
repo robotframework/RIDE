@@ -92,7 +92,7 @@ class TestRunnerPlugin(Plugin):
                         default_settings=self.defaults)
         self.version = "3.01"
         self.metadata = {"url": "http://code.google.com/p/robotframework-ride/wiki/TestRunnerPlugin"}
-
+        self._reload_timer = None
         self._application = application
         self._frame = application.frame
         self._process = None
@@ -194,7 +194,10 @@ class TestRunnerPlugin(Plugin):
             # -- sometimes this gets called before the model has
             # actually changed. So, we'll wait before doing any real
             # work.
-            wx.CallLater(750, self._reload_model)
+            if not self._reload_timer:
+                self._reload_timer = wx.CallLater(750, self._reload_model)
+            else:
+                self._reload_timer.Restart()
 
     def OnClose(self, evt):
         '''Shut down the running services and processes'''
@@ -407,6 +410,7 @@ class TestRunnerPlugin(Plugin):
 
     def _reload_model(self):
         '''Redraw the tree when the model changes'''
+        self._reload_timer = None
         self._tree.SetDataModel(self.model)
         if not self._running:
             wx.CallAfter(self._tree.Redraw)
