@@ -35,7 +35,7 @@ class GridToolTips(object):
         event.Skip()
 
     def _start_tooltip_timer(self):
-        self._tooltip_timer.Start(500, True)
+        self._tooltip_timer.Start(1000, True)
 
     def OnShowToolTip(self, event):
         self._hide_tooltip()
