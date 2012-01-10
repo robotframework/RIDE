@@ -13,6 +13,8 @@
 #  limitations under the License.
 
 import os
+import shutil
+import tempfile
 
 from robotide.context import LOG, SETTINGS
 from robotide.publish.messages import RideOpenResource, RideSaving, RideSaveAll, \
@@ -252,25 +254,49 @@ class Serializer(object):
         self._settings = settings
         self._logger = logger
         self._errors = []
+        self._backup = None
 
     def serialize_files(self, controllers):
-        for data in controllers:
-            self._serialize_file(data)
-        RideSaveAll().publish()
-        self._log_errors()
+        try:
+            for data in controllers:
+                self._serialize_file(data)
+            RideSaveAll().publish()
+        finally:
+            self._log_errors()
 
     def serialize_file(self, controller):
-        self._serialize_file(controller)
-        self._log_errors()
+        try:
+            self._serialize_file(controller)
+        finally:
+            self._log_errors()
 
     def _serialize_file(self, controller):
         RideSaving(path=controller.filename, datafile=controller).publish()
         try:
+            self._make_backup(controller.filename)
             controller.datafile.save(**self._get_options())
+            self._remove_backup()
         except Exception, err:
+            self._restore_backup_to(controller.filename)
             self._cache_error(controller, err)
+            raise
         controller.unmark_dirty()
         RideSaved(path=controller.filename).publish()
+
+    def _make_backup(self, path):
+        if os.path.exists(path):
+            self._backup = os.path.join(tempfile.gettempdir(),
+                                        os.path.basename(path))
+            shutil.copy(path, self._backup)
+
+    def _remove_backup(self):
+        if self._backup:
+            os.remove(self._backup)
+            self._backup = None
+
+    def _restore_backup_to(self, path):
+        if self._backup:
+            shutil.move(self._backup, path)
 
     def _get_options(self):
         return {'line_separator': self._resolve_line_separator(),
