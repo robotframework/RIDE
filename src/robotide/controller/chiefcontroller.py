@@ -11,6 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+from __future__ import with_statement
 
 import os
 import shutil
@@ -254,7 +255,6 @@ class Serializer(object):
         self._settings = settings
         self._logger = logger
         self._errors = []
-        self._backup = None
 
     def serialize_files(self, controllers):
         try:
@@ -272,31 +272,14 @@ class Serializer(object):
 
     def _serialize_file(self, controller):
         RideSaving(path=controller.filename, datafile=controller).publish()
-        try:
-            self._make_backup(controller.filename)
-            controller.datafile.save(**self._get_options())
-            self._remove_backup()
-        except Exception, err:
-            self._restore_backup_to(controller.filename)
-            self._cache_error(controller, err)
-            raise
+        with Backup(controller.filename):
+            try:
+                controller.datafile.save(**self._get_options())
+            except Exception, err:
+                self._cache_error(controller, err)
+                raise
         controller.unmark_dirty()
         RideSaved(path=controller.filename).publish()
-
-    def _make_backup(self, path):
-        if os.path.exists(path):
-            self._backup = os.path.join(tempfile.gettempdir(),
-                                        os.path.basename(path))
-            shutil.copy(path, self._backup)
-
-    def _remove_backup(self):
-        if self._backup:
-            os.remove(self._backup)
-            self._backup = None
-
-    def _restore_backup_to(self, path):
-        if self._backup:
-            shutil.move(self._backup, path)
 
     def _get_options(self):
         return {'line_separator': self._resolve_line_separator(),
@@ -321,3 +304,37 @@ class Serializer(object):
         if self._errors:
             self._logger.error('\n\n'.join(self._errors))
             self._errors = []
+
+
+class Backup(object):
+
+    def __init__(self, path):
+        self._path = path
+        self._backup = self._get_backup(path)
+
+    def _get_backup(self, path):
+        if not os.path.exists(path):
+            return None
+        return os.path.join(tempfile.gettempdir(), os.path.basename(path))
+
+    def __enter__(self):
+        self._make_backup()
+
+    def _make_backup(self):
+        if self._backup:
+            shutil.copy(self._path, self._backup)
+
+    def __exit__(self, *args):
+        if any(args):
+            self._restore_backup()
+            return False
+        self._remove_backup()
+        return True
+
+    def _remove_backup(self):
+        if self._backup:
+            os.remove(self._backup)
+
+    def _restore_backup(self):
+        if self._backup:
+            shutil.move(self._backup, self._path)
