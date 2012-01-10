@@ -10,9 +10,9 @@ class BackupTestCase(unittest.TestCase):
     def test_backup_is_restored_when_save_raises_exception(self):
         try:
             with self._backupper:
-                raise AssertionError('expected')
+                raise _SaveFailed('expected')
             self.fail('should not get here')
-        except AssertionError:
+        except _SaveFailed:
             self.assertTrue(self._backupper.restored)
         self.assertEqual(None, self._backupper._backup)
 
@@ -21,6 +21,10 @@ class BackupTestCase(unittest.TestCase):
             pass
         self.assertFalse(self._backupper.restored)
         self.assertEqual(None, self._backupper._backup)
+
+
+class _SaveFailed(Exception):
+    pass
 
 
 class _MyBackup(Backup):
