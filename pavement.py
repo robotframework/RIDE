@@ -180,6 +180,7 @@ def _download_and_format_issues():
     for row in reader:
         if not row or row[1] == 'Task':
             continue
+        row = row[:4]
         writer.start('tr')
         if reader.line_num == 1:
             row = [ '*%s*' % cell for cell in row ]
