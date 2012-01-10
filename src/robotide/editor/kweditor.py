@@ -557,7 +557,7 @@ class ContentAssistCellEditor(grid.PyGridCellEditor):
         self._grid = grid
         self.StartingClick()
 
-    def EndEdit(self, row, col, grid):
+    def EndEdit(self, row, col, grid, *ignored):
         value = self._get_value()
         if value != self._original_value:
             grid.cell_value_edited(row, col, value)
