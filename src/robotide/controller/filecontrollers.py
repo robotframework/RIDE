@@ -223,7 +223,10 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         self.filename = self.data.source
         self.save()
         if old_file != self.filename:
-            os.remove(old_file)
+            self.remove_from_filesystem(old_file)
+
+    def remove_from_filesystem(self, path=None):
+        os.remove(path or self.filename)
 
     def save_with_new_format(self, format):
         self._chief_controller.change_format(self, format)
