@@ -43,7 +43,6 @@ class RIDE(wx.App):
                                            context.get_core_plugins())
         self._plugin_loader.enable_plugins()
         self.editor = self._get_editor()
-        self.editor.show()
         self._load_data()
         self.frame.tree.populate(self.model)
         self.frame.tree.set_editor(self.editor)

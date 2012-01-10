@@ -27,7 +27,7 @@ class PluginLoader(object):
     def __init__(self, application, load_dirs, standard_classes):
         self._load_errors = []
         self.plugins = [ PluginFactory(application, cls) for cls in
-                         standard_classes + self._find_classes(load_dirs) ]
+                         self._find_classes(load_dirs) + standard_classes ]
         if self._load_errors:
             LOG.error('\n\n'.join(self._load_errors))
 
