@@ -48,6 +48,7 @@ class RIDE(wx.App):
         self.frame.tree.populate(self.model)
         self.frame.tree.set_editor(self.editor)
         self._publish_system_info()
+        wx.CallLater(200, self._get_release_notes().bring_to_front)
         return True
 
     def _publish_system_info(self):
@@ -66,6 +67,12 @@ class RIDE(wx.App):
         from robotide.editor import EditorPlugin
         for pl in self._plugin_loader.plugins:
             if isinstance(pl._plugin, EditorPlugin):
+                return pl._plugin
+
+    def _get_release_notes(self):
+        from .releasenotes import ReleaseNotesPlugin
+        for pl in self._plugin_loader.plugins:
+            if isinstance(pl._plugin, ReleaseNotesPlugin):
                 return pl._plugin
 
     def _load_data(self):

@@ -52,6 +52,10 @@ class ReleaseNotesPlugin(Plugin):
             self.notebook.AddPage(self._view, "Release Notes", select=False)
         self.show_tab(self._view)
 
+    def bring_to_front(self):
+        if self._view:
+            self.show_tab(self._view)
+
     def _create_view(self):
         panel = wx.Panel(self.notebook)
         html_win = PyClickableHtmlWindow(panel, -1)
