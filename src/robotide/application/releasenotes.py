@@ -88,78 +88,38 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 0.40</h2>
+<h2>Release notes for 0.40.1</h2>
 <table border="1">
 <tr>
 <td><b>ID</b></td>
 <td><b>Type</b></td>
 <td><b>Priority</b></td>
 <td><b>Summary</b></td>
-<td><b>AllLabels</b></td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=899">Issue 899</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=907">Issue 907</a></td>
 <td>Defect</td>
-<td>High</td>
-<td>Renaming a dirty Test Suite, gets its file deleted</td>
-<td>Priority-High, Target-0.40, Type-Defect</td>
+<td>Critical</td>
+<td>Unable to open ride.py if large quantity of tests in directories</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=903">Issue 903</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=910">Issue 910</a></td>
 <td>Enhancement</td>
 <td>High</td>
-<td>Improved data formatting when saving</td>
-<td>Priority-High, Target-0.40, Type-Enhancement</td>
+<td>Backup file when saving so that it can be restored if saving fails</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=904">Issue 904</a></td>
-<td>Enhancement</td>
-<td>High</td>
-<td>Support for editing test data in plain text format</td>
-<td>Priority-High, Target-0.40, Type-Enhancement</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=735">Issue 735</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=798">Issue 798</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>Using # character to comment rows collapses the commented row on next startup</td>
-<td>Priority-Medium, Target-0.40, Type-Defect</td>
+<td>ProgressDialog_Pulse can't be initialized when running ride along with projects file opening</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=876">Issue 876</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=909">Issue 909</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>Bug in testrunner plugin, module SocketListener.py</td>
-<td>Priority-Medium, Target-0.40, Type-Defect</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=892">Issue 892</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>RIDE cannot create a new top level suite file</td>
-<td>Priority-Medium, Target-0.40, Type-Defect</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=893">Issue 893</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>RIDE - Problems in multiuser environment due to hard-coded port no.</td>
-<td>Priority-Medium, Target-0.40, Type-Defect</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=897">Issue 897</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>HTML files are always written using unix line separators</td>
-<td>Priority-Medium, Target-0.40, Type-Defect</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=901">Issue 901</a></td>
-<td>Enhancement</td>
-<td>Medium</td>
-<td>Show table headers in grid editor</td>
-<td>Priority-Medium, Target-0.40, Type-Enhancement</td>
+<td>"Hide All Test Cases" doesn't work </td>
 </tr>
 </table>
-<p>Altogether 9 issues.</p>
+<p>Altogether 4 issues.</p>
 """
