@@ -7,7 +7,10 @@ from robotide.controller.chiefcontroller import Backup
 class BackupTestCase(unittest.TestCase):
 
     def setUp(self):
-        self._backupper = _MyBackup()
+        file_controller = lambda:0
+        file_controller.filename = 'some_filename.txt'
+        file_controller.refresh_stat = lambda:0
+        self._backupper = _MyBackup(file_controller)
 
     def test_backup_is_restored_when_save_raises_exception(self):
         try:
@@ -31,18 +34,13 @@ class _SaveFailed(Exception):
 
 class _MyBackup(Backup):
 
-    def __init__(self):
-        self._path = object()
-        self._backup = None
+    def __init__(self, file_controller):
+        Backup.__init__(self, file_controller)
+        self._backup = object()
         self.restored = False
 
-    def _make_backup(self):
-        self._backup = object()
-
-    def _restore_backup(self):
-        if not self._backup:
-            raise AssertionError('No backup')
-        self.restored = True
+    def _move(self, from_path, to_path):
+        self.restored = (self._backup == from_path)
 
     def _remove_backup(self):
         self._backup = None

@@ -272,7 +272,7 @@ class Serializer(object):
 
     def _serialize_file(self, controller):
         RideSaving(path=controller.filename, datafile=controller).publish()
-        with Backup(controller.filename):
+        with Backup(controller):
             try:
                 controller.datafile.save(**self._get_options())
             except Exception, err:
@@ -308,12 +308,13 @@ class Serializer(object):
 
 class Backup(object):
 
-    def __init__(self, path):
-        self._path = path
-        self._backup = self._get_backup(path)
+    def __init__(self, file_controller):
+        self._path = file_controller.filename
+        self._file_controller = file_controller
+        self._backup = self._get_backup_name(self._path)
 
-    def _get_backup(self, path):
-        if not os.path.exists(path):
+    def _get_backup_name(self, path):
+        if not os.path.isfile(path):
             return None
         return os.path.join(tempfile.gettempdir(), os.path.basename(path))
 
@@ -322,7 +323,7 @@ class Backup(object):
 
     def _make_backup(self):
         if self._backup:
-            shutil.move(self._path, self._backup)
+            self._move(self._path, self._backup)
 
     def __exit__(self, *args):
         if any(args):
@@ -336,4 +337,8 @@ class Backup(object):
 
     def _restore_backup(self):
         if self._backup:
-            shutil.move(self._backup, self._path)
+            self._move(self._backup, self._path)
+            self._file_controller.refresh_stat()
+
+    def _move(self, from_path, to_path):
+        shutil.move(from_path, to_path)
