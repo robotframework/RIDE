@@ -20,7 +20,7 @@ LIB_SOURCE = ROOT_DIR/'lib'
 MANIFEST = ROOT_DIR/'MANIFEST.in'
 
 VERSION = open(ROOT_DIR/'VERSION.txt').read().strip()
-FINAL_RELEASE = re.match('^\d.\d*$', VERSION)
+FINAL_RELEASE = bool(re.match('^(\d*\.){1,2}\d*$', VERSION))
 
 
 def find_packages(where):
