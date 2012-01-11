@@ -335,4 +335,4 @@ class Backup(object):
 
     def _restore_backup(self):
         if self._backup:
-            shutil.move(self._backup, self._path)
+            shutil.copy(self._backup, self._path)
