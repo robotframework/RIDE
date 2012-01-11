@@ -16,10 +16,10 @@ class BackupTestCase(unittest.TestCase):
             self.fail('should not get here')
         except _SaveFailed:
             self.assertTrue(self._backupper.restored)
-        self.assertEqual(None, self._backupper._backup)
 
     def test_backup_is_not_restored_when_save_passes(self):
         with self._backupper:
+            self.assertNotEqual(None, self._backupper._backup)
             pass
         self.assertFalse(self._backupper.restored)
         self.assertEqual(None, self._backupper._backup)
@@ -33,7 +33,7 @@ class _MyBackup(Backup):
 
     def __init__(self):
         self._path = object()
-        self._backup = object()
+        self._backup = None
         self.restored = False
 
     def _make_backup(self):

@@ -322,12 +322,13 @@ class Backup(object):
 
     def _make_backup(self):
         if self._backup:
-            shutil.copy(self._path, self._backup)
+            shutil.move(self._path, self._backup)
 
     def __exit__(self, *args):
         if any(args):
             self._restore_backup()
-        self._remove_backup()
+        else:
+            self._remove_backup()
 
     def _remove_backup(self):
         if self._backup:
@@ -335,4 +336,4 @@ class Backup(object):
 
     def _restore_backup(self):
         if self._backup:
-            shutil.copy(self._backup, self._path)
+            shutil.move(self._backup, self._path)
