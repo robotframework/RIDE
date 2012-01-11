@@ -22,6 +22,6 @@ def get_core_plugins():
     from robotide.editor.sourceeditor import SourceEditorPlugin
     from robotide.log import LogPlugin
 
-    return [SourceEditorPlugin, RunAnything, RecentFilesPlugin, PreviewPlugin,
-            EditorPlugin, ReleaseNotesPlugin, KeywordSearch, LogPlugin]
+    return [ReleaseNotesPlugin, RunAnything, RecentFilesPlugin, PreviewPlugin,
+            EditorPlugin, SourceEditorPlugin, KeywordSearch, LogPlugin]
 
