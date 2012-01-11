@@ -105,20 +105,18 @@ def install():
     pass
 
 @task
-@needs('_prepare_build', 'generate_setup', 'minilib', 'setuptools.command.sdist')
+@needs('clean', '_prepare_build', 'generate_setup', 'minilib',
+       'setuptools.command.sdist')
 def sdist():
     """Creates source distribution with bundled dependencies"""
-    _release_notes()
-    _announce()
-    _clean(keep_dist=True)
+    _after_distribution()
 
 @task
-@needs('_windows', '_prepare_build', 'setuptools.command.bdist_wininst')
+@needs('_windows', 'clean', '_prepare_build',
+       'setuptools.command.bdist_wininst')
 def wininst():
     """Creates Windows installer with bundled dependencies"""
-    _release_notes()
-    _announce()
-    _clean(keep_dist=True)
+    _after_distribution()
 
 @task
 def _windows():
@@ -127,15 +125,22 @@ def _windows():
 
 @task
 def _prepare_build():
-    _clean()
     _update_version()
-    LIB_SOURCE.copytree(LIB_TARGET)
+    if not LIB_TARGET.exists():
+        LIB_SOURCE.copytree(LIB_TARGET)
+
+@task
+def clean():
+    _clean()
 
 def _clean(keep_dist=False):
     if not keep_dist:
         DIST_DIR.rmtree()
     BUILD_DIR.rmtree()
     LIB_TARGET.rmtree()
+    for name in 'paver-minilib.zip', 'setup.py':
+        p = path(name)
+        p.remove()
 
 def _remove_bytecode_files():
     for d in SOURCE_DIR, TEST_DIR:
@@ -158,6 +163,11 @@ VERSION = '%s'
 def _set_development_path():
     sys.path.insert(0, LIB_SOURCE)
     sys.path.insert(0, SOURCE_DIR)
+
+def _after_distribution():
+    _release_notes()
+    _announce()
+    _clean(keep_dist=True)
 
 def _release_notes():
     if FINAL_RELEASE:
