@@ -28,7 +28,7 @@ from robotide.pluginapi import (Plugin, RideSaving, TreeAwarePluginMixin,
         RideOpenSuite, RideDataChangedToDirty)
 
 
-class SourceEditorPlugin(Plugin, TreeAwarePluginMixin):
+class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     title = 'Text Edit'
 
     def __init__(self, application):
