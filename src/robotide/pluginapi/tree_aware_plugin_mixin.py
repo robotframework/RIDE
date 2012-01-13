@@ -49,7 +49,7 @@ class TreeAwarePluginMixin(object):
         self.subscribe(self._tree_aware_plugin_added, RideTreeAwarePluginAdded)
 
     def remove_self_from_tree_aware_plugins(self):
-        self.unsubscibe(self._tree_aware_plugin_added, RideTreeAwarePluginAdded)
+        self.unsubscribe(self._tree_aware_plugin_added, RideTreeAwarePluginAdded)
         for other in self._tree_aware_plugins:
             other.remove_tree_aware_plugin(self)
 
