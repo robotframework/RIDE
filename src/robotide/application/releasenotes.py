@@ -88,7 +88,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 0.40.1</h2>
+<h2>Release notes for 0.40.2</h2>
 <table border="1">
 <tr>
 <td><b>ID</b></td>
@@ -97,29 +97,17 @@ RELEASE_NOTES = """
 <td><b>Summary</b></td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=907">Issue 907</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=913">Issue 913</a></td>
 <td>Defect</td>
-<td>Critical</td>
-<td>Unable to open ride.py if large quantity of tests in directories</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=910">Issue 910</a></td>
-<td>Enhancement</td>
 <td>High</td>
-<td>Backup file when saving so that it can be restored if saving fails</td>
+<td>Erratical cursor movement when changin back from "Text Edit"-tab to Edit-tab</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=798">Issue 798</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>ProgressDialog_Pulse can't be initialized when running ride along with projects file opening</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=909">Issue 909</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>"Hide All Test Cases" doesn't work </td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=915">Issue 915</a></td>
+<td>Enhancement</td>
+<td>Low</td>
+<td>Suite setup comments are not correct.</td>
 </tr>
 </table>
-<p>Altogether 4 issues.</p>
+<p>Altogether 2 issues.</p>
 """
