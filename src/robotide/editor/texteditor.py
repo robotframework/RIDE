@@ -52,9 +52,10 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self._open()
 
     def disable(self):
-        self.unsubscribe_all()
         self.remove_self_from_tree_aware_plugins()
+        self.unsubscribe_all()
         self.unregister_actions()
+        self.delete_tab(self._editor)
         self._editor_component = None
 
     def OnOpen(self, event):
