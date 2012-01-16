@@ -104,6 +104,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     def OnTabChange(self, message):
         if message.newtab == self.title:
             self._open()
+        elif message.oldtab == self.title:
+            self._editor.remove_and_store_state()
 
     def _apply_txt_changes_to_model(self):
         if not self._editor.save():
@@ -226,8 +228,7 @@ class SourceEditor(wx.Panel):
         button_sizer.add_with_padding(ButtonWithHandler(self, 'Apply Changes', handler=lambda e: self.save()))
         self.SetSizer(VerticalSizer())
         self.Sizer.add(button_sizer)
-        self._editor = RobotDataEditor(self)
-        self.Sizer.add_expanding(self._editor)
+        self._create_editor_text_control()
         self._parent.add_tab(self, title, allow_closing=False)
 
     @property
@@ -241,9 +242,14 @@ class SourceEditor(wx.Panel):
     def open(self, data):
         self.reset()
         self._data = data
-        self._editor.set_text(self._data.content)
+        if not self._editor:
+            self._stored_text = self._data.content
+        else:
+            self._editor.set_text(self._data.content)
 
     def selected(self, data):
+        if not self._editor:
+            self._create_editor_text_control(self._stored_text)
         if self._data == data:
             return
         self.open(data)
@@ -257,6 +263,18 @@ class SourceEditor(wx.Panel):
                                                      self._editor.utf8_text):
                 return False
         return True
+
+    def remove_and_store_state(self):
+        self._stored_text = self._editor.utf8_text
+        self._editor.Destroy()
+        self._editor = None
+
+    def _create_editor_text_control(self, text=None):
+        self._editor = RobotDataEditor(self)
+        self.Sizer.add_expanding(self._editor)
+        self.Sizer.Layout()
+        if text:
+            self._editor.set_text(text)
 
     def _revert(self):
         self.reset()
