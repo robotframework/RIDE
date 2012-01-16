@@ -73,7 +73,7 @@ Inherited tags are not shown in this view.
 %(ESCAPE)s
 
 Suite Setup
-This keyword is executed before executing any test case or lower level suite.
+This keyword is executed before executing any of the test cases or lower level suites.
 %(FIXTURE)s
 %(ESCAPE)s
 
