@@ -219,8 +219,6 @@ class SourceEditor(wx.Panel):
         self._data_validator.set_editor(self)
         self._parent = parent
         self._create_ui(title)
-        self._editor.Bind(wx.EVT_KEY_DOWN, self.OnEditorKey)
-        self._editor.Bind(wx.EVT_KILL_FOCUS, self.save)
         self._data = None
         self._dirty = False
 
@@ -266,7 +264,7 @@ class SourceEditor(wx.Panel):
         return True
 
     def remove_and_store_state(self):
-        self._stored_text = self._editor.utf8_text
+        self._stored_text = self._editor.GetText()
         self._editor.Destroy()
         self._editor = None
 
@@ -274,8 +272,10 @@ class SourceEditor(wx.Panel):
         self._editor = RobotDataEditor(self)
         self.Sizer.add_expanding(self._editor)
         self.Sizer.Layout()
-        if text:
+        if text is not None:
             self._editor.set_text(text)
+        self._editor.Bind(wx.EVT_KEY_DOWN, self.OnEditorKey)
+        self._editor.Bind(wx.EVT_KILL_FOCUS, self.save)
 
     def _revert(self):
         self.reset()
