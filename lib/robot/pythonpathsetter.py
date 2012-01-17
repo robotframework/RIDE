@@ -12,63 +12,39 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-
 """Module that adds directories needed by Robot to sys.path when imported."""
 
-import sys
 import os
+import sys
 import fnmatch
+from os.path import abspath, dirname, join
 
+ROBOTDIR = dirname(abspath(__file__))
 
-def add_path(path, to_beginning=False, force=False):
-    if _should_be_added(path, force):
-        if to_beginning:
-            sys.path.insert(0, path)
-        else:
-            sys.path.append(path)
+def add_path(path, end=False):
+    if not end:
+        remove_path(path)
+        sys.path.insert(0, path)
+    elif not any(fnmatch.fnmatch(p, path) for p in sys.path):
+        sys.path.append(path)
 
 def remove_path(path):
-    path = _normpath(path)
-    sys.path = [p for p in sys.path if _normpath(p) != path]
-
-def _should_be_added(path, force):
-    if (not path) or _find_in_syspath_normalized(path):
-        return False
-    return force or os.path.exists(path)
-
-def _find_in_syspath_normalized(path):
-    path = _normpath(path)
-    for element in sys.path:
-        if _normpath(element) == path:
-            return element
-    return None
-
-def _normpath(path):
-    return os.path.normcase(os.path.normpath(path))
+    sys.path = [p for p in sys.path if not fnmatch.fnmatch(p, path)]
 
 
-ROBOTDIR = os.path.dirname(os.path.abspath(__file__))
-PARENTDIR = os.path.dirname(ROBOTDIR)
-
-add_path(os.path.join(ROBOTDIR, 'libraries'), to_beginning=True,
-        force=True)
-add_path(PARENTDIR, to_beginning=True)
-# Handles egg installations
-if fnmatch.fnmatchcase(os.path.basename(PARENTDIR), 'robotframework-*.egg'):
-    add_path(os.path.dirname(PARENTDIR), to_beginning=True)
-
-# Remove ROBOTDIR dir to disallow importing robot internal modules directly
+# When, for example, runner.py is executed as a script, the directory
+# containing robot module is not added to sys.path automatically but
+# the robot directory itself is. Former is added to allow importing
+# the module and the latter removed to prevent accidentally importing
+# internal modules directly.
+add_path(dirname(ROBOTDIR))
 remove_path(ROBOTDIR)
 
-# Elements from PYTHONPATH. By default it is not processed in Jython and in
-# Python valid non-absolute paths may be ignored.
-PYPATH = os.environ.get('PYTHONPATH')
-if PYPATH:
-    for path in PYPATH.split(os.pathsep):
-        add_path(path)
-    del path
+# Default library search locations.
+add_path(join(ROBOTDIR, 'libraries'))
+add_path('.', end=True)
 
-# Current dir (it seems to be in Jython by default so let's be consistent)
-add_path('.')
+# Support libraries/resources in PYTHONPATH also with Jython and IronPython.
+for item in os.getenv('PYTHONPATH', '').split(os.pathsep):
+    add_path(abspath(item), end=True)
 
-del _find_in_syspath_normalized, _normpath, add_path, remove_path, ROBOTDIR, PARENTDIR, PYPATH
