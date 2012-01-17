@@ -16,7 +16,6 @@ import os
 from robot.parsing.model import ResourceFile
 
 from robotide import utils
-from robotide.controller.dataloader import DataSanitizer
 
 
 class ResourceFactory(object):
@@ -67,7 +66,7 @@ class ResourceFactory(object):
         return self.cache[normalized]
 
     def _load_resource(self, path):
-        return DataSanitizer().sanitize(ResourceFile(path).populate())
+        return ResourceFile(path).populate()
 
     def _normalize(self, path):
         return os.path.normcase(os.path.normpath(path))

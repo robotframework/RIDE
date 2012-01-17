@@ -53,16 +53,12 @@ class _DataLoaderThread(Thread):
     def __init__(self):
         Thread.__init__(self)
         self.result = None
-        self._sanitizer = DataSanitizer()
 
     def run(self):
         try:
-            self.result = self._sanitize(self._run())
+            self.result = self._run()
         except Exception:
             pass # TODO: Log this error somehow
-
-    def _sanitize(self, result):
-        return self._sanitizer.sanitize(result)
 
 
 class _DataLoader(_DataLoaderThread):
@@ -97,44 +93,3 @@ class _ResourceLoader(_DataLoaderThread):
 
     def _run(self):
         return self._loader(self._datafile)
-
-    def _sanitize(self, results):
-        return [self._sanitizer.sanitize(r) for r in results]
-
-
-class DataSanitizer(object):
-
-    def sanitize(self, datafile):
-        self._sanitize_headers(datafile)
-        return datafile
-
-    def _sanitize_headers(self, datafile):
-        # Black magic warning:
-        # Older RIDE versions wrote headers like
-        #   ['Test Cases', 'Action', 'Argument, 'Argument', 'Argument']
-        # Since currently column aligning works based on custom headers,
-        # the old default headers need be removed.
-        for table in datafile.setting_table, datafile.variable_table:
-            if self._is_old_style_setting_or_variable_header(table.header):
-                self._reset_header(table)
-        for table in datafile.testcase_table, datafile.keyword_table:
-            if self._is_old_style_test_or_keyword_header(table.header):
-                self._reset_header(table)
-
-    def _is_old_style_test_or_keyword_header(self, header):
-        if len(header) < 3:
-            return False
-        if header[1].lower() != 'action':
-            return False
-        for h in header[2:]:
-            if not h.lower().startswith('arg'):
-                return False
-        return True
-
-    def _is_old_style_setting_or_variable_header(self, header):
-        if len(header) < 3:
-            return False
-        return all((True if e.lower() == 'value' else False) for e in header[1:])
-
-    def _reset_header(self, table):
-        table.set_header([table.header[0]])
