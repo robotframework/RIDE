@@ -87,6 +87,12 @@ class TestCaseFileControllerTest(unittest.TestCase):
     def test_source(self):
         assert_equals(self.ctrl.filename, self.SOURCE_HTML)
 
+    def test_longname(self):
+        assert_equals(self.ctrl.longname, 'Test.Cases')
+        self.ctrl.parent = lambda:0
+        self.ctrl.parent.longname = 'Parent'
+        assert_equals(self.ctrl.longname, 'Parent.Test.Cases')
+
     def test_set_format(self):
         self.ctrl.set_format('txt')
         assert_equals(self.ctrl.filename, self.SOURCE_TXT)
@@ -160,6 +166,14 @@ class TestDataDirectoryControllerTest(unittest.TestCase):
         ctrl.set_format('txt')
         assert_true(ctrl.has_format())
         assert_equals(ctrl.source, os.path.abspath(os.path.join('source', '__init__.txt')))
+
+    def test_longname(self):
+        ctrl = TestDataDirectoryController(self.data)
+        assert_equals(ctrl.longname, 'Source')
+        ctrl.parent = lambda:0
+        ctrl.parent.longname = 'Parent'
+        assert_equals(ctrl.longname, 'Parent.Source')
+
 
     def test_adding_test_case_file(self):
         new_data = TestDataDirectoryController(self.data).\
