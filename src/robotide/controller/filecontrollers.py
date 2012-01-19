@@ -370,6 +370,8 @@ class TestDataDirectoryController(_DataController, DirectoryController):
 
     @property
     def longname(self):
+        if self.parent:
+            return self.parent.longname + '.' + self.name
         return self.display_name
 
     @property
