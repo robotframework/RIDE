@@ -16,7 +16,7 @@ import wx
 
 from robotide.controller.commands import (RenameKeywordOccurrences, RemoveMacro,
     AddKeyword, AddTestCase, RenameTest, CopyMacroAs, AddVariable,
-    UpdateVariableName, RenameFile, RenameResourceFile, DeleteFile)
+    UpdateVariableName, RenameFile, RenameResourceFile, DeleteFile, SortKeywords)
 from robotide.controller.settingcontrollers import VariableController
 from robotide.controller.macrocontrollers import (TestCaseController,
                                                   UserKeywordController)
@@ -52,6 +52,7 @@ class _ActionHandler(wx.Window):
     _label_add_suite = 'New Suite\tCtrl-Shift-F'
     _label_new_test_case = 'New Test Case\tCtrl-Shift-T'
     _label_new_user_keyword = 'New User Keyword\tCtrl-Shift-K'
+    _label_sort_keywords = 'Sort Keywords'
     _label_new_scalar = 'New Scalar\tCtrl-Shift-V'
     _label_new_list_variable = 'New List Variable\tCtrl-Shift-L'
     _label_change_format = 'Change Format'
@@ -194,6 +195,10 @@ class TestDataHandler(_ActionHandler):
     def rename(self, new_name):
         return False
 
+    def OnSortKeywords(self, event):
+        """Sorts the keywords inside the treenode"""
+        SortKeywords().execute(self.controller)
+
     @property
     def can_be_rendered(self):
         if not self._has_children():
@@ -251,6 +256,7 @@ class ResourceFileHandler(_CanBeRenamed, TestDataHandler):
                 _ActionHandler._label_new_list_variable, '---',
                 _ActionHandler._label_rename,
                 _ActionHandler._label_change_format,
+                _ActionHandler._label_sort_keywords,
                 _ActionHandler._label_find_usages,
                 'Delete\tCtrl-Shift-D']
 
@@ -286,6 +292,7 @@ class TestCaseFileHandler(_CanBeRenamed, TestDataHandler):
                 _ActionHandler._label_new_list_variable, '---',
                 _ActionHandler._label_rename,
                 _ActionHandler._label_change_format,
+                _ActionHandler._label_sort_keywords,
                 'Delete\tCtrl-Shift-D']
 
     def OnNewTestCase(self, event):

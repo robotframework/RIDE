@@ -340,6 +340,9 @@ class RenameResourceFile(_Command):
             RideFileNameChanged(datafile=context,
                                 old_filename=old_filename).publish()
 
+class SortKeywords(_Command):
+    def execute(self, context):
+        context.sort_keywords()
 
 class DeleteFile(_Command):
 

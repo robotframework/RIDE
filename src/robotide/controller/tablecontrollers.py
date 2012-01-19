@@ -287,6 +287,10 @@ class KeywordTableController(_MacroTable):
     def _configure_controller(self, ctrl, config):
         if config:
             ctrl.arguments.set_value(config)
+    
+    def sort(self):
+        """Sorts the keywords of the controller by name"""
+        self._table.keywords = sorted(self._table.keywords, key=lambda userkeyword: userkeyword.name)
 
 
 class ImportSettingsController(_TableController, _WithListOperations):

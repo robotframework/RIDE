@@ -200,6 +200,12 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         else:
             self.variables.add_variable(item.name, item.value, item.comment)
 
+    def sort_keywords(self):
+        if self.keywords:
+            self.keywords.sort()
+            self.mark_dirty()
+            RideDataFileSet(item=self).publish()
+
     def has_format(self):
         return True
 
