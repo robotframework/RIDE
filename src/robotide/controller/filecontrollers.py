@@ -202,9 +202,17 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
 
     def sort_keywords(self):
         if self.keywords:
-            self.keywords.sort()
+            list = self.keywords.sort()
             self.mark_dirty()
-            RideDataFileSet(item=self).publish()
+            RideDataFileSet(item=self).publish() #TODO: Use a more gentle message
+            return list
+        return None
+
+    def restore_keyword_order(self, list):
+        if self.keywords and list:
+            self.keywords.restore_keyword_order(list)
+            self.mark_dirty()
+            RideDataFileSet(item=self).publish() #TODO: Use a more gentle message
 
     def has_format(self):
         return True

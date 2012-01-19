@@ -340,9 +340,26 @@ class RenameResourceFile(_Command):
             RideFileNameChanged(datafile=context,
                                 old_filename=old_filename).publish()
 
-class SortKeywords(_Command):
-    def execute(self, context):
-        context.sort_keywords()
+class SortKeywords(_ReversibleCommand):
+    list = None
+    
+    def _execute(self, context):
+        list = context.sort_keywords()
+        self._undo_command = RestoreKeywordOrder(list)
+
+    def _get_undo_command(self):
+        return self._undo_command
+
+class RestoreKeywordOrder(_ReversibleCommand):
+    
+    def __init__(self, list):
+        self._list = list
+    
+    def _execute(self, context):
+        context.restore_keyword_order(self._list)
+
+    def _get_undo_command(self):
+        return SortKeywords()
 
 class DeleteFile(_Command):
 
