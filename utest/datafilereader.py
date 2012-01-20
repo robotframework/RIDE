@@ -1,5 +1,6 @@
 import os
 from robotide.controller.chiefcontroller import ChiefController
+from robotide.controller.commands import NullObserver
 from robotide.namespace import Namespace
 RESOURCES_DIR = 'resources'
 RESOURCES_HTML = 'resource.html'
@@ -36,13 +37,6 @@ ARGUMENTS_PATH = _makepath('arguments_suite')
 SIMPLE_PROJECT = _makepath('simple', 'test.txt')
 
 def construct_chief_controller(datapath):
-    class NullObserver(object):
-        def notify(self, *args):
-            pass
-    
-        def finish(self, *args):
-            pass
-        
     chief = ChiefController(Namespace())
     chief.load_data(datapath, NullObserver())
     return chief
