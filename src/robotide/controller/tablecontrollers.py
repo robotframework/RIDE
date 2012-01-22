@@ -290,22 +290,21 @@ class KeywordTableController(_MacroTable):
     
     def sort(self):
         """Sorts the keywords of the controller by name"""
-        keywords_temp = sorted(self._table.keywords, key=lambda userkeyword: userkeyword.name)
-        
-        # Determine difference in sorting order for undo/redo
+        keywords_sorted = sorted(self._table.keywords, key=lambda userkeyword: userkeyword.name)
+        index_difference = self._index_difference(self._table.keywords, keywords_sorted)
+        self._table.keywords = keywords_sorted
+        return index_difference
+    
+    def _index_difference(self, original_list, sorted_list):
+        """Determines the difference in sorting order for undo/redo"""
         index_difference = []
-        try:
-            for kw in self._table.keywords:
-                counter = 0
-                for kw2 in keywords_temp:
-                    if kw.name == kw2.name:
-                        index_difference.append(counter)
-                        break
-                    counter += 1
-        except:
-            return None
-        
-        self._table.keywords = keywords_temp
+        for kw in original_list:
+            counter = 0
+            for kw2 in sorted_list:
+                if kw.name == kw2.name:
+                    index_difference.append(counter)
+                    break
+                counter += 1
         return index_difference
 
     def restore_keyword_order(self, list):

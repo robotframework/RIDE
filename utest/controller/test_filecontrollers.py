@@ -9,7 +9,8 @@ from robot.utils.asserts import (assert_equals, assert_true, assert_false)
 from robotide.controller.filecontrollers import TestCaseFileController, \
     TestDataDirectoryController
 from robotide.controller.tablecontrollers import TestCaseController
-from robotide.controller.commands import AddTestCaseFile, AddTestDataDirectory
+from robotide.controller.commands import AddTestCaseFile, AddTestDataDirectory,\
+    SortKeywords, Undo, Redo
 from robotide.publish import PUBLISHER
 from robotide.publish.messages import RideDataChangedToDirty,\
 RideDataDirtyCleared
@@ -131,33 +132,24 @@ class TestResourceFileControllerTest(unittest.TestCase):
         resource_ctrl = self._get_ctrl_by_name(datafilereader.OCCURRENCES_RESOURCE_NAME, chief.datafiles)
         
         # Capture keyword list before sorting
-        unsorted_list = []
-        for kw in resource_ctrl.keywords._items:
-            unsorted_list.append(kw.name)
-        list_for_undo_comparison = unsorted_list[:]
+        original_keywords = resource_ctrl.get_keyword_names()
+        list_for_undo_comparison = original_keywords[:]
         
         # Sort the list
-        undolist = resource_ctrl.keywords.sort()
-        
-        # Capture keyword list after sorting
-        sorted_list = []
-        for kw in resource_ctrl.keywords._items:
-            sorted_list.append(kw.name)
-        
-        # Compare the results
-        unsorted_list.sort()
-        assert_equals(unsorted_list, sorted_list)
+        resource_ctrl.execute(SortKeywords())
+        sorted_keywords = resource_ctrl.get_keyword_names()
+        original_keywords.sort()
+        assert_equals(original_keywords, sorted_keywords)
         
         # Undo sorting        
-        resource_ctrl.keywords.restore_keyword_order(undolist)
-        
-        # Capture keyword list after restoring
-        restored_list = []
-        for kw in resource_ctrl.keywords._items:
-            restored_list.append(kw.name)
-        
-        # Compare the results
+        resource_ctrl.execute(Undo())
+        restored_list = resource_ctrl.get_keyword_names()
         assert_equals(restored_list, list_for_undo_comparison)
+        
+        # Redo sorting
+        resource_ctrl.execute(Redo())
+        keywords_after_redo = resource_ctrl.get_keyword_names()
+        assert_equals(keywords_after_redo, sorted_keywords)
 
 
 class TestDataDirectoryControllerTest(unittest.TestCase):

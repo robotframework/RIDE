@@ -341,22 +341,22 @@ class RenameResourceFile(_Command):
                                 old_filename=old_filename).publish()
 
 class SortKeywords(_ReversibleCommand):
-    list = None
+    index_difference = None
     
     def _execute(self, context):
-        list = context.sort_keywords()
-        self._undo_command = RestoreKeywordOrder(list)
+        index_difference = context.sort_keywords()
+        self._undo_command = RestoreKeywordOrder(index_difference)
 
     def _get_undo_command(self):
         return self._undo_command
 
 class RestoreKeywordOrder(_ReversibleCommand):
     
-    def __init__(self, list):
-        self._list = list
+    def __init__(self, index_difference):
+        self._index_difference = index_difference
     
     def _execute(self, context):
-        context.restore_keyword_order(self._list)
+        context.restore_keyword_order(self._index_difference)
 
     def _get_undo_command(self):
         return SortKeywords()

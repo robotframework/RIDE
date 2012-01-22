@@ -197,7 +197,7 @@ class TestDataHandler(_ActionHandler):
 
     def OnSortKeywords(self, event):
         """Sorts the keywords inside the treenode"""
-        SortKeywords().execute(self.controller)
+        self.controller.execute(SortKeywords())
 
     @property
     def can_be_rendered(self):
