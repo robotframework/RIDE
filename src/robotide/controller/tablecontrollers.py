@@ -61,11 +61,20 @@ class _TableController(ControllerWithParent):
 
 class VariableTableController(_TableController, _WithListOperations):
 
+    def __init__(self, parent_controller, table):
+        _TableController.__init__(self, parent_controller, table)
+        self._variable_cache = {}
+
+    def _get(self, variable):
+        if variable not in self._variable_cache:
+            self._variable_cache[variable] = VariableController(self, variable)
+        return self._variable_cache[variable]
+
     def __iter__(self):
-        return iter(VariableController(self, v) for v in self._table)
+        return iter(self._get(v) for v in self._table)
 
     def __getitem__(self, index):
-        return VariableController(self, self._items[index])
+        return self._get(self._items[index])
 
     @property
     def _items(self):
@@ -104,6 +113,7 @@ class VariableTableController(_TableController, _WithListOperations):
 
     def remove_var(self, var_controller):
         self._items.remove(var_controller.data)
+        del self._variable_cache[var_controller.data]
         self.mark_dirty()
         self.notify_variable_removed(var_controller)
 
