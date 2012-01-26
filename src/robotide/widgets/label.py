@@ -14,6 +14,8 @@
 
 import wx
 
+from .font import Font
+
 
 class Label(wx.StaticText):
 
@@ -24,8 +26,15 @@ class Label(wx.StaticText):
         wx.StaticText.SetLabel(self, label.replace('&', '&&'))
 
 
-class HeaderLabel(wx.StaticText):
+class HeaderLabel(Label):
 
-    def __init__(self, parent, text):
-        wx.StaticText.__init__(self, parent, -1, text)
+    def __init__(self, parent, label):
+        Label.__init__(self, parent, label=label)
         self.SetFont(wx.Font(12, wx.SWISS, wx.NORMAL, wx.BOLD))
+
+
+class HelpLabel(Label):
+
+    def __init__(self, parent, label):
+        Label.__init__(self, parent, label=label)
+        self.SetFont(Font().help)

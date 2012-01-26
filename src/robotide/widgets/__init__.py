@@ -18,6 +18,6 @@ from font import Font
 from htmlwindow import HtmlWindow
 from images import ImageList, ImageProvider
 from popupmenu import PopupCreator, PopupMenu, PopupMenuItem, PopupMenuItems
-from label import Label, HeaderLabel
+from label import Label, HeaderLabel, HelpLabel
 from list import VirtualList
 from sizers import VerticalSizer, HorizontalSizer

@@ -18,7 +18,7 @@ from robotide.validators import (ScalarVariableNameValidator,
     ListVariableNameValidator, TimeoutValidator, ArgumentsValidator,
     TestCaseNameValidator, UserKeywordNameValidator)
 from robotide import utils
-from robotide.widgets import Label, Dialog, Font
+from robotide.widgets import HelpLabel, Dialog
 
 from fieldeditors import ValueEditor, ListValueEditor, MultiLineEditor,\
     ContentAssistEditor, VariableNameEditor
@@ -61,9 +61,8 @@ class _Dialog(Dialog):
         self._sizer.Add(line, 0, wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.RIGHT|wx.TOP, 5)
 
     def _create_help(self):
-        text = Label(self, label=get_help(self._title))
-        text.SetFont(Font().help)
-        self._sizer.Add(text, flag=wx.ALL, border=2)
+        self._sizer.Add(HelpLabel(self, label=get_help(self._title)),
+                        flag=wx.ALL, border=2)
 
     def _create_buttons(self):
         buttons = self.CreateStdDialogButtonSizer(wx.OK|wx.CANCEL)
