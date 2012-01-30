@@ -21,3 +21,4 @@ from popupmenu import PopupCreator, PopupMenu, PopupMenuItem, PopupMenuItems
 from label import Label, HeaderLabel, HelpLabel
 from list import VirtualList
 from sizers import VerticalSizer, HorizontalSizer
+from text import TextField
