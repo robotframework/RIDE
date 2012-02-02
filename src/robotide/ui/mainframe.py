@@ -22,6 +22,7 @@ from robotide.widgets import Dialog, ImageProvider, HtmlWindow
 
 from actiontriggers import MenuBar, ToolBar, ShortcutRegistry
 from filedialogs import NewProjectDialog, NewExternalResourceDialog, InitFileFormatDialog
+from review import ReviewDialog
 from pluginmanager import PluginManager
 from tree import Tree
 from notebook import NoteBook
@@ -46,6 +47,7 @@ _menudata = """
 
 [Tools]
 !Manage Plugins
+Review Test Data | Do | | CUSTOM_REPORTIMG
 
 [Help]
 !About | Information about RIDE
@@ -217,6 +219,11 @@ class RideFrame(wx.Frame, RideEventHandler):
 
     def OnManagePlugins(self, event):
         self._plugin_manager.show(self._application.get_plugins())
+
+    def OnReviewTestData(self, event):
+        if not self._check_unsaved_modifications():
+            return
+        ReviewDialog(self._controller, self).show_it()
 
     def OnAbout(self, event):
         dlg = AboutDialog()
