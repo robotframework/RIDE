@@ -36,14 +36,15 @@ from robotide.namespace.embeddedargs import EmbeddedArgsHandler
 
 class Namespace(object):
 
-    def __init__(self):
+    def __init__(self, exclude_directory=None):
+        self._exclude_directory=exclude_directory
         self._init_caches()
         self._content_assist_hooks = []
         self._update_listeners = []
 
     def _init_caches(self):
         self._lib_cache = LibraryCache()
-        self._resource_factory = ResourceFactory()
+        self._resource_factory = ResourceFactory(exclude_directory=self._exclude_directory)
         self._retriever = DatafileRetriever(self._lib_cache, self._resource_factory)
         self._context_factory = _RetrieverContextFactory()
 
