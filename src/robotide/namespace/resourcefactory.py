@@ -20,12 +20,15 @@ from robotide import utils
 
 class ResourceFactory(object):
 
-    def __init__(self):
+    def __init__(self, exclude_directory=None):
         self.cache = {}
         self.python_path_cache = {}
+        self._exclude_directory= exclude_directory and os.path.abspath(exclude_directory)+os.path.sep
 
     def get_resource(self, directory, name):
         path = os.path.join(directory, name) if directory else name
+        if self._exclude_directory and path.startswith(self._exclude_directory):
+            return None
         res = self._get_resource(path)
         if res:
             return res
