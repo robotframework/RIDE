@@ -13,7 +13,7 @@
 #  limitations under the License.
 
 from __future__ import with_statement
-import getopt     # optparse not supported by Jython 2.2
+import getopt     # optparse was not supported by Jython 2.2
 import os
 import re
 import sys
@@ -23,9 +23,9 @@ import codecs
 import textwrap
 
 from robot.errors import DataError, Information, FrameworkError
+from robot.version import get_full_version
 
 from misc import plural_or_not
-from unic import unic
 from encoding import decode_output, decode_from_file_system
 
 
@@ -40,33 +40,27 @@ ESCAPES = dict(
 
 class ArgumentParser:
     _opt_line_re = re.compile('''
-    ^\s{,4}       # max 4 spaces in the beginning of the line
+    ^\s{1,4}      # 1-4 spaces in the beginning of the line
     ((-\S\s)*)    # all possible short options incl. spaces (group 1)
     --(\S{2,})    # required long option (group 3)
     (\s\S+)?      # optional value (group 4)
     (\s\*)?       # optional '*' telling option allowed multiple times (group 5)
     ''', re.VERBOSE)
-    _usage_line_re = re.compile('''
-    ^usage:.*
-    \[options\]\s*
-    (.*?)         # arguments (group 1)
-    \s*$
-    ''', re.VERBOSE | re.IGNORECASE)
 
-    def __init__(self, usage, version=None, arg_limits=None):
+    def __init__(self, usage, name=None, version=None, arg_limits=None,
+                 validator=None):
         """Available options and tool name are read from the usage.
 
         Tool name is got from the first row of the usage. It is either the
         whole row or anything before first ' -- '.
-
-        See for example 'runner.py' and 'rebot.py' for examples.
         """
         if not usage:
             raise FrameworkError('Usage cannot be empty')
+        self.name = name or usage.splitlines()[0].split(' -- ')[0].strip()
+        self.version = version or get_full_version()
         self._usage = usage
-        self._name = usage.splitlines()[0].split(' -- ')[0].strip()
-        self._version = version
-        self._arg_limits = arg_limits
+        self._arg_limit_validator = ArgLimitValidator(arg_limits)
+        self._validator = validator
         self._short_opts = ''
         self._long_opts = []
         self._multi_opts = []
@@ -74,10 +68,9 @@ class ArgumentParser:
         self._names = []
         self._short_to_long = {}
         self._expected_args = ()
-        self._parse_usage(usage)
+        self._create_options(usage)
 
-    def parse_args(self, args_list, unescape=None, argfile=None, pythonpath=None,
-                   help=None, version=None, check_args=False):
+    def parse_args(self, args_list):
         """Parse given arguments and return options and positional arguments.
 
         Arguments must be given as a list and are typically sys.argv[1:].
@@ -92,56 +85,57 @@ class ArgumentParser:
 
         Positional arguments are returned as a list in the order they are given.
 
-        'unescape' option can be used to automatically unescape problematic
-        characters given in an escaped format. Given value must be the name of
-        the long option used for escaping. Typically usage is having
-        '--escape name:value *' in usage doc and specifying 'enescape="escape"'
-        when calling this method.
-
-        'argfile' can be used to automatically read arguments from specified
-        file. Given value must be the name of the long option used for giving
-        the argument file. Typical usage is '--argumentfile path *' in usage doc
-        and calling this method with 'argfile="argumentfile"'. If 'argfile' is
-        used, it can always be given multiple times and thus it is recommended
-        to use '*' to denote that. Special value 'stdin' can be used to read
-        arguments from stdin instead of a file.
-
-        'pythonpath' can be used to specify option(s) containing extra paths to
-        be added into 'sys.path'. Value can be either a string containing the
-        name of the long option used for this purpose or a list containing
-        all such long options (i.e. the latter format allows aliases).
-
-        'help' and 'version' make it possible to automatically generate help
-        and version messages. Version is generated based on the tool name
-        and version -- see __init__ for information how to set them. Help
-        contains the whole usage given to __init__. Possible <VERSION> text
-        in the usage is replaced with the given version. Possible <--ESCAPES-->
-        is replaced with available escapes so that they are wrapped to multiple
-        lines but take the same amount of horizontal space as <---ESCAPES--->.
-        The numer of hyphens can be used to contrl the horizontal space. Both
-        help and version are wrapped to Information exception.
-
         If 'check_args' is True, this method will automatically check that
         correct number of arguments, as parsed from the usage line, are given.
         If the last argument in the usage line ends with the character 's',
         the maximum number of arguments is infinite.
 
         Possible errors in processing arguments are reported using DataError.
+
+        Some options have a special meaning and are handled automatically
+        if defined in the usage and given from the command line:
+
+        --escape option can be used to automatically unescape problematic
+        characters given in an escaped format.
+
+        --argumentfile can be used to automatically read arguments from
+        a specified file. When --argumentfile is used, the parser always
+        allows using it multiple times. Adding '*' to denote that is thus
+        recommend. A special value 'stdin' can be used to read arguments from
+        stdin instead of a file.
+
+        --pythonpath can be used to add extra path(s) to sys.path.
+
+        --help and --version automatically generate help and version messages.
+        Version is generated based on the tool name and version -- see __init__
+        for information how to set them. Help contains the whole usage given to
+        __init__. Possible <VERSION> text in the usage is replaced with the
+        given version. Possible <--ESCAPES--> is replaced with available
+        escapes so that they are wrapped to multiple lines but take the same
+        amount of horizontal space as <---ESCAPES--->. Both help and version
+        are wrapped to Information exception.
         """
         args_list = [decode_from_file_system(a) for a in args_list]
-        if argfile:
-            args_list = self._add_args_from_file(args_list, argfile)
+        args_list = self._process_possible_argfile(args_list)
         opts, args = self._parse_args(args_list)
-        if unescape:
-            opts, args = self._unescape_opts_and_args(opts, args, unescape)
-        if help and opts[help]:
+        opts, args = self._handle_special_options(opts, args)
+        self._arg_limit_validator(args)
+        if self._validator:
+            opts, args = self._validator(opts, args)
+        return opts, args
+
+    def _handle_special_options(self, opts, args):
+        if opts.get('escape'):
+            opts, args = self._unescape_opts_and_args(opts, args)
+        if opts.get('help'):
             self._raise_help()
-        if version and opts[version]:
+        if opts.get('version'):
             self._raise_version()
-        if pythonpath:
-            sys.path = self._get_pythonpath(opts[pythonpath]) + sys.path
-        if check_args:
-            self._check_args(args)
+        if opts.get('pythonpath'):
+            sys.path = self._get_pythonpath(opts['pythonpath']) + sys.path
+        for opt in ['escape', 'help', 'version', 'pythonpath', 'argumentfile']:
+            if opt in opts:
+                opts.pop(opt)
         return opts, args
 
     def _parse_args(self, args):
@@ -160,36 +154,21 @@ class ArgumentParser:
         opt, value = opt.split('=', 1)
         return '%s=%s' % (opt.lower(), value)
 
-    def _check_args(self, args):
-        if not self._arg_limits:
-            raise FrameworkError('No argument information specified.')
-        minargs, maxargs = self._arg_limits
-        if minargs <= len(args) <= maxargs:
-            return
-        minend = plural_or_not(minargs)
-        if minargs == maxargs:
-            exptxt = "%d argument%s" % (minargs, minend)
-        elif maxargs != sys.maxint:
-            exptxt = "%d to %d arguments" % (minargs, maxargs)
-        else:
-            exptxt = "at least %d argument%s" % (minargs, minend)
-        raise DataError("Expected %s, got %d." % (exptxt, len(args)))
-
-    def _unescape_opts_and_args(self, opts, args, escape_opt):
+    def _unescape_opts_and_args(self, opts, args):
         try:
-            escape_strings = opts[escape_opt]
+            escape_strings = opts['escape']
         except KeyError:
-            raise FrameworkError("No escape option '%s' in given options")
+            raise FrameworkError("No 'escape' in options")
         escapes = self._get_escapes(escape_strings)
         for name, value in opts.items():
-            if name != escape_opt:
+            if name != 'escape':
                 opts[name] = self._unescape(value, escapes)
         return opts, [self._unescape(arg, escapes) for arg in args]
 
-    def _add_args_from_file(self, args, argfile_opt):
-        argfile_opts = ['--'+argfile_opt]
+    def _process_possible_argfile(self, args):
+        argfile_opts = ['--argumentfile']
         for sopt, lopt in self._short_to_long.items():
-            if lopt == argfile_opt:
+            if lopt == 'argumentfile':
                 argfile_opts.append('-'+sopt)
         while True:
             try:
@@ -298,46 +277,32 @@ class ArgumentParser:
         except KeyError:
             return name
 
-    def _parse_usage(self, usage):
+    def _create_options(self, usage):
         for line in usage.splitlines():
-            if not self._parse_opt_line(line) and not self._arg_limits:
-                self._parse_usage_line(line)
+            res = self._opt_line_re.match(line)
+            if res:
+                self._create_option(short_opts=[o[1] for o in res.group(1).split()],
+                                    long_opt=res.group(3).lower(),
+                                    takes_arg=bool(res.group(4)),
+                                    is_multi=bool(res.group(5)))
 
-    def _parse_usage_line(self, line):
-        res = self._usage_line_re.match(line)
-        if res:
-            args = res.group(1).split()
-            if not args:
-                self._arg_limits = (0, 0)
-            else:
-                maxargs = args[-1].endswith('s') and sys.maxint or len(args)
-                self._arg_limits = (len(args), maxargs)
-
-    def _parse_opt_line(self, line):
-        res = self._opt_line_re.match(line)
-        if not res:
-            return False
-        long_opt = res.group(3).lower()
+    def _create_option(self, short_opts, long_opt, takes_arg, is_multi):
         if long_opt in self._names:
             self._raise_option_multiple_times_in_usage('--' + long_opt)
         self._names.append(long_opt)
-        short_opts = [ opt[1] for opt in res.group(1).split() ]
         for sopt in short_opts:
             if self._short_to_long.has_key(sopt):
                 self._raise_option_multiple_times_in_usage('-' + sopt)
             self._short_to_long[sopt] = long_opt
-        # options allowed multiple times
-        if res.group(5):
+        if is_multi:
             self._multi_opts.append(long_opt)
-        # options with arguments
-        if res.group(4):
+        if takes_arg:
             long_opt += '='
-            short_opts = [ sopt + ':' for sopt in short_opts ]
+            short_opts = [sopt+':' for sopt in short_opts]
         else:
             self._toggle_opts.append(long_opt)
         self._long_opts.append(long_opt)
         self._short_opts += (''.join(short_opts))
-        return True
 
     def _get_pythonpath(self, paths):
         if isinstance(paths, basestring):
@@ -378,8 +343,8 @@ class ArgumentParser:
 
     def _raise_help(self):
         msg = self._usage
-        if self._version:
-            msg = msg.replace('<VERSION>', self._version)
+        if self.version:
+            msg = msg.replace('<VERSION>', self.version)
         def replace_escapes(res):
             escapes = 'Available escapes: ' + self._get_available_escapes()
             lines = textwrap.wrap(escapes, width=len(res.group(2)))
@@ -389,9 +354,36 @@ class ArgumentParser:
         raise Information(msg)
 
     def _raise_version(self):
-        if not self._version:
-            raise FrameworkError('Version not set')
-        raise Information('%s %s' % (self._name, self._version))
+        raise Information('%s %s' % (self.name, self.version))
 
     def _raise_option_multiple_times_in_usage(self, opt):
         raise FrameworkError("Option '%s' multiple times in usage" % opt)
+
+
+class ArgLimitValidator(object):
+
+    def __init__(self, arg_limits):
+        self._min_args, self._max_args = self._parse_arg_limits(arg_limits)
+
+    def _parse_arg_limits(self, arg_limits):
+        if arg_limits is None:
+            return 0, sys.maxint
+        if isinstance(arg_limits, int):
+            return arg_limits, arg_limits
+        if len(arg_limits) == 1:
+            return arg_limits[0], sys.maxint
+        return arg_limits[0], arg_limits[1]
+
+    def __call__(self, args):
+        if not (self._min_args <= len(args) <= self._max_args):
+            self._raise_invalid_args(self._min_args, self._max_args, len(args))
+
+    def _raise_invalid_args(self, min_args, max_args, arg_count):
+        min_end = plural_or_not(min_args)
+        if min_args == max_args:
+            expectation = "%d argument%s" % (min_args, min_end)
+        elif max_args != sys.maxint:
+            expectation = "%d to %d arguments" % (min_args, max_args)
+        else:
+            expectation = "at least %d argument%s" % (min_args, min_end)
+        raise DataError("Expected %s, got %d." % (expectation, arg_count))

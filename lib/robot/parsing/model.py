@@ -19,7 +19,7 @@ from robot.errors import DataError
 from robot.variables import is_var
 from robot.output import LOGGER
 from robot import utils
-from robot.writer.serializer import Serializer
+from robot.writer import DataFileWriter
 
 from settings import (Documentation, Fixture, Timeout, Tags, Metadata,
     Library, Resource, Variables, Arguments, Return, Template, Comment)
@@ -94,16 +94,15 @@ class _TestData(object):
                      % (path, table, message), level)
 
     def save(self, **options):
-        """Serializes this datafile.
+        """Writes this datafile to disk.
 
-        :param options: Configuration for serialization. These arguments are
-            passed to
-            :py:class:`~robot.writer.serializer.SerializationContext` as
+        :param options: Configuration for writing. These are passed to
+            :py:class:`~robot.writer.datafilewriter.WriteConfiguration` as
             keyword arguments.
 
-        See also :py:meth:`robot.writer.serializer.Serializer.serialize`
+        See also :py:meth:`robot.writer.datafilewriter.DataFileWriter.write`
         """
-        return Serializer().serialize(self, **options)
+        return DataFileWriter(**options).write(self)
 
 
 class TestCaseFile(_TestData):
@@ -187,9 +186,9 @@ class TestDataDirectory(_TestData):
         self.keyword_table = KeywordTable(self)
         _TestData.__init__(self, parent, source)
 
-    def populate(self, include_suites=[], warn_on_skipped=False):
+    def populate(self, include_suites=[], warn_on_skipped=False, recurse=True):
         FromDirectoryPopulator().populate(self.source, self, include_suites,
-                                          warn_on_skipped)
+                                          warn_on_skipped, recurse)
         self.children = [ch for ch in self.children if ch.has_tests()]
         return self
 
@@ -249,6 +248,9 @@ class _Table(object):
 
     def report_invalid_syntax(self, message, level='ERROR'):
         self.parent.report_invalid_syntax(self.name, message, level)
+
+    def __len__(self):
+        return sum(1 for item in self)
 
 
 class _WithSettings(object):
@@ -310,8 +312,8 @@ class _SettingTable(_Table, _WithSettings):
         self.imports.append(Variables(self, name, args, comment=comment))
         return self.imports[-1]
 
-    def __nonzero__(self):
-        return any(setting.is_set() for setting in self)
+    def __len__(self):
+        return sum(1 for setting in self if setting.is_set())
 
 
 class TestCaseFileSettingTable(_SettingTable):
@@ -368,6 +370,7 @@ class InitFileSettingTable(_SettingTable):
                 'testprecondition': lambda s: s.test_setup.populate,
                 'testteardown': lambda s: s.test_teardown.populate,
                 'testpostcondition': lambda s: s.test_teardown.populate,
+                'testtimeout': lambda s: s.test_timeout.populate,
                 'forcetags': lambda s: s.force_tags.populate,
                 'library': lambda s: s._get_adder(s.add_library),
                 'resource': lambda s: s._get_adder(s.add_resource),
@@ -376,8 +379,8 @@ class InitFileSettingTable(_SettingTable):
 
     def __iter__(self):
         for setting in [self.doc, self.suite_setup, self.suite_teardown,
-                        self.test_setup, self.test_teardown, self.force_tags] \
-                        + self.metadata + self.imports:
+                        self.test_setup, self.test_teardown, self.force_tags,
+                        self.test_timeout] + self.metadata + self.imports:
             yield setting
 
 
@@ -398,9 +401,6 @@ class VariableTable(_Table):
     def __iter__(self):
         return iter(self.variables)
 
-    def __nonzero__(self):
-        return bool(self.variables)
-
 
 class TestCaseTable(_Table):
     type = 'test case'
@@ -419,9 +419,6 @@ class TestCaseTable(_Table):
 
     def __iter__(self):
         return iter(self.tests)
-
-    def __nonzero__(self):
-        return bool(self.tests)
 
     def is_started(self):
         return bool(self._header)
@@ -444,9 +441,6 @@ class KeywordTable(_Table):
 
     def __iter__(self):
         return iter(self.keywords)
-
-    def __nonzero__(self):
-        return bool(self.keywords)
 
 
 class Variable(object):
