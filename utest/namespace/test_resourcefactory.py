@@ -36,6 +36,11 @@ class ResourceFactoryDirectoryIgnoreTestCase(unittest.TestCase):
         imp = _Import(None, os.path.join(os.path.dirname(__file__)+'2', 'foo'))
         self.assertNotEqual(None, r.get_resource_from_import(imp, self._context))
 
+    def test_resourcefactory_ignores_imported_resource_when_relative_import(self):
+        r = _ResourceFactory(exclude_directory=os.path.abspath('.'))
+        imp = _Import(None, os.path.join('.', 'foo'))
+        self.assertEqual(None, r.get_resource_from_import(imp, self._context))
+
     def _mock_context(self):
         context = lambda:0
         context.vars = context

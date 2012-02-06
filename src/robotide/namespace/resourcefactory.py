@@ -23,10 +23,13 @@ class ResourceFactory(object):
     def __init__(self, exclude_directory=None):
         self.cache = {}
         self.python_path_cache = {}
-        self._exclude_directory= exclude_directory and os.path.abspath(exclude_directory)+os.path.sep
+        self._exclude_directory = exclude_directory and self._with_separator(exclude_directory)
+
+    def _with_separator(self, dir):
+        return os.path.abspath(dir)+os.path.sep
 
     def get_resource(self, directory, name):
-        path = os.path.join(directory, name) if directory else name
+        path = self._build_path(directory, name)
         if self._exclude_directory and path.startswith(self._exclude_directory):
             return None
         res = self._get_resource(path)
@@ -36,6 +39,10 @@ class ResourceFactory(object):
         if path_from_pythonpath:
             return self._get_resource(path_from_pythonpath)
         return None
+
+    def _build_path(self, directory, name):
+        path = os.path.join(directory, name) if directory else name
+        return os.path.abspath(path)
 
     def get_resource_from_import(self, import_, retriever_context):
         resolved_name = retriever_context.vars.replace_variables(import_.name)
