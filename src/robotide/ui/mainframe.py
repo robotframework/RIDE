@@ -223,7 +223,7 @@ class RideFrame(wx.Frame, RideEventHandler):
     def OnReviewTestData(self, event):
         if not self._check_unsaved_modifications():
             return
-        ReviewDialog(self._controller, self).show_it()
+        ReviewDialog(self._controller, self).show_dialog()
 
     def OnAbout(self, event):
         dlg = AboutDialog()

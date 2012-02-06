@@ -17,91 +17,187 @@ from robotide.widgets import ButtonWithHandler, Label
 from robotide.spec.iteminfo import LibraryKeywordInfo
 from robotide.usages.commands import FindUsages
 from robotide.controller.filecontrollers import DirectoryController
+from threading import Thread
 
 class ReviewDialog(wx.Frame):
 
-    headers = ['col1', 'col2', 'col3']
-    _filter_strings = []
-
     def __init__(self, controller, parent):
         wx.Frame.__init__(self, parent, title="Review Test Data", style=wx.DEFAULT_FRAME_STYLE|wx.FRAME_FLOAT_ON_PARENT)
-        self._controller = controller
+        self.index = 0
+        self._runner = ReviewRunner(controller, self)
         self._build_ui()
+        self._make_bindings()
+        self._set_default_values()
         self.CenterOnParent()
 
     def _build_ui(self):
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
         
         self._filter_input = wx.TextCtrl(self)
-        self._filter_test_button = ButtonWithHandler(self, 'Show used files')
+        self._filter_mode = wx.RadioBox(self, label="Mode", choices=["exclude", "include"])
+        self._filter_bool = wx.RadioBox(self, label="Bool", choices=["AND", "OR"])
+        self._filter_test_button = ButtonWithHandler(self, 'Show files to be searched')
+        
         line1 = wx.BoxSizer(wx.HORIZONTAL)
-        line1.Add(Label(self, label='Exclusion filter: '), 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 3)
+        line1.Add(Label(self, label='Filter: '), 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 3)
         line1.Add(self._filter_input, 1, wx.ALL|wx.EXPAND, 3)
-        line1.Add(self._filter_test_button, 0, wx.ALL, 3)
-        line2 = wx.BoxSizer(wx.HORIZONTAL)
-        line2.Add(wx.StaticText(self, label='To skip specific files during the search, you can define comma-separated character sequences that must not be part of the searched files\' name (e.g. common,abc,123)', size=(-1, 40)), 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL|wx.EXPAND, 3)
         self.Sizer.Add(line1, 0, wx.ALL|wx.EXPAND, 3)
+        
+        line2 = wx.BoxSizer(wx.HORIZONTAL)
+        line2.Add(wx.StaticText(self, label='Here you can define comma-separated character sequences that must (not) be part of the files\' name (e.g. common,abc,123)', size=(-1, 40)), 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL|wx.EXPAND, 3)
         self.Sizer.Add(line2, 0, wx.ALL|wx.EXPAND, 3)
         
-#        style = wx.LC_REPORT|wx.NO_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VIRTUAL
-        style = wx.LB_MULTIPLE
-        self._list = wx.ListBox(self, style=style)
-#        for col, title in enumerate(self.headers):
-#            self._list.InsertColumn(col, title)
-#        self._list.SetColumnWidth(0, 250)
+        line3 = wx.BoxSizer(wx.HORIZONTAL)
+        line3left = wx.BoxSizer(wx.HORIZONTAL)
+        line3right = wx.BoxSizer(wx.HORIZONTAL)
+        line3left.Add(self._filter_mode, 0, wx.ALL, 3)
+        line3left.Add(self._filter_bool, 0, wx.ALL, 3)
+        line3right.Add(self._filter_test_button, 0, wx.ALL|wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT, 3)
+        line3.Add(line3left, 0, wx.ALL, 3)
+        line3.AddStretchSpacer(1)
+        line3.Add(line3right, 0, wx.ALL|wx.EXPAND, 3)
+        self.Sizer.Add(line3, 0, wx.ALL|wx.EXPAND, 3)
+        
+        self._list = wx.ListCtrl(self, style=wx.LC_REPORT)
+        self._list.InsertColumn(0, "Keyword", width=250)
+        self._list.InsertColumn(1, "File", width=250)
         self.Sizer.Add(self._list, 1, wx.ALL|wx.EXPAND | wx.ALL, 3)
         
+        line4 = wx.BoxSizer(wx.HORIZONTAL)
         self._search_button = ButtonWithHandler(self, 'Search')
-        self.Sizer.Add(self._search_button, 0, wx.ALL, 3)
+        self._abort_button = ButtonWithHandler(self, 'Abort')
+        self._abort_button.Disable()
+        line4.Add(self._search_button, 0, wx.ALL, 3)
+        line4.Add(self._abort_button, 0, wx.ALL, 3)
+        self.Sizer.Add(line4, 0, wx.ALL, 3)
         
         self.SetSize((700,500))
 
-    def OnSearch(self, event):
-        self._search_button.Disable()
-        self._filter_test_button.Disable()
-        resultlist = self._get_unused_keywords()
-        self._list.InsertItems(resultlist, 0)
-        self._search_button.Enable()
-        self._filter_test_button.Enable()
+    def _make_bindings(self):
+        self.Bind(wx.EVT_TEXT, self._update_filter, self._filter_input)
+        self.Bind(wx.EVT_RADIOBOX, self._update_filter_mode, self._filter_mode)
+        self.Bind(wx.EVT_RADIOBOX, self._update_filter_bool, self._filter_bool)
 
-    def OnShowusedfiles(self, event):
-        message = "Keywords of the following files will be included in the search:" + "\n".join([df.name for df in self._get_datafile_list()])
+    def _set_default_values(self):
+        self._filter_mode.SetSelection(0)
+        self._runner.set_filter_mode(True)
+        self._filter_bool.SetSelection(1)
+        self._runner.set_filter_bool(False)
+
+    def _update_filter(self, event):
+        self._runner._parse_filter_string(self._filter_input.GetValue())
+
+    def _update_filter_mode(self, event):
+        self._runner.set_filter_mode(event.GetInt() == 0)
+
+    def _update_filter_bool(self, event):
+        self._runner.set_filter_bool(event.GetInt() == 0)
+
+    def OnSearch(self, event):
+        self._runner._search_unused_keywords()
+
+    def OnAbort(self, event):
+        self._runner.request_stop()
+
+    def OnShowfilestobesearched(self, event):
+        message = "Keywords of the following files will be included in the search:\n\n" + "\n".join([df.name for df in self._runner._get_datafile_list()])
         wx.MessageDialog(self, message=message, caption="Included files", style=wx.OK).ShowModal()
 
+    def show_dialog(self):
+        if not self.IsShown():
+            self.Show()
+        self.Raise()
+
+    def begin_searching(self):
+        self._abort_button.Enable()
+        self._search_button.Disable()
+        self._filter_input.Disable()
+        self._filter_test_button.Disable()
+        self._list.DeleteAllItems()
+
+    def add_result(self, keyword_info):
+        self._list.InsertStringItem(self.index, keyword_info.name)
+        self._list.SetStringItem(self.index, 1, keyword_info.item.source.rsplit('/', 1)[1])
+        self.index += 1
+
+    def end_searching(self):
+        self._abort_button.Disable()
+        self._filter_input.Enable()
+        self._filter_test_button.Enable()
+        self._search_button.Enable()
+
+    def send_radiobox_event(self, mycontrol):
+        cmd = wx.CommandEvent(wx.EVT_RADIOBOX.evtType[0])
+        cmd.SetEventObject(mycontrol)
+        cmd.SetId(mycontrol.GetId())
+        mycontrol.GetEventHandler().ProcessEvent(cmd)
+
+class ReviewRunner():
+
+    def __init__(self, controller, dialog):
+        self._controller = controller
+        self._dlg = dialog
+        self._filter_strings = []
+        self._filter_excludes = True
+        self._filter_uses_and = True
+        self._results_unused_keywords = []
+
+    def set_filter_mode(self, exclude):
+        self._filter_excludes = exclude
+
+    def set_filter_bool(self, value):
+        self._filter_uses_and = value
+
     def _get_datafile_list(self):
-        self._parse_filter_string()
-        return [df for df in self._controller.datafiles if self._include_file(df)]
+        list = [df for df in self._controller.datafiles if self._include_file(df)]
+        return list
 
     def _include_file(self, datafile):
         if isinstance(datafile, DirectoryController):
             return False
+        if len(self._filter_strings) == 0:
+            return True
+        results = []
         for string in self._filter_strings:
             if string == '':
                 continue
-            if string in datafile.name:
-                return False
-        return True
+            results.append(string in datafile.name)
+        
+        if self._filter_excludes and self._filter_uses_and:
+            overall_result = False in results
+        elif self._filter_excludes and not self._filter_uses_and:
+            overall_result = True not in results
+        elif not self._filter_excludes and self._filter_uses_and:
+            overall_result = False not in results
+        elif not self._filter_excludes and not self._filter_uses_and:
+            overall_result = True in results
+        
+        return overall_result
 
-    def _parse_filter_string(self):
-        self._filter_strings = self._filter_input.GetValue().split(',')
-        print "Filterstring: ", self._filter_strings
+    def _parse_filter_string(self, filter_string):
+        self._filter_strings = filter_string.split(',')
 
-    def _get_unused_keywords(self):
-        resultlist = []
-        namespace = self._controller._namespace
-        for keyword_info in namespace.get_all_keywords([df.data for df in self._get_datafile_list()]):
-            if not isinstance(keyword_info, LibraryKeywordInfo) and keyword_info.name:
-                try:
-                    self._controller.execute(FindUsages(keyword_info.name, keyword_info=keyword_info)).next()
-                except StopIteration:
-#                    print 'Source: %s Keyword: "%s"' % (keyword_info.item.source, keyword_info.name)
-                    resultlist.append("%s - %s" % (keyword_info.item.source.rsplit('/', 1)[1], keyword_info.name))
-        return resultlist
+    def _search_unused_keywords(self):
+        worker = Thread(target=self._run)
+        worker.start()
 
-    def show_it(self):
-        self._show()
+    def _run(self):
+        self._stop_requested = False
+        self._dlg.begin_searching()
+        for df in self._get_datafile_list():
+            for keyword in df.keywords:
+                keyword_info = keyword.info
+                print "Checking", keyword_info.name
+                if self._stop_requested  == True:
+                    break
+                if not isinstance(keyword_info, LibraryKeywordInfo) and keyword_info.name:
+                    try:
+                        self._controller.execute(FindUsages(keyword_info.name, keyword_info=keyword_info)).next()
+                    except StopIteration:
+                        self._dlg.add_result(keyword_info)
+            if self._stop_requested == True:
+                break
+        self._dlg.end_searching()
 
-    def _show(self):
-        if not self.IsShown():
-            self.Show()
-        self.Raise()
+    def request_stop(self):
+        self._stop_requested = True
