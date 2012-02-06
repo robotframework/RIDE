@@ -16,6 +16,7 @@ import os
 from robot.parsing.model import ResourceFile
 
 from robotide import utils
+from robotide.context import SETTINGS
 
 
 class ResourceFactory(object):
@@ -23,6 +24,7 @@ class ResourceFactory(object):
     def __init__(self, exclude_directory=None):
         self.cache = {}
         self.python_path_cache = {}
+        exclude_directory = exclude_directory or SETTINGS.get('exclude resources directory', None)
         self._exclude_directory = exclude_directory and self._with_separator(exclude_directory)
 
     def _with_separator(self, dir):

@@ -35,7 +35,7 @@ class RIDE(wx.App):
         wx.App.__init__(self, redirect=False)
 
     def OnInit(self):
-        self.namespace = Namespace(context.SETTINGS.get('Exclude resources directory', None))
+        self.namespace = Namespace()
         self._controller = ChiefController(self.namespace)
         self.frame = RideFrame(self, self._controller)
         self._editor_provider = EditorProvider()
