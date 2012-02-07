@@ -64,6 +64,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         self._controller = controller
         self._init_ui()
         self._plugin_manager = PluginManager(self.notebook)
+        self._review_dialog = None
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         self._subscribe_messages()
         self.ensure_on_screen()
@@ -223,7 +224,9 @@ class RideFrame(wx.Frame, RideEventHandler):
     def OnReviewTestData(self, event):
         if not self._check_unsaved_modifications():
             return
-        ReviewDialog(self._controller, self).show_dialog()
+        if self._review_dialog == None:
+            self._review_dialog = ReviewDialog(self._controller, self)
+        self._review_dialog.show_dialog()
 
     def OnAbout(self, event):
         dlg = AboutDialog()

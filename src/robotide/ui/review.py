@@ -31,49 +31,47 @@ class ReviewDialog(wx.Frame):
         self.CenterOnParent()
 
     def _build_ui(self):
+        
+        # General
+        self.SetSize((700,500))
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
         
-        self._filter_input = wx.TextCtrl(self)
+        # Filter
+        self._filter_box = wx.StaticBox(self, label="Filter")
+        self._filter_input = wx.TextCtrl(self, size=(-1, 20))
+        self._filter_info = wx.StaticText(self, label='Here you can define comma-separated character sequences that must (not) be part of the files\' name (e.g. common,abc,123)', size=(-1, 40))
         self._filter_mode = wx.RadioBox(self, label="Mode", choices=["exclude", "include"])
         self._filter_bool = wx.RadioBox(self, label="Bool", choices=["AND", "OR"])
         self._filter_test_button = ButtonWithHandler(self, 'Show files to be searched')
+        filter_box_sizer = wx.StaticBoxSizer(self._filter_box, wx.VERTICAL)
+        filter_box_sizer.Add(self._filter_input, 0, wx.ALL|wx.EXPAND, 3)
+        filter_box_sizer.Add(self._filter_info, 0, wx.ALL|wx.EXPAND, 3)
+        filter_options = wx.BoxSizer(wx.HORIZONTAL)
+        filter_options.Add(self._filter_mode, 0, wx.ALL, 3)
+        filter_options.Add(self._filter_bool, 0, wx.ALL, 3)
+        filter_options.AddStretchSpacer(1)
+        filter_options.Add(self._filter_test_button, 0, wx.ALL|wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT, 3)
+        filter_box_sizer.Add(filter_options, 0, wx.ALL|wx.EXPAND, 3)
+        self.Sizer.Add(filter_box_sizer, 0, wx.ALL|wx.EXPAND, 3)
         
-        line1 = wx.BoxSizer(wx.HORIZONTAL)
-        line1.Add(Label(self, label='Filter: '), 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 3)
-        line1.Add(self._filter_input, 1, wx.ALL|wx.EXPAND, 3)
-        self.Sizer.Add(line1, 0, wx.ALL|wx.EXPAND, 3)
-        
-        line2 = wx.BoxSizer(wx.HORIZONTAL)
-        line2.Add(wx.StaticText(self, label='Here you can define comma-separated character sequences that must (not) be part of the files\' name (e.g. common,abc,123)', size=(-1, 40)), 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL|wx.EXPAND, 3)
-        self.Sizer.Add(line2, 0, wx.ALL|wx.EXPAND, 3)
-        
-        line3 = wx.BoxSizer(wx.HORIZONTAL)
-        line3left = wx.BoxSizer(wx.HORIZONTAL)
-        line3right = wx.BoxSizer(wx.HORIZONTAL)
-        line3left.Add(self._filter_mode, 0, wx.ALL, 3)
-        line3left.Add(self._filter_bool, 0, wx.ALL, 3)
-        line3right.Add(self._filter_test_button, 0, wx.ALL|wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT, 3)
-        line3.Add(line3left, 0, wx.ALL, 3)
-        line3.AddStretchSpacer(1)
-        line3.Add(line3right, 0, wx.ALL|wx.EXPAND, 3)
-        self.Sizer.Add(line3, 0, wx.ALL|wx.EXPAND, 3)
-        
+        # Unused Keywords
         self._list = wx.ListCtrl(self, style=wx.LC_REPORT)
         self._list.InsertColumn(0, "Keyword", width=250)
         self._list.InsertColumn(1, "File", width=250)
         self.Sizer.Add(self._list, 1, wx.ALL|wx.EXPAND | wx.ALL, 3)
         
-        line4 = wx.BoxSizer(wx.HORIZONTAL)
+        # Controls
         self._search_button = ButtonWithHandler(self, 'Search')
         self._abort_button = ButtonWithHandler(self, 'Abort')
-        self._abort_button.Disable()
-        line4.Add(self._search_button, 0, wx.ALL, 3)
-        line4.Add(self._abort_button, 0, wx.ALL, 3)
-        self.Sizer.Add(line4, 0, wx.ALL, 3)
-        
-        self.SetSize((700,500))
+        self._status_label = Label(self, label='')
+        controls = wx.BoxSizer(wx.HORIZONTAL)
+        controls.Add(self._search_button, 0, wx.ALL, 3)
+        controls.Add(self._abort_button, 0, wx.ALL, 3)
+        controls.Add(self._status_label, 1, wx.ALL|wx.EXPAND, 3)
+        self.Sizer.Add(controls, 0, wx.ALL, 3)
 
     def _make_bindings(self):
+        self.Bind(wx.EVT_CLOSE, self._close_dialog)
         self.Bind(wx.EVT_TEXT, self._update_filter, self._filter_input)
         self.Bind(wx.EVT_RADIOBOX, self._update_filter_mode, self._filter_mode)
         self.Bind(wx.EVT_RADIOBOX, self._update_filter_bool, self._filter_bool)
@@ -83,6 +81,7 @@ class ReviewDialog(wx.Frame):
         self._runner.set_filter_mode(True)
         self._filter_bool.SetSelection(1)
         self._runner.set_filter_bool(False)
+        self._abort_button.Disable()
 
     def _update_filter(self, event):
         self._runner._parse_filter_string(self._filter_input.GetValue())
@@ -108,6 +107,12 @@ class ReviewDialog(wx.Frame):
             self.Show()
         self.Raise()
 
+    def _close_dialog(self, event):
+        if event.CanVeto():
+            self.Hide()
+        else:
+            self.Destroy()
+
     def begin_searching(self):
         self._abort_button.Enable()
         self._search_button.Disable()
@@ -120,7 +125,11 @@ class ReviewDialog(wx.Frame):
         self._list.SetStringItem(self.index, 1, keyword_info.item.source.rsplit('/', 1)[1])
         self.index += 1
 
+    def update_status(self, message, increase=1):
+        self._status_label.SetLabel(message)
+
     def end_searching(self):
+        self.update_status("")
         self._abort_button.Disable()
         self._filter_input.Enable()
         self._filter_test_button.Enable()
@@ -187,7 +196,7 @@ class ReviewRunner():
         for df in self._get_datafile_list():
             for keyword in df.keywords:
                 keyword_info = keyword.info
-                print "Checking", keyword_info.name
+                self._dlg.update_status("Checking %s" % keyword_info.name)
                 if self._stop_requested  == True:
                     break
                 if not isinstance(keyword_info, LibraryKeywordInfo) and keyword_info.name:
