@@ -13,6 +13,8 @@
 #  limitations under the License.
 
 import wx
+import wx.lib.mixins.listctrl as listmix
+import time
 from robotide.widgets import ButtonWithHandler, Label
 from robotide.spec.iteminfo import LibraryKeywordInfo
 from robotide.usages.commands import FindUsages
@@ -55,20 +57,24 @@ class ReviewDialog(wx.Frame):
         self.Sizer.Add(filter_box_sizer, 0, wx.ALL|wx.EXPAND, 3)
         
         # Unused Keywords
-        self._list = wx.ListCtrl(self, style=wx.LC_REPORT)
-        self._list.InsertColumn(0, "Keyword", width=250)
-        self._list.InsertColumn(1, "File", width=250)
-        self.Sizer.Add(self._list, 1, wx.ALL|wx.EXPAND | wx.ALL, 3)
+        self._unused_kw_list = ResultListCtrl(self, style=wx.LC_REPORT)
+        self._unused_kw_list.InsertColumn(0, "Keyword", width=400)
+        self._unused_kw_list.InsertColumn(1, "File", width=300)
+        self._status_label = Label(self, label='')
+        self._delete_button = ButtonWithHandler(self, 'Delete marked keywords')
+        self.Sizer.Add(self._unused_kw_list, 1, wx.ALL|wx.EXPAND | wx.ALL, 3)
+        unused_kw_controls = wx.BoxSizer(wx.HORIZONTAL)
+        unused_kw_controls.Add(self._status_label, 1, wx.ALL|wx.EXPAND, 3)
+        unused_kw_controls.Add(self._delete_button, 0, wx.ALL|wx.ALIGN_RIGHT, 3)
+        self.Sizer.Add(unused_kw_controls, 0, wx.ALL|wx.EXPAND, 3)
         
         # Controls
         self._search_button = ButtonWithHandler(self, 'Search')
         self._abort_button = ButtonWithHandler(self, 'Abort')
-        self._status_label = Label(self, label='')
         controls = wx.BoxSizer(wx.HORIZONTAL)
         controls.Add(self._search_button, 0, wx.ALL, 3)
         controls.Add(self._abort_button, 0, wx.ALL, 3)
-        controls.Add(self._status_label, 1, wx.ALL|wx.EXPAND, 3)
-        self.Sizer.Add(controls, 0, wx.ALL, 3)
+        self.Sizer.Add(controls, 0, wx.ALL|wx.EXPAND, 3)
 
     def _make_bindings(self):
         self.Bind(wx.EVT_CLOSE, self._close_dialog)
@@ -82,6 +88,7 @@ class ReviewDialog(wx.Frame):
         self._filter_bool.SetSelection(1)
         self._runner.set_filter_bool(False)
         self._abort_button.Disable()
+        self._delete_button.Disable()
 
     def _update_filter(self, event):
         self._runner._parse_filter_string(self._filter_input.GetValue())
@@ -98,9 +105,30 @@ class ReviewDialog(wx.Frame):
     def OnAbort(self, event):
         self._runner.request_stop()
 
+    def OnDeletemarkedkeywords(self, event):
+        item = self._unused_kw_list.get_next_checked_item()
+        while(item):
+            index = item[0]
+            kw = item[1]
+            listitem = item[2]
+            item_id = listitem.GetData()
+            print "Deleting", kw.name
+            print "ID", item_id
+            print "Removing index",index
+            self._unused_kw_list.DeleteItem(index)
+            self._unused_kw_list.RemoveClientData(item_id)
+            kw.delete()
+            item = self._unused_kw_list.get_next_checked_item()
+
     def OnShowfilestobesearched(self, event):
         message = "Keywords of the following files will be included in the search:\n\n" + "\n".join([df.name for df in self._runner._get_datafile_list()])
         wx.MessageDialog(self, message=message, caption="Included files", style=wx.OK).ShowModal()
+
+    def item_in_kw_list_checked(self):
+        if self._unused_kw_list.get_number_of_checked_items() > 0:
+            self._delete_button.Enable()
+        else:
+            self._delete_button.Disable()
 
     def show_dialog(self):
         if not self.IsShown():
@@ -118,11 +146,16 @@ class ReviewDialog(wx.Frame):
         self._search_button.Disable()
         self._filter_input.Disable()
         self._filter_test_button.Disable()
-        self._list.DeleteAllItems()
+        self._unused_kw_list.ClearAll()
+        self.index = 0
 
-    def add_result(self, keyword_info):
-        self._list.InsertStringItem(self.index, keyword_info.name)
-        self._list.SetStringItem(self.index, 1, keyword_info.item.source.rsplit('/', 1)[1])
+    def add_result(self, keyword):
+        keyword_info = keyword.info
+        self._unused_kw_list.InsertStringItem(self.index, keyword_info.name)
+        filename = keyword_info.item.source.rsplit('/', 1)[1]
+        self._unused_kw_list.SetStringItem(self.index, 1, filename)
+        self._unused_kw_list.SetItemData(self.index, self.index)
+        self._unused_kw_list.SetClientData(self.index, keyword)
         self.index += 1
 
     def update_status(self, message, increase=1):
@@ -140,6 +173,7 @@ class ReviewDialog(wx.Frame):
         cmd.SetEventObject(mycontrol)
         cmd.SetId(mycontrol.GetId())
         mycontrol.GetEventHandler().ProcessEvent(cmd)
+
 
 class ReviewRunner():
 
@@ -192,21 +226,65 @@ class ReviewRunner():
 
     def _run(self):
         self._stop_requested = False
-        self._dlg.begin_searching()
+        wx.CallAfter(self._dlg.begin_searching)
         for df in self._get_datafile_list():
+            libname = df.source.rsplit('/', 1)[1].rsplit('.', 1)[0]
             for keyword in df.keywords:
-                keyword_info = keyword.info
-                self._dlg.update_status("Checking %s" % keyword_info.name)
-                if self._stop_requested  == True:
+                time.sleep(0) # GIVE SPACE TO OTHER THREADS -- Thread.yield in Java
+                wx.CallAfter(self._dlg.update_status, "%s.%s" % (libname, keyword.name))
+                if self._stop_requested == True:
                     break
-                if not isinstance(keyword_info, LibraryKeywordInfo) and keyword_info.name:
+                if not isinstance(keyword, LibraryKeywordInfo) and keyword.name:
                     try:
-                        self._controller.execute(FindUsages(keyword_info.name, keyword_info=keyword_info)).next()
+                        self._controller.execute(FindUsages(keyword.name, keyword_info=keyword.info)).next()
                     except StopIteration:
-                        self._dlg.add_result(keyword_info)
+                        wx.CallAfter(self._dlg.add_result, keyword)
             if self._stop_requested == True:
                 break
-        self._dlg.end_searching()
+        wx.CallAfter(self._dlg.end_searching)
 
     def request_stop(self):
         self._stop_requested = True
+
+
+class ResultListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin, listmix.ListCtrlAutoWidthMixin):
+    def __init__(self, parent, style):
+        self.parent = parent
+        wx.ListCtrl.__init__(self, parent=parent, style=style)
+        listmix.CheckListCtrlMixin.__init__(self)
+        listmix.ListCtrlAutoWidthMixin.__init__(self)
+        self.setResizeColumn(2)
+        self._clientData = {}
+
+    def OnCheckItem(self, index, flag):
+        self.parent.item_in_kw_list_checked()
+
+    def get_next_checked_item(self):
+        for i in range(self.GetItemCount()):
+            if self.IsChecked(i):
+                item = self.GetItem(i)
+                return ([i, self.GetClientData(item.GetData()), item])
+        return None
+
+    def get_number_of_checked_items(self):
+        sum = 0
+        for i in range(self.GetItemCount()):
+            if self.IsChecked(i):
+                sum += 1
+        return sum
+
+    def SetClientData(self, index, data):
+        self._clientData[index] = data
+
+    def GetClientData(self, index):
+        return self._clientData.get(index, None)
+
+    def RemoveClientData(self, index):
+        del self._clientData[index]
+
+    def ClearAll(self):
+        self.DeleteAllItems()
+        self._clientData.clear()
+
+    def print_data(self):
+        print self._clientData
