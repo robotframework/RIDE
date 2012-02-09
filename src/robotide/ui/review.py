@@ -58,24 +58,34 @@ class ReviewDialog(wx.Frame):
         filter_box_sizer.Add(filter_options, 0, wx.ALL|wx.EXPAND, 3)
         self.Sizer.Add(filter_box_sizer, 0, wx.ALL|wx.EXPAND, 3)
         
+        # Notebook
+        self._notebook = wx.Notebook(self, wx.ID_ANY, style=wx.NB_TOP)
+        self.Sizer.Add(self._notebook, 1, wx.ALL|wx.EXPAND, 3)
+        
         # Unused Keywords
-        self._unused_kw_list = ResultListCtrl(self, style=wx.LC_REPORT)
+        panel_unused_kw = wx.Panel(self._notebook)
+        sizer_unused_kw = wx.BoxSizer(wx.VERTICAL)
+        panel_unused_kw.SetSizer(sizer_unused_kw)
+        self._unused_kw_list = ResultListCtrl(panel_unused_kw, style=wx.LC_REPORT)
         self._unused_kw_list.InsertColumn(0, "Keyword", width=400)
         self._unused_kw_list.InsertColumn(1, "File", width=300)
-        self._status_label = Label(self, label='')
-        self._delete_button = ButtonWithHandler(self, 'Delete marked keywords')
-        self.Sizer.Add(self._unused_kw_list, 1, wx.ALL|wx.EXPAND | wx.ALL, 3)
+        self._unused_kw_list.set_dialog(self)
+        self._delete_button = wx.Button(panel_unused_kw, wx.ID_ANY, 'Delete marked keywords')
+        sizer_unused_kw.Add(self._unused_kw_list, 1, wx.ALL|wx.EXPAND | wx.ALL, 3)
         unused_kw_controls = wx.BoxSizer(wx.HORIZONTAL)
-        unused_kw_controls.Add(self._status_label, 1, wx.ALL|wx.EXPAND, 3)
+        unused_kw_controls.AddStretchSpacer(1)
         unused_kw_controls.Add(self._delete_button, 0, wx.ALL|wx.ALIGN_RIGHT, 3)
-        self.Sizer.Add(unused_kw_controls, 0, wx.ALL|wx.EXPAND, 3)
+        sizer_unused_kw.Add(unused_kw_controls, 0, wx.ALL|wx.EXPAND, 3)
+        self._notebook.AddPage(panel_unused_kw, "Unused Keywords")
         
         # Controls
         self._search_button = ButtonWithHandler(self, 'Search')
         self._abort_button = ButtonWithHandler(self, 'Abort')
+        self._status_label = Label(self, label='')
         controls = wx.BoxSizer(wx.HORIZONTAL)
         controls.Add(self._search_button, 0, wx.ALL, 3)
         controls.Add(self._abort_button, 0, wx.ALL, 3)
+        controls.Add(self._status_label, 1, wx.ALL|wx.EXPAND, 3)
         self.Sizer.Add(controls, 0, wx.ALL|wx.EXPAND, 3)
 
     def _make_bindings(self):
@@ -83,6 +93,7 @@ class ReviewDialog(wx.Frame):
         self.Bind(wx.EVT_TEXT, self._update_filter, self._filter_input)
         self.Bind(wx.EVT_RADIOBOX, self._update_filter_mode, self._filter_mode)
         self.Bind(wx.EVT_RADIOBOX, self._update_filter_bool, self._filter_bool)
+        self.Bind(wx.EVT_BUTTON, self.OnDeletemarkedkeywords, self._delete_button)
 
     def _set_default_values(self):
         self._filter_mode.SetSelection(0)
@@ -114,12 +125,10 @@ class ReviewDialog(wx.Frame):
             kw = item[1]
             listitem = item[2]
             item_id = listitem.GetData()
-            print "Deleting", kw.name
-            print "ID", item_id
-            print "Removing index",index
             self._unused_kw_list.DeleteItem(index)
             self._unused_kw_list.RemoveClientData(item_id)
             kw.delete()
+            self._notebook.SetPageText(0, "Unused keywords (%d)" % self._unused_kw_list.GetItemCount())
             item = self._unused_kw_list.get_next_checked_item()
 
     def OnShowfilestobesearched(self, event):
@@ -158,6 +167,7 @@ class ReviewDialog(wx.Frame):
         self._unused_kw_list.SetStringItem(self.index, 1, filename)
         self._unused_kw_list.SetItemData(self.index, self.index)
         self._unused_kw_list.SetClientData(self.index, keyword)
+        self._notebook.SetPageText(0, "Unused keywords (%d)" % self._unused_kw_list.GetItemCount())
         self.index += 1
 
     def update_status(self, message, increase=1):
@@ -258,8 +268,14 @@ class ResultListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin, listmix.ListCtrlAu
         self.setResizeColumn(2)
         self._clientData = {}
 
+    def set_dialog(self, dialog):
+        self._dlg = dialog
+
     def OnCheckItem(self, index, flag):
-        self.parent.item_in_kw_list_checked()
+        if self._dlg:
+            self._dlg.item_in_kw_list_checked()
+        else:
+            print "No dialog set"
 
     def get_next_checked_item(self):
         for i in range(self.GetItemCount()):

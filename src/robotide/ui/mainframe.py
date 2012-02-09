@@ -222,8 +222,6 @@ class RideFrame(wx.Frame, RideEventHandler):
         self._plugin_manager.show(self._application.get_plugins())
 
     def OnReviewTestData(self, event):
-        if not self._check_unsaved_modifications():
-            return
         if self._review_dialog == None:
             self._review_dialog = ReviewDialog(self._controller, self)
         self._review_dialog.show_dialog()
