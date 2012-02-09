@@ -12,6 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import os
 import wx
 import wx.lib.mixins.listctrl as listmix
 import time
@@ -36,6 +37,7 @@ class ReviewDialog(wx.Frame):
         
         # General
         self.SetSize((700,500))
+        self.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DFACE))
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
         
         # Filter
@@ -152,7 +154,7 @@ class ReviewDialog(wx.Frame):
     def add_result(self, keyword):
         keyword_info = keyword.info
         self._unused_kw_list.InsertStringItem(self.index, keyword_info.name)
-        filename = keyword_info.item.source.rsplit('/', 1)[1]
+        filename = os.path.basename(keyword_info.item.source)
         self._unused_kw_list.SetStringItem(self.index, 1, filename)
         self._unused_kw_list.SetItemData(self.index, self.index)
         self._unused_kw_list.SetClientData(self.index, keyword)
@@ -228,7 +230,7 @@ class ReviewRunner():
         self._stop_requested = False
         wx.CallAfter(self._dlg.begin_searching)
         for df in self._get_datafile_list():
-            libname = df.source.rsplit('/', 1)[1].rsplit('.', 1)[0]
+            libname = os.path.basename(df.source).rsplit('.', 1)[0]
             for keyword in df.keywords:
                 time.sleep(0) # GIVE SPACE TO OTHER THREADS -- Thread.yield in Java
                 wx.CallAfter(self._dlg.update_status, "%s.%s" % (libname, keyword.name))
