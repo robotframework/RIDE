@@ -53,11 +53,9 @@ class Tooltip(RidePopupWindow):
         panel = wx.Panel(self)
         panel.SetBackgroundColour(POPUP_BACKGROUND)
         szr = VerticalSizer()
-        if detachable:
-            szr.add(ButtonWithHandler(panel, 'Detach', width=size[0],
-                                      handler=self._detach))
-            size = (size[0], size[1]-25)
         self._details = HtmlWindow(self, size=size)
+        if detachable:
+            self._details.Bind(wx.EVT_LEFT_UP, self._detach)
         szr.add_expanding(self._details)
         panel.SetSizer(szr)
         panel.Fit()
@@ -81,6 +79,7 @@ class Tooltip(RidePopupWindow):
         dlg = HtmlDialog(self._detached_title, self._current_details)
         dlg.SetPosition((wx.GetMouseState().x, wx.GetMouseState().y))
         dlg.Show()
+        event.Skip()
 
 
 class MacRidePopupWindow(wx.Frame):
