@@ -24,9 +24,10 @@ from threading import Thread
 
 class ReviewDialog(wx.Frame):
 
-    def __init__(self, controller, parent):
-        wx.Frame.__init__(self, parent, title="Review Test Data", style=wx.DEFAULT_FRAME_STYLE|wx.FRAME_FLOAT_ON_PARENT)
+    def __init__(self, controller, frame):
+        wx.Frame.__init__(self, frame, title="Review Test Data", style=wx.DEFAULT_FRAME_STYLE|wx.FRAME_FLOAT_ON_PARENT)
         self.index = 0
+        self.frame = frame
         self._runner = ReviewRunner(controller, self)
         self._build_ui()
         self._make_bindings()
@@ -105,6 +106,7 @@ class ReviewDialog(wx.Frame):
         self.Bind(wx.EVT_CHECKBOX, self._update_filter_source_testcases, self._filter_source_testcases)
         self.Bind(wx.EVT_CHECKBOX, self._update_filter_source_resources, self._filter_source_resources)
         self.Bind(wx.EVT_BUTTON, self.OnDeletemarkedkeywords, self._delete_button)
+        self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnResultSelected, self._unused_kw_list)
 
     def _set_default_values(self):
         self._filter_source_testcases.SetValue(True)
@@ -155,6 +157,9 @@ class ReviewDialog(wx.Frame):
             string_list = "\n".join([df.name for df in df_list])
         message = "Keywords of the following files will be included in the search:\n\n" + string_list
         wx.MessageDialog(self, message=message, caption="Included files", style=wx.OK).ShowModal()
+
+    def OnResultSelected(self, event):
+        self.frame.tree.select_node_by_data(self._unused_kw_list.GetClientData(event.GetData()))
 
     def item_in_kw_list_checked(self):
         if self._unused_kw_list.get_number_of_checked_items() > 0:
