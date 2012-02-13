@@ -25,10 +25,15 @@ release. The most stable, and best documented, module is `robotide.pluginapi`.
 
 import sys
 import os
+
+
 try:
     import wxversion
     from wxversion import VersionError
-    wxversion.select(['2.8', '2.9'])
+    if sys.platform == 'darwin': # CAN NOT IMPORT IS_MAC AS THERE IS A wx IMPORT
+        wxversion.select(['2.8', '2.9'])
+    else:
+        wxversion.select('2.8')
 except ImportError:
     print """wxPython not found.
 You need to install wxPython 2.8 toolkit with unicode support to run RIDE.
