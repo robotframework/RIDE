@@ -88,26 +88,50 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 0.40.2</h2>
-<table border="1">
-<tr>
-<td><b>ID</b></td>
-<td><b>Type</b></td>
-<td><b>Priority</b></td>
-<td><b>Summary</b></td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=913">Issue 913</a></td>
-<td>Defect</td>
-<td>High</td>
-<td>Erratical cursor movement when changin back from "Text Edit"-tab to Edit-tab</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=915">Issue 915</a></td>
-<td>Enhancement</td>
-<td>Low</td>
-<td>Suite setup comments are not correct.</td>
-</tr>
-</table>
-<p>Altogether 2 issues.</p>
+<h2>Release notes for 0.41</h2>
+<table border="1">
+<tr>
+<td><b>ID</b></td>
+<td><b>Type</b></td>
+<td><b>Priority</b></td>
+<td><b>Summary</b></td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=714">Issue 714</a></td>
+<td>Defect</td>
+<td>High</td>
+<td>RIDE sometimes hangs up while google chrome is running</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=888">Issue 888</a></td>
+<td>Defect</td>
+<td>High</td>
+<td>Support wxPython 2.9 in OSX</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=918">Issue 918</a></td>
+<td>Defect</td>
+<td>High</td>
+<td>Errors thrown by RIDE 0.40.2 Test Runner</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=924">Issue 924</a></td>
+<td>Defect</td>
+<td>High</td>
+<td>Encoding error</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=624">Issue 624</a></td>
+<td>Enhancement</td>
+<td>Medium</td>
+<td>Sorting of keywords</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=882">Issue 882</a></td>
+<td>Enhancement</td>
+<td>Medium</td>
+<td>Remove support for serializing old style metadata</td>
+</tr>
+</table>
+<p>Altogether 6 issues.</p>
 """

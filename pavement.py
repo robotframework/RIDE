@@ -105,6 +105,12 @@ def install():
     pass
 
 @task
+@consume_args
+def set_version(args):
+    with open('VERSION.txt', 'w') as version_file:
+        version_file.write(args[0])
+
+@task
 @needs('clean', '_prepare_build', 'generate_setup', 'minilib',
        'setuptools.command.sdist')
 def sdist():
