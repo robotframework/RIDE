@@ -16,6 +16,7 @@ import os
 import wx
 import wx.lib.mixins.listctrl as listmix
 import time
+import re
 from robotide.widgets import ButtonWithHandler, Label
 from robotide.spec.iteminfo import LibraryKeywordInfo
 from robotide.usages.commands import FindUsages
@@ -37,34 +38,37 @@ class ReviewDialog(wx.Frame):
     def _build_ui(self):
         
         # General
-        self.SetSize((700,500))
+        self.SetSize((700,600))
         self.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DFACE))
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
         
         # Filter
         self._filter_box = wx.StaticBox(self, label="Filter")
         self._filter_input = wx.TextCtrl(self, size=(-1, 20))
-        self._filter_info = wx.StaticText(self, label='Here you can define strings separated by comma that must (not) be part of the files\' name (e.g. common,abc,123).\nIf the input is empty, all opened files are included', size=(-1, 60))
+        self._filter_regex_switch = wx.CheckBox (self, wx.ID_ANY, label="Use RegEx")
+        self._filter_info = wx.StaticText(self, label='Here you can define one or more strings separated by comma (e.g. common,abc,123). The filter matches if at least one string is part of the filename.\nIf you don\'t enter any strings, all opened files are included', size=(-1, 80))
         self._filter_source_box = wx.StaticBox(self, label="Search")
         self._filter_source_testcases = wx.CheckBox(self, wx.ID_ANY, label="Test cases")
         self._filter_source_resources = wx.CheckBox(self, wx.ID_ANY, label="Resources")
         self._filter_mode = wx.RadioBox(self, label="Mode", choices=["exclude", "include"])
         self._filter_test_button = ButtonWithHandler(self, 'Show files to be searched')
         filter_box_sizer = wx.StaticBoxSizer(self._filter_box, wx.HORIZONTAL)
+        filter_source_sizer = wx.StaticBoxSizer(self._filter_source_box, wx.VERTICAL)
+        filter_source_sizer.Add(self._filter_source_testcases, 0, wx.ALL, 0)
+        filter_source_sizer.Add(self._filter_source_resources, 0, wx.ALL, 0)
+        filter_options = wx.BoxSizer(wx.VERTICAL)
+        filter_options.Add(filter_source_sizer, 0, wx.BOTTOM|wx.RIGHT|wx.LEFT|wx.EXPAND, 3)
+        filter_options.Add(self._filter_mode, 0, wx.ALL|wx.EXPAND, 3)
         filter_input_sizer = wx.BoxSizer(wx.VERTICAL)
+        filter_input_sizer.AddSpacer(10)
         filter_input_sizer.Add(self._filter_input, 0, wx.ALL|wx.EXPAND, 3)
+        filter_input_sizer.Add(self._filter_regex_switch, 0, wx.ALL|wx.ALIGN_RIGHT, 3)
         filter_input_sizer.Add(self._filter_info, 0, wx.ALL|wx.EXPAND, 3)
         filter_input_sizer.AddStretchSpacer(1)
         filter_controls = wx.BoxSizer(wx.HORIZONTAL)
         filter_controls.AddStretchSpacer(1)
         filter_controls.Add(self._filter_test_button, 0, wx.ALL|wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT, 3)
         filter_input_sizer.Add(filter_controls, 0, wx.ALL|wx.EXPAND, 3)
-        filter_source_sizer = wx.StaticBoxSizer(self._filter_source_box, wx.VERTICAL)
-        filter_source_sizer.Add(self._filter_source_testcases, 0, wx.ALL, 0)
-        filter_source_sizer.Add(self._filter_source_resources, 0, wx.ALL, 0)
-        filter_options = wx.BoxSizer(wx.VERTICAL)
-        filter_options.Add(filter_source_sizer, 0, wx.ALL|wx.EXPAND, 3)
-        filter_options.Add(self._filter_mode, 0, wx.ALL|wx.EXPAND, 3)
         filter_box_sizer.Add(filter_options, 0, wx.ALL|wx.EXPAND, 3)
         filter_box_sizer.Add(filter_input_sizer, 1, wx.ALL|wx.EXPAND, 3)
         self.Sizer.Add(filter_box_sizer, 0, wx.ALL|wx.EXPAND, 3)
@@ -79,7 +83,7 @@ class ReviewDialog(wx.Frame):
         panel_unused_kw.SetSizer(sizer_unused_kw)
         self._unused_kw_list = ResultListCtrl(panel_unused_kw, style=wx.LC_REPORT)
         self._unused_kw_list.InsertColumn(0, "Keyword", width=400)
-        self._unused_kw_list.InsertColumn(1, "File", width=300)
+        self._unused_kw_list.InsertColumn(1, "File", width=250)
         self._unused_kw_list.set_dialog(self)
         self._delete_button = wx.Button(panel_unused_kw, wx.ID_ANY, 'Delete marked keywords')
         sizer_unused_kw.Add(self._unused_kw_list, 1, wx.ALL|wx.EXPAND | wx.ALL, 3)
@@ -107,6 +111,7 @@ class ReviewDialog(wx.Frame):
         self.Bind(wx.EVT_CHECKBOX, self._update_filter_source_resources, self._filter_source_resources)
         self.Bind(wx.EVT_BUTTON, self.OnDeletemarkedkeywords, self._delete_button)
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnResultSelected, self._unused_kw_list)
+        self.Bind(wx.EVT_CHECKBOX, self._upate_filter_regex, self._filter_regex_switch)
 
     def _set_default_values(self):
         self._filter_source_testcases.SetValue(True)
@@ -115,6 +120,8 @@ class ReviewDialog(wx.Frame):
         self._runner.set_filter_source_resources(True)
         self._filter_mode.SetSelection(0)
         self._runner.set_filter_mode(True)
+        self._filter_regex_switch.SetValue(False)
+        self._runner.set_filter_use_regex(False)
         self._abort_button.Disable()
         self._delete_button.Disable()
 
@@ -129,6 +136,9 @@ class ReviewDialog(wx.Frame):
 
     def _update_filter_source_resources(self, event):
         self._runner.set_filter_source_resources(event.Checked())
+
+    def _upate_filter_regex(self, event):
+        self._runner.set_filter_use_regex(event.Checked())
 
     def OnSearch(self, event):
         self._runner._search_unused_keywords()
@@ -183,6 +193,7 @@ class ReviewDialog(wx.Frame):
         self._search_button.Disable()
         self._filter_input.Disable()
         self._filter_test_button.Disable()
+        self._unused_kw_list.Disable()
         self._unused_kw_list.ClearAll()
         self.index = 0
 
@@ -201,6 +212,7 @@ class ReviewDialog(wx.Frame):
 
     def end_searching(self):
         self.update_status("")
+        self._unused_kw_list.Enable()
         self._abort_button.Disable()
         self._filter_input.Enable()
         self._filter_test_button.Enable()
@@ -222,6 +234,7 @@ class ReviewRunner():
         self._filter_excludes = True
         self._filter_check_testcases = True
         self._filter_check_resources = True
+        self._filter_use_regex = False
         self._results_unused_keywords = []
 
     def set_filter_mode(self, exclude):
@@ -233,9 +246,11 @@ class ReviewRunner():
     def set_filter_source_resources(self, value):
         self._filter_check_resources = value
 
+    def set_filter_use_regex(self, value):
+        self._filter_use_regex = value
+
     def _get_datafile_list(self):
-        list = [df for df in self._controller.datafiles if self._include_file(df)]
-        return list
+        return [df for df in self._controller.datafiles if self._include_file(df)]
 
     def _include_file(self, datafile):
         if isinstance(datafile, DirectoryController):
@@ -254,7 +269,10 @@ class ReviewRunner():
         for string in self._filter_strings:
             if string == '':
                 continue
-            results.append(string in datafile.name)
+            if self._filter_use_regex:
+                results.append(not re.match(string, datafile.name) == None)
+            else:
+                results.append(string in datafile.name)
         
         if len(results) == 0:
             return True
