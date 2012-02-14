@@ -17,6 +17,7 @@ import wx
 import wx.lib.mixins.listctrl as listmix
 import time
 import re
+from robotide.context import SETTINGS
 from robotide.widgets import ButtonWithHandler, Label
 from robotide.spec.iteminfo import LibraryKeywordInfo
 from robotide.usages.commands import FindUsages
@@ -114,34 +115,46 @@ class ReviewDialog(wx.Frame):
         self.Bind(wx.EVT_CHECKBOX, self._upate_filter_regex, self._filter_regex_switch)
 
     def _set_default_values(self):
-        self._filter_source_testcases.SetValue(True)
-        self._runner.set_filter_source_testcases(True)
-        self._filter_source_resources.SetValue(True)
-        self._runner.set_filter_source_resources(True)
-        self._filter_mode.SetSelection(0)
-        self._runner.set_filter_mode(True)
-        self._filter_regex_switch.SetValue(False)
-        self._runner.set_filter_use_regex(False)
+        check_testcases = SETTINGS.get('review_check_testcases', True)
+        self._filter_source_testcases.SetValue(check_testcases)
+        self._runner.set_filter_source_testcases(check_testcases)
+        check_resources = SETTINGS.get('review_check_resources', True)
+        self._filter_source_resources.SetValue(check_resources)
+        self._runner.set_filter_source_resources(check_resources)
+        filter_mode = SETTINGS.get('review_filter_mode', 0)
+        self._filter_mode.SetSelection(filter_mode)
+        self._runner.set_filter_mode(filter_mode == 0)
+        use_regex = SETTINGS.get('review_use_regex', False)
+        self._filter_regex_switch.SetValue(use_regex)
+        self._runner.set_filter_use_regex(use_regex)
+        filter_string = SETTINGS.get('review_filter_string', '')
+        self._filter_input.ChangeValue(filter_string)
+        self._runner.parse_filter_string(filter_string)
         self._abort_button.Disable()
         self._delete_button.Disable()
 
     def _update_filter(self, event):
-        self._runner._parse_filter_string(self._filter_input.GetValue())
+        self._runner.parse_filter_string(event.GetString())
+        SETTINGS.set('review_filter_string', event.GetString())
 
     def _update_filter_mode(self, event):
         self._runner.set_filter_mode(event.GetInt() == 0)
+        SETTINGS.set('review_filter_mode', event.GetInt())
 
     def _update_filter_source_testcases(self, event):
         self._runner.set_filter_source_testcases(event.Checked())
+        SETTINGS.set('review_check_testcases', event.Checked())
 
     def _update_filter_source_resources(self, event):
         self._runner.set_filter_source_resources(event.Checked())
+        SETTINGS.set('review_check_resources', event.Checked())
 
     def _upate_filter_regex(self, event):
         self._runner.set_filter_use_regex(event.Checked())
+        SETTINGS.set('review_use_regex', event.Checked())
 
     def OnSearch(self, event):
-        self._runner._search_unused_keywords()
+        self._runner._run_review()
 
     def OnAbort(self, event):
         self._runner.request_stop()
@@ -197,7 +210,7 @@ class ReviewDialog(wx.Frame):
         self._unused_kw_list.ClearAll()
         self.index = 0
 
-    def add_result(self, keyword):
+    def add_result_unused_keyword(self, keyword):
         keyword_info = keyword.info
         self._unused_kw_list.InsertStringItem(self.index, keyword_info.name)
         filename = os.path.basename(keyword_info.item.source)
@@ -280,10 +293,10 @@ class ReviewRunner():
         found = True in results
         return self._filter_excludes ^ found
 
-    def _parse_filter_string(self, filter_string):
+    def parse_filter_string(self, filter_string):
         self._filter_strings = filter_string.split(',')
 
-    def _search_unused_keywords(self):
+    def _run_review(self):
         worker = Thread(target=self._run)
         worker.start()
 
@@ -297,11 +310,14 @@ class ReviewRunner():
                 wx.CallAfter(self._dlg.update_status, "%s.%s" % (libname, keyword.name))
                 if self._stop_requested == True:
                     break
+                
+                # Check if it is unused
                 if not isinstance(keyword, LibraryKeywordInfo) and keyword.name:
                     try:
                         self._controller.execute(FindUsages(keyword.name, keyword_info=keyword.info)).next()
                     except StopIteration:
-                        wx.CallAfter(self._dlg.add_result, keyword)
+                        wx.CallAfter(self._dlg.add_result_unused_keyword, keyword)
+                
             if self._stop_requested == True:
                 break
         wx.CallAfter(self._dlg.end_searching)
