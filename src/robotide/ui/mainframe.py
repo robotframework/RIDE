@@ -271,6 +271,10 @@ class ActionRegisterer(object):
         for action in actions:
             self.register_action(action)
 
+    def register_shortcut(self, action_info):
+        action = ActionFactory(action_info)
+        self._shortcut_registry.register(action)
+
 
 class AboutDialog(Dialog):
 

@@ -14,6 +14,7 @@
 
 import wx
 import inspect
+from robotide.action.actioninfo import ActionInfo
 
 from robotide.context import SETTINGS
 from robotide.publish import PUBLISHER
@@ -199,6 +200,12 @@ class Plugin(object):
         Returns created `Action` object.
         """
         action = self.__frame.actions.register_action(action_info)
+        self.__actions.append(action)
+        return action
+
+    def register_shortcut(self, shortcut, callback):
+        action_info = ActionInfo(None, None, action=callback, shortcut=shortcut)
+        action = self.__frame.actions.register_shortcut(action_info)
         self.__actions.append(action)
         return action
 

@@ -19,6 +19,7 @@ from StringIO import StringIO
 from robot.parsing.model import TestDataDirectory
 from robot.parsing.populators import FromFilePopulator
 from robot.parsing.txtreader import TxtReader
+from robotide.action.actioninfo import ActionInfo
 
 from robotide.controller.commands import SetDataFile
 from robotide.publish.messages import RideMessage
@@ -49,7 +50,22 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.subscribe(self.OnTreeSelection, RideTreeSelection)
         self.subscribe(self.OnDataChanged, RideMessage)
         self.subscribe(self.OnTabChange, RideNotebookTabChanging)
+        self._register_shortcuts()
         self._open()
+
+    def _register_shortcuts(self):
+        def focused(func):
+            def f(event):
+                if self.is_focused():
+                    func(event)
+            return f
+        self.register_shortcut('Ctrl-X', focused(lambda e: self._editor.cut()))
+        self.register_shortcut('Ctrl-C', focused(lambda e: self._editor.copy()))
+        self.register_shortcut('Ctrl-V', focused(lambda e: self._editor.paste()))
+        self.register_shortcut('Ctrl-Z', focused(lambda e: self._editor.undo()))
+        self.register_shortcut('Ctrl-Y', focused(lambda e: self._editor.redo()))
+        # delete seems to have no similar method in styledtextctrl .. DeleteBack
+        # will remove the character before caret --> leaving delete out
 
     def disable(self):
         self.remove_self_from_tree_aware_plugins()
@@ -262,6 +278,21 @@ class SourceEditor(wx.Panel):
                                                      self._editor.utf8_text):
                 return False
         return True
+
+    def cut(self):
+        self._editor.Cut()
+
+    def copy(self):
+        self._editor.Copy()
+
+    def paste(self):
+        self._editor.Paste()
+
+    def undo(self):
+        self._editor.Undo()
+
+    def redo(self):
+        self._editor.Redo()
 
     def remove_and_store_state(self):
         self._stored_text = self._editor.GetText()
