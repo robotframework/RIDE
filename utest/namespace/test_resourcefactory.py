@@ -1,13 +1,20 @@
 import os
 import unittest
 from robot.parsing.settings import _Import
+from robotide.context.platform import IS_WINDOWS
 from robotide.namespace.resourcefactory import ResourceFactory
 
 
 class _ResourceFactory(ResourceFactory):
+    from_path = None
 
     def _load_resource(self, path):
         return object()
+
+    def _get_python_path(self, name):
+        if not self.from_path:
+            return None
+        return os.path.join(self.from_path, name)
 
 
 class ResourceFactoryDirectoryIgnoreTestCase(unittest.TestCase):
@@ -40,6 +47,26 @@ class ResourceFactoryDirectoryIgnoreTestCase(unittest.TestCase):
         r = _ResourceFactory(exclude_directory=os.path.abspath('.'))
         imp = _Import(None, os.path.join('.', 'foo'))
         self.assertEqual(None, r.get_resource_from_import(imp, self._context))
+
+    def test_resourcefactory_finds_imported_resource_from_python_path(self):
+        r = _ResourceFactory()
+        r.from_path = os.path.dirname(__file__)
+        self._is_resolved(r)
+
+    def test_resourcefactory_ignores_imported_resource_from_python_path(self):
+        r = _ResourceFactory(exclude_directory=os.path.dirname(__file__))
+        r.from_path = os.path.dirname(__file__)
+        self.assertEqual(None, r.get_resource_from_import(self._import, self._context))
+
+    if IS_WINDOWS:
+
+        def test_case_insensitive_ignore_upper(self):
+            r = _ResourceFactory(exclude_directory=os.path.dirname(__file__).upper())
+            self.assertEqual(None, r.get_resource_from_import(self._import, self._context))
+
+        def test_case_insensitive_ignore_lower(self):
+            r = _ResourceFactory(exclude_directory=os.path.dirname(__file__).lower())
+            self.assertEqual(None, r.get_resource_from_import(self._import, self._context))
 
     def _mock_context(self):
         context = lambda:0
