@@ -6,7 +6,7 @@ from robotide.namespace.resourcefactory import ResourceFactory
 
 class _ResourceFactory(ResourceFactory):
 
-    def _get_resource(self, path):
+    def _load_resource(self, path):
         return object()
 
 

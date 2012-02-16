@@ -25,15 +25,13 @@ class ResourceFactory(object):
         self.cache = {}
         self.python_path_cache = {}
         exclude_directory = exclude_directory or SETTINGS.get('exclude resources directory', None)
-        self._exclude_directory = exclude_directory and self._with_separator(exclude_directory)
+        self._exclude_directory = exclude_directory and self._with_separator(self._normalize(exclude_directory))
 
     def _with_separator(self, dir):
         return os.path.abspath(dir)+os.path.sep
 
     def get_resource(self, directory, name):
         path = self._build_path(directory, name)
-        if self._exclude_directory and path.startswith(self._exclude_directory):
-            return None
         res = self._get_resource(path)
         if res:
             return res
@@ -69,6 +67,8 @@ class ResourceFactory(object):
 
     def _get_resource(self, path):
         normalized = self._normalize(path)
+        if self._exclude_directory and normalized.startswith(self._exclude_directory):
+            return None
         if normalized not in self.cache:
             try:
                 self.cache[normalized] = self._load_resource(path)
