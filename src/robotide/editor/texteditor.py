@@ -335,6 +335,7 @@ class RobotDataEditor(stc.StyledTextCtrl):
     def set_text(self, text):
         self.SetReadOnly(False)
         self.SetText(text)
+        self.EmptyUndoBuffer()
 
     @property
     def utf8_text(self):
