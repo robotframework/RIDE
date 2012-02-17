@@ -132,7 +132,7 @@ class _ForLoopTooltipMessage(_TooltipMessage):
 
 class CellContent(object):
 
-    def __init__(self, type, value, source):
+    def __init__(self, type, value, source=None):
         self.type = type
         self.value = value
         self.source = source

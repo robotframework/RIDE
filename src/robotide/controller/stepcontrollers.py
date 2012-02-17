@@ -106,16 +106,16 @@ class StepController(object):
     def _get_content_with_type(self, col):
         value = self.get_value(col)
         if self._is_commented(col):
-            return CellContent(ContentType.COMMENTED, value, None)
+            return CellContent(ContentType.COMMENTED, value)
         if self._get_last_none_empty_col_idx() < col:
-            return CellContent(ContentType.EMPTY, value, None)
+            return CellContent(ContentType.EMPTY, value)
         if utils.is_variable(value):
-            return CellContent(ContentType.VARIABLE, value, None)
+            return CellContent(ContentType.VARIABLE, value)
         if self.is_user_keyword(value):
             return CellContent(ContentType.USER_KEYWORD, value, self.get_keyword_info(value).source)
         if self.is_library_keyword(value):
             return CellContent(ContentType.LIBRARY_KEYWORD, value, self.get_keyword_info(value).source)
-        return CellContent(ContentType.STRING, value, None)
+        return CellContent(ContentType.STRING, value)
 
     def _get_last_none_empty_col_idx(self):
         values = self.as_list()
