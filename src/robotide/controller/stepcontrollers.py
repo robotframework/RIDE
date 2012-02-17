@@ -3,6 +3,7 @@ from robot.parsing.model import Step
 from robotide import utils
 from robotide.controller.cellinfo import CellPosition, CellType, CellInfo,\
     CellContent, ContentType
+from robotide.namespace.local_namespace import LocalNamespace
 
 
 class StepController(object):
@@ -17,6 +18,10 @@ class StepController(object):
         self.parent = parent
         self._step = step
         self._cell_info_cache = {}
+
+    @property
+    def datafile_controller(self):
+        return self.parent.datafile_controller
 
     def _change_last_empty_to_empty_var(self, args, comment):
         if comment:
@@ -48,7 +53,7 @@ class StepController(object):
     def get_cell_info(self, col):
         if col not in self._cell_info_cache:
             position = self._get_cell_position(col)
-            content = self._get_content_with_type(col)
+            content = self._get_content_with_type(col, position)
             self._cell_info_cache[col] = self._build_cell_info(content, position)
         return self._cell_info_cache[col]
 
@@ -58,7 +63,7 @@ class StepController(object):
 
     def is_assigning(self, value):
         for assignment in self.assignments:
-            if assignment.replace('=', '').strip() == value:
+            if assignment.replace('=', '').strip() == value.replace('=', '').strip():
                 return True
         return False
 
@@ -103,19 +108,30 @@ class StepController(object):
                 return True
         return False
 
-    def _get_content_with_type(self, col):
+    def _get_content_with_type(self, col, position):
         value = self.get_value(col)
         if self._is_commented(col):
             return CellContent(ContentType.COMMENTED, value)
         if self._get_last_none_empty_col_idx() < col:
             return CellContent(ContentType.EMPTY, value)
         if utils.is_variable(value):
+            if self._is_unknow_variable(value, position):
+                return CellContent(ContentType.UNKNOWN_VARIABLE, value)
             return CellContent(ContentType.VARIABLE, value)
         if self.is_user_keyword(value):
             return CellContent(ContentType.USER_KEYWORD, value, self.get_keyword_info(value).source)
         if self.is_library_keyword(value):
             return CellContent(ContentType.LIBRARY_KEYWORD, value, self.get_keyword_info(value).source)
         return CellContent(ContentType.STRING, value)
+
+    def _is_unknow_variable(self, value, position):
+        if position.type == CellType.ASSIGN:
+            return False
+        return not self._get_local_namespace().has_name(value)
+
+    def _get_local_namespace(self):
+        index = self.parent.index_of_step(self._step)
+        return LocalNamespace(self.parent, self.datafile_controller._namespace, index)
 
     def _get_last_none_empty_col_idx(self):
         values = self.as_list()
@@ -326,7 +342,11 @@ class ForLoopStepController(StepController):
 
     def _get_cell_position(self, col):
         until_range = len(self._step.vars)+1
-        if col <= until_range:
+        if col == 0:
+            return CellPosition(CellType.MANDATORY, None)
+        if col < until_range:
+            return CellPosition(CellType.ASSIGN, None)
+        if col == until_range:
             return CellPosition(CellType.MANDATORY, None)
         if not self._step.range:
             return CellPosition(CellType.OPTIONAL, None)
@@ -413,10 +433,15 @@ class IntendedStepController(StepController):
             return CellPosition(CellType.MUST_BE_EMPTY, None)
         return StepController._get_cell_position(self, col-1)
 
-    def _get_content_with_type(self, col):
+    def _get_local_namespace(self):
+        p = self.parent.parent
+        index = p.index_of_step(self._step)
+        return LocalNamespace(p, self.datafile_controller._namespace, index)
+
+    def _get_content_with_type(self, col, position):
         if col == 0:
-            return CellContent(ContentType.EMPTY, None, None)
-        return StepController._get_content_with_type(self, col)
+            return CellContent(ContentType.EMPTY, None)
+        return StepController._get_content_with_type(self, col, position)
 
     def comment(self):
         self._step.__init__(['Comment'] + self._step.as_list())

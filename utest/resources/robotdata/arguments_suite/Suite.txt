@@ -3,14 +3,16 @@ Keissi
 
 *** Keywords ***
 KW1
-    [Arguments]  ${mandatory}  ${optional}=
+    [Arguments]    ${mandatory}    ${optional}=
 
 KW2
-    [Arguments]  @{rest}
+    [Arguments]    @{rest}
 
 KW3
-    : FOR  ${i}  IN  1  2
-    \  Log  MOI
-    : FOR  ${j}  IN RANGE  200
-    \  Log  moi taas
+    : FOR    ${i}    IN    1    2
+    \    Log    jee
+    \    Log    ${i}
+    \    Log    ${unknown}
+    : FOR    ${j}    IN RANGE    200
+    \    Log    moi taas
 

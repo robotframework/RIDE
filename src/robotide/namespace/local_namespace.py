@@ -63,7 +63,7 @@ class LocalRowNamespace(LocalMacroNamespace):
         return len(start) == 0 or start.startswith('$') or start.startswith('@')
 
     def has_name(self, value):
-        if self._row:
+        if self._row is not None:
             for row, step in enumerate(self._controller.steps):
                 if self._row == row:
                     break
