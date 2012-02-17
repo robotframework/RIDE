@@ -9,12 +9,12 @@ from robotide.controller.cellinfo import CellInfo, CellContent, ContentType,\
 class TestCellTooltip(unittest.TestCase):
 
     def test_empty_tooltip(self):
-        cell = CellInfo(CellContent(ContentType.EMPTY, None, None),
+        cell = CellInfo(CellContent(ContentType.EMPTY, None),
                         CellPosition(CellType.UNKNOWN, None))
         assert_false(TipMessage(cell))
 
     def test_unknown_keyword(self):
-        cell = CellInfo(CellContent(ContentType.STRING, 'What?', None),
+        cell = CellInfo(CellContent(ContentType.STRING, 'What?'),
                         CellPosition(CellType.KEYWORD, None))
         msg = TipMessage(cell)
         assert_true(msg)
@@ -29,17 +29,22 @@ class TestCellTooltip(unittest.TestCase):
                       html_escape(_TooltipMessage.KEYWORD % 'my_source'))
 
     def test_for_loop_start(self):
-        cell = CellInfo(CellContent(ContentType.STRING, ':FOR', None),
+        cell = CellInfo(CellContent(ContentType.STRING, ':FOR'),
                         CellPosition(CellType.MANDATORY, None), for_loop=True)
         assert_false(TipMessage(cell))
 
     def test_for_loop_var(self):
-        cell = CellInfo(CellContent(ContentType.VARIABLE, '${i}', None),
+        cell = CellInfo(CellContent(ContentType.VARIABLE, '${i}'),
                         CellPosition(CellType.MANDATORY, None), for_loop=True)
         assert_false(TipMessage(cell))
 
+    def test_unknown_variable(self):
+        cell = CellInfo(CellContent(ContentType.UNKNOWN_VARIABLE, '${unknown}'),
+                        CellPosition(CellType.UNKNOWN, None))
+        assert_true(TipMessage(cell))
+
     def test_for_loop_too_many_args(self):
-        cell = CellInfo(CellContent(ContentType.STRING, 'something', None),
+        cell = CellInfo(CellContent(ContentType.STRING, 'something'),
                         CellPosition(CellType.MUST_BE_EMPTY, None), for_loop=True)
         msg = TipMessage(cell)
         assert_true(msg)

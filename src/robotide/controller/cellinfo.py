@@ -66,6 +66,7 @@ class _TooltipMessage(object):
     TOO_MANY_ARGUMENTS = "Too many arguments"
     KEYWORD_NOT_FOUND = "Keyword not found"
     VARIABLE_ASSIGMENT = "Variable assignment"
+    UNKNOWN_VARIABLE = "\n\nUnknown variable"
 
     ARGUMENT = "Argument:  %s"
     OPTIONAL_ARGUMENT = "Optional argument:  %s"
@@ -77,6 +78,7 @@ class _TooltipMessage(object):
         self.message = self._get_message(cell)
 
     def _get_message(self, cell):
+        unknown_variable_message = '' if cell.content_type != ContentType.UNKNOWN_VARIABLE else self.UNKNOWN_VARIABLE
         handlers = {
             CellType.ASSIGN: self._assign,
             CellType.KEYWORD: self._keyword,
@@ -85,7 +87,7 @@ class _TooltipMessage(object):
             CellType.MUST_BE_EMPTY: self._must_be_empty,
             CellType.UNKNOWN: self._unknown,
         }
-        return handlers[cell.cell_type](cell)
+        return (handlers[cell.cell_type](cell) + unknown_variable_message).strip()
 
     def _must_be_empty(self, cell):
         if cell.too_many_arguments():
