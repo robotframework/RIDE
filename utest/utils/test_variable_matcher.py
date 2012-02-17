@@ -5,9 +5,11 @@ from robot.utils.asserts import assert_equals, assert_true, assert_false
 
 class _BaseTestIsVariable(object):
     var_name = None
+    var_with_curly_bracket = None
 
     def test_variable_only(self):
         assert_true(self._test_method(self.var_name))
+        assert_true(self._test_method(self.var_with_curly_bracket))
 
     def test_variable_with_equal_sign(self):
         assert_true(self._test_method('%s = ' % self.var_name))
@@ -19,10 +21,12 @@ class _BaseTestIsVariable(object):
         assert_false(self._test_method('some %s' % self.var_name))
         assert_false(self._test_method('%s variable' % self.var_name))
         assert_false(self._test_method('%s123' % self.var_name))
+        assert_false(self._test_method('%s some text %s' % (self.var_name, self.var_name)))
 
 
 class TestIsScalarVariable(_BaseTestIsVariable, unittest.TestCase):
     var_name = '${var name}'
+    var_with_curly_bracket = '${var \}}'
 
     def _test_method(self, value):
         return is_scalar_variable(value)
@@ -30,6 +34,7 @@ class TestIsScalarVariable(_BaseTestIsVariable, unittest.TestCase):
 
 class TestIsListVariable(_BaseTestIsVariable, unittest.TestCase):
     var_name = '@{var name}'
+    var_with_curly_bracket = '@{var \}}'
 
     def _test_method(self, value):
         return is_list_variable(value)

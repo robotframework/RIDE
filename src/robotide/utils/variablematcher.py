@@ -14,6 +14,9 @@
 
 import re
 
+_VAR_BODY = r'([^\}]|\\\})*'
+_SCALAR_VARIABLE_MATCHER = re.compile(r'^(\$\{'+_VAR_BODY+'\}) *=?$')
+_LIST_VARIABLE_MATCHER = re.compile(r'^(@\{'+_VAR_BODY+'\})( ?=?|\[\d*\])$')
 
 def is_variable(value):
     return is_scalar_variable(value) or is_list_variable(value)
@@ -22,13 +25,13 @@ def is_scalar_variable(value):
     return _match_scalar_variable(value)
 
 def _match_scalar_variable(value):
-    return re.match('^(\${.*?}) ?=?$', value.strip())
+    return _SCALAR_VARIABLE_MATCHER.match(value.strip())
 
 def is_list_variable(value):
     return _match_list_variable(value)
 
 def _match_list_variable(value):
-    return re.match('^(\@{.*?})(\ ?=?|\[\d*\])$', value.strip())
+    return _LIST_VARIABLE_MATCHER.match(value.strip())
 
 def get_variable(value):
     "Returns variables name without equal sign '=' and indexing '[2]' or None"
