@@ -317,7 +317,10 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _filename_changed(self, message):
         df = message.datafile
-        self.SetItemText(self._find_node.by_controller(df), df.display_name)
+        node = self._find_node.by_controller(df)
+        if not node:
+            raise AssertionError('No node found with controller "%s"' % df)
+        wx.CallAfter(self.SetItemText, node, df.display_name)
 
     def add_keyword_controller(self, controller):
         parent = self._get_datafile_node(self.get_selected_datafile())
