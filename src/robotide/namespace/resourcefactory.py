@@ -20,11 +20,12 @@ from robotide.context import SETTINGS
 
 
 class ResourceFactory(object):
+    _IGNORE_RESOURCE_DIRECTORY_SETTING_NAME = 'ignored resource directory'
 
     def __init__(self, exclude_directory=None):
         self.cache = {}
         self.python_path_cache = {}
-        exclude_directory = exclude_directory or SETTINGS.get('exclude resources directory', None)
+        exclude_directory = exclude_directory or SETTINGS.get(self._IGNORE_RESOURCE_DIRECTORY_SETTING_NAME, None)
         self._exclude_directory = exclude_directory and self._with_separator(self._normalize(exclude_directory))
 
     def _with_separator(self, dir):
