@@ -16,6 +16,7 @@ import wx
 import re
 
 from shortcut import Shortcut
+from robotide.widgets import ImageProvider
 
 
 def ActionInfoCollection(data, event_handler, container=None):
@@ -222,6 +223,8 @@ class ActionInfo(MenuInfo):
         if not icon:
             return None
         if isinstance(icon, basestring):
+            if icon.startswith("CUSTOM_"):
+                return ImageProvider().get_image_by_name(icon[len("CUSTOM_"):])
             return wx.ArtProvider.GetBitmap(getattr(wx, icon),
                                             wx.ART_TOOLBAR, (16, 16))
         return icon
