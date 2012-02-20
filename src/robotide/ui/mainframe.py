@@ -22,6 +22,7 @@ from robotide.widgets import Dialog, ImageProvider, HtmlWindow
 
 from actiontriggers import MenuBar, ToolBar, ShortcutRegistry
 from filedialogs import NewProjectDialog, NewExternalResourceDialog, InitFileFormatDialog
+from review import ReviewDialog
 from pluginmanager import PluginManager
 from tree import Tree
 from notebook import NoteBook
@@ -46,6 +47,7 @@ _menudata = """
 
 [Tools]
 !Manage Plugins
+Search unused keywords
 
 [Help]
 !About | Information about RIDE
@@ -62,6 +64,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         self._controller = controller
         self._init_ui()
         self._plugin_manager = PluginManager(self.notebook)
+        self._review_dialog = None
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         self._subscribe_messages()
         self.ensure_on_screen()
@@ -217,6 +220,11 @@ class RideFrame(wx.Frame, RideEventHandler):
 
     def OnManagePlugins(self, event):
         self._plugin_manager.show(self._application.get_plugins())
+
+    def OnSearchunusedkeywords(self, event):
+        if self._review_dialog == None:
+            self._review_dialog = ReviewDialog(self._controller, self)
+        self._review_dialog.show_dialog()
 
     def OnAbout(self, event):
         dlg = AboutDialog()

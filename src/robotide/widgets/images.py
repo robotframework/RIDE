@@ -35,6 +35,11 @@ class ImageProvider(object):
         self.DATADIRIMG = self._img_from_art_provider(wx.ART_FOLDER)
         self.DATAFILEIMG = self._img_from_art_provider(wx.ART_NORMAL_FILE)
         self.PROGICONS = self._load_prog_icons()
+        self.REPORTIMG = self._load_image('report.png')
+
+    def get_image_by_name(self, name):
+        if name == "REPORTIMG":
+            return self.REPORTIMG
 
     def _load_image(self, name):
         path = self._get_img_path(name)
