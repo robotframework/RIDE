@@ -13,7 +13,9 @@
 #  limitations under the License.
 
 import os
+import sys
 from robot.errors import DataError
+from robot.running.namespace import Namespace
 
 from robotide.robotapi import TestLibrary as RobotTestLibrary
 from robotide.publish import RideLogException
@@ -49,6 +51,7 @@ class LibrarySpec(Spec):
 
     _alias = None
     keywords = tuple()
+    _library_import_by_path_endings = ('.py', '.java', '.class', '/', os.sep)
 
     def __init__(self, name, args=None):
         self.name = self._get_library_name(name)
@@ -65,9 +68,29 @@ class LibrarySpec(Spec):
                 RideLogException(message=msg, exception=err, level='WARN').publish()
 
     def _init_from_library(self, name, args):
-        lib = RobotTestLibrary(name, args)
+        path = self._get_path(name.replace('/', os.sep), os.path.abspath('.'))
+        lib = RobotTestLibrary(path, args)
         keywords = [LibraryKeywordInfo(kw).with_alias(self._alias) for kw in lib.handlers.values()]
         return keywords, lib.doc
+
+    def _get_path(self, name, basedir):
+        if not self._is_library_by_path(name):
+            return name.replace(' ', '')
+        return self._resolve_path(name.replace('/', os.sep), basedir)
+
+    def _is_library_by_path(self, path):
+        return path.lower().endswith(self._library_import_by_path_endings)
+
+    def _resolve_path(self, path, basedir):
+        for base in [basedir] + sys.path:
+            if not (base and os.path.isdir(base)):
+                continue
+            ret = os.path.join(base, path)
+            if os.path.isfile(ret):
+                return ret
+            if os.path.isdir(ret) and os.path.isfile(os.path.join(ret, '__init__.py')):
+                return ret
+        raise DataError
 
     def _get_library_name(self, name):
         if self._alias:
