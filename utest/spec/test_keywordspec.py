@@ -44,13 +44,17 @@ class TestLibrarySpec(unittest.TestCase):
 
 
     def test_reading_library_from_pythonpath(self):
-        # TODO: IS this test needed or is this tested in kwinfo tests?
         spec = LibrarySpec('TestLib')
         self._assert_keyword(spec.keywords[0], 'Testlib Keyword', args=False)
         exp_doc = 'This keyword requires one argument, has one optional argument'\
                     ' and varargs.\n\nThis is some more documentation'
         self._assert_keyword(spec.keywords[1], 'Testlib Keyword With Args',
                              exp_doc, exp_doc.splitlines()[0], args=False)
+
+    def test_reading_library_with_relative_import_from_pythonpath(self):
+        spec = LibrarySpec('sub/libsi.py')
+        assert_equals(len(spec.keywords), 1)
+        self._assert_keyword(spec.keywords[0], 'Libsi Keyword', args=False)
 
     def test_reading_library_from_xml(self):
         spec = LibrarySpec('LibSpecLibrary')
