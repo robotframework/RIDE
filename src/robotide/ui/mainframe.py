@@ -47,7 +47,7 @@ _menudata = """
 
 [Tools]
 !Manage Plugins
-Review Test Data | Do | | CUSTOM_REPORTIMG
+Search unused keywords
 
 [Help]
 !About | Information about RIDE
@@ -221,7 +221,7 @@ class RideFrame(wx.Frame, RideEventHandler):
     def OnManagePlugins(self, event):
         self._plugin_manager.show(self._application.get_plugins())
 
-    def OnReviewTestData(self, event):
+    def OnSearchunusedkeywords(self, event):
         if self._review_dialog == None:
             self._review_dialog = ReviewDialog(self._controller, self)
         self._review_dialog.show_dialog()

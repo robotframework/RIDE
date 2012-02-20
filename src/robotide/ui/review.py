@@ -27,7 +27,7 @@ from threading import Thread
 class ReviewDialog(wx.Frame):
 
     def __init__(self, controller, frame):
-        wx.Frame.__init__(self, frame, title="Review Test Data", style=wx.DEFAULT_FRAME_STYLE|wx.FRAME_FLOAT_ON_PARENT)
+        wx.Frame.__init__(self, frame, title="Search unused keywords", style=wx.SYSTEM_MENU|wx.CAPTION|wx.CLOSE_BOX|wx.CLIP_CHILDREN|wx.FRAME_FLOAT_ON_PARENT)
         self.index = 0
         self.frame = frame
         self._runner = ReviewRunner(controller, self)
@@ -39,21 +39,31 @@ class ReviewDialog(wx.Frame):
     def _build_ui(self):
         
         # General
-        self.SetSize((700,600))
+        self.SetSize((800,600))
         self.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DFACE))
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
+        label_introduction = wx.StaticText(self, label='This dialog helps you finding unused keywords within your opened project.\nIf you want, you can restrict the search to a set of files with the filter.')
+        label_filter_is = wx.StaticText(self, label='Filter is')
+        self.label_filter_status = wx.StaticText(self, label='inactive')
+        header_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        header_sizer.Add(label_introduction, 0, wx.ALL|wx.EXPAND, 3)
+        header_sizer.AddStretchSpacer(1)
+        header_sizer.Add(label_filter_is, 0, wx.LEFT|wx.TOP|wx.BOTTOM|wx.ALIGN_BOTTOM, 3)
+        header_sizer.Add(self.label_filter_status, 0, wx.ALL|wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT, 3)
+        self.Sizer.Add(header_sizer, 0, wx.ALL|wx.EXPAND, 3)
         
         # Filter
-        self._filter_box = wx.StaticBox(self, label="Filter")
-        self._filter_input = wx.TextCtrl(self, size=(-1, 20))
-        self._filter_regex_switch = wx.CheckBox (self, wx.ID_ANY, label="Use RegEx")
-        self._filter_info = wx.StaticText(self, label='Here you can define one or more strings separated by comma (e.g. common,abc,123). The filter matches if at least one string is part of the filename.\nIf you don\'t enter any strings, all opened files are included', size=(-1, 80))
-        self._filter_source_box = wx.StaticBox(self, label="Search")
-        self._filter_source_testcases = wx.CheckBox(self, wx.ID_ANY, label="Test cases")
-        self._filter_source_resources = wx.CheckBox(self, wx.ID_ANY, label="Resources")
-        self._filter_mode = wx.RadioBox(self, label="Mode", choices=["exclude", "include"])
-        self._filter_test_button = ButtonWithHandler(self, 'Show files to be searched')
-        filter_box_sizer = wx.StaticBoxSizer(self._filter_box, wx.HORIZONTAL)
+        self._filter_pane = MyCollapsiblePane(self, label="Filter", style=wx.CP_DEFAULT_STYLE|wx.CP_NO_TLW_RESIZE)
+        self._filter_input = wx.TextCtrl(self._filter_pane.GetPane(), size=(-1, 20))
+        self._filter_regex_switch = wx.CheckBox (self._filter_pane.GetPane(), wx.ID_ANY, label="Use RegEx")
+        self._filter_info = wx.StaticText(self._filter_pane.GetPane(), label='Here you can define one or more strings separated by comma (e.g. common,abc,123).\nThe filter matches if at least one string is part of the filename.\nIf you don\'t enter any strings, all opened files are included', size=(-1, 80))
+        self._filter_source_box = wx.StaticBox(self._filter_pane.GetPane(), label="Search")
+        self._filter_source_testcases = wx.CheckBox(self._filter_pane.GetPane(), wx.ID_ANY, label="Test cases")
+        self._filter_source_resources = wx.CheckBox(self._filter_pane.GetPane(), wx.ID_ANY, label="Resources")
+        self._filter_mode = wx.RadioBox(self._filter_pane.GetPane(), label="Mode", choices=["exclude", "include"])
+        self._filter_test_button = wx.Button(self._filter_pane.GetPane(), wx.ID_ANY, 'Test the filter')
+        filter_box_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        filter_box_sizer.SetSizeHints(self._filter_pane.GetPane())
         filter_source_sizer = wx.StaticBoxSizer(self._filter_source_box, wx.VERTICAL)
         filter_source_sizer.Add(self._filter_source_testcases, 0, wx.ALL, 0)
         filter_source_sizer.Add(self._filter_source_resources, 0, wx.ALL, 0)
@@ -61,6 +71,7 @@ class ReviewDialog(wx.Frame):
         filter_options.Add(filter_source_sizer, 0, wx.BOTTOM|wx.RIGHT|wx.LEFT|wx.EXPAND, 3)
         filter_options.Add(self._filter_mode, 0, wx.ALL|wx.EXPAND, 3)
         filter_input_sizer = wx.BoxSizer(wx.VERTICAL)
+        filter_input_sizer.SetMinSize((600,-1))
         filter_input_sizer.AddSpacer(10)
         filter_input_sizer.Add(self._filter_input, 0, wx.ALL|wx.EXPAND, 3)
         filter_input_sizer.Add(self._filter_regex_switch, 0, wx.ALL|wx.ALIGN_RIGHT, 3)
@@ -71,8 +82,9 @@ class ReviewDialog(wx.Frame):
         filter_controls.Add(self._filter_test_button, 0, wx.ALL|wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT, 3)
         filter_input_sizer.Add(filter_controls, 0, wx.ALL|wx.EXPAND, 3)
         filter_box_sizer.Add(filter_options, 0, wx.ALL|wx.EXPAND, 3)
-        filter_box_sizer.Add(filter_input_sizer, 1, wx.ALL|wx.EXPAND, 3)
-        self.Sizer.Add(filter_box_sizer, 0, wx.ALL|wx.EXPAND, 3)
+        filter_box_sizer.Add(filter_input_sizer, 0, wx.ALL|wx.EXPAND, 3)
+        self._filter_pane.GetPane().SetSizer(filter_box_sizer)
+        self.Sizer.Add(self._filter_pane, 0, wx.ALL|wx.EXPAND, 3)
         
         # Notebook
         self._notebook = wx.Notebook(self, wx.ID_ANY, style=wx.NB_TOP)
@@ -85,9 +97,10 @@ class ReviewDialog(wx.Frame):
         self._unused_kw_list = ResultListCtrl(panel_unused_kw, style=wx.LC_REPORT)
         self._unused_kw_list.InsertColumn(0, "Keyword", width=400)
         self._unused_kw_list.InsertColumn(1, "File", width=250)
+        self._unused_kw_list.SetMinSize((650, 250))
         self._unused_kw_list.set_dialog(self)
         self._delete_button = wx.Button(panel_unused_kw, wx.ID_ANY, 'Delete marked keywords')
-        sizer_unused_kw.Add(self._unused_kw_list, 1, wx.ALL|wx.EXPAND | wx.ALL, 3)
+        sizer_unused_kw.Add(self._unused_kw_list, 1, wx.ALL|wx.EXPAND, 3)
         unused_kw_controls = wx.BoxSizer(wx.HORIZONTAL)
         unused_kw_controls.AddStretchSpacer(1)
         unused_kw_controls.Add(self._delete_button, 0, wx.ALL|wx.ALIGN_RIGHT, 3)
@@ -111,8 +124,10 @@ class ReviewDialog(wx.Frame):
         self.Bind(wx.EVT_CHECKBOX, self._update_filter_source_testcases, self._filter_source_testcases)
         self.Bind(wx.EVT_CHECKBOX, self._update_filter_source_resources, self._filter_source_resources)
         self.Bind(wx.EVT_BUTTON, self.OnDeletemarkedkeywords, self._delete_button)
+        self.Bind(wx.EVT_BUTTON, self.OnShowfilestobesearched, self._filter_test_button)
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnResultSelected, self._unused_kw_list)
         self.Bind(wx.EVT_CHECKBOX, self._upate_filter_regex, self._filter_regex_switch)
+        self.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self._toggle_filter_active, self._filter_pane)
 
     def _set_default_values(self):
         check_testcases = SETTINGS.get('review_check_testcases', True)
@@ -130,6 +145,7 @@ class ReviewDialog(wx.Frame):
         filter_string = SETTINGS.get('review_filter_string', '')
         self._filter_input.ChangeValue(filter_string)
         self._runner.parse_filter_string(filter_string)
+        self._disable_filter()
         self._abort_button.Disable()
         self._delete_button.Disable()
 
@@ -153,6 +169,23 @@ class ReviewDialog(wx.Frame):
         self._runner.set_filter_use_regex(event.Checked())
         SETTINGS.set('review_use_regex', event.Checked())
 
+    def _toggle_filter_active(self, event):
+        if event.GetCollapsed():
+            self._disable_filter()
+        else:
+            self._enable_filter()
+        self._filter_pane.on_change(event)
+    
+    def _disable_filter(self):
+        self._runner.set_filter_active(False)
+        self.label_filter_status.SetLabel('inactive')
+        self.label_filter_status.SetForegroundColour(wx.RED)
+        
+    def _enable_filter(self):
+        self._runner.set_filter_active(True)
+        self.label_filter_status.SetLabel('active')
+        self.label_filter_status.SetForegroundColour((0,200,0))
+
     def OnSearch(self, event):
         self._runner._run_review()
 
@@ -169,8 +202,9 @@ class ReviewDialog(wx.Frame):
             self._unused_kw_list.DeleteItem(index)
             self._unused_kw_list.RemoveClientData(item_id)
             kw.delete()
-            self._notebook.SetPageText(0, "Unused keywords (%d)" % self._unused_kw_list.GetItemCount())
+            self._notebook.SetPageText(0, "Unused Keywords (%d)" % self._unused_kw_list.GetItemCount())
             item = self._unused_kw_list.get_next_checked_item()
+        self.item_in_kw_list_checked()
 
     def OnShowfilestobesearched(self, event):
         df_list = self._runner._get_datafile_list()
@@ -179,7 +213,7 @@ class ReviewDialog(wx.Frame):
         else:
             string_list = "\n".join([df.name for df in df_list])
         message = "Keywords of the following files will be included in the search:\n\n" + string_list
-        wx.MessageDialog(self, message=message, caption="Included files", style=wx.OK).ShowModal()
+        wx.MessageDialog(self, message=message, caption="Included files", style=wx.OK|wx.ICON_INFORMATION).ShowModal()
 
     def OnResultSelected(self, event):
         self.frame.tree.select_node_by_data(self._unused_kw_list.GetClientData(event.GetData()))
@@ -204,10 +238,10 @@ class ReviewDialog(wx.Frame):
     def begin_searching(self):
         self._abort_button.Enable()
         self._search_button.Disable()
-        self._filter_input.Disable()
-        self._filter_test_button.Disable()
+        self._filter_pane.Disable()
         self._unused_kw_list.Disable()
         self._unused_kw_list.ClearAll()
+        self._notebook.SetPageText(0, "Unused Keywords")
         self.index = 0
 
     def add_result_unused_keyword(self, keyword):
@@ -217,7 +251,7 @@ class ReviewDialog(wx.Frame):
         self._unused_kw_list.SetStringItem(self.index, 1, filename)
         self._unused_kw_list.SetItemData(self.index, self.index)
         self._unused_kw_list.SetClientData(self.index, keyword)
-        self._notebook.SetPageText(0, "Unused keywords (%d)" % self._unused_kw_list.GetItemCount())
+        self._notebook.SetPageText(0, "Unused Keywords (%d)" % self._unused_kw_list.GetItemCount())
         self.index += 1
 
     def update_status(self, message, increase=1):
@@ -227,8 +261,7 @@ class ReviewDialog(wx.Frame):
         self.update_status("")
         self._unused_kw_list.Enable()
         self._abort_button.Disable()
-        self._filter_input.Enable()
-        self._filter_test_button.Enable()
+        self._filter_pane.Enable()
         self._search_button.Enable()
 
     def send_radiobox_event(self, mycontrol):
@@ -243,12 +276,16 @@ class ReviewRunner():
     def __init__(self, controller, dialog):
         self._controller = controller
         self._dlg = dialog
+        self._filter_active = False
         self._filter_strings = []
         self._filter_excludes = True
         self._filter_check_testcases = True
         self._filter_check_resources = True
         self._filter_use_regex = False
-        self._results_unused_keywords = []
+        self._threadsafe_calls = True
+
+    def set_filter_active(self, value):
+        self._filter_active = value
 
     def set_filter_mode(self, exclude):
         self._filter_excludes = exclude
@@ -262,6 +299,10 @@ class ReviewRunner():
     def set_filter_use_regex(self, value):
         self._filter_use_regex = value
 
+    def set_threadsafe_calls(self, value):
+        # disable threadsafe calls for scripts without wxApp
+        self._threadsafe_calls = value
+
     def _get_datafile_list(self):
         return [df for df in self._controller.datafiles if self._include_file(df)]
 
@@ -269,13 +310,16 @@ class ReviewRunner():
         if isinstance(datafile, DirectoryController):
             return False
         
-        if not self._filter_check_testcases and isinstance(datafile, TestCaseFileController):
-            return False
-        
-        if not self._filter_check_resources and isinstance(datafile, ResourceFileController):
-            return False
-        
-        if len(self._filter_strings) == 0:
+        if self._filter_active:
+            if not self._filter_check_testcases and isinstance(datafile, TestCaseFileController):
+                return False
+            
+            if not self._filter_check_resources and isinstance(datafile, ResourceFileController):
+                return False
+            
+            if len(self._filter_strings) == 0:
+                return True
+        else:
             return True
         
         results = []
@@ -302,12 +346,17 @@ class ReviewRunner():
 
     def _run(self):
         self._stop_requested = False
-        wx.CallAfter(self._dlg.begin_searching)
+        wx.CallAfter(self._dlg.begin_searching) if self._threadsafe_calls else self._dlg.begin_searching()
         for df in self._get_datafile_list():
             libname = os.path.basename(df.source).rsplit('.', 1)[0]
             for keyword in df.keywords:
                 time.sleep(0) # GIVE SPACE TO OTHER THREADS -- Thread.yield in Java
-                wx.CallAfter(self._dlg.update_status, "%s.%s" % (libname, keyword.name))
+                
+                if self._threadsafe_calls:
+                    wx.CallAfter(self._dlg.update_status, "%s.%s" % (libname, keyword.name))
+                else:
+                    self._dlg.update_status("%s.%s" % (libname, keyword.name))
+
                 if self._stop_requested == True:
                     break
                 
@@ -316,11 +365,14 @@ class ReviewRunner():
                     try:
                         self._controller.execute(FindUsages(keyword.name, keyword_info=keyword.info)).next()
                     except StopIteration:
-                        wx.CallAfter(self._dlg.add_result_unused_keyword, keyword)
+                        if self._threadsafe_calls:
+                            wx.CallAfter(self._dlg.add_result_unused_keyword, keyword)
+                        else:
+                            self._dlg.add_result_unused_keyword(keyword)
                 
             if self._stop_requested == True:
                 break
-        wx.CallAfter(self._dlg.end_searching)
+        wx.CallAfter(self._dlg.end_searching) if self._threadsafe_calls else self._dlg.end_searching()
 
     def request_stop(self):
         self._stop_requested = True
@@ -373,3 +425,22 @@ class ResultListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin, listmix.ListCtrlAu
 
     def print_data(self):
         print self._clientData
+
+class MyCollapsiblePane(wx.CollapsiblePane):
+    
+    def __init__(self, parent, *args, **kwargs):
+        wx.CollapsiblePane.__init__(self, parent, *args, **kwargs)
+        self.Bind(wx.EVT_SIZE, self._recalc_size)
+
+    def _recalc_size(self, event=None):
+        if self.IsExpanded():
+            expand_button_height = 32  # good guess...
+            height = 150
+            self.SetSizeHints(650, height + expand_button_height)
+        if self.IsCollapsed():
+            self.SetSizeHints(650, 40)
+        if event:
+            event.Skip()
+
+    def on_change(self, event):
+        self.GetParent().Layout()
