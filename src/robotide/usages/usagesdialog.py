@@ -11,6 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+from robotide.ui.searchdots import SearchDots
 
 from robotide.widgets import (Dialog, VirtualList, VerticalSizer, ImageList,
                               ImageProvider, ButtonWithHandler)
@@ -36,18 +37,15 @@ class UsagesDialog(Dialog):
         self.usages.add_usage(usage)
 
     def begin_searching(self):
-        self._timer = wx.Timer(self)
-        self.Bind(wx.EVT_TIMER, self._update_searching)
-        self._dots = 0
-        self._timer.Start(500)
+        self._dots = SearchDots(self, self._update_searching)
+        self._dots.start()
 
-    def _update_searching(self, event):
-        self._dots = (self._dots + 1) % 5
-        self.SetTitle("'%s' - %d matches found - Searching%s" % (self._name, self.usages.total_usages, '.'*self._dots))
+    def _update_searching(self, dots):
+        self.SetTitle("'%s' - %d matches found - Searching%s" % (self._name, self.usages.total_usages, dots))
         self.usage_list.refresh()
 
     def end_searching(self):
-        self._timer.Stop()
+        self._dots.stop()
         self.SetTitle("'%s' - %d matches" % (self._name, self.usages.total_usages))
         self.usage_list.refresh()
 
