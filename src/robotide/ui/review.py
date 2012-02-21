@@ -70,8 +70,7 @@ class ReviewDialog(wx.Frame):
         self._filter_info = wx.StaticText(self._filter_pane.GetPane(),
                                           label='Here you can define one or more strings separated by comma (e.g. common,abc,123).\nThe filter matches if at least one string is part of the filename.\nIf you don\'t enter any strings, all opened files are included'
                                           , size=(-1, 80))
-        self._filter_source_box = wx.StaticBox(self._filter_pane.GetPane(),
-                                               label="Search")
+        filter_source_box = wx.StaticBox(self._filter_pane.GetPane(), label="Search")
         self._filter_source_testcases = wx.CheckBox(self._filter_pane.GetPane(),
                                                     wx.ID_ANY,
                                                     label="Test cases")
@@ -85,8 +84,7 @@ class ReviewDialog(wx.Frame):
                                              wx.ID_ANY, 'Test the filter')
         filter_box_sizer = wx.BoxSizer(wx.HORIZONTAL)
         filter_box_sizer.SetSizeHints(self._filter_pane.GetPane())
-        filter_source_sizer = wx.StaticBoxSizer(self._filter_source_box,
-                                                wx.VERTICAL)
+        filter_source_sizer = wx.StaticBoxSizer(filter_source_box, wx.VERTICAL)
         filter_source_sizer.Add(self._filter_source_testcases, 0, wx.ALL, 0)
         filter_source_sizer.Add(self._filter_source_resources, 0, wx.ALL, 0)
         filter_options = wx.BoxSizer(wx.VERTICAL)
@@ -299,7 +297,7 @@ class ReviewDialog(wx.Frame):
         mycontrol.GetEventHandler().ProcessEvent(cmd)
 
 
-class ReviewRunner():
+class ReviewRunner(object):
 
     def __init__(self, controller, dialog):
         self._controller = controller
@@ -337,19 +335,15 @@ class ReviewRunner():
     def _include_file(self, datafile):
         if isinstance(datafile, DirectoryController):
             return False
-        
         if self._filter_active:
             if not self._filter_check_testcases and isinstance(datafile, TestCaseFileController):
                 return False
-            
             if not self._filter_check_resources and isinstance(datafile, ResourceFileController):
                 return False
-            
             if len(self._filter_strings) == 0:
                 return True
         else:
             return True
-        
         results = []
         for string in self._filter_strings:
             if string == '':
@@ -358,10 +352,8 @@ class ReviewRunner():
                 results.append(not re.match(string, datafile.name) == None)
             else:
                 results.append(string in datafile.name)
-        
         if len(results) == 0:
             return True
-        
         found = True in results
         return self._filter_excludes ^ found
 
@@ -369,8 +361,7 @@ class ReviewRunner():
         self._filter_strings = filter_string.split(',')
 
     def _run_review(self):
-        worker = Thread(target=self._run)
-        worker.start()
+        Thread(target=self._run).start()
 
     def _run(self):
         self._stop_requested = False
@@ -379,28 +370,29 @@ class ReviewRunner():
             libname = os.path.basename(df.source).rsplit('.', 1)[0]
             for keyword in df.keywords:
                 time.sleep(0) # GIVE SPACE TO OTHER THREADS -- Thread.yield in Java
-                
                 if self._threadsafe_calls:
                     wx.CallAfter(self._dlg.update_status, "%s.%s" % (libname, keyword.name))
                 else:
                     self._dlg.update_status("%s.%s" % (libname, keyword.name))
-
                 if self._stop_requested == True:
                     break
-                
                 # Check if it is unused
                 if not isinstance(keyword, LibraryKeywordInfo) and keyword.name:
-                    try:
-                        self._controller.execute(FindUsages(keyword.name, keyword_info=keyword.info)).next()
-                    except StopIteration:
+                    if self._is_unused(keyword):
                         if self._threadsafe_calls:
                             wx.CallAfter(self._dlg.add_result_unused_keyword, keyword)
                         else:
                             self._dlg.add_result_unused_keyword(keyword)
-                
             if self._stop_requested == True:
                 break
         wx.CallAfter(self._dlg.end_searching) if self._threadsafe_calls else self._dlg.end_searching()
+
+    def _is_unused(self, keyword):
+        try:
+            self._controller.execute(FindUsages(keyword.name, keyword_info=keyword.info)).next()
+            return False
+        except StopIteration:
+            return True
 
     def request_stop(self):
         self._stop_requested = True
