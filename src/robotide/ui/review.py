@@ -17,6 +17,7 @@ import wx
 import wx.lib.mixins.listctrl as listmix
 import time
 import re
+from robotide.context.platform import IS_MAC
 from robotide.ui.searchdots import SearchDots
 from robotide.widgets import ButtonWithHandler, Label
 from robotide.spec.iteminfo import LibraryKeywordInfo
@@ -68,8 +69,7 @@ class ReviewDialog(wx.Frame):
         self._filter_regex_switch = wx.CheckBox(self._filter_pane.GetPane(),
                                                 wx.ID_ANY, label="Use RegEx")
         self._filter_info = wx.StaticText(self._filter_pane.GetPane(),
-                                          label='Here you can define one or more strings separated by comma (e.g. common,abc,123).\nThe filter matches if at least one string is part of the filename.\nIf you don\'t enter any strings, all opened files are included'
-                                          , size=(-1, 80))
+                                          label='Here you can define one or more strings separated by comma (e.g. common,abc,123).\nThe filter matches if at least one string is part of the filename.\nIf you don\'t enter any strings, all opened files are included')
         filter_source_box = wx.StaticBox(self._filter_pane.GetPane(), label="Search")
         self._filter_source_testcases = wx.CheckBox(self._filter_pane.GetPane(),
                                                     wx.ID_ANY,
@@ -85,8 +85,9 @@ class ReviewDialog(wx.Frame):
         filter_box_sizer = wx.BoxSizer(wx.HORIZONTAL)
         filter_box_sizer.SetSizeHints(self._filter_pane.GetPane())
         filter_source_sizer = wx.StaticBoxSizer(filter_source_box, wx.VERTICAL)
-        filter_source_sizer.Add(self._filter_source_testcases, 0, wx.ALL, 0)
-        filter_source_sizer.Add(self._filter_source_resources, 0, wx.ALL, 0)
+        checkbox_border = 0 if IS_MAC else 3
+        filter_source_sizer.Add(self._filter_source_testcases, 0, wx.ALL, checkbox_border)
+        filter_source_sizer.Add(self._filter_source_resources, 0, wx.ALL, checkbox_border)
         filter_options = wx.BoxSizer(wx.VERTICAL)
         filter_options.Add(filter_source_sizer, 0,
                            wx.BOTTOM | wx.RIGHT | wx.LEFT | wx.EXPAND, 3)
@@ -461,7 +462,7 @@ class MyCollapsiblePane(wx.CollapsiblePane):
     def _recalc_size(self, event=None):
         if self.IsExpanded():
             expand_button_height = 32  # good guess...
-            height = 150
+            height = 150 if IS_MAC else 135
             self.SetSizeHints(650, height + expand_button_height)
         if self.IsCollapsed():
             self.SetSizeHints(650, 40)
