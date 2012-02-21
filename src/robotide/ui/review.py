@@ -267,7 +267,7 @@ class ReviewDialog(wx.Frame):
         self._filter_pane.Disable()
         self._unused_kw_list.Disable()
         self._unused_kw_list.ClearAll()
-        self._notebook.SetPageText(0, "Unused Keywords")
+        self._update_notebook_text("Unused Keywords")
         self.index = 0
 
     def add_result_unused_keyword(self, keyword):
@@ -277,8 +277,11 @@ class ReviewDialog(wx.Frame):
         self._unused_kw_list.SetStringItem(self.index, 1, filename)
         self._unused_kw_list.SetItemData(self.index, self.index)
         self._unused_kw_list.SetClientData(self.index, keyword)
-        self._notebook.SetPageText(0, "Unused Keywords (%d)" % self._unused_kw_list.GetItemCount())
+        self._update_notebook_text("Unused Keywords (%d)" % self._unused_kw_list.GetItemCount())
         self.index += 1
+
+    def _update_notebook_text(self, new_text):
+        self._notebook.SetPageText(0, new_text)
 
     def update_status(self, message, increase=1):
         self._status_label.SetLabel(message)
@@ -330,7 +333,7 @@ class ReviewRunner(object):
         self._threadsafe_calls = value
 
     def _get_datafile_list(self):
-        return [df for df in self._controller.datafiles if self._include_file(df)]
+        return (df for df in self._controller.datafiles if self._include_file(df))
 
     def _include_file(self, datafile):
         if isinstance(datafile, DirectoryController):
@@ -365,27 +368,24 @@ class ReviewRunner(object):
 
     def _run(self):
         self._stop_requested = False
-        wx.CallAfter(self._dlg.begin_searching) if self._threadsafe_calls else self._dlg.begin_searching()
+        self._threadsafe_call(self._dlg.begin_searching)
         for df in self._get_datafile_list():
             libname = os.path.basename(df.source).rsplit('.', 1)[0]
             for keyword in df.keywords:
                 time.sleep(0) # GIVE SPACE TO OTHER THREADS -- Thread.yield in Java
-                if self._threadsafe_calls:
-                    wx.CallAfter(self._dlg.update_status, "%s.%s" % (libname, keyword.name))
-                else:
-                    self._dlg.update_status("%s.%s" % (libname, keyword.name))
+                self._threadsafe_call(self._dlg.update_status, "%s.%s" % (libname, keyword.name))
                 if self._stop_requested == True:
                     break
                 # Check if it is unused
                 if not isinstance(keyword, LibraryKeywordInfo) and keyword.name:
                     if self._is_unused(keyword):
-                        if self._threadsafe_calls:
-                            wx.CallAfter(self._dlg.add_result_unused_keyword, keyword)
-                        else:
-                            self._dlg.add_result_unused_keyword(keyword)
+                        self._threadsafe_call(self._dlg.add_result_unused_keyword, keyword)
             if self._stop_requested == True:
                 break
-        wx.CallAfter(self._dlg.end_searching) if self._threadsafe_calls else self._dlg.end_searching()
+        self._threadsafe_call(self._dlg.end_searching)
+
+    def _threadsafe_call(self, function, *args):
+        wx.CallAfter(function, *args) if self._threadsafe_calls else function(*args)
 
     def _is_unused(self, keyword):
         try:
