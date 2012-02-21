@@ -18,6 +18,7 @@ import wx.lib.mixins.listctrl as listmix
 import time
 import re
 from robotide.context import SETTINGS
+from robotide.ui.searchdots import SearchDots
 from robotide.widgets import ButtonWithHandler, Label
 from robotide.spec.iteminfo import LibraryKeywordInfo
 from robotide.usages.commands import FindUsages
@@ -269,6 +270,8 @@ class ReviewDialog(wx.Frame):
         self._unused_kw_list.ClearAll()
         self._update_notebook_text("Unused Keywords")
         self.index = 0
+        self._dots = SearchDots(self, self._update_unused_keywords_text)
+        self._dots.start()
 
     def add_result_unused_keyword(self, keyword):
         keyword_info = keyword.info
@@ -277,8 +280,10 @@ class ReviewDialog(wx.Frame):
         self._unused_kw_list.SetStringItem(self.index, 1, filename)
         self._unused_kw_list.SetItemData(self.index, self.index)
         self._unused_kw_list.SetClientData(self.index, keyword)
-        self._update_notebook_text("Unused Keywords (%d)" % self._unused_kw_list.GetItemCount())
         self.index += 1
+
+    def _update_unused_keywords_text(self, dots):
+        self._update_notebook_text("Unused Keywords (%d) - Searching%s" % (self._unused_kw_list.GetItemCount(), dots))
 
     def _update_notebook_text(self, new_text):
         self._notebook.SetPageText(0, new_text)
@@ -287,7 +292,8 @@ class ReviewDialog(wx.Frame):
         self._status_label.SetLabel(message)
 
     def end_searching(self):
-        self.update_status("")
+        self._dots.stop()
+        self.update_status("Unused Keywords (%d) - Search finished" % (self._unused_kw_list.GetItemCount()))
         self._unused_kw_list.Enable()
         self._abort_button.Disable()
         self._filter_pane.Enable()
