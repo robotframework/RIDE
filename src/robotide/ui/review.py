@@ -223,7 +223,7 @@ class ReviewDialog(wx.Frame):
             self._unused_kw_list.DeleteItem(index)
             self._unused_kw_list.RemoveClientData(item_id)
             kw.delete()
-            self._notebook.SetPageText(0, "Unused Keywords (%d)" % self._unused_kw_list.GetItemCount())
+            self._update_notebook_text("Unused Keywords (%d)" % self._unused_kw_list.GetItemCount())
             item = self._unused_kw_list.get_next_checked_item()
         self.item_in_kw_list_checked()
 
@@ -247,6 +247,7 @@ class ReviewDialog(wx.Frame):
 
     def show_dialog(self):
         if not self.IsShown():
+            self._clear_search_results()
             self.Show()
         self.Raise()
 
@@ -261,11 +262,15 @@ class ReviewDialog(wx.Frame):
         self._search_button.Disable()
         self._filter_pane.Disable()
         self._unused_kw_list.Disable()
-        self._unused_kw_list.ClearAll()
-        self._update_notebook_text("Unused Keywords")
+        self._clear_search_results()
         self.index = 0
         self._dots = SearchDots(self, self._update_unused_keywords_text)
         self._dots.start()
+
+    def _clear_search_results(self):
+        self._unused_kw_list.ClearAll()
+        self._update_notebook_text('Unused Keywords')
+        self._status_label.SetLabel('')
 
     def add_result_unused_keyword(self, keyword):
         keyword_info = keyword.info
@@ -287,6 +292,7 @@ class ReviewDialog(wx.Frame):
 
     def end_searching(self):
         self._dots.stop()
+        self._update_notebook_text('Unused Keywords')
         self.update_status("Unused Keywords (%d) - Search finished" % (self._unused_kw_list.GetItemCount()))
         self._unused_kw_list.Enable()
         self._abort_button.Disable()
