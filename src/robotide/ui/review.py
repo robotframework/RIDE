@@ -17,7 +17,6 @@ import wx
 import wx.lib.mixins.listctrl as listmix
 import time
 import re
-from robotide.context import SETTINGS
 from robotide.ui.searchdots import SearchDots
 from robotide.widgets import ButtonWithHandler, Label
 from robotide.spec.iteminfo import LibraryKeywordInfo
@@ -157,19 +156,19 @@ class ReviewDialog(wx.Frame):
         self.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self._toggle_filter_active, self._filter_pane)
 
     def _set_default_values(self):
-        check_testcases = SETTINGS.get('review_check_testcases', True)
+        check_testcases = True
         self._filter_source_testcases.SetValue(check_testcases)
         self._runner.set_filter_source_testcases(check_testcases)
-        check_resources = SETTINGS.get('review_check_resources', True)
+        check_resources = True
         self._filter_source_resources.SetValue(check_resources)
         self._runner.set_filter_source_resources(check_resources)
-        filter_mode = SETTINGS.get('review_filter_mode', 0)
+        filter_mode = 0
         self._filter_mode.SetSelection(filter_mode)
         self._runner.set_filter_mode(filter_mode == 0)
-        use_regex = SETTINGS.get('review_use_regex', False)
+        use_regex = False
         self._filter_regex_switch.SetValue(use_regex)
         self._runner.set_filter_use_regex(use_regex)
-        filter_string = SETTINGS.get('review_filter_string', '')
+        filter_string = ''
         self._filter_input.ChangeValue(filter_string)
         self._runner.parse_filter_string(filter_string)
         self._disable_filter()
@@ -178,23 +177,18 @@ class ReviewDialog(wx.Frame):
 
     def _update_filter(self, event):
         self._runner.parse_filter_string(event.GetString())
-        SETTINGS.set('review_filter_string', event.GetString())
 
     def _update_filter_mode(self, event):
         self._runner.set_filter_mode(event.GetInt() == 0)
-        SETTINGS.set('review_filter_mode', event.GetInt())
 
     def _update_filter_source_testcases(self, event):
         self._runner.set_filter_source_testcases(event.Checked())
-        SETTINGS.set('review_check_testcases', event.Checked())
 
     def _update_filter_source_resources(self, event):
         self._runner.set_filter_source_resources(event.Checked())
-        SETTINGS.set('review_check_resources', event.Checked())
 
     def _upate_filter_regex(self, event):
         self._runner.set_filter_use_regex(event.Checked())
-        SETTINGS.set('review_use_regex', event.Checked())
 
     def _toggle_filter_active(self, event):
         if event.GetCollapsed():
