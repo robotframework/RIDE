@@ -37,85 +37,113 @@ class ReviewDialog(wx.Frame):
         self.CenterOnParent()
 
     def _build_ui(self):
-        
-        # General
         self.SetSize((800,600))
         self.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DFACE))
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
-        label_introduction = wx.StaticText(self, label='This dialog helps you finding unused keywords within your opened project.\nIf you want, you can restrict the search to a set of files with the filter.')
+        self._build_header()
+        self._build_filter()
+        self._build_notebook()
+        self._build_unused_keywords()
+        self._build_controls()
+
+    def _build_header(self):
+        label_introduction = wx.StaticText(self,
+                                           label='This dialog helps you finding unused keywords within your opened project.\nIf you want, you can restrict the search to a set of files with the filter.')
         label_filter_is = wx.StaticText(self, label='Filter is')
         self.label_filter_status = wx.StaticText(self, label='inactive')
         header_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        header_sizer.Add(label_introduction, 0, wx.ALL|wx.EXPAND, 3)
+        header_sizer.Add(label_introduction, 0, wx.ALL | wx.EXPAND, 3)
         header_sizer.AddStretchSpacer(1)
-        header_sizer.Add(label_filter_is, 0, wx.LEFT|wx.TOP|wx.BOTTOM|wx.ALIGN_BOTTOM, 3)
-        header_sizer.Add(self.label_filter_status, 0, wx.ALL|wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT, 3)
-        self.Sizer.Add(header_sizer, 0, wx.ALL|wx.EXPAND, 3)
-        
-        # Filter
-        self._filter_pane = MyCollapsiblePane(self, label="Filter", style=wx.CP_DEFAULT_STYLE|wx.CP_NO_TLW_RESIZE)
-        self._filter_input = wx.TextCtrl(self._filter_pane.GetPane(), size=(-1, 20))
-        self._filter_regex_switch = wx.CheckBox (self._filter_pane.GetPane(), wx.ID_ANY, label="Use RegEx")
-        self._filter_info = wx.StaticText(self._filter_pane.GetPane(), label='Here you can define one or more strings separated by comma (e.g. common,abc,123).\nThe filter matches if at least one string is part of the filename.\nIf you don\'t enter any strings, all opened files are included', size=(-1, 80))
-        self._filter_source_box = wx.StaticBox(self._filter_pane.GetPane(), label="Search")
-        self._filter_source_testcases = wx.CheckBox(self._filter_pane.GetPane(), wx.ID_ANY, label="Test cases")
-        self._filter_source_resources = wx.CheckBox(self._filter_pane.GetPane(), wx.ID_ANY, label="Resources")
-        self._filter_mode = wx.RadioBox(self._filter_pane.GetPane(), label="Mode", choices=["exclude", "include"])
-        self._filter_test_button = wx.Button(self._filter_pane.GetPane(), wx.ID_ANY, 'Test the filter')
+        header_sizer.Add(label_filter_is, 0,
+                         wx.LEFT | wx.TOP | wx.BOTTOM | wx.ALIGN_BOTTOM, 3)
+        header_sizer.Add(self.label_filter_status, 0,
+                         wx.ALL | wx.ALIGN_BOTTOM | wx.ALIGN_RIGHT, 3)
+        self.Sizer.Add(header_sizer, 0, wx.ALL | wx.EXPAND, 3)
+
+    def _build_filter(self):
+        self._filter_pane = MyCollapsiblePane(self, label="Filter",
+                                              style=wx.CP_DEFAULT_STYLE | wx.CP_NO_TLW_RESIZE)
+        self._filter_input = wx.TextCtrl(self._filter_pane.GetPane(),
+                                         size=(-1, 20))
+        self._filter_regex_switch = wx.CheckBox(self._filter_pane.GetPane(),
+                                                wx.ID_ANY, label="Use RegEx")
+        self._filter_info = wx.StaticText(self._filter_pane.GetPane(),
+                                          label='Here you can define one or more strings separated by comma (e.g. common,abc,123).\nThe filter matches if at least one string is part of the filename.\nIf you don\'t enter any strings, all opened files are included'
+                                          , size=(-1, 80))
+        self._filter_source_box = wx.StaticBox(self._filter_pane.GetPane(),
+                                               label="Search")
+        self._filter_source_testcases = wx.CheckBox(self._filter_pane.GetPane(),
+                                                    wx.ID_ANY,
+                                                    label="Test cases")
+        self._filter_source_resources = wx.CheckBox(self._filter_pane.GetPane(),
+                                                    wx.ID_ANY,
+                                                    label="Resources")
+        self._filter_mode = wx.RadioBox(self._filter_pane.GetPane(),
+                                        label="Mode",
+                                        choices=["exclude", "include"])
+        self._filter_test_button = wx.Button(self._filter_pane.GetPane(),
+                                             wx.ID_ANY, 'Test the filter')
         filter_box_sizer = wx.BoxSizer(wx.HORIZONTAL)
         filter_box_sizer.SetSizeHints(self._filter_pane.GetPane())
-        filter_source_sizer = wx.StaticBoxSizer(self._filter_source_box, wx.VERTICAL)
+        filter_source_sizer = wx.StaticBoxSizer(self._filter_source_box,
+                                                wx.VERTICAL)
         filter_source_sizer.Add(self._filter_source_testcases, 0, wx.ALL, 0)
         filter_source_sizer.Add(self._filter_source_resources, 0, wx.ALL, 0)
         filter_options = wx.BoxSizer(wx.VERTICAL)
-        filter_options.Add(filter_source_sizer, 0, wx.BOTTOM|wx.RIGHT|wx.LEFT|wx.EXPAND, 3)
-        filter_options.Add(self._filter_mode, 0, wx.ALL|wx.EXPAND, 3)
+        filter_options.Add(filter_source_sizer, 0,
+                           wx.BOTTOM | wx.RIGHT | wx.LEFT | wx.EXPAND, 3)
+        filter_options.Add(self._filter_mode, 0, wx.ALL | wx.EXPAND, 3)
         filter_input_sizer = wx.BoxSizer(wx.VERTICAL)
-        filter_input_sizer.SetMinSize((600,-1))
+        filter_input_sizer.SetMinSize((600, -1))
         filter_input_sizer.AddSpacer(10)
-        filter_input_sizer.Add(self._filter_input, 0, wx.ALL|wx.EXPAND, 3)
-        filter_input_sizer.Add(self._filter_regex_switch, 0, wx.ALL|wx.ALIGN_RIGHT, 3)
-        filter_input_sizer.Add(self._filter_info, 0, wx.ALL|wx.EXPAND, 3)
+        filter_input_sizer.Add(self._filter_input, 0, wx.ALL | wx.EXPAND, 3)
+        filter_input_sizer.Add(self._filter_regex_switch, 0,
+                               wx.ALL | wx.ALIGN_RIGHT, 3)
+        filter_input_sizer.Add(self._filter_info, 0, wx.ALL | wx.EXPAND, 3)
         filter_input_sizer.AddStretchSpacer(1)
         filter_controls = wx.BoxSizer(wx.HORIZONTAL)
         filter_controls.AddStretchSpacer(1)
-        filter_controls.Add(self._filter_test_button, 0, wx.ALL|wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT, 3)
-        filter_input_sizer.Add(filter_controls, 0, wx.ALL|wx.EXPAND, 3)
-        filter_box_sizer.Add(filter_options, 0, wx.ALL|wx.EXPAND, 3)
-        filter_box_sizer.Add(filter_input_sizer, 0, wx.ALL|wx.EXPAND, 3)
+        filter_controls.Add(self._filter_test_button, 0,
+                            wx.ALL | wx.ALIGN_BOTTOM | wx.ALIGN_RIGHT, 3)
+        filter_input_sizer.Add(filter_controls, 0, wx.ALL | wx.EXPAND, 3)
+        filter_box_sizer.Add(filter_options, 0, wx.ALL | wx.EXPAND, 3)
+        filter_box_sizer.Add(filter_input_sizer, 0, wx.ALL | wx.EXPAND, 3)
         self._filter_pane.GetPane().SetSizer(filter_box_sizer)
-        self.Sizer.Add(self._filter_pane, 0, wx.ALL|wx.EXPAND, 3)
-        
-        # Notebook
-        self._notebook = wx.Notebook(self, wx.ID_ANY, style=wx.NB_TOP)
-        self.Sizer.Add(self._notebook, 1, wx.ALL|wx.EXPAND, 3)
-        
-        # Unused Keywords
+        self.Sizer.Add(self._filter_pane, 0, wx.ALL | wx.EXPAND, 3)
+
+    def _build_unused_keywords(self):
         panel_unused_kw = wx.Panel(self._notebook)
         sizer_unused_kw = wx.BoxSizer(wx.VERTICAL)
         panel_unused_kw.SetSizer(sizer_unused_kw)
-        self._unused_kw_list = ResultListCtrl(panel_unused_kw, style=wx.LC_REPORT)
+        self._unused_kw_list = ResultListCtrl(panel_unused_kw,
+                                              style=wx.LC_REPORT)
         self._unused_kw_list.InsertColumn(0, "Keyword", width=400)
         self._unused_kw_list.InsertColumn(1, "File", width=250)
         self._unused_kw_list.SetMinSize((650, 250))
         self._unused_kw_list.set_dialog(self)
-        self._delete_button = wx.Button(panel_unused_kw, wx.ID_ANY, 'Delete marked keywords')
-        sizer_unused_kw.Add(self._unused_kw_list, 1, wx.ALL|wx.EXPAND, 3)
+        self._delete_button = wx.Button(panel_unused_kw, wx.ID_ANY,
+                                        'Delete marked keywords')
+        sizer_unused_kw.Add(self._unused_kw_list, 1, wx.ALL | wx.EXPAND, 3)
         unused_kw_controls = wx.BoxSizer(wx.HORIZONTAL)
         unused_kw_controls.AddStretchSpacer(1)
-        unused_kw_controls.Add(self._delete_button, 0, wx.ALL|wx.ALIGN_RIGHT, 3)
-        sizer_unused_kw.Add(unused_kw_controls, 0, wx.ALL|wx.EXPAND, 3)
+        unused_kw_controls.Add(self._delete_button, 0, wx.ALL | wx.ALIGN_RIGHT,
+                               3)
+        sizer_unused_kw.Add(unused_kw_controls, 0, wx.ALL | wx.EXPAND, 3)
         self._notebook.AddPage(panel_unused_kw, "Unused Keywords")
-        
-        # Controls
+
+    def _build_controls(self):
         self._search_button = ButtonWithHandler(self, 'Search')
         self._abort_button = ButtonWithHandler(self, 'Abort')
         self._status_label = Label(self, label='')
         controls = wx.BoxSizer(wx.HORIZONTAL)
         controls.Add(self._search_button, 0, wx.ALL, 3)
         controls.Add(self._abort_button, 0, wx.ALL, 3)
-        controls.Add(self._status_label, 1, wx.ALL|wx.EXPAND, 3)
-        self.Sizer.Add(controls, 0, wx.ALL|wx.EXPAND, 3)
+        controls.Add(self._status_label, 1, wx.ALL | wx.EXPAND, 3)
+        self.Sizer.Add(controls, 0, wx.ALL | wx.EXPAND, 3)
+
+    def _build_notebook(self):
+        self._notebook = wx.Notebook(self, wx.ID_ANY, style=wx.NB_TOP)
+        self.Sizer.Add(self._notebook, 1, wx.ALL | wx.EXPAND, 3)
 
     def _make_bindings(self):
         self.Bind(wx.EVT_CLOSE, self._close_dialog)
