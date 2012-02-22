@@ -218,7 +218,7 @@ class ReviewDialog(wx.Frame):
 
     def OnDeletemarkedkeywords(self, event):
         item = self._unused_kw_list.get_next_checked_item()
-        while(item):
+        while item:
             index = item[0]
             kw = item[1]
             listitem = item[2]
@@ -232,7 +232,7 @@ class ReviewDialog(wx.Frame):
 
     def OnShowfilestobesearched(self, event):
         df_list = self._runner._get_datafile_list()
-        if len(df_list) == 0:
+        if not df_list:
             string_list = "(None)"
         else:
             string_list = "\n".join([df.name for df in df_list])
@@ -357,7 +357,7 @@ class ReviewRunner(object):
                 return False
             if not self._filter_check_resources and isinstance(datafile, ResourceFileController):
                 return False
-            if len(self._filter_strings) == 0:
+            if not self._filter_strings:
                 return True
         else:
             return True
@@ -366,12 +366,12 @@ class ReviewRunner(object):
             if string == '':
                 continue
             if self._filter_use_regex:
-                results.append(not re.match(string, datafile.name) == None)
+                results.append(bool(re.match(string, datafile.name)))
             else:
                 results.append(string in datafile.name)
-        if len(results) == 0:
+        if not results:
             return True
-        found = True in results
+        found = any(results)
         return self._filter_excludes ^ found
 
     def parse_filter_string(self, filter_string):
