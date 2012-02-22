@@ -1,0 +1,13 @@
+*** Settings ***
+Resource          Res1.txt
+Resource          foobar.txt
+
+*** Test Cases ***
+Another test case
+    Do that
+    Local keyword
+
+*** Keywords ***
+Local keyword
+    Log    Hello
+

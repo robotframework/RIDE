@@ -1,0 +1,9 @@
+*** Settings ***
+Resource          Res1.txt
+Resource          Abc.txt
+
+*** Test Cases ***
+Test case
+    Do this
+    Do that
+

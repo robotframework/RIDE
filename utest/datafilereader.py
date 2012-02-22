@@ -36,6 +36,8 @@ ARGUMENTS_PATH = _makepath('arguments_suite')
 
 SIMPLE_PROJECT = _makepath('simple', 'test.txt')
 
+UNUSED_KEYWORDS_PATH = _makepath('unused_keywords')
+
 def construct_chief_controller(datapath):
     chief = ChiefController(Namespace())
     chief.load_data(datapath, NullObserver())
