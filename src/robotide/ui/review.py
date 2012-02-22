@@ -319,63 +319,28 @@ class ReviewRunner(object):
     def __init__(self, controller, model):
         self._controller = controller
         self._model = model
-        self._filter_active = False
-        self._filter_strings = []
-        self._filter_excludes = True
-        self._filter_check_testcases = True
-        self._filter_check_resources = True
-        self._filter_use_regex = False
-        self._threadsafe_calls = True
+        self._filter = ResultFilter()
 
     def set_filter_active(self, value):
-        self._filter_active = value
+        self._filter.active = value
 
     def set_filter_mode(self, exclude):
-        self._filter_excludes = exclude
+        self._filter.excludes = exclude
 
     def set_filter_source_testcases(self, value):
-        self._filter_check_testcases = value
+        self._filter.check_testcases = value
 
     def set_filter_source_resources(self, value):
-        self._filter_check_resources = value
+        self._filter.check_resources = value
 
     def set_filter_use_regex(self, value):
-        self._filter_use_regex = value
-
-    def set_threadsafe_calls(self, value):
-        # disable threadsafe calls for scripts without wxApp
-        self._threadsafe_calls = value
-
-    def _get_datafile_list(self):
-        return (df for df in self._controller.datafiles if self._include_file(df))
-
-    def _include_file(self, datafile):
-        if isinstance(datafile, DirectoryController):
-            return False
-        if self._filter_active:
-            if not self._filter_check_testcases and isinstance(datafile, TestCaseFileController):
-                return False
-            if not self._filter_check_resources and isinstance(datafile, ResourceFileController):
-                return False
-            if not self._filter_strings:
-                return True
-        else:
-            return True
-        results = []
-        for string in self._filter_strings:
-            if string == '':
-                continue
-            if self._filter_use_regex:
-                results.append(bool(re.match(string, datafile.name)))
-            else:
-                results.append(string in datafile.name)
-        if not results:
-            return True
-        found = any(results)
-        return self._filter_excludes ^ found
+        self._filter.use_regex = value
 
     def parse_filter_string(self, filter_string):
-        self._filter_strings = filter_string.split(',')
+        self._filter.strings = filter_string.split(',')
+
+    def _get_datafile_list(self):
+        return (df for df in self._controller.datafiles if self._filter.include_file(df))
 
     def _run_review(self):
         self._model.begin_search()
@@ -404,6 +369,44 @@ class ReviewRunner(object):
             return False
         except StopIteration:
             return True
+
+
+class ResultFilter(object):
+
+    def __init__(self):
+        self.strings = []
+        self.excludes = True
+        self.check_testcases = True
+        self.check_resources = True
+        self.use_regex = False
+        self.active = False
+
+    def include_file(self, datafile):
+        if isinstance(datafile, DirectoryController):
+            return False
+        if not self.active:
+            return True
+        if not self.check_testcases and isinstance(datafile, TestCaseFileController):
+            return False
+        if not self.check_resources and isinstance(datafile, ResourceFileController):
+            return False
+        if not self.strings:
+            return True
+        results = self._create_results(datafile.name)
+        if not results:
+            return True # <- FIXME: Bug!?
+        return self.excludes ^ any(results)
+
+    def _create_results(self, name):
+        results = []
+        for string in self.strings:
+            if string == '':
+                continue
+            if self.use_regex:
+                results.append(bool(re.match(string, name)))
+            else:
+                results.append(string in name)
+        return results
 
 
 class ResultModel(object):
