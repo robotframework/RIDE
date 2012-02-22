@@ -337,7 +337,7 @@ class ReviewRunner(object):
         self._filter.use_regex = value
 
     def parse_filter_string(self, filter_string):
-        self._filter.strings = filter_string.split(',')
+        self._filter.set_strings(filter_string.split(','))
 
     def _get_datafile_list(self):
         return (df for df in self._controller.datafiles if self._filter.include_file(df))
@@ -374,12 +374,15 @@ class ReviewRunner(object):
 class ResultFilter(object):
 
     def __init__(self):
-        self.strings = []
+        self._strings = []
         self.excludes = True
         self.check_testcases = True
         self.check_resources = True
         self.use_regex = False
         self.active = False
+
+    def set_strings(self, strings):
+        self._strings = [s.strip() for s in strings if s.strip()]
 
     def include_file(self, datafile):
         if isinstance(datafile, DirectoryController):
@@ -390,23 +393,16 @@ class ResultFilter(object):
             return False
         if not self.check_resources and isinstance(datafile, ResourceFileController):
             return False
-        if not self.strings:
+        if not self._strings:
             return True
-        results = self._create_results(datafile.name)
-        if not results:
-            return True # <- FIXME: Bug!?
-        return self.excludes ^ any(results)
+        return self.excludes ^ any(self._results(datafile.name))
 
-    def _create_results(self, name):
-        results = []
-        for string in self.strings:
-            if string == '':
-                continue
+    def _results(self, name):
+        for string in self._strings:
             if self.use_regex:
-                results.append(bool(re.match(string, name)))
+                yield bool(re.match(string, name))
             else:
-                results.append(string in name)
-        return results
+                yield string in name
 
 
 class ResultModel(object):
