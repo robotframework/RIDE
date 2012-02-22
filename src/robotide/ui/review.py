@@ -235,7 +235,7 @@ class ReviewDialog(wx.Frame):
         if not df_list:
             string_list = "(None)"
         else:
-            string_list = "\n".join([df.name for df in df_list])
+            string_list = "\n".join(df.name for df in df_list)
         message = "Keywords of the following files will be included in the search:\n\n" + string_list
         wx.MessageDialog(self, message=message, caption="Included files", style=wx.OK|wx.ICON_INFORMATION).ShowModal()
 
