@@ -74,10 +74,10 @@ class ReviewDialog(wx.Frame):
         filter_source_box = wx.StaticBox(self._filter_pane.GetPane(), label="Search")
         self._filter_source_testcases = wx.CheckBox(self._filter_pane.GetPane(),
                                                     wx.ID_ANY,
-                                                    label="Test cases")
+                                                    label="Test case files")
         self._filter_source_resources = wx.CheckBox(self._filter_pane.GetPane(),
                                                     wx.ID_ANY,
-                                                    label="Resources")
+                                                    label="Resource files")
         self._filter_mode = wx.RadioBox(self._filter_pane.GetPane(),
                                         label="Mode",
                                         choices=["exclude", "include"])

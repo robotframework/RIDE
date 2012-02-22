@@ -41,6 +41,8 @@ class TestReview(unittest.TestCase):
                                 ",,", ["Test suite 1", "Test suite 2", "Res1", "Abc", "Foobar"]))
         assert_true(self.helper(True, True, False, False, True,
                                 ",s,", ["Test suite 1", "Test suite 2", "Res1"]))
+        assert_true(self.helper(True, True, True, True, True,
+                                ".*es,.*o{2}", ["Abc"]))
 
     def helper(self, tcfiles, resfiles, exclude, regex, active, string, expected_results):
         self.runner.set_filter_active(active)
