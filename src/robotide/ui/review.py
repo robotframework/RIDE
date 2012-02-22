@@ -31,7 +31,8 @@ class ReviewDialog(wx.Frame):
         wx.Frame.__init__(self, frame, title="Search unused keywords", style=wx.SYSTEM_MENU|wx.CAPTION|wx.CLOSE_BOX|wx.CLIP_CHILDREN|wx.FRAME_FLOAT_ON_PARENT)
         self.index = 0
         self.frame = frame
-        self._runner = ReviewRunner(controller, self)
+        self._search_model = ResultModel()
+        self._runner = ReviewRunner(controller, self._search_model)
         self._build_ui()
         self._make_bindings()
         self._set_default_values()
@@ -209,10 +210,11 @@ class ReviewDialog(wx.Frame):
         self.label_filter_status.SetForegroundColour((0,200,0))
 
     def OnSearch(self, event):
+        self.begin_searching()
         self._runner._run_review()
 
     def OnAbort(self, event):
-        self._runner.request_stop()
+        self.end_searching()
 
     def OnDeletemarkedkeywords(self, event):
         item = self._unused_kw_list.get_next_checked_item()
@@ -264,26 +266,30 @@ class ReviewDialog(wx.Frame):
         self._filter_pane.Disable()
         self._unused_kw_list.Disable()
         self._clear_search_results()
-        self.index = 0
-        self._dots = DottedSearch(self, self._update_unused_keywords_text)
+        self._dots = DottedSearch(self, self._update_unused_keywords)
         self._dots.start()
 
     def _clear_search_results(self):
         self._unused_kw_list.ClearAll()
         self._update_notebook_text('Unused Keywords')
         self._status_label.SetLabel('')
+        self._search_model.clear_search()
 
-    def add_result_unused_keyword(self, keyword):
+    def add_result_unused_keyword(self, index, keyword):
         keyword_info = keyword.info
-        self._unused_kw_list.InsertStringItem(self.index, keyword_info.name)
+        self._unused_kw_list.InsertStringItem(index, keyword_info.name)
         filename = os.path.basename(keyword_info.item.source)
-        self._unused_kw_list.SetStringItem(self.index, 1, filename)
-        self._unused_kw_list.SetItemData(self.index, self.index)
-        self._unused_kw_list.SetClientData(self.index, keyword)
-        self.index += 1
+        self._unused_kw_list.SetStringItem(index, 1, filename)
+        self._unused_kw_list.SetItemData(index, index)
+        self._unused_kw_list.SetClientData(index, keyword)
 
-    def _update_unused_keywords_text(self, dots):
-        self._update_notebook_text("Unused Keywords (%d) - Searching%s" % (self._unused_kw_list.GetItemCount(), dots))
+    def _update_unused_keywords(self, dots):
+        self._unused_kw_list.ClearAll()
+        for index, kw in enumerate(self._search_model.keywords):
+            self.add_result_unused_keyword(index, kw)
+        self._update_notebook_text("Unused Keywords (%d) - Searching%s" % (len(self._search_model.keywords), dots))
+        if not self._search_model.searching:
+            self.end_searching()
 
     def _update_notebook_text(self, new_text):
         self._notebook.SetPageText(0, new_text)
@@ -293,6 +299,7 @@ class ReviewDialog(wx.Frame):
 
     def end_searching(self):
         self._dots.stop()
+        self._search_model.end_search()
         self._update_notebook_text('Unused Keywords')
         self.update_status("Unused Keywords (%d) - Search finished" % (self._unused_kw_list.GetItemCount()))
         self._unused_kw_list.Enable()
@@ -309,9 +316,9 @@ class ReviewDialog(wx.Frame):
 
 class ReviewRunner(object):
 
-    def __init__(self, controller, dialog):
+    def __init__(self, controller, model):
         self._controller = controller
-        self._dlg = dialog
+        self._model = model
         self._filter_active = False
         self._filter_strings = []
         self._filter_excludes = True
@@ -371,28 +378,25 @@ class ReviewRunner(object):
         self._filter_strings = filter_string.split(',')
 
     def _run_review(self):
+        self._model.begin_search()
         Thread(target=self._run).start()
 
     def _run(self):
         self._stop_requested = False
-        self._threadsafe_call(self._dlg.begin_searching)
         for df in self._get_datafile_list():
             libname = os.path.basename(df.source).rsplit('.', 1)[0]
             for keyword in df.keywords:
                 time.sleep(0) # GIVE SPACE TO OTHER THREADS -- Thread.yield in Java
-                self._threadsafe_call(self._dlg.update_status, "%s.%s" % (libname, keyword.name))
-                if self._stop_requested == True:
+                self._model.set_current_keyword(libname, keyword.name)
+                if not self._model.searching:
                     break
                 # Check if it is unused
                 if not isinstance(keyword, LibraryKeywordInfo) and keyword.name:
                     if self._is_unused(keyword):
-                        self._threadsafe_call(self._dlg.add_result_unused_keyword, keyword)
-            if self._stop_requested == True:
+                        self._model.add_unused_keyword(keyword)
+            if not self._model.searching:
                 break
-        self._threadsafe_call(self._dlg.end_searching)
-
-    def _threadsafe_call(self, function, *args):
-        wx.CallAfter(function, *args) if self._threadsafe_calls else function(*args)
+        self._model.end_search()
 
     def _is_unused(self, keyword):
         try:
@@ -401,18 +405,28 @@ class ReviewRunner(object):
         except StopIteration:
             return True
 
-    def request_stop(self):
-        self._stop_requested = True
-
 
 class ResultModel(object):
 
     def __init__(self):
+        self.clear_search()
+
+    def clear_search(self):
         self.status = ''
         self.keywords = []
+        self.searching = False
 
     def add_unused_keyword(self, keyword):
         self.keywords += [keyword]
+
+    def set_current_keyword(self, libname, keyword_name):
+        self.status = "%s.%s" % (libname, keyword_name)
+
+    def begin_search(self):
+        self.searching = True
+
+    def end_search(self):
+        self.searching = False
 
 
 class ResultListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin, listmix.ListCtrlAutoWidthMixin):
