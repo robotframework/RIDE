@@ -340,7 +340,7 @@ class ReviewRunner(object):
         self._filter.set_strings(filter_string.split(','))
 
     def _get_datafile_list(self):
-        return (df for df in self._controller.datafiles if self._filter.include_file(df))
+        return [df for df in self._controller.datafiles if self._filter.include_file(df)]
 
     def _run_review(self):
         self._model.begin_search()
