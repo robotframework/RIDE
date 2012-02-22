@@ -405,6 +405,16 @@ class ReviewRunner(object):
         self._stop_requested = True
 
 
+class ResultModel(object):
+
+    def __init__(self):
+        self.status = ''
+        self.keywords = []
+
+    def add_unused_keyword(self, keyword):
+        self.keywords += [keyword]
+
+
 class ResultListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin, listmix.ListCtrlAutoWidthMixin):
     def __init__(self, parent, style):
         self.parent = parent
