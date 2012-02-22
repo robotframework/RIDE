@@ -18,7 +18,7 @@ import wx.lib.mixins.listctrl as listmix
 import time
 import re
 from robotide.context.platform import IS_MAC
-from robotide.ui.searchdots import SearchDots
+from robotide.ui.searchdots import DottedSearch
 from robotide.widgets import ButtonWithHandler, Label
 from robotide.spec.iteminfo import LibraryKeywordInfo
 from robotide.usages.commands import FindUsages
@@ -265,7 +265,7 @@ class ReviewDialog(wx.Frame):
         self._unused_kw_list.Disable()
         self._clear_search_results()
         self.index = 0
-        self._dots = SearchDots(self, self._update_unused_keywords_text)
+        self._dots = DottedSearch(self, self._update_unused_keywords_text)
         self._dots.start()
 
     def _clear_search_results(self):

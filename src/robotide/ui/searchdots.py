@@ -14,7 +14,7 @@
 import wx
 
 
-class SearchDots(object):
+class DottedSearch(object):
     """Class that can be used to make Search dots...
 
     parent - the UI component that the timer should be bound to

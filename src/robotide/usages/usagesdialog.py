@@ -11,7 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from robotide.ui.searchdots import SearchDots
+from robotide.ui.searchdots import DottedSearch
 
 from robotide.widgets import (Dialog, VirtualList, VerticalSizer, ImageList,
                               ImageProvider, ButtonWithHandler)
@@ -37,7 +37,7 @@ class UsagesDialog(Dialog):
         self.usages.add_usage(usage)
 
     def begin_searching(self):
-        self._dots = SearchDots(self, self._update_searching)
+        self._dots = DottedSearch(self, self._update_searching)
         self._dots.start()
 
     def _update_searching(self, dots):
