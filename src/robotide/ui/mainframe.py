@@ -50,6 +50,7 @@ _menudata = """
 !Search Unused Keywords
 
 [Help]
+!Report a Problem | Open browser to the RIDE issue tracker
 !About | Information about RIDE
 """
 
@@ -230,6 +231,10 @@ class RideFrame(wx.Frame, RideEventHandler):
         dlg = AboutDialog()
         dlg.ShowModal()
         dlg.Destroy()
+
+    def OnReportaProblem(self, event):
+        wx.LaunchDefaultBrowser('http://code.google.com/p/robotframework-ride/issues/list')
+
 
 # This code is copied from http://wiki.wxpython.org/EnsureFrameIsOnScreen,
 # and adapted to fit our code style.
