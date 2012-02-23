@@ -43,6 +43,7 @@ RESOURCE_PATH2 = os.path.normpath(os.path.join(_RESOURCE_DIR, 'resource2.html'))
 RESOURCE_PATH3 = os.path.normpath(os.path.join(_RESOURCE_DIR, 'resource3.html'))
 RESOURCE_PATH_TXT = os.path.normpath(os.path.join(_RESOURCE_DIR, 'resource.txt'))
 INVALID_PATH = os.path.join(SUITEPATH, 'invalid.html')
+EXTERNAL_RES_UNSORTED_PATH = os.path.join(DATAPATH, 'external_resources_unsorted', 'suite')
 
 PATH_RESOURCE_NAME = 'pathresource.html' if CIF else 'PathResource.html'
 

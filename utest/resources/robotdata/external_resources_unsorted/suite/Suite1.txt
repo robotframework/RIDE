@@ -1,0 +1,10 @@
+*** Settings ***
+Resource          ../external_resources/subdirectory2/bar.txt
+Resource          ../external_resources/subdirectory/Foo.txt
+Resource          ../external_resources/subdirectory2/Resource.txt
+
+*** Test Cases ***
+Test case
+    kw1
+    kw2
+
