@@ -1,0 +1,7 @@
+*** Settings ***
+Resource          subsubdirectory/Abc.txt
+Resource          subsubdirectory/hello.txt
+
+*** Keywords ***
+kw1
+

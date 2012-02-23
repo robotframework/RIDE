@@ -15,7 +15,8 @@ from robotide.publish.messages import RideOpenSuite, RideOpenResource
 from resources import (COMPLEX_SUITE_PATH, MINIMAL_SUITE_PATH, RESOURCE_PATH,
                        MessageRecordingLoadObserver, SUITEPATH,
                        DATAPATH, RELATIVE_PATH_TO_RESOURCE_FILE,
-                       RESOURCE_PATH2, RESOURCE_PATH3, RESOURCE_PATH_TXT)
+                       RESOURCE_PATH2, RESOURCE_PATH3, RESOURCE_PATH_TXT,
+                       EXTERNAL_RES_UNSORTED_PATH)
 from resources.mocks import PublisherListener
 import datafilereader
 
@@ -126,6 +127,10 @@ class ChiefControllerTest(unittest.TestCase):
         self.ctrl.new_resource('somepath')
         self.ctrl.new_resource('somepath')
         assert_equals(len(self.ctrl.resources), 1)
+
+    def test_sort_external_resources(self):
+        self.ctrl.load_data(EXTERNAL_RES_UNSORTED_PATH, MessageRecordingLoadObserver())
+        assert_equals([res.name for res in self.ctrl.external_resources], ["Abc", "Bar", "Foo", "Hello", "Resource"])
 
     def test_datafiles_property_with_resource_file_only(self):
         resource = self.ctrl.load_resource(RESOURCE_PATH, self.load_observer)
