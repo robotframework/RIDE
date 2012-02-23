@@ -284,10 +284,11 @@ class ReviewDialog(wx.Frame):
         self._unused_kw_list.SetClientData(index, keyword)
 
     def _update_unused_keywords(self, dots):
-        self._unused_kw_list.ClearAll()
-        for index, kw in enumerate(self._search_model.keywords):
+        count_before = self._unused_kw_list.GetItemCount()
+        for index, kw in list(enumerate(self._search_model.keywords))[count_before:]:
             self.add_result_unused_keyword(index, kw)
         self._update_notebook_text("Unused Keywords (%d) - Searching%s" % (len(self._search_model.keywords), dots))
+        self.update_status(self._search_model.status)
         if not self._search_model.searching:
             self.end_searching()
 
@@ -348,11 +349,13 @@ class ReviewRunner(object):
 
     def _run(self):
         self._stop_requested = False
+        self._model.status = 'listing datafiles'
         for df in self._get_datafile_list():
             libname = os.path.basename(df.source).rsplit('.', 1)[0]
+            self._model.status = 'searching from '+libname
             for keyword in df.keywords:
                 time.sleep(0) # GIVE SPACE TO OTHER THREADS -- Thread.yield in Java
-                self._model.set_current_keyword(libname, keyword.name)
+                self._model.status = "%s.%s" % (libname, keyword.name)
                 if not self._model.searching:
                     break
                 # Check if it is unused
@@ -417,9 +420,6 @@ class ResultModel(object):
 
     def add_unused_keyword(self, keyword):
         self.keywords += [keyword]
-
-    def set_current_keyword(self, libname, keyword_name):
-        self.status = "%s.%s" % (libname, keyword_name)
 
     def begin_search(self):
         self.searching = True
