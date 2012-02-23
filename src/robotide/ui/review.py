@@ -291,7 +291,7 @@ class ReviewDialog(wx.Frame):
         count_before = self._unused_kw_list.GetItemCount()
         for index, kw in list(enumerate(self._search_model.keywords))[count_before:]:
             self.add_result_unused_keyword(index, kw)
-        self.update_status("Searching%s \t- %s" % (dots, self._search_model.status))
+        self.update_status("Searching.%s \t- %s" % (dots, self._search_model.status))
         if not self._search_model.searching:
             self.end_searching()
 
