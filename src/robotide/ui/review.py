@@ -227,6 +227,7 @@ class ReviewDialog(wx.Frame):
             self._unused_kw_list.RemoveClientData(item_id)
             kw.delete()
             self._update_notebook_text("Unused Keywords (%d)" % self._unused_kw_list.GetItemCount())
+            self.update_status("")
             item = self._unused_kw_list.get_next_checked_item()
         self.item_in_kw_list_checked()
 
@@ -255,6 +256,8 @@ class ReviewDialog(wx.Frame):
         self.Raise()
 
     def _close_dialog(self, event):
+        if self._search_model.searching:
+            self.end_searching()
         if event.CanVeto():
             self.Hide()
         else:
@@ -272,6 +275,7 @@ class ReviewDialog(wx.Frame):
     def _clear_search_results(self):
         self._unused_kw_list.ClearAll()
         self._update_notebook_text('Unused Keywords')
+        self._delete_button.Disable()
         self._status_label.SetLabel('')
         self._search_model.clear_search()
 
@@ -287,8 +291,7 @@ class ReviewDialog(wx.Frame):
         count_before = self._unused_kw_list.GetItemCount()
         for index, kw in list(enumerate(self._search_model.keywords))[count_before:]:
             self.add_result_unused_keyword(index, kw)
-        self._update_notebook_text("Unused Keywords (%d) - Searching%s" % (len(self._search_model.keywords), dots))
-        self.update_status(self._search_model.status)
+        self.update_status("Searching%s \t- %s" % (dots, self._search_model.status))
         if not self._search_model.searching:
             self.end_searching()
 
@@ -301,8 +304,8 @@ class ReviewDialog(wx.Frame):
     def end_searching(self):
         self._dots.stop()
         self._search_model.end_search()
-        self._update_notebook_text('Unused Keywords')
-        self.update_status("Unused Keywords (%d) - Search finished" % (self._unused_kw_list.GetItemCount()))
+        self._update_notebook_text('Unused Keywords (%d)' % (self._unused_kw_list.GetItemCount()))
+        self.update_status("Search finished - Found %d Unused Keywords" % (self._unused_kw_list.GetItemCount()))
         self._unused_kw_list.Enable()
         self._abort_button.Disable()
         self._filter_pane.Enable()
