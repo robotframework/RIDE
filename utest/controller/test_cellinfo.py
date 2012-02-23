@@ -81,6 +81,19 @@ class TestCellInfo(unittest.TestCase):
         self._verify_cell_info(0, 0, ContentType.VARIABLE, CellType.ASSIGN)
         self._verify_cell_info(0, 2, ContentType.UNKNOWN_VARIABLE, CellType.OPTIONAL)
 
+    def test_known_extended_variable_syntax(self):
+        self.test.execute(ChangeCellValue(0, 0, '${var}='))
+        self.test.execute(ChangeCellValue(0, 1, 'Set Variable'))
+        self.test.execute(ChangeCellValue(0, 2, 'something'))
+        self.test.execute(ChangeCellValue(1, 0, 'log'))
+        self.test.execute(ChangeCellValue(1, 2, '${var.lower()}'))
+        self.test.execute(ChangeCellValue(2, 0, 'log'))
+        self.test.execute(ChangeCellValue(2, 2, '${var+"moi"}'))
+        self.test.execute(ChangeCellValue(3, 0, 'log'))
+        self.test.execute(ChangeCellValue(3, 2, '${var[1:]}'))
+        self._verify_cell_info(1, 2, ContentType.VARIABLE, CellType.OPTIONAL)
+        self._verify_cell_info(2, 2, ContentType.VARIABLE, CellType.OPTIONAL)
+        self._verify_cell_info(3, 2, ContentType.VARIABLE, CellType.OPTIONAL)
 
     def test_empty_column_before_string_is_string(self):
         self.test.execute(ChangeCellValue(0, 0, self.keyword1.name))

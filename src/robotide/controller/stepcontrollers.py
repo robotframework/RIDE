@@ -127,7 +127,12 @@ class StepController(object):
     def _is_unknow_variable(self, value, position):
         if position.type == CellType.ASSIGN:
             return False
-        return not self._get_local_namespace().has_name(value)
+        is_known = self._get_local_namespace().has_name(value)
+        if is_known:
+            return False
+        inner_value = value[2:-1]
+        modified = re.split(r'\W', inner_value, 1)[0]
+        return not self._get_local_namespace().has_name('%s{%s}' % (value[0],modified))
 
     def _get_local_namespace(self):
         index = self.parent.index_of_step(self._step)
