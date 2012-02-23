@@ -166,7 +166,6 @@ class ChiefController(_BaseController, WithNamespace):
     
     def _sort_external_resources(self):
         self.external_resources = sorted(self.external_resources, key=lambda resource: resource.name.lower())
-        
 
     def _load_resources_resource_imports(self, controller):
         for _import in [ imp for imp in controller.imports if imp.is_resource ]:
