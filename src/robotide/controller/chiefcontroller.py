@@ -320,14 +320,19 @@ class Backup(object):
     def _get_backup_name(self, path):
         if not os.path.isfile(path):
             return None
-        return os.path.join(tempfile.gettempdir(), os.path.basename(path))
+        self._backup_dir = tempfile.mkdtemp()
+        return os.path.join(self._backup_dir, os.path.basename(path))
 
     def __enter__(self):
         self._make_backup()
 
     def _make_backup(self):
         if self._backup:
-            self._move(self._path, self._backup)
+            try:
+                self._move(self._path, self._backup)
+            except IOError:
+                self._backup = None
+                self._remove_backup_dir()
 
     def __exit__(self, *args):
         if any(args):
@@ -338,11 +343,16 @@ class Backup(object):
     def _remove_backup(self):
         if self._backup:
             os.remove(self._backup)
+            self._remove_backup_dir()
 
     def _restore_backup(self):
         if self._backup:
             self._move(self._backup, self._path)
             self._file_controller.refresh_stat()
+            self._remove_backup_dir()
 
     def _move(self, from_path, to_path):
         shutil.move(from_path, to_path)
+
+    def _remove_backup_dir(self):
+        os.rmdir(self._backup_dir)

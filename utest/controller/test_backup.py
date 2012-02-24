@@ -27,6 +27,15 @@ class BackupTestCase(unittest.TestCase):
         self.assertFalse(self._backupper.restored)
         self.assertEqual(None, self._backupper._backup)
 
+    def test_save_can_be_done_if_backup_move_fails(self):
+        def move_fails(*args):
+            raise IOError('failed')
+        self._backupper._move = move_fails
+        save_done = False
+        with self._backupper:
+            save_done = True
+        self.assertTrue(save_done)
+
 
 class _SaveFailed(Exception):
     pass
@@ -44,6 +53,10 @@ class _MyBackup(Backup):
 
     def _remove_backup(self):
         self._backup = None
+
+    def _remove_backup_dir(self):
+        pass
+
 
 if __name__ == '__main__':
     unittest.main()
