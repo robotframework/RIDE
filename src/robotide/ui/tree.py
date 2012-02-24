@@ -219,6 +219,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         return node
 
     def _expand_and_render_children(self, node):
+        assert node is not None
         self._render_children(node)
         self.Expand(node)
 
@@ -453,6 +454,9 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         current_txt = self.GetItemText(item) if item.IsOk() else ''
         # after refresh current and current_txt might have been changed
         node = self._refresh_datafile(controller)
+        if node is None:
+            #TODO: Find out why this sometimes happens
+            return
         self._expand_and_render_children(node)
         if current == controller:
             wx.CallAfter(self.SelectItem, self._find_node.with_label(node, current_txt) or node)
