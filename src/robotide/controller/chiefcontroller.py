@@ -320,7 +320,7 @@ class Backup(object):
     def _get_backup_name(self, path):
         if not os.path.isfile(path):
             return None
-        self._backup_dir = tempfile.mkdtemp()
+        self._backup_dir = tempfile.mkdtemp(dir=os.path.dirname(path))
         return os.path.join(self._backup_dir, os.path.basename(path))
 
     def __enter__(self):
