@@ -389,9 +389,6 @@ class ForLoopStepController(StepController):
 
     def contains_keyword(self, name):
         return False
-    
-    def contains_variable(self, name):
-        return False
 
     def add_step(self, step):
         self._get_raw_steps().append(step)
