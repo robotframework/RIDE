@@ -27,6 +27,7 @@ from robotide.publish import (RideItemStepsChanged,
                               RideSettingsChanged, PUBLISHER)
 from robotide.usages.UsageRunner import Usages
 from robotide.ui.progress import RenameProgressObserver
+from robotide import utils
 from robotide.utils import RideEventHandler
 from robotide.widgets import PopupMenu, PopupMenuItems
 
@@ -497,7 +498,20 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._extract_list(cells)
 
     def OnFindWhereUsed(self, event):
-        Usages(self._controller, self._tree.highlight, self.GetCellValue(*self.selection.cells()[0])).show()
+        cellvalue = self.GetCellValue(*self.selection.cells()[0])
+        variables = utils.find_variable_basenames(cellvalue)
+        searchstring = cellvalue
+        if variables and variables[0] != cellvalue:
+            choices = [cellvalue] + variables
+            choices_string = ["Complete cell content"] + ["Variable " + var for var in variables]
+            choice_dialog = ChooseUsageSearchStringDialog(None, "Find Where Used", "Please select what you want to check for usage", choices_string)
+            if choice_dialog.ShowModal() == wx.ID_OK:
+                searchstring = choices[choice_dialog.GetSelection()]
+                choice_dialog.Destroy()
+            else:
+                choice_dialog.Destroy()
+                return
+        Usages(self._controller, self._tree.highlight, searchstring).show()
 
     def _extract_scalar(self, cell):
         var = Variable('', self.GetCellValue(*cell), '')
@@ -589,3 +603,32 @@ class ContentAssistCellEditor(grid.PyGridCellEditor):
 
     def Clone(self):
         return ContentAssistCellEditor()
+
+
+class ChooseUsageSearchStringDialog(wx.Dialog):
+
+    def __init__(self, parent, title, caption, choices):
+        wx.Dialog.__init__(self, parent, wx.ID_ANY, title, style=wx.DEFAULT_DIALOG_STYLE)
+        self.caption = caption
+        self.choices = choices
+        self._build_ui()
+    
+    def _build_ui(self):
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        label_caption = wx.StaticText(self, label=self.caption)
+        sizer.Add(label_caption, 0, wx.ALL|wx.EXPAND, 5)
+        
+        self.radiobox_choices = wx.RadioBox(self, choices=self.choices, style=wx.RA_SPECIFY_COLS, majorDimension=1)
+        sizer.Add(self.radiobox_choices, 0, wx.ALL|wx.EXPAND, 5)
+        
+        search_button = wx.Button(self, wx.ID_OK, label="Search")
+        sizer.Add(search_button, 0, wx.ALL|wx.ALIGN_CENTER, 5)
+        
+        big_sizer = wx.BoxSizer(wx.VERTICAL)
+        big_sizer.Add(sizer, 0, wx.ALL, 10)
+        self.SetSizer(big_sizer)
+        self.Fit()
+        self.CenterOnParent()
+    
+    def GetSelection(self):
+        return self.radiobox_choices.GetSelection()

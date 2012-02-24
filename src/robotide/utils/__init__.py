@@ -19,7 +19,7 @@ import inspect
 from robot.utils import printable_name, normalize, eq, ET, \
     HtmlWriter, NormalizedDict, timestr_to_secs, secs_to_timestr, normpath,\
     unic, asserts, unescape, html_attr_escape,\
-    get_timestamp
+    get_timestamp, matches
 from eventhandler import RideEventHandler
 from variablematcher import is_variable, is_scalar_variable, is_list_variable, \
     get_variable, get_variable_basename, find_variable_basenames
