@@ -157,7 +157,8 @@ class TestBrokenMessageListener(unittest.TestCase):
     def test_broken_listener(self):
         self.plugin.subscribe(self.plugin.error_listener, RideLog)
         RideTestMessage().publish()
-        assert_true(self.plugin.error.message.startswith('Error in listener: ride.test\n\nTraceback (most recent call last):'))
+        assert_true(self.plugin.error.message.startswith('Error in listener: ride.test'),
+                    'Wrong error message text: ' + self.plugin.error.message)
         assert_equals(self.plugin.error.topic, 'ride.log.exception')
         assert_equals(self.plugin.error.level, 'ERROR')
 

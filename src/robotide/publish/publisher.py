@@ -83,7 +83,9 @@ class _ListenerWrapper:
         try:
             self.listener(event.data)
         except Exception, err:
-            # Prevent infinite recusrion if RideLogMessage listerner is broken,
+            # Prevent infinite recursion if RideLogMessage listener is broken,
             if not isinstance(event.data, RideLogException):
-                RideLogException(message='Error in listener: ' + unicode(err), 
+                RideLogException(message='Error in listener: %s\n' \
+                                         'While handling %s' % (unicode(err),
+                                                                unicode(event.data)),
                                  exception=err, level='ERROR').publish()
