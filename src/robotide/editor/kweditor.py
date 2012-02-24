@@ -504,7 +504,9 @@ class KeywordEditor(GridEditor, RideEventHandler):
         if variables and variables[0] != cellvalue:
             choices = [cellvalue] + variables
             choices_string = ["Complete cell content"] + ["Variable " + var for var in variables]
-            choice_dialog = ChooseUsageSearchStringDialog(None, "Find Where Used", "Please select what you want to check for usage", choices_string)
+            choice_dialog = ChooseUsageSearchStringDialog(None, "Find Where Used",
+                                                          "Please select what you want to check for usage",
+                                                          choices_string)
             if choice_dialog.ShowModal() == wx.ID_OK:
                 searchstring = choices[choice_dialog.GetSelection()]
                 choice_dialog.Destroy()
@@ -614,16 +616,12 @@ class ChooseUsageSearchStringDialog(wx.Dialog):
         self._build_ui()
     
     def _build_ui(self):
+        self.radiobox_choices = wx.RadioBox(self, choices=self.choices,
+                                            style=wx.RA_SPECIFY_COLS, majorDimension=1)
         sizer = wx.BoxSizer(wx.VERTICAL)
-        label_caption = wx.StaticText(self, label=self.caption)
-        sizer.Add(label_caption, 0, wx.ALL|wx.EXPAND, 5)
-        
-        self.radiobox_choices = wx.RadioBox(self, choices=self.choices, style=wx.RA_SPECIFY_COLS, majorDimension=1)
+        sizer.Add(wx.StaticText(self, label=self.caption), 0, wx.ALL|wx.EXPAND, 5)
         sizer.Add(self.radiobox_choices, 0, wx.ALL|wx.EXPAND, 5)
-        
-        search_button = wx.Button(self, wx.ID_OK, label="Search")
-        sizer.Add(search_button, 0, wx.ALL|wx.ALIGN_CENTER, 5)
-        
+        sizer.Add(wx.Button(self, wx.ID_OK, label="Search"), 0, wx.ALL|wx.ALIGN_CENTER, 5)
         big_sizer = wx.BoxSizer(wx.VERTICAL)
         big_sizer.Add(sizer, 0, wx.ALL, 10)
         self.SetSizer(big_sizer)
