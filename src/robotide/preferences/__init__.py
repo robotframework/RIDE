@@ -1,7 +1,7 @@
 from .preferences_dialog import PreferencesDialog
 from .preferences_panel import (PreferencesPanel, PreferencesComboBox,
     PreferencesColorPicker)
-from .general import GeneralPreferences
+from .saving import SavingPreferences
 from .colors import ColorPreferences
 
 
@@ -24,5 +24,5 @@ class Preferences(object):
             self._preference_panels.remove(panel_class)
 
     def _add_builtin_preferences(self):
-        self.add(GeneralPreferences)
+        self.add(SavingPreferences)
         self.add(ColorPreferences)
