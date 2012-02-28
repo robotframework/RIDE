@@ -5,11 +5,11 @@ A generic, extensible preferences dialog
 
 Usage:
 
-    dialog = PreferencesDialog(parent, title, panel_classes, style)
+    dialog = PreferencesDialog(parent, title, preferences, style)
     dialog.ShowModal()
 
-panel_classes is a list or tuple of classes that inherit from
-PreferencesPanel.
+preferences is a any object with attribute preferecne_panels, which in turn
+is a list or tuple of classes that inherit from PreferencesPanel.
 
 style may have any of the values "auto", "notebook", "tree" or
 "single". If style is "auto", the choice of using a single window, a
@@ -21,8 +21,10 @@ dialog.
 # any more than TREE_THRESHOLD panels when style is "auto" forces
 # the UI into showing a hierarchical tree
 TREE_THRESHOLD = 5
+
+
 class PreferencesDialog(wx.Dialog):
-    '''A dialog for showing the Firebrick panels'''
+    '''A dialog for showing the preference panels'''
     def __init__(self, parent, title, preferences, style="auto"):
         panels = preferences.preference_panels
         self._current_panel = None
@@ -109,7 +111,6 @@ class PreferencesDialog(wx.Dialog):
                 location = (location,)
             item = self._get_item(location)
             self._tree.SetItemPyData(item, panel_class)
-        self._tree.SortChildren(root)
         self._tree.ExpandAll()
 
     def _get_item(self, location):
