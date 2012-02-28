@@ -61,12 +61,17 @@ class ResourceFactoryDirectoryIgnoreTestCase(unittest.TestCase):
     if IS_WINDOWS:
 
         def test_case_insensitive_ignore_upper(self):
-            r = _ResourceFactory(exclude_directory=os.path.dirname(__file__).upper())
-            self.assertEqual(None, r.get_resource_from_import(self._import, self._context))
+            self._ignore_import(os.path.dirname(__file__).upper())
 
         def test_case_insensitive_ignore_lower(self):
-            r = _ResourceFactory(exclude_directory=os.path.dirname(__file__).lower())
-            self.assertEqual(None, r.get_resource_from_import(self._import, self._context))
+            self._ignore_import(os.path.dirname(__file__).lower())
+
+        def test_case_insensitive_ignore_relative(self):
+            self._ignore_import(os.path.relpath(os.path.dirname(__file__)))
+
+    def _ignore_import(self, exclude_directory):
+        r = _ResourceFactory(exclude_directory=exclude_directory)
+        self.assertEqual(None, r.get_resource_from_import(self._import, self._context))
 
     def _mock_context(self):
         context = lambda:0
