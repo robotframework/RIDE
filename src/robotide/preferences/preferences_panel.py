@@ -41,11 +41,10 @@ class PreferencesComboBox(wx.ComboBox):
 
     def OnSelect(self, event):
         value = str(event.GetEventObject().GetValue())
-        
         self.settings[self.key] = value
         self.settings.save()
 
-        
+
 class PreferencesColorPicker(wx.ColourPickerCtrl):
     '''A colored button that opens a color picker dialog'''
     def __init__(self, parent, id, settings, key):
@@ -61,4 +60,3 @@ class PreferencesColorPicker(wx.ColourPickerCtrl):
         rgb = "#%02X%02X%02X" % color.asTuple()
         self.settings[self.key] = rgb
         self.settings.save()
-
