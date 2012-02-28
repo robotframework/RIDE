@@ -15,9 +15,12 @@
 import wx
 
 from robotide.action import ActionInfoCollection, ActionFactory
-from robotide.publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER, RideInputValidationError
-from robotide.utils import RideEventHandler
 from robotide.context import SETTINGS, ABOUT_RIDE
+from robotide.controller.commands import SaveFile, SaveAll
+from robotide.publish import (RideSaveAll, RideClosing, RideSaved, PUBLISHER,
+        RideInputValidationError, RideTreeSelection)
+from robotide.preferences import PreferencesDialog
+from robotide.utils import RideEventHandler
 from robotide.widgets import Dialog, ImageProvider, HtmlWindow
 
 from actiontriggers import MenuBar, ToolBar, ShortcutRegistry
@@ -33,6 +36,7 @@ from robotide.publish.messages import RideTreeSelection, RideModificationPrevent
 from robotide.preferences.general import GeneralPreferences
 from robotide.preferences.colors import ColorPreferences
 from robotide.preferences import PreferencesDialog
+
 
 _menudata = """
 [File]
@@ -51,7 +55,7 @@ _menudata = """
 [Tools]
 !Manage Plugins
 !Search Unused Keywords
-!Options
+!Preferences
 
 [Help]
 !Report a Problem | Open browser to the RIDE issue tracker
@@ -69,7 +73,6 @@ class RideFrame(wx.Frame, RideEventHandler):
         self._application = application
         self._controller = controller
         self._init_ui()
-        self._init_preferences()
         self._plugin_manager = PluginManager(self.notebook)
         self._review_dialog = None
         self.Bind(wx.EVT_CLOSE, self.OnClose)
@@ -101,6 +104,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         wx.MessageBox(message.message, 'Validation Error', style=wx.ICON_ERROR)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     def _show_modification_prevented_error(self, message):
         wx.MessageBox('"%s" is read only' % message.controller.datafile_controller.filename,
                       'Modification prevented',
@@ -112,6 +116,8 @@ class RideFrame(wx.Frame, RideEventHandler):
         self._application.register_preference_panel(ColorPreferences)
 >>>>>>> prefernces: applied the original patch
 
+=======
+>>>>>>> preferences: extracted class for handling preference panels
     def _init_ui(self):
         splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
         self.notebook = NoteBook(splitter, self._application)
@@ -257,8 +263,9 @@ class RideFrame(wx.Frame, RideEventHandler):
             self._review_dialog = ReviewDialog(self._controller, self)
         self._review_dialog.show_dialog()
 
-    def OnOptions(self, event):
-        dlg = PreferencesDialog(self, "RIDE - Settings", self._application.get_preference_panels())
+    def OnPreferences(self, event):
+        dlg = PreferencesDialog(self, "RIDE - Settings",
+                                self._application.preferences)
         # I would prefer that this not be modal, but making it non-
         # modal opens up a can of worms. We don't want to have to deal
         # with settings getting changed out from under us while the

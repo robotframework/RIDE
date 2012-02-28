@@ -1,5 +1,4 @@
 import wx
-from robotide.preferences import PreferencesPanel
 
 '''
 A generic, extensible preferences dialog
@@ -24,7 +23,8 @@ dialog.
 TREE_THRESHOLD = 5
 class PreferencesDialog(wx.Dialog):
     '''A dialog for showing the Firebrick panels'''
-    def __init__(self, parent, title, panels, style="auto"):
+    def __init__(self, parent, title, preferences, style="auto"):
+        panels = preferences.preference_panels
         self._current_panel = None
         wx.Dialog.__init__(self, parent, wx.ID_ANY, title, size=(800,400),
                            style=wx.RESIZE_BORDER|wx.DEFAULT_DIALOG_STYLE)
@@ -49,7 +49,7 @@ class PreferencesDialog(wx.Dialog):
         elif style == "notebook" or (style == "auto" and len(panels) > 1):
             # the tabs appear in alphabetical order based on their
             # location. This has the pleasant side effect of "General"
-            # coming before "Plugins", but if some plugin adds a 
+            # coming before "Plugins", but if some plugin adds a
             # location of ("aaa","me first!") it will come before
             # "General". I need some way to order them, though maybe
             # just special-casing "General" to come first might be
@@ -77,7 +77,7 @@ class PreferencesDialog(wx.Dialog):
 
     def OnTreeSelection(self, event):
         '''Show panel that corresponds to selected tree item
-        
+
         Used only when the hierarchical tree is shown.
         '''
         pydata = self._tree.GetItemPyData(event.GetItem())
@@ -111,13 +111,13 @@ class PreferencesDialog(wx.Dialog):
             self._tree.SetItemPyData(item, panel_class)
         self._tree.SortChildren(root)
         self._tree.ExpandAll()
-        
+
     def _get_item(self, location):
         item = self._tree.GetRootItem()
         for text in location:
             item = self._get_child_item(item, text)
         return item
-            
+
     def _get_child_item(self, parent, text):
         '''Returns the tree item with the given text under the given parent
 
@@ -132,7 +132,7 @@ class PreferencesDialog(wx.Dialog):
         # if we get here we didn't find the item
         item = self._tree.AppendItem(parent, text)
         return item
-        
+
     def _get_children(self, parent):
         if self._tree.ItemHasChildren(parent):
             item, cookie = self._tree.GetFirstChild(parent)
@@ -142,7 +142,7 @@ class PreferencesDialog(wx.Dialog):
 
 
 class PanelContainer(wx.Panel):
-    '''This contains a preference panel. 
+    '''This contains a preference panel.
 
     This container has the ability to hold several panels,
     and to be able to switch between them. For some modes, however,
@@ -166,7 +166,7 @@ class PanelContainer(wx.Panel):
         font = self.title.GetFont()
         font.SetPointSize(font.GetPointSize()+2)
         self.title.SetFont(font)
-        self.title.SetForegroundColour("#000000") 
+        self.title.SetForegroundColour("#000000")
 
     def AddPanel(self, panel_class):
         '''Add a panel to the dialog'''
@@ -192,4 +192,4 @@ class PanelContainer(wx.Panel):
         '''Set the title of the panel'''
         self.title.SetLabel(title)
 
-            
+
