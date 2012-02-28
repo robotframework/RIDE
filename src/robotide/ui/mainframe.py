@@ -265,7 +265,7 @@ class RideFrame(wx.Frame, RideEventHandler):
 
     def OnPreferences(self, event):
         dlg = PreferencesDialog(self, "RIDE - Settings",
-                                self._application.preferences)
+                                self._application.preferences, style='tree')
         # I would prefer that this not be modal, but making it non-
         # modal opens up a can of worms. We don't want to have to deal
         # with settings getting changed out from under us while the
