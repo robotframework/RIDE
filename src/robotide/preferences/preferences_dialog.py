@@ -1,0 +1,195 @@
+import wx
+from robotide.preferences import PreferencesPanel
+
+'''
+A generic, extensible preferences dialog
+
+Usage:
+
+    dialog = PreferencesDialog(parent, title, panel_classes, style)
+    dialog.ShowModal()
+
+panel_classes is a list or tuple of classes that inherit from
+PreferencesPanel.
+
+style may have any of the values "auto", "notebook", "tree" or
+"single". If style is "auto", the choice of using a single window, a
+notebook, or a tree will depend on how many pages will be in the
+dialog.
+
+'''
+
+# any more than TREE_THRESHOLD panels when style is "auto" forces
+# the UI into showing a hierarchical tree
+TREE_THRESHOLD = 5
+class PreferencesDialog(wx.Dialog):
+    '''A dialog for showing the Firebrick panels'''
+    def __init__(self, parent, title, panels, style="auto"):
+        self._current_panel = None
+        wx.Dialog.__init__(self, parent, wx.ID_ANY, title, size=(800,400),
+                           style=wx.RESIZE_BORDER|wx.DEFAULT_DIALOG_STYLE)
+
+        if style not in ("tree","notebook","single","auto"):
+            raise Exception("invalid style; must be one of 'tree','notebook','single' or 'auto'")
+
+        if style == "tree" or (style == "auto" and len(panels) > TREE_THRESHOLD):
+            self._sw = wx.SplitterWindow(self, wx.ID_ANY, style=wx.SP_LIVE_UPDATE|wx.SP_3D)
+            self._tree = wx.TreeCtrl(self._sw, wx.ID_ANY, style=wx.TR_HIDE_ROOT|wx.TR_HAS_BUTTONS)
+            # create a single container which will hold all of the
+            # preference panels
+            self._container = PanelContainer(self._sw, wx.ID_ANY)
+            self._sw.SplitVertically(self._tree, self._container, 150)
+            sizer = wx.BoxSizer(wx.VERTICAL)
+            sizer.Add(self._sw, 1, wx.EXPAND)
+            self._tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnTreeSelection)
+            self._populate_tree(panels)
+            self._tree.SelectItem(self._tree.GetFirstChild(self._tree.GetRootItem())[0])
+            self.SetSizer(sizer)
+
+        elif style == "notebook" or (style == "auto" and len(panels) > 1):
+            # the tabs appear in alphabetical order based on their
+            # location. This has the pleasant side effect of "General"
+            # coming before "Plugins", but if some plugin adds a 
+            # location of ("aaa","me first!") it will come before
+            # "General". I need some way to order them, though maybe
+            # just special-casing "General" to come first might be
+            # good enough?
+            self._notebook = wx.Notebook(self)
+            for panel_class in sorted(panels, key=lambda p: p.location):
+                # for a notebook, each notebook page gets a container,
+                # and that container will only show one panel
+                container = PanelContainer(self._notebook)
+                panel = container.AddPanel(panel_class)
+                container.ShowPanel(panel)
+                self._notebook.AddPage(container, panel.GetTitle())
+            sizer = wx.BoxSizer(wx.VERTICAL)
+            sizer.Add(self._notebook, 1, wx.EXPAND)
+            self.SetSizer(sizer)
+
+        else:
+            self._container = PanelContainer(self, wx.ID_ANY)
+            sizer = wx.BoxSizer(wx.VERTICAL)
+            sizer.Add(self._container, 1, wx.EXPAND)
+            self.SetSizer(sizer)
+
+            panel = self._container.AddPanel(panels[0])
+            self._container.ShowPanel(panel)
+
+    def OnTreeSelection(self, event):
+        '''Show panel that corresponds to selected tree item
+        
+        Used only when the hierarchical tree is shown.
+        '''
+        pydata = self._tree.GetItemPyData(event.GetItem())
+
+        if pydata is None:
+            panel_class = GenericPreferencesPanel
+        else:
+            panel_class = pydata
+
+        if isinstance(panel_class, wx.Panel):
+            panel = pydata
+        else:
+            # not an instance, assume it's a class
+            panel = self._container.AddPanel(panel_class)
+            self._tree.SetItemPyData(event.GetItem(), panel)
+        self._container.ShowPanel(panel)
+
+    def _populate_tree(self, panels):
+        '''Recreate the hierarchical tree of preferences panels
+
+        Used only when the hierarchical tree is shown.
+        '''
+        root = self._tree.AddRoot("Root")
+        for panel_class in panels:
+            location = panel_class.location
+            if not isinstance(location, tuple):
+                # location should be a tuple, but it's easy to accidentally
+                # make it not a tuple (eg: ("Plugins")). This fixes that.
+                location = (location,)
+            item = self._get_item(location)
+            self._tree.SetItemPyData(item, panel_class)
+        self._tree.SortChildren(root)
+        self._tree.ExpandAll()
+        
+    def _get_item(self, location):
+        item = self._tree.GetRootItem()
+        for text in location:
+            item = self._get_child_item(item, text)
+        return item
+            
+    def _get_child_item(self, parent, text):
+        '''Returns the tree item with the given text under the given parent
+
+        This will create the item if it doesn't exist
+        '''
+        if self._tree.ItemHasChildren(parent):
+            item, cookie = self._tree.GetFirstChild(parent)
+            while item:
+                if self._tree.GetItemText(item).strip().lower() == text.strip().lower():
+                    return item
+                item, cookie = self._tree.GetNextChild(parent, cookie)
+        # if we get here we didn't find the item
+        item = self._tree.AppendItem(parent, text)
+        return item
+        
+    def _get_children(self, parent):
+        if self._tree.ItemHasChildren(parent):
+            item, cookie = self._tree.GetFirstChild(parent)
+            while item:
+                yield item
+                item, cookie = self._tree.GetNextChild(parent, cookie)
+
+
+class PanelContainer(wx.Panel):
+    '''This contains a preference panel. 
+
+    This container has the ability to hold several panels,
+    and to be able to switch between them. For some modes, however,
+    the container will only hold a single panel.
+
+    Each page has a title area, and an area for a preferences panel
+    '''
+    def __init__(self, *args, **kwargs):
+        super(PanelContainer, self).__init__(*args, **kwargs)
+
+        self._current_panel = None
+        self.title = wx.StaticText(self, label="Your message here")
+        self.panels_container = wx.Panel(self)
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(self.title, 0, wx.TOP|wx.LEFT|wx.EXPAND, 4)
+        sizer.Add(wx.StaticLine(self), 0, wx.EXPAND|wx.TOP|wx.BOTTOM, 4)
+        sizer.Add(self.panels_container,1, wx.EXPAND)
+        self.SetSizer(sizer)
+        self.panels_container.SetSizer(wx.BoxSizer(wx.VERTICAL))
+
+        font = self.title.GetFont()
+        font.SetPointSize(font.GetPointSize()+2)
+        self.title.SetFont(font)
+        self.title.SetForegroundColour("#000000") 
+
+    def AddPanel(self, panel_class):
+        '''Add a panel to the dialog'''
+        panel = panel_class(parent=self.panels_container)
+        self.panels_container.GetSizer().Add(panel, 1, wx.EXPAND)
+        return panel
+
+    def ShowPanel(self, panel):
+        '''Arrange for the given panel to be shown'''
+        if self._current_panel is not None:
+            self._current_panel.Hide()
+        self._current_panel = panel
+        panel.Show()
+        sizer = self.panels_container.GetSizer()
+        item = sizer.GetItem(panel)
+        title = getattr(panel, "title", panel.location[-1])
+        self.title.SetLabel(title)
+        if item is None:
+            sizer.Add(panel, 1, wx.EXPAND)
+        sizer.Layout()
+
+    def SetTitle(self, title):
+        '''Set the title of the panel'''
+        self.title.SetLabel(title)
+
+            

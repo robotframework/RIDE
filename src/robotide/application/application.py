@@ -38,6 +38,7 @@ class RIDE(wx.App):
         wx.App.__init__(self, redirect=False)
 
     def OnInit(self):
+        self._preference_panels = []
         self.namespace = Namespace()
         self._controller = ChiefController(self.namespace)
         self.frame = RideFrame(self, self._controller)
@@ -83,6 +84,19 @@ class RIDE(wx.App):
 
     def get_plugins(self):
         return self._plugin_loader.plugins
+
+    def get_preference_panels(self):
+        return self._preference_panels
+
+    def register_preference_panel(self, panel_class):
+        '''Add the given panel class to the list of known preference panels'''
+        if panel_class not in self._preference_panels:
+            self._preference_panels.append(panel_class)
+
+    def unregister_preference_panel(self, panel_class):
+        '''Remove the given panel class from the list of known preference panels'''
+        if panel_class in self._preference_panels:
+            self._preference_panels.remove(panel_class)
 
     def register_editor(self, object_class, editor_class, activate):
         self._editor_provider.register_editor(object_class, editor_class,
