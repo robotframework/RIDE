@@ -56,6 +56,7 @@ Topic :: Software Development :: Testing
       author       = 'Robot Framework Developers',
       author_email = 'robotframework-devel@googlegroups,com',
       url          = 'https://github.com/robotframework/RIDE/',
+      download_url = 'https://github.com/robotframework/RIDE/downloads/',
       package_dir  = {'' : str(SOURCE_DIR)},
       packages     = find_packages(str(SOURCE_DIR)) + \
                         ['robotide.lib.%s' % str(name) for name
