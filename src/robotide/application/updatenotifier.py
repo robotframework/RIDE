@@ -13,19 +13,21 @@
 #  limitations under the License.
 
 # Configure wx version to allow running test app in __main__
-import time
 
 
 if __name__ == '__main__':
     import robotide as _
+    import wx, wx.html
+    from robotide.widgets.button import ButtonWithHandler
 
+import time
 import urllib2
-import wx, wx.html
 import xmlrpclib
-from robotide.version import VERSION
-from robotide.widgets.button import ButtonWithHandler
+import robotide.version as version
 
 class UpdateNotifierController(object):
+
+    VERSION = version.VERSION
 
     def __init__(self, settings):
         self._settings = settings
@@ -35,17 +37,18 @@ class UpdateNotifierController(object):
 
     def is_new_version_available(self):
         self._settings['last update check'] = time.time()
-        return True
+        self._newest_version = self._get_newest_version()
+        return self.VERSION < self._newest_version
+
+    def _get_newest_version(self):
+        return self._get_response(('robotframework-ride',), 'package_releases')[0]
 
     def get_new_version_information(self):
-        return 'new version', 'download url'
+        return self._newest_version, 'download url'
 
-def _get_response(params, method):
-    req = urllib2.Request('http://pypi.python.org/pypi', xmlrpclib.dumps(params, method), {'Content-Type':'text/xml'})
-    return xmlrpclib.loads(urllib2.urlopen(req, timeout=1).read())[0][0]
-
-def get_newest_version():
-    return _get_response(('robotframework-ride',), 'package_releases')[0]
+    def _get_response(params, method):
+        req = urllib2.Request('http://pypi.python.org/pypi', xmlrpclib.dumps(params, method), {'Content-Type':'text/xml'})
+        return xmlrpclib.loads(urllib2.urlopen(req, timeout=1).read())[0][0]
 
 def get_download_url(version):
     return _get_response(('robotframework-ride', version), 'release_data')['download_url']
