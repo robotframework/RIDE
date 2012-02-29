@@ -1,5 +1,6 @@
 import unittest
 import time
+import urllib2
 from robotide.application.updatenotifier import UpdateNotifierController
 
 
@@ -57,7 +58,15 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self.assertTrue(settings['check for updates'])
 
     def test_checking_timeouts(self):
-        pass
+        settings = self._settings()
+        original_time = settings['last update check']
+        ctrl = UpdateNotifierController(self._settings())
+        def throwTimeoutError():
+            raise urllib2.URLError('timeout')
+        ctrl._get_newest_version = throwTimeoutError
+        self.assertTrue(ctrl.should_check())
+        self.assertFalse(ctrl.is_new_version_available())
+        self.assertEqual(original_time, settings['last update check'])
 
     def test_server_returns_no_versions(self):
         pass

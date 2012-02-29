@@ -39,8 +39,11 @@ class UpdateNotifierController(object):
         return self._settings['check for updates'] and time.time() - self._settings['last update check'] > 60*60*24*7
 
     def is_new_version_available(self):
+        try:
+            self._newest_version = self._get_newest_version()
+        except urllib2.URLError:
+            return False
         self._settings['last update check'] = time.time()
-        self._newest_version = self._get_newest_version()
         return self.VERSION < self._newest_version
 
     def _get_newest_version(self):
