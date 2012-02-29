@@ -1,13 +1,29 @@
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
 import wx
+
 from robotide.preferences import PreferencesPanel, PreferencesColorPicker
 from robotide.context import SETTINGS
+
 
 class ColorPreferences(PreferencesPanel):
     location = ("Grid Colors",)
     title = "Grid Colors"
     def __init__(self, *args, **kwargs):
         super(ColorPreferences, self).__init__(*args, **kwargs)
-        
+
         # N.B. There really ought to be a "reset colors to defaults"
         # button, in case the user gets things hopelessly mixed up
 
@@ -48,11 +64,12 @@ class ColorPreferences(PreferencesPanel):
             main_sizer.Add(btn, (row, 2), flag=wx.ALL|wx.ALIGN_CENTER_VERTICAL, border=4)
             main_sizer.Add(lbl, (row, 3), flag=wx.ALIGN_CENTER_VERTICAL|wx.LEFT, border=4)
             row += 1
-            
+
         self.SetSizer(main_sizer)
 
+
 class ColorPicker(wx.Panel):
-    '''A panel with a color picker and a label'''
+    """A panel with a color picker and a label"""
     def __init__(self, parent, label, key):
         super(ColorPicker, self).__init__(parent, wx.ID_ANY)
 
@@ -65,4 +82,3 @@ class ColorPicker(wx.Panel):
         sizer.Add(button, 0, wx.ALIGN_CENTER_VERTICAL)
         sizer.Add(label, 1, wx.ALIGN_CENTER_VERTICAL|wx.EXPAND|wx.LEFT, 10)
         self.SetSizer(sizer)
-

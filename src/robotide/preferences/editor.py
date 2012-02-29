@@ -1,11 +1,22 @@
-import wx
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
 
-'''
-A generic, extensible preferences dialog
+"""A generic, extensible preferences dialog
 
 Usage:
 
-    dialog = PreferencesDialog(parent, title, preferences, style)
+    dialog = PreferenceEditor(parent, title, preferences, style)
     dialog.ShowModal()
 
 preferences is a any object with attribute preferecne_panels, which in turn
@@ -16,15 +27,17 @@ style may have any of the values "auto", "notebook", "tree" or
 notebook, or a tree will depend on how many pages will be in the
 dialog.
 
-'''
+"""
+
+import wx
 
 # any more than TREE_THRESHOLD panels when style is "auto" forces
 # the UI into showing a hierarchical tree
 TREE_THRESHOLD = 5
 
 
-class PreferencesDialog(wx.Dialog):
-    '''A dialog for showing the preference panels'''
+class PreferenceEditor(wx.Dialog):
+    """A dialog for showing the preference panels"""
     def __init__(self, parent, title, preferences, style="auto"):
         panels = preferences.preference_panels
         self._current_panel = None
@@ -78,10 +91,10 @@ class PreferencesDialog(wx.Dialog):
             self._container.ShowPanel(panel)
 
     def OnTreeSelection(self, event):
-        '''Show panel that corresponds to selected tree item
+        """Show panel that corresponds to selected tree item
 
         Used only when the hierarchical tree is shown.
-        '''
+        """
         pydata = self._tree.GetItemPyData(event.GetItem())
 
         if pydata is None:
@@ -98,10 +111,10 @@ class PreferencesDialog(wx.Dialog):
         self._container.ShowPanel(panel)
 
     def _populate_tree(self, panels):
-        '''Recreate the hierarchical tree of preferences panels
+        """Recreate the hierarchical tree of preferences panels
 
         Used only when the hierarchical tree is shown.
-        '''
+        """
         root = self._tree.AddRoot("Root")
         for panel_class in panels:
             location = panel_class.location
@@ -120,10 +133,10 @@ class PreferencesDialog(wx.Dialog):
         return item
 
     def _get_child_item(self, parent, text):
-        '''Returns the tree item with the given text under the given parent
+        """Returns the tree item with the given text under the given parent
 
         This will create the item if it doesn't exist
-        '''
+        """
         if self._tree.ItemHasChildren(parent):
             item, cookie = self._tree.GetFirstChild(parent)
             while item:
@@ -143,14 +156,14 @@ class PreferencesDialog(wx.Dialog):
 
 
 class PanelContainer(wx.Panel):
-    '''This contains a preference panel.
+    """This contains a preference panel.
 
     This container has the ability to hold several panels,
     and to be able to switch between them. For some modes, however,
     the container will only hold a single panel.
 
     Each page has a title area, and an area for a preferences panel
-    '''
+    """
     def __init__(self, *args, **kwargs):
         super(PanelContainer, self).__init__(*args, **kwargs)
 
@@ -170,13 +183,13 @@ class PanelContainer(wx.Panel):
         self.title.SetForegroundColour("#000000")
 
     def AddPanel(self, panel_class):
-        '''Add a panel to the dialog'''
+        """Add a panel to the dialog"""
         panel = panel_class(parent=self.panels_container)
         self.panels_container.GetSizer().Add(panel, 1, wx.EXPAND)
         return panel
 
     def ShowPanel(self, panel):
-        '''Arrange for the given panel to be shown'''
+        """Arrange for the given panel to be shown"""
         if self._current_panel is not None:
             self._current_panel.Hide()
         self._current_panel = panel
@@ -190,7 +203,7 @@ class PanelContainer(wx.Panel):
         sizer.Layout()
 
     def SetTitle(self, title):
-        '''Set the title of the panel'''
+        """Set the title of the panel"""
         self.title.SetLabel(title)
 
 
