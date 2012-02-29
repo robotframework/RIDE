@@ -16,7 +16,7 @@ import wx
 
 
 class PreferencesPanel(wx.Panel):
-    '''Base class for all preference panels used by PreferencesDialog'''
+    """Base class for all preference panels used by PreferencesDialog"""
     location = ("Preferences",)
     title = "Preferences"
 
@@ -30,7 +30,7 @@ class PreferencesPanel(wx.Panel):
         return title
 
     def Separator(self, parent, title):
-        '''Creates a simple horizontal separator with title'''
+        """Creates a simple horizontal separator with title"""
         container = wx.Panel(parent, wx.ID_ANY)
         label = wx.StaticText(container, wx.ID_ANY, label=title)
         sep = wx.StaticLine(container, wx.ID_ANY)
@@ -40,11 +40,15 @@ class PreferencesPanel(wx.Panel):
         container.SetSizerAndFit(sizer)
         return container
 
+    def close(self):
+        """Manager dialog calls this when it is closing"""
+        pass
+
 # these are standard widgets that are tied to a specific
 # setting; when the widget is changed the setting is
 # automaticaly saved
 class PreferencesComboBox(wx.ComboBox):
-    '''A combobox tied to a specific setting'''
+    """A combobox tied to a specific setting"""
     def __init__(self, parent, id, settings, key, choices):
         self.settings = settings
         self.key = key
@@ -60,7 +64,7 @@ class PreferencesComboBox(wx.ComboBox):
 
 
 class PreferencesColorPicker(wx.ColourPickerCtrl):
-    '''A colored button that opens a color picker dialog'''
+    """A colored button that opens a color picker dialog"""
     def __init__(self, parent, id, settings, key):
         self.settings = settings
         self.key = key
@@ -69,7 +73,7 @@ class PreferencesColorPicker(wx.ColourPickerCtrl):
         self.Bind(wx.EVT_COLOURPICKER_CHANGED, self.OnPickColor)
 
     def OnPickColor(self, event):
-        '''Set the color for the given key to the color of the widget'''
+        """Set the color for the given key to the color of the widget"""
         color = event.GetColour()
         rgb = "#%02X%02X%02X" % color.asTuple()
         self.settings[self.key] = rgb

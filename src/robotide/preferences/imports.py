@@ -15,6 +15,7 @@
 import wx
 
 from robotide.context import SETTINGS
+from robotide.preferences.messages import RideSettingChanged
 from robotide.widgets import Label, TextField, VerticalSizer, HorizontalSizer, HelpLabel
 
 from .widgets import PreferencesPanel
@@ -26,25 +27,47 @@ class ImportPreferences(PreferencesPanel):
     def __init__(self, parent):
         super(PreferencesPanel, self).__init__(parent)
         self.SetSizer(VerticalSizer())
-        self._create_editor(SETTINGS, 'auto imports', 'Comma separated list of libraries to be automatically imported.')
-        self._create_editor(SETTINGS, 'pythonpath', 'Comma separated list of directories to be added to PYTHONPATH when libraries are searched.')
+        self._settings = [
+            Setting('auto imports', 'Comma separated list of libraries to be automatically imported.'),
+            Setting('pythonpath', 'Comma separated list of directories to be added to PYTHONPATH when libraries are searched.')
+        ]
+        for s in self._settings:
+            self._create_editor(s)
 
-    def _create_editor(self, settings, setting_name, help_text):
+    def _create_editor(self, setting):
         sizer = HorizontalSizer()
-        sizer.add_with_padding(self._label_for(setting_name))
-        sizer.add(self._editor_for(setting_name), proportion=1)
+        sizer.add_with_padding(self._label_for(setting))
+        sizer.add(self._editor_for(setting), proportion=1)
         self.Sizer.Add(sizer, flag=wx.EXPAND)
-        self.Sizer.add_with_padding(HelpLabel(self, help_text))
+        self.Sizer.add_with_padding(HelpLabel(self, setting.help))
 
-    def _label_for(self, setting_name):
-        label = ('%s: ' % setting_name).capitalize()
+    def _label_for(self, setting):
+        label = ('%s: ' % setting.name).capitalize()
         return Label(self, label=label)
 
-    def _editor_for(self, setting_name):
-        initial_value = ', '.join(SETTINGS[setting_name])
+    def _editor_for(self, setting):
+        initial_value = ', '.join(setting.current_value)
         editor = TextField(self, initial_value)
-        def set_value(event):
-            value = [name.strip() for name in editor.GetValue().split(',')]
-            SETTINGS.set(setting_name, value)
-        editor.Bind(wx.EVT_TEXT, set_value)
+        editor.Bind(wx.EVT_TEXT, lambda evt: setting.set(editor.GetValue()))
         return editor
+
+    def close(self):
+        for s in self._settings:
+            s.publish()
+
+
+class Setting(object):
+
+    def __init__(self, name, help):
+        self.name = name
+        self.help = help
+        self._original_value = SETTINGS[name]
+        self.current_value = self._original_value
+
+    def set(self, new_value):
+        self.current_value = [token.strip() for token in new_value.split(',')]
+
+    def publish(self):
+        SETTINGS.set(self.name, self.current_value)
+        RideSettingChanged(name=self.name, old_value=self._original_value,
+                           new_value=self.current_value)

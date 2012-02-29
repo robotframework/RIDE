@@ -41,6 +41,7 @@ class PreferenceEditor(wx.Dialog):
     def __init__(self, parent, title, preferences, style="auto"):
         panels = preferences.preference_panels
         self._current_panel = None
+        self._panels = []
         wx.Dialog.__init__(self, parent, wx.ID_ANY, title, size=(800,400),
                            style=wx.RESIZE_BORDER|wx.DEFAULT_DIALOG_STYLE)
 
@@ -89,6 +90,12 @@ class PreferenceEditor(wx.Dialog):
 
             panel = self._container.AddPanel(panels[0])
             self._container.ShowPanel(panel)
+        self.Bind(wx.EVT_CLOSE, self._notify_close)
+
+    def _notify_close(self, event):
+        for p in self._panels:
+            p.close()
+        event.Skip()
 
     def OnTreeSelection(self, event):
         """Show panel that corresponds to selected tree item
@@ -107,6 +114,7 @@ class PreferenceEditor(wx.Dialog):
         else:
             # not an instance, assume it's a class
             panel = self._container.AddPanel(panel_class)
+            self._panels.append(panel)
             self._tree.SetItemPyData(event.GetItem(), panel)
         self._container.ShowPanel(panel)
 
