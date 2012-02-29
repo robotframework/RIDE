@@ -33,6 +33,9 @@ class UpdateNotifierController(object):
         self._settings = settings
 
     def should_check(self):
+        if self._settings['check for updates'] is None:
+            self._settings['check for updates'] = True
+            return True
         return self._settings['check for updates'] and time.time() - self._settings['last update check'] > 60*60*24*7
 
     def is_new_version_available(self):

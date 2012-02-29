@@ -49,7 +49,12 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self.assertTrue(settings['last update check'] > time.time() - 1)
 
     def test_first_run_sets_settings_correctly_and_checks_for_updates(self):
-        pass
+        settings = self._settings(check_for_updates=None, last_update_check=None)
+        ctrl = self._update_notifier_controller(settings, '1.0.2', '1.0.2')
+        self.assertTrue(ctrl.should_check())
+        self.assertFalse(ctrl.is_new_version_available())
+        self.assertTrue(settings['last update check'] > time.time() - 1)
+        self.assertTrue(settings['check for updates'])
 
     def test_checking_timeouts(self):
         pass
