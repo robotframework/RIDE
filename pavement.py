@@ -106,6 +106,12 @@ def install():
     pass
 
 @task
+@needs('_prepare_build', 'setuptools.command.register')
+def register():
+    """Register current version to Python package index"""
+    pass
+
+@task
 @consume_args
 def set_version(args):
     with open('VERSION.txt', 'w') as version_file:
