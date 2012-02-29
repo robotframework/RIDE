@@ -15,7 +15,6 @@
 import wx
 
 from robotide.context import SETTINGS
-from robotide.preferences.messages import RideSettingChanged
 from robotide.widgets import Label, TextField, VerticalSizer, HorizontalSizer, HelpLabel
 
 from .widgets import PreferencesPanel
@@ -69,5 +68,4 @@ class Setting(object):
 
     def publish(self):
         SETTINGS.set(self.name, self.current_value)
-        RideSettingChanged(name=self.name, old_value=self._original_value,
-                           new_value=self.current_value)
+        SETTINGS.notify(self.name, self._original_value, self.current_value)
