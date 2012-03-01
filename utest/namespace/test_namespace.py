@@ -6,6 +6,7 @@ from robot.parsing.model import VariableTable, TestDataDirectory
 from robot.utils import robotpath
 from robot.utils.asserts import assert_true, assert_false, assert_not_none, \
     assert_equals, fail, assert_none
+from resources.mocks import FakeSettings
 from robotide.namespace.namespace import _VariableStash
 from robotide.robotapi import TestCaseFile
 from robotide.controller.filecontrollers import DataController
@@ -80,7 +81,7 @@ class _DataFileTest(unittest.TestCase):
     tcf = _build_test_case_file()
     tcf_ctrl = DataController(tcf, None)
     kw = tcf_ctrl.keywords[0]
-    ns = Namespace()
+    ns = Namespace(FakeSettings())
 
 
 class TestKeywordSuggestions(_DataFileTest):

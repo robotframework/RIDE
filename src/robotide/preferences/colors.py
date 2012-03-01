@@ -15,15 +15,14 @@
 import wx
 
 from robotide.preferences import PreferencesPanel, PreferencesColorPicker
-from robotide.context import SETTINGS
 
 
 class ColorPreferences(PreferencesPanel):
     location = ("Grid Colors",)
     title = "Grid Colors"
-    def __init__(self, *args, **kwargs):
+    def __init__(self, settings, *args, **kwargs):
         super(ColorPreferences, self).__init__(*args, **kwargs)
-
+        self._settings = settings
         # N.B. There really ought to be a "reset colors to defaults"
         # button, in case the user gets things hopelessly mixed up
 
@@ -42,7 +41,7 @@ class ColorPreferences(PreferencesPanel):
             ("text empty", "Empty Foreground"),
             ):
             lbl = wx.StaticText(self, wx.ID_ANY, label)
-            btn = PreferencesColorPicker(self, wx.ID_ANY, SETTINGS["Colors"], key)
+            btn = PreferencesColorPicker(self, wx.ID_ANY, self._settings["Colors"], key)
             main_sizer.Add(btn, (row, 0), flag=wx.ALL|wx.ALIGN_CENTER_VERTICAL, border=4)
             main_sizer.Add(lbl, (row, 1), flag=wx.ALIGN_CENTER_VERTICAL|wx.LEFT, border=4)
             row += 1
@@ -60,25 +59,9 @@ class ColorPreferences(PreferencesPanel):
             ):
 
             lbl = wx.StaticText(self, wx.ID_ANY, label)
-            btn = PreferencesColorPicker(self, wx.ID_ANY, SETTINGS["Colors"], key)
+            btn = PreferencesColorPicker(self, wx.ID_ANY, self._settings["Colors"], key)
             main_sizer.Add(btn, (row, 2), flag=wx.ALL|wx.ALIGN_CENTER_VERTICAL, border=4)
             main_sizer.Add(lbl, (row, 3), flag=wx.ALIGN_CENTER_VERTICAL|wx.LEFT, border=4)
             row += 1
 
         self.SetSizer(main_sizer)
-
-
-class ColorPicker(wx.Panel):
-    """A panel with a color picker and a label"""
-    def __init__(self, parent, label, key):
-        super(ColorPicker, self).__init__(parent, wx.ID_ANY)
-
-        self.key = key
-        color = SETTINGS["Colors"][key]
-        label = wx.StaticText(self, wx.ID_ANY, label)
-        button = wx.ColourPickerCtrl(self, wx.ID_ANY)
-        button.SetColour(color)
-        sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.Add(button, 0, wx.ALIGN_CENTER_VERTICAL)
-        sizer.Add(label, 1, wx.ALIGN_CENTER_VERTICAL|wx.EXPAND|wx.LEFT, 10)
-        self.SetSizer(sizer)

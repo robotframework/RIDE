@@ -15,26 +15,26 @@
 import wx
 import wx.grid
 
-from robotide.context import SETTINGS
 from robotide.context import ctrl_or_cmd, bind_keys_to_evt_menu
-from contentassist import ContentAssistTextCtrl
-from grid import GridEditor
 from robotide.widgets import Label
+
+from .contentassist import ContentAssistTextCtrl
+from .grid import GridEditor
 
 
 class ValueEditor(wx.Panel):
     expand_factor = 0
     _sizer_flags_for_editor = wx.ALL
 
-    def __init__(self, parent, value, label=None, validator=None):
+    def __init__(self, parent, value, label=None, validator=None, settings=None):
         wx.Panel.__init__(self, parent)
         self._sizer = wx.BoxSizer(wx.VERTICAL)
-        self._create_editor(value, label)
+        self._create_editor(value, label, settings)
         if validator:
             self.set_validator(validator)
         self.SetSizer(self._sizer)
 
-    def _create_editor(self, value, label):
+    def _create_editor(self, value, label, settings):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         if label:
             sizer.Add(Label(self, label=label, size=(80, -1)), 0, wx.ALL, 5)
@@ -75,9 +75,10 @@ class ListValueEditor(ValueEditor):
     expand_factor = 1
     _sizer_flags_for_editor = wx.ALL | wx.EXPAND
 
-    def _create_editor(self, value, label):
+    def _create_editor(self, value, label, settings):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
-        cols = SETTINGS['list variable columns']
+        self._settings = settings
+        cols = self._settings['list variable columns']
         sizer.Add(self._create_components(label, cols))
         self._editor = _EditorGrid(self, value, cols)
         sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
@@ -109,7 +110,7 @@ class ListValueEditor(ValueEditor):
 
     def OnColumns(self, event):
         num_cols = int(event.String)
-        SETTINGS['list variable columns'] = num_cols
+        self._settings['list variable columns'] = num_cols
         self._editor.set_number_of_columns(num_cols)
 
     def OnAddRow(self, event):

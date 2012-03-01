@@ -17,19 +17,18 @@ import sys
 from robot.parsing.model import ResourceFile
 
 from robotide import utils
-from robotide.context import SETTINGS
 
 
 class ResourceFactory(object):
     _IGNORE_RESOURCE_DIRECTORY_SETTING_NAME = 'ignored resource directory'
 
-    def __init__(self, exclude_directory=None):
+    def __init__(self, settings):
         self.cache = {}
         self.python_path_cache = {}
-        exclude_directory = exclude_directory or SETTINGS.get(self._IGNORE_RESOURCE_DIRECTORY_SETTING_NAME, None)
+        exclude_directory = settings.get(self._IGNORE_RESOURCE_DIRECTORY_SETTING_NAME, None)
         self._exclude_directory = exclude_directory and self._with_separator(self._normalize(exclude_directory))
-        self._set_pythonpath(SETTINGS['pythonpath'])
-        SETTINGS.add_change_listener(self)
+        self._set_pythonpath(settings.get('pythonpath', []))
+        settings.add_change_listener(self)
 
     def _with_separator(self, dir):
         return os.path.abspath(dir)+os.path.sep

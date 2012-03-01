@@ -33,7 +33,7 @@ from .progress import RenameProgressObserver
 from .resourcedialogs import ResourceRenameDialog, ResourceDeleteDialog
 
 
-def action_handler(controller, tree, node):
+def action_handler(controller, tree, node, settings):
     return {TestDataDirectoryController:TestDataDirectoryHandler,
          ResourceFileController:ResourceFileHandler,
          TestCaseFileController:TestCaseFileHandler,
@@ -41,7 +41,7 @@ def action_handler(controller, tree, node):
          UserKeywordController:UserKeywordHandler,
          VariableController:VariableHandler,
          DirectoryController: DirectoryHandler
-     }[controller.__class__](controller, tree, node)
+     }[controller.__class__](controller, tree, node, settings)
 
 
 class _ActionHandler(wx.Window):
@@ -61,11 +61,12 @@ class _ActionHandler(wx.Window):
     _label_new_resource = 'New Resource'
     _label_find_usages = 'Find Usages'
 
-    def __init__(self, controller, tree, node):
+    def __init__(self, controller, tree, node, settings):
         wx.Window.__init__(self, tree)
         self.controller = controller
         self._tree = tree
         self._node = node
+        self._settings = settings
         self._rendered = False
         self.Show(False)
         self._popup_creator = tree._popup_creator
@@ -225,10 +226,12 @@ class TestDataHandler(_ActionHandler):
         self._new_var(ScalarVariableDialog)
 
     def OnNewListVariable(self, event):
-        self._new_var(ListVariableDialog)
+        class FakePlugin(object):
+            global_settings = self._settings
+        self._new_var(ListVariableDialog, plugin=FakePlugin())
 
-    def _new_var(self, dialog_class):
-        dlg = dialog_class(self._var_controller)
+    def _new_var(self, dialog_class, plugin=None):
+        dlg = dialog_class(self._var_controller, plugin=plugin)
         if dlg.ShowModal() == wx.ID_OK:
             name, value = dlg.get_value()
             comment = dlg.get_comment()

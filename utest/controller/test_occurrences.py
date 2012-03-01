@@ -2,6 +2,7 @@ import unittest
 from robot.parsing.model import TestCaseFile
 
 from robot.utils.asserts import assert_equals, assert_true, assert_false
+from resources import FakeSettings
 from robotide.controller import ChiefController
 from robotide.controller.macrocontrollers import KEYWORD_NAME_FIELD
 from robotide.controller.commands import Undo, FindOccurrences, NullObserver, RenameKeywordOccurrences, ChangeCellValue
@@ -50,7 +51,7 @@ def TestCaseControllerWithSteps(chief=None, source='some_suite.txt'):
     uk = tcf.keyword_table.add(USERKEYWORD2_NAME)
     uk.add_step(['No Operation'])
     if chief is None:
-        chief = ChiefController(Namespace())
+        chief = ChiefController(Namespace(FakeSettings()))
     tcf_ctrl = TestCaseFileController(tcf, chief)
     chief._controller = tcf_ctrl
     tctablectrl = TestCaseTableController(tcf_ctrl,

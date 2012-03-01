@@ -27,7 +27,7 @@ from robotide.controller.filecontrollers import (TestDataDirectoryController,
 
 from robotide.ui.actiontriggers import MenuBar, ToolBar, ShortcutRegistry
 from robotide.ui.mainframe import ActionRegisterer
-from resources import PYAPP_REFERENCE
+from resources import PYAPP_REFERENCE, FakeSettings
 
 from robotide.ui import tree as st
 from robotide.ui import treenodehandlers as th
@@ -91,7 +91,7 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         res = ResourceFile()
         res.source = 'resource.txt'
         res.keyword_table.keywords.append(UserKeyword(res, 'Resource Keyword'))
-        model = ChiefController(Namespace())
+        model = ChiefController(Namespace(FakeSettings()))
         model._controller = TestDataDirectoryController(suite)
         rfc = ResourceFileController(res)
         model.resources.append(rfc)

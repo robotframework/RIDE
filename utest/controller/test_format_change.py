@@ -9,13 +9,13 @@ from robotide.controller.filecontrollers import TestCaseFileController
 from robotide.namespace.namespace import Namespace
 from robot.utils.asserts import assert_not_none, assert_true, assert_false, assert_equals, assert_none
 
-from resources import MINIMAL_SUITE_PATH, SUITEPATH, MessageRecordingLoadObserver
+from resources import MINIMAL_SUITE_PATH, SUITEPATH, MessageRecordingLoadObserver, FakeSettings
 
 
 class TestFormatChange(unittest.TestCase):
 
     def setUp(self):
-        ns = Namespace()
+        ns = Namespace(FakeSettings())
         self.chief = ChiefControllerChecker(ns)
 
     def test_format_change(self):
@@ -58,10 +58,10 @@ class TestFormatChange(unittest.TestCase):
 
 class ChiefControllerChecker(ChiefController):
 
-    def __init__(self, namespace):
+    def __init__(self, namespace, settings=None):
         self.removed_files = []
         self.serialized_files = []
-        ChiefController.__init__(self, namespace)
+        ChiefController.__init__(self, namespace, settings)
 
     def save(self, controller):
         self.serialized_files.append(controller.source)
@@ -78,7 +78,7 @@ class _UnitTestsWithWorkingResourceImports(unittest.TestCase):
         tcf.setting_table.add_resource(resource_import)
         tcf.variable_table.add('${dirname}', os.path.abspath('.').replace('\\', '\\\\'))
         tcf.variable_table.add('${path}', os.path.abspath(resource_name).replace('\\', '\\\\'))
-        self.chef = ChiefController(namespace=Namespace())
+        self.chef = ChiefController(Namespace(FakeSettings()), FakeSettings())
         self.chef._controller = TestCaseFileController(tcf, self.chef)
         res = ResourceFile(source=res_path)
         self.res_controller = \

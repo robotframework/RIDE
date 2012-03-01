@@ -91,7 +91,8 @@ class ListVariableDialog(_Dialog):
         value = var.value if var and var.value else ''
         validator = ListVariableNameValidator(self._controller, name)
         return [VariableNameEditor(self, name, 'Name', validator),
-                ListValueEditor(self, value, 'Value')]
+                ListValueEditor(self, value, 'Value',
+                                settings=self.plugin.global_settings)]
 
 
 class LibraryDialog(_Dialog):

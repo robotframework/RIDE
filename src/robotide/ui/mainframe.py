@@ -15,7 +15,7 @@
 import wx
 
 from robotide.action import ActionInfoCollection, ActionFactory
-from robotide.context import SETTINGS, ABOUT_RIDE
+from robotide.context import ABOUT_RIDE
 from robotide.controller.commands import SaveFile, SaveAll
 from robotide.publish import (RideSaveAll, RideClosing, RideSaved, PUBLISHER,
         RideInputValidationError, RideTreeSelection)
@@ -68,8 +68,8 @@ class RideFrame(wx.Frame, RideEventHandler):
 
     def __init__(self, application, controller):
         wx.Frame.__init__(self, parent=None, title='RIDE',
-                          pos=SETTINGS['mainframe position'],
-                          size=SETTINGS['mainframe size'])
+                          pos=application.settings['mainframe position'],
+                          size=application.settings['mainframe size'])
         self._application = application
         self._controller = controller
         self._init_ui()
@@ -124,7 +124,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         mb = MenuBar(self)
         self.actions = ActionRegisterer(mb, ToolBar(self),
                                         ShortcutRegistry(self))
-        self.tree = Tree(splitter, self.actions)
+        self.tree = Tree(splitter, self.actions, self._application.settings)
         self.actions.register_actions(ActionInfoCollection(_menudata, self,
                                                            self.tree))
         mb.take_menu_bar_into_use()
@@ -140,8 +140,8 @@ class RideFrame(wx.Frame, RideEventHandler):
         return self.tree.get_selected_datafile_controller()
 
     def OnClose(self, event):
-        SETTINGS['mainframe size'] = self.GetSizeTuple()
-        SETTINGS['mainframe position'] = self.GetPositionTuple()
+        self._application.settings['mainframe size'] = self.GetSizeTuple()
+        self._application.settings['mainframe position'] = self.GetPositionTuple()
         if self._allowed_to_exit():
             PUBLISHER.unsubscribe(self._set_label, RideTreeSelection)
             RideClosing().publish()
@@ -259,7 +259,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         self._plugin_manager.show(self._application.get_plugins())
 
     def OnSearchUnusedKeywords(self, event):
-        if self._review_dialog == None:
+        if self._review_dialog is None:
             self._review_dialog = ReviewDialog(self._controller, self)
         self._review_dialog.show_dialog()
 

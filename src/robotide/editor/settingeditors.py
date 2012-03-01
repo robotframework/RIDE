@@ -200,7 +200,7 @@ class SettingValueDisplay(wx.TextCtrl):
         wx.TextCtrl.__init__(self, parent, size=(-1, context.SETTING_ROW_HEIGTH),
                              style=wx.TE_RICH|wx.TE_MULTILINE)
         self.SetEditable(False)
-        self._colour_provider = ColorizationSettings(context.SETTINGS)
+        self._colour_provider = ColorizationSettings(parent.plugin.global_settings)
         self._empty_values()
 
     def _empty_values(self):
@@ -378,7 +378,7 @@ class VariablesListEditor(_AbstractListEditor):
         dlg.Destroy()
 
     def OnAddList(self, event):
-        dlg = ListVariableDialog(self._controller)
+        dlg = ListVariableDialog(self._controller, plugin=self.Parent.plugin)
         if dlg.ShowModal() == wx.ID_OK:
             ctrl = self._controller.add_variable(*dlg.get_value())
             ctrl.set_comment(dlg.get_comment())
@@ -390,7 +390,8 @@ class VariablesListEditor(_AbstractListEditor):
         if var.name.startswith('${'):
             dlg = ScalarVariableDialog(self._controller, item=var)
         else:
-            dlg = ListVariableDialog(self._controller, item=var)
+            dlg = ListVariableDialog(self._controller, item=var,
+                                     plugin=self.Parent.plugin)
         if dlg.ShowModal() == wx.ID_OK:
             name, value = dlg.get_value()
             var.execute(UpdateVariable(name, value, dlg.get_comment()))

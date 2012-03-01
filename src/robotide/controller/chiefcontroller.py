@@ -17,7 +17,7 @@ import os
 import shutil
 import tempfile
 
-from robotide.context import LOG, SETTINGS
+from robotide.context import LOG
 from robotide.publish.messages import RideOpenResource, RideSaving, RideSaveAll, \
     RideSaved, RideOpenSuite, RideNewProject, RideFileNameChanged
 
@@ -29,14 +29,15 @@ from .robotdata import NewTestCaseFile, NewTestDataDirectory
 
 class ChiefController(_BaseController, WithNamespace):
 
-    def __init__(self, namespace):
+    def __init__(self, namespace=None, settings=None):
         self._set_namespace(namespace)
+        self._settings = settings
         self._loader = DataLoader(namespace)
         self._controller = None
         self.name = None
         self.external_resources = []
         self._resource_file_controller_factory = ResourceFileControllerFactory(namespace)
-        self._serializer = Serializer(SETTINGS, LOG)
+        self._serializer = Serializer(settings, LOG)
 
     @property
     def display_name(self):
@@ -44,11 +45,11 @@ class ChiefController(_BaseController, WithNamespace):
 
     @property
     def default_dir(self):
-        return os.path.abspath(SETTINGS['default directory'])
+        return os.path.abspath(self._settings['default directory'])
 
     def update_default_dir(self, path):
         default_dir = path if os.path.isdir(path) else os.path.dirname(path)
-        SETTINGS.set('default directory', default_dir)
+        self._settings.set('default directory', default_dir)
 
     # TODO: in all other controllers data returns a robot data model object.
     @property
@@ -121,7 +122,7 @@ class ChiefController(_BaseController, WithNamespace):
         return datafile
 
     def _populate_from_datafile(self, path, datafile, load_observer):
-        self.__init__(self._namespace)
+        self.__init__(self._namespace, self._settings)
         resources = self._loader.resources_for(datafile, load_observer)
         self._create_controllers(datafile, resources)
         RideOpenSuite(path=path, datafile=self._controller).publish()
@@ -163,7 +164,7 @@ class ChiefController(_BaseController, WithNamespace):
         else:
             self.external_resources.append(resource)
             self._sort_external_resources()
-    
+
     def _sort_external_resources(self):
         self.external_resources.sort(key=lambda resource: resource.name.lower())
 

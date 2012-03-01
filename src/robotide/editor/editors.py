@@ -81,12 +81,12 @@ class _RobotTableEditor(EditorPanel):
         self.plugin.subscribe(self._settings_changed, RideItemSettingsChanged)
 
     def _should_settings_be_open(self):
-        if self._settings_open_id not in context.SETTINGS:
+        if self._settings_open_id not in self.plugin.global_settings:
             return False
-        return context.SETTINGS[self._settings_open_id]
+        return self.plugin.global_settings[self._settings_open_id]
 
     def _store_settings_open_status(self):
-        context.SETTINGS[self._settings_open_id] = self._settings.IsExpanded()
+        self.plugin.global_settings[self._settings_open_id] = self._settings.IsExpanded()
 
     def _settings_changed(self, data):
         if data.item == self.controller:

@@ -1,10 +1,12 @@
 import os
+from resources import FakeSettings
+from robotide.context.settings import Settings
 from robotide.controller.chiefcontroller import ChiefController
 from robotide.controller.commands import NullObserver
 from robotide.namespace import Namespace
 RESOURCES_DIR = 'resources'
 RESOURCES_HTML = 'resource.html'
-DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]), 
+DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]),
                         RESOURCES_DIR, 'robotdata')
 
 def _makepath(*elements):
@@ -39,7 +41,8 @@ SIMPLE_PROJECT = _makepath('simple', 'test.txt')
 UNUSED_KEYWORDS_PATH = _makepath('unused_keywords')
 
 def construct_chief_controller(datapath):
-    chief = ChiefController(Namespace())
+    settings = FakeSettings()
+    chief = ChiefController(Namespace(settings), settings)
     chief.load_data(datapath, NullObserver())
     return chief
 

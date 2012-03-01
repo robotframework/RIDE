@@ -177,6 +177,14 @@ class Settings(_Section):
             self._config_obj = ConfigObj(user_path, unrepr=True)
         except UnreprError, error:
             raise ConfigurationError(error)
+        self._listeners = []
 
     def save(self):
         self._config_obj.write()
+
+    def add_change_listener(self, l):
+        self._listeners.append(l)
+
+    def notify(self, name, old_value, new_value):
+        for l in self._listeners:
+            l.setting_changed(name, old_value, new_value)

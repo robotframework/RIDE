@@ -16,7 +16,7 @@ from resources import (COMPLEX_SUITE_PATH, MINIMAL_SUITE_PATH, RESOURCE_PATH,
                        MessageRecordingLoadObserver, SUITEPATH,
                        DATAPATH, RELATIVE_PATH_TO_RESOURCE_FILE,
                        RESOURCE_PATH2, RESOURCE_PATH3, RESOURCE_PATH_TXT,
-                       EXTERNAL_RES_UNSORTED_PATH)
+                       EXTERNAL_RES_UNSORTED_PATH, FakeSettings)
 from resources.mocks import PublisherListener
 import datafilereader
 
@@ -27,7 +27,7 @@ ALL_RESOURCE_PATH_RELATED_RESOURCE_IMPORTS = [RESOURCE_PATH, RESOURCE_PATH2, RES
 class ChiefControllerTest(unittest.TestCase):
 
     def setUp(self):
-        self.ctrl = ChiefController(Namespace())
+        self.ctrl = ChiefController(Namespace(FakeSettings()), FakeSettings())
         self.load_observer = MessageRecordingLoadObserver()
         self.suite_listener = PublisherListener(RideOpenSuite)
         self.resource_listener = PublisherListener(RideOpenResource)
@@ -150,7 +150,7 @@ class ChiefControllerTest(unittest.TestCase):
 class TestResolvingResourceDirectories(unittest.TestCase):
 
     def setUp(self):
-        self.chief = ChiefController(Namespace())
+        self.chief = ChiefController(Namespace(FakeSettings()), FakeSettings())
 
     def test_resource_file_outside_of_topsuite_is_an_external_resource(self):
         self.chief._controller = TestDataDirectoryController(self._data_directory('suite'))

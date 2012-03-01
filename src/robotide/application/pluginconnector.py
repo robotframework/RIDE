@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.context import LOG, SETTINGS
+from robotide.context import LOG
 from robotide import utils
 
 
@@ -22,7 +22,7 @@ def PluginFactory(application, plugin_class):
     except Exception, err:
         return BrokenPlugin(str(err), plugin_class)
     else:
-        return PluginConnector(plugin)
+        return PluginConnector(plugin, application)
 
 
 class _PluginConnector(object):
@@ -38,10 +38,10 @@ class _PluginConnector(object):
 
 class PluginConnector(_PluginConnector):
 
-    def __init__(self, plugin):
+    def __init__(self, plugin, application):
         _PluginConnector.__init__(self, plugin.name, plugin.doc)
         self._plugin = plugin
-        self._settings = SETTINGS['Plugins'].add_section(plugin.name)
+        self._settings = application.settings['Plugins'].add_section(plugin.name)
         self.config_panel = plugin.config_panel
         self.metadata = plugin.metadata
 

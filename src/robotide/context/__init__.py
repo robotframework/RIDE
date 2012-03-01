@@ -33,21 +33,12 @@ class RideSettings(Settings):
         Settings.__init__(self, user_path)
         self._settings_dir = os.path.dirname(user_path)
         self.set('install root', os.path.dirname(os.path.dirname(__file__)))
-        self._listeners = []
 
     def get_path(self, *parts):
         """Returns path which combines settings directory and given parts."""
         return os.path.join(self._settings_dir, *parts)
 
-    def add_change_listener(self, l):
-        self._listeners.append(l)
 
-    def notify(self, name, old_value, new_value):
-        for l in self._listeners:
-            l.setting_changed(name, old_value, new_value)
-
-
-SETTINGS = RideSettings()
 LOG = Logger()
 ROBOT_LOGGER.disable_automatic_console_logger()
 ROBOT_LOGGER.register_logger(LOG)

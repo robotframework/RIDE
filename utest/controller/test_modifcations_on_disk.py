@@ -4,6 +4,7 @@ import os
 import tempfile
 from robot.utils.asserts import assert_true, assert_false, assert_equals
 from robot.parsing.model import TestCaseFile, TestDataDirectory, ResourceFile
+from resources.mocks import FakeSettings
 
 from robotide.controller.filecontrollers import (TestCaseFileController,
                                                  TestDataDirectoryController,
@@ -21,9 +22,11 @@ def create_test_data(path, filepath, resourcepath, initpath):
     open(resourcepath, 'w').write('*Keywords*\nUnit Test Keyword  No Operation\n')
     open(initpath, 'w').write('*Settings*\nDocumentation  Ride unit testing file\n')
 
-
 def remove_test_data(path):
     shutil.rmtree(path)
+
+def create_chief():
+    return ChiefController(Namespace(FakeSettings()), FakeSettings())
 
 
 class _DataDependentTest(unittest.TestCase):
@@ -63,7 +66,7 @@ class TestModifiedOnDiskWithFileSuite(_DataDependentTest):
 
     def test_overwrite(self):
         ctrl = TestCaseFileController(TestCaseFile(source=self._filepath).populate(),
-                                      ChiefController(Namespace()))
+                                      create_chief())
         os.utime(self._filepath, (1,1))
         assert_true(ctrl.has_been_modified_on_disk())
         ctrl.save()
@@ -111,7 +114,7 @@ class TestDataFileRemoval(_DataDependentTest):
         self._removed_datafile = message.datafile
 
     def test_deleting_source_should_remove_it_from_model(self):
-        chief = ChiefController(Namespace())
+        chief = create_chief()
         chief._controller = TestCaseFileController(TestCaseFile(source=self._filepath), chief)
         os.remove(self._filepath)
         ctrl = chief.data
@@ -120,20 +123,20 @@ class TestDataFileRemoval(_DataDependentTest):
         assert_true(self._removed_datafile is ctrl)
 
     def test_deleting_file_suite_under_dir_suite(self):
-        chief = ChiefController(Namespace())
+        chief = create_chief()
         chief._controller = TestDataDirectoryController(TestDataDirectory(source=self._dirpath).populate(), chief)
         file_suite = chief.data.children[0]
         file_suite.remove()
         assert_true(len(chief.data.children) == 0, 'Child suite was not removed')
 
     def test_deleting_resource_file(self):
-        chief = ChiefController(Namespace())
+        chief = create_chief()
         res = chief.new_resource(self._resource_path)
         res.remove()
         assert_true(len(chief.resources) == 0, 'Resource was not removed')
 
     def test_deleting_init_file(self):
-        chief = ChiefController(Namespace())
+        chief = create_chief()
         chief._controller = TestDataDirectoryController(TestDataDirectory(source=self._dirpath).populate(), chief)
         os.remove(self._init_path)
         chief.data.remove()

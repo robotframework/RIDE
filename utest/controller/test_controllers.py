@@ -13,7 +13,6 @@ from robotide.controller.tablecontrollers import (VariableTableController,
         MetadataListController, ImportSettingsController, _WithListOperations)
 from robotide.publish.messages import (RideImportSetting, RideImportSettingRemoved,
         RideImportSettingAdded, RideImportSettingChanged)
-from robotide.context import SETTINGS
 from resources.mocks import PublisherListener
 from controller.base_command_test import _FakeChief
 from robotide.controller.tags import Tag
@@ -408,7 +407,6 @@ class MetadataListControllerTest(unittest.TestCase):
         self.tcf.setting_table.add_metadata('Meta name', 'Some value')
         self.ctrl = MetadataListController(TestCaseFileController(self.tcf),
                                            self.tcf.setting_table)
-        SETTINGS['metadata style'] = 'new'
 
     def test_creation(self):
         self._assert_meta_in_ctrl(0, 'Meta name', 'Some value')

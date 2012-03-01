@@ -42,6 +42,7 @@ class PreferenceEditor(wx.Dialog):
         panels = preferences.preference_panels
         self._current_panel = None
         self._panels = []
+        self._settings = preferences.settings
         wx.Dialog.__init__(self, parent, wx.ID_ANY, title, size=(800,400),
                            style=wx.RESIZE_BORDER|wx.DEFAULT_DIALOG_STYLE)
 
@@ -113,7 +114,7 @@ class PreferenceEditor(wx.Dialog):
             panel = pydata
         else:
             # not an instance, assume it's a class
-            panel = self._container.AddPanel(panel_class)
+            panel = self._container.AddPanel(panel_class, self._settings)
             self._panels.append(panel)
             self._tree.SetItemPyData(event.GetItem(), panel)
         self._container.ShowPanel(panel)
@@ -190,9 +191,9 @@ class PanelContainer(wx.Panel):
         self.title.SetFont(font)
         self.title.SetForegroundColour("#000000")
 
-    def AddPanel(self, panel_class):
+    def AddPanel(self, panel_class, settings):
         """Add a panel to the dialog"""
-        panel = panel_class(parent=self.panels_container)
+        panel = panel_class(parent=self.panels_container, settings=settings)
         self.panels_container.GetSizer().Add(panel, 1, wx.EXPAND)
         return panel
 

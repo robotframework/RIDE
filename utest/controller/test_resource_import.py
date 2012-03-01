@@ -1,10 +1,12 @@
+import os
 import unittest
 import datafilereader
+
 from robotide.controller.commands import AddKeyword, ChangeCellValue,\
     CreateNewResource, SaveFile
 from robot.utils.asserts import assert_equals
 from robotide.controller.cellinfo import ContentType, CellType
-import os
+
 
 class TestResourceImport(unittest.TestCase):
 

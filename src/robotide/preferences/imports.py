@@ -14,8 +14,8 @@
 
 import wx
 
-from robotide.context import SETTINGS
-from robotide.widgets import Label, TextField, VerticalSizer, HorizontalSizer, HelpLabel
+from robotide.widgets import (Label, TextField, VerticalSizer, HorizontalSizer,
+        HelpLabel)
 
 from .widgets import PreferencesPanel
 
@@ -23,12 +23,14 @@ from .widgets import PreferencesPanel
 class ImportPreferences(PreferencesPanel):
     location = ('Importing')
     title = 'Automatic imports and PYTHONPATH'
-    def __init__(self, parent):
+    def __init__(self, parent, settings):
         super(PreferencesPanel, self).__init__(parent)
         self.SetSizer(VerticalSizer())
         self._settings = [
-            Setting('auto imports', 'Comma separated list of libraries to be automatically imported.'),
-            Setting('pythonpath', 'Comma separated list of directories to be added to PYTHONPATH when libraries are searched.')
+            Setting(settings, 'auto imports',
+                    'Comma separated list of libraries to be automatically imported.'),
+            Setting(settings, 'pythonpath',
+                    'Comma separated list of directories to be added to PYTHONPATH when libraries are searched.')
         ]
         for s in self._settings:
             self._create_editor(s)
@@ -57,15 +59,16 @@ class ImportPreferences(PreferencesPanel):
 
 class Setting(object):
 
-    def __init__(self, name, help):
+    def __init__(self, settings, name, help):
+        self._settings = settings
         self.name = name
         self.help = help
-        self._original_value = SETTINGS[name]
+        self._original_value = settings[name]
         self.current_value = self._original_value
 
     def set(self, new_value):
         self.current_value = [token.strip() for token in new_value.split(',')]
 
     def publish(self):
-        SETTINGS.set(self.name, self.current_value)
-        SETTINGS.notify(self.name, self._original_value, self.current_value)
+        self._settings.set(self.name, self.current_value)
+        self._settings.notify(self.name, self._original_value, self.current_value)

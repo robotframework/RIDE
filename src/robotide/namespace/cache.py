@@ -15,7 +15,6 @@
 import os
 import time
 
-from robotide.context import SETTINGS
 from robotide.spec import LibrarySpec
 from robotide.robotapi import normpath
 from robotide.publish.messages import RideLogException
@@ -25,7 +24,8 @@ class LibraryCache(object):
     _IMPORT_FAILED = 'Importing library %s failed:'
     _RESOLVE_FAILED = 'Resolving keywords for library %s with args %s failed:'
 
-    def __init__(self):
+    def __init__(self, settings):
+        self._settings = settings
         self._library_keywords = _LibraryCache()
         self.__default_libraries = None
         self.__default_kws = None
@@ -88,7 +88,7 @@ class LibraryCache(object):
 
     def _get_default_libraries(self):
         default_libs = {}
-        for libsetting in SETTINGS['auto imports'] + ['BuiltIn']:
+        for libsetting in self._settings['auto imports'] + ['BuiltIn']:
             name, args = self._get_name_and_args(libsetting)
             default_libs[name] = LibrarySpec(name, args)
         return default_libs

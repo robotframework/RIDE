@@ -16,7 +16,6 @@ import wx
 import inspect
 from robotide.action.actioninfo import ActionInfo
 
-from robotide.context import SETTINGS
 from robotide.publish import PUBLISHER
 from robotide import utils
 
@@ -62,6 +61,8 @@ class Plugin(object):
                      doc='Reference to the RIDE main frame')
     datafile = property(lambda self: self.get_selected_datafile(),
                         doc='Currently selected datafile')
+    global_settings = property(lambda self: self.__app.settings,
+                               doc='Settings read from settings.cfg')
 
     def __init__(self, application, name=None, doc=None, metadata=None,
                  default_settings=None, initially_enabled=True):
@@ -111,7 +112,7 @@ class Plugin(object):
         self.__app = application
         self.__frame = application.frame
         self.__namespace = application.namespace
-        self.__settings = SETTINGS['Plugins'].add_section(self.name)
+        self.__settings = application.settings['Plugins'].add_section(self.name)
         self.__settings.set_defaults(default_settings)
         self.__actions = []
 
@@ -139,7 +140,7 @@ class Plugin(object):
         overridden or not. Saved settings can be accessed using direct attribute
         access via `__getattr__`.
         ``delay`` is number defining how many seconds is waited before setting
-        is saved. This can be used to prevent saving the value while user is 
+        is saved. This can be used to prevent saving the value while user is
         typing it.
         """
         self.__settings.set(name, value, autosave=delay == 0, override=override)

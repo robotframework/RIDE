@@ -5,12 +5,12 @@ from robot.utils.asserts import assert_true
 from robotide.namespace import Namespace
 from robotide.controller.chiefcontroller import ChiefController
 
-from resources import MessageRecordingLoadObserver
+from resources import MessageRecordingLoadObserver, FakeSettings
 from datafilereader import TESTCASEFILE_WITH_EVERYTHING, KW1000_TESTCASEFILE,\
     KW2000_TESTCASEFILE, KW3000_TESTCASEFILE, KW4000_TESTCASEFILE
 
-class TestNamespacePerformance(unittest.TestCase):
 
+class TestNamespacePerformance(unittest.TestCase):
     SAFETY_MARGIN = 0.96
     RELEVANT_B_RELATIVE_TO_C = 0.2
 
@@ -69,7 +69,7 @@ class TestNamespacePerformance(unittest.TestCase):
         return a, b, c
 
     def _load(self, testcasefile):
-        ns = Namespace()
+        ns = Namespace(FakeSettings())
         chief =  ChiefController(ns)
         chief.load_datafile(testcasefile,
                             MessageRecordingLoadObserver())
@@ -82,4 +82,4 @@ class TestNamespacePerformance(unittest.TestCase):
         for i in range(n):
             func(testcasefile, 'hevonen %s' % i)
         return time.time() - start_time
-        
+

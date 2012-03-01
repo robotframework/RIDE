@@ -16,7 +16,7 @@ import wx
 from wx import grid
 from robot.parsing.model import Variable
 
-from robotide.context import IS_MAC, SETTINGS # TODO: can we avoid direct reference?
+from robotide.context import IS_MAC
 from robotide.controller.commands import (ChangeCellValue, ClearArea, PasteArea,
         DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells,
         UncommentRows, Undo, Redo, RenameKeywordOccurrences, ExtractKeyword,
@@ -64,7 +64,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._parent = parent
             self._plugin = parent.plugin
             self._cell_selected = False
-            self._colorizer = Colorizer(self, controller, ColorizationSettings(SETTINGS))
+            self._colorizer = Colorizer(self, controller,
+                                        ColorizationSettings(self._plugin.global_settings))
             self._controller = controller
             self._configure_grid()
             PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
@@ -529,7 +530,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def _extract_list(self, cells):
         var = Variable('', [self.GetCellValue(*cell) for cell in cells], '')
-        dlg = ListVariableDialog(self._controller.datafile_controller.variables, var)
+        dlg = ListVariableDialog(self._controller.datafile_controller.variables,
+                                 var, self._plugin)
         if dlg.ShowModal() == wx.ID_OK:
             name, value = dlg.get_value()
             comment = dlg.get_comment()

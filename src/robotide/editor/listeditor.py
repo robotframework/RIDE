@@ -19,7 +19,6 @@ from robotide.controller.commands import MoveUp, MoveDown, DeleteItem
 from robotide.utils import RideEventHandler
 from robotide.widgets import PopupMenu, PopupMenuItems, ButtonWithHandler, Font
 from robotide.context.platform import ctrl_or_cmd, bind_keys_to_evt_menu, IS_WINDOWS
-from robotide.context import SETTINGS
 
 
 class ListEditorBase(wx.Panel):
@@ -169,8 +168,8 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
             self._add_link_style(row, item)
 
     def _set_column_widths(self):
-        min_width = SETTINGS['list col min width']
-        max_width = SETTINGS['list col max width']
+        min_width = self._parent.Parent.plugin.global_settings['list col min width']
+        max_width = self._parent.Parent.plugin.global_settings['list col max width']
         for i in range(self.ColumnCount):
             self.SetColumnWidth(i, -1)
             if self.GetColumnWidth(i) < min_width:

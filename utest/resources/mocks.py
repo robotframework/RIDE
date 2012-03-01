@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-
+from robotide.context import Settings
 from robotide.publish import PUBLISHER
 
 
@@ -58,6 +58,15 @@ class _FakeUIObject(object):
     notebook = property(lambda *args: _FakeUIObject())
     actions = property(lambda *args: _FakeActions())
 
+
+class FakeSettings(Settings):
+    def __init__(self):
+        Settings.__init__(self, None)
+        self.add_section('Plugins')
+        self.set('pythonpath', [])
+        self.set('auto imports', [])
+
+
 class FakeApplication(object):
     frame = _FakeUIObject()
     model = _FakeModel()
@@ -68,10 +77,8 @@ class FakeApplication(object):
     get_notebook = lambda s: _FakeUIObject()
     get_frame = lambda s: _FakeUIObject()
     create_menu_item = lambda *args: None
+    settings = FakeSettings()
 
-class FakeSettings(object):
-    def __getitem__(self, name):
-        return _FakeSetting()
 
 class _FakeSetting(object):
     add_section = lambda self, name: _FakeSetting()

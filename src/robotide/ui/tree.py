@@ -13,10 +13,6 @@
 #  limitations under the License.
 
 import wx
-from robotide.controller.commands import MoveTo
-from robotide.publish.messages import RideDataFileSet
-from robotide.ui.treenodehandlers import ResourceRootHandler, action_handler
-
 
 try:
     import treemixin
@@ -30,10 +26,12 @@ from robotide.publish import (PUBLISHER, RideTreeSelection, RideFileNameChanged,
     RideTestCaseRemoved, RideDataFileRemoved, RideDataChangedToDirty,
     RideDataDirtyCleared, RideVariableRemoved, RideVariableAdded,
     RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated,
-    RideOpenResource, RideSuiteAdded, RideSelectResource)
-from robotide import utils
+    RideOpenResource, RideSuiteAdded, RideSelectResource, RideDataFileSet)
+from robotide.controller.commands import MoveTo
 from robotide.widgets import PopupCreator
+from robotide import utils
 
+from .treenodehandlers import ResourceRootHandler, action_handler
 from .images import TreeImageList
 
 
@@ -49,13 +47,14 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     _RESOURCES_NODE_LABEL = 'External Resources'
 
-    def __init__(self, parent, action_registerer):
+    def __init__(self, parent, action_registerer, settings=None):
         style = wx.TR_DEFAULT_STYLE
         if IS_WINDOWS:
             style = style|wx.TR_EDIT_LABELS
         treemixin.DragAndDrop.__init__(self, parent, style=style)
         actions = ActionInfoCollection(tree_actions, self, self)
         action_registerer.register_actions(actions)
+        self._settings = settings
         self._find_node = _FindNode(self)
         self._bind_tree_events()
         self._images = TreeImageList()
@@ -167,7 +166,9 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
                                  self._images.directory)
 
     def _populate_model(self, model):
-        self.SetPyData(self._resource_root, ResourceRootHandler(model, self, self._resource_root))
+        handler = ResourceRootHandler(model, self, self._resource_root,
+                                      self._settings)
+        self.SetPyData(self._resource_root, handler)
         if model.data:
             self._render_datafile(self._root, model.data, 0)
         for res in model.external_resources:
@@ -221,7 +222,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def _create_node_with_handler(self, parent_node, controller, index=None):
         node = self._create_node(parent_node, controller.display_name, self._images[controller],
                                  index)
-        self.SetPyData(node, action_handler(controller, self, node))
+        self.SetPyData(node, action_handler(controller, self, node, self._settings))
         return node
 
     def _expand_and_render_children(self, node):

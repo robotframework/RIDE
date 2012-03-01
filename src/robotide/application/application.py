@@ -19,6 +19,7 @@ from contextlib import contextmanager
 from robotide.application.updatenotifier import UpdateNotifierController, UpdateDialog
 from robotide.context import SETTINGS
 
+from robotide.context import RideSettings
 from robotide.namespace import Namespace
 from robotide.controller import ChiefController
 from robotide.ui import RideFrame, LoadProgressObserver
@@ -39,9 +40,10 @@ class RIDE(wx.App):
         wx.App.__init__(self, redirect=False)
 
     def OnInit(self):
-        self.preferences = Preferences()
-        self.namespace = Namespace()
-        self._controller = ChiefController(self.namespace)
+        self.settings = RideSettings()
+        self.preferences = Preferences(self.settings)
+        self.namespace = Namespace(self.settings)
+        self._controller = ChiefController(self.namespace, self.settings)
         self.frame = RideFrame(self, self._controller)
         self._editor_provider = EditorProvider()
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),
@@ -67,8 +69,8 @@ class RIDE(wx.App):
         return self._controller
 
     def _get_plugin_dirs(self):
-        return [context.SETTINGS.get_path('plugins'),
-                os.path.join(context.SETTINGS['install root'], 'site-plugins'),
+        return [self.settings.get_path('plugins'),
+                os.path.join(self.settings['install root'], 'site-plugins'),
                 contrib.CONTRIB_PATH]
 
     def _get_editor(self):

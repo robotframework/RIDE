@@ -20,9 +20,9 @@ class ContentAssistPlugin(Plugin):
 
 class TestContentAssistHook(unittest.TestCase):
 
-    def test_(self):
+    def test_hook_suggestions_are_included(self):
         self.app = FakeApplication()
-        self.app.namespace = Namespace()
+        self.app.namespace = Namespace(self.app.settings)
         pl = ContentAssistPlugin(self.app, name='test')
         pl.register_content_assist_hook(pl._get_content_assist_values)
         self._assert_contains('foo')

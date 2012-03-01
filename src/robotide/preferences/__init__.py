@@ -22,7 +22,8 @@ from .colors import ColorPreferences
 
 class Preferences(object):
 
-    def __init__(self):
+    def __init__(self, settings):
+        self.settings = settings
         self._preference_panels = []
         self._add_builtin_preferences()
 

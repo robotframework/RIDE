@@ -12,55 +12,60 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import tempfile
 import unittest
+import os
 
-from robotide.pluginapi import plugin
+from robotide.context.settings import Settings
+from robotide.pluginapi import Plugin
 
 from resources import TestSettingsHelper, FakeApplication
 
 
 class TestPluginSettings(TestSettingsHelper):
-
-    def setUp(self):
-        TestSettingsHelper.setUp(self)
-        self.orig_plugin_settings = plugin.SETTINGS
-        self.settings.add_section('Plugins')
-        plugin.SETTINGS = self.settings
+    _settings_path = os.path.join(tempfile.gettempdir(), 'set.cfg')
 
     def tearDown(self):
-        TestSettingsHelper.tearDown(self)
-        plugin.SETTINGS = self.orig_plugin_settings
+        if os.path.exists(self._settings_path):
+            os.remove(self._settings_path)
 
     def test_setting_default_settings_when_no_settings_exist(self):
-        self.assertEquals(self.App().foo, 'bar')
+        self.assertEquals(self._create_plugin().foo, 'bar')
 
     def test_set_default_settings_when_settings_exist(self):
-        self.settings['Plugins'].add_section('MyPlug')['foo'] = 'zip'
-        self.assertEquals(self.App().foo, 'zip')
+        app = self._create_app()
+        app.settings['Plugins'].add_section('MyPlug', foo='zip')
+        self.assertEquals(Plugin(app, name='MyPlug').foo, 'zip')
 
     def test_save_setting_with_override(self):
-        p = self.App()
+        p = self._create_plugin()
         p.save_setting('foo', 'new')
         self.assertEquals(p.foo, 'new')
 
     def test_save_setting_without_override(self):
-        p = self.App()
+        p = self._create_plugin()
         p.save_setting('foo', 'new', override=False)
         self.assertEquals(p.foo, 'bar')
 
     def test_direct_attribute_access_with_existing_setting(self):
-        self.assertEquals(self.App().foo, 'bar')
+        self.assertEquals(self._create_plugin().foo, 'bar')
 
     def test_direct_attribute_access_with_non_existing_setting(self):
         try:
-            self.App().non_existing
+            self._create_plugin().non_existing
         except AttributeError:
             return
         raise AssertionError("Accessing non existent attribute should raise AttributeError")
 
-    def App(self, settings={'foo': 'bar'}):
-        return plugin.Plugin(FakeApplication(), name='MyPlug', 
-                             default_settings=settings)
+    def _create_plugin(self, settings={'foo': 'bar'}):
+        return Plugin(self._create_app(), name='MyPlug', default_settings=settings)
+
+    def _create_app(self):
+        app = FakeApplication()
+        settings = Settings(self._settings_path)
+        settings.add_section('Plugins')
+        app.settings = settings
+        return app
 
 
 if __name__ == "__main__":
