@@ -23,6 +23,8 @@ import urllib2
 import xmlrpclib
 import robotide.version as version
 
+_CHECK_FOR_UPDATES_SETTING = 'check for updates'
+_LAST_UPDATE_CHECK_SETTING = 'last update check'
 
 class UpdateNotifierController(object):
 
@@ -34,14 +36,14 @@ class UpdateNotifierController(object):
 
     def notify_update_if_needed(self, update_notification_callback):
         if self._should_check() and self._is_new_version_available():
-            update_notification_callback(self._newest_version, self._download_url)
+            update_notification_callback(self._newest_version, self._download_url, self._settings)
 
     def _should_check(self):
-        if self._settings.get('check for updates', None) is None:
-            self._settings['check for updates'] = True
+        if self._settings.get(_CHECK_FOR_UPDATES_SETTING, None) is None:
+            self._settings[_CHECK_FOR_UPDATES_SETTING] = True
             return True
-        return self._settings['check for updates'] and \
-               time.time() - self._settings.get('last update check', 0) > self.SECONDS_IN_WEEK
+        return self._settings[_CHECK_FOR_UPDATES_SETTING] and \
+               time.time() - self._settings.get(_LAST_UPDATE_CHECK_SETTING, 0) > self.SECONDS_IN_WEEK
 
     def _is_new_version_available(self):
         try:
@@ -55,7 +57,7 @@ class UpdateNotifierController(object):
             # - Server fault message
             # - Unexpected change in dataformat
             return False
-        self._settings['last update check'] = time.time()
+        self._settings[_LAST_UPDATE_CHECK_SETTING] = time.time()
         return self.VERSION < self._newest_version
 
     def _get_newest_version(self):
@@ -81,8 +83,8 @@ class HtmlWindow(wx.html.HtmlWindow):
 
 class UpdateDialog(wx.Dialog):
 
-    def __init__(self, version, url):
-        print version, url
+    def __init__(self, version, url, settings):
+        self._settings = settings
         wx.Dialog.__init__(self, None, -1, "Update available")
         sizer = wx.BoxSizer(orient=wx.VERTICAL)
         hwin = HtmlWindow(self, -1, size=(400,200))
@@ -91,6 +93,7 @@ class UpdateDialog(wx.Dialog):
         hwin.SetSize((irep.GetWidth()+25, irep.GetHeight()+10))
         sizer.Add(hwin)
         checkbox = wx.CheckBox(self, -1, label='do not check for updates')
+        checkbox.Bind(wx.EVT_CHECKBOX, handler=self.OnCheckboxChange)
         sizer.Add(checkbox)
         button = ButtonWithHandler(self, label='remind me later', handler=self.OnRemindMeLater)
         sizer.Add(button)
@@ -103,3 +106,7 @@ class UpdateDialog(wx.Dialog):
 
     def OnRemindMeLater(self, event):
         self.Close(True)
+
+    def OnCheckboxChange(self, event):
+        self._settings[_CHECK_FOR_UPDATES_SETTING] = not event.IsChecked()
+        event.Skip()

@@ -11,13 +11,14 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self._version = None
         self._url = None
 
-    def _callback(self, version, url):
+    def _callback(self, version, url, settings):
         self.assertFalse(self._callback_called)
         self._callback_called = True
         self.assertNotEqual(None, version)
         self._version = version
         self.assertNotEqual(None, url)
         self._url = url
+        self.assertEqual(dict, type(settings))
 
     def _update_notifier_controller(self, settings, current, new, url='some url'):
         ctrl = UpdateNotifierController(settings)
