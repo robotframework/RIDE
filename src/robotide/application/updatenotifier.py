@@ -47,6 +47,7 @@ class UpdateNotifierController(object):
                time.time() - self._settings.get(_LAST_UPDATE_CHECK_SETTING, 0) > self.SECONDS_IN_WEEK
 
     def _is_new_version_available(self):
+        self._settings[_LAST_UPDATE_CHECK_SETTING] = time.time()
         try:
             self._newest_version = self._get_newest_version()
             self._download_url = self._get_download_url(self._newest_version)
@@ -58,7 +59,6 @@ class UpdateNotifierController(object):
             # - Server fault message
             # - Unexpected change in dataformat
             return False
-        self._settings[_LAST_UPDATE_CHECK_SETTING] = time.time()
         return cmp_versions(self.VERSION, self._newest_version) == -1
 
     def _get_newest_version(self):

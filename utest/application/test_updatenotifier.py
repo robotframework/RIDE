@@ -93,18 +93,16 @@ class UpdateNotifierTestCase(unittest.TestCase):
 
     def test_checking_timeouts(self):
         settings = self._settings()
-        original_time = settings['last update check']
         ctrl = UpdateNotifierController(settings)
         def throwTimeoutError():
             raise urllib2.URLError('timeout')
         ctrl._get_newest_version = throwTimeoutError
         ctrl.notify_update_if_needed(self._callback)
-        self.assertEqual(original_time, settings['last update check'])
+        self.assertTrue(settings['last update check'] > time.time() - 1)
         self.assertFalse(self._callback_called)
 
     def test_download_url_checking_timeouts(self):
         settings = self._settings()
-        original_time = settings['last update check']
         ctrl = UpdateNotifierController(settings)
         ctrl.VERSION = '0'
         ctrl._get_newest_version = lambda: '1'
@@ -112,7 +110,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
             raise urllib2.URLError('timeout')
         ctrl._get_download_url = throwTimeoutError
         ctrl.notify_update_if_needed(self._callback)
-        self.assertEqual(original_time, settings['last update check'])
+        self.assertTrue(settings['last update check'] > time.time() - 1)
         self.assertFalse(self._callback_called)
 
     def test_server_returns_no_versions(self):
