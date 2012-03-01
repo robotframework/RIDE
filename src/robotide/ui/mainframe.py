@@ -90,11 +90,13 @@ class RideFrame(wx.Frame, RideEventHandler):
     def _init_ui(self):
         splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
         self.notebook = NoteBook(splitter, self._application)
-        self.actions = ActionRegisterer(MenuBar(self), ToolBar(self),
+        mb = MenuBar(self)
+        self.actions = ActionRegisterer(mb, ToolBar(self),
                                         ShortcutRegistry(self))
         self.tree = Tree(splitter, self.actions)
         self.actions.register_actions(ActionInfoCollection(_menudata, self,
                                                            self.tree))
+        mb.take_menu_bar_into_use()
         splitter.SetMinimumPaneSize(100)
         splitter.SplitVertically(self.tree, self.notebook, 300)
         self.CreateStatusBar()

@@ -27,6 +27,10 @@ class MenuBar(object):
         self._accelerators = []
         self._menus = []
         self._create_default_menus()
+
+    def take_menu_bar_into_use(self):
+        """This should be called after fully populating menus.
+        Otherwise help menu will not be functional in osx."""
         self._frame.SetMenuBar(self._mb)
 
     def _create_default_menus(self):
