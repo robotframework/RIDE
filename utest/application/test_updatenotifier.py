@@ -6,73 +6,120 @@ from robotide.application.updatenotifier import UpdateNotifierController
 
 class UpdateNotifierTestCase(unittest.TestCase):
 
-    def test_normal_update(self):
-        settings = self._settings()
-        ctrl = self._update_notifier_controller(settings, '0', '1')
-        self.assertTrue(ctrl.should_check())
-        self.assertTrue(ctrl.is_new_version_available())
-        version, url = ctrl.get_new_version_information()
-        self.assertEqual('1', version)
-        self.assertEqual('download url', url)
-        self.assertTrue(settings['check for updates'])
-        self.assertTrue(settings['last update check'] > time.time() - 1)
+    def setUp(self):
+        self._callback_called = False
+        self._version = None
+        self._url = None
 
-    def _update_notifier_controller(self, settings, current, new):
+    def _callback(self, version, url):
+        self.assertFalse(self._callback_called)
+        self._callback_called = True
+        self.assertNotEqual(None, version)
+        self._version = version
+        self.assertNotEqual(None, url)
+        self._url = url
+
+    def _update_notifier_controller(self, settings, current, new, url='some url'):
         ctrl = UpdateNotifierController(settings)
         ctrl.VERSION = current
         ctrl._get_newest_version = lambda: new
+        ctrl._get_download_url   = lambda v: url if v == new else None
         return ctrl
 
-    def _settings(self, check_for_updates=True, last_update_check=None):
+    def _settings(self, check_for_updates=True, last_update_check=time.time()-60*60*24*7):
         return {'check for updates': check_for_updates,
-                'last update check': last_update_check or time.time()-60*60*24*7}
+                'last update check': last_update_check}
+
+    def test_normal_update(self):
+        settings = self._settings()
+        ctrl = self._update_notifier_controller(settings, '0', '1', 'http://xyz.abc.efg.di')
+        ctrl.notify_update_if_needed(self._callback)
+        self.assertEqual('1', self._version)
+        self.assertEqual('http://xyz.abc.efg.di', self._url)
+        self.assertTrue(self._callback_called)
+        self.assertTrue(settings['check for updates'])
+        self.assertTrue(settings['last update check'] > time.time() - 1)
 
     def test_last_update_done_less_than_a_week_ago(self):
         original_time = time.time()-60*60*24*3
         settings = self._settings(last_update_check=original_time)
         ctrl = UpdateNotifierController(settings)
-        self.assertFalse(ctrl.should_check())
+        ctrl.notify_update_if_needed(self._callback)
         self.assertTrue(settings['check for updates'])
         self.assertEqual(original_time, settings['last update check'])
+        self.assertFalse(self._callback_called)
 
     def test_check_for_updates_is_false(self):
         settings = self._settings(check_for_updates=False)
         original_time = settings['last update check']
         ctrl = UpdateNotifierController(settings)
-        self.assertFalse(ctrl.should_check())
+        ctrl.notify_update_if_needed(self._callback)
         self.assertFalse(settings['check for updates'])
         self.assertEqual(original_time, settings['last update check'])
+        self.assertFalse(self._callback_called)
 
     def test_no_update_found(self):
         settings = self._settings()
         ctrl = self._update_notifier_controller(settings, '0.55', '0.55')
-        self.assertFalse(ctrl.is_new_version_available())
+        ctrl.notify_update_if_needed(self._callback)
         self.assertTrue(settings['last update check'] > time.time() - 1)
+        self.assertFalse(self._callback_called)
 
     def test_first_run_sets_settings_correctly_and_checks_for_updates(self):
         settings = self._settings(check_for_updates=None, last_update_check=None)
         ctrl = self._update_notifier_controller(settings, '1.0.2', '1.0.2')
-        self.assertTrue(ctrl.should_check())
-        self.assertFalse(ctrl.is_new_version_available())
+        ctrl.notify_update_if_needed(self._callback)
         self.assertTrue(settings['last update check'] > time.time() - 1)
         self.assertTrue(settings['check for updates'])
+        self.assertFalse(self._callback_called)
+
+    def test_first_run_sets_settings_correctly_and_finds_an_update(self):
+        settings = self._settings(check_for_updates=None, last_update_check=None)
+        ctrl = self._update_notifier_controller(settings, '1.2', '2.0')
+        ctrl.notify_update_if_needed(self._callback)
+        self.assertTrue(settings['last update check'] > time.time() - 1)
+        self.assertTrue(settings['check for updates'])
+        self.assertTrue(self._callback_called)
 
     def test_checking_timeouts(self):
         settings = self._settings()
         original_time = settings['last update check']
-        ctrl = UpdateNotifierController(self._settings())
+        ctrl = UpdateNotifierController(settings)
         def throwTimeoutError():
             raise urllib2.URLError('timeout')
         ctrl._get_newest_version = throwTimeoutError
-        self.assertTrue(ctrl.should_check())
-        self.assertFalse(ctrl.is_new_version_available())
+        ctrl.notify_update_if_needed(self._callback)
         self.assertEqual(original_time, settings['last update check'])
+        self.assertFalse(self._callback_called)
+
+    def test_download_url_checking_timeouts(self):
+        settings = self._settings()
+        original_time = settings['last update check']
+        ctrl = UpdateNotifierController(settings)
+        ctrl.VERSION = '0'
+        ctrl._get_newest_version = lambda: '1'
+        def throwTimeoutError(*args):
+            raise urllib2.URLError('timeout')
+        ctrl._get_download_url = throwTimeoutError
+        ctrl.notify_update_if_needed(self._callback)
+        self.assertEqual(original_time, settings['last update check'])
+        self.assertFalse(self._callback_called)
 
     def test_server_returns_no_versions(self):
-        pass
+        settings = self._settings()
+        ctrl = self._update_notifier_controller(settings, '1.2.2', None)
+        ctrl.notify_update_if_needed(self._callback)
+        self.assertTrue(settings['last update check'] > time.time() - 1)
+        self.assertTrue(settings['check for updates'])
+        self.assertFalse(self._callback_called)
 
     def test_server_returns_older_version(self):
-        pass
+        settings = self._settings()
+        ctrl = self._update_notifier_controller(settings, '0.44', '0.43.1')
+        ctrl.notify_update_if_needed(self._callback)
+        self.assertTrue(settings['last update check'] > time.time() - 1)
+        self.assertTrue(settings['check for updates'])
+        self.assertFalse(self._callback_called)
 
 if __name__ == '__main__':
     unittest.main()

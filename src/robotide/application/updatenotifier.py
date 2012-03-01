@@ -15,10 +15,8 @@
 # Configure wx version to allow running test app in __main__
 
 
-if __name__ == '__main__':
-    import robotide as _
-    import wx, wx.html
-    from robotide.widgets.button import ButtonWithHandler
+import wx, wx.html
+from robotide.widgets.button import ButtonWithHandler
 
 import time
 import urllib2
@@ -28,20 +26,31 @@ import robotide.version as version
 class UpdateNotifierController(object):
 
     VERSION = version.VERSION
+    SECONDS_IN_WEEK = 60*60*24*7
 
     def __init__(self, settings):
         self._settings = settings
 
-    def should_check(self):
+    def notify_update_if_needed(self, update_notification_callback):
+        if self._should_check() and self._is_new_version_available():
+            update_notification_callback(self._newest_version, self._download_url)
+
+    def _should_check(self):
         if self._settings['check for updates'] is None:
             self._settings['check for updates'] = True
             return True
-        return self._settings['check for updates'] and time.time() - self._settings['last update check'] > 60*60*24*7
+        return self._settings['check for updates'] and time.time() - self._settings['last update check'] > self.SECONDS_IN_WEEK
 
-    def is_new_version_available(self):
+    def _is_new_version_available(self):
         try:
             self._newest_version = self._get_newest_version()
-        except urllib2.URLError:
+            self._download_url = self._get_download_url(self._newest_version)
+        except Exception:
+            #There are many possible errors:
+            # - Timeout
+            # - Corrupted data
+            # - Server fault message
+            # - Unexpected change in dataformat
             return False
         self._settings['last update check'] = time.time()
         return self.VERSION < self._newest_version
@@ -49,68 +58,32 @@ class UpdateNotifierController(object):
     def _get_newest_version(self):
         return self._get_response(('robotframework-ride',), 'package_releases')[0]
 
-    def get_new_version_information(self):
-        return self._newest_version, 'download url'
+    def _get_download_url(self, version):
+        return self._get_response(('robotframework-ride', version), 'release_data')['download_url']
 
     def _get_response(params, method):
         req = urllib2.Request('http://pypi.python.org/pypi', xmlrpclib.dumps(params, method), {'Content-Type':'text/xml'})
         return xmlrpclib.loads(urllib2.urlopen(req, timeout=1).read())[0][0]
 
-def get_download_url(version):
-    return _get_response(('robotframework-ride', version), 'release_data')['download_url']
 
-def should_update():
-    try:
-        version = get_newest_version()
-        #if VERSION >= version:
-        #    return False
-        url = get_download_url(version)
-        return version, url
-    except urllib2.URLError:
-        print 'timeout'
+class UpdateDialog(wx.Dialog):
 
-if __name__ == '__main__':
+    def __init__(self, version, url):
+        wx.Dialog.__init__(self, None, -1, "Update available")
+        sizer = wx.BoxSizer(orient=wx.VERTICAL)
+        hwin = wx.HtmlWindow(self, -1, size=(400,200))
+        hwin.SetPage('New version %s available from <a href="%s">%s</a>' % (version, url, url))
+        irep = hwin.GetInternalRepresentation()
+        hwin.SetSize((irep.GetWidth()+25, irep.GetHeight()+10))
+        sizer.Add(hwin)
+        checkbox = wx.CheckBox(self, -1, label='do not check for updates')
+        sizer.Add(checkbox)
+        button = ButtonWithHandler(self, label='remind me later', handler=self.OnRemindMeLater)
+        sizer.Add(button)
+        self.SetSizer(sizer)
+        self.CentreOnParent(wx.BOTH)
+        self.Fit()
+        self.SetFocus()
 
-    class MyMenuApp( wx.App):
-
-        def OnInit(self):
-            wx.Frame(None, -1, 'frame')
-            u = UpdateDialog(*should_update())
-            u.ShowModal()
-            u.Destroy()
-            return True
-
-    class HtmlWindow(wx.html.HtmlWindow):
-        def __init__(self, parent, id, size=(600,400)):
-            wx.html.HtmlWindow.__init__(self,parent, id, size=size)
-            if "gtk2" in wx.PlatformInfo:
-                self.SetStandardFonts()
-
-        def OnLinkClicked(self, link):
-            wx.LaunchDefaultBrowser(link.GetHref())
-
-    class UpdateDialog(wx.Dialog):
-
-        def __init__(self, version, url):
-            wx.Dialog.__init__(self, None, -1, "Update available")
-            sizer = wx.BoxSizer(orient=wx.VERTICAL)
-            hwin = HtmlWindow(self, -1, size=(400,200))
-            hwin.SetPage('New version %s available from <a href="%s">%s</a>' % (version, url, url))
-            irep = hwin.GetInternalRepresentation()
-            hwin.SetSize((irep.GetWidth()+25, irep.GetHeight()+10))
-            sizer.Add(hwin)
-            checkbox = wx.CheckBox(self, -1, label='do not check for updates')
-            sizer.Add(checkbox)
-            button = ButtonWithHandler(self, label='remind me later', handler=self.OnRemindMeLater)
-            sizer.Add(button)
-            self.SetSizer(sizer)
-            self.CentreOnParent(wx.BOTH)
-            self.Fit()
-            self.SetFocus()
-
-        def OnRemindMeLater(self, event):
-            self.Close(True)
-
-    # Run program
-    app=MyMenuApp(0)
-    app.MainLoop()
+    def OnRemindMeLater(self, event):
+        self.Close(True)

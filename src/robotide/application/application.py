@@ -16,6 +16,8 @@ from __future__ import with_statement
 import os
 import wx
 from contextlib import contextmanager
+from robotide.application.updatenotifier import UpdateNotifierController, UpdateDialog
+from robotide.context import SETTINGS
 
 from robotide.namespace import Namespace
 from robotide.controller import ChiefController
@@ -37,6 +39,7 @@ class RIDE(wx.App):
     def OnInit(self):
         self.namespace = Namespace()
         self._controller = ChiefController(self.namespace)
+        UpdateNotifierController(SETTINGS).notify_update_if_needed(UpdateDialog)
         self.frame = RideFrame(self, self._controller)
         self._editor_provider = EditorProvider()
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),
