@@ -203,3 +203,6 @@ class _EditorTab(wx.Panel):
 
     def save(self, message=None):
         self.editor.save()
+
+    def OnKey(self, *args):
+        pass
