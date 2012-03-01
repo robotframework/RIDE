@@ -41,6 +41,15 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self.assertTrue(settings['check for updates'])
         self.assertTrue(settings['last update check'] > time.time() - 1)
 
+    def test_update_when_trunk_version(self):
+        settings = self._settings()
+        ctrl = self._update_notifier_controller(settings, 'trunk', '0.56')
+        ctrl.notify_update_if_needed(self._callback)
+        self.assertTrue(self._callback_called)
+        self.assertEqual('0.56', self._version)
+        self.assertTrue(settings['check for updates'])
+        self.assertTrue(settings['last update check'] > time.time() - 1)
+
     def test_last_update_done_less_than_a_week_ago(self):
         original_time = time.time()-60*60*24*3
         settings = self._settings(last_update_check=original_time)

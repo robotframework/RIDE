@@ -16,6 +16,7 @@
 
 
 import wx, wx.html
+from robotide.utils.versioncomparator import cmp_versions
 from robotide.widgets.button import ButtonWithHandler
 
 import time
@@ -58,7 +59,7 @@ class UpdateNotifierController(object):
             # - Unexpected change in dataformat
             return False
         self._settings[_LAST_UPDATE_CHECK_SETTING] = time.time()
-        return self.VERSION < self._newest_version
+        return cmp_versions(self.VERSION, self._newest_version) == -1
 
     def _get_newest_version(self):
         return self._get_response(('robotframework-ride',), 'package_releases')[0]
