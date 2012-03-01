@@ -23,6 +23,7 @@ import urllib2
 import xmlrpclib
 import robotide.version as version
 
+
 class UpdateNotifierController(object):
 
     VERSION = version.VERSION
@@ -36,16 +37,18 @@ class UpdateNotifierController(object):
             update_notification_callback(self._newest_version, self._download_url)
 
     def _should_check(self):
-        if self._settings['check for updates'] is None:
+        if self._settings.get('check for updates', None) is None:
             self._settings['check for updates'] = True
             return True
-        return self._settings['check for updates'] and time.time() - self._settings['last update check'] > self.SECONDS_IN_WEEK
+        return self._settings['check for updates'] and \
+               time.time() - self._settings.get('last update check', 0) > self.SECONDS_IN_WEEK
 
     def _is_new_version_available(self):
         try:
             self._newest_version = self._get_newest_version()
             self._download_url = self._get_download_url(self._newest_version)
-        except Exception:
+        except Exception, e:
+            print e
             #There are many possible errors:
             # - Timeout
             # - Corrupted data
@@ -61,17 +64,28 @@ class UpdateNotifierController(object):
     def _get_download_url(self, version):
         return self._get_response(('robotframework-ride', version), 'release_data')['download_url']
 
-    def _get_response(params, method):
+    def _get_response(self, params, method):
         req = urllib2.Request('http://pypi.python.org/pypi', xmlrpclib.dumps(params, method), {'Content-Type':'text/xml'})
         return xmlrpclib.loads(urllib2.urlopen(req, timeout=1).read())[0][0]
+
+
+class HtmlWindow(wx.html.HtmlWindow):
+    def __init__(self, parent, id, size=(600,400)):
+        wx.html.HtmlWindow.__init__(self,parent, id, size=size)
+        if "gtk2" in wx.PlatformInfo:
+            self.SetStandardFonts()
+
+    def OnLinkClicked(self, link):
+        wx.LaunchDefaultBrowser(link.GetHref())
 
 
 class UpdateDialog(wx.Dialog):
 
     def __init__(self, version, url):
+        print version, url
         wx.Dialog.__init__(self, None, -1, "Update available")
         sizer = wx.BoxSizer(orient=wx.VERTICAL)
-        hwin = wx.HtmlWindow(self, -1, size=(400,200))
+        hwin = HtmlWindow(self, -1, size=(400,200))
         hwin.SetPage('New version %s available from <a href="%s">%s</a>' % (version, url, url))
         irep = hwin.GetInternalRepresentation()
         hwin.SetSize((irep.GetWidth()+25, irep.GetHeight()+10))
@@ -84,6 +98,8 @@ class UpdateDialog(wx.Dialog):
         self.CentreOnParent(wx.BOTH)
         self.Fit()
         self.SetFocus()
+        self.ShowModal()
+        self.Destroy()
 
     def OnRemindMeLater(self, event):
         self.Close(True)
