@@ -39,7 +39,6 @@ class RIDE(wx.App):
     def OnInit(self):
         self.namespace = Namespace()
         self._controller = ChiefController(self.namespace)
-        UpdateNotifierController(SETTINGS).notify_update_if_needed(UpdateDialog)
         self.frame = RideFrame(self, self._controller)
         self._editor_provider = EditorProvider()
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),
@@ -51,6 +50,7 @@ class RIDE(wx.App):
         self.frame.tree.populate(self.model)
         self.frame.tree.set_editor(self.editor)
         self._publish_system_info()
+        UpdateNotifierController(SETTINGS).notify_update_if_needed(UpdateDialog)
         wx.CallLater(200, self._get_release_notes().bring_to_front)
         return True
 
