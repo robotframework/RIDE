@@ -20,8 +20,8 @@ class _BoxSizer(wx.BoxSizer):
     def __init__(self):
         wx.BoxSizer.__init__(self, self.direction)
 
-    def add(self, component):
-        self.Add(component)
+    def add(self, component, proportion=0, flag=0):
+        self.Add(component, proportion=proportion, flag=flag)
 
     def add_with_padding(self, component, padding=5):
         self.Add(component, flag=wx.ALL, border=padding)

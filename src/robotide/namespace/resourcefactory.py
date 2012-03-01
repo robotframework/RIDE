@@ -82,4 +82,4 @@ class ResourceFactory(object):
         return ResourceFile(path).populate()
 
     def _normalize(self, path):
-        return os.path.normcase(os.path.normpath(path))
+        return os.path.normcase(os.path.normpath(os.path.abspath(path)))
