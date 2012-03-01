@@ -155,7 +155,7 @@ class StepController(object):
         return self._step.as_list()
 
     def contains_variable(self, name):
-        return any(self._var_name_match(item, name) for item in self.as_list())
+        return any(utils.value_contains_variable(item, name) for item in self.as_list())
 
     def contains_keyword(self, name):
         return any(self._kw_name_match(item, name) for item in [self.keyword or ''] + self.args)
@@ -164,9 +164,6 @@ class StepController(object):
         return utils.eq(item, expected) or (
             self._GIVEN_WHEN_THEN_MATCHER.match(item) and
             utils.eq(self._GIVEN_WHEN_THEN_MATCHER.sub('', item), expected))
-
-    def _var_name_match(self, item, expected):
-        return utils.matches(item, "*%s*" % expected)
 
     def replace_keyword(self, new_name, old_name):
         if self._kw_name_match(self.keyword or '', old_name):

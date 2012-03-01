@@ -447,12 +447,14 @@ class FindOccurrences(_Command):
         return item_info.source if item_info else None
 
     def _find_occurrences_in(self, items):
+        return (Occurrence(item, self._keyword_name) for item in items
+            if self._contains_item(item))
+
+    def _contains_item(self, item):
         if len(utils.find_variable_basenames(self._keyword_name)) > 0:
-            return (Occurrence(item, self._keyword_name) for item in items
-                if self._contains_variable(item))
+            return self._contains_variable(item)
         else:
-            return (Occurrence(item, self._keyword_name) for item in items
-                if self._contains_keyword(item))
+            return self._contains_keyword(item)
 
     def _contains_keyword(self, item):
         self._yield_for_other_threads()

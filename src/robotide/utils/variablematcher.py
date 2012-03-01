@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 import re
+from robot.utils import matches
 
 _VAR_BODY = r'([^\}]|\\\})*'
 _SCALAR_VARIABLE_MATCHER = re.compile(r'^(\$\{'+_VAR_BODY+'\}) *=?$')
@@ -50,3 +51,5 @@ def get_variable_basename(value):
 def find_variable_basenames(value):
     return [get_variable_basename(var) for var in re.findall('[\@\$]{.*?}', value)]
 
+def value_contains_variable(value, varname):
+    return matches(value, "*%s*" % varname)

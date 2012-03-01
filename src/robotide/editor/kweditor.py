@@ -499,21 +499,21 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def OnFindWhereUsed(self, event):
         cellvalue = self.GetCellValue(*self.selection.cells()[0])
-        variables = utils.find_variable_basenames(cellvalue)
-        searchstring = cellvalue
-        if variables and variables[0] != cellvalue:
-            choices = [cellvalue] + variables
-            choices_string = ["Complete cell content"] + ["Variable " + var for var in variables]
-            choice_dialog = ChooseUsageSearchStringDialog(None, "Find Where Used",
-                                                          "Please select what you want to check for usage",
-                                                          choices_string)
+        if self._cell_value_contains_multiple_search_items(cellvalue):
+            choice_dialog = ChooseUsageSearchStringDialog(cellvalue)
             if choice_dialog.ShowModal() == wx.ID_OK:
-                searchstring = choices[choice_dialog.GetSelection()]
+                searchstring = choice_dialog.GetStringSelection()
                 choice_dialog.Destroy()
             else:
                 choice_dialog.Destroy()
                 return
+        else:
+            searchstring = cellvalue
         Usages(self._controller, self._tree.highlight, searchstring).show()
+
+    def _cell_value_contains_multiple_search_items(self, value):
+        variables = utils.find_variable_basenames(value)
+        return variables and variables[0] != value
 
     def _extract_scalar(self, cell):
         var = Variable('', self.GetCellValue(*cell), '')
@@ -609,14 +609,16 @@ class ContentAssistCellEditor(grid.PyGridCellEditor):
 
 class ChooseUsageSearchStringDialog(wx.Dialog):
 
-    def __init__(self, parent, title, caption, choices):
-        wx.Dialog.__init__(self, parent, wx.ID_ANY, title, style=wx.DEFAULT_DIALOG_STYLE)
-        self.caption = caption
-        self.choices = choices
+    def __init__(self, cellvalue):
+        wx.Dialog.__init__(self, None, wx.ID_ANY, "Find Where Used", style=wx.DEFAULT_DIALOG_STYLE)
+        self.caption = "Please select what you want to check for usage"
+        variables = utils.find_variable_basenames(cellvalue)
+        self.choices = [cellvalue] + variables
+        self.choices_string = ["Complete cell content"] + ["Variable " + var for var in variables]
         self._build_ui()
     
     def _build_ui(self):
-        self.radiobox_choices = wx.RadioBox(self, choices=self.choices,
+        self.radiobox_choices = wx.RadioBox(self, choices=self.choices_string,
                                             style=wx.RA_SPECIFY_COLS, majorDimension=1)
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(wx.StaticText(self, label=self.caption), 0, wx.ALL|wx.EXPAND, 5)
@@ -628,5 +630,5 @@ class ChooseUsageSearchStringDialog(wx.Dialog):
         self.Fit()
         self.CenterOnParent()
     
-    def GetSelection(self):
-        return self.radiobox_choices.GetSelection()
+    def GetStringSelection(self):
+        return self.choices[self.radiobox_choices.GetSelection()]
