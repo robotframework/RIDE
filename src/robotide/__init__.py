@@ -14,10 +14,12 @@
 
 """RIDE -- Robot Framework test data editor
 
-Usage: ride.py [inpath]
+Usage: ride.py [--noupdatecheck] [inpath]
 
 RIDE can be started either without any arguments or by giving a path to a test
 data file or directory to be opened.
+
+To disable update checker use --noupdatecheck.
 
 RIDE's API is still evolving while the project is moving towards the 1.0
 release. The most stable, and best documented, module is `robotide.pluginapi`.
@@ -55,20 +57,27 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'spec'))
 
 
 def main(args):
-    if len(args) > 1 or '--help' in args:
+    noupdatecheck, inpath = _parse_args(args)
+    if len(args) > 2 or '--help' in args:
         print __doc__
         sys.exit()
     try:
-        _run(*args)
+        _run(inpath, not noupdatecheck)
     except DataError, err:
         print str(err) + '\n\nUse --help to get usage information.'
 
+def _parse_args(args):
+    if not args:
+        return False, None
+    noupdatecheck = (args[0] == '--noupdatecheck')
+    inpath = args[-1] if not noupdatecheck or len(args) > 1 else None
+    return noupdatecheck, inpath
 
-def _run(inpath=None):
+def _run(inpath=None, updatecheck=True):
     from robotide.application import RIDE
     if inpath:
         inpath = unicode(inpath, sys.getfilesystemencoding())
-    ride = RIDE(inpath)
+    ride = RIDE(inpath, updatecheck)
     ride.MainLoop()
 
 

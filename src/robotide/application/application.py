@@ -31,8 +31,9 @@ from editorprovider import EditorProvider
 
 class RIDE(wx.App):
 
-    def __init__(self, path=None):
+    def __init__(self, path=None, updatecheck=True):
         self._initial_path = path
+        self._updatecheck = updatecheck
         context.APP = self
         wx.App.__init__(self, redirect=False)
 
@@ -50,7 +51,8 @@ class RIDE(wx.App):
         self.frame.tree.populate(self.model)
         self.frame.tree.set_editor(self.editor)
         self._publish_system_info()
-        UpdateNotifierController(SETTINGS).notify_update_if_needed(UpdateDialog)
+        if self._updatecheck:
+            UpdateNotifierController(SETTINGS).notify_update_if_needed(UpdateDialog)
         wx.CallLater(200, self._get_release_notes().bring_to_front)
         return True
 
