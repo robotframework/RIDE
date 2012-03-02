@@ -71,7 +71,7 @@ class TestCaseNameController(ItemNameController):
     _name_field = TESTCASE_NAME_FIELD
 
 
-class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
+class _WithStepsController(_BaseController, ControllerWithParent, WithUndoRedoStacks):
 
     def __init__(self, parent_controller, data):
         self._parent = parent_controller
@@ -288,7 +288,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         messageclass(item=self).publish()
 
 
-class TestCaseController(_BaseController, _WithStepsController):
+class TestCaseController(_WithStepsController):
     _populator = TestCasePopulator
 
     def _init(self, test):
@@ -359,7 +359,7 @@ class TestCaseController(_BaseController, _WithStepsController):
         return self.datafile_controller.get_template()
 
 
-class UserKeywordController(_BaseController, _WithStepsController):
+class UserKeywordController(_WithStepsController):
     _populator = UserKeywordPopulator
 
     def _init(self, kw):
