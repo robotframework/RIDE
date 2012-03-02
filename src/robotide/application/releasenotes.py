@@ -75,11 +75,11 @@ WELCOME_TEXT = """
 <p>Visit RIDE on the web:</p>
 
 <ul>
-  <li><a href="http://code.google.com/p/robotframework-ride/">
-      RIDE project page on Google Code</a></li>
-  <li><a href="http://code.google.com/p/robotframework-ride/wiki/InstallationInstructions">
+  <li><a href="https://github.com/robotframework/RIDE">
+      RIDE project page on github</a></li>
+  <li><a href="https://github.com/robotframework/RIDE/wiki/Installation-Instructions">
       Installation instructions</a></li>
-  <li><a href="http://code.google.com/p/robotframework-ride/wiki/ReleaseNotes">
+  <li><a href="https://github.com/robotframework/RIDE/wiki/Release-notes">
       Release notes</a></li>
 </ul>
 """ % VERSION
@@ -88,50 +88,20 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 0.41</h2>
-<table border="1">
-<tr>
-<td><b>ID</b></td>
-<td><b>Type</b></td>
-<td><b>Priority</b></td>
-<td><b>Summary</b></td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=714">Issue 714</a></td>
-<td>Defect</td>
-<td>High</td>
-<td>RIDE sometimes hangs up while google chrome is running</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=888">Issue 888</a></td>
-<td>Defect</td>
-<td>High</td>
-<td>Support wxPython 2.9 in OSX</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=918">Issue 918</a></td>
-<td>Defect</td>
-<td>High</td>
-<td>Errors thrown by RIDE 0.40.2 Test Runner</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=924">Issue 924</a></td>
-<td>Defect</td>
-<td>High</td>
-<td>Encoding error</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=624">Issue 624</a></td>
-<td>Enhancement</td>
-<td>Medium</td>
-<td>Sorting of keywords</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=882">Issue 882</a></td>
-<td>Enhancement</td>
-<td>Medium</td>
-<td>Remove support for serializing old style metadata</td>
-</tr>
-</table>
-<p>Altogether 6 issues.</p>
+<h2>Release notes for 0.42.1</h2>
+<table border="1">
+<tr>
+<td><b>ID</b></td>
+<td><b>Type</b></td>
+<td><b>Priority</b></td>
+<td><b>Summary</b></td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=942">Issue 942</a></td>
+<td>Enhancement</td>
+<td>High</td>
+<td>Support relative paths with 'ignored resources directory'</td>
+</tr>
+</table>
+<p>Altogether 1 issues.</p>
 """
