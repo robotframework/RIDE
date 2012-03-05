@@ -21,6 +21,7 @@ from robotide.publish.messages import RideSelectResource, RideFileNameChanged
 
 from .macrocontrollers import KeywordNameController, ForLoopStepController
 from .settingcontrollers import _SettingController
+from .tablecontrollers import VariableTableController
 from .validators import BaseNameValidator
 
 
@@ -62,7 +63,9 @@ class Occurrence(object):
 
     @property
     def usage(self):
-        if self._in_settings():
+        if self._in_variable_table():
+            return "Variable Table"
+        elif self._in_settings():
             return self._item.label
         elif self._in_kw_name():
             return 'Keyword Name'
@@ -70,6 +73,9 @@ class Occurrence(object):
 
     def _in_settings(self):
         return isinstance(self._item, _SettingController)
+
+    def _in_variable_table(self):
+        return isinstance(self._item, VariableTableController)
 
     def _in_kw_name(self):
         return isinstance(self._item, KeywordNameController)
@@ -468,6 +474,14 @@ class FindOccurrences(_Command):
         # GIL !?#!!!
         # THIS IS TO ENSURE THAT OTHER THREADS WILL GET SOME SPACE ALSO
         time.sleep(0)
+
+
+class FindVariableOccurrences(FindOccurrences):
+    
+    def _items_from_datafile(self, df):
+        for itm in FindOccurrences._items_from_datafile(self, df):
+            yield itm
+        yield df.variables
 
 
 def AddKeywordFromCells(cells):

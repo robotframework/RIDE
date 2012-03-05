@@ -127,6 +127,12 @@ class VariableTableController(_TableController, _WithListOperations):
         RideVariableRemoved(datafile=self.datafile,
                             name=ctrl.name, item=ctrl).publish()
 
+    def contains_variable(self, name):
+        vars_as_list = []
+        for var in self._items:
+            vars_as_list += var.as_list()
+        return any(utils.value_contains_variable(string, name) for string in vars_as_list)
+
 
 class _ScalarVarValidator(object):
     __call__ = lambda self, name: is_scalar_var(name)

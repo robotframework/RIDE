@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.usages.commands import FindUsages, FindResourceUsages
+from robotide.usages.commands import FindUsages, FindResourceUsages, FindVariableUsages
 from robotide.usages.usagesdialog import UsagesDialog, UsagesDialogWithUserKwNavigation, ResourceImportUsageDialog
 from threading import Thread
 import wx
@@ -80,3 +80,9 @@ class ResourceFileUsages(Usages):
 
     def _find_usages(self):
         return self._controller.execute(FindResourceUsages())
+
+
+class VariableUsages(Usages):
+
+    def _find_usages(self):
+        return self._controller.execute(FindVariableUsages(self._name))
