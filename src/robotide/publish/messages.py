@@ -129,6 +129,11 @@ class RideInputValidationError(RideMessage):
     data = ['message']
 
 
+class RideModificationPrevented(RideMessage):
+    """Sent whenever modifying command is prevented for some reason"""
+    data = ['controller']
+
+
 class RideSettingsChanged(RideMessage):
     """Sent when settings are changed
 

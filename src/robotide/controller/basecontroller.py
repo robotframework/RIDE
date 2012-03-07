@@ -11,6 +11,8 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+from robotide.publish.messages import RideModificationPrevented
+
 
 class _BaseController(object):
 
@@ -21,6 +23,8 @@ class _BaseController(object):
     def execute(self, command):
         if not command.modifying or self.is_modifiable():
             return command.execute(self)
+        else:
+            RideModificationPrevented(controller=self).publish()
 
     def is_modifiable(self):
         return True

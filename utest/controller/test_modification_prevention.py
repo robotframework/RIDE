@@ -2,6 +2,8 @@ import unittest
 from robotide.controller.basecontroller import _BaseController
 from robotide.controller.commands import _Command
 from robotide.controller.filecontrollers import TestCaseFileController, ResourceFileController
+from robotide.publish import PUBLISHER
+from robotide.publish.messages import RideModificationPrevented
 
 
 class _Controller(_BaseController):
@@ -25,6 +27,14 @@ class ModificationPreventionTestCase(unittest.TestCase):
     def setUp(self):
         self._command = _ModifyingCommand()
         self._controller = _Controller()
+        self._modification_prevented_controller = None
+        PUBLISHER.subscribe(self._modification_prevented, RideModificationPrevented)
+
+    def tearDown(self):
+        PUBLISHER.unsubscribe(self._modification_prevented, RideModificationPrevented)
+
+    def _modification_prevented(self, message):
+        self._modification_prevented_controller = message.controller
 
     def test_modification_prevented(self):
         self._execution_prevented()
@@ -88,10 +98,12 @@ class ModificationPreventionTestCase(unittest.TestCase):
     def _execution_prevented(self):
         self._controller.execute(self._command)
         self.assertFalse(self._command.executed)
+        self.assertEqual(self._controller, self._modification_prevented_controller)
 
     def _execution_allowed(self):
         self._controller.execute(self._command)
         self.assertTrue(self._command.executed)
+        self.assertEqual(None, self._modification_prevented_controller)
 
 if __name__ == '__main__':
     unittest.main()
