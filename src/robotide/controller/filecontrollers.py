@@ -58,7 +58,13 @@ class _FileSystemElement(object):
         return self._get_stat(self.filename) != self._stat
 
     def has_been_removed_from_disk(self):
-        return self._stat != (0, 0) and not os.path.isfile(self.filename)
+        return self._stat != (0, 0) and not self.exists()
+
+    def is_readonly(self):
+        return not os.access(self.filename, os.W_OK)
+
+    def exists(self):
+        return self.filename and os.path.isfile(self.filename)
 
     @property
     def basename(self):
@@ -490,6 +496,9 @@ class TestCaseFileController(_FileSystemElement, _DataController):
     def default_tags(self):
         return DefaultTagsController(self, self._setting_table.default_tags)
 
+    def is_modifiable(self):
+        return not self.exists() or not self.is_readonly()
+
     def create_test(self, name):
         return self.tests.new(name)
 
@@ -572,6 +581,9 @@ class ResourceFileController(_FileSystemElement, _DataController):
     def display_name(self):
         _, tail = os.path.split(self.data.source)
         return tail
+
+    def is_modifiable(self):
+        return not self.exists() or not self.is_readonly()
 
     def set_format(self, format):
         self._modify_file_name(lambda: _DataController.set_format(self, format),
