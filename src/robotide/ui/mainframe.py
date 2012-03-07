@@ -28,7 +28,7 @@ from tree import Tree
 from notebook import NoteBook
 from progress import LoadProgressObserver
 from robotide.controller.commands import SaveFile, SaveAll
-from robotide.publish.messages import RideTreeSelection
+from robotide.publish.messages import RideTreeSelection, RideModificationPrevented
 
 
 _menudata = """
@@ -75,7 +75,8 @@ class RideFrame(wx.Frame, RideEventHandler):
         for listener, topic in [(lambda msg: self.SetStatusText('Saved %s' % msg.path), RideSaved),
                                 (lambda msg: self.SetStatusText('Saved all files'), RideSaveAll),
                                 (self._set_label, RideTreeSelection),
-                                (self._show_validation_error, RideInputValidationError)]:
+                                (self._show_validation_error, RideInputValidationError),
+                                (self._show_modification_prevented_error, RideModificationPrevented)]:
             PUBLISHER.subscribe(listener, topic)
 
     def _set_label(self, message):
@@ -86,6 +87,9 @@ class RideFrame(wx.Frame, RideEventHandler):
 
     def _show_validation_error(self, message):
         wx.MessageBox(message.message, 'Validation Error', style=wx.ICON_ERROR)
+
+    def _show_modification_prevented_error(self, message):
+        wx.MessageBox('Modification prevented', 'This element is read only', style=wx.ICON_ERROR)
 
     def _init_ui(self):
         splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
