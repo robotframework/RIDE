@@ -16,7 +16,7 @@ import tempfile
 import unittest
 import os
 
-from robotide.context.settings import Settings
+from robotide.preferences.settings import Settings
 from robotide.pluginapi import Plugin
 
 from resources import TestSettingsHelper, FakeApplication

@@ -14,9 +14,10 @@
 
 import os
 import shutil
-from configobj import ConfigObj, Section, UnreprError
 
 from robotide.context.platform import IS_WINDOWS
+
+from .configobj import ConfigObj, Section, UnreprError
 
 
 if IS_WINDOWS:

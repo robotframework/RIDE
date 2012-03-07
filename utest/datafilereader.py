@@ -1,6 +1,5 @@
 import os
 from resources import FakeSettings
-from robotide.context.settings import Settings
 from robotide.controller.chiefcontroller import ChiefController
 from robotide.controller.commands import NullObserver
 from robotide.namespace import Namespace

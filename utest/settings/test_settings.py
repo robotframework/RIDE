@@ -14,10 +14,10 @@
 
 import unittest
 import os
+from robotide.preferences import settings
 
-from robotide.context.settings import Settings, SectionError,\
+from robotide.preferences.settings import Settings, SectionError,\
     ConfigurationError, _merge_settings, initialize_settings
-from robotide.context  import settings
 
 from resources.setting_utils import TestSettingsHelper
 

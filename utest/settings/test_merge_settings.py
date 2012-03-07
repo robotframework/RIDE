@@ -15,7 +15,7 @@
 import os.path
 import unittest
 
-from robotide.context.settings import _merge_settings
+from robotide.preferences.settings import _merge_settings
 
 from resources.setting_utils import TestSettingsHelper
 
@@ -35,7 +35,7 @@ class TestMergeSettings(TestSettingsHelper):
         _merge_settings(self.settings_cfg, self.user_cfg)
         content = self._read_settings_file_content(self.user_cfg)
         line_count = len(content.splitlines())
-        self.assertEquals(line_count, 33, "line count should be 33 was %s" % 
+        self.assertEquals(line_count, 33, "line count should be 33 was %s" %
                           line_count)
 
 

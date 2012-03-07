@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.context import Settings
+from robotide.preferences.settings import Settings
 from robotide.publish import PUBLISHER
 
 

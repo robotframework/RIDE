@@ -12,33 +12,15 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import os
 import sys
 
 from robotide.version import VERSION
 from robotide.robotapi import ROBOT_LOGGER
 
-from logger import Logger
-from settings import Settings, initialize_settings
 from coreplugins import get_core_plugins
+from logger import Logger
 from platform import (IS_MAC, IS_WINDOWS, WX_VERSION, ctrl_or_cmd,
-        bind_keys_to_evt_menu)
-
-
-class RideSettings(Settings):
-
-    def __init__(self):
-        default_path = os.path.join(os.path.dirname(__file__), 'settings.cfg')
-        user_path = initialize_settings('ride', default_path)
-        Settings.__init__(self, user_path)
-        self._settings_dir = os.path.dirname(user_path)
-        self.set('install root', os.path.dirname(os.path.dirname(__file__)))
-
-    def get_path(self, *parts):
-        """Returns path which combines settings directory and given parts."""
-        return os.path.join(self._settings_dir, *parts)
-
-
+    bind_keys_to_evt_menu)
 LOG = Logger()
 ROBOT_LOGGER.disable_automatic_console_logger()
 ROBOT_LOGGER.register_logger(LOG)

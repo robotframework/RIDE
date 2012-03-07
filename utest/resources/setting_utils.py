@@ -2,7 +2,7 @@ import os
 import stat
 import unittest
 
-from robotide.context.settings import Settings
+from robotide.preferences.settings import Settings
 
 
 class TestSettingsHelper(unittest.TestCase):

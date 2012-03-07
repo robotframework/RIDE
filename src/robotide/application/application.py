@@ -19,13 +19,12 @@ from contextlib import contextmanager
 from robotide.application.updatenotifier import UpdateNotifierController, UpdateDialog
 from robotide.context import SETTINGS
 
-from robotide.context import RideSettings
 from robotide.namespace import Namespace
 from robotide.controller import ChiefController
 from robotide.ui import RideFrame, LoadProgressObserver
 from robotide.pluginapi import RideLogMessage
 from robotide import context, contrib
-from robotide.preferences import Preferences
+from robotide.preferences import Preferences, RideSettings
 
 from pluginloader import PluginLoader
 from editorprovider import EditorProvider

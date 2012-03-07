@@ -15,7 +15,7 @@
 import unittest
 import os
 
-from robotide.context import RideSettings
+from robotide.preferences import RideSettings
 
 
 class TestRideSettings(unittest.TestCase):
