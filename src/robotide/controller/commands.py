@@ -94,6 +94,8 @@ class Occurrence(object):
 
 class _Command(object):
 
+    modifying = True
+
     def execute(self, context):
         raise NotImplementedError(self.__class__)
 

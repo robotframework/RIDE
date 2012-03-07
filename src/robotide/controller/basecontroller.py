@@ -19,7 +19,12 @@ class _BaseController(object):
         return self.data.name
 
     def execute(self, command):
-        return command.execute(self)
+        if not command.modifying or self.is_modifiable():
+            return command.execute(self)
+
+    def is_modifiable(self):
+        return True
+
 
 class ControllerWithParent(object):
 
