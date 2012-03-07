@@ -82,6 +82,18 @@ class ModificationPreventionTestCase(unittest.TestCase):
         self._controller.exists = lambda: False
         self._execution_allowed()
 
+    def test_settings_are_modifiable_equals_file_is_modifiable(self):
+        pass
+
+    def test_steps_are_modifiable_equals_file_is_modifiable(self):
+        pass
+
+    def test_imports_are_modifiable_equals_file_is_modifiable(self):
+        pass
+
+    def test_variables_are_modifiable_equals_file_is_modifiable(self):
+        pass
+
     def _use_resourcefilecontroller(self):
         self._create_ctrl(ResourceFileController)
 
