@@ -75,7 +75,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._tree = tree
             self._has_been_clicked = False
         except Exception, e:
-            print 'Exception in initing KeywordEditor: %s' % e
+            print 'Exception in initializing KeywordEditor: %s' % e
             raise
 
     def _configure_grid(self):
