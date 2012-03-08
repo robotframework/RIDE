@@ -89,7 +89,9 @@ class RideFrame(wx.Frame, RideEventHandler):
         wx.MessageBox(message.message, 'Validation Error', style=wx.ICON_ERROR)
 
     def _show_modification_prevented_error(self, message):
-        wx.MessageBox('Modification prevented', 'This element is read only', style=wx.ICON_ERROR)
+        wx.MessageBox('"%s" is read only' % message.controller.datafile_controller.filename,
+                      'Modification prevented',
+                      style=wx.ICON_ERROR)
 
     def _init_ui(self):
         splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
