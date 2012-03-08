@@ -499,6 +499,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def OnFindWhereUsed(self, event):
         cellvalue = self.GetCellValue(*self.selection.cells()[0])
+        searchstring = None
         if self._cell_value_contains_multiple_search_items(cellvalue):
             choice_dialog = ChooseUsageSearchStringDialog(cellvalue)
             if choice_dialog.ShowModal() == wx.ID_OK:
@@ -507,10 +508,11 @@ class KeywordEditor(GridEditor, RideEventHandler):
         else:
             searchstring = cellvalue
         
-        if searchstring and utils.is_variable(searchstring):
-            VariableUsages(self._controller, self._tree.highlight, searchstring).show()
-        else:
-            Usages(self._controller, self._tree.highlight, searchstring).show()
+        if searchstring:
+            if utils.is_variable(searchstring):
+                VariableUsages(self._controller, self._tree.highlight, searchstring).show()
+            else:
+                Usages(self._controller, self._tree.highlight, searchstring).show()
 
 
     def _cell_value_contains_multiple_search_items(self, value):

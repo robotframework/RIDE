@@ -157,6 +157,9 @@ class StepController(object):
     def contains_variable(self, name):
         return any(utils.value_contains_variable(item, name) for item in self.as_list())
 
+    def contains_variable_assignment(self, name):
+        return any(utils.value_contains_variable(item, "%s=" % name) for item in self.as_list())
+
     def contains_keyword(self, name):
         return any(self._kw_name_match(item, name) for item in [self.keyword or ''] + self.args)
 

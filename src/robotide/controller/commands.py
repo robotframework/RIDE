@@ -15,10 +15,12 @@
 from itertools import chain
 import time
 import os
+
 from robotide import utils
-
 from robotide.publish.messages import RideSelectResource, RideFileNameChanged
+from robotide.namespace.namespace import _VariableStash
 
+from .filecontrollers import ResourceFileController
 from .macrocontrollers import KeywordNameController, ForLoopStepController
 from .settingcontrollers import _SettingController
 from .tablecontrollers import VariableTableController
@@ -483,6 +485,75 @@ class FindVariableOccurrences(FindOccurrences):
             yield itm
         yield df.variables
 
+    def _items_from_keyword(self, kw):
+        return chain([kw.keyword_name], kw.steps, kw.settings)
+
+    def _items_from(self, context):
+        self._context = context
+        
+        if self._is_local_variable(self._keyword_name, context):
+            for item in self._items_from_keyword(context):
+                yield item
+        else:
+            for df in context.datafiles:
+                self._yield_for_other_threads()
+                if self._items_from_datafile_should_be_checked(df):
+                    for item in self._items_from_datafile(df):
+                        yield item
+
+    def _items_from_datafile_should_be_checked(self, datafile):
+
+        if self._is_file_variable(self._keyword_name, self._context):
+            return datafile in [self._context.datafile_controller] + \
+                                self._get_all_where_used(self._context)
+        elif self._is_imported_variable(self._keyword_name, self._context):
+            return datafile in [self._get_source_of_imported_var(
+                                    self._keyword_name, self._context)] + \
+                                self._get_all_where_used(
+                                    self._get_source_of_imported_var(
+                                        self._keyword_name, self._context))
+        elif self._is_builtin_variable(self._keyword_name):
+            return True
+        else:
+            # no chance to track source of variable from external files,
+            # so search everywhere
+            return True
+
+    def _is_local_variable(self, name, context):
+        return name in context.get_local_variables() or \
+                any(step.contains_variable_assignment(name)
+                    for step in context.steps)
+
+    def _is_file_variable(self, name, context):
+        return context.datafile_controller.variables.contains_variable(name)
+    
+    def _is_imported_variable(self, name, context):
+        return self._get_source_of_imported_var(name, context) not in \
+                                        [None, context.datafile_controller]
+    
+    def _is_builtin_variable(self, name):
+        return name in _VariableStash.global_variables.keys()
+    
+    def _get_source_of_imported_var(self, name, context):
+        for df in self._get_all_imported(context):
+            if df.variables.contains_variable(name):
+                return df
+        return None
+
+    def _get_all_imported(self, context):
+        files = [context.datafile_controller]
+        for f in files:
+            files += [imp.get_imported_controller() 
+                        for imp in f.imports if imp.is_resource and 
+                            imp.get_imported_controller() not in files]
+        return files
+
+    def _get_all_where_used(self, context):
+        files = [context.datafile_controller]
+        for f in files:
+            if isinstance(f, ResourceFileController):
+                files += [imp.datafile_controller for imp in f.get_where_used()]
+        return files
 
 def AddKeywordFromCells(cells):
     if not cells:
