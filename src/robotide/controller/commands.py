@@ -395,6 +395,15 @@ class MoveDown(_Command):
         context.move_down(self._item)
 
 
+class DeleteItem(_Command):
+
+    def __init__(self, item):
+        self._item = item
+
+    def execute(self, context):
+        context.delete(self._item)
+
+
 class DeleteFile(_Command):
 
     def execute(self, context):

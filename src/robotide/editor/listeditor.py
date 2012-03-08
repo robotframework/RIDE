@@ -14,7 +14,7 @@
 
 import wx
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
-from robotide.controller.commands import MoveUp, MoveDown
+from robotide.controller.commands import MoveUp, MoveDown, DeleteItem
 
 from robotide.utils import RideEventHandler
 from robotide.widgets import PopupMenu, PopupMenuItems, ButtonWithHandler, Font
@@ -114,7 +114,7 @@ class ListEditorBase(wx.Panel):
             self._list.SetColumnWidth(i, widths[i])
 
     def _delete_selected(self):
-        self._controller.delete(self._selection)
+        self._controller.execute(DeleteItem(self._selection))
         self._calculate_selection()
         self.update_data()
 
