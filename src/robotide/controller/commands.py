@@ -376,29 +376,25 @@ class UpdateDocumentation(_ReversibleCommand):
     def _get_undo_command(self):
         return UpdateDocumentation(self._old_doc)
 
-
-class MoveUp(_Command):
+class _ItemCommand(_Command):
 
     def __init__(self, item):
         self._item = item
+
+
+class MoveUp(_ItemCommand):
 
     def execute(self, context):
         context.move_up(self._item)
 
 
-class MoveDown(_Command):
-
-    def __init__(self, item):
-        self._item = item
+class MoveDown(_ItemCommand):
 
     def execute(self, context):
         context.move_down(self._item)
 
 
-class DeleteItem(_Command):
-
-    def __init__(self, item):
-        self._item = item
+class DeleteItem(_ItemCommand):
 
     def execute(self, context):
         context.delete(self._item)
