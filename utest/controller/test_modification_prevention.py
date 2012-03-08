@@ -60,6 +60,13 @@ class ModificationPreventionTestCase(unittest.TestCase):
         self._command.modifying = False
         self._execution_allowed()
 
+    def test_nonmodifying_command_implies_no_is_modifiable_call(self):
+        self._command.modifying = False
+        def no_call():
+            raise AssertionError('Should not be called')
+        self._controller.is_modifiable = no_call
+        self._execution_allowed()
+
     def test_nonmodifying_command_and_modifications_allowed(self):
         self._command.modifying = False
         self._controller.modifiable = True
