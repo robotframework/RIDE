@@ -15,7 +15,7 @@
 import wx
 
 from robotide import context
-from robotide.controller.commands import UpdateVariable, UpdateDocumentation, SetValues
+from robotide.controller.commands import UpdateVariable, UpdateDocumentation, SetValues, Call, AddLibrary, AddResource, AddVariable, AddVariablesFileImport
 from robotide.publish.messages import RideImportSetting
 from robotide.widgets import ButtonWithHandler, Label, HtmlWindow
 from robotide.publish import PUBLISHER
@@ -166,7 +166,7 @@ class SettingEditor(wx.Panel, utils.RideEventHandler):
         self.update_value()
 
     def OnClear(self, event):
-        self._controller.clear()
+        self._controller.execute(Call(lambda c: c.clear()))
         self._update_and_notify()
 
     def update_value(self, event=None):
@@ -422,20 +422,21 @@ class ImportSettingListEditor(_AbstractListEditor):
     def OnEdit(self, event):
         setting = self._get_setting()
         self._show_import_editor_dialog(EditorDialog(setting),
-                                        setting.set_value, setting,
+                                        lambda v, c: setting.execute(SetValues(v, c)),
+                                        setting,
                                         on_empty=self._delete_selected)
 
     def OnAddLibrary(self, event):
         self._show_import_editor_dialog(LibraryDialog,
-                                        self._controller.add_library)
+                                        lambda v, c: self._controller.execute(AddLibrary(v, c)))
 
     def OnAddResource(self, event):
         self._show_import_editor_dialog(ResourceDialog,
-                                        self._controller.add_resource)
+                                        lambda v, c: self._controller.execute(AddResource(v, c)))
 
     def OnAddVariables(self, event):
         self._show_import_editor_dialog(VariablesDialog,
-                                        self._controller.add_variables)
+                                        lambda v, c: self._controller.execute(AddVariablesFileImport(v, c)))
 
     def _get_setting(self):
         return self._controller[self._selection]
@@ -445,8 +446,7 @@ class ImportSettingListEditor(_AbstractListEditor):
         if dlg.ShowModal() == wx.ID_OK:
             value = dlg.get_value()
             if not self._empty_name(value):
-                ctrl = creator_or_setter(*value)
-                ctrl.set_comment(dlg.get_comment())
+                creator_or_setter(value, dlg.get_comment())
             elif on_empty:
                 on_empty()
             self.update_data()

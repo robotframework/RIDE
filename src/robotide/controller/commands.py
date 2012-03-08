@@ -114,6 +114,19 @@ class _Command(object):
         return []
 
 
+class Call(_Command):
+    """
+    Helper command to allow executing any piece of code when command
+    can be executed.
+    """
+
+    def __init__(self, callable):
+        self._callable = callable
+
+    def execute(self, context):
+        return callable(context)
+
+
 class CopyMacroAs(_Command):
 
     def __init__(self, new_name):
@@ -410,6 +423,42 @@ class SetValues(_Command):
     def execute(self, context):
         context.set_value(*self._values)
         context.set_comment(self._comment)
+
+
+class AddLibrary(_Command):
+
+    def __init__(self, values, comment):
+        self._values = values
+        self._comment = comment
+
+    def execute(self, context):
+        lib = context.add_library(*self._values)
+        lib.set_comment(self._comment)
+        return lib
+
+
+class AddResource(_Command):
+
+    def __init__(self, values, comment):
+        self._values = values
+        self._comment = comment
+
+    def execute(self, context):
+        res = context.add_resource(*self._values)
+        res.set_comment(self._comment)
+        return res
+
+
+class AddVariablesFileImport(_Command):
+
+    def __init__(self, values, comment):
+        self._values = values
+        self._comment = comment
+
+    def execute(self, context):
+        var = context.add_variables(*self._values)
+        var.set_comment(self._comment)
+        return var
 
 
 class DeleteResourceAndImports(DeleteFile):
