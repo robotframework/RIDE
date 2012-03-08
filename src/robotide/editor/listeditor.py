@@ -14,6 +14,7 @@
 
 import wx
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
+from robotide.controller.commands import MoveUp, MoveDown
 
 from robotide.utils import RideEventHandler
 from robotide.widgets import PopupMenu, PopupMenuItems, ButtonWithHandler, Font
@@ -89,14 +90,14 @@ class ListEditorBase(wx.Panel):
     def OnMoveUp(self, event):
         if self._selection < 1:
             return
-        self._controller.move_up(self._selection)
+        self._controller.execute(MoveUp(self._selection))
         self.update_data()
         self._list.Select(self._selection-1, True)
 
     def OnMoveDown(self, event):
         if self._selection == self._list.GetItemCount() - 1 or not self.is_selected:
             return
-        self._controller.move_down(self._selection)
+        self._controller.execute(MoveDown(self._selection))
         self.update_data()
         self._list.Select(self._selection+1, True)
 

@@ -377,6 +377,24 @@ class UpdateDocumentation(_ReversibleCommand):
         return UpdateDocumentation(self._old_doc)
 
 
+class MoveUp(_Command):
+
+    def __init__(self, item):
+        self._item = item
+
+    def execute(self, context):
+        context.move_up(self._item)
+
+
+class MoveDown(_Command):
+
+    def __init__(self, item):
+        self._item = item
+
+    def execute(self, context):
+        context.move_down(self._item)
+
+
 class DeleteFile(_Command):
 
     def execute(self, context):
