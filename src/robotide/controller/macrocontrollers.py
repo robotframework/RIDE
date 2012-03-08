@@ -32,6 +32,7 @@ from robotide.controller.stepcontrollers import ForLoopStepController,\
 import os
 from robotide.spec.iteminfo import ResourceUserKeywordInfo, TestCaseUserKeywordInfo
 from robotide.controller.tags import Tag
+from robotide import utils
 
 
 KEYWORD_NAME_FIELD = 'Keyword Name'
@@ -48,6 +49,9 @@ class ItemNameController(object):
 
     def contains_keyword(self, name):
         return self._item.name == name
+
+    def contains_variable(self, name):
+        return utils.value_contains_variable(self._item.name, name)
 
     def replace_keyword(self, new_name, old_value=None):
         self._item.rename(new_name)

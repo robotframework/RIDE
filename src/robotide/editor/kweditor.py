@@ -25,8 +25,9 @@ from robotide.controller.commands import (ChangeCellValue, ClearArea, PasteArea,
 from robotide.controller.cellinfo import TipMessage
 from robotide.publish import (RideItemStepsChanged,
                               RideSettingsChanged, PUBLISHER)
-from robotide.usages.UsageRunner import Usages
+from robotide.usages.UsageRunner import Usages, VariableUsages
 from robotide.ui.progress import RenameProgressObserver
+from robotide import utils
 from robotide.utils import RideEventHandler
 from robotide.widgets import PopupMenu, PopupMenuItems
 
@@ -497,7 +498,26 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._extract_list(cells)
 
     def OnFindWhereUsed(self, event):
-        Usages(self._controller, self._tree.highlight, self.GetCellValue(*self.selection.cells()[0])).show()
+        cellvalue = self.GetCellValue(*self.selection.cells()[0])
+        searchstring = None
+        if self._cell_value_contains_multiple_search_items(cellvalue):
+            choice_dialog = ChooseUsageSearchStringDialog(cellvalue)
+            if choice_dialog.ShowModal() == wx.ID_OK:
+                searchstring = choice_dialog.GetStringSelection()
+            choice_dialog.Destroy()
+        else:
+            searchstring = cellvalue
+        
+        if searchstring:
+            if utils.is_variable(searchstring):
+                VariableUsages(self._controller, self._tree.highlight, searchstring).show()
+            else:
+                Usages(self._controller, self._tree.highlight, searchstring).show()
+
+
+    def _cell_value_contains_multiple_search_items(self, value):
+        variables = utils.find_variable_basenames(value)
+        return variables and variables[0] != value
 
     def _extract_scalar(self, cell):
         var = Variable('', self.GetCellValue(*cell), '')
@@ -589,3 +609,30 @@ class ContentAssistCellEditor(grid.PyGridCellEditor):
 
     def Clone(self):
         return ContentAssistCellEditor()
+
+
+class ChooseUsageSearchStringDialog(wx.Dialog):
+
+    def __init__(self, cellvalue):
+        wx.Dialog.__init__(self, None, wx.ID_ANY, "Find Where Used", style=wx.DEFAULT_DIALOG_STYLE)
+        self.caption = "Please select what you want to check for usage"
+        variables = utils.find_variable_basenames(cellvalue)
+        self.choices = [cellvalue] + variables
+        self.choices_string = ["Complete cell content"] + ["Variable " + var for var in variables]
+        self._build_ui()
+    
+    def _build_ui(self):
+        self.radiobox_choices = wx.RadioBox(self, choices=self.choices_string,
+                                            style=wx.RA_SPECIFY_COLS, majorDimension=1)
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(wx.StaticText(self, label=self.caption), 0, wx.ALL|wx.EXPAND, 5)
+        sizer.Add(self.radiobox_choices, 0, wx.ALL|wx.EXPAND, 5)
+        sizer.Add(wx.Button(self, wx.ID_OK, label="Search"), 0, wx.ALL|wx.ALIGN_CENTER, 5)
+        big_sizer = wx.BoxSizer(wx.VERTICAL)
+        big_sizer.Add(sizer, 0, wx.ALL, 10)
+        self.SetSizer(big_sizer)
+        self.Fit()
+        self.CenterOnParent()
+    
+    def GetStringSelection(self):
+        return self.choices[self.radiobox_choices.GetSelection()]
