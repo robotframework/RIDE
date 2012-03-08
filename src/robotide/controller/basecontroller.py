@@ -30,7 +30,7 @@ class _BaseController(object):
         return True
 
 
-class ControllerWithParent(object):
+class ControllerWithParent(_BaseController):
 
     @property
     def parent(self):
@@ -58,6 +58,9 @@ class ControllerWithParent(object):
     @property
     def datafiles(self):
         return self._parent.datafiles
+
+    def is_modifiable(self):
+        return self.datafile_controller.is_modifiable()
 
 
 class WithNamespace(object):

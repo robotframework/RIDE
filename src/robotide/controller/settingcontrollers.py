@@ -21,11 +21,10 @@ from robotide.publish.messages import (RideImportSettingChanged,
 from robotide import utils
 
 from .tags import Tag, ForcedTag, DefaultTag
-from .basecontroller import ControllerWithParent, _BaseController
+from .basecontroller import ControllerWithParent
 
 
 class _SettingController(ControllerWithParent):
-
     def __init__(self, parent_controller, data):
         self._parent = parent_controller
         self._data = data
@@ -358,7 +357,7 @@ class MetadataController(_SettingController):
         self._parent.mark_dirty()
 
 
-class VariableController(_BaseController, _SettingController):
+class VariableController(_SettingController):
 
     def _init(self, var):
         self._var = var

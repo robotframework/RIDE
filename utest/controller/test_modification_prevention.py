@@ -2,6 +2,10 @@ import unittest
 from robotide.controller.basecontroller import _BaseController
 from robotide.controller.commands import _Command
 from robotide.controller.filecontrollers import TestCaseFileController, ResourceFileController
+from robotide.controller.macrocontrollers import UserKeywordController, TestCaseController
+from robotide.controller.settingcontrollers import _SettingController, LibraryImportController, ResourceImportController
+from robotide.controller.stepcontrollers import StepController
+from robotide.controller.tablecontrollers import VariableTableController
 from robotide.publish import PUBLISHER
 from robotide.publish.messages import RideModificationPrevented
 
@@ -22,16 +26,25 @@ class _ModifyingCommand(_Command):
         self.executed = True
 
 
+class _SomeSetting(_SettingController):
+
+    def _init(self, *args):
+        pass
+
+
 class ModificationPreventionTestCase(unittest.TestCase):
 
     def setUp(self):
-        self._command = _ModifyingCommand()
         self._controller = _Controller()
-        self._modification_prevented_controller = None
+        self._reset_command()
         PUBLISHER.subscribe(self._modification_prevented, RideModificationPrevented)
 
     def tearDown(self):
         PUBLISHER.unsubscribe(self._modification_prevented, RideModificationPrevented)
+
+    def _reset_command(self):
+        self._command = _ModifyingCommand()
+        self._modification_prevented_controller = None
 
     def _modification_prevented(self, message):
         self._modification_prevented_controller = message.controller
@@ -83,16 +96,46 @@ class ModificationPreventionTestCase(unittest.TestCase):
         self._execution_allowed()
 
     def test_settings_are_modifiable_equals_file_is_modifiable(self):
-        pass
+        data = lambda:0
+        data.setting_name = 'some setting'
+        self._verify_controller_obeys_datafile_modifiability(_SomeSetting, data)
 
     def test_steps_are_modifiable_equals_file_is_modifiable(self):
-        pass
+        self._verify_controller_obeys_datafile_modifiability(UserKeywordController)
+        self._verify_controller_obeys_datafile_modifiability(TestCaseController)
+
+    def test_step_is_modifiable_equals_file_is_modifiable(self):
+        data = lambda:0
+        data.args = []
+        data.comment = None
+        self._verify_controller_obeys_datafile_modifiability(StepController, data)
 
     def test_imports_are_modifiable_equals_file_is_modifiable(self):
-        pass
+        data = lambda:0
+        data.type = None
+        self._verify_controller_obeys_datafile_modifiability(LibraryImportController, data)
+        self._verify_controller_obeys_datafile_modifiability(ResourceImportController, data)
 
     def test_variables_are_modifiable_equals_file_is_modifiable(self):
-        pass
+        self._verify_controller_obeys_datafile_modifiability(VariableTableController)
+
+    def _verify_controller_obeys_datafile_modifiability(self, controller_class, data=None):
+        controller = controller_class(self._parent_with_datafile(), data or (lambda:0))
+        controller.datafile_controller.is_modifiable = lambda: False
+        self._controller = controller
+        self.assertFalse(controller.is_modifiable())
+        self._reset_command()
+        self._execution_prevented()
+        controller.datafile_controller.is_modifiable = lambda: True
+        self.assertTrue(controller.is_modifiable())
+        self._reset_command()
+        self._execution_allowed()
+
+    def _parent_with_datafile(self):
+        parent = lambda:0
+        parent.datafile_controller = lambda:0
+        parent.datafile_controller.register_for_namespace_updates = lambda *args:0
+        return parent
 
     def _use_resourcefilecontroller(self):
         self._create_ctrl(ResourceFileController)

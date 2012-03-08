@@ -71,7 +71,7 @@ class TestCaseNameController(ItemNameController):
     _name_field = TESTCASE_NAME_FIELD
 
 
-class _WithStepsController(_BaseController, ControllerWithParent, WithUndoRedoStacks):
+class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
 
     def __init__(self, parent_controller, data):
         self._parent = parent_controller
@@ -147,9 +147,6 @@ class _WithStepsController(_BaseController, ControllerWithParent, WithUndoRedoSt
     def set_steps(self, steps):
         self.data.steps = steps
         self._has_steps_changed = True
-
-    def execute(self, command):
-        return command.execute(self)
 
     def update_namespace(self):
         self.datafile_controller.update_namespace()

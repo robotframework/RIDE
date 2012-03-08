@@ -1,12 +1,13 @@
 import re
 from robot.parsing.model import Step
 from robotide import utils
+from robotide.controller.basecontroller import _BaseController
 from robotide.controller.cellinfo import CellPosition, CellType, CellInfo,\
     CellContent, ContentType
 from robotide.namespace.local_namespace import LocalNamespace
 
 
-class StepController(object):
+class StepController(_BaseController):
 
     _GIVEN_WHEN_THEN_MATCHER = re.compile(r'^(given|when|then|and)\s*', re.I)
 
@@ -18,6 +19,10 @@ class StepController(object):
         self.parent = parent
         self._step = step
         self._cell_info_cache = {}
+
+    @property
+    def display_name(self):
+        return 'Step'
 
     @property
     def datafile_controller(self):
@@ -144,6 +149,9 @@ class StepController(object):
             if values[i].strip() != '':
                 return i
         return None
+
+    def is_modifiable(self):
+        return self.datafile_controller.is_modifiable()
 
     def is_user_keyword(self, value):
         return self.parent.is_user_keyword(value)
