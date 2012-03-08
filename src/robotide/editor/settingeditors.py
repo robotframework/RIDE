@@ -15,7 +15,7 @@
 import wx
 
 from robotide import context
-from robotide.controller.commands import UpdateVariable, UpdateDocumentation
+from robotide.controller.commands import UpdateVariable, UpdateDocumentation, SetValues
 from robotide.publish.messages import RideImportSetting
 from robotide.widgets import ButtonWithHandler, Label, HtmlWindow
 from robotide.publish import PUBLISHER
@@ -106,8 +106,7 @@ class SettingEditor(wx.Panel, utils.RideEventHandler):
         return dlg_class(self._datafile, self._controller, self.plugin)
 
     def _set_value(self, value_list, comment):
-        self._controller.set_value(*value_list)
-        self._controller.set_comment(comment)
+        self._controller.execute(SetValues(value_list, comment))
 
     def _hide_tooltip(self):
         self._stop_popup_timer()
@@ -165,7 +164,6 @@ class SettingEditor(wx.Panel, utils.RideEventHandler):
 
     def _update_and_notify(self):
         self.update_value()
-        self._tree.mark_dirty(self._controller)
 
     def OnClear(self, event):
         self._controller.clear()

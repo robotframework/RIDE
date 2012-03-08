@@ -364,22 +364,16 @@ class RestoreKeywordOrder(_ReversibleCommand):
         return SortKeywords()
 
 
-class UpdateDocumentation(_ReversibleCommand):
-
-    def __init__(self, documentation):
-        self._documentation = documentation
-
-    def _execute(self, context):
-        context.editable_value, self._old_doc = self._documentation, context.editable_value
-
-    @property
-    def _get_undo_command(self):
-        return UpdateDocumentation(self._old_doc)
-
 class _ItemCommand(_Command):
 
     def __init__(self, item):
         self._item = item
+
+
+class UpdateDocumentation(_ItemCommand):
+
+    def execute(self, context):
+        context.editable_value = self._item
 
 
 class MoveUp(_ItemCommand):
@@ -405,6 +399,17 @@ class DeleteFile(_Command):
     def execute(self, context):
         context.remove_from_filesystem()
         context.remove()
+
+
+class SetValues(_Command):
+
+    def __init__(self, values, comment):
+        self._values = values
+        self._comment = comment
+
+    def execute(self, context):
+        context.set_value(*self._values)
+        context.set_comment(self._comment)
 
 
 class DeleteResourceAndImports(DeleteFile):
