@@ -180,9 +180,6 @@ class TagsController(_SettingController):
     def _init(self, tags):
         self._tags = tags
 
-    def execute(self, command):
-        return command.execute(self)
-
     def empty_tag(self):
         return Tag(None, controller=self)
 
