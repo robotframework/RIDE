@@ -363,6 +363,20 @@ class RestoreKeywordOrder(_ReversibleCommand):
     def _get_undo_command(self):
         return SortKeywords()
 
+
+class UpdateDocumentation(_ReversibleCommand):
+
+    def __init__(self, documentation):
+        self._documentation = documentation
+
+    def _execute(self, context):
+        context.editable_value, self._old_doc = self._documentation, context.editable_value
+
+    @property
+    def _get_undo_command(self):
+        return UpdateDocumentation(self._old_doc)
+
+
 class DeleteFile(_Command):
 
     def execute(self, context):

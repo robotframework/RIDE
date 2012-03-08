@@ -15,7 +15,7 @@
 import wx
 
 from robotide import context
-from robotide.controller.commands import UpdateVariable
+from robotide.controller.commands import UpdateVariable, UpdateDocumentation
 from robotide.publish.messages import RideImportSetting
 from robotide.widgets import ButtonWithHandler, Label, HtmlWindow
 from robotide.publish import PUBLISHER
@@ -278,7 +278,7 @@ class DocumentationEditor(SettingEditor):
 
     def _set_value(self, value_list, comment):
         if value_list:
-            self._controller.editable_value = value_list[0]
+            self._controller.execute(UpdateDocumentation(value_list[0]))
 
     def contains(self, text):
         return False
