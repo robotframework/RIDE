@@ -314,3 +314,6 @@ class AboutDialog(Dialog):
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(HtmlWindow(self, (450, 200), ABOUT_RIDE))
         self.SetSizerAndFit(sizer)
+
+    def OnKey(self, *args):
+        pass
