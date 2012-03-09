@@ -123,7 +123,9 @@ class _RobotTableEditor(EditorPanel):
         self.close()
         self.Destroy()
 
-    def _create_header(self, text):
+    def _create_header(self, text, readonly=False):
+        if readonly:
+            text += ' (READ ONLY)'
         self._title_display = HeaderLabel(self, text)
         return self._title_display
 
@@ -265,7 +267,7 @@ class _FileEditor(_RobotTableEditor):
 
     def _populate(self):
         datafile = self.controller.data
-        self.sizer.Add(self._create_header(datafile.name), 0, wx.EXPAND|wx.ALL, 5)
+        self.sizer.Add(self._create_header(datafile.name, not self.controller.is_modifiable()), 0, wx.EXPAND|wx.ALL, 5)
         self.sizer.Add(self._create_source_label(datafile.source), 0, wx.EXPAND|wx.ALL, 1)
         self.sizer.Add((0, 10))
         self._add_settings()
@@ -318,7 +320,9 @@ class FindUsagesHeader(HorizontalSizer):
 class ResourceFileEditor(_FileEditor):
     _settings_open_id = 'resource file settings open'
 
-    def _create_header(self, text):
+    def _create_header(self, text, readonly=False):
+        if readonly:
+            text += ' (READ ONLY)'
         def cb(event):
             ResourceFileUsages(self.controller, self._tree.highlight).show()
         self._title_display = FindUsagesHeader(self, text, cb)
