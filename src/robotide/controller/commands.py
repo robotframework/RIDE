@@ -123,19 +123,6 @@ class _Command(object):
         return []
 
 
-class Call(_Command):
-    """
-    Helper command to allow executing any piece of code when command
-    can be executed.
-    """
-
-    def __init__(self, callable):
-        self._callable = callable
-
-    def execute(self, context):
-        return callable(context)
-
-
 class CopyMacroAs(_Command):
 
     def __init__(self, new_name):
@@ -414,6 +401,12 @@ class DeleteItem(_ItemCommand):
 
     def execute(self, context):
         context.delete(self._item)
+
+
+class ClearSetting(_Command):
+
+    def execute(self, context):
+        context.clear()
 
 
 class DeleteFile(_Command):

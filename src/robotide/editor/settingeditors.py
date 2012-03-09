@@ -15,7 +15,7 @@
 import wx
 
 from robotide import context
-from robotide.controller.commands import UpdateVariable, UpdateDocumentation, SetValues, Call, AddLibrary, AddResource, AddVariable, AddVariablesFileImport
+from robotide.controller.commands import UpdateVariable, UpdateDocumentation, SetValues, AddLibrary, AddResource, AddVariablesFileImport, ClearSetting
 from robotide.publish.messages import RideImportSetting
 from robotide.widgets import ButtonWithHandler, Label, HtmlWindow
 from robotide.publish import PUBLISHER
@@ -166,7 +166,7 @@ class SettingEditor(wx.Panel, utils.RideEventHandler):
         self.update_value()
 
     def OnClear(self, event):
-        self._controller.execute(Call(lambda c: c.clear()))
+        self._controller.execute(ClearSetting())
         self._update_and_notify()
 
     def update_value(self, event=None):
