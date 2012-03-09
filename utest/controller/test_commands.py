@@ -7,6 +7,12 @@ from base_command_test import TestCaseCommandTest
 from controller_creator import *
 
 
+class UnmodifyingCommandsTest(unittest.TestCase):
+
+    def test_unmodifying(self):
+        self.assertFalse(FindOccurrences.modifying)
+
+
 class FileHandlingCommandsTest(TestCaseCommandTest):
 
     def test_file_saving(self):

@@ -494,6 +494,7 @@ class UpdateVariableName(_Command):
 
 
 class FindOccurrences(_Command):
+    modifying = False
 
     def __init__(self, keyword_name, keyword_info=None):
         if keyword_name.strip() == '':
