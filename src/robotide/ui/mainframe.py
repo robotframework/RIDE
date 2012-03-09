@@ -52,6 +52,7 @@ _menudata = """
 [Help]
 !Report a Problem | Open browser to the RIDE issue tracker
 !About | Information about RIDE
+!Release notes | Shows release notes
 """
 
 
@@ -129,6 +130,9 @@ class RideFrame(wx.Frame, RideEventHandler):
             self.Destroy()
         else:
             wx.CloseEvent.Veto(event)
+
+    def OnReleasenotes(self, event):
+        pass
 
     def _allowed_to_exit(self):
         if self.has_unsaved_changes():

@@ -13,7 +13,6 @@
 #  limitations under the License.
 
 def get_core_plugins():
-    from robotide.application.releasenotes import ReleaseNotesPlugin
     from robotide.run import RunAnything
     from robotide.recentfiles import RecentFilesPlugin
     from robotide.ui.preview import PreviewPlugin
@@ -22,6 +21,6 @@ def get_core_plugins():
     from robotide.editor.texteditor import TextEditorPlugin
     from robotide.log import LogPlugin
 
-    return [ReleaseNotesPlugin, RunAnything, RecentFilesPlugin, PreviewPlugin,
+    return [RunAnything, RecentFilesPlugin, PreviewPlugin,
             EditorPlugin, TextEditorPlugin, KeywordSearch, LogPlugin]
 

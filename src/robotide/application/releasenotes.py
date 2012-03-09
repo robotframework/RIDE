@@ -16,10 +16,11 @@ import wx
 from wx.lib.ClickableHtmlWindow import PyClickableHtmlWindow
 
 from robotide.version import VERSION
-from robotide.pluginapi import Plugin, ActionInfo
+from robotide.pluginapi import ActionInfo
+from robotide.context import SETTINGS
 
 
-class ReleaseNotesPlugin(Plugin):
+class ReleaseNotes(object):
     """Shows release notes of the current version.
 
     The release notes tab will automatically be shown once per release.
@@ -28,36 +29,34 @@ class ReleaseNotesPlugin(Plugin):
     """
 
     def __init__(self, application):
-        Plugin.__init__(self, application, default_settings={'version_shown':''})
+        self.application = application
+        self.version_shown = SETTINGS['version_shown'] if 'version_shown' in \
+                                                          SETTINGS else ""
         self._view = None
+        self.enable()
 
     def enable(self):
-        self.register_action(ActionInfo('Help', 'Release Notes', self.show,
+        self.application.frame.actions.register_action(ActionInfo('Help', 'Release Notes', self.show,
                                         doc='Show the release notes'))
         self.show_if_updated()
-
-    def disable(self):
-        self.unregister_actions()
-        self.delete_tab(self._view)
-        self._view = None
 
     def show_if_updated(self):
         if self.version_shown != VERSION:
             self.show()
-            self.save_setting('version_shown', VERSION)
+            SETTINGS['version_shown'] = VERSION
 
     def show(self, event=None):
         if not self._view:
             self._view = self._create_view()
-            self.notebook.AddPage(self._view, "Release Notes", select=False)
-        self.show_tab(self._view)
+            self.application.frame.notebook.AddPage(self._view, "Release Notes", select=False)
+        self.application.frame.notebook.show_tab(self._view)
 
     def bring_to_front(self):
         if self._view:
-            self.show_tab(self._view)
+            self.application.frame.notebook.show_tab(self._view)
 
     def _create_view(self):
-        panel = wx.Panel(self.notebook)
+        panel = wx.Panel(self.application.frame.notebook)
         html_win = PyClickableHtmlWindow(panel, -1)
         html_win.SetStandardFonts()
         html_win.SetPage(WELCOME_TEXT + RELEASE_NOTES)
