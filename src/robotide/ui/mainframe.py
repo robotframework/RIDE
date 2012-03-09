@@ -80,10 +80,16 @@ class RideFrame(wx.Frame, RideEventHandler):
             PUBLISHER.subscribe(listener, topic)
 
     def _set_label(self, message):
-        if not message:
-            self.SetTitle('RIDE')
-        else:
-            self.SetTitle('RIDE - %s' % message.item.datafile.name)
+        self.SetTitle(self._create_title(message))
+
+    def _create_title(self, message):
+        title = 'RIDE'
+        if message:
+            item = message.item
+            title += ' - ' + item.datafile.name
+            if not item.is_modifiable():
+                title += ' (READ ONLY)'
+        return title
 
     def _show_validation_error(self, message):
         wx.MessageBox(message.message, 'Validation Error', style=wx.ICON_ERROR)
