@@ -17,7 +17,6 @@ import os
 import wx
 from contextlib import contextmanager
 from robotide.application.updatenotifier import UpdateNotifierController, UpdateDialog
-from robotide.context import SETTINGS
 
 from robotide.namespace import Namespace
 from robotide.controller import ChiefController
@@ -56,7 +55,7 @@ class RIDE(wx.App):
         self._publish_system_info()
         self._release_notes = ReleaseNotes(self)
         if self._updatecheck:
-            UpdateNotifierController(SETTINGS).notify_update_if_needed(UpdateDialog)
+            UpdateNotifierController(self.settings).notify_update_if_needed(UpdateDialog)
         wx.CallLater(200, self._release_notes.bring_to_front)
         return True
 

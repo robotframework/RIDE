@@ -33,9 +33,7 @@ from progress import LoadProgressObserver
 from robotide.controller.commands import SaveFile, SaveAll
 from robotide.publish.messages import RideTreeSelection, RideModificationPrevented
 
-from robotide.preferences.general import GeneralPreferences
-from robotide.preferences.colors import ColorPreferences
-from robotide.preferences import PreferencesDialog
+from robotide.preferences import PreferenceEditor
 
 
 _menudata = """
@@ -103,21 +101,11 @@ class RideFrame(wx.Frame, RideEventHandler):
     def _show_validation_error(self, message):
         wx.MessageBox(message.message, 'Validation Error', style=wx.ICON_ERROR)
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     def _show_modification_prevented_error(self, message):
         wx.MessageBox('"%s" is read only' % message.controller.datafile_controller.filename,
                       'Modification prevented',
                       style=wx.ICON_ERROR)
-=======
-    def _init_preferences(self):
-        '''Register core preference panels'''
-        self._application.register_preference_panel(GeneralPreferences)
-        self._application.register_preference_panel(ColorPreferences)
->>>>>>> prefernces: applied the original patch
 
-=======
->>>>>>> preferences: extracted class for handling preference panels
     def _init_ui(self):
         splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
         self.notebook = NoteBook(splitter, self._application)

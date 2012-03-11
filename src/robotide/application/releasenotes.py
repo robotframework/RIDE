@@ -17,7 +17,6 @@ from wx.lib.ClickableHtmlWindow import PyClickableHtmlWindow
 
 from robotide.version import VERSION
 from robotide.pluginapi import ActionInfo
-from robotide.context import SETTINGS
 
 
 class ReleaseNotes(object):
@@ -30,8 +29,9 @@ class ReleaseNotes(object):
 
     def __init__(self, application):
         self.application = application
-        self.version_shown = SETTINGS['version_shown'] if 'version_shown' in \
-                                                          SETTINGS else ""
+        settings =  application.settings
+        self.version_shown =settings['version_shown'] if 'version_shown' in \
+                                                          settings else ""
         self._view = None
         self.enable()
 
@@ -43,7 +43,7 @@ class ReleaseNotes(object):
     def show_if_updated(self):
         if self.version_shown != VERSION:
             self.show()
-            SETTINGS['version_shown'] = VERSION
+            self.application.settings['version_shown'] = VERSION
 
     def show(self, event=None):
         if not self._view:
