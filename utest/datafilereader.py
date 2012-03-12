@@ -38,6 +38,8 @@ SIMPLE_PROJECT = _makepath('simple', 'test.txt')
 
 UNUSED_KEYWORDS_PATH = _makepath('unused_keywords')
 
+FINDWHEREUSED_VARIABLES_PATH = _makepath('findwhereused_variables')
+
 def construct_chief_controller(datapath):
     chief = ChiefController(Namespace())
     chief.load_data(datapath, NullObserver())
