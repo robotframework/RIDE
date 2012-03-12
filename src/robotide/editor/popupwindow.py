@@ -144,6 +144,9 @@ class MacRidePopupWindow(wx.Frame):
         dlg.SetPosition((wx.GetMouseState().x, wx.GetMouseState().y))
         dlg.Show()
 
+    def OnKey(self, *params):
+        pass
+
 
 class HtmlDialog(Dialog):
 
