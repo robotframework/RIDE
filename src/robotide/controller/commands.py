@@ -21,7 +21,7 @@ from robotide.publish.messages import RideSelectResource, RideFileNameChanged
 from robotide.namespace.namespace import _VariableStash
 
 from .filecontrollers import ResourceFileController
-from .macrocontrollers import KeywordNameController, ForLoopStepController
+from .macrocontrollers import KeywordNameController, ForLoopStepController, TestCaseController
 from .settingcontrollers import _SettingController
 from .tablecontrollers import VariableTableController
 from .validators import BaseNameValidator
@@ -572,6 +572,12 @@ class FindVariableOccurrences(FindOccurrences):
             yield itm
         yield df.variables
 
+    def _items_from_controller(self, ctrl):
+        if isinstance(ctrl, TestCaseController):
+            return self._items_from_test(ctrl)
+        else:
+            return self._items_from_keyword(ctrl)
+
     def _items_from_keyword(self, kw):
         return chain([kw.keyword_name], kw.steps, kw.settings)
 
@@ -579,7 +585,7 @@ class FindVariableOccurrences(FindOccurrences):
         self._context = context
         
         if self._is_local_variable(self._keyword_name, context):
-            for item in self._items_from_keyword(context):
+            for item in self._items_from_controller(context):
                 yield item
         else:
             for df in context.datafiles:
