@@ -53,10 +53,9 @@ class RIDE(wx.App):
         self.frame.tree.populate(self.model)
         self.frame.tree.set_editor(self.editor)
         self._publish_system_info()
-        self._release_notes = ReleaseNotes(self)
         if self._updatecheck:
             UpdateNotifierController(self.settings).notify_update_if_needed(UpdateDialog)
-        wx.CallLater(200, self._release_notes.bring_to_front)
+        wx.CallLater(200, ReleaseNotes(self).bring_to_front)
         return True
 
     def _publish_system_info(self):

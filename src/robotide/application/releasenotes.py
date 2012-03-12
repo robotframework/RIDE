@@ -30,8 +30,7 @@ class ReleaseNotes(object):
     def __init__(self, application):
         self.application = application
         settings =  application.settings
-        self.version_shown =settings['version_shown'] if 'version_shown' in \
-                                                          settings else ""
+        self.version_shown = settings.get('version_shown', '')
         self._view = None
         self.enable()
 
