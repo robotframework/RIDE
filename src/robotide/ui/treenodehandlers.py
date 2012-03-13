@@ -25,7 +25,7 @@ from robotide.controller.filecontrollers import (TestDataDirectoryController,
 from robotide.editor.editordialogs import (TestCaseNameDialog,
     UserKeywordNameDialog, ScalarVariableDialog, ListVariableDialog,
     CopyUserKeywordDialog)
-from robotide.usages.UsageRunner import Usages, ResourceFileUsages
+from robotide.usages.UsageRunner import Usages, ResourceFileUsages, VariableUsages
 from .filedialogs import (AddSuiteDialog, ChangeFormatDialog,
     NewExternalResourceDialog, NewResourceDialog)
 from robotide.widgets import PopupMenuItems
@@ -385,7 +385,7 @@ class VariableHandler(_CanBeRenamed, _ActionHandler):
     is_draggable = True
     is_variable = True
     OnMoveUp = OnMoveDown = lambda *args: None
-    _actions = [_ActionHandler._label_rename, 'Delete']
+    _actions = [_ActionHandler._label_rename, 'Delete', _ActionHandler._label_find_usages]
 
     def OnDelete(self, event):
         self.remove()
@@ -395,6 +395,9 @@ class VariableHandler(_CanBeRenamed, _ActionHandler):
 
     def rename(self, new_name):
         self.controller.execute(UpdateVariableName(new_name))
+
+    def OnFindUsages(self, event):
+        VariableUsages(self.controller, self._tree.highlight).show()
 
 
 class ResourceRootHandler(_ActionHandler):

@@ -22,7 +22,7 @@ from robotide.namespace.namespace import _VariableStash
 
 from .filecontrollers import ResourceFileController
 from .macrocontrollers import KeywordNameController, ForLoopStepController, TestCaseController
-from .settingcontrollers import _SettingController
+from .settingcontrollers import _SettingController, VariableController
 from .tablecontrollers import VariableTableController
 from .validators import BaseNameValidator
 
@@ -613,6 +613,8 @@ class FindVariableOccurrences(FindOccurrences):
             return True
 
     def _is_local_variable(self, name, context):
+        if isinstance(context, VariableController):
+            return False
         return name in context.get_local_variables() or \
                 any(step.contains_variable_assignment(name)
                     for step in context.steps)
