@@ -54,7 +54,9 @@ class KeywordEditor(GridEditor, RideEventHandler):
     dirty = property(lambda self: self._controller.dirty)
     update_value = lambda *args: None
     _popup_items = ['Create Keyword', 'Extract Keyword', 'Extract Variable',
-                    'Rename Keyword', 'Find Where Used', '---'] + GridEditor._popup_items
+                    'Rename Keyword', 'Find Where Used', '---',
+                    'Make Variable\tCtrl-1',
+                    'Make List Variable\tCtrl-2', '---'] + GridEditor._popup_items
 
     def __init__(self, parent, controller, tree):
         try:
@@ -365,6 +367,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._move_grid_cursor(event, keycode)
         elif control_down and keycode == wx.WXK_SPACE:
             self._open_cell_editor_with_content_assist()
+        elif control_down and keycode in (ord('1'), ord('2')):
+            self._open_cell_editor_and_execute_variable_creator(list_variable=(keycode==ord('2')))
         else:
             event.Skip()
 
@@ -421,6 +425,20 @@ class KeywordEditor(GridEditor, RideEventHandler):
         celleditor = self.GetCellEditor(self.GetGridCursorCol(), row)
         celleditor.Show(True)
         wx.CallAfter(celleditor.show_content_assist)
+
+    def _open_cell_editor_and_execute_variable_creator(self, list_variable=False):
+        if not self.IsCellEditControlEnabled():
+            self.EnableCellEditControl()
+        row = self.GetGridCursorRow()
+        celleditor = self.GetCellEditor(self.GetGridCursorCol(), row)
+        celleditor.Show(True)
+        wx.CallAfter(celleditor.execute_variable_creator, list_variable)
+
+    def OnMakeVariable(self, event):
+        self._open_cell_editor_and_execute_variable_creator(list_variable=False)
+
+    def OnMakeListVariable(self, event):
+        self._open_cell_editor_and_execute_variable_creator(list_variable=True)
 
     def OnCellRightClick(self, event):
         self._tooltips.hide()
@@ -558,6 +576,9 @@ class ContentAssistCellEditor(grid.PyGridCellEditor):
 
     def show_content_assist(self):
         self._tc.show_content_assist()
+
+    def execute_variable_creator(self, list_variable=False):
+        self._tc.execute_variable_creator(list_variable)
 
     def Create(self, parent, id, evthandler):
         self._tc = ExpandingContentAssistTextCtrl(parent, self._plugin, self._controller)

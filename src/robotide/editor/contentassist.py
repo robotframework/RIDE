@@ -58,7 +58,21 @@ class _ContentAssistTextCtrlBase(object):
             return
         elif self._popup.is_shown() and keycode < 256:
             self._populate_content_assist(event)
+        elif keycode in (ord('1'), ord('2')) and event.ControlDown():
+            self.execute_variable_creator(list_variable=(keycode==ord('2')))
         event.Skip()
+
+    def execute_variable_creator(self, list_variable=False):
+        from_, to_ = self.GetSelection()
+        symbol = '@' if list_variable else '$'
+        self.SetValue(self._variable_creator_value(self.Value, symbol, from_, to_))
+        if from_ == to_:
+            self.SetInsertionPoint(from_ + 2)
+        else:
+            self.SetSelection(from_ + 2, to_ + 2)
+
+    def _variable_creator_value(self, value, symbol, from_, to_):
+        return value[:from_]+symbol+'{'+value[from_:to_]+'}'+value[to_:]
 
     def OnFocusLost(self, event, set_value=True):
         if not self._popup.is_shown():
