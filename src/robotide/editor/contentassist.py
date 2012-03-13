@@ -28,7 +28,7 @@ class _ContentAssistTextCtrlBase(object):
 
     def __init__(self, plugin, controller=None):
         self._popup = ContentAssistPopup(self, plugin, controller=controller)
-        self.Bind(wx.EVT_CHAR, self.OnChar)
+        self.Bind(wx.EVT_KEY_DOWN, self.OnChar)
         self.Bind(wx.EVT_KILL_FOCUS, self.OnFocusLost)
         self.Bind(wx.EVT_MOVE, self.OnFocusLost)
         self._showing_content_assist = False
