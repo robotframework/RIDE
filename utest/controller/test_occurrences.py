@@ -5,7 +5,7 @@ from robot.utils.asserts import assert_equals, assert_true, assert_false
 from resources import FakeSettings
 from robotide.controller import ChiefController
 from robotide.controller.macrocontrollers import KEYWORD_NAME_FIELD
-from robotide.controller.commands import Undo, FindOccurrences, NullObserver, RenameKeywordOccurrences, ChangeCellValue
+from robotide.controller.commands import Undo, FindOccurrences, FindVariableOccurrences, NullObserver, RenameKeywordOccurrences, ChangeCellValue
 from robotide.controller.filecontrollers import (TestCaseFileController,
                                                  TestCaseTableController,
                                                  TestCaseController)
@@ -64,11 +64,38 @@ def assert_occurrence(test_ctrl, kw_name, source, usage):
     assert_equals(occ.location, source)
     assert_equals(occ.usage, usage)
 
+def assert_variable_occurrence(occurrences, source, usage, count):
+    times_found = 0
+    for occ in occurrences:
+        if occ.location == source and occ.usage == usage:
+            times_found += 1
+    assert_equals(times_found, count)
+
+def check_for_variable_occurrences(test_ctrl, name, expected_occurrences):
+    occurrences = list(test_ctrl.execute(FindVariableOccurrences(name)))
+    processed_occurrences = 0
+    for source, usage, count in expected_occurrences:
+        assert_variable_occurrence(occurrences, source, usage, count)
+        processed_occurrences += count
+    assert_equals(processed_occurrences, len(occurrences))
+
 def _first_occurrence(test_ctrl, kw_name):
     occurrences = test_ctrl.execute(FindOccurrences(kw_name))
     if not occurrences:
         raise AssertionError('No occurrences found for "%s"' % kw_name)
     return occurrences.next()
+
+def _get_ctrl_by_name(self, name, datafiles):
+    for file in datafiles:
+        if file.name == name:
+            return file
+        for test in file.tests:
+            if test.name == name:
+                return test
+        for kw in file.keywords:
+            if kw.name == name:
+                return kw
+    return None
 
 
 class FindOccurrencesWithFiles(unittest.TestCase):
@@ -153,6 +180,80 @@ class FindOccurrencesTest(unittest.TestCase):
 
     def test_occurrence_in_user_keyword_name(self):
         assert_occurrence(self.test_ctrl, USERKEYWORD1_NAME, USERKEYWORD1_NAME, KEYWORD_NAME_FIELD)
+
+
+class FindVariableOccurrencesTest(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        chief = datafilereader.construct_chief_controller(datafilereader.FINDWHEREUSED_VARIABLES_PATH)
+        cls._suite1 = _get_ctrl_by_name(cls, "Suite 1", chief.datafiles)
+        cls._suite2 = _get_ctrl_by_name(cls, "Suite 2", chief.datafiles)
+        cls._resource1 = _get_ctrl_by_name(cls, "Res1", chief.datafiles)
+        cls._case1 = _get_ctrl_by_name(cls, "Case 1", chief.datafiles)
+        cls._case2 = _get_ctrl_by_name(cls, "Case 2", chief.datafiles)
+        cls._case3 = _get_ctrl_by_name(cls, "Case 3", chief.datafiles)
+        cls._case4 = _get_ctrl_by_name(cls, "Case 4", chief.datafiles)
+        cls._case5 = _get_ctrl_by_name(cls, "Case 5", chief.datafiles)
+        cls._case6 = _get_ctrl_by_name(cls, "Case 6", chief.datafiles)
+        cls._kw1 = _get_ctrl_by_name(cls, "User KW 1", chief.datafiles)
+        cls._kw2 = _get_ctrl_by_name(cls, "User KW 2", chief.datafiles)
+
+    def test_occurrences_local_variable(self):
+        check_for_variable_occurrences(self._case2, "${log}", ((self._case2.name, 'Steps', 2),
+                                                           (self._case2.name, 'Documentation', 1)))
+        
+        check_for_variable_occurrences(self._kw2, "${arg1}", ((self._kw2.name, 'Arguments', 1),
+                                                            (self._kw2.name, 'Documentation', 1),
+                                                            (self._kw2.name, 'Steps', 1)))
+        
+        check_for_variable_occurrences(self._kw2, "@{arg2}", ((self._kw2.name, 'Arguments', 1),
+                                                            (self._kw2.name, 'Teardown', 1),
+                                                            (self._kw2.name, 'Steps', 1)))
+
+    def test_occurrences_file_variable(self):
+        check_for_variable_occurrences(self._case1, "${fileVar}", ((self._case2.name, 'Teardown', 1),
+                                                            (self._case1.name, 'Setup', 1),
+                                                            (self._case3.name, 'Steps', 1),
+                                                            (self._suite1.name, 'Variable Table', 1)))
+        
+        check_for_variable_occurrences(self._kw2, "${resVar}", ((self._resource1.name, 'Variable Table', 1),
+                                                            (self._kw2.name, 'Steps', 1),
+                                                            (self._kw1.name, 'Teardown', 1),
+                                                            (self._case5.name, 'Steps', 1),
+                                                            (self._case5.name, 'Documentation', 1)))
+
+    def test_occurrences_imported_variable(self):
+        check_for_variable_occurrences(self._case5, "${resVar}", ((self._resource1.name, 'Variable Table', 1),
+                                                            (self._kw2.name, 'Steps', 1),
+                                                            (self._kw1.name, 'Teardown', 1),
+                                                            (self._case5.name, 'Steps', 1),
+                                                            (self._case5.name, 'Documentation', 1)))
+    
+    def test_occurrences_external_file_variable(self):
+        check_for_variable_occurrences(self._case2, "${ServerHost}", ((self._case1.name, 'Steps', 1),
+                                                            (self._case2.name, 'Steps', 1),
+                                                            (self._case5.name, 'Steps', 1)))
+
+        check_for_variable_occurrences(self._case5, "${ServerHost}", ((self._case1.name, 'Steps', 1),
+                                                             (self._case2.name, 'Steps', 1),
+                                                             (self._case5.name, 'Steps', 1)))
+        
+        check_for_variable_occurrences(self._case1, "${ServerPort}", ((self._case1.name, 'Steps', 1),
+                                                                       (self._kw1.name, 'Steps', 1)))
+
+    def test_occurrences_builtin_variable(self):
+        check_for_variable_occurrences(self._kw1, "${True}", ((self._case4.name, 'Steps', 1),
+                                                             (self._case6.name, 'Setup', 1),
+                                                             (self._case6.name, 'Steps', 1),
+                                                             (self._kw1.name, 'Steps', 1)))
+        
+        check_for_variable_occurrences(self._case6, "${False}", ((self._case6.name, 'Documentation', 1),
+                                                             (self._case1.name, 'Steps', 1),
+                                                             (self._kw1.name, 'Steps', 1)))
+        
+        check_for_variable_occurrences(self._case3, "${EMPTY}", ((self._resource1.name, 'Variable Table', 1),
+                                                             (self._case3.name, 'Steps', 1)))
 
 
 class RenameOccurrenceTest(unittest.TestCase):
