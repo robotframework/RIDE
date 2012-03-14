@@ -86,6 +86,7 @@ class TestRunnerPlugin(Plugin):
                 "runprofiles": [('jybot', 'jybot' + ('.bat' if os.name == 'nt' else ''))]}
     report_regex = re.compile("^Report: {2}(.*\.html)$", re.MULTILINE)
     log_regex = re.compile("^Log: {5}(.*\.html)$", re.MULTILINE)
+    title = "Run"
 
     def __init__(self, application=None):
         Plugin.__init__(self, application, initially_enabled=True,
@@ -106,6 +107,14 @@ class TestRunnerPlugin(Plugin):
         self._server_thread = None
         self._port = None
         self._running = False
+        self.register_shortcut('Ctrl-C', self._copy_from_out)
+
+    def _copy_from_out(self, event):
+        if self.notebook.current_page_title != self.title:
+            return
+        if not self.out.GetSTCFocus():
+            return
+        self.out.Copy()
 
     def enable(self):
         self._read_run_profiles()
@@ -699,8 +708,7 @@ class TestRunnerPlugin(Plugin):
         self.splitter.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.OnSplitterSashChanged)
         self.panel.Bind(wx.EVT_WINDOW_DESTROY, self.OnClose)
 
-        # whitespace added to label just so label isn't so tiny
-        self.add_tab(panel, "Run    ", allow_closing=False)
+        self.add_tab(panel, self.title, allow_closing=False)
 
         self._tree_menu = wx.Menu()
         select_all = self._tree_menu.Append(wx.ID_ANY, "Select All")
