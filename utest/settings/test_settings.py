@@ -11,6 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+from __future__ import with_statement
 
 import unittest
 import os
@@ -319,6 +320,16 @@ class TestInitializeSettings(TestSettingsHelper):
         self.assertRaises(ConfigurationError, initialize_settings, 'ride',
                           self.settings_path, 'user.cfg')
 
+    def test_initialize_settings_replaces_corrupted_settings_with_defaults(self):
+        os.mkdir(self.ride_dir)
+        self._write_settings("dlskajldsjjw2018032")
+        defaults = self._read_file(self.settings_path)
+        settings = self._read_file(initialize_settings('ride', self.settings_path, 'user.cfg'))
+        self.assertEqual(defaults, settings)
+
+    def _read_file(self, path):
+        with open(path, 'r') as o:
+            return o.read()
 
 class TestMergeSettings(TestSettingsHelper):
 
