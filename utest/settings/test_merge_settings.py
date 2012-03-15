@@ -15,9 +15,8 @@
 import os.path
 import unittest
 
-from robotide.preferences.settings import _merge_settings
-
 from resources.setting_utils import TestSettingsHelper
+from robotide.preferences.settings import SettingsMigrator
 
 
 class TestMergeSettings(TestSettingsHelper):
@@ -31,8 +30,8 @@ class TestMergeSettings(TestSettingsHelper):
         pass
 
     def test_merge_settings(self):
-        _merge_settings(self.settings_cfg, self.user_cfg)
-        _merge_settings(self.settings_cfg, self.user_cfg)
+        SettingsMigrator(self.settings_cfg, self.user_cfg).merge()
+        SettingsMigrator(self.settings_cfg, self.user_cfg).merge()
         content = self._read_settings_file_content(self.user_cfg)
         line_count = len(content.splitlines())
         self.assertEquals(line_count, 33, "line count should be 33 was %s" %

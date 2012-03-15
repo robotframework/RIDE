@@ -44,34 +44,44 @@ def initialize_settings(tool_name, source_path, dest_file_name=None):
     if not os.path.exists(settings_path):
         shutil.copy(source_path, settings_path)
     else:
-        _merge_settings(source_path, settings_path)
+        SettingsMigrator(source_path, settings_path).migrate()
     return os.path.abspath(settings_path)
 
+class SettingsMigrator(object):
 
-def _merge_settings(default_path, user_path):
-    settings = _create_merged_settings(default_path, user_path)
-    _write_merged_settings(settings, user_path)
+    SETTINGS_VERSION = 'settings_version'
+    CURRENT_SETTINGS_VERSION = 1 #used at least in tests
 
-def _create_merged_settings(default_path, user_path):
-    settings = ConfigObj(default_path, unrepr=True)
-    try:
-        settings.merge(ConfigObj(user_path, unrepr=True))
-    except UnreprError, err:
-        raise ConfigurationError("Invalid config file '%s': %s" %
-                (user_path, err))
-    return settings
+    def __init__(self, default_path, user_path):
+        self._default_settings = ConfigObj(default_path, unrepr=True)
+        self._user_path = user_path
+        try:
+            self._old_settings = ConfigObj(user_path, unrepr=True)
+        except UnreprError, err:
+            raise ConfigurationError("Invalid config file '%s': %s" %
+                            (user_path, err))
 
-def _write_merged_settings(settings, path):
-    outfile = None
-    try:
-        outfile = open(path, 'wb')
-        settings.write(outfile)
-    except IOError:
-        raise RuntimeError('Could not open settings file "%s" for writing' %
-                           path)
-    finally:
-        if outfile:
-            outfile.close()
+    def migrate(self):
+        if not self._old_settings.get(self.SETTINGS_VERSION):
+            self.migrate_from_0_to_1(self._old_settings)
+        self.merge()
+
+    def merge(self):
+        self._default_settings.merge(self._old_settings)
+        self._write_merged_settings(self._default_settings, self._user_path)
+
+    def migrate_from_0_to_1(self, settings):
+        if settings.get('Colors',{}).get('text library keyword') == 'blue':
+            settings['Colors']['text library keyword'] = '#0080C0'
+        settings[self.SETTINGS_VERSION] = 1
+
+    def _write_merged_settings(self, settings, path):
+        try:
+            with open(path, 'wb') as outfile:
+                settings.write(outfile)
+        except IOError:
+            raise RuntimeError('Could not open settings file "%s" for writing' %
+                                   path)
 
 
 class SectionError(Exception):

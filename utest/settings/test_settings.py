@@ -17,7 +17,7 @@ import os
 from robotide.preferences import settings
 
 from robotide.preferences.settings import Settings, SectionError,\
-    ConfigurationError, _merge_settings, initialize_settings
+    ConfigurationError, initialize_settings, SettingsMigrator
 
 from resources.setting_utils import TestSettingsHelper
 
@@ -308,7 +308,7 @@ class TestInitializeSettings(TestSettingsHelper):
         self._write_settings("foo = 'new value'\nhello = 'world'",
                              self.user_settings_path)
         initialize_settings('ride', self.settings_path, 'user.cfg')
-        self._check_content({'foo':'new value', 'hello' : 'world'},
+        self._check_content({'foo':'new value', 'hello' : 'world', SettingsMigrator.SETTINGS_VERSION:SettingsMigrator.CURRENT_SETTINGS_VERSION},
                             False)
 
     def test_initialize_settings_raises_exception_when_invalid_user_settings(self):
@@ -328,13 +328,13 @@ class TestMergeSettings(TestSettingsHelper):
                              self.settings_path)
 
     def test_merge_when_no_user_settings(self):
-        _merge_settings(self.settings_path, self.user_settings_path)
+        SettingsMigrator(self.settings_path, self.user_settings_path).merge()
         self._check_content({'foo':'bar', 'hello' : 'world'}, False)
 
     def test_merge_when_user_settings_are_changed(self):
         self._write_settings("foo = 'new value'\nhello = 'world'",
                              self.user_settings_path)
-        _merge_settings(self.settings_path, self.user_settings_path)
+        SettingsMigrator(self.settings_path, self.user_settings_path).merge()
         self._check_content({'foo':'new value', 'hello' : 'world'}, False)
 
     def test_merge_when_new_settings_in_defaults(self):
@@ -342,13 +342,13 @@ class TestMergeSettings(TestSettingsHelper):
                              self.settings_path)
         self._write_settings("foo = 'new value'\nhello = 'world'",
                              self.user_settings_path)
-        _merge_settings(self.settings_path, self.user_settings_path)
+        SettingsMigrator(self.settings_path, self.user_settings_path).merge()
         self._check_content({'foo':'new value', 'hello' : 'world', 'new':'value'},
                             False)
 
     def test_merge_fails_reasonably_when_settings_file_is_read_only(self):
         try:
-            _merge_settings(self.settings_path, self.read_only_path)
+            SettingsMigrator(self.settings_path, self.read_only_path).merge()
         except RuntimeError, e:
             self.assertTrue(str(e).startswith('Could not open'))
         else:
