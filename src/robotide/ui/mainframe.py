@@ -18,22 +18,19 @@ from robotide.action import ActionInfoCollection, ActionFactory
 from robotide.context import ABOUT_RIDE
 from robotide.controller.commands import SaveFile, SaveAll
 from robotide.publish import (RideSaveAll, RideClosing, RideSaved, PUBLISHER,
-        RideInputValidationError, RideTreeSelection)
-from robotide.preferences import PreferenceEditor
+        RideInputValidationError, RideTreeSelection, RideModificationPrevented)
 from robotide.utils import RideEventHandler
 from robotide.widgets import Dialog, ImageProvider, HtmlWindow
-
-from actiontriggers import MenuBar, ToolBar, ShortcutRegistry
-from filedialogs import NewProjectDialog, NewExternalResourceDialog, InitFileFormatDialog
-from review import ReviewDialog
-from pluginmanager import PluginManager
-from tree import Tree
-from notebook import NoteBook
-from progress import LoadProgressObserver
-from robotide.controller.commands import SaveFile, SaveAll
-from robotide.publish.messages import RideTreeSelection, RideModificationPrevented
-
 from robotide.preferences import PreferenceEditor
+
+from .actiontriggers import MenuBar, ToolBar, ShortcutRegistry
+from .filedialogs import (NewProjectDialog, NewExternalResourceDialog,
+        InitFileFormatDialog)
+from .review import ReviewDialog
+from .pluginmanager import PluginManager
+from .tree import Tree
+from .notebook import NoteBook
+from .progress import LoadProgressObserver
 
 
 _menudata = """
