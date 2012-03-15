@@ -18,6 +18,7 @@ import shutil
 from robotide.context.platform import IS_WINDOWS
 
 from .configobj import ConfigObj, Section, UnreprError
+from robotide.preferences.configobj import ConfigObjError
 
 
 if IS_WINDOWS:
@@ -44,7 +45,12 @@ def initialize_settings(tool_name, source_path, dest_file_name=None):
     if not os.path.exists(settings_path):
         shutil.copy(source_path, settings_path)
     else:
-        SettingsMigrator(source_path, settings_path).migrate()
+        try:
+            SettingsMigrator(source_path, settings_path).migrate()
+        except ConfigObjError, parsing_error:
+            print 'WARNING! corrupted configuration file replaced with defaults'
+            print parsing_error
+            shutil.copy(source_path, settings_path)
     return os.path.abspath(settings_path)
 
 class SettingsMigrator(object):
