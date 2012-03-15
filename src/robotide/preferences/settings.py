@@ -62,8 +62,21 @@ class SettingsMigrator(object):
                             (user_path, err))
 
     def migrate(self):
+        # Add migrations here.
+        # idea is that we are able to migrate from any of the previous settings
+        # versions to the current one by applying as many migration scripts as
+        # is needed --> so don't do migrate_from_0_to_3 or something other
+        # that will leap over some versions to save space
+        # NOTE!
+        # Don't count on default settings when giving values in migration scripts
+        # as default values could change in the future --> state after your
+        # migration is something else then what you intended and this could
+        # mess up the next migration script(s)
         if not self._old_settings.get(self.SETTINGS_VERSION):
             self.migrate_from_0_to_1(self._old_settings)
+        #so next would be something like:
+        #if self._old_settings[self.SETTINGS_VERSION] == 1:
+        #   self.migrate_from_1_to_2(self._old_settings)
         self.merge()
 
     def merge(self):
