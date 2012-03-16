@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,6 +12,30 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from datarow import DataRow
-from model import (TestData, TestCaseFile, TestDataDirectory, ResourceFile,
-                   TestCase, UserKeyword)
+"""Implements parsing of test data files.
+
+Classes :class:`~.model.TestCaseFile`, :class:`~.model.TestDataDirectory` and
+:class:`~.model.ResourceFile` represented parsed test data. These can be
+modified and saved back to disk. In addition, a convenience factory function
+:func:`~.model.TestData` can be used to parse file or directory to a
+corresponding object.
+
+This package is considered stable.
+
+Example
+-------
+
+.. code-block:: python
+
+    from robot.parsing import TestCaseFile
+
+    suite = TestCaseFile(source='path/to/tests.html').populate()
+    print 'Suite: ', suite.name
+    for test in suite.testcase_table:
+        print test.name
+"""
+
+from .model import TestData, TestCaseFile, TestDataDirectory, ResourceFile
+from .populators import READERS
+VALID_EXTENSIONS = tuple(READERS)
+del READERS

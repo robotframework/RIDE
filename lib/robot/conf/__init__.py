@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,4 +12,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from settings import RobotSettings, RebotSettings
+"""Settings for both test execution and output processing."""
+
+from .settings import RobotSettings, RebotSettings

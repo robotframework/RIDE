@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,6 +12,14 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+"""Contains base classes and other generic functionality.
+
+In RF 2.7 this package is mainly used by :mod:`robot.result` package, but
+there is a plan to change also :mod:`robot.running` to use this in RF 2.8.
+
+This package is considered stable.
+"""
+
 from .testsuite import TestSuite
 from .testcase import TestCase
 from .keyword import Keyword
@@ -22,3 +30,4 @@ from .namepatterns import SuiteNamePatterns, TestNamePatterns
 from .visitor import SuiteVisitor, SkipAllVisitor
 from .totalstatistics import TotalStatisticsBuilder
 from .statistics import Statistics
+from .itemlist import ItemList

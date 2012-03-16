@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -70,7 +70,7 @@ class Output(AbstractLogger):
 
     def set_log_level(self, level):
         # TODO: Module structure should be cleaned up to prevent cyclic imports
-        import pyloggingconf
-        pyloggingconf.set_level(level)
+        from .pyloggingconf import set_level
+        set_level(level)
         return self._xmllogger.set_log_level(level)
 

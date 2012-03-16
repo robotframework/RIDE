@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ EXECUTION_CONTEXTS = ExecutionContexts()
 
 
 class _ExecutionContext(object):
-    _started_keywords_threshold = 100
+    _started_keywords_threshold = 42  # Jython on Windows don't work with higher
 
     def __init__(self, namespace, output, dry_run=False):
         self.namespace = namespace
@@ -58,14 +58,15 @@ class _ExecutionContext(object):
     def teardown(self):
         if self._in_teardown:
             return True
-        # TODO: tests and suites should also call start/end_teardown()
         test_or_suite = self.namespace.test or self.namespace.suite
         return test_or_suite.status != 'RUNNING'
 
-    def start_teardown(self):
+    def start_keyword_teardown(self, error):
+        self.namespace.variables['${KEYWORD_STATUS}'] = 'FAIL' if error else 'PASS'
+        self.namespace.variables['${KEYWORD_MESSAGE}'] = unicode(error or '')
         self._in_teardown += 1
 
-    def end_teardown(self):
+    def end_keyword_teardown(self):
         self._in_teardown -= 1
 
     def get_current_vars(self):

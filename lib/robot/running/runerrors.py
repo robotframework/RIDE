@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -156,7 +156,6 @@ class TestRunErrors(object):
         return self._kw_err
 
     def get_teardown_message(self, message):
-        # TODO: This API is really in need of cleanup
         if message == '':
             return 'Teardown failed:\n%s' % self._teardown_err
         return '%s\n\nAlso teardown failed:\n%s' % (message, self._teardown_err)

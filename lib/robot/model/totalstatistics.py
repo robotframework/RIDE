@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ class TotalStatisticsBuilder(SuiteVisitor):
 
     def add_test(self, test):
         self.stats.all.add_test(test)
-        if test.critical == 'yes':
+        if test.critical:
             self.stats.critical.add_test(test)
 
     def visit_test(self, test):

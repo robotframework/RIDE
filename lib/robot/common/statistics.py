@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
 
 import re
 
-from robot import utils
 from robot.model.tags import TagPatterns
+from robot.utils import Matcher, MultiMatcher, NormalizedDict
 
 
 class Statistics:
@@ -53,7 +53,7 @@ class Stat:
         self.failed += other.failed
 
     def add_test(self, test):
-        if test.status == 'PASS':
+        if test.passed:
             self.passed += 1
         else:
             self.failed += 1
@@ -89,7 +89,7 @@ class CriticalStats(Stat):
         self.add_suite(suite)
 
     def _is_included(self, test):
-        return test.critical == 'yes'
+        return test.critical
 
     def _subsuite_stats(self, suite):
         return suite.critical_stats
@@ -175,7 +175,7 @@ class SuiteStatistics:
     def _process_tests(self, suite, tag_stats):
         for test in suite.tests:
             self.all.add_test(test)
-            if test.critical == 'yes':
+            if test.critical:
                 self.critical.add_test(test)
             tag_stats.add_test(test, suite.critical)
 
@@ -195,9 +195,9 @@ class TagStatistics:
 
     def __init__(self, include=None, exclude=None, combine=None, docs=None,
                  links=None):
-        self.stats = utils.NormalizedDict(ignore=['_'])
-        self._include = include or []
-        self._exclude = exclude or []
+        self.stats = NormalizedDict(ignore=['_'])
+        self._include = MultiMatcher(include, ignore=['_'])
+        self._exclude = MultiMatcher(exclude, ignore=['_'])
         self._combine = combine or []
         info = TagStatInfo(docs or [], links or [])
         self._get_doc = info.get_doc
@@ -219,9 +219,9 @@ class TagStatistics:
             self.stats[tag].add_test(test)
 
     def _is_included(self, tag):
-        if self._include and not utils.matches_any(tag, self._include):
+        if self._include and not self._include.match(tag):
             return False
-        return not utils.matches_any(tag, self._exclude)
+        return not self._exclude.match(tag)
 
     def _add_combined_statistics(self, test):
         for pattern, name in self._combine:
@@ -274,10 +274,10 @@ class TagStatDoc:
 
     def __init__(self, pattern, doc):
         self.text = doc
-        self._pattern = pattern
+        self._matcher = Matcher(pattern, ignore=['_'])
 
     def matches(self, tag):
-        return utils.matches(tag, self._pattern, ignore=['_'])
+        return self._matcher.match(tag)
 
 
 class TagStatLink:

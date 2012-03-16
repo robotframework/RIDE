@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -104,7 +104,8 @@ class Listeners(object):
             if li.version == 1:
                 li.call_method(li.start_test, test.name, test.doc, test.tags)
             else:
-                attrs = self._get_start_attrs(test, 'tags', 'critical')
+                attrs = self._get_start_attrs(test, 'tags')
+                attrs['critical'] = 'yes' if test.critical else 'no'
                 attrs['template'] = test.template or ''
                 li.call_method(li.start_test, test.name, attrs)
 
@@ -114,7 +115,8 @@ class Listeners(object):
             if li.version == 1:
                 li.call_method(li.end_test, test.status, test.message)
             else:
-                attrs = self._get_end_attrs(test, 'tags', 'critical')
+                attrs = self._get_end_attrs(test, 'tags')
+                attrs['critical'] = 'yes' if test.critical else 'no'
                 attrs['template'] = test.template or ''
                 li.call_method(li.end_test, test.name, attrs)
 
@@ -218,19 +220,8 @@ class _ListenerProxy(AbstractLoggerProxy):
 
     def _import_listener(self, name, args):
         importer = utils.Importer('listener')
-        listener = importer.import_class_or_module(os.path.normpath(name))
-        if inspect.isclass(listener):
-            return self._instantiate_listener_class(listener, args)
-        if not args:
-            return listener
-        raise DataError("Listeners implemented as modules do not take arguments")
-
-    def _instantiate_listener_class(self, listener, args):
-        try:
-            return listener(*args)
-        except:
-            raise DataError('Creating instance failed: %s\n%s'
-                            % utils.get_error_details())
+        return importer.import_class_or_module(os.path.normpath(name),
+                                               instantiate_with_args=args)
 
     def _get_version(self, listener):
         try:

@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -13,12 +13,13 @@
 #  limitations under the License.
 
 import re
-import os
+import inspect
+from functools import partial
 from UserDict import UserDict
-if os.name == 'java':
+try:
     from java.lang.System import getProperty as getJavaSystemProperty
     from java.util import Map
-else:
+except ImportError:
     getJavaSystemProperty = lambda name: None
     class Map: pass
 
@@ -26,8 +27,8 @@ from robot import utils
 from robot.errors import DataError
 from robot.output import LOGGER
 
-from isvar import is_var, is_scalar_var
-from variablesplitter import VariableSplitter
+from .isvar import is_var, is_scalar_var
+from .variablesplitter import VariableSplitter
 
 
 class Variables(utils.NormalizedDict):
@@ -48,7 +49,8 @@ class Variables(utils.NormalizedDict):
     def __init__(self, identifiers=('$','@','%','&','*')):
         utils.NormalizedDict.__init__(self, ignore=['_'])
         self._identifiers = identifiers
-        self._importer = utils.Importer('variable file')
+        importer = utils.Importer('variable file').import_class_or_module_by_path
+        self._import_variable_file = partial(importer, instantiate_with_args=())
 
     def __setitem__(self, name, value):
         self._validate_var_name(name)
@@ -202,15 +204,15 @@ class Variables(utils.NormalizedDict):
         # 2) Handle environment variables and Java system properties
         elif var.identifier == '%':
             name = var.get_replaced_base(self).strip()
-            if name == '':
+            if not name:
                 return '%%{%s}' % var.base
-            try:
-                return os.environ[name]
-            except KeyError:
-                property = getJavaSystemProperty(name)
-                if property:
-                    return property
-                raise DataError("Environment variable '%s' does not exist" % name)
+            value = utils.get_env_var(name)
+            if value is not None:
+                return value
+            value = getJavaSystemProperty(name)
+            if value is not None:
+                return value
+            raise DataError("Environment variable '%s' does not exist" % name)
 
         # 3) Handle ${scalar} variables and @{list} variables without index
         elif var.index is None:
@@ -229,10 +231,9 @@ class Variables(utils.NormalizedDict):
 
     def set_from_file(self, path, args=None, overwrite=False):
         LOGGER.info("Importing variable file '%s' with args %s" % (path, args))
-        args = args or []
-        module = self._importer.import_class_or_module_by_path(path)
+        var_file = self._import_variable_file(path)
         try:
-            variables = self._get_variables_from_module(module, args)
+            variables = self._get_variables_from_var_file(var_file, args)
             self._set_from_file(variables, overwrite, path)
         except:
             amsg = 'with arguments %s ' % utils.seq2str2(args) if args else ''
@@ -256,7 +257,7 @@ class Variables(utils.NormalizedDict):
                                     "value '%s'" % (name, utils.unic(value)))
             else:
                 name = '${%s}' % name
-            if overwrite or not utils.NormalizedDict.has_key(self, name):
+            if overwrite or not self.contains(name):
                 self.set(name, value)
 
     def set_from_variable_table(self, variable_table, overwrite=False):
@@ -264,8 +265,7 @@ class Variables(utils.NormalizedDict):
             try:
                 name, value = self._get_var_table_name_and_value(
                     variable.name, variable.value, variable_table.source)
-                # self.has_key would also match if name matches extended syntax
-                if overwrite or not utils.NormalizedDict.has_key(self, name):
+                if overwrite or not self.contains(name):
                     self.set(name, value)
             except DataError, err:
                 variable_table.report_invalid_syntax("Setting variable '%s' failed: %s"
@@ -297,19 +297,17 @@ class Variables(utils.NormalizedDict):
         LOGGER.warn(msg + '.')
         return self.replace_list(value)
 
-    def _get_variables_from_module(self, module, args):
-        variables = self._get_dynamical_variables(module, args)
+    def _get_variables_from_var_file(self, var_file, args):
+        variables = self._get_dynamical_variables(var_file, args or ())
         if variables is not None:
             return variables
-        names = [attr for attr in dir(module) if not attr.startswith('_')]
-        if hasattr(module, '__all__'):
-            names = [name for name in names if name in module.__all__]
-        return [(name, getattr(module, name)) for name in names]
+        names = self._get_static_variable_names(var_file)
+        return self._get_static_variables(var_file, names)
 
-    def _get_dynamical_variables(self, module, args):
-        get_variables = getattr(module, 'get_variables', None)
+    def _get_dynamical_variables(self, var_file, args):
+        get_variables = getattr(var_file, 'get_variables', None)
         if not get_variables:
-            get_variables = getattr(module, 'getVariables', None)
+            get_variables = getattr(var_file, 'getVariables', None)
         if not get_variables:
             return None
         variables = get_variables(*args)
@@ -320,12 +318,29 @@ class Variables(utils.NormalizedDict):
         raise DataError("Expected mapping but %s returned %s."
                          % (get_variables.__name__, type(variables).__name__))
 
-    def has_key(self, key):
+    def _get_static_variable_names(self, var_file):
+        names = [attr for attr in dir(var_file) if not attr.startswith('_')]
+        if hasattr(var_file, '__all__'):
+            names = [name for name in names if name in var_file.__all__]
+        return names
+
+    def _get_static_variables(self, var_file, names):
+        variables = [(name, getattr(var_file, name)) for name in names]
+        if not inspect.ismodule(var_file):
+            variables = [var for var in variables if not callable(var[1])]
+        return variables
+
+    def has_key(self, variable):
         try:
-            self[key]
+            self[variable]
         except DataError:
             return False
         else:
             return True
 
     __contains__ = has_key
+
+    def contains(self, variable, extended=False):
+        if extended:
+            return self.has_key(variable)
+        return utils.NormalizedDict.has_key(self, variable)

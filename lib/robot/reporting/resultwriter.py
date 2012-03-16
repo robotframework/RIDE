@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,10 +14,7 @@
 
 from robot.errors import DataError
 from robot.output import LOGGER
-from robot.result import ResultFromXml
-
-# TODO: OutputWriter belongs into robot.reporting
-from robot.result.outputwriter import OutputWriter
+from robot.result import ExecutionResult
 
 from .jsmodelbuilders import JsModelBuilder
 from .logreportwriters import LogWriter, ReportWriter
@@ -44,7 +41,7 @@ class ResultWriter(object):
 
     def _write_output(self, result, path):
         try:
-            result.visit(OutputWriter(path))
+            result.save(path)
         except DataError, err:
             LOGGER.error(unicode(err))
         else:
@@ -91,7 +88,7 @@ class Results(object):
     @property
     def result(self):
         if self._result is None:
-            self._result = ResultFromXml(*self._data_sources)
+            self._result = ExecutionResult(*self._data_sources)
             self._result.configure(self._settings.status_rc,
                                    self._settings.suite_config,
                                    self._settings.statistics_config)

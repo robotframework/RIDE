@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -15,16 +15,16 @@
 import os
 import urllib
 
-from encoding import decode_from_file_system
+from .encoding import decode_from_system
 
 
 if os.sep == '\\':
-    _CASE_INSENSITIVE_FILESYSTEM = True
+    CASE_INSENSITIVE_FILESYSTEM = True
 else:
     try:
-        _CASE_INSENSITIVE_FILESYSTEM = os.listdir('/tmp') == os.listdir('/TMP')
+        CASE_INSENSITIVE_FILESYSTEM = os.listdir('/tmp') == os.listdir('/TMP')
     except OSError:
-        _CASE_INSENSITIVE_FILESYSTEM = False
+        CASE_INSENSITIVE_FILESYSTEM = False
 
 
 def normpath(path):
@@ -34,7 +34,7 @@ def normpath(path):
     If that is not desired, abspath should be used instead.
     """
     path = abspath(path)
-    if _CASE_INSENSITIVE_FILESYSTEM:
+    if CASE_INSENSITIVE_FILESYSTEM:
         path = path.lower()
     return path
 
@@ -45,10 +45,11 @@ def abspath(path):
     1) Converts non-Unicode paths to Unicode using file system encoding
     2) At least Jython 2.5.1 on Windows returns wrong path with 'c:'.
     3) Python until 2.6.5 and at least Jython 2.5.1 don't handle non-ASCII
-    characters in the working directory: http://bugs.python.org/issue3426
+        characters in the working directory: http://bugs.python.org/issue3426
+
     """
     if not isinstance(path, unicode):
-        path = decode_from_file_system(path)
+        path = decode_from_system(path)
     if os.sep == '\\' and len(path) == 2 and path[1] == ':':
         return path + '\\'
     return os.path.normpath(os.path.join(os.getcwdu(), path))

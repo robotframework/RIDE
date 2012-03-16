@@ -18,8 +18,9 @@ robot.parsing.populators.PROCESS_CURDIR = False
 from robot.version import get_version
 from robot.utils import normpath, NormalizedDict
 from robot.common.handlers import UserErrorHandler
-from robot.parsing import (TestCaseFile, ResourceFile, TestDataDirectory,
-                           TestCase, UserKeyword, DataRow)
+from robot.parsing import TestCaseFile, ResourceFile, TestDataDirectory
+from robot.parsing.model import TestCase, UserKeyword
+from robot.parsing.datarow import DataRow
 from robot.parsing.model import Variable
 from robot.running import TestLibrary
 from robot.output import LOGGER as ROBOT_LOGGER

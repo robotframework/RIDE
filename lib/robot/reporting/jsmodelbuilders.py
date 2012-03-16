@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -106,7 +106,7 @@ class TestBuilder(_Builder):
         with self._context.prune_input(test.keywords):
             return (self._string(test.name),
                     self._string(test.timeout),
-                    int(test.critical == 'yes'),
+                    int(test.critical),
                     self._html(test.doc),
                     tuple(self._string(t) for t in test.tags),
                     self._get_status(test),

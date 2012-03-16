@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -11,6 +11,15 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
+"""Implements the core test execution logic.
+
+The code in this package is in many places suboptimal and likely to change in
+RF 2.8. External code should use this package with care.
+
+Currently, the main entry point is the :func:`~.model.TestSuite` factory
+method.
+"""
 
 from .model import TestSuite
 from .keywords import Keyword
@@ -26,8 +35,8 @@ def UserLibrary(path):
     This is used at least by libdoc.py."""
     from robot.parsing import ResourceFile
     from robot import utils
-    from arguments import UserKeywordArguments
-    from userkeyword import UserLibrary as RuntimeUserLibrary
+    from .arguments import UserKeywordArguments
+    from .userkeyword import UserLibrary as RuntimeUserLibrary
 
     resource = ResourceFile(path).populate()
     ret = RuntimeUserLibrary(resource.keyword_table.keywords, path)

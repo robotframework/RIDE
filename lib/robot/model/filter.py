@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,11 +12,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot import utils
+from robot.utils import setter
 
-from tags import TagPatterns
-from namepatterns import SuiteNamePatterns, TestNamePatterns
-from visitor import SuiteVisitor
+from .tags import TagPatterns
+from .namepatterns import SuiteNamePatterns, TestNamePatterns
+from .visitor import SuiteVisitor
 
 
 class Filter(SuiteVisitor):
@@ -28,38 +28,37 @@ class Filter(SuiteVisitor):
         self.include_tags = include_tags
         self.exclude_tags = exclude_tags
 
-    @utils.setter
+    @setter
     def include_suites(self, suites):
         return SuiteNamePatterns(suites) \
             if not isinstance(suites, SuiteNamePatterns) else suites
 
-    @utils.setter
+    @setter
     def include_tests(self, tests):
         return TestNamePatterns(tests) \
             if not isinstance(tests, TestNamePatterns) else tests
 
-    @utils.setter
+    @setter
     def include_tags(self, tags):
         return TagPatterns(tags) if not isinstance(tags, TagPatterns) else tags
 
-    @utils.setter
+    @setter
     def exclude_tags(self, tags):
         return TagPatterns(tags) if not isinstance(tags, TagPatterns) else tags
 
     def start_suite(self, suite):
         if not self:
             return False
-        # TODO: is this too eager? Cleanup at least..
         if hasattr(suite, 'starttime'):
-            suite.starttime = suite.endtime = 'N/A'
+            suite.starttime = suite.endtime = None
         if self.include_suites:
             return self._filter_by_suite_name(suite)
         if self.include_tests:
-            suite.tests = list(self._filter(suite, self._included_by_test_name))
+            suite.tests = self._filter(suite, self._included_by_test_name)
         if self.include_tags:
-            suite.tests = list(self._filter(suite, self._included_by_tags))
+            suite.tests = self._filter(suite, self._included_by_tags)
         if self.exclude_tags:
-            suite.tests = list(self._filter(suite, self._not_excluded_by_tags))
+            suite.tests = self._filter(suite, self._not_excluded_by_tags)
         return bool(suite.suites)
 
     def _filter_by_suite_name(self, suite):
@@ -73,9 +72,7 @@ class Filter(SuiteVisitor):
         return True
 
     def _filter(self, suite, filter):
-        for test in suite.tests:
-            if filter(test):
-                yield test
+        return [t for t in suite.tests if filter(t)]
 
     def _included_by_test_name(self, test):
         return self.include_tests.match(test.name, test.longname)

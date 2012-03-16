@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -113,12 +113,12 @@ class TxtFormatter(_DataFileFormatter):
 
     def _escape(self, row):
         return self._escape_consecutive_whitespace(
-            self._escape_empty_cell_from_start(row))
+            self._escape_empty_cells(row))
 
-    def _escape_empty_cell_from_start(self, row):
-        if len(row) >= 2 and row[0] == row[1] == '':
-            row[1] = '\\'
-        return row
+    def _escape_empty_cells(self, row):
+        if not row:
+            return row
+        return [row[0]] + [c if c else '\\' for c in row[1:]]
 
 
 class PipeFormatter(TxtFormatter):

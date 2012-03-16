@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ class _KeywordRemover(object):
         return tuple(self._remove_keywords_from_test(t) for t in tests)
 
     def _remove_keywords_from_test(self, test):
-        return test[:-1] + ((),)  # TODO: Could we just return test[:-1]?
+        return test[:-1] + ((),)
 
     def remove_unused_strings(self, model, strings):
         used = set(self._get_used_indices(model))

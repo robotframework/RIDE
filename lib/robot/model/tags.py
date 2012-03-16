@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot import utils
+from robot.utils import normalize_tags, setter, Matcher
 
 
 class Tags(object):
@@ -20,11 +20,11 @@ class Tags(object):
     def __init__(self, tags=None):
         self._tags = tags
 
-    @utils.setter
+    @setter
     def _tags(self, tags):
         if isinstance(tags, basestring):
             tags = [tags]
-        return utils.normalize_tags(tags or [])
+        return normalize_tags(tags or [])
 
     def add(self, tags):
         self._tags = list(self) + list(Tags(tags))
@@ -75,7 +75,7 @@ class TagPatterns(object):
 
 
 def TagPattern(pattern):
-    pattern = pattern.replace('&', 'AND') # TODO: where should this be done?
+    pattern = pattern.replace('&', 'AND')
     if 'NOT' in pattern:
         return _NotTagPattern(*pattern.split('NOT', 1))
     if 'AND' in pattern:
@@ -86,7 +86,7 @@ def TagPattern(pattern):
 class _SingleTagPattern(object):
 
     def __init__(self, pattern):
-        self._matcher = utils.Matcher(pattern, ignore=['_'])
+        self._matcher = Matcher(pattern, ignore=['_'])
 
     def match(self, tags):
         return any(self._matcher.match(tag) for tag in tags)

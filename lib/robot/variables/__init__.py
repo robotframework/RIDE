@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,15 +12,22 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+"""Implements handling and resolving of variables.
+
+This package is likely to change radically in RF 2.8. External code should use
+functionality provided directly by this package with care.
+"""
+
 import os
 import tempfile
 
 from robot import utils
 from robot.output import LOGGER
 
-from variables import Variables
-from variablesplitter import VariableSplitter
-from isvar import is_var, is_scalar_var, is_list_var
+from .isvar import is_var, is_scalar_var, is_list_var
+from .variables import Variables
+from .variableassigner import VariableAssigner
+from .variablesplitter import VariableSplitter
 
 
 GLOBAL_VARIABLES = Variables()

@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ class JsBuildingContext(object):
         return self.string(rel_source)
 
     def timestamp(self, time):
-        if time == 'N/A':   # TODO: Should definitely use None in model!
+        if not time:
             return None
         # Must use `long` due to http://ironpython.codeplex.com/workitem/31549
         millis = long(round(timestamp_to_secs(time) * 1000))

@@ -1,0 +1,327 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="Generator" content="">
+<link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAEAAAAAAAAAAAAAAAJEBoACtnfgA5cYYAERsiAEx2lAAbKkQAcazBACZCVwAcM1cAK0ucAAMDBQAnQncASG+FABkoVQAyWmgA6f8SgvH/Ij99+GLyIinyJfn/Yi//KSLzUy9iZogpIld3/4JVVTkid7vyUjNVNVJEAGOZ6Z7pXwAABpmZkRiLAAAGiJZpmGAAAEEt3SXdxAAATC7o/u3EAAC8MRZpjasAAAY1VVVTYAAABKqqqqpAAAAADKqq4AAAAAAAv4sAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMADAADgAwAA4AcAAOAHAADgBwAAwAcAAOAHAADgDwAA8A8AAPg/AAD+fwAA">
+<link rel="stylesheet" type="text/css" href="log.css" media="all">
+<link rel="stylesheet" type="text/css" href="common.css" media="all">
+<link rel="stylesheet" type="text/css" href="print.css" media="print">
+<script type="text/javascript" src="log.js"></script>
+<script type="text/javascript" src="../lib/jquery.min.js"></script>
+<script type="text/javascript" src="../lib/jquery.tmpl.min.js"></script>
+<script type="text/javascript" src="../lib/jsxcompressor.js"></script>
+<script type="text/javascript" src="fileloading.js"></script>
+<script type="text/javascript" src="model.js"></script>
+<script type="text/javascript" src="util.js"></script>
+<script type="text/javascript" src="testdata.js"></script>
+<script type="text/javascript" src="view.js"></script>
+<!-- JS MODEL --><script type="text/javascript" src="../testdata/data.js"></script>
+<title></title>
+</head>
+<body>
+<div id="javascript_disabled">
+  <h1>Opening Robot Framework log failed</h1>
+  <ul>
+    <li>Verify that you have <b>JavaScript enabled</b> in your browser.</li>
+    <li>Make sure you are using a <b>modern enough browser</b>. Firefox 3.5, IE 8, or equivalent is required, newer browsers are recommended.</li>
+    <li>Check are there messages in your browser's <b>JavaScript error log</b>. Please report the problem if you suspect you have encountered a bug.</li>
+  </ul>
+</div>
+<script type="text/javascript">removeJavaScriptDisabledWarning();</script>
+
+<div id="header"></div>
+<div id="statistics_container"></div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    try {
+        var topsuite = window.testdata.suite();
+    } catch (e) {
+        addJavaScriptDisabledWarning();
+        return;
+    }
+    initLayout(topsuite.name, 'Log');
+    addStatistics();
+    addErrors();
+    addTestExecutionLog(topsuite);
+    if (window.location.hash) {
+        makeElementVisible(window.location.hash.substring(1));
+        scrollToHash();
+    } else {
+        expandSuite(topsuite);
+    }
+});
+
+function addErrors() {
+    var errors = window.testdata.errors();
+    if (errors.hasNext()) {
+        $.tmpl('errorHeaderTemplate').appendTo($('body'));
+        window.errorsToRender = errors;
+        drawErrorsRecursively();
+    }
+}
+
+function drawErrorsRecursively(){
+    if (!window.errorsToRender.hasNext())
+        return;
+    var elements = popFromIterator(window.errorsToRender, 10);
+    $.tmpl('errorTemplate', elements).appendTo($('#error_table'));
+    if (window.errorsToRender.hasNext())
+        setTimeout(drawErrorsRecursively, 0);
+    else
+        scrollToHash();
+}
+
+function scrollToHash() {
+    // This does not scroll window in Safari.
+    if (window.location.hash)
+        window.location.hash = window.location.hash.substring(1);
+}
+
+function popFromIterator(iterator, upTo) {
+    var result = [];
+    while (iterator.hasNext() > 0 && result.length < upTo)
+        result.push(iterator.next());
+    return result;
+}
+
+function makeElementVisible(element) {
+    // findPathTo ensures that all the data for the element has been downloaded
+    // from server before executing the callback function
+    window.testdata.findPathTo(unescape(element), function (uniqueIds) {
+        for (var i in uniqueIds) {
+            expandElementWithId(uniqueIds[i]);
+        }
+        if (uniqueIds && uniqueIds.length > 0) {
+            expandCriticalFailed(window.testdata.find(uniqueIds[uniqueIds.length - 1]));
+            window.location.hash = element;
+        }
+    });
+}
+
+function addTestExecutionLog(main) {
+    $('<h2>Test Execution Log</h2>').appendTo($('body'));
+    var root = $.tmpl('suiteTemplate', main);
+    root.appendTo($('body'));
+}
+</script>
+
+<script type="text/x-jquery-tmpl" id="totalStatisticsRowTemplate">
+  <tr>
+    <td class="col_stat_name">
+      <div class="stat_name">
+        <span title="${doc}">${label}</span>
+      </div>
+    </td>
+    {{tmpl($data) 'stat_columns'}}
+  </tr>
+</script>
+
+<script type="text/x-jquery-tmpl" id="tagStatisticsRowTemplate">
+  <tr>
+    <td class="col_stat_name">
+      <div class="stat_name">
+        <span title="${doc}">${label}</span>
+        {{if info}}(${info}){{/if}}
+      </div>
+      <div class="tag_links">
+        {{each links}}
+        <span>[<a href="${$value.url}" title="${$value.url}">${$value.title}</a>]</span>
+        {{/each}}
+      </div>
+    </td>
+    {{tmpl($data) 'stat_columns'}}
+  </tr>
+</script>
+
+<script type="text/x-jquery-tmpl" id="suiteStatisticsRowTemplate">
+  <tr>
+    <td class="col_stat_name">
+      <div class="stat_name">
+        <a onclick="makeElementVisible('${id}')" href="#${id}" title="${label}"><span class="parent_name">${formatParentName}</span>${name}</a>
+      </div>
+    </td>
+    {{tmpl($data) 'stat_columns'}}
+  </tr>
+</script>
+
+<script type="text/x-jquery-tmpl" id="errorHeaderTemplate">
+  <h2>Test Execution Errors</h2>
+  <table class="errors" id="error_table"></table>
+</script>
+
+<script type="text/x-jquery-tmpl" id="errorTemplate">
+  <tr>
+    <td class="time">
+      {{if link}}
+      <a onclick="makeElementVisible('${link}')"
+         href="#${link}" title="Link to details.">${date} ${time}</a>
+      {{else}}
+      ${date} ${time}
+      {{/if}}
+    </td>
+    <td class="${level.toLowerCase()} level">${level}</td>
+    <td class="msg">{{html text}}</td>
+  </tr>
+</script>
+
+<script type="text/x-jquery-tmpl" id="suiteTemplate">
+  <div id="${id}" class="suite">
+    <div id="${id}_elementheader" class="elementheader"
+         onclick="toggleSuite('${id}');" title="${fullName}">
+      <div id="${id}_foldingbutton" class="foldingbutton">+</div>
+      <span class="${status.toLowerCase()}">TEST&nbsp;SUITE:</span>
+      <span class="name">${name}</span>
+        <a class="expandall" href="javascript:expandAllChildren('${id}')"
+           onclick="stopPropagation(event);">Expand All</a>
+    </div>
+    <div id="${id}_children" style="display: none;">
+      <table class="metadata">
+        <tr>
+          <th>Full Name:</th>
+          <td>${fullName}</td>
+        </tr>
+        {{if doc()}}
+        <tr>
+          <th>Documentation:</th>
+          <td>{{html doc()}}</td>
+        </tr>
+        {{/if}}
+        {{each metadata}}
+        <tr>
+          <th>${$value[0]}:</th>
+          <td>{{html $value[1]}}</td>
+        </tr>
+        {{/each}}
+        {{if source}}
+        <tr>
+          <th>Source:</th>
+          {{if relativeSource}}
+          <td><a href="${relativeSource}">${source}</a></td>
+          {{else}}
+          <td>${source}</td>
+          {{/if}}
+        </tr>
+        {{/if}}
+        <tr>
+          <th>Start / End / Elapsed:</th><td>${times.startTime}  /  ${times.endTime}  /  ${times.elapsedTime}</td>
+        </tr>
+        <tr>
+          <th>Status:</th>
+          <td>{{tmpl($data) 'suiteStatusMessageTemplate'}}</td>
+        </tr>
+        {{if message()}}
+        <tr>
+          <th>Message:</th>
+          <td>${message()}</td>
+        </tr>
+        {{/if}}
+      </table>
+    </div>
+  </div>
+</script>
+
+<script type="text/x-jquery-tmpl" id="testTemplate">
+  <div id="${id}" class="test">
+    <div id="${id}_elementheader" onclick="toggleTest('${id}');"
+         class="elementheader" title="${fullName}">
+      <div id="${id}_foldingbutton" class="foldingbutton">+</div>
+      <span class="${status.toLowerCase()}">TEST&nbsp;CASE: </span>
+      <span class="name">${name}</span>
+      {{if !isCritical}}<span>  (non-critical)</span>{{/if}}
+        <a class="expandall" href="javascript:expandAllChildren('${id}')"
+           onclick="stopPropagation(event);">Expand All</a>
+    </div>
+    <div id="${id}_children" style="display: none;">
+      <table class="metadata">
+        <tr>
+          <th>Full Name:</th>
+          <td>${fullName}</td>
+        </tr>
+        {{if doc()}}
+        <tr>
+          <th>Documentation:</th>
+          <td>{{html doc()}}</td>
+        </tr>
+        {{/if}}
+        {{if tags.length}}
+        <tr>
+          <th>Tags:</th>
+          <td>${tags.join(', ')}</td>
+        </tr>
+        {{/if}}
+        {{if timeout}}
+        <tr>
+          <th>Timeout:</th>
+          <td>${timeout}</td>
+        </tr>
+        {{/if}}
+        <tr>
+          <th>Start / End / Elapsed:</th>
+          <td>${times.startTime}  /  ${times.endTime}  /  ${times.elapsedTime}</td>
+        </tr>
+        <tr>
+          <th>Status:</th>
+          <td><span class="${status.toLowerCase()}">${status}</span> ({{if isCritical}}critical{{else}}non-critical{{/if}})</td>
+        </tr>
+        {{if message()}}
+        <tr>
+          <th>Message:</th>
+          <td>${message()}</td>
+        </tr>
+        {{/if}}
+      </table>
+    </div>
+  </div>
+</script>
+
+<script type="text/x-jquery-tmpl" id="keywordTemplate">
+  <div id="${id}" class="keyword">
+    <div id="${id}_elementheader" class="elementheader"
+         onclick="toggleKeyword('${id}');" title="${name}">
+      <div id="${id}_foldingbutton" class="foldingbutton">+</div>
+      <span class="${status.toLowerCase()}">${type}: </span>
+      <span class="name">${name}</span>
+      <span class="arg">${arguments}</span>
+      <a class="expandall" href="javascript:expandAllChildren('${id}')"
+         onclick="stopPropagation(event);">Expand All</a>
+    </div>
+    <div id="${id}_children" style="display: none;">
+      <table class="metadata">
+        {{if doc()}}
+        <tr>
+          <th>Documentation:</th>
+          <td>{{html doc()}}</td>
+        </tr>
+        {{/if}}
+        {{if timeout}}
+        <tr>
+          <th>Timeout:</th>
+          <td>${timeout}</td>
+        </tr>
+        {{/if}}
+        <tr>
+          <th>Start / End / Elapsed:</th>
+          <td>${times.startTime}  /  ${times.endTime}  /  ${times.elapsedTime}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</script>
+
+<script type="text/x-jquery-tmpl" id="messageTemplate">
+  <table class="messages">
+    <tr>
+      <td class="time">${time}</td>
+      <td class="${level.toLowerCase()} level">${level}</td>
+      <td class="msg">{{html text}}</td>
+    </tr>
+  </table>
+</script>
+
+</body>
+</html>

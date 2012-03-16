@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,8 +14,9 @@
 
 import re
 
-from robot.output.loggerhelper import Message, LEVELS
 from robot import utils
+
+from .loggerhelper import Message, LEVELS
 
 
 class StdoutLogSplitter(object):

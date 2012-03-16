@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -589,7 +589,8 @@ class _Verify:
         | Should Contain X Times | ${some list} | value  | 3 |
         """
         if not msg:
-            msg = "'%s' does not contain '%s' %s times" % (item1, item2, count)
+            msg = "'%s' does not contain '%s' %s times" \
+                    % (utils.unic(item1), utils.unic(item2), count)
         self.should_be_equal_as_integers(self.get_count(item1, item2),
                                          count, msg, values=False)
 
@@ -687,13 +688,12 @@ class _Verify:
         | ${match} | ${group1} | ${group2} = |
         | ...      | Should Match Regexp | Bar: 43 | (Foo|Bar): (\\\\d+) |
         =>
-        - ${ret} = 'Foo: 42'
-        - ${match} = 'Bar: 43'
-        - ${group1} = 'Bar'
-        - ${group2} = '43'
+        | ${ret} = 'Foo: 42'
+        | ${match} = 'Bar: 43'
+        | ${group1} = 'Bar'
+        | ${group2} = '43'
         """
-        msg = self._get_string_msg(string, pattern, msg, values,
-                                   'does not match')
+        msg = self._get_string_msg(string, pattern, msg, values, 'does not match')
         res = re.search(pattern, string)
         asserts.fail_if_none(res, msg, False)
         match = res.group(0)
@@ -775,7 +775,7 @@ class _Verify:
             raise AssertionError(msg or "'%s' should not be empty" % item)
 
     def _get_string_msg(self, str1, str2, msg, values, delim):
-        default = "'%s' %s '%s'" % (str1, delim, str2)
+        default = "'%s' %s '%s'" % (utils.unic(str1), delim, utils.unic(str2))
         if not msg:
             msg = default
         elif values is True:
@@ -801,9 +801,9 @@ class _Variables:
         | ${y} = | Get Variable Value | ${a} | ${b}    |
         | ${z} = | Get Variable Value | ${z} |         |
         =>
-        - ${x} gets value of ${a} if ${a} exists and string "default" otherwise
-        - ${y} gets value of ${a} if ${a} exists and value of ${b} otherwise
-        - ${z} is set to Python `None` if it does not exist previously
+        | ${x} gets value of ${a} if ${a} exists and string "default" otherwise
+        | ${y} gets value of ${a} if ${a} exists and value of ${b} otherwise
+        | ${z} is set to Python `None` if it does not exist previously
 
         This keyword was added in Robot Framework 2.6. See `Set Variable If`
         for another keyword to set variables dynamically.
@@ -861,6 +861,9 @@ class _Variables:
         """Replaces variables in the given text with their current values.
 
         If the text contains undefined variables, this keyword fails.
+        If the given `text` contains only a single variable, its value is
+        returned as-is and it can be any object. Otherwise this keyword
+        always returns a string.
 
         Example:
 
@@ -870,10 +873,6 @@ class _Variables:
         | ${template} =   | Get File          | ${CURDIR}/template.txt |
         | ${message} =    | Replace Variables | ${template}            |
         | Should Be Equal | ${message}        | Hello Robot!           |
-
-        If the given `text` contains only a single variable, its value is
-        returned as-is and it can be any object. Otherwise this keyword
-        always returns a string.
         """
         return self.get_variables().replace_scalar(text)
 
@@ -883,7 +882,7 @@ class _Variables:
         This keyword is mainly used for setting scalar variables.
         Additionally it can be used for converting a scalar variable
         containing a list to a list variable or to multiple scalar variables.
-        It is recommended to use `Create List' when creating new lists.
+        It is recommended to use `Create List` when creating new lists.
 
         Examples:
         | ${hi} =   | Set Variable | Hello, world! |
@@ -893,8 +892,8 @@ class _Variables:
         | ${item1}  | ${item2} =   | Set Variable  | ${list with 2 items} |
 
         Variables created with this keyword are available only in the
-        scope where they are created. See `Set Global Variable`, `Set
-        Test Variable` and `Set Suite Variable` for information on how to
+        scope where they are created. See `Set Global Variable`,
+        `Set Test Variable` and `Set Suite Variable` for information on how to
         set variables so that they are available also in a larger scope.
         """
         if len(values) == 0:
@@ -1204,11 +1203,17 @@ class _RunKeyword:
         Both `timeout` and `retry_interval` must be given in Robot Framework's
         time format (e.g. '1 minute', '2 min 3 s', '4.5').
 
+        Errors caused by invalid syntax, test or keyword timeouts, or fatal
+        exceptions are not caught by this keyword.
+
         Example:
         | Wait Until Keyword Succeeds | 2 min | 5 sec | My keyword | arg1 | arg2 |
 
-        Starting from Robot Framework 2.5 errors caused by invalid syntax,
-        timeouts, or fatal exceptions are not caught by this keyword.
+        Running the same keyword multiple times inside this keyword can create
+        lots of output and considerably increase the size of the generated
+        output files. Starting from Robot Framework 2.7, it is possible to
+        remove unnecessary keywords from the outputs using
+        `--RemoveKeywords WUKS` command line option.
         """
         timeout = utils.timestr_to_secs(timeout)
         retry_interval = utils.timestr_to_secs(retry_interval)
@@ -1242,9 +1247,9 @@ class _RunKeyword:
         | ${var2} = | Set Variable If | ${rc} > 0  | value1   | value2  |
         | ${var3} = | Set Variable If | ${rc} > 0  | whatever |         |
         =>
-        - ${var1} = 'zero'
-        - ${var2} = 'value2'
-        - ${var3} = None
+        | ${var1} = 'zero'
+        | ${var2} = 'value2'
+        | ${var3} = None
 
         It is also possible to have 'Else If' support by replacing the
         second value with another condition, and having two new values
@@ -1295,7 +1300,7 @@ class _RunKeyword:
         documentation for more details.
         """
         test = self._get_test_in_teardown('Run Keyword If Test Failed')
-        if test.status == 'FAIL':
+        if not test.passed:
             return self.run_keyword(name, *args)
 
     def run_keyword_if_test_passed(self, name, *args):
@@ -1308,7 +1313,7 @@ class _RunKeyword:
         documentation for more details.
         """
         test = self._get_test_in_teardown('Run Keyword If Test Passed')
-        if test.status == 'PASS':
+        if test.passed:
             return self.run_keyword(name, *args)
 
     def run_keyword_if_timeout_occurred(self, name, *args):
@@ -1446,9 +1451,9 @@ class _Misc:
         | ${str2} = | Catenate | SEPARATOR=--- | Hello | world |
         | ${str3} = | Catenate | SEPARATOR=    | Hello | world |
         =>
-        - ${str1} = 'Hello world'
-        - ${str2} = 'Hello---world'
-        - ${str3} = 'Helloworld'
+        | ${str1} = 'Hello world'
+        | ${str2} = 'Hello---world'
+        | ${str3} = 'Helloworld'
         """
         if not items:
             return ''
@@ -1613,7 +1618,7 @@ class _Misc:
 
         | Set Library Search Order | resource | another_resource |
 
-        NOTE:
+        *NOTE:*
         - The search order is valid only in the suite where this keywords is used.
         - Keywords in resources always have higher priority than
           keywords in libraries regardless the search order.
@@ -1691,13 +1696,13 @@ class _Misc:
         | @{time} = | Get Time | year month day hour min sec |  |  |
         | ${y}      | ${s} =   | Get Time    | seconds and year |  |
         =>
-        - ${time} = '2006-03-29 15:06:21'
-        - ${secs} = 1143637581
-        - ${year} = '2006'
-        - ${yyyy} = '2006', ${mm} = '03', ${dd} = '29'
-        - @{time} = ['2006', '03', '29', '15', '06', '21']
-        - ${y} = '2006'
-        - ${s} = '21'
+        | ${time} = '2006-03-29 15:06:21'
+        | ${secs} = 1143637581
+        | ${year} = '2006'
+        | ${yyyy} = '2006', ${mm} = '03', ${dd} = '29'
+        | @{time} = ['2006', '03', '29', '15', '06', '21']
+        | ${y} = '2006'
+        | ${s} = '21'
 
         | ${time} = | Get Time |      | 1177654467 |
         | ${secs} = | Get Time | sec  | 2007-04-27 09:14:27 |
@@ -1705,11 +1710,11 @@ class _Misc:
         | ${day} =  | Get Time | day  | NOW - 1d | # 1 day subtraced from NOW |
         | @{time} = | Get Time | hour min sec | NOW + 1h 2min 3s | # 1h 2min 3s added to NOW |
         =>
-        - ${time} = '2007-04-27 09:14:27'
-        - ${secs} = 27
-        - ${year} = '2006'
-        - ${day} = '28'
-        - @{time} = ['16', '08', '24']
+        | ${time} = '2007-04-27 09:14:27'
+        | ${secs} = 27
+        | ${year} = '2006'
+        | ${day} = '28'
+        | @{time} = ['16', '08', '24']
         """
         return utils.get_time(format, utils.parse_time(time_))
 
@@ -1726,10 +1731,10 @@ class _Misc:
         | ${up}     = | Evaluate | math.ceil(${result})  | math |
         | ${random} = | Evaluate | random.randint(0, sys.maxint) | random,sys |
         =>
-        - ${status} = True
-        - ${down} = 3
-        - ${up} = 4.0
-        - ${random} = <random integer>
+        | ${status} = True
+        | ${down} = 3
+        | ${up} = 4.0
+        | ${random} = <random integer>
 
         Notice that instead of creating complicated expressions, it is
         recommended to move the logic into a test library.
@@ -1799,6 +1804,42 @@ class _Misc:
                                "suite setup or teardown")
         test.message = message
         self.log('Set test message to:\n%s' % message)
+
+    def set_test_documentation(self, doc):
+        """Sets documentation for for the current test.
+
+        The current documentation is available from built-in variable
+        ${TEST DOCUMENTATION}. This keyword can not be used in suite
+        setup or suite teardown.
+
+        New in Robot Framework 2.7.
+        """
+        if not isinstance(doc, unicode):
+            doc = utils.unic(doc)
+        test = self._namespace.test
+        if not test:
+            raise RuntimeError("'Set Test Documentation' keyword cannot be used in "
+                               "suite setup or teardown")
+        test.doc = doc
+        self._namespace.variables.set_test('${TEST_DOCUMENTATION}', test.doc)
+        self.log('Set test documentation to:\n%s' % doc)
+
+
+    def set_suite_documentation(self, doc):
+        """Sets documentation for for the current suite.
+
+        The current documentation is available from built-in variable
+        ${SUITE DOCUMENTATION}.
+
+        New in Robot Framework 2.7.
+        """
+        if not isinstance(doc, unicode):
+            doc = utils.unic(doc)
+        suite = self._namespace.suite
+        suite.doc = doc
+        self._namespace.variables.set_suite('${SUITE_DOCUMENTATION}', suite.doc)
+        self.log('Set suite documentation to:\n%s' % doc)
+
 
     def set_tags(self, *tags):
         """Adds given `tags` for the current test or all tests in a suite.
@@ -1876,8 +1917,7 @@ class _Misc:
         It is also possible to use this keyword in the test data and
         pass the returned library instance to another keyword. If a
         library is imported with a custom name, the `name` used to get
-        the instance must be that name and not the original library
-        name.
+        the instance must be that name and not the original library name.
         """
         try:
             return self._namespace.get_library_instance(name)

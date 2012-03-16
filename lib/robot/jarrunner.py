@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,7 +14,9 @@
 
 from org.robotframework import RobotRunner
 from robot import run_cli, rebot_cli
+from robot.libdoc import libdoc_cli
 from robot.tidy import tidy_cli
+from robot.testdoc import testdoc_cli
 
 
 USAGE = """robotframework.jar - Robot Framework runner.
@@ -22,9 +24,11 @@ USAGE = """robotframework.jar - Robot Framework runner.
 Usage: java -jar robotframework.jar [command] [options] [input(s)]
 
 Available commands:
-  run   - Run Robot Framework tests. The default, if no command is given.
-  rebot - Post process Robot Framework output files.
-  tidy  - Clean-up and changed format of test data files.
+  run     - Run Robot Framework tests. The default, if no command is given.
+  rebot   - Post process Robot Framework output files.
+  libdoc  - Create test library or resource file documentation.
+  tidy    - Clean-up and changed format of test data files.
+  testdoc - Create documentation from Robot Framework test data files.
 
 Run `java -jar robotframework.jar command --help` for more information about
 an individual command.
@@ -39,19 +43,23 @@ Examples:
 
 class JarRunner(RobotRunner):
     """Used for Java-Jython interop when RF is executed from .jar file"""
-    _commands = {'run': run_cli, 'rebot': rebot_cli, 'tidy': tidy_cli}
+    _commands = {'run': run_cli, 'rebot': rebot_cli, 'tidy': tidy_cli,
+                 'libdoc': libdoc_cli, 'testdoc': testdoc_cli}
 
     def run(self, args):
         try:
-            command, args = self._parse_command_line(args)
-            return command(args)
+            self._run(args)
         except SystemExit, err:
             return err.code
 
-    def _parse_command_line(self, args):
+    def _run(self, args):
         if not args or args[0] in ('-h', '--help'):
             print USAGE
             raise SystemExit(0)
+        command, args = self._parse_command_line(args)
+        command(args) # Always calls sys.exit()
+
+    def _parse_command_line(self, args):
         try:
             return self._commands[args[0]], args[1:]
         except KeyError:

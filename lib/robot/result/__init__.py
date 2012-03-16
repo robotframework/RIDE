@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,9 +12,23 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from testsuite import TestSuite
-from testcase import TestCase
-from keyword import Keyword
-from message import Message
-from executionresult import ResultFromXml
+"""Implements parsing results from XML output files.
 
+The entry point of this API is the :func:`~.resultbuilder.ExecutionResult`
+factory method, which returns an instance of
+:class:`~.executionresult.Result`.
+
+This package is considered stable.
+
+Example
+-------
+
+The example below reads a given output file and marks each test case whose
+execution time is longer than three minutes failed. The
+:class:`~.executionresult.Result` object is then written back to disk and
+normal log and report files could be generated with ``rebot`` tool.
+
+.. literalinclude:: /../../doc/api/code_examples/check_test_times.py
+"""
+
+from .resultbuilder import ExecutionResult

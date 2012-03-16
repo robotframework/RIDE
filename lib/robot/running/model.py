@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -30,6 +30,13 @@ from .defaultvalues import DefaultValues
 
 
 def TestSuite(datasources, settings):
+    """Creates a runnable test suite from given datasources and settings.
+
+    :param datasources: List of paths to read data from.
+    :param settings: Execution configuration.
+    :type settings: :class:`~robot.conf.settings.RobotSettings`
+    :returns: :class:`RunnableTestSuite`
+    """
     datasources = [utils.abspath(path) for path in datasources]
     suite = _get_suite(datasources, settings['SuiteNames'], settings['WarnOnSkipped'])
     suite.set_options(settings)
@@ -257,7 +264,7 @@ class RunnableTestCase(BaseTestCase):
 
     def keyword_failed(self, err):
         self.timeout.set_keyword_timeout(err.timeout)
-        self._suite_errors.test_failed(exit=err.exit, critical=self.critical=='yes')
+        self._suite_errors.test_failed(exit=err.exit, critical=self.critical)
 
     def _run_setup(self, context):
         self.setup.run(context, TestSetupListener(self))
@@ -283,7 +290,7 @@ class RunnableTestCase(BaseTestCase):
             self.status = 'FAIL'
             self.message = self.timeout.get_message()
         if self.status == 'FAIL':
-            self._suite_errors.test_failed(critical=self.critical=='yes')
+            self._suite_errors.test_failed(critical=self.critical)
 
     def _not_allowed_to_run(self):
         self.status = 'FAIL'

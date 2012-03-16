@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -46,6 +46,7 @@ class _BaseSettings(object):
                  'TagStatCombine'   : ('tagstatcombine', []),
                  'TagDoc'           : ('tagdoc', []),
                  'TagStatLink'      : ('tagstatlink', []),
+                 'RemoveKeywords'   : ('removekeywords', []),
                  'NoStatusRC'       : ('nostatusrc', False),
                  'RunEmptySuite'    : ('runemptysuite', False),
                  'MonitorWidth'     : ('monitorwidth', 78),
@@ -54,11 +55,11 @@ class _BaseSettings(object):
                  'StdErr'           : ('stderr', None)}
     _output_opts = ['Output', 'Log', 'Report', 'DebugFile', 'XUnitFile']
 
-    def __init__(self, options={}, log=True):
+    def __init__(self, options=None, log=True):
         self._opts = {}
         self._cli_opts = self._cli_opts.copy()
         self._cli_opts.update(self._extra_cli_opts)
-        self._process_cli_opts(options, log)
+        self._process_cli_opts(options or {}, log)
         if log: LOGGER.info('Settings:\n%s' % unicode(self))
 
     def _process_cli_opts(self, opts, log):
@@ -98,8 +99,10 @@ class _BaseSettings(object):
             return [self._process_tag_stat_combine(v) for v in value]
         if name == 'TagStatLink':
             return [v for v in [self._process_tag_stat_link(v) for v in value] if v]
-        if name in ['RemoveKeywords', 'LogLevel']:
+        if name == 'LogLevel':
             return value.upper()
+        if name == 'RemoveKeywords':
+            return [v.upper() for v in value]
         return value
 
     def __getitem__(self, name):
@@ -264,10 +267,9 @@ class RobotSettings(_BaseSettings):
             del(settings._opts[name])
         for name in ['Include', 'Exclude', 'TestNames', 'SuiteNames', 'Metadata']:
             settings._opts[name] = []
-        for name in ['Output', 'RemoveKeywords']:
-            settings._opts[name] = 'NONE'
         for name in ['Name', 'Doc']:
             settings._opts[name] = None
+        settings._opts['Output'] = 'NONE'
         settings._opts['LogLevel'] = 'TRACE'
         return datasource, settings
 
@@ -283,9 +285,8 @@ class RobotSettings(_BaseSettings):
 class RebotSettings(_BaseSettings):
     _extra_cli_opts = {'Output'         : ('output', 'NONE'),
                        'LogLevel'       : ('loglevel', 'TRACE'),
-                       'RemoveKeywords' : ('removekeywords', 'NONE'),
-                       'StartTime'      : ('starttime', 'N/A'),
-                       'EndTime'        : ('endtime', 'N/A')}
+                       'StartTime'      : ('starttime', None),
+                       'EndTime'        : ('endtime', None)}
 
     def _outputfile_disabled(self, type_, name):
         return name == 'NONE'

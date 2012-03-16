@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,33 +12,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from output import Output
-from logger import LOGGER
-from monitor import CommandLineMonitor
-from xmllogger import XmlLogger
-from loggerhelper import LEVELS, Message
+"""TImplements runtime logging and listener interface.
 
+This package is likely to change in RF 2.8.
+"""
 
-#TODO: Fix Public API
-def TestSuite(outpath):
-    """Factory method for getting test suite from an xml output file.
-
-    If you want statistics get suite first and say Statistics(suite).
-    """
-    suite, errors = process_output(outpath)
-
-    def write_to_file(path=None):
-        """Write processed suite (incl. statistics and errors) back to xml.
-
-        If path is not given the suite is written into the same file as it
-        originally was read from.
-        """
-        if path is None:
-            path = outpath
-        suite.set_status()
-        testoutput = ResultFromXml(suite, errors)
-        testoutput.serialize_output(path)
-
-    suite.write_to_file = write_to_file
-    return suite
-
+from .output import Output
+from .logger import LOGGER
+from .xmllogger import XmlLogger
+from .loggerhelper import LEVELS, Message

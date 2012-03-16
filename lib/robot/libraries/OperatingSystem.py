@@ -1,4 +1,4 @@
-# Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -24,21 +24,27 @@ try:
     from robot.api import logger
     from robot.utils import (ConnectionCache, seq2str, timestr_to_secs,
                              secs_to_timestr, plural_or_not, get_time, abspath,
-                             secs_to_timestamp, parse_time, unic, decode_output)
+                             secs_to_timestamp, parse_time, unic, decode_output,
+                             get_env_var, set_env_var, del_env_var, get_env_vars,
+                             decode_from_system)
     __version__ = get_version()
     PROCESSES = ConnectionCache('No active processes')
+    del ConnectionCache, get_version
 
 # Support for using this library without installed Robot Framework
 except ImportError:
     from os.path import abspath
+    from os import (getenv as get_env_var, putenv as set_env_var,
+                    unsetenv as del_env_var, environ)
     __version__ = '<unknown>'
+    get_env_vars = environ.copy
     logger = None
     seq2str = lambda items: ', '.join("'%s'" % item for item in items)
     timestr_to_secs = int
-    plural_or_not = lambda count: count != 1 and 's' or ''
+    plural_or_not = lambda count: '' if count == 1 else 's'
     secs_to_timestr = lambda secs: '%d second%s' % (secs, plural_or_not(secs))
     unic = unicode
-    decode_output = lambda string: string
+    decode_output = decode_from_system = lambda string: string
     class _NotImplemented:
         def __getattr__(self, name):
             raise NotImplementedError('This usage requires Robot Framework '
@@ -322,8 +328,7 @@ class OperatingSystem:
         A line matches if it contains the `pattern` anywhere in it and
         it *does not need to match the pattern fully*. The pattern
         matching syntax is explained in `introduction`, and in this
-        case matching is case-sensitive. Support for different pattern types
-        were removed in Robot Framework 2.5.
+        case matching is case-sensitive.
 
         Examples:
         | ${errors} = | Grep File | /var/log/myapp.log | ERROR |
@@ -335,7 +340,7 @@ class OperatingSystem:
         """
         pattern = '*%s*' % pattern
         orig = self.get_file(path, encoding).splitlines()
-        lines = [ line for line in orig if fnmatch.fnmatchcase(line, pattern) ]
+        lines = [line for line in orig if fnmatch.fnmatchcase(line, pattern)]
         self._info('%d out of %d lines matched' % (len(lines), len(orig)))
         return '\n'.join(lines)
 
@@ -392,7 +397,7 @@ class OperatingSystem:
         The default error message can be overridden with the `msg` argument.
         """
         path = self._absnorm(path)
-        matches = [ p for p in glob.glob(path) if os.path.isfile(p) ]
+        matches = [p for p in glob.glob(path) if os.path.isfile(p)]
         if not matches:
             self._fail(msg, "Path '%s' does not match any file" % path)
         self._link("File '%s' exists", path)
@@ -405,7 +410,7 @@ class OperatingSystem:
         The default error message can be overridden with the `msg` argument.
         """
         path = self._absnorm(path)
-        matches = [ p for p in glob.glob(path) if os.path.isfile(p) ]
+        matches = [p for p in glob.glob(path) if os.path.isfile(p)]
         if not matches:
             self._link("File '%s' does not exist", path)
             return
@@ -426,7 +431,7 @@ class OperatingSystem:
         The default error message can be overridden with the `msg` argument.
         """
         path = self._absnorm(path)
-        matches = [ p for p in glob.glob(path) if os.path.isdir(p) ]
+        matches = [p for p in glob.glob(path) if os.path.isdir(p)]
         if not matches:
             self._fail(msg, "Path '%s' does not match any directory" % path)
         self._link("Directory '%s' exists", path)
@@ -439,7 +444,7 @@ class OperatingSystem:
         The default error message can be overridden with the `msg` argument.
         """
         path = self._absnorm(path)
-        matches = [ p for p in glob.glob(path) if os.path.isdir(p) ]
+        matches = [p for p in glob.glob(path) if os.path.isdir(p)]
         if not matches:
             self._link("Directory '%s' does not exist", path)
             return
@@ -632,7 +637,7 @@ class OperatingSystem:
     def empty_directory(self, path):
         """Deletes all the content (incl. subdirectories) from the given directory."""
         path = self._absnorm(path)
-        items = [ os.path.join(path, item) for item in self._list_dir(path) ]
+        items = [os.path.join(path, item) for item in self._list_dir(path)]
         for item in items:
             if os.path.isdir(item):
                 shutil.rmtree(item)
@@ -679,7 +684,6 @@ class OperatingSystem:
             self.directory_should_be_empty(path, msg)
             os.rmdir(path)
         self._link("Removed directory '%s'", path)
-
 
     # Moving and copying files and directories
 
@@ -773,7 +777,6 @@ class OperatingSystem:
         shutil.copytree(source, dest)
         return source, dest
 
-
     # Environment Variables
 
     def get_environment_variable(self, name, default=None):
@@ -782,62 +785,85 @@ class OperatingSystem:
         If no such environment variable is set, returns the default value, if
         given. Otherwise fails the test case.
 
+        Starting from Robot Framework 2.7, returned variables are automatically
+        decoded to Unicode using the system encoding.
+
         Note that you can also access environment variables directly using
         the variable syntax `%{ENV_VAR_NAME}`.
         """
-        ret = os.environ.get(name, default)
-        if ret is None:
+        value = get_env_var(name, default)
+        if value is None:
             raise RuntimeError("Environment variable '%s' does not exist" % name)
-        return ret
+        return value
 
     def set_environment_variable(self, name, value):
         """Sets an environment variable to a specified value.
 
-        Starting from Robot Framework 2.1.1, values are converted to strings
-        automatically.
+        Values are converted to strings automatically. Starting from Robot
+        Framework 2.7, set variables are automatically encoded using the system
+        encoding.
         """
-        # Cannot convert to Unicode because they aren't generally supported in
-        # environment variables, but don't want to change deliberately given
-        # Unicode strings either.
-        if not isinstance(value, basestring):
-            value = str(value)
-        os.environ[name] = value
+        set_env_var(name, value)
         self._info("Environment variable '%s' set to value '%s'" % (name, value))
 
-    def remove_environment_variable(self, name):
+    def remove_environment_variable(self, *names):
         """Deletes the specified environment variable.
 
         Does nothing if the environment variable is not set.
+
+        Starting from Robot Framework 2.7, it is possible to remove multiple
+        variables by passing them to this keyword as separate arguments.
         """
-        if os.environ.has_key(name):
-            del os.environ[name]
-            self._info("Environment variable '%s' deleted" % name)
-        else:
-            self._info("Environment variable '%s' does not exist" % name)
+        for name in names:
+            value = del_env_var(name)
+            if value:
+                self._info("Environment variable '%s' deleted" % name)
+            else:
+                self._info("Environment variable '%s' does not exist" % name)
 
     def environment_variable_should_be_set(self, name, msg=None):
         """Fails if the specified environment variable is not set.
 
         The default error message can be overridden with the `msg` argument.
         """
-        try:
-            value = os.environ[name]
-        except KeyError:
+        value = get_env_var(name)
+        if not value:
             self._fail(msg, "Environment variable '%s' is not set" % name)
-        else:
-            self._info("Environment variable '%s' is set to '%s'" % (name, value))
+        self._info("Environment variable '%s' is set to '%s'" % (name, value))
 
     def environment_variable_should_not_be_set(self, name, msg=None):
         """Fails if the specified environment variable is set.
 
         The default error message can be overridden with the `msg` argument.
         """
-        try:
-            value = os.environ[name]
-        except KeyError:
-            self._info("Environment variable '%s' is not set" % name)
-        else:
+        value = get_env_var(name)
+        if value:
             self._fail(msg, "Environment variable '%s' is set to '%s'" % (name, value))
+        self._info("Environment variable '%s' is not set" % name)
+
+    def get_environment_variables(self):
+        """Returns currently available environment variables as a dictionary.
+
+        Both keys and values are decoded to Unicode using the system encoding.
+        Altering the returned dictionary has no effect on the actual environment
+        variables.
+
+        New in Robot Framework 2.7.
+        """
+        return get_env_vars()
+
+    def log_environment_variables(self, level='INFO'):
+        """Logs all environment variables using the given log level.
+
+        Environment variables are also returned the same way as with
+        `Get Environment Variables` keyword.
+
+        New in Robot Framework 2.7.
+        """
+        vars = get_env_vars()
+        for name, value in sorted(vars.items(), key=lambda item: item[0].lower()):
+            self._log('%s = %s' % (name, value), level)
+        return vars
 
     # Path
 
@@ -862,7 +888,7 @@ class OperatingSystem:
         - ${p5} = '/my/path2'
         """
         base = base.replace('/', os.sep)
-        parts = [ p.replace('/', os.sep) for p in parts ]
+        parts = [p.replace('/', os.sep) for p in parts]
         return self.normalize_path(os.path.join(base, *parts))
 
     def join_paths(self, base, *paths):
@@ -879,7 +905,7 @@ class OperatingSystem:
         - @{p2} = ['/example', '/my/base/other']
         - @{p3} = ['my/base/example/path', 'my/base/other', 'my/base/one/more']
         """
-        return [ self.join_path(base, path) for path in paths ]
+        return [self.join_path(base, path) for path in paths]
 
     def normalize_path(self, path):
         """Normalizes the given path.
@@ -897,9 +923,7 @@ class OperatingSystem:
         - ${p4} = 'abc/def'
         - ${p5} = 'abc/def'
         """
-        ret = os.path.normpath(path.replace('/', os.sep))
-        if ret == '': return '.'
-        return ret
+        return os.path.normpath(path.replace('/', os.sep)) or '.'
 
     def split_path(self, path):
         """Splits the given path from the last path separator ('/' or '\\').

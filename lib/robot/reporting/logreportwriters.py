@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -13,12 +13,13 @@
 #  limitations under the License.
 
 from __future__ import with_statement
-import os
-import os.path
+from os.path import basename, splitext
 import codecs
 
-from .jswriter import SplitLogWriter
-from .htmlfilewriter import HtmlFileWriter
+from robot.htmldata import HtmlFileWriter, ModelWriter, LOG, REPORT
+from robot.utils import utf8open
+
+from .jswriter import JsResultWriter, SplitLogWriter
 
 
 class _LogReportWriter(object):
@@ -27,19 +28,30 @@ class _LogReportWriter(object):
         self._js_model = js_model
 
     def _write_file(self, path, config, template):
-        outfile = codecs.open(path, 'wb', encoding='UTF-8') \
+        outfile = codecs.open(path, 'wb', encoding='UTF-8')\
             if isinstance(path, basestring) else path  # unit test hook
         with outfile:
-            writer = HtmlFileWriter(outfile, self._js_model, config)
+            model_writer = RobotModelWriter(outfile, self._js_model, config)
+            writer = HtmlFileWriter(outfile, model_writer)
             writer.write(template)
+
+class RobotModelWriter(ModelWriter):
+
+    def __init__(self, output, model, config):
+        self._output = output
+        self._model = model
+        self._config = config
+
+    def write(self, line):
+        JsResultWriter(self._output).write(self._model, self._config)
 
 
 class LogWriter(_LogReportWriter):
 
     def write(self, path, config):
-        self._write_file(path, config, 'log.html')
+        self._write_file(path, config, LOG)
         if self._js_model.split_results:
-            self._write_split_logs(os.path.splitext(path)[0])
+            self._write_split_logs(splitext(path)[0])
 
     def _write_split_logs(self, base):
         for index, (keywords, strings) in enumerate(self._js_model.split_results):
@@ -47,12 +59,12 @@ class LogWriter(_LogReportWriter):
             self._write_split_log(index, keywords, strings, '%s-%d.js' % (base, index))
 
     def _write_split_log(self, index, keywords, strings, path):
-        with codecs.open(path, 'wb', encoding='UTF-8') as outfile:
+        with utf8open(path, 'wb') as outfile:
             writer = SplitLogWriter(outfile)
-            writer.write(keywords, strings, index, os.path.basename(path))
+            writer.write(keywords, strings, index, basename(path))
 
 
 class ReportWriter(_LogReportWriter):
 
     def write(self, path, config):
-        self._write_file(path, config, 'report.html')
+        self._write_file(path, config, REPORT)

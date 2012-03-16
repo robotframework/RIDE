@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ from .abstractxmlwriter import AbstractXmlWriter
 class XmlWriter(AbstractXmlWriter):
 
     def __init__(self, output):
-        self.path = output # TODO: is this attribute needed?
         self._output = self._create_output(output)
         self._writer = XMLGenerator(self._output, encoding='UTF-8')
         self._writer.startDocument()
@@ -40,6 +39,9 @@ class XmlWriter(AbstractXmlWriter):
 
     def _end(self, name):
         self._writer.endElement(name)
+
+    def _newline(self):
+        self._output.write('\n')
 
     # Workaround for http://ironpython.codeplex.com/workitem/29474
     if sys.platform == 'cli':

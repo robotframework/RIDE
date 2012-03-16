@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,11 +12,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot import utils
+from robot.utils import setter
 
-from tags import Tags
-from keyword import Keyword, Keywords
-from modelobject import ModelObject
+from .itemlist import ItemList
+from .keyword import Keyword, Keywords
+from .modelobject import ModelObject
+from .tags import Tags
 
 
 class TestCase(ModelObject):
@@ -31,13 +32,13 @@ class TestCase(ModelObject):
         self.timeout = timeout
         self.keywords = []
 
-    @utils.setter
+    @setter
     def tags(self, tags):
         return Tags(tags)
 
-    @utils.setter
+    @setter
     def keywords(self, keywords):
-        return Keywords(self.keyword_class, keywords, parent=self)
+        return Keywords(self.keyword_class, self, keywords)
 
     @property
     def id(self):
@@ -53,11 +54,16 @@ class TestCase(ModelObject):
 
     @property
     def critical(self):
-        # TODO: yes/no -> True/False
         if not self.parent:
-            return 'yes'
-        return 'yes' if self.parent.criticality.test_is_critical(self) else 'no'
+            return True
+        return self.parent.criticality.test_is_critical(self)
 
     def visit(self, visitor):
         visitor.visit_test(self)
 
+
+class TestCases(ItemList):
+    __slots__ = []
+
+    def __init__(self, test_class=TestCase, parent=None, tests=None):
+        ItemList.__init__(self, test_class, {'parent': parent}, tests)

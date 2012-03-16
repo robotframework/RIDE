@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -16,11 +16,12 @@
 
 USAGE = """Robot Framework -- A keyword-driven test automation framework
 
-Version: <VERSION>
+Version:  <VERSION>
 
 Usage:  pybot|jybot|ipybot [options] data_sources
    or:  python|jython|ipy -m robot.run [options] data_sources
    or:  python|jython|ipy path/to/robot/run.py [options] data_sources
+   or:  java -jar robotframework.jar [options] data_sources
 
 Robot Framework is a Python-based keyword-driven test automation framework for
 acceptance level testing and acceptance test-driven development (ATDD). It has
@@ -33,7 +34,7 @@ Depending is Robot Framework installed using Python, Jython, or IronPython
 interpreter, it has a start-up script, `pybot`, `jybot` or `ipybot`,
 respectively. Alternatively, it is possible to directly execute `robot.run`
 module (e.g. `python -m robot.run`) or `robot/run.py` script using a selected
-interpreter.
+interpreter. Finally, there is also a standalone JAR distribution.
 
 Data sources given to Robot Framework are either test case files or directories
 containing them and/or other directories. Single test case file creates a test
@@ -52,7 +53,8 @@ Robot Framework is open source software released under Apache License 2.0.
 Its copyrights are owned and development supported by Nokia Siemens Networks.
 For more information about the framework see http://robotframework.org.
 
-Options:
+Options
+=======
 
  -N --name name           Set the name of the top level test suite. Underscores
                           in the name are converted to spaces. Default name is
@@ -196,6 +198,15 @@ Options:
                           automatically converted to spaces.
                           Examples: --tagstatlink mytag:http://my.domain:Link
                           --tagstatlink bug-*:http://tracker/id=%1:Bug_Tracker
+    --removekeywords all|passed|for|wuks *  Remove keyword data from the
+                          generated log file. Keywords containing warnings are
+                          not removed except in `all` mode.
+                          all:    remove data from all keywords
+                          passed: remove data only from keywords in passed
+                                  test cases and suites
+                          for:    remove all passed iterations from for loops
+                          wuks:   remove all but last failing keyword from
+                                  `Wait Until Keyword Succeeds`
     --listener class *    A class for monitoring test execution. Gets
                           notifications e.g. when a test case starts and ends.
                           Arguments to listener class can be given after class
@@ -272,7 +283,8 @@ also be shortened as long as they are unique. For example, `--logti Title`
 works while `--lo log.html` does not because the former matches only --logtitle
 but the latter matches --log, --loglevel and --logtitle.
 
-Environment Variables:
+Environment Variables
+=====================
 
 ROBOT_SYSLOG_FILE         Path to the syslog file. If not specified, or set to
                           special value `NONE`, writing to syslog file is
@@ -281,7 +293,8 @@ ROBOT_SYSLOG_LEVEL        Log level to use when writing to the syslog file.
                           Available levels are the same as for --loglevel
                           option and the default is INFO.
 
-Examples:
+Examples
+========
 
 # Simple test run with `pybot` without options.
 $ pybot tests.html
@@ -311,7 +324,7 @@ if 'robot' not in sys.modules:
 from robot.conf import RobotSettings
 from robot.output import LOGGER, Output, pyloggingconf
 from robot.reporting import ResultWriter
-from robot.running import TestSuite, STOP_SIGNAL_MONITOR
+from robot.running import TestSuite, STOP_SIGNAL_MONITOR, namespace
 from robot.utils import Application
 from robot.variables import init_global_variables
 
@@ -323,6 +336,7 @@ class RobotFramework(Application):
 
     def main(self, datasources, **options):
         STOP_SIGNAL_MONITOR.start()
+        namespace.IMPORTER.reset()
         settings = RobotSettings(options)
         pyloggingconf.initialize(settings['LogLevel'])
         LOGGER.register_console_logger(width=settings['MonitorWidth'],
@@ -344,8 +358,9 @@ class RobotFramework(Application):
 def run_cli(arguments):
     """Command line execution entry point for running tests.
 
-    For programmatic usage the `run` method is typically better. It has
-    better API for that usage and does not use sys.exit like this method.
+    For programmatic usage the :func:`run` method is typically better. It has
+    better API for that usage and does not call :func:`sys.exit` like this
+    method.
     """
     RobotFramework().execute_cli(arguments)
 
@@ -362,14 +377,18 @@ def run(*datasources, **options):
 
     A return code is returned similarly as when running on the command line.
 
-    Examples:
-    run('path/to/tests.html')
-    with open('stdout.txt', 'w') as stdout:
-        run('t1.txt', 't2.txt', report='r.html', log='NONE', stdout=stdout)
+    Example:
 
-    Equivalent command line usage:
-    pybot path/to/tests.html
-    pybot --report r.html --log NONE t1.txt t2.txt > stdout.txt
+    .. code-block:: python
+
+        run('path/to/tests.html')
+        with open('stdout.txt', 'w') as stdout:
+            run('t1.txt', 't2.txt', report='r.html', log='NONE', stdout=stdout)
+
+    Equivalent command line usage::
+
+        pybot path/to/tests.html
+        pybot --report r.html --log NONE t1.txt t2.txt > stdout.txt
     """
     return RobotFramework().execute(*datasources, **options)
 

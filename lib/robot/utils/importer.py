@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ class Importer(object):
                            DottedImporter(logger))
         self._by_path_importer = self._importers[0]
 
-    def import_class_or_module(self, name):
+    def import_class_or_module(self, name, instantiate_with_args=None):
         """Imports Python class/module or Java class with given name.
 
         Class can either live in a module/package or be standalone Java class.
@@ -51,21 +51,23 @@ class Importer(object):
 
         `name` can also be a path to the imported file/directory. In that case
         importing is done using `import_class_or_module_by_path` method.
+
+        If `instantiate_with_args` is not None, imported classes are
+        instantiated with the specified arguments automatically.
         """
         try:
             imported, source = self._import_class_or_module(name)
+            self._log_import_succeeded(imported, name, source)
+            return self._instantiate_if_needed(imported, instantiate_with_args)
         except DataError, err:
             self._raise_import_failed(name, err)
-        else:
-            self._log_import_succeeded(imported, name, source)
-            return imported
 
     def _import_class_or_module(self, name):
         for importer in self._importers:
             if importer.handles(name):
                 return importer.import_(name)
 
-    def import_class_or_module_by_path(self, path):
+    def import_class_or_module_by_path(self, path, instantiate_with_args=None):
         """Import a Python module or Java class using a file system path.
 
         When importing a Python file, the path must end with '.py' and the
@@ -75,14 +77,16 @@ class Importer(object):
         When importing Java classes, the path must end with '.java' or '.class'.
         The class file must exist in both cases and in the former case also
         the source file must exist.
+
+        If `instantiate_with_args` is not None, imported classes are
+        instantiated with the specified arguments automatically.
         """
         try:
             imported, source = self._by_path_importer.import_(path)
+            self._log_import_succeeded(imported, imported.__name__, source)
+            return self._instantiate_if_needed(imported, instantiate_with_args)
         except DataError, err:
             self._raise_import_failed(path, err)
-        else:
-            self._log_import_succeeded(imported, imported.__name__, source)
-            return imported
 
     def _raise_import_failed(self, name, error):
         import_type = '%s ' % self._type if self._type else ''
@@ -102,6 +106,21 @@ class Importer(object):
             if item:
                 yield '  %s' % item
 
+    def _instantiate_if_needed(self, imported, args):
+        if args is None:
+            return imported
+        if inspect.isclass(imported):
+            return self._instantiate_class(imported, args)
+        if args:
+            raise DataError("Modules do not take arguments.")
+        return imported
+
+    def _instantiate_class(self, imported, args):
+        try:
+            return imported(*args)
+        except:
+            raise DataError('Creating instance failed: %s\n%s' % get_error_details())
+
     def _log_import_succeeded(self, item, name, source):
         import_type = '%s ' % self._type if self._type else ''
         item_type = 'module' if inspect.ismodule(item) else 'class'
@@ -120,12 +139,15 @@ class _Importer(object):
             try:
                 return __import__(name, fromlist=fromlist)
             except ImportError:
-                # Hack to support standalone Jython:
+                # Hack to support standalone Jython. For more information, see:
                 # http://code.google.com/p/robotframework/issues/detail?id=515
-                if fromlist and retry and sys.platform.startswith('java'):
-                    __import__(name)
+                # http://bugs.jython.org/issue1778514
+                if sys.platform.startswith('java') and fromlist and retry:
+                    __import__('%s.%s' % (name, fromlist[0]))
                     return self._import(name, fromlist, retry=False)
-                raise
+                # Cannot use plain raise due to
+                # http://ironpython.codeplex.com/workitem/32332
+                raise sys.exc_type, sys.exc_value, sys.exc_traceback
         except:
             raise DataError(*get_error_details())
 
@@ -224,7 +246,7 @@ class DottedImporter(_Importer):
 
     def import_(self, name):
         parent_name, lib_name = name.rsplit('.', 1)
-        parent = self._import(parent_name, [str(lib_name)])
+        parent = self._import(parent_name, fromlist=[str(lib_name)])
         try:
             imported = getattr(parent, lib_name)
         except AttributeError:

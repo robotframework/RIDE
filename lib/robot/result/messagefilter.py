@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -20,8 +20,7 @@ from robot.model import SuiteVisitor
 class MessageFilter(SuiteVisitor):
 
     def __init__(self, loglevel):
-        loglevel = loglevel or 'trace' #TODO: is this the correct default?
-        self._is_logged = IsLogged(loglevel)
+        self._is_logged = IsLogged(loglevel or 'TRACE')
 
     def start_keyword(self, keyword):
         keyword.messages = [msg for msg in keyword.messages

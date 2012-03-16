@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -22,6 +22,10 @@ class BaseKeyword:
         self.timeout = timeout
         self.type = type
         self.status = 'NOT_RUN'
+
+    @property
+    def passed(self):
+        return self.status == 'PASS'
 
     def serialize(self, serializer):
         serializer.start_keyword(self)

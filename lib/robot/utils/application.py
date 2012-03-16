@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -27,9 +27,9 @@ from .error import get_error_details
 class Application(object):
 
     def __init__(self, usage, name=None, version=None, arg_limits=None,
-                 logger=None):
+                 logger=None, **auto_options):
         self._ap = ArgumentParser(usage, name, version, arg_limits,
-                                  self.validate)
+                                  self.validate, **auto_options)
         self._logger = logger or DefaultLogger()
 
     def main(self, arguments, **options):
@@ -43,6 +43,9 @@ class Application(object):
             options, arguments = self._parse_arguments(cli_arguments)
             rc = self._execute(arguments, options)
         self._exit(rc)
+
+    def console(self, msg):
+        print encode_output(msg)
 
     @contextmanager
     def _logging(self):
@@ -81,10 +84,10 @@ class Application(object):
             return self._report_error('Unexpected error: %s' % error,
                                       details, rc=FRAMEWORK_ERROR)
         else:
-            return rc
+            return rc or 0
 
-    def _report_info(self, msg):
-        print encode_output(unicode(msg))
+    def _report_info(self, err):
+        self.console(unicode(err))
         self._exit(INFO_PRINTED)
 
     def _report_error(self, message, details=None, help=False, rc=DATA_ERROR,

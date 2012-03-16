@@ -16,17 +16,21 @@
 
 USAGE = """robot.tidy -- Robot Framework test data clean-up tool.
 
-Usage: python -m robot.tidy [options] inputfile
-   or: python -m robot.tidy [options] inputfile > outputfile
-   or: python -m robot.tidy --inplace [options] inputfile [more input files]
-   or: python -m robot.tidy --recursive [options] directory
+Version:  <VERSION>
 
-This tool can be used to clean up and change format of Robot Framework test
+Usage:  python -m robot.tidy [options] inputfile
+   or:  python -m robot.tidy [options] inputfile > outputfile
+   or:  python -m robot.tidy --inplace [options] inputfile [more input files]
+   or:  python -m robot.tidy --recursive [options] directory
+
+Tidy tool can be used to clean up and change format of Robot Framework test
 data files. By default, the output is written to the standard output stream,
 but it can be redirected to a file. Alternatively, files can be modified
 in-place using --inplace or --recursive options.
 
-Options:
+Options
+=======
+
  -i --inplace    Tidy given file(s) so that original file(s) are overwritten
                  (or removed, if the format is changed). When this option is
                  used, it is possible to give multiple input files.
@@ -183,6 +187,13 @@ class TidyCommandLine(Application):
 
 
 def tidy_cli(args):
+    """Executes tidy similarly as from the command line.
+
+    :param args: command line arguments as a list of strings.
+
+    Example:
+        tidy_cli(['--format', 'txt', 'mytests.html'])
+    """
     TidyCommandLine().execute_cli(args)
 
 

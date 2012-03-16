@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -63,10 +63,19 @@ class _DynamicMethod(object):
         if not self._method:
             return self._default
         try:
-            return self._method(*args)
+            value = self._method(*args)
         except:
             raise DataError("Calling dynamic method '%s' failed: %s" %
                             (self._method.__name__, utils.get_error_message()))
+        else:
+            return self._to_unicode(value)
+
+    def _to_unicode(self, value):
+        if isinstance(value, unicode):
+            return value
+        if isinstance(value, str):
+            return utils.unic(value, 'UTF-8')
+        return [self._to_unicode(v) for v in value]
 
     def __nonzero__(self):
         return self._method is not None
@@ -84,7 +93,7 @@ class _DynamicMethod(object):
 
 
 class _BaseTestLibrary(BaseLibrary):
-    supports_named_arguments = False # this attribute is for libdoc
+    supports_named_arguments = True # this attribute is for libdoc
     _log_success = LOGGER.debug
     _log_failure = LOGGER.info
     _log_failure_details = LOGGER.debug
@@ -245,7 +254,6 @@ class _BaseTestLibrary(BaseLibrary):
 
 
 class _ClassLibrary(_BaseTestLibrary):
-    supports_named_arguments = True # this attribute is for libdoc
 
     def _get_handler_method(self, libinst, name):
         # Type is checked before using getattr to avoid calling properties,
@@ -288,7 +296,6 @@ class _ClassLibrary(_BaseTestLibrary):
 
 
 class _ModuleLibrary(_BaseTestLibrary):
-    supports_named_arguments = True # this attribute is for libdoc
 
     def _get_scope(self, libcode):
         return 'GLOBAL'
@@ -318,6 +325,7 @@ class _HybridLibrary(_BaseTestLibrary):
 
 
 class _DynamicLibrary(_BaseTestLibrary):
+    supports_named_arguments = False # this attribute is for libdoc
     _log_failure = LOGGER.warn
 
     def __init__(self, libcode, name, args, variables=None):

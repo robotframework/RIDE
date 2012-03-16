@@ -1,0 +1,85 @@
+/* Containers */
+div.suite, div.test, table.errors {
+    border: 1px solid gray;
+    padding: 0.3em;
+    margin: 0.2em 0;
+}
+div.test {
+    border-style: dashed;
+}
+table.errors, table.metadata, table.messages {
+    width: 100%;
+}
+div.keyword, table.metadata, table.messages {
+    padding-left: 1.2em;
+}
+/* Suite, test and kw headers */
+div.elementheader {
+    border: 1px solid white;
+    border-radius: 2px;
+    padding: 0.2em 0;
+}
+div.elementheader:hover {
+    cursor: pointer;
+    background: #F4F4FF;
+    border: 1px solid #D3D3D3;
+}
+div.foldingbutton {
+    float: left;
+    height: 0.9em;
+    width: 0.9em;
+    line-height: 0.9em;
+    text-align: center;
+    font-size: 0.7em;
+    margin: 0.3em 0.5em;
+    border: 1px solid black;
+    border-radius: 2px;
+}
+div.foldingbutton:hover {
+    background: yellow;
+}
+span.name {
+    font-weight: bold;
+}
+a.expandall {
+    float: right;
+    margin: 0.2em 0.5em;
+    font-size: 0.8em;
+}
+/* Messages and errors */
+table.messages {
+    font-family: monospace;
+    font-size: 1.2em;
+}
+table.messages td, table.errors.td {
+    vertical-align: top;
+}
+table.messages td.time {
+    width: 6em;
+}
+table.errors td.time {
+    width: 10em;
+    white-space: nowrap;
+}
+td.level {
+    width: 5em;
+    text-align: center;
+}
+td.msg {
+    white-space: pre-wrap;
+}
+/* Metadata */
+table.metadata th {
+    width: 13em;
+    text-align: left;
+    vertical-align: top;
+    white-space: nowrap;
+}
+table.metadata td {
+    padding-left: 0.5em;
+    vertical-align: top;
+    white-space: pre-wrap;
+}
+div.keyword table.metadata {
+    font-size: 0.9em;
+}

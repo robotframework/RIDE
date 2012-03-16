@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -16,20 +16,27 @@ from __future__ import with_statement
 import os
 
 from robot.errors import DataError
+
 from .filewriters import FileWriter
 
 
 class DataFileWriter(object):
-    """Writes parsed Robot Framework test data file objects back to disk."""
+    """Object to write parsed test data file objects back to disk."""
 
     def __init__(self, **options):
-        """:param options: used to create a :py:class:`.WriteConfiguration`."""
+        """
+        :param `**options`: A :class:`.WritingContext` is created based
+            on these.
+        """
         self._options = options
 
     def write(self, datafile):
         """Writes given `datafile` using `**options`.
 
-        :param datafile: A robot.parsing.model.DataFile object to be written
+        :param datafile: The parsed test data object to be written
+        :type datafile: :py:class:`~robot.parsing.model.TestCaseFile`,
+            :py:class:`~robot.parsing.model.ResourceFile`,
+            :py:class:`~robot.parsing.model.TestDataDirectory`
         """
         with WritingContext(datafile, **self._options) as ctx:
             FileWriter(ctx).write(datafile)
@@ -46,8 +53,8 @@ class WritingContext(object):
     tsv_column_count = 8
     _formats = [txt_format, html_format, tsv_format]
 
-    def __init__(self, datafile, format='', output=None,
-                 pipe_separated=False, line_separator=os.linesep):
+    def __init__(self, datafile, format='', output=None, pipe_separated=False,
+                 txt_separating_spaces=4, line_separator=os.linesep):
         """
         :param datafile: The datafile to be written.
         :type datafile: :py:class:`~robot.parsing.model.TestCaseFile`,
@@ -60,23 +67,28 @@ class WritingContext(object):
             used to construct a new file object.
         :param bool pipe_separated: Whether to use pipes as separator when
             output file format is txt.
+        :param int txt_separating_spaces: Number of separating spaces between
+            cells in space separated format.
         :param str line_separator: Line separator used in output files.
 
         If `output` is not given, an output file is created based on the source
         of the given datafile and value of `format`. Examples:
 
-            WriteConfiguration(datafile, output=StringIO) ->
-               Output written in the StringIO instance using format of
-              `datafile.source`
-            WriteConfiguration(datafile, format='html') ->
-               Output file is created from `datafile.source` by stripping
-               extension and replacing it with `html`.
+        Write output in a StringIO instance using format of `datafile.source`::
+
+            WriteConfiguration(datafile, output=StringIO)
+
+        Output file is created from `datafile.source` by stripping extension
+        and replacing it with `html`::
+
+            WriteConfiguration(datafile, format='html')
         """
         self.datafile = datafile
         self.pipe_separated = pipe_separated
         self.line_separator = line_separator
         self._given_output = output
         self.format = self._validate_format(format) or self._format_from_file()
+        self.txt_separating_spaces = txt_separating_spaces
         self.output = output
 
     def __enter__(self):

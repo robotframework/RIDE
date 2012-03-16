@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -16,11 +16,12 @@
 
 USAGE = """Rebot -- Robot Framework Report and Log Generator
 
-Version: <VERSION>
+Version:  <VERSION>
 
 Usage:  rebot|jyrebot|ipyrebot [options] robot_outputs
    or:  python|jython|ipy -m robot.rebot [options] robot_outputs
    or:  python|jython|ipy path/to/robot/rebot.py [options] robot_outputs
+   or:  java -jar robotframework.jar rebot [options] robot_outputs
 
 Rebot can be used to generate logs and reports in HTML format. It can also
 produce new XML output files which can be further processed with Rebot or
@@ -35,12 +36,13 @@ Depending is Robot Framework installed using Python, Jython, or IronPython
 interpreter, Rebot can be run using `rebot`, `jyrebot` or `ipyrebot` command,
 respectively. Alternatively, it is possible to directly execute `robot.rebot`
 module (e.g. `python -m robot.rebot`) or `robot/rebot.py` script using a
-selected interpreter.
+selected interpreter. Finally, there is also a standalone JAR distribution.
 
 For more information about Robot Framework run, for example, `pybot --help` or
 go to http://robotframework.org.
 
-Options:
+Options
+=======
 
  -N --name name           Set the name of the top level test suite. Underscores
                           in the name are converted to spaces. Default name is
@@ -156,15 +158,15 @@ Options:
                           automatically converted to spaces.
                           Examples: --tagstatlink mytag:http://my.domain:Link
                           --tagstatlink bug-*:http://tracker/id=%1:Bug_Tracker
-    --removekeywords all|passed|for  Remove keyword data from generated
-                          outputs. Keyword data is not needed when creating
-                          reports and removing it can make the size of an
-                          output file considerably smaller.
+    --removekeywords all|passed|for|wuks *  Remove keyword data from all
+                          generated outputs. Keywords containing warnings are
+                          not removed except in `all` mode.
                           all:    remove data from all keywords
                           passed: remove data only from keywords in passed
                                   test cases and suites
-                          for:    remove data only from for loops in passed
-                                  test cases and suites
+                          for:    remove all passed iterations from for loops
+                          wuks:   remove all but last failing keyword from
+                                  `Wait Until Keyword Succeeds`
     --starttime timestamp  Set starting time of test execution when creating
                           reports. Timestamp must be given in format
                           `2007-10-01 15:12:42.268` where all separators are
@@ -219,7 +221,8 @@ also be shortened as long as they are unique. For example, `--logti Title`
 works while `--lo log.html` does not because the former matches only --logtitle
 but the latter matches both --log and --logtitle.
 
-Environment Variables:
+Environment Variables
+=====================
 
 ROBOT_SYSLOG_FILE         Path to the syslog file. If not specified, or set to
                           special value `NONE`, writing to syslog file is
@@ -228,7 +231,8 @@ ROBOT_SYSLOG_LEVEL        Log level to use when writing to the syslog file.
                           Available levels are the same as for --loglevel
                           option to Robot and the default is INFO.
 
-Examples:
+Examples
+========
 
 # Simple Rebot run that creates log and report with default names.
 $ rebot output.xml
@@ -277,8 +281,9 @@ class Rebot(Application):
 def rebot_cli(arguments):
     """Command line execution entry point for running rebot.
 
-    For programmatic usage the `rebot` method is typically better. It has
-    better API for that usage and does not use sys.exit like this method.
+    For programmatic usage the :func:`rebot` method is typically better. It has
+    better API for that usage and does not call :func:`sys.exit` like this
+    method.
     """
     Rebot().execute_cli(arguments)
 
@@ -296,13 +301,17 @@ def rebot(*datasources, **options):
     A return code is returned similarly as when running on the command line.
 
     Examples:
-    rebot('path/to/output.xml')
-    with open('stdout.txt', 'w') as stdout:
-        rebot('o1.xml', 'o2.xml', report='r.html', log='NONE', stdout=stdout)
 
-    Equivalent command line usage:
-    rebot path/to/output.xml
-    rebot --report r.html --log NONE o1.xml o2.xml > stdout.txt
+    .. code-block:: python
+
+        rebot('path/to/output.xml')
+        with open('stdout.txt', 'w') as stdout:
+            rebot('o1.xml', 'o2.xml', report='r.html', log='NONE', stdout=stdout)
+
+    Equivalent command line usage::
+
+        rebot path/to/output.xml
+        rebot --report r.html --log NONE o1.xml o2.xml > stdout.txt
     """
     return Rebot().execute(*datasources, **options)
 

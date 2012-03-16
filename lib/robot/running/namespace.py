@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -63,6 +63,7 @@ class Namespace:
         variables = _VariableScopes(suite, parent_vars)
         variables['${SUITE_NAME}'] = suite.longname
         variables['${SUITE_SOURCE}'] = suite.source
+        variables['${SUITE_DOCUMENTATION}'] = suite.doc
         return variables
 
     def _import_default_libraries(self):
@@ -192,6 +193,7 @@ class Namespace:
         for lib in self._testlibs.values():
             lib.start_test()
         self.variables['${TEST_NAME}'] = test.name
+        self.variables['${TEST_DOCUMENTATION}'] = test.doc
         self.variables['@{TEST_TAGS}'] = test.tags
 
     def end_test(self):
@@ -439,8 +441,6 @@ class _VariableScopes:
         if self._uk_handlers:
             self.current.set_from_variable_table(rawvariables, overwrite)
 
-    # TODO: This should be removed so that these objects themselves had
-    # the capability of resolving variables.
     def replace_meta(self, name, item, errors):
         error = None
         for varz in [self.current] + self._parents:
@@ -501,3 +501,8 @@ class _VariableScopes:
 
     def has_key(self, key):
         return self.current.has_key(key)
+
+    __contains__ = has_key
+
+    def contains(self, name, extended=False):
+        return self.current.contains(name, extended)

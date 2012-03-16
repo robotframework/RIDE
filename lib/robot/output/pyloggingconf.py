@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ LEVELS = {'TRACE': logging.NOTSET,
 
 
 def initialize(level):
+    logging.raiseExceptions = False
     logging.getLogger().addHandler(RobotHandler())
     set_level(level)
 

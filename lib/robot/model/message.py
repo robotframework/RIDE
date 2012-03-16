@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,14 +14,14 @@
 
 from robot.utils import html_escape
 
+from .itemlist import ItemList
 from .modelobject import ModelObject
 
 
 class Message(ModelObject):
     __slots__ = ['message', 'level', 'html', 'timestamp', 'parent']
 
-    # TODO: Use None instead of N/A with all timestamps in model
-    def __init__(self, message='', level='INFO', html=False, timestamp='N/A',
+    def __init__(self, message='', level='INFO', html=False, timestamp=None,
                  parent=None):
         self.message = message
         self.level = level
@@ -38,3 +38,11 @@ class Message(ModelObject):
 
     def __unicode__(self):
         return self.message
+
+
+class Messages(ItemList):
+    __slots__ = []
+
+    def __init__(self, message_class=Message, parent=None, messages=None):
+        ItemList.__init__(self, message_class, {'parent': parent}, messages)
+

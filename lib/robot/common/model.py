@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,9 +14,10 @@
 
 import random
 
-from statistics import Stat
 from robot import utils
 from robot.errors import DataError
+
+from .statistics import Stat
 
 
 class _TestAndSuiteHelper:
@@ -166,7 +167,7 @@ class BaseTestSuite(_TestAndSuiteHelper):
 
     def _add_test_to_stats(self, test):
         self.all_stats.add_test(test)
-        if test.critical == 'yes':
+        if test.critical:
             self.critical_stats.add_test(test)
 
     def _add_suite_to_stats(self, suite):
@@ -201,7 +202,7 @@ class BaseTestSuite(_TestAndSuiteHelper):
 
     def filter_by_names(self, suites=None, tests=None, zero_tests_ok=False):
         suites = [([], name.split('.')) for name in suites or []]
-        tests = tests or []
+        tests = utils.MultiMatcher(tests, ignore=['_'], match_if_no_patterns=True)
         if not self._filter_by_names(suites, tests) and not zero_tests_ok:
             self._raise_no_tests_filtered_by_names(suites, tests)
 
@@ -210,9 +211,8 @@ class BaseTestSuite(_TestAndSuiteHelper):
         self.suites = [suite for suite in self.suites
                        if suite._filter_by_names(suites, tests)]
         if not suites:
-            self.tests = [test for test in self.tests if tests == [] or
-                          any(utils.matches_any(name, tests, ignore=['_'])
-                              for name in [test.name, test.longname])]
+            self.tests = [test for test in self.tests
+                          if tests.match(test.name) or tests.match(test.longname)]
         else:
             self.tests = []
         return bool(self.suites or self.tests)
@@ -231,7 +231,7 @@ class BaseTestSuite(_TestAndSuiteHelper):
         return ([], parent + suite)
 
     def _raise_no_tests_filtered_by_names(self, suites, tests):
-        tests = utils.seq2str(tests, lastsep=' or ')
+        tests = utils.seq2str(list(tests), lastsep=' or ')
         suites = utils.seq2str(['.'.join(p + s) for p, s in suites],
                                lastsep=' or ')
         if not suites:
@@ -299,8 +299,6 @@ class BaseTestSuite(_TestAndSuiteHelper):
         self._return_status_rc = not settings['NoStatusRC']
         if 'RunMode' in settings:
             map(self.set_runmode, settings['RunMode'])
-        if 'RemoveKeywords' in settings:
-            self.remove_keywords(settings['RemoveKeywords'])
 
     def serialize(self, serializer):
         serializer.start_suite(self)
@@ -324,16 +322,26 @@ class BaseTestCase(_TestAndSuiteHelper):
 
     def __init__(self, name, parent):
         _TestAndSuiteHelper.__init__(self, name, parent)
-        self.critical = 'yes'
+        self.critical = True
         if parent:
             parent.tests.append(self)
+
+    @property
+    def id(self):
+        if not self.parent:
+            return 't1'
+        return '%s-t%d' % (self.parent.id, self.parent.tests.index(self)+1)
+
+    @property
+    def passed(self):
+        return self.status == 'PASS'
 
     def suite_teardown_failed(self, message):
         self.status = 'FAIL'
         self._set_teardown_fail_msg(message)
 
     def set_criticality(self, critical):
-        self.critical = 'yes' if critical.are_critical(self.tags) else 'no'
+        self.critical = critical.are_critical(self.tags)
 
     def is_included(self, incl_tags, excl_tags):
         """Returns True if this test case is included but not excluded.
@@ -374,9 +382,9 @@ class BaseTestCase(_TestAndSuiteHelper):
 
     def __cmp__(self, other):
         if self.status != other.status:
-            return -1 if self.status == 'FAIL' else 1
+            return -1 if not self.passed else 1
         if self.critical != other.critical:
-            return -1 if self.critical == 'yes' else 1
+            return -1 if self.critical else 1
         try:
             return cmp(self.longname, other.longname)
         except AttributeError:
@@ -399,14 +407,19 @@ class _Critical:
         self.set(tags, nons)
 
     def set(self, tags, nons):
-        self.tags = utils.normalize_tags(tags or [])
-        self.nons = utils.normalize_tags(nons or [])
+        self.tags = self._get_tags(tags)
+        self.nons = self._get_tags(nons)
+
+    def _get_tags(self, tags):
+        if isinstance(tags, utils.MultiMatcher):
+            return tags
+        return utils.MultiMatcher(utils.normalize_tags(tags or []), ignore=['_'])
 
     def is_critical(self, tag):
-        return utils.matches_any(tag, self.tags)
+        return self.tags.match(tag)
 
     def is_non_critical(self, tag):
-        return utils.matches_any(tag, self.nons)
+        return self.nons.match(tag)
 
     def are_critical(self, tags):
         for tag in tags:

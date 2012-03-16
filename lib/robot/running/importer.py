@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -29,7 +29,10 @@ class Importer(object):
         self._library_cache = ImportCache()
         self._resource_cache = ImportCache()
 
-    def import_library(self, name, args, alias, variables):
+    def reset(self):
+        self.__init__()
+
+    def import_library(self, name, args=None, alias=None, variables=None):
         lib = TestLibrary(name, args, variables, create_handlers=False)
         positional, named = lib.positional_args, lib.named_args
         lib = self._import_library(name, positional, named, lib)

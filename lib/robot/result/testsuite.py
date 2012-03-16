@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -29,7 +29,22 @@ class TestSuite(model.TestSuite):
     keyword_class = Keyword
 
     def __init__(self, source='', name='', doc='', metadata=None,
-                 message='', starttime='N/A', endtime='N/A'):
+                 message='', starttime=None, endtime=None):
+        """Results of a single test suite.
+
+        :ivar parent: Parent :class:`TestSuite` or `None`.
+        :ivar source: Path to the source file.
+        :ivar name: Test suite name.
+        :ivar doc: Test suite documentation.
+        :ivar metadata: Test suite metadata as a dictionary.
+        :ivar suites: Child suite results.
+        :ivar tests: Test case results. a list of :class:`~.testcase.TestCase`
+            instances.
+        :ivar keywords: A list containing setup and teardown results.
+        :ivar message: Possible failure message.
+        :ivar starttime: Test suite execution start time as a timestamp.
+        :ivar endtime: Test suite execution end time as a timestamp.
+        """
         model.TestSuite.__init__(self, source, name, doc, metadata)
         self.message = message
         self.starttime = starttime
@@ -51,13 +66,13 @@ class TestSuite(model.TestSuite):
 
     @property
     def elapsedtime(self):
-        if self.starttime == 'N/A' or self.endtime == 'N/A':
-            return sum(child.elapsedtime for child in
-                       chain(self.suites, self.tests, self.keywords))
-        return utils.get_elapsed_time(self.starttime, self.endtime)
+        if self.starttime and self.endtime:
+            return utils.get_elapsed_time(self.starttime, self.endtime)
+        return sum(child.elapsedtime for child in
+                   chain(self.suites, self.tests, self.keywords))
 
     def remove_keywords(self, how):
         self.visit(KeywordRemover(how))
 
-    def filter_messages(self, log_level):
+    def filter_messages(self, log_level='TRACE'):
         self.visit(MessageFilter(log_level))

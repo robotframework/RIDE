@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ from abstractxmlwriter import AbstractXmlWriter
 
 def XmlWriter(path):
     if path == 'NONE':
-        return FakeXMLWriter()
+        return NullXmlWriter()
     if os.name == 'java':
         from jyxmlwriter import XmlWriter
     else:
@@ -27,6 +27,7 @@ def XmlWriter(path):
     return XmlWriter(path)
 
 
-class FakeXMLWriter(AbstractXmlWriter):
+class NullXmlWriter(AbstractXmlWriter):
     closed = False
-    _start = _content = _end = _close = lambda self, *args: None
+    _start = _content = _end = _newline = close = lambda self, *args: None
+

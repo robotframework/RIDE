@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ from robot.errors import DataError, Information, FrameworkError
 from robot.version import get_full_version
 
 from misc import plural_or_not
-from encoding import decode_output, decode_from_file_system
+from encoding import decode_output, decode_from_system, utf8open
 
 
 ESCAPES = dict(
@@ -48,7 +48,8 @@ class ArgumentParser:
     ''', re.VERBOSE)
 
     def __init__(self, usage, name=None, version=None, arg_limits=None,
-                 validator=None):
+                 validator=None, auto_help=True, auto_version=True,
+                 auto_escape=True, auto_pythonpath=True, auto_argumentfile=True):
         """Available options and tool name are read from the usage.
 
         Tool name is got from the first row of the usage. It is either the
@@ -61,6 +62,11 @@ class ArgumentParser:
         self._usage = usage
         self._arg_limit_validator = ArgLimitValidator(arg_limits)
         self._validator = validator
+        self._auto_help = auto_help
+        self._auto_version = auto_version
+        self._auto_escape = auto_escape
+        self._auto_pythonpath = auto_pythonpath
+        self._auto_argumentfile = auto_argumentfile
         self._short_opts = ''
         self._long_opts = []
         self._multi_opts = []
@@ -115,8 +121,9 @@ class ArgumentParser:
         amount of horizontal space as <---ESCAPES--->. Both help and version
         are wrapped to Information exception.
         """
-        args_list = [decode_from_file_system(a) for a in args_list]
-        args_list = self._process_possible_argfile(args_list)
+        args_list = [decode_from_system(a) for a in args_list]
+        if self._auto_argumentfile:
+            args_list = self._process_possible_argfile(args_list)
         opts, args = self._parse_args(args_list)
         opts, args = self._handle_special_options(opts, args)
         self._arg_limit_validator(args)
@@ -125,16 +132,20 @@ class ArgumentParser:
         return opts, args
 
     def _handle_special_options(self, opts, args):
-        if opts.get('escape'):
+        if self._auto_escape and opts.get('escape'):
             opts, args = self._unescape_opts_and_args(opts, args)
-        if opts.get('help'):
+        if self._auto_help and opts.get('help'):
             self._raise_help()
-        if opts.get('version'):
+        if self._auto_version and opts.get('version'):
             self._raise_version()
-        if opts.get('pythonpath'):
+        if self._auto_pythonpath and opts.get('pythonpath'):
             sys.path = self._get_pythonpath(opts['pythonpath']) + sys.path
-        for opt in ['escape', 'help', 'version', 'pythonpath', 'argumentfile']:
-            if opt in opts:
+        for auto, opt in [(self._auto_help, 'help'),
+                          (self._auto_version, 'version'),
+                          (self._auto_escape, 'escape'),
+                          (self._auto_pythonpath, 'pythonpath'),
+                          (self._auto_argumentfile, 'argumentfile')]:
+            if auto and opt in opts:
                 opts.pop(opt)
         return opts, args
 
@@ -143,7 +154,7 @@ class ArgumentParser:
         try:
             opts, args = getopt.getopt(args, self._short_opts, self._long_opts)
         except getopt.GetoptError, err:
-            raise DataError(err.args[0])
+            raise DataError(err.msg)
         return self._process_opts(opts), self._glob_args(args)
 
     def _lowercase_long_option(self, opt):
@@ -194,7 +205,7 @@ class ArgumentParser:
 
     def _read_argfile(self, path):
         try:
-            with codecs.open(path, encoding='UTF-8') as f:
+            with utf8open(path) as f:
                 content = f.read()
         except (IOError, UnicodeError), err:
             raise DataError("Opening argument file '%s' failed: %s"

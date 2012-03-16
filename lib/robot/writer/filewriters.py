@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -77,10 +77,10 @@ class _DataFileWriter(object):
 
 
 class SpaceSeparatedTxtWriter(_DataFileWriter):
-    _separator = ' '*4
 
     def __init__(self, configuration):
         formatter = TxtFormatter(configuration.txt_column_count)
+        self._separator = ' ' * configuration.txt_separating_spaces
         _DataFileWriter.__init__(self, formatter, configuration)
 
     def _write_row(self, row):

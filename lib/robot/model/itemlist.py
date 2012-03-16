@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,13 +14,11 @@
 
 
 class ItemList(object):
-    __slots__ = ['_item_class', '_parent', '_items']
+    __slots__ = ['_item_class', '_common_attrs', '_items']
 
-    def __init__(self, item_class, items=None, parent=None):
-        # TODO: This really should accept generic **common_attrs and not
-        # parent. Need to investigate why **common_attrs took so much memory.
+    def __init__(self, item_class, common_attrs=None, items=None):
         self._item_class = item_class
-        self._parent = parent
+        self._common_attrs = common_attrs
         self._items = []
         if items:
             self.extend(items)
@@ -37,8 +35,9 @@ class ItemList(object):
         if not isinstance(item, self._item_class):
             raise TypeError("Only '%s' objects accepted, got '%s'"
                             % (self._item_class.__name__, type(item).__name__))
-        if self._parent:
-            item.parent = self._parent
+        if self._common_attrs:
+            for attr in self._common_attrs:
+                setattr(item, attr, self._common_attrs[attr])
 
     def extend(self, items):
         for item in items:

@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -22,7 +22,21 @@ class TestCase(model.TestCase):
     keyword_class = Keyword
 
     def __init__(self, name='', doc='', tags=None, timeout='', status='FAIL',
-                 message='', starttime='N/A', endtime='N/A'):
+                 message='', starttime=None, endtime=None):
+        """Results of a single test case.
+
+        :ivar name: Test case name.
+        :ivar parent: :class:`~.testsuite.TestSuite` that contains this test.
+        :ivar doc: Test case documentation.
+        :ivar tags: Test case tags, a list of strings.
+        :ivar timeout: Test case timeout.
+        :ivar keywords: Keyword results, a list of :class:`~.keyword.Keyword`.
+            instances
+        :ivar status: String 'PASS' of 'FAIL'.
+        :ivar message: Possible failure message.
+        :ivar starttime: Test case execution start time as a timestamp.
+        :ivar endtime: Test case execution end time as a timestamp.
+        """
         model.TestCase.__init__(self, name, doc, tags, timeout)
         self.status = status
         self.message = message
@@ -33,7 +47,6 @@ class TestCase(model.TestCase):
     def elapsedtime(self):
         return utils.get_elapsed_time(self.starttime, self.endtime)
 
-    # TODO: Rename to passed
     @property
-    def is_passed(self):
+    def passed(self):
         return self.status == 'PASS'

@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ from .abstractxmlwriter import AbstractXmlWriter
 class XmlWriter(AbstractXmlWriter):
 
     def __init__(self, path):
-        self.path = path
         self._output = self._create_output(path)
         self._writer = SAXTransformerFactory.newInstance().newTransformerHandler()
         self._writer.setResult(StreamResult(self._output))
@@ -50,6 +49,9 @@ class XmlWriter(AbstractXmlWriter):
 
     def _content(self, content):
         self._writer.characters(content, 0, len(content))
+
+    def _newline(self):
+        self._writer.ignorableWhitespace('\n', 0, 1)
 
     def _end(self, name):
         self._writer.endElement('', '', name)

@@ -1,4 +1,4 @@
-#  Copyright 2008-2011 Nokia Siemens Networks Oyj
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,14 +12,14 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot import utils
+from robot.utils import XmlWriter, get_timestamp
 from robot.errors import DataError
 from robot.version import get_full_version
 
-from loggerhelper import IsLogged
+from .loggerhelper import IsLogged
 
 
-class XmlLogger:
+class XmlLogger(object):
 
     def __init__(self, path, log_level='TRACE', generator='Robot'):
         self._log_message_is_logged = IsLogged(log_level)
@@ -29,12 +29,12 @@ class XmlLogger:
 
     def _get_writer(self, path, generator):
         try:
-            writer = utils.XmlWriter(path)
+            writer = XmlWriter(path)
         except EnvironmentError, err:
             raise DataError("Opening output file '%s' failed: %s"
                             % (path, err.strerror))
         writer.start('robot', {'generator': get_full_version(generator),
-                               'generated': utils.get_timestamp()})
+                               'generated': get_timestamp()})
         return writer
 
     def close(self):
@@ -57,7 +57,7 @@ class XmlLogger:
             self._write_message(msg)
 
     def _write_message(self, msg):
-        attrs = {'timestamp': msg.timestamp, 'level': msg.level}
+        attrs = {'timestamp': msg.timestamp or 'N/A', 'level': msg.level}
         if msg.html:
             attrs['html'] = 'yes'
         self._writer.element('msg', msg.message, attrs)
@@ -73,27 +73,28 @@ class XmlLogger:
         self._writer.end('kw')
 
     def start_test(self, test):
-        self._writer.start('test', {'name': test.name,
+        self._writer.start('test', {'id': test.id, 'name': test.name,
                                     'timeout': test.timeout})
-        self._writer.element('doc', test.doc)
 
     def end_test(self, test):
+        self._writer.element('doc', test.doc)
         self._write_list('tags', 'tag', test.tags)
-        self._write_status(test, test.message, {'critical': test.critical})
+        self._write_status(test, test.message,
+                           {'critical': 'yes' if test.critical else 'no'})
         self._writer.end('test')
 
     def start_suite(self, suite):
-        attrs = {'name': suite.name}
+        attrs = {'id': suite.id, 'name': suite.name}
         if suite.source:
             attrs['source'] = suite.source
         self._writer.start('suite', attrs)
-        self._writer.element('doc', suite.doc)
         self._writer.start('metadata')
         for name, value in suite.metadata.items():
             self._writer.element('item', value, {'name': name})
         self._writer.end('metadata')
 
     def end_suite(self, suite):
+        self._writer.element('doc', suite.doc)
         self._write_status(suite, suite.message)
         self._writer.end('suite')
 
@@ -164,9 +165,9 @@ class XmlLogger:
         self._writer.end(container_tag)
 
     def _write_status(self, item, message=None, extra_attrs=None):
-        attrs = {'status': item.status, 'starttime': item.starttime,
-                 'endtime': item.endtime}
-        if item.starttime == 'N/A' or item.endtime == 'N/A':
+        attrs = {'status': item.status, 'starttime': item.starttime or 'N/A',
+                 'endtime': item.endtime or 'N/A'}
+        if not (item.starttime and item.endtime):
             attrs['elapsedtime'] = item.elapsedtime
         if extra_attrs:
             attrs.update(extra_attrs)
