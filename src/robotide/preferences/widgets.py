@@ -25,9 +25,7 @@ class PreferencesPanel(wx.Panel):
         wx.Panel.__init__(self, parent, *args, **kwargs)
 
     def GetTitle(self):
-        location = getattr(self, "location", ("Preferences",))
-        title = getattr(self, "title", self.location[-1])
-        return title
+        return getattr(self, "title", self.location[-1])
 
     def Separator(self, parent, title):
         """Creates a simple horizontal separator with title"""
@@ -41,26 +39,38 @@ class PreferencesPanel(wx.Panel):
         return container
 
     def close(self):
-        """Manager dialog calls this when it is closing"""
+        """Callback to do actions when editor is closed."""
         pass
 
-# these are standard widgets that are tied to a specific
-# setting; when the widget is changed the setting is
-# automaticaly saved
+
 class PreferencesComboBox(wx.ComboBox):
-    """A combobox tied to a specific setting"""
+    """A combobox tied to a specific setting. Saves value to disk after edit."""
     def __init__(self, parent, id, settings, key, choices):
         self.settings = settings
         self.key = key
-        value = settings[key]
-        super(PreferencesComboBox, self).__init__(parent, id, value,
+        super(PreferencesComboBox, self).__init__(parent, id, self._get_value(),
                                                   choices=choices)
         self.Bind(wx.EVT_COMBOBOX, self.OnSelect)
 
+    def _get_value(self):
+        return self.settings[self.key]
+
     def OnSelect(self, event):
-        value = str(event.GetEventObject().GetValue())
-        self.settings[self.key] = value
+        self._set_value(str(event.GetEventObject().GetValue()))
         self.settings.save()
+
+    def _set_value(self, value):
+        self.settings[self.key] = value
+
+
+class IntegerPreferenceComboBox(PreferencesComboBox):
+    """A combobox tied to a setting that has integer values."""
+
+    def _get_value(self):
+        return str(self.settings[self.key])
+
+    def _set_value(self, value):
+        self.settings[self.key] = int(value)
 
 
 class PreferencesColorPicker(wx.ColourPickerCtrl):

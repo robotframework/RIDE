@@ -287,10 +287,11 @@ class Serializer(object):
         RideSaved(path=controller.filename).publish()
 
     def _get_options(self):
-        return {'line_separator': self._resolve_line_separator(),
-                'pipe_separated': self._resolve_pipe_separated()}
+        return {'line_separator': self._get_line_separator(),
+                'pipe_separated': self._get_pipe_separated(),
+                'txt_separating_spaces': self._get_separating_spaces()}
 
-    def _resolve_line_separator(self):
+    def _get_line_separator(self):
         setting = self._settings.get('line separator', 'native').lower()
         if setting in ('crlf', 'windows'):
             return '\r\n'
@@ -298,8 +299,11 @@ class Serializer(object):
             return '\n'
         return os.linesep
 
-    def _resolve_pipe_separated(self):
+    def _get_pipe_separated(self):
         return self._settings.get('txt format separator', 'space') == 'pipe'
+
+    def _get_separating_spaces(self):
+        return self._settings['txt number of spaces']
 
     def _cache_error(self, data, error):
         self._errors.append("Error in serializing '%s':\n%s"
