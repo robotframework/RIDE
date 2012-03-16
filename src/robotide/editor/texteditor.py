@@ -16,10 +16,10 @@ from time import time
 import wx
 from wx import stc
 from StringIO import StringIO
+
 from robot.parsing.model import TestDataDirectory
 from robot.parsing.populators import FromFilePopulator
 from robot.parsing.txtreader import TxtReader
-from robotide.action.actioninfo import ActionInfo
 
 from robotide.controller.commands import SetDataFile
 from robotide.publish.messages import RideMessage
@@ -113,10 +113,12 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     def _open_tree_selection_in_editor(self):
         datafile_controller = self.tree.get_selected_datafile_controller()
         if datafile_controller:
-            self._editor.open(DataFileWrapper(datafile_controller))
+            self._editor.open(DataFileWrapper(datafile_controller,
+                                              self.global_settings))
 
     def _open_data_for_controller(self, datafile_controller):
-        self._editor.selected(DataFileWrapper(datafile_controller))
+        self._editor.selected(DataFileWrapper(datafile_controller,
+                                              self.global_settings))
 
     def OnTabChange(self, message):
         if message.newtab == self.title:
@@ -186,8 +188,9 @@ class DataValidationHandler(object):
 
 class DataFileWrapper(object): # TODO: bad class name
 
-    def __init__(self, data):
+    def __init__(self, data, settings):
         self._data = data
+        self._settings = settings
 
     def __eq__(self, other):
         if other is None:
@@ -204,7 +207,7 @@ class DataFileWrapper(object): # TODO: bad class name
         return target
 
     def format_text(self, text):
-        return self._txt_data(self._create_target_from(text)).encode('UTF-8')
+        return self._txt_data(self._create_target_from(text))
 
     def mark_data_dirty(self):
         self._data.mark_dirty()
@@ -223,7 +226,8 @@ class DataFileWrapper(object): # TODO: bad class name
 
     def _txt_data(self, data):
         output = StringIO()
-        data.save(output=output, format='txt')
+        data.save(output=output, format='txt',
+                  txt_separating_spaces=self._settings['txt number of spaces'])
         return output.getvalue()
 
 
