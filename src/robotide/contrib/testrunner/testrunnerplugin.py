@@ -488,6 +488,10 @@ class TestRunnerPlugin(Plugin):
             linecount = self.out.GetLineCount()
             self.out.ScrollToLine(linecount)
 
+    def _add_tmp_outputdir_if_not_given_by_user(self, command, standard_args):
+        if "--outputdir" not in command and "-d" not in command:
+            standard_args.extend(["--outputdir", self._tmpdir])
+
     def _get_command(self):
         '''Return the command (as a list) used to run the test'''
         profile = self.get_current_profile()
@@ -500,8 +504,8 @@ class TestRunnerPlugin(Plugin):
 
         standard_args = []
         standard_args.extend(profile.get_custom_args())
-        if "--outputdir" not in command and "-d" not in command:
-            standard_args.extend(["--outputdir",self._tmpdir])
+        self._add_tmp_outputdir_if_not_given_by_user(command, standard_args)
+        self._add_pythonpath_if_in_settings_and_not_given_by_user(command, standard_args)
         standard_args.extend(["--monitorcolors","off"])
         standard_args.extend(["--monitorwidth", self._get_monitor_width()])
 
@@ -513,6 +517,16 @@ class TestRunnerPlugin(Plugin):
         f.close()
 
         return command
+
+    def _add_pythonpath_if_in_settings_and_not_given_by_user(self, command, standard_args):
+        if '--pythonpath' in command:
+            return
+        if '-P' in command:
+            return
+        pythonpath = self.global_settings.get('pythonpath', None)
+        if not pythonpath:
+            return
+        standard_args.extend(['--pythonpath', ':'.join(pythonpath)])
 
     def _get_listener_to_cmd(self):
         return os.path.join(os.path.dirname(__file__),
