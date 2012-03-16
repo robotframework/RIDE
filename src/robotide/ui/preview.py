@@ -141,8 +141,12 @@ class PreviewPanel(wx.Panel):
             return ''
         output = StringIO()
         try:
-            datafile.save(output=output, format=self._file_format,
-                          pipe_separated=self._pipe_separated)
+            datafile.save(
+                output=output,
+                format=self._file_format,
+                pipe_separated=self._pipe_separated,
+                txt_separating_spaces=self._parent.global_settings['txt number of spaces']
+            )
         except Exception, e:
             return "Creating preview of '%s' failed: %s" % (datafile.name, e)
         else:
