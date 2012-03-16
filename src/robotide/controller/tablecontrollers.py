@@ -41,7 +41,10 @@ class _WithListOperations(object):
         self.mark_dirty()
 
     def delete(self, index):
-        self._items.pop(index)
+        if isinstance(self._items, list):
+            self._items.pop(index)
+        else:
+            self._items.data.pop(index)
         self.mark_dirty()
 
     @property
@@ -303,14 +306,14 @@ class KeywordTableController(_MacroTable):
     def _configure_controller(self, ctrl, config):
         if config:
             ctrl.arguments.set_value(config)
-    
+
     def sort(self):
         """Sorts the keywords of the controller by name"""
         keywords_sorted = sorted(self._table.keywords, key=lambda userkeyword: userkeyword.name)
         index_difference = self._index_difference(self._table.keywords, keywords_sorted)
         self._table.keywords = keywords_sorted
         return index_difference
-    
+
     def _index_difference(self, original_list, sorted_list):
         """Determines the difference in sorting order for undo/redo"""
         index_difference = []

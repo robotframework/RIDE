@@ -16,8 +16,8 @@
 
 import unittest
 
-from robot.parsing import (TestDataDirectory, TestCaseFile, ResourceFile,
-                           TestCase, UserKeyword)
+from robotide.robotapi import (TestDataDirectory, TestCaseFile, ResourceFile,
+                               TestCase, UserKeyword)
 from robot.utils.asserts import assert_equals
 from robotide.ui.images import TreeImageList
 

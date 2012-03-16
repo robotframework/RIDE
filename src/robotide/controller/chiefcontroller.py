@@ -303,7 +303,7 @@ class Serializer(object):
         return self._settings.get('txt format separator', 'space') == 'pipe'
 
     def _get_separating_spaces(self):
-        return self._settings['txt number of spaces']
+        return self._settings.get('txt number of spaces', 4)
 
     def _cache_error(self, data, error):
         self._errors.append("Error in serializing '%s':\n%s"

@@ -2,8 +2,7 @@ import unittest
 import os
 import shutil
 
-from robot.parsing import TestCase
-from robot.parsing.model import TestCaseFile, TestDataDirectory
+from robotide.robotapi import TestCase, TestCaseFile, TestDataDirectory
 from robot.utils.asserts import (assert_equals, assert_true, assert_false)
 
 from robotide.controller.filecontrollers import TestCaseFileController, \
@@ -136,22 +135,22 @@ class TestResourceFileControllerTest(unittest.TestCase):
     def test_sort_and_restore_keywords(self):
         chief = datafilereader.construct_chief_controller(datafilereader.OCCURRENCES_PATH)
         resource_ctrl = self._get_ctrl_by_name(datafilereader.OCCURRENCES_RESOURCE_NAME, chief.datafiles)
-        
+
         # Capture keyword list before sorting
         original_keywords = resource_ctrl.get_keyword_names()
         list_for_undo_comparison = original_keywords[:]
-        
+
         # Sort the list
         resource_ctrl.execute(SortKeywords())
         sorted_keywords = resource_ctrl.get_keyword_names()
         original_keywords.sort()
         assert_equals(original_keywords, sorted_keywords)
-        
-        # Undo sorting        
+
+        # Undo sorting
         resource_ctrl.execute(Undo())
         restored_list = resource_ctrl.get_keyword_names()
         assert_equals(restored_list, list_for_undo_comparison)
-        
+
         # Redo sorting
         resource_ctrl.execute(Redo())
         keywords_after_redo = resource_ctrl.get_keyword_names()

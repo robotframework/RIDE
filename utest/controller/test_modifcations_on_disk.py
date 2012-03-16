@@ -80,7 +80,7 @@ class TestModifiedOnDiskWithDirectorySuite(_DataDependentTest):
         open(self._init_path, 'a').write('...  ninjaed more documentation')
         ctrl.reload()
         assert_equals(ctrl.settings[0].value,
-                      'Ride unit testing file ninjaed more documentation')
+                      'Ride unit testing file\\nninjaed more documentation')
 
     def test_mtime_with_directory_suite(self):
         ctrl = TestDataDirectoryController(TestDataDirectory(source=self._dirpath).populate())
