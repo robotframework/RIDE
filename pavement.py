@@ -118,14 +118,14 @@ def set_version(args):
         version_file.write(args[0])
 
 @task
-@needs('clean', '_prepare_build', 'generate_setup', 'minilib',
+@needs('clean', '_prepare_build', '_release_notes', 'generate_setup', 'minilib',
        'setuptools.command.sdist')
 def sdist():
     """Creates source distribution with bundled dependencies"""
     _after_distribution()
 
 @task
-@needs('_windows', 'clean', '_prepare_build',
+@needs('_windows', 'clean', '_prepare_build', '_release_notes',
        'setuptools.command.bdist_wininst')
 def wininst():
     """Creates Windows installer with bundled dependencies"""
@@ -141,6 +141,12 @@ def _prepare_build():
     _update_version()
     if not LIB_TARGET.exists():
         LIB_SOURCE.copytree(LIB_TARGET)
+
+@task
+def _release_notes():
+    if FINAL_RELEASE:
+        changes = _download_and_format_issues()
+        _update_release_notes_plugin(changes)
 
 @task
 def clean():
@@ -178,14 +184,8 @@ def _set_development_path():
     sys.path.insert(0, SOURCE_DIR)
 
 def _after_distribution():
-    _release_notes()
     _announce()
     _clean(keep_dist=True)
-
-def _release_notes():
-    if FINAL_RELEASE:
-        changes = _download_and_format_issues()
-        _update_release_notes_plugin(changes)
 
 def _download_and_format_issues():
     try:
