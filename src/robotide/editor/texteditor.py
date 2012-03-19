@@ -156,7 +156,7 @@ class DataValidationHandler(object):
             return True
 
     def _sanity_check(self, data, text):
-        formatted_text = data.format_text(text)
+        formatted_text = data.format_text(text).encode('UTF-8')
         c = self._remove_all(formatted_text, ' ', '\n', '...', '\r', '*')
         e = self._remove_all(text, ' ', '\n', '...', '\r', '*')
         return len(c) == len(e)
@@ -228,7 +228,7 @@ class DataFileWrapper(object): # TODO: bad class name
         output = StringIO()
         data.save(output=output, format='txt',
                   txt_separating_spaces=self._settings['txt number of spaces'])
-        return output.getvalue()
+        return output.getvalue().decode('UTF-8')
 
 
 class SourceEditor(wx.Panel):
