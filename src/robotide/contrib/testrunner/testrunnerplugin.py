@@ -73,6 +73,24 @@ ID_AUTOSAVE = wx.NewId()
 STYLE_STDERR = 2
 
 
+try:
+    from os.path import relpath
+except ImportError:
+    # the python 2.6 os.path package provides a relpath() function,
+    # but we're running 2.5 so we have to roll our own
+    def relpath(path, start=curdir):
+        """Return a relative version of a path"""
+        if not path:
+            raise ValueError("no path specified")
+        start_list = posixpath.abspath(start).split(sep)
+        path_list = posixpath.abspath(path).split(sep)
+        # Work out how much of the filepath is shared by start and path.
+        i = len(posixpath.commonprefix([start_list, path_list]))
+        rel_list = [pardir] * (len(start_list)-i) + path_list[i:]
+        if not rel_list:
+            return curdir
+        return join(*rel_list)
+
 def _RunProfile(name, run_prefix):
     return type('Profile', (runprofiles.PybotProfile,),
                 {'name': name, 'get_command': lambda self: run_prefix})
@@ -500,7 +518,7 @@ class TestRunnerPlugin(Plugin):
         argfile = os.path.join(self._tmpdir, "argfile.txt")
         command.extend(["--argumentfile", argfile])
         command.extend(["--listener", self._get_listener_to_cmd()])
-        command.append(self._relpath(self.model.suite.source))
+        command.append(relpath(self.model.suite.source))
 
         standard_args = []
         standard_args.extend(profile.get_custom_args())
@@ -539,22 +557,6 @@ class TestRunnerPlugin(Plugin):
         out_width, _ = self.out.GetSizeTuple()
         char_width = self.out.GetCharWidth()
         return str(int(out_width/char_width)-10)
-
-    # the python 2.6 os.path package provides a relpath() function,
-    # but we're running 2.5 so we have to roll our own
-    def _relpath(self, path, start=curdir):
-        """Return a relative version of a path"""
-        if not path:
-            raise ValueError("no path specified")
-        start_list = posixpath.abspath(start).split(sep)
-        path_list = posixpath.abspath(path).split(sep)
-        # Work out how much of the filepath is shared by start and path.
-        i = len(posixpath.commonprefix([start_list, path_list]))
-        rel_list = [pardir] * (len(start_list)-i) + path_list[i:]
-        if not rel_list:
-            return curdir
-        return join(*rel_list)
-
 
     def _build_ui(self):
         """Creates the UI for this plugin"""
