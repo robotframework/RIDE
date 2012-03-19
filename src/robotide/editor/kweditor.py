@@ -25,7 +25,7 @@ from robotide.controller.commands import (ChangeCellValue, ClearArea, PasteArea,
 from robotide.controller.cellinfo import TipMessage
 from robotide.publish import (RideItemStepsChanged,
                               RideSettingsChanged, PUBLISHER)
-from robotide.usages.UsageRunner import Usages, VariableUsages
+from robotide.usages.UsageRunner import Usages
 from robotide.ui.progress import RenameProgressObserver
 from robotide import utils
 from robotide.utils import RideEventHandler
@@ -528,10 +528,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
             searchstring = cellvalue
         
         if searchstring:
-            if utils.is_variable(searchstring):
-                VariableUsages(self._controller, self._tree.highlight, searchstring).show()
-            else:
-                Usages(self._controller, self._tree.highlight, searchstring).show()
+            Usages(self._controller, self._tree.highlight, searchstring).show()
 
 
     def _cell_value_contains_multiple_search_items(self, value):
