@@ -86,7 +86,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 0.43.1</h2>
+<h2>Release notes for 0.43.2</h2>
 <table border="1">
 <tr>
 <td><b>ID</b></td>
@@ -95,17 +95,11 @@ RELEASE_NOTES = """
 <td><b>Summary</b></td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=953">Issue 953</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=955">Issue 955</a></td>
 <td>Defect</td>
-<td>Medium</td>
-<td>Selecting Run -> Manage Run Configurations causes traceback</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=954">Issue 954</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>Import and Metadata move not working in RIDE 0.43</td>
+<td>High</td>
+<td>Variable completion shadows @ sign in windows</td>
 </tr>
 </table>
-<p>Altogether 2 issues.</p>
+<p>Altogether 1 issues.</p>
 """
