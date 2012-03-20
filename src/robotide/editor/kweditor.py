@@ -367,7 +367,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._move_grid_cursor(event, keycode)
         elif control_down and keycode == wx.WXK_SPACE:
             self._open_cell_editor_with_content_assist()
-        elif control_down and keycode in (ord('1'), ord('2')):
+        elif control_down and not event.AltDown() and keycode in (ord('1'), ord('2')):
             self._open_cell_editor_and_execute_variable_creator(list_variable=(keycode==ord('2')))
         else:
             event.Skip()

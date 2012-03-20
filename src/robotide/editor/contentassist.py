@@ -58,7 +58,7 @@ class _ContentAssistTextCtrlBase(object):
             return
         elif self._popup.is_shown() and keycode < 256:
             self._populate_content_assist(event)
-        elif keycode in (ord('1'), ord('2')) and event.ControlDown():
+        elif keycode in (ord('1'), ord('2')) and event.ControlDown() and not event.AltDown():
             self.execute_variable_creator(list_variable=(keycode==ord('2')))
         event.Skip()
 
