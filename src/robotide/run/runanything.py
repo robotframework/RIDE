@@ -34,7 +34,7 @@ class RunAnything(Plugin):
         self._create_menu(self._configs)
 
     def OnManageConfigurations(self, event):
-        dlg = ConfigManagerDialog(self._configs)
+        dlg = ConfigManagerDialog(self._configs, self)
         if dlg.ShowModal() == wx.ID_OK:
             self._configs.update(dlg.get_data())
             self.save_setting('configs', self._configs.data_to_save())

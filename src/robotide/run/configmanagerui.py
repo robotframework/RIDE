@@ -37,8 +37,9 @@ command does not work.'''.replace('\n', ' '),
 
 class ConfigManagerDialog(Dialog):
 
-    def __init__(self, configs):
+    def __init__(self, configs, plugin):
         Dialog.__init__(self, title='Manage Run Configurations')
+        self.plugin = plugin
         self._create_ui(configs)
 
     def _create_ui(self, configs):
