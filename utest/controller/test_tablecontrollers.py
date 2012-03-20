@@ -1,8 +1,12 @@
 import unittest
-from robot.parsing.model import TestCaseFile
+from robot.parsing.model import TestCaseFile, TestCaseFileSettingTable
+from robot.parsing.settings import _Import
+from robot.parsing.tablepopulators import SettingTablePopulator
 from robot.utils.asserts import assert_equals
 
 from robotide.controller.filecontrollers import TestCaseFileController
+from robotide.controller.tablecontrollers import ImportSettingsController
+
 
 VALID_NAME = 'Valid name'
 
@@ -47,3 +51,24 @@ class TestCaseCreationTest(unittest.TestCase):
         test = self.ctrl.new('   ' + VALID_NAME + '\t   \n')
         assert_equals(test.name, VALID_NAME)
 
+
+class LibraryImportListOperationsTest(unittest.TestCase):
+
+    def setUp(self):
+        self._parent = lambda:0
+        self._parent.mark_dirty = lambda:0
+        self._parent.datafile_controller = self._parent
+        self._parent.update_namespace = lambda:0
+        self._table = TestCaseFileSettingTable(lambda:0)
+        self.ctrl = ImportSettingsController(self._parent, self._table)
+        self._lib1 = self.ctrl.add_library('libbi1', '', '')
+        self._lib2 = self.ctrl.add_library('libbi2', '', '')
+        self.assertEqual([self._lib1.name, self._lib2.name], [l.name for l in self.ctrl])
+
+    def test_move_up(self):
+        self.ctrl.move_up(1)
+        self.assertEqual([self._lib2.name, self._lib1.name], [l.name for l in self.ctrl])
+
+    def test_move_down(self):
+        self.ctrl.move_down(0)
+        self.assertEqual([self._lib2.name, self._lib1.name], [l.name for l in self.ctrl])
