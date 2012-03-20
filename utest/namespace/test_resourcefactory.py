@@ -71,7 +71,7 @@ class ResourceFactoryDirectoryIgnoreTestCase(unittest.TestCase):
             self._ignore_import(os.path.relpath(os.path.dirname(__file__)))
 
     def _ignore_import(self, exclude_directory):
-        r = _ResourceFactory(exclude_directory=exclude_directory)
+        r = self._create_factory(exclude_directory)
         self.assertEqual(None, r.get_resource_from_import(self._import, self._context))
 
     def _create_factory(self, exluded_dir):
