@@ -86,7 +86,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 0.43</h2>
+<h2>Release notes for 0.43.1</h2>
 <table border="1">
 <tr>
 <td><b>ID</b></td>
@@ -95,89 +95,17 @@ RELEASE_NOTES = """
 <td><b>Summary</b></td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=861">Issue 861</a></td>
-<td>Enhancement</td>
-<td>High</td>
-<td>UI for editing RIDE's settings</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=157">Issue 157</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=953">Issue 953</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>RIDE should not allow editing read-only files</td>
+<td>Selecting Run -> Manage Run Configurations causes traceback</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=442">Issue 442</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=954">Issue 954</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>Help-About isn't available on OSX</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=781">Issue 781</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>Help-Release Notes not available on Mac OSX after first launch</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=895">Issue 895</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>The pythonpath setting is not used by Run plugin</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=943">Issue 943</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>Copy does not work in the output view of Run tab</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=952">Issue 952</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>RIDE should survive if configuration file is corrupted</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=623">Issue 623</a></td>
-<td>Enhancement</td>
-<td>Medium</td>
-<td>Check for updates once a week</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=871">Issue 871</a></td>
-<td>Enhancement</td>
-<td>Medium</td>
-<td>Create variable keyboard shortcut</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=927">Issue 927</a></td>
-<td>Enhancement</td>
-<td>Medium</td>
-<td>Default space number should be cofigurable</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=932">Issue 932</a></td>
-<td>Enhancement</td>
-<td>Medium</td>
-<td>Mechanism for settings migration</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=934">Issue 934</a></td>
-<td>Enhancement</td>
-<td>Medium</td>
-<td>Colorize Library keywords in a different color than User keywords</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=866">Issue 866</a></td>
-<td>Documentation</td>
-<td>Medium</td>
-<td>Document how to configure line separator</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=940">Issue 940</a></td>
-<td>Defect</td>
-<td>Low</td>
-<td>In ReleaseNote Tab, the first three Hyperlinks should refer to GitHub now, no longer to GoogleCode</td>
+<td>Import and Metadata move not working in RIDE 0.43</td>
 </tr>
 </table>
-<p>Altogether 14 issues.</p>
+<p>Altogether 2 issues.</p>
 """
