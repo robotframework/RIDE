@@ -27,11 +27,30 @@ else:
 
 
 def get_system_encoding():
-    encoding = sys.getfilesystemencoding()
+    encoding = _get_python_file_system_encoding()
     if not encoding and JYTHON:
-        from java.lang import System
-        encoding = System.getProperty('file.encoding')
+        encoding = _get_java_file_system_encoding()
     return encoding or DEFAULT_SYSTEM_ENCODING
+
+def _get_python_file_system_encoding():
+    encoding = sys.getfilesystemencoding()
+    return encoding if _is_valid(encoding) else None
+
+def _get_java_file_system_encoding():
+    from java.lang import System
+    encoding = System.getProperty('file.encoding')
+    return encoding if _is_valid(encoding) else None
+
+def _is_valid(encoding):
+    if not encoding:
+        return False
+    try:
+        'test'.encode(encoding)
+    except LookupError:
+        return False
+    else:
+        return True
+
 
 def get_output_encoding():
     if _on_buggy_jython():
@@ -50,18 +69,17 @@ def _on_buggy_jython():
 def _get_encoding_from_standard_streams():
     # Stream may not have encoding attribute if it is intercepted outside RF
     # in Python. Encoding is None if process's outputs are redirected.
-    return getattr(sys.__stdout__, 'encoding', None) \
-        or getattr(sys.__stderr__, 'encoding', None) \
-        or getattr(sys.__stdin__, 'encoding', None)
+    for stream in sys.__stdout__, sys.__stderr__, sys.__stdin__:
+        encoding = getattr(stream, 'encoding', None)
+        if _is_valid(encoding):
+            return encoding
+    return None
 
 def _get_encoding_from_unix_environment_variables():
     for name in 'LANG', 'LC_CTYPE', 'LANGUAGE', 'LC_ALL':
-        try:
+        if name in os.environ:
             # Encoding can be in format like `UTF-8` or `en_US.UTF-8`
             encoding = os.environ[name].split('.')[-1]
-            'testing that encoding is valid'.encode(encoding)
-        except (KeyError, LookupError):
-            pass
-        else:
-            return encoding
+            if _is_valid(encoding):
+                return encoding
     return None
