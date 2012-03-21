@@ -64,8 +64,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.register_shortcut('Ctrl-V', focused(lambda e: self._editor.paste()))
         self.register_shortcut('Ctrl-Z', focused(lambda e: self._editor.undo()))
         self.register_shortcut('Ctrl-Y', focused(lambda e: self._editor.redo()))
-        # delete seems to have no similar method in styledtextctrl .. DeleteBack
-        # will remove the character before caret --> leaving delete out
+        self.register_shortcut('Del', focused(lambda e: self._editor.delete()))
 
     def disable(self):
         self.remove_self_from_tree_aware_plugins()
@@ -282,6 +281,11 @@ class SourceEditor(wx.Panel):
                                                      self._editor.utf8_text):
                 return False
         return True
+
+    def delete(self):
+        if self._editor.GetSelectionStart() == self._editor.GetSelectionEnd():
+            self._editor.CharRight()
+        self._editor.DeleteBack()
 
     def cut(self):
         self._editor.Cut()
