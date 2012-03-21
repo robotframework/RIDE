@@ -101,16 +101,19 @@ def generate_seed():
         seed = long(sys.argv[2])
     return seed
 
+def _debugging(seed, path, i):
+    print '='*80
+    trace = debug(seed, path, i, [], 0, i)
+    print '#'*80
+    print trace
+    print '%'*80
+    print 'seed = ', seed
+    run_trace(init_ride_runner(seed, path), trace)
+
 if __name__ == '__main__':
     result, seed, i, path = do_test(generate_seed(), sys.argv[1])
     if result == 'FAIL':
-        print '='*80
-        trace = debug(seed, path, i, [], 0, i)
-        print '#'*80
-        print trace
-        print '%'*80
-        print 'seed = ', seed
-        run_trace(init_ride_runner(seed, path), trace)
+        _debugging(seed, path, i)
         print 'error occurred!'
         sys.exit(1) #indicate failure
 

@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 import os
-from robotide.controller.commands import AddTestCaseFile, AddTestCase, AddKeyword, AddVariable, ChangeCellValue, AddRow, DeleteRow, InsertCell, DeleteCell, MoveRowsUp, MoveRowsDown, ExtractKeyword, RenameKeywordOccurrences, RenameTest, Undo, Redo, SaveFile, NullObserver
+from robotide.controller.commands import AddTestCaseFile, AddTestCase, AddKeyword, AddVariable, ChangeCellValue, AddRow, DeleteRow, InsertCell, DeleteCell, MoveRowsUp, MoveRowsDown, ExtractKeyword, RenameKeywordOccurrences, RenameTest, Undo, Redo, SaveFile, NullObserver, MoveUp, MoveDown, AddLibrary, AddResource, DeleteItem
 from robotide.namespace import Namespace
 from robotide.controller.chiefcontroller import ChiefController
 from robotide.preferences import RideSettings
@@ -82,6 +82,20 @@ class RIDE(object):
         print 'test = suite.execute(AddTestCase("%s"))' % testname
         self._test = self._suite.execute(AddTestCase(testname))
 
+    def change_test_order(self):
+        self._change_order([t.data for t in self._suite.tests], self._suite.tests)
+
+    def _change_order(self, items, controller):
+        command = MoveUp if self._rand() > 0.5 else MoveDown
+        r = self._rand()
+        if self._skip:
+            return
+        items = list(items)
+        if items:
+            i = int(r*(len(items)))
+            print '%s.execute(%s(items[%d]))' % (controller.__class__.__name__, command.__name__, i)
+            self._suite.tests.execute(command(items[i]))
+
     def _rand(self):
         return self._random.random()
 
@@ -99,6 +113,9 @@ class RIDE(object):
         print 'keyword = suite.execute(AddKeyword("%s"))' % keyword_name
         self._keyword = self._suite.execute(AddKeyword(keyword_name))
 
+    def change_keyword_order(self):
+        pass
+
     def add_variable(self):
         if self._skip:
             self._rand()
@@ -107,6 +124,9 @@ class RIDE(object):
         command = AddVariable('${var%s}' % str(self._rand()), str(self._rand()), 'comment')
         print 'suite.execute(%s)' % str(command)
         self._suite.execute(command)
+
+    def change_variable_order(self):
+        pass
 
     def write_cell_data(self):
         prefix = self._random.choice(['# something', 'foobar', ': FOR', '${var}', 'No Operation', '\\'])
@@ -144,6 +164,29 @@ class RIDE(object):
     def extract_keyword(self):
         first_row = self._rand_row()
         self._macro_execute(ExtractKeyword('foo', '', [first_row, first_row+self._random.randint(1,10)]))
+
+    def add_library_import(self):
+        if not self._skip:
+            print 'suite.imports.execute(AddLibrary(["OperatingSystem", "", ""], "#comment"))'
+            self._suite.imports.execute(AddLibrary(['OperatingSystem', '', ''], '#comment'))
+
+    def remove_import(self):
+        r = self._rand()
+        if self._skip:
+            return
+        imps = list(self._suite.imports)
+        if imps:
+            i = int(r*len(imps))
+            print 'suite.imports.execute(DeleteItem(%d))' % i
+            self._suite.imports.execute(DeleteItem(i))
+
+    def add_resource_import(self):
+        if not self._skip:
+            print 'suite.imports.execute(AddResource(["SomeNonExisting.txt"], "#comment"))'
+            self._suite.imports.execute(AddResource(['SomeNonExisting.txt'], '#comment'))
+
+    def change_import_order(self):
+        self._change_order(range(len(self._suite.imports)), self._suite.imports)
 
     def rename_keyword(self):
         class Observer(object):
