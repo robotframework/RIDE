@@ -112,4 +112,5 @@ if __name__ == '__main__':
         print 'seed = ', seed
         run_trace(init_ride_runner(seed, path), trace)
         print 'error occurred!'
+        sys.exit(1) #indicate failure
 
