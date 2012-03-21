@@ -31,6 +31,7 @@ from test_runner import Runner
 
 
 def do_test(seed, path):
+    i = None
     try:
         ride_runner = init_ride_runner(seed, path)
         for i in range(10000):
@@ -41,7 +42,7 @@ def do_test(seed, path):
         print 'i = ', i
         print 'seed was', str(seed)
         print 'path was', path
-        return 'FAIL', seed, i, path
+        return 'FAIL', seed, i or 0, path
 
 def init_ride_runner(seed, path):
     shutil.rmtree(path, ignore_errors=True)

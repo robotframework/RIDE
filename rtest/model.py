@@ -12,17 +12,18 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 import os
-from robotide.controller.robotdata import NewTestCaseFile
 from robotide.controller.commands import AddTestCaseFile, AddTestCase, AddKeyword, AddVariable, ChangeCellValue, AddRow, DeleteRow, InsertCell, DeleteCell, MoveRowsUp, MoveRowsDown, ExtractKeyword, RenameKeywordOccurrences, RenameTest, Undo, Redo, SaveFile, NullObserver
 from robotide.namespace import Namespace
 from robotide.controller.chiefcontroller import ChiefController
+from robotide.preferences import RideSettings
 
 
 class RIDE(object):
 
     def __init__(self, random, path):
         print 'chief = ChiefController(Namespace())'
-        self._chief = ChiefController(Namespace())
+        settings = RideSettings()
+        self._chief = ChiefController(Namespace(settings=settings), settings=settings)
         self._path = path
         self._suite = None
         self._test = None
