@@ -94,7 +94,7 @@ class RIDE(object):
         if items:
             i = int(r*(len(items)))
             print '%s.execute(%s(items[%d]))' % (controller.__class__.__name__, command.__name__, i)
-            self._suite.tests.execute(command(items[i]))
+            controller.execute(command(items[i]))
 
     def _rand(self):
         return self._random.random()
@@ -186,7 +186,7 @@ class RIDE(object):
             self._suite.imports.execute(AddResource(['SomeNonExisting.txt'], '#comment'))
 
     def change_import_order(self):
-        self._change_order(range(len(self._suite.imports)), self._suite.imports)
+        self._change_order(range(sum(1 for _ in self._suite.imports)), self._suite.imports)
 
     def rename_keyword(self):
         class Observer(object):

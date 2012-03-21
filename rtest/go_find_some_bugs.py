@@ -110,10 +110,13 @@ def _debugging(seed, path, i):
     print 'seed = ', seed
     run_trace(init_ride_runner(seed, path), trace)
 
+def main(path):
+    result, seed, i, path = do_test(generate_seed(), path)
+    #_debugging..
+    return result != 'FAIL'
+
 if __name__ == '__main__':
-    result, seed, i, path = do_test(generate_seed(), sys.argv[1])
-    if result == 'FAIL':
-        _debugging(seed, path, i)
+    if not main(sys.argv[1]):
         print 'error occurred!'
         sys.exit(1) #indicate failure
 

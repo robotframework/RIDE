@@ -2,6 +2,8 @@ import os
 from os.path import join, isdir, isfile
 import csv
 import re
+import shutil
+import tempfile
 from urllib2 import urlopen
 from string import Template
 from StringIO import StringIO
@@ -80,6 +82,19 @@ def test(args):
     """Run unit tests (requires nose and mock)"""
     _remove_bytecode_files()
     assert _run_nose(args) is True
+
+@task
+def random_test():
+    """Use rtest go_find_bugs.py to randomly test RIDE api"""
+    _remove_bytecode_files()
+    _set_development_path()
+    sys.path.insert(0, '.')
+    from rtest.go_find_some_bugs import main
+    dir = tempfile.mkdtemp()
+    try:
+        main(dir)
+    finally:
+        shutil.rmtree(dir, ignore_errors=True)
 
 @task
 def test_parallel():
