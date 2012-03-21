@@ -92,7 +92,7 @@ def random_test():
     from rtest.go_find_some_bugs import main
     dir = tempfile.mkdtemp()
     try:
-        main(dir)
+        assert main(dir)
     finally:
         shutil.rmtree(dir, ignore_errors=True)
 
