@@ -510,31 +510,33 @@ class TestRunnerPlugin(Plugin):
         if "--outputdir" not in command and "-d" not in command:
             standard_args.extend(["--outputdir", self._tmpdir])
 
+    def _create_standard_args(self, command, profile):
+        standard_args = []
+        standard_args.extend(profile.get_custom_args())
+        self._add_tmp_outputdir_if_not_given_by_user(command, standard_args)
+        self._add_pythonpath_if_in_settings_and_not_given_by_user(command,
+                                                                  standard_args)
+        standard_args.extend(["--monitorcolors", "off"])
+        standard_args.extend(["--monitorwidth", self._get_monitor_width()])
+        for (suite, test) in self._tree.GetCheckedTestsByName():
+            standard_args.extend(["--suite", suite, "--test", test])
+        return standard_args
+
     def _get_command(self):
         '''Return the command (as a list) used to run the test'''
         profile = self.get_current_profile()
         command = profile.get_command_prefix()[:]
-
         argfile = os.path.join(self._tmpdir, "argfile.txt")
         command.extend(["--argumentfile", argfile])
         command.extend(["--listener", self._get_listener_to_cmd()])
         command.append(relpath(self.model.suite.source))
+        self._write_argfile(argfile, self._create_standard_args(command, profile))
+        return command
 
-        standard_args = []
-        standard_args.extend(profile.get_custom_args())
-        self._add_tmp_outputdir_if_not_given_by_user(command, standard_args)
-        self._add_pythonpath_if_in_settings_and_not_given_by_user(command, standard_args)
-        standard_args.extend(["--monitorcolors","off"])
-        standard_args.extend(["--monitorwidth", self._get_monitor_width()])
-
-        for (suite, test) in self._tree.GetCheckedTestsByName():
-            standard_args.extend(["--suite", suite, "--test", test])
-
+    def _write_argfile(self, argfile, args):
         f = codecs.open(argfile, "w", "utf-8")
         f.write("\n".join(standard_args))
         f.close()
-
-        return command
 
     def _add_pythonpath_if_in_settings_and_not_given_by_user(self, command, standard_args):
         if '--pythonpath' in command:
