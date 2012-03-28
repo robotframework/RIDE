@@ -529,9 +529,14 @@ class TestRunnerPlugin(Plugin):
         argfile = os.path.join(self._tmpdir, "argfile.txt")
         command.extend(["--argumentfile", argfile])
         command.extend(["--listener", self._get_listener_to_cmd()])
-        command.append(relpath(self.model.suite.source))
+        command.append(self._get_suite_source_for_command())
         self._write_argfile(argfile, self._create_standard_args(command, profile))
         return command
+
+    def _get_suite_source_for_command(self):
+        if os.path.splitdrive(os.path.curdir)[0] != os.path.splitdrive(self.model.suite.source)[0]:
+            return os.path.abspath(self.model.suite.source)
+        return relpath(self.model.suite.source)
 
     def _write_argfile(self, argfile, args):
         f = codecs.open(argfile, "w", "utf-8")
