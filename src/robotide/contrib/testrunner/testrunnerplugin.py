@@ -540,7 +540,7 @@ class TestRunnerPlugin(Plugin):
 
     def _write_argfile(self, argfile, args):
         f = codecs.open(argfile, "w", "utf-8")
-        f.write("\n".join(standard_args))
+        f.write("\n".join(args))
         f.close()
 
     def _add_pythonpath_if_in_settings_and_not_given_by_user(self, command, standard_args):
