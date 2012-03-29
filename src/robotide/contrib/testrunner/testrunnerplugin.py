@@ -534,9 +534,14 @@ class TestRunnerPlugin(Plugin):
         return command
 
     def _get_suite_source_for_command(self):
-        if os.path.splitdrive(os.path.curdir)[0] != os.path.splitdrive(self.model.suite.source)[0]:
-            return os.path.abspath(self.model.suite.source)
+        cur = os.path.abspath(os.path.curdir)
+        source = os.path.abspath(self.model.suite.source)
+        if not self._is_same_drive(cur, source):
+            return source
         return relpath(self.model.suite.source)
+
+    def _is_same_drive(self, source1, source2):
+        return os.path.splitdrive(source1)[0] == os.path.splitdrive(source2)[0]
 
     def _write_argfile(self, argfile, args):
         f = codecs.open(argfile, "w", "utf-8")
