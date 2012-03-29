@@ -86,7 +86,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 0.43.2</h2>
+<h2>Release notes for 0.43.3</h2>
 <table border="1">
 <tr>
 <td><b>ID</b></td>
@@ -95,11 +95,23 @@ RELEASE_NOTES = """
 <td><b>Summary</b></td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=955">Issue 955</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=956">Issue 956</a></td>
 <td>Defect</td>
 <td>High</td>
-<td>Variable completion shadows @ sign in windows</td>
+<td>RIDE freezes when adding data to 9th cell before other cells</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=957">Issue 957</a></td>
+<td>Defect</td>
+<td>High</td>
+<td>Starting a testcase from the run tab doesn't work, when testcase drive != ride drive</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=959">Issue 959</a></td>
+<td>Defect</td>
+<td>Medium</td>
+<td>Delete-key doesn't work in text editor</td>
 </tr>
 </table>
-<p>Altogether 1 issues.</p>
+<p>Altogether 3 issues.</p>
 """
