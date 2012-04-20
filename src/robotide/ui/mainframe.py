@@ -39,6 +39,8 @@ _menudata = """
 !Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN
 !Open &Resource | Open a resource file | Ctrlcmd-R
 ---
+!&Reload Directory | Reload directory | Ctrlcmd-Shift-R | ART_MISSING_IMAGE
+---
 !&New Project | Create a new top level suite | Ctrlcmd-N
 !N&ew Resource | Create New Resource File | Ctrlcmd-Shift-N
 ---
@@ -266,6 +268,12 @@ class RideFrame(wx.Frame, RideEventHandler):
     def OnReportaProblem(self, event):
         wx.LaunchDefaultBrowser('http://code.google.com/p/robotframework-ride/issues/list')
 
+    def OnReloadDirectory(self, event):
+        #if self._check_unsaved_modifications():
+            path = self._controller.default_dir
+            self._controller.update_default_dir(path)
+            self._controller.load_datafile(path, LoadProgressObserver(self))
+            self._populate_tree()
 
 # This code is copied from http://wiki.wxpython.org/EnsureFrameIsOnScreen,
 # and adapted to fit our code style.
