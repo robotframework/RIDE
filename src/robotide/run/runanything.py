@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 import wx
+from robotide.controller.basecontroller import _BaseController
 
 from robotide.pluginapi import Plugin, ActionInfo, SeparatorInfo
 from robotide.run.configmanagerui import ConfigManagerDialog
@@ -58,7 +59,7 @@ class RunAnything(Plugin):
         self.register_action(info)
 
 
-class RunConfigs(object):
+class RunConfigs(_BaseController):
 
     def __init__(self, saved_data):
         self._configs = []
