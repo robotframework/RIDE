@@ -269,11 +269,14 @@ class RideFrame(wx.Frame, RideEventHandler):
         wx.LaunchDefaultBrowser('http://code.google.com/p/robotframework-ride/issues/list')
 
     def OnReloadDirectory(self, event):
-        #if self._check_unsaved_modifications():
-            path = self._controller.default_dir
-            self._controller.update_default_dir(path)
-            self._controller.load_datafile(path, LoadProgressObserver(self))
-            self._populate_tree()
+        if self._check_unsaved_modifications():
+            wx.CallAfter(self._reload)
+
+    def _reload(self):
+        path = self._controller.default_dir
+        self._controller.update_default_dir(path)
+        self._controller.load_datafile(path, LoadProgressObserver(self))
+        self._populate_tree()
 
 # This code is copied from http://wiki.wxpython.org/EnsureFrameIsOnScreen,
 # and adapted to fit our code style.
