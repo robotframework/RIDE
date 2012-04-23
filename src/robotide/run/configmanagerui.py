@@ -78,6 +78,7 @@ class _ConfigListEditor(ListEditorBase):
     _columns = ['Name', 'Command', 'Documentation']
 
     def __init__(self, parent, configs):
+        self._editor_open = False
         ListEditorBase.__init__(self, parent, self._columns, configs)
 
     def _create_list(self, columns, data):
@@ -103,6 +104,16 @@ class _ConfigListEditor(ListEditorBase):
 
     def edit_config(self, index, data):
         self._controller.edit(index, *data)
+
+    def OnDelete(self, event):
+        if not self._editor_open:
+            ListEditorBase.OnDelete(self, event)
+
+    def editor_open(self):
+        self._editor_open = True
+
+    def editor_closed(self):
+        self._editor_open = False
 
 
 class _TextEditListCtrl(AutoWidthColumnList, TextEditMixin):
@@ -134,6 +145,10 @@ class _TextEditListCtrl(AutoWidthColumnList, TextEditMixin):
     def open_editor(self, row):
         self.OpenEditor(0, row)
 
+    def OpenEditor(self, col, row):
+        self._parent.editor_open()
+        TextEditMixin.OpenEditor(self, col, row)
+
     def new_item(self):
         self._new_item_creation = True
         self.InsertStringItem(self.ItemCount, '')
@@ -159,3 +174,4 @@ class _TextEditListCtrl(AutoWidthColumnList, TextEditMixin):
         else:
             self.Parent.edit_config(self.curRow, self._get_row(self.curRow))
             self.Select(self.curRow)
+        self._parent.editor_closed()
