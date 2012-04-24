@@ -16,6 +16,7 @@ import wx
 import wx.grid
 
 from robotide.context import ctrl_or_cmd, bind_keys_to_evt_menu
+from robotide.editor.contentassist import SuggestionSource
 from robotide.widgets import Label
 
 from .contentassist import ContentAssistTextCtrl
@@ -251,5 +252,5 @@ class MultiLineEditor(ValueEditor):
 class ContentAssistEditor(ValueEditor):
 
     def _get_text_ctrl(self):
-        return ContentAssistTextCtrl(self, self.Parent.plugin, (500, -1))
+        return ContentAssistTextCtrl(self, SuggestionSource(self.Parent.plugin, None), (500, -1))
 

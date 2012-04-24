@@ -133,9 +133,9 @@ class ExpandingContentAssistTextCtrl(_ContentAssistTextCtrlBase, ExpandoTextCtrl
 
 class ContentAssistTextCtrl(_ContentAssistTextCtrlBase, wx.TextCtrl):
 
-    def __init__(self, parent, plugin, size=wx.DefaultSize):
+    def __init__(self, parent, suggestion_source, size=wx.DefaultSize):
         wx.TextCtrl.__init__(self, parent, size=size, style=wx.WANTS_CHARS)
-        _ContentAssistTextCtrlBase.__init__(self, SuggestionSource(plugin, None))
+        _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
 
 class Suggestions(object):
 
