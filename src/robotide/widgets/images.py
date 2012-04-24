@@ -36,10 +36,14 @@ class ImageProvider(object):
         self.DATAFILEIMG = self._img_from_art_provider(wx.ART_NORMAL_FILE)
         self.PROGICONS = self._load_prog_icons()
         self.REPORTIMG = self._load_image('report.png')
+        self._icons = {}
+        for name in dir(self):
+            value = getattr(self, name)
+            if isinstance(value, wx.Bitmap):
+                self._icons[name] = getattr(self, name)
 
     def get_image_by_name(self, name):
-        if name == "REPORTIMG":
-            return self.REPORTIMG
+        return self._icons.get(name, None)
 
     def _load_image(self, name):
         path = self._get_img_path(name)
