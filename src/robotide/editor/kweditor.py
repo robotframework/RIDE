@@ -369,6 +369,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._open_cell_editor_with_content_assist()
         elif control_down and not event.AltDown() and keycode in (ord('1'), ord('2')):
             self._open_cell_editor_and_execute_variable_creator(list_variable=(keycode==ord('2')))
+        elif control_down and keycode == ord('B'):
+            self._navigate_to_matching_user_keyword(self.GetGridCursorRow(), self.GetGridCursorCol())
         else:
             event.Skip()
 
