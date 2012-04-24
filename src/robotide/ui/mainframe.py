@@ -39,7 +39,7 @@ _menudata = """
 !Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN
 !Open &Resource | Open a resource file | Ctrlcmd-R
 ---
-!&Reload Directory | Reload directory | Ctrlcmd-Shift-R | ART_MISSING_IMAGE
+!&Reload Directory | Reload directory | Ctrlcmd-Shift-R | CUSTOM_REFRESH_ALL
 ---
 !&New Project | Create a new top level suite | Ctrlcmd-N
 !N&ew Resource | Create New Resource File | Ctrlcmd-Shift-N

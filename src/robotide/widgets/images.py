@@ -36,6 +36,7 @@ class ImageProvider(object):
         self.DATAFILEIMG = self._img_from_art_provider(wx.ART_NORMAL_FILE)
         self.PROGICONS = self._load_prog_icons()
         self.REPORTIMG = self._load_image('report.png')
+        self.REFRESH_ALL = self._load_image('database_refresh.png')
         self._icons = {}
         for name in dir(self):
             value = getattr(self, name)
