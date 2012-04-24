@@ -95,15 +95,40 @@ class ListVariableDialog(_Dialog):
                                 settings=self.plugin.global_settings)]
 
 
+class HistorySuggester(object):
+
+    def __init__(self):
+        self._suggestions = []
+
+    def get_suggestions(self, name, *args):
+        return [s for s in self._suggestions if name is None or name in s.name]
+
+    def store(self, name):
+        self._suggestions += [self._suggestion(name)]
+        self._suggestions.sort()
+
+    def _suggestion(self, name):
+        s = lambda:0
+        s.name = name
+        s.details = None
+        return s
+
+
 class LibraryDialog(_Dialog):
+    _history_suggest = HistorySuggester()
 
     def _get_editors(self, item):
         name = item and item.name or ''
         args = item and utils.join_value(item.args) or ''
         alias = item.alias if item else ''
-        return [ValueEditor(self, name, 'Name'),
+        return [ContentAssistEditor(self, name, 'Name', suggestion_source=self._history_suggest),
                 ValueEditor(self, args, 'Args'),
                 ValueEditor(self, alias, 'Alias')]
+
+    def get_value(self):
+        self._history_suggest.store(self._editors[0].get_value())
+        return _Dialog.get_value(self)
+
 
 class VariablesDialog(LibraryDialog):
 
@@ -114,10 +139,15 @@ class VariablesDialog(LibraryDialog):
                ValueEditor(self, args, 'Args')]
 
 class ResourceDialog(_Dialog):
+    _history_suggest = HistorySuggester()
 
     def _get_editors(self, item):
         name = item and item.name or ''
-        return [ValueEditor(self, name, 'Path')]
+        return [ContentAssistEditor(self, name, 'Path', suggestion_source=self._history_suggest)]
+
+    def get_value(self):
+        self._history_suggest.store(self._editors[0].get_value())
+        return _Dialog.get_value(self)
 
 
 class DocumentationDialog(_Dialog):
