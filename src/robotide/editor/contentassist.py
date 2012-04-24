@@ -181,6 +181,25 @@ class SuggestionSource(object):
         return self._plugin.content_assist_values(value) # TODO: Remove old functionality when no more needed
 
 
+class HistorySuggester(object):
+
+    def __init__(self):
+        self._suggestions = []
+
+    def get_suggestions(self, name, *args):
+        return [s for s in self._suggestions if name is None or name in s.name]
+
+    def store(self, name):
+        self._suggestions += [self._suggestion(name)]
+        self._suggestions.sort()
+
+    def _suggestion(self, name):
+        s = lambda:0
+        s.name = name
+        s.details = None
+        return s
+
+
 class ContentAssistPopup(object):
 
     def __init__(self, parent, suggestion_source):
