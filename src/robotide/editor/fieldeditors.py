@@ -251,6 +251,10 @@ class MultiLineEditor(ValueEditor):
 
 class ContentAssistEditor(ValueEditor):
 
+    def __init__(self, parent, value, label=None, validator=None, settings=None, suggestion_source=None):
+        self._suggestion_source = suggestion_source or SuggestionSource(parent.plugin, None)
+        ValueEditor.__init__(self, parent, value, label, validator, settings)
+
     def _get_text_ctrl(self):
-        return ContentAssistTextCtrl(self, SuggestionSource(self.Parent.plugin, None), (500, -1))
+        return ContentAssistTextCtrl(self, self._suggestion_source, (500, -1))
 
