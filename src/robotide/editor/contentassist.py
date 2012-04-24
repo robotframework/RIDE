@@ -26,8 +26,8 @@ _PREFERRED_POPUP_SIZE = (400, 200)
 
 class _ContentAssistTextCtrlBase(object):
 
-    def __init__(self, plugin, controller=None):
-        self._popup = ContentAssistPopup(self, plugin, controller=controller)
+    def __init__(self, suggestion_source):
+        self._popup = ContentAssistPopup(self, suggestion_source)
         self.Bind(wx.EVT_KEY_DOWN, self.OnChar)
         self.Bind(wx.EVT_KILL_FOCUS, self.OnFocusLost)
         self.Bind(wx.EVT_MOVE, self.OnFocusLost)
@@ -128,20 +128,19 @@ class ExpandingContentAssistTextCtrl(_ContentAssistTextCtrlBase, ExpandoTextCtrl
 
     def __init__(self, parent, plugin, controller):
         ExpandoTextCtrl.__init__(self, parent, size=wx.DefaultSize, style=wx.WANTS_CHARS)
-        _ContentAssistTextCtrlBase.__init__(self, plugin, controller=controller)
+        _ContentAssistTextCtrlBase.__init__(self, SuggestionSource(plugin, controller))
 
 
 class ContentAssistTextCtrl(_ContentAssistTextCtrlBase, wx.TextCtrl):
 
     def __init__(self, parent, plugin, size=wx.DefaultSize):
         wx.TextCtrl.__init__(self, parent, size=size, style=wx.WANTS_CHARS)
-        _ContentAssistTextCtrlBase.__init__(self, plugin)
+        _ContentAssistTextCtrlBase.__init__(self, SuggestionSource(plugin, None))
 
 class Suggestions(object):
 
-    def __init__(self, plugin, controller):
-        self._plugin = plugin
-        self._controller = controller
+    def __init__(self, suggestion_source):
+        self._suggestion_source = suggestion_source
         self._previous_value = None
         self._previous_choices = []
 
@@ -160,10 +159,7 @@ class Suggestions(object):
         if self._previous_value and value.startswith(self._previous_value):
             return [(key, val) for key, val in self._previous_choices
                                     if normalize(key).startswith(normalize(value))]
-        if self._controller and row:
-            choices = self._controller.get_local_namespace_for_row(row).get_suggestions(value)
-        else:
-            choices = self._plugin.content_assist_values(value) # TODO: Remove old functionality when no more needed
+        choices = self._suggestion_source.get_suggestions(value, row)
         return self._format_choices(choices, value)
 
     def _format_choices(self, data, prefix):
@@ -173,17 +169,28 @@ class Suggestions(object):
         return choice.name if normalize(choice.name).startswith(normalize(prefix)) else choice.longname
 
 
+class SuggestionSource(object):
+
+    def __init__(self, plugin, controller):
+        self._plugin = plugin
+        self._controller = controller
+
+    def get_suggestions(self, value, row=None):
+        if self._controller and row:
+            return self._controller.get_local_namespace_for_row(row).get_suggestions(value)
+        return self._plugin.content_assist_values(value) # TODO: Remove old functionality when no more needed
+
+
 class ContentAssistPopup(object):
 
-    def __init__(self, parent, plugin, controller=None):
+    def __init__(self, parent, suggestion_source):
         self._parent = parent
-        self._plugin = plugin
         self._main_popup = RidePopupWindow(parent, _PREFERRED_POPUP_SIZE)
         self._details_popup = Tooltip(parent, _PREFERRED_POPUP_SIZE)
         self._selection = -1
         self._list = ContentAssistList(self._main_popup, self.OnListItemSelected,
                                        self.OnListItemActivated)
-        self._suggestions = Suggestions(self._plugin, controller)
+        self._suggestions = Suggestions(suggestion_source)
 
     def reset(self):
         self._selection = -1
