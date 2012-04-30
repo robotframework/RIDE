@@ -196,6 +196,7 @@ class HistorySuggester(object):
     def _suggestion(self, name):
         s = lambda:0
         s.name = name
+        s.longname = name
         s.details = None
         return s
 
