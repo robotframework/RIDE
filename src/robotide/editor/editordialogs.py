@@ -13,7 +13,7 @@
 #  limitations under the License.
 
 import wx
-from robotide.editor.contentassist import HistorySuggester
+from robotide.namespace.suggesters import HistorySuggester, ResourceSuggester
 
 from robotide.validators import (ScalarVariableNameValidator,
     ListVariableNameValidator, TimeoutValidator, ArgumentsValidator,
@@ -121,11 +121,10 @@ class VariablesDialog(LibraryDialog):
                ValueEditor(self, args, 'Args')]
 
 class ResourceDialog(_Dialog):
-    _history_suggest = HistorySuggester()
 
     def _get_editors(self, item):
         name = item and item.name or ''
-        return [ContentAssistEditor(self, name, 'Path', suggestion_source=self._history_suggest)]
+        return [ContentAssistEditor(self, name, 'Path', suggestion_source=ResourceSuggester(self._controller))]
 
 
 class DocumentationDialog(_Dialog):

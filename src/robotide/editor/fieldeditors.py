@@ -16,7 +16,7 @@ import wx
 import wx.grid
 
 from robotide.context import ctrl_or_cmd, bind_keys_to_evt_menu
-from robotide.editor.contentassist import SuggestionSource
+from robotide.namespace.suggesters import SuggestionSource
 from robotide.widgets import Label
 
 from .contentassist import ContentAssistTextCtrl
