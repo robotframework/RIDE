@@ -60,6 +60,10 @@ class _FileSystemElement(object):
     def has_been_removed_from_disk(self):
         return self._stat != (0, 0) and not self.exists()
 
+    def relative_path_to(self, other):
+        other_path = os.path.join(other.directory, other.filename)
+        return os.path.relpath(other_path, start=self.directory)
+
     def is_readonly(self):
         return not os.access(self.filename, os.W_OK)
 

@@ -6,7 +6,7 @@ from robotide.robotapi import TestCase, TestCaseFile, TestDataDirectory
 from robot.utils.asserts import (assert_equals, assert_true, assert_false)
 
 from robotide.controller.filecontrollers import TestCaseFileController, \
-    TestDataDirectoryController
+    TestDataDirectoryController, _FileSystemElement
 from robotide.controller.tablecontrollers import TestCaseController
 from robotide.controller.commands import AddTestCaseFile, AddTestDataDirectory,\
     SortKeywords, Undo, Redo
@@ -244,3 +244,16 @@ class DatafileIteratorTest(unittest.TestCase):
                 in self.directory_controller.iter_datafiles()]
         assert_true(check_count_and_sub_dir.iteration_count == 5)
         assert_true(check_count_and_sub_dir.in_sub_dir)
+
+
+class TestRelativePathTo(unittest.TestCase):
+
+    def test_relative_path_to(self):
+        fse1 = _FileSystemElement('foo.txt', 'bar')
+        fse2 = _FileSystemElement('zoo.html', 'goo')
+        self.assertEqual(os.path.join('..','goo','zoo.html'), fse1.relative_path_to(fse2))
+        self.assertEqual(os.path.join('..', 'bar', 'foo.txt'), fse2.relative_path_to(fse1))
+
+
+if __name__ == '__main__':
+    unittest.main()

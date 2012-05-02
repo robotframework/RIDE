@@ -51,16 +51,16 @@ class HistorySuggester(_Suggester):
 class ResourceSuggester(_Suggester):
 
     def __init__(self, controller):
-        self._controller = controller
+        self._df_controller = controller.datafile_controller
 
     def get_suggestions(self, name, *args):
         already_imported = self._get_resources_that_are_already_imported()
         all_resources = self._get_all_available_resources()
         resources = all_resources - already_imported
-        return sorted(self._suggestion(n) for n in resources if n.startswith(name))
+        return sorted(self._suggestion(n) for n in resources if name in n)
 
     def _get_resources_that_are_already_imported(self):
-        return set(imp.name  for imp in self._controller.datafile_controller.imports)
+        return set(imp.name  for imp in self._df_controller.imports)
 
     def _get_all_available_resources(self):
-        return set(r.display_name for r in self._controller.datafile_controller._chief_controller.resources)
+        return set(self._df_controller.relative_path_to(r) for r in self._df_controller._chief_controller.resources)
