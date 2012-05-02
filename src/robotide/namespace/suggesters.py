@@ -54,4 +54,13 @@ class ResourceSuggester(_Suggester):
         self._controller = controller
 
     def get_suggestions(self, name, *args):
-        return [self._suggestion(name)]
+        already_imported = self._get_resources_that_are_already_imported()
+        all_resources = self._get_all_available_resources()
+        resources = all_resources - already_imported
+        return sorted(self._suggestion(n) for n in resources if n.startswith(name))
+
+    def _get_resources_that_are_already_imported(self):
+        return set(imp.name  for imp in self._controller.datafile_controller.imports)
+
+    def _get_all_available_resources(self):
+        return set(r.display_name for r in self._controller.datafile_controller._chief_controller.resources)
