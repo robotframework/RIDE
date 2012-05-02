@@ -127,10 +127,6 @@ class ResourceDialog(_Dialog):
         name = item and item.name or ''
         return [ContentAssistEditor(self, name, 'Path', suggestion_source=self._history_suggest)]
 
-    def get_value(self):
-        self._history_suggest.store(self._editors[0].get_value())
-        return _Dialog.get_value(self)
-
 
 class DocumentationDialog(_Dialog):
 
