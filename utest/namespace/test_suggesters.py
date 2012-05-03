@@ -1,7 +1,6 @@
 import unittest
 from robotide.controller.filecontrollers import ResourceFileController
 from robotide.namespace.suggesters import ResourceSuggester, CachedLibrarySuggester
-from robotide.spec.xmlreaders import LibrarySpec
 
 
 class _ImportSuggesterTests(object):
