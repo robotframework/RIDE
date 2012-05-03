@@ -1,9 +1,18 @@
 import unittest
 from robotide.controller.filecontrollers import ResourceFileController
-from robotide.namespace.suggesters import ResourceSuggester, CachedLibrarySuggester
+from robotide.namespace.suggesters import ResourceSuggester, CachedLibrarySuggester, BuiltInLibrariesSuggester
 
 
-class _ImportSuggesterTests(object):
+class _ImportSuggesterHelpers(object):
+
+    def _assert_suggestion_names(self, expected, value):
+        self.assertEqual(expected, self._suggestion_names(value))
+
+    def _suggestion_names(self, value):
+        return [s.name for s in self._suggester.get_suggestions(value)]
+
+
+class _ImportSuggesterTests(_ImportSuggesterHelpers):
 
     def setUp(self):
         self._suggester = self._create_suggester(['foofoo'], ['foofoo', 'foobar', 'barbar', 'doodoo'])
@@ -42,12 +51,6 @@ class _ImportSuggesterTests(object):
         imp.name = name
         return imp
 
-    def _assert_suggestion_names(self, expected, value):
-        self.assertEqual(expected, self._suggestion_names(value))
-
-    def _suggestion_names(self, value):
-        return [s.name for s in self._suggester.get_suggestions(value)]
-
 
 class TestResourceSuggester(_ImportSuggesterTests, unittest.TestCase):
 
@@ -59,6 +62,23 @@ class TestCachedLibrarySuggester(_ImportSuggesterTests, unittest.TestCase):
 
     def _create_suggester(self, already_imported=(), available=()):
         return CachedLibrarySuggester(self._controller(imports=already_imported, libraries=available))
+
+class TestBuiltInLibrariesSuggester(_ImportSuggesterHelpers, unittest.TestCase):
+
+    def setUp(self):
+        self._suggester = BuiltInLibrariesSuggester()
+
+    def test_returns_all_builtin_libraries_with_empty_string(self):
+        self._assert_suggestion_names(['Collections',
+                                       'Dialogs',
+                                       'OperatingSystem',
+                                       'Remote',
+                                       'Screenshot',
+                                       'String',
+                                       'Telnet'], '')
+
+    def test_returns_matching_builtin_libraries(self):
+        self._assert_suggestion_names(['OperatingSystem', 'Remote', 'Telnet'], 'te')
 
 
 if __name__ == '__main__':

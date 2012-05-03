@@ -11,6 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+from robot.running.namespace import STDLIB_NAMES
 
 
 class SuggestionSource(object):
@@ -76,3 +77,9 @@ class CachedLibrarySuggester(_ImportSuggester):
 
     def _get_all_available(self):
         return set(self._df_controller.get_all_cached_library_names())
+
+
+class BuiltInLibrariesSuggester(_Suggester):
+
+    def get_suggestions(self, name, *args):
+        return [self._suggestion(n) for n in sorted(STDLIB_NAMES) if name.lower() in n.lower() and n not in ['BuiltIn', 'Reserved', 'Easter']]
