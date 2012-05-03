@@ -9,16 +9,16 @@ class _ImportSuggesterTests(object):
         self._suggester = self._create_suggester(['foofoo'], ['foofoo', 'foobar', 'barbar', 'doodoo'])
 
     def test_all_suggestions_with_empty_string(self):
-        self.assertEqual(['barbar', 'doodoo', 'foobar'], self._suggestion_names(''))
+        self._assert_suggestion_names(['barbar', 'doodoo', 'foobar'], '')
 
     def test_only_matching_suggestion(self):
-        self.assertEqual(['foobar'], self._suggestion_names('foo'))
+        self._assert_suggestion_names(['foobar'], 'foo')
 
     def test_multiple_matching_suggestions(self):
-        self.assertEqual(['barbar', 'foobar'], self._suggestion_names('bar'))
+        self._assert_suggestion_names(['barbar', 'foobar'], 'bar')
 
     def test_no_matching_suggestions(self):
-        self.assertEqual([], self._suggestion_names('zoo'))
+        self._assert_suggestion_names([], 'zoo')
 
     def _controller(self, imports=(), resources=(), libraries=()):
         controller = lambda:0
@@ -41,6 +41,9 @@ class _ImportSuggesterTests(object):
         imp = lambda:0
         imp.name = name
         return imp
+
+    def _assert_suggestion_names(self, expected, value):
+        self.assertEqual(expected, self._suggestion_names(value))
 
     def _suggestion_names(self, value):
         return [s.name for s in self._suggester.get_suggestions(value)]
