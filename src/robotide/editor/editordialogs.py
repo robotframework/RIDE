@@ -13,7 +13,7 @@
 #  limitations under the License.
 
 import wx
-from robotide.namespace.suggesters import ResourceSuggester, CachedLibrarySuggester
+from robotide.namespace.suggesters import ResourceSuggester, LibrariesSuggester, HistorySuggester
 
 from robotide.validators import (ScalarVariableNameValidator,
     ListVariableNameValidator, TimeoutValidator, ArgumentsValidator,
@@ -98,13 +98,21 @@ class ListVariableDialog(_Dialog):
 
 class LibraryDialog(_Dialog):
 
+    _history_suggester = HistorySuggester()
+
     def _get_editors(self, item):
         name = item and item.name or ''
         args = item and utils.join_value(item.args) or ''
         alias = item.alias if item else ''
-        return [ContentAssistEditor(self, name, 'Name', suggestion_source=CachedLibrarySuggester(self._controller)),
+        self._suggester = LibrariesSuggester(self._controller, self._history_suggester)
+        return [ContentAssistEditor(self, name, 'Name', suggestion_source=self._suggester),
                 ValueEditor(self, args, 'Args'),
                 ValueEditor(self, alias, 'Alias')]
+
+    def get_value(self):
+        values = _Dialog.get_value(self)
+        self._history_suggester.store(values[0])
+        return values
 
 
 class VariablesDialog(LibraryDialog):

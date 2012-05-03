@@ -82,4 +82,19 @@ class CachedLibrarySuggester(_ImportSuggester):
 class BuiltInLibrariesSuggester(_Suggester):
 
     def get_suggestions(self, name, *args):
-        return [self._suggestion(n) for n in sorted(STDLIB_NAMES) if name.lower() in n.lower() and n not in ['BuiltIn', 'Reserved', 'Easter']]
+        return [self._suggestion(n) for n in sorted(STDLIB_NAMES)
+                if name.lower() in n.lower() and n not in ['BuiltIn', 'Reserved', 'Easter']]
+
+class LibrariesSuggester(_Suggester):
+
+    def __init__(self, controller, history_suggester=None):
+        self._history_suggester = history_suggester or HistorySuggester()
+        self._cached_suggester = CachedLibrarySuggester(controller)
+        self._builtin_suggester = BuiltInLibrariesSuggester()
+
+    def get_suggestions(self, name, *args):
+        history = set(h.name for h in self._history_suggester.get_suggestions(name, *args))
+        cached = set(c.name for c in self._cached_suggester.get_suggestions(name, *args))
+        builtin = set(b.name for b in self._builtin_suggester.get_suggestions(name, *args))
+        return [self._suggestion(s)
+                for s in sorted((history | cached | builtin)-self._cached_suggester._get_already_imported())]
