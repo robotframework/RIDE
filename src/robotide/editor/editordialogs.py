@@ -13,7 +13,7 @@
 #  limitations under the License.
 
 import wx
-from robotide.namespace.suggesters import ResourceSuggester, LibrarySuggester
+from robotide.namespace.suggesters import ResourceSuggester, CachedLibrarySuggester
 
 from robotide.validators import (ScalarVariableNameValidator,
     ListVariableNameValidator, TimeoutValidator, ArgumentsValidator,
@@ -102,7 +102,7 @@ class LibraryDialog(_Dialog):
         name = item and item.name or ''
         args = item and utils.join_value(item.args) or ''
         alias = item.alias if item else ''
-        return [ContentAssistEditor(self, name, 'Name', suggestion_source=LibrarySuggester(self._controller)),
+        return [ContentAssistEditor(self, name, 'Name', suggestion_source=CachedLibrarySuggester(self._controller)),
                 ValueEditor(self, args, 'Args'),
                 ValueEditor(self, alias, 'Alias')]
 

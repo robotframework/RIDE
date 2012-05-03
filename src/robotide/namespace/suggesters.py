@@ -53,7 +53,7 @@ class ResourceSuggester(_ImportSuggester):
         return set(self._df_controller.relative_path_to(r) for r in self._df_controller._chief_controller.resources)
 
 
-class LibrarySuggester(_ImportSuggester):
+class CachedLibrarySuggester(_ImportSuggester):
 
     def _get_already_imported(self):
         return set(imp.name  for imp in self._df_controller.imports)

@@ -1,6 +1,6 @@
 import unittest
 from robotide.controller.filecontrollers import ResourceFileController
-from robotide.namespace.suggesters import ResourceSuggester, LibrarySuggester
+from robotide.namespace.suggesters import ResourceSuggester, CachedLibrarySuggester
 from robotide.spec.xmlreaders import LibrarySpec
 
 
@@ -53,10 +53,10 @@ class TestResourceSuggester(_ImportSuggesterTests, unittest.TestCase):
         return ResourceSuggester(self._controller(imports=already_imported, resources=available))
 
 
-class TestLibrarySuggester(_ImportSuggesterTests, unittest.TestCase):
+class TestCachedLibrarySuggester(_ImportSuggesterTests, unittest.TestCase):
 
     def _create_suggester(self, already_imported=(), available=()):
-        return LibrarySuggester(self._controller(imports=already_imported, libraries=available))
+        return CachedLibrarySuggester(self._controller(imports=already_imported, libraries=available))
 
 
 if __name__ == '__main__':
