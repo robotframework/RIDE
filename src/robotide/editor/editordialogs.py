@@ -13,7 +13,7 @@
 #  limitations under the License.
 
 import wx
-from robotide.namespace.suggesters import HistorySuggester, ResourceSuggester, LibrarySuggester
+from robotide.namespace.suggesters import ResourceSuggester, LibrarySuggester
 
 from robotide.validators import (ScalarVariableNameValidator,
     ListVariableNameValidator, TimeoutValidator, ArgumentsValidator,
