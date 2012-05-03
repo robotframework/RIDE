@@ -25,7 +25,30 @@ class SuggestionSource(object):
         return self._plugin.content_assist_values(value) # TODO: Remove old functionality when no more needed
 
 
-class _ImportSuggester(object):
+class _Suggester(object):
+
+    def _suggestion(self, name):
+        s = lambda:0
+        s.name = name
+        s.longname = name
+        s.details = None
+        return s
+
+
+class HistorySuggester(_Suggester):
+
+    def __init__(self):
+        self._suggestions = []
+
+    def get_suggestions(self, name, *args):
+        return [s for s in self._suggestions if name is None or name in s.name]
+
+    def store(self, name):
+        self._suggestions += [self._suggestion(name)]
+        self._suggestions.sort()
+
+
+class _ImportSuggester(_Suggester):
 
     def __init__(self, controller):
         self._df_controller = controller.datafile_controller
@@ -35,13 +58,6 @@ class _ImportSuggester(object):
         all_resources = self._get_all_available()
         suggestion_names = all_resources - already_imported
         return [self._suggestion(n) for n in sorted(suggestion_names) if name in n]
-
-    def _suggestion(self, name):
-        s = lambda:0
-        s.name = name
-        s.longname = name
-        s.details = None
-        return s
 
 
 class ResourceSuggester(_ImportSuggester):

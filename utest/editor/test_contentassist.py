@@ -1,5 +1,5 @@
 import unittest
-from robotide.namespace.suggesters import SuggestionSource
+from robotide.namespace.suggesters import SuggestionSource, HistorySuggester
 
 class TestSuggestionSources(unittest.TestCase):
 
@@ -14,6 +14,16 @@ class TestSuggestionSources(unittest.TestCase):
         suggestions = suggestion_source.get_suggestions('foo', 1)
         self.assertEqual(1, len(suggestions))
         self.assertEqual('barfoo', suggestions[0].name)
+
+    def test_history_suggester(self):
+        suggestion_source = HistorySuggester()
+        self.assertEqual([], suggestion_source.get_suggestions('f'))
+        suggestion_source.store('foo')
+        self.assertEqual('foo', suggestion_source.get_suggestions('f')[0].name)
+        self.assertEqual([], suggestion_source.get_suggestions('b'))
+        suggestion_source.store('bar')
+        self.assertEqual('bar', suggestion_source.get_suggestions('b')[0].name)
+        self.assertEqual('foo', suggestion_source.get_suggestions('f')[0].name)
 
     def _controller_mock(self, name):
         controller_mock = lambda:0
