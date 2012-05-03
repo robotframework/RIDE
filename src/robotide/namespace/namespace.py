@@ -36,7 +36,7 @@ from robotide.namespace.embeddedargs import EmbeddedArgsHandler
 
 class Namespace(object):
 
-    def __init__(self, settings=None):
+    def __init__(self, settings):
         self._settings = settings
         self._init_caches()
         self._content_assist_hooks = []
