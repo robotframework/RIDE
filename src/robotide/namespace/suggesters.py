@@ -75,4 +75,4 @@ class LibrarySuggester(_ImportSuggester):
         return set(imp.name  for imp in self._df_controller.imports)
 
     def _get_all_available(self):
-        return set(l.name for l in self._df_controller._chief_controller.libraries)
+        return set(self._df_controller.get_all_cached_library_names())

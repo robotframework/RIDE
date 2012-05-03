@@ -100,6 +100,9 @@ class Namespace(object):
             sugs.extend(hook(datafile, start))
         return sugs
 
+    def get_all_cached_library_names(self):
+        return self._retriever.get_all_cached_library_names()
+
     def _blank(self, start):
         return start == ''
 
@@ -292,6 +295,9 @@ class DatafileRetriever(object):
         self._resource_factory = resource_factory
         self.keyword_cache = ExpiringCache()
         self._default_kws = None
+
+    def get_all_cached_library_names(self):
+        return self._lib_cache.get_all_cached_library_names()
 
     @property
     def default_kws(self):

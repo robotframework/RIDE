@@ -28,7 +28,7 @@ class _ImportSuggesterTests(object):
         controller.imports = [self._import(i) for i in imports]
         controller._chief_controller = controller
         controller.resources = [self._resource(r) for r in resources]
-        controller.libraries = [self._library(l) for l in libraries]
+        controller.get_all_cached_library_names = lambda: libraries[:]
         return controller
 
     def _resource(self, name):
@@ -37,11 +37,6 @@ class _ImportSuggesterTests(object):
         data.directory = '.'
         resource = ResourceFileController(data)
         return resource
-
-    def _library(self, name):
-        libSpec = lambda:0
-        libSpec.name = name
-        return libSpec
 
     def _import(self, name):
         imp = lambda:0
