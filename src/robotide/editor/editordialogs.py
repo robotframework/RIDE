@@ -117,11 +117,14 @@ class LibraryDialog(_Dialog):
 
 class VariablesDialog(LibraryDialog):
 
+    _history_suggester = HistorySuggester()
+
     def _get_editors(self, item):
         path = item and item.name or ''
         args = item and utils.join_value(item.args) or ''
-        return [ValueEditor(self, path, 'Path'),
+        return [ContentAssistEditor(self, path, 'Path', suggestion_source=self._history_suggester),
                ValueEditor(self, args, 'Args')]
+
 
 class ResourceDialog(_Dialog):
 
