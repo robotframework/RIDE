@@ -78,3 +78,14 @@ def find_from_pythonpath(name):
 def replace_extension(path, new_extension):
     base = os.path.splitext(path)[0]
     return '%s.%s' % (base, new_extension.lower())
+
+def overrides(interface_class):
+    """
+    A decorator that can be used to validate method override
+
+    http://stackoverflow.com/questions/1167617/in-python-how-do-i-indicate-im-overriding-a-method/8313042#8313042
+    """
+    def overrider(method):
+        assert(method.__name__ in dir(interface_class))
+        return method
+    return overrider
