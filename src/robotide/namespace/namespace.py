@@ -36,7 +36,7 @@ from robotide.namespace.embeddedargs import EmbeddedArgsHandler
 
 class Namespace(object):
 
-    def __init__(self, settings=None):
+    def __init__(self, settings):
         self._settings = settings
         self._init_caches()
         self._content_assist_hooks = []
@@ -99,6 +99,9 @@ class Namespace(object):
         for hook in self._content_assist_hooks:
             sugs.extend(hook(datafile, start))
         return sugs
+
+    def get_all_cached_library_names(self):
+        return self._retriever.get_all_cached_library_names()
 
     def _blank(self, start):
         return start == ''
@@ -292,6 +295,9 @@ class DatafileRetriever(object):
         self._resource_factory = resource_factory
         self.keyword_cache = ExpiringCache()
         self._default_kws = None
+
+    def get_all_cached_library_names(self):
+        return self._lib_cache.get_all_cached_library_names()
 
     @property
     def default_kws(self):

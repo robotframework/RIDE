@@ -1,5 +1,5 @@
 import unittest
-from robotide.editor.contentassist import SuggestionSource, HistorySuggester
+from robotide.namespace.suggesters import SuggestionSource, HistorySuggester
 
 class TestSuggestionSources(unittest.TestCase):
 

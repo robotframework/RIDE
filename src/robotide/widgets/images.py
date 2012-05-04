@@ -37,6 +37,9 @@ class ImageProvider(object):
         self.PROGICONS = self._load_prog_icons()
         self.REPORTIMG = self._load_image('report.png')
         self.REFRESH_ALL = self._load_image('database_refresh.png')
+        self._build_icons()
+
+    def _build_icons(self):
         self._icons = {}
         for name in dir(self):
             value = getattr(self, name)

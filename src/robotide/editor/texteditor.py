@@ -42,6 +42,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self._editor_component = SourceEditor(self.notebook,
                                                   self.title,
                                                   DataValidationHandler(self))
+            self._refresh_timer = wx.Timer(self._editor_component)
+            self._editor_component.Bind(wx.EVT_TIMER, self._on_timer)
         return self._editor_component
 
     def enable(self):
@@ -92,7 +94,11 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                 self._editor.reset()
             if self._editor.dirty:
                 self._apply_txt_changes_to_model()
-            self._open_tree_selection_in_editor()
+            self._refresh_timer.Start(500, True) # For performance reasons only run after all the data changes
+
+    def _on_timer(self, event):
+        self._open_tree_selection_in_editor()
+        event.Skip()
 
     def _should_process_data_changed_message(self, message):
         return isinstance(message, RideDataChanged) and \

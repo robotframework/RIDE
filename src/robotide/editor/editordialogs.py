@@ -13,7 +13,7 @@
 #  limitations under the License.
 
 import wx
-from robotide.editor.contentassist import HistorySuggester
+from robotide.namespace.suggesters import ResourceSuggester, LibrariesSuggester, HistorySuggester
 
 from robotide.validators import (ScalarVariableNameValidator,
     ListVariableNameValidator, TimeoutValidator, ArgumentsValidator,
@@ -97,39 +97,40 @@ class ListVariableDialog(_Dialog):
 
 
 class LibraryDialog(_Dialog):
-    _history_suggest = HistorySuggester()
+
+    _history_suggester = HistorySuggester()
 
     def _get_editors(self, item):
         name = item and item.name or ''
         args = item and utils.join_value(item.args) or ''
         alias = item.alias if item else ''
-        return [ContentAssistEditor(self, name, 'Name', suggestion_source=self._history_suggest),
+        self._suggester = LibrariesSuggester(self._controller, self._history_suggester)
+        return [ContentAssistEditor(self, name, 'Name', suggestion_source=self._suggester),
                 ValueEditor(self, args, 'Args'),
                 ValueEditor(self, alias, 'Alias')]
 
     def get_value(self):
-        self._history_suggest.store(self._editors[0].get_value())
-        return _Dialog.get_value(self)
+        values = _Dialog.get_value(self)
+        self._history_suggester.store(values[0])
+        return values
 
 
 class VariablesDialog(LibraryDialog):
 
+    _history_suggester = HistorySuggester()
+
     def _get_editors(self, item):
         path = item and item.name or ''
         args = item and utils.join_value(item.args) or ''
-        return [ValueEditor(self, path, 'Path'),
+        return [ContentAssistEditor(self, path, 'Path', suggestion_source=self._history_suggester),
                ValueEditor(self, args, 'Args')]
 
+
 class ResourceDialog(_Dialog):
-    _history_suggest = HistorySuggester()
 
     def _get_editors(self, item):
         name = item and item.name or ''
-        return [ContentAssistEditor(self, name, 'Path', suggestion_source=self._history_suggest)]
-
-    def get_value(self):
-        self._history_suggest.store(self._editors[0].get_value())
-        return _Dialog.get_value(self)
+        return [ContentAssistEditor(self, name, 'Path', suggestion_source=ResourceSuggester(self._controller))]
 
 
 class DocumentationDialog(_Dialog):

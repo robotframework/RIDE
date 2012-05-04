@@ -42,6 +42,10 @@ class LibraryCache(object):
             self.__default_kws = self._build_default_kws()
         return self.__default_kws
 
+
+    def get_all_cached_library_names(self):
+        return self._library_keywords.get_library_names()
+
     def add_library(self, name, args=None):
         if not self._library_keywords.has_key(self._key(name, args)):
             action = lambda: LibrarySpec(name, args).keywords
@@ -147,3 +151,6 @@ class _LibraryCache:
 
     def has_key(self, key):
         return key in self._keys
+
+    def get_library_names(self):
+        return [name for name,_ in self._keys]

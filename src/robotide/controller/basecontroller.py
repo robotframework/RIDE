@@ -99,6 +99,9 @@ class WithNamespace(object):
     def get_all_keywords_from(self, *datafiles):
         return self._namespace.get_all_keywords(*datafiles)
 
+    def get_all_cached_library_names(self):
+        return self._namespace.get_all_cached_library_names()
+
     def keyword_info(self, datafile, keyword_name):
         return self._namespace.find_keyword(datafile, keyword_name)
 

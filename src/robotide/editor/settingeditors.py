@@ -443,7 +443,7 @@ class ImportSettingListEditor(_AbstractListEditor):
         return self._controller[self._selection]
 
     def _show_import_editor_dialog(self, dialog, creator_or_setter, item=None, on_empty=None):
-        dlg = dialog(self._controller.datafile, item=item)
+        dlg = dialog(self._controller, item=item)
         if dlg.ShowModal() == wx.ID_OK:
             value = dlg.get_value()
             if not self._empty_name(value):

@@ -269,8 +269,11 @@ class RideFrame(wx.Frame, RideEventHandler):
         wx.LaunchDefaultBrowser('http://code.google.com/p/robotframework-ride/issues/list')
 
     def OnReloadDirectory(self, event):
-        if self._check_unsaved_modifications():
+        if self._has_data() and self._check_unsaved_modifications():
             wx.CallAfter(self._reload)
+
+    def _has_data(self):
+        return self._controller.data is not None
 
     def _reload(self):
         path = self._controller.default_dir

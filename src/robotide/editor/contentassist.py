@@ -19,6 +19,7 @@ from robot.utils.normalizing import normalize
 from robotide import context
 
 from popupwindow import RidePopupWindow, Tooltip
+from robotide.namespace.suggesters import SuggestionSource
 
 
 _PREFERRED_POPUP_SIZE = (400, 200)
@@ -167,37 +168,6 @@ class Suggestions(object):
 
     def _format(self, choice, prefix):
         return choice.name if normalize(choice.name).startswith(normalize(prefix)) else choice.longname
-
-
-class SuggestionSource(object):
-
-    def __init__(self, plugin, controller):
-        self._plugin = plugin
-        self._controller = controller
-
-    def get_suggestions(self, value, row=None):
-        if self._controller and row:
-            return self._controller.get_local_namespace_for_row(row).get_suggestions(value)
-        return self._plugin.content_assist_values(value) # TODO: Remove old functionality when no more needed
-
-
-class HistorySuggester(object):
-
-    def __init__(self):
-        self._suggestions = []
-
-    def get_suggestions(self, name, *args):
-        return [s for s in self._suggestions if name is None or name in s.name]
-
-    def store(self, name):
-        self._suggestions += [self._suggestion(name)]
-        self._suggestions.sort()
-
-    def _suggestion(self, name):
-        s = lambda:0
-        s.name = name
-        s.details = None
-        return s
 
 
 class ContentAssistPopup(object):
