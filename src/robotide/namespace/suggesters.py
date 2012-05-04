@@ -42,7 +42,7 @@ class HistorySuggester(_Suggester):
         self._suggestions = []
 
     def get_suggestions(self, name, *args):
-        return [s for s in self._suggestions if name is None or name in s.name]
+        return [s for s in self._suggestions if name is None or name.lower() in s.name.lower()]
 
     def store(self, name):
         self._suggestions += [self._suggestion(name)]
@@ -87,8 +87,8 @@ class BuiltInLibrariesSuggester(_Suggester):
 
 class LibrariesSuggester(_Suggester):
 
-    def __init__(self, controller, history_suggester=None):
-        self._history_suggester = history_suggester or HistorySuggester()
+    def __init__(self, controller, history_suggester):
+        self._history_suggester = history_suggester
         self._cached_suggester = CachedLibrarySuggester(controller)
         self._builtin_suggester = BuiltInLibrariesSuggester()
 
@@ -97,4 +97,5 @@ class LibrariesSuggester(_Suggester):
         cached = set(c.name for c in self._cached_suggester.get_suggestions(name, *args))
         builtin = set(b.name for b in self._builtin_suggester.get_suggestions(name, *args))
         return [self._suggestion(s)
-                for s in sorted((history | cached | builtin)-self._cached_suggester._get_already_imported())]
+                for s in sorted((history | cached | builtin)-self._cached_suggester._get_already_imported(),
+                key=lambda s: s.lower())]

@@ -1,6 +1,7 @@
 import unittest
 from robotide.controller.filecontrollers import ResourceFileController
-from robotide.namespace.suggesters import ResourceSuggester, CachedLibrarySuggester, BuiltInLibrariesSuggester
+from robotide.namespace.suggesters import ResourceSuggester, CachedLibrarySuggester, BuiltInLibrariesSuggester, LibrariesSuggester, HistorySuggester
+from robotide.utils import overrides
 
 
 class _ImportSuggesterHelpers(object):
@@ -79,6 +80,31 @@ class TestBuiltInLibrariesSuggester(_ImportSuggesterHelpers, unittest.TestCase):
 
     def test_returns_matching_builtin_libraries(self):
         self._assert_suggestion_names(['OperatingSystem', 'Remote', 'Telnet'], 'te')
+
+class TestLibrariesSuggester(_ImportSuggesterTests, unittest.TestCase):
+
+    def _create_suggester(self, already_imported=(), available=()):
+        self._history_suggester = HistorySuggester()
+        return LibrariesSuggester(self._controller(imports=already_imported, libraries=available),
+                                  self._history_suggester)
+
+    @overrides(_ImportSuggesterTests)
+    def test_all_suggestions_with_empty_string(self):
+        self._assert_suggestion_names(['barbar',
+                                       'Collections',
+                                       'Dialogs',
+                                       'doodoo',
+                                       'foobar',
+                                       'OperatingSystem',
+                                       'Remote',
+                                       'Screenshot',
+                                       'String',
+                                       'Telnet'], '')
+
+    def test_history(self):
+        self._assert_suggestion_names([], 'ooz')
+        self._history_suggester.store(u'zooZoo')
+        self._assert_suggestion_names([u'zooZoo'], 'ooz')
 
 
 if __name__ == '__main__':
