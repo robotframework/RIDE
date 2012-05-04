@@ -60,20 +60,17 @@ class _ImportSuggester(_Suggester):
         suggestion_names = all_resources - already_imported
         return [self._suggestion(n) for n in sorted(suggestion_names) if name in n]
 
-
-class ResourceSuggester(_ImportSuggester):
-
     def _get_already_imported(self):
         return set(imp.name  for imp in self._df_controller.imports)
+
+
+class ResourceSuggester(_ImportSuggester):
 
     def _get_all_available(self):
         return set(self._df_controller.relative_path_to(r) for r in self._df_controller._chief_controller.resources)
 
 
 class CachedLibrarySuggester(_ImportSuggester):
-
-    def _get_already_imported(self):
-        return set(imp.name  for imp in self._df_controller.imports)
 
     def _get_all_available(self):
         return set(self._df_controller.get_all_cached_library_names())
@@ -84,6 +81,7 @@ class BuiltInLibrariesSuggester(_Suggester):
     def get_suggestions(self, name, *args):
         return [self._suggestion(n) for n in sorted(STDLIB_NAMES)
                 if name.lower() in n.lower() and n not in ['BuiltIn', 'Reserved', 'Easter']]
+
 
 class LibrariesSuggester(_Suggester):
 
@@ -96,6 +94,7 @@ class LibrariesSuggester(_Suggester):
         history = set(h.name for h in self._history_suggester.get_suggestions(name, *args))
         cached = set(c.name for c in self._cached_suggester.get_suggestions(name, *args))
         builtin = set(b.name for b in self._builtin_suggester.get_suggestions(name, *args))
+        already_imported = self._cached_suggester._get_already_imported()
         return [self._suggestion(s)
-                for s in sorted((history | cached | builtin)-self._cached_suggester._get_already_imported(),
+                for s in sorted((history | cached | builtin)-already_imported,
                 key=lambda s: s.lower())]
