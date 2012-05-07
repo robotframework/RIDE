@@ -56,7 +56,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
     _popup_items = ['Create Keyword', 'Extract Keyword', 'Extract Variable',
                     'Rename Keyword', 'Find Where Used', '---',
                     'Make Variable\tCtrl-1',
-                    'Make List Variable\tCtrl-2', '---'] + GridEditor._popup_items
+                    'Make List Variable\tCtrl-2', '---',
+                    'Go to Definition\tCtrl-B', '---'] + GridEditor._popup_items
 
     def __init__(self, parent, controller, tree):
         try:
@@ -373,6 +374,9 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._navigate_to_matching_user_keyword(self.GetGridCursorRow(), self.GetGridCursorCol())
         else:
             event.Skip()
+
+    def OnGotoDefinition(self, event):
+        self._navigate_to_matching_user_keyword(self.GetGridCursorRow(), self.GetGridCursorCol())
 
     def _show_cell_information(self):
         cell = self.cell_under_cursor
