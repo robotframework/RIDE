@@ -473,7 +473,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         if uk:
             self._toggle_underlined((grid.GridCellCoords(row, col)))
             self._marked_cell = None
-            self._tree.select_user_keyword_node(uk)
+            wx.CallAfter(self._tree.select_user_keyword_node, uk)
             return True
         return False
 
