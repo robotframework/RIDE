@@ -126,6 +126,7 @@ class TestRunnerPlugin(Plugin):
         self._port = None
         self._running = False
         self.register_shortcut('Ctrl-C', self._copy_from_out)
+        self._currently_executing_keyword = None
 
     def _copy_from_out(self, event):
         if self.notebook.current_page_title != self.title:
@@ -861,6 +862,11 @@ class TestRunnerPlugin(Plugin):
             self._log_file = args[0]
             self.local_toolbar.EnableTool(ID_SHOW_LOG, True)
 
+        if event == 'start_keyword':
+            self._progress_bar.set_current_keyword(args[0])
+        if event == 'end_keyword':
+            self._progress_bar.empty_current_keyword()
+
         return
 
     def _set_state(self, state):
@@ -904,6 +910,13 @@ class ProgressBar(wx.Panel):
         self._pass = 0
         self._fail = 0
         self._start = None
+        self._current_keywords = []
+
+    def set_current_keyword(self, name):
+        self._current_keywords.append(name)
+
+    def empty_current_keyword(self):
+        self._current_keywords.pop()
 
     def OnTimer(self, event):
         '''A handler for timer events; it updates the statusbar'''
@@ -939,6 +952,7 @@ class ProgressBar(wx.Panel):
         elapsed = time.time()-self._start_time
         message = "elapsed time: %s     pass: %s     fail: %s" % (
             secondsToString(elapsed), self._pass, self._fail)
+        message += self._get_current_keyword_text()
         self._label.SetLabel(message)
         if self._fail > 0:
             self.SetBackgroundColour("#FF8E8E")
@@ -947,6 +961,16 @@ class ProgressBar(wx.Panel):
         # not sure why this is required, but without it the background
         # colors don't look right on Windows
         self.Refresh()
+
+    def _get_current_keyword_text(self):
+        if not self._current_keywords:
+            return ''
+        return '     current keyword: '+self._fix_size(' -> '.join(self._current_keywords), 50)
+
+    def _fix_size(self, text, max_length):
+        if len(text) <= max_length:
+            return text
+        return '...'+text[3-max_length:]
 
 
 # The following two classes implement a small line-buffered socket
