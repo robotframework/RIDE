@@ -902,10 +902,11 @@ class ProgressBar(wx.Panel):
         self.SetSizer(self._sizer)
         self._gauge.Hide()
         self._default_colour = parent.GetBackgroundColour()
-
         self._timer = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.OnTimer)
+        self._initialize_state()
 
+    def _initialize_state(self):
         self._pass = 0
         self._fail = 0
         self._current_keywords = []
@@ -924,9 +925,7 @@ class ProgressBar(wx.Panel):
 
     def Start(self):
         '''Signals the start of a test run; initialize progressbar.'''
-        self._pass = 0
-        self._fail = 0
-        self._current_keywords = []
+        self._initialize_state()
         self._start_time = time.time()
         self._gauge.Show()
         self._sizer.Layout()
