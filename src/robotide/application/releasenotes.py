@@ -86,7 +86,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 0.43.3</h2>
+<h2>Release notes for 0.44</h2>
 <table border="1">
 <tr>
 <td><b>ID</b></td>
@@ -95,23 +95,41 @@ RELEASE_NOTES = """
 <td><b>Summary</b></td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=956">Issue 956</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=916">Issue 916</a></td>
 <td>Defect</td>
 <td>High</td>
-<td>RIDE freezes when adding data to 9th cell before other cells</td>
+<td>Slow saving in RIDE 0.40.2</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=957">Issue 957</a></td>
-<td>Defect</td>
-<td>High</td>
-<td>Starting a testcase from the run tab doesn't work, when testcase drive != ride drive</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=959">Issue 959</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=947">Issue 947</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>Delete-key doesn't work in text editor</td>
+<td>Delete key behaves badly in 'Manage Run Configurations' dialog</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=877">Issue 877</a></td>
+<td>Enhancement</td>
+<td>Medium</td>
+<td>Import library/resource/variables dialogs should propose known alternatives</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=966">Issue 966</a></td>
+<td>Enhancement</td>
+<td>Medium</td>
+<td>Reload Directory</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=969">Issue 969</a></td>
+<td>Enhancement</td>
+<td>Medium</td>
+<td>Keyboard shortcut for go to definition</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=970">Issue 970</a></td>
+<td>Enhancement</td>
+<td>Medium</td>
+<td>Test Runner: Show currently executed keyword while running</td>
 </tr>
 </table>
-<p>Altogether 3 issues.</p>
+<p>Altogether 6 issues.</p>
 """
