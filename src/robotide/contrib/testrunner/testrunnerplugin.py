@@ -908,7 +908,6 @@ class ProgressBar(wx.Panel):
 
         self._pass = 0
         self._fail = 0
-        self._start = None
         self._current_keywords = []
 
     def set_current_keyword(self, name):
