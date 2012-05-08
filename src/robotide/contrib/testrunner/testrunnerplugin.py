@@ -927,6 +927,7 @@ class ProgressBar(wx.Panel):
         '''Signals the start of a test run; initialize progressbar.'''
         self._pass = 0
         self._fail = 0
+        self._current_keywords = []
         self._start_time = time.time()
         self._gauge.Show()
         self._sizer.Layout()
