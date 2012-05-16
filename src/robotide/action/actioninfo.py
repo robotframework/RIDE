@@ -216,18 +216,25 @@ class ActionInfo(MenuInfo):
         self.action = action
         self.container = container
         self.shortcut = Shortcut(shortcut)
-        self.icon = self._get_icon(icon)
+        self._icon = None
+        self._icon_source = icon
         self.doc = doc
 
-    def _get_icon(self, icon):
-        if not icon:
+    @property
+    def icon(self):
+        if not self._icon:
+            self._icon = self._get_icon()
+        return self._icon
+
+    def _get_icon(self):
+        if not self._icon_source:
             return None
-        if isinstance(icon, basestring):
-            if icon.startswith("CUSTOM_"):
-                return ImageProvider().get_image_by_name(icon[len("CUSTOM_"):])
-            return wx.ArtProvider.GetBitmap(getattr(wx, icon),
+        if isinstance(self._icon_source, basestring):
+            if self._icon_source.startswith("CUSTOM_"):
+                return ImageProvider().get_image_by_name(self._icon_source[len("CUSTOM_"):])
+            return wx.ArtProvider.GetBitmap(getattr(wx, self._icon_source),
                                             wx.ART_TOOLBAR, (16, 16))
-        return icon
+        return self._icon_source
 
 
 class SeparatorInfo(MenuInfo):
