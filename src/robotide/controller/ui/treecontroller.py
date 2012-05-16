@@ -49,9 +49,21 @@ class TreeController(object):
     def add_to_history(self, node):
         self._history.change(node)
 
+    def mark_controller_dirty(self, controller):
+        if not controller.dirty:
+            return
+        node = self.find_node_by_controller(controller)
+        if node:
+            self.mark_node_dirty(node)
+
+    def mark_node_dirty(self, node):
+        text = self._tree.GetItemText(node)
+        if not text.startswith('*'):
+             self._tree.SetItemText(node, '*' + text)
+
     def find_node_by_controller(self, controller):
         def match_handler(n):
-            handler = self._tree._get_handler(n)
+            handler = self.get_handler(n)
             return handler and controller is handler.controller
         return self._find_node_with_predicate(self._tree._root, match_handler)
 

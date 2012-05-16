@@ -168,7 +168,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def _render_datafile(self, parent_node, controller, index=None):
         node = self._create_node_with_handler(parent_node, controller, index)
         if controller.dirty:
-            self._mark_dirty(node)
+            self._controller.mark_node_dirty(node)
         self._datafile_nodes.append(node)
         self.SetItemHasChildren(node, True)
         for child in controller.children:
@@ -228,7 +228,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def _add_dataitem(self, parent_node, dataitem, predicate):
         node = self._get_or_create_node(parent_node, dataitem, predicate)
         self._select(node)
-        self._mark_dirty(parent_node)
+        self._controller.mark_node_dirty(parent_node)
 
     def _get_or_create_node(self, parent_node, dataitem, predicate):
         if not self.IsExpanded(parent_node):
@@ -294,28 +294,16 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         if node is None:
             return
         parent = self.GetItemParent(node)
-        self._mark_dirty(parent)
+        self._controller.mark_node_dirty(parent)
         if self.IsSelected(node):
             wx.CallAfter(self.SelectItem, parent)
         wx.CallAfter(self.Delete, node)
 
     def _data_dirty(self, message):
-        self.mark_dirty(message.datafile)
+        self._controller.mark_controller_dirty(message.datafile)
 
     def _data_undirty(self, message):
         self.unset_dirty()
-
-    def mark_dirty(self, controller):
-        if not controller.dirty:
-            return
-        node = self._controller.find_node_by_controller(controller)
-        if node:
-            self._mark_dirty(node)
-
-    def _mark_dirty(self, node):
-        text = self.GetItemText(node)
-        if not text.startswith('*'):
-            self.SetItemText(node, '*' + text)
 
     def unset_dirty(self):
         for node in self._datafile_nodes:
@@ -557,7 +545,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         if node:
             self.SetItemText(node, data.item.name)
         if controller.dirty:
-            self._mark_dirty(self._get_datafile_node(controller.datafile))
+            self._controller.mark_node_dirty(self._get_datafile_node(controller.datafile))
 
     def _variable_moved_up(self, data):
         self._do_action_if_datafile_node_is_expanded(self.move_up, data)
