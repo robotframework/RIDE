@@ -11,6 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+from robot import utils
 from robotide.action.actioninfo import ActionInfoCollection
 from robotide.context.platform import IS_WINDOWS
 
@@ -24,9 +25,10 @@ tree_actions ="""
 
 class TreeController(object):
 
-    def __init__(self, tree, action_registerer, history=None):
+    def __init__(self, tree, action_registerer, settings, history=None):
         self._tree = tree
         self._action_registerer = action_registerer
+        self.settings = settings
         self._history = history or _History()
 
     def register_tree_actions(self):
@@ -45,6 +47,30 @@ class TreeController(object):
 
     def add_to_history(self, node):
         self._history.change(node)
+
+    def find_node_by_controller(self, controller):
+        def match_handler(n):
+            handler = self._tree._get_handler(n)
+            return handler and controller is handler.controller
+        return self._find_node_with_predicate(self._tree._root, match_handler)
+
+    def find_node_with_label(self, node, label):
+        matcher = lambda n: utils.eq(self._tree.GetItemText(n), label)
+        return self._find_node_with_predicate(node, matcher)
+
+    def _find_node_with_predicate(self, node, predicate):
+        if node != self._tree._root and predicate(node):
+            return node
+        item, cookie = self._tree.GetFirstChild(node)
+        while item:
+            if predicate(item):
+                return item
+            if self._tree.ItemHasChildren(item):
+                result = self._find_node_with_predicate(item, predicate)
+                if result:
+                    return result
+            item, cookie = self._tree.GetNextChild(node, cookie)
+        return None
 
 
 class _History(object):

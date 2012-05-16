@@ -40,14 +40,12 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     _RESOURCES_NODE_LABEL = 'External Resources'
 
     def __init__(self, parent, action_registerer, settings=None):
-        self._controller = TreeController(self, action_registerer)
+        self._controller = TreeController(self, action_registerer, settings=settings)
         style = wx.TR_DEFAULT_STYLE
         if IS_WINDOWS:
             style = style|wx.TR_EDIT_LABELS
         treemixin.DragAndDrop.__init__(self, parent, style=style)
         self._controller.register_tree_actions()
-        self._settings = settings
-        self._find_node = _FindNode(self)
         self._bind_tree_events()
         self._images = TreeImageList()
         self._silent_mode = False
@@ -158,7 +156,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _populate_model(self, model):
         handler = ResourceRootHandler(model, self, self._resource_root,
-                                      self._settings)
+                                      self._controller.settings)
         self.SetPyData(self._resource_root, handler)
         if model.data:
             self._render_datafile(self._root, model.data, 0)
@@ -168,7 +166,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _resource_added(self, message):
         ctrl = message.datafile
-        if self._find_node.by_controller(ctrl):
+        if self._controller.find_node_by_controller(ctrl):
             return
         parent = self._get_dir_node(ctrl.parent) if ctrl.parent else self._resource_root
         self._render_datafile(parent, ctrl)
@@ -187,7 +185,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self.select_controller_node(message.item)
 
     def select_controller_node(self, controller):
-        self.SelectItem(self._find_node.by_controller(controller))
+        self.SelectItem(self._controller.find_node_by_controller(controller))
 
     def _suite_added(self, message):
         self.add_datafile(message.parent, message.suite)
@@ -213,7 +211,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def _create_node_with_handler(self, parent_node, controller, index=None):
         node = self._create_node(parent_node, controller.display_name, self._images[controller],
                                  index)
-        self.SetPyData(node, action_handler(controller, self, node, self._settings))
+        self.SetPyData(node, action_handler(controller, self, node, self._controller.settings))
         return node
 
     def _expand_and_render_children(self, node):
@@ -268,7 +266,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def _get_or_create_node(self, parent_node, dataitem, predicate):
         if not self.IsExpanded(parent_node):
             self._expand_and_render_children(parent_node)
-            return self._find_node.with_label(parent_node, dataitem.display_name)
+            return self._controller.find_node_with_label(parent_node, dataitem.display_name)
         index = self._get_insertion_index(parent_node, predicate)
         return self._create_node_with_handler(parent_node, dataitem, index)
 
@@ -298,7 +296,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
                            message.item, lambda item: not item.is_variable)
 
     def _leaf_item_removed(self, message):
-        node = self._find_node.by_controller(message.item)
+        node = self._controller.find_node_by_controller(message.item)
         self.delete_node(node)
 
     def _test_added(self, message):
@@ -316,7 +314,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _filename_changed(self, message):
         df = message.datafile
-        node = self._find_node.by_controller(df)
+        node = self._controller.find_node_by_controller(df)
         if not node:
             raise AssertionError('No node found with controller "%s"' % df)
         wx.CallAfter(self.SetItemText, node, df.display_name)
@@ -343,7 +341,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def mark_dirty(self, controller):
         if not controller.dirty:
             return
-        node = self._find_node.by_controller(controller)
+        node = self._controller.find_node_by_controller(controller)
         if node:
             self._mark_dirty(node)
 
@@ -368,7 +366,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             return None
         if not self.IsExpanded(parent_node):
             self._expand_and_render_children(parent_node)
-        node = self._find_node.by_controller(controller)
+        node = self._controller.find_node_by_controller(controller)
         if node != self.GetSelection():
             self.SelectItem(node)
         return node
@@ -379,7 +377,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             return
         if not self.IsExpanded(parent_node):
             self._expand_and_render_children(parent_node)
-        node = self._find_node.with_label(parent_node, utils.normalize(uk.name))
+        node = self._controller.find_node_with_label(parent_node, utils.normalize(uk.name))
         if node != self.GetSelection():
             self.SelectItem(node)
 
@@ -457,7 +455,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             return
         self._expand_and_render_children(node)
         if current == controller:
-            wx.CallAfter(self.SelectItem, self._find_node.with_label(node, current_txt) or node)
+            wx.CallAfter(self.SelectItem, self._controller.find_node_with_label(node, current_txt) or node)
             wx.CallAfter(self._end_silent_mode)
         else:
             self._end_silent_mode()
@@ -525,7 +523,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         if to_be_selected:
             self._expand_and_render_children(parent_node)
             wx.CallAfter(self.SelectItem,
-                         self._find_node.with_label(parent_node, to_be_selected))
+                         self._controller.find_node_with_label(parent_node, to_be_selected))
 
 
     def OnSelChanged(self, event):
@@ -591,7 +589,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _item_changed(self, data):
         controller = data.item
-        node = self._find_node.by_controller(controller)
+        node = self._controller.find_node_by_controller(controller)
         if node:
             self.SetItemText(node, data.item.name)
         if controller.dirty:
@@ -605,7 +603,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _do_action_if_datafile_node_is_expanded(self, action, data):
         if self.IsExpanded(self._get_datafile_node(data.item.datafile)):
-            node = self._find_node.by_controller(data.item)
+            node = self._controller.find_node_by_controller(data.item)
             action(node)
 
     def _variable_updated(self, data):
@@ -654,33 +652,3 @@ class TreeLabelEditListener(object):
 
     def _get_handler(self, item=None):
         return self._tree._get_handler(item)
-
-
-class _FindNode(object):
-
-    def __init__(self, tree):
-        self._tree = tree
-
-    def by_controller(self, controller):
-        def match_handler(n):
-            handler = self._tree._get_handler(n)
-            return handler and controller is handler.controller
-        return self._find_node_with_predicate(self._tree._root, match_handler)
-
-    def with_label(self, node, label):
-        matcher = lambda n: utils.eq(self._tree.GetItemText(n), label)
-        return self._find_node_with_predicate(node, matcher)
-
-    def _find_node_with_predicate(self, node, predicate):
-        if node != self._tree._root and predicate(node):
-            return node
-        item, cookie = self._tree.GetFirstChild(node)
-        while item:
-            if predicate(item):
-                return item
-            if self._tree.ItemHasChildren(item):
-                result = self._find_node_with_predicate(item, predicate)
-                if result:
-                    return result
-            item, cookie = self._tree.GetNextChild(node, cookie)
-        return None
