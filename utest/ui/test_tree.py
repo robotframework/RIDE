@@ -203,64 +203,6 @@ class TestNodeRemoval(_BaseSuiteTreeTest):
         assert_equals(count -1, self._tree.GetChildrenCount(self._tree._root))
 
 
-class TestNavigationHistory(_BaseSuiteTreeTest):
-
-    def test_go_back_one_level(self):
-        self._select_node('Top Suite Fake UK 2')
-        self._go_back_and_assert_selection('Top Suite')
-
-    def test_go_back_two_levels(self):
-        nodes = ['Top Suite Fake UK 1', 'Sub Suite 1', 'Sub Suite 1 Fake UK 0']
-        for name in nodes:
-            self._select_node(name)
-        nodes.reverse()
-        for name in nodes[1:]:
-            self._go_back_and_assert_selection(name)
-
-    def test_it_is_not_possible_to_go_back_farther_than_history(self):
-        nodes = ['Top Suite Fake UK 1', 'Sub Suite 1', 'Sub Suite 1 Fake UK 0']
-        for name in nodes:
-            self._select_node(name)
-        nodes.reverse()
-        for name in nodes[1:] + ['Top Suite']:
-            self._go_back_and_assert_selection(name)
-        self._go_back_and_assert_selection('Top Suite')
-
-    def test_go_back_with_selecting_in_between(self):
-        nodes = ['Top Suite Fake UK 1', 'Sub Suite 1', 'Sub Suite 1 Fake UK 0']
-        for name in nodes:
-            self._select_node(name)
-        self._go_back_and_assert_selection('Sub Suite 1')
-        self._select_node('Sub Suite 2 Fake UK 0')
-        self._go_back_and_assert_selection('Sub Suite 1')
-
-    def test_go_forward(self):
-        nodes = ['Top Suite Fake UK 1', 'Sub Suite 1', 'Sub Suite 1 Fake UK 0']
-        for name in nodes:
-            self._select_node(name)
-        for _ in range(3):
-            self._tree.OnGoBack(None)
-        for name in nodes:
-            self._go_forward_and_assert_selection(name)
-
-    def test_go_back_and_forward_between_suite_and_resource(self):
-        nodes = ['Top Suite Fake UK 0', 'Resource Keyword', 'Sub Suite 0 Fake UK 2']
-        for name in nodes:
-            self._select_node(name)
-        self._go_back_and_assert_selection('Resource Keyword')
-        self._go_back_and_assert_selection('Top Suite Fake UK 0')
-        self._go_forward_and_assert_selection('Resource Keyword')
-        self._go_forward_and_assert_selection('Sub Suite 0 Fake UK 2')
-
-    def _go_back_and_assert_selection(self, expected_selection):
-        self._tree.OnGoBack(None)
-        assert_equals(self._get_selected_label(), expected_selection)
-
-    def _go_forward_and_assert_selection(self, expected_selection):
-        self._tree.OnGoForward(None)
-        assert_equals(self._get_selected_label(), expected_selection)
-
-
 class TestRefreshingDataNode(_BaseSuiteTreeTest):
 
     def test_refreshing_suite(self):

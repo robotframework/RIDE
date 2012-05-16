@@ -1,8 +1,7 @@
 import unittest
 
 from robot.utils.asserts import assert_equals
-
-from robotide.ui.tree import _History
+from robotide.controller.ui.treecontroller import _History
 
 
 class TestChange(unittest.TestCase):

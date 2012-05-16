@@ -13,13 +13,13 @@
 #  limitations under the License.
 
 import wx
+from robotide.controller.ui.treecontroller import TreeController
 
 try:
     import treemixin
 except ImportError:
     from wx.lib.mixins import treemixin
 
-from robotide.action import ActionInfoCollection
 from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
 from robotide.publish import (PUBLISHER, RideTreeSelection, RideFileNameChanged,
     RideItem, RideUserKeywordAdded, RideTestCaseAdded, RideUserKeywordRemoved,
@@ -35,32 +35,23 @@ from .treenodehandlers import ResourceRootHandler, action_handler
 from .images import TreeImageList
 
 
-tree_actions ="""
-[Navigate]
-!Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK
-!Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD
-""" % (('Left', 'Right') if IS_WINDOWS else ('Z', 'X'))
-# Left and right cannot be overridden in tree on non Windows OSses, issue 354
-
-
 class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     _RESOURCES_NODE_LABEL = 'External Resources'
 
     def __init__(self, parent, action_registerer, settings=None):
+        self._controller = TreeController(self, action_registerer)
         style = wx.TR_DEFAULT_STYLE
         if IS_WINDOWS:
             style = style|wx.TR_EDIT_LABELS
         treemixin.DragAndDrop.__init__(self, parent, style=style)
-        actions = ActionInfoCollection(tree_actions, self, self)
-        action_registerer.register_actions(actions)
+        self._controller.register_tree_actions()
         self._settings = settings
         self._find_node = _FindNode(self)
         self._bind_tree_events()
         self._images = TreeImageList()
         self._silent_mode = False
         self.SetImageList(self._images)
-        self._history = _History()
         self._label_editor = TreeLabelEditListener(self)
         self._bind_keys()
         self._subscribe_to_messages()
@@ -536,22 +527,13 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             wx.CallAfter(self.SelectItem,
                          self._find_node.with_label(parent_node, to_be_selected))
 
-    def OnGoBack(self, event):
-        node = self._history.back()
-        if node:
-            self.SelectItem(node)
-
-    def OnGoForward(self, event):
-        node = self._history.forward()
-        if node:
-            self.SelectItem(node)
 
     def OnSelChanged(self, event):
         node = event.Item
         if not node.IsOk() or self._dragging:
             event.Skip()
             return
-        self._history.change(node)
+        self._controller.add_to_history(node)
         handler = self._get_handler(node)
         if handler and handler.item:
             RideTreeSelection(node=node, item=handler.controller, silent=self._silent_mode).publish()
@@ -672,35 +654,6 @@ class TreeLabelEditListener(object):
 
     def _get_handler(self, item=None):
         return self._tree._get_handler(item)
-
-
-class _History(object):
-
-    def __init__(self):
-        self._back = []
-        self._forward = []
-
-    def change(self, state):
-        if not self._back or state != self._back[-1]:
-            self._back.append(state)
-            self._forward = []
-
-    def back(self):
-        if not self._back:
-            return None
-        if len(self._back) > 1:
-            self._forward.append(self._back.pop())
-        return self._back[-1]
-
-    def forward(self):
-        if not self._forward:
-            return None
-        state = self._forward.pop()
-        self._back.append(state)
-        return state
-
-    def top(self):
-        return self._back and self._back[-1] or None
 
 
 class _FindNode(object):
