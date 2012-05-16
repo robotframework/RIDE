@@ -133,7 +133,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         return bindings
 
     def _expanded_handler(self):
-        handler = self._get_handler()
+        handler = self._controller.get_handler()
         if not self.IsExpanded(handler.node):
             self.Expand(handler.node)
         return handler
@@ -220,7 +220,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self.Expand(node)
 
     def _render_children(self, node):
-        handler = self._get_handler(node)
+        handler = self._controller.get_handler(node)
         if not handler or not handler.can_be_rendered:
             return
         self._create_child_nodes(node, handler, lambda item: item.is_test_suite)
@@ -279,7 +279,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             return None
         item, cookie = self.GetFirstChild(parent_node)
         while item:
-            if predicate(self._get_handler(item)):
+            if predicate(self._controller.get_handler(item)):
                 index = self.GetPrevSibling(item)
                 if not index.IsOk:
                     index = 0
@@ -353,7 +353,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def unset_dirty(self):
         for node in self._datafile_nodes:
             text = self.GetItemText(node)
-            handler = self._get_handler(node)
+            handler = self._controller.get_handler(node)
             if text.startswith('*') and not handler.controller.dirty:
                 self.SetItemText(node, text[1:])
 
@@ -383,7 +383,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
     def _get_datafile_node(self, datafile):
         for node in self._datafile_nodes:
-            if self._get_handler(node).item == datafile:
+            if self._controller.get_handler(node).item == datafile:
                 return node
         return None
 
@@ -395,7 +395,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         datafile = self._get_selected_datafile_node()
         if not datafile:
             return None
-        return self._get_handler(datafile).item
+        return self._controller.get_handler(datafile).item
 
     def get_selected_datafile_controller(self):
         """Returns controller associated with currently active data file.
@@ -403,7 +403,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         If a test or user keyword node is selected, returns parent of that item.
         """
         dfnode = self._get_selected_datafile_node()
-        return self._get_handler(dfnode).controller if dfnode else None
+        return self._controller.get_handler(dfnode).controller if dfnode else None
 
     def _get_selected_datafile_node(self):
         node = self.GetSelection()
@@ -418,7 +418,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         selection = self.GetSelection()
         if not selection:
             return None
-        handler = self._get_handler(selection)
+        handler = self._controller.get_handler(selection)
         return handler and handler.controller or None
 
     def move_up(self, node):
@@ -434,7 +434,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def _switch_items(self, first, second, currently_selected):
         """Changes the order of given items, first is expected to be directly above the second"""
         selection = self.GetItemPyData(currently_selected).controller
-        controller = self._get_handler(first).controller
+        controller = self._controller.get_handler(first).controller
         self.Delete(first)
         self._create_node_with_handler(self.GetItemParent(second),
                                               controller, second)
@@ -509,9 +509,6 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
     def _get_parent(self, node):
         return self.GetItemParent(node)
 
-    def _get_handler(self, node=None):
-        return self.GetItemPyData(node or self.Selection)
-
     def _remove_datafile_node(self, node):
         for child in self.GetItemChildren(node):
             if child in self._datafile_nodes:
@@ -532,7 +529,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             event.Skip()
             return
         self._controller.add_to_history(node)
-        handler = self._get_handler(node)
+        handler = self._controller.get_handler(node)
         if handler and handler.item:
             RideTreeSelection(node=node, item=handler.controller, silent=self._silent_mode).publish()
         self.SetFocus()
@@ -557,33 +554,33 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             event.Skip()
 
     def OnRightClick(self, event):
-        handler = self._get_handler(event.Item if hasattr(event, 'Item') else None)
+        handler = self._controller.get_handler(event.Item if hasattr(event, 'Item') else None)
         if handler:
             if not self.IsExpanded(handler.node):
                 self.Expand(handler.node)
             handler.show_popup()
 
     def OnNewTestCase(self, event):
-        handler = self._get_handler()
+        handler = self._controller.get_handler()
         if handler:
             handler.OnNewTestCase(event)
 
     def OnDrop(self, target, dragged):
-        dragged = self._get_handler(dragged)
-        target = self._get_handler(target)
+        dragged = self._controller.get_handler(dragged)
+        target = self._controller.get_handler(target)
         if target and target.accepts_drag(dragged):
             dragged.controller.execute(MoveTo(target.controller))
 
     def IsValidDragItem(self, item):
-        return self._get_handler(item).is_draggable
+        return self._controller.get_handler(item).is_draggable
 
     def OnMoveUp(self, event):
-        handler = self._get_handler()
+        handler = self._controller.get_handler()
         if handler.is_draggable:
             handler.OnMoveUp(event)
 
     def OnMoveDown(self, event):
-        handler = self._get_handler()
+        handler = self._controller.get_handler()
         if handler.is_draggable:
             handler.OnMoveDown(event)
 
@@ -633,14 +630,14 @@ class TreeLabelEditListener(object):
     def OnLabelEdit(self, event):
         if not self._on_label_edit_called:
             self._on_label_edit_called = True
-            handler = self._get_handler()
+            handler = self._controller.get_handler()
             if handler:
                 handler.begin_label_edit()
 
     def OnLabelEdited(self, event):
         self._editing_label = False
         self._on_label_edit_called = False
-        self._get_handler(event.Item).end_label_edit(event)
+        self._controller.get_handler(event.Item).end_label_edit(event)
 
     def OnLeftDown(self, event):
         #See http://code.google.com/p/robotframework-ride/issues/detail?id=756

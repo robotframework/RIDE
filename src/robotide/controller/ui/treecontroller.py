@@ -72,6 +72,9 @@ class TreeController(object):
             item, cookie = self._tree.GetNextChild(node, cookie)
         return None
 
+    def get_handler(self, node=None):
+        return self._tree.GetItemPyData(node or self._tree.Selection)
+
 
 class _History(object):
 
