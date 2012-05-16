@@ -11,9 +11,10 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+import wx
 from robot import utils
 from robotide.action.actioninfo import ActionInfoCollection
-from robotide.context.platform import IS_WINDOWS
+from robotide.context.platform import IS_WINDOWS, ctrl_or_cmd, bind_keys_to_evt_menu
 
 tree_actions ="""
 [Navigate]
@@ -74,6 +75,39 @@ class TreeController(object):
 
     def get_handler(self, node=None):
         return self._tree.GetItemPyData(node or self._tree.Selection)
+
+    def bind_keys(self):
+        bind_keys_to_evt_menu(self._tree, self._get_bind_keys())
+
+    def _get_bind_keys(self):
+        bindings = [
+            (ctrl_or_cmd(), wx.WXK_UP, self._tree.OnMoveUp),
+            (ctrl_or_cmd(), wx.WXK_DOWN, self._tree.OnMoveDown),
+            (wx.ACCEL_NORMAL, wx.WXK_F2, self._tree._label_editor.OnLabelEdit),
+            (wx.ACCEL_NORMAL, wx.WXK_WINDOWS_MENU, self._tree.OnRightClick),
+            (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('d'), lambda event: self._expanded_handler().OnSafeDelete(event)),
+            (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('f'),
+                lambda event: self._expanded_handler().OnNewSuite(event)),
+            (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('k'),
+                lambda event: self._expanded_handler().OnNewUserKeyword(event)),
+            (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('t'),
+                lambda event: self._expanded_handler().OnNewTestCase(event)),
+            (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('v'),
+                lambda event: self._expanded_handler().OnNewScalar(event)),
+            (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('l'),
+                lambda event: self._expanded_handler().OnNewListVariable(event)),
+            (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('c'),
+                lambda event: self._expanded_handler().OnCopy(event))
+        ]
+        if not IS_WINDOWS:
+            bindings.append((wx.ACCEL_NORMAL, wx.WXK_LEFT, self._tree.OnLeftArrow))
+        return bindings
+
+    def _expanded_handler(self):
+        handler = self.get_handler()
+        if not self._tree.IsExpanded(handler.node):
+            self._tree.Expand(handler.node)
+        return handler
 
 
 class _History(object):
