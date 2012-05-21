@@ -461,7 +461,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
 
     def _get_datafile_index(self, node):
         insertion_index = self.GetPrevSibling(node)
-        if not insertion_index.IsOk():
+        if not insertion_index:
             insertion_index = 0
         return insertion_index
 
