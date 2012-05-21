@@ -440,7 +440,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
 
     def _get_pending_selection(self, event):
         if hasattr(event, 'Item'):
-            item= event.Item
+            item = event.GetItem()
             event.Veto()
         elif hasattr(event, 'Position'):
             item, flags = self.HitTest(event.Position)
@@ -589,14 +589,14 @@ class TreeLabelEditListener(object):
     def OnLabelEdit(self, event):
         if not self._on_label_edit_called:
             self._on_label_edit_called = True
-            handler = self._controller.get_handler()
+            handler = self._tree._controller.get_handler()
             if handler:
                 handler.begin_label_edit()
 
     def OnLabelEdited(self, event):
         self._editing_label = False
         self._on_label_edit_called = False
-        self._controller.get_handler(event.Item).end_label_edit(event)
+        self._tree._controller.get_handler(event.GetItem()).end_label_edit(event)
 
     def OnLeftDown(self, event):
         #See http://code.google.com/p/robotframework-ride/issues/detail?id=756

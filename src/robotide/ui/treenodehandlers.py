@@ -138,10 +138,10 @@ class _CanBeRenamed(object):
 
     def end_label_edit(self, event):
         if event.IsEditCancelled() or \
-                not self._is_valid_rename(event.Label):
+                not self._is_valid_rename(event.GetLabel()):
             event.Veto()
         else:
-            self.rename(event.Label)
+            self.rename(event.GetLabel())
 
     def _is_valid_rename(self, label):
         validation = self.controller.validate_name(label)
@@ -279,7 +279,7 @@ class ResourceFileHandler(_CanBeRenamed, TestDataHandler):
 
     def end_label_edit(self, event):
         if not event.IsEditCancelled():
-            self.controller.execute(RenameResourceFile(event.Label, self._check_should_rename_static_imports))
+            self.controller.execute(RenameResourceFile(event.GetLabel(), self._check_should_rename_static_imports))
 
     def _check_should_rename_static_imports(self):
         return ResourceRenameDialog(self.controller).execute()
@@ -319,7 +319,7 @@ class TestCaseFileHandler(_CanBeRenamed, TestDataHandler):
 
     def end_label_edit(self, event):
         if not event.IsEditCancelled():
-            self.controller.execute(RenameFile(event.Label))
+            self.controller.execute(RenameFile(event.GetLabel()))
 
     def _set_node_label(self, label):
         self._tree.SetItemText(self._node, label)

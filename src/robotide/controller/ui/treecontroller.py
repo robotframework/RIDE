@@ -86,7 +86,7 @@ class TreeController(object):
         return None
 
     def get_handler(self, node=None):
-        return self._tree.GetItemPyData(node or self._tree.Selection)
+        return self._tree.GetItemPyData(node or self._tree.GetSelection())
 
     def bind_keys(self):
         bind_keys_to_evt_menu(self._tree, self._get_bind_keys())
