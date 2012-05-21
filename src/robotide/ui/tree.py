@@ -252,7 +252,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         while item:
             if predicate(self._controller.get_handler(item)):
                 index = self.GetPrevSibling(item)
-                if not index.IsOk:
+                if not index:
                     index = 0
                 return index
             item, cookie = self.GetNextChild(parent_node, cookie)
