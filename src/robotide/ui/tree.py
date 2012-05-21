@@ -13,12 +13,13 @@
 #  limitations under the License.
 
 import wx
+tree_args = {}
 try:
     import wx.lib.agw.customtreectrl as customtreectrl
-    tree_args = {'agwStyle':customtreectrl.TR_DEFAULT_STYLE | customtreectrl.TR_HIDE_ROOT | customtreectrl.TR_EDIT_LABELS}
+    if wx.VERSION_STRING >= '2.8.11.0':
+        tree_args['agwStyle']=customtreectrl.TR_DEFAULT_STYLE | customtreectrl.TR_HIDE_ROOT | customtreectrl.TR_EDIT_LABELS
 except ImportError:
     import wx.lib.customtreectrl as customtreectrl
-    tree_args = {}
 from robotide.controller.ui.treecontroller import TreeController
 
 try:
