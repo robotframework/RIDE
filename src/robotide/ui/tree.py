@@ -15,8 +15,10 @@
 import wx
 try:
     import wx.lib.agw.customtreectrl as customtreectrl
+    tree_args = {'agwStyle':customtreectrl.TR_DEFAULT_STYLE | customtreectrl.TR_HIDE_ROOT | customtreectrl.TR_EDIT_LABELS}
 except ImportError:
     import wx.lib.customtreectrl as customtreectrl
+    tree_args = {}
 from robotide.controller.ui.treecontroller import TreeController
 
 try:
@@ -45,11 +47,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
 
     def __init__(self, parent, action_registerer, settings=None):
         self._controller = TreeController(self, action_registerer, settings=settings)
-        style = wx.TR_DEFAULT_STYLE
-        if IS_WINDOWS:
-            style =  style | wx.TR_EDIT_LABELS
-        treemixin.DragAndDrop.__init__(self, parent, style=style,
-            agwStyle=customtreectrl.TR_DEFAULT_STYLE | customtreectrl.TR_HIDE_ROOT | customtreectrl.TR_EDIT_LABELS)
+        tree_args['style'] = wx.TR_DEFAULT_STYLE | (IS_WINDOWS and wx.TR_EDIT_LABELS)
+        treemixin.DragAndDrop.__init__(self, parent, **tree_args)
         self._controller.register_tree_actions()
         self._bind_tree_events()
         self._images = TreeImageList()
