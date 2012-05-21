@@ -47,8 +47,9 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         self._controller = TreeController(self, action_registerer, settings=settings)
         style = wx.TR_DEFAULT_STYLE
         if IS_WINDOWS:
-            style = style|wx.TR_EDIT_LABELS
-        treemixin.DragAndDrop.__init__(self, parent, style=style)
+            style =  style | wx.TR_EDIT_LABELS
+        treemixin.DragAndDrop.__init__(self, parent, style=style,
+            agwStyle=customtreectrl.TR_DEFAULT_STYLE | customtreectrl.TR_HIDE_ROOT)
         self._controller.register_tree_actions()
         self._bind_tree_events()
         self._images = TreeImageList()
