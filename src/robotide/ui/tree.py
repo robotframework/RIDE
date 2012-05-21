@@ -13,6 +13,10 @@
 #  limitations under the License.
 
 import wx
+try:
+    import wx.lib.agw.customtreectrl as customtreectrl
+except ImportError:
+    import wx.lib.customtreectrl as customtreectrl
 from robotide.controller.ui.treecontroller import TreeController
 
 try:
@@ -35,7 +39,7 @@ from .treenodehandlers import ResourceRootHandler, action_handler
 from .images import TreeImageList
 
 
-class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
+class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEventHandler):
 
     _RESOURCES_NODE_LABEL = 'External Resources'
 
@@ -206,7 +210,9 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         if index is not None:
             # blame wxPython for this ugliness
             if isinstance(index, int):
-                node = self.InsertItemBefore(parent_node, index, label)
+                #FIXME!!! this is not working correctly
+                node = self.InsertItemByIndex(parent_node, index+1, label)
+                #node = self.InsertItemBefore(parent_node, index, label)
             else:
                 node = self.InsertItem(parent_node, index, label)
         else:
@@ -479,7 +485,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
 
 
     def OnSelChanged(self, event):
-        node = event.Item
+        node = event.GetItem()
         if not node.IsOk() or self._dragging:
             event.Skip()
             return
@@ -490,12 +496,12 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
         self.SetFocus()
 
     def OnTreeItemExpanding(self, event):
-        node = event.Item
+        node = event.GetItem()
         if node.IsOk():
             self._render_children(node)
 
     def OnItemActivated(self, event):
-        node = event.Item
+        node = event.GetItem()
         if self.IsExpanded(node):
             self.Collapse(node)
         elif self.ItemHasChildren(node):
@@ -509,7 +515,7 @@ class Tree(treemixin.DragAndDrop, wx.TreeCtrl, utils.RideEventHandler):
             event.Skip()
 
     def OnRightClick(self, event):
-        handler = self._controller.get_handler(event.Item if hasattr(event, 'Item') else None)
+        handler = self._controller.get_handler(event.GetItem() if hasattr(event, 'GetItem') else None)
         if handler:
             if not self.IsExpanded(handler.node):
                 self.Expand(handler.node)
@@ -599,7 +605,7 @@ class TreeLabelEditListener(object):
         if IS_WINDOWS and self._editing_label:
             # This method works only on Windows, luckily the issue 756 exists
             # only on Windows
-            self._tree.EndEditLabel(self._tree.Selection, discardChanges=True)
+            self._tree.EndEditLabel(self._tree.GetSelection(), discardChanges=True)
         event.Skip()
 
     def _get_handler(self, item=None):
