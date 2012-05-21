@@ -210,9 +210,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         if index is not None:
             # blame wxPython for this ugliness
             if isinstance(index, int):
-                #FIXME!!! this is not working correctly
-                node = self.InsertItemByIndex(parent_node, index+1, label)
-                #node = self.InsertItemBefore(parent_node, index, label)
+                node = self.InsertItemByIndex(parent_node, index, label)
             else:
                 node = self.InsertItem(parent_node, index, label)
         else:
