@@ -846,7 +846,7 @@ class TestRunnerPlugin(Plugin):
         if event == 'start_test':
             _, attrs = args
             longname = attrs['longname']
-            RideTestRunning(longname=longname).publish()
+            RideTestRunning(item=self._get_test_controller(longname)).publish()
             self._tree.running_test(longname)
         if event == 'start_suite':
             _, attrs = args
@@ -858,11 +858,11 @@ class TestRunnerPlugin(Plugin):
             if attrs['status'] == 'PASS':
                 self._tree.test_passed(longname)
                 self._progress_bar.Pass()
-                RideTestPassed(longname=longname).publish()
+                RideTestPassed(item=self._get_test_controller(longname)).publish()
             else:
                 self._tree.test_failed(longname)
                 self._progress_bar.Fail()
-                RideTestFailed(longname=longname).publish()
+                RideTestFailed(item=self._get_test_controller(longname)).publish()
         if event == 'end_suite':
             _, attrs = args
             longname = attrs['longname']
@@ -884,6 +884,10 @@ class TestRunnerPlugin(Plugin):
             self._progress_bar.empty_current_keyword()
 
         return
+
+    def _get_test_controller(self, longname):
+        node = self._tree.GetItemPyData(self._tree._nodes[self._tree._convert_test_longname_key(longname)])
+        return node.controller
 
     def _set_state(self, state):
         if state == "running":

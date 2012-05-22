@@ -321,6 +321,7 @@ class TreeNode:
     def __init__(self, longname, data):
         self.longname= longname
         self.data = data.data
+        self.controller = data
 
     @property
     def name(self):

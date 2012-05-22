@@ -117,13 +117,13 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
             PUBLISHER.subscribe(listener, topic)
 
     def _running_test(self, message):
-        print 'running', message.longname
+        print 'running', message.item
 
     def _test_passed(self, message):
-        print 'test passed', message.longname
+        print 'test passed', message.item
 
     def _test_failed(self, message):
-        print 'test failed', message.longname
+        print 'test failed', message.item
 
     def populate(self, model):
         self._clear_tree_data()

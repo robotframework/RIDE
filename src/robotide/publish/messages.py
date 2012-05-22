@@ -154,15 +154,15 @@ class RideTestSelectedForRunningChanged(RideMessage):
 
 class RideTestRunning(RideMessage):
     """Sent whenever RIDE is starting to run a test case."""
-    data = ['longname']
+    data = ['item']
 
 class RideTestPassed(RideMessage):
     """Sent whenever RIDE has executed a test case and it passed."""
-    data = ['longname']
+    data = ['item']
 
 class RideTestFailed(RideMessage):
     """Sent whenever RIDE has executed a test case and it failed."""
-    data = ['longname']
+    data = ['item']
 
 class RideNotebookTabChanging(RideMessage):
     """Sent when the notebook tab change has started.
