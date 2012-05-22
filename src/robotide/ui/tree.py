@@ -607,7 +607,7 @@ class TreeLabelEditListener(object):
         if IS_WINDOWS and self._editing_label:
             # This method works only on Windows, luckily the issue 756 exists
             # only on Windows
-            self._tree.EndEditLabel(self._tree.GetSelection(), discardChanges=True)
+            self._tree.OnCancelEdit(self._tree.GetSelection())
         event.Skip()
 
     def _get_handler(self, item=None):
