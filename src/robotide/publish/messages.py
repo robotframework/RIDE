@@ -152,6 +152,18 @@ class RideTestSelectedForRunningChanged(RideMessage):
     """Sent whenever user (un)selects a test from the tree for running."""
     data = ['item', 'running']
 
+class RideTestRunning(RideMessage):
+    """Sent whenever RIDE is starting to run a test case."""
+    data = ['longname']
+
+class RideTestPassed(RideMessage):
+    """Sent whenever RIDE has executed a test case and it passed."""
+    data = ['longname']
+
+class RideTestFailed(RideMessage):
+    """Sent whenever RIDE has executed a test case and it failed."""
+    data = ['longname']
+
 class RideNotebookTabChanging(RideMessage):
     """Sent when the notebook tab change has started.
 

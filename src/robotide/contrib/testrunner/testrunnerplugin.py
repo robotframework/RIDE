@@ -43,7 +43,9 @@ import posixpath
 import re
 import codecs
 from posixpath import curdir, sep, pardir, join
-from robotide.publish.messages import RideDataFileSet, RideDataFileRemoved, RideFileNameChanged, RideTestSelectedForRunningChanged
+from robotide.publish.messages import (RideDataFileSet, RideDataFileRemoved, RideFileNameChanged,
+                                       RideTestSelectedForRunningChanged, RideTestRunning, RideTestPassed,
+                                       RideTestFailed)
 
 
 try:
@@ -844,6 +846,7 @@ class TestRunnerPlugin(Plugin):
         if event == 'start_test':
             _, attrs = args
             longname = attrs['longname']
+            RideTestRunning(longname=longname).publish()
             self._tree.running_test(longname)
         if event == 'start_suite':
             _, attrs = args
@@ -855,9 +858,11 @@ class TestRunnerPlugin(Plugin):
             if attrs['status'] == 'PASS':
                 self._tree.test_passed(longname)
                 self._progress_bar.Pass()
+                RideTestPassed(longname=longname).publish()
             else:
                 self._tree.test_failed(longname)
                 self._progress_bar.Fail()
+                RideTestFailed(longname=longname).publish()
         if event == 'end_suite':
             _, attrs = args
             longname = attrs['longname']
