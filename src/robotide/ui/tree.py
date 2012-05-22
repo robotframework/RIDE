@@ -16,6 +16,7 @@ import wx
 from robotide.controller.macrocontrollers import TestCaseController, UserKeywordController
 from robotide.controller.settingcontrollers import VariableController
 from robotide.publish.messages import RideTestRunning, RideTestPassed, RideTestFailed
+from robotide.ui.images import RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, FAILED_IMAGE_INDEX
 
 tree_args = {}
 try:
@@ -120,16 +121,16 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
 
     def _running_test(self, message):
         node = self.select_node_by_data(message.item)
-        self.SetItemImage(node, 4)
+        self.SetItemImage(node, RUNNING_IMAGE_INDEX)
         self.Expand(node)
 
     def _test_passed(self, message):
         node = self._controller.find_node_by_controller(message.item)
-        self.SetItemImage(node, 3)
+        self.SetItemImage(node, PASSED_IMAGE_INDEX)
 
     def _test_failed(self, message):
         node = self._controller.find_node_by_controller(message.item)
-        self.SetItemImage(node, 6)
+        self.SetItemImage(node, FAILED_IMAGE_INDEX)
 
     def populate(self, model):
         self._clear_tree_data()

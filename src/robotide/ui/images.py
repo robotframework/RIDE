@@ -23,6 +23,9 @@ from robotide.controller.filecontrollers import TestDataDirectoryController, Tes
 _SIZE = (16, 16)
 _BASE = os.path.join(os.path.dirname(__file__), '..', 'widgets')
 
+RUNNING_IMAGE_INDEX = 7
+PASSED_IMAGE_INDEX = 8
+FAILED_IMAGE_INDEX = 9
 
 class TreeImageList(wx.ImageList):
 
@@ -35,7 +38,10 @@ class TreeImageList(wx.ImageList):
             TestCaseController: _TreeImage(self, 'robot.png'),
             UserKeywordController: _TreeImage(self, 'cog.png'),
             ResourceFileController: _TreeImage(self, 'page_white_gear.png'),
-            VariableController: _TreeImage(self, 'dollar.png')
+            VariableController: _TreeImage(self, 'dollar.png'),
+            'running': _TreeImage(self, 'robot_running.png'),
+            'passed': _TreeImage(self, 'robot_passed.png'),
+            'failed': _TreeImage(self, 'robot_failed.png')
         }
 
     @property
