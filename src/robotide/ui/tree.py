@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 import wx
+from robotide.publish.messages import RideTestRunning, RideTestPassed, RideTestFailed
 
 tree_args = {}
 try:
@@ -108,9 +109,21 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
             (self._variable_moved_down, RideVariableMovedDown),
             (self._variable_updated, RideVariableUpdated),
             (self._filename_changed, RideFileNameChanged),
+            (self._running_test, RideTestRunning),
+            (self._test_passed, RideTestPassed),
+            (self._test_failed, RideTestFailed)
         ]
         for listener, topic in subscriptions:
             PUBLISHER.subscribe(listener, topic)
+
+    def _running_test(self, message):
+        print 'running', message.longname
+
+    def _test_passed(self, message):
+        print 'test passed', message.longname
+
+    def _test_failed(self, message):
+        print 'test failed', message.longname
 
     def populate(self, model):
         self._clear_tree_data()
