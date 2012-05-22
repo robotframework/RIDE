@@ -207,15 +207,16 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         return list(handler.variables) + list(handler.tests) + \
                 list(handler.keywords)
 
-    def _create_node(self, parent_node, label, img, index=None):
+    def _create_node(self, parent_node, label, img, index=None, with_checkbox=False):
+        ct_type = 1 if with_checkbox else 0
         if index is not None:
             # blame wxPython for this ugliness
             if isinstance(index, int):
-                node = self.InsertItemByIndex(parent_node, index, label)
+                node = self.InsertItemByIndex(parent_node, index, label, ct_type=ct_type)
             else:
-                node = self.InsertItem(parent_node, index, label)
+                node = self.InsertItem(parent_node, index, label, ct_type=ct_type)
         else:
-            node = self.AppendItem(parent_node, label)
+            node = self.AppendItem(parent_node, label, ct_type=ct_type)
         self.SetItemImage(node, img.normal, wx.TreeItemIcon_Normal)
         self.SetItemImage(node, img.expanded, wx.TreeItemIcon_Expanded)
         return node
