@@ -43,7 +43,7 @@ import posixpath
 import re
 import codecs
 from posixpath import curdir, sep, pardir, join
-from robotide.publish.messages import RideDataFileSet, RideDataFileRemoved, RideFileNameChanged
+from robotide.publish.messages import RideDataFileSet, RideDataFileRemoved, RideFileNameChanged, RideTestSelectedForRunningChanged
 
 
 try:
@@ -126,6 +126,7 @@ class TestRunnerPlugin(Plugin):
         self._running = False
         self.register_shortcut('Ctrl-C', self._copy_from_out)
         self._currently_executing_keyword = None
+        self._tests_to_run = set()
 
     def _copy_from_out(self, event):
         if self.notebook.current_page_title != self.title:
@@ -181,6 +182,17 @@ class TestRunnerPlugin(Plugin):
                                             RideDataFileRemoved,
                                             RideDataFileSet,
                                             RideFileNameChanged)
+        self.subscribe(self.OnTestSelectedForRunningChanged, RideTestSelectedForRunningChanged)
+        self.subscribe(self.OnOpenSuite, RideOpenSuite)
+
+    def OnTestSelectedForRunningChanged(self, message):
+        if message.running:
+            self._tests_to_run.add(message.item)
+        else:
+            self._tests_to_run.remove(message.item)
+
+    def OnOpenSuite(self, message):
+        self._tests_to_run = set()
 
     def _start_listener_server(self):
         self._server = RideListenerServer(RideListenerHandler,
@@ -518,8 +530,8 @@ class TestRunnerPlugin(Plugin):
                                                                   standard_args)
         standard_args.extend(["--monitorcolors", "off"])
         standard_args.extend(["--monitorwidth", self._get_monitor_width()])
-        for (suite, test) in self._tree.GetCheckedTestsByName():
-            standard_args.extend(["--suite", suite, "--test", test])
+        for tc in self._tests_to_run:
+            standard_args += ['--test', tc.longname]
         return standard_args
 
     def _get_command(self):

@@ -7,7 +7,10 @@ class CommandCreator(TestRunnerPlugin):
     def __init__(self):
         self._tmpdir = 'temppi'
         self._tree = lambda:0
-        self._tree.GetCheckedTestsByName = lambda:[('suite', 'test')]
+        self._tests_to_run = set()
+        tc = lambda:0
+        tc.longname = 'suite.test'
+        self._tests_to_run.add(tc)
 
     def get_current_profile(self):
         p = lambda:0
@@ -48,8 +51,7 @@ class CommandCreationTestCase(unittest.TestCase):
              '--pythonpath', 'PYTHON:PATH',
              '--monitorcolors', 'off',
              '--monitorwidth', 7,
-             '--suite', 'suite',
-             '--test', 'test'])
+             '--test', 'suite.test'])
 
 if __name__ == '__main__':
     unittest.main()
