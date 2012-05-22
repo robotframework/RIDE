@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 import wx
+
 tree_args = {}
 try:
     import wx.lib.agw.customtreectrl as customtreectrl
@@ -38,7 +39,7 @@ from robotide.controller.commands import MoveTo
 from robotide.widgets import PopupCreator
 from robotide import utils
 
-from .treenodehandlers import ResourceRootHandler, action_handler
+from .treenodehandlers import ResourceRootHandler, action_handler_class
 from .images import TreeImageList
 
 
@@ -181,9 +182,10 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         return node
 
     def _create_node_with_handler(self, parent_node, controller, index=None):
+        handler_class = action_handler_class(controller)
         node = self._create_node(parent_node, controller.display_name, self._images[controller],
-                                 index)
-        self.SetPyData(node, action_handler(controller, self, node, self._controller.settings))
+                                 index, with_checkbox=handler_class.with_checkbox)
+        self.SetPyData(node, handler_class(controller, self, node, self._controller.settings))
         return node
 
     def _expand_and_render_children(self, node):

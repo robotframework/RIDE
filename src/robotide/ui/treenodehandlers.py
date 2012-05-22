@@ -32,8 +32,7 @@ from robotide.widgets import PopupMenuItems
 from .progress import RenameProgressObserver
 from .resourcedialogs import ResourceRenameDialog, ResourceDeleteDialog
 
-
-def action_handler(controller, tree, node, settings):
+def action_handler_class(controller):
     return {TestDataDirectoryController:TestDataDirectoryHandler,
          ResourceFileController:ResourceFileHandler,
          TestCaseFileController:TestCaseFileHandler,
@@ -41,13 +40,13 @@ def action_handler(controller, tree, node, settings):
          UserKeywordController:UserKeywordHandler,
          VariableController:VariableHandler,
          DirectoryController: DirectoryHandler
-     }[controller.__class__](controller, tree, node, settings)
-
+     }[controller.__class__]
 
 class _ActionHandler(wx.Window):
     is_user_keyword = False
     is_test_suite = False
     is_variable = False
+    with_checkbox = False
 
     _label_add_suite = 'New Suite\tCtrl-Shift-F'
     _label_new_test_case = 'New Test Case\tCtrl-Shift-T'
@@ -356,6 +355,7 @@ class _TestOrUserKeywordHandler(_CanBeRenamed, _ActionHandler):
 
 
 class TestCaseHandler(_TestOrUserKeywordHandler):
+    with_checkbox = True
     _datalist = property(lambda self: self.item.datalist)
     _copy_name_dialog_class = TestCaseNameDialog
 
