@@ -30,8 +30,8 @@ except ImportError:
 
 from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
 from robotide.publish import (PUBLISHER, RideTreeSelection, RideFileNameChanged,
-    RideItem, RideUserKeywordAdded, RideTestCaseAdded, RideUserKeywordRemoved,
-    RideTestCaseRemoved, RideDataFileRemoved, RideDataChangedToDirty,
+    RideTestSelectedForRunningChanged, RideItem, RideUserKeywordAdded, RideTestCaseAdded,
+    RideUserKeywordRemoved, RideTestCaseRemoved, RideDataFileRemoved, RideDataChangedToDirty,
     RideDataDirtyCleared, RideVariableRemoved, RideVariableAdded,
     RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated,
     RideOpenResource, RideSuiteAdded, RideSelectResource, RideDataFileSet)
@@ -69,6 +69,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         self.Bind(wx.EVT_TREE_ITEM_EXPANDING, self.OnTreeItemExpanding)
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnRightClick)
         self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnItemActivated)
+        self.Bind(customtreectrl.EVT_TREE_ITEM_CHECKED, self.OnTreeItemChecked)
 
     def set_editor(self, editor):
         self._editor = editor
@@ -501,6 +502,11 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         node = event.GetItem()
         if node.IsOk():
             self._render_children(node)
+
+    def OnTreeItemChecked(self, event):
+        node = event.GetItem()
+        handler = self._controller.get_handler(node=node)
+        RideTestSelectedForRunningChanged(item=handler.controller, running=node.IsChecked()).publish()
 
     def OnItemActivated(self, event):
         node = event.GetItem()
