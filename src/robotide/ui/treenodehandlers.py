@@ -62,6 +62,7 @@ class _ActionHandler(wx.Window):
     _label_expand_all = 'Expand All'
     _label_select_all = 'Select All Tests'
     _label_deselect_all = 'Deselect All Tests'
+    _label_select_failed_tests = 'Select Failed Tests'
 
     def __init__(self, controller, tree, node, settings):
         wx.Window.__init__(self, tree)
@@ -116,6 +117,9 @@ class _ActionHandler(wx.Window):
 
     def OnDeselectAllTests(self, event):
         self._tree.DeselectAllTests(self._node)
+
+    def OnSelectFailedTests(self, event):
+        self._tree.SelectFailedTests(self._node)
 
     def OnSafeDelete(self, event):
         pass
@@ -184,7 +188,8 @@ class TestDataHandler(_ActionHandler):
                 _ActionHandler._label_new_list_variable, '---',
                 _ActionHandler._label_change_format, '---',
                 _ActionHandler._label_select_all,
-                _ActionHandler._label_deselect_all]
+                _ActionHandler._label_deselect_all,
+                _ActionHandler._label_select_failed_tests]
 
     @property
     def tests(self):
@@ -309,6 +314,7 @@ class TestCaseFileHandler(_CanBeRenamed, TestDataHandler):
                 _ActionHandler._label_sort_keywords,
                 _ActionHandler._label_select_all,
                 _ActionHandler._label_deselect_all,
+                _ActionHandler._label_select_failed_tests,
                 'Delete\tCtrl-Shift-D']
 
     def OnNewTestCase(self, event):
