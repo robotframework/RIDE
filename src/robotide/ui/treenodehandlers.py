@@ -59,6 +59,8 @@ class _ActionHandler(wx.Window):
     _label_rename = 'Rename\tF2'
     _label_new_resource = 'New Resource'
     _label_find_usages = 'Find Usages'
+    _label_expand_all = 'Expand All'
+    _label_select_all = 'Select All Tests'
 
     def __init__(self, controller, tree, node, settings):
         wx.Window.__init__(self, tree)
@@ -107,6 +109,9 @@ class _ActionHandler(wx.Window):
 
     def OnFindUsages(self, event):
         pass
+
+    def OnSelectAllTests(self, event):
+        self._tree.SelectAllTests(self._node)
 
     def OnSafeDelete(self, event):
         pass
@@ -173,7 +178,8 @@ class TestDataHandler(_ActionHandler):
                 _ActionHandler._label_new_user_keyword,
                 _ActionHandler._label_new_scalar,
                 _ActionHandler._label_new_list_variable, '---',
-                _ActionHandler._label_change_format]
+                _ActionHandler._label_change_format, '---',
+                _ActionHandler._label_select_all]
 
     @property
     def tests(self):
@@ -296,6 +302,7 @@ class TestCaseFileHandler(_CanBeRenamed, TestDataHandler):
                 _ActionHandler._label_rename,
                 _ActionHandler._label_change_format,
                 _ActionHandler._label_sort_keywords,
+                _ActionHandler._label_select_all,
                 'Delete\tCtrl-Shift-D']
 
     def OnNewTestCase(self, event):
