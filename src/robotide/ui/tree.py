@@ -120,17 +120,16 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
             PUBLISHER.subscribe(listener, topic)
 
     def _running_test(self, message):
-        node = self.select_node_by_data(message.item)
-        self.SetItemImage(node, RUNNING_IMAGE_INDEX)
-        self.Expand(node)
+        node = self._controller.find_node_by_controller(message.item)
+        if node: self.SetItemImage(node, RUNNING_IMAGE_INDEX)
 
     def _test_passed(self, message):
         node = self._controller.find_node_by_controller(message.item)
-        self.SetItemImage(node, PASSED_IMAGE_INDEX)
+        if node: self.SetItemImage(node, PASSED_IMAGE_INDEX)
 
     def _test_failed(self, message):
         node = self._controller.find_node_by_controller(message.item)
-        self.SetItemImage(node, FAILED_IMAGE_INDEX)
+        if node: self.SetItemImage(node, FAILED_IMAGE_INDEX)
 
     def populate(self, model):
         self._clear_tree_data()
