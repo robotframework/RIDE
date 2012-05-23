@@ -523,24 +523,20 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
             self._render_children(node)
 
     def SelectAllTests(self, item):
+        self._for_all_tests(item, lambda t: self.CheckItem(t))
+
+    def _for_all_tests(self, item, func):
         if not self.HasAGWFlag(customtreectrl.TR_HIDE_ROOT) or item != self.GetRootItem():
             self.Expand(item)
             if item.GetType() == 1:
-                self.CheckItem(item)
+                func(item)
             if not self.IsExpanded(item):
                 return
         for child in item.GetChildren():
-            self.SelectAllTests(child)
+            self._for_all_tests(child, func)
 
     def DeselectAllTests(self, item):
-        if not self.HasAGWFlag(customtreectrl.TR_HIDE_ROOT) or item != self.GetRootItem():
-            self.Expand(item)
-            if item.GetType() == 1:
-                self.CheckItem(item, checked=False)
-            if not self.IsExpanded(item):
-                return
-        for child in item.GetChildren():
-            self.DeselectAllTests(child)
+        self._for_all_tests(item, lambda t: self.CheckItem(t, checked=False))
 
     def OnTreeItemChecked(self, event):
         node = event.GetItem()
