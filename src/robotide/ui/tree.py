@@ -532,6 +532,16 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         for child in item.GetChildren():
             self.SelectAllTests(child)
 
+    def DeselectAllTests(self, item):
+        if not self.HasAGWFlag(customtreectrl.TR_HIDE_ROOT) or item != self.GetRootItem():
+            self.Expand(item)
+            if item.GetType() == 1:
+                self.CheckItem(item, checked=False)
+            if not self.IsExpanded(item):
+                return
+        for child in item.GetChildren():
+            self.DeselectAllTests(child)
+
     def OnTreeItemChecked(self, event):
         node = event.GetItem()
         handler = self._controller.get_handler(node=node)
