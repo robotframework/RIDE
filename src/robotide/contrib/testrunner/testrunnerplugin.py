@@ -61,7 +61,6 @@ from robot.parsing.model import TestCase
 from robotide.pluginapi import Plugin, ActionInfo
 from robotide.publish import (RideTestCaseAdded, RideOpenSuite, RideSuiteAdded,
                               RideItemNameChanged, RideTestCaseRemoved)
-from robotide.contrib.testrunner.TestSuiteTreeCtrl import TestSuiteTreeCtrl
 from robotide.contrib.testrunner import runprofiles
 from robotide.widgets import Label
 
@@ -144,7 +143,6 @@ class TestRunnerPlugin(Plugin):
         self.SetProfile(self.profile)
         self._subscribe_to_events()
         self._start_listener_server()
-        self._load_tree_if_data_is_open()
         self._create_temporary_directory()
         self._set_stopped()
 
@@ -203,10 +201,6 @@ class TestRunnerPlugin(Plugin):
         self._server_thread.setDaemon(True)
         self._server_thread.start()
         self._port = self._server.server_address[1]
-
-    def _load_tree_if_data_is_open(self):
-        if self.model is not None and self.model.suite is not None:
-            self.OnModelChanged()
 
     def _create_temporary_directory(self):
         self._tmpdir = tempfile.mkdtemp(".d", "RIDE")
@@ -323,7 +317,6 @@ class TestRunnerPlugin(Plugin):
 
     def _initialize_ui_for_running(self):
         self._show_notebook_tab()
-        self._tree.Reset()
         self._clear_output_window()
         self.local_toolbar.EnableTool(ID_SHOW_REPORT, False)
         self.local_toolbar.EnableTool(ID_SHOW_LOG, False)
@@ -344,40 +337,9 @@ class TestRunnerPlugin(Plugin):
         if self._log_file:
             wx.LaunchDefaultBrowser("file:%s" % os.path.abspath(self._log_file))
 
-    def OnSplitterSashChanged(self, evt):
-        sash_position = self.splitter.GetSashPosition()
-        # this is a gross hack. For some reason yet to be determined, sometimes
-        # a value of 7 is getting saved. Weird.
-        if sash_position > 10:
-            self.save_setting("sash_position", sash_position)
-
     def OnProfileSelection(self, event):
         self.save_setting("profile", event.GetString())
         self.SetProfile(self.profile)
-
-    def OnDoubleClick(self, event):
-        '''Handle double-click events on the leaf nodes'''
-        data = self._tree.GetItemPyData(self._tree.GetSelection()).data
-        # the select_user_keyword_node works also for test cases
-        if isinstance(data, TestCase):
-            self.tree.select_user_keyword_node(data)
-        event.Skip()
-
-    def OnTreePaint(self, event):
-        '''Reposition the little menubutton when the tree is repainted'''
-        self._reposition_menubutton()
-        event.Skip()
-
-    def OnTreeResize(self, event):
-        '''Reposition the little menubutton with the tree is resized'''
-        event.Skip()
-        self._reposition_menubutton()
-
-    def OnMenuButton(self, event):
-        '''Show the menu associated with the menu button'''
-        (x,y) = self._menubutton.GetPosition()
-        (_,h) = self._menubutton.GetSize()
-        self._tree.PopupMenu(self._tree_menu, (x,y+h))
 
     def OnProcessEnded(self, evt):
         stream = self._process.GetInputStream()
@@ -448,13 +410,6 @@ class TestRunnerPlugin(Plugin):
         pos = self.out.PositionBefore(self.out.GetLength())
         char = self.out.GetCharAt(pos)
         return chr(char)
-
-    def _reload_model(self):
-        '''Redraw the tree when the model changes'''
-        self._reload_timer = None
-        self._tree.SetDataModel(self.model)
-        if not self._running:
-            wx.CallAfter(self._tree.Redraw)
 
     def _format_command(self, argv):
         '''Quote a list as if it were a command line command
@@ -681,10 +636,7 @@ class TestRunnerPlugin(Plugin):
         self.local_toolbar = self._build_local_toolbar()
         self.header_panel = wx.Panel(self.panel)
         self.configPanel = self._build_config_panel(panel)
-        self.splitter = wx.SplitterWindow(self.panel, wx.ID_ANY, style=wx.SP_LIVE_UPDATE)
-        self.splitter.SetMinimumPaneSize(10)
-        self._left_panel = wx.Panel(self.splitter)
-        self._right_panel = wx.Panel(self.splitter)
+        self._right_panel = wx.Panel(self.panel)
         self.out = wx.stc.StyledTextCtrl(self._right_panel, wx.ID_ANY, style=wx.SUNKEN_BORDER)
         font=wx.SystemSettings.GetFont(wx.SYS_SYSTEM_FIXED_FONT)
         if not font.IsFixedWidth():
@@ -713,121 +665,24 @@ class TestRunnerPlugin(Plugin):
         right_panel_sizer.Add(self.out, 1, wx.EXPAND)
         self._right_panel.SetSizer(right_panel_sizer)
 
-        self._tree = TestSuiteTreeCtrl(self._left_panel)
-        left_panel_sizer = wx.BoxSizer(wx.VERTICAL)
-        left_panel_sizer.Add(self._tree, 1, wx.EXPAND)
-        self._left_panel.SetSizer(left_panel_sizer)
-
-        self._menubutton = wx.BitmapButton(self._tree, bitmap=getMenuButtonBitmap(),
-                                           style=wx.NO_BORDER)
-        msizer = wx.BoxSizer(wx.HORIZONTAL)
-        msizer.AddStretchSpacer(1)
-        msizer.Add(self._menubutton, 0, wx.ALL|wx.ALIGN_RIGHT)
-
         header_sizer = wx.BoxSizer(wx.HORIZONTAL)
         self.header_panel.SetSizer(header_sizer)
 
-        self._tree.Bind(wx.EVT_PAINT, self.OnTreePaint)
-        self._tree.Bind(wx.EVT_SIZE, self.OnTreeResize)
-        self._menubutton.Bind(wx.EVT_BUTTON, self.OnMenuButton)
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.local_toolbar, 0, wx.EXPAND)
         sizer.Add(self.configPanel, 0, wx.EXPAND|wx.TOP|wx.RIGHT, 4)
         sizer.Add(wx.StaticLine(self.panel), 0, wx.EXPAND|wx.BOTTOM|wx.TOP, 2)
         sizer.Add(self.header_panel, 0, wx.EXPAND|wx.RIGHT, 10)
-        sizer.Add(self.splitter,   1, wx.EXPAND|wx.RIGHT, 8)
+        sizer.Add(self._right_panel, 1, wx.EXPAND|wx.RIGHT, 8)
         panel.SetSizer(sizer)
-
-        self.splitter.SplitVertically(self._left_panel, self._right_panel, 200)
-        # I don't know why but the sash position is being ignored; setting
-        # it via CallAfter seems to work
-        wx.CallAfter(self._set_splitter_size, self.sash_position)
 
         self._process_timer = wx.Timer(self.panel)
         self.panel.Bind(wx.EVT_TIMER, self.OnTimer)
         self.panel.Bind(wx.EVT_END_PROCESS, self.OnProcessEnded)
 
-        self.splitter.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.OnSplitterSashChanged)
         self.panel.Bind(wx.EVT_WINDOW_DESTROY, self.OnClose)
 
         self.add_tab(panel, self.title, allow_closing=False)
-
-        self._tree_menu = wx.Menu()
-        select_all = self._tree_menu.Append(wx.ID_ANY, "Select All")
-        select_failed = self._tree_menu.Append(wx.ID_ANY, "Select Only Failed Tests")
-        deselect_all = self._tree_menu.Append(wx.ID_ANY, "Deselect All")
-        self._tree_menu.AppendSeparator()
-        select_children = self._tree_menu.Append(wx.ID_ANY, "Select All Children")
-        deselect_children = self._tree_menu.Append(wx.ID_ANY, "Deselect All Children")
-        self._tree_menu.AppendSeparator()
-        expand_all = self._tree_menu.Append(wx.ID_ANY, "Show All Test Cases")
-        collapse_all = self._tree_menu.Append(wx.ID_ANY, "Hide All Test Cases")
-
-        self._tree.Bind(wx.EVT_CONTEXT_MENU, self.OnShowPopup)
-        self._tree.Bind(wx.EVT_LEFT_DCLICK, self.OnDoubleClick)
-        self._tree.Bind(wx.EVT_MENU, self.OnSelectAll, select_all)
-        self._tree.Bind(wx.EVT_MENU, self.OnSelectOnlyFailed, select_failed)
-        self._tree.Bind(wx.EVT_MENU, self.OnDeselectAll, deselect_all)
-        self._tree.Bind(wx.EVT_MENU, self.OnExpandAll, expand_all)
-        self._tree.Bind(wx.EVT_MENU, self.OnCollapseAll, collapse_all)
-        self._tree.Bind(wx.EVT_MENU, self.OnSelectChildren, select_children)
-        self._tree.Bind(wx.EVT_MENU, self.OnDeselectChildren, deselect_children)
-
-    def OnSelectAll(self, event):
-        '''Called when the user chooses "Select All" from the menu'''
-        self._tree.SelectAll()
-
-    def OnSelectOnlyFailed(self, event):
-        '''Called when the user chooses "Select All Failed" from the menu'''
-        self._tree.SelectAllFailed()
-
-    def OnDeselectAll(self, event):
-        '''Called when the user chooses "Deselect All" from the menu'''
-        self._tree.DeselectAll()
-
-    def OnExpandAll(self, event):
-        '''Called when the user chooses "Expand All" from the menu'''
-        self._tree.ExpandAll()
-
-    def OnCollapseAll(self, event):
-        '''Called when the user chooses "Collapse All" from the menu'''
-        self._tree.CollapseAll()
-
-    def OnSelectChildren(self, event):
-        '''Called when the user chooses "Select All Children" from the menu'''
-        self._tree.SelectChildren()
-
-    def OnDeselectChildren(self, event):
-        '''Called when the user chooses "Deselect All Children" from the menu'''
-        self._tree.DeselectChildren()
-
-    def OnShowPopup(self, event):
-        '''Show the context-sensitive menu'''
-        pos = event.GetPosition()
-        pos = self._tree.ScreenToClient(pos)
-        self._tree.PopupMenu(self._tree_menu, pos)
-
-    def _reposition_menubutton(self):
-        '''Redraw the menubutton
-
-        This is necessary because wxPython doesn't support relative
-        placement (ie: place this in the upper right corner of the
-        tree)
-        '''
-        (menubutton_width, _) = self._menubutton.GetSize()
-        (_, vh)  = self._tree.GetVirtualSize()
-        (_, ch) = self._tree.GetClientSize()
-        # N.B. add a little extra offset for margins/borderwidths
-        offset = menubutton_width + 4
-        if (ch != vh):
-            # scrollbar is visible
-            scrollbar_width = wx.SystemSettings_GetMetric(wx.SYS_VSCROLL_X)
-            offset += scrollbar_width
-        (w,_) = self._tree.GetSize()
-        self._menubutton.SetPosition((w-offset, 0))
-
-    def _set_splitter_size(self, size):
-        self.splitter.SetSashPosition(size)
 
     def _post_result(self, event, *args):
         '''Endpoint of the listener interface
@@ -847,29 +702,20 @@ class TestRunnerPlugin(Plugin):
             _, attrs = args
             longname = attrs['longname']
             RideTestRunning(item=self._get_test_controller(longname)).publish()
-            self._tree.running_test(longname)
         if event == 'start_suite':
             _, attrs = args
             longname = attrs['longname']
-            self._tree.running_suite(longname)
         if event == 'end_test':
             _, attrs = args
             longname = attrs['longname']
             if attrs['status'] == 'PASS':
-                self._tree.test_passed(longname)
                 self._progress_bar.Pass()
                 RideTestPassed(item=self._get_test_controller(longname)).publish()
             else:
-                self._tree.test_failed(longname)
                 self._progress_bar.Fail()
                 RideTestFailed(item=self._get_test_controller(longname)).publish()
         if event == 'end_suite':
-            _, attrs = args
-            longname = attrs['longname']
-            if attrs['status'] == 'PASS':
-                self._tree.suite_passed(longname)
-            else:
-                self._tree.suite_failed(longname)
+            pass
         if event == 'report_file':
             self._report_file = args[0]
             self.local_toolbar.EnableTool(ID_SHOW_REPORT, True)
@@ -883,9 +729,8 @@ class TestRunnerPlugin(Plugin):
         if event == 'end_keyword':
             self._progress_bar.empty_current_keyword()
 
-        return
-
     def _get_test_controller(self, longname):
+        return
         node = self._tree.GetItemPyData(self._tree._nodes[self._tree._convert_test_longname_key(longname)])
         return node.controller
 
