@@ -409,6 +409,20 @@ class TestDataDirectoryController(_DataController, DirectoryController):
                     isinstance(child, TestDataDirectoryController) or
                     isinstance(child, TestCaseFileController)]
 
+    def find_controller_by_longname(self, longname):
+        return self.find_controller_by_names(longname.split('.'))
+
+
+    def find_controller_by_names(self, names):
+        if names[0] != self.name:
+            return None
+        if len(names) == 1:
+            return self
+        for suite in self.suites:
+            res = suite.find_controller_by_names(names[1:])
+            if res:
+                return res
+
     def _children(self, data):
         return [DataController(child, self._chief_controller, self)
                 for child in data.children]
@@ -495,6 +509,21 @@ class TestCaseFileController(_FileSystemElement, _DataController):
     @property
     def suites(self):
         return ()
+
+    def find_controller_by_longname(self, longname):
+        return self.find_controller_by_names(longname.split('.'))
+
+
+    def find_controller_by_names(self, names):
+        if names[0] != self.name:
+            return None
+        if len(names) == 1:
+            return self
+        if len(names) > 2:
+            return None
+        for test in self.tests:
+            if test.name == names[1]:
+                return test
 
     @property
     def default_tags(self):

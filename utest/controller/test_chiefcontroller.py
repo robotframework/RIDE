@@ -3,7 +3,7 @@ import unittest
 
 from os.path import join as j
 
-from robot.parsing.model import TestDataDirectory, ResourceFile
+from robot.parsing.model import TestDataDirectory, TestCaseFile, ResourceFile
 from robot.utils.asserts import assert_true, assert_equals, assert_none
 
 from robotide.controller import ChiefController
@@ -152,6 +152,11 @@ def _data_directory(path):
     data.source = data.directory = os.path.normpath(path)
     return data
 
+def _testcasefile(path):
+    data = TestCaseFile()
+    data.source = os.path.normpath(path)
+    return data
+
 class TestResolvingResourceDirectories(unittest.TestCase):
 
     def setUp(self):
@@ -223,8 +228,8 @@ class TestFindingControllers(unittest.TestCase):
         self.chief = ChiefController(Namespace(FakeSettings()), FakeSettings())
 
     def test_finding_root_directory_controller(self):
-        self.chief._controller = TestDataDirectoryController(_data_directory('root'))
-        result = self.chief.find_controller_by_longname('root')
+        self.chief._controller = TestDataDirectoryController(_data_directory('Root'))
+        result = self.chief.find_controller_by_longname('Root')
         assert_equals(result, self.chief._controller)
 
     def test_finding_subdirectory_controller(self):
@@ -234,6 +239,13 @@ class TestFindingControllers(unittest.TestCase):
         self.chief._controller = directory_controller
         result = self.chief.find_controller_by_longname('Root.Subsuite')
         assert_equals(result, subdirectory_controller)
+
+    def test_finding_testcase_controller(self):
+        suite_controller = TestCaseFileController(_testcasefile('Suite.txt'))
+        test = suite_controller.create_test('Test 1')
+        self.chief._controller = suite_controller
+        result = self.chief.find_controller_by_longname('Suite.Test 1')
+        assert_equals(result, test)
 
 
 if __name__ == "__main__":

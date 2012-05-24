@@ -73,7 +73,7 @@ class ChiefController(_BaseController, WithNamespace):
         return self._resource_file_controller_factory
 
     def find_controller_by_longname(self, longname):
-        return self._controller
+        return self._controller.find_controller_by_longname(longname)
 
     def new_directory_project(self, path):
         self._new_project(NewTestDataDirectory(path))

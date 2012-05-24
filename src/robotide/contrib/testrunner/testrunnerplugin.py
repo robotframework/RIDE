@@ -730,9 +730,7 @@ class TestRunnerPlugin(Plugin):
             self._progress_bar.empty_current_keyword()
 
     def _get_test_controller(self, longname):
-        return
-        node = self._tree.GetItemPyData(self._tree._nodes[self._tree._convert_test_longname_key(longname)])
-        return node.controller
+        return self._application.model.find_controller_by_longname(longname)
 
     def _set_state(self, state):
         if state == "running":
