@@ -551,14 +551,8 @@ class TestRunnerPlugin(Plugin):
         self.choice.SetToolTip(wx.ToolTip("Choose which method to use for running the tests"))
         toolbar.AddControl(profileLabel)
         toolbar.AddControl(self.choice)
-        toolbar.AddSeparator()
         reportImage = getReportIconBitmap()
         logImage = getLogIconBitmap()
-        toolbar.AddLabelTool(ID_RUN,"Start", getRobotBitmap(), shortHelp="Start robot",
-                             longHelp="Start running the robot test suite")
-        toolbar.AddLabelTool(ID_STOP,"Stop", getProcessStopBitmap(),
-                             shortHelp="Stop a running test",
-                             longHelp="Stop a running test")
         toolbar.AddSeparator()
         toolbar.AddLabelTool(ID_SHOW_REPORT, " Report", reportImage,
                              shortHelp = "View Robot Report in Browser")
