@@ -92,6 +92,7 @@ class MacRidePopupWindow(wx.Frame):
 
     def __init__(self, parent, size, detachable=True, autohide=False):
         wx.Frame.__init__(self, parent, style=wx.SIMPLE_BORDER)
+        self.SetSize(size)
         self._create_ui(size, detachable, autohide)
         self.hide()
 
@@ -115,11 +116,9 @@ class MacRidePopupWindow(wx.Frame):
         panel = wx.Panel(self)
         panel.SetBackgroundColour(POPUP_BACKGROUND)
         szr = VerticalSizer()
-        if detachable:
-            szr.add(ButtonWithHandler(panel, 'Detach', width=size[0],
-                                      handler=self._detach))
-            size = (size[0], size[1]-25)
         self._details = HtmlWindow(self, size=size)
+        if detachable:
+            self._details.Bind(wx.EVT_LEFT_UP, self._detach)
         szr.add_expanding(self._details)
         panel.SetSizer(szr)
         panel.Fit()
