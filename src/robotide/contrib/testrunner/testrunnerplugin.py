@@ -174,14 +174,6 @@ class TestRunnerPlugin(Plugin):
         return classes
 
     def _subscribe_to_events(self):
-        self.subscribe(self.OnModelChanged, RideTestCaseAdded,
-                                            RideOpenSuite,
-                                            RideItemNameChanged,
-                                            RideTestCaseRemoved,
-                                            RideSuiteAdded,
-                                            RideDataFileRemoved,
-                                            RideDataFileSet,
-                                            RideFileNameChanged)
         self.subscribe(self.OnTestSelectedForRunningChanged, RideTestSelectedForRunningChanged)
         self.subscribe(self.OnOpenSuite, RideOpenSuite)
 
@@ -221,18 +213,6 @@ class TestRunnerPlugin(Plugin):
         self._server = None
         self.unsubscribe_all()
         self.unregister_actions()
-
-    def OnModelChanged(self, *args):
-        '''Update the display to reflect a changed model'''
-        if not self._running:
-            # This is an awful hack. RIDE seems to have a timing issue
-            # -- sometimes this gets called before the model has
-            # actually changed. So, we'll wait before doing any real
-            # work.
-            if not self._reload_timer:
-                self._reload_timer = wx.CallLater(750, self._reload_model)
-            else:
-                self._reload_timer.Restart()
 
     def OnClose(self, evt):
         '''Shut down the running services and processes'''
