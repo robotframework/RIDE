@@ -15,7 +15,7 @@
 import os
 
 from robot.utils.normalizing import normalize
-from robotide.utils import html_escape, unescape
+from robotide.utils import html_format, unescape
 
 
 class ItemInfo(object):
@@ -36,7 +36,7 @@ class ItemInfo(object):
         """
         self.name = name
         self.source = source
-        if details != None:
+        if details is not None:
             self.details = details
         self._priority = PRIORITIES.get(self.__class__, PRIORITIES[ItemInfo])
 
@@ -132,7 +132,7 @@ class _KeywordInfo(ItemInfo):
                 '</table>') % \
                 (self._name(self.item), self._source(self.item), self._type,
                  self._format_args(self._parse_args(self.item)),
-                 html_escape(self.doc, formatting=True))
+                 html_format(self.doc))
 
     def _format_args(self, args):
         return '[ %s ]' % ' | '.join(args)

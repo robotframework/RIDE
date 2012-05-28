@@ -130,7 +130,7 @@ class DocumentationController(_SettingController):
 
     @property
     def visible_value(self):
-        return utils.html_escape(utils.unescape(self.value), formatting=True)
+        return utils.html_format(utils.unescape(self.value))
 
     def _unescape_newlines_and_handle_escaped_backslashes(self, item):
         for regexp in self.newline_regexps:

@@ -69,7 +69,7 @@ class Tooltip(RidePopupWindow):
     def set_content(self, content, title=None, html=True):
         color = ''.join(hex(item)[2:] for item in POPUP_BACKGROUND)
         if not html:
-            content = utils.html_escape(content, formatting=True)
+            content = utils.html_format(content)
         self._current_details = '<body bgcolor=#%s>%s</body>' % (color, content)
         self._details.SetPage(self._current_details)
         self._detached_title = title
@@ -133,7 +133,7 @@ class MacRidePopupWindow(wx.Frame):
     def set_content(self, content, title=None, html=True):
         color = ''.join(hex(item)[2:] for item in POPUP_BACKGROUND)
         if not html:
-            content = utils.html_escape(content, formatting=True)
+            content = utils.html_format(content)
         self._current_details = '<body bgcolor=#%s>%s</body>' % (color, content)
         self._details.SetPage(self._current_details)
         self._detached_title = title

@@ -16,9 +16,10 @@ import os
 import sys
 import inspect
 
+import robot.utils
 from robot.utils import printable_name, normalize, eq, ET, \
     HtmlWriter, NormalizedDict, timestr_to_secs, secs_to_timestr, normpath,\
-    unic, asserts, unescape, html_attr_escape,\
+    unic, asserts, unescape, html_escape, html_attr_escape,\
     get_timestamp
 from eventhandler import RideEventHandler
 from variablematcher import is_variable, is_scalar_variable, is_list_variable, \
@@ -26,7 +27,11 @@ from variablematcher import is_variable, is_scalar_variable, is_list_variable, \
     value_contains_variable
 from highlightmatcher import highlight_matcher
 from printing import Printing
-from htmlutils import html_escape
+
+
+def html_format(text):
+    return robot.utils.html_format(text).replace('\n', '<br />\n')
+
 
 def name_from_class(item, drop=None):
     cls = inspect.isclass(item) and item or item.__class__

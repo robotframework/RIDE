@@ -204,7 +204,7 @@ def _after_distribution():
 
 def _download_and_format_issues():
     try:
-        from robot.utils import HtmlWriter, html_escape
+        from robot.utils import HtmlWriter, html_format
     except ImportError:
         sys.exit('creating release requires Robot Framework to be installed.')
     URL = Template('http://code.google.com/p/robotframework-ride/issues/csv?'
@@ -228,7 +228,7 @@ def _download_and_format_issues():
             total_issues += 1
         for cell in row:
             if reader.line_num == 1:
-                cell = html_escape(cell, formatting=True)
+                cell = html_format(cell)
             writer.element('td', cell, escape=False)
         writer.end('tr')
     writer.end('table')
