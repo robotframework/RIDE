@@ -123,23 +123,27 @@ class MacRidePopupWindow(wx.Frame):
         panel.SetSizer(szr)
         panel.Fit()
         if autohide:
+            self._details.Bind(wx.EVT_MOTION, self.OnMouseMotion)
             self._get_autohide_component(panel).Bind(wx.EVT_LEAVE_WINDOW,
                                                      self.hide)
 
+    def OnMouseMotion(self, evt):
+        self.hide()
+
     def _get_autohide_component(self, panel):
-        return panel
+        return self
 
     def set_content(self, content, title=None, html=True):
         color = ''.join(hex(item)[2:] for item in POPUP_BACKGROUND)
         if not html:
             content = utils.html_format(content)
-        self._current_details = '<body bgcolor=#%s>%s</body>' % (color, content)
-        self._details.SetPage(self._current_details)
+        self._details.SetPage('<body bgcolor=#%s><center>%s</center></body>'
+                              % (color, content))
         self._detached_title = title
 
     def _detach(self, event):
         self.hide()
-        dlg = HtmlDialog(self._detached_title, self._current_details)
+        dlg = HtmlDialog(self._detached_title, self._details.ToText())
         dlg.SetPosition((wx.GetMouseState().x, wx.GetMouseState().y))
         dlg.Show()
 

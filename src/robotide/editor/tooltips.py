@@ -63,7 +63,7 @@ class GridToolTips(object):
 
     def _calculate_tooltip_position(self):
         x, y = wx.GetMousePosition()
-        return x+5, y+5
+        return x - 2, y - 2
 
     def _hide_tooltip(self):
         self._tooltip.hide()
