@@ -23,6 +23,7 @@ from robotide.controller.filecontrollers import TestDataDirectoryController, Tes
 _SIZE = (16, 16)
 _BASE = os.path.join(os.path.dirname(__file__), '..', 'widgets')
 
+ROBOT_IMAGE_INDEX = 3
 RUNNING_IMAGE_INDEX = 7
 PASSED_IMAGE_INDEX = 8
 FAILED_IMAGE_INDEX = 9

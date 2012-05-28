@@ -15,8 +15,8 @@
 import wx
 from robotide.controller.macrocontrollers import TestCaseController, UserKeywordController
 from robotide.controller.settingcontrollers import VariableController
-from robotide.publish.messages import RideTestRunning, RideTestPassed, RideTestFailed
-from robotide.ui.images import RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, FAILED_IMAGE_INDEX
+from robotide.publish.messages import RideTestRunning, RideTestPassed, RideTestFailed, RideTestExecutionStarted
+from robotide.ui.images import RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, FAILED_IMAGE_INDEX, ROBOT_IMAGE_INDEX
 
 tree_args = {}
 try:
@@ -112,12 +112,16 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
             (self._variable_moved_down, RideVariableMovedDown),
             (self._variable_updated, RideVariableUpdated),
             (self._filename_changed, RideFileNameChanged),
+            (self._testing_started, RideTestExecutionStarted),
             (self._running_test, RideTestRunning),
             (self._test_passed, RideTestPassed),
             (self._test_failed, RideTestFailed)
         ]
         for listener, topic in subscriptions:
             PUBLISHER.subscribe(listener, topic)
+
+    def _testing_started(self, message):
+        self._for_all_tests(self._root, lambda t: self.SetItemImage(t, ROBOT_IMAGE_INDEX))
 
     def _running_test(self, message):
         node = self._controller.find_node_by_controller(message.item)

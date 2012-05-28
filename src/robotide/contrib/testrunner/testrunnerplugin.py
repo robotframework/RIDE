@@ -45,7 +45,7 @@ import codecs
 from posixpath import curdir, sep, pardir, join
 from robotide.publish.messages import (RideDataFileSet, RideDataFileRemoved, RideFileNameChanged,
                                        RideTestSelectedForRunningChanged, RideTestRunning, RideTestPassed,
-                                       RideTestFailed)
+                                       RideTestFailed, RideTestExecutionStarted)
 
 
 try:
@@ -724,6 +724,8 @@ class TestRunnerPlugin(Plugin):
         self.local_toolbar.EnableTool(ID_RUN, False)
         self.local_toolbar.EnableTool(ID_STOP, True)
         self._running = True
+        RideTestExecutionStarted().publish()
+
 
     def _set_stopped(self):
         self._run_action.enable()
