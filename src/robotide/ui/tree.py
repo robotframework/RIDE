@@ -121,7 +121,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
             PUBLISHER.subscribe(listener, topic)
 
     def _testing_started(self, message):
-        self._for_all_tests(self._root, lambda t: self.SetItemImage(t, ROBOT_IMAGE_INDEX))
+        self._for_all_visible_tests(self._root, lambda t: self.SetItemImage(t, ROBOT_IMAGE_INDEX))
 
     def _running_test(self, message):
         node = self._controller.find_node_by_controller(message.item)
@@ -532,12 +532,23 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
     def _for_all_tests(self, item, func):
         if not self.HasAGWFlag(customtreectrl.TR_HIDE_ROOT) or item != self.GetRootItem():
             self.Expand(item)
-            if item.GetType() == 1:
+            if self._is_test_node(item):
                 func(item)
             if not self.IsExpanded(item):
                 return
         for child in item.GetChildren():
             self._for_all_tests(child, func)
+
+    def _for_all_visible_tests(self, item, func):
+        if self._is_test_node(item):
+            func(item)
+        if not self.IsExpanded(item):
+            return
+        for child in item.GetChildren():
+            self._for_all_visible_tests(child, func)
+
+    def _is_test_node(self, node):
+        return node.GetType() == 1
 
     def DeselectAllTests(self, item):
         self._for_all_tests(item, lambda t: self.CheckItem(t, checked=False))
