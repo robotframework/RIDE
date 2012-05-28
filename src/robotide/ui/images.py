@@ -32,6 +32,7 @@ class TreeImageList(wx.ImageList):
 
     def __init__(self):
         wx.ImageList.__init__(self, *_SIZE)
+        self._execution_results = None
         self._images = {
             TestDataDirectoryController: _TreeImage(self, 'folder.png'),
             DirectoryController: _TreeImage(self, 'folder_wrench.png'),
