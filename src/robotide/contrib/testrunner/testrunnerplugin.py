@@ -43,6 +43,7 @@ import posixpath
 import re
 import codecs
 from posixpath import curdir, sep, pardir, join
+from robotide.controller.testexecutionresults import TestExecutionResults
 from robotide.publish.messages import (RideDataFileSet, RideDataFileRemoved, RideFileNameChanged,
                                        RideTestSelectedForRunningChanged, RideTestRunning, RideTestPassed,
                                        RideTestFailed, RideTestExecutionStarted)
@@ -128,6 +129,7 @@ class TestRunnerPlugin(Plugin):
         self.register_shortcut('Ctrl-C', self._copy_from_out)
         self._currently_executing_keyword = None
         self._tests_to_run = set()
+        self._running_results = TestExecutionResults()
 
     def _copy_from_out(self, event):
         if self.notebook.current_page_title != self.title:
@@ -681,7 +683,7 @@ class TestRunnerPlugin(Plugin):
         if event == 'start_test':
             _, attrs = args
             longname = attrs['longname']
-            RideTestRunning(item=self._get_test_controller(longname)).publish()
+            self._running_results.set_running(self._get_test_controller(longname))
         if event == 'start_suite':
             _, attrs = args
             longname = attrs['longname']
@@ -690,10 +692,10 @@ class TestRunnerPlugin(Plugin):
             longname = attrs['longname']
             if attrs['status'] == 'PASS':
                 self._progress_bar.Pass()
-                RideTestPassed(item=self._get_test_controller(longname)).publish()
+                self._running_results.set_passed(self._get_test_controller(longname))
             else:
                 self._progress_bar.Fail()
-                RideTestFailed(item=self._get_test_controller(longname)).publish()
+                self._running_results.set_failed(self._get_test_controller(longname))
         if event == 'end_suite':
             pass
         if event == 'report_file':
@@ -724,7 +726,7 @@ class TestRunnerPlugin(Plugin):
         self.local_toolbar.EnableTool(ID_RUN, False)
         self.local_toolbar.EnableTool(ID_STOP, True)
         self._running = True
-        RideTestExecutionStarted().publish()
+        self._running_results.test_execution_started()
 
 
     def _set_stopped(self):

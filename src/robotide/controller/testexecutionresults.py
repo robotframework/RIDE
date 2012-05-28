@@ -11,6 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+from robotide.publish.messages import RideTestExecutionStarted, RideTestPassed, RideTestFailed, RideTestRunning
 
 class TestExecutionResults(object):
     RUNNING = 'Running'
@@ -20,17 +21,24 @@ class TestExecutionResults(object):
     def __init__(self):
         self.clear()
 
+    def test_execution_started(self):
+        self.clear()
+        RideTestExecutionStarted().publish()
+
     def clear(self):
         self._results = {}
 
     def set_running(self, test):
         self._results[test] = self.RUNNING
+        RideTestRunning(item=test).publish()
 
     def set_passed(self, test):
         self._results[test] = self.PASSED
+        RideTestPassed(item=test).publish()
 
     def set_failed(self, test):
         self._results[test] = self.FAILED
+        RideTestFailed(item=test).publish()
 
     def is_running(self, test):
         return test in self._results and self._results[test] == self.RUNNING
