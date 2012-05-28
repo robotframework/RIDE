@@ -65,6 +65,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         self._dragging = False
         self._clear_tree_data()
         self._editor = None
+        self._execution_results = None
 
     def _bind_tree_events(self):
         self.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnSelChanged)
@@ -111,27 +112,36 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
             (self._variable_updated, RideVariableUpdated),
             (self._filename_changed, RideFileNameChanged),
             (self._testing_started, RideTestExecutionStarted),
-            (self._running_test, RideTestRunning),
-            (self._test_passed, RideTestPassed),
-            (self._test_failed, RideTestFailed)
+            (self._test_result, RideTestRunning),
+            (self._test_result, RideTestPassed),
+            (self._test_result, RideTestFailed)
         ]
         for listener, topic in subscriptions:
             PUBLISHER.subscribe(listener, topic)
 
     def _testing_started(self, message):
         self._for_all_visible_tests(self._root, lambda t: self.SetItemImage(t, ROBOT_IMAGE_INDEX))
+        self._execution_results = message.results
 
-    def _running_test(self, message):
-        node = self._controller.find_node_by_controller(message.item)
-        if node: self.SetItemImage(node, RUNNING_IMAGE_INDEX)
+    def _test_result(self, message):
+        self._set_icon_from_execution_results(message.item)
 
-    def _test_passed(self, message):
-        node = self._controller.find_node_by_controller(message.item)
-        if node: self.SetItemImage(node, PASSED_IMAGE_INDEX)
+    def _set_icon_from_execution_results(self, controller):
+        node = self._controller.find_node_by_controller(controller)
+        if not node:
+            return
+        self.SetItemImage(node, self._get_icon_index_for(controller))
 
-    def _test_failed(self, message):
-        node = self._controller.find_node_by_controller(message.item)
-        if node: self.SetItemImage(node, FAILED_IMAGE_INDEX)
+    def _get_icon_index_for(self, controller):
+        if not self._execution_results:
+            return ROBOT_IMAGE_INDEX
+        if self._execution_results.is_running(controller):
+            return RUNNING_IMAGE_INDEX
+        if self._execution_results.has_passed(controller):
+            return PASSED_IMAGE_INDEX
+        if self._execution_results.has_failed(controller):
+            return FAILED_IMAGE_INDEX
+        return ROBOT_IMAGE_INDEX
 
     def populate(self, model):
         self._clear_tree_data()

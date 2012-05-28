@@ -150,6 +150,7 @@ class  RideTreeSelection(RideMessage):
 
 class RideTestExecutionStarted(RideMessage):
     """Sent whenever new test execution is started."""
+    data = ['results']
 
 class RideTestSelectedForRunningChanged(RideMessage):
     """Sent whenever user (un)selects a test from the tree for running."""

@@ -23,7 +23,7 @@ class TestExecutionResults(object):
 
     def test_execution_started(self):
         self.clear()
-        RideTestExecutionStarted().publish()
+        RideTestExecutionStarted(results=self).publish()
 
     def clear(self):
         self._results = {}
