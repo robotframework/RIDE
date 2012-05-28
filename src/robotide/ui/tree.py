@@ -120,8 +120,9 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
             PUBLISHER.subscribe(listener, topic)
 
     def _testing_started(self, message):
-        self._for_all_visible_tests(self._root, lambda t: self.SetItemImage(t, ROBOT_IMAGE_INDEX))
+        self._for_all_drawn_tests(self._root, lambda t: self.SetItemImage(t, ROBOT_IMAGE_INDEX))
         self._execution_results = message.results
+        self._images.set_execution_results(message.results)
 
     def _test_result(self, message):
         self._set_icon_from_execution_results(message.item)
@@ -547,13 +548,11 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         for child in item.GetChildren():
             self._for_all_tests(child, func)
 
-    def _for_all_visible_tests(self, item, func):
+    def _for_all_drawn_tests(self, item, func):
         if self._is_test_node(item):
             func(item)
-        if not self.IsExpanded(item):
-            return
         for child in item.GetChildren():
-            self._for_all_visible_tests(child, func)
+            self._for_all_drawn_tests(child, func)
 
     def _is_test_node(self, node):
         return node.GetType() == 1

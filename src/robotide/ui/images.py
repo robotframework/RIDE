@@ -49,7 +49,18 @@ class TreeImageList(wx.ImageList):
     def directory(self):
         return self._images[DirectoryController]
 
+    def set_execution_results(self, results):
+        self._execution_results = results
+
     def __getitem__(self, controller):
+        if controller.__class__ == TestCaseController:
+            if self._execution_results:
+                if self._execution_results.is_running(controller):
+                    return self._images['running']
+                if self._execution_results.has_passed(controller):
+                    return self._images['passed']
+                if self._execution_results.has_failed(controller):
+                    return self._images['failed']
         return self._images[controller.__class__]
 
 
