@@ -13,8 +13,6 @@
 #  limitations under the License.
 
 import wx
-from robotide.controller.macrocontrollers import TestCaseController, UserKeywordController
-from robotide.controller.settingcontrollers import VariableController
 from robotide.publish.messages import RideTestRunning, RideTestPassed, RideTestFailed, RideTestExecutionStarted
 from robotide.ui.images import RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, FAILED_IMAGE_INDEX, ROBOT_IMAGE_INDEX
 
