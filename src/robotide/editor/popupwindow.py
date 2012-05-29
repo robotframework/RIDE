@@ -94,7 +94,7 @@ class MacRidePopupWindow(wx.Frame, _PopupWindowBase):
 
     def __init__(self, parent, size, detachable=True, autohide=False):
         wx.Frame.__init__(self, parent, style=wx.SIMPLE_BORDER)
-        _PopupWindowBase.__init__(size, detachable, autohide)
+        _PopupWindowBase.__init__(self, size, detachable, autohide)
         self.hide()
 
     def _set_auto_hiding(self):
