@@ -602,6 +602,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         target = self._controller.get_handler(target)
         if target and target.accepts_drag(dragged):
             dragged.controller.execute(MoveTo(target.controller))
+        else:
+            self.Refresh()
 
     def IsValidDragItem(self, item):
         return self._controller.get_handler(item).is_draggable
