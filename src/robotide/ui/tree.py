@@ -563,8 +563,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
     def SelectFailedTests(self, item):
         def func(t):
             # FIXME: This information should be in domain model!
-            if self.GetItemImage(t) == FAILED_IMAGE_INDEX:
-                self.CheckItem(t)
+            self.CheckItem(t, checked=(self.GetItemImage(t) == FAILED_IMAGE_INDEX))
         self._for_all_tests(item, func)
 
     def OnTreeItemChecked(self, event):

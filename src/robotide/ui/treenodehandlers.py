@@ -62,7 +62,7 @@ class _ActionHandler(wx.Window):
     _label_expand_all = 'Expand All'
     _label_select_all = 'Select All Tests'
     _label_deselect_all = 'Deselect All Tests'
-    _label_select_failed_tests = 'Select Failed Tests'
+    _label_select_failed_tests = 'Select Only Failed Tests'
 
     def __init__(self, controller, tree, node, settings):
         wx.Window.__init__(self, tree)
@@ -118,7 +118,7 @@ class _ActionHandler(wx.Window):
     def OnDeselectAllTests(self, event):
         self._tree.DeselectAllTests(self._node)
 
-    def OnSelectFailedTests(self, event):
+    def OnSelectOnlyFailedTests(self, event):
         self._tree.SelectFailedTests(self._node)
 
     def OnSafeDelete(self, event):
