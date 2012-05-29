@@ -183,7 +183,7 @@ class TestRunnerPlugin(Plugin):
         if message.running:
             self._tests_to_run.add(message.item)
         else:
-            self._tests_to_run.remove(message.item)
+            self._tests_to_run.discard(message.item)
 
     def OnOpenSuite(self, message):
         self._tests_to_run = set()
