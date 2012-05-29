@@ -88,6 +88,9 @@ class _ActionHandler(wx.Window):
     def begin_label_edit(self):
         pass
 
+    def end_label_edit(self, event):
+        pass
+
     def OnNewSuite(self, event):
         pass
 
