@@ -27,7 +27,7 @@ from .editordialogs import (EditorDialog, DocumentationDialog, MetadataDialog,
         ScalarVariableDialog, ListVariableDialog, LibraryDialog,
         ResourceDialog, VariablesDialog)
 from .listeditor import ListEditor
-from .popupwindow import Tooltip
+from .popupwindow import RidePopupWindow
 from .tags import TagsDisplay
 
 
@@ -75,7 +75,7 @@ class SettingEditor(wx.Panel, utils.RideEventHandler):
         return ctrl
 
     def _get_tooltip(self):
-        return Tooltip(self, (500, 350))
+        return RidePopupWindow(self, (500, 350))
 
     def OnKey(self, event):
         self._tooltip.hide()
@@ -140,7 +140,7 @@ class SettingEditor(wx.Panel, utils.RideEventHandler):
 
     def _tooltip_position(self):
         ms = wx.GetMouseState()
-        # -1 ensures that the popup gets focus immediately
+        # ensure that the popup gets focus immediately
         return ms.x-3, ms.y-3
 
     def OnLeftUp(self, event):
@@ -265,7 +265,7 @@ class DocumentationEditor(SettingEditor):
             self._value_display.SetPage(self._controller.visible_value)
 
     def _get_tooltip(self):
-        return Tooltip(self, (500, 350), detachable=False)
+        return RidePopupWindow(self, (500, 350), detachable=False)
 
     def _get_details_for_tooltip(self):
         return self._controller.visible_value, None
