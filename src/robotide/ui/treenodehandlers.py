@@ -46,7 +46,6 @@ class _ActionHandler(wx.Window):
     is_user_keyword = False
     is_test_suite = False
     is_variable = False
-    with_checkbox = False
 
     _label_add_suite = 'New Suite\tCtrl-Shift-F'
     _label_new_test_case = 'New Test Case\tCtrl-Shift-T'
@@ -377,7 +376,6 @@ class _TestOrUserKeywordHandler(_CanBeRenamed, _ActionHandler):
 
 
 class TestCaseHandler(_TestOrUserKeywordHandler):
-    with_checkbox = True
     _datalist = property(lambda self: self.item.datalist)
     _copy_name_dialog_class = TestCaseNameDialog
 

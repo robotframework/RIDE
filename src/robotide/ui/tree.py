@@ -15,6 +15,7 @@
 import wx
 from robotide.publish.messages import RideTestRunning, RideTestPassed, RideTestFailed, RideTestExecutionStarted
 from robotide.ui.images import RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, FAILED_IMAGE_INDEX, ROBOT_IMAGE_INDEX
+from robotide.ui.treenodehandlers import TestCaseHandler
 
 tree_args = {}
 try:
@@ -50,6 +51,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
     _RESOURCES_NODE_LABEL = 'External Resources'
 
     def __init__(self, parent, action_registerer, settings=None):
+        self._checkboxes_for_tests = False
         self._controller = TreeController(self, action_registerer, settings=settings)
         tree_args['style'] = wx.TR_DEFAULT_STYLE | (IS_WINDOWS and wx.TR_EDIT_LABELS)
         treemixin.DragAndDrop.__init__(self, parent, **tree_args)
@@ -217,9 +219,12 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
     def _create_node_with_handler(self, parent_node, controller, index=None):
         handler_class = action_handler_class(controller)
         node = self._create_node(parent_node, controller.display_name, self._images[controller],
-                                 index, with_checkbox=handler_class.with_checkbox)
+                                 index, with_checkbox=(handler_class == TestCaseHandler and self._checkboxes_for_tests))
         self.SetPyData(node, handler_class(controller, self, node, self._controller.settings))
         return node
+
+    def set_checkboxes_for_tests(self):
+        self._checkboxes_for_tests = True
 
     def _expand_and_render_children(self, node):
         assert node is not None

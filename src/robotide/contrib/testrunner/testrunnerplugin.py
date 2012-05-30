@@ -139,6 +139,7 @@ class TestRunnerPlugin(Plugin):
         self.out.Copy()
 
     def enable(self):
+        self.tree.set_checkboxes_for_tests()
         self._read_run_profiles()
         self._register_actions()
         self._build_ui()
