@@ -58,7 +58,6 @@ class _ActionHandler(wx.Window):
     _label_rename = 'Rename\tF2'
     _label_new_resource = 'New Resource'
     _label_find_usages = 'Find Usages'
-    _label_expand_all = 'Expand All'
     _label_select_all = 'Select All Tests'
     _label_deselect_all = 'Deselect All Tests'
     _label_select_failed_tests = 'Select Only Failed Tests'
