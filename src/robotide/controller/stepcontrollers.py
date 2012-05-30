@@ -97,10 +97,16 @@ class StepController(_BaseController):
             return CellPosition(CellType.UNKNOWN, None)
         if col > args_amount:
             return CellPosition(CellType.MUST_BE_EMPTY, None)
-        defaults = [arg for arg in args if '=' in arg]
-        if col <= args_amount-len(defaults):
+        if col <= self._number_of_mandatory_arguments(args, args_amount):
             return CellPosition(CellType.MANDATORY, args[col-1])
         return CellPosition(CellType.OPTIONAL, args[col-1])
+
+    def _number_of_mandatory_arguments(self, args, args_amount):
+        defaults = [arg for arg in args if '=' in arg]
+        n = args_amount - len(defaults)
+        if self._last_argument_is_varargs(args):
+            n -= 1
+        return n
 
     def _last_argument_is_varargs(self, args):
         return args[-1].startswith('*')

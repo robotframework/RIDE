@@ -16,3 +16,6 @@ KW3
     : FOR    ${j}    IN RANGE    200
     \    Log    moi taas
 
+KW4
+    [Arguments]  ${optional}=val  @{others}
+    No Operation

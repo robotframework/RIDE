@@ -46,9 +46,11 @@ class TestCellInfo(unittest.TestCase):
         ctrl = datafilereader.construct_chief_controller(datafilereader.ARGUMENTS_PATH)
         cls.testsuite = datafilereader.get_ctrl_by_name('Suite', ctrl.datafiles)
         cls.test = cls.testsuite.tests[0]
-        cls.keyword1 = [kw for kw in cls.testsuite.keywords if kw.name == 'KW1'][0]
-        cls.keyword2 = [kw for kw in cls.testsuite.keywords if kw.name == 'KW2'][0]
-        cls.keyword3 = [kw for kw in cls.testsuite.keywords if kw.name == 'KW3'][0]
+        keyword = lambda name: [kw for kw in cls.testsuite.keywords if kw.name == name][0]
+        cls.keyword1 = keyword('KW1')
+        cls.keyword2 = keyword('KW2')
+        cls.keyword3 = keyword('KW3')
+        cls.keyword4 = keyword('KW4')
 
     def tearDown(self):
         self.test.execute(DeleteRows([i for i in range(len(self.test.steps))]))
@@ -65,6 +67,14 @@ class TestCellInfo(unittest.TestCase):
         self._verify_string_change(0, 1, CellType.MANDATORY)
         self._verify_string_change(0, 2, CellType.OPTIONAL)
         self._verify_string_change(0, 3, CellType.MUST_BE_EMPTY)
+
+    def test_keyword_with_optional_and_list_arguments(self):
+        self.test.execute(ChangeCellValue(0, 0, self.keyword4.name))
+        self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.KEYWORD)
+        self._verify_string_change(0, 1, CellType.OPTIONAL)
+        self._verify_string_change(0, 2, CellType.OPTIONAL)
+        self._verify_string_change(0, 3, CellType.OPTIONAL)
+        self._verify_string_change(0, 4, CellType.OPTIONAL)
 
     def test_celltype_is_unknown_if_list_var_given(self):
         self.test.execute(ChangeCellValue(0, 0, self.keyword1.name))
