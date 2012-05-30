@@ -44,9 +44,11 @@ class _PopupWindowBase(object):
 
     def _detach(self, event):
         self.hide()
-        dlg = HtmlDialog(self._detached_title, self._details.ToText())
+        dlg = HtmlDialog(self._detached_title, self._current_details)
         dlg.SetPosition((wx.GetMouseState().x, wx.GetMouseState().y))
         dlg.Show()
+        if IS_WINDOWS:
+            event.Skip()
 
     def show_at(self, position):
         if not self.IsShown():
@@ -64,19 +66,18 @@ class _PopupWindowBase(object):
     def size(self):
         return self.Size
 
-    def set_content(self, content, title=None, html=True):
+    def set_content(self, content, title=None):
         color = ''.join(hex(item)[2:] for item in POPUP_BACKGROUND)
-        if not html:
-            content = utils.html_format(content)
-        self._details.SetPage('<body bgcolor=#%s>%s</body>' % (color, content))
+        self._current_details = '<body bgcolor=#%s>%s</body>' % (color, content)
+        self._details.SetPage(self._current_details)
         self._detached_title = title
 
 
 class RidePopupWindow(wx.PopupWindow, _PopupWindowBase):
 
-    def __init__(self, parent, size, detachable=True, autohide=False):
+    def __init__(self, parent, size):
         wx.PopupWindow.__init__(self, parent)
-        _PopupWindowBase.__init__(self, size, detachable, autohide)
+        self.SetSize(size)
 
     def _set_auto_hiding(self):
         # EVT_LEAVE is triggered on different components on different OSes.
@@ -84,13 +85,14 @@ class RidePopupWindow(wx.PopupWindow, _PopupWindowBase):
         component_to_hide.Bind(wx.EVT_LEAVE_WINDOW, self.hide)
 
 
+class HtmlPopupWindow(RidePopupWindow):
+
+    def __init__(self, parent, size, detachable=True, autohide=False):
+        RidePopupWindow.__init__(self, parent, size)
+        _PopupWindowBase.__init__(self, size, detachable, autohide)
+
+
 class MacRidePopupWindow(wx.Frame, _PopupWindowBase):
-    """This class in now an exact copy of RidePopupWindow except that it takes
-    wx.Frame instead of wx.PopupWindow and that it has a style of wx.SIMPLE_BORDER.
-    This violates the DRY principal but
-    I'm not skilled enough in python yet to know how to fix it.  Someone who
-    knows better should feel free to encapsulate this
-    """
 
     def __init__(self, parent, size, detachable=True, autohide=False):
         wx.Frame.__init__(self, parent, style=wx.SIMPLE_BORDER)

@@ -15,14 +15,14 @@
 import wx
 import wx.grid
 
-from popupwindow import RidePopupWindow
+from popupwindow import HtmlPopupWindow
 
 
 class GridToolTips(object):
 
     def __init__(self, grid):
-        self._tooltip = RidePopupWindow(grid, (250, 80), False, True)
-        self._information_popup = RidePopupWindow(grid, (450, 300))
+        self._tooltip = HtmlPopupWindow(grid, (250, 80), False, True)
+        self._information_popup = HtmlPopupWindow(grid, (450, 300))
         self._grid = grid
         self._tooltip_timer = wx.Timer(grid.GetGridWindow())
         grid.GetGridWindow().Bind(wx.EVT_MOTION, self.OnMouseMotion)

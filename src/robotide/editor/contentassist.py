@@ -17,9 +17,9 @@ from wx.lib.expando import ExpandoTextCtrl
 from robot.utils.normalizing import normalize
 
 from robotide import context
-
-from popupwindow import RidePopupWindow
 from robotide.namespace.suggesters import SuggestionSource
+
+from .popupwindow import RidePopupWindow, HtmlPopupWindow
 
 
 _PREFERRED_POPUP_SIZE = (400, 200)
@@ -174,9 +174,8 @@ class ContentAssistPopup(object):
 
     def __init__(self, parent, suggestion_source):
         self._parent = parent
-        self._main_popup = RidePopupWindow(parent, _PREFERRED_POPUP_SIZE,
-                                   detachable=False)
-        self._details_popup = RidePopupWindow(parent, _PREFERRED_POPUP_SIZE)
+        self._main_popup = RidePopupWindow(parent, _PREFERRED_POPUP_SIZE)
+        self._details_popup = HtmlPopupWindow(parent, _PREFERRED_POPUP_SIZE)
         self._selection = -1
         self._list = ContentAssistList(self._main_popup, self.OnListItemSelected,
                                        self.OnListItemActivated)

@@ -15,7 +15,9 @@
 import wx
 
 from robotide import context
-from robotide.controller.commands import UpdateVariable, UpdateDocumentation, SetValues, AddLibrary, AddResource, AddVariablesFileImport, ClearSetting
+from robotide.controller.commands import (UpdateVariable, UpdateDocumentation,
+        SetValues, AddLibrary, AddResource, AddVariablesFileImport,
+        ClearSetting)
 from robotide.publish.messages import RideImportSetting
 from robotide.widgets import ButtonWithHandler, Label, HtmlWindow
 from robotide.publish import PUBLISHER
@@ -27,7 +29,7 @@ from .editordialogs import (EditorDialog, DocumentationDialog, MetadataDialog,
         ScalarVariableDialog, ListVariableDialog, LibraryDialog,
         ResourceDialog, VariablesDialog)
 from .listeditor import ListEditor
-from .popupwindow import RidePopupWindow
+from .popupwindow import HtmlPopupWindow
 from .tags import TagsDisplay
 
 
@@ -75,7 +77,7 @@ class SettingEditor(wx.Panel, utils.RideEventHandler):
         return ctrl
 
     def _get_tooltip(self):
-        return RidePopupWindow(self, (500, 350))
+        return HtmlPopupWindow(self, (500, 350))
 
     def OnKey(self, event):
         self._tooltip.hide()
@@ -265,7 +267,7 @@ class DocumentationEditor(SettingEditor):
             self._value_display.SetPage(self._controller.visible_value)
 
     def _get_tooltip(self):
-        return RidePopupWindow(self, (500, 350), detachable=False)
+        return HtmlPopupWindow(self, (500, 350), detachable=False)
 
     def _get_details_for_tooltip(self):
         return self._controller.visible_value, None
