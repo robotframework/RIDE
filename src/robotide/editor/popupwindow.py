@@ -119,5 +119,5 @@ class HtmlDialog(Dialog):
 
 
 if wx.PlatformInfo[0] == '__WXMAC__':
-    RidePopupWindow = MacRidePopupWindow
+    RidePopupWindow = HtmlPopupWindow = MacRidePopupWindow
 del MacRidePopupWindow
