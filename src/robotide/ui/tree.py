@@ -666,7 +666,7 @@ class TreeLabelEditListener(object):
         if not self._on_label_edit_called:
             self.OnLabelEdit(None)
             event.Veto() # On windows CustomTreeCtrl will create Editor component
-            # And we wan't this to be done by the handler -- as it knows if there should be one or not
+            # And we want this to be done by the handler -- as it knows if there should be one or not
             # And because this will make it work the same way as when pressing F2
             # .. so in other words there is a bug if we don't Veto this event
 
