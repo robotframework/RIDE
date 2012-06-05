@@ -262,9 +262,8 @@ class TestRunnerPlugin(Plugin):
         if not self._can_start_running_tests():
             return
         self._initialize_ui_for_running()
-        os.chdir(self.model.suite.source)
         command = self._get_command()
-        self._output("Directory: %s\n" % self.model.suite.source)
+        self._output("working directory: %s\n" % os.getcwd())
         self._output("command: %s\n" % self._format_command(command))
         try:
             self._process = wx.Process(self.panel)
