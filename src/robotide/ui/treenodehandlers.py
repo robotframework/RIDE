@@ -150,10 +150,8 @@ class _CanBeRenamed(object):
         wx.CallAfter(label_edit)
 
     def end_label_edit(self, event):
-        if event.IsEditCancelled() or \
-                not self._is_valid_rename(event.GetLabel()):
-            event.Veto()
-        else:
+        if not event.IsEditCancelled() and \
+                self._is_valid_rename(event.GetLabel()):
             self.rename(event.GetLabel())
 
     def _is_valid_rename(self, label):
