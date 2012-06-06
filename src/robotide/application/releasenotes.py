@@ -86,7 +86,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 0.44</h2>
+<h2>Release notes for 0.45</h2>
 <table border="1">
 <tr>
 <td><b>ID</b></td>
@@ -95,41 +95,23 @@ RELEASE_NOTES = """
 <td><b>Summary</b></td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=916">Issue 916</a></td>
-<td>Defect</td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=703">Issue 703</a></td>
+<td>Enhancement</td>
 <td>High</td>
-<td>Slow saving in RIDE 0.40.2</td>
+<td>Integrate test run plugin to RIDE tree</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=947">Issue 947</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=929">Issue 929</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>Delete key behaves badly in 'Manage Run Configurations' dialog</td>
+<td>popup help interferes with editing/copying/pasting of cells</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=877">Issue 877</a></td>
-<td>Enhancement</td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=980">Issue 980</a></td>
+<td>Defect</td>
 <td>Medium</td>
-<td>Import library/resource/variables dialogs should propose known alternatives</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=966">Issue 966</a></td>
-<td>Enhancement</td>
-<td>Medium</td>
-<td>Reload Directory</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=969">Issue 969</a></td>
-<td>Enhancement</td>
-<td>Medium</td>
-<td>Keyboard shortcut for go to definition</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=970">Issue 970</a></td>
-<td>Enhancement</td>
-<td>Medium</td>
-<td>Test Runner: Show currently executed keyword while running</td>
+<td>Wrong warning color when variable with default value and varargs</td>
 </tr>
 </table>
-<p>Altogether 6 issues.</p>
+<p>Altogether 3 issues.</p>
 """
