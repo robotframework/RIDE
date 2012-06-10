@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 import wx
+from robotide.action.actioninfo import ActionInfo
 from robotide.publish.messages import RideTestRunning, RideTestPassed, RideTestFailed, RideTestExecutionStarted
 from robotide.ui.images import RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, FAILED_IMAGE_INDEX, ROBOT_IMAGE_INDEX
 from robotide.ui.treenodehandlers import TestCaseHandler
@@ -60,7 +61,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         self._images = TreeImageList()
         self._silent_mode = False
         self.SetImageList(self._images)
-        self._label_editor = TreeLabelEditListener(self)
+        self._label_editor = TreeLabelEditListener(self, action_registerer)
         self._controller.bind_keys()
         self._subscribe_to_messages()
         self._popup_creator = PopupCreator()
@@ -652,11 +653,14 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
 
 class TreeLabelEditListener(object):
 
-    def __init__(self, tree):
+    def __init__(self, tree, action_registerer):
         self._tree = tree
         tree.Bind(wx.EVT_TREE_BEGIN_LABEL_EDIT, self.OnBeginLabelEdit)
         tree.Bind(wx.EVT_TREE_END_LABEL_EDIT, self.OnLabelEdited)
         tree.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDown)
+        if IS_WINDOWS:
+            #Delete key behaves badly in windows..
+            action_registerer.register_shortcut(ActionInfo(None, None, action=self.OnDelete, shortcut='Del'))
         self._editing_label = False
         self._on_label_edit_called = False
 
@@ -681,6 +685,13 @@ class TreeLabelEditListener(object):
         self._editing_label = False
         self._on_label_edit_called = False
         self._tree._controller.get_handler(event.GetItem()).end_label_edit(event)
+
+    def OnDelete(self, event):
+        editor = self._tree.GetEditControl()
+        if editor and wx.Window.FindFocus() == editor:
+            start, end = editor.GetSelection()
+            end = max(end, start+1)
+            editor.Remove(start, end)
 
     def OnLeftDown(self, event):
         #See http://code.google.com/p/robotframework-ride/issues/detail?id=756
