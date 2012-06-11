@@ -35,6 +35,7 @@ class _NameValidationTest(object):
     def test_rename_validation_pass_when_different_than_previous_but_normalized_eq(self):
         self.assertTrue(self.rename_validate('NorMALIzed', 'N_O_R_M_A_L_I_zed'))
 
+
 class _VariableNameValidationTest(_NameValidationTest):
 
     def setUp(self):
@@ -61,6 +62,7 @@ class ScalarNameValidationTest(_VariableNameValidationTest, unittest.TestCase):
 class ListVariableNameValidationTest(_VariableNameValidationTest, unittest.TestCase):
     symbol = '@'
     validator_class = ListVariableNameValidator
+
 
 class _MacroNameValidationTest(_NameValidationTest):
 

@@ -659,7 +659,7 @@ class TreeLabelEditListener(object):
         tree.Bind(wx.EVT_TREE_END_LABEL_EDIT, self.OnLabelEdited)
         tree.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDown)
         if IS_WINDOWS:
-            #Delete key behaves badly in windows..
+            #Delete key does not work in windows without registration
             action_registerer.register_shortcut(ActionInfo(None, None, action=self.OnDelete, shortcut='Del'))
         self._editing_label = False
         self._on_label_edit_called = False
@@ -690,8 +690,7 @@ class TreeLabelEditListener(object):
         editor = self._tree.GetEditControl()
         if editor and wx.Window.FindFocus() == editor:
             start, end = editor.GetSelection()
-            end = max(end, start+1)
-            editor.Remove(start, end)
+            editor.Remove(start, max(end, start+1))
 
     def OnLeftDown(self, event):
         #See http://code.google.com/p/robotframework-ride/issues/detail?id=756
