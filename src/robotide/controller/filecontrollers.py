@@ -425,20 +425,28 @@ class TestDataDirectoryController(_DataController, DirectoryController):
 
     def _children(self, data):
         children = [DataController(child, self._chief_controller, self) for child in data.children]
-        if data.source and os.path.isdir(data.source) and self._namespace:
+        if self._can_add_directory_resources(data):
             self._add_directory_resources(children, data)
         return children
 
+    def _can_add_directory_resources(self, data):
+        return data.source and os.path.isdir(data.source) and self._namespace
+
     def _add_directory_resources(self, children, data):
+        for filename in self._get_unknown_files_in_directory(children, data):
+            r = self._namespace.get_resource(filename, report_status=False)
+            if self._is_valid_resource(r):
+                children.append(self._resource_control(r))
+
+    def _is_valid_resource(self, resource):
+        return resource and (resource.setting_table or resource.variable_table or resource.keyword_table)
+
+    def _resource_control(self, resource):
+        return self._resource_file_controller_factory.create(resource, chief_controller=self._chief_controller)
+
+    def _get_unknown_files_in_directory(self, children, data):
         already_in_use = [c.source for c in children] + [self.data.initfile]
-        for filename in self._get_filenames_in_directory(data):
-            if filename not in already_in_use:
-                resu = self._namespace.get_resource(filename, report_status=False)
-                if resu and (resu.setting_table or resu.variable_table or resu.keyword_table):
-                    children.append(
-                        self._resource_file_controller_factory.create(
-                            resu,
-                            chief_controller=self._chief_controller))
+        return [f for f in self._get_filenames_in_directory(data) if f not in already_in_use]
 
     def _get_filenames_in_directory(self, data):
         return [os.path.join(data.source, f) for f in os.listdir(data.source)]
