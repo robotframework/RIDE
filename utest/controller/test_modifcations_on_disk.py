@@ -125,9 +125,10 @@ class TestDataFileRemoval(_DataDependentTest):
     def test_deleting_file_suite_under_dir_suite(self):
         chief = create_chief()
         chief._controller = TestDataDirectoryController(TestDataDirectory(source=self._dirpath).populate(), chief)
+        original_children_length = len(chief.data.children)
         file_suite = chief.data.children[0]
         file_suite.remove()
-        assert_true(len(chief.data.children) == 0, 'Child suite was not removed')
+        assert_true(len(chief.data.children) == original_children_length-1, 'Child suite was not removed')
 
     def test_deleting_resource_file(self):
         chief = create_chief()
