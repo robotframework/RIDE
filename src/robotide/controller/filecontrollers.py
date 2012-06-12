@@ -427,7 +427,7 @@ class TestDataDirectoryController(_DataController, DirectoryController):
         children = [DataController(child, self._chief_controller, self) for child in data.children]
         for filename in [os.path.join(data.source, f) for f in os.listdir(data.source)]:
             if filename not in [c.source for c in children]+[self.data.initfile]:
-                resu = self._namespace.get_resource(filename)
+                resu = self._namespace.get_resource(filename, report_status=False)
                 if resu and (resu.setting_table or resu.variable_table or resu.keyword_table):
                     children.append(
                         self._resource_file_controller_factory.create(

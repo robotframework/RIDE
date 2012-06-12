@@ -132,8 +132,8 @@ class Namespace(object):
     def get_resources(self, datafile):
         return self._retriever.get_resources_from(datafile)
 
-    def get_resource(self, path, directory=''):
-        return self._resource_factory.get_resource(directory, path)
+    def get_resource(self, path, directory='', report_status=True):
+        return self._resource_factory.get_resource(directory, path, report_status=report_status)
 
     def find_resource_with_import(self, imp):
         ctx = self._context_factory.ctx_for_datafile(imp.parent.parent)

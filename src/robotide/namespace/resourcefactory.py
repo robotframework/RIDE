@@ -15,6 +15,7 @@
 import os
 import sys
 from robot.parsing.model import ResourceFile
+from robot.parsing.populators import FromFilePopulator
 
 from robotide import utils
 
@@ -42,14 +43,14 @@ class ResourceFactory(object):
         if name == 'pythonpath':
             self._set_pythonpath(new_value)
 
-    def get_resource(self, directory, name):
+    def get_resource(self, directory, name, report_status=True):
         path = self._build_path(directory, name)
-        res = self._get_resource(path)
+        res = self._get_resource(path, report_status=report_status)
         if res:
             return res
         path_from_pythonpath = self._get_python_path(name)
         if path_from_pythonpath:
-            return self._get_resource(path_from_pythonpath)
+            return self._get_resource(path_from_pythonpath, report_status=report_status)
         return None
 
     def _build_path(self, directory, name):
@@ -68,7 +69,7 @@ class ResourceFactory(object):
         return resource
 
     def resource_filename_changed(self, old_name, new_name):
-        self.cache[self._normalize(new_name)] = self._get_resource(old_name)
+        self.cache[self._normalize(new_name)] = self._get_resource(old_name, report_status=True)
         del self.cache[self._normalize(old_name)]
 
     def _get_python_path(self, name):
@@ -77,20 +78,24 @@ class ResourceFactory(object):
             self.python_path_cache[name] = path_from_pythonpath
         return self.python_path_cache[name]
 
-    def _get_resource(self, path):
+    def _get_resource(self, path, report_status):
         normalized = self._normalize(path)
         if self._exclude_directory and normalized.startswith(self._exclude_directory):
             return None
         if normalized not in self.cache:
             try:
-                self.cache[normalized] = self._load_resource(path)
+                self.cache[normalized] = self._load_resource(path, report_status=report_status)
             except Exception:
                 self.cache[normalized] = None
                 return None
         return self.cache[normalized]
 
-    def _load_resource(self, path):
-        return ResourceFile(path).populate()
+    def _load_resource(self, path, report_status):
+        r = ResourceFile(path)
+        if report_status:
+            return r.populate()
+        FromFilePopulator(r).populate(r.source)
+        return r
 
     def _normalize(self, path):
         return os.path.normcase(os.path.normpath(os.path.abspath(path)))
