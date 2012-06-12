@@ -442,7 +442,9 @@ class TestDataDirectoryController(_DataController, DirectoryController):
         return resource and (resource.setting_table or resource.variable_table or resource.keyword_table)
 
     def _resource_control(self, resource):
-        return self._resource_file_controller_factory.create(resource, chief_controller=self._chief_controller)
+        resource_control =  self._resource_file_controller_factory.create(resource, chief_controller=self._chief_controller)
+        resource_control.parent = self
+        return resource_control
 
     def _get_unknown_files_in_directory(self, children, data):
         already_in_use = [c.source for c in children] + [self.data.initfile]
