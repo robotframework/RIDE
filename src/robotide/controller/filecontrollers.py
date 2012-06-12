@@ -425,7 +425,7 @@ class TestDataDirectoryController(_DataController, DirectoryController):
 
     def _children(self, data):
         children = [DataController(child, self._chief_controller, self) for child in data.children]
-        if data.source and os.path.isdir(data.source):
+        if data.source and os.path.isdir(data.source) and self._namespace:
             self._add_directory_resources(children, data)
         return children
 
