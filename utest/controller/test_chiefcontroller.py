@@ -157,37 +157,41 @@ def _testcasefile(path):
     data.source = os.path.normpath(path)
     return data
 
+
 class TestResolvingResourceDirectories(unittest.TestCase):
 
     def setUp(self):
         self.chief = ChiefController(Namespace(FakeSettings()), FakeSettings())
 
     def test_resource_file_outside_of_topsuite_is_an_external_resource(self):
-        self.chief._controller = TestDataDirectoryController(_data_directory('suite'))
+        self._set_data_directory_controller('suite')
         self._set_resources(j('foo','resource.txt'))
         assert_equals(self.chief.external_resources, self.chief.resources)
 
+    def _set_data_directory_controller(self, dir):
+        self.chief._controller = TestDataDirectoryController(_data_directory(dir))
+
     def test_resource_file_in_own_directory_is_added_to_top_suite(self):
-        self.chief._controller = TestDataDirectoryController(_data_directory('foo'))
+        self._set_data_directory_controller('foo')
         self._set_resources(j('foo','bar','quux.txt'))
         self._assert_resource_dir_was_created_as_child_of(self.chief.data)
         self._assert_resource_dir_contains_resources()
         assert_true(len(self.chief.external_resources)==  0)
 
     def test_two_resource_in_same_directory_get_same_parent(self):
-        self.chief._controller = TestDataDirectoryController(_data_directory('foo'))
+        self._set_data_directory_controller('foo')
         self._set_resources(j('foo','bar','quux.txt'), j('foo','bar','zap.txt'))
         self._assert_resource_dir_was_created_as_child_of(self.chief.data)
         self._assert_resource_dir_contains_resources()
 
     def test_two_nested_resources_in_same_directory_get_same_parent(self):
-        self.chief._controller = TestDataDirectoryController(_data_directory('suite'))
+        self._set_data_directory_controller('suite')
         self._set_resources(j('suite','foo','bar','quux.txt'), j('suite','foo','bar','zap.txt'))
         assert_equals(self.chief.data.children[0].children[0].children,
                       self.chief.resources)
 
     def test_resource_directory_gets_nearest_possible_parent(self):
-        self.chief._controller = TestDataDirectoryController(_data_directory('tmp'))
+        self._set_data_directory_controller('tmp')
         self.chief.data.add_child(TestDataDirectoryController(_data_directory(j('tmp','some'))))
         self._set_resources(j('tmp','some','resoruces','res.txt'))
         assert_equals(len(self.chief.data.children), 1)
@@ -195,14 +199,14 @@ class TestResolvingResourceDirectories(unittest.TestCase):
         assert_equals(self.chief.data.children[0].children[0].children, [self.chief.resources[0]])
 
     def test_nested_resource_directories(self):
-        self.chief._controller = TestDataDirectoryController(_data_directory('tmp'))
+        self._set_data_directory_controller('tmp')
         self._set_resources(j('tmp','resoruces','res.txt'), j('tmp','resoruces','more','res.txt'))
         assert_equals(len(self.chief.data.children), 1)
         assert_equals(len(self.chief.data.children[0].children), 2)
         assert_equals(self.chief.data.children[0].children[1].children, [self.chief.resources[1]])
 
     def test_resource_in_nested_directory(self):
-        self.chief._controller = TestDataDirectoryController(_data_directory('tmp'))
+        self._set_data_directory_controller('tmp')
         self._set_resources(j('tmp','res','ources','res.txt'))
         assert_equals(len(self.chief.data.children), 1)
         assert_equals(len(self.chief.data.children[0].children), 1)
