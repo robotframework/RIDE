@@ -9,7 +9,7 @@ from robotide.namespace.resourcefactory import ResourceFactory
 class _ResourceFactory(ResourceFactory):
     from_path = None
 
-    def _load_resource(self, path):
+    def _load_resource(self, path, report_status):
         return object()
 
     def _get_python_path(self, name):
