@@ -425,19 +425,23 @@ class TestDataDirectoryController(_DataController, DirectoryController):
 
     def _children(self, data):
         children = [DataController(child, self._chief_controller, self) for child in data.children]
-        if data.source:
+        if data.source and os.path.isdir(data.source):
             self._add_directory_resources(children, data)
         return children
 
     def _add_directory_resources(self, children, data):
-        for filename in [os.path.join(data.source, f) for f in os.listdir(data.source)]:
-            if filename not in [c.source for c in children] + [self.data.initfile]:
+        already_in_use = [c.source for c in children] + [self.data.initfile]
+        for filename in self._get_filenames_in_directory(data):
+            if filename not in already_in_use:
                 resu = self._namespace.get_resource(filename, report_status=False)
                 if resu and (resu.setting_table or resu.variable_table or resu.keyword_table):
                     children.append(
                         self._resource_file_controller_factory.create(
                             resu,
                             chief_controller=self._chief_controller))
+
+    def _get_filenames_in_directory(self, data):
+        return [os.path.join(data.source, f) for f in os.listdir(data.source)]
 
     def add_child(self, controller):
         self.children.append(controller)
