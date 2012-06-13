@@ -12,8 +12,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.utils import XmlWriter, get_timestamp
 from robot.errors import DataError
+from robot.utils import XmlWriter, NullMarkupWriter, get_timestamp
 from robot.version import get_full_version
 
 from .loggerhelper import IsLogged
@@ -28,11 +28,13 @@ class XmlLogger(object):
         self._errors = []
 
     def _get_writer(self, path, generator):
+        if path == 'NONE':
+            return NullMarkupWriter()
         try:
-            writer = XmlWriter(path)
+            writer = XmlWriter(path, encoding='UTF-8')
         except EnvironmentError, err:
-            raise DataError("Opening output file '%s' failed: %s"
-                            % (path, err.strerror))
+            raise DataError("Opening output file '%s' failed: %s" %
+                            (path, err.strerror))
         writer.start('robot', {'generator': get_full_version(generator),
                                'generated': get_timestamp()})
         return writer
@@ -64,7 +66,7 @@ class XmlLogger(object):
 
     def start_keyword(self, kw):
         self._writer.start('kw', {'name': kw.name, 'type': kw.type,
-                                  'timeout': kw.timeout})
+                                  'timeout': str(kw.timeout)})
         self._writer.element('doc', kw.doc)
         self._write_list('arguments', 'arg', kw.args)
 
@@ -74,7 +76,7 @@ class XmlLogger(object):
 
     def start_test(self, test):
         self._writer.start('test', {'id': test.id, 'name': test.name,
-                                    'timeout': test.timeout})
+                                    'timeout': str(test.timeout)})
 
     def end_test(self, test):
         self._writer.element('doc', test.doc)
@@ -126,7 +128,8 @@ class XmlLogger(object):
         self._stat(stat)
 
     def suite_stat(self, stat):
-        self._stat(stat, stat.longname, attrs={'id': stat.id, 'name': stat.name})
+        self._stat(stat, stat.longname,
+                   attrs={'id': stat.id, 'name': stat.name})
 
     def tag_stat(self, stat):
         self._stat(stat, attrs={'info': self._get_tag_stat_info(stat),
@@ -168,7 +171,7 @@ class XmlLogger(object):
         attrs = {'status': item.status, 'starttime': item.starttime or 'N/A',
                  'endtime': item.endtime or 'N/A'}
         if not (item.starttime and item.endtime):
-            attrs['elapsedtime'] = item.elapsedtime
+            attrs['elapsedtime'] = str(item.elapsedtime)
         if extra_attrs:
             attrs.update(extra_attrs)
         self._writer.element('status', message, attrs)

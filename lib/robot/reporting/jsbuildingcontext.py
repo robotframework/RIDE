@@ -15,6 +15,7 @@
 from contextlib import contextmanager
 import os.path
 
+from robot.output.loggerhelper import LEVELS
 from robot.utils import timestamp_to_secs, get_link_path, html_format
 
 from .stringcache import StringCache
@@ -31,6 +32,7 @@ class JsBuildingContext(object):
         self._strings = self._orig_strings = StringCache()
         self.basemillis = None
         self.split_results = []
+        self.min_level = 'NONE'
         self._msg_links = {}
 
     def string(self, string):
@@ -55,6 +57,10 @@ class JsBuildingContext(object):
 
     def create_link_target(self, msg):
         self._msg_links[self._link_key(msg)] = self.string(msg.parent.id)
+
+    def message_level(self, level):
+        if LEVELS[level] < LEVELS[self.min_level]:
+            self.min_level = level
 
     def _link_key(self, msg):
         return (msg.message, msg.level, msg.timestamp)

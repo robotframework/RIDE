@@ -10,6 +10,8 @@
 <link rel="stylesheet" type="text/css" href="log.css" media="all">
 <link rel="stylesheet" type="text/css" href="common.css" media="all">
 <link rel="stylesheet" type="text/css" href="print.css" media="print">
+<link rel="stylesheet" type="text/css" href="../common/js_disabled.css" media="all">
+<link rel="stylesheet" type="text/css" href="../common/doc_formatting.css" media="all">
 <script type="text/javascript" src="log.js"></script>
 <script type="text/javascript" src="../lib/jquery.min.js"></script>
 <script type="text/javascript" src="../lib/jquery.tmpl.min.js"></script>
@@ -37,7 +39,7 @@
 <div id="statistics_container"></div>
 
 <script type="text/javascript">
-$(document).ready(function(){
+$(document).ready(function() {
     try {
         var topsuite = window.testdata.suite();
     } catch (e) {
@@ -48,6 +50,7 @@ $(document).ready(function(){
     addStatistics();
     addErrors();
     addTestExecutionLog(topsuite);
+    addLogLevelSelector(window.settings['minLevel'], window.settings['defaultLevel']);
     if (window.location.hash) {
         makeElementVisible(window.location.hash.substring(1));
         scrollToHash();
@@ -55,6 +58,17 @@ $(document).ready(function(){
         expandSuite(topsuite);
     }
 });
+
+function addLogLevelSelector(minLevel, defaultLevel) {
+    var controller = LogLevelController(minLevel, defaultLevel);
+    if (controller.showLogLevelSelector()) {
+        var selector = $.tmpl('logLevelSelectorTemplate', controller);
+        selector.find('select').val(controller.defaultLogLevel());
+        selector.appendTo($('#top_right_header'));
+        $('#report_or_log_link a').css({'border-bottom-left-radius': '0'});
+        logLevelSelected(controller.defaultLogLevel());
+    }
+}
 
 function addErrors() {
     var errors = window.testdata.errors();
@@ -165,7 +179,7 @@ function addTestExecutionLog(main) {
       {{/if}}
     </td>
     <td class="${level.toLowerCase()} level">${level}</td>
-    <td class="msg">{{html text}}</td>
+    <td class="message">{{html text}}</td>
   </tr>
 </script>
 
@@ -188,13 +202,13 @@ function addTestExecutionLog(main) {
         {{if doc()}}
         <tr>
           <th>Documentation:</th>
-          <td>{{html doc()}}</td>
+          <td class="doc">{{html doc()}}</td>
         </tr>
         {{/if}}
         {{each metadata}}
         <tr>
           <th>${$value[0]}:</th>
-          <td>{{html $value[1]}}</td>
+          <td class="doc">{{html $value[1]}}</td>
         </tr>
         {{/each}}
         {{if source}}
@@ -208,7 +222,7 @@ function addTestExecutionLog(main) {
         </tr>
         {{/if}}
         <tr>
-          <th>Start / End / Elapsed:</th><td>${times.startTime}  /  ${times.endTime}  /  ${times.elapsedTime}</td>
+          <th>Start / End / Elapsed:</th><td>${times.startTime} / ${times.endTime} / ${times.elapsedTime}</td>
         </tr>
         <tr>
           <th>Status:</th>
@@ -217,7 +231,7 @@ function addTestExecutionLog(main) {
         {{if message()}}
         <tr>
           <th>Message:</th>
-          <td>${message()}</td>
+          <td class="message">${message()}</td>
         </tr>
         {{/if}}
       </table>
@@ -245,7 +259,7 @@ function addTestExecutionLog(main) {
         {{if doc()}}
         <tr>
           <th>Documentation:</th>
-          <td>{{html doc()}}</td>
+          <td class="doc">{{html doc()}}</td>
         </tr>
         {{/if}}
         {{if tags.length}}
@@ -262,7 +276,7 @@ function addTestExecutionLog(main) {
         {{/if}}
         <tr>
           <th>Start / End / Elapsed:</th>
-          <td>${times.startTime}  /  ${times.endTime}  /  ${times.elapsedTime}</td>
+          <td>${times.startTime} / ${times.endTime} / ${times.elapsedTime}</td>
         </tr>
         <tr>
           <th>Status:</th>
@@ -271,7 +285,7 @@ function addTestExecutionLog(main) {
         {{if message()}}
         <tr>
           <th>Message:</th>
-          <td>${message()}</td>
+          <td class="message">${message()}</td>
         </tr>
         {{/if}}
       </table>
@@ -295,7 +309,7 @@ function addTestExecutionLog(main) {
         {{if doc()}}
         <tr>
           <th>Documentation:</th>
-          <td>{{html doc()}}</td>
+          <td class="doc">{{html doc()}}</td>
         </tr>
         {{/if}}
         {{if timeout}}
@@ -306,7 +320,7 @@ function addTestExecutionLog(main) {
         {{/if}}
         <tr>
           <th>Start / End / Elapsed:</th>
-          <td>${times.startTime}  /  ${times.endTime}  /  ${times.elapsedTime}</td>
+          <td>${times.startTime} / ${times.endTime} / ${times.elapsedTime}</td>
         </tr>
       </table>
     </div>
@@ -314,13 +328,24 @@ function addTestExecutionLog(main) {
 </script>
 
 <script type="text/x-jquery-tmpl" id="messageTemplate">
-  <table class="messages">
+  <table class="messages ${level.toLowerCase()}_message">
     <tr>
       <td class="time">${time}</td>
       <td class="${level.toLowerCase()} level">${level}</td>
-      <td class="msg">{{html text}}</td>
+      <td class="message">{{html text}}</td>
     </tr>
   </table>
+</script>
+
+<script type="text/x-jquery-tmpl" id="logLevelSelectorTemplate">
+  <div id="log_level_selector">
+  Log level:
+    <select onchange="logLevelSelected(this.options[selectedIndex].value);">
+      <option value="2">INFO</option>
+      <option value="1">DEBUG</option>
+      {{if showTrace()}}<option value="0">TRACE</option>{{/if}}
+    </select>
+  </div>
 </script>
 
 </body>

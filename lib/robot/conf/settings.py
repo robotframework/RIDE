@@ -16,7 +16,7 @@ import os
 
 from robot import utils
 from robot.errors import DataError, FrameworkError
-from robot.output import LOGGER
+from robot.output import LOGGER, loggerhelper
 
 
 class _BaseSettings(object):
@@ -48,7 +48,6 @@ class _BaseSettings(object):
                  'TagStatLink'      : ('tagstatlink', []),
                  'RemoveKeywords'   : ('removekeywords', []),
                  'NoStatusRC'       : ('nostatusrc', False),
-                 'RunEmptySuite'    : ('runemptysuite', False),
                  'MonitorWidth'     : ('monitorwidth', 78),
                  'MonitorColors'    : ('monitorcolors', 'AUTO'),
                  'StdOut'           : ('stdout', None),
@@ -67,6 +66,8 @@ class _BaseSettings(object):
             value = opts.get(cli_name, default)
             if value in [None, []]:
                 value = default
+            elif default == [] and isinstance(value, basestring):
+                value = [value]
             self[name] = self._process_value(name, value, log)
 
     def __setitem__(self, name, value):
@@ -75,6 +76,8 @@ class _BaseSettings(object):
         self._opts[name] = value
 
     def _process_value(self, name, value, log):
+        if name == 'LogLevel':
+            return self._process_log_level(value)
         if value == self._get_default_value(name):
             return value
         if name in ['Name', 'Doc', 'LogTitle', 'ReportTitle']:
@@ -99,14 +102,34 @@ class _BaseSettings(object):
             return [self._process_tag_stat_combine(v) for v in value]
         if name == 'TagStatLink':
             return [v for v in [self._process_tag_stat_link(v) for v in value] if v]
-        if name == 'LogLevel':
-            return value.upper()
         if name == 'RemoveKeywords':
             return [v.upper() for v in value]
         return value
 
+    def _process_log_level(self, level):
+        level, visible_level = self._split_log_level(level.upper())
+        self._opts['VisibleLogLevel'] = visible_level
+        return level
+
+    def _split_log_level(self, level):
+        if ':' in level:
+            level, visible_level = level.split(':', 1)
+        else:
+            visible_level = level
+        self._validate_log_level_and_default(level, visible_level)
+        return level, visible_level
+
+    def _validate_log_level_and_default(self, log_level, default):
+        if log_level not in loggerhelper.LEVELS:
+            raise DataError("Invalid log level '%s'" % log_level)
+        if default not in loggerhelper.LEVELS:
+            raise DataError("Invalid log level '%s'" % default)
+        if not loggerhelper.IsLogged(log_level)(default):
+            raise DataError("Default visible log level '%s' is lower than "
+                            "log level '%s'" % (default, log_level))
+
     def __getitem__(self, name):
-        if name not in self._cli_opts:
+        if name not in self._opts:
             raise KeyError("Non-existing setting '%s'" % name)
         if name in self._output_opts:
             return self._get_output_file(name)
@@ -250,6 +273,7 @@ class RobotSettings(_BaseSettings):
     _extra_cli_opts = {'Output'        : ('output', 'output.xml'),
                        'LogLevel'      : ('loglevel', 'INFO'),
                        'RunMode'       : ('runmode', []),
+                       'RunEmptySuite' : ('runemptysuite', False),
                        'WarnOnSkipped' : ('warnonskippedfiles', False),
                        'Variables'     : ('variable', []),
                        'VariableFiles' : ('variablefile', []),
@@ -271,6 +295,7 @@ class RobotSettings(_BaseSettings):
             settings._opts[name] = None
         settings._opts['Output'] = 'NONE'
         settings._opts['LogLevel'] = 'TRACE'
+        settings._opts['ProcessEmptySuite'] = self['RunEmptySuite']
         return datasource, settings
 
     def _outputfile_disabled(self, type_, name):
@@ -283,10 +308,11 @@ class RobotSettings(_BaseSettings):
 
 
 class RebotSettings(_BaseSettings):
-    _extra_cli_opts = {'Output'         : ('output', 'NONE'),
-                       'LogLevel'       : ('loglevel', 'TRACE'),
-                       'StartTime'      : ('starttime', None),
-                       'EndTime'        : ('endtime', None)}
+    _extra_cli_opts = {'Output'            : ('output', 'NONE'),
+                       'LogLevel'          : ('loglevel', 'TRACE'),
+                       'ProcessEmptySuite' : ('processemptysuite', False),
+                       'StartTime'         : ('starttime', None),
+                       'EndTime'           : ('endtime', None)}
 
     def _outputfile_disabled(self, type_, name):
         return name == 'NONE'
@@ -305,6 +331,7 @@ class RebotSettings(_BaseSettings):
             'exclude_tags': self['Exclude'],
             'include_suites': self['SuiteNames'],
             'include_tests': self['TestNames'],
+            'process_empty_suite': self['ProcessEmptySuite'],
             'remove_keywords': self['RemoveKeywords'],
             'log_level': self['LogLevel'],
             'critical': self['Critical'],
@@ -331,7 +358,8 @@ class RebotSettings(_BaseSettings):
         return {
             'title': self['LogTitle'],
             'reportURL': self._url_from_path(self.log, self.report),
-            'splitLogBase': os.path.basename(os.path.splitext(self.log)[0])
+            'splitLogBase': os.path.basename(os.path.splitext(self.log)[0]),
+            'defaultLevel': self['VisibleLogLevel']
         }
 
     @property

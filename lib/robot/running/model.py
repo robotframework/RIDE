@@ -30,13 +30,21 @@ from .defaultvalues import DefaultValues
 
 
 def TestSuite(datasources, settings):
-    """Creates a runnable test suite from given datasources and settings.
+    """Creates a runnable test suite from given data sources and settings.
 
-    :param datasources: List of paths to read data from.
+    This is a factory method that returns either :class:`RunnableTestSuite`
+    or :class:`RunnableMultiTestSuite` depending are one or more data sources
+    given. This method, and especially the returned suite, is likely to change
+    heavily in version 2.8.
+
+    :param datasources: List of paths to read data from. Starting from 2.7.2,
+                        a single datasource can also be given as a string.
     :param settings: Execution configuration.
     :type settings: :class:`~robot.conf.settings.RobotSettings`
     :returns: :class:`RunnableTestSuite`
     """
+    if isinstance(datasources, basestring):
+        datasources = [datasources]
     datasources = [utils.abspath(path) for path in datasources]
     suite = _get_suite(datasources, settings['SuiteNames'], settings['WarnOnSkipped'])
     suite.set_options(settings)

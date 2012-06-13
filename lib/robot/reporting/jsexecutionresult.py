@@ -22,9 +22,10 @@ from .stringcache import StringIndex
 class JsExecutionResult(object):
 
     def __init__(self, suite, statistics, errors, strings, basemillis=None,
-                 split_results=None):
+                 split_results=None, min_level=None):
         self.suite = suite
         self.strings = strings
+        self.min_level = min_level
         self.data = self._get_data(statistics, errors, basemillis or 0)
         self.split_results = split_results or []
 

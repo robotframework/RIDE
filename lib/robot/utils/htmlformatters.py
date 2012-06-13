@@ -42,19 +42,19 @@ class LinkFormatter(object):
         return pre + self._get_link(url)
 
     def _get_image(self, src, title=None):
-        return '<img src="%s" title="%s" class="robotdoc">' \
+        return '<img src="%s" title="%s">' \
                 % (self._quot(src), self._quot(title or src))
 
     def _get_link(self, href, content=None):
         return '<a href="%s">%s</a>' % (self._quot(href), content or href)
 
     def _quot(self, attr):
-        return attr.replace('"', '&quot;')
+        return attr if '"' not in attr else attr.replace('"', '&quot;')
 
     def format_link(self, text):
         # 2nd, 4th, etc. token contains link, others surrounding content
         tokens = self._link.split(text)
-        formatters = cycle([self._format_url, self._format_link])
+        formatters = cycle((self._format_url, self._format_link))
         return ''.join(f(t) for f, t in zip(formatters, tokens))
 
     def _format_link(self, text):
@@ -67,72 +67,6 @@ class LinkFormatter(object):
 
     def _is_image(self, text):
         return text.lower().endswith(self._image_exts)
-
-
-class HtmlFormatter(object):
-
-    def __init__(self):
-        self._rows = []
-        self._collectors = (BlockCollector(self._rows, TableFormatter()),
-                            BlockCollector(self._rows, PreformattedFormatter()),
-                            LineCollector(self._rows, RulerFormatter()),
-                            LineCollector(self._rows, LineFormatter()))
-        self._current_block = None
-
-    def format(self, text):
-        for line in text.splitlines():
-            self._process_line(line)
-        self._end_current_block()
-        return ''.join(self._rows).rstrip('\n')
-
-    def _process_line(self, line):
-        if self._current_block and self._current_block.handles(line):
-            self._current_block.add(line)
-            return
-        self._end_current_block()
-        collector = self._find_collector(line)
-        collector.add(line)
-        self._current_block = collector if collector.is_block else None
-
-    def _end_current_block(self):
-        if self._current_block:
-            self._current_block.end()
-
-    def _find_collector(self, line):
-        for collector in self._collectors:
-            if collector.handles(line):
-                return collector
-
-
-class _Collector(object):
-
-    def __init__(self, result, formatter):
-        self._result = result
-        self._formatter = formatter
-        self.handles = formatter.handles
-
-
-class LineCollector(_Collector):
-    is_block = False
-
-    def add(self, line):
-        self._result.append(self._formatter.format(line) +
-                            self._formatter.newline)
-
-
-class BlockCollector(_Collector):
-    is_block = True
-
-    def __init__(self, result, formatter):
-        _Collector.__init__(self, result, formatter)
-        self._lines = []
-
-    def add(self, line):
-        self._lines.append(self._formatter.pre_format(line))
-
-    def end(self):
-        self._result.append(self._formatter.format(self._lines))
-        self._lines = []
 
 
 class LineFormatter(object):
@@ -172,43 +106,130 @@ _                          # end of italic
         return self._italic.sub('\\1<i>\\3</i>', line) if '_' in line else line
 
 
-class RulerFormatter(object):
-    handles = re.compile('^-{3,} *$').match
-    newline = ''
+class HtmlFormatter(object):
 
-    def format(self, line):
-        return '<hr class="robotdoc">'
+    def __init__(self):
+        self._results = []
+        self._formatters = [TableFormatter(),
+                            PreformattedFormatter(),
+                            ListFormatter(),
+                            RulerFormatter()]
+        self._formatters.append(ParagraphFormatter(self._formatters[:]))
+        self._current = None
+
+    def format(self, text):
+        for line in text.splitlines():
+            self._process_line(line.strip())
+        self._end_current()
+        return '\n'.join(self._results)
+
+    def _process_line(self, line):
+        if not line:
+            self._end_current()
+        elif self._current and self._current.handles(line):
+            self._current.add(line)
+        else:
+            self._end_current()
+            self._current = self._find_formatter(line)
+            self._current.add(line)
+
+    def _end_current(self):
+        if self._current:
+            self._results.append(self._current.end())
+            self._current = None
+
+    def _find_formatter(self, line):
+        for formatter in self._formatters:
+            if formatter.handles(line):
+                return formatter
 
 
-class TableFormatter(object):
-    handles = re.compile('^\s*\| (.* |)\|\s*$').match
+class _BlockFormatter(object):
+
+    def __init__(self):
+        self._lines = []
+
+    def add(self, line):
+        self._lines.append(line)
+
+    def end(self):
+        result = self.format(self._lines)
+        self._lines = []
+        return result
+
+    def format(self, lines):
+        raise NotImplementedError
+
+
+class RulerFormatter(_BlockFormatter):
+    _hr_matcher = re.compile('^-{3,}$').match
+
+    def handles(self, line):
+        return not self._lines and self._hr_matcher(line)
+
+    def format(self, lines):
+        return '<hr>'
+
+
+class ParagraphFormatter(_BlockFormatter):
+    _format_line = LineFormatter().format
+
+    def __init__(self, other_formatters):
+        _BlockFormatter.__init__(self)
+        self._other_formatters = other_formatters
+
+    def handles(self, line):
+        if any(formatter.handles(line) for formatter in self._other_formatters):
+            return False
+        if line:
+            return True
+        return not self._lines
+
+    def format(self, lines):
+        return '<p>%s</p>' % self._format_line(' '.join(lines))
+
+
+class TableFormatter(_BlockFormatter):
+    handles = re.compile('^\| (.* |)\|$').match
     _line_splitter = re.compile(' \|(?= )')
     _format_cell = LineFormatter().format
 
-    def pre_format(self, line):
-        line = line.strip()[1:-1]   # remove outer whitespace and pipes
-        return [cell.strip() for cell in self._line_splitter.split(line)]
-
     def format(self, lines):
-        maxlen = max(len(row) for row in lines)
-        table = ['<table class="robotdoc">']
-        for line in lines:
-            line += [''] * (maxlen - len(line))  # fix ragged tables
+        return self._format_table([self._split_to_cells(l) for l in lines])
+
+    def _split_to_cells(self, line):
+        return [cell.strip() for cell in self._line_splitter.split(line[1:-1])]
+
+    def _format_table(self, rows):
+        maxlen = max(len(row) for row in rows)
+        table = ['<table>']
+        for row in rows:
+            row += [''] * (maxlen - len(row))  # fix ragged tables
             table.append('<tr>')
-            table.extend(['<td>%s</td>' % self._format_cell(cell)
-                          for cell in line])
+            table.extend('<td>%s</td>' % self._format_cell(c) for c in row)
             table.append('</tr>')
         table.append('</table>')
         return '\n'.join(table)
 
 
-class PreformattedFormatter(object):
-    handles = re.compile('\s*\|( |$)').match
+class PreformattedFormatter(_BlockFormatter):
     _format_line = LineFormatter().format
 
-    def pre_format(self, line):
-        return line.strip()[2:]
+    def handles(self, line):
+        return line.startswith('| ') or line == '|'
 
     def format(self, lines):
-        lines = [self._format_line(line) for line in lines]
-        return '\n'.join(['<pre class="robotdoc">'] + lines + ['</pre>'])
+        lines = [self._format_line(line[2:]) for line in lines]
+        return '\n'.join(['<pre>'] + lines + ['</pre>'])
+
+
+class ListFormatter(_BlockFormatter):
+    _format_item = LineFormatter().format
+
+    def handles(self, line):
+        return line.startswith('- ')
+
+    def format(self, lines):
+        items = ['<li>%s</li>' % self._format_item(line[2:].strip())
+                 for line in lines]
+        return '\n'.join(['<ul>'] + items + ['</ul>'])

@@ -15,13 +15,11 @@
 import time
 import datetime
 
-from normalizing import normalize
-from misc import plural_or_not
+from .normalizing import normalize
+from .misc import plural_or_not
 
 
 def _get_timetuple(epoch_secs=None):
-    if _CURRENT_TIME:
-        return _CURRENT_TIME
     if epoch_secs is None:  # can also be 0 (at least in unit tests)
         epoch_secs = time.time()
     secs, millis = _float_secs_to_secs_and_millis(epoch_secs)
@@ -34,7 +32,6 @@ def _float_secs_to_secs_and_millis(secs):
     return (isecs, millis) if millis < 1000 else (isecs+1, 0)
 
 
-_CURRENT_TIME = None       # Seam for mocking time-dependent tests
 START_TIME = _get_timetuple()
 
 
@@ -276,7 +273,7 @@ def parse_time(timestr):
 
 
 def get_timestamp(daysep='', daytimesep=' ', timesep=':', millissep='.'):
-    return format_time(_get_timetuple(), daysep, daytimesep, timesep, millissep)
+    return TIMESTAMP_CACHE.get_timestamp(daysep, daytimesep, timesep, millissep)
 
 
 def timestamp_to_secs(timestamp, seps=None):
@@ -304,8 +301,10 @@ def get_start_timestamp(daysep='', daytimesep=' ', timesep=':', millissep=None):
 
 def get_elapsed_time(start_time, end_time):
     """Returns the time between given timestamps in milliseconds."""
-    if not (start_time and end_time):
+    if start_time == end_time or not (start_time and end_time):
         return 0
+    if start_time[:-4] == end_time[:-4]:
+        return int(end_time[-3:]) - int(start_time[-3:])
     start_millis = _timestamp_to_millis(start_time)
     end_millis = _timestamp_to_millis(end_time)
     # start/end_millis can be long but we want to return int when possible
@@ -336,7 +335,8 @@ def _timestamp_to_millis(timestamp, seps=None):
 
 def _normalize_timestamp(ts, seps):
     for sep in seps:
-        ts = ts.replace(sep, '')
+        if sep in ts:
+            ts = ts.replace(sep, '')
     ts = ts.ljust(17, '0')
     return '%s%s%s %s:%s:%s.%s' % (ts[:4], ts[4:6], ts[6:8], ts[8:10],
                                    ts[10:12], ts[12:14], ts[14:17])
@@ -350,3 +350,42 @@ def _split_timestamp(timestamp):
     secs = int(timestamp[15:17])
     millis = int(timestamp[18:21])
     return years, mons, days, hours, mins, secs, millis
+
+
+class TimestampCache(object):
+
+    def __init__(self):
+        self._previous_secs = None
+        self._previous_separators = None
+        self._previous_timestamp = None
+
+    def get_timestamp(self, daysep='', daytimesep=' ', timesep=':', millissep='.'):
+        epoch = self._get_epoch()
+        secs, millis = _float_secs_to_secs_and_millis(epoch)
+        if self._use_cache(secs, daysep, daytimesep, timesep):
+            return self._cached_timestamp(millis, millissep)
+        timestamp = format_time(epoch, daysep, daytimesep, timesep, millissep)
+        self._cache_timestamp(secs, timestamp, daysep, daytimesep, timesep, millissep)
+        return timestamp
+
+    # Seam for mocking
+    def _get_epoch(self):
+        return time.time()
+
+    def _use_cache(self, secs, *separators):
+        return self._previous_timestamp \
+            and self._previous_secs == secs \
+            and self._previous_separators == separators
+
+    def _cached_timestamp(self, millis, millissep):
+        if millissep:
+            return '%s%s%03d' % (self._previous_timestamp, millissep, millis)
+        return self._previous_timestamp
+
+    def _cache_timestamp(self, secs, timestamp, daysep, daytimesep, timesep, millissep):
+        self._previous_secs = secs
+        self._previous_separators = (daysep, daytimesep, timesep)
+        self._previous_timestamp = timestamp[:-4] if millissep else timestamp
+
+
+TIMESTAMP_CACHE = TimestampCache()

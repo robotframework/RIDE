@@ -21,6 +21,7 @@ from .rowsplitter import RowSplitter
 
 class _DataFileFormatter(object):
     _want_names_on_first_content_row = False
+    _consecutive_whitespace = re.compile('\s{2,}')
 
     def __init__(self, column_count):
         self._splitter = RowSplitter(column_count)
@@ -31,7 +32,8 @@ class _DataFileFormatter(object):
         return self._format_row([], table)
 
     def format_header(self, table):
-        return self._format_row(self._header_for(table))
+        header = self._format_row(table.header)
+        return self._format_header(header, table)
 
     def format_table(self, table):
         rows = self._extractor.rows_from_table(table)
@@ -53,30 +55,33 @@ class _DataFileFormatter(object):
         return self._is_indented_table(table) and bool(table.header[1:])
 
     def _is_indented_table(self, table):
-        return bool(table is not None and table.type in ['test case', 'keyword'])
+        return table is not None and table.type in ['test case', 'keyword']
 
     def _escape_consecutive_whitespace(self, row):
-        return [re.sub('\s\s+(?=[^\s])',
-            lambda match: '\\'.join(match.group(0)), item.replace('\n', ' ')) for item in row]
+        return [self._consecutive_whitespace.sub(
+                lambda match: '\\'.join(match.group(0)), item.replace('\n', ' '))
+                for item in row]
 
     def _format_row(self, row, table=None):
         raise NotImplementedError
 
-    def _header_for(self, table):
+    def _format_header(self, header, table):
         raise NotImplementedError
 
 
 class TsvFormatter(_DataFileFormatter):
 
-    def _header_for(self, table):
-        return ['*%s*' % cell for cell in table.header]
+    def _format_header(self, header, table):
+        return [self._format_header_cell(cell) for cell in header]
+
+    def _format_header_cell(self, cell):
+        return '*%s*' % cell if cell else ''
 
     def _format_row(self, row, table=None):
         return self._pad(self._escape(row))
 
     def _escape(self, row):
-        return self._escape_consecutive_whitespace(
-            self._escape_tabs(row))
+        return self._escape_consecutive_whitespace(self._escape_tabs(row))
 
     def _escape_tabs(self, row):
         return [c.replace('\t', '\\t') for c in row]
@@ -104,37 +109,36 @@ class TxtFormatter(_DataFileFormatter):
             return ColumnAligner(self._test_or_keyword_name_width, table)
         return None
 
-    def _header_for(self, table):
-        header = ['*** %s ***' % table.header[0]] + table.header[1:]
+    def _format_header(self, header, table):
+        header = ['*** %s ***' % header[0]] + header[1:]
         aligner = self._aligner_for(table)
         if aligner:
             return aligner.align_row(header)
         return header
 
     def _escape(self, row):
-        return self._escape_consecutive_whitespace(
-            self._escape_empty_cells(row))
-
-    def _escape_empty_cells(self, row):
         if not row:
             return row
-        return [row[0]] + [c if c else '\\' for c in row[1:]]
+        return self._escape_cells(self._escape_consecutive_whitespace(row))
+
+    def _escape_cells(self, row):
+        return [row[0]] + [self._escape_empty(cell) for cell in row[1:]]
+
+    def _escape_empty(self, cell):
+        return cell or '\\'
 
 
 class PipeFormatter(TxtFormatter):
 
-    def _escape(self, row):
-        row = self._format_empty_cells(row)
-        return self._escape_consecutive_whitespace(self._escape_pipes(row))
+    def _escape_cells(self, row):
+        return [self._escape_empty(self._escape_pipes(cell)) for cell in row]
 
-    def _format_empty_cells(self, row):
-        return ['  ' if not cell else cell for cell in row]
+    def _escape_empty(self, cell):
+        return cell or '  '
 
-    def _escape_pipes(self, row):
-        return [self._escape_pipes_from_cell(cell) for cell in row]
-
-    def _escape_pipes_from_cell(self, cell):
-        cell = cell.replace(' | ', ' \\| ')
+    def _escape_pipes(self, cell):
+        if ' | ' in cell:
+            cell = cell.replace(' | ', ' \\| ')
         if cell.startswith('| '):
             cell = '\\' + cell
         if cell.endswith(' |'):

@@ -650,8 +650,8 @@ class _Verify:
         the one in Java. See the following documents for more details about
         regular expressions in general and Python implementation in particular.
 
-        * http://docs.python.org/lib/module-re.html
-        * http://www.amk.ca/python/howto/regex/
+        | http://docs.python.org/lib/module-re.html
+        | http://www.amk.ca/python/howto/regex/
 
         Things to note about the regexp syntax in Robot Framework test data:
 
@@ -1033,6 +1033,8 @@ class _RunKeyword:
         can be a variable and thus set dynamically, e.g. from a return value of
         another keyword or from the command line.
         """
+        if not isinstance(name, basestring):
+            raise RuntimeError('Keyword name must be a string.')
         kw = Keyword(name, list(args))
         return kw.run(self._execution_context)
 

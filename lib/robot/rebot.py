@@ -81,6 +81,9 @@ Options
                           not run even if they are included with --include.
                           Tags are excluded using the rules explained in
                           --include.
+    --processemptysuite   Processes output also if the top level test suite is
+                          empty. Useful e.g. with --include/--exclude when it
+                          is not an error that no test matches the condition.
  -c --critical tag *      Tests having given tag are considered critical. If no
                           critical tags are set, all tags are critical. Tags
                           can be given as a pattern like e.g. with --test.
@@ -120,7 +123,11 @@ Options
                           Examples: --reportbackground green:yellow:red
                                     --reportbackground #00E:#E00
  -L --loglevel level      Threshold for selecting messages. Available levels:
-                          TRACE (default), DEBUG, INFO, WARN, NONE (no msgs)
+                          TRACE (default), DEBUG, INFO, WARN, NONE (no msgs).
+                          Use syntax `LOGLEVEL:DEFAULT` to define the default
+                          visible log level in log files.
+                          Examples: --loglevel DEBUG
+                                    --loglevel DEBUG:INFO
     --suitestatlevel level  How many levels to show in `Statistics by Suite`
                           in log and report. By default all suite levels are
                           shown. Example:  --suitestatlevel 3
@@ -251,8 +258,10 @@ $ jython path/robot/rebot.py -N Project_X -l none -r x.html output.xml
 
 import sys
 
-if 'robot' not in sys.modules:
-    import pythonpathsetter  # running robot/rebot.py as a script
+# Allows running as a script. __name__ check needed with multiprocessing:
+# http://code.google.com/p/robotframework/issues/detail?id=1137
+if 'robot' not in sys.modules and __name__ == '__main__':
+    import pythonpathsetter
 
 from robot.conf import RebotSettings
 from robot.errors import DataError
@@ -295,8 +304,13 @@ def rebot(*datasources, **options):
     rebot from the command line. Options are given as keywords arguments and
     their names are same as long command line options without hyphens.
 
+    Options that can be given on the command line multiple times can be
+    passed as lists like `include=['tag1', 'tag2']`. Starting from 2.7.2,
+    when such option is used only once, it can be given also as a single string
+    like `include='tag'`.
+
     To capture stdout and/or stderr streams, pass open file objects in as
-    keyword arguments `stdout` and `stderr`, respectively.
+    special keyword arguments `stdout` and `stderr`, respectively.
 
     A return code is returned similarly as when running on the command line.
 

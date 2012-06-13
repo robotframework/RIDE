@@ -51,7 +51,7 @@ table.messages {
     font-family: monospace;
     font-size: 1.2em;
 }
-table.messages td, table.errors.td {
+table.messages td, table.errors td {
     vertical-align: top;
 }
 table.messages td.time {
@@ -65,8 +65,13 @@ td.level {
     width: 5em;
     text-align: center;
 }
-td.msg {
-    white-space: pre-wrap;
+/* Message tables - these MUST NOT be combined together because otherwise
+   dynamically altering them based on visible log level is not possible. */
+.trace_message {
+    display: table;
+}
+.debug_message {
+    display: table;
 }
 /* Metadata */
 table.metadata th {
@@ -74,11 +79,10 @@ table.metadata th {
     text-align: left;
     vertical-align: top;
     white-space: nowrap;
+    padding-right: 0.5em;
 }
 table.metadata td {
-    padding-left: 0.5em;
     vertical-align: top;
-    white-space: pre-wrap;
 }
 div.keyword table.metadata {
     font-size: 0.9em;

@@ -9,9 +9,11 @@
 <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAEAAAAAAAAAAAAAAAJEBoACtnfgA5cYYAERsiAEx2lAAbKkQAcazBACZCVwAcM1cAK0ucAAMDBQAnQncASG+FABkoVQAyWmgA6f8SgvH/Ij99+GLyIinyJfn/Yi//KSLzUy9iZogpIld3/4JVVTkid7vyUjNVNVJEAGOZ6Z7pXwAABpmZkRiLAAAGiJZpmGAAAEEt3SXdxAAATC7o/u3EAAC8MRZpjasAAAY1VVVTYAAABKqqqqpAAAAADKqq4AAAAAAAv4sAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMADAADgAwAA4AcAAOAHAADgBwAAwAcAAOAHAADgDwAA8A8AAPg/AAD+fwAA">
 <link rel="stylesheet" type="text/css" href="libdoc.css" media="all">
 <link rel="stylesheet" type="text/css" href="print.css" media="print">
+<link rel="stylesheet" type="text/css" href="../common/js_disabled.css" media="all">
+<link rel="stylesheet" type="text/css" href="../common/doc_formatting.css" media="all">
 <script type="text/javascript" src="../lib/jquery.min.js"></script>
 <script type="text/javascript" src="../lib/jquery.tmpl.min.js"></script>
-<!-- JS MODEL --><script type="text/javascript" src="../testdata/libdocdata.js"></script>
+<!-- JS MODEL --><script type="text/javascript" src="../testdata/libdoc.js"></script>
 <title></title>
 </head>
 <body>
@@ -31,7 +33,7 @@
 </script>
 
 <script type="text/javascript">
-    $(document).ready(function(){
+    $(document).ready(function() {
         parseTemplates();
         document.title = libdoc.name;
         $.tmpl('start', libdoc).appendTo($('body'));
@@ -41,12 +43,18 @@
         $.tmpl('shortcuts', libdoc).appendTo($('body'));
         $.tmpl('keywords', libdoc).appendTo($('body'));
         $.tmpl('footer', libdoc).appendTo($('body'));
+        scrollToHash();
     });
 
     function parseTemplates() {
         $('script[type="text/x-jquery-tmpl"]').map(function (idx, elem) {
             $.template(elem.id, elem.text);
         });
+    }
+
+    function scrollToHash() {
+        if (window.location.hash)
+            window.location.hash = window.location.hash.substring(1);
     }
 </script>
 
@@ -58,12 +66,12 @@
     <tr><th>Named arguments:</th><td>{{if named_args}}supported{{else}}not supported{{/if}}</td></tr>
     </table>
     <h2 id="introduction">Introduction</h2>
-    <div class="libdoc">{{html doc}}</div>
+    <div class="doc">{{html doc}}</div>
 </script>
 
 <script type="text/x-jquery-tmpl" id="inits">
     <h2 id="importing">Importing</h2>
-    <table border="1" class="keywords libdoc">
+    <table border="1" class="keywords">
         <tr>
             <th class="arg">Arguments</th>
             <th class="doc">Documentation</th>
@@ -89,7 +97,7 @@
 
 <script type="text/x-jquery-tmpl" id="keywords">
     <h2>Keywords</h2>
-    <table border="1" class="keywords libdoc">
+    <table border="1" class="keywords">
         <tr>
             <th class="kw">Keyword</th>
             <th class="arg">Arguments</th>

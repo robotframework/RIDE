@@ -13,6 +13,9 @@ a:link, a:visited {
     text-decoration: none;
     color: blue;
 }
+a img {
+    border: 1px solid blue !important;
+}
 a:hover, a:active {
     text-decoration: underline;
     color: purple;
@@ -20,6 +23,9 @@ a:hover, a:active {
 .parent_name {
     font-size: 0.7em;
     letter-spacing: -0.07em;
+}
+.message {
+    white-space: pre-wrap;
 }
 /* Headers */
 #header {
@@ -41,61 +47,46 @@ h1 {
 }
 /* Status text colors -- !important allows using them in links */
 .error, .fail {
-    color: red !important;;
+    color: red !important;
     font-weight: bold;
 }
 .pass {
-    color: #009900 !important;;
+    color: #009900 !important;
 }
 .warn {
-    color: #FFCC00 !important;;
+    color: #FFCC00 !important;
     font-weight: bold;
 }
 .not_run {
     color: #444444 !important;
 }
-/* JavaScript disabled box */
-#javascript_disabled {
-    width: 600px;
-    margin: 100px auto 0 auto;
-    padding: 20px;
-    color: #2A2A2E;
-    border: 1px solid #9A9A9E;
-    background: #FAFAFF;
-}
-#javascript_disabled h1 {
-    width: 100%;
-}
-#javascript_disabled ul {
-    font-size: 1.2em;
-}
-#javascript_disabled li {
-    margin: 0.5em 0;
-}
-#javascript_disabled b {
-    font-style: italic;
-}
-/* Report/log link */
-#report_or_log_link {
+/* Top right header */
+#top_right_header {
     position: fixed;
-    z-index: 1000;
     top: 0;
     right: 0;
-    background: black;
-    border-radius: 0 0 0 4px;
-    width: 8em;
+    z-index: 1000;
+    width: 12em;
+    font-weight: bold;
     text-align: center;
 }
 #report_or_log_link a {
     display: block;
-    width: 100%;
+    background: black;
     color: white;
     text-decoration: none;
-    font-weight: bold;
     letter-spacing: 0.1em;
+    padding: 0.3em 0;
+    border-bottom-left-radius: 4px;
 }
 #report_or_log_link a:hover {
     color: yellow;
+}
+#log_level_selector {
+    padding: 0.3em 0;
+    font-size: 0.9em;
+    border-bottom-left-radius: 4px;
+    background: lightgray;
 }
 /* Statistics table */
 table.statistics {
@@ -156,32 +147,4 @@ table.statistics th {
     position: relative;
     float: left;
     height: 100%;
-}
-/* HTML in users' suite documentation etc. */
-table.robotdoc, pre.robotdoc, hr.robotdoc {
-    margin: 0.5em 1em;
-}
-table.robotdoc {
-    border: 1px solid gray;
-    background: transparent;
-    border-collapse: collapse;
-    empty-cells: show;
-    font-size: 0.85em;
-}
-table.robotdoc td {
-    border: 1px solid gray;
-    padding: 0.1em 0.3em;
-    height: 1.2em;
-}
-pre.robotdoc {
-    font-size: 1.1em;
-    background: #F4F4FF;
-}
-img.robotdoc {
-    border: 1px solid gray;
-}
-hr.robotdoc {
-    background: gray;
-    height: 1px;
-    border: 0;
 }

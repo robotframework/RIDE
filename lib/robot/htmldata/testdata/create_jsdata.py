@@ -3,7 +3,6 @@
 from os.path import abspath, dirname, normpath, join
 import os
 import sys
-import codecs
 
 BASEDIR = dirname(abspath(__file__))
 LOG = normpath(join(BASEDIR, '..', 'log.html'))
@@ -21,7 +20,7 @@ from robot.reporting.jswriter import JsResultWriter
 from robot.utils import utf8open
 
 def run_robot(testdata, outxml):
-    robot.run(testdata, log='NONE', report='NONE', output=outxml)
+    robot.run(testdata, loglevel='DEBUG', log='NONE', report='NONE', output=outxml)
 
 
 def create_jsdata(outxml, target):
@@ -36,6 +35,8 @@ def create_jsdata(outxml, target):
     })
     result = Results(outxml, settings).js_result
     config = {'logURL': 'log.html',
+              'minLevel': 'DEBUG',
+              'defaultLevel': 'DEBUG',
               'reportURL': 'report.html',
               'background': {'fail': 'DeepPink'}}
     with utf8open(target, 'w') as output:
