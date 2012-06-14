@@ -696,6 +696,9 @@ class ResourceFileController(_FileSystemElement, _DataController):
         self._chief_controller.remove_resource(self)
         RideDataFileRemoved(path=self.filename, datafile=self).publish()
 
+    def is_used(self):
+        return bool(list(self.get_where_used()))
+
     def get_where_used(self):
         for imp in self._all_imports():
             if imp.get_imported_controller() is self:
