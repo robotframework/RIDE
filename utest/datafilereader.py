@@ -12,6 +12,7 @@ def _makepath(*elements):
     elements = [DATAPATH]+list(elements)
     return os.path.normpath(os.path.join(*elements)).replace('\\', '/')
 
+ALL_FILES_PATH = _makepath('all_files')
 RESOURCE_PATH = _makepath(RESOURCES_DIR, RESOURCES_HTML)
 RESOURCE_LIB_PATH = _makepath(RESOURCES_DIR, 'resource_lib_imports.txt')
 RESOURCE_WITH_VARS = _makepath(RESOURCES_DIR, 'resource_with_variables.txt')
