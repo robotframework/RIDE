@@ -14,6 +14,7 @@
 
 import wx
 from robotide.action.actioninfo import ActionInfo
+from robotide.controller.filecontrollers import ResourceFileController
 from robotide.publish.messages import RideTestRunning, RideTestPassed, RideTestFailed, RideTestExecutionStarted
 from robotide.ui.images import RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, FAILED_IMAGE_INDEX, ROBOT_IMAGE_INDEX
 from robotide.ui.treenodehandlers import TestCaseHandler
@@ -221,6 +222,9 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         handler_class = action_handler_class(controller)
         node = self._create_node(parent_node, controller.display_name, self._images[controller],
                                  index, with_checkbox=(handler_class == TestCaseHandler and self._checkboxes_for_tests))
+        if controller.__class__ == ResourceFileController:
+            if not controller.is_used():
+                self.SetItemTextColour(node, wx.ColorRGB(0xA9A9A9))
         self.SetPyData(node, handler_class(controller, self, node, self._controller.settings))
         return node
 
