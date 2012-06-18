@@ -181,14 +181,6 @@ class TestDataHandler(_ActionHandler):
 
     is_draggable = False
     is_test_suite = True
-    _actions = [_ActionHandler._label_add_suite,
-                _ActionHandler._label_new_user_keyword,
-                _ActionHandler._label_new_scalar,
-                _ActionHandler._label_new_list_variable, '---',
-                _ActionHandler._label_change_format, '---',
-                _ActionHandler._label_select_all,
-                _ActionHandler._label_deselect_all,
-                _ActionHandler._label_select_failed_tests]
 
     @property
     def tests(self):
@@ -258,7 +250,15 @@ class TestDataHandler(_ActionHandler):
 
 
 class TestDataDirectoryHandler(TestDataHandler):
-    _actions = TestDataHandler._actions[:] + [_ActionHandler._label_new_resource]
+    _actions = [_ActionHandler._label_add_suite,
+            _ActionHandler._label_new_resource, '---',
+            _ActionHandler._label_new_user_keyword,
+            _ActionHandler._label_new_scalar,
+            _ActionHandler._label_new_list_variable, '---',
+            _ActionHandler._label_change_format, '---',
+            _ActionHandler._label_select_all,
+            _ActionHandler._label_deselect_all,
+            _ActionHandler._label_select_failed_tests]
 
     def OnNewSuite(self, event):
         AddSuiteDialog(self.controller).execute()
