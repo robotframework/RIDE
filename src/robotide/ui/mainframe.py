@@ -35,17 +35,17 @@ from .progress import LoadProgressObserver
 
 _menudata = """
 [File]
+!&New Project | Create a new top level suite | Ctrlcmd-N
+!N&ew Resource | Create New Resource File | Ctrlcmd-Shift-N
+---
 !&Open | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN
 !Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN
 !Open &Resource | Open a resource file | Ctrlcmd-R
 ---
-!&Reload Directory | Reload directory | Ctrlcmd-Shift-R | CUSTOM_REFRESH_ALL
----
-!&New Project | Create a new top level suite | Ctrlcmd-N
-!N&ew Resource | Create New Resource File | Ctrlcmd-Shift-N
----
 &Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE
 !Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS
+---
+!&Reload Directory | Reload directory | Ctrlcmd-Shift-R | CUSTOM_REFRESH_ALL
 ---
 !E&xit | Exit RIDE | Ctrlcmd-Q
 
