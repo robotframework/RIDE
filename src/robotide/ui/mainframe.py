@@ -37,7 +37,7 @@ _menudata = """
 [File]
 !&New Project | Create a new top level suite | Ctrlcmd-N
 ---
-!&Open | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN
+!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN
 !Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN
 ---
 &Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE
@@ -163,7 +163,7 @@ class RideFrame(wx.Frame, RideEventHandler):
     def OnNewResource(self, event):
         NewExternalResourceDialog(self._controller).execute()
 
-    def OnOpen(self, event):
+    def OnOpenTestSuite(self, event):
         self._check_unsaved_modifications()
         path = self._get_path()
         if path:
