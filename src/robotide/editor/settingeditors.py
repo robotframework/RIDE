@@ -18,7 +18,9 @@ from robotide import context
 from robotide.controller.commands import (UpdateVariable, UpdateDocumentation,
         SetValues, AddLibrary, AddResource, AddVariablesFileImport,
         ClearSetting)
+from robotide.editor.listeditor import ListEditorBase
 from robotide.publish.messages import RideImportSetting
+from robotide.utils import overrides
 from robotide.widgets import ButtonWithHandler, Label, HtmlWindow
 from robotide.publish import PUBLISHER
 from robotide import utils
@@ -406,7 +408,15 @@ class VariablesListEditor(_AbstractListEditor):
 
 class ImportSettingListEditor(_AbstractListEditor):
     _titles = ['Import', 'Name / Path', 'Arguments', 'Comment']
-    _buttons = ['Add Library', 'Add Resource', 'Add Variables']
+    _buttons = ['Library', 'Resource', 'Variables']
+
+    @overrides(ListEditorBase)
+    def _create_buttons(self):
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(Label(self, label='Add Import', size=wx.Size(120, 20), style=wx.ALIGN_CENTER))
+        for label in self._buttons:
+            sizer.Add(ButtonWithHandler(self, label, width=120), 0, wx.ALL, 1)
+        return sizer
 
     def OnLeftClick(self, event):
         if not self.is_selected:
@@ -429,15 +439,15 @@ class ImportSettingListEditor(_AbstractListEditor):
                                         setting,
                                         on_empty=self._delete_selected)
 
-    def OnAddLibrary(self, event):
+    def OnLibrary(self, event):
         self._show_import_editor_dialog(LibraryDialog,
                                         lambda v, c: self._controller.execute(AddLibrary(v, c)))
 
-    def OnAddResource(self, event):
+    def OnResource(self, event):
         self._show_import_editor_dialog(ResourceDialog,
                                         lambda v, c: self._controller.execute(AddResource(v, c)))
 
-    def OnAddVariables(self, event):
+    def OnVariables(self, event):
         self._show_import_editor_dialog(VariablesDialog,
                                         lambda v, c: self._controller.execute(AddVariablesFileImport(v, c)))
 
