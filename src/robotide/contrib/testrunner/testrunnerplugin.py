@@ -862,11 +862,11 @@ class StreamReaderThread(object):
 
     def pop(self):
         result = ""
-        try:
-            while True:
+        for _ in xrange(self._queue.qsize()):
+            try:
                 result += self._queue.get_nowait()
-        except Empty:
-            pass
+            except Empty:
+                pass
         return result
 
 
