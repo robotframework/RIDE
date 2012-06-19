@@ -311,10 +311,11 @@ class TestCaseFileHandler(_CanBeRenamed, TestDataHandler):
                 _ActionHandler._label_rename,
                 _ActionHandler._label_change_format,
                 _ActionHandler._label_sort_keywords,
+                'Delete\tCtrl-Shift-D',
+                '---',
                 _ActionHandler._label_select_all,
                 _ActionHandler._label_deselect_all,
-                _ActionHandler._label_select_failed_tests,
-                'Delete\tCtrl-Shift-D']
+                _ActionHandler._label_select_failed_tests]
 
     def OnNewTestCase(self, event):
         dlg = TestCaseNameDialog(self.controller)
