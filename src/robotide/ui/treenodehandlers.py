@@ -423,12 +423,8 @@ class ResourceRootHandler(_ActionHandler):
     can_be_rendered = is_draggable = is_user_keyword = is_test_suite = False
     rename = lambda self, new_name: False
     accepts_drag = lambda self, dragged: False
-    _actions = [_ActionHandler._label_new_resource]
+    _actions = []
 
     @property
     def item(self):
         return None
-
-    def OnNewResource(self, event):
-        NewExternalResourceDialog(self.controller).execute()
-        NewExternalResourceDialog(self.controller).execute()
