@@ -28,7 +28,8 @@ linux it's /tmp).
 You can safely manually remove these directories, except for the one
 being used for a currently running test.
 '''
-
+import subprocess
+from Queue import Queue, Empty
 import tempfile
 import datetime
 import time
@@ -48,6 +49,7 @@ from robotide.publish.messages import (RideDataFileSet, RideDataFileRemoved, Rid
                                        RideTestSelectedForRunningChanged, RideTestRunning, RideTestPassed,
                                        RideTestFailed, RideTestExecutionStarted)
 
+ON_POSIX = 'posix' in sys.builtin_module_names
 
 try:
     import cPickle as pickle
@@ -58,10 +60,9 @@ import wx
 import wx.stc
 from wx.lib.embeddedimage import PyEmbeddedImage
 
-from robot.parsing.model import TestCase
 from robotide.pluginapi import Plugin, ActionInfo
-from robotide.publish import (RideTestCaseAdded, RideOpenSuite, RideSuiteAdded,
-                              RideItemNameChanged, RideTestCaseRemoved)
+from robotide.publish import RideTestCaseAdded, RideOpenSuite, RideSuiteAdded, \
+                              RideItemNameChanged, RideTestCaseRemoved
 from robotide.contrib.testrunner import runprofiles
 from robotide.widgets import Label
 
@@ -220,26 +221,11 @@ class TestRunnerPlugin(Plugin):
     def OnClose(self, evt):
         '''Shut down the running services and processes'''
         if self._process:
-            self._kill_process()
+            self._process.kill(force=True)
         if self._process_timer:
             self._process_timer.Stop()
         if self._server:
             self._server.shutdown()
-
-    def _kill_process(self):
-        if self._pid_to_kill:
-            try:
-                if os.name == 'nt' and sys.version_info < (2,7):
-                    import ctypes
-                    kernel32 = ctypes.windll.kernel32
-                    handle = kernel32.OpenProcess(1, 0, self._pid_to_kill)
-                    kernel32.TerminateProcess(handle, 0)
-                else:
-                    os.kill(self._pid_to_kill, signal.SIGINT)
-                self._output("process %s killed\n" % self._pid_to_kill)
-                self._pid_to_kill = None
-            except OSError:
-                pass
 
     def OnAutoSaveCheckbox(self, evt):
         '''Called when the user clicks on the "Auto Save" checkbox'''
@@ -253,7 +239,7 @@ class TestRunnerPlugin(Plugin):
         command line.
         '''
         if self._process:
-            self._kill_process()
+            self._output("process %s killed\n" % self._process.kill())
             self._set_stopped()
             self._progress_bar.Stop()
 
@@ -266,12 +252,9 @@ class TestRunnerPlugin(Plugin):
         self._output("working directory: %s\n" % os.getcwd())
         self._output("command: %s\n" % self._format_command(command))
         try:
-            self._process = wx.Process(self.panel)
-            self._process.Redirect()
-            self._pid_to_kill = wx.Execute(self._format_command(command), wx.EXEC_ASYNC, self._process)
-            if self._pid_to_kill == 0:
-                self._set_stopped()
-                return
+            command = self._format_command(command)
+            self._process = Process()
+            self._process.run_command(command)
             self._process_timer.Start(41) # roughly 24fps
             self._set_running()
             self._progress_bar.Start()
@@ -325,19 +308,11 @@ class TestRunnerPlugin(Plugin):
         self.SetProfile(self.profile)
 
     def OnProcessEnded(self, evt):
-        stream = self._process.GetInputStream()
-        while stream.CanRead():
-            text = stream.read()
-            self._output(text)
-
+        output, errors = self._process.get_output(), self._process.get_errors()
+        self._output(output)
         self._read_report_and_log_from_stdout_if_needed()
-
-        stream = self._process.GetErrorStream()
-        while stream.CanRead():
-            text = stream.read()
-            if len(text) > 0:
-                self._output("unexpected error: " + text)
-
+        if len(errors) > 0:
+            self._output("unexpected error: " + errors)
         self._progress_bar.Stop()
         if self._process_timer:
             self._process_timer.Stop()
@@ -345,7 +320,6 @@ class TestRunnerPlugin(Plugin):
         now = datetime.datetime.now()
         self._output("\ntest finished %s" % now.strftime("%c"))
         self._set_stopped()
-        self._process.Destroy()
         self._process = None
 
     def _read_report_and_log_from_stdout_if_needed(self):
@@ -364,29 +338,22 @@ class TestRunnerPlugin(Plugin):
         return res.group(1) if res and os.path.isfile(res.group(1)) else None
 
     def OnTimer(self, evt):
-        '''Get process output'''
-        if self._process is not None:
-            stdout = self._process.GetInputStream()
-            stderr = self._process.GetErrorStream()
-
-            text_buffer = ""
-            while self._process.IsInputAvailable():
-                text_buffer += stdout.read()
-            if len(text_buffer) > 0:
-                self._output(text_buffer, source="stdout")
-
-            text_buffer = ""
-            while self._process.IsErrorAvailable():
-                text_buffer += stderr.read()
-            if len(text_buffer) > 0:
-                if self.GetLastOutputChar() != "\n":
-                    # Robot prints partial lines to stdout to make the
-                    # interactive experience better. It all goes to
-                    # heck in a handbasket if something shows up on
-                    # stderr. So, to fix that we'll add a newline if
-                    # the previous character isn't a newline.
-                    self._output("\n", source="stdout")
-                self._output(text_buffer, source="stderr")
+        """Get process output"""
+        if not self._process.is_alive():
+            self.OnProcessEnded(None)
+            return
+        out_buffer, err_buffer = self._process.get_output(), self._process.get_errors()
+        if len(out_buffer) > 0:
+            self._output(out_buffer, source="stdout")
+        if len(err_buffer) > 0:
+            if self.GetLastOutputChar() != "\n":
+                # Robot prints partial lines to stdout to make the
+                # interactive experience better. It all goes to
+                # heck in a handbasket if something shows up on
+                # stderr. So, to fix that we'll add a newline if
+                # the previous character isn't a newline.
+                self._output("\n", source="stdout")
+            self._output(err_buffer, source="stderr")
 
     def GetLastOutputChar(self):
         '''Return the last character in the output window'''
@@ -835,6 +802,73 @@ class RideListenerHandler(SocketServer.StreamRequestHandler):
             except (EOFError, IOError):
                 # I should log this...
                 break
+
+
+class Process(object):
+
+    def __init__(self):
+        self._process = None
+        self._error_stream = None
+        self._output_stream = None
+
+    def run_command(self, command):
+        self._process = subprocess.Popen(command, bufsize=0, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        self._output_stream = StreamReaderThread(self._process.stdout)
+        self._error_stream = StreamReaderThread(self._process.stderr)
+        self._output_stream.run()
+        self._error_stream.run()
+
+    def get_output(self):
+        return self._output_stream.pop()
+
+    def get_errors(self):
+        return self._error_stream.pop()
+
+    def is_alive(self):
+        return self._process.poll() is None
+
+    def kill(self, force=False):
+        if force:
+            self._process.kill()
+        pid = self._process.pid
+        if pid:
+            try:
+                if os.name == 'nt' and sys.version_info < (2,7):
+                    import ctypes
+                    kernel32 = ctypes.windll.kernel32
+                    handle = kernel32.OpenProcess(1, 0, pid)
+                    kernel32.TerminateProcess(handle, 0)
+                else:
+                    os.kill(pid, signal.SIGINT)
+            except OSError:
+                pass
+        return pid
+
+class StreamReaderThread(object):
+
+    def __init__(self, stream):
+        self._queue = Queue()
+        self._thread = None
+        self._stream = stream
+
+    def run(self):
+        self._thread = threading.Thread(target=self._enqueue_output, args=(self._stream, self._queue))
+        self._thread.daemon = True
+        self._thread.start()
+
+    def _enqueue_output(self, out, queue):
+        for line in iter(out.readline, b''):
+            self._queue.put(line)
+
+    def pop(self):
+        result = ""
+        try:
+            while True:
+                result += self._queue.get_nowait()
+        except Empty:
+            pass
+        return result
+
 
 # stole this off the internet. Nifty.
 def secondsToString(t):
