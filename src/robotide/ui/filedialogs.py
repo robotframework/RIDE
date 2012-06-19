@@ -239,3 +239,22 @@ class InitFileFormatDialog(_FileFormatDialog):
 
     def _execute(self):
         self._controller.execute(SetFileFormat(self._get_format()))
+
+
+class AddResourceDialog(wx.FileDialog):
+
+    def __init__(self, window, controller):
+        wildcard = ('All files|*.*|Robot data (*.html)|*.*htm*|'
+                'Robot data (*.tsv)|*.tsv|Robot data (*txt)|*.txt')
+        self._controller = controller
+        wx.FileDialog.__init__(self, window, message='Open', wildcard=wildcard,
+            defaultDir=self._controller.default_dir, style=wx.OPEN)
+
+    def execute(self):
+        if self.ShowModal() == wx.ID_OK:
+            path = self.GetPath()
+            self._controller.update_default_dir(path)
+        else:
+            path = None
+        self.Destroy()
+        return path

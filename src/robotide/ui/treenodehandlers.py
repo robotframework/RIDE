@@ -25,9 +25,10 @@ from robotide.controller.filecontrollers import (TestDataDirectoryController,
 from robotide.editor.editordialogs import (TestCaseNameDialog,
     UserKeywordNameDialog, ScalarVariableDialog, ListVariableDialog,
     CopyUserKeywordDialog)
+from robotide.ui.progress import LoadProgressObserver
 from robotide.usages.UsageRunner import Usages, ResourceFileUsages
 from .filedialogs import (AddSuiteDialog, ChangeFormatDialog,
-    NewExternalResourceDialog, NewResourceDialog)
+    NewExternalResourceDialog, NewResourceDialog, AddResourceDialog)
 from robotide.widgets import PopupMenuItems
 from .progress import RenameProgressObserver
 from .resourcedialogs import ResourceRenameDialog, ResourceDeleteDialog
@@ -56,6 +57,7 @@ class _ActionHandler(wx.Window):
     _label_change_format = 'Change Format'
     _label_copy_macro = 'Copy\tCtrl-Shift-C'
     _label_rename = 'Rename\tF2'
+    _label_add_resource = 'Add Resource'
     _label_new_resource = 'New Resource'
     _label_find_usages = 'Find Usages'
     _label_select_all = 'Select All Tests'
@@ -423,8 +425,13 @@ class ResourceRootHandler(_ActionHandler):
     can_be_rendered = is_draggable = is_user_keyword = is_test_suite = False
     rename = lambda self, new_name: False
     accepts_drag = lambda self, dragged: False
-    _actions = []
+    _actions = [_ActionHandler._label_add_resource]
 
     @property
     def item(self):
         return None
+
+    def OnAddResource(self, event):
+        path = AddResourceDialog(self, self.controller).execute()
+        if path:
+            self.controller.load_resource(path, LoadProgressObserver(self))

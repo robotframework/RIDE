@@ -39,7 +39,6 @@ _menudata = """
 ---
 !&Open | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN
 !Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN
-!Open &Resource | Open a resource file | Ctrlcmd-R
 ---
 &Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE
 !Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS
@@ -178,10 +177,6 @@ class RideFrame(wx.Frame, RideEventHandler):
             return ret == wx.YES
         return True
 
-    def OnOpenResource(self, event):
-        path = self._get_path()
-        if path:
-            self._controller.load_resource(path, LoadProgressObserver(self))
 
     def _get_path(self):
         wildcard = ('All files|*.*|Robot data (*.html)|*.*htm*|'
