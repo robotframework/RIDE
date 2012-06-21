@@ -1,6 +1,0 @@
-*** Settings ***
-Resource  used_resource.txt
-
-*** Test Case ***
-Some test
-  No Operation

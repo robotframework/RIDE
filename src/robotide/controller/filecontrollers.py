@@ -425,33 +425,42 @@ class TestDataDirectoryController(_DataController, DirectoryController):
 
     def _children(self, data):
         children = [DataController(child, self._chief_controller, self) for child in data.children]
-        if self._can_add_directory_resources(data):
-            self._add_directory_resources(children, data)
+        if self._can_add_directory_children(data):
+            self._add_directory_children(children, data.source, data.initfile)
         return children
 
-    def _can_add_directory_resources(self, data):
+    def _can_add_directory_children(self, data):
         return data.source and os.path.isdir(data.source) and self._namespace
 
-    def _add_directory_resources(self, children, data):
-        for filename in self._get_unknown_files_in_directory(children, data):
-            r = self._namespace.get_resource(filename, report_status=False)
-            if self._is_valid_resource(r):
-                children.append(self._resource_control(r))
+    def _add_directory_children(self, children, path, initfile):
+        for filename in self._get_unknown_files_in_directory(children, path, initfile):
+            if os.path.isdir(filename):
+                children.append(self._directory_controller(filename))
+            else:
+                r = self._namespace.get_resource(filename, report_status=False)
+                if self._is_valid_resource(r):
+                    children.append(self._resource_controller(r))
+
+    def _directory_controller(self, path):
+        dc = DirectoryController(path, chief_controller=self._chief_controller)
+        self._add_directory_children(dc.children, dc.source, None)
+        return dc
 
     def _is_valid_resource(self, resource):
         return resource and (resource.setting_table or resource.variable_table or resource.keyword_table)
 
-    def _resource_control(self, resource):
+    def _resource_controller(self, resource):
         resource_control =  self._resource_file_controller_factory.create(resource, chief_controller=self._chief_controller)
         resource_control.parent = self
         return resource_control
 
-    def _get_unknown_files_in_directory(self, children, data):
-        already_in_use = [c.source for c in children] + [self.data.initfile]
-        return [f for f in self._get_filenames_in_directory(data) if f not in already_in_use]
+    def _get_unknown_files_in_directory(self, children, path, initfile):
+        already_in_use = [c.filename for c in children] + [initfile]
+        already_in_use += [c.directory for c in children]
+        return [f for f in self._get_filenames_in_directory(path) if f not in already_in_use]
 
-    def _get_filenames_in_directory(self, data):
-        return [os.path.join(data.source, f) for f in os.listdir(data.source)]
+    def _get_filenames_in_directory(self, path):
+        return [os.path.join(path, f) for f in os.listdir(path)]
 
     def add_child(self, controller):
         self.children.append(controller)

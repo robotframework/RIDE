@@ -15,8 +15,18 @@ class TestAllFilesCanBeSeenCase(unittest.TestCase):
         chief = datafilereader.construct_chief_controller(datafilereader.ALL_FILES_PATH)
         all_files = chief.data
         self.assertEqual(all_files.name, 'All Files')
-        self.assertEqual(len(all_files.suites), 1)
-        self.assertEqual(set(c.name for c in all_files.children), set(['Used Resource', 'Unused Resource', 'Tests']))
+        self.assertEqual(len(all_files.suites), 2)
+        self._verify_names(all_files, 'Used Resource', 'Unused Resource', 'resource_dir', 'Suite Dir', 'Suite2 Dir')
+        resource_dir = self._get_child(all_files, 'resource_dir')
+        self._verify_names(resource_dir, 'Unused')
+        suite_dir = self._get_child(all_files, 'Suite Dir')
+        self._verify_names(suite_dir, 'Suite')
+
+    def _get_child(self, controller, name):
+        return [c for c in controller.children if c.name == name][0]
+
+    def _verify_names(self, controller, *names):
+        self.assertEqual(set(c.name for c in controller.children), set(names))
 
 
 if __name__ == '__main__':
