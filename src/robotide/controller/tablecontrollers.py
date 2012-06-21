@@ -355,7 +355,7 @@ class ImportSettingsController(_TableController, _WithListOperations):
         return self._resource_file_controller_factory
 
     def remove_import_data(self, imp):
-        self.delete(self._items.index(imp))
+        self.delete(self._items.data.index(imp))
 
     def delete(self, index):
         item = self[index]
