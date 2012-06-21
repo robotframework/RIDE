@@ -20,32 +20,26 @@ from robotide.usages.usagesdialog import ResourceImportListModel
 from robotide.widgets import Dialog, VirtualList, VerticalSizer, Label
 
 
-class _ConfirmationWithCheckbox(Dialog):
+class _UsageDialog(Dialog):
     _width = 650
     _height = 250
 
-    def __init__(self, controller):
-        Dialog.__init__(self, self._title, size=(self._width, self._height))
-        self._controller = controller
+    def __init__(self, usages, title, checkbox_label):
+        Dialog.__init__(self, title, size=(self._width, self._height))
         self._sizer = VerticalSizer()
-        self._create_controls()
+        self._create_controls(usages, checkbox_label)
         self._create_horizontal_line(self._sizer)
         self._create_buttons(self._sizer)
         self.SetSizer(self._sizer)
 
-    def _create_controls(self):
-        self._show_usages()
-        self._checkbox = wx.CheckBox(self, label=self._checkbox_label)
+    def _create_controls(self, usages, checkbox_label):
+        self._sizer.add_with_padding(Label(self, label="Usages:"))
+        model = ResourceImportListModel(usages)
+        self._sizer.add_expanding(VirtualList(self, model.headers, model))
+        self._add_usages_modifying_help(usages)
+        self._checkbox = wx.CheckBox(self, label=checkbox_label)
         self._checkbox.SetValue(True)
         self._sizer.add_with_padding(self._checkbox)
-
-    def _show_usages(self):
-        usages = list(self._controller.execute(FindResourceUsages()))
-        if usages:
-            self._sizer.add_with_padding(Label(self, label="Usages:"))
-            model = ResourceImportListModel(usages)
-            self._sizer.add_expanding(VirtualList(self, model.headers, model))
-            self._add_usages_modifying_help(usages)
 
     def _add_usages_modifying_help(self, usages):
         if any(u for u in usages if not u.can_be_renamed):
@@ -56,27 +50,39 @@ class _ConfirmationWithCheckbox(Dialog):
             help.SetForegroundColour('red')
             self._sizer.add_with_padding(help)
 
+    def show(self):
+        confirmed = self.ShowModal() == wx.ID_OK
+        return confirmed, self._checkbox.IsChecked()
 
-class ResourceRenameDialog(_ConfirmationWithCheckbox):
-    _title = 'Rename resource'
-    _checkbox_label = 'Also update resource imports'
 
+class ResourceRenameDialog(object):
     def __init__(self, controller):
-        _ConfirmationWithCheckbox.__init__(self, controller)
+        self._rename_confirmed = True
+        self._rename_usage = False
+        title = 'Rename resource'
+        checkbox_label = 'Also update resource imports'
 
-    def _execute(self):
-        return self._checkbox.IsChecked()
+        usages = list(controller.execute(FindResourceUsages()))
+        if usages:
+            self._rename_confirmed, self._rename_usage = _UsageDialog(usages, title, checkbox_label).show()
+
+    def execute(self):
+        return self._rename_confirmed and self._rename_usage
 
 
-class ResourceDeleteDialog(_ConfirmationWithCheckbox):
-    _title = 'Delete resource'
-    _checkbox_label = 'Also delete resource imports'
-
+class ResourceDeleteDialog(object):
     def __init__(self, controller):
-        _ConfirmationWithCheckbox.__init__(self, controller)
+        self._delete_confirmed = False
+        self._delete_usage = False
+        title = 'Delete resource'
+        checkbox_label = 'Also delete resource imports'
 
-    def _execute(self):
-        if self._checkbox.IsChecked():
-            self._controller.execute(DeleteResourceAndImports())
-        else:
-            self._controller.execute(DeleteFile())
+        usages = list(controller.execute(FindResourceUsages()))
+        self._delete_confirmed, self._delete_usage = _UsageDialog(usages, title, checkbox_label).show()
+
+    def execute(self):
+        if self._delete_confirmed:
+            if self._delete_usage:
+                self._controller.execute(DeleteResourceAndImports())
+            else:
+                self._controller.execute(DeleteFile())
