@@ -696,3 +696,6 @@ class ResourceFileController(_FileSystemElement, _DataController):
         for df in self.datafiles:
             for imp in df.imports:
                 yield imp
+
+    def remove_child(self, controller):
+        pass
