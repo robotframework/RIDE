@@ -18,6 +18,7 @@ import shutil
 import tempfile
 
 from robotide.context import LOG
+from robotide.controller.commands import NullObserver
 from robotide.publish.messages import RideOpenResource, RideSaving, RideSaveAll, \
     RideSaved, RideOpenSuite, RideNewProject, RideFileNameChanged
 
@@ -92,7 +93,8 @@ class ChiefController(_BaseController, WithNamespace):
         self.update_default_dir(path)
         return self._create_resource_controller(res, parent)
 
-    def load_data(self, path, load_observer):
+    def load_data(self, path, load_observer=None):
+        load_observer = load_observer or NullObserver()
         if self._load_initfile(path, load_observer):
             return
         if self._load_datafile(path, load_observer):
