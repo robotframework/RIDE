@@ -254,6 +254,14 @@ class RideInitFileRemoved(RideDataChanged):
 
 class RideImportSetting(RideDataChanged):
     """Base class for all messages about changes to import settings."""
+    data = ['datafile', 'type', 'import_controller']
+
+    def is_resource(self):
+        return self.type == 'resource'
+
+    @property
+    def name(self):
+        return self.import_controller.name
 
 
 class RideImportSettingAdded(RideImportSetting):
@@ -262,7 +270,7 @@ class RideImportSettingAdded(RideImportSetting):
     ``datafile`` is the suite or resource file whose imports have changed,
     ``type`` is either ``resource``, ``library``, or ``variables``.
     """
-    data = ['datafile', 'type', 'name']
+    pass
 
 
 class RideImportSettingChanged(RideImportSetting):
@@ -271,7 +279,7 @@ class RideImportSettingChanged(RideImportSetting):
     ``datafile`` is the suite or resource file whose imports have changed,
     ``type`` is either ``resource``, ``library``, or ``variables``.
     """
-    data = ['datafile', 'type', 'name']
+    pass
 
 
 class RideImportSettingRemoved(RideImportSetting):
@@ -280,7 +288,7 @@ class RideImportSettingRemoved(RideImportSetting):
     ``datafile`` is the suite or resource file whose imports have removed,
     ``type`` is either ``resource``, ``library``, or ``variables``.
     """
-    data = ['datafile', 'type', 'name']
+    pass
 
 
 class RideDataChangedToDirty(RideDataChanged):

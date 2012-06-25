@@ -17,7 +17,7 @@ from itertools import chain
 from robot.parsing.settings import Comment
 
 from robotide.publish.messages import (RideImportSettingChanged,
-        RideImportSettingRemoved, RideVariableUpdated, RideItemSettingsChanged)
+        RideImportSettingRemoved, RideVariableUpdated, RideItemSettingsChanged, RideImportSettingAdded)
 from robotide import utils
 
 from .tags import Tag, ForcedTag, DefaultTag
@@ -476,13 +476,17 @@ class _ImportController(_SettingController):
     def remove(self):
         self.parent.remove_import_data(self._import)
 
+    def publish_added(self):
+        RideImportSettingAdded(datafile=self.datafile_controller,
+            import_controller=self, type=self.type.lower()).publish()
+
     def publish_edited(self):
         RideImportSettingChanged(datafile=self.datafile_controller,
-                                 name=self.name, type=self.type.lower()).publish()
+            import_controller=self, type=self.type.lower()).publish()
 
     def publish_removed(self):
         RideImportSettingRemoved(datafile=self.datafile_controller,
-                                 name=self.name,
+                                 import_controller=self,
                                  type=self.type.lower()).publish()
 
 

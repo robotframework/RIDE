@@ -341,10 +341,13 @@ class ImportSettingsController(_TableController, _WithListOperations):
         self._resource_file_controller_factory = resource_file_controller_factory
 
     def __iter__(self):
-        return iter(ImportController(self, imp) for imp in self._items)
+        return iter(self._import_controller(imp) for imp in self._items)
 
     def __getitem__(self, index):
-        return ImportController(self, self._items[index])
+        return self._import_controller(self._items[index])
+
+    def _import_controller(self, import_):
+        return ImportController(self, import_)
 
     @property
     def _items(self):
@@ -368,30 +371,32 @@ class ImportSettingsController(_TableController, _WithListOperations):
                                           comment)
         import_.alias = alias
         self._parent.mark_dirty()
-        self._publish_setting_added(name, 'library')
+        self._import_controller(import_).publish_added()
         self.notify_imports_modified()
         return self[-1]
 
     def add_resource(self, path, comment=None):
         import_ = self._table.add_resource(path, comment)
         self._parent.mark_dirty()
-        self._publish_setting_added(path, 'resource')
         resource = self.resource_import_modified(path)
+        self._import_controller(import_).publish_added()
         self.notify_imports_modified()
         return self[-1]
 
     def add_variables(self, path, argstr, comment=None):
-        self._table.add_variables(path, utils.split_value(argstr), comment)
+        import_ = self._table.add_variables(path, utils.split_value(argstr), comment)
         self._parent.mark_dirty()
         self._publish_setting_added(path, 'variables')
+        self._import_controller(import_).publish_added()
         return self[-1]
 
-    def _publish_setting_added(self, name, type):
-        RideImportSettingAdded(datafile=self.datafile_controller, name=name,
+    def _publish_setting_added(self, import_, type):
+        RideImportSettingAdded(datafile=self.datafile_controller, import_controller=import_,
                                type=type).publish()
 
     def notify_imports_modified(self):
         self.datafile_controller.update_namespace()
+
 
     def resource_import_modified(self, path):
         return self._parent.resource_import_modified(path)
