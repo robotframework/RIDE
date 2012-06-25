@@ -224,6 +224,9 @@ class CustomScriptProfile(PybotProfile):
     def get_command(self):
         return self.runner_script
 
+    def get_cwd(self):
+        return os.path.dirname(self.runner_script)
+
     def get_toolbar_items(self):
         return [self.RunScriptPanel, self.ArgumentsPanel, self.TagsPanel]
 

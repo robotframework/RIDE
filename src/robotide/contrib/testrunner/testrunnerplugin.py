@@ -44,6 +44,7 @@ import posixpath
 import re
 import codecs
 from posixpath import curdir, sep, pardir, join
+from robotide.contrib.testrunner.runprofiles import CustomScriptProfile
 from robotide.controller.testexecutionresults import TestExecutionResults
 from robotide.publish.messages import (RideDataFileSet, RideDataFileRemoved, RideFileNameChanged,
                                        RideTestSelectedForRunningChanged, RideTestRunning, RideTestPassed,
@@ -242,18 +243,19 @@ class TestRunnerPlugin(Plugin):
             self._output("process %s killed\n" % self._process.kill())
             self._set_stopped()
             self._progress_bar.Stop()
+            self._process_timer.Stop()
+            self._process = None
 
     def OnRun(self, event):
         '''Called when the user clicks the "Run" button'''
         if not self._can_start_running_tests():
             return
         self._initialize_ui_for_running()
-        command = self._get_command()
+        command = self._format_command(self._get_command())
         self._output("working directory: %s\n" % os.getcwd())
-        self._output("command: %s\n" % self._format_command(command))
+        self._output("command: %s\n" % command)
         try:
-            command = self._format_command(command)
-            self._process = Process()
+            self._process = Process(self._get_current_working_dir())
             self._process.run_command(command)
             self._process_timer.Start(41) # roughly 24fps
             self._set_running()
@@ -263,6 +265,12 @@ class TestRunnerPlugin(Plugin):
             self._set_stopped()
             self._output(str(e))
             wx.MessageBox("Could not start running tests.", "Error", wx.ICON_ERROR)
+
+    def _get_current_working_dir(self):
+        profile = self.get_current_profile()
+        if profile.name == CustomScriptProfile.name:
+            return profile.get_cwd()
+        return self.model.suite.source
 
     def _can_start_running_tests(self):
         if self._running or self.model.suite is None:
@@ -478,7 +486,7 @@ class TestRunnerPlugin(Plugin):
         standard_args.extend(['--pythonpath', ':'.join(pythonpath)])
 
     def _get_listener_to_cmd(self):
-        return os.path.join(os.path.dirname(__file__),
+        return os.path.join(os.path.abspath(os.path.dirname(__file__)),
                             "SocketListener.py") + ":%s" % self._port
 
     def _get_monitor_width(self):
@@ -806,13 +814,14 @@ class RideListenerHandler(SocketServer.StreamRequestHandler):
 
 class Process(object):
 
-    def __init__(self):
+    def __init__(self, cwd):
         self._process = None
         self._error_stream = None
         self._output_stream = None
+        self._cwd = cwd
 
     def run_command(self, command):
-        self._process = subprocess.Popen(command, bufsize=0, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        self._process = subprocess.Popen(command, bufsize=0, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, cwd=self._cwd)
         self._output_stream = StreamReaderThread(self._process.stdout)
         self._error_stream = StreamReaderThread(self._process.stderr)
         self._output_stream.run()
