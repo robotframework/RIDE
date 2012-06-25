@@ -5,6 +5,7 @@ import tempfile
 from robot.utils.asserts import assert_true, assert_false, assert_equals
 from robot.parsing.model import TestCaseFile, TestDataDirectory, ResourceFile
 from resources.mocks import FakeSettings
+from robotide.controller.commands import DeleteResourceAndImports, DeleteFile
 
 from robotide.controller.filecontrollers import (TestCaseFileController,
                                                  TestDataDirectoryController,
@@ -18,9 +19,17 @@ from robotide.namespace.namespace import Namespace
 def create_test_data(path, filepath, resourcepath, initpath):
     if not os.path.exists(path):
         os.mkdir(path)
-    open(filepath, 'w').write('*Test Cases*\nRide Unit Test  No Operation\n')
+    open(filepath, 'w').write('''\
+*Settings*
+Resource  resource.txt
+*Test Cases*
+Ride Unit Test  No Operation
+''')
     open(resourcepath, 'w').write('*Keywords*\nUnit Test Keyword  No Operation\n')
-    open(initpath, 'w').write('*Settings*\nDocumentation  Ride unit testing file\n')
+    open(initpath, 'w').write('''\
+*Settings*
+Documentation  Ride unit testing file
+''')
 
 def remove_test_data(path):
     shutil.rmtree(path)
@@ -143,6 +152,36 @@ class TestDataFileRemoval(_DataDependentTest):
         chief.data.remove()
         open(self._init_path, 'w').write('*Settings*\nDocumentation  Ride unit testing file\n')
         assert_true(chief.data.has_format() is False, chief.data.data.initfile)
+
+
+class DeleteCommandTest(_DataDependentTest):
+
+    def setUp(self):
+        _DataDependentTest.setUp(self)
+        self.chief = create_chief()
+        self.chief.load_data(self._dirpath)
+        self.suite = self.chief.suite.children[0]
+        self.resource = self.chief.resources[0]
+
+    def test_delete_resource_and_imports(self):
+        self.assert_resource_count(1)
+        self.assert_import_count(1)
+        self.resource.execute(DeleteResourceAndImports())
+        self.assert_resource_count(0)
+        self.assert_import_count(0)
+
+    def test_delete_file(self):
+        self.assert_resource_count(1)
+        self.assert_import_count(1)
+        self.resource.execute(DeleteFile())
+        self.assert_resource_count(0)
+        self.assert_import_count(1)
+
+    def assert_resource_count(self, resource_count):
+        assert_equals(len(self.chief.resources), resource_count)
+
+    def assert_import_count(self, import_count):
+        assert_equals(len(self.suite.setting_table.imports), import_count)
 
 
 if __name__ == "__main__":
