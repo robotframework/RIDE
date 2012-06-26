@@ -494,12 +494,20 @@ class ResourceImportController(_ImportController):
     is_resource = True
     _resolved_import = False
 
+    def set_value(self, name, args=None, alias=''):
+        self._previous_imported_controller = self.get_imported_controller()
+        self.unresolve()
+        _ImportController.set_value(self, name, args, alias)
+
     def get_imported_controller(self):
         if not self._resolved_import:
             self._imported_resource_controller = \
                 self.parent.resource_file_controller_factory.find_with_import(self._import)
             self._resolved_import = True
         return self._imported_resource_controller
+
+    def get_previous_imported_controller(self):
+        return self._previous_imported_controller
 
     def unresolve(self):
         self._resolved_import = False

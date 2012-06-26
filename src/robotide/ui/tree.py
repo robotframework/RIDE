@@ -15,7 +15,7 @@
 import wx
 from robotide.action.actioninfo import ActionInfo
 from robotide.controller.filecontrollers import ResourceFileController
-from robotide.publish.messages import RideTestRunning, RideTestPassed, RideTestFailed, RideTestExecutionStarted
+from robotide.publish.messages import RideTestRunning, RideTestPassed, RideTestFailed, RideTestExecutionStarted, RideImportSetting
 from robotide.ui.images import RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, FAILED_IMAGE_INDEX, ROBOT_IMAGE_INDEX
 from robotide.ui.treenodehandlers import TestCaseHandler
 
@@ -118,10 +118,26 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
             (self._testing_started, RideTestExecutionStarted),
             (self._test_result, RideTestRunning),
             (self._test_result, RideTestPassed),
-            (self._test_result, RideTestFailed)
+            (self._test_result, RideTestFailed),
+            (self._handle_import_setting_message, RideImportSetting),
         ]
         for listener, topic in subscriptions:
             PUBLISHER.subscribe(listener, topic)
+
+    def _handle_import_setting_message(self, message):
+        if message.is_resource():
+            self._set_resource_color(message.import_controller.get_imported_controller())
+            self._set_resource_color(message.import_controller.get_previous_imported_controller())
+
+    def _set_resource_color(self, resource_controller):
+        if not resource_controller:
+            return
+        node = self._controller.find_node_by_controller(resource_controller)
+        if node:
+            self.SetItemTextColour(node, self._get_resource_text_color(resource_controller.is_used()))
+
+    def _get_resource_text_color(self, is_used):
+        return 'black' if is_used else 'grey'
 
     def _testing_started(self, message):
         self._for_all_drawn_tests(self._root, lambda t: self.SetItemImage(t, ROBOT_IMAGE_INDEX))
