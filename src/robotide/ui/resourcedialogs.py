@@ -74,6 +74,7 @@ class ResourceDeleteDialog(object):
     def __init__(self, controller):
         self._delete_confirmed = False
         self._delete_usage = False
+        self._controller = controller
         title = 'Delete resource'
         checkbox_label = 'Also delete resource imports'
 
