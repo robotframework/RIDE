@@ -252,11 +252,17 @@ class ImportControllerTest(unittest.TestCase):
         self.tcf.setting_table.add_library('BuiltIn', ['WITH NAME', 'InBuilt'])
         self.tcf_ctrl = TestCaseFileController(self.tcf, ImportControllerTest.FakeParent())
         self.tcf_ctrl.data.directory = 'tmp'
-        self.parent = ImportSettingsController(self.tcf_ctrl, self.tcf.setting_table)
+        self.parent = ImportSettingsController(self.tcf_ctrl, self.tcf.setting_table,
+            resource_file_controller_factory=self._resource_file_controller_factory_mock())
         self.add_import_listener = PublisherListener(RideImportSettingAdded)
         self.changed_import_listener = PublisherListener(RideImportSettingChanged)
         self.removed_import_listener = PublisherListener(RideImportSettingRemoved)
         self.import_listener = PublisherListener(RideImportSetting)
+
+    def _resource_file_controller_factory_mock(self):
+        rfcfm = lambda:0
+        rfcfm.find_with_import = lambda *_:None
+        return rfcfm
 
     def tearDown(self):
         self.add_import_listener.unsubscribe()

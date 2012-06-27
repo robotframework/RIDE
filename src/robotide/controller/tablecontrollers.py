@@ -386,13 +386,8 @@ class ImportSettingsController(_TableController, _WithListOperations):
     def add_variables(self, path, argstr, comment=None):
         import_ = self._table.add_variables(path, utils.split_value(argstr), comment)
         self._parent.mark_dirty()
-        self._publish_setting_added(path, 'variables')
         self._import_controller(import_).publish_added()
         return self[-1]
-
-    def _publish_setting_added(self, import_, type):
-        RideImportSettingAdded(datafile=self.datafile_controller, import_controller=import_,
-                               type=type).publish()
 
     def notify_imports_modified(self):
         self.datafile_controller.update_namespace()
