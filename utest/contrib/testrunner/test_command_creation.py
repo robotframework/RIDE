@@ -44,7 +44,8 @@ class CommandCreationTestCase(unittest.TestCase):
         creator = CommandCreator()
         command = creator._get_command()
         self.assertEqual(command,
-            ['prefix', '--argumentfile', os.path.join('temppi','argfile.txt'), '--listener', 'listener', 'source'])
+            ['prefix', '--argumentfile', os.path.join('temppi','argfile.txt'),
+             '--listener', 'listener', os.path.abspath('source')])
         self.assertEqual(creator._arguments,
             ['custom', 'args',
              '--outputdir', 'temppi',
