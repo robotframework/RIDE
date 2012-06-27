@@ -465,7 +465,7 @@ class TestRunnerPlugin(Plugin):
         source = os.path.abspath(self.model.suite.source)
         if not self._is_same_drive(cur, source):
             return source
-        return relpath(self.model.suite.source)
+        return os.path.abspath(self.model.suite.source)
 
     def _is_same_drive(self, source1, source2):
         return os.path.splitdrive(source1)[0] == os.path.splitdrive(source2)[0]
