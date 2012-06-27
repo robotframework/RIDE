@@ -93,7 +93,7 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         res.keyword_table.keywords.append(UserKeyword(res, 'Resource Keyword'))
         model = ChiefController(Namespace(FakeSettings()))
         model._controller = TestDataDirectoryController(suite)
-        rfc = ResourceFileController(res)
+        rfc = ResourceFileController(res, chief_controller=model)
         model.resources.append(rfc)
         model._insert_into_suite_structure(rfc)
         return model
