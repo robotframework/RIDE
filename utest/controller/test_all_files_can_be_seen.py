@@ -1,12 +1,4 @@
 import unittest
-# Used File structure
-#
-# all_files/__init__.txt         <- main suite
-#           tests.txt            <- test suite
-#           used_resource.txt    <- tests.txt has an import to this
-#           unused_resource.txt  <- valid resource file without referrer
-#           some_file.bla        <- not a robot file
-#
 import datafilereader
 
 class TestAllFiles(unittest.TestCase):

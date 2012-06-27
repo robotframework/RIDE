@@ -1,3 +1,6 @@
+*** Settings ***
+Resource  ../used_resource.txt
+
 *** Test Cases ***
 Some test
   No Operation
