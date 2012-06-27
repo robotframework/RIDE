@@ -434,12 +434,16 @@ class TestDataDirectoryController(_DataController, DirectoryController):
 
     def _add_directory_children(self, children, path, initfile):
         for filename in self._get_unknown_files_in_directory(children, path, initfile):
-            if os.path.isdir(filename):
-                children.append(self._directory_controller(filename))
-            else:
-                r = self._namespace.get_resource(filename, report_status=False)
-                if self._is_valid_resource(r):
-                    children.append(self._resource_controller(r))
+            if not os.path.basename(filename).startswith('.'):
+                self._add_directory_child(children, filename)
+
+    def _add_directory_child(self, children, filename):
+        if os.path.isdir(filename):
+            children.append(self._directory_controller(filename))
+        else:
+            r = self._namespace.get_resource(filename, report_status=False)
+            if self._is_valid_resource(r):
+                children.append(self._resource_controller(r))
 
     def _directory_controller(self, path):
         dc = DirectoryController(path, chief_controller=self._chief_controller)
