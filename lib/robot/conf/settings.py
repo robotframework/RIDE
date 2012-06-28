@@ -190,7 +190,7 @@ class _BaseSettings(object):
         return tuple(colors)
 
     def _process_tag_stat_combine(self, value):
-        for replwhat, replwith in [('AND', '&'), ('&', ' & '), ('NOT', ' NOT ')]:
+        for replwhat, replwith in [('&', 'AND'), ('AND', ' AND '), ('NOT', ' NOT ')]:
             value = value.replace(replwhat, replwith)
         if ':' not in value:
             return value, ''
@@ -356,7 +356,7 @@ class RebotSettings(_BaseSettings):
         if not self.log:
             return {}
         return {
-            'title': self['LogTitle'],
+            'title': utils.html_escape(self['LogTitle'] or ''),
             'reportURL': self._url_from_path(self.log, self.report),
             'splitLogBase': os.path.basename(os.path.splitext(self.log)[0]),
             'defaultLevel': self['VisibleLogLevel']
@@ -367,7 +367,7 @@ class RebotSettings(_BaseSettings):
         if not self.report:
             return {}
         return {
-            'title': self['ReportTitle'],
+            'title': utils.html_escape(self['ReportTitle'] or ''),
             'logURL': self._url_from_path(self.report, self.log),
             'background' : self._resolve_background_colors(),
         }
