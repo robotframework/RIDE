@@ -54,6 +54,15 @@ class TestResourceImport(unittest.TestCase):
         self._keyword_controller.arguments.set_value('')
         self._check_cells(ContentType.USER_KEYWORD, CellType.MUST_BE_EMPTY)
 
+    def test_resource_import_knows_resource_after_import_has_been_removed(self):
+        item_without_settings = datafilereader.get_ctrl_by_name('Inner Resource', self.ctrl.datafiles)
+        self.assertEqual(list(item_without_settings.imports), [])
+        self._create_resource()
+        import_ = item_without_settings.imports.add_resource(os.path.join('..', self.res_name))
+        self.assertIsNotNone(import_)
+        item_without_settings.imports.delete(0)
+        self.assertEqual(self.new_resource, import_.get_imported_controller())
+
     @property
     def _keyword_controller(self):
         return self.ctrl.resources[-1].keywords[-1]
