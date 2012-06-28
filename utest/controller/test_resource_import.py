@@ -59,7 +59,7 @@ class TestResourceImport(unittest.TestCase):
         self.assertEqual(list(item_without_settings.imports), [])
         self._create_resource()
         import_ = item_without_settings.imports.add_resource(os.path.join('..', self.res_name))
-        self.assertIsNotNone(import_)
+        self.assertTrue(import_ is not None)
         item_without_settings.imports.delete(0)
         self.assertEqual(self.new_resource, import_.get_imported_controller())
 
