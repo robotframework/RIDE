@@ -134,10 +134,10 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
             return
         node = self._controller.find_node_by_controller(resource_controller)
         if node:
-            self.SetItemTextColour(node, self._get_resource_text_color(resource_controller.is_used()))
+            self.SetItemTextColour(node, self._get_resource_text_color(resource_controller))
 
-    def _get_resource_text_color(self, is_used):
-        return 'black' if is_used else 'grey'
+    def _get_resource_text_color(self, resource_controller):
+        return self.GetDefaultAttributes().colFg if resource_controller.is_used() else 'grey'
 
     def _testing_started(self, message):
         self._for_all_drawn_tests(self._root, lambda t: self.SetItemImage(t, ROBOT_IMAGE_INDEX))
