@@ -86,32 +86,44 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 0.45</h2>
+<h2>Release notes for 0.46</h2>
 <table border="1">
 <tr>
-<td><b>ID</b></td>
-<td><b>Type</b></td>
-<td><b>Priority</b></td>
-<td><b>Summary</b></td>
+<td><p><b>ID</b></p></td>
+<td><p><b>Type</b></p></td>
+<td><p><b>Priority</b></p></td>
+<td><p><b>Summary</b></p></td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=703">Issue 703</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=881">Issue 881</a></td>
+<td>Defect</td>
+<td>Medium</td>
+<td>Saving new testsuites with no tests with RIDE, causes an invalid data error when trying to open the suite later</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=974">Issue 974</a></td>
+<td>Defect</td>
+<td>Medium</td>
+<td>When running test cases, the working directory is where RIDE is started, not where the test cases are located</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=988">Issue 988</a></td>
+<td>Defect</td>
+<td>Medium</td>
+<td>Table borders are not shown in suite/test/keyword documentation</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=870">Issue 870</a></td>
 <td>Enhancement</td>
-<td>High</td>
-<td>Integrate test run plugin to RIDE tree</td>
+<td>Medium</td>
+<td>tree: Show unused resource files</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=929">Issue 929</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=531">Issue 531</a></td>
 <td>Defect</td>
-<td>Medium</td>
-<td>popup help interferes with editing/copying/pasting of cells</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=980">Issue 980</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>Wrong warning color when variable with default value and varargs</td>
+<td>Low</td>
+<td>Delete key does not work in test case/user keyword rename on Windows</td>
 </tr>
 </table>
-<p>Altogether 3 issues.</p>
+<p>Altogether 5 issues.</p>
 """
