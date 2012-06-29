@@ -270,6 +270,8 @@ class TestRunnerPlugin(Plugin):
         profile = self.get_current_profile()
         if profile.name == CustomScriptProfile.name:
             return profile.get_cwd()
+        if not os.path.isdir(self.model.suite.source):
+            return os.path.dirname(self.model.suite.source)
         return self.model.suite.source
 
     def _can_start_running_tests(self):
