@@ -7,10 +7,8 @@ class CommandCreator(TestRunnerPlugin):
     def __init__(self):
         self._tmpdir = 'temppi'
         self._tree = lambda:0
-        self._tests_to_run = set()
-        tc = lambda:0
-        tc.longname = 'suite.test'
-        self._tests_to_run.add(tc)
+        self._test_names_to_run = set()
+        self._test_names_to_run.add('suite.test')
 
     def get_current_profile(self):
         p = lambda:0
