@@ -252,7 +252,6 @@ class TestRunnerPlugin(Plugin):
             return
         self._initialize_ui_for_running()
         command = self._format_command(self._get_command())
-        self._output("working directory: %s\n" % os.getcwd())
         self._output("command: %s\n" % command)
         try:
             self._process = Process(self._get_current_working_dir())
