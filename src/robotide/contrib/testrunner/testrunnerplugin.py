@@ -184,12 +184,12 @@ class TestRunnerPlugin(Plugin):
 
     def OnTestSelectedForRunningChanged(self, message):
         if message.running:
-            self._tests_to_run.add(message.item)
+            self._test_names_to_run.add(message.item.longname)
         else:
-            self._tests_to_run.discard(message.item)
+            self._test_names_to_run.discard(message.item.longname)
 
     def OnOpenSuite(self, message):
-        self._tests_to_run = set()
+        self._test_names_to_run = set()
 
     def _start_listener_server(self):
         self._server = RideListenerServer(RideListenerHandler,
@@ -447,8 +447,8 @@ class TestRunnerPlugin(Plugin):
                                                                   standard_args)
         standard_args.extend(["--monitorcolors", "off"])
         standard_args.extend(["--monitorwidth", self._get_monitor_width()])
-        for tc in self._tests_to_run:
-            standard_args += ['--test', tc.longname]
+        for tc in self._test_names_to_run:
+            standard_args += ['--test', tc]
         return standard_args
 
     def _get_command(self):

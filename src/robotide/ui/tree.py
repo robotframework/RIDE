@@ -468,6 +468,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         if not current: # If tree is not yet in use - do not expand anything.
             self._end_silent_mode()
             return
+        self._uncheck_tests(current)
         item = self.GetSelection()
         current_txt = self.GetItemText(item) if item.IsOk() else ''
         # after refresh current and current_txt might have been changed
@@ -481,6 +482,10 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
             wx.CallAfter(self._end_silent_mode)
         else:
             self._end_silent_mode()
+
+    def _uncheck_tests(self, current):
+        for test in current.tests:
+            RideTestSelectedForRunningChanged(item=test, running=False).publish()
 
     def _start_silent_mode(self):
         self._silent_mode = True
