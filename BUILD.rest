@@ -97,3 +97,5 @@ TODO: These are incomplete
   > echo $version > VERSION.txt
   > git commit VERSION.txt -m 'Version $version'
   > git tag v$version
+  > git push
+  > git push --tags
