@@ -828,7 +828,10 @@ class Process(object):
         self._cwd = cwd
 
     def run_command(self, command):
-        self._process = subprocess.Popen(command, bufsize=0, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, cwd=self._cwd)
+        # We need to supply an stdin for subprocess, because otherways in pythonw
+        # subprocess will try using sys.stdin which will cause an error in windows
+        self._process = subprocess.Popen(command, bufsize=0, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, shell=True, cwd=self._cwd)
+        self._process.stdin.close()
         self._output_stream = StreamReaderThread(self._process.stdout)
         self._error_stream = StreamReaderThread(self._process.stderr)
         self._output_stream.run()
