@@ -91,6 +91,8 @@ Releasing
 =========
 TODO: These are incomplete
 
+ * Update the ReleaseNotes
+
 ::
 
   > version=0.xx
@@ -99,3 +101,6 @@ TODO: These are incomplete
   > git tag v$version
   > git push
   > git push --tags
+
+ * Upload new downloads
+ * Announce on usergroup, robot homepage, and twitter
