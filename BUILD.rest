@@ -91,7 +91,7 @@ Releasing
 =========
 TODO: These are incomplete
 
- * Update the ReleaseNotes
+* Update the ReleaseNotes
 
 ::
 
@@ -102,5 +102,5 @@ TODO: These are incomplete
   > git push
   > git push --tags
 
- * Upload new downloads
- * Announce on usergroup, robot homepage, and twitter
+* Upload new downloads
+* Announce on usergroup, robot homepage, and twitter
