@@ -26,6 +26,9 @@ any additional arguments.
 import wx
 from wx.lib.filebrowsebutton import FileBrowseButton
 import os
+from robot.errors import DataError
+from robot.run import USAGE
+from robot.utils.argumentparser import ArgumentParser
 
 from robotide.widgets import Label
 
@@ -115,7 +118,10 @@ class PybotProfile(BaseProfile):
 
     def get_command_prefix(self):
         '''Returns a command and any special arguments for this profile'''
-        return [self.get_command()] + self.arguments.split()
+        return [self.get_command()] + self._get_arguments()
+
+    def _get_arguments(self):
+        return self.arguments.split()
 
     def get_command(self):
         return "pybot.bat" if os.name == "nt" else "pybot"
@@ -200,7 +206,24 @@ class PybotProfile(BaseProfile):
         return checkbox
 
     def OnArgumentsChanged(self, evt):
-        self.set_setting("arguments", self._arguments.GetValue())
+        args = self._arguments.GetValue()
+        self._validate_arguments(args)
+        self.set_setting("arguments", args)
+
+    def _validate_arguments(self, args):
+        message = None
+        try:
+            _, invalid = ArgumentParser(USAGE).parse_args([str(i) for i in args.split()])
+        except DataError, e:
+            message = e.message
+            invalid = True
+        if bool(invalid):
+            self._arguments.SetBackgroundColour('red')
+            message = message or 'unknown option(s): '+' '.join(invalid)
+        else:
+            self._arguments.SetBackgroundColour('white')
+            message = "Arguments for the test run. Arguments are space separated list."
+        self._arguments.SetToolTipString(message)
 
     def OnExcludeCheckbox(self, evt):
         self.set_setting("apply_exclude_tags", evt.IsChecked())
@@ -229,6 +252,10 @@ class CustomScriptProfile(PybotProfile):
 
     def get_toolbar_items(self):
         return [self.RunScriptPanel, self.ArgumentsPanel, self.TagsPanel]
+
+    def _validate_arguments(self, args):
+        #Can't say anything about custom script argument validity
+        pass
 
     def RunScriptPanel(self, parent):
         panel = wx.Panel(parent, wx.ID_ANY)
