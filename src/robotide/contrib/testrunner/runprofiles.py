@@ -214,7 +214,8 @@ class PybotProfile(BaseProfile):
     def _validate_arguments(self, args):
         message = None
         try:
-            _, invalid = ArgumentParser(USAGE).parse_args([str(i) for i in args.split()])
+            args = args.encode('utf-8')
+            _, invalid = ArgumentParser(USAGE).parse_args(args.split())
         except DataError, e:
             message = e.message
             invalid = True
