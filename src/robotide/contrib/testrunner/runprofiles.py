@@ -171,6 +171,7 @@ class PybotProfile(BaseProfile):
         sizer.Add(label, 0, wx.ALL|wx.EXPAND)
         sizer.Add(self._arguments, 1, wx.ALL|wx.EXPAND)
         panel.SetSizerAndFit(sizer)
+        self._validate_arguments(self.arguments)
         return panel
 
     def TagsPanel(self, parent):
