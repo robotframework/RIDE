@@ -213,6 +213,7 @@ class PybotProfile(BaseProfile):
 
     def _validate_arguments(self, args):
         message = None
+        assert type(args) is unicode
         try:
             args = args.encode('utf-8')
             _, invalid = ArgumentParser(USAGE).parse_args(args.split())
