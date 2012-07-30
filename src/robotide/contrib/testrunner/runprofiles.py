@@ -29,6 +29,7 @@ import os
 from robot.errors import DataError
 from robot.run import USAGE
 from robot.utils.argumentparser import ArgumentParser
+from robot.utils.encoding import SYSTEM_ENCODING
 
 from robotide.widgets import Label
 
@@ -215,7 +216,7 @@ class PybotProfile(BaseProfile):
         message = None
         assert type(args) is unicode
         try:
-            args = args.encode('utf-8')
+            args = args.encode(SYSTEM_ENCODING)
             _, invalid = ArgumentParser(USAGE).parse_args(args.split())
         except DataError, e:
             message = e.message
