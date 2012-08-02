@@ -881,11 +881,11 @@ class StreamReaderThread(object):
         self._stream = stream
 
     def run(self):
-        self._thread = threading.Thread(target=self._enqueue_output, args=(self._stream, self._queue))
+        self._thread = threading.Thread(target=self._enqueue_output, args=(self._stream,))
         self._thread.daemon = True
         self._thread.start()
 
-    def _enqueue_output(self, out, queue):
+    def _enqueue_output(self, out):
         for line in iter(out.readline, b''):
             self._queue.put(line)
 
