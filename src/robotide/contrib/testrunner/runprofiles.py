@@ -26,7 +26,7 @@ any additional arguments.
 import wx
 from wx.lib.filebrowsebutton import FileBrowseButton
 import os
-from robot.errors import DataError
+from robot.errors import DataError, Information, FrameworkError
 from robot.run import USAGE
 from robot.utils.argumentparser import ArgumentParser
 from robot.utils.encoding import SYSTEM_ENCODING
@@ -213,21 +213,22 @@ class PybotProfile(BaseProfile):
         self.set_setting("arguments", args)
 
     def _validate_arguments(self, args):
-        message = None
         assert type(args) is unicode
+        invalid_message = self._get_invalid_message(args)
+        self._arguments.SetBackgroundColour('red' if invalid_message else 'white')
+        self._arguments.SetToolTipString(invalid_message or 'Arguments for the test run. Arguments are space separated list.')
+
+    def _get_invalid_message(self, args):
         try:
             args = args.encode(SYSTEM_ENCODING)
             _, invalid = ArgumentParser(USAGE).parse_args(args.split())
+            if bool(invalid):
+                return 'Unknown option(s): '+' '.join(invalid)
+            return None
         except DataError, e:
-            message = e.message
-            invalid = True
-        if bool(invalid):
-            self._arguments.SetBackgroundColour('red')
-            message = message or 'unknown option(s): '+' '.join(invalid)
-        else:
-            self._arguments.SetBackgroundColour('white')
-            message = "Arguments for the test run. Arguments are space separated list."
-        self._arguments.SetToolTipString(message)
+            return e.message
+        except Information:
+            return 'Does not execute - help or version option given'
 
     def OnExcludeCheckbox(self, evt):
         self.set_setting("apply_exclude_tags", evt.IsChecked())
