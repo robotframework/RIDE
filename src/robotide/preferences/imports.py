@@ -67,7 +67,7 @@ class Setting(object):
         self.current_value = self._original_value
 
     def set(self, new_value):
-        self.current_value = [token.strip() for token in new_value.split(',')]
+        self.current_value = [token.strip() for token in new_value.split(',') if token.strip()]
 
     def publish(self):
         self._settings.set(self.name, self.current_value)
