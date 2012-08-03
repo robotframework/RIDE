@@ -56,7 +56,7 @@ def initialize_settings(tool_name, source_path, dest_file_name=None):
 class SettingsMigrator(object):
 
     SETTINGS_VERSION = 'settings_version'
-    CURRENT_SETTINGS_VERSION = 1 #used at least in tests
+    CURRENT_SETTINGS_VERSION = 2 #used at least in tests
 
     def __init__(self, default_path, user_path):
         self._default_settings = ConfigObj(default_path, unrepr=True)
@@ -80,9 +80,11 @@ class SettingsMigrator(object):
         # mess up the next migration script(s)
         if not self._old_settings.get(self.SETTINGS_VERSION):
             self.migrate_from_0_to_1(self._old_settings)
+        if self._old_settings.get(self.SETTINGS_VERSION) == 1:
+            self.migrate_from_1_to_2(self._old_settings)
         #so next would be something like:
-        #if self._old_settings[self.SETTINGS_VERSION] == 1:
-        #   self.migrate_from_1_to_2(self._old_settings)
+        #if self._old_settings[self.SETTINGS_VERSION] == 2:
+        #   self.migrate_from_2_to_3(self._old_settings)
         self.merge()
 
     def merge(self):
@@ -93,6 +95,15 @@ class SettingsMigrator(object):
         if settings.get('Colors',{}).get('text library keyword') == 'blue':
             settings['Colors']['text library keyword'] = '#0080C0'
         settings[self.SETTINGS_VERSION] = 1
+
+    def migrate_from_1_to_2(self, settings):
+        # See issue http://code.google.com/p/robotframework-ride/issues/detail?id=925
+        # And other reported issues about test run failure after pythonpath was added
+        # to run
+        pythonpath = settings.get('pythonpath', [])
+        if pythonpath:
+            settings['pythonpath'] = [p.strip() for p in pythonpath if p.strip()]
+        settings[self.SETTINGS_VERSION] = 2
 
     def _write_merged_settings(self, settings, path):
         try:
