@@ -18,9 +18,9 @@ import shutil
 import tempfile
 
 from robotide.context import LOG
-from robotide.controller.commands import NullObserver
-from robotide.publish.messages import RideOpenResource, RideSaving, RideSaveAll, \
-    RideSaved, RideOpenSuite, RideNewProject, RideFileNameChanged
+from robotide.controller.commands import NullObserver, SaveFile
+from robotide.publish.messages import RideOpenResource, RideSaveAll, \
+     RideOpenSuite, RideNewProject, RideFileNameChanged
 
 from .basecontroller import WithNamespace, _BaseController
 from .dataloader import DataLoader
@@ -216,7 +216,7 @@ class ChiefController(_BaseController, WithNamespace):
             return
         old_path = controller.filename
         controller.set_format(format)
-        self.save(controller)
+        controller.execute(SaveFile())
         if old_path:
             self._remove_file(old_path)
             RideFileNameChanged(old_filename=old_path,
@@ -281,15 +281,12 @@ class Serializer(object):
             self._log_errors()
 
     def _serialize_file(self, controller):
-        RideSaving(path=controller.filename, datafile=controller).publish()
         with Backup(controller):
             try:
                 controller.datafile.save(**self._get_options())
             except Exception, err:
                 self._cache_error(controller, err)
                 raise
-        controller.unmark_dirty()
-        RideSaved(path=controller.filename).publish()
 
     def _get_options(self):
         return {'line_separator': self._get_line_separator(),

@@ -290,7 +290,9 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
 
 
 class TestCaseController(_WithStepsController):
+
     _populator = TestCasePopulator
+    filename = ""
 
     def _init(self, test):
         self._test = test

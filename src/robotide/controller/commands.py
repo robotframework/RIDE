@@ -17,7 +17,7 @@ import time
 import os
 
 from robotide import utils
-from robotide.publish.messages import RideSelectResource, RideFileNameChanged
+from robotide.publish.messages import RideSelectResource, RideFileNameChanged, RideSaving, RideSaved
 from robotide.namespace.namespace import _VariableStash
 
 from .filecontrollers import ResourceFileController
@@ -858,11 +858,13 @@ class ChangeCellValue(_StepsChangingCommand):
 class SaveFile(_Command):
 
     def execute(self, context):
+        RideSaving(path=context.filename, datafile=context).publish()
         datafile_controller = context.datafile_controller
         for macro_controller in chain(datafile_controller.tests, datafile_controller.keywords):
             macro_controller.execute(Purify())
         datafile_controller.save()
         datafile_controller.unmark_dirty()
+        RideSaved(path=context.filename).publish()
 
 
 class SaveAll(_Command):

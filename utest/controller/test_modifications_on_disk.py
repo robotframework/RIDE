@@ -5,7 +5,7 @@ import tempfile
 from robot.utils.asserts import assert_true, assert_false, assert_equals
 from robot.parsing.model import TestCaseFile, TestDataDirectory, ResourceFile
 from resources.mocks import FakeSettings
-from robotide.controller.commands import DeleteResourceAndImports, DeleteFile
+from robotide.controller.commands import DeleteResourceAndImports, DeleteFile, SaveFile
 
 from robotide.controller.filecontrollers import (TestCaseFileController,
                                                  TestDataDirectoryController,
@@ -78,7 +78,7 @@ class TestModifiedOnDiskWithFileSuite(_DataDependentTest):
                                       create_chief())
         os.utime(self._filepath, (1,1))
         assert_true(ctrl.has_been_modified_on_disk())
-        ctrl.save()
+        ctrl.execute(SaveFile())
         assert_false(ctrl.has_been_modified_on_disk())
 
 
