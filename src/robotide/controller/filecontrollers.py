@@ -14,6 +14,7 @@
 
 import os
 from itertools import chain
+import commands
 
 from robotide.publish import (RideDataFileRemoved, RideInitFileRemoved,
         RideDataChangedToDirty, RideDataDirtyCleared, RideSuiteAdded,
@@ -250,7 +251,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         old_file = self.filename
         self.data.source = os.path.join(self.directory, '%s.%s' % (basename, self.get_format()))
         self.filename = self.data.source
-        self.save()
+        self.execute(commands.SaveFile())
         if old_file != self.filename:
             self.remove_from_filesystem(old_file)
 
