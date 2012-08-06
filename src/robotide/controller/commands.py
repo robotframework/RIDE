@@ -17,7 +17,7 @@ import time
 import os
 
 from robotide import utils
-from robotide.publish.messages import RideSelectResource, RideFileNameChanged, RideSaving, RideSaved
+from robotide.publish.messages import RideSelectResource, RideFileNameChanged, RideSaving, RideSaved, RideSaveAll
 from robotide.namespace.namespace import _VariableStash
 
 from .filecontrollers import ResourceFileController
@@ -873,6 +873,7 @@ class SaveAll(_Command):
         for datafile_controller in context._get_all_dirty_controllers():
             if datafile_controller.has_format():
                 datafile_controller.execute(SaveFile())
+        RideSaveAll().publish()
 
 
 class Purify(_Command):

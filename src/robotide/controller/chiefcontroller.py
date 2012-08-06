@@ -240,10 +240,8 @@ class ChiefController(_BaseController, WithNamespace):
         self._resource_file_controller_factory.remove(controller)
 
     def save(self, controller):
-        if controller:
-            self._serializer.serialize_file(controller)
-        else:
-            self._serializer.serialize_files(self._get_all_dirty_controllers())
+        assert controller is not None
+        self._serializer.serialize_file(controller)
 
     def _get_all_dirty_controllers(self):
         return [controller for controller in self.datafiles if controller.dirty]
@@ -265,14 +263,6 @@ class Serializer(object):
         self._settings = settings
         self._logger = logger
         self._errors = []
-
-    def serialize_files(self, controllers):
-        try:
-            for data in controllers:
-                self._serialize_file(data)
-            RideSaveAll().publish()
-        finally:
-            self._log_errors()
 
     def serialize_file(self, controller):
         try:
