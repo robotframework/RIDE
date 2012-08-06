@@ -44,6 +44,8 @@ import posixpath
 import re
 import codecs
 from posixpath import curdir, sep, pardir, join
+from robot.utils.encoding import SYSTEM_ENCODING
+from robot.utils.encodingsniffer import DEFAULT_OUTPUT_ENCODING
 from robotide.contrib.testrunner.runprofiles import CustomScriptProfile
 from robotide.controller.testexecutionresults import TestExecutionResults
 from robotide.publish.messages import (RideDataFileSet, RideDataFileRemoved, RideFileNameChanged,
@@ -400,7 +402,6 @@ class TestRunnerPlugin(Plugin):
     def _AppendText(self, string, source="stdout"):
         if not self.panel:
             return
-
         try:
             width, _ = self.out.GetTextExtent(string)
             if self.out.GetScrollWidth() < width+50:
@@ -830,7 +831,14 @@ class Process(object):
     def run_command(self, command):
         # We need to supply an stdin for subprocess, because otherways in pythonw
         # subprocess will try using sys.stdin which will cause an error in windows
-        self._process = subprocess.Popen(command, bufsize=0, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, shell=True, cwd=self._cwd)
+        self._process = subprocess.Popen(
+            command.encode(SYSTEM_ENCODING),
+            bufsize=0,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            stdin=subprocess.PIPE,
+            shell=True,
+            cwd=self._cwd.encode(SYSTEM_ENCODING))
         self._process.stdin.close()
         self._output_stream = StreamReaderThread(self._process.stdout)
         self._error_stream = StreamReaderThread(self._process.stderr)
@@ -847,6 +855,8 @@ class Process(object):
         return self._process.poll() is None
 
     def kill(self, force=False):
+        if not self._process:
+            return
         if force:
             self._process.kill()
         pid = self._process.pid
@@ -886,7 +896,7 @@ class StreamReaderThread(object):
                 result += self._queue.get_nowait()
             except Empty:
                 pass
-        return result
+        return result.decode(DEFAULT_OUTPUT_ENCODING)
 
 
 # stole this off the internet. Nifty.
