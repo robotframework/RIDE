@@ -11,6 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+from robotide.context.platform import IS_WINDOWS
 
 import wx
 
@@ -130,22 +131,15 @@ class _ActionHandler(wx.Window):
 
 class _CanBeRenamed(object):
 
-    _begin_label_edit_started = False
-
     def OnRename(self, event):
         self.begin_label_edit()
 
     def begin_label_edit(self):
-        # This prevents looping in windows
-        if self._begin_label_edit_started:
-            return
-        self._begin_label_edit_started = True
         def label_edit():
             #FIXME: yep.yep.yep.yep.yep
             node = self._tree._controller.find_node_by_controller(self.controller)
             if node:
                 self._tree.EditLabel(node)
-            self._begin_label_edit_started = False
         # Must handle pending events before label edit
         # This is a fix for situations where there is a pending action
         # that will change this label (Text Editor all changing actions)
