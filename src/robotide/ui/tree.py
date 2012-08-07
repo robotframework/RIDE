@@ -714,7 +714,10 @@ class TreeLabelEditListener(object):
         # Reset edit control as it doesn't seem to reset it in case the focus goes directly
         # away from the tree control
         # Use CallAfter to prevent messing up the current end label edit
-        wx.CallAfter(self._tree.ResetEditControl)
+        # .. and the another CallAfter because of
+        # customtreectrl.TreeTextCtrl#OnChar will call CallAfter(self.Finish) when Enter is pressed
+        # --> Results in PyDeadObject if called after ResetEditControl..
+        wx.CallAfter(wx.CallAfter, self._tree.ResetEditControl)
 
     def OnDelete(self, event):
         editor = self._tree.GetEditControl()
