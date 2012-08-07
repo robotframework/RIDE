@@ -11,7 +11,6 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from robotide.context.platform import IS_WINDOWS
 
 import wx
 
@@ -28,8 +27,7 @@ from robotide.editor.editordialogs import (TestCaseNameDialog,
     CopyUserKeywordDialog)
 from robotide.ui.progress import LoadProgressObserver
 from robotide.usages.UsageRunner import Usages, ResourceFileUsages
-from .filedialogs import (AddSuiteDialog, ChangeFormatDialog,
-    NewExternalResourceDialog, NewResourceDialog, AddResourceDialog)
+from .filedialogs import (AddSuiteDialog, ChangeFormatDialog, NewResourceDialog, AddResourceDialog)
 from robotide.widgets import PopupMenuItems
 from .progress import RenameProgressObserver
 from .resourcedialogs import ResourceRenameDialog, ResourceDeleteDialog
