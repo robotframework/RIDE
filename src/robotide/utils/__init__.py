@@ -23,6 +23,7 @@ from robot.utils import printable_name, normalize, eq, ET, \
     get_timestamp
 from eventhandler import RideEventHandler
 from variablematcher import is_variable, is_scalar_variable, is_list_variable, \
+    is_list_variable_subitem, \
     get_variable, get_variable_basename, find_variable_basenames, \
     value_contains_variable
 from highlightmatcher import highlight_matcher

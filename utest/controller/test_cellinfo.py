@@ -51,6 +51,7 @@ class TestCellInfo(unittest.TestCase):
         cls.keyword2 = keyword('KW2')
         cls.keyword3 = keyword('KW3')
         cls.keyword4 = keyword('KW4')
+        cls.keyword5 = keyword('KW5')
 
     def tearDown(self):
         self.test.execute(DeleteRows([i for i in range(len(self.test.steps))]))
@@ -67,6 +68,12 @@ class TestCellInfo(unittest.TestCase):
         self._verify_string_change(0, 1, CellType.MANDATORY)
         self._verify_string_change(0, 2, CellType.OPTIONAL)
         self._verify_string_change(0, 3, CellType.MUST_BE_EMPTY)
+
+    def test_list_variables_item_in_keyword_args(self):
+        self.test.execute(PasteArea((0,0), [[self.keyword5.name, '@{LIST_VARIABLE}[0]']]))
+        self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.KEYWORD)
+        self._verify_cell_info(0, 1, ContentType.VARIABLE, CellType.MANDATORY)
+        self._verify_cell_info(0, 2, ContentType.EMPTY, CellType.MANDATORY)
 
     def test_keyword_with_optional_and_list_arguments(self):
         self.test.execute(ChangeCellValue(0, 0, self.keyword4.name))

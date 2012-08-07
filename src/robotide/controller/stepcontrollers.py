@@ -115,7 +115,8 @@ class StepController(_BaseController):
         for idx, value in enumerate(self.args):
             if idx > arg_index:
                 return False
-            if utils.is_list_variable(value):
+            if utils.is_list_variable(value) and \
+               not utils.is_list_variable_subitem(value):
                 return True
         return False
 

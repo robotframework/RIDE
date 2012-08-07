@@ -1,6 +1,9 @@
 *** Test Cases ***
 Keissi
 
+*** Variables ***
+@{LIST_VARIABLE}  1  2  3
+
 *** Keywords ***
 KW1
     [Arguments]    ${mandatory}    ${optional}=
@@ -19,3 +22,8 @@ KW3
 KW4
     [Arguments]  ${optional}=val  @{others}
     No Operation
+
+KW5
+    [Arguments]  ${mandatory1}  ${mandatory2}
+    Log  ${mandatory1}
+    Log  ${mandatory2}

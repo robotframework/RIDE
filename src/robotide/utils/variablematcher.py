@@ -18,6 +18,7 @@ from robot.utils import matches
 _VAR_BODY = r'([^\}]|\\\})*'
 _SCALAR_VARIABLE_MATCHER = re.compile(r'^(\$\{'+_VAR_BODY+'\}) *=?$')
 _LIST_VARIABLE_MATCHER = re.compile(r'^(@\{'+_VAR_BODY+'\})( ?=?|\[\d*\])$')
+_LIST_VARIABLE_SUBITEM_END_MATCHER = re.compile(r'\[\d+\]\s*(=\s*)?$')
 
 def is_variable(value):
     return is_scalar_variable(value) or is_list_variable(value)
@@ -31,11 +32,14 @@ def _match_scalar_variable(value):
 def is_list_variable(value):
     return _match_list_variable(value)
 
+def is_list_variable_subitem(value):
+    return is_list_variable(value) and _LIST_VARIABLE_SUBITEM_END_MATCHER.search(value)
+
 def _match_list_variable(value):
     return _LIST_VARIABLE_MATCHER.match(value.strip())
 
 def get_variable(value):
-    "Returns variables name without equal sign '=' and indexing '[2]' or None"
+    """Returns variables name without equal sign '=' and indexing '[2]' or None"""
     match = is_variable(value)
     return match.groups()[0] if match else None
 
