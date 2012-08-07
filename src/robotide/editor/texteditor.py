@@ -138,7 +138,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         return True
 
     def is_focused(self):
-        return self.notebook.current_page_title == self.title
+        return (self.notebook.current_page_title == self.title) and (self._editor == wx.Window.FindFocus())
 
 
 class DataValidationHandler(object):
