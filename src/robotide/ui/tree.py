@@ -710,6 +710,10 @@ class TreeLabelEditListener(object):
         self._editing_label = False
         self._on_label_edit_called = False
         self._tree._controller.get_handler(event.GetItem()).end_label_edit(event)
+        # Reset edit control as it doesn't seem to reset it in case the focus goes directly
+        # away from the tree control
+        # Use CallAfter to prevent messing up the current end label edit
+        wx.CallAfter(self._tree.ResetEditControl)
 
     def OnDelete(self, event):
         editor = self._tree.GetEditControl()
