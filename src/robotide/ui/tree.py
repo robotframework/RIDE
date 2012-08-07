@@ -703,8 +703,9 @@ class TreeLabelEditListener(object):
         if not self._on_label_edit_called:
             self._on_label_edit_called = True
             handler = self._tree._controller.get_handler()
-            if handler:
-                handler.begin_label_edit()
+            if handler and not handler.begin_label_edit():
+                    self._on_label_edit_called = False
+                    self._editing_label = False
 
     def OnLabelEdited(self, event):
         self._editing_label = False

@@ -85,7 +85,7 @@ class _ActionHandler(wx.Window):
         self._popup_creator.show(self, PopupMenuItems(self, self._actions),
                                  self.controller)
     def begin_label_edit(self):
-        pass
+        return False
 
     def end_label_edit(self, event):
         pass
@@ -142,6 +142,7 @@ class _CanBeRenamed(object):
         # This is a fix for situations where there is a pending action
         # that will change this label (Text Editor all changing actions)
         wx.CallAfter(label_edit)
+        return True
 
     def end_label_edit(self, event):
         if not event.IsEditCancelled() and \
@@ -283,7 +284,7 @@ class ResourceFileHandler(_CanBeRenamed, TestDataHandler):
 
     def begin_label_edit(self):
         self._set_node_label(self.controller.basename)
-        _CanBeRenamed.begin_label_edit(self)
+        return _CanBeRenamed.begin_label_edit(self)
 
     def end_label_edit(self, event):
         if not event.IsEditCancelled():
@@ -327,7 +328,7 @@ class TestCaseFileHandler(_CanBeRenamed, TestDataHandler):
 
     def begin_label_edit(self):
         self._set_node_label(self.controller.basename)
-        _CanBeRenamed.begin_label_edit(self)
+        return _CanBeRenamed.begin_label_edit(self)
 
     def end_label_edit(self, event):
         if not event.IsEditCancelled():
