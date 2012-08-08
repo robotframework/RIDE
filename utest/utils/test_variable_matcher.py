@@ -42,6 +42,10 @@ class TestIsListVariable(_BaseTestIsVariable, unittest.TestCase):
     def test_variable_with_index(self):
         assert_true(is_list_variable('@{list}[21]'))
 
+    def test_list_variable_subitem(self):
+        assert_true(is_list_variable_subitem('@{SOME_LIST}[3]'))
+        assert_false(is_list_variable_subitem('@{justlist}'))
+
 class TestGetVariable(unittest.TestCase):
 
     def test_get_scalar_variable(self):
