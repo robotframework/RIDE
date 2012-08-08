@@ -209,7 +209,7 @@ class PybotProfile(BaseProfile):
 
     def OnArgumentsChanged(self, evt):
         args = self._arguments.GetValue()
-        self._validate_arguments(args)
+        self._validate_arguments(args or u'')
         self.set_setting("arguments", args)
 
     def _validate_arguments(self, args):
