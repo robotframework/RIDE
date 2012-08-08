@@ -130,7 +130,7 @@ class _ActionHandler(wx.Window):
 class _CanBeRenamed(object):
 
     def OnRename(self, event):
-        self.begin_label_edit()
+        self._tree.label_editor.OnLabelEdit()
 
     def begin_label_edit(self):
         def label_edit():
@@ -283,12 +283,15 @@ class ResourceFileHandler(_CanBeRenamed, TestDataHandler):
         return self.OnDelete(event)
 
     def begin_label_edit(self):
+        self._old_label = self._node.GetText()
         self._set_node_label(self.controller.basename)
         return _CanBeRenamed.begin_label_edit(self)
 
     def end_label_edit(self, event):
         if not event.IsEditCancelled():
             self.controller.execute(RenameResourceFile(event.GetLabel(), self._check_should_rename_static_imports))
+        else:
+            self._set_node_label(self._old_label)
 
     def _check_should_rename_static_imports(self):
         return ResourceRenameDialog(self.controller).execute()
@@ -327,12 +330,15 @@ class TestCaseFileHandler(_CanBeRenamed, TestDataHandler):
         return self.OnDelete(event)
 
     def begin_label_edit(self):
+        self._old_label = self._node.GetText()
         self._set_node_label(self.controller.basename)
         return _CanBeRenamed.begin_label_edit(self)
 
     def end_label_edit(self, event):
         if not event.IsEditCancelled():
             self.controller.execute(RenameFile(event.GetLabel()))
+        else:
+            self._set_node_label(self._old_label)
 
     def _set_node_label(self, label):
         self._tree.SetItemText(self._node, label)

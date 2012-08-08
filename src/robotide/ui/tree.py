@@ -62,7 +62,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         self._images = TreeImageList()
         self._silent_mode = False
         self.SetImageList(self._images)
-        self._label_editor = TreeLabelEditListener(self, action_registerer)
+        self.label_editor = TreeLabelEditListener(self, action_registerer)
         self._controller.bind_keys()
         self._subscribe_to_messages()
         self._popup_creator = PopupCreator()
@@ -693,13 +693,13 @@ class TreeLabelEditListener(object):
         #See http://code.google.com/p/robotframework-ride/issues/detail?id=756
         self._editing_label = True
         if not self._on_label_edit_called:
-            self.OnLabelEdit(None)
+            self.OnLabelEdit()
             event.Veto() # On windows CustomTreeCtrl will create Editor component
             # And we want this to be done by the handler -- as it knows if there should be one or not
             # And because this will make it work the same way as when pressing F2
             # .. so in other words there is a bug if we don't Veto this event
 
-    def OnLabelEdit(self, event):
+    def OnLabelEdit(self, event=None):
         if not self._on_label_edit_called:
             self._on_label_edit_called = True
             handler = self._tree._controller.get_handler()
