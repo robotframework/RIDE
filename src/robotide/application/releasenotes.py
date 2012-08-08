@@ -86,7 +86,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 0.46</h2>
+<h2>Release notes for 0.47</h2>
 <table border="1">
 <tr>
 <td><p><b>ID</b></p></td>
@@ -95,35 +95,65 @@ RELEASE_NOTES = """
 <td><p><b>Summary</b></p></td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=881">Issue 881</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=987">Issue 987</a></td>
 <td>Defect</td>
-<td>Medium</td>
-<td>Saving new testsuites with no tests with RIDE, causes an invalid data error when trying to open the suite later</td>
+<td>High</td>
+<td>Saving during empty row edit will remove next row</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=974">Issue 974</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1021">Issue 1021</a></td>
 <td>Defect</td>
-<td>Medium</td>
-<td>When running test cases, the working directory is where RIDE is started, not where the test cases are located</td>
+<td>High</td>
+<td>Renaming a suite file while empty rows causes corrupt data</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=988">Issue 988</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=923">Issue 923</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>Table borders are not shown in suite/test/keyword documentation</td>
+<td>Rename Test Case/Keyword does not take effect when focus is moved away</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=870">Issue 870</a></td>
-<td>Enhancement</td>
-<td>Medium</td>
-<td>tree: Show unused resource files</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=531">Issue 531</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=982">Issue 982</a></td>
 <td>Defect</td>
-<td>Low</td>
-<td>Delete key does not work in test case/user keyword rename on Windows</td>
+<td>Medium</td>
+<td>Pressing F2 on a non renameable tree element will disable F2</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=989">Issue 989</a></td>
+<td>Defect</td>
+<td>Medium</td>
+<td>Getting "Failed: Data source does not exist" errors</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1015">Issue 1015</a></td>
+<td>Defect</td>
+<td>Medium</td>
+<td>Directory doesn't accept non-ascii characters (V.0.46.1)</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1017">Issue 1017</a></td>
+<td>Defect</td>
+<td>Medium</td>
+<td>Argument highlighting is lost when passing in individual list items as arguments</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1019">Issue 1019</a></td>
+<td>Defect</td>
+<td>Medium</td>
+<td>Unicode characters in test execution output</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1022">Issue 1022</a></td>
+<td>Defect</td>
+<td>Medium</td>
+<td>Delete-key in text editor and renaming</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=900">Issue 900</a></td>
+<td>Defect</td>
+<td></td>
+<td>Rename cancel does not return dirty status</td>
 </tr>
 </table>
-<p>Altogether 5 issues.</p>
+<p>Altogether 10 issues.</p>
 """
