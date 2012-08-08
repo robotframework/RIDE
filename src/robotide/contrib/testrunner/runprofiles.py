@@ -107,7 +107,7 @@ class PybotProfile(BaseProfile):
     It is assumed that pybot is on the path
     '''
     name = "pybot"
-    default_settings = {"arguments": "",
+    default_settings = {"arguments": u"",
                         "include_tags": "",
                         "exclude_tags": "",
                         "apply_include_tags": False,
