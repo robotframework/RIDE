@@ -28,6 +28,7 @@ linux it's /tmp).
 You can safely manually remove these directories, except for the one
 being used for a currently running test.
 '''
+import ctypes
 import subprocess
 from Queue import Queue, Empty
 import tempfile
@@ -252,18 +253,13 @@ class TestRunnerPlugin(Plugin):
         self.save_setting("auto_save", evt.IsChecked())
 
     def OnStop(self, event):
-        '''Called when the user clicks the "Stop" button
+        """Called when the user clicks the "Stop" button
 
         This sends a SIGINT to the running process, with the
         same effect as typing control-c when running from the
-        command line.
-        '''
+        command line."""
         if self._process:
             self._output("process %s killed\n" % self._process.kill())
-            self._set_stopped()
-            self._progress_bar.Stop()
-            self._process_timer.Stop()
-            self._process = None
 
     def OnRun(self, event):
         '''Called when the user clicks the "Run" button'''
@@ -348,6 +344,8 @@ class TestRunnerPlugin(Plugin):
         self._progress_bar.Stop()
         if self._process_timer:
             self._process_timer.Stop()
+        self._set_stopped()
+        self._progress_bar.Stop()
 
         now = datetime.datetime.now()
         self._output("\ntest finished %s" % now.strftime("%c"))
@@ -716,6 +714,7 @@ class TestRunnerPlugin(Plugin):
             self._handle_log_file(args)
         if event == 'start_keyword':
             self._handle_start_keyword(args)
+            self._progress_bar.set_current_keyword(args[0])
         if event == 'end_keyword':
             self._handle_end_keyword()
         if event == 'log_message':
@@ -900,14 +899,16 @@ class Process(object):
     def run_command(self, command):
         # We need to supply an stdin for subprocess, because otherways in pythonw
         # subprocess will try using sys.stdin which will cause an error in windows
+        flags = subprocess.CREATE_NEW_PROCESS_GROUP if IS_WINDOWS else 0
         self._process = subprocess.Popen(
             command.encode(SYSTEM_ENCODING),
             bufsize=0,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             stdin=subprocess.PIPE,
-            shell=True,
-            cwd=self._cwd.encode(SYSTEM_ENCODING))
+            shell=False if IS_WINDOWS else True,
+            cwd=self._cwd.encode(SYSTEM_ENCODING), creationflags=flags,
+            preexec_fn=os.setsid if not IS_WINDOWS else None)
         self._process.stdin.close()
         self._output_stream = StreamReaderThread(self._process.stdout)
         self._error_stream = StreamReaderThread(self._process.stderr)
@@ -933,11 +934,12 @@ class Process(object):
             try:
                 if os.name == 'nt' and sys.version_info < (2,7):
                     import ctypes
-                    kernel32 = ctypes.windll.kernel32
-                    handle = kernel32.OpenProcess(1, 0, pid)
-                    kernel32.TerminateProcess(handle, 0)
+                    ctypes.windll.kernel32.TerminateProcess(int(self._process._handle), -1)
                 else:
-                    os.kill(pid, signal.SIGINT)
+                    if IS_WINDOWS:
+                        os.kill(pid, signal.CTRL_BREAK_EVENT)
+                    else:
+                        os.killpg(pid, signal.SIGINT)
             except OSError:
                 pass
         return pid
