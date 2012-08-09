@@ -68,7 +68,7 @@ from robotide.publish import RideTestCaseAdded, RideOpenSuite, RideSuiteAdded, \
                               RideItemNameChanged, RideTestCaseRemoved
 from robotide.contrib.testrunner import runprofiles
 from robotide.widgets import Label
-from robotide.context import IS_WINDOWS
+from robotide.context import IS_WINDOWS, IS_MAC
 
 ID_RUN = wx.NewId()
 ID_STOP = wx.NewId()
@@ -137,7 +137,7 @@ class TestRunnerPlugin(Plugin):
 
     def _register_shortcuts(self):
         self.register_shortcut('Ctrl-C', self._copy_from_out)
-        if IS_WINDOWS:
+        if IS_WINDOWS or IS_MAC:
             self.register_shortcut('Del', self._delete_pressed)
 
     def _delete_pressed(self, event):
