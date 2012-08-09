@@ -30,6 +30,7 @@ from robot.errors import DataError, Information, FrameworkError
 from robot.run import USAGE
 from robot.utils.argumentparser import ArgumentParser
 from robot.utils.encoding import SYSTEM_ENCODING
+from robotide.utils import overrides
 
 from robotide.widgets import Label
 
@@ -58,6 +59,10 @@ class BaseProfile(object):
     def get_toolbar(self, parent):
         '''Returns a panel with toolbar controls to be shown for this profile'''
         return wx.Panel(parent, wx.ID_ANY)
+
+    def delete_pressed(self):
+        '''Handle delete key pressing'''
+        pass
 
     def get_custom_args(self):
         '''Return a list of arguments unique to this profile.
@@ -160,6 +165,14 @@ class PybotProfile(BaseProfile):
 
     def get_toolbar_items(self):
         return [self.ArgumentsPanel, self.TagsPanel]
+
+    @overrides(BaseProfile)
+    def delete_pressed(self):
+        focused = wx.Window.FindFocus()
+        if focused not in [self._arguments, self._include_tags, self._exclude_tags]:
+            return
+        start, end = focused.GetSelection()
+        focused.Remove(start, max(end, start+1))
 
     def ArgumentsPanel(self, parent):
         panel = wx.Panel(parent, wx.ID_ANY)

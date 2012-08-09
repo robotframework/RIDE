@@ -68,7 +68,7 @@ from robotide.publish import RideTestCaseAdded, RideOpenSuite, RideSuiteAdded, \
                               RideItemNameChanged, RideTestCaseRemoved
 from robotide.contrib.testrunner import runprofiles
 from robotide.widgets import Label
-
+from robotide.context import IS_WINDOWS
 
 ID_RUN = wx.NewId()
 ID_STOP = wx.NewId()
@@ -130,10 +130,20 @@ class TestRunnerPlugin(Plugin):
         self._server_thread = None
         self._port = None
         self._running = False
-        self.register_shortcut('Ctrl-C', self._copy_from_out)
         self._currently_executing_keyword = None
         self._tests_to_run = set()
         self._running_results = TestExecutionResults()
+        self._register_shortcuts()
+
+    def _register_shortcuts(self):
+        self.register_shortcut('Ctrl-C', self._copy_from_out)
+        if IS_WINDOWS:
+            self.register_shortcut('Del', self._delete_pressed)
+
+    def _delete_pressed(self, event):
+        if self.notebook.current_page_title != self.title:
+            return
+        self.get_current_profile().delete_pressed()
 
     def _copy_from_out(self, event):
         if self.notebook.current_page_title != self.title:
