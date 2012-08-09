@@ -99,7 +99,8 @@ class RunConfigs(_BaseController):
         config.name, config.command, config.doc = name, command, doc
 
     def delete(self, index):
-        self._configs.pop(index)
+        if index < len(self._configs):
+            self._configs.pop(index)
 
     def data_to_save(self):
         return [ (c.name, c.command, c.doc) for c in self._configs ]
