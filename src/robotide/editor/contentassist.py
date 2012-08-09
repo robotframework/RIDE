@@ -138,6 +138,7 @@ class ContentAssistTextCtrl(_ContentAssistTextCtrlBase, wx.TextCtrl):
         wx.TextCtrl.__init__(self, parent, size=size, style=wx.WANTS_CHARS)
         _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
 
+
 class Suggestions(object):
 
     def __init__(self, suggestion_source):
@@ -161,13 +162,30 @@ class Suggestions(object):
             return [(key, val) for key, val in self._previous_choices
                                     if normalize(key).startswith(normalize(value))]
         choices = self._suggestion_source.get_suggestions(value, row)
-        return self._format_choices(choices, value)
+        duplicate_names = self._get_duplicate_names(choices)
+        return self._format_choices(choices, value, duplicate_names)
 
-    def _format_choices(self, data, prefix):
-        return [(self._format(val, prefix), val) for val in data]
+    def _get_duplicate_names(self, choices):
+        results = set()
+        normalized_names = [normalize(ch.name) for ch in choices]
+        for choice in choices:
+            normalized = normalize(choice.name)
+            if normalized_names.count(normalized) > 1:
+                results.add(normalized)
+        return results
 
-    def _format(self, choice, prefix):
-        return choice.name if normalize(choice.name).startswith(normalize(prefix)) else choice.longname
+    def _format_choices(self, choices, prefix, duplicate_names):
+        return [(self._format(val, prefix, duplicate_names), val) for val in choices]
+
+    def _format(self, choice, prefix, duplicate_names):
+        return choice.name if self._matches_unique_shortname(choice, prefix, duplicate_names) else choice.longname
+
+    def _matches_unique_shortname(self, choice, prefix, duplicate_names):
+        if not normalize(choice.name).startswith(normalize(prefix)):
+            return False
+        if normalize(choice.name) in duplicate_names:
+            return False
+        return True
 
 
 class ContentAssistPopup(object):

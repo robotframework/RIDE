@@ -1,4 +1,5 @@
 import unittest
+from robotide.editor.contentassist import Suggestions
 from robotide.namespace.suggesters import SuggestionSource, HistorySuggester
 
 class TestSuggestionSources(unittest.TestCase):
@@ -42,6 +43,50 @@ class TestSuggestionSources(unittest.TestCase):
         mock.content_assist_values = lambda value:[suggestion]
         return mock
 
+
+class TestSuggestions(unittest.TestCase):
+
+    def test_suggestions_are_cached(self):
+        mock_source = self._create_mock_source()
+        suggestions = Suggestions(mock_source)
+        self.assertEquals(mock_source.request_count, 0)
+        suggestions.get_for('a')
+        self.assertEquals(mock_source.request_count, 1)
+        suggestions.get_for('aa')
+        self.assertEquals(mock_source.request_count, 1)
+
+    def test_cache_is_not_used_when_current_search_is_not_subset_of_previous(self):
+        mock_source = self._create_mock_source()
+        suggestions = Suggestions(mock_source)
+        self.assertEquals(mock_source.request_count, 0)
+        suggestions.get_for('aa')
+        self.assertEquals(mock_source.request_count, 1)
+        suggestions.get_for('a')
+        self.assertEquals(mock_source.request_count, 2)
+
+    def test_suggestions_for_duplicates(self):
+        mock_source = self._create_mock_source()
+        suggestions = Suggestions(mock_source)
+        choices = suggestions.get_for('a')
+        self.assertEquals(choices, ['aarnio', 'fo.aaatio', 'bA.AAATIO'])
+
+    def _create_mock_source(self):
+        mock_source = lambda:0
+        mock_source.request_count = 0
+        def get(name, *args):
+            mock_source.request_count += 1
+            return self._suggestions(('aarnio', 'fo.aarnio'), ('aaatio', 'fo.aaatio'), ('AAATIO', 'bA.AAATIO'))
+        mock_source.get_suggestions = get
+        return mock_source
+
+    def _suggestions(self, *args):
+        return [self._sug(name, longname) for (name, longname) in args]
+
+    def _sug(self, name, longname):
+        sug = lambda:0
+        sug.name = name
+        sug.longname = longname
+        return sug
 
 if __name__ == '__main__':
     unittest.main()
