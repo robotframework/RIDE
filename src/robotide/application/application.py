@@ -77,10 +77,23 @@ class RIDE(wx.App):
                 return pl._plugin
 
     def _load_data(self):
-        if self._initial_path:
+        path = self._initial_path or self._get_latest_path()
+        if path:
             with self.active_event_loop():
                 observer = LoadProgressObserver(self.frame)
-                self._controller.load_data(self._initial_path, observer)
+                self._controller.load_data(path, observer)
+
+    def _get_latest_path(self):
+        recent = self._get_recentfiles_plugin()
+        if not recent or not recent.recent_files:
+            return None
+        return recent.recent_files[0]
+
+    def _get_recentfiles_plugin(self):
+        from robotide.recentfiles import RecentFilesPlugin
+        for pl in self.get_plugins():
+            if isinstance(pl._plugin, RecentFilesPlugin):
+                return pl._plugin
 
     def get_plugins(self):
         return self._plugin_loader.plugins
