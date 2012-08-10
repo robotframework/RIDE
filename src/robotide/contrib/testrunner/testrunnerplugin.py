@@ -137,6 +137,8 @@ class TestRunnerPlugin(Plugin):
 
     def _register_shortcuts(self):
         self.register_shortcut('Ctrl-C', self._copy_from_out)
+        self.register_shortcut('Ctrl-L', self.OnShowLog)
+        self.register_shortcut('Ctrl-R', self.OnShowReport)
         if IS_WINDOWS or IS_MAC:
             self.register_shortcut('Del', self._delete_pressed)
 
@@ -549,9 +551,9 @@ class TestRunnerPlugin(Plugin):
                              longHelp="Stop a running test")
         toolbar.AddSeparator()
         toolbar.AddLabelTool(ID_SHOW_REPORT, " Report", reportImage,
-                             shortHelp = "View Robot Report in Browser")
+                             shortHelp = "View Robot Report in Browser (Ctrl-R)")
         toolbar.AddLabelTool(ID_SHOW_LOG, " Log", logImage,
-                             shortHelp = "View Robot Log in Browser")
+                             shortHelp = "View Robot Log in Browser (Ctrl-L)")
         toolbar.AddSeparator()
         # the toolbar API doesn't give us a way to specify padding which
         # is why the label has a couple spaces after the colon. gross,
