@@ -107,6 +107,7 @@ TODO: These are incomplete
   > paver register
 
 * Upload new downloads
+
   currently (10.8.2012) it seems that something creates garbage to development directory so I always take a new clone for distribution packages
 
 ::
