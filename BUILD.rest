@@ -91,16 +91,32 @@ Releasing
 =========
 TODO: These are incomplete
 
-* Update the ReleaseNotes
+* Avoid releasing on Fridays!
+* Usually I try to do releases before lunch - this gives us some time to react to possible regressions during the release day
+* Update the ReleaseNotes with "python get_issues.py rotes ride 0.xx" (the script is from robotframework-wiki-project / tools)
 
 ::
 
-  > version=0.xx
-  > echo $version > VERSION.txt
-  > git commit VERSION.txt -m 'Version $version'
-  > git tag v$version
+  > paver test
+  > paver set_version 0.xx
+  > paver sdist
+  > git commit -am 'Version 0.xx'
+  > git tag $version
   > git push
   > git push --tags
+  > paver register
 
 * Upload new downloads
+  currently (10.8.2012) it seems that something creates garbage to development directory so I always take a new clone for distribution packages
+
+::
+
+  > cd ..
+  > git clone [your ride clone] ride-release
+  > cd ride-release
+  > git checkout 0.xx
+  > paver sdist OR paver wininst
+  > cd ..
+  > rm -rf ride-release
+
 * Announce on usergroup, robot homepage, and twitter
