@@ -7,7 +7,7 @@ This document describes the technical details of the RIDE project:
  * What's in the source
  * How to contribute
  * How to make a release
-
+ * Settings migrations
 
 Developing
 ==========
@@ -129,3 +129,23 @@ This should efficiently limit the number of users that encounter a specific defe
   > rm -rf ride-release
 
 * Announce on usergroup, robot homepage, and twitter
+
+
+Settings migration
+==================
+
+RIDE has a user specific configuration file that you usually don't need to worry about.
+But sometimes old configurations should be changed during RIDE version update. For example when the old configuration
+had a bug or new RIDE uses a differing kind of configuration parameter then the old version.
+
+For these situations I've created a configuration migration system that can do these changes when a new version of RIDE is taken in to use.
+The migrator is currenlty (10.8.2012) located at preferences/settings.py/SettingsMigrator.
+
+The mechanism works in the following way:
+ * Settings have a settings_version attribute that should be updated when a new migration is needed
+ * the SettingsMigrator.migrate method should be updated so that it will also do the new migration
+ * You only need to add a migration from the previous version to current (the migrate method will handle all the older versions - 
+so only the last configuration delta is needed)
+
+Hope this helps when persistent things change a lot.
+
