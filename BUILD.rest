@@ -91,8 +91,16 @@ Releasing
 =========
 TODO: These are incomplete
 
-* Avoid releasing on Fridays!
+* Release early and often!
+
+Currently (10.8.2012) RIDE is used in many differing environments by a rather large userbase (reported bugs per feature is 1.56 - compared to RF:s 0.75). 
+Thus simulating (testing) all the possible use cases is more or less impossible (NOTE: You should still try to test all the relevant cases). 
+We can still keep the user observed quality good by doing small changes at a time and reacting fast to any observed regressions.
+This should efficiently limit the number of users that encounter a specific defect.
+
 * Usually I try to do releases before lunch - this gives us some time to react to possible regressions during the release day
+* Avoid releasing on Fridays! - lousy reaction time (or weekend work) if there is a regression
+* Manually test run RIDE in windows, linux and OSX
 * Update the ReleaseNotes with "python get_issues.py rotes ride 0.xx" (the script is from robotframework-wiki-project / tools)
 
 ::
