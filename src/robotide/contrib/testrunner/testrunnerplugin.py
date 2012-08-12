@@ -609,25 +609,7 @@ class TestRunnerPlugin(Plugin):
         self.header_panel = wx.Panel(self.panel)
         self.configPanel = self._build_config_panel(panel)
         self._right_panel = wx.Panel(self.panel)
-        self.out = wx.stc.StyledTextCtrl(self._right_panel, wx.ID_ANY, style=wx.SUNKEN_BORDER)
-        font=wx.SystemSettings.GetFont(wx.SYS_SYSTEM_FIXED_FONT)
-        if not font.IsFixedWidth():
-            # fixed width fonts are typically a little bigger than their variable width
-            # peers so subtract one from the point size.
-            font = wx.Font(font.GetPointSize()-1, wx.FONTFAMILY_MODERN, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL)
-        face = font.GetFaceName()
-        size = font.GetPointSize()
-        self.out.SetFont(font)
-        self.out.StyleSetSpec(wx.stc.STC_STYLE_DEFAULT,"face:%s,size:%d" % (face, size))
-        self.out.StyleSetSpec(STYLE_STDERR, "fore:#b22222") # firebrick
-        self.out.SetScrollWidth(100)
-
-        self.out.SetMarginLeft(10)
-        self.out.SetMarginWidth(0,0)
-        self.out.SetMarginWidth(1,0)
-        self.out.SetMarginWidth(2,0)
-        self.out.SetMarginWidth(3,0)
-        self.out.SetReadOnly(True)
+        self.out = self._create_output_textctrl()
         self._clear_output_window()
 
         self._progress_bar = ProgressBar(self._right_panel)
@@ -655,6 +637,34 @@ class TestRunnerPlugin(Plugin):
         self.panel.Bind(wx.EVT_WINDOW_DESTROY, self.OnClose)
 
         self.add_tab(panel, self.title, allow_closing=False)
+
+    def _create_output_textctrl(self):
+        out = wx.stc.StyledTextCtrl(self._right_panel, wx.ID_ANY, style=wx.SUNKEN_BORDER)
+        font = self._create_font()
+        face = font.GetFaceName()
+        size = font.GetPointSize()
+        out.SetFont(font)
+        out.StyleSetSpec(wx.stc.STC_STYLE_DEFAULT,"face:%s,size:%d" % (face, size))
+        out.StyleSetSpec(STYLE_STDERR, "fore:#b22222") # firebrick
+        out.SetScrollWidth(100)
+        self._set_margins(out)
+        out.SetReadOnly(True)
+        return out
+
+    def _set_margins(self, out):
+        out.SetMarginLeft(10)
+        out.SetMarginWidth(0,0)
+        out.SetMarginWidth(1,0)
+        out.SetMarginWidth(2,0)
+        out.SetMarginWidth(3,0)
+
+    def _create_font(self):
+        font=wx.SystemSettings.GetFont(wx.SYS_SYSTEM_FIXED_FONT)
+        if not font.IsFixedWidth():
+            # fixed width fonts are typically a little bigger than their variable width
+            # peers so subtract one from the point size.
+            font = wx.Font(font.GetPointSize()-1, wx.FONTFAMILY_MODERN, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL)
+        return font
 
     def _post_result(self, event, *args):
         '''Endpoint of the listener interface
