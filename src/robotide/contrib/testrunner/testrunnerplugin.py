@@ -312,9 +312,13 @@ class TestRunnerPlugin(Plugin):
         self._report_file = self._log_file = None
 
     def _clear_output_window(self):
-        self.out.SetReadOnly(False)
-        self.out.ClearAll()
-        self.out.SetReadOnly(True)
+        self._clear_text(self.out)
+        self._clear_text(self.log_out)
+
+    def _clear_text(self, textctrl):
+        textctrl.SetReadOnly(False)
+        textctrl.ClearAll()
+        textctrl.SetReadOnly(True)
 
     def OnShowReport(self, evt):
         '''Called when the user clicks on the "Report" button'''
@@ -411,41 +415,41 @@ class TestRunnerPlugin(Plugin):
             self._reload_model()
         self.show_tab(self.panel)
 
-    def _AppendText(self, string, source="stdout"):
+    def _AppendText(self, textctrl, string, source="stdout"):
         if not self.panel:
             return
         try:
-            width, _ = self.out.GetTextExtent(string)
-            if self.out.GetScrollWidth() < width+50:
-                self.out.SetScrollWidth(width+50)
+            width, _ = textctrl.GetTextExtent(string)
+            if textctrl.GetScrollWidth() < width+50:
+                textctrl.SetScrollWidth(width+50)
         except UnicodeDecodeError:
             # I don't know what unicode data it is complaining about,
             # but I think the best thing is just to ignore it
             pass
 
         # we need this information to decide whether to autoscroll or not
-        new_text_start = self.out.GetLength()
-        linecount = self.out.GetLineCount()
-        lastVisibleLine = self.out.GetFirstVisibleLine() + self.out.LinesOnScreen() - 1
+        new_text_start = textctrl.GetLength()
+        linecount = textctrl.GetLineCount()
+        lastVisibleLine = textctrl.GetFirstVisibleLine() + textctrl.LinesOnScreen() - 1
 
-        self.out.SetReadOnly(False)
+        textctrl.SetReadOnly(False)
         try:
-            self.out.AppendText(string)
+            textctrl.AppendText(string)
         except UnicodeDecodeError,e:
             # I'm not sure why I sometimes get this, and I don't know what I can
             # do other than to ignore it.
             pass
 
-        new_text_end = self.out.GetLength()
+        new_text_end = textctrl.GetLength()
 
-        self.out.StartStyling(new_text_start, 0x1f)
+        textctrl.StartStyling(new_text_start, 0x1f)
         if source == "stderr":
-            self.out.SetStyling(new_text_end-new_text_start, STYLE_STDERR)
+            textctrl.SetStyling(new_text_end-new_text_start, STYLE_STDERR)
 
-        self.out.SetReadOnly(True)
+        textctrl.SetReadOnly(True)
         if lastVisibleLine >= linecount-4:
-            linecount = self.out.GetLineCount()
-            self.out.ScrollToLine(linecount)
+            linecount = textctrl.GetLineCount()
+            textctrl.ScrollToLine(linecount)
 
     def _add_tmp_outputdir_if_not_given_by_user(self, command, standard_args):
         if "--outputdir" not in command and "-d" not in command:
@@ -531,7 +535,7 @@ class TestRunnerPlugin(Plugin):
 
     def _output(self, string, source="stdout"):
         '''Put output to the text control'''
-        self._AppendText(string, source)
+        self._AppendText(self.out, string, source)
 
     def _build_local_toolbar(self):
         toolbar = wx.ToolBar(self.panel, wx.ID_ANY, style=wx.TB_HORIZONTAL|wx.TB_HORZ_TEXT)
@@ -610,6 +614,7 @@ class TestRunnerPlugin(Plugin):
         self.configPanel = self._build_config_panel(panel)
         self._right_panel = wx.Panel(self.panel)
         self.out = self._create_output_textctrl()
+        self.log_out = self._create_output_textctrl()
         self._clear_output_window()
 
         self._progress_bar = ProgressBar(self._right_panel)
@@ -617,6 +622,7 @@ class TestRunnerPlugin(Plugin):
         right_panel_sizer = wx.BoxSizer(wx.VERTICAL)
         right_panel_sizer.Add(self._progress_bar, 0, wx.EXPAND)
         right_panel_sizer.Add(self.out, 1, wx.EXPAND)
+        right_panel_sizer.Add(self.log_out, 1, wx.EXPAND)
         self._right_panel.SetSizer(right_panel_sizer)
 
         header_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -684,12 +690,14 @@ class TestRunnerPlugin(Plugin):
             _, attrs = args
             longname = attrs['longname']
             self._running_results.set_running(self._get_test_controller(longname))
+            self._AppendText(self.log_out, 'Starting test: %s\n' % longname)
         if event == 'start_suite':
             _, attrs = args
             longname = attrs['longname']
         if event == 'end_test':
             _, attrs = args
             longname = attrs['longname']
+            self._AppendText(self.log_out, 'Ending test:   %s\n' % longname)
             if attrs['status'] == 'PASS':
                 self._progress_bar.Pass()
                 self._running_results.set_passed(self._get_test_controller(longname))
@@ -710,6 +718,10 @@ class TestRunnerPlugin(Plugin):
             self._progress_bar.set_current_keyword(args[0])
         if event == 'end_keyword':
             self._progress_bar.empty_current_keyword()
+        if event == 'log_message':
+            a = args[0]
+            if a['level'] not in ['TRACE', 'DEBUG']:
+                self._AppendText(self.log_out, '%s : %s : %s\n' % (a['timestamp'], a['level'].rjust(5), a['message']))
 
     def _get_test_controller(self, longname):
         return self._application.model.find_controller_by_longname(longname)
