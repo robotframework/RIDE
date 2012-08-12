@@ -112,7 +112,6 @@ This should efficiently limit the number of users that encounter a specific defe
   > git tag $version
   > git push
   > git push --tags
-  > paver register
 
 * Upload new downloads
 
@@ -127,6 +126,11 @@ This should efficiently limit the number of users that encounter a specific defe
   > paver sdist OR paver wininst
   > cd ..
   > rm -rf ride-release
+
+* Register new packages to PyPI - the Python Package Index. 
+  NOTE! RIDE automatic update notifier checks updates from PyPI - so no update notifications without this step.
+
+  > paver register
 
 * Announce on usergroup, robot homepage, and twitter
 
