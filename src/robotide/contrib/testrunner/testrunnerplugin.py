@@ -44,6 +44,7 @@ import posixpath
 import re
 import codecs
 from posixpath import curdir, sep, pardir, join
+from robot.output import LEVELS
 from robot.utils.encoding import SYSTEM_ENCODING
 from robot.utils.encodingsniffer import DEFAULT_OUTPUT_ENCODING
 from robotide.contrib.testrunner.runprofiles import CustomScriptProfile
@@ -134,6 +135,7 @@ class TestRunnerPlugin(Plugin):
         self._tests_to_run = set()
         self._running_results = TestExecutionResults()
         self._register_shortcuts()
+        self._min_log_level_number = LEVELS['INFO']
 
     def _register_shortcuts(self):
         self.register_shortcut('Ctrl-C', self._copy_from_out)
@@ -734,7 +736,7 @@ class TestRunnerPlugin(Plugin):
 
     def _handle_log_message(self, args):
         a = args[0]
-        if a['level'] not in ['TRACE', 'DEBUG']:
+        if LEVELS[a['level']] >= self._min_log_level_number:
             self._AppendText(self.log_out, '%s : %s : %s\n' % (a['timestamp'], a['level'].rjust(5), a['message']))
 
     def _get_test_controller(self, longname):
