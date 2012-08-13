@@ -645,17 +645,17 @@ class TestRunnerPlugin(Plugin):
         self.add_tab(panel, self.title, allow_closing=False)
 
     def _create_output_textctrl(self):
-        out = wx.stc.StyledTextCtrl(self._right_panel, wx.ID_ANY, style=wx.SUNKEN_BORDER)
+        textctrl = wx.stc.StyledTextCtrl(self._right_panel, wx.ID_ANY, style=wx.SUNKEN_BORDER)
         font = self._create_font()
         face = font.GetFaceName()
         size = font.GetPointSize()
-        out.SetFont(font)
-        out.StyleSetSpec(wx.stc.STC_STYLE_DEFAULT,"face:%s,size:%d" % (face, size))
-        out.StyleSetSpec(STYLE_STDERR, "fore:#b22222") # firebrick
-        out.SetScrollWidth(100)
-        self._set_margins(out)
-        out.SetReadOnly(True)
-        return out
+        textctrl.SetFont(font)
+        textctrl.StyleSetSpec(wx.stc.STC_STYLE_DEFAULT,"face:%s,size:%d" % (face, size))
+        textctrl.StyleSetSpec(STYLE_STDERR, "fore:#b22222") # firebrick
+        textctrl.SetScrollWidth(100)
+        self._set_margins(textctrl)
+        textctrl.SetReadOnly(True)
+        return textctrl
 
     def _set_margins(self, out):
         out.SetMarginLeft(10)
