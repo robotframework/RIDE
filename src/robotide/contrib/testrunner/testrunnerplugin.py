@@ -473,12 +473,28 @@ class TestRunnerPlugin(Plugin):
         '''Return the command (as a list) used to run the test'''
         profile = self.get_current_profile()
         command = profile.get_command_prefix()[:]
+        self._detect_message_log_level_for_listener(command)
         argfile = os.path.join(self._tmpdir, "argfile.txt")
         command.extend(["--argumentfile", argfile])
         command.extend(["--listener", self._get_listener_to_cmd()])
         command.append(self._get_suite_source_for_command())
         self._write_argfile(argfile, self._create_standard_args(command, profile))
         return command
+
+    def _detect_message_log_level_for_listener(self, command):
+        switch = None
+        self._min_log_level_number = LEVELS['INFO']
+        if '-L' in command:
+            switch = '-L'
+        elif '--loglevel' in command:
+            switch = '--loglevel'
+        else:
+            return
+        i = command.index(switch)
+        if len(command) == i:
+            return
+        level = command[i+1].upper().split(':')[0]
+        self._min_log_level_number = LEVELS.get(level, self._min_log_level_number)
 
     def _get_suite_source_for_command(self):
         cur = os.path.abspath(os.path.curdir)
