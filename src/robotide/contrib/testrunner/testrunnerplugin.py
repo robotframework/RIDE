@@ -152,9 +152,12 @@ class TestRunnerPlugin(Plugin):
     def _copy_from_out(self, event):
         if self.notebook.current_page_title != self.title:
             return
-        if not self.out.GetSTCFocus():
+        if self.out.GetSTCFocus():
+            self.out.Copy()
             return
-        self.out.Copy()
+        if self.log_out.GetSTCFocus():
+            self.log_out.Copy()
+            return
 
     def enable(self):
         self.tree.set_checkboxes_for_tests()
