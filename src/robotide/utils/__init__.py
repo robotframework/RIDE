@@ -31,7 +31,7 @@ from printing import Printing
 
 
 def html_format(text):
-    return robot.utils.html_format(text).replace('\n', '<br />\n')
+    return robot.utils.html_format(text)
 
 
 def name_from_class(item, drop=None):
