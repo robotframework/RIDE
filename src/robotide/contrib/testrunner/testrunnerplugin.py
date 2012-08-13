@@ -683,45 +683,59 @@ class TestRunnerPlugin(Plugin):
             # out from under us. In the immortal words of Jar Jar
             # Binks, "How rude!"
             return
-
         if event == 'pid':
-            self._pid_to_kill = int(args[0])
+            self._handle_pid(args)
         if event == 'start_test':
-            _, attrs = args
-            longname = attrs['longname']
-            self._running_results.set_running(self._get_test_controller(longname))
-            self._AppendText(self.log_out, 'Starting test: %s\n' % longname)
-        if event == 'start_suite':
-            _, attrs = args
-            longname = attrs['longname']
+            self._handle_start_test(args)
         if event == 'end_test':
-            _, attrs = args
-            longname = attrs['longname']
-            self._AppendText(self.log_out, 'Ending test:   %s\n' % longname)
-            if attrs['status'] == 'PASS':
-                self._progress_bar.Pass()
-                self._running_results.set_passed(self._get_test_controller(longname))
-            else:
-                self._progress_bar.Fail()
-                self._running_results.set_failed(self._get_test_controller(longname))
-        if event == 'end_suite':
-            pass
+            self._handle_end_test(args)
         if event == 'report_file':
-            self._report_file = args[0]
-            self.local_toolbar.EnableTool(ID_SHOW_REPORT, True)
-
+            self._handle_report_file(args)
         if event == 'log_file':
-            self._log_file = args[0]
-            self.local_toolbar.EnableTool(ID_SHOW_LOG, True)
-
+            self._handle_log_file(args)
         if event == 'start_keyword':
-            self._progress_bar.set_current_keyword(args[0])
+            self._handle_start_keyword(args)
         if event == 'end_keyword':
-            self._progress_bar.empty_current_keyword()
+            self._handle_end_keyword()
         if event == 'log_message':
-            a = args[0]
-            if a['level'] not in ['TRACE', 'DEBUG']:
-                self._AppendText(self.log_out, '%s : %s : %s\n' % (a['timestamp'], a['level'].rjust(5), a['message']))
+            self._handle_log_message(args)
+
+    def _handle_pid(self, args):
+        self._pid_to_kill = int(args[0])
+
+    def _handle_start_test(self, args):
+        longname = args[1]['longname']
+        self._running_results.set_running(self._get_test_controller(longname))
+        self._AppendText(self.log_out, 'Starting test: %s\n' % longname)
+
+    def _handle_end_test(self, args):
+        longname = args[1]['longname']
+        self._AppendText(self.log_out, 'Ending test:   %s\n' % longname)
+        if args[1]['status'] == 'PASS':
+            self._progress_bar.Pass()
+            self._running_results.set_passed(self._get_test_controller(longname))
+        else:
+            self._progress_bar.Fail()
+            self._running_results.set_failed(self._get_test_controller(longname))
+
+    def _handle_report_file(self, args):
+        self._report_file = args[0]
+        self.local_toolbar.EnableTool(ID_SHOW_REPORT, True)
+
+    def _handle_log_file(self, args):
+        self._log_file = args[0]
+        self.local_toolbar.EnableTool(ID_SHOW_LOG, True)
+
+    def _handle_start_keyword(self, args):
+        self._progress_bar.set_current_keyword(args[0])
+
+    def _handle_end_keyword(self):
+        self._progress_bar.empty_current_keyword()
+
+    def _handle_log_message(self, args):
+        a = args[0]
+        if a['level'] not in ['TRACE', 'DEBUG']:
+            self._AppendText(self.log_out, '%s : %s : %s\n' % (a['timestamp'], a['level'].rjust(5), a['message']))
 
     def _get_test_controller(self, longname):
         return self._application.model.find_controller_by_longname(longname)
