@@ -28,7 +28,6 @@ linux it's /tmp).
 You can safely manually remove these directories, except for the one
 being used for a currently running test.
 '''
-import ctypes
 import subprocess
 from Queue import Queue, Empty
 import tempfile
@@ -259,7 +258,7 @@ class TestRunnerPlugin(Plugin):
         same effect as typing control-c when running from the
         command line."""
         if self._process:
-            self._output("process %s killed\n" % self._process.kill())
+            self._process.kill()
 
     def OnRun(self, event):
         '''Called when the user clicks the "Run" button'''
@@ -346,7 +345,6 @@ class TestRunnerPlugin(Plugin):
             self._process_timer.Stop()
         self._set_stopped()
         self._progress_bar.Stop()
-
         now = datetime.datetime.now()
         self._output("\ntest finished %s" % now.strftime("%c"))
         self._set_stopped()
@@ -657,7 +655,6 @@ class TestRunnerPlugin(Plugin):
 
         self._process_timer = wx.Timer(self.panel)
         self.panel.Bind(wx.EVT_TIMER, self.OnTimer)
-        self.panel.Bind(wx.EVT_END_PROCESS, self.OnProcessEnded)
 
         self.panel.Bind(wx.EVT_WINDOW_DESTROY, self.OnClose)
 
@@ -935,11 +932,10 @@ class Process(object):
                 if os.name == 'nt' and sys.version_info < (2,7):
                     import ctypes
                     ctypes.windll.kernel32.TerminateProcess(int(self._process._handle), -1)
+                elif IS_WINDOWS:
+                    os.kill(pid, signal.CTRL_BREAK_EVENT)
                 else:
-                    if IS_WINDOWS:
-                        os.kill(pid, signal.CTRL_BREAK_EVENT)
-                    else:
-                        os.killpg(pid, signal.SIGINT)
+                    os.killpg(pid, signal.SIGINT)
             except OSError:
                 pass
         return pid
