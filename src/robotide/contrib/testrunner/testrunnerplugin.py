@@ -106,6 +106,7 @@ def _RunProfile(name, run_prefix):
 class TestRunnerPlugin(Plugin):
     """A plugin for running tests from within RIDE"""
     defaults = {"auto_save": False,
+                "show_message_log": True,
                 "profile": "pybot",
                 "sash_position": 200,
                 "runprofiles": [('jybot', 'jybot' + ('.bat' if os.name == 'nt' else ''))]}
@@ -253,7 +254,9 @@ class TestRunnerPlugin(Plugin):
         self.save_setting("auto_save", evt.IsChecked())
 
     def OnShowHideMessageLog(self, evt):
-        if evt.IsChecked():
+        checked = evt.IsChecked()
+        self.save_setting("show_message_log", checked)
+        if checked:
             self._show_message_log()
         else:
             self._hide_message_log()
@@ -264,9 +267,10 @@ class TestRunnerPlugin(Plugin):
         self._right_panel.GetSizer().Layout()
 
     def _hide_message_log(self):
+        self._clear_text(self.message_log)
         self._right_panel.GetSizer().Remove(self.message_log)
-        self._right_panel.GetSizer().Layout()
         self.message_log = None
+        self._right_panel.GetSizer().Layout()
 
     def OnStop(self, event):
         """Called when the user clicks the "Stop" button
@@ -330,7 +334,8 @@ class TestRunnerPlugin(Plugin):
 
     def _clear_output_window(self):
         self._clear_text(self.out)
-        self._clear_text(self.message_log)
+        if self.message_log:
+            self._clear_text(self.message_log)
 
     def _clear_text(self, textctrl):
         textctrl.SetReadOnly(False)
@@ -603,7 +608,7 @@ class TestRunnerPlugin(Plugin):
 
         self.show_log_messages_checkbox = wx.CheckBox(toolbar, ID_SHOW_MESSAGE_LOG, 'Show message log')
         self.show_log_messages_checkbox.SetToolTip(wx.ToolTip('Show or hide message log'))
-        self.show_log_messages_checkbox.SetValue(True)
+        self.show_log_messages_checkbox.SetValue(self.show_message_log)
         toolbar.AddControl(self.show_log_messages_checkbox)
 
         toolbar.EnableTool(ID_SHOW_LOG, False)
@@ -654,7 +659,7 @@ class TestRunnerPlugin(Plugin):
         self.configPanel = self._build_config_panel(panel)
         self._right_panel = wx.Panel(self.panel)
         self.out = self._create_output_textctrl()
-        self.message_log = self._create_output_textctrl()
+        self.message_log = self._create_output_textctrl() if self.show_message_log else None
         self._clear_output_window()
 
         self._progress_bar = ProgressBar(self._right_panel)
@@ -662,7 +667,8 @@ class TestRunnerPlugin(Plugin):
         right_panel_sizer = wx.BoxSizer(wx.VERTICAL)
         right_panel_sizer.Add(self._progress_bar, 0, wx.EXPAND)
         right_panel_sizer.Add(self.out, 1, wx.EXPAND)
-        right_panel_sizer.Add(self.message_log, 1, wx.EXPAND)
+        if self.message_log:
+            right_panel_sizer.Add(self.message_log, 1, wx.EXPAND)
         self._right_panel.SetSizer(right_panel_sizer)
 
         header_sizer = wx.BoxSizer(wx.HORIZONTAL)
