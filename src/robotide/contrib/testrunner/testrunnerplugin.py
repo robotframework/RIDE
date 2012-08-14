@@ -76,6 +76,7 @@ ID_STOP = wx.NewId()
 ID_SHOW_REPORT = wx.NewId()
 ID_SHOW_LOG = wx.NewId()
 ID_AUTOSAVE = wx.NewId()
+ID_SHOW_MESSAGE_LOG = wx.NewId()
 STYLE_STDERR = 2
 
 
@@ -155,8 +156,8 @@ class TestRunnerPlugin(Plugin):
         if self.out.GetSTCFocus():
             self.out.Copy()
             return
-        if self.log_out.GetSTCFocus():
-            self.log_out.Copy()
+        if self.message_log.GetSTCFocus():
+            self.message_log.Copy()
             return
 
     def enable(self):
@@ -251,6 +252,22 @@ class TestRunnerPlugin(Plugin):
         '''Called when the user clicks on the "Auto Save" checkbox'''
         self.save_setting("auto_save", evt.IsChecked())
 
+    def OnShowHideMessageLog(self, evt):
+        if evt.IsChecked():
+            self._show_message_log()
+        else:
+            self._hide_message_log()
+
+    def _show_message_log(self):
+        self.message_log = self._create_output_textctrl()
+        self._right_panel.GetSizer().Add(self.message_log, 1, wx.EXPAND)
+        self._right_panel.GetSizer().Layout()
+
+    def _hide_message_log(self):
+        self._right_panel.GetSizer().Remove(self.message_log)
+        self._right_panel.GetSizer().Layout()
+        self.message_log = None
+
     def OnStop(self, event):
         """Called when the user clicks the "Stop" button
 
@@ -313,7 +330,7 @@ class TestRunnerPlugin(Plugin):
 
     def _clear_output_window(self):
         self._clear_text(self.out)
-        self._clear_text(self.log_out)
+        self._clear_text(self.message_log)
 
     def _clear_text(self, textctrl):
         textctrl.SetReadOnly(False)
@@ -417,7 +434,7 @@ class TestRunnerPlugin(Plugin):
         self.show_tab(self.panel)
 
     def _AppendText(self, textctrl, string, source="stdout"):
-        if not self.panel:
+        if not self.panel or not textctrl:
             return
         try:
             width, _ = textctrl.GetTextExtent(string)
@@ -584,6 +601,11 @@ class TestRunnerPlugin(Plugin):
         self.savecb.SetValue(self.auto_save)
         toolbar.AddControl(self.savecb)
 
+        self.show_log_messages_checkbox = wx.CheckBox(toolbar, ID_SHOW_MESSAGE_LOG, 'Show message log')
+        self.show_log_messages_checkbox.SetToolTip(wx.ToolTip('Show or hide message log'))
+        self.show_log_messages_checkbox.SetValue(True)
+        toolbar.AddControl(self.show_log_messages_checkbox)
+
         toolbar.EnableTool(ID_SHOW_LOG, False)
         toolbar.EnableTool(ID_SHOW_REPORT, False)
 
@@ -593,6 +615,7 @@ class TestRunnerPlugin(Plugin):
         toolbar.Bind(wx.EVT_TOOL, self.OnShowReport, id=ID_SHOW_REPORT)
         toolbar.Bind(wx.EVT_TOOL, self.OnShowLog, id=ID_SHOW_LOG)
         toolbar.Bind(wx.EVT_CHECKBOX, self.OnAutoSaveCheckbox, self.savecb)
+        toolbar.Bind(wx.EVT_CHECKBOX, self.OnShowHideMessageLog, self.show_log_messages_checkbox)
         toolbar.Bind(wx.EVT_CHOICE, self.OnProfileSelection, self.choice)
 
         return toolbar
@@ -631,7 +654,7 @@ class TestRunnerPlugin(Plugin):
         self.configPanel = self._build_config_panel(panel)
         self._right_panel = wx.Panel(self.panel)
         self.out = self._create_output_textctrl()
-        self.log_out = self._create_output_textctrl()
+        self.message_log = self._create_output_textctrl()
         self._clear_output_window()
 
         self._progress_bar = ProgressBar(self._right_panel)
@@ -639,7 +662,7 @@ class TestRunnerPlugin(Plugin):
         right_panel_sizer = wx.BoxSizer(wx.VERTICAL)
         right_panel_sizer.Add(self._progress_bar, 0, wx.EXPAND)
         right_panel_sizer.Add(self.out, 1, wx.EXPAND)
-        right_panel_sizer.Add(self.log_out, 1, wx.EXPAND)
+        right_panel_sizer.Add(self.message_log, 1, wx.EXPAND)
         self._right_panel.SetSizer(right_panel_sizer)
 
         header_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -723,11 +746,11 @@ class TestRunnerPlugin(Plugin):
     def _handle_start_test(self, args):
         longname = args[1]['longname']
         self._running_results.set_running(self._get_test_controller(longname))
-        self._AppendText(self.log_out, 'Starting test: %s\n' % longname)
+        self._AppendText(self.message_log, 'Starting test: %s\n' % longname)
 
     def _handle_end_test(self, args):
         longname = args[1]['longname']
-        self._AppendText(self.log_out, 'Ending test:   %s\n' % longname)
+        self._AppendText(self.message_log, 'Ending test:   %s\n' % longname)
         if args[1]['status'] == 'PASS':
             self._progress_bar.Pass()
             self._running_results.set_passed(self._get_test_controller(longname))
@@ -752,7 +775,7 @@ class TestRunnerPlugin(Plugin):
     def _handle_log_message(self, args):
         a = args[0]
         if LEVELS[a['level']] >= self._min_log_level_number:
-            self._AppendText(self.log_out, '%s : %s : %s\n' % (a['timestamp'], a['level'].rjust(5), a['message']))
+            self._AppendText(self.message_log, '%s : %s : %s\n' % (a['timestamp'], a['level'].rjust(5), a['message']))
 
     def _get_test_controller(self, longname):
         return self._application.model.find_controller_by_longname(longname)
