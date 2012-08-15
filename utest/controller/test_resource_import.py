@@ -63,12 +63,17 @@ class TestResourceImport(unittest.TestCase):
         item_without_settings.imports.delete(0)
         self.assertEqual(self.new_resource, import_.get_imported_controller())
 
+    def test_previously_imported_resource_controller_is_none_by_default(self):
+        self._create_resource()
+        import_controller = self._add_resource_import_to_suite()
+        self.assertIsNone(import_controller.get_previous_imported_controller())
+
     @property
     def _keyword_controller(self):
         return self.ctrl.resources[-1].keywords[-1]
 
     def _add_resource_import_to_suite(self):
-        self.suite.imports.add_resource(self.res_name)
+        return self.suite.imports.add_resource(self.res_name)
 
     def _verify_unidentified_keyword(self):
         self._check_cells(ContentType.STRING, CellType.UNKNOWN)

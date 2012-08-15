@@ -493,6 +493,7 @@ class _ImportController(_SettingController):
 class ResourceImportController(_ImportController):
     is_resource = True
     _resolved_import = False
+    _previous_imported_controller = None
 
     def set_value(self, name, args=None, alias=''):
         self._previous_imported_controller = self.get_imported_controller()
