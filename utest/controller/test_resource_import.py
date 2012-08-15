@@ -66,7 +66,7 @@ class TestResourceImport(unittest.TestCase):
     def test_previously_imported_resource_controller_is_none_by_default(self):
         self._create_resource()
         import_controller = self._add_resource_import_to_suite()
-        self.assertIsNone(import_controller.get_previous_imported_controller())
+        self.assertEqual(import_controller.get_previous_imported_controller(), None)
 
     @property
     def _keyword_controller(self):
