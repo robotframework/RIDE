@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 import wx
+from robotide.editor.fieldeditors import FileNameEditor
 from robotide.namespace.suggesters import ResourceSuggester, LibrariesSuggester, HistorySuggester
 
 from robotide.validators import (ScalarVariableNameValidator,
@@ -130,7 +131,7 @@ class ResourceDialog(_Dialog):
 
     def _get_editors(self, item):
         name = item and item.name or ''
-        return [ContentAssistEditor(self, name, 'Path', suggestion_source=ResourceSuggester(self._controller))]
+        return [FileNameEditor(self, name, 'Path', suggestion_source=ResourceSuggester(self._controller))]
 
 
 class DocumentationDialog(_Dialog):

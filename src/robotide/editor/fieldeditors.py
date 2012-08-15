@@ -16,6 +16,7 @@ import wx
 import wx.grid
 
 from robotide.context import ctrl_or_cmd, bind_keys_to_evt_menu
+from robotide.editor.contentassist import ContentAssistFileButton
 from robotide.namespace.suggesters import SuggestionSource
 from robotide.widgets import Label
 
@@ -56,6 +57,17 @@ class ValueEditor(wx.Panel):
     def set_focus(self):
         self._editor.SetFocus()
         self._editor.SelectAll()
+
+
+class FileNameEditor(ValueEditor):
+
+    def __init__(self, parent, value, label=None, validator=None, settings=None, suggestion_source=None):
+        self._suggestion_source = suggestion_source or SuggestionSource(parent.plugin, None)
+        ValueEditor.__init__(self, parent, value, label, validator, settings)
+
+    def _get_text_ctrl(self):
+        return ContentAssistFileButton(self, self._suggestion_source, (500, -1))
+
 
 
 class VariableNameEditor(ValueEditor):
@@ -257,4 +269,3 @@ class ContentAssistEditor(ValueEditor):
 
     def _get_text_ctrl(self):
         return ContentAssistTextCtrl(self, self._suggestion_source, (500, -1))
-
