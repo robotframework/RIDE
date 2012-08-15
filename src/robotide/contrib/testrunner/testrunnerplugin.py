@@ -331,6 +331,7 @@ class TestRunnerPlugin(Plugin):
         self.local_toolbar.EnableTool(ID_SHOW_REPORT, False)
         self.local_toolbar.EnableTool(ID_SHOW_LOG, False)
         self._report_file = self._log_file = None
+        self._messages_log_texts = []
 
     def _clear_output_window(self):
         self._clear_text(self.out)
@@ -404,6 +405,9 @@ class TestRunnerPlugin(Plugin):
                 # the previous character isn't a newline.
                 self._output("\n", source="stdout")
             self._output(err_buffer, source="stderr")
+        if self._messages_log_texts and self.message_log:
+            self._AppendText(self.message_log, '\n'.join(self._messages_log_texts))
+            self._messages_log_texts = []
 
     def GetLastOutputChar(self):
         '''Return the last character in the output window'''
@@ -752,11 +756,15 @@ class TestRunnerPlugin(Plugin):
     def _handle_start_test(self, args):
         longname = args[1]['longname']
         self._running_results.set_running(self._get_test_controller(longname))
-        self._AppendText(self.message_log, 'Starting test: %s\n' % longname)
+        self._append_to_message_log('Starting test: %s' % longname)
+
+    def _append_to_message_log(self, text):
+        if self.show_message_log:
+            self._messages_log_texts.append(text)
 
     def _handle_end_test(self, args):
         longname = args[1]['longname']
-        self._AppendText(self.message_log, 'Ending test:   %s\n' % longname)
+        self._append_to_message_log('Ending test:   %s' % longname)
         if args[1]['status'] == 'PASS':
             self._progress_bar.Pass()
             self._running_results.set_passed(self._get_test_controller(longname))
@@ -781,7 +789,7 @@ class TestRunnerPlugin(Plugin):
     def _handle_log_message(self, args):
         a = args[0]
         if LEVELS[a['level']] >= self._min_log_level_number:
-            self._AppendText(self.message_log, '%s : %s : %s\n' % (a['timestamp'], a['level'].rjust(5), a['message']))
+            self._append_to_message_log('%s : %s : %s' % (a['timestamp'], a['level'].rjust(5), a['message']))
 
     def _get_test_controller(self, longname):
         return self._application.model.find_controller_by_longname(longname)
