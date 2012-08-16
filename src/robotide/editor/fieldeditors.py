@@ -61,13 +61,14 @@ class ValueEditor(wx.Panel):
 
 class FileNameEditor(ValueEditor):
 
-    def __init__(self, parent, value, label=None, validator=None, settings=None, suggestion_source=None):
+    def __init__(self, parent, value, label, controller, validator=None, settings=None, suggestion_source=None):
         self._suggestion_source = suggestion_source or SuggestionSource(parent.plugin, None)
-        ValueEditor.__init__(self, parent, value, label, validator, settings)
+        self._controller = controller
+        self._label = label
+        ValueEditor.__init__(self, parent, value, None, validator, settings)
 
     def _get_text_ctrl(self):
-        return ContentAssistFileButton(self, self._suggestion_source, (500, -1))
-
+        return ContentAssistFileButton(self, self._suggestion_source, self._label, self._controller, (500, -1))
 
 
 class VariableNameEditor(ValueEditor):

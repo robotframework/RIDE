@@ -131,7 +131,7 @@ class ResourceDialog(_Dialog):
 
     def _get_editors(self, item):
         name = item and item.name or ''
-        return [FileNameEditor(self, name, 'Path', suggestion_source=ResourceSuggester(self._controller))]
+        return [FileNameEditor(self, name, 'Path', self._controller, suggestion_source=ResourceSuggester(self._controller))]
 
 
 class DocumentationDialog(_Dialog):

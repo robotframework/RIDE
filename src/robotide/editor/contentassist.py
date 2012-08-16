@@ -16,6 +16,7 @@ import wx
 from wx.lib.expando import ExpandoTextCtrl
 from wx.lib.filebrowsebutton import FileBrowseButton
 from robot.utils.normalizing import normalize
+from os.path import relpath, dirname
 
 from robotide import context
 from robotide.namespace.suggesters import SuggestionSource
@@ -142,10 +143,12 @@ class ContentAssistTextCtrl(_ContentAssistTextCtrlBase, wx.TextCtrl):
 
 class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
 
-    def __init__(self, parent, suggestion_source, size=wx.DefaultSize):
-        FileBrowseButton.__init__(self, parent, labelText="Resource:",
-            size=(-1, -1), fileMask="*",
+    def __init__(self, parent, suggestion_source, label, controller, size=wx.DefaultSize):
+        FileBrowseButton.__init__(self, parent, labelText=label,
+            size=size, fileMask="*",
             changeCallback=self.OnFileChanged)
+        self._controller = controller
+        self._browsed = False
         _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
 
     def Bind(self, *args):
@@ -161,8 +164,14 @@ class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
     def AppendText(self, *args):
         return self.textControl.AppendText(*args)
 
+    def OnBrowse(self, evt):
+        self._browsed = True
+        FileBrowseButton.OnBrowse(self, evt)
+
     def OnFileChanged(self, evt):
-        pass
+        if self._browsed:
+            self._browsed = False
+            self.SetValue(relpath(self.GetValue(), dirname(self._controller.datafile.source)))
 
     def SelectAll(self):
         self.textControl.SelectAll()
