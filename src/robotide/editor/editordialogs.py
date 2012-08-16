@@ -106,7 +106,7 @@ class LibraryDialog(_Dialog):
         args = item and utils.join_value(item.args) or ''
         alias = item.alias if item else ''
         self._suggester = LibrariesSuggester(self._controller, self._history_suggester)
-        return [ContentAssistEditor(self, name, 'Name', suggestion_source=self._suggester),
+        return [FileNameEditor(self, name, 'Name', self._controller, suggestion_source=self._suggester),
                 ValueEditor(self, args, 'Args'),
                 ValueEditor(self, alias, 'Alias')]
 
@@ -123,7 +123,7 @@ class VariablesDialog(LibraryDialog):
     def _get_editors(self, item):
         path = item and item.name or ''
         args = item and utils.join_value(item.args) or ''
-        return [ContentAssistEditor(self, path, 'Path', suggestion_source=self._history_suggester),
+        return [FileNameEditor(self, path, 'Path', self._controller, suggestion_source=self._history_suggester),
                ValueEditor(self, args, 'Args')]
 
 
