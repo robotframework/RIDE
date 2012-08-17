@@ -745,7 +745,6 @@ class TestRunnerPlugin(Plugin):
             self._handle_log_file(args)
         if event == 'start_keyword':
             self._handle_start_keyword(args)
-            self._progress_bar.set_current_keyword(args[0])
         if event == 'end_keyword':
             self._handle_end_keyword()
         if event == 'log_message':
