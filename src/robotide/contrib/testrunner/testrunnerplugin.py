@@ -268,7 +268,8 @@ class TestRunnerPlugin(Plugin):
 
     def _hide_message_log(self):
         self._clear_text(self.message_log)
-        self._right_panel.GetSizer().Remove(self.message_log)
+        self._right_panel.RemoveChild(self.message_log)
+        self.message_log.Destroy()
         self.message_log = None
         self._right_panel.GetSizer().Layout()
 
