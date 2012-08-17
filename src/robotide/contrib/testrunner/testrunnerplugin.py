@@ -407,7 +407,7 @@ class TestRunnerPlugin(Plugin):
                 self._output("\n", source="stdout")
             self._output(err_buffer, source="stderr")
         if self._messages_log_texts and self.message_log:
-            self._AppendText(self.message_log, '\n'.join(self._messages_log_texts))
+            self._AppendText(self.message_log, '\n'+'\n'.join(self._messages_log_texts))
             self._messages_log_texts = []
 
     def GetLastOutputChar(self):
