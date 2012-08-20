@@ -16,7 +16,7 @@ import wx
 
 from robotide.controller.commands import (RenameKeywordOccurrences, RemoveMacro,
     AddKeyword, AddTestCase, RenameTest, CopyMacroAs, AddVariable,
-    UpdateVariableName, RenameFile, RenameResourceFile, DeleteFile, SortKeywords)
+    UpdateVariableName, RenameFile, RenameResourceFile, DeleteFile, SortKeywords, DeleteFolder)
 from robotide.controller.settingcontrollers import VariableController
 from robotide.controller.macrocontrollers import (TestCaseController,
                                                   UserKeywordController)
@@ -62,6 +62,7 @@ class _ActionHandler(wx.Window):
     _label_select_all = 'Select All Tests'
     _label_deselect_all = 'Deselect All Tests'
     _label_select_failed_tests = 'Select Only Failed Tests'
+    _label_delete = 'Delete\tCtrl-Shift-D'
 
     def __init__(self, controller, tree, node, settings):
         wx.Window.__init__(self, tree)
@@ -88,6 +89,9 @@ class _ActionHandler(wx.Window):
         return False
 
     def end_label_edit(self, event):
+        pass
+
+    def OnDelete(self, event):
         pass
 
     def OnNewSuite(self, event):
@@ -245,12 +249,21 @@ class TestDataHandler(_ActionHandler):
 
 
 class TestDataDirectoryHandler(TestDataHandler):
+
+    def __init__(self, *args):
+        TestDataHandler.__init__(self, *args)
+        self.controller.filename = self.controller.data.directory
+
     _actions = [_ActionHandler._label_add_suite,
-            _ActionHandler._label_new_resource, '---',
+            _ActionHandler._label_new_resource,
+            '---',
             _ActionHandler._label_new_user_keyword,
             _ActionHandler._label_new_scalar,
-            _ActionHandler._label_new_list_variable, '---',
-            _ActionHandler._label_change_format, '---',
+            _ActionHandler._label_new_list_variable,
+            '---',
+            _ActionHandler._label_change_format,
+            _ActionHandler._label_delete,
+            '---',
             _ActionHandler._label_select_all,
             _ActionHandler._label_deselect_all,
             _ActionHandler._label_select_failed_tests]
@@ -260,6 +273,13 @@ class TestDataDirectoryHandler(TestDataHandler):
 
     def OnNewResource(self, event):
         NewResourceDialog(self.controller).execute()
+
+    def OnDelete(self, event):
+        if wx.MessageBox('Delete folder', caption='Confirm',
+            style=wx.YES_NO | wx.ICON_QUESTION) == wx.YES:
+
+            self.controller.execute(DeleteFolder())
+
 
 
 class ResourceFileHandler(_CanBeRenamed, TestDataHandler):
@@ -271,7 +291,7 @@ class ResourceFileHandler(_CanBeRenamed, TestDataHandler):
                 _ActionHandler._label_change_format,
                 _ActionHandler._label_sort_keywords,
                 _ActionHandler._label_find_usages,
-                'Delete\tCtrl-Shift-D']
+                _ActionHandler._label_delete]
 
     def OnFindUsages(self, event):
         ResourceFileUsages(self.controller, self._tree.highlight).show()
@@ -309,7 +329,7 @@ class TestCaseFileHandler(_CanBeRenamed, TestDataHandler):
                 _ActionHandler._label_rename,
                 _ActionHandler._label_change_format,
                 _ActionHandler._label_sort_keywords,
-                'Delete\tCtrl-Shift-D',
+                _ActionHandler._label_delete,
                 '---',
                 _ActionHandler._label_select_all,
                 _ActionHandler._label_deselect_all,

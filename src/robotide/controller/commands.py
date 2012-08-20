@@ -416,6 +416,13 @@ class DeleteFile(_Command):
         context.remove()
 
 
+class DeleteFolder(_Command):
+
+    def execute(self, context):
+        context.remove_folder_from_filesystem()
+        context.remove()
+
+
 class SetValues(_Command):
 
     def __init__(self, values, comment):

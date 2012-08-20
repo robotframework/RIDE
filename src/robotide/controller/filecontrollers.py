@@ -14,6 +14,7 @@
 
 import os
 from itertools import chain
+import shutil
 import commands
 
 from robotide.publish import (RideDataFileRemoved, RideInitFileRemoved,
@@ -257,6 +258,9 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
 
     def remove_from_filesystem(self, path=None):
         os.remove(path or self.filename)
+
+    def remove_folder_from_filesystem(self, path=None):
+        shutil.rmtree(path or self.filename)
 
     def save_with_new_format(self, format):
         self._chief_controller.change_format(self, format)
@@ -504,11 +508,8 @@ class TestDataDirectoryController(_DataController, DirectoryController):
                       self._chief_controller)
 
     def remove(self):
-        path = self.filename
-        self.data.initfile = None
-        self._stat = self._get_stat(None)
-        self.reload()
-        RideInitFileRemoved(path=path, datafile=self).publish()
+        self._chief_controller.remove_datafile(self)
+        RideDataFileRemoved(path=self.filename, datafile=self).publish()
 
     def remove_child(self, controller):
         if controller in self.children:
