@@ -764,7 +764,7 @@ class TestRunnerPlugin(Plugin):
 
     def _handle_end_test(self, args):
         longname = args[1]['longname']
-        self._append_to_message_log('Ending test:   %s' % longname)
+        self._append_to_message_log('Ending test:   %s\n' % longname)
         if args[1]['status'] == 'PASS':
             self._progress_bar.Pass()
             self._running_results.set_passed(self._get_test_controller(longname))
@@ -788,8 +788,12 @@ class TestRunnerPlugin(Plugin):
 
     def _handle_log_message(self, args):
         a = args[0]
-        if LEVELS[a['level']] >= self._min_log_level_number:
-            self._append_to_message_log('%s : %s : %s' % (a['timestamp'], a['level'].rjust(5), a['message']))
+        if self.show_message_log and LEVELS[a['level']] >= self._min_log_level_number:
+            prefix = '%s : %s : ' % (a['timestamp'], a['level'].rjust(5))
+            message = a['message']
+            if '\n' in message:
+                message = '\n'+message
+            self._messages_log_texts.append(prefix+message)
 
     def _get_test_controller(self, longname):
         return self._application.model.find_controller_by_longname(longname)
