@@ -310,6 +310,9 @@ class DirectoryController(_FileSystemElement, _BaseController):
         self.dirty = False
         self._dir_controllers = {}
 
+    def remove_child(self, event):
+        pass
+
     def is_directory_suite(self):
         return False
 
