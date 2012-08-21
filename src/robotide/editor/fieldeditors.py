@@ -27,6 +27,7 @@ from .grid import GridEditor
 class ValueEditor(wx.Panel):
     expand_factor = 0
     _sizer_flags_for_editor = wx.ALL
+    _sizer_flags_for_label = wx.ALL
 
     def __init__(self, parent, value, label=None, validator=None, settings=None):
         wx.Panel.__init__(self, parent)
@@ -39,7 +40,7 @@ class ValueEditor(wx.Panel):
     def _create_editor(self, value, label, settings):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         if label:
-            sizer.Add(Label(self, label=label, size=(80, -1)), 0, wx.ALL, 5)
+            sizer.Add(Label(self, label=label, size=(80, -1)), 0, self._sizer_flags_for_label, 5)
         self._editor = self._get_text_ctrl()
         self._editor.AppendText(value)
         sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
@@ -61,18 +62,21 @@ class ValueEditor(wx.Panel):
 
 class FileNameEditor(ValueEditor):
 
+    _sizer_flags_for_editor = 0
+    _sizer_flags_for_label =  wx.TOP|wx.BOTTOM|wx.LEFT
+
     def __init__(self, parent, value, label, controller, validator=None, settings=None, suggestion_source=None):
         self._suggestion_source = suggestion_source or SuggestionSource(parent.plugin, None)
         self._controller = controller
         self._label = label
         self._parent = parent
-        ValueEditor.__init__(self, parent, value, None, validator, settings)
+        ValueEditor.__init__(self, parent, value, label, validator, settings)
 
     def setFocusToOK(self):
         self._parent.setFocusToOK()
 
     def _get_text_ctrl(self):
-        return ContentAssistFileButton(self, self._suggestion_source, self._label, self._controller, (500, -1))
+        return ContentAssistFileButton(self, self._suggestion_source, '', self._controller, (500, -1))
 
 
 class VariableNameEditor(ValueEditor):
