@@ -280,7 +280,7 @@ class TestRunnerPlugin(Plugin):
         same effect as typing control-c when running from the
         command line."""
         if self._process:
-            self._process.kill()
+            self._process.kill(pid_to_kill=self._pid_to_kill)
 
     def OnRun(self, event):
         '''Called when the user clicks the "Run" button'''
@@ -962,21 +962,19 @@ class Process(object):
     def is_alive(self):
         return self._process.poll() is None
 
-    def kill(self, force=False):
+    def kill(self, force=False, pid_to_kill=None):
         if not self._process:
             return
         if force:
             self._process.kill()
-        pid = self._process.pid
+        pid = pid_to_kill or self._process.pid
         if pid:
             try:
                 if os.name == 'nt' and sys.version_info < (2,7):
                     import ctypes
                     ctypes.windll.kernel32.TerminateProcess(int(self._process._handle), -1)
-                elif IS_WINDOWS:
-                    os.kill(pid, signal.CTRL_BREAK_EVENT)
                 else:
-                    os.killpg(pid, signal.SIGINT)
+                    os.kill(pid, signal.SIGINT)
             except OSError:
                 pass
         return pid

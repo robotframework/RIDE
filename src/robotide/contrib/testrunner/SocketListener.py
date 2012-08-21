@@ -23,6 +23,9 @@ XMLRPC server.
 import os
 import socket
 import sys
+import signal
+import time
+
 try:
     import cPickle as pickle
 except ImportError:
