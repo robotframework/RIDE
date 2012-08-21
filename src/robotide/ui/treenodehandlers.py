@@ -275,7 +275,8 @@ class TestDataDirectoryHandler(TestDataHandler):
         NewResourceDialog(self.controller).execute()
 
     def OnDelete(self, event):
-        if wx.MessageBox('Delete folder', caption='Confirm',
+        if wx.MessageBox('Are you sure you want to delete this folder and all of its'
+                         'content.', caption='Confirm',
             style=wx.YES_NO | wx.ICON_QUESTION) == wx.YES:
 
             self.controller.execute(DeleteFolder())
