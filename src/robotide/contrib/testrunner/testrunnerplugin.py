@@ -288,6 +288,8 @@ class TestRunnerPlugin(Plugin):
         if not self._can_start_running_tests():
             return
         self._initialize_ui_for_running()
+        self._pid_to_kill = None
+        self._killer_port = None
         command = self._format_command(self._get_command())
         self._output("command: %s\n" % command)
         try:
