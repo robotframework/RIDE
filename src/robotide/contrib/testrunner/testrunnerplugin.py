@@ -281,6 +281,7 @@ class TestRunnerPlugin(Plugin):
         same effect as typing control-c when running from the
         command line."""
         if self._process:
+            self._AppendText(self.out, '[ SENDING STOP SIGNAL ]\n', source='stderr')
             self._process.kill(killer_pid=self._pid_to_kill, killer_port=self._killer_port)
 
     def OnRun(self, event):
