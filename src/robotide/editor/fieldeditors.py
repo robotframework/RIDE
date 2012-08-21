@@ -65,7 +65,11 @@ class FileNameEditor(ValueEditor):
         self._suggestion_source = suggestion_source or SuggestionSource(parent.plugin, None)
         self._controller = controller
         self._label = label
+        self._parent = parent
         ValueEditor.__init__(self, parent, value, None, validator, settings)
+
+    def setFocusToOK(self):
+        self._parent.setFocusToOK()
 
     def _get_text_ctrl(self):
         return ContentAssistFileButton(self, self._suggestion_source, self._label, self._controller, (500, -1))

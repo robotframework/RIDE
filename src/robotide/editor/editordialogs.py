@@ -76,6 +76,9 @@ class _Dialog(Dialog):
     def get_comment(self):
         return self._comment_editor.get_value()
 
+    def setFocusToOK(self):
+        self.FindWindowById(wx.ID_OK).SetFocus()
+
 
 class ScalarVariableDialog(_Dialog):
 

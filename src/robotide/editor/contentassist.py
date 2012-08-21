@@ -147,6 +147,7 @@ class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
         FileBrowseButton.__init__(self, parent, labelText=label,
             size=size, fileMask="*",
             changeCallback=self.OnFileChanged)
+        self._parent = parent
         self._controller = controller
         self._browsed = False
         _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
@@ -167,11 +168,13 @@ class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
     def OnBrowse(self, evt):
         self._browsed = True
         FileBrowseButton.OnBrowse(self, evt)
+        self._browsed = False
 
     def OnFileChanged(self, evt):
         if self._browsed:
             self._browsed = False
             self.SetValue(relpath(self.GetValue(), dirname(self._controller.datafile.source)))
+            self._parent.setFocusToOK()
 
     def SelectAll(self):
         self.textControl.SelectAll()
