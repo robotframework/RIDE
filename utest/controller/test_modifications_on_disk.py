@@ -151,7 +151,7 @@ class TestDataFileRemoval(_DataDependentTest):
         os.remove(self._init_path)
         chief.data.remove()
         open(self._init_path, 'w').write('*Settings*\nDocumentation  Ride unit testing file\n')
-        assert_true(chief.data.has_format() is False, chief.data.data.initfile)
+        assert_true(chief.data is None, chief.data)
 
 
 class DeleteCommandTest(_DataDependentTest):

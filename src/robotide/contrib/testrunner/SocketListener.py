@@ -12,6 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Modified by Mikko Korpela under NSN copyrights
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
 
 '''A Robot Framework listener that sends information to a socket
 
@@ -22,9 +36,10 @@ XMLRPC server.
 
 import os
 import socket
-import sys
-import signal
-import time
+import threading
+import SocketServer
+from robot.running.signalhandler import STOP_SIGNAL_MONITOR
+from robot.errors import ExecutionFailed
 
 try:
     import cPickle as pickle
@@ -53,9 +68,20 @@ class SocketListener:
             self.port = int(args[1])
         self._connect()
         self._send_pid()
+        self._create_kill_server()
+
+    def _create_kill_server(self):
+        self._killer = RobotKillerServer()
+        self._server_thread = threading.Thread(target=self._killer.serve_forever)
+        self._server_thread.setDaemon(True)
+        self._server_thread.start()
+        self._send_server_port(self._killer.server_address[1])
 
     def _send_pid(self):
         self._send_socket("pid", os.getpid())
+
+    def _send_server_port(self, port):
+        self._send_socket("port", port)
 
     def start_test(self, name, attrs):
         self._send_socket("start_test", name, attrs)
@@ -119,3 +145,14 @@ class SocketListener:
             self.pickler.dump(packet)
             self.filehandler.flush()
 
+class RobotKillerServer(SocketServer.TCPServer):
+    allow_reuse_address = True
+    def __init__(self):
+        SocketServer.TCPServer.__init__(self, ("",0), RobotKillerHandler)
+
+class RobotKillerHandler(SocketServer.StreamRequestHandler):
+    def handle(self):
+        try:
+            STOP_SIGNAL_MONITOR(1,'')
+        except ExecutionFailed:
+            pass
