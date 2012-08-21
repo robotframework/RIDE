@@ -28,6 +28,7 @@ linux it's /tmp).
 You can safely manually remove these directories, except for the one
 being used for a currently running test.
 '''
+import socket
 import subprocess
 from Queue import Queue, Empty
 import tempfile
@@ -280,7 +281,7 @@ class TestRunnerPlugin(Plugin):
         same effect as typing control-c when running from the
         command line."""
         if self._process:
-            self._process.kill(pid_to_kill=self._pid_to_kill)
+            self._process.kill(killer_pid=self._pid_to_kill, killer_port=self._killer_port)
 
     def OnRun(self, event):
         '''Called when the user clicks the "Run" button'''
@@ -749,6 +750,8 @@ class TestRunnerPlugin(Plugin):
             self._handle_end_keyword()
         if event == 'log_message':
             self._handle_log_message(args)
+        if event == 'port':
+            self._killer_port = args[0]
 
     def _handle_pid(self, args):
         self._pid_to_kill = int(args[0])
@@ -952,6 +955,7 @@ class Process(object):
         self._error_stream = StreamReaderThread(self._process.stderr)
         self._output_stream.run()
         self._error_stream.run()
+        self._kill_called = False
 
     def get_output(self):
         return self._output_stream.pop()
@@ -962,12 +966,24 @@ class Process(object):
     def is_alive(self):
         return self._process.poll() is None
 
-    def kill(self, force=False, pid_to_kill=None):
+    def kill(self, force=False, killer_port=None, killer_pid=None):
         if not self._process:
             return
         if force:
             self._process.kill()
-        pid = pid_to_kill or self._process.pid
+        if not self._kill_called and killer_port:
+            self._signal_kill_with_listener_server(killer_port)
+            self._kill_called = True
+        else:
+            self._kill(killer_pid or self._process.pid)
+
+    def _signal_kill_with_listener_server(self, killer_port):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.connect(('localhost', killer_port))
+        sock.send('kill\n')
+        sock.close()
+
+    def _kill(self, pid):
         if pid:
             try:
                 if os.name == 'nt' and sys.version_info < (2,7):
@@ -977,7 +993,8 @@ class Process(object):
                     os.kill(pid, signal.SIGINT)
             except OSError:
                 pass
-        return pid
+
+
 
 class StreamReaderThread(object):
 
