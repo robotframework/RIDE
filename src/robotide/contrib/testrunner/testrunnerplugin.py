@@ -974,7 +974,7 @@ class Process(object):
             return
         if force:
             self._process.kill()
-        if not self._kill_called and killer_port:
+        if IS_WINDOWS and not self._kill_called and killer_port:
             self._signal_kill_with_listener_server(killer_port)
             self._kill_called = True
         else:
