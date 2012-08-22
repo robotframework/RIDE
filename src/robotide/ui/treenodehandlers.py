@@ -63,6 +63,7 @@ class _ActionHandler(wx.Window):
     _label_deselect_all = 'Deselect All Tests'
     _label_select_failed_tests = 'Select Only Failed Tests'
     _label_delete = 'Delete\tCtrl-Shift-D'
+    _label_delete_no_kbsc = 'Delete'
 
     def __init__(self, controller, tree, node, settings):
         wx.Window.__init__(self, tree)
@@ -261,7 +262,7 @@ class TestDataDirectoryHandler(TestDataHandler):
                 _ActionHandler._label_new_list_variable,
                 '---',
                 _ActionHandler._label_change_format] + \
-                        ([_ActionHandler._label_delete] if self.controller.parent else []) + \
+                        ([_ActionHandler._label_delete_no_kbsc] if self.controller.parent else []) + \
                 ['---',
                 _ActionHandler._label_select_all,
                 _ActionHandler._label_deselect_all,
