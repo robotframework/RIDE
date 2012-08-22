@@ -109,7 +109,7 @@ This should efficiently limit the number of users that encounter a specific defe
   > paver set_version 0.xx
   > paver sdist
   > git commit -am 'Version 0.xx'
-  > git tag $version
+  > git tag 0.xx
   > git push
   > git push --tags
 
