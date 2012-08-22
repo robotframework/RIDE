@@ -254,19 +254,19 @@ class TestDataDirectoryHandler(TestDataHandler):
         TestDataHandler.__init__(self, *args)
         self.controller.filename = self.controller.data.directory
 
-    _actions = [_ActionHandler._label_add_suite,
-            _ActionHandler._label_new_resource,
-            '---',
-            _ActionHandler._label_new_user_keyword,
-            _ActionHandler._label_new_scalar,
-            _ActionHandler._label_new_list_variable,
-            '---',
-            _ActionHandler._label_change_format,
-            _ActionHandler._label_delete,
-            '---',
-            _ActionHandler._label_select_all,
-            _ActionHandler._label_deselect_all,
-            _ActionHandler._label_select_failed_tests]
+        self._actions = [_ActionHandler._label_add_suite,
+                _ActionHandler._label_new_resource,
+                '---',
+                _ActionHandler._label_new_user_keyword,
+                _ActionHandler._label_new_scalar,
+                _ActionHandler._label_new_list_variable,
+                '---',
+                _ActionHandler._label_change_format] + \
+                        ([_ActionHandler._label_delete] if self.controller.parent else []) + \
+                ['---',
+                _ActionHandler._label_select_all,
+                _ActionHandler._label_deselect_all,
+                _ActionHandler._label_select_failed_tests]
 
     def OnNewSuite(self, event):
         AddSuiteDialog(self.controller).execute()
@@ -275,12 +275,10 @@ class TestDataDirectoryHandler(TestDataHandler):
         NewResourceDialog(self.controller).execute()
 
     def OnDelete(self, event):
-        if wx.MessageBox('Are you sure you want to delete this folder and all of its'
-                         'content.', caption='Confirm',
+        if wx.MessageBox('Are you sure you want to delete this folder and all of its '
+                         'contents.', caption='Confirm',
             style=wx.YES_NO | wx.ICON_QUESTION) == wx.YES:
-
             self.controller.execute(DeleteFolder())
-
 
 
 class ResourceFileHandler(_CanBeRenamed, TestDataHandler):
