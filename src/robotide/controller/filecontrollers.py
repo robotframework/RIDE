@@ -260,7 +260,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         os.remove(path or self.filename)
 
     def remove_folder_from_filesystem(self, path=None):
-        shutil.rmtree(path or self.filename)
+        shutil.rmtree(path or self.data.directory)
 
     def save_with_new_format(self, format):
         self._chief_controller.change_format(self, format)
@@ -508,6 +508,13 @@ class TestDataDirectoryController(_DataController, DirectoryController):
                       self._chief_controller)
 
     def remove(self):
+        path = self.filename
+        self.data.initfile = None
+        self._stat = self._get_stat(None)
+        self.reload()
+        RideInitFileRemoved(path=path, datafile=self).publish()
+
+    def remove_from_model(self):
         self._chief_controller.remove_datafile(self)
         RideDataFileRemoved(path=self.filename, datafile=self).publish()
 

@@ -252,7 +252,6 @@ class TestDataDirectoryHandler(TestDataHandler):
 
     def __init__(self, *args):
         TestDataHandler.__init__(self, *args)
-        self.controller.filename = self.controller.data.directory
 
         self._actions = [_ActionHandler._label_add_suite,
                 _ActionHandler._label_new_resource,

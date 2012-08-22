@@ -420,7 +420,7 @@ class DeleteFolder(_Command):
 
     def execute(self, context):
         context.remove_folder_from_filesystem()
-        context.remove()
+        context.remove_from_model()
 
 
 class SetValues(_Command):
