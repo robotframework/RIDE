@@ -86,7 +86,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 0.47</h2>
+<h2>Release notes for 0.48</h2>
 <table border="1">
 <tr>
 <td><p><b>ID</b></p></td>
@@ -95,65 +95,77 @@ RELEASE_NOTES = """
 <td><p><b>Summary</b></p></td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=987">Issue 987</a></td>
-<td>Defect</td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=693">Issue 693</a></td>
+<td>Enhancement</td>
 <td>High</td>
-<td>Saving during empty row edit will remove next row</td>
+<td>Importing resource through file browser </td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1021">Issue 1021</a></td>
-<td>Defect</td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1034">Issue 1034</a></td>
+<td>Enhancement</td>
 <td>High</td>
-<td>Renaming a suite file while empty rows causes corrupt data</td>
+<td>Stop test execution gracefully</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=923">Issue 923</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=941">Issue 941</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>Rename Test Case/Keyword does not take effect when focus is moved away</td>
+<td>input box of TestRunnerPlugin should handle "suppr" / Delete key in addition to "backspace"</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=982">Issue 982</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=977">Issue 977</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>Pressing F2 on a non renameable tree element will disable F2</td>
+<td>Autocomplete does not show correct library name for duplicate keywords</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=989">Issue 989</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1008">Issue 1008</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>Getting "Failed: Data source does not exist" errors</td>
+<td>Extra white space after tables in suite/test/keyword documentation</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1015">Issue 1015</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1027">Issue 1027</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>Directory doesn't accept non-ascii characters (V.0.46.1)</td>
+<td>Clicking on "Stop" button doesn't stop test execution (RIDE: 0.46/0.47)</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1017">Issue 1017</a></td>
-<td>Defect</td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=800">Issue 800</a></td>
+<td>Enhancement</td>
 <td>Medium</td>
-<td>Argument highlighting is lost when passing in individual list items as arguments</td>
+<td>Add option to stop test execution gracefully</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1019">Issue 1019</a></td>
-<td>Defect</td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=837">Issue 837</a></td>
+<td>Enhancement</td>
 <td>Medium</td>
-<td>Unicode characters in test execution output</td>
+<td>Remember Last Opened Project on RIDE Restart/Reopen</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1022">Issue 1022</a></td>
-<td>Defect</td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=862">Issue 862</a></td>
+<td>Enhancement</td>
 <td>Medium</td>
-<td>Delete-key in text editor and renaming</td>
+<td>Possibility to delete directory suites</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=900">Issue 900</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=873">Issue 873</a></td>
+<td>Enhancement</td>
+<td>Medium</td>
+<td>Test runner plugin: Show running message log during execution</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=990">Issue 990</a></td>
 <td>Defect</td>
-<td></td>
-<td>Rename cancel does not return dirty status</td>
+<td>Low</td>
+<td>Run configuration list editor can't delete empty items</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1006">Issue 1006</a></td>
+<td>Enhancement</td>
+<td>Low</td>
+<td>Add hot-keys for open report and log files </td>
 </tr>
 </table>
-<p>Altogether 10 issues.</p>
+<p>Altogether 12 issues.</p>
 """
