@@ -60,9 +60,10 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     def _register_shortcuts(self):
         def focused(func):
             def f(event):
-                if self.is_focused():
+                if self.is_focused() and (self._editor == wx.Window.FindFocus()):
                     func(event)
             return f
+        #NOTE: Do not keep hard reference to _editor as it can change if plugin is disabled and enabled!
         self.register_shortcut('CtrlCmd-X', focused(lambda e: self._editor.cut()))
         self.register_shortcut('CtrlCmd-C', focused(lambda e: self._editor.copy()))
         self.register_shortcut('CtrlCmd-V', focused(lambda e: self._editor.paste()))
@@ -143,7 +144,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         return True
 
     def is_focused(self):
-        return (self.notebook.current_page_title == self.title) and (self._editor == wx.Window.FindFocus())
+        return self.notebook.current_page_title == self.title
 
 
 class DataValidationHandler(object):
