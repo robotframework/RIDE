@@ -257,7 +257,9 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
             self.remove_from_filesystem(old_file)
 
     def remove_from_filesystem(self, path=None):
-        os.remove(path or self.filename)
+        path = path or self.filename
+        if os.path.exists(path):
+            os.remove(path)
 
     def remove_folder_from_filesystem(self, path=None):
         shutil.rmtree(path or self.data.directory)
