@@ -182,12 +182,12 @@ class KeywordEditor(GridEditor, RideEventHandler):
         if event is not None and not IS_MAC:
             event.Skip()
 
-    def OnInsertCells(self, event):
+    def OnInsertCells(self, event=None):
         self._execute(InsertCells(self.selection.topleft,
                                   self.selection.bottomright))
         self._skip_except_on_mac(event)
 
-    def OnDeleteCells(self, event):
+    def OnDeleteCells(self, event=None):
         self._execute(DeleteCells(self.selection.topleft,
                                   self.selection.bottomright))
         self._skip_except_on_mac(event)
@@ -370,6 +370,10 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._open_cell_editor_with_content_assist()
         elif control_down and not event.AltDown() and keycode in (ord('1'), ord('2')):
             self._open_cell_editor_and_execute_variable_creator(list_variable=(keycode==ord('2')))
+        elif control_down and event.ShiftDown() and keycode == ord('I'):
+            self.OnInsertCells()
+        elif control_down and event.ShiftDown() and keycode == ord('D'):
+            self.OnDeleteCells()
         elif control_down and keycode == ord('B'):
             self._navigate_to_matching_user_keyword(self.GetGridCursorRow(), self.GetGridCursorCol())
         else:
