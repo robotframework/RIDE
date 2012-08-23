@@ -63,6 +63,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                 if self.is_focused() and (self._editor == wx.Window.FindFocus()):
                     func(event)
             return f
+        #NOTE: Do not keep hard reference to _editor as it can change if plugin is disabled and enabled!
         self.register_shortcut('CtrlCmd-X', focused(lambda e: self._editor.cut()))
         self.register_shortcut('CtrlCmd-C', focused(lambda e: self._editor.copy()))
         self.register_shortcut('CtrlCmd-V', focused(lambda e: self._editor.paste()))
@@ -70,7 +71,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.register_shortcut('CtrlCmd-Y', focused(lambda e: self._editor.redo()))
         self.register_shortcut('Del', focused(lambda e: self._editor.delete()))
         self.register_shortcut('CtrlCmd-F', lambda e: self._editor._search_field.SetFocus())
-        self.register_shortcut('CtrlCmd-G', self._editor.OnFind)
+        self.register_shortcut('CtrlCmd-G', lambda e: self._editor.OnFind(e))
 
     def disable(self):
         self.remove_self_from_tree_aware_plugins()
