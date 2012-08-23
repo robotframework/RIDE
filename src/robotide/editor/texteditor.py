@@ -252,19 +252,28 @@ class SourceEditor(wx.Panel):
         self._dirty = False
 
     def _create_ui(self, title):
+        self.SetSizer(VerticalSizer())
+        self._create_editor_toolbar()
+        self._create_editor_text_control()
+        self._parent.add_tab(self, title, allow_closing=False)
+
+    def _create_editor_toolbar(self):
         editor_toolbar_sizer = HorizontalSizer()
-        editor_toolbar_sizer.add_with_padding(ButtonWithHandler(self, 'Apply Changes', handler=lambda e: self.save()))
+        editor_toolbar_sizer.add_with_padding(
+            ButtonWithHandler(self, 'Apply Changes',
+                handler=lambda e: self.save()))
+        self._create_search(editor_toolbar_sizer)
+        self.Sizer.add(editor_toolbar_sizer)
+
+    def _create_search(self, editor_toolbar_sizer):
         editor_toolbar_sizer.AddSpacer(20)
         self._search_field = TextField(self, '', process_enters=True)
         self._search_field.Bind(wx.EVT_TEXT_ENTER, self.OnFind)
         editor_toolbar_sizer.add_with_padding(self._search_field)
-        editor_toolbar_sizer.add_with_padding(ButtonWithHandler(self, 'Search', handler=self.OnFind))
+        editor_toolbar_sizer.add_with_padding(
+            ButtonWithHandler(self, 'Search', handler=self.OnFind))
         self._search_field_notification = Label(self, label='')
         editor_toolbar_sizer.add_with_padding(self._search_field_notification)
-        self.SetSizer(VerticalSizer())
-        self.Sizer.add(editor_toolbar_sizer)
-        self._create_editor_text_control()
-        self._parent.add_tab(self, title, allow_closing=False)
 
     @property
     def dirty(self):
