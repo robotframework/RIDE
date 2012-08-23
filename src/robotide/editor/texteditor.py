@@ -28,6 +28,7 @@ from robotide.pluginapi import (Plugin, RideSaving, TreeAwarePluginMixin,
         RideTreeSelection, RideNotebookTabChanging, RideDataChanged,
         RideOpenSuite, RideDataChangedToDirty)
 from robotide.widgets.text import TextField
+from robotide.widgets.label import Label
 
 
 class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
@@ -258,6 +259,8 @@ class SourceEditor(wx.Panel):
         self._search_field.Bind(wx.EVT_TEXT_ENTER, self.OnFind)
         editor_toolbar_sizer.add_with_padding(self._search_field)
         editor_toolbar_sizer.add_with_padding(ButtonWithHandler(self, 'Search', handler=self.OnFind))
+        self._search_field_notification = Label(self, label='')
+        editor_toolbar_sizer.add_with_padding(self._search_field_notification)
         self.SetSizer(VerticalSizer())
         self.Sizer.add(editor_toolbar_sizer)
         self._create_editor_text_control()
@@ -279,6 +282,9 @@ class SourceEditor(wx.Panel):
             position = self._editor.FindText(0, len(self._editor.utf8_text),txt, 0)
         if position != -1:
             self._editor.SetSelection(position, position+3)
+            self._search_field_notification.SetLabel('')
+        else:
+            self._search_field_notification.SetLabel('No matches found.')
 
     def open(self, data):
         self.reset()
