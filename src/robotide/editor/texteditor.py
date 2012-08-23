@@ -27,6 +27,7 @@ from robotide.widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler
 from robotide.pluginapi import (Plugin, RideSaving, TreeAwarePluginMixin,
         RideTreeSelection, RideNotebookTabChanging, RideDataChanged,
         RideOpenSuite, RideDataChangedToDirty)
+from robotide.widgets.text import TextField
 
 
 class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
@@ -248,10 +249,14 @@ class SourceEditor(wx.Panel):
         self._dirty = False
 
     def _create_ui(self, title):
-        button_sizer = HorizontalSizer()
-        button_sizer.add_with_padding(ButtonWithHandler(self, 'Apply Changes', handler=lambda e: self.save()))
+        editor_toolbar_sizer = HorizontalSizer()
+        editor_toolbar_sizer.add_with_padding(ButtonWithHandler(self, 'Apply Changes', handler=lambda e: self.save()))
+        editor_toolbar_sizer.AddSpacer(20)
+        self._search_field = TextField(self, '')
+        editor_toolbar_sizer.add_with_padding(self._search_field)
+        editor_toolbar_sizer.add_with_padding(ButtonWithHandler(self, 'Search', handler=self.OnFind))
         self.SetSizer(VerticalSizer())
-        self.Sizer.add(button_sizer)
+        self.Sizer.add(editor_toolbar_sizer)
         self._create_editor_text_control()
         self._parent.add_tab(self, title, allow_closing=False)
 
@@ -262,6 +267,15 @@ class SourceEditor(wx.Panel):
     @property
     def datafile_controller(self):
         return self._data._data
+
+    def OnFind(self, event):
+        txt = self._search_field.GetValue()
+        min_pos = self._editor.GetAnchor()
+        position = self._editor.FindText(min_pos+1, len(self._editor.utf8_text),txt, 0)
+        if position == -1:
+            position = self._editor.FindText(0, len(self._editor.utf8_text),txt, 0)
+        if position != -1:
+            self._editor.SetSelection(position, position+3)
 
     def open(self, data):
         self.reset()
