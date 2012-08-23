@@ -290,7 +290,7 @@ class SourceEditor(wx.Panel):
         if position == -1:
             position = self._editor.FindText(0, len(self._editor.utf8_text),txt, 0)
         if position != -1:
-            self._editor.SetSelection(position, position+3)
+            self._editor.SetSelection(position, position+len(txt))
             self._search_field_notification.SetLabel('')
         else:
             self._search_field_notification.SetLabel('No matches found.')
@@ -352,7 +352,16 @@ class SourceEditor(wx.Panel):
         if text is not None:
             self._editor.set_text(text)
         self._editor.Bind(wx.EVT_KEY_UP, self.OnEditorKey)
-        self._editor.Bind(wx.EVT_KILL_FOCUS, self.save)
+        self._editor.Bind(wx.EVT_KILL_FOCUS, self.LeaveFocus)
+        self._editor.Bind(wx.EVT_SET_FOCUS, self.GetFocus)
+
+    def LeaveFocus(self, event):
+        self._editor.SetCaretPeriod(0)
+        self.save()
+
+    def GetFocus(self, event):
+        self._editor.SetCaretPeriod(500)
+        event.Skip()
 
     def _revert(self):
         self.reset()
