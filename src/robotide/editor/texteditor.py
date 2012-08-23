@@ -60,7 +60,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     def _register_shortcuts(self):
         def focused(func):
             def f(event):
-                if self.is_focused():
+                if self.is_focused() and (self._editor == wx.Window.FindFocus()):
                     func(event)
             return f
         self.register_shortcut('CtrlCmd-X', focused(lambda e: self._editor.cut()))
@@ -142,7 +142,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         return True
 
     def is_focused(self):
-        return (self.notebook.current_page_title == self.title) and (self._editor == wx.Window.FindFocus())
+        return self.notebook.current_page_title == self.title
 
 
 class DataValidationHandler(object):
