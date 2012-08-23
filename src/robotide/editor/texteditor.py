@@ -293,14 +293,16 @@ class SourceEditor(wx.Panel):
 
     def _find(self, forward=True):
         txt = self._search_field.GetValue()
-        anchor = self._editor.GetAnchor()
-        file_end = len(self._editor.utf8_text)
-        position = self._find_text_position(anchor, file_end, forward, txt)
+        position = self._find_text_position(forward, txt)
         self._show_search_results(position, txt)
 
-    def _find_text_position(self, anchor, file_end, forward, txt):
+    # FIXME: This must be cleaned up
+    def _find_text_position(self, forward, txt):
+        file_end = len(self._editor.utf8_text)
         search_end = file_end if forward else 0
-        position = self._editor.FindText(anchor + 1, search_end, txt, 0)
+        anchor = self._editor.GetAnchor()
+        anchor += 1 if forward else 0
+        position = self._editor.FindText(anchor, search_end, txt, 0)
         if position == -1:
             start, end = (0, file_end) if forward else (file_end - 1, 0)
             position = self._editor.FindText(start, end, txt, 0)
