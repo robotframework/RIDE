@@ -70,7 +70,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.register_shortcut('CtrlCmd-Y', focused(lambda e: self._editor.redo()))
         self.register_shortcut('Del', focused(lambda e: self._editor.delete()))
         self.register_shortcut('CtrlCmd-F', lambda e: self._editor._search_field.SetFocus())
-        self.register_shortcut('CtrlCmd-G', self._editor.OnFind)
+        self.register_shortcut('CtrlCmd-G', lambda e: self._editor.OnFind(e))
+        self.register_shortcut('CtrlCmd-Shift-G', lambda e: self._editor.OnFindBackwards(e))
 
     def disable(self):
         self.remove_self_from_tree_aware_plugins()
@@ -284,13 +285,29 @@ class SourceEditor(wx.Panel):
         return self._data._data
 
     def OnFind(self, event):
+        self._find()
+
+    def OnFindBackwards(self, event):
+        self._find(forward=False)
+
+    def _find(self, forward=True):
         txt = self._search_field.GetValue()
-        min_pos = self._editor.GetAnchor()
-        position = self._editor.FindText(min_pos+1, len(self._editor.utf8_text),txt, 0)
+        anchor = self._editor.GetAnchor()
+        file_end = len(self._editor.utf8_text)
+        position = self._find_text_position(anchor, file_end, forward, txt)
+        self._show_search_results(position, txt)
+
+    def _find_text_position(self, anchor, file_end, forward, txt):
+        search_end = file_end if forward else 0
+        position = self._editor.FindText(anchor + 1, search_end, txt, 0)
         if position == -1:
-            position = self._editor.FindText(0, len(self._editor.utf8_text),txt, 0)
+            start, end = (0, file_end) if forward else (file_end - 1, 0)
+            position = self._editor.FindText(start, end, txt, 0)
+        return position
+
+    def _show_search_results(self, position, txt):
         if position != -1:
-            self._editor.SetSelection(position, position+len(txt))
+            self._editor.SetSelection(position, position + len(txt))
             self._search_field_notification.SetLabel('')
         else:
             self._search_field_notification.SetLabel('No matches found.')
