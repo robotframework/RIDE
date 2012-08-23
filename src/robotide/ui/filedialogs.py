@@ -180,10 +180,11 @@ class NewResourceDialog(_WithImmutableParent, _NewResourceDialog):
 
 class AddSuiteDialog(_WithImmutableParent, _CreationDialog):
 
-    def __init__(self, controller):
+    def __init__(self, controller, settings):
         self._controller = controller
         self._path = controller.directory
         _CreationDialog.__init__(self, self._path, 'Add Suite')
+        self._format_chooser.SetStringSelection(settings['default file format'])
 
     def _execute(self):
         cmd = AddTestDataDirectory if self._is_dir_type() else AddTestCaseFile

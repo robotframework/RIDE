@@ -269,7 +269,7 @@ class TestDataDirectoryHandler(TestDataHandler):
                 _ActionHandler._label_select_failed_tests]
 
     def OnNewSuite(self, event):
-        AddSuiteDialog(self.controller).execute()
+        AddSuiteDialog(self.controller, self._settings).execute()
 
     def OnNewResource(self, event):
         NewResourceDialog(self.controller).execute()

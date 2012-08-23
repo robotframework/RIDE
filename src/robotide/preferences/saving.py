@@ -62,6 +62,11 @@ class SavingPreferences(PreferencesPanel):
     def _create_editors(self, settings):
         return [
             StringChoiceEditor(settings,
+                'default file format',
+                'Default file format:',
+                ('txt', 'html', 'tsv' )
+            ),
+            StringChoiceEditor(settings,
                 'txt format separator',
                 'TXT format separator:',
                 ('pipe', 'space')
