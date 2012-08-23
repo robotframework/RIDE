@@ -68,6 +68,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.register_shortcut('Ctrl-Z', focused(lambda e: self._editor.undo()))
         self.register_shortcut('Ctrl-Y', focused(lambda e: self._editor.redo()))
         self.register_shortcut('Del', focused(lambda e: self._editor.delete()))
+        self.register_shortcut('Ctrl-F', lambda e: self._editor._search_field.SetFocus())
 
     def disable(self):
         self.remove_self_from_tree_aware_plugins()
@@ -252,7 +253,8 @@ class SourceEditor(wx.Panel):
         editor_toolbar_sizer = HorizontalSizer()
         editor_toolbar_sizer.add_with_padding(ButtonWithHandler(self, 'Apply Changes', handler=lambda e: self.save()))
         editor_toolbar_sizer.AddSpacer(20)
-        self._search_field = TextField(self, '')
+        self._search_field = TextField(self, '', process_enters=True)
+        self._search_field.Bind(wx.EVT_TEXT_ENTER, self.OnFind)
         editor_toolbar_sizer.add_with_padding(self._search_field)
         editor_toolbar_sizer.add_with_padding(ButtonWithHandler(self, 'Search', handler=self.OnFind))
         self.SetSizer(VerticalSizer())
@@ -333,7 +335,7 @@ class SourceEditor(wx.Panel):
         self.Sizer.Layout()
         if text is not None:
             self._editor.set_text(text)
-        self._editor.Bind(wx.EVT_KEY_DOWN, self.OnEditorKey)
+        self._editor.Bind(wx.EVT_KEY_UP, self.OnEditorKey)
         self._editor.Bind(wx.EVT_KILL_FOCUS, self.save)
 
     def _revert(self):
@@ -341,7 +343,7 @@ class SourceEditor(wx.Panel):
         self._editor.set_text(self._data.content)
 
     def OnEditorKey(self, event):
-        if not self.dirty:
+        if not self.dirty and self._editor.GetModify():
             self._mark_file_dirty()
         event.Skip()
 
