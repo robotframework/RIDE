@@ -142,12 +142,12 @@ class ListEditor(ListEditorBase, RideEventHandler): pass
 
 class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
 
-    def __init__(self, parent, columns, data=[]):
+    def __init__(self, parent, columns, data=None):
         wx.ListCtrl.__init__(self, parent,
                              style=wx.LC_REPORT|wx.NO_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES)
         ListCtrlAutoWidthMixin.__init__(self)
         self._parent = parent
-        self.populate(columns, data)
+        self.populate(columns, data or [])
 
     def populate(self, columns, data):
         for i, name in enumerate(columns):
