@@ -22,6 +22,7 @@ from robotide.namespace.namespace import _VariableStash
 
 from .filecontrollers import ResourceFileController
 from .macrocontrollers import KeywordNameController, ForLoopStepController, TestCaseController
+from robotide.utils import overrides
 from .settingcontrollers import _SettingController, VariableController
 from .tablecontrollers import VariableTableController
 from .validators import BaseNameValidator
@@ -553,18 +554,8 @@ class FindOccurrences(_Command):
             if self._contains_item(item))
 
     def _contains_item(self, item):
-        if len(utils.find_variable_basenames(self._keyword_name)) > 0:
-            return self._contains_variable(item)
-        else:
-            return self._contains_keyword(item)
-
-    def _contains_keyword(self, item):
         self._yield_for_other_threads()
         return item.contains_keyword(self._keyword_name)
-
-    def _contains_variable(self, item):
-        self._yield_for_other_threads()
-        return item.contains_variable(self._keyword_name)
 
     def _yield_for_other_threads(self):
         # GIL !?#!!!
@@ -573,7 +564,12 @@ class FindOccurrences(_Command):
 
 
 class FindVariableOccurrences(FindOccurrences):
-    
+
+    @overrides(FindOccurrences)
+    def _contains_item(self, item):
+        self._yield_for_other_threads()
+        return item.contains_variable(self._keyword_name)
+
     def _items_from_datafile(self, df):
         for itm in FindOccurrences._items_from_datafile(self, df):
             yield itm
