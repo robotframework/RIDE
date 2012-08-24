@@ -67,7 +67,7 @@ SHORTCUT_KEYS = '''<h2>Shortcut keys in RIDE</h2>
         <td>Open resource</td>
     </tr>
     <tr>
-        <td>CtrlCmd-Shift-R</td>
+        <td>Shift-CtrlCmd-R</td>
         <td>Refresh directory</td>
     </tr>
     <tr>
@@ -75,7 +75,7 @@ SHORTCUT_KEYS = '''<h2>Shortcut keys in RIDE</h2>
         <td>New project</td>
     </tr>
     <tr>
-        <td>CtrlCmd-Shift-N</td>
+        <td>Shift-CtrlCmd-N</td>
         <td>New resource</td>
     </tr>
     <tr>
@@ -127,6 +127,14 @@ SHORTCUT_KEYS = '''<h2>Shortcut keys in RIDE</h2>
         <td>Remove row(s)</td>
     </tr>
     <tr>
+        <td>Shift-CtrlCmd-I</td>
+        <td>Insert cell(s)</td>
+    </tr>
+    <tr>
+        <td>Shift-CtrlCmd-D</td>
+        <td>Remove cell(s)</td>
+    </tr>
+    <tr>
         <td>CtrlCmd-Z</td>
         <td>Undo</td>
     </tr>
@@ -167,7 +175,7 @@ SHORTCUT_KEYS = '''<h2>Shortcut keys in RIDE</h2>
         <td>Paste (does not move cells or rows)</td>
     </tr>
     <tr>
-        <td>CtrlCmd-Shift-V</td>
+        <td>Shift-CtrlCmd-V</td>
         <td>Insert (adds empty rows and pastes data)</td>
     </tr>
     <tr>
@@ -183,19 +191,19 @@ SHORTCUT_KEYS = '''<h2>Shortcut keys in RIDE</h2>
         <th><b>What it does</b></th>
     </tr>
     <tr>
-        <td>CtrlCmd-Shift-T</td>
+        <td>Shift-CtrlCmd-T</td>
         <td>Add new test case</td>
     </tr>
     <tr>
-        <td>CtrlCmd-Shift-K</td>
+        <td>Shift-CtrlCmd-K</td>
         <td>Add new keyword</td>
     </tr>
     <tr>
-        <td>CtrlCmd-Shift-V</td>
+        <td>Shift-CtrlCmd-V</td>
         <td>Add new scalar variable</td>
     </tr>
     <tr>
-        <td>CtrlCmd-Shift-L</td>
+        <td>Shift-CtrlCmd-L</td>
         <td>Add new list variable</td>
     </tr>
     <tr>
@@ -203,7 +211,7 @@ SHORTCUT_KEYS = '''<h2>Shortcut keys in RIDE</h2>
         <td>Rename</td>
     </tr>
     <tr>
-        <td>CtrlCmd-Shift-C</td>
+        <td>Shift-CtrlCmd-C</td>
         <td>Clone/Copy selected keyword/test case</td>
     </tr>
     <tr>
@@ -213,6 +221,56 @@ SHORTCUT_KEYS = '''<h2>Shortcut keys in RIDE</h2>
     <tr>
         <td>CtrlCmd-Down</td>
         <td>Move item down</td>
+    </tr>
+</table>
+
+<h3>Text editor</h3>
+
+<table>
+    <tr align="left">
+        <th><b>Shortcut</b></th>
+        <th><b>What it does</b></th>
+    </tr>
+    <tr>
+        <td>CtrlCmd-F</td>
+        <td>Find in text</td>
+    </tr>
+    <tr>
+        <td>CtrlCmd-G</td>
+        <td>Find next search result</td>
+    </tr>
+    <tr>
+        <td>Shift-CtrlCmd-G</td>
+        <td>Find previous search result</td>
+    </tr>
+    <tr>
+        <td>Enter</td>
+        <td>When focus is in the search field, find next search result</td>
+    </tr>
+    <tr>
+        <td>Shift-Enter</td>
+        <td>When focus is in the search field, find previous search result</td>
+    </tr>
+</table>
+
+<h3>Run tab</h3>
+
+<table>
+    <tr align="left">
+        <th><b>Shortcut</b></th>
+        <th><b>What it does</b></th>
+    </tr>
+    <tr>
+        <td>Ctrl-C</td>
+        <td>Copy from text output when text selected</td>
+    </tr>
+       <tr>
+        <td>Ctrl-L</td>
+        <td>Open HTML log</td>
+    </tr>
+    <tr>
+        <td>Ctrl-R</td>
+        <td>Show HTML report</td>
     </tr>
 </table>
 '''
