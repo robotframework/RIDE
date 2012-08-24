@@ -17,6 +17,7 @@ import time
 import os
 
 from robotide import utils
+from robotide.namespace.embeddedargs import EmbeddedArgsHandler
 from robotide.publish.messages import RideSelectResource, RideFileNameChanged, RideSaving, RideSaved, RideSaveAll
 from robotide.namespace.namespace import _VariableStash
 
@@ -509,6 +510,14 @@ class FindOccurrences(_Command):
             raise ValueError('Keyword name can not be "%s"' % keyword_name)
         self._keyword_name = keyword_name
         self._keyword_info = keyword_info
+        self._keyword_regexp = self._create_regexp(keyword_name)
+
+    def _create_regexp(self, keyword_name):
+        if '$' in keyword_name:
+            kw = lambda: 0
+            kw.arguments = None
+            kw.name = keyword_name
+            return EmbeddedArgsHandler(kw).name_regexp
 
     def execute(self, context):
         self._keyword_source = self._keyword_info and self._keyword_info.source or \
@@ -555,7 +564,7 @@ class FindOccurrences(_Command):
 
     def _contains_item(self, item):
         self._yield_for_other_threads()
-        return item.contains_keyword(self._keyword_name)
+        return item.contains_keyword(self._keyword_regexp or self._keyword_name)
 
     def _yield_for_other_threads(self):
         # GIL !?#!!!
