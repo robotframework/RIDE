@@ -11,11 +11,12 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+from robotide.context.platform import IS_MAC
 
 import wx
 
 from robotide.action import ActionInfoCollection, ActionFactory
-from robotide.context import ABOUT_RIDE
+from robotide.context import ABOUT_RIDE, SHORTCUT_KEYS
 from robotide.controller.commands import SaveFile, SaveAll
 from robotide.publish import (RideSaveAll, RideClosing, RideSaved, PUBLISHER,
         RideInputValidationError, RideTreeSelection, RideModificationPrevented)
@@ -28,6 +29,7 @@ from .filedialogs import (NewProjectDialog, NewExternalResourceDialog,
         InitFileFormatDialog)
 from .review import ReviewDialog
 from .pluginmanager import PluginManager
+from robotide.action.shortcut import replace_mac_chars
 from .tree import Tree
 from .notebook import NoteBook
 from .progress import LoadProgressObserver
@@ -55,6 +57,7 @@ _menudata = """
 [Help]
 !Report a Problem | Open browser to the RIDE issue tracker
 !About | Information about RIDE
+!Shortcut keys | RIDE shortcut keys
 !Release notes | Shows release notes
 """
 
@@ -259,6 +262,10 @@ class RideFrame(wx.Frame, RideEventHandler):
         dlg.ShowModal()
         dlg.Destroy()
 
+    def OnShortcutkeys(self, event):
+        dialog = ShortcutKeysDialog()
+        dialog.Show()
+
     def OnReportaProblem(self, event):
         wx.LaunchDefaultBrowser('http://code.google.com/p/robotframework-ride/issues/list')
 
@@ -338,3 +345,20 @@ class AboutDialog(Dialog):
 
     def OnKey(self, *args):
         pass
+
+
+class ShortcutKeysDialog(Dialog):
+
+    def __init__(self):
+        Dialog.__init__(self, title='Shortcut keys for RIDE')
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer.Add(HtmlWindow(self, (350, 400), self._get_platform_specific_shortcut_keys()), 1, flag=wx.EXPAND)
+        self.SetSizerAndFit(sizer)
+
+    def OnKey(self, *args):
+        pass
+
+    def _get_platform_specific_shortcut_keys(self):
+        if IS_MAC:
+            return replace_mac_chars(SHORTCUT_KEYS.replace('CtrlCmd', 'Cmd'))
+        return SHORTCUT_KEYS.replace('CtrlCmd', 'Ctrl')
