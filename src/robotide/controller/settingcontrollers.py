@@ -66,7 +66,7 @@ class _SettingController(ControllerWithParent):
     def contains_keyword(self, name):
         if isinstance(name, basestring):
             return utils.eq(self.keyword_name or '', name)
-        return name.match(self.keyword_name)
+        return name.match(self.keyword_name or '')
 
     def contains_variable(self, name):
         return utils.value_contains_variable(self.value, name)
