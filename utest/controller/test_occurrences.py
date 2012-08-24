@@ -29,6 +29,7 @@ SUITE_TEST_SETUP_KEYWORD = 'Test Setup Kw'
 SUITE_TEST_TEMPLATE_KEYWORD = 'Test Template Kw'
 SUITE_NAME = 'Some Suite'
 KEYWORD_IN_USERKEYWORD1 = 'Some Keyword'
+EMBEDDED_ARGUMENTS_KEYWORD = "Pick '${fruit}' and '${action}' it"
 
 def TestCaseControllerWithSteps(chief=None, source='some_suite.txt'):
     tcf = TestCaseFile()
@@ -38,17 +39,12 @@ def TestCaseControllerWithSteps(chief=None, source='some_suite.txt'):
     tcf.setting_table.test_teardown.name = 'Test Teardown Kw'
     tcf.setting_table.suite_teardown.name = 'Suite Teardown Kw'
     tcf.setting_table.test_template.value = SUITE_TEST_TEMPLATE_KEYWORD
-    testcase = tcf.testcase_table.add(TEST1_NAME)
-    for step in [[STEP1_KEYWORD, 'Hello'], ['Run Keyword', STEP2_ARGUMENT], [USERKEYWORD2_NAME]]:
-        testcase.add_step(step)
-    for_loop = testcase.add_for_loop([': FOR', '${i}', 'IN RANGE', '10'])
-    for_loop.add_step(['Log', '${i}'])
-    testcase.setup.name = SETUP_KEYWORD
-    testcase.teardown.name = 'Teardown Kw'
-    testcase.template.value = TEMPLATE_KEYWORD
+    testcase = _create_testcase(tcf)
     uk = tcf.keyword_table.add(USERKEYWORD1_NAME)
     uk.add_step([KEYWORD_IN_USERKEYWORD1])
     uk = tcf.keyword_table.add(USERKEYWORD2_NAME)
+    uk.add_step(['No Operation'])
+    uk = tcf.keyword_table.add(EMBEDDED_ARGUMENTS_KEYWORD)
     uk.add_step(['No Operation'])
     if chief is None:
         chief = ChiefController(Namespace(FakeSettings()))
@@ -58,11 +54,25 @@ def TestCaseControllerWithSteps(chief=None, source='some_suite.txt'):
                                           tcf.testcase_table)
     return TestCaseController(tctablectrl, testcase), chief._namespace
 
+def _create_testcase(tcf):
+    testcase = tcf.testcase_table.add(TEST1_NAME)
+    for step in [[STEP1_KEYWORD, 'Hello'],
+                 ['Run Keyword', STEP2_ARGUMENT],
+                 [USERKEYWORD2_NAME],
+                 ["Pick 'apple' and 'peel' it"]]:
+        testcase.add_step(step)
+    for_loop = testcase.add_for_loop([': FOR', '${i}', 'IN RANGE', '10'])
+    for_loop.add_step(['Log', '${i}'])
+    testcase.setup.name = SETUP_KEYWORD
+    testcase.teardown.name = 'Teardown Kw'
+    testcase.template.value = TEMPLATE_KEYWORD
+    return testcase
 
-def assert_occurrence(test_ctrl, kw_name, source, usage):
+
+def assert_occurrence(test_ctrl, kw_name, expected_source, expected_usage):
     occ = _first_occurrence(test_ctrl, kw_name)
-    assert_equals(occ.location, source)
-    assert_equals(occ.usage, usage)
+    assert_equals(occ.location, expected_source, 'Occurrence not in the right place')
+    assert_equals(occ.usage, expected_usage, 'Usage not in the right place')
 
 def assert_variable_occurrence(occurrences, source, usage, count):
     times_found = 0
@@ -162,6 +172,9 @@ class FindOccurrencesTest(unittest.TestCase):
     def test_occurrences_are_case_and_space_insensitive(self):
         assert_occurrence(self.test_ctrl, 'R un KE Y W O rd', TEST1_NAME, 'Steps')
         assert_occurrence(self.test_ctrl, 'se tu p KW  ', TEST1_NAME, 'Setup')
+
+    def test_embedded_arguments_occurrence(self):
+        assert_occurrence(self.test_ctrl, EMBEDDED_ARGUMENTS_KEYWORD, TEST1_NAME, 'Steps')
 
     def test_occurrences_in_test_metadata(self):
         assert_occurrence(self.test_ctrl, SETUP_KEYWORD, TEST1_NAME, 'Setup')

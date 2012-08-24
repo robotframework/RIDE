@@ -179,9 +179,11 @@ class StepController(_BaseController):
         return any(self._kw_name_match(item, name) for item in [self.keyword or ''] + self.args)
 
     def _kw_name_match(self, item, expected):
-        return utils.eq(item, expected) or (
-            self._GIVEN_WHEN_THEN_MATCHER.match(item) and
-            utils.eq(self._GIVEN_WHEN_THEN_MATCHER.sub('', item), expected))
+        if isinstance(expected, basestring):
+            return utils.eq(item, expected) or (
+                self._GIVEN_WHEN_THEN_MATCHER.match(item) and
+                utils.eq(self._GIVEN_WHEN_THEN_MATCHER.sub('', item), expected))
+        return expected.match(item)
 
     def replace_keyword(self, new_name, old_name):
         if self._kw_name_match(self.keyword or '', old_name):

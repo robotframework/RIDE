@@ -1,3 +1,4 @@
+import re
 import unittest
 from mock import Mock
 from robot.parsing.settings import Fixture, Documentation, Timeout, Tags, Return
@@ -140,6 +141,11 @@ class FixtureControllerTest(unittest.TestCase):
         self.ctrl.set_comment(['My comment'])
         assert_equals(self.ctrl.comment.as_list(), ['# My comment'])
         assert_true(self.ctrl.dirty)
+
+    def test_contains_keyword_with_regexp_with_empty_fixture(self):
+        empty_fixture_controller = FixtureController(self.parent, Fixture('Setup'))
+        keyword_regexp = re.compile(r'foo.*bar')
+        assert_false(empty_fixture_controller.contains_keyword(keyword_regexp))
 
 
 class TagsControllerTest(unittest.TestCase):

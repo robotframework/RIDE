@@ -943,7 +943,6 @@ class Process(object):
     def run_command(self, command):
         # We need to supply an stdin for subprocess, because otherways in pythonw
         # subprocess will try using sys.stdin which will cause an error in windows
-        flags = subprocess.CREATE_NEW_PROCESS_GROUP if IS_WINDOWS else 0
         self._process = subprocess.Popen(
             command.encode(SYSTEM_ENCODING),
             bufsize=0,
@@ -951,7 +950,7 @@ class Process(object):
             stderr=subprocess.PIPE,
             stdin=subprocess.PIPE,
             shell=False if IS_WINDOWS else True,
-            cwd=self._cwd.encode(SYSTEM_ENCODING), creationflags=flags,
+            cwd=self._cwd.encode(SYSTEM_ENCODING),
             preexec_fn=os.setsid if not IS_WINDOWS else None)
         self._process.stdin.close()
         self._output_stream = StreamReaderThread(self._process.stdout)
