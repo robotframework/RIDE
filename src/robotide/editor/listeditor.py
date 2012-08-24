@@ -165,7 +165,7 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
             for i in range(1, len(rowdata)):
                 data = rowdata[i] is not None and rowdata[i] or ''
                 self.SetStringItem(row, i, data)
-            self._add_link_style(row, item)
+            self._add_style(row, item)
 
     def _set_column_widths(self):
         min_width = self._parent.Parent.plugin.global_settings['list col min width']
@@ -177,12 +177,25 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
             if self.GetColumnWidth(i) > max_width:
                 self.SetColumnWidth(i, max_width)
 
-    def _add_link_style(self, row, item):
+    def _add_style(self, row, item):
         if self._parent.has_link_target(item):
-            list_item = self.GetItem(row)
-            list_item.SetFont(self._underlined_font())
-            list_item.SetTextColour(wx.BLUE)
-            self.SetItem(list_item)
+            self._add_link_style(row)
+        if self._parent.has_error(item):
+            self._add_error_style(row)
+
+    def _add_link_style(self, row):
+        self._set_row_style(row, font=self._underlined_font(), colour=wx.BLUE)
+
+    def _add_error_style(self, row):
+        self._set_row_style(row, colour=wx.RED)
+
+    def _set_row_style(self, row, font=None, colour=None):
+        list_item = self.GetItem(row)
+        if font:
+            list_item.SetFont(font)
+        if colour:
+            list_item.SetTextColour(colour)
+        self.SetItem(list_item)
 
     def _underlined_font(self):
         font = Font().underlined

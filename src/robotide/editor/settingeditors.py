@@ -432,6 +432,9 @@ class ImportSettingListEditor(_AbstractListEditor):
     def has_link_target(self, controller):
         return controller.is_resource and controller.get_imported_controller()
 
+    def has_error(self, controller):
+        return False
+
     def OnEdit(self, event):
         setting = self._get_setting()
         self._show_import_editor_dialog(EditorDialog(setting),
