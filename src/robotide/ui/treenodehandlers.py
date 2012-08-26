@@ -31,6 +31,7 @@ from .filedialogs import (AddSuiteDialog, ChangeFormatDialog, NewResourceDialog,
 from robotide.widgets import PopupMenuItems
 from .progress import RenameProgressObserver
 from .resourcedialogs import ResourceRenameDialog, ResourceDeleteDialog
+from robotide.ui.resourcedialogs import FolderDeleteDialog
 
 def action_handler_class(controller):
     return {TestDataDirectoryController:TestDataDirectoryHandler,
@@ -275,10 +276,7 @@ class TestDataDirectoryHandler(TestDataHandler):
         NewResourceDialog(self.controller).execute()
 
     def OnDelete(self, event):
-        if wx.MessageBox('Are you sure you want to delete this folder and all of its '
-                         'contents.', caption='Confirm',
-            style=wx.YES_NO | wx.ICON_QUESTION) == wx.YES:
-            self.controller.execute(DeleteFolder())
+        FolderDeleteDialog(self.controller).execute()
 
 
 class ResourceFileHandler(_CanBeRenamed, TestDataHandler):

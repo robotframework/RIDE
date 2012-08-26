@@ -56,9 +56,18 @@ class FindResourceUsages(_Command):
             yield ResourceUsage(context, imp)
 
 
+class FindTestFolderUsages(_Command):
+
+    def execute(self, context):
+        for imp in context.get_where_used():
+            yield ResourceUsage(*imp)
+
+
 class ResourceUsage(object):
 
     def __init__(self, resource, imp):
+        self.res_name = resource.name
+        self.res_src = resource.source
         user = imp.datafile_controller
         self.location = user.filename
         self.name = user.display_name

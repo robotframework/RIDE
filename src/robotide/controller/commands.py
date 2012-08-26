@@ -479,6 +479,13 @@ class DeleteResourceAndImports(DeleteFile):
         DeleteFile.execute(self, context)
 
 
+class DeleteFolderAndImports(DeleteFolder):
+
+    def execute(self, context):
+        context.remove_static_imports_to_this()
+        DeleteFolder.execute(self, context)
+
+
 class UpdateVariable(_Command):
 
     def __init__(self, new_name, new_value, new_comment):
