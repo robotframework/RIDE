@@ -60,7 +60,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     def _register_shortcuts(self):
         def focused(func):
             def f(event):
-                if self.is_focused() and (self._editor == wx.Window.FindFocus()):
+                if self.is_focused() and self._editor.is_focused():
                     func(event)
             return f
         #NOTE: Do not keep hard reference to _editor as it can change if plugin is disabled and enabled!
@@ -252,6 +252,10 @@ class SourceEditor(wx.Panel):
         self._create_ui(title)
         self._data = None
         self._dirty = False
+
+    def is_focused(self):
+        foc = wx.Window.FindFocus()
+        return any(elem == foc for elem in [self]+list(self.GetChildren()))
 
     def _create_ui(self, title):
         self.SetSizer(VerticalSizer())
