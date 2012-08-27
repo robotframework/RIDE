@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 from time import time
+from robotide.context.platform import IS_WINDOWS, IS_MAC
 import wx
 from wx import stc
 from StringIO import StringIO
@@ -29,6 +30,7 @@ from robotide.pluginapi import (Plugin, RideSaving, TreeAwarePluginMixin,
         RideOpenSuite, RideDataChangedToDirty)
 from robotide.widgets.text import TextField
 from robotide.widgets.label import Label
+
 
 
 class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
@@ -65,7 +67,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             return f
         self.register_shortcut('CtrlCmd-X', focused(lambda e: self._editor.cut()))
         self.register_shortcut('CtrlCmd-C', focused(lambda e: self._editor.copy()))
-        self.register_shortcut('CtrlCmd-V', focused(lambda e: self._editor.paste()))
+        if IS_WINDOWS or IS_MAC: # Linux does not need this key binding
+            self.register_shortcut('CtrlCmd-V', focused(lambda e: self._editor.paste()))
         self.register_shortcut('CtrlCmd-Z', focused(lambda e: self._editor.undo()))
         self.register_shortcut('CtrlCmd-Y', focused(lambda e: self._editor.redo()))
         self.register_shortcut('Del', focused(lambda e: self._editor.delete()))
