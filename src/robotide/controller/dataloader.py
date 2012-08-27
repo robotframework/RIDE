@@ -58,7 +58,8 @@ class _DataLoaderThread(Thread):
         try:
             self.result = self._run()
         except Exception:
-            pass # TODO: Log this error somehow
+            import traceback
+            traceback.print_exc()
 
 
 class _DataLoader(_DataLoaderThread):
