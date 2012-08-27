@@ -59,12 +59,17 @@ class TimeoutValidator(_AbstractValidator):
         timestr = time_tokens[0]
         try:
             secs = utils.timestr_to_secs(timestr)
+            if secs <= 0:
+                raise ValueError("Timestring must be over zero")
             time_tokens[0] = utils.secs_to_timestr(secs)
-        except DataError, err:
+        except ValueError, err:
             if not '${' in timestr:
                 return str(err)
-        self.Window.SetValue(utils.join_value(time_tokens))
+        self._set_window_value(utils.join_value(time_tokens))
         return None
+
+    def _set_window_value(self, value):
+        self.Window.SetValue(value)
 
 
 class ArgumentsValidator(_AbstractValidator):
