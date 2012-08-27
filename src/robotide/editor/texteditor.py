@@ -63,7 +63,6 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                 if self.is_focused() and self._editor.is_focused():
                     func(event)
             return f
-        #NOTE: Do not keep hard reference to _editor as it can change if plugin is disabled and enabled!
         self.register_shortcut('CtrlCmd-X', focused(lambda e: self._editor.cut()))
         self.register_shortcut('CtrlCmd-C', focused(lambda e: self._editor.copy()))
         self.register_shortcut('CtrlCmd-V', focused(lambda e: self._editor.paste()))
@@ -356,7 +355,11 @@ class SourceEditor(wx.Panel):
         self._editor.Copy()
 
     def paste(self):
-        self._editor.Paste()
+        focus = wx.Window.FindFocus()
+        if focus == self._editor:
+            self._editor.Paste()
+        elif focus == self._search_field:
+            self._search_field.Paste()
 
     def undo(self):
         self._editor.Undo()
