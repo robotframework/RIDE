@@ -29,7 +29,7 @@ from .filedialogs import (NewProjectDialog, NewExternalResourceDialog,
         InitFileFormatDialog)
 from .review import ReviewDialog
 from .pluginmanager import PluginManager
-from robotide.action.shortcut import replace_mac_chars
+from robotide.action.shortcut import localize_shortcuts
 from .tree import Tree
 from .notebook import NoteBook
 from .progress import LoadProgressObserver
@@ -359,6 +359,4 @@ class ShortcutKeysDialog(Dialog):
         pass
 
     def _get_platform_specific_shortcut_keys(self):
-        if IS_MAC:
-            return replace_mac_chars(SHORTCUT_KEYS.replace('CtrlCmd', 'Cmd'))
-        return SHORTCUT_KEYS.replace('CtrlCmd', 'Ctrl')
+        return localize_shortcuts(SHORTCUT_KEYS)

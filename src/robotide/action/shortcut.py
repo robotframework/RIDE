@@ -47,7 +47,14 @@ _REPLACE = {
     'Down': DOWN_CHAR
 }
 
-def replace_mac_chars(string):
+def localize_shortcuts(string):
+    if IS_MAC:
+        string = string.replace('CtrlCmd', 'Cmd')
+    else:
+        string = string.replace('CtrlCmd', 'Ctrl')
+    return _replace_mac_chars(string)
+
+def _replace_mac_chars(string):
     if not IS_MAC or not string:
         return string
     for key, value in _REPLACE.items():
@@ -65,7 +72,7 @@ class Shortcut(object):
         return self._replace_chars_in_mac(value)
 
     def _replace_chars_in_mac(self, shortcut):
-        return replace_mac_chars(shortcut)
+        return _replace_mac_chars(shortcut)
 
     def __nonzero__(self):
         return bool(self.value)

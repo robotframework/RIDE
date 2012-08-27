@@ -261,15 +261,15 @@ SHORTCUT_KEYS = '''<h2>Shortcut keys in RIDE</h2>
         <th><b>What it does</b></th>
     </tr>
     <tr>
-        <td>Ctrl-C</td>
+        <td>CtrlCmd-C</td>
         <td>Copy from text output when text selected</td>
     </tr>
        <tr>
-        <td>Ctrl-L</td>
+        <td>CtrlCmd-L</td>
         <td>Open HTML log</td>
     </tr>
     <tr>
-        <td>Ctrl-R</td>
+        <td>CtrlCmd-R</td>
         <td>Show HTML report</td>
     </tr>
 </table>

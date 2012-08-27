@@ -48,6 +48,7 @@ from posixpath import curdir, sep, pardir, join
 from robot.output import LEVELS
 from robot.utils.encoding import SYSTEM_ENCODING
 from robot.utils.encodingsniffer import DEFAULT_OUTPUT_ENCODING
+from robotide.action.shortcut import localize_shortcuts
 from robotide.contrib.testrunner.runprofiles import CustomScriptProfile
 from robotide.controller.testexecutionresults import TestExecutionResults
 from robotide.publish.messages import (RideDataFileSet, RideDataFileRemoved, RideFileNameChanged,
@@ -141,9 +142,9 @@ class TestRunnerPlugin(Plugin):
         self._min_log_level_number = LEVELS['INFO']
 
     def _register_shortcuts(self):
-        self.register_shortcut('Ctrl-C', self._copy_from_out)
-        self.register_shortcut('Ctrl-L', self.OnShowLog)
-        self.register_shortcut('Ctrl-R', self.OnShowReport)
+        self.register_shortcut('CtrlCmd-C', self._copy_from_out)
+        self.register_shortcut('CtrlCmd-L', self.OnShowLog)
+        self.register_shortcut('CtrlCmd-R', self.OnShowReport)
         if IS_WINDOWS or IS_MAC:
             self.register_shortcut('Del', self._delete_pressed)
 
@@ -178,7 +179,7 @@ class TestRunnerPlugin(Plugin):
                                      "F8", getRobotBitmap(), "Run the selected tests")
         self._run_action = self.register_action(run_action_info)
         stop_action_info = ActionInfo("Tools", "Stop Running", self.OnStop, None,
-                                      "Ctrl-F8", getProcessStopBitmap(), "Stop a running test")
+                                      "CtrlCmd-F8", getProcessStopBitmap(), "Stop a running test")
         self._stop_action = self.register_action(stop_action_info)
 
     def _read_run_profiles(self):
@@ -603,9 +604,9 @@ class TestRunnerPlugin(Plugin):
                              longHelp="Stop a running test")
         toolbar.AddSeparator()
         toolbar.AddLabelTool(ID_SHOW_REPORT, " Report", reportImage,
-                             shortHelp = "View Robot Report in Browser (Ctrl-R)")
+                             shortHelp = localize_shortcuts("View Robot Report in Browser (CtrlCmd-R)"))
         toolbar.AddLabelTool(ID_SHOW_LOG, " Log", logImage,
-                             shortHelp = "View Robot Log in Browser (Ctrl-L)")
+                             shortHelp = localize_shortcuts("View Robot Log in Browser (CtrlCmd-L)"))
         toolbar.AddSeparator()
         # the toolbar API doesn't give us a way to specify padding which
         # is why the label has a couple spaces after the colon. gross,
