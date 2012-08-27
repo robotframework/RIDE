@@ -517,8 +517,14 @@ class TestDataDirectoryController(_DataController, DirectoryController):
         self.reload()
         RideInitFileRemoved(path=path, datafile=self).publish()
 
+    def _remove_resources(self):
+        for resource in self._find_resources_recursively(self):
+            self._chief_controller.remove_resource(resource)
+            RideDataFileRemoved(path=resource.filename, datafile=resource).publish()
+
     def remove_from_model(self):
         self._chief_controller.remove_datafile(self)
+        self._remove_resources()
         RideDataFileRemoved(path=self.filename, datafile=self).publish()
 
     def remove_child(self, controller):
