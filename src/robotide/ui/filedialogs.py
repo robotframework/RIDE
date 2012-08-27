@@ -155,10 +155,12 @@ class NewProjectDialog(_CreationDialog):
         cmd(self._get_path()).execute(self._controller )
 
 
-class _NewResourceDialog(_CreationDialog):
+class NewResourceDialog(_WithImmutableParent, _CreationDialog):
 
-    def __init__(self, controller):
+    def __init__(self, controller, settings):
+        self._path = controller.directory
         _CreationDialog.__init__(self, controller.default_dir, 'New Resource File')
+        self._format_chooser.SetStringSelection(settings['default file format'])
         self._controller = controller
 
     def _execute(self):
@@ -168,14 +170,7 @@ class _NewResourceDialog(_CreationDialog):
         return None
 
 
-class NewExternalResourceDialog(_NewResourceDialog): pass
-
-
-class NewResourceDialog(_WithImmutableParent, _NewResourceDialog):
-
-    def __init__(self, controller):
-        self._path = controller.directory
-        _NewResourceDialog.__init__(self, controller)
+class NewExternalResourceDialog(NewResourceDialog): pass
 
 
 class AddSuiteDialog(_WithImmutableParent, _CreationDialog):

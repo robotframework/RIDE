@@ -273,7 +273,7 @@ class TestDataDirectoryHandler(TestDataHandler):
         AddSuiteDialog(self.controller, self._settings).execute()
 
     def OnNewResource(self, event):
-        NewResourceDialog(self.controller).execute()
+        NewResourceDialog(self.controller, self._settings).execute()
 
     def OnDelete(self, event):
         FolderDeleteDialog(self.controller).execute()
