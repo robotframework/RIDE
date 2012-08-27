@@ -27,19 +27,32 @@ DEL_CHAR = u'\u2326'
 ENTER_CHAR = u'\u2324'
 RETURN_CHAR = u'\u21A9'
 ESC_CHAR = u'\u238B'
+UP_CHAR = u'\u2191'
+DOWN_CHAR = u'\u2193'
 
-_REPLACE = {'Cmd': CMD_CHAR,
-           'Shift': SHIFT_CHAR,
-           'Alt': OPTION_CHAR,
-           'Ctrl': CTRL_CHAR,
-           'Space': SPACE_CHAR,
-           'Left': LEFT_CHAR,
-           'Right': RIGHT_CHAR,
-           'Delete': DEL_CHAR,
-           'Enter': ENTER_CHAR,
-           'Return': RETURN_CHAR,
-           'Escape': ESC_CHAR,
-           '-': ''}
+_REPLACE = {
+    'Cmd': CMD_CHAR,
+    'Shift': SHIFT_CHAR,
+    'Alt': OPTION_CHAR,
+    'Ctrl': CTRL_CHAR,
+    'Space': SPACE_CHAR,
+    'Left': LEFT_CHAR,
+    'Right': RIGHT_CHAR,
+    'Delete': DEL_CHAR,
+    'Enter': ENTER_CHAR,
+    'Return': RETURN_CHAR,
+    'Escape': ESC_CHAR,
+    '-': '',
+    'Up': UP_CHAR,
+    'Down': DOWN_CHAR
+}
+
+def replace_mac_chars(string):
+    if not IS_MAC or not string:
+        return string
+    for key, value in _REPLACE.items():
+        string = string.replace(key, value)
+    return string
 
 
 class Shortcut(object):
@@ -52,11 +65,7 @@ class Shortcut(object):
         return self._replace_chars_in_mac(value)
 
     def _replace_chars_in_mac(self, shortcut):
-        if not IS_MAC or not shortcut:
-            return shortcut
-        for key, value in _REPLACE.items():
-            shortcut = shortcut.replace(key, value)
-        return shortcut
+        return replace_mac_chars(shortcut)
 
     def __nonzero__(self):
         return bool(self.value)

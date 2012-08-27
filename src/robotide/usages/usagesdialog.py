@@ -148,3 +148,14 @@ class ResourceImportListModel(_UsagesListModel):
     @property
     def total_usages(self):
         return len(self._usages)
+
+
+class RecursiveResourceImportListModel(_UsagesListModel):
+
+    def __init__(self, usages):
+        _UsagesListModel.__init__(self, usages)
+        self.headers = ['Imported name', 'Imported Location', 'Importing Name', 'Importing Location']
+
+    def item_text(self, row, col):
+        u = self.usage(row)
+        return [u.res_name, u.res_src, u.name, u.location][col]

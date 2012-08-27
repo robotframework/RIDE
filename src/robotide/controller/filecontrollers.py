@@ -27,6 +27,7 @@ from robotide import utils
 from .basecontroller import WithUndoRedoStacks, _BaseController, WithNamespace
 from .macrocontrollers import UserKeywordController
 from .robotdata import NewTestCaseFile, NewTestDataDirectory
+from robotide.controller.settingcontrollers import ResourceImportController
 from .settingcontrollers import (DocumentationController, FixtureController,
         TimeoutController, TemplateController, DefaultTagsController,
         ForceTagsController)
@@ -516,8 +517,14 @@ class TestDataDirectoryController(_DataController, DirectoryController):
         self.reload()
         RideInitFileRemoved(path=path, datafile=self).publish()
 
+    def _remove_resources(self):
+        for resource in self._find_resources_recursively(self):
+            self._chief_controller.remove_resource(resource)
+            RideDataFileRemoved(path=resource.filename, datafile=resource).publish()
+
     def remove_from_model(self):
         self._chief_controller.remove_datafile(self)
+        self._remove_resources()
         RideDataFileRemoved(path=self.filename, datafile=self).publish()
 
     def remove_child(self, controller):
@@ -539,6 +546,43 @@ class TestDataDirectoryController(_DataController, DirectoryController):
         return any(True for s in [self] + self.children
                    if s.is_directory_suite() and s.directory == directory)
 
+    def remove_static_imports_to_this(self):
+        for resource_import in self.get_where_used():
+            resource_import[1].remove()
+
+    def get_where_used(self):
+        for imp in self._get_recursive_imports():
+            yield imp
+
+    def _all_imports(self):
+        for df in self.datafiles:
+            for imp in df.imports:
+                yield imp
+
+    def _get_recursive_imports(self):
+        all_imports = self._all_imports()
+        ctrls = self._find_controllers_recursively(self)
+        for res in self._find_resources_recursively(self):
+            for imp in all_imports:
+                if imp.get_imported_controller() == res and imp.parent.parent not in ctrls:
+                    yield res, imp
+
+    def _find_resources_recursively(self, controller):
+        resources = []
+        if controller.children:
+            for child in controller.children:
+                resources += self._find_resources_recursively(child)
+        elif isinstance(controller, ResourceFileController):
+            resources.append(controller)
+        return resources
+
+    def _find_controllers_recursively(self, controller):
+        resources = []
+        if controller.children:
+            for child in controller.children:
+                resources += self._find_controllers_recursively(child)
+        resources.append(controller)
+        return resources
 
 class TestCaseFileController(_FileSystemElement, _DataController):
 
