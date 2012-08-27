@@ -65,7 +65,7 @@ class _FileSystemElement(object):
 
     def relative_path_to(self, other):
         other_path = os.path.join(other.directory, other.filename)
-        return os.path.relpath(other_path, start=self.directory)
+        return os.path.relpath(other_path, start=self.directory).replace('\\', '/')
 
     def is_readonly(self):
         return not os.access(self.filename, os.W_OK)

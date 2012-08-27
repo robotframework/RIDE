@@ -251,8 +251,8 @@ class TestRelativePathTo(unittest.TestCase):
     def test_relative_path_to(self):
         fse1 = _FileSystemElement('foo.txt', 'bar')
         fse2 = _FileSystemElement('zoo.html', 'goo')
-        self.assertEqual(os.path.join('..','goo','zoo.html'), fse1.relative_path_to(fse2))
-        self.assertEqual(os.path.join('..', 'bar', 'foo.txt'), fse2.relative_path_to(fse1))
+        self.assertEqual('../goo/zoo.html', fse1.relative_path_to(fse2))
+        self.assertEqual('../bar/foo.txt', fse2.relative_path_to(fse1))
 
 
 if __name__ == '__main__':
