@@ -113,7 +113,7 @@ This should efficiently limit the number of users that encounter a specific defe
   > git push
   > git push --tags
 
-  currently (10.8.2012) it seems that something creates garbage to development directory so I always take a new clone for distribution packages
+* currently (10.8.2012) it seems that something creates garbage to development directory so I always take a new clone for distribution packages
 
 ::
 
