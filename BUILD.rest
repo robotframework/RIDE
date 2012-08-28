@@ -118,13 +118,13 @@ This should efficiently limit the number of users that encounter a specific defe
 ::
 
   > cd ..
-  > git clone [your ride clone] ride-release
+  > git clone [your local ride clone] ride-release
   > cd ride-release
   > git checkout 0.xx
   > paver sdist OR paver wininst
   > cd ..
 
-* Upload new downloads
+* Upload new packages to github
 * Register new packages to PyPI - the Python Package Index. 
   NOTE! RIDE automatic update notifier checks updates from PyPI - so no update notifications without this step.
 
