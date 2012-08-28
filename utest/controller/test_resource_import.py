@@ -58,7 +58,7 @@ class TestResourceImport(unittest.TestCase):
         item_without_settings = datafilereader.get_ctrl_by_name('Inner Resource', self.ctrl.datafiles)
         self.assertEqual(list(item_without_settings.imports), [])
         self._create_resource()
-        import_ = item_without_settings.imports.add_resource(os.path.join('..', self.res_name))
+        import_ = item_without_settings.imports.add_resource('/'.join(['..', self.res_name]))
         self.assertTrue(import_ is not None)
         item_without_settings.imports.delete(0)
         self.assertEqual(self.new_resource, import_.get_imported_controller())
