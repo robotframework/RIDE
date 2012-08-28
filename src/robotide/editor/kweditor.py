@@ -495,9 +495,11 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self._marked_cell = None
 
     def OnCreateKeyword(self, event):
-        cmd = AddKeywordFromCells(self._data_cells_from_current_row())
+        cells = self._data_cells_from_current_row()
+        if not cells:
+            return
         try:
-            self._execute(cmd)
+            self._execute(AddKeywordFromCells(cells))
         except ValueError, err:
             wx.MessageBox(unicode(err))
 
