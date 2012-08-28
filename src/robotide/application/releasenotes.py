@@ -86,7 +86,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 0.48</h2>
+<h2>Release notes for 0.49</h2>
 <table border="1">
 <tr>
 <td><p><b>ID</b></p></td>
@@ -95,77 +95,65 @@ RELEASE_NOTES = """
 <td><p><b>Summary</b></p></td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=693">Issue 693</a></td>
-<td>Enhancement</td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1043">Issue 1043</a></td>
+<td>Defect</td>
 <td>High</td>
-<td>Importing resource through file browser </td>
+<td>Executing test in Windows with Python 2.6 does not work</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1034">Issue 1034</a></td>
-<td>Enhancement</td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1047">Issue 1047</a></td>
+<td>Defect</td>
 <td>High</td>
-<td>Stop test execution gracefully</td>
+<td>Text Edit shortcuts don't work on windows</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=941">Issue 941</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1033">Issue 1033</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>input box of TestRunnerPlugin should handle "suppr" / Delete key in addition to "backspace"</td>
+<td>Ride's Search unused keywords utility does not work correctly with embedded arguments</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=977">Issue 977</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1038">Issue 1038</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>Autocomplete does not show correct library name for duplicate keywords</td>
+<td>Deleting test data folder that contain resource files does not update imports</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1008">Issue 1008</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1041">Issue 1041</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>Extra white space after tables in suite/test/keyword documentation</td>
+<td>Text Edit file change from tree should not change focus to Grid editor</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1027">Issue 1027</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1048">Issue 1048</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>Clicking on "Stop" button doesn't stop test execution (RIDE: 0.46/0.47)</td>
+<td>Resource path autocompletes wrong in windows</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=800">Issue 800</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=867">Issue 867</a></td>
 <td>Enhancement</td>
 <td>Medium</td>
-<td>Add option to stop test execution gracefully</td>
+<td>setting for default file type</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=837">Issue 837</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=986">Issue 986</a></td>
 <td>Enhancement</td>
 <td>Medium</td>
-<td>Remember Last Opened Project on RIDE Restart/Reopen</td>
+<td>The list of available shotcuts should be shown somewhere</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=862">Issue 862</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1032">Issue 1032</a></td>
 <td>Enhancement</td>
 <td>Medium</td>
-<td>Possibility to delete directory suites</td>
+<td>Keyborad shortcut to add cell in the Grid editor</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=873">Issue 873</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1044">Issue 1044</a></td>
 <td>Enhancement</td>
 <td>Medium</td>
-<td>Test runner plugin: Show running message log during execution</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=990">Issue 990</a></td>
-<td>Defect</td>
-<td>Low</td>
-<td>Run configuration list editor can't delete empty items</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1006">Issue 1006</a></td>
-<td>Enhancement</td>
-<td>Low</td>
-<td>Add hot-keys for open report and log files </td>
+<td>Search in text editor</td>
 </tr>
 </table>
-<p>Altogether 12 issues.</p>
+<p>Altogether 10 issues.</p>
 """
