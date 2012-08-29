@@ -48,7 +48,6 @@ import os
 import sys
 import posixpath
 import re
-import codecs
 from posixpath import curdir, sep, pardir, join
 from robot.output import LEVELS
 from robotide.action.shortcut import localize_shortcuts
@@ -255,7 +254,7 @@ class TestRunnerPlugin(Plugin):
         if not self._can_start_running_tests():
             return
         self._initialize_ui_for_running()
-        command = self._format_command(self._get_command())
+        command = self._create_command()
         self._output("command: %s\n" % command)
         try:
             self._test_runner.run_command(command, self._get_current_working_dir())
@@ -267,6 +266,16 @@ class TestRunnerPlugin(Plugin):
             self._set_stopped()
             self._output(str(e))
             wx.MessageBox("Could not start running tests.", "Error", wx.ICON_ERROR)
+
+    def _create_command(self):
+        command_as_list = self._test_runner.get_command(
+            self.get_current_profile(),
+            self.global_settings.get('pythonpath', None),
+            self._get_monitor_width(),
+            self._test_names_to_run)
+        self._min_log_level_number = self._test_runner.get_message_log_level(command_as_list)
+        command = self._format_command(command_as_list)
+        return command
 
     def _get_current_working_dir(self):
         profile = self.get_current_profile()
@@ -445,78 +454,6 @@ class TestRunnerPlugin(Plugin):
         if lastVisibleLine >= linecount-4:
             linecount = textctrl.GetLineCount()
             textctrl.ScrollToLine(linecount)
-
-    def _add_tmp_outputdir_if_not_given_by_user(self, command, standard_args):
-        if "--outputdir" not in command and "-d" not in command:
-            standard_args.extend(["--outputdir", self._test_runner._output_dir])
-
-    def _create_standard_args(self, command, profile):
-        standard_args = []
-        standard_args.extend(profile.get_custom_args())
-        self._add_tmp_outputdir_if_not_given_by_user(command, standard_args)
-        self._add_pythonpath_if_in_settings_and_not_given_by_user(command,
-                                                                  standard_args)
-        standard_args.extend(["--monitorcolors", "off"])
-        standard_args.extend(["--monitorwidth", self._get_monitor_width()])
-        for tc in self._test_names_to_run:
-            standard_args += ['--test', tc]
-        return standard_args
-
-    def _get_command(self):
-        '''Return the command (as a list) used to run the test'''
-        profile = self.get_current_profile()
-        command = profile.get_command_prefix()[:]
-        self._detect_message_log_level_for_listener(command)
-        argfile = os.path.join(self._test_runner._output_dir, "argfile.txt")
-        command.extend(["--argumentfile", argfile])
-        command.extend(["--listener", self._get_listener_to_cmd()])
-        command.append(self._get_suite_source_for_command())
-        self._write_argfile(argfile, self._create_standard_args(command, profile))
-        return command
-
-    def _detect_message_log_level_for_listener(self, command):
-        switch = None
-        self._min_log_level_number = LEVELS['INFO']
-        if '-L' in command:
-            switch = '-L'
-        elif '--loglevel' in command:
-            switch = '--loglevel'
-        else:
-            return
-        i = command.index(switch)
-        if len(command) == i:
-            return
-        level = command[i+1].upper().split(':')[0]
-        self._min_log_level_number = LEVELS.get(level, self._min_log_level_number)
-
-    def _get_suite_source_for_command(self):
-        cur = os.path.abspath(os.path.curdir)
-        source = os.path.abspath(self.model.suite.source)
-        if not self._is_same_drive(cur, source):
-            return source
-        return os.path.abspath(self.model.suite.source)
-
-    def _is_same_drive(self, source1, source2):
-        return os.path.splitdrive(source1)[0] == os.path.splitdrive(source2)[0]
-
-    def _write_argfile(self, argfile, args):
-        f = codecs.open(argfile, "w", "utf-8")
-        f.write("\n".join(args))
-        f.close()
-
-    def _add_pythonpath_if_in_settings_and_not_given_by_user(self, command, standard_args):
-        if '--pythonpath' in command:
-            return
-        if '-P' in command:
-            return
-        pythonpath = self.global_settings.get('pythonpath', None)
-        if not pythonpath:
-            return
-        standard_args.extend(['--pythonpath', ':'.join(pythonpath)])
-
-    def _get_listener_to_cmd(self):
-        return os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                            "SocketListener.py") + ":%s" % self._test_runner.port
 
     def _get_monitor_width(self):
         # robot wants to know a fixed size for output, so calculate the

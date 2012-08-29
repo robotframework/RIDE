@@ -29,6 +29,7 @@
 from Queue import Empty, Queue
 import SocketServer
 import atexit
+import codecs
 import os
 import pickle
 import shutil
@@ -38,9 +39,11 @@ import tempfile
 import threading
 import signal
 import sys
+from robot.output.loggerhelper import LEVELS
 from robot.utils.encoding import SYSTEM_ENCODING
 from robot.utils.encodingsniffer import DEFAULT_OUTPUT_ENCODING
 from robotide.context.platform import IS_WINDOWS
+from robotide.contrib.testrunner import SocketListener
 from robotide.controller.testexecutionresults import TestExecutionResults
 
 
@@ -134,6 +137,77 @@ class TestRunner(object):
         self._killer_port = None
         self._process = Process(cwd)
         self._process.run_command(command)
+
+    def get_command(self, profile, pythonpath, monitor_width, test_names):
+        '''Return the command (as a list) used to run the test'''
+        command = profile.get_command_prefix()[:]
+        argfile = os.path.join(self._output_dir, "argfile.txt")
+        command.extend(["--argumentfile", argfile])
+        command.extend(["--listener", self._get_listener_to_cmd()])
+        command.append(self._get_suite_source_for_command())
+        self._write_argfile(argfile, self._create_standard_args(command, profile, pythonpath, monitor_width, test_names))
+        return command
+
+    def get_message_log_level(self, command):
+        min_log_level_number = LEVELS['INFO']
+        if '-L' in command:
+            switch = '-L'
+        elif '--loglevel' in command:
+            switch = '--loglevel'
+        else:
+            return min_log_level_number
+        i = command.index(switch)
+        if len(command) == i:
+            return
+        level = command[i+1].upper().split(':')[0]
+        return LEVELS.get(level, min_log_level_number)
+
+    def _get_listener_to_cmd(self):
+        path = os.path.abspath(SocketListener.__file__)
+        if path[-1] == 'c':
+            path = path[:-1]
+        return '%s:%s' % (path, self.port)
+
+    def _get_suite_source_for_command(self):
+        cur = os.path.abspath(os.path.curdir)
+        source = os.path.abspath(self._chief.suite.source)
+        if not self._is_same_drive(cur, source):
+            return source
+        return os.path.abspath(self._chief.suite.source)
+
+    def _create_standard_args(self, command, profile, pythonpath, monitor_width, test_names):
+        standard_args = []
+        standard_args.extend(profile.get_custom_args())
+        self._add_tmp_outputdir_if_not_given_by_user(command, standard_args)
+        self._add_pythonpath_if_in_settings_and_not_given_by_user(command,
+                                                                  standard_args,
+                                                                  pythonpath)
+        standard_args.extend(["--monitorcolors", "off"])
+        standard_args.extend(["--monitorwidth", monitor_width])
+        for tc in test_names:
+            standard_args += ['--test', tc]
+        return standard_args
+
+    def _add_tmp_outputdir_if_not_given_by_user(self, command, standard_args):
+        if "--outputdir" not in command and "-d" not in command:
+            standard_args.extend(["--outputdir", self._output_dir])
+
+    def _add_pythonpath_if_in_settings_and_not_given_by_user(self, command, standard_args, pythonpath):
+        if '--pythonpath' in command:
+            return
+        if '-P' in command:
+            return
+        if not pythonpath:
+            return
+        standard_args.extend(['--pythonpath', ':'.join(pythonpath)])
+
+    def _write_argfile(self, argfile, args):
+        f = codecs.open(argfile, "w", "utf-8")
+        f.write("\n".join(args))
+        f.close()
+
+    def _is_same_drive(self, source1, source2):
+        return os.path.splitdrive(source1)[0] == os.path.splitdrive(source2)[0]
 
     def get_output_and_errors(self):
         return self._process.get_output(), self._process.get_errors()
