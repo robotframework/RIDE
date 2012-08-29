@@ -59,7 +59,6 @@ from robot.output import LEVELS
 from robotide.action.shortcut import localize_shortcuts
 from robotide.contrib.testrunner.runprofiles import CustomScriptProfile
 from robotide.contrib.testrunner.testrunner import TestRunner
-from robotide.controller.testexecutionresults import TestExecutionResults
 from robotide.publish.messages import RideTestSelectedForRunningChanged
 
 ON_POSIX = 'posix' in sys.builtin_module_names
@@ -141,7 +140,6 @@ class TestRunnerPlugin(Plugin):
         self._running = False
         self._currently_executing_keyword = None
         self._tests_to_run = set()
-        self._running_results = TestExecutionResults()
         self._test_runner = TestRunner()
         self._register_shortcuts()
         self._min_log_level_number = LEVELS['INFO']
@@ -759,7 +757,7 @@ class TestRunnerPlugin(Plugin):
 
     def _handle_start_test(self, args):
         longname = args[1]['longname']
-        self._running_results.set_running(self._get_test_controller(longname))
+        self._test_runner.set_running(self._get_test_controller(longname))
         self._append_to_message_log('Starting test: %s' % longname)
 
     def _append_to_message_log(self, text):
@@ -771,10 +769,10 @@ class TestRunnerPlugin(Plugin):
         self._append_to_message_log('Ending test:   %s\n' % longname)
         if args[1]['status'] == 'PASS':
             self._progress_bar.Pass()
-            self._running_results.set_passed(self._get_test_controller(longname))
+            self._test_runner.set_passed(self._get_test_controller(longname))
         else:
             self._progress_bar.Fail()
-            self._running_results.set_failed(self._get_test_controller(longname))
+            self._test_runner.set_failed(self._get_test_controller(longname))
 
     def _handle_report_file(self, args):
         self._report_file = args[0]
@@ -814,7 +812,7 @@ class TestRunnerPlugin(Plugin):
         self.local_toolbar.EnableTool(ID_RUN, False)
         self.local_toolbar.EnableTool(ID_STOP, True)
         self._running = True
-        self._running_results.test_execution_started()
+        self._test_runner.test_execution_started()
 
 
     def _set_stopped(self):

@@ -36,12 +36,26 @@ import sys
 from robot.utils.encoding import SYSTEM_ENCODING
 from robot.utils.encodingsniffer import DEFAULT_OUTPUT_ENCODING
 from robotide.context.platform import IS_WINDOWS
+from robotide.controller.testexecutionresults import TestExecutionResults
 
 
 class TestRunner(object):
 
     def __init__(self):
         self._process = None
+        self._results = TestExecutionResults()
+
+    def set_running(self, test):
+        self._results.set_running(test)
+
+    def set_passed(self, test):
+        self._results.set_passed(test)
+
+    def set_failed(self, test):
+        self._results.set_failed(test)
+
+    def test_execution_started(self):
+        self._results.test_execution_started()
 
     def kill_process(self):
         if self._process:
