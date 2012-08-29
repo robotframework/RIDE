@@ -14,30 +14,30 @@
 
 import re
 
-from robot.parsing.settings import Documentation, MetadataList
+from .comments import CommentCache, Comments
+from .settings import Documentation, MetadataList
 
 
 class Populator(object):
     """Explicit interface for all populators."""
-    def add(self, row): raise NotImplementedError()
-    def populate(self): raise NotImplementedError()
+
+    def add(self, row):
+        raise NotImplementedError
+
+    def populate(self):
+        raise NotImplementedError
 
 
-class CommentCacher(object):
+class NullPopulator(Populator):
 
-    def __init__(self):
-        self._init_comments()
+    def add(self, row):
+        pass
 
-    def _init_comments(self):
-        self._comments = []
+    def populate(self):
+        pass
 
-    def add(self, comment):
-        self._comments.append(comment)
-
-    def consume_comments_with(self, function):
-        for c in self._comments:
-            function(c)
-        self._init_comments()
+    def __nonzero__(self):
+        return False
 
 
 class _TablePopulator(Populator):
@@ -45,30 +45,41 @@ class _TablePopulator(Populator):
     def __init__(self, table):
         self._table = table
         self._populator = NullPopulator()
-        self._comments = CommentCacher()
+        self._comment_cache = CommentCache()
 
     def add(self, row):
         if self._is_cacheable_comment_row(row):
-            self._comments.add(row)
+            self._comment_cache.add(row)
         else:
             self._add(row)
 
+    def _is_cacheable_comment_row(self, row):
+        return row.is_commented()
+
     def _add(self, row):
-        if not self._is_continuing(row):
+        if self._is_continuing(row):
+            self._consume_comments()
+        else:
             self._populator.populate()
             self._populator = self._get_populator(row)
-        self._comments.consume_comments_with(self._populator.add)
+            self._consume_standalone_comments()
         self._populator.add(row)
-
-    def populate(self):
-        self._comments.consume_comments_with(self._populator.add)
-        self._populator.populate()
 
     def _is_continuing(self, row):
         return row.is_continuing() and self._populator
 
-    def _is_cacheable_comment_row(self, row):
-        return row.is_commented()
+    def _get_populator(self, row):
+        raise NotImplementedError
+
+    def _consume_comments(self):
+        self._comment_cache.consume_with(self._populator.add)
+
+    def _consume_standalone_comments(self):
+        self._consume_comments()
+
+    def populate(self):
+        self._consume_comments()
+        self._populator.populate()
 
 
 class SettingTablePopulator(_TablePopulator):
@@ -90,6 +101,18 @@ class VariableTablePopulator(_TablePopulator):
     def _get_populator(self, row):
         return VariablePopulator(self._table.add, row.head)
 
+    def _consume_standalone_comments(self):
+        self._comment_cache.consume_with(self._populate_standalone_comment)
+
+    def _populate_standalone_comment(self, comment):
+        populator = self._get_populator(comment)
+        populator.add(comment)
+        populator.populate()
+
+    def populate(self):
+        self._populator.populate()
+        self._consume_standalone_comments()
+
 
 class _StepContainingTablePopulator(_TablePopulator):
 
@@ -97,7 +120,7 @@ class _StepContainingTablePopulator(_TablePopulator):
         return row.is_indented() and self._populator or row.is_commented()
 
     def _is_cacheable_comment_row(self, row):
-        return row.is_commented() and isinstance(self._populator, NullPopulator)
+        return row.is_commented() and not self._populator
 
 
 class TestTablePopulator(_StepContainingTablePopulator):
@@ -150,11 +173,11 @@ class _TestCaseUserKeywordPopulator(Populator):
         self._test_or_uk_creator = test_or_uk_creator
         self._test_or_uk = None
         self._populator = NullPopulator()
-        self._comments = CommentCacher()
+        self._comment_cache = CommentCache()
 
     def add(self, row):
         if row.is_commented():
-            self._comments.add(row)
+            self._comment_cache.add(row)
             return
         if not self._test_or_uk:
             self._test_or_uk = self._test_or_uk_creator(row.head)
@@ -166,9 +189,9 @@ class _TestCaseUserKeywordPopulator(Populator):
         if not self._continues(row):
             self._populator.populate()
             self._populator = self._get_populator(row)
-            self._flush_comments_with(self._populate_comment_row)
+            self._comment_cache.consume_with(self._populate_comment_row)
         else:
-            self._flush_comments_with(self._populator.add)
+            self._comment_cache.consume_with(self._populator.add)
         self._populator.add(row)
 
     def _populate_comment_row(self, crow):
@@ -176,12 +199,9 @@ class _TestCaseUserKeywordPopulator(Populator):
         populator.add(crow)
         populator.populate()
 
-    def _flush_comments_with(self, function):
-        self._comments.consume_comments_with(function)
-
     def populate(self):
         self._populator.populate()
-        self._flush_comments_with(self._populate_comment_row)
+        self._comment_cache.consume_with(self._populate_comment_row)
 
     def _get_populator(self, row):
         if row.starts_test_or_user_keyword_setting():
@@ -212,20 +232,6 @@ class UserKeywordPopulator(_TestCaseUserKeywordPopulator):
     _item_type = 'keyword'
 
 
-class Comments(object):
-
-    def __init__(self):
-        self._comments = []
-
-    def add(self, row):
-        if row.comments:
-            self._comments.extend(c.strip() for c in row.comments if c.strip())
-
-    @property
-    def value(self):
-        return self._comments
-
-
 class _PropertyPopulator(Populator):
 
     def __init__(self, setter):
@@ -249,8 +255,7 @@ class VariablePopulator(_PropertyPopulator):
         self._name = name
 
     def populate(self):
-        self._setter(self._name, self._value,
-                     self._comments.value)
+        self._setter(self._name, self._value, self._comments.value)
 
 
 class SettingPopulator(_PropertyPopulator):
@@ -317,9 +322,3 @@ class StepPopulator(_PropertyPopulator):
     def populate(self):
         if self._value or self._comments:
             self._setter(self._value, self._comments.value)
-
-
-class NullPopulator(Populator):
-    def add(self, row): pass
-    def populate(self): pass
-    def __nonzero__(self): return False

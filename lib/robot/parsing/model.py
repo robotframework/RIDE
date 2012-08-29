@@ -459,18 +459,23 @@ class Variable(object):
         if name.startswith('$') and value == []:
             value = ''
         if isinstance(value, basestring):
-            value = [value]  # Must support scalar lists until RF 2.7 (issue 939)
+            value = [value]  # Must support scalar lists until RF 2.8 (issue 939)
         self.value = value
         self.comment = Comment(comment)
 
     def as_list(self):
-        return [self.name] + self.value + self.comment.as_list()
+        if self.has_data():
+            return [self.name] + self.value + self.comment.as_list()
+        return self.comment.as_list()
 
     def is_set(self):
         return True
 
     def is_for_loop(self):
         return False
+
+    def has_data(self):
+        return bool(self.name or ''.join(self.value))
 
 
 class _WithSteps(object):

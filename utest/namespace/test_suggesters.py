@@ -76,7 +76,8 @@ class TestBuiltInLibrariesSuggester(_ImportSuggesterHelpers, unittest.TestCase):
                                        'Remote',
                                        'Screenshot',
                                        'String',
-                                       'Telnet'], '')
+                                       'Telnet',
+                                       'XML'], '')
 
     def test_returns_matching_builtin_libraries(self):
         self._assert_suggestion_names(['OperatingSystem', 'Remote', 'Telnet'], 'te')
@@ -99,7 +100,8 @@ class TestLibrariesSuggester(_ImportSuggesterTests, unittest.TestCase):
                                        'Remote',
                                        'Screenshot',
                                        'String',
-                                       'Telnet'], '')
+                                       'Telnet',
+                                       'XML'], '')
 
     def test_history(self):
         self._assert_suggestion_names([], 'ooz')

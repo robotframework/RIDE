@@ -12,11 +12,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import os
 import sys
+import os.path
 from StringIO import StringIO
-
-from robot.errors import DataError
 
 
 _IRONPYTHON = sys.platform == 'cli'
@@ -55,17 +53,12 @@ class ETSource(object):
         self._opened = None
 
     def __enter__(self):
-        if self._source_file_does_not_exist():
-            raise DataError("Source file '%s' does not exist." % self._source)
         self._opened = self._open_source_if_necessary()
         return self._opened or self._source
 
     def __exit__(self, exc_type, exc_value, exc_trace):
         if self._opened:
             self._opened.close()
-        if exc_type is None or exc_type is DataError:
-            return False
-        raise DataError(exc_value) # TODO: this loses original traceback
 
     def __str__(self):
         if self._source_is_file_name():
@@ -73,9 +66,6 @@ class ETSource(object):
         if hasattr(self._source, 'name'):
             return self._source.name
         return '<in-memory file>'
-
-    def _source_file_does_not_exist(self):
-        return self._source_is_file_name() and not os.path.isfile(self._source)
 
     def _source_is_file_name(self):
         return isinstance(self._source, basestring) \
@@ -93,6 +83,11 @@ class ETSource(object):
         # it didn't close files it had opened. This caused problems with Jython
         # especially on Windows: http://bugs.jython.org/issue1598
         # The bug has now been fixed in ET and worked around in Jython 2.5.2.
-        # File cannot be opened on IronPython, though, as on IronPython ET
-        # doesn't handle non-ASCII characters correctly in that case.
-        return open(self._source, 'rb') if not _IRONPYTHON else None
+        if not _IRONPYTHON:
+            return open(self._source, 'rb')
+        # File cannot be opened on IronPython, however, as ET does not seem to
+        # handle non-ASCII characters correctly in that case. We want to check
+        # that the file exists even in that case, though.
+        if not os.path.exists(self._source):
+            raise IOError(2, 'No such file', self._source)
+        return None
