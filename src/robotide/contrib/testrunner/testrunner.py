@@ -27,12 +27,15 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 from Queue import Empty, Queue
+import SocketServer
 import os
+import pickle
 import socket
 import subprocess
 import threading
 import signal
 import sys
+import wx
 from robot.utils.encoding import SYSTEM_ENCODING
 from robot.utils.encodingsniffer import DEFAULT_OUTPUT_ENCODING
 from robotide.context.platform import IS_WINDOWS
@@ -43,7 +46,24 @@ class TestRunner(object):
 
     def __init__(self):
         self._process = None
+        self._server = None
+        self._server_thread = None
         self._results = TestExecutionResults()
+        self.port = None
+
+    def start_listener_server(self, result_handler):
+        self._server = RideListenerServer(RideListenerHandler, result_handler)
+        self._server_thread = threading.Thread(target=self._server.serve_forever)
+        self._server_thread.setDaemon(True)
+        self._server_thread.start()
+        self.port = self._server.server_address[1]
+
+    def clear_server(self):
+        self._server = None
+
+    def shutdown_server(self):
+        if self._server:
+            self._server.shutdown()
 
     def set_running(self, test):
         self._results.set_running(test)
@@ -179,3 +199,26 @@ class StreamReaderThread(object):
             except Empty:
                 pass
         return result.decode(DEFAULT_OUTPUT_ENCODING)
+
+
+# The following two classes implement a small line-buffered socket
+# server. It is designed to run in a separate thread, read data
+# from the given port and update the UI -- hopefully all in a
+# thread-safe manner.
+class RideListenerServer(SocketServer.TCPServer):
+    """Implements a simple line-buffered socket server"""
+    allow_reuse_address = True
+    def __init__(self, RequestHandlerClass, callback):
+        SocketServer.TCPServer.__init__(self, ("",0), RequestHandlerClass)
+        self.callback = callback
+
+class RideListenerHandler(SocketServer.StreamRequestHandler):
+    def handle(self):
+        unpickler = pickle.Unpickler(self.request.makefile('r'))
+        while True:
+            try:
+                (name, args) = unpickler.load()
+                wx.CallAfter(self.server.callback, name, *args)
+            except (EOFError, IOError):
+                # I should log this...
+                break

@@ -134,9 +134,6 @@ class TestRunnerPlugin(Plugin):
         self._log_file = None
         self.profiles = {}
         self._controls = {}
-        self._server = None
-        self._server_thread = None
-        self._port = None
         self._running = False
         self._currently_executing_keyword = None
         self._test_runner = TestRunner()
@@ -172,7 +169,7 @@ class TestRunnerPlugin(Plugin):
         self._build_ui()
         self.SetProfile(self.profile)
         self._subscribe_to_events()
-        self._start_listener_server()
+        self._test_runner.start_listener_server(self._post_result)
         self._create_temporary_directory()
         self._set_stopped()
 
@@ -216,14 +213,6 @@ class TestRunnerPlugin(Plugin):
     def OnOpenSuite(self, message):
         self._test_names_to_run = set()
 
-    def _start_listener_server(self):
-        self._server = RideListenerServer(RideListenerHandler,
-                                          self._post_result)
-        self._server_thread = threading.Thread(target=self._server.serve_forever)
-        self._server_thread.setDaemon(True)
-        self._server_thread.start()
-        self._port = self._server.server_address[1]
-
     def _create_temporary_directory(self):
         self._tmpdir = tempfile.mkdtemp(".d", "RIDE")
         atexit.register(self._remove_temporary_directory)
@@ -240,7 +229,7 @@ class TestRunnerPlugin(Plugin):
 
     def disable(self):
         self._remove_from_notebook()
-        self._server = None
+        self._test_runner.clear_server()
         self.unsubscribe_all()
         self.unregister_actions()
 
@@ -249,8 +238,7 @@ class TestRunnerPlugin(Plugin):
         self._test_runner.kill_process()
         if self._process_timer:
             self._process_timer.Stop()
-        if self._server:
-            self._server.shutdown()
+        self._test_runner.shutdown_server()
 
     def OnAutoSaveCheckbox(self, evt):
         '''Called when the user clicks on the "Auto Save" checkbox'''
@@ -551,7 +539,7 @@ class TestRunnerPlugin(Plugin):
 
     def _get_listener_to_cmd(self):
         return os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                            "SocketListener.py") + ":%s" % self._port
+                            "SocketListener.py") + ":%s" % self._test_runner.port
 
     def _get_monitor_width(self):
         # robot wants to know a fixed size for output, so calculate the
@@ -902,28 +890,6 @@ class ProgressBar(wx.Panel):
         if len(text) <= max_length:
             return text
         return '...'+text[3-max_length:]
-
-# The following two classes implement a small line-buffered socket
-# server. It is designed to run in a separate thread, read data
-# from the given port and update the UI -- hopefully all in a
-# thread-safe manner.
-class RideListenerServer(SocketServer.TCPServer):
-    """Implements a simple line-buffered socket server"""
-    allow_reuse_address = True
-    def __init__(self, RequestHandlerClass, callback):
-        SocketServer.TCPServer.__init__(self, ("",0), RequestHandlerClass)
-        self.callback = callback
-
-class RideListenerHandler(SocketServer.StreamRequestHandler):
-    def handle(self):
-        unpickler = pickle.Unpickler(self.request.makefile('r'))
-        while True:
-            try:
-                (name, args) = unpickler.load()
-                wx.CallAfter(self.server.callback, name, *args)
-            except (EOFError, IOError):
-                # I should log this...
-                break
 
 
 # stole this off the internet. Nifty.
