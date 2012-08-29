@@ -125,7 +125,6 @@ class TestRunnerPlugin(Plugin):
         self.version = "3.01"
         self.metadata = {"url": "http://code.google.com/p/robotframework-ride/wiki/TestRunnerPlugin"}
         self._reload_timer = None
-        self._application = application
         self._frame = application.frame
         self._tmpdir = None
         self._report_file = None
@@ -134,7 +133,7 @@ class TestRunnerPlugin(Plugin):
         self._controls = {}
         self._running = False
         self._currently_executing_keyword = None
-        self._test_runner = TestRunner(self._application.model)
+        self._test_runner = TestRunner(application.model)
         self._register_shortcuts()
         self._min_log_level_number = LEVELS['INFO']
 
