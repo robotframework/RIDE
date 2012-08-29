@@ -169,7 +169,7 @@ class TestRunnerPlugin(Plugin):
         self._build_ui()
         self.SetProfile(self.profile)
         self._subscribe_to_events()
-        self._test_runner.start_listener_server(lambda *args: wx.CallAfter(self._post_result, *args))
+        self._test_runner.start_listener_server(self._post_result)
         self._create_temporary_directory()
         self._set_stopped()
 
@@ -763,11 +763,11 @@ class TestRunnerPlugin(Plugin):
 
     def _handle_report_file(self, args):
         self._report_file = args[0]
-        self.local_toolbar.EnableTool(ID_SHOW_REPORT, True)
+        wx.CallAfter(self.local_toolbar.EnableTool, ID_SHOW_REPORT, True)
 
     def _handle_log_file(self, args):
         self._log_file = args[0]
-        self.local_toolbar.EnableTool(ID_SHOW_LOG, True)
+        wx.CallAfter(self.local_toolbar.EnableTool, ID_SHOW_LOG, True)
 
     def _handle_start_keyword(self, args):
         self._progress_bar.set_current_keyword(args[0])
