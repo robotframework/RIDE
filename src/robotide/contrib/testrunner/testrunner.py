@@ -28,10 +28,13 @@
 #  limitations under the License.
 from Queue import Empty, Queue
 import SocketServer
+import atexit
 import os
 import pickle
+import shutil
 import socket
 import subprocess
+import tempfile
 import threading
 import signal
 import sys
@@ -44,6 +47,7 @@ from robotide.controller.testexecutionresults import TestExecutionResults
 class TestRunner(object):
 
     def __init__(self, chief):
+        self._output_dir = None
         self._process = None
         self._server = None
         self._server_thread = None
@@ -51,6 +55,24 @@ class TestRunner(object):
         self.port = None
         self._chief = chief
         self.profiles = {}
+
+    def enable(self, result_handler):
+        self._start_listener_server(result_handler)
+        self._create_temporary_directory()
+
+    def _create_temporary_directory(self):
+        self._output_dir = tempfile.mkdtemp(".d", "RIDE")
+        atexit.register(self._remove_temporary_directory)
+        # this plugin creates a temporary directory which _should_
+        # get reaped at exit. Sometimes things happen which might
+        # cause it to not get deleted. Maybe this would be a good
+        # place to check for temporary directories that match the
+        # signature and delete them if they are more than a few
+        # days old...
+
+    def _remove_temporary_directory(self):
+        if os.path.exists(self._output_dir):
+            shutil.rmtree(self._output_dir)
 
     def add_profile(self, name, item):
         self.profiles[name] = item
@@ -61,7 +83,7 @@ class TestRunner(object):
     def get_profile_names(self):
         return sorted(self.profiles.keys())
 
-    def start_listener_server(self, result_handler):
+    def _start_listener_server(self, result_handler):
         def handle(*args):
             self._result_handler(*args)
             result_handler(*args)

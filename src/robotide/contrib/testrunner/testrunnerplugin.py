@@ -42,13 +42,10 @@ linux it's /tmp).
 You can safely manually remove these directories, except for the one
 being used for a currently running test.
 '''
-import tempfile
 import datetime
 import time
 import os
 import sys
-import atexit
-import shutil
 import posixpath
 import re
 import codecs
@@ -126,7 +123,6 @@ class TestRunnerPlugin(Plugin):
         self.metadata = {"url": "http://code.google.com/p/robotframework-ride/wiki/TestRunnerPlugin"}
         self._reload_timer = None
         self._frame = application.frame
-        self._tmpdir = None
         self._report_file = None
         self._log_file = None
         self._controls = {}
@@ -165,8 +161,7 @@ class TestRunnerPlugin(Plugin):
         self._build_ui()
         self.SetProfile(self.profile)
         self._subscribe_to_events()
-        self._test_runner.start_listener_server(lambda *args: wx.CallAfter(self._post_result, *args))
-        self._create_temporary_directory()
+        self._test_runner.enable(lambda *args: wx.CallAfter(self._post_result, *args))
         self._set_stopped()
 
     def _register_actions(self):
@@ -208,20 +203,6 @@ class TestRunnerPlugin(Plugin):
 
     def OnOpenSuite(self, message):
         self._test_names_to_run = set()
-
-    def _create_temporary_directory(self):
-        self._tmpdir = tempfile.mkdtemp(".d", "RIDE")
-        atexit.register(self._remove_temporary_directory)
-        # this plugin creates a temporary directory which _should_
-        # get reaped at exit. Sometimes things happen which might
-        # cause it to not get deleted. Maybe this would be a good
-        # place to check for temporary directories that match the
-        # signature and delete them if they are more than a few
-        # days old...
-
-    def _remove_temporary_directory(self):
-        if os.path.exists(self._tmpdir):
-            shutil.rmtree(self._tmpdir)
 
     def disable(self):
         self._remove_from_notebook()
@@ -467,7 +448,7 @@ class TestRunnerPlugin(Plugin):
 
     def _add_tmp_outputdir_if_not_given_by_user(self, command, standard_args):
         if "--outputdir" not in command and "-d" not in command:
-            standard_args.extend(["--outputdir", self._tmpdir])
+            standard_args.extend(["--outputdir", self._test_runner._output_dir])
 
     def _create_standard_args(self, command, profile):
         standard_args = []
@@ -486,7 +467,7 @@ class TestRunnerPlugin(Plugin):
         profile = self.get_current_profile()
         command = profile.get_command_prefix()[:]
         self._detect_message_log_level_for_listener(command)
-        argfile = os.path.join(self._tmpdir, "argfile.txt")
+        argfile = os.path.join(self._test_runner._output_dir, "argfile.txt")
         command.extend(["--argumentfile", argfile])
         command.extend(["--listener", self._get_listener_to_cmd()])
         command.append(self._get_suite_source_for_command())
