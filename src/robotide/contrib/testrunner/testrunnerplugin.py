@@ -139,7 +139,6 @@ class TestRunnerPlugin(Plugin):
         self._port = None
         self._running = False
         self._currently_executing_keyword = None
-        self._tests_to_run = set()
         self._test_runner = TestRunner()
         self._register_shortcuts()
         self._min_log_level_number = LEVELS['INFO']
