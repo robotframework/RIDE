@@ -35,7 +35,6 @@ import subprocess
 import threading
 import signal
 import sys
-import wx
 from robot.utils.encoding import SYSTEM_ENCODING
 from robot.utils.encodingsniffer import DEFAULT_OUTPUT_ENCODING
 from robotide.context.platform import IS_WINDOWS
@@ -218,7 +217,7 @@ class RideListenerHandler(SocketServer.StreamRequestHandler):
         while True:
             try:
                 (name, args) = unpickler.load()
-                wx.CallAfter(self.server.callback, name, *args)
+                self.server.callback(name, *args)
             except (EOFError, IOError):
                 # I should log this...
                 break

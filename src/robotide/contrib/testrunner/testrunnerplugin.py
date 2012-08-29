@@ -169,7 +169,7 @@ class TestRunnerPlugin(Plugin):
         self._build_ui()
         self.SetProfile(self.profile)
         self._subscribe_to_events()
-        self._test_runner.start_listener_server(self._post_result)
+        self._test_runner.start_listener_server(lambda *args: wx.CallAfter(self._post_result, *args))
         self._create_temporary_directory()
         self._set_stopped()
 
