@@ -31,13 +31,13 @@ class ProcessUnicodeTestCase(unittest.TestCase):
         '==============================================================================\n'
         'Small Test                                                            | FAIL |\n'
         '2 critical tests, 1 passed, 1 failed\n2 tests total, 1 passed, 1 failed\n'
-        '==============================================================================\n'
-        'Output:'), msg=repr(output))
+        '==============================================================================\n'),
+        msg=repr(output))
         self.assertEquals(errors, u'[ WARN ] this passes\n')
 
     def _run_small_test(self):
         p = Process(datafilereader.SMALL_TEST_PATH)
-        p.run_command('pybot .')
+        p.run_command('pybot --output NONE .')
         max_time = 5.0
         while p.is_alive() and max_time > 0:
             time.sleep(0.1)
