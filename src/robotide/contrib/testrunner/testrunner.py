@@ -68,14 +68,13 @@ class TestRunner(object):
             self._killer_port = args[0]
         if event == 'start_test':
             longname = args[1]['longname']
-            self.set_running(self._get_test_controller(longname))
+            self._results.set_running(self._get_test_controller(longname))
         if event == 'end_test':
             longname = args[1]['longname']
             if args[1]['status'] == 'PASS':
-               self.set_passed(self._get_test_controller(longname))
+                self._results.set_passed(self._get_test_controller(longname))
             else:
-               self.set_failed(self._get_test_controller(longname))
-
+                self._results.set_failed(self._get_test_controller(longname))
 
     def _get_test_controller(self, longname):
         return self._chief.find_controller_by_longname(longname)
@@ -86,15 +85,6 @@ class TestRunner(object):
     def shutdown_server(self):
         if self._server:
             self._server.shutdown()
-
-    def set_running(self, test):
-        self._results.set_running(test)
-
-    def set_passed(self, test):
-        self._results.set_passed(test)
-
-    def set_failed(self, test):
-        self._results.set_failed(test)
 
     def test_execution_started(self):
         self._results.test_execution_started()
