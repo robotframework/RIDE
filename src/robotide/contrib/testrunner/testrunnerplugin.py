@@ -45,10 +45,8 @@ being used for a currently running test.
 import tempfile
 import datetime
 import time
-import SocketServer
 import os
 import sys
-import threading
 import atexit
 import shutil
 import posixpath
@@ -136,7 +134,7 @@ class TestRunnerPlugin(Plugin):
         self._controls = {}
         self._running = False
         self._currently_executing_keyword = None
-        self._test_runner = TestRunner()
+        self._test_runner = TestRunner(self._application.model)
         self._register_shortcuts()
         self._min_log_level_number = LEVELS['INFO']
 
@@ -723,8 +721,6 @@ class TestRunnerPlugin(Plugin):
             # out from under us. In the immortal words of Jar Jar
             # Binks, "How rude!"
             return
-        if event == 'pid':
-            self._test_runner.set_pid_to_kill(int(args[0]))
         if event == 'start_test':
             self._handle_start_test(args)
         if event == 'end_test':
@@ -739,12 +735,9 @@ class TestRunnerPlugin(Plugin):
             self._handle_end_keyword()
         if event == 'log_message':
             self._handle_log_message(args)
-        if event == 'port':
-            self._test_runner.set_killer_port(args[0])
 
     def _handle_start_test(self, args):
         longname = args[1]['longname']
-        self._test_runner.set_running(self._get_test_controller(longname))
         self._append_to_message_log('Starting test: %s' % longname)
 
     def _append_to_message_log(self, text):
@@ -756,10 +749,8 @@ class TestRunnerPlugin(Plugin):
         self._append_to_message_log('Ending test:   %s\n' % longname)
         if args[1]['status'] == 'PASS':
             self._progress_bar.Pass()
-            self._test_runner.set_passed(self._get_test_controller(longname))
         else:
             self._progress_bar.Fail()
-            self._test_runner.set_failed(self._get_test_controller(longname))
 
     def _handle_report_file(self, args):
         self._report_file = args[0]
@@ -783,9 +774,6 @@ class TestRunnerPlugin(Plugin):
             if '\n' in message:
                 message = '\n'+message
             self._messages_log_texts.append(prefix+message)
-
-    def _get_test_controller(self, longname):
-        return self._application.model.find_controller_by_longname(longname)
 
     def _set_state(self, state):
         if state == "running":

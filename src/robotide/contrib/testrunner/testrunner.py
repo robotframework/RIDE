@@ -43,19 +43,42 @@ from robotide.controller.testexecutionresults import TestExecutionResults
 
 class TestRunner(object):
 
-    def __init__(self):
+    def __init__(self, chief):
         self._process = None
         self._server = None
         self._server_thread = None
         self._results = TestExecutionResults()
         self.port = None
+        self._chief = chief
 
     def start_listener_server(self, result_handler):
-        self._server = RideListenerServer(RideListenerHandler, result_handler)
+        def handle(*args):
+            self._result_handler(*args)
+            result_handler(*args)
+        self._server = RideListenerServer(RideListenerHandler, handle)
         self._server_thread = threading.Thread(target=self._server.serve_forever)
         self._server_thread.setDaemon(True)
         self._server_thread.start()
         self.port = self._server.server_address[1]
+
+    def _result_handler(self, event, *args):
+        if event == 'pid':
+            self._pid_to_kill = int(args[0])
+        if event == 'port':
+            self._killer_port = args[0]
+        if event == 'start_test':
+            longname = args[1]['longname']
+            self.set_running(self._get_test_controller(longname))
+        if event == 'end_test':
+            longname = args[1]['longname']
+            if args[1]['status'] == 'PASS':
+               self.set_passed(self._get_test_controller(longname))
+            else:
+               self.set_failed(self._get_test_controller(longname))
+
+
+    def _get_test_controller(self, longname):
+        return self._chief.find_controller_by_longname(longname)
 
     def clear_server(self):
         self._server = None
@@ -89,12 +112,6 @@ class TestRunner(object):
         self._killer_port = None
         self._process = Process(cwd)
         self._process.run_command(command)
-
-    def set_pid_to_kill(self, pid):
-        self._pid_to_kill = pid
-
-    def set_killer_port(self, port):
-        self._killer_port = port
 
     def get_output_and_errors(self):
         return self._process.get_output(), self._process.get_errors()
