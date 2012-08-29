@@ -2,6 +2,7 @@ import unittest
 import time
 import datafilereader
 from robotide.contrib.testrunner.testrunner import Process
+from robotide.widgets.list import IS_WINDOWS
 
 class ProcessUnicodeTestCase(unittest.TestCase):
 
@@ -15,7 +16,7 @@ class ProcessUnicodeTestCase(unittest.TestCase):
 
     def test_running_pybot_test(self):
         output, errors = self._run_small_test()
-        self.assertTrue(output.startswith(
+        self.assertTrue(output.replace('\r','').startswith(
         '==============================================================================\n'
         'Small Test                                                                    \n'
         '==============================================================================\n'
@@ -33,11 +34,11 @@ class ProcessUnicodeTestCase(unittest.TestCase):
         '2 critical tests, 1 passed, 1 failed\n2 tests total, 1 passed, 1 failed\n'
         '==============================================================================\n'),
         msg=repr(output))
-        self.assertEquals(errors, u'[ WARN ] this passes\n')
+        self.assertEquals(errors.replace('\r', ''), u'[ WARN ] this passes\n')
 
     def _run_small_test(self):
         p = Process(datafilereader.SMALL_TEST_PATH)
-        p.run_command('pybot --output NONE .')
+        p.run_command('pybot' + ('.bat' if IS_WINDOWS else '') + ' --output NONE .')
         max_time = 5.0
         while p.is_alive() and max_time > 0:
             time.sleep(0.1)
