@@ -129,7 +129,6 @@ class TestRunnerPlugin(Plugin):
         self._tmpdir = None
         self._report_file = None
         self._log_file = None
-        self.profiles = {}
         self._controls = {}
         self._running = False
         self._currently_executing_keyword = None
@@ -189,7 +188,7 @@ class TestRunnerPlugin(Plugin):
 
     def _read_run_profiles_from_classes(self):
         for profile in self._get_all_subclasses(runprofiles.BaseProfile):
-            self.profiles[profile.name] = profile(plugin=self)
+            self._test_runner.add_profile(profile.name, profile(plugin=self))
 
     def _get_all_subclasses(self, class_):
         classes = []
@@ -571,7 +570,7 @@ class TestRunnerPlugin(Plugin):
     def _build_local_toolbar(self):
         toolbar = wx.ToolBar(self.panel, wx.ID_ANY, style=wx.TB_HORIZONTAL|wx.TB_HORZ_TEXT)
         profileLabel = Label(toolbar, label="Execution Profile:  ")
-        choices = sorted(self.profiles.keys())
+        choices = self._test_runner.get_profile_names()
         self.choice = wx.Choice(toolbar, wx.ID_ANY, choices=choices)
         self.choice.SetToolTip(wx.ToolTip("Choose which method to use for running the tests"))
         toolbar.AddControl(profileLabel)
@@ -618,9 +617,7 @@ class TestRunnerPlugin(Plugin):
         return toolbar
 
     def get_current_profile(self):
-        profile = self.choice.GetStringSelection()
-        p = self.profiles[profile]
-        return p
+        return self._test_runner.get_profile(self.choice.GetStringSelection())
 
     def SetProfile(self, profile):
         '''Set the profile to be used to run tests'''
@@ -629,7 +626,7 @@ class TestRunnerPlugin(Plugin):
             return
         choice_index = items.index(profile)
         self.choice.Select(choice_index)
-        p = self.profiles[profile]
+        p = self._test_runner.get_profile(profile)
         for child in self.config_sizer.GetChildren():
             child.GetWindow().Hide()
             self.config_sizer.Remove(child.GetWindow())

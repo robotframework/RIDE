@@ -50,6 +50,16 @@ class TestRunner(object):
         self._results = TestExecutionResults()
         self.port = None
         self._chief = chief
+        self.profiles = {}
+
+    def add_profile(self, name, item):
+        self.profiles[name] = item
+
+    def get_profile(self, name):
+        return self.profiles[name]
+
+    def get_profile_names(self):
+        return sorted(self.profiles.keys())
 
     def start_listener_server(self, result_handler):
         def handle(*args):
