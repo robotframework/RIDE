@@ -7,7 +7,8 @@ class CommandCreator(TestRunnerPlugin):
 
     def __init__(self, prefix=None):
         self._prefix = prefix or ['prefix']
-        self._tmpdir = 'temppi'
+        self._test_runner = self
+        self._output_dir = 'temppi'
         self._tree = lambda:0
         self._test_names_to_run = set()
         self._test_names_to_run.add('suite.test')
