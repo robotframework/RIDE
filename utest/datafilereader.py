@@ -42,6 +42,8 @@ UNUSED_KEYWORDS_PATH = _makepath('unused_keywords')
 
 FINDWHEREUSED_VARIABLES_PATH = _makepath('findwhereused_variables')
 
+SMALL_TEST_PATH = _makepath('small_test')
+
 def construct_chief_controller(datapath):
     settings = FakeSettings()
     chief = ChiefController(Namespace(settings), settings)

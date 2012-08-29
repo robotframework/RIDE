@@ -12,6 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Modified by NSN
+#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
 
 '''A plugin for running tests from within RIDE
 
@@ -28,9 +42,6 @@ linux it's /tmp).
 You can safely manually remove these directories, except for the one
 being used for a currently running test.
 '''
-import socket
-import subprocess
-from Queue import Queue, Empty
 import tempfile
 import datetime
 import time
@@ -40,20 +51,16 @@ import sys
 import threading
 import atexit
 import shutil
-import signal
 import posixpath
 import re
 import codecs
 from posixpath import curdir, sep, pardir, join
 from robot.output import LEVELS
-from robot.utils.encoding import SYSTEM_ENCODING
-from robot.utils.encodingsniffer import DEFAULT_OUTPUT_ENCODING
 from robotide.action.shortcut import localize_shortcuts
 from robotide.contrib.testrunner.runprofiles import CustomScriptProfile
+from robotide.contrib.testrunner.testrunner import TestRunner
 from robotide.controller.testexecutionresults import TestExecutionResults
-from robotide.publish.messages import (RideDataFileSet, RideDataFileRemoved, RideFileNameChanged,
-                                       RideTestSelectedForRunningChanged, RideTestRunning, RideTestPassed,
-                                       RideTestFailed, RideTestExecutionStarted)
+from robotide.publish.messages import RideTestSelectedForRunningChanged
 
 ON_POSIX = 'posix' in sys.builtin_module_names
 
@@ -67,8 +74,7 @@ import wx.stc
 from wx.lib.embeddedimage import PyEmbeddedImage
 
 from robotide.pluginapi import Plugin, ActionInfo
-from robotide.publish import RideTestCaseAdded, RideOpenSuite, RideSuiteAdded, \
-                              RideItemNameChanged, RideTestCaseRemoved
+from robotide.publish import RideOpenSuite
 from robotide.contrib.testrunner import runprofiles
 from robotide.widgets import Label
 from robotide.context import IS_WINDOWS, IS_MAC
@@ -124,8 +130,6 @@ class TestRunnerPlugin(Plugin):
         self._reload_timer = None
         self._application = application
         self._frame = application.frame
-        self._process = None
-        self._pid_to_kill = None
         self._tmpdir = None
         self._report_file = None
         self._log_file = None
@@ -138,6 +142,7 @@ class TestRunnerPlugin(Plugin):
         self._currently_executing_keyword = None
         self._tests_to_run = set()
         self._running_results = TestExecutionResults()
+        self._test_runner = TestRunner()
         self._register_shortcuts()
         self._min_log_level_number = LEVELS['INFO']
 
@@ -244,8 +249,7 @@ class TestRunnerPlugin(Plugin):
 
     def OnClose(self, evt):
         '''Shut down the running services and processes'''
-        if self._process:
-            self._process.kill(force=True)
+        self._test_runner.kill_process()
         if self._process_timer:
             self._process_timer.Stop()
         if self._server:
@@ -281,22 +285,18 @@ class TestRunnerPlugin(Plugin):
         This sends a SIGINT to the running process, with the
         same effect as typing control-c when running from the
         command line."""
-        if self._process:
-            self._AppendText(self.out, '[ SENDING STOP SIGNAL ]\n', source='stderr')
-            self._process.kill(killer_pid=self._pid_to_kill, killer_port=self._killer_port)
+        self._AppendText(self.out, '[ SENDING STOP SIGNAL ]\n', source='stderr')
+        self._test_runner.send_stop_signal()
 
     def OnRun(self, event):
         '''Called when the user clicks the "Run" button'''
         if not self._can_start_running_tests():
             return
         self._initialize_ui_for_running()
-        self._pid_to_kill = None
-        self._killer_port = None
         command = self._format_command(self._get_command())
         self._output("command: %s\n" % command)
         try:
-            self._process = Process(self._get_current_working_dir())
-            self._process.run_command(command)
+            self._test_runner.run_command(command, self._get_current_working_dir())
             self._process_timer.Start(41) # roughly 24fps
             self._set_running()
             self._progress_bar.Start()
@@ -364,7 +364,7 @@ class TestRunnerPlugin(Plugin):
         self.SetProfile(self.profile)
 
     def OnProcessEnded(self, evt):
-        output, errors = self._process.get_output(), self._process.get_errors()
+        output, errors = self._test_runner.get_output_and_errors()
         self._output(output)
         self._read_report_and_log_from_stdout_if_needed()
         if len(errors) > 0:
@@ -377,7 +377,7 @@ class TestRunnerPlugin(Plugin):
         now = datetime.datetime.now()
         self._output("\ntest finished %s" % now.strftime("%c"))
         self._set_stopped()
-        self._process = None
+        self._test_runner.command_ended()
 
     def _read_report_and_log_from_stdout_if_needed(self):
         output = self.out.GetText()
@@ -396,10 +396,10 @@ class TestRunnerPlugin(Plugin):
 
     def OnTimer(self, evt):
         """Get process output"""
-        if not self._process.is_alive():
+        if not self._test_runner.is_running():
             self.OnProcessEnded(None)
             return
-        out_buffer, err_buffer = self._process.get_output(), self._process.get_errors()
+        out_buffer, err_buffer = self._test_runner.get_output_and_errors()
         if len(out_buffer) > 0:
             self._output(out_buffer, source="stdout")
         if len(err_buffer) > 0:
@@ -739,7 +739,7 @@ class TestRunnerPlugin(Plugin):
             # Binks, "How rude!"
             return
         if event == 'pid':
-            self._handle_pid(args)
+            self._test_runner.set_pid_to_kill(int(args[0]))
         if event == 'start_test':
             self._handle_start_test(args)
         if event == 'end_test':
@@ -755,10 +755,7 @@ class TestRunnerPlugin(Plugin):
         if event == 'log_message':
             self._handle_log_message(args)
         if event == 'port':
-            self._killer_port = args[0]
-
-    def _handle_pid(self, args):
-        self._pid_to_kill = int(args[0])
+            self._test_runner.set_killer_port(args[0])
 
     def _handle_start_test(self, args):
         longname = args[1]['longname']
@@ -909,7 +906,6 @@ class ProgressBar(wx.Panel):
             return text
         return '...'+text[3-max_length:]
 
-
 # The following two classes implement a small line-buffered socket
 # server. It is designed to run in a separate thread, read data
 # from the given port and update the UI -- hopefully all in a
@@ -931,98 +927,6 @@ class RideListenerHandler(SocketServer.StreamRequestHandler):
             except (EOFError, IOError):
                 # I should log this...
                 break
-
-
-class Process(object):
-
-    def __init__(self, cwd):
-        self._process = None
-        self._error_stream = None
-        self._output_stream = None
-        self._cwd = cwd
-
-    def run_command(self, command):
-        # We need to supply an stdin for subprocess, because otherways in pythonw
-        # subprocess will try using sys.stdin which will cause an error in windows
-        self._process = subprocess.Popen(
-            command.encode(SYSTEM_ENCODING),
-            bufsize=0,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            stdin=subprocess.PIPE,
-            shell=False if IS_WINDOWS else True,
-            cwd=self._cwd.encode(SYSTEM_ENCODING),
-            preexec_fn=os.setsid if not IS_WINDOWS else None)
-        self._process.stdin.close()
-        self._output_stream = StreamReaderThread(self._process.stdout)
-        self._error_stream = StreamReaderThread(self._process.stderr)
-        self._output_stream.run()
-        self._error_stream.run()
-        self._kill_called = False
-
-    def get_output(self):
-        return self._output_stream.pop()
-
-    def get_errors(self):
-        return self._error_stream.pop()
-
-    def is_alive(self):
-        return self._process.poll() is None
-
-    def kill(self, force=False, killer_port=None, killer_pid=None):
-        if not self._process:
-            return
-        if force:
-            self._process.kill()
-        if IS_WINDOWS and not self._kill_called and killer_port:
-            self._signal_kill_with_listener_server(killer_port)
-            self._kill_called = True
-        else:
-            self._kill(killer_pid or self._process.pid)
-
-    def _signal_kill_with_listener_server(self, killer_port):
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.connect(('localhost', killer_port))
-        sock.send('kill\n')
-        sock.close()
-
-    def _kill(self, pid):
-        if pid:
-            try:
-                if os.name == 'nt' and sys.version_info < (2,7):
-                    import ctypes
-                    ctypes.windll.kernel32.TerminateProcess(int(self._process._handle), -1)
-                else:
-                    os.kill(pid, signal.SIGINT)
-            except OSError:
-                pass
-
-
-
-class StreamReaderThread(object):
-
-    def __init__(self, stream):
-        self._queue = Queue()
-        self._thread = None
-        self._stream = stream
-
-    def run(self):
-        self._thread = threading.Thread(target=self._enqueue_output, args=(self._stream,))
-        self._thread.daemon = True
-        self._thread.start()
-
-    def _enqueue_output(self, out):
-        for line in iter(out.readline, b''):
-            self._queue.put(line)
-
-    def pop(self):
-        result = ""
-        for _ in xrange(self._queue.qsize()):
-            try:
-                result += self._queue.get_nowait()
-            except Empty:
-                pass
-        return result.decode(DEFAULT_OUTPUT_ENCODING)
 
 
 # stole this off the internet. Nifty.
