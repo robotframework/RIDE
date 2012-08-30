@@ -79,6 +79,9 @@ class VariableTableController(_TableController, _WithListOperations):
     def __getitem__(self, index):
         return self._get(self._items[index])
 
+    def index(self, ctrl):
+        return [v for v in self].index(ctrl)
+
     @property
     def _items(self):
         return self._table.variables
@@ -125,7 +128,8 @@ class VariableTableController(_TableController, _WithListOperations):
     def notify_variable_added(self, ctrl):
         self.datafile_controller.update_namespace()
         RideVariableAdded(datafile=self.datafile,
-                          name=ctrl.name, item=ctrl).publish()
+                          name=ctrl.name, item=ctrl,
+                          index=ctrl.index).publish()
 
     def notify_variable_removed(self, ctrl):
         self.datafile_controller.update_namespace()

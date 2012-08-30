@@ -395,6 +395,10 @@ class VariableController(_SettingController):
     def data(self):
         return self._data
 
+    @property
+    def index(self):
+        return self.parent.index(self)
+
     def set_value(self, name, value):
         value = [value] if isinstance(value, basestring) else value
         self._var.name = name

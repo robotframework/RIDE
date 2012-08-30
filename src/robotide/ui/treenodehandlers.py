@@ -436,6 +436,10 @@ class VariableHandler(_CanBeRenamed, _ActionHandler):
     def rename(self, new_name):
         self.controller.execute(UpdateVariableName(new_name))
 
+    @property
+    def index(self):
+        return self.controller.index
+
 
 class ResourceRootHandler(_ActionHandler):
     can_be_rendered = is_draggable = is_user_keyword = is_test_suite = False

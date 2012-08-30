@@ -355,7 +355,7 @@ class RideItemMovedDown(RideDataChanged):
 
 class RideVariableAdded(RideDataChanged):
     """Sent when a new variable is added to a suite."""
-    data = ['datafile', 'name', 'item']
+    data = ['datafile', 'name', 'item', 'index']
 
 
 class RideVariableRemoved(RideDataChanged):

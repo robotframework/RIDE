@@ -327,7 +327,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
 
     def _variable_added(self, message):
         self._get_or_create_node(self._get_datafile_node(self.get_selected_datafile()),
-                           message.item, lambda item: not item.is_variable)
+                           message.item, lambda item: not item.is_variable or item.index > message.index)
 
     def _leaf_item_removed(self, message):
         node = self._controller.find_node_by_controller(message.item)
