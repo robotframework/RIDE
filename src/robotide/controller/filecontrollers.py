@@ -27,7 +27,6 @@ from robotide import utils
 from .basecontroller import WithUndoRedoStacks, _BaseController, WithNamespace
 from .macrocontrollers import UserKeywordController
 from .robotdata import NewTestCaseFile, NewTestDataDirectory
-from robotide.controller.settingcontrollers import ResourceImportController
 from .settingcontrollers import (DocumentationController, FixtureController,
         TimeoutController, TemplateController, DefaultTagsController,
         ForceTagsController)
