@@ -434,7 +434,7 @@ class ImportSettingListEditor(_AbstractListEditor):
 
     @overrides(ListEditorBase)
     def has_error(self, controller):
-        return False
+        return controller.has_error()
 
     def OnEdit(self, event):
         setting = self._get_setting()

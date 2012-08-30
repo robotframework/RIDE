@@ -19,6 +19,7 @@ from robot.parsing.settings import Comment
 from robotide.publish.messages import (RideImportSettingChanged,
         RideImportSettingRemoved, RideVariableUpdated, RideItemSettingsChanged, RideImportSettingAdded)
 from robotide import utils
+from robotide.utils import overrides
 
 from .tags import Tag, ForcedTag, DefaultTag
 from .basecontroller import ControllerWithParent
@@ -467,6 +468,9 @@ class _ImportController(_SettingController):
     def dirty(self):
         return self._parent.dirty
 
+    def has_error(self):
+        return False
+
     def get_imported_controller(self):
         return None
 
@@ -518,6 +522,10 @@ class ResourceImportController(_ImportController):
                 self.parent.resource_file_controller_factory.find_with_import(self._import)
             self._resolved_import = True
         return self._imported_resource_controller
+
+    @overrides(_ImportController)
+    def has_error(self):
+        return self.get_imported_controller() is None
 
     def get_previous_imported_controller(self):
         return self._previous_imported_controller
