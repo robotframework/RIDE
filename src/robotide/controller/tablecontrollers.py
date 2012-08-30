@@ -86,14 +86,16 @@ class VariableTableController(_TableController, _WithListOperations):
     def move_up(self, index):
         ctrl = self[index]
         _WithListOperations.move_up(self, index)
+        other = self[index]
         self.mark_dirty()
-        RideVariableMovedUp(item=ctrl).publish()
+        RideVariableMovedUp(item=ctrl, other=other).publish()
 
     def move_down(self, index):
         ctrl = self[index]
         _WithListOperations.move_down(self, index)
+        other = self[index]
         self.mark_dirty()
-        RideVariableMovedDown(item=ctrl).publish()
+        RideVariableMovedDown(item=ctrl, other=other).publish()
 
     def add_variable(self, name, value, comment=None):
         self._table.add(name, value, comment)

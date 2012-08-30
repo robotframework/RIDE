@@ -401,6 +401,9 @@ class VariableController(_SettingController):
         self._var.value = value
         self._parent.mark_dirty()
 
+    def has_data(self):
+        return self._data.has_data()
+
     def delete(self):
         self._parent.remove_var(self)
 

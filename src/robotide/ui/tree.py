@@ -265,7 +265,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
             self._create_node_with_handler(node, childitem, index)
 
     def _children_of(self, handler):
-        return list(handler.variables) + list(handler.tests) + \
+        return [v for v in handler.variables if v.has_data()] + list(handler.tests) + \
                 list(handler.keywords)
 
     def _create_node(self, parent_node, label, img, index=None, with_checkbox=False):
@@ -658,10 +658,15 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
             self._controller.mark_node_dirty(self._get_datafile_node(controller.datafile))
 
     def _variable_moved_up(self, data):
-        self._do_action_if_datafile_node_is_expanded(self.move_up, data)
+        if self._should_update_variable_positions(data):
+            self._do_action_if_datafile_node_is_expanded(self.move_up, data)
 
     def _variable_moved_down(self, data):
-        self._do_action_if_datafile_node_is_expanded(self.move_down, data)
+        if self._should_update_variable_positions(data):
+            self._do_action_if_datafile_node_is_expanded(self.move_down, data)
+
+    def _should_update_variable_positions(self, message):
+        return message.item != message.other and message.item.has_data() and message.other.has_data()
 
     def _do_action_if_datafile_node_is_expanded(self, action, data):
         if self.IsExpanded(self._get_datafile_node(data.item.datafile)):

@@ -364,11 +364,19 @@ class RideVariableRemoved(RideDataChanged):
 
 
 class RideVariableMovedUp(RideItemMovedUp):
-    """Sent when a variable is moved up"""
+    """Sent when a variable is moved up
+    item   is the item that has been moved up
+    other  is the item that was swapped down
+    """
+    data = ['item', 'other']
 
 
 class RideVariableMovedDown(RideItemMovedDown):
-    """Sent when a variable is moved down"""
+    """Sent when a variable is moved down
+    item   is the item that has been moved down
+    other  is the item that was swapped up
+    """
+    data = ['item', 'other']
 
 
 class RideVariableUpdated(RideDataChanged):
