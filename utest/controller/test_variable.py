@@ -22,6 +22,9 @@ class TestVariableEquality(unittest.TestCase):
         other = VariableController(object(), self._var)
         self.assertTrue(self._var_ctrl == other)
 
+    def test_comment_variable(self):
+        self.assertTrue(self._var_ctrl.has_data())
+        self.assertFalse(VariableController(object(), Variable('','')).has_data())
 
 if __name__ == '__main__':
     unittest.main()
