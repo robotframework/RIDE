@@ -494,9 +494,13 @@ class UpdateVariable(_Command):
         self._new_comment = new_comment
 
     def execute(self, context):
+        has_data = context.has_data()
         context.set_value(self._new_name, self._new_value)
         context.set_comment(self._new_comment)
-        context.notify_value_changed()
+        if has_data:
+            context.notify_value_changed()
+        else:
+            context.notify_variable_added()
 
 
 class UpdateVariableName(_Command):
