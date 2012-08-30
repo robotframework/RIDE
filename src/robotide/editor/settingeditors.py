@@ -432,6 +432,7 @@ class ImportSettingListEditor(_AbstractListEditor):
     def has_link_target(self, controller):
         return controller.is_resource and controller.get_imported_controller()
 
+    @overrides(ListEditorBase)
     def has_error(self, controller):
         return False
 

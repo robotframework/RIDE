@@ -136,6 +136,9 @@ class ListEditorBase(wx.Panel):
     def has_link_target(self, controller):
         return False
 
+    def has_error(self, controller):
+        return False
+
 
 class ListEditor(ListEditorBase, RideEventHandler): pass
 
