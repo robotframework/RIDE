@@ -553,3 +553,7 @@ class ResourceImportController(_ImportController):
 
 class LibraryImportController(_ImportController):
     is_resource = False
+
+    @overrides(_ImportController)
+    def has_error(self):
+        return not self.parent.parent.is_library(self.name)

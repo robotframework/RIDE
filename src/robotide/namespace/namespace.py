@@ -153,6 +153,9 @@ class Namespace(object):
         kw = self.find_keyword(datafile, kw_name)
         return kw if kw and kw.is_library_keyword() else None
 
+    def is_library(self, datafile, library_name):
+        return self._retriever.is_library(datafile, library_name)
+
     def find_keyword(self, datafile, kw_name):
         if not kw_name:
             return None
@@ -336,6 +339,12 @@ class DatafileRetriever(object):
         for imp in self._collect_import_of_type(datafile, instance_type):
             kws.extend(getter(imp, ctx))
         return kws
+
+    def is_library(self, datafile, library_name):
+        for kw in self._get_imported_library_keywords(datafile, RetrieverContext()):
+            if kw.source == library_name:
+                return True
+        return False
 
     def _lib_kw_getter(self, imp, ctx):
         name = ctx.replace_variables(imp.name)
