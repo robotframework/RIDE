@@ -1,0 +1,2 @@
+VARIABLE = 'VALUE'
+

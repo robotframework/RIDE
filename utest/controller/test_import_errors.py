@@ -46,6 +46,12 @@ class TestImportErrors(unittest.TestCase):
     def test_library_import_with_variable_has_no_error(self):
         self._has_no_error('${LIB}')
 
+    def test_variable_import_has_no_error(self):
+        self._has_no_error('vars//vars.py')
+
+    def test_importing_none_existing_variable_file_has_error(self):
+        self._has_error('vars//none_existing.py')
+
 
 if __name__ == '__main__':
     unittest.main()
