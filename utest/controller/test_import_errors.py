@@ -22,13 +22,13 @@ class TestImportErrors(unittest.TestCase):
     def _has_no_error(self, name):
         self.assertFalse(self._find_by_name(name).has_error(), 'Import "%s" should have no error' % name)
 
-    def test_importing_existing_resource_has_no_errors(self):
+    def test_importing_existing_resource_has_no_error(self):
         self._has_no_error('res//existing.txt')
 
-    def test_importing_existing_library_from_pythonpath_has_no_errors(self):
+    def test_importing_existing_library_from_pythonpath_has_no_error(self):
         self._has_no_error('String')
 
-    def test_importing_existing_library_with_path_has_no_errors(self):
+    def test_importing_existing_library_with_path_has_no_error(self):
         self._has_no_error('libs//existing.py')
 
     def test_importing_none_existing_resource_has_error(self):
@@ -37,11 +37,14 @@ class TestImportErrors(unittest.TestCase):
     def test_importing_none_existing_library_has_error(self):
         self._has_error('libs//none_existing.py')
 
-    def test_importing_corrupted_resource_has_error(self):
-        self._has_error('res//corrupted.txt')
-
     def test_importing_corrupted_library_has_error(self):
         self._has_error('libs//corrupted.py')
+
+    def test_resource_import_with_variable_has_no_error(self):
+        self._has_no_error('${RESU}')
+
+    def test_library_import_with_variable_has_no_error(self):
+        self._has_no_error('${LIB}')
 
 
 if __name__ == '__main__':

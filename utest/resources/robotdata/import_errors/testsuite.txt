@@ -1,11 +1,16 @@
 *** Settings ***
 Resource  res//existing.txt
 Resource  res//none_existing.txt
-Resource  res//corrupted.txt
+Resource  ${RESU}
 Library   String  # A built in library from PYTHONPATH
 Library   libs//existing.py
 Library   libs//none_existing.py  AS  nothing
 Library   libs//corrupted.py
+Library   ${LIB}
+
+*** Variables ***
+${RESU}  res//with_variable.txt
+${LIB}   XML
 
 *** Test Cases ***
 Some case
