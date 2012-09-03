@@ -25,8 +25,7 @@ from robotide.widgets import Dialog, ImageProvider, HtmlWindow
 from robotide.preferences import PreferenceEditor
 
 from .actiontriggers import MenuBar, ToolBar, ShortcutRegistry
-from .filedialogs import (NewProjectDialog, NewExternalResourceDialog,
-        InitFileFormatDialog)
+from .filedialogs import (NewProjectDialog, InitFileFormatDialog)
 from .review import ReviewDialog
 from .pluginmanager import PluginManager
 from robotide.action.shortcut import localize_shortcuts
@@ -162,9 +161,6 @@ class RideFrame(wx.Frame, RideEventHandler):
 
     def _populate_tree(self):
         self.tree.populate(self._controller)
-
-    def OnNewResource(self, event):
-        NewExternalResourceDialog(self._controller).execute()
 
     def OnOpenTestSuite(self, event):
         self._check_unsaved_modifications()

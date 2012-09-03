@@ -170,9 +170,6 @@ class NewResourceDialog(_WithImmutableParent, _CreationDialog):
         return None
 
 
-class NewExternalResourceDialog(NewResourceDialog): pass
-
-
 class AddSuiteDialog(_WithImmutableParent, _CreationDialog):
 
     def __init__(self, controller, settings):
