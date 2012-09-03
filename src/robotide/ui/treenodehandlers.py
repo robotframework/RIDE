@@ -173,7 +173,7 @@ class DirectoryHandler(_ActionHandler):
     _actions = [_ActionHandler._label_new_resource]
 
     def OnNewResource(self, event):
-        NewResourceDialog(self.controller).execute()
+        NewResourceDialog(self.controller, self._settings).execute()
 
 
 class TestDataHandler(_ActionHandler):
