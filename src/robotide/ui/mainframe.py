@@ -244,7 +244,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         self._review_dialog.show_dialog()
 
     def OnPreferences(self, event):
-        dlg = PreferenceEditor(self, "RIDE - Settings",
+        dlg = PreferenceEditor(self, "RIDE - Preferences",
                                 self._application.preferences, style='tree')
         # I would prefer that this not be modal, but making it non-
         # modal opens up a can of worms. We don't want to have to deal
