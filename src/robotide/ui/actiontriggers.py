@@ -44,11 +44,11 @@ class MenuBar(object):
 
     def _insert_menu(self, menu, before_help):
         if before_help:
-            index = self._mb.FindMenu('Help')
+            index = [m.name for m in self._menus].index('&Help')
         else:
-            index = self._mb.GetMenuCount()
-        self._mb.Insert(index, menu.wx_menu, menu.name)
+            index = len(self._menus)
         self._menus.insert(index, menu)
+        self._mb.Insert(index, menu.wx_menu, menu.name)
 
     def register(self, action):
         menu = self._find_menu(action.menu_name)
