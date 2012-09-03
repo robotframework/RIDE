@@ -156,6 +156,9 @@ class Namespace(object):
     def is_library_import_ok(self, datafile, imp):
         return self._retriever.is_library_import_ok(datafile, imp, self._context_factory.ctx_for_datafile(datafile))
 
+    def is_variables_import_ok(self, datafile, imp):
+        return self._retriever.is_variables_import_ok(datafile, imp, self._context_factory.ctx_for_datafile(datafile))
+
     def find_keyword(self, datafile, kw_name):
         if not kw_name:
             return None
@@ -329,6 +332,10 @@ class DatafileRetriever(object):
         self._get_vars_recursive(datafile, ctx)
         return bool(self._lib_kw_getter(imp, ctx))
 
+    def is_variables_import_ok(self, datafile, imp, ctx):
+        self._get_vars_recursive(datafile, ctx)
+        return self._import_vars(ctx, datafile, imp)
+
     def _get_datafile_keywords(self, datafile):
         if isinstance(datafile, ResourceFile):
             return [ResourceUserKeywordInfo(kw) for kw in datafile.keywords]
@@ -388,13 +395,17 @@ class DatafileRetriever(object):
 
     def _collect_vars_from_variable_files(self, datafile, ctx):
         for imp in self._collect_import_of_type(datafile, Variables):
-            varfile_path = os.path.join(datafile.directory,
-                                        ctx.replace_variables(imp.name))
-            args = [ctx.replace_variables(a) for a in imp.args]
-            try:
-                ctx.vars.set_from_file(varfile_path, args)
-            except DataError:
-                pass # TODO: log somewhere
+            self._import_vars(ctx, datafile, imp)
+
+    def _import_vars(self, ctx, datafile, imp):
+        varfile_path = os.path.join(datafile.directory,
+            ctx.replace_variables(imp.name))
+        args = [ctx.replace_variables(a) for a in imp.args]
+        try:
+            ctx.vars.set_from_file(varfile_path, args)
+            return True
+        except DataError:
+            return False # TODO: log somewhere
 
     def _var_collector(self, res, ctx, items):
         self._get_vars_recursive(res, ctx)

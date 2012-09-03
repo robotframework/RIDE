@@ -435,7 +435,9 @@ class VariableController(_SettingController):
 def ImportController(parent, import_):
     if import_.type == 'Resource':
         return ResourceImportController(parent, import_)
-    return LibraryImportController(parent, import_)
+    elif import_.type == 'Library':
+        return LibraryImportController(parent, import_)
+    return VariablesImportController(parent, import_)
 
 
 class _ImportController(_SettingController):
@@ -557,3 +559,10 @@ class LibraryImportController(_ImportController):
     @overrides(_ImportController)
     def has_error(self):
         return not self.parent.parent.is_library_import_ok(self._data)
+
+class VariablesImportController(_ImportController):
+    is_resource = False
+
+    @overrides(_ImportController)
+    def has_error(self):
+        return not self.parent.parent.is_variables_import_ok(self._data)

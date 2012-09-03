@@ -108,6 +108,9 @@ class WithNamespace(object):
     def is_library_import_ok(self, imp):
         return self._namespace.is_library_import_ok(self.datafile, imp)
 
+    def is_variables_import_ok(self, imp):
+        return self._namespace.is_variables_import_ok(self.datafile, imp)
+
 
 class WithUndoRedoStacks(object):
 
