@@ -44,6 +44,8 @@ FINDWHEREUSED_VARIABLES_PATH = _makepath('findwhereused_variables')
 
 SMALL_TEST_PATH = _makepath('small_test')
 
+IMPORT_ERRORS = _makepath('import_errors')
+
 def construct_chief_controller(datapath):
     settings = FakeSettings()
     chief = ChiefController(Namespace(settings), settings)
