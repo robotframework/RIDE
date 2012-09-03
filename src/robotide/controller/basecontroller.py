@@ -105,8 +105,8 @@ class WithNamespace(object):
     def keyword_info(self, datafile, keyword_name):
         return self._namespace.find_keyword(datafile, keyword_name)
 
-    def is_library(self, library_name):
-        return self._namespace.is_library(self.datafile, library_name)
+    def is_library_import_ok(self, imp):
+        return self._namespace.is_library_import_ok(self.datafile, imp)
 
 
 class WithUndoRedoStacks(object):

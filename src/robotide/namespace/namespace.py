@@ -153,8 +153,8 @@ class Namespace(object):
         kw = self.find_keyword(datafile, kw_name)
         return kw if kw and kw.is_library_keyword() else None
 
-    def is_library(self, datafile, library_name):
-        return self._retriever.is_library(datafile, library_name)
+    def is_library_import_ok(self, datafile, imp):
+        return self._retriever.is_library_import_ok(datafile, imp, self._context_factory.ctx_for_datafile(datafile))
 
     def find_keyword(self, datafile, kw_name):
         if not kw_name:
@@ -325,6 +325,10 @@ class DatafileRetriever(object):
               self._get_imported_resource_keywords(datafile, ctx) +\
               self._get_imported_library_keywords(datafile, ctx)))
 
+    def is_library_import_ok(self, datafile, imp, ctx):
+        self._get_vars_recursive(datafile, ctx)
+        return bool(self._lib_kw_getter(imp, ctx))
+
     def _get_datafile_keywords(self, datafile):
         if isinstance(datafile, ResourceFile):
             return [ResourceUserKeywordInfo(kw) for kw in datafile.keywords]
@@ -339,12 +343,6 @@ class DatafileRetriever(object):
         for imp in self._collect_import_of_type(datafile, instance_type):
             kws.extend(getter(imp, ctx))
         return kws
-
-    def is_library(self, datafile, library_name):
-        for kw in self._get_imported_library_keywords(datafile, RetrieverContext()):
-            if kw.source == library_name:
-                return True
-        return False
 
     def _lib_kw_getter(self, imp, ctx):
         name = ctx.replace_variables(imp.name)

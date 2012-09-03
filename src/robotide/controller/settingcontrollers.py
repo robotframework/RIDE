@@ -556,4 +556,4 @@ class LibraryImportController(_ImportController):
 
     @overrides(_ImportController)
     def has_error(self):
-        return not self.parent.parent.is_library(self.name)
+        return not self.parent.parent.is_library_import_ok(self._data)
