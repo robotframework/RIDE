@@ -5,6 +5,7 @@ from robotide.controller.basecontroller import _BaseController
 from robotide.controller.cellinfo import CellPosition, CellType, CellInfo,\
     CellContent, ContentType
 from robotide.namespace.local_namespace import LocalNamespace
+from robotide.utils import overrides
 
 
 class StepController(_BaseController):
@@ -452,6 +453,8 @@ class ForLoopStepController(StepController):
 
 class IntendedStepController(StepController):
 
+    _invalid = False
+
     @property
     def _keyword_column(self):
         return 1
@@ -488,12 +491,27 @@ class IntendedStepController(StepController):
                 self.parent.add_step(self._step)
         else:
             self._recreate_as_normal_step(cells)
+            self._invalid = True
 
     def _recreate_as_normal_step(self, cells):
-        index = self.parent._get_raw_steps().index(self._step)
+        steps = self.parent.steps
+        index = [s._step for s in steps].index(self._step)
+        for i, step in reversed(list(enumerate(steps))):
+            if i == index:
+                break
+            step._replace_with_normal_step(i)
+        self._replace_with_normal_step(index, cells)
+
+    def _replace_with_normal_step(self, index, cells=None):
         index_of_parent = self.parent.parent.index_of_step(self.parent._step)
-        self.parent._replace_with_new_cells(self.parent.as_list())
-        self.parent.parent.replace_step(index+index_of_parent+1, Step(cells))
+        self.parent.parent.add_step(index_of_parent+index+2, Step(cells or self._step.as_list()))
+        self.parent._get_raw_steps().pop(index)
 
     def remove(self):
         self.parent._get_raw_steps().remove(self._step)
+
+    @overrides(StepController)
+    def remove_empty_columns_from_end(self):
+        if self._invalid:
+            return
+        StepController.remove_empty_columns_from_end(self)
