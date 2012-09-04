@@ -325,14 +325,6 @@ class StepController(_BaseController):
     def _recreate(self, cells, comment=None):
         if cells and cells[0].replace(' ', '').upper() == ':FOR':
             self.parent.replace_step(self._index(), ForLoop(cells[1:]))
-        elif cells and not cells[0].strip():
-            previous_step = self.parent.step(self._index()-1)
-            if type(previous_step) == ForLoopStepController:
-                previous_step.add_step(Step(cells[1:]))
-            elif type(previous_step) == IntendedStepController:
-                previous_step.parent.add_step(Step(cells[1:]))
-            else:
-                self._step.__init__(cells, comment)
         else:
             self._step.__init__(cells, comment)
 

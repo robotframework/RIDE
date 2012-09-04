@@ -4,6 +4,8 @@ Test
     \  Log  joo
     : FOR  ${j}  IN  1  2
     \  Log  jee
+    \  Log  another
+    \  Log  and another
 
 Test 2
     No Operation
