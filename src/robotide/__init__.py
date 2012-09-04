@@ -45,10 +45,10 @@ try:
         print errorMessageTemplate.substitute(reason="wxPython with ansi encoding is not supported", versions=" or ".join(supported_versions))
         sys.exit(1)
 except ImportError:
-    print errorMessageTemplate.substitute(reason="wxPython not found.", versions=supported_versions)
+    print errorMessageTemplate.substitute(reason="wxPython not found.", versions=" or ".join(supported_versions))
     sys.exit(1)
 except VersionError:
-    print errorMessageTemplate.substitute(reason="Wrong wxPython version.", versions=supported_versions)
+    print errorMessageTemplate.substitute(reason="Wrong wxPython version.", versions=" or ".join(supported_versions))
     sys.exit(1)
 
 # Insert bundled robot to path before anything else
