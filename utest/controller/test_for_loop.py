@@ -1,7 +1,7 @@
 import unittest
 import datafilereader
 from robotide.controller.cellinfo import CellType
-from robotide.controller.commands import MoveRowsDown, Undo, ChangeCellValue
+from robotide.controller.commands import MoveRowsDown, Undo, ChangeCellValue, InsertCell
 from robotide.controller.stepcontrollers import ForLoopStepController, IntendedStepController, StepController
 
 
@@ -25,7 +25,6 @@ class TestForLoop(unittest.TestCase):
         test2.execute(ChangeCellValue(0, 0, ':FOR'))
         self.assertTrue(isinstance(test2.step(0), ForLoopStepController),
             'wrong type of step type (%s)' % type(test2.step(0)))
-        test2.execute(Undo())
 
     def test_adding_step_to_for_loop(self):
         test = self.chief.datafiles[1].tests[0]
@@ -33,29 +32,45 @@ class TestForLoop(unittest.TestCase):
         self.assertTrue(isinstance(test.step(4), IntendedStepController),
             'wrong type of step type (%s)' % type(test.step(4)))
 
-    def test_removing_steps_from_for_loop(self):
-        test = self.chief.datafiles[1].tests[0]
-        self._steps_are_in_for_loop(test, 3, 4, 5)
-        test.execute(ChangeCellValue(4, 0, 'Something'))
-        self._steps_are_in_for_loop(test, 3)
-        self._steps_are_not_in_for_loop(test, 4, 5)
-        test.execute(Undo())
-        self._steps_are_in_for_loop(test, 3, 4, 5)
+    def test_removing_step_in_middle_from_for_loop(self):
+        test = self.chief.datafiles[1].tests[5]
+        test.execute(ChangeCellValue(2, 0, 'Something'))
+        self._steps_are_in_for_loop(test, 1)
+        self._steps_are_not_in_for_loop(test, 2, 3)
 
     def test_removing_first_step_from_for_loop(self):
-        test = self.chief.datafiles[1].tests[0]
-        test.execute(ChangeCellValue(3, 0, 'Invalidate all'))
-        self._steps_are_not_in_for_loop(test, 3, 4, 5)
-        test.execute(Undo())
-        self._steps_are_in_for_loop(test, 3, 4, 5)
+        test = self.chief.datafiles[1].tests[6]
+        test.execute(ChangeCellValue(1, 0, 'Invalidate all'))
+        self._steps_are_not_in_for_loop(test, 1, 2, 3)
+
+    def test_removing_last_step_from_for_loop(self):
+        test = self.chief.datafiles[1].tests[7]
+        test.execute(ChangeCellValue(3, 0, 'Something'))
+        self._steps_are_in_for_loop(test, 1, 2)
+        self._steps_are_not_in_for_loop(test, 3)
+
+    def test_modify_step_so_that_it_becomes_part_of_for_loop_at_first_position(self):
+        test = self.chief.datafiles[1].tests[3]
+        test.execute(InsertCell(1, 0))
+        self._steps_are_in_for_loop(test, 1, 2, 3)
+
+    def test_modify_step_so_that_it_becomes_part_of_for_loop_at_middle_position(self):
+        test = self.chief.datafiles[1].tests[4]
+        test.execute(InsertCell(2, 0))
+        self._steps_are_in_for_loop(test, 1, 2, 3)
+
+    def test_modify_step_so_that_it_becomes_part_of_for_loop_at_last_position(self):
+        test = self.chief.datafiles[1].tests[5]
+        test.execute(InsertCell(3, 0))
+        self._steps_are_in_for_loop(test, 1, 2, 3)
 
     def _steps_are_in_for_loop(self, macro, *steps):
         for i in steps:
-            self.assertEqual(type(macro.step(i)), IntendedStepController)
+            self.assertEqual(type(macro.step(i)), IntendedStepController, 'Wrong type in index %d' % i)
 
     def _steps_are_not_in_for_loop(self, macro, *steps):
         for i in steps:
-            self.assertEqual(type(macro.step(i)), StepController)
+            self.assertEqual(type(macro.step(i)), StepController, 'Wrong type in index %d' % i)
 
     def test_modifying_step_in_for_loop(self):
         test = self.chief.datafiles[1].tests[0]

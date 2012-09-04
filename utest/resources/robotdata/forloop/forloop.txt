@@ -1,5 +1,5 @@
 *** Test Cases ***
-Test
+Test 1
     : FOR  ${i}  IN RANGE  1  10
     \  Log  joo
     : FOR  ${j}  IN  1  2
@@ -9,3 +9,39 @@ Test
 
 Test 2
     No Operation
+
+Test 3
+    : FOR  ${j}  IN  1  2
+    \  One
+    Two
+    \  Three
+
+Test 4
+    : FOR  ${j}  IN  1  2
+    One
+    \  Two
+    \  Three
+
+Test 5
+    : FOR  ${j}  IN  1  2
+    \  One
+    \  Two
+    Three
+
+Test 6
+    : FOR  ${j}  IN  1  2
+    \  One
+    \  Two
+    \  Three
+
+Test 7
+    : FOR  ${j}  IN  1  2
+    \  One
+    \  Two
+    \  Three
+
+Test 8
+    : FOR  ${j}  IN  1  2
+    \  One
+    \  Two
+    \  Three
