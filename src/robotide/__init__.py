@@ -27,24 +27,28 @@ release. The most stable, and best documented, module is `robotide.pluginapi`.
 
 import sys
 import os
+from string import Template
 
+errorMessageTemplate = Template("""$reason
+You need to install wxPython $versions toolkit with unicode support to run RIDE.
+See http://wxpython.org for more information.""")
+supported_versions = ["2.8"]
 
 try:
     import wxversion
     from wxversion import VersionError
     if sys.platform == 'darwin': # CAN NOT IMPORT IS_MAC AS THERE IS A wx IMPORT
-        wxversion.select(['2.8', '2.9'])
-    else:
-        wxversion.select('2.8')
+        supported_versions.append("2.9")
+    wxversion.select(supported_versions)
+    import wx
+    if "ansi" in wx.PlatformInfo:
+        print errorMessageTemplate.substitute(reason="wxPython with ansi encoding is not supported", versions=" or ".join(supported_versions))
+        sys.exit(1)
 except ImportError:
-    print """wxPython not found.
-You need to install wxPython 2.8 toolkit with unicode support to run RIDE.
-See http://wxpython.org for more information."""
+    print errorMessageTemplate.substitute(reason="wxPython not found.", versions=supported_versions)
     sys.exit(1)
 except VersionError:
-    print """Wrong wxPython version.
-You need to install wxPython 2.8 toolkit with unicode support to run RIDE.
-See http://wxpython.org for more information."""
+    print errorMessageTemplate.substitute(reason="Wrong wxPython version.", versions=supported_versions)
     sys.exit(1)
 
 # Insert bundled robot to path before anything else
