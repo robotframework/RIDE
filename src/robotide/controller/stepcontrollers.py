@@ -1,5 +1,5 @@
 import re
-from robot.parsing.model import Step
+from robot.parsing.model import Step, ForLoop
 from robotide import utils
 from robotide.controller.basecontroller import _BaseController
 from robotide.controller.cellinfo import CellPosition, CellType, CellInfo,\
@@ -323,7 +323,10 @@ class StepController(_BaseController):
         return cells[-1][2:].strip() if cells[-1].startswith('# ') else None
 
     def _recreate(self, cells, comment=None):
-        self._step.__init__(cells, comment)
+        if cells and cells[0].replace(' ', '').upper() == ':FOR':
+            self.parent.replace_step(self._index(), ForLoop(cells[1:]))
+        else:
+            self._step.__init__(cells, comment)
 
     def notify_value_changed(self):
         self.parent.notify_steps_changed()
