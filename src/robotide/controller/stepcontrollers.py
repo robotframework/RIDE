@@ -487,10 +487,13 @@ class IntendedStepController(StepController):
             if self._step not in self.parent._get_raw_steps():
                 self.parent.add_step(self._step)
         else:
-            index = self.parent._get_raw_steps().index(self._step)
-            index_of_parent = self.parent.parent.index_of_step(self.parent._step)
-            self.parent._replace_with_new_cells(self.parent.as_list())
-            self.parent.parent.replace_step(index+index_of_parent+1, Step(cells))
+            self._recreate_as_normal_step(cells)
+
+    def _recreate_as_normal_step(self, cells):
+        index = self.parent._get_raw_steps().index(self._step)
+        index_of_parent = self.parent.parent.index_of_step(self.parent._step)
+        self.parent._replace_with_new_cells(self.parent.as_list())
+        self.parent.parent.replace_step(index+index_of_parent+1, Step(cells))
 
     def remove(self):
         self.parent._get_raw_steps().remove(self._step)
