@@ -2,7 +2,7 @@ import unittest
 import datafilereader
 from robotide.controller.cellinfo import CellType
 from robotide.controller.commands import MoveRowsDown, Undo, ChangeCellValue
-from robotide.controller.stepcontrollers import ForLoopStepController
+from robotide.controller.stepcontrollers import ForLoopStepController, IntendedStepController
 
 
 class TestForLoop(unittest.TestCase):
@@ -25,9 +25,13 @@ class TestForLoop(unittest.TestCase):
         test2.execute(ChangeCellValue(0, 0, ':FOR'))
         self.assertTrue(isinstance(test2.step(0), ForLoopStepController),
             'wrong type of step type (%s)' % type(test2.step(0)))
+        test2.execute(Undo())
 
     def test_adding_step_to_for_loop(self):
-        pass
+        test = self.chief.datafiles[1].tests[0]
+        test.execute(ChangeCellValue(4, 1, 'No Operation'))
+        self.assertTrue(isinstance(test.step(4), IntendedStepController),
+            'wrong type of step type (%s)' % type(test.step(4)))
 
     def test_removing_step_from_for_loop(self):
         pass
