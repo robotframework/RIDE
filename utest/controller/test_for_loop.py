@@ -37,17 +37,24 @@ class TestForLoop(unittest.TestCase):
         test.execute(ChangeCellValue(2, 0, 'Something'))
         self._steps_are_in_for_loop(test, 1)
         self._steps_are_not_in_for_loop(test, 2, 3)
+        self._steps_first_cells_are_empty(test, 1, 3)
+
+    def _steps_first_cells_are_empty(self, macro, *steps):
+        for i in steps:
+            self.assertEqual(macro.step(i).get_value(0), '')
 
     def test_removing_first_step_from_for_loop(self):
         test = self.chief.datafiles[1].tests[6]
         test.execute(ChangeCellValue(1, 0, 'Invalidate all'))
         self._steps_are_not_in_for_loop(test, 1, 2, 3)
+        self._steps_first_cells_are_empty(test, 2, 3)
 
     def test_removing_last_step_from_for_loop(self):
         test = self.chief.datafiles[1].tests[7]
         test.execute(ChangeCellValue(3, 0, 'Something'))
         self._steps_are_in_for_loop(test, 1, 2)
         self._steps_are_not_in_for_loop(test, 3)
+        self._steps_first_cells_are_empty(test, 1, 2)
 
     def test_modify_step_so_that_it_becomes_part_of_for_loop_at_first_position(self):
         test = self.chief.datafiles[1].tests[3]
