@@ -504,7 +504,7 @@ class IntendedStepController(StepController):
 
     def _replace_with_normal_step(self, index, cells=None):
         index_of_parent = self.parent.parent.index_of_step(self.parent._step)
-        self.parent.parent.add_step(index_of_parent+index+2, Step(cells or self._step.as_list()))
+        self.parent.parent.add_step(index_of_parent+index+2, Step(cells or self.as_list()))
         self.parent._get_raw_steps().pop(index)
 
     def remove(self):
