@@ -71,6 +71,11 @@ class TestForLoop(unittest.TestCase):
         test.execute(InsertCell(3, 0))
         self._steps_are_in_for_loop(test, 1, 2, 3)
 
+    def test_modify_last_step_so_that_it_should_be_empty_and_not_part_of_for_loop(self):
+        test = self.chief.datafiles[1].tests[8]
+        test.execute(ChangeCellValue(2, 0, ''))
+        self._steps_are_not_in_for_loop(test, 2)
+
     def _steps_are_in_for_loop(self, macro, *steps):
         for i in steps:
             self.assertEqual(type(macro.step(i)), IntendedStepController, 'Wrong type in index %d' % i)
