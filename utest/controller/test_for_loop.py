@@ -62,12 +62,12 @@ class TestForLoop(unittest.TestCase):
         self._steps_are_in_for_loop(test, 1, 2, 3)
 
     def test_modify_step_so_that_it_becomes_part_of_for_loop_at_middle_position(self):
-        test = self.chief.datafiles[1].tests[4]
+        test = self.chief.datafiles[1].tests[2]
         test.execute(InsertCell(2, 0))
         self._steps_are_in_for_loop(test, 1, 2, 3)
 
     def test_modify_step_so_that_it_becomes_part_of_for_loop_at_last_position(self):
-        test = self.chief.datafiles[1].tests[5]
+        test = self.chief.datafiles[1].tests[4]
         test.execute(InsertCell(3, 0))
         self._steps_are_in_for_loop(test, 1, 2, 3)
 
