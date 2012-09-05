@@ -54,3 +54,5 @@ Test 8
 Test 9
     Log  Something
 
+Test 10
+    Nothing

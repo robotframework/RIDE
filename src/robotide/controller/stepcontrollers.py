@@ -326,8 +326,8 @@ class StepController(_BaseController):
 
     def _recreate(self, cells, comment=None):
         if cells and cells[0].replace(' ', '').upper() == ':FOR':
-            self.parent.replace_step(self._index(), ForLoop(cells[1:]))
-        elif cells and not cells[0].strip():
+            self.parent.replace_step(self._index(), PartialForLoop(cells[1:], first_cell=cells[0]))
+        elif cells and not cells[0].strip() and any(c.strip() for c in cells):
             i = self._index()
             previous_step = self.parent.step(i-1)
             if type(previous_step) == ForLoopStepController:
@@ -348,6 +348,17 @@ class StepController(_BaseController):
 
     def notify_value_changed(self):
         self.parent.notify_steps_changed()
+
+
+class PartialForLoop(ForLoop):
+
+    def __init__(self, cells, first_cell=':FOR'):
+        self._cells = cells
+        self._first_cell = first_cell
+        ForLoop.__init__(self, cells)
+
+    def as_list(self, indent=False, include_comment=False):
+        return [self._first_cell]+self._cells
 
 
 class ForLoopStepController(StepController):
@@ -450,6 +461,10 @@ class ForLoopStepController(StepController):
         if cells[0] != self.as_list()[0]:
             return False
         in_token_index = len(self.vars)+1
+        if len(cells) <= in_token_index:
+            return False
+        if len(self.as_list()) <= in_token_index:
+            return False
         if cells[in_token_index] != self.as_list()[in_token_index]:
             return False
         return True

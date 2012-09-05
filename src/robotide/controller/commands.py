@@ -868,7 +868,7 @@ class ChangeCellValue(_StepsChangingCommand):
         step = self._step(context)
         self._undo_command = ChangeCellValue(self._row, self._col, step.get_value(self._col))
         step.change(self._col, self._value)
-        step.remove_empty_columns_from_end()
+        self._step(context).remove_empty_columns_from_end()
         return True
 
     def _get_undo_command(self):

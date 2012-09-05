@@ -94,6 +94,15 @@ class TestForLoop(unittest.TestCase):
         test.execute(ChangeCellValue(3, 1, 'Something again'))
         self.assertEqual(type(test.step(3)), IntendedStepController)
 
+    def test_new_for_loop(self):
+        test = self.chief.datafiles[1].tests[10]
+        test.execute(ChangeCellValue(0, 0, ': FOR'))
+        test.execute(ChangeCellValue(0, 1, '${i}'))
+        test.execute(ChangeCellValue(0, 2, 'IN RANGE'))
+        test.execute(ChangeCellValue(0, 3, '100'))
+        self.assertEqual(test.steps[0].as_list(), [':FOR', '${i}', 'IN RANGE', '100'])
+        self.assertEqual(type(test.steps[0]), ForLoopStepController)
+
 
 if __name__ == '__main__':
     unittest.main()
