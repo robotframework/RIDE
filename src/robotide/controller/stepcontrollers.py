@@ -300,6 +300,7 @@ class StepController(_BaseController):
 
     def remove(self):
         self.parent.data.steps.remove(self._step)
+        self.parent._clear_cached_steps()
 
     def move_up(self):
         previous_step = self.parent.step(self._index()-1)
@@ -326,6 +327,23 @@ class StepController(_BaseController):
     def _recreate(self, cells, comment=None):
         if cells and cells[0].replace(' ', '').upper() == ':FOR':
             self.parent.replace_step(self._index(), ForLoop(cells[1:]))
+        elif cells and not cells[0].strip():
+            i = self._index()
+            previous_step = self.parent.step(i-1)
+            if type(previous_step) == ForLoopStepController:
+                self.remove()
+                previous_step.add_step(Step(cells[1:]))
+                if len(self.parent.steps) > i+1:
+                    next_step = self.parent.step(i+1)
+                    next_step._recreate(next_step.as_list())
+            elif type(previous_step) == IntendedStepController:
+                previous_step.parent.add_step(Step(cells[1:]))
+                self.remove()
+                if len(self.parent.steps) > i+1:
+                    next_step = self.parent.step(i+1)
+                    next_step._recreate(next_step.as_list())
+            else:
+                self._step.__init__(cells, comment)
         else:
             self._step.__init__(cells, comment)
 
