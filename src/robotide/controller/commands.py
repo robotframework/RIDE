@@ -902,7 +902,9 @@ class SaveAll(_Command):
 class Purify(_Command):
 
     def execute(self, context):
-        for step in context.steps:
+        for i in range(len(context.steps)):
+            step = context.steps[i] # Steps can changes during this operation
+            # this is why index based iteration - step reference can be stale
             step.remove_empty_columns_from_end()
             if step.has_only_comment():
                 step.remove_empty_columns_from_beginning()
