@@ -103,6 +103,10 @@ class TestForLoop(unittest.TestCase):
         self.assertEqual(test.steps[0].as_list(), [':FOR', '${i}', 'IN RANGE', '100'])
         self.assertEqual(type(test.steps[0]), ForLoopStepController)
 
+    def test_for_loop_creation_and_steps(self):
+        test = self.chief.datafiles[1].tests[11]
+        test.execute(ChangeCellValue(0, 0, ': FOR'))
+        self._steps_are_in_for_loop(test, 1, 2, 3)
 
 if __name__ == '__main__':
     unittest.main()
