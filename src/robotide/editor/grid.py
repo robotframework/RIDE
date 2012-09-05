@@ -156,7 +156,10 @@ class GridEditor(grid.Grid):
         self.AutoSizeRows()
 
     def OnSelectCell(self, event):
-        self.selection.set_from_single_selection(event)
+        if self._is_whole_row_selection():
+            self.SelectBlock(self.selection.topleft.row, self.selection.topleft.col,self.selection.bottomright.row, self.selection.bottomright.col, addToSelected=True)
+        else:
+            self.selection.set_from_single_selection(event)
         self.AutoSizeRows()
         event.Skip()
 
