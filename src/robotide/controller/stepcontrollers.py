@@ -331,21 +331,20 @@ class StepController(_BaseController):
             i = self._index()
             previous_step = self.parent.step(i-1)
             if type(previous_step) == ForLoopStepController:
-                self.remove()
-                previous_step.add_step(Step(cells[1:]))
-                if len(self.parent.steps) > i+1:
-                    next_step = self.parent.step(i+1)
-                    next_step._recreate(next_step.as_list())
+                self._recreate_as_intended_step(previous_step, cells, i)
             elif type(previous_step) == IntendedStepController:
-                previous_step.parent.add_step(Step(cells[1:]))
-                self.remove()
-                if len(self.parent.steps) > i+1:
-                    next_step = self.parent.step(i+1)
-                    next_step._recreate(next_step.as_list())
+                self._recreate_as_intended_step(previous_step.parent, cells, i)
             else:
                 self._step.__init__(cells, comment)
         else:
             self._step.__init__(cells, comment)
+
+    def _recreate_as_intended_step(self, for_loop_step, cells, index):
+        self.remove()
+        for_loop_step.add_step(Step(cells[1:]))
+        if len(self.parent.steps) > index+1:
+            next_step = self.parent.step(index+1)
+            next_step._recreate(next_step.as_list())
 
     def notify_value_changed(self):
         self.parent.notify_steps_changed()
