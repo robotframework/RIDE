@@ -326,7 +326,7 @@ class StepController(_BaseController):
 
     def _recreate(self, cells, comment=None):
         if cells and cells[0].replace(' ', '').upper() == ':FOR':
-            self.parent.replace_step(self._index(), PartialForLoop(cells[1:], first_cell=cells[0]))
+            self._recreate_as_partial_for_loop(cells)
         elif cells and not cells[0].strip() and any(c.strip() for c in cells):
             i = self._index()
             previous_step = self.parent.step(i-1)
@@ -338,6 +338,9 @@ class StepController(_BaseController):
                 self._step.__init__(cells, comment)
         else:
             self._step.__init__(cells, comment)
+
+    def _recreate_as_partial_for_loop(self, cells):
+        self.parent.replace_step(self._index(), PartialForLoop(cells[1:], first_cell=cells[0]))
 
     def _recreate_as_intended_step(self, for_loop_step, cells, index):
         self.remove()
@@ -444,7 +447,13 @@ class ForLoopStepController(StepController):
 
     def _recreate(self, cells, comment=None):
         if not self._represent_valid_for_loop_header(cells):
-            self._replace_with_new_cells(cells)
+            if cells[0].replace(' ','').upper() != ':FOR':
+                self._replace_with_new_cells(cells)
+            else:
+                steps = self._get_raw_steps()
+                i = self._index()
+                StepController._recreate_as_partial_for_loop(self, cells)
+                self.parent.step(i)._set_raw_steps(steps)
         else:
             steps = self._get_raw_steps()
             self._step.__init__(cells[1:])
