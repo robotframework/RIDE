@@ -452,7 +452,7 @@ class ForLoopStepController(StepController):
 
     def _recreate(self, cells, comment=None):
         if not self._represent_valid_for_loop_header(cells):
-            if cells[0].replace(' ','').upper() != ':FOR':
+            if not cells or cells[0].replace(' ','').upper() != ':FOR':
                 self._replace_with_new_cells(cells)
             else:
                 steps = self._get_raw_steps()
@@ -472,6 +472,8 @@ class ForLoopStepController(StepController):
         self._step.steps = []
 
     def _represent_valid_for_loop_header(self, cells):
+        if not cells:
+            return False
         if cells[0] != self.as_list()[0]:
             return False
         in_token_index = len(self.vars)+1
