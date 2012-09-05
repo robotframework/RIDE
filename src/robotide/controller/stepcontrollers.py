@@ -340,14 +340,19 @@ class StepController(_BaseController):
             self._step.__init__(cells, comment)
 
     def _recreate_as_partial_for_loop(self, cells):
-        self.parent.replace_step(self._index(), PartialForLoop(cells[1:], first_cell=cells[0]))
+        index = self._index()
+        self.parent.replace_step(index, PartialForLoop(cells[1:], first_cell=cells[0]))
+        self._recreate_next_step(index)
 
     def _recreate_as_intended_step(self, for_loop_step, cells, index):
         self.remove()
         for_loop_step.add_step(Step(cells[1:]))
+        self._recreate_next_step(index)
+
+    def _recreate_next_step(self, index):
         if len(self.parent.steps) > index+1:
-            next_step = self.parent.step(index+1)
-            next_step._recreate(next_step.as_list())
+                next_step = self.parent.step(index+1)
+                next_step._recreate(next_step.as_list())
 
     def notify_value_changed(self):
         self.parent.notify_steps_changed()
