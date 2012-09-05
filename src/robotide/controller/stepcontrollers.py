@@ -1,10 +1,11 @@
 import re
-from robot.parsing.model import Step
+from robot.parsing.model import Step, ForLoop
 from robotide import utils
 from robotide.controller.basecontroller import _BaseController
 from robotide.controller.cellinfo import CellPosition, CellType, CellInfo,\
     CellContent, ContentType
 from robotide.namespace.local_namespace import LocalNamespace
+from robotide.utils import overrides
 
 
 class StepController(_BaseController):
@@ -299,6 +300,7 @@ class StepController(_BaseController):
 
     def remove(self):
         self.parent.data.steps.remove(self._step)
+        self.parent._clear_cached_steps()
 
     def move_up(self):
         previous_step = self.parent.step(self._index()-1)
@@ -323,10 +325,48 @@ class StepController(_BaseController):
         return cells[-1][2:].strip() if cells[-1].startswith('# ') else None
 
     def _recreate(self, cells, comment=None):
-        self._step.__init__(cells, comment)
+        if cells and cells[0].replace(' ', '').upper() == ':FOR':
+            self._recreate_as_partial_for_loop(cells)
+        elif cells and not cells[0].strip() and any(c.strip() for c in cells):
+            i = self._index()
+            previous_step = self.parent.step(i-1)
+            if type(previous_step) == ForLoopStepController:
+                self._recreate_as_intended_step(previous_step, cells, i)
+            elif type(previous_step) == IntendedStepController:
+                self._recreate_as_intended_step(previous_step.parent, cells, i)
+            else:
+                self._step.__init__(cells, comment)
+        else:
+            self._step.__init__(cells, comment)
+
+    def _recreate_as_partial_for_loop(self, cells):
+        index = self._index()
+        self.parent.replace_step(index, PartialForLoop(cells[1:], first_cell=cells[0]))
+        self._recreate_next_step(index)
+
+    def _recreate_as_intended_step(self, for_loop_step, cells, index):
+        self.remove()
+        for_loop_step.add_step(Step(cells[1:]))
+        self._recreate_next_step(index)
+
+    def _recreate_next_step(self, index):
+        if len(self.parent.steps) > index+1:
+                next_step = self.parent.step(index+1)
+                next_step._recreate(next_step.as_list())
 
     def notify_value_changed(self):
         self.parent.notify_steps_changed()
+
+
+class PartialForLoop(ForLoop):
+
+    def __init__(self, cells, first_cell=':FOR'):
+        self._cells = cells
+        self._first_cell = first_cell
+        ForLoop.__init__(self, cells)
+
+    def as_list(self, indent=False, include_comment=False):
+        return [self._first_cell]+self._cells
 
 
 class ForLoopStepController(StepController):
@@ -412,7 +452,13 @@ class ForLoopStepController(StepController):
 
     def _recreate(self, cells, comment=None):
         if not self._represent_valid_for_loop_header(cells):
-            self._replace_with_new_cells(cells)
+            if cells[0].replace(' ','').upper() != ':FOR':
+                self._replace_with_new_cells(cells)
+            else:
+                steps = self._get_raw_steps()
+                i = self._index()
+                StepController._recreate_as_partial_for_loop(self, cells)
+                self.parent.step(i)._set_raw_steps(steps)
         else:
             steps = self._get_raw_steps()
             self._step.__init__(cells[1:])
@@ -429,6 +475,10 @@ class ForLoopStepController(StepController):
         if cells[0] != self.as_list()[0]:
             return False
         in_token_index = len(self.vars)+1
+        if len(cells) <= in_token_index:
+            return False
+        if len(self.as_list()) <= in_token_index:
+            return False
         if cells[in_token_index] != self.as_list()[in_token_index]:
             return False
         return True
@@ -448,6 +498,8 @@ class ForLoopStepController(StepController):
 
 
 class IntendedStepController(StepController):
+
+    _invalid = False
 
     @property
     def _keyword_column(self):
@@ -484,10 +536,28 @@ class IntendedStepController(StepController):
             if self._step not in self.parent._get_raw_steps():
                 self.parent.add_step(self._step)
         else:
-            index = self.parent._get_raw_steps().index(self._step)
-            index_of_parent = self.parent.parent.index_of_step(self.parent._step)
-            self.parent._replace_with_new_cells(self.parent.as_list())
-            self.parent.parent.replace_step(index+index_of_parent+1, Step(cells))
+            self._recreate_as_normal_step(cells)
+            self._invalid = True
+
+    def _recreate_as_normal_step(self, cells):
+        steps = self.parent.steps
+        index = [s._step for s in steps].index(self._step)
+        for i, step in reversed(list(enumerate(steps))):
+            if i == index:
+                break
+            step._replace_with_normal_step(i)
+        self._replace_with_normal_step(index, cells)
+
+    def _replace_with_normal_step(self, index, cells=None):
+        index_of_parent = self.parent.parent.index_of_step(self.parent._step)
+        self.parent.parent.add_step(index_of_parent+index+2, Step(cells or self.as_list()))
+        self.parent._get_raw_steps().pop(index)
 
     def remove(self):
         self.parent._get_raw_steps().remove(self._step)
+
+    @overrides(StepController)
+    def remove_empty_columns_from_end(self):
+        if self._invalid:
+            return
+        StepController.remove_empty_columns_from_end(self)

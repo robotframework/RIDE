@@ -1,6 +1,64 @@
 *** Test Cases ***
-Test
+Test 0
     : FOR  ${i}  IN RANGE  1  10
     \  Log  joo
     : FOR  ${j}  IN  1  2
     \  Log  jee
+    \  Log  another
+    \  Log  and another
+
+Test 1
+    No Operation
+
+Test 2
+    : FOR  ${j}  IN  1  2
+    \  One
+    Two
+    \  Three
+
+Test 3
+    : FOR  ${j}  IN  1  2
+    One
+    \  Two
+    \  Three
+
+Test 4
+    : FOR  ${j}  IN  1  2
+    \  One
+    \  Two
+    Three
+
+Test 5
+    : FOR  ${j}  IN  1  2
+    \  One
+    \  Two
+    \  Three
+
+Test 6
+    : FOR  ${j}  IN  1  2
+    \  One
+    \  Two
+    \  Three
+
+Test 7
+    : FOR  ${j}  IN  1  2
+    \  One
+    \  Two
+    \  Three
+
+Test 8
+    : FOR  ${a}  IN RANGE  100
+    \  Log  Moi
+    Foo
+
+Test 9
+    Log  Something
+
+Test 10
+    Nothing
+
+Test 11
+    Not For loop
+    \  One
+    \  Two
+    \  Three
