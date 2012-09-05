@@ -301,9 +301,22 @@ class TestCaseEditingTest(TestCaseCommandTest):
         self._verify_step(0, 'Changed Step 1')
         self._verify_step(1, 'Changed Step 2', ['', 'ca2', 'a3'])
 
+    def test_paste_area_different_length_rows(self):
+        self._exec(PasteArea((0, 0), [['Changed Step 1', '', '', '', '\t'],
+            ['Changed Step 2', '', 'ca2']]))
+        self._verify_step(0, 'Changed Step 1')
+        self._verify_step(1, 'Changed Step 2', ['', 'ca2', 'a3'])
+
     def test_insert_area_inserts_cells_before_selected_cell(self):
         self._exec(InsertArea((0, 0), [['Changed Step 1', '', ''],
                                       ['Changed Step 2', '', 'ca2']]))
+        self._verify_step(0, 'Changed Step 1')
+        self._verify_step(1, 'Changed Step 2', ['', 'ca2'])
+        self._verify_step(2, 'Step 1', ['arg'])
+
+    def test_insert_area_inserts_cells_before_selected_cell_different_length_rows(self):
+        self._exec(InsertArea((0, 0), [['Changed Step 1', '', '', '\t'],
+            ['Changed Step 2', '', 'ca2']]))
         self._verify_step(0, 'Changed Step 1')
         self._verify_step(1, 'Changed Step 2', ['', 'ca2'])
         self._verify_step(2, 'Step 1', ['arg'])

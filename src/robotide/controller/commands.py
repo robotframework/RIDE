@@ -1130,7 +1130,7 @@ def PasteArea(top_left, content):
     row_s, col_s = top_left
     return StepsChangingCompositeCommand(*[ChangeCellValue(row+row_s, col+col_s, content[row][col])
                               for row in range(len(content))
-                              for col in range(len(content[0]))])
+                              for col in range(len(content[row]))])
 
 def InsertArea(top_left, content):
     row, _ = top_left
