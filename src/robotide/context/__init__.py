@@ -40,7 +40,8 @@ For more information, see project pages at
 <a href="http://github.com/robotframework/RIDE">http://github.com/robotframework/RIDE</a>.</p>
 <p>Some of the icons are from <a href="http://www.famfamfam.com/lab/icons/silk/">Silk Icons</a>.</p>
 ''' % (VERSION, pyversion)
-SHORTCUT_KEYS = '''<h2>Shortcut keys in RIDE</h2>
+SHORTCUT_KEYS = '''\
+<h2>Shortcut keys in RIDE</h2>
 <table>
     <tr align="left">
         <th><b>Shortcut</b></th>
@@ -141,6 +142,14 @@ SHORTCUT_KEYS = '''<h2>Shortcut keys in RIDE</h2>
     <tr>
         <td>CtrlCmd-Y</td>
         <td>Redo</td>
+    </tr>
+    <tr>
+        <td>CtrlCmd-1</td>
+        <td>Make scalar variable body</td>
+    </tr>
+    <tr>
+        <td>CtrlCmd-2</td>
+        <td>Make list variable body</td>
     </tr>
     <tr>
         <td>CtrlCmd-3</td>
