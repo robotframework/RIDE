@@ -40,8 +40,7 @@ import threading
 import signal
 import sys
 from robot.output.loggerhelper import LEVELS
-from robot.utils.encoding import SYSTEM_ENCODING
-from robot.utils.encodingsniffer import DEFAULT_OUTPUT_ENCODING
+from robot.utils.encoding import SYSTEM_ENCODING, OUTPUT_ENCODING
 from robotide.context.platform import IS_WINDOWS
 from robotide.contrib.testrunner import SocketListener
 from robotide.controller.testexecutionresults import TestExecutionResults
@@ -314,7 +313,7 @@ class StreamReaderThread(object):
                 result += self._queue.get_nowait()
             except Empty:
                 pass
-        return result.decode(DEFAULT_OUTPUT_ENCODING)
+        return result.decode(OUTPUT_ENCODING)
 
 
 # The following two classes implement a small line-buffered socket
