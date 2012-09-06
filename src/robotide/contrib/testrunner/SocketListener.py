@@ -49,6 +49,9 @@ except ImportError:
 PORT = 5007
 HOST = "localhost"
 
+import robot.utils.encoding
+robot.utils.encoding.OUTPUT_ENCODING = 'UTF-8' # Set output encoding to UTF-8 for piped output streams
+
 class SocketListener:
     """Pass all listener events to a remote listener
 
