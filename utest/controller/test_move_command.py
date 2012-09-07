@@ -32,9 +32,10 @@ class TestMoveCommand(unittest.TestCase):
 
     def test_move_testcase_from_suite_to_another_suite(self):
         test_from_suite2 = self.ts2.tests[1]
+        len_before = len(self.ts2.tests)
         test_from_suite2.execute(MoveTo(self.ts1))
         assert_equals(test_from_suite2, self.ts1.tests[1])
-        assert_equals(len(self.ts2.tests), 1)
+        assert_equals(len(self.ts2.tests), len_before-1)
 
     def test_move_keyword_from_suite_to_another_suite(self):
         kw_from_suite1 = self.ts1.keywords[1]

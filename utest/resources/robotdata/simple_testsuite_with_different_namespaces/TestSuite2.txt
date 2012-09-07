@@ -1,5 +1,6 @@
 *** Settings ***
 Resource    testdata_resource.txt
+Suite Setup   Run Keyword  Suite Setup Keyword
 
 *** Variables ***
 @{Test Suite 2 List}  2  3
@@ -16,6 +17,21 @@ My Other Test
     None Keyword
     None Keyword
 
+My Third Test
+    [Setup]     Run Keyword  Test Setup Keyword
+    [Teardown]  Run Keyword  Test Teardown Keyword
+    No Operation
+
 *** Keywords ***
 Log
     Overrides builtin
+
+Test Setup Keyword
+    [Teardown]  Test Teardown Keyword
+    No Operation
+
+Test Teardown Keyword
+    No Operation
+
+Suite Setup Keyword
+    No Operation
