@@ -559,8 +559,7 @@ class FindOccurrences(_Command):
                 yield item
 
     def _items_from_keyword(self, kw):
-        return chain([kw.keyword_name] if kw.source == self._keyword_source else [],
-                     kw.steps)
+        return chain([kw.keyword_name] if kw.source == self._keyword_source else [], kw.steps, [kw.teardown] if kw.teardown else [])
 
     def _items_from_test(self, test):
         return chain(test.settings, test.steps)

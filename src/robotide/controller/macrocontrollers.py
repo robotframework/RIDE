@@ -364,6 +364,8 @@ class TestCaseController(_WithStepsController):
 
 class UserKeywordController(_WithStepsController):
     _populator = UserKeywordPopulator
+    _TEARDOWN_NOT_SET = object()
+    _teardown = _TEARDOWN_NOT_SET
 
     def _init(self, kw):
         self._kw = kw
@@ -399,8 +401,16 @@ class UserKeywordController(_WithStepsController):
                   ReturnValueController(self, self._kw.return_)]
         if hasattr(self._kw, 'teardown'):
             result = result[:2] + \
-                     [FixtureController(self, self._kw.teardown)] + result[2:]
+                     [self.teardown] + result[2:]
         return result
+
+    @property
+    def teardown(self):
+        if self._teardown == self._TEARDOWN_NOT_SET:
+            self._teardown = None
+            if hasattr(self._kw, 'teardown'):
+                self._teardown = FixtureController(self, self._kw.teardown)
+        return self._teardown
 
     @property
     def arguments(self):

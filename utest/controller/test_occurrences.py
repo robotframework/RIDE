@@ -14,6 +14,7 @@ from robotide.publish.messages import RideItemStepsChanged, RideItemSettingsChan
     RideItemNameChanged
 from robotide.namespace.namespace import Namespace
 import datafilereader
+from robotide.usages.commands import FindUsages
 
 
 STEP1_KEYWORD = 'Log'
@@ -147,6 +148,26 @@ class FindOccurrencesWithFiles(unittest.TestCase):
         for kw in [k for k in self.resu.keywords if k.name == old_name]:
             self.resu.execute(RenameKeywordOccurrences(kw.name, new_name, NullObserver(), kw.info))
             assert_equals(kw.name, new_name)
+
+    def test_finding_from_test_setup_with_run_keyword(self):
+        self._assert_usage('Test Setup Keyword', 'Setup')
+
+    def test_finding_from_suite_setup_with_run_keyword(self):
+        self._assert_usage('Suite Setup Keyword', 'Suite Setup')
+
+    def test_finding_from_test_teardown_with_run_keyword(self):
+        self._assert_usage('Test Teardown Keyword', 'Teardown')
+
+    def test_finding_from_keyword_teardown(self):
+        self._assert_usage('Keyword Teardown Keyword', 'Teardown')
+
+    def test_finding_from_test_teardown_in_settings(self):
+        self._assert_usage('Test Teardown in Setting', 'Test Teardown')
+
+    def _assert_usage(self, keyword, usage):
+        occ = list(self.ts2.execute(FindUsages(keyword)))
+        self.assertEqual(len(occ), 1)
+        self.assertEqual(occ[0].usage, usage)
 
     def assert_occurrences(self, ctrl, kw_name, count):
         assert_equals(sum(1 for _ in ctrl.execute(FindOccurrences(kw_name))), count)

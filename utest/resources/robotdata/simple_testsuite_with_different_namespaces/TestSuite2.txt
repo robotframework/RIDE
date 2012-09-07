@@ -1,6 +1,7 @@
 *** Settings ***
 Resource    testdata_resource.txt
 Suite Setup   Run Keyword  Suite Setup Keyword
+Test Teardown  Test Teardown in Setting
 
 *** Variables ***
 @{Test Suite 2 List}  2  3
@@ -27,11 +28,17 @@ Log
     Overrides builtin
 
 Test Setup Keyword
-    [Teardown]  Test Teardown Keyword
+    [Teardown]  Keyword Teardown Keyword
     No Operation
 
 Test Teardown Keyword
     No Operation
 
+Keyword Teardown Keyword
+    No Operation
+
 Suite Setup Keyword
+    No Operation
+
+Test Teardown in Setting
     No Operation
