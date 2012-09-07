@@ -51,6 +51,7 @@ HOST = "localhost"
 
 import robot.utils.encoding
 robot.utils.encoding.OUTPUT_ENCODING = 'UTF-8' # Set output encoding to UTF-8 for piped output streams
+robot.utils.encoding._output_encoding = robot.utils.encoding.OUTPUT_ENCODING # RF 2.6.3 and RF 2.5.7
 
 class SocketListener:
     """Pass all listener events to a remote listener
