@@ -49,11 +49,13 @@ except ImportError:
 PORT = 5007
 HOST = "localhost"
 
+# Setting Output encoding to UTF-8 and ignoring the platform specs
+# RIDE will expect UTF-8
 import robot.utils.encoding
 robot.utils.encoding.OUTPUT_ENCODING = 'UTF-8' # Set output encoding to UTF-8 for piped output streams
 robot.utils.encoding._output_encoding = robot.utils.encoding.OUTPUT_ENCODING # RF 2.6.3 and RF 2.5.7
 
-class SocketListener:
+class TestRunnerAgent:
     """Pass all listener events to a remote listener
 
     If called with one argument, that argument is a port

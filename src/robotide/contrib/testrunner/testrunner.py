@@ -42,7 +42,7 @@ import sys
 from robot.output.loggerhelper import LEVELS
 from robot.utils.encoding import SYSTEM_ENCODING, OUTPUT_ENCODING
 from robotide.context.platform import IS_WINDOWS
-from robotide.contrib.testrunner import SocketListener
+from robotide.contrib.testrunner import TestRunnerAgent
 from robotide.controller.testexecutionresults import TestExecutionResults
 
 
@@ -162,7 +162,7 @@ class TestRunner(object):
         return LEVELS.get(level, min_log_level_number)
 
     def _get_listener_to_cmd(self):
-        path = os.path.abspath(SocketListener.__file__)
+        path = os.path.abspath(TestRunnerAgent.__file__)
         if path[-1] == 'c':
             path = path[:-1]
         return '%s:%s' % (path, self.port)
