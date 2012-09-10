@@ -11,18 +11,20 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+import os
 
 import wx
 from wx.lib.expando import ExpandoTextCtrl
 from wx.lib.filebrowsebutton import FileBrowseButton
 from robot.utils.normalizing import normalize
-from os.path import relpath, dirname
+from os.path import relpath, dirname, isdir
 
 from robotide import context
 from robotide.namespace.suggesters import SuggestionSource
 
 from .popupwindow import RidePopupWindow, HtmlPopupWindow
 import robotide.utils as utils
+from robotide.context import IS_WINDOWS
 
 
 _PREFERRED_POPUP_SIZE = (400, 200)
@@ -181,9 +183,12 @@ class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
         self.textControl.SelectAll()
 
     def _relative_path(self, value):
-        if utils.is_same_drive(self._controller.datafile.path, value):
-            return relpath(value, dirname(self._controller.datafile.source))
-        return value
+        src = self._controller.datafile.source
+        if utils.is_same_drive(src, value):
+            path =  relpath(value, src if isdir(src) else dirname(src))
+        else:
+            path = value
+        return path.replace('\\', '/') if IS_WINDOWS else path.replace('\\', '\\\\')
 
 
 class Suggestions(object):
