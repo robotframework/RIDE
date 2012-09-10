@@ -44,6 +44,7 @@ from robot.utils.encoding import SYSTEM_ENCODING, OUTPUT_ENCODING
 from robotide.context.platform import IS_WINDOWS
 from robotide.contrib.testrunner import TestRunnerAgent
 from robotide.controller.testexecutionresults import TestExecutionResults
+import robotide.utils as utils
 
 
 class TestRunner(object):
@@ -170,7 +171,7 @@ class TestRunner(object):
     def _get_suite_source_for_command(self):
         cur = os.path.abspath(os.path.curdir)
         source = os.path.abspath(self._chief.suite.source)
-        if not self._is_same_drive(cur, source):
+        if not utils.is_same_drive(cur, source):
             return source
         return os.path.abspath(self._chief.suite.source)
 
@@ -204,9 +205,6 @@ class TestRunner(object):
         f = codecs.open(argfile, "w", "utf-8")
         f.write("\n".join(args))
         f.close()
-
-    def _is_same_drive(self, source1, source2):
-        return os.path.splitdrive(source1)[0] == os.path.splitdrive(source2)[0]
 
     def get_output_and_errors(self):
         return self._process.get_output(), self._process.get_errors()

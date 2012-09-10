@@ -22,6 +22,7 @@ from robotide import context
 from robotide.namespace.suggesters import SuggestionSource
 
 from .popupwindow import RidePopupWindow, HtmlPopupWindow
+import robotide.utils as utils
 
 
 _PREFERRED_POPUP_SIZE = (400, 200)
@@ -173,11 +174,16 @@ class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
     def OnFileChanged(self, evt):
         if self._browsed:
             self._browsed = False
-            self.SetValue(relpath(self.GetValue(), dirname(self._controller.datafile.source)))
+            self.SetValue(self._relative_path(self.GetValue()))
             self._parent.setFocusToOK()
 
     def SelectAll(self):
         self.textControl.SelectAll()
+
+    def _relative_path(self, value):
+        if utils.is_same_drive(self._controller.datafile.path, value):
+            return relpath(value, dirname(self._controller.datafile.source))
+        return value
 
 
 class Suggestions(object):

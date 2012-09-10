@@ -95,3 +95,6 @@ def overrides(interface_class):
         assert(method.__name__ in dir(interface_class))
         return method
     return overrider
+
+def is_same_drive(path1, path2):
+    return os.path.splitdrive(path1)[0] == os.path.splitdrive(path2)[0]
