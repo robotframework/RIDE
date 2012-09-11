@@ -202,6 +202,7 @@ class TestDataDirectoryControllerTest(unittest.TestCase):
     def test_adding_test_case_file(self):
         new_data = TestDataDirectoryController(self.data).\
                     new_test_case_file(self.TEST_CASE_FILE_PATH)
+        assert_true(new_data.dirty)
         assert_true(isinstance(new_data, TestCaseFileController))
         assert_equals(new_data.filename, self.TEST_CASE_FILE_PATH)
 
