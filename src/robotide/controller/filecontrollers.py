@@ -366,7 +366,7 @@ class DirectoryController(_FileSystemElement, _BaseController):
     def _find_closest_directory(self, res):
         target = self
         for s in self.iter_datafiles():
-            if not isinstance(s, DirectoryController):
+            if not isinstance(s, TestDataDirectoryController):
                 continue
             if res.filename.startswith(s.directory):
                 target = s

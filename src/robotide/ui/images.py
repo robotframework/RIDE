@@ -14,7 +14,6 @@
 
 import os
 import wx
-from robot.parsing.model import Variable
 from robotide.controller.settingcontrollers import VariableController
 from robotide.controller.macrocontrollers import TestCaseController, UserKeywordController
 from robotide.controller.filecontrollers import TestDataDirectoryController, TestCaseFileController, ResourceFileController, DirectoryController
@@ -35,7 +34,7 @@ class TreeImageList(wx.ImageList):
         self._execution_results = None
         self._images = {
             TestDataDirectoryController: _TreeImage(self, 'folder.png'),
-            DirectoryController: _TreeImage(self, 'folder_wrench.png'),
+            DirectoryController: _TreeImage(self, 'folder_wrench.png'), #FIXME: Replace with TestDataDirectoryController without test suites
             TestCaseFileController: _TreeImage(self, 'page_white.png'),
             TestCaseController: _TreeImage(self, 'robot.png'),
             UserKeywordController: _TreeImage(self, 'cog.png'),

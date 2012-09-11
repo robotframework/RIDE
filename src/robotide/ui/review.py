@@ -22,7 +22,7 @@ from robotide.ui.searchdots import DottedSearch
 from robotide.widgets import ButtonWithHandler, Label
 from robotide.spec.iteminfo import LibraryKeywordInfo
 from robotide.usages.commands import FindUsages
-from robotide.controller.filecontrollers import DirectoryController, TestCaseFileController, ResourceFileController
+from robotide.controller.filecontrollers import TestCaseFileController, ResourceFileController, TestDataDirectoryController
 from threading import Thread
 
 class ReviewDialog(wx.Frame):
@@ -391,7 +391,7 @@ class ResultFilter(object):
         self._strings = [s.strip() for s in strings if s.strip()]
 
     def include_file(self, datafile):
-        if isinstance(datafile, DirectoryController):
+        if isinstance(datafile, TestDataDirectoryController):
             return False
         if not self.active:
             return True

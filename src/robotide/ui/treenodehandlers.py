@@ -40,7 +40,7 @@ def action_handler_class(controller):
          TestCaseController:TestCaseHandler,
          UserKeywordController:UserKeywordHandler,
          VariableController:VariableHandler,
-         DirectoryController: DirectoryHandler
+         DirectoryController: DirectoryHandler #FIXME: Replace with TestDataDirectoryController without test suites
      }[controller.__class__]
 
 class _ActionHandler(wx.Window):
