@@ -488,7 +488,9 @@ class TestDataDirectoryController(_DataController, DirectoryController):
         self.filename = self.data.initfile
 
     def new_test_case_file(self, path):
-        return self._new_data_controller(NewTestCaseFile(path))
+        ctrl = self._new_data_controller(NewTestCaseFile(path))
+        ctrl.mark_dirty()
+        return ctrl
 
     def new_test_data_directory(self, path):
         return self._new_data_controller(NewTestDataDirectory(path))
