@@ -456,7 +456,7 @@ class TestDataDirectoryController(_DataController, DirectoryController):
                 children.append(self._resource_controller(r))
 
     def _directory_controller(self, path):
-        dc = DirectoryController(path, chief_controller=self._chief_controller)
+        dc = TestDataDirectoryController(TestDataDirectory(source=path), chief_controller=self._chief_controller)
         self._add_directory_children(dc.children, dc.source, None)
         return dc
 

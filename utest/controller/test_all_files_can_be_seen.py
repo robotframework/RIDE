@@ -10,9 +10,9 @@ class TestAllFiles(unittest.TestCase):
     def test_all_files_can_be_seen(self):
         all_files = self.chief.data
         self.assertEqual(all_files.name, 'All Files')
-        self.assertEqual(len(all_files.suites), 2)
-        self._verify_names(all_files, 'Used Resource', 'Unused Resource', 'resource_dir', 'Suite Dir', 'Suite2 Dir')
-        resource_dir = self._get_child(all_files, 'resource_dir')
+        self.assertEqual(len(all_files.suites), 3)
+        self._verify_names(all_files, 'Used Resource', 'Unused Resource', 'Resource Dir', 'Suite Dir', 'Suite2 Dir')
+        resource_dir = self._get_child(all_files, 'Resource Dir')
         self._verify_names(resource_dir, 'Unused')
         suite_dir = self._get_child(all_files, 'Suite Dir')
         self._verify_names(suite_dir, 'Suite')
