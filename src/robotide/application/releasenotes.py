@@ -86,7 +86,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 0.49</h2>
+<h2>Release notes for 0.50</h2>
 <table border="1">
 <tr>
 <td><p><b>ID</b></p></td>
@@ -95,65 +95,77 @@ RELEASE_NOTES = """
 <td><p><b>Summary</b></p></td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1043">Issue 1043</a></td>
-<td>Defect</td>
-<td>High</td>
-<td>Executing test in Windows with Python 2.6 does not work</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1047">Issue 1047</a></td>
-<td>Defect</td>
-<td>High</td>
-<td>Text Edit shortcuts don't work on windows</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1033">Issue 1033</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=453">Issue 453</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>Ride's Search unused keywords utility does not work correctly with embedded arguments</td>
+<td>Using Comments Rows or Colorizing for a complete FOR loop does not work correctly</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1038">Issue 1038</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=702">Issue 702</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>Deleting test data folder that contain resource files does not update imports</td>
+<td>Keywords used as Run keyword variants' argument in setup/teardown are not find with find usages</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1041">Issue 1041</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1025">Issue 1025</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>Text Edit file change from tree should not change focus to Grid editor</td>
+<td>It shows wrong Character for non-ascii characters when running</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1048">Issue 1048</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1042">Issue 1042</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>Resource path autocompletes wrong in windows</td>
+<td>Row: Ctrl+c does not copy the whole selection</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=867">Issue 867</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1046">Issue 1046</a></td>
+<td>Defect</td>
+<td>Medium</td>
+<td>Show a better error message if ansi version of wx is used</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1053">Issue 1053</a></td>
+<td>Defect</td>
+<td>Medium</td>
+<td>Test runner shows console when RIDE is started with pythonw.exe</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1058">Issue 1058</a></td>
+<td>Defect</td>
+<td>Medium</td>
+<td>Pasting data into Rides Edit page from a tab delimited file has issues if the lines have different numbers of delimiters / columns</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1059">Issue 1059</a></td>
+<td>Defect</td>
+<td>Medium</td>
+<td>Library/Resource import from File Dialog on Windows fails</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1060">Issue 1060</a></td>
+<td>Defect</td>
+<td>Medium</td>
+<td>Can't add new resource to resource folder</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=260">Issue 260</a></td>
 <td>Enhancement</td>
 <td>Medium</td>
-<td>setting for default file type</td>
+<td>Notification about (un)successfully imported libraries, resources, variables</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=986">Issue 986</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1049">Issue 1049</a></td>
 <td>Enhancement</td>
 <td>Medium</td>
-<td>The list of available shotcuts should be shown somewhere</td>
+<td>Standalone comments should be preserved in variable table</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1032">Issue 1032</a></td>
-<td>Enhancement</td>
-<td>Medium</td>
-<td>Keyborad shortcut to add cell in the Grid editor</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1044">Issue 1044</a></td>
-<td>Enhancement</td>
-<td>Medium</td>
-<td>Search in text editor</td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1040">Issue 1040</a></td>
+<td>Defect</td>
+<td>Low</td>
+<td>Disabling plugin causes exception</td>
 </tr>
 </table>
-<p>Altogether 10 issues.</p>
+<p>Altogether 12 issues.</p>
 """
