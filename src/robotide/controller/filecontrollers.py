@@ -377,7 +377,7 @@ class DirectoryController(_FileSystemElement, _BaseController):
             if not dirname:
                 continue
             target_dir = os.path.join(target.directory, dirname)
-            dir_ctrl = DirectoryController(target_dir, self._chief_controller)
+            dir_ctrl = TestDataDirectoryController(TestDataDirectory(source=target_dir), self._chief_controller, self)
             target._dir_controllers[target.directory] = dir_ctrl
             target.add_child(dir_ctrl)
             if target_dir == res_dir:
@@ -537,11 +537,6 @@ class TestDataDirectoryController(_DataController, DirectoryController):
 
     def is_inside_top_suite(self, ctrl):
         return ctrl.filename.startswith(self.directory)
-
-    def insert_to_test_data_directory(self, res):
-        if self._is_inside_test_data_directory(os.path.dirname(res.filename)):
-            return
-        DirectoryController.insert_to_test_data_directory(self, res)
 
     def _is_inside_test_data_directory(self, directory):
         return any(True for s in [self] + self.children
