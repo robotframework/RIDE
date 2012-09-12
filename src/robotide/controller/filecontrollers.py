@@ -419,6 +419,12 @@ class TestDataDirectoryController(_DataController, DirectoryController):
                     isinstance(child, TestDataDirectoryController) or
                     isinstance(child, TestCaseFileController)]
 
+    def contains_tests(self):
+        for suite in self.suites:
+            if suite.contains_tests():
+                return True
+        return False
+
     def find_controller_by_longname(self, longname):
         return self.find_controller_by_names(longname.split('.'))
 
@@ -602,6 +608,9 @@ class TestCaseFileController(_FileSystemElement, _DataController):
     @property
     def suites(self):
         return ()
+
+    def contains_tests(self):
+        return bool(self.tests)
 
     def find_controller_by_longname(self, longname):
         return self.find_controller_by_names(longname.split('.'))
