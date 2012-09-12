@@ -16,12 +16,12 @@ import wx
 
 from robotide.controller.commands import (RenameKeywordOccurrences, RemoveMacro,
     AddKeyword, AddTestCase, RenameTest, CopyMacroAs, AddVariable,
-    UpdateVariableName, RenameFile, RenameResourceFile, DeleteFile, SortKeywords, DeleteFolder)
+    UpdateVariableName, RenameFile, RenameResourceFile, DeleteFile, SortKeywords)
 from robotide.controller.settingcontrollers import VariableController
 from robotide.controller.macrocontrollers import (TestCaseController,
                                                   UserKeywordController)
 from robotide.controller.filecontrollers import (TestDataDirectoryController,
-    ResourceFileController, TestCaseFileController, DirectoryController)
+    ResourceFileController, TestCaseFileController)
 from robotide.editor.editordialogs import (TestCaseNameDialog,
     UserKeywordNameDialog, ScalarVariableDialog, ListVariableDialog,
     CopyUserKeywordDialog)
@@ -39,8 +39,7 @@ def action_handler_class(controller):
          TestCaseFileController:TestCaseFileHandler,
          TestCaseController:TestCaseHandler,
          UserKeywordController:UserKeywordHandler,
-         VariableController:VariableHandler,
-         DirectoryController: DirectoryHandler #FIXME: Replace with TestDataDirectoryController without test suites
+         VariableController:VariableHandler
      }[controller.__class__]
 
 class _ActionHandler(wx.Window):
