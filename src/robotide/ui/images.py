@@ -16,7 +16,7 @@ import os
 import wx
 from robotide.controller.settingcontrollers import VariableController
 from robotide.controller.macrocontrollers import TestCaseController, UserKeywordController
-from robotide.controller.filecontrollers import TestDataDirectoryController, TestCaseFileController, ResourceFileController, DirectoryController
+from robotide.controller.filecontrollers import TestDataDirectoryController, TestCaseFileController, ResourceFileController
 
 
 _SIZE = (16, 16)
@@ -34,7 +34,7 @@ class TreeImageList(wx.ImageList):
         self._execution_results = None
         self._images = {
             TestDataDirectoryController: _TreeImage(self, 'folder.png'),
-            DirectoryController: _TreeImage(self, 'folder_wrench.png'), #FIXME: Replace with TestDataDirectoryController without test suites
+            'resource directory': _TreeImage(self, 'folder_wrench.png'),
             TestCaseFileController: _TreeImage(self, 'page_white.png'),
             TestCaseController: _TreeImage(self, 'robot.png'),
             UserKeywordController: _TreeImage(self, 'cog.png'),
@@ -47,7 +47,7 @@ class TreeImageList(wx.ImageList):
 
     @property
     def directory(self):
-        return self._images[DirectoryController]
+        return self._images['resource directory']
 
     def set_execution_results(self, results):
         self._execution_results = results
@@ -63,7 +63,7 @@ class TreeImageList(wx.ImageList):
                     return self._images['failed']
         elif controller.__class__ == TestDataDirectoryController:
             if not controller.contains_tests():
-                return self._images[DirectoryController]
+                return self._images['resource directory']
         return self._images[controller.__class__]
 
 
