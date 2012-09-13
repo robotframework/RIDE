@@ -304,6 +304,8 @@ class _FileEditor(_RobotTableEditor):
         self._editors = []
         _RobotTableEditor.close(self)
 
+    delete_rows = insert_rows = lambda s:0 #Stubs so that ctrl+d ctrl+i don't throw exceptions
+
 
 class FindUsagesHeader(HorizontalSizer):
 
