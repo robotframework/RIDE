@@ -40,6 +40,9 @@ class TestImportErrors(unittest.TestCase):
     def test_importing_corrupted_library_has_error(self):
         self._has_error('libs//corrupted.py')
 
+    def test_importing_system_exiting_library_has_error(self):
+        self._has_error('libs//exiting.py')
+
     def test_resource_import_with_variable_has_no_error(self):
         self._has_no_error('${RESU}')
 
