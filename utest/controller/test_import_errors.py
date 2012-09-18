@@ -55,6 +55,9 @@ class TestImportErrors(unittest.TestCase):
     def test_importing_none_existing_variable_file_has_error(self):
         self._has_error('vars//none_existing.py')
 
+    def test_importing_exiting_variable_file_has_error(self):
+        self._has_error('vars//exiting.py')
+
 
 if __name__ == '__main__':
     unittest.main()

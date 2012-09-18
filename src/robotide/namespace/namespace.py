@@ -11,6 +11,9 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+from Queue import Empty
+from multiprocessing import Queue
+from multiprocessing.process import Process
 
 import os
 import re
@@ -280,10 +283,22 @@ class _VariableStash(object):
                     self.set(variable.name, '', variable_table.source)
 
     def set_from_file(self, varfile_path, args):
-        temp = RobotVariables()
-        temp.set_from_file(varfile_path, args)
-        for (name, value) in temp.items():
-            self.set(name, value, varfile_path)
+        q = Queue()
+        p = Process(target=_set_from_file, args=(q, varfile_path, args))
+        p.start()
+        p.join()
+        there_are_results = False
+        while True:
+            try:
+                results = q.get_nowait()
+                there_are_results  = True
+                if len(results) == 1:
+                    raise DataError(results[0])
+                self.set(*results)
+            except Empty:
+                if not there_are_results:
+                    raise DataError('No variables')
+                return
 
     def __iter__(self):
         for name, value in self._vars.items():
@@ -292,6 +307,16 @@ class _VariableStash(object):
                 yield ArgumentInfo(name, value)
             else:
                 yield VariableInfo(name, value, source)
+
+
+def _set_from_file(queue, varfile_path, args):
+    try:
+        temp = RobotVariables()
+        temp.set_from_file(varfile_path, args)
+        for (name, value) in temp.items():
+            queue.put((name, value, varfile_path))
+    except DataError, e:
+        queue.put((e,))
 
 
 class DatafileRetriever(object):

@@ -10,6 +10,7 @@ Library   libs//exiting.py
 Library   ${LIB}
 Variables  vars//vars.py
 Variables  vars//none_existing.py
+Variables  vars//exiting.py
 
 *** Variables ***
 ${RESU}  res//with_variable.txt
