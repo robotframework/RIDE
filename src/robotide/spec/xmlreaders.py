@@ -11,11 +11,13 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+from Queue import Empty
+from multiprocessing import Queue
+from multiprocessing.process import Process
 
 import os
 import sys
 from robot.errors import DataError
-from robot.running.namespace import Namespace
 
 from robotide.robotapi import TestLibrary as RobotTestLibrary
 from robotide.publish import RideLogException
@@ -47,6 +49,19 @@ class Spec(object):
         return keywords, root.find('doc').text or ''
 
 
+def library_initializer(queue, path, args, alias):
+    try:
+        lib = RobotTestLibrary(path, args)
+        keywords = [LibraryKeywordInfo(kw).with_alias(alias) for kw in lib.handlers.values()]
+        for kw in keywords:
+            kw.item = None
+        queue.put((keywords, lib.doc))
+    except Exception, e:
+        queue.put((None, e))
+    finally:
+        sys.exit()
+
+
 class LibrarySpec(Spec):
 
     _alias = None
@@ -69,9 +84,21 @@ class LibrarySpec(Spec):
 
     def _init_from_library(self, name, args):
         path = self._get_path(name.replace('/', os.sep), os.path.abspath('.'))
-        lib = RobotTestLibrary(path, args)
-        keywords = [LibraryKeywordInfo(kw).with_alias(self._alias) for kw in lib.handlers.values()]
-        return keywords, lib.doc
+        return self._import_library_in_another_process(path, args)
+
+    def _import_library_in_another_process(self, path, args):
+        q = Queue(maxsize=1)
+        p = Process(target=library_initializer, args=(q, path, args, self._alias))
+        p.start()
+        while True:
+            try:
+                result = q.get(timeout=0.1)
+                if result[0] is None:
+                    raise ImportError(result[1])
+                return result
+            except Empty:
+                if not p.is_alive():
+                    raise ImportError()
 
     def _get_path(self, name, basedir):
         if not self._is_library_by_path(name):

@@ -141,7 +141,6 @@ class _KeywordInfo(ItemInfo):
         return 'KeywordInfo[name: %s, source: %s, doc: %s]' %(self.name,
                                                               self.source,
                                                               self.doc)
-
     def _name(self, item):
         return item.name
 
@@ -171,6 +170,15 @@ class _XMLKeywordContent(_KeywordInfo):
 class LibraryKeywordInfo(_KeywordInfo):
     _type = 'test library'
     _library_alias = None
+    _args = None
+
+    def __init__(self, item):
+        self._item_name = item.name
+        self._item_doc = item.doc
+        self._item_library_name = item.library.name
+        self._args = self._parse_args(item)
+        _KeywordInfo.__init__(self, item)
+        self.item = None
 
     def with_alias(self, alias):
         self._library_alias = alias
@@ -180,12 +188,14 @@ class LibraryKeywordInfo(_KeywordInfo):
     def _source(self, item):
         if self._library_alias:
             return self._library_alias
-        return item.library.name
+        return self._item_library_name
 
     def _doc(self, item):
-        return item.doc
+        return self._item_doc
 
     def _parse_args(self, handler):
+        if self._args:
+            return self._args
         args = []
         handler_args = handler.arguments
         if handler_args.names:
@@ -201,6 +211,8 @@ class LibraryKeywordInfo(_KeywordInfo):
     def is_library_keyword(self):
         return True
 
+    def _name(self, item):
+        return self._item_name
 
 
 class _UserKeywordInfo(_KeywordInfo):
