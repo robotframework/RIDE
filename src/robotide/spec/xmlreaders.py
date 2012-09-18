@@ -19,11 +19,12 @@ import os
 import sys
 from robot.errors import DataError
 
-from robotide.robotapi import TestLibrary as RobotTestLibrary
+
 from robotide.publish import RideLogException
 from robotide import utils
 
-from iteminfo import LibraryKeywordInfo, _XMLKeywordContent
+from iteminfo import _XMLKeywordContent
+from robotide.spec import libraryfetcher
 
 
 class Spec(object):
@@ -47,19 +48,6 @@ class Spec(object):
         keywords = [_XMLKeywordContent(node, self.name, source_type)
                      for node in kw_nodes]
         return keywords, root.find('doc').text or ''
-
-
-def library_initializer(queue, path, args, alias):
-    try:
-        lib = RobotTestLibrary(path, args)
-        keywords = [LibraryKeywordInfo(kw).with_alias(alias) for kw in lib.handlers.values()]
-        for kw in keywords:
-            kw.item = None
-        queue.put((keywords, lib.doc))
-    except Exception, e:
-        queue.put((None, e))
-    finally:
-        sys.exit()
 
 
 class LibrarySpec(Spec):
@@ -88,7 +76,7 @@ class LibrarySpec(Spec):
 
     def _import_library_in_another_process(self, path, args):
         q = Queue(maxsize=1)
-        p = Process(target=library_initializer, args=(q, path, args, self._alias))
+        p = Process(target=libraryfetcher.library_initializer, args=(q, path, args, self._alias))
         p.start()
         while True:
             try:

@@ -25,8 +25,8 @@ from robot.errors import DataError
 from robot.parsing.model import ResourceFile
 from robot.parsing.settings import Library, Resource, Variables
 from robot.utils.normalizing import normalize
+from robotide.namespace import variablefetcher
 from robot.variables import Variables as RobotVariables
-
 from robotide.namespace.cache import LibraryCache, ExpiringCache
 from robotide.namespace.resourcefactory import ResourceFactory
 from robotide.spec.iteminfo import (TestCaseUserKeywordInfo,
@@ -284,7 +284,7 @@ class _VariableStash(object):
 
     def set_from_file(self, varfile_path, args):
         q = Queue()
-        p = Process(target=_set_from_file, args=(q, varfile_path, args))
+        p = Process(target=variablefetcher.set_from_file, args=(q, varfile_path, args))
         p.start()
         p.join()
         there_are_results = False
@@ -307,16 +307,6 @@ class _VariableStash(object):
                 yield ArgumentInfo(name, value)
             else:
                 yield VariableInfo(name, value, source)
-
-
-def _set_from_file(queue, varfile_path, args):
-    try:
-        temp = RobotVariables()
-        temp.set_from_file(varfile_path, args)
-        for (name, value) in temp.items():
-            queue.put((name, value, varfile_path))
-    except DataError, e:
-        queue.put((e,))
 
 
 class DatafileRetriever(object):
