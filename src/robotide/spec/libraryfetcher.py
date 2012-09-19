@@ -11,13 +11,16 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+from Queue import Empty
+from multiprocessing import Queue
+from multiprocessing.process import Process
 import sys
-from robotide.robotapi import TestLibrary as RobotTestLibrary
+from robot.running import TestLibrary
 from robotide.spec.iteminfo import LibraryKeywordInfo
 
 def library_initializer(queue, path, args, alias):
     try:
-        lib = RobotTestLibrary(path, args)
+        lib = TestLibrary(path, args)
         keywords = [LibraryKeywordInfo(kw).with_alias(alias) for kw in lib.handlers.values()]
         for kw in keywords:
             kw.item = None
@@ -26,3 +29,17 @@ def library_initializer(queue, path, args, alias):
         queue.put((None, e))
     finally:
         sys.exit()
+
+def import_library_in_another_process(path, args, alias):
+    q = Queue(maxsize=1)
+    p = Process(target=library_initializer, args=(q, path, args, alias))
+    p.start()
+    while True:
+        try:
+            result = q.get(timeout=0.1)
+            if result[0] is None:
+                raise ImportError(result[1])
+            return result
+        except Empty:
+            if not p.is_alive():
+                raise ImportError()

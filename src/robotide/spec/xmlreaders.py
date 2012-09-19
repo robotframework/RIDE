@@ -72,21 +72,7 @@ class LibrarySpec(Spec):
 
     def _init_from_library(self, name, args):
         path = self._get_path(name.replace('/', os.sep), os.path.abspath('.'))
-        return self._import_library_in_another_process(path, args)
-
-    def _import_library_in_another_process(self, path, args):
-        q = Queue(maxsize=1)
-        p = Process(target=libraryfetcher.library_initializer, args=(q, path, args, self._alias))
-        p.start()
-        while True:
-            try:
-                result = q.get(timeout=0.1)
-                if result[0] is None:
-                    raise ImportError(result[1])
-                return result
-            except Empty:
-                if not p.is_alive():
-                    raise ImportError()
+        return libraryfetcher.import_library_in_another_process(path, args, self._alias)
 
     def _get_path(self, name, basedir):
         if not self._is_library_by_path(name):

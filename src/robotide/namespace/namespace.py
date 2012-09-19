@@ -29,6 +29,7 @@ from robotide.namespace import variablefetcher
 from robot.variables import Variables as RobotVariables
 from robotide.namespace.cache import LibraryCache, ExpiringCache
 from robotide.namespace.resourcefactory import ResourceFactory
+from robotide.namespace.variablefetcher import set_from_file
 from robotide.spec.iteminfo import (TestCaseUserKeywordInfo,
                                     ResourceUserKeywordInfo,
                                     VariableInfo, _UserKeywordInfo,
@@ -284,7 +285,7 @@ class _VariableStash(object):
 
     def set_from_file(self, varfile_path, args):
         q = Queue()
-        p = Process(target=variablefetcher.set_from_file, args=(q, varfile_path, args))
+        p = Process(target=set_from_file, args=(q, varfile_path, args))
         p.start()
         p.join()
         there_are_results = False
