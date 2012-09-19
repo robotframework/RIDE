@@ -27,28 +27,7 @@ from iteminfo import _XMLKeywordContent
 from robotide.spec import libraryfetcher
 
 
-class Spec(object):
-
-    def _init_from_specfile(self, specfile):
-        try:
-            return self._parse_xml(specfile)
-        except Exception:
-            # TODO: which exception to catch?
-            return []
-
-    def _parse_xml(self, file):
-        root = utils.ET.parse(file).getroot()
-        if root.tag != 'keywordspec':
-            # TODO: XML validation errors should be logged
-            return [], ''
-        kw_nodes = root.findall('keywords/kw') + root.findall('kw')
-        source_type = root.get('type')
-        if source_type == 'resource':
-            source_type += ' file'
-        return [_XMLKeywordContent(node, self.name, source_type) for node in kw_nodes]
-
-
-class LibrarySpec(Spec):
+class LibrarySpec(object):
 
     _alias = None
     keywords = tuple()
@@ -71,6 +50,24 @@ class LibrarySpec(Spec):
     def _init_from_library(self, name, args):
         path = self._get_path(name.replace('/', os.sep), os.path.abspath('.'))
         return libraryfetcher.import_library_in_another_process(path, args, self._alias)
+
+    def _init_from_specfile(self, specfile):
+            try:
+                return self._parse_xml(specfile)
+            except Exception:
+                # TODO: which exception to catch?
+                return []
+
+    def _parse_xml(self, file):
+        root = utils.ET.parse(file).getroot()
+        if root.tag != 'keywordspec':
+            # TODO: XML validation errors should be logged
+            return [], ''
+        kw_nodes = root.findall('keywords/kw') + root.findall('kw')
+        source_type = root.get('type')
+        if source_type == 'resource':
+            source_type += ' file'
+        return [_XMLKeywordContent(node, self.name, source_type) for node in kw_nodes]
 
     def _get_path(self, name, basedir):
         if not self._is_library_by_path(name):
