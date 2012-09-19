@@ -21,11 +21,29 @@ from robotide.spec.iteminfo import LibraryKeywordInfo
 def library_initializer(queue, path, args):
     try:
         lib = TestLibrary(path, args)
-        queue.put([LibraryKeywordInfo(kw) for kw in lib.handlers.values()])
+        queue.put([
+        LibraryKeywordInfo(
+            kw.name,
+            kw.doc,
+            kw.library.name,
+            _parse_args(kw.arguments)
+        ) for kw in lib.handlers.values()])
     except Exception, e:
         queue.put(e)
     finally:
         sys.exit()
+
+def _parse_args(handler_args):
+    args = []
+    if handler_args.names:
+        args.extend(list(handler_args.names))
+    if handler_args.defaults:
+        for i, value in enumerate(handler_args.defaults):
+            index = len(handler_args.names) - len(handler_args.defaults) + i
+            args[index] = args[index] + '=' + unicode(value)
+    if handler_args.varargs:
+        args.append('*%s' % handler_args.varargs)
+    return args
 
 def import_library_in_another_process(path, args):
     q = Queue(maxsize=1)

@@ -131,7 +131,7 @@ class _KeywordInfo(ItemInfo):
                 '<tr><td>%s</td></tr>'
                 '</table>') % \
                 (self._name(self.item), self._source(self.item), self._type,
-                 self._format_args(self._parse_args(self.item)),
+                 self._format_args(self.arguments),
                  html_format(self.doc))
 
     def _format_args(self, args):
@@ -170,15 +170,15 @@ class _XMLKeywordContent(_KeywordInfo):
 class LibraryKeywordInfo(_KeywordInfo):
     _type = 'test library'
     _library_alias = None
-    _args = None
+    item = None
 
-    def __init__(self, item):
-        self._item_name = item.name
-        self._item_doc = item.doc
-        self._item_library_name = item.library.name
-        self._args = self._parse_args(item)
-        _KeywordInfo.__init__(self, item)
-        self.item = None
+    def __init__(self, name, doc, library_name, args):
+        self._item_name = name
+        self.doc = doc.strip()
+        self._item_library_name = library_name
+        self._args = args
+        ItemInfo.__init__(self, self._item_name, library_name, None)
+        self.shortdoc = self.doc.splitlines()[0] if self.doc else ''
 
     def with_alias(self, alias):
         self._library_alias = alias
@@ -190,23 +190,9 @@ class LibraryKeywordInfo(_KeywordInfo):
             return self._library_alias
         return self._item_library_name
 
-    def _doc(self, item):
-        return self._item_doc
-
-    def _parse_args(self, handler):
-        if self._args:
-            return self._args
-        args = []
-        handler_args = handler.arguments
-        if handler_args.names:
-            args.extend(list(handler_args.names))
-        if handler_args.defaults:
-            for i, value in enumerate(handler_args.defaults):
-                index = len(handler_args.names) - len(handler_args.defaults) + i
-                args[index] = args[index] + '=' + unicode(value)
-        if handler_args.varargs:
-            args.append('*%s' % handler_args.varargs)
-        return args
+    @property
+    def arguments(self):
+        return self._args
 
     def is_library_keyword(self):
         return True

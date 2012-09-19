@@ -4,6 +4,7 @@ import unittest
 from robot.running import TestLibrary
 from robot.parsing.model import UserKeyword, KeywordTable
 from robot.utils.asserts import assert_true, assert_equals
+from robotide.spec import libraryfetcher
 
 from robotide.spec.iteminfo import LibraryKeywordInfo, TestCaseUserKeywordInfo, VariableInfo, ResourceUserKeywordInfo
 
@@ -30,7 +31,8 @@ class TestKeywordInfo(unittest.TestCase):
     def test_libkw_arguments_parsing(self):
         libname = 'TestLib'
         lib = TestLibrary(libname)
-        kw_info = LibraryKeywordInfo(lib.handlers['testlib_keyword_with_args'])
+        kw = lib.handlers['testlib_keyword_with_args']
+        kw_info = LibraryKeywordInfo(kw.name, kw.doc, kw.library.name, libraryfetcher._parse_args(kw.arguments))
         assert_in_details(kw_info, 'Testlib',
                           '[ arg1 | arg2=default value | *args ]')
 
