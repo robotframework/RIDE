@@ -15,13 +15,14 @@ class TestNamespacePerformance(unittest.TestCase):
     RELEVANT_B_RELATIVE_TO_C = 0.2
 
     def test_user_keyword_find_performance(self):
-        times = 5000
-        end_time = self._execute_keyword_find_function_n_times('is_user_keyword', times)
-        assert_true(end_time < 0.5, 'Checking %d kws took too long: %fs.' % (times, end_time))
+        self._test_keyword_find_performance('is_user_keyword')
 
     def test_library_keyword_find_performance(self):
+        self._test_keyword_find_performance('is_library_keyword')
+
+    def _test_keyword_find_performance(self, find_function_name):
         times = 5000
-        end_time = self._execute_keyword_find_function_n_times('is_library_keyword', times)
+        end_time = self._execute_keyword_find_function_n_times(find_function_name, times)
         assert_true(end_time < 0.5, 'Checking %d kws took too long: %fs.' % (times, end_time))
 
     def _FLICKERS_measure_user_keyword_find_performance(self):
