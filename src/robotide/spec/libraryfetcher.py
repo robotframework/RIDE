@@ -18,21 +18,18 @@ import sys
 from robot.running import TestLibrary
 from robotide.spec.iteminfo import LibraryKeywordInfo
 
-def library_initializer(queue, path, args, alias):
+def library_initializer(queue, path, args):
     try:
         lib = TestLibrary(path, args)
-        keywords = [LibraryKeywordInfo(kw).with_alias(alias) for kw in lib.handlers.values()]
-        for kw in keywords:
-            kw.item = None
-        queue.put(keywords)
+        queue.put([LibraryKeywordInfo(kw) for kw in lib.handlers.values()])
     except Exception, e:
         queue.put(e)
     finally:
         sys.exit()
 
-def import_library_in_another_process(path, args, alias):
+def import_library_in_another_process(path, args):
     q = Queue(maxsize=1)
-    p = Process(target=library_initializer, args=(q, path, args, alias))
+    p = Process(target=library_initializer, args=(q, path, args))
     p.start()
     while True:
         try:

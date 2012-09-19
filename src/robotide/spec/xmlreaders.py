@@ -29,36 +29,36 @@ from robotide.spec import libraryfetcher
 
 class LibrarySpec(object):
 
-    _alias = None
     keywords = tuple()
     _library_import_by_path_endings = ('.py', '.java', '.class', '/', os.sep)
 
     def __init__(self, name, args=None):
-        self.name = self._get_library_name(name)
+        name = self._get_library_name(name)
+        alias = None
         if args and len(args) >= 2 and isinstance(args[-2], basestring) and args[-2].upper() == 'WITH NAME':
-            self._alias = args[-1]
+            alias = args[-1]
             args = args[:-2]
         try:
-            self.keywords = self._init_from_library(self.name, args)
+            self.keywords = [kw.with_alias(alias) for kw in self._init_from_library(name, args)]
         except (ImportError, DataError), err:
-            specfile = utils.find_from_pythonpath(self.name + '.xml')
-            self.keywords = self._init_from_specfile(specfile)
+            specfile = utils.find_from_pythonpath(name + '.xml')
+            self.keywords = self._init_from_specfile(specfile, name)
             if not self.keywords:
-                msg = 'Importing test library "%s" failed' % self.name
+                msg = 'Importing test library "%s" failed' % name
                 RideLogException(message=msg, exception=err, level='WARN').publish()
 
     def _init_from_library(self, name, args):
         path = self._get_path(name.replace('/', os.sep), os.path.abspath('.'))
-        return libraryfetcher.import_library_in_another_process(path, args, self._alias)
+        return libraryfetcher.import_library_in_another_process(path, args)
 
-    def _init_from_specfile(self, specfile):
+    def _init_from_specfile(self, specfile, name):
             try:
-                return self._parse_xml(specfile)
+                return self._parse_xml(specfile, name)
             except Exception:
                 # TODO: which exception to catch?
                 return []
 
-    def _parse_xml(self, file):
+    def _parse_xml(self, file, name):
         root = utils.ET.parse(file).getroot()
         if root.tag != 'keywordspec':
             # TODO: XML validation errors should be logged
@@ -67,7 +67,7 @@ class LibrarySpec(object):
         source_type = root.get('type')
         if source_type == 'resource':
             source_type += ' file'
-        return [_XMLKeywordContent(node, self.name, source_type) for node in kw_nodes]
+        return [_XMLKeywordContent(node, name, source_type) for node in kw_nodes]
 
     def _get_path(self, name, basedir):
         if not self._is_library_by_path(name):
@@ -89,8 +89,6 @@ class LibrarySpec(object):
         raise DataError
 
     def _get_library_name(self, name):
-        if self._alias:
-            return self._alias
         if os.path.exists(name):
             return name
         return name.replace(' ', '')
