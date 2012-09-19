@@ -20,18 +20,21 @@ from robotide.spec.iteminfo import LibraryKeywordInfo
 
 def library_initializer(queue, path, args):
     try:
-        lib = TestLibrary(path, args)
-        queue.put([
+        queue.put(_get_keywords(path, args))
+    except Exception, e:
+        queue.put(e)
+    finally:
+        sys.exit()
+
+def _get_keywords(path, args):
+    lib = TestLibrary(path, args)
+    return [
         LibraryKeywordInfo(
             kw.name,
             kw.doc,
             kw.library.name,
             _parse_args(kw.arguments)
-        ) for kw in lib.handlers.values()])
-    except Exception, e:
-        queue.put(e)
-    finally:
-        sys.exit()
+        ) for kw in lib.handlers.values()]
 
 def _parse_args(handler_args):
     args = []
