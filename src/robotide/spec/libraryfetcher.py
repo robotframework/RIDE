@@ -24,9 +24,9 @@ def library_initializer(queue, path, args, alias):
         keywords = [LibraryKeywordInfo(kw).with_alias(alias) for kw in lib.handlers.values()]
         for kw in keywords:
             kw.item = None
-        queue.put((keywords, lib.doc))
+        queue.put(keywords)
     except Exception, e:
-        queue.put((None, e))
+        queue.put(e)
     finally:
         sys.exit()
 
@@ -37,8 +37,8 @@ def import_library_in_another_process(path, args, alias):
     while True:
         try:
             result = q.get(timeout=0.1)
-            if result[0] is None:
-                raise ImportError(result[1])
+            if isinstance(result, Exception):
+                raise ImportError(result)
             return result
         except Empty:
             if not p.is_alive():

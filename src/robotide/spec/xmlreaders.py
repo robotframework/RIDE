@@ -34,7 +34,7 @@ class Spec(object):
             return self._parse_xml(specfile)
         except Exception:
             # TODO: which exception to catch?
-            return [], ''
+            return []
 
     def _parse_xml(self, file):
         root = utils.ET.parse(file).getroot()
@@ -45,9 +45,7 @@ class Spec(object):
         source_type = root.get('type')
         if source_type == 'resource':
             source_type += ' file'
-        keywords = [_XMLKeywordContent(node, self.name, source_type)
-                     for node in kw_nodes]
-        return keywords, root.find('doc').text or ''
+        return [_XMLKeywordContent(node, self.name, source_type) for node in kw_nodes]
 
 
 class LibrarySpec(Spec):
@@ -62,10 +60,10 @@ class LibrarySpec(Spec):
             self._alias = args[-1]
             args = args[:-2]
         try:
-            self.keywords, self.doc = self._init_from_library(self.name, args)
+            self.keywords = self._init_from_library(self.name, args)
         except (ImportError, DataError), err:
             specfile = utils.find_from_pythonpath(self.name + '.xml')
-            self.keywords, self.doc = self._init_from_specfile(specfile)
+            self.keywords = self._init_from_specfile(specfile)
             if not self.keywords:
                 msg = 'Importing test library "%s" failed' % self.name
                 RideLogException(message=msg, exception=err, level='WARN').publish()
