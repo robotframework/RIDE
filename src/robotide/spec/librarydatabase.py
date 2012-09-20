@@ -25,6 +25,7 @@ CREATE TABLE libraries (id INTEGER PRIMARY KEY,
 CREATE TABLE keywords (name TEXT,
                        doc TEXT,
                        arguments TEXT,
+                       library_name TEXT,
                        library INTEGER,
                        FOREIGN KEY(library) REFERENCES libraries(id));
 """
@@ -44,7 +45,6 @@ if not os.path.exists(DATABASE_FILE):
     connection.commit()
     connection.close()
 
-
 class LibraryDatabase(object):
 
     def __init__(self, database):
@@ -59,33 +59,35 @@ class LibraryDatabase(object):
     def insert_library_keywords(self, library_name, library_arguments, keywords):
         self._remove_old_versions(library_name, library_arguments)
         lib = self._insert_library(library_name, library_arguments)
-        keyword_values = [[kw.name, kw.doc, u' | '.join(kw.arguments), lib[0]] for kw in keywords]
+        keyword_values = [[kw.name, kw.doc, u' | '.join(kw.arguments), kw.source, lib[0]] for kw in keywords if kw is not None]
         self._insert_library_keywords(keyword_values)
         self._connection.commit()
 
     def _remove_old_versions(self, name, arguments):
-        old_versions = self._connection.execute('select id from libraries where name = ? and arguments = ?', (name, arguments)).fetchall()
+        old_versions = self._connection.execute('select id from libraries where name = ? and arguments = ?', (name, unicode(arguments))).fetchall()
         self._connection.executemany('delete from keywords where library = ?', old_versions)
-        self._connection.execute('delete from libraries where name = ? and arguments = ?', (name, arguments))
+        self._connection.execute('delete from libraries where name = ? and arguments = ?', (name, unicode(arguments)))
 
     def fetch_library_keywords(self, library_name, library_arguments):
         lib = self._fetch_lib(library_name, library_arguments)
         if lib is None:
             return []
-        return [LibraryKeywordInfo(name, doc, lib[1], arguments.split(u' | '))
-                for name, doc, arguments in
-                self._connection.execute('select name, doc, arguments from keywords where library = ?', [lib[0]])]
+        return [LibraryKeywordInfo(name, doc, library_name, arguments.split(u' | '))
+                for name, doc, arguments, library_name in
+                self._connection.execute('select name, doc, arguments, library_name from keywords where library = ?', [lib[0]])]
 
     def library_exists(self, library_name, library_arguments):
         return self._fetch_lib(library_name, library_arguments) is not None
 
     def _insert_library(self, name, arguments):
-        self._connection.execute('insert into libraries values (null, ?, ?, ?)', (name, arguments, time.time()))
+        self._connection.execute('insert into libraries values (null, ?, ?, ?)', (name, unicode(arguments), time.time()))
         return self._fetch_lib(name, arguments)
 
     def _fetch_lib(self, name, arguments):
-        t = self._connection.execute('select max(last_updated) from libraries where name = ? and arguments = ?', (name, arguments)).fetchone()[0]
-        return self._connection.execute('select * from libraries where name = ? and arguments = ? and last_updated = ?', (name, arguments, t)).fetchone()
+        t = self._connection.execute('select max(last_updated) from libraries where name = ? and arguments = ?', (name, unicode(arguments))).fetchone()[0]
+        return self._connection.execute('select * from libraries where name = ? and arguments = ? and last_updated = ?', (name, unicode(arguments), t)).fetchone()
 
     def _insert_library_keywords(self, data):
-        self._connection.executemany('insert into keywords values (?, ?, ?, ?)', data)
+        self._connection.executemany('insert into keywords values (?, ?, ?, ?, ?)', data)
+
+DATABASE = LibraryDatabase(DATABASE_FILE)

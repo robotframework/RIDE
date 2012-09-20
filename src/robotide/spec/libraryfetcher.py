@@ -17,8 +17,12 @@ from multiprocessing.process import Process
 import sys
 from robot.running import TestLibrary
 from robotide.spec.iteminfo import LibraryKeywordInfo
+from robotide.spec.librarydatabase import DATABASE
 
 def import_library(path, args):
+    kws = DATABASE.fetch_library_keywords(path, args)
+    if kws or DATABASE.library_exists(path, args):
+        return kws
     q = Queue(maxsize=1)
     p = Process(target=_library_initializer, args=(q, path, args))
     p.start()
@@ -27,6 +31,7 @@ def import_library(path, args):
             result = q.get(timeout=0.1)
             if isinstance(result, Exception):
                 raise ImportError(result)
+            DATABASE.insert_library_keywords(path, args, result or [])
             return result
         except Empty:
             if not p.is_alive():
