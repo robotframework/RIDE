@@ -18,7 +18,21 @@ import sys
 from robot.running import TestLibrary
 from robotide.spec.iteminfo import LibraryKeywordInfo
 
-def library_initializer(queue, path, args):
+def import_library(path, args):
+    q = Queue(maxsize=1)
+    p = Process(target=_library_initializer, args=(q, path, args))
+    p.start()
+    while True:
+        try:
+            result = q.get(timeout=0.1)
+            if isinstance(result, Exception):
+                raise ImportError(result)
+            return result
+        except Empty:
+            if not p.is_alive():
+                raise ImportError()
+
+def _library_initializer(queue, path, args):
     try:
         queue.put(_get_keywords(path, args))
     except Exception, e:
@@ -47,17 +61,3 @@ def _parse_args(handler_args):
     if handler_args.varargs:
         args.append('*%s' % handler_args.varargs)
     return args
-
-def import_library_in_another_process(path, args):
-    q = Queue(maxsize=1)
-    p = Process(target=library_initializer, args=(q, path, args))
-    p.start()
-    while True:
-        try:
-            result = q.get(timeout=0.1)
-            if isinstance(result, Exception):
-                raise ImportError(result)
-            return result
-        except Empty:
-            if not p.is_alive():
-                raise ImportError()

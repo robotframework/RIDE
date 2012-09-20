@@ -49,7 +49,7 @@ class LibrarySpec(object):
 
     def _init_from_library(self, name, args):
         path = self._get_path(name.replace('/', os.sep), os.path.abspath('.'))
-        return libraryfetcher.import_library_in_another_process(path, args)
+        return libraryfetcher.import_library(path, args)
 
     def _init_from_specfile(self, specfile, name):
             try:
