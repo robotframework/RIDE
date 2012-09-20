@@ -43,6 +43,13 @@ class TestLibraryDatabase(unittest.TestCase):
         count = self._connection.execute('select count(*) from libraries').fetchone()[0]
         self.assertEqual(count, 1)
 
+    def test_unknown_library_keywords_fetch(self):
+        results = self._fetch_keywords_from_db('Something that is not there', 'at all')
+        self.assertEqual(len(results), 0)
+
+    def test_unknown_library_fetch(self):
+        self.assertIsNone(self._fetch_lib('is not there', 'is not'))
+
     def _remove_old_library_data(self, name, arguments):
         new = self._fetch_lib(name, arguments)
         old_versions = self._connection.execute('select id from libraries where name = ? and arguments = ? and id != ?', (name, arguments, new[0])).fetchall()
@@ -69,6 +76,8 @@ class TestLibraryDatabase(unittest.TestCase):
 
     def _fetch_keywords_from_db(self, library_name, library_arguments):
         lib = self._fetch_lib(library_name, library_arguments)
+        if lib is None:
+            return []
         return [LibraryKeywordInfo(name, doc, lib[1], arguments.split(u' | '))
                 for name, doc, arguments in
                 self._connection.execute('select name, doc, arguments from keywords where library = ?', [lib[0]])]
