@@ -15,14 +15,15 @@ from Queue import Empty
 from multiprocessing import Queue
 from multiprocessing.process import Process
 import sys
+import time
 from robot.running import TestLibrary
 from robotide.spec.iteminfo import LibraryKeywordInfo
 from robotide.spec.librarydatabase import DATABASE
 
 def import_library(path, args):
-    kws = DATABASE.fetch_library_keywords(path, args)
-    if kws or DATABASE.library_exists(path, args):
-        return kws
+    last_updated = DATABASE.get_library_last_updated(path, args)
+    if last_updated and time.time() - last_updated < 10.0:
+        return DATABASE.fetch_library_keywords(path, args)
     q = Queue(maxsize=1)
     p = Process(target=_library_initializer, args=(q, path, args))
     p.start()
