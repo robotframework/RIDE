@@ -1,8 +1,4 @@
-import os
-import sqlite3
 import unittest
-import time
-from robotide import spec
 from robotide.spec.iteminfo import LibraryKeywordInfo
 from robotide.spec.librarydatabase import LibraryDatabase
 from robotide.spec.libraryfetcher import _get_keywords
