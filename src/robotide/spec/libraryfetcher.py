@@ -22,8 +22,14 @@ from robotide.spec.librarydatabase import DATABASE
 
 def import_library(path, args):
     last_updated = DATABASE.get_library_last_updated(path, args)
-    if last_updated and time.time() - last_updated < 10.0:
+    if last_updated:
+        if time.time() - last_updated > 10.0:
+            # Eventually consistent trick
+            Process(target=_update_library_keywords, args=(path, args)).start()
         return DATABASE.fetch_library_keywords(path, args)
+    return _get_import_result_from_process(path, args)
+
+def _get_import_result_from_process(path, args):
     q = Queue(maxsize=1)
     p = Process(target=_library_initializer, args=(q, path, args))
     p.start()
@@ -32,7 +38,6 @@ def import_library(path, args):
             result = q.get(timeout=0.1)
             if isinstance(result, Exception):
                 raise ImportError(result)
-            DATABASE.insert_library_keywords(path, args, result or [])
             return result
         except Empty:
             if not p.is_alive():
@@ -40,11 +45,22 @@ def import_library(path, args):
 
 def _library_initializer(queue, path, args):
     try:
-        queue.put(_get_keywords(path, args))
+        queue.put(_get_keywords_to_db(path, args))
     except Exception, e:
         queue.put(e)
     finally:
         sys.exit()
+
+def _update_library_keywords(path, args):
+    try:
+        _get_keywords_to_db(path, args)
+    finally:
+        sys.exit()
+
+def _get_keywords_to_db(path, args):
+    keywords = _get_keywords(path, args)
+    DATABASE.insert_library_keywords(path, args, keywords)
+    return keywords
 
 def _get_keywords(path, args):
     lib = TestLibrary(path, args)
