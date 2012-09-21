@@ -85,7 +85,7 @@ class LibraryDatabase(object):
         lib = self._fetch_lib(library_name, library_arguments)
         if lib is None:
             return []
-        return [LibraryKeywordInfo(name, doc, library_name, arguments.split(u' | '))
+        return [LibraryKeywordInfo(name, doc, library_name, arguments.split(u' | ') if arguments else [])
                 for name, doc, arguments, library_name in
                 self._connection.execute('select name, doc, arguments, library_name from keywords where library = ?', [lib[0]])]
 

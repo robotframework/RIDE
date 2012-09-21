@@ -15,10 +15,14 @@ class TestLibraryDatabase(unittest.TestCase):
     def test_inserting_and_fetching(self):
         collections_kws = self._get_and_insert_keywords('Collections', '')
         string_kws = self._get_and_insert_keywords('String', '')
+        builtin_kws = self._get_and_insert_keywords('BuiltIn', '')
         collections_kws_from_db = self._database.fetch_library_keywords('Collections', '')
         string_kws_from_db = self._database.fetch_library_keywords('String', '')
-        self._check_keywords(collections_kws, collections_kws_from_db)
-        self._check_keywords(string_kws, string_kws_from_db)
+        builtin_kws_from_db = self._database.fetch_library_keywords('BuiltIn', '')
+        for originals, from_database in [[collections_kws, collections_kws_from_db],
+                                         [string_kws, string_kws_from_db],
+                                         [builtin_kws, builtin_kws_from_db]]:
+            self._check_keywords(originals, from_database)
 
     def test_finds_newest_version(self):
         self._database.insert_library_keywords('lib.py', 'foo', [LibraryKeywordInfo('this is old', 'doc', 'lib.py', '')])
@@ -54,7 +58,8 @@ class TestLibraryDatabase(unittest.TestCase):
         for k1, k2 in zip(originals, from_database):
             self.assertEqual(k1.name, k2.name)
             self.assertEqual(k1.doc, k2.doc)
-            self.assertEqual(k1.arguments, k2.arguments)
+            self.assertEqual(k1.arguments, k2.arguments, 'Arguments differ ("%s" != "%s") on keyword %s' %
+                                                         (k1.arguments, k2.arguments, k1.name))
             self.assertEqual(k1.source, k2.source)
         self.assertEqual(len(originals), len(from_database))
 
