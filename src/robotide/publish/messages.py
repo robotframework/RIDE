@@ -143,11 +143,6 @@ class RideSettingsChanged(RideMessage):
     """
     data = ['keys']
 
-class RideNamespaceRefresh(RideMessage):
-    """
-    Sent when someone forces namespace refresh
-    """
-
 
 class  RideTreeSelection(RideMessage):
     """Sent whenever user selects a node from the tree."""

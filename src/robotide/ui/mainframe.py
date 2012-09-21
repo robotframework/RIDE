@@ -20,7 +20,6 @@ from robotide.context import ABOUT_RIDE, SHORTCUT_KEYS
 from robotide.controller.commands import SaveFile, SaveAll
 from robotide.publish import (RideSaveAll, RideClosing, RideSaved, PUBLISHER,
         RideInputValidationError, RideTreeSelection, RideModificationPrevented)
-from robotide.publish.messages import RideNamespaceRefresh
 from robotide.utils import RideEventHandler
 from robotide.widgets import Dialog, ImageProvider, HtmlWindow
 from robotide.preferences import PreferenceEditor
@@ -275,7 +274,6 @@ class RideFrame(wx.Frame, RideEventHandler):
 
     def _refresh(self):
         self._controller.update_namespace()
-        RideNamespaceRefresh().publish()
 
 # This code is copied from http://wiki.wxpython.org/EnsureFrameIsOnScreen,
 # and adapted to fit our code style.
