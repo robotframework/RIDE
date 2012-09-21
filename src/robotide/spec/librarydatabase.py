@@ -48,7 +48,7 @@ else:
     try:
         connection = sqlite3.connect(DATABASE_FILE)
         connection.execute('select id, name, arguments, last_updated from libraries')
-        connection.execute('select name, doc, arguments, library_name, library from libraries')
+        connection.execute('select name, doc, arguments, library_name, library from keywords')
         connection.close()
     except sqlite3.DatabaseError:
         os.remove(DATABASE_FILE)
@@ -64,6 +64,7 @@ class LibraryDatabase(object):
 
     def create_database(self):
         self._connection.executescript(CREATION_SCRIPT)
+        self._connection.commit()
 
     def close(self):
         self._connection.close()
