@@ -267,7 +267,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         wx.LaunchDefaultBrowser('http://code.google.com/p/robotframework-ride/issues/list')
 
     def OnRefresh(self, event):
-        if self._has_data() and self._check_unsaved_modifications():
+        if self._has_data():
             wx.CallAfter(self._refresh)
 
     def _has_data(self):
