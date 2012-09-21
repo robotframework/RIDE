@@ -50,7 +50,7 @@ class LibraryCache(object):
     def get_all_cached_library_names(self):
         return self._library_keywords.get_library_names()
 
-    def add_library(self, name, args=None):
+    def add_library(self, name, args):
         if not self._library_keywords.has_key(self._key(name, args)):
             action = lambda: LibrarySpec(name, args).keywords
             kws = self._with_error_logging(action, [],

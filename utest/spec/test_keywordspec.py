@@ -18,7 +18,6 @@ import os
 
 from robot.utils.asserts import assert_equals, assert_true
 from robotide.spec import LibrarySpec
-from robotide.namespace import cache
 
 from resources import DATAPATH
 sys.path.append(os.path.join(DATAPATH, 'libs'))
@@ -27,10 +26,10 @@ sys.path.append(os.path.join(DATAPATH, 'libs'))
 class TestLibrarySpec(unittest.TestCase):
 
     def test_opening_standard_library(self):
-        spec = LibrarySpec('OperatingSystem')
+        spec = LibrarySpec('OperatingSystem', '')
         assert_true(len(spec.keywords))
 
-    def test_openging_library_with_args(self):
+    def test_opening_library_with_args(self):
         spec = LibrarySpec('ArgLib', ['arg value'])
         assert_equals(len(spec.keywords), 2)
 
@@ -44,7 +43,7 @@ class TestLibrarySpec(unittest.TestCase):
 
 
     def test_reading_library_from_pythonpath(self):
-        spec = LibrarySpec('TestLib')
+        spec = LibrarySpec('TestLib', '')
         self._assert_keyword(spec.keywords[0], 'Testlib Keyword', args=False)
         exp_doc = 'This keyword requires one argument, has one optional argument'\
                     ' and varargs.\n\nThis is some more documentation'
@@ -52,12 +51,12 @@ class TestLibrarySpec(unittest.TestCase):
                              exp_doc, exp_doc.splitlines()[0], args=False)
 
     def test_reading_library_with_relative_import_from_pythonpath(self):
-        spec = LibrarySpec('sub/libsi.py')
+        spec = LibrarySpec('sub/libsi.py', '')
         assert_equals(len(spec.keywords), 1)
         self._assert_keyword(spec.keywords[0], 'Libsi Keyword', args=False)
 
     def test_reading_library_from_xml(self):
-        spec = LibrarySpec('LibSpecLibrary')
+        spec = LibrarySpec('LibSpecLibrary', '')
         assert_equals(len(spec.keywords), 3)
         exp_doc = 'This is kw documentation.\n\nThis is more docs.'
         self._assert_keyword(spec.keywords[0], 'Normal Keyword', exp_doc,
@@ -67,7 +66,7 @@ class TestLibrarySpec(unittest.TestCase):
                              args='[ arg1 | arg2=default value | *args ]')
 
     def test_reading_library_from_old_style_xml(self):
-        spec = LibrarySpec('OldStyleLibSpecLibrary')
+        spec = LibrarySpec('OldStyleLibSpecLibrary', '')
         assert_equals(len(spec.keywords), 3)
         exp_doc = 'This is kw documentation.\n\nThis is more docs.'
         self._assert_keyword(spec.keywords[0], 'Normal Keyword', exp_doc,

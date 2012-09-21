@@ -29,7 +29,7 @@ class LibrarySpec(object):
     keywords = tuple()
     _library_import_by_path_endings = ('.py', '.java', '.class', '/', os.sep)
 
-    def __init__(self, name, args=None):
+    def __init__(self, name, args):
         name = self._get_library_name(name)
         alias = None
         if args and len(args) >= 2 and isinstance(args[-2], basestring) and args[-2].upper() == 'WITH NAME':
