@@ -329,6 +329,7 @@ class DatafileRetriever(object):
 
     def expire_cache(self):
         self.keyword_cache = ExpiringCache()
+        self._lib_cache.expire()
 
     def get_keywords_from_several(self, datafiles):
         kws = set()

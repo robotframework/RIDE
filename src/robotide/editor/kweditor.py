@@ -25,6 +25,7 @@ from robotide.controller.commands import (ChangeCellValue, ClearArea, PasteArea,
 from robotide.controller.cellinfo import TipMessage
 from robotide.publish import (RideItemStepsChanged,
                               RideSettingsChanged, PUBLISHER)
+from robotide.publish.messages import RideNamespaceRefresh
 from robotide.usages.UsageRunner import Usages, VariableUsages
 from robotide.ui.progress import RenameProgressObserver
 from robotide import utils
@@ -73,6 +74,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._configure_grid()
             PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
             PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
+            PUBLISHER.subscribe(self.OnNamespaceRefresh, RideNamespaceRefresh)
             self._tooltips = GridToolTips(self)
             self._marked_cell = None
             self._make_bindings()
@@ -111,6 +113,9 @@ class KeywordEditor(GridEditor, RideEventHandler):
         '''Redraw the colors if the color settings are modified'''
         if data.keys[0] == "Colors":
             self._colorize_grid()
+
+    def OnNamespaceRefresh(self, event):
+        self._colorize_grid()
 
     def OnSelectCell(self, event):
         self._cell_selected = True

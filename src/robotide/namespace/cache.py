@@ -30,6 +30,9 @@ class LibraryCache(object):
         self.__default_libraries = None
         self.__default_kws = None
 
+    def expire(self):
+        self.__init__(self._settings)
+
     @property
     def _default_libraries(self):
         if self.__default_libraries is None:

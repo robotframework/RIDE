@@ -20,6 +20,7 @@ from robotide.context import ABOUT_RIDE, SHORTCUT_KEYS
 from robotide.controller.commands import SaveFile, SaveAll
 from robotide.publish import (RideSaveAll, RideClosing, RideSaved, PUBLISHER,
         RideInputValidationError, RideTreeSelection, RideModificationPrevented)
+from robotide.publish.messages import RideNamespaceRefresh
 from robotide.utils import RideEventHandler
 from robotide.widgets import Dialog, ImageProvider, HtmlWindow
 from robotide.preferences import PreferenceEditor
@@ -44,7 +45,7 @@ _menudata = """
 &Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE
 !Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS
 ---
-!&Reload Directory | Reload directory | Ctrlcmd-Shift-R | CUSTOM_REFRESH_ALL
+!&Refresh | Refresh | Ctrlcmd-Shift-R | CUSTOM_REFRESH_ALL
 ---
 !E&xit | Exit RIDE | Ctrlcmd-Q
 
@@ -265,18 +266,16 @@ class RideFrame(wx.Frame, RideEventHandler):
     def OnReportaProblem(self, event):
         wx.LaunchDefaultBrowser('http://code.google.com/p/robotframework-ride/issues/list')
 
-    def OnReloadDirectory(self, event):
+    def OnRefresh(self, event):
         if self._has_data() and self._check_unsaved_modifications():
-            wx.CallAfter(self._reload)
+            wx.CallAfter(self._refresh)
 
     def _has_data(self):
         return self._controller.data is not None
 
-    def _reload(self):
-        path = self._controller.default_dir
-        self._controller.update_default_dir(path)
-        self._controller.load_datafile(path, LoadProgressObserver(self))
-        self._populate_tree()
+    def _refresh(self):
+        self._controller.update_namespace()
+        RideNamespaceRefresh().publish()
 
 # This code is copied from http://wiki.wxpython.org/EnsureFrameIsOnScreen,
 # and adapted to fit our code style.
