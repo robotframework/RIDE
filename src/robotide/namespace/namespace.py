@@ -25,7 +25,6 @@ from robot.errors import DataError
 from robot.parsing.model import ResourceFile
 from robot.parsing.settings import Library, Resource, Variables
 from robot.utils.normalizing import normalize
-from robotide.namespace import variablefetcher
 from robot.variables import Variables as RobotVariables
 from robotide.namespace.cache import LibraryCache, ExpiringCache
 from robotide.namespace.resourcefactory import ResourceFactory
