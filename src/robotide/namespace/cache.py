@@ -24,14 +24,15 @@ class LibraryCache(object):
     _IMPORT_FAILED = 'Importing library %s failed:'
     _RESOLVE_FAILED = 'Resolving keywords for library %s with args %s failed:'
 
-    def __init__(self, settings):
+    def __init__(self, settings, libraries_need_refresh_listener):
         self._settings = settings
+        self._libraries_need_refresh_listener = libraries_need_refresh_listener
         self._library_keywords = _LibraryCache()
         self.__default_libraries = None
         self.__default_kws = None
 
     def expire(self):
-        self.__init__(self._settings)
+        self.__init__(self._settings, self._libraries_need_refresh_listener)
 
     @property
     def _default_libraries(self):

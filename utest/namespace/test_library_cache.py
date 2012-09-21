@@ -22,11 +22,11 @@ class TestLibraryCache(unittest.TestCase):
                                          'Get Mandatory')
 
     def test_importing_library_with_dictionary_arg(self):
-        LibraryCache({}).add_library('ArgLib', [{'moi':'hoi'}, []])
+        LibraryCache({}, lambda:0).add_library('ArgLib', [{'moi':'hoi'}, []])
 
     def _create_cache_with_auto_imports(self, auto_import):
         settings = {'auto imports': [auto_import]}
-        return LibraryCache(settings)
+        return LibraryCache(settings, lambda:0)
 
     def _assert_keyword_in_keywords(self, keywords, name):
         for kw in keywords:

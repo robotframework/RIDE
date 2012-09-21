@@ -46,7 +46,7 @@ class Namespace(object):
         self._update_listeners = []
 
     def _init_caches(self):
-        self._lib_cache = LibraryCache(self._settings)
+        self._lib_cache = LibraryCache(self._settings, self.update)
         self._resource_factory = ResourceFactory(self._settings)
         self._retriever = DatafileRetriever(self._lib_cache, self._resource_factory)
         self._context_factory = _RetrieverContextFactory()
