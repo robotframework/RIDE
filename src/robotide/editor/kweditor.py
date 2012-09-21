@@ -85,8 +85,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
             raise
 
     def _namespace_updated(self):
-        if self.has_focus():
-            self._colorize_grid()
+        wx.CallAfter(self._colorize_grid)
 
     def _configure_grid(self):
         self.SetRowLabelSize(25)
