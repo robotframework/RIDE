@@ -15,6 +15,7 @@ from Queue import Empty
 from multiprocessing import Queue
 from multiprocessing.process import Process
 import sys
+from threading import Thread
 import time
 from robot.running import TestLibrary
 from robotide.spec.iteminfo import LibraryKeywordInfo
@@ -24,10 +25,20 @@ def import_library(path, args):
     last_updated = DATABASE.get_library_last_updated(path, args)
     if last_updated:
         if time.time() - last_updated > 10.0:
-            # Eventually consistent trick
-            Process(target=_update_library_keywords, args=(path, args)).start()
+            _refresh_library(path, args)
         return DATABASE.fetch_library_keywords(path, args)
     return _get_import_result_from_process(path, args)
+
+def _refresh_library(path, args):
+    def execute():
+        # Eventually consistent trick
+        p = Process(target=_update_library_keywords, args=(path, args))
+        p.start()
+        p.join()
+        print 'should refresh database'
+    t = Thread(target=execute)
+    t.setDaemon(True)
+    t.start()
 
 def _get_import_result_from_process(path, args):
     q = Queue(maxsize=1)
