@@ -44,6 +44,18 @@ if not os.path.exists(DATABASE_FILE):
     connection.executescript(CREATION_SCRIPT)
     connection.commit()
     connection.close()
+else:
+    try:
+        connection = sqlite3.connect(DATABASE_FILE)
+        connection.execute('select id, name, arguments, last_updated from libraries')
+        connection.execute('select name, doc, arguments, library_name, library from libraries')
+        connection.close()
+    except sqlite3.DatabaseError:
+        os.remove(DATABASE_FILE)
+        connection = sqlite3.connect(DATABASE_FILE)
+        connection.executescript(CREATION_SCRIPT)
+        connection.commit()
+        connection.close()
 
 class LibraryDatabase(object):
 
