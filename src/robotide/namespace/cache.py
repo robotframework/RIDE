@@ -52,7 +52,7 @@ class LibraryCache(object):
 
     def add_library(self, name, args):
         if not self._library_keywords.has_key(self._key(name, args)):
-            action = lambda: LibrarySpec(name, args).keywords
+            action = lambda: LibrarySpec(name, args, self._libraries_need_refresh_listener).keywords
             kws = self._with_error_logging(action, [],
                                            self._IMPORT_FAILED % (name))
             self._library_keywords[self._key(name, args)] = kws
@@ -98,7 +98,7 @@ class LibraryCache(object):
         default_libs = {}
         for libsetting in self._settings['auto imports'] + ['BuiltIn']:
             name, args = self._get_name_and_args(libsetting)
-            default_libs[name] = LibrarySpec(name, args)
+            default_libs[name] = LibrarySpec(name, args, self._libraries_need_refresh_listener)
         return default_libs
 
     def _get_name_and_args(self, libsetting):

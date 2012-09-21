@@ -26,24 +26,27 @@ sys.path.append(os.path.join(DATAPATH, 'libs'))
 class TestLibrarySpec(unittest.TestCase):
 
     def test_opening_standard_library(self):
-        spec = LibrarySpec('OperatingSystem', '')
+        spec = self._spec('OperatingSystem')
         assert_true(len(spec.keywords))
 
+    def _spec(self, name, args=None):
+        return LibrarySpec(name, args, lambda:0)
+
     def test_opening_library_with_args(self):
-        spec = LibrarySpec('ArgLib', ['arg value'])
+        spec = self._spec('ArgLib', ['arg value'])
         assert_equals(len(spec.keywords), 2)
 
     def test_importing_library_with_name(self):
-        spec = LibrarySpec('ArgLib', ['val', 'WITH NAME', 'MyLib'])
+        spec = self._spec('ArgLib', ['val', 'WITH NAME', 'MyLib'])
         assert_equals(len(spec.keywords), 2)
 
     def test_importing_library_with_mutable_objects(self):
-        spec = LibrarySpec('ArgLib', [[1,2], {1:3}])
+        spec = self._spec('ArgLib', [[1,2], {1:3}])
         assert_equals(len(spec.keywords), 2)
 
 
     def test_reading_library_from_pythonpath(self):
-        spec = LibrarySpec('TestLib', '')
+        spec = self._spec('TestLib')
         self._assert_keyword(spec.keywords[0], 'Testlib Keyword', args=False)
         exp_doc = 'This keyword requires one argument, has one optional argument'\
                     ' and varargs.\n\nThis is some more documentation'
@@ -51,12 +54,12 @@ class TestLibrarySpec(unittest.TestCase):
                              exp_doc, exp_doc.splitlines()[0], args=False)
 
     def test_reading_library_with_relative_import_from_pythonpath(self):
-        spec = LibrarySpec('sub/libsi.py', '')
+        spec = self._spec('sub/libsi.py')
         assert_equals(len(spec.keywords), 1)
         self._assert_keyword(spec.keywords[0], 'Libsi Keyword', args=False)
 
     def test_reading_library_from_xml(self):
-        spec = LibrarySpec('LibSpecLibrary', '')
+        spec = self._spec('LibSpecLibrary')
         assert_equals(len(spec.keywords), 3)
         exp_doc = 'This is kw documentation.\n\nThis is more docs.'
         self._assert_keyword(spec.keywords[0], 'Normal Keyword', exp_doc,
@@ -66,7 +69,7 @@ class TestLibrarySpec(unittest.TestCase):
                              args='[ arg1 | arg2=default value | *args ]')
 
     def test_reading_library_from_old_style_xml(self):
-        spec = LibrarySpec('OldStyleLibSpecLibrary', '')
+        spec = self._spec('OldStyleLibSpecLibrary')
         assert_equals(len(spec.keywords), 3)
         exp_doc = 'This is kw documentation.\n\nThis is more docs.'
         self._assert_keyword(spec.keywords[0], 'Normal Keyword', exp_doc,

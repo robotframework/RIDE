@@ -21,21 +21,21 @@ from robot.running import TestLibrary
 from robotide.spec.iteminfo import LibraryKeywordInfo
 from robotide.spec.librarydatabase import DATABASE
 
-def import_library(path, args):
+def import_library(path, args, library_needs_refresh_listener):
     last_updated = DATABASE.get_library_last_updated(path, args)
     if last_updated:
         if time.time() - last_updated > 10.0:
-            _refresh_library(path, args)
+            _refresh_library(path, args, library_needs_refresh_listener)
         return DATABASE.fetch_library_keywords(path, args)
     return _get_import_result_from_process(path, args)
 
-def _refresh_library(path, args):
+def _refresh_library(path, args, library_needs_refresh_listener):
     def execute():
         # Eventually consistent trick
         p = Process(target=_update_library_keywords, args=(path, args))
         p.start()
         p.join()
-        print 'should refresh database'
+        library_needs_refresh_listener()
     t = Thread(target=execute)
     t.setDaemon(True)
     t.start()

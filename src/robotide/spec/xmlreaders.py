@@ -29,14 +29,14 @@ class LibrarySpec(object):
     keywords = tuple()
     _library_import_by_path_endings = ('.py', '.java', '.class', '/', os.sep)
 
-    def __init__(self, name, args):
+    def __init__(self, name, args, library_needs_refresh_listener):
         name = self._get_library_name(name)
         alias = None
         if args and len(args) >= 2 and isinstance(args[-2], basestring) and args[-2].upper() == 'WITH NAME':
             alias = args[-1]
             args = args[:-2]
         try:
-            self.keywords = [kw.with_alias(alias) for kw in self._init_from_library(name, args)]
+            self.keywords = [kw.with_alias(alias) for kw in self._init_from_library(name, args, library_needs_refresh_listener)]
         except (ImportError, DataError), err:
             specfile = utils.find_from_pythonpath(name + '.xml')
             self.keywords = self._init_from_specfile(specfile, name)
@@ -44,9 +44,9 @@ class LibrarySpec(object):
                 msg = 'Importing test library "%s" failed' % name
                 RideLogException(message=msg, exception=err, level='WARN').publish()
 
-    def _init_from_library(self, name, args):
+    def _init_from_library(self, name, args, library_needs_refresh_listener):
         path = self._get_path(name.replace('/', os.sep), os.path.abspath('.'))
-        return libraryfetcher.import_library(path, args)
+        return libraryfetcher.import_library(path, args, library_needs_refresh_listener)
 
     def _init_from_specfile(self, specfile, name):
             try:
