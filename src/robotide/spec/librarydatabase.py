@@ -60,7 +60,7 @@ else:
 class LibraryDatabase(object):
 
     def __init__(self, database):
-        self._connection = sqlite3.connect(database)
+        self._connection = sqlite3.connect(database, timeout=30.0)
 
     def create_database(self):
         self._connection.executescript(CREATION_SCRIPT)
@@ -81,6 +81,9 @@ class LibraryDatabase(object):
         self._connection.executemany('delete from keywords where library = ?', old_versions)
         self._connection.execute('delete from libraries where name = ? and arguments = ?', (name, unicode(arguments)))
 
+    def update_library_timestamp_to_current(self, name, arguments):
+        self._connection.execute('update libraries set last_updated = ? where name = ? and arguments = ?', (time.time(), name, unicode(arguments)))
+
     def fetch_library_keywords(self, library_name, library_arguments):
         lib = self._fetch_lib(library_name, library_arguments)
         if lib is None:
@@ -98,6 +101,12 @@ class LibraryDatabase(object):
             return 0.0
         return lib[3]
 
+    def get_library_id(self, library_name, library_arguments):
+        lib = self._fetch_lib(library_name, library_arguments)
+        if not lib:
+            return None
+        return lib[0]
+
     def _insert_library(self, name, arguments):
         self._connection.execute('insert into libraries values (null, ?, ?, ?)', (name, unicode(arguments), time.time()))
         return self._fetch_lib(name, arguments)
@@ -108,5 +117,3 @@ class LibraryDatabase(object):
 
     def _insert_library_keywords(self, data):
         self._connection.executemany('insert into keywords values (?, ?, ?, ?, ?)', data)
-
-DATABASE = LibraryDatabase(DATABASE_FILE)
