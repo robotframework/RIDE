@@ -31,7 +31,7 @@ def import_library(path, args, library_needs_refresh_listener):
             if time.time() - last_updated > 10.0:
                 _refresh_library(path, args, library_needs_refresh_listener)
             return db.fetch_library_keywords(path, args)
-        return _get_import_result_from_process_and_update_db(path, args, database=db)
+        return _get_import_result_from_process_to_db(path, args)
     finally:
         db.close()
 
@@ -39,28 +39,42 @@ def _refresh_library(path, args, library_needs_refresh_listener):
     # Eventually consistent trick
     def execute():
         try:
-            _get_import_result_from_process_and_update_db(path, args, library_needs_refresh_listener=library_needs_refresh_listener)
+            _get_import_result_from_process_and_update_db(path, args, library_needs_refresh_listener)
         except ImportError:
             pass
     t = Thread(target=execute)
     t.setDaemon(True)
     t.start()
 
-def _get_import_result_from_process_and_update_db(path, args, database=None, library_needs_refresh_listener=None):
+def _get_import_result_from_process_and_update_db(path, args, library_needs_refresh_listener):
     keywords = _get_import_result_from_process(path, args)
-    db = database or LibraryDatabase(DATABASE_FILE)
+    db = LibraryDatabase(DATABASE_FILE)
     try:
         if _keywords_differ(keywords, db.fetch_library_keywords(path, args)):
             with DB_LOCK:
                 db.insert_library_keywords(path, args, keywords)
-            if library_needs_refresh_listener:
-                library_needs_refresh_listener()
+            library_needs_refresh_listener()
         else:
             with DB_LOCK:
                 db.update_library_timestamp_to_current(path, args)
         return keywords
     finally:
         db.close()
+
+def _get_import_result_from_process_to_db(path, args):
+    keywords = _get_import_result_from_process(path, args)
+    def execute():
+        database = LibraryDatabase(DATABASE_FILE)
+        try:
+            with DB_LOCK:
+                database.insert_library_keywords(path, args, keywords)
+            return keywords
+        finally:
+            database.close()
+    t = Thread(target=execute)
+    t.setDaemon(True)
+    t.start()
+    return keywords
 
 def _get_import_result_from_process(path, args):
     q = Queue(maxsize=1)
