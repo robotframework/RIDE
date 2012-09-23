@@ -101,12 +101,6 @@ class LibraryDatabase(object):
             return 0.0
         return lib[3]
 
-    def get_library_id(self, library_name, library_arguments):
-        lib = self._fetch_lib(library_name, library_arguments)
-        if not lib:
-            return None
-        return lib[0]
-
     def _insert_library(self, name, arguments):
         self._connection.execute('insert into libraries values (null, ?, ?, ?)', (name, unicode(arguments), time.time()))
         return self._fetch_lib(name, arguments)

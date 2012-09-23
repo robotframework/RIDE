@@ -34,16 +34,16 @@ def import_library(path, args, library_needs_refresh_listener):
         db.close()
 
 def _refresh_library(db, path, args, library_needs_refresh_listener):
-    library_id_before = db.get_library_id(path, args)
     def execute():
         # Eventually consistent trick
-        p = Process(target=_update_library_keywords, args=(path, args))
-        p.start()
-        p.join()
+        try:
+            keywords = _get_import_result_from_process(path, args)
+        except ImportError:
+            return
         db = LibraryDatabase(DATABASE_FILE)
-        id_after = db.get_library_id(path, args)
+        db_keywords = db.fetch_library_keywords(path, args)
         db.close()
-        if id_after != library_id_before:
+        if _keywords_differ(keywords, db_keywords):
             library_needs_refresh_listener()
     t = Thread(target=execute)
     t.setDaemon(True)
