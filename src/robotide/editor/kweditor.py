@@ -252,7 +252,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
     def _colorize_grid(self):
         selection_content = self._get_single_selection_content_or_none_on_first_call()
         if selection_content is None:
-            self.highlight(selection_content)
+            self.highlight(None)
         else:
             self._parent.highlight(selection_content, expand=False)
 
