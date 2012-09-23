@@ -17,7 +17,6 @@ from multiprocessing.process import Process
 import sys
 from threading import Thread
 import time
-import traceback
 from robot.running import TestLibrary
 from robotide.spec.iteminfo import LibraryKeywordInfo
 from robotide.spec.librarydatabase import LibraryDatabase, DATABASE_FILE
@@ -34,13 +33,9 @@ def import_library(path, args, library_needs_refresh_listener):
     finally:
         db.close()
 
-CURRENT_THREAD = None
-
 def _refresh_library(db, path, args, library_needs_refresh_listener):
     library_id_before = db.get_library_id(path, args)
-    global CURRENT_THREAD
     def execute():
-        global CURRENT_THREAD
         # Eventually consistent trick
         p = Process(target=_update_library_keywords, args=(path, args))
         p.start()
@@ -50,12 +45,9 @@ def _refresh_library(db, path, args, library_needs_refresh_listener):
         db.close()
         if id_after != library_id_before:
             library_needs_refresh_listener()
-        CURRENT_THREAD = None
-    if CURRENT_THREAD:
-        CURRENT_THREAD.join()
-    CURRENT_THREAD = Thread(target=execute)
-    CURRENT_THREAD.setDaemon(True)
-    CURRENT_THREAD.start()
+    t = Thread(target=execute)
+    t.setDaemon(True)
+    t.start()
 
 def _get_import_result_from_process(path, args):
     q = Queue(maxsize=1)
