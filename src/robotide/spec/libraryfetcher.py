@@ -27,27 +27,36 @@ def import_library(path, args, library_needs_refresh_listener):
         last_updated = db.get_library_last_updated(path, args)
         if last_updated:
             if time.time() - last_updated > 10.0:
-                _refresh_library(db, path, args, library_needs_refresh_listener)
+                _refresh_library(path, args, library_needs_refresh_listener)
             return db.fetch_library_keywords(path, args)
-        return _get_import_result_from_process(path, args)
+        return _get_import_result_from_process_and_update_db(path, args, database=db)
     finally:
         db.close()
 
-def _refresh_library(db, path, args, library_needs_refresh_listener):
+def _refresh_library(path, args, library_needs_refresh_listener):
+    # Eventually consistent trick
     def execute():
-        # Eventually consistent trick
         try:
-            keywords = _get_import_result_from_process(path, args)
+            _get_import_result_from_process_and_update_db(path, args, library_needs_refresh_listener=library_needs_refresh_listener)
         except ImportError:
-            return
-        db = LibraryDatabase(DATABASE_FILE)
-        db_keywords = db.fetch_library_keywords(path, args)
-        db.close()
-        if _keywords_differ(keywords, db_keywords):
-            library_needs_refresh_listener()
+            pass
     t = Thread(target=execute)
     t.setDaemon(True)
     t.start()
+
+def _get_import_result_from_process_and_update_db(path, args, database=None, library_needs_refresh_listener=None):
+    keywords = _get_import_result_from_process(path, args)
+    db = database or LibraryDatabase(DATABASE_FILE)
+    try:
+        if _keywords_differ(keywords, db.fetch_library_keywords(path, args)):
+            db.insert_library_keywords(path, args, keywords)
+            if library_needs_refresh_listener:
+                library_needs_refresh_listener()
+        else:
+            db.update_library_timestamp_to_current(path, args)
+        return keywords
+    finally:
+        db.close()
 
 def _get_import_result_from_process(path, args):
     q = Queue(maxsize=1)
@@ -65,28 +74,11 @@ def _get_import_result_from_process(path, args):
 
 def _library_initializer(queue, path, args):
     try:
-        queue.put(_get_keywords_to_db(path, args))
+        queue.put(_get_keywords(path, args))
     except Exception, e:
         queue.put(e)
     finally:
         sys.exit()
-
-def _update_library_keywords(path, args):
-    try:
-        _get_keywords_to_db(path, args)
-    finally:
-        sys.exit()
-
-def _get_keywords_to_db(path, args):
-    keywords = _get_keywords(path, args)
-    db = LibraryDatabase(DATABASE_FILE)
-    old_keywords = db.fetch_library_keywords(path, args)
-    if _keywords_differ(keywords, old_keywords):
-        db.insert_library_keywords(path, args, keywords)
-    else:
-        db.update_library_timestamp_to_current(path, args)
-    db.close()
-    return keywords
 
 def _keywords_differ(keywords1, keywords2):
     if keywords1 != keywords2 and None in (keywords1, keywords2):
