@@ -15,11 +15,13 @@ from Queue import Empty
 from multiprocessing import Queue
 from multiprocessing.process import Process
 import sys
-from threading import Thread
+from threading import Thread, Lock
 import time
 from robot.running import TestLibrary
 from robotide.spec.iteminfo import LibraryKeywordInfo
 from robotide.spec.librarydatabase import LibraryDatabase, DATABASE_FILE
+
+DB_LOCK = Lock()
 
 def import_library(path, args, library_needs_refresh_listener):
     db = LibraryDatabase(DATABASE_FILE)
@@ -49,11 +51,13 @@ def _get_import_result_from_process_and_update_db(path, args, database=None, lib
     db = database or LibraryDatabase(DATABASE_FILE)
     try:
         if _keywords_differ(keywords, db.fetch_library_keywords(path, args)):
-            db.insert_library_keywords(path, args, keywords)
+            with DB_LOCK:
+                db.insert_library_keywords(path, args, keywords)
             if library_needs_refresh_listener:
                 library_needs_refresh_listener()
         else:
-            db.update_library_timestamp_to_current(path, args)
+            with DB_LOCK:
+                db.update_library_timestamp_to_current(path, args)
         return keywords
     finally:
         db.close()
