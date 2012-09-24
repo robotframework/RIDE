@@ -45,11 +45,13 @@ def _init_from_spec(name):
     return _init_from_specfile(utils.find_from_pythonpath(name + '.xml'), name)
 
 def _init_from_specfile(specfile, name):
-        try:
-            return _parse_xml(specfile, name)
-        except Exception:
-            # TODO: which exception to catch?
-            return []
+    if not specfile:
+        return []
+    try:
+        return _parse_xml(specfile, name)
+    except Exception:
+        # TODO: which exception to catch?
+        return []
 
 def _parse_xml(file, name):
     root = utils.ET.parse(file).getroot()
