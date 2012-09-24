@@ -31,12 +31,10 @@ class LibrarySpec(object):
 
     def __init__(self, name, args, library_needs_refresh_listener):
         name = self._get_library_name(name)
-        alias = None
         if args and len(args) >= 2 and isinstance(args[-2], basestring) and args[-2].upper() == 'WITH NAME':
-            alias = args[-1]
             args = args[:-2]
         try:
-            self.keywords = [kw.with_alias(alias) for kw in self._init_from_library(name, args, library_needs_refresh_listener)]
+            self.keywords = self._init_from_library(name, args, library_needs_refresh_listener)
         except (ImportError, DataError), err:
             specfile = utils.find_from_pythonpath(name + '.xml')
             self.keywords = self._init_from_specfile(specfile, name)

@@ -153,6 +153,11 @@ class _XMLKeywordContent(_KeywordInfo):
         _KeywordInfo.__init__(self, item)
         self.args = self._format_args(self._parse_args(item))
 
+    def with_alias(self, alias):
+        if alias:
+            self.source = alias
+        return self
+
     def _name(self, node):
         return node.get('name')
 
