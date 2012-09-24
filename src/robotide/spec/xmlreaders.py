@@ -36,8 +36,7 @@ class LibrarySpec(object):
         try:
             self.keywords = self._init_from_library(name, args, library_needs_refresh_listener)
         except (ImportError, DataError), err:
-            specfile = utils.find_from_pythonpath(name + '.xml')
-            self.keywords = self._init_from_specfile(specfile, name)
+            self.keywords = self._init_from_spec(name)
             if not self.keywords:
                 msg = 'Importing test library "%s" failed' % name
                 RideLogException(message=msg, exception=err, level='WARN').publish()
@@ -45,6 +44,9 @@ class LibrarySpec(object):
     def _init_from_library(self, name, args, library_needs_refresh_listener):
         path = self._get_path(name.replace('/', os.sep), os.path.abspath('.'))
         return libraryfetcher.import_library(path, args, library_needs_refresh_listener)
+
+    def _init_from_spec(self, name):
+        return self._init_from_specfile(utils.find_from_pythonpath(name + '.xml'), name)
 
     def _init_from_specfile(self, specfile, name):
             try:
