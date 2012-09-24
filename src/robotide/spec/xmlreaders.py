@@ -28,8 +28,6 @@ _library_import_by_path_endings = ('.py', '.java', '.class', '/', os.sep)
 
 def keywords(name, args, library_needs_refresh_listener):
     name = _get_library_name(name)
-    if args and len(args) >= 2 and isinstance(args[-2], basestring) and args[-2].upper() == 'WITH NAME':
-        args = args[:-2]
     try:
         keywords_list = _init_from_library(name, args, library_needs_refresh_listener)
     except (ImportError, DataError), err:

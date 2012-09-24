@@ -35,9 +35,6 @@ class TestLibrarySpec(unittest.TestCase):
     def test_opening_library_with_args(self):
         assert_equals(len(self._spec('ArgLib', ['arg value'])), 2)
 
-    def test_importing_library_with_name(self):
-        assert_equals(len(self._spec('ArgLib', ['val', 'WITH NAME', 'MyLib'])), 2)
-
     def test_importing_library_with_mutable_objects(self):
         assert_equals(len(self._spec('ArgLib', [[1,2], {1:3}])), 2)
 

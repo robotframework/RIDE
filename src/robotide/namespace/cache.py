@@ -21,8 +21,6 @@ from robotide.spec.xmlreaders import keywords
 
 
 class LibraryCache(object):
-    _IMPORT_FAILED = 'Importing library %s failed:'
-    _RESOLVE_FAILED = 'Resolving keywords for library %s with args %s failed:'
 
     def __init__(self, settings, libraries_need_refresh_listener):
         self._settings = settings
@@ -49,9 +47,8 @@ class LibraryCache(object):
     def get_all_cached_library_names(self):
         return [name for name, _ in self._library_keywords]
 
-    def _get_library(self, name, args, alias=None):
-        action = lambda: [k.with_alias(alias) for k in keywords(name, args, self._libraries_need_refresh_listener)]
-        return self._with_error_logging(action, [], self._IMPORT_FAILED % (name))
+    def _get_library(self, name, args):
+        return keywords(name, args, self._libraries_need_refresh_listener)
 
     def _key(self, name, args):
         return name, unicode(tuple(args or ''))
@@ -59,7 +56,7 @@ class LibraryCache(object):
     def get_library_keywords(self, name, args=None, alias=None):
         args_with_alias = self._alias_to_args(alias, args)
         if not self._library_keywords.has_key(self._key(name, args_with_alias)):
-            self._library_keywords[self._key(name, args_with_alias)] = self._get_library(name, args, alias)
+            self._library_keywords[self._key(name, args_with_alias)] = [k.with_alias(alias) for k in self._get_library(name, args)]
         return self._library_keywords[self._key(name, args_with_alias)]
 
     def _alias_to_args(self, alias, args):
@@ -69,14 +66,6 @@ class LibraryCache(object):
             else:
                 args = ('WITH NAME', alias)
         return args
-
-    def _with_error_logging(self, action, default, errormsg):
-        try:
-            return action()
-        except Exception, err:
-            RideLogException(message=errormsg,
-                             exception=err, level='WARN').publish()
-        return default
 
     def get_default_keywords(self):
         return self._default_kws[:]
