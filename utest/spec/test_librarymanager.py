@@ -1,5 +1,4 @@
 import unittest
-import time
 from robotide.spec.libraryfetcher import _get_keywords
 from robotide.spec.librarymanager import LibraryManager
 
