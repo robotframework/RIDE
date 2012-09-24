@@ -81,8 +81,8 @@ class LibraryDatabase(object):
         self._connection.executemany('delete from keywords where library = ?', old_versions)
         self._connection.execute('delete from libraries where name = ? and arguments = ?', (name, unicode(arguments)))
 
-    def update_library_timestamp_to_current(self, name, arguments):
-        self._connection.execute('update libraries set last_updated = ? where name = ? and arguments = ?', (time.time(), name, unicode(arguments)))
+    def update_library_timestamp(self, name, arguments, milliseconds=None):
+        self._connection.execute('update libraries set last_updated = ? where name = ? and arguments = ?', (milliseconds or time.time(), name, unicode(arguments)))
 
     def fetch_library_keywords(self, library_name, library_arguments):
         lib = self._fetch_lib(library_name, library_arguments)

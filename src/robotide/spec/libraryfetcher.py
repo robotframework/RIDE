@@ -56,7 +56,7 @@ def _get_import_result_from_process_and_update_db(path, args, library_needs_refr
             library_needs_refresh_listener()
         else:
             with DB_LOCK:
-                db.update_library_timestamp_to_current(path, args)
+                db.update_library_timestamp(path, args)
         return keywords
     finally:
         db.close()
