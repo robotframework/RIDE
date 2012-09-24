@@ -49,23 +49,18 @@ class LibraryCache(object):
     def get_all_cached_library_names(self):
         return [name for name, _ in self._library_keywords]
 
-    def _add_library(self, name, args, alias=None):
+    def _get_library(self, name, args, alias=None):
         action = lambda: [k.with_alias(alias) for k in keywords(name, args, self._libraries_need_refresh_listener)]
-        kws = self._with_error_logging(action, [],
-                                       self._IMPORT_FAILED % (name))
-        self._library_keywords[self._key(name, args)] = kws
+        return self._with_error_logging(action, [], self._IMPORT_FAILED % (name))
 
     def _key(self, name, args):
         return name, unicode(tuple(args or ''))
 
     def get_library_keywords(self, name, args=None, alias=None):
-        args = self._alias_to_args(alias, args)
-        def _get_library_keywords():
-            if not self._library_keywords.has_key(self._key(name, args)):
-                self._add_library(name, args, alias)
-            return self._library_keywords[self._key(name, args)]
-        return self._with_error_logging(_get_library_keywords, [],
-                                        self._RESOLVE_FAILED % (name, args))
+        args_with_alias = self._alias_to_args(alias, args)
+        if not self._library_keywords.has_key(self._key(name, args_with_alias)):
+            self._library_keywords[self._key(name, args_with_alias)] = self._get_library(name, args, alias)
+        return self._library_keywords[self._key(name, args_with_alias)]
 
     def _alias_to_args(self, alias, args):
         if alias:
