@@ -27,7 +27,7 @@ class LibraryCache(object):
     def __init__(self, settings, libraries_need_refresh_listener):
         self._settings = settings
         self._libraries_need_refresh_listener = libraries_need_refresh_listener
-        self._library_keywords = _LibraryCache()
+        self._library_keywords = {}
         self.__default_libraries = None
         self.__default_kws = None
 
@@ -46,9 +46,8 @@ class LibraryCache(object):
             self.__default_kws = self._build_default_kws()
         return self.__default_kws
 
-
     def get_all_cached_library_names(self):
-        return self._library_keywords.get_library_names()
+        return [name for name, _ in self._library_keywords]
 
     def _add_library(self, name, args, alias=None):
         action = lambda: [k.with_alias(alias) for k in keywords(name, args, self._libraries_need_refresh_listener)]
@@ -57,7 +56,7 @@ class LibraryCache(object):
         self._library_keywords[self._key(name, args)] = kws
 
     def _key(self, name, args):
-        return (name, tuple(args or ''))
+        return name, unicode(tuple(args or ''))
 
     def get_library_keywords(self, name, args=None, alias=None):
         args = self._alias_to_args(alias, args)
@@ -133,27 +132,3 @@ class ExpiringCache(object):
         except KeyError:
             path = normpath(os.path.join(os.path.dirname(source), name))
             return self._resource_files[path]
-
-
-class _LibraryCache:
-    """Cache for libs/resources that doesn't require mutable keys like dicts"""
-
-    def __init__(self):
-        self._keys = []
-        self._libs = []
-
-    def __setitem__(self, key, library):
-        self._keys.append(key)
-        self._libs.append(library)
-
-    def __getitem__(self, key):
-        try:
-            return self._libs[self._keys.index(key)]
-        except ValueError:
-            raise KeyError
-
-    def has_key(self, key):
-        return key in self._keys
-
-    def get_library_names(self):
-        return [name for name,_ in self._keys]
