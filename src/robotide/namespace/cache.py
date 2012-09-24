@@ -15,9 +15,9 @@
 import os
 import time
 
-from robotide.spec import LibrarySpec
 from robotide.robotapi import normpath
 from robotide.publish.messages import RideLogException
+from robotide.spec.xmlreaders import keywords
 
 
 class LibraryCache(object):
@@ -51,7 +51,7 @@ class LibraryCache(object):
         return self._library_keywords.get_library_names()
 
     def _add_library(self, name, args, alias=None):
-        action = lambda: [k.with_alias(alias) for k in LibrarySpec(name, args, self._libraries_need_refresh_listener).keywords]
+        action = lambda: [k.with_alias(alias) for k in keywords(name, args, self._libraries_need_refresh_listener)]
         kws = self._with_error_logging(action, [],
                                        self._IMPORT_FAILED % (name))
         self._library_keywords[self._key(name, args)] = kws
@@ -89,15 +89,15 @@ class LibraryCache(object):
 
     def _build_default_kws(self):
         kws = []
-        for spec in self._default_libraries.values():
-            kws.extend(spec.keywords)
+        for keywords_in_library in self._default_libraries.values():
+            kws.extend(keywords_in_library)
         return kws
 
     def _get_default_libraries(self):
         default_libs = {}
         for libsetting in self._settings['auto imports'] + ['BuiltIn']:
             name, args = self._get_name_and_args(libsetting)
-            default_libs[name] = LibrarySpec(name, args, self._libraries_need_refresh_listener)
+            default_libs[name] = keywords(name, args, self._libraries_need_refresh_listener)
         return default_libs
 
     def _get_name_and_args(self, libsetting):

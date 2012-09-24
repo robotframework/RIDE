@@ -17,65 +17,61 @@ import sys
 import os
 
 from robot.utils.asserts import assert_equals, assert_true
-from robotide.spec import LibrarySpec
 
 from resources import DATAPATH
+from robotide.spec.xmlreaders import keywords
+
 sys.path.append(os.path.join(DATAPATH, 'libs'))
 
 
 class TestLibrarySpec(unittest.TestCase):
 
     def test_opening_standard_library(self):
-        spec = self._spec('OperatingSystem')
-        assert_true(len(spec.keywords))
+        assert_true(len(self._spec('OperatingSystem')))
 
     def _spec(self, name, args=None):
-        return LibrarySpec(name, args, lambda:0)
+        return keywords(name, args, lambda:0)
 
     def test_opening_library_with_args(self):
-        spec = self._spec('ArgLib', ['arg value'])
-        assert_equals(len(spec.keywords), 2)
+        assert_equals(len(self._spec('ArgLib', ['arg value'])), 2)
 
     def test_importing_library_with_name(self):
-        spec = self._spec('ArgLib', ['val', 'WITH NAME', 'MyLib'])
-        assert_equals(len(spec.keywords), 2)
+        assert_equals(len(self._spec('ArgLib', ['val', 'WITH NAME', 'MyLib'])), 2)
 
     def test_importing_library_with_mutable_objects(self):
-        spec = self._spec('ArgLib', [[1,2], {1:3}])
-        assert_equals(len(spec.keywords), 2)
-
+        assert_equals(len(self._spec('ArgLib', [[1,2], {1:3}])), 2)
 
     def test_reading_library_from_pythonpath(self):
-        spec = self._spec('TestLib')
-        self._assert_keyword(spec.keywords[0], 'Testlib Keyword', args=False)
+        kws = self._spec('TestLib')
+        self._assert_keyword(kws[0], 'Testlib Keyword', args=False)
         exp_doc = 'This keyword requires one argument, has one optional argument'\
                     ' and varargs.\n\nThis is some more documentation'
-        self._assert_keyword(spec.keywords[1], 'Testlib Keyword With Args',
+        self._assert_keyword(kws[1], 'Testlib Keyword With Args',
                              exp_doc, exp_doc.splitlines()[0], args=False)
 
     def test_reading_library_with_relative_import_from_pythonpath(self):
-        spec = self._spec('sub/libsi.py')
-        assert_equals(len(spec.keywords), 1)
-        self._assert_keyword(spec.keywords[0], 'Libsi Keyword', args=False)
+        kws = self._spec('sub/libsi.py')
+        assert_equals(len(kws), 1)
+        self._assert_keyword(kws[0], 'Libsi Keyword', args=False)
 
     def test_reading_library_from_xml(self):
-        spec = self._spec('LibSpecLibrary')
-        assert_equals(len(spec.keywords), 3)
+        kws = self._spec('LibSpecLibrary')
+        assert_equals(len(kws), 3)
         exp_doc = 'This is kw documentation.\n\nThis is more docs.'
-        self._assert_keyword(spec.keywords[0], 'Normal Keyword', exp_doc,
+        self._assert_keyword(kws[0], 'Normal Keyword', exp_doc,
                              exp_doc.splitlines()[0], '[ foo ]')
-        self._assert_keyword(spec.keywords[1], 'Attributeless Keyword')
-        self._assert_keyword(spec.keywords[2], 'Multiarg Keyword',
+        self._assert_keyword(kws[1], 'Attributeless Keyword')
+        self._assert_keyword(kws[2], 'Multiarg Keyword',
                              args='[ arg1 | arg2=default value | *args ]')
 
     def test_reading_library_from_old_style_xml(self):
-        spec = self._spec('OldStyleLibSpecLibrary')
-        assert_equals(len(spec.keywords), 3)
+        kws = self._spec('OldStyleLibSpecLibrary')
+        assert_equals(len(kws), 3)
         exp_doc = 'This is kw documentation.\n\nThis is more docs.'
-        self._assert_keyword(spec.keywords[0], 'Normal Keyword', exp_doc,
+        self._assert_keyword(kws[0], 'Normal Keyword', exp_doc,
                              exp_doc.splitlines()[0], '[ foo ]')
-        self._assert_keyword(spec.keywords[1], 'Attributeless Keyword')
-        self._assert_keyword(spec.keywords[2], 'Multiarg Keyword',
+        self._assert_keyword(kws[1], 'Attributeless Keyword')
+        self._assert_keyword(kws[2], 'Multiarg Keyword',
                              args='[ arg1 | arg2=default value | *args ]')
 
     def _assert_keyword(self, kw, name, doc='', shortdoc='', args='[  ]'):
