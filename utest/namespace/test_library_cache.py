@@ -22,7 +22,7 @@ class TestLibraryCache(unittest.TestCase):
                                          'Get Mandatory')
 
     def test_importing_library_with_dictionary_arg(self):
-        LibraryCache({}, lambda:0).add_library('ArgLib', [{'moi':'hoi'}, []])
+        LibraryCache({}, lambda:0)._add_library('ArgLib', [{'moi':'hoi'}, []])
 
     def _create_cache_with_auto_imports(self, auto_import):
         settings = {'auto imports': [auto_import]}

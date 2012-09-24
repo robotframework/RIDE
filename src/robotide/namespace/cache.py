@@ -50,12 +50,11 @@ class LibraryCache(object):
     def get_all_cached_library_names(self):
         return self._library_keywords.get_library_names()
 
-    def add_library(self, name, args):
-        if not self._library_keywords.has_key(self._key(name, args)):
-            action = lambda: LibrarySpec(name, args, self._libraries_need_refresh_listener).keywords
-            kws = self._with_error_logging(action, [],
-                                           self._IMPORT_FAILED % (name))
-            self._library_keywords[self._key(name, args)] = kws
+    def _add_library(self, name, args):
+        action = lambda: LibrarySpec(name, args, self._libraries_need_refresh_listener).keywords
+        kws = self._with_error_logging(action, [],
+                                       self._IMPORT_FAILED % (name))
+        self._library_keywords[self._key(name, args)] = kws
 
     def _key(self, name, args):
         return (name, tuple(args or ''))
@@ -64,7 +63,7 @@ class LibraryCache(object):
         args = self._alias_to_args(alias, args)
         def _get_library_keywords():
             if not self._library_keywords.has_key(self._key(name, args)):
-                self.add_library(name, args)
+                self._add_library(name, args)
             return self._library_keywords[self._key(name, args)]
         return self._with_error_logging(_get_library_keywords, [],
                                         self._RESOLVE_FAILED % (name, args))
