@@ -49,12 +49,15 @@ class LibraryManager(Thread):
             keywords = _get_import_result_from_process(library_name, library_args)
         except ImportError:
             keywords = []
-        db_keywords = self._database.fetch_library_keywords(library_name, library_args)
+        self._update_database_and_call_callback_if_needed((library_name, library_args), keywords, callback)
+
+    def _update_database_and_call_callback_if_needed(self, library_key, keywords, callback):
+        db_keywords = self._database.fetch_library_keywords(*library_key)
         if not db_keywords or self._keywords_differ(keywords, db_keywords):
-            self._database.insert_library_keywords(library_name, library_args, keywords)
+            self._database.insert_library_keywords(library_key[0], library_key[1], keywords)
             self._call(callback, keywords)
         else:
-            self._database.update_library_timestamp(library_name, library_args)
+            self._database.update_library_timestamp(*library_key)
 
     def _call(self, callback, *args):
         try:
