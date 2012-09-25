@@ -13,7 +13,7 @@
 #  limitations under the License.
 from Queue import Queue
 import os
-from threading import Thread
+from threading import Thread, Event
 from robot.errors import DataError
 from robotide.spec.librarydatabase import LibraryDatabase
 from robotide.spec.libraryfetcher import _get_import_result_from_process
@@ -44,16 +44,27 @@ class LibraryManager(Thread):
         type = message[0]
         if type == 'fetch':
             self._handle_fetch_keywords_message(message)
+        elif type == 'insert':
+            self._handle_insert_keywords_message(message)
         return True
 
     def _handle_fetch_keywords_message(self, message):
         _, library_name, library_args, callback = message
+        keywords = self._fetch_keywords(library_name, library_args)
+        self._update_database_and_call_callback_if_needed((library_name, library_args), keywords, callback)
+
+    def _fetch_keywords(self, library_name, library_args):
         try:
             path =_get_path(library_name.replace('/', os.sep), os.path.abspath('.'))
-            keywords = _get_import_result_from_process(path, library_args)
+            return _get_import_result_from_process(path, library_args)
         except (ImportError, DataError):
-            keywords = _init_from_spec(library_name)
-        self._update_database_and_call_callback_if_needed((library_name, library_args), keywords, callback)
+            return _init_from_spec(library_name)
+
+    def _handle_insert_keywords_message(self, message):
+        _, library_name, library_args, callback = message
+        keywords = self._fetch_keywords(library_name, library_args)
+        self._database.insert_library_keywords(library_name, library_args, keywords)
+        self._call(callback, keywords)
 
     def _update_database_and_call_callback_if_needed(self, library_key, keywords, callback):
         db_keywords = self._database.fetch_library_keywords(*library_key)
@@ -71,6 +82,16 @@ class LibraryManager(Thread):
 
     def fetch_keywords(self, library_name, library_args, callback):
         self._messages.put(('fetch', library_name, library_args, callback))
+
+    def get_and_insert_keywords(self, library_name, library_args):
+        result = []
+        event = Event()
+        def result_waiting_callback(kws):
+            result.append(kws)
+            event.set()
+        self._messages.put(('insert', library_name, library_args, result_waiting_callback))
+        event.wait()
+        return result[0]
 
     def stop(self):
         self._messages.put(False)

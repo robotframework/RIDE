@@ -19,7 +19,6 @@ import time
 from robotide.robotapi import normpath
 from robotide.spec.librarydatabase import DATABASE_FILE, LibraryDatabase
 from robotide.spec.librarymanager import LibraryManager
-from robotide.spec.xmlreaders import keywords
 
 LIBRARY_MANAGER = LibraryManager(DATABASE_FILE)
 LIBRARY_MANAGER.start()
@@ -58,14 +57,7 @@ class LibraryCache(object):
             if time.time() - last_updated > 10.0:
                 LIBRARY_MANAGER.fetch_keywords(name, args, self._libraries_need_refresh_listener)
             return DATABASE_CONNECTION.fetch_library_keywords(name, args)
-        result = []
-        event = Event()
-        def foo(kws):
-            result.append(kws)
-            event.set()
-        LIBRARY_MANAGER.fetch_keywords(name, args, foo)
-        event.wait()
-        return result[0]
+        return LIBRARY_MANAGER.get_and_insert_keywords(name, args)
 
     def _key(self, name, args):
         return name, unicode(tuple(args or ''))
