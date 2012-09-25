@@ -63,14 +63,16 @@ class LibraryManager(Thread):
     def _handle_insert_keywords_message(self, message):
         _, library_name, library_args, callback = message
         keywords = self._fetch_keywords(library_name, library_args)
+        self._insert(library_name, library_args, keywords, callback)
+
+    def _insert(self, library_name, library_args, keywords, callback):
         self._database.insert_library_keywords(library_name, library_args, keywords)
         self._call(callback, keywords)
 
     def _update_database_and_call_callback_if_needed(self, library_key, keywords, callback):
         db_keywords = self._database.fetch_library_keywords(*library_key)
         if not db_keywords or self._keywords_differ(keywords, db_keywords):
-            self._database.insert_library_keywords(library_key[0], library_key[1], keywords)
-            self._call(callback, keywords)
+            self._insert(library_key[0], library_key[1], keywords, callback)
         else:
             self._database.update_library_timestamp(*library_key)
 
