@@ -13,10 +13,17 @@
 #  limitations under the License.
 
 import os
+from threading import Event
 import time
 
 from robotide.robotapi import normpath
+from robotide.spec.librarydatabase import DATABASE_FILE, LibraryDatabase
+from robotide.spec.librarymanager import LibraryManager
 from robotide.spec.xmlreaders import keywords
+
+LIBRARY_MANAGER = LibraryManager(DATABASE_FILE)
+LIBRARY_MANAGER.start()
+DATABASE_CONNECTION = LibraryDatabase(DATABASE_FILE)
 
 class LibraryCache(object):
 
@@ -46,7 +53,19 @@ class LibraryCache(object):
         return [name for name, _ in self._library_keywords]
 
     def _get_library(self, name, args):
-        return keywords(name, args, self._libraries_need_refresh_listener)
+        last_updated = DATABASE_CONNECTION.get_library_last_updated(name, args)
+        if last_updated:
+            if time.time() - last_updated > 10.0:
+                LIBRARY_MANAGER.fetch_keywords(name, args, self._libraries_need_refresh_listener)
+            return DATABASE_CONNECTION.fetch_library_keywords(name, args)
+        result = []
+        event = Event()
+        def foo(kws):
+            result.append(kws)
+            event.set()
+        LIBRARY_MANAGER.fetch_keywords(name, args, foo)
+        event.wait()
+        return result[0]
 
     def _key(self, name, args):
         return name, unicode(tuple(args or ''))

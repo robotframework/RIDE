@@ -14,6 +14,7 @@
 from Queue import Queue
 import os
 from threading import Thread
+from robot.errors import DataError
 from robotide.spec.librarydatabase import LibraryDatabase
 from robotide.spec.libraryfetcher import _get_import_result_from_process
 from robotide.spec.xmlreaders import _init_from_spec, _get_path
@@ -50,7 +51,7 @@ class LibraryManager(Thread):
         try:
             path =_get_path(library_name.replace('/', os.sep), os.path.abspath('.'))
             keywords = _get_import_result_from_process(path, library_args)
-        except ImportError:
+        except (ImportError, DataError):
             keywords = _init_from_spec(library_name)
         self._update_database_and_call_callback_if_needed((library_name, library_args), keywords, callback)
 
