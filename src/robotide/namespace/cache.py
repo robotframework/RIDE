@@ -16,7 +16,6 @@ import os
 import time
 
 from robotide.robotapi import normpath
-from robotide.publish.messages import RideLogException
 from robotide.spec.xmlreaders import keywords
 
 
@@ -55,9 +54,10 @@ class LibraryCache(object):
 
     def get_library_keywords(self, name, args=None, alias=None):
         args_with_alias = self._alias_to_args(alias, args)
-        if not self._library_keywords.has_key(self._key(name, args_with_alias)):
-            self._library_keywords[self._key(name, args_with_alias)] = [k.with_alias(alias) for k in self._get_library(name, args)]
-        return self._library_keywords[self._key(name, args_with_alias)]
+        key = self._key(name, args_with_alias)
+        if not self._library_keywords.has_key(key):
+            self._library_keywords[key] = [k.with_alias(alias) for k in self._get_library(name, args)]
+        return self._library_keywords[key]
 
     def _alias_to_args(self, alias, args):
         if alias:
