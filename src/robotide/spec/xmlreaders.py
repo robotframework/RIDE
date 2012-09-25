@@ -24,8 +24,6 @@ from iteminfo import _XMLKeywordContent
 from robotide.spec import libraryfetcher
 
 
-_library_import_by_path_endings = ('.py', '.java', '.class', '/', os.sep)
-
 def keywords(name, args, library_needs_refresh_listener):
     name = _get_library_name(name)
     try:
@@ -70,7 +68,7 @@ def _get_path(name, basedir):
     return _resolve_path(name.replace('/', os.sep), basedir)
 
 def _is_library_by_path(path):
-    return path.lower().endswith(_library_import_by_path_endings)
+    return path.lower().endswith(('.py', '.java', '.class', '/', os.sep))
 
 def _resolve_path(path, basedir):
     for base in [basedir] + sys.path:
