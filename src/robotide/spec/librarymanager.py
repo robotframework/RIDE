@@ -12,10 +12,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 from Queue import Queue
+import os
 from threading import Thread
 from robotide.spec.librarydatabase import LibraryDatabase
 from robotide.spec.libraryfetcher import _get_import_result_from_process
-from robotide.spec.xmlreaders import _init_from_spec
+from robotide.spec.xmlreaders import _init_from_spec, _get_path
 
 class LibraryManager(Thread):
 
@@ -47,7 +48,8 @@ class LibraryManager(Thread):
     def _handle_fetch_keywords_message(self, message):
         _, library_name, library_args, callback = message
         try:
-            keywords = _get_import_result_from_process(library_name, library_args)
+            path =_get_path(library_name.replace('/', os.sep), os.path.abspath('.'))
+            keywords = _get_import_result_from_process(path, library_args)
         except ImportError:
             keywords = _init_from_spec(library_name)
         self._update_database_and_call_callback_if_needed((library_name, library_args), keywords, callback)
