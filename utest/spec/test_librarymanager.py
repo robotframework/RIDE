@@ -29,7 +29,7 @@ class TestLibraryManager(unittest.TestCase):
         self._library_manager._handle_message()
         self._library_manager.fetch_keywords('BuiltIn', '', self._callback)
         self._library_manager._handle_message()
-        self.assertIsNotNone(self._keywords)
+        self.assertTrue(self._keywords is not None)
 
     def test_fetching_unknown_library(self):
         self._library_manager.fetch_keywords('FooBarZoo', '', self._callback)

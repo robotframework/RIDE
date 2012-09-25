@@ -18,7 +18,6 @@ import time
 from robotide.robotapi import normpath
 from robotide.spec.xmlreaders import keywords
 
-
 class LibraryCache(object):
 
     def __init__(self, settings, libraries_need_refresh_listener):
@@ -80,7 +79,7 @@ class LibraryCache(object):
         default_libs = {}
         for libsetting in self._settings['auto imports'] + ['BuiltIn']:
             name, args = self._get_name_and_args(libsetting)
-            default_libs[name] = keywords(name, args, self._libraries_need_refresh_listener)
+            default_libs[name] = self._get_library(name, args)
         return default_libs
 
     def _get_name_and_args(self, libsetting):
