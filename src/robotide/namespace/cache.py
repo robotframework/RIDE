@@ -13,7 +13,6 @@
 #  limitations under the License.
 
 import os
-from threading import Event
 import time
 
 from robotide.robotapi import normpath
