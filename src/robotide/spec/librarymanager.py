@@ -86,7 +86,7 @@ class LibraryManager(Thread):
         self._messages.put(('fetch', library_name, library_args, callback))
 
     def get_and_insert_keywords(self, library_name, library_args):
-        result_queue = Queue()
+        result_queue = Queue(maxsize=1)
         self._messages.put(('insert', library_name, library_args, result_queue))
         return result_queue.get()
 
