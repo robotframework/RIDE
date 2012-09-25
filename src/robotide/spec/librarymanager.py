@@ -15,6 +15,7 @@ from Queue import Queue
 from threading import Thread
 from robotide.spec.librarydatabase import LibraryDatabase
 from robotide.spec.libraryfetcher import _get_import_result_from_process
+from robotide.spec.xmlreaders import _init_from_spec
 
 class LibraryManager(Thread):
 
@@ -48,7 +49,7 @@ class LibraryManager(Thread):
         try:
             keywords = _get_import_result_from_process(library_name, library_args)
         except ImportError:
-            keywords = []
+            keywords = _init_from_spec(library_name)
         self._update_database_and_call_callback_if_needed((library_name, library_args), keywords, callback)
 
     def _update_database_and_call_callback_if_needed(self, library_key, keywords, callback):

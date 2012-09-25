@@ -1,7 +1,11 @@
+import os
 import unittest
+import sys
 from robotide.spec.libraryfetcher import _get_keywords
 from robotide.spec.librarymanager import LibraryManager
+from resources import DATAPATH
 
+sys.path.append(os.path.join(DATAPATH, 'libs'))
 
 class TestLibraryManager(unittest.TestCase):
 
@@ -31,6 +35,11 @@ class TestLibraryManager(unittest.TestCase):
         self._library_manager.fetch_keywords('FooBarZoo', '', self._callback)
         self._library_manager._handle_message()
         self.assertEqual(self._keywords, [])
+
+    def test_fetching_from_library_xml(self):
+        self._library_manager.fetch_keywords('LibSpecLibrary', '', self._callback)
+        self._library_manager._handle_message()
+        self.assertEqual(len(self._keywords), 3)
 
     def _stop_and_run(self):
         self._library_manager.stop()
