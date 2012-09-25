@@ -70,16 +70,13 @@ class LibraryDatabase(object):
         self._connection.close()
 
     def insert_library_keywords(self, library_name, library_arguments, keywords):
-        self._remove_old_versions(library_name, library_arguments)
+        old_versions = self._connection.execute('select id from libraries where name = ? and arguments = ?', (library_name, unicode(library_arguments))).fetchall()
         lib = self._insert_library(library_name, library_arguments)
         keyword_values = [[kw.name, kw.doc, u' | '.join(kw.arguments), kw.source, lib[0]] for kw in keywords if kw is not None]
         self._insert_library_keywords(keyword_values)
-        self._connection.commit()
-
-    def _remove_old_versions(self, name, arguments):
-        old_versions = self._connection.execute('select id from libraries where name = ? and arguments = ?', (name, unicode(arguments))).fetchall()
         self._connection.executemany('delete from keywords where library = ?', old_versions)
-        self._connection.execute('delete from libraries where name = ? and arguments = ?', (name, unicode(arguments)))
+        self._connection.executemany('delete from libraries where id = ?', old_versions)
+        self._connection.commit()
 
     def update_library_timestamp(self, name, arguments, milliseconds=None):
         self._connection.execute('update libraries set last_updated = ? where name = ? and arguments = ?', (milliseconds or time.time(), name, unicode(arguments)))
