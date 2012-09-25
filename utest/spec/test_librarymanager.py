@@ -41,10 +41,6 @@ class TestLibraryManager(unittest.TestCase):
         self._library_manager._handle_message()
         self.assertEqual(len(self._keywords), 3)
 
-    def _stop_and_run(self):
-        self._library_manager.stop()
-        self._library_manager.run()
-
     def _callback(self, keywords):
         self._keywords = keywords
 
