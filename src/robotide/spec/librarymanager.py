@@ -57,7 +57,7 @@ class LibraryManager(Thread):
         try:
             path =_get_path(library_name.replace('/', os.sep), os.path.abspath('.'))
             return _get_import_result_from_process(path, library_args)
-        except (ImportError, DataError):
+        except (ImportError, DataError, OSError):
             return _init_from_spec(library_name)
 
     def _handle_insert_keywords_message(self, message):
