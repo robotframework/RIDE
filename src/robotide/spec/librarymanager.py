@@ -13,7 +13,7 @@
 #  limitations under the License.
 from Queue import Queue
 import os
-from threading import Thread, Event
+from threading import Thread
 from robot.errors import DataError
 from robotide.spec.librarydatabase import LibraryDatabase
 from robotide.spec.libraryfetcher import _get_import_result_from_process
@@ -61,9 +61,9 @@ class LibraryManager(Thread):
             return _init_from_spec(library_name)
 
     def _handle_insert_keywords_message(self, message):
-        _, library_name, library_args, callback = message
+        _, library_name, library_args, result_queue = message
         keywords = self._fetch_keywords(library_name, library_args)
-        self._insert(library_name, library_args, keywords, callback)
+        self._insert(library_name, library_args, keywords, lambda result: result_queue.put(result))
 
     def _insert(self, library_name, library_args, keywords, callback):
         self._database.insert_library_keywords(library_name, library_args, keywords)
@@ -86,14 +86,9 @@ class LibraryManager(Thread):
         self._messages.put(('fetch', library_name, library_args, callback))
 
     def get_and_insert_keywords(self, library_name, library_args):
-        result = []
-        event = Event()
-        def result_waiting_callback(kws):
-            result.append(kws)
-            event.set()
-        self._messages.put(('insert', library_name, library_args, result_waiting_callback))
-        event.wait()
-        return result[0]
+        result_queue = Queue()
+        self._messages.put(('insert', library_name, library_args, result_queue))
+        return result_queue.get()
 
     def stop(self):
         self._messages.put(False)
