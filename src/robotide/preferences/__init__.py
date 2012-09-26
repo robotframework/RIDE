@@ -28,7 +28,7 @@ class RideSettings(Settings):
 
     def __init__(self):
         default_path = os.path.join(os.path.dirname(__file__), 'settings.cfg')
-        user_path = initialize_settings('ride', default_path)
+        user_path = initialize_settings('user settings', default_path)
         Settings.__init__(self, user_path)
         self._settings_dir = os.path.dirname(user_path)
         self.set('install root', os.path.dirname(os.path.dirname(__file__)))

@@ -281,50 +281,49 @@ class TestInitializeSettings(TestSettingsHelper):
 
     def setUp(self):
         self._orig_dir = settings.SETTINGS_DIRECTORY
-        self.settings_dir = os.path.dirname(__file__)
+        self.settings_dir = os.path.join(os.path.dirname(__file__), 'ride')
         settings.SETTINGS_DIRECTORY = self.settings_dir
         self._init_settings_paths()
         self._write_settings("foo = 'bar'\nhello = 'world'",
                              self.settings_path)
-        self.ride_dir = os.path.join(self.settings_dir, 'ride')
-        self.user_settings_path = os.path.join(self.ride_dir, 'user.cfg')
+        self.user_settings_path = os.path.join(self.settings_dir, 'user.cfg')
 
     def tearDown(self):
         settings.SETTINGS_DIRECTORY = self._orig_dir
         self._remove_path(self.user_settings_path)
-        os.removedirs(self.ride_dir)
+        os.removedirs(self.settings_dir)
 
     def test_initialize_settings_creates_directory(self):
-        initialize_settings('ride', self.settings_path, 'user.cfg')
-        self.assertTrue(os.path.exists(self.ride_dir))
+        initialize_settings('user settings', self.settings_path, 'user.cfg')
+        self.assertTrue(os.path.exists(self.settings_dir))
 
     def test_initialize_settings_copies_settings(self):
-        initialize_settings('ride', self.settings_path, 'user.cfg')
-        self.assertTrue(os.path.exists(self.ride_dir))
+        initialize_settings('user settings', self.settings_path, 'user.cfg')
+        self.assertTrue(os.path.exists(self.settings_dir))
 
     def test_initialize_settings_does_merge_when_settings_exists(self):
-        os.mkdir(self.ride_dir)
+        os.mkdir(self.settings_dir)
         self._write_settings("foo = 'bar'\nhello = 'world'",
                              self.settings_path)
         self._write_settings("foo = 'new value'\nhello = 'world'",
                              self.user_settings_path)
-        initialize_settings('ride', self.settings_path, 'user.cfg')
+        initialize_settings('user settings', self.settings_path, 'user.cfg')
         self._check_content({'foo':'new value', 'hello' : 'world', SettingsMigrator.SETTINGS_VERSION:SettingsMigrator.CURRENT_SETTINGS_VERSION},
                             False)
 
     def test_initialize_settings_raises_exception_when_invalid_user_settings(self):
-        os.mkdir(self.ride_dir)
+        os.mkdir(self.settings_dir)
         self._write_settings("foo = 'bar'\nhello = 'world'",
                              self.settings_path)
         self._write_settings("invalid = invalid", self.user_settings_path)
-        self.assertRaises(ConfigurationError, initialize_settings, 'ride',
+        self.assertRaises(ConfigurationError, initialize_settings, 'user settings',
                           self.settings_path, 'user.cfg')
 
     def test_initialize_settings_replaces_corrupted_settings_with_defaults(self):
-        os.mkdir(self.ride_dir)
+        os.mkdir(self.settings_dir)
         self._write_settings("dlskajldsjjw2018032")
         defaults = self._read_file(self.settings_path)
-        settings = self._read_file(initialize_settings('ride', self.settings_path, 'user.cfg'))
+        settings = self._read_file(initialize_settings('user settings', self.settings_path, 'user.cfg'))
         self.assertEqual(defaults, settings)
 
     def _read_file(self, path):

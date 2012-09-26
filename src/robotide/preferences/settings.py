@@ -22,23 +22,26 @@ from robotide.preferences.configobj import ConfigObjError
 
 
 if IS_WINDOWS:
-    SETTINGS_DIRECTORY = os.path.join(os.environ['APPDATA'], 'RobotFramework')
+    SETTINGS_DIRECTORY = os.path.join(os.environ['APPDATA'], 'RobotFramework', 'ride')
 else:
-    SETTINGS_DIRECTORY = os.path.expanduser('~/.robotframework')
+    SETTINGS_DIRECTORY = os.path.join(os.path.expanduser('~/.robotframework'), 'ride')
 if not os.path.exists(SETTINGS_DIRECTORY):
     os.mkdir(SETTINGS_DIRECTORY)
 
+def initialize_settings(type, path=None, dest_file_name=None):
+    if not os.path.exists(SETTINGS_DIRECTORY):
+        os.mkdir(SETTINGS_DIRECTORY)
+    if type == 'user settings':
+        return _copy_or_migrate_user_settings(SETTINGS_DIRECTORY, path, dest_file_name)
 
-def initialize_settings(tool_name, source_path, dest_file_name=None):
+
+def _copy_or_migrate_user_settings(settings_dir, source_path, dest_file_name):
     """ Creates settings directory and copies or merges the source to there.
 
     In case source already exists, merge is done.
     Destination file name is the source_path's file name unless dest_file_name
     is given.
     """
-    settings_dir = os.path.join(SETTINGS_DIRECTORY, tool_name)
-    if not os.path.exists(settings_dir):
-        os.mkdir(settings_dir)
     if not dest_file_name:
         dest_file_name = os.path.basename(source_path)
     settings_path = os.path.join(settings_dir, dest_file_name)
