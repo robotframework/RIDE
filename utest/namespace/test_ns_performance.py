@@ -81,10 +81,12 @@ class TestNamespacePerformance(unittest.TestCase):
 
     def _execute_keyword_find_function_n_times(self, function, n, filename=TESTCASEFILE_WITH_EVERYTHING):
         ns, testcasefile, library_manager = self._load(filename)
-        func = getattr(ns, function)
-        start_time = time.time()
-        for i in range(n):
-            func(testcasefile, 'hevonen %s' % i)
-        library_manager.stop()
-        return time.time() - start_time
+        try:
+            func = getattr(ns, function)
+            start_time = time.time()
+            for i in range(n):
+                func(testcasefile, 'hevonen %s' % i)
+            return time.time() - start_time
+        finally:
+            library_manager.stop()
 
