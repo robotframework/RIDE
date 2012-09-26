@@ -52,6 +52,7 @@ class LibraryCache(object):
         return [name for name, _ in self._library_keywords]
 
     def _get_library(self, name, args):
+        print name, args
         last_updated = DATABASE_CONNECTION.get_library_last_updated(name, args)
         if last_updated:
             if time.time() - last_updated > 10.0:
