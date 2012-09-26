@@ -8,6 +8,7 @@ from robotide.controller.chiefcontroller import ChiefController
 from resources import MessageRecordingLoadObserver, FakeSettings
 from datafilereader import TESTCASEFILE_WITH_EVERYTHING, KW1000_TESTCASEFILE,\
     KW2000_TESTCASEFILE, KW3000_TESTCASEFILE, KW4000_TESTCASEFILE
+from robotide.spec.librarymanager import LibraryManager
 
 
 class TestNamespacePerformance(unittest.TestCase):
@@ -71,16 +72,19 @@ class TestNamespacePerformance(unittest.TestCase):
 
     def _load(self, testcasefile):
         ns = Namespace(FakeSettings())
-        chief =  ChiefController(ns)
+        library_manager = LibraryManager(':memory:')
+        library_manager.create_database()
+        chief = ChiefController(ns, library_manager=library_manager)
         chief.load_datafile(testcasefile,
                             MessageRecordingLoadObserver())
-        return ns, chief._controller.data
+        return ns, chief._controller.data, library_manager
 
     def _execute_keyword_find_function_n_times(self, function, n, filename=TESTCASEFILE_WITH_EVERYTHING):
-        ns, testcasefile = self._load(filename)
+        ns, testcasefile, library_manager = self._load(filename)
         func = getattr(ns, function)
         start_time = time.time()
         for i in range(n):
             func(testcasefile, 'hevonen %s' % i)
+        library_manager.stop()
         return time.time() - start_time
 
