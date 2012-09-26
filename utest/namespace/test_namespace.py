@@ -89,8 +89,8 @@ class _DataFileTest(unittest.TestCase):
         cls.library_manager = LibraryManager(':memory:')
         cls.library_manager.start()
         cls.library_manager.create_database()
-        cls.library_manager.get_and_insert_keywords('Dialogs', '')
-        cls.library_manager.get_and_insert_keywords('LibSpecLibrary', '')
+        cls.library_manager.get_and_insert_keywords('Dialogs', [])
+        cls.library_manager.get_and_insert_keywords('LibSpecLibrary', [])
         cls.ns.set_library_manager(cls.library_manager)
 
     @classmethod
