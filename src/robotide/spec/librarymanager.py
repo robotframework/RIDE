@@ -46,6 +46,8 @@ class LibraryManager(Thread):
             self._handle_fetch_keywords_message(message)
         elif type == 'insert':
             self._handle_insert_keywords_message(message)
+        elif type == 'create':
+            self._database.create_database()
         return True
 
     def _handle_fetch_keywords_message(self, message):
@@ -89,6 +91,9 @@ class LibraryManager(Thread):
         result_queue = Queue(maxsize=1)
         self._messages.put(('insert', library_name, library_args, result_queue))
         return result_queue.get()
+
+    def create_database(self):
+        self._messages.put(('create',))
 
     def stop(self):
         self._messages.put(False)

@@ -6,9 +6,13 @@ class TestImportErrors(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        chief = datafilereader.construct_chief_controller(datafilereader.IMPORT_ERRORS)
-        suite = chief.data.suites[0]
+        cls.chief = datafilereader.construct_chief_controller(datafilereader.IMPORT_ERRORS)
+        suite = cls.chief.data.suites[0]
         cls.imports =  [i for i in suite.imports]
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.chief.close()
 
     def _find_by_name(self, name):
         for i in self.imports:

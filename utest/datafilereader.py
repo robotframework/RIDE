@@ -3,6 +3,8 @@ from resources import FakeSettings
 from robotide.controller.chiefcontroller import ChiefController
 from robotide.controller.commands import NullObserver
 from robotide.namespace import Namespace
+from robotide.spec.librarymanager import LibraryManager
+
 RESOURCES_DIR = 'resources'
 RESOURCES_HTML = 'resource.html'
 DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]),
@@ -48,7 +50,9 @@ IMPORT_ERRORS = _makepath('import_errors')
 
 def construct_chief_controller(datapath):
     settings = FakeSettings()
-    chief = ChiefController(Namespace(settings), settings)
+    library_manager = LibraryManager(':memory:')
+    library_manager.create_database()
+    chief = ChiefController(Namespace(settings), settings, library_manager)
     chief.load_data(datapath, NullObserver())
     return chief
 

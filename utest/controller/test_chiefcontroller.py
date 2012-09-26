@@ -35,6 +35,7 @@ class ChiefControllerTest(unittest.TestCase):
     def tearDown(self):
         self.suite_listener.unsubscribe()
         self.resource_listener.unsubscribe()
+        self.ctrl.close()
 
     def test_loading_suite_at_startup(self):
         self._load(MINIMAL_SUITE_PATH)
@@ -139,6 +140,7 @@ class ChiefControllerTest(unittest.TestCase):
     def test_get_all_keywords_with_resource_file_only(self):
         chief = datafilereader.construct_chief_controller(RESOURCE_PATH)
         all_kws = chief.get_all_keywords()
+        chief.close()
         res_kws = [kw for kw in all_kws if kw.name == 'Resource UK']
         assert_equals(len(res_kws), 1)
 
@@ -162,6 +164,9 @@ class TestResolvingResourceDirectories(unittest.TestCase):
 
     def setUp(self):
         self.chief = ChiefController(Namespace(FakeSettings()), FakeSettings())
+
+    def tearDown(self):
+        self.chief.close()
 
     def test_resource_file_outside_of_topsuite_is_an_external_resource(self):
         self._set_data_directory_controller('suite')
@@ -230,6 +235,9 @@ class TestFindingControllers(unittest.TestCase):
 
     def setUp(self):
         self.chief = ChiefController(Namespace(FakeSettings()), FakeSettings())
+
+    def tearDown(self):
+        self.chief.close()
 
     def test_finding_root_directory_controller(self):
         self.chief._controller = TestDataDirectoryController(_data_directory('Root'))

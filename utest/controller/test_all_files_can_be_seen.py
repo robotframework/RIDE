@@ -7,6 +7,10 @@ class TestAllFiles(unittest.TestCase):
     def setUpClass(cls):
         cls.chief = datafilereader.construct_chief_controller(datafilereader.ALL_FILES_PATH)
 
+    @classmethod
+    def tearDownClass(cls):
+        cls.chief.close()
+
     def test_all_files_can_be_seen(self):
         all_files = self.chief.data
         self.assertEqual(all_files.name, 'All Files')

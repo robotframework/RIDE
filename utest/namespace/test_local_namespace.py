@@ -10,6 +10,9 @@ class TestLocalNamespace(unittest.TestCase):
         self._test = datafilereader.get_ctrl_by_name('Test Case', self._chief.datafiles[0].tests)
         self._keyword = datafilereader.get_ctrl_by_name('Keyword', self._chief.datafiles[0].keywords)
 
+    def tearDown(self):
+        self._chief.close()
+
     def test_macro_controller_has_local_namespace(self):
         assert_true(self._test.get_local_namespace() is not None)
         assert_true(self._keyword.get_local_namespace() is not None)

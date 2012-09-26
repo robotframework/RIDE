@@ -113,10 +113,14 @@ class FindOccurrencesWithFiles(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        ctrl = datafilereader.construct_chief_controller(datafilereader.OCCURRENCES_PATH)
-        cls.ts1 = datafilereader.get_ctrl_by_name('TestSuite1', ctrl.datafiles)
-        cls.ts2 = datafilereader.get_ctrl_by_name('TestSuite2', ctrl.datafiles)
-        cls.resu = datafilereader.get_ctrl_by_name(datafilereader.OCCURRENCES_RESOURCE_NAME, ctrl.datafiles)
+        cls.chief_ctrl = datafilereader.construct_chief_controller(datafilereader.OCCURRENCES_PATH)
+        cls.ts1 = datafilereader.get_ctrl_by_name('TestSuite1', cls.chief_ctrl.datafiles)
+        cls.ts2 = datafilereader.get_ctrl_by_name('TestSuite2', cls.chief_ctrl.datafiles)
+        cls.resu = datafilereader.get_ctrl_by_name(datafilereader.OCCURRENCES_RESOURCE_NAME, cls.chief_ctrl.datafiles)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.chief_ctrl.close()
 
     def test_finds_only_occurrences_with_same_source(self):
         self.assert_occurrences(self.ts1, 'My Keyword', 2)

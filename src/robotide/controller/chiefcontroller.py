@@ -26,11 +26,16 @@ from .basecontroller import WithNamespace, _BaseController
 from .dataloader import DataLoader
 from .filecontrollers import DataController, ResourceFileControllerFactory
 from .robotdata import NewTestCaseFile, NewTestDataDirectory
+from robotide.spec.librarydatabase import DATABASE_FILE
+from robotide.spec.librarymanager import LibraryManager
+from robotide.utils import overrides
 
 
 class ChiefController(_BaseController, WithNamespace):
 
-    def __init__(self, namespace=None, settings=None):
+    def __init__(self, namespace=None, settings=None, library_manager=None):
+        self._library_manager = library_manager or LibraryManager(DATABASE_FILE)
+        self._library_manager.start()
         self._set_namespace(namespace)
         self._settings = settings
         self._loader = DataLoader(namespace)
@@ -39,6 +44,19 @@ class ChiefController(_BaseController, WithNamespace):
         self.external_resources = []
         self._resource_file_controller_factory = ResourceFileControllerFactory(namespace)
         self._serializer = Serializer(settings, LOG)
+
+    def __del__(self):
+        if self._library_manager:
+            self.close()
+
+    def close(self):
+        self._library_manager.stop()
+        self._library_manager = None
+
+    @overrides(WithNamespace)
+    def _set_namespace(self, namespace):
+        namespace.set_library_manager(self._library_manager)
+        WithNamespace._set_namespace(self, namespace)
 
     @property
     def display_name(self):

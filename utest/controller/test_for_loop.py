@@ -11,6 +11,10 @@ class TestForLoop(unittest.TestCase):
     def setUpClass(cls):
         cls.chief = datafilereader.construct_chief_controller(datafilereader.FOR_LOOP_PATH)
 
+    @classmethod
+    def tearDownClass(cls):
+        cls.chief.close()
+
     def test_for_loop_move(self):
         test = self.chief.datafiles[1].tests[0]
         test.execute(MoveRowsDown([0]))

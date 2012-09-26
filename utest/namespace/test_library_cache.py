@@ -5,11 +5,23 @@ import os
 from robotide.namespace.cache import LibraryCache
 
 from resources import DATAPATH
+from robotide.spec.librarymanager import LibraryManager
 
 sys.path.append(os.path.join(DATAPATH, 'libs'))
 
 
 class TestLibraryCache(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls._library_manager = LibraryManager(':memory:')
+        cls._library_manager.start()
+        cls._library_manager.create_database()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls._library_manager.stop()
+        cls._library_manager = None
 
     def test_auto_importing_libraries(self):
         cache = self._create_cache_with_auto_imports('TestLib')
@@ -20,11 +32,11 @@ class TestLibraryCache(unittest.TestCase):
         self._assert_keyword_in_keywords(cache.get_default_keywords(), 'Get Mandatory')
 
     def test_importing_library_with_dictionary_arg(self):
-        LibraryCache({}, lambda:0)._get_library('ArgLib', [{'moi':'hoi'}, []])
+        LibraryCache({}, lambda:0, self._library_manager)._get_library('ArgLib', [{'moi':'hoi'}, []])
 
     def _create_cache_with_auto_imports(self, auto_import):
         settings = {'auto imports': [auto_import]}
-        return LibraryCache(settings, lambda:0)
+        return LibraryCache(settings, lambda:0, self._library_manager)
 
     def _assert_keyword_in_keywords(self, keywords, name):
         for kw in keywords:

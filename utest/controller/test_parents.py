@@ -19,11 +19,15 @@ class TestParents(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        chief = datafilereader.construct_chief_controller(datafilereader.OCCURRENCES_PATH)
-        cls.directory = chief.data
-        cls.test = datafilereader.get_ctrl_by_name('TestSuite1', chief.datafiles)
-        cls.resource = datafilereader.get_ctrl_by_name(datafilereader.OCCURRENCES_RESOURCE_NAME, chief.datafiles)
-        cls.external_resource = datafilereader.get_ctrl_by_name('Resu', chief.datafiles)
+        cls.chief = datafilereader.construct_chief_controller(datafilereader.OCCURRENCES_PATH)
+        cls.directory = cls.chief.data
+        cls.test = datafilereader.get_ctrl_by_name('TestSuite1', cls.chief.datafiles)
+        cls.resource = datafilereader.get_ctrl_by_name(datafilereader.OCCURRENCES_RESOURCE_NAME, cls.chief.datafiles)
+        cls.external_resource = datafilereader.get_ctrl_by_name('Resu', cls.chief.datafiles)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.chief.close()
 
     def test_test_suite_parent_is_directory(self):
         self.assertEquals(self.test.parent, self.directory)

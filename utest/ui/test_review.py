@@ -21,8 +21,11 @@ from robotide.ui.review import ReviewRunner
 class TestReview(unittest.TestCase):
     
     def setUp(self):
-        chief = datafilereader.construct_chief_controller(datafilereader.UNUSED_KEYWORDS_PATH)
-        self.runner = ReviewRunner(chief, self)
+        self.chief = datafilereader.construct_chief_controller(datafilereader.UNUSED_KEYWORDS_PATH)
+        self.runner = ReviewRunner(self.chief, self)
+
+    def tearDown(self):
+        self.chief.close()
     
     def test_filter(self):
         assert_true(self.helper(True, False, False, False, False,

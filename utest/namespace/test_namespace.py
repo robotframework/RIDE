@@ -13,6 +13,7 @@ from robotide.controller.filecontrollers import DataController
 from datafilereader import *
 from robotide.spec.iteminfo import ArgumentInfo
 from robotide.context import IS_WINDOWS
+from robotide.spec.librarymanager import LibraryManager
 
 RESOURCES_DIR = 'resources'
 
@@ -78,10 +79,22 @@ class ParentMock(object):
 
 
 class _DataFileTest(unittest.TestCase):
-    tcf = _build_test_case_file()
-    tcf_ctrl = DataController(tcf, None)
-    kw = tcf_ctrl.keywords[0]
-    ns = Namespace(FakeSettings())
+
+    @classmethod
+    def setUpClass(cls):
+        cls.tcf = _build_test_case_file()
+        cls.tcf_ctrl = DataController(cls.tcf, None)
+        cls.kw = cls.tcf_ctrl.keywords[0]
+        cls.ns = Namespace(FakeSettings())
+        cls.library_manager = LibraryManager(':memory:')
+        cls.library_manager.start()
+        cls.library_manager.create_database()
+        cls.ns.set_library_manager(cls.library_manager)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.library_manager.stop()
+        cls.library_manager = None
 
 
 class TestKeywordSuggestions(_DataFileTest):
@@ -312,6 +325,7 @@ class TestKeywordSearch(_DataFileTest):
     def test_resource_kws_only_once_through_chief_controller(self):
         chief = construct_chief_controller(OCCURRENCES_PATH)
         all_kws = chief.get_all_keywords()
+        chief.close()
         self._check_resource_keyword_only_once(all_kws)
 
     def _check_resource_keyword_only_once(self, all_kws):

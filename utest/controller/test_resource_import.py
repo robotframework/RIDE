@@ -23,6 +23,7 @@ class TestResourceImport(unittest.TestCase):
 
     def tearDown(self):
         os.remove(self.res_full_name)
+        self.ctrl.close()
 
     def _create_resource(self):
         self.new_resource = self.ctrl.execute(CreateNewResource(self.res_full_name))

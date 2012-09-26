@@ -10,10 +10,14 @@ class ResourceUsageTests(unittest.TestCase):
     # This is for performance reasons but be warned when you add tests!
     @classmethod
     def setUpClass(cls):
-        ctrl = datafilereader.construct_chief_controller(datafilereader.OCCURRENCES_PATH)
-        cls.ts1 = datafilereader.get_ctrl_by_name('TestSuite1', ctrl.datafiles)
-        cls.ts2 = datafilereader.get_ctrl_by_name('TestSuite2', ctrl.datafiles)
-        cls.resu = datafilereader.get_ctrl_by_name(datafilereader.OCCURRENCES_RESOURCE_NAME, ctrl.datafiles)
+        cls.ctrl = datafilereader.construct_chief_controller(datafilereader.OCCURRENCES_PATH)
+        cls.ts1 = datafilereader.get_ctrl_by_name('TestSuite1', cls.ctrl.datafiles)
+        cls.ts2 = datafilereader.get_ctrl_by_name('TestSuite2', cls.ctrl.datafiles)
+        cls.resu = datafilereader.get_ctrl_by_name(datafilereader.OCCURRENCES_RESOURCE_NAME, cls.ctrl.datafiles)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.ctrl.close()
 
     def test_resource_import_knows_imported_resource_controller(self):
         assert_equals(self.resu, self.ts1.imports[0].get_imported_controller())

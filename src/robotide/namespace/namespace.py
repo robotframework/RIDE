@@ -41,15 +41,20 @@ class Namespace(object):
 
     def __init__(self, settings):
         self._settings = settings
+        self._library_manager = None
         self._init_caches()
         self._content_assist_hooks = []
         self._update_listeners = []
 
     def _init_caches(self):
-        self._lib_cache = LibraryCache(self._settings, self.update)
+        self._lib_cache = LibraryCache(self._settings, self.update, self._library_manager)
         self._resource_factory = ResourceFactory(self._settings)
         self._retriever = DatafileRetriever(self._lib_cache, self._resource_factory)
         self._context_factory = _RetrieverContextFactory()
+
+    def set_library_manager(self, library_manager):
+        self._library_manager = library_manager
+        self._lib_cache.set_library_manager(library_manager)
 
     def update(self):
         self._retriever.expire_cache()
