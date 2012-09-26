@@ -15,31 +15,11 @@
 import os
 import sys
 from robot.errors import DataError
-
-
-from robotide.publish import RideLogException
 from robotide import utils
-
 from iteminfo import _XMLKeywordContent
-from robotide.spec import libraryfetcher
 
 
-def keywords(name, args, library_needs_refresh_listener):
-    name = _get_library_name(name)
-    try:
-        keywords_list = _init_from_library(name, args, library_needs_refresh_listener)
-    except (ImportError, DataError), err:
-        keywords_list = _init_from_spec(name)
-        if not keywords_list:
-            msg = 'Importing test library "%s" failed' % name
-            RideLogException(message=msg, exception=err, level='WARN').publish()
-    return keywords_list
-
-def _init_from_library(name, args, library_needs_refresh_listener):
-    path =_get_path(name.replace('/', os.sep), os.path.abspath('.'))
-    return libraryfetcher.import_library(path, args, library_needs_refresh_listener)
-
-def _init_from_spec(name):
+def init_from_spec(name):
     return _init_from_specfile(utils.find_from_pythonpath(name + '.xml'), name)
 
 def _init_from_specfile(specfile, name):
@@ -62,7 +42,7 @@ def _parse_xml(file, name):
         source_type += ' file'
     return [_XMLKeywordContent(node, name, source_type) for node in kw_nodes]
 
-def _get_path(name, basedir):
+def get_path(name, basedir):
     if not _is_library_by_path(name):
         return name.replace(' ', '')
     return _resolve_path(name.replace('/', os.sep), basedir)

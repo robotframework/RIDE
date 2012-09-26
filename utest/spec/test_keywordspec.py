@@ -19,37 +19,15 @@ import os
 from robot.utils.asserts import assert_equals, assert_true
 
 from resources import DATAPATH
-from robotide.spec.xmlreaders import keywords
+from robotide.spec.xmlreaders import init_from_spec
 
 sys.path.append(os.path.join(DATAPATH, 'libs'))
 
 
 class TestLibrarySpec(unittest.TestCase):
 
-    def test_opening_standard_library(self):
-        assert_true(len(self._spec('OperatingSystem')))
-
-    def _spec(self, name, args=None):
-        return keywords(name, args, lambda:0)
-
-    def test_opening_library_with_args(self):
-        assert_equals(len(self._spec('ArgLib', ['arg value'])), 2)
-
-    def test_importing_library_with_mutable_objects(self):
-        assert_equals(len(self._spec('ArgLib', [[1,2], {1:3}])), 2)
-
-    def test_reading_library_from_pythonpath(self):
-        kws = self._spec('TestLib')
-        self._assert_keyword(kws[0], 'Testlib Keyword', args=False)
-        exp_doc = 'This keyword requires one argument, has one optional argument'\
-                    ' and varargs.\n\nThis is some more documentation'
-        self._assert_keyword(kws[1], 'Testlib Keyword With Args',
-                             exp_doc, exp_doc.splitlines()[0], args=False)
-
-    def test_reading_library_with_relative_import_from_pythonpath(self):
-        kws = self._spec('sub/libsi.py')
-        assert_equals(len(kws), 1)
-        self._assert_keyword(kws[0], 'Libsi Keyword', args=False)
+    def _spec(self, name):
+        return init_from_spec(name)
 
     def test_reading_library_from_xml(self):
         kws = self._spec('LibSpecLibrary')

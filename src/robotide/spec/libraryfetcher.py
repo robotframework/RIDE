@@ -15,68 +15,11 @@ from Queue import Empty
 from multiprocessing import Queue
 from multiprocessing.process import Process
 import sys
-from threading import Thread, Lock
-import time
 from robot.running import TestLibrary
 from robotide.spec.iteminfo import LibraryKeywordInfo
-from robotide.spec.librarydatabase import LibraryDatabase, DATABASE_FILE
 
-DB_LOCK = Lock()
 
-def import_library(path, args, library_needs_refresh_listener):
-    db = LibraryDatabase(DATABASE_FILE)
-    try:
-        last_updated = db.get_library_last_updated(path, args)
-        if last_updated:
-            if time.time() - last_updated > 10.0:
-                _refresh_library(path, args, library_needs_refresh_listener)
-            return db.fetch_library_keywords(path, args)
-        return _get_import_result_from_process_to_db(path, args)
-    finally:
-        db.close()
-
-def _refresh_library(path, args, library_needs_refresh_listener):
-    # Eventually consistent trick
-    def execute():
-        try:
-            _get_import_result_from_process_and_update_db(path, args, library_needs_refresh_listener)
-        except ImportError:
-            pass
-    t = Thread(target=execute)
-    t.setDaemon(True)
-    t.start()
-
-def _get_import_result_from_process_and_update_db(path, args, library_needs_refresh_listener):
-    keywords = _get_import_result_from_process(path, args)
-    db = LibraryDatabase(DATABASE_FILE)
-    try:
-        if _keywords_differ(keywords, db.fetch_library_keywords(path, args)):
-            with DB_LOCK:
-                db.insert_library_keywords(path, args, keywords)
-            library_needs_refresh_listener()
-        else:
-            with DB_LOCK:
-                db.update_library_timestamp(path, args)
-        return keywords
-    finally:
-        db.close()
-
-def _get_import_result_from_process_to_db(path, args):
-    keywords = _get_import_result_from_process(path, args)
-    def execute():
-        database = LibraryDatabase(DATABASE_FILE)
-        try:
-            with DB_LOCK:
-                database.insert_library_keywords(path, args, keywords)
-            return keywords
-        finally:
-            database.close()
-    t = Thread(target=execute)
-    t.setDaemon(True)
-    t.start()
-    return keywords
-
-def _get_import_result_from_process(path, args):
+def get_import_result_from_process(path, args):
     q = Queue(maxsize=1)
     p = Process(target=_library_initializer, args=(q, path, args))
     p.start()
@@ -97,22 +40,6 @@ def _library_initializer(queue, path, args):
         queue.put(e)
     finally:
         sys.exit()
-
-def _keywords_differ(keywords1, keywords2):
-    if keywords1 != keywords2 and None in (keywords1, keywords2):
-        return True
-    if len(keywords1) != len(keywords2):
-        return True
-    for k1, k2 in zip(keywords1, keywords2):
-        if k1.name != k2.name:
-            return True
-        if k1.doc != k2.doc:
-            return True
-        if k1.arguments != k2.arguments:
-            return True
-        if k1.source != k2.source:
-            return True
-    return False
 
 def _get_keywords(path, args):
     lib = TestLibrary(path, args)

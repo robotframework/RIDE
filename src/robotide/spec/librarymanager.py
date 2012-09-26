@@ -15,9 +15,10 @@ from Queue import Queue
 import os
 from threading import Thread
 from robot.errors import DataError
+from robotide.publish import RideLogException
 from robotide.spec.librarydatabase import LibraryDatabase
-from robotide.spec.libraryfetcher import _get_import_result_from_process
-from robotide.spec.xmlreaders import _init_from_spec, _get_path
+from robotide.spec.libraryfetcher import get_import_result_from_process
+from robotide.spec.xmlreaders import init_from_spec, get_path
 
 class LibraryManager(Thread):
 
@@ -57,10 +58,14 @@ class LibraryManager(Thread):
 
     def _fetch_keywords(self, library_name, library_args):
         try:
-            path =_get_path(library_name.replace('/', os.sep), os.path.abspath('.'))
-            return _get_import_result_from_process(path, library_args)
-        except (ImportError, DataError, OSError):
-            return _init_from_spec(library_name)
+            path = get_path(library_name.replace('/', os.sep), os.path.abspath('.'))
+            return get_import_result_from_process(path, library_args)
+        except (ImportError, DataError, OSError), err:
+            kws = init_from_spec(library_name)
+            if not kws:
+                msg = 'Importing test library "%s" failed' % library_name
+                RideLogException(message=msg, exception=err, level='WARN').publish()
+            return kws
 
     def _handle_insert_keywords_message(self, message):
         _, library_name, library_args, result_queue = message
