@@ -19,15 +19,22 @@ from resources import (COMPLEX_SUITE_PATH, MINIMAL_SUITE_PATH, RESOURCE_PATH,
                        EXTERNAL_RES_UNSORTED_PATH, FakeSettings)
 from resources.mocks import PublisherListener
 import datafilereader
+from robotide.spec.librarymanager import LibraryManager
 
 
 ALL_RESOURCE_PATH_RELATED_RESOURCE_IMPORTS = [RESOURCE_PATH, RESOURCE_PATH2, RESOURCE_PATH3, RESOURCE_PATH_TXT]
 
 
+def _library_manager():
+    library_manager = LibraryManager(':memory:')
+    library_manager.create_database()
+    return library_manager
+
 class ChiefControllerTest(unittest.TestCase):
 
     def setUp(self):
-        self.ctrl = ChiefController(Namespace(FakeSettings()), FakeSettings())
+        self._library_manager = _library_manager()
+        self.ctrl = ChiefController(Namespace(FakeSettings()), FakeSettings(), self._library_manager)
         self.load_observer = MessageRecordingLoadObserver()
         self.suite_listener = PublisherListener(RideOpenSuite)
         self.resource_listener = PublisherListener(RideOpenResource)
@@ -36,6 +43,7 @@ class ChiefControllerTest(unittest.TestCase):
         self.suite_listener.unsubscribe()
         self.resource_listener.unsubscribe()
         self.ctrl.close()
+        self._library_manager.stop()
 
     def test_loading_suite_at_startup(self):
         self._load(MINIMAL_SUITE_PATH)
@@ -163,7 +171,7 @@ def _testcasefile(path):
 class TestResolvingResourceDirectories(unittest.TestCase):
 
     def setUp(self):
-        self.chief = ChiefController(Namespace(FakeSettings()), FakeSettings())
+        self.chief = ChiefController(Namespace(FakeSettings()), FakeSettings(), _library_manager())
 
     def tearDown(self):
         self.chief.close()
@@ -234,7 +242,7 @@ class TestResolvingResourceDirectories(unittest.TestCase):
 class TestFindingControllers(unittest.TestCase):
 
     def setUp(self):
-        self.chief = ChiefController(Namespace(FakeSettings()), FakeSettings())
+        self.chief = ChiefController(Namespace(FakeSettings()), FakeSettings(), _library_manager())
 
     def tearDown(self):
         self.chief.close()

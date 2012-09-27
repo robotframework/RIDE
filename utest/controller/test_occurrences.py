@@ -14,6 +14,7 @@ from robotide.publish.messages import RideItemStepsChanged, RideItemSettingsChan
     RideItemNameChanged
 from robotide.namespace.namespace import Namespace
 import datafilereader
+from robotide.spec.librarymanager import LibraryManager
 from robotide.usages.commands import FindUsages
 
 
@@ -48,7 +49,9 @@ def TestCaseControllerWithSteps(chief=None, source='some_suite.txt'):
     uk = tcf.keyword_table.add(EMBEDDED_ARGUMENTS_KEYWORD)
     uk.add_step(['No Operation'])
     if chief is None:
-        chief = ChiefController(Namespace(FakeSettings()))
+        library_manager = LibraryManager(':memory:')
+        library_manager.create_database()
+        chief = ChiefController(Namespace(FakeSettings()), library_manager=library_manager)
     tcf_ctrl = TestCaseFileController(tcf, chief)
     chief._controller = tcf_ctrl
     tctablectrl = TestCaseTableController(tcf_ctrl,

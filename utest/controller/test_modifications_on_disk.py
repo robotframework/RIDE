@@ -15,6 +15,7 @@ from robotide.publish.messages import RideDataFileRemoved
 from robotide.publish import PUBLISHER
 import shutil
 from robotide.namespace.namespace import Namespace
+from robotide.spec.librarymanager import LibraryManager
 
 def create_test_data(path, filepath, resourcepath, initpath):
     if not os.path.exists(path):
@@ -35,7 +36,9 @@ def remove_test_data(path):
     shutil.rmtree(path)
 
 def create_chief():
-    return ChiefController(Namespace(FakeSettings()), FakeSettings())
+    library_manager = LibraryManager(':memory:')
+    library_manager.create_database()
+    return ChiefController(Namespace(FakeSettings()), FakeSettings(), library_manager)
 
 
 class _DataDependentTest(unittest.TestCase):
