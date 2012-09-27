@@ -12,31 +12,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import os
-
-
-from.settings import Settings, initialize_settings
+from .settings import Settings, initialize_settings, RideSettings
 from .editor import PreferenceEditor
 from .widgets import (PreferencesPanel, PreferencesComboBox,
     PreferencesColorPicker)
 from .imports import ImportPreferences
 from .saving import SavingPreferences
 from .colors import ColorPreferences
-
-
-class RideSettings(Settings):
-
-    def __init__(self):
-        default_path = os.path.join(os.path.dirname(__file__), 'settings.cfg')
-        user_path = initialize_settings('user settings', default_path)
-        Settings.__init__(self, user_path)
-        self._settings_dir = os.path.dirname(user_path)
-        self.set('install root', os.path.dirname(os.path.dirname(__file__)))
-
-    def get_path(self, *parts):
-        """Returns path which combines settings directory and given parts."""
-        return os.path.join(self._settings_dir, *parts)
-
 
 class Preferences(object):
 
