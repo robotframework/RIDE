@@ -71,11 +71,11 @@ class LibraryDatabase(object):
 
     def insert_library_keywords(self, library_name, library_arguments, keywords):
         old_versions = self._connection.execute('select id from libraries where name = ? and arguments = ?', (library_name, unicode(library_arguments))).fetchall()
+        self._connection.executemany('delete from keywords where library = ?', old_versions)
+        self._connection.executemany('delete from libraries where id = ?', old_versions)
         lib = self._insert_library(library_name, library_arguments)
         keyword_values = [[kw.name, kw.doc, u' | '.join(kw.arguments), kw.source, lib[0]] for kw in keywords if kw is not None]
         self._insert_library_keywords(keyword_values)
-        self._connection.executemany('delete from keywords where library = ?', old_versions)
-        self._connection.executemany('delete from libraries where id = ?', old_versions)
         self._connection.commit()
 
     def update_library_timestamp(self, name, arguments, milliseconds=None):

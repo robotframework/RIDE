@@ -28,7 +28,7 @@ class TestLibraryDatabase(unittest.TestCase):
         self._database.insert_library_keywords('lib.py', 'foo', [LibraryKeywordInfo('this is old', 'doc', 'lib.py', '')])
         self._database.insert_library_keywords('lib.py', 'foo', [LibraryKeywordInfo('this is new', 'doc', 'lib.py', '')])
         kws = self._database.fetch_library_keywords('lib.py', 'foo')
-        self.assertEqual(len(kws), 1)
+        self.assertEqual(len(kws), 1, unicode(kws))
         self.assertEqual(kws[0].name, 'this is new')
 
     def test_removing_old_data(self):
