@@ -16,10 +16,8 @@ import os
 import shutil
 
 from robotide.context.platform import IS_WINDOWS
-
-from .configobj import ConfigObj, Section, UnreprError
 from robotide.preferences.configobj import ConfigObjError
-
+from .configobj import ConfigObj, Section, UnreprError
 
 if IS_WINDOWS:
     SETTINGS_DIRECTORY = os.path.join(os.environ['APPDATA'], 'RobotFramework', 'ride')
@@ -30,10 +28,9 @@ if not os.path.exists(SETTINGS_DIRECTORY):
 
 def initialize_settings(type, path=None, dest_file_name=None):
     if not os.path.exists(SETTINGS_DIRECTORY):
-        os.mkdir(SETTINGS_DIRECTORY)
+        os.makedirs(SETTINGS_DIRECTORY)
     if type == 'user settings':
         return _copy_or_migrate_user_settings(SETTINGS_DIRECTORY, path, dest_file_name)
-
 
 def _copy_or_migrate_user_settings(settings_dir, source_path, dest_file_name):
     """ Creates settings directory and copies or merges the source to there.
@@ -204,7 +201,7 @@ class _Section:
     def add_section(self, name, **defaults):
         """Creates section or updates existing section with defaults."""
         if name in self._config_obj and not isinstance(self._config_obj[name], Section):
-            raise SectionError("Cannot override value with section.")
+            raise SectionError('Cannot override value with section.')
         if name not in self._config_obj:
             self._config_obj[name] = {}
         return self[name].set_defaults(**defaults)
@@ -232,3 +229,17 @@ class Settings(_Section):
     def notify(self, name, old_value, new_value):
         for l in self._listeners:
             l.setting_changed(name, old_value, new_value)
+
+
+class RideSettings(Settings):
+
+    def __init__(self):
+        default_path = os.path.join(os.path.dirname(__file__), 'settings.cfg')
+        user_path = initialize_settings('user settings', default_path)
+        Settings.__init__(self, user_path)
+        self._settings_dir = os.path.dirname(user_path)
+        self.set('install root', os.path.dirname(os.path.dirname(__file__)))
+
+    def get_path(self, *parts):
+        """Returns path which combines settings directory and given parts."""
+        return os.path.join(self._settings_dir, *parts)
