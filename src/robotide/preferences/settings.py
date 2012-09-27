@@ -26,7 +26,7 @@ else:
 if not os.path.exists(SETTINGS_DIRECTORY):
     os.mkdir(SETTINGS_DIRECTORY)
 
-def initialize_settings(type, path=None, dest_file_name=None):
+def initialize_settings(type, path, dest_file_name=None):
     if not os.path.exists(SETTINGS_DIRECTORY):
         os.makedirs(SETTINGS_DIRECTORY)
     if type == 'user settings':
@@ -238,25 +238,55 @@ class RideSettings(Settings):
         Settings.__init__(self, user_path)
         self._settings_dir = os.path.dirname(user_path)
         self.set('install root', os.path.dirname(os.path.dirname(__file__)))
-        self._excludes = _get_excludes(SETTINGS_DIRECTORY, self.get('default directory', None))
+        self.excludes = Excludes(self)
 
     def get_path(self, *parts):
         """Returns path which combines settings directory and given parts."""
         return os.path.join(self._settings_dir, *parts)
 
-def _get_project_name(project_dir):
-    if not project_dir:
-        raise Exception('lol') #TODO FIXME
-    project_dir = project_dir[:-1] if project_dir.endswith('/') else project_dir # strip trailing slash
-    project_name = os.path.split(project_dir)[-1]
-    return project_name
 
-def _get_excludes(settings_dir, project_dir):
-    project_name = _get_project_name(project_dir)
-    exclude_file_path = os.path.join(settings_dir, project_name)
-    excludes = None
-    try:
-        excludes = open(exclude_file_path, 'w').read().split()
-    except IOError:
-        raise Exception('lol') #TODO FIXME
-    return excludes
+class Excludes():
+
+    def __init__(self, settings):
+        self._settings = settings if settings else RideSettings()
+        self._dir_for_settings = SETTINGS_DIRECTORY
+        self._project_name = self._get_project_name(self._settings.get('default directory', None))
+        self._exclude_file_path = os.path.join(self._dir_for_settings, self._project_name)
+        self._settings.add_change_listener(self)
+
+    def setting_changed(self, name, old_value, new_value):
+        if name == 'default directory':
+            _update_project_file(new_value)
+
+    def _update_project_file(self, new_project_name):
+        self._project_name = new_project_name
+        self._exclude_file_path = os.path.join(self._dir_for_settings, self._project_name)
+
+    def _get_project_name(self, project_dir):
+        if not project_dir: # might be None
+            raise Exception('lol') #TODO FIXME
+        project_dir = project_dir.rstrip('/') # strip trailing slash for os.path.split
+        project_name = os.path.split(project_dir)[-1]
+        return project_name
+
+    def get_excludes(self):
+        excludes = None
+        try:
+            excludes = open(exclude_file_path, 'w').read().split()
+        except IOError:
+            raise Exception('lol') #TODO FIXME
+        return excludes
+
+    def update_excludes(self, new_excludes):
+        excludes = self.get_excludes()
+        new_excludes = [exclude for exclude in new_excludes if exclude not in excludes]
+        excludes.extend(new_excludes)
+        exclude_file = None
+        try:
+            exclude_file = open(exclude_file_path, 'w')
+        except IOError:
+            raise Exception('lol') #TODO FIXME
+
+        for exclude in excludes:
+            exclude_file.write("%s\n", exclude)
+
