@@ -12,6 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 from Queue import Queue
+from _sqlite3 import OperationalError
 import os
 from threading import Thread
 from robot.errors import DataError
@@ -78,10 +79,13 @@ class LibraryManager(Thread):
 
     def _update_database_and_call_callback_if_needed(self, library_key, keywords, callback):
         db_keywords = self._database.fetch_library_keywords(*library_key)
-        if not db_keywords or self._keywords_differ(keywords, db_keywords):
-            self._insert(library_key[0], library_key[1], keywords, callback)
-        else:
-            self._database.update_library_timestamp(*library_key)
+        try:
+            if not db_keywords or self._keywords_differ(keywords, db_keywords):
+                self._insert(library_key[0], library_key[1], keywords, callback)
+            else:
+                self._database.update_library_timestamp(*library_key)
+        except OperationalError:
+            pass
 
     def _call(self, callback, *args):
         try:
