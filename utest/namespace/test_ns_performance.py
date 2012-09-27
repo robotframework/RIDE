@@ -83,6 +83,7 @@ class TestNamespacePerformance(unittest.TestCase):
         ns, testcasefile, library_manager = self._load(filename)
         try:
             func = getattr(ns, function)
+            func(testcasefile, 'hevonen -1') # execute one time to initialize caches correctly
             start_time = time.time()
             for i in range(n):
                 func(testcasefile, 'hevonen %s' % i)
