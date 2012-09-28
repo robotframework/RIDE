@@ -35,7 +35,7 @@ class ChiefController(_BaseController, WithNamespace):
 
     def __init__(self, namespace=None, settings=None, library_manager=None):
         self._library_manager = library_manager or LibraryManager(DATABASE_FILE)
-        if not library_manager.is_alive():
+        if not self._library_manager.is_alive():
             self._library_manager.start()
         self._set_namespace(namespace)
         self._settings = settings
