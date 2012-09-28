@@ -18,13 +18,13 @@ import time
 from robotide.robotapi import normpath
 from robotide.spec.librarydatabase import DATABASE_FILE, LibraryDatabase
 
-DATABASE_CONNECTION = LibraryDatabase(DATABASE_FILE)
 
 class LibraryCache(object):
 
     def __init__(self, settings, libraries_need_refresh_listener, library_manager):
         self._settings = settings
         self._library_manager = library_manager
+        self._library_database = LibraryDatabase(DATABASE_FILE)
         self._libraries_need_refresh_listener = libraries_need_refresh_listener
         self._library_keywords = {}
         self.__default_libraries = None
@@ -34,6 +34,7 @@ class LibraryCache(object):
         self._library_manager = library_manager
 
     def expire(self):
+        self._library_database.close()
         self.__init__(self._settings, self._libraries_need_refresh_listener, self._library_manager)
 
     @property
@@ -52,11 +53,11 @@ class LibraryCache(object):
         return [name for name, _ in self._library_keywords]
 
     def _get_library(self, name, args):
-        last_updated = DATABASE_CONNECTION.get_library_last_updated(name, args)
+        last_updated = self._library_database.get_library_last_updated(name, args)
         if last_updated:
             if time.time() - last_updated > 10.0:
                 self._library_manager.fetch_keywords(name, args, self._libraries_need_refresh_listener)
-            return DATABASE_CONNECTION.fetch_library_keywords(name, args)
+            return self._library_database.fetch_library_keywords(name, args)
         return self._library_manager.get_and_insert_keywords(name, args)
 
     def _key(self, name, args):

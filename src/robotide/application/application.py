@@ -20,6 +20,7 @@ from robotide.application.updatenotifier import UpdateNotifierController, Update
 
 from robotide.namespace import Namespace
 from robotide.controller import ChiefController
+from robotide.spec import librarydatabase
 from robotide.ui import RideFrame, LoadProgressObserver
 from robotide.pluginapi import RideLogMessage
 from robotide import context, contrib
@@ -39,6 +40,7 @@ class RIDE(wx.App):
 
     def OnInit(self):
         self.settings = RideSettings()
+        librarydatabase.initialize_database()
         self.preferences = Preferences(self.settings)
         self.namespace = Namespace(self.settings)
         self._controller = ChiefController(self.namespace, self.settings)

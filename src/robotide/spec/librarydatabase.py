@@ -30,13 +30,7 @@ CREATE TABLE keywords (name TEXT,
                        FOREIGN KEY(library) REFERENCES libraries(id));
 """
 
-#FIXME! SIDE-EFFECTS DURING IMPORTING!
-
 DB_DIR = os.path.join(SETTINGS_DIRECTORY, 'ride')
-
-if not os.path.exists(DB_DIR):
-    os.makedirs(DB_DIR)
-
 DATABASE_FILE = os.path.join(DB_DIR, 'librarykeywords.db')
 
 def _create_database():
@@ -52,16 +46,19 @@ def _validate_database():
     connection.execute('select name, doc, arguments, library_name, library from keywords')
     connection.close()
 
-if not os.path.exists(DATABASE_FILE):
-    _create_database()
-else:
-    try:
-        _validate_database()
-    except sqlite3.DatabaseError, err:
-        print 'error during database validation "%s"' % err
-        print 'removing database "%s"' % DATABASE_FILE
-        os.remove(DATABASE_FILE)
+def initialize_database():
+    if not os.path.exists(DB_DIR):
+        os.makedirs(DB_DIR)
+    if not os.path.exists(DATABASE_FILE):
         _create_database()
+    else:
+        try:
+            _validate_database()
+        except sqlite3.DatabaseError, err:
+            print 'error during database validation "%s"' % err
+            print 'removing database "%s"' % DATABASE_FILE
+            os.remove(DATABASE_FILE)
+            _create_database()
 
 class LibraryDatabase(object):
 
