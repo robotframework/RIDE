@@ -39,6 +39,14 @@ class LibraryManager(Thread):
     def _initiate_database_connection(self):
         self._database = LibraryDatabase(self._database_name)
 
+    def get_new_connection_to_library_database(self):
+        library_database = LibraryDatabase(self._database_name)
+        if self._database_name == ':memory:':
+            # In memory database does not point to the right place..
+            # this is here for unit tests..
+            library_database.create_database()
+        return library_database
+
     def _handle_message(self):
         message = self._messages.get()
         if not message:

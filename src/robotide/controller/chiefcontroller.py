@@ -35,7 +35,8 @@ class ChiefController(_BaseController, WithNamespace):
 
     def __init__(self, namespace=None, settings=None, library_manager=None):
         self._library_manager = library_manager or LibraryManager(DATABASE_FILE)
-        self._library_manager.start()
+        if not library_manager.is_alive():
+            self._library_manager.start()
         self._set_namespace(namespace)
         self._settings = settings
         self._loader = DataLoader(namespace)
@@ -145,7 +146,7 @@ class ChiefController(_BaseController, WithNamespace):
         return datafile
 
     def _populate_from_datafile(self, path, datafile, load_observer):
-        self.__init__(self._namespace, self._settings)
+        self.__init__(self._namespace, self._settings, library_manager=self._library_manager)
         resources = self._loader.resources_for(datafile, load_observer)
         self._create_controllers(datafile, resources)
         RideOpenSuite(path=path, datafile=self._controller).publish()

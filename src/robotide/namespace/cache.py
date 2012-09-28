@@ -16,15 +16,14 @@ import os
 import time
 
 from robotide.robotapi import normpath
-from robotide.spec.librarydatabase import DATABASE_FILE, LibraryDatabase
 
 
 class LibraryCache(object):
 
     def __init__(self, settings, libraries_need_refresh_listener, library_manager):
         self._settings = settings
-        self._library_manager = library_manager
-        self._library_database = LibraryDatabase(DATABASE_FILE)
+        if library_manager:
+            self.set_library_manager(library_manager)
         self._libraries_need_refresh_listener = libraries_need_refresh_listener
         self._library_keywords = {}
         self.__default_libraries = None
@@ -32,6 +31,7 @@ class LibraryCache(object):
 
     def set_library_manager(self, library_manager):
         self._library_manager = library_manager
+        self._library_database = library_manager.get_new_connection_to_library_database()
 
     def expire(self):
         self._library_database.close()

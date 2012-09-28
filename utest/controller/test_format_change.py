@@ -59,11 +59,12 @@ class TestFormatChange(unittest.TestCase):
 
 class ChiefControllerChecker(ChiefController):
 
-    def __init__(self, namespace, settings=None):
+    def __init__(self, namespace, settings=None, library_manager=None):
         self.removed_files = []
         self.serialized_files = []
-        library_manager = LibraryManager(':memory:')
-        library_manager.create_database()
+        library_manager = library_manager or LibraryManager(':memory:')
+        if not library_manager:
+            library_manager.create_database()
         ChiefController.__init__(self, namespace, settings, library_manager)
 
     def save(self, controller):
