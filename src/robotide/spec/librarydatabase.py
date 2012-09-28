@@ -39,23 +39,29 @@ if not os.path.exists(DB_DIR):
 
 DATABASE_FILE = os.path.join(DB_DIR, 'librarykeywords.db')
 
-if not os.path.exists(DATABASE_FILE):
+def _create_database():
+    print 'Creating librarykeywords database to "%s"' % DATABASE_FILE
     connection = sqlite3.connect(DATABASE_FILE)
     connection.executescript(CREATION_SCRIPT)
     connection.commit()
     connection.close()
+
+def _validate_database():
+    connection = sqlite3.connect(DATABASE_FILE)
+    connection.execute('select id, name, arguments, last_updated from libraries')
+    connection.execute('select name, doc, arguments, library_name, library from keywords')
+    connection.close()
+
+if not os.path.exists(DATABASE_FILE):
+    _create_database()
 else:
     try:
-        connection = sqlite3.connect(DATABASE_FILE)
-        connection.execute('select id, name, arguments, last_updated from libraries')
-        connection.execute('select name, doc, arguments, library_name, library from keywords')
-        connection.close()
-    except sqlite3.DatabaseError:
+        _validate_database()
+    except sqlite3.DatabaseError, err:
+        print 'error during database validation "%s"' % err
+        print 'removing database "%s"' % DATABASE_FILE
         os.remove(DATABASE_FILE)
-        connection = sqlite3.connect(DATABASE_FILE)
-        connection.executescript(CREATION_SCRIPT)
-        connection.commit()
-        connection.close()
+        _create_database()
 
 class LibraryDatabase(object):
 
