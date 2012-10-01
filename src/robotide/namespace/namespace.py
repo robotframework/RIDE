@@ -11,9 +11,6 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from Queue import Empty
-from multiprocessing import Queue
-from multiprocessing.process import Process
 
 import os
 import re
@@ -26,6 +23,7 @@ from robot.parsing.model import ResourceFile
 from robot.parsing.settings import Library, Resource, Variables
 from robot.utils.normalizing import normalize
 from robot.variables import Variables as RobotVariables
+from robotide.namespace import variablefetcher
 from robotide.namespace.cache import LibraryCache, ExpiringCache
 from robotide.namespace.resourcefactory import ResourceFactory
 from robotide.namespace.variablefetcher import set_from_file
@@ -288,22 +286,7 @@ class _VariableStash(object):
                     self.set(variable.name, '', variable_table.source)
 
     def set_from_file(self, varfile_path, args):
-        q = Queue()
-        p = Process(target=set_from_file, args=(q, varfile_path, args))
-        p.start()
-        p.join()
-        there_are_results = False
-        while True:
-            try:
-                results = q.get_nowait()
-                there_are_results  = True
-                if len(results) == 1:
-                    raise DataError(results[0])
-                self.set(*results)
-            except Empty:
-                if not there_are_results:
-                    raise DataError('No variables')
-                return
+        self.set(*variablefetcher.import_varfile_in_another_process(varfile_path, args))
 
     def __iter__(self):
         for name, value in self._vars.items():
