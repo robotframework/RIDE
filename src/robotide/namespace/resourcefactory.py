@@ -26,8 +26,8 @@ class ResourceFactory(object):
     def __init__(self, settings):
         self.cache = {}
         self.python_path_cache = {}
-        exclude_directory = settings.get(self._IGNORE_RESOURCE_DIRECTORY_SETTING_NAME, None)
-        self._exclude_directory = exclude_directory and self._with_separator(self._normalize(exclude_directory))
+        self._excludes = settings.excludes
+        self.check_path_from_excludes = self._excludes.check_path
         self._set_pythonpath(settings.get('pythonpath', []))
         settings.add_change_listener(self)
 
@@ -80,7 +80,7 @@ class ResourceFactory(object):
 
     def _get_resource(self, path, report_status):
         normalized = self._normalize(path)
-        if self._exclude_directory and normalized.startswith(self._exclude_directory):
+        if self.check_path_from_excludes(path) or self.check_path_from_excludes(normalized):
             return None
         if normalized not in self.cache:
             try:
