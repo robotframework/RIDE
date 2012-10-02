@@ -17,6 +17,11 @@ class _ResourceFactory(ResourceFactory):
             return None
         return os.path.join(self.from_path, name)
 
+    def _remove(self):
+        p = self._excludes._get_file_path()
+        if p:
+            os.remove(p)
+
 
 class ResourceFactoryDirectoryIgnoreTestCase(unittest.TestCase):
 
@@ -24,40 +29,45 @@ class ResourceFactoryDirectoryIgnoreTestCase(unittest.TestCase):
         self._import = _Import(None, __file__)
         self._context = self._mock_context()
 
+    def tearDown(self):
+        if self.r:
+            self.r._remove()
+
     def test_resourcefactory_finds_imported_resource(self):
-        self._is_resolved(_ResourceFactory(FakeSettings()))
+        self.r = _ResourceFactory(FakeSettings())
+        self._is_resolved(self.r)
 
     def test_resourcefactory_ignores_imported_resource_from_ignore_directory(self):
-        r = self._create_factory(os.path.dirname(__file__))
-        self.assertEqual(None, r.get_resource_from_import(self._import, self._context))
+        self.r = self._create_factory(os.path.dirname(__file__))
+        self.assertEqual(None, self.r.get_resource_from_import(self._import, self._context))
 
     def test_resourcefactory_ignores_imported_resource_from_ignore_subdirectory(self):
-        r = self._create_factory(os.path.split(os.path.dirname(__file__))[0])
-        self.assertEqual(None, r.get_resource_from_import(self._import, self._context))
+        self.r = self._create_factory(os.path.split(os.path.dirname(__file__))[0])
+        self.assertEqual(None, self.r.get_resource_from_import(self._import, self._context))
 
     def test_resourcefactory_finds_imported_resource_when_subdirectory_ignored(self):
-        r = self._create_factory(os.path.join(os.path.dirname(__file__), 'something'))
-        self._is_resolved(r)
+        self.r = self._create_factory(os.path.join(os.path.dirname(__file__), 'something'))
+        self._is_resolved(self.r)
 
     def test_resourcefactory_finds_imported_resource_when_similar_ignore_name(self):
-        r = self._create_factory(os.path.dirname(__file__))
+        self.r = self._create_factory(os.path.dirname(__file__))
         imp = _Import(None, os.path.join(os.path.dirname(__file__)+'2', 'foo'))
-        self._is_resolved(r, imp)
+        self._is_resolved(self.r, imp)
 
     def test_resourcefactory_ignores_imported_resource_when_relative_import(self):
-        r = self._create_factory(os.path.abspath('.'))
+        self.r = self._create_factory(os.path.abspath('.'))
         imp = _Import(None, os.path.join('.', 'foo'))
-        self.assertEqual(None, r.get_resource_from_import(imp, self._context))
+        self.assertEqual(None, self.r.get_resource_from_import(imp, self._context))
 
     def test_resourcefactory_finds_imported_resource_from_python_path(self):
-        r = _ResourceFactory(FakeSettings())
-        r.from_path = os.path.dirname(__file__)
-        self._is_resolved(r)
+        self.r = _ResourceFactory(FakeSettings())
+        self.r.from_path = os.path.dirname(__file__)
+        self._is_resolved(self.r)
 
     def test_resourcefactory_ignores_imported_resource_from_python_path(self):
-        r = self._create_factory(os.path.dirname(__file__))
-        r.from_path = os.path.dirname(__file__)
-        self.assertEqual(None, r.get_resource_from_import(self._import, self._context))
+        self.r = self._create_factory(os.path.dirname(__file__))
+        self.r.from_path = os.path.dirname(__file__)
+        self.assertEqual(None, self.r.get_resource_from_import(self._import, self._context))
 
     if IS_WINDOWS:
 
@@ -71,12 +81,14 @@ class ResourceFactoryDirectoryIgnoreTestCase(unittest.TestCase):
             self._ignore_import(os.path.relpath(os.path.dirname(__file__)))
 
     def _ignore_import(self, exclude_directory):
-        r = self._create_factory(exclude_directory)
-        self.assertEqual(None, r.get_resource_from_import(self._import, self._context))
+        self.r = self._create_factory(exclude_directory)
+        self.assertEqual(None, self.r.get_resource_from_import(self._import, self._context))
 
-    def _create_factory(self, exluded_dir):
+    def _create_factory(self, excluded_dir):
         settings = FakeSettings()
-        settings.set('ignored resource directory', exluded_dir)
+        settings.set('default directory', os.path.dirname(__file__))
+        settings.excludes.update_excludes([excluded_dir])
+        # settings.set('ignored resource directory', exluded_dir)
         return _ResourceFactory(settings)
 
     def _mock_context(self):

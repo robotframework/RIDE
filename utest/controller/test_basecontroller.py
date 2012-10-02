@@ -14,8 +14,15 @@ class TestWithNamespace(unittest.TestCase):
         settings = lambda:0
         settings.get = lambda k, d: d
         settings.add_change_listener = lambda *args:0
+        settings.excludes = self._dummy_settings()
         namespace = Namespace(settings=settings)
         return namespace
+
+    def _dummy_settings(self):
+        class foo(object):
+            def __init__(self):
+                self.check_path = lambda *args: False
+        return foo()
 
 
 if __name__ == '__main__':
