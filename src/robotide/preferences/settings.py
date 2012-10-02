@@ -161,6 +161,13 @@ class _Section:
             self.set(name, default)
             return default
 
+    def get_without_default(self, name):
+        """Returns specified setting or None if setting is not defined."""
+        try:
+            return self[name]
+        except KeyError:
+            return None
+
     def set(self, name, value, autosave=True, override=True):
         """Sets setting 'name' value to 'value'.
 
@@ -219,6 +226,7 @@ class Settings(_Section):
         except UnreprError, error:
             raise ConfigurationError(error)
         self._listeners = []
+        self.excludes = Excludes(self)
 
     def save(self):
         self._config_obj.write()
@@ -238,7 +246,6 @@ class RideSettings(Settings):
         Settings.__init__(self, user_path)
         self._settings_dir = os.path.dirname(user_path)
         self.set('install root', os.path.dirname(os.path.dirname(__file__)))
-        self.excludes = Excludes(self)
 
     def get_path(self, *parts):
         """Returns path which combines settings directory and given parts."""
@@ -250,43 +257,62 @@ class Excludes():
     def __init__(self, settings):
         self._settings = settings if settings else RideSettings()
         self._dir_for_settings = SETTINGS_DIRECTORY
-        self._project_name = self._get_project_name(self._settings.get('default directory', None))
-        self._exclude_file_path = os.path.join(self._dir_for_settings, self._project_name)
+        self._project_name = self._get_project_name(self._settings.get_without_default('default directory'))
+        self._exclude_file_path = self._get_file_path()
         self._settings.add_change_listener(self)
+
+    def _get_file_path(self):
+        if not self._project_name:
+            return None
+        if not os.path.exists(self._dir_for_settings):
+            os.makedirs(self._dir_for_settings)
+        self._exclude_file_path = os.path.join(self._dir_for_settings, self._project_name)
+        return self._exclude_file_path
 
     def setting_changed(self, name, old_value, new_value):
         if name == 'default directory':
-            _update_project_file(new_value)
-
-    def _update_project_file(self, new_project_name):
-        self._project_name = new_project_name
-        self._exclude_file_path = os.path.join(self._dir_for_settings, self._project_name)
+            self._project_name = self._get_project_name(new_value)
+            self._exclude_file_path = self._get_file_path()
 
     def _get_project_name(self, project_dir):
         if not project_dir: # might be None
-            raise Exception('lol') #TODO FIXME
+            return None
         project_dir = project_dir.rstrip('/') # strip trailing slash for os.path.split
         project_name = os.path.split(project_dir)[-1]
         return project_name
 
     def get_excludes(self):
-        excludes = None
-        try:
-            excludes = open(exclude_file_path, 'w').read().split()
-        except IOError:
-            raise Exception('lol') #TODO FIXME
-        return excludes
+        with self._get_exclude_file('r') as exclude_file:
+            if not exclude_file:
+                return []
+            return exclude_file.read().split()
 
     def update_excludes(self, new_excludes):
         excludes = self.get_excludes()
         new_excludes = [exclude for exclude in new_excludes if exclude not in excludes]
         excludes.extend(new_excludes)
-        exclude_file = None
-        try:
-            exclude_file = open(exclude_file_path, 'w')
-        except IOError:
-            raise Exception('lol') #TODO FIXME
-
+        exclude_file = self._get_exclude_file(read_write='a')
         for exclude in excludes:
-            exclude_file.write("%s\n", exclude)
+            exclude_file.write("%s\n" % exclude)
+        exclude_file.close()
 
+    def _get_exclude_file(self, read_write):
+        if not self._exclude_file_path:
+            return None
+        if not os.path.exists(self._exclude_file_path) and read_write.startswith('r'):
+            return open(self._exclude_file_path, 'w+')
+        file = None
+        try:
+            file = open(self._exclude_file_path, read_write)
+        except IOError as e:
+            raise Exception(e) #TODO FIXME
+        return file
+
+    def check_path(self, path, excludes=None):
+        head, _ = os.path.split(path)
+        if head == '/':
+            return False
+        excludes = excludes or self.get_excludes()
+        if head in excludes:
+            return True
+        return self.check_path(head, excludes)
