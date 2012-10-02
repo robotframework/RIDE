@@ -88,7 +88,6 @@ class ResourceFactoryDirectoryIgnoreTestCase(unittest.TestCase):
         settings = FakeSettings()
         settings.set('default directory', os.path.dirname(__file__))
         settings.excludes.update_excludes([excluded_dir])
-        # settings.set('ignored resource directory', exluded_dir)
         return _ResourceFactory(settings)
 
     def _mock_context(self):
