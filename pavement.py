@@ -84,6 +84,27 @@ def test(args):
     assert _run_nose(args) is True
 
 @task
+@consume_args
+def generate_big_project(args):
+    """Use rtest go_find_bugs.py to randomly test RIDE api"""
+    _remove_bytecode_files()
+    _set_development_path()
+    sys.path.insert(0, '.')
+    from rtest.large_scale_keyword_test import main
+    dir = sys.argv[2]
+    _log("DIR: %s" % dir)
+    shutil.rmtree(dir, ignore_errors=True)
+    sys.path.append(dir)
+    try:
+        assert main(dir)
+    finally:
+        if len(args) >= 1 and ("del" in args):
+            shutil.rmtree(dir, ignore_errors=True)
+        else:
+            _log("Not removing: " + dir)
+
+
+@task
 def random_test():
     """Use rtest go_find_bugs.py to randomly test RIDE api"""
     _remove_bytecode_files()
