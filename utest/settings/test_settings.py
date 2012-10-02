@@ -303,13 +303,12 @@ class TestInitializeSettings(TestSettingsHelper):
 
     def test_initialize_settings_does_merge_when_settings_exists(self):
         os.mkdir(self.settings_dir)
-        self._write_settings("foo = 'bar'\nhello = 'world'",
-                             self.settings_path)
+        self._write_settings("foo = 'bar'\nhello = 'world'",self.settings_path)
         self._write_settings("foo = 'new value'\nhello = 'world'",
                              self.user_settings_path)
         initialize_settings('user settings', self.settings_path, 'user.cfg')
-        self._check_content({'foo':'new value', 'hello' : 'world', SettingsMigrator.SETTINGS_VERSION:SettingsMigrator.CURRENT_SETTINGS_VERSION},
-                            False)
+        self._check_content({'foo':'new value', 'hello' : 'world',
+                             SettingsMigrator.SETTINGS_VERSION:SettingsMigrator.CURRENT_SETTINGS_VERSION,}, False)
 
     def test_initialize_settings_raises_exception_when_invalid_user_settings(self):
         os.mkdir(self.settings_dir)
