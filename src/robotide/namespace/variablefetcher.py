@@ -24,25 +24,32 @@ def import_varfile_in_another_process(varfile_path, args):
     p = Process(target=set_from_file, args=(q, varfile_path, args))
     p.start()
     p.join()
-    there_are_results = False
     while True:
         try:
-            results = q.get_nowait()
-            there_are_results  = True
-            if len(results) == 1:
-                raise DataError(results[0])
+            results = q.get(timeout=0.1)
+            if isinstance(results, DataError):
+                raise DataError(results)
             return results
         except Empty:
-            if not there_are_results:
+            if not p.is_alive():
                 raise DataError('No variables')
-            return None
 
 
 def set_from_file(queue, varfile_path, args):
+    queue.put(_get_vars(varfile_path, args))
+
+def _get_vars(varfile_path, args):
     try:
         temp = RobotVariables()
         temp.set_from_file(varfile_path, args)
-        for (name, value) in temp.items():
-            queue.put((name, value, varfile_path))
+        return [(name, _format_value(value), varfile_path) for (name, value) in temp.items()]
     except DataError, e:
-        queue.put((e,))
+        return e
+
+# Must be pickable
+def _format_value(value):
+    if isinstance(value, basestring):
+        return value
+    if isinstance(value, list):
+        return u'[ %s ]' % u' | '.join(unicode(v) for v in value)
+    return unicode(value)

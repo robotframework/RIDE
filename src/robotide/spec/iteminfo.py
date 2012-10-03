@@ -84,8 +84,7 @@ class VariableInfo(ItemInfo):
         value = self._value
         if self.name.startswith('@'):
             if value is None:
-                value = []
-            value = '[ %s ]' % ' | '.join(unicode(v) for v in value)
+                value = '[ ]'
         return ('<table>'
                 '<tr><td><i>Name:</i></td><td>%s</td></tr>'
                 '<tr><td><i>Source:</i></td><td>%s</td></tr>'

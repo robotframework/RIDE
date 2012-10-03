@@ -286,7 +286,8 @@ class _VariableStash(object):
                     self.set(variable.name, '', variable_table.source)
 
     def set_from_file(self, varfile_path, args):
-        self.set(*variablefetcher.import_varfile_in_another_process(varfile_path, args))
+        for item in variablefetcher.import_varfile_in_another_process(varfile_path, args):
+            self.set(*item)
 
     def __iter__(self):
         for name, value in self._vars.items():

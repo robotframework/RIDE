@@ -4,6 +4,7 @@ import unittest
 from robot.running import TestLibrary
 from robot.parsing.model import UserKeyword, KeywordTable
 from robot.utils.asserts import assert_true, assert_equals
+from robotide.namespace import variablefetcher
 from robotide.spec import libraryfetcher
 
 from robotide.spec.iteminfo import LibraryKeywordInfo, TestCaseUserKeywordInfo, VariableInfo, ResourceUserKeywordInfo
@@ -71,7 +72,7 @@ class TestVariableInfo(unittest.TestCase):
     def test_list_variable_item_info(self):
         name = '@{foo}'
         source = 'source'
-        value = [1,2,3]
+        value = variablefetcher._format_value([1,2,3])
         info = VariableInfo(name, value, source)
         assert_equals(info.name, name)
         assert_in_details(info, source, '[ 1 | 2 | 3 ]')
