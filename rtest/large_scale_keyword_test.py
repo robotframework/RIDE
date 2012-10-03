@@ -38,50 +38,8 @@ end_time = None
 db_connection = None
 db_cursor = None
 
-template_initfile =\
-"""
-*** Settings ***
-<LIBRARY_ENTRY>
-
-*** Variables ***
-<VARIABLE_ENTRY>
-"""
-
-template_testsuite =\
-"""
-*Setting*	*Value*	*Value*	*Value*
-<LIBRARY_ENTRY>
-
-*Variable*	*Value*	*Value*	*Value*
-<VARIABLE_ENTRY>
-
-*Test Case*	*Action*	*Argument*	*Argument*
-<TC_NAME>
-<TC_KEYWORDS>
-
-*Keyword*	*Action*	*Argument*	*Argument*
-<TC_KEYWORD_ENTRY>
-"""
 verbs = ['do','make','execute','select','count','process','insert','validate','verify']
 words = None
-
-def do_test(seed, path):
-    global start_time, end_time
-
-    i = None
-    try:
-        ride_runner = init_ride_runner(seed, path)
-        ride_runner.open_test_dir()
-        end_time = time.time()
-        print "ELAPSED: ", (end_time-start_time)
-        return 'PASS', seed, i, path
-    except Exception, err:
-        print err
-        print 'i = ', i
-        print 'seed was', str(seed)
-        print 'path was', path
-        return 'FAIL', seed, i or 0, path
-
 
 def _create_test_libraries(path, filecount = 10):
     global db_cursor, verbs, words
@@ -182,81 +140,12 @@ def _create_test_suite(path, testcount = 20, filecount = 1):
         tcfile.close()
 
 def _create_test_project(path, testlibs_count = 5, testsuite_count = 5, tests_in_suite = 10):
-    global template_initfile,template_testsuite
-
-    _create_test_libraries(path, filecount=testlibs_count)
-    _create_test_suite(path, testcount=tests_in_suite,filecount=testsuite_count)
-
-def init_ride_runner(seed, path):
-    global start_time
     shutil.rmtree(path, ignore_errors=True)
-    #thedir = os.path.join("./", path)
     thetestdir = os.path.join(path, 'testdir')
-    #os.makedirs(thetestdir)
-    #os.makedirs(thetestdir + "/resources")
     shutil.copytree(os.path.join(ROOT, 'testdir'), thetestdir)
-    _create_test_project(thetestdir)
-    random.seed(seed)
-    start_time = time.time()
-    ride = RIDE(random, path)
-    #ride_runner = Runner(ride, random)
-    #if random.random() > 0.5:
-    #    ride.open_test_dir()
-    #else:
-    #    ride.open_suite_file()
-    return ride
 
-
-def split(start, end):
-    return int(ceil(float(end - start) / 2)) + start
-
-
-def skip_steps(runner, number_of_steps):
-    for i in range(number_of_steps):
-        runner.skip_step()
-
-def debug(seed, path, last_index, trace, start, end):
-    if last_index == start:
-        return trace + [last_index]
-    if end <= start:
-        return debug(seed, path, last_index, trace + [end], end+1, last_index)
-    runner = init_ride_runner(seed, path)
-    if trace != []:
-        run_trace(runner, trace)
-    midpoint = split(start, end)
-    runner.skip_steps(midpoint)
-    try:
-        for j in range(midpoint, last_index):
-            runner.step()
-        return debug(seed, path, last_index, trace, start, midpoint-1)
-    except Exception, err:
-        if runner.count == last_index:
-            return debug(seed, path, last_index, trace, midpoint, end)
-        else:
-            print 'New exception during debugging!'
-            return debug(seed, path, runner.count, trace, midpoint, runner.count)
-
-def run_trace(runner, trace):
-    i = 0
-    while i < trace[-1]:
-        if i in trace:
-            runner.step()
-        else:
-            runner.skip_step()
-        i += 1
-
-def generate_seed():
-    seed = long(time.time() * 256)
-    return seed
-
-def _debugging(seed, path, i):
-    print '='*80
-    trace = debug(seed, path, i, [], 0, i)
-    print '#'*80
-    print trace
-    print '%'*80
-    print 'seed = ', seed
-    run_trace(init_ride_runner(seed, path), trace)
+    _create_test_libraries(thetestdir, filecount=testlibs_count)
+    _create_test_suite(thetestdir, testcount=tests_in_suite,filecount=testsuite_count)
 
 def main(path):
     global db_connection, db_cursor, words
@@ -269,25 +158,21 @@ def main(path):
         db_cursor.execute('CREATE TABLE IF NOT EXISTS source (id INTEGER PRIMARY KEY, path TEXT, type TEXT)')
         db_cursor.execute('CREATE TABLE IF NOT EXISTS keywords (id INTEGER PRIMARY KEY, name TEXT, source TEXT, arguments INTEGER, returns INTEGER)')
         db_cursor.execute('DELETE FROM source')
-        db_cursor.execute('INSERT INTO source (path,type) VALUES ("BuiltIn","LIBRARY")')
-        db_cursor.execute('INSERT INTO source (path,type) VALUES ("OperatingSystem","LIBRARY")')
-        db_cursor.execute('INSERT INTO source (path,type) VALUES ("String","LIBRARY")')
-        db_cursor.execute('INSERT INTO keywords (name,source,arguments,returns) VALUES ("Log","BuiltIn",1,0)')
-        db_cursor.execute('INSERT INTO keywords (name,source,arguments,returns) VALUES ("No Operation","BuiltIn",0,0)')
-        db_cursor.execute('INSERT INTO keywords (name,source,arguments,returns) VALUES ("Get Time","BuiltIn",0,1)')
-        db_cursor.execute('INSERT INTO keywords (name,source,arguments,returns) VALUES ("Count Files In Directory","Operating System",0,1)')
-        db_cursor.execute('INSERT INTO keywords (name,source,arguments,returns) VALUES ("Get Environment Variables","BuiltIn",0,1)')
-        db_cursor.execute('INSERT INTO keywords (name,source,arguments,returns) VALUES ("Get Time","BuiltIn",0,1)')
+        libs_to_insert = [("BuiltIn","LIBRARY","OperatingSystem","LIBRARY","String","LIBRARY")]
+        db_cursor.executemany('INSERT INTO source (path,type) VALUES (?)', libs_to_insert)
+        keywords_to_insert = [("Log","BuiltIn",1,0),("No Operation","BuiltIn",0,0),("Get Time","BuiltIn",0,1),
+                              ("Count Files In Directory","Operating System",0,1),("Get Environment Variables","BuiltIn",0,1),
+                              ("Get Time","BuiltIn",0,1)]
+        db_cursor.executemany('INSERT INTO keywords (name,source,arguments,returns) VALUES (?)', keywords_to_insert)
     except OperationalError, err:
         print "DB error: ",err
     db_connection.commit()
 
-    result, seed, i, path = do_test(generate_seed(), path)
-    #_debugging..
+    _create_test_project(path)
+    result = "PASS"
     return result != 'FAIL'
 
 if __name__ == '__main__':
     if not main(sys.argv[1]):
         print 'error occurred!'
         sys.exit(1) #indicate failure
-
