@@ -24,6 +24,8 @@ MANIFEST = ROOT_DIR/'MANIFEST.in'
 VERSION = open(ROOT_DIR/'VERSION.txt').read().strip()
 FINAL_RELEASE = bool(re.match('^(\d*\.){1,2}\d*$', VERSION))
 
+TEST_PROJECT_DIR = 'theproject'
+TEST_LIBS_GENERATED = 10
 
 def find_packages(where):
     def is_package(path):
@@ -83,25 +85,44 @@ def test(args):
     _remove_bytecode_files()
     assert _run_nose(args) is True
 
+options(
+    generate_big_project = Bunch(
+        dir = "theproject",
+        libs = 3,
+        keywords=10,
+        suites = 1,
+        tests=20,
+        resourcefiles=1,
+        resources=30
+    )
+)
 @task
-@consume_args
-def generate_big_project(args):
+@cmdopts([
+    ('libs=', 'l', 'Count of generated test libraries'),
+    ('dir=', 'd', 'Target directory for the test project'),
+    ('suites=', 's', 'Count of generated test suites'),
+    ('tests=', 't', 'Count of generated tests in a suite'),
+    ('resourcefiles=', 'f', 'Count of generated resource files'),
+    ('resources=', 'r', 'Count of generated resources in a file')
+])
+def generate_big_project(options):
     """Use rtest go_find_bugs.py to randomly test RIDE api"""
     _remove_bytecode_files()
     _set_development_path()
     sys.path.insert(0, '.')
     from rtest.large_scale_keyword_test import main
-    dir = sys.argv[2]
+    dir = options.dir
     _log("DIR: %s" % dir)
     shutil.rmtree(dir, ignore_errors=True)
     sys.path.append(dir)
     try:
-        assert main(dir)
+        assert main(dir, testlibs_count=int(options.libs), testsuite_count=int(options.suites), tests_in_suite=int(options.tests),
+                    resource_count=int(options.resourcefiles), resources_in_file=int(options.resources))
     finally:
-        if len(args) >= 1 and ("del" in args):
-            shutil.rmtree(dir, ignore_errors=True)
-        else:
-            _log("Not removing: " + dir)
+        #if len(args) >= 1 and ("del" in args):
+        #    shutil.rmtree(dir, ignore_errors=True)
+        #else:
+        _log("Not removing: " + dir)
 
 
 @task

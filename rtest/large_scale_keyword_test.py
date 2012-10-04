@@ -69,10 +69,9 @@ class %s:
 
         libfile.write(random.choice([directory_looper, sleeper]) + "\n")
 
+        temp_verb = copy.copy(verbs)
         for x in range(random.randint(2,5)):
-            temp_verb = copy.copy(verbs)
-            verb = random.choice(temp_verb).capitalize()
-            temp_verb.remove(verb.lower())
+            verb = temp_verb.pop().capitalize()
             kw_name = verb + "_" + lib_main
             db_cursor.execute("INSERT INTO keywords (name,source) VALUES ('%s','%s')" % (kw_name,lib_name))
             print "KW %s IN %s" % (kw_name, lib_name)
@@ -105,15 +104,21 @@ myinstance = %s()
     fo.close()
 
 
-def _create_test_suite(path, testcount = 20, filecount = 1):
+def _create_test_suite(path, filecount = 1, testcount = 20):
     global db_cursor, verbs, words
+
+    available_resources = db_cursor.execute(
+                            "SELECT path FROM source WHERE type = 'RESOURCE' ORDER BY RANDOM()").fetchall()
 
     for testfile_index in range(filecount):
         libraries_in_use = {}
+        resources_in_use = []
+
         settings_txt = ""
         test_txt = ""
         keywords_txt = ""
         available_libraries = db_cursor.execute("SELECT path FROM source WHERE type = 'CUSTOMLIBRARY'").fetchall()
+
         tcfile = open("%s/CustomTests_%d.txt" % (path, testfile_index+1),"w")
         test_txt += "*** Test Cases ***\n"
         for tc in range(testcount):
@@ -122,15 +127,24 @@ def _create_test_suite(path, testcount = 20, filecount = 1):
                 libraries_in_use["Cus%d" % tc] = selected_library
             tc_name = "Test %s in %s #%d" % (random.choice(verbs), selected_library.split("CustomLib")[1], tc)
             print tc_name
-            available_keywords = db_cursor.execute("SELECT * FROM keywords WHERE source = '%s' ORDER BY RANDOM()" % selected_library).fetchall()
+            available_keywords = db_cursor.execute("SELECT * FROM keywords WHERE source = '%s' ORDER BY RANDOM()"
+                                                    % selected_library).fetchall()
             kw1 = available_keywords.pop()
             kw2 = available_keywords.pop()
-            test_txt += "%s\t[Documentation]\t%s\n\t\t%s\n\t\t%s\n\n" % (tc_name, "Test %d" % tc, kw1[2] + "." +kw1[1].replace("_"," "), kw2[2] + "." +kw2[1].replace("_"," "))
+            test_txt += "%s\t[Documentation]\t%s\n\t\t%s\n\t\t%s\n\n" % (tc_name, "Test %d" % tc, kw1[2] +
+                    "." +kw1[1].replace("_"," "), kw2[2] + "." +kw2[1].replace("_"," "))
 
         settings_txt += "*** Settings ***\n"
         for tc_withname,tc_name in libraries_in_use.iteritems():
             settings_txt += "Library    %45s.py\tWITH NAME\t%s\n" % (tc_name, tc_withname)
             #settings_txt += "Library    %45s\n" % (os.getcwd()+"/"+path+"/" +tc_name)
+
+        for x in range(random.randint(0,2)):
+            try:
+                selected_resource = available_resources.pop()[0]
+                settings_txt += "Resource   %45s\n" % selected_resource
+            except IndexError:
+                break
         settings_txt += "\n"
         keywords_txt += "*** Keywords ***\n"
         keywords_txt += "My Keyword\n\tNo Operation\n"
@@ -139,15 +153,35 @@ def _create_test_suite(path, testcount = 20, filecount = 1):
         tcfile.write(keywords_txt)
         tcfile.close()
 
-def _create_test_project(path, testlibs_count = 5, testsuite_count = 5, tests_in_suite = 10):
+
+def _create_test_resources(path, filecount, resource_count):
+    global db_cursor, verbs, words
+
+    for resfile_index in range(filecount):
+        resource_name = "%s/Resource_%d.txt" % (path, resfile_index+1)
+        resfile = open(resource_name,"w")
+        content = "*** Settings ***\n"
+        #available_keywords = db_cursor.execute("SELECT * FROM keywords ORDER BY RANDOM()").fetchall()
+        content += "\n*** Variables ***\n"
+        for x in range(resource_count):
+            content += "%-25s%10s%d\n" % ("${%s%d}" % (random.choice(words).strip().capitalize(),x),"",
+                                                        random.randint(1,1000))
+        content += "\n*** Keywords ***\n"
+        resfile.write(content)
+        resfile.close()
+        db_cursor.execute("INSERT INTO source (path,type) VALUES ('%s','RESOURCE')" % resource_name)
+
+
+def _create_test_project(path,testlibs_count=5,testsuite_count=5,tests_in_suite=10,resource_count=10,resources_in_file=20):
     shutil.rmtree(path, ignore_errors=True)
     thetestdir = os.path.join(path, 'testdir')
     shutil.copytree(os.path.join(ROOT, 'testdir'), thetestdir)
 
     _create_test_libraries(thetestdir, filecount=testlibs_count)
-    _create_test_suite(thetestdir, testcount=tests_in_suite,filecount=testsuite_count)
+    _create_test_resources(thetestdir + "/resources", filecount=resource_count,resource_count=resources_in_file)
+    _create_test_suite(thetestdir, filecount=testsuite_count, testcount=tests_in_suite)
 
-def main(path):
+def main(path,testlibs_count=25,testsuite_count=30,tests_in_suite=40,resource_count=10,resources_in_file=100):
     global db_connection, db_cursor, words
 
     words = open("testwords.txt").readlines()
@@ -158,17 +192,18 @@ def main(path):
         db_cursor.execute('CREATE TABLE IF NOT EXISTS source (id INTEGER PRIMARY KEY, path TEXT, type TEXT)')
         db_cursor.execute('CREATE TABLE IF NOT EXISTS keywords (id INTEGER PRIMARY KEY, name TEXT, source TEXT, arguments INTEGER, returns INTEGER)')
         db_cursor.execute('DELETE FROM source')
-        libs_to_insert = [("BuiltIn","LIBRARY","OperatingSystem","LIBRARY","String","LIBRARY")]
-        db_cursor.executemany('INSERT INTO source (path,type) VALUES (?)', libs_to_insert)
+        db_cursor.execute('DELETE FROM keywords')
+        libs_to_insert = [("BuiltIn","LIBRARY"),("OperatingSystem","LIBRARY"),("String","LIBRARY")]
+        db_cursor.executemany('INSERT INTO source (path,type) VALUES (?,?)', libs_to_insert)
         keywords_to_insert = [("Log","BuiltIn",1,0),("No Operation","BuiltIn",0,0),("Get Time","BuiltIn",0,1),
                               ("Count Files In Directory","Operating System",0,1),("Get Environment Variables","BuiltIn",0,1),
                               ("Get Time","BuiltIn",0,1)]
-        db_cursor.executemany('INSERT INTO keywords (name,source,arguments,returns) VALUES (?)', keywords_to_insert)
+        db_cursor.executemany('INSERT INTO keywords (name,source,arguments,returns) VALUES (?,?,?,?)', keywords_to_insert)
+        db_connection.commit()
     except OperationalError, err:
         print "DB error: ",err
-    db_connection.commit()
 
-    _create_test_project(path)
+    _create_test_project(path,testlibs_count,testsuite_count,tests_in_suite,resource_count,resources_in_file)
     result = "PASS"
     return result != 'FAIL'
 
