@@ -44,7 +44,7 @@ _menudata = """
 &Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE
 !Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS
 ---
-!&Refresh | Refresh | Ctrlcmd-Shift-R | CUSTOM_REFRESH_ALL
+!&Refresh | Refresh | Ctrlcmd-Shift-R
 ---
 !E&xit | Exit RIDE | Ctrlcmd-Q
 
