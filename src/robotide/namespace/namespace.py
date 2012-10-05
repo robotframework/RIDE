@@ -26,7 +26,6 @@ from robot.variables import Variables as RobotVariables
 from robotide.namespace import variablefetcher
 from robotide.namespace.cache import LibraryCache, ExpiringCache
 from robotide.namespace.resourcefactory import ResourceFactory
-from robotide.namespace.variablefetcher import set_from_file
 from robotide.spec.iteminfo import (TestCaseUserKeywordInfo,
                                     ResourceUserKeywordInfo,
                                     VariableInfo, _UserKeywordInfo,
@@ -286,7 +285,7 @@ class _VariableStash(object):
                     self.set(variable.name, '', variable_table.source)
 
     def set_from_file(self, varfile_path, args):
-        for item in variablefetcher.import_varfile_in_another_process(varfile_path, args):
+        for item in variablefetcher.import_varfile(varfile_path, args):
             self.set(*item)
 
     def __iter__(self):
