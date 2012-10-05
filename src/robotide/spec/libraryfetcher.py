@@ -11,45 +11,22 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from Queue import Empty
-from multiprocessing import Queue
-from multiprocessing.process import Process
-import sys
 from robot.running import TestLibrary
 from robotide.spec.iteminfo import LibraryKeywordInfo
 
 
-def get_import_result_from_process(path, args):
-    q = Queue(maxsize=1)
-    p = Process(target=_library_initializer, args=(q, path, args))
-    p.start()
-    while True:
-        try:
-            result = q.get(timeout=0.1)
-            if isinstance(result, Exception):
-                raise ImportError(result)
-            return result
-        except Empty:
-            if not p.is_alive():
-                raise ImportError()
-
-def _library_initializer(queue, path, args):
+def get_import_result(path, args):
     try:
-        queue.put(_get_keywords(path, args))
-    except Exception, e:
-        queue.put(e)
-    finally:
-        sys.exit()
-
-def _get_keywords(path, args):
-    lib = TestLibrary(path, args)
-    return [
-        LibraryKeywordInfo(
-            kw.name,
-            kw.doc,
-            kw.library.name,
-            _parse_args(kw.arguments)
-        ) for kw in lib.handlers.values()]
+        lib = TestLibrary(path, args)
+        return [
+            LibraryKeywordInfo(
+                kw.name,
+                kw.doc,
+                kw.library.name,
+                _parse_args(kw.arguments)
+            ) for kw in lib.handlers.values()]
+    except SystemExit:
+        raise ImportError('Library "%s" import failed' % path)
 
 def _parse_args(handler_args):
     args = []

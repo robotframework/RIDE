@@ -1,7 +1,7 @@
 import unittest
 from robotide.spec.iteminfo import LibraryKeywordInfo
 from robotide.spec.librarydatabase import LibraryDatabase
-from robotide.spec.libraryfetcher import _get_keywords
+from robotide.spec.libraryfetcher import get_import_result
 
 class TestLibraryDatabase(unittest.TestCase):
 
@@ -50,7 +50,7 @@ class TestLibraryDatabase(unittest.TestCase):
         self.assertTrue(self._database.library_exists('library', ''))
 
     def _get_and_insert_keywords(self, library_name, library_arguments):
-        kws = _get_keywords(library_name, library_arguments)
+        kws = get_import_result(library_name, library_arguments)
         self._database.insert_library_keywords(library_name, library_arguments, kws)
         return kws
 

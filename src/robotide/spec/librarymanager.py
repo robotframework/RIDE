@@ -18,7 +18,7 @@ from threading import Thread
 from robot.errors import DataError
 from robotide.publish import RideLogException
 from robotide.spec.librarydatabase import LibraryDatabase
-from robotide.spec.libraryfetcher import get_import_result_from_process
+from robotide.spec.libraryfetcher import get_import_result
 from robotide.spec.xmlreaders import init_from_spec, get_path
 
 class LibraryManager(Thread):
@@ -68,7 +68,7 @@ class LibraryManager(Thread):
     def _fetch_keywords(self, library_name, library_args):
         try:
             path = get_path(library_name.replace('/', os.sep), os.path.abspath('.'))
-            return get_import_result_from_process(path, library_args)
+            return get_import_result(path, library_args)
         except (ImportError, DataError, OSError), err:
             kws = init_from_spec(library_name)
             if not kws:

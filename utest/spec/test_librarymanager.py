@@ -1,7 +1,7 @@
 import os
 import unittest
 import sys
-from robotide.spec.libraryfetcher import _get_keywords
+from robotide.spec.libraryfetcher import get_import_result
 from robotide.spec.librarymanager import LibraryManager
 from resources import DATAPATH
 
@@ -20,7 +20,7 @@ class TestLibraryManager(unittest.TestCase):
 
     def test_database_update(self):
         self._library_manager.fetch_keywords('BuiltIn', '', self._callback)
-        keywords = _get_keywords('BuiltIn', '')
+        keywords = get_import_result('BuiltIn', '')
         self._library_manager._handle_message()
         self.assertFalse(self._library_manager._keywords_differ(keywords, self._keywords))
 
