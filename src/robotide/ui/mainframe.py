@@ -44,8 +44,6 @@ _menudata = """
 &Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE
 !Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS
 ---
-!&Refresh | Refresh | Ctrlcmd-Shift-R
----
 !E&xit | Exit RIDE | Ctrlcmd-Q
 
 [Tools]
@@ -264,10 +262,6 @@ class RideFrame(wx.Frame, RideEventHandler):
 
     def OnReportaProblem(self, event):
         wx.LaunchDefaultBrowser('http://code.google.com/p/robotframework-ride/issues/list')
-
-    def OnRefresh(self, event):
-        if self._has_data():
-            wx.CallAfter(self._refresh)
 
     def _has_data(self):
         return self._controller.data is not None
