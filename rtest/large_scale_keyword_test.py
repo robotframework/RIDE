@@ -41,7 +41,7 @@ db_cursor = None
 verbs = ['do','make','execute','select','count','process','insert','validate','verify']
 words = None
 
-def _create_test_libraries(path, filecount = 10):
+def _create_test_libraries(path, filecount = 10, keywords=10):
     global db_cursor, verbs, words
 
     libs = []
@@ -70,8 +70,13 @@ class %s:
         libfile.write(random.choice([directory_looper, sleeper]) + "\n")
 
         temp_verb = copy.copy(verbs)
-        for x in range(random.randint(2,5)):
-            verb = temp_verb.pop().capitalize()
+        counter = 1
+        for x in range(keywords):
+            if len(temp_verb) > 0:
+                verb = temp_verb.pop().capitalize()
+            else:
+                verb = "KW_%d" % counter
+                counter += 1
             kw_name = verb + "_" + lib_main
             db_cursor.execute("INSERT INTO keywords (name,source) VALUES ('%s','%s')" % (kw_name,lib_name))
             print "KW %s IN %s" % (kw_name, lib_name)
@@ -172,16 +177,16 @@ def _create_test_resources(path, filecount, resource_count):
         db_cursor.execute("INSERT INTO source (path,type) VALUES ('%s','RESOURCE')" % resource_name)
 
 
-def _create_test_project(path,testlibs_count=5,testsuite_count=5,tests_in_suite=10,resource_count=10,resources_in_file=20):
+def _create_test_project(path,testlibs_count=5,keyword_count=10,testsuite_count=5,tests_in_suite=10,resource_count=10,resources_in_file=20):
     shutil.rmtree(path, ignore_errors=True)
     thetestdir = os.path.join(path, 'testdir')
     shutil.copytree(os.path.join(ROOT, 'testdir'), thetestdir)
 
-    _create_test_libraries(thetestdir, filecount=testlibs_count)
+    _create_test_libraries(thetestdir, filecount=testlibs_count, keywords=keyword_count)
     _create_test_resources(thetestdir + "/resources", filecount=resource_count,resource_count=resources_in_file)
     _create_test_suite(thetestdir, filecount=testsuite_count, testcount=tests_in_suite)
 
-def main(path,testlibs_count=25,testsuite_count=30,tests_in_suite=40,resource_count=10,resources_in_file=100):
+def main(path,testlibs_count=25,keyword_count=10,testsuite_count=30,tests_in_suite=40,resource_count=10,resources_in_file=100):
     global db_connection, db_cursor, words
 
     words = open("testwords.txt").readlines()
@@ -203,7 +208,7 @@ def main(path,testlibs_count=25,testsuite_count=30,tests_in_suite=40,resource_co
     except OperationalError, err:
         print "DB error: ",err
 
-    _create_test_project(path,testlibs_count,testsuite_count,tests_in_suite,resource_count,resources_in_file)
+    _create_test_project(path,testlibs_count,keyword_count,testsuite_count,tests_in_suite,resource_count,resources_in_file)
     result = "PASS"
     return result != 'FAIL'
 

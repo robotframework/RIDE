@@ -88,7 +88,7 @@ def test(args):
 options(
     generate_big_project = Bunch(
         dir = "theproject",
-        libs = 3,
+        libs = 6,
         keywords=10,
         suites = 1,
         tests=20,
@@ -98,12 +98,13 @@ options(
 )
 @task
 @cmdopts([
-    ('libs=', 'l', 'Count of generated test libraries'),
+    ('libs=', 'l', 'Number of test libraries'),
+    ('keywords=', 'k', 'Number of keywords in a test library'),
     ('dir=', 'd', 'Target directory for the test project'),
-    ('suites=', 's', 'Count of generated test suites'),
-    ('tests=', 't', 'Count of generated tests in a suite'),
-    ('resourcefiles=', 'f', 'Count of generated resource files'),
-    ('resources=', 'r', 'Count of generated resources in a file')
+    ('suites=', 's', 'Number of test suites'),
+    ('tests=', 't', 'Number of tests in a suite'),
+    ('resourcefiles=', 'f', 'Number of resource files'),
+    ('resources=', 'r', 'Number of resources in a file')
 ])
 def generate_big_project(options):
     """Use rtest go_find_bugs.py to randomly test RIDE api"""
@@ -116,7 +117,8 @@ def generate_big_project(options):
     shutil.rmtree(dir, ignore_errors=True)
     sys.path.append(dir)
     try:
-        assert main(dir, testlibs_count=int(options.libs), testsuite_count=int(options.suites), tests_in_suite=int(options.tests),
+        assert main(dir, testlibs_count=int(options.libs), keyword_count=int(options.keywords),
+                    testsuite_count=int(options.suites), tests_in_suite=int(options.tests),
                     resource_count=int(options.resourcefiles), resources_in_file=int(options.resources))
     finally:
         #if len(args) >= 1 and ("del" in args):
