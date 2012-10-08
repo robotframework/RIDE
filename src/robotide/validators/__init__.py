@@ -121,6 +121,22 @@ class NonEmptyValidator(_AbstractValidator):
             return '%s cannot be empty' % self._field_name
         return None
 
+class SuiteFileNameValidator(NonEmptyValidator):
+
+    def __init__(self, field_name, is_dir_type):
+        NonEmptyValidator.__init__(self, field_name)
+        self._is_dir_type = is_dir_type
+
+    def Clone(self):
+        return self.__class__(self._field_name, self._is_dir_type)
+
+    def _validate(self, value):
+        validity = NonEmptyValidator._validate(self, value)
+        if not self._is_dir_type() and not validity:
+            if value.lower() == '__init__':
+                return 'Invalid suite file name "%s"' % value
+        return validity
+
 
 class DirectoryExistsValidator(_AbstractValidator):
 

@@ -19,13 +19,14 @@ from wx.lib.filebrowsebutton import DirBrowseButton
 from robotide.controller.commands import (CreateNewResource,
     AddTestDataDirectory, AddTestCaseFile, CreateNewDirectoryProject,
     CreateNewFileProject, SetFileFormat, SetFileFormatRecuresively)
+from robotide.utils import overrides
 from robotide.widgets import Label
 # This hack needed to set same label width as with other labels
 DirBrowseButton.createLabel = lambda self: Label(self, size=(110, -1),
                                                       label=self.labelText)
 
 from robotide.widgets import Dialog
-from robotide.validators import NonEmptyValidator, NewSuitePathValidator
+from robotide.validators import NonEmptyValidator, NewSuitePathValidator, SuiteFileNameValidator
 
 
 class _CreationDialog(Dialog):
@@ -177,6 +178,12 @@ class AddSuiteDialog(_WithImmutableParent, _CreationDialog):
         self._path = controller.directory
         _CreationDialog.__init__(self, self._path, 'Add Suite')
         self._format_chooser.SetStringSelection(settings['default file format'])
+
+    @overrides(_CreationDialog)
+    def _create_name_editor(self, sizer):
+        name_editor = _CreationDialog._create_name_editor(self, sizer)
+        name_editor.SetValidator(SuiteFileNameValidator('Name', self._is_dir_type))
+        return name_editor
 
     def _execute(self):
         cmd = AddTestDataDirectory if self._is_dir_type() else AddTestCaseFile
