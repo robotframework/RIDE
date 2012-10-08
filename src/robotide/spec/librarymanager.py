@@ -32,8 +32,12 @@ class LibraryManager(Thread):
     def run(self):
         self._initiate_database_connection()
         while True:
-            if not self._handle_message():
-                break
+            try:
+                if not self._handle_message():
+                    break
+            except Exception, err:
+                msg = 'Library import handling threw an unexpected exception'
+                RideLogException(message=msg, exception=err, level='WARN').publish()
         self._database.close()
 
     def _initiate_database_connection(self):
