@@ -41,7 +41,7 @@ class Namespace(object):
         self._library_manager = None
         self._init_caches()
         self._content_assist_hooks = []
-        self._update_listeners = []
+        self._update_listeners = set()
 
     def _init_caches(self):
         self._lib_cache = LibraryCache(self._settings, self.update, self._library_manager)
@@ -66,13 +66,14 @@ class Namespace(object):
         self._init_caches()
 
     def register_update_listener(self, listener):
-        self._update_listeners.append(listener)
+        self._update_listeners.add(listener)
 
     def unregister_update_listener(self, listener):
-        self._update_listeners.remove(listener)
+        if listener in self._update_listeners:
+            self._update_listeners.remove(listener)
 
     def clear_update_listeners(self):
-        self._update_listeners = []
+        self._update_listeners.clear()
 
     def register_content_assist_hook(self, hook):
         self._content_assist_hooks.append(hook)
