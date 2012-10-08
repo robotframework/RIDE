@@ -102,8 +102,9 @@ class LibraryManager(Thread):
     def _call(self, callback, *args):
         try:
             callback(*args)
-        except Exception:
-            pass
+        except Exception, err:
+            msg = 'Library import callback threw an unexpected exception'
+            RideLogException(message=msg, exception=err, level='WARN').publish()
 
     def fetch_keywords(self, library_name, library_args, callback):
         self._messages.put(('fetch', library_name, library_args, callback))
