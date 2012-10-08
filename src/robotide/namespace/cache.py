@@ -28,14 +28,25 @@ class LibraryCache(object):
         self._library_keywords = {}
         self.__default_libraries = None
         self.__default_kws = None
+        self.__library_database = None
+        self._library_database_to_close = None
 
     def set_library_manager(self, library_manager):
         self._library_manager = library_manager
-        self._library_database = library_manager.get_new_connection_to_library_database()
 
     def expire(self):
-        self._library_database.close()
+        library_database_to_close = self.__library_database
         self.__init__(self._settings, self._libraries_need_refresh_listener, self._library_manager)
+        self._library_database_to_close = library_database_to_close
+
+    @property
+    def _library_database(self):
+        if self.__library_database is None:
+            if self._library_database_to_close is not None:
+                self._library_database_to_close.close()
+                self._library_database_to_close = None
+            self.__library_database = self._library_manager.get_new_connection_to_library_database()
+        return self.__library_database
 
     @property
     def _default_libraries(self):
