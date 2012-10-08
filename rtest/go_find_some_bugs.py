@@ -17,6 +17,7 @@ import random
 import shutil
 import time
 import sys
+import traceback
 
 
 ROOT = os.path.dirname(__file__)
@@ -37,8 +38,9 @@ def do_test(seed, path):
         for i in range(10000):
             ride_runner.step()
         return 'PASS', seed, i, path
-    except Exception, err:
-        print err
+    except Exception:
+        print '-'*80
+        traceback.print_exc()
         print 'i = ', i
         print 'seed was', str(seed)
         print 'path was', path
