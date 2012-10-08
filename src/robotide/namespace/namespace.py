@@ -53,7 +53,7 @@ class Namespace(object):
         self._library_manager = library_manager
         self._lib_cache.set_library_manager(library_manager)
 
-    def update(self):
+    def update(self, *args):
         self._retriever.expire_cache()
         self._context_factory = _RetrieverContextFactory()
         for listener in self._update_listeners:
