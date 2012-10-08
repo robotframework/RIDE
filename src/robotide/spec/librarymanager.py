@@ -86,7 +86,7 @@ class LibraryManager(Thread):
         self._insert(library_name, library_args, keywords, lambda result: result_queue.put(result))
 
     def _insert(self, library_name, library_args, keywords, callback):
-        self._database.insert_library_keywords(library_name, library_args, keywords)
+        self._database.insert_library_keywords(library_name, library_args, keywords or [])
         self._call(callback, keywords)
 
     def _update_database_and_call_callback_if_needed(self, library_key, keywords, callback):
