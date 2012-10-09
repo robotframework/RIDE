@@ -22,7 +22,7 @@ from robotide.namespace.namespace import _VariableStash
 
 from .filecontrollers import ResourceFileController
 from .macrocontrollers import KeywordNameController, ForLoopStepController, TestCaseController
-from robotide.utils import overrides
+from robotide.utils import overrides, is_variable
 from .settingcontrollers import _SettingController, VariableController
 from .tablecontrollers import VariableTableController
 from .validators import BaseNameValidator
@@ -523,7 +523,7 @@ class FindOccurrences(_Command):
         self._keyword_regexp = self._create_regexp(keyword_name)
 
     def _create_regexp(self, keyword_name):
-        if '$' in keyword_name:
+        if '$' in keyword_name and not is_variable(keyword_name):
             kw = lambda: 0
             kw.arguments = None
             kw.name = keyword_name
@@ -664,6 +664,7 @@ class FindVariableOccurrences(FindOccurrences):
             if isinstance(f, ResourceFileController):
                 files += [imp.datafile_controller for imp in f.get_where_used()]
         return files
+
 
 def AddKeywordFromCells(cells):
     if not cells:

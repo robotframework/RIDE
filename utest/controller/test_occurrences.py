@@ -204,6 +204,9 @@ class FindOccurrencesTest(unittest.TestCase):
     def test_embedded_arguments_occurrence(self):
         assert_occurrence(self.test_ctrl, EMBEDDED_ARGUMENTS_KEYWORD, TEST1_NAME, 'Steps')
 
+    def test_unknown_variable_occurrences(self):
+        self.assertEqual(list(self.test_ctrl.execute(FindOccurrences('${some unknown variable}'))), [])
+
     def test_occurrences_in_test_metadata(self):
         assert_occurrence(self.test_ctrl, SETUP_KEYWORD, TEST1_NAME, 'Setup')
         assert_occurrence(self.test_ctrl, 'Teardown Kw', TEST1_NAME, 'Teardown')
