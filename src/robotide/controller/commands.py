@@ -16,7 +16,6 @@ from itertools import chain
 import time
 import os
 
-from robotide import utils
 from robotide.namespace.embeddedargs import EmbeddedArgsHandler
 from robotide.publish.messages import RideSelectResource, RideFileNameChanged, RideSaving, RideSaved, RideSaveAll
 from robotide.namespace.namespace import _VariableStash
@@ -798,6 +797,9 @@ class AddVariable(_ReversibleCommand):
 
     def _get_undo_command(self):
         return self._undo_command
+
+    def __str__(self):
+        return 'AddVariable("%s", "%s", "%s")' % (self._name, self._value, self._comment)
 
 
 class RecreateMacro(_ReversibleCommand):

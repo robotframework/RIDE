@@ -68,6 +68,7 @@ def skip_steps(runner, number_of_steps):
         runner.skip_step()
 
 def debug(seed, path, last_index, trace, start, end):
+    print '*'*80
     if last_index == start:
         return trace + [last_index]
     if end <= start:
@@ -114,7 +115,7 @@ def _debugging(seed, path, i):
 
 def main(path):
     result, seed, i, path = do_test(generate_seed(), path)
-    #_debugging..
+    _debugging(seed, path, i)
     return result != 'FAIL'
 
 if __name__ == '__main__':
