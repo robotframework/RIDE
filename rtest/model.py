@@ -21,7 +21,8 @@ from robotide.preferences import RideSettings
 class RIDE(object):
 
     def __init__(self, random, path):
-        print 'chief = ChiefController(Namespace())'
+        print 'settings = RideSettings()'
+        print 'chief = ChiefController(Namespace(settings=settings), settings=settings)'
         settings = RideSettings()
         self._chief = ChiefController(Namespace(settings=settings), settings=settings)
         self._path = path

@@ -16,7 +16,6 @@ from itertools import chain
 import time
 import os
 
-from robotide import utils
 from robotide.namespace.embeddedargs import EmbeddedArgsHandler
 from robotide.publish.messages import RideSelectResource, RideFileNameChanged, RideSaving, RideSaved, RideSaveAll
 from robotide.namespace.namespace import _VariableStash
@@ -617,7 +616,6 @@ class FindVariableOccurrences(FindOccurrences):
                         yield item
 
     def _items_from_datafile_should_be_checked(self, datafile):
-
         if self._is_file_variable(self._keyword_name, self._context):
             return datafile in [self._context.datafile_controller] + \
                                 self._get_all_where_used(self._context)
@@ -627,11 +625,7 @@ class FindVariableOccurrences(FindOccurrences):
                                 self._get_all_where_used(
                                     self._get_source_of_imported_var(
                                         self._keyword_name, self._context))
-        elif self._is_builtin_variable(self._keyword_name):
-            return True
         else:
-            # no chance to track source of variable from external files,
-            # so search everywhere
             return True
 
     def _is_local_variable(self, name, context):
@@ -799,6 +793,9 @@ class AddVariable(_ReversibleCommand):
     def _get_undo_command(self):
         return self._undo_command
 
+    def __str__(self):
+        return 'AddVariable("%s", "%s", "%s")' % (self._name, self._value, self._comment)
+
 
 class RecreateMacro(_ReversibleCommand):
 
@@ -901,12 +898,16 @@ class SaveAll(_Command):
 class Purify(_Command):
 
     def execute(self, context):
-        for i in range(len(context.steps)):
+        i = 0
+        while True:
+            if len(context.steps) <= i:
+                break
             step = context.steps[i] # Steps can changes during this operation
             # this is why index based iteration - step reference can be stale
             step.remove_empty_columns_from_end()
             if step.has_only_comment():
                 step.remove_empty_columns_from_beginning()
+            i += 1
         context.execute(DeleteRows(context.get_empty_rows()))
         context.notify_steps_changed()
 

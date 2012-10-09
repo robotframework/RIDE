@@ -1,7 +1,7 @@
 import unittest
 import datafilereader
 from robotide.controller.cellinfo import CellType
-from robotide.controller.commands import MoveRowsDown, Undo, ChangeCellValue, InsertCell, DeleteCell
+from robotide.controller.commands import MoveRowsDown, Undo, ChangeCellValue, InsertCell, DeleteCell, Purify
 from robotide.controller.stepcontrollers import ForLoopStepController, IntendedStepController, StepController
 
 
@@ -117,6 +117,12 @@ class TestForLoop(unittest.TestCase):
         test.execute(ChangeCellValue(0, 0, ': FOR'))
         test.execute(DeleteCell(0,0))
         self.assertEqual(type(test.steps[0]), StepController)
+
+    def test_for_loop_change_and_purify(self):
+        test = self.chief.datafiles[1].tests[13]
+        test.execute(ChangeCellValue(1, 2, ''))
+        test.execute(Purify())
+        self._steps_are_in_for_loop(test, 2)
 
 if __name__ == '__main__':
     unittest.main()

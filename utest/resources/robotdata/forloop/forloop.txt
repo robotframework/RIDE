@@ -65,3 +65,8 @@ Test 11
 
 Test 12
     Foo
+
+Test 13
+    Log  something
+    : FOR  ${i}  IN  1  2
+    \   Log  ${i}
