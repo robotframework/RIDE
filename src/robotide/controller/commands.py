@@ -903,12 +903,16 @@ class SaveAll(_Command):
 class Purify(_Command):
 
     def execute(self, context):
-        for i in range(len(context.steps)):
+        i = 0
+        while True:
+            if len(context.steps) <= i:
+                break
             step = context.steps[i] # Steps can changes during this operation
             # this is why index based iteration - step reference can be stale
             step.remove_empty_columns_from_end()
             if step.has_only_comment():
                 step.remove_empty_columns_from_beginning()
+            i += 1
         context.execute(DeleteRows(context.get_empty_rows()))
         context.notify_steps_changed()
 
