@@ -79,7 +79,6 @@ class %s:
                 counter += 1
             kw_name = verb + "_" + lib_main
             db_cursor.execute("INSERT INTO keywords (name,source) VALUES ('%s','%s')" % (kw_name,lib_name))
-            print "KW %s IN %s" % (kw_name, lib_name)
             libfile.write(\
 """
     def %s():
@@ -138,7 +137,6 @@ def _create_test_suite(path, filecount = 1, testcount = 20):
                         tc_withname = key
                         break
             tc_name = "Test %s in %s #%d" % (random.choice(verbs), selected_library.split("CustomLib")[1], tc)
-            print tc_name
             available_keywords = db_cursor.execute("SELECT * FROM keywords WHERE source = '%s' ORDER BY RANDOM()"
                                                     % selected_library).fetchall()
             kwlib = random.choice([selected_library, tc_withname, tc_withname + "xyz"])
@@ -189,6 +187,15 @@ def _create_test_project(path,testlibs_count=5,keyword_count=10,testsuite_count=
     shutil.rmtree(path, ignore_errors=True)
     thetestdir = os.path.join(path, 'testdir')
     shutil.copytree(os.path.join(ROOT, 'testdir'), thetestdir)
+
+    print """Generating test project with following settings
+    %d test libraries (option 'l')
+    %d keywords per test library (option 'k')
+    %d test suites (option 's')
+    %d tests per test suite (option 't')
+    %d resource files (option 'f')
+    %d resources per resource file (option 'r')""" % (testlibs_count, keyword_count, testsuite_count,
+                                        tests_in_suite, resource_count, resources_in_file)
 
     _create_test_libraries(thetestdir, filecount=testlibs_count, keywords=keyword_count)
     _create_test_resources(thetestdir + "/resources", filecount=resource_count,resource_count=resources_in_file)

@@ -112,19 +112,18 @@ def generate_big_project(options):
     _set_development_path()
     sys.path.insert(0, '.')
     from rtest.large_scale_keyword_test import main
-    dir = options.dir
-    _log("DIR: %s" % dir)
-    shutil.rmtree(dir, ignore_errors=True)
-    sys.path.append(dir)
+    _log("Test project is created into directory (option 'd'): %s" % options.dir)
+    shutil.rmtree(options.dir, ignore_errors=True)
+    sys.path.append(options.dir)
     try:
-        assert main(dir, testlibs_count=int(options.libs), keyword_count=int(options.keywords),
+        assert main(options.dir, testlibs_count=int(options.libs), keyword_count=int(options.keywords),
                     testsuite_count=int(options.suites), tests_in_suite=int(options.tests),
                     resource_count=int(options.resourcefiles), resources_in_file=int(options.resources))
     finally:
         #if len(args) >= 1 and ("del" in args):
         #    shutil.rmtree(dir, ignore_errors=True)
         #else:
-        _log("Not removing: " + dir)
+        _log("Not removing directory: " + options.dir)
 
 
 @task
