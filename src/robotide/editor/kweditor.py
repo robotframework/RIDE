@@ -28,7 +28,7 @@ from robotide.publish import (RideItemStepsChanged,
 from robotide.usages.UsageRunner import Usages, VariableUsages
 from robotide.ui.progress import RenameProgressObserver
 from robotide import utils
-from robotide.utils import RideEventHandler, overrides
+from robotide.utils import RideEventHandler, overrides, is_variable
 from robotide.widgets import PopupMenu, PopupMenuItems
 
 from .grid import GridEditor
@@ -579,7 +579,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def OnRenameKeyword(self, event):
         old_name = self._current_cell_value()
-        if not old_name.strip():
+        if not old_name.strip() or is_variable(old_name):
             return
         new_name = wx.GetTextFromUser('New name', 'Rename Keyword',
                                       default_value=old_name)
