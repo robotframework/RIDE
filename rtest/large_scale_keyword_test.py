@@ -128,16 +128,24 @@ def _create_test_suite(path, filecount = 1, testcount = 20):
         test_txt += "*** Test Cases ***\n"
         for tc in range(testcount):
             selected_library = random.choice(available_libraries)[0]
+            tc_withname = None
             if selected_library not in libraries_in_use.values():
-                libraries_in_use["Cus%d" % tc] = selected_library
+                tc_withname = "Cus%d" % tc
+                libraries_in_use[tc_withname] = selected_library
+            else:
+                for key,val in libraries_in_use.iteritems():
+                    if val == selected_library:
+                        tc_withname = key
+                        break
             tc_name = "Test %s in %s #%d" % (random.choice(verbs), selected_library.split("CustomLib")[1], tc)
             print tc_name
             available_keywords = db_cursor.execute("SELECT * FROM keywords WHERE source = '%s' ORDER BY RANDOM()"
                                                     % selected_library).fetchall()
+            kwlib = random.choice([selected_library, tc_withname, tc_withname + "xyz"])
             kw1 = available_keywords.pop()
             kw2 = available_keywords.pop()
-            test_txt += "%s\t[Documentation]\t%s\n\t\t%s\n\t\t%s\n\n" % (tc_name, "Test %d" % tc, kw1[2] +
-                    "." +kw1[1].replace("_"," "), kw2[2] + "." +kw2[1].replace("_"," "))
+            test_txt += "%s\t[Documentation]\t%s\n\t\t%s\n\t\t%s\n\n" % (tc_name, "Test %d" % tc, kwlib +
+                    "." +kw1[1].replace("_"," "), kwlib + "." +kw2[1].replace("_"," "))
 
         settings_txt += "*** Settings ***\n"
         for tc_withname,tc_name in libraries_in_use.iteritems():
