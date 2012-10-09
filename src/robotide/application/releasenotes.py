@@ -86,7 +86,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 0.50</h2>
+<h2>Release notes for 0.51</h2>
 <table border="1">
 <tr>
 <td><p><b>ID</b></p></td>
@@ -95,77 +95,41 @@ RELEASE_NOTES = """
 <td><p><b>Summary</b></p></td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=453">Issue 453</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>Using Comments Rows or Colorizing for a complete FOR loop does not work correctly</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=702">Issue 702</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>Keywords used as Run keyword variants' argument in setup/teardown are not find with find usages</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1025">Issue 1025</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>It shows wrong Character for non-ascii characters when running</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1042">Issue 1042</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>Row: Ctrl+c does not copy the whole selection</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1046">Issue 1046</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>Show a better error message if ansi version of wx is used</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1053">Issue 1053</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>Test runner shows console when RIDE is started with pythonw.exe</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1058">Issue 1058</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>Pasting data into Rides Edit page from a tab delimited file has issues if the lines have different numbers of delimiters / columns</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1059">Issue 1059</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>Library/Resource import from File Dialog on Windows fails</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1060">Issue 1060</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>Can't add new resource to resource folder</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=260">Issue 260</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=92">Issue 92</a></td>
 <td>Enhancement</td>
-<td>Medium</td>
-<td>Notification about (un)successfully imported libraries, resources, variables</td>
+<td>High</td>
+<td>Cannot open non-empty directory/file unless it contains at least one test case</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1049">Issue 1049</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1082">Issue 1082</a></td>
 <td>Enhancement</td>
-<td>Medium</td>
-<td>Standalone comments should be preserved in variable table</td>
+<td>High</td>
+<td>Library loading time improvements</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1040">Issue 1040</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1069">Issue 1069</a></td>
+<td>Defect</td>
+<td>Medium</td>
+<td>Remove 'Reload Directory'</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1072">Issue 1072</a></td>
+<td>Defect</td>
+<td>Medium</td>
+<td>Library code can kill RIDE without a trace</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1081">Issue 1081</a></td>
+<td>Defect</td>
+<td>Medium</td>
+<td>Using 'Rename Keyword' on variable name in Step cell hangs RIDE</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1066">Issue 1066</a></td>
 <td>Defect</td>
 <td>Low</td>
-<td>Disabling plugin causes exception</td>
+<td>TestCaseFileEditor has no delete_rows</td>
 </tr>
 </table>
-<p>Altogether 12 issues.</p>
+<p>Altogether 6 issues.</p>
 """
