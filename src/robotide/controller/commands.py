@@ -616,7 +616,6 @@ class FindVariableOccurrences(FindOccurrences):
                         yield item
 
     def _items_from_datafile_should_be_checked(self, datafile):
-
         if self._is_file_variable(self._keyword_name, self._context):
             return datafile in [self._context.datafile_controller] + \
                                 self._get_all_where_used(self._context)
@@ -626,11 +625,7 @@ class FindVariableOccurrences(FindOccurrences):
                                 self._get_all_where_used(
                                     self._get_source_of_imported_var(
                                         self._keyword_name, self._context))
-        elif self._is_builtin_variable(self._keyword_name):
-            return True
         else:
-            # no chance to track source of variable from external files,
-            # so search everywhere
             return True
 
     def _is_local_variable(self, name, context):
