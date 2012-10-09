@@ -604,7 +604,6 @@ class FindVariableOccurrences(FindOccurrences):
 
     def _items_from(self, context):
         self._context = context
-        
         if self._is_local_variable(self._keyword_name, context):
             for item in self._items_from_controller(context):
                 yield item
