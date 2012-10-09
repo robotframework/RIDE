@@ -115,7 +115,7 @@ def _debugging(seed, path, i):
 
 def main(path):
     result, seed, i, path = do_test(generate_seed(), path)
-    _debugging(seed, path, i)
+    #_debugging(seed, path, i)
     return result != 'FAIL'
 
 if __name__ == '__main__':
