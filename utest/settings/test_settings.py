@@ -18,7 +18,7 @@ import os
 from robotide.preferences import settings
 
 from robotide.preferences.settings import Settings, SectionError,\
-    ConfigurationError, initialize_settings, SettingsMigrator
+    ConfigurationError, initialize_settings, SettingsMigrator, Excludes
 
 from resources.setting_utils import TestSettingsHelper
 
@@ -363,7 +363,77 @@ class TestMergeSettings(TestSettingsHelper):
         else:
             raise AssertionError('merging read-only file succeeded')
 
+class TestExcludes(unittest.TestCase):
 
+    class FakeSettings(object):
+        def __init__(self, setting):
+            self.get_without_default = lambda _: setting
+            self.add_change_listener = lambda _: 0
+
+    def tearDown(self):
+        if 'file_path' in dir(self) and os.path.exists(self.file_path):
+            os.remove(self.file_path)
+
+    def test_excludes_init_work(self):
+        fs = self.FakeSettings('test_excludes_work')
+        e = Excludes(fs)
+        self.assertEqual('test_excludes_work', e._project_name)
+
+    def test_update_excludes(self):
+        fs = self.FakeSettings('test_update_excludes')
+        e = Excludes(fs)
+        e.update_excludes(['foo'])
+        self.file_path = os.path.join(e._dir_for_settings, 'test_update_excludes')
+        self._verify_exclude_file(self.file_path, ['foo\n'])
+
+    def test_updating_excludes_does_not_repeat_path(self):
+        fs = self.FakeSettings('test_update_repeat')
+        e = Excludes(fs)
+        e.update_excludes(['foo'])
+        e.update_excludes(['foo'])
+        self.file_path = os.path.join(e._dir_for_settings, 'test_update_repeat')
+        self._verify_exclude_file(self.file_path, ['foo\n'])
+
+    def test_updating_excludes_does_not_repeat_almost_similar_paths(self):
+        fs = self.FakeSettings('test_repeat_almost_similar')
+        e = Excludes(fs)
+        e.update_excludes(['/foo/bar'])
+        e.update_excludes(['/foo/bar/'])
+        self.file_path = os.path.join(e._dir_for_settings, 'test_repeat_almost_similar')
+        self._verify_exclude_file(self.file_path, ['/foo/bar\n'])
+
+    def test_check_path(self):
+        fs = self.FakeSettings('test_check_path')
+        e = Excludes(fs)
+        e.update_excludes(['/foo/bar/baz'])
+        self.assertTrue(e.check_path('/foo/bar/baz'))
+        self.file_path = os.path.join(e._dir_for_settings, 'test_check_path')
+        self._verify_exclude_file(self.file_path, ['/foo/bar/baz\n'])
+
+    def test_check_path_when_file_is_in_excluded_directory(self):
+        fs = self.FakeSettings('test_file_in_excluded_dir')
+        e = Excludes(fs)
+        e.update_excludes(['/foo'])
+        self.assertTrue(e.check_path('/foo/bar/baz'))
+        self.assertTrue(e.check_path('/foo/bar/'))
+        self.assertTrue(e.check_path('/foo/'))
+        self.file_path = os.path.join(e._dir_for_settings, 'test_file_in_excluded_dir')
+        self._verify_exclude_file(self.file_path, ['/foo\n'])
+
+    def test_directory_changed(self):
+        fs = self.FakeSettings('test_dir_changed')
+        e = Excludes(fs)
+        file_paths = [ os.path.join(e._dir_for_settings, 'test_dir_changed'),
+                       os.path.join(e._dir_for_settings, 'test_dir_changed_to_another_one') ]
+        self.assertEqual(e._project_name, 'test_dir_changed')
+        self.assertEqual(e._exclude_file_path, file_paths[0])
+        e.setting_changed('default directory', file_paths[0], file_paths[1])
+        self.assertEqual(e._project_name, 'test_dir_changed_to_another_one')
+        self.assertEqual(e._exclude_file_path, file_paths[1])
+
+    def _verify_exclude_file(self, file_path, expected):
+        file_contents = open(file_path, 'r').readlines()
+        self.assertEqual(file_contents, expected)
 
 if __name__ == "__main__":
     unittest.main()
