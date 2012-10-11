@@ -289,9 +289,10 @@ class Excludes():
 
     def update_excludes(self, new_excludes):
         excludes = self.get_excludes()
+        new_excludes = [exclude.rstrip('/') for exclude in new_excludes]
         new_excludes = [exclude for exclude in new_excludes if exclude not in excludes]
         excludes.extend(new_excludes)
-        exclude_file = self._get_exclude_file(read_write='a')
+        exclude_file = self._get_exclude_file(read_write='w')
         for exclude in excludes:
             exclude_file.write("%s\n" % exclude)
         exclude_file.close()
@@ -309,10 +310,10 @@ class Excludes():
         return file
 
     def check_path(self, path, excludes=None):
+        excludes = excludes or self.get_excludes()
+        if path in excludes:
+            return True
         head, _ = os.path.split(path)
         if head == '/':
             return False
-        excludes = excludes or self.get_excludes()
-        if head in excludes:
-            return True
         return self.check_path(head, excludes)
