@@ -371,7 +371,7 @@ class TestExcludes(unittest.TestCase):
             self.add_change_listener = lambda _: 0
 
     def tearDown(self):
-        if 'file_path' in dir(self) and os.path.exists(self.file_path):
+        if hasattr(self, 'file_path') and os.path.exists(self.file_path):
             os.remove(self.file_path)
 
     def test_excludes_init_work(self):
