@@ -15,7 +15,8 @@
 import wx
 from robotide.action.actioninfo import ActionInfo
 from robotide.controller.filecontrollers import ResourceFileController
-from robotide.publish.messages import RideTestRunning, RideTestPassed, RideTestFailed, RideTestExecutionStarted, RideImportSetting
+from robotide.publish.messages import RideTestRunning, RideTestPassed, RideTestFailed, RideTestExecutionStarted, \
+    RideImportSetting, RideExcludesChanged
 from robotide.ui.images import RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, FAILED_IMAGE_INDEX, ROBOT_IMAGE_INDEX
 from robotide.ui.treenodehandlers import TestCaseHandler
 
@@ -120,9 +121,21 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
             (self._test_result, RideTestPassed),
             (self._test_result, RideTestFailed),
             (self._handle_import_setting_message, RideImportSetting),
+            (self._mark_excludes, RideExcludesChanged)
         ]
         for listener, topic in subscriptions:
             PUBLISHER.subscribe(listener, topic)
+
+    def _set_item_excluded(self, node):
+        self.SetItemTextColour(node, 'gray')
+        self.SetItemItalic(node, True)
+        self.SetItemText(node, "%s (excluded)" % self.GetItemText(node))
+
+    def _mark_excludes(self, message):
+        tree = self._controller.find_node_by_controller(message.controller)
+        self._set_item_excluded(tree)
+        for child in tree.GetChildren():
+            self._set_item_excluded(child)
 
     def _handle_import_setting_message(self, message):
         if message.is_resource():
@@ -242,6 +255,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
             if not controller.is_used():
                 self.SetItemTextColour(node, wx.ColorRGB(0xA9A9A9))
         self.SetPyData(node, handler_class(controller, self, node, self._controller.settings))
+        if controller.is_excluded():
+            self._set_item_excluded(node)
         return node
 
     def set_checkboxes_for_tests(self):
