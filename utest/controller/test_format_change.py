@@ -17,7 +17,7 @@ class TestFormatChange(unittest.TestCase):
 
     def setUp(self):
         ns = Namespace(FakeSettings())
-        self.chief = ChiefControllerChecker(ns)
+        self.chief = ChiefControllerChecker(ns, settings=ns._settings)
 
     def test_format_change(self):
         controller = self._get_file_controller(MINIMAL_SUITE_PATH)

@@ -424,6 +424,7 @@ class TestExcludes(unittest.TestCase):
         fs = self.FakeSettings('test_check_path_with_none')
         e = Excludes(fs)
         self.assertFalse(e.check_path(None))
+        self.file_path = os.path.join(e._dir_for_settings, 'test_check_path_with_none')
 
     def test_directory_changed(self):
         fs = self.FakeSettings('test_dir_changed')
