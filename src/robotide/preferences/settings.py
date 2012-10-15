@@ -307,6 +307,8 @@ class Excludes():
             raise Exception(e) #TODO FIXME
 
     def check_path(self, path, excludes=None):
+        if not path:
+            return False
         excludes = excludes or self.get_excludes()
         if path in excludes:
             return True
