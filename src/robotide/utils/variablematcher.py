@@ -16,7 +16,8 @@ import re
 from robot.utils import matches
 
 _VAR_BODY = r'([^\}]|\\\})*'
-_SCALAR_VARIABLE_MATCHER = re.compile(r'^(\$\{'+_VAR_BODY+'\}) *=?$')
+_SCALAR_VARIABLE_MATCHER = re.compile(r'\$\{'+_VAR_BODY+'\}')
+_SCALAR_VARIABLE_LINE_MATCHER = re.compile(r'^(\$\{'+_VAR_BODY+'\}) *=?$')
 _LIST_VARIABLE_MATCHER = re.compile(r'^(@\{'+_VAR_BODY+'\})( ?=?|\[\d*\])$')
 _LIST_VARIABLE_SUBITEM_END_MATCHER = re.compile(r'\[\d+\]\s*(=\s*)?$')
 
@@ -27,7 +28,7 @@ def is_scalar_variable(value):
     return _match_scalar_variable(value)
 
 def _match_scalar_variable(value):
-    return _SCALAR_VARIABLE_MATCHER.match(value.strip())
+    return _SCALAR_VARIABLE_LINE_MATCHER.match(value.strip())
 
 def is_list_variable(value):
     return _match_list_variable(value)
@@ -54,6 +55,9 @@ def get_variable_basename(value):
 
 def find_variable_basenames(value):
     return [get_variable_basename(var) for var in re.findall('[\@\$]{.*?}', value)]
+
+def contains_scalar_variable(value):
+    return bool(_SCALAR_VARIABLE_MATCHER.findall(value))
 
 def value_contains_variable(value, varname):
     return matches(value, "*%s*" % varname)
