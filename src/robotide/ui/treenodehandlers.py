@@ -25,6 +25,7 @@ from robotide.controller.filecontrollers import (TestDataDirectoryController,
 from robotide.editor.editordialogs import (TestCaseNameDialog,
     UserKeywordNameDialog, ScalarVariableDialog, ListVariableDialog,
     CopyUserKeywordDialog)
+from robotide.publish import RideExcludesChanged
 from robotide.ui.progress import LoadProgressObserver
 from robotide.usages.UsageRunner import Usages, ResourceFileUsages
 from .filedialogs import (AddSuiteDialog, ChangeFormatDialog, NewResourceDialog, AddResourceDialog)
@@ -64,6 +65,7 @@ class _ActionHandler(wx.Window):
     _label_select_failed_tests = 'Select Only Failed Tests'
     _label_delete = 'Delete\tCtrl-Shift-D'
     _label_delete_no_kbsc = 'Delete'
+    _label_exclude = 'Exclude'
 
     def __init__(self, controller, tree, node, settings):
         wx.Window.__init__(self, tree)
@@ -131,6 +133,8 @@ class _ActionHandler(wx.Window):
     def OnSafeDelete(self, event):
         pass
 
+    def OnExclude(self, event):
+        pass
 
 class _CanBeRenamed(object):
 
@@ -266,7 +270,9 @@ class TestDataDirectoryHandler(TestDataHandler):
                 ['---',
                 _ActionHandler._label_select_all,
                 _ActionHandler._label_deselect_all,
-                _ActionHandler._label_select_failed_tests]
+                _ActionHandler._label_select_failed_tests,
+                _ActionHandler._label_exclude
+        ]
 
     def OnNewSuite(self, event):
         AddSuiteDialog(self.controller, self._settings).execute()
@@ -276,6 +282,10 @@ class TestDataDirectoryHandler(TestDataHandler):
 
     def OnDelete(self, event):
         FolderDeleteDialog(self.controller).execute()
+
+    def OnExclude(self, event):
+        self._settings.excludes.update_excludes([self.controller.source])
+        RideExcludesChanged(controller=self.controller).publish()
 
 
 class ResourceFileHandler(_CanBeRenamed, TestDataHandler):

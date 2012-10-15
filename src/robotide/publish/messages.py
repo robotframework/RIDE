@@ -263,6 +263,9 @@ class RideImportSetting(RideDataChanged):
     def name(self):
         return self.import_controller.name
 
+class RideExcludesChanged(RideMessage):
+    data = ['controller']
+
 
 class RideImportSettingAdded(RideImportSetting):
     """Sent whenever an import setting is added.

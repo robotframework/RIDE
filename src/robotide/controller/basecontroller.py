@@ -29,6 +29,9 @@ class _BaseController(object):
     def is_modifiable(self):
         return True
 
+    def is_excluded(self):
+        return False
+
 
 class ControllerWithParent(_BaseController):
 
