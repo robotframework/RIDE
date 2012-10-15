@@ -292,22 +292,19 @@ class Excludes():
         new_excludes = [exclude.rstrip('/') for exclude in new_excludes]
         new_excludes = [exclude for exclude in new_excludes if exclude not in excludes]
         excludes.extend(new_excludes)
-        exclude_file = self._get_exclude_file(read_write='w')
-        for exclude in excludes:
-            exclude_file.write("%s\n" % exclude)
-        exclude_file.close()
-
+        with self._get_exclude_file(read_write='w') as exclude_file:
+            for exclude in excludes:
+                exclude_file.write("%s\n" % exclude)
+        
     def _get_exclude_file(self, read_write):
         if not self._exclude_file_path:
             return None
         if not os.path.exists(self._exclude_file_path) and read_write.startswith('r'):
             return open(self._exclude_file_path, 'w+')
-        file = None
         try:
-            file = open(self._exclude_file_path, read_write)
+            return open(self._exclude_file_path, read_write)
         except IOError as e:
             raise Exception(e) #TODO FIXME
-        return file
 
     def check_path(self, path, excludes=None):
         excludes = excludes or self.get_excludes()
