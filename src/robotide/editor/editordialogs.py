@@ -13,7 +13,6 @@
 #  limitations under the License.
 
 import wx
-from robotide.editor.fieldeditors import FileNameEditor
 from robotide.namespace.suggesters import ResourceSuggester, LibrariesSuggester, HistorySuggester
 
 from robotide.validators import (ScalarVariableNameValidator,
@@ -23,7 +22,7 @@ from robotide import utils
 from robotide.widgets import HelpLabel, Dialog
 
 from fieldeditors import ValueEditor, ListValueEditor, MultiLineEditor,\
-    ContentAssistEditor, VariableNameEditor
+    ContentAssistEditor, VariableNameEditor, ArgumentEditor, FileNameEditor
 from formatters import ListToStringFormatter
 from dialoghelps import get_help
 
@@ -255,7 +254,7 @@ class UserKeywordNameDialog(_Dialog):
         value = uk.name if uk else ''
         return [ValueEditor(self, value, 'Name',
                             UserKeywordNameValidator(self._controller)),
-                ValueEditor(self, '', 'Arguments', ArgumentsValidator())]
+                ArgumentEditor(self, '', 'Arguments', ArgumentsValidator())]
 
     def get_name(self):
         return _Dialog.get_value(self)[0]

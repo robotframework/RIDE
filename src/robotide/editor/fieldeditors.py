@@ -46,7 +46,6 @@ class ValueEditor(wx.Panel):
         self._editor.AppendText(value)
         sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
         self._sizer.Add(sizer, 1, wx.EXPAND)
-        wx.EVT_KEY_DOWN(self._editor, self.on_key_down)
 
     def _get_text_ctrl(self):
         return wx.TextCtrl(self, size=(600, -1))
@@ -61,14 +60,32 @@ class ValueEditor(wx.Panel):
         self._editor.SetFocus()
         self._editor.SelectAll()
 
+
+class ArgumentEditor(ValueEditor):
+
+    def _create_editor(self, value, label, settings):
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        if self._label:
+            sizer.Add(Label(self, label=self._label, size=(80, -1)), 0, self._sizer_flags_for_label, 5)
+        self._editor = self._get_text_ctrl()
+        self._editor.AppendText(value)
+        sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
+        self._sizer.Add(sizer, 1, wx.EXPAND)
+        wx.EVT_KEY_DOWN(self._editor, self.on_key_down)
+
     def on_key_down(self, event):
-        if 'Arg' in self._label and len(self.get_value()) == 0:
-            self._editor.WriteText("${}")
-        elif 'Arg' in self._label and event.GetKeyCode() == 44:
-            self._editor.AppendText(" | ${}")
+        if  event.CmdDown() and event.GetKeyCode() == 73:
+            if len(self.get_value()) == 0:
+                self._editor.WriteText("${}")
+            else:
+                self._editor.AppendText(" | ${}")
+        elif event.CmdDown() and event.GetKeyCode() == 68:
+            arguments = self.get_value().split("|")
+            del arguments[-1]
+            self._editor.Clear()
+            self._editor.AppendText('|'.join(arguments))
         else:
             event.Skip()
-
 
 class FileNameEditor(ValueEditor):
 
