@@ -116,7 +116,7 @@ def TestData(source, parent=None, settings=None):
     """
     if os.path.isdir(source):
         data = TestDataDirectoryWithExcludes(parent, source, settings)
-        FromDirectoryPopulator().populate(source, data, [], False)
+        data.populate()
         return data
     return TestCaseFile(parent, source).populate()
 
@@ -125,3 +125,6 @@ class ExcludedDirectory(TestDataDirectory):
         self._parent = parent
         self._path = path
         TestDataDirectory.__init__(self, parent, path)
+
+    def has_tests(self):
+        return True
