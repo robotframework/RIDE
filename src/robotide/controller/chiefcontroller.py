@@ -39,12 +39,13 @@ class ChiefController(_BaseController, WithNamespace):
             self._library_manager.start()
         self._set_namespace(namespace)
         self._settings = settings
-        self._loader = DataLoader(namespace)
+        self._loader = DataLoader(namespace, settings)
         self._controller = None
         self.name = None
         self.external_resources = []
         self._resource_file_controller_factory = ResourceFileControllerFactory(namespace)
         self._serializer = Serializer(settings, LOG)
+        self._settings = settings
 
     def __del__(self):
         if self._library_manager:
@@ -122,6 +123,9 @@ class ChiefController(_BaseController, WithNamespace):
             return
         load_observer.error("Given file '%s' is not a valid Robot Framework "
                             "test case or resource file." % path)
+
+    def is_excluded(self, source):
+        return self._settings.excludes.contains(source) if self._settings else False
 
     def _load_initfile(self, path, load_observer):
         if not os.path.splitext(os.path.split(path)[1])[0] == '__init__':

@@ -35,9 +35,14 @@ from .tablecontrollers import (VariableTableController, TestCaseTableController,
         MetadataListController, TestCaseController)
 
 
+def _get_controller(chief, data, parent):
+    if isinstance(data, TestCaseFile):
+        return TestCaseFileController(data, chief, parent)
+    return TestDataDirectoryController(data, chief, parent)
+
+
 def DataController(data, chief, parent=None):
-    return TestCaseFileController(data, chief, parent) if isinstance(data, TestCaseFile) \
-        else TestDataDirectoryController(data, chief, parent)
+    return _get_controller(chief, data, parent)
 
 
 class _FileSystemElement(object):
@@ -346,7 +351,6 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
     def find_controller_by_longname(self, longname):
         return self.find_controller_by_names(longname.split('.'))
 
-
     def find_controller_by_names(self, names):
         if names[0] != self.name:
             return None
@@ -356,6 +360,9 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
             res = suite.find_controller_by_names(names[1:])
             if res:
                 return res
+
+    def is_excluded(self):
+        return self._chief_controller.is_excluded(self.source) if self._chief_controller else False
 
     def _children(self, data):
         children = [DataController(child, self._chief_controller, self) for child in data.children]

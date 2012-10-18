@@ -42,7 +42,8 @@ class TreeImageList(wx.ImageList):
             VariableController: _TreeImage(self, 'dollar.png'),
             'running': _TreeImage(self, 'robot_running.png'),
             'passed': _TreeImage(self, 'robot_passed.png'),
-            'failed': _TreeImage(self, 'robot_failed.png')
+            'failed': _TreeImage(self, 'robot_failed.png'),
+            'excluded': _TreeImage(self, 'folder_excluded.png')
         }
 
     @property
@@ -64,6 +65,8 @@ class TreeImageList(wx.ImageList):
         elif controller.__class__ == TestDataDirectoryController:
             if not controller.contains_tests():
                 return self._images['resource directory']
+            if controller.is_excluded():
+                return self._images['excluded']
         return self._images[controller.__class__]
 
 

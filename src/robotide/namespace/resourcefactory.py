@@ -27,7 +27,7 @@ class ResourceFactory(object):
         self.cache = {}
         self.python_path_cache = {}
         self._excludes = settings.excludes
-        self.check_path_from_excludes = self._excludes.check_path
+        self.check_path_from_excludes = self._excludes.contains
         self._set_pythonpath(settings.get('pythonpath', []))
         settings.add_change_listener(self)
 

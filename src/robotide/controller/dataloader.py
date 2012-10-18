@@ -15,26 +15,25 @@
 import os
 from threading import Thread
 
-from robot.parsing.model import TestData, TestDataDirectory
-from robot.parsing.populators import FromFilePopulator
+from robot.parsing.model import TestDataDirectory, TestCaseFile
+from robot.parsing.populators import FromFilePopulator, FromDirectoryPopulator
 
 
 class DataLoader(object):
 
-    def __init__(self, namespace):
+    def __init__(self, namespace, settings):
         self._namespace = namespace
         self._namespace.reset_resource_and_library_cache()
+        self._settings = settings
 
     def load_datafile(self, path, load_observer):
-        return self._load(_DataLoader(path), load_observer)
+        return self._load(_DataLoader(path, self._settings), load_observer)
 
     def load_initfile(self, path, load_observer):
-        res = self._load(_InitFileLoader(path), load_observer)
-        return res
+        return self._load(_InitFileLoader(path), load_observer)
 
     def resources_for(self, datafile, load_observer):
-        return self._load(_ResourceLoader(datafile, self._namespace.get_resources),
-                          load_observer)
+        return self._load(_ResourceLoader(datafile, self._namespace.get_resources), load_observer)
 
     def _load(self, loader, load_observer):
         self._wait_until_loaded(loader, load_observer)
@@ -55,20 +54,21 @@ class _DataLoaderThread(Thread):
         self.result = None
 
     def run(self):
-        try:
+        #try:
             self.result = self._run()
-        except Exception:
-            pass # TODO: Log this error somehow
+        #except Exception:
+        #    pass # TODO: Log this error somehow
 
 
 class _DataLoader(_DataLoaderThread):
 
-    def __init__(self, path):
+    def __init__(self, path, settings):
         _DataLoaderThread.__init__(self)
         self._path = path
+        self._settings = settings
 
     def _run(self):
-        return TestData(source=self._path)
+        return TestData(source=self._path, settings=self._settings)
 
 
 class _InitFileLoader(_DataLoaderThread):
@@ -93,3 +93,31 @@ class _ResourceLoader(_DataLoaderThread):
 
     def _run(self):
         return self._loader(self._datafile)
+
+
+class TestDataDirectoryWithExcludes(TestDataDirectory):
+
+    def __init__(self, parent, source, settings):
+        self._settings = settings
+        TestDataDirectory.__init__(self, parent, source)
+
+    def add_child(self, path, include_suites):
+        if not self._settings.excludes.contains(path):
+            print 'blim', "<"*20
+            self.children.append(TestData(parent=self, source=path, settings=self._settings))
+        else:
+            print 'koo'
+        print "-"*10
+
+def TestData(source, parent=None, settings=None):
+    """Parses a file or directory to a corresponding model object.
+
+    :param source: path where test data is read from.
+    :returns: :class:`~.model.TestDataDirectory`  if `source` is a directory,
+        :class:`~.model.TestCaseFile` otherwise.
+    """
+    if os.path.isdir(source):
+        data = TestDataDirectoryWithExcludes(parent, source, settings)
+        data.populate([], False)
+        return data
+    return TestCaseFile(parent, source).populate()
