@@ -21,7 +21,7 @@ from robotide.controller.settingcontrollers import VariableController
 from robotide.controller.macrocontrollers import (TestCaseController,
                                                   UserKeywordController)
 from robotide.controller.filecontrollers import (TestDataDirectoryController,
-    ResourceFileController, TestCaseFileController)
+    ResourceFileController, TestCaseFileController, ExcludedDirectoryController)
 from robotide.editor.editordialogs import (TestCaseNameDialog,
     UserKeywordNameDialog, ScalarVariableDialog, ListVariableDialog,
     CopyUserKeywordDialog)
@@ -40,7 +40,8 @@ def action_handler_class(controller):
          TestCaseFileController:TestCaseFileHandler,
          TestCaseController:TestCaseHandler,
          UserKeywordController:UserKeywordHandler,
-         VariableController:VariableHandler
+         VariableController:VariableHandler,
+         ExcludedDirectoryController:ExcludedDirectoryHandler
      }[controller.__class__]
 
 class _ActionHandler(wx.Window):
@@ -66,6 +67,7 @@ class _ActionHandler(wx.Window):
     _label_delete = 'Delete\tCtrl-Shift-D'
     _label_delete_no_kbsc = 'Delete'
     _label_exclude = 'Exclude'
+    _label_include = 'Include'
 
     def __init__(self, controller, tree, node, settings):
         wx.Window.__init__(self, tree)
@@ -134,6 +136,9 @@ class _ActionHandler(wx.Window):
         pass
 
     def OnExclude(self, event):
+        pass
+
+    def OnInclude(self, event):
         pass
 
 class _CanBeRenamed(object):
@@ -464,3 +469,16 @@ class ResourceRootHandler(_ActionHandler):
         path = AddResourceDialog(self, self.controller).execute()
         if path:
             self.controller.load_resource(path, LoadProgressObserver(self))
+
+
+class ExcludedDirectoryHandler(TestDataDirectoryHandler):
+    is_draggable = False
+    is_test_suite = True
+
+    def __init__(self, *args):
+        TestDataHandler.__init__(self, *args)
+        self._actions = [_ActionHandler._label_include]
+
+    def OnInclude(self, event):
+        pass
+

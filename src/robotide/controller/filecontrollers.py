@@ -16,6 +16,7 @@ import os
 from itertools import chain
 import shutil
 import commands
+from robotide.controller.dataloader import ExcludedDirectory, TestDataDirectoryWithExcludes
 
 from robotide.publish import (RideDataFileRemoved, RideInitFileRemoved,
         RideDataChangedToDirty, RideDataDirtyCleared, RideSuiteAdded,
@@ -27,6 +28,7 @@ from robotide import utils
 from .basecontroller import WithUndoRedoStacks, _BaseController, WithNamespace
 from .macrocontrollers import UserKeywordController
 from .robotdata import NewTestCaseFile, NewTestDataDirectory
+from robotide.utils import overrides
 from .settingcontrollers import (DocumentationController, FixtureController,
         TimeoutController, TemplateController, DefaultTagsController,
         ForceTagsController)
@@ -38,6 +40,8 @@ from .tablecontrollers import (VariableTableController, TestCaseTableController,
 def _get_controller(chief, data, parent):
     if isinstance(data, TestCaseFile):
         return TestCaseFileController(data, chief, parent)
+    if isinstance(data, ExcludedDirectory):
+        return ExcludedDirectoryController(data)
     return TestDataDirectoryController(data, chief, parent)
 
 
@@ -741,3 +745,15 @@ class ResourceFileController(_FileSystemElement, _DataController):
 
     def remove_child(self, controller):
         pass
+
+class ExcludedDirectoryController(_FileSystemElement, _BaseController):
+
+    def __init__(self, data):
+        self.data = data
+        self.dirty = False
+        self.children = tuple()
+        _FileSystemElement.__init__(self, '', data.directory)
+
+    @overrides(_BaseController)
+    def is_excluded(self):
+        return True

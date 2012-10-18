@@ -312,9 +312,7 @@ class Excludes():
         excludes = excludes or self.get_excludes()
         if len(excludes) < 1:
             return False
-        print path, "==", excludes
         if path in excludes:
-            print "!"*20, "YEA"
             return True
         head, folder = os.path.split(path)
         if folder == self._project_name or head == '/':

@@ -54,10 +54,10 @@ class _DataLoaderThread(Thread):
         self.result = None
 
     def run(self):
-        #try:
+        try:
             self.result = self._run()
-        #except Exception:
-        #    pass # TODO: Log this error somehow
+        except Exception:
+            pass # TODO: Log this error somehow
 
 
 class _DataLoader(_DataLoaderThread):
@@ -103,11 +103,9 @@ class TestDataDirectoryWithExcludes(TestDataDirectory):
 
     def add_child(self, path, include_suites):
         if not self._settings.excludes.contains(path):
-            print 'blim', "<"*20
             self.children.append(TestData(parent=self, source=path, settings=self._settings))
         else:
-            print 'koo'
-        print "-"*10
+            self.children.append(ExcludedDirectory(self, path))
 
 def TestData(source, parent=None, settings=None):
     """Parses a file or directory to a corresponding model object.
@@ -118,6 +116,12 @@ def TestData(source, parent=None, settings=None):
     """
     if os.path.isdir(source):
         data = TestDataDirectoryWithExcludes(parent, source, settings)
-        data.populate([], False)
+        FromDirectoryPopulator().populate(source, data, [], False)
         return data
     return TestCaseFile(parent, source).populate()
+
+class ExcludedDirectory(TestDataDirectory):
+    def __init__(self, parent, path):
+        self._parent = parent
+        self._path = path
+        TestDataDirectory.__init__(self, parent, path)
