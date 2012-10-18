@@ -21,7 +21,7 @@ class TestWithNamespace(unittest.TestCase):
     def _dummy_settings(self):
         class foo(object):
             def __init__(self):
-                self.check_path = lambda *args: False
+                self.contains = lambda *args: False
         return foo()
 
 

@@ -406,7 +406,7 @@ class TestExcludes(unittest.TestCase):
         fs = self.FakeSettings('test_check_path')
         e = Excludes(fs)
         e.update_excludes(['/foo/bar/baz'])
-        self.assertTrue(e.check_path('/foo/bar/baz'))
+        self.assertTrue(e.contains('/foo/bar/baz'))
         self.file_path = os.path.join(e._dir_for_settings, 'test_check_path')
         self._verify_exclude_file(self.file_path, ['/foo/bar/baz\n'])
 
@@ -414,16 +414,16 @@ class TestExcludes(unittest.TestCase):
         fs = self.FakeSettings('test_file_in_excluded_dir')
         e = Excludes(fs)
         e.update_excludes(['/foo'])
-        self.assertTrue(e.check_path('/foo/bar/baz'))
-        self.assertTrue(e.check_path('/foo/bar/'))
-        self.assertTrue(e.check_path('/foo/'))
+        self.assertTrue(e.contains('/foo/bar/baz'))
+        self.assertTrue(e.contains('/foo/bar/'))
+        self.assertTrue(e.contains('/foo/'))
         self.file_path = os.path.join(e._dir_for_settings, 'test_file_in_excluded_dir')
         self._verify_exclude_file(self.file_path, ['/foo\n'])
 
     def test_check_path_when_there_is_no_path(self):
         fs = self.FakeSettings('test_check_path_with_none')
         e = Excludes(fs)
-        self.assertFalse(e.check_path(None))
+        self.assertFalse(e.contains(None))
         self.file_path = os.path.join(e._dir_for_settings, 'test_check_path_with_none')
 
     def test_directory_changed(self):

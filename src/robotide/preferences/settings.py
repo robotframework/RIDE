@@ -306,13 +306,17 @@ class Excludes():
         except IOError as e:
             raise Exception(e) #TODO FIXME
 
-    def check_path(self, path, excludes=None):
+    def contains(self, path, excludes=None):
         if not path:
             return False
         excludes = excludes or self.get_excludes()
-        if path in excludes:
-            return True
-        head, _ = os.path.split(path)
-        if head == '/':
+        if len(excludes) < 1:
             return False
-        return self.check_path(head, excludes)
+        print path, "==", excludes
+        if path in excludes:
+            print "!"*20, "YEA"
+            return True
+        head, folder = os.path.split(path)
+        if folder == self._project_name or head == '/':
+            return False
+        return self.contains(head, excludes)
