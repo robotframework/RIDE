@@ -752,6 +752,9 @@ class ExcludedDirectoryController(_FileSystemElement, _BaseController):
         self.data = data
         self.dirty = False
         self.children = tuple()
+        self.variables = tuple()
+        self.tests = []
+        self.keywords = []
         _FileSystemElement.__init__(self, '', data.directory)
 
     @overrides(_BaseController)
