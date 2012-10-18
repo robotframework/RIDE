@@ -320,3 +320,4 @@ class Excludes():
         if folder == self._project_name or head == '/':
             return False
         return self.contains(head, excludes)
+
