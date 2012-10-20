@@ -720,7 +720,11 @@ class ResourceFileController(_FileSystemElement, _DataController):
         RideDataFileRemoved(path=self.filename, datafile=self).publish()
 
     def is_used(self):
-        return bool(list(self.get_where_used()))
+        try:
+            self.get_where_used().next()
+            return True
+        except StopIteration:
+            return False
 
     def get_where_used(self):
         for imp in self._all_imports():
