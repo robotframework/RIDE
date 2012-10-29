@@ -11,6 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+import re
 
 import wx
 from robotide.action.actioninfo import ActionInfo
@@ -121,21 +122,35 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
             (self._test_result, RideTestPassed),
             (self._test_result, RideTestFailed),
             (self._handle_import_setting_message, RideImportSetting),
-            (self._mark_excludes, RideExcludesChanged)
+            (self._mark_excludes, RideExcludesChanged),
         ]
         for listener, topic in subscriptions:
             PUBLISHER.subscribe(listener, topic)
+
+    def _mark_excludes(self, message):
+        tree = self._controller.find_node_by_controller(message.controller)
+        if message.exclude:
+            self._set_item_excluded(tree)
+            for child in tree.GetChildren():
+                self._set_item_excluded(child)
+        else:
+            self._set_item_unexcluded(tree)
 
     def _set_item_excluded(self, node):
         self.SetItemTextColour(node, 'gray')
         self.SetItemItalic(node, True)
         self.SetItemText(node, "%s (excluded)" % self.GetItemText(node))
 
-    def _mark_excludes(self, message):
-        tree = self._controller.find_node_by_controller(message.controller)
-        self._set_item_excluded(tree)
-        for child in tree.GetChildren():
-            self._set_item_excluded(child)
+    def _set_item_unexcluded(self, node):
+        self.SetItemTextColour(node, 'black')
+        self.SetItemItalic(node, False)
+        self.SetItemText(node, self._split_exclude_from_filename(node))
+
+    def _split_exclude_from_filename(self, node):
+        orig_text = self.GetItemText(node)
+        m = re.match('(.*)\s\(excluded\)', orig_text)
+        text = m.groups()[0] if m else orig_text
+        return text
 
     def _handle_import_setting_message(self, message):
         if message.is_resource():

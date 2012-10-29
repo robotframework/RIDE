@@ -290,7 +290,7 @@ class TestDataDirectoryHandler(TestDataHandler):
 
     def OnExclude(self, event):
         self._settings.excludes.update_excludes([self.controller.source])
-        RideExcludesChanged(controller=self.controller).publish()
+        RideExcludesChanged(controller=self.controller, exclude=True).publish()
 
 
 class ResourceFileHandler(_CanBeRenamed, TestDataHandler):
@@ -480,5 +480,5 @@ class ExcludedDirectoryHandler(TestDataDirectoryHandler):
         self._actions = [_ActionHandler._label_include]
 
     def OnInclude(self, event):
-        pass
-
+        self._settings.excludes.remove_path(self.controller.source)
+        RideExcludesChanged(controller=self.controller, exclude=False).publish()

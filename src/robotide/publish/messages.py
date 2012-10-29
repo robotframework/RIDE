@@ -264,7 +264,7 @@ class RideImportSetting(RideDataChanged):
         return self.import_controller.name
 
 class RideExcludesChanged(RideMessage):
-    data = ['controller']
+    data = ['controller', 'exclude']
 
 
 class RideImportSettingAdded(RideImportSetting):
