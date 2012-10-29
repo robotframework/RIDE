@@ -35,6 +35,7 @@ import pickle
 import shutil
 import socket
 import subprocess
+import _subprocess
 import tempfile
 import threading
 import signal
@@ -234,7 +235,7 @@ class Process(object):
                         cwd=self._cwd.encode(SYSTEM_ENCODING))
         if IS_WINDOWS:
             startupinfo = subprocess.STARTUPINFO()
-            startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+            startupinfo.dwFlags |= _subprocess.STARTF_USESHOWWINDOW
             subprocess_args['startupinfo'] = startupinfo
         else:
             subprocess_args['preexec_fn'] = os.setsid
