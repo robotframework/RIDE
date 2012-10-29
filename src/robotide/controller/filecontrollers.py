@@ -25,7 +25,7 @@ from robotide.publish.messages import RideDataFileSet
 from robotide.robotapi import TestDataDirectory, TestCaseFile, ResourceFile
 from robotide import utils
 
-from .basecontroller import WithUndoRedoStacks, _BaseController, WithNamespace
+from .basecontroller import WithUndoRedoStacks, _BaseController, WithNamespace, ControllerWithParent
 from .macrocontrollers import UserKeywordController
 from .robotdata import NewTestCaseFile, NewTestDataDirectory
 from robotide.utils import overrides
@@ -41,7 +41,7 @@ def _get_controller(chief, data, parent):
     if isinstance(data, TestCaseFile):
         return TestCaseFileController(data, chief, parent)
     if isinstance(data, ExcludedDirectory):
-        return ExcludedDirectoryController(data)
+        return ExcludedDirectoryController(data, chief, parent)
     return TestDataDirectoryController(data, chief, parent)
 
 
@@ -391,7 +391,9 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
                 children.append(self._resource_controller(r))
 
     def _directory_controller(self, path):
-        dc = TestDataDirectoryController(TestDataDirectory(source=path), chief_controller=self._chief_controller)
+        dc = TestDataDirectoryController(TestDataDirectory(source=path),
+                                         chief_controller=self._chief_controller,
+                                         parent=self)
         self._add_directory_children(dc.children, dc.source, None)
         return dc
 
@@ -551,6 +553,13 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
 
     def new_resource(self, path):
         return self._chief_controller.new_resource(path, parent=self)
+
+    def exclude(self):
+        self._chief_controller._settings.excludes.update_excludes([self.source])
+        index = self.parent.children.index(self)
+        result = ExcludedDirectoryController(self.data, self._chief_controller, self.parent)
+        self.parent.children[index] = result
+        return result
 
 
 class TestCaseFileController(_FileSystemElement, _DataController):
@@ -746,17 +755,29 @@ class ResourceFileController(_FileSystemElement, _DataController):
     def remove_child(self, controller):
         pass
 
-class ExcludedDirectoryController(_FileSystemElement, _BaseController):
+class ExcludedDirectoryController(_FileSystemElement, ControllerWithParent):
 
-    def __init__(self, data):
+    def __init__(self, data, chief, parent):
         self.data = data
-        self.dirty = False
-        self.children = tuple()
-        self.variables = tuple()
-        self.tests = []
+        self._chief_controller = chief
+        self._parent = parent
+        self.children = []
         self.keywords = []
+        self.variables = tuple()
+        self.tests = tuple()
         _FileSystemElement.__init__(self, '', data.directory)
+
+    @property
+    def dirty(self):
+        return False
 
     @overrides(_BaseController)
     def is_excluded(self):
         return True
+
+    def remove_from_excludes(self):
+        self._chief_controller._settings.excludes.remove_path(self.source)
+        index = self.parent.children.index(self)
+        result = TestDataDirectoryController(self.data, self._chief_controller, self.parent)
+        self.parent.children[index] = result
+        return result

@@ -16,7 +16,7 @@ import wx
 
 from robotide.controller.commands import (RenameKeywordOccurrences, RemoveMacro,
     AddKeyword, AddTestCase, RenameTest, CopyMacroAs, AddVariable,
-    UpdateVariableName, RenameFile, RenameResourceFile, DeleteFile, SortKeywords)
+    UpdateVariableName, RenameFile, RenameResourceFile, DeleteFile, SortKeywords, Include, Exclude)
 from robotide.controller.settingcontrollers import VariableController
 from robotide.controller.macrocontrollers import (TestCaseController,
                                                   UserKeywordController)
@@ -289,9 +289,7 @@ class TestDataDirectoryHandler(TestDataHandler):
         FolderDeleteDialog(self.controller).execute()
 
     def OnExclude(self, event):
-        self._settings.excludes.update_excludes([self.controller.source])
-        RideExcludesChanged(controller=self.controller, exclude=True).publish()
-
+        self.controller.execute(Exclude())
 
 class ResourceFileHandler(_CanBeRenamed, TestDataHandler):
     is_test_suite = False
@@ -480,5 +478,4 @@ class ExcludedDirectoryHandler(TestDataDirectoryHandler):
         self._actions = [_ActionHandler._label_include]
 
     def OnInclude(self, event):
-        self._settings.excludes.remove_path(self.controller.source)
-        RideExcludesChanged(controller=self.controller, exclude=False).publish()
+        self.controller.execute(Include())

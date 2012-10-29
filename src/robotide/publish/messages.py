@@ -263,8 +263,14 @@ class RideImportSetting(RideDataChanged):
     def name(self):
         return self.import_controller.name
 
-class RideExcludesChanged(RideMessage):
-    data = ['controller', 'exclude']
+class _RideExcludes(RideMessage):
+    data = ['old_controller', 'new_controller']
+
+class RideIncludesChanged(_RideExcludes):
+    pass
+
+class RideExcludesChanged(_RideExcludes):
+    pass
 
 
 class RideImportSettingAdded(RideImportSetting):

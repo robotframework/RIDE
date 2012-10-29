@@ -225,6 +225,29 @@ class TestDataDirectoryControllerTest(unittest.TestCase):
         suite = ctrl.execute(AddTestDataDirectory(self.INIT_FILE_PATH))
         assert_equals(suite.data.parent, ctrl.data)
 
+    def test_exclude(self):
+        parent = lambda:0
+        chief = self._mock_chief()
+        ctrl = TestDataDirectoryController(self.data, chief, parent)
+        parent.children = [ctrl]
+        ctrl.exclude()
+        self.assertEqual(len(parent.children), 1)
+        self.assertTrue(parent.children[0].is_excluded())
+        self.assertTrue(self.called)
+
+    def _mock_chief(self):
+        chief = lambda:0
+        chief._namespace = lambda:0
+        chief.resource_file_controller_factory = lambda:0
+        chief._settings = lambda:0
+        chief._settings.excludes = lambda:0
+        self.called = False
+        def update_excludes(new_excludes):
+            self.assertEqual(len(new_excludes), 1)
+            self.assertTrue(new_excludes[0].endswith('source'))
+            self.called = True
+        chief._settings.excludes.update_excludes = update_excludes
+        return chief
 
 class DatafileIteratorTest(unittest.TestCase):
 

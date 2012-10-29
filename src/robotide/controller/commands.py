@@ -17,7 +17,7 @@ import time
 import os
 
 from robotide.namespace.embeddedargs import EmbeddedArgsHandler
-from robotide.publish.messages import RideSelectResource, RideFileNameChanged, RideSaving, RideSaved, RideSaveAll
+from robotide.publish.messages import RideSelectResource, RideFileNameChanged, RideSaving, RideSaved, RideSaveAll, RideExcludesChanged
 from robotide.namespace.namespace import _VariableStash
 
 from .filecontrollers import ResourceFileController
@@ -332,6 +332,19 @@ class RenameFile(_Command):
             RideFileNameChanged(datafile=context,
                                 old_filename=old_filename).publish()
 
+
+class Include(_Command):
+
+    def execute(self, excluded_controller):
+        directory_controller = excluded_controller.remove_from_excludes()
+        RideExcludesChanged(old_controller=excluded_controller, new_controller=directory_controller).publish()
+
+
+class Exclude(_Command):
+
+    def execute(self, directory_controller):
+        excluded_controller = directory_controller.exclude()
+        RideExcludesChanged(old_controller=directory_controller, new_controller=excluded_controller).publish()
 
 class RenameResourceFile(_Command):
 
