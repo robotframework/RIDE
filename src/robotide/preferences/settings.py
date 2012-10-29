@@ -287,14 +287,22 @@ class Excludes():
                 return []
             return exclude_file.read().split()
 
+    def remove_path(self, path):
+        path = path.rstrip('/')
+        excludes = self.get_excludes()
+        self._write_excludes(filter(lambda item: item != path, excludes))
+
+    def _write_excludes(self, excludes):
+        with self._get_exclude_file(read_write='w') as exclude_file:
+            for exclude in excludes:
+                exclude_file.write("%s\n" % exclude)
+
     def update_excludes(self, new_excludes):
         excludes = self.get_excludes()
         new_excludes = [exclude.rstrip('/') for exclude in new_excludes]
         new_excludes = [exclude for exclude in new_excludes if exclude not in excludes]
         excludes.extend(new_excludes)
-        with self._get_exclude_file(read_write='w') as exclude_file:
-            for exclude in excludes:
-                exclude_file.write("%s\n" % exclude)
+        self._write_excludes(excludes)
         
     def _get_exclude_file(self, read_write):
         if not self._exclude_file_path:

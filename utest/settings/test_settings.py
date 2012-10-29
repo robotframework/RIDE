@@ -375,44 +375,38 @@ class TestExcludes(unittest.TestCase):
             os.remove(self.file_path)
 
     def test_excludes_init_work(self):
-        fs = self.FakeSettings('test_excludes_work')
-        e = Excludes(fs)
+        e = self._setup_excludes('test_excludes_work')
         self.assertEqual('test_excludes_work', e._project_name)
 
     def test_update_excludes(self):
-        fs = self.FakeSettings('test_update_excludes')
-        e = Excludes(fs)
+        e = self._setup_excludes('test_update_excludes')
         e.update_excludes(['foo'])
         self.file_path = os.path.join(e._dir_for_settings, 'test_update_excludes')
         self._verify_exclude_file(self.file_path, ['foo\n'])
 
     def test_updating_excludes_does_not_repeat_path(self):
-        fs = self.FakeSettings('test_update_repeat')
-        e = Excludes(fs)
+        e = self._setup_excludes('test_update_repeat')
         e.update_excludes(['foo'])
         e.update_excludes(['foo'])
         self.file_path = os.path.join(e._dir_for_settings, 'test_update_repeat')
         self._verify_exclude_file(self.file_path, ['foo\n'])
 
     def test_updating_excludes_does_not_repeat_almost_similar_paths(self):
-        fs = self.FakeSettings('test_repeat_almost_similar')
-        e = Excludes(fs)
+        e = self._setup_excludes('test_repeat_almost_similar')
         e.update_excludes(['/foo/bar'])
         e.update_excludes(['/foo/bar/'])
         self.file_path = os.path.join(e._dir_for_settings, 'test_repeat_almost_similar')
         self._verify_exclude_file(self.file_path, ['/foo/bar\n'])
 
     def test_check_path(self):
-        fs = self.FakeSettings('test_check_path')
-        e = Excludes(fs)
+        e = self._setup_excludes('test_check_path')
         e.update_excludes(['/foo/bar/baz'])
         self.assertTrue(e.contains('/foo/bar/baz'))
         self.file_path = os.path.join(e._dir_for_settings, 'test_check_path')
         self._verify_exclude_file(self.file_path, ['/foo/bar/baz\n'])
 
     def test_check_path_when_file_is_in_excluded_directory(self):
-        fs = self.FakeSettings('test_file_in_excluded_dir')
-        e = Excludes(fs)
+        e = self._setup_excludes('test_file_in_excluded_dir')
         e.update_excludes(['/foo'])
         self.assertTrue(e.contains('/foo/bar/baz'))
         self.assertTrue(e.contains('/foo/bar/'))
@@ -421,14 +415,12 @@ class TestExcludes(unittest.TestCase):
         self._verify_exclude_file(self.file_path, ['/foo\n'])
 
     def test_check_path_when_there_is_no_path(self):
-        fs = self.FakeSettings('test_check_path_with_none')
-        e = Excludes(fs)
+        e = self._setup_excludes('test_check_path_with_none')
         self.assertFalse(e.contains(None))
         self.file_path = os.path.join(e._dir_for_settings, 'test_check_path_with_none')
 
     def test_directory_changed(self):
-        fs = self.FakeSettings('test_dir_changed')
-        e = Excludes(fs)
+        e = self._setup_excludes('test_dir_changed')
         file_paths = [ os.path.join(e._dir_for_settings, 'test_dir_changed'),
                        os.path.join(e._dir_for_settings, 'test_dir_changed_to_another_one') ]
         self.assertEqual(e._project_name, 'test_dir_changed')
@@ -436,6 +428,23 @@ class TestExcludes(unittest.TestCase):
         e.setting_changed('default directory', file_paths[0], file_paths[1])
         self.assertEqual(e._project_name, 'test_dir_changed_to_another_one')
         self.assertEqual(e._exclude_file_path, file_paths[1])
+
+    def test_remove_path(self):
+        e = self._setup_excludes('test_remove_path')
+        excludes = ['/foo', '/bar/baz', '/qux', '/quux/corge']
+        removed = ['/bar/baz', '/quux/corge']
+        e.update_excludes(excludes)
+        self.file_path = os.path.join(e._dir_for_settings, 'test_remove_path')
+        self._verify_exclude_file(self.file_path, [ex + '\n' for ex in excludes])
+        e.remove_path(removed[0])
+        self.assertEqual(len(e.get_excludes()), len(excludes)-1)
+        e.remove_path(removed[1])
+        self.assertEqual(len(e.get_excludes()), len(excludes)-2)
+
+    def _setup_excludes(self, name):
+        fs = self.FakeSettings(name)
+        e = Excludes(fs)
+        return e
 
     def _verify_exclude_file(self, file_path, expected):
         file_contents = open(file_path, 'r').readlines()
