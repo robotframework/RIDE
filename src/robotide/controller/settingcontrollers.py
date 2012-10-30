@@ -523,6 +523,8 @@ class ResourceImportController(_ImportController):
         if not self._resolved_import:
             self._imported_resource_controller = \
                 self.parent.resource_file_controller_factory.find_with_import(self._import)
+            if self._imported_resource_controller:
+                self._imported_resource_controller.add_known_import(self)
             self._resolved_import = True
         return self._imported_resource_controller
 
@@ -534,6 +536,8 @@ class ResourceImportController(_ImportController):
         return self._previous_imported_controller
 
     def unresolve(self):
+        if self._imported_resource_controller:
+            self._imported_resource_controller.remove_known_import(self)
         self._resolved_import = False
 
     def contains_filename(self, filename):

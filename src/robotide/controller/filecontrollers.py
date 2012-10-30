@@ -654,6 +654,7 @@ class ResourceFileControllerFactory(object):
 class ResourceFileController(_FileSystemElement, _DataController):
 
     def __init__(self, data, chief_controller=None, parent=None):
+        self._known_imports = set()
         _FileSystemElement.__init__(self, data.source if data else None, data.directory)
         _DataController.__init__(self, data, chief_controller,
                                  parent or self._find_parent_for(chief_controller, data.source))
@@ -723,7 +724,15 @@ class ResourceFileController(_FileSystemElement, _DataController):
         self._chief_controller.remove_resource(self)
         RideDataFileRemoved(path=self.filename, datafile=self).publish()
 
+    def remove_known_import(self, _import):
+        self._known_imports.remove(_import)
+
+    def add_known_import(self, _import):
+        self._known_imports.add(_import)
+
     def is_used(self):
+        if self._known_imports:
+            return True
         try:
             self.get_where_used().next()
             return True
