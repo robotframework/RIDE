@@ -106,7 +106,12 @@ class _UnitTestsWithWorkingResourceImports(unittest.TestCase):
                           self.res_controller)
 
     def _verify_import_reference_is_not_resolved(self):
-        assert_none(self.import_setting.get_imported_controller())
+        imported_controller = self.import_setting.get_imported_controller()
+        if imported_controller:
+            msg = 'Resolved to source %s' % imported_controller.source
+        else:
+            msg = None
+        assert_none(imported_controller, msg)
 
 
 class TestResourceFileRename(_UnitTestsWithWorkingResourceImports):

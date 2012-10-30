@@ -22,6 +22,7 @@ from robotide import utils
 
 from .basecontroller import ControllerWithParent
 from .macrocontrollers import TestCaseController, UserKeywordController
+from robotide.utils import overrides
 from .settingcontrollers import (MetadataController, ImportController,
         VariableController)
 
@@ -345,12 +346,19 @@ class ImportSettingsController(_TableController, _WithListOperations):
     def __init__(self, parent_controller, table, resource_file_controller_factory=None):
         _TableController.__init__(self, parent_controller, table)
         self._resource_file_controller_factory = resource_file_controller_factory
+        self.__import_controllers = None
 
     def __iter__(self):
-        return iter(self._import_controller(imp) for imp in self._items)
+        return iter(self._import_controllers)
 
     def __getitem__(self, index):
-        return self._import_controller(self._items[index])
+        return self._import_controllers[index]
+
+    @property
+    def _import_controllers(self):
+        if self.__import_controllers is None:
+            self.__import_controllers = [self._import_controller(imp) for imp in self._items]
+        return self.__import_controllers
 
     def _import_controller(self, import_):
         return ImportController(self, import_)
@@ -362,6 +370,11 @@ class ImportSettingsController(_TableController, _WithListOperations):
     @property
     def resource_file_controller_factory(self):
         return self._resource_file_controller_factory
+
+    @overrides(_WithListOperations)
+    def _swap(self, ind1, ind2):
+        _WithListOperations._swap(self, ind1, ind2)
+        self.__import_controllers = None
 
     def remove_import_data(self, imp):
         self.delete(self._items.data.index(imp))
@@ -396,6 +409,7 @@ class ImportSettingsController(_TableController, _WithListOperations):
         return self[-1]
 
     def notify_imports_modified(self):
+        self.__import_controllers = None
         self.datafile_controller.update_namespace()
 
 

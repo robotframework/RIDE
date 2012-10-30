@@ -542,10 +542,16 @@ class ResourceImportController(_ImportController):
     def change_name(self, old_name, new_name):
         if self.contains_filename(old_name):
             self.set_value(self.name[:-len(old_name)] + new_name)
+        else:
+            # If original result has changed and this import relays on variables
+            # can't know if import is still resolved
+            self.unresolve()
 
     def change_format(self, format):
         if self._has_format():
             self.set_value(utils.replace_extension(self.name, format))
+        else:
+            self.unresolve()
 
     def _has_format(self):
         parts = self.name.rsplit('.', 1)
