@@ -17,6 +17,7 @@ from robot.parsing.model import (TestCase, TestDataDirectory, ResourceFile,
         TestCaseFile, UserKeyword, Variable)
 
 from robotide.controller.chiefcontroller import ChiefController
+from robotide.controller.dataloader import TestDataDirectoryWithExcludes
 from robotide.controller.settingcontrollers import VariableController
 
 from .editors import (InitFileEditor, TestCaseFileEditor, WelcomePage,
@@ -37,7 +38,8 @@ class EditorCreator(object):
                 (TestCase, TestCaseEditor),
                 (TestCaseFile, TestCaseFileEditor),
                 (UserKeyword, UserKeywordEditor),
-                (Variable, VariableEditorChooser))
+                (Variable, VariableEditorChooser),
+                (TestDataDirectoryWithExcludes, InitFileEditor))
 
     def __init__(self, editor_registerer):
         self._editor_registerer = editor_registerer
@@ -49,15 +51,12 @@ class EditorCreator(object):
 
     def editor_for(self, plugin, editor_panel, tree):
         controller = plugin.get_selected_item()
-        if not controller or not controller.data or \
-                isinstance(controller, ChiefController):
+        if not controller or not controller.data or isinstance(controller, ChiefController):
             if self._editor:
                 return self._editor
             self._editor = WelcomePage(editor_panel)
             return self._editor
-        if self._editor and \
-           isinstance(controller, VariableController) and \
-           controller.datafile_controller is self._editor.controller:
+        if self._editor and isinstance(controller, VariableController) and controller.datafile_controller is self._editor.controller:
             return self._editor
         editor_class = plugin.get_editor(controller.data.__class__)
         if self._editor:
