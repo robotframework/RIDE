@@ -34,7 +34,7 @@ class EditorCreatorTest(unittest.TestCase):
         self._registered_editors[iclass] = eclass
 
     def test_registering_editors_for_model_objects(self):
-        assert_equals(len(self._registered_editors), 6)
+        assert_equals(len(self._registered_editors), len(self.creator._EDITORS))
 
     def test_creating_editor_for_datafile_controller(self):
         plugin = self._datafile_plugin()

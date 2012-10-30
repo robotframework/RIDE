@@ -21,7 +21,8 @@ from robotide.application.updatenotifier import UpdateNotifierController, Update
 from robotide.namespace import Namespace
 from robotide.controller import ChiefController
 from robotide.spec import librarydatabase
-from robotide.ui import RideFrame, LoadProgressObserver
+from robotide.ui import LoadProgressObserver
+from robotide.ui.mainframe import RideFrame
 from robotide.pluginapi import RideLogMessage
 from robotide import context, contrib
 from robotide.preferences import Preferences, RideSettings

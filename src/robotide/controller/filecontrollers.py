@@ -16,7 +16,7 @@ import os
 from itertools import chain
 import shutil
 import commands
-from robotide.controller.dataloader import ExcludedDirectory, TestDataDirectoryWithExcludes
+from robotide.controller.dataloader import ExcludedDirectory, TestDataDirectoryWithExcludes, TestData
 
 from robotide.publish import (RideDataFileRemoved, RideInitFileRemoved,
         RideDataChangedToDirty, RideDataDirtyCleared, RideSuiteAdded,
@@ -778,6 +778,9 @@ class ExcludedDirectoryController(_FileSystemElement, ControllerWithParent):
     def remove_from_excludes(self):
         self._chief_controller._settings.excludes.remove_path(self.source)
         index = self.parent.children.index(self)
-        result = TestDataDirectoryController(self.data, self._chief_controller, self.parent)
+        result = TestDataDirectoryController(
+            TestData(self.data.source, self.parent.data, self._chief_controller._settings),
+            self._chief_controller,
+            self.parent)
         self.parent.children[index] = result
         return result

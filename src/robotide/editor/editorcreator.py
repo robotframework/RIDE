@@ -18,6 +18,7 @@ from robot.parsing.model import (TestCase, TestDataDirectory, ResourceFile,
 
 from robotide.controller.chiefcontroller import ChiefController
 from robotide.controller.dataloader import TestDataDirectoryWithExcludes
+from robotide.controller.filecontrollers import ExcludedDirectoryController
 from robotide.controller.settingcontrollers import VariableController
 
 from .editors import (InitFileEditor, TestCaseFileEditor, WelcomePage,
@@ -50,17 +51,31 @@ class EditorCreator(object):
             self._editor_registerer(item, editorclass)
 
     def editor_for(self, plugin, editor_panel, tree):
+        self._editor = self._create_editor(editor_panel, plugin, tree)
+        return self._editor
+
+    def _create_editor(self, editor_panel, plugin, tree):
         controller = plugin.get_selected_item()
-        if not controller or not controller.data or isinstance(controller, ChiefController):
+        if self._invalid(controller):
             if self._editor:
                 return self._editor
-            self._editor = WelcomePage(editor_panel)
+            return WelcomePage(editor_panel)
+        if self._should_use_old_editor(controller):
             return self._editor
-        if self._editor and isinstance(controller, VariableController) and controller.datafile_controller is self._editor.controller:
-            return self._editor
+        return self._create_new_editor(controller, editor_panel, plugin, tree)
+
+    def _invalid(self, controller):
+        return not controller or not controller.data or \
+               isinstance(controller, ChiefController) or isinstance(controller, ExcludedDirectoryController)
+
+    def _should_use_old_editor(self, controller):
+        return self._editor and \
+               isinstance(controller, VariableController) and \
+               controller.datafile_controller is self._editor.controller
+
+    def _create_new_editor(self, controller, editor_panel, plugin, tree):
         editor_class = plugin.get_editor(controller.data.__class__)
         if self._editor:
             self._editor.destroy()
         editor_panel.Show(False)
-        self._editor = editor_class(plugin, editor_panel, controller, tree)
-        return self._editor
+        return editor_class(plugin, editor_panel, controller, tree)

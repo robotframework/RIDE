@@ -25,7 +25,6 @@ from robotide.controller.filecontrollers import (TestDataDirectoryController,
 from robotide.editor.editordialogs import (TestCaseNameDialog,
     UserKeywordNameDialog, ScalarVariableDialog, ListVariableDialog,
     CopyUserKeywordDialog)
-from robotide.publish import RideExcludesChanged
 from robotide.ui.progress import LoadProgressObserver
 from robotide.usages.UsageRunner import Usages, ResourceFileUsages
 from .filedialogs import (AddSuiteDialog, ChangeFormatDialog, NewResourceDialog, AddResourceDialog)
@@ -263,21 +262,28 @@ class TestDataDirectoryHandler(TestDataHandler):
     def __init__(self, *args):
         TestDataHandler.__init__(self, *args)
 
-        self._actions = [_ActionHandler._label_add_suite,
-                _ActionHandler._label_new_resource,
-                '---',
-                _ActionHandler._label_new_user_keyword,
-                _ActionHandler._label_new_scalar,
-                _ActionHandler._label_new_list_variable,
-                '---',
-                _ActionHandler._label_change_format] + \
-                        ([_ActionHandler._label_delete_no_kbsc] if self.controller.parent else []) + \
-                ['---',
-                _ActionHandler._label_select_all,
-                _ActionHandler._label_deselect_all,
-                _ActionHandler._label_select_failed_tests,
-                _ActionHandler._label_exclude
+        self._actions = [
+            _ActionHandler._label_add_suite,
+            _ActionHandler._label_new_resource,
+            '---',
+            _ActionHandler._label_new_user_keyword,
+            _ActionHandler._label_new_scalar,
+            _ActionHandler._label_new_list_variable,
+            '---',
+            _ActionHandler._label_change_format
         ]
+        if self.controller.parent:
+            self._actions.extend([_ActionHandler._label_delete_no_kbsc])
+
+        self._actions.extend([
+            '---',
+            _ActionHandler._label_select_all,
+            _ActionHandler._label_deselect_all,
+            _ActionHandler._label_select_failed_tests,
+
+        ])
+        if self.controller.parent:
+            self._actions.extend(['---', _ActionHandler._label_exclude])
 
     def OnNewSuite(self, event):
         AddSuiteDialog(self.controller, self._settings).execute()
@@ -290,6 +296,7 @@ class TestDataDirectoryHandler(TestDataHandler):
 
     def OnExclude(self, event):
         self.controller.execute(Exclude())
+
 
 class ResourceFileHandler(_CanBeRenamed, TestDataHandler):
     is_test_suite = False
