@@ -397,7 +397,7 @@ class ImportSettingsController(_TableController, _WithListOperations):
     def add_resource(self, path, comment=None):
         import_ = self._table.add_resource(path, comment)
         self._parent.mark_dirty()
-        resource = self.resource_import_modified(path)
+        self.resource_import_modified(path)
         self._import_controller(import_).publish_added()
         self.notify_imports_modified()
         return self[-1]
@@ -411,7 +411,6 @@ class ImportSettingsController(_TableController, _WithListOperations):
     def notify_imports_modified(self):
         self.__import_controllers = None
         self.datafile_controller.update_namespace()
-
 
     def resource_import_modified(self, path):
         return self._parent.resource_import_modified(path)

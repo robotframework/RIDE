@@ -532,11 +532,16 @@ class ResourceImportController(_ImportController):
     def has_error(self):
         return self.get_imported_controller() is None
 
+    @overrides(_ImportController)
+    def publish_removed(self):
+        self.unresolve()
+        _ImportController.publish_removed(self)
+
     def get_previous_imported_controller(self):
         return self._previous_imported_controller
 
     def unresolve(self):
-        if self._imported_resource_controller:
+        if self._resolved_import and self._imported_resource_controller:
             self._imported_resource_controller.remove_known_import(self)
         self._resolved_import = False
 
