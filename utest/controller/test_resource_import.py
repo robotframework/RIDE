@@ -67,7 +67,7 @@ class TestResourceImport(unittest.TestCase):
         import_ = item_without_settings.imports.add_resource('/'.join(['..', self.res_name]))
         self.assertTrue(import_ is not None)
         item_without_settings.imports.delete(0)
-        self.assertEqual(self.new_resource, import_.get_imported_controller())
+        self.assertEqual(self.new_resource, import_.get_previous_imported_controller())
 
     def test_previously_imported_resource_controller_is_none_by_default(self):
         self._create_resource()

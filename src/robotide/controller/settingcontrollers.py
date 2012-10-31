@@ -541,9 +541,12 @@ class ResourceImportController(_ImportController):
     def publish_removed(self):
         self._previous_imported_controller = self.get_imported_controller()
         self.unresolve() #Unresolve the import <-> ResourceFileController link
+        self._prevent_resolve()
+        _ImportController.publish_removed(self)
+
+    def _prevent_resolve(self):
         self._resolved_import = True
         self._imported_resource_controller = None
-        _ImportController.publish_removed(self)
 
     def get_previous_imported_controller(self):
         return self._previous_imported_controller
