@@ -401,6 +401,7 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         return [os.path.join(path, f) for f in os.listdir(path)]
 
     def add_child(self, controller):
+        assert controller not in self.children
         self.children.append(controller)
 
     def has_format(self):
@@ -505,15 +506,15 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         return resources
 
     def insert_to_test_data_directory(self, res):
-            res_dir = os.path.dirname(res.filename)
-            if res_dir in self._dir_controllers:
-                self._dir_controllers[res_dir].add_child(res)
+        res_dir = os.path.dirname(res.filename)
+        if res_dir in self._dir_controllers:
+            self._dir_controllers[res_dir].add_child(res)
+        else:
+            target = self._find_closest_directory(res)
+            if target is self:
+                self._create_target_dir_controller(res, res_dir, target)
             else:
-                target = self._find_closest_directory(res)
-                if target is self:
-                    self._create_target_dir_controller(res, res_dir, target)
-                else:
-                    target.insert_to_test_data_directory(res)
+                target.insert_to_test_data_directory(res)
 
     def _find_closest_directory(self, res):
         target = self
@@ -525,21 +526,24 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         return target
 
     def _create_target_dir_controller(self, res, res_dir, target):
-            for dirname in res_dir[len(self.directory):].split(os.sep):
-                if not dirname:
-                    continue
-                target_dir = os.path.join(target.directory, dirname)
-                dir_ctrl = TestDataDirectoryController(TestDataDirectory(source=target_dir), self._chief_controller, self)
-                target._dir_controllers[target.directory] = dir_ctrl
-                target.add_child(dir_ctrl)
-                if target_dir == res_dir:
-                    dir_ctrl.add_child(res)
-                    return
-                target = dir_ctrl
+        for dirname in res_dir[len(self.directory):].split(os.sep):
+            if not dirname:
+                continue
+            target_dir = os.path.join(target.directory, dirname)
+            dir_ctrl = TestDataDirectoryController(TestDataDirectory(source=target_dir), self._chief_controller, self)
+            target._dir_controllers[target.directory] = dir_ctrl
+            target.add_child(dir_ctrl)
+            if target_dir == res_dir:
+                dir_ctrl.add_child(res)
+                return
+            target = dir_ctrl
+        if res not in self.children:
             self.add_child(res)
 
     def new_resource(self, path):
-        return self._chief_controller.new_resource(path, parent=self)
+        ctrl = self._chief_controller.new_resource(path, parent=self)
+        ctrl.mark_dirty()
+        return ctrl
 
 
 class TestCaseFileController(_FileSystemElement, _DataController):
@@ -653,7 +657,7 @@ class ResourceFileController(_FileSystemElement, _DataController):
         _FileSystemElement.__init__(self, data.source if data else None, data.directory)
         _DataController.__init__(self, data, chief_controller,
                                  parent or self._find_parent_for(chief_controller, data.source))
-        if self.parent:
+        if self.parent and self not in self.parent.children:
             self.parent.add_child(self)
 
     def _find_parent_for(self, chief_controller, source):
