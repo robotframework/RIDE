@@ -656,12 +656,13 @@ class ResourceFileController(_FileSystemElement, _DataController):
 
     def __init__(self, data, chief_controller=None, parent=None):
         self._known_imports = set()
-        self._all_imports_resolved = False # Some import may have referred to this object before it existed
         _FileSystemElement.__init__(self, data.source if data else None, data.directory)
         _DataController.__init__(self, data, chief_controller,
                                  parent or self._find_parent_for(chief_controller, data.source))
         if self.parent and self not in self.parent.children:
             self.parent.add_child(self)
+        if not self.exists():
+            self._all_imports_resolved = False # Some import may have referred to this none existing resource
 
     def _find_parent_for(self, chief_controller, source):
         if not chief_controller:
