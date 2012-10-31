@@ -539,7 +539,10 @@ class ResourceImportController(_ImportController):
 
     @overrides(_ImportController)
     def publish_removed(self):
+        self._previous_imported_controller = self.get_imported_controller()
         self.unresolve() #Unresolve the import <-> ResourceFileController link
+        self._resolved_import = True
+        self._imported_resource_controller = None
         _ImportController.publish_removed(self)
 
     def get_previous_imported_controller(self):
@@ -580,6 +583,7 @@ class LibraryImportController(_ImportController):
     @overrides(_ImportController)
     def has_error(self):
         return not self.parent.parent.is_library_import_ok(self._data)
+
 
 class VariablesImportController(_ImportController):
     is_resource = False
