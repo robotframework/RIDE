@@ -373,8 +373,9 @@ class ImportSettingsController(_TableController, _WithListOperations):
 
     @overrides(_WithListOperations)
     def _swap(self, ind1, ind2):
+        imps = self._import_controllers
+        imps[ind1], imps[ind2] = imps[ind2], imps[ind1]
         _WithListOperations._swap(self, ind1, ind2)
-        self.__import_controllers = None
 
     def remove_import_data(self, imp):
         self.delete(self._items.data.index(imp))
@@ -382,34 +383,42 @@ class ImportSettingsController(_TableController, _WithListOperations):
     def delete(self, index):
         item = self[index]
         _WithListOperations.delete(self, index)
+        self._import_controllers.pop(index)
         item.publish_removed()
         self.notify_imports_modified()
 
     def add_library(self, name, argstr, alias, comment=None):
+        self._import_controllers # Have to exist before adding new
         import_ = self._table.add_library(name, utils.split_value(argstr),
                                           comment)
         import_.alias = alias
         self._parent.mark_dirty()
-        self._import_controller(import_).publish_added()
+        self._add_controller(import_)
         self.notify_imports_modified()
         return self[-1]
 
+    def _add_controller(self, import_):
+        ctrl = self._import_controller(import_)
+        ctrl.publish_added()
+        self._import_controllers.append(ctrl)
+
     def add_resource(self, path, comment=None):
+        self._import_controllers # Have to exist before adding new
         import_ = self._table.add_resource(path, comment)
         self._parent.mark_dirty()
         self.resource_import_modified(path)
-        self._import_controller(import_).publish_added()
+        self._add_controller(import_)
         self.notify_imports_modified()
         return self[-1]
 
     def add_variables(self, path, argstr, comment=None):
+        self._import_controllers # Have to exist before adding new
         import_ = self._table.add_variables(path, utils.split_value(argstr), comment)
         self._parent.mark_dirty()
-        self._import_controller(import_).publish_added()
+        self._add_controller(import_)
         return self[-1]
 
     def notify_imports_modified(self):
-        self.__import_controllers = None
         self.datafile_controller.update_namespace()
 
     def resource_import_modified(self, path):

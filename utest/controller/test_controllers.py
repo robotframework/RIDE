@@ -349,9 +349,13 @@ class ImportSettingsControllerTest(unittest.TestCase):
         self.tcf = TestCaseFile()
         filectrl = TestCaseFileController(self.tcf)
         filectrl.resource_import_modified = Mock()
-        self.ctrl = ImportSettingsController(filectrl, self.tcf.setting_table)
+        resource_file_controller_mock = lambda:0
+        resource_file_controller_mock.add_known_import = lambda *_:0
+        resu_factory_mock = lambda:0
+        resu_factory_mock.find_with_import = lambda *_: resource_file_controller_mock
+        self.ctrl = ImportSettingsController(filectrl, self.tcf.setting_table, resu_factory_mock)
 
-    def test_addding_library(self):
+    def test_adding_library(self):
         self.ctrl.add_library('MyLib', 'Some | argu | ments', 'alias')
         self._assert_import('MyLib', ['Some', 'argu', 'ments'], 'alias')
 

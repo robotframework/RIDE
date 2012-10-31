@@ -533,8 +533,13 @@ class ResourceImportController(_ImportController):
         return self.get_imported_controller() is None
 
     @overrides(_ImportController)
+    def publish_added(self):
+        self.get_imported_controller() #Resolve the import <-> ResourceFileController link
+        _ImportController.publish_added(self)
+
+    @overrides(_ImportController)
     def publish_removed(self):
-        self.unresolve()
+        self.unresolve() #Unresolve the import <-> ResourceFileController link
         _ImportController.publish_removed(self)
 
     def get_previous_imported_controller(self):

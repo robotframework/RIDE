@@ -41,10 +41,10 @@ class TestResourceImport(unittest.TestCase):
         self._create_resource()
         self._verify_unidentified_keyword()
         self.assertFalse(self.new_resource.is_used())
-        self._add_resource_import_to_suite()
+        import_ = self._add_resource_import_to_suite()
         self._verify_identified_keyword()
         self.assertTrue(self.new_resource.is_used())
-        self._remove_resource_import_from_suite()
+        self._remove_resource_import_from_suite(import_)
         self._verify_unidentified_keyword()
         self.assertFalse(self.new_resource.is_used())
 
@@ -81,8 +81,8 @@ class TestResourceImport(unittest.TestCase):
     def _add_resource_import_to_suite(self):
         return self.suite.imports.add_resource(self.res_name)
 
-    def _remove_resource_import_from_suite(self):
-        self.suite.imports.delete(-1)
+    def _remove_resource_import_from_suite(self, import_):
+        import_.remove()
 
     def _verify_unidentified_keyword(self):
         self._check_cells(ContentType.STRING, CellType.UNKNOWN)

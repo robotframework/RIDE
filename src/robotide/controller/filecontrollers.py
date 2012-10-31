@@ -652,9 +652,11 @@ class ResourceFileControllerFactory(object):
 
 
 class ResourceFileController(_FileSystemElement, _DataController):
+    _all_imports_resolved = False
 
     def __init__(self, data, chief_controller=None, parent=None):
         self._known_imports = set()
+        self._all_imports_resolved = False # Some import may have referred to this object before it existed
         _FileSystemElement.__init__(self, data.source if data else None, data.directory)
         _DataController.__init__(self, data, chief_controller,
                                  parent or self._find_parent_for(chief_controller, data.source))
@@ -733,11 +735,9 @@ class ResourceFileController(_FileSystemElement, _DataController):
     def is_used(self):
         if self._known_imports:
             return True
-        try:
-            self.get_where_used().next()
-            return True
-        except StopIteration:
+        if self._all_imports_resolved:
             return False
+        return any(self.get_where_used())
 
     def get_where_used(self):
         for imp in self._all_imports():
@@ -748,6 +748,7 @@ class ResourceFileController(_FileSystemElement, _DataController):
         for df in self.datafiles:
             for imp in df.imports:
                 yield imp
+        ResourceFileController._all_imports_resolved = True
 
     def remove_child(self, controller):
         pass
