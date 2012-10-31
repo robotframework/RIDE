@@ -797,6 +797,7 @@ class ExcludedDirectoryController(_FileSystemElement, ControllerWithParent):
         self.keywords = []
         self.variables = tuple()
         self.tests = tuple()
+        self.imports = tuple()
         _FileSystemElement.__init__(self, '', data.directory)
 
     @property
