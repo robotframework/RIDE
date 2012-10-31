@@ -31,6 +31,7 @@ class ValueEditor(wx.Panel):
 
     def __init__(self, parent, value, label=None, validator=None, settings=None):
         wx.Panel.__init__(self, parent)
+        self._label = label
         self._sizer = wx.BoxSizer(wx.VERTICAL)
         self._create_editor(value, label, settings)
         if validator:
@@ -39,8 +40,8 @@ class ValueEditor(wx.Panel):
 
     def _create_editor(self, value, label, settings):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
-        if label:
-            sizer.Add(Label(self, label=label, size=(80, -1)), 0, self._sizer_flags_for_label, 5)
+        if self._label:
+            sizer.Add(Label(self, label=self._label, size=(80, -1)), 0, self._sizer_flags_for_label, 5)
         self._editor = self._get_text_ctrl()
         self._editor.AppendText(value)
         sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
@@ -58,6 +59,36 @@ class ValueEditor(wx.Panel):
     def set_focus(self):
         self._editor.SetFocus()
         self._editor.SelectAll()
+
+
+class ArgumentEditor(ValueEditor):
+
+    def _create_editor(self, value, label, settings):
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        if self._label:
+            sizer.Add(Label(self, label=self._label, size=(80, -1)), 0, self._sizer_flags_for_label, 5)
+        self._editor = self._get_text_ctrl()
+        self._editor.AppendText(value)
+        sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
+        self._sizer.Add(sizer, 1, wx.EXPAND)
+        wx.EVT_KEY_DOWN(self._editor, self.on_key_down)
+
+    def on_key_down(self, event):
+        character = None
+        keycode, control_down = event.GetKeyCode(), event.CmdDown()
+        if  event.CmdDown() and event.GetKeyCode() == ord('1'):
+            character = '$'
+        elif event.CmdDown() and event.GetKeyCode() == ord('2'):
+            character = '@'
+        if character:
+            if len(self.get_value()) == 0:
+                self._editor.WriteText(character + "{}")
+            else:
+                self._editor.AppendText(" | " + character + "{}")
+            _from, _ = self._editor.GetSelection()
+            self._editor.SetInsertionPoint(_from-1)
+        else:
+            event.Skip()
 
 
 class FileNameEditor(ValueEditor):

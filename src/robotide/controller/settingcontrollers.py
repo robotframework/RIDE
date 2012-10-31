@@ -523,6 +523,8 @@ class ResourceImportController(_ImportController):
         if not self._resolved_import:
             self._imported_resource_controller = \
                 self.parent.resource_file_controller_factory.find_with_import(self._import)
+            if self._imported_resource_controller:
+                self._imported_resource_controller.add_known_import(self)
             self._resolved_import = True
         return self._imported_resource_controller
 
@@ -530,10 +532,28 @@ class ResourceImportController(_ImportController):
     def has_error(self):
         return self.get_imported_controller() is None
 
+    @overrides(_ImportController)
+    def publish_added(self):
+        self.get_imported_controller() #Resolve the import <-> ResourceFileController link
+        _ImportController.publish_added(self)
+
+    @overrides(_ImportController)
+    def publish_removed(self):
+        self._previous_imported_controller = self.get_imported_controller()
+        self.unresolve() #Unresolve the import <-> ResourceFileController link
+        self._prevent_resolve()
+        _ImportController.publish_removed(self)
+
+    def _prevent_resolve(self):
+        self._resolved_import = True
+        self._imported_resource_controller = None
+
     def get_previous_imported_controller(self):
         return self._previous_imported_controller
 
     def unresolve(self):
+        if self._resolved_import and self._imported_resource_controller:
+            self._imported_resource_controller.remove_known_import(self)
         self._resolved_import = False
 
     def contains_filename(self, filename):
@@ -542,10 +562,16 @@ class ResourceImportController(_ImportController):
     def change_name(self, old_name, new_name):
         if self.contains_filename(old_name):
             self.set_value(self.name[:-len(old_name)] + new_name)
+        else:
+            # If original result has changed and this import relays on variables
+            # can't know if import is still resolved
+            self.unresolve()
 
     def change_format(self, format):
         if self._has_format():
             self.set_value(utils.replace_extension(self.name, format))
+        else:
+            self.unresolve()
 
     def _has_format(self):
         parts = self.name.rsplit('.', 1)
@@ -560,6 +586,7 @@ class LibraryImportController(_ImportController):
     @overrides(_ImportController)
     def has_error(self):
         return not self.parent.parent.is_library_import_ok(self._data)
+
 
 class VariablesImportController(_ImportController):
     is_resource = False

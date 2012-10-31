@@ -25,7 +25,8 @@ _EXAMPLES = {
             "Optional message can be specified like '3 minutes | My message here'."),
 'ARGUMENTS': ("Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.\n"
               "Default values are given using equal sign and the last argument can be a list variable.\n"
-              "Example: '${arg1} | ${arg2}=default value | @{rest}'.")
+              "Example: '${arg1} | ${arg2}=default value | @{rest}'.\n"
+              "Note. You can use variable shortcuts in this field.")
 }
 
 for row in """

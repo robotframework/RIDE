@@ -365,6 +365,10 @@ class RenameOccurrenceTest(unittest.TestCase):
         self._rename(STEP1_KEYWORD, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
         self._expected_messages(steps_have_changed=True)
 
+    def test_rename_with_dollar_sign(self):
+        self._rename(STEP1_KEYWORD, UNUSED_KEYWORD_NAME+'$', TEST1_NAME, 'Steps')
+        self._expected_messages(steps_have_changed=True)
+
     def test_undo_rename_in_step(self):
         self._rename(STEP1_KEYWORD, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
         self.test_ctrl.execute(Undo())

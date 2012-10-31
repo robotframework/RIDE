@@ -40,8 +40,13 @@ class TestResourceImport(unittest.TestCase):
     def test_creating_and_importing_resource_file(self):
         self._create_resource()
         self._verify_unidentified_keyword()
-        self._add_resource_import_to_suite()
+        self.assertFalse(self.new_resource.is_used())
+        import_ = self._add_resource_import_to_suite()
         self._verify_identified_keyword()
+        self.assertTrue(self.new_resource.is_used())
+        self._remove_resource_import_from_suite(import_)
+        self._verify_unidentified_keyword()
+        self.assertFalse(self.new_resource.is_used())
 
     def test_importing_and_creating_resource_file(self):
         self._add_resource_import_to_suite()
@@ -62,7 +67,7 @@ class TestResourceImport(unittest.TestCase):
         import_ = item_without_settings.imports.add_resource('/'.join(['..', self.res_name]))
         self.assertTrue(import_ is not None)
         item_without_settings.imports.delete(0)
-        self.assertEqual(self.new_resource, import_.get_imported_controller())
+        self.assertEqual(self.new_resource, import_.get_previous_imported_controller())
 
     def test_previously_imported_resource_controller_is_none_by_default(self):
         self._create_resource()
@@ -75,6 +80,9 @@ class TestResourceImport(unittest.TestCase):
 
     def _add_resource_import_to_suite(self):
         return self.suite.imports.add_resource(self.res_name)
+
+    def _remove_resource_import_from_suite(self, import_):
+        import_.remove()
 
     def _verify_unidentified_keyword(self):
         self._check_cells(ContentType.STRING, CellType.UNKNOWN)

@@ -22,6 +22,7 @@ from robotide import utils
 
 from .basecontroller import ControllerWithParent
 from .macrocontrollers import TestCaseController, UserKeywordController
+from robotide.utils import overrides
 from .settingcontrollers import (MetadataController, ImportController,
         VariableController)
 
@@ -345,12 +346,19 @@ class ImportSettingsController(_TableController, _WithListOperations):
     def __init__(self, parent_controller, table, resource_file_controller_factory=None):
         _TableController.__init__(self, parent_controller, table)
         self._resource_file_controller_factory = resource_file_controller_factory
+        self.__import_controllers = None
 
     def __iter__(self):
-        return iter(self._import_controller(imp) for imp in self._items)
+        return iter(self._import_controllers)
 
     def __getitem__(self, index):
-        return self._import_controller(self._items[index])
+        return self._import_controllers[index]
+
+    @property
+    def _import_controllers(self):
+        if self.__import_controllers is None:
+            self.__import_controllers = [self._import_controller(imp) for imp in self._items]
+        return self.__import_controllers
 
     def _import_controller(self, import_):
         return ImportController(self, import_)
@@ -363,41 +371,55 @@ class ImportSettingsController(_TableController, _WithListOperations):
     def resource_file_controller_factory(self):
         return self._resource_file_controller_factory
 
+    @overrides(_WithListOperations)
+    def _swap(self, ind1, ind2):
+        imps = self._import_controllers
+        imps[ind1], imps[ind2] = imps[ind2], imps[ind1]
+        _WithListOperations._swap(self, ind1, ind2)
+
     def remove_import_data(self, imp):
         self.delete(self._items.data.index(imp))
 
     def delete(self, index):
         item = self[index]
         _WithListOperations.delete(self, index)
+        self._import_controllers.pop(index)
         item.publish_removed()
         self.notify_imports_modified()
 
     def add_library(self, name, argstr, alias, comment=None):
+        self._import_controllers # Have to exist before adding new
         import_ = self._table.add_library(name, utils.split_value(argstr),
                                           comment)
         import_.alias = alias
         self._parent.mark_dirty()
-        self._import_controller(import_).publish_added()
+        self._add_controller(import_)
         self.notify_imports_modified()
         return self[-1]
 
+    def _add_controller(self, import_):
+        ctrl = self._import_controller(import_)
+        ctrl.publish_added()
+        self._import_controllers.append(ctrl)
+
     def add_resource(self, path, comment=None):
+        self._import_controllers # Have to exist before adding new
         import_ = self._table.add_resource(path, comment)
         self._parent.mark_dirty()
-        resource = self.resource_import_modified(path)
-        self._import_controller(import_).publish_added()
+        self.resource_import_modified(path)
+        self._add_controller(import_)
         self.notify_imports_modified()
         return self[-1]
 
     def add_variables(self, path, argstr, comment=None):
+        self._import_controllers # Have to exist before adding new
         import_ = self._table.add_variables(path, utils.split_value(argstr), comment)
         self._parent.mark_dirty()
-        self._import_controller(import_).publish_added()
+        self._add_controller(import_)
         return self[-1]
 
     def notify_imports_modified(self):
         self.datafile_controller.update_namespace()
-
 
     def resource_import_modified(self, path):
         return self._parent.resource_import_modified(path)

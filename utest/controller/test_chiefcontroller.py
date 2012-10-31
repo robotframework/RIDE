@@ -228,9 +228,7 @@ class TestResolvingResourceDirectories(unittest.TestCase):
 
     def _set_resources(self, *paths):
         for p in paths:
-            resource = ResourceFileController(ResourceFile(os.path.normpath(p)))
-            self.chief.resources.append(resource)
-            self.chief._insert_into_suite_structure(resource)
+            self.chief.new_resource(os.path.normpath(p))
 
     def _assert_resource_dir_was_created_as_child_of(self, ctrl):
         assert_equals(len(ctrl.children), 1)

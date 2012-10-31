@@ -234,7 +234,11 @@ class Process(object):
                         cwd=self._cwd.encode(SYSTEM_ENCODING))
         if IS_WINDOWS:
             startupinfo = subprocess.STARTUPINFO()
-            startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+            try:
+                import _subprocess
+                startupinfo.dwFlags |= _subprocess.STARTF_USESHOWWINDOW
+            except ImportError:
+                startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             subprocess_args['startupinfo'] = startupinfo
         else:
             subprocess_args['preexec_fn'] = os.setsid

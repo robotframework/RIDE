@@ -245,6 +245,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
             self._controller.mark_node_dirty(node)
         self._datafile_nodes.append(node)
         self.SetItemHasChildren(node, True)
+
         for child in controller.children:
             self._render_datafile(node, child)
         return node

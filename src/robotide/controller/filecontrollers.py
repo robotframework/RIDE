@@ -398,7 +398,7 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         return dc
 
     def _is_valid_resource(self, resource):
-        return resource and (resource.setting_table or resource.variable_table or resource.keyword_table)
+        return resource and (resource.setting_table or resource.variable_table or resource.keyword_table or os.stat(resource.source)[6]==0)
 
     def _resource_controller(self, resource):
         resource_control =  self._resource_file_controller_factory.create(resource, chief_controller=self._chief_controller)
@@ -414,6 +414,7 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         return [os.path.join(path, f) for f in os.listdir(path)]
 
     def add_child(self, controller):
+        assert controller not in self.children
         self.children.append(controller)
 
     def has_format(self):
@@ -518,15 +519,15 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         return resources
 
     def insert_to_test_data_directory(self, res):
-            res_dir = os.path.dirname(res.filename)
-            if res_dir in self._dir_controllers:
-                self._dir_controllers[res_dir].add_child(res)
+        res_dir = os.path.dirname(res.filename)
+        if res_dir in self._dir_controllers:
+            self._dir_controllers[res_dir].add_child(res)
+        else:
+            target = self._find_closest_directory(res)
+            if target is self:
+                self._create_target_dir_controller(res, res_dir, target)
             else:
-                target = self._find_closest_directory(res)
-                if target is self:
-                    self._create_target_dir_controller(res, res_dir, target)
-                else:
-                    target.insert_to_test_data_directory(res)
+                target.insert_to_test_data_directory(res)
 
     def _find_closest_directory(self, res):
         target = self
@@ -538,21 +539,24 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         return target
 
     def _create_target_dir_controller(self, res, res_dir, target):
-            for dirname in res_dir[len(self.directory):].split(os.sep):
-                if not dirname:
-                    continue
-                target_dir = os.path.join(target.directory, dirname)
-                dir_ctrl = TestDataDirectoryController(TestDataDirectory(source=target_dir), self._chief_controller, self)
-                target._dir_controllers[target.directory] = dir_ctrl
-                target.add_child(dir_ctrl)
-                if target_dir == res_dir:
-                    dir_ctrl.add_child(res)
-                    return
-                target = dir_ctrl
+        for dirname in res_dir[len(self.directory):].split(os.sep):
+            if not dirname:
+                continue
+            target_dir = os.path.join(target.directory, dirname)
+            dir_ctrl = TestDataDirectoryController(TestDataDirectory(source=target_dir), self._chief_controller, self)
+            target._dir_controllers[target.directory] = dir_ctrl
+            target.add_child(dir_ctrl)
+            if target_dir == res_dir:
+                dir_ctrl.add_child(res)
+                return
+            target = dir_ctrl
+        if res not in self.children:
             self.add_child(res)
 
     def new_resource(self, path):
-        return self._chief_controller.new_resource(path, parent=self)
+        ctrl = self._chief_controller.new_resource(path, parent=self)
+        ctrl.mark_dirty()
+        return ctrl
 
     def exclude(self):
         self._chief_controller._settings.excludes.update_excludes([self.source])
@@ -637,6 +641,7 @@ class ResourceFileControllerFactory(object):
     def __init__(self, namespace):
         self._resources = []
         self._namespace = namespace
+        self._all_resource_imports_resolved = False
 
     @property
     def resources(self):
@@ -659,9 +664,18 @@ class ResourceFileControllerFactory(object):
         return res
 
     def create(self, data, chief_controller=None, parent=None):
-        rfc = ResourceFileController(data, chief_controller, parent)
+        rfc = ResourceFileController(data, chief_controller, parent, self)
         self.resources.append(rfc)
         return rfc
+
+    def set_all_resource_imports_resolved(self):
+        self._all_resource_imports_resolved = True
+
+    def set_all_resource_imports_unresolved(self):
+        self._all_resource_imports_resolved = False
+
+    def is_all_resource_file_imports_resolved(self):
+        return self._all_resource_imports_resolved
 
     def remove(self, controller):
         self._resources.remove(controller)
@@ -669,12 +683,19 @@ class ResourceFileControllerFactory(object):
 
 class ResourceFileController(_FileSystemElement, _DataController):
 
-    def __init__(self, data, chief_controller=None, parent=None):
+    def __init__(self, data, chief_controller=None, parent=None, resource_file_controller_factory=None):
+        self._resource_file_controller_factory = resource_file_controller_factory
+        self._known_imports = set()
         _FileSystemElement.__init__(self, data.source if data else None, data.directory)
         _DataController.__init__(self, data, chief_controller,
                                  parent or self._find_parent_for(chief_controller, data.source))
-        if self.parent:
+        if self.parent and self not in self.parent.children:
             self.parent.add_child(self)
+        self._unresolve_all_if_none_existing()
+
+    def _unresolve_all_if_none_existing(self):
+        if not self.exists() and self._resource_file_controller_factory:
+            self._resource_file_controller_factory.set_all_resource_imports_unresolved() # Some import may have referred to this none existing resource
 
     def _find_parent_for(self, chief_controller, source):
         if not chief_controller:
@@ -739,13 +760,24 @@ class ResourceFileController(_FileSystemElement, _DataController):
         self._chief_controller.remove_resource(self)
         RideDataFileRemoved(path=self.filename, datafile=self).publish()
 
+    def remove_known_import(self, _import):
+        self._known_imports.remove(_import)
+
+    def add_known_import(self, _import):
+        self._known_imports.add(_import)
+
     def is_used(self):
-        return bool(list(self.get_where_used()))
+        if self._known_imports:
+            return True
+        if self._resource_file_controller_factory.is_all_resource_file_imports_resolved():
+            return False
+        return any(self.get_where_used())
 
     def get_where_used(self):
         for imp in self._all_imports():
             if imp.get_imported_controller() is self:
                 yield imp
+        self._resource_file_controller_factory.set_all_resource_imports_resolved()
 
     def _all_imports(self):
         for df in self.datafiles:

@@ -23,6 +23,7 @@ from robotide.namespace.namespace import _VariableStash
 from .filecontrollers import ResourceFileController
 from .macrocontrollers import KeywordNameController, ForLoopStepController, TestCaseController
 from robotide.utils import overrides, is_variable
+from robotide.utils.variablematcher import contains_scalar_variable
 from .settingcontrollers import _SettingController, VariableController
 from .tablecontrollers import VariableTableController
 from .validators import BaseNameValidator
@@ -536,7 +537,7 @@ class FindOccurrences(_Command):
         self._keyword_regexp = self._create_regexp(keyword_name)
 
     def _create_regexp(self, keyword_name):
-        if '$' in keyword_name and not is_variable(keyword_name):
+        if contains_scalar_variable(keyword_name) and not is_variable(keyword_name):
             kw = lambda: 0
             kw.arguments = None
             kw.name = keyword_name

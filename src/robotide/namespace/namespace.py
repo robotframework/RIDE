@@ -456,6 +456,7 @@ class DatafileRetriever(object):
         resources.update(res)
         for child in datafile.children:
             resources.update(self.get_resources_from(child))
+
         return resources
 
     def _add_resource(self, res, ctx, items):
