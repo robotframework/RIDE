@@ -306,7 +306,7 @@ class Excludes():
         
     def _get_exclude_file(self, read_write):
         if not self._exclude_file_path:
-            return None
+            raise NameError('No project name defined')
         if not os.path.exists(self._exclude_file_path) and read_write.startswith('r'):
             return open(self._exclude_file_path, 'w+')
         if os.path.isdir(self._exclude_file_path):
