@@ -757,12 +757,12 @@ class ResourceFileController(_FileSystemElement, _DataController):
         for imp in self._all_imports():
             if imp.get_imported_controller() is self:
                 yield imp
+        self._resource_file_controller_factory.set_all_resource_imports_resolved()
 
     def _all_imports(self):
         for df in self.datafiles:
             for imp in df.imports:
                 yield imp
-        self._resource_file_controller_factory.set_all_resource_imports_resolved()
 
     def remove_child(self, controller):
         pass
