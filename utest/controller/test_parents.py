@@ -19,10 +19,10 @@ class TestParents(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.chief = datafilereader.construct_chief_controller(datafilereader.OCCURRENCES_PATH)
+        cls.chief = datafilereader.construct_chief_controller(datafilereader.SIMPLE_TEST_SUITE_PATH)
         cls.directory = cls.chief.data
         cls.test = datafilereader.get_ctrl_by_name('TestSuite1', cls.chief.datafiles)
-        cls.resource = datafilereader.get_ctrl_by_name(datafilereader.OCCURRENCES_RESOURCE_NAME, cls.chief.datafiles)
+        cls.resource = datafilereader.get_ctrl_by_name(datafilereader.SIMPLE_TEST_SUITE_RESOURCE_NAME, cls.chief.datafiles)
         cls.external_resource = datafilereader.get_ctrl_by_name('Resu', cls.chief.datafiles)
 
     @classmethod

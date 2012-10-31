@@ -10,10 +10,10 @@ class ResourceUsageTests(unittest.TestCase):
     # This is for performance reasons but be warned when you add tests!
     @classmethod
     def setUpClass(cls):
-        cls.ctrl = datafilereader.construct_chief_controller(datafilereader.OCCURRENCES_PATH)
+        cls.ctrl = datafilereader.construct_chief_controller(datafilereader.SIMPLE_TEST_SUITE_PATH)
         cls.ts1 = datafilereader.get_ctrl_by_name('TestSuite1', cls.ctrl.datafiles)
         cls.ts2 = datafilereader.get_ctrl_by_name('TestSuite2', cls.ctrl.datafiles)
-        cls.resu = datafilereader.get_ctrl_by_name(datafilereader.OCCURRENCES_RESOURCE_NAME, cls.ctrl.datafiles)
+        cls.resu = datafilereader.get_ctrl_by_name(datafilereader.SIMPLE_TEST_SUITE_RESOURCE_NAME, cls.ctrl.datafiles)
 
     @classmethod
     def tearDownClass(cls):

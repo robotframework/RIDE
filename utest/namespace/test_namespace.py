@@ -318,12 +318,12 @@ class TestKeywordSearch(_DataFileTest):
                                          'My Suite Teardown')
 
     def test_resource_kws_only_once(self):
-        directory = TestDataDirectory(source=OCCURRENCES_PATH).populate()
+        directory = TestDataDirectory(source=SIMPLE_TEST_SUITE_PATH).populate()
         all_kws = self.ns.get_all_keywords(directory.children)
         self._check_resource_keyword_only_once(all_kws)
 
     def test_resource_kws_only_once_through_chief_controller(self):
-        chief = construct_chief_controller(OCCURRENCES_PATH)
+        chief = construct_chief_controller(SIMPLE_TEST_SUITE_PATH)
         all_kws = chief.get_all_keywords()
         chief.close()
         self._check_resource_keyword_only_once(all_kws)

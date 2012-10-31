@@ -123,7 +123,7 @@ class TestResourceFileControllerTest(unittest.TestCase):
 
 
     def setUp(self):
-        self.chief = datafilereader.construct_chief_controller(datafilereader.OCCURRENCES_PATH)
+        self.chief = datafilereader.construct_chief_controller(datafilereader.SIMPLE_TEST_SUITE_PATH)
 
     def tearDown(self):
         self.chief.close()
@@ -132,11 +132,11 @@ class TestResourceFileControllerTest(unittest.TestCase):
         return datafilereader.get_ctrl_by_name(name , self.chief.datafiles)
 
     def test_resource_file_display_name_is_file_name_with_extension(self):
-        resource_ctrl = self._get_ctrl_by_name(datafilereader.OCCURRENCES_RESOURCE_NAME)
-        assert_equals(resource_ctrl.display_name, datafilereader.OCCURRENCES_RESOURCE_FILE)
+        resource_ctrl = self._get_ctrl_by_name(datafilereader.SIMPLE_TEST_SUITE_RESOURCE_NAME)
+        assert_equals(resource_ctrl.display_name, datafilereader.SIMPLE_TEST_SUITE_RESOURCE_FILE)
 
     def test_sort_and_restore_keywords(self):
-        resource_ctrl = self._get_ctrl_by_name(datafilereader.OCCURRENCES_RESOURCE_NAME)
+        resource_ctrl = self._get_ctrl_by_name(datafilereader.SIMPLE_TEST_SUITE_RESOURCE_NAME)
 
         # Capture keyword list before sorting
         original_keywords = resource_ctrl.get_keyword_names()

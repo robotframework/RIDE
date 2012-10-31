@@ -30,9 +30,9 @@ LIBRARY_WITH_SPACES_IN_PATH = _makepath('lib with spaces', 'spacelib.py')
 TESTCASEFILE_WITH_RESOURCES_WITH_VARIABLES_FROM_VARIABLE_FILE = _makepath('var_file_variables',
                                             'import_resource_with_variable_from_var_file.txt')
 
-OCCURRENCES_RESOURCE_NAME = 'Testdata Resource'
-OCCURRENCES_RESOURCE_FILE = 'testdata_resource.txt'
-OCCURRENCES_PATH = _makepath('simple_testsuite_with_different_namespaces')
+SIMPLE_TEST_SUITE_RESOURCE_NAME = 'Testdata Resource'
+SIMPLE_TEST_SUITE_RESOURCE_FILE = 'testdata_resource.txt'
+SIMPLE_TEST_SUITE_PATH = _makepath('simple_testsuite_with_different_namespaces')
 
 FOR_LOOP_PATH = _makepath('forloop')
 
