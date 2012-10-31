@@ -441,6 +441,11 @@ class TestExcludes(unittest.TestCase):
         e.remove_path(removed[1])
         self.assertEqual(len(e.get_excludes()), len(excludes)-2)
 
+    def test_invalid_file_path(self):
+        e = self._setup_excludes('.')
+        with self.assertRaises(NameError):
+            e._get_exclude_file('w')
+
     def _setup_excludes(self, name):
         fs = self.FakeSettings(name)
         e = Excludes(fs)

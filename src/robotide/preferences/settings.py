@@ -256,7 +256,7 @@ class Excludes():
 
     def __init__(self, settings):
         self._settings = settings if settings else RideSettings()
-        self._dir_for_settings = SETTINGS_DIRECTORY
+        self._dir_for_settings = os.path.join(SETTINGS_DIRECTORY, 'excludes')
         self._project_name = self._get_project_name(self._settings.get_without_default('default directory'))
         self._exclude_file_path = self._get_file_path()
         self._settings.add_change_listener(self)
@@ -309,6 +309,8 @@ class Excludes():
             return None
         if not os.path.exists(self._exclude_file_path) and read_write.startswith('r'):
             return open(self._exclude_file_path, 'w+')
+        if os.path.isdir(self._exclude_file_path):
+            raise NameError('"%s" is a directory, not file' % self._exclude_file_path)
         try:
             return open(self._exclude_file_path, read_write)
         except IOError as e:
