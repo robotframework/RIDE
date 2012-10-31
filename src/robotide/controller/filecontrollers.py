@@ -621,6 +621,7 @@ class ResourceFileControllerFactory(object):
     def __init__(self, namespace):
         self._resources = []
         self._namespace = namespace
+        self._all_resource_imports_resolved = False
 
     @property
     def resources(self):
@@ -643,18 +644,27 @@ class ResourceFileControllerFactory(object):
         return res
 
     def create(self, data, chief_controller=None, parent=None):
-        rfc = ResourceFileController(data, chief_controller, parent)
+        rfc = ResourceFileController(data, chief_controller, parent, self)
         self.resources.append(rfc)
         return rfc
+
+    def set_all_resource_imports_resolved(self):
+        self._all_resource_imports_resolved = True
+
+    def set_all_resource_imports_unresolved(self):
+        self._all_resource_imports_resolved = False
+
+    def is_all_resource_file_imports_resolved(self):
+        return self._all_resource_imports_resolved
 
     def remove(self, controller):
         self._resources.remove(controller)
 
 
 class ResourceFileController(_FileSystemElement, _DataController):
-    _all_imports_resolved = False
 
-    def __init__(self, data, chief_controller=None, parent=None):
+    def __init__(self, data, chief_controller=None, parent=None, resource_file_controller_factory=None):
+        self._resource_file_controller_factory = resource_file_controller_factory
         self._known_imports = set()
         _FileSystemElement.__init__(self, data.source if data else None, data.directory)
         _DataController.__init__(self, data, chief_controller,
@@ -662,7 +672,7 @@ class ResourceFileController(_FileSystemElement, _DataController):
         if self.parent and self not in self.parent.children:
             self.parent.add_child(self)
         if not self.exists():
-            self._all_imports_resolved = False # Some import may have referred to this none existing resource
+            self._resource_file_controller_factory.set_all_resource_imports_unresolved() # Some import may have referred to this none existing resource
 
     def _find_parent_for(self, chief_controller, source):
         if not chief_controller:
@@ -736,7 +746,7 @@ class ResourceFileController(_FileSystemElement, _DataController):
     def is_used(self):
         if self._known_imports:
             return True
-        if self._all_imports_resolved:
+        if self._resource_file_controller_factory.is_all_resource_file_imports_resolved():
             return False
         return any(self.get_where_used())
 
@@ -749,7 +759,7 @@ class ResourceFileController(_FileSystemElement, _DataController):
         for df in self.datafiles:
             for imp in df.imports:
                 yield imp
-        ResourceFileController._all_imports_resolved = True
+        self._resource_file_controller_factory.set_all_resource_imports_resolved()
 
     def remove_child(self, controller):
         pass
