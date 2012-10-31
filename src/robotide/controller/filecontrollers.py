@@ -671,7 +671,10 @@ class ResourceFileController(_FileSystemElement, _DataController):
                                  parent or self._find_parent_for(chief_controller, data.source))
         if self.parent and self not in self.parent.children:
             self.parent.add_child(self)
-        if not self.exists():
+        self._unresolve_all_if_none_existing()
+
+    def _unresolve_all_if_none_existing(self):
+        if not self.exists() and self._resource_file_controller_factory:
             self._resource_file_controller_factory.set_all_resource_imports_unresolved() # Some import may have referred to this none existing resource
 
     def _find_parent_for(self, chief_controller, source):
