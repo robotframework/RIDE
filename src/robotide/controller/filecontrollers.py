@@ -385,7 +385,7 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         return dc
 
     def _is_valid_resource(self, resource):
-        return resource and (resource.setting_table or resource.variable_table or resource.keyword_table)
+        return resource and (resource.setting_table or resource.variable_table or resource.keyword_table or os.stat(resource.source)[6]==0)
 
     def _resource_controller(self, resource):
         resource_control =  self._resource_file_controller_factory.create(resource, chief_controller=self._chief_controller)
