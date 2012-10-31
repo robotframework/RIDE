@@ -45,7 +45,6 @@ class ChiefController(_BaseController, WithNamespace):
         self.external_resources = []
         self._resource_file_controller_factory = ResourceFileControllerFactory(namespace)
         self._serializer = Serializer(settings, LOG)
-        self._settings = settings
 
     def __del__(self):
         if self._library_manager:

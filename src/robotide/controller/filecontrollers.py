@@ -778,9 +778,20 @@ class ExcludedDirectoryController(_FileSystemElement, ControllerWithParent):
     def remove_from_excludes(self):
         self._chief_controller._settings.excludes.remove_path(self.source)
         index = self.parent.children.index(self)
-        result = TestDataDirectoryController(
-            TestData(self.data.source, self.parent.data, self._chief_controller._settings),
-            self._chief_controller,
-            self.parent)
+        td = TestData(self.data.source, self.parent.data, self._chief_controller._settings)
+        result = TestDataDirectoryController(td, self._chief_controller, self.parent)
         self.parent.children[index] = result
         return result
+
+    def iter_datafiles(self):
+        return [self]
+
+    @property
+    def name(self):
+        return self.data.name
+
+    def is_directory_suite(self):
+        return True
+
+    def add_child(self, child):
+        self.children.append(child)

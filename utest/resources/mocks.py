@@ -60,11 +60,13 @@ class _FakeUIObject(object):
 
 
 class FakeSettings(Settings):
-    def __init__(self):
+    def __init__(self, name='ridedummy'):
         Settings.__init__(self, None)
         self.add_section('Plugins')
         self.set('pythonpath', [])
         self.set('auto imports', [])
+        self.set('default directory', name)
+        self.excludes.setting_changed('default directory', '', name)
 
 
 class FakeApplication(object):

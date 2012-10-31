@@ -32,6 +32,7 @@ TESTCASEFILE_WITH_RESOURCES_WITH_VARIABLES_FROM_VARIABLE_FILE = _makepath('var_f
 
 SIMPLE_TEST_SUITE_RESOURCE_NAME = 'Testdata Resource'
 SIMPLE_TEST_SUITE_RESOURCE_FILE = 'testdata_resource.txt'
+SIMPLE_TEST_SUITE_INNER_RESOURCE_DIR = 'Resources Folder'
 SIMPLE_TEST_SUITE_PATH = _makepath('simple_testsuite_with_different_namespaces')
 
 FOR_LOOP_PATH = _makepath('forloop')
@@ -48,8 +49,8 @@ SMALL_TEST_PATH = _makepath('small_test')
 
 IMPORT_ERRORS = _makepath('import_errors')
 
-def construct_chief_controller(datapath):
-    settings = FakeSettings()
+def construct_chief_controller(datapath, dirname=None):
+    settings = FakeSettings(name=dirname) if dirname else FakeSettings()
     library_manager = LibraryManager(':memory:')
     library_manager.create_database()
     chief = ChiefController(Namespace(settings), settings, library_manager)
