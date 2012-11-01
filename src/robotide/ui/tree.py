@@ -486,8 +486,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         else:
             self._end_silent_mode()
 
-    def _uncheck_tests(self, current):
-        for test in current.tests:
+    def _uncheck_tests(self, controller):
+        for test in controller.tests:
             RideTestSelectedForRunningChanged(item=test, running=False).publish()
 
     def _start_silent_mode(self):
@@ -502,6 +502,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         self._handle_pending_selection(to_be_selected, new_node)
 
     def _refresh_datafile(self, controller):
+        self._uncheck_tests(controller)
         orig_node = self._get_data_controller_node(controller)
         if orig_node is not None:
             insertion_index = self._get_datafile_index(orig_node)
