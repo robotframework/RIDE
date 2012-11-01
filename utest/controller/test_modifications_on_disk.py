@@ -94,11 +94,16 @@ class TestModifiedOnDiskWithFileSuite(_DataDependentTest):
 class TestModifiedOnDiskWithDirectorySuite(_DataDependentTest):
 
     def test_reload_with_directory_suite(self):
-        ctrl = TestDataDirectoryController(TestDataDirectory(source=self._dirpath).populate())
+        model_parent = object()
+        controller_parent = object()
+        ctrl = TestDataDirectoryController(TestDataDirectory(source=self._dirpath, parent=model_parent).populate(),
+            parent=controller_parent)
         open(self._init_path, 'a').write('...  ninjaed more documentation')
         ctrl.reload()
         assert_equals(ctrl.settings[0].value,
                       'Ride unit testing file\\nninjaed more documentation')
+        assert_equals(ctrl.parent, controller_parent)
+        assert_equals(ctrl.data.parent, model_parent)
 
     def test_mtime_with_directory_suite(self):
         ctrl = TestDataDirectoryController(TestDataDirectory(source=self._dirpath).populate())

@@ -433,8 +433,8 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         return True
 
     def reload(self):
-        self.__init__(TestDataDirectory(source=self.directory).populate(),
-                      self._chief_controller)
+        self.__init__(TestDataDirectory(source=self.directory, parent=self.data.parent).populate(),
+                      self._chief_controller, parent=self.parent)
 
     def remove(self):
         path = self.filename
