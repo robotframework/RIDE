@@ -734,8 +734,7 @@ class ResourceFileController(_FileSystemElement, _DataController):
         return None
 
     def reload(self):
-        self.__init__(ResourceFile(source=self.filename).populate(),
-                      self._chief_controller)
+        self.__init__(ResourceFile(source=self.filename).populate(), self._chief_controller, parent=self.parent)
 
     def remove(self):
         self._chief_controller.remove_resource(self)
