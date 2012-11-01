@@ -609,8 +609,9 @@ class TestCaseFileController(_FileSystemElement, _DataController):
         RideDataFileRemoved(path=self.filename, datafile=self).publish()
 
     def reload(self):
-        self.__init__(TestCaseFile(source=self.filename).populate(),
-                      self._chief_controller)
+        self.__init__(TestCaseFile(parent=self.data.parent, source=self.filename).populate(),
+                      chief_controller=self._chief_controller,
+                      parent=self.parent)
 
     def get_template(self):
         return self.data.setting_table.test_template

@@ -69,12 +69,18 @@ class TestModifiedOnDiskWithFileSuite(_DataDependentTest):
         assert_true(ctrl.has_been_modified_on_disk())
 
     def test_reload(self):
-        ctrl = TestCaseFileController(TestCaseFile(source=self._filepath).populate())
+        controller_parent = object()
+        model_parent = object()
+        ctrl = TestCaseFileController(
+            TestCaseFile(parent=model_parent, source=self._filepath).populate(),
+            parent=controller_parent)
         assert_equals(len(ctrl.tests), 1)
         open(self._filepath, 'a').write('Second Test  Log  Hello World!\n')
         ctrl.reload()
         assert_equals(len(ctrl.tests), 2)
         assert_equals(ctrl.tests[-1].name, 'Second Test')
+        assert_equals(ctrl.parent, controller_parent)
+        assert_equals(ctrl.data.parent, model_parent)
 
     def test_overwrite(self):
         ctrl = TestCaseFileController(TestCaseFile(source=self._filepath).populate(),
