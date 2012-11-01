@@ -270,18 +270,20 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
                 list(handler.keywords)
 
     def _create_node(self, parent_node, label, img, index=None, with_checkbox=False):
+        node = self._wx_node(parent_node, index, label, with_checkbox)
+        self.SetItemImage(node, img.normal, wx.TreeItemIcon_Normal)
+        self.SetItemImage(node, img.expanded, wx.TreeItemIcon_Expanded)
+        return node
+
+    def _wx_node(self, parent_node, index, label, with_checkbox):
         ct_type = 1 if with_checkbox else 0
         if index is not None:
             # blame wxPython for this ugliness
             if isinstance(index, int):
-                node = self.InsertItemByIndex(parent_node, index, label, ct_type=ct_type)
+                return self.InsertItemByIndex(parent_node, index, label, ct_type=ct_type)
             else:
-                node = self.InsertItem(parent_node, index, label, ct_type=ct_type)
-        else:
-            node = self.AppendItem(parent_node, label, ct_type=ct_type)
-        self.SetItemImage(node, img.normal, wx.TreeItemIcon_Normal)
-        self.SetItemImage(node, img.expanded, wx.TreeItemIcon_Expanded)
-        return node
+                return self.InsertItem(parent_node, index, label, ct_type=ct_type)
+        return self.AppendItem(parent_node, label, ct_type=ct_type)
 
     def add_datafile(self, parent, suite):
         snode = self._render_datafile(self._get_datafile_node(parent.data), suite)
