@@ -751,9 +751,17 @@ class ResourceFileController(_FileSystemElement, _DataController):
             return True
         if self._resource_file_controller_factory.is_all_resource_file_imports_resolved():
             return False
-        return any(self.get_where_used())
+        return any(self._resolve_known_imports())
 
     def get_where_used(self):
+        if self._resource_file_controller_factory.is_all_resource_file_imports_resolved():
+            source = self._known_imports
+        else:
+            source = self._resolve_known_imports()
+        for usage in source:
+            yield usage
+
+    def _resolve_known_imports(self):
         for imp in self._all_imports():
             if imp.get_imported_controller() is self:
                 yield imp
