@@ -23,6 +23,14 @@ for more information.
 __ http://paver.github.com/paver
 
 
+MacOS 10.7+
+-----------
+wxPython is limited to running in 32-bit mode.
+Python itself should thus be executed in 32-bit mode. This can be done by setting:
+
+  export VERSIONER_PYTHON_PREFER_32_BIT=yes
+
+
 Repository contents
 ===================
 
