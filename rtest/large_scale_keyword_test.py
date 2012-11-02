@@ -175,13 +175,14 @@ def _create_test_suite(path, filecount = 1, testcount = 20):
 def _create_test_resources(path, resources_in_file, resource_count, subdir = ""):
     global db_cursor, verbs, words
 
-
     for resfile_index in range(resources_in_file):
         basename = "R%d_Resource.txt" % (resfile_index+1)
-        rf_resource_name = "%s%s" % (subdir + "${/}", basename)
         if subdir != "":
-            subdir += os.sep
-        resfile_ondisk = open("%s%s" % (path + os.sep + subdir, basename) ,"w")
+            rf_resource_name = subdir + "${/}" + basename
+            resfile_ondisk = open("%s%s" % (path + os.sep + subdir + os.sep, basename) ,"w")
+        else:
+            rf_resource_name = basename
+            resfile_ondisk = open("%s%s" % (path + os.sep, basename) ,"w")
         content = "*** Settings ***\n"
         #available_keywords = db_cursor.execute("SELECT * FROM keywords ORDER BY RANDOM()").fetchall()
         content += "\n*** Variables ***\n"
