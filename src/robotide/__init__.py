@@ -44,8 +44,11 @@ try:
     if "ansi" in wx.PlatformInfo:
         print errorMessageTemplate.substitute(reason="wxPython with ansi encoding is not supported", versions=" or ".join(supported_versions))
         sys.exit(1)
-except ImportError:
-    print errorMessageTemplate.substitute(reason="wxPython not found.", versions=" or ".join(supported_versions))
+except ImportError as e:
+    if "no appropriate 64-bit architecture" in e.message.lower() and sys.platform == 'darwin':
+        print "python should be executed in 32-bit mode to support wxPython on mac. Check BUILD.rest for details"
+    else:
+        print errorMessageTemplate.substitute(reason="wxPython not found.", versions=" or ".join(supported_versions))
     sys.exit(1)
 except VersionError:
     print errorMessageTemplate.substitute(reason="Wrong wxPython version.", versions=" or ".join(supported_versions))
