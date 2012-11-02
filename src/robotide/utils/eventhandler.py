@@ -14,7 +14,6 @@
 
 import wx
 
-
 class eventhandlertype(type):
     def __new__(cls, name, bases, dict):
         def mod_time_wrapper(method):
@@ -76,7 +75,8 @@ class RideEventHandler(object):
         ret = wx.MessageBox('\n'.join(msg_lines), 'File Changed On Disk',
                             style=wx.YES_NO|wx.CANCEL|wx.ICON_WARNING)
         if ret == wx.NO:
-            ctrl.save()
+            from robotide.controller.commands import SaveFile
+            ctrl.execute(SaveFile())
             return True
         if ret == wx.YES:
             yes_handler()
