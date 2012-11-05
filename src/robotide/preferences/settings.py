@@ -342,12 +342,15 @@ class Excludes():
         excludes = excludes or self.get_excludes()
         if len(excludes) < 1:
             return False
-        if self._normalize(path) in [self._normalize(e) for e in excludes]:
+        return self._contains(self._normalize(path), [self._normalize(e) for e in excludes])
+
+    def _contains(self, path, excludes):
+        if path in excludes:
             return True
         head, folder = os.path.split(path)
         if folder == self._project_name or head == path:
             return False
-        return self.contains(head, excludes)
+        return self._contains(head, excludes)
 
     if IS_WINDOWS:
         def _normalize(self, path):
