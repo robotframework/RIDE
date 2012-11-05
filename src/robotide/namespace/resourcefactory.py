@@ -92,7 +92,6 @@ class ResourceFactory(object):
 
     def _load_resource(self, path, report_status):
         r = ResourceFile(path)
-
         if os.stat(path)[6]!=0 and report_status:
             return r.populate()
         FromFilePopulator(r).populate(r.source)
