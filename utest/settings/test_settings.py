@@ -443,13 +443,11 @@ class TestExcludes(unittest.TestCase):
 
     def test_invalid_file_path(self):
         e = self._setup_excludes('.')
-        with self.assertRaises(NameError):
-            e._get_exclude_file('w')
+        self.assertRaises(NameError, e._get_exclude_file, 'w')
 
     def test_uninitialized_file_path(self):
         e = self._setup_excludes()
-        with self.assertRaises(NameError):
-            e._get_exclude_file('w')
+        self.assertRaises(NameError, e._get_exclude_file, 'w')
 
     def _setup_excludes(self, name=None):
         fs = self.FakeSettings(name)
