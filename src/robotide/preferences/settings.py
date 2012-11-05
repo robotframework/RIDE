@@ -345,7 +345,7 @@ class Excludes():
         if path in excludes:
             return True
         head, folder = os.path.split(path)
-        if folder == self._project_name or head == '/':
+        if folder == self._project_name or head == path:
             return False
         return self.contains(head, excludes)
 
