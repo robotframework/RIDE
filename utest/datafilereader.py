@@ -49,8 +49,8 @@ SMALL_TEST_PATH = _makepath('small_test')
 
 IMPORT_ERRORS = _makepath('import_errors')
 
-def construct_chief_controller(datapath, dirname=None):
-    settings = FakeSettings(name=dirname) if dirname else FakeSettings()
+def construct_chief_controller(datapath, temp_dir_for_excludes=None):
+    settings = FakeSettings(temp_dir_for_excludes)
     library_manager = LibraryManager(':memory:')
     library_manager.create_database()
     chief = ChiefController(Namespace(settings), settings, library_manager)

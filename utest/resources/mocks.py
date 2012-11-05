@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.preferences.settings import Settings
+from robotide.preferences.settings import Settings, Excludes
 from robotide.publish import PUBLISHER
 
 
@@ -60,13 +60,13 @@ class _FakeUIObject(object):
 
 
 class FakeSettings(Settings):
-    def __init__(self, name='ridedummy'):
+    def __init__(self, temp_dir_for_excludes=None):
         Settings.__init__(self, None)
         self.add_section('Plugins')
         self.set('pythonpath', [])
         self.set('auto imports', [])
-        self.set('default directory', name)
-        self.excludes.setting_changed('default directory', '', name)
+        if temp_dir_for_excludes:
+            self.excludes = Excludes(temp_dir_for_excludes)
 
 
 class FakeApplication(object):
@@ -84,7 +84,7 @@ class FakeApplication(object):
 
 class _FakeSetting(object):
     add_section = lambda self, name: _FakeSetting()
-    get = lambda self, name, deafault: True
+    get = lambda self, name, default: True
     set = lambda self, name, value: None
 
 class PublisherListener(object):

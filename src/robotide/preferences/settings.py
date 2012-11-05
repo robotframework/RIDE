@@ -226,7 +226,7 @@ class Settings(_Section):
         except UnreprError, error:
             raise ConfigurationError(error)
         self._listeners = []
-        self.excludes = Excludes(self)
+        self.excludes = Excludes()
 
     def save(self):
         self._config_obj.write()
@@ -254,52 +254,9 @@ class RideSettings(Settings):
 
 class Excludes():
 
-    def __init__(self, settings):
-        self.__settings = settings
-        self.__exclude_file_path = None
-        if self.__settings:
-            self.__settings.add_change_listener(self)
-        self._dir_for_settings = os.path.join(SETTINGS_DIRECTORY, 'excludes')
-        self.__project_name = None
-
-    @property
-    def _settings(self):
-        if self.__settings is None:
-            self.__settings = RideSettings()
-            self.__settings.add_change_listener(self)
-        return self.__settings
-
-    @property
-    def _project_name(self):
-        if self.__project_name is None:
-            self.__project_name = self._get_project_name(self._settings.get_without_default('default directory'))
-        return self.__project_name
-
-    @property
-    def _exclude_file_path(self):
-        if self.__exclude_file_path is None:
-            self.__exclude_file_path = self._get_file_path()
-        return self.__exclude_file_path
-
-    def _get_file_path(self):
-        if not self._project_name:
-            return None
-        if not os.path.exists(self._dir_for_settings):
-            os.makedirs(self._dir_for_settings)
-        self.__exclude_file_path = os.path.join(self._dir_for_settings, self._project_name)
-        return self.__exclude_file_path
-
-    def setting_changed(self, name, old_value, new_value):
-        if name == 'default directory':
-            self.__project_name = self._get_project_name(new_value)
-            self.__exclude_file_path = self._get_file_path()
-
-    def _get_project_name(self, project_dir):
-        if not project_dir: # might be None
-            return None
-        project_dir = project_dir.rstrip('/') # strip trailing slash for os.path.split
-        project_name = os.path.split(project_dir)[-1]
-        return project_name
+    def __init__(self, directory=None):
+        settings_directory = directory or SETTINGS_DIRECTORY
+        self._exclude_file_path = os.path.join(settings_directory, 'excludes')
 
     def get_excludes(self):
         with self._get_exclude_file('r') as exclude_file:
@@ -326,7 +283,7 @@ class Excludes():
         
     def _get_exclude_file(self, read_write):
         if not self._exclude_file_path:
-            raise NameError('No project name defined')
+            raise NameError('No exclude file defined')
         if not os.path.exists(self._exclude_file_path) and read_write.startswith('r'):
             return open(self._exclude_file_path, 'w+')
         if os.path.isdir(self._exclude_file_path):
@@ -348,7 +305,7 @@ class Excludes():
         if path in excludes:
             return True
         head, folder = os.path.split(path)
-        if folder == self._project_name or head == path:
+        if head == path:
             return False
         return self._contains(head, excludes)
 

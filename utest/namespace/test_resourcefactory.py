@@ -18,7 +18,7 @@ class _ResourceFactory(ResourceFactory):
         return os.path.join(self.from_path, name)
 
     def _remove(self):
-        p = self._excludes._get_file_path()
+        p = self._excludes._exclude_file_path
         if p:
             os.remove(p)
 

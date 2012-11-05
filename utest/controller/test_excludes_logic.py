@@ -1,3 +1,4 @@
+import tempfile
 import unittest
 import os
 import datafilereader
@@ -7,10 +8,10 @@ from robotide.controller.filecontrollers import TestDataDirectoryController, Exc
 class TestExcludesLogic(unittest.TestCase):
 
     def setUp(self):
-        self.chief = datafilereader.construct_chief_controller(datafilereader.SIMPLE_TEST_SUITE_PATH, 'test_excluding')
+        self.chief = datafilereader.construct_chief_controller(datafilereader.SIMPLE_TEST_SUITE_PATH, tempfile.gettempdir())
 
     def tearDown(self):
-        p = self.chief._settings.excludes._get_file_path()
+        p = self.chief._settings.excludes._exclude_file_path
         if os.path.exists(p):
             os.remove(p)
 
