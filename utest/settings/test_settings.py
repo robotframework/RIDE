@@ -413,6 +413,13 @@ class TestExcludes(unittest.TestCase):
         self.exclude.remove_path(removed[1])
         self.assertEqual(len(self.exclude.get_excludes()), len(excludes)-2)
 
+    def test_when_exclude_file_points_to_directory(self):
+        dir = tempfile.mkdtemp()
+        os.mkdir(os.path.join(dir, 'excludes'))
+        self.exclude = Excludes(dir)
+        del self.file_path # not created nor used in this test
+        self.assertRaises(NameError, self.exclude._get_exclude_file, 'w')
+
     def _verify_exclude_file(self, expected):
         file_contents = open(self.file_path, 'r').readlines()
         self.assertEqual(file_contents, expected)
