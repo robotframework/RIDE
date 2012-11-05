@@ -1,6 +1,7 @@
 import unittest
 import sys
 import os
+from robot.running.timeouts.stoppablethread import Thread
 
 from robotide.namespace.cache import LibraryCache
 
@@ -33,6 +34,20 @@ class TestLibraryCache(unittest.TestCase):
 
     def test_importing_library_with_dictionary_arg(self):
         LibraryCache({}, lambda:0, self._library_manager)._get_library('ArgLib', [{'moi':'hoi'}, []])
+
+    def test_importing_from_two_threads(self):
+        cache = self._create_cache_with_auto_imports('TestLib')
+        self._thread_results = []
+        def check_test_lib_keyword():
+            cache.get_default_keywords()
+            self._thread_results.append('ok')
+        t1 = Thread(runner=check_test_lib_keyword)
+        t2 = Thread(runner=check_test_lib_keyword)
+        t1.start()
+        t2.start()
+        t1.join()
+        t2.join()
+        self.assertEqual(['ok', 'ok'], self._thread_results)
 
     def _create_cache_with_auto_imports(self, auto_import):
         settings = {'auto imports': [auto_import]}
