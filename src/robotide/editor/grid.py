@@ -23,6 +23,7 @@ from clipboard import ClipboardHandler
 class GridEditor(grid.Grid):
     _col_add_threshold = 1
     _popup_items = ['Insert Cells\tCtrl-Shift-I', 'Delete Cells\tCtrl-Shift-D',
+                    'Insert Rows\tCtrl-I', 'Delete Rows\tCtrl-D',
                     '---', 'Select All\tCtrl-A',
                     '---', 'Cut\tCtrl-X', 'Copy\tCtrl-C',
                     'Paste\tCtrl-V',
