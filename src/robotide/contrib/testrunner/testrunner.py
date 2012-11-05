@@ -40,7 +40,7 @@ import threading
 import signal
 import sys
 from robot.output.loggerhelper import LEVELS
-from robot.utils.encoding import SYSTEM_ENCODING, OUTPUT_ENCODING
+from robot.utils.encoding import SYSTEM_ENCODING
 from robotide.context.platform import IS_WINDOWS
 from robotide.contrib.testrunner import TestRunnerAgent
 from robotide.controller.testexecutionresults import TestExecutionResults

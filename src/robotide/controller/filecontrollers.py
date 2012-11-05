@@ -446,8 +446,8 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         return True
 
     def reload(self):
-        self.__init__(TestDataDirectory(source=self.directory).populate(),
-                      self._chief_controller)
+        self.__init__(TestDataDirectory(source=self.directory, parent=self.data.parent).populate(),
+                      self._chief_controller, parent=self.parent)
 
     def remove(self):
         path = self.filename
@@ -629,8 +629,9 @@ class TestCaseFileController(_FileSystemElement, _DataController):
         RideDataFileRemoved(path=self.filename, datafile=self).publish()
 
     def reload(self):
-        self.__init__(TestCaseFile(source=self.filename).populate(),
-                      self._chief_controller)
+        self.__init__(TestCaseFile(parent=self.data.parent, source=self.filename).populate(),
+                      chief_controller=self._chief_controller,
+                      parent=self.parent)
 
     def get_template(self):
         return self.data.setting_table.test_template
@@ -753,8 +754,7 @@ class ResourceFileController(_FileSystemElement, _DataController):
         return None
 
     def reload(self):
-        self.__init__(ResourceFile(source=self.filename).populate(),
-                      self._chief_controller)
+        self.__init__(ResourceFile(source=self.filename).populate(), self._chief_controller, parent=self.parent)
 
     def remove(self):
         self._chief_controller.remove_resource(self)
@@ -771,9 +771,17 @@ class ResourceFileController(_FileSystemElement, _DataController):
             return True
         if self._resource_file_controller_factory.is_all_resource_file_imports_resolved():
             return False
-        return any(self.get_where_used())
+        return any(self._resolve_known_imports())
 
     def get_where_used(self):
+        if self._resource_file_controller_factory.is_all_resource_file_imports_resolved():
+            source = self._known_imports
+        else:
+            source = self._resolve_known_imports()
+        for usage in source:
+            yield usage
+
+    def _resolve_known_imports(self):
         for imp in self._all_imports():
             if imp.get_imported_controller() is self:
                 yield imp

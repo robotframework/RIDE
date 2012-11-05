@@ -93,14 +93,15 @@ myinstance = %s()
 
     initfile_lines = open("%s/__init__.txt" % path).readlines()
     index = 0
-    for line in initfile_lines:
-        if "*** Settings ***" in line:
-            index += 1
-            for lib_name in libs:
-                initfile_lines.insert(index, "Library\t%s.py\n" % (os.getcwd() + "/" + path + "/" + lib_name))
-                index += 1
-            break
-        index += 1
+
+#    for line in initfile_lines:
+#        if "*** Settings ***" in line:
+#            index += 1
+#            for lib_name in libs:
+#                initfile_lines.insert(index, "Library\t%s.py\n" % lib_name)
+#                index += 1
+#            break
+#        index += 1
 
     fo = open("%s/__init__.txt" % path, "w")
     for line in initfile_lines:
@@ -113,7 +114,6 @@ def _create_test_suite(path, filecount = 1, testcount = 20):
 
     available_resources = db_cursor.execute(
                             "SELECT path FROM source WHERE type = 'RESOURCE' ORDER BY RANDOM()").fetchall()
-
     for testfile_index in range(filecount):
         libraries_in_use = {}
         resources_in_use = []
@@ -123,31 +123,38 @@ def _create_test_suite(path, filecount = 1, testcount = 20):
         keywords_txt = ""
         available_libraries = db_cursor.execute("SELECT path FROM source WHERE type = 'CUSTOMLIBRARY'").fetchall()
 
-        tcfile = open("%s/CustomTests_%d.txt" % (path, testfile_index+1),"w")
+        tcfile = open("%s/T%d_CustomTests.txt" % (path, testfile_index+1),"w")
         test_txt += "*** Test Cases ***\n"
         for tc in range(testcount):
             selected_library = random.choice(available_libraries)[0]
-            tc_withname = None
+            testlib = selected_library
             if selected_library not in libraries_in_use.values():
-                tc_withname = "Cus%d" % tc
-                libraries_in_use[tc_withname] = selected_library
+                use_with_name = random.choice([True,False])
+                if use_with_name:
+                    testlib = "Cus%d" % tc
+                    libraries_in_use[testlib] = selected_library
+                else:
+                    libraries_in_use[selected_library] = selected_library
             else:
                 for key,val in libraries_in_use.iteritems():
                     if val == selected_library:
-                        tc_withname = key
+                        testlib = key
                         break
             tc_name = "Test %s in %s #%d" % (random.choice(verbs), selected_library.split("CustomLib")[1], tc)
             available_keywords = db_cursor.execute("SELECT * FROM keywords WHERE source = '%s' ORDER BY RANDOM()"
                                                     % selected_library).fetchall()
-            kwlib = random.choice([selected_library, tc_withname, tc_withname + "xyz"])
+            kwlib = random.choice([selected_library, testlib, testlib + "xyz"])
             kw1 = available_keywords.pop()
             kw2 = available_keywords.pop()
             test_txt += "%s\t[Documentation]\t%s\n\t\t%s\n\t\t%s\n\n" % (tc_name, "Test %d" % tc, kwlib +
                     "." +kw1[1].replace("_"," "), kwlib + "." +kw2[1].replace("_"," "))
 
         settings_txt += "*** Settings ***\n"
-        for tc_withname,tc_name in libraries_in_use.iteritems():
-            settings_txt += "Library    %45s.py\tWITH NAME\t%s\n" % (tc_name, tc_withname)
+        for testlib_key,testlib_value in libraries_in_use.iteritems():
+            if testlib_key != testlib_value:
+                settings_txt += "Library    %45s.py\tWITH NAME\t%s\n" % (testlib_value, testlib_key)
+            else:
+                settings_txt += "Library    %45s.py\n" % (testlib_value)
             #settings_txt += "Library    %45s\n" % (os.getcwd()+"/"+path+"/" +tc_name)
 
         for x in range(random.randint(0,2)):
@@ -165,12 +172,17 @@ def _create_test_suite(path, filecount = 1, testcount = 20):
         tcfile.close()
 
 
-def _create_test_resources(path, filecount, resource_count):
+def _create_test_resources(path, resources_in_file, resource_count, subdir = ""):
     global db_cursor, verbs, words
 
-    for resfile_index in range(filecount):
-        resource_name = "%s/Resource_%d.txt" % (path, resfile_index+1)
-        resfile = open(resource_name,"w")
+    for resfile_index in range(resources_in_file):
+        basename = "R%d_Resource.txt" % (resfile_index+1)
+        if subdir != "":
+            rf_resource_name = subdir + "${/}" + basename
+            resfile_ondisk = open("%s%s" % (path + os.sep + subdir + os.sep, basename) ,"w")
+        else:
+            rf_resource_name = basename
+            resfile_ondisk = open("%s%s" % (path + os.sep, basename) ,"w")
         content = "*** Settings ***\n"
         #available_keywords = db_cursor.execute("SELECT * FROM keywords ORDER BY RANDOM()").fetchall()
         content += "\n*** Variables ***\n"
@@ -178,9 +190,9 @@ def _create_test_resources(path, filecount, resource_count):
             content += "%-25s%10s%d\n" % ("${%s%d}" % (random.choice(words).strip().capitalize(),x),"",
                                                         random.randint(1,1000))
         content += "\n*** Keywords ***\n"
-        resfile.write(content)
-        resfile.close()
-        db_cursor.execute("INSERT INTO source (path,type) VALUES ('%s','RESOURCE')" % resource_name)
+        resfile_ondisk.write(content)
+        resfile_ondisk.close()
+        db_cursor.execute("INSERT INTO source (path,type) VALUES ('%s','RESOURCE')" % rf_resource_name)
 
 
 def _create_test_project(path,testlibs_count=5,keyword_count=10,testsuite_count=5,tests_in_suite=10,resource_count=10,resources_in_file=20):
@@ -198,7 +210,7 @@ def _create_test_project(path,testlibs_count=5,keyword_count=10,testsuite_count=
                                         tests_in_suite, resource_count, resources_in_file)
 
     _create_test_libraries(thetestdir, filecount=testlibs_count, keywords=keyword_count)
-    _create_test_resources(thetestdir + "/resources", filecount=resource_count,resource_count=resources_in_file)
+    _create_test_resources(thetestdir,subdir="resources", resources_in_file=resource_count,resource_count=resources_in_file)
     _create_test_suite(thetestdir, filecount=testsuite_count, testcount=tests_in_suite)
 
 def main(path,testlibs_count=25,keyword_count=10,testsuite_count=30,tests_in_suite=40,resource_count=10,resources_in_file=100):

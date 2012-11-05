@@ -40,6 +40,8 @@ Cu&t | Cut | Ctrlcmd-X
 Comment | Comment selected rows | Ctrlcmd-3
 Uncomment | Uncomment selected rows | Ctrlcmd-4
 ---
+Insert Cells | Insert Cells | Shift-Ctrl-I
+Delete Cells | Delete Cells | Shift-Ctrl-D
 Insert Rows | Insert Rows | Ctrlcmd-I
 Delete Rows | Delete Rows | Ctrlcmd-D
 [Tools]
@@ -182,6 +184,12 @@ class _EditorTab(wx.Panel):
 
     def OnInsert(self, event):
         self.editor.insert()
+
+    def OnInsertCells(self, event):
+        self.editor.insert_cells()
+
+    def OnDeleteCells(self, event):
+        self.editor.delete_cells()
 
     def OnInsertRows(self, event):
         self.editor.insert_rows()

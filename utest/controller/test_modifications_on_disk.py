@@ -69,12 +69,18 @@ class TestModifiedOnDiskWithFileSuite(_DataDependentTest):
         assert_true(ctrl.has_been_modified_on_disk())
 
     def test_reload(self):
-        ctrl = TestCaseFileController(TestCaseFile(source=self._filepath).populate())
+        controller_parent = object()
+        model_parent = object()
+        ctrl = TestCaseFileController(
+            TestCaseFile(parent=model_parent, source=self._filepath).populate(),
+            parent=controller_parent)
         assert_equals(len(ctrl.tests), 1)
         open(self._filepath, 'a').write('Second Test  Log  Hello World!\n')
         ctrl.reload()
         assert_equals(len(ctrl.tests), 2)
         assert_equals(ctrl.tests[-1].name, 'Second Test')
+        assert_equals(ctrl.parent, controller_parent)
+        assert_equals(ctrl.data.parent, model_parent)
 
     def test_overwrite(self):
         ctrl = TestCaseFileController(TestCaseFile(source=self._filepath).populate(),
@@ -88,11 +94,16 @@ class TestModifiedOnDiskWithFileSuite(_DataDependentTest):
 class TestModifiedOnDiskWithDirectorySuite(_DataDependentTest):
 
     def test_reload_with_directory_suite(self):
-        ctrl = TestDataDirectoryController(TestDataDirectory(source=self._dirpath).populate())
+        model_parent = object()
+        controller_parent = object()
+        ctrl = TestDataDirectoryController(TestDataDirectory(source=self._dirpath, parent=model_parent).populate(),
+            parent=controller_parent)
         open(self._init_path, 'a').write('...  ninjaed more documentation')
         ctrl.reload()
         assert_equals(ctrl.settings[0].value,
                       'Ride unit testing file\\nninjaed more documentation')
+        assert_equals(ctrl.parent, controller_parent)
+        assert_equals(ctrl.data.parent, model_parent)
 
     def test_mtime_with_directory_suite(self):
         ctrl = TestDataDirectoryController(TestDataDirectory(source=self._dirpath).populate())
@@ -104,12 +115,16 @@ class TestModifiedOnDiskWithDirectorySuite(_DataDependentTest):
 class TestModifiedOnDiskWithresource(_DataDependentTest):
 
     def test_reload_with_resource(self):
-        ctrl = ResourceFileController(ResourceFile(source=self._resource_path).populate())
+        controller_parent = lambda:0
+        controller_parent.children = []
+        controller_parent.add_child = controller_parent.children.append
+        ctrl = ResourceFileController(ResourceFile(source=self._resource_path).populate(), parent=controller_parent)
         assert_equals(len(ctrl.keywords), 1)
         open(self._resource_path, 'a').write('Ninjaed Keyword  Log  I am taking over!\n')
         ctrl.reload()
         assert_equals(len(ctrl.keywords), 2)
         assert_equals(ctrl.keywords[-1].name, 'Ninjaed Keyword')
+        assert_equals(ctrl.parent, controller_parent)
 
 
 class TestDataFileRemoval(_DataDependentTest):

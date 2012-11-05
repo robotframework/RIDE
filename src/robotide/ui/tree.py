@@ -254,7 +254,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         handler_class = action_handler_class(controller)
         node = self._create_node(parent_node, controller.display_name, self._images[controller],
                                  index, with_checkbox=(handler_class == TestCaseHandler and self._checkboxes_for_tests))
-        if controller.__class__ == ResourceFileController:
+        if isinstance(controller, ResourceFileController):
             if not controller.is_used():
                 self.SetItemTextColour(node, wx.ColorRGB(0xA9A9A9))
         self.SetPyData(node, handler_class(controller, self, node, self._controller.settings))
@@ -287,18 +287,20 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
                 list(handler.keywords)
 
     def _create_node(self, parent_node, label, img, index=None, with_checkbox=False):
+        node = self._wx_node(parent_node, index, label, with_checkbox)
+        self.SetItemImage(node, img.normal, wx.TreeItemIcon_Normal)
+        self.SetItemImage(node, img.expanded, wx.TreeItemIcon_Expanded)
+        return node
+
+    def _wx_node(self, parent_node, index, label, with_checkbox):
         ct_type = 1 if with_checkbox else 0
         if index is not None:
             # blame wxPython for this ugliness
             if isinstance(index, int):
-                node = self.InsertItemByIndex(parent_node, index, label, ct_type=ct_type)
+                return self.InsertItemByIndex(parent_node, index, label, ct_type=ct_type)
             else:
-                node = self.InsertItem(parent_node, index, label, ct_type=ct_type)
-        else:
-            node = self.AppendItem(parent_node, label, ct_type=ct_type)
-        self.SetItemImage(node, img.normal, wx.TreeItemIcon_Normal)
-        self.SetItemImage(node, img.expanded, wx.TreeItemIcon_Expanded)
-        return node
+                return self.InsertItem(parent_node, index, label, ct_type=ct_type)
+        return self.AppendItem(parent_node, label, ct_type=ct_type)
 
     def add_datafile(self, parent, suite):
         snode = self._render_datafile(self._get_datafile_node(parent.data), suite)
@@ -501,8 +503,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         else:
             self._end_silent_mode()
 
-    def _uncheck_tests(self, current):
-        for test in current.tests:
+    def _uncheck_tests(self, controller):
+        for test in controller.tests:
             RideTestSelectedForRunningChanged(item=test, running=False).publish()
 
     def _start_silent_mode(self):
@@ -517,6 +519,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         self._handle_pending_selection(to_be_selected, new_node)
 
     def _refresh_datafile(self, controller):
+        self._uncheck_tests(controller)
         orig_node = self._get_data_controller_node(controller)
         if orig_node is not None:
             insertion_index = self._get_datafile_index(orig_node)
