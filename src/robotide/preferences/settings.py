@@ -255,24 +255,44 @@ class RideSettings(Settings):
 class Excludes():
 
     def __init__(self, settings):
-        self._settings = settings if settings else RideSettings()
+        self.__settings = settings
+        self.__exclude_file_path = None
+        if self.__settings:
+            self.__settings.add_change_listener(self)
         self._dir_for_settings = os.path.join(SETTINGS_DIRECTORY, 'excludes')
-        self._project_name = self._get_project_name(self._settings.get_without_default('default directory'))
-        self._exclude_file_path = self._get_file_path()
-        self._settings.add_change_listener(self)
+        self.__project_name = None
+
+    @property
+    def _settings(self):
+        if self.__settings is None:
+            self.__settings = RideSettings()
+            self.__settings.add_change_listener(self)
+        return self.__settings
+
+    @property
+    def _project_name(self):
+        if self.__project_name is None:
+            self.__project_name = self._get_project_name(self._settings.get_without_default('default directory'))
+        return self.__project_name
+
+    @property
+    def _exclude_file_path(self):
+        if self.__exclude_file_path is None:
+            self.__exclude_file_path = self._get_file_path()
+        return self.__exclude_file_path
 
     def _get_file_path(self):
         if not self._project_name:
             return None
         if not os.path.exists(self._dir_for_settings):
             os.makedirs(self._dir_for_settings)
-        self._exclude_file_path = os.path.join(self._dir_for_settings, self._project_name)
-        return self._exclude_file_path
+        self.__exclude_file_path = os.path.join(self._dir_for_settings, self._project_name)
+        return self.__exclude_file_path
 
     def setting_changed(self, name, old_value, new_value):
         if name == 'default directory':
-            self._project_name = self._get_project_name(new_value)
-            self._exclude_file_path = self._get_file_path()
+            self.__project_name = self._get_project_name(new_value)
+            self.__exclude_file_path = self._get_file_path()
 
     def _get_project_name(self, project_dir):
         if not project_dir: # might be None
