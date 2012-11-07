@@ -28,25 +28,12 @@ class LibraryCache(object):
         self._library_keywords = {}
         self.__default_libraries = None
         self.__default_kws = None
-        self.__library_database = None
-        self._library_database_to_close = None
 
     def set_library_manager(self, library_manager):
         self._library_manager = library_manager
 
     def expire(self):
-        library_database_to_close = self.__library_database
         self.__init__(self._settings, self._libraries_need_refresh_listener, self._library_manager)
-        self._library_database_to_close = library_database_to_close
-
-    @property
-    def _library_database(self):
-        if self.__library_database is None:
-            if self._library_database_to_close is not None:
-                self._library_database_to_close.close()
-                self._library_database_to_close = None
-            self.__library_database = self._library_manager.get_new_connection_to_library_database()
-        return self.__library_database
 
     @property
     def _default_libraries(self):
@@ -64,12 +51,16 @@ class LibraryCache(object):
         return [name for name, _ in self._library_keywords]
 
     def _get_library(self, name, args):
-        last_updated = self._library_database.get_library_last_updated(name, args)
-        if last_updated:
-            if time.time() - last_updated > 10.0:
-                self._library_manager.fetch_keywords(name, args, self._libraries_need_refresh_listener)
-            return self._library_database.fetch_library_keywords(name, args)
-        return self._library_manager.get_and_insert_keywords(name, args)
+        library_database = self._library_manager.get_new_connection_to_library_database()
+        try:
+            last_updated = library_database.get_library_last_updated(name, args)
+            if last_updated:
+                if time.time() - last_updated > 10.0:
+                    self._library_manager.fetch_keywords(name, args, self._libraries_need_refresh_listener)
+                return library_database.fetch_library_keywords(name, args)
+            return self._library_manager.get_and_insert_keywords(name, args)
+        finally:
+            library_database.close()
 
     def _key(self, name, args):
         return name, unicode(tuple(args or ''))
