@@ -267,10 +267,10 @@ class Excludes():
     def remove_path(self, path):
         path = self._normalize(path)
         excludes = self._get_excludes()
-        self._write_excludes([e for e in excludes if e != path])
+        self._write_excludes(set([e for e in excludes if e != path]))
 
     def _write_excludes(self, excludes):
-        excludes = [e if e.endswith(os.path.sep) else e + os.path.sep for e in excludes]
+        excludes = [self._normalize(e) for e in excludes]
         with self._get_exclude_file(read_write='w') as exclude_file:
             for exclude in excludes:
                 exclude_file.write("%s\n" % exclude)
@@ -299,9 +299,12 @@ class Excludes():
         excludes = [self._normalize(e) for e in excludes]
         return any(path.startswith(e) for e in excludes)
 
-    if IS_WINDOWS:
-        def _normalize(self, path):
+
+
+    def _normalize(self, path):
+        if not path.endswith(os.path.sep):
+            path = path + os.path.sep
+        if IS_WINDOWS:
             return os.path.normcase(os.path.normpath(os.path.abspath(path)))
-    else:
-        def _normalize(self, path):
-            return path
+        return path
+

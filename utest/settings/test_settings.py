@@ -385,11 +385,13 @@ class TestExcludes(unittest.TestCase):
     def test_update_excludes_with_separator(self):
         self.exclude.update_excludes(['foo' + sep])
         self.assertTrue(self.exclude.contains(_join('foo')))
+        self.assertTrue(self.exclude.contains('foo'))
 
     def test_updating_excludes_does_not_repeat_path(self):
         self.exclude.update_excludes(['foo'])
         self.exclude.update_excludes(['foo' + sep])
         self.assertTrue(self.exclude.contains(_join('foo', 'bar')))
+        self.assertEqual(len(self.exclude._get_excludes()), 1)
 
     def test_updating_excludes_does_not_repeat_almost_similar_paths(self):
         data = os.path.join('foo', 'bar')
