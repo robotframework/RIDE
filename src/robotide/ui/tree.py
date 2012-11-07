@@ -132,7 +132,6 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         tree = self._controller.find_node_by_controller(message.old_controller)
         self._render_datafile(self.GetItemParent(tree), message.new_controller)
         self._remove_datafile_node(tree)
-        self._refresh_view()
 
     def _set_item_excluded(self, node):
         self.SetItemTextColour(node, 'gray')
