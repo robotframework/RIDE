@@ -23,6 +23,7 @@ from robotide.preferences.settings import Settings, SectionError,\
 from resources.setting_utils import TestSettingsHelper
 import tempfile
 
+from os.path import sep
 
 class TestInvalidSettings(TestSettingsHelper):
 
@@ -364,6 +365,9 @@ class TestMergeSettings(TestSettingsHelper):
         else:
             raise AssertionError('merging read-only file succeeded')
 
+def _join(*args):
+    return os.path.join(*args) + sep
+
 class TestExcludes(unittest.TestCase):
 
     def setUp(self):
@@ -376,42 +380,35 @@ class TestExcludes(unittest.TestCase):
 
     def test_update_excludes(self):
         self.exclude.update_excludes(['foo'])
-        self._verify_exclude_file(['foo\n'])
+        self.assertTrue(self.exclude.contains(_join('foo', 'bar')))
+
+    def test_update_excludes_with_separator(self):
+        self.exclude.update_excludes(['foo' + sep])
+        self.assertTrue(self.exclude.contains(_join('foo')))
 
     def test_updating_excludes_does_not_repeat_path(self):
         self.exclude.update_excludes(['foo'])
-        self.exclude.update_excludes(['foo'])
-        self._verify_exclude_file(['foo\n'])
+        self.exclude.update_excludes(['foo' + sep])
+        self.assertTrue(self.exclude.contains(_join('foo', 'bar')))
 
     def test_updating_excludes_does_not_repeat_almost_similar_paths(self):
-        self.exclude.update_excludes(['/foo/bar'])
-        self.exclude.update_excludes(['/foo/bar/'])
-        self._verify_exclude_file(['/foo/bar\n'])
-
-    def test_contains(self):
-        self.exclude.update_excludes(['/foo/bar/baz'])
-        self.assertTrue(self.exclude.contains('/foo/bar/baz'))
-        self._verify_exclude_file(['/foo/bar/baz\n'])
-
-    def test_contains_when_file_is_in_excluded_directory(self):
-        self.exclude.update_excludes(['/foo'])
-        self.assertTrue(self.exclude.contains('/foo/bar/baz'))
-        self.assertTrue(self.exclude.contains('/foo/bar/'))
-        self.assertTrue(self.exclude.contains('/foo/'))
-        self._verify_exclude_file(['/foo\n'])
+        data = os.path.join('foo', 'bar')
+        self.exclude.update_excludes([data])
+        self.exclude.update_excludes([data + os.path.sep])
+        self.assertTrue(self.exclude.contains(_join('foo', 'bar')))
 
     def test_contains_when_there_is_no_path(self):
         self.assertFalse(self.exclude.contains(None))
 
     def test_remove_path(self):
-        excludes = ['/foo', '/bar/baz', '/qux', '/quux/corge']
-        removed = ['/bar/baz', '/quux/corge']
+        excludes = [_join('foo'), _join('bar', 'baz'), _join('qux'), _join('quux', 'corge')]
+        removed = [_join('bar', 'baz'), _join('quux', 'corge')]
         self.exclude.update_excludes(excludes)
-        self._verify_exclude_file([ex + '\n' for ex in excludes])
+        self.assertTrue(all([self.exclude.contains(e) for e in excludes]))
         self.exclude.remove_path(removed[0])
-        self.assertEqual(len(self.exclude.get_excludes()), len(excludes)-1)
+        self.assertFalse(self.exclude.contains(removed[0]))
         self.exclude.remove_path(removed[1])
-        self.assertEqual(len(self.exclude.get_excludes()), len(excludes)-2)
+        self.assertFalse(self.exclude.contains(removed[1]))
 
     def test_when_exclude_file_points_to_directory(self):
         dir = tempfile.mkdtemp()
@@ -420,9 +417,6 @@ class TestExcludes(unittest.TestCase):
         del self.file_path # not created nor used in this test
         self.assertRaises(NameError, self.exclude._get_exclude_file, 'w')
 
-    def _verify_exclude_file(self, expected):
-        file_contents = open(self.file_path, 'r').readlines()
-        self.assertEqual(file_contents, expected)
 
 if __name__ == "__main__":
     unittest.main()

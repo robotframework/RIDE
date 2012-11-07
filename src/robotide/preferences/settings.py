@@ -258,32 +258,28 @@ class Excludes():
         settings_directory = directory or SETTINGS_DIRECTORY
         self._exclude_file_path = os.path.join(settings_directory, 'excludes')
 
-    def get_excludes(self):
+    def _get_excludes(self):
         with self._get_exclude_file('r') as exclude_file:
             if not exclude_file:
-                return []
-            return exclude_file.read().split()
+                return set()
+            return set(exclude_file.read().split())
 
     def remove_path(self, path):
-        path = path.rstrip('/')
-        excludes = self.get_excludes()
-        self._write_excludes(filter(lambda item: item != path, excludes))
+        path = self._normalize(path)
+        excludes = self._get_excludes()
+        self._write_excludes([e for e in excludes if e != path])
 
     def _write_excludes(self, excludes):
+        excludes = [e if e.endswith(os.path.sep) else e + os.path.sep for e in excludes]
         with self._get_exclude_file(read_write='w') as exclude_file:
             for exclude in excludes:
                 exclude_file.write("%s\n" % exclude)
 
     def update_excludes(self, new_excludes):
-        excludes = self.get_excludes()
-        new_excludes = [exclude.rstrip('/') for exclude in new_excludes]
-        new_excludes = [exclude for exclude in new_excludes if exclude not in excludes]
-        excludes.extend(new_excludes)
-        self._write_excludes(excludes)
+        excludes = self._get_excludes()
+        self._write_excludes(excludes.union(new_excludes))
         
     def _get_exclude_file(self, read_write):
-        if not self._exclude_file_path:
-            raise NameError('No exclude file defined')
         if not os.path.exists(self._exclude_file_path) and read_write.startswith('r'):
             return open(self._exclude_file_path, 'w+')
         if os.path.isdir(self._exclude_file_path):
@@ -291,23 +287,17 @@ class Excludes():
         try:
             return open(self._exclude_file_path, read_write)
         except IOError as e:
-            raise Exception(e) #TODO FIXME
+            raise e #TODO FIXME
 
     def contains(self, path, excludes=None):
         if not path:
             return False
-        excludes = excludes or self.get_excludes()
+        excludes = excludes or self._get_excludes()
         if len(excludes) < 1:
             return False
-        return self._contains(self._normalize(path), [self._normalize(e) for e in excludes])
-
-    def _contains(self, path, excludes):
-        if path in excludes:
-            return True
-        head, folder = os.path.split(path)
-        if head == path:
-            return False
-        return self._contains(head, excludes)
+        path = self._normalize(path)
+        excludes = [self._normalize(e) for e in excludes]
+        return any(path.startswith(e) for e in excludes)
 
     if IS_WINDOWS:
         def _normalize(self, path):
