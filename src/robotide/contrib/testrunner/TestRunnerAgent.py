@@ -139,7 +139,8 @@ class TestRunnerAgent:
         try:
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.sock.connect((self.host, self.port))
-            self.filehandler = self.sock.makefile('w')
+            # Iron python does not return right kind of objects if binary mode is not used
+            self.filehandler = self.sock.makefile('wb')
             self.pickler = pickle.Pickler(self.filehandler)
         except socket.error, e:
             print 'unable to open socket to "%s:%s" error: %s' % (self.host, self.port, str(e))
