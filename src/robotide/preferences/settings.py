@@ -297,8 +297,6 @@ class Excludes():
             return False
         path = self._normalize(path)
         excludes = [self._normalize(e) for e in excludes]
-        print 'path', repr(path)
-        print 'excludes', repr(excludes)
         return any(path.startswith(e) for e in excludes)
 
     def _normalize(self, path):
