@@ -88,12 +88,13 @@ def test(args):
 options(
     generate_big_project = Bunch(
         dir = "theproject",
-        libs = 6,
+        libs = 5,
         keywords=10,
         suites = 1,
-        tests=20,
+        tests=10,
         resourcefiles=1,
-        resources=30
+        resources=30,
+        testdepth=3
     )
 )
 @task
@@ -103,6 +104,7 @@ options(
     ('dir=', 'd', 'Target directory for the test project'),
     ('suites=', 's', 'Number of test suites'),
     ('tests=', 't', 'Number of tests in a suite'),
+    ('testdepth=', 'e', 'Average number of steps in a test case (2..20)'),
     ('resourcefiles=', 'f', 'Number of resource files'),
     ('resources=', 'r', 'Number of resources in a file')
 ])
@@ -118,7 +120,8 @@ def generate_big_project(options):
     try:
         assert main(options.dir, testlibs_count=int(options.libs), keyword_count=int(options.keywords),
                     testsuite_count=int(options.suites), tests_in_suite=int(options.tests),
-                    resource_count=int(options.resourcefiles), resources_in_file=int(options.resources))
+                    resource_count=int(options.resourcefiles), resources_in_file=int(options.resources),
+                    avg_test_depth=int(options.testdepth))
     finally:
         #if len(args) >= 1 and ("del" in args):
         #    shutil.rmtree(dir, ignore_errors=True)
