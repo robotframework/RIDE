@@ -194,7 +194,8 @@ class TestTemplateDialog(_FixtureDialog): pass
 
 
 class ArgumentsDialog(_SettingDialog):
-    _validator = ArgumentsValidator
+    def _get_editors(self, item):
+        return [ArgumentEditor(self, item.value, 'Arguments', ArgumentsValidator())]
 
 class ReturnValueDialog(_SettingDialog):
     pass
