@@ -86,7 +86,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 0.51</h2>
+<h2>Release notes for 0.52</h2>
 <table border="1">
 <tr>
 <td><p><b>ID</b></p></td>
@@ -95,40 +95,40 @@ RELEASE_NOTES = """
 <td><p><b>Summary</b></p></td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=92">Issue 92</a></td>
-<td>Enhancement</td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1010">Issue 1010</a></td>
+<td>Defect</td>
 <td>High</td>
-<td>Cannot open non-empty directory/file unless it contains at least one test case</td>
+<td>RIDE 0.46.1 load time very slow, and timer stops</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1082">Issue 1082</a></td>
-<td>Enhancement</td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1085">Issue 1085</a></td>
+<td>Defect</td>
 <td>High</td>
-<td>Library loading time improvements</td>
+<td>RIDE does not always execute the correct test case</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1069">Issue 1069</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1088">Issue 1088</a></td>
+<td>Defect</td>
+<td>High</td>
+<td>'module' object has no attribute 'STARTF_USESHOWWINDOW'</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1095">Issue 1095</a></td>
+<td>Defect</td>
+<td>High</td>
+<td>Searching results in sqllite3.ProgrammingError</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1063">Issue 1063</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>Remove 'Reload Directory'</td>
+<td>RIDE doesn't show zero sized resource files</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1072">Issue 1072</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1086">Issue 1086</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>Library code can kill RIDE without a trace</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1081">Issue 1081</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>Using 'Rename Keyword' on variable name in Step cell hangs RIDE</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1066">Issue 1066</a></td>
-<td>Defect</td>
-<td>Low</td>
-<td>TestCaseFileEditor has no delete_rows</td>
+<td>Renaming keyword with $-sign fails</td>
 </tr>
 </table>
 <p>Altogether 6 issues.</p>
