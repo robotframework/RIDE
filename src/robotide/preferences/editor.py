@@ -55,7 +55,7 @@ class PreferenceEditor(wx.Dialog):
             # create a single container which will hold all of the
             # preference panels
             self._container = PanelContainer(self._sw, wx.ID_ANY)
-            self._sw.SplitVertically(self._tree, self._container, 150)
+            self._sw.SplitVertically(self._tree, self._container, 210)
             sizer = wx.BoxSizer(wx.VERTICAL)
             sizer.Add(self._sw, 1, wx.EXPAND)
             self._tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnTreeSelection)
