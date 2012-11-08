@@ -297,14 +297,17 @@ class Excludes():
             return False
         path = self._normalize(path)
         excludes = [self._normalize(e) for e in excludes]
+        print 'path', repr(path)
+        print 'excludes', repr(excludes)
         return any(path.startswith(e) for e in excludes)
 
-
-
     def _normalize(self, path):
-        if not path.endswith(os.path.sep):
-            path = path + os.path.sep
-        if IS_WINDOWS:
-            return os.path.normcase(os.path.normpath(os.path.abspath(path)))
-        return path
+        path = self._norming(path)
+        return path + os.path.sep if not path.endswith(os.path.sep) else path
 
+    if IS_WINDOWS:
+        def _norming(self, path):
+            return os.path.normcase(os.path.normpath(os.path.abspath(path)))
+    else:
+        def _norming(self, path):
+            return path
