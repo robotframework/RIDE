@@ -20,6 +20,7 @@ import sys
 import sqlite3
 from sqlite3 import OperationalError
 import copy
+from time import strftime
 
 
 ROOT = os.path.dirname(__file__)
@@ -38,7 +39,7 @@ end_time = None
 db_connection = None
 db_cursor = None
 
-verbs = ['do','make','execute','select','count','process','insert','validate','verify']
+verbs = ['do','make','execute','select','count','process','insert','validate','verify','filter','magnify']
 words = None
 
 def _create_test_libraries(path, filecount = 10, keywords=10):
@@ -52,13 +53,16 @@ def _create_test_libraries(path, filecount = 10, keywords=10):
         libs.append(lib_name)
         db_cursor.execute("INSERT INTO source (path,type) VALUES ('%s','CUSTOMLIBRARY')" % lib_name)
         libfile = open("%s/%s.py" % (path,lib_name),"w")
+        lib_doc = '"""Library documentation:\n' \
+                  '\t%s"""' % lib_name
         libfile.write(\
 """
 import os,time
 
 class %s:
     def __init__(self):
-""" % lib_name)
+        %s
+""" % (lib_name, lib_doc))
 
         directory_looper = """\tfor dirname, dirnames, filenames in os.walk('.'):
             for subdirname in dirnames:
@@ -79,11 +83,14 @@ class %s:
                 counter += 1
             kw_name = verb + "_" + lib_main
             db_cursor.execute("INSERT INTO keywords (name,source) VALUES ('%s','%s')" % (kw_name,lib_name))
+            kw_doc = '"""Keyword documentation:\n' \
+                     '\t%s"""' % kw_name
             libfile.write(\
 """
-    def %s():
+    def %s(self):
+        %s
         pass
-""" % kw_name)
+""" % (kw_name,kw_doc))
 
         libfile.write(\
 """
@@ -109,7 +116,7 @@ myinstance = %s()
     fo.close()
 
 
-def _create_test_suite(path, filecount = 1, testcount = 20):
+def _create_test_suite(path, filecount = 1, testcount = 20, avg_test_depth = 5):
     global db_cursor, verbs, words
 
     available_resources = db_cursor.execute(
@@ -141,13 +148,47 @@ def _create_test_suite(path, filecount = 1, testcount = 20):
                         testlib = key
                         break
             tc_name = "Test %s in %s #%d" % (random.choice(verbs), selected_library.split("CustomLib")[1], tc)
-            available_keywords = db_cursor.execute("SELECT * FROM keywords WHERE source = '%s' ORDER BY RANDOM()"
+            available_keywords = db_cursor.execute("SELECT * FROM keywords WHERE source IN ('%s','BuiltIn','OperatingSystem','String') ORDER BY RANDOM()"
                                                     % selected_library).fetchall()
             kwlib = random.choice([selected_library, testlib, testlib + "xyz"])
-            kw1 = available_keywords.pop()
-            kw2 = available_keywords.pop()
-            test_txt += "%s\t[Documentation]\t%s\n\t\t%s\n\t\t%s\n\n" % (tc_name, "Test %d" % tc, kwlib +
-                    "." +kw1[1].replace("_"," "), kwlib + "." +kw2[1].replace("_"," "))
+
+            test_txt += "%s\t[Documentation]\t%s\n" % (tc_name, "Test %d - %s" % (tc,strftime("%d.%m.%Y %H:%M:%S"))) # kwlib +
+                    # "." +kw1[1].replace("_"," "), kwlib + "." +kw2[1].replace("_"," "))
+
+            for i in range(avg_test_depth+random.choice([-1,0,1])):
+                kw1 = available_keywords.pop()
+                kw_library = kw1[2]
+                for key,val in libraries_in_use.iteritems():
+                    if val == kw_library:
+                        kw_library = key
+                kw_action = kw1[1].replace("_"," ")
+                if kw_library in ('BuiltIn','OperatingSystem','String'):
+                    kw_total = kw_action
+                else:
+                    kw_total = "%s.%s" % (kw_library,kw_action)
+                kw_args = kw1[3]
+                kw_return = kw1[4]
+
+                #print kw1[2] + "." + kw1[1]
+                argument = None
+                return_statement = None
+                if kw1[3] == 1:
+                    argument = random.choice(words).strip().lower()
+                if kw1[4] == 1:
+                    return_statement = "${ret}="
+                test_txt += "\t\t"
+                if return_statement:
+                    test_txt += return_statement
+                test_txt += "\t%s" % kw_total
+                if argument:
+                    if kw_action == "Count Files In Directory":
+                        test_txt += "\t" + os.path.join(os.path.abspath(os.curdir), path)
+                    else:
+                        test_txt += "\t" + argument
+                test_txt += "\n"
+                if return_statement:
+                    test_txt += "\t\tLog\t${ret}\n"
+            test_txt += "\n"
 
         settings_txt += "*** Settings ***\n"
         for testlib_key,testlib_value in libraries_in_use.iteritems():
@@ -156,6 +197,8 @@ def _create_test_suite(path, filecount = 1, testcount = 20):
             else:
                 settings_txt += "Library    %45s.py\n" % (testlib_value)
             #settings_txt += "Library    %45s\n" % (os.getcwd()+"/"+path+"/" +tc_name)
+        settings_txt += "Library\tOperatingSystem\n"
+        settings_txt += "Library\tString\n"
 
         for x in range(random.randint(0,2)):
             try:
@@ -195,30 +238,37 @@ def _create_test_resources(path, resources_in_file, resource_count, subdir = "")
         db_cursor.execute("INSERT INTO source (path,type) VALUES ('%s','RESOURCE')" % rf_resource_name)
 
 
-def _create_test_project(path,testlibs_count=5,keyword_count=10,testsuite_count=5,tests_in_suite=10,resource_count=10,resources_in_file=20):
-    shutil.rmtree(path, ignore_errors=True)
-    thetestdir = os.path.join(path, 'testdir')
-    shutil.copytree(os.path.join(ROOT, 'testdir'), thetestdir)
-
+def _create_test_project(thetestdir,testlibs_count=5,keyword_count=10,testsuite_count=5,tests_in_suite=10,
+                         resource_count=10,resources_in_file=20,avg_test_depth=5):
     print """Generating test project with following settings
     %d test libraries (option 'l')
     %d keywords per test library (option 'k')
     %d test suites (option 's')
     %d tests per test suite (option 't')
+    %d test steps per test case (option 'e')
     %d resource files (option 'f')
     %d resources per resource file (option 'r')""" % (testlibs_count, keyword_count, testsuite_count,
-                                        tests_in_suite, resource_count, resources_in_file)
+                                        tests_in_suite, avg_test_depth, resource_count, resources_in_file)
 
     _create_test_libraries(thetestdir, filecount=testlibs_count, keywords=keyword_count)
     _create_test_resources(thetestdir,subdir="resources", resources_in_file=resource_count,resource_count=resources_in_file)
-    _create_test_suite(thetestdir, filecount=testsuite_count, testcount=tests_in_suite)
+    _create_test_suite(thetestdir, filecount=testsuite_count, testcount=tests_in_suite, avg_test_depth=avg_test_depth)
 
-def main(path,testlibs_count=25,keyword_count=10,testsuite_count=30,tests_in_suite=40,resource_count=10,resources_in_file=100):
+def main(path,testlibs_count=25,keyword_count=10,testsuite_count=30,tests_in_suite=40,resource_count=10,
+         resources_in_file=100,avg_test_depth=3):
     global db_connection, db_cursor, words
 
+    if avg_test_depth < 2:
+        avg_test_depth = 2
+    elif avg_test_depth > 20:
+        avg_test_depth = 20
+    project_root_dir = os.path.join("./tmp/", path)
+    shutil.rmtree(project_root_dir, ignore_errors=True)
+    project_test_dir = os.path.join(project_root_dir, 'testdir')
+    shutil.copytree(os.path.join(ROOT, 'testdir'), project_test_dir)
     words = open("testwords.txt").readlines()
 
-    db_connection=sqlite3.connect("testdata.db")
+    db_connection=sqlite3.connect(os.path.join(project_root_dir, "testdata.db"))
     db_cursor=db_connection.cursor()
     try:
         db_cursor.execute('CREATE TABLE IF NOT EXISTS source (id INTEGER PRIMARY KEY, path TEXT, type TEXT)')
@@ -228,14 +278,15 @@ def main(path,testlibs_count=25,keyword_count=10,testsuite_count=30,tests_in_sui
         libs_to_insert = [("BuiltIn","LIBRARY"),("OperatingSystem","LIBRARY"),("String","LIBRARY")]
         db_cursor.executemany('INSERT INTO source (path,type) VALUES (?,?)', libs_to_insert)
         keywords_to_insert = [("Log","BuiltIn",1,0),("No Operation","BuiltIn",0,0),("Get Time","BuiltIn",0,1),
-                              ("Count Files In Directory","Operating System",0,1),("Get Environment Variables","BuiltIn",0,1),
+                              ("Count Files In Directory","OperatingSystem",1,1),("Get Environment Variables","OperatingSystem",0,1),
                               ("Get Time","BuiltIn",0,1)]
         db_cursor.executemany('INSERT INTO keywords (name,source,arguments,returns) VALUES (?,?,?,?)', keywords_to_insert)
         db_connection.commit()
     except OperationalError, err:
         print "DB error: ",err
 
-    _create_test_project(path,testlibs_count,keyword_count,testsuite_count,tests_in_suite,resource_count,resources_in_file)
+    _create_test_project(project_test_dir,testlibs_count,keyword_count,testsuite_count,tests_in_suite,resource_count,
+        resources_in_file,avg_test_depth)
     result = "PASS"
     return result != 'FAIL'
 
