@@ -94,7 +94,8 @@ options(
         tests=10,
         resourcefiles=1,
         resources=30,
-        testdepth=3
+        testdepth=3,
+        validity=1
     )
 )
 @task
@@ -106,7 +107,8 @@ options(
     ('tests=', 't', 'Number of tests in a suite'),
     ('testdepth=', 'e', 'Average number of steps in a test case (2..20)'),
     ('resourcefiles=', 'f', 'Number of resource files'),
-    ('resources=', 'r', 'Number of resources in a file')
+    ('resources=', 'r', 'Number of resources in a file'),
+    ('validity=', 'v', 'Validity of test cases (1...0). To have ~80% passes give 0.8. Default 1.')
 ])
 def generate_big_project(options):
     """Use rtest go_find_bugs.py to randomly test RIDE api"""
@@ -121,7 +123,7 @@ def generate_big_project(options):
         assert main(options.dir, testlibs_count=int(options.libs), keyword_count=int(options.keywords),
                     testsuite_count=int(options.suites), tests_in_suite=int(options.tests),
                     resource_count=int(options.resourcefiles), resources_in_file=int(options.resources),
-                    avg_test_depth=int(options.testdepth))
+                    avg_test_depth=int(options.testdepth), test_validity=float(options.validity))
     finally:
         #if len(args) >= 1 and ("del" in args):
         #    shutil.rmtree(dir, ignore_errors=True)

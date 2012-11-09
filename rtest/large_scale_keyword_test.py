@@ -64,14 +64,14 @@ class %s:
         %s
 """ % (lib_name, lib_doc))
 
-        directory_looper = """\tfor dirname, dirnames, filenames in os.walk('.'):
+        directory_looper = """for dirname, dirnames, filenames in os.walk('.'):
             for subdirname in dirnames:
                 print os.path.join(dirname, subdirname)
             for filename in filenames:
                 print os.path.join(dirname, filename)"""
-        sleeper = "\ttime.sleep(2)"
+        sleeper = "time.sleep(1)"
 
-        libfile.write(random.choice([directory_looper, sleeper]) + "\n")
+        libfile.write("\t" + random.choice([directory_looper, sleeper]) + "\n")
 
         temp_verb = copy.copy(verbs)
         counter = 1
@@ -83,14 +83,13 @@ class %s:
                 counter += 1
             kw_name = verb + "_" + lib_main
             db_cursor.execute("INSERT INTO keywords (name,source) VALUES ('%s','%s')" % (kw_name,lib_name))
-            kw_doc = '"""Keyword documentation:\n' \
-                     '\t%s"""' % kw_name
+            kw_doc = '"""Keyword documentation for %s"""' % kw_name
             libfile.write(\
 """
     def %s(self):
         %s
-        pass
-""" % (kw_name,kw_doc))
+        %s
+""" % (kw_name,kw_doc,random.choice([directory_looper, sleeper, "pass"])))
 
         libfile.write(\
 """
@@ -116,15 +115,16 @@ myinstance = %s()
     fo.close()
 
 
-def _create_test_suite(path, filecount = 1, testcount = 20, avg_test_depth = 5):
+def _create_test_suite(path, filecount = 1, testcount = 20, avg_test_depth = 5, test_validity = 1):
     global db_cursor, verbs, words
+
 
     available_resources = db_cursor.execute(
                             "SELECT path FROM source WHERE type = 'RESOURCE' ORDER BY RANDOM()").fetchall()
     for testfile_index in range(filecount):
         libraries_in_use = {}
         resources_in_use = []
-
+        generated_errors = 0
         settings_txt = ""
         test_txt = ""
         keywords_txt = ""
@@ -133,6 +133,9 @@ def _create_test_suite(path, filecount = 1, testcount = 20, avg_test_depth = 5):
         tcfile = open("%s/T%d_CustomTests.txt" % (path, testfile_index+1),"w")
         test_txt += "*** Test Cases ***\n"
         for tc in range(testcount):
+            generate_error = False
+            if test_validity < 1 and random.random() > (test_validity*1.0):
+                generate_error = True
             selected_library = random.choice(available_libraries)[0]
             testlib = selected_library
             if selected_library not in libraries_in_use.values():
@@ -151,9 +154,7 @@ def _create_test_suite(path, filecount = 1, testcount = 20, avg_test_depth = 5):
             available_keywords = db_cursor.execute("SELECT * FROM keywords WHERE source IN ('%s','BuiltIn','OperatingSystem','String') ORDER BY RANDOM()"
                                                     % selected_library).fetchall()
             kwlib = random.choice([selected_library, testlib, testlib + "xyz"])
-
-            test_txt += "%s\t[Documentation]\t%s\n" % (tc_name, "Test %d - %s" % (tc,strftime("%d.%m.%Y %H:%M:%S"))) # kwlib +
-                    # "." +kw1[1].replace("_"," "), kwlib + "." +kw2[1].replace("_"," "))
+            test_txt += "%s\t[Documentation]\t%s\n" % (tc_name, "Test %d - %s" % (tc,strftime("%d.%m.%Y %H:%M:%S")))
 
             for i in range(avg_test_depth+random.choice([-1,0,1])):
                 kw1 = available_keywords.pop()
@@ -162,19 +163,21 @@ def _create_test_suite(path, filecount = 1, testcount = 20, avg_test_depth = 5):
                     if val == kw_library:
                         kw_library = key
                 kw_action = kw1[1].replace("_"," ")
+                if generate_error:
+                    kw_action += "_X"
+                    generate_error = False
+                    generated_errors += 1
                 if kw_library in ('BuiltIn','OperatingSystem','String'):
                     kw_total = kw_action
                 else:
                     kw_total = "%s.%s" % (kw_library,kw_action)
                 kw_args = kw1[3]
                 kw_return = kw1[4]
-
-                #print kw1[2] + "." + kw1[1]
                 argument = None
                 return_statement = None
-                if kw1[3] == 1:
+                if kw_args == 1:
                     argument = random.choice(words).strip().lower()
-                if kw1[4] == 1:
+                if kw_return == 1:
                     return_statement = "${ret}="
                 test_txt += "\t\t"
                 if return_statement:
@@ -188,6 +191,8 @@ def _create_test_suite(path, filecount = 1, testcount = 20, avg_test_depth = 5):
                 test_txt += "\n"
                 if return_statement:
                     test_txt += "\t\tLog\t${ret}\n"
+            if tc == testcount-1 and generated_errors == 0 and test_validity < 1:
+                test_txt += "\t\tLogX\t${ret}\n"
             test_txt += "\n"
 
         settings_txt += "*** Settings ***\n"
@@ -196,7 +201,6 @@ def _create_test_suite(path, filecount = 1, testcount = 20, avg_test_depth = 5):
                 settings_txt += "Library    %45s.py\tWITH NAME\t%s\n" % (testlib_value, testlib_key)
             else:
                 settings_txt += "Library    %45s.py\n" % (testlib_value)
-            #settings_txt += "Library    %45s\n" % (os.getcwd()+"/"+path+"/" +tc_name)
         settings_txt += "Library\tOperatingSystem\n"
         settings_txt += "Library\tString\n"
 
@@ -239,7 +243,7 @@ def _create_test_resources(path, resources_in_file, resource_count, subdir = "")
 
 
 def _create_test_project(thetestdir,testlibs_count=5,keyword_count=10,testsuite_count=5,tests_in_suite=10,
-                         resource_count=10,resources_in_file=20,avg_test_depth=5):
+                         resource_count=10,resources_in_file=20,avg_test_depth=5,test_validity=1):
     print """Generating test project with following settings
     %d test libraries (option 'l')
     %d keywords per test library (option 'k')
@@ -252,16 +256,20 @@ def _create_test_project(thetestdir,testlibs_count=5,keyword_count=10,testsuite_
 
     _create_test_libraries(thetestdir, filecount=testlibs_count, keywords=keyword_count)
     _create_test_resources(thetestdir,subdir="resources", resources_in_file=resource_count,resource_count=resources_in_file)
-    _create_test_suite(thetestdir, filecount=testsuite_count, testcount=tests_in_suite, avg_test_depth=avg_test_depth)
+    _create_test_suite(thetestdir, filecount=testsuite_count, testcount=tests_in_suite, avg_test_depth=avg_test_depth,test_validity=test_validity)
 
 def main(path,testlibs_count=25,keyword_count=10,testsuite_count=30,tests_in_suite=40,resource_count=10,
-         resources_in_file=100,avg_test_depth=3):
+         resources_in_file=100,avg_test_depth=3,test_validity=1):
     global db_connection, db_cursor, words
 
     if avg_test_depth < 2:
         avg_test_depth = 2
     elif avg_test_depth > 20:
         avg_test_depth = 20
+    if test_validity > 1:
+        test_validity = 1
+    elif test_validity < 0:
+        test_validity = 0
     project_root_dir = os.path.join("./tmp/", path)
     shutil.rmtree(project_root_dir, ignore_errors=True)
     project_test_dir = os.path.join(project_root_dir, 'testdir')
@@ -286,7 +294,7 @@ def main(path,testlibs_count=25,keyword_count=10,testsuite_count=30,tests_in_sui
         print "DB error: ",err
 
     _create_test_project(project_test_dir,testlibs_count,keyword_count,testsuite_count,tests_in_suite,resource_count,
-        resources_in_file,avg_test_depth)
+        resources_in_file,avg_test_depth,test_validity)
     result = "PASS"
     return result != 'FAIL'
 
