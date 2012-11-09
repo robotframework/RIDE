@@ -67,6 +67,8 @@ class _ActionHandler(wx.Window):
     _label_delete_no_kbsc = 'Delete'
     _label_exclude = 'Exclude'
     _label_include = 'Include'
+    _label_expand_all = 'Expand all'
+    _label_collapse_all = 'Collapse all'
 
     def __init__(self, controller, tree, node, settings):
         wx.Window.__init__(self, tree)
@@ -261,7 +263,6 @@ class TestDataDirectoryHandler(TestDataHandler):
 
     def __init__(self, *args):
         TestDataHandler.__init__(self, *args)
-
         self._actions = [
             _ActionHandler._label_add_suite,
             _ActionHandler._label_new_resource,
@@ -283,7 +284,17 @@ class TestDataDirectoryHandler(TestDataHandler):
 
         ])
         if self.controller.parent:
-            self._actions.extend(['---', _ActionHandler._label_exclude])
+            self._actions.extend(['---',
+                                  _ActionHandler._label_exclude])
+        self._actions.extend(['---',
+                              _ActionHandler._label_expand_all,
+                              _ActionHandler._label_collapse_all])
+
+    def OnExpandall(self, event):
+        self._tree.ExpandAllSubNodes(self._node)
+
+    def OnCollapseall(self, event):
+        self._tree.CollapseAllSubNodes(self._node)
 
     def OnNewSuite(self, event):
         AddSuiteDialog(self.controller, self._settings).execute()

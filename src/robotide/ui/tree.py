@@ -589,6 +589,18 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
     def SelectAllTests(self, item):
         self._for_all_tests(item, lambda t: self.CheckItem(t))
 
+    def ExpandAllSubNodes(self, item):
+        self._expand_or_collapse_nodes(item, self.Expand)
+
+    def CollapseAllSubNodes(self, item):
+        self._expand_or_collapse_nodes(item, self.Collapse)
+
+    def _expand_or_collapse_nodes(self, item, callback):
+        if not self.HasAGWFlag(customtreectrl.TR_HIDE_ROOT) or item != self.GetRootItem():
+            callback(item)
+            for child in item.GetChildren():
+                self._expand_or_collapse_nodes(child, callback)
+
     def _for_all_tests(self, item, func):
         if not self.HasAGWFlag(customtreectrl.TR_HIDE_ROOT) or item != self.GetRootItem():
             self.Expand(item)
