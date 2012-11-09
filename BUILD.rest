@@ -146,11 +146,16 @@ Minor releases
 ==============
 
 If there for some reason is a critical problem with a new release, it is important to get that fixed quickly.
+The user observed quality is somewhat based on time. Less time that a critical problem exists implies 
+less users affected by the critical problem. Also the users that have been affected by the problem will 
+see quick resolution as a quality attribute - we are listening to them and doing things to help them versus 
+we are ignoring there problems.
 
-* Fix the problem and commit
+* First thing first: Fix the problem and commit
 
 If there are other work already commited to master:
-* Checkout the tagged release to a new branch
+
+* Checkout the tagged release to a new branch - mitigate the probability of introducing new defects
 
 ::
 
