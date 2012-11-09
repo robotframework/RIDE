@@ -23,8 +23,6 @@ if IS_WINDOWS:
     SETTINGS_DIRECTORY = os.path.join(os.environ['APPDATA'], 'RobotFramework', 'ride')
 else:
     SETTINGS_DIRECTORY = os.path.join(os.path.expanduser('~/.robotframework'), 'ride')
-if not os.path.exists(SETTINGS_DIRECTORY):
-    os.mkdir(SETTINGS_DIRECTORY)
 
 def initialize_settings(type, path, dest_file_name=None):
     if not os.path.exists(SETTINGS_DIRECTORY):
