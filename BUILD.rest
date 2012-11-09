@@ -142,6 +142,38 @@ This should efficiently limit the number of users that encounter a specific defe
 
 * Announce on usergroup, robot homepage, and twitter
 
+Minor releases
+==============
+
+If there for some reason is a critical problem with a new release, it is important to get that fixed quickly.
+
+* Fix the problem and commit
+
+If there are other work already commited to master:
+* Checkout the tagged release to a new branch
+
+::
+
+  > git checkout 0.xx -b 0.xx.x
+
+* Cherrypick the fix to that branch
+
+::
+
+  > git cherry-pick FIX_COMMIT
+
+* Make a new tagged minor release from that branch
+
+::
+
+  > git push origin 0.xx.x
+  > paver test
+  > paver set_version 0.xx.y
+  > paver sdist
+  > git commit -am 'Version 0.xx.y'
+  > git tag 0.xx.y
+  > git push
+  > git push --tags
 
 Settings migration
 ==================
