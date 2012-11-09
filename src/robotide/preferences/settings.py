@@ -280,7 +280,7 @@ class Excludes():
     def _get_exclude_file(self, read_write):
         if not os.path.exists(self._exclude_file_path) and read_write.startswith('r'):
             if not os.path.isdir(self._settings_directory):
-                os.makedirs(self._exclude_file_path)
+                os.makedirs(self._settings_directory)
             return open(self._exclude_file_path, 'w+')
         if os.path.isdir(self._exclude_file_path):
             raise NameError('"%s" is a directory, not file' % self._exclude_file_path)
