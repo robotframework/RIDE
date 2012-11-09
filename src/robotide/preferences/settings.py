@@ -253,8 +253,8 @@ class RideSettings(Settings):
 class Excludes():
 
     def __init__(self, directory=None):
-        settings_directory = directory or SETTINGS_DIRECTORY
-        self._exclude_file_path = os.path.join(settings_directory, 'excludes')
+        self._settings_directory = directory or SETTINGS_DIRECTORY
+        self._exclude_file_path = os.path.join(self._settings_directory, 'excludes')
 
     def _get_excludes(self):
         with self._get_exclude_file('r') as exclude_file:
@@ -279,6 +279,8 @@ class Excludes():
         
     def _get_exclude_file(self, read_write):
         if not os.path.exists(self._exclude_file_path) and read_write.startswith('r'):
+            if not os.path.isdir(self._settings_directory):
+                os.makedirs(self._exclude_file_path)
             return open(self._exclude_file_path, 'w+')
         if os.path.isdir(self._exclude_file_path):
             raise NameError('"%s" is a directory, not file' % self._exclude_file_path)
