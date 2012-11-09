@@ -30,8 +30,7 @@ CREATE TABLE keywords (name TEXT,
                        FOREIGN KEY(library) REFERENCES libraries(id));
 """
 
-DB_DIR = os.path.join(SETTINGS_DIRECTORY, 'ride')
-DATABASE_FILE = os.path.join(DB_DIR, 'librarykeywords.db')
+DATABASE_FILE = os.path.join(SETTINGS_DIRECTORY, 'librarykeywords.db')
 
 def _create_database():
     print 'Creating librarykeywords database to "%s"' % DATABASE_FILE
@@ -47,8 +46,8 @@ def _validate_database():
     connection.close()
 
 def initialize_database():
-    if not os.path.exists(DB_DIR):
-        os.makedirs(DB_DIR)
+    if not os.path.exists(SETTINGS_DIRECTORY):
+        os.makedirs(SETTINGS_DIRECTORY)
     if not os.path.exists(DATABASE_FILE):
         _create_database()
     else:
