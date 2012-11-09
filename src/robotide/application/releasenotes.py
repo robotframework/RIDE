@@ -86,7 +86,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 0.52</h2>
+<h2>Release notes for 0.52.1</h2>
 <table border="1">
 <tr>
 <td><p><b>ID</b></p></td>
@@ -95,41 +95,17 @@ RELEASE_NOTES = """
 <td><p><b>Summary</b></p></td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1010">Issue 1010</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1100">Issue 1100</a></td>
 <td>Defect</td>
 <td>High</td>
-<td>RIDE 0.46.1 load time very slow, and timer stops</td>
+<td>Exclude will show debug prints in console</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1085">Issue 1085</a></td>
-<td>Defect</td>
-<td>High</td>
-<td>RIDE does not always execute the correct test case</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1088">Issue 1088</a></td>
-<td>Defect</td>
-<td>High</td>
-<td>'module' object has no attribute 'STARTF_USESHOWWINDOW'</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1095">Issue 1095</a></td>
-<td>Defect</td>
-<td>High</td>
-<td>Searching results in sqllite3.ProgrammingError</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1063">Issue 1063</a></td>
-<td>Defect</td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=580">Issue 580</a></td>
+<td>Enhancement</td>
 <td>Medium</td>
-<td>RIDE doesn't show zero sized resource files</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1086">Issue 1086</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>Renaming keyword with $-sign fails</td>
+<td>User keyword Arguments should be presented in a more userfriendly manner</td>
 </tr>
 </table>
-<p>Altogether 6 issues.</p>
+<p>Altogether 2 issues.</p>
 """
