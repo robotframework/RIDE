@@ -151,7 +151,7 @@ less users affected by the critical problem. Also the users that have been affec
 see quick resolution as a quality attribute - we are listening to them and doing things to help them versus 
 we are ignoring there problems.
 
-* First thing first: Fix the problem and commit
+* First things first: Fix the problem and commit
 
 If there are other work already commited to master:
 
