@@ -109,6 +109,7 @@ This should efficiently limit the number of users that encounter a specific defe
 * Consider making a prerelease - this will give you possibility to test the new release with friendly real users 
 
 Remember the "good old" times - these are not the only once: 
+
   * https://groups.google.com/d/topic/robotframework-users/C4SdqaqLFcw/discussion
   * https://groups.google.com/d/topic/robotframework-users/_7D3MR9fMQw/discussion
   * https://groups.google.com/d/topic/robotframework-users/Al7PpTfpUgw/discussion
