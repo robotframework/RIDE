@@ -106,13 +106,17 @@ Thus simulating (testing) all the possible use cases is more or less impossible 
 We can still keep the user observed quality good by doing small changes at a time and reacting fast to any observed regressions.
 This should efficiently limit the number of users that encounter a specific defect.
 
-* Consider making a prerelease - this will give you possibility to test the new release with friendly real users 
+* Consider making a preview release - this will give you possibility to test the new release with friendly real users 
 
 Remember the "good old" times - these are not the only once: 
 
   * https://groups.google.com/d/topic/robotframework-users/C4SdqaqLFcw/discussion
   * https://groups.google.com/d/topic/robotframework-users/_7D3MR9fMQw/discussion
   * https://groups.google.com/d/topic/robotframework-users/Al7PpTfpUgw/discussion
+
+And then a positive example:
+
+  * https://groups.google.com/d/topic/robotframework-users/02kWX2nnfds/discussion
 
 * Usually I try to do releases before lunch - this gives us some time to react to possible regressions during the release day
 * Avoid releasing on Fridays! - lousy reaction time (or weekend work) if there is a regression
