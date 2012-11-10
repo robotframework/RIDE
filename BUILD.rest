@@ -97,8 +97,11 @@ where direct attribute access is sufficient
 
 Releasing
 =========
-TODO: These are incomplete
 
+* All positiva (and negative) value from development to the end users comes only after you have released what you
+have made.
+* Every day you keep postponing release will remove some value you could have added by releasing today (fixed bugs
+are still in production and new features are still not there).
 * Release early and often!
 
 Currently (10.8.2012) RIDE is used in many differing environments by a rather large userbase (reported bugs per feature is 1.56 - compared to RF:s 0.75). 
