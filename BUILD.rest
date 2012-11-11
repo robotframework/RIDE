@@ -98,7 +98,7 @@ where direct attribute access is sufficient
 Releasing
 =========
 
-* All positiva (and negative) value from development to the end users comes only after you have released what you have made.
+* All positive (and negative) value from development to the end users comes only after you have released what you have made.
 * Every day you keep postponing release will remove some value you could have added by releasing today (fixed bugs are still in production and new features are still not there).
 * Release early and often!
 
