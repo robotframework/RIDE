@@ -107,7 +107,7 @@ Thus simulating (testing) all the possible use cases is more or less impossible 
 We can still keep the user observed quality good by doing small changes at a time and reacting fast to any observed regressions.
 This should efficiently limit the number of users that encounter a specific defect.
 
-* *Consider making a preview release* - this will give you possibility to test the new release with friendly real users 
+* **Consider making a preview release** - this will give you possibility to test the new release with friendly real users 
 
 Remember the "good old" times - these are not the only ones: 
 
