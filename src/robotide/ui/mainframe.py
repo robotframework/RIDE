@@ -152,7 +152,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         return self._controller.is_dirty()
 
     def OnNewProject(self, event):
-        if not self._check_unsaved_modifications():
+        if not self.check_unsaved_modifications():
             return
         NewProjectDialog(self._controller).execute()
         self._populate_tree()
@@ -161,13 +161,13 @@ class RideFrame(wx.Frame, RideEventHandler):
         self.tree.populate(self._controller)
 
     def OnOpenTestSuite(self, event):
-        if not self._check_unsaved_modifications():
+        if not self.check_unsaved_modifications():
             return
         path = self._get_path()
         if path:
             self.open_suite(path)
 
-    def _check_unsaved_modifications(self):
+    def check_unsaved_modifications(self):
         if self.has_unsaved_changes():
             ret = wx.MessageBox('There are unsaved modifications.\n'
                                 'Do you want to proceed without saving?',
@@ -198,7 +198,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         self.tree.refresh_datafile(item, event)
 
     def OnOpenDirectory(self, event):
-        if self._check_unsaved_modifications():
+        if self.check_unsaved_modifications():
             path = wx.DirSelector(message='Choose a directory containing Robot files',
                                   defaultPath=self._controller.default_dir)
             if path:

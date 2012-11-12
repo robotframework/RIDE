@@ -131,6 +131,8 @@ class RecentFileEntry(object):
         self.doc = 'Open %s' % self.path
 
     def OnOpenRecent(self, event):
+        if not self.plugin.frame.check_unsaved_modifications():
+            return
         self.plugin.open_suite(self.path)
 
     def get_action_info(self):
