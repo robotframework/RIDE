@@ -38,7 +38,7 @@ from .editordialogs import (UserKeywordNameDialog, ScalarVariableDialog,
 from .contentassist import ExpandingContentAssistTextCtrl
 from .gridcolorizer import Colorizer, ColorizationSettings
 
-_DEFAULT_FONT_SIZE=14
+_DEFAULT_FONT_SIZE=11
 
 def requires_focus(function):
     def _row_header_selected_on_linux(self):
@@ -82,7 +82,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._tree = tree
             self._has_been_clicked = False
             font_size = self._plugin.global_settings.get('font size', _DEFAULT_FONT_SIZE)
-            self.SetDefaultCellFont(wx.Font(font_size, wx.FONTFAMILY_DEFAULT, wx.FONTWEIGHT_NORMAL, wx.FONTENCODING_DEFAULT))
+            self.SetDefaultCellFont(wx.Font(font_size, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         except Exception, e:
             print 'Exception in initializing KeywordEditor: %s' % e
             raise
