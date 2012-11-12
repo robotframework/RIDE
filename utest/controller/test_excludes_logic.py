@@ -2,7 +2,8 @@ import tempfile
 import unittest
 import os
 import datafilereader
-from robotide.controller.filecontrollers import TestDataDirectoryController, ExcludedDirectoryController
+from robotide.controller.filecontrollers import TestDataDirectoryController, ExcludedDirectoryController, \
+    DirtyRobotDataException
 
 
 class TestExcludesLogic(unittest.TestCase):
@@ -28,6 +29,11 @@ class TestExcludesLogic(unittest.TestCase):
         resource_dir = self._get_resource_dir()
         self.assertEqual(resource_dir.__class__, TestDataDirectoryController)
 
+    def test_excluding_throws_exception_if_dirty_data(self):
+        resource_dir = self._get_resource_dir()
+        resu = resource_dir.children[0]
+        resu.mark_dirty()
+        self.assertRaises(DirtyRobotDataException, resource_dir.exclude)
 
 if __name__ == '__main__':
     unittest.main()

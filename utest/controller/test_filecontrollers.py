@@ -239,6 +239,7 @@ class TestDataDirectoryControllerTest(unittest.TestCase):
         chief = lambda:0
         chief._namespace = lambda:0
         chief.resource_file_controller_factory = lambda:0
+        chief.is_datafile_dirty = lambda *_:False
         chief._settings = lambda:0
         chief._settings.excludes = lambda:0
         self.called = False

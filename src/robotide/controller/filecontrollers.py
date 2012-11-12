@@ -559,11 +559,20 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         return ctrl
 
     def exclude(self):
+        if self._chief_controller.is_datafile_dirty(self):
+            raise DirtyRobotDataException()
         self._chief_controller._settings.excludes.update_excludes([self.directory])
         index = self.parent.children.index(self)
         result = ExcludedDirectoryController(self.data, self._chief_controller, self.parent)
         self.parent.children[index] = result
         return result
+
+
+class DirtyRobotDataException(Exception):
+    """
+    Raised when data is dirty and you are trying to do an operation that requires undirty data.
+    """
+    pass
 
 
 class TestCaseFileController(_FileSystemElement, _DataController):

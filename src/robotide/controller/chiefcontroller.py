@@ -218,18 +218,18 @@ class ChiefController(_BaseController, WithNamespace):
         return self.suite.get_dir_path()
 
     def is_dirty(self):
-        if self.data and self._is_datafile_dirty(self.data):
+        if self.data and self.is_datafile_dirty(self.data):
             return True
         for res in self.resources:
             if res.dirty:
                 return True
         return False
 
-    def _is_datafile_dirty(self, datafile):
+    def is_datafile_dirty(self, datafile):
         if datafile.dirty:
             return True
         for df in datafile.children:
-            if self._is_datafile_dirty(df):
+            if self.is_datafile_dirty(df):
                 return True
         return False
 
