@@ -559,7 +559,7 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         return ctrl
 
     def exclude(self):
-        self._chief_controller._settings.excludes.update_excludes([self.source])
+        self._chief_controller._settings.excludes.update_excludes([self.directory])
         index = self.parent.children.index(self)
         result = ExcludedDirectoryController(self.data, self._chief_controller, self.parent)
         self.parent.children[index] = result
