@@ -28,6 +28,8 @@ release. The most stable, and best documented, module is `robotide.pluginapi`.
 import sys
 import os
 from string import Template
+import threading
+import traceback
 
 errorMessageTemplate = Template("""$reason
 You need to install wxPython $versions toolkit with unicode support to run RIDE.
@@ -80,11 +82,22 @@ def _parse_args(args):
     inpath = args[-1] if not noupdatecheck or len(args) > 1 else None
     return noupdatecheck, inpath
 
+def print_stacks():
+    id2name = dict((th.ident, th.name) for th in threading.enumerate())
+    for threadId, stack in sys._current_frames().items():
+        print(id2name[threadId])
+        traceback.print_stack(f=stack)
+
 def _run(inpath=None, updatecheck=True):
     from robotide.application import RIDE
     if inpath:
         inpath = unicode(inpath, sys.getfilesystemencoding())
     ride = RIDE(inpath, updatecheck)
+    import code
+    i = code.InteractiveConsole(locals={'RIDE':ride, 'print_stacks':print_stacks})
+    t = threading.Thread(target=lambda: i.interact('RIDE - access to the running application\n'
+                                                   'print_stacks() - print current stack traces'))
+    t.start()
     ride.MainLoop()
 
 
