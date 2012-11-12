@@ -21,7 +21,7 @@ from robotide.controller.settingcontrollers import VariableController
 from robotide.controller.macrocontrollers import (TestCaseController,
                                                   UserKeywordController)
 from robotide.controller.filecontrollers import (TestDataDirectoryController,
-    ResourceFileController, TestCaseFileController, ExcludedDirectoryController)
+    ResourceFileController, TestCaseFileController, ExcludedDirectoryController, DirtyRobotDataException)
 from robotide.editor.editordialogs import (TestCaseNameDialog,
     UserKeywordNameDialog, ScalarVariableDialog, ListVariableDialog,
     CopyUserKeywordDialog)
@@ -306,7 +306,11 @@ class TestDataDirectoryHandler(TestDataHandler):
         FolderDeleteDialog(self.controller).execute()
 
     def OnExclude(self, event):
-        self.controller.execute(Exclude())
+        try:
+            self.controller.execute(Exclude())
+        except DirtyRobotDataException:
+            wx.MessageBox('Directory contains unsaved data!\n'
+                          'You must save data before excluding.')
 
 
 class ResourceFileHandler(_CanBeRenamed, TestDataHandler):
