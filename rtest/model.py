@@ -16,11 +16,14 @@ from robotide.controller.commands import AddTestCaseFile, AddTestCase, AddKeywor
 from robotide.namespace import Namespace
 from robotide.controller.chiefcontroller import ChiefController
 from robotide.preferences import RideSettings
+from robotide.spec import librarydatabase
 
 
 class RIDE(object):
 
     def __init__(self, random, path):
+        print 'librarydatabase.initialize_database()'
+        print librarydatabase.initialize_database()
         print 'settings = RideSettings()'
         print 'chief = ChiefController(Namespace(settings=settings), settings=settings)'
         settings = RideSettings()
