@@ -161,7 +161,8 @@ class RideFrame(wx.Frame, RideEventHandler):
         self.tree.populate(self._controller)
 
     def OnOpenTestSuite(self, event):
-        self._check_unsaved_modifications()
+        if not self._check_unsaved_modifications():
+            return
         path = self._get_path()
         if path:
             self.open_suite(path)
