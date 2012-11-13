@@ -122,6 +122,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                     return
             if next_datafile_controller:
                 self._open_data_for_controller(next_datafile_controller)
+                self._set_position(next_datafile_controller)
 
     def _open_tree_selection_in_editor(self):
         datafile_controller = self.tree.get_selected_datafile_controller()
@@ -136,8 +137,17 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     def OnTabChange(self, message):
         if message.newtab == self.title:
             self._open()
+            self._set_position(self.tree.get_selected_datafile_controller())
         elif message.oldtab == self.title:
+            self.tree.get_selected_datafile_controller().position = self._editor._editor.GetCurrentPos()
             self._editor.remove_and_store_state()
+
+    def _set_position(self, datafile_controller):
+        position = datafile_controller.position
+        if position:
+            self._editor._editor.SetFocus()
+            self._editor._editor.SetCurrentPos(position)
+            self._editor._editor.SetSelection(position, position)
 
     def _apply_txt_changes_to_model(self):
         if not self._editor.save():
@@ -372,6 +382,7 @@ class SourceEditor(wx.Panel):
 
     def remove_and_store_state(self):
         self._stored_text = self._editor.GetText()
+        self._editor.datafile_controller.position = self._editor._editor.GetCurrentPos()
         self._editor.Destroy()
         self._editor = None
 
