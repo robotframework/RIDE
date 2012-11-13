@@ -123,7 +123,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                     return
             if next_datafile_controller:
                 self._open_data_for_controller(next_datafile_controller)
-                self._editor.set_editor_caret_position(next_datafile_controller)
+                self._editor.set_editor_caret_position()
 
     def _open_tree_selection_in_editor(self):
         datafile_controller = self.tree.get_selected_datafile_controller()
@@ -138,9 +138,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     def OnTabChange(self, message):
         if message.newtab == self.title:
             self._open()
-            self._editor.set_editor_caret_position(self.tree.get_selected_datafile_controller())
+            self._editor.set_editor_caret_position()
         elif message.oldtab == self.title:
-            self._editor.store_position(self.tree.get_selected_datafile_controller())
             self._editor.remove_and_store_state()
 
 
@@ -289,18 +288,15 @@ class SourceEditor(wx.Panel):
         self._search_field_notification = Label(self, label='')
         editor_toolbar_sizer.add_with_padding(self._search_field_notification)
 
-    def store_position(self, datafile_controller=None):
-        self._positions[datafile_controller or self.datafile_controller] = self._editor.GetCurrentPos()
+    def store_position(self):
+        self._positions[self.datafile_controller] = self._editor.GetCurrentPos()
 
-    def set_editor_caret_position(self, datafile_controller=None):
-        position = self._get_position(datafile_controller)
+    def set_editor_caret_position(self):
+        position = self._positions[self.datafile_controller]
         if position:
             self._editor.SetFocus()
             self._editor.SetCurrentPos(position)
             self._editor.SetSelection(position, position)
-
-    def _get_position(self, datafile_controller=None):
-        return self._positions[datafile_controller or self.datafile_controller]
 
     @property
     def dirty(self):
@@ -390,6 +386,7 @@ class SourceEditor(wx.Panel):
         self._editor.Redo()
 
     def remove_and_store_state(self):
+        self.store_position()
         self._stored_text = self._editor.GetText()
         self._editor.datafile_controller.position = self._editor._editor.GetCurrentPos()
         self._editor.Destroy()
