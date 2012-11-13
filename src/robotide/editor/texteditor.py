@@ -292,7 +292,7 @@ class SourceEditor(wx.Panel):
         self._positions[self.datafile_controller] = self._editor.GetCurrentPos()
 
     def set_editor_caret_position(self):
-        position = self._positions[self.datafile_controller]
+        position = self._positions.get(self.datafile_controller, None)
         if position:
             self._editor.SetFocus()
             self._editor.SetCurrentPos(position)
@@ -304,7 +304,8 @@ class SourceEditor(wx.Panel):
 
     @property
     def datafile_controller(self):
-        return self._data._data
+        return self._data._data if self._data else None
+
 
     def OnFind(self, event):
         self._find()
@@ -388,7 +389,6 @@ class SourceEditor(wx.Panel):
     def remove_and_store_state(self):
         self.store_position()
         self._stored_text = self._editor.GetText()
-        self._editor.datafile_controller.position = self._editor._editor.GetCurrentPos()
         self._editor.Destroy()
         self._editor = None
 
