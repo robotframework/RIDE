@@ -74,6 +74,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._configure_grid()
             PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
             PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
+            self._updating_namespace = False
             self._controller.datafile_controller.register_for_namespace_updates(self._namespace_updated)
             self._tooltips = GridToolTips(self)
             self._marked_cell = None
@@ -88,7 +89,17 @@ class KeywordEditor(GridEditor, RideEventHandler):
             raise
 
     def _namespace_updated(self):
-        wx.CallAfter(self._colorize_grid)
+        if not self._updating_namespace:
+            self._updating_namespace = True
+            # _updating_namespace flag prevents too many calls
+            wx.CallAfter(self._colorize_grid)
+
+    def _update_based_on_namespace_change(self):
+        try:
+            self._updating_namespace = True
+            self._colorize_grid()
+        finally:
+            self._updating_namespace = False
 
     def _configure_grid(self):
         self.SetRowLabelSize(25)
