@@ -14,12 +14,14 @@
 
 """RIDE -- Robot Framework test data editor
 
-Usage: ride.py [--noupdatecheck] [inpath]
+Usage: ride.py [--noupdatecheck] [--debugconsole] [inpath]
 
 RIDE can be started either without any arguments or by giving a path to a test
 data file or directory to be opened.
 
 To disable update checker use --noupdatecheck.
+
+To start debug console for RIDE problem debugging use --debugconsole option.
 
 RIDE's API is still evolving while the project is moving towards the 1.0
 release. The most stable, and best documented, module is `robotide.pluginapi`.
@@ -28,8 +30,8 @@ release. The most stable, and best documented, module is `robotide.pluginapi`.
 import sys
 import os
 from string import Template
-import threading
 import traceback
+import threading
 
 errorMessageTemplate = Template("""$reason
 You need to install wxPython $versions toolkit with unicode support to run RIDE.
@@ -66,40 +68,47 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'spec'))
 
 
 def main(args):
-    noupdatecheck, inpath = _parse_args(args)
-    if len(args) > 2 or '--help' in args:
+    noupdatecheck, debug_console, inpath = _parse_args(args)
+    if len(args) > 3 or '--help' in args:
         print __doc__
         sys.exit()
     try:
-        _run(inpath, not noupdatecheck)
+        _run(inpath, not noupdatecheck, debug_console)
     except DataError, err:
         print str(err) + '\n\nUse --help to get usage information.'
 
 def _parse_args(args):
     if not args:
-        return False, None
-    noupdatecheck = (args[0] == '--noupdatecheck')
-    inpath = args[-1] if not noupdatecheck or len(args) > 1 else None
-    return noupdatecheck, inpath
+        return False, False, None
+    noupdatecheck = '--noupdatecheck' in args
+    debug_console = '--debugconsole' in args
+    inpath = args[-1] if args[-1] not in ['--noupdatecheck', '--debugconsole'] else None
+    return noupdatecheck, debug_console, inpath
 
-def print_stacks():
+def _run(inpath=None, updatecheck=True, debug_console=False):
+    from robotide.application import RIDE
+    if inpath:
+        inpath = unicode(inpath, sys.getfilesystemencoding())
+    ride = RIDE(inpath, updatecheck)
+    if debug_console:
+        _start_debug_console(ride)
+    ride.MainLoop()
+
+def _print_stacks():
     id2name = dict((th.ident, th.name) for th in threading.enumerate())
     for threadId, stack in sys._current_frames().items():
         print(id2name[threadId])
         traceback.print_stack(f=stack)
 
-def _run(inpath=None, updatecheck=True):
-    from robotide.application import RIDE
-    if inpath:
-        inpath = unicode(inpath, sys.getfilesystemencoding())
-    ride = RIDE(inpath, updatecheck)
+def _start_debug_console(ride):
     import code
-    i = code.InteractiveConsole(locals={'RIDE':ride, 'print_stacks':print_stacks})
-    t = threading.Thread(target=lambda: i.interact('RIDE - access to the running application\n'
-                                                   'print_stacks() - print current stack traces'))
-    t.start()
-    ride.MainLoop()
-
+    help_string = """\
+RIDE - access to the running application
+print_stacks() - print current stack traces
+"""
+    console = code.InteractiveConsole(locals={'RIDE':ride, 'print_stacks':_print_stacks})
+    thread = threading.Thread(target=lambda: console.interact(help_string))
+    thread.start()
 
 if __name__ == '__main__':
     main(sys.argv[1:])
