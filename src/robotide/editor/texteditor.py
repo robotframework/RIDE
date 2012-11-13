@@ -113,6 +113,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                not isinstance(message, RideDataChangedToDirty)
 
     def OnTreeSelection(self, message):
+        self._editor.store_position()
         if self.is_focused():
             next_datafile_controller = message.item and message.item.datafile_controller
             if self._editor.dirty:
@@ -122,7 +123,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                     return
             if next_datafile_controller:
                 self._open_data_for_controller(next_datafile_controller)
-                self._set_position(next_datafile_controller)
+                self._editor.set_editor_caret_position(next_datafile_controller)
 
     def _open_tree_selection_in_editor(self):
         datafile_controller = self.tree.get_selected_datafile_controller()
@@ -137,17 +138,11 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     def OnTabChange(self, message):
         if message.newtab == self.title:
             self._open()
-            self._set_position(self.tree.get_selected_datafile_controller())
+            self._editor.set_editor_caret_position(self.tree.get_selected_datafile_controller())
         elif message.oldtab == self.title:
-            self.tree.get_selected_datafile_controller().position = self._editor._editor.GetCurrentPos()
+            self._editor.store_position(self.tree.get_selected_datafile_controller())
             self._editor.remove_and_store_state()
 
-    def _set_position(self, datafile_controller):
-        position = datafile_controller.position
-        if position:
-            self._editor._editor.SetFocus()
-            self._editor._editor.SetCurrentPos(position)
-            self._editor._editor.SetSelection(position, position)
 
     def _apply_txt_changes_to_model(self):
         if not self._editor.save():
@@ -264,6 +259,7 @@ class SourceEditor(wx.Panel):
         self._create_ui(title)
         self._data = None
         self._dirty = False
+        self._positions = {}
 
     def is_focused(self):
         foc = wx.Window.FindFocus()
@@ -292,6 +288,19 @@ class SourceEditor(wx.Panel):
             ButtonWithHandler(self, 'Search', handler=self.OnFind))
         self._search_field_notification = Label(self, label='')
         editor_toolbar_sizer.add_with_padding(self._search_field_notification)
+
+    def store_position(self, datafile_controller=None):
+        self._positions[datafile_controller or self.datafile_controller] = self._editor.GetCurrentPos()
+
+    def set_editor_caret_position(self, datafile_controller=None):
+        position = self._get_position(datafile_controller)
+        if position:
+            self._editor.SetFocus()
+            self._editor.SetCurrentPos(position)
+            self._editor.SetSelection(position, position)
+
+    def _get_position(self, datafile_controller=None):
+        return self._positions[datafile_controller or self.datafile_controller]
 
     @property
     def dirty(self):
