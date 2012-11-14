@@ -38,8 +38,30 @@ import os
 import socket
 import threading
 import SocketServer
+
+try:
+    # RF 2.7.5
+    from robot.running import EXECUTION_CONTEXTS
+    def _is_logged(level):
+        current = EXECUTION_CONTEXTS.current
+        if current is None:
+            return True
+        out = current.output
+        if out is None:
+            return True
+        return out._xmllogger._log_message_is_logged(level)
+except ImportError:
+    # RF 2.5.6
+    # RF 2.6.3
+    def _is_logged(level):
+        from robot.output import OUTPUT # Needs to be imported in the function as OUTPUT is not a constant
+        if OUTPUT is None:
+            return True
+        return OUTPUT._xmllogger._log_message_is_logged(level)
+
 from robot.running.signalhandler import STOP_SIGNAL_MONITOR
 from robot.errors import ExecutionFailed
+
 
 try:
     import cPickle as pickle
@@ -108,10 +130,12 @@ class TestRunnerAgent:
         self._send_socket("end_keyword", name, attrs)
 
     def message(self, message):
-        self._send_socket("message", message)
+        if _is_logged(message['level']):
+            self._send_socket("message", message)
 
     def log_message(self, message):
-        self._send_socket("log_message", message)
+        if _is_logged(message['level']):
+            self._send_socket("log_message", message)
 
     def log_file(self, path):
         self._send_socket("log_file", path)
