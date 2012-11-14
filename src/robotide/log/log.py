@@ -53,6 +53,7 @@ class LogPlugin(Plugin):
         if not self._window:
             self._window = _LogWindow(self.notebook, self._log)
             self._window.update_log()
+            self.register_shortcut('CtrlCmd-C', lambda e: self._window.Copy())
         else:
             self.notebook.show_tab(self._window)
 
