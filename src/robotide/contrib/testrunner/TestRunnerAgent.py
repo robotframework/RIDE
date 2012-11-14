@@ -130,8 +130,7 @@ class TestRunnerAgent:
         self._send_socket("end_keyword", name, attrs)
 
     def message(self, message):
-        if _is_logged(message['level']):
-            self._send_socket("message", message)
+        pass
 
     def log_message(self, message):
         if _is_logged(message['level']):
@@ -141,16 +140,16 @@ class TestRunnerAgent:
         self._send_socket("log_file", path)
 
     def output_file(self, path):
-        self._send_socket("output_file", path)
+        pass
 
     def report_file(self, path):
         self._send_socket("report_file", path)
 
     def summary_file(self, path):
-        self._send_socket("summary_file", path)
+        pass
 
     def debug_file(self, path):
-        self._send_socket("debug_file", path)
+        pass
 
     def close(self):
         self._send_socket("close")
