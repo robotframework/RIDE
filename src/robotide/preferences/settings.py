@@ -54,7 +54,7 @@ def _copy_or_migrate_user_settings(settings_dir, source_path, dest_file_name):
 class SettingsMigrator(object):
 
     SETTINGS_VERSION = 'settings_version'
-    CURRENT_SETTINGS_VERSION = 2 #used at least in tests
+    CURRENT_SETTINGS_VERSION = 3 #used at least in tests
 
     def __init__(self, default_path, user_path):
         self._default_settings = ConfigObj(default_path, unrepr=True)
@@ -80,9 +80,11 @@ class SettingsMigrator(object):
             self.migrate_from_0_to_1(self._old_settings)
         if self._old_settings.get(self.SETTINGS_VERSION) == 1:
             self.migrate_from_1_to_2(self._old_settings)
+        if self._old_settings.get(self.SETTINGS_VERSION) == 2:
+            self.migrate_from_2_to_3(self._old_settings)
         #so next would be something like:
-        #if self._old_settings[self.SETTINGS_VERSION] == 2:
-        #   self.migrate_from_2_to_3(self._old_settings)
+        #if self._old_settings[self.SETTINGS_VERSION] == 3:
+        #   self.migrate_from_3_to_4(self._old_settings)
         self.merge()
 
     def merge(self):
@@ -102,6 +104,17 @@ class SettingsMigrator(object):
         if pythonpath:
             settings['pythonpath'] = [p.strip() for p in pythonpath if p.strip()]
         settings[self.SETTINGS_VERSION] = 2
+
+    def migrate_from_2_to_3(self, settings):
+        # See issue http://code.google.com/p/robotframework-ride/issues/detail?id=1107
+        excludes = os.path.join(SETTINGS_DIRECTORY, 'excludes')
+        if os.path.isfile(excludes):
+            with open(excludes) as f:
+                old = f.read()
+            new = '\n'.join(d for d in old.split('\n') if os.path.isdir(d))+'\n'
+            with open(excludes, 'w') as f:
+                f.write(new)
+        settings[self.SETTINGS_VERSION] = 3
 
     def _write_merged_settings(self, settings, path):
         try:
