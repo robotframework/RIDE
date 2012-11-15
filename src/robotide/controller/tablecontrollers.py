@@ -192,6 +192,9 @@ class MacroNameValidation(_NameValidation):
         if self._name_taken(name):
             self.error_message = '%s with this name already exists.' % \
                     self._table.item_type
+        if "\n" in name:
+            self.error_message = '%s name contains newlines' % \
+                    self._table.item_type
 
 
 class _MacroTable(_TableController):

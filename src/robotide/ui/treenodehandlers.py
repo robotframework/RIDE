@@ -160,9 +160,11 @@ class _CanBeRenamed(object):
         return True
 
     def end_label_edit(self, event):
-        if not event.IsEditCancelled() and \
-                self._is_valid_rename(event.GetLabel()):
-            self.rename(event.GetLabel())
+        if not event.IsEditCancelled():
+            if self._is_valid_rename(event.GetLabel()):
+                self.rename(event.GetLabel())
+            else:
+                event.Veto()
 
     def _is_valid_rename(self, label):
         validation = self.controller.validate_name(label)
