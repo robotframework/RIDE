@@ -42,6 +42,7 @@ linux it's /tmp).
 You can safely manually remove these directories, except for the one
 being used for a currently running test.
 '''
+from Queue import Queue
 import datetime
 import time
 import os
@@ -160,7 +161,7 @@ class TestRunnerPlugin(Plugin):
         self._build_ui()
         self.SetProfile(self.profile)
         self._subscribe_to_events()
-        self._test_runner.enable(lambda *args: wx.CallAfter(self._post_result, *args))
+        self._test_runner.enable(self._post_result)
         self._set_stopped()
 
     def _register_actions(self):
@@ -308,7 +309,7 @@ class TestRunnerPlugin(Plugin):
         self.local_toolbar.EnableTool(ID_SHOW_REPORT, False)
         self.local_toolbar.EnableTool(ID_SHOW_LOG, False)
         self._report_file = self._log_file = None
-        self._messages_log_texts = []
+        self._messages_log_texts = Queue()
 
     def _clear_output_window(self):
         self._clear_text(self.out)
@@ -382,9 +383,11 @@ class TestRunnerPlugin(Plugin):
                 # the previous character isn't a newline.
                 self._output("\n", source="stdout")
             self._output(err_buffer, source="stderr")
-        if self._messages_log_texts and self.message_log:
-            self._AppendText(self.message_log, '\n'+'\n'.join(self._messages_log_texts))
-            self._messages_log_texts = []
+        if self.message_log and not self._messages_log_texts.empty():
+            texts = []
+            while not self._messages_log_texts.empty():
+                texts += [self._messages_log_texts.get()]
+            self._AppendText(self.message_log, '\n'+'\n'.join(texts))
 
     def GetLastOutputChar(self):
         '''Return the last character in the output window'''
@@ -422,15 +425,7 @@ class TestRunnerPlugin(Plugin):
     def _AppendText(self, textctrl, string, source="stdout"):
         if not self.panel or not textctrl:
             return
-        try:
-            width, _ = textctrl.GetTextExtent(string)
-            if textctrl.GetScrollWidth() < width+50:
-                textctrl.SetScrollWidth(width+50)
-        except UnicodeDecodeError:
-            # I don't know what unicode data it is complaining about,
-            # but I think the best thing is just to ignore it
-            pass
-
+        textctrl.update_scroll_width(string)
         # we need this information to decide whether to autoscroll or not
         new_text_start = textctrl.GetLength()
         linecount = textctrl.GetLineCount()
@@ -597,7 +592,7 @@ class TestRunnerPlugin(Plugin):
         self.add_tab(panel, self.title, allow_closing=False)
 
     def _create_output_textctrl(self):
-        textctrl = wx.stc.StyledTextCtrl(self._right_panel, wx.ID_ANY, style=wx.SUNKEN_BORDER)
+        textctrl = OutputStyledTextCtrl(self._right_panel)
         font = self._create_font()
         face = font.GetFaceName()
         size = font.GetPointSize()
@@ -656,23 +651,23 @@ class TestRunnerPlugin(Plugin):
 
     def _append_to_message_log(self, text):
         if self.show_message_log:
-            self._messages_log_texts.append(text)
+            self._messages_log_texts.put(text)
 
     def _handle_end_test(self, args):
         longname = args[1]['longname']
         self._append_to_message_log('Ending test:   %s\n' % longname)
         if args[1]['status'] == 'PASS':
-            self._progress_bar.Pass()
+            self._progress_bar.add_pass()
         else:
-            self._progress_bar.Fail()
+            self._progress_bar.add_fail()
 
     def _handle_report_file(self, args):
         self._report_file = args[0]
-        self.local_toolbar.EnableTool(ID_SHOW_REPORT, True)
+        wx.CallAfter(self.local_toolbar.EnableTool, ID_SHOW_REPORT, True)
 
     def _handle_log_file(self, args):
         self._log_file = args[0]
-        self.local_toolbar.EnableTool(ID_SHOW_LOG, True)
+        wx.CallAfter(self.local_toolbar.EnableTool, ID_SHOW_LOG, True)
 
     def _handle_start_keyword(self, args):
         self._progress_bar.set_current_keyword(args[0])
@@ -687,7 +682,7 @@ class TestRunnerPlugin(Plugin):
             message = a['message']
             if '\n' in message:
                 message = '\n'+message
-            self._messages_log_texts.append(prefix+message)
+            self._messages_log_texts.put(prefix+message)
 
     def _set_state(self, state):
         if state == "running":
@@ -760,11 +755,11 @@ class ProgressBar(wx.Panel):
         self._gauge.Hide()
         self._timer.Stop()
 
-    def Pass(self):
+    def add_pass(self):
         '''Add one to the passed count'''
         self._pass += 1
 
-    def Fail(self):
+    def add_fail(self):
         '''Add one to the failed count'''
         self._fail += 1
 
@@ -792,6 +787,25 @@ class ProgressBar(wx.Panel):
         if len(text) <= max_length:
             return text
         return '...'+text[3-max_length:]
+
+
+class OutputStyledTextCtrl(wx.stc.StyledTextCtrl):
+
+    def __init__(self, parent):
+        wx.stc.StyledTextCtrl.__init__(self, parent, wx.ID_ANY, style=wx.SUNKEN_BORDER)
+        self._max_row_len = 0
+
+    def update_scroll_width(self, string):
+        string_max_len = max(len(s) for s in string.split('\n'))
+        if string_max_len <= self._max_row_len:
+            return
+        self._max_row_len = string_max_len
+        try:
+            width, _ = self.GetTextExtent(string)
+            if self.GetScrollWidth() < width + 50:
+                self.SetScrollWidth(width + 50)
+        except UnicodeDecodeError:
+            pass
 
 
 # stole this off the internet. Nifty.
