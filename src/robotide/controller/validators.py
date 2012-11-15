@@ -22,14 +22,21 @@ class BaseNameValidator(object):
         self._new_basename = new_basename
 
     def validate(self, context):
-        filename = os.path.join(context.directory, '%s.%s' % (self._new_basename, context.get_format()))
-        if os.path.exists(filename):
-            RideInputValidationError(message="File '%s' already exists" % filename).publish()
+        # Try-except is needed to check if file can be created if named like this, using open()
+        # http://code.google.com/p/robotframework-ride/issues/detail?id=1111
+        try:
+            filename = os.path.join(context.directory, '%s.%s' % (self._new_basename, context.get_format()))
+            if os.path.exists(filename):
+                RideInputValidationError(message="File '%s' already exists" % filename).publish()
+                return False
+            if "\n" in self._new_basename:
+                RideInputValidationError(message="Filename can't contain newlines").publish()
+                return False
+            if len(self._new_basename.strip()) == 0:
+                RideInputValidationError(message="Filename can't be empty").publish()
+                return False
+            open(filename,"w")
+            return True
+        except IOError:
+            RideInputValidationError(message="Filename contains illegal characters").publish()
             return False
-        if "\n" in self._new_basename:
-            RideInputValidationError(message="Filename can't contain newlines").publish()
-            return False
-        if len(self._new_basename.strip()) == 0:
-            RideInputValidationError(message="Filename can't be empty").publish()
-            return False
-        return True
