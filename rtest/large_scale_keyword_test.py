@@ -185,7 +185,7 @@ def _create_test_suite(path, filecount = 1, testcount = 20, avg_test_depth = 5, 
                 test_txt += "\t%s" % kw_total
                 if argument:
                     if kw_action == "Count Files In Directory":
-                        test_txt += "\t" + os.path.join(os.path.abspath(os.curdir), path)
+                        test_txt += "\t${CURDIR}"
                     else:
                         test_txt += "\t" + argument
                 test_txt += "\n"
