@@ -327,11 +327,13 @@ class RenameFile(_Command):
         self._new_basename = new_basename
 
     def execute(self, context):
-        if BaseNameValidator(self._new_basename).validate(context):
+        validation_result = BaseNameValidator(self._new_basename).validate(context)
+        if validation_result:
             old_filename = context.filename
-            context.set_basename(self._new_basename)
+            context.set_basename(self._new_basename.strip())
             RideFileNameChanged(datafile=context,
                                 old_filename=old_filename).publish()
+        return validation_result
 
 
 class Include(_Command):
@@ -354,7 +356,8 @@ class RenameResourceFile(_Command):
         self._should_modify_imports = get_should_modify_imports
 
     def execute(self, context):
-        if BaseNameValidator(self._new_basename).validate(context):
+        validation_result = BaseNameValidator(self._new_basename).validate(context)
+        if validation_result:
             old_filename = context.filename
             modify_imports = self._should_modify_imports()
             if modify_imports is None:
@@ -365,6 +368,7 @@ class RenameResourceFile(_Command):
                 context.set_basename(self._new_basename)
             RideFileNameChanged(datafile=context,
                                 old_filename=old_filename).publish()
+        return validation_result
 
 class SortKeywords(_ReversibleCommand):
     index_difference = None

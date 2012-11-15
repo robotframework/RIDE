@@ -26,4 +26,10 @@ class BaseNameValidator(object):
         if os.path.exists(filename):
             RideInputValidationError(message="File '%s' already exists" % filename).publish()
             return False
+        if "\n" in self._new_basename:
+            RideInputValidationError(message="Filename can't contain newlines").publish()
+            return False
+        if len(self._new_basename.strip()) == 0:
+            RideInputValidationError(message="Filename can't be empty").publish()
+            return False
         return True
