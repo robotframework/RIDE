@@ -54,6 +54,7 @@ class LogPlugin(Plugin):
             self._window = _LogWindow(self.notebook, self._log)
             self._window.update_log()
             self.register_shortcut('CtrlCmd-C', lambda e: self._window.Copy())
+            self.register_shortcut('CtrlCmd-A', lambda e: self._window.SelectAll())
         else:
             self.notebook.show_tab(self._window)
 

@@ -289,7 +289,8 @@ class SourceEditor(wx.Panel):
         editor_toolbar_sizer.add_with_padding(self._search_field_notification)
 
     def store_position(self):
-        self._positions[self.datafile_controller] = self._editor.GetCurrentPos()
+        if self._editor:
+            self._positions[self.datafile_controller] = self._editor.GetCurrentPos()
 
     def set_editor_caret_position(self):
         position = self._positions.get(self.datafile_controller, None)
