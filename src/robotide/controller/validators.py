@@ -16,6 +16,11 @@ import os
 
 from robotide.publish.messages import RideInputValidationError
 
+ERROR_ILLEGAL_CHARACTERS = "Filename contains illegal characters"
+ERROR_EMPTY_FILENAME = "Empty filename"
+ERROR_NEWLINES_IN_THE_FILENAME = "Newlines in the filename"
+ERROR_FILE_ALREADY_EXISTS = "File %s already exists"
+
 class BaseNameValidator(object):
 
     def __init__(self, new_basename):
@@ -28,15 +33,15 @@ class BaseNameValidator(object):
             filename = os.path.join(context.directory, '%s.%s' % (self._new_basename, context.get_format()))
             if os.path.exists(filename):
                 RideInputValidationError(message="File '%s' already exists" % filename).publish()
-                return "Error: File %s already exists" % filename
+                return ERROR_FILE_ALREADY_EXISTS % filename
             if "\n" in self._new_basename:
                 RideInputValidationError(message="Filename can't contain newlines").publish()
-                return "Error: Newlines in the filename"
+                return ERROR_NEWLINES_IN_THE_FILENAME
             if len(self._new_basename.strip()) == 0:
                 RideInputValidationError(message="Filename can't be empty").publish()
-                return "Error: Empty filename"
+                return ERROR_EMPTY_FILENAME
             open('%s.%s' % (self._new_basename, context.get_format()),"w")
             return None
         except IOError:
             RideInputValidationError(message="Filename contains illegal characters").publish()
-            return "Error: Filename contains illegal characters"
+            return ERROR_ILLEGAL_CHARACTERS

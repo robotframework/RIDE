@@ -5,6 +5,7 @@ from robot.parsing.model import TestCaseFile
 from robot.utils.asserts import assert_equals, assert_true
 from robotide.controller.commands import RenameFile
 from robotide.controller.filecontrollers import TestCaseFileController
+from robotide.controller.validators import ERROR_ILLEGAL_CHARACTERS, ERROR_EMPTY_FILENAME, ERROR_NEWLINES_IN_THE_FILENAME, ERROR_FILE_ALREADY_EXISTS
 from robotide.publish import PUBLISHER, RideFileNameChanged
 
 
@@ -54,6 +55,24 @@ class TestRenameTestCaseFile(unittest.TestCase):
         result = RenameFile('some').execute(self._create_controller())
         assert_equals(result, None)
         assert_equals(self._message, self.ctrl)
+
+    def test_rename_illegal_character_error(self):
+        result = RenameFile("dsk\//\sdfj$''lkfdsjflk$'\'fdslkjlsuite....").execute(self._create_controller())
+        assert_equals(result, ERROR_ILLEGAL_CHARACTERS)
+
+    def test_rename_empty_name_error(self):
+        result = RenameFile("").execute(self._create_controller())
+        assert_equals(result, ERROR_EMPTY_FILENAME)
+
+    def test_rename_newlines_in_name_error(self):
+        result = RenameFile("ashdjashdhjasd\nasdads").execute(self._create_controller())
+        assert_equals(result, ERROR_NEWLINES_IN_THE_FILENAME)
+
+    def test_rename_already_existing_error(self):
+        result = RenameFile("jup").execute(self._create_controller())
+        assert_equals(result, None)
+        result = RenameFile("jup").execute(self._create_controller("jup.txt"))
+        assert_equals(result, ERROR_FILE_ALREADY_EXISTS % "jup.txt")
 
     def _create_controller(self, path='some.txt'):
         self._filenames_to_remove.append(path)
