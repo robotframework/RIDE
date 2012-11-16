@@ -28,15 +28,15 @@ class BaseNameValidator(object):
             filename = os.path.join(context.directory, '%s.%s' % (self._new_basename, context.get_format()))
             if os.path.exists(filename):
                 RideInputValidationError(message="File '%s' already exists" % filename).publish()
-                return False
+                return "Error: File %s already exists" % filename
             if "\n" in self._new_basename:
                 RideInputValidationError(message="Filename can't contain newlines").publish()
-                return False
+                return "Error: Newlines in the filename"
             if len(self._new_basename.strip()) == 0:
                 RideInputValidationError(message="Filename can't be empty").publish()
-                return False
-            open(filename,"w")
-            return True
+                return "Error: Empty filename"
+            open('%s.%s' % (self._new_basename, context.get_format()),"w")
+            return None
         except IOError:
             RideInputValidationError(message="Filename contains illegal characters").publish()
-            return False
+            return "Error: Filename contains illegal characters"
