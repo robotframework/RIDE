@@ -325,10 +325,11 @@ class RenameFile(_Command):
 
     def __init__(self, new_basename):
         self._new_basename = new_basename
+        self._validator = BaseNameValidator(new_basename)
 
     def execute(self, context):
-        validation_result = BaseNameValidator(self._new_basename).validate(context)
-        if validation_result is None:
+        validation_result = self._validator.validate(context)
+        if validation_result:
             old_filename = context.filename
             context.set_basename(self._new_basename.strip())
             RideFileNameChanged(datafile=context,

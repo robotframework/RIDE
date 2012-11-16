@@ -30,18 +30,25 @@ class BaseNameValidator(object):
         # Try-except is needed to check if file can be created if named like this, using open()
         # http://code.google.com/p/robotframework-ride/issues/detail?id=1111
         try:
-            filename = os.path.join(context.directory, '%s.%s' % (self._new_basename, context.get_format()))
-            if os.path.exists(filename):
-                RideInputValidationError(message="File '%s' already exists" % filename).publish()
-                return ERROR_FILE_ALREADY_EXISTS % filename
+            name = '%s.%s' % (self._new_basename, context.get_format())
+            filename = os.path.join(context.directory, name)
+            if self._file_exists(filename):
+                RideInputValidationError(message=ERROR_FILE_ALREADY_EXISTS % filename).publish()
+                return False
             if "\n" in self._new_basename:
-                RideInputValidationError(message="Filename can't contain newlines").publish()
-                return ERROR_NEWLINES_IN_THE_FILENAME
+                RideInputValidationError(message=ERROR_NEWLINES_IN_THE_FILENAME).publish()
+                return False
             if len(self._new_basename.strip()) == 0:
-                RideInputValidationError(message="Filename can't be empty").publish()
-                return ERROR_EMPTY_FILENAME
-            open('%s.%s' % (self._new_basename, context.get_format()),"w")
-            return None
-        except IOError:
-            RideInputValidationError(message="Filename contains illegal characters").publish()
-            return ERROR_ILLEGAL_CHARACTERS
+                RideInputValidationError(message=ERROR_EMPTY_FILENAME).publish()
+                return False
+            try:
+                open(name,"w").close()
+            finally:
+                os.remove(name)
+            return True
+        except (IOError, OSError):
+            RideInputValidationError(message=ERROR_ILLEGAL_CHARACTERS).publish()
+            return False
+
+    def _file_exists(self, filename):
+        return os.path.exists(filename)
