@@ -35,7 +35,7 @@ class BaseNameValidator(object):
             if self._file_exists(filename):
                 RideInputValidationError(message=ERROR_FILE_ALREADY_EXISTS % filename).publish()
                 return False
-            if '\\n' or '\n' in self._new_basename:
+            if '\\n' in self._new_basename or '\n' in self._new_basename:
                 RideInputValidationError(message=ERROR_NEWLINES_IN_THE_FILENAME).publish()
                 return False
             if len(self._new_basename.strip()) == 0:
