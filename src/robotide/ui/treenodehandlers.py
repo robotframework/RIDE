@@ -392,7 +392,7 @@ class TestCaseFileHandler(_CanBeRenamed, TestDataHandler):
     def end_label_edit(self, event):
         if not event.IsEditCancelled():
             result = self.controller.execute(RenameFile(event.GetLabel()))
-            if result is None:
+            if result:
                 self._tree.DeselectAllTests(self._node)
             else:
                 event.Veto()
