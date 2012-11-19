@@ -17,6 +17,7 @@ from robotide.context.platform import IS_WINDOWS, IS_MAC
 import wx
 from wx import stc
 from StringIO import StringIO
+import string
 
 from robot.parsing.model import TestDataDirectory
 from robot.parsing.populators import FromFilePopulator
@@ -175,15 +176,15 @@ class DataValidationHandler(object):
 
     def _sanity_check(self, data, text):
         formatted_text = data.format_text(text).encode('UTF-8')
-        c = self._remove_all(formatted_text, ' ', '\n', '...', '\r', '*')
-        e = self._remove_all(text, ' ', '\n', '...', '\r', '*')
+        c = self._normalize(formatted_text)
+        e = self._normalize(text)
         return len(c) == len(e)
 
-    def _remove_all(self, original_txt, *to_remove):
-        txt = original_txt
-        for item in to_remove:
-            txt = txt.replace(item, '')
-        return txt
+    def _normalize(self, text):
+        for item in tuple(string.whitespace) + ('...', '*'):
+            if item in text:
+                text = text.replace(item, '')
+        return text
 
     def _handle_sanity_check_failure(self):
         if self._last_answer == wx.ID_NO and \
