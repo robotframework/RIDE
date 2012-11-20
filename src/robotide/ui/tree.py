@@ -159,7 +159,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         self._images.set_execution_results(message.results)
 
     def _test_result(self, message):
-        self._set_icon_from_execution_results(message.item)
+        wx.CallAfter(self._set_icon_from_execution_results, message.item)
 
     def _set_icon_from_execution_results(self, controller):
         node = self._controller.find_node_by_controller(controller)
