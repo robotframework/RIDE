@@ -264,7 +264,7 @@ class TestFindingControllers(unittest.TestCase):
         suite_controller = TestCaseFileController(_testcasefile('Suite.txt'))
         test = suite_controller.create_test('Test 1')
         self.chief._controller = suite_controller
-        result = self.chief.find_controller_by_longname('Suite.Test 1')
+        result = self.chief.find_controller_by_longname('Suite.Test 1', 'Test 1')
         assert_equals(result, test)
 
 

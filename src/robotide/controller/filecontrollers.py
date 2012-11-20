@@ -352,16 +352,16 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
                 return True
         return False
 
-    def find_controller_by_longname(self, longname):
-        return self.find_controller_by_names(longname.split('.'))
+    def find_controller_by_longname(self, longname, testname = None):
+        return self.find_controller_by_names(longname.split("."), testname)
 
-    def find_controller_by_names(self, names):
+    def find_controller_by_names(self, names, testname):
         if names[0] != self.name:
             return None
         if len(names) == 1:
             return self
         for suite in self.suites:
-            res = suite.find_controller_by_names(names[1:])
+            res = suite.find_controller_by_names(names[1:], testname)
             if res:
                 return res
 
@@ -601,20 +601,23 @@ class TestCaseFileController(_FileSystemElement, _DataController):
     def contains_tests(self):
         return bool(self.tests)
 
-    def find_controller_by_longname(self, longname):
-        return self.find_controller_by_names(longname.split('.'))
+    def find_controller_by_longname(self, longname, node_testname = None):
+        return self.find_controller_by_names(longname.split("."), node_testname)
 
 
-    def find_controller_by_names(self, names):
-        if names[0] != self.name:
-            return None
+    def find_controller_by_names(self, names, node_testname = None):
         if len(names) == 1:
             return self
-        if len(names) > 2:
-            return None
+        checked_names = set()
+        for elem in reversed(names):
+            if not checked_names:
+                checked_names.add(elem)
+            else:
+                checked_names.update([elem + '.' + name for name in checked_names])
         for test in self.tests:
-            if test.name == names[1]:
+            if test.name == node_testname:
                 return test
+        return None
 
     @property
     def default_tags(self):
