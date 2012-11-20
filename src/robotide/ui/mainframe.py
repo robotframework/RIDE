@@ -52,6 +52,7 @@ _menudata = """
 !Preferences
 
 [Help]
+!User Guide | RIDE User Guide
 !Report a Problem | Open browser to the RIDE issue tracker
 !About | Information about RIDE
 !Shortcut keys | RIDE shortcut keys
@@ -263,6 +264,9 @@ class RideFrame(wx.Frame, RideEventHandler):
 
     def OnReportaProblem(self, event):
         wx.LaunchDefaultBrowser('http://code.google.com/p/robotframework-ride/issues/list')
+
+    def OnUserGuide(self, event):
+        wx.LaunchDefaultBrowser('http://code.google.com/p/robotframework/wiki/UserGuide')
 
     def _has_data(self):
         return self._controller.data is not None
