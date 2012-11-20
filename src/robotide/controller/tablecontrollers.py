@@ -391,7 +391,7 @@ class ImportSettingsController(_TableController, _WithListOperations):
         self.notify_imports_modified()
 
     def add_library(self, name, argstr, alias, comment=None):
-        self._import_controllers # Have to exist before adding new
+        self._import_controllers # Call property since it has to exist before adding new
         import_ = self._table.add_library(name, utils.split_value(argstr),
                                           comment)
         import_.alias = alias
