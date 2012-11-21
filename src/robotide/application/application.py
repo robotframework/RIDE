@@ -58,7 +58,7 @@ class RIDE(wx.App):
         self._publish_system_info()
         if self._updatecheck:
             UpdateNotifierController(self.settings).notify_update_if_needed(UpdateDialog)
-        self.frame._toolbar.create_search_tool()
+        self.frame._toolbar.create_search_tool(lambda s: 0)
         wx.CallLater(200, ReleaseNotes(self).bring_to_front)
         return True
 
