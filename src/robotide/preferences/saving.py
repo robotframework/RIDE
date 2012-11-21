@@ -80,7 +80,7 @@ class SavingPreferences(PreferencesPanel):
             IntegerChoiceEditor(settings,
                 'txt number of spaces',
                 'Separating spaces',
-                [str(i) for i in range(10, 48)],
+                [str(i) for i in range(2, 11)],
                 'Number of spaces between cells when saving in txt format'
             )
         ]
