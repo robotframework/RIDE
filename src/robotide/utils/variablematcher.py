@@ -48,7 +48,7 @@ def get_variable_basename(value):
     "Return variable without extended variable syntax part"
     if is_list_variable(value):
         return get_variable(value)
-    match = re.match('\${(.+?)[^\s\w]+.*?}?', value)
+    match = re.match('\${(.+?)[^\s\w-]+.*?}?', value)
     if not match:
         return None
     return '${%s}' % (match.groups()[0].strip())
