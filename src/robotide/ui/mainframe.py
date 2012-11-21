@@ -112,8 +112,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         self.actions = ActionRegisterer(mb, self.toolbar,
                                         ShortcutRegistry(self))
         self.tree = Tree(splitter, self.actions, self._application.settings)
-        self.actions.register_actions(ActionInfoCollection(_menudata, self,
-                                                           self.tree))
+        self.actions.register_actions(ActionInfoCollection(_menudata, self, self.tree))
         mb.take_menu_bar_into_use()
         splitter.SetMinimumPaneSize(100)
         splitter.SplitVertically(self.tree, self.notebook, 300)
