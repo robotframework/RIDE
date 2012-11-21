@@ -12,12 +12,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 from robotide.pluginapi import Plugin
+from robotide.widgets import ImageProvider
 
 
 class TestSearchPlugin(Plugin):
 
     def enable(self):
-        self.register_search_action('Search Tests', self.show_search_for)
+        self.register_search_action('Search Tests', self.show_search_for, ImageProvider().T32)
 
     def show_search_for(self, text):
         def etsii(data):

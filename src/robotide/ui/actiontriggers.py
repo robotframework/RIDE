@@ -256,6 +256,7 @@ class ToolBar(object):
         search = wx.SearchCtrl(self._wx_toolbar, size=(200, -1), style=wx.TE_PROCESS_ENTER)
         search.SetMenu(self._build_menu())
         search.SetDescriptiveText(self._current_description)
+        search.SetSearchMenuBitmap(self._search_handlers[self._current_description].icon)
         wrapped = lambda event: self._search_handlers[self._current_description](search.GetValue())
         search.Bind(wx.EVT_TEXT_ENTER, wrapped)
         self._search = search
@@ -273,8 +274,7 @@ class ToolBar(object):
     def _select(self, event):
         self._current_description = self._menu.FindItemById(event.GetId()).GetLabel()
         self._search.SetDescriptiveText(self._current_description)
-        open_ico = wx.ArtProvider.GetBitmap(wx.ART_FILE_OPEN, wx.ART_TOOLBAR, (16,16))
-        self._search.SetSearchMenuBitmap(open_ico)
+        self._search.SetSearchMenuBitmap(self._search_handlers[self._current_description].icon)
         self._search.Refresh()
 
     def _get_existing_button(self, action):
@@ -300,10 +300,20 @@ class ToolBar(object):
         self._wx_toolbar.RemoveTool(button.id)
         self._wx_toolbar.Realize()
 
-    def register_search_handler(self, description, handler):
+    def register_search_handler(self, description, handler, icon):
         if self._current_description is None:
             self._current_description = description
-        self._search_handlers[description] = handler
+        self._search_handlers[description] = _RideSearchMenuItem(handler, icon)
+
+
+class _RideSearchMenuItem(object):
+
+    def __init__(self, handler, icon):
+        self._handler = handler
+        self.icon = icon
+
+    def __call__(self, *args, **kwargs):
+        self._handler(*args, **kwargs)
 
 
 class ToolBarButton(object):

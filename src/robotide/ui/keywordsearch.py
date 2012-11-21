@@ -23,7 +23,7 @@ from robotide.pluginapi import (Plugin, ActionInfo, RideOpenSuite,
 from robotide.usages.UsageRunner import Usages
 from robotide import utils
 from robotide.widgets import (PopupMenuItem, ButtonWithHandler, Label, Font,
-        HtmlWindow)
+        HtmlWindow, ImageProvider)
 
 ALL_KEYWORDS = '<all keywords>'
 ALL_USER_KEYWORDS = '<all user keywords>'
@@ -44,7 +44,7 @@ class KeywordSearch(Plugin):
                             shortcut='F5',
                             doc='Search keywords from libraries and resources')
         self.register_action(action)
-        self.register_search_action('Search Keywords', self.show_search_for)
+        self.register_search_action('Search Keywords', self.show_search_for, ImageProvider().KW32)
         self.subscribe(self.mark_dirty, RideOpenSuite, RideOpenResource,
                        RideImportSetting, RideUserKeyword, RideNewProject)
         self._dialog = KeywordSearchDialog(self.frame, self)
