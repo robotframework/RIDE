@@ -253,14 +253,12 @@ class ToolBar(object):
 
     def create_search_tool(self):
         self._wx_toolbar.AddSeparator()
-        search = wx.SearchCtrl(self._wx_toolbar, size=(200, -1), style=wx.TE_PROCESS_ENTER)
-        search.SetMenu(self._build_menu())
-        search.SetDescriptiveText(self._current_description)
-        search.SetSearchMenuBitmap(self._search_handlers[self._current_description].icon)
-        wrapped = lambda event: self._search_handlers[self._current_description](search.GetValue())
-        search.Bind(wx.EVT_TEXT_ENTER, wrapped)
-        self._search = search
-        self._wx_toolbar.AddControl(search)
+        self._search = wx.SearchCtrl(self._wx_toolbar, size=(200, -1), style=wx.TE_PROCESS_ENTER)
+        self._search.SetMenu(self._build_menu())
+        self._update_to_current_search_mode()
+        wrapped = lambda event: self._search_handlers[self._current_description](self._search.GetValue())
+        self._search.Bind(wx.EVT_TEXT_ENTER, wrapped)
+        self._wx_toolbar.AddControl(self._search)
         self._wx_toolbar.Realize()
 
     def _build_menu(self):
@@ -273,9 +271,13 @@ class ToolBar(object):
 
     def _select(self, event):
         self._current_description = self._menu.FindItemById(event.GetId()).GetLabel()
+        self._update_to_current_search_mode()
+        self._search.Refresh()
+
+    def _update_to_current_search_mode(self):
         self._search.SetDescriptiveText(self._current_description)
         self._search.SetSearchMenuBitmap(self._search_handlers[self._current_description].icon)
-        self._search.Refresh()
+        self._search.SetToolTipString(self._current_description)
 
     def _get_existing_button(self, action):
         for button in self._buttons:
