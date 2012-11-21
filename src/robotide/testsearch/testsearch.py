@@ -18,7 +18,7 @@ from robotide.widgets import ImageProvider
 class TestSearchPlugin(Plugin):
 
     def enable(self):
-        self.register_search_action('Search Tests', self.show_search_for, ImageProvider().T32)
+        self.register_search_action('Search Tests', self.show_search_for, ImageProvider().TEST_SEARCH_ICON)
 
     def show_search_for(self, text):
         def etsii(data):

@@ -37,8 +37,8 @@ class ImageProvider(object):
         self.PROGICONS = self._load_prog_icons()
         self.REPORTIMG = self._load_image('report.png')
         self.REFRESH_ALL = self._load_image('database_refresh.png')
-        self.KW32 = self._load_image('Kw32.png')
-        self.T32 = self._load_image('T32.png')
+        self.KW_SEARCH_ICON = self._load_image('kw_search.png')
+        self.TEST_SEARCH_ICON = self._load_image('test_search.png')
         self._build_icons()
 
     def _build_icons(self):
