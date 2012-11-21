@@ -108,7 +108,8 @@ class RideFrame(wx.Frame, RideEventHandler):
         splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
         self.notebook = NoteBook(splitter, self._application)
         mb = MenuBar(self)
-        self.actions = ActionRegisterer(mb, ToolBar(self),
+        self._toolbar = ToolBar(self)
+        self.actions = ActionRegisterer(mb, self._toolbar,
                                         ShortcutRegistry(self))
         self.tree = Tree(splitter, self.actions, self._application.settings)
         self.actions.register_actions(ActionInfoCollection(_menudata, self,

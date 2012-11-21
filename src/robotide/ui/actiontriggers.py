@@ -249,6 +249,12 @@ class ToolBar(object):
                 button = self._create_button(action)
             button.register(action)
 
+    def create_search_tool(self):
+        self._wx_toolbar.AddSeparator()
+        search = wx.SearchCtrl(self._wx_toolbar, size=(200, -1))
+        self._wx_toolbar.AddControl(search)
+        self._wx_toolbar.Realize()
+
     def _get_existing_button(self, action):
         for button in self._buttons:
             if button.icon == action.icon:
