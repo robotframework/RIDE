@@ -11,18 +11,20 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+from robotide.pluginapi import Plugin
 
 
-def get_core_plugins():
-    from robotide.run import RunAnything
-    from robotide.recentfiles import RecentFilesPlugin
-    from robotide.ui.preview import PreviewPlugin
-    from robotide.ui.keywordsearch import KeywordSearch
-    from robotide.editor import EditorPlugin
-    from robotide.editor.texteditor import TextEditorPlugin
-    from robotide.log import LogPlugin
-    from robotide.testsearch.testsearch import TestSearchPlugin
+class TestSearchPlugin(Plugin):
 
-    return [RunAnything, RecentFilesPlugin, PreviewPlugin,
-            EditorPlugin, TextEditorPlugin, KeywordSearch, LogPlugin, TestSearchPlugin]
+    def enable(self):
+        self.register_search_action('Search Tests', self.show_search_for)
+
+    def show_search_for(self, text):
+        def etsii(data):
+            for t in data.tests:
+                if text in t.name or text in [str(tag) for tag in t.tags]:
+                    print t.longname
+            for s in data.suites:
+                etsii(s)
+        etsii(self.frame._controller.data)
 
