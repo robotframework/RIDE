@@ -249,10 +249,10 @@ class ToolBar(object):
                 button = self._create_button(action)
             button.register(action)
 
-    def create_search_tool(self, handler):
+    def create_search_tool(self):
         self._wx_toolbar.AddSeparator()
         search = wx.SearchCtrl(self._wx_toolbar, size=(200, -1), style=wx.TE_PROCESS_ENTER)
-        wrapped = lambda event: handler(search.GetValue())
+        wrapped = lambda event: self._search_handler(search.GetValue())
         search.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, wrapped)
         search.Bind(wx.EVT_TEXT_ENTER, wrapped)
         self._wx_toolbar.AddControl(search)
@@ -281,6 +281,8 @@ class ToolBar(object):
         self._wx_toolbar.RemoveTool(button.id)
         self._wx_toolbar.Realize()
 
+    def register_search_handler(self, handler):
+        self._search_handler = handler
 
 class ToolBarButton(object):
 

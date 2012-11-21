@@ -220,6 +220,9 @@ class Plugin(object):
         """
         return [self.register_action(info) for info in action_infos]
 
+    def register_search_action(self, handler):
+        self.__frame._toolbar.register_search_handler(handler)
+
     def unregister_actions(self):
         """Unregisters all actions registered by this plugin."""
         for action in self.__actions:

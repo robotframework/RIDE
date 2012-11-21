@@ -44,6 +44,7 @@ class KeywordSearch(Plugin):
                             shortcut='F5',
                             doc='Search keywords from libraries and resources')
         self.register_action(action)
+        self.register_search_action(self.show_search_for)
         self.subscribe(self.mark_dirty, RideOpenSuite, RideOpenResource,
                        RideImportSetting, RideUserKeyword, RideNewProject)
         self._dialog = KeywordSearchDialog(self.frame, self)
@@ -80,6 +81,9 @@ class KeywordSearch(Plugin):
 
     def _show_resource(self, resource):
         self._dialog.show_search_with_criteria(source=resource)
+
+    def show_search_for(self, pattern):
+        self._dialog.show_search_with_criteria(pattern=pattern)
 
 
 class _SearchCriteria(object):
