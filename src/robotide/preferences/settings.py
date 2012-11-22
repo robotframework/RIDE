@@ -54,7 +54,7 @@ def _copy_or_migrate_user_settings(settings_dir, source_path, dest_file_name):
 class SettingsMigrator(object):
 
     SETTINGS_VERSION = 'settings_version'
-    CURRENT_SETTINGS_VERSION = 3 #used at least in tests
+    CURRENT_SETTINGS_VERSION = 4 #used at least in tests
 
     def __init__(self, default_path, user_path):
         self._default_settings = ConfigObj(default_path, unrepr=True)
@@ -82,9 +82,11 @@ class SettingsMigrator(object):
             self.migrate_from_1_to_2(self._old_settings)
         if self._old_settings.get(self.SETTINGS_VERSION) == 2:
             self.migrate_from_2_to_3(self._old_settings)
+        if self._old_settings.get(self.SETTINGS_VERSION) == 3:
+            self.migrate_from_3_to_4(self._old_settings)
         #so next would be something like:
-        #if self._old_settings[self.SETTINGS_VERSION] == 3:
-        #   self.migrate_from_3_to_4(self._old_settings)
+        #if self._old_settings[self.SETTINGS_VERSION] == 4:
+        #   self.migrate_from_4_to_5(self._old_settings)
         self.merge()
 
     def merge(self):
@@ -115,6 +117,13 @@ class SettingsMigrator(object):
             with open(excludes, 'w') as f:
                 f.write(new)
         settings[self.SETTINGS_VERSION] = 3
+
+    def migrate_from_3_to_4(self, settings):
+        # See issue http://code.google.com/p/robotframework-ride/issues/detail?id=1124
+        font_size = settings.get('font size', None)
+        if font_size:
+            settings['font size'] = 8
+        settings[self.SETTINGS_VERSION] = 4
 
     def _write_merged_settings(self, settings, path):
         try:
