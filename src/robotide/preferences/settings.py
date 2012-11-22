@@ -121,7 +121,7 @@ class SettingsMigrator(object):
     def migrate_from_3_to_4(self, settings):
         # See issue http://code.google.com/p/robotframework-ride/issues/detail?id=1124
         font_size = settings.get('font size', None)
-        if font_size:
+        if font_size and font_size == 11:
             settings['font size'] = 8
         settings[self.SETTINGS_VERSION] = 4
 
