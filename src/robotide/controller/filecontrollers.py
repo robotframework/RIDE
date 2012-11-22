@@ -745,7 +745,10 @@ class ResourceFileController(_FileSystemElement, _DataController):
 
     def remove_static_imports_to_this(self):
         name = os.path.basename(self.filename)
-        for resource_import in self.get_where_used():
+        # have to resolve imports before deleting
+        # see: http://code.google.com/p/robotframework-ride/issues/detail?id=1119
+        imports = [import_ for import_ in self.get_where_used()]
+        for resource_import in imports:
             if resource_import.name.endswith(name):
                 resource_import.remove()
 
