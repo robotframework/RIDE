@@ -25,7 +25,7 @@ class TestSearchPlugin(Plugin):
         self.register_search_action('Search Tests', self.show_search_for, ImageProvider().TEST_SEARCH_ICON)
 
     def show_search_for(self, text):
-        d = TestsDialog(text, _TestSearchListModel(self._search(text, self.frame._controller.data)))
+        d = TestsDialog(text, _TestSearchListModel(self._search(text.lower(), self.frame._controller.data)))
         d.add_selection_listener(self._selected)
         d.Show()
         d.set_focus_to_first_match()
@@ -35,12 +35,20 @@ class TestSearchPlugin(Plugin):
 
     def _search(self, text, data):
         for test in data.tests:
-            if text in test.name or text in [str(tag) for tag in test.tags]:
+            if self._matches(text, test):
                 yield test
         for s in data.suites:
             for test in self._search(text, s):
                 yield test
 
+    def _matches(self, text, test):
+        if text in test.name.lower():
+            return True
+        if text in (str(tag).lower() for tag in test.tags):
+            return True
+        if text in test.settings[0].value.lower():
+            return True
+        return False
 
 class _TestSearchListModel(ListModel):
 
