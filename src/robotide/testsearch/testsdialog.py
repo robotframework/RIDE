@@ -33,3 +33,7 @@ class TestsDialog(Dialog):
 
     def add_selection_listener(self, listener):
         self._selection_listeners.append(listener)
+
+    def set_focus_to_first_match(self):
+        self.tests_list.Select(0)
+        self.tests_list.SetFocus()

@@ -27,6 +27,7 @@ class TestSearchPlugin(Plugin):
         d = TestsDialog(text, _TestSearchListModel(self._search(text, self.frame._controller.data)))
         d.add_selection_listener(self._foo)
         d.Show()
+        d.set_focus_to_first_match()
 
     def _foo(self, test):
         self.tree.select_node_by_data(test)
