@@ -48,7 +48,7 @@ class TestSearchPlugin(Plugin):
     def _matches(self, text, test):
         if text in test.name.lower():
             return 'Name match'
-        if text in (str(tag).lower() for tag in test.tags):
+        if any(text in str(tag).lower() for tag in test.tags):
             return 'Tag match'
         if text in test.settings[0].value.lower():
             return 'Documentation match'
