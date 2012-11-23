@@ -268,6 +268,7 @@ class KeywordSearchDialog(wx.Frame):
         self._update_widgets(pattern, search_docs, source)
         self._populate_search()
         self._show()
+        self._search_control.SetFocus()
 
     def _update_widgets(self, pattern, search_docs, source):
         self._search_control.SetValue(pattern)
