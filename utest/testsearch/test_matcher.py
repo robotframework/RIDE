@@ -28,8 +28,14 @@ class TestTestSearchMatcher(unittest.TestCase):
     def test_matching_name_partially(self):
         self.assertTrue(self._match('match', doc='prefix[match]postfix'))
 
-    def test_matching_name_is_case_insensitive(self):
+    def test_matching_name_is_case_insensitive_in_tags(self):
         self.assertTrue(self._match('mAtCh', tags=['MATcH']))
+
+    def test_matching_name_is_case_insensitive_in_name(self):
+        self.assertTrue(self._match('mAtCh', name=' MATcH'))
+
+    def test_matching_name_is_case_insensitive_in_doc(self):
+        self.assertTrue(self._match('mAtCh', doc='Doc MATcHoc'))
 
     def test_matching_to_documentation(self):
         self.assertTrue(self._match('docstring', doc='docstring matching!'))

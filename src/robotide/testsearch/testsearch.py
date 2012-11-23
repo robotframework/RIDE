@@ -52,7 +52,7 @@ class TestSearchMatcher(object):
         self._texts = text.lower().split()
 
     def matches(self, test):
-        name = test.name
+        name = test.name.lower()
         tags = (str(tag).lower() for tag in test.tags)
         doc = test.documentation.value.lower()
         matches = []
