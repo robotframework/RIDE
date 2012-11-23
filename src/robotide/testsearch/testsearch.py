@@ -12,7 +12,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 from robotide.pluginapi import Plugin
+from robotide.testsearch.testsdialog import TestsDialog
+from robotide.utils import overrides
 from robotide.widgets import ImageProvider
+from robotide.widgets.list import ListModel
 
 
 class TestSearchPlugin(Plugin):
@@ -21,11 +24,34 @@ class TestSearchPlugin(Plugin):
         self.register_search_action('Search Tests', self.show_search_for, ImageProvider().TEST_SEARCH_ICON)
 
     def show_search_for(self, text):
-        def etsii(data):
-            for t in data.tests:
-                if text in t.name or text in [str(tag) for tag in t.tags]:
-                    print t.longname
-            for s in data.suites:
-                etsii(s)
-        etsii(self.frame._controller.data)
+        d = TestsDialog(text, _TestSearchListModel(self._search(text, self.frame._controller.data)))
+        d.add_selection_listener(self._foo)
+        d.Show()
+
+    def _foo(self, test):
+        self.tree.select_node_by_data(test)
+
+    def _search(self, text, data):
+        for test in data.tests:
+            if text in test.name or text in [str(tag) for tag in test.tags]:
+                yield test
+        for s in data.suites:
+            for test in self._search(text, s):
+                yield test
+
+class _TestSearchListModel(ListModel):
+
+    def __init__(self, tests):
+        self._tests = list(tests)
+
+    @property
+    @overrides(ListModel)
+    def count(self):
+        return len(self._tests)
+
+    def __getitem__(self, item):
+        return self._tests[item]
+
+    def item_text(self, row, col):
+        return self._tests[row].longname
 
