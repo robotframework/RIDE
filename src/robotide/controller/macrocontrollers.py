@@ -327,12 +327,16 @@ class TestCaseController(_WithStepsController):
 
     @property
     def settings(self):
-        return [DocumentationController(self, self._test.doc),
+        return [self.documentation,
                 FixtureController(self, self._test.setup),
                 FixtureController(self, self._test.teardown),
                 TimeoutController(self, self._test.timeout),
                 TemplateController(self, self._test.template),
                 self.tags]
+
+    @property
+    def documentation(self):
+        return DocumentationController(self, self._test.doc)
 
     def move_up(self):
         return self._parent.move_up(self._test)

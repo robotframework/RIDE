@@ -56,7 +56,7 @@ class TestSearchMatcher(object):
             return 'Name match'
         if any(self._text in str(tag).lower() for tag in test.tags):
             return 'Tag match'
-        if self._text in test.settings[0].value.lower():
+        if self._text in test.documentation.value.lower():
             return 'Documentation match'
         return False
 
