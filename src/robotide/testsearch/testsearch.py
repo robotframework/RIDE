@@ -27,7 +27,7 @@ class TestSearchPlugin(Plugin):
         self.register_search_action(self.HEADER, self.show_search_for, ImageProvider().TEST_SEARCH_ICON, default=True)
 
     def show_search_for(self, text):
-        d = TestsDialog(text, _TestSearchListModel(self._search(text.lower(), self.frame._controller.data)))
+        d = TestsDialog(text, _TestSearchListModel(self._search(TestSearchMatcher(text), self.frame._controller.data)))
         d.add_selection_listener(self._selected)
         d.Show()
         d.set_focus_to_first_match()
@@ -36,23 +36,30 @@ class TestSearchPlugin(Plugin):
         test, match_location = selection
         wx.CallAfter(self.tree.select_node_by_data, test)
 
-    def _search(self, text, data):
+    def _search(self, matcher, data):
         for test in data.tests:
-            match = self._matches(text, test)
+            match = matcher._matches(test)
             if match:
                 yield test, match
         for s in data.suites:
-            for test, match in self._search(text, s):
+            for test, match in self._search(matcher, s):
                 yield test, match
 
-    def _matches(self, text, test):
-        if text in test.name.lower():
+
+class TestSearchMatcher(object):
+
+    def __init__(self, text):
+        self._text = text.lower()
+
+    def matches(self, test):
+        if self._text in test.name.lower():
             return 'Name match'
-        if any(text in str(tag).lower() for tag in test.tags):
+        if any(self._text in str(tag).lower() for tag in test.tags):
             return 'Tag match'
-        if text in test.settings[0].value.lower():
+        if self._text in test.settings[0].value.lower():
             return 'Documentation match'
         return False
+
 
 class _TestSearchListModel(ListModel):
 
