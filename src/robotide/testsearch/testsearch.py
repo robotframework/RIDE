@@ -41,6 +41,7 @@ class TestSearchPlugin(Plugin):
             for test in self._search(text, s):
                 yield test
 
+
 class _TestSearchListModel(ListModel):
 
     def __init__(self, tests):
