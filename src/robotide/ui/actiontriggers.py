@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 import wx
+from robotide.action import ActionInfo
 
 from robotide.context import IS_WINDOWS
 from robotide.context.platform import IS_MAC
@@ -260,6 +261,7 @@ class ToolBar(object):
         self._search.Bind(wx.EVT_TEXT_ENTER, wrapped)
         self._wx_toolbar.AddControl(self._search)
         self._wx_toolbar.Realize()
+        self._frame.actions.register_shortcut(ActionInfo(None, None, action=lambda e: self._search.SetFocus(), shortcut='F3'))
 
     def _build_menu(self):
         menu = wx.Menu()
