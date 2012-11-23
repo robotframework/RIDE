@@ -302,8 +302,8 @@ class ToolBar(object):
         self._wx_toolbar.RemoveTool(button.id)
         self._wx_toolbar.Realize()
 
-    def register_search_handler(self, description, handler, icon):
-        if self._current_description is None:
+    def register_search_handler(self, description, handler, icon, default=False):
+        if default:
             self._current_description = description
         self._search_handlers[description] = _RideSearchMenuItem(handler, icon)
 

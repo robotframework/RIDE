@@ -21,8 +21,10 @@ from robotide.widgets.list import ListModel
 
 class TestSearchPlugin(Plugin):
 
+    HEADER = 'Search Tests'
+
     def enable(self):
-        self.register_search_action('Search Tests', self.show_search_for, ImageProvider().TEST_SEARCH_ICON)
+        self.register_search_action(self.HEADER, self.show_search_for, ImageProvider().TEST_SEARCH_ICON, default=True)
 
     def show_search_for(self, text):
         d = TestsDialog(text, _TestSearchListModel(self._search(text.lower(), self.frame._controller.data)))
