@@ -26,11 +26,11 @@ class TestSearchPlugin(Plugin):
 
     def show_search_for(self, text):
         d = TestsDialog(text, _TestSearchListModel(self._search(text, self.frame._controller.data)))
-        d.add_selection_listener(self._foo)
+        d.add_selection_listener(self._selected)
         d.Show()
         d.set_focus_to_first_match()
 
-    def _foo(self, test):
+    def _selected(self, test):
         wx.CallAfter(self.tree.select_node_by_data, test)
 
     def _search(self, text, data):
