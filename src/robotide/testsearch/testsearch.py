@@ -32,24 +32,26 @@ class TestSearchPlugin(Plugin):
         d.Show()
         d.set_focus_to_first_match()
 
-    def _selected(self, test):
+    def _selected(self, selection):
+        test, match_location = selection
         wx.CallAfter(self.tree.select_node_by_data, test)
 
     def _search(self, text, data):
         for test in data.tests:
-            if self._matches(text, test):
-                yield test
+            match = self._matches(text, test)
+            if match:
+                yield test, match
         for s in data.suites:
-            for test in self._search(text, s):
-                yield test
+            for test, match in self._search(text, s):
+                yield test, match
 
     def _matches(self, text, test):
         if text in test.name.lower():
-            return True
+            return 'Name match'
         if text in (str(tag).lower() for tag in test.tags):
-            return True
+            return 'Tag match'
         if text in test.settings[0].value.lower():
-            return True
+            return 'Documentation match'
         return False
 
 class _TestSearchListModel(ListModel):
@@ -66,5 +68,8 @@ class _TestSearchListModel(ListModel):
         return self._tests[item]
 
     def item_text(self, row, col):
-        return self._tests[row].longname
+        test, match_location = self._tests[row]
+        if col == 0:
+            return test.longname
+        return match_location
 

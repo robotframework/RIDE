@@ -23,7 +23,8 @@ class TestsDialog(Dialog):
         Dialog.__init__(self, title=title, size=(650, 400))
         self.SetSizer(VerticalSizer())
         self.tests = tests
-        self.tests_list = VirtualList(self, ['Tests'], self.tests)
+        #TODO: Why is third header needed? - for some reason does not show second column texts without
+        self.tests_list = VirtualList(self, ['Test', 'Match location', ''], self.tests)
         self.tests_list.add_selection_listener(self._usage_selected)
         self.Sizer.add_expanding(self.tests_list)
 
