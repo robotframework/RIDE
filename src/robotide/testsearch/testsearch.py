@@ -20,7 +20,7 @@ from robotide.widgets.list import ListModel
 
 
 class TestSearchPlugin(Plugin):
-
+    """A plugin for searching tests based on name, tags and documentation"""
     HEADER = 'Search Tests'
 
     def enable(self):
