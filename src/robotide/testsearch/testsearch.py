@@ -11,6 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+import wx
 from robotide.pluginapi import Plugin
 from robotide.testsearch.testsdialog import TestsDialog
 from robotide.utils import overrides
@@ -30,7 +31,7 @@ class TestSearchPlugin(Plugin):
         d.set_focus_to_first_match()
 
     def _foo(self, test):
-        self.tree.select_node_by_data(test)
+        wx.CallAfter(self.tree.select_node_by_data, test)
 
     def _search(self, text, data):
         for test in data.tests:
