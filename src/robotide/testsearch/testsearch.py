@@ -57,7 +57,18 @@ class TestSearchPlugin(Plugin):
 class _TestSearchListModel(ListModel):
 
     def __init__(self, tests):
-        self._tests = list(tests)
+        self._tests = sorted(tests, cmp=self._comparator)
+
+    def _comparator(self, first, second):
+        if first[1] == second[1]:
+            return cmp(first[0], first[1])
+        if first[1] == 'Name match':
+            return -1
+        if second[1] == 'Name match':
+            return 1
+        if first[1] == 'Tag match':
+            return -1
+        return 1
 
     @property
     @overrides(ListModel)
