@@ -19,28 +19,31 @@ from robotide.testsearch.testsearch import TestSearchMatcher
 
 class TestTestSearchMatcher(unittest.TestCase):
 
-    def setUp(self):
-        self._matcher = TestSearchMatcher('name')
-
     def test_matching_name(self):
-        self.assertTrue(self._matcher.matches(self._test('name')))
+        self.assertTrue(self._match('name', name='name'))
 
     def test_not_matching(self):
-        self.assertFalse(self._matcher.matches(self._test('unknown', tags=['no match'], doc='no match')))
+        self.assertFalse(self._match('tERm', name='no match', tags=['no match'], doc='no match'))
 
     def test_matching_name_partially(self):
-        self.assertTrue(self._matcher.matches(self._test('prefix[name]postfix')))
+        self.assertTrue(self._match('match', doc='prefix[match]postfix'))
 
     def test_matching_name_is_case_insensitive(self):
-        self.assertTrue(self._matcher.matches(self._test('NamE')))
+        self.assertTrue(self._match('mAtCh', tags=['MATcH']))
 
     def test_matching_to_documentation(self):
-        self.assertTrue(self._matcher.matches(self._test('SOME', doc='There is some name')))
+        self.assertTrue(self._match('docstring', doc='docstring matching!'))
 
     def test_matching_to_tag(self):
-        self.assertTrue(self._matcher.matches(self._test('SOME', tags=['name'])))
+        self.assertTrue(self._match('tag', tags=['tag']))
 
-    def _test(self, name, tags=None, doc='documentation'):
+    def test_multiple_match_terms(self):
+        self.assertTrue(self._match('name tag doc', name='name!', tags=['foo', 'tag', 'bar'], doc='well doc to you!'))
+
+    def _match(self, text, name='name', tags=None, doc='documentation'):
+        return TestSearchMatcher(text).matches(self._test(name, tags, doc))
+
+    def _test(self, name, tags, doc):
         parent = lambda:0
         parent.datafile_controller = parent
         parent.register_for_namespace_updates = lambda *_:0

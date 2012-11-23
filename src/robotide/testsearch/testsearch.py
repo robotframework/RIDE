@@ -38,7 +38,7 @@ class TestSearchPlugin(Plugin):
 
     def _search(self, matcher, data):
         for test in data.tests:
-            match = matcher._matches(test)
+            match = matcher.matches(test)
             if match:
                 yield test, match
         for s in data.suites:
@@ -49,17 +49,28 @@ class TestSearchPlugin(Plugin):
 class TestSearchMatcher(object):
 
     def __init__(self, text):
-        self._text = text.lower()
+        self._texts = text.lower().split()
 
     def matches(self, test):
-        if self._text in test.name.lower():
+        name = test.name
+        tags = (str(tag).lower() for tag in test.tags)
+        doc = test.documentation.value.lower()
+        matches = []
+        for text in self._texts:
+            match = self._unit_match(text, name, tags, doc)
+            if not match:
+                return False
+            matches.append(match)
+        return ', '.join(matches)
+
+    def _unit_match(self, text, name, tags, doc):
+        if text in name:
             return 'Name match'
-        if any(self._text in str(tag).lower() for tag in test.tags):
+        if any(text in tag for tag in tags):
             return 'Tag match'
-        if self._text in test.documentation.value.lower():
+        if text in doc:
             return 'Documentation match'
         return False
-
 
 class _TestSearchListModel(ListModel):
 
