@@ -18,33 +18,27 @@ from testsearch.test_matcher import _TestSearchTest
 class TestTestSorter(_TestSearchTest, unittest.TestCase):
 
     def test_exact_match_is_better_than_partial(self):
-        match_text = 'exact'
-        exact_match = self._match(match_text, name='exact')
-        with_something_extra_after_match = self._match(match_text, name='exact jotain')
-        with_something_extra_before_match = self._match(match_text, name='jotain exact')
-        starting_with_match = self._match(match_text, name='exact_foo')
-        a_and_match = self._match(match_text, name='aexact')
-        z_and_match = self._match(match_text, name='zexact')
-        self.assertGreater(with_something_extra_after_match, exact_match)
-        self.assertGreater(with_something_extra_before_match, with_something_extra_after_match)
-        self.assertGreater(starting_with_match, with_something_extra_before_match)
-        self.assertGreater(a_and_match, starting_with_match)
-        self.assertGreater(z_and_match, a_and_match)
+        self._matches_in_order('exact', ['exact', 'exact jotain', 'jotain exact', 'exact_foo', 'aexact', 'zexact'])
+
+    def _matches_in_order(self, match_text, matches):
+        match_objects = [self._match(match_text, name=name) for name in matches]
+        for i in range(1, len(match_objects)):
+            self.assertTrue(match_objects[i] > match_objects[i-1])
 
     def test_name_is_better_than_doc(self):
         name_match = self._match('name', name='name')
         doc_match = self._match('doc', doc='doc')
-        self.assertGreater(doc_match, name_match)
+        self.assertTrue(doc_match > name_match)
 
     def test_name_is_better_than_tag(self):
         name_match = self._match('name', name='name')
         tag_match = self._match('tag', tags=['tag'])
-        self.assertGreater(tag_match, name_match)
+        self.assertTrue(tag_match > name_match)
 
     def test_tag_is_better_than_doc(self):
         tag_match = self._match('tag', tags=['tag'])
         doc_match = self._match('doc', doc='doc')
-        self.assertGreater(doc_match, tag_match)
+        self.assertTrue(doc_match > tag_match)
 
 if __name__ == '__main__':
     unittest.main()
