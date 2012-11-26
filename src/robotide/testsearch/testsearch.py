@@ -12,6 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 import wx
+from robotide.action import ActionInfo
 from robotide.pluginapi import Plugin
 from robotide.testsearch.testsdialog import TestsDialog
 from robotide.utils import overrides
@@ -24,13 +25,17 @@ class TestSearchPlugin(Plugin):
     HEADER = 'Search Tests'
 
     def enable(self):
+        self.register_action(ActionInfo('Tools', self.HEADER, self.show_empty_search, shortcut='F3', doc=self.__doc__))
         self.register_search_action(self.HEADER, self.show_search_for, ImageProvider().TEST_SEARCH_ICON, default=True)
 
     def show_search_for(self, text):
         d = TestsDialog(text, _TestSearchListModel(self._search(TestSearchMatcher(text), self.frame._controller.data)))
         d.add_selection_listener(self._selected)
         d.Show()
-        d.set_focus_to_first_match()
+        d.set_focus_to_default_location()
+
+    def show_empty_search(self, event):
+        self.show_search_for('')
 
     def _selected(self, selection):
         test, match_location = selection
@@ -53,7 +58,7 @@ class TestSearchMatcher(object):
 
     def matches(self, test):
         name = test.name.lower()
-        tags = [str(tag).lower() for tag in test.tags]
+        tags = [unicode(tag).lower() for tag in test.tags]
         doc = test.documentation.value.lower()
         matches = []
         for text in self._texts:
