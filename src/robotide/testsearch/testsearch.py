@@ -118,5 +118,7 @@ class _TestSearchListModel(ListModel):
         test, match = self._tests[row]
         if col == 0:
             return test.name
+        if col == 1:
+            return u', '.join(unicode(t) for t in test.tags)
         return test.datafile_controller.longname
 

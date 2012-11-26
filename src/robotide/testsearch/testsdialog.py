@@ -19,12 +19,12 @@ class TestsDialog(Dialog):
     def __init__(self, name, tests):
         self._name = name
         self._selection_listeners = []
-        title = "Tests matching '%s'" % (name)
+        title = "Search Tests: (%d) matching '%s'" % (tests.count, name)
         Dialog.__init__(self, title=title, size=(650, 400))
         self.SetSizer(VerticalSizer())
         self.tests = tests
         #TODO: Why is third header needed? - for some reason does not show second column texts without
-        self.tests_list = VirtualList(self, ['Test', 'Location'], self.tests)
+        self.tests_list = VirtualList(self, ['Test', 'Tags', 'Source'], self.tests)
         self.tests_list.add_selection_listener(self._usage_selected)
         self.Sizer.add_expanding(self.tests_list)
 
