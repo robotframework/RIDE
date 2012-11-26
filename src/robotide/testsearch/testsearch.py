@@ -99,6 +99,6 @@ class _TestSearchListModel(ListModel):
     def item_text(self, row, col):
         test, match_location = self._tests[row]
         if col == 0:
-            return test.longname
-        return match_location
+            return test.name
+        return test.datafile_controller.longname
 
