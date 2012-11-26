@@ -195,7 +195,7 @@ class _EditorTab(wx.Panel):
         self.editor.insert_rows()
 
     def OnDeleteRows(self, event):
-        self.editor.delete_rows()
+        wx.CallAfter(self.editor.delete_rows)
 
     def OnDelete(self, event):
         self.editor.delete()
