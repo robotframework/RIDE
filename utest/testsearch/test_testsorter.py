@@ -40,5 +40,11 @@ class TestTestSorter(_TestSearchTest, unittest.TestCase):
         doc_match = self._match('doc', doc='doc')
         self.assertTrue(doc_match > tag_match)
 
+    def test_tags_order(self):
+        tag1_match = self._match('tag', tags=['atag'])
+        tag2_match = self._match('tag', tags=['btag'])
+        self.assertTrue(tag2_match > tag1_match)
+
+
 if __name__ == '__main__':
     unittest.main()

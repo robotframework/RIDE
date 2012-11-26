@@ -53,7 +53,7 @@ class TestSearchMatcher(object):
 
     def matches(self, test):
         name = test.name.lower()
-        tags = (str(tag).lower() for tag in test.tags)
+        tags = [str(tag).lower() for tag in test.tags]
         doc = test.documentation.value.lower()
         matches = []
         for text in self._texts:
@@ -65,15 +65,15 @@ class TestSearchMatcher(object):
 
     def _unit_match(self, text, name, tags, doc):
         if text in name:
-            return TestSearchResult(text, name, super_over_number=1000)
+            return NameMatchingResult(text, name)
         if any(text in tag for tag in tags):
-            return TestSearchResult(text, name, super_over_number=10)
+            return TagMatchingResult(text, [tag for tag in tags if text in tag][0])
         if text in doc:
-            return TestSearchResult(text, doc, super_over_number=1)
+            return DocMatchingResult(text, doc)
         return False
 
 
-class TestSearchResult(object):
+class SearchResult(object):
 
     def __init__(self, matching_search_string, string, super_over_number):
         self._matching_search_string = matching_search_string
@@ -99,6 +99,16 @@ class TestSearchResult(object):
 
     def __repr__(self):
         return '"%s":%d' % (self._string, self._over_number)
+
+
+def NameMatchingResult(search_string, name):
+    return SearchResult(search_string, name, 3)
+
+def TagMatchingResult(search_string, tag_match):
+    return SearchResult(search_string, tag_match, 2)
+
+def DocMatchingResult(search_string, doc_match):
+    return SearchResult(search_string, doc_match, 1)
 
 
 class _TestSearchListModel(ListModel):
