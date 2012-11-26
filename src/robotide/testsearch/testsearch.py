@@ -29,7 +29,8 @@ class TestSearchPlugin(Plugin):
         self.register_search_action(self.HEADER, self.show_search_for, ImageProvider().TEST_SEARCH_ICON, default=True)
 
     def show_search_for(self, text):
-        d = TestsDialog(text, _TestSearchListModel(self._search(TestSearchMatcher(text), self.frame._controller.data)))
+        d = TestsDialog(text, _TestSearchListModel(self._search(TestSearchMatcher(text), self.frame._controller.data)),
+            search_handler=self.show_search_for)
         d.add_selection_listener(self._selected)
         d.Show()
         d.set_focus_to_default_location()

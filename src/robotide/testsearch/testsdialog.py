@@ -16,8 +16,9 @@ import wx
 
 class TestsDialog(Dialog):
 
-    def __init__(self, search_text, tests):
+    def __init__(self, search_text, tests, search_handler):
         self._search_text = search_text
+        self._search_handler = search_handler
         self._selection_listeners = []
         title = "Search Tests (%d)" % tests.count
         Dialog.__init__(self, title=title, size=(650, 400))
@@ -41,6 +42,8 @@ class TestsDialog(Dialog):
     def _add_pattern_filter(self, sizer):
         sizer.Add(Label(self, label='Search term: '))
         self._search_control = wx.SearchCtrl(self, value=self._search_text, size=(200,-1),style=wx.TE_PROCESS_ENTER)
+        wrapped = lambda event: self._search_handler(self._search_control.GetValue())
+        self._search_control.Bind(wx.EVT_TEXT_ENTER, wrapped)
         sizer.Add(self._search_control)
 
     def _add_doc_filter(self, sizer):
