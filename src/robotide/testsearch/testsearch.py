@@ -15,9 +15,7 @@ import wx
 from robotide.action import ActionInfo
 from robotide.pluginapi import Plugin
 from robotide.testsearch.testsdialog import TestsDialog
-from robotide.utils import overrides
 from robotide.widgets import ImageProvider
-from robotide.widgets.list import ListModel
 
 
 class TestSearchPlugin(Plugin):
@@ -27,13 +25,23 @@ class TestSearchPlugin(Plugin):
     def enable(self):
         self.register_action(ActionInfo('Tools', self.HEADER, self.show_empty_search, shortcut='F3', doc=self.__doc__))
         self.register_search_action(self.HEADER, self.show_search_for, ImageProvider().TEST_SEARCH_ICON, default=True)
+        self._dialog = None
 
     def show_search_for(self, text):
-        d = TestsDialog(text, _TestSearchListModel(self._search(TestSearchMatcher(text), self.frame._controller.data)),
-            search_handler=self.show_search_for)
-        d.add_selection_listener(self._selected)
-        d.Show()
-        d.set_focus_to_default_location()
+        if self._dialog is None:
+            self._create_tests_dialog()
+        self._dialog.set_search_model(text, self._search(TestSearchMatcher(text), self.frame._controller.data))
+        self._dialog.set_focus_to_default_location()
+
+    def _create_tests_dialog(self):
+        self._dialog = TestsDialog(search_handler=self.show_search_for)
+        self._dialog.add_selection_listener(self._selected)
+        self._dialog.Bind(wx.EVT_CLOSE, self._dialog_closed)
+        self._dialog.Show()
+
+    def _dialog_closed(self, event):
+        self._dialog = None
+        event.Skip()
 
     def show_empty_search(self, event):
         self.show_search_for('')
@@ -115,26 +123,4 @@ def TagMatchingResult(search_string, tag_match):
 
 def DocMatchingResult(search_string, doc_match):
     return SearchResult(search_string, doc_match, 1)
-
-
-class _TestSearchListModel(ListModel):
-
-    def __init__(self, tests):
-        self._tests = sorted(tests, cmp=lambda x, y: cmp(x[1], y[1]))
-
-    @property
-    @overrides(ListModel)
-    def count(self):
-        return len(self._tests)
-
-    def __getitem__(self, item):
-        return self._tests[item]
-
-    def item_text(self, row, col):
-        test, match = self._tests[row]
-        if col == 0:
-            return test.name
-        if col == 1:
-            return u', '.join(unicode(t) for t in test.tags)
-        return test.datafile_controller.longname
 
