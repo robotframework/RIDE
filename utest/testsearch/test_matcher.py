@@ -16,8 +16,25 @@ from robot.parsing.model import TestCase, Tags
 from robotide.controller.macrocontrollers import TestCaseController
 from robotide.testsearch.testsearch import TestSearchMatcher
 
+class _TestSearchTest(object):
 
-class TestTestSearchMatcher(unittest.TestCase):
+    def _test(self, name='name', tags=None, doc='documentation'):
+        parent = lambda:0
+        parent.datafile_controller = parent
+        parent.register_for_namespace_updates = lambda *_:0
+        parent.force_tags = []
+        parent.default_tags = []
+        robot_test = TestCase(parent=parent, name=name)
+        robot_test.get_setter('documentation')(doc)
+        robot_test.get_setter('tags')(tags or [])
+        test = TestCaseController(parent, robot_test)
+        return test
+
+    def _match(self, text, name='name', tags=None, doc='documentation'):
+        return TestSearchMatcher(text).matches(self._test(name, tags, doc))
+
+
+class TestTestSearchMatcher(_TestSearchTest, unittest.TestCase):
 
     def test_matching_name(self):
         self.assertTrue(self._match('name', name='name'))
@@ -45,21 +62,6 @@ class TestTestSearchMatcher(unittest.TestCase):
 
     def test_multiple_match_terms(self):
         self.assertTrue(self._match('name tag doc', name='name!', tags=['foo', 'tag', 'bar'], doc='well doc to you!'))
-
-    def _match(self, text, name='name', tags=None, doc='documentation'):
-        return TestSearchMatcher(text).matches(self._test(name, tags, doc))
-
-    def _test(self, name, tags, doc):
-        parent = lambda:0
-        parent.datafile_controller = parent
-        parent.register_for_namespace_updates = lambda *_:0
-        parent.force_tags = []
-        parent.default_tags = []
-        robot_test = TestCase(parent=parent, name=name)
-        robot_test.get_setter('documentation')(doc)
-        robot_test.get_setter('tags')(tags or [])
-        test = TestCaseController(parent, robot_test)
-        return test
 
 
 if __name__ == '__main__':

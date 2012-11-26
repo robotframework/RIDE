@@ -60,33 +60,51 @@ class TestSearchMatcher(object):
             match = self._unit_match(text, name, tags, doc)
             if not match:
                 return False
-            matches.append(match)
-        return ', '.join(matches)
+            matches += [match]
+        return matches
 
     def _unit_match(self, text, name, tags, doc):
         if text in name:
-            return 'Name match'
+            return TestSearchResult(text, name, super_over_number=1000)
         if any(text in tag for tag in tags):
-            return 'Tag match'
+            return TestSearchResult(text, name, super_over_number=10)
         if text in doc:
-            return 'Documentation match'
+            return TestSearchResult(text, doc, super_over_number=1)
         return False
+
+
+class TestSearchResult(object):
+
+    def __init__(self, matching_search_string, string, super_over_number):
+        self._matching_search_string = matching_search_string
+        self._string = string
+        self._over_number = self._calculate_over_number()
+        self._super_over_number = super_over_number
+
+    def _calculate_over_number(self):
+        if self._matching_search_string == self._string:
+            return 100000
+        if self._matching_search_string in self._string.split():
+            return 1000
+        if self._string.startswith(self._matching_search_string):
+            return 100
+        return 12
+
+    def __cmp__(self, other):
+        if self._super_over_number != other._super_over_number:
+            return cmp(other._super_over_number, self._super_over_number)
+        if self._over_number != other._over_number:
+            return cmp(other._over_number, self._over_number)
+        return cmp(self._string, other._string)
+
+    def __repr__(self):
+        return '"%s":%d' % (self._string, self._over_number)
+
 
 class _TestSearchListModel(ListModel):
 
     def __init__(self, tests):
-        self._tests = sorted(tests, cmp=self._comparator)
-
-    def _comparator(self, first, second):
-        if first[1] == second[1]:
-            return cmp(first[0], first[1])
-        if first[1] == 'Name match':
-            return -1
-        if second[1] == 'Name match':
-            return 1
-        if first[1] == 'Tag match':
-            return -1
-        return 1
+        self._tests = sorted(tests, cmp=lambda x, y: cmp(x[1], y[1]))
 
     @property
     @overrides(ListModel)
@@ -97,7 +115,7 @@ class _TestSearchListModel(ListModel):
         return self._tests[item]
 
     def item_text(self, row, col):
-        test, match_location = self._tests[row]
+        test, match = self._tests[row]
         if col == 0:
             return test.name
         return test.datafile_controller.longname
