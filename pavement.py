@@ -68,7 +68,7 @@ Topic :: Software Development :: Testing
                          in find_packages(str(LIB_SOURCE))],
       package_data = find_package_data(str(SOURCE_DIR)),
       # Robot Framework package data is not included, but RIDE does not need it.
-      scripts      = ['src/bin/ride.py']
+      scripts      = ['src/bin/ride.py', 'post_install.py']
       )
 
 @task
@@ -174,7 +174,13 @@ def test_parallel():
 @needs('_prepare_build', 'setuptools.command.install')
 def install():
     """Installs development version and dependencies"""
-    pass
+    try:
+        import wxversion
+    except ImportError:
+        print "No wxPython installation detected!"
+        print ""
+        print "Please ensure that you have wxPython installed before running RIDE."
+        print "You can obtain wxPython from http://wxpython.org/"
 
 @task
 @needs('_prepare_build', 'setuptools.command.register')
@@ -196,7 +202,7 @@ def sdist():
     _after_distribution()
 
 @task
-@needs('_windows', 'clean', '_prepare_build', '_release_notes',
+@needs('_windows', 'clean', '_prepare_build',
        'setuptools.command.bdist_wininst')
 def wininst():
     """Creates Windows installer with bundled dependencies"""
