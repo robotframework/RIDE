@@ -24,4 +24,4 @@ from robotide import main
 # and we use multiprocessing
 # http://docs.python.org/library/multiprocessing.html#windows
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    main(*sys.argv[1:])

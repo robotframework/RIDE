@@ -67,7 +67,7 @@ from robot.errors import DataError
 sys.path.append(os.path.join(os.path.dirname(__file__), 'spec'))
 
 
-def main(args):
+def main(*args):
     noupdatecheck, debug_console, inpath = _parse_args(args)
     if len(args) > 3 or '--help' in args:
         print __doc__
