@@ -7,6 +7,7 @@ import tempfile
 from urllib2 import urlopen
 from string import Template
 from StringIO import StringIO
+import urllib2
 from paver.easy import *
 from paver.setuputils import setup, find_package_data
 
@@ -95,40 +96,47 @@ options(
         resourcefiles=1,
         resources=30,
         testdepth=3,
-        validity=1
+        validity=1,
+        upgrade=False
     )
 )
 @task
 @cmdopts([
     ('libs=', 'l', 'Number of test libraries'),
     ('keywords=', 'k', 'Number of keywords in a test library'),
-    ('dir=', 'd', 'Target directory for the test project'),
     ('suites=', 's', 'Number of test suites'),
     ('tests=', 't', 'Number of tests in a suite'),
-    ('testdepth=', 'e', 'Average number of steps in a test case (2..20)'),
     ('resourcefiles=', 'f', 'Number of resource files'),
     ('resources=', 'r', 'Number of resources in a file'),
-    ('validity=', 'v', 'Validity of test cases (1...0). To have ~80% passes give 0.8. Default 1.')
+    ('validity=', 'v', 'Validity of test cases (1...0). To have ~80% passes give 0.8. Default 1.'),
+    ('testdepth=', 'e', 'Average number of steps in a test case (2..)'),
+    ('dir=', 'd', 'Target directory for the test project'),
+    ('upgrade', 'u', 'Update script from the github')
 ])
 def generate_big_project(options):
     """Use rtest go_find_bugs.py to randomly test RIDE api"""
+    #find_package_data(where='https://github.com/robotframework/Generator/')
+    if options.upgrade:
+        rfgen_url = "https://raw.github.com/robotframework/Generator/master/rfgen.py"
+        print "Updating rfgen.py from github."
+        f = open('rfgen.py','wb')
+        f.write(urllib2.urlopen(rfgen_url).read())
+        f.close()
+        print "Update done."
+        sys.exit(0)
+
     _remove_bytecode_files()
     _set_development_path()
     sys.path.insert(0, '.')
-    from rtest.large_scale_keyword_test import main
-    _log("Test project is created into directory (option 'd'): %s" % options.dir)
+
     shutil.rmtree(options.dir, ignore_errors=True)
     sys.path.append(options.dir)
-    try:
-        assert main(options.dir, testlibs_count=int(options.libs), keyword_count=int(options.keywords),
-                    testsuite_count=int(options.suites), tests_in_suite=int(options.tests),
-                    resource_count=int(options.resourcefiles), resources_in_file=int(options.resources),
-                    avg_test_depth=int(options.testdepth), test_validity=float(options.validity))
-    finally:
-        #if len(args) >= 1 and ("del" in args):
-        #    shutil.rmtree(dir, ignore_errors=True)
-        #else:
-        _log("Not removing directory: " + options.dir)
+    from rfgen import main
+
+    assert main(options.dir, testlibs_count=int(options.libs), keyword_count=int(options.keywords),
+                testsuite_count=int(options.suites), tests_in_suite=int(options.tests),
+                resource_count=int(options.resourcefiles), resources_in_file=int(options.resources),
+                avg_test_depth=int(options.testdepth), test_validity=float(options.validity))
 
 
 @task
