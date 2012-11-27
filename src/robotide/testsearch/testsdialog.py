@@ -29,10 +29,14 @@ class TestsDialog(Dialog):
         self.tests_list = VirtualList(self, ['Test', 'Tags', 'Source'], self.tests)
         self.tests_list.add_selection_listener(self._usage_selected)
         self.Sizer.add_expanding(self.tests_list)
+        self._results_text = wx.StaticText(self, -1, 'Results: ')
+        self.Sizer.Add(self._results_text, 0, wx.ALL, 3)
 
     def set_search_model(self, search_text, results):
+        results = list(results)
         self._search_control.SetValue(search_text)
-        self.tests._tests = list(results)
+        self._results_text.SetLabel('Results: %d' % len(results))
+        self.tests._tests = results
         self.tests_list.refresh()
 
     def _add_search_control(self):
