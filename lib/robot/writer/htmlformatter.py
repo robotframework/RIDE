@@ -20,6 +20,7 @@ from .formatters import _DataFileFormatter
 
 
 class HtmlFormatter(_DataFileFormatter):
+    _split_multiline_doc = False
 
     def _format_row(self, row, table=None):
         row = self._pad(self._escape_consecutive_whitespace(row), table)
@@ -80,7 +81,7 @@ class HtmlFormatter(_DataFileFormatter):
 
 
 class HtmlCell(object):
-    _backslash_matcher = re.compile(r'(\\+)n ')
+    _backslash_matcher = re.compile(r'(\\+)n ?')
 
     def __init__(self, content='', attributes=None, tag='td', escape=True):
         if escape:
@@ -118,12 +119,12 @@ class AnchorNameCell(HtmlCell):
 class DocumentationCell(HtmlCell):
 
     def __init__(self, content, span):
-        HtmlCell.__init__(self, content)
-        self.attributes = {'class': 'colspan%d' % span, 'colspan': '%d' % span}
+        HtmlCell.__init__(self, content, {'class': 'colspan%d' % span,
+                                          'colspan': '%d' % span})
 
 
 class HeaderCell(HtmlCell):
 
     def __init__(self, name, span=1):
         HtmlCell.__init__(self, name, {'class': 'name', 'colspan': '%d' % span},
-            tag='th')
+                          tag='th')

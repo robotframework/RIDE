@@ -22,10 +22,13 @@ from .xmlelementhandlers import XmlElementHandler
 from .executionresult import Result, CombinedResult
 
 
-def ExecutionResult(*sources):
+def ExecutionResult(*sources, **options):
     """Constructs :class:`Result` object based on execution result xml file(s).
 
     :param sources: The Robot Framework output xml file(s).
+    :param options: Configuration options passed to
+                    :py:class:`~ExecutionResultBuilder` as keyword arguments.
+                    New in 2.7.5.
     :returns: :py:class:`~.executionresult.Result` instance.
 
     See :py:mod:`robot.result` for usage example.
@@ -33,29 +36,59 @@ def ExecutionResult(*sources):
     if not sources:
         raise DataError('One or more data source needed.')
     if len(sources) > 1:
-        return CombinedResult(*[ExecutionResult(src) for src in sources])
-    source = ETSource(sources[0])
+        return _combined_result(sources, options)
+    return _single_result(sources[0], options)
+
+def _combined_result(sources, options):
+    return CombinedResult(ExecutionResult(src, **options) for src in sources)
+
+def _single_result(source, options):
+    ets = ETSource(source)
     try:
-        return ExecutionResultBuilder(source).build(Result(sources[0]))
+        return ExecutionResultBuilder(ets, **options).build(Result(source))
     except IOError, err:
         error = err.strerror
     except:
         error = get_error_message()
-    raise DataError("Reading XML source '%s' failed: %s" % (unicode(source), error))
+    raise DataError("Reading XML source '%s' failed: %s" % (unicode(ets), error))
 
 
 class ExecutionResultBuilder(object):
 
-    def __init__(self, source):
+    def __init__(self, source, include_keywords=True):
         self._source = source \
             if isinstance(source, ETSource) else ETSource(source)
+        self._include_keywords = include_keywords
 
     def build(self, result):
+        # Parsing is performance optimized. Do not change without profiling!
         handler = XmlElementHandler(result)
-        # Faster attribute lookup inside for loop
-        start, end = handler.start, handler.end
         with self._source as source:
-            for event, elem in ET.iterparse(source, events=('start', 'end')):
-                start(elem) if event == 'start' else end(elem)
+            self._parse(source, handler.start, handler.end)
         SuiteTeardownFailureHandler(result.generator).visit_suite(result.suite)
         return result
+
+    def _parse(self, source, start, end):
+        context = ET.iterparse(source, events=('start', 'end'))
+        if not self._include_keywords:
+            context = self._omit_keywords(context)
+        for event, elem in context:
+            if event == 'start':
+                start(elem)
+            else:
+                end(elem)
+                elem.clear()
+
+    def _omit_keywords(self, context):
+        started_kws = 0
+        for event, elem in context:
+            start = event == 'start'
+            kw = elem.tag == 'kw'
+            if kw and start:
+                started_kws += 1
+            if not started_kws:
+                yield event, elem
+            elif not start:
+                elem.clear()
+            if kw and not start:
+                started_kws -= 1

@@ -19,14 +19,14 @@ USAGE = """robot.tidy -- Robot Framework test data clean-up tool.
 Version:  <VERSION>
 
 Usage:  python -m robot.tidy [options] inputfile
-   or:  python -m robot.tidy [options] inputfile > outputfile
+   or:  python -m robot.tidy [options] inputfile [outputfile]
    or:  python -m robot.tidy --inplace [options] inputfile [more input files]
    or:  python -m robot.tidy --recursive [options] directory
 
 Tidy tool can be used to clean up and change format of Robot Framework test
-data files. By default, the output is written to the standard output stream,
-but it can be redirected to a file. Alternatively, files can be modified
-in-place using --inplace or --recursive options.
+data files. The output is written into the standard output stream by default,
+but an optional output file can be given starting from Robot Framework 2.7.5.
+Files can also be modified in-place using --inplace or --recursive options.
 
 Options
 =======
@@ -38,7 +38,7 @@ Options
                    python -m robot.tidy --inplace tests.html
                    python -m robot.tidy --inplace --format txt *.html
  -r --recursive  Process given directory recursively. Files in the directory
-                 are processed in place similarly as when --inplace option
+                 are processed in-place similarly as when --inplace option
                  is used.
  -f --format txt|html|tsv
                  Output file format. If omitted, the format of the input
@@ -57,7 +57,7 @@ using tidy. Tidy always writes consistent headers, consistent order for
 settings, and consistent amount of whitespace between cells and tables.
 
 Examples:
-  python -m robot.tidy messed_up_tests.html > cleaned_tests.html
+  python -m robot.tidy messed_up_tests.html cleaned_tests.html
   python -m robot.tidy --inplace tests.txt
 
 Changing the test data format
@@ -69,7 +69,7 @@ based on the extension of the input file. Output format can be set using
 the --format option.
 
 Examples:
-  python -m robot.tidy --format tsv tests_in_html.html > tests_in_tsv.tsv
+  python -m robot.tidy --format tsv --inplace tests.html
   python -m robot.tidy --format txt --recursive mytests
 
 Output encoding
@@ -96,8 +96,9 @@ if 'robot' not in sys.modules and __name__ == '__main__':
     import pythonpathsetter
 
 from robot.errors import DataError
-from robot.parsing import ResourceFile, TestDataDirectory, TestCaseFile
-from robot.utils import Application, encode_output
+from robot.parsing import (ResourceFile, TestDataDirectory, TestCaseFile,
+                           disable_curdir_processing)
+from robot.utils import Application
 
 
 class Tidy(object):
@@ -105,23 +106,45 @@ class Tidy(object):
     def __init__(self, **options):
         self._options = options
 
-    def file(self, path):
-        output = StringIO()
-        data = self._create_datafile(path)
-        data.save(output=output, **self._options)
-        return output.getvalue().decode('UTF-8')
+    def file(self, path, output=None):
+        data = self._parse_data(path)
+        outfile = open(output, 'w') if output else StringIO()
+        try:
+            self._save_file(data, outfile)
+            if not output:
+                return outfile.getvalue().replace('\r\n', '\n').decode('UTF-8')
+        finally:
+            outfile.close()
 
     def directory(self, path):
-        self._save_directory(TestDataDirectory(source=path).populate())
+        self._save_directory(self._parse_data(path))
 
     def inplace(self, path):
-        self._save_file(self._create_datafile(path))
+        self._save_file(self._parse_data(path))
 
-    def _save_file(self, data):
+    @disable_curdir_processing
+    def _parse_data(self, path):
+        if os.path.isdir(path):
+            return TestDataDirectory(source=path).populate()
+        if self._is_init_file(path):
+            path = os.path.dirname(path)
+            return TestDataDirectory(source=path).populate(recurse=False)
+        try:
+            return TestCaseFile(source=path).populate()
+        except DataError:
+            try:
+                return ResourceFile(source=path).populate()
+            except DataError:
+                raise DataError("Invalid data source '%s'." % path)
+
+    def _is_init_file(self, path):
+        return os.path.splitext(os.path.basename(path))[0].lower() == '__init__'
+
+    def _save_file(self, data, output=None):
         source = data.initfile if self._is_directory(data) else data.source
-        if source:
+        if source and not output:
             os.remove(source)
-        data.save(**self._options)
+        data.save(output=output, **self._options)
 
     def _save_directory(self, data):
         if not self._is_directory(data):
@@ -135,65 +158,51 @@ class Tidy(object):
     def _is_directory(self, data):
         return hasattr(data, 'initfile')
 
-    def _create_datafile(self, source):
-        if self._is_init_file(source):
-            dir_ = os.path.dirname(source)
-            return TestDataDirectory(source=dir_).populate(recurse=False)
-        try:
-            return TestCaseFile(source=source).populate()
-        except DataError:
-            try:
-                return ResourceFile(source=source).populate()
-            except DataError:
-                raise DataError("Invalid data source '%s'." % source)
-
-    def _is_init_file(self, source):
-        return os.path.splitext(os.path.basename(source))[0] == '__init__'
-
 
 class TidyCommandLine(Application):
 
     def __init__(self):
-        Application.__init__(self, USAGE)
+        Application.__init__(self, USAGE, arg_limits=(1,))
 
-    def main(self, inputs, recursive=False, inplace=False, format='txt',
+    def main(self, arguments, recursive=False, inplace=False, format='txt',
              usepipes=False, spacecount=4):
         tidy = Tidy(format=format, pipe_separated=usepipes,
                     txt_separating_spaces=spacecount)
         if recursive:
-            tidy.directory(inputs[0])
+            tidy.directory(arguments[0])
         elif inplace:
-            for source in inputs:
+            for source in arguments:
                 tidy.inplace(source)
         else:
-            self._print(tidy.file(inputs[0]))
+            output = tidy.file(*arguments)
+            self.console(output)
 
-    def _print(self, msg):
-        if sys.stdout.isatty():
-            msg = encode_output(msg)
+    def validate(self, opts, args):
+        self._validate_mode_and_arguments(args, **opts)
+        opts['format'] = self._validate_format(args, **opts)
+        if not opts['spacecount']:
+            opts.pop('spacecount')
         else:
-            if os.sep == '\\' and 'b' not in sys.stdout.mode:
-                msg = msg.replace('\r\n', '\n')
-            msg = msg.encode('UTF-8')
-        sys.stdout.write(msg)
+            opts['spacecount'] = self._validate_spacecount(opts['spacecount'])
+        return opts, args
 
-    def validate(self, options, arguments):
-        if options['inplace'] and options['recursive']:
+    def _validate_mode_and_arguments(self, args, inplace, recursive, **others):
+        if inplace and recursive:
             raise DataError('--recursive and --inplace can not be used together.')
-        if not options['inplace'] and len(arguments) > 1:
-            raise DataError('Expected exactly 1 input file.')
-        if not arguments:
-            raise DataError('Expected at least 1 input file.')
-        if options['recursive'] and not os.path.isdir(arguments[0]):
-            raise DataError('--recursive requires input to be a directory.')
-        format = options['format']
-        if format and format not in ['txt', 'tsv', 'html']:
-            raise DataError("Invalid format: %s." % format)
-        if not options['spacecount']:
-            options.pop('spacecount')
-        else:
-            options['spacecount'] = self._validate_spacecount(options['spacecount'])
-        return options, arguments
+        if recursive and (len(args) > 1 or not os.path.isdir(args[0])):
+            raise DataError('--recursive requires exactly one directory as argument.')
+        if not (inplace or recursive) and len(args) > 2:
+            raise DataError('Default mode requires 1 or 2 arguments.')
+
+    def _validate_format(self, args, format, inplace, recursive, **others):
+        if not format:
+            if inplace or recursive or len(args) < 2:
+                return None
+            format = os.path.splitext(args[1])[1][1:]
+        format = format.upper()
+        if format not in ['TXT', 'TSV', 'HTML']:
+            raise DataError("Invalid format: '%s'." % format)
+        return format
 
     def _validate_spacecount(self, spacecount):
         try:
@@ -201,7 +210,7 @@ class TidyCommandLine(Application):
             if spacecount < 2:
                 raise ValueError
         except ValueError:
-            raise DataError('--spacecount must be an integer greater than 1')
+            raise DataError('--spacecount must be an integer greater than 1.')
         return spacecount
 
 

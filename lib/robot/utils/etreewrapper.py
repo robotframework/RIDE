@@ -46,6 +46,11 @@ else:
         raise ImportError(_ERROR)
 
 
+# cElementTree.VERSION seems to always be 1.0.6. We want real API version.
+if ET.VERSION < '1.3' and hasattr(ET, 'tostringlist'):
+    ET.VERSION = '1.3'
+
+
 class ETSource(object):
 
     def __init__(self, source):
@@ -73,21 +78,32 @@ class ETSource(object):
 
     def _open_source_if_necessary(self):
         if self._source_is_file_name():
-            return self._open_source_file()
+            return self._open_file(self._source)
         if isinstance(self._source, basestring):
-            return StringIO(self._source.encode('UTF-8'))
+            return self._open_string_io(self._source)
         return None
 
-    def _open_source_file(self):
+    if not _IRONPYTHON:
+
         # File is opened, and later closed, because ElementTree had a bug that
         # it didn't close files it had opened. This caused problems with Jython
         # especially on Windows: http://bugs.jython.org/issue1598
         # The bug has now been fixed in ET and worked around in Jython 2.5.2.
-        if not _IRONPYTHON:
-            return open(self._source, 'rb')
+        def _open_file(self, source):
+            return open(source, 'rb')
+
+        def _open_string_io(self, source):
+            return StringIO(source.encode('UTF-8'))
+
+    else:
+
         # File cannot be opened on IronPython, however, as ET does not seem to
         # handle non-ASCII characters correctly in that case. We want to check
         # that the file exists even in that case, though.
-        if not os.path.exists(self._source):
-            raise IOError(2, 'No such file', self._source)
-        return None
+        def _open_file(self, source):
+            if not os.path.exists(source):
+                raise IOError(2, 'No such file', source)
+            return None
+
+        def _open_string_io(self, source):
+            return StringIO(source)

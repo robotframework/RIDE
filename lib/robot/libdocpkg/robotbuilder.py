@@ -17,7 +17,7 @@ import sys
 
 from robot.errors import DataError
 from robot.running import TestLibrary, UserLibrary
-from robot.parsing import populators
+from robot.parsing import disable_curdir_processing
 from robot import utils
 
 from .model import LibraryDoc, KeywordDoc
@@ -32,8 +32,9 @@ class LibraryDocBuilder(object):
         libdoc = LibraryDoc(name=lib.name,
                             doc=self._get_doc(lib),
                             version=lib.version,
-                            scope=self._get_scope(lib),
-                            named_args=lib.supports_named_arguments)
+                            scope=lib.scope,
+                            named_args=lib.supports_named_arguments,
+                            doc_format=lib.doc_format)
         libdoc.inits = self._get_initializers(lib)
         libdoc.keywords = KeywordDocBuilder().build_keywords(lib)
         return libdoc
@@ -52,12 +53,6 @@ class LibraryDocBuilder(object):
     def _get_doc(self, lib):
         return lib.doc or "Documentation for test library `%s`." % lib.name
 
-    def _get_scope(self, lib):
-        if hasattr(lib, 'scope'):
-            return {'TESTCASE': 'test case', 'TESTSUITE': 'test suite',
-                    'GLOBAL': 'global'}[lib.scope]
-        return ''
-
     def _get_initializers(self, lib):
         if lib.init.arguments.maxargs:
             return [KeywordDocBuilder().build_keyword(lib.init)]
@@ -73,12 +68,9 @@ class ResourceDocBuilder(object):
         libdoc.keywords = KeywordDocBuilder().build_keywords(res)
         return libdoc
 
+    @disable_curdir_processing
     def _import_resource(self, path):
-        populators.PROCESS_CURDIR = False
-        try:
-            return UserLibrary(self._find_resource_file(path))
-        finally:
-            populators.PROCESS_CURDIR = True
+        return UserLibrary(self._find_resource_file(path))
 
     def _find_resource_file(self, path):
         if os.path.isfile(path):

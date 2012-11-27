@@ -13,7 +13,9 @@
 #  limitations under the License.
 
 from __future__ import with_statement
+import os.path
 
+from robot.errors import DataError
 from robot.utils import ET, ETSource
 
 from .model import LibraryDoc, KeywordDoc
@@ -28,14 +30,20 @@ class SpecDocBuilder(object):
                             version=spec.find('version').text or '',
                             doc=spec.find('doc').text or '',
                             scope=spec.find('scope').text or '',
-                            named_args=self._get_named_args(spec))
+                            named_args=self._get_named_args(spec),
+                            doc_format=spec.get('format', 'ROBOT'))
         libdoc.inits = self._create_keywords(spec, 'init')
         libdoc.keywords = self._create_keywords(spec, 'kw')
         return libdoc
 
     def _parse_spec(self, path):
+        if not os.path.isfile(path):
+            raise DataError("Spec file '%s' does not exist." % path)
         with ETSource(path) as source:
-            return ET.parse(source).getroot()
+            root = ET.parse(source).getroot()
+        if root.tag != 'keywordspec':
+            raise DataError("Invalid spec file '%s'." % path)
+        return root
 
     def _get_named_args(self, spec):
         elem = spec.find('namedargs')

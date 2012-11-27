@@ -13,7 +13,8 @@
 #  limitations under the License.
 
 from robot.version import get_version
-from robot import utils
+from robot.utils import plural_or_not, seq2str, seq2str2, unic
+from robot.utils.asserts import assert_equals
 
 
 class _List:
@@ -133,6 +134,24 @@ class _List:
             return list_.pop(self._index_to_int(index))
         except IndexError:
             self._index_error(list_, index)
+
+    def remove_duplicates(self, list_):
+        """Returns a list without duplicates based on the given `list`.
+
+        Creates and returns a new list that contains all items in the given
+        list so that one item can appear only once. Order of the items in
+        the new list is the same as in the original except for missing
+        duplicates. Number of the removed duplicates is logged.
+
+        New in Robot Framework 2.7.5.
+        """
+        ret = []
+        for item in list_:
+            if item not in ret:
+                ret.append(item)
+        removed = len(list_) - len(ret)
+        print '%d duplicate%s removed.' % (removed, plural_or_not(removed))
+        return ret
 
     def get_from_list(self, list_, index):
         """Returns the value specified with an `index` from `list`.
@@ -266,8 +285,7 @@ class _List:
         not contain the value 'x'" is shown in case of a failure. Otherwise,
         the given `msg` is used in case of a failure.
         """
-        default = "%s does not contain value '%s'" % (utils.seq2str2(list_),
-                                                      value)
+        default = "%s does not contain value '%s'" % (seq2str2(list_), value)
         _verify_condition(value in list_, default, msg)
 
     def list_should_not_contain_value(self, list_, value, msg=None):
@@ -275,7 +293,7 @@ class _List:
 
         See `List Should Contain Value` for an explanation of `msg`.
         """
-        default = "%s contains value '%s'" % (utils.seq2str2(list_), value)
+        default = "%s contains value '%s'" % (seq2str2(list_), value)
         _verify_condition(value not in list_, default, msg)
 
     def list_should_not_contain_duplicates(self, list_, msg=None):
@@ -300,7 +318,7 @@ class _List:
                     dupes.append(item)
         if dupes:
             if not msg:
-                msg = '%s found multiple times' % utils.seq2str(dupes)
+                msg = '%s found multiple times' % seq2str(dupes)
             raise AssertionError(msg)
 
     def lists_should_be_equal(self, list1, list2, msg=None, values=True,
@@ -341,7 +359,7 @@ class _List:
         default = 'Lengths are different: %d != %d' % (len1, len2)
         _verify_condition(len1 == len2, default, msg, values)
         names = self._get_list_index_name_mapping(names, len1)
-        diffs = list(self._get_diffs(list1, list2, names))
+        diffs = list(self._yield_list_diffs(list1, list2, names))
         default = 'Lists are different:\n' + '\n'.join(diffs)
         _verify_condition(diffs == [], default, msg, values)
 
@@ -352,11 +370,13 @@ class _List:
             return dict((int(index), names[index]) for index in names)
         return dict(zip(range(list_length), names))
 
-    def _get_diffs(self, list1, list2, names):
+    def _yield_list_diffs(self, list1, list2, names):
         for index, (item1, item2) in enumerate(zip(list1, list2)):
-            if item1 != item2:
-                name = ' (%s)' % names[index] if index in names else ''
-                yield 'Index %d%s: %s != %s' % (index, name, item1, item2)
+            name = ' (%s)' % names[index] if index in names else ''
+            try:
+                assert_equals(item1, item2, msg='Index %d%s' % (index, name))
+            except AssertionError, err:
+                yield unic(err)
 
     def list_should_contain_sub_list(self, list1, list2, msg=None, values=True):
         """Fails if not all of the elements in `list2` are found in `list1`.
@@ -367,8 +387,7 @@ class _List:
         See the use of `msg` and `values` from the `Lists Should Be Equal`
         keyword.
         """
-        diffs = ', '.join(utils.unic(item) for item in list2
-                          if item not in list1)
+        diffs = ', '.join(unic(item) for item in list2 if item not in list1)
         default = 'Following values were not found from first list: ' + diffs
         _verify_condition(diffs == '', default, msg, values)
 
@@ -598,7 +617,7 @@ class _Dictionary:
         The given dictionaries are never altered by this keyword.
         """
         keys = self.get_dictionary_keys(dict2)
-        diffs = [ utils.unic(k) for k in keys if k not in dict1 ]
+        diffs = [unic(k) for k in keys if k not in dict1]
         default = "Following keys missing from first dictionary: %s" \
                   % ', '.join(diffs)
         _verify_condition(diffs == [], default, msg, values)
@@ -626,8 +645,8 @@ class _Dictionary:
     def _keys_should_be_equal(self, dict1, dict2, msg, values):
         keys1 = self.get_dictionary_keys(dict1)
         keys2 = self.get_dictionary_keys(dict2)
-        miss1 = [utils.unic(k) for k in keys2 if k not in dict1]
-        miss2 = [utils.unic(k) for k in keys1 if k not in dict2]
+        miss1 = [unic(k) for k in keys2 if k not in dict1]
+        miss2 = [unic(k) for k in keys1 if k not in dict2]
         error = []
         if miss1:
             error += ['Following keys missing from first dictionary: %s'
@@ -639,10 +658,16 @@ class _Dictionary:
         return keys1
 
     def _key_values_should_be_equal(self, keys, dict1, dict2, msg, values):
-        diffs = ['Key %s: %s != %s' % (k, dict1[k], dict2[k])
-                 for k in keys if dict1[k] != dict2[k]]
+        diffs = list(self._yield_dict_diffs(keys, dict1, dict2))
         default = 'Following keys have different values:\n' + '\n'.join(diffs)
         _verify_condition(diffs == [], default, msg, values)
+
+    def _yield_dict_diffs(self, keys, dict1, dict2):
+        for key in keys:
+            try:
+                assert_equals(dict1[key], dict2[key], msg='Key %s' % (key,))
+            except AssertionError, err:
+                yield unic(err)
 
 
 class Collections(_List, _Dictionary):

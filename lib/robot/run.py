@@ -208,7 +208,7 @@ Options
                           all:    remove data from all keywords
                           passed: remove data only from keywords in passed
                                   test cases and suites
-                          for:    remove all passed iterations from for loops
+                          for:    remove passed iterations from for loops
                           wuks:   remove all but last failing keyword from
                                   `Wait Until Keyword Succeeds`
     --listener class *    A class for monitoring test execution. Gets
@@ -235,11 +235,15 @@ Options
                           In the `DryRun` test data is verified and tests run
                           so that library keywords are not executed.
  -W --monitorwidth chars  Width of the monitor output. Default is 78.
- -C --monitorcolors auto|on|off  Use colors on console output or not.
+ -C --monitorcolors auto|on|ansi|off  Use colors on console output or not.
                           auto: use colors when output not redirected (default)
                           on:   always use colors
-                          off:  never use colors
+                          ansi: like `on` but use ANSI colors also on Windows
+                          off:  disable colors altogether
                           Note that colors do not work with Jython on Windows.
+ -K --monitormarkers auto|on|off  Show `.` (success) or `F` (failure) on
+                          console when top level keywords in test cases end.
+                          Values have same semantics as with --monitorcolors.
  -P --pythonpath path *   Additional locations (directories, ZIPs, JARs) where
                           to search test libraries from when they are imported.
                           Multiple paths can be given by separating them with a
@@ -321,6 +325,7 @@ $ pybot tests.html
 """
 
 import sys
+import os.path
 
 # Allows running as a script. __name__ check needed with multiprocessing:
 # http://code.google.com/p/robotframework/issues/detail?id=1137
@@ -328,10 +333,11 @@ if 'robot' not in sys.modules and __name__ == '__main__':
     import pythonpathsetter
 
 from robot.conf import RobotSettings
+from robot.errors import DataError
 from robot.output import LOGGER, Output, pyloggingconf
 from robot.reporting import ResultWriter
 from robot.running import TestSuite, STOP_SIGNAL_MONITOR, namespace
-from robot.utils import Application
+from robot.utils import Application, seq2str
 from robot.variables import init_global_variables
 
 
@@ -347,6 +353,7 @@ class RobotFramework(Application):
         pyloggingconf.initialize(settings['LogLevel'])
         LOGGER.register_console_logger(width=settings['MonitorWidth'],
                                        colors=settings['MonitorColors'],
+                                       markers=settings['MonitorMarkers'],
                                        stdout=settings['StdOut'],
                                        stderr=settings['StdErr'])
         init_global_variables(settings)
@@ -359,6 +366,25 @@ class RobotFramework(Application):
             output, settings = settings.get_rebot_datasource_and_settings()
             ResultWriter(output).write_results(settings)
         return suite.return_code
+
+    def validate(self, options, arguments):
+        if len(arguments) > 1:
+            arguments = self._validate_arguments_exist(arguments)
+        return options, arguments
+
+    def _validate_arguments_exist(self, arguments):
+        valid = []
+        nonex = []
+        for arg in arguments:
+            (valid if os.path.exists(arg) else nonex).append(arg)
+        if nonex:
+            s, were = ('s', 'were') if len(nonex) > 1 else ('', 'was')
+            LOGGER.warn("Argument%s %s did not exist and %s ignored. "
+                        "Validate the used command line syntax."
+                        % (s, seq2str(nonex), were))
+            if not valid:
+                raise DataError('No valid arguments given.')
+        return valid
 
 
 def run_cli(arguments):

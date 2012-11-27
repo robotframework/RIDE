@@ -44,7 +44,7 @@ class Variables(utils.NormalizedDict):
     (.+?)        # base name (group 1)
     ([^\s\w].+)  # extended part (group 2)
     }$           # "}" and end of the string
-    ''', re.VERBOSE)
+    ''', re.UNICODE|re.VERBOSE)
 
     def __init__(self, identifiers=('$','@','%','&','*')):
         utils.NormalizedDict.__init__(self, ignore=['_'])
@@ -184,7 +184,7 @@ class Variables(utils.NormalizedDict):
                 if not ignore_errors:
                     raise
                 value = string[splitted.start:splitted.end]
-            if not isinstance(value, basestring):
+            if not isinstance(value, unicode):
                 value = utils.unic(value)
             result.append(value)
             string = string[splitted.end:]

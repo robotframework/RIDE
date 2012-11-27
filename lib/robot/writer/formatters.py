@@ -21,9 +21,10 @@ from .rowsplitter import RowSplitter
 
 class _DataFileFormatter(object):
     _whitespace = re.compile('\s{2,}')
+    _split_multiline_doc = True
 
     def __init__(self, column_count):
-        self._splitter = RowSplitter(column_count)
+        self._splitter = RowSplitter(column_count, self._split_multiline_doc)
         self._column_count = column_count
         self._extractor = DataExtractor(self._want_names_on_first_content_row)
 
@@ -40,18 +41,16 @@ class _DataFileFormatter(object):
     def format_table(self, table):
         rows = self._extractor.rows_from_table(table)
         if self._should_split_rows(table):
-            return self._split_rows(rows, table)
-        return [self._format_row(r, table) for r in rows]
+            rows = self._split_rows(rows, table)
+        return (self._format_row(r, table) for r in rows)
 
     def _should_split_rows(self, table):
-        if self._should_align_columns(table):
-            return False
-        return True
+        return not self._should_align_columns(table)
 
-    def _split_rows(self, rows, table):
-        for row in rows:
-            for r in self._splitter.split(row, self._is_indented_table(table)):
-                yield self._format_row(r, table)
+    def _split_rows(self, original_rows, table):
+        for original in original_rows:
+            for split in self._splitter.split(original, table.type):
+                yield split
 
     def _should_align_columns(self, table):
         return self._is_indented_table(table) and bool(table.header[1:])

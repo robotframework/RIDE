@@ -297,11 +297,32 @@ class _Converter:
 
 class _Verify:
 
-    def fail(self, msg=None):
-        """Fails the test immediately with the given (optional) message.
+    def fail(self, msg=None, *tags):
+        """Fails the test with the given message and optionally alters its tags.
+
+        The error message is specified using the optional `msg` argument.
+
+        Starting from Robot Framework 2.7.4, it is possible to modify tags of
+        the current test case by passing tags after the message. Tags starting
+        with a hyphen (e.g. `-regression`) are removed and others added. Tags
+        are modified using `Set Tags` and `Remove Tags` internally, and the
+        semantics setting and removing them are the same as with these keywords.
+
+        Examples:
+        | Fail | Keyword not ready |             | | # Fails with the given message. |
+        | Fail | Keyword not ready | not-ready   | | # Fails and adds 'not-ready' tag. |
+        | Fail | OS not supported  | -regression | | # Removes tag 'regression'. |
+        | Fail | My message        | -old   | new  | # Adds tag 'new' and removes 'old'. |
+        | Fail | My message        | tag    | -t*  | # Removes all tags starting with 't' except the newly added 'tag'. |
 
         See `Fatal Error` if you need to stop the whole test execution.
         """
+        set_tags = [tag for tag in tags if not tag.startswith('-')]
+        remove_tags = [tag[1:] for tag in tags if tag.startswith('-')]
+        if remove_tags:
+            self.remove_tags(*remove_tags)
+        if set_tags:
+            self.set_tags(*set_tags)
         raise AssertionError(msg) if msg else AssertionError()
 
     def fatal_error(self, msg=None):
@@ -384,8 +405,14 @@ class _Verify:
                                   self._include_values(values))
 
     def _log_types(self, *args):
-        msg = ["Argument types are:"] + [str(type(a)) for a in args]
+        msg = ["Argument types are:"] + [self._get_type(a) for a in args]
         self.log('\n'.join(msg))
+
+    def _get_type(self, arg):
+        # In IronPython type(u'x') is str. We want to report unicode anyway.
+        if isinstance(arg, unicode):
+            return "<type 'unicode'>"
+        return str(type(arg))
 
     def _include_values(self, values):
         if isinstance(values, basestring):
@@ -954,8 +981,15 @@ class _Variables:
 
         Examples:
         | Set Suite Variable | ${GREET} | Hello, world! |
+        | Set Suite Variable | @{LIST}  | First item    | Second item |
         | ${ID} =            | Get ID   |
         | Set Suite Variable | ${ID}    |
+
+        To override an existing value with an empty value, use built-in
+        variables `${EMPTY}` or `@{EMPTY}`:
+
+        | Set Suite Variable | ${GREET} | ${EMPTY} |
+        | Set Suite Variable | @{LIST}  | @{EMPTY} | # New in RF 2.7.4 |
 
         *NOTE:* If the variable has value which itself is a variable (escaped
         or not), you must always use the escaped format to reset the variable:
@@ -1075,7 +1109,6 @@ class _RunKeyword:
         if errors:
             raise ExecutionFailures(errors)
 
-
     def run_keyword_if(self, condition, name, *args):
         """Runs the given keyword with the given arguments, if `condition` is true.
 
@@ -1084,15 +1117,63 @@ class _RunKeyword:
         `Run Keyword`.
 
         Example, a simple if/else construct:
-        | ${status} | ${value} = | Run Keyword And Ignore Error | My Keyword |
-        | Run Keyword If     | '${status}' == 'PASS' | Some Action    |
-        | Run Keyword Unless | '${status}' == 'PASS' | Another Action |
+        | ${status} | ${value} = | `Run Keyword And Ignore Error` | `My Keyword` |
+        | `Run Keyword If`     | '${status}' == 'PASS' | `Some Action`    | arg |
+        | `Run Keyword Unless` | '${status}' == 'PASS' | `Another Action` |
 
-        In this example, only either 'Some Action' or 'Another Action' is
-        executed, based on the status of 'My Keyword'.
+        In this example, only either `Some Action` or `Another Action` is
+        executed, based on the status of `My Keyword`.
+
+        Starting from Robot version 2.7.4, this keyword supports also optional
+        ELSE and ELSE IF branches. Both of these are defined in `*args` and must
+        use exactly format `ELSE` or `ELSE IF`, respectively. ELSE branches
+        must contain first the name of the keyword to execute and then its
+        possible arguments. ELSE IF branches must first contain a condition,
+        like the first argument to this keyword, and then the keyword to execute
+        and its possible arguments. It is possible to have ELSE branch after
+        ELSE IF and to have multiple ELSE IF branches.
+
+        Given previous example, if/else construct can also be created like this:
+        | ${status} | ${value} = | `Run Keyword And Ignore Error` | My Keyword |
+        | `Run Keyword If` | '${status}' == 'PASS' | `Some Action` | arg | ELSE | `Another Action` |
+
+        Using ELSE and/or ELSE IF branches is especially handy if you are
+        interested in the return value. This is illustrated by the example
+        below that also demonstrates using ELSE IF and ELSE together:
+
+        | ${result} = | `Run Keyword If` | ${rc} == 0  | `Zero return value` |
+        | ...         | ELSE IF          | 0 < ${rc} < 42 | `Normal return value` |
+        | ...         | ELSE IF          | ${rc} < 0      | `Negative return value` | ${rc} | arg2 |
+        | ...         | ELSE             | `Abnormal return value` | ${rc} |
+
+        Notice that ELSE and ELSE IF control arguments must be used explicitly
+        and thus cannot come from variables. If you need to use literal ELSE
+        and ELSE IF strings as arguments, you can either use variables or
+        escape them with a backslash like `\\ELSE` and `\\ELSE IF`.
         """
+        args, branch = self._split_elif_or_else_branch(args)
         if self._is_true(condition):
             return self.run_keyword(name, *args)
+        return branch()
+
+    def _split_elif_or_else_branch(self, args):
+        if 'ELSE IF' in args:
+            args, branch = self._split_branch(args, 'ELSE IF', 2,
+                                              'condition and keyword')
+            return args, lambda: self.run_keyword_if(*branch)
+        if 'ELSE' in args:
+            args, branch = self._split_branch(args, 'ELSE', 1, 'keyword')
+            return args, lambda: self.run_keyword(*branch)
+        return args, lambda: None
+
+    def _split_branch(self, args, control_word, required, required_error):
+        args = list(args)
+        index = args.index(control_word)
+        branch = self._variables.replace_from_beginning(args[index+1:], required,
+                                                        extra_escapes=('ELSE', 'ELSE IF'))
+        if len(branch) < required:
+            raise DataError('%s requires %s.' % (control_word, required_error))
+        return args[:index], branch
 
     def run_keyword_unless(self, condition, name, *args):
         """Runs the given keyword with the given arguments, if `condition` is false.
@@ -1257,7 +1338,7 @@ class _RunKeyword:
         first value is returned, and otherwise the second value is
         returned. The second value can also be omitted, in which case
         it has a default value None. This usage is illustrated in the
-        examples below, where ${rc} is assumed to be zero.
+        examples below, where `${rc}` is assumed to be zero.
 
         | ${var1} = | Set Variable If | ${rc} == 0 | zero     | nonzero |
         | ${var2} = | Set Variable If | ${rc} > 0  | value1   | value2  |
@@ -1669,11 +1750,11 @@ class _Misc:
     def get_time(self, format='timestamp', time_='NOW'):
         """Returns the given time in the requested format.
 
-        How time is returned is determined based on the given `format` string
-        as follows. Note that all checks are case-insensitive.
+        How time is returned is determined based on the given `format`
+        string as follows. Note that all checks are case-insensitive.
 
         1) If `format` contains the word 'epoch', the time is returned
-           in seconds after the UNIX epoch (Jan 1, 1970 0:00:00).
+           in seconds after the UNIX epoch (1970-01-01 00:00:00 UTC).
            The return value is always an integer.
 
         2) If `format` contains any of the words 'year', 'month',
@@ -1686,25 +1767,33 @@ class _Misc:
         3) Otherwise (and by default) the time is returned as a
            timestamp string in the format '2006-02-24 15:08:31'.
 
-        By default this keyword returns the current time, but that can be
-        altered using `time` argument as explained below.
+        By default this keyword returns the current local time, but
+        that can be altered using `time` argument as explained below.
+        Note that all checks involving strings are case-insensitive.
 
-        1) If `time` is a floating point number, it is interpreted as
-           seconds since the epoch. This documentation is written about
-           1177654467 seconds after the epoch.
+        1) If `time` is a number, or a string that can be converted to
+           a number, it is interpreted as seconds since the UNIX epoch.
+           This documentation was originally written about 1177654467
+           seconds after the epoch.
 
-        2) If `time` is a valid timestamp, that time will be used. Valid
+        2) If `time` is a timestamp, that time will be used. Valid
            timestamp formats are 'YYYY-MM-DD hh:mm:ss' and 'YYYYMMDD hhmmss'.
 
-        3) If `time` is equal to 'NOW' (case-insensitive), the
-           current time is used.
+        3) If `time` is equal to 'NOW' (default), the current local
+           time is used. This time is got using Python's 'time.time()'
+           function.
 
-        4) If `time` is in the format 'NOW - 1 day' or 'NOW + 1 hour
-           30 min', the current time plus/minus the time specified
-           with the time string is used. The time string format is
-           described in an appendix of Robot Framework User Guide.
+        4) If `time` is equal to 'UTC', the current time in
+           [http://en.wikipedia.org/wiki/Coordinated_Universal_Time|UTC]
+           is used. This time is got using 'time.time() + time.altzone'
+           in Python.
 
-        Examples (expecting the current time is 2006-03-29 15:06:21):
+        5) If `time` is in the format like 'NOW - 1 day' or 'UTC + 1 hour
+           30 min', the current local/UTC time plus/minus the time
+           specified with the time string is used. The time string format
+           is described in an appendix of Robot Framework User Guide.
+
+        Examples (expecting the current local time is 2006-03-29 15:06:21):
         | ${time} = | Get Time |             |  |  |
         | ${secs} = | Get Time | epoch       |  |  |
         | ${year} = | Get Time | return year |  |  |
@@ -1720,17 +1809,23 @@ class _Misc:
         | ${y} = '2006'
         | ${s} = '21'
 
-        | ${time} = | Get Time |      | 1177654467 |
-        | ${secs} = | Get Time | sec  | 2007-04-27 09:14:27 |
-        | ${year} = | Get Time | year | NOW      | # The time of execution |
-        | ${day} =  | Get Time | day  | NOW - 1d | # 1 day subtraced from NOW |
-        | @{time} = | Get Time | hour min sec | NOW + 1h 2min 3s | # 1h 2min 3s added to NOW |
+        Examples (expecting the current local time is 2006-03-29 15:06:21 and
+        UTC time is 2006-03-29 12:06:21):
+        | ${time} = | Get Time |              | 1177654467          | # Time given as epoch seconds        |
+        | ${secs} = | Get Time | sec          | 2007-04-27 09:14:27 | # Time given as a timestamp          |
+        | ${year} = | Get Time | year         | NOW                 | # The local time of execution        |
+        | @{time} = | Get Time | hour min sec | NOW + 1h 2min 3s    | # 1h 2min 3s added to the local time |
+        | @{utc} =  | Get Time | hour min sec | UTC                 | # The UTC time of execution          |
+        | ${hour} = | Get Time | hour         | UTC - 1 hour        | # 1h subtracted from the UTC  time   |
         =>
         | ${time} = '2007-04-27 09:14:27'
         | ${secs} = 27
         | ${year} = '2006'
-        | ${day} = '28'
         | @{time} = ['16', '08', '24']
+        | @{utc} = ['12', '06', '21']
+        | ${hour} = '11'
+
+        Support for UTC time is a new feature in Robot Framework 2.7.5.
         """
         return utils.get_time(format, utils.parse_time(time_))
 
@@ -1741,7 +1836,7 @@ class _Misc:
         list of Python modules to be imported and added to the
         namespace of the evaluated `expression`.
 
-        Examples (expecting ${result} is 3.14):
+        Examples (expecting `${result}` is 3.14):
         | ${status} = | Evaluate | 0 < ${result} < 10    |
         | ${down}   = | Evaluate | int(${result})        |
         | ${up}     = | Evaluate | math.ceil(${result})  | math |
@@ -1825,7 +1920,7 @@ class _Misc:
         """Sets documentation for for the current test.
 
         The current documentation is available from built-in variable
-        ${TEST DOCUMENTATION}. This keyword can not be used in suite
+        `${TEST DOCUMENTATION}`. This keyword can not be used in suite
         setup or suite teardown.
 
         New in Robot Framework 2.7.
@@ -1837,15 +1932,14 @@ class _Misc:
             raise RuntimeError("'Set Test Documentation' keyword cannot be used in "
                                "suite setup or teardown")
         test.doc = doc
-        self._namespace.variables.set_test('${TEST_DOCUMENTATION}', test.doc)
+        self._variables.set_test('${TEST_DOCUMENTATION}', test.doc)
         self.log('Set test documentation to:\n%s' % doc)
 
-
     def set_suite_documentation(self, doc):
-        """Sets documentation for for the current suite.
+        """Sets documentation for the current suite.
 
-        The current documentation is available from built-in variable
-        ${SUITE DOCUMENTATION}.
+        The current documentation is available in built-in variable
+        `${SUITE DOCUMENTATION}`.
 
         New in Robot Framework 2.7.
         """
@@ -1853,9 +1947,22 @@ class _Misc:
             doc = utils.unic(doc)
         suite = self._namespace.suite
         suite.doc = doc
-        self._namespace.variables.set_suite('${SUITE_DOCUMENTATION}', suite.doc)
+        self._variables.set_suite('${SUITE_DOCUMENTATION}', suite.doc)
         self.log('Set suite documentation to:\n%s' % doc)
 
+    def set_suite_metadata(self, name, value):
+        """Sets metadata for the current suite.
+
+        The current metadata is available as a Python dictionary in built-in
+        variable `${SUITE METADATA}`. Notice that modifying that variable
+        directly has no effect on the actual metadata the suite has.
+
+        New in Robot Framework 2.7.4.
+        """
+        metadata = self._namespace.suite.metadata
+        metadata[name] = value
+        self._variables.set_suite('${SUITE_METADATA}', metadata.copy())
+        self.log("Set suite metadata '%s' to value '%s'." % (name, value))
 
     def set_tags(self, *tags):
         """Adds given `tags` for the current test or all tests in a suite.
@@ -1869,8 +1976,8 @@ class _Misc:
 
         The current test tags are available from built in variable @{TEST TAGS}.
 
-        See `Remove Tags` for another keyword to modify tags at test
-        execution time.
+        See `Remove Tags` if you want to remove certain tags and `Fail` if
+        you want to fail the test case after setting and/or removing tags.
         """
         tags = utils.normalize_tags(tags)
         handler = lambda test: utils.normalize_tags(test.tags + tags)
@@ -1891,6 +1998,9 @@ class _Misc:
 
         Example:
         | Remove Tags | mytag | something-* | ?ython |
+
+        See `Set Tags` if you want to add certain tags and `Fail` if you want
+        to fail the test case after setting and/or removing tags.
         """
         tags = TagPatterns(tags)
         handler = lambda test: [t for t in test.tags if not tags.match(t)]
@@ -1908,7 +2018,7 @@ class _Misc:
                 self._set_or_remove_tags(handler, suite=ns.suite)
             else:
                 self._set_or_remove_tags(handler, test=ns.test)
-                ns.variables.set_test('@{TEST_TAGS}', ns.test.tags)
+                ns.variables.set_test('@{TEST_TAGS}', ns.test.tags[:])
             ns.suite._set_critical_tags(ns.suite.critical)
         elif suite:
             for sub in suite.suites:

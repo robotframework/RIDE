@@ -23,15 +23,26 @@ from .output import LibdocOutput
 class LibraryDoc(object):
 
     def __init__(self, name='', doc='', version='', type='library',
-                 scope='', named_args=False):
+                 scope='', named_args=False, doc_format=''):
         self.name = name
         self.doc = doc
         self.version = version
         self.type = type
         self.scope = scope
         self.named_args = named_args
+        self.doc_format = doc_format
         self.inits = []
         self.keywords = []
+
+    @setter
+    def scope(self, scope):
+        return {'TESTCASE': 'test case',
+                'TESTSUITE': 'test suite',
+                'GLOBAL': 'global'}.get(scope, scope)
+
+    @setter
+    def doc_format(self, format):
+        return format or 'ROBOT'
 
     @setter
     def keywords(self, kws):

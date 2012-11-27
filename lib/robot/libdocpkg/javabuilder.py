@@ -25,28 +25,33 @@ class JavaDocBuilder(object):
         libdoc = LibraryDoc(name=doc.qualifiedName(),
                             doc=self._get_doc(doc),
                             version=self._get_version(doc),
-                            scope=self._get_scope(doc))
+                            scope=self._get_scope(doc),
+                            doc_format=self._get_doc_format(doc))
         libdoc.keywords = self._keywords(doc)
         libdoc.inits = self._intializers(doc)
         return libdoc
 
-    def _get_doc(self, code_object):
-        doc = code_object.getRawCommentText()
-        return '\n'.join(line.strip() for line in doc.splitlines())
+    def _get_doc(self, doc):
+        text = doc.getRawCommentText()
+        return '\n'.join(line.strip() for line in text.splitlines())
 
     def _get_version(self, doc):
-        version = self._get_attr(doc, 'VERSION', '<unknown>')
-        return utils.html_escape(version)
+        return self._get_attr(doc, 'VERSION')
 
     def _get_scope(self, doc):
-        scope = self._get_attr(doc, 'SCOPE', 'TEST CASE')
-        return scope.replace('_', ' ').lower()
+        return self._get_attr(doc, 'SCOPE', default='TESTCASE', upper=True)
 
-    def _get_attr(self, doc, name, default):
+    def _get_doc_format(self, doc):
+        return self._get_attr(doc, 'DOC_FORMAT', upper=True)
+
+    def _get_attr(self, doc, name, default='', upper=False):
+        name = 'ROBOT_LIBRARY_' + name
         for field in doc.fields():
-            if field.name() == 'ROBOT_LIBRARY_' + name \
-               and field.isPublic() and field.constantValue():
-                return field.constantValue()
+            if field.name() == name and field.isPublic():
+                value = field.constantValue()
+                if upper:
+                    value = utils.normalize(value, ignore='_').upper()
+                return value
         return default
 
     def _keywords(self, doc):
@@ -55,9 +60,16 @@ class JavaDocBuilder(object):
     def _keyword_doc(self, method):
         return KeywordDoc(
             name=utils.printable_name(method.name(), code_style=True),
-            args=[param.name() for param in method.parameters()],
+            args=list(self._yield_keyword_arguments(method)),
             doc=self._get_doc(method)
         )
+
+    def _yield_keyword_arguments(self, method):
+        for param in method.parameters():
+            name = param.name()
+            if param.type().dimension() == '[]':
+                name = '*' + name
+            yield name
 
     def _intializers(self, doc):
         inits = [self._keyword_doc(init) for init in doc.constructors()]
@@ -86,7 +98,7 @@ def ClassDoc(path):
     context = Context()
     Messager.preRegister(context, 'libdoc')
     jdoctool = JavadocTool.make0(context)
-    filter =  ModifierFilter(PUBLIC)
+    filter = ModifierFilter(PUBLIC)
     java_names = List.of(path)
     root = jdoctool.getRootDocImpl('en', 'utf-8', filter, java_names,
                                    List.nil(), False, List.nil(),

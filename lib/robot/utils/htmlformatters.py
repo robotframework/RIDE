@@ -113,6 +113,7 @@ class HtmlFormatter(object):
         self._formatters = [TableFormatter(),
                             PreformattedFormatter(),
                             ListFormatter(),
+                            HeaderFormatter(),
                             RulerFormatter()]
         self._formatters.append(ParagraphFormatter(self._formatters[:]))
         self._current = None
@@ -144,7 +145,7 @@ class HtmlFormatter(object):
                 return formatter
 
 
-class _BlockFormatter(object):
+class _Formatter(object):
     _strip_lines = True
 
     def __init__(self):
@@ -168,21 +169,42 @@ class _BlockFormatter(object):
         raise NotImplementedError
 
 
-class RulerFormatter(_BlockFormatter):
-    _hr_matcher = re.compile('^-{3,}$').match
+class _SingleLineFormatter(_Formatter):
 
     def _handles(self, line):
-        return not self._lines and self._hr_matcher(line)
+        return not self._lines and self._match(line)
+
+    def _match(self, line):
+        raise NotImplementedError
 
     def format(self, lines):
+        return self.format_line(lines[0])
+
+    def format_line(self, line):
+        raise NotImplementedError
+
+
+class RulerFormatter(_SingleLineFormatter):
+    _match = re.compile('^-{3,}$').match
+
+    def format_line(self, line):
         return '<hr>'
 
 
-class ParagraphFormatter(_BlockFormatter):
+class HeaderFormatter(_SingleLineFormatter):
+    _match = re.compile(r'^(={1,3})\s+(\S.*?)\s+\1$').match
+
+    def format_line(self, line):
+        level, text = self._match(line).groups()
+        level = len(level) + 1
+        return '<h%d>%s</h%d>' % (level, text, level)
+
+
+class ParagraphFormatter(_Formatter):
     _format_line = LineFormatter().format
 
     def __init__(self, other_formatters):
-        _BlockFormatter.__init__(self)
+        _Formatter.__init__(self)
         self._other_formatters = other_formatters
 
     def _handles(self, line):
@@ -193,7 +215,7 @@ class ParagraphFormatter(_BlockFormatter):
         return '<p>%s</p>' % self._format_line(' '.join(lines))
 
 
-class TableFormatter(_BlockFormatter):
+class TableFormatter(_Formatter):
     _table_line = re.compile('^\| (.* |)\|$')
     _line_splitter = re.compile(' \|(?= )')
     _format_cell = LineFormatter().format
@@ -219,7 +241,7 @@ class TableFormatter(_BlockFormatter):
         return '\n'.join(table)
 
 
-class PreformattedFormatter(_BlockFormatter):
+class PreformattedFormatter(_Formatter):
     _format_line = LineFormatter().format
 
     def _handles(self, line):
@@ -230,7 +252,7 @@ class PreformattedFormatter(_BlockFormatter):
         return '\n'.join(['<pre>'] + lines + ['</pre>'])
 
 
-class ListFormatter(_BlockFormatter):
+class ListFormatter(_Formatter):
     _strip_lines = False
     _format_item = LineFormatter().format
 

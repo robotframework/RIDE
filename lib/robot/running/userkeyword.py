@@ -47,8 +47,8 @@ class UserLibrary(BaseLibrary):
             else:
                 self.embedded_arg_handlers.append(handler)
             if handler.name in self.handlers:
-                err = "Keyword '%s' defined multiple times" % handler.name
-                handler = UserErrorHandler(handler.name, err)
+                error = "Keyword '%s' defined multiple times." % handler.name
+                handler = UserErrorHandler(handler.name, error)
             self.handlers[handler.name] = handler
 
     def _get_name_for_resource_file(self, path):
@@ -89,7 +89,7 @@ class UserLibrary(BaseLibrary):
         return found
 
     def _raise_multiple_matching_keywords_found(self, name, found):
-        names = utils.seq2str([f.origname for f in found])
+        names = utils.seq2str([f.orig_name for f in found])
         if self.name is None:
             where = "Test case file"
         else:
@@ -211,6 +211,7 @@ class EmbeddedArgsTemplate(UserKeywordHandler):
         if not self.embedded_args:
             raise TypeError('Must have embedded arguments')
         UserKeywordHandler.__init__(self, keyword, libname)
+        self.keyword = keyword
 
     def _read_embedded_args_and_regexp(self, string):
         args = []
@@ -275,11 +276,10 @@ class EmbeddedArgs(UserKeywordHandler):
         match = template.name_regexp.match(name)
         if not match:
             raise TypeError('Does not match given name')
+        UserKeywordHandler.__init__(self, template.keyword, template.libname)
         self.embedded_args = zip(template.embedded_args, match.groups())
         self.name = name
-        self.teardown = None
-        self.origname = template.name
-        self._copy_attrs_from_template(template)
+        self.orig_name = template.name
 
     def _run(self, context, args):
         if not context.dry_run:
@@ -287,12 +287,3 @@ class EmbeddedArgs(UserKeywordHandler):
                 context.get_current_vars()[name] = \
                     context.get_current_vars().replace_scalar(value)
         return UserKeywordHandler._run(self, context, args)
-
-    def _copy_attrs_from_template(self, template):
-        self.libname = template.libname
-        self.keywords = template.keywords
-        self._keyword_args = template._keyword_args
-        self.return_value = template.return_value
-        self.doc = template.doc
-        self._doc = template._doc
-        self._timeout = template._timeout

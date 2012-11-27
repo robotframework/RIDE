@@ -15,6 +15,7 @@
 import os
 import re
 
+from robot.errors import DataError
 from robot.htmldata import HtmlFileWriter, ModelWriter, JsonWriter, LIBDOC
 from robot import utils
 
@@ -38,7 +39,8 @@ class LibdocModelWriter(ModelWriter):
         self._output.write('</script>' + os.linesep)
 
     def write_data(self):
-        formatter = DocFormatter(self._libdoc.keywords)
+        formatter = DocFormatter(self._libdoc.keywords, self._libdoc.doc,
+                                 self._libdoc.doc_format)
         libdoc = JsonConverter(formatter).convert(self._libdoc)
         JsonWriter(self._output).write_json('libdoc = ', libdoc)
 
@@ -51,7 +53,7 @@ class JsonConverter(object):
     def convert(self, libdoc):
         return {
             'name': libdoc.name,
-            'doc': self._doc_formatter.html(libdoc.doc),
+            'doc': self._doc_formatter.html(libdoc.doc, intro=True),
             'version': libdoc.version,
             'named_args': libdoc.named_args,
             'scope': libdoc.scope,
@@ -73,24 +75,77 @@ class JsonConverter(object):
 
 
 class DocFormatter(object):
+    _header_regexp = re.compile(r'<h2>(.+?)</h2>')
     _name_regexp = re.compile('`(.+?)`')
 
-    def __init__(self, keywords):
-        self._targets = utils.NormalizedDict({
+    def __init__(self, keywords, introduction, doc_format='ROBOT'):
+        self._doc_to_html = DocToHtml(doc_format)
+        self._targets = self._get_targets(keywords, introduction,
+                                          doc_format == 'ROBOT')
+
+    def _get_targets(self, keywords, introduction, robot_format):
+        targets = utils.NormalizedDict({
             'introduction': 'introduction',
             'library introduction': 'introduction',
             'importing': 'importing',
-            'library importing': 'importing'
+            'library importing': 'importing',
+            'shortcuts': 'shortcuts',
+            'keywords': 'keywords'
         })
         for kw in keywords:
-            self._targets[kw.name] = kw.name
+            targets[kw.name] = kw.name
+        if robot_format:
+            for header in self._yield_header_targets(introduction):
+                targets[header] = header
+        return targets
 
-    def html(self, doc):
-        doc = utils.html_format(doc)
+    def _yield_header_targets(self, introduction):
+        for line in introduction.splitlines():
+            line = line.strip()
+            if line.startswith('= ') and line.endswith(' ='):
+                yield line[1:-1].strip()
+
+    def html(self, doc, intro=False):
+        doc = self._doc_to_html(doc)
+        if intro:
+            doc = self._header_regexp.sub(r'<h2 id="\1">\1</h2>', doc)
         return self._name_regexp.sub(self._link_keywords, doc)
 
-    def _link_keywords(self, res):
-        name = res.group(1)
+    def _link_keywords(self, match):
+        name = match.group(1)
         if name in self._targets:
             return '<a href="#%s" class="name">%s</a>' % (self._targets[name], name)
         return '<span class="name">%s</span>' % name
+
+
+class DocToHtml(object):
+
+    def __init__(self, format):
+        self._formatter =  self._get_formatter(format)
+
+
+    def _get_formatter(self, format):
+        try:
+            return {'ROBOT': utils.html_format,
+                    'TEXT': self._format_text,
+                    'HTML': self._format_html,
+                    'REST': self._format_rest}[format]
+        except KeyError:
+            raise DataError("Invalid documentation format '%s'." % format)
+
+    def _format_text(self, doc):
+        return '<p style="white-space: pre-wrap">%s</p>' % utils.html_escape(doc)
+
+    def _format_html(self, doc):
+        return '<div style="margin: 0">%s</div>' % doc
+
+    def _format_rest(self, doc):
+        try:
+            from docutils.core import publish_parts
+        except ImportError:
+            raise DataError("reST format requires 'docutils' module to be installed.")
+        parts = publish_parts(doc, writer_name='html')
+        return self._format_html(parts['html_body'])
+
+    def __call__(self, doc):
+        return self._formatter(doc)

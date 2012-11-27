@@ -14,12 +14,12 @@
 
 from __future__ import with_statement
 
+import copy
 import re
-import sys
 
 from robot.api import logger
 from robot.libraries.BuiltIn import BuiltIn
-from robot.utils import asserts, ET, ETSource
+from robot.utils import asserts, ET, ETSource, plural_or_not as s
 from robot.version import get_version
 
 
@@ -28,13 +28,13 @@ should_match = BuiltIn().should_match
 
 
 class XML(object):
-    """Robot Framework test library for XML verification.
+    """Robot Framework test library for verifying and modifying XML documents.
 
     As the name implies, `XML` is a test library for verifying contents of XML
     files. In practice it is a pretty thin wrapper on top of Python's
     [http://docs.python.org/library/xml.etree.elementtree.html|ElementTree XML API].
 
-    The library has the following three main usages:
+    The library has the following main usages:
 
     - Parsing an XML file, or a string containing XML, into an XML element
       structure and finding certain elements from it for for further analysis
@@ -43,11 +43,20 @@ class XML(object):
       (e.g. `Get Element Text` and `Get Element Attribute`).
     - Directly verifying text, attributes, or whole elements
       (e.g `Element Text Should Be` and `Elements Should Be Equal`).
+    - Modifying XML and saving it (e.g. `Set Element Text`, `Add Element`
+      and `Save XML`).
 
-    In the future this library may grow functionality for modifying and
-    creating XML content.
+    == Table of contents ==
 
-    *Parsing XML*
+    - `Parsing XML`
+    - `Example`
+    - `Finding elements with xpath`
+    - `Element attributes`
+    - `Handling XML namespaces`
+    - `Shortcuts`
+    - `Keywords`
+
+    = Parsing XML =
 
     XML can be parsed into an element structure using `Parse XML` keyword.
     It accepts both paths to XML files and strings that contain XML. The
@@ -66,18 +75,18 @@ class XML(object):
     escaped by doubling it (`\\\\`). Using the built-in variable `${/}`
     naturally works too.
 
-    *Example*
+    = Example =
 
     The following simple example demonstrates parsing XML and verifying its
     contents both using keywords in this library and in `BuiltIn` and
     `Collections` libraries. How to use xpath expressions to find elements
     and what attributes the returned elements contain are discussed, with
-    more examples, in the subsequent sections.
+    more examples, in `Finding elements with xpath` and `Element attributes`
+    sections.
 
-    In the example, `${XML}` refers to the following example XML content.
-    `${XML}` could either be a path to file containing the structure or it
-    could contain the XML itself. The same example structure is used also in
-    the subsequent examples.
+    In this example, as well as in many other examples in this documentation,
+    `${XML}` refers to the following example XML document. In practice `${XML}`
+    could either be a path to an XML file or it could contain the XML itself.
 
     | <example>
     |   <first id="1">text</first>
@@ -112,7 +121,7 @@ class XML(object):
     suffice. If more verifications are needed, parsing the XML with `Parse XML`
     only once would be more efficient.
 
-    *Finding elements with xpath*
+    = Finding elements with xpath =
 
     ElementTree, and thus also this library, supports finding elements using
     xpath expressions. ElementTree does not, however, support the full xpath
@@ -125,7 +134,7 @@ class XML(object):
     provides more details. In the examples `${XML}` refers to the same XML
     structure as in the earlier example.
 
-    _Tag names_
+    == Tag names ==
 
     When just a single tag name is used, xpath matches all direct child
     elements that have that tag name.
@@ -135,7 +144,7 @@ class XML(object):
     | @{children} =      | `Get Elements` | ${elem}     | child |
     | `Length Should Be` | ${children}    | 2           |       |
 
-    _Paths_
+    == Paths ==
 
     Paths are created by combining tag names with a forward slash (`/`).
     For example, `parent/child` matches all `child` elements under `parent`
@@ -148,7 +157,7 @@ class XML(object):
     | ${elem} =         | `Get Element` | ${XML}     | third/child/grandchild  |
     | `Should Be Equal` | ${elem.tag}   | grandchild |                         |
 
-    _Wildcards_
+    == Wildcards ==
 
     An asterisk (`*`) can be used in paths instead of a tag name to denote
     any element.
@@ -156,12 +165,12 @@ class XML(object):
     | @{children} =      | `Get Elements` | ${XML} | */child |
     | `Length Should Be` | ${children}    | 3      |         |
 
-    _Current element_
+    == Current element ==
 
     The current element is denoted with a dot (`.`). Normally the current
     element is implicit and does not need to be included in the xpath.
 
-    _Parent element_
+    == Parent element ==
 
     The parent element of another element is denoted with two dots (`..`).
     Notice that it is not possible to refer to the parent of the current
@@ -171,7 +180,7 @@ class XML(object):
     | ${elem} =         | `Get Element` | ${XML} | */second/.. |
     | `Should Be Equal` | ${elem.tag}   | third  |             |
 
-    _Search all sub elements_
+    == Search all sub elements ==
 
     Two forward slashes (`//`) mean that all sub elements, not only the
     direct children, are searched. If the search is started from the current
@@ -182,7 +191,7 @@ class XML(object):
     | ${b} =             | `Get Element`  | ${XML} | html//b   |
     | `Should Be Equal`  | ${b.text}      | bold   |           |
 
-    _Predicates_
+    == Predicates ==
 
     Predicates allow selecting elements using also other criteria than tag
     names, for example, attributes or position. They are specified after the
@@ -202,11 +211,11 @@ class XML(object):
     Predicates can also be stacked like `path[predicate1][predicate2]`.
     A limitation is that possible position predicate must always be first.
 
-    *Element attributes*
+    = Element attributes =
 
     All keywords returning elements, such as `Parse XML`, and `Get Element`,
     return ElementTree's
-    [http://docs.python.org/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element|Element classes].
+    [http://docs.python.org/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element|Element objects].
     These elements can be used as inputs for other keywords, but they also
     contain several useful attributes that can be accessed directly using
     the extended variable syntax.
@@ -218,14 +227,14 @@ class XML(object):
 
     The examples use the same `${XML}` structure as the earlier examples.
 
-    _tag_
+    == tag ==
 
     The tag of the element.
 
     | ${root} =         | `Parse XML` | ${XML}  |
     | `Should Be Equal` | ${root.tag} | example |
 
-    _text_
+    == text ==
 
     The text that the element contains or Python `None` if the element has no
     text. Notice that the text _does not_ contain texts of possible child
@@ -241,7 +250,7 @@ class XML(object):
     | ${p} =            | `Get Element` | ${XML}  | html/p       |
     | `Should Be Equal` | ${p.text}     | \\n${SPACE*6}Text with${SPACE} |
 
-    _tail_
+    == tail ==
 
     The text after the element before the next opening or closing tag. Python
     `None` if the element has no tail. Similarly as with `text`, also `tail`
@@ -250,7 +259,7 @@ class XML(object):
     | ${b} =            | `Get Element` | ${XML}  | html/p/b  |
     | `Should Be Equal` | ${b.tail}     | ${SPACE}and${SPACE} |
 
-    _attrib_
+    == attrib ==
 
     A Python dictionary containing attributes of the element.
 
@@ -258,6 +267,97 @@ class XML(object):
     | `Should Be Equal` | ${2nd.attrib['id']} | 2      |        |
     | ${3rd} =          | `Get Element`       | ${XML} | third  |
     | `Should Be Empty` | ${3rd.attrib}       |        |        |
+
+    = Handling XML namespaces =
+
+    ElementTree handles possible namespaces in XML documents by adding the
+    namespace URI to tag names in so called Clark Notation. That is
+    inconvenient especially with xpaths, and by default this library strips
+    those namespaces away and moves them to `xmlns` attribute instead. That can
+    be avoided by passing `keep_clark_notation` argument to `Parse XML` keyword.
+    The pros and cons of both approaches are discussed in more detail below.
+
+    == How ElementTree handles namespaces ==
+
+    If an XML document has namespaces, ElementTree adds namespace information
+    to tag names in [http://www.jclark.com/xml/xmlns.htm|Clark Notation]
+    (e.g. `{http://ns.uri}tag` and removes original `xmlns` attributes. This
+    is done both with default namespaces and with namespaces with a prefix.
+    How it works in practice is illustrated by the following example, where
+    `${NS}` variable contains this XML document:
+
+    | <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    |                 xmlns="http://www.w3.org/1999/xhtml">
+    |   <xsl:template match="/">
+    |     <html></html>
+    |   </xsl:template>
+    | </xsl:stylesheet>
+
+    | ${root} = | `Parse XML` | ${NS} | keep_clark_notation=yes |
+    | `Should Be Equal` | ${root.tag} | {http://www.w3.org/1999/XSL/Transform}stylesheet |
+    | `Element Should Exist` | ${root} | {http://www.w3.org/1999/XSL/Transform}template/{http://www.w3.org/1999/xhtml}html |
+    | `Should Be Empty` | ${root.attrib} |
+
+    As you can see, including the namespace URI in tag names makes xpaths
+    really long and complex.
+
+    If you save the XML, ElementTree moves namespace information back to `xmlns`
+    attributes. Unfortunately it does not restore the original prefixes:
+
+    | <ns0:stylesheet xmlns:ns0="http://www.w3.org/1999/XSL/Transform">
+    |   <ns0:template match="/">
+    |     <ns1:html xmlns:ns1="http://www.w3.org/1999/xhtml"></ns1:html>
+    |   </ns0:template>
+    | </ns0:stylesheet>
+
+    The resulting output is semantically same as the original, but mangling
+    prefixes like this may still not be desirable. Notice also that the actual
+    output depends slightly on ElementTree version.
+
+    == Default namespace handling ==
+
+    Because the way ElementTree handles namespaces makes xpaths so complicated,
+    this library, by default, strips namespaces from tag names and moves that
+    information back to `xmlns` attributes. How this works in practice is shown
+    by the example below, where `${NS}` variable contains the same XML
+    document as in the previous example.
+
+    | ${root} = | `Parse XML` | ${NS} |
+    | `Should Be Equal` | ${root.tag} | stylesheet |
+    | `Element Should Exist` | ${root} | template/html |
+    | `Element Attribute Should Be` | ${root} | xmlns | http://www.w3.org/1999/XSL/Transform |
+    | `Element Attribute Should Be` | ${root} | xmlns | http://www.w3.org/1999/xhtml | xpath=template/html |
+
+    Now that tags do not contain namespace information, xpaths are simple again.
+
+    A minor limitation of this approach is that namespace prefixes are lost.
+    As a result the saved output is not exactly same as the original one in
+    this case either:
+
+    | <stylesheet xmlns="http://www.w3.org/1999/XSL/Transform">
+    |   <template match="/">
+    |     <html xmlns="http://www.w3.org/1999/xhtml"></html>
+    |   </template>
+    | </stylesheet>
+
+    Also this output is semantically same as the original. If the original XML
+    had only default namespaces, the output would also looks identical.
+
+    == Attribute namespaces ==
+
+    Attributes in XML documents are, by default, in the same namespaces as
+    the element they belong to. It is possible to use different namespaces
+    by using prefixes, but this is pretty rare.
+
+    If an attribute has a namespace prefix, ElementTree will replace it with
+    Clark Notation the same way it handles elements. Because stripping
+    namespaces from attributes could cause attribute conflicts, this library
+    does not handle attribute namespaces at all. Thus the following example
+    works the same way regardless how namespaces are handled.
+
+    | ${root} = | `Parse XML` | <root id="1" ns:id="2" xmlns:ns="http://my.ns"/> |
+    | `Element Attribute Should Be` | ${root} | id | 1 |
+    | `Element Attribute Should Be` | ${root} | {http://my.ns}id | 2 |
     """
 
     ROBOT_LIBRARY_SCOPE = 'GLOBAL'
@@ -265,7 +365,7 @@ class XML(object):
     _whitespace = re.compile('\s+')
     _xml_declaration = re.compile('^<\?xml .*\?>\n')
 
-    def parse_xml(self, source):
+    def parse_xml(self, source, keep_clark_notation=False):
         """Parses the given XML file or string into an element structure.
 
         The `source` can either be a path to an XML file or a string containing
@@ -273,19 +373,40 @@ class XML(object):
         [http://docs.python.org/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element|element structure]
         and the root element is returned.
 
+        As discussed in `Handling XML namespaces` section, this keyword, by
+        default, strips possible namespaces added by ElementTree into tag names.
+        This typically eases handling XML documents with namespaces
+        considerably. If you do not want that to happen, or want to avoid
+        the small overhead of going through the element structure when your
+        XML does not have namespaces, you can disable this feature by giving
+        `keep_clark_notation` argument a true value (e.g. any non-empty string).
+
         Examples:
-        | ${xml} =  | Parse XML | ${CURDIR}/test.xml    |
         | ${root} = | Parse XML | <root><child/></root> |
+        | ${xml} =  | Parse XML | ${CURDIR}/test.xml    | no namespace cleanup |
 
-        For more details and examples, see `Parsing XML` section in the
-        `introduction`.
+        Use `Get Element` keyword if you want to get a certain element and not
+        the whole structure. See `Parsing XML` section for more details and
+        examples
 
-        See also `Get Element` and `Get Elements`.
+        Stripping namespaces is a new feature in Robot Framework 2.7.5.
         """
         with ETSource(source) as source:
-            return ET.parse(source).getroot()
+            root = ET.parse(source).getroot()
+        if not keep_clark_notation:
+            self._strip_namespaces(root)
+        return root
 
-    def get_element(self, source, xpath):
+    def _strip_namespaces(self, elem, current_ns=None):
+        if elem.tag.startswith('{') and '}' in elem.tag:
+            ns, elem.tag = elem.tag[1:].split('}', 1)
+            if ns != current_ns:
+                elem.set('xmlns', ns)
+                current_ns = ns
+        for child in elem:
+            self._strip_namespaces(child, current_ns)
+
+    def get_element(self, source, xpath='.'):
         """Returns an element in the `source` matching the `xpath`.
 
         The `source` can be a path to an XML file, a string containing XML, or
@@ -301,15 +422,26 @@ class XML(object):
         | ${element} = | Get Element | ${XML}     | second |
         | ${child} =   | Get Element | ${element} | child  |
 
-        See also `Parse XML` and `Get Elements`.
+        `Parse XML` is recommended for parsing XML when the whole structure
+        is needed. It must be used if there is a need to configure how XML
+        namespaces are handled.
         """
         elements = self.get_elements(source, xpath)
-        if not elements:
-            raise RuntimeError("No element matching '%s' found." % xpath)
-        if len(elements) > 1:
-            raise RuntimeError("Multiple elements (%d) matching '%s' found."
-                               % (len(elements), xpath))
+        if len(elements) != 1:
+            self._raise_wrong_number_of_matches(len(elements), xpath)
         return elements[0]
+
+    def _raise_wrong_number_of_matches(self, count, xpath, message=None):
+        if not message:
+            message = self._wrong_number_of_matches(count, xpath)
+        raise AssertionError(message)
+
+    def _wrong_number_of_matches(self, count, xpath):
+        if not count:
+            return "No element matching '%s' found." % xpath
+        if count == 1:
+            return "One element matching '%s' found." % xpath
+        return "Multiple elements (%d) matching '%s' found." % (count, xpath)
 
     def get_elements(self, source, xpath):
         """Returns a list of elements in the `source` matching the `xpath`.
@@ -327,16 +459,16 @@ class XML(object):
         | Length Should Be | ${children}  | 2      |             |
         | ${children} =    | Get Elements | ${XML} | first/child |
         | Should Be Empty  |  ${children} |        |             |
-
-        See also `Get Element`.
         """
         if isinstance(source, basestring):
             source = self.parse_xml(source)
+        if not xpath:
+            raise RuntimeError('No xpath given.')
         if xpath == '.':  # ET < 1.3 does not support '.' alone.
             return [source]
         return source.findall(self._get_xpath(xpath))
 
-    if sys.version_info >= (2, 7):
+    if ET.VERSION >= '1.3':
         def _get_xpath(self, xpath):
             return xpath
     else:
@@ -368,6 +500,54 @@ class XML(object):
         | Should Be Empty  | ${children}        |        |             |
         """
         return list(self.get_element(source, xpath))
+
+    def get_element_count(self, source, xpath='.'):
+        """Returns and logs how many elements the given `xpath` matches.
+
+        Arguments `source` and `xpath` have exactly the same semantics as with
+        `Get Elements` keyword that this keyword uses internally.
+
+        See also `Element Should Exist` and `Element Should Not Exist`.
+
+        New in Robot Framework 2.7.5.
+        """
+        count = len(self.get_elements(source, xpath))
+        logger.info("%d element%s matched '%s'." % (count, s(count), xpath))
+        return count
+
+    def element_should_exist(self, source, xpath='.', message=None):
+        """Verifies that one or more element match the given `xpath`.
+
+        Arguments `source` and `xpath` have exactly the same semantics as with
+        `Get Elements` keyword. Keyword passes if the `xpath` matches one or
+        more elements in the `source`. The default error message can be
+        overridden with the `message` argument.
+
+        See also `Element Should Not Exist` as well as `Get Element Count`
+        that this keyword uses internally.
+
+        New in Robot Framework 2.7.5.
+        """
+        count = self.get_element_count(source, xpath)
+        if not count:
+            self._raise_wrong_number_of_matches(count, xpath, message)
+
+    def element_should_not_exist(self, source, xpath='.', message=None):
+        """Verifies that no element match the given `xpath`.
+
+        Arguments `source` and `xpath` have exactly the same semantics as with
+        `Get Elements` keyword. Keyword fails if the `xpath` matches any
+        element in the `source`. The default error message can be overridden
+        with the `message` argument.
+
+        See also `Element Should Exist` as well as `Get Element Count`
+        that this keyword uses internally.
+
+        New in Robot Framework 2.7.5.
+        """
+        count = self.get_element_count(source, xpath)
+        if count:
+            self._raise_wrong_number_of_matches(count, xpath, message)
 
     def get_element_text(self, source, xpath='.', normalize_whitespace=False):
         """Returns all text of the element, possibly whitespace normalized.
@@ -435,9 +615,6 @@ class XML(object):
         | Length Should Be | ${texts}           | 2         |             |
         | Should Be Equal  | @{texts}[0]        | more text |             |
         | Should Be Equal  | @{texts}[1]        | ${EMPTY}  |             |
-
-        See also `Get Element Text`, `Element Text Should Be` and
-        `Element Text Should Match`.
         """
         return [self.get_element_text(elem, normalize_whitespace=normalize_whitespace)
                 for elem in self.get_elements(source, xpath)]
@@ -456,16 +633,14 @@ class XML(object):
 
         The keyword passes if the text of the element is equal to the
         `expected` value, and otherwise it fails. The default error message can
-        be overridden with the `message` argument.
+        be overridden with the `message` argument.  Use `Element Text Should
+        Match` to verify the text against a pattern instead of an exact value.
 
         Examples using `${XML}` structure from the `introduction`:
         | Element Text Should Be | ${XML}       | text     | xpath=first      |
         | Element Text Should Be | ${XML}       | ${EMPTY} | xpath=second/child |
         | ${paragraph} =         | Get Element  | ${XML}   | xpath=html/p     |
         | Element Text Should Be | ${paragraph} | Text with bold and italics. | normalize_whitespace=yes |
-
-        See also `Get Element Text`, `Get Elements Texts` and
-        `Element Text Should Match`.
         """
         text = self.get_element_text(source, xpath, normalize_whitespace)
         should_be_equal(text, expected, message, values=False)
@@ -486,9 +661,6 @@ class XML(object):
         | Element Text Should Match | ${XML}       | t???   | xpath=first  |
         | ${paragraph} =            | Get Element  | ${XML} | xpath=html/p |
         | Element Text Should Match | ${paragraph} | Text with * and *. | normalize_whitespace=yes |
-
-        See also `Get Element Text`, `Get Elements Texts` and
-        `Element Text Should Be`.
         """
         text = self.get_element_text(source, xpath, normalize_whitespace)
         should_match(text, pattern, message, values=False)
@@ -511,7 +683,7 @@ class XML(object):
         | Should Be Equal | ${attribute}          | value  |    |             |
 
         See also `Get Element Attributes`, `Element Attribute Should Be`,
-        and `Element Attribute Should Match`.
+        `Element Attribute Should Match` and `Element Should Not Have Attribute`.
         """
         return self.get_element(source, xpath).get(name, default)
 
@@ -531,8 +703,7 @@ class XML(object):
         | ${attributes} = | Get Element Attributes      | ${XML} | third |
         | Should Be Empty | ${attributes}               |        |       |
 
-        See also `Get Element Attribute`, `Element Attribute Should Be`,
-        and `Element Attribute Should Match`.
+        Use `Get Element Attribute` to get the value of a single attribute.
         """
         return self.get_element(source, xpath).attrib.copy()
 
@@ -545,17 +716,18 @@ class XML(object):
         keyword.
 
         The keyword passes if the attribute `name` of the element is equal to
-        the `expected` value, and otherwise it fails. To test that the element
-        does not have certain attribute, use Python `None` (i.e. variable
-        `${NONE}`) as the `expected` value. The default error message can be
-        overridden with the `message` argument.
+        the `expected` value, and otherwise it fails. The default error message
+        can be overridden with the `message` argument.
+
+        To test that the element does not have a certain attribute, Python
+        `None` (i.e. variable `${NONE}`) can be used as the `expected` value.
+        A cleaner alternative is using `Element Should Not Have Attribute`.
 
         Examples using `${XML}` structure from the `introduction`:
         | Element Attribute Should Be | ${XML} | id | 1       | xpath=first |
         | Element Attribute Should Be | ${XML} | id | ${NONE} |             |
 
-        See also `Get Element Attribute`, `Get Element Attributes` and
-        `Element Text Should Match`.
+        See also `Element Attribute Should Match` and `Get Element Attribute`.
         """
         attr = self.get_element_attribute(source, name, xpath)
         should_be_equal(attr, expected, message, values=False)
@@ -575,14 +747,35 @@ class XML(object):
         Examples using `${XML}` structure from the `introduction`:
         | Element Attribute Should Match | ${XML} | id | ?   | xpath=first |
         | Element Attribute Should Match | ${XML} | id | c*d | xpath=third/second |
-
-        See also `Get Element Attribute`, `Get Element Attributes` and
-        `Element Text Should Be`.
         """
         attr = self.get_element_attribute(source, name, xpath)
         if attr is None:
             raise AssertionError("Attribute '%s' does not exist." % name)
         should_match(attr, pattern, message, values=False)
+
+    def element_should_not_have_attribute(self, source, name, xpath='.', message=None):
+        """Verifies that the specified element does not have  attribute `name`.
+
+        The element whose attribute is verified is specified using `source`
+        and `xpath`. They have exactly the same semantics as with `Get Element`
+        keyword.
+
+        The keyword fails if the specified element has attribute `name`.
+        The default error message can be overridden with the `message` argument.
+
+        Examples using `${XML}` structure from the `introduction`:
+        | Element Should Not Have Attribute | ${XML} | id  |
+        | Element Should Not Have Attribute | ${XML} | xxx | xpath=first |
+
+        See also `Get Element Attribute`, `Get Element Attributes`,
+        `Element Text Should Be` and `Element Text Should Match`.
+
+        New in Robot Framework 2.7.5.
+        """
+        attr = self.get_element_attribute(source, name, xpath)
+        if attr is not None:
+            raise AssertionError(message or "Attribute '%s' exists and "
+                                            "has value '%s'." % (name, attr))
 
     def elements_should_be_equal(self, source, expected, exclude_children=False,
                                  normalize_whitespace=False):
@@ -647,8 +840,291 @@ class XML(object):
                           normalize_whitespace):
         normalizer = self._normalize_whitespace if normalize_whitespace else None
         comparator = ElementComparator(comparator, normalizer, exclude_children)
-        comparator.compare(self.get_element(source, xpath='.'),
-                           self.get_element(expected, xpath='.'))
+        comparator.compare(self.get_element(source), self.get_element(expected))
+
+    def set_element_tag(self, source, tag, xpath='.'):
+        """Sets the tag of the specified element to `tag`.
+
+        The element whose tag to set is specified using `source` and
+        `xpath`. They have exactly the same semantics as with `Get Element`
+        keyword. The given `source` structure  is modified and also returned.
+
+        Examples using `${XML}` structure from `Example`:
+        | Set Element Tag      | ${XML}     | newTag     |
+        | Should Be Equal      | ${XML.tag} | newTag     |
+        | Set Element Tag      | ${XML}     | xxx        | xpath=second/child |
+        | Element Should Exist | ${XML}     | second/xxx |
+        | Element Should Not Exist | ${XML} | second/child |
+
+        New in Robot Framework 2.7.5.
+        """
+        source = self.get_element(source)
+        self.get_element(source, xpath).tag = tag
+        return source
+
+    def set_element_text(self, source, text=None, tail=None, xpath='.'):
+        """Sets text and/or tail text of the specified element.
+
+        The element whose text to set is specified using `source` and
+        `xpath`. They have exactly the same semantics as with `Get Element`
+        keyword. The given `source` structure  is modified and also returned.
+
+        Element's text and tail text are changed only if new `text` and/or
+        `tail` values are given. See `Element attributes` section for more
+        information about text and tail in general.
+
+        Examples using `${XML}` structure from `Example`:
+        | Set Element Text       | ${XML} | new text | xpath=first    |
+        | Element Text Should Be | ${XML} | new text | xpath=first    |
+        | Set Element Text       | ${XML} | tail=&   | xpath=html/p/b |
+        | Element Text Should Be | ${XML} | Text with bold&italics. | xpath=html/p  | normalize_whitespace=yes |
+        | Set Element Text       | ${XML} | slanted  | !! | xpath=html/p/i |
+        | Element Text Should Be | ${XML} | Text with bold&slanted!! | xpath=html/p  | normalize_whitespace=yes |
+
+        New in Robot Framework 2.7.5.
+        """
+        source = self.get_element(source)
+        element = self.get_element(source, xpath)
+        if text is not None:
+            element.text = text
+        if tail is not None:
+            element.tail = tail
+        return source
+
+    def set_element_attribute(self, source, name, value, xpath='.'):
+        """Sets attribute `name` of the specified element to `value`
+
+        The element whose attribute to set is specified using `source` and
+        `xpath`. They have exactly the same semantics as with `Get Element`
+        keyword. The given `source` structure  is modified and also returned.
+
+        It is possible to both set new attributes and to overwrite existing.
+        Use `Remove Element Attribute` or `Remove Element Attributes` for
+        removing them.
+
+        Examples using `${XML}` structure from `Example`:
+        | Set Element Attribute       | ${XML} | attr | value |
+        | Element Attribute Should Be | ${XML} | attr | value |
+        | Set Element Attribute       | ${XML} | id   | new   | xpath=first |
+        | Element Attribute Should Be | ${XML} | id   | new   | xpath=first |
+
+        New in Robot Framework 2.7.5.
+        """
+        if not name:
+            raise RuntimeError('Attribute name can not be empty.')
+        source = self.get_element(source)
+        self.get_element(source, xpath).attrib[name] = value
+        return source
+
+    def remove_element_attribute(self, source, name, xpath='.'):
+        """Removes attribute `name` from the specified element.
+
+        The element whose attribute to remove is specified using `source` and
+        `xpath`. They have exactly the same semantics as with `Get Element`
+        keyword. The given `source` structure  is modified and also returned.
+
+        It is not a failure to remove a non-existing attribute. Use `Remove
+        Element Attributes` to remove all attributes and `Set Element Attribute`
+        to set them.
+
+        Examples using `${XML}` structure from `Example`:
+        | Remove Element Attribute          | ${XML} | id | xpath=first |
+        | Element Should Not Have Attribute | ${XML} | id | xpath=first |
+
+        New in Robot Framework 2.7.5.
+        """
+        source = self.get_element(source)
+        attrib = self.get_element(source, xpath).attrib
+        if name in attrib:
+            attrib.pop(name)
+        return source
+
+    def remove_element_attributes(self, source, xpath='.'):
+        """Removes all attributes from the specified element.
+
+        The element whose attributes to remove is specified using `source` and
+        `xpath`. They have exactly the same semantics as with `Get Element`
+        keyword. The given `source` structure  is modified and also returned.
+
+        Use `Remove Element Attribute` to remove a single attribute and
+        `Set Element Attribute` to set them.
+
+        Examples using `${XML}` structure from `Example`:
+        | Remove Element Attributes         | ${XML} | xpath=first |
+        | Element Should Not Have Attribute | ${XML} | id | xpath=first |
+
+        New in Robot Framework 2.7.5.
+        """
+        source = self.get_element(source)
+        self.get_element(source, xpath).attrib.clear()
+        return source
+
+    def add_element(self, source, element, index=None, xpath='.'):
+        """Adds a child element to the specified element.
+
+        The element to whom to add the new element is specified using `source`
+        and `xpath`. They have exactly the same semantics as with `Get Element`
+        keyword. The given `source` structure  is modified and also returned.
+
+        The `element` to add can be specified as a path to an XML file or
+        as a string containing XML, or it can be an already parsed XML element.
+        The element is copied before adding so modifying either the original
+        or the added element has no effect on the other
+        .
+        The element is added as the last child by default, but a custom index
+        can be used to alter the position. Indices start from zero (0 = first
+        position, 1 = second position, etc.), and negative numbers refer to
+        positions at the end (-1 = second last position, -2 = third last, etc.).
+
+        Examples using `${XML}` structure from `Example`:
+        | Add Element | ${XML} | <new id="x"><c1/></new> |
+        | Add Element | ${XML} | <c2/> | xpath=new |
+        | Add Element | ${XML} | <c3/> | index=1 | xpath=new |
+        | ${new} = | Get Element | ${XML} | new |
+        | Elements Should Be Equal | ${new} | <new id="x"><c1/><c3/><c2/></new> |
+
+        Use `Remove Element` or `Remove Elements` to remove elements.
+
+        New in Robot Framework 2.7.5.
+        """
+        source = self.get_element(source)
+        parent = self.get_element(source, xpath)
+        element = self.copy_element(element)
+        if index is None:
+            parent.append(element)
+        else:
+            parent.insert(int(index), element)
+        return source
+
+    def remove_element(self, source, xpath='', remove_tail=False):
+        """Removes the element matching `xpath` from the `source` structure.
+
+        The element to remove from the `source` is specified with `xpath`
+        using the same semantics as with `Get Element` keyword. The given
+        `source` structure  is modified and also returned.
+
+        The keyword fails if `xpath` does not match exactly one element.
+        Use `Remove Elements` to remove all matched elements.
+
+        Element's tail text is not removed by default, but that can be changed
+        by giving `remove_tail` a true value (e.g. any non-empty string).
+        See `Element attributes` section for more information about tail in
+        general.
+
+        Examples using `${XML}` structure from `Example`:
+        | Remove Element           | ${XML} | xpath=second |
+        | Element Should Not Exist | ${XML} | xpath=second |
+        | Remove Element           | ${XML} | xpath=html/p/b | remove_tail=yes |
+        | Element Text Should Be   | ${XML} | Text with italics. | xpath=html/p | normalize_whitespace=yes |
+
+        New in Robot Framework 2.7.5.
+        """
+        source = self.get_element(source)
+        self._remove_element(source, self.get_element(source, xpath), remove_tail)
+        return source
+
+    def remove_elements(self, source, xpath='', remove_tail=False):
+        """Removes all elements matching `xpath` from the `source` structure.
+
+        The elements to remove from the `source` are specified with `xpath`
+        using the same semantics as with `Get Elements` keyword. The given
+        `source` structure  is modified and also returned.
+
+        It is not a failure if `xpath` matches no elements. Use `Remove Element`
+        to remove exactly one element and `Add Element` to add new ones.
+
+        Element's tail text is not removed by default, but that can be changed
+        by using `remove_tail` argument similarly as with `Remove Element`.
+
+        Examples using `${XML}` structure from `Example`:
+        | Remove Elements          | ${XML} | xpath=*/child      |
+        | Element Should Not Exist | ${XML} | xpath=second/child |
+        | Element Should Not Exist | ${XML} | xpath=third/child  |
+
+        New in Robot Framework 2.7.5.
+        """
+        source = self.get_element(source)
+        for element in self.get_elements(source, xpath):
+            self._remove_element(source, element, remove_tail)
+        return source
+
+    def _remove_element(self, root, element, remove_tail=False):
+        parent = self._find_parent(root, element)
+        if element.tail and not remove_tail:
+            self._preserve_tail(element, parent)
+        parent.remove(element)
+
+    def _find_parent(self, root, element):
+        for parent in root.getiterator():
+            for child in parent:
+                if child is element:
+                    return parent
+        raise RuntimeError('Cannot remove root element.')
+
+    def _preserve_tail(self, element, parent):
+        index = list(parent).index(element)
+        if index == 0:
+            parent.text = (parent.text or '') + element.tail
+        else:
+            sibling = parent[index-1]
+            sibling.tail = (sibling.tail or '') + element.tail
+
+    def clear_element(self, source, xpath='.', clear_tail=False):
+        """Clears the contents of the specified element.
+
+        The element to clear is specified using `source` and `xpath`. They
+        have exactly the same semantics as with `Get Element` keyword.
+        The given `source` structure  is modified and also returned.
+
+        Clearing the element means removing its text, attributes, and children.
+        Element's tail text is not removed by default, but that can be changed
+        by giving `clear_tail` a true value (e.g. any non-empty string).
+        See `Element attributes` section for more information about tail in
+        general.
+
+        Examples using `${XML}` structure from `Example`:
+        | Clear Element            | ${XML}   | xpath=first |
+        | ${first} = | Get Element | ${XML}   | xpath=first |
+        | Elements Should Be Equal | ${first} | <first/>    |
+        | Clear Element            | ${XML}   | xpath=html/p/b | clear_tail=yes |
+        | Element Text Should Be   | ${XML}   | Text with italics. | xpath=html/p | normalize_whitespace=yes |
+        | Clear Element            | ${XML}   |
+        | Elements Should Be Equal | ${XML}   | <example/> |
+
+        Use `Remove Element` to remove the whole element.
+
+        New in Robot Framework 2.7.5.
+        """
+        source = self.get_element(source)
+        element = self.get_element(source, xpath)
+        tail = element.tail
+        element.clear()
+        if not clear_tail:
+            element.tail = tail
+        return source
+
+    def copy_element(self, source, xpath='.'):
+        """Returns a copy of the specified element.
+
+        The element to copy is specified using `source` and `xpath`. They
+        have exactly the same semantics as with `Get Element` keyword.
+
+        If the copy or the original element is modified afterwards, the changes
+        have no effect on the other.
+
+        Examples using `${XML}` structure from `Example`:
+        | ${elem} =  | Get Element  | ${XML}  | xpath=first |
+        | ${copy1} = | Copy Element | ${elem} |
+        | ${copy2} = | Copy Element | ${XML}  | xpath=first |
+        | Set Element Text         | ${XML}   | new text    | xpath=first      |
+        | Set Element Attribute    | ${copy1} | id          | new              |
+        | Elements Should Be Equal | ${elem}  | <first id="1">new text</first> |
+        | Elements Should Be Equal | ${copy1} | <first id="new">text</first>   |
+        | Elements Should Be Equal | ${copy2} | <first id="1">text</first>     |
+
+        New in Robot Framework 2.7.5.
+        """
+        return copy.deepcopy(self.get_element(source, xpath))
 
     def element_to_string(self, source, xpath='.'):
         """Returns the string representation of the specified element.
@@ -660,7 +1136,7 @@ class XML(object):
         The returned string is in Unicode format and it does not contain any
         XML declaration.
 
-        See also `Log Element`.
+        See also `Log Element` and `Save XML`.
         """
         string = ET.tostring(self.get_element(source, xpath), encoding='UTF-8')
         return self._xml_declaration.sub('', string.decode('UTF-8')).strip()
@@ -677,6 +1153,28 @@ class XML(object):
         string = self.element_to_string(source, xpath)
         logger.write(string, level)
         return string
+
+    def save_xml(self, source, path, encoding='UTF-8'):
+        """Saves the given element to the specified file.
+
+        The element to save is specified with `source` using the same
+        semantics as with `Get Element` keyword.
+
+        The file where the element is saved is denoted with `path` and the
+        encoding to use with `encoding`. The resulting file contains an XML
+        declaration.
+
+        Use `Element To String` if you just need a string representation of
+        the element,
+
+        New in Robot Framework 2.7.5.
+        """
+        tree = ET.ElementTree(self.get_element(source))
+        kwargs = {'xml_declaration': True} if ET.VERSION >= '1.3' else {}
+        # Need to explicitly open/close files because older ET versions don't
+        # close files they open and Jython/IPY don't close them implicitly.
+        with open(path, 'w') as output:
+            tree.write(output, encoding, **kwargs)
 
 
 class ElementComparator(object):

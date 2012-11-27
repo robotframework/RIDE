@@ -18,6 +18,12 @@ if sys.platform.startswith('java'):
     from java.awt import Toolkit, Robot, Rectangle
     from javax.imageio import ImageIO
     from java.io import File
+elif sys.platform == 'cli':
+    import clr
+    clr.AddReference('System.Windows.Forms')
+    clr.AddReference('System.Drawing')
+    from System.Drawing import Bitmap, Graphics, Imaging
+    from System.Windows.Forms import Screen
 else:
     try:
         import wx
@@ -33,23 +39,21 @@ else:
     except ImportError:
         ImageGrab = None
 
-from robot.version import get_version
 from robot import utils
+from robot.api import logger
 from robot.libraries.BuiltIn import BuiltIn
+from robot.version import get_version
 
 
 class Screenshot(object):
+    """Test library for taking screenshots on the machine where tests are run.
 
-    """A test library for taking screenshots and embedding them into log files.
-
-    *Using with Jython*
-
-    On Jython this library uses Java AWT APIs. They are always available
-    and thus no external modules are needed.
+    Notice that successfully taking screenshots requires tests to be run with
+    a physical or virtual display.
 
     *Using with Python*
 
-    On Python you need to have one of the following modules installed to be
+    With Python you need to have one of the following modules installed to be
     able to use this library. The first module that is found will be used.
 
     - wxPython :: http://wxpython.org :: Required also by RIDE so many Robot
@@ -60,6 +64,14 @@ class Screenshot(object):
       This module can take screenshots only on Windows.
 
     Python support was added in Robot Framework 2.5.5.
+
+    *Using with Jython and IronPython*
+
+    With Jython and IronPython this library uses APIs provided by JVM and .NET
+    platforms, respectively. These APIs are always available and thus no
+    external modules are needed.
+
+    IronPython support was added in Robot Framework 2.7.5.
 
     *Where screenshots are saved*
 
@@ -167,19 +179,19 @@ class Screenshot(object):
         return path
 
     def take_screenshot(self, name="screenshot", width="800px"):
-        """Takes a screenshot and embeds it into the log file.
+        """Takes a screenshot in JPEG format and embeds it into the log file.
 
-        Name of the file where the screenshot is stored is derived from `name`.
-        If `name` ends with extension `.jpg` or `.jpeg`, the screenshot will be
-        stored with that name. Otherwise a unique name is created by adding
-        underscore, a running index and extension to the `name`.
+        Name of the file where the screenshot is stored is derived from the
+        given `name`. If the `name` ends with extension `.jpg` or `.jpeg`,
+        the screenshot will be stored with that exact name. Otherwise a unique
+        name is created by adding an underscore, a running index and
+        an extension to the `name`.
 
         The name will be interpreted to be relative to the directory where
         the log file is written. It is also possible to use absolute paths.
+        Using `/` as a path separator works in all operating systems.
 
         `width` specifies the size of the screenshot in the log file.
-
-        The path where the screenshot is saved is returned.
 
         Examples: (LOGDIR is determined automatically by the library)
         | Take Screenshot |                  |     | # LOGDIR/screenshot_1.jpg (index automatically incremented) |
@@ -189,8 +201,7 @@ class Screenshot(object):
         | Take Screenshot | images/login.jpg | 80% | # Specify both name and width. |
         | Take Screenshot | width=550px      |     | # Specify only width. |
 
-        Screenshots can be only taken in JPEG format. It is possible to use `/`
-        as a path separator in all operating systems.
+        The path where the screenshot is saved is returned.
         """
         path = self._save_screenshot(name)
         self._embed_screenshot(path, width)
@@ -212,17 +223,23 @@ class Screenshot(object):
         return self._screenshot_to_file(path)
 
     def _screenshot_to_file(self, path):
-        path = utils.abspath(self._norm_path(path))
-        self._validate_screenshot_path(path)
-        print '*DEBUG* Using %s modules for taking screenshot.' \
-            % self._screenshot_taker.module
-        self._screenshot_taker(path)
+        path = self._validate_screenshot_path(path)
+        logger.debug('Using %s modules for taking screenshot.'
+                     % self._screenshot_taker.module)
+        try:
+            self._screenshot_taker(path)
+        except:
+            logger.warn('Taking screenshot failed: %s\n'
+                        'Make sure tests are run with a physical or virtual display.'
+                        % utils.get_error_message())
         return path
 
     def _validate_screenshot_path(self, path):
+        path = utils.abspath(self._norm_path(path))
         if not os.path.exists(os.path.dirname(path)):
-            raise RuntimeError("Directory '%s' where to save the screenshot does "
-                               "not exist" % os.path.dirname(path))
+            raise RuntimeError("Directory '%s' where to save the screenshot "
+                               "does not exist" % os.path.dirname(path))
+        return path
 
     def _get_screenshot_path(self, basename, directory):
         directory = self._norm_path(directory) if directory else self._screenshot_dir
@@ -237,12 +254,13 @@ class Screenshot(object):
 
     def _embed_screenshot(self, path, width):
         link = utils.get_link_path(path, self._log_dir)
-        print '*HTML* <a href="%s"><img src="%s" width="%s"></a>' \
-              % (link, link, width)
+        logger.info('<a href="%s"><img src="%s" width="%s"></a>'
+                    % (link, link, width), html=True)
 
     def _link_screenshot(self, path):
         link = utils.get_link_path(path, self._log_dir)
-        print "*HTML* Screenshot saved to '<a href=\"%s\">%s</a>'." % (link, path)
+        logger.info("Screenshot saved to '<a href=\"%s\">%s</a>'."
+                    % (link, path), html=True)
 
 
 class ScreenshotTaker(object):
@@ -257,6 +275,8 @@ class ScreenshotTaker(object):
     def _get_screenshot_taker(self, module_name):
         if sys.platform.startswith('java'):
             return self._java_screenshot
+        if sys.platform == 'cli':
+            return self._cli_screenshot
         if module_name:
             method_name = '_%s_screenshot' % module_name.lower()
             if hasattr(self, method_name):
@@ -276,6 +296,16 @@ class ScreenshotTaker(object):
         rectangle = Rectangle(0, 0, size.width, size.height)
         image = Robot().createScreenCapture(rectangle)
         ImageIO.write(image, 'jpg', File(path))
+
+    def _cli_screenshot(self, path):
+        bmp = Bitmap(Screen.PrimaryScreen.Bounds.Width,
+                     Screen.PrimaryScreen.Bounds.Height)
+        graphics = Graphics.FromImage(bmp)
+        try:
+            graphics.CopyFromScreen(0, 0, 0, 0, bmp.Size)
+        finally:
+            graphics.Dispose()
+            bmp.Save(path, Imaging.ImageFormat.Jpeg)
 
     def _wx_screenshot(self, path):
         context = wx.ScreenDC()
@@ -309,8 +339,9 @@ class ScreenshotTaker(object):
 
 if __name__ == "__main__":
     if len(sys.argv) not in [2, 3]:
-        print "Usage: %s path [wx|gtk|pil]" % os.path.basename(sys.argv[0])
-        sys.exit(1)
+        sys.exit("Usage: %s <path> [wx|gtk|pil] OR test" % os.path.basename(sys.argv[0]))
+    if sys.argv[1] == 'test':
+        sys.exit('OK' if ScreenshotTaker().module != 'no' else 'NOK')
     path = utils.abspath(sys.argv[1])
     module = sys.argv[2] if len(sys.argv) == 3 else None
     shooter = ScreenshotTaker(module)

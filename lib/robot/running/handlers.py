@@ -16,6 +16,7 @@ from __future__ import with_statement
 
 from robot import utils
 from robot.errors import DataError
+from robot.variables import is_list_var
 
 from outputcapture import OutputCapturer
 from runkwregister import RUN_KW_REGISTER
@@ -240,15 +241,6 @@ class _RunKeywordHandler(_PythonHandler):
             keywords.add_keyword(keyword)
         return keywords
 
-    def _get_keywords(self, args):
-        arg_names = self.arguments.names
-        if 'name' in arg_names:
-            name_index = arg_names.index('name')
-            return [ Keyword(args[name_index], args[name_index+1:]) ]
-        elif self.arguments.varargs == 'names':
-            return [ Keyword(name, []) for name in args[len(arg_names):] ]
-        return []
-
     def _variable_syntax_in(self, kw_name, context):
         try:
             resolved = context.namespace.variables.replace_string(kw_name)
@@ -257,6 +249,56 @@ class _RunKeywordHandler(_PythonHandler):
             return resolved != kw_name
         except DataError:
             return True
+
+    def _get_keywords(self, args):
+        if self._handler_name == 'run_keyword_if':
+            return list(self._get_run_kw_if_keywords(args))
+        if self._handler_name == 'run_keywords':
+            return self._get_run_kws_keywords(args)
+        if 'name' in self.arguments.names:
+            return self._get_default_run_kw_keywords(args)
+        return []
+
+    def _get_run_kw_if_keywords(self, given_args):
+        for kw_call in self._get_run_kw_if_calls(given_args):
+            if kw_call:
+                yield Keyword(kw_call[0], kw_call[1:])
+
+    def _get_run_kw_if_calls(self, given_args):
+        while 'ELSE IF' in given_args:
+            kw_call, given_args = self._split_run_kw_if_args(given_args, 'ELSE IF', 2)
+            yield kw_call
+        if 'ELSE' in given_args:
+            kw_call, else_call = self._split_run_kw_if_args(given_args, 'ELSE', 1)
+            yield kw_call
+            yield else_call
+        elif self._validate_kw_call(given_args):
+            expr, kw_call = given_args[0], given_args[1:]
+            if not is_list_var(expr):
+                yield kw_call
+
+    def _split_run_kw_if_args(self, given_args, control_word, required_after):
+        index = given_args.index(control_word)
+        expr_and_call = given_args[:index]
+        remaining = given_args[index+1:]
+        if not (self._validate_kw_call(expr_and_call) and
+                self._validate_kw_call(remaining, required_after)):
+            raise DataError("Invalid 'Run Keyword If' usage.")
+        if is_list_var(expr_and_call[0]):
+            return [], remaining
+        return expr_and_call[1:], remaining
+
+    def _validate_kw_call(self, kw_call, min_length=2):
+        if len(kw_call) >= min_length:
+            return True
+        return any(is_list_var(item) for item in kw_call)
+
+    def _get_run_kws_keywords(self, given_args):
+        return [Keyword(name, []) for name in given_args]
+
+    def _get_default_run_kw_keywords(self, given_args):
+        index = self.arguments.names.index('name')
+        return [Keyword(given_args[index], given_args[index+1:])]
 
 
 class _XTimesHandler(_RunKeywordHandler):
