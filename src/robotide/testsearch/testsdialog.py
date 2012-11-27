@@ -38,7 +38,7 @@ class TestsDialog(Dialog):
     def _add_search_control(self):
         line1 = self._horizontal_sizer()
         self._add_pattern_filter(line1)
-        self._add_doc_filter(line1)
+        self._add_only_tags_filter(line1)
         self.Sizer.Add(line1, 0, wx.ALL, 3)
 
     def _horizontal_sizer(self):
@@ -51,10 +51,14 @@ class TestsDialog(Dialog):
         self._search_control.Bind(wx.EVT_TEXT_ENTER, wrapped)
         sizer.Add(self._search_control)
 
-    def _add_doc_filter(self, sizer):
-        self._use_doc = wx.CheckBox(self, label='Search only tags')
-        self._use_doc.SetValue(False)
-        sizer.Add(self._use_doc)
+    def _add_only_tags_filter(self, sizer):
+        self._only_tags = wx.CheckBox(self, label='Search only tags')
+        self._only_tags.SetValue(False)
+        sizer.Add(self._only_tags)
+
+    @property
+    def tags_only(self):
+        return self._only_tags.GetValue()
 
     def _usage_selected(self, idx):
         for listener in self._selection_listeners:

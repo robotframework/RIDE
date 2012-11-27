@@ -30,7 +30,7 @@ class TestSearchPlugin(Plugin):
     def show_search_for(self, text):
         if self._dialog is None:
             self._create_tests_dialog()
-        self._dialog.set_search_model(text, self._search(TestSearchMatcher(text), self.frame._controller.data))
+        self._dialog.set_search_model(text, self._search(TestSearchMatcher(text, self._dialog.tags_only), self.frame._controller.data))
         self._dialog.set_focus_to_default_location()
 
     def _create_tests_dialog(self):
@@ -62,13 +62,14 @@ class TestSearchPlugin(Plugin):
 
 class TestSearchMatcher(object):
 
-    def __init__(self, text):
+    def __init__(self, text, tags_only=False):
         self._texts = text.lower().split()
+        self._tags_only = tags_only
 
     def matches(self, test):
-        name = test.name.lower()
+        name = test.name.lower() if not self._tags_only else ()
         tags = [unicode(tag).lower() for tag in test.tags]
-        doc = test.documentation.value.lower()
+        doc = test.documentation.value.lower() if not self._tags_only else ()
         matches = []
         for text in self._texts:
             match = self._unit_match(text, name, tags, doc)
