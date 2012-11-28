@@ -66,6 +66,16 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         self._clear_tree_data()
         self._editor = None
         self._execution_results = None
+        if not hasattr(self, 'OnCancelEdit'):
+            self.OnCancelEdit = self._on_cancel_edit
+
+    def _on_cancel_edit(self, item):
+        le = customtreectrl.TreeEvent(customtreectrl.wxEVT_TREE_END_LABEL_EDIT, self.GetId())
+        le._item = item
+        le.SetEventObject(self)
+        le._label = ""
+        le._editCancelled = True
+        self.GetEventHandler().ProcessEvent(le)
 
     def _bind_tree_events(self):
         self.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnSelChanged)
@@ -748,7 +758,12 @@ class TreeLabelEditListener(object):
         # .. and the another CallAfter because of
         # customtreectrl.TreeTextCtrl#OnChar will call CallAfter(self.Finish) when Enter is pressed
         # --> Results in PyDeadObject if called after ResetEditControl..
-        wx.CallAfter(wx.CallAfter, self._tree.ResetEditControl)
+        wx.CallAfter(wx.CallAfter, self._stop_editing)
+
+    def _stop_editing(self):
+        control = self._tree.GetEditControl()
+        if control:
+            control.StopEditing()
 
     def OnDelete(self, event):
         editor = self._tree.GetEditControl()
