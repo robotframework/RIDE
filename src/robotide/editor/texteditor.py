@@ -68,7 +68,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             return f
         self.register_shortcut('CtrlCmd-X', focused(lambda e: self._editor.cut()))
         self.register_shortcut('CtrlCmd-C', focused(lambda e: self._editor.copy()))
-        self.register_shortcut('CtrlCmd-A', focused(lambda e: self._editor.select_all()))
+        if IS_MAC: # Mac needs this key binding
+            self.register_shortcut('CtrlCmd-A', focused(lambda e: self._editor.select_all()))
         if IS_WINDOWS or IS_MAC: # Linux does not need this key binding
             self.register_shortcut('CtrlCmd-V', focused(lambda e: self._editor.paste()))
         self.register_shortcut('CtrlCmd-Z', focused(lambda e: self._editor.undo()))
