@@ -13,19 +13,8 @@
 #  limitations under the License.
 
 import wx
-
-_TREE_ARGS = {'style':wx.TR_DEFAULT_STYLE}
-try:
-    import wx.lib.agw.customtreectrl as customtreectrl
-    if wx.VERSION_STRING >= '2.8.11.0':
-        _TREE_ARGS['agwStyle']=customtreectrl.TR_DEFAULT_STYLE | customtreectrl.TR_HIDE_ROOT | customtreectrl.TR_EDIT_LABELS
-except ImportError:
-    import wx.lib.customtreectrl as customtreectrl
-
-try:
-    import treemixin
-except ImportError:
-    from wx.lib.mixins import treemixin
+import wx.lib.agw.customtreectrl as customtreectrl
+from wx.lib.mixins import treemixin
 
 from robotide.controller.ui.treecontroller import TreeController
 from robotide.context import IS_WINDOWS
@@ -48,6 +37,10 @@ from robotide import utils
 from .treenodehandlers import ResourceRootHandler, action_handler_class
 from .images import TreeImageList
 
+_TREE_ARGS = {'style':wx.TR_DEFAULT_STYLE}
+
+if wx.VERSION_STRING >= '2.8.11.0':
+    _TREE_ARGS['agwStyle']=customtreectrl.TR_DEFAULT_STYLE | customtreectrl.TR_HIDE_ROOT | customtreectrl.TR_EDIT_LABELS
 if IS_WINDOWS:
     _TREE_ARGS['style'] |= wx.TR_EDIT_LABELS
 
