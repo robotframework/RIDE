@@ -11,31 +11,30 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-import re
 
 import wx
-from robotide.action.actioninfo import ActionInfo
-from robotide.controller.filecontrollers import ResourceFileController
-from robotide.publish.messages import RideTestRunning, RideTestPassed, RideTestFailed, RideTestExecutionStarted, \
-    RideImportSetting, RideExcludesChanged, RideIncludesChanged
-from robotide.ui.images import RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, FAILED_IMAGE_INDEX, ROBOT_IMAGE_INDEX
-from robotide.ui.treenodehandlers import TestCaseHandler
 
-tree_args = {}
+_TREE_ARGS = {'style':wx.TR_DEFAULT_STYLE}
 try:
     import wx.lib.agw.customtreectrl as customtreectrl
     if wx.VERSION_STRING >= '2.8.11.0':
-        tree_args['agwStyle']=customtreectrl.TR_DEFAULT_STYLE | customtreectrl.TR_HIDE_ROOT | customtreectrl.TR_EDIT_LABELS
+        _TREE_ARGS['agwStyle']=customtreectrl.TR_DEFAULT_STYLE | customtreectrl.TR_HIDE_ROOT | customtreectrl.TR_EDIT_LABELS
 except ImportError:
     import wx.lib.customtreectrl as customtreectrl
-from robotide.controller.ui.treecontroller import TreeController
 
 try:
     import treemixin
 except ImportError:
     from wx.lib.mixins import treemixin
 
-from robotide.context import ctrl_or_cmd, IS_WINDOWS, bind_keys_to_evt_menu
+from robotide.controller.ui.treecontroller import TreeController
+from robotide.context import IS_WINDOWS
+from robotide.action.actioninfo import ActionInfo
+from robotide.controller.filecontrollers import ResourceFileController
+from robotide.publish.messages import RideTestRunning, RideTestPassed, RideTestFailed, RideTestExecutionStarted, \
+    RideImportSetting, RideExcludesChanged, RideIncludesChanged
+from robotide.ui.images import RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, FAILED_IMAGE_INDEX, ROBOT_IMAGE_INDEX
+from robotide.ui.treenodehandlers import TestCaseHandler
 from robotide.publish import (PUBLISHER, RideTreeSelection, RideFileNameChanged,
     RideTestSelectedForRunningChanged, RideItem, RideUserKeywordAdded, RideTestCaseAdded,
     RideUserKeywordRemoved, RideTestCaseRemoved, RideDataFileRemoved, RideDataChangedToDirty,
@@ -49,6 +48,9 @@ from robotide import utils
 from .treenodehandlers import ResourceRootHandler, action_handler_class
 from .images import TreeImageList
 
+if IS_WINDOWS:
+    _TREE_ARGS['style'] |= wx.TR_EDIT_LABELS
+
 
 class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEventHandler):
 
@@ -57,8 +59,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
     def __init__(self, parent, action_registerer, settings=None):
         self._checkboxes_for_tests = False
         self._controller = TreeController(self, action_registerer, settings=settings)
-        tree_args['style'] = wx.TR_DEFAULT_STYLE | (IS_WINDOWS and wx.TR_EDIT_LABELS)
-        treemixin.DragAndDrop.__init__(self, parent, **tree_args)
+        treemixin.DragAndDrop.__init__(self, parent, **_TREE_ARGS)
         self._controller.register_tree_actions()
         self._bind_tree_events()
         self._images = TreeImageList()
