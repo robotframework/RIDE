@@ -101,42 +101,29 @@ options(
     )
 )
 @task
-@cmdopts([
-    ('libs=', 'l', 'Number of test libraries'),
-    ('keywords=', 'k', 'Number of keywords in a test library'),
-    ('suites=', 's', 'Number of test suites'),
-    ('tests=', 't', 'Number of tests in a suite'),
-    ('resourcefiles=', 'f', 'Number of resource files'),
-    ('resources=', 'r', 'Number of resources in a file'),
-    ('validity=', 'v', 'Validity of test cases (1...0). To have ~80% passes give 0.8. Default 1.'),
-    ('testdepth=', 'e', 'Average number of steps in a test case (2..)'),
-    ('dir=', 'd', 'Target directory for the test project'),
-    ('upgrade', 'u', 'Update script from the github')
-])
-def generate_big_project(options):
-    """Use rtest go_find_bugs.py to randomly test RIDE api"""
-    #find_package_data(where='https://github.com/robotframework/Generator/')
-    if options.upgrade:
+@consume_args
+@no_help
+def generate_big_project(args):
+    _remove_bytecode_files()
+    if "--upgrade" in args or '--install' in args:
         rfgen_url = "https://raw.github.com/robotframework/Generator/master/rfgen.py"
-        print "Updating rfgen.py from github."
+        print "Installing/upgrading rfgen.py from github."
         f = open('rfgen.py','wb')
         f.write(urllib2.urlopen(rfgen_url).read())
         f.close()
-        print "Update done."
+        print "Done."
         sys.exit(0)
 
-    _remove_bytecode_files()
     _set_development_path()
     sys.path.insert(0, '.')
 
-    shutil.rmtree(options.dir, ignore_errors=True)
-    sys.path.append(options.dir)
-    from rfgen import main
-
-    assert main(options.dir, testlibs_count=int(options.libs), keyword_count=int(options.keywords),
-                testsuite_count=int(options.suites), tests_in_suite=int(options.tests),
-                resource_count=int(options.resourcefiles), resources_in_file=int(options.resources),
-                avg_test_depth=int(options.testdepth), test_validity=float(options.validity))
+    try:
+        from rfgen import main
+        assert main(args)
+    except ImportError:
+        print "Error: Did not find 'rfgen' script or installation"
+        print "Use 'paver generate_big_project --install'"
+        sys.exit(0)
 
 
 @task
