@@ -63,6 +63,9 @@ class RideEventHandler(object):
         if ctrl in the_set:
             return
         the_set.add(ctrl)
+        wx.CallLater(100, self._try_show_warning, the_set, ctrl, msg, yes_handler)
+
+    def _try_show_warning(self, the_set, ctrl, msg, yes_handler):
         try:
             self._show_warning(msg, ctrl, yes_handler)
         finally:
