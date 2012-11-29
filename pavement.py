@@ -68,7 +68,7 @@ Topic :: Software Development :: Testing
                          in find_packages(str(LIB_SOURCE))],
       package_data = find_package_data(str(SOURCE_DIR)),
       # Robot Framework package data is not included, but RIDE does not need it.
-      scripts      = ['src/bin/ride.py', 'post_install.py']
+      scripts      = ['src/bin/ride.py', 'ride_postinstall.py']
       )
 
 @task
