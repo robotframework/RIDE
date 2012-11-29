@@ -82,8 +82,8 @@ def find_from_pythonpath(name):
 
 
 def replace_extension(path, new_extension):
-    base = os.path.splitext(path)[0]
-    return '%s.%s' % (base, new_extension.lower())
+    base = path.rsplit('.', 1)
+    return '%s.%s' % (base[0], new_extension.lower())
 
 def overrides(interface_class):
     """
