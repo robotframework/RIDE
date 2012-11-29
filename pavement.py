@@ -77,7 +77,7 @@ def run(args):
     """Start development version of RIDE"""
     _set_development_path()
     from robotide import main
-    main(args)
+    main(*args)
 
 @task
 @consume_args
