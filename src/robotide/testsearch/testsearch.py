@@ -91,30 +91,31 @@ class SearchResult(object):
         self._test = test
 
     def __cmp__(self, other):
-        names = self._compare(self._is_name_match(), other._is_name_match())
+        names = self._compare(self._is_name_match(), other._is_name_match(), self._test.name, other._test.name)
         if names:
             return names
-        if self._is_name_match() and other._is_name_match():
-            return cmp(self._test.name, other._test.name)
-        tags = self._compare(self._is_tag_match(), other._is_tag_match())
+        tags = self._compare(self._is_tag_match(), other._is_tag_match(), self._tags(), other._tags())
         if tags:
             return tags
-        if self._is_tag_match() and other._is_tag_match():
-            return cmp([unicode(tag) for tag in self._test.tags], [unicode(tag) for tag in other._test.tags])
-        return 0
+        return cmp(self._test.name, other._test.name)
 
-    def _compare(self, my_result, other_result):
+    def _compare(self, my_result, other_result, my_comparable, other_comparable):
         if my_result and not other_result:
             return -1
         if not my_result and other_result:
             return 1
+        if my_result and other_result:
+            return cmp(my_comparable, other_comparable)
         return 0
 
     def _is_name_match(self):
         return self._matcher.match(self._test.name.lower())
 
     def _is_tag_match(self):
-        return any(self._matcher.match(unicode(tag)) for tag in self._test.tags)
+        return any(self._matcher.match(t) for t in self._tags())
+
+    def _tags(self):
+        return [unicode(tag) for tag in self._test.tags]
 
     def __repr__(self):
         return self._test.name
