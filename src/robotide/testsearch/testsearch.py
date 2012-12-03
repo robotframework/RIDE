@@ -12,6 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 import wx
+from robot.utils import MultiMatcher
 from robotide.action import ActionInfo
 from robotide.pluginapi import Plugin
 from robotide.testsearch.testsdialog import TestsDialog
@@ -63,65 +64,58 @@ class TestSearchPlugin(Plugin):
 class TestSearchMatcher(object):
 
     def __init__(self, text, tags_only=False):
-        self._texts = text.lower().split()
+        self._text_matcher = MultiMatcher(text.split())
         self._tags_only = tags_only
 
     def matches(self, test):
-        name = test.name.lower() if not self._tags_only else ()
-        tags = [unicode(tag).lower() for tag in test.tags]
-        doc = test.documentation.value.lower() if not self._tags_only else ()
-        matches = []
-        for text in self._texts:
-            match = self._unit_match(text, name, tags, doc)
-            if not match:
-                return False
-            matches += [match]
-        return matches
+        if self._matches(test):
+            return SearchResult(self._text_matcher, test)
+        return False
 
-    def _unit_match(self, text, name, tags, doc):
-        if text in name:
-            return NameMatchingResult(text, name)
-        if any(text in tag for tag in tags):
-            return TagMatchingResult(text, [tag for tag in tags if text in tag][0])
-        if text in doc:
-            return DocMatchingResult(text, doc)
+    def _matches(self, test):
+        name = test.name.lower() if not self._tags_only else ''
+        if self._text_matcher.match(name):
+            return True
+        if any(self._text_matcher.match(unicode(tag)) for tag in test.tags):
+            return True
+        doc = test.documentation.value.lower() if not self._tags_only else ''
+        if self._text_matcher.match(doc):
+            return True
         return False
 
 
 class SearchResult(object):
 
-    def __init__(self, matching_search_string, string, super_over_number):
-        self._matching_search_string = matching_search_string
-        self._string = string
-        self._over_number = self._calculate_over_number()
-        self._super_over_number = super_over_number
-
-    def _calculate_over_number(self):
-        if self._matching_search_string == self._string:
-            return 100000
-        if self._matching_search_string in self._string.split():
-            return 1000
-        if self._string.startswith(self._matching_search_string):
-            return 100
-        return 12
+    def __init__(self, matcher, test):
+        self._matcher = matcher
+        self._test = test
 
     def __cmp__(self, other):
-        if self._super_over_number != other._super_over_number:
-            return cmp(other._super_over_number, self._super_over_number)
-        if self._over_number != other._over_number:
-            return cmp(other._over_number, self._over_number)
-        return cmp(self._string, other._string)
+        names = self._compare(self._is_name_match(), other._is_name_match(), self._test.name, other._test.name)
+        if names:
+            return names
+        tags = self._compare(self._is_tag_match(), other._is_tag_match(), self._tags(), other._tags())
+        if tags:
+            return tags
+        return cmp(self._test.name, other._test.name)
+
+    def _compare(self, my_result, other_result, my_comparable, other_comparable):
+        if my_result and not other_result:
+            return -1
+        if not my_result and other_result:
+            return 1
+        if my_result and other_result:
+            return cmp(my_comparable, other_comparable)
+        return 0
+
+    def _is_name_match(self):
+        return self._matcher.match(self._test.name.lower())
+
+    def _is_tag_match(self):
+        return any(self._matcher.match(t) for t in self._tags())
+
+    def _tags(self):
+        return [unicode(tag) for tag in self._test.tags]
 
     def __repr__(self):
-        return '"%s":%d' % (self._string, self._over_number)
-
-
-def NameMatchingResult(search_string, name):
-    return SearchResult(search_string, name, 3)
-
-def TagMatchingResult(search_string, tag_match):
-    return SearchResult(search_string, tag_match, 2)
-
-def DocMatchingResult(search_string, doc_match):
-    return SearchResult(search_string, doc_match, 1)
-
+        return self._test.name
