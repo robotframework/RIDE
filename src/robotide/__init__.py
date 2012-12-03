@@ -90,7 +90,7 @@ def _run(inpath=None, updatecheck=True, debug_console=False):
     if inpath:
         inpath = unicode(inpath, sys.getfilesystemencoding())
     ride = RIDE(inpath, updatecheck)
-    if wx.VERSION < (2, 8, 12, 1) or True:
+    if wx.VERSION < (2, 8, 12, 1):
         _show_old_wxpython_warning(ride.frame)
     if debug_console:
         _start_debug_console(ride)
