@@ -25,6 +25,9 @@ class TestTestSorter(_TestSearchTest, unittest.TestCase):
         for i in range(1, len(match_objects)):
             self._assert_is_greater(match_objects[i], match_objects[i-1])
 
+    def test_all_matches_is_better_than_some(self):
+        self._matches_in_order('zoo* *foo* *bar', ['zoo foo bar', 'zoo foo', 'bar'])
+
     def test_name_is_better_than_doc(self):
         name_match = self._match('name', name='name')
         doc_match = self._match('doc', doc='doc')

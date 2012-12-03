@@ -91,6 +91,9 @@ class SearchResult(object):
         self._test = test
 
     def __cmp__(self, other):
+        totals, other_totals = self._total_matches(), other._total_matches()
+        if totals != other_totals:
+            return cmp(other_totals, totals)
         names = self._compare(self._is_name_match(), other._is_name_match(), self._test.name, other._test.name)
         if names:
             return names
@@ -107,6 +110,12 @@ class SearchResult(object):
         if my_result and other_result:
             return cmp(my_comparable, other_comparable)
         return 0
+
+    def _total_matches(self):
+        return sum(1 for m in self._matcher._matchers
+            if m.match(self._test.name.lower()
+                       or any(m.match(t) for t in self._tags())
+                       or m.match(self._test.documentation.value.lower())))
 
     def _is_name_match(self):
         return self._matcher.match(self._test.name.lower())
