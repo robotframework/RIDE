@@ -90,9 +90,22 @@ def _run(inpath=None, updatecheck=True, debug_console=False):
     if inpath:
         inpath = unicode(inpath, sys.getfilesystemencoding())
     ride = RIDE(inpath, updatecheck)
+    if wx.VERSION < (2, 8, 12, 1) or True:
+        _show_old_wxpython_warning(ride.frame)
     if debug_console:
         _start_debug_console(ride)
     ride.MainLoop()
+
+def _show_old_wxpython_warning(parent):
+    title = 'Please upgrade your wxPython installation'
+    message = ('RIDE officially supports wxPython 2.8.12.1 and newer. '
+               'Your current version is %s.\n\n'
+               'Older wxPython versions are known to miss some features used by RIDE. '
+               'Notice also that wxPython 2.9 releases are not yet considered stable.\n\n'
+               'Latest wxPython packages can be found from\nhttp://wxpython.org/.'
+               % wx.VERSION_STRING)
+    style = wx.ICON_EXCLAMATION
+    wx.MessageDialog(parent, message, title, style).ShowModal()
 
 def _print_stacks():
     id2name = dict((th.ident, th.name) for th in threading.enumerate())
