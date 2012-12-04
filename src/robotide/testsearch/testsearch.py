@@ -50,9 +50,13 @@ class TestSearchPlugin(Plugin):
     def show_empty_search(self, event):
         self.show_search_for('')
 
+    def doWithSelection(self, test):
+        self.tree.select_node_by_data(test)
+        self._dialog.set_focus_to_default_location(test)
+
     def _selected(self, selection):
         test, match_location = selection
-        wx.CallAfter(self.tree.select_node_by_data, test)
+        wx.CallAfter(self.doWithSelection, test)
 
     def _search_results(self, text):
         result = self._search(TestSearchMatcher(text, self._dialog.tags_only), self.frame._controller.data)

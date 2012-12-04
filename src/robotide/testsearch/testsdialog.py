@@ -71,9 +71,20 @@ class TestsDialog(Dialog):
     def add_selection_listener(self, listener):
         self._selection_listeners.append(listener)
 
-    def set_focus_to_default_location(self):
+    def _find_index_in_tests_list(self, test):
+        idx = 0
+        for tc in self.tests:
+            if tc[0] == test:
+                return idx
+            idx += 1
+        return 0
+
+    def set_focus_to_default_location(self, selected=None):
         if self.tests.count:
-            self.tests_list.Select(0)
+            if selected:
+                self.tests_list.Select(self._find_index_in_tests_list(selected))
+            else:
+                self.tests_list.Select(0)
             self.tests_list.SetFocus()
         else:
             self._search_control.SetFocus()
