@@ -31,7 +31,7 @@ class TestSearchPlugin(Plugin):
     def show_search_for(self, text):
         if self._dialog is None:
             self._create_tests_dialog()
-        self._dialog.set_search_model(text, self._search(TestSearchMatcher(text, self._dialog.tags_only), self.frame._controller.data))
+        self._dialog.set_search_model(text, self._search_results(text))
         self._dialog.set_focus_to_default_location()
 
     def _create_tests_dialog(self):
@@ -50,6 +50,10 @@ class TestSearchPlugin(Plugin):
     def _selected(self, selection):
         test, match_location = selection
         wx.CallAfter(self.tree.select_node_by_data, test)
+
+    def _search_results(self, text):
+        result = self._search(TestSearchMatcher(text, self._dialog.tags_only), self.frame._controller.data)
+        return sorted(result, cmp=lambda x,y: cmp(x[1], y[1]))
 
     def _search(self, matcher, data):
         for test in data.tests:
