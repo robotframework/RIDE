@@ -92,7 +92,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         if not self._updating_namespace:
             self._updating_namespace = True
             # _updating_namespace flag prevents too many calls
-            wx.CallAfter(self._update_based_on_namespace_change)
+            wx.CallLater(200, self._update_based_on_namespace_change)
 
     def _update_based_on_namespace_change(self):
         try:
