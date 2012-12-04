@@ -37,6 +37,9 @@ class TestsDialog(Dialog):
         self._search_control.SetValue(search_text)
         self._results_text.SetLabel('Results: %d' % len(results))
         self.tests._tests = results
+        self._refresh_tests_list()
+
+    def _refresh_tests_list(self):
         self.tests_list.refresh()
         self.tests_list.Refresh()
 

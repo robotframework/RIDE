@@ -37,14 +37,8 @@ class VirtualList(wx.ListCtrl, ListCtrlAutoWidthMixin):
     def OnLeftDown(self, event):
         item, flags =  self.HitTest(event.Position)
         if flags | wx.LIST_HITTEST_ONITEM:
-            wx.CallAfter(self._force_item_selection, item)
+            wx.CallAfter(self._inform_listeners, item)
         event.Skip()
-
-    def _force_item_selection(self, item):
-        # On Windows, wx.EVT_LIST_ITEM_SELECTED is not generated when
-        # already selected item is selected again.
-        self.Select(item, False)
-        self.Select(item, True)
 
     def _create_headers(self, headers):
         for idx, name in enumerate(headers):
@@ -60,8 +54,11 @@ class VirtualList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         self._selection_listeners.append(listener)
 
     def OnListItemSelected(self, event):
+        self._inform_listeners(event.Index)
+
+    def _inform_listeners(self, selected_index):
         for listener in self._selection_listeners:
-            listener(event.Index)
+            listener(selected_index)
 
     def OnGetItemText(self, row, col):
         return self._model.item_text(row, col)
