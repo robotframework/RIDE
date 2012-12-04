@@ -38,6 +38,7 @@ class TestsDialog(Dialog):
         self._results_text.SetLabel('Results: %d' % len(results))
         self.tests._tests = results
         self.tests_list.refresh()
+        self.tests_list.Refresh()
 
     def _add_search_control(self):
         line1 = self._horizontal_sizer()
