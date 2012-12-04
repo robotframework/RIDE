@@ -25,7 +25,7 @@ class TestSearchPlugin(Plugin):
 
     def enable(self):
         self.register_action(ActionInfo('Tools', self.HEADER, self.show_empty_search, shortcut='F3', doc=self.__doc__))
-        self.register_search_action(self.HEADER, self.show_search_for, ImageProvider().TEST_SEARCH_ICON, default=True)
+        self.register_search_action(self.HEADER, self.preprocess_input_and_show_search, ImageProvider().TEST_SEARCH_ICON, default=True)
         self._dialog = None
 
     def show_search_for(self, text):
@@ -33,6 +33,9 @@ class TestSearchPlugin(Plugin):
             self._create_tests_dialog()
         self._dialog.set_search_model(text, self._search_results(text))
         self._dialog.set_focus_to_default_location()
+
+    def preprocess_input_and_show_search(self, text):
+        self.show_search_for(_preprocess_input(text))
 
     def _create_tests_dialog(self):
         self._dialog = TestsDialog(search_handler=self.show_search_for)
@@ -63,6 +66,12 @@ class TestSearchPlugin(Plugin):
         for s in data.suites:
             for test, match in self._search(matcher, s):
                 yield test, match
+
+
+def _preprocess_input(text):
+    if set('?*') & set(text) or not text:
+        return text
+    return '*'+'* *'.join(text.split())+'*'
 
 
 class TestSearchMatcher(object):
