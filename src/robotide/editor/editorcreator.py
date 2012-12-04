@@ -57,6 +57,10 @@ class EditorCreator(object):
     def _create_editor(self, editor_panel, plugin, tree):
         controller = plugin.get_selected_item()
         if self._invalid(controller):
+            if self._editor and not tree._datafile_nodes: # see http://code.google.com/p/robotframework-ride/issues/detail?id=1092
+                self._editor.destroy()
+                self._editor = None
+                return None
             if self._editor:
                 return self._editor
             return WelcomePage(editor_panel)

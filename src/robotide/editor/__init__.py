@@ -13,7 +13,7 @@
 #  limitations under the License.
 
 import wx
-from robotide.publish.messages import RideMessage, RideDataFileSet
+from robotide.publish.messages import RideMessage, RideDataFileSet, RideDataFileRemoved
 
 from robotide.pluginapi import (Plugin, ActionInfoCollection,
                                 TreeAwarePluginMixin)
@@ -69,6 +69,7 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
         self.subscribe(self.OnTabChanged, RideNotebookTabChanged)
         self.subscribe(self.OnTabChanging, RideNotebookTabChanging)
         self.subscribe(self.OnSaveToModel, RideSaving)
+        self.subscribe(self.OnFileDeleted, RideDataFileRemoved)
         self.add_self_as_tree_aware_plugin()
 
     def disable(self):
@@ -141,6 +142,8 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
         if self._tab:
             self._tab.save()
 
+    def OnFileDeleted(self, message):
+        self._create_editor()
 
 class _EditorTab(wx.Panel):
 

@@ -22,10 +22,11 @@ class eventhandlertype(type):
                     method(self, event)
             return wrapped
         for attr in dict:
-            if attr.startswith('On') and \
-                    not (name == 'RideFrame' and attr == 'OnClose') and \
-                    not (name == 'Tree' and attr == 'OnDrop') and \
-                    not (name == 'KeywordEditor' and attr == 'OnIdle'):
+            if (attr.startswith('On') and
+                    not (name == 'RideFrame' and attr == 'OnClose') and
+                    not (name == 'Tree' and attr == 'OnDrop') and
+                    not (name == 'KeywordEditor' and attr == 'OnIdle') and
+                    not (attr == 'OnEnterWindow' or attr == 'OnLeaveWindow' or attr == 'OnDisplayMotion')):
                 dict[attr] = mod_time_wrapper(dict[attr])
         return type.__new__(cls, name, bases, dict)
 
