@@ -22,6 +22,7 @@ from robotide.widgets import ImageProvider
 class TestSearchPlugin(Plugin):
     """A plugin for searching tests based on name, tags and documentation"""
     HEADER = 'Search Tests'
+    _selection = None
 
     def enable(self):
         self.register_action(ActionInfo('Tools', self.HEADER, self.show_empty_search, shortcut='F3', doc=self.__doc__))
@@ -50,13 +51,16 @@ class TestSearchPlugin(Plugin):
     def show_empty_search(self, event):
         self.show_search_for('')
 
-    def doWithSelection(self, test):
+    def _do_with_selection(self):
+        test, match_location = self._selection
         self.tree.select_node_by_data(test)
         self._dialog.set_focus_to_default_location(test)
+        self._selection = None
 
     def _selected(self, selection):
-        test, match_location = selection
-        wx.CallAfter(self.doWithSelection, test)
+        if self._selection is None:
+            wx.CallLater(200, self._do_with_selection)
+        self._selection = selection
 
     def _search_results(self, text):
         result = self._search(TestSearchMatcher(text, self._dialog.tags_only), self.frame._controller.data)
