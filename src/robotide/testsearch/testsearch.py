@@ -110,6 +110,8 @@ class SearchResult(object):
     def __init__(self, matcher, test):
         self._matcher = matcher
         self._test = test
+        self.__total_matches = None
+        self.__tags = None
 
     def __cmp__(self, other):
         totals, other_totals = self._total_matches(), other._total_matches()
@@ -133,10 +135,12 @@ class SearchResult(object):
         return 0
 
     def _total_matches(self):
-        return sum(1 for m in self._matcher._matchers
-            if m.match(self._test.name.lower())
-            or any(m.match(t) for t in self._tags())
-            or m.match(self._test.documentation.value.lower()))
+        if not self.__total_matches:
+            self.__total_matches = sum(1 for m in self._matcher._matchers
+                                        if m.match(self._test.name.lower())
+                                        or any(m.match(t) for t in self._tags())
+                                        or m.match(self._test.documentation.value.lower()))
+        return self.__total_matches
 
     def _is_name_match(self):
         return self._matcher.match(self._test.name.lower())
@@ -145,7 +149,9 @@ class SearchResult(object):
         return any(self._matcher.match(t) for t in self._tags())
 
     def _tags(self):
-        return [unicode(tag) for tag in self._test.tags]
+        if self.__tags is None:
+            self.__tags = [unicode(tag) for tag in self._test.tags]
+        return self.__tags
 
     def __repr__(self):
         return self._test.name
