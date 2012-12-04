@@ -113,9 +113,9 @@ class SearchResult(object):
 
     def _total_matches(self):
         return sum(1 for m in self._matcher._matchers
-            if m.match(self._test.name.lower()
-                       or any(m.match(t) for t in self._tags())
-                       or m.match(self._test.documentation.value.lower())))
+            if m.match(self._test.name.lower())
+            or any(m.match(t) for t in self._tags())
+            or m.match(self._test.documentation.value.lower()))
 
     def _is_name_match(self):
         return self._matcher.match(self._test.name.lower())

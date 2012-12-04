@@ -28,6 +28,21 @@ class TestTestSorter(_TestSearchTest, unittest.TestCase):
     def test_all_matches_is_better_than_some(self):
         self._matches_in_order('zoo* *foo* *bar', ['zoo foo bar', 'zoo foo', 'bar'])
 
+    def test_more_matches_is_better_than_some_in_name(self):
+        all_matches_in_docs = self._match('*foo* *bar*', doc='foo bar')
+        some_match_in_name = self._match('*foo* *bar*', name='foo')
+        self._assert_is_greater(some_match_in_name, all_matches_in_docs)
+
+    def test_more_matches_is_better_than_some_in_tags(self):
+        some_match_in_tag = self._match('*foo* *bar*', tags=['bar'])
+        all_matches_in_tags = self._match('*foo* *bar*', tags=['foo', 'bar'])
+        self._assert_is_greater(some_match_in_tag, all_matches_in_tags)
+
+    def test_same_pattern_matches_do_not_raise_priority(self):
+        all_matches_in_name = self._match('*foo* *bar*', name='foo bar')
+        some_match_in_doc = self._match('*foo* *bar*', doc='bar bar bar bar bar bar')
+        self._assert_is_greater(some_match_in_doc, all_matches_in_name)
+
     def test_name_is_better_than_doc(self):
         name_match = self._match('name', name='name')
         doc_match = self._match('doc', doc='doc')
