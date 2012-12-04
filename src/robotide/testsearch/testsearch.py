@@ -12,6 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 import wx
+from robot.model import TagPatterns
 from robot.utils import MultiMatcher
 from robotide.action import ActionInfo
 from robotide.pluginapi import Plugin
@@ -63,7 +64,8 @@ class TestSearchPlugin(Plugin):
         self._selected_timer.Start(400, True)
 
     def _search_results(self, text):
-        result = self._search(TestSearchMatcher(text, self._dialog.tags_only), self.frame._controller.data)
+        matcher = TestSearchMatcher(text) if not self._dialog.tags_only else TagSearchMatcher(text)
+        result = self._search(matcher, self.frame._controller.data)
         return sorted(result, cmp=lambda x,y: cmp(x[1], y[1]))
 
     def _search(self, matcher, data):
@@ -82,11 +84,21 @@ def _preprocess_input(text):
     return '*'+'* *'.join(text.split())+'*'
 
 
+class TagSearchMatcher(object):
+
+    def __init__(self, pattern):
+        self._tag_pattern = TagPatterns(pattern)
+
+    def matches(self, test):
+        if self._tag_pattern.match([unicode(tag) for tag in test.tags]):
+            return test.name
+        return False
+
+
 class TestSearchMatcher(object):
 
-    def __init__(self, text, tags_only=False):
+    def __init__(self, text):
         self._text_matcher = MultiMatcher(text.split())
-        self._tags_only = tags_only
 
     def matches(self, test):
         if self._matches(test):
@@ -94,12 +106,12 @@ class TestSearchMatcher(object):
         return False
 
     def _matches(self, test):
-        name = test.name.lower() if not self._tags_only else ''
+        name = test.name.lower()
         if self._text_matcher.match(name):
             return True
         if any(self._text_matcher.match(unicode(tag)) for tag in test.tags):
             return True
-        doc = test.documentation.value.lower() if not self._tags_only else ''
+        doc = test.documentation.value.lower()
         if self._text_matcher.match(doc):
             return True
         return False

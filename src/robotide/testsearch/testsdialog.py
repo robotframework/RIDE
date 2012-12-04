@@ -56,7 +56,7 @@ class TestsDialog(Dialog):
         sizer.Add(self._search_control)
 
     def _add_only_tags_filter(self, sizer):
-        self._only_tags = wx.CheckBox(self, label='Search only tags')
+        self._only_tags = wx.CheckBox(self, label='Search as a tag pattern')
         self._only_tags.SetValue(False)
         sizer.Add(self._only_tags)
 
