@@ -42,6 +42,8 @@ class TestSearchPlugin(Plugin):
         self._dialog = TestsDialog(search_handler=self.show_search_for)
         self._dialog.add_selection_listener(self._selected)
         self._dialog.Bind(wx.EVT_CLOSE, self._dialog_closed)
+        self._selected_timer = wx.Timer(self._dialog)
+        self._dialog.Bind(wx.EVT_TIMER, self._do_with_selection)
         self._dialog.Show()
 
     def _dialog_closed(self, event):
@@ -51,16 +53,14 @@ class TestSearchPlugin(Plugin):
     def show_empty_search(self, event):
         self.show_search_for('')
 
-    def _do_with_selection(self):
+    def _do_with_selection(self, evt=None):
         test, match_location = self._selection
         self.tree.select_node_by_data(test)
         self._dialog.set_focus_to_default_location(test)
-        self._selection = None
 
     def _selected(self, selection):
-        if self._selection is None:
-            wx.CallLater(200, self._do_with_selection)
         self._selection = selection
+        self._selected_timer.Start(400, True)
 
     def _search_results(self, text):
         result = self._search(TestSearchMatcher(text, self._dialog.tags_only), self.frame._controller.data)
