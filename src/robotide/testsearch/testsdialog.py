@@ -26,9 +26,10 @@ class TestsDialog(Dialog):
         Dialog.__init__(self, title=title, size=(650, 400))
         self.SetSizer(VerticalSizer())
         self._notebook = wx.Notebook(self, wx.ID_ANY, style=wx.NB_TOP)
-        self.Sizer.Add(self._notebook, 1, wx.ALL | wx.EXPAND, 3)
+
         self._notebook.AddPage(self._text_search_panel(), 'Search')
         self._notebook.AddPage(self._tag_pattern_search_panel(), 'Tag Search')
+        self.Sizer.Add(self._notebook, 1, wx.ALL | wx.EXPAND | wx.ALIGN_LEFT, 3)
 
     def _text_search_panel(self):
         panel = wx.Panel(self._notebook)
@@ -66,6 +67,7 @@ class TestsDialog(Dialog):
         button.Bind(wx.EVT_BUTTON, self.OnSearchTags)
 
         panel.Sizer.Add(controls_sizer)
+        panel.Sizer.Add(self._add_info_text(panel, "Find matches using tag patterns.\nSee http://robotframework.googlecode.com/hg/doc/userguide/RobotFrameworkUserGuide.html?#by-tag-names"), 0, wx.ALL, 3)
         self._tags_results = _TestSearchListModel([])
         self._tags_list = VirtualList(panel, ['Test', 'Tags', 'Source'], self._tags_results)
         panel.Sizer.add_expanding(self._tags_list)
@@ -94,12 +96,22 @@ class TestsDialog(Dialog):
         list.refresh()
         list.Refresh()
 
+    def _add_info_text(self, panel, text = ""):
+        infopanel = self._horizontal_sizer()
+        infotext = wx.StaticText(panel, label="Info. " + text)
+        font = wx.Font(12, wx.NORMAL, wx.ITALIC, wx.NORMAL)
+        infotext.SetFont(font)
+        infopanel.Add(infotext)
+        return infopanel
+
     def _add_search_control(self, panel):
+        panel.SetSizer(VerticalSizer())
         line1 = self._horizontal_sizer()
         self._add_pattern_filter(line1, panel)
         fuzzy_search_button = wx.Button(panel, label='Search')
         line1.Add(fuzzy_search_button)
         panel.Sizer.Add(line1, 0, wx.ALL, 3)
+        panel.Sizer.Add(self._add_info_text(panel, "Find matches by test name, documentation and/or tag."), 0, wx.ALL, 3)
 
     def _horizontal_sizer(self):
         return wx.BoxSizer(wx.HORIZONTAL)
