@@ -58,7 +58,7 @@ class EditorCreator(object):
         controller = plugin.get_selected_item()
         if self._invalid(controller):
             # see http://code.google.com/p/robotframework-ride/issues/detail?id=1092
-            if self._editor and (not tree._datafile_nodes or self._only_resource_files(tree)):
+            if self._editor and tree and (not tree._datafile_nodes or self._only_resource_files(tree)):
                 self._editor.destroy()
                 self._editor = None
                 return None
