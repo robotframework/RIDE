@@ -81,14 +81,18 @@ class TestSearchPlugin(Plugin):
 class TagSearchMatcher(object):
 
     def __init__(self, includes, excludes):
-        self._tag_pattern_includes = TagPatterns(includes.split())
+        self._tag_pattern_includes = TagPatterns(includes.split()) if includes.split() else None
         self._tag_pattern_excludes = TagPatterns(excludes.split())
 
     def matches(self, test):
         tags = [unicode(tag) for tag in test.tags]
-        if self._tag_pattern_includes.match(tags) and not self._tag_pattern_excludes.match(tags):
+        if self._matches(tags):
             return test.longname
         return False
+
+    def _matches(self, tags):
+        return (self._tag_pattern_includes is None or self._tag_pattern_includes.match(tags)) and \
+               not self._tag_pattern_excludes.match(tags)
 
 
 class TestSearchMatcher(object):
