@@ -48,29 +48,12 @@ class TestsDialog(Dialog):
     def _tag_pattern_search_panel(self):
         panel = wx.Panel(self._notebook)
         panel.SetSizer(VerticalSizer())
-        controls_sizer = self._horizontal_sizer()
-
         tags_controls_sizer = VerticalSizer()
-
-        include_line = self._horizontal_sizer()
-        include_line.Add(Label(panel, label='Include', size=(80, -1)))
-        self._tags_to_include_text = wx.TextCtrl(panel, value='', size=(400, -1))
-        include_line.Add(self._tags_to_include_text)
-
-        tags_controls_sizer.Add(include_line, 0, wx.ALL, 3)
-
-        exclude_line = self._horizontal_sizer()
-        exclude_line.Add(Label(panel, label='Exclude', size=(80, -1)))
-        self._tags_to_exclude_text = wx.TextCtrl(panel, value='', size=(400, -1))
-        exclude_line.Add(self._tags_to_exclude_text)
-
-        tags_controls_sizer.Add(exclude_line, 0, wx.ALL, 3)
-
+        tags_controls_sizer.Add(self._create_include_line(panel), 0, wx.ALL, 3)
+        tags_controls_sizer.Add(self._create_exclude_line(panel), 0, wx.ALL, 3)
+        controls_sizer = self._horizontal_sizer()
         controls_sizer.Add(tags_controls_sizer)
-        button = wx.Button(panel, label='Search')
-        controls_sizer.Add(button, 0, wx.ALL | wx.EXPAND, 3)
-        button.Bind(wx.EVT_BUTTON, self.OnSearchTags)
-
+        controls_sizer.Add(self._create_tag_search_button(panel), 0, wx.ALL | wx.EXPAND, 3)
         panel.Sizer.Add(controls_sizer)
         panel.Sizer.Add(self._add_info_text(panel, "Find matches using tag patterns.\nSee http://robotframework.googlecode.com/hg/doc/userguide/RobotFrameworkUserGuide.html?#by-tag-names"), 0, wx.ALL, 3)
         self._tags_results = _TestSearchListModel([])
@@ -79,6 +62,25 @@ class TestsDialog(Dialog):
         results = wx.StaticText(panel, -1, 'Results: ')
         panel.Sizer.Add(results, 0, wx.ALL, 3)
         return panel
+
+    def _create_include_line(self, panel):
+        include_line = self._horizontal_sizer()
+        include_line.Add(Label(panel, label='Include', size=(80, -1)))
+        self._tags_to_include_text = wx.TextCtrl(panel, value='', size=(400, -1))
+        include_line.Add(self._tags_to_include_text)
+        return include_line
+
+    def _create_exclude_line(self, panel):
+        exclude_line = self._horizontal_sizer()
+        exclude_line.Add(Label(panel, label='Exclude', size=(80, -1)))
+        self._tags_to_exclude_text = wx.TextCtrl(panel, value='', size=(400, -1))
+        exclude_line.Add(self._tags_to_exclude_text)
+        return exclude_line
+
+    def _create_tag_search_button(self, panel):
+        button = wx.Button(panel, label='Search')
+        button.Bind(wx.EVT_BUTTON, self.OnSearchTags)
+        return button
 
     def OnSearchTags(self, event):
         self._tag_search_handler(self._tags_to_include_text.GetValue(), self._tags_to_exclude_text.GetValue())
