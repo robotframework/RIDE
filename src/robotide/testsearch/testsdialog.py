@@ -25,11 +25,13 @@ class TestsDialog(Dialog):
         title = "Search Tests"
         Dialog.__init__(self, title=title, size=(650, 400))
         self.SetSizer(VerticalSizer())
-        self._notebook = wx.Notebook(self, wx.ID_ANY, style=wx.NB_TOP)
+        self.Sizer.Add(self._create_notebook(), 1, wx.ALL | wx.EXPAND | wx.ALIGN_LEFT, 3)
 
+    def _create_notebook(self):
+        self._notebook = wx.Notebook(self, wx.ID_ANY, style=wx.NB_TOP)
         self._notebook.AddPage(self._text_search_panel(), 'Search')
         self._notebook.AddPage(self._tag_pattern_search_panel(), 'Tag Search')
-        self.Sizer.Add(self._notebook, 1, wx.ALL | wx.EXPAND | wx.ALIGN_LEFT, 3)
+        return self._notebook
 
     def _text_search_panel(self):
         panel = wx.Panel(self._notebook)
@@ -49,16 +51,19 @@ class TestsDialog(Dialog):
         controls_sizer = self._horizontal_sizer()
 
         tags_controls_sizer = VerticalSizer()
+
         include_line = self._horizontal_sizer()
         include_line.Add(Label(panel, label='Include', size=(80, -1)))
         self._tags_to_include_text = wx.TextCtrl(panel, value='', size=(400, -1))
         include_line.Add(self._tags_to_include_text)
-        tags_controls_sizer.Add(include_line, 0, wx.ALL, 3)
-        exclude_line = self._horizontal_sizer()
 
+        tags_controls_sizer.Add(include_line, 0, wx.ALL, 3)
+
+        exclude_line = self._horizontal_sizer()
         exclude_line.Add(Label(panel, label='Exclude', size=(80, -1)))
         self._tags_to_exclude_text = wx.TextCtrl(panel, value='', size=(400, -1))
         exclude_line.Add(self._tags_to_exclude_text)
+
         tags_controls_sizer.Add(exclude_line, 0, wx.ALL, 3)
 
         controls_sizer.Add(tags_controls_sizer)
