@@ -18,8 +18,9 @@ from robotide.widgets.list import ListModel
 
 class TestsDialog(Dialog):
 
-    def __init__(self, search_handler):
-        self._search_handler = search_handler
+    def __init__(self, fuzzy_search_handler, tag_search_handler):
+        self._fuzzy_search_handler = fuzzy_search_handler
+        self._tag_search_handler = tag_search_handler
         self._selection_listeners = []
         title = "Search Tests"
         Dialog.__init__(self, title=title, size=(650, 400))
@@ -49,38 +50,55 @@ class TestsDialog(Dialog):
         tags_controls_sizer = VerticalSizer()
         include_line = self._horizontal_sizer()
         include_line.Add(Label(panel, label='Include', size=(80, -1)))
-        include_line.Add(wx.TextCtrl(panel, value='', size=(400, -1)))
+        self._tags_to_include_text = wx.TextCtrl(panel, value='', size=(400, -1))
+        include_line.Add(self._tags_to_include_text)
         tags_controls_sizer.Add(include_line, 0, wx.ALL, 3)
         exclude_line = self._horizontal_sizer()
+
         exclude_line.Add(Label(panel, label='Exclude', size=(80, -1)))
-        exclude_line.Add(wx.TextCtrl(panel, value='', size=(400, -1)))
+        self._tags_to_exclude_text = wx.TextCtrl(panel, value='', size=(400, -1))
+        exclude_line.Add(self._tags_to_exclude_text)
         tags_controls_sizer.Add(exclude_line, 0, wx.ALL, 3)
 
         controls_sizer.Add(tags_controls_sizer)
-        controls_sizer.Add(wx.Button(panel, label='Search'), 0, wx.ALL | wx.EXPAND, 3)
+        button = wx.Button(panel, label='Search')
+        controls_sizer.Add(button, 0, wx.ALL | wx.EXPAND, 3)
+        button.Bind(wx.EVT_BUTTON, self.OnSearchTags)
 
         panel.Sizer.Add(controls_sizer)
-        list = VirtualList(panel, ['Test', 'Tags', 'Source'], self.tests)
-        panel.Sizer.add_expanding(list)
+        self._tags_results = _TestSearchListModel([])
+        self._tags_list = VirtualList(panel, ['Test', 'Tags', 'Source'], self._tags_results)
+        panel.Sizer.add_expanding(self._tags_list)
         results = wx.StaticText(panel, -1, 'Results: ')
         panel.Sizer.Add(results, 0, wx.ALL, 3)
         return panel
+
+    def OnSearchTags(self, event):
+        self._tag_search_handler(self._tags_to_include_text.GetValue(), self._tags_to_exclude_text.GetValue())
 
     def set_search_model(self, search_text, results):
         results = list(results)
         self._search_control.SetValue(search_text)
         self._results_text.SetLabel('Results: %d' % len(results))
         self.tests._tests = results
-        self._refresh_tests_list()
+        self._refresh_list(self.tests_list)
 
-    def _refresh_tests_list(self):
-        self.tests_list.refresh()
-        self.tests_list.Refresh()
+    def set_tag_search_model(self, include_text, exclude_text, results):
+        results = list(results)
+        self._tags_to_include_text.SetValue(include_text)
+        self._tags_to_exclude_text.SetValue(exclude_text)
+        self._tags_results._tests = results
+        self._refresh_list(self._tags_list)
+
+    def _refresh_list(self, list):
+        list.refresh()
+        list.Refresh()
 
     def _add_search_control(self, panel):
         line1 = self._horizontal_sizer()
         self._add_pattern_filter(line1, panel)
-        line1.Add(wx.Button(panel, label='Search'))
+        fuzzy_search_button = wx.Button(panel, label='Search')
+        line1.Add(fuzzy_search_button)
         panel.Sizer.Add(line1, 0, wx.ALL, 3)
 
     def _horizontal_sizer(self):
@@ -89,18 +107,9 @@ class TestsDialog(Dialog):
     def _add_pattern_filter(self, sizer, parent):
         self._search_control = wx.SearchCtrl(parent, value='', size=(200,-1),style=wx.TE_PROCESS_ENTER)
         self._search_control.SetDescriptiveText('Search term')
-        wrapped = lambda event: self._search_handler(self._search_control.GetValue())
+        wrapped = lambda event: self._fuzzy_search_handler(self._search_control.GetValue())
         self._search_control.Bind(wx.EVT_TEXT_ENTER, wrapped)
         sizer.Add(self._search_control, 0, wx.ALL, 3)
-
-    def _add_only_tags_filter(self, sizer):
-        self._only_tags = wx.CheckBox(self, label='Search as a tag pattern')
-        self._only_tags.SetValue(False)
-        sizer.Add(self._only_tags)
-
-    @property
-    def tags_only(self):
-        return self._only_tags.GetValue()
 
     def _usage_selected(self, idx):
         for listener in self._selection_listeners:
