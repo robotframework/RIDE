@@ -39,7 +39,7 @@ class TestsDialog(Dialog):
         self._add_search_control(panel)
         self.tests = _TestSearchListModel([])
         self.tests_list = VirtualList(panel, ['Test', 'Tags', 'Source'], self.tests)
-        self.tests_list.add_selection_listener(self._usage_selected)
+        self.tests_list.add_selection_listener(self._select_text_search_result)
         panel.Sizer.add_expanding(self.tests_list)
         self._fuzzy_results_text = wx.StaticText(panel, -1, 'Results: ')
         panel.Sizer.Add(self._fuzzy_results_text, 0, wx.ALL, 3)
@@ -58,6 +58,7 @@ class TestsDialog(Dialog):
         panel.Sizer.Add(self._add_info_text(panel, "Find matches using tag patterns.\nSee http://robotframework.googlecode.com/hg/doc/userguide/RobotFrameworkUserGuide.html?#by-tag-names"), 0, wx.ALL, 3)
         self._tags_results = _TestSearchListModel([])
         self._tags_list = VirtualList(panel, ['Test', 'Tags', 'Source'], self._tags_results)
+        self._tags_list.add_selection_listener(self._select_tag_search_result)
         panel.Sizer.add_expanding(self._tags_list)
         self._tags_results_text = wx.StaticText(panel, -1, 'Results: ')
         panel.Sizer.Add(self._tags_results_text, 0, wx.ALL, 3)
@@ -133,9 +134,13 @@ class TestsDialog(Dialog):
         self._search_control.Bind(wx.EVT_TEXT_ENTER, wrapped)
         sizer.Add(self._search_control, 0, wx.ALL, 3)
 
-    def _usage_selected(self, idx):
+    def _select_text_search_result(self, idx):
         for listener in self._selection_listeners:
             listener(self.tests[idx])
+
+    def _select_tag_search_result(self, idx):
+        for listener in self._selection_listeners:
+            listener(self._tags_results[idx])
 
     def add_selection_listener(self, listener):
         self._selection_listeners.append(listener)
