@@ -57,7 +57,8 @@ class EditorCreator(object):
     def _create_editor(self, editor_panel, plugin, tree):
         controller = plugin.get_selected_item()
         if self._invalid(controller):
-            if self._editor and not tree._datafile_nodes: # see http://code.google.com/p/robotframework-ride/issues/detail?id=1092
+            # see http://code.google.com/p/robotframework-ride/issues/detail?id=1092
+            if self._editor and (not tree._datafile_nodes or self._only_resource_files(tree)):
                 self._editor.destroy()
                 self._editor = None
                 return None
@@ -83,3 +84,6 @@ class EditorCreator(object):
             self._editor.destroy()
         editor_panel.Show(False)
         return editor_class(plugin, editor_panel, controller, tree)
+
+    def _only_resource_files(self, tree):
+        return all([tree.node_is_resource_file(node) for node in tree._datafile_nodes])

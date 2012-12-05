@@ -34,7 +34,7 @@ from robotide.controller.commands import MoveTo
 from robotide.widgets import PopupCreator
 from robotide import utils
 
-from .treenodehandlers import ResourceRootHandler, action_handler_class
+from .treenodehandlers import ResourceRootHandler, action_handler_class, ResourceFileHandler
 from .images import TreeImageList
 
 _TREE_ARGS = {'style':wx.TR_DEFAULT_STYLE}
@@ -716,6 +716,9 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         self.select_node_by_data(data)
         self._editor.highlight(text)
 
+    def node_is_resource_file(self, node):
+        return self._controller.get_handler(node).__class__ == ResourceFileHandler
+
 
 class TreeLabelEditListener(object):
 
@@ -781,3 +784,4 @@ class TreeLabelEditListener(object):
 
     def _get_handler(self, item=None):
         return self._tree._get_handler(item)
+
