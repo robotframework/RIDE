@@ -41,8 +41,8 @@ class TestsDialog(Dialog):
         self.tests_list = VirtualList(panel, ['Test', 'Tags', 'Source'], self.tests)
         self.tests_list.add_selection_listener(self._usage_selected)
         panel.Sizer.add_expanding(self.tests_list)
-        self._results_text = wx.StaticText(panel, -1, 'Results: ')
-        panel.Sizer.Add(self._results_text, 0, wx.ALL, 3)
+        self._fuzzy_results_text = wx.StaticText(panel, -1, 'Results: ')
+        panel.Sizer.Add(self._fuzzy_results_text, 0, wx.ALL, 3)
         return panel
 
     def _tag_pattern_search_panel(self):
@@ -59,21 +59,23 @@ class TestsDialog(Dialog):
         self._tags_results = _TestSearchListModel([])
         self._tags_list = VirtualList(panel, ['Test', 'Tags', 'Source'], self._tags_results)
         panel.Sizer.add_expanding(self._tags_list)
-        results = wx.StaticText(panel, -1, 'Results: ')
-        panel.Sizer.Add(results, 0, wx.ALL, 3)
+        self._tags_results_text = wx.StaticText(panel, -1, 'Results: ')
+        panel.Sizer.Add(self._tags_results_text, 0, wx.ALL, 3)
         return panel
 
     def _create_include_line(self, panel):
         include_line = self._horizontal_sizer()
         include_line.Add(Label(panel, label='Include', size=(80, -1)))
-        self._tags_to_include_text = wx.TextCtrl(panel, value='', size=(400, -1))
+        self._tags_to_include_text = wx.TextCtrl(panel, value='', size=(400, -1), style=wx.TE_PROCESS_ENTER)
+        self._tags_to_include_text.Bind(wx.EVT_TEXT_ENTER, self.OnSearchTags)
         include_line.Add(self._tags_to_include_text)
         return include_line
 
     def _create_exclude_line(self, panel):
         exclude_line = self._horizontal_sizer()
         exclude_line.Add(Label(panel, label='Exclude', size=(80, -1)))
-        self._tags_to_exclude_text = wx.TextCtrl(panel, value='', size=(400, -1))
+        self._tags_to_exclude_text = wx.TextCtrl(panel, value='', size=(400, -1), style=wx.TE_PROCESS_ENTER)
+        self._tags_to_exclude_text.Bind(wx.EVT_TEXT_ENTER, self.OnSearchTags)
         exclude_line.Add(self._tags_to_exclude_text)
         return exclude_line
 
@@ -88,7 +90,7 @@ class TestsDialog(Dialog):
     def set_search_model(self, search_text, results):
         results = list(results)
         self._search_control.SetValue(search_text)
-        self._results_text.SetLabel('Results: %d' % len(results))
+        self._fuzzy_results_text.SetLabel('Results: %d' % len(results))
         self.tests._tests = results
         self._refresh_list(self.tests_list)
 
@@ -96,6 +98,7 @@ class TestsDialog(Dialog):
         results = list(results)
         self._tags_to_include_text.SetValue(include_text)
         self._tags_to_exclude_text.SetValue(exclude_text)
+        self._tags_results_text.SetLabel('Results: %d' % len(results))
         self._tags_results._tests = results
         self._refresh_list(self._tags_list)
 
@@ -124,7 +127,7 @@ class TestsDialog(Dialog):
         return wx.BoxSizer(wx.HORIZONTAL)
 
     def _add_pattern_filter(self, sizer, parent):
-        self._search_control = wx.SearchCtrl(parent, value='', size=(200,-1),style=wx.TE_PROCESS_ENTER)
+        self._search_control = wx.SearchCtrl(parent, value='', size=(200,-1), style=wx.TE_PROCESS_ENTER)
         self._search_control.SetDescriptiveText('Search term')
         wrapped = lambda event: self._fuzzy_search_handler(self._search_control.GetValue())
         self._search_control.Bind(wx.EVT_TEXT_ENTER, wrapped)
