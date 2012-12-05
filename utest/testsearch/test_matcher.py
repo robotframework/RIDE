@@ -43,7 +43,7 @@ class TestTestSearchMatcher(_TestSearchTest, unittest.TestCase):
         self.assertFalse(self._match('tERm', name='no match', tags=['no match'], doc='no match'))
 
     def test_matching_name_partially(self):
-        self.assertTrue(self._match('*match*', doc='prefix[match]postfix'))
+        self.assertTrue(self._match('match', doc='prefix[match]postfix'))
 
     def test_matching_name_is_case_insensitive_in_tags(self):
         self.assertTrue(self._match('mAtCh', tags=['MATcH']))
@@ -52,10 +52,10 @@ class TestTestSearchMatcher(_TestSearchTest, unittest.TestCase):
         self.assertTrue(self._match('mAtCh', name=' MATcH'))
 
     def test_matching_name_is_case_insensitive_in_doc(self):
-        self.assertTrue(self._match('*mAtCh*', doc='Doc MATcHoc'))
+        self.assertTrue(self._match('mAtCh', doc='Doc MATcHoc'))
 
     def test_matching_to_documentation(self):
-        self.assertTrue(self._match('docstring*', doc='docstring matching!'))
+        self.assertTrue(self._match('docstring', doc='docstring matching!'))
 
     def test_matching_to_tag(self):
         self.assertTrue(self._match('tag', tags=['tag']))

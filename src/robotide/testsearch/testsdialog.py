@@ -26,7 +26,7 @@ class TestsDialog(Dialog):
         self.SetSizer(VerticalSizer())
         self._notebook = wx.Notebook(self, wx.ID_ANY, style=wx.NB_TOP)
         self.Sizer.Add(self._notebook, 1, wx.ALL | wx.EXPAND, 3)
-        self._notebook.AddPage(self._text_search_panel(), 'Text Search')
+        self._notebook.AddPage(self._text_search_panel(), 'Search')
         self._notebook.AddPage(self._tag_pattern_search_panel(), 'Tag Search')
 
     def _text_search_panel(self):

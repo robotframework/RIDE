@@ -91,36 +91,41 @@ class TagSearchMatcher(object):
 
     def matches(self, test):
         if self._tag_pattern.match([unicode(tag) for tag in test.tags]):
-            return test.name
+            return test.longname
         return False
 
 
 class TestSearchMatcher(object):
 
     def __init__(self, text):
-        self._text_matcher = MultiMatcher(text.split())
+        self._texts = text.split()
+        self._texts_lower = [t.lower() for t in self._texts]
 
     def matches(self, test):
         if self._matches(test):
-            return SearchResult(self._text_matcher, test)
+            return SearchResult(self._texts, self._texts_lower, test)
         return False
 
     def _matches(self, test):
         name = test.name.lower()
-        if self._text_matcher.match(name):
+        if self._match_in(name):
             return True
-        if any(self._text_matcher.match(unicode(tag)) for tag in test.tags):
+        if any(self._match_in(unicode(tag).lower()) for tag in test.tags):
             return True
         doc = test.documentation.value.lower()
-        if self._text_matcher.match(doc):
+        if self._match_in(doc):
             return True
         return False
+
+    def _match_in(self, text):
+        return any(word in text for word in self._texts_lower)
 
 
 class SearchResult(object):
 
-    def __init__(self, matcher, test):
-        self._matcher = matcher
+    def __init__(self, original_search_terms, search_terms_lower, test):
+        self._original_search_terms = original_search_terms
+        self._search_terms_lower = search_terms_lower
         self._test = test
         self.__total_matches = None
         self.__tags = None
@@ -148,21 +153,24 @@ class SearchResult(object):
 
     def _total_matches(self):
         if not self.__total_matches:
-            self.__total_matches = sum(1 for m in self._matcher._matchers
-                                        if m.match(self._test.name.lower())
-                                        or any(m.match(t) for t in self._tags())
-                                        or m.match(self._test.documentation.value.lower()))
+            self.__total_matches = sum(1 for word in self._search_terms_lower
+                                        if word in self._test.name.lower()
+                                        or any(word in t for t in self._tags())
+                                        or word in self._test.documentation.value.lower())
         return self.__total_matches
 
+    def _match_in(self, text):
+        return any(word in text for word in self._search_terms_lower)
+
     def _is_name_match(self):
-        return self._matcher.match(self._test.name.lower())
+        return self._match_in(self._test.name.lower())
 
     def _is_tag_match(self):
-        return any(self._matcher.match(t) for t in self._tags())
+        return any(self._match_in(t) for t in self._tags())
 
     def _tags(self):
         if self.__tags is None:
-            self.__tags = [unicode(tag) for tag in self._test.tags]
+            self.__tags = [unicode(tag).lower() for tag in self._test.tags]
         return self.__tags
 
     def __repr__(self):
