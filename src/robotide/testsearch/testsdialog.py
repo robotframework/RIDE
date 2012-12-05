@@ -24,13 +24,47 @@ class TestsDialog(Dialog):
         title = "Search Tests"
         Dialog.__init__(self, title=title, size=(650, 400))
         self.SetSizer(VerticalSizer())
-        self._add_search_control()
+        self._notebook = wx.Notebook(self, wx.ID_ANY, style=wx.NB_TOP)
+        self.Sizer.Add(self._notebook, 1, wx.ALL | wx.EXPAND, 3)
+        self._notebook.AddPage(self._text_search_panel(), 'Text Search')
+        self._notebook.AddPage(self._tag_pattern_search_panel(), 'Tag Search')
+
+    def _text_search_panel(self):
+        panel = wx.Panel(self._notebook)
+        panel.SetSizer(VerticalSizer())
+        self._add_search_control(panel)
         self.tests = _TestSearchListModel([])
-        self.tests_list = VirtualList(self, ['Test', 'Tags', 'Source'], self.tests)
+        self.tests_list = VirtualList(panel, ['Test', 'Tags', 'Source'], self.tests)
         self.tests_list.add_selection_listener(self._usage_selected)
-        self.Sizer.add_expanding(self.tests_list)
-        self._results_text = wx.StaticText(self, -1, 'Results: ')
-        self.Sizer.Add(self._results_text, 0, wx.ALL, 3)
+        panel.Sizer.add_expanding(self.tests_list)
+        self._results_text = wx.StaticText(panel, -1, 'Results: ')
+        panel.Sizer.Add(self._results_text, 0, wx.ALL, 3)
+        return panel
+
+    def _tag_pattern_search_panel(self):
+        panel = wx.Panel(self._notebook)
+        panel.SetSizer(VerticalSizer())
+        controls_sizer = self._horizontal_sizer()
+
+        tags_controls_sizer = VerticalSizer()
+        include_line = self._horizontal_sizer()
+        include_line.Add(Label(panel, label='Include', size=(80, -1)))
+        include_line.Add(wx.TextCtrl(panel, value='', size=(400, -1)))
+        tags_controls_sizer.Add(include_line, 0, wx.ALL, 3)
+        exclude_line = self._horizontal_sizer()
+        exclude_line.Add(Label(panel, label='Exclude', size=(80, -1)))
+        exclude_line.Add(wx.TextCtrl(panel, value='', size=(400, -1)))
+        tags_controls_sizer.Add(exclude_line, 0, wx.ALL, 3)
+
+        controls_sizer.Add(tags_controls_sizer)
+        controls_sizer.Add(wx.Button(panel, label='Search'), 0, wx.ALL | wx.EXPAND, 3)
+
+        panel.Sizer.Add(controls_sizer)
+        list = VirtualList(panel, ['Test', 'Tags', 'Source'], self.tests)
+        panel.Sizer.add_expanding(list)
+        results = wx.StaticText(panel, -1, 'Results: ')
+        panel.Sizer.Add(results, 0, wx.ALL, 3)
+        return panel
 
     def set_search_model(self, search_text, results):
         results = list(results)
@@ -43,21 +77,21 @@ class TestsDialog(Dialog):
         self.tests_list.refresh()
         self.tests_list.Refresh()
 
-    def _add_search_control(self):
+    def _add_search_control(self, panel):
         line1 = self._horizontal_sizer()
-        self._add_pattern_filter(line1)
-        self._add_only_tags_filter(line1)
-        self.Sizer.Add(line1, 0, wx.ALL, 3)
+        self._add_pattern_filter(line1, panel)
+        line1.Add(wx.Button(panel, label='Search'))
+        panel.Sizer.Add(line1, 0, wx.ALL, 3)
 
     def _horizontal_sizer(self):
         return wx.BoxSizer(wx.HORIZONTAL)
 
-    def _add_pattern_filter(self, sizer):
-        sizer.Add(Label(self, label='Search term: '))
-        self._search_control = wx.SearchCtrl(self, value='', size=(200,-1),style=wx.TE_PROCESS_ENTER)
+    def _add_pattern_filter(self, sizer, parent):
+        self._search_control = wx.SearchCtrl(parent, value='', size=(200,-1),style=wx.TE_PROCESS_ENTER)
+        self._search_control.SetDescriptiveText('Search term')
         wrapped = lambda event: self._search_handler(self._search_control.GetValue())
         self._search_control.Bind(wx.EVT_TEXT_ENTER, wrapped)
-        sizer.Add(self._search_control)
+        sizer.Add(self._search_control, 0, wx.ALL, 3)
 
     def _add_only_tags_filter(self, sizer):
         self._only_tags = wx.CheckBox(self, label='Search as a tag pattern')
