@@ -145,23 +145,35 @@ class TestsDialog(Dialog):
     def add_selection_listener(self, listener):
         self._selection_listeners.append(listener)
 
-    def _find_index_in_tests_list(self, test):
+    def _find_index_in_list(self, item, list):
+        if item is None:
+            return 0
         idx = 0
-        for tc in self.tests:
-            if tc[0] == test:
+        for tc in list:
+            if tc[0] == item:
                 return idx
             idx += 1
         return 0
 
     def set_focus_to_default_location(self, selected=None):
+        if self._notebook.GetSelection() == 0:
+            self._set_focus_to_default_location_in_text_search(selected)
+        else:
+            self._set_focus_to_default_location_in_tag_search(selected)
+
+    def _set_focus_to_default_location_in_text_search(self, selected):
         if self.tests.count:
-            if selected:
-                self.tests_list.Select(self._find_index_in_tests_list(selected))
-            else:
-                self.tests_list.Select(0)
+            self.tests_list.Select(self._find_index_in_list(selected, self.tests))
             self.tests_list.SetFocus()
         else:
             self._search_control.SetFocus()
+
+    def _set_focus_to_default_location_in_tag_search(self, selected):
+        if self._tags_results.count:
+            self._tags_list.Select(self._find_index_in_list(selected, self._tags_results))
+            self._tags_list.SetFocus()
+        else:
+            self._tags_to_include_text.SetFocus()
 
 
 class _TestSearchListModel(ListModel):
