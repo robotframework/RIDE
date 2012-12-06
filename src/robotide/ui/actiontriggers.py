@@ -279,7 +279,7 @@ class ToolBar(object):
     def _update_to_current_search_mode(self):
         self._search.SetDescriptiveText(self._current_description)
         self._search.SetSearchMenuBitmap(self._search_handlers[self._current_description].icon)
-        self._search.SetToolTipString(self._current_description)
+        self._search.SetToolTipString(u'Focus with <F4>: '+self._current_description)
 
     def _get_existing_button(self, action):
         for button in self._buttons:
