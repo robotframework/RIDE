@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 from robotide.utils import overrides
-from robotide.widgets import Dialog, VerticalSizer, VirtualList, Label
+from robotide.widgets import Dialog, VerticalSizer, VirtualList, Label, HelpLabel
 import wx
 from robotide.widgets.list import ListModel
 
@@ -55,7 +55,7 @@ class TestsDialog(Dialog):
         controls_sizer.Add(tags_controls_sizer)
         controls_sizer.Add(self._create_tag_search_button(panel), 0, wx.ALL | wx.EXPAND, 3)
         panel.Sizer.Add(controls_sizer)
-        panel.Sizer.Add(self._add_info_text(panel, "Find matches using tag patterns.\nSee http://robotframework.googlecode.com/hg/doc/userguide/RobotFrameworkUserGuide.html?#by-tag-names"), 0, wx.ALL, 3)
+        panel.Sizer.Add(self._add_info_text(panel, "Find matches using tag patterns. See RF User Guide or 'pybot --help' for more information."), 0, wx.ALL, 3)
         self._tags_results = _TestSearchListModel([])
         self._tags_list = VirtualList(panel, ['Test', 'Tags', 'Source'], self._tags_results)
         self._tags_list.add_selection_listener(self._select_tag_search_result)
@@ -109,10 +109,7 @@ class TestsDialog(Dialog):
 
     def _add_info_text(self, panel, text = ""):
         infopanel = self._horizontal_sizer()
-        infotext = wx.StaticText(panel, label="Info. " + text)
-        font = wx.Font(12, wx.NORMAL, wx.ITALIC, wx.NORMAL)
-        infotext.SetFont(font)
-        infopanel.Add(infotext)
+        infopanel.Add(HelpLabel(panel, "Info. " + text))
         return infopanel
 
     def _add_search_control(self, panel):
