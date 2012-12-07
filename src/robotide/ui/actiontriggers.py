@@ -264,12 +264,18 @@ class ToolBar(object):
 
     def _create_button(self, action):
         button = ToolBarButton(self._frame, self, action)
-        name = action.name.replace('&', '')
+        name = self._format_button_tooltip(action)
         self._wx_toolbar.AddLabelTool(button.id, label=name, bitmap=action.icon,
                                       shortHelp=name, longHelp=action.doc)
         self._wx_toolbar.Realize()
         self._buttons.append(button)
         return button
+
+    def _format_button_tooltip(self, action):
+        tooltip = action.name.replace('&', '')
+        if action.shortcut and action.shortcut.value:
+            tooltip = '<%s> %s' % (action.shortcut.value, tooltip)
+        return tooltip
 
     def remove_toolbar_button(self, button):
         self._buttons.remove(button)
