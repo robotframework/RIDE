@@ -11,7 +11,7 @@ pngtopnm -mix robot-trans.png | pamcut $cut > robot.pnm
 pngtopnm -alpha robot-trans.png | pamcut $cut | ppmtopgm > alpha.pgm
 
 # Create input images (and alpha channels) for icon in different sizes
-for size in 16 32 48 64; do
+for size in 16 32 48; do
     pnmscale -xysize $size $size robot.pnm > tmp.pnm
     pnmquant 16 tmp.pnm > $size.pnm  # pnmquant fails to work with stdin
     pnmscale -xysize $size $size alpha.pgm > $size.pgm
@@ -22,7 +22,6 @@ ppmtowinicon -andpgms \
     16.pnm 16.pgm \
     32.pnm 32.pgm \
     48.pnm 48.pgm \
-    64.pnm 64.pgm \
     > robot.ico
 echo "Created robot.ico"
 
