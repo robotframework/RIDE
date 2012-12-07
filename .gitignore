@@ -10,3 +10,4 @@ src/robotframework_ride.egg-info
 RIDE.wiki
 .DS_Store
 .spyderworkspace
+rfgen.py
