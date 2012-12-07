@@ -65,7 +65,10 @@ class TestSearchPlugin(Plugin):
         self._selected_timer.Start(400, True)
 
     def _search_results(self, matcher):
-        result = self._search(matcher, self.frame._controller.data)
+        current_suite = self.frame._controller.data
+        if not current_suite:
+            return []
+        result = self._search(matcher, current_suite)
         return sorted(result, cmp=lambda x,y: cmp(x[1], y[1]))
 
     def _search(self, matcher, data):
