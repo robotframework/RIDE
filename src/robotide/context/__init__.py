@@ -100,6 +100,14 @@ SHORTCUT_KEYS = '''\
         <td>Open search keywords dialog</td>
     </tr>
     <tr>
+        <td>F4</td>
+        <td>Focus on the search bar</td>
+    </tr>
+    <tr>
+        <td>F3</td>
+        <td>Open search tests dialog</td>
+    </tr>
+    <tr>
         <td>F8</td>
         <td>Run test suite</td>
     </tr>
