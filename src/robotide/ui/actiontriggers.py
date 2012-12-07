@@ -252,34 +252,6 @@ class ToolBar(object):
                 button = self._create_button(action)
             button.register(action)
 
-    def create_search_tool(self):
-        self._wx_toolbar.AddSeparator()
-        self._search = wx.SearchCtrl(self._wx_toolbar, size=(200, -1), style=wx.TE_PROCESS_ENTER)
-        self._search.SetMenu(self._build_menu())
-        self._update_to_current_search_mode()
-        wrapped = lambda event: self._search_handlers[self._current_description](self._search.GetValue())
-        self._search.Bind(wx.EVT_TEXT_ENTER, wrapped)
-        self._wx_toolbar.AddControl(self._search)
-        self._wx_toolbar.Realize()
-        self._frame.actions.register_shortcut(ActionInfo(None, None, action=lambda e: self._search.SetFocus(), shortcut='F4'))
-
-    def _build_menu(self):
-        menu = wx.Menu()
-        for desc in self._search_handlers:
-            menu.Append(wx.NewId(), desc)
-        menu.Bind(wx.EVT_MENU, self._select)
-        self._menu = menu
-        return menu
-
-    def _select(self, event):
-        self._current_description = self._menu.FindItemById(event.GetId()).GetLabel()
-        self._update_to_current_search_mode()
-        self._search.Refresh()
-
-    def _update_to_current_search_mode(self):
-        self._search.SetDescriptiveText(self._current_description)
-        self._search.SetSearchMenuBitmap(self._search_handlers[self._current_description].icon)
-        self._search.SetToolTipString(u'Focus with <F4>: '+self._current_description)
 
     def _get_existing_button(self, action):
         for button in self._buttons:

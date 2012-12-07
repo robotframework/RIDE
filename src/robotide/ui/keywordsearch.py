@@ -42,7 +42,8 @@ class KeywordSearch(Plugin):
     def enable(self):
         action = ActionInfo('Tools', 'Search Keywords', self.OnSearch,
                             shortcut='F5',
-                            doc='Search keywords from libraries and resources')
+                            doc='Search keywords from libraries and resources',
+                            icon=ImageProvider().KW_SEARCH_ICON)
         self.register_action(action)
         self.register_search_action('Search Keywords', self.show_search_for, ImageProvider().KW_SEARCH_ICON)
         self.subscribe(self.mark_dirty, RideOpenSuite, RideOpenResource,
