@@ -86,7 +86,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 0.53</h2>
+<h2>Release notes for 0.54</h2>
 <table border="1">
 <tr>
 <td><p><b>ID</b></p></td>
@@ -95,89 +95,125 @@ RELEASE_NOTES = """
 <td><p><b>Summary</b></p></td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1102">Issue 1102</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=32">Issue 32</a></td>
+<td>Enhancement</td>
+<td>Critical</td>
+<td>Searching tests using name, documentation or tags</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1124">Issue 1124</a></td>
 <td>Defect</td>
 <td>High</td>
-<td>RIDE doesn't prompt to save changes when switching between projects</td>
+<td>Font size displayed does not match font size set</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=875">Issue 875</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1131">Issue 1131</a></td>
+<td>Defect</td>
+<td>High</td>
+<td>Multiline documentation should be formatted in multiple rows</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1141">Issue 1141</a></td>
+<td>Enhancement</td>
+<td>High</td>
+<td>Document and notify at start-up that wxPython 2.8.12.1 is the minimum supported version</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1004">Issue 1004</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>test runner listener interface doesn't work on windows with iron python</td>
+<td>popup help interferes with editing/copying/pasting of cells</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=983">Issue 983</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1064">Issue 1064</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>Unable to copy/paste from View Log screen</td>
+<td>Directory init file library imports fail on linux</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=998">Issue 998</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1080">Issue 1080</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>Rename error when renaming KW</td>
+<td>'Find Where Used' on for variable name with dashes excludes items after the dash</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1090">Issue 1090</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1092">Issue 1092</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>RIDE hangs up while test execution</td>
+<td>"File Changed On Disk" keeps poping up repeatedly even after a deleted suite has been removed from the project</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1099">Issue 1099</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1101">Issue 1101</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>New lines in user keyword name or variable name breaks the Tree view</td>
+<td>Green Dot Indication Isn't Visible for tests' with '.'</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1107">Issue 1107</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1110">Issue 1110</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>Exclude does not work if the directory has a __init__ file</td>
+<td>Ride crashes regularly in Ubuntu 12.04</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1108">Issue 1108</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1118">Issue 1118</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>Editing a cell exits after a very short amount of time</td>
+<td>Using tab character in text editor does not work</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1109">Issue 1109</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1119">Issue 1119</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>file 'dirty' status behaves badly with exclude</td>
+<td>Deleting resource file and imports throws an exception</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1111">Issue 1111</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1122">Issue 1122</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>RIDE crashes if a suite file name contains newlines</td>
+<td>RIDE Preferences Dialog shows 40 spaces, should be 4</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1113">Issue 1113</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1138">Issue 1138</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>Renaming suite should update tests selected for running</td>
+<td>Hot key "Control + A" does not work under windows os</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=816">Issue 816</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1144">Issue 1144</a></td>
+<td>Defect</td>
+<td>Medium</td>
+<td>Failures in importing libraries (e.g. `Remote` library) can hang RIDE</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=198">Issue 198</a></td>
 <td>Enhancement</td>
 <td>Medium</td>
-<td>Expand All/Collapse All actions to tree nodes</td>
+<td>Ride should have links to help documents in the "Help"  menu.</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1071">Issue 1071</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1121">Issue 1121</a></td>
 <td>Enhancement</td>
 <td>Medium</td>
-<td>support change font</td>
+<td>Add keyword search to toolbar</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1078">Issue 1078</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1132">Issue 1132</a></td>
 <td>Enhancement</td>
 <td>Medium</td>
-<td>Caret moves to the top of text edit when change between edit- and text edit-tabs</td>
+<td>Installer should optionally create shortcuts on windows</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1133">Issue 1133</a></td>
+<td>Enhancement</td>
+<td>Medium</td>
+<td>Installer should check that wx exists</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1026">Issue 1026</a></td>
+<td>Defect</td>
+<td>Low</td>
+<td>Pressing Ctrl+D when cell editor open will remove two rows in Linux</td>
 </tr>
 </table>
-<p>Altogether 14 issues.</p>
+<p>Altogether 20 issues.</p>
 """
