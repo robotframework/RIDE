@@ -125,7 +125,7 @@ class _Menu(object):
                                  self._name_builder.get_registered_name
         if not action.shortcut:
             return get_name(action.name)
-        return '%s   (%s)' % (get_name(action.name), action.get_shortcut())
+        return '%s    (%s)' % (get_name(action.name), action.get_shortcut())
 
     def _create_menu_item(self, action):
         name_with_accerelator = self._get_name(action, build_new=True)
@@ -274,7 +274,7 @@ class ToolBar(object):
     def _format_button_tooltip(self, action):
         tooltip = action.name.replace('&', '')
         if action.shortcut and action.shortcut.value:
-            tooltip = '<%s> %s' % (action.shortcut.value, tooltip)
+            tooltip = '%s    (%s)' % (tooltip, action.shortcut.value)
         return tooltip
 
     def remove_toolbar_button(self, button):
