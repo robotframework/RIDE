@@ -52,11 +52,13 @@ _menudata = """
 !Preferences
 
 [Help]
+!Shortcut keys | RIDE shortcut keys
+---
 !User Guide | RIDE User Guide
 !Report a Problem | Open browser to the RIDE issue tracker
-!About | Information about RIDE
-!Shortcut keys | RIDE shortcut keys
+---
 !Release notes | Shows release notes
+!About | Information about RIDE
 """
 
 
