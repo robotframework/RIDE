@@ -66,11 +66,10 @@ except ImportError:
 import wx
 import wx.stc
 from wx.lib.embeddedimage import PyEmbeddedImage
-
 from robotide.pluginapi import Plugin, ActionInfo
 from robotide.publish import RideOpenSuite
 from robotide.contrib.testrunner import runprofiles
-from robotide.widgets import Label
+from robotide.widgets import Label, ImageProvider
 from robotide.context import IS_WINDOWS, IS_MAC
 
 ID_RUN = wx.NewId()
@@ -166,10 +165,10 @@ class TestRunnerPlugin(Plugin):
 
     def _register_actions(self):
         run_action_info = ActionInfo("Tools", "Run Test Suite", self.OnRun, None,
-                                     "F8", getRobotBitmap(), "Run the selected tests")
+                                     "F8", ImageProvider().TOOLBAR_PLAY, "Run the selected tests")
         self._run_action = self.register_action(run_action_info)
         stop_action_info = ActionInfo("Tools", "Stop Running", self.OnStop, None,
-                                      "CtrlCmd-F8", getProcessStopBitmap(), "Stop a running test")
+                                      "CtrlCmd-F8", ImageProvider().TOOLBAR_STOP, "Stop a running test")
         self._stop_action = self.register_action(stop_action_info)
 
     def _read_run_profiles(self):
@@ -841,7 +840,6 @@ MenuButton = PyEmbeddedImage(
     "Ppjn+ULyqZSyxhiM44hhGEiyXAOStSG1bVuIyMtaq51zJHltmsZtBgCgruuC5N17f+u6brX8"
     "Fdia43dwPPAGncZYbvceeuMAAAAASUVORK5CYII=")
 getMenuButtonBitmap = MenuButton.GetBitmap
-
 
 
 ProcessStop = PyEmbeddedImage(

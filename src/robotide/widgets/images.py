@@ -39,6 +39,8 @@ class ImageProvider(object):
         self.REFRESH_ALL = self._load_image('database_refresh.png')
         self.KW_SEARCH_ICON = self._load_image('kw_search_button.png')
         self.TEST_SEARCH_ICON = self._load_image('test_search_button.png')
+        self.TOOLBAR_PLAY = self._load_image('control_play.png')
+        self.TOOLBAR_STOP = self._load_image('control_stop.png')
         self._build_icons()
 
     def _build_icons(self):
