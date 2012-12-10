@@ -15,7 +15,7 @@ import wx
 from robot.model import TagPatterns
 from robotide.action import ActionInfo
 from robotide.pluginapi import Plugin
-from robotide.testsearch.testsdialog import TestsDialog
+from robotide.searchtests.dialogsearchtests import TestsDialog
 from robotide.widgets import ImageProvider
 
 

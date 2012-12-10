@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 import unittest
-from testsearch.test_matcher import _TestSearchTest
+from searchtests.test_matcher import _TestSearchTest
 
 
 class TestTestSorter(_TestSearchTest, unittest.TestCase):

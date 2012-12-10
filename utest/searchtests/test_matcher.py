@@ -14,7 +14,7 @@
 import unittest
 from robot.parsing.model import TestCase, Tags
 from robotide.controller.macrocontrollers import TestCaseController
-from robotide.testsearch.testsearch import TestSearchMatcher
+from robotide.searchtests.searchtests import TestSearchMatcher
 
 class _TestSearchTest(object):
 
