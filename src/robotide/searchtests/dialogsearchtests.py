@@ -106,6 +106,8 @@ class TestsDialog(Dialog):
     def _refresh_list(self, list):
         list.refresh()
         list.Refresh()
+        if list.GetItemCount():
+            list._inform_listeners(0)
 
     def _add_info_text(self, panel, text = ""):
         infopanel = self._horizontal_sizer()
