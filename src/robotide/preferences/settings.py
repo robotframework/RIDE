@@ -18,6 +18,7 @@ import shutil
 from robotide.context.platform import IS_WINDOWS
 from robotide.preferences.configobj import ConfigObjError
 from .configobj import ConfigObj, Section, UnreprError
+from .excludes import Excludes
 
 if IS_WINDOWS:
     SETTINGS_DIRECTORY = os.path.join(os.environ['APPDATA'], 'RobotFramework', 'ride')
@@ -246,7 +247,7 @@ class Settings(_Section):
         except UnreprError, error:
             raise ConfigurationError(error)
         self._listeners = []
-        self.excludes = Excludes()
+        self.excludes = Excludes(SETTINGS_DIRECTORY)
 
     def save(self):
         self._config_obj.write()
@@ -272,62 +273,3 @@ class RideSettings(Settings):
         return os.path.join(self._settings_dir, *parts)
 
 
-class Excludes():
-
-    def __init__(self, directory=None):
-        self._settings_directory = directory or SETTINGS_DIRECTORY
-        self._exclude_file_path = os.path.join(self._settings_directory, 'excludes')
-
-    def _get_excludes(self):
-        with self._get_exclude_file('r') as exclude_file:
-            if not exclude_file:
-                return set()
-            return set(exclude_file.read().split())
-
-    def remove_path(self, path):
-        path = self._normalize(path)
-        excludes = self._get_excludes()
-        self._write_excludes(set([e for e in excludes if e != path]))
-
-    def _write_excludes(self, excludes):
-        excludes = [self._normalize(e) for e in excludes]
-        with self._get_exclude_file(read_write='w') as exclude_file:
-            for exclude in excludes:
-                exclude_file.write("%s\n" % exclude)
-
-    def update_excludes(self, new_excludes):
-        excludes = self._get_excludes()
-        self._write_excludes(excludes.union(new_excludes))
-        
-    def _get_exclude_file(self, read_write):
-        if not os.path.exists(self._exclude_file_path) and read_write.startswith('r'):
-            if not os.path.isdir(self._settings_directory):
-                os.makedirs(self._settings_directory)
-            return open(self._exclude_file_path, 'w+')
-        if os.path.isdir(self._exclude_file_path):
-            raise NameError('"%s" is a directory, not file' % self._exclude_file_path)
-        try:
-            return open(self._exclude_file_path, read_write)
-        except IOError as e:
-            raise e #TODO FIXME
-
-    def contains(self, path, excludes=None):
-        if not path:
-            return False
-        excludes = excludes or self._get_excludes()
-        if len(excludes) < 1:
-            return False
-        path = self._normalize(path)
-        excludes = [self._normalize(e) for e in excludes]
-        return any(path.startswith(e) for e in excludes)
-
-    def _normalize(self, path):
-        path = self._norming(path)
-        return path + os.path.sep if not path.endswith(os.path.sep) else path
-
-    if IS_WINDOWS:
-        def _norming(self, path):
-            return os.path.normcase(os.path.normpath(os.path.abspath(path)))
-    else:
-        def _norming(self, path):
-            return path
