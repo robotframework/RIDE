@@ -88,6 +88,9 @@ class TestsDialog(Dialog):
     def OnSearchTags(self, event):
         self._tag_search_handler(self._tags_to_include_text.GetValue(), self._tags_to_exclude_text.GetValue())
 
+    def OnSearchTests(self, event):
+        self._fuzzy_search_handler(self._search_control.GetValue())
+
     def set_search_model(self, search_text, results):
         results = list(results)
         self._search_control.SetValue(search_text)
@@ -119,6 +122,7 @@ class TestsDialog(Dialog):
         line1 = self._horizontal_sizer()
         self._add_pattern_filter(line1, panel)
         fuzzy_search_button = wx.Button(panel, label='Search')
+        fuzzy_search_button.Bind(wx.EVT_BUTTON, self.OnSearchTests)
         line1.Add(fuzzy_search_button)
         panel.Sizer.Add(line1, 0, wx.ALL, 3)
         panel.Sizer.Add(self._add_info_text(panel, "Find matches by test name, documentation and/or tag."), 0, wx.ALL, 3)
