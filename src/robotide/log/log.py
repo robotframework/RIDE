@@ -40,7 +40,7 @@ class LogPlugin(Plugin):
     def _create_menu(self):
         self.unregister_actions()
         self.register_action(ActionInfo('Tools', 'View RIDE Log',
-                                        self.OnViewLog))
+                                        self.OnViewLog, position=80))
 
     def _log_message(self, log_event):
         self._log.append(log_event)

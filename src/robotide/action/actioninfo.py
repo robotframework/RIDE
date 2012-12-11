@@ -60,6 +60,8 @@ def ActionInfoCollection(data, event_handler, container=None):
       Keyboard shortcut to invoke the action.
     icon
       Icon for the toolbar button.
+    position
+      Value for menu item ordering.
 
     See the `ActionInfo` attributes with same/similar names for more
     information about the fields and their possible values. Three
@@ -95,7 +97,7 @@ def ActionInfoCollection(data, event_handler, container=None):
         &Save | Save selected datafile | Ctrl-S | ART_FILE_SAVE
 
         [Tools]
-        !Manage Plugins
+        !Manage Plugins  | | | | POSITION-81
 
         [Content]
         Content Assist (Ctrl-Space or Ctrl-Alt-Space) | Has two shortcuts.
@@ -119,14 +121,14 @@ def _create_action_info(eventhandler, menu, container, row):
     if row.startswith('---'):
         return SeparatorInfo(menu)
     tokens = [ t.strip() for t in row.split('|') ]
-    tokens += [''] * (4-len(tokens))
-    name, doc, shortcut, icon =  tokens
+    tokens += [''] * (5-len(tokens))
+    name, doc, shortcut, icon, position =  tokens
     if name.startswith('!'):
         name = name[1:]
         container = None
     eventhandler_name, name = _get_eventhandler_name_and_parsed_name(name)
     action = getattr(eventhandler, eventhandler_name)
-    return ActionInfo(menu, name, action, container, shortcut, icon, doc)
+    return ActionInfo(menu, name, action, container, shortcut, icon, doc, position)
 
 def _get_eventhandler_name_and_parsed_name(name):
     eventhandler_name, name = _parse_shortcuts_from_name(name)
@@ -171,7 +173,7 @@ class ActionInfo(MenuInfo):
     """Used to create menu entries, keyboard shortcuts and/or toolbar buttons."""
 
     def __init__(self, menu_name, name, action=None, container=None,
-                 shortcut=None, icon=None, doc=''):
+                 shortcut=None, icon=None, doc='', position=-1):
         """Initializes information needed to create actions..
 
         :Parameters:
@@ -206,6 +208,9 @@ class ActionInfo(MenuInfo):
           doc
             The documentation shown on the statusbar when selection is on
             the associated menu entry or toolbar button.
+          position
+            The positional value of an item in the menu. Provided for ordering
+            Tools menu. Defaults to -1.
 
         __ http://docs.wxwidgets.org/stable/wx_keycodes.html#keycodes
         __ http://www.wxpython.org/docs/api/wx.ArtProvider-class.html
@@ -219,6 +224,7 @@ class ActionInfo(MenuInfo):
         self._icon = None
         self._icon_source = icon
         self.doc = doc
+        self._position = position
 
     @property
     def icon(self):
@@ -236,6 +242,14 @@ class ActionInfo(MenuInfo):
                                             wx.ART_TOOLBAR, (16, 16))
         return self._icon_source
 
+    @property
+    def position(self):
+        if isinstance(self._position, int):
+            return self._position
+        elif isinstance(self._position, str):
+            if len(self._position) > 0:
+                return int(self._position.split("POSITION-")[-1])
+        return -1
 
 class SeparatorInfo(MenuInfo):
     """Used to create separators to menus."""

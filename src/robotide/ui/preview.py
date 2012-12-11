@@ -34,7 +34,8 @@ class PreviewPlugin(Plugin, TreeAwarePluginMixin):
     def enable(self):
         self.register_action(ActionInfo('Tools','Preview', self.OnShowPreview,
                                         shortcut='F6',
-                                        doc='Show preview of the current file'))
+                                        doc='Show preview of the current file',
+                                        position=71))
         self.subscribe(self.OnTreeSelection, RideTreeSelection)
         self.subscribe(self.OnTabChanged, RideNotebookTabChanged)
         self.subscribe(self._update_preview, RideTestCaseAdded)

@@ -43,7 +43,8 @@ class KeywordSearch(Plugin):
         action = ActionInfo('Tools', 'Search Keywords', self.OnSearch,
                             shortcut='F5',
                             doc='Search keywords from libraries and resources',
-                            icon=ImageProvider().KW_SEARCH_ICON)
+                            icon=ImageProvider().KW_SEARCH_ICON,
+                            position=51)
         self.register_action(action)
         self.register_search_action('Search Keywords', self.show_search_for, ImageProvider().KW_SEARCH_ICON)
         self.subscribe(self.mark_dirty, RideOpenSuite, RideOpenResource,

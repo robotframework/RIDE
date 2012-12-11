@@ -165,10 +165,10 @@ class TestRunnerPlugin(Plugin):
 
     def _register_actions(self):
         run_action_info = ActionInfo("Tools", "Run Test Suite", self.OnRun, None,
-                                     "F8", ImageProvider().TOOLBAR_PLAY, "Run the selected tests")
+                                     "F8", ImageProvider().TOOLBAR_PLAY, "Run the selected tests", position=10)
         self._run_action = self.register_action(run_action_info)
         stop_action_info = ActionInfo("Tools", "Stop Running", self.OnStop, None,
-                                      "CtrlCmd-F8", ImageProvider().TOOLBAR_STOP, "Stop a running test")
+                                      "CtrlCmd-F8", ImageProvider().TOOLBAR_STOP, "Stop a running test",position=11)
         self._stop_action = self.register_action(stop_action_info)
 
     def _read_run_profiles(self):

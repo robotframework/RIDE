@@ -15,7 +15,7 @@ from robotide.context.platform import IS_MAC
 
 import wx
 
-from robotide.action import ActionInfoCollection, ActionFactory
+from robotide.action import ActionInfoCollection, ActionFactory, SeparatorInfo
 from robotide.context import ABOUT_RIDE, SHORTCUT_KEYS
 from robotide.controller.commands import SaveFile, SaveAll
 from robotide.publish import (RideSaveAll, RideClosing, RideSaved, PUBLISHER,
@@ -47,9 +47,9 @@ _menudata = """
 !E&xit | Exit RIDE | Ctrlcmd-Q
 
 [Tools]
-!Manage Plugins
-!Search Unused Keywords
-!Preferences
+!Search Unused Keywords | | | | POSITION-50
+!Manage Plugins | | | | POSITION-81
+!Preferences | | | | POSITION-99
 
 [Help]
 !Shortcut keys | RIDE shortcut keys
@@ -77,6 +77,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         self._subscribe_messages()
         self.ensure_on_screen()
         self.Show()
+        wx.CallLater(100, self.actions.register_tools)
 
     def _subscribe_messages(self):
         for listener, topic in [(lambda msg: self.SetStatusText('Saved %s' % msg.path), RideSaved),
@@ -312,13 +313,28 @@ class ActionRegisterer(object):
         self._menubar = menubar
         self._toolbar = toolbar
         self._shortcut_registry = shortcut_registry
+        self._tools_items = {}
 
     def register_action(self, action_info):
+        menubar_can_be_registered = True
         action = ActionFactory(action_info)
         self._shortcut_registry.register(action)
-        self._menubar.register(action)
+        if hasattr(action_info,"menu_name"):
+            if action_info.menu_name == "Tools":
+                self._tools_items[action_info.position] = action
+                menubar_can_be_registered = False
+        if menubar_can_be_registered:
+            self._menubar.register(action)
         self._toolbar.register(action)
         return action
+
+    def register_tools(self):
+        separator_action = ActionFactory(SeparatorInfo("Tools"))
+        add_separator_after = ["stop running","search tests","preview","manage plugins"]
+        for key in sorted(self._tools_items.iterkeys()):
+            self._menubar.register(self._tools_items[key])
+            if self._tools_items[key].name.lower() in add_separator_after:
+                self._menubar.register(separator_action)
 
     def register_actions(self, actions):
         for action in actions:

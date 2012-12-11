@@ -45,7 +45,7 @@ Delete Cells | Delete Cells | Shift-Ctrl-D
 Insert Rows | Insert Rows | Ctrlcmd-I
 Delete Rows | Delete Rows | Ctrlcmd-D
 [Tools]
-Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions
+Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70
 """
 
 class EditorPlugin(Plugin, TreeAwarePluginMixin):
