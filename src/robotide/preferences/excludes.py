@@ -14,7 +14,8 @@
 from datetime import datetime
 import os
 from robotide.context import IS_WINDOWS
-
+import wx
+from .widgets import PreferencesPanel
 
 class Excludes():
 
@@ -79,5 +80,42 @@ class Excludes():
     else:
         def _norming(self, path):
             return path
+
+
+class ExcludePreferences(PreferencesPanel):
+    location = ('Excludes')
+    title = 'Excludes'
+
+    def __init__(self, settings, *args, **kwargs):
+        super(ExcludePreferences, self).__init__(*args, **kwargs)
+        self._settings = settings
+        self._create_sizer()
+
+    def _create_sizer(self):
+        sizer = wx.BoxSizer(orient=wx.VERTICAL)
+        self._add_text_box(sizer)
+        self._add_button_and_status(sizer)
+        self.SetSizer(sizer)
+
+    def _add_text_box(self, sizer):
+        self._text_box = wx.TextCtrl(self,
+            style=wx.TE_MULTILINE,
+            size=wx.Size(570, 100),
+            value=self._settings.excludes.get_excludes())
+        sizer.Add(self._text_box, proportion=wx.EXPAND)
+
+    def _add_button_and_status(self, sizer):
+        status_and_button_sizer = wx.GridSizer(rows=1, cols=2, hgap=10)
+        status_and_button_sizer.Add(wx.Button(self, id=wx.ID_SAVE))
+        self.Bind(wx.EVT_BUTTON, self.OnSave)
+        self._status_label = wx.StaticText(self)
+        status_and_button_sizer.Add(self._status_label)
+        sizer.Add(status_and_button_sizer)
+
+    def OnSave(self, event):
+        text = self._text_box.GetValue()
+        self._settings.excludes.write_excludes(set(text.split('\n')))
+        self._status_label.SetLabel('Saved at %s' % datetime.now().strftime('%H:%M:%S'))
+
 
 

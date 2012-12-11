@@ -19,6 +19,8 @@ from .widgets import (PreferencesPanel, PreferencesComboBox,
 from .imports import ImportPreferences
 from .saving import SavingPreferences
 from .colors import ColorPreferences
+from .excludes import ExcludePreferences
+
 
 class Preferences(object):
 
@@ -43,3 +45,4 @@ class Preferences(object):
         self.add(SavingPreferences)
         self.add(ImportPreferences)
         self.add(ColorPreferences)
+        self.add(ExcludePreferences)
