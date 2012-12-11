@@ -810,11 +810,17 @@ class ResourceFileController(_FileSystemElement, _DataController):
     def remove_child(self, controller):
         pass
 
-class ExcludedDirectoryController(_FileSystemElement, ControllerWithParent):
+class ExcludedDirectoryController(_FileSystemElement, ControllerWithParent, WithNamespace):
 
     def __init__(self, data, chief, parent):
         self.data = data
         self._chief_controller = chief
+        if self._chief_controller:
+            self._set_namespace_from(self._chief_controller)
+            self._resource_file_controller_factory =\
+            self._chief_controller.resource_file_controller_factory
+        else:
+            self._resource_file_controller_factory = None
         self._parent = parent
         self.children = []
         self.keywords = []
@@ -824,8 +830,32 @@ class ExcludedDirectoryController(_FileSystemElement, ControllerWithParent):
         _FileSystemElement.__init__(self, '', data.directory)
 
     @property
+    def settings(self):
+        return self._settings()
+
+    def _settings(self):
+        ss = self.data.setting_table
+        return [DocumentationController(self, ss.doc),
+                FixtureController(self, ss.suite_setup),
+                FixtureController(self, ss.suite_teardown),
+                FixtureController(self, ss.test_setup),
+                FixtureController(self, ss.test_teardown),
+                self.force_tags]
+
+    @property
+    def _setting_table(self):
+        return self.data.setting_table
+
+    @property
+    def force_tags(self):
+        return ForceTagsController(self, self._setting_table.force_tags)
+
+    @property
     def dirty(self):
         return False
+
+    def keyword_info(self, keyword_name):
+        return WithNamespace.keyword_info(self, self.data, keyword_name)
 
     @overrides(_BaseController)
     def is_excluded(self):
