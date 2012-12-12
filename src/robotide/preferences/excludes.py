@@ -12,6 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 from datetime import datetime
+from fnmatch import fnmatch
 import os
 from robotide.context import IS_WINDOWS
 import wx
@@ -67,7 +68,14 @@ class Excludes():
             return False
         path = self._normalize(path)
         excludes = [self._normalize(e) for e in excludes]
-        return any(path.startswith(e) for e in excludes)
+        return any(self._match(path, e) for e in excludes)
+
+    def _match(self, path, e):
+        if fnmatch(path, e):
+            return True
+        if path.startswith(e):
+            return True
+        return False
 
     def _normalize(self, path):
         path = self._norming(path)

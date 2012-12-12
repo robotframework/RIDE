@@ -55,5 +55,28 @@ class TestExcludes(unittest.TestCase):
         del self.file_path # not created nor used in this test
         self.assertRaises(NameError, self.exclude._get_exclude_file, 'w')
 
+    def test_star_path_pattern(self):
+        self.exclude.update_excludes([_join('foo', '*', 'bar')])
+        self.assertTrue(self.exclude.contains('foo/baz/bar'))
+        self.assertTrue(self.exclude.contains('foo/quu/qux/bar'))
+
+    def test_question_mark_path_pattern(self):
+        self.exclude.update_excludes([_join('foo', '?ar')])
+        self.assertTrue(self.exclude.contains('foo/bar'))
+        self.assertTrue(self.exclude.contains('foo/dar'))
+        self.assertFalse(self.exclude.contains('foo/ggar'))
+
+    def test_char_sequence_path_pattern(self):
+        self.exclude.update_excludes([_join('foo', '[bz]ar')])
+        self.assertTrue(self.exclude.contains('foo/bar'))
+        self.assertTrue(self.exclude.contains('foo/zar'))
+        self.assertFalse(self.exclude.contains('foo/gar'))
+
+    def test_char_sequence_not_in_path_pattern(self):
+        self.exclude.update_excludes([_join('foo', '[!bz]ar')])
+        self.assertFalse(self.exclude.contains('foo/bar'))
+        self.assertFalse(self.exclude.contains('foo/zar'))
+        self.assertTrue(self.exclude.contains('foo/gar'))
+
 def _join(*args):
     return os.path.join(*args) + sep
