@@ -52,14 +52,16 @@ class FindVariableUsages(FindVariableOccurrences):
 class FindResourceUsages(_Command):
 
     def execute(self, context):
-        for imp in context.get_where_used():
+        imports = [import_ for import_ in context.get_where_used()]
+        for imp in imports:
             yield ResourceUsage(context, imp)
 
 
 class FindTestFolderUsages(_Command):
 
     def execute(self, context):
-        for imp in context.get_where_used():
+        imports = [import_ for import_ in context.get_where_used()]
+        for imp in imports:
             yield ResourceUsage(*imp)
 
 

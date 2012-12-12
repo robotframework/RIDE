@@ -755,7 +755,8 @@ class ResourceFileController(_FileSystemElement, _DataController):
     def _modify_file_name(self, modification, notification):
         old = self.filename
         modification()
-        for resource_import in self.get_where_used():
+        resource_imports = [resource_import_ for resource_import_ in self.get_where_used()]
+        for resource_import in resource_imports:
             notification(resource_import)
         self._namespace.resource_filename_changed(old, self.filename)
 
@@ -790,11 +791,13 @@ class ResourceFileController(_FileSystemElement, _DataController):
 
     def get_where_used(self):
         if self._resource_file_controller_factory.is_all_resource_file_imports_resolved():
-            source = self._known_imports
+            source = [src for src in self._known_imports]
         else:
-            source = self._resolve_known_imports()
+            source = [src for src in self._resolve_known_imports()]
+
         for usage in source:
             yield usage
+
 
     def _resolve_known_imports(self):
         for imp in self._all_imports():
