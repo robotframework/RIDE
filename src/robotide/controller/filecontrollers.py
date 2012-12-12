@@ -674,6 +674,7 @@ class ResourceFileControllerFactory(object):
         if not resource_model:
             return None
         res = self.find(resource_model)
+        assert(res is not None)
         return res
 
     def create(self, data, chief_controller=None, parent=None):
