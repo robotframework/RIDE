@@ -679,6 +679,7 @@ class ResourceFileControllerFactory(object):
     def create(self, data, chief_controller=None, parent=None):
         rfc = ResourceFileController(data, chief_controller, parent, self)
         self.resources.append(rfc)
+        self.set_all_resource_imports_unresolved()
         return rfc
 
     def set_all_resource_imports_resolved(self):
@@ -692,6 +693,7 @@ class ResourceFileControllerFactory(object):
 
     def remove(self, controller):
         self._resources.remove(controller)
+        self.set_all_resource_imports_unresolved()
 
 
 class ResourceFileController(_FileSystemElement, _DataController):
