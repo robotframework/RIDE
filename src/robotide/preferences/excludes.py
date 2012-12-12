@@ -75,19 +75,14 @@ class Excludes():
             return True
         if path.startswith(e):
             return True
+
         return False
 
     def _normalize(self, path):
-        path = self._norming(path)
-        return path + os.path.sep if not path.endswith(os.path.sep) else path
-
-
-    if IS_WINDOWS:
-        def _norming(self, path):
-            return os.path.normcase(os.path.normpath(os.path.abspath(path)))
-    else:
-        def _norming(self, path):
-            return path
+        path = os.path.normcase(os.path.normpath(os.path.abspath(path)))
+        if os.path.isdir(path):
+            path += os.sep
+        return path
 
 
 class ExcludePreferences(PreferencesPanel):
