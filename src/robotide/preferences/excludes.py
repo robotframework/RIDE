@@ -14,8 +14,8 @@
 from datetime import datetime
 from fnmatch import fnmatch
 import os
-from robotide.context import IS_WINDOWS
 import wx
+from robotide.widgets import Dialog, HtmlWindow
 from .widgets import PreferencesPanel
 
 class Excludes():
@@ -96,9 +96,14 @@ class ExcludePreferences(PreferencesPanel):
 
     def _create_sizer(self):
         sizer = wx.BoxSizer(orient=wx.VERTICAL)
+        self._add_help_dialog(sizer)
         self._add_text_box(sizer)
         self._add_button_and_status(sizer)
         self.SetSizer(sizer)
+
+    def _add_help_dialog(self, sizer):
+        sizer.Add(wx.HyperlinkCtrl(self, wx.ID_ANY, '', 'Need help?'))
+        self.Bind(wx.EVT_HYPERLINK, self.OnHelp)
 
     def _add_text_box(self, sizer):
         self._text_box = wx.TextCtrl(self,
@@ -120,5 +125,102 @@ class ExcludePreferences(PreferencesPanel):
         self._settings.excludes.write_excludes(set(text.split('\n')))
         self._status_label.SetLabel('Saved at %s' % datetime.now().strftime('%H:%M:%S'))
 
+    def OnHelp(self, event):
+        dialog = ExcludeHelpDialog()
+        dialog.Show()
 
+class ExcludeHelpDialog(Dialog):
+    help = """<font size="5">
+<h1>Excludes</h1>
+<p align="justify">
+Paths to excludes are described in the text box, one exclude per row.
+These excludes are saved in a file which is located at $HOME/.robotframework/ride/excludes on POSIX-systems and
+%APPDATA%\\RobotFramework\\ride\\excludes on Windows.
+</p>
+<p align="justify">
+You can edit excludes yourself using either the text box or editing the file with an editor. After hitting "Save", close
+the Preferences window and reload the project to make the edited exludes to take effect. You can reload the project by
+selecting "File" from the main menu bar and then selecting your project from the list in view.
+</p>
+<h2>Patterns in paths</h2>
+<p align="justify">
+RIDE supports defining excludes with absolute paths. You can achieve relative paths with path patterns which are
+also supported.
+</p>
+<p align="left">
+The following shell-style wildcards are supported:
+<table width="100%" border="1">
+    <thead>
+        <th><b>Pattern</b></th>
+        <th><b>Meaning</b></th>
+        <th><b>Examples</b></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td valign="top" align="center">*</td>
+            <td valign="top" align="center">matches everything</td>
+            <td valign="top" align="left">
+                Pattern /foo/*/quu matches:
+                <ul>
+                    <li>/foo/bar/quu</li>
+                    <li>/foo/corge/quu</li>
+                    <li><i>etc.</i></li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" align="center">?</td>
+            <td valign="top" align="center">matches any single character</td>
+            <td valign="top" align="left">
+                Pattern C:\MyProject\?oo matches:
+                <ul>
+                    <li>C:\MyProject\\foo</li>
+                    <li>C:\MyProject\\boo</li>
+                    <li><i>etc.</i></li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" align="center">[seq]</td>
+            <td valign="top" align="center">matches any character in <i>seq</i></td>
+            <td valign="top" align="left">
+               Pattern C:\MyProject\[bf]oo matches:
+                <ul>
+                    <li>C:\MyProject\\foo</li>
+                    <li>C:\MyProject\\boo</li>
+                    <li><i>and nothing else</i></li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" align="center">[!seq]</td>
+            <td valign="top" align="center">matches any character not in <i>seq</i></td>
+            <td valign="top" align="left">
+                Pattern /foo/[!q]uu matches:
+                <ul>
+                    <li>/foo/zuu</li>
+                    <li><i>etc.</i></li>
+                </ul>
+                But does not match:
+                <ul>
+                    <li>/foo/quu</li>
+                </ul>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</p>
+
+<p align="justify">
+</p>
+</font>"""
+
+    def __init__(self):
+        Dialog.__init__(self, title='Help: excludes')
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(HtmlWindow(self, (800, 600), self.help))
+        self.SetSizerAndFit(sizer)
+
+    def OnKey(self, *args):
+        pass
 
