@@ -351,7 +351,7 @@ class AboutDialog(Dialog):
     def __init__(self):
         Dialog.__init__(self, title='RIDE')
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(HtmlWindow(self, (450, 200), ABOUT_RIDE))
+        sizer.Add(HtmlWindow(self, (450, 200), ABOUT_RIDE), 1, flag=wx.EXPAND)
         self.SetSizerAndFit(sizer)
 
     def OnKey(self, *args):
