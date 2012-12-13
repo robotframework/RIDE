@@ -110,7 +110,10 @@ class ChiefController(_BaseController, WithNamespace):
     def new_resource(self, path, parent=None):
         res = self._namespace.new_resource(path)
         self.update_default_dir(path)
-        return self._create_resource_controller(res, parent)
+        resource_controller, new = self._create_resource_controller(res, parent)
+        if new:
+            self._inform_resource_created(resource_controller)
+        return resource_controller
 
     def load_data(self, path, load_observer=None):
         load_observer = load_observer or NullObserver()
@@ -158,8 +161,9 @@ class ChiefController(_BaseController, WithNamespace):
     def _create_controllers(self, datafile, resources):
         self.clear_namespace_update_listeners()
         self._controller = DataController(datafile, self)
-        for r in resources:
-            self._create_resource_controller(r)
+        for ctrl, new in [self._create_resource_controller(r) for r in resources]:
+            if new:
+                self._inform_resource_created(ctrl)
 
     def load_resource(self, path, load_observer):
         resource = self._load_resource(path, load_observer)
@@ -171,19 +175,23 @@ class ChiefController(_BaseController, WithNamespace):
         resource = self._namespace.get_resource(path)
         if not resource:
             return None
-        ctrl = self._create_resource_controller(resource)
+        ctrl, new = self._create_resource_controller(resource)
+        if new:
+            self._inform_resource_created(ctrl)
         load_observer.finish()
         return ctrl
 
     def _create_resource_controller(self, parsed_resource, parent=None):
         old = self._resource_file_controller_factory.find(parsed_resource)
         if old:
-            return old
+            return old, False
         controller = self._resource_file_controller_factory.create(parsed_resource, parent=parent)
         self._insert_into_suite_structure(controller)
-        RideOpenResource(path=parsed_resource.source, datafile=controller).publish()
+        return controller, True
+
+    def _inform_resource_created(self, controller):
+        RideOpenResource(path=controller.filename, datafile=controller).publish()
         self._load_resources_resource_imports(controller)
-        return controller
 
     def _insert_into_suite_structure(self, resource):
         if self._controller and self._controller.is_inside_top_suite(resource):
@@ -276,7 +284,10 @@ class ChiefController(_BaseController, WithNamespace):
     def resource_import_modified(self, path, directory):
         resource = self._namespace.get_resource(path, directory)
         if resource:
-            return self._create_resource_controller(resource)
+            resource_controller, new = self._create_resource_controller(resource)
+            if new:
+                self._inform_resource_created(resource_controller)
+            return resource_controller
 
 
 class Serializer(object):
