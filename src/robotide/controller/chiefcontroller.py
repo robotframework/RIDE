@@ -43,7 +43,7 @@ class ChiefController(_BaseController, WithNamespace):
         self._controller = None
         self.name = None
         self.external_resources = []
-        self._resource_file_controller_factory = ResourceFileControllerFactory(namespace)
+        self._resource_file_controller_factory = ResourceFileControllerFactory(namespace, self)
         self._serializer = Serializer(settings, LOG)
 
     def __del__(self):
@@ -104,7 +104,7 @@ class ChiefController(_BaseController, WithNamespace):
     def _new_project(self, datafile):
         self.update_default_dir(datafile.directory)
         self._controller = DataController(datafile, self)
-        self._resource_file_controller_factory = ResourceFileControllerFactory(self._namespace)
+        self._resource_file_controller_factory = ResourceFileControllerFactory(self._namespace, self)
         RideNewProject(path=datafile.source, datafile=datafile).publish()
 
     def new_resource(self, path, parent=None):
@@ -179,7 +179,7 @@ class ChiefController(_BaseController, WithNamespace):
         old = self._resource_file_controller_factory.find(parsed_resource)
         if old:
             return old
-        controller = self._resource_file_controller_factory.create(parsed_resource, self, parent=parent)
+        controller = self._resource_file_controller_factory.create(parsed_resource, parent=parent)
         self._insert_into_suite_structure(controller)
         RideOpenResource(path=parsed_resource.source, datafile=controller).publish()
         self._load_resources_resource_imports(controller)

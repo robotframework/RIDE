@@ -88,7 +88,7 @@ class _UnitTestsWithWorkingResourceImports(unittest.TestCase):
         self.chef._controller = TestCaseFileController(tcf, self.chef)
         res = ResourceFile(source=res_path)
         self.res_controller = \
-            self.chef._resource_file_controller_factory.create(res, self.chef)
+            self.chef._resource_file_controller_factory.create(res)
         self.chef._namespace._resource_factory.cache[os.path.normcase(res_path)] = res
 
     @property

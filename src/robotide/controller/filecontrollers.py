@@ -401,7 +401,7 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         return resource and (resource.setting_table or resource.variable_table or resource.keyword_table or os.stat(resource.source)[6]==0)
 
     def _resource_controller(self, resource):
-        resource_control =  self._resource_file_controller_factory.create(resource, chief_controller=self._chief_controller)
+        resource_control =  self._resource_file_controller_factory.create(resource)
         resource_control.parent = self
         return resource_control
 
@@ -651,9 +651,10 @@ class TestCaseFileController(_FileSystemElement, _DataController):
 
 class ResourceFileControllerFactory(object):
 
-    def __init__(self, namespace):
+    def __init__(self, namespace, chief_controller):
         self._resources = []
         self._namespace = namespace
+        self._chief_controller = chief_controller
         self._all_resource_imports_resolved = False
 
     @property
@@ -677,8 +678,8 @@ class ResourceFileControllerFactory(object):
         assert(res is not None)
         return res
 
-    def create(self, data, chief_controller=None, parent=None):
-        rfc = ResourceFileController(data, chief_controller, parent, self)
+    def create(self, data, parent=None):
+        rfc = ResourceFileController(data, self._chief_controller, parent, self)
         self.resources.append(rfc)
         self.set_all_resource_imports_unresolved()
         return rfc
