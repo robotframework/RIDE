@@ -136,22 +136,22 @@ class ExcludePreferences(PreferencesPanel):
 class ExcludeHelpDialog(Dialog):
     help = """<font size="5">
 <h1>Excludes</h1>
-<p align="justify">
+<p>
 Paths to excludes are described in the text box, one exclude per row.
 These excludes are saved in a file which is located at $HOME/.robotframework/ride/excludes on POSIX-systems and
 %APPDATA%\\RobotFramework\\ride\\excludes on Windows.
 </p>
-<p align="justify">
+<p>
 You can edit excludes yourself using either the text box or editing the file with an editor. After hitting "Save", close
 the Preferences window and reload the project to make the edited exludes to take effect. You can reload the project by
 selecting "File" from the main menu bar and then selecting your project from the list in view.
 </p>
 <h2>Patterns in paths</h2>
-<p align="justify">
+<p>
 RIDE supports defining excludes with absolute paths. You can achieve relative paths with path patterns which are
 also supported.
 </p>
-<p align="left">
+<p>
 The following shell-style wildcards are supported:
 <table width="100%" border="1">
     <thead>
@@ -214,15 +214,14 @@ The following shell-style wildcards are supported:
     </tbody>
 </table>
 </p>
-
-<p align="justify">
-</p>
 </font>"""
 
     def __init__(self):
         Dialog.__init__(self, title='Help: excludes')
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(HtmlWindow(self, (800, 600), self.help))
+        sizer.Add(HtmlWindow(self, (800, 600), self.help),
+                  1,
+                  flag=wx.EXPAND)
         self.SetSizerAndFit(sizer)
 
     def OnKey(self, *args):
