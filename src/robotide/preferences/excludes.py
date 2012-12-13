@@ -42,6 +42,8 @@ class Excludes():
         excludes = [self._normalize(e) for e in excludes]
         with self._get_exclude_file(read_write='w') as exclude_file:
             for exclude in excludes:
+                if not exclude:
+                    continue
                 exclude_file.write("%s\n" % exclude)
 
     def update_excludes(self, new_excludes):
@@ -79,6 +81,8 @@ class Excludes():
         return False
 
     def _normalize(self, path):
+        if not path or path.strip() == "":
+            return None
         path = os.path.normcase(os.path.normpath(os.path.abspath(path)))
         if os.path.isdir(path):
             path += os.sep
