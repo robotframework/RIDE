@@ -54,9 +54,8 @@ class LocalRowNamespace(LocalMacroNamespace):
                 val.replace('=','').strip() for val in step.assignments if
                 val.startswith(start))
         if matching_assignments:
-            # replace overwritten global variables in the suggestions list with local variable
-            for name in matching_assignments:
-                suggestions = [LocalVariableInfo(name) if sug.name==name else sug.name for sug in suggestions]
+            suggestions = sorted(
+                suggestions + [LocalVariableInfo(name) for name in matching_assignments])
         return suggestions
 
     def _could_be_variable(self, start):
