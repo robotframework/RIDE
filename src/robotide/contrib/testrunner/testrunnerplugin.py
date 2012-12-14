@@ -164,10 +164,10 @@ class TestRunnerPlugin(Plugin):
         self._set_stopped()
 
     def _register_actions(self):
-        run_action_info = ActionInfo("Tools", "Run Test Suite", self.OnRun, None,
+        run_action_info = ActionInfo("Tools", "Run Tests", self.OnRun, None,
                                      "F8", ImageProvider().TOOLBAR_PLAY, "Run the selected tests", position=10)
         self._run_action = self.register_action(run_action_info)
-        stop_action_info = ActionInfo("Tools", "Stop Running", self.OnStop, None,
+        stop_action_info = ActionInfo("Tools", "Stop Test Run", self.OnStop, None,
                                       "CtrlCmd-F8", ImageProvider().TOOLBAR_STOP, "Stop a running test",position=11)
         self._stop_action = self.register_action(stop_action_info)
 
@@ -490,9 +490,9 @@ class TestRunnerPlugin(Plugin):
         toolbar.AddSeparator()
         reportImage = getReportIconBitmap()
         logImage = getLogIconBitmap()
-        toolbar.AddLabelTool(ID_RUN,"Start", getRobotBitmap(), shortHelp="Start robot",
+        toolbar.AddLabelTool(ID_RUN,"Start", ImageProvider().TOOLBAR_PLAY, shortHelp="Start robot",
                              longHelp="Start running the robot test suite")
-        toolbar.AddLabelTool(ID_STOP,"Stop", getProcessStopBitmap(),
+        toolbar.AddLabelTool(ID_STOP,"Stop", ImageProvider().TOOLBAR_STOP,
                              shortHelp="Stop a running test",
                              longHelp="Stop a running test")
         toolbar.AddSeparator()

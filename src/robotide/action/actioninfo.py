@@ -97,7 +97,7 @@ def ActionInfoCollection(data, event_handler, container=None):
         &Save | Save selected datafile | Ctrl-S | ART_FILE_SAVE
 
         [Tools]
-        !Manage Plugins  | | | | POSITION-81
+        !Manage Plugins  | | | | POSITION-80
 
         [Content]
         Content Assist (Ctrl-Space or Ctrl-Alt-Space) | Has two shortcuts.

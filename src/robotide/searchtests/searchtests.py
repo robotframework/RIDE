@@ -25,7 +25,7 @@ class TestSearchPlugin(Plugin):
     _selection = None
 
     def enable(self):
-        self.register_action(ActionInfo('Tools', self.HEADER, self.show_empty_search, shortcut='F3', doc=self.__doc__,icon=ImageProvider().TEST_SEARCH_ICON,position=52))
+        self.register_action(ActionInfo('Tools', self.HEADER, self.show_empty_search, shortcut='F3', doc=self.__doc__,icon=ImageProvider().TEST_SEARCH_ICON,position=50))
         self.register_search_action(self.HEADER, self.show_search_for, ImageProvider().TEST_SEARCH_ICON, default=True)
         self._dialog = None
 

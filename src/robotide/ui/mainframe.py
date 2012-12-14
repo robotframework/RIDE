@@ -47,7 +47,7 @@ _menudata = """
 !E&xit | Exit RIDE | Ctrlcmd-Q
 
 [Tools]
-!Search Unused Keywords | | | | POSITION-50
+!Search Unused Keywords | | | | POSITION-54
 !Manage Plugins | | | | POSITION-81
 !Preferences | | | | POSITION-99
 
@@ -330,7 +330,7 @@ class ActionRegisterer(object):
 
     def register_tools(self):
         separator_action = ActionFactory(SeparatorInfo("Tools"))
-        add_separator_after = ["stop running","search tests","preview","manage plugins"]
+        add_separator_after = ["stop test run","search unused keywords","preview","view ride log"]
         for key in sorted(self._tools_items.iterkeys()):
             self._menubar.register(self._tools_items[key])
             if self._tools_items[key].name.lower() in add_separator_after:
