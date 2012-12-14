@@ -51,8 +51,8 @@ class ChiefControllerTest(unittest.TestCase):
         self._test_listeners([MINIMAL_SUITE_PATH], [])
 
     def _test_listeners(self, suite_paths, resource_paths):
-        assert_equals(self._get_paths(self.suite_listener.data), suite_paths)
-        assert_equals(self._get_paths(self.resource_listener.data), resource_paths)
+        self.assertEqual(self._get_paths(self.suite_listener.data), suite_paths)
+        self.assertEqual(self._get_paths(self.resource_listener.data), resource_paths)
 
     def _get_paths(self, data):
             return [item.path for item in data]
@@ -136,6 +136,22 @@ class ChiefControllerTest(unittest.TestCase):
         self.ctrl.new_resource('somepath')
         self.ctrl.new_resource('somepath')
         assert_equals(len(self.ctrl.resources), 1)
+
+    def test_load_data_with_external_resources_all_externals_are_used(self):
+        are_used = []
+        def handle(message):
+            are_used.append(message.datafile.is_used())
+        self.resource_listener.outer_listener = handle
+        self._load(EXTERNAL_RES_UNSORTED_PATH)
+        assert_true(self.ctrl.resources != [])
+        res_path = os.path.join(os.path.split(EXTERNAL_RES_UNSORTED_PATH)[0], 'external_resources')
+        abc_path = os.path.join(res_path, 'subdirectory2', 'subsubdirectory', 'Abc.txt')
+        bar_path = os.path.join(res_path, 'subdirectory2', 'bar.txt')
+        foo_path = os.path.join(res_path, 'subdirectory', 'Foo.txt')
+        hello_path = os.path.join(res_path, 'subdirectory2', 'subsubdirectory', 'hello.txt')
+        resource_path = os.path.join(res_path, 'subdirectory2', 'Resource.txt')
+        self.assertEqual(are_used, [True for _ in range(5)])
+        self._test_listeners([EXTERNAL_RES_UNSORTED_PATH], [abc_path, bar_path, foo_path, hello_path, resource_path])
 
     def test_sort_external_resources(self):
         self.ctrl.load_data(EXTERNAL_RES_UNSORTED_PATH, MessageRecordingLoadObserver())

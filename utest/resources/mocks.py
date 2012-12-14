@@ -93,9 +93,11 @@ class PublisherListener(object):
         PUBLISHER.subscribe(self._listener, topic, self)
         self._topic = topic
         self.data = []
+        self.outer_listener = lambda message:0
 
     def _listener(self, data):
         self.data.append(data)
+        self.outer_listener(data)
 
     @property
     def count(self):
