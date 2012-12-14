@@ -87,10 +87,11 @@ class ExecutionFailed(RobotError):
         self.exit = exit
         self.cont = cont
         self.exit_for_loop = exit_for_loop
+        self.return_value = None
 
     @property
     def dont_cont(self):
-        return self.timeout or self.syntax or self.exit
+        return self.timeout or self.syntax or self.exit or self.exit_for_loop
 
     cont = property(lambda self: self._cont and not self.dont_cont,
                     lambda self, cont: self._set_cont(cont))
@@ -128,9 +129,9 @@ class HandlerExecutionFailed(ExecutionFailed):
 
 class ExecutionFailures(ExecutionFailed):
 
-    def __init__(self, errors):
-        msg = self._format_message([unicode(e) for e in errors])
-        ExecutionFailed.__init__(self, msg, **self._get_attrs(errors))
+    def __init__(self, errors, message=None):
+        message = message or self._format_message([unicode(e) for e in errors])
+        ExecutionFailed.__init__(self, message, **self._get_attrs(errors))
         self._errors = errors
 
     def _format_message(self, messages):
@@ -160,16 +161,20 @@ class ExecutionFailures(ExecutionFailed):
 class UserKeywordExecutionFailed(ExecutionFailures):
 
     def __init__(self, run_errors=None, teardown_errors=None):
-        no_errors = ExecutionFailed('', cont=True, exit_for_loop=True)
-        ExecutionFailures.__init__(self, [run_errors or no_errors,
-                                          teardown_errors or no_errors])
+        errors = self._get_active_errors(run_errors, teardown_errors)
+        message = self._get_message(run_errors, teardown_errors)
+        ExecutionFailures.__init__(self, errors, message)
         if run_errors and not teardown_errors:
             self._errors = run_errors.get_errors()
         else:
             self._errors = [self]
 
-    def _format_message(self, messages):
-        run_msg, td_msg = messages
+    def _get_active_errors(self, *errors):
+        return [err for err in errors if err]
+
+    def _get_message(self, run_errors, teardown_errors):
+        run_msg = unicode(run_errors or '')
+        td_msg = unicode(teardown_errors or '')
         if not td_msg:
             return run_msg
         if not run_msg:
