@@ -91,8 +91,9 @@ class KeywordEditor(GridEditor, RideEventHandler):
     def _namespace_updated(self):
         if not self._updating_namespace:
             self._updating_namespace = True
-            # _updating_namespace flag prevents too many calls
-            wx.CallAfter(self._update_based_on_namespace_change)
+            # See following issue for history of the next line:
+            # http://code.google.com/p/robotframework-ride/issues/detail?id=1108
+            wx.CallAfter(wx.CallLater, 200, self._update_based_on_namespace_change)
 
     def _update_based_on_namespace_change(self):
         try:
