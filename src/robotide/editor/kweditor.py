@@ -92,11 +92,10 @@ class KeywordEditor(GridEditor, RideEventHandler):
         if not self._updating_namespace:
             self._updating_namespace = True
             # _updating_namespace flag prevents too many calls
-            wx.CallLater(200, self._update_based_on_namespace_change)
+            wx.CallAfter(self._update_based_on_namespace_change)
 
     def _update_based_on_namespace_change(self):
         try:
-            self._updating_namespace = True
             self._colorize_grid()
         finally:
             self._updating_namespace = False
@@ -679,7 +678,7 @@ class ChooseUsageSearchStringDialog(wx.Dialog):
         self.choices = [(False, cellvalue)] + [(True, v) for v in variables]
         self.choices_string = ["Complete cell content"] + ["Variable " + var for var in variables]
         self._build_ui()
-    
+
     def _build_ui(self):
         self.radiobox_choices = wx.RadioBox(self, choices=self.choices_string,
                                             style=wx.RA_SPECIFY_COLS, majorDimension=1)
@@ -692,6 +691,6 @@ class ChooseUsageSearchStringDialog(wx.Dialog):
         self.SetSizer(big_sizer)
         self.Fit()
         self.CenterOnParent()
-    
+
     def GetStringSelection(self):
         return self.choices[self.radiobox_choices.GetSelection()]
