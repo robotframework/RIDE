@@ -11,6 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+from robot.utils import normalize
 from robotide.spec.iteminfo import LocalVariableInfo
 
 def LocalNamespace(controller, namespace, row=None):
@@ -54,8 +55,8 @@ class LocalRowNamespace(LocalMacroNamespace):
                 val.replace('=','').strip() for val in step.assignments if
                 val.startswith(start))
         if matching_assignments:
-            suggestions = sorted(
-                suggestions + [LocalVariableInfo(name) for name in matching_assignments])
+            locals = [LocalVariableInfo(name) for name in matching_assignments]
+            suggestions = sorted(self._remove_duplicates(suggestions, locals))
         return suggestions
 
     def _could_be_variable(self, start):
@@ -69,3 +70,9 @@ class LocalRowNamespace(LocalMacroNamespace):
                 if step.is_assigning(value):
                     return True
         return LocalMacroNamespace.has_name(self, value)
+
+    def _remove_duplicates(self, suggestions, locals):
+        checked = [gvar for gvar in suggestions
+                        if normalize(gvar.name) not in
+                            [normalize(lvar.name) for lvar in locals]]
+        return checked + locals
