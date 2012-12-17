@@ -190,7 +190,6 @@ class ChiefController(_BaseController, WithNamespace):
 
     def _inform_resource_created(self, controller):
         controller.notify_opened()
-        self._load_resources_resource_imports(controller)
 
     def _insert_into_suite_structure(self, resource):
         if self._controller and self._controller.is_inside_top_suite(resource):
@@ -201,10 +200,6 @@ class ChiefController(_BaseController, WithNamespace):
 
     def _sort_external_resources(self):
         self.external_resources.sort(key=lambda resource: resource.name.lower())
-
-    def _load_resources_resource_imports(self, controller):
-        for _import in [ imp for imp in controller.imports if imp.is_resource ]:
-            _import.import_loaded_or_modified()
 
     def get_all_keywords(self):
         return self.get_all_keywords_from(ctrl.datafile for ctrl in self.datafiles if ctrl.datafile)
