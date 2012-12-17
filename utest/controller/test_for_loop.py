@@ -124,5 +124,13 @@ class TestForLoop(unittest.TestCase):
         test.execute(Purify())
         self._steps_are_in_for_loop(test, 2)
 
+    def test_adding_comment(self):
+        test = self.chief.datafiles[1].tests[14]
+        test.execute(ChangeCellValue(1, 2, '# comment'))
+        self.assertEqual(test.steps[1].as_list(), ['', 'No Operation', '# comment'])
+        test.execute(ChangeCellValue(1, 2, '##comment'))
+        self.assertEqual(test.steps[1].as_list(), ['', 'No Operation', '##comment'])
+
+
 if __name__ == '__main__':
     unittest.main()

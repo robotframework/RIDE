@@ -70,3 +70,7 @@ Test 13
     Log  something
     : FOR  ${i}  IN  1  2
     \   Log  ${i}
+
+Test 14
+    : FOR  ${i}  IN  1  2
+    \   No Operation
