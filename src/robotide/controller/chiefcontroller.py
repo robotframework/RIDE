@@ -19,8 +19,7 @@ import tempfile
 
 from robotide.context import LOG
 from robotide.controller.commands import NullObserver, SaveFile
-from robotide.publish.messages import RideOpenResource, RideSaveAll, \
-     RideOpenSuite, RideNewProject, RideFileNameChanged
+from robotide.publish.messages import RideOpenSuite, RideNewProject, RideFileNameChanged
 
 from .basecontroller import WithNamespace, _BaseController
 from .dataloader import DataLoader
@@ -190,7 +189,7 @@ class ChiefController(_BaseController, WithNamespace):
         return controller, True
 
     def _inform_resource_created(self, controller):
-        RideOpenResource(path=controller.filename, datafile=controller).publish()
+        controller.notify_opened()
         self._load_resources_resource_imports(controller)
 
     def _insert_into_suite_structure(self, resource):

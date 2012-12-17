@@ -21,7 +21,7 @@ from robotide.controller.dataloader import ExcludedDirectory, TestDataDirectoryW
 from robotide.publish import (RideDataFileRemoved, RideInitFileRemoved,
         RideDataChangedToDirty, RideDataDirtyCleared, RideSuiteAdded,
         RideItemSettingsChanged)
-from robotide.publish.messages import RideDataFileSet
+from robotide.publish.messages import RideDataFileSet, RideOpenResource
 from robotide.robotapi import TestDataDirectory, TestCaseFile, ResourceFile
 from robotide import utils
 
@@ -785,6 +785,9 @@ class ResourceFileController(_FileSystemElement, _DataController):
 
     def add_known_import(self, _import):
         self._known_imports.add(_import)
+
+    def notify_opened(self):
+        RideOpenResource(path=self.filename, datafile=self).publish()
 
     def is_used(self):
         if self._known_imports:
