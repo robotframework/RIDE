@@ -171,10 +171,22 @@ class FindOccurrencesWithFiles(unittest.TestCase):
     def test_finding_from_test_teardown_in_settings(self):
         self._assert_usage('Test Teardown in Setting', 'Test Teardown')
 
+    def test_occurrences_in_suite_documentation_should_not_be_found(self):
+        self._assert_no_usages('suitedocmatch')
+
+    def test_occurrences_in_test_documentation_should_not_be_found(self):
+        self._assert_no_usages('testdocmatch')
+
+    def test_occurrences_in_keyword_documentation_should_not_be_found(self):
+        self._assert_no_usages('keyworddocmatch')
+
     def _assert_usage(self, keyword, usage):
         occ = list(self.ts2.execute(FindUsages(keyword)))
         self.assertEqual(len(occ), 1)
         self.assertEqual(occ[0].usage, usage)
+
+    def _assert_no_usages(self, keyword):
+        self.assertEqual(list(self.ts2.execute(FindUsages(keyword))), [])
 
     def assert_occurrences(self, ctrl, kw_name, count):
         assert_equals(sum(1 for _ in ctrl.execute(FindOccurrences(kw_name))), count)

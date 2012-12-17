@@ -124,6 +124,10 @@ class DocumentationController(_SettingController):
     def value(self):
         return self._doc.value
 
+    @overrides(_SettingController)
+    def contains_keyword(self, name):
+        return False
+
     def _get_editable_value(self):
         return self._unescape_newlines_and_handle_escaped_backslashes(self.value)
 

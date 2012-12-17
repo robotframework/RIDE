@@ -1,4 +1,5 @@
 *** Settings ***
+Documentation  suitedocmatch
 Resource    testdata_resource.txt
 Suite Setup   Run Keyword  Suite Setup Keyword
 Test Teardown  Test Teardown in Setting
@@ -9,6 +10,7 @@ ${Test Suite 2 Var}  irobota
 
 *** Test Cases ***
 My Test
+    [Documentation]  testdocmatch
     My Keyword
     My Keyword
     None Keyword
@@ -25,6 +27,7 @@ My Third Test
 
 *** Keywords ***
 Log
+    [Documentation]  keyworddocmatch
     Overrides builtin
 
 Test Setup Keyword
