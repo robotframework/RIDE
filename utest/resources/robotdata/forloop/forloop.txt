@@ -79,3 +79,6 @@ Test 15
     : FOR  ${kuu}  IN RANGE  100
     \  Kw1      # comment
     \  Keyword  # comment
+
+Test 16
+    Foo

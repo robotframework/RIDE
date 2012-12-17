@@ -142,5 +142,14 @@ class TestForLoop(unittest.TestCase):
         test.execute(InsertCell(1,0))
         self.assertEqual(test.steps[1].as_list(), ['', 'Kw1', '# comment'])
 
+    def test_new_for_loop_with_existing_comment(self):
+        test = self.chief.datafiles[1].tests[16]
+        test.execute(ChangeCellValue(0, 2, '# comment'))
+        test.execute(ChangeCellValue(0, 0, ':FOR'))
+        self.assertEqual(test.steps[0].as_list(), [':FOR', '', '# comment'])
+        test.execute(DeleteCell(0, 0))
+        self.assertEqual(test.steps[0].as_list(), ['', '# comment'])
+
+
 if __name__ == '__main__':
     unittest.main()

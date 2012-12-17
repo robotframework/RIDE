@@ -341,7 +341,7 @@ class StepController(_BaseController):
 
     def _recreate(self, cells, comment=None):
         if self._is_partial_for_loop_step(cells):
-            self._recreate_as_partial_for_loop(cells)
+            self._recreate_as_partial_for_loop(cells, comment)
         elif self._is_intended_step(cells):
             i = self._index()
             previous_step = self.parent.step(i-1)
@@ -360,9 +360,9 @@ class StepController(_BaseController):
     def _is_intended_step(self, cells):
         return cells and not cells[0].strip() and any(c.strip() for c in cells)
 
-    def _recreate_as_partial_for_loop(self, cells):
+    def _recreate_as_partial_for_loop(self, cells, comment):
         index = self._index()
-        self.parent.replace_step(index, PartialForLoop(cells[1:], first_cell=cells[0]))
+        self.parent.replace_step(index, PartialForLoop(cells[1:], first_cell=cells[0], comment=comment))
         self._recreate_next_step(index)
 
     def _recreate_as_intended_step(self, for_loop_step, cells, comment, index):
@@ -381,13 +381,13 @@ class StepController(_BaseController):
 
 class PartialForLoop(ForLoop):
 
-    def __init__(self, cells, first_cell=':FOR'):
+    def __init__(self, cells, first_cell=':FOR', comment=None):
         self._cells = cells
         self._first_cell = first_cell
-        ForLoop.__init__(self, cells)
+        ForLoop.__init__(self, cells, comment)
 
     def as_list(self, indent=False, include_comment=False):
-        return [self._first_cell]+self._cells
+        return [self._first_cell]+self._cells+self.comment.as_list()
 
 
 class ForLoopStepController(StepController):
@@ -478,7 +478,7 @@ class ForLoopStepController(StepController):
             else:
                 steps = self._get_raw_steps()
                 i = self._index()
-                StepController._recreate_as_partial_for_loop(self, cells)
+                StepController._recreate_as_partial_for_loop(self, cells, comment)
                 self.parent.step(i)._set_raw_steps(steps)
         else:
             steps = self._get_raw_steps()
