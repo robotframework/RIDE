@@ -549,7 +549,7 @@ class IntendedStepController(StepController):
 
     def _recreate(self, cells, comment=None):
         if cells == [] or cells[0] == '':
-            self._step.__init__(cells[1:] if cells != [] else [], comment=comment)
+            self._step.__init__(cells[1:], comment=comment)
             if self._step not in self.parent._get_raw_steps():
                 self.parent.add_step(self._step)
         else:
