@@ -87,6 +87,8 @@ class KeywordSearch(Plugin):
     def show_search_for(self, pattern):
         self._dialog.show_search_with_criteria(pattern=pattern)
 
+    def disable(self):
+        self.unregister_actions()
 
 class _SearchCriteria(object):
 

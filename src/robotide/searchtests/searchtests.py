@@ -80,6 +80,8 @@ class TestSearchPlugin(Plugin):
             for test, match in self._search(matcher, s):
                 yield test, match
 
+    def disable(self):
+        self.unregister_actions()
 
 class TagSearchMatcher(object):
 
