@@ -340,28 +340,34 @@ class StepController(_BaseController):
         return cells[-1][2:].strip() if cells[-1].startswith('# ') else None
 
     def _recreate(self, cells, comment=None):
-        if cells and cells[0].replace(' ', '').upper() == ':FOR':
+        if self._is_partial_for_loop_step(cells):
             self._recreate_as_partial_for_loop(cells)
-        elif cells and not cells[0].strip() and any(c.strip() for c in cells):
+        elif self._is_intended_step(cells):
             i = self._index()
             previous_step = self.parent.step(i-1)
             if type(previous_step) == ForLoopStepController:
-                self._recreate_as_intended_step(previous_step, cells, i)
+                self._recreate_as_intended_step(previous_step, cells, comment, i)
             elif type(previous_step) == IntendedStepController:
-                self._recreate_as_intended_step(previous_step.parent, cells, i)
+                self._recreate_as_intended_step(previous_step.parent, cells, comment, i)
             else:
                 self._step.__init__(cells, comment)
         else:
             self._step.__init__(cells, comment)
+
+    def _is_partial_for_loop_step(self, cells):
+        return cells and cells[0].replace(' ', '').upper() == ':FOR'
+
+    def _is_intended_step(self, cells):
+        return cells and not cells[0].strip() and any(c.strip() for c in cells)
 
     def _recreate_as_partial_for_loop(self, cells):
         index = self._index()
         self.parent.replace_step(index, PartialForLoop(cells[1:], first_cell=cells[0]))
         self._recreate_next_step(index)
 
-    def _recreate_as_intended_step(self, for_loop_step, cells, index):
+    def _recreate_as_intended_step(self, for_loop_step, cells, comment, index):
         self.remove()
-        for_loop_step.add_step(Step(cells[1:]))
+        for_loop_step.add_step(Step(cells[1:], comment))
         self._recreate_next_step(index)
 
     def _recreate_next_step(self, index):
