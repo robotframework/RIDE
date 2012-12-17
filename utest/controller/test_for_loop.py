@@ -131,6 +131,12 @@ class TestForLoop(unittest.TestCase):
         test.execute(ChangeCellValue(1, 2, '##comment'))
         self.assertEqual(test.steps[1].as_list(), ['', 'No Operation', '##comment'])
 
+    def test_comment_is_preserved_when_shifting_row_to_left(self):
+        test = self.chief.datafiles[1].tests[15]
+        test.execute(DeleteCell(2,0))
+        self.assertEqual(test.steps[2].as_list(), ['Keyword', '# comment'])
+        test.execute(DeleteCell(1,0))
+        self.assertEqual(test.steps[1].as_list(), ['Kw1', '##comment'])
 
 if __name__ == '__main__':
     unittest.main()

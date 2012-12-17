@@ -74,3 +74,8 @@ Test 13
 Test 14
     : FOR  ${i}  IN  1  2
     \   No Operation
+
+Test 15
+    : FOR  ${kuu}  IN RANGE  100
+    \  Kw1      ##comment
+    \  Keyword  # comment
