@@ -109,9 +109,7 @@ class ChiefController(_BaseController, WithNamespace):
     def new_resource(self, path, parent=None):
         res = self._namespace.new_resource(path)
         self.update_default_dir(path)
-        resource_controller, new = self._create_resource_controller(res, parent)
-        if new:
-            self._inform_resource_created(resource_controller)
+        resource_controller = self._create_resource_controller(res, parent)
         return resource_controller
 
     def load_data(self, path, load_observer=None):
@@ -160,9 +158,11 @@ class ChiefController(_BaseController, WithNamespace):
     def _create_controllers(self, datafile, resources):
         self.clear_namespace_update_listeners()
         self._controller = DataController(datafile, self)
-        for ctrl, new in [self._create_resource_controller(r) for r in resources]:
-            if new:
-                self._inform_resource_created(ctrl)
+        new_resource_controllers = []
+        for r in resources:
+            self._create_resource_controller(r, resource_created_callback=lambda controller: new_resource_controllers.append(controller))
+        for controller in new_resource_controllers:
+            self._inform_resource_created(controller)
 
     def load_resource(self, path, load_observer):
         resource = self._load_resource(path, load_observer)
@@ -174,19 +174,19 @@ class ChiefController(_BaseController, WithNamespace):
         resource = self._namespace.get_resource(path)
         if not resource:
             return None
-        ctrl, new = self._create_resource_controller(resource)
-        if new:
-            self._inform_resource_created(ctrl)
+        ctrl = self._create_resource_controller(resource)
         load_observer.finish()
         return ctrl
 
-    def _create_resource_controller(self, parsed_resource, parent=None):
+    def _create_resource_controller(self, parsed_resource, parent=None, resource_created_callback=None):
         old = self._resource_file_controller_factory.find(parsed_resource)
         if old:
-            return old, False
+            return old
         controller = self._resource_file_controller_factory.create(parsed_resource, parent=parent)
         self._insert_into_suite_structure(controller)
-        return controller, True
+        resource_created_callback = resource_created_callback or self._inform_resource_created
+        resource_created_callback(controller)
+        return controller
 
     def _inform_resource_created(self, controller):
         controller.notify_opened()
@@ -278,10 +278,7 @@ class ChiefController(_BaseController, WithNamespace):
     def resource_import_modified(self, path, directory):
         resource = self._namespace.get_resource(path, directory)
         if resource:
-            resource_controller, new = self._create_resource_controller(resource)
-            if new:
-                self._inform_resource_created(resource_controller)
-            return resource_controller
+            return self._create_resource_controller(resource)
 
 
 class Serializer(object):
