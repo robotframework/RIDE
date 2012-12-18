@@ -77,8 +77,8 @@ class ResourceFactoryDirectoryIgnoreTestCase(unittest.TestCase):
         def test_case_insensitive_ignore_lower(self):
             self._ignore_import(os.path.dirname(__file__).lower())
 
-        def test_case_insensitive_ignore_relative(self):
-            self._ignore_import(os.path.relpath(os.path.dirname(__file__)))
+        def test_case_insensitive_ignore_relative_with_pattern(self):
+            self._ignore_import(os.path.join('*', os.path.dirname(__file__)))
 
     def _ignore_import(self, exclude_directory):
         self.r = self._create_factory(exclude_directory)
