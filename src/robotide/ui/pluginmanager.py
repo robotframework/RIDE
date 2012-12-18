@@ -41,10 +41,10 @@ class _PluginPanel(wx.Panel):
     def __init__(self, notebook, plugins, activation_callback):
         wx.Panel.__init__(self, notebook)
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self._create_header(), 0, wx.LEFT|wx.RIGHT|wx.TOP, border=16)
-        sizer.Add(self._create_line(), 0, wx.EXPAND|wx.LEFT|wx.RIGHT, border=16)
-        sizer.Add(self._create_body(plugins, activation_callback),
-                  1, wx.EXPAND|wx.ALL, border=16)
+        sizer.Add(self._create_header(), 0, flag=wx.LEFT|wx.RIGHT|wx.TOP, border=16)
+        sizer.Add(self._create_info_text(), 0, flag=wx.EXPAND|wx.LEFT|wx.RIGHT, border=16)
+        sizer.Add(self._create_line(), 0, flag=wx.EXPAND|wx.LEFT|wx.RIGHT)
+        sizer.Add(self._create_body(plugins, activation_callback), 1, flag=wx.EXPAND|wx.ALL, border=16)
         self.SetSizer(sizer)
 
     def _create_header(self):
@@ -70,6 +70,11 @@ class _PluginPanel(wx.Panel):
             sizer.Add(_PluginRow(panel, plugin), 0, wx.EXPAND)
         panel.SetSizer(sizer)
         return panel
+
+    def _create_info_text(self):
+        info = wx.StaticText(self, wx.ID_ANY, "Info. Enabling and disabling plugins might require RIDE restart for menus to work.")
+        info.SetFont(wx.Font(12, wx.SWISS, wx.NORMAL, wx.ITALIC))
+        return info
 
     def _create_label(self, parent, text):
         boldFont = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
