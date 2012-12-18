@@ -73,19 +73,17 @@ class Excludes():
         return any(self._match(path, e) for e in excludes)
 
     def _match(self, path, e):
-        if fnmatch(path, e):
-            return True
-        if path.startswith(e):
-            return True
-
-        return False
+        return fnmatch(path, e) or path.startswith(e)
 
     def _normalize(self, path):
-        if not path or path.strip() == "":
+        if not (path or path.strip()):
             return None
-        path = os.path.normcase(os.path.normpath(os.path.abspath(path)))
-        if os.path.isdir(path):
+        path = os.path.normcase(os.path.normpath(path))
+        ext = os.path.splitext(path)[1]
+        if not ext and not path.endswith(('*', '?', ']')):
             path += os.sep
+            if '*' in path or '?' in path or ']' in path:
+                path += '*'
         return path
 
 
