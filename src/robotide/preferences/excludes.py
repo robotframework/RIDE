@@ -125,7 +125,8 @@ class ExcludePreferences(PreferencesPanel):
     def OnSave(self, event):
         text = self._text_box.GetValue()
         self._settings.excludes.write_excludes(set(text.split('\n')))
-        self._status_label.SetLabel('Saved at %s' % datetime.now().strftime('%H:%M:%S'))
+        save_label = 'Saved at %s. Reload the project for changes to take an effect.' % datetime.now().strftime('%H:%M:%S')
+        self._status_label.SetLabel(save_label)
 
     def OnHelp(self, event):
         dialog = ExcludeHelpDialog()
