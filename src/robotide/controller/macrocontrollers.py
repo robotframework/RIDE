@@ -243,7 +243,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self._replace_steps_with_kw(name, step_range)
         self._create_extracted_kw(name, argstr, extracted_steps)
 
-    def _get_raw_steps(self):
+    def get_raw_steps(self):
         self._has_steps_changed = True # Reveales inner state so can't be sure if cache is up to date
         return self.data.steps
 

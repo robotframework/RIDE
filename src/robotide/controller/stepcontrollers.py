@@ -292,12 +292,12 @@ class StepController(_BaseController):
             self._recreate(cells, comment)
 
     def insert_before(self, new_step):
-        steps = self.parent._get_raw_steps()
+        steps = self.parent.get_raw_steps()
         index = steps.index(self._step)
         self.parent._set_raw_steps(steps[:index]+[new_step]+steps[index:])
 
     def insert_after(self, new_step):
-        steps = self.parent._get_raw_steps()
+        steps = self.parent.get_raw_steps()
         index = steps.index(self._step)+1
         self.parent._set_raw_steps(steps[:index]+[new_step]+steps[index:])
 
@@ -407,14 +407,17 @@ class ForLoopStepController(StepController):
         index = self._index()
         previous_step = self.parent.step(index-1)
         if isinstance(previous_step, ForLoopStepController):
-            previous_step._step.steps = self._step.steps
-            self._step.steps = []
-            steps = self.parent._get_raw_steps()
-            steps[index-1:index+1] = [self._step, previous_step._step]
-            self.parent._set_raw_steps(steps)
+            self._swap_forloop_headers(index, previous_step)
         else:
-            self._get_raw_steps().insert(0, previous_step._step)
+            self.get_raw_steps().insert(0, previous_step._step)
             previous_step.remove()
+
+    def _swap_forloop_headers(self, index, previous_step):
+        previous_step._step.steps = self._step.steps
+        self._step.steps = []
+        steps = self.parent.get_raw_steps()
+        steps[index - 1:index + 1] = [self._step, previous_step._step]
+        self.parent._set_raw_steps(steps)
 
     def move_down(self):
         next_step = self.step(self._index()+1)
@@ -423,7 +426,7 @@ class ForLoopStepController(StepController):
             self._replace_with_new_cells(cells=self.as_list())
 
     def insert_after(self, new_step):
-        self._get_raw_steps().insert(0, new_step)
+        self.get_raw_steps().insert(0, new_step)
 
     def step(self, index):
         return self.parent.step(index)
@@ -431,7 +434,7 @@ class ForLoopStepController(StepController):
     def _has_comment_keyword(self):
         return False
 
-    def _get_raw_steps(self):
+    def get_raw_steps(self):
         return self._step.steps
 
     def _set_raw_steps(self, steps):
@@ -458,10 +461,10 @@ class ForLoopStepController(StepController):
 
     @property
     def steps(self):
-        return [IntendedStepController(self, sub_step) for sub_step in self._get_raw_steps()]
+        return [IntendedStepController(self, sub_step) for sub_step in self.get_raw_steps()]
 
     def index_of_step(self, step):
-        index_in_for_loop = self._get_raw_steps().index(step)
+        index_in_for_loop = self.get_raw_steps().index(step)
         return self._index()+index_in_for_loop+1
 
     def _get_comment(self, cells):
@@ -477,19 +480,19 @@ class ForLoopStepController(StepController):
         return False
 
     def add_step(self, step):
-        self._get_raw_steps().append(step)
+        self.get_raw_steps().append(step)
 
     def _recreate(self, cells, comment=None):
         if not self._represent_valid_for_loop_header(cells):
             if not cells or cells[0].replace(' ','').upper() != ':FOR':
                 self._replace_with_new_cells(cells)
             else:
-                steps = self._get_raw_steps()
+                steps = self.get_raw_steps()
                 i = self._index()
                 StepController._recreate_as_partial_for_loop(self, cells, comment)
                 self.parent.step(i)._set_raw_steps(steps)
         else:
-            steps = self._get_raw_steps()
+            steps = self.get_raw_steps()
             self._step.__init__(cells[1:])
             self._set_raw_steps(steps)
 
@@ -497,7 +500,7 @@ class ForLoopStepController(StepController):
         steps = self.parent.data.steps
         index = steps.index(self._step)
         steps.remove(self._step)
-        self.parent.data.steps = steps[:index] + self._get_raw_steps() + steps[index:]
+        self.parent.data.steps = steps[:index] + self.get_raw_steps() + steps[index:]
         self._step.steps = []
 
     def _represent_valid_for_loop_header(self, cells):
@@ -517,7 +520,7 @@ class ForLoopStepController(StepController):
     def _replace_with_new_cells(self, cells):
         index = self.parent.index_of_step(self._step)
         self.parent.replace_step(index, Step(cells))
-        self._get_raw_steps().reverse()
+        self.get_raw_steps().reverse()
         for substep in self.steps:
             self.parent.add_step(index+1, Step(substep.as_list()))
 
@@ -564,7 +567,7 @@ class IntendedStepController(StepController):
     def _recreate(self, cells, comment=None):
         if cells == [] or cells[0] == '':
             self._step.__init__(cells[1:], comment=comment)
-            if self._step not in self.parent._get_raw_steps():
+            if self._step not in self.parent.get_raw_steps():
                 self.parent.add_step(self._step)
         else:
             self._recreate_as_normal_step(cells, comment)
@@ -582,10 +585,10 @@ class IntendedStepController(StepController):
     def _replace_with_normal_step(self, index, cells=None, comment=None):
         index_of_parent = self.parent.parent.index_of_step(self.parent._step)
         self.parent.parent.add_step(index_of_parent+index+2, Step(cells or self.as_list(), comment=comment))
-        self.parent._get_raw_steps().pop(index)
+        self.parent.get_raw_steps().pop(index)
 
     def remove(self):
-        self.parent._get_raw_steps().remove(self._step)
+        self.parent.get_raw_steps().remove(self._step)
 
     @overrides(StepController)
     def remove_empty_columns_from_end(self):
