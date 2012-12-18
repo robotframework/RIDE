@@ -364,7 +364,7 @@ class DatafileRetriever(object):
         return self._lib_cache.get_library_keywords(name, args, alias)
 
     def _convert_to_absolute_path(self, name, import_):
-        full_name = os.path.join(os.path.dirname(import_.source), name)
+        full_name = os.path.join(import_.directory, name)
         if os.path.exists(full_name):
             return full_name
         return name
