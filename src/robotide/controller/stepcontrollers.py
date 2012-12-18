@@ -423,7 +423,7 @@ class ForLoopStepController(StepController):
         next_step = self.step(self._index()+1)
         next_step.move_up()
         if len(self._step.steps) == 0:
-            self._replace_with_new_cells(cells=self.as_list())
+            self._recreate_complete_for_loop_header(cells=self.as_list())
 
     def insert_after(self, new_step):
         self.get_raw_steps().insert(0, new_step)
@@ -484,17 +484,23 @@ class ForLoopStepController(StepController):
 
     def _recreate(self, cells, comment=None):
         if not self._represent_valid_for_loop_header(cells):
-            if not cells or cells[0].replace(' ','').upper() != ':FOR':
-                self._replace_with_new_cells(cells)
-            else:
-                steps = self.get_raw_steps()
-                i = self._index()
-                StepController._recreate_as_partial_for_loop(self, cells, comment)
-                self.parent.step(i).set_raw_steps(steps)
+            self._recreate_partial_for_loop_header(cells, comment)
+        else:
+            self._recreate_complete_for_loop_header(cells)
+
+    def _recreate_complete_for_loop_header(self, cells):
+        steps = self.get_raw_steps()
+        self._step.__init__(cells[1:])
+        self.set_raw_steps(steps)
+
+    def _recreate_partial_for_loop_header(self, cells, comment):
+        if not cells or cells[0].replace(' ', '').upper() != ':FOR':
+            self._replace_with_new_cells(cells)
         else:
             steps = self.get_raw_steps()
-            self._step.__init__(cells[1:])
-            self.set_raw_steps(steps)
+            i = self._index()
+            StepController._recreate_as_partial_for_loop(self, cells, comment)
+            self.parent.step(i).set_raw_steps(steps)
 
     def remove(self):
         steps = self.parent.data.steps

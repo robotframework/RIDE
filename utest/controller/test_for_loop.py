@@ -15,14 +15,14 @@ class TestForLoop(unittest.TestCase):
     def tearDownClass(cls):
         cls.chief.close()
 
-    def test_for_loop_move(self):
+    def test_for_loop_move_with_undo_preserves_correct_celltype(self):
         test = self.chief.datafiles[1].tests[0]
         test.execute(MoveRowsDown([0]))
         test.execute(MoveRowsDown([1]))
         self.assertEqual(test.get_cell_info(1,1).cell_type, CellType.ASSIGN)
         test.execute(Undo())
         test.execute(Undo())
-        self.assertEqual(test.get_cell_info(1,1).cell_type, CellType.MANDATORY)
+        self.assertEqual(test.get_cell_info(1,1).cell_type, CellType.KEYWORD)
 
     def test_adding_new_for_loop(self):
         test2 = self.chief.datafiles[1].tests[1]
