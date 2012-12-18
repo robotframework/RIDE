@@ -82,3 +82,9 @@ Test 15
 
 Test 16
     Foo
+
+Test 17
+    : FOR  ${i}  IN  1  2  3  4
+    \   No Operation
+    : FOR  ${j}  IN RANGE  100
+    \   Fail

@@ -1,7 +1,7 @@
 import unittest
 import datafilereader
 from robotide.controller.cellinfo import CellType
-from robotide.controller.commands import MoveRowsDown, Undo, ChangeCellValue, InsertCell, DeleteCell, Purify
+from robotide.controller.commands import MoveRowsDown, Undo, ChangeCellValue, InsertCell, DeleteCell, Purify, MoveRowsUp
 from robotide.controller.stepcontrollers import ForLoopStepController, IntendedStepController, StepController
 
 
@@ -150,6 +150,25 @@ class TestForLoop(unittest.TestCase):
         test.execute(DeleteCell(0, 0))
         self.assertEqual(test.steps[0].as_list(), ['', '# comment'])
 
+    def test_move_for_loop_over_another_for_loop(self):
+        loop_1 = ': FOR  ${i}  IN  1  2  3  4'.split('  ')
+        loop_2 = [': FOR', '${j}', 'IN RANGE', '100']
+        inside_1 = ['', 'No Operation']
+        inside_2 = ['', 'Fail']
+        test = self.chief.datafiles[1].tests[17]
+        self._verify_steps(test.steps, loop_1, inside_1, loop_2, inside_2)
+        test.execute(MoveRowsUp([2]))
+        self._verify_steps(test.steps, loop_1, loop_2, inside_1, inside_2)
+        test.execute(MoveRowsUp([1]))
+        self._verify_steps(test.steps, loop_2, loop_1, inside_1, inside_2)
+        test.execute(MoveRowsDown([0]))
+        self._verify_steps(test.steps, loop_1, loop_2, inside_1, inside_2)
+
+
+    def _verify_steps(self, steps, *expected):
+        for step, exp in zip(steps, expected):
+            self.assertEqual(step.as_list(), exp)
+        self.assertEqual(len(steps), len(expected), steps)
 
 if __name__ == '__main__':
     unittest.main()
