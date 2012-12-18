@@ -185,7 +185,7 @@ class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
     def _relative_path(self, value):
         src = self._controller.datafile.source
         if utils.is_same_drive(src, value):
-            path =  relpath(value, dirname(src))
+            path =  relpath(value, src if isdir(src) else dirname(src))
         else:
             path = value
         return path.replace('\\', '/') if IS_WINDOWS else path.replace('\\', '\\\\')
