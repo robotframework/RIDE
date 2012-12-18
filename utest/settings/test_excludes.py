@@ -56,9 +56,10 @@ class TestExcludes(unittest.TestCase):
         self.assertRaises(NameError, self.exclude._get_exclude_file, 'w')
 
     def test_star_path_pattern(self):
-        self.exclude.update_excludes([_join('foo', '*', 'bar')])
+        self.exclude.update_excludes([_join('foo', '*', 'bar'), _join('*', 'splat')])
         self.assertTrue(self.exclude.contains('foo/baz/bar'))
         self.assertTrue(self.exclude.contains('foo/quu/qux/bar'))
+        self.assertTrue(self.exclude.contains('/corge/splat/doom.txt'))
 
     def test_question_mark_path_pattern(self):
         self.exclude.update_excludes([_join('foo', '?ar')])
