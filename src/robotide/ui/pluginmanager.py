@@ -73,7 +73,7 @@ class _PluginPanel(wx.Panel):
 
     def _create_info_text(self):
         info = wx.StaticText(self, wx.ID_ANY, "Info. Enabling and disabling plugins might require RIDE restart for menus to work.")
-        info.SetFont(wx.Font(12, wx.SWISS, wx.NORMAL, wx.ITALIC))
+        info.SetFont(wx.Font(1, wx.SWISS, wx.NORMAL, wx.FONTWEIGHT_NORMAL))
         return info
 
     def _create_label(self, parent, text):
