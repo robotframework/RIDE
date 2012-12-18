@@ -610,7 +610,7 @@ class ContentAssistCellEditor(grid.PyGridCellEditor):
         self._controller = controller
         self._grid = None
 
-    def show_content_assist(self):
+    def show_content_assist(self, args=None):
         self._tc.show_content_assist()
 
     def execute_variable_creator(self, list_variable=False):
