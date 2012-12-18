@@ -53,10 +53,8 @@ _menudata = """
 
 [Help]
 !Shortcut keys | RIDE shortcut keys
----
 !User Guide | RIDE User Guide
 !Report a Problem | Open browser to the RIDE issue tracker
----
 !Release notes | Shows release notes
 !About | Information about RIDE
 """
