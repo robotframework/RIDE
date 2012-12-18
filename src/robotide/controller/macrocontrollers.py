@@ -48,7 +48,9 @@ class ItemNameController(object):
         self._item = item
 
     def contains_keyword(self, name):
-        return self._item.name == name
+        if isinstance(name, basestring):
+            return self._item.name == name
+        return name.match(self._item.name)
 
     def contains_variable(self, name):
         return utils.value_contains_variable(self._item.name, name)

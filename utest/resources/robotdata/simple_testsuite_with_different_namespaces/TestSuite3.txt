@@ -1,0 +1,9 @@
+*** Test Cases ***
+My Second Test
+   My Keyword
+   embedded args keyword
+   None Keyword
+
+*** Keywords ***
+embedded ${args} keyword
+   No Operation

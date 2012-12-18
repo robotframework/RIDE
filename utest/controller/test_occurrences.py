@@ -115,10 +115,11 @@ def _get_ctrl_by_name(self, name, datafiles):
 class FindOccurrencesWithFiles(unittest.TestCase):
 
     @classmethod
-    def setUpClass(cls):
+    def setUp(cls):
         cls.chief_ctrl = datafilereader.construct_chief_controller(datafilereader.SIMPLE_TEST_SUITE_PATH)
         cls.ts1 = datafilereader.get_ctrl_by_name('TestSuite1', cls.chief_ctrl.datafiles)
         cls.ts2 = datafilereader.get_ctrl_by_name('TestSuite2', cls.chief_ctrl.datafiles)
+        cls.ts3 = datafilereader.get_ctrl_by_name('TestSuite3', cls.chief_ctrl.datafiles)
         cls.resu = datafilereader.get_ctrl_by_name(datafilereader.SIMPLE_TEST_SUITE_RESOURCE_NAME, cls.chief_ctrl.datafiles)
 
     @classmethod
@@ -138,7 +139,7 @@ class FindOccurrencesWithFiles(unittest.TestCase):
 
     def test_finds_occurrences_that_are_unrecognized(self):
         self.assert_occurrences(self.ts1, 'None Keyword', 2)
-        self.assert_occurrences(self.ts2, 'None Keyword', 3)
+        self.assert_occurrences(self.ts2, 'None Keyword', 4)
 
     def test_finds_occurrences_that_override_builtin(self):
         self.assert_occurrences(self.ts1, 'Log', 1)
@@ -155,6 +156,24 @@ class FindOccurrencesWithFiles(unittest.TestCase):
         for kw in [k for k in self.resu.keywords if k.name == old_name]:
             self.resu.execute(RenameKeywordOccurrences(kw.name, new_name, NullObserver(), kw.info))
             assert_equals(kw.name, new_name)
+
+    def test_rename_embedded_arguments_keyword_but_dont_rename_occurrences(self):
+        old_name = 'embedded ${args} keyword'
+        new_name = 'unembedded keyword'
+        self.assert_occurrences(self.ts3, old_name, 2)
+        self.assert_occurrences(self.ts3, new_name, 0)
+        self.ts3.execute(RenameKeywordOccurrences(old_name, new_name, NullObserver()))
+        self.assert_occurrences(self.ts3, old_name, 1)
+        self.assert_occurrences(self.ts3, new_name, 1)
+
+    def test_rename_embedded_arguments_keyword_with_another_embedded_arguments_keyword(self):
+        old_name = 'embedded ${args} keyword'
+        new_name = 'embedded args keyword with ${trailing args}'
+        self.assert_occurrences(self.ts3, old_name, 2)
+        self.assert_occurrences(self.ts3, new_name, 0)
+        self.ts3.execute(RenameKeywordOccurrences(old_name, new_name, NullObserver()))
+        self.assert_occurrences(self.ts3, old_name, 1)
+        self.assert_occurrences(self.ts3, new_name, 1)
 
     def test_finding_from_test_setup_with_run_keyword(self):
         self._assert_usage('Test Setup Keyword', 'Setup')
