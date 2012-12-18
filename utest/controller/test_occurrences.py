@@ -112,10 +112,10 @@ def _get_ctrl_by_name(self, name, datafiles):
     return None
 
 
-class FindOccurrencesWithFiles(unittest.TestCase):
+class TestFindOccurrencesWithFiles(unittest.TestCase):
 
     @classmethod
-    def setUp(cls):
+    def setUpClass(cls):
         cls.chief_ctrl = datafilereader.construct_chief_controller(datafilereader.SIMPLE_TEST_SUITE_PATH)
         cls.ts1 = datafilereader.get_ctrl_by_name('TestSuite1', cls.chief_ctrl.datafiles)
         cls.ts2 = datafilereader.get_ctrl_by_name('TestSuite2', cls.chief_ctrl.datafiles)
@@ -167,8 +167,8 @@ class FindOccurrencesWithFiles(unittest.TestCase):
         self.assert_occurrences(self.ts3, new_name, 1)
 
     def test_rename_embedded_arguments_keyword_with_another_embedded_arguments_keyword(self):
-        old_name = 'embedded ${args} keyword'
-        new_name = 'embedded args keyword with ${trailing args}'
+        old_name = '2nd embedded ${args} keyword'
+        new_name = '2nd embedded args keyword with ${trailing args}'
         self.assert_occurrences(self.ts3, old_name, 2)
         self.assert_occurrences(self.ts3, new_name, 0)
         self.ts3.execute(RenameKeywordOccurrences(old_name, new_name, NullObserver()))
