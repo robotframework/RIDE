@@ -11,7 +11,7 @@ tracker`_ is still there.
   * Any questions? Do not hesitate to use the `mailing list`_.
   * Development information is in `BUILD`_ file.
 
-.. _Downloads: https://github.com/robotframework/RIDE/downloads/
+.. _Downloads: http://code.google.com/p/robotframework-ride/downloads/list
 .. _issue tracker: http://code.google.com/p/robotframework-ride/issues/list
 .. _Wiki: https://github.com/robotframework/RIDE/wiki
 .. _BUILD: https://github.com/robotframework/RIDE/blob/master/BUILD.rest
