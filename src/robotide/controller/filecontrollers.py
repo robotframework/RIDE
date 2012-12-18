@@ -379,8 +379,12 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
 
     def _add_directory_children(self, children, path, initfile):
         for filename in self._get_unknown_files_in_directory(children, path, initfile):
-            if not os.path.basename(filename).startswith('.'):
+            if not self._is_robot_ignored_name(filename):
                 self._add_directory_child(children, filename)
+
+    def _is_robot_ignored_name(self, filename):
+        base = os.path.basename(filename)
+        return any(base.startswith(c) for c in '_.')
 
     def _add_directory_child(self, children, filename):
         if os.path.isdir(filename):
