@@ -247,7 +247,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self._has_steps_changed = True # Reveales inner state so can't be sure if cache is up to date
         return self.data.steps
 
-    def _set_raw_steps(self, steps):
+    def set_raw_steps(self, steps):
         self.data.steps = steps
         self._has_steps_changed = True
 
