@@ -1,7 +1,7 @@
 import unittest
 from robotide.preferences.imports import Setting
 
-class TestSettings(unittest.TestCase):
+class TestImportSetting(unittest.TestCase):
 
     def setUp(self):
         settings = {'name':['foo']}
