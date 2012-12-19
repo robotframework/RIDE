@@ -19,6 +19,7 @@ from robotide.pluginapi import (Plugin, ActionInfoCollection,
                                 TreeAwarePluginMixin)
 from robotide.publish import (RideTreeSelection, RideNotebookTabChanging,
                               RideNotebookTabChanged, RideSaving)
+from robotide.utils import overrides
 from robotide.widgets import PopupCreator
 from editorcreator import EditorCreator
 
@@ -127,6 +128,12 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
             self.show()
         if self._editor:
             self._editor.tree_item_selected(message.item)
+
+    @overrides(Plugin)
+    def get_selected_datafile(self):
+        if self._editor and self._editor.controller:
+            return self._editor.controller.datafile
+        return Plugin.get_selected_datafile(self)
 
     def OnOpenEditor(self, event):
         self._show_editor()
