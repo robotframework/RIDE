@@ -312,10 +312,12 @@ class SourceEditor(wx.Panel):
 
 
     def OnFind(self, event):
-        self._find()
+        if self._editor:
+            self._find()
 
     def OnFindBackwards(self, event):
-        self._find(forward=False)
+        if self._editor:
+            self._find(forward=False)
 
     def _find(self, forward=True):
         txt = self._search_field.GetValue()
