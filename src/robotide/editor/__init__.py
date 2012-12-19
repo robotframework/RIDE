@@ -162,6 +162,8 @@ class _EditorTab(wx.Panel):
         self.editor = None
 
     def show_editor(self, editor):
+        if editor is None:
+            return
         if editor is self.editor:
             self.Show(True)
             return
@@ -220,7 +222,8 @@ class _EditorTab(wx.Panel):
         self.editor.show_content_assist()
 
     def save(self, message=None):
-        self.editor.save()
+        if self.editor:
+            self.editor.save()
 
     def OnKey(self, *args):
         pass

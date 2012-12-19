@@ -396,10 +396,11 @@ class SourceEditor(wx.Panel):
         self._editor.Redo()
 
     def remove_and_store_state(self):
-        self.store_position()
-        self._stored_text = self._editor.GetText()
-        self._editor.Destroy()
-        self._editor = None
+        if self._editor:
+            self.store_position()
+            self._stored_text = self._editor.GetText()
+            self._editor.Destroy()
+            self._editor = None
 
     def _create_editor_text_control(self, text=None):
         self._editor = RobotDataEditor(self)
