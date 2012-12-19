@@ -7,15 +7,16 @@ class TestImports(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.chief = datafilereader.construct_chief_controller(datafilereader.IMPORTS)
-        suite = cls.chief.data.suites[0]
+        suite = cls.chief.data.suites[1]
         cls.imports =  [i for i in suite.imports]
 
     @classmethod
     def tearDownClass(cls):
         cls.chief.close()
 
-    def _find_by_name(self, name):
-        for i in self.imports:
+    def _find_by_name(self, name, data_file=None):
+        data_file = data_file or self
+        for i in data_file.imports:
             if i.name == name:
                 return i
         raise AssertionError('No import found with name "%s"' % name)
@@ -23,8 +24,8 @@ class TestImports(unittest.TestCase):
     def _has_error(self, name):
         self.assertTrue(self._find_by_name(name).has_error(), 'Import "%s" should have error' % name)
 
-    def _has_no_error(self, name):
-        self.assertFalse(self._find_by_name(name).has_error(), 'Import "%s" should have no error' % name)
+    def _has_no_error(self, name, data_file=None):
+        self.assertFalse(self._find_by_name(name, data_file).has_error(), 'Import "%s" should have no error' % name)
 
     def test_importing_existing_resource_has_no_error(self):
         self._has_no_error('res//existing.txt')
@@ -61,6 +62,9 @@ class TestImports(unittest.TestCase):
 
     def test_importing_exiting_variable_file_has_error(self):
         self._has_error('vars//exiting.py')
+
+    def test_library_import_in_subsuite_init_file_with_relative_path_has_no_error(self):
+        self._has_no_error('..//outer_lib.py', self.chief.data.suites[0])
 
 
 if __name__ == '__main__':
