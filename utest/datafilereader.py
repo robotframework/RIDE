@@ -47,7 +47,7 @@ FINDWHEREUSED_VARIABLES_PATH = _makepath('findwhereused_variables')
 
 SMALL_TEST_PATH = _makepath('small_test')
 
-IMPORT_ERRORS = _makepath('import_errors')
+IMPORTS = _makepath('imports')
 
 def construct_chief_controller(datapath, temp_dir_for_excludes=None):
     settings = FakeSettings(temp_dir_for_excludes)

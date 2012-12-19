@@ -2,11 +2,11 @@ import unittest
 import datafilereader
 
 
-class TestImportErrors(unittest.TestCase):
+class TestImports(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.chief = datafilereader.construct_chief_controller(datafilereader.IMPORT_ERRORS)
+        cls.chief = datafilereader.construct_chief_controller(datafilereader.IMPORTS)
         suite = cls.chief.data.suites[0]
         cls.imports =  [i for i in suite.imports]
 
