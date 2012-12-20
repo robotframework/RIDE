@@ -52,7 +52,7 @@ Framework test data.
       keywords     = 'robotframework testing testautomation',
       platforms    = 'any',
       classifiers  = """
-Development Status :: 4 - Beta
+Development Status :: 5 - Production/Stable
 License :: OSI Approved :: Apache Software License
 Operating System :: OS Independent
 Programming Language :: Python
