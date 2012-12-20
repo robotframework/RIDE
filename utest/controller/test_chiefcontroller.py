@@ -283,6 +283,23 @@ class TestFindingControllers(unittest.TestCase):
         result = self.chief.find_controller_by_longname('Suite.Test 1', 'Test 1')
         assert_equals(result, test)
 
+    def test_finding_correct_testcase_when_two_with_same_name(self):
+        test1, test2 = self._create_suite_structure_with_two_tests_with_same_name()
+        result1 = self.chief.find_controller_by_longname('Root.'+test1.longname, test1.display_name)
+        assert_equals(result1, test1)
+        result2 = self.chief.find_controller_by_longname('Root.'+test2.longname, test2.display_name)
+        assert_equals(result2, test2)
+
+    def _create_suite_structure_with_two_tests_with_same_name(self):
+        directory_controller = TestDataDirectoryController(_data_directory('Root'))
+        suite1_controller = TestCaseFileController(_testcasefile('Suite 1.txt'))
+        test1 = suite1_controller.create_test('Test')
+        suite2_controller = TestCaseFileController(_testcasefile('Suite 2.txt'))
+        test2 = suite2_controller.create_test('Test')
+        directory_controller.add_child(suite1_controller)
+        directory_controller.add_child(suite2_controller)
+        self.chief._controller = directory_controller
+        return test1, test2
 
 if __name__ == "__main__":
     unittest.main()
