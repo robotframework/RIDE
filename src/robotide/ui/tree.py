@@ -13,7 +13,7 @@
 #  limitations under the License.
 
 import wx
-import wx.lib.agw.customtreectrl as customtreectrl
+from wx.lib.agw import customtreectrl
 from wx.lib.mixins import treemixin
 
 from robotide.controller.ui.treecontroller import TreeController

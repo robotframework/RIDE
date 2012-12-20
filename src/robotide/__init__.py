@@ -86,17 +86,22 @@ def _parse_args(args):
     return noupdatecheck, debug_console, inpath
 
 def _run(inpath=None, updatecheck=True, debug_console=False):
-    from robotide.application import RIDE
+    try:
+        from robotide.application import RIDE
+    except ImportError:
+        _show_old_wxpython_warning_if_needed()
+        raise
     if inpath:
         inpath = unicode(inpath, sys.getfilesystemencoding())
     ride = RIDE(inpath, updatecheck)
-    if wx.VERSION < (2, 8, 12, 1):
-        _show_old_wxpython_warning(ride.frame)
+    _show_old_wxpython_warning_if_needed(ride.frame)
     if debug_console:
         _start_debug_console(ride)
     ride.MainLoop()
 
-def _show_old_wxpython_warning(parent):
+def _show_old_wxpython_warning_if_needed(parent=None):
+    if wx.VERSION >= (2, 8, 12, 1):
+        return
     title = 'Please upgrade your wxPython installation'
     message = ('RIDE officially supports wxPython 2.8.12.1 and newer. '
                'Your current version is %s.\n\n'
@@ -105,6 +110,9 @@ def _show_old_wxpython_warning(parent):
                'Latest wxPython packages can be found from\nhttp://wxpython.org/.'
                % wx.VERSION_STRING)
     style = wx.ICON_EXCLAMATION
+    if not parent:
+        app = wx.PySimpleApp()
+        parent = wx.Frame(None, size=(0,0))
     wx.MessageDialog(parent, message, title, style).ShowModal()
 
 def _print_stacks():
