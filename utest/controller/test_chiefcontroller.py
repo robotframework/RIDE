@@ -292,10 +292,10 @@ class TestFindingControllers(unittest.TestCase):
 
     def _create_suite_structure_with_two_tests_with_same_name(self):
         directory_controller = TestDataDirectoryController(_data_directory('Root'))
-        suite1_controller = TestCaseFileController(_testcasefile('Suite 1.txt'))
-        test1 = suite1_controller.create_test('Test')
-        suite2_controller = TestCaseFileController(_testcasefile('Suite 2.txt'))
-        test2 = suite2_controller.create_test('Test')
+        suite1_controller = TestCaseFileController(_testcasefile('Suite.1.txt'))
+        test1 = suite1_controller.create_test('Te.st')
+        suite2_controller = TestCaseFileController(_testcasefile('Suite.2.txt'))
+        test2 = suite2_controller.create_test('Te.st')
         directory_controller.add_child(suite1_controller)
         directory_controller.add_child(suite2_controller)
         self.chief._controller = directory_controller
