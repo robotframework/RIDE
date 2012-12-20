@@ -610,14 +610,10 @@ class TestCaseFileController(_FileSystemElement, _DataController):
 
 
     def find_controller_by_names(self, names, node_testname = None):
+        if names[0] != self.name:
+            return None
         if len(names) == 1:
             return self
-        checked_names = set()
-        for elem in reversed(names):
-            if not checked_names:
-                checked_names.add(elem)
-            else:
-                checked_names.update([elem + '.' + name for name in checked_names])
         for test in self.tests:
             if test.name == node_testname:
                 return test
