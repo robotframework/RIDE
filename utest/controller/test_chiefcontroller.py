@@ -270,10 +270,10 @@ class TestFindingControllers(unittest.TestCase):
 
     def test_finding_subdirectory_controller(self):
         directory_controller = TestDataDirectoryController(_data_directory('Root'))
-        subdirectory_controller = TestDataDirectoryController(_data_directory('Subsuite'))
+        subdirectory_controller = TestDataDirectoryController(_data_directory('Sub.suite'))
         directory_controller.add_child(subdirectory_controller)
         self.chief._controller = directory_controller
-        result = self.chief.find_controller_by_longname('Root.Subsuite')
+        result = self.chief.find_controller_by_longname('Root.Sub.suite')
         assert_equals(result, subdirectory_controller)
 
     def test_finding_testcase_controller(self):
@@ -285,13 +285,13 @@ class TestFindingControllers(unittest.TestCase):
 
     def test_finding_correct_testcase_when_two_with_same_name(self):
         test1, test2 = self._create_suite_structure_with_two_tests_with_same_name()
-        result1 = self.chief.find_controller_by_longname('Root.'+test1.longname, test1.display_name)
+        result1 = self.chief.find_controller_by_longname('Ro.ot.'+test1.longname, test1.display_name)
         assert_equals(result1, test1)
-        result2 = self.chief.find_controller_by_longname('Root.'+test2.longname, test2.display_name)
+        result2 = self.chief.find_controller_by_longname('Ro.ot.'+test2.longname, test2.display_name)
         assert_equals(result2, test2)
 
     def _create_suite_structure_with_two_tests_with_same_name(self):
-        directory_controller = TestDataDirectoryController(_data_directory('Root'))
+        directory_controller = TestDataDirectoryController(_data_directory('Ro.ot'))
         suite1_controller = TestCaseFileController(_testcasefile('Suite.1.txt'))
         test1 = suite1_controller.create_test('Te.st')
         suite2_controller = TestCaseFileController(_testcasefile('Suite.2.txt'))

@@ -356,12 +356,13 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         return self.find_controller_by_names(longname.split("."), testname)
 
     def find_controller_by_names(self, names, testname):
-        if names[0] != self.name:
+        namestring = '.'.join(names)
+        if not namestring.startswith(self.name):
             return None
-        if len(names) == 1:
+        if namestring == self.name:
             return self
         for suite in self.suites:
-            res = suite.find_controller_by_names(names[1:], testname)
+            res = suite.find_controller_by_names(namestring[len(self.name)+1:].split('.'), testname)
             if res:
                 return res
 
