@@ -86,7 +86,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 0.55</h2>
+<h2>Release notes for 1.0</h2>
 <table border="1">
 <tr>
 <td><p><b>ID</b></p></td>
@@ -95,101 +95,29 @@ RELEASE_NOTES = """
 <td><p><b>Summary</b></p></td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1135">Issue 1135</a></td>
-<td>Defect</td>
-<td>High</td>
-<td>Backwards going resource imports sometimes fail (Are shown in red color and resources are shown as unused)</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1155">Issue 1155</a></td>
-<td>Defect</td>
-<td>High</td>
-<td>"Search" button of "Search Tests" dialog does nothing</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1164">Issue 1164</a></td>
-<td>Defect</td>
-<td>High</td>
-<td>Renaming keyword with embedded arguments fails</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1147">Issue 1147</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1170">Issue 1170</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>Screenshot library prevents RIDE from closing completely</td>
+<td>Keyword cell information threw an exception when External Resources selected from tree</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1154">Issue 1154</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1173">Issue 1173</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>Search Keywords get error and never stops refreshing the screen</td>
+<td>Test cases with the same name are marked wrongly in the tree with test execution status</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1157">Issue 1157</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1174">Issue 1174</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>HTML format change does not work</td>
+<td>Should show old wxpython dialog with really old wxpython</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1159">Issue 1159</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>Comments are not handled correctly in FOR loops</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1160">Issue 1160</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>enabling/disabling plugins does not work</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1161">Issue 1161</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>RIDE freezes w/ 'DocumentationController' object has no attribute 'replace_keyword'</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1162">Issue 1162</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>Editing in text editor is not possible if there is a comment starting with two hash characters</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1166">Issue 1166</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>For loop header row move throws an exception</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1117">Issue 1117</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1169">Issue 1169</a></td>
 <td>Enhancement</td>
 <td>Medium</td>
-<td>Support wildcards in excludes</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1137">Issue 1137</a></td>
-<td>Enhancement</td>
-<td>Medium</td>
-<td>Clean-up menus, toolbars, etc.</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1150">Issue 1150</a></td>
-<td>Enhancement</td>
-<td>Medium</td>
-<td>Excludes editable in Preferences</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1146">Issue 1146</a></td>
-<td>Defect</td>
-<td>Low</td>
-<td>global variable value set problem</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1167">Issue 1167</a></td>
-<td>Defect</td>
-<td>Low</td>
-<td>Test suite files starting with underscore cause parse error</td>
+<td>Update status to stable in pavement</td>
 </tr>
 </table>
-<p>Altogether 16 issues.</p>
+<p>Altogether 4 issues.</p>
 """
