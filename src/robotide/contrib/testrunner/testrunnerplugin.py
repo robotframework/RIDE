@@ -54,7 +54,7 @@ from robot.output import LEVELS
 from robotide.action.shortcut import localize_shortcuts
 from robotide.contrib.testrunner.runprofiles import CustomScriptProfile
 from robotide.contrib.testrunner.testrunner import TestRunner
-from robotide.publish.messages import RideTestSelectedForRunningChanged
+from robotide.publish.messages import RideTestSelectedForRunningChanged, RideNewProject
 
 ON_POSIX = 'posix' in sys.builtin_module_names
 
@@ -130,6 +130,7 @@ class TestRunnerPlugin(Plugin):
         self._test_runner = TestRunner(application.model)
         self._register_shortcuts()
         self._min_log_level_number = LEVELS['INFO']
+        self._test_names_to_run = set()
 
     def _register_shortcuts(self):
         self.register_shortcut('CtrlCmd-C', self._copy_from_out)
@@ -193,6 +194,7 @@ class TestRunnerPlugin(Plugin):
     def _subscribe_to_events(self):
         self.subscribe(self.OnTestSelectedForRunningChanged, RideTestSelectedForRunningChanged)
         self.subscribe(self.OnOpenSuite, RideOpenSuite)
+        self.subscribe(self.OnOpenSuite, RideNewProject)
 
     def OnTestSelectedForRunningChanged(self, message):
         if message.running:
