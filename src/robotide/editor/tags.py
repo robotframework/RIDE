@@ -194,8 +194,6 @@ class TagBox(wx.TextCtrl):
 
 
 def Properties(tag, controller):
-    if tag.is_empty():
-        return AddTagBoxProperties(tag)
     if tag.controller == controller:
         return TagBoxProperties(tag)
     return tag.choose({ForcedTag: ForcedTagBoxProperties,
