@@ -28,6 +28,7 @@ from robotide.editor.editordialogs import (TestCaseNameDialog,
 from robotide.ui.progress import LoadProgressObserver
 from robotide.usages.UsageRunner import Usages, ResourceFileUsages
 from .filedialogs import (AddSuiteDialog, ChangeFormatDialog, NewResourceDialog, AddResourceDialog)
+from robotide.utils import overrides
 from robotide.widgets import PopupMenuItems
 from .progress import RenameProgressObserver
 from .resourcedialogs import ResourceRenameDialog, ResourceDeleteDialog
@@ -340,10 +341,13 @@ class ResourceFileHandler(_CanBeRenamed, TestDataHandler):
         self._set_node_label(self.controller.basename)
         return _CanBeRenamed.begin_label_edit(self)
 
+    @overrides(_CanBeRenamed)
     def end_label_edit(self, event):
         if not event.IsEditCancelled():
             result = self.controller.execute(RenameResourceFile(event.GetLabel(), self._check_should_rename_static_imports))
-            if not result:
+            if result:
+                self._old_label = self.controller.basename
+            else:
                 event.Veto()
         else:
             self._set_node_label(self._old_label)
@@ -389,11 +393,13 @@ class TestCaseFileHandler(_CanBeRenamed, TestDataHandler):
         self._set_node_label(self.controller.basename)
         return _CanBeRenamed.begin_label_edit(self)
 
+    @overrides(_CanBeRenamed)
     def end_label_edit(self, event):
         if not event.IsEditCancelled():
             result = self.controller.execute(RenameFile(event.GetLabel()))
             if result:
                 self._tree.DeselectAllTests(self._node)
+                self._old_label = self.controller.basename
             else:
                 event.Veto()
         else:
