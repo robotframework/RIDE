@@ -316,7 +316,37 @@ class TestDataDirectoryHandler(TestDataHandler):
                           'You must save data before excluding.')
 
 
-class ResourceFileHandler(_CanBeRenamed, TestDataHandler):
+class _FileHandlerThanCanBeRenamed(_CanBeRenamed):
+
+    @overrides(_CanBeRenamed)
+    def begin_label_edit(self):
+        self._old_label = self._node.GetText()
+        self._set_node_label(self.controller.basename)
+        return _CanBeRenamed.begin_label_edit(self)
+
+    @overrides(_CanBeRenamed)
+    def end_label_edit(self, event):
+        if not event.IsEditCancelled():
+            result = self.controller.execute(self._rename_command(event.GetLabel()))
+            if result:
+                self._rename_ok_handler()
+                self._old_label = self.controller.basename
+            else:
+                event.Veto()
+        else:
+            self._set_node_label(self._old_label)
+
+    def _rename_ok_handler(self):
+        pass
+
+    def _rename_command(self, label):
+        raise NotImplementedError(self.__class__)
+
+    def _set_node_label(self, label):
+        self._tree.SetItemText(self._node, label)
+
+
+class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
     is_test_suite = False
     _actions = [_ActionHandler._label_new_user_keyword,
                 _ActionHandler._label_new_scalar,
@@ -336,30 +366,15 @@ class ResourceFileHandler(_CanBeRenamed, TestDataHandler):
     def OnSafeDelete(self, event):
         return self.OnDelete(event)
 
-    def begin_label_edit(self):
-        self._old_label = self._node.GetText()
-        self._set_node_label(self.controller.basename)
-        return _CanBeRenamed.begin_label_edit(self)
-
-    @overrides(_CanBeRenamed)
-    def end_label_edit(self, event):
-        if not event.IsEditCancelled():
-            result = self.controller.execute(RenameResourceFile(event.GetLabel(), self._check_should_rename_static_imports))
-            if result:
-                self._old_label = self.controller.basename
-            else:
-                event.Veto()
-        else:
-            self._set_node_label(self._old_label)
+    @overrides(_FileHandlerThanCanBeRenamed)
+    def _rename_command(self, label):
+        return RenameResourceFile(label, self._check_should_rename_static_imports)
 
     def _check_should_rename_static_imports(self):
         return ResourceRenameDialog(self.controller).execute()
 
-    def _set_node_label(self, label):
-        self._tree.SetItemText(self._node, label)
 
-
-class TestCaseFileHandler(_CanBeRenamed, TestDataHandler):
+class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
     accepts_drag = lambda *args: True
     _actions = [_ActionHandler._label_new_test_case,
                 _ActionHandler._label_new_user_keyword,
@@ -388,25 +403,13 @@ class TestCaseFileHandler(_CanBeRenamed, TestDataHandler):
     def OnSafeDelete(self, event):
         return self.OnDelete(event)
 
-    def begin_label_edit(self):
-        self._old_label = self._node.GetText()
-        self._set_node_label(self.controller.basename)
-        return _CanBeRenamed.begin_label_edit(self)
+    @overrides(_FileHandlerThanCanBeRenamed)
+    def _rename_command(self, label):
+        return RenameFile(label)
 
-    @overrides(_CanBeRenamed)
-    def end_label_edit(self, event):
-        if not event.IsEditCancelled():
-            result = self.controller.execute(RenameFile(event.GetLabel()))
-            if result:
-                self._tree.DeselectAllTests(self._node)
-                self._old_label = self.controller.basename
-            else:
-                event.Veto()
-        else:
-            self._set_node_label(self._old_label)
-
-    def _set_node_label(self, label):
-        self._tree.SetItemText(self._node, label)
+    @overrides(_FileHandlerThanCanBeRenamed)
+    def _rename_ok_handler(self):
+        self._tree.DeselectAllTests(self._node)
 
 
 class _TestOrUserKeywordHandler(_CanBeRenamed, _ActionHandler):
