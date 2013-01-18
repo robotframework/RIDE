@@ -40,20 +40,26 @@ Options
  -r --recursive  Process given directory recursively. Files in the directory
                  are processed in-place similarly as when --inplace option
                  is used.
- -f --format txt|html|tsv
+ -f --format txt|html|tsv|robot
                  Output file format. If omitted, the format of the input
                  file is used.
  -p --usepipes   Use pipe (`|`) as a cell separator in the txt format.
  -s --spacecount number
                  The number of spaces between cells in the txt format.
                  New in Robot Framework 2.7.3.
+ -l --lineseparator native|windows|unix
+                 Line separator to use in outputs. The default is 'native'.
+                 native:  use operating system's native line separators
+                 windows: use Windows line separators (CRLF)
+                 unix:    use Unix line separators (LF)
+                 New in Robot Framework 2.7.6.
  -h -? --help    Show this help.
 
 Cleaning up the test data
 =========================
 
 Test case files created with HTML editors or written by hand can be normalized
-using tidy. Tidy always writes consistent headers, consistent order for
+using Tidy. Tidy always writes consistent headers, consistent order for
 settings, and consistent amount of whitespace between cells and tables.
 
 Examples:
@@ -63,12 +69,14 @@ Examples:
 Changing the test data format
 =============================
 
-Robot Framework supports test data in HTML, TSV and TXT formats and this tool
+Robot Framework supports test data in HTML, TSV and TXT formats, and Tidy
 makes changing between the formats trivial. Input format is always determined
-based on the extension of the input file. Output format can be set using
-the --format option.
+based on the extension of the input file. Output format is got from the
+extension of the output file, when used, and can also be set using the --format
+option.
 
 Examples:
+  python -m robot.tidy tests.html tests.tsv
   python -m robot.tidy --format tsv --inplace tests.html
   python -m robot.tidy --format txt --recursive mytests
 
@@ -81,9 +89,9 @@ console use the current console encoding.
 Alternative execution
 =====================
 
-In the above examples tidy is used only with Python, but it works also with
-Jython and IronPython. Above tidy is executed as an installed module, but
-it can also be executed as a script like `python path/robot/tidy.py`.
+In the above examples Tidy is used only with Python, but it works also with
+Jython and IronPython. Above it is executed as an installed module, but it
+can also be run as a script like `python path/robot/tidy.py`.
 """
 
 import os
@@ -108,7 +116,7 @@ class Tidy(object):
 
     def file(self, path, output=None):
         data = self._parse_data(path)
-        outfile = open(output, 'w') if output else StringIO()
+        outfile = open(output, 'wb') if output else StringIO()
         try:
             self._save_file(data, outfile)
             if not output:
@@ -165,9 +173,10 @@ class TidyCommandLine(Application):
         Application.__init__(self, USAGE, arg_limits=(1,))
 
     def main(self, arguments, recursive=False, inplace=False, format='txt',
-             usepipes=False, spacecount=4):
+             usepipes=False, spacecount=4, lineseparator=os.linesep):
         tidy = Tidy(format=format, pipe_separated=usepipes,
-                    txt_separating_spaces=spacecount)
+                    txt_separating_spaces=spacecount,
+                    line_separator=lineseparator)
         if recursive:
             tidy.directory(arguments[0])
         elif inplace:
@@ -180,6 +189,7 @@ class TidyCommandLine(Application):
     def validate(self, opts, args):
         self._validate_mode_and_arguments(args, **opts)
         opts['format'] = self._validate_format(args, **opts)
+        opts['lineseparator'] = self._validate_line_sep(**opts)
         if not opts['spacecount']:
             opts.pop('spacecount')
         else:
@@ -200,9 +210,18 @@ class TidyCommandLine(Application):
                 return None
             format = os.path.splitext(args[1])[1][1:]
         format = format.upper()
-        if format not in ['TXT', 'TSV', 'HTML']:
-            raise DataError("Invalid format: '%s'." % format)
+        if format not in ('TXT', 'TSV', 'HTML', 'ROBOT'):
+            raise DataError("Invalid format '%s'." % format)
         return format
+
+    def _validate_line_sep(self, lineseparator, **others):
+        if not lineseparator:
+            return os.linesep
+        values = {'native': os.linesep, 'windows': '\r\n', 'unix': '\n'}
+        try:
+            return values[lineseparator.lower()]
+        except KeyError:
+            raise DataError("Invalid line separator '%s'." % lineseparator)
 
     def _validate_spacecount(self, spacecount):
         try:

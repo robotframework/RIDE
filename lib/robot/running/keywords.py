@@ -114,6 +114,8 @@ class Keyword(BaseKeyword):
     def _end(self, context, return_value=None, error=None):
         self.endtime = get_timestamp()
         self.elapsedtime = get_elapsed_time(self.starttime, self.endtime)
+        if error and self.type == 'teardown':
+            self.message = unicode(error)
         try:
             if not error or error.can_continue(context.teardown):
                 self._set_variables(context, return_value, error)
@@ -157,24 +159,30 @@ class ForLoop(BaseKeyword):
 
     def run(self, context):
         self.starttime = get_timestamp()
-        context.output.start_keyword(self)
-        try:
-            self._validate()
-            self._run(context)
-        except ExecutionFailed, err:
-            error = err
-        except DataError, err:
-            msg = unicode(err)
-            context.output.fail(msg)
-            error = ExecutionFailed(msg, syntax=True)
-        else:
-            error = None
+        context.start_keyword(self)
+        error = self._run_with_error_handling(self._validate_and_run, context)
         self.status = 'PASS' if not error else 'FAIL'
         self.endtime = get_timestamp()
         self.elapsedtime = get_elapsed_time(self.starttime, self.endtime)
-        context.output.end_keyword(self)
+        context.end_keyword(self)
         if error:
             raise error
+
+    def _run_with_error_handling(self, runnable, context):
+        try:
+            runnable(context)
+        except ExecutionFailed, err:
+            return err
+        except DataError, err:
+            msg = unicode(err)
+            context.output.fail(msg)
+            return ExecutionFailed(msg, syntax=True)
+        else:
+            return None
+
+    def _validate_and_run(self, context):
+        self._validate()
+        self._run(context)
 
     def _validate(self):
         if not self.vars:
@@ -211,17 +219,12 @@ class ForLoop(BaseKeyword):
 
     def _run_one_round(self, context, variables, values):
         foritem = _ForItem(variables, values)
-        context.output.start_keyword(foritem)
+        context.start_keyword(foritem)
         for var, value in zip(variables, values):
             context.get_current_vars()[var] = value
-        try:
-            self.keywords.run(context)
-        except ExecutionFailed, err:
-            error = err
-        else:
-            error = None
+        error = self._run_with_error_handling(self.keywords.run, context)
         foritem.end('PASS' if not error or error.exit_for_loop else 'FAIL')
-        context.output.end_keyword(foritem)
+        context.end_keyword(foritem)
         return error
 
     def _replace_vars_from_items(self, variables):

@@ -137,7 +137,8 @@ class Variables(utils.NormalizedDict):
             if listvar:
                 results.extend(self[listvar])
             else:
-                results.append(self.replace_scalar(item))
+                item = self.replace_scalar(item)
+                results.append(item)
         return results
 
     def _replace_variables_inside_possible_list_var(self, item):

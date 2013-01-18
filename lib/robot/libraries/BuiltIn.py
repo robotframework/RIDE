@@ -1086,28 +1086,70 @@ class _RunKeyword:
         kw = Keyword(name, list(args))
         return kw.run(self._execution_context)
 
-    def run_keywords(self, *names):
-        """Executes all the given keywords in a sequence without arguments.
+    def run_keywords(self, *keywords):
+        """Executes all the given keywords in a sequence.
 
         This keyword is mainly useful in setups and teardowns when they need to
         take care of multiple actions and creating a new higher level user
-        keyword is overkill. User keywords must nevertheless be used if the
-        executed keywords need to take arguments.
+        keyword would be an overkill.
 
-        Example:
-        |  *Setting*  |   *Value*    |      *Value*        |    *Value*    |
-        | Suite Setup | Run Keywords | Initialize database | Start servers |
+        Examples:
+        | Run Keywords | Initialize database | Start servers | Clear logs |
+        | Run Keywords | ${KW 1} | ${KW 2} |
+        | Run Keywords | @{KEYWORDS} |
+
+        In this example, we call `Run Keywords` with three different combination
+        of arguments. Keyword names and arguments can come from variables, as
+        demonstrated in the second and third row.
+
+        Starting from Robot Framework 2.7.6, keywords can also be run with
+        arguments using upper case `AND` as a separator between keywords.
+        The keywords are executed so that the first argument is the first
+        keyword and proceeding arguments until the first `AND` are arguments
+        to it. First argument after the first `AND` is the second keyword and
+        proceeding arguments until the next `AND` are its arguments. And so on.
+
+        Examples:
+        | Run Keywords | Initialize database | db1 | AND | Start servers | server1 | server2 |
+        | Run Keywords | Initialize database | ${DB NAME} | AND | Start servers | @{SERVERS} | AND | Clear logs |
+        | Run Keywords | ${KW} | AND | @{KW WITH ARGS} |
+
+        Notice that the `AND` control argument must be used explicitly and thus
+        cannot itself come from a variable. If you need to use literal `AND`
+        string as argument, you can either use variables or escape it with
+        a backslash like `\\AND`.
         """
         errors = []
-        for kw in self._variables.replace_list(names):
+        for kw, args in self._split_run_keywords(list(keywords)):
             try:
-                self.run_keyword(kw)
+                self.run_keyword(kw, *args)
             except ExecutionFailed, err:
                 errors.extend(err.get_errors())
                 if not err.can_continue(self._execution_context.teardown):
                     break
         if errors:
             raise ExecutionFailures(errors)
+
+    def _split_run_keywords(self, keywords):
+        if 'AND' not in keywords:
+            for name in self._variables.replace_run_kw_info(keywords):
+                yield name, ()
+        else:
+            for name, args in self._split_run_keywords_from_and(keywords):
+                yield name, args
+
+    def _split_run_keywords_from_and(self, keywords):
+        while 'AND' in keywords:
+            index = keywords.index('AND')
+            yield self._resolve_run_keywords_name_and_args(keywords[:index])
+            keywords = keywords[index+1:]
+        yield self._resolve_run_keywords_name_and_args(keywords)
+
+    def _resolve_run_keywords_name_and_args(self, kw_call):
+        kw_call = self._variables.replace_run_kw_info(kw_call, needed=1)
+        if not kw_call:
+            raise DataError('Incorrect use of AND')
+        return kw_call[0], kw_call[1:]
 
     def run_keyword_if(self, condition, name, *args):
         """Runs the given keyword with the given arguments, if `condition` is true.
@@ -1122,7 +1164,8 @@ class _RunKeyword:
         | `Run Keyword Unless` | '${status}' == 'PASS' | `Another Action` |
 
         In this example, only either `Some Action` or `Another Action` is
-        executed, based on the status of `My Keyword`.
+        executed, based on the status of `My Keyword`. Instead of `Run Keyword
+        And Ignore Error` you can also use `Run Keyword And Return Status`.
 
         Starting from Robot version 2.7.4, this keyword supports also optional
         ELSE and ELSE IF branches. Both of these are defined in `*args` and must
@@ -1169,8 +1212,7 @@ class _RunKeyword:
     def _split_branch(self, args, control_word, required, required_error):
         args = list(args)
         index = args.index(control_word)
-        branch = self._variables.replace_from_beginning(args[index+1:], required,
-                                                        extra_escapes=('ELSE', 'ELSE IF'))
+        branch = self._variables.replace_run_kw_info(args[index+1:], required)
         if len(branch) < required:
             raise DataError('%s requires %s.' % (control_word, required_error))
         return args[:index], branch
@@ -1189,7 +1231,8 @@ class _RunKeyword:
         This keyword returns two values, so that the first is either 'PASS' or
         'FAIL', depending on the status of the executed keyword. The second
         value is either the return value of the keyword or the received error
-        message.
+        message. See `Run Keyword And Return Status` If you are only interested
+        in the execution status.
 
         The keyword name and arguments work as in `Run Keyword`. See
         `Run Keyword If` for a usage example.
@@ -1203,6 +1246,25 @@ class _RunKeyword:
             if err.dont_cont:
                 raise
             return 'FAIL', unicode(err)
+
+    def run_keyword_and_return_status(self, name, *args):
+        """Runs the given keyword with given arguments and returns the status as a Boolean value.
+
+        This keyword returns `True` if the keyword that is executed succeeds and
+        `False` if it fails. This is useful, for example, in combination with
+        `Run Keyword If`. If you are interested in the error message or return
+        value, use `Run Keyword And Ignore Error` instead.
+
+        The keyword name and arguments work as in `Run Keyword`.
+
+        Example:
+        | ${passed} = | `Run Keyword And Return Status` | Keyword | args |
+        | `Run Keyword If` | ${passed} | Another keyword |
+
+        New in Robot Framework 2.7.6.
+        """
+        status, _ = self.run_keyword_and_ignore_error(name, *args)
+        return status == 'PASS'
 
     def run_keyword_and_continue_on_failure(self, name, *args):
         """Runs the keyword and continues execution even if a failure occurs.
@@ -2111,10 +2173,8 @@ def register_run_keyword(library, keyword, args_to_process=None):
     format (e.g. MyLib.Keyword).
 
     Starting from Robot Framework 2.5.2, keywords executed by registered run
-    keywords can be tested with dryrun runmode with following limitations:
-    - Registered keyword must have 'name' argument which takes keyword's name or
-    Registered keyword must have '*names' argument which takes keywords' names
-    - Keyword name does not contain variables
+    keywords can be tested in dry-run mode they have 'name' argument which
+    takes the name of the executed keyword.
 
     2) How to use this method
 
