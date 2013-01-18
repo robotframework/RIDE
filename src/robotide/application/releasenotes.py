@@ -86,7 +86,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 1.0</h2>
+<h2>Release notes for 1.0.1</h2>
 <table border="1">
 <tr>
 <td><p><b>ID</b></p></td>
@@ -95,29 +95,23 @@ RELEASE_NOTES = """
 <td><p><b>Summary</b></p></td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1170">Issue 1170</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1179">Issue 1179</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>Keyword cell information threw an exception when External Resources selected from tree</td>
+<td>Test execution fails when starting from scratch</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1173">Issue 1173</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>Test cases with the same name are marked wrongly in the tree with test execution status</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1174">Issue 1174</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>Should show old wxpython dialog with really old wxpython</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1169">Issue 1169</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1187">Issue 1187</a></td>
 <td>Enhancement</td>
 <td>Medium</td>
-<td>Update status to stable in pavement</td>
+<td>Update internal Robot to 2.7.6</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1180">Issue 1180</a></td>
+<td>Defect</td>
+<td>Low</td>
+<td>suite or resource file not fully renamed if you tab off</td>
 </tr>
 </table>
-<p>Altogether 4 issues.</p>
+<p>Altogether 3 issues.</p>
 """
