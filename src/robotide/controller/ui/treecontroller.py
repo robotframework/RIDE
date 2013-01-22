@@ -13,8 +13,9 @@
 #  limitations under the License.
 import wx
 from robot import utils
-from robotide.action.actioninfo import ActionInfoCollection
+from robotide.action.actioninfo import ActionInfoCollection, ActionInfo
 from robotide.context.platform import IS_WINDOWS, ctrl_or_cmd, bind_keys_to_evt_menu
+from robotide.controller.tags import Tag
 from robotide.publish import RideTestSelectedForRunningChanged, PUBLISHER, RideNewProject, RideOpenSuite
 
 tree_actions ="""
@@ -154,10 +155,11 @@ class _History(object):
 
 class TestSelectionController(object):
 
-    def __init__(self):
+    def __init__(self, action_registerer):
         self._tests = set()
         PUBLISHER.subscribe(self.clear_all, RideOpenSuite)
         PUBLISHER.subscribe(self.clear_all, RideNewProject)
+        action_registerer.register_action(ActionInfo('Edit', 'Add Tag', self.add_tag))
 
     def clear_all(self, message=None):
         self._tests = set()
@@ -169,7 +171,13 @@ class TestSelectionController(object):
 
     def select(self, test, selected):
         if selected:
-            self._tests.add(test.longname)
+            self._tests.add(test)
         else:
-            self._tests.discard(test.longname)
-        RideTestSelectedForRunningChanged(tests=self._tests).publish()
+            self._tests.discard(test)
+        RideTestSelectedForRunningChanged(tests=set([t.longname for t in self._tests])).publish()
+
+    def add_tag(self, message=None):
+        name = 'kukkakeppi'
+        for test in self._tests:
+            if name not in [t.name for t in test.tags]:
+                test.tags.add(Tag(name))
