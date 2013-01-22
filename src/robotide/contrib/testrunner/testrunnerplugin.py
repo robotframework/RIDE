@@ -67,7 +67,6 @@ import wx
 import wx.stc
 from wx.lib.embeddedimage import PyEmbeddedImage
 from robotide.pluginapi import Plugin, ActionInfo
-from robotide.publish import RideOpenSuite
 from robotide.contrib.testrunner import runprofiles
 from robotide.widgets import Label, ImageProvider
 from robotide.context import IS_WINDOWS, IS_MAC
@@ -193,17 +192,9 @@ class TestRunnerPlugin(Plugin):
 
     def _subscribe_to_events(self):
         self.subscribe(self.OnTestSelectedForRunningChanged, RideTestSelectedForRunningChanged)
-        self.subscribe(self.OnOpenSuite, RideOpenSuite)
-        self.subscribe(self.OnOpenSuite, RideNewProject)
 
     def OnTestSelectedForRunningChanged(self, message):
-        if message.running:
-            self._test_names_to_run.add(message.item.longname)
-        else:
-            self._test_names_to_run.discard(message.item.longname)
-
-    def OnOpenSuite(self, message):
-        self._test_names_to_run = set()
+        self._test_names_to_run = message.tests
 
     def disable(self):
         self._remove_from_notebook()

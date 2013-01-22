@@ -15,7 +15,7 @@ import wx
 from robot import utils
 from robotide.action.actioninfo import ActionInfoCollection
 from robotide.context.platform import IS_WINDOWS, ctrl_or_cmd, bind_keys_to_evt_menu
-from robotide.publish import RideTestSelectedForRunningChanged
+from robotide.publish import RideTestSelectedForRunningChanged, PUBLISHER, RideNewProject, RideOpenSuite
 
 tree_actions ="""
 [Navigate]
@@ -154,9 +154,22 @@ class _History(object):
 
 class TestSelectionController(object):
 
+    def __init__(self):
+        self._tests = set()
+        PUBLISHER.subscribe(self.clear_all, RideOpenSuite)
+        PUBLISHER.subscribe(self.clear_all, RideNewProject)
+
+    def clear_all(self, message=None):
+        self._tests = set()
+        RideTestSelectedForRunningChanged(tests=self._tests).publish()
+
     def unselect_all(self, tests):
         for test in tests:
-            RideTestSelectedForRunningChanged(item=test, running=False).publish()
+            self.select(test, False)
 
     def select(self, test, selected):
-        RideTestSelectedForRunningChanged(item=test, running=selected).publish()
+        if selected:
+            self._tests.add(test.longname)
+        else:
+            self._tests.discard(test.longname)
+        RideTestSelectedForRunningChanged(tests=self._tests).publish()

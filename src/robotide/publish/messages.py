@@ -153,8 +153,8 @@ class RideTestExecutionStarted(RideMessage):
     data = ['results']
 
 class RideTestSelectedForRunningChanged(RideMessage):
-    """Sent whenever user (un)selects a test from the tree for running."""
-    data = ['item', 'running']
+    """Sent whenever a test is selected or unselected from the tree."""
+    data = ['tests']
 
 class RideTestRunning(RideMessage):
     """Sent whenever RIDE is starting to run a test case."""
