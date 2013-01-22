@@ -15,6 +15,7 @@ import wx
 from robot import utils
 from robotide.action.actioninfo import ActionInfoCollection
 from robotide.context.platform import IS_WINDOWS, ctrl_or_cmd, bind_keys_to_evt_menu
+from robotide.publish import RideTestSelectedForRunningChanged
 
 tree_actions ="""
 [Navigate]
@@ -149,3 +150,13 @@ class _History(object):
 
     def top(self):
         return self._back and self._back[-1] or None
+
+
+class TestSelectionController(object):
+
+    def unselect_all(self, tests):
+        for test in tests:
+            RideTestSelectedForRunningChanged(item=test, running=False).publish()
+
+    def select(self, test, selected):
+        RideTestSelectedForRunningChanged(item=test, running=selected).publish()

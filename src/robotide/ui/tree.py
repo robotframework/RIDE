@@ -16,7 +16,7 @@ import wx
 from wx.lib.agw import customtreectrl
 from wx.lib.mixins import treemixin
 
-from robotide.controller.ui.treecontroller import TreeController
+from robotide.controller.ui.treecontroller import TreeController, TestSelectionController
 from robotide.context import IS_WINDOWS
 from robotide.action.actioninfo import ActionInfo
 from robotide.controller.filecontrollers import ResourceFileController
@@ -25,7 +25,7 @@ from robotide.publish.messages import RideTestRunning, RideTestPassed, RideTestF
 from robotide.ui.images import RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, FAILED_IMAGE_INDEX, ROBOT_IMAGE_INDEX
 from robotide.ui.treenodehandlers import TestCaseHandler
 from robotide.publish import (PUBLISHER, RideTreeSelection, RideFileNameChanged,
-    RideTestSelectedForRunningChanged, RideItem, RideUserKeywordAdded, RideTestCaseAdded,
+    RideItem, RideUserKeywordAdded, RideTestCaseAdded,
     RideUserKeywordRemoved, RideTestCaseRemoved, RideDataFileRemoved, RideDataChangedToDirty,
     RideDataDirtyCleared, RideVariableRemoved, RideVariableAdded,
     RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated,
@@ -52,6 +52,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
     def __init__(self, parent, action_registerer, settings=None):
         self._checkboxes_for_tests = False
         self._controller = TreeController(self, action_registerer, settings=settings)
+        self._test_selection_controller = TestSelectionController()
         treemixin.DragAndDrop.__init__(self, parent, **_TREE_ARGS)
         self._controller.register_tree_actions()
         self._bind_tree_events()
@@ -507,8 +508,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
             self._end_silent_mode()
 
     def _uncheck_tests(self, controller):
-        for test in controller.tests:
-            RideTestSelectedForRunningChanged(item=test, running=False).publish()
+        self._test_selection_controller.unselect_all(controller.tests)
+
 
     def _start_silent_mode(self):
         self._silent_mode = True
@@ -636,7 +637,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
     def OnTreeItemChecked(self, event):
         node = event.GetItem()
         handler = self._controller.get_handler(node=node)
-        RideTestSelectedForRunningChanged(item=handler.controller, running=node.IsChecked()).publish()
+        self._test_selection_controller.select(handler.controller, node.IsChecked())
 
     def OnItemActivated(self, event):
         node = event.GetItem()
