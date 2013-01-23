@@ -41,12 +41,15 @@ class TestSearchPlugin(Plugin):
         self._dialog.set_focus_to_default_location()
 
     def _create_tests_dialog(self):
-        self._dialog = TestsDialog(fuzzy_search_handler=self.show_search_for, tag_search_handler=self.show_search_for_tag_patterns)
+        self._dialog = TestsDialog(fuzzy_search_handler=self.show_search_for, tag_search_handler=self.show_search_for_tag_patterns, add_to_selected_handler=self._add_to_selected)
         self._dialog.add_selection_listener(self._selected)
         self._dialog.Bind(wx.EVT_CLOSE, self._dialog_closed)
         self._selected_timer = wx.Timer(self._dialog)
         self._dialog.Bind(wx.EVT_TIMER, self._do_with_selection)
         self._dialog.Show()
+
+    def _add_to_selected(self, tests):
+        self.tree.SelectTests(tests)
 
     def _dialog_closed(self, event):
         self._dialog = None

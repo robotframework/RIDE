@@ -594,6 +594,12 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
     def SelectAllTests(self, item):
         self._for_all_tests(item, lambda t: self.CheckItem(t))
 
+    def SelectTests(self, tests):
+        def foo(t):
+            if self.GetPyData(t).controller in tests:
+                self.CheckItem(t)
+        self._for_all_tests(self._root, foo)
+
     def ExpandAllSubNodes(self, item):
         self._expand_or_collapse_nodes(item, self.Expand)
 

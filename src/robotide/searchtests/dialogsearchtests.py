@@ -18,12 +18,13 @@ from robotide.widgets.list import ListModel
 
 class TestsDialog(Dialog):
 
-    def __init__(self, fuzzy_search_handler, tag_search_handler):
+    def __init__(self, fuzzy_search_handler, tag_search_handler, add_to_selected_handler):
         self._fuzzy_search_handler = fuzzy_search_handler
         self._tag_search_handler = tag_search_handler
+        self._add_to_selected_handler = add_to_selected_handler
         self._selection_listeners = []
         title = "Search Tests"
-        Dialog.__init__(self, title=title, size=(650, 400))
+        Dialog.__init__(self, title=title, size=(750, 400))
         self.SetSizer(VerticalSizer())
         self.Sizer.Add(self._create_notebook(), 1, wx.ALL | wx.EXPAND | wx.ALIGN_LEFT, 3)
 
@@ -54,6 +55,7 @@ class TestsDialog(Dialog):
         controls_sizer = self._horizontal_sizer()
         controls_sizer.Add(tags_controls_sizer)
         controls_sizer.Add(self._create_tag_search_button(panel), 0, wx.ALL | wx.EXPAND, 3)
+        controls_sizer.Add(self._create_add_to_selected_button(panel), 0, wx.ALL | wx.EXPAND, 3)
         panel.Sizer.Add(controls_sizer)
         panel.Sizer.Add(self._add_info_text(panel, "Find matches using tag patterns. See RF User Guide or 'pybot --help' for more information."), 0, wx.ALL, 3)
         self._tags_results = _TestSearchListModel([])
@@ -87,6 +89,14 @@ class TestsDialog(Dialog):
 
     def OnSearchTags(self, event):
         self._tag_search_handler(self._tags_to_include_text.GetValue(), self._tags_to_exclude_text.GetValue())
+
+    def _create_add_to_selected_button(self, panel):
+        button = wx.Button(panel, label='Add all to selected')
+        button.Bind(wx.EVT_BUTTON, self.OnAddToSelected)
+        return button
+
+    def OnAddToSelected(self, event):
+        self._add_to_selected_handler([test for test, _ in self._tags_results._tests])
 
     def OnSearchTests(self, event):
         self._fuzzy_search_handler(self._search_control.GetValue())
