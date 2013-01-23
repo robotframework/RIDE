@@ -22,11 +22,15 @@ class ActionRegistererMock(object):
     def register_actions(self, action_collections):
         self.action_collections = action_collections
 
+    def register_action(self, action):
+        pass
+
+
 class TestTreeController(unittest.TestCase):
 
     def test_register_tree_actions(self):
         mocked_ar = ActionRegistererMock()
-        TreeController(None, mocked_ar, None).register_tree_actions()
+        TreeController(None, mocked_ar, None, None).register_tree_actions()
         self.assertEquals(["Go &Back", "Go &Forward"], [a.name for a in mocked_ar.action_collections])
 
 
@@ -34,7 +38,7 @@ class _BaseTreeControllerTest(object):
 
     def setUp(self):
         self.history = _History()
-        self.controller = TreeController(self._tree_mock(), None, None, history=self.history)
+        self.controller = TreeController(self._tree_mock(), None, None, None, history=self.history)
         self.controller.add_to_history("Top Suite")
 
     def _tree_mock(self):
