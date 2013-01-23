@@ -20,6 +20,7 @@ from robotide.context import ABOUT_RIDE, SHORTCUT_KEYS
 from robotide.controller.commands import SaveFile, SaveAll
 from robotide.publish import (RideSaveAll, RideClosing, RideSaved, PUBLISHER,
         RideInputValidationError, RideTreeSelection, RideModificationPrevented)
+from robotide.ui.tagdialogs import ViewAllTagsDialog
 from robotide.utils import RideEventHandler
 from robotide.widgets import Dialog, ImageProvider, HtmlWindow
 from robotide.preferences import PreferenceEditor
@@ -49,6 +50,7 @@ _menudata = """
 [Tools]
 !Search Unused Keywords | | | | POSITION-54
 !Manage Plugins | | | | POSITION-81
+!View All Tags | | | | POSITION-82
 !Preferences | | | | POSITION-99
 
 [Help]
@@ -71,6 +73,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         self._init_ui()
         self._plugin_manager = PluginManager(self.notebook)
         self._review_dialog = None
+        self._view_all_tags_dialog = None
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         self._subscribe_messages()
         self.ensure_on_screen()
@@ -238,6 +241,11 @@ class RideFrame(wx.Frame, RideEventHandler):
 
     def OnManagePlugins(self, event):
         self._plugin_manager.show(self._application.get_plugins())
+
+    def OnViewAllTags(self, event):
+        if self._view_all_tags_dialog is None:
+            self._view_all_tags_dialog = ViewAllTagsDialog(self._controller, self)
+        self._view_all_tags_dialog.show_dialog()
 
     def OnSearchUnusedKeywords(self, event):
         if self._review_dialog is None:
