@@ -47,7 +47,9 @@ class TreeController(object):
             self._tree.SelectItem(node)
 
     def OnAddTagToSelected(self, event):
-        self._test_selection.add_tag('kukkakeppi')
+        name = wx.GetTextFromUser(message='Enter Tag Name', caption='Add Tag To Selected')
+        if name:
+            self._test_selection.add_tag(name)
 
     def OnGoForward(self, event):
         node = self._history.forward()
