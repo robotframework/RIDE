@@ -15,6 +15,7 @@ import wx
 from robot import utils
 from robotide.action.actioninfo import ActionInfoCollection, ActionInfo
 from robotide.context.platform import IS_WINDOWS, ctrl_or_cmd, bind_keys_to_evt_menu
+from robotide.controller.commands import ChangeTag
 from robotide.controller.tags import Tag
 from robotide.publish import RideTestSelectedForRunningChanged, PUBLISHER, RideNewProject, RideOpenSuite
 from robotide.widgets import Dialog
@@ -186,4 +187,4 @@ class TestSelectionController(object):
     def add_tag(self, name):
         for test in self._tests:
             if name not in [t.name for t in test.tags]:
-                test.tags.add(Tag(name))
+                test.tags.execute(ChangeTag(Tag(None), name))
