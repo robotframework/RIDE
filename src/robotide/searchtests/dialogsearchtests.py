@@ -96,7 +96,7 @@ class TestsDialog(Dialog):
         return button
 
     def OnAddToSelected(self, event):
-        self._add_to_selected_handler([test for test, _ in self._tags_results._tests])
+        self._add_to_selected_handler(self._get_current_tests())
 
     def OnSearchTests(self, event):
         self._fuzzy_search_handler(self._search_control.GetValue())
@@ -134,6 +134,9 @@ class TestsDialog(Dialog):
         fuzzy_search_button = wx.Button(panel, label='Search')
         fuzzy_search_button.Bind(wx.EVT_BUTTON, self.OnSearchTests)
         line1.Add(fuzzy_search_button)
+        add_to_selection_button = wx.Button(panel, label='Add all to selected')
+        add_to_selection_button.Bind(wx.EVT_BUTTON, self.OnAddToSelected)
+        line1.Add(add_to_selection_button)
         panel.Sizer.Add(line1, 0, wx.ALL, 3)
         panel.Sizer.Add(self._add_info_text(panel, "Find matches by test name, documentation and/or tag."), 0, wx.ALL, 3)
 
@@ -173,6 +176,12 @@ class TestsDialog(Dialog):
             self._set_focus_to_default_location_in_text_search(selected)
         else:
             self._set_focus_to_default_location_in_tag_search(selected)
+
+    def _get_current_tests(self):
+        if self._notebook.GetSelection() == 0:
+            return [t for t, _ in self.tests._tests]
+        else:
+            return [test for test, _ in self._tags_results._tests]
 
     def _set_focus_to_default_location_in_text_search(self, selected):
         if self.tests.count:
