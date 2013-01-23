@@ -41,6 +41,7 @@ class TreeController(object):
         actions = ActionInfoCollection(tree_actions, self, self._tree)
         self._action_registerer.register_actions(actions)
         self._action_registerer.register_action(ActionInfo(menu_name='Edit', name='Add Tag to selected', action=self.OnAddTagToSelected))
+        self._action_registerer.register_action(ActionInfo(menu_name='Edit', name='Clear Selected', action=self.OnClearSelected))
 
     def OnGoBack(self, event):
         node = self._history.back()
@@ -48,9 +49,14 @@ class TreeController(object):
             self._tree.SelectItem(node)
 
     def OnAddTagToSelected(self, event):
+        if self._test_selection.is_empty():
+            return
         name = wx.GetTextFromUser(message='Enter Tag Name', caption='Add Tag To Selected')
         if name:
             self._test_selection.add_tag(name)
+
+    def OnClearSelected(self, event):
+        self._tree.DeselectAllTests(self._tree._root)
 
     def OnGoForward(self, event):
         node = self._history.forward()
@@ -168,6 +174,9 @@ class TestSelectionController(object):
         self._tests = set()
         PUBLISHER.subscribe(self.clear_all, RideOpenSuite)
         PUBLISHER.subscribe(self.clear_all, RideNewProject)
+
+    def is_empty(self):
+        return not bool(self._tests)
 
     def clear_all(self, message=None):
         self._tests = set()
