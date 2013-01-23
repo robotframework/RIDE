@@ -17,6 +17,7 @@ from robotide.action.actioninfo import ActionInfoCollection, ActionInfo
 from robotide.context.platform import IS_WINDOWS, ctrl_or_cmd, bind_keys_to_evt_menu
 from robotide.controller.tags import Tag
 from robotide.publish import RideTestSelectedForRunningChanged, PUBLISHER, RideNewProject, RideOpenSuite
+from robotide.widgets import Dialog
 
 tree_actions ="""
 [Navigate]
@@ -28,20 +29,25 @@ tree_actions ="""
 
 class TreeController(object):
 
-    def __init__(self, tree, action_registerer, settings, history=None):
+    def __init__(self, tree, action_registerer, settings, test_selection, history=None):
         self._tree = tree
         self._action_registerer = action_registerer
         self.settings = settings
         self._history = history or _History()
+        self._test_selection = test_selection
 
     def register_tree_actions(self):
         actions = ActionInfoCollection(tree_actions, self, self._tree)
         self._action_registerer.register_actions(actions)
+        self._action_registerer.register_action(ActionInfo(menu_name='Edit', name='Add Tag to selected', action=self.OnAddTagToSelected))
 
     def OnGoBack(self, event):
         node = self._history.back()
         if node:
             self._tree.SelectItem(node)
+
+    def OnAddTagToSelected(self, event):
+        self._test_selection.add_tag('kukkakeppi')
 
     def OnGoForward(self, event):
         node = self._history.forward()
@@ -155,11 +161,10 @@ class _History(object):
 
 class TestSelectionController(object):
 
-    def __init__(self, action_registerer):
+    def __init__(self):
         self._tests = set()
         PUBLISHER.subscribe(self.clear_all, RideOpenSuite)
         PUBLISHER.subscribe(self.clear_all, RideNewProject)
-        action_registerer.register_action(ActionInfo('Edit', 'Add Tag', self.add_tag))
 
     def clear_all(self, message=None):
         self._tests = set()
@@ -176,8 +181,7 @@ class TestSelectionController(object):
             self._tests.discard(test)
         RideTestSelectedForRunningChanged(tests=set([t.longname for t in self._tests])).publish()
 
-    def add_tag(self, message=None):
-        name = 'kukkakeppi'
+    def add_tag(self, name):
         for test in self._tests:
             if name not in [t.name for t in test.tags]:
                 test.tags.add(Tag(name))

@@ -51,8 +51,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
 
     def __init__(self, parent, action_registerer, settings=None):
         self._checkboxes_for_tests = False
-        self._controller = TreeController(self, action_registerer, settings=settings)
-        self._test_selection_controller = TestSelectionController(action_registerer)
+        self._test_selection_controller = TestSelectionController()
+        self._controller = TreeController(self, action_registerer, settings=settings, test_selection=self._test_selection_controller)
         treemixin.DragAndDrop.__init__(self, parent, **_TREE_ARGS)
         self._controller.register_tree_actions()
         self._bind_tree_events()
