@@ -76,9 +76,9 @@ class ViewAllTagsDialog(wx.Frame):
         #self.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self._toggle_filter_active, self._filter_pane)
 
     def _execute(self):
-        results = self._search_results()
+        self._results = self._search_results()
         index = 0
-        for tag_data, tests in results:
+        for tag_data, tests in self._results:
             tag_name, tag_type = tag_data.split(":")
             self._tags_list.SetClientData(index, tests)
             self._tags_list.InsertStringItem(index, str(tag_name))
@@ -133,7 +133,6 @@ class ViewAllTagsDialog(wx.Frame):
         return self._tags_list
 
     def OnColClick(self, event):
-        print "column clicked"
         event.Skip()
 
     def OnRefresh(self, event):
@@ -147,14 +146,11 @@ class ViewAllTagsDialog(wx.Frame):
             self.Destroy()
 
     def OnSelect(self, event):
-        for row in self._tags_list.get_checked_items():
-            for test in row:
-                print "selecting test: ", test.longname
-                self.tree.select_node_by_data(test)
+        for tests in self._tags_list.get_checked_items():
+            self.tree.SelectTests(tests)
 
     def OnTagSelected(self, event):
         item = self._tags_list.GetItem(event.GetIndex())
-        print "Item selected: ", item
 
     def item_in_kw_list_checked(self):
         if self._tags_list.get_number_of_checked_items() > 0:
@@ -176,7 +172,7 @@ class TagsListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin, listmix.ListCtrlAuto
         if self._dlg:
             self._dlg.item_in_kw_list_checked()
         else:
-            print "No dialog set"
+            pass
 
     def get_next_checked_item(self):
         for i in range(self.GetItemCount()):
