@@ -81,7 +81,7 @@ class ViewAllTagsDialog(wx.Frame):
         for tag_data, tests in results:
             tag_name, tag_type = tag_data.split(":")
             self._tags_list.SetClientData(index, tests)
-            self._tags_list.InsertStringItem(index, str(tag_data))
+            self._tags_list.InsertStringItem(index, str(tag_name))
             occurrences = len(tests)
             self._tags_list.SetStringItem(index, 1, str(occurrences))
             self._tags_list.SetStringItem(index, 2, str(tag_type))
