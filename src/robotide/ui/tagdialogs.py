@@ -25,6 +25,7 @@ class ViewAllTagsDialog(wx.Frame):
     def __init__(self, controller, frame):
         wx.Frame.__init__(self, frame, title="View All Tags", style=wx.SYSTEM_MENU|wx.CAPTION|wx.CLOSE_BOX|wx.CLIP_CHILDREN|wx.FRAME_FLOAT_ON_PARENT)
         self.frame = frame
+        self.tree = self.frame.tree
         self._controller = controller
         self._build_ui()
         self._make_bindings()
@@ -77,11 +78,11 @@ class ViewAllTagsDialog(wx.Frame):
     def _execute(self):
         results = self._search_results()
         index = 0
-        for key, val in results:
-            tag_name, tag_type = key.split(":")
-            self._tags_list.SetClientData(index, val)
-            self._tags_list.InsertStringItem(index, str(tag_name))
-            occurrences = len(val)
+        for tag_data, tests in results:
+            tag_name, tag_type = tag_data.split(":")
+            self._tags_list.SetClientData(index, tests)
+            self._tags_list.InsertStringItem(index, str(tag_data))
+            occurrences = len(tests)
             self._tags_list.SetStringItem(index, 1, str(occurrences))
             self._tags_list.SetStringItem(index, 2, str(tag_type))
             index += 1
@@ -97,37 +98,12 @@ class ViewAllTagsDialog(wx.Frame):
         self._tags_list.ClearAll()
         self._select_button.Disable()
         self._status_label.SetLabel('')
-        self.frame.tree.CollapseAllSubNodes()
-
-    def add_usage(self, usage):
-        self.usages.add_usage(usage)
-
-    def begin_searching(self):
-        self._dots = DottedSearch(self, self._update_searching)
-        self._dots.start()
-
-    def _update_searching(self, dots):
-        self.SetTitle("'%s' - %d matches found - Searching%s" % (self._name, self.usages.total_usages, dots))
-        self.usage_list.refresh()
-
-    def end_searching(self):
-        self._dots.stop()
-        self.SetTitle("'%s' - %d matches" % (self._name, self.usages.total_usages))
-        self.usage_list.refresh()
-
-    def _usage_selected(self, idx):
-        for listener in self._selection_listeners:
-            listener(self.usages.usage(idx).item.parent, self._name)
-
-    def add_selection_listener(self, listener):
-        self._selection_listeners.append(listener)
 
     def _add_view_components(self):
         pass
 
     def _search_results(self):
         self._unique_tags = NormalizedDict()
-        tag_info = ""
         for test in self.frame._controller.all_testcases():
             for tag in test.tags:
                 tag_info = unicode(tag)
@@ -137,7 +113,6 @@ class ViewAllTagsDialog(wx.Frame):
                     tag_info += ":default"
                 else:
                     tag_info += ":test"
-
                 if self._unique_tags.has_key(tag_info):
                     self._unique_tags[tag_info].append(test)
                 else:
@@ -155,7 +130,7 @@ class ViewAllTagsDialog(wx.Frame):
                 yield test, match
 
     def GetListCtrl(self):
-        return self.list_ctrl
+        return self._tags_list
 
     def OnColClick(self, event):
         print "column clicked"
@@ -172,12 +147,10 @@ class ViewAllTagsDialog(wx.Frame):
             self.Destroy()
 
     def OnSelect(self, event):
-        print "Should be doing now something with %d checked items" % self._tags_list.get_number_of_checked_items()
         for row in self._tags_list.get_checked_items():
-            for item in row:
-                print item
-                self.frame.tree.select_node_by_data(item)
-                #print item
+            for test in row:
+                print "selecting test: ", test.longname
+                self.tree.select_node_by_data(test)
 
     def OnTagSelected(self, event):
         item = self._tags_list.GetItem(event.GetIndex())
