@@ -172,8 +172,6 @@ class TestSelectionController(object):
 
     def __init__(self):
         self._tests = set()
-        PUBLISHER.subscribe(self.clear_all, RideOpenSuite)
-        PUBLISHER.subscribe(self.clear_all, RideNewProject)
 
     def is_empty(self):
         return not bool(self._tests)
@@ -195,5 +193,8 @@ class TestSelectionController(object):
 
     def add_tag(self, name):
         for test in self._tests:
-            if name not in [t.name for t in test.tags]:
-                test.tags.execute(ChangeTag(Tag(None), name))
+            self._add_tag_to_test(name, test)
+
+    def _add_tag_to_test(self, name, test):
+        if name not in [t.name for t in test.tags]:
+            test.tags.execute(ChangeTag(Tag(None), name))

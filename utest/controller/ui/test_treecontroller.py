@@ -14,7 +14,8 @@
 
 import unittest
 from robot.utils.asserts import assert_equals
-from robotide.controller.ui.treecontroller import TreeController, _History
+from robotide.controller.macrocontrollers import TestCaseController
+from robotide.controller.ui.treecontroller import TreeController, _History, TestSelectionController
 
 
 class ActionRegistererMock(object):
@@ -113,6 +114,32 @@ class TestNavigationHistory(_BaseTreeControllerTest, unittest.TestCase):
 
     def _go_forward_and_assert_selection(self, expected_selection):
         assert_equals(self._go_forward_and_return_selection(), expected_selection)
+
+
+class TestTestSelectionController(unittest.TestCase):
+
+    def setUp(self):
+        self._tsc = TestSelectionController()
+
+    def test_test_selection_is_empty_by_default(self):
+        self.assertTrue(self._tsc.is_empty())
+
+    def test_test_selection_is_not_empty_when_it_contains_a_test(self):
+        self._tsc.select(self._create_test(), True)
+        self.assertFalse(self._tsc.is_empty())
+
+    def test_adding_tag_to_selected_tests(self):
+        pass
+
+    def _create_test(self):
+        parent = lambda:0
+        parent.datafile_controller = parent
+        parent.register_for_namespace_updates = lambda s:0
+        parent.parent = parent
+        parent.longname = 'suite'
+        data = lambda:0
+        data.name = 'test'
+        return TestCaseController(parent, data)
 
 
 if __name__ == '__main__':

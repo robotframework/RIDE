@@ -21,7 +21,7 @@ from robotide.context import IS_WINDOWS
 from robotide.action.actioninfo import ActionInfo
 from robotide.controller.filecontrollers import ResourceFileController
 from robotide.publish.messages import RideTestRunning, RideTestPassed, RideTestFailed, RideTestExecutionStarted, \
-    RideImportSetting, RideExcludesChanged, RideIncludesChanged
+    RideImportSetting, RideExcludesChanged, RideIncludesChanged, RideOpenSuite, RideNewProject
 from robotide.ui.images import RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, FAILED_IMAGE_INDEX, ROBOT_IMAGE_INDEX
 from robotide.ui.treenodehandlers import TestCaseHandler
 from robotide.publish import (PUBLISHER, RideTreeSelection, RideFileNameChanged,
@@ -51,7 +51,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
 
     def __init__(self, parent, action_registerer, settings=None):
         self._checkboxes_for_tests = False
-        self._test_selection_controller = TestSelectionController()
+        self._test_selection_controller = self._create_test_selection_controller()
         self._controller = TreeController(self, action_registerer, settings=settings, test_selection=self._test_selection_controller)
         treemixin.DragAndDrop.__init__(self, parent, **_TREE_ARGS)
         self._controller.register_tree_actions()
@@ -69,6 +69,12 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         self._execution_results = None
         if not hasattr(self, 'OnCancelEdit'):
             self.OnCancelEdit = self._on_cancel_edit
+
+    def _create_test_selection_controller(self):
+        tsc = TestSelectionController()
+        PUBLISHER.subscribe(tsc.clear_all, RideOpenSuite)
+        PUBLISHER.subscribe(tsc.clear_all, RideNewProject)
+        return tsc
 
     def _on_cancel_edit(self, item):
         le = customtreectrl.TreeEvent(customtreectrl.wxEVT_TREE_END_LABEL_EDIT, self.GetId())
