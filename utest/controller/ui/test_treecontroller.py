@@ -13,8 +13,13 @@
 #  limitations under the License.
 
 import unittest
+from robot.parsing.model import TestCase, TestCaseFile
 from robot.utils.asserts import assert_equals
+from robotide.controller.commands import ChangeTag
+from robotide.controller.filecontrollers import TestCaseFileController
 from robotide.controller.macrocontrollers import TestCaseController
+from robotide.controller.tablecontrollers import TestCaseTableController
+from robotide.controller.tags import Tag
 from robotide.controller.ui.treecontroller import TreeController, _History, TestSelectionController
 
 
@@ -125,21 +130,31 @@ class TestTestSelectionController(unittest.TestCase):
         self.assertTrue(self._tsc.is_empty())
 
     def test_test_selection_is_not_empty_when_it_contains_a_test(self):
-        self._tsc.select(self._create_test(), True)
+        self._tsc.select(self._create_test())
         self.assertFalse(self._tsc.is_empty())
 
     def test_adding_tag_to_selected_tests(self):
-        pass
+        tests = [self._create_test() for _ in range(10)]
+        for t in tests:
+            self._tsc.select(t)
+        self._tsc.add_tag('foo')
+        for t in tests:
+            self.assertEqual([tag.name for tag in t.tags], ['foo'])
+
+    def test_adding_a_tag_to_test_with_a_default_tag(self):
+        test = self._create_test()
+        test.datafile_controller.default_tags.execute(ChangeTag(Tag(None), 'default'))
+        assert_equals([t.name for t in test.tags], ['default'])
+        self._tsc.select(test)
+        self._tsc.add_tag('custom')
+        self.assertEqual([t.name for t in test.tags], ['default', 'custom'])
 
     def _create_test(self):
-        parent = lambda:0
-        parent.datafile_controller = parent
-        parent.register_for_namespace_updates = lambda s:0
-        parent.parent = parent
-        parent.longname = 'suite'
-        data = lambda:0
-        data.name = 'test'
-        return TestCaseController(parent, data)
+        suite = TestCaseFile(source='suite')
+        suite_controller = TestCaseFileController(suite)
+        parent = TestCaseTableController(suite_controller, suite.testcase_table)
+        test = TestCase(parent=lambda:0, name='test')
+        return TestCaseController(parent, test)
 
 
 if __name__ == '__main__':

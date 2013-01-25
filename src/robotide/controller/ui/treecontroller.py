@@ -16,7 +16,7 @@ from robot import utils
 from robotide.action.actioninfo import ActionInfoCollection, ActionInfo
 from robotide.context.platform import IS_WINDOWS, ctrl_or_cmd, bind_keys_to_evt_menu
 from robotide.controller.commands import ChangeTag
-from robotide.controller.tags import Tag
+from robotide.controller.tags import Tag, DefaultTag
 from robotide.publish import RideTestSelectedForRunningChanged, PUBLISHER, RideNewProject, RideOpenSuite
 from robotide.widgets import Dialog
 
@@ -184,7 +184,7 @@ class TestSelectionController(object):
         for test in tests:
             self.select(test, False)
 
-    def select(self, test, selected):
+    def select(self, test, selected=True):
         if selected:
             self._tests.add(test)
         else:
@@ -197,4 +197,10 @@ class TestSelectionController(object):
 
     def _add_tag_to_test(self, name, test):
         if name not in [t.name for t in test.tags]:
+            self._move_default_tags_to_test(test)
             test.tags.execute(ChangeTag(Tag(None), name))
+
+    def _move_default_tags_to_test(self, test):
+        for tag in test.tags:
+            if isinstance(tag, DefaultTag):
+                test.tags.execute(ChangeTag(Tag(None), tag.name))
