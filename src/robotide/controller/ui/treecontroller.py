@@ -198,9 +198,12 @@ class TestSelectionController(object):
     def _add_tag_to_test(self, name, test):
         if name not in [t.name for t in test.tags]:
             self._move_default_tags_to_test(test)
-            test.tags.execute(ChangeTag(Tag(None), name))
+            self._add_tag(test, name)
 
     def _move_default_tags_to_test(self, test):
         for tag in test.tags:
             if isinstance(tag, DefaultTag):
-                test.tags.execute(ChangeTag(Tag(None), tag.name))
+                self._add_tag(test, tag.name)
+
+    def _add_tag(self, test, name):
+        test.tags.execute(ChangeTag(Tag(None), name))
