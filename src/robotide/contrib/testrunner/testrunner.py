@@ -135,6 +135,14 @@ class TestRunner(object):
         if self._process:
             self._process.kill(killer_pid=self._pid_to_kill, killer_port=self._killer_port)
 
+    def send_pause_signal(self):
+        if self._process:
+            self._process.pause(port=self._killer_port)
+
+    def send_resume_signal(self):
+        if self._process:
+            self._process.resume(port=self._killer_port)
+
     def run_command(self, command, cwd):
         self._pid_to_kill = None
         self._killer_port = None
@@ -281,6 +289,18 @@ class Process(object):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.connect(('localhost', killer_port))
         sock.send('kill\n')
+        sock.close()
+
+    def pause(self, port):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.connect(('localhost', port))
+        sock.send('pause\n')
+        sock.close()
+
+    def resume(self, port):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.connect(('localhost', port))
+        sock.send('resume\n')
         sock.close()
 
     def _kill(self, pid):

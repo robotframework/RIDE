@@ -70,6 +70,7 @@ except ImportError:
 
 PORT = 5007
 HOST = "localhost"
+PAUSE = threading.RLock()
 
 # Setting Output encoding to UTF-8 and ignoring the platform specs
 # RIDE will expect UTF-8
@@ -124,6 +125,8 @@ class TestRunnerAgent:
         self._send_socket("end_suite", name, attrs)
 
     def start_keyword(self, name, attrs):
+        PAUSE.acquire()
+        PAUSE.release()
         self._send_socket("start_keyword", name, attrs)
 
     def end_keyword(self, name, attrs):
@@ -182,6 +185,15 @@ class RobotKillerServer(SocketServer.TCPServer):
 
 class RobotKillerHandler(SocketServer.StreamRequestHandler):
     def handle(self):
+        data = self.request.makefile('r').read().strip()
+        if data == 'kill':
+            self._signal_kill()
+        elif data == 'pause':
+            PAUSE.acquire()
+        elif data == 'resume':
+            PAUSE.release()
+
+    def _signal_kill(self):
         try:
             STOP_SIGNAL_MONITOR(1,'')
         except ExecutionFailed:

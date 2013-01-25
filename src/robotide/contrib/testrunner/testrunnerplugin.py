@@ -73,6 +73,8 @@ from robotide.context import IS_WINDOWS, IS_MAC
 
 ID_RUN = wx.NewId()
 ID_STOP = wx.NewId()
+ID_PAUSE = wx.NewId()
+ID_RESUME = wx.NewId()
 ID_SHOW_REPORT = wx.NewId()
 ID_SHOW_LOG = wx.NewId()
 ID_AUTOSAVE = wx.NewId()
@@ -241,6 +243,14 @@ class TestRunnerPlugin(Plugin):
         command line."""
         self._AppendText(self.out, '[ SENDING STOP SIGNAL ]\n', source='stderr')
         self._test_runner.send_stop_signal()
+
+    def OnPause(self, event):
+        self._AppendText(self.out, '[ SENDING PAUSE SIGNAL ]\n')
+        self._test_runner.send_pause_signal()
+
+    def OnResume(self, event):
+        self._AppendText(self.out, '[ SENDING RESUME SIGNAL ]\n')
+        self._test_runner.send_resume_signal()
 
     def OnRun(self, event):
         '''Called when the user clicks the "Run" button'''
@@ -488,6 +498,10 @@ class TestRunnerPlugin(Plugin):
         toolbar.AddLabelTool(ID_STOP,"Stop", ImageProvider().TOOLBAR_STOP,
                              shortHelp="Stop a running test",
                              longHelp="Stop a running test")
+        toolbar.AddLabelTool(ID_PAUSE, "Pause", ImageProvider().TOOLBAR_PAUSE,
+            shortHelp="Pause test execution", longHelp="Pause test execution")
+        toolbar.AddLabelTool(ID_RESUME, "Resume", ImageProvider().TOOLBAR_RESUME,
+            shortHelp="Resume test execution", longHelp="Resume test execution")
         toolbar.AddSeparator()
         toolbar.AddLabelTool(ID_SHOW_REPORT, " Report", reportImage,
                              shortHelp = localize_shortcuts("View Robot Report in Browser (CtrlCmd-R)"))
@@ -513,6 +527,8 @@ class TestRunnerPlugin(Plugin):
         toolbar.Realize()
         toolbar.Bind(wx.EVT_TOOL, self.OnRun, id=ID_RUN)
         toolbar.Bind(wx.EVT_TOOL, self.OnStop, id=ID_STOP)
+        toolbar.Bind(wx.EVT_TOOL, self.OnPause, id=ID_PAUSE)
+        toolbar.Bind(wx.EVT_TOOL, self.OnResume, id=ID_RESUME)
         toolbar.Bind(wx.EVT_TOOL, self.OnShowReport, id=ID_SHOW_REPORT)
         toolbar.Bind(wx.EVT_TOOL, self.OnShowLog, id=ID_SHOW_LOG)
         toolbar.Bind(wx.EVT_CHECKBOX, self.OnAutoSaveCheckbox, self.savecb)
