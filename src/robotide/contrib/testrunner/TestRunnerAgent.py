@@ -38,6 +38,7 @@ import os
 import socket
 import threading
 import SocketServer
+import time
 
 try:
     # RF 2.7.5
@@ -70,7 +71,7 @@ except ImportError:
 
 PORT = 5007
 HOST = "localhost"
-PAUSE = threading.RLock()
+
 
 # Setting Output encoding to UTF-8 and ignoring the platform specs
 # RIDE will expect UTF-8
@@ -97,10 +98,14 @@ class TestRunnerAgent:
             self.port = int(args[1])
         self._connect()
         self._send_pid()
+        self._create_debugger()
         self._create_kill_server()
 
+    def _create_debugger(self):
+        self._debugger = RobotDebugger()
+
     def _create_kill_server(self):
-        self._killer = RobotKillerServer()
+        self._killer = RobotKillerServer(self._debugger)
         self._server_thread = threading.Thread(target=self._killer.serve_forever)
         self._server_thread.setDaemon(True)
         self._server_thread.start()
@@ -125,12 +130,12 @@ class TestRunnerAgent:
         self._send_socket("end_suite", name, attrs)
 
     def start_keyword(self, name, attrs):
-        PAUSE.acquire()
-        PAUSE.release()
         self._send_socket("start_keyword", name, attrs)
+        self._debugger.start_keyword()
 
     def end_keyword(self, name, attrs):
         self._send_socket("end_keyword", name, attrs)
+        self._debugger.end_keyword()
 
     def message(self, message):
         pass
@@ -178,10 +183,39 @@ class TestRunnerAgent:
             self.pickler.dump(packet)
             self.filehandler.flush()
 
+
+class RobotDebugger(object):
+
+    def __init__(self):
+        self.pause_lock = threading.RLock()
+        self.stepper_lock = threading.RLock()
+
+    def pause(self):
+        self.pause_lock.acquire()
+
+    def resume(self):
+        self.pause_lock.release()
+
+    def step_next(self):
+        self.pause_lock.release()
+        with self.stepper_lock:
+            self.pause_lock.acquire()
+
+    def start_keyword(self):
+        with self.stepper_lock:
+            with self.pause_lock:
+                pass
+
+    def end_keyword(self):
+        pass
+
+
+
 class RobotKillerServer(SocketServer.TCPServer):
     allow_reuse_address = True
-    def __init__(self):
+    def __init__(self, debugger):
         SocketServer.TCPServer.__init__(self, ("",0), RobotKillerHandler)
+        self.debugger = debugger
 
 class RobotKillerHandler(SocketServer.StreamRequestHandler):
     def handle(self):
@@ -189,9 +223,11 @@ class RobotKillerHandler(SocketServer.StreamRequestHandler):
         if data == 'kill':
             self._signal_kill()
         elif data == 'pause':
-            PAUSE.acquire()
+            self.server.debugger.pause()
         elif data == 'resume':
-            PAUSE.release()
+            self.server.debugger.resume()
+        elif data == 'step_next':
+            self.server.debugger.step_next()
 
     def _signal_kill(self):
         try:

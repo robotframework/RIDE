@@ -143,6 +143,10 @@ class TestRunner(object):
         if self._process:
             self._process.resume(port=self._killer_port)
 
+    def send_step_next_signal(self):
+        if self._process:
+            self._process.step_next(port=self._killer_port)
+
     def run_command(self, command, cwd):
         self._pid_to_kill = None
         self._killer_port = None
@@ -301,6 +305,12 @@ class Process(object):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.connect(('localhost', port))
         sock.send('resume\n')
+        sock.close()
+
+    def step_next(self, port):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.connect(('localhost', port))
+        sock.send('step_next\n')
         sock.close()
 
     def _kill(self, pid):
