@@ -376,6 +376,10 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.GetCellEditor(*self.selection.cell).SetHeight(row_height)
         event.Skip()
 
+    def _move_cursor_down(self, event):
+        self.DisableCellEditControl()
+        self.MoveCursorDown(event.ShiftDown())
+
     def OnKeyDown(self, event):
         keycode, control_down = event.GetKeyCode(), event.CmdDown()
         if keycode == wx.WXK_CONTROL:
@@ -384,6 +388,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self.OnSelectAll(event)
         elif event.AltDown() and keycode in [wx.WXK_DOWN, wx.WXK_UP]:
             self._move_rows(keycode)
+        elif event.AltDown() and keycode == wx.WXK_RETURN:
+            self._move_cursor_down(event)
         elif keycode == wx.WXK_WINDOWS_MENU:
             self.OnCellRightClick(event)
         elif keycode in [wx.WXK_RETURN, wx.WXK_BACK]:

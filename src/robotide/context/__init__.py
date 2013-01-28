@@ -172,6 +172,10 @@ SHORTCUT_KEYS = '''\
         <td>Move row(s) down</td>
     </tr>
     <tr>
+        <td>Alt-Enter</td>
+        <td>Move cursor down</td>
+    </tr>
+    <tr>
         <td>CtrlCmd-A</td>
         <td>Select all</td>
     </tr>
