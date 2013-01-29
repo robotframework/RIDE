@@ -20,7 +20,7 @@ from robotide.controller.commands import ChangeTag
 from robotide.editor.popupwindow import RidePopupWindow
 from robotide.publish import RideOpenTagSearch
 from robotide.ui.treenodehandlers import ResourceRootHandler, ResourceFileHandler
-from robotide.widgets import ButtonWithHandler, Label
+from robotide.widgets import ButtonWithHandler, Label, PopupMenuItems
 
 class ViewAllTagsDialog(wx.Frame):
 
@@ -82,9 +82,10 @@ class ViewAllTagsDialog(wx.Frame):
     def _make_bindings(self):
         self.Bind(wx.EVT_CLOSE, self._close_dialog)
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnTagSelected)
-        self._tags_list.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.OnRename)
+        self._tags_list.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.OnRightClick)
 
     def _execute(self):
+        self._clear_search_results()
         self._results = self._search_results()
         index = 0
         self.total_occurrences = 0
@@ -154,7 +155,6 @@ class ViewAllTagsDialog(wx.Frame):
         RideOpenTagSearch(includes="", excludes=' '.join(excluded_tags)).publish()
 
     def OnClear(self, event):
-        self._clear_search_results()
         self._execute()
         for tag_name, tests in self._results:
             self.tree.DeselectTests(tests)
@@ -163,15 +163,32 @@ class ViewAllTagsDialog(wx.Frame):
                 self.tree.CollapseAllSubNodes(item)
         self.update_footer()
 
+    def OnRightClick(self, event):
+        self._index = event.GetIndex()
+        self.tree._popup_creator.show(self, PopupMenuItems(self, ["Rename","Delete"]),
+            self._controller)
+
     def OnRename(self, event):
-        index = event.GetIndex()
-        tests,tag_name = self._tags_list.GetClientData(index)
+        tests,tag_name = self._tags_list.GetClientData(self._index)
         tags_to_rename = self._tagit[tag_name]
         name = wx.GetTextFromUser(message="Old name for the tag is '%s'" % tag_name, default_value=tag_name, caption='Rename a tag')
         if name:
             for tag in tags_to_rename:
                 tag.controller.execute(ChangeTag(tag, name))
+            self._execute()
+            for tag_name, tests in self._results:
+                self.tree.DeselectTests(tests)
 
+    def OnDelete(self, event):
+        tests,tag_name = self._tags_list.GetClientData(self._index)
+        tags_to_delete = self._tagit[tag_name]
+        if wx.MessageBox("Delete a tag '%s'" % tag_name, caption='Confirm',
+            style=wx.YES_NO | wx.ICON_QUESTION) == wx.YES:
+            for tag in tags_to_delete:
+                tag.controller.execute(ChangeTag(tag, "", "DELETE"))
+            self._execute()
+            for tag_name, tests in self._results:
+                self.tree.DeselectTests(tests)
 
     def _close_dialog(self, event):
         if event.CanVeto():
@@ -185,7 +202,8 @@ class ViewAllTagsDialog(wx.Frame):
     def item_in_kw_list_checked(self, index, flag):
         self.selected_tests = 0
         if flag == False:
-            self.tree.DeselectTests(self._tags_list.GetClientData(index))
+            tests, tag_name = self._tags_list.GetClientData(index)
+            self.tree.DeselectTests(tests)
         if self._tags_list.get_number_of_checked_items() > 0:
             for tests,tag_name in self._tags_list.get_checked_items():
                 self.selected_tests += len(tests)
