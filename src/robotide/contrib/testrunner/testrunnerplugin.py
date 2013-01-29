@@ -659,6 +659,10 @@ class TestRunnerPlugin(Plugin):
             self._handle_end_keyword()
         if event == 'log_message':
             self._handle_log_message(args)
+        if event == 'paused':
+            self._append_to_message_log('<<PAUSED>>')
+        if event == 'continue':
+            self._append_to_message_log('<<CONTINUE>>')
 
     def _handle_start_test(self, args):
         longname = args[1]['longname']

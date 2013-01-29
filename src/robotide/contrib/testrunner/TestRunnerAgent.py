@@ -131,7 +131,12 @@ class TestRunnerAgent:
 
     def start_keyword(self, name, attrs):
         self._send_socket("start_keyword", name, attrs)
+        paused = self._debugger.is_paused()
+        if paused:
+            self._send_socket('paused')
         self._debugger.start_keyword()
+        if paused:
+            self._send_socket('continue')
 
     def end_keyword(self, name, attrs):
         self._send_socket("end_keyword", name, attrs)
@@ -219,6 +224,10 @@ class RobotDebugger(object):
 
     def end_keyword(self):
         pass
+
+    def is_paused(self):
+        with self._pause_flag_lock:
+            return self._paused
 
 
 
