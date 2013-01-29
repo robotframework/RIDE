@@ -50,7 +50,7 @@ _menudata = """
 [Tools]
 !Search Unused Keywords | | | | POSITION-54
 !Manage Plugins | | | | POSITION-81
-!View All Tags | | | | POSITION-82
+!View All Tags | | F7 | | POSITION-82
 !Preferences | | | | POSITION-99
 
 [Help]

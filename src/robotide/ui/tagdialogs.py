@@ -16,9 +16,11 @@ import wx
 import wx.lib.mixins.listctrl as listmix
 
 from robot.utils import NormalizedDict
+from robotide.controller.commands import ChangeTag
+from robotide.editor.popupwindow import RidePopupWindow
 from robotide.publish import RideOpenTagSearch
 from robotide.ui.treenodehandlers import ResourceRootHandler, ResourceFileHandler
-from robotide.widgets import ButtonWithHandler
+from robotide.widgets import ButtonWithHandler, Label
 
 class ViewAllTagsDialog(wx.Frame):
 
@@ -80,6 +82,7 @@ class ViewAllTagsDialog(wx.Frame):
     def _make_bindings(self):
         self.Bind(wx.EVT_CLOSE, self._close_dialog)
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnTagSelected)
+        self._tags_list.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.OnRename)
 
     def _execute(self):
         self._results = self._search_results()
@@ -117,24 +120,18 @@ class ViewAllTagsDialog(wx.Frame):
 
     def _search_results(self):
         self._unique_tags = NormalizedDict()
+        self._tagit = dict()
         for test in self.frame._controller.all_testcases():
             for tag in test.tags:
                 tag_info = unicode(tag)
                 if self._unique_tags.has_key(tag_info):
                     self._unique_tags[tag_info].append(test)
+                    self._tagit[tag_info].append(tag)
                 else:
                     self._unique_tags.set(tag_info, [test])
+                    self._tagit[tag_info] = [tag]
 
         return sorted(self._unique_tags.items(), key=lambda x: len(x[1]), reverse=True)
-
-    def _search(self, data):
-        for test in data.tests:
-            match = False
-            if match:
-                yield test, match
-        for s in data.suites:
-            for test, match in self._search(s):
-                yield test, match
 
     def GetListCtrl(self):
         return self._tags_list
@@ -165,6 +162,16 @@ class ViewAllTagsDialog(wx.Frame):
             if not isinstance(item.GetData(), ResourceRootHandler or ResourceFileHandler):
                 self.tree.CollapseAllSubNodes(item)
         self.update_footer()
+
+    def OnRename(self, event):
+        index = event.GetIndex()
+        tests,tag_name = self._tags_list.GetClientData(index)
+        tags_to_rename = self._tagit[tag_name]
+        name = wx.GetTextFromUser(message="Old name for the tag is '%s'" % tag_name, default_value=tag_name, caption='Rename a tag')
+        if name:
+            for tag in tags_to_rename:
+                tag.controller.execute(ChangeTag(tag, name))
+
 
     def _close_dialog(self, event):
         if event.CanVeto():
