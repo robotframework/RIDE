@@ -189,17 +189,28 @@ class RobotDebugger(object):
     def __init__(self):
         self.pause_lock = threading.RLock()
         self.stepper_lock = threading.RLock()
+        self._paused = False
+        self._pause_flag_lock = threading.Lock()
 
     def pause(self):
-        self.pause_lock.acquire()
+        with self._pause_flag_lock:
+            self.pause_lock.acquire()
+            self._paused = True
 
     def resume(self):
-        self.pause_lock.release()
+        with self._pause_flag_lock:
+            if not self._paused:
+                return
+            self.pause_lock.release()
+            self._paused = False
 
     def step_next(self):
-        self.pause_lock.release()
-        with self.stepper_lock:
-            self.pause_lock.acquire()
+        with self._pause_flag_lock:
+            if not self._paused:
+                return
+            self.pause_lock.release()
+            with self.stepper_lock:
+                self.pause_lock.acquire()
 
     def start_keyword(self):
         with self.stepper_lock:
