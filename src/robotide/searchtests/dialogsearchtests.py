@@ -34,6 +34,9 @@ class TestsDialog(Dialog):
         self._notebook.AddPage(self._tag_pattern_search_panel(), 'Tag Search')
         return self._notebook
 
+    def _select_page(self, page=0):
+        self._notebook.ChangeSelection(page)
+
     def _text_search_panel(self):
         panel = wx.Panel(self._notebook)
         panel.SetSizer(VerticalSizer())

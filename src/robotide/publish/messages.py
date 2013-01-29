@@ -393,5 +393,9 @@ class RideVariableUpdated(RideDataChanged):
     data = ['item']
 
 
+class RideOpenTagSearch(RideMessage):
+    """ Sent we when want to open Search Tags)"""
+    data = ['includes','excludes']
+
 __all__ = [ name for name, cls in globals().items()
             if inspect.isclass(cls) and issubclass(cls, RideMessage) ]

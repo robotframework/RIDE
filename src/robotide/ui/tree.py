@@ -621,6 +621,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
 
     def _for_all_tests(self, item, func):
         if not self.HasAGWFlag(customtreectrl.TR_HIDE_ROOT) or item != self.GetRootItem():
+            if isinstance(item.GetData(), ResourceRootHandler or ResourceFileHandler):
+                return
             self.Expand(item)
             if self._is_test_node(item):
                 func(item)

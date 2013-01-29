@@ -17,9 +17,11 @@ import wx.lib.mixins.listctrl as listmix
 
 from robot.utils import NormalizedDict
 from robotide.controller.tags import ForcedTag, DefaultTag
+from robotide.publish import PUBLISHER, RideOpenTagSearch
 from robotide.searchtests.dialogsearchtests import TestsDialog
 from robotide.searchtests.searchtests import TestSearchPlugin
 from robotide.ui.searchdots import DottedSearch
+from robotide.ui.treenodehandlers import ResourceRootHandler, ResourceFileHandler
 from robotide.usages.UsageRunner import ResourceFileUsages
 from robotide.widgets import Label, ButtonWithHandler
 
@@ -95,7 +97,7 @@ class ViewAllTagsDialog(wx.Frame):
 
         for tag_name, tests in self._results:
             #tag_name, tag_type = tag_data.split(":")
-            self._tags_list.SetClientData(self.unique_tags, tests)
+            self._tags_list.SetClientData(self.unique_tags, (tests,tag_name))
             self._tags_list.InsertStringItem(self.unique_tags, str(tag_name))
             occurrences = len(tests)
             self.total_occurrences += occurrences
@@ -157,14 +159,22 @@ class ViewAllTagsDialog(wx.Frame):
         event.Skip()
 
     def OnShowTests(self, event):
-        pass
+        included_tags = []
+        excluded_tags = []
+        for tests,tag_name in self._tags_list.get_checked_items():
+            included_tags.append(tag_name)
+        RideOpenTagSearch(includes=' '.join(included_tags), excludes=' '.join(excluded_tags)).publish()
 
     def OnClear(self, event):
         self._clear_search_results()
         self._execute()
         for tag_name, tests in self._results:
             self.tree.DeselectTests(tests)
-        self.tree.CollapseAllSubNodes(self.tree._root)
+        #print dir(self.tree)
+        #self.tree.CollapseAndReset(self.tree._root)
+        for item in self.tree.GetItemChildren():
+            if not isinstance(item.GetData(), ResourceRootHandler or ResourceFileHandler):
+                self.tree.CollapseAllSubNodes(item)
         self.update_footer()
 
     def _close_dialog(self, event):
@@ -181,7 +191,7 @@ class ViewAllTagsDialog(wx.Frame):
         if flag == False:
             self.tree.DeselectTests(self._tags_list.GetClientData(index))
         if self._tags_list.get_number_of_checked_items() > 0:
-            for tests in self._tags_list.get_checked_items():
+            for tests,tag_name in self._tags_list.get_checked_items():
                 self.selected_tests += len(tests)
                 self.tree.SelectTests(tests)
         self.update_footer()

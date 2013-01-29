@@ -15,6 +15,7 @@ import wx
 from robot.model import TagPatterns
 from robotide.action import ActionInfo
 from robotide.pluginapi import Plugin
+from robotide.publish import RideOpenTagSearch
 from robotide.searchtests.dialogsearchtests import TestsDialog
 from robotide.widgets import ImageProvider
 
@@ -27,6 +28,7 @@ class TestSearchPlugin(Plugin):
     def enable(self):
         self.register_action(ActionInfo('Tools', self.HEADER, self.show_empty_search, shortcut='F3', doc=self.__doc__,icon=ImageProvider().TEST_SEARCH_ICON,position=50))
         self.register_search_action(self.HEADER, self.show_search_for, ImageProvider().TEST_SEARCH_ICON, default=True)
+        self.subscribe(self.show_tag_search, RideOpenTagSearch)
         self._dialog = None
 
     def show_search_for(self, text):
@@ -39,6 +41,12 @@ class TestSearchPlugin(Plugin):
         matcher =  TagSearchMatcher(includes, excludes)
         self._dialog.set_tag_search_model(includes, excludes, self._search_results(matcher))
         self._dialog.set_focus_to_default_location()
+
+    def show_tag_search(self, data):
+        if self._dialog is None:
+            self._create_tests_dialog()
+        self.show_search_for_tag_patterns(data.includes, data.excludes)
+        self._dialog._select_page(1)
 
     def _create_tests_dialog(self):
         self._dialog = TestsDialog(fuzzy_search_handler=self.show_search_for, tag_search_handler=self.show_search_for_tag_patterns, add_to_selected_handler=self._add_to_selected)
