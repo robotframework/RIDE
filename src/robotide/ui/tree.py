@@ -14,6 +14,7 @@
 
 import wx
 from wx.lib.agw import customtreectrl
+from wx.lib.agw.customtreectrl import GenericTreeItem
 from wx.lib.mixins import treemixin
 
 from robotide.controller.ui.treecontroller import TreeController, TestSelectionController
@@ -639,6 +640,13 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
 
     def DeselectAllTests(self, item):
         self._for_all_tests(item, lambda t: self.CheckItem(t, checked=False))
+
+    def DeselectTests(self, tests):
+        def foo(t):
+            if self.GetPyData(t).controller in tests:
+                self.CheckItem(t, checked=False)
+        self._for_all_tests(self._root, foo)
+
 
     def SelectFailedTests(self, item):
         def func(t):

@@ -17,7 +17,10 @@ import wx.lib.mixins.listctrl as listmix
 
 from robot.utils import NormalizedDict
 from robotide.controller.tags import ForcedTag, DefaultTag
+from robotide.searchtests.dialogsearchtests import TestsDialog
+from robotide.searchtests.searchtests import TestSearchPlugin
 from robotide.ui.searchdots import DottedSearch
+from robotide.usages.UsageRunner import ResourceFileUsages
 from robotide.widgets import Label, ButtonWithHandler
 
 class ViewAllTagsDialog(wx.Frame):
@@ -27,17 +30,23 @@ class ViewAllTagsDialog(wx.Frame):
         self.frame = frame
         self.tree = self.frame.tree
         self._controller = controller
+        self._results = NormalizedDict()
+        self.selected_tests = 0
+        self.total_occurrences = 0
+        self.unique_tags = 0
         self._build_ui()
         self._make_bindings()
         self._execute()
 
     def _build_ui(self):
         self.SetSize((600,600))
+        self.SetPosition((500,300))
         self.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DFACE))
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
         self._build_notebook()
         self._build_tag_lister()
         self._build_controls()
+        self._build_footer()
 
     def _build_tag_lister(self):
         panel_tag_vw = wx.Panel(self._notebook)
@@ -46,22 +55,25 @@ class ViewAllTagsDialog(wx.Frame):
         self._tags_list = TagsListCtrl(panel_tag_vw,style=wx.LC_REPORT)
         self._tags_list.InsertColumn(0, "Tag", width=300)
         self._tags_list.InsertColumn(1, "Occurrences", width=25, format=wx.LIST_FORMAT_CENTER)
-        self._tags_list.InsertColumn(2, "Types", width=150)
+        #self._tags_list.InsertColumn(2, "Types", width=150)
         self._tags_list.SetMinSize((550, 250))
         self._tags_list.set_dialog(self)
         sizer_tag_vw.Add(self._tags_list, 1, wx.ALL | wx.EXPAND, 3)
         self._notebook.AddPage(panel_tag_vw, "The List")
 
     def _build_controls(self):
-        self._select_button = ButtonWithHandler(self, 'Select')
-        self._refresh_button = ButtonWithHandler(self, 'Refresh')
-        self._status_label = Label(self, label='')
+        self._clear_button = ButtonWithHandler(self, 'Clear')
+        self._show_tests_button = ButtonWithHandler(self, 'Show Tests')
         controls = wx.BoxSizer(wx.HORIZONTAL)
-        controls.Add(self._select_button, 0, wx.ALL, 3)
-        controls.Add(self._refresh_button, 0, wx.ALL, 3)
-        controls.Add(self._status_label, 1, wx.ALL | wx.EXPAND, 3)
+        controls.Add(self._show_tests_button, 0, wx.ALL, 3)
+        controls.Add(self._clear_button, 0, wx.ALL, 3)
         self.Sizer.Add(controls, 0, wx.ALL | wx.EXPAND, 3)
-        self._select_button.Disable()
+
+    def _build_footer(self):
+        footer = wx.BoxSizer(wx.HORIZONTAL)
+        self._footer_text = wx.StaticText(self, -1, 'Results: %d' % len(self._results.items()))
+        footer.Add(self._footer_text)
+        self.Sizer.Add(footer, 0, wx.ALL, 3)
 
     def _build_notebook(self):
         self._notebook = wx.Notebook(self, wx.ID_ANY, style=wx.NB_TOP)
@@ -78,16 +90,26 @@ class ViewAllTagsDialog(wx.Frame):
     def _execute(self):
         self._results = self._search_results()
         index = 0
-        for tag_data, tests in self._results:
-            tag_name, tag_type = tag_data.split(":")
-            self._tags_list.SetClientData(index, tests)
-            self._tags_list.InsertStringItem(index, str(tag_name))
+        self.total_occurrences = 0
+        self.unique_tags = 0
+
+        for tag_name, tests in self._results:
+            #tag_name, tag_type = tag_data.split(":")
+            self._tags_list.SetClientData(self.unique_tags, tests)
+            self._tags_list.InsertStringItem(self.unique_tags, str(tag_name))
             occurrences = len(tests)
-            self._tags_list.SetStringItem(index, 1, str(occurrences))
-            self._tags_list.SetStringItem(index, 2, str(tag_type))
-            index += 1
+            self.total_occurrences += occurrences
+            self._tags_list.SetStringItem(self.unique_tags, 1, str(occurrences))
+            #self._tags_list.SetStringItem(index, 2, str(tag_type))
+            self.unique_tags += 1
         self._tags_list.SetColumnWidth(1,wx.LIST_AUTOSIZE_USEHEADER)
         self._tags_list.setResizeColumn(1)
+        self.update_footer()
+
+    def update_footer(self):
+        footer_string = "Tagged tests %d, Unique tags %d, Selected tests %d" % \
+                    (self.total_occurrences, self.unique_tags, self.selected_tests)
+        self._footer_text.SetLabel(footer_string)
 
     def show_dialog(self):
         if not self.IsShown():
@@ -95,9 +117,8 @@ class ViewAllTagsDialog(wx.Frame):
         self.Raise()
 
     def _clear_search_results(self):
+        self.selected_tests = 0
         self._tags_list.ClearAll()
-        self._select_button.Disable()
-        self._status_label.SetLabel('')
 
     def _add_view_components(self):
         pass
@@ -107,12 +128,12 @@ class ViewAllTagsDialog(wx.Frame):
         for test in self.frame._controller.all_testcases():
             for tag in test.tags:
                 tag_info = unicode(tag)
-                if isinstance(tag, ForcedTag):
-                    tag_info += ":forced"
-                elif isinstance(tag, DefaultTag):
-                    tag_info += ":default"
-                else:
-                    tag_info += ":test"
+                #if isinstance(tag, ForcedTag):
+                #    tag_info += ":forced"
+                #elif isinstance(tag, DefaultTag):
+                #    tag_info += ":default"
+                #else:
+                #    tag_info += ":test"
                 if self._unique_tags.has_key(tag_info):
                     self._unique_tags[tag_info].append(test)
                 else:
@@ -135,9 +156,16 @@ class ViewAllTagsDialog(wx.Frame):
     def OnColClick(self, event):
         event.Skip()
 
-    def OnRefresh(self, event):
+    def OnShowTests(self, event):
+        pass
+
+    def OnClear(self, event):
         self._clear_search_results()
         self._execute()
+        for tag_name, tests in self._results:
+            self.tree.DeselectTests(tests)
+        self.tree.CollapseAllSubNodes(self.tree._root)
+        self.update_footer()
 
     def _close_dialog(self, event):
         if event.CanVeto():
@@ -145,18 +173,18 @@ class ViewAllTagsDialog(wx.Frame):
         else:
             self.Destroy()
 
-    def OnSelect(self, event):
-        for tests in self._tags_list.get_checked_items():
-            self.tree.SelectTests(tests)
-
     def OnTagSelected(self, event):
         item = self._tags_list.GetItem(event.GetIndex())
 
-    def item_in_kw_list_checked(self):
+    def item_in_kw_list_checked(self, index, flag):
+        self.selected_tests = 0
+        if flag == False:
+            self.tree.DeselectTests(self._tags_list.GetClientData(index))
         if self._tags_list.get_number_of_checked_items() > 0:
-            self._select_button.Enable()
-        else:
-            self._select_button.Disable()
+            for tests in self._tags_list.get_checked_items():
+                self.selected_tests += len(tests)
+                self.tree.SelectTests(tests)
+        self.update_footer()
 
 
 class TagsListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin, listmix.ListCtrlAutoWidthMixin):
@@ -170,7 +198,7 @@ class TagsListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin, listmix.ListCtrlAuto
 
     def OnCheckItem(self, index, flag):
         if self._dlg:
-            self._dlg.item_in_kw_list_checked()
+            self._dlg.item_in_kw_list_checked(index,flag)
         else:
             pass
 
