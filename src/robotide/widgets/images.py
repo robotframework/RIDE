@@ -43,6 +43,7 @@ class ImageProvider(object):
         self.TOOLBAR_STOP = self._load_image('control_stop.png')
         self.TOOLBAR_PAUSE = self._load_image('control_pause.png')
         self.TOOLBAR_RESUME = self._load_image('control_play.png')
+        self.TOOLBAR_NEXT = self._load_image('control_fastforward.png')
         self._build_icons()
 
     def _build_icons(self):

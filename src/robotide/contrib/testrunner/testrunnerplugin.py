@@ -507,7 +507,7 @@ class TestRunnerPlugin(Plugin):
             shortHelp="Pause test execution", longHelp="Pause test execution")
         toolbar.AddLabelTool(ID_RESUME, "Resume", ImageProvider().TOOLBAR_RESUME,
             shortHelp="Resume test execution", longHelp="Resume test execution")
-        toolbar.AddLabelTool(ID_STEP_OVER, "Next", ImageProvider().TOOLBAR_RESUME,
+        toolbar.AddLabelTool(ID_STEP_OVER, "Next", ImageProvider().TOOLBAR_NEXT,
                     shortHelp="Step next", longHelp="Step next")
         toolbar.AddSeparator()
         toolbar.AddLabelTool(ID_SHOW_REPORT, " Report", reportImage,
