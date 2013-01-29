@@ -41,7 +41,7 @@ class ImageProvider(object):
         self.TEST_SEARCH_ICON = self._load_image('test_search_button.png')
         self.TOOLBAR_PLAY = self._load_image('control_play.png')
         self.TOOLBAR_STOP = self._load_image('control_stop.png')
-        self.TOOLBAR_PAUSE = self._load_image('control_stop.png')
+        self.TOOLBAR_PAUSE = self._load_image('control_pause.png')
         self.TOOLBAR_RESUME = self._load_image('control_play.png')
         self._build_icons()
 
