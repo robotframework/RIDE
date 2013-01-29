@@ -527,11 +527,13 @@ class TestRunnerPlugin(Plugin):
         self.show_log_messages_checkbox.SetToolTip(wx.ToolTip('Show or hide message log'))
         self.show_log_messages_checkbox.SetValue(self.show_message_log)
         toolbar.AddControl(self.show_log_messages_checkbox)
-
         toolbar.EnableTool(ID_SHOW_LOG, False)
         toolbar.EnableTool(ID_SHOW_REPORT, False)
-
         toolbar.Realize()
+        self._bind_toolbar_events(toolbar)
+        return toolbar
+
+    def _bind_toolbar_events(self, toolbar):
         toolbar.Bind(wx.EVT_TOOL, self.OnRun, id=ID_RUN)
         toolbar.Bind(wx.EVT_TOOL, self.OnStop, id=ID_STOP)
         toolbar.Bind(wx.EVT_TOOL, self.OnPause, id=ID_PAUSE)
@@ -542,8 +544,6 @@ class TestRunnerPlugin(Plugin):
         toolbar.Bind(wx.EVT_CHECKBOX, self.OnAutoSaveCheckbox, self.savecb)
         toolbar.Bind(wx.EVT_CHECKBOX, self.OnShowHideMessageLog, self.show_log_messages_checkbox)
         toolbar.Bind(wx.EVT_CHOICE, self.OnProfileSelection, self.choice)
-
-        return toolbar
 
     def get_current_profile(self):
         return self._test_runner.get_profile(self.choice.GetStringSelection())
