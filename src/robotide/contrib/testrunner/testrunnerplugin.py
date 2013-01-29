@@ -270,7 +270,6 @@ class TestRunnerPlugin(Plugin):
             self._set_running()
             self._progress_bar.Start()
         except Exception, e:
-            #FIXME: Dead code?
             self._set_stopped()
             self._output(str(e))
             wx.MessageBox("Could not start running tests.", "Error", wx.ICON_ERROR)
