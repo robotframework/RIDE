@@ -165,8 +165,21 @@ class ViewAllTagsDialog(wx.Frame):
 
     def OnRightClick(self, event):
         self._index = event.GetIndex()
-        self.tree._popup_creator.show(self, PopupMenuItems(self, ["Rename","Delete"]),
-            self._controller)
+        self.tree._popup_creator.show(self, PopupMenuItems(self, ["Rename",
+                                                                  "Delete",
+                                                                  "---",
+                                                                  "Show tests with this tag",
+                                                                  "Show tests without this tag"]),
+                                      self._controller)
+
+
+    def OnShowTestsWithThisTag(self, event):
+        tests,tag_name = self._tags_list.GetClientData(self._index)
+        RideOpenTagSearch(includes=tag_name, excludes="").publish()
+
+    def OnShowTestsWithoutThisTag(self, event):
+        tests,tag_name = self._tags_list.GetClientData(self._index)
+        RideOpenTagSearch(includes="", excludes=tag_name).publish()
 
     def OnRename(self, event):
         tests,tag_name = self._tags_list.GetClientData(self._index)

@@ -91,7 +91,7 @@ class PopupMenuItem(object):
             return callable
         if name == '---':
             return None
-        handler_name = name.replace(' ', '').split('\t')[0]  # split shortcut
+        handler_name = ''.join(x for x in name.title() if not x.isspace())
         return getattr(parent, 'On'+handler_name)
 
     def is_separator(self):
