@@ -30,8 +30,8 @@ class ViewAllTagsDialog(wx.Frame):
         self.tree = self.frame.tree
         self._controller = controller
         self._results = NormalizedDict()
-        self.selected_tests = 0
-        self.total_occurrences = 0
+        self.selected_tests = list()
+        self.tagged_test_cases = list()
         self.unique_tags = 0
         self.total_test_cases = 0
         self._build_ui()
@@ -89,23 +89,24 @@ class ViewAllTagsDialog(wx.Frame):
         self._clear_search_results()
         self._results = self._search_results()
         self.total_test_cases = len(self._test_cases)
-        self.total_occurrences = 0
+        self.tagged_test_cases = list()
         self.unique_tags = 0
 
         for tag_name, tests in self._results:
             self._tags_list.SetClientData(self.unique_tags, (tests,tag_name))
             self._tags_list.InsertStringItem(self.unique_tags, str(tag_name))
+            self.tagged_test_cases += tests
             occurrences = len(tests)
-            self.total_occurrences += occurrences
             self._tags_list.SetStringItem(self.unique_tags, 1, str(occurrences))
             self.unique_tags += 1
         self._tags_list.SetColumnWidth(1,wx.LIST_AUTOSIZE_USEHEADER)
         self._tags_list.setResizeColumn(1)
+        self.tagged_test_cases = list(set(self.tagged_test_cases))
         self.update_footer()
 
     def update_footer(self):
         footer_string = "Total tests %d, Tests with tags %d, Unique tags %d, Currently selected tests %d" % \
-                    (self.total_test_cases, self.total_occurrences, self.unique_tags, self.selected_tests)
+                    (self.total_test_cases, len(self.tagged_test_cases), self.unique_tags, len(self.selected_tests))
         self._footer_text.SetLabel(footer_string)
 
     def show_dialog(self):
@@ -114,7 +115,7 @@ class ViewAllTagsDialog(wx.Frame):
         self.Raise()
 
     def _clear_search_results(self):
-        self.selected_tests = 0
+        self.selected_tests = list()
         self._tags_list.ClearAll()
 
     def _add_view_components(self):
@@ -169,9 +170,19 @@ class ViewAllTagsDialog(wx.Frame):
                 self.tree.CollapseAllSubNodes(item)
         self.update_footer()
 
+    def OnSelectAll(self, event):
+        all_tests = []
+        for tag_name, tests in self._results:
+            all_tests += tests
+        self.tree.SelectTests(all_tests)
+        self._tags_list.CheckAll()
+
     def OnRightClick(self, event):
         self._index = event.GetIndex()
-        self.tree._popup_creator.show(self, PopupMenuItems(self, ["Rename",
+        self.tree._popup_creator.show(self, PopupMenuItems(self, ["Select all",
+                                                                  "Clear",
+                                                                  "---",
+                                                                  "Rename",
                                                                   "Delete",
                                                                   "---",
                                                                   "Show tests with this tag",
@@ -219,14 +230,15 @@ class ViewAllTagsDialog(wx.Frame):
         item = self._tags_list.GetItem(event.GetIndex())
 
     def item_in_kw_list_checked(self, index, flag):
-        self.selected_tests = 0
+        self.selected_tests = list()
         if flag == False:
             tests, tag_name = self._tags_list.GetClientData(index)
             self.tree.DeselectTests(tests)
         if self._tags_list.get_number_of_checked_items() > 0:
             for tests,tag_name in self._tags_list.get_checked_items():
-                self.selected_tests += len(tests)
+                self.selected_tests += tests
                 self.tree.SelectTests(tests)
+        self.selected_tests = list(set(self.selected_tests))
         self.update_footer()
 
 
@@ -281,6 +293,10 @@ class TagsListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin, listmix.ListCtrlAuto
     def ClearAll(self):
         self.DeleteAllItems()
         self._clientData.clear()
+
+    def CheckAll(self):
+        for i in range(self.GetItemCount()):
+            self.CheckItem(i)
 
     def print_data(self):
         print self._clientData
