@@ -61,7 +61,7 @@ class ViewAllTagsDialog(wx.Frame):
         self._notebook.AddPage(panel_tag_vw, "The List")
 
     def _build_controls(self):
-        self._clear_button = ButtonWithHandler(self, 'Clear')
+        self._clear_button = ButtonWithHandler(self, 'Refresh', self.OnClear)
         self._show_tagged_tests_button = ButtonWithHandler(self, 'Included Tag Search')
         self._show_excluded_tests_button = ButtonWithHandler(self, 'Excluded Tag Search')
         controls = wx.BoxSizer(wx.HORIZONTAL)

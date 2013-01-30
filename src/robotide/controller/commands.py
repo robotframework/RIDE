@@ -162,7 +162,13 @@ class ChangeTag(_Command):
         if self._tag.is_empty():
             return [v.name for v in old_values]+[self._value]
         else:
-            return [v.name if v != self._tag else self._value for v in old_values]
+            new_list = []
+            for v in old_values:
+                if v != self._tag:
+                    new_list.append(v.name)
+            if self._value not in new_list:
+                new_list += [self._value]
+            return new_list
 
 class DeleteTag(_Command):
 
