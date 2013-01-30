@@ -89,7 +89,6 @@ class ViewAllTagsDialog(wx.Frame):
         self._clear_search_results()
         self._results = self._search_results()
         self.total_test_cases = len(self._test_cases)
-        index = 0
         self.total_occurrences = 0
         self.unique_tags = 0
 
