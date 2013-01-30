@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 from robotide.utils import overrides
-from robotide.widgets import Dialog, VerticalSizer, VirtualList, Label, HelpLabel
+from robotide.widgets import Dialog, VerticalSizer, VirtualList, Label, HelpLabel, ImageProvider, ButtonWithHandler
 import wx
 from robotide.widgets.list import ListModel
 
@@ -57,6 +57,7 @@ class TestsDialog(Dialog):
         tags_controls_sizer.Add(self._create_exclude_line(panel), 0, wx.ALL, 3)
         controls_sizer = self._horizontal_sizer()
         controls_sizer.Add(tags_controls_sizer)
+        controls_sizer.Add(self._create_switch_button(panel), 0, wx.CENTER, 3)
         controls_sizer.Add(self._create_tag_search_button(panel), 0, wx.ALL | wx.EXPAND, 3)
         controls_sizer.Add(self._create_add_to_selected_button(panel), 0, wx.ALL | wx.EXPAND, 3)
         panel.Sizer.Add(controls_sizer)
@@ -76,6 +77,14 @@ class TestsDialog(Dialog):
         self._tags_to_include_text.Bind(wx.EVT_TEXT_ENTER, self.OnSearchTags)
         include_line.Add(self._tags_to_include_text)
         return include_line
+
+    def _create_switch_button(self, panel):
+        sizer = self._vertical_sizer()
+        img = ImageProvider().SWITCH_FIELDS_ICON
+        button = wx.BitmapButton(panel, -1, img, pos=(10, 20))
+        self.Bind(wx.EVT_BUTTON, self.OnSwitchFields, button)
+        sizer.Add(button)
+        return sizer
 
     def _create_exclude_line(self, panel):
         exclude_line = self._horizontal_sizer()
@@ -146,6 +155,9 @@ class TestsDialog(Dialog):
     def _horizontal_sizer(self):
         return wx.BoxSizer(wx.HORIZONTAL)
 
+    def _vertical_sizer(self):
+        return wx.BoxSizer(wx.VERTICAL)
+
     def _add_pattern_filter(self, sizer, parent):
         self._search_control = wx.SearchCtrl(parent, value='', size=(200,-1), style=wx.TE_PROCESS_ENTER)
         self._search_control.SetDescriptiveText('Search term')
@@ -200,6 +212,12 @@ class TestsDialog(Dialog):
         else:
             self._tags_to_include_text.SetFocus()
 
+    def OnSwitchFields(self, event):
+        include_txt = self._tags_to_include_text.GetValue()
+        exclude_txt = self._tags_to_exclude_text.GetValue()
+        self._tags_to_include_text.SetValue(exclude_txt)
+        self._tags_to_exclude_text.SetValue(include_txt)
+        self.OnSearchTags(event)
 
 class _TestSearchListModel(ListModel):
 
