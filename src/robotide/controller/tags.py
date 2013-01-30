@@ -11,8 +11,9 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+from robotide.controller.basecontroller import _BaseController
 
-class Tag(object):
+class Tag(_BaseController):
     tooltip = "Test case's tag"
 
     def __init__(self, name, index=None, controller=None):
@@ -37,6 +38,11 @@ class Tag(object):
 
     def choose(self, mapping):
         return mapping[self.__class__]
+
+    def delete(self):
+        self.controller._tags.remove(unicode(self.name))
+        if type(self) is Tag and len(self.controller._tags) == 0:
+            self.controller.add(self.controller.empty_tag())
 
 
 class ForcedTag(Tag):

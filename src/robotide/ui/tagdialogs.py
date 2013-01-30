@@ -16,16 +16,16 @@ import wx
 import wx.lib.mixins.listctrl as listmix
 
 from robot.utils import NormalizedDict
-from robotide.controller.commands import ChangeTag
-from robotide.editor.popupwindow import RidePopupWindow
+from robotide.controller.commands import ChangeTag, DeleteTag
+from types import *
 from robotide.publish import RideOpenTagSearch
 from robotide.ui.treenodehandlers import ResourceRootHandler, ResourceFileHandler
-from robotide.widgets import ButtonWithHandler, Label, PopupMenuItems
+from robotide.widgets import ButtonWithHandler, PopupMenuItems
 
 class ViewAllTagsDialog(wx.Frame):
 
     def __init__(self, controller, frame):
-        wx.Frame.__init__(self, frame, title="View All Tags", style=wx.SYSTEM_MENU|wx.CAPTION|wx.CLOSE_BOX|wx.CLIP_CHILDREN|wx.FRAME_FLOAT_ON_PARENT)
+        wx.Frame.__init__(self, frame, title="View all tags", style=wx.SYSTEM_MENU|wx.CAPTION|wx.CLOSE_BOX|wx.CLIP_CHILDREN|wx.FRAME_FLOAT_ON_PARENT)
         self.frame = frame
         self.tree = self.frame.tree
         self._controller = controller
@@ -33,6 +33,7 @@ class ViewAllTagsDialog(wx.Frame):
         self.selected_tests = 0
         self.total_occurrences = 0
         self.unique_tags = 0
+        self.total_test_cases = 0
         self._build_ui()
         self._make_bindings()
         self._execute()
@@ -87,6 +88,7 @@ class ViewAllTagsDialog(wx.Frame):
     def _execute(self):
         self._clear_search_results()
         self._results = self._search_results()
+        self.total_test_cases = len(self._test_cases)
         index = 0
         self.total_occurrences = 0
         self.unique_tags = 0
@@ -103,8 +105,8 @@ class ViewAllTagsDialog(wx.Frame):
         self.update_footer()
 
     def update_footer(self):
-        footer_string = "Total tests with tag %d, Unique tags %d, Currently selected tests %d" % \
-                    (self.total_occurrences, self.unique_tags, self.selected_tests)
+        footer_string = "Total tests %d, Tests with tags %d, Unique tags %d, Currently selected tests %d" % \
+                    (self.total_test_cases, self.total_occurrences, self.unique_tags, self.selected_tests)
         self._footer_text.SetLabel(footer_string)
 
     def show_dialog(self):
@@ -122,15 +124,20 @@ class ViewAllTagsDialog(wx.Frame):
     def _search_results(self):
         self._unique_tags = NormalizedDict()
         self._tagit = dict()
+        self._test_cases = list()
         for test in self.frame._controller.all_testcases():
+            self._test_cases.append(test)
             for tag in test.tags:
-                tag_info = unicode(tag)
-                if self._unique_tags.has_key(tag_info):
-                    self._unique_tags[tag_info].append(test)
-                    self._tagit[tag_info].append(tag)
+                if tag.is_empty():
+                    tag_name = "NONE"
                 else:
-                    self._unique_tags.set(tag_info, [test])
-                    self._tagit[tag_info] = [tag]
+                    tag_name = unicode(tag)
+                if self._unique_tags.has_key(tag_name):
+                    self._unique_tags[tag_name].append(test)
+                    self._tagit[tag_name].append(tag)
+                else:
+                    self._unique_tags.set(tag_name, [test])
+                    self._tagit[tag_name] = [tag]
 
         return sorted(self._unique_tags.items(), key=lambda x: len(x[1]), reverse=True)
 
@@ -184,7 +191,7 @@ class ViewAllTagsDialog(wx.Frame):
     def OnRename(self, event):
         tests,tag_name = self._tags_list.GetClientData(self._index)
         tags_to_rename = self._tagit[tag_name]
-        name = wx.GetTextFromUser(message="Old name for the tag is '%s'" % tag_name, default_value=tag_name, caption='Rename a tag')
+        name = wx.GetTextFromUser(message="Renaming tag '%s'." % tag_name, default_value=tag_name, caption='Rename')
         if name:
             for tag in tags_to_rename:
                 tag.controller.execute(ChangeTag(tag, name))
@@ -195,10 +202,10 @@ class ViewAllTagsDialog(wx.Frame):
     def OnDelete(self, event):
         tests,tag_name = self._tags_list.GetClientData(self._index)
         tags_to_delete = self._tagit[tag_name]
-        if wx.MessageBox("Delete a tag '%s'" % tag_name, caption='Confirm',
+        if wx.MessageBox("Delete a tag '%s' ?" % tag_name, caption='Confirm',
             style=wx.YES_NO | wx.ICON_QUESTION) == wx.YES:
             for tag in tags_to_delete:
-                tag.controller.execute(ChangeTag(tag, "", "DELETE"))
+                tag.execute(DeleteTag())
             self._execute()
             for tag_name, tests in self._results:
                 self.tree.DeselectTests(tests)

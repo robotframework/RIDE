@@ -139,22 +139,17 @@ class CopyMacroAs(_Command):
 
 class ChangeTag(_Command):
 
-    def __init__(self, tag, value, operation = 'RENAME'):
+    def __init__(self, tag, value):
         self._tag = tag
         self._value = value.strip()
-        self._operation = operation
 
     def _params(self):
         return (self._tag, self._value)
 
     def execute(self, context):
         tags = [tag for tag in context if tag.controller == context]
-        if self._operation == 'RENAME':
-            context.set_value(self._create_value(tags))
-            context.notify_value_changed()
-        elif self._operation == 'DELETE':
-            context.clear()
-            context.notify_value_changed()
+        context.set_value(self._create_value(tags))
+        context.notify_value_changed()
 
     def _create_value(self, old_values):
         if old_values == [] and self._tag.is_empty():
@@ -169,6 +164,11 @@ class ChangeTag(_Command):
         else:
             return [v.name if v != self._tag else self._value for v in old_values]
 
+class DeleteTag(_Command):
+
+    def execute(self, tag):
+        tag.delete()
+        tag.controller.notify_value_changed()
 
 class _ReversibleCommand(_Command):
 

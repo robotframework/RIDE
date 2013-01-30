@@ -193,6 +193,13 @@ class Tags(Setting):
         tags.value = (self.value or []) + (other.value or [])
         return tags
 
+    def __len__(self):
+        return len(self.value) or 0
+
+    def remove(self, item):
+        if item in self.value:
+            self.value.remove(item)
+
 
 class Arguments(Setting):
     pass
