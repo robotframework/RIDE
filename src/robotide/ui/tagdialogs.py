@@ -93,8 +93,9 @@ class ViewAllTagsDialog(wx.Frame):
         self.unique_tags = 0
 
         for tag_name, tests in self._results:
+            utf8_tag_name = tag_name.encode('UTF-8')
             self._tags_list.SetClientData(self.unique_tags, (tests,tag_name))
-            self._tags_list.InsertStringItem(self.unique_tags, str(tag_name))
+            self._tags_list.InsertStringItem(self.unique_tags, str(utf8_tag_name))
             self.tagged_test_cases += tests
             occurrences = len(tests)
             self._tags_list.SetStringItem(self.unique_tags, 1, str(occurrences))
