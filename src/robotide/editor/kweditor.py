@@ -407,7 +407,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         else:
             event.Skip()
 
-    def OnGotoDefinition(self, event):
+    def OnGoToDefinition(self, event):
         self._navigate_to_matching_user_keyword(self.GetGridCursorRow(), self.GetGridCursorCol())
 
     def _show_cell_information(self):

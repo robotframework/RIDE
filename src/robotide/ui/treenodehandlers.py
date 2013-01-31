@@ -293,10 +293,10 @@ class TestDataDirectoryHandler(TestDataHandler):
                               _ActionHandler._label_expand_all,
                               _ActionHandler._label_collapse_all])
 
-    def OnExpandall(self, event):
+    def OnExpandAll(self, event):
         self._tree.ExpandAllSubNodes(self._node)
 
-    def OnCollapseall(self, event):
+    def OnCollapseAll(self, event):
         self._tree.CollapseAllSubNodes(self._node)
 
     def OnNewSuite(self, event):
