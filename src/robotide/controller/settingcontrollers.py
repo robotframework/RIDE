@@ -192,7 +192,7 @@ class TagsController(_SettingController):
         self._tags = tags
 
     def empty_tag(self):
-        return Tag(None, controller=self)
+        return Tag("", controller=self)
 
     def _changed(self, value):
         return self._tags.value != self._split_from_separators(value)
@@ -233,7 +233,7 @@ class TagsController(_SettingController):
 class DefaultTagsController(TagsController):
 
     def empty_tag(self):
-        return DefaultTag(None, controller=self)
+        return DefaultTag("", controller=self)
 
     def __iter__(self):
         if self._tags.value is None:
@@ -244,7 +244,7 @@ class DefaultTagsController(TagsController):
 class ForceTagsController(TagsController):
 
     def empty_tag(self):
-        return ForcedTag(None, controller=self)
+        return ForcedTag("", controller=self)
 
     def __iter__(self):
         return self._recursive_gather_from(self.parent, []).__iter__()

@@ -129,7 +129,7 @@ class ViewAllTagsDialog(wx.Frame):
         for test in self.frame._controller.all_testcases():
             self._test_cases.append(test)
             for tag in test.tags:
-                if tag.is_empty():
+                if tag.is_empty() or len(unicode(tag).strip()) == 0:
                     continue
                 else:
                     tag_name = unicode(tag)
