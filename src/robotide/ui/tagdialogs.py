@@ -87,18 +87,16 @@ class ViewAllTagsDialog(wx.Frame):
 
     def _execute(self):
         self._clear_search_results()
-        self._results = self._search_results()
-        self.total_test_cases = len(self._test_cases)
+        self._search_for_tags()
+
         self.tagged_test_cases = list()
         self.unique_tags = 0
 
         for tag_name, tests in self._results:
-            utf8_tag_name = tag_name.encode('UTF-8')
             self._tags_list.SetClientData(self.unique_tags, (tests,tag_name))
-            self._tags_list.InsertStringItem(self.unique_tags, str(utf8_tag_name))
+            self._tags_list.InsertStringItem(self.unique_tags, unicode(tag_name))
             self.tagged_test_cases += tests
-            occurrences = len(tests)
-            self._tags_list.SetStringItem(self.unique_tags, 1, str(occurrences))
+            self._tags_list.SetStringItem(self.unique_tags, 1, str(len(tests)))
             self.unique_tags += 1
         self._tags_list.SetColumnWidth(1,wx.LIST_AUTOSIZE_USEHEADER)
         self._tags_list.setResizeColumn(1)
@@ -122,7 +120,7 @@ class ViewAllTagsDialog(wx.Frame):
     def _add_view_components(self):
         pass
 
-    def _search_results(self):
+    def _search_for_tags(self):
         self._unique_tags = NormalizedDict()
         self._tagit = dict()
         self._test_cases = list()
@@ -140,7 +138,8 @@ class ViewAllTagsDialog(wx.Frame):
                     self._unique_tags.set(tag_name, [test])
                     self._tagit[tag_name] = [tag]
 
-        return sorted(self._unique_tags.items(), key=lambda x: len(x[1]), reverse=True)
+        self.total_test_cases = len(self._test_cases)
+        self._results = sorted(self._unique_tags.items(), key=lambda x: len(x[1]), reverse=True)
 
     def GetListCtrl(self):
         return self._tags_list
