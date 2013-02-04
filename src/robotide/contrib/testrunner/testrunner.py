@@ -290,28 +290,22 @@ class Process(object):
             self._kill(killer_pid or self._process.pid)
 
     def _signal_kill_with_listener_server(self, killer_port):
+        self._send_socket(killer_port, 'kill\n')
+
+    def _send_socket(self, port, data):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.connect(('localhost', killer_port))
-        sock.send('kill\n')
+        sock.connect(('localhost', port))
+        sock.send(data)
         sock.close()
 
     def pause(self, port):
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.connect(('localhost', port))
-        sock.send('pause\n')
-        sock.close()
+        self._send_socket(port, 'pause\n')
 
     def resume(self, port):
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.connect(('localhost', port))
-        sock.send('resume\n')
-        sock.close()
+        self._send_socket(port, 'resume\n')
 
     def step_next(self, port):
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.connect(('localhost', port))
-        sock.send('step_next\n')
-        sock.close()
+        self._send_socket(port, 'step_next\n')
 
     def _kill(self, pid):
         if pid:
