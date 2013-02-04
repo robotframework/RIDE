@@ -215,9 +215,11 @@ class TestsDialog(Dialog):
     def OnSwitchFields(self, event):
         include_txt = self._tags_to_include_text.GetValue()
         exclude_txt = self._tags_to_exclude_text.GetValue()
-        self._tags_to_include_text.SetValue(exclude_txt)
-        self._tags_to_exclude_text.SetValue(include_txt)
-        self.OnSearchTags(event)
+
+        if len(include_txt.strip()) > 0 or len(exclude_txt.strip()) > 0:
+            self._tags_to_include_text.SetValue(exclude_txt)
+            self._tags_to_exclude_text.SetValue(include_txt)
+            self.OnSearchTags(event)
 
 class _TestSearchListModel(ListModel):
 
