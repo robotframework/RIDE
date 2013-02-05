@@ -660,8 +660,10 @@ class TestRunnerPlugin(Plugin):
         if event == 'log_message':
             self._handle_log_message(args)
         if event == 'paused':
+            self._set_paused()
             self._append_to_message_log('<<  PAUSED  >>')
         if event == 'continue':
+            self._set_running()
             self._append_to_message_log('<< CONTINUE >>')
 
     def _handle_start_test(self, args):
@@ -703,26 +705,36 @@ class TestRunnerPlugin(Plugin):
                 message = '\n'+message
             self._messages_log_texts.put(prefix+message)
 
-    def _set_state(self, state):
-        if state == "running":
-            self._set_running()
-        else:
-            self._set_stopped()
-
     def _set_running(self):
         self._run_action.disable()
         self._stop_action.enable()
         self.local_toolbar.EnableTool(ID_RUN, False)
         self.local_toolbar.EnableTool(ID_STOP, True)
+        self.local_toolbar.EnableTool(ID_PAUSE, True)
+        self.local_toolbar.EnableTool(ID_RESUME, False)
+        self.local_toolbar.EnableTool(ID_STEP_OVER, False)
         self._running = True
         self._test_runner.test_execution_started()
 
+    def _set_paused(self):
+        self._run_action.disable()
+        self._stop_action.enable()
+        self.local_toolbar.EnableTool(ID_RUN, False)
+        self.local_toolbar.EnableTool(ID_STOP, True)
+        self.local_toolbar.EnableTool(ID_PAUSE, False)
+        self.local_toolbar.EnableTool(ID_RESUME, True)
+        self.local_toolbar.EnableTool(ID_STEP_OVER, True)
+        self._running = True
+        self._test_runner.test_execution_started()
 
     def _set_stopped(self):
         self._run_action.enable()
         self._stop_action.disable()
         self.local_toolbar.EnableTool(ID_RUN, True)
         self.local_toolbar.EnableTool(ID_STOP, False)
+        self.local_toolbar.EnableTool(ID_PAUSE, False)
+        self.local_toolbar.EnableTool(ID_RESUME, False)
+        self.local_toolbar.EnableTool(ID_STEP_OVER, False)
         self._running = False
 
 

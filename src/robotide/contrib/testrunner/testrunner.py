@@ -290,6 +290,7 @@ class Process(object):
             self._kill(killer_pid or self._process.pid)
 
     def _signal_kill_with_listener_server(self, killer_port):
+        self.resume(killer_port)
         self._send_socket(killer_port, 'kill\n')
 
     def _send_socket(self, port, data):

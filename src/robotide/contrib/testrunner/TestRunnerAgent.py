@@ -195,7 +195,7 @@ class RobotDebugger(object):
         self.pause_lock = threading.RLock()
         self.stepper_lock = threading.RLock()
         self._paused = False
-        self._pause_flag_lock = threading.Lock()
+        self._pause_flag_lock = threading.RLock()
 
     def pause(self):
         with self._pause_flag_lock:
