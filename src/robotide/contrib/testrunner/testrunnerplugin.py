@@ -665,7 +665,7 @@ class TestRunnerPlugin(Plugin):
             self._set_paused()
             self._append_to_message_log('<<  PAUSED  >>')
         if event == 'continue':
-            self._set_running()
+            self._set_continue()
             self._append_to_message_log('<< CONTINUE >>')
 
     def _handle_start_test(self, args):
@@ -718,6 +718,11 @@ class TestRunnerPlugin(Plugin):
         self._run_action.disable()
         self._stop_action.enable()
         self._enable_toolbar(False, True, False, True, True)
+
+    def _set_continue(self):
+        self._run_action.disable()
+        self._stop_action.enable()
+        self._enable_toolbar(False, True, True, False, False)
 
     def _set_stopped(self):
         self._run_action.enable()
