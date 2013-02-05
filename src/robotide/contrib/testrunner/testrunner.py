@@ -47,6 +47,8 @@ from robotide.controller.testexecutionresults import TestExecutionResults
 import robotide.utils as utils
 
 
+ATEXIT_LOCK = threading.RLock()
+
 class TestRunner(object):
 
     def __init__(self, chief):
@@ -74,8 +76,9 @@ class TestRunner(object):
         # days old...
 
     def _remove_temporary_directory(self):
-        if os.path.exists(self._output_dir):
-            shutil.rmtree(self._output_dir)
+        with ATEXIT_LOCK:
+            if os.path.exists(self._output_dir):
+                shutil.rmtree(self._output_dir)
 
     def add_profile(self, name, item):
         self.profiles[name] = item
