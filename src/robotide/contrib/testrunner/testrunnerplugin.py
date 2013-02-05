@@ -708,33 +708,22 @@ class TestRunnerPlugin(Plugin):
     def _set_running(self):
         self._run_action.disable()
         self._stop_action.enable()
-        self.local_toolbar.EnableTool(ID_RUN, False)
-        self.local_toolbar.EnableTool(ID_STOP, True)
-        self.local_toolbar.EnableTool(ID_PAUSE, True)
-        self.local_toolbar.EnableTool(ID_RESUME, False)
-        self.local_toolbar.EnableTool(ID_STEP_OVER, False)
+        for id, enabled in ((ID_RUN, False), (ID_STOP, True), (ID_PAUSE, True), (ID_RESUME, False), (ID_STEP_OVER, False)):
+            self.local_toolbar.EnableTool(id, enabled)
         self._running = True
         self._test_runner.test_execution_started()
 
     def _set_paused(self):
         self._run_action.disable()
         self._stop_action.enable()
-        self.local_toolbar.EnableTool(ID_RUN, False)
-        self.local_toolbar.EnableTool(ID_STOP, True)
-        self.local_toolbar.EnableTool(ID_PAUSE, False)
-        self.local_toolbar.EnableTool(ID_RESUME, True)
-        self.local_toolbar.EnableTool(ID_STEP_OVER, True)
-        self._running = True
-        self._test_runner.test_execution_started()
+        for id, enabled in ((ID_RUN, False), (ID_STOP, True), (ID_PAUSE, False), (ID_RESUME, True), (ID_STEP_OVER, True)):
+            self.local_toolbar.EnableTool(id, enabled)
 
     def _set_stopped(self):
         self._run_action.enable()
         self._stop_action.disable()
-        self.local_toolbar.EnableTool(ID_RUN, True)
-        self.local_toolbar.EnableTool(ID_STOP, False)
-        self.local_toolbar.EnableTool(ID_PAUSE, False)
-        self.local_toolbar.EnableTool(ID_RESUME, False)
-        self.local_toolbar.EnableTool(ID_STEP_OVER, False)
+        for id, enabled in ((ID_RUN, True), (ID_STOP, False), (ID_PAUSE, False), (ID_RESUME, False), (ID_STEP_OVER, False)):
+            self.local_toolbar.EnableTool(id, enabled)
         self._running = False
 
 
