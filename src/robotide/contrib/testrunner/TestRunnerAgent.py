@@ -199,6 +199,8 @@ class RobotDebugger(object):
 
     def pause(self):
         with self._pause_flag_lock:
+            if self._paused:
+                return
             self.pause_lock.acquire()
             self._paused = True
 
