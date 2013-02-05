@@ -710,35 +710,28 @@ class TestRunnerPlugin(Plugin):
     def _set_running(self):
         self._run_action.disable()
         self._stop_action.enable()
-        for id, enabled in ((ID_RUN, False),
-                            (ID_STOP, True),
-                            (ID_PAUSE, True),
-                            (ID_RESUME, False),
-                            (ID_STEP_OVER, False)):
-            self.local_toolbar.EnableTool(id, enabled)
+        self._enable_toolbar(False, True, True, False, False)
         self._running = True
         self._test_runner.test_execution_started()
 
     def _set_paused(self):
         self._run_action.disable()
         self._stop_action.enable()
-        for id, enabled in ((ID_RUN, False),
-                            (ID_STOP, True),
-                            (ID_PAUSE, False),
-                            (ID_RESUME, True),
-                            (ID_STEP_OVER, True)):
-            self.local_toolbar.EnableTool(id, enabled)
+        self._enable_toolbar(False, True, False, True, True)
 
     def _set_stopped(self):
         self._run_action.enable()
         self._stop_action.disable()
-        for id, enabled in ((ID_RUN, True),
-                            (ID_STOP, False),
-                            (ID_PAUSE, False),
-                            (ID_RESUME, False),
-                            (ID_STEP_OVER, False)):
-            self.local_toolbar.EnableTool(id, enabled)
+        self._enable_toolbar(True, False, False, False, False)
         self._running = False
+
+    def _enable_toolbar(self, run, stop, pause, resume, step_over):
+        for id, enabled in ((ID_RUN, run),
+                            (ID_STOP, stop),
+                            (ID_PAUSE, pause),
+                            (ID_RESUME, resume),
+                            (ID_STEP_OVER, step_over)):
+            self.local_toolbar.EnableTool(id, enabled)
 
 
 class ProgressBar(wx.Panel):
