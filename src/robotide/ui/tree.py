@@ -163,7 +163,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
             self.SetItemTextColour(node, self._get_resource_text_color(resource_controller))
 
     def _get_resource_text_color(self, resource_controller):
-        return self.GetDefaultAttributes().colFg if resource_controller.is_used() else 'grey'
+        return self.GetDefaultAttributes().colFg if resource_controller.is_used() else wx.LIGHT_GREY
 
     def _testing_started(self, message):
         self._for_all_drawn_tests(self._root, lambda t: self.SetItemImage(t, ROBOT_IMAGE_INDEX))
@@ -178,6 +178,9 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         if not node:
             return
         self.SetItemImage(node, self._get_icon_index_for(controller))
+
+        if self._execution_results.is_running(controller):
+            self.SelectItem(node)
 
     def _get_icon_index_for(self, controller):
         if not self._execution_results:
@@ -584,7 +587,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
 
     def OnSelChanged(self, event):
         node = event.GetItem()
-        if not node.IsOk() or self._dragging:
+        if not node.IsOk() or self._dragging or self._execution_results is not None:
             event.Skip()
             return
         self._controller.add_to_history(node)
