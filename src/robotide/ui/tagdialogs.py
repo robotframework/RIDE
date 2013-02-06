@@ -34,6 +34,7 @@ class ViewAllTagsDialog(wx.Frame):
         self.tagged_test_cases = list()
         self.unique_tags = 0
         self.total_test_cases = 0
+        self._index = -1
         self._build_ui()
         self._make_bindings()
         self._execute()
@@ -189,16 +190,21 @@ class ViewAllTagsDialog(wx.Frame):
                                                                   "Show tests without this tag"]),
                                       self._controller)
 
-
     def OnShowTestsWithThisTag(self, event):
+        if self._index == -1:
+            return
         tests,tag_name = self._tags_list.GetClientData(self._index)
         RideOpenTagSearch(includes=tag_name, excludes="").publish()
 
     def OnShowTestsWithoutThisTag(self, event):
+        if self._index == -1:
+            return
         tests,tag_name = self._tags_list.GetClientData(self._index)
         RideOpenTagSearch(includes="", excludes=tag_name).publish()
 
     def OnRename(self, event):
+        if self._index == -1:
+            return
         tests,tag_name = self._tags_list.GetClientData(self._index)
         tags_to_rename = self._tagit[tag_name]
         name = wx.GetTextFromUser(message="Renaming tag '%s'." % tag_name, default_value=tag_name, caption='Rename')
@@ -210,6 +216,8 @@ class ViewAllTagsDialog(wx.Frame):
                 self.tree.DeselectTests(tests)
 
     def OnDelete(self, event):
+        if self._index == -1:
+            return
         tests,tag_name = self._tags_list.GetClientData(self._index)
         tags_to_delete = self._tagit[tag_name]
         if wx.MessageBox("Delete a tag '%s' ?" % tag_name, caption='Confirm',
