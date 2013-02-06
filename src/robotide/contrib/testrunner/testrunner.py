@@ -290,6 +290,7 @@ class Process(object):
             return
         if force:
             self._process.kill()
+        self.resume() # Send so that RF is not blocked
         if IS_WINDOWS and not self._kill_called and self._port is not None:
             self._signal_kill_with_listener_server()
             self._kill_called = True
@@ -297,8 +298,7 @@ class Process(object):
             self._kill(killer_pid or self._process.pid)
 
     def _signal_kill_with_listener_server(self):
-        self.resume()
-        self._send_socket('kill\n')
+        self._send_socket('kill')
 
     def _send_socket(self, data):
         try:
@@ -309,13 +309,13 @@ class Process(object):
             sock.close()
 
     def pause(self):
-        self._send_socket('pause\n')
+        self._send_socket('pause')
 
     def resume(self):
-        self._send_socket('resume\n')
+        self._send_socket('resume')
 
     def step_next(self):
-        self._send_socket('step_next\n')
+        self._send_socket('step_next')
 
     def _kill(self, pid):
         if pid:

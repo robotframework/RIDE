@@ -192,7 +192,7 @@ class TestRunnerAgent:
 class RobotDebugger(object):
 
     def __init__(self):
-        self.pause_lock = threading.RLock()
+        self.pause_semaphore = threading.Semaphore()
         self.stepper_lock = threading.RLock()
         self._paused = False
         self._pause_flag_lock = threading.RLock()
@@ -201,27 +201,27 @@ class RobotDebugger(object):
         with self._pause_flag_lock:
             if self._paused:
                 return
-            self.pause_lock.acquire()
+            self.pause_semaphore.acquire()
             self._paused = True
 
     def resume(self):
         with self._pause_flag_lock:
             if not self._paused:
                 return
-            self.pause_lock.release()
+            self.pause_semaphore.release()
             self._paused = False
 
     def step_next(self):
         with self._pause_flag_lock:
             if not self._paused:
                 return
-            self.pause_lock.release()
+            self.pause_semaphore.release()
             with self.stepper_lock:
-                self.pause_lock.acquire()
+                self.pause_semaphore.acquire()
 
     def start_keyword(self):
         with self.stepper_lock:
-            with self.pause_lock:
+            with self.pause_semaphore:
                 pass
 
     def end_keyword(self):
