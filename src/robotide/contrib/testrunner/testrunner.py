@@ -102,8 +102,8 @@ class TestRunner(object):
     def _result_handler(self, event, *args):
         if event == 'pid':
             self._pid_to_kill = int(args[0])
-        if event == 'port':
-            self._killer_port = args[0]
+        if event == 'port' and self._process:
+            self._process.set_port(args[0])
         if event == 'start_test':
             longname = args[1]['longname']
             testname = args[0]
@@ -136,23 +136,22 @@ class TestRunner(object):
 
     def send_stop_signal(self):
         if self._process:
-            self._process.kill(killer_pid=self._pid_to_kill, killer_port=self._killer_port)
+            self._process.kill(killer_pid=self._pid_to_kill)
 
     def send_pause_signal(self):
         if self._process:
-            self._process.pause(port=self._killer_port)
+            self._process.pause()
 
     def send_resume_signal(self):
         if self._process:
-            self._process.resume(port=self._killer_port)
+            self._process.resume()
 
     def send_step_next_signal(self):
         if self._process:
-            self._process.step_next(port=self._killer_port)
+            self._process.step_next()
 
     def run_command(self, command, cwd):
         self._pid_to_kill = None
-        self._killer_port = None
         self._process = Process(cwd)
         self._process.run_command(command)
 
@@ -231,6 +230,7 @@ class TestRunner(object):
         return self._process and self._process.is_alive()
 
     def command_ended(self):
+        self._process.close_connection()
         self._process = None
 
 
@@ -241,6 +241,8 @@ class Process(object):
         self._error_stream = None
         self._output_stream = None
         self._cwd = cwd
+        self._port = None
+        self._sock = None
 
     def run_command(self, command):
         # We need to supply an stdin for subprocess, because otherways in pythonw
@@ -269,6 +271,9 @@ class Process(object):
         self._error_stream.run()
         self._kill_called = False
 
+    def set_port(self, port):
+        self._port = port
+
     def get_output(self):
         return self._output_stream.pop()
 
@@ -281,35 +286,43 @@ class Process(object):
     def wait(self):
         self._process.wait()
 
-    def kill(self, force=False, killer_port=None, killer_pid=None):
+    def kill(self, force=False, killer_pid=None):
         if not self._process:
             return
         if force:
             self._process.kill()
-        if IS_WINDOWS and not self._kill_called and killer_port:
-            self._signal_kill_with_listener_server(killer_port)
+        if IS_WINDOWS and not self._kill_called and self._port is not None:
+            self._signal_kill_with_listener_server()
             self._kill_called = True
         else:
             self._kill(killer_pid or self._process.pid)
 
-    def _signal_kill_with_listener_server(self, killer_port):
-        self.resume(killer_port)
-        self._send_socket(killer_port, 'kill\n')
+    def _signal_kill_with_listener_server(self):
+        self.resume()
+        self._send_socket('kill\n')
 
-    def _send_socket(self, port, data):
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.connect(('localhost', port))
-        sock.send(data)
-        sock.close()
+    def _send_socket(self, data):
+        try:
+            self._connect()
+            self._sock.send(data)
+        finally:
+            self.close_connection()
 
-    def pause(self, port):
-        self._send_socket(port, 'pause\n')
+    def _connect(self):
+        self._sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self._sock.connect(('localhost', self._port))
 
-    def resume(self, port):
-        self._send_socket(port, 'resume\n')
+    def close_connection(self):
+        self._sock.close()
 
-    def step_next(self, port):
-        self._send_socket(port, 'step_next\n')
+    def pause(self):
+        self._send_socket('pause\n')
+
+    def resume(self):
+        self._send_socket('resume\n')
+
+    def step_next(self):
+        self._send_socket('step_next\n')
 
     def _kill(self, pid):
         if pid:
