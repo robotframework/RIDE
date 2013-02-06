@@ -74,7 +74,7 @@ from robotide.context import IS_WINDOWS, IS_MAC
 ID_RUN = wx.NewId()
 ID_STOP = wx.NewId()
 ID_PAUSE = wx.NewId()
-ID_RESUME = wx.NewId()
+ID_CONTINUE = wx.NewId()
 ID_STEP_OVER = wx.NewId()
 ID_SHOW_REPORT = wx.NewId()
 ID_SHOW_LOG = wx.NewId()
@@ -249,9 +249,9 @@ class TestRunnerPlugin(Plugin):
         self._AppendText(self.out, '[ SENDING PAUSE SIGNAL ]\n')
         self._test_runner.send_pause_signal()
 
-    def OnResume(self, event):
-        self._AppendText(self.out, '[ SENDING RESUME SIGNAL ]\n')
-        self._test_runner.send_resume_signal()
+    def OnContinue(self, event):
+        self._AppendText(self.out, '[ SENDING CONTINUE SIGNAL ]\n')
+        self._test_runner.send_continue_signal()
 
     def OnStepOver(self, event):
         self._AppendText(self.out, '[ SENDING STEP NEXT SIGNAL ]\n')
@@ -504,8 +504,8 @@ class TestRunnerPlugin(Plugin):
                              longHelp="Stop a running test")
         toolbar.AddLabelTool(ID_PAUSE, "Pause", ImageProvider().TOOLBAR_PAUSE,
             shortHelp="Pause test execution", longHelp="Pause test execution")
-        toolbar.AddLabelTool(ID_RESUME, "Resume", ImageProvider().TOOLBAR_RESUME,
-            shortHelp="Resume test execution", longHelp="Resume test execution")
+        toolbar.AddLabelTool(ID_CONTINUE, "Continue", ImageProvider().TOOLBAR_CONTINUE,
+            shortHelp="Continue test execution", longHelp="Continue test execution")
         toolbar.AddLabelTool(ID_STEP_OVER, "Next", ImageProvider().TOOLBAR_NEXT,
                     shortHelp="Step next", longHelp="Step next")
         toolbar.AddSeparator()
@@ -537,7 +537,7 @@ class TestRunnerPlugin(Plugin):
             (wx.EVT_TOOL, self.OnRun, ID_RUN),
             (wx.EVT_TOOL, self.OnStop, ID_STOP),
             (wx.EVT_TOOL, self.OnPause, ID_PAUSE),
-            (wx.EVT_TOOL, self.OnResume, ID_RESUME),
+            (wx.EVT_TOOL, self.OnContinue, ID_CONTINUE),
             (wx.EVT_TOOL, self.OnStepOver, ID_STEP_OVER),
             (wx.EVT_TOOL, self.OnShowReport, ID_SHOW_REPORT),
             (wx.EVT_TOOL, self.OnShowLog, ID_SHOW_LOG)):
@@ -734,7 +734,7 @@ class TestRunnerPlugin(Plugin):
         for id, enabled in ((ID_RUN, run),
                             (ID_STOP, stop),
                             (ID_PAUSE, pause),
-                            (ID_RESUME, resume),
+                            (ID_CONTINUE, resume),
                             (ID_STEP_OVER, step_over)):
             self.local_toolbar.EnableTool(id, enabled)
 

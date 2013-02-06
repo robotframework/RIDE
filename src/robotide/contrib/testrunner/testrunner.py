@@ -142,7 +142,7 @@ class TestRunner(object):
         if self._process:
             self._process.pause()
 
-    def send_resume_signal(self):
+    def send_continue_signal(self):
         if self._process:
             self._process.resume()
 

@@ -42,7 +42,7 @@ class ImageProvider(object):
         self.TOOLBAR_PLAY = self._load_image('control_play.png')
         self.TOOLBAR_STOP = self._load_image('control_stop.png')
         self.TOOLBAR_PAUSE = self._load_image('control_pause.png')
-        self.TOOLBAR_RESUME = self._load_image('control_play.png')
+        self.TOOLBAR_CONTINUE = self._load_image('control_play.png')
         self.TOOLBAR_NEXT = self._load_image('control_fastforward.png')
         self.SWITCH_FIELDS_ICON = self._load_image('switch.png')
         self._build_icons()
