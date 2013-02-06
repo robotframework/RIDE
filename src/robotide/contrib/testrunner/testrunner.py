@@ -230,7 +230,6 @@ class TestRunner(object):
         return self._process and self._process.is_alive()
 
     def command_ended(self):
-        self._process.close_connection()
         self._process = None
 
 
@@ -303,17 +302,11 @@ class Process(object):
 
     def _send_socket(self, data):
         try:
-            self._connect()
-            self._sock.send(data)
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.connect(('localhost', self._port))
+            sock.send(data)
         finally:
-            self.close_connection()
-
-    def _connect(self):
-        self._sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self._sock.connect(('localhost', self._port))
-
-    def close_connection(self):
-        self._sock.close()
+            sock.close()
 
     def pause(self):
         self._send_socket('pause\n')
