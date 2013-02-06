@@ -31,7 +31,13 @@ from robotide.pluginapi import (Plugin, RideSaving, TreeAwarePluginMixin,
         RideOpenSuite, RideDataChangedToDirty)
 from robotide.widgets.text import TextField
 from robotide.widgets.label import Label
-
+try:
+    from pygments.lexer import _robotframeworklexer as robotframeworklexer
+except ImportError:
+    try:
+        import robotframeworklexer
+    except ImportError:
+        robotframeworklexer = None
 
 
 class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
@@ -439,22 +445,70 @@ class RobotDataEditor(stc.StyledTextCtrl):
 
     def __init__(self, parent):
         stc.StyledTextCtrl.__init__(self, parent)
-        self.StyleSetSpec(stc.STC_STYLE_DEFAULT, 'fore:#000000,back:#FFFFFF,face:Courier New,size:12')
         self.SetMarginType(0, stc.STC_MARGIN_NUMBER)
         self.SetMarginWidth(0, self.TextWidth(stc.STC_STYLE_LINENUMBER,'1234'))
         self.SetReadOnly(True)
+        self.SetLexer(stc.STC_LEX_CONTAINER)
+        self.Bind(stc.EVT_STC_STYLENEEDED, self.OnStyle)
+        self.stylizer = RobotStylizer(self)
 
     def set_text(self, text):
         self.SetReadOnly(False)
         self.SetText(text)
+        self.stylizer.stylize()
         self.EmptyUndoBuffer()
 
     @property
     def utf8_text(self):
         return self.GetText().encode('UTF-8')
 
+    def OnStyle(self, event):
+        self.stylizer.stylize()
+
 
 class FromStringIOPopulator(FromFilePopulator):
 
     def populate(self, content):
         TxtReader().read(content, self)
+
+class RobotStylizer(object):
+    def __init__(self, editor):
+        self.editor = editor
+        if robotframeworklexer:
+            self.lexer = robotframeworklexer.RobotFrameworkLexer()
+            self._set_styles()
+
+    def _set_styles(self):
+        styles = {
+            robotframeworklexer.ARGUMENT: dict(fore='#bb8844'),
+            robotframeworklexer.COMMENT: dict(),
+            robotframeworklexer.ERROR: dict(),
+            robotframeworklexer.GHERKIN: dict(),
+            robotframeworklexer.HEADING: dict(fore='#999999', bold='true'),
+            robotframeworklexer.IMPORT: dict(fore='#555555'),
+            robotframeworklexer.KEYWORD: dict(fore='#990000', bold='true'),
+            robotframeworklexer.SEPARATOR: dict(),
+            robotframeworklexer.SETTING: dict(bold='true'),
+            robotframeworklexer.SYNTAX: dict(),
+            robotframeworklexer.TC_KW_NAME: dict(fore='#aaaaaa'),
+            robotframeworklexer.VARIABLE: dict(fore='#008080')
+        }
+        self.tokens = {}
+        for index, token in enumerate(styles):
+            self.tokens[token] = index
+            self.editor.StyleSetSpec(index, self._get_style_string(**styles[token]))
+
+    def _get_word_and_length(self, current_position):
+        word = self.editor.GetTextRange(current_position, self.editor.WordEndPosition(current_position, False))
+        return word, len(word)
+
+    def _get_style_string(self, back='#FFFFFF', face='Courier New', size=14, fore='#000000', bold='true', underline=''):
+        return ','.join('%s:%s' % (name, value) for name, value in locals().items() if value)
+
+    def stylize(self):
+        if not self.lexer:
+            return
+        for position, token, value in self.lexer.get_tokens_unprocessed(self.editor.GetText()):
+            self.editor.StartStyling(position, 31)
+            self.editor.SetStyling(len(value), self.tokens[token])
+
