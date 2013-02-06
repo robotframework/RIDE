@@ -31,7 +31,13 @@ from robotide.pluginapi import (Plugin, RideSaving, TreeAwarePluginMixin,
         RideOpenSuite, RideDataChangedToDirty)
 from robotide.widgets.text import TextField
 from robotide.widgets.label import Label
-import robotframeworklexer
+try:
+    from pygments.lexer import _robotframeworklexer as robotframeworklexer
+except ImportError:
+    try:
+        import robotframeworklexer
+    except ImportError:
+        robotframeworklexer = None
 
 
 class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
@@ -468,8 +474,9 @@ class FromStringIOPopulator(FromFilePopulator):
 class RobotStylizer(object):
     def __init__(self, editor):
         self.editor = editor
-        self._set_styles()
-        self.lexer = robotframeworklexer.RobotFrameworkLexer()
+        if robotframeworklexer:
+            self.lexer = robotframeworklexer.RobotFrameworkLexer()
+            self._set_styles()
 
     def _set_styles(self):
         styles = {
@@ -499,6 +506,8 @@ class RobotStylizer(object):
         return ','.join('%s:%s' % (name, value) for name, value in locals().items() if value)
 
     def stylize(self):
+        if not self.lexer:
+            return
         for position, token, value in self.lexer.get_tokens_unprocessed(self.editor.GetText()):
             self.editor.StartStyling(position, 31)
             self.editor.SetStyling(len(value), self.tokens[token])
