@@ -32,7 +32,7 @@ from robotide.pluginapi import (Plugin, RideSaving, TreeAwarePluginMixin,
 from robotide.widgets.text import TextField
 from robotide.widgets.label import Label
 try:
-    from pygments.lexer import _robotframeworklexer as robotframeworklexer
+    from pygments.lexers import _robotframeworklexer as robotframeworklexer
 except ImportError:
     try:
         import robotframeworklexer
