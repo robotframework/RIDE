@@ -474,6 +474,7 @@ class FromStringIOPopulator(FromFilePopulator):
 class RobotStylizer(object):
     def __init__(self, editor):
         self.editor = editor
+        self.lexer = None
         if robotframeworklexer:
             self.lexer = robotframeworklexer.RobotFrameworkLexer()
             self._set_styles()
