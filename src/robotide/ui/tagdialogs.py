@@ -40,8 +40,9 @@ class ViewAllTagsDialog(wx.Frame):
         self._execute()
 
     def _build_ui(self):
-        self.SetSize((600,600))
-        self.SetPosition((500,300))
+        self.SetSize((400,400))
+        parent_x, parent_y = self.frame.GetPosition()
+        self.SetPosition((parent_x+50,parent_y+50))
         self.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DFACE))
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
         self._build_notebook()
@@ -54,9 +55,9 @@ class ViewAllTagsDialog(wx.Frame):
         sizer_tag_vw = wx.BoxSizer(wx.VERTICAL)
         panel_tag_vw.SetSizer(sizer_tag_vw)
         self._tags_list = TagsListCtrl(panel_tag_vw,style=wx.LC_REPORT)
-        self._tags_list.InsertColumn(0, "Tag", width=300)
+        self._tags_list.InsertColumn(0, "Tag", width=200)
         self._tags_list.InsertColumn(1, "Occurrences", width=25, format=wx.LIST_FORMAT_CENTER)
-        self._tags_list.SetMinSize((550, 250))
+        self._tags_list.SetMinSize((350, 250))
         self._tags_list.set_dialog(self)
         sizer_tag_vw.Add(self._tags_list, 1, wx.ALL | wx.EXPAND, 3)
         self._notebook.AddPage(panel_tag_vw, "The List")
