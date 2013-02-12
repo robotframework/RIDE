@@ -70,6 +70,7 @@ class TestDebugger(unittest.TestCase):
         started = threading.Event()
         first_keyword_done = threading.Event()
         second_keyword_done = threading.Event()
+        third_keyword_done = threading.Event()
         last_keyword_done = threading.Event()
 
         def test_execution():
@@ -77,20 +78,27 @@ class TestDebugger(unittest.TestCase):
             with self.kw():
                 first_keyword_done.set()
                 with self.kw():
+                    with self.kw():
+                        pass
+                    with self.kw():
+                        pass
                     second_keyword_done.set()
                 with self.kw():
-                    pass
-                with self.kw():
-                    pass
+                    third_keyword_done.set()
             with self.kw():
                 last_keyword_done.set()
 
         with self.execution(test_execution):
             self._verify_done(started)
             self.assertFalse(first_keyword_done.isSet())
-            self._debugger.step_over()
+            self._debugger.step_next()
             self._verify_done(first_keyword_done)
+            self.assertFalse(second_keyword_done.isSet())
+            self._debugger.step_over()
             self._verify_done(second_keyword_done)
+            self.assertFalse(third_keyword_done.isSet())
+            self._debugger.step_over()
+            self._verify_done(third_keyword_done)
             self.assertFalse(last_keyword_done.isSet())
             self._debugger.step_over()
             self._verify_done(last_keyword_done)
