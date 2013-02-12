@@ -192,6 +192,8 @@ class RobotDebugger(object):
 
     def __init__(self):
         self._state = 'running'
+        self._keyword_level = 0
+        self._pause_when_on_level = -1
         self._resume = threading.Event()
 
     def pause(self):
@@ -200,10 +202,15 @@ class RobotDebugger(object):
 
     def resume(self):
         self._state = 'running'
+        self._pause_when_on_level = -1
         self._resume.set()
 
     def step_next(self):
         self._state = 'step_next'
+        self._resume.set()
+
+    def step_over(self):
+        self._state = 'step_over'
         self._resume.set()
 
     def start_keyword(self):
@@ -212,9 +219,15 @@ class RobotDebugger(object):
             self._resume.clear()
         if self._state == 'step_next':
             self._state = 'pause'
+        elif self._state == 'step_over':
+            self._pause_when_on_level = self._keyword_level
+            self._state = 'resume'
+        self._keyword_level += 1
 
     def end_keyword(self):
-        pass
+        self._keyword_level -= 1
+        if self._keyword_level == self._pause_when_on_level:
+            self._state = 'pause'
 
     def is_paused(self):
         return self._state == 'pause'
@@ -237,6 +250,8 @@ class RobotKillerHandler(SocketServer.StreamRequestHandler):
             self.server.debugger.resume()
         elif data == 'step_next':
             self.server.debugger.step_next()
+        elif data == 'step_over':
+            self.server.debugger.step_over()
 
     def _signal_kill(self):
         try:

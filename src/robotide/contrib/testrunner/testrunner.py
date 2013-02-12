@@ -150,6 +150,10 @@ class TestRunner(object):
         if self._process:
             self._process.step_next()
 
+    def send_step_over_signal(self):
+        if self._process:
+            self._process.step_over()
+
     def run_command(self, command, cwd):
         self._pid_to_kill = None
         self._process = Process(cwd)
@@ -301,6 +305,7 @@ class Process(object):
         self._send_socket('kill')
 
     def _send_socket(self, data):
+        sock = None
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.connect(('localhost', self._port))
@@ -316,6 +321,9 @@ class Process(object):
 
     def step_next(self):
         self._send_socket('step_next')
+
+    def step_over(self):
+        self._send_socket('step_over')
 
     def _kill(self, pid):
         if pid:

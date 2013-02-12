@@ -75,6 +75,7 @@ ID_RUN = wx.NewId()
 ID_STOP = wx.NewId()
 ID_PAUSE = wx.NewId()
 ID_CONTINUE = wx.NewId()
+ID_STEP_NEXT = wx.NewId()
 ID_STEP_OVER = wx.NewId()
 ID_SHOW_REPORT = wx.NewId()
 ID_SHOW_LOG = wx.NewId()
@@ -253,9 +254,13 @@ class TestRunnerPlugin(Plugin):
         self._AppendText(self.out, '[ SENDING CONTINUE SIGNAL ]\n')
         self._test_runner.send_continue_signal()
 
-    def OnStepOver(self, event):
+    def OnStepNext(self, event):
         self._AppendText(self.out, '[ SENDING STEP NEXT SIGNAL ]\n')
         self._test_runner.send_step_next_signal()
+
+    def OnStepOver(self, event):
+        self._AppendText(self.out, '[ SENDING STEP OVER SIGNAL ]\n')
+        self._test_runner.send_step_over_signal()
 
     def OnRun(self, event):
         '''Called when the user clicks the "Run" button'''
@@ -506,8 +511,10 @@ class TestRunnerPlugin(Plugin):
             shortHelp="Pause test execution", longHelp="Pause test execution")
         toolbar.AddLabelTool(ID_CONTINUE, "Continue", ImageProvider().TOOLBAR_CONTINUE,
             shortHelp="Continue test execution", longHelp="Continue test execution")
-        toolbar.AddLabelTool(ID_STEP_OVER, "Next", ImageProvider().TOOLBAR_NEXT,
+        toolbar.AddLabelTool(ID_STEP_NEXT, "Next", ImageProvider().TOOLBAR_NEXT,
                     shortHelp="Step next", longHelp="Step next")
+        toolbar.AddLabelTool(ID_STEP_OVER, "Step over", ImageProvider().TOOLBAR_NEXT,
+                    shortHelp="Step over", longHelp="Step over")
         toolbar.AddSeparator()
         toolbar.AddLabelTool(ID_SHOW_REPORT, " Report", reportImage,
                              shortHelp = localize_shortcuts("View Robot Report in Browser (CtrlCmd-R)"))
@@ -538,6 +545,7 @@ class TestRunnerPlugin(Plugin):
             (wx.EVT_TOOL, self.OnStop, ID_STOP),
             (wx.EVT_TOOL, self.OnPause, ID_PAUSE),
             (wx.EVT_TOOL, self.OnContinue, ID_CONTINUE),
+            (wx.EVT_TOOL, self.OnStepNext, ID_STEP_NEXT),
             (wx.EVT_TOOL, self.OnStepOver, ID_STEP_OVER),
             (wx.EVT_TOOL, self.OnShowReport, ID_SHOW_REPORT),
             (wx.EVT_TOOL, self.OnShowLog, ID_SHOW_LOG)):
@@ -710,31 +718,32 @@ class TestRunnerPlugin(Plugin):
     def _set_running(self):
         self._run_action.disable()
         self._stop_action.enable()
-        self._enable_toolbar(False, True, True, False, False)
+        self._enable_toolbar(False, True, True, False, False, False)
         self._running = True
         self._test_runner.test_execution_started()
 
     def _set_paused(self):
         self._run_action.disable()
         self._stop_action.enable()
-        self._enable_toolbar(False, True, False, True, True)
+        self._enable_toolbar(False, True, False, True, True, True)
 
     def _set_continue(self):
         self._run_action.disable()
         self._stop_action.enable()
-        self._enable_toolbar(False, True, True, False, False)
+        self._enable_toolbar(False, True, True, False, False, False)
 
     def _set_stopped(self):
         self._run_action.enable()
         self._stop_action.disable()
-        self._enable_toolbar(True, False, False, False, False)
+        self._enable_toolbar(True, False, False, False, False, False)
         self._running = False
 
-    def _enable_toolbar(self, run, stop, pause, resume, step_over):
+    def _enable_toolbar(self, run, stop, pause, resume, step_next, step_over):
         for id, enabled in ((ID_RUN, run),
                             (ID_STOP, stop),
                             (ID_PAUSE, pause),
                             (ID_CONTINUE, resume),
+                            (ID_STEP_NEXT, step_next),
                             (ID_STEP_OVER, step_over)):
             self.local_toolbar.EnableTool(id, enabled)
 

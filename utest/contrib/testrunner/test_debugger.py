@@ -57,5 +57,48 @@ class TestDebugger(unittest.TestCase):
     def _verify_done(self, event):
         self.assertTrue(event.wait(timeout=1.0) or event.isSet())
 
+    def test_step_over(self):
+        debugger = RobotDebugger()
+        debugger.pause()
+        started = threading.Event()
+        first_keyword_done = threading.Event()
+        second_keyword_done = threading.Event()
+        last_keyword_done = threading.Event()
+
+        def test_execution():
+            started.set()
+            debugger.start_keyword()
+            first_keyword_done.set()
+            debugger.start_keyword()
+            second_keyword_done.set()
+            debugger.start_keyword()
+            debugger.end_keyword()
+            debugger.start_keyword()
+            debugger.end_keyword()
+            debugger.end_keyword()
+            debugger.start_keyword()
+            debugger.end_keyword()
+            debugger.end_keyword()
+            debugger.start_keyword()
+            last_keyword_done.set()
+            debugger.end_keyword()
+
+        def debugger_signals():
+            self._verify_done(started)
+            self.assertFalse(first_keyword_done.isSet())
+            debugger.step_over()
+            self._verify_done(first_keyword_done)
+            self._verify_done(second_keyword_done)
+            self.assertFalse(last_keyword_done.isSet())
+            debugger.step_over()
+            self._verify_done(last_keyword_done)
+
+        t = threading.Thread(target=test_execution)
+        t.setDaemon(True)
+        t.start()
+        debugger_signals()
+        t.join()
+
+
 if __name__ == '__main__':
     unittest.main()
