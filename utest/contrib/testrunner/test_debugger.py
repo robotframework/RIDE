@@ -34,7 +34,7 @@ class TestDebugger(unittest.TestCase):
             with self.kw():
                 third_keyword_done.set()
 
-        def debugger_signals():
+        with self.execution(test_execution):
             self._verify_done(started)
             self.assertFalse(first_keyword_done.isSet())
             self._debugger.step_next()
@@ -47,11 +47,6 @@ class TestDebugger(unittest.TestCase):
             self._debugger.step_next()
             self._verify_done(third_keyword_done)
 
-        t = threading.Thread(target=test_execution)
-        t.setDaemon(True)
-        t.start()
-        debugger_signals()
-        t.join()
 
     def _verify_done(self, event):
         self.assertTrue(event.wait(timeout=1.0) or event.isSet())
@@ -61,6 +56,14 @@ class TestDebugger(unittest.TestCase):
         self._debugger.start_keyword()
         yield
         self._debugger.end_keyword()
+
+    @contextmanager
+    def execution(self, executed):
+        t = threading.Thread(target=executed)
+        t.setDaemon(True)
+        t.start()
+        yield
+        t.join()
 
     def test_step_over(self):
         self._debugger.pause()
@@ -82,7 +85,7 @@ class TestDebugger(unittest.TestCase):
             with self.kw():
                 last_keyword_done.set()
 
-        def debugger_signals():
+        with self.execution(test_execution):
             self._verify_done(started)
             self.assertFalse(first_keyword_done.isSet())
             self._debugger.step_over()
@@ -91,13 +94,6 @@ class TestDebugger(unittest.TestCase):
             self.assertFalse(last_keyword_done.isSet())
             self._debugger.step_over()
             self._verify_done(last_keyword_done)
-
-        t = threading.Thread(target=test_execution)
-        t.setDaemon(True)
-        t.start()
-        debugger_signals()
-        t.join()
-
 
 if __name__ == '__main__':
     unittest.main()
