@@ -662,10 +662,10 @@ class TestRunnerPlugin(Plugin):
         if event == 'log_message':
             self._handle_log_message(args)
         if event == 'paused':
-            self._set_paused()
+            wx.CallAfter(self._set_paused)
             self._append_to_message_log('<<  PAUSED  >>')
         if event == 'continue':
-            self._set_continue()
+            wx.CallAfter(self._set_continue)
             self._append_to_message_log('<< CONTINUE >>')
 
     def _handle_start_test(self, args):
