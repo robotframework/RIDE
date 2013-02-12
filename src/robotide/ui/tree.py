@@ -178,7 +178,6 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         if not node:
             return
         self.SetItemImage(node, self._get_icon_index_for(controller))
-
         if self._execution_results.is_running(controller):
             self.SelectItem(node)
 
