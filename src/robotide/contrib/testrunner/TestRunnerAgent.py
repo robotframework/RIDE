@@ -38,7 +38,6 @@ import os
 import socket
 import threading
 import SocketServer
-import time
 
 try:
     # RF 2.7.5
@@ -192,45 +191,33 @@ class TestRunnerAgent:
 class RobotDebugger(object):
 
     def __init__(self):
-        self.pause_semaphore = threading.Semaphore()
-        self.stepper_lock = threading.RLock()
-        self._paused = False
-        self._pause_flag_lock = threading.RLock()
+        self._state = 'running'
+        self._resume = threading.Event()
 
     def pause(self):
-        with self._pause_flag_lock:
-            if self._paused:
-                return
-            self.pause_semaphore.acquire()
-            self._paused = True
+        self._resume.clear()
+        self._state = 'pause'
 
     def resume(self):
-        with self._pause_flag_lock:
-            if not self._paused:
-                return
-            self.pause_semaphore.release()
-            self._paused = False
+        self._state = 'running'
+        self._resume.set()
 
     def step_next(self):
-        with self._pause_flag_lock:
-            if not self._paused:
-                return
-            self.pause_semaphore.release()
-            with self.stepper_lock:
-                self.pause_semaphore.acquire()
+        self._state = 'step_next'
+        self._resume.set()
 
     def start_keyword(self):
-        with self.stepper_lock:
-            with self.pause_semaphore:
-                pass
+        while self._state == 'pause':
+            self._resume.wait()
+            self._resume.clear()
+        if self._state == 'step_next':
+            self._state = 'pause'
 
     def end_keyword(self):
         pass
 
     def is_paused(self):
-        with self._pause_flag_lock:
-            return self._paused
-
+        return self._state == 'pause'
 
 
 class RobotKillerServer(SocketServer.TCPServer):
