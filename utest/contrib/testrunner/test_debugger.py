@@ -52,10 +52,10 @@ class TestDebugger(unittest.TestCase):
         self.assertTrue(event.wait(timeout=1.0) or event.isSet())
 
     @contextmanager
-    def kw(self):
+    def kw(self, passes=True):
         self._debugger.start_keyword()
         yield
-        self._debugger.end_keyword()
+        self._debugger.end_keyword(passes)
 
     @contextmanager
     def execution(self, executed):
@@ -102,6 +102,29 @@ class TestDebugger(unittest.TestCase):
             self.assertFalse(last_keyword_done.isSet())
             self._debugger.step_over()
             self._verify_done(last_keyword_done)
+
+    def test_pause_on_failure(self):
+        self._debugger.pause_on_failure()
+        before_failure = threading.Event()
+        after_failure = threading.Event()
+
+        def test_execution():
+            with self.kw():
+                pass
+            with self.kw():
+                pass
+            before_failure.set()
+            with self.kw(False):
+                pass
+            with self.kw():
+                pass
+            after_failure.set()
+
+        with self.execution(test_execution):
+            self._verify_done(before_failure)
+            self.assertFalse(after_failure.isSet())
+            self._debugger.resume()
+            self._verify_done(after_failure)
 
 if __name__ == '__main__':
     unittest.main()

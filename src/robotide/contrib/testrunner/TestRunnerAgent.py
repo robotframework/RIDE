@@ -139,7 +139,7 @@ class TestRunnerAgent:
 
     def end_keyword(self, name, attrs):
         self._send_socket("end_keyword", name, attrs)
-        self._debugger.end_keyword()
+        self._debugger.end_keyword(attrs['status']=='PASS')
 
     def message(self, message):
         pass
@@ -194,11 +194,15 @@ class RobotDebugger(object):
         self._state = 'running'
         self._keyword_level = 0
         self._pause_when_on_level = -1
+        self._pause_on_failure = False
         self._resume = threading.Event()
 
     def pause(self):
         self._resume.clear()
         self._state = 'pause'
+
+    def pause_on_failure(self):
+        self._pause_on_failure = True
 
     def resume(self):
         self._state = 'running'
@@ -224,9 +228,10 @@ class RobotDebugger(object):
             self._state = 'resume'
         self._keyword_level += 1
 
-    def end_keyword(self):
+    def end_keyword(self, passed=True):
         self._keyword_level -= 1
-        if self._keyword_level == self._pause_when_on_level:
+        if self._keyword_level == self._pause_when_on_level \
+        or (self._pause_on_failure and not passed):
             self._state = 'pause'
 
     def is_paused(self):
