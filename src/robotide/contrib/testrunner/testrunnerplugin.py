@@ -80,6 +80,7 @@ ID_STEP_OVER = wx.NewId()
 ID_SHOW_REPORT = wx.NewId()
 ID_SHOW_LOG = wx.NewId()
 ID_AUTOSAVE = wx.NewId()
+ID_PAUSE_ON_FAILURE = wx.NewId()
 ID_SHOW_MESSAGE_LOG = wx.NewId()
 STYLE_STDERR = 2
 
@@ -524,12 +525,17 @@ class TestRunnerPlugin(Plugin):
         # the toolbar API doesn't give us a way to specify padding which
         # is why the label has a couple spaces after the colon. gross,
         # but effective.
-        self.savecb = wx.CheckBox(toolbar, ID_AUTOSAVE, "Autosave")
+        self.savecb = wx.CheckBox(toolbar, ID_AUTOSAVE, " Autosave  ")
         self.savecb.SetToolTip(wx.ToolTip("Automatically save all changes before running"))
         self.savecb.SetValue(self.auto_save)
         toolbar.AddControl(self.savecb)
 
-        self.show_log_messages_checkbox = wx.CheckBox(toolbar, ID_SHOW_MESSAGE_LOG, 'Show message log')
+        self.pause_after_failure_cb = wx.CheckBox(toolbar, ID_PAUSE_ON_FAILURE, " Pause on failure  ")
+        self.pause_after_failure_cb.SetToolTip(wx.ToolTip("Automatically pause after failing keyword"))
+        self.pause_after_failure_cb.SetValue(False)
+        toolbar.AddControl(self.pause_after_failure_cb)
+
+        self.show_log_messages_checkbox = wx.CheckBox(toolbar, ID_SHOW_MESSAGE_LOG, ' Show message log  ')
         self.show_log_messages_checkbox.SetToolTip(wx.ToolTip('Show or hide message log'))
         self.show_log_messages_checkbox.SetValue(self.show_message_log)
         toolbar.AddControl(self.show_log_messages_checkbox)
