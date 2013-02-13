@@ -519,7 +519,6 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
     def _uncheck_tests(self, controller):
         self._test_selection_controller.unselect_all(controller.tests)
 
-
     def _start_silent_mode(self):
         self._silent_mode = True
 
