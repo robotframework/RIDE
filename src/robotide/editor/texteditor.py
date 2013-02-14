@@ -506,6 +506,7 @@ class RobotStylizer(object):
     def stylize(self):
         if not self.lexer:
             return
+        self.editor.ConvertEOLs(2)
         shift = 0
         for position, token, value in self.lexer.get_tokens_unprocessed(self.editor.GetText()):
             self.editor.StartStyling(position+shift, 31)
