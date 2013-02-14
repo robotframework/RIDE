@@ -148,7 +148,7 @@ class RowSplitter(object):
     def split(self, row):
         splitter = self._split_from_spaces \
             if not row.startswith('| ') else self._split_from_pipes
-        for value in splitter(row.rstrip()):
+        for value in splitter(row):
             yield value
         yield '\n'
 
