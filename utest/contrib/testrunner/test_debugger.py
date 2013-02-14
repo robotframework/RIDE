@@ -49,7 +49,7 @@ class TestDebugger(unittest.TestCase):
 
 
     def _verify_done(self, event):
-        self.assertTrue(event.wait(timeout=5.0) or event.isSet())
+        self.assertTrue(event.wait(timeout=10.0) or event.isSet())
 
     @contextmanager
     def kw(self, passes=True):
