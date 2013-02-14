@@ -512,21 +512,3 @@ class RobotStylizer(object):
             self.editor.SetStyling(len(value.encode('utf-8')), self.tokens[token])
             shift += len(value.encode('utf-8'))-len(value)
 
-
-if __name__ == '__main__':
-    class MyFrame(wx.Frame):
-        def __init__(self, parent, id, title):
-            wx.Frame.__init__(self, parent, id, title)
-    class MyMenuApp( wx.App):
-        def OnInit(self):
-            frame = MyFrame(None , -1, 'Textii')
-            sz = wx.BoxSizer()
-            editor = RobotDataEditor(frame)
-            sz.Add(editor, 0, wx.GROW|wx.ALL, 5)
-            editor.set_text('')
-            frame.Show(True)
-            self.SetTopWindow(frame)
-            return True
-    # Run program
-    app=MyMenuApp(0)
-    app.MainLoop()
