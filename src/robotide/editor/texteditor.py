@@ -31,14 +31,11 @@ from robotide.pluginapi import (Plugin, RideSaving, TreeAwarePluginMixin,
         RideOpenSuite, RideDataChangedToDirty)
 from robotide.widgets.text import TextField
 from robotide.widgets.label import Label
-try:
-    from pygments.lexers import _robotframeworklexer as robotframeworklexer
-except ImportError:
-    try:
-        import robotframeworklexer
-    except ImportError:
-        robotframeworklexer = None
 
+try:
+    from . import robotframeworklexer
+except Exception as e:
+    robotframeworklexer = None
 
 class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     title = 'Text Edit'
