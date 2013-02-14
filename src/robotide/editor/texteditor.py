@@ -510,7 +510,7 @@ class RobotStylizer(object):
         if not self.lexer:
             return
         shift = 0
-        for position, token, value in self.lexer.get_tokens_unprocessed(self.editor.GetText()):
+        for position, token, value in self.lexer    .get_tokens_unprocessed(self.editor.GetText()):
             self.editor.StartStyling(position+shift, 31)
             self.editor.SetStyling(len(value.encode('utf-8')), self.tokens[token])
             shift += len(value.encode('utf-8'))-len(value)
