@@ -104,7 +104,7 @@ class TestDebugger(unittest.TestCase):
             self._verify_done(last_keyword_done)
 
     def test_pause_on_failure(self):
-        self._debugger.pause_on_failure()
+        self._debugger.pause_on_failure(True)
         before_failure = threading.Event()
         after_failure = threading.Event()
 
