@@ -201,8 +201,8 @@ class RobotDebugger(object):
         self._resume.clear()
         self._state = 'pause'
 
-    def pause_on_failure(self):
-        self._pause_on_failure = True
+    def pause_on_failure(self, pause):
+        self._pause_on_failure = pause
 
     def resume(self):
         self._state = 'running'
@@ -257,6 +257,10 @@ class RobotKillerHandler(SocketServer.StreamRequestHandler):
             self.server.debugger.step_next()
         elif data == 'step_over':
             self.server.debugger.step_over()
+        elif data == 'pause_on_failure':
+            self.server.debugger.pause_on_failure(True)
+        elif data == 'do_not_pause_on_failure':
+            self.server.debugger.pause_on_failure(False)
 
     def _signal_kill(self):
         try:

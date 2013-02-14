@@ -511,7 +511,7 @@ class RobotStylizer(object):
             return
         for position, token, value in self.lexer.get_tokens_unprocessed(self.editor.GetText()):
             self.editor.StartStyling(position, 31)
-            self.editor.SetStyling(len(value), self.tokens[token])
+            self.editor.SetStyling(len(value.encode('utf-8')), self.tokens[token])
 
 
 if __name__ == '__main__':

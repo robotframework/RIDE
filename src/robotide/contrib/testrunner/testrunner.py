@@ -56,6 +56,7 @@ class TestRunner(object):
         self._process = None
         self._server = None
         self._server_thread = None
+        self._pause_on_failure = False
         self._results = TestExecutionResults()
         self.port = None
         self._chief = chief
@@ -104,6 +105,7 @@ class TestRunner(object):
             self._pid_to_kill = int(args[0])
         if event == 'port' and self._process:
             self._process.set_port(args[0])
+            self._send_pause_on_failure_information()
         if event == 'start_test':
             longname = args[1]['longname']
             testname = args[0]
@@ -133,6 +135,14 @@ class TestRunner(object):
     def kill_process(self):
         if self._process:
             self._process.kill(force=True)
+
+    def set_pause_on_failure(self, pause):
+        self._pause_on_failure = pause
+        self._send_pause_on_failure_information()
+
+    def _send_pause_on_failure_information(self):
+        if self._process:
+            self._process.pause_on_failure(self._pause_on_failure)
 
     def send_stop_signal(self):
         if self._process:
@@ -315,6 +325,12 @@ class Process(object):
 
     def pause(self):
         self._send_socket('pause')
+
+    def pause_on_failure(self, pause):
+        if pause:
+            self._send_socket('pause_on_failure')
+        else:
+            self._send_socket('do_not_pause_on_failure')
 
     def resume(self):
         self._send_socket('resume')

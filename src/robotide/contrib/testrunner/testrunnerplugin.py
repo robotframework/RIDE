@@ -226,6 +226,9 @@ class TestRunnerPlugin(Plugin):
         else:
             self._hide_message_log()
 
+    def OnPauseOnFailureCheckbox(self, evt):
+        self._test_runner.set_pause_on_failure(evt.IsChecked())
+
     def _show_message_log(self):
         self.message_log = self._create_output_textctrl()
         self._right_panel.GetSizer().Add(self.message_log, 1, wx.EXPAND)
@@ -558,6 +561,7 @@ class TestRunnerPlugin(Plugin):
             toolbar.Bind(event, callback, id=id)
         toolbar.Bind(wx.EVT_CHECKBOX, self.OnAutoSaveCheckbox, self.savecb)
         toolbar.Bind(wx.EVT_CHECKBOX, self.OnShowHideMessageLog, self.show_log_messages_checkbox)
+        toolbar.Bind(wx.EVT_CHECKBOX, self.OnPauseOnFailureCheckbox, self.pause_after_failure_cb)
         toolbar.Bind(wx.EVT_CHOICE, self.OnProfileSelection, self.choice)
 
     def get_current_profile(self):
