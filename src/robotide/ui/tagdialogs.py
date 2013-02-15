@@ -307,6 +307,3 @@ class TagsListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin, listmix.ListCtrlAuto
     def CheckAll(self):
         for i in range(self.GetItemCount()):
             self.CheckItem(i)
-
-    def print_data(self):
-        print self._clientData
