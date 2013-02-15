@@ -739,33 +739,33 @@ class TestRunnerPlugin(Plugin):
     def _set_running(self):
         self._run_action.disable()
         self._stop_action.enable()
-        self._enable_toolbar(False, True, True, False, False, False)
+        self._enable_toolbar(False, True)
         self._running = True
         self._test_runner.test_execution_started()
 
     def _set_paused(self):
         self._run_action.disable()
         self._stop_action.enable()
-        self._enable_toolbar(False, True, False, True, True, True)
+        self._enable_toolbar(False, False)
 
     def _set_continue(self):
         self._run_action.disable()
         self._stop_action.enable()
-        self._enable_toolbar(False, True, True, False, False, False)
+        self._enable_toolbar(False, True)
 
     def _set_stopped(self):
         self._run_action.enable()
         self._stop_action.disable()
-        self._enable_toolbar(True, False, False, False, False, False)
+        self._enable_toolbar(True, False)
         self._running = False
 
-    def _enable_toolbar(self, run, stop, pause, resume, step_next, step_over):
+    def _enable_toolbar(self, run, paused):
         for id, enabled in ((ID_RUN, run),
-                            (ID_STOP, stop),
-                            (ID_PAUSE, pause),
-                            (ID_CONTINUE, resume),
-                            (ID_STEP_NEXT, step_next),
-                            (ID_STEP_OVER, step_over)):
+                            (ID_STOP, not run),
+                            (ID_PAUSE, paused),
+                            (ID_CONTINUE, not run and not paused),
+                            (ID_STEP_NEXT, not run and not paused),
+                            (ID_STEP_OVER, not run and not paused)):
             self.runner_toolbar.EnableTool(id, enabled)
 
 
