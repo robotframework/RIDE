@@ -495,17 +495,8 @@ class TestRunnerPlugin(Plugin):
         '''Put output to the text control'''
         self._AppendText(self.out, string, source)
 
-    def _build_local_toolbar(self):
+    def _build_runner_toolbar(self):
         toolbar = wx.ToolBar(self.panel, wx.ID_ANY, style=wx.TB_HORIZONTAL|wx.TB_HORZ_TEXT)
-        profileLabel = Label(toolbar, label="Execution Profile:  ")
-        choices = self._test_runner.get_profile_names()
-        self.choice = wx.Choice(toolbar, wx.ID_ANY, choices=choices)
-        self.choice.SetToolTip(wx.ToolTip("Choose which method to use for running the tests"))
-        toolbar.AddControl(profileLabel)
-        toolbar.AddControl(self.choice)
-        toolbar.AddSeparator()
-        reportImage = getReportIconBitmap()
-        logImage = getLogIconBitmap()
         toolbar.AddLabelTool(ID_RUN,"Start", ImageProvider().TOOLBAR_PLAY, shortHelp="Start robot",
                              longHelp="Start running the robot test suite")
         toolbar.AddLabelTool(ID_STOP,"Stop", ImageProvider().TOOLBAR_STOP,
@@ -519,7 +510,31 @@ class TestRunnerPlugin(Plugin):
                     shortHelp="Step next", longHelp="Step next")
         toolbar.AddLabelTool(ID_STEP_OVER, "Step over", ImageProvider().TOOLBAR_NEXT,
                     shortHelp="Step over", longHelp="Step over")
+        toolbar.Realize()
+        self._bind_runner_toolbar_events(toolbar)
+        return toolbar
+
+    def _bind_runner_toolbar_events(self, toolbar):
+        for event, callback, id in (
+            (wx.EVT_TOOL, self.OnRun, ID_RUN),
+            (wx.EVT_TOOL, self.OnStop, ID_STOP),
+            (wx.EVT_TOOL, self.OnPause, ID_PAUSE),
+            (wx.EVT_TOOL, self.OnContinue, ID_CONTINUE),
+            (wx.EVT_TOOL, self.OnStepNext, ID_STEP_NEXT),
+            (wx.EVT_TOOL, self.OnStepOver, ID_STEP_OVER)):
+            toolbar.Bind(event, callback, id=id)
+
+    def _build_local_toolbar(self):
+        toolbar = wx.ToolBar(self.panel, wx.ID_ANY, style=wx.TB_HORIZONTAL|wx.TB_HORZ_TEXT)
+        profileLabel = Label(toolbar, label="Execution Profile:  ")
+        choices = self._test_runner.get_profile_names()
+        self.choice = wx.Choice(toolbar, wx.ID_ANY, choices=choices)
+        self.choice.SetToolTip(wx.ToolTip("Choose which method to use for running the tests"))
+        toolbar.AddControl(profileLabel)
+        toolbar.AddControl(self.choice)
         toolbar.AddSeparator()
+        reportImage = getReportIconBitmap()
+        logImage = getLogIconBitmap()
         toolbar.AddLabelTool(ID_SHOW_REPORT, " Report", reportImage,
                              shortHelp = localize_shortcuts("View Robot Report in Browser (CtrlCmd-R)"))
         toolbar.AddLabelTool(ID_SHOW_LOG, " Log", logImage,
@@ -550,12 +565,6 @@ class TestRunnerPlugin(Plugin):
 
     def _bind_toolbar_events(self, toolbar):
         for event, callback, id in (
-            (wx.EVT_TOOL, self.OnRun, ID_RUN),
-            (wx.EVT_TOOL, self.OnStop, ID_STOP),
-            (wx.EVT_TOOL, self.OnPause, ID_PAUSE),
-            (wx.EVT_TOOL, self.OnContinue, ID_CONTINUE),
-            (wx.EVT_TOOL, self.OnStepNext, ID_STEP_NEXT),
-            (wx.EVT_TOOL, self.OnStepOver, ID_STEP_OVER),
             (wx.EVT_TOOL, self.OnShowReport, ID_SHOW_REPORT),
             (wx.EVT_TOOL, self.OnShowLog, ID_SHOW_LOG)):
             toolbar.Bind(event, callback, id=id)
@@ -591,6 +600,7 @@ class TestRunnerPlugin(Plugin):
     def _build_notebook_tab(self):
         panel = wx.Panel(self.notebook)
         self.panel = panel
+        self.runner_toolbar = self._build_runner_toolbar()
         self.local_toolbar = self._build_local_toolbar()
         self.header_panel = wx.Panel(self.panel)
         self.configPanel = self._build_config_panel(panel)
@@ -613,6 +623,7 @@ class TestRunnerPlugin(Plugin):
 
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.local_toolbar, 0, wx.EXPAND)
+        sizer.Add(self.runner_toolbar, 0, wx.EXPAND)
         sizer.Add(self.configPanel, 0, wx.EXPAND|wx.TOP|wx.RIGHT, 4)
         sizer.Add(wx.StaticLine(self.panel), 0, wx.EXPAND|wx.BOTTOM|wx.TOP, 2)
         sizer.Add(self.header_panel, 0, wx.EXPAND|wx.RIGHT, 10)
@@ -755,7 +766,7 @@ class TestRunnerPlugin(Plugin):
                             (ID_CONTINUE, resume),
                             (ID_STEP_NEXT, step_next),
                             (ID_STEP_OVER, step_over)):
-            self.local_toolbar.EnableTool(id, enabled)
+            self.runner_toolbar.EnableTool(id, enabled)
 
 
 class ProgressBar(wx.Panel):
