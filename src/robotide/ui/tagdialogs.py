@@ -37,7 +37,6 @@ class ViewAllTagsDialog(wx.Frame):
         self._index = -1
         self._build_ui()
         self._make_bindings()
-        self._execute()
 
     def _build_ui(self):
         self.SetSize((500,400))
@@ -112,6 +111,7 @@ class ViewAllTagsDialog(wx.Frame):
         self._footer_text.SetLabel(footer_string)
 
     def show_dialog(self):
+        self._execute()
         if not self.IsShown():
             self.Show()
         self.Raise()
