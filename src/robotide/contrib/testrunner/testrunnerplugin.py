@@ -760,12 +760,14 @@ class TestRunnerPlugin(Plugin):
         self._running = False
 
     def _enable_toolbar(self, run, paused):
+        stop = not run
+        debug = stop and not paused
         for id, enabled in ((ID_RUN, run),
-                            (ID_STOP, not run),
+                            (ID_STOP, stop),
                             (ID_PAUSE, paused),
-                            (ID_CONTINUE, not run and not paused),
-                            (ID_STEP_NEXT, not run and not paused),
-                            (ID_STEP_OVER, not run and not paused)):
+                            (ID_CONTINUE, debug),
+                            (ID_STEP_NEXT, debug),
+                            (ID_STEP_OVER, debug)):
             self.runner_toolbar.EnableTool(id, enabled)
 
 
