@@ -195,7 +195,7 @@ class TestRunner(object):
 
     def _get_listener_to_cmd(self):
         path = os.path.abspath(TestRunnerAgent.__file__)
-        if path[-1] == 'c':
+        if path[-1] in ['c', 'o']:
             path = path[:-1]
         return '%s:%s' % (path, self.port)
 
