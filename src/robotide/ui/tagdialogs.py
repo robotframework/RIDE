@@ -74,7 +74,7 @@ class ViewAllTagsDialog(wx.Frame):
 
     def _build_footer(self):
         footer = wx.BoxSizer(wx.HORIZONTAL)
-        self._footer_text = wx.StaticText(self, -1, 'Results: %d' % len(self._results.items()))
+        self._footer_text = wx.StaticText(self, -1, '')
         footer.Add(self._footer_text)
         self.Sizer.Add(footer, 0, wx.ALL, 3)
 
