@@ -70,7 +70,8 @@ Topic :: Software Development :: Testing
       # Robot Framework package data is not included, but RIDE does not need it.
       # # Always install everything, since we may be switching between versions
       options      = { 'install': { 'force' : True } },
-      scripts      = ['src/bin/ride.py', 'ride_postinstall.py']
+      scripts      = ['src/bin/ride.py', 'ride_postinstall.py'],
+      install_requires = ['Pygments']
       )
 
 @task
