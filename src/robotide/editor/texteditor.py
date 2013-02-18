@@ -37,6 +37,8 @@ try:
 except Exception as e:
     robotframeworklexer = None
 
+from popupwindow import HtmlDialog
+
 class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     title = 'Text Edit'
 
@@ -277,22 +279,64 @@ class SourceEditor(wx.Panel):
         self._parent.add_tab(self, title, allow_closing=False)
 
     def _create_editor_toolbar(self):
-        editor_toolbar_sizer = HorizontalSizer()
-        editor_toolbar_sizer.add_with_padding(
-            ButtonWithHandler(self, 'Apply Changes',
-                handler=lambda e: self.save()))
-        self._create_search(editor_toolbar_sizer)
-        self.Sizer.add(editor_toolbar_sizer)
+        # needs extra container, since we might add helper text about syntax colorization
+        self.editor_toolbar = HorizontalSizer()
+        default_components = HorizontalSizer()
+        default_components.add_with_padding(
+            ButtonWithHandler(self, 'Apply Changes', handler=lambda e: self.save()))
+        self._create_search(default_components)
+        self.editor_toolbar.add_expanding(default_components)
+        self.Sizer.add_expanding(self.editor_toolbar, propotion=0)
 
-    def _create_search(self, editor_toolbar_sizer):
-        editor_toolbar_sizer.AddSpacer(20)
+    def _create_search(self, container_sizer):
+        container_sizer.AddSpacer(20)
         self._search_field = TextField(self, '', process_enters=True)
         self._search_field.Bind(wx.EVT_TEXT_ENTER, self.OnFind)
-        editor_toolbar_sizer.add_with_padding(self._search_field)
-        editor_toolbar_sizer.add_with_padding(
+        container_sizer.add_with_padding(self._search_field)
+        container_sizer.add_with_padding(
             ButtonWithHandler(self, 'Search', handler=self.OnFind))
         self._search_field_notification = Label(self, label='')
-        editor_toolbar_sizer.add_with_padding(self._search_field_notification)
+        container_sizer.add_with_padding(self._search_field_notification)
+
+    def create_syntax_colorization_help(self):
+        label = Label(self, label="Syntax colorization disabled due to missing requirements.")
+        link = wx.HyperlinkCtrl(self, -1, label="Get help", url="")
+        link.Bind(wx.EVT_HYPERLINK, self.show_help_dialog)
+        flags = wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT
+        syntax_colorization_help_sizer = wx.BoxSizer(wx.VERTICAL)
+        syntax_colorization_help_sizer.AddMany([
+            (label, 0, flags),
+            (link, 0, flags)
+        ])
+        self.editor_toolbar.add_expanding(syntax_colorization_help_sizer)
+        self.Layout()
+
+    def show_help_dialog(self, event):
+        content = """<h1>Syntax colorization</h1>
+        <p>
+        Syntax colorization for Text Edit uses <a href='http://pygments.org/'>Pygments</a> syntax highlighter.
+        </p>
+        <p>
+        Install Pygments from command line with:
+        <pre>
+            pip install pygments
+        </pre>
+        Or:
+        <pre>
+            easy_install pygments
+        </pre>
+        Then, restart RIDE.
+        </p>
+        <p>
+        If you do not have pip or easy_install,
+        <a href='http://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'>follow
+        these instructions</a>.
+        </p>
+        <p>
+        For more information about installing Pygments, <a href='http://pygments.org/download/'>see the site</a>.
+        </p>
+        """
+        HtmlDialog("Getting syntax colorization", content).Show()
 
     def store_position(self):
         if self._editor:
@@ -475,6 +519,8 @@ class RobotStylizer(object):
         if robotframeworklexer:
             self.lexer = robotframeworklexer.RobotFrameworkLexer()
             self._set_styles()
+        else:
+            self.editor.GetParent().create_syntax_colorization_help()
 
     def _set_styles(self):
         styles = {
