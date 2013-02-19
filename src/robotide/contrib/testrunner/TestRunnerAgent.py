@@ -130,7 +130,7 @@ class TestRunnerAgent:
 
     def start_keyword(self, name, attrs):
         self._send_socket("start_keyword", name, attrs)
-        if name == 'BuiltIn.Comment' and attrs['args'] == ['PAUSE']:
+        if self._debugger.is_breakpoint(name, attrs):
             self._debugger.pause()
         paused = self._debugger.is_paused()
         if paused:
@@ -198,6 +198,9 @@ class RobotDebugger(object):
         self._pause_when_on_level = -1
         self._pause_on_failure = False
         self._resume = threading.Event()
+
+    def is_breakpoint(self, name, attrs):
+        return name == 'BuiltIn.Comment' and attrs['args'] == ['PAUSE']
 
     def pause(self):
         self._resume.clear()
