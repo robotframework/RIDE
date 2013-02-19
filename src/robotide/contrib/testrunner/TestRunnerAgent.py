@@ -130,6 +130,8 @@ class TestRunnerAgent:
 
     def start_keyword(self, name, attrs):
         self._send_socket("start_keyword", name, attrs)
+        if name == 'BuiltIn.Comment' and attrs['args'] == ['PAUSE']:
+            self._debugger.pause()
         paused = self._debugger.is_paused()
         if paused:
             self._send_socket('paused')
