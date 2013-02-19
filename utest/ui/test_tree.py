@@ -98,7 +98,7 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         model._controller = TestDataDirectoryController(suite)
         rfc = ResourceFileController(res, chief_controller=model)
         model.resources.append(rfc)
-        model._insert_into_suite_structure(rfc)
+        model.insert_into_suite_structure(rfc)
         return model
 
     def _create_directory_suite(self, source):

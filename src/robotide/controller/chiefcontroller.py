@@ -183,7 +183,7 @@ class ChiefController(_BaseController, WithNamespace):
         if old:
             return old
         controller = self._resource_file_controller_factory.create(parsed_resource, parent=parent)
-        self._insert_into_suite_structure(controller)
+        self.insert_into_suite_structure(controller)
         resource_created_callback = resource_created_callback or self._inform_resource_created
         resource_created_callback(controller)
         return controller
@@ -191,7 +191,7 @@ class ChiefController(_BaseController, WithNamespace):
     def _inform_resource_created(self, controller):
         controller.notify_opened()
 
-    def _insert_into_suite_structure(self, resource):
+    def insert_into_suite_structure(self, resource):
         if self._controller and self._controller.is_inside_top_suite(resource):
             self._controller.insert_to_test_data_directory(resource)
         else:

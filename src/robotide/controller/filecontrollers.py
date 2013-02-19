@@ -677,6 +677,9 @@ class ResourceFileControllerFactory(object):
         if not resource_model:
             return None
         res = self.find(resource_model)
+        if not res:
+            res = self.create(resource_model)
+            self._chief_controller.insert_into_suite_structure(res)
         assert(res is not None)
         return res
 
