@@ -315,6 +315,8 @@ class Process(object):
         self._send_socket('kill')
 
     def _send_socket(self, data):
+        if self._port is None:
+            return  # Silent failure..
         sock = None
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
