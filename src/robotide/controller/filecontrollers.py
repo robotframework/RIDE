@@ -16,7 +16,7 @@ import os
 from itertools import chain
 import shutil
 import commands
-from robotide.controller.dataloader import ExcludedDirectory, TestDataDirectoryWithExcludes, TestData
+from robotide.controller.dataloader import ExcludedDirectory, TestData
 
 from robotide.publish import (RideDataFileRemoved, RideInitFileRemoved,
         RideDataChangedToDirty, RideDataDirtyCleared, RideSuiteAdded,
