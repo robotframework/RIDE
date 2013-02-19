@@ -19,6 +19,8 @@ class TestDebugger(unittest.TestCase):
     def test_is_breakpoint(self):
         self.assertTrue(self._debugger.is_breakpoint('BuiltIn.Comment', {'args':['PAUSE']}))
         self.assertFalse(self._debugger.is_breakpoint('BuiltIn.Log', {'args':['PAUSE']}))
+        self.assertFalse(self._debugger.is_breakpoint('BuiltIn.Comment', {'args':['Something']}))
+        self.assertFalse(self._debugger.is_breakpoint('Foo', {'args':[]}))
 
     def test_step_next(self):
         self._debugger.pause()
