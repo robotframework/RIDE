@@ -86,7 +86,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 1.0.1</h2>
+<h2>Release notes for 1.1</h2>
 <table border="1">
 <tr>
 <td><p><b>ID</b></p></td>
@@ -95,23 +95,59 @@ RELEASE_NOTES = """
 <td><p><b>Summary</b></p></td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1179">Issue 1179</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>Test execution fails when starting from scratch</td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1134">Issue 1134</a></td>
+<td>Enhancement</td>
+<td>Critical</td>
+<td>Mass Tag editor</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1187">Issue 1187</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1200">Issue 1200</a></td>
+<td>Defect</td>
+<td>High</td>
+<td>RIDE starts but it is not able to open project files and closes again</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=228">Issue 228</a></td>
+<td>Enhancement</td>
+<td>High</td>
+<td>Debugging executed tests</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1193">Issue 1193</a></td>
+<td>Enhancement</td>
+<td>High</td>
+<td>Syntax colorization for Text Edit</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=536">Issue 536</a></td>
 <td>Enhancement</td>
 <td>Medium</td>
-<td>Update internal Robot to 2.7.6</td>
+<td>Generic text based search</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1180">Issue 1180</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=742">Issue 742</a></td>
+<td>Enhancement</td>
+<td>Medium</td>
+<td>Shortcut for moving to next line in grid editor</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1198">Issue 1198</a></td>
+<td>Enhancement</td>
+<td>Medium</td>
+<td>Add pause on failure option to test runner</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1188">Issue 1188</a></td>
+<td>Documentation</td>
+<td>Medium</td>
+<td>Document that running tests does not work if `C:\Python27\Scripts` is in PATH with quotes</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1202">Issue 1202</a></td>
 <td>Defect</td>
 <td>Low</td>
-<td>suite or resource file not fully renamed if you tab off</td>
+<td>error importing listener when running Python in optimized mode</td>
 </tr>
 </table>
-<p>Altogether 3 issues.</p>
+<p>Altogether 9 issues.</p>
 """
