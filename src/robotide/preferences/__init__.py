@@ -18,7 +18,7 @@ from .widgets import (PreferencesPanel, PreferencesComboBox,
     PreferencesColorPicker)
 from .imports import ImportPreferences
 from .saving import SavingPreferences
-from .colors import ColorPreferences
+from .colors import GridColorPreferences, TextEditColorPreferences
 from .excludes import ExcludePreferences
 
 
@@ -37,12 +37,12 @@ class Preferences(object):
         if prefrence_ui not in self._preference_panels:
             self._preference_panels.append(prefrence_ui)
 
-    def remove(self):
+    def remove(self, panel_class):
         if panel_class in self._preference_panels:
             self._preference_panels.remove(panel_class)
 
     def _add_builtin_preferences(self):
         self.add(SavingPreferences)
         self.add(ImportPreferences)
-        self.add(ColorPreferences)
+        self.add(GridColorPreferences)
         self.add(ExcludePreferences)
