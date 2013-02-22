@@ -105,7 +105,6 @@ class TestRunner(object):
             self._pid_to_kill = int(args[0])
         if event == 'port' and self._process:
             self._process.set_port(args[0])
-            self._send_pause_on_failure_information()
         if event == 'start_test':
             longname = args[1]['longname']
             testname = args[0]
@@ -197,7 +196,7 @@ class TestRunner(object):
         path = os.path.abspath(TestRunnerAgent.__file__)
         if path[-1] in ['c', 'o']:
             path = path[:-1]
-        return '%s:%s' % (path, self.port)
+        return '%s:%s:%s' % (path, self.port, self._pause_on_failure)
 
     def _get_suite_source_for_command(self):
         cur = os.path.abspath(os.path.curdir)

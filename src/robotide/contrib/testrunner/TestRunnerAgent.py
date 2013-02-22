@@ -68,7 +68,6 @@ try:
 except ImportError:
     import pickle
 
-PORT = 5007
 HOST = "localhost"
 
 
@@ -87,21 +86,16 @@ class TestRunnerAgent:
     ROBOT_LISTENER_API_VERSION = 2
 
     def __init__(self, *args):
-        self.port = PORT
+        self.port = int(args[0])
         self.host = HOST
         self.sock = None
-        if len(args) == 1:
-            self.port = int(args[0])
-        elif len(args) >= 2:
-            self.host = args[0]
-            self.port = int(args[1])
         self._connect()
         self._send_pid()
-        self._create_debugger()
+        self._create_debugger(args[1] == 'True')
         self._create_kill_server()
 
-    def _create_debugger(self):
-        self._debugger = RobotDebugger()
+    def _create_debugger(self, pause_on_failure):
+        self._debugger = RobotDebugger(pause_on_failure)
 
     def _create_kill_server(self):
         self._killer = RobotKillerServer(self._debugger)
@@ -192,11 +186,11 @@ class TestRunnerAgent:
 
 class RobotDebugger(object):
 
-    def __init__(self):
+    def __init__(self, pause_on_failure=False):
         self._state = 'running'
         self._keyword_level = 0
         self._pause_when_on_level = -1
-        self._pause_on_failure = False
+        self._pause_on_failure = pause_on_failure
         self._resume = threading.Event()
 
     def is_breakpoint(self, name, attrs):
