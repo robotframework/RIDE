@@ -45,4 +45,5 @@ class Preferences(object):
         self.add(SavingPreferences)
         self.add(ImportPreferences)
         self.add(GridColorPreferences)
+        self.add(TextEditColorPreferences)
         self.add(ExcludePreferences)

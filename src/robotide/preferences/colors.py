@@ -51,7 +51,6 @@ class ColorPreferences(PreferencesPanel):
     def create_colors_sizer(self):
         raise NotImplementedError('Implement me')
 
-
 class TextEditColorPreferences(ColorPreferences):
     location = ("Text Edit Colors and Font Size",)
     title = "Text Edit Colors and Font Size"
@@ -59,6 +58,13 @@ class TextEditColorPreferences(ColorPreferences):
     def __init__(self, settings, *args, **kwargs):
         super(TextEditColorPreferences, self).__init__('Text Edit Font Size', settings, *args, **kwargs)
 
+    def create_colors_sizer(self):
+        container = wx.GridBagSizer()
+        self._create_pickers(container)
+        return container
+
+    def _create_pickers(self, sizer):
+        pass
 
 class GridColorPreferences(ColorPreferences):
     location = ("Grid Colors and Font Size",)
@@ -76,15 +82,15 @@ class GridColorPreferences(ColorPreferences):
     def _create_foreground_pickers(self, colors_sizer):
         row = 0
         for key, label in (
-            ("text user keyword", "User Keyword Foreground"),
-            ("text library keyword", "Library Keyword Foreground"),
-            ("text commented", "Comments Foreground"),
-            ("text variable", "Variable Foreground"),
-            ("text string", "Default Foreground"),
-            ("text empty", "Empty Foreground"),
+            ('text user keyword', 'User Keyword Foreground'),
+            ('text library keyword', 'Library Keyword Foreground'),
+            ('text commented', 'Comments Foreground'),
+            ('text variable', 'Variable Foreground'),
+            ('text string', 'Default Foreground'),
+            ('text empty', 'Empty Foreground'),
         ):
             lbl = wx.StaticText(self, wx.ID_ANY, label)
-            btn = PreferencesColorPicker(self, wx.ID_ANY, self._settings["Colors"], key)
+            btn = PreferencesColorPicker(self, wx.ID_ANY, self._settings['Colors'], key)
             colors_sizer.Add(btn, (row, 0), flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL, border=4)
             colors_sizer.Add(lbl, (row, 1), flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border=4)
             row += 1
@@ -92,17 +98,17 @@ class GridColorPreferences(ColorPreferences):
     def _create_background_pickers(self, colors_sizer):
         row = 0
         for key, label in (
-            ("background assign", "Variable Background"),
-            ("background keyword", "Keyword Background"),
-            ("background mandatory", "Mandatory Field Background"),
-            ("background optional", "Optional Field Background"),
-            ("background must be empty", "Mandatory Empty Field Background"),
-            ("background unknown", "Unknown Background"),
-            ("background error", "Error Background"),
-            ("background highlight", "Highlight Background")
+            ('background assign', 'Variable Background'),
+            ('background keyword', 'Keyword Background'),
+            ('background mandatory', 'Mandatory Field Background'),
+            ('background optional', 'Optional Field Background'),
+            ('background must be empty', 'Mandatory Empty Field Background'),
+            ('background unknown', 'Unknown Background'),
+            ('background error', 'Error Background'),
+            ('background highlight', 'Highlight Background')
         ):
             lbl = wx.StaticText(self, wx.ID_ANY, label)
-            btn = PreferencesColorPicker(self, wx.ID_ANY, self._settings["Colors"], key)
+            btn = PreferencesColorPicker(self, wx.ID_ANY, self._settings['Colors'], key)
             colors_sizer.Add(btn, (row, 2), flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL, border=4)
             colors_sizer.Add(lbl, (row, 3), flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border=4)
             row += 1
