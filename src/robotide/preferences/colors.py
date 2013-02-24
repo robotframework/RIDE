@@ -20,7 +20,7 @@ from robotide.preferences.saving import IntegerChoiceEditor
 
 class ColorPreferences(PreferencesPanel):
 
-    def __init__(self, font_label, settings, *args, **kwargs):
+    def __init__(self, font_label, font_setting_key, settings, *args, **kwargs):
         super(ColorPreferences, self).__init__(*args, **kwargs)
         self._settings = settings
         # N.B. There really ought to be a "reset colors to defaults"
@@ -31,16 +31,16 @@ class ColorPreferences(PreferencesPanel):
         # don't have the time to do that right now, so this will have
         # to suffice.
 
-        font_size_sizer = self._create_font_size_sizer(settings, font_label)
+        font_size_sizer = self._create_font_size_sizer(settings, font_setting_key, font_label)
         colors_sizer = self.create_colors_sizer()
         main_sizer = wx.FlexGridSizer(rows=2, cols=1, hgap=10)
         main_sizer.Add(font_size_sizer)
         main_sizer.Add(colors_sizer)
         self.SetSizer(main_sizer)
 
-    def _create_font_size_sizer(self, settings, title='Font Size'):
+    def _create_font_size_sizer(self, settings, settings_key, title='Font Size'):
         f = IntegerChoiceEditor(settings,
-                                'font size',
+                                settings_key,
                                 title,
                                 [str(i) for i in range(8, 49)]
         )
@@ -56,7 +56,8 @@ class TextEditColorPreferences(ColorPreferences):
     title = "Text Edit Colors and Font Size"
 
     def __init__(self, settings, *args, **kwargs):
-        super(TextEditColorPreferences, self).__init__('Text Edit Font Size', settings, *args, **kwargs)
+        super(TextEditColorPreferences, self).__init__('Text Edit Font Size',
+                                                       'text edit font size', settings, *args, **kwargs)
 
     def create_colors_sizer(self):
         container = wx.GridBagSizer()
@@ -72,7 +73,7 @@ class TextEditColorPreferences(ColorPreferences):
             ('separator', 'Separator'),
             ('setting',  'Setting foreground'),
             ('syntax', 'SYNTAX(?!)'),
-            ('tc_kw_name', 'TCKEYWORDWUT(?)'),
+            ('tc_kw_name', 'Keyword definition foreground'),
             ('variable',  'Variable foreground'),
         ):
             if column == 4:
@@ -92,7 +93,7 @@ class GridColorPreferences(ColorPreferences):
     title = "Grid Colors and Font Size"
 
     def __init__(self, settings, *args, **kwargs):
-        super(GridColorPreferences, self).__init__('Grid Font Size', settings, *args, **kwargs)
+        super(GridColorPreferences, self).__init__('Grid Font Size', 'font size', settings, *args, **kwargs)
 
     def create_colors_sizer(self):
         colors_sizer = wx.GridBagSizer()

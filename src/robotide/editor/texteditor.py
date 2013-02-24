@@ -491,7 +491,7 @@ class RobotDataEditor(stc.StyledTextCtrl):
         self.SetReadOnly(True)
         self.SetLexer(stc.STC_LEX_CONTAINER)
         self.Bind(stc.EVT_STC_STYLENEEDED, self.OnStyle)
-        self.stylizer = RobotStylizer(self)
+        self.stylizer = RobotStylizer(self, parent._parent._app.settings)
 
     def set_text(self, text):
         self.SetReadOnly(False)
@@ -513,9 +513,11 @@ class FromStringIOPopulator(FromFilePopulator):
         TxtReader().read(content, self)
 
 class RobotStylizer(object):
-    def __init__(self, editor):
+    def __init__(self, editor, settings):
         self.editor = editor
         self.lexer = None
+        self.settings = settings
+        self.font_size = settings.get('text edit font size', 8)
         if robotframeworklexer:
             self.lexer = robotframeworklexer.RobotFrameworkLexer()
             self._set_styles()
@@ -523,19 +525,47 @@ class RobotStylizer(object):
             self.editor.GetParent().create_syntax_colorization_help()
 
     def _set_styles(self):
+        color_settings = self.settings.get_without_default('Text Edit Colors')
         styles = {
-            robotframeworklexer.ARGUMENT: dict(fore='#bb8844'),
-            robotframeworklexer.COMMENT: dict(),
-            robotframeworklexer.ERROR: dict(),
-            robotframeworklexer.GHERKIN: dict(),
-            robotframeworklexer.HEADING: dict(fore='#999999', bold='true'),
-            robotframeworklexer.IMPORT: dict(fore='#555555'),
-            robotframeworklexer.KEYWORD: dict(fore='#990000', bold='true'),
-            robotframeworklexer.SEPARATOR: dict(),
-            robotframeworklexer.SETTING: dict(bold='true'),
-            robotframeworklexer.SYNTAX: dict(),
-            robotframeworklexer.TC_KW_NAME: dict(fore='#aaaaaa'),
-            robotframeworklexer.VARIABLE: dict(fore='#008080')
+            robotframeworklexer.ARGUMENT: {
+                'fore': color_settings['argument']
+            },
+            robotframeworklexer.COMMENT: {
+                'fore': color_settings['comment']
+            },
+            robotframeworklexer.ERROR: {
+                'fore': color_settings['error']
+            },
+            robotframeworklexer.GHERKIN: {
+                'fore': color_settings['gherkin']
+            },
+            robotframeworklexer.HEADING: {
+                'fore': color_settings['heading'],
+                'bold': 'true'
+            },
+            robotframeworklexer.IMPORT: {
+                'fore': color_settings['import']
+            },
+            robotframeworklexer.KEYWORD: {
+                'fore': color_settings['keyword'],
+                'bold': 'true'
+            },
+            robotframeworklexer.SEPARATOR: {
+                'fore': color_settings['separator']
+            },
+            robotframeworklexer.SETTING: {
+                'fore': color_settings['setting'],
+                'bold': 'true'
+            },
+            robotframeworklexer.SYNTAX: {
+                'fore': color_settings['syntax']
+            },
+            robotframeworklexer.TC_KW_NAME: {
+                'fore': color_settings['tc_kw_name']
+            },
+            robotframeworklexer.VARIABLE: {
+                'fore': color_settings['variable']
+            }
         }
         self.tokens = {}
         for index, token in enumerate(styles):
@@ -546,8 +576,10 @@ class RobotStylizer(object):
         word = self.editor.GetTextRange(current_position, self.editor.WordEndPosition(current_position, False))
         return word, len(word)
 
-    def _get_style_string(self, back='#FFFFFF', face='Courier New', size=14, fore='#000000', bold='true', underline=''):
-        return ','.join('%s:%s' % (name, value) for name, value in locals().items() if value)
+    def _get_style_string(self, back='#FFFFFF', face='Courier New', fore='#000000', bold='', underline=''):
+        settings = locals()
+        settings.update(size=self.font_size)
+        return ','.join('%s:%s' % (name, value) for name, value in settings.items() if value)
 
     def stylize(self):
         if not self.lexer:
