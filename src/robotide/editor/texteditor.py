@@ -576,7 +576,7 @@ class RobotStylizer(object):
         word = self.editor.GetTextRange(current_position, self.editor.WordEndPosition(current_position, False))
         return word, len(word)
 
-    def _get_style_string(self, back='#FFFFFF', face='Courier New', fore='#000000', bold='', underline=''):
+    def _get_style_string(self, back='#FFFFFF', face='Courier', fore='#000000', bold='', underline=''):
         settings = locals()
         settings.update(size=self.font_size)
         return ','.join('%s:%s' % (name, value) for name, value in settings.items() if value)
