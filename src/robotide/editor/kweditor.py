@@ -127,7 +127,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def OnSettingsChanged(self, data):
         '''Redraw the colors if the color settings are modified'''
-        if data.keys[0] == "Colors":
+        if data.keys[0] == "Grid Colors":
             self._colorize_grid()
 
     def OnSelectCell(self, event):

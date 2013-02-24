@@ -85,9 +85,11 @@ class SettingsMigrator(object):
             self.migrate_from_2_to_3(self._old_settings)
         if self._old_settings.get(self.SETTINGS_VERSION) == 3:
             self.migrate_from_3_to_4(self._old_settings)
+        if self._old_settings.get(self.SETTINGS_VERSION) == 4:
+            self.migrate_from_4_to_5(self._old_settings)
         #so next would be something like:
-        #if self._old_settings[self.SETTINGS_VERSION] == 4:
-        #   self.migrate_from_4_to_5(self._old_settings)
+        #if self._old_settings[self.SETTINGS_VERSION] == 5:
+        #   self.migrate_from_5_to_6(self._old_settings)
         self.merge()
 
     def merge(self):
@@ -125,6 +127,14 @@ class SettingsMigrator(object):
         if font_size and font_size == 11:
             settings['font size'] = 8
         settings[self.SETTINGS_VERSION] = 4
+
+    def migrate_from_4_to_5(self, settings):
+        # Changed color section name; see http://code.google.com/p/robotframework-ride/issues/detail?id=1206
+        colors = settings.get('Colors', None)
+        if colors:
+            settings['Grid Colors'] = colors
+            # TODO FIXME: should old section 'Colors' be deleted?
+            del settings['Colors']
 
     def _write_merged_settings(self, settings, path):
         try:

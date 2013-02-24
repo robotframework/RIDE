@@ -137,8 +137,8 @@ class RideModificationPrevented(RideMessage):
 class RideSettingsChanged(RideMessage):
     """Sent when settings are changed
 
-    keys is a tuple of key names. For example, if the "Colors" section
-    was modified the keys would be ("Colors"), or a specific plugin
+    keys is a tuple of key names. For example, if the "Grid Colors" section
+    was modified the keys would be ("Grid Colors"), or a specific plugin
     setting might be ("Plugin", "Preview", "format").
     """
     data = ['keys']
