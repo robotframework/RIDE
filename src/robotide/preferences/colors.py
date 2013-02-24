@@ -11,8 +11,9 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-
+import ConfigParser
 import wx
+from os.path import abspath, dirname, join
 
 from robotide.preferences import PreferencesPanel, PreferencesColorPicker
 from robotide.preferences.saving import IntegerChoiceEditor
@@ -56,8 +57,10 @@ class TextEditColorPreferences(ColorPreferences):
     title = "Text Edit Colors and Font Size"
 
     def __init__(self, settings, *args, **kwargs):
+        self._color_pickers = [] # must be before super class constructor call
         super(TextEditColorPreferences, self).__init__('Text Edit Font Size',
                                                        'text edit font size', settings, *args, **kwargs)
+
 
     def create_colors_sizer(self):
         container = wx.GridBagSizer()
@@ -82,10 +85,35 @@ class TextEditColorPreferences(ColorPreferences):
             label = wx.StaticText(self, wx.ID_ANY, label_text)
             button = PreferencesColorPicker(self, wx.ID_ANY, self._settings['Text Edit Colors'], settings_key)
             container.Add(button, (row, column), flag=wx.ALL|wx.ALIGN_CENTER_VERTICAL, border=4)
+            self._color_pickers.append(button)
             column += 1
             container.Add(label, (row, column), flag=wx.ALIGN_CENTER_VERTICAL|wx.LEFT, border=4)
             column += 1
+        reset = wx.Button(self, wx.ID_ANY, 'Reset colors to default')
+        self.Bind(wx.EVT_BUTTON, self.OnReset)
+        container.Add(reset, (row + 1, 0))
         return container
+
+    def OnReset(self, event):
+        defaults = self._read_defaults()
+        for picker in self._color_pickers:
+            picker.SetColour(defaults[picker.key])
+
+    def _read_defaults(self):
+        settings = [s.strip() for s in open(self._get_path(), 'r').readlines()]
+        start_index = settings.index('[Text Edit Colors]') + 1
+        defaults = {}
+        for line in settings[start_index:]:
+            if line.startswith('['):
+                break
+            if not line:
+                continue
+            key, value = [s.strip().strip('\'') for s in line.split("=")]
+            defaults[key] = value
+        return defaults
+
+    def _get_path(self):
+        return join(dirname(abspath(__file__)), 'settings.cfg')
 
 
 class GridColorPreferences(ColorPreferences):

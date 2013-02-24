@@ -88,3 +88,8 @@ class PreferencesColorPicker(wx.ColourPickerCtrl):
         rgb = "#%02X%02X%02X" % color.asTuple()
         self.settings[self.key] = rgb
         self.settings.save()
+
+    def SetColour(self, colour):
+        super(PreferencesColorPicker, self).SetColour(colour)
+        self.settings[self.key] = colour
+        self.settings.save()
