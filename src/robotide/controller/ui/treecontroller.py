@@ -178,7 +178,7 @@ class TestSelectionController(object):
 
     def clear_all(self, message=None):
         self._tests = set()
-        RideTestSelectedForRunningChanged(tests=self._tests).publish()
+        self.send_selection_changed_message()
 
     def unselect_all(self, tests):
         for test in tests:
@@ -189,6 +189,9 @@ class TestSelectionController(object):
             self._tests.add(test)
         else:
             self._tests.discard(test)
+        self.send_selection_changed_message()
+
+    def send_selection_changed_message(self):
         RideTestSelectedForRunningChanged(tests=set([t.longname for t in self._tests])).publish()
 
     def add_tag(self, name):

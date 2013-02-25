@@ -712,6 +712,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         node = self._controller.find_node_by_controller(controller)
         if node:
             self.SetItemText(node, data.item.name)
+            self._test_selection_controller.send_selection_changed_message()
         if controller.dirty:
             self._controller.mark_node_dirty(self._get_datafile_node(controller.datafile))
 
