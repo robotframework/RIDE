@@ -614,6 +614,8 @@ class TestCaseFileController(_FileSystemElement, _DataController):
         names = '.'.join(names)
         if not names.startswith(self.name):
             return None
+        if len(self.name) < len(names) and not names.startswith(self.name+'.'):
+            return None
         if len(names) == 1:
             return self
         for test in self.tests:
