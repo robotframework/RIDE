@@ -220,13 +220,16 @@ def clean():
     _clean()
 
 def _clean(keep_dist=False):
-    if not keep_dist:
+    if not keep_dist and DIST_DIR.exists():
         DIST_DIR.rmtree()
-    BUILD_DIR.rmtree()
-    LIB_TARGET.rmtree()
+    if BUILD_DIR.exists():
+        BUILD_DIR.rmtree()
+    if LIB_TARGET.exists():
+        LIB_TARGET.rmtree()
     for name in 'paver-minilib.zip', 'setup.py':
         p = path(name)
-        p.remove()
+        if p.exists():
+            p.remove()
 
 def _remove_bytecode_files():
     for d in LIB_SOURCE, SOURCE_DIR, TEST_DIR:
