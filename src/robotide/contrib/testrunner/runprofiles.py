@@ -229,6 +229,7 @@ class PybotProfile(BaseProfile):
         assert type(args) is unicode
         invalid_message = self._get_invalid_message(args)
         self._arguments.SetBackgroundColour('red' if invalid_message else 'white')
+        self._arguments.SetForegroundColour('white' if invalid_message else 'black')
         self._arguments.SetToolTipString(invalid_message or 'Arguments for the test run. Arguments are space separated list.')
 
     def _get_invalid_message(self, args):
