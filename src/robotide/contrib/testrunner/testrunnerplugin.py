@@ -51,6 +51,7 @@ import posixpath
 import re
 from posixpath import curdir, sep, pardir, join
 from robot.output import LEVELS
+from robot.utils import robottime
 from robotide.action.shortcut import localize_shortcuts
 from robotide.contrib.testrunner.runprofiles import CustomScriptProfile
 from robotide.contrib.testrunner.testrunner import TestRunner
@@ -362,7 +363,7 @@ class TestRunnerPlugin(Plugin):
         self._set_stopped()
         self._progress_bar.Stop()
         now = datetime.datetime.now()
-        self._output("\ntest finished %s" % now.strftime("%c"))
+        self._output("\ntest finished %s" % robottime.format_time(now.timetuple()))
         self._set_stopped()
         self._test_runner.command_ended()
 
