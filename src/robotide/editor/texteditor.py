@@ -260,6 +260,7 @@ class SourceEditor(wx.Panel):
 
     def __init__(self, parent, title, data_validator):
         wx.Panel.__init__(self, parent)
+        self._syntax_colorization_help_exists = False
         self._data_validator = data_validator
         self._data_validator.set_editor(self)
         self._parent = parent
@@ -299,6 +300,8 @@ class SourceEditor(wx.Panel):
         container_sizer.add_with_padding(self._search_field_notification)
 
     def create_syntax_colorization_help(self):
+        if self._syntax_colorization_help_exists:
+            return
         label = Label(self, label="Syntax colorization disabled due to missing requirements.")
         link = wx.HyperlinkCtrl(self, -1, label="Get help", url="")
         link.Bind(wx.EVT_HYPERLINK, self.show_help_dialog)
@@ -310,6 +313,7 @@ class SourceEditor(wx.Panel):
         ])
         self.editor_toolbar.add_expanding(syntax_colorization_help_sizer)
         self.Layout()
+        self._syntax_colorization_help_exists = True
 
     def show_help_dialog(self, event):
         content = """<h1>Syntax colorization</h1>
