@@ -46,6 +46,7 @@ class ValueEditor(wx.Panel):
         self._editor.AppendText(value)
         sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
         self._sizer.Add(sizer, 1, wx.EXPAND)
+        wx.EVT_KEY_DOWN(self._editor, self.on_key_down)
 
     def _get_text_ctrl(self):
         return wx.TextCtrl(self, size=(600, -1))
@@ -59,19 +60,6 @@ class ValueEditor(wx.Panel):
     def set_focus(self):
         self._editor.SetFocus()
         self._editor.SelectAll()
-
-
-class ArgumentEditor(ValueEditor):
-
-    def _create_editor(self, value, label, settings):
-        sizer = wx.BoxSizer(wx.HORIZONTAL)
-        if self._label:
-            sizer.Add(Label(self, label=self._label, size=(80, -1)), 0, self._sizer_flags_for_label, 5)
-        self._editor = self._get_text_ctrl()
-        self._editor.AppendText(value)
-        sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
-        self._sizer.Add(sizer, 1, wx.EXPAND)
-        wx.EVT_KEY_DOWN(self._editor, self.on_key_down)
 
     def on_key_down(self, event):
         character = None
@@ -89,6 +77,18 @@ class ArgumentEditor(ValueEditor):
             self._editor.SetInsertionPoint(_from-1)
         else:
             event.Skip()
+
+
+class ArgumentEditor(ValueEditor):
+
+    def _create_editor(self, value, label, settings):
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        if self._label:
+            sizer.Add(Label(self, label=self._label, size=(80, -1)), 0, self._sizer_flags_for_label, 5)
+        self._editor = self._get_text_ctrl()
+        self._editor.AppendText(value)
+        sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
+        self._sizer.Add(sizer, 1, wx.EXPAND)
 
 
 class FileNameEditor(ValueEditor):
