@@ -30,11 +30,15 @@ def get_import_result(path, args):
 
 def _parse_args(handler_args):
     args = []
-    if handler_args.names:
-        args.extend(list(handler_args.names))
+    try: # Robot >= 2.8
+        positional = handler_args.positional
+    except AttributeError:
+        positional = handler_args.names
+    if positional:
+        args.extend(list(positional))
     if handler_args.defaults:
         for i, value in enumerate(handler_args.defaults):
-            index = len(handler_args.names) - len(handler_args.defaults) + i
+            index = len(positional) - len(handler_args.defaults) + i
             args[index] = args[index] + '=' + unicode(value)
     if handler_args.varargs:
         args.append('*%s' % handler_args.varargs)

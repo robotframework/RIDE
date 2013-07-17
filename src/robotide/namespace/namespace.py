@@ -277,9 +277,17 @@ class _VariableStash(object):
         for variable in variable_table:
             try:
                 if not self._vars.has_key(variable.name):
-                    _, value = self._vars._get_var_table_name_and_value(
-                        variable.name,
-                        variable.value)
+                    try: # Robot >= 2.8
+                        error_reporter=variable.report_invalid_syntax
+                    except AttributeError:
+                        _, value = self._vars._get_var_table_name_and_value(
+                            variable.name,
+                            variable.value)
+                    else:
+                        _, value = self._vars._get_var_table_name_and_value(
+                            variable.name,
+                            variable.value,
+                            error_reporter=error_reporter)
                     self.set(variable.name, value, variable_table.source)
             except DataError:
                 if is_var(variable.name):
