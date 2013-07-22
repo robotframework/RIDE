@@ -30,7 +30,7 @@ def get_import_result(path, args):
 
 def _parse_args(handler_args):
     args = []
-    try: # Robot >= 2.8
+    try: # Robot 2.8+
         positional = handler_args.positional
     except AttributeError:
         positional = handler_args.names
