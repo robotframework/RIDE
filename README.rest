@@ -2,7 +2,7 @@ This is an experimental RIDE branch for Robot Framework 2.8+
 with support for ${{kwargs}} in User Keyword Arguments.
 It also features general enhanced support for Robot 2.8+
 and \**kwargs handling in Test Libraries.
-It's only working with the *userkwargs* branch
+It's only working with the ``userkwargs`` branch
 of my Robot Framework fork:
 
 https://bitbucket.org/userzimmermann/robotframework/commits/branch/userkwargs
@@ -11,13 +11,13 @@ User Keyword Arguments can now look like::
 
   ${arg} | @{rest} | ${{named}}
 
-This will create a Dictionary ${named}
-containing all extra *name=value* arguments passed to the Keyword.
+- This will create a Dictionary ${named}
+  containing all extra *name=value* arguments passed to the Keyword.
 
-The ${{arg}} syntax can easily be changed
-by modifying the *USER_KWARGS_SYNTAX* variable in::
+- The ${{arg}} syntax can easily be changed
+  by modifying the *USER_KWARGS_SYNTAX* variable in::
 
-  [robotframework]/src/robot/running/arguments/userkwargs.py
+    [robotframework]/src/robot/running/arguments/userkwargs.py
 
 -- Stefan Zimmermann
 
