@@ -16,7 +16,8 @@ import os
 
 from robot.utils.normalizing import normalize
 from robotide.utils import html_format, unescape
-
+from robotide.robotapi import (is_scalar_var, is_list_var,
+                               is_user_kwargs, get_user_kwargs_name)
 
 class ItemInfo(object):
     """Represents an object that can be displayed by content assistant."""
@@ -220,10 +221,12 @@ class _UserKeywordInfo(_KeywordInfo):
                 parsed.append(self._parse_name_and_default(arg))
             elif self._is_list(arg):
                 parsed.append(self._parse_vararg(arg))
+            elif self._is_kwarg(arg):
+                parsed.append(self._parse_kwarg(arg))
         return parsed
 
     def _is_scalar(self, arg):
-        return arg.startswith('$')
+        return is_scalar_var(arg)
 
     def _parse_name_and_default(self, arg):
         parts = arg.split('=', 1)
@@ -236,11 +239,16 @@ class _UserKeywordInfo(_KeywordInfo):
         return string[2:-1]
 
     def _is_list(self, arg):
-        return arg.startswith('@')
+        return is_list_var(arg)
 
     def _parse_vararg(self, arg):
         return '*' + self._strip_var_syntax_chars(arg)
 
+    def _is_kwarg(self, arg):
+        return is_user_kwargs(arg)
+
+    def _parse_kwarg(self, arg):
+        return '**' + get_user_kwargs_name(arg)
 
 class TestCaseUserKeywordInfo(_UserKeywordInfo):
     _type = 'test case file'

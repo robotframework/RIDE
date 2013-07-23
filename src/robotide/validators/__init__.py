@@ -16,7 +16,7 @@ import os
 import wx
 from robot.errors import DataError
 
-from robotide.robotapi import is_scalar_var, is_list_var
+from robotide.robotapi import is_scalar_var, is_list_var, is_user_kwargs
 from robotide import utils
 
 
@@ -79,7 +79,8 @@ class ArgumentsValidator(_AbstractValidator):
             types = [ self._get_type(arg) for arg in utils.split_value(args_str) ]
         except ValueError:
             return "Invalid argument syntax '%s'" % arg
-        return self._validate_list_args_in_correct_place(types) \
+        return self._validate_kwargs_in_correct_place(types) \
+               or self._validate_list_args_in_correct_place(types) \
                or self._validate_req_args_in_correct_place(types) or None
 
     def _get_type(self, arg):
@@ -89,12 +90,22 @@ class ArgumentsValidator(_AbstractValidator):
             return 2
         elif is_list_var(arg):
             return 3
+        elif is_user_kwargs(arg):
+            return 4
         else:
             raise ValueError
 
+    def _validate_kwargs_in_correct_place(self, types):
+        if 4 in types and types.index(4) != len(types) - 1:
+            return ("Extra named arguments dictionary "
+                    "allowed only as the last argument")
+        return None
+
     def _validate_list_args_in_correct_place(self, types):
-        if 3 in types and types.index(3) != len(types) - 1:
-            return "List variable allowed only as the last argument"
+        if 3 in types and (types.index(3)
+                           != (len(types) - (1 if types[-1] != 4 else 2))):
+            return ("Only extra named arguments dictionary "
+                    "allowed after list variable")
         return None
 
     def _validate_req_args_in_correct_place(self, types):

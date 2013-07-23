@@ -12,6 +12,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from robotide.robotapi import USER_KWARGS_SYNTAX
+
+
 def get_help(title):
     return '\n'.join(_HELPS[title])
 
@@ -24,8 +27,12 @@ _EXAMPLES = {
 'TIMEOUT': ("Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
             "Optional message can be specified like '3 minutes | My message here'."),
 'ARGUMENTS': ("Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.\n"
-              "Default values are given using equal sign and the last argument can be a list variable.\n"
-              "Example: '${arg1} | ${arg2}=default value | @{rest}'.\n"
+              "Default values are given using equal sign.\n"
+              "The last argument(s) can be a list variable for extra values\n"
+              "and/or a special dictionary " + (USER_KWARGS_SYNTAX % 'var')
+              + " for extra named values.\n"
+              "The latter can later be accessed with normal ${var} syntax.\n"
+              "Example: '${arg1} | ${arg2}=default value | @{rest} | ${{named}}'.\n"
               "Note. You can use variable shortcuts in this field.")
 }
 
