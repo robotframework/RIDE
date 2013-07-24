@@ -1,3 +1,18 @@
+This is a RIDE fork with additional compatibility fixes
+for Robot Framework 2.8+.
+
+There is also a branch with additional support
+for ${{kwargs}} arguments in User Keywords:
+
+https://github.com/userzimmermann/RIDE/commits/userkwargs
+
+  - This is only compatible with my accompanying Robot Framework branch:
+
+  https://bitbucket.org/userzimmermann/robotframework/commits/branch/userkwargs
+
+-- Stefan Zimmermann
+
+
 RIDE
 ====
 
