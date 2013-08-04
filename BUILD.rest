@@ -37,6 +37,9 @@ Python itself should thus be executed in 32-bit mode. This can be done by settin
 
   export VERSIONER_PYTHON_PREFER_32_BIT=yes
 
+and launching with the command
+
+  arch -i386 /usr/bin/python /usr/local/bin/ride.py
 
 Repository contents
 ===================
