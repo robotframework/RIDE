@@ -148,6 +148,10 @@ class  RideTreeSelection(RideMessage):
     """Sent whenever user selects a node from the tree."""
     data = ['node', 'item', 'silent']
 
+class RideOpenVariableDialog(RideMessage):
+    """Sent when variable dialog is requested to be open"""
+    data = ['controller']
+
 class RideTestExecutionStarted(RideMessage):
     """Sent whenever new test execution is started."""
     data = ['results']

@@ -96,7 +96,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
     def OnDoubleClick(self, event):
         item, pos = self.HitTest(self.ScreenToClient(wx.GetMousePosition()))
         if item:
-            print 'item double clicked', item
+            handler = self._controller.get_handler(item)
+            handler.double_clicked()
 
     def set_editor(self, editor):
         self._editor = editor

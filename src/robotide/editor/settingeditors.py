@@ -19,7 +19,7 @@ from robotide.controller.commands import (UpdateVariable, UpdateDocumentation,
         SetValues, AddLibrary, AddResource, AddVariablesFileImport,
         ClearSetting)
 from robotide.editor.listeditor import ListEditorBase
-from robotide.publish.messages import RideImportSetting
+from robotide.publish.messages import RideImportSetting, RideOpenVariableDialog
 from robotide.utils import overrides
 from robotide.widgets import ButtonWithHandler, Label, HtmlWindow
 from robotide.publish import PUBLISHER
@@ -356,6 +356,7 @@ class VariablesListEditor(_AbstractListEditor):
         PUBLISHER.subscribe(self._update_vars, 'ride.variable.added', key=self)
         PUBLISHER.subscribe(self._update_vars, 'ride.variable.updated', key=self)
         PUBLISHER.subscribe(self._update_vars, 'ride.variable.removed', key=self)
+        PUBLISHER.subscribe(self._open_variable_dialog, RideOpenVariableDialog)
         _AbstractListEditor.__init__(self, parent, tree, controller)
 
     def _update_vars(self, event):
@@ -391,6 +392,12 @@ class VariablesListEditor(_AbstractListEditor):
 
     def OnEdit(self, event):
         var = self._controller[self._selection]
+        self._open_var_dialog(var)
+
+    def _open_variable_dialog(self, message):
+        self._open_var_dialog(message.controller)
+
+    def _open_var_dialog(self, var):
         if var.name.startswith('${'):
             dlg = ScalarVariableDialog(self._controller, item=var)
         else:
