@@ -17,10 +17,19 @@ import sys
 from robot.errors import DataError
 from robotide import utils
 from iteminfo import _XMLKeywordContent
+from robotide.preferences.settings import SETTINGS_DIRECTORY
 
+LIBRARY_XML_DIRECTORY = os.path.join(SETTINGS_DIRECTORY, 'library_xmls')
+if not os.path.isdir(LIBRARY_XML_DIRECTORY):
+    os.makedirs(LIBRARY_XML_DIRECTORY)
 
 def init_from_spec(name):
-    return _init_from_specfile(utils.find_from_pythonpath(name + '.xml'), name)
+    specfile = _find_from_library_xml_directory(name + '.xml') or utils.find_from_pythonpath(name + '.xml')
+    return _init_from_specfile(specfile, name)
+
+def _find_from_library_xml_directory(name):
+    path = os.path.join(LIBRARY_XML_DIRECTORY, name)
+    return path if os.path.isfile(path) else None
 
 def _init_from_specfile(specfile, name):
     if not specfile:
