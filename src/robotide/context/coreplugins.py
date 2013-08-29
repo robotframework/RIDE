@@ -22,7 +22,8 @@ def get_core_plugins():
     from robotide.editor.texteditor import TextEditorPlugin
     from robotide.log import LogPlugin
     from robotide.searchtests.searchtests import TestSearchPlugin
+    from robotide.spec.specimporter import SpecImporterPlugin
 
-    return [RunAnything, RecentFilesPlugin, PreviewPlugin,
+    return [RunAnything, RecentFilesPlugin, PreviewPlugin, SpecImporterPlugin,
             EditorPlugin, TextEditorPlugin, KeywordSearch, LogPlugin, TestSearchPlugin]
 
