@@ -29,7 +29,7 @@ class SpecImporterPlugin(Plugin):
 
     def execute_spec_import(self, event):
         path = self._get_path_to_library_spec()
-        if os.path.isfile(path):
+        if path and os.path.isfile(path):
             self._store_spec(path)
             self.model.update_namespace()
 
@@ -51,6 +51,9 @@ class SpecImporterPlugin(Plugin):
         name = self._get_name_from_xml(path)
         if name:
             shutil.copy(path, os.path.join(LIBRARY_XML_DIRECTORY, name+'.xml'))
+            wx.MessageBox('Library "%s" imported\nfrom "%s"' % (name, path), 'Info', wx.OK | wx.ICON_INFORMATION)
+        else:
+            wx.MessageBox('Could not import library from file "%s"' % path, 'Import failed', wx.OK | wx.ICON_ERROR)
 
     def _get_name_from_xml(self, path):
         try:
