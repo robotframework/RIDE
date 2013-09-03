@@ -64,10 +64,7 @@ def TipMessage(cell):
 class _TooltipMessage(object):
 
     TOO_MANY_ARGUMENTS = "Too many arguments"
-    KEYWORD_NOT_FOUND = """\
-Keyword not found! Consider importing library spec XML to enable keyword completion for example for Java libraries.\
-Library spec XML can be created using libdoc tool from Robot Framework.\
-"""
+    KEYWORD_NOT_FOUND = "Keyword not found! For possible corrections see details with CTRL"
     VARIABLE_ASSIGMENT = "Variable assignment"
     UNKNOWN_VARIABLE = "\n\nUnknown variable"
 
