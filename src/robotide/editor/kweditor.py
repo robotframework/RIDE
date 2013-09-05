@@ -437,8 +437,9 @@ class KeywordEditor(GridEditor, RideEventHandler):
         <br>Possible corrections:<br>
         <ul>
             <li>Import library or resource file containing the keyword</li>
-            <li>Consider importing library spec XML to enable keyword completion for example for Java libraries.
-Library spec XML can be created using libdoc tool from Robot Framework.</li>
+            <li>Consider importing library spec XML (Tools / Import Library Spec XML) to enable keyword completion
+            for example for Java libraries.
+            Library spec XML can be created using libdoc tool from Robot Framework.</li>
         </ul>"""
         if details:
             self._tooltips.show_info_at(details, value,
