@@ -18,7 +18,7 @@ class TestCellTooltip(unittest.TestCase):
                         CellPosition(CellType.KEYWORD, None))
         msg = TipMessage(cell)
         assert_true(msg)
-        assert_equals(str(msg), _TooltipMessage.KEYWORD_NOT_FOUND)
+        assert_equals(str(msg), html_escape(_TooltipMessage.KEYWORD_NOT_FOUND))
 
     def test_known_keyword(self):
         cell = CellInfo(CellContent(ContentType.USER_KEYWORD, 'Known', 'my_source'),
