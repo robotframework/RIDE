@@ -143,8 +143,10 @@ class RideSettingsChanged(RideMessage):
     """
     data = ['keys']
 
+class RideExecuteSpecXmlImport(RideMessage):
+    """Sent whenever spec xml import is requested"""
 
-class  RideTreeSelection(RideMessage):
+class RideTreeSelection(RideMessage):
     """Sent whenever user selects a node from the tree."""
     data = ['node', 'item', 'silent']
 

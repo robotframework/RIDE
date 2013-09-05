@@ -16,9 +16,10 @@ import shutil
 import wx
 from robotide.action import ActionInfo
 from robotide.pluginapi import Plugin
+from robotide.publish import RideExecuteSpecXmlImport
 from robotide.spec.xmlreaders import LIBRARY_XML_DIRECTORY
 from robotide.utils import ET
-
+from robotide.publish import PUBLISHER
 
 class SpecImporterPlugin(Plugin):
 
@@ -26,6 +27,7 @@ class SpecImporterPlugin(Plugin):
 
     def enable(self):
         self.register_action(ActionInfo('Tools', self.HEADER, self.execute_spec_import))
+        PUBLISHER.subscribe(self.execute_spec_import, RideExecuteSpecXmlImport)
 
     def execute_spec_import(self, event):
         path = self._get_path_to_library_spec()

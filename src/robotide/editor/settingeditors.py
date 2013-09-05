@@ -19,9 +19,9 @@ from robotide.controller.commands import (UpdateVariable, UpdateDocumentation,
         SetValues, AddLibrary, AddResource, AddVariablesFileImport,
         ClearSetting)
 from robotide.editor.listeditor import ListEditorBase
-from robotide.publish.messages import RideImportSetting, RideOpenVariableDialog
+from robotide.publish.messages import RideImportSetting, RideOpenVariableDialog, RideExecuteSpecXmlImport
 from robotide.utils import overrides
-from robotide.widgets import ButtonWithHandler, Label, HtmlWindow
+from robotide.widgets import ButtonWithHandler, Label, HtmlWindow, PopupMenu, PopupMenuItems
 from robotide.publish import PUBLISHER
 from robotide import utils
 
@@ -419,10 +419,6 @@ class ImportSettingListEditor(_AbstractListEditor):
 
     def __init__(self, parent, tree, controller):
         _AbstractListEditor.__init__(self, parent, tree, controller)
-        self._subscribe_messages()
-
-    def _subscribe_messages(self):
-        pass
 
     @overrides(ListEditorBase)
     def _create_buttons(self):
@@ -449,6 +445,17 @@ class ImportSettingListEditor(_AbstractListEditor):
     @overrides(ListEditorBase)
     def has_error(self, controller):
         return controller.has_error()
+
+    @overrides(ListEditorBase)
+    def OnRightClick(self, event):
+        menu = self._menu
+        item = self._controller[self._selection]
+        if item.has_error():
+            menu = menu[:] + ['Import Library Spec XML']
+        PopupMenu(self, PopupMenuItems(self, menu))
+
+    def OnImportLibrarySpecXml(self, event):
+        RideExecuteSpecXmlImport().publish()
 
     def OnEdit(self, event):
         setting = self._get_setting()
@@ -487,7 +494,10 @@ class ImportSettingListEditor(_AbstractListEditor):
         return not value[0]
 
     def get_column_values(self, item):
-        return ['Import Failed' if item.has_error() else 'Import OK', item.type, item.name, item.display_value, ListToStringFormatter(item.comment).value]
+        return [self._import_status(item), item.type, item.name, item.display_value, ListToStringFormatter(item.comment).value]
+
+    def _import_status(self, item):
+        return 'Import Failed' if item.has_error() else 'Import OK'
 
 
 class MetadataListEditor(_AbstractListEditor):
