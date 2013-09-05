@@ -448,11 +448,14 @@ class ImportSettingListEditor(_AbstractListEditor):
 
     @overrides(ListEditorBase)
     def OnRightClick(self, event):
+        PopupMenu(self, PopupMenuItems(self, self._create_item_menu()))
+
+    def _create_item_menu(self):
         menu = self._menu
         item = self._controller[self._selection]
-        if item.has_error():
+        if item.has_error() and item.type == 'Library':
             menu = menu[:] + ['Import Library Spec XML']
-        PopupMenu(self, PopupMenuItems(self, menu))
+        return menu
 
     def OnImportLibrarySpecXml(self, event):
         RideExecuteSpecXmlImport().publish()
