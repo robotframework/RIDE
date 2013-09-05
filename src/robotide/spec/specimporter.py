@@ -26,7 +26,7 @@ class SpecImporterPlugin(Plugin):
     HEADER = 'Import Library Spec XML'
 
     def enable(self):
-        self.register_action(ActionInfo('Tools', self.HEADER, self.execute_spec_import))
+        self.register_action(ActionInfo('Tools', self.HEADER, self.execute_spec_import, position=83))
         PUBLISHER.subscribe(self.execute_spec_import, RideExecuteSpecXmlImport)
 
     def execute_spec_import(self, event):

@@ -432,11 +432,14 @@ class KeywordEditor(GridEditor, RideEventHandler):
         if not details:
             info = self._controller.get_cell_info(cell.Row, cell.Col)
             if info.cell_type == CellType.KEYWORD and info.content_type == ContentType.STRING:
-                details = "Keyword was not detected by RIDE\n" \
-                          "Possible corrections:\n" \
-                          "- Import library or resource file containing the keyword\n" \
-                          "- Consider importing library spec XML to enable keyword completion for example for Java libraries."\
-                          "Library spec XML can be created using libdoc tool from Robot Framework."
+                details = """\
+        <b>Keyword was not detected by RIDE</b>
+        <br>Possible corrections:<br>
+        <ul>
+            <li>Import library or resource file containing the keyword</li>
+            <li>Consider importing library spec XML to enable keyword completion for example for Java libraries.
+Library spec XML can be created using libdoc tool from Robot Framework.</li>
+        </ul>"""
         if details:
             self._tooltips.show_info_at(details, value,
                                     self._cell_to_screen_coordinates(cell))
