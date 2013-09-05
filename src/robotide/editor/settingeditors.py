@@ -414,8 +414,15 @@ class VariablesListEditor(_AbstractListEditor):
 
 
 class ImportSettingListEditor(_AbstractListEditor):
-    _titles = ['Import', 'Name / Path', 'Arguments', 'Comment']
+    _titles = ['Status', 'Import', 'Name / Path', 'Arguments', 'Comment']
     _buttons = ['Library', 'Resource', 'Variables']
+
+    def __init__(self, parent, tree, controller):
+        _AbstractListEditor.__init__(self, parent, tree, controller)
+        self._subscribe_messages()
+
+    def _subscribe_messages(self):
+        pass
 
     @overrides(ListEditorBase)
     def _create_buttons(self):
@@ -480,7 +487,7 @@ class ImportSettingListEditor(_AbstractListEditor):
         return not value[0]
 
     def get_column_values(self, item):
-        return [item.type, item.name, item.display_value, ListToStringFormatter(item.comment).value]
+        return ['Import Failed' if item.has_error() else 'Import OK', item.type, item.name, item.display_value, ListToStringFormatter(item.comment).value]
 
 
 class MetadataListEditor(_AbstractListEditor):
