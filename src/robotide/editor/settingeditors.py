@@ -31,7 +31,7 @@ from .editordialogs import (EditorDialog, DocumentationDialog, MetadataDialog,
         ScalarVariableDialog, ListVariableDialog, LibraryDialog,
         ResourceDialog, VariablesDialog)
 from .listeditor import ListEditor
-from .popupwindow import HtmlPopupWindow
+from .popupwindow import HtmlPopupWindow, HtmlDialog
 from .tags import TagsDisplay
 
 
@@ -415,7 +415,7 @@ class VariablesListEditor(_AbstractListEditor):
 
 class ImportSettingListEditor(_AbstractListEditor):
     _titles = ['Status', 'Import', 'Name / Path', 'Arguments', 'Comment']
-    _buttons = ['Library', 'Resource', 'Variables']
+    _buttons = ['Library', 'Resource', 'Variables', 'Import Failed Help']
 
     def __init__(self, parent, tree, controller):
         _AbstractListEditor.__init__(self, parent, tree, controller)
@@ -478,6 +478,17 @@ class ImportSettingListEditor(_AbstractListEditor):
     def OnVariables(self, event):
         self._show_import_editor_dialog(VariablesDialog,
                                         lambda v, c: self._controller.execute(AddVariablesFileImport(v, c)))
+
+    def OnImportFailedHelp(self, event):
+        dialog = HtmlDialog('Library import failure handling', '''<br>Possible corrections:<br>
+        <ul>
+            <li>See Tools / View RIDE Log for detailed information about failure</li>
+            <li>Consider importing library spec XML (Tools / Import Library Spec XML or by adding the XML file with the
+            correct name to PYTHONPATH) to enable keyword completion
+            for example for Java libraries.
+            Library spec XML can be created using libdoc tool from Robot Framework.</li>
+        </ul>''')
+        dialog.Show()
 
     def _get_setting(self):
         return self._controller[self._selection]
