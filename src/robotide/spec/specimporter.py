@@ -29,11 +29,17 @@ class SpecImporterPlugin(Plugin):
         self.register_action(ActionInfo('Tools', self.HEADER, self.execute_spec_import, position=83))
         PUBLISHER.subscribe(self.execute_spec_import, RideExecuteSpecXmlImport)
 
-    def execute_spec_import(self, event):
+    def execute_spec_import(self, event=None):
         path = self._get_path_to_library_spec()
-        if path and os.path.isfile(path):
+        if self._is_valid_path(path):
             self._store_spec(path)
-            self.model.update_namespace()
+            self._execute_namespace_update()
+
+    def _is_valid_path(self, path):
+        return path and os.path.isfile(path)
+
+    def _execute_namespace_update(self):
+        self.model.update_namespace()
 
     def _get_path_to_library_spec(self):
         wildcard = ('Library Spec XML | *.xml')
