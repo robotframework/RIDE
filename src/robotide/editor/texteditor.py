@@ -401,6 +401,7 @@ class SourceEditor(wx.Panel):
             self._stored_text = self._data.content
         else:
             self._editor.set_text(self._data.content)
+            self.set_editor_caret_position()
 
     def selected(self, data):
         if not self._editor:
