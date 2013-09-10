@@ -482,9 +482,9 @@ class ImportSettingListEditor(_AbstractListEditor):
     def OnImportFailedHelp(self, event):
         dialog = HtmlDialog('Import failure handling', '''<br>Possible corrections:<br>
         <ul>
-            <li>See Tools / View RIDE Log for detailed information about the failure</li>
+            <li>See Tools / View RIDE Log for detailed information about the failure.</li>
             <li>If the import contains a variable that RIDE has not initialized, consider adding the variable
-            to variable table with a default value</li>
+            to variable table with a default value.</li>
             <li>For library import failure: Consider importing library spec XML (Tools / Import Library Spec XML or by
             adding the XML file with the correct name to PYTHONPATH) to enable keyword completion
             for example for Java libraries.

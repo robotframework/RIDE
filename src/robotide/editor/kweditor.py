@@ -436,8 +436,9 @@ class KeywordEditor(GridEditor, RideEventHandler):
         <b>Keyword was not detected by RIDE</b>
         <br>Possible corrections:<br>
         <ul>
-            <li>Import library or resource file containing the keyword</li>
-            <li>Consider importing library spec XML (Tools / Import Library Spec XML or by adding the XML file with the
+            <li>Import library or resource file containing the keyword.</li>
+            <li>For library import errors: Consider importing library spec XML
+            (Tools / Import Library Spec XML or by adding the XML file with the
             correct name to PYTHONPATH) to enable keyword completion
             for example for Java libraries.
             Library spec XML can be created using libdoc tool from Robot Framework.</li>
