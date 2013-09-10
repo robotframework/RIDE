@@ -282,7 +282,7 @@ class TestRunnerPlugin(Plugin):
         except Exception, e:
             self._set_stopped()
             self._output(str(e))
-            wx.MessageBox("Could not start running tests.", "Error", wx.ICON_ERROR)
+            wx.MessageBox("Could not start running tests with command '%s'" % command, "Error", wx.ICON_ERROR)
 
     def _create_command(self):
         command_as_list = self._test_runner.get_command(
