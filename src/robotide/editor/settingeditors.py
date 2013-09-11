@@ -418,6 +418,7 @@ class ImportSettingListEditor(_AbstractListEditor):
     _buttons = ['Library', 'Resource', 'Variables', 'Import Failed Help']
 
     def __init__(self, parent, tree, controller):
+        self._import_failed_shown = False
         _AbstractListEditor.__init__(self, parent, tree, controller)
 
     @overrides(ListEditorBase)
@@ -480,6 +481,8 @@ class ImportSettingListEditor(_AbstractListEditor):
                                         lambda v, c: self._controller.execute(AddVariablesFileImport(v, c)))
 
     def OnImportFailedHelp(self, event):
+        if self._import_failed_shown:
+            return
         dialog = HtmlDialog('Import failure handling', '''
         <br>Possible corrections and notes:<br>
         <ul>
@@ -494,7 +497,13 @@ class ImportSettingListEditor(_AbstractListEditor):
             For more information see <a href="https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs">wiki</a>.
             </li>
         </ul>''')
+        dialog.Bind(wx.EVT_CLOSE, self._import_failed_help_closed)
         dialog.Show()
+        self._import_failed_shown = True
+
+    def _import_failed_help_closed(self, event):
+        self._import_failed_shown = False
+        event.Skip()
 
     def _get_setting(self):
         return self._controller[self._selection]
