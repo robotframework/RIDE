@@ -15,7 +15,6 @@ from Queue import Queue
 from _sqlite3 import OperationalError
 import os
 from threading import Thread
-from robot.errors import DataError
 from robotide.publish import RideLogException
 from robotide.spec.librarydatabase import LibraryDatabase
 from robotide.spec.libraryfetcher import get_import_result
