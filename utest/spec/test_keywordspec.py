@@ -19,7 +19,7 @@ import os
 from robot.utils.asserts import assert_equals, assert_true
 
 from resources import DATAPATH
-from robotide.spec.xmlreaders import init_from_spec
+from robotide.spec.xmlreaders import SpecInitializer
 
 sys.path.append(os.path.join(DATAPATH, 'libs'))
 
@@ -27,7 +27,7 @@ sys.path.append(os.path.join(DATAPATH, 'libs'))
 class TestLibrarySpec(unittest.TestCase):
 
     def _spec(self, name):
-        return init_from_spec(name)
+        return SpecInitializer().init_from_spec(name)
 
     def test_reading_library_from_xml(self):
         kws = self._spec('LibSpecLibrary')

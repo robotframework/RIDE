@@ -23,9 +23,13 @@ LIBRARY_XML_DIRECTORY = os.path.join(SETTINGS_DIRECTORY, 'library_xmls')
 if not os.path.isdir(LIBRARY_XML_DIRECTORY):
     os.makedirs(LIBRARY_XML_DIRECTORY)
 
-def init_from_spec(name):
-    specfile = _find_from_library_xml_directory(name + '.xml') or utils.find_from_pythonpath(name + '.xml')
-    return _init_from_specfile(specfile, name)
+class SpecInitializer(object):
+
+    def init_from_spec(self, name):
+        filename = name + '.xml'
+        specfile = _find_from_library_xml_directory(filename) or utils.find_from_pythonpath(filename)
+        return _init_from_specfile(specfile, name)
+
 
 def _find_from_library_xml_directory(name):
     path = os.path.join(LIBRARY_XML_DIRECTORY, name)
