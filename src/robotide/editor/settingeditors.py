@@ -414,7 +414,7 @@ class VariablesListEditor(_AbstractListEditor):
 
 
 class ImportSettingListEditor(_AbstractListEditor):
-    _titles = ['Status', 'Import', 'Name / Path', 'Arguments', 'Comment']
+    _titles = ['Import', 'Name / Path', 'Arguments', 'Comment']
     _buttons = ['Library', 'Resource', 'Variables', 'Import Failed Help']
 
     def __init__(self, parent, tree, controller):
@@ -480,8 +480,10 @@ class ImportSettingListEditor(_AbstractListEditor):
                                         lambda v, c: self._controller.execute(AddVariablesFileImport(v, c)))
 
     def OnImportFailedHelp(self, event):
-        dialog = HtmlDialog('Import failure handling', '''<br>Possible corrections:<br>
+        dialog = HtmlDialog('Import failure handling', '''
+        <br>Possible corrections and notes:<br>
         <ul>
+            <li>Import failure is shown with red color.</li>
             <li>See Tools / View RIDE Log for detailed information about the failure.</li>
             <li>If the import contains a variable that RIDE has not initialized, consider adding the variable
             to variable table with a default value.</li>
@@ -510,10 +512,7 @@ class ImportSettingListEditor(_AbstractListEditor):
         return not value[0]
 
     def get_column_values(self, item):
-        return [self._import_status(item), item.type, item.name, item.display_value, ListToStringFormatter(item.comment).value]
-
-    def _import_status(self, item):
-        return 'Import Failed' if item.has_error() else 'Import OK'
+        return [item.type, item.name, item.display_value, ListToStringFormatter(item.comment).value]
 
 
 class MetadataListEditor(_AbstractListEditor):
