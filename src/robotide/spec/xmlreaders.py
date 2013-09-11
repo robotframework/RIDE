@@ -74,3 +74,11 @@ def _get_library_name(name):
     if os.path.exists(name):
         return name
     return name.replace(' ', '')
+
+def get_name_from_xml(path):
+    try:
+        root = utils.ET.parse(path).getroot()
+        name = root.get('name')
+        return name
+    except:
+        return None

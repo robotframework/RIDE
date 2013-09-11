@@ -17,8 +17,7 @@ import wx
 from robotide.action import ActionInfo
 from robotide.pluginapi import Plugin
 from robotide.publish import RideExecuteSpecXmlImport
-from robotide.spec.xmlreaders import LIBRARY_XML_DIRECTORY
-from robotide.utils import ET
+from robotide.spec.xmlreaders import LIBRARY_XML_DIRECTORY, get_name_from_xml
 from robotide.publish import PUBLISHER
 
 class SpecImporterPlugin(Plugin):
@@ -56,17 +55,10 @@ class SpecImporterPlugin(Plugin):
         return path
 
     def _store_spec(self, path):
-        name = self._get_name_from_xml(path)
+        name = get_name_from_xml(path)
         if name:
             shutil.copy(path, os.path.join(LIBRARY_XML_DIRECTORY, name+'.xml'))
             wx.MessageBox('Library "%s" imported\nfrom "%s"\nThis may require RIDE restart.' % (name, path), 'Info', wx.OK | wx.ICON_INFORMATION)
         else:
             wx.MessageBox('Could not import library from file "%s"' % path, 'Import failed', wx.OK | wx.ICON_ERROR)
 
-    def _get_name_from_xml(self, path):
-        try:
-            root = ET.parse(path).getroot()
-            name = root.get('name')
-            return name
-        except:
-            return None
