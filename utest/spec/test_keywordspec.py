@@ -20,6 +20,7 @@ from robot.utils.asserts import assert_equals, assert_true
 
 from resources import DATAPATH
 from robotide.spec.xmlreaders import SpecInitializer
+from robotide.utils import overrides
 
 sys.path.append(os.path.join(DATAPATH, 'libs'))
 
@@ -56,6 +57,32 @@ class TestLibrarySpec(unittest.TestCase):
         if args:
             assert_equals(kw.args, args)
 
+
+class MockedSpecInitializer(SpecInitializer):
+
+    def __init__(self):
+        self.initialized_from_pythonpath = False
+
+    @overrides(SpecInitializer)
+    def _find_from_library_xml_directory(self, name):
+        return 'directory'
+
+    @overrides(SpecInitializer)
+    def _find_from_pythonpath(self, name):
+        return 'pythonpath'
+
+    @overrides(SpecInitializer)
+    def _init_from_specfile(self, specfile, name):
+        self.initialized_from_pythonpath = (specfile == 'pythonpath')
+        return lambda:0
+
+
+class TestSpecInitializer(unittest.TestCase):
+
+    def test_pythonpath_is_preferred_before_xml_directory(self):
+        specinitializer = MockedSpecInitializer()
+        specinitializer.init_from_spec('name')
+        self.assertTrue(specinitializer.initialized_from_pythonpath)
 
 if __name__ == '__main__':
     unittest.main()

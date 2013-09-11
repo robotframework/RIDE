@@ -27,22 +27,25 @@ class SpecInitializer(object):
 
     def init_from_spec(self, name):
         filename = name + '.xml'
-        specfile = _find_from_library_xml_directory(filename) or utils.find_from_pythonpath(filename)
-        return _init_from_specfile(specfile, name)
+        specfile = self._find_from_pythonpath(filename) or self._find_from_library_xml_directory(filename)
+        return self._init_from_specfile(specfile, name)
 
+    def _find_from_library_xml_directory(self, name):
+        path = os.path.join(LIBRARY_XML_DIRECTORY, name)
+        return path if os.path.isfile(path) else None
 
-def _find_from_library_xml_directory(name):
-    path = os.path.join(LIBRARY_XML_DIRECTORY, name)
-    return path if os.path.isfile(path) else None
+    def _find_from_pythonpath(self, name):
+        return utils.find_from_pythonpath(name)
 
-def _init_from_specfile(specfile, name):
-    if not specfile:
-        return []
-    try:
-        return _parse_xml(specfile, name)
-    except Exception:
-        # TODO: which exception to catch?
-        return []
+    def _init_from_specfile(self, specfile, name):
+        if not specfile:
+            return []
+        try:
+            return _parse_xml(specfile, name)
+        except Exception:
+            # TODO: which exception to catch?
+            return []
+
 
 def _parse_xml(file, name):
     root = utils.ET.parse(file).getroot()
