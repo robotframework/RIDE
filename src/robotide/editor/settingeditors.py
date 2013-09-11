@@ -490,7 +490,9 @@ class ImportSettingListEditor(_AbstractListEditor):
             <li>For library import failure: Consider importing library spec XML (Tools / Import Library Spec XML or by
             adding the XML file with the correct name to PYTHONPATH) to enable keyword completion
             for example for Java libraries.
-            Library spec XML can be created using libdoc tool from Robot Framework.</li>
+            Library spec XML can be created using libdoc tool from Robot Framework.
+            For more information see <a href="https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs">wiki</a>.
+            </li>
         </ul>''')
         dialog.Show()
 
