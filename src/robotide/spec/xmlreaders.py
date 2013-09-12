@@ -25,17 +25,36 @@ if not os.path.isdir(LIBRARY_XML_DIRECTORY):
 
 class SpecInitializer(object):
 
+    def __init__(self, directories=None):
+        self._directories = directories or []
+        self._directories.append(LIBRARY_XML_DIRECTORY)
+
     def init_from_spec(self, name):
-        filename = name + '.xml'
-        specfile = self._find_from_pythonpath(filename) or self._find_from_library_xml_directory(filename)
+        specfile = self._find_from_pythonpath(name) or self._find_from_library_xml_directories(name)
         return self._init_from_specfile(specfile, name)
 
-    def _find_from_library_xml_directory(self, name):
-        path = os.path.join(LIBRARY_XML_DIRECTORY, name)
-        return path if os.path.isfile(path) else None
+    def _find_from_library_xml_directories(self, name):
+        for directory in self._directories:
+            path = self._find_from_library_xml_directory(directory, name)
+            if path:
+                return path
+        return None
+
+    def _find_from_library_xml_directory(self, directory, name):
+        for xml_file in self._list_xml_files_in(directory):
+            name_from_xml = get_name_from_xml(xml_file)
+            if name_from_xml == name:
+                return xml_file
+        return None
+
+    def _list_xml_files_in(self, directory):
+        for filename in os.listdir(directory):
+            path = os.path.join(directory, filename)
+            if path.endswith('.xml') and os.path.isfile(path):
+                yield path
 
     def _find_from_pythonpath(self, name):
-        return utils.find_from_pythonpath(name)
+        return utils.find_from_pythonpath(name+'.xml')
 
     def _init_from_specfile(self, specfile, name):
         if not specfile:

@@ -19,7 +19,7 @@ import os
 from robot.utils.asserts import assert_equals, assert_true
 
 from resources import DATAPATH
-from robotide.spec.xmlreaders import SpecInitializer
+from robotide.spec.xmlreaders import SpecInitializer, LIBRARY_XML_DIRECTORY
 from robotide.utils import overrides
 
 sys.path.append(os.path.join(DATAPATH, 'libs'))
@@ -60,20 +60,28 @@ class TestLibrarySpec(unittest.TestCase):
 
 class MockedSpecInitializer(SpecInitializer):
 
-    def __init__(self):
+    def __init__(self, directories=None, pythonpath_return_value='pythonpath', directory_mapping=None):
+        self._pythonpath_return_value = pythonpath_return_value
+        self._directory_mapping = directory_mapping or {LIBRARY_XML_DIRECTORY:'directory'}
         self.initialized_from_pythonpath = False
+        self.initialized_from_xml_directory = False
+        SpecInitializer.__init__(self, directories)
 
     @overrides(SpecInitializer)
-    def _find_from_library_xml_directory(self, name):
-        return 'directory'
+    def _find_from_library_xml_directory(self, directory, name):
+        assert(name == 'name')
+        self.directory = directory
+        return self._directory_mapping.get(directory, None)
 
     @overrides(SpecInitializer)
     def _find_from_pythonpath(self, name):
-        return 'pythonpath'
+        assert(name == 'name')
+        return self._pythonpath_return_value
 
     @overrides(SpecInitializer)
     def _init_from_specfile(self, specfile, name):
         self.initialized_from_pythonpath = (specfile == 'pythonpath')
+        self.initialized_from_xml_directory = (specfile == 'directory')
         return lambda:0
 
 
@@ -83,6 +91,24 @@ class TestSpecInitializer(unittest.TestCase):
         specinitializer = MockedSpecInitializer()
         specinitializer.init_from_spec('name')
         self.assertTrue(specinitializer.initialized_from_pythonpath)
+        self.assertFalse(specinitializer.initialized_from_xml_directory)
+
+    def test_default_directory_is_always_used(self):
+        specinitializer = MockedSpecInitializer(pythonpath_return_value=None)
+        specinitializer.init_from_spec('name')
+        self.assertFalse(specinitializer.initialized_from_pythonpath)
+        self.assertTrue(specinitializer.initialized_from_xml_directory)
+        self.assertEquals(specinitializer.directory, LIBRARY_XML_DIRECTORY)
+
+    def test_finding_from_given_directory(self):
+        specinitializer = MockedSpecInitializer(directories=['my_dir'],
+                                                pythonpath_return_value=None,
+                                                directory_mapping={'my_dir':'directory'})
+        specinitializer.init_from_spec('name')
+        self.assertFalse(specinitializer.initialized_from_pythonpath)
+        self.assertTrue(specinitializer.initialized_from_xml_directory)
+        self.assertEquals(specinitializer.directory, 'my_dir')
+
 
 if __name__ == '__main__':
     unittest.main()
