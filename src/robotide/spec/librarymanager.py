@@ -23,10 +23,10 @@ from robotide.spec.xmlreaders import get_path, SpecInitializer
 
 class LibraryManager(Thread):
 
-    def __init__(self, database_name):
+    def __init__(self, database_name, spec_initializer=None):
         self._database_name = database_name
         self._messages = Queue()
-        self._spec_initializer = SpecInitializer()
+        self._spec_initializer = spec_initializer or SpecInitializer()
         Thread.__init__(self)
         self.setDaemon(True)
 
