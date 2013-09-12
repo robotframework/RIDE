@@ -16,6 +16,7 @@ import os
 import sys
 from robot.errors import DataError
 from robotide import utils
+from robotide.utils.versioncomparator import cmp_versions
 from iteminfo import _XMLKeywordContent
 from robotide.preferences.settings import SETTINGS_DIRECTORY
 
@@ -41,11 +42,25 @@ class SpecInitializer(object):
         return None
 
     def _find_from_library_xml_directory(self, directory, name):
+        current_xml_file = None
         for xml_file in self._list_xml_files_in(directory):
             name_from_xml = get_name_from_xml(xml_file)
             if name_from_xml == name:
-                return xml_file
-        return None
+                current_xml_file = self._get_newest_xml_file(xml_file, current_xml_file)
+        return current_xml_file
+
+    def _get_newest_xml_file(self, xml_file, current_xml_file):
+        version1 = self._get_version(xml_file)
+        version2 = self._get_version(current_xml_file)
+        if cmp_versions(version1, version2) == 1:
+            return xml_file
+        return current_xml_file
+
+    def _get_version(self, xml_file):
+        try:
+            return utils.ET.parse(xml_file).getroot().find('version').text
+        except:
+            return None
 
     def _list_xml_files_in(self, directory):
         for filename in os.listdir(directory):
