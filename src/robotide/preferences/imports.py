@@ -30,7 +30,9 @@ class ImportPreferences(PreferencesPanel):
             Setting(settings, 'auto imports',
                     'Comma separated list of libraries to be automatically imported.'),
             Setting(settings, 'pythonpath',
-                    'Comma separated list of directories to be added to PYTHONPATH when libraries are searched.')
+                    'Comma separated list of directories to be added to PYTHONPATH when libraries are searched.'),
+            Setting(settings, 'library xml directories',
+                    'Directories to search for library xml files')
         ]
         for s in self._settings:
             self._create_editor(s)
