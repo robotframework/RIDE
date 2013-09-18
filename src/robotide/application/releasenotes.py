@@ -86,7 +86,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 1.1</h2>
+<h2>Release notes for 1.2</h2>
 <table border="1">
 <tr>
 <td><p><b>ID</b></p></td>
@@ -95,59 +95,53 @@ RELEASE_NOTES = """
 <td><p><b>Summary</b></p></td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1134">Issue 1134</a></td>
-<td>Enhancement</td>
-<td>Critical</td>
-<td>Mass Tag editor</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1200">Issue 1200</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1248">Issue 1248</a></td>
 <td>Defect</td>
 <td>High</td>
-<td>RIDE starts but it is not able to open project files and closes again</td>
+<td>Can not open RIDE by error: sqlite3.OperationalError: unable to open database file</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=228">Issue 228</a></td>
-<td>Enhancement</td>
-<td>High</td>
-<td>Debugging executed tests</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1193">Issue 1193</a></td>
-<td>Enhancement</td>
-<td>High</td>
-<td>Syntax colorization for Text Edit</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=536">Issue 536</a></td>
-<td>Enhancement</td>
-<td>Medium</td>
-<td>Generic text based search</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=742">Issue 742</a></td>
-<td>Enhancement</td>
-<td>Medium</td>
-<td>Shortcut for moving to next line in grid editor</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1198">Issue 1198</a></td>
-<td>Enhancement</td>
-<td>Medium</td>
-<td>Add pause on failure option to test runner</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1188">Issue 1188</a></td>
-<td>Documentation</td>
-<td>Medium</td>
-<td>Document that running tests does not work if `C:\Python27\Scripts` is in PATH with quotes</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1202">Issue 1202</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1207">Issue 1207</a></td>
 <td>Defect</td>
+<td>Medium</td>
+<td>RIDE 1.1 - selecting ONE test case, will run also following test cases</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1208">Issue 1208</a></td>
+<td>Defect</td>
+<td>Medium</td>
+<td>Message console is not showing anything when running a very fast test case</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1259">Issue 1259</a></td>
+<td>Defect</td>
+<td>Medium</td>
+<td>saving txt file in text edit mode automatically scrolls to the top (l</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1263">Issue 1263</a></td>
+<td>Defect</td>
+<td>Medium</td>
+<td>"Arguments" textbox turns red when inserting --runfailed option</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1233">Issue 1233</a></td>
+<td>Enhancement</td>
+<td>Medium</td>
+<td>Use keyboard shortcuts in more places</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1265">Issue 1265</a></td>
+<td>Enhancement</td>
+<td>Medium</td>
+<td>Double clicking Variable icon on tree should open variable dialog</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1224">Issue 1224</a></td>
+<td>Enhancement</td>
 <td>Low</td>
-<td>error importing listener when running Python in optimized mode</td>
+<td>difficult to read the arguments in the Run panel when they are considered invalid</td>
 </tr>
 </table>
-<p>Altogether 9 issues.</p>
+<p>Altogether 8 issues.</p>
 """
