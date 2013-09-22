@@ -59,11 +59,6 @@ from robotide.publish.messages import RideTestSelectedForRunningChanged, RideNew
 
 ON_POSIX = 'posix' in sys.builtin_module_names
 
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle as pickle
-
 import wx
 import wx.stc
 from wx.lib.embeddedimage import PyEmbeddedImage
