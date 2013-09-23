@@ -169,7 +169,7 @@ class TestRunnerAgent:
             self.sock.connect((self.host, self.port))
             # Iron python does not return right kind of objects if binary mode is not used
             self.filehandler = self.sock.makefile('wb')
-            self.streamhandler = StreamHandler(self.filehandler)
+            self.streamhandler = streamhandler.StreamHandler(self.filehandler)
         except socket.error, e:
             print 'unable to open socket to "%s:%s" error: %s' % (self.host, self.port, str(e))
             self.sock = None
