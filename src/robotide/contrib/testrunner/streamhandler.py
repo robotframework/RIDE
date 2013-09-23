@@ -92,6 +92,40 @@ class _Finished(Exception):
     def __init__(self, val):
         self.val = val
 
+def dump(obj, sock):
+    StreamHandler(sock).dump(obj)
+
+def load(sock):
+    return StreamHandler(sock).load()
+
+def dumps(obj):
+    """
+    Similar method to json dumps, prepending data with message length
+    header. Replaces pickle.dumps, so can be used in place without
+    the memory leaks on receiving side in pickle.loads (related to
+    memoization of data)
+    
+    NOTE: Protocol is ignored when json representation is used
+    """
+    fp = StringIO()
+    StreamHandler(fp).dump(obj)
+    return fp.getvalue()
+
+def loads(str):
+    """
+    Reads in json message or pickle message prepended with message length
+    header from a string. Message is expected to be encoded by this class as
+    well, to have same message length header type.
+    
+    Specifically replaces pickle.loads as that function/method has serious
+    memory leak issues with long term use of same Unpickler object for
+    encoding data to send, specifically related to memoization of data to
+    encode.
+    """
+    fp = StringIO(s)
+    return StreamHandler(fp).load()
+
+
 class StreamHandler(object):
     loads = staticmethod(loads)
     dumps = staticmethod(dumps)
@@ -208,37 +242,3 @@ class StreamHandler(object):
                 raise EOFError
             buff.write(s)
         return buff.getvalue()[:-1]
-
-
-def dump(obj, sock):
-    StreamHandler(sock).dump(obj)
-
-def load(sock):
-    return StreamHandler(sock).load()
-
-def dumps(obj):
-    """
-    Similar method to json dumps, prepending data with message length
-    header. Replaces pickle.dumps, so can be used in place without
-    the memory leaks on receiving side in pickle.loads (related to
-    memoization of data)
-    
-    NOTE: Protocol is ignored when json representation is used
-    """
-    fp = StringIO()
-    StreamHandler(fp).dump(obj)
-    return fp.getvalue()
-
-def loads(str):
-    """
-    Reads in json message or pickle message prepended with message length
-    header from a string. Message is expected to be encoded by this class as
-    well, to have same message length header type.
-    
-    Specifically replaces pickle.loads as that function/method has serious
-    memory leak issues with long term use of same Unpickler object for
-    encoding data to send, specifically related to memoization of data to
-    encode.
-    """
-    fp = StringIO(s)
-    return StreamHandler(fp).load()
