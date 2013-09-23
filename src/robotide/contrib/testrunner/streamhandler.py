@@ -215,5 +215,8 @@ class StreamHandler(object):
         """
         buff = StringIO()
         while len(buff.getvalue()) == 0 or buff.getvalue()[-1] != '|':
-            buff.write(self.fp.read(1))
+            recv_char = self.fp.read(1)
+            if not recv_char:
+                raise EOFError('File/Socket closed while reading load header')
+            buff.write(recv_char)
         return buff.getvalue()[:-1]
