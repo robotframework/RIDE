@@ -60,7 +60,7 @@ except ImportError:
 
 __all__ = ["StreamError", "DecodeError", "EncodeError", "StreamHandler",
            "dump", "dumps", "load", "loads"]
-
+_JSONAVAIL = False
 
 class StreamError(Exception):
     """
@@ -169,20 +169,16 @@ class StreamHandler(object):
         if _JSONAVAIL:
             write_list.append('J')
             s = self._json_encoder(obj)
-            write_list.extend([str(sys.getsizeof(s)), '|', s])
+            write_list.extend([str(len(s)), '|', s])
         else:
             write_list.append('P')
-            try:
-                s = pickle.dumps(obj, pickle.HIGHEST_PROTOCOL)
-            except EncodeError.wrapped_exceptions, e:
-                raise EncodeError(str(e))
-            write_list.extend([str(sys.getsizeof(s)), '|', s])
-        try:
-            self.fp.write(''.join(write_list))
-            self.fp.flush()
-        except (socket.error,), e:
-            # python <2.6 does not make socket.error a subclass of IOError
-            raise IOError(str(e))
+            #try:
+            s = pickle.dumps(obj, pickle.HIGHEST_PROTOCOL)
+            #except EncodeError.wrapped_exceptions, e:
+            #    raise EncodeError(str(e))
+            write_list.extend([str(len(s)), '|', s])
+        self.fp.write(''.join(write_list))
+        #self.fp.flush()
 
     def load(self):
         """
@@ -201,29 +197,14 @@ class StreamHandler(object):
         if not msglen.isdigit():
             raise DecodeError('Message header not valid: %r' % header)
         msglen = int(msglen)
-        bytes_left = msglen
         buff = StringIO()
         # Don't use StringIO.len for sizing, reports string len not bytes
-        while bytes_left:
-            try:
-                s = self.fp.read(bytes_left)
-            except (socket.error,), e:
-                # python <2.6 does not make socket.error a subclass of IOError
-                buff.close()  # Not strictly neccesary, but good idea
-                raise IOError(str(e))
-            except EOFError, e:
-                # socket closed before all data could be read
-                buff.close()  # Not strictly neccesary, but good idea
-                raise EOFError
-            if not s:
-                raise EOFError
-            buff.write(s)
-            bytes_left = msglen - sys.getsizeof(buff.getvalue())
+        buff.write(self.fp.read(msglen))
         try:
             if msgtype == 'J':
                 return self._json_decoder(buff.getvalue())
             elif msgtype == 'P':
-                return pickle.load(buff)
+                return pickle.loads(buff.getvalue())
             else:
                 raise DecodeError("Message type %r not supported" % msgtype)
         except DecodeError.wrapped_exceptions, e:
@@ -234,17 +215,6 @@ class StreamHandler(object):
         Load in just the header bit from a socket/file pointer
         """
         buff = StringIO()
-        while buff.getvalue()[-1] != '|':
-            try:
-                s = self.fp.read(1)
-            except (socket.error,), e:
-                # python <2.6 does not make socket.error a subclass of IOError
-                raise IOError(str(e))
-            except EOFError, e:
-                # socket closed before all data could be read
-                buff.close()  # Not strictly neccesary, but good idea
-                raise EOFError
-            if not s:
-                raise EOFError
-            buff.write(s)
+        while len(buff.getvalue()) == 0 or buff.getvalue()[-1] != '|':
+            buff.write(self.fp.read(1))
         return buff.getvalue()[:-1]

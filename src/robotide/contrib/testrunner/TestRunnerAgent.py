@@ -86,6 +86,7 @@ class TestRunnerAgent:
         self.port = int(args[0])
         self.host = HOST
         self.sock = None
+        self.filehandler = None
         self._connect()
         self._send_pid()
         self._create_debugger(args[1] == 'True')
@@ -173,12 +174,19 @@ class TestRunnerAgent:
         except socket.error, e:
             print 'unable to open socket to "%s:%s" error: %s' % (self.host, self.port, str(e))
             self.sock = None
+            self.filehandler = None
 
     def _send_socket(self, name, *args):
-        if self.sock:
-            packet = (name, args)
-            self.streamhandler.dump(packet)
-            self.filehandler.flush()
+        try:
+            if self.filehandler:
+                packet = (name, args)
+                self.streamhandler.dump(packet)
+                self.filehandler.flush()
+        except Exception, e:
+            import traceback, sys
+            traceback.print_exc(file=sys.stdout)
+            sys.stdout.flush()
+            raise
 
 
 class RobotDebugger(object):
