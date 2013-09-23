@@ -45,7 +45,7 @@ from robotide.contrib.testrunner import TestRunnerAgent
 from robotide.controller.testexecutionresults import TestExecutionResults
 import robotide.utils as utils
 
-from robotide.contrib.testrunner.streamhandler import StreamHandler
+from robotide.contrib.testrunner import streamhandler
 
 ATEXIT_LOCK = threading.RLock()
 
@@ -393,7 +393,7 @@ class RideListenerServer(SocketServer.TCPServer):
 
 class RideListenerHandler(SocketServer.StreamRequestHandler):
     def handle(self):
-        decoder = StreamHandler(self.request)
+        decoder = streamhandler.StreamHandler(self.request.makefile('r'))
         while True:
             try:
                 (name, args) = decoder.load()

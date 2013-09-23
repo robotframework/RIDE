@@ -74,7 +74,7 @@ class EncodeError(StreamError):
     This exception is raised when an unencodable object is passed to the
     dump() method or function.
     """
-    _wrapped_exceptions = (pickle.PicklingError, )
+    wrapped_exceptions = (pickle.PicklingError, )
 
 
 class DecodeError(StreamError):
@@ -86,17 +86,16 @@ class DecodeError(StreamError):
     AttributeError, EOFError, ImportError, and IndexError.
     """
     # NOTE: No JSONDecodeError in json in stdlib for python >= 2.6
-    _wrapped_exceptions = (pickle.UnpicklingError, )
+    wrapped_exceptions = (pickle.UnpicklingError,)
+    if _JSONAVAIL:
+        if hasattr(json, 'JSONDecodeError'):
+            wrapped_exceptions = (pickle.UnpicklingError, json.JSONDecodeError)
 
-class _Finished(Exception):
-    def __init__(self, val):
-        self.val = val
+def dump(obj, fp):
+    StreamHandler(fp).dump(obj)
 
-def dump(obj, sock):
-    StreamHandler(sock).dump(obj)
-
-def load(sock):
-    return StreamHandler(sock).load()
+def load(fp):
+    return StreamHandler(fp).load()
 
 def dumps(obj):
     """
@@ -111,7 +110,7 @@ def dumps(obj):
     StreamHandler(fp).dump(obj)
     return fp.getvalue()
 
-def loads(str):
+def loads(s):
     """
     Reads in json message or pickle message prepended with message length
     header from a string. Message is expected to be encoded by this class as
@@ -130,7 +129,7 @@ class StreamHandler(object):
     loads = staticmethod(loads)
     dumps = staticmethod(dumps)
     
-    def __init__(self, sock):
+    def __init__(self, fp):
         """
         Stream handler that encodes objects as either JSON (if available) with
         message length header prepended for sending over a socket, or as a
@@ -141,18 +140,18 @@ class StreamHandler(object):
         method to encode/decode for long running processes which pass large
         amounts of data back and forth.
         """
-        if JSONAVAIL:
+        if _JSONAVAIL:
             self._json_encoder = json.JSONEncoder(separators=(',', ':'),
                                         sort_keys=True).encode
             self._json_decoder = json.JSONDecoder(strict=False).decode
         else:
-            def json_not_impl(obj):
+            def json_not_impl(dummy):
                 raise NotImplementedError(
                     'Python version < 2.6 and simplejson not installed. Please'
                     ' install simplejson.')
             self._json_decoder = staticmethod(json_not_impl)
             self._json_encoder = staticmethod(json_not_impl)
-        self.sock = sock
+        self.fp = fp
 
     def dump(self, obj):
         """
@@ -160,9 +159,6 @@ class StreamHandler(object):
         header. Replaces pickle.dump, so can be used in place without
         the memory leaks on receiving side in pickle.load (related to
         memoization of data)
-        
-        Note, class takes a socket rather than a file, as this is the intended
-        communication method.
         
         NOTE: Protocol is ignored when json representation is used
         """
@@ -178,16 +174,17 @@ class StreamHandler(object):
             write_list.append('P')
             try:
                 s = pickle.dumps(obj, pickle.HIGHEST_PROTOCOL)
-            except EncodeError._wrapped_exceptions, e:
+            except EncodeError.wrapped_exceptions, e:
                 raise EncodeError(str(e))
             write_list.extend([str(sys.getsizeof(s)), '|', s])
         try:
-            sock.sendall(''.join(write_list))
-        except socket.error, e:
+            self.fp.write(''.join(write_list))
+            self.fp.flush()
+        except (socket.error,), e:
             # python <2.6 does not make socket.error a subclass of IOError
             raise IOError(str(e))
 
-    def load():
+    def load(self):
         """
         Reads in json message prepended with message length header from a file
         (or socket, or other .read() enabled object). Message is expected to be
@@ -209,10 +206,15 @@ class StreamHandler(object):
         # Don't use StringIO.len for sizing, reports string len not bytes
         while bytes_left:
             try:
-                s = self.sock.recv(bytes_left)
-            except socket.error, e:
+                s = self.fp.read(bytes_left)
+            except (socket.error,), e:
                 # python <2.6 does not make socket.error a subclass of IOError
+                buff.close()  # Not strictly neccesary, but good idea
                 raise IOError(str(e))
+            except EOFError, e:
+                # socket closed before all data could be read
+                buff.close()  # Not strictly neccesary, but good idea
+                raise EOFError
             if not s:
                 raise EOFError
             buff.write(s)
@@ -224,20 +226,24 @@ class StreamHandler(object):
                 return pickle.load(buff)
             else:
                 raise DecodeError("Message type %r not supported" % msgtype)
-        except DecodeError._wrapped_exceptions, e:
+        except DecodeError.wrapped_exceptions, e:
             raise DecodeError(str(e))
         
-    def _load_header():
+    def _load_header(self):
         """
-        Load in just the header bit from a socket
+        Load in just the header bit from a socket/file pointer
         """
         buff = StringIO()
         while buff.getvalue()[-1] != '|':
             try:
-                s = self.sock.recv(1)
-            except socket.error, e:
+                s = self.fp.read(1)
+            except (socket.error,), e:
                 # python <2.6 does not make socket.error a subclass of IOError
                 raise IOError(str(e))
+            except EOFError, e:
+                # socket closed before all data could be read
+                buff.close()  # Not strictly neccesary, but good idea
+                raise EOFError
             if not s:
                 raise EOFError
             buff.write(s)

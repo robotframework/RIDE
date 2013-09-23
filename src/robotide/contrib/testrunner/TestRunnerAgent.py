@@ -63,7 +63,7 @@ from robot.running.signalhandler import STOP_SIGNAL_MONITOR
 from robot.errors import ExecutionFailed
 
 
-from robotide.contrib.testrunner.streamhandler import StreamHandler
+from robotide.contrib.testrunner import streamhandler
 
 HOST = "localhost"
 
@@ -167,7 +167,9 @@ class TestRunnerAgent:
         try:
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.sock.connect((self.host, self.port))
-            self.streamhandler = StreamHandler(self.sock)
+            # Iron python does not return right kind of objects if binary mode is not used
+            self.filehandler = self.sock.makefile('wb')
+            self.streamhandler = StreamHandler(self.filehandler)
         except socket.error, e:
             print 'unable to open socket to "%s:%s" error: %s' % (self.host, self.port, str(e))
             self.sock = None
@@ -176,6 +178,7 @@ class TestRunnerAgent:
         if self.sock:
             packet = (name, args)
             self.streamhandler.dump(packet)
+            self.filehandler.flush()
 
 
 class RobotDebugger(object):
