@@ -60,7 +60,6 @@ except ImportError:
 
 __all__ = ["StreamError", "DecodeError", "EncodeError", "StreamHandler",
            "dump", "dumps", "load", "loads"]
-_JSONAVAIL = False
 
 class StreamError(Exception):
     """
