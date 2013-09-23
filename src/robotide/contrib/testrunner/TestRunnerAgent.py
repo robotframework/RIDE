@@ -89,7 +89,7 @@ class TestRunnerAgent:
         self.filehandler = None
         self._connect()
         self._send_pid()
-        self._create_debugger(args[1] == 'True')
+        self._create_debugger((len(args)>=2) and (args[1] == 'True'))
         self._create_kill_server()
 
     def _create_debugger(self, pause_on_failure):
