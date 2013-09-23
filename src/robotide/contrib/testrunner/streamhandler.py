@@ -85,10 +85,8 @@ class DecodeError(StreamError):
     Note that other exceptions may also be raised during decoding, including
     AttributeError, EOFError, ImportError, and IndexError.
     """
-    if _JSONAVAIL:
-        _wrapped_exceptions = (pickle.UnpicklingError, json.JSONDecodeError)
-    else:
-        _wrapped_exceptions = (pickle.UnpicklingError, )
+    # NOTE: No JSONDecodeError in json in stdlib for python >= 2.6
+    _wrapped_exceptions = (pickle.UnpicklingError, )
 
 class _Finished(Exception):
     def __init__(self, val):
