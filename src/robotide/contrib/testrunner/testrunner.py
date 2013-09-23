@@ -31,7 +31,6 @@ import SocketServer
 import atexit
 import codecs
 import os
-import pickle
 import shutil
 import socket
 import subprocess
@@ -46,6 +45,7 @@ from robotide.contrib.testrunner import TestRunnerAgent
 from robotide.controller.testexecutionresults import TestExecutionResults
 import robotide.utils as utils
 
+from robotide.contrib.testrunner.streamhandler import StreamHandler
 
 ATEXIT_LOCK = threading.RLock()
 
@@ -393,10 +393,10 @@ class RideListenerServer(SocketServer.TCPServer):
 
 class RideListenerHandler(SocketServer.StreamRequestHandler):
     def handle(self):
-        unpickler = pickle.Unpickler(self.request.makefile('r'))
+        decoder = StreamHandler(self.request)
         while True:
             try:
-                (name, args) = unpickler.load()
+                (name, args) = decoder.load()
                 self.server.callback(name, *args)
             except (EOFError, IOError):
                 # I should log this...

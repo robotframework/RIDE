@@ -29,9 +29,9 @@
 
 '''A Robot Framework listener that sends information to a socket
 
-This uses the "pickle" module of python to send objects to the
-listening server. It should probably be refactored to call an
-XMLRPC server.
+This uses a custom streamhandler module, preferring json but sending either
+json or pickle to send objects to the listening server. It should probably be
+refactored to call an XMLRPC server.
 '''
 
 import os
@@ -63,10 +63,7 @@ from robot.running.signalhandler import STOP_SIGNAL_MONITOR
 from robot.errors import ExecutionFailed
 
 
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
+from robotide.contrib.testrunner.streamhandler import StreamHandler
 
 HOST = "localhost"
 
@@ -166,13 +163,11 @@ class TestRunnerAgent:
             self.sock.close()
 
     def _connect(self):
-        '''Establish a connection for sending pickles'''
+        '''Establish a connection for sending data'''
         try:
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.sock.connect((self.host, self.port))
-            # Iron python does not return right kind of objects if binary mode is not used
-            self.filehandler = self.sock.makefile('wb')
-            self.pickler = pickle.Pickler(self.filehandler)
+            self.streamhandler = StreamHandler(self.sock)
         except socket.error, e:
             print 'unable to open socket to "%s:%s" error: %s' % (self.host, self.port, str(e))
             self.sock = None
@@ -180,8 +175,7 @@ class TestRunnerAgent:
     def _send_socket(self, name, *args):
         if self.sock:
             packet = (name, args)
-            self.pickler.dump(packet)
-            self.filehandler.flush()
+            self.streamhandler.dump(packet)
 
 
 class RobotDebugger(object):
