@@ -17,7 +17,7 @@ robot.parsing.populators.PROCESS_CURDIR = False
 
 from robot.version import get_version
 from robot.utils import normpath, NormalizedDict
-from robot.common.handlers import UserErrorHandler
+from robot.running.usererrorhandler import UserErrorHandler
 from robot.parsing import TestCaseFile, ResourceFile, TestDataDirectory
 from robot.parsing.model import TestCase, UserKeyword
 from robot.parsing.datarow import DataRow
@@ -26,6 +26,7 @@ from robot.running import TestLibrary
 from robot.output import LOGGER as ROBOT_LOGGER
 from robot.variables import Variables as RobotVariables
 from robot.variables import is_scalar_var, is_list_var, is_var, VariableSplitter
-
+from robot.running.arguments import (USER_KWARGS_SYNTAX,
+                                     is_user_kwargs, get_user_kwargs_name)
 
 ROBOT_VERSION = get_version()

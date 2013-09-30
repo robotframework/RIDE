@@ -164,8 +164,9 @@ class ChiefController(_BaseController, WithNamespace):
         self.clear_namespace_update_listeners()
         self._controller = DataController(datafile, self)
         new_resource_controllers = []
-        for r in resources:
-            self._create_resource_controller(r, resource_created_callback=lambda controller: new_resource_controllers.append(controller))
+        if resources:
+            for r in resources:
+                self._create_resource_controller(r, resource_created_callback=lambda controller: new_resource_controllers.append(controller))
         for controller in new_resource_controllers:
             self._inform_resource_created(controller)
 
