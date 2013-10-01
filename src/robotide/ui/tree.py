@@ -98,6 +98,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         if item:
             handler = self._controller.get_handler(item)
             handler.double_clicked()
+        event.Skip()
 
     def set_editor(self, editor):
         self._editor = editor
