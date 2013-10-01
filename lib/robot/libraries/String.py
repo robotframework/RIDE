@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2013 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -18,32 +18,80 @@ from random import randint
 from string import ascii_lowercase, ascii_uppercase, digits
 
 from robot.api import logger
+from robot.utils import unic
 from robot.version import get_version
 
 
 class String:
-
     """A test library for string manipulation and verification.
 
     `String` is Robot Framework's standard library for manipulating
     strings (e.g. `Replace String Using Regexp`, `Split To Lines`) and
     verifying their contents (e.g. `Should Be String`).
 
-    Following keywords from the BuiltIn library can also be used with
-    strings:
+    Following keywords from `BuiltIn` library can also be used with strings:
+
     - `Catenate`
     - `Get Length`
     - `Length Should Be`
-    - `Should (Not) Match (Regexp)`
     - `Should (Not) Be Empty`
     - `Should (Not) Be Equal (As Strings/Integers/Numbers)`
+    - `Should (Not) Match (Regexp)`
     - `Should (Not) Contain`
     - `Should (Not) Start With`
     - `Should (Not) End With`
+    - `Convert To String`
     """
-
     ROBOT_LIBRARY_SCOPE = 'GLOBAL'
     ROBOT_LIBRARY_VERSION = get_version()
+
+    def encode_string_to_bytes(self, string, encoding, errors='strict'):
+        """Encodes the given Unicode `string` to bytes using the given `encoding`.
+
+        `errors` argument controls what to do if encoding some characters fails.
+        All values accepted by `encode` method in Python are valid, but in
+        practice the following values are most useful:
+
+        - `strict`: fail if characters cannot be encoded (default)
+        - `ignore`: ignore characters that cannot be encoded
+        - `replace`: replace characters that cannot be encoded with
+          a replacement character
+
+        Examples:
+        | ${bytes} = | Encode String To Bytes | ${string} | UTF-8 |
+        | ${bytes} = | Encode String To Bytes | ${string} | ASCII | errors=ignore |
+
+        Use `Decode Bytes To String` if you need to convert byte strings to
+        Unicode strings, and `Convert To String` in `BuiltIn` if you need to
+        convert arbitrary objects to Unicode strings.
+
+        New in Robot Framework 2.7.7.
+        """
+        return string.encode(encoding, errors)
+
+    def decode_bytes_to_string(self, bytes, encoding, errors='strict'):
+        """Decodes the given `bytes` to a Unicode string using the given `encoding`.
+
+        `errors` argument controls what to do if decoding some bytes fails.
+        All values accepted by `decode` method in Python are valid, but in
+        practice the following values are most useful:
+
+        - `strict`: fail if characters cannot be decoded (default)
+        - `ignore`: ignore characters that cannot be decoded
+        - `replace`: replace characters that cannot be decoded with
+          a replacement character
+
+        Examples:
+        | ${string} = | Decode Bytes To String | ${bytes} | UTF-8 |
+        | ${string} = | Decode Bytes To String | ${bytes} | ASCII | errors=ignore |
+
+        Use `Encode String To Bytes` if you need to convert Unicode strings to
+        byte strings, and `Convert To String` in `BuiltIn` if you need to
+        convert arbitrary objects to Unicode strings.
+
+        New in Robot Framework 2.7.7.
+        """
+        return bytes.decode(encoding, errors)
 
     def get_line_count(self, string):
         """Returns and logs the number of lines in the given `string`."""
@@ -339,13 +387,15 @@ class String:
     def should_be_string(self, item, msg=None):
         """Fails if the given `item` is not a string.
 
+        This keyword passes regardless is the `item` is a Unicode string or
+        a byte string. Use `Should Be Unicode String` or `Should Be Byte
+        String` if you want to restrict the string type.
+
         The default error message can be overridden with the optional
         `msg` argument.
         """
         if not isinstance(item, basestring):
-            if not msg:
-                msg = "Given item '%s' is not a string" % item
-            raise AssertionError(msg)
+            self._fail(msg, "'%s' is not a string.", item)
 
     def should_not_be_string(self, item, msg=None):
         """Fails if the given `item` is a string.
@@ -354,39 +404,67 @@ class String:
         `msg` argument.
         """
         if isinstance(item, basestring):
-            if not msg:
-                msg = "Given item '%s' is a string" % item
-            raise AssertionError(msg)
+            self._fail(msg, "'%s' is a string.", item)
 
-    def should_be_lowercase(self, string, msg=None):
-        """Fails if the given `string` is not in lowercase.
+    def should_be_unicode_string(self, item, msg=None):
+        """Fails if the given `item` is not a Unicode string.
+
+        Use `Should Be Byte String` if you want to verify the `item` is a
+        byte string, or `Should Be String` if both Unicode and byte strings
+        are fine.
 
         The default error message can be overridden with the optional
         `msg` argument.
 
+        New in Robot Framework 2.7.7.
+        """
+        if not isinstance(item, unicode):
+            self._fail(msg, "'%s' is not a Unicode string.", item)
+
+    def should_be_byte_string(self, item, msg=None):
+        """Fails if the given `item` is not a byte string.
+
+        Use `Should Be Unicode String` if you want to verify the `item` is a
+        Unicode string, or `Should Be String` if both Unicode and byte strings
+        are fine.
+
+        The default error message can be overridden with the optional
+        `msg` argument.
+
+        New in Robot Framework 2.7.7.
+        """
+        if not isinstance(item, str):
+            self._fail(msg, "'%s' is not a byte string.", item)
+
+    def should_be_lowercase(self, string, msg=None):
+        """Fails if the given `string` is not in lowercase.
+
         For example 'string' and 'with specials!' would pass, and 'String', ''
         and ' ' would fail.
+
+        The default error message can be overridden with the optional
+        `msg` argument.
 
         See also `Should Be Uppercase` and `Should Be Titlecase`.
         All these keywords were added in Robot Framework 2.1.2.
         """
         if not string.islower():
-            raise AssertionError(msg or "'%s' is not lowercase" % string)
+            self._fail(msg, "'%s' is not lowercase.", string)
 
     def should_be_uppercase(self, string, msg=None):
         """Fails if the given `string` is not in uppercase.
 
-        The default error message can be overridden with the optional
-        `msg` argument.
-
         For example 'STRING' and 'WITH SPECIALS!' would pass, and 'String', ''
         and ' ' would fail.
+
+        The default error message can be overridden with the optional
+        `msg` argument.
 
         See also `Should Be Titlecase` and `Should Be Lowercase`.
         All these keywords were added in Robot Framework 2.1.2.
         """
         if not string.isupper():
-            raise AssertionError(msg or "'%s' is not uppercase" % string)
+            self._fail(msg, "'%s' is not uppercase.", string)
 
     def should_be_titlecase(self, string, msg=None):
         """Fails if given `string` is not title.
@@ -395,17 +473,17 @@ class String:
         character in it, uppercase characters only follow uncased
         characters and lowercase characters only cased ones.
 
-        The default error message can be overridden with the optional
-        `msg` argument.
-
         For example 'This Is Title' would pass, and 'Word In UPPER',
         'Word In lower', '' and ' ' would fail.
+
+        The default error message can be overridden with the optional
+        `msg` argument.
 
         See also `Should Be Uppercase` and `Should Be Lowercase`.
         All theses keyword were added in Robot Framework 2.1.2.
         """
         if not string.istitle():
-            raise AssertionError(msg or "'%s' is not titlecase" % string)
+            self._fail(msg, "'%s' is not titlecase.", string)
 
     def _convert_to_index(self, value, name):
         if value == '':
@@ -418,5 +496,10 @@ class String:
         try:
             return int(value)
         except ValueError:
-            raise ValueError("Cannot convert '%s' argument '%s' to an integer"
+            raise ValueError("Cannot convert '%s' argument '%s' to an integer."
                              % (name, value))
+
+    def _fail(self, message, default_template, *items):
+        if not message:
+            message = default_template % tuple(unic(item) for item in items)
+        raise AssertionError(message)
