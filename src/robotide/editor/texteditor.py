@@ -24,6 +24,7 @@ from robot.parsing.populators import FromFilePopulator
 from robot.parsing.txtreader import TxtReader
 
 from robotide.controller.commands import SetDataFile
+from robotide.controller.dataloader import TestDataDirectoryWithExcludes
 from robotide.publish.messages import RideMessage
 from robotide.widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler
 from robotide.pluginapi import (Plugin, RideSaving, TreeAwarePluginMixin,
@@ -238,10 +239,11 @@ class DataFileWrapper(object): # TODO: bad class name
         self._data.mark_dirty()
 
     def _create_target(self):
-        target_class = type(self._data.data)
-        if target_class is TestDataDirectory:
+        data = self._data.data
+        target_class = type(data)
+        if isinstance(data, TestDataDirectory):
             target = TestDataDirectory(source=self._data.directory)
-            target.initfile = self._data.data.initfile
+            target.initfile = data.initfile
             return target
         return target_class(source=self._data.source)
 
