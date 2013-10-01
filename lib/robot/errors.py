@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2013 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
 #  limitations under the License.
 
 import utils
-
 
 # Return codes from Robot and Rebot.
 # RC below 250 is the number of failed critical tests and exactly 250
@@ -78,35 +77,39 @@ class ExecutionFailed(RobotError):
     """Used for communicating failures in test execution."""
 
     def __init__(self, message, timeout=False, syntax=False, exit=False,
-                 cont=False, exit_for_loop=False):
+                 continue_on_failure=False, return_value=None):
         if '\r\n' in message:
             message = message.replace('\r\n', '\n')
         RobotError.__init__(self, utils.cut_long_message(message))
         self.timeout = timeout
         self.syntax = syntax
         self.exit = exit
-        self.cont = cont
-        self.exit_for_loop = exit_for_loop
-        self.return_value = None
+        self.continue_on_failure = continue_on_failure
+        self.return_value = return_value
 
     @property
-    def dont_cont(self):
-        return self.timeout or self.syntax or self.exit or self.exit_for_loop
+    def dont_continue(self):
+        return self.timeout or self.syntax or self.exit
 
-    cont = property(lambda self: self._cont and not self.dont_cont,
-                    lambda self, cont: self._set_cont(cont))
+    def _get_continue_on_failure(self):
+        return self._continue_on_failure
 
-    def _set_cont(self, cont=True):
-        self._cont = cont
+    def _set_continue_on_failure(self, continue_on_failure):
+        self._continue_on_failure = continue_on_failure
+        for child in getattr(self, '_errors', []):
+            child.continue_on_failure = continue_on_failure
+
+    continue_on_failure = property(_get_continue_on_failure,
+                                   _set_continue_on_failure)
 
     def can_continue(self, teardown=False, templated=False, dry_run=False):
         if dry_run:
             return True
-        if self.dont_cont and not (teardown and self.syntax):
+        if self.dont_continue and not (teardown and self.syntax):
             return False
         if teardown or templated:
             return True
-        return self.cont
+        return self.continue_on_failure
 
     def get_errors(self):
         return [self]
@@ -118,13 +121,24 @@ class HandlerExecutionFailed(ExecutionFailed):
         details = utils.ErrorDetails()
         timeout = isinstance(details.error, TimeoutError)
         syntax = isinstance(details.error, DataError)
-        exit = bool(getattr(details.error, 'ROBOT_EXIT_ON_FAILURE', False))
-        cont = bool(getattr(details.error, 'ROBOT_CONTINUE_ON_FAILURE', False))
-        exit_for_loop = bool(getattr(details.error, 'ROBOT_EXIT_FOR_LOOP', False))
+        exit_on_failure = self._get(details.error, 'EXIT_ON_FAILURE')
+        continue_on_failure = self._get(details.error, 'CONTINUE_ON_FAILURE')
         ExecutionFailed.__init__(self, details.message, timeout, syntax,
-                                 exit, cont, exit_for_loop)
+                                 exit_on_failure, continue_on_failure)
         self.full_message = details.message
         self.traceback = details.traceback
+        self._handle_deprecated_exit_for_loop(details.error)
+
+    def _get(self, error, attr):
+        return bool(getattr(error, 'ROBOT_' + attr, False))
+
+    def _handle_deprecated_exit_for_loop(self, error):
+        if self._get(error, 'EXIT_FOR_LOOP'):
+            from robot.output import LOGGER
+            LOGGER.warn("Support for using 'ROBOT_EXIT_FOR_LOOP' attribute to "
+                        "exit for loops is deprecated in Robot Framework 2.8 "
+                        "and will be removed in 2.9.")
+            raise ExitForLoop
 
 
 class ExecutionFailures(ExecutionFailed):
@@ -145,17 +159,11 @@ class ExecutionFailures(ExecutionFailed):
         return {'timeout': any(err.timeout for err in errors),
                 'syntax': any(err.syntax for err in errors),
                 'exit': any(err.exit for err in errors),
-                'cont': all(err.cont for err in errors),
-                'exit_for_loop': all(err.exit_for_loop for err in errors)}
+                'continue_on_failure': all(err.continue_on_failure for err in errors)
+                }
 
     def get_errors(self):
         return self._errors
-
-    def _set_cont(self, cont):
-        ExecutionFailed._set_cont(self, cont)
-        if hasattr(self, '_errors'):
-            for err in self._errors:
-                err.cont = cont
 
 
 class UserKeywordExecutionFailed(ExecutionFailures):
@@ -180,6 +188,53 @@ class UserKeywordExecutionFailed(ExecutionFailures):
         if not run_msg:
             return 'Keyword teardown failed:\n%s' % td_msg
         return '%s\n\nAlso keyword teardown failed:\n%s' % (run_msg, td_msg)
+
+
+class ExecutionPassed(ExecutionFailed):
+    """Base class for all exceptions communicating that execution passed.
+
+    Should not be raised directly, but more detailed exceptions used instead.
+    """
+
+    def __init__(self, message=None, **kwargs):
+        ExecutionFailed.__init__(self, message or self._get_message(), **kwargs)
+        self._earlier_failures = []
+
+    def _get_message(self):
+        return "Invalid '%s' usage." \
+               % utils.printable_name(self.__class__.__name__, code_style=True)
+
+    def set_earlier_failures(self, failures):
+        if failures:
+            self._earlier_failures.extend(failures)
+
+    @property
+    def earlier_failures(self):
+        if not self._earlier_failures:
+            return None
+        return ExecutionFailures(self._earlier_failures)
+
+
+class PassExecution(ExecutionPassed):
+    """Used by 'Pass Execution' keyword."""
+
+    def __init__(self, message):
+        ExecutionPassed.__init__(self, message)
+
+
+class ContinueForLoop(ExecutionPassed):
+    """Used by 'Continue For Loop' keyword."""
+
+
+class ExitForLoop(ExecutionPassed):
+    """Used by 'Exit For Loop' keyword."""
+
+
+class ReturnFromKeyword(ExecutionPassed):
+    """Used by 'Return From Keyword' keyword."""
+
+    def __init__(self, return_value):
+        ExecutionPassed.__init__(self, return_value=return_value)
 
 
 class RemoteError(RobotError):
