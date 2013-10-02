@@ -86,7 +86,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 1.2</h2>
+<h2>Release notes for 1.2.1</h2>
 <table border="1">
 <tr>
 <td><p><b>ID</b></p></td>
@@ -95,53 +95,29 @@ RELEASE_NOTES = """
 <td><p><b>Summary</b></p></td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1248">Issue 1248</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1285">Issue 1285</a></td>
 <td>Defect</td>
 <td>High</td>
-<td>Can not open RIDE by error: sqlite3.OperationalError: unable to open database file</td>
+<td>Edit directory init file in Text Edit can not be applied</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1207">Issue 1207</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1281">Issue 1281</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>RIDE 1.1 - selecting ONE test case, will run also following test cases</td>
+<td> unable to import String library 2.8.1 to RIDE </td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1208">Issue 1208</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1283">Issue 1283</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>Message console is not showing anything when running a very fast test case</td>
+<td>In foder tree, Ride does not open a fodler when it is double clicked</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1259">Issue 1259</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>saving txt file in text edit mode automatically scrolls to the top (l</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1263">Issue 1263</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>"Arguments" textbox turns red when inserting --runfailed option</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1233">Issue 1233</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1284">Issue 1284</a></td>
 <td>Enhancement</td>
 <td>Medium</td>
-<td>Use keyboard shortcuts in more places</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1265">Issue 1265</a></td>
-<td>Enhancement</td>
-<td>Medium</td>
-<td>Double clicking Variable icon on tree should open variable dialog</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1224">Issue 1224</a></td>
-<td>Enhancement</td>
-<td>Low</td>
-<td>difficult to read the arguments in the Run panel when they are considered invalid</td>
+<td>ride1.2 not work well with robot 2.8.1 when search keywords for new added keywords in BuiltIn</td>
 </tr>
 </table>
-<p>Altogether 8 issues.</p>
+<p>Altogether 4 issues.</p>
 """
