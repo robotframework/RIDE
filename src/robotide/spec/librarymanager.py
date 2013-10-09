@@ -15,17 +15,18 @@ from Queue import Queue
 from _sqlite3 import OperationalError
 import os
 from threading import Thread
-from robot.errors import DataError
 from robotide.publish import RideLogException
 from robotide.spec.librarydatabase import LibraryDatabase
 from robotide.spec.libraryfetcher import get_import_result
-from robotide.spec.xmlreaders import init_from_spec, get_path
+from robotide.spec.xmlreaders import get_path, SpecInitializer
+
 
 class LibraryManager(Thread):
 
-    def __init__(self, database_name):
+    def __init__(self, database_name, spec_initializer=None):
         self._database_name = database_name
         self._messages = Queue()
+        self._spec_initializer = spec_initializer or SpecInitializer()
         Thread.__init__(self)
         self.setDaemon(True)
 
@@ -74,7 +75,7 @@ class LibraryManager(Thread):
             path = get_path(library_name.replace('/', os.sep), os.path.abspath('.'))
             return get_import_result(path, library_args)
         except Exception, err:
-            kws = init_from_spec(library_name)
+            kws = self._spec_initializer.init_from_spec(library_name)
             if not kws:
                 msg = 'Importing test library "%s" failed' % library_name
                 RideLogException(message=msg, exception=err, level='WARN').publish()

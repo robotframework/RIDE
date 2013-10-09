@@ -86,11 +86,19 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         self.GetEventHandler().ProcessEvent(le)
 
     def _bind_tree_events(self):
+        self.Bind(wx.EVT_LEFT_DCLICK, self.OnDoubleClick)
         self.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnSelChanged)
         self.Bind(wx.EVT_TREE_ITEM_EXPANDING, self.OnTreeItemExpanding)
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnRightClick)
         self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnItemActivated)
         self.Bind(customtreectrl.EVT_TREE_ITEM_CHECKED, self.OnTreeItemChecked)
+
+    def OnDoubleClick(self, event):
+        item, pos = self.HitTest(self.ScreenToClient(wx.GetMousePosition()))
+        if item:
+            handler = self._controller.get_handler(item)
+            handler.double_clicked()
+        event.Skip()
 
     def set_editor(self, editor):
         self._editor = editor

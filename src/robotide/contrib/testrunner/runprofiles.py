@@ -27,7 +27,7 @@ import wx
 from wx.lib.filebrowsebutton import FileBrowseButton
 import os
 from robot.errors import DataError, Information, FrameworkError
-from robot.run import USAGE
+from robotide.contrib.testrunner.usages import USAGE
 from robot.utils.argumentparser import ArgumentParser
 from robot.utils.encoding import SYSTEM_ENCODING
 from robotide.utils import overrides

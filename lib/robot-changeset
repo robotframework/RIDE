@@ -1,1 +1,7 @@
 69bc60b7b843
+NOTE!:
+robot/running/namespace.py has changes to support Process.py also Process.py file added from 2.8.1
+libraries/String.py added from 2.8.1
+libraries/BuiltIn.py added from 2.8.1
+running/usererrorhandler.py added from 2.8.1 (to support BuiltIn)
+errors.py added from 2.8.1 (to support BuiltIn)

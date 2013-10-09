@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2013 Nokia Siemens Networks Oyj
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,20 +12,20 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import os
 import re
 import time
 
 from robot.output import LOGGER, Message
-from robot.errors import DataError, ExecutionFailed, ExecutionFailures
+from robot.errors import (ContinueForLoop, DataError, ExecutionFailed,
+                          ExecutionFailures, ExitForLoop, PassExecution,
+                          ReturnFromKeyword)
 from robot import utils
 from robot.utils import asserts
 from robot.variables import is_var, is_list_var
 from robot.running import Keyword, RUN_KW_REGISTER
 from robot.running.context import EXECUTION_CONTEXTS
-from robot.common import UserErrorHandler
+from robot.running.usererrorhandler import UserErrorHandler
 from robot.version import get_version
-from robot.model import TagPatterns
 
 if utils.is_jython:
     from java.lang import String, Number
@@ -47,6 +47,13 @@ except NameError:
             bins.append(str(remainder))
         bins.append(str(integer))
         return prefix + ''.join(reversed(bins))
+
+
+def run_keyword_variant(resolve):
+    def decorator(method):
+        RUN_KW_REGISTER.register_run_keyword('BuiltIn', method.__name__, resolve)
+        return method
+    return decorator
 
 
 class _Converter:
@@ -257,6 +264,10 @@ class _Converter:
 
         Uses '__unicode__' or '__str__' method with Python objects and
         'toString' with Java objects.
+
+        Use `Encode String To Bytes` and `Decode Bytes To String` keywords
+        in `String` library if you need to convert between Unicode and byte
+        strings.
         """
         self._log_types(item)
         return self._convert_to_string(item)
@@ -297,32 +308,41 @@ class _Converter:
 
 class _Verify:
 
-    def fail(self, msg=None, *tags):
-        """Fails the test with the given message and optionally alters its tags.
-
-        The error message is specified using the optional `msg` argument.
-
-        Starting from Robot Framework 2.7.4, it is possible to modify tags of
-        the current test case by passing tags after the message. Tags starting
-        with a hyphen (e.g. `-regression`) are removed and others added. Tags
-        are modified using `Set Tags` and `Remove Tags` internally, and the
-        semantics setting and removing them are the same as with these keywords.
-
-        Examples:
-        | Fail | Keyword not ready |             | | # Fails with the given message. |
-        | Fail | Keyword not ready | not-ready   | | # Fails and adds 'not-ready' tag. |
-        | Fail | OS not supported  | -regression | | # Removes tag 'regression'. |
-        | Fail | My message        | -old   | new  | # Adds tag 'new' and removes 'old'. |
-        | Fail | My message        | tag    | -t*  | # Removes all tags starting with 't' except the newly added 'tag'. |
-
-        See `Fatal Error` if you need to stop the whole test execution.
-        """
+    def _set_and_remove_tags(self, tags):
         set_tags = [tag for tag in tags if not tag.startswith('-')]
         remove_tags = [tag[1:] for tag in tags if tag.startswith('-')]
         if remove_tags:
             self.remove_tags(*remove_tags)
         if set_tags:
             self.set_tags(*set_tags)
+
+    def fail(self, msg=None, *tags):
+        """Fails the test with the given message and optionally alters its tags.
+
+        The error message is specified using the `msg` argument.
+        It is possible to use HTML in the given error message, similarly
+        as with any other keyword accepting an error message, by prefixing
+        the error with `*HTML*`.
+
+        It is possible to modify tags of the current test case by passing tags
+        after the message. Tags starting with a hyphen (e.g. `-regression`) are
+        removed and others added. Tags are modified using `Set Tags` and
+        `Remove Tags` internally, and the semantics setting and removing them
+        are the same as with these keywords.
+
+        Examples:
+        | Fail | Test not ready   |             | | # Fails with the given message.    |
+        | Fail | *HTML*<b>Test not ready</b> | | | # Fails using HTML in the message. |
+        | Fail | Test not ready   | not-ready   | | # Fails and adds 'not-ready' tag.  |
+        | Fail | OS not supported | -regression | | # Removes tag 'regression'.        |
+        | Fail | My message       | tag    | -t*  | # Removes all tags starting with 't' except the newly added 'tag'. |
+
+        See `Fatal Error` if you need to stop the whole test execution.
+
+        Support for modifying tags was added in Robot Framework 2.7.4 and
+        HTML message support in 2.8.
+        """
+        self._set_and_remove_tags(tags)
         raise AssertionError(msg) if msg else AssertionError()
 
     def fatal_error(self, msg=None):
@@ -336,25 +356,6 @@ class _Verify:
         """
         error = AssertionError(msg) if msg else AssertionError()
         error.ROBOT_EXIT_ON_FAILURE = True
-        raise error
-
-    def exit_for_loop(self):
-        """Immediately stops executing the enclosing for loop.
-
-        This keyword can be used directly in a for loop or in a keyword that
-        the for loop uses. In both cases the test execution continues after
-        the for loop. If executed outside of a for loop, the test fails.
-
-        Example:
-        | :FOR | ${var} | IN | @{SOME LIST} |
-        |      | Run Keyword If | '${var}' == 'EXIT' | Exit For Loop |
-        |      | Do Something   | ${var} |
-
-        New in Robot Framework 2.5.2.
-        """
-        # Error message is shown only if there is no enclosing for loop
-        error = AssertionError('Exit for loop without enclosing for loop.')
-        error.ROBOT_EXIT_FOR_LOOP = True
         raise error
 
     def should_not_be_true(self, condition, msg=None):
@@ -384,6 +385,14 @@ class _Verify:
         | Should Be True | '${status}' == 'PASS' | # Strings must be quoted |
         | Should Be True | ${number}   | # Passes if ${number} is not zero |
         | Should Be True | ${list}     | # Passes if ${list} is not empty  |
+
+        Starting from Robot Framework 2.8, `Should Be True` automatically
+        imports Python's os- and sys-modules:
+
+        | Should Be True | os.linesep == '\\n' | # Is Unix |
+        | Should Be True | os.linesep == '\\r\\n' | # Is Windows |
+        | Should Be True | sys.platform == 'darwin' | # Is OS X |
+        | Should Be True | sys.platform == 'linux2' | # Is Linux |
         """
         if not msg:
             msg = "'%s' should be true" % condition
@@ -835,6 +844,7 @@ class _Variables:
         """
         return utils.NormalizedDict(self._variables.current, ignore='_')
 
+    @run_keyword_variant(resolve=0)
     def get_variable_value(self, name, default=None):
         """Returns variable value or `default` if the variable does not exist.
 
@@ -867,6 +877,7 @@ class _Variables:
                                               cut_long=False)
             self.log(msg, level)
 
+    @run_keyword_variant(resolve=0)
     def variable_should_exist(self, name, msg=None):
         """Fails unless the given variable exists within the current scope.
 
@@ -883,6 +894,7 @@ class _Variables:
             else "Variable %s does not exist" % name
         asserts.fail_unless(name in self._variables, msg)
 
+    @run_keyword_variant(resolve=0)
     def variable_should_not_exist(self, name, msg=None):
         """Fails if the given variable exists within the current scope.
 
@@ -945,6 +957,7 @@ class _Variables:
         else:
             return list(values)
 
+    @run_keyword_variant(resolve=0)
     def set_test_variable(self, name, *values):
         """Makes a variable available everywhere within the scope of the current test.
 
@@ -961,6 +974,7 @@ class _Variables:
         self._variables.set_test(name, value)
         self._log_set_variable(name, value)
 
+    @run_keyword_variant(resolve=0)
     def set_suite_variable(self, name, *values):
         """Makes a variable available everywhere within the scope of the current suite.
 
@@ -1007,6 +1021,7 @@ class _Variables:
         self._variables.set_suite(name, value)
         self._log_set_variable(name, value)
 
+    @run_keyword_variant(resolve=0)
     def set_global_variable(self, name, *values):
         """Makes a variable available globally in all tests and suites.
 
@@ -1084,7 +1099,7 @@ class _RunKeyword:
         if not isinstance(name, basestring):
             raise RuntimeError('Keyword name must be a string.')
         kw = Keyword(name, list(args))
-        return kw.run(self._execution_context)
+        return kw.run(self._context)
 
     def run_keywords(self, *keywords):
         """Executes all the given keywords in a sequence.
@@ -1125,14 +1140,14 @@ class _RunKeyword:
                 self.run_keyword(kw, *args)
             except ExecutionFailed, err:
                 errors.extend(err.get_errors())
-                if not err.can_continue(self._execution_context.teardown):
+                if not err.can_continue(self._context.in_teardown):
                     break
         if errors:
             raise ExecutionFailures(errors)
 
     def _split_run_keywords(self, keywords):
         if 'AND' not in keywords:
-            for name in self._variables.replace_run_kw_info(keywords):
+            for name in self._variables.replace_list(keywords):
                 yield name, ()
         else:
             for name, args in self._split_run_keywords_from_and(keywords):
@@ -1146,7 +1161,7 @@ class _RunKeyword:
         yield self._resolve_run_keywords_name_and_args(keywords)
 
     def _resolve_run_keywords_name_and_args(self, kw_call):
-        kw_call = self._variables.replace_run_kw_info(kw_call, needed=1)
+        kw_call = self._variables.replace_list(kw_call, replace_until=1)
         if not kw_call:
             raise DataError('Incorrect use of AND')
         return kw_call[0], kw_call[1:]
@@ -1193,6 +1208,12 @@ class _RunKeyword:
         and thus cannot come from variables. If you need to use literal ELSE
         and ELSE IF strings as arguments, you can either use variables or
         escape them with a backslash like `\\ELSE` and `\\ELSE IF`.
+
+        Starting from Robot Framework 2.8, Python's os- and sys-modules are automatically
+        imported when evaluating the `condition`:
+
+        | `Run Keyword If` | os.sep == '/' | `Unix Keyword` |
+        | ...              | ELSE          | `Windows Keyword` |
         """
         args, branch = self._split_elif_or_else_branch(args)
         if self._is_true(condition):
@@ -1210,9 +1231,8 @@ class _RunKeyword:
         return args, lambda: None
 
     def _split_branch(self, args, control_word, required, required_error):
-        args = list(args)
-        index = args.index(control_word)
-        branch = self._variables.replace_run_kw_info(args[index+1:], required)
+        index = list(args).index(control_word)
+        branch = self._variables.replace_list(args[index+1:], required)
         if len(branch) < required:
             raise DataError('%s requires %s.' % (control_word, required_error))
         return args[:index], branch
@@ -1243,7 +1263,7 @@ class _RunKeyword:
         try:
             return 'PASS', self.run_keyword(name, *args)
         except ExecutionFailed, err:
-            if err.dont_cont:
+            if err.dont_continue:
                 raise
             return 'FAIL', unicode(err)
 
@@ -1282,8 +1302,8 @@ class _RunKeyword:
         try:
             return self.run_keyword(name, *args)
         except ExecutionFailed, err:
-            if not err.dont_cont:
-                err.cont = True
+            if not err.dont_continue:
+                err.continue_on_failure = True
             raise err
 
     def run_keyword_and_expect_error(self, expected_error, name, *args):
@@ -1310,7 +1330,7 @@ class _RunKeyword:
         try:
             self.run_keyword(name, *args)
         except ExecutionFailed, err:
-            if err.dont_cont:
+            if err.dont_continue:
                 raise
         else:
             raise AssertionError("Expected error '%s' did not occur"
@@ -1382,7 +1402,7 @@ class _RunKeyword:
             try:
                 return self.run_keyword(name, *args)
             except ExecutionFailed, err:
-                if err.dont_cont:
+                if err.dont_continue:
                     raise
                 if time.time() > maxtime:
                     error = unicode(err)
@@ -1486,14 +1506,14 @@ class _RunKeyword:
 
         Available in Robot Framework 2.5 and newer.
         """
-        test = self._get_test_in_teardown('Run Keyword If Timeout Occurred')
-        if test.timeout.any_timeout_occurred():
+        self._get_test_in_teardown('Run Keyword If Timeout Occurred')
+        if self._context.timeout_occurred:
             return self.run_keyword(name, *args)
 
     def _get_test_in_teardown(self, kwname):
-        test = self._namespace.test
-        if test and test.status != 'RUNNING':
-            return test
+        ctx = self._context
+        if ctx.test and ctx.in_test_teardown:
+            return ctx.test
         raise RuntimeError("Keyword '%s' can only be used in test teardown"
                            % kwname)
 
@@ -1508,7 +1528,7 @@ class _RunKeyword:
         """
         suite = self._get_suite_in_teardown('Run Keyword If '
                                             'All Critical Tests Passed')
-        if suite.critical_stats.failed == 0:
+        if suite.statistics.critical.failed == 0:
             return self.run_keyword(name, *args)
 
     def run_keyword_if_any_critical_tests_failed(self, name, *args):
@@ -1522,7 +1542,7 @@ class _RunKeyword:
         """
         suite = self._get_suite_in_teardown('Run Keyword If '
                                             'Any Critical Tests Failed')
-        if suite.critical_stats.failed > 0:
+        if suite.statistics.critical.failed > 0:
             return self.run_keyword(name, *args)
 
     def run_keyword_if_all_tests_passed(self, name, *args):
@@ -1535,7 +1555,7 @@ class _RunKeyword:
         documentation for more details.
         """
         suite = self._get_suite_in_teardown('Run Keyword If All Tests Passed')
-        if suite.all_stats.failed == 0:
+        if suite.statistics.all.failed == 0:
             return self.run_keyword(name, *args)
 
     def run_keyword_if_any_tests_failed(self, name, *args):
@@ -1548,14 +1568,237 @@ class _RunKeyword:
         documentation for more details.
         """
         suite = self._get_suite_in_teardown('Run Keyword If Any Tests Failed')
-        if suite.all_stats.failed > 0:
+        if suite.statistics.all.failed > 0:
             return self.run_keyword(name, *args)
 
     def _get_suite_in_teardown(self, kwname):
-        if self._namespace.suite.status == 'RUNNING':
+        if not self._context.in_suite_teardown:
             raise RuntimeError("Keyword '%s' can only be used in suite teardown"
                                % kwname)
-        return self._namespace.suite
+        return self._context.suite
+
+
+class _Control:
+
+    def continue_for_loop(self):
+        """Skips the current for loop iteration and continues from the next.
+
+        Skips the remaining keywords in the current for loop iteration and
+        continues from the next one. Can be used directly in a for loop or
+        in a keyword that the loop uses.
+
+        Example:
+        | :FOR | ${var}         | IN                     | @{VALUES}         |
+        |      | Run Keyword If | '${var}' == 'CONTINUE' | Continue For Loop |
+        |      | Do Something   | ${var}                 |
+
+        See `Continue For Loop If` to conditionally continue a for loop without
+        using `Run Keyword If` or other wrapper keywords.
+
+        New in Robot Framework 2.8.
+        """
+        self.log("Continuing for loop from the next iteration.")
+        raise ContinueForLoop()
+
+    def continue_for_loop_if(self, condition):
+        """Skips the current for loop iteration if the `condition` is true.
+
+        A wrapper for `Continue For Loop` to continue a for loop based on
+        the given condition. The condition is evaluated using the same
+        semantics as with `Should Be True` keyword.
+
+        Example:
+        | :FOR | ${var}               | IN                     | @{VALUES} |
+        |      | Continue For Loop If | '${var}' == 'CONTINUE' |
+        |      | Do Something         | ${var}                 |
+
+        New in Robot Framework 2.8.
+        """
+        if self._is_true(condition):
+            self.continue_for_loop()
+
+    def exit_for_loop(self):
+        """Stops executing the enclosing for loop.
+
+        Exits the enclosing for loop and continues execution after it.
+        Can be used directly in a for loop or in a keyword that the loop uses.
+
+        Example:
+        | :FOR | ${var}         | IN                 | @{VALUES}     |
+        |      | Run Keyword If | '${var}' == 'EXIT' | Exit For Loop |
+        |      | Do Something   | ${var} |
+
+        See `Exit For Loop If` to conditionally exit a for loop without
+        using `Run Keyword If` or other wrapper keywords.
+
+        New in Robot Framework 2.5.2.
+        """
+        self.log("Exiting for loop altogether.")
+        raise ExitForLoop()
+
+    def exit_for_loop_if(self, condition):
+        """Stops executing the enclosing for loop if the `condition` is true.
+
+        A wrapper for `Exit For Loop` to exit a for loop based on
+        the given condition. The condition is evaluated using the same
+        semantics as with `Should Be True` keyword.
+
+        Example:
+        | :FOR | ${var}           | IN                 | @{VALUES} |
+        |      | Exit For Loop If | '${var}' == 'EXIT' |
+        |      | Do Something     | ${var}             |
+
+        New in Robot Framework 2.8.
+        """
+        if self._is_true(condition):
+            self.exit_for_loop()
+
+    @run_keyword_variant(resolve=0)
+    def return_from_keyword(self, *return_values):
+        """Returns from the enclosing user keyword.
+
+        This keyword can be used to return from a user keyword with PASS status
+        without executing it fully. It is also possible to return values
+        similarly as with the `[Return]` setting. For more detailed information
+        about working with the return values, see the User Guide.
+
+        This keyword is typically wrapped to some other keyword, such as
+        `Run Keyword If` or `Run Keyword If Test Passed`, to return based
+        on a condition:
+
+        | Run Keyword If | ${rc} < 0 | Return From Keyword |
+        | Run Keyword If Test Passed | Return From Keyword |
+
+        It is possible to use this keyword to return from a keyword also inside
+        a for loop. That, as well as returning values, is demonstrated by the
+        `Find Index` keyword in the following somewhat advanced example.
+        Notice that it is often a good idea to move this kind of complicated
+        logic into a test library.
+
+        | ***** Variables *****
+        | @{LIST} =    foo    baz
+        |
+        | ***** Test Cases *****
+        | Example
+        |     ${index} =    Find Index    baz    @{LIST}
+        |     Should Be Equal    ${index}    ${1}
+        |     ${index} =    Find Index    non existing    @{LIST}
+        |     Should Be Equal    ${index}    ${-1}
+        |
+        | ***** Keywords *****
+        | Find Index
+        |    [Arguments]    ${element}    @{items}
+        |    ${index} =    Set Variable    ${0}
+        |    :FOR    ${item}    IN    @{items}
+        |    \\    Run Keyword If    '${item}' == '${element}'    Return From Keyword    ${index}
+        |    \\    ${index} =    Set Variable    ${index + 1}
+        |    Return From Keyword    ${-1}    # Also [Return] would work here.
+
+        The most common use case, returning based on an expression, can be
+        accomplished directly with `Return From Keyword If`. Both of these
+        keywords are new in Robot Framework 2.8.
+        """
+        self.log('Returning from the enclosing user keyword.')
+        raise ReturnFromKeyword(return_values)
+
+    @run_keyword_variant(resolve=1)
+    def return_from_keyword_if(self, condition, *return_values):
+        """Returns from the enclosing user keyword if `condition` is true.
+
+        A wrapper for `Return From Keyword` to return based on the given
+        condition. The condition is evaluated using the same semantics as
+        with `Should Be True` keyword.
+
+        Given the same example as in `Return From Keyword`, we can rewrite the
+        `Find Index` keyword as follows:
+
+        | ***** Keywords *****
+        | Find Index
+        |    [Arguments]    ${element}    @{items}
+        |    ${index} =    Set Variable    ${0}
+        |    :FOR    ${item}    IN    @{items}
+        |    \\    Return From Keyword If    '${item}' == '${element}'    ${index}
+        |    \\    ${index} =    Set Variable    ${index + 1}
+        |    Return From Keyword    ${-1}    # Also [Return] would work here.
+
+        New in Robot Framework 2.8.
+        """
+        if self._is_true(condition):
+            self.return_from_keyword(*return_values)
+
+    def pass_execution(self, message, *tags):
+        """Skips rest of the current test, setup, or teardown with PASS status.
+
+        This keyword can be used anywhere in the test data, but the place where
+        used affects the behavior:
+
+        - When used in any setup or teardown (suite, test or keyword), passes
+          that setup or teardown. Possible keyword teardowns of the started
+          keywords are executed. Does not affect execution or statuses
+          otherwise.
+        - When used in a test outside setup or teardown, passes that particular
+          test case. Possible test and keyword teardowns are executed.
+
+        Possible continuable failures before this keyword is used, as well as
+        failures in executed teardowns, will fail the execution.
+
+        It is mandatory to give a message explaining why execution was passed.
+        By default the message is considered plain text, but starting it with
+        `*HTML*` allows using HTML formatting.
+
+        It is also possible to modify test tags passing tags after the message
+        similarly as with `Fail` keyword. Tags starting with a hyphen
+        (e.g. `-regression`) are removed and others added. Tags are modified
+        using `Set Tags` and `Remove Tags` internally, and the semantics
+        setting and removing them are the same as with these keywords.
+
+        Examples:
+        | Pass Execution | All features available in this version tested. |
+        | Pass Execution | Deprecated test. | deprecated | -regression    |
+
+        This keyword is typically wrapped to some other keyword, such as
+        `Run Keyword If`, to pass based on a condition. The most common case
+        can be handled also with `Pass Execution If`:
+
+        | Run Keyword If    | ${rc} < 0 | Pass Execution | Negative values are cool. |
+        | Pass Execution If | ${rc} < 0 | Negative values are cool. |
+
+        Passing execution in the middle of a test, setup or teardown should be
+        used with care. In the worst case it leads to tests that skip all the
+        parts that could actually uncover problems in the tested application.
+        In cases where execution cannot continue do to external factors,
+        it is often safer to fail the test case and make it non-critical.
+
+        New in Robot Framework 2.8.
+        """
+        message = message.strip()
+        if not message:
+            raise RuntimeError('Message cannot be empty.')
+        self._set_and_remove_tags(tags)
+        log_message, level = self._get_logged_test_message_and_level(message)
+        self.log('Execution passed with message:\n%s' % log_message, level)
+        raise PassExecution(message)
+
+    @run_keyword_variant(resolve=1)
+    def pass_execution_if(self, condition, message, *tags):
+        """Conditionally skips rest of the current test, setup, or teardown with PASS status.
+
+        A wrapper for `Pass Execution` to skip rest of the current test,
+        setup or teardown based the given `condition`. The condition is
+        evaluated similarly as with `Should Be True` keyword, and `message`
+        and `*tags` have same semantics as with `Pass Execution`.
+
+        Example:
+        | :FOR | ${var}            | IN                     | @{VALUES}               |
+        |      | Pass Execution If | '${var}' == 'EXPECTED' | Correct value was found |
+        |      | Do Something      | ${var}                 |
+
+        New in Robot Framework 2.8.
+        """
+        if self._is_true(condition):
+            message = self._variables.replace_string(message)
+            tags = [self._variables.replace_string(tag) for tag in tags]
+            self.pass_execution(message, *tags)
 
 
 class _Misc:
@@ -1648,6 +1891,7 @@ class _Misc:
         for msg in messages:
             self.log(msg)
 
+    @run_keyword_variant(resolve=0)
     def comment(self, *messages):
         """Displays the given messages in the log file as keyword arguments.
 
@@ -1670,12 +1914,14 @@ class _Misc:
         logging).
         """
         try:
-            old = self._execution_context.output.set_log_level(level)
+            old = self._context.output.set_log_level(level)
         except DataError, err:
             raise RuntimeError(unicode(err))
+        self._namespace.variables.set_global('${LOG_LEVEL}', level.upper())
         self.log('Log level changed from %s to %s' % (old, level.upper()))
         return old
 
+    @run_keyword_variant(resolve=0)
     def import_library(self, name, *args):
         """Imports a library with the given name and optional arguments.
 
@@ -1686,31 +1932,33 @@ class _Misc:
         table.
 
         This keyword supports importing libraries both using library
-        names and physical paths. When path are used, they must be
+        names and physical paths. When paths are used, they must be
         given in absolute format. Forward slashes can be used as path
-        separators in all operating systems. It is possible to use
-        arguments as well as to give a custom name with 'WITH NAME'
-        syntax. For more information about importing libraries, see
-        Robot Framework User Guide.
+        separators in all operating systems.
+
+        It is possible to pass arguments to the imported library and also
+        named argument syntax works if the library supports it. 'WITH NAME'
+        syntax can be used to give a custom name to the imported library.
 
         Examples:
         | Import Library | MyLibrary |
-        | Import Library | ${CURDIR}/Library.py | some | args |
-        | Import Library | ${CURDIR}/../libs/Lib.java | arg | WITH NAME | JavaLib |
+        | Import Library | ${CURDIR}/../Library.py | arg1 | named=arg2 |
+        | Import Library | ${LIBRARIES}/Lib.java | arg | WITH NAME | JavaLib |
         """
         try:
-            self._namespace.import_library(name.replace('/', os.sep), list(args))
+            self._namespace.import_library(name, list(args))
         except DataError, err:
             raise RuntimeError(unicode(err))
 
+    @run_keyword_variant(resolve=0)
     def import_variables(self, path, *args):
         """Imports a variable file with the given path and optional arguments.
 
         Variables imported with this keyword are set into the test suite scope
         similarly when importing them in the Setting table using the Variables
         setting. These variables override possible existing variables with
-        the same names and this functionality can thus be used to import new
-        variables, e.g. for each test in a test suite.
+        the same names. This functionality can thus be used to import new
+        variables, for example, for each test in a test suite.
 
         The given path must be absolute. Forward slashes can be used as path
         separator regardless the operating system.
@@ -1722,11 +1970,11 @@ class _Misc:
         New in Robot Framework 2.5.4.
         """
         try:
-            self._namespace.import_variables(path.replace('/', os.sep),
-                                             list(args), overwrite=True)
+            self._namespace.import_variables(path, list(args), overwrite=True)
         except DataError, err:
             raise RuntimeError(unicode(err))
 
+    @run_keyword_variant(resolve=0)
     def import_resource(self, path):
         """Imports a resource file with the given path.
 
@@ -1742,7 +1990,7 @@ class _Misc:
         | Import Resource | ${CURDIR}/../resources/resource.html |
         """
         try:
-            self._namespace.import_resource(path.replace('/', os.sep))
+            self._namespace.import_resource(path)
         except DataError, err:
             raise RuntimeError(unicode(err))
 
@@ -1887,7 +2135,8 @@ class _Misc:
         | @{utc} = ['12', '06', '21']
         | ${hour} = '11'
 
-        Support for UTC time is a new feature in Robot Framework 2.7.5.
+        Support for UTC time was added in Robot Framework 2.7.5 but it did not
+        work correctly until 2.7.7.
         """
         return utils.get_time(format, utils.parse_time(time_))
 
@@ -1960,71 +2209,122 @@ class _Misc:
             return re.escape(patterns[0])
         return [re.escape(p) for p in patterns]
 
-    def set_test_message(self, message):
-        """Sets message for for the current test.
+    def set_test_message(self, message, append=False):
+        """Sets message for the current test case.
 
-        This is overridden by possible failure message, except when this keyword
-        is used in test case teardown. In test case teardown this overrides
-        messages even for failed tests.
+        Possible failures override this message.
 
-        This keyword can not be used in suite setup or suite teardown.
+        If the optional `append` argument is given any value considered `true`
+        in Python, for example, any non-empty string, the given `message` is
+        added after the possible earlier message by joining the messages with
+        a space.
+
+        In teardown the current test message is available as a built-in variable
+        `${TEST MESSAGE}`. This keyword can not be used in suite setup or
+        or suite teardown.
+
+        It is possible to use HTML format in the message by starting the message
+        with `*HTML*`.
+
+        Examples:
+        | Set Test Message | My message          |            |
+        | Set Test Message | is continued.       | append=yes |
+        | Should Be Equal  | ${TEST MESSAGE}     | My message is continued. |
+        | Set Test Message | *HTML*<b>Hello!</b> |            |
+
+
+        New in Robot Framework 2.5. Support for `append` was added in 2.7.7
+        and HTML support in 2.8.
         """
-        if not isinstance(message, unicode):
-            message = utils.unic(message)
         test = self._namespace.test
         if not test:
             raise RuntimeError("'Set Test Message' keyword cannot be used in "
                                "suite setup or teardown")
-        test.message = message
-        self.log('Set test message to:\n%s' % message)
+        test.message = self._get_possibly_appended_value(test.message, message, append)
+        message, level = self._get_logged_test_message_and_level(test.message)
+        self.log('Set test message to:\n%s' % message, level)
 
-    def set_test_documentation(self, doc):
-        """Sets documentation for for the current test.
+    def _get_possibly_appended_value(self, initial, new, append):
+        if not isinstance(new, unicode):
+            new = utils.unic(new)
+        return '%s %s' % (initial, new) if append and initial else new
 
-        The current documentation is available from built-in variable
+    def _get_logged_test_message_and_level(self, message):
+        if message.startswith('*HTML*'):
+            return message[6:].lstrip(), 'HTML'
+        return message, 'INFO'
+
+    def set_test_documentation(self, doc, append=False):
+        """Sets documentation for the current test case.
+
+        By default the possible existing documentation is overwritten, but
+        this can be changed using the optional `append` argument similarly
+        as with `Set Test Message` keyword.
+
+        The current test documentation is available as a built-in variable
         `${TEST DOCUMENTATION}`. This keyword can not be used in suite
         setup or suite teardown.
 
-        New in Robot Framework 2.7.
+        New in Robot Framework 2.7. Support for `append` was added in 2.7.7.
         """
-        if not isinstance(doc, unicode):
-            doc = utils.unic(doc)
         test = self._namespace.test
         if not test:
             raise RuntimeError("'Set Test Documentation' keyword cannot be used in "
                                "suite setup or teardown")
-        test.doc = doc
+        test.doc = self._get_possibly_appended_value(test.doc, doc, append)
         self._variables.set_test('${TEST_DOCUMENTATION}', test.doc)
-        self.log('Set test documentation to:\n%s' % doc)
+        self.log('Set test documentation to:\n%s' % test.doc)
 
-    def set_suite_documentation(self, doc):
-        """Sets documentation for the current suite.
+    def set_suite_documentation(self, doc, append=False, top=False):
+        """Sets documentation for the current test suite.
 
-        The current documentation is available in built-in variable
-        `${SUITE DOCUMENTATION}`.
+        By default the possible existing documentation is overwritten, but
+        this can be changed using the optional `append` argument similarly
+        as with `Set Test Message` keyword.
 
-        New in Robot Framework 2.7.
+        This keyword sets the documentation of the current suite by default.
+        If the optional `top` argument is given any value considered
+        `true` in Python, for example, any non-empty string, the documentation
+        of the top level suite is altered instead.
+
+        The documentation of the current suite is available as a built-in
+        variable `${SUITE DOCUMENTATION}`.
+
+        New in Robot Framework 2.7. Support for `append` and `top` were
+        added in 2.7.7..
         """
-        if not isinstance(doc, unicode):
-            doc = utils.unic(doc)
-        suite = self._namespace.suite
-        suite.doc = doc
-        self._variables.set_suite('${SUITE_DOCUMENTATION}', suite.doc)
-        self.log('Set suite documentation to:\n%s' % doc)
+        ns = self._get_namespace(top)
+        suite = ns.suite
+        suite.doc = self._get_possibly_appended_value(suite.doc, doc, append)
+        ns.variables.set_suite('${SUITE_DOCUMENTATION}', suite.doc)
+        self.log('Set suite documentation to:\n%s' % suite.doc)
 
-    def set_suite_metadata(self, name, value):
-        """Sets metadata for the current suite.
+    def set_suite_metadata(self, name, value, append=False, top=False):
+        """Sets metadata for the current test suite.
 
-        The current metadata is available as a Python dictionary in built-in
-        variable `${SUITE METADATA}`. Notice that modifying that variable
-        directly has no effect on the actual metadata the suite has.
+        By default possible existing metadata values are overwritten, but
+        this can be changed using the optional `append` argument similarly
+        as with `Set Test Message` keyword.
 
-        New in Robot Framework 2.7.4.
+        This keyword sets the metadata of the current suite by default.
+        If the optional `top` argument is given any value considered
+        `true` in Python, for example, any non-empty string, the metadata
+        of the top level suite is altered instead.
+
+        The metadata of the current suite is available as a built-in variable
+        `${SUITE METADATA}` in a Python dictionary. Notice that modifying this
+        variable directly has no effect on the actual metadata the suite has.
+
+        New in Robot Framework 2.7.4. Support for `append` and `top` were
+        added in 2.7.7.
         """
-        metadata = self._namespace.suite.metadata
-        metadata[name] = value
-        self._variables.set_suite('${SUITE_METADATA}', metadata.copy())
-        self.log("Set suite metadata '%s' to value '%s'." % (name, value))
+        if not isinstance(name, unicode):
+            name = utils.unic(name)
+        ns = self._get_namespace(top)
+        metadata = ns.suite.metadata
+        metadata[name] = self._get_possibly_appended_value(metadata.get(name, ''), value, append)
+        ns.variables.set_suite('${SUITE_METADATA}', metadata.copy())
+        self.log("Set suite metadata '%s' to value '%s'." % (name, metadata[name]))
 
     def set_tags(self, *tags):
         """Adds given `tags` for the current test or all tests in a suite.
@@ -2036,14 +2336,19 @@ class _Misc:
         that suite, recursively, gets the given tags. It is a failure
         to use this keyword in a suite teardown.
 
-        The current test tags are available from built in variable @{TEST TAGS}.
+        The current tags are available as a built-in variable `@{TEST TAGS}`.
 
         See `Remove Tags` if you want to remove certain tags and `Fail` if
         you want to fail the test case after setting and/or removing tags.
         """
-        tags = utils.normalize_tags(tags)
-        handler = lambda test: utils.normalize_tags(test.tags + tags)
-        self._set_or_remove_tags(handler)
+        ctx = self._context
+        if ctx.test:
+            ctx.test.tags.add(tags)
+            ctx.variables.set_test('@{TEST_TAGS}', list(ctx.test.tags))
+        elif not ctx.in_suite_teardown:
+            ctx.suite.set_tags(tags, persist=True)
+        else:
+            raise RuntimeError("'Set Tags' cannot be used in suite teardown.")
         self.log('Set tag%s %s.' % (utils.plural_or_not(tags),
                                     utils.seq2str(tags)))
 
@@ -2056,7 +2361,7 @@ class _Misc:
         This keyword can affect either one test case or all test cases in a
         test suite similarly as `Set Tags` keyword.
 
-        The current test tags are available from built in variable @{TEST TAGS}.
+        The current tags are available as a built-in variable `@{TEST TAGS}`.
 
         Example:
         | Remove Tags | mytag | something-* | ?ython |
@@ -2064,31 +2369,16 @@ class _Misc:
         See `Set Tags` if you want to add certain tags and `Fail` if you want
         to fail the test case after setting and/or removing tags.
         """
-        tags = TagPatterns(tags)
-        handler = lambda test: [t for t in test.tags if not tags.match(t)]
-        self._set_or_remove_tags(handler)
+        ctx = self._context
+        if ctx.test:
+            ctx.test.tags.remove(tags)
+            ctx.variables.set_test('@{TEST_TAGS}', list(ctx.test.tags))
+        elif not ctx.in_suite_teardown:
+            ctx.suite.set_tags(remove=tags, persist=True)
+        else:
+            raise RuntimeError("'Remove Tags' cannot be used in suite teardown.")
         self.log('Removed tag%s %s.' % (utils.plural_or_not(tags),
                                         utils.seq2str(tags)))
-
-    def _set_or_remove_tags(self, handler, suite=None, test=None):
-        if not (suite or test):
-            ns = self._namespace
-            if ns.test is None:
-                if ns.suite.status != 'RUNNING':
-                    raise RuntimeError("'Set Tags' and 'Remove Tags' keywords "
-                                       "cannot be used in suite teardown.")
-                self._set_or_remove_tags(handler, suite=ns.suite)
-            else:
-                self._set_or_remove_tags(handler, test=ns.test)
-                ns.variables.set_test('@{TEST_TAGS}', ns.test.tags[:])
-            ns.suite._set_critical_tags(ns.suite.critical)
-        elif suite:
-            for sub in suite.suites:
-                self._set_or_remove_tags(handler, suite=sub)
-            for test in suite.tests:
-                self._set_or_remove_tags(handler, test=test)
-        else:
-            test.tags = handler(test)
 
     def get_library_instance(self, name):
         """Returns the currently active instance of the specified test library.
@@ -2117,7 +2407,7 @@ class _Misc:
             raise RuntimeError(unicode(err))
 
 
-class BuiltIn(_Verify, _Converter, _Variables, _RunKeyword, _Misc):
+class BuiltIn(_Verify, _Converter, _Variables, _RunKeyword, _Control, _Misc):
     """An always available standard library with often needed keywords.
 
     `BuiltIn` is Robot Framework's standard library that provides a set
@@ -2126,18 +2416,27 @@ class BuiltIn(_Verify, _Converter, _Variables, _RunKeyword, _Misc):
     for verifications (e.g. `Should Be Equal`, `Should Contain`),
     conversions (e.g. `Convert To Integer`) and for various other purposes
     (e.g. `Log`, `Sleep`, `Run Keyword If`, `Set Global Variable`).
-    """
 
+    Many of the keywords accept an optional error message to use if the keyword
+    fails. Starting from Robot Framework 2.8, it is possible to use HTML in
+    these messages by prefixing them with `*HTML*`. See `Fail` keyword for
+    a usage example. Notice that using HTML in messages is not limited to
+    BuiltIn library but works with any error message.
+    """
     ROBOT_LIBRARY_SCOPE = 'GLOBAL'
     ROBOT_LIBRARY_VERSION = get_version()
 
     @property
-    def _execution_context(self):
+    def _context(self):
         return EXECUTION_CONTEXTS.current
 
     @property
     def _namespace(self):
-        return self._execution_context.namespace
+        return self._context.namespace
+
+    def _get_namespace(self, top=False):
+        ctx = EXECUTION_CONTEXTS.top if top else EXECUTION_CONTEXTS.current
+        return ctx.namespace
 
     @property
     def _variables(self):
@@ -2145,15 +2444,12 @@ class BuiltIn(_Verify, _Converter, _Variables, _RunKeyword, _Misc):
 
     def _matches(self, string, pattern):
         # Must use this instead of fnmatch when string may contain newlines.
-        return utils.matches(string, pattern, caseless=False, spaceless=False)
+        matcher = utils.Matcher(pattern, caseless=False, spaceless=False)
+        return matcher.match(string)
 
     def _is_true(self, condition):
         if isinstance(condition, basestring):
-            try:
-                condition = eval(condition)
-            except:
-                raise RuntimeError("Evaluating condition '%s' failed: %s"
-                                   % (condition, utils.get_error_message()))
+            condition = self.evaluate(condition, modules='os,sys')
         return bool(condition)
 
 
@@ -2220,8 +2516,4 @@ def register_run_keyword(library, keyword, args_to_process=None):
 
 for name in [attr for attr in dir(_RunKeyword) if not attr.startswith('_')]:
     register_run_keyword('BuiltIn', getattr(_RunKeyword, name))
-for name in ['set_test_variable', 'set_suite_variable', 'set_global_variable',
-             'variable_should_exist', 'variable_should_not_exist', 'comment',
-             'get_variable_value']:
-    register_run_keyword('BuiltIn', name, 0)
 del name, attr

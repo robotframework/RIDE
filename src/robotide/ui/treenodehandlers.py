@@ -25,6 +25,7 @@ from robotide.controller.filecontrollers import (TestDataDirectoryController,
 from robotide.editor.editordialogs import (TestCaseNameDialog,
     UserKeywordNameDialog, ScalarVariableDialog, ListVariableDialog,
     CopyUserKeywordDialog)
+from robotide.publish import RideOpenVariableDialog
 from robotide.ui.progress import LoadProgressObserver
 from robotide.usages.UsageRunner import Usages, ResourceFileUsages
 from .filedialogs import (AddSuiteDialog, ChangeFormatDialog, NewResourceDialog, AddResourceDialog)
@@ -95,6 +96,9 @@ class _ActionHandler(wx.Window):
     def begin_label_edit(self):
         return False
 
+    def double_clicked(self):
+        pass
+
     def end_label_edit(self, event):
         pass
 
@@ -142,6 +146,7 @@ class _ActionHandler(wx.Window):
 
     def OnInclude(self, event):
         pass
+
 
 class _CanBeRenamed(object):
 
@@ -477,6 +482,10 @@ class VariableHandler(_CanBeRenamed, _ActionHandler):
     is_variable = True
     OnMoveUp = OnMoveDown = lambda *args: None
     _actions = [_ActionHandler._label_rename, 'Delete']
+
+    @overrides(_ActionHandler)
+    def double_clicked(self):
+        RideOpenVariableDialog(controller=self.controller).publish()
 
     def OnDelete(self, event):
         self.remove()

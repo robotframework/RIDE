@@ -64,7 +64,7 @@ def TipMessage(cell):
 class _TooltipMessage(object):
 
     TOO_MANY_ARGUMENTS = "Too many arguments"
-    KEYWORD_NOT_FOUND = "Keyword not found"
+    KEYWORD_NOT_FOUND = "Keyword not found! For possible corrections press <ctrl>"
     VARIABLE_ASSIGMENT = "Variable assignment"
     UNKNOWN_VARIABLE = "\n\nUnknown variable"
 

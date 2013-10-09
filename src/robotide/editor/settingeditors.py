@@ -19,9 +19,9 @@ from robotide.controller.commands import (UpdateVariable, UpdateDocumentation,
         SetValues, AddLibrary, AddResource, AddVariablesFileImport,
         ClearSetting)
 from robotide.editor.listeditor import ListEditorBase
-from robotide.publish.messages import RideImportSetting
+from robotide.publish.messages import RideImportSetting, RideOpenVariableDialog, RideExecuteSpecXmlImport
 from robotide.utils import overrides
-from robotide.widgets import ButtonWithHandler, Label, HtmlWindow
+from robotide.widgets import ButtonWithHandler, Label, HtmlWindow, PopupMenu, PopupMenuItems
 from robotide.publish import PUBLISHER
 from robotide import utils
 
@@ -31,7 +31,7 @@ from .editordialogs import (EditorDialog, DocumentationDialog, MetadataDialog,
         ScalarVariableDialog, ListVariableDialog, LibraryDialog,
         ResourceDialog, VariablesDialog)
 from .listeditor import ListEditor
-from .popupwindow import HtmlPopupWindow
+from .popupwindow import HtmlPopupWindow, HtmlDialog
 from .tags import TagsDisplay
 
 
@@ -356,6 +356,7 @@ class VariablesListEditor(_AbstractListEditor):
         PUBLISHER.subscribe(self._update_vars, 'ride.variable.added', key=self)
         PUBLISHER.subscribe(self._update_vars, 'ride.variable.updated', key=self)
         PUBLISHER.subscribe(self._update_vars, 'ride.variable.removed', key=self)
+        PUBLISHER.subscribe(self._open_variable_dialog, RideOpenVariableDialog)
         _AbstractListEditor.__init__(self, parent, tree, controller)
 
     def _update_vars(self, event):
@@ -391,6 +392,12 @@ class VariablesListEditor(_AbstractListEditor):
 
     def OnEdit(self, event):
         var = self._controller[self._selection]
+        self._open_var_dialog(var)
+
+    def _open_variable_dialog(self, message):
+        self._open_var_dialog(message.controller)
+
+    def _open_var_dialog(self, var):
         if var.name.startswith('${'):
             dlg = ScalarVariableDialog(self._controller, item=var)
         else:
@@ -408,7 +415,11 @@ class VariablesListEditor(_AbstractListEditor):
 
 class ImportSettingListEditor(_AbstractListEditor):
     _titles = ['Import', 'Name / Path', 'Arguments', 'Comment']
-    _buttons = ['Library', 'Resource', 'Variables']
+    _buttons = ['Library', 'Resource', 'Variables', 'Import Failed Help']
+
+    def __init__(self, parent, tree, controller):
+        self._import_failed_shown = False
+        _AbstractListEditor.__init__(self, parent, tree, controller)
 
     @overrides(ListEditorBase)
     def _create_buttons(self):
@@ -436,6 +447,20 @@ class ImportSettingListEditor(_AbstractListEditor):
     def has_error(self, controller):
         return controller.has_error()
 
+    @overrides(ListEditorBase)
+    def OnRightClick(self, event):
+        PopupMenu(self, PopupMenuItems(self, self._create_item_menu()))
+
+    def _create_item_menu(self):
+        menu = self._menu
+        item = self._controller[self._selection]
+        if item.has_error() and item.type == 'Library':
+            menu = menu[:] + ['Import Library Spec XML']
+        return menu
+
+    def OnImportLibrarySpecXml(self, event):
+        RideExecuteSpecXmlImport().publish()
+
     def OnEdit(self, event):
         setting = self._get_setting()
         self._show_import_editor_dialog(EditorDialog(setting),
@@ -454,6 +479,31 @@ class ImportSettingListEditor(_AbstractListEditor):
     def OnVariables(self, event):
         self._show_import_editor_dialog(VariablesDialog,
                                         lambda v, c: self._controller.execute(AddVariablesFileImport(v, c)))
+
+    def OnImportFailedHelp(self, event):
+        if self._import_failed_shown:
+            return
+        dialog = HtmlDialog('Import failure handling', '''
+        <br>Possible corrections and notes:<br>
+        <ul>
+            <li>Import failure is shown with red color.</li>
+            <li>See Tools / View RIDE Log for detailed information about the failure.</li>
+            <li>If the import contains a variable that RIDE has not initialized, consider adding the variable
+            to variable table with a default value.</li>
+            <li>For library import failure: Consider importing library spec XML (Tools / Import Library Spec XML or by
+            adding the XML file with the correct name to PYTHONPATH) to enable keyword completion
+            for example for Java libraries.
+            Library spec XML can be created using libdoc tool from Robot Framework.
+            For more information see <a href="https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs">wiki</a>.
+            </li>
+        </ul>''')
+        dialog.Bind(wx.EVT_CLOSE, self._import_failed_help_closed)
+        dialog.Show()
+        self._import_failed_shown = True
+
+    def _import_failed_help_closed(self, event):
+        self._import_failed_shown = False
+        event.Skip()
 
     def _get_setting(self):
         return self._controller[self._selection]

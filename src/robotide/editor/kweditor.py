@@ -22,7 +22,7 @@ from robotide.controller.commands import (ChangeCellValue, ClearArea, PasteArea,
         UncommentRows, Undo, Redo, RenameKeywordOccurrences, ExtractKeyword,
         AddKeywordFromCells, MoveRowsUp, MoveRowsDown, ExtractScalar, ExtractList,
         InsertArea)
-from robotide.controller.cellinfo import TipMessage
+from robotide.controller.cellinfo import TipMessage, ContentType, CellType
 from robotide.publish import (RideItemStepsChanged,
                               RideSettingsChanged, PUBLISHER)
 from robotide.usages.UsageRunner import Usages, VariableUsages
@@ -429,9 +429,23 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def _show_keyword_details(self, cell, value):
         details = self._plugin.get_keyword_details(value)
+        if not details:
+            info = self._controller.get_cell_info(cell.Row, cell.Col)
+            if info.cell_type == CellType.KEYWORD and info.content_type == ContentType.STRING:
+                details = """\
+        <b>Keyword was not detected by RIDE</b>
+        <br>Possible corrections:<br>
+        <ul>
+            <li>Import library or resource file containing the keyword.</li>
+            <li>For library import errors: Consider importing library spec XML
+            (Tools / Import Library Spec XML or by adding the XML file with the
+            correct name to PYTHONPATH) to enable keyword completion
+            for example for Java libraries.
+            Library spec XML can be created using libdoc tool from Robot Framework.</li>
+        </ul>"""
         if details:
             self._tooltips.show_info_at(details, value,
-                                        self._cell_to_screen_coordinates(cell))
+                                    self._cell_to_screen_coordinates(cell))
 
     def _cell_to_screen_coordinates(self, cell):
         point = self.CellToRect(cell.Row, cell.Col).GetTopRight()
