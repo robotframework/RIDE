@@ -214,8 +214,8 @@ class TestRunner(object):
                                                                   pythonpath)
         standard_args.extend(["--monitorcolors", "off"])
         standard_args.extend(["--monitorwidth", monitor_width])
-        for tc in test_names:
-            standard_args += ['--test', tc]
+        for suite, test in test_names:
+            standard_args += ['--suite', suite, '--test', test]
         return standard_args
 
     def _add_tmp_outputdir_if_not_given_by_user(self, command, standard_args):
