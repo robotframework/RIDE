@@ -20,7 +20,7 @@ class CommandCreationTestCase(unittest.TestCase):
         fakechief.suite.source = 'source'
         creator = CommandCreator(fakechief)
         creator._output_dir = 'temppi'
-        command = creator.get_command(self._create_profile(), ['PYTHON', 'PATH'], 7, ['suite.test'])
+        command = creator.get_command(self._create_profile(), ['PYTHON', 'PATH'], 7, [('suite', 'suite.test')])
         self.assertEqual(command,
             ['prefix', '--argumentfile', os.path.join('temppi','argfile.txt'),
              '--listener', 'listener', os.path.abspath('source')])
@@ -30,6 +30,7 @@ class CommandCreationTestCase(unittest.TestCase):
              '--pythonpath', 'PYTHON:PATH',
              '--monitorcolors', 'off',
              '--monitorwidth', 7,
+             '--suite', 'suite',
              '--test', 'suite.test'])
 
     def _create_profile(self):
