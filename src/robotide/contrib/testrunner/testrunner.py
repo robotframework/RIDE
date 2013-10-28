@@ -168,14 +168,14 @@ class TestRunner(object):
         self._process = Process(cwd)
         self._process.run_command(command)
 
-    def get_command(self, profile, pythonpath, monitor_width, test_names):
+    def get_command(self, profile, pythonpath, monitor_width, names_to_run):
         '''Return the command (as a list) used to run the test'''
         command = profile.get_command_prefix()[:]
         argfile = os.path.join(self._output_dir, "argfile.txt")
         command.extend(["--argumentfile", argfile])
         command.extend(["--listener", self._get_listener_to_cmd()])
         command.append(self._get_suite_source_for_command())
-        self._write_argfile(argfile, self._create_standard_args(command, profile, pythonpath, monitor_width, test_names))
+        self._write_argfile(argfile, self._create_standard_args(command, profile, pythonpath, monitor_width, names_to_run))
         return command
 
     def get_message_log_level(self, command):
@@ -205,7 +205,7 @@ class TestRunner(object):
             return source
         return os.path.abspath(self._chief.suite.source)
 
-    def _create_standard_args(self, command, profile, pythonpath, monitor_width, test_names):
+    def _create_standard_args(self, command, profile, pythonpath, monitor_width, names_to_run):
         standard_args = []
         standard_args.extend(profile.get_custom_args())
         self._add_tmp_outputdir_if_not_given_by_user(command, standard_args)
@@ -214,7 +214,7 @@ class TestRunner(object):
                                                                   pythonpath)
         standard_args.extend(["--monitorcolors", "off"])
         standard_args.extend(["--monitorwidth", monitor_width])
-        for suite, test in test_names:
+        for suite, test in names_to_run:
             standard_args += ['--suite', suite, '--test', test]
         return standard_args
 
