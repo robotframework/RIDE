@@ -65,6 +65,7 @@ class _ActionHandler(wx.Window):
     _label_select_all = 'Select All Tests'
     _label_deselect_all = 'Deselect All Tests'
     _label_select_failed_tests = 'Select Only Failed Tests'
+    _label_select_passed_tests = 'Select Only Passed Tests'
     _label_delete = 'Delete\tCtrl-Shift-D'
     _label_delete_no_kbsc = 'Delete'
     _label_exclude = 'Exclude'
@@ -137,6 +138,9 @@ class _ActionHandler(wx.Window):
 
     def OnSelectOnlyFailedTests(self, event):
         self._tree.SelectFailedTests(self._node)
+
+    def OnSelectOnlyPassedTests(self, event):
+        self._tree.SelectPassedTests(self._node)
 
     def OnSafeDelete(self, event):
         pass
@@ -289,7 +293,7 @@ class TestDataDirectoryHandler(TestDataHandler):
             _ActionHandler._label_select_all,
             _ActionHandler._label_deselect_all,
             _ActionHandler._label_select_failed_tests,
-
+            _ActionHandler._label_select_passed_tests
         ])
         if self.controller.parent:
             self._actions.extend(['---',
@@ -392,7 +396,9 @@ class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
                 '---',
                 _ActionHandler._label_select_all,
                 _ActionHandler._label_deselect_all,
-                _ActionHandler._label_select_failed_tests]
+                _ActionHandler._label_select_failed_tests,
+                _ActionHandler._label_select_passed_tests
+                ]
 
     def OnNewTestCase(self, event):
         dlg = TestCaseNameDialog(self.controller)
