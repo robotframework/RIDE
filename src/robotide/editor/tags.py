@@ -16,7 +16,6 @@
 if __name__ == '__main__':
     import robotide as _
 
-import os
 import wx
 
 from robotide.editor.flowsizer import HorizontalFlowSizer
@@ -55,6 +54,10 @@ class TagsDisplay(wx.Panel):
     def close(self):
         for tag_box in self._tag_boxes:
             tag_box.close()
+
+    def saving(self):
+        for tag_box in self._tag_boxes:
+            tag_box.saving()
 
     def set_value(self, controller, plugin=None):
         if not self._tag_boxes:
@@ -147,6 +150,9 @@ class TagBox(wx.TextCtrl):
         self.SetBackgroundColour(self._properties.background_color)
 
     def close(self):
+        self._update_value()
+
+    def saving(self):
         self._update_value()
 
     def OnKeyUp(self, event):

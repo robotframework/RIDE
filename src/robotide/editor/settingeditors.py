@@ -19,7 +19,7 @@ from robotide.controller.commands import (UpdateVariable, UpdateDocumentation,
         SetValues, AddLibrary, AddResource, AddVariablesFileImport,
         ClearSetting)
 from robotide.editor.listeditor import ListEditorBase
-from robotide.publish.messages import RideImportSetting, RideOpenVariableDialog, RideExecuteSpecXmlImport
+from robotide.publish.messages import RideImportSetting, RideOpenVariableDialog, RideExecuteSpecXmlImport, RideSaving
 from robotide.utils import overrides
 from robotide.widgets import ButtonWithHandler, Label, HtmlWindow, PopupMenu, PopupMenuItems
 from robotide.publish import PUBLISHER
@@ -296,7 +296,11 @@ class TagsEditor(SettingEditor):
 
     def __init__(self, parent, controller, plugin, tree):
         SettingEditor.__init__(self, parent, controller, plugin, tree)
+        self.plugin.subscribe(self._saving, RideSaving)
         self.Bind(wx.EVT_SIZE, self.OnSize)
+
+    def _saving(self, message):
+        self._tags_display.saving()
 
     def OnSize(self, event):
         self.SetSizeHints(-1, max(self._tags_display.get_height(), 25))
@@ -319,6 +323,7 @@ class TagsEditor(SettingEditor):
 
     def close(self):
         self._tags_display.close()
+        self.plugin.unsubscribe(self._saving, RideSaving)
         SettingEditor.close(self)
 
 
