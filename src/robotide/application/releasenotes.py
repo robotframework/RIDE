@@ -86,7 +86,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 1.2.1</h2>
+<h2>Release notes for 1.2.2</h2>
 <table border="1">
 <tr>
 <td><p><b>ID</b></p></td>
@@ -95,28 +95,28 @@ RELEASE_NOTES = """
 <td><p><b>Summary</b></p></td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1285">Issue 1285</a></td>
-<td>Defect</td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1293">Issue 1293</a></td>
+<td>Enhancement</td>
 <td>High</td>
-<td>Edit directory init file in Text Edit can not be applied</td>
+<td>Improve start speed of robot inside Ride.</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1281">Issue 1281</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1282">Issue 1282</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td> unable to import String library 2.8.1 to RIDE </td>
+<td>Pickle memory leak in TestRunner plugin</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1283">Issue 1283</a></td>
-<td>Defect</td>
-<td>Medium</td>
-<td>In foder tree, Ride does not open a fodler when it is double clicked</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1284">Issue 1284</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1292">Issue 1292</a></td>
 <td>Enhancement</td>
 <td>Medium</td>
-<td>ride1.2 not work well with robot 2.8.1 when search keywords for new added keywords in BuiltIn</td>
+<td>Add "Select only passed Tests" option</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1294">Issue 1294</a></td>
+<td>Defect</td>
+<td>Low</td>
+<td>Changed testcase form value is not saved, if the cursor is left in same form field</td>
 </tr>
 </table>
 <p>Altogether 4 issues.</p>
