@@ -39,6 +39,7 @@ class _ContentAssistTextCtrlBase(object):
         self.Bind(wx.EVT_MOVE, self.OnFocusLost)
         self._showing_content_assist = False
         self._row = None
+        self.gherkin_prefix = '' # Store gherkin prefix from input to add later after search is performed
 
     def set_row(self, row):
         self._row = row
@@ -83,7 +84,8 @@ class _ContentAssistTextCtrlBase(object):
     def OnFocusLost(self, event, set_value=True):
         if not self._popup.is_shown():
             return
-        value = self._popup.get_value()
+        value = self.gherkin_prefix + self._popup.get_value() 
+        
         if set_value and value:
             self.SetValue(value)
             self.SetInsertionPoint(len(self.Value))
@@ -115,15 +117,27 @@ class _ContentAssistTextCtrlBase(object):
                 return False
             else:
                 value += unichr(event.GetRawKeyCode())
-        return self._popup.content_assist_for(value, row=self._row)
+        (self.gherkin_prefix,v1) = self._remove_bdd_prefix(value)
+        return self._popup.content_assist_for(v1, row=self._row)
 
+    def _remove_bdd_prefix(self, name): 
+        matcher = name.lower()
+        for match in ['given ', 'when ', 'then ', 'and ']:
+            if matcher.startswith(match):
+                return (name[:len(match)],name[len(match):])
+        return ('',name)
+    
     def _show_content_assist(self):
         height = self.GetSizeTuple()[1]
         x, y = self.ClientToScreenXY(0, 0)
         self._popup.show(x, y, height)
 
     def content_assist_value(self):
-        return self._popup.content_assist_value(self.Value)
+        pop_cav =  self._popup.content_assist_value(self.Value) 
+        if pop_cav == None:
+           return pop_cav
+        else:
+           return self.gherkin_prefix + pop_cav
 
     def hide(self):
         self._popup.hide()
@@ -197,7 +211,7 @@ class Suggestions(object):
         self._suggestion_source = suggestion_source
         self._previous_value = None
         self._previous_choices = []
-
+    
     def get_for(self, value, row=None):
         self._previous_choices = self._get_choices(value, row)
         self._previous_value = value

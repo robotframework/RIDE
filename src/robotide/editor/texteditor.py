@@ -544,7 +544,8 @@ class RobotStylizer(object):
                 'fore': color_settings['error']
             },
             robotframeworklexer.GHERKIN: {
-                'fore': color_settings['gherkin']
+                'fore': color_settings['gherkin'],
+                'bold': 'true'
             },
             robotframeworklexer.HEADING: {
                 'fore': color_settings['heading'],
