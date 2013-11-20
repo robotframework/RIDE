@@ -173,10 +173,12 @@ class NewResourceDialog(_WithImmutableParent, _CreationDialog):
 
 class AddSuiteDialog(_WithImmutableParent, _CreationDialog):
 
+    NAME = 'Add Suite'
+
     def __init__(self, controller, settings):
         self._controller = controller
         self._path = controller.directory
-        _CreationDialog.__init__(self, self._path, 'Add Suite')
+        _CreationDialog.__init__(self, self._path, self.NAME)
         self._format_chooser.SetStringSelection(settings['default file format'])
 
     @overrides(_CreationDialog)
@@ -188,6 +190,17 @@ class AddSuiteDialog(_WithImmutableParent, _CreationDialog):
     def _execute(self):
         cmd = AddTestDataDirectory if self._is_dir_type() else AddTestCaseFile
         self._controller.execute(cmd(self._get_path()))
+
+
+class AddDirectoryDialog(AddSuiteDialog):
+
+    NAME = 'Add Directory'
+
+    def _create_type_chooser(self, sizer):
+        return None
+
+    def _is_dir_type(self):
+        return True
 
 
 class _FileFormatDialog(_CreationDialog):

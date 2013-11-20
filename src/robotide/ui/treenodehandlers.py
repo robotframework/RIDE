@@ -28,7 +28,7 @@ from robotide.editor.editordialogs import (TestCaseNameDialog,
 from robotide.publish import RideOpenVariableDialog
 from robotide.ui.progress import LoadProgressObserver
 from robotide.usages.UsageRunner import Usages, ResourceFileUsages
-from .filedialogs import (AddSuiteDialog, ChangeFormatDialog, NewResourceDialog, AddResourceDialog)
+from .filedialogs import (AddSuiteDialog, AddDirectoryDialog, ChangeFormatDialog, NewResourceDialog, AddResourceDialog)
 from robotide.utils import overrides
 from robotide.widgets import PopupMenuItems
 from .progress import RenameProgressObserver
@@ -51,6 +51,7 @@ class _ActionHandler(wx.Window):
     is_variable = False
 
     _label_add_suite = 'New Suite\tCtrl-Shift-F'
+    _label_add_directory = 'New Directory'
     _label_new_test_case = 'New Test Case\tCtrl-Shift-T'
     _label_new_user_keyword = 'New User Keyword\tCtrl-Shift-K'
     _label_sort_keywords = 'Sort Keywords'
@@ -107,6 +108,9 @@ class _ActionHandler(wx.Window):
         pass
 
     def OnNewSuite(self, event):
+        pass
+
+    def OnNewDirectory(self, event):
         pass
 
     def OnNewResource(self, event):
@@ -277,6 +281,7 @@ class TestDataDirectoryHandler(TestDataHandler):
         TestDataHandler.__init__(self, *args)
         self._actions = [
             _ActionHandler._label_add_suite,
+            _ActionHandler._label_add_directory,
             _ActionHandler._label_new_resource,
             '---',
             _ActionHandler._label_new_user_keyword,
@@ -310,6 +315,9 @@ class TestDataDirectoryHandler(TestDataHandler):
 
     def OnNewSuite(self, event):
         AddSuiteDialog(self.controller, self._settings).execute()
+
+    def OnNewDirectory(self, event):
+        AddDirectoryDialog(self.controller, self._settings).execute()
 
     def OnNewResource(self, event):
         NewResourceDialog(self.controller, self._settings).execute()
