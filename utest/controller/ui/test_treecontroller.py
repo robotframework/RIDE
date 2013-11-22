@@ -139,7 +139,7 @@ class TestTestSelectionController(unittest.TestCase):
         self.assertTrue(self._tsc.is_empty())
 
     def test_adding_tag_to_selected_tests(self):
-        tests = [self._create_test() for _ in range(10)]
+        tests = [self._create_test('test%d' % i) for i in range(10)]
         for t in tests:
             self._tsc.select(t)
         self._tsc.add_tag('foo')
@@ -154,11 +154,11 @@ class TestTestSelectionController(unittest.TestCase):
         self._tsc.add_tag('custom')
         self.assertEqual([t.name for t in test.tags], ['default', 'custom'])
 
-    def _create_test(self):
+    def _create_test(self, name='test'):
         suite = TestCaseFile(source='suite')
         suite_controller = TestCaseFileController(suite)
         parent = TestCaseTableController(suite_controller, suite.testcase_table)
-        test = TestCase(parent=lambda:0, name='test')
+        test = TestCase(parent=lambda:0, name=name)
         return TestCaseController(parent, test)
 
 
