@@ -358,7 +358,8 @@ class StepController(_BaseController):
         return cells and cells[0].replace(' ', '').upper() == ':FOR'
 
     def _is_intended_step(self, cells):
-        return cells and not cells[0].strip() and any(c.strip() for c in cells)
+        return cells and not cells[0].strip() and \
+               any(c.strip() for c in cells) and self._index() > 0
 
     def _recreate_as_partial_for_loop(self, cells, comment):
         index = self._index()
