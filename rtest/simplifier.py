@@ -9,14 +9,11 @@ def _simplify(min_i, trace, runner):
     max_i = len(trace)
     if max_i == min_i:
         return trace
-    un_trace = trace[:-1]
     step = (max_i-1)/min_i
-    start = 0
-    while start < len(un_trace):
-        new_trace = un_trace[:start]+un_trace[start+step:]+[trace[-1]]
+    for start in range(0, max_i-1, step):
+        new_trace = trace[:start]+trace[start+step:]
         if test_trace(new_trace, runner):
             return _simplify(min_i, new_trace, runner)
-        start += step
     return _simplify(min_i+1, trace, runner)
 
 class ResetSimplify(Exception):
