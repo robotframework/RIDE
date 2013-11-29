@@ -12,14 +12,32 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 import inspect
+from model import RIDE
+import random
+import shutil
+import os
 
 class Runner(object):
 
-    def __init__(self, model, random):
-        self._model = model
+    def __init__(self, seed, path, root):
+        self._path = path
+        self._root = root
+        self._seed = seed
+        self._model = None
         self._random = random
+
+    def initialize(self):
+        shutil.rmtree(self._path, ignore_errors=True)
+        shutil.copytree(os.path.join(self._root, 'testdir'), os.path.join(self._path, 'testdir'))
+        self._random.seed(self._seed)
+        self._model = RIDE(self._random, self._path)
         self._actions = self._actions_from_model()
         self._count = 0
+        if self._random.random() > 0.5:
+            self._model.open_test_dir()
+        else:
+            self._model.open_suite_file()
+        return self
 
     def _actions_from_model(self):
         return [name for name,_ in inspect.getmembers(self._model, inspect.ismethod) if not name.startswith('_')]
