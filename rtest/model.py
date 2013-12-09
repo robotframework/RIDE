@@ -228,5 +228,7 @@ class RIDE(object):
         macro = self._random.choice([c for c in [self._test, self._keyword] if c])
         row = self._rand_row()
         col = self._rand_col()
+        if self._skip:
+            return
         print '%s.get_cell_info(%s, %s)' % (self._name(macro), row, col)
         macro.get_cell_info(row, col)
