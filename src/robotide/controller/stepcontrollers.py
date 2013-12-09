@@ -405,19 +405,20 @@ class ForLoopStepController(StepController):
         return self._step.vars
 
     def move_up(self):
-        index = self._index()
-        previous_step = self.parent.step(index-1)
+        previous_step = self.parent.step(self._index()-1)
         if isinstance(previous_step, ForLoopStepController):
-            self._swap_forloop_headers(index, previous_step)
+            self._swap_forloop_headers(previous_step)
         else:
             self.get_raw_steps().insert(0, previous_step._step)
             previous_step.remove()
 
-    def _swap_forloop_headers(self, index, previous_step):
+    def _swap_forloop_headers(self, previous_step):
         previous_step._step.steps = self._step.steps
         self._step.steps = []
         steps = self.parent.get_raw_steps()
-        steps[index - 1:index + 1] = [self._step, previous_step._step]
+        i = steps.index(self._step)
+        steps[i - 1] = self._step
+        steps[i] = previous_step._step
         self.parent.set_raw_steps(steps)
 
     def move_down(self):
