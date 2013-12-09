@@ -24,6 +24,8 @@ class ResetSimplify(Exception):
 
 
 def test_trace(trace, runner):
+    print '>'*80
+    print '! >>> %d' % len(trace)
     runner.initialize()
     try:
         run_trace(runner, trace)
