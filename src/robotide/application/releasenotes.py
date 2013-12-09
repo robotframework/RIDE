@@ -86,7 +86,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 1.2.2</h2>
+<h2>Release notes for 1.2.3</h2>
 <table border="1">
 <tr>
 <td><p><b>ID</b></p></td>
@@ -95,29 +95,23 @@ RELEASE_NOTES = """
 <td><p><b>Summary</b></p></td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1293">Issue 1293</a></td>
-<td>Enhancement</td>
-<td>High</td>
-<td>Improve start speed of robot inside Ride.</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1282">Issue 1282</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1290">Issue 1290</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>Pickle memory leak in TestRunner plugin</td>
+<td>RIDE runs not selected (with checkboxes) tests</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1292">Issue 1292</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1306">Issue 1306</a></td>
+<td>Defect</td>
+<td>Medium</td>
+<td>[RIDE 1.2.2 running on Python 2.7.5.] - Unable to insert cell in RIDE, if the TC contains FOR loop.</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1307">Issue 1307</a></td>
 <td>Enhancement</td>
 <td>Medium</td>
-<td>Add "Select only passed Tests" option</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1294">Issue 1294</a></td>
-<td>Defect</td>
-<td>Low</td>
-<td>Changed testcase form value is not saved, if the cursor is left in same form field</td>
+<td>Possibility to create new folder with right click</td>
 </tr>
 </table>
-<p>Altogether 4 issues.</p>
+<p>Altogether 3 issues.</p>
 """
