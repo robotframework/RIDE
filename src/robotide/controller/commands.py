@@ -895,9 +895,18 @@ class ChangeCellValue(_StepsChangingCommand):
         self._undo_command = ChangeCellValue(self._row, self._col, step.get_value(self._col))
         step.change(self._col, self._value)
         self._step(context).remove_empty_columns_from_end()
-        assert self._step(context).get_value(self._col).strip() == self._value.strip(), \
+        assert self._validate_postcondition(context), \
             'Should have correct value after change'
         return True
+
+    def _validate_postcondition(self, context):
+        value = self._step(context).get_value(self._col).strip()
+        should_be = self._value.strip()
+        if value == should_be:
+            return True
+        return self._col == 0 and \
+               value.replace(' ', '').upper() == ':FOR' and \
+               should_be.replace(' ', '').upper() == ':FOR'
 
     def _get_undo_command(self):
         return self._undo_command
