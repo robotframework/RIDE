@@ -11,7 +11,7 @@ from robotide.namespace.namespace import _VariableStash
 from robotide.robotapi import TestCaseFile
 from robotide.controller.filecontrollers import DataController
 from datafilereader import *
-from robotide.spec.iteminfo import ArgumentInfo
+from robotide.spec.iteminfo import ArgumentInfo, VariableInfo
 from robotide.context import IS_WINDOWS
 from robotide.spec.librarymanager import LibraryManager
 
@@ -129,6 +129,7 @@ class TestKeywordSuggestions(_DataFileTest):
 
     def test_lib_import_with_spaces(self):
         sugs = self.ns.get_suggestions_for(self.kw, 'space')
+        sugs = [s for s in sugs if not isinstance(s, VariableInfo)] #remove variable suggestions
         self._assert_import_kws(sugs, 'spacelib')
 
     def test_resource_file_keywords(self):
@@ -189,8 +190,8 @@ class TestKeywordSuggestions(_DataFileTest):
         self._test_global_variable(global_vars[5])
         self._test_global_variable(global_vars[-1])
 
-    def _test_global_variable(self, variable):
-        assert_equals(variable, self.ns.get_suggestions_for(self.kw, variable)[0].name)
+    def _test_global_variable(self, variable, expected=None):
+        assert_equals(expected or variable, self.ns.get_suggestions_for(self.kw, variable)[0].name)
 
     def test_resource_with_variable_in_path(self):
         sugs = self.ns.get_suggestions_for(self.kw, 'Resu UK')
@@ -205,6 +206,10 @@ class TestKeywordSuggestions(_DataFileTest):
         assert_true(len(self.ns.get_suggestions_for(self.kw, '@{')) == len(list_vars))
         sug = self.ns.get_suggestions_for(self.kw, '${lib')
         assert_true(sug[0].name == LIB_NAME_VARIABLE)
+
+    def test_variable_suggestions_without_varwrapping(self):
+        self._test_global_variable('space', '${SPACE}')
+        self._test_global_variable('EMP', '${EMPTY}')
 
     def test_vars_from_file(self):
         sugs = self.ns.get_suggestions_for(self._get_controller(TESTCASEFILE_WITH_EVERYTHING).keywords[0],
