@@ -27,6 +27,10 @@ RUNNING_IMAGE_INDEX = 7
 PASSED_IMAGE_INDEX = 8
 FAILED_IMAGE_INDEX = 9
 
+DOCUMENTED_INDEX = 10
+UNDOCUMENTED_INDEX = 2
+UNDOCUMENTED_SUITE_INDEX = 0
+
 class TreeImageList(wx.ImageList):
 
     def __init__(self):
@@ -43,6 +47,7 @@ class TreeImageList(wx.ImageList):
             'running': _TreeImage(self, 'robot_running.png'),
             'passed': _TreeImage(self, 'robot_passed.png'),
             'failed': _TreeImage(self, 'robot_failed.png'),
+            'documented':_TreeImage(self, 'report.png'),
             ExcludedDirectoryController: _TreeImage(self, 'folder_excluded.png')
         }
 
@@ -65,6 +70,11 @@ class TreeImageList(wx.ImageList):
         elif controller.__class__ == TestDataDirectoryController:
             if not controller.contains_tests():
                 return self._images['resource directory']
+            if controller.data.setting_table.doc.value:
+                return self._images['documented']
+        elif controller.__class__ == TestCaseFileController:
+            if controller.data.setting_table.doc.value:
+                return self._images['documented']
         return self._images[controller.__class__]
 
 
