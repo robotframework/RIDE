@@ -18,7 +18,7 @@ from robot.parsing.settings import Comment
 
 from robotide.publish.messages import (RideImportSettingChanged,
         RideImportSettingRemoved, RideVariableUpdated, RideItemSettingsChanged, RideImportSettingAdded,
-        RideDocumentaionChanged)
+        RideDocumentationChanged)
 from robotide import utils
 from robotide.utils import overrides
 
@@ -131,7 +131,7 @@ class DocumentationController(_SettingController):
             self._set(value)
             self.mark_dirty()
             RideItemSettingsChanged(item=self._parent).publish()
-            RideDocumentaionChanged(controller=self._parent, value=value).publish()
+            RideDocumentationChanged(controller=self._parent, value=value).publish()
 
     @overrides(_SettingController)
     def contains_keyword(self, name):

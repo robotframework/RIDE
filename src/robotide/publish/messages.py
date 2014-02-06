@@ -143,7 +143,7 @@ class RideSettingsChanged(RideMessage):
     """
     data = ['keys']
 
-class RideDocumentaionChanged(RideMessage):
+class RideDocumentationChanged(RideMessage):
     data = ['controller', 'value']
 
 class RideExecuteSpecXmlImport(RideMessage):

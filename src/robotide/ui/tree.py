@@ -31,7 +31,7 @@ from robotide.publish import (PUBLISHER, RideTreeSelection, RideFileNameChanged,
     RideItem, RideUserKeywordAdded, RideTestCaseAdded,
     RideUserKeywordRemoved, RideTestCaseRemoved, RideDataFileRemoved, RideDataChangedToDirty,
     RideDataDirtyCleared, RideVariableRemoved, RideVariableAdded,
-    RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated, RideDocumentaionChanged,
+    RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated, RideDocumentationChanged,
     RideOpenResource, RideSuiteAdded, RideSelectResource, RideDataFileSet)
 from robotide.controller.commands import MoveTo
 from robotide.widgets import PopupCreator
@@ -146,7 +146,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
             (self._handle_import_setting_message, RideImportSetting),
             (self._mark_excludes, RideExcludesChanged),
             (self._mark_excludes, RideIncludesChanged),
-            (self._documentation_changed, RideDocumentaionChanged),
+            (self._documentation_changed, RideDocumentationChanged),
         ]
         for listener, topic in subscriptions:
             PUBLISHER.subscribe(listener, topic)
