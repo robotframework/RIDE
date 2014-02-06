@@ -17,8 +17,7 @@ from itertools import chain
 from robot.parsing.settings import Comment
 
 from robotide.publish.messages import (RideImportSettingChanged,
-        RideImportSettingRemoved, RideVariableUpdated, RideItemSettingsChanged, RideImportSettingAdded,
-        RideDocumentationChanged)
+        RideImportSettingRemoved, RideVariableUpdated, RideItemSettingsChanged, RideImportSettingAdded)
 from robotide import utils
 from robotide.utils import overrides
 
@@ -87,7 +86,7 @@ class _SettingController(ControllerWithParent):
         if self._changed(value):
             self._set(value)
             self.mark_dirty()
-            RideItemSettingsChanged(item=self._parent).publish()
+            RideItemSettingsChanged(item=self._parent, value=value).publish()
 
     def set_comment(self, comment):
         if comment != self.comment:
@@ -124,14 +123,6 @@ class DocumentationController(_SettingController):
     @property
     def value(self):
         return self._doc.value
-
-    @overrides(_SettingController)
-    def set_value(self, value):
-        if self._changed(value):
-            self._set(value)
-            self.mark_dirty()
-            RideItemSettingsChanged(item=self._parent).publish()
-            RideDocumentationChanged(controller=self._parent, value=value).publish()
 
     @overrides(_SettingController)
     def contains_keyword(self, name):

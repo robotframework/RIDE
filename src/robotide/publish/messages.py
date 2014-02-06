@@ -143,9 +143,6 @@ class RideSettingsChanged(RideMessage):
     """
     data = ['keys']
 
-class RideDocumentationChanged(RideMessage):
-    data = ['controller', 'value']
-
 class RideExecuteSpecXmlImport(RideMessage):
     """Sent whenever spec xml import is requested"""
 
@@ -349,6 +346,7 @@ class RideItemNameChanged(RideItem):
 
 class RideItemSettingsChanged(RideItem):
     """"""
+    data = ['item', 'value']
 
 
 class RideTestCaseAdded(RideDataChanged):
