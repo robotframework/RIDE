@@ -75,7 +75,7 @@ class _CreationDialog(Dialog):
         return self._create_radiobuttons(sizer, 'Type', ['File', 'Directory'])
 
     def _create_format_chooser(self, sizer, callback=True):
-        return self._create_radiobuttons(sizer, 'Format', ['TXT', 'TSV', 'HTML'],
+        return self._create_radiobuttons(sizer, 'Format', ['ROBOT', 'TXT', 'TSV', 'HTML'],
                                          callback)
 
     def _create_radiobuttons(self, sizer, label, choices, callback=True):

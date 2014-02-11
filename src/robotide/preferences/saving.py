@@ -64,7 +64,7 @@ class SavingPreferences(PreferencesPanel):
             StringChoiceEditor(settings,
                 'default file format',
                 'Default file format:',
-                ('txt', 'tsv', 'html')
+                ('txt', 'tsv', 'html', 'robot')
             ),
             StringChoiceEditor(settings,
                 'txt format separator',
