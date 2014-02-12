@@ -35,7 +35,7 @@ import threading
 
 errorMessageTemplate = Template("""$reason
 You need to install wxPython $versions toolkit with unicode support to run RIDE.
-See http://wxpython.org for more information.""")
+wxPython 2.8.12.1 can be downloaded from http://sourceforge.net/projects/wxpython/files/wxPython/2.8.12.1/""")
 supported_versions = ["2.8"]
 
 try:
@@ -103,11 +103,12 @@ def _show_old_wxpython_warning_if_needed(parent=None):
     if wx.VERSION >= (2, 8, 12, 1):
         return
     title = 'Please upgrade your wxPython installation'
-    message = ('RIDE officially supports wxPython 2.8.12.1 and newer. '
+    message = ('RIDE officially supports wxPython 2.8.12.1. '
                'Your current version is %s.\n\n'
                'Older wxPython versions are known to miss some features used by RIDE. '
-               'Notice also that wxPython 2.9 releases are not yet considered stable.\n\n'
-               'Latest wxPython packages can be found from\nhttp://wxpython.org/.'
+               'Notice also that wxPython 3.0 is not yet supported.\n\n'
+               'wxPython 2.8.12.1 packages can be found from\n'
+               'http://sourceforge.net/projects/wxpython/files/wxPython/2.8.12.1/.'
                % wx.VERSION_STRING)
     style = wx.ICON_EXCLAMATION
     if not parent:
