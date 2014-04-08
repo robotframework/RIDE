@@ -225,6 +225,9 @@ class ByPathImporter(_Importer):
         module_dir, module_name = self._split_path_to_module(path)
         sys.path.insert(0, module_dir)
         try:
+            #fix http://code.google.com/p/robotframework-ride/issues/detail?id=1348
+            if module_name in sys.modules:
+                del sys.modules[module_name]
             return self._import(module_name)
         finally:
             sys.path.pop(0)
