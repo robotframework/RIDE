@@ -211,6 +211,14 @@ class TestCaseEditingTest(TestCaseCommandTest):
         assert_equals(len(self._steps), self._orig_number_of_steps+1)
         assert_equals(self._steps[row_in_for_loop].as_list(), [''])
 
+    def test_inserting_cell_when_for_loop_is_last(self):
+        row_after_for_loop = self._data_row(STEP_AFTER_FOR_LOOP)
+        self._exec(DeleteRow(row_after_for_loop))
+        self._exec(DeleteRow(row_after_for_loop))
+        assert_equals(self._steps[-1].as_list(), ['', 'No Operation'])
+        self._exec(InsertCell(0,0))
+        self._verify_step(0, '', ['Step 1', 'arg'])
+
     def test_add_multiple_rows(self):
         self._exec(AddRows([1,2]))
         self._verify_step_number_change(2)

@@ -164,6 +164,10 @@ class TestForLoop(unittest.TestCase):
         test.execute(MoveRowsDown([0]))
         self._verify_steps(test.steps, loop_1, loop_2, inside_1, inside_2)
 
+    def test_move_for_loop_header_between_for_loops(self):
+        test = self.chief.datafiles[1].tests[18]
+        test.execute(MoveRowsDown([3]))
+        self.assertEqual(test.steps[4].as_list()[1], '${j}')
 
     def _verify_steps(self, steps, *expected):
         for step, exp in zip(steps, expected):

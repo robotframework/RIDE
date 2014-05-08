@@ -171,13 +171,13 @@ class _History(object):
 class TestSelectionController(object):
 
     def __init__(self):
-        self._tests = set()
+        self._tests = {}
 
     def is_empty(self):
         return not bool(self._tests)
 
     def clear_all(self, message=None):
-        self._tests = set()
+        self._tests = {}
         self.send_selection_changed_message()
 
     def unselect_all(self, tests):
@@ -186,16 +186,17 @@ class TestSelectionController(object):
 
     def select(self, test, selected=True):
         if selected:
-            self._tests.add(test)
-        else:
-            self._tests.discard(test)
+            self._tests[test.longname] = test
+        elif test.longname in self._tests:
+            del self._tests[test.longname]
         self.send_selection_changed_message()
 
     def send_selection_changed_message(self):
-        RideTestSelectedForRunningChanged(tests=set([t.longname for t in self._tests])).publish()
+        RideTestSelectedForRunningChanged(tests=set([(t.datafile_controller.longname, t.longname)
+                                                     for t in self._tests.values()])).publish()
 
     def add_tag(self, name):
-        for test in self._tests:
+        for test in self._tests.values():
             self._add_tag_to_test(name, test)
 
     def _add_tag_to_test(self, name, test):

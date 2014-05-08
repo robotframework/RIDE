@@ -58,6 +58,7 @@ class TestLocalNamespace(unittest.TestCase):
 
     def test_suggestions_when_only_part_matches(self):
         self._verify_suggestions_on_row(4, start='${f', contains=['${foo}'], does_not_contain=['${argument}', '${bar}'])
+        self._verify_suggestions_on_row(4, start='fo', contains=['${foo}'], does_not_contain=['${argument}', '${bar}'])
 
     def _verify_suggestions_on_row(self, row, start='${', contains=None, does_not_contain=None):
         suggestion_names = [suggestion.name for suggestion in self._keyword.get_local_namespace_for_row(row).get_suggestions(start)]

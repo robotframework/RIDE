@@ -13,11 +13,10 @@
 #  limitations under the License.
 from math import ceil
 import os
-import random
-import shutil
 import time
 import sys
 import traceback
+from rtest import simplifier
 
 
 ROOT = os.path.dirname(__file__)
@@ -27,7 +26,7 @@ src = os.path.join(ROOT, '..', 'src')
 sys.path.insert(0, lib)
 sys.path.insert(0, src)
 
-from model import RIDE
+
 from test_runner import Runner
 
 
@@ -47,21 +46,10 @@ def do_test(seed, path):
         return 'FAIL', seed, i or 0, path
 
 def init_ride_runner(seed, path):
-    shutil.rmtree(path, ignore_errors=True)
-    shutil.copytree(os.path.join(ROOT, 'testdir'), os.path.join(path, 'testdir'))
-    random.seed(seed)
-    ride = RIDE(random, path)
-    ride_runner = Runner(ride, random)
-    if random.random() > 0.5:
-        ride.open_test_dir()
-    else:
-        ride.open_suite_file()
-    return ride_runner
-
+    return Runner(seed, path, ROOT).initialize()
 
 def split(start, end):
     return int(ceil(float(end - start) / 2)) + start
-
 
 def skip_steps(runner, number_of_steps):
     for i in range(number_of_steps):
@@ -116,6 +104,7 @@ def _debugging(seed, path, i):
 def main(path):
     result, seed, i, path = do_test(generate_seed(), path)
     #_debugging(seed, path, i)
+    #???>>>!!! simplifier.simplify(range(i+1), init_ride_runner(seed, path))
     return result != 'FAIL'
 
 if __name__ == '__main__':

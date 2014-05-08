@@ -88,3 +88,12 @@ Test 17
     \   No Operation
     : FOR  ${j}  IN RANGE  100
     \   Fail
+
+Test 18
+    : FOR  ${i}  IN  1  2  3  4
+    \   No Operation
+    \   No Operation
+    : FOR  ${j}  IN  1  2  3  4
+    : FOR  ${k}  IN  1  2  3  4
+    \   No Operation
+    \   No Operation

@@ -59,11 +59,6 @@ from robotide.publish.messages import RideTestSelectedForRunningChanged, RideNew
 
 ON_POSIX = 'posix' in sys.builtin_module_names
 
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle as pickle
-
 import wx
 import wx.stc
 from wx.lib.embeddedimage import PyEmbeddedImage
@@ -135,7 +130,7 @@ class TestRunnerPlugin(Plugin):
         self._test_runner = TestRunner(application.model)
         self._register_shortcuts()
         self._min_log_level_number = LEVELS['INFO']
-        self._test_names_to_run = set()
+        self._names_to_run = set()
 
     def _register_shortcuts(self):
         self.register_shortcut('CtrlCmd-C', self._copy_from_out)
@@ -200,7 +195,7 @@ class TestRunnerPlugin(Plugin):
         self.subscribe(self.OnTestSelectedForRunningChanged, RideTestSelectedForRunningChanged)
 
     def OnTestSelectedForRunningChanged(self, message):
-        self._test_names_to_run = message.tests
+        self._names_to_run = message.tests
 
     def disable(self):
         self._remove_from_notebook()
@@ -289,7 +284,7 @@ class TestRunnerPlugin(Plugin):
             self.get_current_profile(),
             self.global_settings.get('pythonpath', None),
             self._get_monitor_width(),
-            self._test_names_to_run)
+            self._names_to_run)
         self._min_log_level_number = self._test_runner.get_message_log_level(command_as_list)
         command = self._format_command(command_as_list)
         return command

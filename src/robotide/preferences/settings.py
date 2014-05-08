@@ -42,14 +42,14 @@ def _copy_or_migrate_user_settings(settings_dir, source_path, dest_file_name):
         dest_file_name = os.path.basename(source_path)
     settings_path = os.path.join(settings_dir, dest_file_name)
     if not os.path.exists(settings_path):
-        shutil.copy(source_path, settings_path)
+        shutil.copyfile(source_path, settings_path)
     else:
         try:
             SettingsMigrator(source_path, settings_path).migrate()
         except ConfigObjError, parsing_error:
             print 'WARNING! corrupted configuration file replaced with defaults'
             print parsing_error
-            shutil.copy(source_path, settings_path)
+            shutil.copyfile(source_path, settings_path)
     return os.path.abspath(settings_path)
 
 class SettingsMigrator(object):

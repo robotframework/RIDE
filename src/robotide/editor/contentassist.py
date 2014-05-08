@@ -18,6 +18,7 @@ from wx.lib.expando import ExpandoTextCtrl
 from wx.lib.filebrowsebutton import FileBrowseButton
 from robot.utils.normalizing import normalize
 from os.path import relpath, dirname, isdir
+from robotide.spec.iteminfo import VariableInfo
 
 from robotide import context
 from robotide.namespace.suggesters import SuggestionSource
@@ -233,6 +234,8 @@ class Suggestions(object):
         return choice.name if self._matches_unique_shortname(choice, prefix, duplicate_names) else choice.longname
 
     def _matches_unique_shortname(self, choice, prefix, duplicate_names):
+        if isinstance(choice, VariableInfo):
+            return True
         if not normalize(choice.name).startswith(normalize(prefix)):
             return False
         if normalize(choice.name) in duplicate_names:

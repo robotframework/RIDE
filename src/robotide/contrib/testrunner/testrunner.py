@@ -26,12 +26,10 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from Queue import Empty, Queue
 import SocketServer
 import atexit
 import codecs
 import os
-import pickle
 import shutil
 import socket
 import subprocess
@@ -39,13 +37,13 @@ import tempfile
 import threading
 import signal
 import sys
+import robotide.utils as utils
+from Queue import Empty, Queue
 from robot.output.loggerhelper import LEVELS
 from robot.utils.encoding import SYSTEM_ENCODING
 from robotide.context.platform import IS_WINDOWS
 from robotide.contrib.testrunner import TestRunnerAgent
 from robotide.controller.testexecutionresults import TestExecutionResults
-import robotide.utils as utils
-
 
 ATEXIT_LOCK = threading.RLock()
 
@@ -57,6 +55,7 @@ class TestRunner(object):
         self._server = None
         self._server_thread = None
         self._pause_on_failure = False
+        self._pid_to_kill = None
         self._results = TestExecutionResults()
         self.port = None
         self._chief = chief
@@ -95,7 +94,8 @@ class TestRunner(object):
             self._result_handler(*args)
             result_handler(*args)
         self._server = RideListenerServer(RideListenerHandler, handle)
-        self._server_thread = threading.Thread(target=self._server.serve_forever)
+        self._server_thread = threading.Thread(
+            target=self._server.serve_forever)
         self._server_thread.setDaemon(True)
         self._server_thread.start()
         self.port = self._server.server_address[1]
@@ -108,14 +108,17 @@ class TestRunner(object):
         if event == 'start_test':
             longname = args[1]['longname']
             testname = args[0]
-            self._results.set_running(self._get_test_controller(longname, testname))
+            self._results.set_running(self._get_test_controller(longname,
+                                                                testname))
         if event == 'end_test':
             longname = args[1]['longname']
             testname = args[0]
             if args[1]['status'] == 'PASS':
-                self._results.set_passed(self._get_test_controller(longname, testname))
+                self._results.set_passed(self._get_test_controller(longname,
+                                                                   testname))
             else:
-                self._results.set_failed(self._get_test_controller(longname, testname))
+                self._results.set_failed(self._get_test_controller(longname,
+                                                                   testname))
 
     def _get_test_controller(self, longname, testname = None):
         ret = self._chief.find_controller_by_longname(longname, testname)
@@ -168,17 +171,18 @@ class TestRunner(object):
         self._process = Process(cwd)
         self._process.run_command(command)
 
-    def get_command(self, profile, pythonpath, monitor_width, test_names):
+    def get_command(self, profile, pythonpath, monitor_width, names_to_run):
         '''Return the command (as a list) used to run the test'''
         command = profile.get_command_prefix()[:]
         argfile = os.path.join(self._output_dir, "argfile.txt")
         command.extend(["--argumentfile", argfile])
         command.extend(["--listener", self._get_listener_to_cmd()])
         command.append(self._get_suite_source_for_command())
-        self._write_argfile(argfile, self._create_standard_args(command, profile, pythonpath, monitor_width, test_names))
+        self._write_argfile(argfile, self._create_standard_args(command, profile, pythonpath, monitor_width, names_to_run))
         return command
 
-    def get_message_log_level(self, command):
+    @staticmethod
+    def get_message_log_level(command):
         min_log_level_number = LEVELS['INFO']
         if '-L' in command:
             switch = '-L'
@@ -205,7 +209,7 @@ class TestRunner(object):
             return source
         return os.path.abspath(self._chief.suite.source)
 
-    def _create_standard_args(self, command, profile, pythonpath, monitor_width, test_names):
+    def _create_standard_args(self, command, profile, pythonpath, monitor_width, names_to_run):
         standard_args = []
         standard_args.extend(profile.get_custom_args())
         self._add_tmp_outputdir_if_not_given_by_user(command, standard_args)
@@ -214,15 +218,17 @@ class TestRunner(object):
                                                                   pythonpath)
         standard_args.extend(["--monitorcolors", "off"])
         standard_args.extend(["--monitorwidth", monitor_width])
-        for tc in test_names:
-            standard_args += ['--test', tc]
+        for suite, test in names_to_run:
+            standard_args += ['--suite', suite, '--test', test]
         return standard_args
 
     def _add_tmp_outputdir_if_not_given_by_user(self, command, standard_args):
         if "--outputdir" not in command and "-d" not in command:
             standard_args.extend(["--outputdir", self._output_dir])
 
-    def _add_pythonpath_if_in_settings_and_not_given_by_user(self, command, standard_args, pythonpath):
+    @staticmethod
+    def _add_pythonpath_if_in_settings_and_not_given_by_user(
+        command, standard_args, pythonpath):
         if '--pythonpath' in command:
             return
         if '-P' in command:
@@ -231,7 +237,8 @@ class TestRunner(object):
             return
         standard_args.extend(['--pythonpath', ':'.join(pythonpath)])
 
-    def _write_argfile(self, argfile, args):
+    @staticmethod
+    def _write_argfile(argfile, args):
         f = codecs.open(argfile, "w", "utf-8")
         f.write("\n".join(args))
         f.close()
@@ -255,10 +262,11 @@ class Process(object):
         self._cwd = cwd
         self._port = None
         self._sock = None
+        self._kill_called = False
 
     def run_command(self, command):
-        # We need to supply an stdin for subprocess, because otherways in pythonw
-        # subprocess will try using sys.stdin which will cause an error in windows
+        # We need to supply stdin for subprocess, because otherways in pythonw
+        # subprocess will try using sys.stdin which causes an error in windows
         subprocess_args = dict(bufsize=0,
                         stdout=subprocess.PIPE,
                         stderr=subprocess.PIPE,
@@ -275,7 +283,8 @@ class Process(object):
         else:
             subprocess_args['preexec_fn'] = os.setsid
             subprocess_args['shell'] = True
-        self._process = subprocess.Popen(command.encode(SYSTEM_ENCODING), **subprocess_args)
+        self._process = subprocess.Popen(command.encode(SYSTEM_ENCODING),
+                                         **subprocess_args)
         self._process.stdin.close()
         self._output_stream = StreamReaderThread(self._process.stdout)
         self._error_stream = StreamReaderThread(self._process.stderr)
@@ -347,7 +356,8 @@ class Process(object):
             try:
                 if os.name == 'nt' and sys.version_info < (2,7):
                     import ctypes
-                    ctypes.windll.kernel32.TerminateProcess(int(self._process._handle), -1)
+                    ctypes.windll.kernel32.TerminateProcess(
+                        int(self._process._handle), -1)
                 else:
                     os.kill(pid, signal.SIGINT)
             except OSError:
@@ -362,7 +372,8 @@ class StreamReaderThread(object):
         self._stream = stream
 
     def run(self):
-        self._thread = threading.Thread(target=self._enqueue_output, args=(self._stream,))
+        self._thread = threading.Thread(target=self._enqueue_output,
+                                        args=(self._stream,))
         self._thread.daemon = True
         self._thread.start()
 
@@ -393,10 +404,10 @@ class RideListenerServer(SocketServer.TCPServer):
 
 class RideListenerHandler(SocketServer.StreamRequestHandler):
     def handle(self):
-        unpickler = pickle.Unpickler(self.request.makefile('r'))
+        decoder = TestRunnerAgent.StreamHandler(self.request.makefile('r'))
         while True:
             try:
-                (name, args) = unpickler.load()
+                (name, args) = decoder.load()
                 self.server.callback(name, *args)
             except (EOFError, IOError):
                 # I should log this...

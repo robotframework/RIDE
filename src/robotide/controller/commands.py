@@ -895,7 +895,18 @@ class ChangeCellValue(_StepsChangingCommand):
         self._undo_command = ChangeCellValue(self._row, self._col, step.get_value(self._col))
         step.change(self._col, self._value)
         self._step(context).remove_empty_columns_from_end()
+        assert self._validate_postcondition(context), \
+            'Should have correct value after change'
         return True
+
+    def _validate_postcondition(self, context):
+        value = self._step(context).get_value(self._col).strip()
+        should_be = self._value.strip()
+        if value == should_be:
+            return True
+        return self._col == 0 and \
+               value.replace(' ', '').upper() == ':FOR' and \
+               should_be.replace(' ', '').upper() == ':FOR'
 
     def _get_undo_command(self):
         return self._undo_command
@@ -953,6 +964,7 @@ class InsertCell(_StepsChangingCommand):
 
     def change_steps(self, context):
         self._step(context).shift_right(self._col)
+        assert self._step(context).get_value(self._col) == '', 'Should have an empty value after insert'
         return True
 
     def _get_undo_command(self):
@@ -1017,6 +1029,8 @@ class AddRow(_RowChangingCommand):
     def _change_value(self, context):
         row = self._row if self._row != -1 else len(context.steps)
         context.add_step(row)
+        assert not(any(i for i in self._step(context).as_list() if i)), \
+            'Should have an empty row after add instead %r' % self._step(context).as_list()
 
     def _get_undo_command(self):
         return DeleteRow(self._row)
@@ -1053,8 +1067,10 @@ class MoveRowsUp(_StepsChangingCommand):
     def change_steps(self, context):
         if len(self._rows) == 0 or self._last_row > len(context.steps)-1 or self._first_row == 0:
             return False
+        number_of_steps_before = len(context.steps)
         for row in self._rows:
             context.move_step_up(row)
+        assert len(context.steps) == number_of_steps_before
         return True
 
     @property
@@ -1080,8 +1096,10 @@ class MoveRowsDown(_StepsChangingCommand):
     def change_steps(self, context):
         if len(self._rows) == 0 or self._last_row >= len(context.steps)-1:
             return False
+        number_of_steps_before = len(context.steps)
         for row in reversed(self._rows):
             context.move_step_down(row)
+        assert len(context.steps) == number_of_steps_before
         return True
 
     @property

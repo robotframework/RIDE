@@ -358,7 +358,8 @@ class StepController(_BaseController):
         return cells and cells[0].replace(' ', '').upper() == ':FOR'
 
     def _is_intended_step(self, cells):
-        return cells and not cells[0].strip() and any(c.strip() for c in cells)
+        return cells and not cells[0].strip() and \
+               any(c.strip() for c in cells) and self._index() > 0
 
     def _recreate_as_partial_for_loop(self, cells, comment):
         index = self._index()
@@ -404,19 +405,20 @@ class ForLoopStepController(StepController):
         return self._step.vars
 
     def move_up(self):
-        index = self._index()
-        previous_step = self.parent.step(index-1)
+        previous_step = self.parent.step(self._index()-1)
         if isinstance(previous_step, ForLoopStepController):
-            self._swap_forloop_headers(index, previous_step)
+            self._swap_forloop_headers(previous_step)
         else:
             self.get_raw_steps().insert(0, previous_step._step)
             previous_step.remove()
 
-    def _swap_forloop_headers(self, index, previous_step):
+    def _swap_forloop_headers(self, previous_step):
         previous_step._step.steps = self._step.steps
         self._step.steps = []
         steps = self.parent.get_raw_steps()
-        steps[index - 1:index + 1] = [self._step, previous_step._step]
+        i = steps.index(self._step)
+        steps[i - 1] = self._step
+        steps[i] = previous_step._step
         self.parent.set_raw_steps(steps)
 
     def move_down(self):

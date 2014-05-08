@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 import os
-from robotide.controller.commands import AddTestCaseFile, AddTestCase, AddKeyword, AddVariable, ChangeCellValue, AddRow, DeleteRow, InsertCell, DeleteCell, MoveRowsUp, MoveRowsDown, ExtractKeyword, RenameKeywordOccurrences, RenameTest, Undo, Redo, SaveFile, NullObserver, MoveUp, MoveDown, AddLibrary, AddResource, DeleteItem
+from robotide.controller.commands import AddTestCaseFile, AddTestCase, AddKeyword, AddVariable, ChangeCellValue, AddRow, DeleteRow, InsertCell, DeleteCell, MoveRowsUp, MoveRowsDown, ExtractKeyword, RenameKeywordOccurrences, RenameTest, Undo, Redo, SaveFile, NullObserver, MoveUp, MoveDown, AddLibrary, AddResource, DeleteItem, InsertArea
 from robotide.namespace import Namespace
 from robotide.controller.chiefcontroller import ChiefController
 from robotide.preferences import RideSettings
@@ -133,8 +133,13 @@ class RIDE(object):
         pass
 
     def write_cell_data(self):
-        prefix = self._random.choice(['# something', 'foobar', ': FOR', '${var}', 'No Operation', '\\'])
-        self._macro_execute(ChangeCellValue(self._rand_row(), self._rand_col(), prefix + str(self._rand())))
+        value = self._random.choice(['# something', 'foobar', ': FOR', '${var}', 'No Operation', '\\',
+                                      'zoo%d' % self._rand(), '${%d}' % self._rand()])
+        self._macro_execute(ChangeCellValue(self._rand_row(), self._rand_col(), value))
+
+    def write_for_loop(self):
+        self._macro_execute(InsertArea((self._rand_row(), 0),
+                            [[':FOR', '${i}', 'IN', '1', '2', 'foo'], ['', 'No Operation']]))
 
     def _macro_execute(self, command):
         macro = self._random.choice([c for c in [self._test, self._keyword] if c])
@@ -223,5 +228,7 @@ class RIDE(object):
         macro = self._random.choice([c for c in [self._test, self._keyword] if c])
         row = self._rand_row()
         col = self._rand_col()
+        if self._skip:
+            return
         print '%s.get_cell_info(%s, %s)' % (self._name(macro), row, col)
         macro.get_cell_info(row, col)

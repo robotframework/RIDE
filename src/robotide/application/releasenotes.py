@@ -86,7 +86,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 1.2.1</h2>
+<h2>Release notes for 1.2.3</h2>
 <table border="1">
 <tr>
 <td><p><b>ID</b></p></td>
@@ -95,29 +95,23 @@ RELEASE_NOTES = """
 <td><p><b>Summary</b></p></td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1285">Issue 1285</a></td>
-<td>Defect</td>
-<td>High</td>
-<td>Edit directory init file in Text Edit can not be applied</td>
-</tr>
-<tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1281">Issue 1281</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1290">Issue 1290</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td> unable to import String library 2.8.1 to RIDE </td>
+<td>RIDE runs not selected (with checkboxes) tests</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1283">Issue 1283</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1306">Issue 1306</a></td>
 <td>Defect</td>
 <td>Medium</td>
-<td>In foder tree, Ride does not open a fodler when it is double clicked</td>
+<td>[RIDE 1.2.2 running on Python 2.7.5.] - Unable to insert cell in RIDE, if the TC contains FOR loop.</td>
 </tr>
 <tr>
-<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1284">Issue 1284</a></td>
+<td><a href="http://code.google.com/p/robotframework-ride/issues/detail?id=1307">Issue 1307</a></td>
 <td>Enhancement</td>
 <td>Medium</td>
-<td>ride1.2 not work well with robot 2.8.1 when search keywords for new added keywords in BuiltIn</td>
+<td>Possibility to create new folder with right click</td>
 </tr>
 </table>
-<p>Altogether 4 issues.</p>
+<p>Altogether 3 issues.</p>
 """

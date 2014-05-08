@@ -94,6 +94,9 @@ class Namespace(object):
         sugs.update(self._get_suggestions_from_hooks(datafile, start))
         if self._blank(start) or self._looks_like_variable(start):
             sugs.update(self._variable_suggestions(controller, start, ctx))
+        else:
+            sugs.update(self._variable_suggestions(controller, '${'+start, ctx))
+            sugs.update(self._variable_suggestions(controller, '@{'+start, ctx))
         if self._blank(start) or not self._looks_like_variable(start):
             sugs.update(self._keyword_suggestions(datafile, start, ctx))
         sugs_list = list(sugs)
