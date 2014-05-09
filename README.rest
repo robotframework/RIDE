@@ -11,6 +11,16 @@ tracker`_. `Downloads`_ are in the Python Package Index.
   * Any questions? Do not hesitate to use the `mailing list`_.
   * Development information is in `BUILD`_ file.
 
+Installation
+============
+
+.. youtube:: zpenQJcrBNg
+
+A very simple demo
+==================
+
+.. youtube:: 6F_xGKdoN1E
+
 .. _Downloads: https://pypi.python.org/pypi/robotframework-ride
 .. _issue tracker: http://code.google.com/p/robotframework-ride/issues/list
 .. _Wiki: https://github.com/robotframework/RIDE/wiki
