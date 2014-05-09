@@ -15,7 +15,7 @@ Installation
 ============
 
 .. image:: http://img.youtube.com/vi/zpenQJcrBNg/sddefault.jpg 
-.. youtube:: zpenQJcrBNg
+   target : https://www.youtube.com/watch?feature=player_embedded&v=zpenQJcrBNg
 
 A very simple demo
 ==================
