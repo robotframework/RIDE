@@ -3,7 +3,7 @@ RIDE
 
 RIDE is a light-weight and intuitive editor for Robot Framework test case
 files. This project is partially hosted at Google Code, the `issue
-tracker`_ and Downloads_ are there.
+tracker`_.Downloads_ are in the Python Package Index.
 
   * Downloads_
   * Usage instructions and some tips and tricks can be found from the Wiki_
