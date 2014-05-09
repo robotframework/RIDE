@@ -20,7 +20,8 @@ Installation
 A very simple demo
 ==================
 
-.. youtube:: 6F_xGKdoN1E
+.. image:: http://img.youtube.com/vi/6F_xGKdoN1E/sddefault.jpg 
+   :target: https://www.youtube.com/watch?feature=player_embedded&v=6F_xGKdoN1E
 
 .. _Downloads: https://pypi.python.org/pypi/robotframework-ride
 .. _issue tracker: http://code.google.com/p/robotframework-ride/issues/list
