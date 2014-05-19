@@ -130,6 +130,10 @@ class RideFrame(wx.Frame, RideEventHandler):
         return self.tree.get_selected_datafile_controller()
 
     def OnClose(self, event):
+        # Restore window if it is currently iconized as otherwise you end up with an incorrect size and position in the
+        # settings file
+        if self.IsIconized():
+            self.Iconize(False)
         self._application.settings['mainframe size'] = self.GetSizeTuple()
         self._application.settings['mainframe position'] = self.GetPositionTuple()
         if self._allowed_to_exit():
