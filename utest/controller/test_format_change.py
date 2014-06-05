@@ -19,12 +19,18 @@ class TestFormatChange(unittest.TestCase):
         ns = Namespace(FakeSettings())
         self.chief = ChiefControllerChecker(ns, settings=ns._settings)
 
-    def test_format_change(self):
+    def test_format_change_to_tsv(self):
+        self._test_format_change('tsv')
+
+    def test_format_change_to_robot(self):
+        self._test_format_change('robot')
+
+    def _test_format_change(self, to_format):
         controller = self._get_file_controller(MINIMAL_SUITE_PATH)
         assert_not_none(controller)
-        controller.save_with_new_format('tsv')
+        controller.save_with_new_format(to_format)
         self._assert_removed(MINIMAL_SUITE_PATH)
-        path_with_tsv = os.path.splitext(MINIMAL_SUITE_PATH)[0] + '.tsv'
+        path_with_tsv = os.path.splitext(MINIMAL_SUITE_PATH)[0] + '.'+to_format
         self._assert_serialized(path_with_tsv)
 
     def test_recursive_format_change(self):

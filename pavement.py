@@ -1,3 +1,4 @@
+import sys
 import os
 from os.path import join, isdir, isfile
 import csv
@@ -170,7 +171,7 @@ def install():
         print "No wxPython installation detected!"
         print ""
         print "Please ensure that you have wxPython installed before running RIDE."
-        print "You can obtain wxPython from http://wxpython.org/"
+        print "You can obtain wxPython 2.8.12.1 from http://sourceforge.net/projects/wxpython/files/wxPython/2.8.12.1/"
 
 @task
 @needs('_prepare_build', 'setuptools.command.register')

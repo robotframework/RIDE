@@ -44,6 +44,9 @@ class LocalRowNamespace(LocalMacroNamespace):
         suggestions = LocalMacroNamespace.get_suggestions(self, start)
         if self._could_be_variable(start):
             suggestions = self._harvest_local_variables(start, suggestions)
+        else:
+            suggestions = self._harvest_local_variables('${'+start, suggestions)
+            suggestions = self._harvest_local_variables('@{'+start, suggestions)
         return suggestions
 
     def _harvest_local_variables(self, start, suggestions):
