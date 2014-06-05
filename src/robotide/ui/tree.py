@@ -15,6 +15,10 @@
 import wx
 from wx.lib.agw import customtreectrl
 from wx.lib.mixins import treemixin
+try:
+    from wx import ColorRGB as Colour
+except ImportError:
+    from wx import Colour
 
 from robotide.controller.ui.treecontroller import TreeController, \
     TestSelectionController
