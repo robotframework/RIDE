@@ -39,8 +39,8 @@ supported_versions = ["2.8"]
 try:
     import wxversion
     from wxversion import VersionError
-    if sys.platform == 'darwin':
-        supported_versions.append("2.9")
+    if sys.platform == 'darwin': # CAN NOT IMPORT IS_MAC AS THERE IS A wx IMPORT
+        supported_versions.append("3.0")
     wxversion.select(supported_versions)
     import wx
 except ImportError as e:
