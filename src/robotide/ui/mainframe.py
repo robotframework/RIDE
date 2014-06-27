@@ -146,19 +146,16 @@ class RideFrame(wx.Frame, RideEventHandler):
         if not self.IsMaximized():
             self._application.settings['mainframe maximized'] = False
             self._application.settings['mainframe size'] = self.GetSizeTuple()
-        # Make sure that the rest of the event processing also takes places
         event.Skip()
 
     def OnMove(self, event):
         # When the window is Iconized, a move event is also raised, but we don't want to update the position in the settings file
         if not self.IsIconized() and not self.IsMaximized():
             self._application.settings['mainframe position'] = self.GetPositionTuple()
-        # Make sure that the rest of the event processing also takes places
         event.Skip()
 
     def OnMaximize(self, event):
         self._application.settings['mainframe maximized'] = True
-        # Make sure that the rest of the event processing also takes places
         event.Skip()
 
     def OnReleasenotes(self, event):
