@@ -12,14 +12,21 @@ This document describes the technical details of the RIDE project:
 Developing
 ==========
 
+It is recommended to use Virtualenv__ as a development Python environment.
+
+Necessary development dependencies can be installed with::
+
+    pip install -r requirements.txt
+
 RIDE uses Paver__ as it's build tool. Packaging, testing, and running a
-development version without installation can all be done using Paver. Install
-Paver and run::
+development version without installation can all be done using Paver.
+Run::
 
     paver help
 
 for more information.
 
+__ https://pypi.python.org/pypi/virtualenv
 __ http://paver.github.com/paver
 
 
@@ -102,14 +109,14 @@ Releasing
 * Every day you keep postponing release will remove some value you could have added by releasing today (fixed bugs are still in production and new features are still not there).
 * Release early and often!
 
-Currently (10.8.2012) RIDE is used in many differing environments by a rather large userbase (reported bugs per feature is 1.56 - compared to RF:s 0.75). 
-Thus simulating (testing) all the possible use cases is more or less impossible (NOTE: You should still try to test all the relevant cases). 
+Currently (10.8.2012) RIDE is used in many differing environments by a rather large userbase (reported bugs per feature is 1.56 - compared to RF:s 0.75).
+Thus simulating (testing) all the possible use cases is more or less impossible (NOTE: You should still try to test all the relevant cases).
 We can still keep the user observed quality good by doing small changes at a time and reacting fast to any observed regressions.
 This should efficiently limit the number of users that encounter a specific defect.
 
-* **Consider making a preview release** - this will give you possibility to test the new release with friendly real users 
+* **Consider making a preview release** - this will give you possibility to test the new release with friendly real users
 
-Remember the "good old" times - these are not the only ones: 
+Remember the "good old" times - these are not the only ones:
 
   * https://groups.google.com/d/topic/robotframework-users/C4SdqaqLFcw/discussion
   * https://groups.google.com/d/topic/robotframework-users/_7D3MR9fMQw/discussion
@@ -147,7 +154,7 @@ And then positive examples from previews:
   > cd ..
 
 * Upload new packages to github
-* Register new packages to PyPI - the Python Package Index. 
+* Register new packages to PyPI - the Python Package Index.
   NOTE! RIDE automatic update notifier checks updates from PyPI - so no update notifications without this step.
 
 ::
@@ -160,9 +167,9 @@ Minor releases
 ==============
 
 If there for some reason is a critical problem with a new release, it is important to get that fixed quickly.
-The user observed quality is somewhat based on time. Less time that a critical problem exists implies 
-less users affected by the critical problem. Also the users that have been affected by the problem will 
-see quick resolution as a quality attribute - we are listening to them and doing things to help them versus 
+The user observed quality is somewhat based on time. Less time that a critical problem exists implies
+less users affected by the critical problem. Also the users that have been affected by the problem will
+see quick resolution as a quality attribute - we are listening to them and doing things to help them versus
 we are ignoring there problems.
 
 * First things first: Fix the problem and commit
@@ -207,7 +214,7 @@ The migrator is currenlty (10.8.2012) located at preferences/settings.py/Setting
 The mechanism works in the following way:
  * Settings have a settings_version attribute that should be updated when a new migration is needed
  * the SettingsMigrator.migrate method should be updated so that it will also do the new migration
- * You only need to add a migration from the previous version to current (the migrate method will handle all the older versions - 
+ * You only need to add a migration from the previous version to current (the migrate method will handle all the older versions -
 so only the last configuration delta is needed)
 
 Hope this helps when persistent things change a lot.

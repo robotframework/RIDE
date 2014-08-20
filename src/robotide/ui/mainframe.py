@@ -68,6 +68,9 @@ class RideFrame(wx.Frame, RideEventHandler):
         wx.Frame.__init__(self, parent=None, title='RIDE',
                           pos=application.settings['mainframe position'],
                           size=application.settings['mainframe size'])
+        self.ensure_on_screen()
+        if application.settings['mainframe maximized']:
+            self.Maximize()
         self._application = application
         self._controller = controller
         self._init_ui()
@@ -75,8 +78,10 @@ class RideFrame(wx.Frame, RideEventHandler):
         self._review_dialog = None
         self._view_all_tags_dialog = None
         self.Bind(wx.EVT_CLOSE, self.OnClose)
+        self.Bind(wx.EVT_SIZE, self.OnSize)
+        self.Bind(wx.EVT_MOVE, self.OnMove)
+        self.Bind(wx.EVT_MAXIMIZE, self.OnMaximize)
         self._subscribe_messages()
-        self.ensure_on_screen()
         self.Show()
         wx.CallLater(100, self.actions.register_tools)
 
@@ -130,14 +135,28 @@ class RideFrame(wx.Frame, RideEventHandler):
         return self.tree.get_selected_datafile_controller()
 
     def OnClose(self, event):
-        self._application.settings['mainframe size'] = self.GetSizeTuple()
-        self._application.settings['mainframe position'] = self.GetPositionTuple()
         if self._allowed_to_exit():
             PUBLISHER.unsubscribe(self._set_label, RideTreeSelection)
             RideClosing().publish()
             self.Destroy()
         else:
             wx.CloseEvent.Veto(event)
+
+    def OnSize(self, event):
+        if not self.IsMaximized():
+            self._application.settings['mainframe maximized'] = False
+            self._application.settings['mainframe size'] = self.GetSizeTuple()
+        event.Skip()
+
+    def OnMove(self, event):
+        # When the window is Iconized, a move event is also raised, but we don't want to update the position in the settings file
+        if not self.IsIconized() and not self.IsMaximized():
+            self._application.settings['mainframe position'] = self.GetPositionTuple()
+        event.Skip()
+
+    def OnMaximize(self, event):
+        self._application.settings['mainframe maximized'] = True
+        event.Skip()
 
     def OnReleasenotes(self, event):
         pass
