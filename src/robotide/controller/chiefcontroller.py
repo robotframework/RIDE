@@ -164,7 +164,7 @@ class ChiefController(_BaseController, WithNamespace):
         self.clear_namespace_update_listeners()
         self._controller = DataController(datafile, self)
         new_resource_controllers = []
-        if resources:
+        if resources: # may be None in Robot 2.8+
             for r in resources:
                 self._create_resource_controller(r, resource_created_callback=lambda controller: new_resource_controllers.append(controller))
         for controller in new_resource_controllers:

@@ -42,9 +42,6 @@ def _parse_args(handler_args):
             args[index] = args[index] + '=' + unicode(value)
     if handler_args.varargs:
         args.append('*%s' % handler_args.varargs)
-    try: # Robot 2.8+
-        if handler_args.kwargs:
-            args.append('**%s' % handler_args.kwargs)
-    except AttributeError:
-        pass
+    if getattr(handler_args, 'kwargs', None): # Robot 2.8+
+        args.append('**%s' % handler_args.kwargs)
     return args
