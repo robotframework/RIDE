@@ -41,7 +41,7 @@ class Colorizer(object):
     def _coloring_task(self, task_index, selection_content, row=0, col=0):
         if task_index != self._current_task_id or self._grid is None:
             return
-        if row >= self._grid.NumberRows:
+        if self._grid and row >= self._grid.NumberRows:
             self._grid.ForceRefresh()
             self._grid.AutoSizeRows()
         elif col < self._grid.NumberCols:
