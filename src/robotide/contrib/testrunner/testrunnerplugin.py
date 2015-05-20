@@ -416,7 +416,7 @@ class TestRunnerPlugin(Plugin):
         '''
         result = []
         for arg in argv:
-            if "'" in arg or " " in arg:
+            if "'" in arg or " " in arg or "&" in arg:
                 # for windows, if there are spaces we need to use
                 # double quotes. Single quotes cause problems
                 result.append('"%s"' % arg)
