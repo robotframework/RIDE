@@ -17,6 +17,7 @@ import re
 import operator
 import tempfile
 from itertools import chain
+from inspect import getargspec
 
 from robot.errors import DataError
 from robot.parsing.model import ResourceFile
@@ -225,6 +226,14 @@ class RetrieverContext(object):
 
 
 class _VariableStash(object):
+
+    # Since Robot 2.8 some robot.variables classes and methods
+    # expect an error_reporter argument.
+    # The following attribute can be used to determine how they must be called:
+    _error_reporting = 'error_reporter' in getargspec(
+        RobotVariables._get_var_table_name_and_value
+        ).args
+
     # Global variables copied from robot.variables.__init__.py
     global_variables =  {'${TEMPDIR}': os.path.normpath(tempfile.gettempdir()),
                          '${EXECDIR}': os.path.abspath('.'),
@@ -280,9 +289,15 @@ class _VariableStash(object):
         for variable in variable_table:
             try:
                 if not self._vars.has_key(variable.name):
-                    _, value = self._vars._get_var_table_name_and_value(
-                        variable.name,
-                        variable.value)
+                    if self._error_reporting: # Robot 2.8+
+                        _, value = self._vars._get_var_table_name_and_value(
+                            variable.name,
+                            variable.value,
+                            variable.report_invalid_syntax)
+                    else:
+                        _, value = self._vars._get_var_table_name_and_value(
+                            variable.name,
+                            variable.value)
                     self.set(variable.name, value, variable_table.source)
             except DataError:
                 if is_var(variable.name):
