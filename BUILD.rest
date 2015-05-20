@@ -30,13 +30,19 @@ __ https://pypi.python.org/pypi/virtualenv
 __ http://paver.github.com/paver
 
 
-MacOS 10.7+
------------
+MacOS 10.7 - 10.8
+-----------------
 wxPython is limited to running in 32-bit mode.
 Python itself should thus be executed in 32-bit mode. This can be done by setting:
 
   export VERSIONER_PYTHON_PREFER_32_BIT=yes
 
+MacOS 10.9+
+-----------
+
+wxPython 2.8 is still limited to run in 32-bit mode. It must be launched with the command
+
+  arch -i386 /usr/bin/python /usr/local/bin/ride.py
 
 Repository contents
 ===================
@@ -218,4 +224,3 @@ The mechanism works in the following way:
 so only the last configuration delta is needed)
 
 Hope this helps when persistent things change a lot.
-
