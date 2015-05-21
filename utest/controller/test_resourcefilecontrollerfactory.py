@@ -6,8 +6,8 @@ class ResourceFileControllerFactoryTestCase(unittest.TestCase):
 
     def setUp(self):
         namespace = lambda:0
-        chef = lambda:0
-        self._resource_file_controller_factory = ResourceFileControllerFactory(namespace, chef)
+        project = lambda:0
+        self._resource_file_controller_factory = ResourceFileControllerFactory(namespace, project)
 
     def test_is_all_resource_imports_resolved(self):
         self.assertFalse(self._resource_file_controller_factory.is_all_resource_file_imports_resolved())

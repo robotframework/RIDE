@@ -14,7 +14,7 @@
 import os
 from robotide.controller.commands import AddTestCaseFile, AddTestCase, AddKeyword, AddVariable, ChangeCellValue, AddRow, DeleteRow, InsertCell, DeleteCell, MoveRowsUp, MoveRowsDown, ExtractKeyword, RenameKeywordOccurrences, RenameTest, Undo, Redo, SaveFile, NullObserver, MoveUp, MoveDown, AddLibrary, AddResource, DeleteItem, InsertArea
 from robotide.namespace import Namespace
-from robotide.controller.chiefcontroller import ChiefController
+from robotide.project import Project
 from robotide.preferences import RideSettings
 from robotide.spec import librarydatabase
 
@@ -25,9 +25,9 @@ class RIDE(object):
         print 'librarydatabase.initialize_database()'
         print librarydatabase.initialize_database()
         print 'settings = RideSettings()'
-        print 'chief = ChiefController(Namespace(settings=settings), settings=settings)'
+        print 'project = Project(Namespace(settings=settings), settings=settings)'
         settings = RideSettings()
-        self._chief = ChiefController(Namespace(settings=settings), settings=settings)
+        self._project = Project(Namespace(settings=settings), settings=settings)
         self._path = path
         self._suite = None
         self._test = None
@@ -45,8 +45,8 @@ class RIDE(object):
         if self._skip:
             return
         self._open(os.path.join(self._path, 'testdir'))
-        print 'suite = chief.data.children[0]'
-        self._suite = self._chief.data.children[0]
+        print 'suite = project.data.children[0]'
+        self._suite = self._project.data.children[0]
         print 'test = list(t for t in suite.tests)[0]'
         self._test = list(t for t in self._suite.tests)[0]
         print 'keyword = list(k for k in suite.keywords)[0]'
@@ -56,8 +56,8 @@ class RIDE(object):
         if self._skip:
             return
         self._open(os.path.join(self._path, 'testdir', 'Suite.txt'))
-        print 'suite = chief.data'
-        self._suite = self._chief.data
+        print 'suite = project.data'
+        self._suite = self._project.data
         print 'test = list(t for t in suite.tests)[0]'
         self._test = list(t for t in self._suite.tests)[0]
         print 'keyword = list(k for k in suite.keywords)[0]'
@@ -70,13 +70,13 @@ class RIDE(object):
         self._keyword = None
 
     def _open(self, path):
-        print 'chief.load_data("%s", NullObserver())' % path
-        self._chief.load_data(path, NullObserver())
+        print 'project.load_data("%s", NullObserver())' % path
+        self._project.load_data(path, NullObserver())
 
     def _create_suite(self):
         filename = os.path.join(self._path,'path_to_foo%s.txt' % str(self._rand()))
-        print 'suite = chief.data.execute(AddSuite(NewDatafile("%s")))' % filename
-        self._suite = self._chief.data.execute(AddTestCaseFile(filename))
+        print 'suite = project.data.execute(AddSuite(NewDatafile("%s")))' % filename
+        self._suite = self._project.data.execute(AddTestCaseFile(filename))
 
     def create_test(self):
         if self._skip:

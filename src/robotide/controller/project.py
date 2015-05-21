@@ -31,7 +31,7 @@ from robotide.spec.xmlreaders import SpecInitializer
 from robotide.utils import overrides
 
 
-class ChiefController(_BaseController, WithNamespace):
+class Project(_BaseController, WithNamespace):
 
     def __init__(self, namespace=None, settings=None, library_manager=None):
         self._library_manager = self._construct_library_manager(library_manager, settings)
@@ -65,7 +65,7 @@ class ChiefController(_BaseController, WithNamespace):
 
     @property
     def display_name(self):
-        return 'Chief'
+        return 'Project'
 
     @property
     def default_dir(self):

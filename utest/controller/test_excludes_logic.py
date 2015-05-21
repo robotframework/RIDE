@@ -9,15 +9,15 @@ from robotide.controller.filecontrollers import TestDataDirectoryController, Exc
 class TestExcludesLogic(unittest.TestCase):
 
     def setUp(self):
-        self.chief = datafilereader.construct_chief_controller(datafilereader.SIMPLE_TEST_SUITE_PATH, tempfile.gettempdir())
+        self.project = datafilereader.construct_project(datafilereader.SIMPLE_TEST_SUITE_PATH, tempfile.gettempdir())
 
     def tearDown(self):
-        p = self.chief._settings.excludes._exclude_file_path
+        p = self.project._settings.excludes._exclude_file_path
         if os.path.exists(p):
             os.remove(p)
 
     def _get_resource_dir(self):
-        return datafilereader.get_ctrl_by_name(datafilereader.SIMPLE_TEST_SUITE_INNER_RESOURCE_DIR, self.chief.datafiles)
+        return datafilereader.get_ctrl_by_name(datafilereader.SIMPLE_TEST_SUITE_INNER_RESOURCE_DIR, self.project.datafiles)
 
     def test_excluding_and_including(self):
         resource_dir = self._get_resource_dir()

@@ -15,7 +15,7 @@ class TestResourceImport(unittest.TestCase):
         self.res_name = 'new_resource_for_test_creating_and_importing_resource.txt'
         self.res_full_name = os.path.join(self.res_path, self.res_name)
         self.new_keyword_name = 'My Keywordian'
-        self.ctrl = datafilereader.construct_chief_controller(datafilereader.SIMPLE_TEST_SUITE_PATH)
+        self.ctrl = datafilereader.construct_project(datafilereader.SIMPLE_TEST_SUITE_PATH)
         self.suite = datafilereader.get_ctrl_by_name('TestSuite1', self.ctrl.datafiles)
         self.test = self.suite.tests[0]
         self.test.execute(ChangeCellValue(0,0,self.new_keyword_name))

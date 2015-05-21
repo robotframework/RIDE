@@ -3,7 +3,7 @@ import unittest
 
 from robot.utils.asserts import assert_true
 from robotide.namespace import Namespace
-from robotide.controller.chiefcontroller import ChiefController
+from robotide.controller import Project
 
 from resources import MessageRecordingLoadObserver, FakeSettings
 from datafilereader import TESTCASEFILE_WITH_EVERYTHING, KW1000_TESTCASEFILE,\
@@ -74,10 +74,10 @@ class TestNamespacePerformance(unittest.TestCase):
         ns = Namespace(FakeSettings())
         library_manager = LibraryManager(':memory:')
         library_manager.create_database()
-        chief = ChiefController(ns, settings=ns._settings, library_manager=library_manager)
-        chief.load_datafile(testcasefile,
+        project = Project(ns, settings=ns._settings, library_manager=library_manager)
+        project.load_datafile(testcasefile,
                             MessageRecordingLoadObserver())
-        return ns, chief._controller.data, library_manager
+        return ns, project._controller.data, library_manager
 
     def _execute_keyword_find_function_n_times(self, function, n, filename=TESTCASEFILE_WITH_EVERYTHING):
         ns, testcasefile, library_manager = self._load(filename)

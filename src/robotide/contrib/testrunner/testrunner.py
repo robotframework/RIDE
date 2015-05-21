@@ -49,7 +49,7 @@ ATEXIT_LOCK = threading.RLock()
 
 class TestRunner(object):
 
-    def __init__(self, chief):
+    def __init__(self, project):
         self._output_dir = None
         self._process = None
         self._server = None
@@ -58,7 +58,7 @@ class TestRunner(object):
         self._pid_to_kill = None
         self._results = TestExecutionResults()
         self.port = None
-        self._chief = chief
+        self._project = project
         self.profiles = {}
 
     def enable(self, result_handler):
@@ -121,7 +121,7 @@ class TestRunner(object):
                                                                    testname))
 
     def _get_test_controller(self, longname, testname = None):
-        ret = self._chief.find_controller_by_longname(longname, testname)
+        ret = self._project.find_controller_by_longname(longname, testname)
         return ret
 
     def clear_server(self):
@@ -204,10 +204,10 @@ class TestRunner(object):
 
     def _get_suite_source_for_command(self):
         cur = os.path.abspath(os.path.curdir)
-        source = os.path.abspath(self._chief.suite.source)
+        source = os.path.abspath(self._project.suite.source)
         if not utils.is_same_drive(cur, source):
             return source
-        return os.path.abspath(self._chief.suite.source)
+        return os.path.abspath(self._project.suite.source)
 
     def _create_standard_args(self, command, profile, pythonpath, monitor_width, names_to_run):
         standard_args = []

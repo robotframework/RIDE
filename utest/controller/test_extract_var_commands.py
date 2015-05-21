@@ -7,12 +7,12 @@ from robot.utils.asserts import assert_equals
 class TestExtractVariableCommands(unittest.TestCase):
 
     def setUp(self):
-        self.chief_ctrl = datafilereader.construct_chief_controller(datafilereader.LOG_MANY_SUITE)
-        self.datafile = datafilereader.get_ctrl_by_name('Log Many', self.chief_ctrl.datafiles)
+        self.project_ctrl = datafilereader.construct_project(datafilereader.LOG_MANY_SUITE)
+        self.datafile = datafilereader.get_ctrl_by_name('Log Many', self.project_ctrl.datafiles)
         self.testcase = self.datafile.tests[0]
 
     def tearDown(self):
-        self.chief_ctrl.close()
+        self.project_ctrl.close()
 
     def test_scalar_extract(self):
         row, col = 0, 1

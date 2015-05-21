@@ -147,9 +147,9 @@ class _WithImmutableParent(object):
 
 class NewProjectDialog(_CreationDialog):
 
-    def __init__(self, chief_controller):
-        self._controller = chief_controller
-        _CreationDialog.__init__(self, chief_controller.default_dir, 'New Project')
+    def __init__(self, project):
+        self._controller = project
+        _CreationDialog.__init__(self, project.default_dir, 'New Project')
 
     def _execute(self):
         cmd = CreateNewDirectoryProject if self._is_dir_type() else CreateNewFileProject

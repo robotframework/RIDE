@@ -37,16 +37,16 @@ from .tablecontrollers import (VariableTableController, TestCaseTableController,
         MetadataListController, TestCaseController)
 
 
-def _get_controller(chief, data, parent):
+def _get_controller(project, data, parent):
     if isinstance(data, TestCaseFile):
-        return TestCaseFileController(data, chief, parent)
+        return TestCaseFileController(data, project, parent)
     if isinstance(data, ExcludedDirectory):
-        return ExcludedDirectoryController(data, chief, parent)
-    return TestDataDirectoryController(data, chief, parent)
+        return ExcludedDirectoryController(data, project, parent)
+    return TestDataDirectoryController(data, project, parent)
 
 
-def DataController(data, chief, parent=None):
-    return _get_controller(chief, data, parent)
+def DataController(data, project, parent=None):
+    return _get_controller(project, data, parent)
 
 
 class _FileSystemElement(object):
@@ -94,12 +94,12 @@ class _FileSystemElement(object):
 
 class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
 
-    def __init__(self, data, chief_controller=None, parent=None):
-        self._chief_controller = chief_controller
-        if chief_controller:
-            self._set_namespace_from(chief_controller)
+    def __init__(self, data, project=None, parent=None):
+        self._project = project
+        if project:
+            self._set_namespace_from(project)
             self._resource_file_controller_factory =\
-                chief_controller.resource_file_controller_factory
+                project.resource_file_controller_factory
         else:
             self._resource_file_controller_factory = None
         self.parent = parent
@@ -163,7 +163,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
 
     @property
     def datafiles(self):
-        return chain([self], (df for df in self._chief_controller.datafiles
+        return chain([self], (df for df in self._project.datafiles
                               if df != self))
 
     @property
@@ -274,10 +274,10 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         shutil.rmtree(path or self.data.directory)
 
     def save_with_new_format(self, format):
-        self._chief_controller.change_format(self, format)
+        self._project.change_format(self, format)
 
     def save_with_new_format_recursive(self, format):
-        self._chief_controller.change_format_recursive(self, format)
+        self._project.change_format_recursive(self, format)
 
     def validate_keyword_name(self, name):
         return self.keywords.validate_name(name)
@@ -286,7 +286,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         return False
 
     def resource_import_modified(self, path):
-        return self._chief_controller.resource_import_modified(path, self.directory)
+        return self._project.resource_import_modified(path, self.directory)
 
     def notify_settings_changed(self):
         RideItemSettingsChanged(item=self).publish()
@@ -302,7 +302,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
                 yield datafile
 
     def save(self):
-        self._chief_controller.save(self)
+        self._project.save(self)
 
     def get_local_variables(self):
         return {}
@@ -313,11 +313,11 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
 
 class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseController):
 
-    def __init__(self, data, chief_controller=None, parent=None):
+    def __init__(self, data, project=None, parent=None):
         dir_ = data.directory
         dir_ = os.path.abspath(dir_) if isinstance(dir_, basestring) else dir_
         _FileSystemElement.__init__(self, self._filename(data), dir_)
-        _DataController.__init__(self, data, chief_controller, parent)
+        _DataController.__init__(self, data, project, parent)
         self._dir_controllers = {}
 
     def _filename(self, data):
@@ -367,10 +367,10 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
                 return res
 
     def is_excluded(self):
-        return self._chief_controller.is_excluded(self.source) if self._chief_controller else False
+        return self._project.is_excluded(self.source) if self._project else False
 
     def _children(self, data):
-        children = [DataController(child, self._chief_controller, self) for child in data.children]
+        children = [DataController(child, self._project, self) for child in data.children]
         if self._can_add_directory_children(data):
             self._add_directory_children(children, data.source, data.initfile)
         return children
@@ -397,7 +397,7 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
 
     def _directory_controller(self, path):
         dc = TestDataDirectoryController(TestDataDirectory(source=path),
-                                         chief_controller=self._chief_controller,
+                                         project=self._project,
                                          parent=self)
         self._add_directory_children(dc.children, dc.source, None)
         return dc
@@ -441,7 +441,7 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
     def _new_data_controller(self, datafile):
         self.data.children.append(datafile)
         datafile.parent = self.data
-        self.children.append(DataController(datafile, self._chief_controller, self))
+        self.children.append(DataController(datafile, self._project, self))
         return self.children[-1]
 
     def notify_suite_added(self, suite):
@@ -452,7 +452,7 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
 
     def reload(self):
         self.__init__(TestDataDirectory(source=self.directory, parent=self.data.parent).populate(),
-                      self._chief_controller, parent=self.parent)
+                      self._project, parent=self.parent)
 
     def remove(self):
         path = self.filename
@@ -463,11 +463,11 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
 
     def _remove_resources(self):
         for resource in self._find_resources_recursively(self):
-            self._chief_controller.remove_resource(resource)
+            self._project.remove_resource(resource)
             RideDataFileRemoved(path=resource.filename, datafile=resource).publish()
 
     def remove_from_model(self):
-        self._chief_controller.remove_datafile(self)
+        self._project.remove_datafile(self)
         self._remove_resources()
         RideDataFileRemoved(path=self.filename, datafile=self).publish()
 
@@ -548,7 +548,7 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
             if not dirname:
                 continue
             target_dir = os.path.join(target.directory, dirname)
-            dir_ctrl = TestDataDirectoryController(TestDataDirectory(source=target_dir), self._chief_controller, self)
+            dir_ctrl = TestDataDirectoryController(TestDataDirectory(source=target_dir), self._project, self)
             target._dir_controllers[target.directory] = dir_ctrl
             target.add_child(dir_ctrl)
             if target_dir == res_dir:
@@ -559,16 +559,16 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
             self.add_child(res)
 
     def new_resource(self, path):
-        ctrl = self._chief_controller.new_resource(path, parent=self)
+        ctrl = self._project.new_resource(path, parent=self)
         ctrl.mark_dirty()
         return ctrl
 
     def exclude(self):
-        if self._chief_controller.is_datafile_dirty(self):
+        if self._project.is_datafile_dirty(self):
             raise DirtyRobotDataException()
-        self._chief_controller._settings.excludes.update_excludes([self.directory])
+        self._project._settings.excludes.update_excludes([self.directory])
         index = self.parent.children.index(self)
-        result = ExcludedDirectoryController(self.data, self._chief_controller, self.parent)
+        result = ExcludedDirectoryController(self.data, self._project, self.parent)
         self.parent.children[index] = result
         return result
 
@@ -582,9 +582,9 @@ class DirtyRobotDataException(Exception):
 
 class TestCaseFileController(_FileSystemElement, _DataController):
 
-    def __init__(self, data, chief_controller=None, parent=None):
+    def __init__(self, data, project=None, parent=None):
         _FileSystemElement.__init__(self, data.source if data else None, data.directory)
-        _DataController.__init__(self, data, chief_controller, parent)
+        _DataController.__init__(self, data, project, parent)
 
     def _settings(self):
         ss = self._setting_table
@@ -641,12 +641,12 @@ class TestCaseFileController(_FileSystemElement, _DataController):
             self.remove()
 
     def remove(self):
-        self._chief_controller.remove_datafile(self)
+        self._project.remove_datafile(self)
         RideDataFileRemoved(path=self.filename, datafile=self).publish()
 
     def reload(self):
         self.__init__(TestCaseFile(parent=self.data.parent, source=self.filename).populate(),
-                      chief_controller=self._chief_controller,
+                      project=self._project,
                       parent=self.parent)
 
     def get_template(self):
@@ -655,10 +655,10 @@ class TestCaseFileController(_FileSystemElement, _DataController):
 
 class ResourceFileControllerFactory(object):
 
-    def __init__(self, namespace, chief_controller):
+    def __init__(self, namespace, project):
         self._resources = []
         self._namespace = namespace
-        self._chief_controller = chief_controller
+        self._project = project
         self._all_resource_imports_resolved = False
 
     @property
@@ -681,12 +681,12 @@ class ResourceFileControllerFactory(object):
         res = self.find(resource_model)
         if not res:
             res = self.create(resource_model)
-            self._chief_controller.insert_into_suite_structure(res)
+            self._project.insert_into_suite_structure(res)
         assert(res is not None)
         return res
 
     def create(self, data, parent=None):
-        rfc = ResourceFileController(data, self._chief_controller, parent, self)
+        rfc = ResourceFileController(data, self._project, parent, self)
         self.resources.append(rfc)
         self.set_all_resource_imports_unresolved()
         return rfc
@@ -707,12 +707,12 @@ class ResourceFileControllerFactory(object):
 
 class ResourceFileController(_FileSystemElement, _DataController):
 
-    def __init__(self, data, chief_controller=None, parent=None, resource_file_controller_factory=None):
+    def __init__(self, data, project=None, parent=None, resource_file_controller_factory=None):
         self._resource_file_controller_factory = resource_file_controller_factory
         self._known_imports = set()
         _FileSystemElement.__init__(self, data.source if data else None, data.directory)
-        _DataController.__init__(self, data, chief_controller,
-                                 parent or self._find_parent_for(chief_controller, data.source))
+        _DataController.__init__(self, data, project,
+                                 parent or self._find_parent_for(project, data.source))
         if self.parent and self not in self.parent.children:
             self.parent.add_child(self)
         self._unresolve_all_if_none_existing()
@@ -721,11 +721,11 @@ class ResourceFileController(_FileSystemElement, _DataController):
         if not self.exists() and self._resource_file_controller_factory:
             self._resource_file_controller_factory.set_all_resource_imports_unresolved() # Some import may have referred to this none existing resource
 
-    def _find_parent_for(self, chief_controller, source):
-        if not chief_controller:
+    def _find_parent_for(self, project, source):
+        if not project:
             return None
         dir = os.path.dirname(source)
-        for ctrl in chief_controller.datafiles:
+        for ctrl in project.datafiles:
             if ctrl.is_directory_suite() and self._to_os_style(ctrl.directory) == dir:
                 return ctrl
         return None
@@ -781,10 +781,10 @@ class ResourceFileController(_FileSystemElement, _DataController):
         return None
 
     def reload(self):
-        self.__init__(ResourceFile(source=self.filename).populate(), self._chief_controller, parent=self.parent)
+        self.__init__(ResourceFile(source=self.filename).populate(), self._project, parent=self.parent)
 
     def remove(self):
-        self._chief_controller.remove_resource(self)
+        self._project.remove_resource(self)
         RideDataFileRemoved(path=self.filename, datafile=self).publish()
 
     def remove_known_import(self, _import):
@@ -831,13 +831,13 @@ class ResourceFileController(_FileSystemElement, _DataController):
 
 class ExcludedDirectoryController(_FileSystemElement, ControllerWithParent, WithNamespace):
 
-    def __init__(self, data, chief, parent):
+    def __init__(self, data, project, parent):
         self.data = data
-        self._chief_controller = chief
-        if self._chief_controller:
-            self._set_namespace_from(self._chief_controller)
+        self._project = project
+        if self._project:
+            self._set_namespace_from(self._project)
             self._resource_file_controller_factory =\
-            self._chief_controller.resource_file_controller_factory
+            self._project.resource_file_controller_factory
         else:
             self._resource_file_controller_factory = None
         self._parent = parent
@@ -881,10 +881,10 @@ class ExcludedDirectoryController(_FileSystemElement, ControllerWithParent, With
         return True
 
     def remove_from_excludes(self):
-        self._chief_controller._settings.excludes.remove_path(self.source)
+        self._project._settings.excludes.remove_path(self.source)
         index = self.parent.children.index(self)
-        td = TestData(self.data.source, self.parent.data, self._chief_controller._settings)
-        result = TestDataDirectoryController(td, self._chief_controller, self.parent)
+        td = TestData(self.data.source, self.parent.data, self._project._settings)
+        result = TestDataDirectoryController(td, self._project, self.parent)
         self.parent.children[index] = result
         return result
 

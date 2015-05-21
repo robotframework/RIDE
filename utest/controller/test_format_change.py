@@ -3,7 +3,7 @@ import unittest
 from mock import Mock
 from robot.parsing.model import TestCaseFile, ResourceFile
 
-from robotide.controller.chiefcontroller import ChiefController
+from robotide.controller import Project
 from robotide.controller.commands import RenameResourceFile
 from robotide.controller.filecontrollers import TestCaseFileController
 from robotide.namespace.namespace import Namespace
@@ -17,7 +17,7 @@ class TestFormatChange(unittest.TestCase):
 
     def setUp(self):
         ns = Namespace(FakeSettings())
-        self.chief = ChiefControllerChecker(ns, settings=ns._settings)
+        self.project = ProjectChecker(ns, settings=ns._settings)
 
     def test_format_change_to_tsv(self):
         self._test_format_change('tsv')
@@ -47,23 +47,23 @@ class TestFormatChange(unittest.TestCase):
         self._assert_not_removed(path_to_txt_file)
 
     def _get_file_controller(self, path):
-        self.chief.load_datafile(path, MessageRecordingLoadObserver())
-        return self.chief._controller
+        self.project.load_datafile(path, MessageRecordingLoadObserver())
+        return self.project._controller
 
     def _assert_serialized(self, path):
-        assert_true(path in self.chief.serialized_files)
+        assert_true(path in self.project.serialized_files)
 
     def _assert_not_serialized(self, path):
-        assert_false(path in self.chief.serialized_files)
+        assert_false(path in self.project.serialized_files)
 
     def _assert_removed(self, path):
-        assert_true(path in self.chief.removed_files)
+        assert_true(path in self.project.removed_files)
 
     def _assert_not_removed(self, path):
-        assert_false(path in self.chief.removed_files)
+        assert_false(path in self.project.removed_files)
 
 
-class ChiefControllerChecker(ChiefController):
+class ProjectChecker(Project):
 
     def __init__(self, namespace, settings=None, library_manager=None):
         self.removed_files = []
@@ -71,7 +71,7 @@ class ChiefControllerChecker(ChiefController):
         library_manager = library_manager or LibraryManager(':memory:')
         if not library_manager:
             library_manager.create_database()
-        ChiefController.__init__(self, namespace, settings, library_manager)
+        Project.__init__(self, namespace, settings, library_manager)
 
     def save(self, controller):
         self.serialized_files.append(controller.source)
@@ -90,16 +90,16 @@ class _UnitTestsWithWorkingResourceImports(unittest.TestCase):
         tcf.variable_table.add('${path}', os.path.abspath(resource_name).replace('\\', '\\\\'))
         library_manager = LibraryManager(':memory:')
         library_manager.create_database()
-        self.chef = ChiefController(Namespace(FakeSettings()), FakeSettings(), library_manager)
-        self.chef._controller = TestCaseFileController(tcf, self.chef)
+        self.project = Project(Namespace(FakeSettings()), FakeSettings(), library_manager)
+        self.project._controller = TestCaseFileController(tcf, self.project)
         res = ResourceFile(source=res_path)
         self.res_controller = \
-            self.chef._resource_file_controller_factory.create(res)
-        self.chef._namespace._resource_factory.cache[os.path.normcase(res_path)] = res
+            self.project._resource_file_controller_factory.create(res)
+        self.project._namespace._resource_factory.cache[os.path.normcase(res_path)] = res
 
     @property
     def import_setting(self):
-        return self.chef._controller.imports[0]
+        return self.project._controller.imports[0]
 
     def _verify_import_reference(self, imp_is_resolved):
         if imp_is_resolved:

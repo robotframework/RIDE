@@ -35,7 +35,7 @@ class _ImportSuggesterTests(_ImportSuggesterHelpers):
         controller.datafile_controller = controller
         controller.relative_path_to = lambda other: other.display_name
         controller.imports = [self._import(i) for i in imports]
-        controller._chief_controller = controller
+        controller._project = controller
         controller.resources = [self._resource(r) for r in resources]
         controller.get_all_cached_library_names = lambda: libraries[:]
         return controller

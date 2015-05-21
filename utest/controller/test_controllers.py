@@ -15,11 +15,11 @@ from robotide.controller.tablecontrollers import (VariableTableController,
 from robotide.publish.messages import (RideImportSetting, RideImportSettingRemoved,
         RideImportSettingAdded, RideImportSettingChanged)
 from resources.mocks import PublisherListener
-from controller.base_command_test import _FakeChief
+from controller.base_command_test import _FakeProject
 from robotide.controller.tags import Tag
 
 
-class _FakeParent(_FakeChief):
+class _FakeParent(_FakeProject):
     def __init__(self):
         self.parent = None
         self.dirty = False
@@ -240,7 +240,7 @@ class ReturnValueControllerTest(unittest.TestCase):
 
 
 class ImportControllerTest(unittest.TestCase):
-    class FakeParent(_FakeChief):
+    class FakeParent(_FakeProject):
 
         _namespace = None
 

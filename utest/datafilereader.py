@@ -1,6 +1,6 @@
 import os
 from resources import FakeSettings
-from robotide.controller.chiefcontroller import ChiefController
+from robotide.controller import Project
 from robotide.controller.commands import NullObserver
 from robotide.namespace import Namespace
 from robotide.spec.librarymanager import LibraryManager
@@ -49,13 +49,13 @@ SMALL_TEST_PATH = _makepath('small_test')
 
 IMPORTS = _makepath('imports')
 
-def construct_chief_controller(datapath, temp_dir_for_excludes=None):
+def construct_project(datapath, temp_dir_for_excludes=None):
     settings = FakeSettings(temp_dir_for_excludes)
     library_manager = LibraryManager(':memory:')
     library_manager.create_database()
-    chief = ChiefController(Namespace(settings), settings, library_manager)
-    chief.load_data(datapath, NullObserver())
-    return chief
+    project = Project(Namespace(settings), settings, library_manager)
+    project.load_data(datapath, NullObserver())
+    return project
 
 def get_ctrl_by_name(name, datafiles):
     for file in datafiles:

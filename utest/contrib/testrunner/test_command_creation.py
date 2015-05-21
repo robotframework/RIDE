@@ -15,10 +15,10 @@ class CommandCreator(TestRunner):
 class CommandCreationTestCase(unittest.TestCase):
 
     def test_command(self):
-        fakechief = lambda:0
-        fakechief.suite = lambda:0
-        fakechief.suite.source = 'source'
-        creator = CommandCreator(fakechief)
+        fakeproject = lambda:0
+        fakeproject.suite = lambda:0
+        fakeproject.suite.source = 'source'
+        creator = CommandCreator(fakeproject)
         creator._output_dir = 'temppi'
         command = creator.get_command(self._create_profile(), ['PYTHON', 'PATH'], 7, [('suite', 'suite.test')])
         self.assertEqual(command,

@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from chiefcontroller import ChiefController
+from project import Project
 from commands import FindOccurrences, RenameKeywordOccurrences
 from dataloader import DataLoader
 from filecontrollers import DataController, ResourceFileController

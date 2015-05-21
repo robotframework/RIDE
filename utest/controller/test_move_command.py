@@ -10,15 +10,15 @@ class TestMoveCommand(unittest.TestCase):
     # This is for performance reasons but be warned when you add tests!
     @classmethod
     def setUpClass(cls):
-        cls.chief_ctrl = datafilereader.construct_chief_controller(datafilereader.SIMPLE_TEST_SUITE_PATH)
-        cls.ts1 = datafilereader.get_ctrl_by_name('TestSuite1', cls.chief_ctrl.datafiles)
-        cls.ts2 = datafilereader.get_ctrl_by_name('TestSuite2', cls.chief_ctrl.datafiles)
-        cls.resu = datafilereader.get_ctrl_by_name(datafilereader.SIMPLE_TEST_SUITE_RESOURCE_NAME, cls.chief_ctrl.datafiles)
+        cls.project_ctrl = datafilereader.construct_project(datafilereader.SIMPLE_TEST_SUITE_PATH)
+        cls.ts1 = datafilereader.get_ctrl_by_name('TestSuite1', cls.project_ctrl.datafiles)
+        cls.ts2 = datafilereader.get_ctrl_by_name('TestSuite2', cls.project_ctrl.datafiles)
+        cls.resu = datafilereader.get_ctrl_by_name(datafilereader.SIMPLE_TEST_SUITE_RESOURCE_NAME, cls.project_ctrl.datafiles)
 
     @classmethod
     def tearDownClass(cls):
-        cls.chief_ctrl.close()
-        cls.chief_ctrl = None
+        cls.project_ctrl.close()
+        cls.project_ctrl = None
 
     def test_move_variable_from_suite_to_another_suite(self):
         self._move_variable(self.ts1.variables[0], self.ts1, self.ts2)

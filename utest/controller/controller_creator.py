@@ -25,7 +25,7 @@ BASE_DATA = [TEST_NAME,
         '  ${variable}=  some value'
 ]
 
-class _FakeChief(WithNamespace):
+class _FakeProject(WithNamespace):
 
     def update_namespace(self):
         pass
@@ -49,11 +49,11 @@ def create(data):
     return tcf
 
 
-def testcase_controller(chief=None, data=None):
+def testcase_controller(project=None, data=None):
     if data is None:
         data = BASE_DATA[:]
-    base_directory_controller = TestDataDirectoryController(TestDataDirectory(), chief)
-    directory_controller = TestDataDirectoryController(TestDataDirectory(), chief, base_directory_controller)
-    tcf_controller = TestCaseFileController(create(data), chief, directory_controller)
+    base_directory_controller = TestDataDirectoryController(TestDataDirectory(), project)
+    directory_controller = TestDataDirectoryController(TestDataDirectory(), project, base_directory_controller)
+    tcf_controller = TestCaseFileController(create(data), project, directory_controller)
     tctablectrl = tcf_controller.tests
     return tctablectrl[0]

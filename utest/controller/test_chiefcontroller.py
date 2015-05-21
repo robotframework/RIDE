@@ -6,7 +6,7 @@ from os.path import join as j
 from robot.parsing.model import TestDataDirectory, TestCaseFile, ResourceFile
 from robot.utils.asserts import assert_true, assert_equals, assert_none
 
-from robotide.controller import ChiefController
+from robotide.controller import Project
 from robotide.namespace import Namespace
 from robotide.controller.filecontrollers import TestCaseFileController, \
     TestDataDirectoryController, ResourceFileController
@@ -30,11 +30,11 @@ def _library_manager():
     library_manager.create_database()
     return library_manager
 
-class ChiefControllerTest(unittest.TestCase):
+class ProjectTest(unittest.TestCase):
 
     def setUp(self):
         self._library_manager = _library_manager()
-        self.ctrl = ChiefController(Namespace(FakeSettings()), FakeSettings(), self._library_manager)
+        self.ctrl = Project(Namespace(FakeSettings()), FakeSettings(), self._library_manager)
         self.load_observer = MessageRecordingLoadObserver()
         self.suite_listener = PublisherListener(RideOpenSuite)
         self.resource_listener = PublisherListener(RideOpenResource)
@@ -162,9 +162,9 @@ class ChiefControllerTest(unittest.TestCase):
         assert_equals(self.ctrl.datafiles[0], resource)
 
     def test_get_all_keywords_with_resource_file_only(self):
-        chief = datafilereader.construct_chief_controller(RESOURCE_PATH)
-        all_kws = chief.get_all_keywords()
-        chief.close()
+        project = datafilereader.construct_project(RESOURCE_PATH)
+        all_kws = project.get_all_keywords()
+        project.close()
         res_kws = [kw for kw in all_kws if kw.name == 'Resource UK']
         assert_equals(len(res_kws), 1)
 
@@ -187,107 +187,107 @@ def _testcasefile(path):
 class TestResolvingResourceDirectories(unittest.TestCase):
 
     def setUp(self):
-        self.chief = ChiefController(Namespace(FakeSettings()), FakeSettings(), _library_manager())
+        self.project = Project(Namespace(FakeSettings()), FakeSettings(), _library_manager())
 
     def tearDown(self):
-        self.chief.close()
+        self.project.close()
 
     def test_resource_file_outside_of_topsuite_is_an_external_resource(self):
         self._set_data_directory_controller('suite')
         self._set_resources(j('foo','resource.txt'))
-        assert_equals(self.chief.external_resources, self.chief.resources)
+        assert_equals(self.project.external_resources, self.project.resources)
 
     def _set_data_directory_controller(self, dir):
-        self.chief._controller = TestDataDirectoryController(_data_directory(dir))
+        self.project._controller = TestDataDirectoryController(_data_directory(dir))
 
     def test_resource_file_in_own_directory_is_added_to_top_suite(self):
         self._set_data_directory_controller('foo')
         self._set_resources(j('foo','bar','quux.txt'))
-        self._assert_resource_dir_was_created_as_child_of(self.chief.data)
+        self._assert_resource_dir_was_created_as_child_of(self.project.data)
         self._assert_resource_dir_contains_resources()
-        assert_true(len(self.chief.external_resources)==  0)
+        assert_true(len(self.project.external_resources)==  0)
 
     def test_two_resource_in_same_directory_get_same_parent(self):
         self._set_data_directory_controller('foo')
         self._set_resources(j('foo','bar','quux.txt'), j('foo','bar','zap.txt'))
-        self._assert_resource_dir_was_created_as_child_of(self.chief.data)
+        self._assert_resource_dir_was_created_as_child_of(self.project.data)
         self._assert_resource_dir_contains_resources()
 
     def test_two_nested_resources_in_same_directory_get_same_parent(self):
         self._set_data_directory_controller('suite')
         self._set_resources(j('suite','foo','bar','quux.txt'), j('suite','foo','bar','zap.txt'))
-        assert_equals(self.chief.data.children[0].children[0].children,
-                      self.chief.resources)
+        assert_equals(self.project.data.children[0].children[0].children,
+                      self.project.resources)
 
     def test_resource_directory_gets_nearest_possible_parent(self):
         self._set_data_directory_controller('tmp')
-        self.chief.data.add_child(TestDataDirectoryController(_data_directory(j('tmp','some'))))
+        self.project.data.add_child(TestDataDirectoryController(_data_directory(j('tmp','some'))))
         self._set_resources(j('tmp','some','resoruces','res.txt'))
-        assert_equals(len(self.chief.data.children), 1)
-        assert_equals(len(self.chief.data.children[0].children), 1)
-        assert_equals(self.chief.data.children[0].children[0].children, [self.chief.resources[0]])
+        assert_equals(len(self.project.data.children), 1)
+        assert_equals(len(self.project.data.children[0].children), 1)
+        assert_equals(self.project.data.children[0].children[0].children, [self.project.resources[0]])
 
     def test_nested_resource_directories(self):
         self._set_data_directory_controller('tmp')
         self._set_resources(j('tmp','resoruces','res.txt'), j('tmp','resoruces','more','res.txt'))
-        assert_equals(len(self.chief.data.children), 1)
-        assert_equals(len(self.chief.data.children[0].children), 2)
-        assert_equals(self.chief.data.children[0].children[1].children, [self.chief.resources[1]])
+        assert_equals(len(self.project.data.children), 1)
+        assert_equals(len(self.project.data.children[0].children), 2)
+        assert_equals(self.project.data.children[0].children[1].children, [self.project.resources[1]])
 
     def test_resource_in_nested_directory(self):
         self._set_data_directory_controller('tmp')
         self._set_resources(j('tmp','res','ources','res.txt'))
-        assert_equals(len(self.chief.data.children), 1)
-        assert_equals(len(self.chief.data.children[0].children), 1)
-        assert_equals(self.chief.data.children[0].children[0].children, [self.chief.resources[0]])
-        assert_true(len(self.chief.external_resources)==  0)
+        assert_equals(len(self.project.data.children), 1)
+        assert_equals(len(self.project.data.children[0].children), 1)
+        assert_equals(self.project.data.children[0].children[0].children, [self.project.resources[0]])
+        assert_true(len(self.project.external_resources)==  0)
 
     def _set_resources(self, *paths):
         for p in paths:
             resource = ResourceFileController(ResourceFile(os.path.normpath(p)))
-            self.chief.resources.append(resource)
-            self.chief.insert_into_suite_structure(resource)
+            self.project.resources.append(resource)
+            self.project.insert_into_suite_structure(resource)
 
     def _assert_resource_dir_was_created_as_child_of(self, ctrl):
         assert_equals(len(ctrl.children), 1)
 
     def _assert_resource_dir_contains_resources(self):
-        assert_equals(self.chief.data.children[0].children, self.chief.resources)
+        assert_equals(self.project.data.children[0].children, self.project.resources)
 
 
 class TestFindingControllers(unittest.TestCase):
 
     def setUp(self):
-        self.chief = ChiefController(Namespace(FakeSettings()), FakeSettings(), _library_manager())
+        self.project = Project(Namespace(FakeSettings()), FakeSettings(), _library_manager())
 
     def tearDown(self):
-        self.chief.close()
+        self.project.close()
 
     def test_finding_root_directory_controller(self):
-        self.chief._controller = TestDataDirectoryController(_data_directory('Root'))
-        result = self.chief.find_controller_by_longname('Root')
-        assert_equals(result, self.chief._controller)
+        self.project._controller = TestDataDirectoryController(_data_directory('Root'))
+        result = self.project.find_controller_by_longname('Root')
+        assert_equals(result, self.project._controller)
 
     def test_finding_subdirectory_controller(self):
         directory_controller = TestDataDirectoryController(_data_directory('Root'))
         subdirectory_controller = TestDataDirectoryController(_data_directory('Sub.suite'))
         directory_controller.add_child(subdirectory_controller)
-        self.chief._controller = directory_controller
-        result = self.chief.find_controller_by_longname('Root.Sub.suite')
+        self.project._controller = directory_controller
+        result = self.project.find_controller_by_longname('Root.Sub.suite')
         assert_equals(result, subdirectory_controller)
 
     def test_finding_testcase_controller(self):
         suite_controller = TestCaseFileController(_testcasefile('Suite.txt'))
         test = suite_controller.create_test('Test 1')
-        self.chief._controller = suite_controller
-        result = self.chief.find_controller_by_longname('Suite.Test 1', 'Test 1')
+        self.project._controller = suite_controller
+        result = self.project.find_controller_by_longname('Suite.Test 1', 'Test 1')
         assert_equals(result, test)
 
     def test_finding_correct_testcase_when_two_with_same_name(self):
         test1, test2 = self._create_suite_structure_with_two_tests_with_same_name()
-        result1 = self.chief.find_controller_by_longname('Ro.ot.'+test1.longname, test1.display_name)
+        result1 = self.project.find_controller_by_longname('Ro.ot.'+test1.longname, test1.display_name)
         assert_equals(result1, test1)
-        result2 = self.chief.find_controller_by_longname('Ro.ot.'+test2.longname, test2.display_name)
+        result2 = self.project.find_controller_by_longname('Ro.ot.'+test2.longname, test2.display_name)
         assert_equals(result2, test2)
 
     def test_finding_correct_testcase_when_two_files_with_same_name_start(self):
@@ -298,10 +298,10 @@ class TestFindingControllers(unittest.TestCase):
         test2 = suite2_controller.create_test('A')
         directory_controller.add_child(suite1_controller)
         directory_controller.add_child(suite2_controller)
-        self.chief._controller = directory_controller
-        result1 = self.chief.find_controller_by_longname('T.'+test1.longname, test1.display_name)
+        self.project._controller = directory_controller
+        result1 = self.project.find_controller_by_longname('T.'+test1.longname, test1.display_name)
         assert_equals(result1, test1)
-        result2 = self.chief.find_controller_by_longname('T.'+test2.longname, test2.display_name)
+        result2 = self.project.find_controller_by_longname('T.'+test2.longname, test2.display_name)
         assert_equals(result2, test2)
 
     def _create_suite_structure_with_two_tests_with_same_name(self):
@@ -312,7 +312,7 @@ class TestFindingControllers(unittest.TestCase):
         test2 = suite2_controller.create_test('Te.st')
         directory_controller.add_child(suite1_controller)
         directory_controller.add_child(suite2_controller)
-        self.chief._controller = directory_controller
+        self.project._controller = directory_controller
         return test1, test2
 
 if __name__ == "__main__":

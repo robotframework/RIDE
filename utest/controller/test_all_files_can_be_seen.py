@@ -5,14 +5,14 @@ class TestAllFiles(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.chief = datafilereader.construct_chief_controller(datafilereader.ALL_FILES_PATH)
+        cls.project = datafilereader.construct_project(datafilereader.ALL_FILES_PATH)
 
     @classmethod
     def tearDownClass(cls):
-        cls.chief.close()
+        cls.project.close()
 
     def test_all_files_can_be_seen(self):
-        all_files = self.chief.data
+        all_files = self.project.data
         self.assertEqual(all_files.name, 'All Files')
         self.assertEqual(len(all_files.suites), 3)
         self._verify_names(all_files, 'Used Resource', 'Unused Resource', 'Resource Dir', 'Suite Dir', 'Suite2 Dir')
@@ -28,11 +28,11 @@ class TestAllFiles(unittest.TestCase):
         self.assertEqual(set(c.name for c in controller.children), set(names))
 
     def test_unused_resource_knows_it_is_unused(self):
-        unused = datafilereader.get_ctrl_by_name('Unused Resource', self.chief.datafiles)
+        unused = datafilereader.get_ctrl_by_name('Unused Resource', self.project.datafiles)
         self.assertFalse(unused.is_used())
 
     def test_used_resource_knows_it_is_used(self):
-        used = datafilereader.get_ctrl_by_name('Used Resource', self.chief.datafiles)
+        used = datafilereader.get_ctrl_by_name('Used Resource', self.project.datafiles)
         self.assertTrue(used.is_used())
 
 

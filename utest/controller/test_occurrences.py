@@ -3,7 +3,7 @@ from robot.parsing.model import TestCaseFile
 
 from robot.utils.asserts import assert_equals, assert_true, assert_false
 from resources import FakeSettings
-from robotide.controller import ChiefController
+from robotide.controller import Project
 from robotide.controller.macrocontrollers import KEYWORD_NAME_FIELD
 from robotide.controller.commands import Undo, FindOccurrences, FindVariableOccurrences, NullObserver, RenameKeywordOccurrences, ChangeCellValue
 from robotide.controller.filecontrollers import (TestCaseFileController,
@@ -33,7 +33,7 @@ SUITE_NAME = 'Some Suite'
 KEYWORD_IN_USERKEYWORD1 = 'Some Keyword'
 EMBEDDED_ARGUMENTS_KEYWORD = "Pick '${fruit}' and '${action}' it"
 
-def TestCaseControllerWithSteps(chief=None, source='some_suite.txt'):
+def TestCaseControllerWithSteps(project=None, source='some_suite.txt'):
     tcf = TestCaseFile()
     tcf.source = source
     tcf.setting_table.suite_setup.name = 'Suite Setup Kw'
@@ -48,15 +48,15 @@ def TestCaseControllerWithSteps(chief=None, source='some_suite.txt'):
     uk.add_step(['No Operation'])
     uk = tcf.keyword_table.add(EMBEDDED_ARGUMENTS_KEYWORD)
     uk.add_step(['No Operation'])
-    if chief is None:
+    if project is None:
         library_manager = LibraryManager(':memory:')
         library_manager.create_database()
-        chief = ChiefController(Namespace(FakeSettings()), library_manager=library_manager)
-    tcf_ctrl = TestCaseFileController(tcf, chief)
-    chief._controller = tcf_ctrl
+        project = Project(Namespace(FakeSettings()), library_manager=library_manager)
+    tcf_ctrl = TestCaseFileController(tcf, project)
+    project._controller = tcf_ctrl
     tctablectrl = TestCaseTableController(tcf_ctrl,
                                           tcf.testcase_table)
-    return TestCaseController(tctablectrl, testcase), chief._namespace
+    return TestCaseController(tctablectrl, testcase), project._namespace
 
 def _create_testcase(tcf):
     testcase = tcf.testcase_table.add(TEST1_NAME)
@@ -116,15 +116,15 @@ class TestFindOccurrencesWithFiles(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.chief_ctrl = datafilereader.construct_chief_controller(datafilereader.SIMPLE_TEST_SUITE_PATH)
-        cls.ts1 = datafilereader.get_ctrl_by_name('TestSuite1', cls.chief_ctrl.datafiles)
-        cls.ts2 = datafilereader.get_ctrl_by_name('TestSuite2', cls.chief_ctrl.datafiles)
-        cls.ts3 = datafilereader.get_ctrl_by_name('TestSuite3', cls.chief_ctrl.datafiles)
-        cls.resu = datafilereader.get_ctrl_by_name(datafilereader.SIMPLE_TEST_SUITE_RESOURCE_NAME, cls.chief_ctrl.datafiles)
+        cls.project_ctrl = datafilereader.construct_project(datafilereader.SIMPLE_TEST_SUITE_PATH)
+        cls.ts1 = datafilereader.get_ctrl_by_name('TestSuite1', cls.project_ctrl.datafiles)
+        cls.ts2 = datafilereader.get_ctrl_by_name('TestSuite2', cls.project_ctrl.datafiles)
+        cls.ts3 = datafilereader.get_ctrl_by_name('TestSuite3', cls.project_ctrl.datafiles)
+        cls.resu = datafilereader.get_ctrl_by_name(datafilereader.SIMPLE_TEST_SUITE_RESOURCE_NAME, cls.project_ctrl.datafiles)
 
     @classmethod
     def tearDownClass(cls):
-        cls.chief_ctrl.close()
+        cls.project_ctrl.close()
 
     def test_finds_only_occurrences_with_same_source(self):
         self.assert_occurrences(self.ts1, 'My Keyword', 2)
@@ -261,18 +261,18 @@ class FindVariableOccurrencesTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        chief = datafilereader.construct_chief_controller(datafilereader.FINDWHEREUSED_VARIABLES_PATH)
-        cls._suite1 = _get_ctrl_by_name(cls, "Suite 1", chief.datafiles)
-        cls._suite2 = _get_ctrl_by_name(cls, "Suite 2", chief.datafiles)
-        cls._resource1 = _get_ctrl_by_name(cls, "Res1", chief.datafiles)
-        cls._case1 = _get_ctrl_by_name(cls, "Case 1", chief.datafiles)
-        cls._case2 = _get_ctrl_by_name(cls, "Case 2", chief.datafiles)
-        cls._case3 = _get_ctrl_by_name(cls, "Case 3", chief.datafiles)
-        cls._case4 = _get_ctrl_by_name(cls, "Case 4", chief.datafiles)
-        cls._case5 = _get_ctrl_by_name(cls, "Case 5", chief.datafiles)
-        cls._case6 = _get_ctrl_by_name(cls, "Case 6", chief.datafiles)
-        cls._kw1 = _get_ctrl_by_name(cls, "User KW 1", chief.datafiles)
-        cls._kw2 = _get_ctrl_by_name(cls, "User KW 2", chief.datafiles)
+        project = datafilereader.construct_project(datafilereader.FINDWHEREUSED_VARIABLES_PATH)
+        cls._suite1 = _get_ctrl_by_name(cls, "Suite 1", project.datafiles)
+        cls._suite2 = _get_ctrl_by_name(cls, "Suite 2", project.datafiles)
+        cls._resource1 = _get_ctrl_by_name(cls, "Res1", project.datafiles)
+        cls._case1 = _get_ctrl_by_name(cls, "Case 1", project.datafiles)
+        cls._case2 = _get_ctrl_by_name(cls, "Case 2", project.datafiles)
+        cls._case3 = _get_ctrl_by_name(cls, "Case 3", project.datafiles)
+        cls._case4 = _get_ctrl_by_name(cls, "Case 4", project.datafiles)
+        cls._case5 = _get_ctrl_by_name(cls, "Case 5", project.datafiles)
+        cls._case6 = _get_ctrl_by_name(cls, "Case 6", project.datafiles)
+        cls._kw1 = _get_ctrl_by_name(cls, "User KW 1", project.datafiles)
+        cls._kw2 = _get_ctrl_by_name(cls, "User KW 2", project.datafiles)
 
     def test_occurrences_local_variable(self):
         check_for_variable_occurrences(self._case2, "${log}", ((self._case2.name, 'Steps', 2),

@@ -67,7 +67,7 @@ class _ImportSuggester(_Suggester):
 class ResourceSuggester(_ImportSuggester):
 
     def _get_all_available(self):
-        return set(self._df_controller.relative_path_to(r) for r in self._df_controller._chief_controller.resources)
+        return set(self._df_controller.relative_path_to(r) for r in self._df_controller._project.resources)
 
 
 class CachedLibrarySuggester(_ImportSuggester):

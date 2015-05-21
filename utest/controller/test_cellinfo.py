@@ -43,8 +43,8 @@ class TestCellInfo(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.chief_ctrl = datafilereader.construct_chief_controller(datafilereader.ARGUMENTS_PATH)
-        cls.testsuite = datafilereader.get_ctrl_by_name('Suite', cls.chief_ctrl.datafiles)
+        cls.project_ctrl = datafilereader.construct_project(datafilereader.ARGUMENTS_PATH)
+        cls.testsuite = datafilereader.get_ctrl_by_name('Suite', cls.project_ctrl.datafiles)
         cls.test = cls.testsuite.tests[0]
         keyword = lambda name: [kw for kw in cls.testsuite.keywords if kw.name == name][0]
         cls.keyword1 = keyword('KW1')
@@ -55,7 +55,7 @@ class TestCellInfo(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.chief_ctrl.close()
+        cls.project_ctrl.close()
 
     def tearDown(self):
         self.test.execute(DeleteRows([i for i in range(len(self.test.steps))]))

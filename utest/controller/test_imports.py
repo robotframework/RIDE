@@ -6,13 +6,13 @@ class TestImports(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.chief = datafilereader.construct_chief_controller(datafilereader.IMPORTS)
-        suite = cls.chief.data.suites[1]
+        cls.project = datafilereader.construct_project(datafilereader.IMPORTS)
+        suite = cls.project.data.suites[1]
         cls.imports =  [i for i in suite.imports]
 
     @classmethod
     def tearDownClass(cls):
-        cls.chief.close()
+        cls.project.close()
 
     def _find_by_name(self, name, data_file=None):
         data_file = data_file or self
@@ -64,7 +64,7 @@ class TestImports(unittest.TestCase):
         self._has_error('vars//exiting.py')
 
     def test_library_import_in_subsuite_init_file_with_relative_path_has_no_error(self):
-        self._has_no_error('..//outer_lib.py', self.chief.data.suites[0])
+        self._has_no_error('..//outer_lib.py', self.project.data.suites[0])
 
 
 if __name__ == '__main__':

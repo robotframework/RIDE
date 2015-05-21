@@ -22,7 +22,7 @@ from robot.utils.asserts import assert_equals
 from robotide.spec.librarymanager import LibraryManager
 from robotide.ui.images import TreeImageList
 
-from robotide.application import ChiefController
+from robotide.application import Project
 from robotide.controller.filecontrollers import (TestDataDirectoryController,
                                                  ResourceFileController)
 
@@ -94,9 +94,9 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         res.keyword_table.keywords.append(UserKeyword(res, 'Resource Keyword'))
         library_manager = LibraryManager(':memory:')
         library_manager.create_database()
-        model = ChiefController(Namespace(FakeSettings()), library_manager=library_manager)
+        model = Project(Namespace(FakeSettings()), library_manager=library_manager)
         model._controller = TestDataDirectoryController(suite)
-        rfc = ResourceFileController(res, chief_controller=model)
+        rfc = ResourceFileController(res, project=model)
         model.resources.append(rfc)
         model.insert_into_suite_structure(rfc)
         return model

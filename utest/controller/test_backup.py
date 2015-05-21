@@ -1,7 +1,7 @@
 from __future__ import with_statement
 
 import unittest
-from robotide.controller.chiefcontroller import Backup
+from robotide.controller.project import Backup
 
 
 class BackupTestCase(unittest.TestCase):

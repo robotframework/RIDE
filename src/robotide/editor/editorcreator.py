@@ -16,7 +16,7 @@
 from robot.parsing.model import (TestCase, TestDataDirectory, ResourceFile,
         TestCaseFile, UserKeyword, Variable)
 
-from robotide.controller.chiefcontroller import ChiefController
+from robotide.controller import Project
 from robotide.controller.dataloader import TestDataDirectoryWithExcludes
 from robotide.controller.filecontrollers import ExcludedDirectoryController
 from robotide.controller.settingcontrollers import VariableController
@@ -71,7 +71,7 @@ class EditorCreator(object):
 
     def _invalid(self, controller):
         return not controller or controller.data is None or \
-               isinstance(controller, ChiefController) or \
+               isinstance(controller, Project) or \
                isinstance(controller, ExcludedDirectoryController)
 
     def _should_use_old_editor(self, controller):

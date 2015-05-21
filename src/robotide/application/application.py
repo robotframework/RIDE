@@ -19,7 +19,7 @@ from contextlib import contextmanager
 from robotide.application.updatenotifier import UpdateNotifierController, UpdateDialog
 
 from robotide.namespace import Namespace
-from robotide.controller import ChiefController
+from robotide.controller import Project
 from robotide.spec import librarydatabase
 from robotide.ui import LoadProgressObserver
 from robotide.ui.mainframe import RideFrame
@@ -44,7 +44,7 @@ class RIDE(wx.App):
         librarydatabase.initialize_database()
         self.preferences = Preferences(self.settings)
         self.namespace = Namespace(self.settings)
-        self._controller = ChiefController(self.namespace, self.settings)
+        self._controller = Project(self.namespace, self.settings)
         self.frame = RideFrame(self, self._controller)
         self._editor_provider = EditorProvider()
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),

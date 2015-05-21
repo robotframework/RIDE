@@ -6,12 +6,12 @@ import datafilereader
 class TestLocalNamespace(unittest.TestCase):
 
     def setUp(self):
-        self._chief = datafilereader.construct_chief_controller(datafilereader.SIMPLE_PROJECT)
-        self._test = datafilereader.get_ctrl_by_name('Test Case', self._chief.datafiles[0].tests)
-        self._keyword = datafilereader.get_ctrl_by_name('Keyword', self._chief.datafiles[0].keywords)
+        self._project = datafilereader.construct_project(datafilereader.SIMPLE_PROJECT)
+        self._test = datafilereader.get_ctrl_by_name('Test Case', self._project.datafiles[0].tests)
+        self._keyword = datafilereader.get_ctrl_by_name('Keyword', self._project.datafiles[0].keywords)
 
     def tearDown(self):
-        self._chief.close()
+        self._project.close()
 
     def test_macro_controller_has_local_namespace(self):
         assert_true(self._test.get_local_namespace() is not None)

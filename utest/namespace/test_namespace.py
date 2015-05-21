@@ -327,10 +327,10 @@ class TestKeywordSearch(_DataFileTest):
         all_kws = self.ns.get_all_keywords(directory.children)
         self._check_resource_keyword_only_once(all_kws)
 
-    def test_resource_kws_only_once_through_chief_controller(self):
-        chief = construct_chief_controller(SIMPLE_TEST_SUITE_PATH)
-        all_kws = chief.get_all_keywords()
-        chief.close()
+    def test_resource_kws_only_once_through_project(self):
+        project = construct_project(SIMPLE_TEST_SUITE_PATH)
+        all_kws = project.get_all_keywords()
+        project.close()
         self._check_resource_keyword_only_once(all_kws)
 
     def _check_resource_keyword_only_once(self, all_kws):

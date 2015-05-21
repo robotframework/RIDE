@@ -123,13 +123,13 @@ class TestResourceFileControllerTest(unittest.TestCase):
 
 
     def setUp(self):
-        self.chief = datafilereader.construct_chief_controller(datafilereader.SIMPLE_TEST_SUITE_PATH)
+        self.project = datafilereader.construct_project(datafilereader.SIMPLE_TEST_SUITE_PATH)
 
     def tearDown(self):
-        self.chief.close()
+        self.project.close()
 
     def _get_ctrl_by_name(self, name):
-        return datafilereader.get_ctrl_by_name(name , self.chief.datafiles)
+        return datafilereader.get_ctrl_by_name(name , self.project.datafiles)
 
     def test_resource_file_display_name_is_file_name_with_extension(self):
         resource_ctrl = self._get_ctrl_by_name(datafilereader.SIMPLE_TEST_SUITE_RESOURCE_NAME)
@@ -227,28 +227,28 @@ class TestDataDirectoryControllerTest(unittest.TestCase):
 
     def test_exclude(self):
         parent = lambda:0
-        chief = self._mock_chief()
-        ctrl = TestDataDirectoryController(self.data, chief, parent)
+        project = self._mock_project()
+        ctrl = TestDataDirectoryController(self.data, project, parent)
         parent.children = [ctrl]
         ctrl.exclude()
         self.assertEqual(len(parent.children), 1)
         self.assertTrue(parent.children[0].is_excluded())
         self.assertTrue(self.called)
 
-    def _mock_chief(self):
-        chief = lambda:0
-        chief._namespace = lambda:0
-        chief.resource_file_controller_factory = lambda:0
-        chief.is_datafile_dirty = lambda *_:False
-        chief._settings = lambda:0
-        chief._settings.excludes = lambda:0
+    def _mock_project(self):
+        project = lambda:0
+        project._namespace = lambda:0
+        project.resource_file_controller_factory = lambda:0
+        project.is_datafile_dirty = lambda *_:False
+        project._settings = lambda:0
+        project._settings.excludes = lambda:0
         self.called = False
         def update_excludes(new_excludes):
             self.assertEqual(len(new_excludes), 1)
             self.assertTrue(new_excludes[0].endswith('source'))
             self.called = True
-        chief._settings.excludes.update_excludes = update_excludes
-        return chief
+        project._settings.excludes.update_excludes = update_excludes
+        return project
 
 class DatafileIteratorTest(unittest.TestCase):
 

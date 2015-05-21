@@ -7,11 +7,11 @@ from robot.utils.asserts import assert_equals
 from robotide.publish import PUBLISHER
 from robotide.controller.filecontrollers import TestCaseFileController
 from robotide.publish.messages import RideItemStepsChanged
-from controller.controller_creator import _FakeChief, testcase_controller,\
+from controller.controller_creator import _FakeProject, testcase_controller,\
    BASE_DATA
 
 
-class TestCaseCommandTest(unittest.TestCase, _FakeChief):
+class TestCaseCommandTest(unittest.TestCase, _FakeProject):
 
     resource_file_controller_factory = None
 

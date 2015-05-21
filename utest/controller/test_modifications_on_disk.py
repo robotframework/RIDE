@@ -10,7 +10,7 @@ from robotide.controller.commands import DeleteResourceAndImports, DeleteFile, S
 from robotide.controller.filecontrollers import (TestCaseFileController,
                                                  TestDataDirectoryController,
                                                  ResourceFileController)
-from robotide.controller import ChiefController
+from robotide.controller import Project
 from robotide.publish.messages import RideDataFileRemoved
 from robotide.publish import PUBLISHER
 import shutil
@@ -35,10 +35,10 @@ Documentation  Ride unit testing file
 def remove_test_data(path):
     shutil.rmtree(path)
 
-def create_chief():
+def create_project():
     library_manager = LibraryManager(':memory:')
     library_manager.create_database()
-    return ChiefController(Namespace(FakeSettings()), FakeSettings(), library_manager)
+    return Project(Namespace(FakeSettings()), FakeSettings(), library_manager)
 
 
 class _DataDependentTest(unittest.TestCase):
@@ -84,7 +84,7 @@ class TestModifiedOnDiskWithFileSuite(_DataDependentTest):
 
     def test_overwrite(self):
         ctrl = TestCaseFileController(TestCaseFile(source=self._filepath).populate(),
-                                      create_chief())
+                                      create_project())
         os.utime(self._filepath, (1,1))
         assert_true(ctrl.has_been_modified_on_disk())
         ctrl.execute(SaveFile())
@@ -141,45 +141,45 @@ class TestDataFileRemoval(_DataDependentTest):
         self._removed_datafile = message.datafile
 
     def test_deleting_source_should_remove_it_from_model(self):
-        chief = create_chief()
-        chief._controller = TestCaseFileController(TestCaseFile(source=self._filepath), chief)
+        project = create_project()
+        project._controller = TestCaseFileController(TestCaseFile(source=self._filepath), project)
         os.remove(self._filepath)
-        ctrl = chief.data
+        ctrl = project.data
         ctrl.remove()
-        assert_true(chief.data is None)
+        assert_true(project.data is None)
         assert_true(self._removed_datafile is ctrl)
 
     def test_deleting_file_suite_under_dir_suite(self):
-        chief = create_chief()
-        chief._controller = TestDataDirectoryController(TestDataDirectory(source=self._dirpath).populate(), chief)
-        original_children_length = len(chief.data.children)
-        file_suite = chief.data.children[0]
+        project = create_project()
+        project._controller = TestDataDirectoryController(TestDataDirectory(source=self._dirpath).populate(), project)
+        original_children_length = len(project.data.children)
+        file_suite = project.data.children[0]
         file_suite.remove()
-        assert_true(len(chief.data.children) == original_children_length-1, 'Child suite was not removed')
+        assert_true(len(project.data.children) == original_children_length-1, 'Child suite was not removed')
 
     def test_deleting_resource_file(self):
-        chief = create_chief()
-        res = chief.new_resource(self._resource_path)
+        project = create_project()
+        res = project.new_resource(self._resource_path)
         res.remove()
-        assert_true(len(chief.resources) == 0, 'Resource was not removed')
+        assert_true(len(project.resources) == 0, 'Resource was not removed')
 
     def test_deleting_init_file(self):
-        chief = create_chief()
-        chief._controller = TestDataDirectoryController(TestDataDirectory(source=self._dirpath).populate(), chief)
+        project = create_project()
+        project._controller = TestDataDirectoryController(TestDataDirectory(source=self._dirpath).populate(), project)
         os.remove(self._init_path)
-        chief.data.remove()
+        project.data.remove()
         open(self._init_path, 'w').write('*Settings*\nDocumentation  Ride unit testing file\n')
-        assert_true(chief.data.has_format() is False, chief.data.data.initfile)
+        assert_true(project.data.has_format() is False, project.data.data.initfile)
 
 
 class DeleteCommandTest(_DataDependentTest):
 
     def setUp(self):
         _DataDependentTest.setUp(self)
-        self.chief = create_chief()
-        self.chief.load_data(self._dirpath)
-        self.suite = self.chief.suite.children[0]
-        self.resource = self.chief.resources[0]
+        self.project = create_project()
+        self.project.load_data(self._dirpath)
+        self.suite = self.project.suite.children[0]
+        self.resource = self.project.resources[0]
 
     def test_delete_resource_and_imports(self):
         self.assert_resource_count(1)
@@ -196,7 +196,7 @@ class DeleteCommandTest(_DataDependentTest):
         self.assert_import_count(1)
 
     def assert_resource_count(self, resource_count):
-        assert_equals(len(self.chief.resources), resource_count)
+        assert_equals(len(self.project.resources), resource_count)
 
     def assert_import_count(self, import_count):
         assert_equals(len(self.suite.setting_table.imports), import_count)
