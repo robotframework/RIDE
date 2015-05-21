@@ -53,7 +53,6 @@ def _add_settings_table(tcf):
     tcf.setting_table.add_resource(RESOURCE_LIB_PATH)
     tcf.setting_table.add_resource(RES_NAME_VARIABLE)
     tcf.setting_table.add_library(LIB_NAME_VARIABLE)
-    tcf.setting_table.add_library(LIB_NAME_VARIABLE)
     tcf.setting_table.add_library(UNRESOLVABLE_VARIABLE)
     tcf.setting_table.add_library(LIBRARY_WITH_SPACES_IN_PATH)
     tcf.setting_table.add_library(TELNET_LIB, ['WITH NAME', TELNET_LIB_ALIAS])
