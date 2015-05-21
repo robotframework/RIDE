@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -15,11 +15,12 @@
 from robot.errors import DataError
 from robot.utils import XmlWriter, NullMarkupWriter, get_timestamp, unic
 from robot.version import get_full_version
+from robot.result.visitor import ResultVisitor
 
 from .loggerhelper import IsLogged
 
 
-class XmlLogger(object):
+class XmlLogger(ResultVisitor):
 
     def __init__(self, path, log_level='TRACE', generator='Robot'):
         self._log_message_is_logged = IsLogged(log_level)
@@ -28,7 +29,7 @@ class XmlLogger(object):
         self._errors = []
 
     def _get_writer(self, path, generator):
-        if path == 'NONE':
+        if not path:
             return NullMarkupWriter()
         try:
             writer = XmlWriter(path, encoding='UTF-8')
@@ -65,8 +66,10 @@ class XmlLogger(object):
         self._writer.element('msg', msg.message, attrs)
 
     def start_keyword(self, kw):
-        self._writer.start('kw', {'name': kw.name, 'type': kw.type,
-                                  'timeout': str(kw.timeout)})
+        attrs = {'name': kw.name, 'type': kw.type}
+        if kw.timeout:
+            attrs['timeout'] = unicode(kw.timeout)
+        self._writer.start('kw', attrs)
         self._writer.element('doc', kw.doc)
         self._write_list('arguments', 'arg', (unic(a) for a in kw.args))
 
@@ -75,8 +78,10 @@ class XmlLogger(object):
         self._writer.end('kw')
 
     def start_test(self, test):
-        self._writer.start('test', {'id': test.id, 'name': test.name,
-                                    'timeout': str(test.timeout)})
+        attrs = {'id': test.id, 'name': test.name}
+        if test.timeout:
+            attrs['timeout'] = unicode(test.timeout)
+        self._writer.start('test', attrs)
 
     def end_test(self, test):
         self._writer.element('doc', test.doc)
@@ -105,59 +110,32 @@ class XmlLogger(object):
     def end_statistics(self, stats):
         self._writer.end('statistics')
 
-    def start_total_stats(self, total_stats):
+    def start_total_statistics(self, total_stats):
         self._writer.start('total')
 
-    def end_total_stats(self, total_stats):
+    def end_total_statistics(self, total_stats):
         self._writer.end('total')
 
-    def start_tag_stats(self, tag_stats):
+    def start_tag_statistics(self, tag_stats):
         self._writer.start('tag')
 
-    def end_tag_stats(self, tag_stats):
+    def end_tag_statistics(self, tag_stats):
         self._writer.end('tag')
 
-    def start_suite_stats(self, tag_stats):
+    def start_suite_statistics(self, tag_stats):
         self._writer.start('suite')
 
-    def end_suite_stats(self, tag_stats):
+    def end_suite_statistics(self, tag_stats):
         self._writer.end('suite')
 
-    def total_stat(self, stat):
-        self._stat(stat)
+    def visit_stat(self, stat):
+        self._writer.element('stat', stat.name,
+                             stat.get_attributes(values_as_strings=True))
 
-    def suite_stat(self, stat):
-        self._stat(stat, stat.longname,
-                   attrs={'id': stat.id, 'name': stat.name})
-
-    def tag_stat(self, stat):
-        self._stat(stat, attrs={'info': self._get_tag_stat_info(stat),
-                                'links': self._get_tag_links(stat),
-                                'doc': stat.doc,
-                                'combined': stat.combined})
-
-    def _get_tag_links(self, stat):
-        return ':::'.join(':'.join([title, url]) for url, title in stat.links)
-
-    def _stat(self, stat, name=None, attrs=None):
-        attrs = attrs or {}
-        attrs['pass'] = str(stat.passed)
-        attrs['fail'] = str(stat.failed)
-        self._writer.element('stat', name or stat.name, attrs)
-
-    def _get_tag_stat_info(self, stat):
-        if stat.critical:
-            return 'critical'
-        if stat.non_critical:
-            return 'non-critical'
-        if stat.combined:
-            return 'combined'
-        return ''
-
-    def start_errors(self):
+    def start_errors(self, errors=None):
         self._writer.start('errors')
 
-    def end_errors(self):
+    def end_errors(self, errors=None):
         self._writer.end('errors')
 
     def _write_list(self, container_tag, item_tag, items):

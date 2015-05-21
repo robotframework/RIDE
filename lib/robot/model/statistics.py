@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -19,7 +19,11 @@ from .visitor import SuiteVisitor
 
 
 class Statistics(object):
+    """Container for total, suite and tag statistics.
 
+    Accepted parameters have the same semantics as the matching command line
+    options.
+    """
     def __init__(self, suite, suite_stat_level=-1, tag_stat_include=None,
                  tag_stat_exclude=None, tag_stat_combine=None, tag_doc=None,
                  tag_stat_link=None):
@@ -29,8 +33,11 @@ class Statistics(object):
                                            tag_stat_exclude, tag_stat_combine,
                                            tag_doc, tag_stat_link)
         suite.visit(StatisticsBuilder(total_builder, suite_builder, tag_builder))
+        #: Instance of :class:`~robot.model.totalstatistics.TotalStatistics`.
         self.total = total_builder.stats
+        #: Instance of :class:`~robot.model.suitestatistics.SuiteStatistics`.
         self.suite = suite_builder.stats
+        #: Instance of :class:`~robot.model.tagstatistics.TagStatistics`.
         self.tags = tag_builder.stats
 
     def visit(self, visitor):

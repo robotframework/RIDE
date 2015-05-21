@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ class DataRow(object):
         return self.cells[0] if self.cells else ''
 
     @property
-    def _tail(self):
+    def tail(self):
         return self.cells[1:]
 
     @property
@@ -64,7 +64,7 @@ class DataRow(object):
 
     def dedent(self):
         datarow = DataRow([])
-        datarow.cells = self._tail
+        datarow.cells = self.tail
         datarow.comments = self.comments
         return datarow
 
@@ -76,7 +76,7 @@ class DataRow(object):
         return value.lower().startswith(self._ye_olde_metadata_prefix)
 
     def _convert_to_new_style_metadata(self):
-        return ['Metadata'] + [self.head.split(':', 1)[1].strip()] + self._tail
+        return ['Metadata'] + [self.head.split(':', 1)[1].strip()] + self.tail
 
     def starts_for_loop(self):
         if self.head and self.head.startswith(':'):

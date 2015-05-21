@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -13,28 +13,27 @@
 #  limitations under the License.
 
 from robot.utils import (format_assign_message, get_elapsed_time,
-                         get_error_message, get_timestamp, plural_or_not)
-from robot.errors import (DataError, ExecutionFailed, ExecutionFailures,
+                         get_error_message, get_timestamp, plural_or_not, frange)
+from robot.errors import (ContinueForLoop, DataError, ExecutionFailed,
+                          ExecutionFailures, ExecutionPassed, ExitForLoop,
                           HandlerExecutionFailed)
-from robot.common import BaseKeyword
+
 from robot.variables import is_scalar_var, VariableAssigner
 
 
 class Keywords(object):
 
-    def __init__(self, steps, template=None):
+    def __init__(self, steps, templated=False):
         self._keywords = []
-        self._templated = bool(template)
-        if self._templated:
-            steps = [s.apply_template(template) for s in steps]
+        self._templated = templated
         for s in steps:
-            self._add_step(s, template)
+            self._add_step(s)
 
-    def _add_step(self, step, template):
+    def _add_step(self, step):
         if step.is_comment():
             return
         if step.is_for_loop():
-            keyword = ForLoop(step, template)
+            keyword = ForLoop(step, self._templated)
         else:
             keyword = Keyword(step.keyword, step.args, step.assign)
         self.add_keyword(keyword)
@@ -47,10 +46,14 @@ class Keywords(object):
         for kw in self._keywords:
             try:
                 kw.run(context)
-            except ExecutionFailed, err:
-                errors.extend(err.get_errors())
-                if not err.can_continue(context.teardown, self._templated,
-                                        context.dry_run):
+            except ExecutionPassed, exception:
+                exception.set_earlier_failures(errors)
+                raise exception
+            except ExecutionFailed, exception:
+                errors.extend(exception.get_errors())
+                if not exception.can_continue(context.in_teardown,
+                                              self._templated,
+                                              context.dry_run):
                     break
         if errors:
             raise ExecutionFailures(errors)
@@ -62,10 +65,37 @@ class Keywords(object):
         return iter(self._keywords)
 
 
-class Keyword(BaseKeyword):
+class _BaseKeyword:
+
+    def __init__(self, name='', args=None, doc='', timeout='', type='kw'):
+        self.name = name
+        self.args = args or []
+        self.doc = doc
+        self.timeout = timeout
+        self.type = type
+        self.message = ''
+        self.status = 'NOT_RUN'
+
+    @property
+    def passed(self):
+        return self.status == 'PASS'
+
+    def serialize(self, serializer):
+        serializer.start_keyword(self)
+        serializer.end_keyword(self)
+
+    def _get_status(self, error):
+        if not error:
+            return 'PASS'
+        if isinstance(error, ExecutionPassed) and not error.earlier_failures:
+            return 'PASS'
+        return 'FAIL'
+
+
+class Keyword(_BaseKeyword):
 
     def __init__(self, name, args, assign=None, type='kw'):
-        BaseKeyword.__init__(self, name, args, type=type)
+        _BaseKeyword.__init__(self, name, args, type=type)
         self.assign = assign or []
         self.handler_name = name
 
@@ -74,7 +104,7 @@ class Keyword(BaseKeyword):
         try:
             return_value = self._run(handler, context)
         except ExecutionFailed, err:
-            self.status = 'FAIL' if not err.exit_for_loop else 'PASS'
+            self.status = self._get_status(err)
             self._end(context, error=err)
             raise
         else:
@@ -85,7 +115,7 @@ class Keyword(BaseKeyword):
 
     def _start(self, context):
         handler = context.get_handler(self.handler_name)
-        handler.init_keyword(context.get_current_vars())
+        handler.init_keyword(context.variables)
         self.name = self._get_name(handler.longname)
         self.doc = handler.shortdoc
         self.timeout = getattr(handler, 'timeout', '')
@@ -117,7 +147,7 @@ class Keyword(BaseKeyword):
         if error and self.type == 'teardown':
             self.message = unicode(error)
         try:
-            if not error or error.can_continue(context.teardown):
+            if not error or error.can_continue(context.in_teardown):
                 self._set_variables(context, return_value, error)
         finally:
             context.end_keyword(self)
@@ -135,22 +165,23 @@ class Keyword(BaseKeyword):
 
     def _report_failure(self, context):
         failure = HandlerExecutionFailed()
-        if not failure.exit_for_loop:
-            context.output.fail(failure.full_message)
-            if failure.traceback:
-                context.output.debug(failure.traceback)
+        if failure.timeout:
+            context.timeout_occurred = True
+        context.output.fail(failure.full_message)
+        if failure.traceback:
+            context.output.debug(failure.traceback)
         raise failure
 
 
-class ForLoop(BaseKeyword):
+class ForLoop(_BaseKeyword):
 
-    def __init__(self, forstep, template=None):
-        BaseKeyword.__init__(self, self._get_name(forstep), type='for')
+    def __init__(self, forstep, templated=False):
+        _BaseKeyword.__init__(self, self._get_name(forstep), type='for')
         self.vars = forstep.vars
         self.items = forstep.items
         self.range = forstep.range
-        self.keywords = Keywords(forstep.steps, template)
-        self._templated = bool(template)
+        self.keywords = Keywords(forstep.steps, templated)
+        self._templated = templated
 
     def _get_name(self, data):
         return '%s %s [ %s ]' % (' | '.join(data.vars),
@@ -161,7 +192,7 @@ class ForLoop(BaseKeyword):
         self.starttime = get_timestamp()
         context.start_keyword(self)
         error = self._run_with_error_handling(self._validate_and_run, context)
-        self.status = 'PASS' if not error else 'FAIL'
+        self.status = self._get_status(error)
         self.endtime = get_timestamp()
         self.elapsedtime = get_elapsed_time(self.starttime, self.endtime)
         context.end_keyword(self)
@@ -200,13 +231,23 @@ class ForLoop(BaseKeyword):
         items, iteration_steps = self._get_items_and_iteration_steps(context)
         for i in iteration_steps:
             values = items[i:i+len(self.vars)]
-            err = self._run_one_round(context, self.vars, values)
-            if err:
-                if err.exit_for_loop:
+            exception = self._run_one_round(context, self.vars, values)
+            if exception:
+                if isinstance(exception, ExitForLoop):
+                    if exception.earlier_failures:
+                        errors.extend(exception.earlier_failures.get_errors())
                     break
-                errors.extend(err.get_errors())
-                if not err.can_continue(context.teardown, self._templated,
-                                        context.dry_run):
+                if isinstance(exception, ContinueForLoop):
+                    if exception.earlier_failures:
+                        errors.extend(exception.earlier_failures.get_errors())
+                    continue
+                if isinstance(exception, ExecutionPassed):
+                    exception.set_earlier_failures(errors)
+                    raise exception
+                errors.extend(exception.get_errors())
+                if not exception.can_continue(context.in_teardown,
+                                              self._templated,
+                                              context.dry_run):
                     break
         if errors:
             raise ExecutionFailures(errors)
@@ -214,16 +255,16 @@ class ForLoop(BaseKeyword):
     def _get_items_and_iteration_steps(self, context):
         if context.dry_run:
             return self.vars, [0]
-        items = self._replace_vars_from_items(context.get_current_vars())
+        items = self._replace_vars_from_items(context.variables)
         return items, range(0, len(items), len(self.vars))
 
     def _run_one_round(self, context, variables, values):
         foritem = _ForItem(variables, values)
         context.start_keyword(foritem)
         for var, value in zip(variables, values):
-            context.get_current_vars()[var] = value
+            context.variables[var] = value
         error = self._run_with_error_handling(self.keywords.run, context)
-        foritem.end('PASS' if not error or error.exit_for_loop else 'FAIL')
+        foritem.end(self._get_status(error))
         context.end_keyword(foritem)
         return error
 
@@ -239,29 +280,39 @@ class ForLoop(BaseKeyword):
 
     def _get_range_items(self, items):
         try:
-            items = [self._to_int_with_arithmetics(item) for item in items]
+            items = [self._to_number_with_arithmetics(item) for item in items]
         except:
             raise DataError('Converting argument of FOR IN RANGE failed: %s'
                             % get_error_message())
         if not 1 <= len(items) <= 3:
             raise DataError('FOR IN RANGE expected 1-3 arguments, '
                             'got %d instead.' % len(items))
-        return range(*items)
+        return frange(*items)
 
-    def _to_int_with_arithmetics(self, item):
+    def _to_number_with_arithmetics(self, item):
+        if isinstance(item, (int, long, float)):
+            return item
         item = str(item)
-        try:
-            return int(item)
-        except ValueError:
-            return int(eval(item))
+        # eval() would also convert to int or float, but it sometimes very
+        # mysteriously fails with IronPython (seems to be related to timeouts)
+        # and thus it's better to avoid it.
+        for converter in int, float:
+            try:
+                return converter(item)
+            except ValueError:
+                pass
+        number = eval(item, {})
+        if not isinstance(number, (int, long, float)):
+            raise TypeError("Expected number, got '%s' instead." % item)
+        return number
 
 
-class _ForItem(BaseKeyword):
+class _ForItem(_BaseKeyword):
 
     def __init__(self, vars, items):
         name = ', '.join(format_assign_message(var, item)
                          for var, item in zip(vars, items))
-        BaseKeyword.__init__(self, name, type='foritem')
+        _BaseKeyword.__init__(self, name, type='foritem')
         self.starttime = get_timestamp()
 
     def end(self, status):

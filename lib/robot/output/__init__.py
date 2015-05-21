@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,9 +12,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-"""TImplements runtime logging and listener interface.
+"""Package for internal logging and other output.
 
-This package is likely to change in RF 2.8.
+Not part of the public API, and also subject to change in the future when
+test execution is refactored.
 """
 
 from .output import Output

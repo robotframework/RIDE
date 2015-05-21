@@ -1,15 +1,24 @@
 /* Generic and misc styles */
 body {
-    font-family: sans-serif;
+    font-family: Helvetica, sans-serif;
     font-size: 0.8em;
     color: black;
     padding: 6px;
     background: white;
 }
+table {
+    table-layout: fixed;
+    word-wrap: break-word;
+    empty-cells: show;
+    font-size: 1em;
+}
+th, td {
+    vertical-align: top;
+}
 br {
     mso-data-placement: same-cell; /* maintain line breaks in Excel */
 }
-a:link, a:visited {
+a, a:link, a:visited {
     text-decoration: none;
     color: blue;
 }
@@ -20,7 +29,7 @@ a:hover, a:active {
     text-decoration: underline;
     color: purple;
 }
-.parent_name {
+.parent-name {
     font-size: 0.7em;
     letter-spacing: -0.07em;
 }
@@ -29,24 +38,33 @@ a:hover, a:active {
 }
 /* Headers */
 #header {
-    width: 63em;
+    width: 65em;
     height: 3em;
     margin: 6px 0;
 }
 h1 {
     float: left;
-    width: 70%;
     margin: 0 0 0.5em 0;
+    width: 75%;
 }
 h2 {
     clear: left;
 }
 #generated {
     float: right;
-    width : 29%;
     text-align: right;
     font-size: 0.9em;
     white-space: nowrap;
+}
+/* Documentation headers */
+.doc > h2 {
+    font-size: 1.2em;
+}
+.doc > h3 {
+    font-size: 1.1em;
+}
+.doc > h4 {
+    font-size: 1.0em;
 }
 /* Status text colors -- !important allows using them in links */
 .error, .fail {
@@ -60,11 +78,11 @@ h2 {
     color: #FFCC00 !important;
     font-weight: bold;
 }
-.not_run {
+.not-run {
     color: #444444 !important;
 }
 /* Top right header */
-#top_right_header {
+#top-right-header {
     position: fixed;
     top: 0;
     right: 0;
@@ -72,7 +90,7 @@ h2 {
     width: 12em;
     text-align: center;
 }
-#report_or_log_link a {
+#report-or-log-link a {
     display: block;
     background: black;
     color: white;
@@ -81,10 +99,10 @@ h2 {
     padding: 0.3em 0;
     border-bottom-left-radius: 4px;
 }
-#report_or_log_link a:hover {
+#report-or-log-link a:hover {
     color: yellow;
 }
-#log_level_selector {
+#log-level-selector {
     padding: 0.3em 0;
     font-size: 0.9em;
     border-bottom-left-radius: 4px;
@@ -92,13 +110,13 @@ h2 {
 }
 /* Statistics table */
 .statistics {
-    width: 63em;
+    width: 65em;
     border-collapse: collapse;
     empty-cells: show;
     margin-bottom: 1em;
 }
 .statistics tr:hover {
-    background: #F4F4FF;
+    background: #ECECF7;
     cursor: pointer;
 }
 .statistics th, .statistics td {
@@ -107,52 +125,55 @@ h2 {
 }
 .statistics th {
     background-color: #DCDCF0;
+    padding: 0.2em 0.3em;
 }
-.stats_col_stat {
-    width: 3em;
-    text-align: center;
+.statistics td {
+    vertical-align: middle;
 }
-.stats_col_elapsed {
+.stats-col-stat {
     width: 4.5em;
     text-align: center;
 }
-.stats_col_graph {
+.stats-col-elapsed {
+    width: 5.5em;
+    text-align: center;
+}
+.stats-col-graph {
     width: 9em;
 }
-th.stats_col_graph:hover {
+th.stats-col-graph:hover {
     cursor: default;
 }
-.stat_name {
+.stat-name {
     float: left;
 }
-.stat_name a, .stat_name span {
+.stat-name a, .stat-name span {
     font-weight: bold;
 }
-.tag_links {
+.tag-links {
     font-size: 0.9em;
     float: right;
     margin-top: 0.05em;
 }
-.tag_links span {
+.tag-links span {
     margin-left: 0.2em;
 }
 /* Statistics graph */
-.graph, .empty_graph {
+.graph, .empty-graph {
     border: 1px solid black;
     width: auto;
-    height: 8px;
+    height: 7px;
     padding: 0;
     background: red;
 }
-.empty_graph {
+.empty-graph {
     background: #E9E9E9;
 }
-.pass_bar, .fail_bar {
-    position: relative;
+.pass-bar, .fail-bar {
     float: left;
     height: 100%;
 }
-.pass_bar {
+.pass-bar {
     background: #00F000;
 }
 /* Tablesorter - adapted from provided Blue Skin */
@@ -162,14 +183,21 @@ th.stats_col_graph:hover {
     background-position: center right;
     cursor: pointer;
 }
-.tablesorter-headerSortUp {
+.tablesorter-header:hover {
+    background-color: #B8C8E3;
+}
+.tablesorter-headerAsc {
     background-image: url(data:image/gif;base64,R0lGODlhCwAJAKEAAAAAAH9/fwAAAAAAACH5BAEAAAIALAAAAAALAAkAAAIUlBWnFr3cnIr0WQOyBmvzp13CpxQAOw==);
     background-color: #B8C8E3 !important;
 }
-.tablesorter-headerSortDown {
+.tablesorter-headerDesc {
     background-image: url(data:image/gif;base64,R0lGODlhCwAJAKEAAAAAAH9/fwAAAAAAACH5BAEAAAIALAAAAAALAAkAAAIUlAWnBr3cnIr0WROyDmvzp13CpxQAOw==);
     background-color: #B8C8E3 !important;
 }
-.narrow {
-    padding-right: 1em !important;
+.sorter-false {
+    background-image: none;
+    cursor: default;
+}
+.sorter-false:hover {
+    background-color: #DCDCF0;
 }

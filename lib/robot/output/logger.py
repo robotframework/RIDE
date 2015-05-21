@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -34,20 +34,18 @@ class Logger(AbstractLogger):
     to get errors/warnings into console is using 'register_console_logger'.
     """
 
-    def __init__(self):
+    def __init__(self, register_console_logger=True):
         self._loggers = LoggerCollection()
         self._message_cache = []
-        self._register_console_logger()
-        self._console_logger_disabled = False
+        self._console_logger = None
         self._started_keywords = 0
+        self._error_occurred = False
+        self._error_listener = None
+        if register_console_logger:
+            self.register_console_logger()
 
     def disable_message_cache(self):
         self._message_cache = None
-
-    def disable_automatic_console_logger(self):
-        if not self._console_logger_disabled:
-            self._console_logger_disabled = True
-            return self._loggers.remove_first_regular_logger()
 
     def register_logger(self, *loggers):
         for log in loggers:
@@ -69,13 +67,23 @@ class Logger(AbstractLogger):
 
     def register_console_logger(self, width=78, colors='AUTO', markers='AUTO',
                                 stdout=None, stderr=None):
-        self.disable_automatic_console_logger()
-        self._register_console_logger(width, colors, markers, stdout, stderr)
+        logger = CommandLineMonitor(width, colors, markers, stdout, stderr)
+        if self._console_logger:
+            self._loggers.unregister_logger(self._console_logger)
+        self._console_logger = logger
+        self._loggers.register_regular_logger(logger)
 
-    def _register_console_logger(self, width=78, colors='AUTO', markers='AUTO',
-                                 stdout=None, stderr=None):
-        monitor = CommandLineMonitor(width, colors, markers, stdout, stderr)
-        self._loggers.register_regular_logger(monitor)
+    def unregister_console_logger(self):
+        if not self._console_logger:
+            return None
+        logger = self._console_logger
+        self._loggers.unregister_logger(logger)
+        self._console_logger = None
+        return logger
+
+    # TODO: Remove in RF 2.9. Not used outside utests since 2.8.4 but may
+    # be used by external tools. Need to check that before removal.
+    disable_automatic_console_logger = unregister_console_logger
 
     def register_file_logger(self, path=None, level='INFO'):
         if not path:
@@ -90,12 +98,21 @@ class Logger(AbstractLogger):
         else:
             self.register_logger(logger)
 
+    def register_error_listener(self, listener):
+        self._error_listener = listener
+        if self._error_occurred:
+            listener()
+
     def message(self, msg):
         """Messages about what the framework is doing, warnings, errors, ..."""
         for logger in self._loggers.all_loggers():
             logger.message(msg)
         if self._message_cache is not None:
             self._message_cache.append(msg)
+        if msg.level == 'ERROR':
+            self._error_occurred = True
+            if self._error_listener:
+                self._error_listener()
 
     def _log_message(self, msg):
         """Log messages written (mainly) by libraries"""
@@ -175,6 +192,7 @@ class LoggerCollection(object):
         self._context_changing_loggers.append(_LoggerProxy(logger))
         return self._context_changing_loggers[-1]
 
+    # TODO: Remove in RF 2.9. Doesn't seem to be used anywhere since 2.8.4.
     def remove_first_regular_logger(self):
         return self._regular_loggers.pop(0)
 

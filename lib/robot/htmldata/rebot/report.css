@@ -1,10 +1,10 @@
 /* Generic table styles */
 table {
-    background: white;
-    border: 1px solid black;
-    border-collapse: collapse;
-    empty-cells: show;
     margin: 0 1px;
+    background: white;
+}
+tr {
+    background: white;
 }
 th {
     background: #DCDCF0;
@@ -12,8 +12,10 @@ th {
 }
 /* Summary and total/tag/suite details */
 .details {
+    border: 1px solid black;
+    border-collapse: collapse;
     clear: both;
-    width: 63em;
+    width: 65em;
     margin-bottom: 1em;
 }
 .details th {
@@ -28,21 +30,69 @@ th {
     vertical-align: top;
     padding: 0.2em 0.4em;
 }
-#selector th, #selector td {
+.selector th, .selector td {
     padding-top: 0.5em;
-    padding-bottom: 1em;
+    padding-bottom: 0.5em;
     white-space: normal;
 }
-#print_selector {
+.first-selector th, .first-selector td{
+    padding-bottom: 0.2em;
+}
+.middle-selector th, .middle-selector td {
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+}
+.last-selector th, .last-selector td{
+    padding-top: 0.2em;
+}
+#print-selector {
     display: none;
 }
+/* Search */
+#search-suite, #search-test, #search-include, #search-exclude {
+    width: 25em;
+}
+#search a:hover {
+    text-decoration: none;
+}
+#search-help div {
+    margin: 0.5em 0.5em 0.7em 0;
+    padding: 0.7em;
+    background: #ECECF7;
+    border: 1px solid #BCBCD7;
+    border-radius: 3px;
+}
+#search-help h3, #search-help p {
+    margin: 0 0 0.7em 0;
+}
+.search-help-examples {
+    table-layout: auto;
+    width: 100%;
+}
+.search-help-examples, .search-help-examples tr,
+.search-help-examples th, .search-help-examples td {
+    background: transparent;
+    margin: 0;
+}
+.search-help-examples th, .search-help-examples td {
+    padding: 0.2em 0.7em 0.2em 0;
+}
+.help-item {
+    width: 10%;
+}
+.help-explanation {
+    width: 65%;
+}
+.help-examples {
+    width: 25%;
+}
 /* Tabs - adapted from http://www.htmldog.com/articles/tabs */
-#detail_tabs {
+#detail-tabs {
     list-style: none;
     padding: 0;
     margin: 0 1em;
 }
-.detail_tab {
+.detail-tab {
     float: left;
     background: #DCDCF0;
     border: 1px solid black;
@@ -51,62 +101,89 @@ th {
     padding-top: 0.1em;
     border-radius: 3px 3px 0 0;
 }
-.detail_tab:hover {
+.detail-tab:hover {
     background: yellow;
 }
-.detail_tab a {
+.detail-tab a {
     color: black;
     text-decoration: none;
     font-weight: bold;
     padding: 0 1em;
 }
-.detail_tab_selected {
+.detail-tab-selected {
     position: relative;
     top: 1px;
     background: white;
 }
-.detail_tab_selected:hover {
+.detail-tab-selected:hover {
     background: white;
 }
 /* Test details table */
-#test_details {
+#test-details {
     width: 100%;
+    border-spacing: 1px;
+    background-color: black;
 }
-#test_details tr:hover {
+#test-details > tbody > tr:hover {
     background: #F4F4FF;
+    cursor: pointer;
 }
-#test_details th, table#test_details td {
-    border: 1px solid black;
-    padding: 0 0.2em;
-}
-#test_details th {
+#test-details th, #test-details td {
     padding: 0.2em;
 }
-.details_col_name {
+.details-limited {
+    max-height: 20em;
+    overflow: auto;
+}
+.details-col-header {
+    padding-right: 1em;
+}
+.details-col-toggle {
+    float: left;
+    color: #808080;
+    cursor: pointer;
+}
+.details-col-toggle:hover {
+    color: black;
+}
+.details-col-name {
     min-width: 20em;
     font-weight: bold;
 }
-.details_col_doc {
+.details-col-doc {
     min-width: 10em;
 }
-.details_col_tags {
+.details-col-tags {
     min-width: 10em;
 }
-.details_col_crit {
-    width: 2em;
+.details-col-crit {
+    width: 3.5em;
     text-align: center;
 }
-.details_col_status {
-    width: 3em;
+.details-col-status {
+    width: 4.5em;
     text-align: center;
 }
-.details_col_msg {
+.details-col-msg {
     min-width: 20em;
 }
-.details_col_elapsed {
-    width: 5em;
+.details-col-elapsed {
+    width: 7em;
+    text-align: center;
 }
-.details_col_times {
-    width: 9em;
+.details-col-times {
+    width: 11em;
     white-space: nowrap;
+    text-align: center;
+}
+.hidden .details-col-header, td.hidden > div {
+    display: none;
+}
+.hidden {
+    width: 13px;
+    min-width: 0;
+    background-image: none;
+}
+th.hidden:hover {
+    background-color: #DCDCF0;
 }

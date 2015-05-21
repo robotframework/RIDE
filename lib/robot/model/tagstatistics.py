@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -22,9 +22,15 @@ from .tags import TagPatterns
 
 
 class TagStatistics(object):
+    """Container for tag statistics.
+    """
 
     def __init__(self, combined_stats):
+         #: Dictionary, where key is the name of the tag as a string and value
+         #: is an instance of :class:`~robot.model.stats.TagStat`.
         self.tags = NormalizedDict(ignore=['_'])
+        #: Dictionary, where key is the name of the created tag as a string
+        # and value is an instance of :class:`~robot.model.stats.TagStat`.
         self.combined = combined_stats
 
     def visit(self, visitor):

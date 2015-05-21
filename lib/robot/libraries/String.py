@@ -1,4 +1,4 @@
-#  Copyright 2008-2013 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -18,11 +18,11 @@ from random import randint
 from string import ascii_lowercase, ascii_uppercase, digits
 
 from robot.api import logger
-from robot.utils import unic
+from robot.utils import unic, lower
 from robot.version import get_version
 
 
-class String:
+class String(object):
     """A test library for string manipulation and verification.
 
     `String` is Robot Framework's standard library for manipulating
@@ -41,9 +41,38 @@ class String:
     - `Should (Not) Start With`
     - `Should (Not) End With`
     - `Convert To String`
+    - `Convert To Bytes`
     """
     ROBOT_LIBRARY_SCOPE = 'GLOBAL'
     ROBOT_LIBRARY_VERSION = get_version()
+
+    def convert_to_lowercase(self, string):
+        """Converts string to lowercase.
+
+        Examples:
+        | ${str1} = | Convert To Lowercase | ABC |
+        | ${str2} = | Convert To Lowercase | 1A2c3D |
+        | Should Be Equal | ${str1} | abc |
+        | Should Be Equal | ${str2} | 1a2c3d |
+
+        New in Robot Framework 2.8.6.
+        """
+        # Custom `lower` needed due to IronPython bug. See its code and
+        # comments for more details.
+        return lower(string)
+
+    def convert_to_uppercase(self, string):
+        """Converts string to uppercase.
+
+        Examples:
+        | ${str1} = | Convert To Uppercase | abc |
+        | ${str2} = | Convert To Uppercase | 1a2C3d |
+        | Should Be Equal | ${str1} | ABC |
+        | Should Be Equal | ${str2} | 1A2C3D |
+
+        New in Robot Framework 2.8.6.
+        """
+        return string.upper()
 
     def encode_string_to_bytes(self, string, encoding, errors='strict'):
         """Encodes the given Unicode `string` to bytes using the given `encoding`.
@@ -61,9 +90,10 @@ class String:
         | ${bytes} = | Encode String To Bytes | ${string} | UTF-8 |
         | ${bytes} = | Encode String To Bytes | ${string} | ASCII | errors=ignore |
 
-        Use `Decode Bytes To String` if you need to convert byte strings to
-        Unicode strings, and `Convert To String` in `BuiltIn` if you need to
-        convert arbitrary objects to Unicode strings.
+        Use `Convert To Bytes` in `BuiltIn` if you want to create bytes based
+        on character or integer sequences. Use `Decode Bytes To String` if you
+        need to convert byte strings to Unicode strings and `Convert To String`
+        in `BuiltIn` if you need to convert arbitrary objects to Unicode.
 
         New in Robot Framework 2.7.7.
         """
@@ -225,7 +255,7 @@ class String:
 
     def _get_matching_lines(self, string, matches):
         lines = string.splitlines()
-        matching = [ line for line in lines if matches(line) ]
+        matching = [line for line in lines if matches(line)]
         logger.info('%d out of %d lines matched' % (len(matching), len(lines)))
         return '\n'.join(matching)
 
@@ -234,6 +264,7 @@ class String:
 
         `search_for` is used as a literal string. See `Replace String
         Using Regexp` if more powerful pattern matching is needed.
+        If you need to just remove a string see `Remove String`.
 
         If the optional argument `count` is given, only that many
         occurrences from left are replaced. Negative `count` means
@@ -244,8 +275,10 @@ class String:
         string is not altered.
 
         Examples:
-        | ${str} = | Replace String | ${str} | Hello | Hi     |   |
-        | ${str} = | Replace String | ${str} | world | tellus | 1 |
+        | ${str} =        | Replace String | Hello, world!  | world | tellus   |
+        | Should Be Equal | ${str}         | Hello, tellus! |       |          |
+        | ${str} =        | Replace String | Hello, world!  | l     | ${EMPTY} | count=1 |
+        | Should Be Equal | ${str}         | Helo, world!   |       |          |
         """
         count = self._convert_to_integer(count, 'count')
         return string.replace(search_for, replace_with, count)
@@ -259,15 +292,59 @@ class String:
         information about Python regular expression syntax in general
         and how to use it in Robot Framework test data in particular.
 
+        If you need to just remove a string see `Remove String Using Regexp`.
+
         Examples:
-        | ${str} = | Replace String Using Regexp | ${str} | (Hello|Hi) | Hei  |   |
-        | ${str} = | Replace String Using Regexp | ${str} | 20\\\\d\\\\d-\\\\d\\\\d-\\\\d\\\\d | <DATE>  | 2  |
+        | ${str} = | Replace String Using Regexp | ${str} | 20\\\\d\\\\d-\\\\d\\\\d-\\\\d\\\\d | <DATE> |
+        | ${str} = | Replace String Using Regexp | ${str} | (Hello|Hi) | ${EMPTY} | count=1 |
         """
         count = self._convert_to_integer(count, 'count')
         # re.sub handles 0 and negative counts differently than string.replace
         if count == 0:
             return string
         return re.sub(pattern, replace_with, string, max(count, 0))
+
+    def remove_string(self, string, *removables):
+        """Removes all `removables` from the given `string`.
+
+        `removables` are used as literal strings. Each removable will be
+        matched to a temporary string from which preceding removables have
+        been already removed. See second example below.
+
+        Use `Remove String Using Regexp` if more powerful pattern matching is
+        needed. If only a certain number of matches should be removed,
+        `Replace String` or `Replace String Using Regexp` can be used.
+
+        A modified version of the string is returned and the original
+        string is not altered.
+
+        Examples:
+        | ${str} =        | Remove String | Robot Framework | work   |
+        | Should Be Equal | ${str}        | Robot Frame     |
+        | ${str} =        | Remove String | Robot Framework | o | bt |
+        | Should Be Equal | ${str}        | R Framewrk      |
+
+        New in Robot Framework 2.8.2.
+        """
+        for removable in removables:
+            string = self.replace_string(string, removable, '')
+        return string
+
+    def remove_string_using_regexp(self, string, *patterns):
+        """Removes `patterns` from the given `string`.
+
+        This keyword is otherwise identical to `Remove String`, but
+        the `patterns` to search for are considered to be a regular
+        expression. See `Replace String Using Regexp` for more information
+        about the regular expression syntax. That keyword can also be
+        used if there is a need to remove only a certain number of
+        occurrences.
+
+        New in Robot Framework 2.8.2.
+        """
+        for pattern in patterns:
+            string = self.replace_string_using_regexp(string, pattern, '')
+        return string
 
     def split_string(self, string, separator=None, max_split=-1):
         """Splits the `string` using `separator` as a delimiter string.
@@ -301,18 +378,21 @@ class String:
         an effect only when `max_split` is given.
 
         Examples:
-        | ${first} | ${others} = | Split String | ${string} | - | 1 |
-        | ${others} | ${last} = | Split String From Right | ${string} | - | 1 |
+        | ${first} | ${rest} = | Split String            | ${string} | - | 1 |
+        | ${rest}  | ${last} = | Split String From Right | ${string} | - | 1 |
         """
-        # Strings in Jython 2.2 don't have 'rsplit' methods
-        reversed = self.split_string(string[::-1], separator, max_split)
-        return [ r[::-1] for r in reversed ][::-1]
+        if separator == '':
+            separator = None
+        max_split = self._convert_to_integer(max_split, 'max_split')
+        return string.rsplit(separator, max_split)
 
     def split_string_to_characters(self, string):
-        """Splits the string` to characters.
+        """Splits the given `string` to characters.
 
         Example:
         | @{characters} = | Split String To Characters | ${string} |
+
+        New in Robot Framework 2.7.
         """
         return list(string)
 
@@ -344,6 +424,7 @@ class String:
         characters, and it is possible to use special markers
         explained in the table below:
 
+        | = Marker =  |              = Explanation =                |
         | _[LOWER]_   | Lowercase ASCII characters from 'a' to 'z'. |
         | _[UPPER]_   | Uppercase ASCII characters from 'A' to 'Z'. |
         | _[LETTERS]_ | Lowercase and uppercase ASCII characters.   |
@@ -364,7 +445,7 @@ class String:
                             ('[NUMBERS]', digits)]:
             chars = chars.replace(name, value)
         maxi = len(chars) - 1
-        return ''.join([ chars[randint(0, maxi)] for i in xrange(length) ])
+        return ''.join(chars[randint(0, maxi)] for _ in xrange(length))
 
     def get_substring(self, string, start, end=None):
         """Returns a substring from `start` index to `end` index.

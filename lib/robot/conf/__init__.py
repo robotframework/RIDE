@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,6 +12,15 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-"""Settings for both test execution and output processing."""
+"""Implements settings for both test execution and output processing.
+
+This package implements :class:`~robot.conf.settings.RobotSettings` and
+:class:`~robot.conf.settings.RebotSettings` classes used internally by
+the framework. There should be no need to use these classes externally.
+
+This package can be considered relatively stable. Aforementioned classes
+are likely to be rewritten at some point to be more convenient to use.
+Instantiating them is not likely to change, though.
+"""
 
 from .settings import RobotSettings, RebotSettings

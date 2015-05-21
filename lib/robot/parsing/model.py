@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -27,9 +27,8 @@ from .settings import (Documentation, Fixture, Timeout, Tags, Metadata, Library,
     Resource, Variables, Arguments, Return, Template, MetadataList, ImportList)
 
 
-def TestData(parent=None, source=None, include_suites=[],
+def TestData(parent=None, source=None, include_suites=None,
              warn_on_skipped=False):
-    # TODO: can we change the order of parent and source?? source seems mandatory
     """Parses a file or directory to a corresponding model object.
 
     :param parent: (optional) parent to be used in creation of the model object.
@@ -96,11 +95,10 @@ class _TestData(object):
     def imports(self):
         return self.setting_table.imports
 
-    def report_invalid_syntax(self, table, message, level='ERROR'):
+    def report_invalid_syntax(self, message, level='ERROR'):
         initfile = getattr(self, 'initfile', None)
         path = os.path.join(self.source, initfile) if initfile else self.source
-        LOGGER.write("Error in file '%s' in table '%s': %s"
-                     % (path, table, message), level)
+        LOGGER.write("Error in file '%s': %s" % (path, message), level)
 
     def save(self, **options):
         """Writes this datafile to disk.
@@ -115,7 +113,11 @@ class _TestData(object):
 
 
 class TestCaseFile(_TestData):
-    """The parsed test case file object."""
+    """The parsed test case file object.
+
+    :param parent: parent object to be used in creation of the model object.
+    :param source: path where test data is read from.
+    """
 
     def __init__(self, parent=None, source=None):
         self.directory = os.path.dirname(source) if source else None
@@ -147,7 +149,10 @@ class TestCaseFile(_TestData):
 
 
 class ResourceFile(_TestData):
-    """The parsed resource file object."""
+    """The parsed resource file object.
+
+    :param source: path where resource file is read from.
+    """
 
     def __init__(self, source=None):
         self.directory = os.path.dirname(source) if source else None
@@ -184,6 +189,9 @@ class TestDataDirectory(_TestData):
     """The parsed test data directory object. Contains hiearchical structure
     of other :py:class:`.TestDataDirectory` and :py:class:`.TestCaseFile`
     objects.
+
+    :param parent: parent object to be used in creation of the model object.
+    :param source: path where test data is read from.
     """
 
     def __init__(self, parent=None, source=None):
@@ -195,7 +203,7 @@ class TestDataDirectory(_TestData):
         self.keyword_table = KeywordTable(self)
         _TestData.__init__(self, parent, source)
 
-    def populate(self, include_suites=[], warn_on_skipped=False, recurse=True):
+    def populate(self, include_suites=None, warn_on_skipped=False, recurse=True):
         FromDirectoryPopulator().populate(self.source, self, include_suites,
                                           warn_on_skipped, recurse)
         self.children = [ch for ch in self.children if ch.has_tests()]
@@ -256,7 +264,7 @@ class _Table(object):
         return self.parent.directory
 
     def report_invalid_syntax(self, message, level='ERROR'):
-        self.parent.report_invalid_syntax(self.name, message, level)
+        self.parent.report_invalid_syntax(message, level)
 
     def __nonzero__(self):
         return bool(self._header or len(self))
@@ -402,7 +410,7 @@ class VariableTable(_Table):
         return OldStyleSettingAndVariableTableHeaderMatcher()
 
     def add(self, name, value, comment=None):
-        self.variables.append(Variable(name, value, comment))
+        self.variables.append(Variable(self, name, value, comment))
 
     def __iter__(self):
         return iter(self.variables)
@@ -454,7 +462,8 @@ class KeywordTable(_Table):
 
 class Variable(object):
 
-    def __init__(self, name, value, comment=None):
+    def __init__(self, parent, name, value, comment=None):
+        self.parent = parent
         self.name = name.rstrip('= ')
         if name.startswith('$') and value == []:
             value = ''
@@ -476,6 +485,13 @@ class Variable(object):
 
     def has_data(self):
         return bool(self.name or ''.join(self.value))
+
+    def __nonzero__(self):
+        return self.has_data()
+
+    def report_invalid_syntax(self, message, level='ERROR'):
+        self.parent.report_invalid_syntax("Setting variable '%s' failed: %s"
+                                          % (self.name, message), level)
 
 
 class _WithSteps(object):
@@ -600,9 +616,6 @@ class ForLoop(_WithSteps):
     def is_for_loop(self):
         return True
 
-    def apply_template(self, template):
-        return self
-
     def as_list(self, indent=False, include_comment=True):
         IN = ['IN RANGE' if self.range else 'IN']
         comments = self.comment.as_list() if include_comment else []
@@ -637,11 +650,6 @@ class Step(object):
 
     def is_for_loop(self):
         return False
-
-    def apply_template(self, template):
-        if self.is_comment():
-            return self
-        return Step([template] + self.as_list(include_comment=False))
 
     def is_set(self):
         return True

@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -62,7 +62,7 @@ class SuiteVisitor(object):
 
 
 class SkipAllVisitor(SuiteVisitor):
-
+    """Travels suite and it's sub-suites without doing anything."""
     def visit_suite(self, suite):
         pass
 

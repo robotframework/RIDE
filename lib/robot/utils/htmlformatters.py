@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -21,10 +21,10 @@ class LinkFormatter(object):
     _image_exts = ('.jpg', '.jpeg', '.png', '.gif', '.bmp')
     _link = re.compile('\[(.+?\|.*?)\]')
     _url = re.compile('''
-((^|\ ) ["'([]*)           # begin of line or space and opt. any char "'([
-(\w{3,9}://[\S]+?)         # url (protocol is any alphanum 3-9 long string)
-(?=[])"'.,!?:;]* ($|\ ))   # opt. any char ])"'.,!?:; and end of line or space
-''', re.VERBOSE|re.MULTILINE)
+((^|\ ) ["'\(\[]*)           # begin of line or space and opt. any char "'([
+([a-z][\w+-.]*://[^\s|]+?)   # url
+(?=[\]\)|"'.,!?:;]* ($|\ ))   # opt. any char ])"'.,!?:; and end of line or space
+''', re.VERBOSE|re.MULTILINE|re.IGNORECASE)
 
     def format_url(self, text):
         return self._format_url(text, format_as_image=False)
@@ -92,18 +92,34 @@ _                          # start of italic
 _                          # end of italic
 (?= ["').,!?:;]* ($|\ ) )  # opt. any char "').,!?:; and end of line or space
 ''', re.VERBOSE)
+    _code = re.compile('''
+( (^|\ ) ["'(]* )          # same as above with _ changed to ``
+``
+([^\ `].*?)
+``
+(?= ["').,!?:;]* ($|\ ) )
+''', re.VERBOSE)
 
     def __init__(self):
-        self._format_link = LinkFormatter().format_link
+        self._formatters = [('*', self._format_bold),
+                            ('_', self._format_italic),
+                            ('``', self._format_code),
+                            ('', LinkFormatter().format_link)]
 
     def format(self, line):
-        return self._format_link(self._format_italic(self._format_bold(line)))
+        for marker, formatter in self._formatters:
+            if marker in line:
+                line = formatter(line)
+        return line
 
     def _format_bold(self, line):
-        return self._bold.sub('\\1<b>\\3</b>', line) if '*' in line else line
+        return self._bold.sub('\\1<b>\\3</b>', line)
 
     def _format_italic(self, line):
-        return self._italic.sub('\\1<i>\\3</i>', line) if '_' in line else line
+        return self._italic.sub('\\1<i>\\3</i>', line)
+
+    def _format_code(self, line):
+        return self._code.sub('\\1<code>\\3</code>', line)
 
 
 class HtmlFormatter(object):
@@ -172,9 +188,9 @@ class _Formatter(object):
 class _SingleLineFormatter(_Formatter):
 
     def _handles(self, line):
-        return not self._lines and self._match(line)
+        return not self._lines and self.match(line)
 
-    def _match(self, line):
+    def match(self, line):
         raise NotImplementedError
 
     def format(self, lines):
@@ -185,17 +201,17 @@ class _SingleLineFormatter(_Formatter):
 
 
 class RulerFormatter(_SingleLineFormatter):
-    _match = re.compile('^-{3,}$').match
+    match = re.compile('^-{3,}$').match
 
     def format_line(self, line):
         return '<hr>'
 
 
 class HeaderFormatter(_SingleLineFormatter):
-    _match = re.compile(r'^(={1,3})\s+(\S.*?)\s+\1$').match
+    match = re.compile(r'^(={1,3})\s+(\S.*?)\s+\1$').match
 
     def format_line(self, line):
-        level, text = self._match(line).groups()
+        level, text = self.match(line).groups()
         level = len(level) + 1
         return '<h%d>%s</h%d>' % (level, text, level)
 
@@ -218,7 +234,7 @@ class ParagraphFormatter(_Formatter):
 class TableFormatter(_Formatter):
     _table_line = re.compile('^\| (.* |)\|$')
     _line_splitter = re.compile(' \|(?= )')
-    _format_cell = LineFormatter().format
+    _format_cell_content = LineFormatter().format
 
     def _handles(self, line):
         return self._table_line.match(line) is not None
@@ -235,10 +251,18 @@ class TableFormatter(_Formatter):
         for row in rows:
             row += [''] * (maxlen - len(row))  # fix ragged tables
             table.append('<tr>')
-            table.extend('<td>%s</td>' % self._format_cell(c) for c in row)
+            table.extend(self._format_cell(cell) for cell in row)
             table.append('</tr>')
         table.append('</table>')
         return '\n'.join(table)
+
+    def _format_cell(self, content):
+        if content.startswith('=') and content.endswith('='):
+            tx = 'th'
+            content = content[1:-1].strip()
+        else:
+            tx = 'td'
+        return '<%s>%s</%s>' % (tx, self._format_cell_content(content), tx)
 
 
 class PreformattedFormatter(_Formatter):

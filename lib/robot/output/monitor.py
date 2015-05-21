@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ class CommandLineMonitor(object):
     def end_suite(self, suite):
         self._writer.info(suite.longname, suite.doc)
         self._writer.status(suite.status)
-        self._writer.message(suite.get_full_message())
+        self._writer.message(suite.full_message)
         self._writer.suite_separator()
 
     def start_test(self, test):

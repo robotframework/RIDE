@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -24,3 +24,6 @@ class ModelObject(object):
 
     def __str__(self):
         return unicode(self).encode('ASCII', 'replace')
+
+    def __repr__(self):
+        return repr(str(self))

@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -19,14 +19,14 @@ import re
 import sys
 import glob
 import string
-import codecs
 import textwrap
 
 from robot.errors import DataError, Information, FrameworkError
 from robot.version import get_full_version
 
 from .misc import plural_or_not
-from .encoding import decode_output, decode_from_system, utf8open
+from .encoding import decode_output, decode_from_system
+from .utf8reader import Utf8Reader
 
 
 ESCAPES = dict(
@@ -48,8 +48,9 @@ class ArgumentParser:
     ''', re.VERBOSE)
 
     def __init__(self, usage, name=None, version=None, arg_limits=None,
-                 validator=None, auto_help=True, auto_version=True,
-                 auto_escape=True, auto_pythonpath=True, auto_argumentfile=True):
+                 validator=None, env_options=None, auto_help=True,
+                 auto_version=True, auto_escape=True, auto_pythonpath=True,
+                 auto_argumentfile=True):
         """Available options and tool name are read from the usage.
 
         Tool name is got from the first row of the usage. It is either the
@@ -67,6 +68,7 @@ class ArgumentParser:
         self._auto_escape = auto_escape
         self._auto_pythonpath = auto_pythonpath
         self._auto_argumentfile = auto_argumentfile
+        self._env_options = env_options
         self._short_opts = ''
         self._long_opts = []
         self._multi_opts = []
@@ -76,12 +78,12 @@ class ArgumentParser:
         self._expected_args = ()
         self._create_options(usage)
 
-    def parse_args(self, args_list):
+    def parse_args(self, args):
         """Parse given arguments and return options and positional arguments.
 
         Arguments must be given as a list and are typically sys.argv[1:].
 
-        Options are retuned as a dictionary where long options are keys. Value
+        Options are returned as a dictionary where long options are keys. Value
         is a string for those options that can be given only one time (if they
         are given multiple times the last value is used) or None if the option
         is not used at all. Value for options that can be given multiple times
@@ -121,10 +123,12 @@ class ArgumentParser:
         amount of horizontal space as <---ESCAPES--->. Both help and version
         are wrapped to Information exception.
         """
-        args_list = [decode_from_system(a) for a in args_list]
+        if self._env_options:
+            args = os.getenv(self._env_options, '').split() + list(args)
+        args = [decode_from_system(a) for a in args]
         if self._auto_argumentfile:
-            args_list = self._process_possible_argfile(args_list)
-        opts, args = self._parse_args(args_list)
+            args = self._process_possible_argfile(args)
+        opts, args = self._parse_args(args)
         opts, args = self._handle_special_options(opts, args)
         self._arg_limit_validator(args)
         if self._validator:
@@ -262,7 +266,7 @@ class ArgumentParser:
             self._raise_option_multiple_times_in_usage('--' + long_opt)
         self._names.append(long_opt)
         for sopt in short_opts:
-            if self._short_to_long.has_key(sopt):
+            if sopt in self._short_to_long:
                 self._raise_option_multiple_times_in_usage('-' + sopt)
             self._short_to_long[sopt] = long_opt
         if is_multi:
@@ -367,18 +371,23 @@ class ArgFileParser(object):
 
     def process(self, args):
         while True:
-            index = self._get_index(args)
-            if index < 0:
+            path, replace = self._get_index(args)
+            if not path:
                 break
-            path = args[index+1]
-            args[index:index+2] = self._get_args(path)
+            args[replace] = self._get_args(path)
         return args
 
     def _get_index(self, args):
         for opt in self._options:
-            if opt in args:
-                return args.index(opt)
-        return -1
+            start = opt + '=' if opt.startswith('--') else opt
+            for index, arg in enumerate(args):
+                # Handles `--argumentfile foo` and `-A foo`
+                if arg == opt and index + 1 < len(args):
+                    return args[index+1], slice(index, index+2)
+                # Handles `--argumentfile=foo` and `-Afoo`
+                if arg.startswith(start):
+                    return arg[len(start):], slice(index, index+1)
+        return None, -1
 
     def _get_args(self, path):
         if path.upper() != 'STDIN':
@@ -389,14 +398,11 @@ class ArgFileParser(object):
 
     def _read_from_file(self, path):
         try:
-            with utf8open(path) as f:
-                content = f.read()
+            with Utf8Reader(path) as reader:
+                return reader.read()
         except (IOError, UnicodeError), err:
             raise DataError("Opening argument file '%s' failed: %s"
                             % (path, err))
-        if content.startswith(codecs.BOM_UTF8.decode('UTF-8')):
-            content = content[1:]
-        return content
 
     def _read_from_stdin(self):
         content = sys.__stdin__.read()

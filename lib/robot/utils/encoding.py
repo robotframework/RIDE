@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
 #  limitations under the License.
 
 import sys
-import codecs
-from contextlib import contextmanager
 
 from .encodingsniffer import get_output_encoding, get_system_encoding
 from .unic import unic
@@ -24,9 +22,17 @@ OUTPUT_ENCODING = get_output_encoding()
 SYSTEM_ENCODING = get_system_encoding()
 
 
-def decode_output(string):
-    """Decodes bytes from console encoding to Unicode."""
+def decode_output(string, force=False):
+    """Decodes bytes from console encoding to Unicode.
+
+    By default returns Unicode strings as-is. `force` argument can be used
+    on IronPython where all strings are `unicode` and caller knows decoding
+    is needed.
+    """
+    if isinstance(string, unicode) and not force:
+        return string
     return unic(string, OUTPUT_ENCODING)
+
 
 def encode_output(string, errors='replace'):
     """Encodes Unicode to bytes in console encoding."""
@@ -34,6 +40,7 @@ def encode_output(string, errors='replace'):
     if sys.platform == 'cli':
         return string
     return string.encode(OUTPUT_ENCODING, errors)
+
 
 def decode_from_system(string, can_be_from_java=True):
     """Decodes bytes from system (e.g. cli args or env vars) to Unicode."""
@@ -45,15 +52,12 @@ def decode_from_system(string, can_be_from_java=True):
         string = String(string)
     return unic(string, SYSTEM_ENCODING)
 
-def encode_to_system(string, errors='replace'):
-    """Encodes Unicode to system encoding (e.g. cli args and env vars)."""
-    return string.encode(SYSTEM_ENCODING, errors)
 
-# workaround for Python 2.5.0 bug: http://bugs.python.org/issue1586513
-@contextmanager
-def utf8open(filename, mode='r'):
-    file = codecs.open(filename, mode=mode, encoding='utf8')
-    try:
-        yield file
-    finally:
-        file.close()
+def encode_to_system(string, errors='replace'):
+    """Encodes Unicode to system encoding (e.g. cli args and env vars).
+
+    Non-Unicode strings are first converted to Unicode.
+    """
+    if not isinstance(string, unicode):
+        string = unicode(string)
+    return string.encode(SYSTEM_ENCODING, errors)

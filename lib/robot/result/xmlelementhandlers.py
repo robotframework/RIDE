@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -18,31 +18,32 @@ from robot.errors import DataError
 class XmlElementHandler(object):
 
     def __init__(self, execution_result, root_handler=None):
-        self._stack = [(execution_result, root_handler or RootHandler())]
+        self._stack = [(root_handler or RootHandler(), execution_result)]
 
     def start(self, elem):
-        result, handler = self._stack[-1]
-        self._stack.append(handler.handle_child(elem, result))
+        handler, result = self._stack[-1]
+        handler = handler.get_child_handler(elem)
+        result = handler.start(elem, result)
+        self._stack.append((handler, result))
 
     def end(self, elem):
-        result, handler = self._stack.pop()
+        handler, result = self._stack.pop()
         handler.end(elem, result)
 
 
 class _Handler(object):
 
     def __init__(self):
-        self._child_map = dict((c.tag, c) for c in self._children())
+        self._child_handlers = dict((c.tag, c) for c in self._children())
 
     def _children(self):
         return []
 
-    def handle_child(self, elem, result):
+    def get_child_handler(self, elem):
         try:
-            handler = self._child_map[elem.tag]
+            return self._child_handlers[elem.tag]
         except KeyError:
-            raise DataError("Incompatible XML element '%s'" % elem.tag)
-        return handler.start(elem, result), handler
+            raise DataError("Incompatible XML element '%s'." % elem.tag)
 
     def start(self, elem, result):
         return result
@@ -65,7 +66,8 @@ class RobotHandler(_Handler):
     tag = 'robot'
 
     def start(self, elem, result):
-        result.generator = elem.get('generator', 'unknown').split()[0].upper()
+        generator = elem.get('generator', 'unknown').split()[0].upper()
+        result.generated_by_robot = generator == 'ROBOT'
         return result
 
     def _children(self):
@@ -88,7 +90,7 @@ class RootSuiteHandler(SuiteHandler):
 
     def start(self, elem, result):
         result.suite.name = elem.get('name')
-        result.suite.source = elem.get('source', '')
+        result.suite.source = elem.get('source')
         return result.suite
 
     def _children(self):
@@ -100,7 +102,7 @@ class TestCaseHandler(_Handler):
 
     def start(self, elem, result):
         return result.tests.create(name=elem.get('name'),
-                                   timeout=elem.get('timeout', ''))
+                                   timeout=elem.get('timeout'))
 
     def _children(self):
         return [DocHandler(), TagsHandler(), TestStatusHandler(), KeywordHandler()]
@@ -213,7 +215,7 @@ class ArgumentHandler(_Handler):
     tag = 'arg'
 
     def end(self, elem, result):
-        result.args.append(elem.text or '')
+        result.args += (elem.text or '',)
 
 
 class ErrorsHandler(_Handler):
@@ -229,5 +231,5 @@ class ErrorsHandler(_Handler):
 class StatisticsHandler(_Handler):
     tag = 'statistics'
 
-    def handle_child(self, elem, result):
-        return result, self
+    def get_child_handler(self, elem):
+        return self

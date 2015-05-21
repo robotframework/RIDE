@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ from robot.utils import NormalizedDict
 class Metadata(NormalizedDict):
 
     def __init__(self, initial=None):
-        NormalizedDict.__init__(self, initial, ignore=['_'])
+        NormalizedDict.__init__(self, initial, ignore='_')
 
     def __unicode__(self):
         return u'{%s}' % ', '.join('%s: %s' % (k, self[k]) for k in self)

@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -98,7 +98,8 @@ class _ErrorDetails(object):
         name = name.split('.')[-1]  # Use only last part of the name
         if not message:
             return name
-        if name in self._generic_exceptions:
+        if name in self._generic_exceptions or \
+                getattr(self.error, 'ROBOT_SUPPRESS_NAME', False):
             return message
         return '%s: %s' % (name, message)
 

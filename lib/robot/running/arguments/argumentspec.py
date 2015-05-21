@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,22 +12,25 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import sys
 
-class BaseKeyword:
 
-    def __init__(self, name='', args=None, doc='', timeout='', type='kw'):
+class ArgumentSpec(object):
+
+    def __init__(self, name, type='Keyword', positional=None, defaults=None,
+                 varargs=None, kwargs=None, supports_named=True):
         self.name = name
-        self.args = args or []
-        self.doc = doc
-        self.timeout = timeout
         self.type = type
-        self.message = ''
-        self.status = 'NOT_RUN'
+        self.positional = positional or []
+        self.defaults = defaults or []
+        self.varargs = varargs
+        self.kwargs = kwargs
+        self.supports_named = supports_named
 
     @property
-    def passed(self):
-        return self.status == 'PASS'
+    def minargs(self):
+        return len(self.positional) - len(self.defaults)
 
-    def serialize(self, serializer):
-        serializer.start_keyword(self)
-        serializer.end_keyword(self)
+    @property
+    def maxargs(self):
+        return len(self.positional) if not self.varargs else sys.maxint

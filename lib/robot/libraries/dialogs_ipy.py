@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ class MessageDialog(_AbstractWinformsDialog):
 
 class InputDialog(_AbstractWinformsDialog):
 
-    def __init__(self, message, default):
+    def __init__(self, message, default, hidden=False):
         _AbstractWinformsDialog.__init__(self)
 
 

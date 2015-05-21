@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -112,7 +112,7 @@ class AnchorNameCell(HtmlCell):
                           {'class': 'name'}, escape=False)
 
     def _link_from_name(self, name, type_):
-        return '<a name="%s_%s">%s</a>' % (type_, utils.html_attr_escape(name),
+        return '<a name="%s_%s">%s</a>' % (type_, utils.attribute_escape(name),
                                            utils.html_escape(name))
 
 

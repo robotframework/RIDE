@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -50,7 +50,11 @@ class Screenshot(object):
     Notice that successfully taking screenshots requires tests to be run with
     a physical or virtual display.
 
-    *Using with Python*
+    This library was heavily enhanced in Robot Framework 2.5.5 release. Old
+    keywords for taking screenshots were deprecated and they have since been
+    removed.
+
+    = Using with Python =
 
     With Python you need to have one of the following modules installed to be
     able to use this library. The first module that is found will be used.
@@ -62,9 +66,7 @@ class Screenshot(object):
     - Python Imaging Library (PIL) :: http://www.pythonware.com/products/pil ::
       This module can take screenshots only on Windows.
 
-    Python support was added in Robot Framework 2.5.5.
-
-    *Using with Jython and IronPython*
+    = Using with Jython and IronPython =
 
     With Jython and IronPython this library uses APIs provided by JVM and .NET
     platforms, respectively. These APIs are always available and thus no
@@ -72,7 +74,7 @@ class Screenshot(object):
 
     IronPython support was added in Robot Framework 2.7.5.
 
-    *Where screenshots are saved*
+    = Where screenshots are saved =
 
     By default screenshots are saved into the same directory where the Robot
     Framework log file is written. If no log is created, screenshots are saved
@@ -82,29 +84,6 @@ class Screenshot(object):
    `screenshot_directory` argument in `importing` and `Set Screenshot Directory`
     keyword during execution. It is also possible to save screenshots using
     an absolute path.
-
-    Note that prior to Robot Framework 2.5.5 the default screenshot location
-    was system's temporary directory.
-
-    *Changes in Robot Framework 2.5.5 and Robot Framework 2.6*
-
-    This library was heavily enhanced in Robot Framework 2.5.5 release. The
-    changes are listed below and explained more thoroughly in affected places.
-
-    - The support for using this library on Python (see above) was added.
-    - The default location where screenshots are saved was changed (see above).
-    - New `Take Screenshot` and `Take Screenshot Without Embedding` keywords
-      were added. These keywords should be used for taking screenshots in
-      the future. Other screenshot taking keywords will be deprecated and
-      removed later.
-    - `log_file_directory` argument was deprecated everywhere it was used.
-
-    In Robot Framework 2.6, following additional changes were made:
-
-    - `log_file_directory` argument was removed altogether.
-    - `Set Screenshot Directories` keyword was removed.
-    - `Save Screenshot`, `Save Screenshot To` and `Log Screenshot`
-      keywords were deprecated. They will be removed in Robot Framework 2.8.
     """
 
     ROBOT_LIBRARY_SCOPE = 'TEST SUITE'
@@ -119,9 +98,9 @@ class Screenshot(object):
 
         Examples (use only one of these):
 
-        | *Setting* | *Value*  | *Value*    | *Value* |
-        | Library | Screenshot |            | # Default location |
-        | Library | Screenshot | ${TEMPDIR} | # System temp (this was default prior to 2.5.5) |
+        | =Setting= |  =Value=   |  =Value=   |      =Value=       |
+        | Library   | Screenshot |            | # Default location |
+        | Library   | Screenshot | ${TEMPDIR} | # System temp      |
         """
         self._given_screenshot_dir = self._norm_path(screenshot_directory)
         self._screenshot_taker = ScreenshotTaker()
@@ -157,25 +136,6 @@ class Screenshot(object):
         old = self._screenshot_dir
         self._given_screenshot_dir = path
         return old
-
-    def save_screenshot_to(self, path):
-        """*DEPRECATED* Use `Take Screenshot` or `Take Screenshot Without Embedding` instead."""
-        path = self._screenshot_to_file(path)
-        self._link_screenshot(path)
-        return path
-
-    def save_screenshot(self, basename="screenshot", directory=None):
-        """*DEPRECATED* Use `Take Screenshot` or `Take Screenshot Without Embedding` instead."""
-        path = self._save_screenshot(basename, directory)
-        self._link_screenshot(path)
-        return path
-
-    def log_screenshot(self, basename='screenshot', directory=None,
-                       width='100%'):
-        """*DEPRECATED* Use `Take Screenshot` or `Take Screenshot Without Embedding` instead."""
-        path = self._save_screenshot(basename, directory)
-        self._embed_screenshot(path, width)
-        return path
 
     def take_screenshot(self, name="screenshot", width="800px"):
         """Takes a screenshot in JPEG format and embeds it into the log file.
@@ -272,6 +232,26 @@ class ScreenshotTaker(object):
     def __call__(self, path):
         self._screenshot(path)
 
+    def __nonzero__(self):
+        return self.module != 'no'
+
+    def test(self, path=None):
+        print "Using '%s' module." % self.module
+        if not self:
+            return False
+        if not path:
+            print "Not taking test screenshot."
+            return True
+        print "Taking test screenshot to '%s'." % path
+        try:
+            self(path)
+        except:
+            print "Failed: %s" % utils.get_error_message()
+            return False
+        else:
+            print "Success!"
+            return True
+
     def _get_screenshot_taker(self, module_name):
         if sys.platform.startswith('java'):
             return self._java_screenshot
@@ -341,9 +321,9 @@ class ScreenshotTaker(object):
 
 if __name__ == "__main__":
     if len(sys.argv) not in [2, 3]:
-        sys.exit("Usage: %s <path> [wx|gtk|pil] OR test" % os.path.basename(sys.argv[0]))
+        sys.exit("Usage: %s <path> [wx|gtk|pil] OR test [<path>]" % os.path.basename(sys.argv[0]))
     if sys.argv[1] == 'test':
-        sys.exit('OK' if ScreenshotTaker().module != 'no' else 'NOK')
+        sys.exit(0 if ScreenshotTaker().test(*sys.argv[2:]) else 1)
     path = utils.abspath(sys.argv[1])
     module = sys.argv[2] if len(sys.argv) == 3 else None
     shooter = ScreenshotTaker(module)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,7 +14,21 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-USAGE = """robot.tidy -- Robot Framework test data clean-up tool.
+"""Module implementing the command line entry point for the `Tidy` tool.
+
+This module can be executed from the command line using the following
+approaches::
+
+    python -m robot.tidy
+    python path/to/robot/tidy.py
+
+Instead of ``python`` it is possible to use also other Python interpreters.
+
+This module also provides :class:`Tidy` class and :func:`tidy_cli` function
+that can be used programmatically. Other code is for internal usage.
+"""
+
+USAGE = """robot.tidy -- Robot Framework test data clean-up tool
 
 Version:  <VERSION>
 
@@ -92,6 +106,9 @@ Alternative execution
 In the above examples Tidy is used only with Python, but it works also with
 Jython and IronPython. Above it is executed as an installed module, but it
 can also be run as a script like `python path/robot/tidy.py`.
+
+For more information about Tidy and other built-in tools, see
+http://robotframework.org/robotframework/#built-in-tools.
 """
 
 import os
@@ -110,11 +127,28 @@ from robot.utils import Application
 
 
 class Tidy(object):
+    """Programmatic API for the `Tidy` tool.
 
-    def __init__(self, **options):
-        self._options = options
+    Arguments accepted when creating an instance have same semantics as
+    Tidy command line options with same names.
+    """
+
+    def __init__(self, format='txt', use_pipes=False,
+                 space_count=4, line_separator=os.linesep):
+        self._options = dict(format=format,
+                             pipe_separated=use_pipes,
+                             txt_separating_spaces=space_count,
+                             line_separator=line_separator)
 
     def file(self, path, output=None):
+        """Tidy a file.
+
+        :param path: Path of the input file.
+        :param output: Path of the output file. If not given, output is
+            returned.
+
+        Use :func:`inplace` to tidy files in-place.
+        """
         data = self._parse_data(path)
         outfile = open(output, 'wb') if output else StringIO()
         try:
@@ -124,11 +158,22 @@ class Tidy(object):
         finally:
             outfile.close()
 
-    def directory(self, path):
-        self._save_directory(self._parse_data(path))
+    def inplace(self, *paths):
+        """Tidy file(s) in-place.
 
-    def inplace(self, path):
-        self._save_file(self._parse_data(path))
+        :param paths: Paths of the files to to process.
+        """
+        for path in paths:
+            self._save_file(self._parse_data(path))
+
+    def directory(self, path):
+        """Tidy a directory.
+
+        :param path: Path of the directory to process.
+
+        All files in a directory, recursively, are processed in-place.
+        """
+        self._save_directory(self._parse_data(path))
 
     @disable_curdir_processing
     def _parse_data(self, path):
@@ -168,43 +213,68 @@ class Tidy(object):
 
 
 class TidyCommandLine(Application):
+    """Command line interface for the `Tidy` tool.
+
+    Typically :func:`tidy_cli` is a better suited for command line style
+    usage and :class:`Tidy` for other programmatic usage.
+    """
 
     def __init__(self):
         Application.__init__(self, USAGE, arg_limits=(1,))
 
     def main(self, arguments, recursive=False, inplace=False, format='txt',
              usepipes=False, spacecount=4, lineseparator=os.linesep):
-        tidy = Tidy(format=format, pipe_separated=usepipes,
-                    txt_separating_spaces=spacecount,
-                    line_separator=lineseparator)
+        tidy = Tidy(format=format, use_pipes=usepipes,
+                    space_count=spacecount, line_separator=lineseparator)
         if recursive:
             tidy.directory(arguments[0])
         elif inplace:
-            for source in arguments:
-                tidy.inplace(source)
+            tidy.inplace(*arguments)
         else:
             output = tidy.file(*arguments)
             self.console(output)
 
     def validate(self, opts, args):
-        self._validate_mode_and_arguments(args, **opts)
-        opts['format'] = self._validate_format(args, **opts)
-        opts['lineseparator'] = self._validate_line_sep(**opts)
+        validator = ArgumentValidator()
+        validator.mode_and_arguments(args, **opts)
+        opts['format'] = validator.format(args, **opts)
+        opts['lineseparator'] = validator.line_sep(**opts)
         if not opts['spacecount']:
             opts.pop('spacecount')
         else:
-            opts['spacecount'] = self._validate_spacecount(opts['spacecount'])
+            opts['spacecount'] = validator.spacecount(opts['spacecount'])
         return opts, args
 
-    def _validate_mode_and_arguments(self, args, inplace, recursive, **others):
-        if inplace and recursive:
-            raise DataError('--recursive and --inplace can not be used together.')
-        if recursive and (len(args) > 1 or not os.path.isdir(args[0])):
-            raise DataError('--recursive requires exactly one directory as argument.')
-        if not (inplace or recursive) and len(args) > 2:
-            raise DataError('Default mode requires 1 or 2 arguments.')
 
-    def _validate_format(self, args, format, inplace, recursive, **others):
+class ArgumentValidator(object):
+
+    def mode_and_arguments(self, args, recursive, inplace, **others):
+        validators = {(True, True): self._recursive_and_inplace_together,
+                      (True, False): self._recursive_mode_arguments,
+                      (False, True): self._inplace_mode_arguments,
+                      (False, False): self._default_mode_arguments}
+        validators[(recursive, inplace)](args)
+
+    def _recursive_and_inplace_together(self, args):
+        raise DataError('--recursive and --inplace can not be used together.')
+
+    def _recursive_mode_arguments(self, args):
+        if len(args) != 1:
+            raise DataError('--recursive requires exactly one argument.')
+        if not os.path.isdir(args[0]):
+            raise DataError('--recursive requires input to be a directory.')
+
+    def _inplace_mode_arguments(self, args):
+        if not all(os.path.isfile(path) for path in args):
+            raise DataError('--inplace requires inputs to be files.')
+
+    def _default_mode_arguments(self, args):
+        if len(args) not in (1, 2):
+            raise DataError('Default mode requires 1 or 2 arguments.')
+        if not os.path.isfile(args[0]):
+            raise DataError('Default mode requires input to be a file.')
+
+    def format(self, args, format, inplace, recursive, **others):
         if not format:
             if inplace or recursive or len(args) < 2:
                 return None
@@ -214,16 +284,14 @@ class TidyCommandLine(Application):
             raise DataError("Invalid format '%s'." % format)
         return format
 
-    def _validate_line_sep(self, lineseparator, **others):
-        if not lineseparator:
-            return os.linesep
+    def line_sep(self, lineseparator, **others):
         values = {'native': os.linesep, 'windows': '\r\n', 'unix': '\n'}
         try:
-            return values[lineseparator.lower()]
+            return values[(lineseparator or 'native').lower()]
         except KeyError:
             raise DataError("Invalid line separator '%s'." % lineseparator)
 
-    def _validate_spacecount(self, spacecount):
+    def spacecount(self, spacecount):
         try:
             spacecount = int(spacecount)
             if spacecount < 2:
@@ -233,15 +301,18 @@ class TidyCommandLine(Application):
         return spacecount
 
 
-def tidy_cli(args):
-    """Executes tidy similarly as from the command line.
+def tidy_cli(arguments):
+    """Executes `Tidy` similarly as from the command line.
 
-    :param args: command line arguments as a list of strings.
+    :param arguments: Command line arguments as a list of strings.
 
-    Example:
-        tidy_cli(['--format', 'txt', 'mytests.html'])
+    Example::
+
+        from robot.tidy import tidy_cli
+
+        tidy_cli(['--format', 'txt', 'tests.html'])
     """
-    TidyCommandLine().execute_cli(args)
+    TidyCommandLine().execute_cli(arguments)
 
 
 if __name__ == '__main__':

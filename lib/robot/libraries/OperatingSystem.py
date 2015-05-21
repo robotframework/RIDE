@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,13 +12,16 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import os
-import sys
-import time
-import glob
+from __future__ import with_statement
+import codecs
 import fnmatch
+import glob
+import os
 import shutil
 import subprocess
+import sys
+import tempfile
+import time
 
 try:
     from robot.version import get_version
@@ -76,8 +79,8 @@ class OperatingSystem:
 
     Unless otherwise noted, matching is case-insensitive on
     case-insensitive operating systems such as Windows. Pattern
-    matching is implemented using Python's `fnmatch` module:
-    http://docs.python.org/library/fnmatch.html
+    matching is implemented using
+    [http://docs.python.org/library/fnmatch.html|fnmatch module].
 
     = Path separators =
 
@@ -88,6 +91,23 @@ class OperatingSystem:
     cases the built-in variable `${/}` can be used to keep the test
     data platform independent.
 
+    = Tilde expansion =
+
+    Paths beginning with `~` or `~username` are expanded to the current or
+    specified user's home directory, respectively. The resulting path is
+    operating system dependent, but typically e.g. `~/robot` is expanded to
+    `C:\\Users\\<user>\\robot` on Windows and `/home/<user>/robot` on Linuxes.
+
+    Notice that the `~username` form does not work on Jython or on Windows
+    python 2.5. Tilde expansion is a new feature in Robot Framework 2.8.
+
+    = Process library =
+
+    Process library replaces old process keywords (`Start Process` and
+    `Switch Process`) from OperatingSystem library. These keywords in the
+    OperatingSystem library might be deprecated in the future. This library is
+    new in Robot Framework 2.8.
+
     = Example =
 
     |  *Setting*  |     *Value*     |
@@ -96,13 +116,12 @@ class OperatingSystem:
     | *Variable*  |       *Value*         |
     | ${PATH}     | ${CURDIR}/example.txt |
 
-    | *Test Case* |     *Action*      | *Argument* |    *Argument*       |
-    | Example     | Create File       | ${PATH}    | Some text           |
-    |             | File Should Exist | ${PATH}    |                     |
-    |             | Copy File         | ${PATH}    | ${TEMPDIR}/stuff    |
-    |             | ${output} =       | Run | ${CURDIR}${/}script.py arg |
+    | *Test Case* |     *Action*      | *Argument* |    *Argument*        |
+    | Example     | Create File       | ${PATH}    | Some text            |
+    |             | File Should Exist | ${PATH}    |                      |
+    |             | Copy File         | ${PATH}    | ~/file.txt           |
+    |             | ${output} =       | Run | ${TEMPDIR}${/}script.py arg |
     """
-
     ROBOT_LIBRARY_SCOPE = 'GLOBAL'
     ROBOT_LIBRARY_VERSION = __version__
 
@@ -186,12 +205,13 @@ class OperatingSystem:
         return rc, stdout
 
     def start_process(self, command, stdin=None, alias=None):
-        """Starts the given command as a background process.
+        """It is recommended to use same keyword from Process library instead.
 
-        Starts the process in the background and sets this process as
-        the current process. The following calls of the keywords `Read
-        Process Output` or `Stop Process` affect this process, unless
-        the keyword `Switch Process` is used.
+        Starts the given command as a background process.
+
+        Starts the process in background and sets it as the active process.
+        `Read Process Output` or `Stop Process` keywords affect this process
+        unless `Switch Process` is used in between.
 
         If the command needs input through the standard input stream,
         it can be defined with the `stdin` argument.  It is not
@@ -199,18 +219,17 @@ class OperatingSystem:
         line arguments must be given as part of the command like
         '/tmp/script.sh arg1 arg2'.
 
-        Returns the index of this process. The indexing starts from 1, and it
-        can be used to switch between the processes with the `Switch Process`
-        keyword. To wait until all processes terminate and to reset indexing, the
-        `Stop All Processes` keyword must be used.
+        Returns the index of this process. Indexing starts from 1, and indices
+        can be used to switch between processes using `Switch Process` keyword.
+        `Stop All Processes` can be used to reset indexing.
 
         The optional `alias` is a name for this process that may be used with
         `Switch Process` instead of the returned index.
 
         The standard error stream is redirected to the standard input
-        stream automatically by adding '2>&1' after the executed
-        command. This is done the same way, and for the same reasons,
-        as with `Run` keyword.
+        stream automatically. This is done for the same reasons as with `Run`
+        keyword, but redirecting is done when the process is started and not
+        by adding '2>&1' to the command.
 
         Example:
         | Start Process  | /path/longlasting.sh |
@@ -224,13 +243,16 @@ class OperatingSystem:
         return PROCESSES.register(process, alias)
 
     def switch_process(self, index_or_alias):
-        """Switches the active process to the specified process.
+        """It is recommended to use same keyword from Process library instead.
 
-        The index is the return value of the `Start Process` keyword and an
-        alias may have been defined to it.
+        Switches the active process to the specified process.
+
+        New active process can be specified either using an index or an alias.
+        Indices are return values from `Start Process` and aliases can be
+        given to that keyword.
 
         Example:
-        | Start Process  | /path/script.sh arg  |    | 1st process |
+        | Start Process  | /path/script.sh arg  | alias=1st process |
         | ${2nd} =       | Start Process        | /path/script2.sh |
         | Switch Process | 1st process          |
         | ${out1} =      | Read Process Output  |
@@ -242,56 +264,51 @@ class OperatingSystem:
         PROCESSES.switch(index_or_alias)
 
     def read_process_output(self):
-        """Waits for the process to finish and returns its output.
+        """Waits for a process to finish and returns its output.
 
-        As mentioned in the documentation of `Start Process` keyword,
-        and documented thoroughly in `Run` keyword, the standard error
-        stream is automatically redirected to the standard
-        output. This keyword thus always returns all the output
-        procuded by the command.
+        This keyword waits for a process started with `Start Process` to end
+        and then returns all output it has produced. The returned output
+        contains everything the process has written into the standard output
+        and error streams.
 
-        Note that although the process is finished, it is not removed
-        from the process list. Trying to read from a stopped process
-        nevertheless fails. To reset the process list (and indexes and
-        aliases), `Stop All Processes` must be used.
+        There is no need to use `Stop Process` after using this keyword.
+        Trying to read from an already stopped process fails.
 
-        See `Start Process` and `Switch Process` for more information
-        and examples about running processes.
+        Note that although the process is finished, it still stays as the
+        active process. Use `Switch Process` to switch the active process or
+        `Stop All Processes` to reset the list of started processes.
         """
         output = PROCESSES.current.read()
         PROCESSES.current.close()
         return output
 
     def stop_process(self):
-        """Waits until the current process terminates without reading from it.
+        """Closes the standard output stream of the process.
 
-        Note that this keyword does not actually stop the process, only waits
-        until it terminates on its own. It does not either remove it from the
-        process list. To reset the process list (and indexes and aliases),
-        `Stop All Processes` must be used. Calling Stop Process on a process
-        that has already terminated has no effect.
+        This keyword does not actually stop the process nor even wait for it
+        to terminate. Only thing it does is closing the standard output stream
+        of the process. Depending on the process that may terminate it but
+        that is not guaranteed. Use `Read Process Output` instead if you need
+        to wait for the process to complete.
 
-        See `Start Process` and `Switch Process` for more information.
+        This keyword operates the active process similarly as `Read Process
+        Output`. Stopping an already stopped process is not an error.
         """
         PROCESSES.current.close()
 
     def stop_all_processes(self):
-        """Waits until all the processes terminate and removes them from the
-        process list.
+        """Closes the standard output of all the processes and resets the process list.
 
-        Note that this keyword does not actually stop the processes, only waits
-        until they terminate on their own.
+        Exactly like `Stop Process`, this keyword does not actually stop
+        processes nor even wait for them to terminate.
 
         This keyword resets the indexing that `Start Process` uses. All aliases
         are also deleted. It does not matter have some of the processes
         already been closed or not.
-
-        It is highly recommended to use this keyword in test or suite level
-        teardown to make sure all the started processes are closed.
         """
         PROCESSES.close_all()
 
-    def get_file(self, path, encoding='UTF-8'):
+    def get_file(self, path, encoding='UTF-8', encoding_errors='strict'):
         """Returns the contents of a specified file.
 
         This keyword reads the specified file and returns the contents.
@@ -301,9 +318,20 @@ class OperatingSystem:
         `encoding` defines the encoding of the file. By default the value is
         'UTF-8', which means that UTF-8 and ASCII-encoded files are read
         correctly.
+
+        `encoding_errors` argument controls what to do if decoding some bytes
+        fails. All values accepted by `decode` method in Python are valid, but
+        in practice the following values are most useful:
+
+        - `strict`: fail if characters cannot be decoded (default)
+        - `ignore`: ignore characters that cannot be decoded
+        - `replace`: replace characters that cannot be decoded with
+          a replacement character
+
+        `encoding_errors` argument is new in Robot Framework 2.8.5.
         """
         content = self.get_binary_file(path)
-        return unicode(content, encoding).replace('\r\n', '\n')
+        return unicode(content, encoding, encoding_errors).replace('\r\n', '\n')
 
     def get_binary_file(self, path):
         """Returns the contents of a specified file.
@@ -315,20 +343,17 @@ class OperatingSystem:
         """
         path = self._absnorm(path)
         self._link("Getting file '%s'", path)
-        f = open(path, 'rb')
-        try:
+        with open(path, 'rb') as f:
             return f.read()
-        finally:
-            f.close()
 
-    def grep_file(self, path, pattern, encoding='UTF-8'):
+    def grep_file(self, path, pattern, encoding='UTF-8', encoding_errors='strict'):
         """Returns the lines of the specified file that match the `pattern`.
 
         This keyword reads a file from the file system using the defined
-        `path` and `encoding` similarly as `Get File`. A difference is
-        that only the lines that match the given `pattern` are returned.
-        Lines are returned as a single string catenated back together with
-        newlines and the number of matched lines is automatically logged.
+        `path`, `encoding` and `encoding_errors` similarly as `Get File`. A
+        difference is that only the lines that match the given `pattern` are
+        returned. Lines are returned as a single string catenated back together
+        with newlines and the number of matched lines is automatically logged.
         Possible trailing newline is never returned.
 
         A line matches if it contains the `pattern` anywhere in it and
@@ -343,21 +368,33 @@ class OperatingSystem:
         If more complex pattern matching is needed, it is possible to use
         `Get File` in combination with String library keywords like `Get
         Lines Matching Regexp`.
+
+        `encoding_errors` argument is new in Robot Framework 2.8.5.
         """
         pattern = '*%s*' % pattern
-        orig = self.get_file(path, encoding).splitlines()
-        lines = [line for line in orig if fnmatch.fnmatchcase(line, pattern)]
-        self._info('%d out of %d lines matched' % (len(lines), len(orig)))
-        return '\n'.join(lines)
+        path = self._absnorm(path)
+        lines = []
+        total_lines = 0
+        self._link("Reading file '%s'", path)
+        with codecs.open(path, encoding=encoding, errors=encoding_errors) as f:
+            for line in f.readlines():
+                total_lines += 1
+                line = line.rstrip('\r\n')
+                if fnmatch.fnmatchcase(line, pattern):
+                    lines.append(line)
+            self._info('%d out of %d lines matched' % (len(lines), total_lines))
+            return '\n'.join(lines)
 
-    def log_file(self, path, encoding='UTF-8'):
+    def log_file(self, path, encoding='UTF-8', encoding_errors='strict'):
         """Wrapper for `Get File` that also logs the returned file.
 
         The file is logged with the INFO level. If you want something else,
         just use `Get File` and the built-in keyword `Log` with the desired
         level.
+
+        `encoding_errors` argument is new in Robot Framework 2.8.5.
         """
-        content = self.get_file(path, encoding)
+        content = self.get_file(path, encoding, encoding_errors)
         self._info(content)
         return content
 
@@ -583,32 +620,63 @@ class OperatingSystem:
         If the directory where to create file does not exist it, and possible
         intermediate missing directories, are created.
 
-        Use `Append To File` if you want to append to an existing file,
-        and use `File Should Not Exist` if you want to avoid overwriting
-        existing files.
+        Examples:
+        | Create File | ${dir}/example.txt | Hello, world!      |         |
+        | Create File | ${path}            | Hyv\\xe4 esimerkki | latin-1 |
+
+        Use `Append To File` if you want to append to an existing file
+        and `Create Binary File` if you need to write bytes without encoding.
+        `File Should Not Exist` can be used to avoid overwriting existing
+        files.
         """
-        path = self._write_to_file(path, content, encoding, 'w')
+        path = self._write_to_file(path, content, encoding)
         self._link("Created file '%s'", path)
+
+    def create_binary_file(self, path, content):
+        """Creates a binary file with the given content.
+
+        If content is given as a Unicode string, it is first converted to bytes
+        character by character. All characters with ordinal below 256 can be
+        used and are converted to bytes with same values.
+
+        Byte strings, and possible other types, are written to the file as is.
+
+        If the directory where to create file does not exist it, and possible
+        intermediate missing directories, are created.
+
+        Examples:
+        | Create Binary File | ${dir}/example.png | ${image content}     |
+        | Create Binary File | ${path}            | \\x01\\x00\\xe4\\x00 |
+
+        Use `Create File` if you want to create a text file using a certain
+        encoding. `File Should Not Exist` can be used to avoid overwriting
+        existing files.
+
+        New in Robot Framework 2.8.5.
+        """
+        if isinstance(content, unicode):
+            content = ''.join(chr(ord(c)) for c in content)
+        path = self._write_to_file(path, content)
+        self._link("Created binary file '%s'", path)
 
     def append_to_file(self, path, content, encoding='UTF-8'):
         """Appends the given contend to the specified file.
 
         If the file does not exists, this keyword works exactly the same
-        way as `Create File With Encoding`.
+        way as `Create File`.
         """
-        path = self._write_to_file(path, content, encoding, 'a')
+        path = self._write_to_file(path, content, encoding, mode='a')
         self._link("Appended to file '%s'", path)
 
-    def _write_to_file(self, path, content, encoding, mode):
+    def _write_to_file(self, path, content, encoding=None, mode='w'):
         path = self._absnorm(path)
         parent = os.path.dirname(path)
         if not os.path.exists(parent):
             os.makedirs(parent)
-        f = open(path, mode+'b')
-        try:
-            f.write(content.encode(encoding))
-        finally:
-            f.close()
+        if encoding:
+            content = content.encode(encoding)
+        with open(path, mode+'b') as f:
+            f.write(content)
         return path
 
     def remove_file(self, path):
@@ -694,13 +762,18 @@ class OperatingSystem:
     # Moving and copying files and directories
 
     def copy_file(self, source, destination):
-        """Copies the source file into a new destination.
+        """Copies the source file into the destination.
+
+        Source must be an existing file. Starting from Robot Framework 2.8.4,
+        it can be given as a glob pattern (see `Pattern matching`) that matches
+        exactly one file. How the destination is interpreted is explained below.
 
         1) If the destination is an existing file, the source file is copied
         over it.
 
         2) If the destination is an existing directory, the source file is
-        copied into it. A possible file with the same name is overwritten.
+        copied into it. A possible file with the same name as the source is
+        overwritten.
 
         3) If the destination does not exist and it ends with a path
         separator ('/' or '\\'), it is considered a directory. That
@@ -710,38 +783,140 @@ class OperatingSystem:
         4) If the destination does not exist and it does not end with a path
         separator, it is considered a file. If the path to the file does not
         exist, it is created.
+
+        See also `Copy Files`, `Move File`, and `Move Files`.
         """
         source, destination = self._copy_file(source, destination)
         self._link("Copied file from '%s' to '%s'", source, destination)
 
     def move_file(self, source, destination):
-        """Moves the source file into a new destination.
+        """Moves the source file into the destination.
 
-        Uses `Copy File` keyword internally, and `source` and `destination`
-        arguments have exactly same semantics as with that keyword.
+        Arguments have exactly same semantics as with `Copy File` keyword.
+
+        If the source and destination are on the same filesystem, rename
+        operation is used. Otherwise file is copied to the destination
+        filesystem and then removed from the original filesystem.
+
+        See also `Move Files`, `Copy File`, and `Copy Files`.
         """
-        source, destination = self._copy_file(source, destination)
-        os.remove(source)
+        source, destination, _ = self._prepare_for_move_or_copy(source, destination)
+        shutil.move(source, destination)
         self._link("Moved file from '%s' to '%s'", source, destination)
 
-    def _copy_file(self, source, dest):
-        source = self._absnorm(source)
+    def copy_files(self, *sources_and_destination):
+        """Copies specified files to the target directory.
+
+        Source files can be given as exact paths and as glob patterns (see
+        `Pattern matching`). At least one source must be given, but it is
+        not an error if it is a pattern that does not match anything.
+
+        Last argument must be the destination directory. If the destination
+        does not exist, it will be created.
+
+        Examples:
+        | Copy Files | ${dir}/file1.txt  | ${dir}/file2.txt | ${dir2} |
+        | Copy Files | ${dir}/file-*.txt | ${dir2}          |         |
+
+        See also `Copy File`, `Move File`, and `Move Files`.
+
+        New in Robot Framework 2.8.4.
+        """
+        source_files, dest_dir = self._parse_sources_and_destination(sources_and_destination)
+        for source in source_files:
+            self.copy_file(source, dest_dir)
+
+    def move_files(self, *sources_and_destination):
+        """Moves specified files to the target directory.
+
+        Arguments have exactly same semantics as with `Copy Files` keyword.
+
+        See also `Move File`, `Copy File`, and `Copy Files`.
+
+        New in Robot Framework 2.8.4.
+        """
+        source_files, dest_dir = self._parse_sources_and_destination(sources_and_destination)
+        for source in source_files:
+            self.move_file(source, dest_dir)
+
+    def _parse_sources_and_destination(self, items):
+        if len(items) < 2:
+            raise RuntimeError("Must contain destination and at least one source")
+        sources, destination = items[:-1], items[-1]
+        self._ensure_destination_directory(destination)
+        return self._glob_files(sources), destination
+
+    def _normalize_dest(self, dest):
         dest = dest.replace('/', os.sep)
-        dest_is_dir = dest.endswith(os.sep)
+        dest_is_dir = dest.endswith(os.sep) or os.path.isdir(dest)
         dest = self._absnorm(dest)
+        return dest, dest_is_dir
+
+    def _ensure_destination_directory(self, destination):
+        destination, _ = self._normalize_dest(destination)
+        if not os.path.exists(destination):
+            os.makedirs(destination)
+        elif not os.path.isdir(destination):
+            raise RuntimeError("Destination '%s' exists and is not a directory" % destination)
+
+    def _glob_files(self, patterns):
+        files = []
+        for pattern in patterns:
+            files.extend(glob.glob(self._absnorm(pattern)))
+        return files
+
+    def _prepare_for_move_or_copy(self, source, dest):
+        source, dest, dest_is_dir = self._normalize_source_and_dest(source, dest)
+        self._verify_that_source_is_a_file(source)
+        parent = self._ensure_directory_exists(dest, dest_is_dir)
+        self._ensure_dest_file_does_not_exist(source, dest, dest_is_dir)
+        return source, dest, parent
+
+    def _ensure_dest_file_does_not_exist(self, source, dest, dest_is_dir):
+        if dest_is_dir:
+            dest = os.path.join(dest, os.path.basename(source))
+        if os.path.isfile(dest):
+            os.remove(dest)
+
+    def _copy_file(self, source, dest):
+        source, dest, parent = self._prepare_for_move_or_copy(source, dest)
+        return self._atomic_copy(source, dest, parent)
+
+    def _normalize_source_and_dest(self, source, dest):
+        sources = self._glob_files([source])
+        if len(sources) > 1:
+            raise RuntimeError("Multiple matches with source pattern '%s'" % source)
+        source = sources[0] if sources else source
+        dest, dest_is_dir = self._normalize_dest(dest)
+        return source, dest, dest_is_dir
+
+    def _verify_that_source_is_a_file(self, source):
         if not os.path.exists(source):
             raise RuntimeError("Source file '%s' does not exist" % source)
         if not os.path.isfile(source):
             raise RuntimeError("Source file '%s' is not a regular file" % source)
-        if not os.path.exists(dest):
-            if dest_is_dir:
-                parent = dest
-            else:
-                parent = os.path.dirname(dest)
-            if not os.path.exists(parent):
-                os.makedirs(parent)
-        shutil.copy(source, dest)
-        return source, dest
+
+    def _ensure_directory_exists(self, dest, dest_is_dir):
+        parent = dest if dest_is_dir else os.path.dirname(dest)
+        if not os.path.exists(dest) and not os.path.exists(parent):
+            os.makedirs(parent)
+        return parent
+
+    def _atomic_copy(self, source, destination, destination_parent):
+        # This method tries to ensure that a file copy operation will not fail if the destination file is removed during
+        # copy operation.
+        # This has been an issue for at least some of the users that had a mechanism that polled and removed
+        # the destination - their test cases sometimes failed because the copy file failed.
+        # This is done by first copying the source to a temporary directory on the same drive as the destination is
+        # and then moving (that is almost always in every platform an atomic operation) that temporary file to
+        # the destination.
+        # See http://code.google.com/p/robotframework/issues/detail?id=1502 for details
+        temp_directory = tempfile.mkdtemp(dir=destination_parent) # Temporary directory can be atomically created
+        temp_file = os.path.join(temp_directory, os.path.basename(source))
+        shutil.copy(source, temp_file)
+        shutil.move(temp_file, destination)
+        os.rmdir(temp_directory)
+        return source, destination
 
     def copy_directory(self, source, destination):
         """Copies the source directory into the destination.
@@ -760,11 +935,16 @@ class OperatingSystem:
         `destination` arguments have exactly same semantics as with
         that keyword.
         """
-        source, destination = self._copy_dir(source, destination)
-        shutil.rmtree(source)
+        source, destination = self._prepare_copy_or_move_dir(source, destination)
+        shutil.move(source, destination)
         self._link("Moved directory from '%s' to '%s'", source, destination)
 
     def _copy_dir(self, source, dest):
+        source, dest = self._prepare_copy_or_move_dir(source, dest)
+        shutil.copytree(source, dest)
+        return source, dest
+
+    def _prepare_copy_or_move_dir(self, source, dest):
         source = self._absnorm(source)
         dest = self._absnorm(dest)
         if not os.path.exists(source):
@@ -780,7 +960,6 @@ class OperatingSystem:
             parent = os.path.dirname(dest)
             if not os.path.exists(parent):
                 os.makedirs(parent)
-        shutil.copytree(source, dest)
         return source, dest
 
     # Environment Variables
@@ -811,6 +990,40 @@ class OperatingSystem:
         """
         set_env_var(name, value)
         self._info("Environment variable '%s' set to value '%s'" % (name, value))
+
+    def append_to_environment_variable(self, name, *values, **config):
+        """Appends given `values` to environment variable `name`.
+
+        If the environment variable already exists, values are added after it,
+        and otherwise a new environment variable is created.
+
+        Values are, by default, joined together using the operating system
+        path separator (';' on Windows, ':' elsewhere). This can be changed
+        by giving a separator after the values like `separator=value`. No
+        other configuration parameters are accepted.
+
+        Examples (assuming `NAME` and `NAME2` do not exist initially):
+        | Append To Environment Variable | NAME     | first  |       |
+        | Should Be Equal                | %{NAME}  | first  |       |
+        | Append To Environment Variable | NAME     | second | third |
+        | Should Be Equal                | %{NAME}  | first${:}second${:}third |
+        | Append To Environment Variable | NAME2    | first  | separator=-     |
+        | Should Be Equal                | %{NAME2} | first  |                 |
+        | Append To Environment Variable | NAME2    | second | separator=-     |
+        | Should Be Equal                | %{NAME2} | first-second             |
+
+        New in Robot Framework 2.8.4.
+        """
+        sentinel = object()
+        initial = self.get_environment_variable(name, sentinel)
+        if initial is not sentinel:
+            values = (initial,) + values
+        separator = config.pop('separator', os.pathsep)
+        if config:
+            config = ['='.join(i) for i in sorted(config.items())]
+            raise RuntimeError('Configuration %s not accepted.'
+                               % seq2str(config, lastsep=' or '))
+        self.set_environment_variable(name, separator.join(values))
 
     def remove_environment_variable(self, *names):
         """Deletes the specified environment variable.
@@ -929,7 +1142,8 @@ class OperatingSystem:
         - ${p4} = 'abc/def'
         - ${p5} = 'abc/def'
         """
-        return os.path.normpath(path.replace('/', os.sep)) or '.'
+        path = os.path.normpath(os.path.expanduser(path.replace('/', os.sep)))
+        return path or '.'
 
     def split_path(self, path):
         """Splits the given path from the last path separator ('/' or '\\').
@@ -1210,10 +1424,11 @@ class OperatingSystem:
             self._link("Touched new file '%s'", path)
 
     def _absnorm(self, path):
+        path = self.normalize_path(path)
         try:
-            return abspath(path.replace('/', os.sep))
+            return abspath(path)
         except ValueError:  # http://ironpython.codeplex.com/workitem/29489
-            return os.path.normpath(path.replace('/', os.sep))
+            return path
 
     def _fail(self, error, default):
         raise AssertionError(error or default)
@@ -1280,7 +1495,7 @@ class _Process:
         stdout = stdout.replace('\r\n', '\n') # http://bugs.jython.org/issue1566
         if stdout.endswith('\n'):
             stdout = stdout[:-1]
-        return decode_output(stdout)
+        return decode_output(stdout, force=True)
 
 
 class _Process2(_Process):

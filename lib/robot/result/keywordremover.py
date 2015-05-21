@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,18 +12,23 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot import utils
-
-from robot.model import SuiteVisitor, SkipAllVisitor
+from robot.errors import DataError
+from robot.model import SuiteVisitor
+from robot.utils import Matcher, plural_or_not
 
 
 def KeywordRemover(how):
-    return {
-        'PASSED': PassedKeywordRemover,
-        'FOR': ForLoopItemsRemover,
-        'ALL': AllKeywordsRemover,
-        'WUKS': WaitUntilKeywordSucceedsRemover,
-    }.get(how.upper(), SkipAllVisitor)()
+    upper = how.upper()
+    if upper.startswith('NAME:'):
+        return ByNameKeywordRemover(pattern=how[5:])
+    try:
+        return {'ALL': AllKeywordsRemover,
+                'PASSED': PassedKeywordRemover,
+                'FOR': ForLoopItemsRemover,
+                'WUKS': WaitUntilKeywordSucceedsRemover}[upper]()
+    except KeyError:
+        raise DataError("Expected 'ALL', 'PASSED', 'NAME:<pattern>', 'FOR', "
+                        "or 'WUKS' but got '%s'." % how)
 
 
 class _KeywordRemover(SuiteVisitor):
@@ -69,6 +74,17 @@ class PassedKeywordRemover(_KeywordRemover):
         pass
 
 
+class ByNameKeywordRemover(_KeywordRemover):
+
+    def __init__(self, pattern):
+        _KeywordRemover.__init__(self)
+        self._matcher = Matcher(pattern, ignore='_')
+
+    def start_keyword(self, kw):
+        if self._matcher.match(kw.name) and not self._contains_warning(kw):
+            self._clear_content(kw)
+
+
 class ForLoopItemsRemover(_KeywordRemover):
     _message = '%d passing step%s removed using --RemoveKeywords option.'
 
@@ -95,7 +111,7 @@ class WaitUntilKeywordSucceedsRemover(_KeywordRemover):
     def _remove_keywords(self, keywords):
         include_from_end = 2 if keywords[-1].passed else 1
         return self._kws_with_warnings(keywords[:-include_from_end]) \
-                + keywords[-include_from_end:]
+            + keywords[-include_from_end:]
 
     def _kws_with_warnings(self, keywords):
         return [kw for kw in keywords if self._contains_warning(kw)]
@@ -128,7 +144,7 @@ class RemovalMessage(object):
     def set_if_removed(self, kw, len_before):
         removed = len_before - len(kw.keywords)
         if removed:
-            self.set(kw, self._message % (removed, utils.plural_or_not(removed)))
+            self.set(kw, self._message % (removed, plural_or_not(removed)))
 
     def set(self, kw, message=None):
         kw.doc = ('%s\n\n_%s_' % (kw.doc, message or self._message)).strip()

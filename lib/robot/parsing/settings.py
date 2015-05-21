@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -77,6 +77,12 @@ class Setting(object):
     def __nonzero__(self):
         return self.is_set()
 
+    def __iter__(self):
+        return iter(self.value)
+
+    def __unicode__(self):
+        return unicode(self.value or '')
+
 
 class StringValueJoiner(object):
 
@@ -120,6 +126,9 @@ class Template(Setting):
     def is_set(self):
         return self.value is not None
 
+    def is_active(self):
+        return self.value and self.value.upper() != 'NONE'
+
     def _data_as_list(self):
         ret = [self.setting_name]
         if self.value:
@@ -129,9 +138,19 @@ class Template(Setting):
 
 class Fixture(Setting):
 
+    # `keyword`, `is_comment` and `assign` make the API compatible with Step.
+
+    @property
+    def keyword(self):
+        return self.name or ''
+
+    def is_comment(self):
+        return False
+
     def _set_initial_value(self):
         self.name = None
         self.args = []
+        self.assign = ()
 
     def _populate(self, value):
         if not self.name:
@@ -141,6 +160,9 @@ class Fixture(Setting):
 
     def is_set(self):
         return self.name is not None
+
+    def is_active(self):
+        return self.name and self.name.upper() != 'NONE'
 
     def _data_as_list(self):
         ret = [self.setting_name]
@@ -192,13 +214,6 @@ class Tags(Setting):
         tags = Tags('Tags')
         tags.value = (self.value or []) + (other.value or [])
         return tags
-
-    def __len__(self):
-        return len(self.value) or 0
-
-    def remove(self, item):
-        if item in self.value:
-            self.value.remove(item)
 
 
 class Arguments(Setting):
@@ -308,6 +323,9 @@ class _DataList(object):
 
     def __len__(self):
         return len(self.data)
+
+    def __iter__(self):
+        return iter(self.data)
 
 
 class ImportList(_DataList):

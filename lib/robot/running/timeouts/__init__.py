@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ class _Timeout(object):
     def replace_variables(self, variables):
         try:
             self.string = variables.replace_string(self.string)
-            if not self.string or self.string.upper() == 'NONE':
+            if not self:
                 return
             self.secs = utils.timestr_to_secs(self.string)
             self.string = utils.secs_to_timestr(self.secs)
@@ -76,11 +76,17 @@ class _Timeout(object):
         return self.active and self.time_left() <= 0
 
     def __str__(self):
+        return unicode(self).encode('utf-8')
+
+    def __unicode__(self):
         return self.string
 
     def __cmp__(self, other):
         return cmp(not self.active, not other.active) \
             or cmp(self.time_left(), other.time_left())
+
+    def __nonzero__(self):
+        return bool(self.string and self.string.upper() != 'NONE')
 
     def run(self, runnable, args=None, kwargs=None):
         if self.error:
@@ -110,13 +116,14 @@ class _Timeout(object):
 
 class TestTimeout(_Timeout):
     type = 'Test'
-    _keyword_timeouted = False
+    _keyword_timeout_occurred = False
 
     def set_keyword_timeout(self, timeout_occurred):
-        self._keyword_timeouted = self._keyword_timeouted or timeout_occurred
+        if timeout_occurred:
+            self._keyword_timeout_occurred = True
 
     def any_timeout_occurred(self):
-        return self.timed_out() or self._keyword_timeouted
+        return self.timed_out() or self._keyword_timeout_occurred
 
 
 class KeywordTimeout(_Timeout):

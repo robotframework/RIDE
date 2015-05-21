@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,45 +12,37 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import tempfile
-import os
-
-from robot.errors import DataError
+from cStringIO import StringIO
 
 from .htmlreader import HtmlReader
+from .txtreader import TxtReader
 
 
 def RestReader():
-    try:
-        from docutils.core import publish_cmdline
-        from docutils.parsers.rst import directives
-    except ImportError:
-        raise DataError("Using reStructuredText test data requires having "
-                        "'docutils' module installed.")
+    from .restsupport import (publish_doctree, publish_from_doctree,
+                              RobotDataStorage)
 
-    # Ignore custom sourcecode directives at least we use in reST sources.
-    # See e.g. ug2html.py for an example how custom directives are created.
-    ignorer = lambda *args: []
-    ignorer.content = 1
-    directives.register_directive('sourcecode', ignorer)
-
-    class RestReader(HtmlReader):
+    class RestReader(object):
 
         def read(self, rstfile, rawdata):
-            htmlpath = self._rest_to_html(rstfile.name)
-            htmlfile = None
-            try:
-                htmlfile = open(htmlpath, 'rb')
-                return HtmlReader.read(self, htmlfile, rawdata)
-            finally:
-                if htmlfile:
-                    htmlfile.close()
-                os.remove(htmlpath)
+            doctree = publish_doctree(
+                rstfile.read(), source_path=rstfile.name,
+                settings_overrides={'input_encoding': 'UTF-8'})
+            store = RobotDataStorage(doctree)
+            if store.has_data():
+                return self._read_text(store.get_data(), rawdata)
+            return self._read_html(doctree, rawdata)
 
-        def _rest_to_html(self, rstpath):
-            filedesc, htmlpath = tempfile.mkstemp('.html')
-            os.close(filedesc)
-            publish_cmdline(writer_name='html', argv=[rstpath, htmlpath])
-            return htmlpath
+        def _read_text(self, data, rawdata):
+            txtfile = StringIO(data.encode('UTF-8'))
+            return TxtReader().read(txtfile, rawdata)
+
+        def _read_html(self, doctree, rawdata):
+            htmlfile = StringIO()
+            htmlfile.write(publish_from_doctree(
+                doctree, writer_name='html',
+                settings_overrides={'output_encoding': 'UTF-8'}))
+            htmlfile.seek(0)
+            return HtmlReader().read(htmlfile, rawdata)
 
     return RestReader()

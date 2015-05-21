@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -16,7 +16,7 @@
 <script type="text/javascript" src="../lib/jquery.min.js"></script>
 <script type="text/javascript" src="../lib/jquery.tmpl.min.js"></script>
 <script type="text/javascript" src="../lib/jquery.tablesorter.min.js"></script>
-<script type="text/javascript" src="../lib/jsxcompressor.js"></script>
+<script type="text/javascript" src="../lib/jsxcompressor.min.js"></script>
 <script type="text/javascript" src="fileloading.js"></script>
 <script type="text/javascript" src="model.js"></script>
 <script type="text/javascript" src="util.js"></script>
@@ -26,7 +26,7 @@
 <title></title>
 </head>
 <body>
-<div id="javascript_disabled">
+<div id="javascript-disabled">
   <h1>Opening Robot Framework log failed</h1>
   <ul>
     <li>Verify that you have <b>JavaScript enabled</b> in your browser.</li>
@@ -37,14 +37,14 @@
 <script type="text/javascript">removeJavaScriptDisabledWarning();</script>
 
 <div id="header"></div>
-<div id="statistics_container"></div>
+<div id="statistics-container"></div>
 
 <script type="text/javascript">
 $(document).ready(function() {
     try {
         var topsuite = window.testdata.suite();
-    } catch (e) {
-        addJavaScriptDisabledWarning();
+    } catch (error) {
+        addJavaScriptDisabledWarning(error);
         return;
     }
     initLayout(topsuite.name, 'Log');
@@ -54,7 +54,6 @@ $(document).ready(function() {
     addLogLevelSelector(window.settings['minLevel'], window.settings['defaultLevel']);
     if (window.location.hash) {
         makeElementVisible(window.location.hash.substring(1));
-        scrollToHash();
     } else {
         expandSuite(topsuite);
     }
@@ -65,36 +64,49 @@ function addLogLevelSelector(minLevel, defaultLevel) {
     if (controller.showLogLevelSelector()) {
         var selector = $.tmpl('logLevelSelectorTemplate', controller);
         selector.find('select').val(controller.defaultLogLevel());
-        selector.appendTo($('#top_right_header'));
-        $('#report_or_log_link a').css({'border-bottom-left-radius': '0'});
+        selector.appendTo($('#top-right-header'));
+        $('#report-or-log-link').find('a').css({'border-bottom-left-radius': '0'});
         setMessageVisibility(controller.defaultLogLevel());
     }
 }
 
 function addErrors() {
-    var errors = window.testdata.errors();
+    var errors = window.testdata.errorIterator();
     if (errors.hasNext()) {
         $.tmpl('errorHeaderTemplate').appendTo($('body'));
-        window.errorsToRender = errors;
-        drawErrorsRecursively();
+        drawErrorsRecursively(errors, $('#errors'));
     }
 }
 
-function drawErrorsRecursively(){
-    if (!window.errorsToRender.hasNext())
-        return;
-    var elements = popFromIterator(window.errorsToRender, 10);
-    $.tmpl('errorTemplate', elements).appendTo($('#error_table'));
-    if (window.errorsToRender.hasNext())
-        setTimeout(drawErrorsRecursively, 0);
-    else
-        scrollToHash();
+function drawErrorsRecursively(errors, target) {
+    var elements = popFromIterator(errors, 10);
+    $.tmpl('errorTemplate', elements).appendTo(target);
+    if (errors.hasNext())
+        setTimeout(function () { drawErrorsRecursively(errors, target); }, 0);
+    else {
+        // Errors may have moved scroll position. Resetting location re-scrolls.
+        if (window.location.hash)
+            window.location.replace(window.location.hash);
+        highlightLinkTarget();
+    }
 }
 
-function scrollToHash() {
-    // This does not scroll window in Safari.
-    if (window.location.hash)
-        window.location.hash = window.location.hash.substring(1);
+function highlightLinkTarget() {
+    if (window.location.hash) {
+        var target = $(window.location.hash);
+        highlight(target);
+    }
+}
+
+function highlight(element, color) {
+    if (color === undefined)
+        color = 242;
+    if (color < 255) {
+        element.css({'background-color': 'rgb('+color+','+color+','+color+')'});
+        setTimeout(function () { highlight(element, color+1); }, 300);
+    } else {
+        element.css({'background-color': ''});
+    }
 }
 
 function popFromIterator(iterator, upTo) {
@@ -104,99 +116,100 @@ function popFromIterator(iterator, upTo) {
     return result;
 }
 
-function makeElementVisible(element) {
-    // findPathTo ensures that all the data for the element has been downloaded
-    // from server before executing the callback function
-    window.testdata.findPathTo(unescape(element), function (uniqueIds) {
-        for (var i in uniqueIds) {
-            expandElementWithId(uniqueIds[i]);
-        }
-        if (uniqueIds && uniqueIds.length > 0) {
-            expandCriticalFailed(window.testdata.find(uniqueIds[uniqueIds.length - 1]));
-            window.location.hash = element;
+function makeElementVisible(id) {
+    window.testdata.ensureLoaded(id, function (ids) {
+        util.map(ids, expandElementWithId);
+        if (ids.length) {
+            expandCriticalFailed(window.testdata.findLoaded(util.last(ids)));
+            window.location.hash = id;
+            highlightLinkTarget();
         }
     });
 }
 
 function addTestExecutionLog(main) {
-    $('<h2>Test Execution Log</h2>').appendTo($('body'));
-    var root = $.tmpl('suiteTemplate', main);
-    root.appendTo($('body'));
+    $('body').append($('<h2>Test Execution Log</h2>'),
+                     $.tmpl('suiteTemplate', main));
 }
 </script>
 
 <script type="text/x-jquery-tmpl" id="totalStatisticsRowTemplate">
   <tr class="row-${$item.index}">
-    <td class="stats_col_name">
-      <div class="stat_name">
+    <td class="stats-col-name">
+      <div class="stat-name">
         <span>{{html label}}</span>
       </div>
     </td>
-    {{tmpl($data) 'stat_columns'}}
+    {{tmpl($data) 'statColumnsTemplate'}}
   </tr>
 </script>
 
 <script type="text/x-jquery-tmpl" id="tagStatisticsRowTemplate">
   <tr class="row-${$item.index}">
-    <td class="stats_col_name">
-      <div class="stat_name">
-        <span title="{{html doc}}">{{html label}}</span>
+    <td class="stats-col-name" title="{{html doc}}">
+      <div class="stat-name">
+        <span>{{html label}}</span>
         {{if info}}(${info}){{/if}}
       </div>
-      <div class="tag_links">
+      <div class="tag-links">
         {{each links}}
-        <span>[<a href="{{html $value.url}}"
-                  title="{{html $value.url}}">{{html $value.title}}</a>]</span>
+        <span>[<a href="{{html $value.url}}" title="{{html $value.url}}">{{html $value.title}}</a>]</span>
         {{/each}}
       </div>
     </td>
-    {{tmpl($data) 'stat_columns'}}
+    {{tmpl($data) 'statColumnsTemplate'}}
   </tr>
 </script>
 
 <script type="text/x-jquery-tmpl" id="suiteStatisticsRowTemplate">
   <tr onclick="makeElementVisible('${id}')" class="row-${$item.index}">
-    <td class="stats_col_name">
-      <div class="stat_name">
-        <a title="{{html label}}"
-           href="#${id}"><span class="parent_name">{{html formatParentName}}</span>{{html name}}</a>
+    <td class="stats-col-name" title="{{html label}}">
+      <div class="stat-name">
+        <a href="#${id}"><span class="parent-name">{{html formatParentName}}</span>{{html name}}</a>
       </div>
     </td>
-    {{tmpl($data) 'stat_columns'}}
+    {{tmpl($data) 'statColumnsTemplate'}}
   </tr>
 </script>
 
 <script type="text/x-jquery-tmpl" id="errorHeaderTemplate">
   <h2>Test Execution Errors</h2>
-  <table class="errors" id="error_table"></table>
+  <table id="errors"></table>
 </script>
 
 <script type="text/x-jquery-tmpl" id="errorTemplate">
-  <tr>
-    <td class="error_time">
+  <tr id="${id}" class="message-row">
+    <td class="error-time">
       {{if link}}
-      <a onclick="makeElementVisible('${link}')" href="#${link}"
-         title="Link to details">${date} ${time}</a>
+      <a onclick="makeElementVisible('${link}')" href="#${link}" title="Link to details">${date} ${time}</a>
       {{else}}
       ${date} ${time}
       {{/if}}
     </td>
     <td class="${level.toLowerCase()} level">${level}</td>
     <td class="message">{{html text}}</td>
+    <td class="select-message" onclick="javascript:selectMessage('${id}')" title="Select message text">
+      <div></div>
+    </td>
   </tr>
 </script>
 
 <script type="text/x-jquery-tmpl" id="suiteTemplate">
   <div id="${id}" class="suite">
-    <div id="${id}_elementheader" class="elementheader"
-         onclick="toggleSuite('${id}');" title="{{html fullName}}">
-      <div id="${id}_foldingbutton" class="foldingbutton">+</div>
-      <span class="${status.toLowerCase()}">TEST&nbsp;SUITE:</span>
-      <span class="name">{{html name}}</span>
-        <a class="expandall" href="javascript:expandAllChildren('${id}')"
-           onclick="stopPropagation(event);">Expand All</a>
+    <div class="element-header closed" onclick="toggleSuite('${id}')">
+      <div class="element-header-left" title="{{html fullName}}">
+        <span class="elapsed" title="Elapsed time">${times.elapsedTime}</span>
+        <span class="${status.toLowerCase()}">TEST SUITE: </span>
+        <span class="name">{{html name}}</span>
+      </div>
+      <div class="element-header-right" onclick="stopPropagation(event)" title="">
+        <a class="expand" title="Expand all" href="javascript:expandAll('${id}')"></a>
+        <a class="collapse" title="Collapse all" href="javascript:collapseAll('${id}')"></a>
+        <a class="link" title="Link to this suite" href="#${id}" onclick="makeElementVisible('${id}')"></a>
+      </div>
+      <div class="element-header-toggle" title="Toggle visibility"></div>
     </div>
-    <div id="${id}_children" style="display: none;">
+    <div class="children">
       <table class="metadata">
         <tr>
           <th>Full Name:</th>
@@ -218,14 +231,15 @@ function addTestExecutionLog(main) {
         <tr>
           <th>Source:</th>
           {{if relativeSource}}
-          <td><a href="{{html relativeSource}}">{{html source}}</a></td>
+          <td><a href="${relativeSource}">{{html source}}</a></td>
           {{else}}
           <td>{{html source}}</td>
           {{/if}}
         </tr>
         {{/if}}
         <tr>
-          <th>Start / End / Elapsed:</th><td>${times.startTime} / ${times.endTime} / ${times.elapsedTime}</td>
+          <th>Start / End / Elapsed:</th>
+          <td>${times.startTime} / ${times.endTime} / ${times.elapsedTime}</td>
         </tr>
         <tr>
           <th>Status:</th>
@@ -244,16 +258,21 @@ function addTestExecutionLog(main) {
 
 <script type="text/x-jquery-tmpl" id="testTemplate">
   <div id="${id}" class="test">
-    <div id="${id}_elementheader" onclick="toggleTest('${id}');"
-         class="elementheader" title="{{html fullName}}">
-      <div id="${id}_foldingbutton" class="foldingbutton">+</div>
-      <span class="${status.toLowerCase()}">TEST&nbsp;CASE: </span>
-      <span class="name">{{html name}}</span>
-      {{if !isCritical}}<span>  (non-critical)</span>{{/if}}
-        <a class="expandall" href="javascript:expandAllChildren('${id}')"
-           onclick="stopPropagation(event);">Expand All</a>
+    <div class="element-header closed" onclick="toggleTest('${id}')">
+      <div class="element-header-left" title="{{html fullName}}">
+        <span class="elapsed" title="Elapsed time">${times.elapsedTime}</span>
+        <span class="${status.toLowerCase()}">TEST CASE: </span>
+        <span class="name">{{html name}}</span>
+        {{if !isCritical}}(non-critical){{/if}}
+      </div>
+      <div class="element-header-right" onclick="stopPropagation(event)" title="">
+        <a class="expand" title="Expand all" href="javascript:expandAll('${id}')"></a>
+        <a class="collapse" title="Collapse all" href="javascript:collapseAll('${id}')"></a>
+        <a class="link" title="Link to this test" href="#${id}" onclick="makeElementVisible('${id}')"></a>
+      </div>
+      <div class="element-header-toggle" title="Toggle visibility"></div>
     </div>
-    <div id="${id}_children" style="display: none;">
+    <div class="children">
       <table class="metadata">
         <tr>
           <th>Full Name:</th>
@@ -298,17 +317,22 @@ function addTestExecutionLog(main) {
 
 <script type="text/x-jquery-tmpl" id="keywordTemplate">
   <div id="${id}" class="keyword">
-    <div id="${id}_elementheader" class="elementheader"
-         onclick="toggleKeyword('${id}');" title="{{html name}}">
-      <div id="${id}_foldingbutton" class="foldingbutton">+</div>
-      <span class="${status.toLowerCase()}">${type}: </span>
-      <span class="name">{{html name}}</span>
-      <span class="arg">{{html arguments}}</span>
-      <a class="expandall" href="javascript:expandAllChildren('${id}')"
-         onclick="stopPropagation(event);">Expand All</a>
+    <div class="element-header closed" onclick="toggleKeyword('${id}')">
+      <div class="element-header-left" title="{{html name}}">
+        <span class="elapsed" title="Elapsed time">${times.elapsedTime}</span>
+        <span class="${status.toLowerCase()}">${type}: </span>
+        <span class="name">{{html name}}</span>
+        <span class="arg">{{html arguments}}</span>
+      </div>
+      <div class="element-header-right" onclick="stopPropagation(event)">
+        <a class="expand" title="Expand all" href="javascript:expandAll('${id}')"></a>
+        <a class="collapse" title="Collapse all" href="javascript:collapseAll('${id}')"></a>
+        <a class="link" title="Link to this keyword" href="#${id}" onclick="makeElementVisible('${id}')"></a>
+      </div>
+      <div class="element-header-toggle" title="Toggle visibility"></div>
     </div>
-    <div id="${id}_children" style="display: none;">
-      <table class="metadata keyword_metadata">
+    <div class="children">
+      <table class="metadata keyword-metadata">
         {{if doc()}}
         <tr>
           <th>Documentation:</th>
@@ -331,19 +355,22 @@ function addTestExecutionLog(main) {
 </script>
 
 <script type="text/x-jquery-tmpl" id="messageTemplate">
-  <table class="messages ${level.toLowerCase()}_message">
-    <tr>
+  <table id="${id}" class="messages ${level.toLowerCase()}-message">
+    <tr class="message-row">
       <td class="time">${time}</td>
       <td class="${level.toLowerCase()} level">${level}</td>
       <td class="message">{{html text}}</td>
+      <td class="select-message" onclick="javascript:selectMessage('${id}')" title="Select message text">
+        <div></div>
+      </td>
     </tr>
   </table>
 </script>
 
 <script type="text/x-jquery-tmpl" id="logLevelSelectorTemplate">
-  <div id="log_level_selector">
+  <div id="log-level-selector">
   Log level:
-    <select onchange="logLevelSelected(this.options[selectedIndex].value);">
+    <select onchange="logLevelSelected(this.options[selectedIndex].value)">
       <option value="2">INFO</option>
       <option value="1">DEBUG</option>
       {{if showTrace()}}<option value="0">TRACE</option>{{/if}}

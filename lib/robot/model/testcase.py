@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -21,16 +21,24 @@ from .tags import Tags
 
 
 class TestCase(ModelObject):
+    """Base model for single test case."""
     __slots__ = ['parent', 'name', 'doc', 'timeout']
     keyword_class = Keyword
 
-    def __init__(self, name='', doc='', tags=None, timeout=''):
+    def __init__(self, name='', doc='', tags=None, timeout=None):
+        #: :class:`~.model.testsuite.TestSuite` that contains this test.
         self.parent = None
+        #: Test case name.
         self.name = name
+        #: Test case documentation.
         self.doc = doc
+        #: Test case tags, a list of strings.
         self.tags = tags
+        #: Test case timeout.
         self.timeout = timeout
-        self.keywords = []
+        #: Keyword results, a list of :class:`~.model.keyword.Keyword`
+        #: instances and contains also possible setup and teardown keywords.
+        self.keywords = None
 
     @setter
     def tags(self, tags):
@@ -52,12 +60,6 @@ class TestCase(ModelObject):
             return self.name
         return '%s.%s' % (self.parent.longname, self.name)
 
-    @property
-    def critical(self):
-        if not self.parent:
-            return True
-        return self.parent.criticality.test_is_critical(self)
-
     def visit(self, visitor):
         visitor.visit_test(self)
 
@@ -67,3 +69,8 @@ class TestCases(ItemList):
 
     def __init__(self, test_class=TestCase, parent=None, tests=None):
         ItemList.__init__(self, test_class, {'parent': parent}, tests)
+
+    def _check_type_and_set_attrs(self, test):
+        ItemList._check_type_and_set_attrs(self, test)
+        for visitor in test.parent._visitors:
+            test.visit(visitor)

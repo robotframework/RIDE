@@ -1,12 +1,12 @@
 .doc > * {
-    margin: 1em 1em 0 1em;
+    margin: 0.7em 1em 0.1em 1em;
     padding: 0;
 }
 .doc > p, .doc > h1, .doc > h2, .doc > h3, .doc > h4 {
-    margin: 1em 0 0 0;
+    margin: 0.7em 0 0.1em 0;
 }
 .doc > *:first-child {
-    margin-top: 0;
+    margin-top: 0.1em;
 }
 .doc table {
     border: 1px solid gray;
@@ -15,13 +15,24 @@
     empty-cells: show;
     font-size: 0.9em;
 }
-.doc table td {
+.doc table th, .doc table td {
     border: 1px solid gray;
+    background: transparent;
     padding: 0.1em 0.3em;
     height: 1.2em;
 }
+.doc table th {
+    text-align: center;
+    letter-spacing: 0.1em;
+}
 .doc pre {
     font-size: 1.1em;
+    letter-spacing: 0.05em;
+    background: #F4F4FF;
+}
+.doc code {
+    padding: 0 0.2em;
+    letter-spacing: 0.05em;
     background: #F4F4FF;
 }
 .doc li {

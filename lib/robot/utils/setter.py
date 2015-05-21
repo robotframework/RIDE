@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ class setter(object):
     def __init__(self, method):
         self.method = method
         self.attr_name = '_setter__' + method.__name__
+        self.__doc__ = method.__doc__
 
     def __get__(self, instance, owner):
         if instance is None:

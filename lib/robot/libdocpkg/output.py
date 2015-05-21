@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import codecs
+import os
 
 
 class LibdocOutput(object):
@@ -24,10 +24,12 @@ class LibdocOutput(object):
 
     def __enter__(self):
         if self._format == 'HTML':
-            self._output_file = codecs.open(self._output_path, 'w', 'UTF-8')
+            self._output_file = open(self._output_path, 'w')
             return self._output_file
         return self._output_path
 
     def __exit__(self, *exc_info):
         if self._output_file:
             self._output_file.close()
+        if any(exc_info):
+            os.remove(self._output_path)

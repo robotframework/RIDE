@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,23 +12,23 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-"""Implements parsing results from XML output files.
+"""Implements parsing execution results from XML output files.
 
-The entry point of this API is the :func:`~.resultbuilder.ExecutionResult`
-factory method, which returns an instance of
-:class:`~.executionresult.Result`.
+The public API of this package is the :func:`~.ExecutionResult` factory
+method, which returns :class:`~.Result` objects, and :class:`~.ResultVisitor`
+abstract class to ease further processing the results. It is highly
+recommended to use the public API via the :mod:`robot.api` package like in
+the example below.
 
 This package is considered stable.
 
 Example
 -------
 
-The example below reads a given output file and marks each test case whose
-execution time is longer than three minutes failed. The
-:class:`~.executionresult.Result` object is then written back to disk and
-normal log and report files could be generated with ``rebot`` tool.
-
 .. literalinclude:: /../../doc/api/code_examples/check_test_times.py
 """
 
+from .executionresult import Result
 from .resultbuilder import ExecutionResult
+from .testsuite import TestSuite
+from .visitor import ResultVisitor

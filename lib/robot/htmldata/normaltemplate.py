@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@ from __future__ import with_statement
 import os
 from os.path import abspath, dirname, join, normpath
 
-from robot.utils import utf8open
 
 class HtmlTemplate(object):
     _base_dir = join(dirname(abspath(__file__)), '..', 'htmldata')
@@ -25,6 +24,6 @@ class HtmlTemplate(object):
         self._path = normpath(join(self._base_dir, filename.replace('/', os.sep)))
 
     def __iter__(self):
-        with utf8open(self._path) as file:
+        with open(self._path) as file:
             for line in file:
                 yield line.rstrip()

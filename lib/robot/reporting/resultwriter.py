@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,9 +12,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from robot.conf import RebotSettings
 from robot.errors import DataError
 from robot.output import LOGGER
-from robot.result import ExecutionResult
+from robot.result import ExecutionResult, Result
 from robot.utils import unic
 
 from .jsmodelbuilders import JsModelBuilder
@@ -23,29 +24,54 @@ from .xunitwriter import XUnitWriter
 
 
 class ResultWriter(object):
+    """A class to create log, report, output XML and xUnit files.
 
-    def __init__(self, *data_sources):
-        self._data_sources = data_sources
+    :param sources: Either one :class:`~robot.result.executionresult.Result`
+        object, or one or more paths to existing output XML files.
 
-    def write_results(self, settings, results=None):
-        results = results or Results(self._data_sources, settings)
+    By default writes ``report.html`` and ``log.html``, but no output XML
+    or xUnit files. Custom file names can be given and results disabled
+    or enabled using ``settings`` or ``options`` passed to the
+    :meth:`write_results` method. The latter is typically more convenient::
+
+        writer = ResultWriter(result)
+        writer.write_results(report='custom.html', log=None, xunit='xunit.xml')
+    """
+
+    def __init__(self, *sources):
+        self._sources = sources
+
+    def write_results(self, settings=None, **options):
+        """Writes results based on the given ``settings``  or ``options``.
+
+        :param settings: :class:`~robot.conf.settings.RebotSettings` object
+            to configure result writing.
+        :param options: Used to construct new
+            :class:`~robot.conf.settings.RebotSettings` object if ``settings``
+            are not given.
+        """
+        settings = settings or RebotSettings(options)
+        results = Results(settings, *self._sources)
         if settings.output:
             self._write_output(results.result, settings.output)
         if settings.xunit:
-            self._write_xunit(results.result, settings.xunit)
+            self._write_xunit(results.result, settings.xunit,
+                              settings.xunit_skip_noncritical)
         if settings.log:
-            config = dict(settings.log_config, minLevel=results.js_result.min_level)
+            config = dict(settings.log_config,
+                          minLevel=results.js_result.min_level)
             self._write_log(results.js_result, settings.log, config)
         if settings.report:
             results.js_result.remove_data_not_needed_in_report()
-            self._write_report(results.js_result, settings.report, settings.report_config)
+            self._write_report(results.js_result, settings.report,
+                               settings.report_config)
         return results.return_code
 
     def _write_output(self, result, path):
         self._write('Output', result.save, path)
 
-    def _write_xunit(self, result, path):
-        self._write('XUnit', XUnitWriter(result).write, path)
+    def _write_xunit(self, result, path, skip_noncritical):
+        self._write('XUnit', XUnitWriter(result, skip_noncritical).write, path)
 
     def _write_log(self, js_result, path, config):
         self._write('Log', LogWriter(js_result).write, path, config)
@@ -70,22 +96,28 @@ class ResultWriter(object):
 
 class Results(object):
 
-    def __init__(self, data_sources, settings):
-        self._data_sources = data_sources \
-            if not isinstance(data_sources, basestring) else [data_sources]
+    def __init__(self, settings, *sources):
         self._settings = settings
-        self._result = None
+        self._sources = sources
+        if len(sources) == 1 and isinstance(sources[0], Result):
+            self._result = sources[0]
+            self._prune = False
+            self.return_code = self._result.return_code
+        else:
+            self._result = None
+            self._prune = True
+            self.return_code = -1
         self._js_result = None
-        self.return_code = -1
 
     @property
     def result(self):
         if self._result is None:
-            include_keywords = bool(self._settings.log or
-                                    self._settings.output or
-                                    self._settings.xunit)
+            include_keywords = bool(self._settings.log or self._settings.output)
+            flattened = self._settings.flatten_keywords
             self._result = ExecutionResult(include_keywords=include_keywords,
-                                           *self._data_sources)
+                                           flattened_keywords=flattened,
+                                           merge=self._settings.merge,
+                                           *self._sources)
             self._result.configure(self._settings.status_rc,
                                    self._settings.suite_config,
                                    self._settings.statistics_config)
@@ -97,7 +129,8 @@ class Results(object):
         if self._js_result is None:
             builder = JsModelBuilder(log_path=self._settings.log,
                                      split_log=self._settings.split_log,
-                                     prune_input_to_save_memory=True)
+                                     prune_input_to_save_memory=self._prune)
             self._js_result = builder.build_from(self.result)
-            self._result = None
+            if self._prune:
+                self._result = None
         return self._js_result
