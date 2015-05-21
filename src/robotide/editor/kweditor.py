@@ -61,32 +61,28 @@ class KeywordEditor(GridEditor, RideEventHandler):
                     'Go to Definition\tCtrl-B', '---'] + GridEditor._popup_items
 
     def __init__(self, parent, controller, tree):
-        try:
-            GridEditor.__init__(self, parent, len(controller.steps) + 5,
-                                max((controller.max_columns + 1), 5),
-                                parent.plugin._grid_popup_creator)
-            self._parent = parent
-            self._plugin = parent.plugin
-            self._cell_selected = False
-            self._colorizer = Colorizer(self, controller,
-                                        ColorizationSettings(self._plugin.global_settings))
-            self._controller = controller
-            self._configure_grid()
-            PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
-            PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
-            self._updating_namespace = False
-            self._controller.datafile_controller.register_for_namespace_updates(self._namespace_updated)
-            self._tooltips = GridToolTips(self)
-            self._marked_cell = None
-            self._make_bindings()
-            self._write_steps(self._controller)
-            self._tree = tree
-            self._has_been_clicked = False
-            font_size = self._plugin.global_settings.get('font size', _DEFAULT_FONT_SIZE)
-            self.SetDefaultCellFont(wx.Font(font_size, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
-        except Exception, e:
-            print 'Exception in initializing KeywordEditor: %s' % e
-            raise
+        GridEditor.__init__(self, parent, len(controller.steps) + 5,
+                            max((controller.max_columns + 1), 5),
+                            parent.plugin._grid_popup_creator)
+        self._parent = parent
+        self._plugin = parent.plugin
+        self._cell_selected = False
+        self._colorizer = Colorizer(self, controller,
+                                    ColorizationSettings(self._plugin.global_settings))
+        self._controller = controller
+        self._configure_grid()
+        PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
+        PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
+        self._updating_namespace = False
+        self._controller.datafile_controller.register_for_namespace_updates(self._namespace_updated)
+        self._tooltips = GridToolTips(self)
+        self._marked_cell = None
+        self._make_bindings()
+        self._write_steps(self._controller)
+        self._tree = tree
+        self._has_been_clicked = False
+        font_size = self._plugin.global_settings.get('font size', _DEFAULT_FONT_SIZE)
+        self.SetDefaultCellFont(wx.Font(font_size, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
 
     def _namespace_updated(self):
         if not self._updating_namespace:
@@ -588,22 +584,27 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def _execute_find_where_used(self, is_variable, searchstring):
         usages_dialog_class = VariableUsages if is_variable else Usages
-        usages_dialog_class(self._controller, self._tree.highlight, searchstring).show()
+        usages_dialog_class(
+            self._controller,
+            self._tree.highlight, searchstring).show()
 
     def _cell_value_contains_multiple_search_items(self, value):
         variables = utils.find_variable_basenames(value)
         return variables and variables[0] != value
 
     def _extract_scalar(self, cell):
-        var = Variable('', self.GetCellValue(*cell), '')
-        dlg = ScalarVariableDialog(self._controller.datafile_controller.variables, var)
+        var = Variable(self._controller.datafile.variable_table,
+            '', self.GetCellValue(*cell), '')
+        dlg = ScalarVariableDialog(
+            self._controller.datafile_controller.variables, var)
         if dlg.ShowModal() == wx.ID_OK:
             name, value = dlg.get_value()
             comment = dlg.get_comment()
             self._execute(ExtractScalar(name, value, comment, cell))
 
     def _extract_list(self, cells):
-        var = Variable('', [self.GetCellValue(*cell) for cell in cells], '')
+        var = Variable(self._controller.datafile.variable_table,
+            '', [self.GetCellValue(*cell) for cell in cells], '')
         dlg = ListVariableDialog(self._controller.datafile_controller.variables,
                                  var, self._plugin)
         if dlg.ShowModal() == wx.ID_OK:
