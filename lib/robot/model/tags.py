@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.utils import normalize_tags, setter, Matcher
+from robot.utils import Matcher, NormalizedDict, setter
 
 
 class Tags(object):
@@ -22,12 +22,21 @@ class Tags(object):
 
     @setter
     def _tags(self, tags):
+        if not tags:
+            return ()
         if isinstance(tags, basestring):
-            tags = [tags]
-        return normalize_tags(tags or [])
+            tags = (tags,)
+        return self._normalize(tags)
+
+    def _normalize(self, tags):
+        normalized = NormalizedDict(((t, 1) for t in tags), ignore='_')
+        for removed in '', 'NONE':
+            if removed in normalized:
+                normalized.pop(removed)
+        return tuple(normalized)
 
     def add(self, tags):
-        self._tags = list(self) + list(Tags(tags))
+        self._tags = tuple(self) + tuple(Tags(tags))
 
     def remove(self, tags):
         tags = TagPatterns(tags)
@@ -48,14 +57,24 @@ class Tags(object):
     def __unicode__(self):
         return u'[%s]' % ', '.join(self)
 
+    def __repr__(self):
+        return repr(list(self))
+
     def __str__(self):
         return unicode(self).encode('UTF-8')
+
+    def __getitem__(self, index):
+        item = self._tags[index]
+        return item if not isinstance(index, slice) else Tags(item)
+
+    def __add__(self, other):
+        return Tags(tuple(self) + tuple(Tags(other)))
 
 
 class TagPatterns(object):
 
     def __init__(self, patterns):
-        self._patterns = [TagPattern(p) for p in Tags(patterns)]
+        self._patterns = tuple(TagPattern(p) for p in Tags(patterns))
 
     def match(self, tags):
         tags = tags if isinstance(tags, Tags) else Tags(tags)
@@ -75,21 +94,22 @@ class TagPatterns(object):
 
 
 def TagPattern(pattern):
-    pattern = pattern.replace('&', 'AND')
     if 'NOT' in pattern:
         return _NotTagPattern(*pattern.split('NOT'))
-    if 'AND' in pattern:
-        return _AndTagPattern(pattern.split('AND'))
+    if 'OR' in pattern:
+        return _OrTagPattern(pattern.split('OR'))
+    if 'AND' in pattern or '&' in pattern:
+        return _AndTagPattern(pattern.replace('&', 'AND').split('AND'))
     return _SingleTagPattern(pattern)
 
 
 class _SingleTagPattern(object):
 
     def __init__(self, pattern):
-        self._matcher = Matcher(pattern, ignore=['_'])
+        self._matcher = Matcher(pattern, ignore='_')
 
     def match(self, tags):
-        return any(self._matcher.match(tag) for tag in tags)
+        return self._matcher.match_any(tags)
 
     def __unicode__(self):
         return self._matcher.pattern
@@ -98,18 +118,26 @@ class _SingleTagPattern(object):
 class _AndTagPattern(object):
 
     def __init__(self, patterns):
-        self._patterns = [TagPattern(p) for p in patterns]
+        self._patterns = tuple(TagPattern(p) for p in patterns)
 
     def match(self, tags):
         return all(p.match(tags) for p in self._patterns)
 
 
+class _OrTagPattern(object):
+
+    def __init__(self, patterns):
+        self._patterns = tuple(TagPattern(p) for p in patterns)
+
+    def match(self, tags):
+        return any(p.match(tags) for p in self._patterns)
+
+
 class _NotTagPattern(object):
 
     def __init__(self, must_match, *must_not_match):
-        self._must = TagPattern(must_match)
-        self._must_not = [TagPattern(m) for m in must_not_match]
+        self._first = TagPattern(must_match)
+        self._rest = _OrTagPattern(must_not_match)
 
     def match(self, tags):
-        return self._must.match(tags) \
-            and not any(p.match(tags) for p in self._must_not)
+        return self._first.match(tags) and not self._rest.match(tags)

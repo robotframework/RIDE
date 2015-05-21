@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,23 +12,27 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from __future__ import with_statement
+
 import os
 import re
 
-from robot.common import BaseLibrary, UserErrorHandler
-from robot.errors import DataError, ExecutionFailed, UserKeywordExecutionFailed
-from robot.variables import is_list_var, VariableSplitter
+from robot.errors import (DataError, ExecutionFailed, ExecutionPassed,
+                          PassExecution, ReturnFromKeyword,
+                          UserKeywordExecutionFailed)
+from robot.variables import is_list_var, VariableIterator
 from robot.output import LOGGER
 from robot import utils
 
-from .keywords import Keywords
-from .fixture import Teardown
+from .arguments import (ArgumentMapper, ArgumentResolver,
+                        UserKeywordArgumentParser)
+from .baselibrary import BaseLibrary
+from .keywords import Keywords, Keyword
 from .timeouts import KeywordTimeout
-from .arguments import UserKeywordArguments
+from .usererrorhandler import UserErrorHandler
 
 
 class UserLibrary(BaseLibrary):
-    supports_named_arguments = True # this attribute is for libdoc
 
     def __init__(self, user_keywords, path=None):
         self.name = self._get_name_for_resource_file(path)
@@ -36,19 +40,24 @@ class UserLibrary(BaseLibrary):
         self.embedded_arg_handlers = []
         for kw in user_keywords:
             try:
-                handler = EmbeddedArgsTemplate(kw, self.name)
+                handler = self._create_handler(kw)
             except DataError, err:
                 LOGGER.error("Creating user keyword '%s' failed: %s"
                              % (kw.name, unicode(err)))
                 continue
-            except TypeError:
-                handler = UserKeywordHandler(kw, self.name)
-            else:
-                self.embedded_arg_handlers.append(handler)
             if handler.name in self.handlers:
                 error = "Keyword '%s' defined multiple times." % handler.name
                 handler = UserErrorHandler(handler.name, error)
             self.handlers[handler.name] = handler
+
+    def _create_handler(self, kw):
+        try:
+            handler = EmbeddedArgsTemplate(kw, self.name)
+        except TypeError:
+            handler = UserKeywordHandler(kw, self.name)
+        else:
+            self.embedded_arg_handlers.append(handler)
+        return handler
 
     def _get_name_for_resource_file(self, path):
         if path is None:
@@ -103,12 +112,13 @@ class UserKeywordHandler(object):
     def __init__(self, keyword, libname):
         self.name = keyword.name
         self.keywords = Keywords(keyword.steps)
-        self.return_value = keyword.return_.value
+        self.return_value = tuple(keyword.return_)
         self.teardown = keyword.teardown
         self.libname = libname
-        self.doc = self._doc = keyword.doc.value
+        self.doc = self._doc = unicode(keyword.doc)
+        self.arguments = UserKeywordArgumentParser().parse(tuple(keyword.args),
+                                                           self.longname)
         self._timeout = keyword.timeout
-        self._keyword_args = keyword.args.value
 
     @property
     def longname(self):
@@ -118,11 +128,11 @@ class UserKeywordHandler(object):
     def shortdoc(self):
         return self.doc.splitlines()[0] if self.doc else ''
 
-    def init_keyword(self, varz):
-        self._errors = []
-        self.doc = varz.replace_meta('Documentation', self._doc, self._errors)
-        self.timeout = KeywordTimeout(self._timeout.value, self._timeout.message)
-        self.timeout.replace_variables(varz)
+    def init_keyword(self, variables):
+        self.doc = variables.replace_string(self._doc, ignore_errors=True)
+        timeout = (self._timeout.value, self._timeout.message) if self._timeout else ()
+        self.timeout = KeywordTimeout(*timeout)
+        self.timeout.replace_variables(variables)
 
     def run(self, context, arguments):
         context.start_user_keyword(self)
@@ -131,72 +141,113 @@ class UserKeywordHandler(object):
         finally:
             context.end_user_keyword()
 
-    def _run(self, context, argument_values):
-        args_spec = UserKeywordArguments(self._keyword_args, self.longname)
-        variables = context.get_current_vars()
+    def _run(self, context, arguments):
         if context.dry_run:
-            return self._dry_run(context, variables, args_spec, argument_values)
-        return self._variable_resolving_run(context, variables, args_spec, argument_values)
+            return self._dry_run(context, arguments)
+        return self._normal_run(context, arguments)
 
-    def _dry_run(self, context, variables, args_spec, argument_values):
-        resolved_arguments = args_spec.resolve_arguments_for_dry_run(argument_values)
-        error = self._execute(context, variables, args_spec, resolved_arguments)
+    def _dry_run(self, context, arguments):
+        arguments = self._resolve_arguments(arguments)
+        error, return_ = self._execute(context, arguments)
         if error:
             raise error
+        return None
 
-    def _variable_resolving_run(self, context, variables, args_spec, argument_values):
-        resolved_arguments = args_spec.resolve(argument_values, variables,
-                                               context.output)
-        error = self._execute(context, variables, args_spec, resolved_arguments)
-        if error and not error.can_continue(context.teardown):
+    def _normal_run(self, context, arguments):
+        arguments = self._resolve_arguments(arguments, context.variables)
+        error, return_ = self._execute(context, arguments)
+        if error and not error.can_continue(context.in_teardown):
             raise error
-        return_value = self._get_return_value(variables)
+        return_value = self._get_return_value(context.variables, return_)
         if error:
             error.return_value = return_value
             raise error
         return return_value
 
-    def _execute(self, context, variables, args_spec, resolved_arguments):
-        args_spec.set_variables(resolved_arguments, variables, context.output)
+    def _resolve_arguments(self, arguments, variables=None):
+        resolver = ArgumentResolver(self.arguments)
+        mapper = ArgumentMapper(self.arguments)
+        positional, named = resolver.resolve(arguments, variables)
+        arguments, _ = mapper.map(positional, named, variables)
+        return arguments
+
+    def _execute(self, context, arguments):
+        self._set_variables(arguments, context.variables)
+        context.output.trace(lambda: self._log_args(context.variables))
         self._verify_keyword_is_valid()
         self.timeout.start()
+        error = return_ = pass_ = None
         try:
             self.keywords.run(context)
-        except ExecutionFailed, error:
-            pass
-        else:
-            error = None
-        td_error = self._run_teardown(context, error)
+        except ReturnFromKeyword, exception:
+            return_ = exception
+            error = exception.earlier_failures
+        except ExecutionPassed, exception:
+            pass_ = exception
+            error = exception.earlier_failures
+        except ExecutionFailed, exception:
+            error = exception
+        with context.keyword_teardown(error):
+            td_error = self._run_teardown(context)
         if error or td_error:
-            return UserKeywordExecutionFailed(error, td_error)
+            error = UserKeywordExecutionFailed(error, td_error)
+        return error or pass_, return_
 
-    def _run_teardown(self, context, error):
+    def _set_variables(self, arguments, variables):
+        before_varargs, varargs = self._split_args_and_varargs(arguments)
+        for name, value in zip(self.arguments.positional, before_varargs):
+            variables['${%s}' % name] = value
+        if self.arguments.varargs:
+            variables['@{%s}' % self.arguments.varargs] = varargs
+
+    def _split_args_and_varargs(self, args):
+        if not self.arguments.varargs:
+            return args, []
+        positional = len(self.arguments.positional)
+        return args[:positional], args[positional:]
+
+    def _log_args(self, variables):
+        args = ['${%s}' % arg for arg in self.arguments.positional]
+        if self.arguments.varargs:
+            args.append('@{%s}' % self.arguments.varargs)
+        args = ['%s=%s' % (name, utils.safe_repr(variables[name]))
+                for name in args]
+        return 'Arguments: [ %s ]' % ' | '.join(args)
+
+    def _run_teardown(self, context):
         if not self.teardown:
             return None
-        teardown = Teardown(self.teardown.name, self.teardown.args)
-        teardown.replace_variables(context.get_current_vars(), [])
-        context.start_keyword_teardown(error)
-        error = teardown.run(context)
-        context.end_keyword_teardown()
-        return error
+        try:
+            name = context.variables.replace_string(self.teardown.name)
+        except DataError, err:
+            return ExecutionFailed(unicode(err), syntax=True)
+        if name.upper() in ('', 'NONE'):
+            return None
+        kw = Keyword(name, self.teardown.args, type='teardown')
+        try:
+            kw.run(context)
+        except PassExecution:
+            return None
+        except ExecutionFailed, err:
+            return err
+        return None
 
     def _verify_keyword_is_valid(self):
-        if self._errors:
-            raise DataError('User keyword initialization failed:\n%s'
-                            % '\n'.join(self._errors))
         if not (self.keywords or self.return_value):
-            raise DataError("User keyword '%s' contains no keywords"
+            raise DataError("User keyword '%s' contains no keywords."
                             % self.name)
 
-    def _get_return_value(self, variables):
-        if not self.return_value:
+    def _get_return_value(self, variables, return_):
+        ret = self.return_value if not return_ else return_.return_value
+        if not ret:
             return None
+        contains_list_var = any(is_list_var(item) for item in ret)
         try:
-            ret = variables.replace_list(self.return_value)
+            ret = variables.replace_list(ret)
         except DataError, err:
             raise DataError('Replacing variables from keyword return value '
                             'failed: %s' % unicode(err))
-        if len(ret) != 1 or is_list_var(self.return_value[0]):
+        if len(ret) != 1 or contains_list_var:
             return ret
         return ret[0]
 
@@ -209,7 +260,7 @@ class EmbeddedArgsTemplate(UserKeywordHandler):
     _variable_pattern = r'\$\{[^\}]+\}'
 
     def __init__(self, keyword, libname):
-        if keyword.args.value:
+        if keyword.args:
             raise TypeError('Cannot have normal arguments')
         self.embedded_args, self.name_regexp \
                 = self._read_embedded_args_and_regexp(keyword.name)
@@ -221,22 +272,12 @@ class EmbeddedArgsTemplate(UserKeywordHandler):
     def _read_embedded_args_and_regexp(self, string):
         args = []
         full_pattern = ['^']
-        while True:
-            before, variable, rest = self._split_from_variable(string)
-            if before is None:
-                break
-            variable, pattern = self._get_regexp_pattern(variable)
+        for before, variable, string in VariableIterator(string, identifiers='$'):
+            variable, pattern = self._get_regexp_pattern(variable[2:-1])
             args.append('${%s}' % variable)
             full_pattern.extend([re.escape(before), '(%s)' % pattern])
-            string = rest
-        full_pattern.extend([re.escape(rest), '$'])
+        full_pattern.extend([re.escape(string), '$'])
         return args, self._compile_regexp(full_pattern)
-
-    def _split_from_variable(self, string):
-        var = VariableSplitter(string, identifiers=['$'])
-        if var.identifier is None:
-            return None, None, string
-        return string[:var.start], var.base, string[var.end:]
 
     def _get_regexp_pattern(self, variable):
         if ':' not in variable:
@@ -288,7 +329,8 @@ class EmbeddedArgs(UserKeywordHandler):
 
     def _run(self, context, args):
         if not context.dry_run:
+            variables = context.variables
+            self._resolve_arguments(args, variables)  # validates no args given
             for name, value in self.embedded_args:
-                context.get_current_vars()[name] = \
-                    context.get_current_vars().replace_scalar(value)
+                variables[name] = variables.replace_scalar(value)
         return UserKeywordHandler._run(self, context, args)

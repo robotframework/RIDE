@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -40,9 +40,9 @@ def del_env_var(name):
         del os.environ[_encode(name)]
     return value
 
-def get_env_vars():
-    # name is upper-cases consistently on Windows regardless interpreter
-    return dict((name if os.sep == '/' else name.upper(), get_env_var(name))
+def get_env_vars(upper=os.sep != '/'):
+    # by default, name is upper-cased on Windows regardless interpreter
+    return dict((name if not upper else name.upper(), get_env_var(name))
                 for name in (_decode(name) for name in os.environ))
 
 

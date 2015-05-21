@@ -71,6 +71,7 @@ class TestBuiltInLibrariesSuggester(_ImportSuggesterHelpers, unittest.TestCase):
 
     def test_returns_all_builtin_libraries_with_empty_string(self):
         self._assert_suggestion_names(['Collections',
+                                       'DateTime',
                                        'Dialogs',
                                        'OperatingSystem',
                                        'Process',
@@ -81,7 +82,7 @@ class TestBuiltInLibrariesSuggester(_ImportSuggesterHelpers, unittest.TestCase):
                                        'XML'], '')
 
     def test_returns_matching_builtin_libraries(self):
-        self._assert_suggestion_names(['OperatingSystem', 'Remote', 'Telnet'], 'te')
+        self._assert_suggestion_names(['DateTime', 'OperatingSystem', 'Remote', 'Telnet'], 'te')
 
 class TestLibrariesSuggester(_ImportSuggesterTests, unittest.TestCase):
 
@@ -94,6 +95,7 @@ class TestLibrariesSuggester(_ImportSuggesterTests, unittest.TestCase):
     def test_all_suggestions_with_empty_string(self):
         self._assert_suggestion_names(['barbar',
                                        'Collections',
+                                       'DateTime',
                                        'Dialogs',
                                        'doodoo',
                                        'foobar',

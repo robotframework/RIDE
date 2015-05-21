@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -35,11 +35,10 @@ class VariableAssigner(object):
                                               return_value))
 
     def _assign(self, context, return_value):
-        variables = context.get_current_vars()
         for name, value in return_value.get_variables_to_set():
-            if not self._extended_assign(name, value, variables):
-                self._normal_assign(name, value, variables)
-            context.output.info(format_assign_message(name, value))
+            if not self._extended_assign(name, value, context.variables):
+                self._normal_assign(name, value, context.variables)
+            context.info(format_assign_message(name, value))
 
     def _extended_assign(self, name, value, variables):
         if '.' not in name or name.startswith('@') \

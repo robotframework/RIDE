@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,11 +12,14 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-"""Implements writing of parsed test data to files.
+"""Implements writing of parsed, and possibly edited, test data back to files.
 
-This functionality is used by :py:meth:`robot.parsing.model.TestCaseFile.save`.
+This functionality is used by :meth:`robot.parsing.model.TestCaseFile.save`
+and indirectly by :mod:`robot.tidy`. External tools should not need to use
+this package directly.
 
-This package is considered stable.
+This package is considered stable, although the planned changes to
+:mod:`robot.parsing` may affect also this package.
 """
 
 from .datafilewriter import DataFileWriter

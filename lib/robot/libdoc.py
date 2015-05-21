@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -13,6 +13,22 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
+"""Module implementing the command line entry point for the `Libdoc` tool.
+
+This module can be executed from the command line using the following
+approaches::
+
+    python -m robot.libdoc
+    python path/to/robot/libdoc.py
+
+Instead of ``python`` it is possible to use also other Python interpreters.
+
+This module also provides :func:`libdoc` and :func:`libdoc_cli` functions
+that can be used programmatically. Other code is for internal usage.
+
+Libdoc itself is implemented in the :mod:`~robot.libdocpkg` package.
+"""
 
 USAGE = """robot.libdoc -- Robot Framework library documentation generator
 
@@ -101,12 +117,12 @@ Alternative execution
 =====================
 
 Libdoc works with all interpreters supported by Robot Framework (Python,
-Jython and IronPython). In the examples above libdoc is executed as an
+Jython and IronPython). In the examples above Libdoc is executed as an
 installed module, but it can also be executed as a script like
 `python path/robot/libdoc.py`.
 
-For more information see libdoc section in Robot Framework User Guide at
-http://code.google.com/p/robotframework/wiki/UserGuide
+For more information about Libdoc and other built-in tools, see
+http://robotframework.org/robotframework/#built-in-tools.
 """
 
 import sys
@@ -162,26 +178,36 @@ class LibDoc(Application):
         return format
 
 
-def libdoc_cli(args):
-    """Executes libdoc similarly as from the command line.
+def libdoc_cli(arguments):
+    """Executes Libdoc similarly as from the command line.
 
-    :param args: command line arguments as a list of strings.
+    :param arguments: Command line arguments as a list of strings.
 
-    Example:
-        libdoc_cli(['--name', 'Something', 'MyLibrary.py', 'doc.html'])
+    For programmatic usage the :func:`libdoc` function is typically better. It
+    has a better API for that usage and does not call :func:`sys.exit` like
+    this function.
+
+    Example::
+
+        from robot.libdoc import libdoc_cli
+
+        libdoc_cli(['--version', '1.0', 'MyLibrary.py', 'MyLibraryDoc.html'])
     """
-    LibDoc().execute_cli(args)
+    LibDoc().execute_cli(arguments)
 
 
 def libdoc(library_or_resource, outfile, name='', version='', format=None):
     """Executes libdoc.
 
-    Arguments are same as command line options to libdoc.py.
+    Arguments have same semantics as Libdoc command line options with
+    same names.
 
-    Example:
-        libdoc('MyLibrary.py', 'MyLibrary.html', version='1.0')
+    Example::
+
+        from robot.libdoc import libdoc
+
+        libdoc('MyLibrary.py', 'MyLibraryDoc.html', version='1.0')
     """
-
     LibDoc().execute(library_or_resource, outfile, name=name, version=version,
                      format=format)
 

@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,310 +12,239 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot import utils
-from robot.common import BaseTestSuite, BaseTestCase
-from robot.parsing import TestData
-from robot.errors import ExecutionFailed, DataError
-from robot.variables import GLOBAL_VARIABLES
-from robot.output import LOGGER
+from __future__ import with_statement
 
-from .fixture import Setup, Teardown
-from .keywords import Keywords
-from .namespace import Namespace
-from .runerrors import SuiteRunErrors, TestRunErrors
-from .userkeyword import UserLibrary
-from .context import EXECUTION_CONTEXTS
-from .defaultvalues import DefaultValues
+from robot import model
+from robot.conf import RobotSettings
+from robot.output import LOGGER, Output, pyloggingconf
+from robot.utils import setter
+from robot.variables import init_global_variables
+
+from .namespace import IMPORTER
+from .randomizer import Randomizer
+from .runner import Runner
+from .signalhandler import STOP_SIGNAL_MONITOR
 
 
-def TestSuite(datasources, settings):
-    """Creates a runnable test suite from given data sources and settings.
-
-    This is a factory method that returns either :class:`RunnableTestSuite`
-    or :class:`RunnableMultiTestSuite` depending are one or more data sources
-    given. This method, and especially the returned suite, is likely to change
-    heavily in version 2.8.
-
-    :param datasources: List of paths to read data from. Starting from 2.7.2,
-                        a single datasource can also be given as a string.
-    :param settings: Execution configuration.
-    :type settings: :class:`~robot.conf.settings.RobotSettings`
-    :returns: :class:`RunnableTestSuite`
-    """
-    if isinstance(datasources, basestring):
-        datasources = [datasources]
-    datasources = [utils.abspath(path) for path in datasources]
-    suite = _get_suite(datasources, settings['SuiteNames'], settings['WarnOnSkipped'])
-    suite.set_options(settings)
-    _check_suite_contains_tests(suite, settings['RunEmptySuite'])
-    return suite
-
-def _get_suite(datasources, include_suites, warn_on_skipped):
-    if not datasources:
-        raise DataError("No data sources given.")
-    if len(datasources) > 1:
-        return _get_multisource_suite(datasources, include_suites, warn_on_skipped)
-    return RunnableTestSuite(_parse_suite(datasources[0], include_suites, warn_on_skipped))
-
-def _parse_suite(path, include_suites, warn_on_skipped):
-    try:
-        return TestData(source=path, include_suites=include_suites, warn_on_skipped=warn_on_skipped)
-    except DataError, err:
-        raise DataError("Parsing '%s' failed: %s" % (path, unicode(err)))
-
-def _get_multisource_suite(datasources, include_suites, warn_on_skipped):
-    suitedatas = []
-    for datasource in datasources:
-        try:
-            suitedatas.append(_parse_suite(datasource, include_suites, warn_on_skipped))
-        except DataError, err:
-            LOGGER.warn(err)
-    suite = RunnableMultiTestSuite(suitedatas)
-    if suite.get_test_count() == 0:
-        raise DataError("Data sources %s contain no test cases."
-                        % utils.seq2str(datasources))
-    return suite
-
-def _check_suite_contains_tests(suite, run_empty_suites=False):
-    suite.filter_empty_suites()
-    if not suite.get_test_count() and not run_empty_suites:
-        raise DataError("Test suite '%s' contains no test cases." % suite.source)
+# TODO: This module should be turned into a package with submodules.
+# No time for that prior to 2.8, but it ought to be safe also in 2.8.x.
+# Important to check that references in API docs don't break.
 
 
-class RunnableTestSuite(BaseTestSuite):
+class Keyword(model.Keyword):
+    """Running model for single keyword."""
+    __slots__ = ['assign']
+    message_class = None  # TODO: Remove from base model?
 
-    def __init__(self, data, parent=None, defaults=None):
-        BaseTestSuite.__init__(self, data.name, data.source, parent)
-        self.variables = GLOBAL_VARIABLES.copy()
-        self.variables.set_from_variable_table(data.variable_table)
-        self.source = data.source
-        self.doc = data.setting_table.doc.value
-        self.metadata = self._get_metadata(data.setting_table.metadata)
-        self.imports = data.imports
-        self.user_keywords = UserLibrary(data.keywords)
-        self.setup = Setup(data.setting_table.suite_setup.name,
-                           data.setting_table.suite_setup.args)
-        self.teardown = Teardown(data.setting_table.suite_teardown.name,
-                                 data.setting_table.suite_teardown.args)
-        defaults = DefaultValues(data.setting_table, defaults)
-        for suite in data.children:
-            RunnableTestSuite(suite, parent=self, defaults=defaults)
-        for test in data.testcase_table:
-            RunnableTestCase(test, parent=self, defaults=defaults)
-        self._exit_on_failure_mode = False
-        self._skip_teardowns_on_exit_mode = False
-        self._dry_run_mode = False
+    def __init__(self, name='', args=(), assign=(), type='kw'):
+        model.Keyword.__init__(self, name=name, args=args, type=type)
+        #: Variables to be assigned.
+        self.assign = assign
 
-    def filter_empty_suites(self):
-        for suite in self.suites[:]:
-            suite.filter_empty_suites()
-            if suite.get_test_count() == 0:
-                self.suites.remove(suite)
-                LOGGER.info("Running test suite '%s' failed: Test suite "
-                            "contains no test cases." % suite.source)
+    def is_for_loop(self):
+        return False
 
-    def _get_metadata(self, metadata):
-        meta = utils.NormalizedDict()
-        for item in metadata:
-            meta[item.name] = item.value
-        return meta
+    def is_comment(self):
+        return False
 
-    def run(self, output, parent_context=None, errors=None):
-        if not errors:
-            errors = SuiteRunErrors(self._exit_on_failure_mode,
-                                    self._skip_teardowns_on_exit_mode)
-        context = self._start_run(output, parent_context, errors)
-        self._run_setup(context, errors)
-        self._run_sub_suites(context, errors)
-        self._run_tests(context, errors)
-        self._report_status(context, errors)
-        self._run_teardown(context, errors)
-        self._end_run(context, errors)
-
-    def _start_run(self, output, parent_context, errors):
-        errors.start_suite()
-        self.status = 'RUNNING'
-        self.starttime = utils.get_timestamp()
-        variables = parent_context.get_current_vars() if parent_context else None
-        ns = Namespace(self, variables)
-        context = EXECUTION_CONTEXTS.start_suite(ns, output, self._dry_run_mode)
-        if not errors.exit:
-            ns.handle_imports()
-        self._set_variable_dependent_metadata(context, errors)
-        output.start_suite(self)
-        return context
-
-    def _set_variable_dependent_metadata(self, context, errors):
-        init_errors = []
-        self.doc = context.replace_vars_from_setting('Documentation', self.doc,
-                                                     init_errors)
-        self.setup.replace_variables(context.get_current_vars(), init_errors)
-        self.teardown.replace_variables(context.get_current_vars(), init_errors)
-        for name, value in self.metadata.items():
-            self.metadata[name] = context.replace_vars_from_setting(name, value,
-                                                                    init_errors)
-        errors.suite_initialized('\n'.join(init_errors))
-
-    def _run_setup(self, context, errors):
-        if errors.is_setup_allowed():
-            error = self.setup.run(context)
-            errors.setup_executed(error)
-
-    def _run_teardown(self, context, errors):
-        if errors.is_teardown_allowed():
-            error = self.teardown.run(context)
-            if error:
-                self.suite_teardown_failed(error)
-
-    def _run_sub_suites(self, context, errors):
-        for suite in self.suites:
-            suite.run(context.output, context, errors)
-
-    def _run_tests(self, context, errors):
-        executed_tests = []
-        for test in self.tests:
-            normname = utils.normalize(test.name)
-            if normname in executed_tests:
-                LOGGER.warn("Multiple test cases with name '%s' executed in "
-                            "test suite '%s'"% (test.name, self.longname))
-            executed_tests.append(normname)
-            test.run(context, errors)
-            context.set_prev_test_variables(test)
-
-    def _report_status(self, context, errors):
-        self.set_status()
-        self.message = errors.get_suite_error()
-        context.report_suite_status(self.status, self.get_full_message())
-
-    def _end_run(self, context, errors):
-        self.endtime = utils.get_timestamp()
-        self.elapsedtime = utils.get_elapsed_time(self.starttime, self.endtime)
-        context.copy_prev_test_vars_to_global()
-        context.end_suite(self)
-        errors.end_suite()
+    @property
+    def keyword(self):
+        """Name of the keyword."""
+        return self.name
 
 
-class RunnableMultiTestSuite(RunnableTestSuite):
+class ForLoop(Keyword):
+    __slots__ = ['range']
+    keyword_class = Keyword
 
-    def __init__(self, suitedatas):
-        BaseTestSuite.__init__(self, name='')
-        self.variables = GLOBAL_VARIABLES.copy()
-        self.doc = ''
+    def __init__(self, vars, items, range):
+        Keyword.__init__(self, assign=vars, args=items, type='for')
+        self.range = range
+
+    @property
+    def vars(self):
+        return self.assign
+
+    @property
+    def items(self):
+        return self.args
+
+    def is_for_loop(self):
+        return True
+
+    @property
+    def steps(self):
+        return self.keywords
+
+
+class TestCase(model.TestCase):
+    """Running model for single test case."""
+    __slots__ = ['template']
+    keyword_class = Keyword
+
+    def __init__(self, name='', doc='', tags=None, timeout=None, template=None):
+        model.TestCase.__init__(self, name, doc, tags, timeout)
+        #: Name of the keyword that has been used as template
+        #: when building the test. `None` if no is template used.
+        self.template = template
+
+    @setter
+    def timeout(self, timeout):
+        """Timeout limit of the test case as an instance of
+        :class:`~.Timeout.
+        """
+        return Timeout(*timeout) if timeout else None
+
+
+class TestSuite(model.TestSuite):
+    """Running model for single test suite."""
+    __slots__ = []
+    test_class = TestCase
+    keyword_class = Keyword
+
+    def __init__(self,  name='', doc='', metadata=None, source=None):
+
+        model.TestSuite.__init__(self, name, doc, metadata, source)
+        #: Imports the suite contains.
         self.imports = []
-        self.setup = Setup(None, None)
-        self.teardown = Teardown(None, None)
-        for suite in suitedatas:
-            RunnableTestSuite(suite, parent=self)
-        self._exit_on_failure_mode = False
-        self._skip_teardowns_on_exit_mode = False
-        self._dry_run_mode = False
+        #: User keywords defined in the same file as the suite.
+        #: **Likely to change or to be removed.**
+        self.user_keywords = []
+        #: Variables defined in the same file as the suite.
+        #: **Likely to change or to be removed.**
+        self.variables = []
+
+    @setter
+    def imports(self, imports):
+        return model.Imports(self.source, imports)
+
+    @setter
+    def user_keywords(self, keywords):
+        return model.ItemList(UserKeyword, items=keywords)
+
+    @setter
+    def variables(self, variables):
+        return model.ItemList(Variable, {'source': self.source}, items=variables)
+
+    def configure(self, randomize_suites=False, randomize_tests=False,
+                  randomize_seed=None, **options):
+        model.TestSuite.configure(self, **options)
+        self.randomize(randomize_suites, randomize_tests, randomize_seed)
+
+    def randomize(self, suites=True, tests=True, seed=None):
+        """Randomizes the order of suites and/or tests, recursively."""
+        self.visit(Randomizer(suites, tests, seed))
+
+    def run(self, settings=None, **options):
+        """Executes the suite based based the given ``settings`` or ``options``.
+
+        :param settings: :class:`~robot.conf.settings.RobotSettings` object
+            to configure test execution.
+        :param options: Used to construct new
+            :class:`~robot.conf.settings.RobotSettings` object if ``settings``
+            are not given.
+        :return: :class:`~robot.result.executionresult.Result` object with
+            information about executed suites and tests.
+
+        If ``options`` are used, their names are the same as long command line
+        options except without hyphens, and they also have the same semantics.
+        Options that can be given on the command line multiple times can be
+        passed as lists like ``variable=['VAR1:value1', 'VAR2:value2']``.
+        If such an option is used only once, it can be given also as a single
+        string like ``variable='VAR:value'``.
+
+        To capture stdout and/or stderr streams, pass open file objects in as
+        special keyword arguments `stdout` and `stderr`, respectively. Note
+        that this works only in version 2.8.4 and newer.
+
+        Only options related to the actual test execution have an effect.
+        For example, options related to selecting test cases or creating
+        logs and reports are silently ignored. The output XML generated
+        as part of the execution can be configured, though. This includes
+        disabling it with ``output=None``.
+
+        Example::
+
+            stdout = StringIO()
+            result = suite.run(variable='EXAMPLE:value',
+                               critical='regression',
+                               output='example.xml',
+                               exitonfailure=True,
+                               stdout=stdout)
+            print result.return_code
+
+        To save memory, the returned
+        :class:`~robot.result.executionresult.Result` object does not
+        have any information about the executed keywords. If that information
+        is needed, the created output XML file needs to be read  using the
+        :class:`~robot.result.resultbuilder.ExecutionResult` factory method.
+
+        See the :mod:`package level <robot.running>` documentation for
+        more examples, including how to construct executable test suites and
+        how to create logs and reports based on the execution results.
+
+        See the :func:`robot.run <robot.run.run>` function for a higher-level
+        API for executing tests in files or directories.
+        """
+        if not settings:
+            settings = RobotSettings(options)
+            LOGGER.register_console_logger(**settings.console_logger_config)
+        with pyloggingconf.robot_handler_enabled(settings.log_level):
+            with STOP_SIGNAL_MONITOR:
+                IMPORTER.reset()
+                init_global_variables(settings)
+                output = Output(settings)
+                runner = Runner(output, settings)
+                self.visit(runner)
+            output.close(runner.result)
+        return runner.result
 
 
-class RunnableTestCase(BaseTestCase):
+class Variable(object):
 
-    def __init__(self, tc_data, parent, defaults):
-        BaseTestCase.__init__(self, tc_data.name, parent)
-        self.doc = tc_data.doc.value
-        self.setup = defaults.get_setup(tc_data.setup)
-        self.teardown = defaults.get_teardown(tc_data.teardown)
-        self.tags = defaults.get_tags(tc_data.tags)
-        self.timeout = defaults.get_timeout(tc_data.timeout)
-        self.template = defaults.get_template(tc_data.template)
-        self.keywords = Keywords(tc_data.steps, self.template)
+    def __init__(self, name, value, source=None):
+        # TODO: check name and value
+        self.name = name
+        self.value = value
+        self.source = source
 
-    def run(self, context, parent_errors):
-        errors = self._start_run(context, parent_errors)
-        if errors.is_run_allowed():
-            self._run(context, errors)
-        else:
-            self._not_allowed_to_run(errors)
-        self._end_run(context)
+    def report_invalid_syntax(self, message, level='ERROR'):
+        LOGGER.write("Error in file '%s': Setting variable '%s' failed: %s"
+                     % (self.source or '<unknown>', self.name, message), level)
 
-    def _start_run(self, context, parent_errors):
-        errors = TestRunErrors(parent_errors)
-        self.status = 'RUNNING'
-        self.starttime = utils.get_timestamp()
-        errors.test_initialized(self._init_test(context))
-        context.start_test(self)
-        return errors
 
-    def _init_test(self, context):
-        errors = []
-        self.doc = context.replace_vars_from_setting('Documentation', self.doc,
-                                                     errors)
-        self.setup.replace_variables(context.get_current_vars(), errors)
-        self.teardown.replace_variables(context.get_current_vars(), errors)
-        tags = context.replace_vars_from_setting('Tags', self.tags, errors)
-        self.tags = utils.normalize_tags(tags)
-        self.timeout.replace_variables(context.get_current_vars())
-        if errors:
-            return 'Test case initialization failed:\n%s' % '\n'.join(errors)
-        if not self.name:
-            return 'Test case name is required.'
-        if not self.keywords:
-            return 'Test case contains no keywords'
-        return None
+class Timeout(object):
 
-    def _run(self, context, errors):
-        self.timeout.start()
-        failed = self._run_setup(context, errors)
-        if not failed:
-            self._run_keywords(context, errors)
-        self._set_status_before_teardown(context, errors)
-        failed = self._run_teardown(context, errors)
-        self._set_status_after_teardown(failed, errors)
+    def __init__(self, value, message=None):
+        self.value = value
+        self.message = message
 
-    def _test_failed(self, err, errors):
-        self.timeout.set_keyword_timeout(err.timeout)
-        errors.test_failed(exit=err.exit, critical=self.critical)
+    def __str__(self):
+        return self.value
 
-    def _run_setup(self, context, errors):
-        error = self.setup.run(context)
-        if error:
-            errors.setup_failed(error)
-            self._test_failed(error, errors)
-        return bool(error)
 
-    def _run_keywords(self, context, errors):
-        try:
-            self.keywords.run(context)
-        except ExecutionFailed, err:
-            errors.keyword_failed(err)
-            self._test_failed(err, errors)
+class UserKeyword(object):
+    # TODO: In 2.9:
+    # - Teardown should be handled as a keyword like with tests and suites.
+    # - Timeout should be handled consistently with tests.
+    # - Also resource files should use these model objects.
 
-    def _set_status_before_teardown(self, context, errors):
-        message = errors.get_message()
-        if message:
-            self.status = 'FAIL'
-            self.message = message
-        else:
-            self.status = 'PASS'
-        context.set_test_status_before_teardown(self.message, self.status)
+    def __init__(self, name, args=(), doc='', return_=None, timeout=None,
+                 teardown=None):
+        self.name = name
+        self.args = args
+        self.doc = doc
+        self.return_ = return_ or ()
+        self.teardown = None
+        self.timeout = timeout
+        self.teardown = teardown
+        self.keywords = []
 
-    def _run_teardown(self, context, errors):
-        if not errors.is_teardown_allowed():
-            return False
-        error = self.teardown.run(context)
-        if error:
-            errors.teardown_failed(error)
-            self._test_failed(error, errors)
-        return bool(error)
+    @setter
+    def keywords(self, keywords):
+        return model.ItemList(Keyword, items=keywords)
 
-    def _set_status_after_teardown(self, teardown_failed, errors):
-        if teardown_failed:
-            self.status = 'FAIL'
-            self.message = errors.get_teardown_message(self.message)
-        if self.status == 'PASS' and self.timeout.timed_out():
-            self.status = 'FAIL'
-            self.message = self.timeout.get_message()
-        if self.status == 'FAIL':
-            errors.test_failed(critical=self.critical)
-
-    def _not_allowed_to_run(self, errors):
-        self.status = 'FAIL'
-        self.message = errors.get_parent_or_init_error()
-
-    def _end_run(self, context):
-        self.endtime = utils.get_timestamp()
-        self.elapsedtime = utils.get_elapsed_time(self.starttime, self.endtime)
-        context.end_test(self)
+    # Compatibility with parsing model. Should be removed in 2.9.
+    @property
+    def steps(self):
+        return self.keywords

@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,10 +12,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-"""Implements handling and resolving of variables.
+"""Implements storing and resolving variables.
 
-This package is likely to change radically in RF 2.8. External code should use
-functionality provided directly by this package with care.
+This package is for internal usage only, and also subject to heavy refactoring
+in the future.
 """
 
 import os
@@ -24,10 +24,10 @@ import tempfile
 from robot import utils
 from robot.output import LOGGER
 
-from .isvar import is_var, is_scalar_var, is_list_var
+from .isvar import contains_var, is_var, is_scalar_var, is_list_var
 from .variables import Variables
 from .variableassigner import VariableAssigner
-from .variablesplitter import VariableSplitter
+from .variablesplitter import VariableSplitter, VariableIterator
 
 
 GLOBAL_VARIABLES = Variables()
@@ -49,10 +49,11 @@ def init_global_variables(settings):
                          ('${None}', None),
                          ('${null}', None),
                          ('${OUTPUT_DIR}', settings['OutputDir']),
-                         ('${OUTPUT_FILE}', settings['Output']),
-                         ('${REPORT_FILE}', settings['Report']),
-                         ('${LOG_FILE}', settings['Log']),
-                         ('${DEBUG_FILE}', settings['DebugFile']),
+                         ('${OUTPUT_FILE}', settings['Output'] or 'NONE'),
+                         ('${REPORT_FILE}', settings['Report'] or 'NONE'),
+                         ('${LOG_FILE}', settings['Log'] or 'NONE'),
+                         ('${LOG_LEVEL}', settings['LogLevel']),
+                         ('${DEBUG_FILE}', settings['DebugFile'] or 'NONE'),
                          ('${PREV_TEST_NAME}', ''),
                          ('${PREV_TEST_STATUS}', ''),
                          ('${PREV_TEST_MESSAGE}', '') ]:
@@ -62,6 +63,7 @@ def init_global_variables(settings):
 def _set_cli_vars(settings):
     for path, args in settings['VariableFiles']:
         try:
+            path = utils.find_file(path, file_type='Variable file')
             GLOBAL_VARIABLES.set_from_file(path, args)
         except:
             msg, details = utils.get_error_details()

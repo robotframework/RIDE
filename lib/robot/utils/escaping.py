@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -15,8 +15,7 @@
 import re
 
 
-_ESCAPE_RE = re.compile(r'(\\+)([^\\]{0,2})')   # escapes and nextchars
-_SEQS_TO_BE_ESCAPED = ('\\', '${', '@{', '%{', '&{', '*{' , '=')
+_SEQS_TO_BE_ESCAPED = ('\\', '${', '@{', '%{', '&{', '*{', '=')
 
 
 def escape(item):
@@ -29,38 +28,89 @@ def escape(item):
 
 
 def unescape(item):
-    if not isinstance(item, basestring):
+    if not (isinstance(item, basestring) and '\\' in item):
         return item
-    result = []
-    unprocessed = item
-    while True:
-        res = _ESCAPE_RE.search(unprocessed)
-        # If no escapes found append string to result and exit loop
-        if res is None:
-            result.append(unprocessed)
-            break
-        # Split string to pre match, escapes, nextchars and unprocessed parts
-        # (e.g. '<pre><esc><nc><unproc>') where nextchars contains 0-2 chars
-        # and unprocessed may contain more escapes. Pre match part contains
-        # no escapes can is appended directly to result.
-        result.append(unprocessed[:res.start()])
-        escapes = res.group(1)
-        nextchars = res.group(2)
-        unprocessed = unprocessed[res.end():]
-        # Append every second escape char to result
-        result.append('\\' * (len(escapes) / 2))
-        # Handle '\n', '\r' and '\t'. Note that both '\n' and '\n ' are
-        # converted to '\n'
-        if len(escapes) % 2 == 0 or len(nextchars) == 0 \
-                    or nextchars[0] not in ['n','r','t']:
-            result.append(nextchars)
-        elif nextchars[0] == 'n':
-            if len(nextchars) == 1 or nextchars[1] == ' ':
-                result.append('\n')
+    return Unescaper().unescape(item)
+
+
+class Unescaper(object):
+    _escaped = re.compile(r'(\\+)([^\\]*)')
+
+    def unescape(self, string):
+        return ''.join(self._yield_unescaped(string))
+
+    def _yield_unescaped(self, string):
+        while '\\' in string:
+            finder = EscapeFinder(string)
+            yield finder.before + finder.backslashes
+            if finder.escaped and finder.text:
+                yield self._unescape(finder.text)
             else:
-                result.append('\n' + nextchars[1])
-        elif nextchars[0] == 'r':
-            result.append('\r' + nextchars[1:])
+                yield finder.text
+            string = finder.after
+        yield string
+
+    def _unescape(self, text):
+        try:
+            escape = str(text[0])
+        except UnicodeError:
+            return text
+        try:
+            unescaper = getattr(self, '_unescaper_for_' + escape)
+        except AttributeError:
+            return text
         else:
-            result.append('\t' + nextchars[1:])
-    return ''.join(result)
+            return unescaper(text[1:])
+
+    def _unescaper_for_n(self, text):
+        if text.startswith(' '):
+            text = text[1:]
+        return '\n' + text
+
+    def _unescaper_for_r(self, text):
+        return '\r' + text
+
+    def _unescaper_for_t(self, text):
+        return '\t' + text
+
+    def _unescaper_for_x(self, text):
+        return self._unescape_character(text, 2, 'x')
+
+    def _unescaper_for_u(self, text):
+        return self._unescape_character(text, 4, 'u')
+
+    def _unescaper_for_U(self, text):
+        return self._unescape_character(text, 8, 'U')
+
+    def _unescape_character(self, text, length, escape):
+        try:
+            char = self._get_character(text[:length], length)
+        except ValueError:
+            return escape + text
+        else:
+            return char + text[length:]
+
+    def _get_character(self, text, length):
+        if len(text) < length or not text.isalnum():
+            raise ValueError
+        ordinal = int(text, 16)
+        # No Unicode code points above 0x10FFFF
+        if ordinal > 0x10FFFF:
+            raise ValueError
+        # unichr only supports ordinals up to 0xFFFF with narrow Python builds
+        if ordinal > 0xFFFF:
+            return eval("u'\\U%08x'" % ordinal)
+        return unichr(ordinal)
+
+
+class EscapeFinder(object):
+    _escaped = re.compile(r'(\\+)([^\\]*)')
+
+    def __init__(self, string):
+        res = self._escaped.search(string)
+        self.before = string[:res.start()]
+        escape_chars = len(res.group(1))
+        self.backslashes = '\\' * (escape_chars // 2)
+        self.escaped = bool(escape_chars % 2)
+        self.text = res.group(2)
+        self.after = string[res.end():]

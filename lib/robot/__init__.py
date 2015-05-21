@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -11,6 +11,31 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
+"""The root of the Robot Framework package.
+
+The command line entry points provided by the framework are exposed for
+programmatic usage as follows:
+
+  * :func:`~robot.run.run`: Function to run tests.
+  * :func:`~robot.run.run_cli`: Function to run tests
+    with command line argument processing.
+  * :func:`~robot.rebot.rebot`: Function to post-process outputs.
+  * :func:`~robot.rebot.rebot_cli`: Function to post-process outputs
+    with command line argument processing.
+  * :mod:`~robot.libdoc`: Module for library documentation generation.
+  * :mod:`~robot.testdoc`: Module for test case documentation generation.
+  * :mod:`~robot.tidy`: Module for test data clean-up and format change.
+
+All the functions above can be imported like ``from robot import run``.
+Functions and classes provided by the modules need to be imported like
+``from robot.libdoc import libdoc_cli``.
+
+The functions and modules listed above are considered stable. Other modules in
+this package are for for internal usage and may change without prior notice.
+
+.. tip:: More public APIs are exposed by the :mod:`robot.api` package.
+"""
 
 import sys
 

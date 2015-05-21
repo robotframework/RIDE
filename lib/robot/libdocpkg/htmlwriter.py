@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,12 +12,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import os
 import re
+import urllib
 
 from robot.errors import DataError
 from robot.htmldata import HtmlFileWriter, ModelWriter, JsonWriter, LIBDOC
-from robot import utils
+from robot.utils import get_timestamp, html_escape, html_format, NormalizedDict
+from robot.utils.htmlformatters import HeaderFormatter
 
 
 class LibdocHtmlWriter(object):
@@ -31,18 +32,16 @@ class LibdocModelWriter(ModelWriter):
 
     def __init__(self, output, libdoc):
         self._output = output
-        self._libdoc = libdoc
+        formatter = DocFormatter(libdoc.keywords, libdoc.doc, libdoc.doc_format)
+        self._libdoc = JsonConverter(formatter).convert(libdoc)
 
     def write(self, line):
-        self._output.write('<script type="text/javascript">' + os.linesep)
+        self._output.write('<script type="text/javascript">\n')
         self.write_data()
-        self._output.write('</script>' + os.linesep)
+        self._output.write('</script>\n')
 
     def write_data(self):
-        formatter = DocFormatter(self._libdoc.keywords, self._libdoc.doc,
-                                 self._libdoc.doc_format)
-        libdoc = JsonConverter(formatter).convert(self._libdoc)
-        JsonWriter(self._output).write_json('libdoc = ', libdoc)
+        JsonWriter(self._output).write_json('libdoc = ', self._libdoc)
 
 
 class JsonConverter(object):
@@ -57,7 +56,7 @@ class JsonConverter(object):
             'version': libdoc.version,
             'named_args': libdoc.named_args,
             'scope': libdoc.scope,
-            'generated': utils.get_timestamp(daysep='-', millissep=None),
+            'generated': get_timestamp(daysep='-', millissep=None),
             'inits': self._get_keywords(libdoc.inits),
             'keywords': self._get_keywords(libdoc.keywords)
         }
@@ -75,40 +74,49 @@ class JsonConverter(object):
 
 
 class DocFormatter(object):
-    _header_regexp = re.compile(r'<h2>(.+?)</h2>')
+    _header_regexp = re.compile(r'<h([234])>(.+?)</h\1>')
     _name_regexp = re.compile('`(.+?)`')
 
     def __init__(self, keywords, introduction, doc_format='ROBOT'):
         self._doc_to_html = DocToHtml(doc_format)
         self._targets = self._get_targets(keywords, introduction,
-                                          doc_format == 'ROBOT')
+                                          robot_format=doc_format == 'ROBOT')
 
     def _get_targets(self, keywords, introduction, robot_format):
-        targets = utils.NormalizedDict({
+        targets = {
             'introduction': 'Introduction',
             'library introduction': 'Introduction',
             'importing': 'Importing',
             'library importing': 'Importing',
             'shortcuts': 'Shortcuts',
             'keywords': 'Keywords'
-        })
+        }
         for kw in keywords:
             targets[kw.name] = kw.name
         if robot_format:
             for header in self._yield_header_targets(introduction):
                 targets[header] = header
-        return targets
+        return self._escape_and_encode_targets(targets)
 
     def _yield_header_targets(self, introduction):
+        headers = HeaderFormatter()
         for line in introduction.splitlines():
-            line = line.strip()
-            if line.startswith('= ') and line.endswith(' ='):
-                yield line[1:-1].strip()
+            match = headers.match(line)
+            if match:
+                yield match.group(2)
+
+    def _escape_and_encode_targets(self, targets):
+        return NormalizedDict((html_escape(key), self._encode_uri_component(value))
+                              for key, value in targets.iteritems())
+
+    def _encode_uri_component(self, value):
+        # Emulates encodeURIComponent javascript function
+        return urllib.quote(value.encode('UTF-8'), safe="-_.!~*'()")
 
     def html(self, doc, intro=False):
         doc = self._doc_to_html(doc)
         if intro:
-            doc = self._header_regexp.sub(r'<h2 id="\1">\1</h2>', doc)
+            doc = self._header_regexp.sub(r'<h\1 id="\2">\2</h\1>', doc)
         return self._name_regexp.sub(self._link_keywords, doc)
 
     def _link_keywords(self, match):
@@ -120,21 +128,20 @@ class DocFormatter(object):
 
 class DocToHtml(object):
 
-    def __init__(self, format):
-        self._formatter =  self._get_formatter(format)
+    def __init__(self, doc_format):
+        self._formatter = self._get_formatter(doc_format)
 
-
-    def _get_formatter(self, format):
+    def _get_formatter(self, doc_format):
         try:
-            return {'ROBOT': utils.html_format,
+            return {'ROBOT': html_format,
                     'TEXT': self._format_text,
                     'HTML': self._format_html,
-                    'REST': self._format_rest}[format]
+                    'REST': self._format_rest}[doc_format]
         except KeyError:
-            raise DataError("Invalid documentation format '%s'." % format)
+            raise DataError("Invalid documentation format '%s'." % doc_format)
 
     def _format_text(self, doc):
-        return '<p style="white-space: pre-wrap">%s</p>' % utils.html_escape(doc)
+        return '<p style="white-space: pre-wrap">%s</p>' % html_escape(doc)
 
     def _format_html(self, doc):
         return '<div style="margin: 0">%s</div>' % doc

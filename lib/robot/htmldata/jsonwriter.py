@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,8 +12,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import os
-
 
 class JsonWriter(object):
 
@@ -21,14 +19,14 @@ class JsonWriter(object):
         self._writer = JsonDumper(output)
         self._separator = separator
 
-    def write_json(self, prefix, data, postfix=';'+os.linesep, mapping=None,
+    def write_json(self, prefix, data, postfix=';\n', mapping=None,
                    separator=True):
         self._writer.write(prefix)
         self._writer.dump(data, mapping)
         self._writer.write(postfix)
         self._write_separator(separator)
 
-    def write(self, string, postfix=';'+os.linesep, separator=True):
+    def write(self, string, postfix=';\n', separator=True):
         self._writer.write(string + postfix)
         self._write_separator(separator)
 
@@ -75,20 +73,17 @@ class _Dumper(object):
 
 class StringDumper(_Dumper):
     _handled_types = basestring
-    _replace = {'\\': '\\\\', '"': '\\"', '\t': '\\t', '\n': '\\n', '\r': '\\r'}
+    _search_and_replace = [('\\', '\\\\'), ('"', '\\"'), ('\t', '\\t'),
+                           ('\n', '\\n'), ('\r', '\\r'), ('</', '\\x3c/')]
 
     def dump(self, data, mapping):
-        self._write('"%s"' % ''.join(self._encode_chars(data)))
+        self._write('"%s"' % (self._encode(data) if data else ''))
 
-    def _encode_chars(self, string):
-        # Performance optimized code..
-        replace = self._replace
-        for char in string:
-            if char in replace:
-                yield replace[char]
-            else:
-                val = ord(char)
-                yield char if 31 < val < 127 else '\\u%04x' % val
+    def _encode(self, string):
+        for search, replace in self._search_and_replace:
+            if search in string:
+                string = string.replace(search, replace)
+        return string.encode('UTF-8')
 
 
 class IntegerDumper(_Dumper):

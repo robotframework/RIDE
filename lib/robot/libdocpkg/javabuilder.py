@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -11,6 +11,8 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
+import sys
 
 from robot.errors import DataError
 from robot import utils
@@ -26,9 +28,10 @@ class JavaDocBuilder(object):
                             doc=self._get_doc(doc),
                             version=self._get_version(doc),
                             scope=self._get_scope(doc),
+                            named_args=False,
                             doc_format=self._get_doc_format(doc))
+        libdoc.inits = self._initializers(doc)
         libdoc.keywords = self._keywords(doc)
-        libdoc.inits = self._intializers(doc)
         return libdoc
 
     def _get_doc(self, doc):
@@ -54,39 +57,49 @@ class JavaDocBuilder(object):
                 return value
         return default
 
+    def _initializers(self, doc):
+        inits = [self._keyword_doc(init) for init in doc.constructors()]
+        if len(inits) == 1 and not inits[0].args:
+            return []
+        return inits
+
     def _keywords(self, doc):
         return [self._keyword_doc(m) for m in doc.methods()]
 
     def _keyword_doc(self, method):
         return KeywordDoc(
             name=utils.printable_name(method.name(), code_style=True),
-            args=list(self._yield_keyword_arguments(method)),
+            args=self._get_keyword_arguments(method),
             doc=self._get_doc(method)
         )
 
-    def _yield_keyword_arguments(self, method):
-        for param in method.parameters():
-            name = param.name()
-            if param.type().dimension() == '[]':
-                name = '*' + name
-            yield name
-
-    def _intializers(self, doc):
-        inits = [self._keyword_doc(init) for init in doc.constructors()]
-        if len(inits) == 1 and not inits[0].args:
+    def _get_keyword_arguments(self, method):
+        params = method.parameters()
+        if not params:
             return []
-        return inits
+        names = [p.name() for p in params]
+        if self._is_varargs(params[-1]):
+            names[-1] = '*' + names[-1]
+        elif self._is_kwargs(params[-1]):
+            names[-1] = '**' + names[-1]
+            if len(params) > 1 and self._is_varargs(params[-2]):
+                names[-2] = '*' + names[-2]
+        return names
+
+    def _is_varargs(self, param):
+        return (param.typeName().startswith('java.util.List')
+                or param.type().dimension() == '[]')
+
+    def _is_kwargs(self, param):
+        return param.typeName().startswith('java.util.Map')
 
 
 def ClassDoc(path):
     """Process the given Java source file and return ClassDoc instance.
 
-    Processing is done using com.sun.tools.javadoc APIs. The usage has
-    been figured out from sources at
-    http://www.java2s.com/Open-Source/Java-Document/JDK-Modules-com.sun/tools/com.sun.tools.javadoc.htm
-
-    Returned object implements com.sun.javadoc.ClassDoc interface, see
-    http://java.sun.com/j2se/1.4.2/docs/tooldocs/javadoc/doclet/
+    Processing is done using com.sun.tools.javadoc APIs. Returned object
+    implements com.sun.javadoc.ClassDoc interface:
+    http://docs.oracle.com/javase/7/docs/jdk/api/javadoc/doclet/
     """
     try:
         from com.sun.tools.javadoc import JavadocTool, Messager, ModifierFilter
@@ -100,8 +113,12 @@ def ClassDoc(path):
     jdoctool = JavadocTool.make0(context)
     filter = ModifierFilter(PUBLIC)
     java_names = List.of(path)
-    root = jdoctool.getRootDocImpl('en', 'utf-8', filter, java_names,
-                                   List.nil(), False, List.nil(),
-                                   List.nil(), False, False, True)
+    if sys.platform[4:7] < '1.8':  # API changed in Java 8
+        root = jdoctool.getRootDocImpl('en', 'utf-8', filter, java_names,
+                                       List.nil(), False, List.nil(),
+                                       List.nil(), False, False, True)
+    else:
+        root = jdoctool.getRootDocImpl('en', 'utf-8', filter, java_names,
+                                       List.nil(), List.nil(), False, List.nil(),
+                                       List.nil(), False, False, True)
     return root.classes()[0]
-

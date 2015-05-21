@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -13,6 +13,22 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
+"""Module implementing the command line entry point for the `Testdoc` tool.
+
+This module can be executed from the command line using the following
+approaches::
+
+    python -m robot.testdoc
+    python path/to/robot/testdoc.py
+
+Instead of ``python`` it is possible to use also other Python interpreters.
+
+This module also provides :func:`testdoc` and :func:`testdoc_cli` functions
+that can be used programmatically. Other code is for internal usage.
+"""
+
+from __future__ import with_statement
 
 USAGE = """robot.testdoc -- Robot Framework test data documentation tool
 
@@ -60,12 +76,13 @@ Examples:
   python -m robot.testdoc my_test.html testdoc.html
   jython -m robot.testdoc -N smoke_tests -i smoke path/to/my_tests smoke.html
   ipy path/to/robot/testdoc.py first_suite.txt second_suite.txt output.html
+
+For more information about Testdoc and other built-in tools, see
+http://robotframework.org/robotframework/#built-in-tools.
 """
 
+import os.path
 import sys
-import os
-from os.path import abspath, dirname
-import codecs
 import time
 
 # Allows running as a script. __name__ check needed with multiprocessing:
@@ -74,10 +91,10 @@ if 'robot' not in sys.modules and __name__ == '__main__':
     import pythonpathsetter
 
 from robot import utils
-from robot.running import TestSuite, Keyword
 from robot.conf import RobotSettings
-from robot.parsing import disable_curdir_processing
 from robot.htmldata import HtmlFileWriter, ModelWriter, JsonWriter, TESTDOC
+from robot.parsing import disable_curdir_processing
+from robot.running import TestSuiteBuilder
 
 
 class TestDoc(utils.Application):
@@ -85,25 +102,26 @@ class TestDoc(utils.Application):
     def __init__(self):
         utils.Application.__init__(self, USAGE, arg_limits=(2,))
 
-    def main(self, args, title=None, **options):
-        datasources = args[0:-1]
-        outfile = abspath(args[-1])
+    def main(self, datasources, title=None, **options):
+        outfile = utils.abspath(datasources.pop())
         suite = TestSuiteFactory(datasources, **options)
         self._write_test_doc(suite, outfile, title)
         self.console(outfile)
 
     def _write_test_doc(self, suite, outfile, title):
-        output = codecs.open(outfile, 'w', 'UTF-8')
-        model_writer = TestdocModelWriter(output, suite, title)
-        HtmlFileWriter(output, model_writer).write(TESTDOC)
-        output.close()
+        with open(outfile, 'w') as output:
+            model_writer = TestdocModelWriter(output, suite, title)
+            HtmlFileWriter(output, model_writer).write(TESTDOC)
 
 
 @disable_curdir_processing
 def TestSuiteFactory(datasources, **options):
+    settings = RobotSettings(options)
     if isinstance(datasources, basestring):
         datasources = [datasources]
-    return TestSuite(datasources, RobotSettings(options))
+    suite = TestSuiteBuilder().build(*datasources)
+    suite.configure(**settings.suite_config)
+    return suite
 
 
 class TestdocModelWriter(ModelWriter):
@@ -115,9 +133,9 @@ class TestdocModelWriter(ModelWriter):
         self._title = title.replace('_', ' ') if title else suite.name
 
     def write(self, line):
-        self._output.write('<script type="text/javascript">' + os.linesep)
+        self._output.write('<script type="text/javascript">\n')
         self.write_data()
-        self._output.write('</script>' + os.linesep)
+        self._output.write('</script>\n')
 
     def write_data(self):
         generated_time = time.localtime()
@@ -143,11 +161,12 @@ class JsonConverter(object):
             'source': suite.source or '',
             'relativeSource': self._get_relative_source(suite.source),
             'id': suite.id,
-            'name': suite.name,
-            'fullName': suite.longname,
+            'name': self._escape(suite.name),
+            'fullName': self._escape(suite.longname),
             'doc': self._html(suite.doc),
-            'metadata': [(n, self._html(v)) for n, v in suite.metadata.items()],
-            'numberOfTests': suite.get_test_count(),
+            'metadata': [(self._escape(name), self._html(value))
+                         for name, value in suite.metadata.items()],
+            'numberOfTests': suite.test_count   ,
             'suites': self._convert_suites(suite),
             'tests': self._convert_tests(suite),
             'keywords': list(self._convert_keywords(suite))
@@ -156,7 +175,10 @@ class JsonConverter(object):
     def _get_relative_source(self, source):
         if not source or not self._output_path:
             return ''
-        return utils.get_link_path(source, dirname(self._output_path))
+        return utils.get_link_path(source, os.path.dirname(self._output_path))
+
+    def _escape(self, item):
+        return utils.html_escape(item)
 
     def _html(self, item):
         return utils.html_format(utils.unescape(item))
@@ -169,49 +191,92 @@ class JsonConverter(object):
 
     def _convert_test(self, test):
         return {
-            'name': test.name,
-            'fullName': test.longname,
+            'name': self._escape(test.name),
+            'fullName': self._escape(test.longname),
             'id': test.id,
             'doc': self._html(test.doc),
-            'tags': utils.normalize_tags(test.tags),
+            'tags': [self._escape(t) for t in test.tags],
             'timeout': self._get_timeout(test.timeout),
             'keywords': list(self._convert_keywords(test))
         }
 
     def _convert_keywords(self, item):
-        if item.setup.name:
-            yield self._convert_keyword(item.setup, type='SETUP')
         for kw in getattr(item, 'keywords', []):
-            yield self._convert_keyword(kw)
-        if item.teardown.name:
-            yield self._convert_keyword(item.teardown, type='TEARDOWN')
+            if kw.type == 'setup':
+                yield self._convert_keyword(kw, 'SETUP')
+            elif kw.type == 'teardown':
+                yield self._convert_keyword(kw, 'TEARDOWN')
+            elif kw.is_for_loop():
+                yield self._convert_for_loop(kw)
+            else:
+                yield self._convert_keyword(kw, 'KEYWORD')
 
-    def _convert_keyword(self, kw, type=None):
+    def _convert_for_loop(self, kw):
         return {
-            'name': kw._get_name(kw.name) if isinstance(kw, Keyword) else kw.name,
-            'arguments': ', '.join(kw.args),
-            'type': type or {'kw': 'KEYWORD', 'for': 'FOR'}[kw.type]
+            'name': self._escape(self._get_for_loop(kw)),
+            'arguments': '',
+            'type': 'FOR'
         }
 
+    def _convert_keyword(self, kw, kw_type):
+        return {
+            'name': self._escape(self._get_kw_name(kw)),
+            'arguments': self._escape(', '.join(kw.args)),
+            'type': kw_type
+        }
+
+    def _get_kw_name(self, kw):
+        if kw.assign:
+            return '%s = %s' % (', '.join(a.rstrip('= ') for a in kw.assign), kw.name)
+        return kw.name
+
+    def _get_for_loop(self, kw):
+        joiner = ' IN RANGE ' if kw.range else ' IN '
+        return ', '.join(kw.vars) + joiner + utils.seq2str2(kw.items)
+
     def _get_timeout(self, timeout):
+        if timeout is None:
+            return ''
         try:
-            tout = utils.secs_to_timestr(utils.timestr_to_secs(timeout.string))
+            tout = utils.secs_to_timestr(utils.timestr_to_secs(timeout.value))
         except ValueError:
-            tout = timeout.string
+            tout = timeout.value
         if timeout.message:
             tout += ' :: ' + timeout.message
         return tout
 
 
-def testdoc_cli(args):
-    """Executes testdoc similarly as from the command line.
+def testdoc_cli(arguments):
+    """Executes `Testdoc` similarly as from the command line.
 
-    :param args: command line arguments as a list of strings.
+    :param arguments: command line arguments as a list of strings.
 
-    Example:
-       testdoc_cli(['--title', 'Test Plan', 'mytests', 'plan.html'])
+    For programmatic usage the :func:`testdoc` function is typically better. It
+    has a better API for that and does not call :func:`sys.exit` like
+    this function.
+
+    Example::
+
+        from robot.testdoc import testdoc_cli
+
+        testdoc_cli(['--title', 'Test Plan', 'mytests', 'plan.html'])
     """
-    TestDoc().execute_cli(args)
+    TestDoc().execute_cli(arguments)
+
+
+def testdoc(*arguments, **options):
+    """Executes `Testdoc` programmatically.
+
+    Arguments and options have same semantics, and options have same names,
+    as arguments and options to Testdoc.
+
+    Example::
+
+        from robot.testdoc import testdoc
+
+        testdoc('mytests', 'plan.html', title='Test Plan')
+    """
+    TestDoc().execute(*arguments, **options)
 
 
 if __name__ == '__main__':

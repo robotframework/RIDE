@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -37,7 +37,9 @@ class JsBuildingContext(object):
         self._msg_links = {}
 
     def string(self, string, escape=True):
-        if escape and string:   # string can, but should not, be None
+        if escape and string:
+            if not isinstance(string, unicode):
+                string = unicode(string)
             string = html_escape(string)
         return self._strings.add(string)
 

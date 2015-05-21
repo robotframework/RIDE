@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,10 +12,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-"""Generic functionality for writing output files in HTML format.
+"""Package for writing output files in HTML format.
 
-:mod:`robot.reporting`, :mod:`robot.libdoc` and :mod:`robot.testdoc` use
-this package.
+This package is considered stable but it is not part of the public API.
 """
 
 from .htmlfilewriter import HtmlFileWriter, ModelWriter

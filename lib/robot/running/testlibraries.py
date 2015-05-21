@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -13,19 +13,23 @@
 #  limitations under the License.
 
 from __future__ import with_statement
-import os
 import inspect
+import os
+import sys
 
-from robot import utils
 from robot.errors import DataError
-from robot.common import BaseLibrary
 from robot.output import LOGGER
+from robot.utils import (getdoc, get_error_details, Importer,
+                         is_java_init, is_java_method, normalize,
+                         NormalizedDict, seq2str2, unic)
 
-from handlers import Handler, InitHandler, DynamicHandler
-from outputcapture import OutputCapturer
+from .baselibrary import BaseLibrary
+from .dynamicmethods import (GetKeywordArguments, GetKeywordDocumentation,
+                             GetKeywordNames, RunKeyword)
+from .handlers import Handler, InitHandler, DynamicHandler
+from .outputcapture import OutputCapturer
 
-if utils.is_jython:
-    from org.python.core import PyReflectedFunction, PyReflectedConstructor
+if sys.platform.startswith('java'):
     from java.lang import Object
 else:
     Object = None
@@ -33,7 +37,7 @@ else:
 
 def TestLibrary(name, args=None, variables=None, create_handlers=True):
     with OutputCapturer(library_import=True):
-        importer = utils.Importer('test library')
+        importer = Importer('test library')
         libcode = importer.import_class_or_module(name)
     libclass = _get_lib_class(libcode)
     lib = libclass(libcode, name, args or [], variables)
@@ -45,55 +49,15 @@ def TestLibrary(name, args=None, variables=None, create_handlers=True):
 def _get_lib_class(libcode):
     if inspect.ismodule(libcode):
         return _ModuleLibrary
-    if _DynamicMethod(libcode, 'get_keyword_names'):
-        if _DynamicMethod(libcode, 'run_keyword'):
+    if GetKeywordNames(libcode):
+        if RunKeyword(libcode):
             return _DynamicLibrary
         else:
             return _HybridLibrary
     return _ClassLibrary
 
 
-class _DynamicMethod(object):
-
-    def __init__(self, libcode, underscore_name, default=None):
-        self._method = self._get_method(libcode, underscore_name)
-        self._default = default
-
-    def __call__(self, *args):
-        if not self._method:
-            return self._default
-        try:
-            value = self._method(*args)
-        except:
-            raise DataError("Calling dynamic method '%s' failed: %s" %
-                            (self._method.__name__, utils.get_error_message()))
-        else:
-            return self._to_unicode(value) if value is not None else self._default
-
-    def _to_unicode(self, value):
-        if isinstance(value, unicode):
-            return value
-        if isinstance(value, str):
-            return utils.unic(value, 'UTF-8')
-        return [self._to_unicode(v) for v in value]
-
-    def __nonzero__(self):
-        return self._method is not None
-
-    def _get_method(self, libcode, underscore_name):
-        for name in underscore_name, self._getCamelCaseName(underscore_name):
-            method = getattr(libcode, name, None)
-            if callable(method):
-                return method
-        return None
-
-    def _getCamelCaseName(self, underscore_name):
-        tokens = underscore_name.split('_')
-        return ''.join([tokens[0]] + [t.capitalize() for t in tokens[1:]])
-
-
 class _BaseTestLibrary(BaseLibrary):
-    supports_named_arguments = True # this attribute is for libdoc
     _log_success = LOGGER.debug
     _log_failure = LOGGER.info
     _log_failure_details = LOGGER.debug
@@ -107,23 +71,35 @@ class _BaseTestLibrary(BaseLibrary):
         self.positional_args = []
         self.named_args = {}
         self._instance_cache = []
+        self.has_listener = None  # Set when first instance is created
         self._libinst = None
         if libcode is not None:
-            self._doc = utils.getdoc(libcode)
+            self._doc = None
             self.doc_format = self._get_doc_format(libcode)
             self.scope = self._get_scope(libcode)
             self._libcode = libcode
-            self.init =  self._create_init_handler(libcode)
-            self.positional_args, self.named_args = self.init.arguments.resolve(args, variables)
+            self.init = self._create_init_handler(libcode)
+            self.positional_args, self.named_args \
+                = self.init.resolve_arguments(args, variables)
 
     @property
     def doc(self):
+        if self._doc is None:
+            self._doc = getdoc(self.get_instance())
         return self._doc
+
+    @property
+    def listener(self):
+        if self.has_listener:
+            return self._get_listener(self.get_instance())
+        return None
+
+    def _get_listener(self, inst):
+        return getattr(inst, 'ROBOT_LIBRARY_LISTENER', None)
 
     def create_handlers(self):
         if self._libcode:
-            self._libinst = self.get_instance()
-            self.handlers = self._create_handlers(self._libinst)
+            self.handlers = self._create_handlers(self.get_instance())
             self.init_scope_handling()
 
     def start_suite(self):
@@ -143,9 +119,9 @@ class _BaseTestLibrary(BaseLibrary):
             or self._get_attr(libcode, '__version__')
 
     def _get_attr(self, object, attr, default='', upper=False):
-        value = utils.unic(getattr(object, attr, default))
+        value = unic(getattr(object, attr, default))
         if upper:
-            value = utils.normalize(value, ignore='_').upper()
+            value = normalize(value, ignore='_').upper()
         return value
 
     def _get_doc_format(self, libcode):
@@ -162,12 +138,8 @@ class _BaseTestLibrary(BaseLibrary):
         init_method = getattr(libcode, '__init__', None)
         return init_method if self._valid_init(init_method) else lambda: None
 
-    def _valid_init(self, init_method):
-        if inspect.ismethod(init_method):
-            return True
-        if utils.is_jython and isinstance(init_method, PyReflectedConstructor):
-            return True
-        return False
+    def _valid_init(self, method):
+        return inspect.ismethod(method) or is_java_init(method)
 
     def init_scope_handling(self):
         if self.scope == 'GLOBAL':
@@ -189,19 +161,19 @@ class _BaseTestLibrary(BaseLibrary):
     def get_instance(self):
         if self._libinst is None:
             self._libinst = self._get_instance()
+        if self.has_listener is None:
+            self.has_listener = self._get_listener(self._libinst) is not None
         return self._libinst
 
     def _get_instance(self):
-        capturer = OutputCapturer(library_import=True)
-        try:
-            return self._libcode(*self.positional_args, **self.named_args)
-        except:
-            self._raise_creating_instance_failed()
-        finally:
-            capturer.release_and_log()
+        with OutputCapturer(library_import=True):
+            try:
+                return self._libcode(*self.positional_args, **self.named_args)
+            except:
+                self._raise_creating_instance_failed()
 
     def _create_handlers(self, libcode):
-        handlers = utils.NormalizedDict(ignore=['_'])
+        handlers = NormalizedDict(ignore='_')
         for name in self._get_handler_names(libcode):
             method = self._try_to_get_handler_method(libcode, name)
             if method:
@@ -222,7 +194,7 @@ class _BaseTestLibrary(BaseLibrary):
             self._report_adding_keyword_failed(name)
 
     def _report_adding_keyword_failed(self, name):
-        msg, details = utils.get_error_details()
+        msg, details = get_error_details()
         self._log_failure("Adding keyword '%s' to library '%s' failed: %s"
                           % (name, self.name, msg))
         if details:
@@ -244,14 +216,15 @@ class _BaseTestLibrary(BaseLibrary):
         return Handler(self, handler_name, handler_method)
 
     def _raise_creating_instance_failed(self):
-        msg, details = utils.get_error_details()
-        if self.positional_args:
-            args = "argument%s %s" % (utils.plural_or_not(self.positional_args),
-                                      utils.seq2str(self.positional_args))
+        msg, details = get_error_details()
+        if self.positional_args or self.named_args:
+            args = self.positional_args \
+                + ['%s=%s' % item for item in self.named_args.items()]
+            args_text = 'arguments %s' % seq2str2(args)
         else:
-            args = "no arguments"
-        raise DataError("Creating an instance of the test library '%s' with %s "
-                        "failed: %s\n%s" % (self.name, args, msg, details))
+            args_text = 'no arguments'
+        raise DataError("Initializing test library '%s' with %s failed: %s\n%s"
+                        % (self.name, args_text, msg, details))
 
 
 class _ClassLibrary(_BaseTestLibrary):
@@ -275,15 +248,10 @@ class _ClassLibrary(_BaseTestLibrary):
             raise DataError('Implicit methods are ignored')
 
     def _is_routine(self, handler):
-        # inspect.isroutine doesn't work with methods from Java classes
-        # prior to Jython 2.5.2: http://bugs.jython.org/issue1223
-        return inspect.isroutine(handler) or self._is_java_method(handler)
-
-    def _is_java_method(self, handler):
-        return utils.is_jython and isinstance(handler, PyReflectedFunction)
+        return inspect.isroutine(handler) or is_java_method(handler)
 
     def _is_implicit_java_or_jython_method(self, handler):
-        if not self._is_java_method(handler):
+        if not is_java_method(handler):
             return False
         for signature in handler.argslist[:handler.nargs]:
             cls = signature.declaringClass
@@ -308,7 +276,8 @@ class _ModuleLibrary(_BaseTestLibrary):
         return method
 
     def get_instance(self):
-        self.init.arguments.check_arg_limits(self.positional_args)
+        if self.has_listener is None:
+            self.has_listener = self._get_listener(self._libcode) is not None
         return self._libcode
 
     def _create_init_handler(self, libcode):
@@ -326,37 +295,37 @@ class _HybridLibrary(_BaseTestLibrary):
 
 
 class _DynamicLibrary(_BaseTestLibrary):
-    supports_named_arguments = False # this attribute is for libdoc
     _log_failure = LOGGER.warn
 
     def __init__(self, libcode, name, args, variables=None):
         _BaseTestLibrary.__init__(self, libcode, name, args, variables)
-        self._get_kw_doc = \
-            _DynamicMethod(libcode, 'get_keyword_documentation', default='')
-        self._get_kw_args = \
-            _DynamicMethod(libcode, 'get_keyword_arguments', default=None)
 
     @property
     def doc(self):
-        return self._get_kw_doc(self.get_instance(), '__intro__') or self._doc
+        if self._doc is None:
+            self._doc = (self._get_kw_doc('__intro__') or
+                         _BaseTestLibrary.doc.fget(self))
+        return self._doc
+
+    def _get_kw_doc(self, name, instance=None):
+        getter = GetKeywordDocumentation(instance or self.get_instance())
+        return getter(name)
+
+    def _get_kw_args(self, name, instance=None):
+        getter = GetKeywordArguments(instance or self.get_instance())
+        return getter(name)
 
     def _get_handler_names(self, instance):
-        try:
-            return instance.get_keyword_names()
-        except AttributeError:
-            return instance.getKeywordNames()
+        return GetKeywordNames(instance)()
 
-    def _get_handler_method(self, instance, name_is_ignored):
-        try:
-            return instance.run_keyword
-        except AttributeError:
-            return instance.runKeyword
+    def _get_handler_method(self, instance, name):
+        return RunKeyword(instance)
 
-    def _create_handler(self, handler_name, handler_method):
-        doc = self._get_kw_doc(self._libinst, handler_name)
-        argspec = self._get_kw_args(self._libinst, handler_name)
-        return DynamicHandler(self, handler_name, handler_method, doc, argspec)
+    def _create_handler(self, name, method):
+        doc = self._get_kw_doc(name)
+        argspec = self._get_kw_args(name)
+        return DynamicHandler(self, name, method, doc, argspec)
 
     def _create_init_handler(self, libcode):
-        docgetter = lambda: self._get_kw_doc(self.get_instance(), '__init__')
+        docgetter = lambda: self._get_kw_doc('__init__')
         return InitHandler(self, self._resolve_init_method(libcode), docgetter)

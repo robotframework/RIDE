@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-
 from robot.errors import DataError
 
 
@@ -25,7 +24,7 @@ class BaseLibrary:
             raise DataError("No keyword handler with name '%s' found"  % name)
 
     def has_handler(self, name):
-        return self.handlers.has_key(name)
+        return name in self.handlers
 
     def __len__(self):
         return len(self.handlers)

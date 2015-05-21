@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -49,7 +49,11 @@ class AbstractLogger:
         self.write(msg, 'WARN')
 
     def fail(self, msg):
-        self.write(msg, 'FAIL')
+        html = False
+        if msg.startswith("*HTML*"):
+            html = True
+            msg = msg[6:].lstrip()
+        self.write(msg, 'FAIL', html)
 
     def error(self, msg):
         self.write(msg, 'ERROR')
@@ -129,9 +133,13 @@ class AbstractLoggerProxy:
             setattr(self, name, self._get_method(logger, name))
 
     def _get_method(self, logger, name):
-        if hasattr(logger, name):
-            return getattr(logger, name)
-        return getattr(logger, self._toCamelCase(name), self._no_method)
+        for method_name in self._get_method_names(name):
+            if hasattr(logger, method_name):
+                return getattr(logger, method_name)
+        return self._no_method
+
+    def _get_method_names(self, name):
+        return [name, self._toCamelCase(name)]
 
     def _toCamelCase(self, name):
         parts = name.split('_')

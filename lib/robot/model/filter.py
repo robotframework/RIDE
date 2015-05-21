@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -19,7 +19,19 @@ from .namepatterns import SuiteNamePatterns, TestNamePatterns
 from .visitor import SuiteVisitor
 
 
-class Filter(SuiteVisitor):
+class EmptySuiteRemover(SuiteVisitor):
+
+    def end_suite(self, suite):
+        suite.suites = [s for s in suite.suites if s.test_count]
+
+    def visit_test(self, test):
+        pass
+
+    def visit_keyword(self, kw):
+        pass
+
+
+class Filter(EmptySuiteRemover):
 
     def __init__(self, include_suites=None, include_tests=None,
                  include_tags=None, exclude_tags=None):
@@ -82,15 +94,6 @@ class Filter(SuiteVisitor):
 
     def _not_excluded_by_tags(self, test):
         return not self.exclude_tags.match(test.tags)
-
-    def end_suite(self, suite):
-        suite.suites = [s for s in suite.suites if s.test_count]
-
-    def visit_test(self, test):
-        pass
-
-    def visit_keyword(self, keyword):
-        pass
 
     def __nonzero__(self):
         return bool(self.include_suites or self.include_tests or

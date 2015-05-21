@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -32,11 +32,12 @@ class Importer(object):
     def reset(self):
         self.__init__()
 
-    def import_library(self, name, args=None, alias=None, variables=None):
+    def import_library(self, name, args, alias, variables):
         lib = TestLibrary(name, args, variables, create_handlers=False)
         positional, named = lib.positional_args, lib.named_args
         lib = self._import_library(name, positional, named, lib)
-        if alias and name != alias:
+        if alias:
+            alias = variables.replace_scalar(alias)
             lib = self._copy_library(lib, alias)
             LOGGER.info("Imported library '%s' with name '%s'" % (name, alias))
         return lib
@@ -63,11 +64,12 @@ class Importer(object):
 
     def _log_imported_library(self, name, args, lib):
         type = lib.__class__.__name__.replace('Library', '').lower()[1:]
+        listener = ', with listener' if lib.has_listener else ''
         LOGGER.info("Imported library '%s' with arguments %s "
-                    "(version %s, %s type, %s scope, %d keywords)"
+                    "(version %s, %s type, %s scope, %d keywords%s)"
                     % (name, utils.seq2str2(args), lib.version or '<unknown>',
-                       type, lib.scope.lower(), len(lib)))
-        if not lib:
+                       type, lib.scope.lower(), len(lib), listener))
+        if not lib and not lib.has_listener:
             LOGGER.warn("Imported library '%s' contains no keywords" % name)
 
     def _copy_library(self, lib, newname):

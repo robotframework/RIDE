@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,14 +14,32 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-USAGE = """Robot Framework -- A keyword-driven test automation framework
+"""Module implementing the command line entry point for executing tests.
+
+This module can be executed from the command line using the following
+approaches::
+
+    python -m robot.run
+    python path/to/robot/run.py
+
+Instead of ``python`` it is possible to use also other Python interpreters.
+This module is also used by the installed ``pybot``, ``jybot`` and
+``ipybot`` start-up scripts.
+
+This module also provides :func:`run` and :func:`run_cli` functions
+that can be used programmatically. Other code is for internal usage.
+"""
+
+from __future__ import with_statement
+
+USAGE = """Robot Framework -- A generic test automation framework
 
 Version:  <VERSION>
 
 Usage:  pybot|jybot|ipybot [options] data_sources
    or:  python|jython|ipy -m robot.run [options] data_sources
    or:  python|jython|ipy path/to/robot/run.py [options] data_sources
-   or:  java -jar robotframework.jar [options] data_sources
+   or:  java -jar robotframework.jar run [options] data_sources
 
 Robot Framework is a Python-based keyword-driven test automation framework for
 acceptance level testing and acceptance test-driven development (ATDD). It has
@@ -49,9 +67,9 @@ Outputs in HTML format are for human consumption and XML output for integration
 with other systems. XML outputs can also be combined and otherwise further
 processed with `rebot` tool. Run `rebot --help` for more information.
 
-Robot Framework is open source software released under Apache License 2.0.
-Its copyrights are owned and development supported by Nokia Siemens Networks.
-For more information about the framework see http://robotframework.org.
+Robot Framework is open source software released under Apache License 2.0. Its
+copyrights are owned and development supported by Nokia Solutions and Networks.
+For more information about the framework see http://robotframework.org/.
 
 Options
 =======
@@ -63,10 +81,10 @@ Options
                           Underscores in the documentation are converted to
                           spaces and it may also contain simple HTML formatting
                           (e.g. *bold* and http://url/).
- -M --metadata name:value *  Set metadata of the top level test suite.
-                          Underscores in the name and value are converted to
-                          spaces. Value can contain same HTML formatting as
-                          --doc. Example: `--metadata version:1.2`
+ -M --metadata name:value *  Set metadata of the top level suite. Underscores
+                          in the name and value are converted to spaces. Value
+                          can contain same HTML formatting as --doc.
+                          Example: --metadata version:1.2
  -G --settag tag *        Sets given tag(s) to all executed test cases.
  -t --test name *         Select test cases to run by name or long name. Name
                           is case and space insensitive and it can also be a
@@ -80,24 +98,23 @@ Options
                           pattern similarly as with --test and it can contain
                           parent name separated with a dot. For example
                           `-s X.Y` selects suite `Y` only if its parent is `X`.
- -i --include tag *       Select test cases to run by tag. Similarly as name in
-                          --test, tag is case and space insensitive. There are
-                          three ways to include test based on tags:
-                          1) One tag as a simple pattern. Tests having a tag
-                          matching the pattern are included. Example: `it-*`
-                          2) Two or more tags (or patterns) separated by `&` or
-                          `AND`. Only tests having all these tags are included.
-                          Examples: `tag1&tag2`, `smokeANDowner-*ANDit-10`
-                          3) Two or more tags (or patterns) separated by `NOT`.
-                          Tests having the first tag but not any of the latter
-                          ones are included. Example: `it-10NOTsmoke`
+ -i --include tag *       Select test cases to run by tag. Similarly as name
+                          with --test, tag is case and space insensitive and it
+                          is possible to use patterns with `*` and `?` as
+                          wildcards. Tags and patterns can also be combined
+                          together with `AND`, `OR`, and `NOT` operators.
+                          Examples: --include foo --include bar*
+                                    --include fooANDbar*
  -e --exclude tag *       Select test cases not to run by tag. These tests are
-                          not run even if they are included with --include.
-                          Tags are excluded using the rules explained in
-                          --include.
+                          not run even if included with --include. Tags are
+                          matched using the rules explained with --include.
+ -R --rerunfailed output  Select failed tests from an earlier output file to be
+                          re-executed. Equivalent to selecting same tests
+                          individually using --test option.
+    --runfailed output    Deprecated since RF 2.8.4. Use --rerunfailed instead.
  -c --critical tag *      Tests having given tag are considered critical. If no
                           critical tags are set, all tags are critical. Tags
-                          can be given as a pattern like e.g. with --test.
+                          can be given as a pattern like with --include.
  -n --noncritical tag *   Tests with given tag are not critical even if they
                           have a tag set with --critical. Tag can be a pattern.
  -v --variable name:value *  Set variables in the test data. Only scalar
@@ -124,7 +141,7 @@ Options
                           directory where tests are run from and the given path
                           is considered relative to that unless it is absolute.
  -o --output file         XML output file. Given path, similarly as paths given
-                          to --log, --report, --debugfile and --xunitfile, is
+                          to --log, --report, --xunit, and --debugfile, is
                           relative to --outputdir unless given as an absolute
                           path. Other output files are created based on XML
                           output files after the test execution and XML outputs
@@ -137,8 +154,10 @@ Options
                           Examples: `--log mylog.html`, `-l NONE`
  -r --report file         HTML report file. Can be disabled with `NONE`
                           similarly as --log. Default: report.html
- -x --xunitfile file      xUnit compatible result file. Not created unless this
+ -x --xunit file          xUnit compatible result file. Not created unless this
                           option is specified.
+    --xunitfile file      Deprecated. Use --xunit instead.
+    --xunitskipnoncritical  Mark non-critical tests on xUnit output as skipped.
  -b --debugfile file      Debug file written during execution. Not created
                           unless this option is specified.
  -T --timestampoutputs    When this option is used, timestamp in a format
@@ -182,8 +201,8 @@ Options
                           `name` is not given, name of the combined tag is got
                           from the specified tags. Tags are combined using the
                           rules explained in --include.
-                          Examples: --tagstatcombine tag1ANDtag2:My_name
-                                    --tagstatcombine requirement-*
+                          Examples: --tagstatcombine requirement-*
+                                    --tagstatcombine tag1ANDtag2:My_name
     --tagdoc pattern:doc *  Add documentation to tags matching given pattern.
                           Documentation is shown in `Test Details` and also as
                           a tooltip in `Statistics by Tag`. Pattern can contain
@@ -202,38 +221,65 @@ Options
                           automatically converted to spaces.
                           Examples: --tagstatlink mytag:http://my.domain:Link
                           --tagstatlink bug-*:http://tracker/id=%1:Bug_Tracker
-    --removekeywords all|passed|for|wuks *  Remove keyword data from the
-                          generated log file. Keywords containing warnings are
-                          not removed except in `all` mode.
-                          all:    remove data from all keywords
-                          passed: remove data only from keywords in passed
-                                  test cases and suites
-                          for:    remove passed iterations from for loops
-                          wuks:   remove all but last failing keyword from
-                                  `Wait Until Keyword Succeeds`
+    --removekeywords all|passed|for|wuks|name:<pattern> *  Remove keyword data
+                          from the generated log file. Keywords containing
+                          warnings are not removed except in `all` mode.
+                          all:     remove data from all keywords
+                          passed:  remove data only from keywords in passed
+                                   test cases and suites
+                          for:     remove passed iterations from for loops
+                          wuks:    remove all but the last failing keyword
+                                   inside `BuiltIn.Wait Until Keyword Succeeds`
+                          name:<pattern>:  remove data from keywords that match
+                                   the given pattern. The pattern is matched
+                                   against the full name of the keyword (e.g.
+                                   'MyLib.Keyword', 'resource.Second Keyword'),
+                                   is case, space, and underscore insensitive,
+                                   and may contain `*` and `?` as wildcards.
+                                   Examples: --removekeywords name:Lib.HugeKw
+                                             --removekeywords name:myresource.*
+    --flattenkeywords for|foritem|name:<pattern> *  Flattens matching keywords
+                          in the generated log file. Matching keywords get all
+                          log messages from their child keywords and children
+                          are discarded otherwise.
+                          for:     flatten for loops fully
+                          foritem: flatten individual for loop iterations
+                          name:<pattern>:  flatten matched keywords using same
+                                   matching rules as with
+                                   `--removekeywords name:<pattern>`
     --listener class *    A class for monitoring test execution. Gets
                           notifications e.g. when a test case starts and ends.
                           Arguments to listener class can be given after class
                           name, using colon as separator. For example:
                           --listener MyListenerClass:arg1:arg2
-    --warnonskippedfiles  If this option is used, skipped files will cause a
-                          warning that is visible to console output and log
-                          files. By default skipped files only cause an info
-                          level syslog message.
+    --warnonskippedfiles  If this option is used, skipped test data files will
+                          cause a warning that is visible in the console output
+                          and the log file. By default skipped files only cause
+                          an info level syslog message.
     --nostatusrc          Sets the return code to zero regardless of failures
                           in test cases. Error codes are returned normally.
     --runemptysuite       Executes tests also if the top level test suite is
                           empty. Useful e.g. with --include/--exclude when it
                           is not an error that no test matches the condition.
-    --runmode mode *      Possible values are `Random:Test`, `Random:Suite`,
-                          `Random:All`, `ExitOnFailure`, `SkipTeardownOnExit`,
-                          and `DryRun` (case-insensitive). First three change
-                          the execution order of tests, suites, or both.
-                          `ExitOnFailure` stops test execution if a critical
-                          test fails. `SkipTeardownOnExit` causes teardowns to
-                          be skipped if test execution is stopped prematurely.
-                          In the `DryRun` test data is verified and tests run
-                          so that library keywords are not executed.
+    --dryrun              Verifies test data and runs tests so that library
+                          keywords are not executed.
+    --exitonfailure       Stops test execution if any critical test fails.
+    --exitonerror         Stops test execution if any error occurs when parsing
+                          test data, importing libraries, and so on.
+    --skipteardownonexit  Causes teardowns to be skipped if test execution is
+                          stopped prematurely.
+    --randomize all|suites|tests|none  Randomizes the test execution order.
+                          all:    randomizes both suites and tests
+                          suites: randomizes suites
+                          tests:  randomizes tests
+                          none:   no randomization (default)
+                          Use syntax `VALUE:SEED` to give a custom random seed.
+                          The seed must be an integer.
+                          Examples: --randomize all
+                                    --randomize tests:1234
+    --runmode mode *      Deprecated in version 2.8. Use individual options
+                          --dryrun, --exitonfailure, --skipteardownonexit, or
+                          --randomize instead.
  -W --monitorwidth chars  Width of the monitor output. Default is 78.
  -C --monitorcolors auto|on|ansi|off  Use colors on console output or not.
                           auto: use colors when output not redirected (default)
@@ -294,6 +340,8 @@ but the latter matches --log, --loglevel and --logtitle.
 Environment Variables
 =====================
 
+ROBOT_OPTIONS             Space separated list of default options to be placed
+                          in front of any explicit options on the command line.
 ROBOT_SYSLOG_FILE         Path to a file where Robot Framework writes internal
                           information about parsing test case files and running
                           tests. Can be useful when debugging problems. If not
@@ -301,7 +349,7 @@ ROBOT_SYSLOG_FILE         Path to a file where Robot Framework writes internal
                           syslog file is disabled.
 ROBOT_SYSLOG_LEVEL        Log level to use when writing to the syslog file.
                           Available levels are the same as for --loglevel
-                          option and the default is INFO.
+                          command line option and the default is INFO.
 
 Examples
 ========
@@ -321,13 +369,13 @@ $ jython /path/to/robot/run.py tests.robot
 # Executing multiple test case files and using case-insensitive long options.
 $ pybot --SuiteStatLevel 2 /my/tests/*.html /your/tests.html
 
-# Setting syslog file before running tests.
+# Setting default options and syslog file before running tests.
+$ export ROBOT_OPTIONS="--critical regression --suitestatlevel 2"
 $ export ROBOT_SYSLOG_FILE=/tmp/syslog.txt
 $ pybot tests.tsv
 """
 
 import sys
-import os.path
 
 # Allows running as a script. __name__ check needed with multiprocessing:
 # http://code.google.com/p/robotframework/issues/detail?id=1137
@@ -335,66 +383,57 @@ if 'robot' not in sys.modules and __name__ == '__main__':
     import pythonpathsetter
 
 from robot.conf import RobotSettings
-from robot.errors import DataError
-from robot.output import LOGGER, Output, pyloggingconf
+from robot.output import LOGGER, pyloggingconf
 from robot.reporting import ResultWriter
-from robot.running import TestSuite, STOP_SIGNAL_MONITOR, namespace
-from robot.utils import Application, seq2str
-from robot.variables import init_global_variables
+from robot.running import TestSuiteBuilder
+from robot.utils import Application
 
 
 class RobotFramework(Application):
 
     def __init__(self):
-        Application.__init__(self, USAGE, arg_limits=(1,), logger=LOGGER)
+        Application.__init__(self, USAGE, arg_limits=(1,),
+                             env_options='ROBOT_OPTIONS', logger=LOGGER)
 
     def main(self, datasources, **options):
-        STOP_SIGNAL_MONITOR.start()
-        namespace.IMPORTER.reset()
         settings = RobotSettings(options)
-        pyloggingconf.initialize(settings['LogLevel'])
-        LOGGER.register_console_logger(width=settings['MonitorWidth'],
-                                       colors=settings['MonitorColors'],
-                                       markers=settings['MonitorMarkers'],
-                                       stdout=settings['StdOut'],
-                                       stderr=settings['StdErr'])
-        init_global_variables(settings)
-        suite = TestSuite(datasources, settings)
-        output = Output(settings)
-        suite.run(output)
-        LOGGER.info("Tests execution ended. Statistics:\n%s" % suite.get_stat_message())
-        output.close(suite)
-        if settings.is_rebot_needed():
-            output, settings = settings.get_rebot_datasource_and_settings()
-            ResultWriter(output).write_results(settings)
-        return suite.return_code
+        LOGGER.register_console_logger(**settings.console_logger_config)
+        LOGGER.info('Settings:\n%s' % unicode(settings))
+        suite = TestSuiteBuilder(settings['SuiteNames'],
+                                 settings['WarnOnSkipped'],
+                                 settings['RunEmptySuite']).build(*datasources)
+        suite.configure(**settings.suite_config)
+        with pyloggingconf.robot_handler_enabled(settings.log_level):
+            result = suite.run(settings)
+            LOGGER.info("Tests execution ended. Statistics:\n%s"
+                        % result.suite.stat_message)
+            if settings.log or settings.report or settings.xunit:
+                writer = ResultWriter(settings.output if settings.log
+                                      else result)
+                writer.write_results(settings.get_rebot_settings())
+        return result.return_code
 
     def validate(self, options, arguments):
-        if len(arguments) > 1:
-            arguments = self._validate_arguments_exist(arguments)
-        return options, arguments
+        return self._filter_options_without_value(options), arguments
 
-    def _validate_arguments_exist(self, arguments):
-        valid = []
-        nonex = []
-        for arg in arguments:
-            (valid if os.path.exists(arg) else nonex).append(arg)
-        if nonex:
-            s, were = ('s', 'were') if len(nonex) > 1 else ('', 'was')
-            LOGGER.warn("Argument%s %s did not exist and %s ignored. "
-                        "Validate the used command line syntax."
-                        % (s, seq2str(nonex), were))
-            if not valid:
-                raise DataError('No valid arguments given.')
-        return valid
+    def _filter_options_without_value(self, options):
+        return dict((name, value) for name, value in options.items() if value)
 
 
 def run_cli(arguments):
     """Command line execution entry point for running tests.
 
-    For programmatic usage the :func:`run` method is typically better. It has
-    better API for that usage and does not call :func:`sys.exit` like this
-    method.
+    :param arguments: Command line arguments as a list of strings.
+
+    For programmatic usage the :func:`run` function is typically better. It has
+    a better API for that usage and does not call :func:`sys.exit` like this
+    function.
+
+    Example::
+
+        from robot import run_cli
+
+        run_cli(['--include', 'tag', 'path/to/tests.html'])
     """
     RobotFramework().execute_cli(arguments)
 
@@ -403,22 +442,22 @@ def run(*datasources, **options):
     """Executes given Robot Framework data sources with given options.
 
     Data sources are paths to files and directories, similarly as when running
-    pybot/jybot from the command line. Options are given as keywords arguments
-    and their names are same as long command line options without hyphens.
+    `pybot` command from the command line. Options are given as keyword
+    arguments and their names are same as long command line options except
+    without hyphens.
 
     Options that can be given on the command line multiple times can be
-    passed as lists like `include=['tag1', 'tag2']`. Starting from 2.7.2,
-    when such option is used only once, it can be given also as a single string
-    like `include='tag'`.
+    passed as lists like `include=['tag1', 'tag2']`. If such option is used
+    only once, it can be given also as a single string like `include='tag'`.
 
     To capture stdout and/or stderr streams, pass open file objects in as
     special keyword arguments `stdout` and `stderr`, respectively.
 
     A return code is returned similarly as when running on the command line.
 
-    Example:
+    Example::
 
-    .. code-block:: python
+        from robot import run
 
         run('path/to/tests.html', include=['tag1', 'tag2'])
         with open('stdout.txt', 'w') as stdout:
@@ -434,4 +473,3 @@ def run(*datasources, **options):
 
 if __name__ == '__main__':
     run_cli(sys.argv[1:])
-

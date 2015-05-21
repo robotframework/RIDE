@@ -18,24 +18,27 @@ from robotide.spec.iteminfo import LibraryKeywordInfo
 def get_import_result(path, args):
     try:
         lib = TestLibrary(path, args)
-        return [
+        kws = [
             LibraryKeywordInfo(
                 kw.name,
                 kw.doc,
                 kw.library.name,
                 _parse_args(kw.arguments)
             ) for kw in lib.handlers.values()]
+        return kws
     except SystemExit:
         raise ImportError('Library "%s" import failed' % path)
 
 def _parse_args(handler_args):
     args = []
-    if handler_args.names:
-        args.extend(list(handler_args.names))
+    if handler_args.positional:
+        args.extend(list(handler_args.positional))
     if handler_args.defaults:
         for i, value in enumerate(handler_args.defaults):
-            index = len(handler_args.names) - len(handler_args.defaults) + i
+            index = len(handler_args.positional) - len(handler_args.defaults) + i
             args[index] = args[index] + '=' + unicode(value)
     if handler_args.varargs:
         args.append('*%s' % handler_args.varargs)
+    if handler_args.kwargs:
+        args.append('**%s' % handler_args.kwargs)
     return args

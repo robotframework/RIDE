@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,6 +12,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from __future__ import with_statement
+
+from contextlib import contextmanager
+
 from robot.errors import DataError
 from robot.variables import GLOBAL_VARIABLES
 
@@ -24,6 +28,10 @@ class ExecutionContexts(object):
     @property
     def current(self):
         return self._contexts[-1] if self._contexts else None
+
+    @property
+    def top(self):
+        return self._contexts[0] if self._contexts else None
 
     def __iter__(self):
         return iter(self._contexts)
@@ -51,76 +59,99 @@ class _ExecutionContext(object):
         self.namespace = namespace
         self.output = output
         self.dry_run = dry_run
-        self._in_teardown = 0
+        self.in_suite_teardown = False
+        self.in_test_teardown = False
+        self.in_keyword_teardown = 0
         self._started_keywords = 0
+        self.timeout_occurred = False
+
+    # TODO: namespace should not have suite, test, or uk_handlers.
 
     @property
-    def teardown(self):
-        if self._in_teardown:
-            return True
-        test_or_suite = self.namespace.test or self.namespace.suite
-        return test_or_suite.status != 'RUNNING'
+    def suite(self):
+        return self.namespace.suite
 
-    def start_keyword_teardown(self, error):
-        self.namespace.variables['${KEYWORD_STATUS}'] = 'FAIL' if error else 'PASS'
-        self.namespace.variables['${KEYWORD_MESSAGE}'] = unicode(error or '')
-        self._in_teardown += 1
+    @property
+    def test(self):
+        return self.namespace.test
 
-    def end_keyword_teardown(self):
-        self._in_teardown -= 1
+    @property
+    def keywords(self):
+        return self.namespace.uk_handlers
 
-    def get_current_vars(self):
+    @contextmanager
+    def suite_teardown(self):
+        self.in_suite_teardown = True
+        try:
+            yield
+        finally:
+            self.in_suite_teardown = False
+
+    @contextmanager
+    def test_teardown(self, test):
+        self.variables['${TEST_STATUS}'] = test.status
+        self.variables['${TEST_MESSAGE}'] = test.message
+        self.in_test_teardown = True
+        try:
+            yield
+        finally:
+            self.in_test_teardown = False
+
+    @contextmanager
+    def keyword_teardown(self, error):
+        self.variables['${KEYWORD_STATUS}'] = 'FAIL' if error else 'PASS'
+        self.variables['${KEYWORD_MESSAGE}'] = unicode(error or '')
+        self.in_keyword_teardown += 1
+        try:
+            yield
+        finally:
+            self.in_keyword_teardown -= 1
+
+    @property
+    def in_teardown(self):
+        return bool(self.in_suite_teardown or
+                    self.in_test_teardown or
+                    self.in_keyword_teardown)
+
+    @property
+    def variables(self):
         return self.namespace.variables
 
-    def end_test(self, test):
-        self.output.end_test(test)
-        self.namespace.end_test()
+    # TODO: Move start_suite here from EXECUTION_CONTEXT
 
     def end_suite(self, suite):
+        for var in ['${PREV_TEST_NAME}',
+                    '${PREV_TEST_STATUS}',
+                    '${PREV_TEST_MESSAGE}']:
+            GLOBAL_VARIABLES[var] = self.variables[var]
         self.output.end_suite(suite)
         self.namespace.end_suite()
         EXECUTION_CONTEXTS.end_suite()
 
-    def output_file_changed(self, filename):
-        self._set_global_variable('${OUTPUT_FILE}', filename)
-
-    def replace_vars_from_setting(self, name, value, errors):
-        return self.namespace.variables.replace_meta(name, value, errors)
-
-    def log_file_changed(self, filename):
-        self._set_global_variable('${LOG_FILE}', filename)
-
-    def set_prev_test_variables(self, test):
-        self._set_prev_test_variables(self.get_current_vars(), test.name,
-                                      test.status, test.message)
-
-    def copy_prev_test_vars_to_global(self):
-        varz = self.get_current_vars()
-        name, status, message = varz['${PREV_TEST_NAME}'], \
-                    varz['${PREV_TEST_STATUS}'], varz['${PREV_TEST_MESSAGE}']
-        self._set_prev_test_variables(GLOBAL_VARIABLES, name, status, message)
-
-    def _set_prev_test_variables(self, destination, name, status, message):
-        destination['${PREV_TEST_NAME}'] = name
-        destination['${PREV_TEST_STATUS}'] = status
-        destination['${PREV_TEST_MESSAGE}'] = message
-
-    def _set_global_variable(self, name, value):
-        self.namespace.variables.set_global(name, value)
+    def set_suite_variables(self, suite):
+        self.variables['${SUITE_NAME}'] = suite.longname
+        self.variables['${SUITE_SOURCE}'] = suite.source or ''
+        self.variables['${SUITE_DOCUMENTATION}'] = suite.doc
+        self.variables['${SUITE_METADATA}'] = suite.metadata.copy()
 
     def report_suite_status(self, status, message):
-        self.get_current_vars()['${SUITE_STATUS}'] = status
-        self.get_current_vars()['${SUITE_MESSAGE}'] = message
+        self.variables['${SUITE_STATUS}'] = status
+        self.variables['${SUITE_MESSAGE}'] = message
 
     def start_test(self, test):
         self.namespace.start_test(test)
-        self.output.start_test(test)
+        self.variables['${TEST_NAME}'] = test.name
+        self.variables['${TEST_DOCUMENTATION}'] = test.doc
+        self.variables['@{TEST_TAGS}'] = list(test.tags)
 
-    def set_test_status_before_teardown(self, message, status):
-        self.namespace.set_test_status_before_teardown(message, status)
+    def end_test(self, test):
+        self.namespace.end_test()
+        self.variables['${PREV_TEST_NAME}'] = test.name
+        self.variables['${PREV_TEST_STATUS}'] = test.status
+        self.variables['${PREV_TEST_MESSAGE}'] = test.message
+        self.timeout_occurred = False
 
-    def get_handler(self, name):
-        return self.namespace.get_handler(name)
+    # Should not need separate start/end_keyword and start/end_user_keyword
 
     def start_keyword(self, keyword):
         self._started_keywords += 1
@@ -138,8 +169,14 @@ class _ExecutionContext(object):
     def end_user_keyword(self):
         self.namespace.end_user_keyword()
 
+    def get_handler(self, name):
+        return self.namespace.get_handler(name)
+
     def warn(self, message):
         self.output.warn(message)
 
     def trace(self, message):
         self.output.trace(message)
+
+    def info(self, message):
+        self.output.info(message)

@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -17,9 +17,12 @@ from .visitor import SuiteVisitor
 
 
 class TotalStatistics(object):
+    """Container for total statistics."""
 
     def __init__(self):
+        #: Instance of :class:`~robot.model.stats.TotalStat` for critical tests.
         self.critical = TotalStat('Critical Tests')
+        #: Instance of :class:`~robot.model.stats.TotalStat` for all the tests.
         self.all = TotalStat('All Tests')
 
     def visit(self, visitor):
@@ -30,6 +33,13 @@ class TotalStatistics(object):
 
     @property
     def message(self):
+        """String representation of the statistics.
+
+        For example::
+
+            2 critical tests, 1 passed, 1 failed
+            2 tests total, 1 passed, 1 failed
+        """
         ctotal, cend, cpass, cfail = self._get_counts(self.critical)
         atotal, aend, apass, afail = self._get_counts(self.all)
         return ('%d critical test%s, %d passed, %d failed\n'

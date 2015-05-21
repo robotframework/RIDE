@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -65,6 +65,8 @@ class FromFilePopulator(object):
         if not os.path.isfile(path):
             raise DataError("Data source does not exist.")
         try:
+            # IronPython handles BOM incorrectly if not using binary mode:
+            # http://code.google.com/p/robotframework/issues/detail?id=1580
             return open(path, 'rb')
         except:
             raise DataError(get_error_message())
@@ -101,15 +103,15 @@ class FromDirectoryPopulator(object):
     ignored_prefixes = ('_', '.')
     ignored_dirs = ('CVS',)
 
-    def populate(self, path, datadir, include_suites, warn_on_skipped,
-                 recurse=True):
+    def populate(self, path, datadir, include_suites=None,
+                 warn_on_skipped=False, recurse=True):
         LOGGER.info("Parsing test data directory '%s'" % path)
-        include_suites = self._get_include_suites(path, include_suites)
+        include_suites = self._get_include_suites(path, include_suites or [])
         init_file, children = self._get_children(path, include_suites)
         if init_file:
             self._populate_init_file(datadir, init_file)
         if recurse:
-            self._populate_chidren(datadir, children, include_suites,
+            self._populate_children(datadir, children, include_suites,
                                    warn_on_skipped)
 
     def _populate_init_file(self, datadir, init_file):
@@ -119,7 +121,7 @@ class FromDirectoryPopulator(object):
         except DataError, err:
             LOGGER.error(unicode(err))
 
-    def _populate_chidren(self, datadir, children, include_suites, warn_on_skipped):
+    def _populate_children(self, datadir, children, include_suites, warn_on_skipped):
         for child in children:
             try:
                 datadir.add_child(child, include_suites)
@@ -135,14 +137,20 @@ class FromDirectoryPopulator(object):
 
     def _get_include_suites(self, path, incl_suites):
         if not isinstance(incl_suites, SuiteNamePatterns):
-            # Use only the last part of names given like '--suite parent.child'
-            incl_suites = SuiteNamePatterns(i.split('.')[-1] for i in incl_suites)
+            incl_suites = SuiteNamePatterns(self._create_included_suites(incl_suites))
         if not incl_suites:
             return incl_suites
         # If a directory is included, also all its children should be included.
         if self._directory_is_included(path, incl_suites):
             return SuiteNamePatterns()
         return incl_suites
+
+    def _create_included_suites(self, incl_suites):
+        for suite in incl_suites:
+            yield suite
+            while '.' in suite:
+                suite = suite.split('.', 1)[1]
+                yield suite
 
     def _directory_is_included(self, path, incl_suites):
         name = os.path.basename(os.path.normpath(path))

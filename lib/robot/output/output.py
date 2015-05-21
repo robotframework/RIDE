@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,12 +12,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.common.statistics import Statistics
-
+from . import pyloggingconf
+from .debugfile import DebugFile
+from .librarylisteners import LibraryListeners
 from .listeners import Listeners
 from .logger import LOGGER
 from .loggerhelper import AbstractLogger
-from .debugfile import DebugFile
 from .xmllogger import XmlLogger
 
 
@@ -31,18 +31,17 @@ class Output(AbstractLogger):
 
     def _register_loggers(self, listeners, debugfile):
         LOGGER.register_context_changing_logger(self._xmllogger)
-        for logger in Listeners(listeners), DebugFile(debugfile):
-            if logger: LOGGER.register_logger(logger)
+        for logger in (Listeners(listeners), LibraryListeners(),
+                       DebugFile(debugfile)):
+            if logger:
+                LOGGER.register_logger(logger)
         LOGGER.disable_message_cache()
 
-    def close(self, suite):
-        stats = Statistics(suite, self._settings['SuiteStatLevel'],
-                           self._settings['TagStatInclude'],
-                           self._settings['TagStatExclude'],
-                           self._settings['TagStatCombine'],
-                           self._settings['TagDoc'],
-                           self._settings['TagStatLink'])
-        stats.serialize(self._xmllogger)
+    def register_error_listener(self, listener):
+        LOGGER.register_error_listener(listener)
+
+    def close(self, result):
+        self._xmllogger.visit_statistics(result.statistics)
         self._xmllogger.close()
         LOGGER.unregister_logger(self._xmllogger)
         LOGGER.output_file('Output', self._settings['Output'])
@@ -69,8 +68,6 @@ class Output(AbstractLogger):
         LOGGER.log_message(msg)
 
     def set_log_level(self, level):
-        # TODO: Module structure should be cleaned up to prevent cyclic imports
-        from .pyloggingconf import set_level
-        set_level(level)
+        pyloggingconf.set_level(level)
         return self._xmllogger.set_log_level(level)
 

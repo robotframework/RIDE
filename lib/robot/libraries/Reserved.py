@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,13 +12,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+RESERVED_KEYWORDS = ['for', 'while', 'break', 'continue', 'end',
+                     'if', 'else', 'elif', 'else if', 'return']
 
-RESERVED_KEYWORDS = [ 'for', 'while', 'break', 'continue', 'end',
-                      'if', 'else', 'elif', 'else if', 'return' ]
 
-
-class Reserved:
-
+class Reserved(object):
     ROBOT_LIBRARY_SCOPE = 'GLOBAL'
 
     def get_keyword_names(self):
@@ -26,4 +24,3 @@ class Reserved:
 
     def run_keyword(self, name, args):
         raise Exception("'%s' is a reserved keyword" % name.title())
-

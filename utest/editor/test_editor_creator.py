@@ -90,7 +90,8 @@ class EditorCreatorTest(unittest.TestCase):
     def _variable_plugin(self):
         return FakePlugin(self._registered_editors,
                           VariableController(VariableTableController(
-                              self._datafile_controller(), None), Variable('','')))
+                              self._datafile_controller(), None),
+                              Variable(None, '','')))
 
     def _no_item_selected_plugin(self):
         return FakePlugin(self._registered_editors, None)

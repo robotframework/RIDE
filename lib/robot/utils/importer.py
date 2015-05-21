@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -72,12 +72,9 @@ class Importer(object):
         """Import a Python module or Java class using a file system path.
 
         When importing a Python file, the path must end with '.py' and the
-        actual file must also exist. When importing a Python module implemented
-        as a directory, the path must end with '/' or, on Windows, with '\\'.
-
-        When importing Java classes, the path must end with '.java' or '.class'.
-        The class file must exist in both cases and in the former case also
-        the source file must exist.
+        actual file must also exist. When importing Java classes, the path
+        must end with '.java' or '.class'. The class file must exist in both
+        cases and in the former case also the source file must exist.
 
         If `instantiate_with_args` is not None, imported classes are
         instantiated with the specified arguments automatically.
@@ -158,8 +155,8 @@ class _Importer(object):
             return imported
         raise DataError('Expected class or module, got <%s>.' % type(imported).__name__)
 
-    def _get_class_from_module(self, module):
-        klass = getattr(module, module.__name__, None)
+    def _get_class_from_module(self, module, name=None):
+        klass = getattr(module, name or module.__name__, None)
         return klass if inspect.isclass(klass) else None
 
     def _get_source(self, module):
@@ -225,9 +222,6 @@ class ByPathImporter(_Importer):
         module_dir, module_name = self._split_path_to_module(path)
         sys.path.insert(0, module_dir)
         try:
-            #fix http://code.google.com/p/robotframework-ride/issues/detail?id=1348
-            if module_name in sys.modules:
-                del sys.modules[module_name]
             return self._import(module_name)
         finally:
             sys.path.pop(0)
@@ -257,4 +251,5 @@ class DottedImporter(_Importer):
         except AttributeError:
             raise DataError("Module '%s' does not contain '%s'."
                             % (parent_name, lib_name))
+        imported = self._get_class_from_module(imported, lib_name) or imported
         return self._verify_type(imported), self._get_source(parent)

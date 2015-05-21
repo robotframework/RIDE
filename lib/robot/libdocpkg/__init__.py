@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,11 +12,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-"""Implements `libdoc` tool.
+"""Implements the `Libdoc` tool.
 
-For programmatic entry point, see :mod:`robot.libdoc`.
+The command line entry point and programmatic interface for Libdoc
+are provided by the separate :mod:`robot.libdoc` module.
 
-This package is considered stable.
+This package is considered stable but it is not part of the public API.
 """
 
 from robot.errors import DataError

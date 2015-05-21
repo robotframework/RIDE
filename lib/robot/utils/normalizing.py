@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -15,6 +15,12 @@
 import re
 import sys
 from UserDict import UserDict
+try:
+    from collections import Mapping
+except ImportError:  # Pre Python 2.6 support
+    mappings = (dict, UserDict)
+else:
+    mappings = (Mapping, UserDict)
 
 
 _WHITESPACE_REGEXP = re.compile('\s+')
@@ -58,23 +64,6 @@ else:
             if c >= u'\x80' and c.isupper():
                 return True
         return False
-
-
-# TODO: Move normalizing tags to robot.model.Tags in 2.8.
-# Move can be done after all tag related code uses Tags.
-
-def normalize_tags(tags):
-    """DEPRECATED!! Use robot.model.Tags instead.
-
-    Returns tags sorted and duplicates, empty, and NONE removed.
-
-    If duplicate tags have different case/space, the one used first wins.
-    """
-    norm = NormalizedDict(((t, 1) for t in tags), ignore=['_'])
-    for removed in '', 'NONE':
-        if removed in norm:
-            norm.pop(removed)
-    return norm.keys()
 
 
 class NormalizedDict(UserDict):
@@ -127,10 +116,10 @@ class NormalizedDict(UserDict):
     def __getitem__(self, key):
         return self.data[self._normalize(key)]
 
-    def pop(self, key):
+    def pop(self, key, *default):
         nkey = self._normalize(key)
-        del self._keys[nkey]
-        return self.data.pop(nkey)
+        self._keys.pop(nkey, *default)
+        return self.data.pop(nkey, *default)
 
     __delitem__ = pop
 
@@ -164,6 +153,12 @@ class NormalizedDict(UserDict):
     def iteritems(self):
         return ((key, self[key]) for key in self)
 
+    def popitem(self):
+        if not self:
+            raise KeyError('dictionary is empty')
+        key = self.iterkeys().next()
+        return key, self.pop(key)
+
     def copy(self):
         copy = UserDict.copy(self)
         copy._keys = self._keys.copy()
@@ -173,6 +168,6 @@ class NormalizedDict(UserDict):
         return str(dict(self.items()))
 
     def __cmp__(self, other):
-        if not isinstance(other, NormalizedDict):
+        if not isinstance(other, NormalizedDict) and isinstance(other, mappings):
             other = NormalizedDict(other)
         return UserDict.__cmp__(self, other)

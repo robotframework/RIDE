@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -11,6 +11,8 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
+from .variablesplitter import VariableIterator
 
 
 def is_var(string):
@@ -27,3 +29,8 @@ def is_scalar_var(string):
 
 def is_list_var(string):
     return is_var(string) and string[0] == '@'
+
+
+def contains_var(string):
+    return bool(isinstance(string, basestring) and
+                VariableIterator(string, '$@'))

@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -16,9 +16,12 @@ from .stats import SuiteStat
 
 
 class SuiteStatistics(object):
+    """Container for suite statistics."""
 
     def __init__(self, suite):
+        #: Instance of :class:`~robot.model.stats.SuiteStat`.
         self.stat = SuiteStat(suite)
+        #: List of :class:`~robot.model.testsuite.TestSuite` objects.
         self.suites = []
 
     def visit(self, visitor):

@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -25,8 +25,7 @@ class DataFileWriter(object):
 
     def __init__(self, **options):
         """
-        :param `**options`: A :class:`.WritingContext` is created based
-            on these.
+        :param `**options`: A :class:`.WritingContext` is created based on these.
         """
         self._options = options
 
@@ -55,7 +54,7 @@ class WritingContext(object):
     _formats = [txt_format, html_format, tsv_format, robot_format]
 
     def __init__(self, datafile, format='', output=None, pipe_separated=False,
-                 txt_separating_spaces=4, line_separator=os.linesep):
+                 txt_separating_spaces=4, line_separator='\n'):
         """
         :param datafile: The datafile to be written.
         :type datafile: :py:class:`~robot.parsing.model.TestCaseFile`,

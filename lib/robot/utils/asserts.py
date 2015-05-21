@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -54,9 +54,7 @@ unittest license::
     SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 
-Examples:
-
-.. code-block:: python
+Examples::
 
     import unittest
     from robot.util.asserts import *
@@ -99,7 +97,6 @@ Example output::
     Ran 2 tests in 0.000s
 
     FAILED (failures=2)
-
 """
 
 from .unic import unic

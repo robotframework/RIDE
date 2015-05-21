@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -18,11 +18,22 @@ from .tags import TagPatterns
 
 
 class Stat(object):
+    """Generic statistic object used for storing all the statistic values."""
 
     def __init__(self, name):
+        #: Human readable identifier of the object these statistics
+        #: belong to. Either `All Tests` or `Critical Tests` for
+        #: :class:`~robot.model.totalstatistics.TotalStatistics`,
+        #: long name of the suite for
+        #: :class:`~robot.model.suitestatistics.SuiteStatistics`
+        #: or name of the tag for
+        #: :class:`~robot.model.tagstatistics.TagStatistics`
         self.name = name
+        #: Number of passed tests.
         self.passed = 0
+        #: Number of failed tests.
         self.failed = 0
+        #: Number of milliseconds it took to execute.
         self.elapsed = 0
         self._norm_name = normalize(name, ignore='_')
 
@@ -78,15 +89,22 @@ class Stat(object):
 
 
 class TotalStat(Stat):
+    """Stores statistic values for a test run."""
+    #: Always string `total`
     type = 'total'
 
 
 class SuiteStat(Stat):
+    """Stores statistics values for a single suite."""
+    #: Always string `suite`
     type = 'suite'
 
     def __init__(self, suite):
         Stat.__init__(self, suite.longname)
+        #: Identifier of the suite, e.g. `s1-s2`.
         self.id = suite.id
+        #: Number of milliseconds it took to execute this suite,
+        #: including sub-suites.
         self.elapsed = suite.elapsedtime
         self._name = suite.name
 
@@ -102,19 +120,32 @@ class SuiteStat(Stat):
 
 
 class TagStat(Stat):
+    """Stores statistic values for a single tag."""
+    #: Always string `tag`.
     type = 'tag'
 
     def __init__(self, name, doc='', links=None, critical=False,
                  non_critical=False, combined=''):
         Stat.__init__(self, name)
+        #: Documentation of tag as a string.
         self.doc = doc
+        #: List of tuples in which the first value is the link URL and
+        #: the second is the link title. An empty list by default.
         self.links = links or []
+        #: ``True`` if tag is considered critical, ``False`` otherwise.
         self.critical = critical
+        #: ``True`` if tag is considered non-critical, ``False`` otherwise.
         self.non_critical = non_critical
+        #: Pattern as a string if the tag is combined,
+        #: an empty string otherwise.
         self.combined = combined
 
     @property
     def info(self):
+        """Returns additional information of the tag statistics
+           are about. Either `critical`, `non-critical`, `combined` or an
+           empty string.
+        """
         if self.critical:
             return 'critical'
         if self.non_critical:

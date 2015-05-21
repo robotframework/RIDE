@@ -1,6 +1,4 @@
-#!/usr/bin/env python
-
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -16,16 +14,21 @@
 
 import sys
 
-# Allows running as a script. __name__ check needed with multiprocessing:
-# http://code.google.com/p/robotframework/issues/detail?id=1137
-if 'robot' not in sys.modules and __name__ == '__main__':
-    import pythonpathsetter
 
-from robot import run_cli
-from robot.output import LOGGER
+if sys.platform.startswith('java'):
+    from org.python.core import PyReflectedFunction, PyReflectedConstructor
 
-LOGGER.warn("'robot/runner.py' entry point is deprecated and will be removed "
-            "in Robot Framework 2.8. Use new 'robot/run.py' instead.")
+    def is_java_init(init):
+        return isinstance(init, PyReflectedConstructor)
 
-if __name__ == '__main__':
-    run_cli(sys.argv[1:])
+    def is_java_method(method):
+        func = method.im_func if hasattr(method, 'im_func') else method
+        return isinstance(func, PyReflectedFunction)
+
+else:
+
+    def is_java_init(init):
+        return False
+
+    def is_java_method(method):
+        return False

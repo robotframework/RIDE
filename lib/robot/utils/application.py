@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -27,9 +27,9 @@ from .error import get_error_details
 class Application(object):
 
     def __init__(self, usage, name=None, version=None, arg_limits=None,
-                 logger=None, **auto_options):
+                 env_options=None, logger=None, **auto_options):
         self._ap = ArgumentParser(usage, name, version, arg_limits,
-                                  self.validate, **auto_options)
+                                  self.validate, env_options, **auto_options)
         self._logger = logger or DefaultLogger()
 
     def main(self, arguments, **options):
@@ -59,7 +59,7 @@ class Application(object):
 
     def _parse_arguments(self, cli_args):
         try:
-            options, arguments = self._ap.parse_args(cli_args)
+            options, arguments = self.parse_arguments(cli_args)
         except Information, msg:
             self._report_info(unicode(msg))
         except DataError, err:
@@ -68,9 +68,19 @@ class Application(object):
             self._logger.info('Arguments: %s' % ','.join(arguments))
             return options, arguments
 
+    def parse_arguments(self, cli_args):
+        """Public interface for parsing command line arguments.
+
+        :param    cli_args: Command line arguments as a list
+        :returns: options (dict), arguments (list)
+        :raises:  :class:`~robot.errors.Information` when --help or --version used
+        :raises:  :class:`~robot.errors.DataError` when parsing fails
+        """
+        return self._ap.parse_args(cli_args)
+
     def execute(self, *arguments, **options):
         with self._logging():
-            return self._execute(arguments, options)
+            return self._execute(list(arguments), options)
 
     def _execute(self, arguments, options):
         try:

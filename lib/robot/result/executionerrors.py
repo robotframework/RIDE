@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Nokia Siemens Networks Oyj
+#  Copyright 2008-2014 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -19,9 +19,15 @@ from .message import Message
 
 
 class ExecutionErrors(object):
+    """Represents errors occurred during the execution of tests.
+
+    An error might be, for example, that importing a library has failed.
+    """
     message_class = Message
 
     def __init__(self, messages=None):
+        #: A :class:`list-like object <robot.model.itemlist.ItemList>` of
+        #: :class:`~robot.model.message.Message` instances.
         self.messages = messages
 
     @setter
@@ -39,3 +45,6 @@ class ExecutionErrors(object):
 
     def __len__(self):
         return len(self.messages)
+
+    def __getitem__(self, index):
+        return self.messages[index]

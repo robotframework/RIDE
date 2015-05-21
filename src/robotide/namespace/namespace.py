@@ -282,7 +282,9 @@ class _VariableStash(object):
                 if not self._vars.has_key(variable.name):
                     _, value = self._vars._get_var_table_name_and_value(
                         variable.name,
-                        variable.value)
+                        variable.value,
+                        variable.report_invalid_syntax
+                    )
                     self.set(variable.name, value, variable_table.source)
             except DataError:
                 if is_var(variable.name):
