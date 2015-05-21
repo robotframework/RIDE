@@ -70,8 +70,9 @@ class EditorCreator(object):
         return self._create_new_editor(controller, editor_panel, plugin, tree)
 
     def _invalid(self, controller):
-        return not controller or not controller.data or \
-               isinstance(controller, ChiefController) or isinstance(controller, ExcludedDirectoryController)
+        return not controller or controller.data is None or \
+               isinstance(controller, ChiefController) or \
+               isinstance(controller, ExcludedDirectoryController)
 
     def _should_use_old_editor(self, controller):
         return self._editor and \

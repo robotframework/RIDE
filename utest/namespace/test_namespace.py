@@ -76,6 +76,7 @@ def _add_keyword_table(tcf):
 class ParentMock(object):
     source = '/tmp/example/parentmock'
     directory = '/tmp/exmaple'
+    report_invalid_syntax = lambda *args: None
 
 
 class _DataFileTest(unittest.TestCase):
