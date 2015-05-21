@@ -18,11 +18,7 @@ import operator
 import tempfile
 from itertools import chain
 
-from robot.errors import DataError
-from robot.parsing.model import ResourceFile
-from robot.parsing.settings import Library, Resource, Variables
-from robot.utils.normalizing import normalize
-from robot.variables import Variables as RobotVariables
+from robotide import robotapi, utils
 from robotide.namespace import variablefetcher
 from robotide.namespace.cache import LibraryCache, ExpiringCache
 from robotide.namespace.resourcefactory import ResourceFactory
@@ -30,7 +26,6 @@ from robotide.spec.iteminfo import (TestCaseUserKeywordInfo,
                                     ResourceUserKeywordInfo,
                                     VariableInfo, _UserKeywordInfo,
     ArgumentInfo)
-from robotide.robotapi import NormalizedDict, is_var
 from robotide.namespace.embeddedargs import EmbeddedArgsHandler
 
 
@@ -121,18 +116,18 @@ class Namespace(object):
 
     def _variable_suggestions(self, controller, start, ctx):
         datafile = controller.datafile
-        start_normalized = normalize(start)
+        start_normalized = utils.normalize(start)
         self._add_kw_arg_vars(controller, ctx.vars)
         vars = self._retriever.get_variables_from(datafile, ctx)
         return (v for v in vars
-                if normalize(v.name).startswith(start_normalized))
+                if utils.normalize(v.name).startswith(start_normalized))
 
     def _add_kw_arg_vars(self, controller, vars):
         for name, value in controller.get_local_variables().iteritems():
             vars.set_argument(name, value)
 
     def _keyword_suggestions(self, datafile, start, ctx):
-        start_normalized = normalize(start)
+        start_normalized = utils.normalize(start)
         return (sug for sug in chain(self._get_default_keywords(),
                                            self._retriever.get_keywords_from(datafile, ctx))
                       if sug.name_begins_with(start_normalized) or
@@ -258,7 +253,7 @@ class _VariableStash(object):
     ARGUMENT_SOURCE = object()
 
     def __init__(self):
-        self._vars = RobotVariables()
+        self._vars = robotapi.RobotVariables()
         self._sources = {}
         for k, v in self.global_variables.iteritems():
             self.set(k, v, 'built-in')
@@ -273,7 +268,7 @@ class _VariableStash(object):
     def replace_variables(self, value):
         try:
             return self._vars.replace_scalar(value)
-        except DataError:
+        except robotapi.DataError:
             return self._vars.replace_string(value, ignore_errors=True)
 
     def set_from_variable_table(self, variable_table):
@@ -286,8 +281,8 @@ class _VariableStash(object):
                         variable.report_invalid_syntax
                     )
                     self.set(variable.name, value, variable_table.source)
-            except DataError:
-                if is_var(variable.name):
+            except robotapi.DataError:
+                if robotapi.is_var(variable.name):
                     self.set(variable.name, '', variable_table.source)
 
     def set_from_file(self, varfile_path, args):
@@ -347,12 +342,12 @@ class DatafileRetriever(object):
         return self._import_vars(ctx, datafile, imp)
 
     def _get_datafile_keywords(self, datafile):
-        if isinstance(datafile, ResourceFile):
+        if isinstance(datafile, robotapi.ResourceFile):
             return [ResourceUserKeywordInfo(kw) for kw in datafile.keywords]
         return [TestCaseUserKeywordInfo(kw) for kw in datafile.keywords]
 
     def _get_imported_library_keywords(self, datafile, ctx):
-        return self._collect_kws_from_imports(datafile, Library,
+        return self._collect_kws_from_imports(datafile, robotapi.Library,
                                               self._lib_kw_getter, ctx)
 
     def _collect_kws_from_imports(self, datafile, instance_type, getter, ctx):
@@ -379,7 +374,7 @@ class DatafileRetriever(object):
                 if isinstance(imp, instance_type)]
 
     def _get_imported_resource_keywords(self, datafile, ctx):
-        return self._collect_kws_from_imports(datafile, Resource,
+        return self._collect_kws_from_imports(datafile, robotapi.Resource,
                                               self._res_kw_recursive_getter, ctx)
 
     def _res_kw_recursive_getter(self, imp, ctx):
@@ -389,7 +384,7 @@ class DatafileRetriever(object):
             return kws
         ctx.parsed.add(res)
         ctx.set_variables_from_datafile_variable_table(res)
-        for child in self._collect_import_of_type(res, Resource):
+        for child in self._collect_import_of_type(res, robotapi.Resource):
             kws.extend(self._res_kw_recursive_getter(child, ctx))
         kws.extend(self._get_imported_library_keywords(res, ctx))
         return [ResourceUserKeywordInfo(kw) for kw in res.keywords] + kws
@@ -404,7 +399,7 @@ class DatafileRetriever(object):
         return ctx
 
     def _collect_vars_from_variable_files(self, datafile, ctx):
-        for imp in self._collect_import_of_type(datafile, Variables):
+        for imp in self._collect_import_of_type(datafile, robotapi.Variables):
             self._import_vars(ctx, datafile, imp)
 
     def _import_vars(self, ctx, datafile, imp):
@@ -414,7 +409,7 @@ class DatafileRetriever(object):
         try:
             ctx.vars.set_from_file(varfile_path, args)
             return True
-        except DataError:
+        except robotapi.DataError:
             return False # TODO: log somewhere
 
     def _var_collector(self, res, ctx, items):
@@ -443,7 +438,7 @@ class DatafileRetriever(object):
     def _collect_each_res_import(self, datafile, ctx, collector):
         items = set()
         ctx.set_variables_from_datafile_variable_table(datafile)
-        for imp in self._collect_import_of_type(datafile, Resource):
+        for imp in self._collect_import_of_type(datafile, robotapi.Resource):
             res = self._resource_factory.get_resource_from_import(imp, ctx)
             if res and res not in ctx.parsed:
                 ctx.parsed.add(res)
@@ -474,7 +469,7 @@ class _Keywords(object):
     regexp = re.compile("\s*(given|when|then|and)\s*(.*)", re.IGNORECASE)
 
     def __init__(self, keywords):
-        self.keywords = NormalizedDict(ignore=['_'])
+        self.keywords = robotapi.NormalizedDict(ignore=['_'])
         self.embedded_keywords = {}
         self._add_keywords(keywords)
 

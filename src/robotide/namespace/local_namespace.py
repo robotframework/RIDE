@@ -11,13 +11,16 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from robot.utils import normalize
+
+from robotide import utils
 from robotide.spec.iteminfo import LocalVariableInfo
 
+
 def LocalNamespace(controller, namespace, row=None):
-   if row is not None: # can be 0!
-       return LocalRowNamespace(controller, namespace, row)
-   return LocalMacroNamespace(controller, namespace)
+    if row is not None: # can be 0!
+        return LocalRowNamespace(controller, namespace, row)
+    return LocalMacroNamespace(controller, namespace)
+
 
 class LocalMacroNamespace(object):
 
@@ -33,6 +36,7 @@ class LocalMacroNamespace(object):
             if sug.name == value:
                 return True
         return False
+
 
 class LocalRowNamespace(LocalMacroNamespace):
 
@@ -55,11 +59,13 @@ class LocalRowNamespace(LocalMacroNamespace):
             if self._row == row:
                 break
             matching_assignments = matching_assignments.union(
-                val.replace('=','').strip() for val in step.assignments if
+                val.replace('=', '').strip() for val in step.assignments if
                 val.startswith(start))
         if matching_assignments:
-            locals = [LocalVariableInfo(name) for name in matching_assignments]
-            suggestions = sorted(self._remove_duplicates(suggestions, locals))
+            local_variables = [LocalVariableInfo(name) for name
+                               in matching_assignments]
+            suggestions = sorted(self._remove_duplicates(suggestions,
+                                                         local_variables))
         return suggestions
 
     def _could_be_variable(self, start):
@@ -74,8 +80,9 @@ class LocalRowNamespace(LocalMacroNamespace):
                     return True
         return LocalMacroNamespace.has_name(self, value)
 
-    def _remove_duplicates(self, suggestions, locals):
-        checked = [gvar for gvar in suggestions
-                        if normalize(gvar.name) not in
-                            [normalize(lvar.name) for lvar in locals]]
-        return checked + locals
+    def _remove_duplicates(self, suggestions, local_variables):
+        def is_unique(gvar):
+            return utils.normalize(gvar.name) not in \
+            [utils.normalize(lvar.name) for lvar in local_variables]
+        unique = [gvar for gvar in suggestions if is_unique(gvar)]
+        return unique + local_variables

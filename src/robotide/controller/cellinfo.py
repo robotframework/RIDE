@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.utils import highlight_matcher, html_escape
+from robotide.utils import highlightmatcher, html_escape
 
 
 class CellInfo(object):
@@ -47,24 +47,27 @@ class CellInfo(object):
 
     def too_many_arguments(self):
         return self.cell_type == CellType.MUST_BE_EMPTY \
-            and self.content_type not in [ContentType.EMPTY, ContentType.COMMENTED]
+            and self.content_type not in \
+            [ContentType.EMPTY, ContentType.COMMENTED]
 
     def matches(self, value):
-        return highlight_matcher(value, self._cell_content.value)
+        return highlightmatcher.highlight_matcher(
+            value, self._cell_content.value)
 
 
 def TipMessage(cell):
     if not cell:
         return ''
     tip = _TooltipMessage(cell) if not cell.for_loop \
-            else _ForLoopTooltipMessage(cell)
+        else _ForLoopTooltipMessage(cell)
     return html_escape(unicode(tip))
 
 
 class _TooltipMessage(object):
 
     TOO_MANY_ARGUMENTS = "Too many arguments"
-    KEYWORD_NOT_FOUND = "Keyword not found! For possible corrections press <ctrl>"
+    KEYWORD_NOT_FOUND = \
+        "Keyword not found! For possible corrections press <ctrl>"
     VARIABLE_ASSIGMENT = "Variable assignment"
     UNKNOWN_VARIABLE = "\n\nUnknown variable"
 
@@ -78,7 +81,8 @@ class _TooltipMessage(object):
         self.message = self._get_message(cell)
 
     def _get_message(self, cell):
-        unknown_variable_message = '' if cell.content_type != ContentType.UNKNOWN_VARIABLE else self.UNKNOWN_VARIABLE
+        message = '' if cell.content_type != ContentType.UNKNOWN_VARIABLE \
+            else self.UNKNOWN_VARIABLE
         handlers = {
             CellType.ASSIGN: self._assign,
             CellType.KEYWORD: self._keyword,
@@ -87,7 +91,7 @@ class _TooltipMessage(object):
             CellType.MUST_BE_EMPTY: self._must_be_empty,
             CellType.UNKNOWN: self._unknown,
         }
-        return (handlers[cell.cell_type](cell) + unknown_variable_message).strip()
+        return (handlers[cell.cell_type](cell) + message).strip()
 
     def _must_be_empty(self, cell):
         if cell.too_many_arguments():
@@ -143,7 +147,7 @@ class CellContent(object):
 class CellPosition(object):
 
     def __init__(self, type, argument_name):
-        self.type= type
+        self.type = type
         self.argument_name = argument_name
 
 

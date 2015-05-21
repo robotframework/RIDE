@@ -12,10 +12,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.running.userkeyword import EmbeddedArgsTemplate
+from robotide import robotapi
 
 
-class EmbeddedArgsHandler(EmbeddedArgsTemplate):
+class EmbeddedArgsHandler(robotapi.EmbeddedArgsTemplate):
 
     def __init__(self, keyword):
         if keyword.arguments:

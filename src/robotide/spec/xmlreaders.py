@@ -14,8 +14,8 @@
 
 import os
 import sys
-from robot.errors import DataError
-from robotide import utils
+
+from robotide import robotapi, utils
 from robotide.utils.versioncomparator import cmp_versions
 from iteminfo import _XMLKeywordContent
 from robotide.preferences.settings import SETTINGS_DIRECTORY
@@ -24,6 +24,7 @@ LIBRARY_XML_DIRECTORY = os.path.join(SETTINGS_DIRECTORY, 'library_xmls')
 if not os.path.isdir(LIBRARY_XML_DIRECTORY):
     os.makedirs(LIBRARY_XML_DIRECTORY)
 
+
 class SpecInitializer(object):
 
     def __init__(self, directories=None):
@@ -31,7 +32,8 @@ class SpecInitializer(object):
         self._directories.append(LIBRARY_XML_DIRECTORY)
 
     def init_from_spec(self, name):
-        specfile = self._find_from_pythonpath(name) or self._find_from_library_xml_directories(name)
+        specfile = self._find_from_pythonpath(name) or \
+            self._find_from_library_xml_directories(name)
         return self._init_from_specfile(specfile, name)
 
     def _find_from_library_xml_directories(self, name):
@@ -46,7 +48,8 @@ class SpecInitializer(object):
         for xml_file in self._list_xml_files_in(directory):
             name_from_xml = get_name_from_xml(xml_file)
             if name_from_xml == name:
-                current_xml_file = self._get_newest_xml_file(xml_file, current_xml_file)
+                current_xml_file = self._get_newest_xml_file(
+                    xml_file, current_xml_file)
         return current_xml_file
 
     def _get_newest_xml_file(self, xml_file, current_xml_file):
@@ -69,7 +72,7 @@ class SpecInitializer(object):
                 yield path
 
     def _find_from_pythonpath(self, name):
-        return utils.find_from_pythonpath(name+'.xml')
+        return utils.find_from_pythonpath(name + '.xml')
 
     def _init_from_specfile(self, specfile, name):
         if not specfile:
@@ -92,13 +95,16 @@ def _parse_xml(file, name):
         source_type += ' file'
     return [_XMLKeywordContent(node, name, source_type) for node in kw_nodes]
 
+
 def get_path(name, basedir):
     if not _is_library_by_path(name):
         return name.replace(' ', '')
     return _resolve_path(name.replace('/', os.sep), basedir)
 
+
 def _is_library_by_path(path):
     return path.lower().endswith(('.py', '.java', '.class', '/', os.sep))
+
 
 def _resolve_path(path, basedir):
     for base in [basedir] + sys.path:
@@ -107,14 +113,17 @@ def _resolve_path(path, basedir):
         ret = os.path.join(base, path)
         if os.path.isfile(ret):
             return ret
-        if os.path.isdir(ret) and os.path.isfile(os.path.join(ret, '__init__.py')):
+        if os.path.isdir(ret) and \
+                os.path.isfile(os.path.join(ret, '__init__.py')):
             return ret
-    raise DataError
+    raise robotapi.DataError
+
 
 def _get_library_name(name):
     if os.path.exists(name):
         return name
     return name.replace(' ', '')
+
 
 def get_name_from_xml(path):
     try:

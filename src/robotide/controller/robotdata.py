@@ -14,18 +14,18 @@
 
 import os
 
-from robot.parsing.model import TestCaseFile, TestDataDirectory
+from robotide import robotapi
 
 
 def NewTestCaseFile(path):
-    datafile = TestCaseFile(source=path)
+    datafile = robotapi.TestCaseFile(source=path)
     _create_missing_directories(datafile.directory)
     return datafile
 
 
 def NewTestDataDirectory(path):
     dirname = os.path.dirname(path)
-    datafile = TestDataDirectory(source=dirname)
+    datafile = robotapi.TestDataDirectory(source=dirname)
     datafile.initfile = path
     _create_missing_directories(dirname)
     return datafile

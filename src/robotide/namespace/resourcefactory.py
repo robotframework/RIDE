@@ -14,10 +14,8 @@
 
 import os
 import sys
-from robot.parsing.model import ResourceFile
-from robot.parsing.populators import FromFilePopulator
 
-from robotide import utils
+from robotide import utils, robotapi
 
 
 class ResourceFactory(object):
@@ -64,7 +62,7 @@ class ResourceFactory(object):
     def new_resource(self, directory, name):
         path = os.path.join(directory, name) if directory else name
         path = self._normalize(path)
-        resource = ResourceFile(source=path)
+        resource = robotapi.ResourceFile(source=path)
         self.cache[path] = resource
         return resource
 
@@ -91,10 +89,10 @@ class ResourceFactory(object):
         return self.cache[normalized]
 
     def _load_resource(self, path, report_status):
-        r = ResourceFile(path)
+        r = robotapi.ResourceFile(path)
         if os.stat(path)[6]!=0 and report_status:
             return r.populate()
-        FromFilePopulator(r).populate(r.source)
+        robotapi.FromFilePopulator(r).populate(r.source)
         return r
 
     def _normalize(self, path):

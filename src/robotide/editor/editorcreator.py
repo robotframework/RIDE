@@ -13,13 +13,11 @@
 #  limitations under the License.
 
 
-from robot.parsing.model import (TestCase, TestDataDirectory, ResourceFile,
-        TestCaseFile, UserKeyword, Variable)
-
 from robotide.controller import Project
 from robotide.controller.dataloader import TestDataDirectoryWithExcludes
 from robotide.controller.filecontrollers import ExcludedDirectoryController
 from robotide.controller.settingcontrollers import VariableController
+from robotide import robotapi
 
 from .editors import (InitFileEditor, TestCaseFileEditor, WelcomePage,
         ResourceFileEditor)
@@ -34,12 +32,12 @@ def VariableEditorChooser(plugin, parent, controller, tree):
 
 class EditorCreator(object):
     # TODO: Should not use robot.model classes here
-    _EDITORS = ((TestDataDirectory, InitFileEditor),
-                (ResourceFile, ResourceFileEditor),
-                (TestCase, TestCaseEditor),
-                (TestCaseFile, TestCaseFileEditor),
-                (UserKeyword, UserKeywordEditor),
-                (Variable, VariableEditorChooser),
+    _EDITORS = ((robotapi.TestDataDirectory, InitFileEditor),
+                (robotapi.ResourceFile, ResourceFileEditor),
+                (robotapi.TestCase, TestCaseEditor),
+                (robotapi.TestCaseFile, TestCaseFileEditor),
+                (robotapi.UserKeyword, UserKeywordEditor),
+                (robotapi.Variable, VariableEditorChooser),
                 (TestDataDirectoryWithExcludes, InitFileEditor))
 
     def __init__(self, editor_registerer):

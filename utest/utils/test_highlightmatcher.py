@@ -2,7 +2,8 @@ import unittest
 
 from robot.utils.asserts import assert_true, assert_false
 
-from robotide.utils import highlight_matcher
+from robotide.utils.highlightmatcher import highlight_matcher
+
 
 class TestHighlightMatcher(unittest.TestCase):
 

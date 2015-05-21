@@ -11,7 +11,8 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from robot.running.namespace import STDLIB_NAMES
+
+from robotide import robotapi
 
 
 class SuggestionSource(object):
@@ -79,7 +80,7 @@ class CachedLibrarySuggester(_ImportSuggester):
 class BuiltInLibrariesSuggester(_Suggester):
 
     def get_suggestions(self, name, *args):
-        return [self._suggestion(n) for n in sorted(STDLIB_NAMES)
+        return [self._suggestion(n) for n in sorted(robotapi.STDLIB_NAMES)
                 if name.lower() in n.lower() and n not in ['BuiltIn', 'Reserved', 'Easter']]
 
 

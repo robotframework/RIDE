@@ -14,8 +14,7 @@
 
 import os
 
-from robot.utils.normalizing import normalize
-from robotide.utils import html_format, unescape
+from robotide import utils
 
 
 class ItemInfo(object):
@@ -45,10 +44,10 @@ class ItemInfo(object):
         return '%s.%s' % (self.source, self.name)
 
     def name_begins_with(self, prefix):
-        return normalize(self.name).startswith(prefix)
+        return utils.normalize(self.name).startswith(prefix)
 
     def longname_begins_with(self, prefix):
-        return normalize(self.longname).startswith(prefix)
+        return utils.normalize(self.longname).startswith(prefix)
 
     def is_library_keyword(self):
         return False
@@ -131,7 +130,7 @@ class _KeywordInfo(ItemInfo):
                 '</table>') % \
                 (self._name(self.item), self._source(self.item), self._type,
                  self._format_args(self.arguments),
-                 html_format(self.doc))
+                 utils.html_format(self.doc))
 
     def _format_args(self, args):
         return '[ %s ]' % ' | '.join(args)
@@ -211,7 +210,7 @@ class _UserKeywordInfo(_KeywordInfo):
         return unicode(os.path.basename(item.source)) if item.source else ''
 
     def _doc(self, item):
-        return unescape(item.doc.value)
+        return utils.unescape(item.doc.value)
 
     def _parse_args(self, uk):
         parsed = []

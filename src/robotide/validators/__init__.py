@@ -14,10 +14,8 @@
 
 import os
 import wx
-from robot.errors import DataError
 
-from robotide.robotapi import is_scalar_var, is_list_var
-from robotide import utils
+from robotide import robotapi, utils
 
 
 class _AbstractValidator(wx.PyValidator):
@@ -63,7 +61,7 @@ class TimeoutValidator(_AbstractValidator):
                 raise ValueError("Timestring must be over zero")
             time_tokens[0] = utils.secs_to_timestr(secs)
         except ValueError, err:
-            if not '${' in timestr:
+            if '${' not in timestr:
                 return str(err)
         self._set_window_value(utils.join_value(time_tokens))
         return None
@@ -76,18 +74,19 @@ class ArgumentsValidator(_AbstractValidator):
 
     def _validate(self, args_str):
         try:
-            types = [ self._get_type(arg) for arg in utils.split_value(args_str) ]
+            types = [self._get_type(arg)
+                     for arg in utils.split_value(args_str)]
         except ValueError:
             return "Invalid argument syntax '%s'" % arg
-        return self._validate_list_args_in_correct_place(types) \
-               or self._validate_req_args_in_correct_place(types) or None
+        return self._validate_list_args_in_correct_place(
+            types) or self._validate_req_args_in_correct_place(types) or None
 
     def _get_type(self, arg):
-        if is_scalar_var(arg):
+        if robotapi.is_scalar_var(arg):
             return 1
-        elif is_scalar_var(arg.split("=")[0]):
+        elif robotapi.is_scalar_var(arg.split("=")[0]):
             return 2
-        elif is_list_var(arg):
+        elif robotapi.is_list_var(arg):
             return 3
         else:
             raise ValueError
@@ -120,6 +119,7 @@ class NonEmptyValidator(_AbstractValidator):
         if not value:
             return '%s cannot be empty' % self._field_name
         return None
+
 
 class SuiteFileNameValidator(NonEmptyValidator):
 
@@ -171,7 +171,8 @@ class _NameValidator(_AbstractValidator):
         return self.__class__(self._controller, self._orig_name)
 
     def _validate(self, name):
-        if self._orig_name is not None and utils.eq(name, self._orig_name, ignore=['_']):
+        if self._orig_name is not None and utils.eq(
+                name, self._orig_name, ignore=['_']):
             return ''
         return self._validation_method(name).error_message
 

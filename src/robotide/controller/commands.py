@@ -17,13 +17,14 @@ import time
 import os
 
 from robotide.namespace.embeddedargs import EmbeddedArgsHandler
-from robotide.publish.messages import RideSelectResource, RideFileNameChanged, RideSaving, RideSaved, RideSaveAll, RideExcludesChanged
+from robotide.publish.messages import RideSelectResource, RideFileNameChanged,\
+    RideSaving, RideSaved, RideSaveAll, RideExcludesChanged
 from robotide.namespace.namespace import _VariableStash
 
+from robotide.utils import overrides, variablematcher
 from .filecontrollers import ResourceFileController
-from .macrocontrollers import KeywordNameController, ForLoopStepController, TestCaseController
-from robotide.utils import overrides, is_variable
-from robotide.utils.variablematcher import contains_scalar_variable
+from .macrocontrollers import KeywordNameController, ForLoopStepController, \
+    TestCaseController
 from .settingcontrollers import _SettingController, VariableController
 from .tablecontrollers import VariableTableController
 from .validators import BaseNameValidator
@@ -160,7 +161,7 @@ class ChangeTag(_Command):
 
     def _create_value_list(self, old_values):
         if self._tag.is_empty():
-            return [v.name for v in old_values]+[self._value]
+            return [v.name for v in old_values] + [self._value]
         else:
             new_list = []
             for v in old_values:
@@ -170,11 +171,13 @@ class ChangeTag(_Command):
                 new_list += [self._value]
             return new_list
 
+
 class DeleteTag(_Command):
 
     def execute(self, tag):
         tag.delete()
         tag.controller.notify_value_changed()
+
 
 class _ReversibleCommand(_Command):
 
@@ -197,7 +200,8 @@ class Undo(_Command):
 
     def execute(self, context):
         if not context.is_undo_empty():
-            result = context.pop_from_undo()._execute_without_redo_clear(context)
+            result = context.pop_from_undo()._execute_without_redo_clear(
+                context)
             redo_command = context.pop_from_undo()
             context.push_to_redo(redo_command)
             return result
@@ -269,7 +273,7 @@ class NonExistingStep(object):
 
 
 class NullObserver(object):
-    notify = finish = lambda x:None
+    notify = finish = lambda x: None
 
 
 class RenameKeywordOccurrences(_ReversibleCommand):
@@ -282,12 +286,14 @@ class RenameKeywordOccurrences(_ReversibleCommand):
         self._occurrences = None
 
     def _params(self):
-        return (self._original_name, self._new_name, self._observer, self._keyword_info)
+        return (self._original_name, self._new_name,
+                self._observer, self._keyword_info)
 
     def _execute(self, context):
         self._observer.notify()
-        self._occurrences = self._find_occurrences(context) if self._occurrences is None \
-                            else self._occurrences
+        self._occurrences = \
+            self._find_occurrences(context) if self._occurrences is None \
+            else self._occurrences
         self._replace_keywords_in(self._occurrences)
         context.update_namespace()
         self._notify_values_changed(self._occurrences)
@@ -295,7 +301,8 @@ class RenameKeywordOccurrences(_ReversibleCommand):
 
     def _find_occurrences(self, context):
         occurrences = []
-        for occ in context.execute(FindOccurrences(self._original_name, keyword_info=self._keyword_info)):
+        for occ in context.execute(FindOccurrences(
+                self._original_name, keyword_info=self._keyword_info)):
             self._observer.notify()
             occurrences.append(occ)
         self._observer.notify()
@@ -352,14 +359,17 @@ class Include(_Command):
 
     def execute(self, excluded_controller):
         directory_controller = excluded_controller.remove_from_excludes()
-        RideExcludesChanged(old_controller=excluded_controller, new_controller=directory_controller).publish()
+        RideExcludesChanged(old_controller=excluded_controller,
+                            new_controller=directory_controller).publish()
 
 
 class Exclude(_Command):
 
     def execute(self, directory_controller):
         excluded_controller = directory_controller.exclude()
-        RideExcludesChanged(old_controller=directory_controller, new_controller=excluded_controller).publish()
+        RideExcludesChanged(old_controller=directory_controller,
+                            new_controller=excluded_controller).publish()
+
 
 class RenameResourceFile(_Command):
 
@@ -368,7 +378,8 @@ class RenameResourceFile(_Command):
         self._should_modify_imports = get_should_modify_imports
 
     def execute(self, context):
-        validation_result = BaseNameValidator(self._new_basename).validate(context)
+        validation_result = BaseNameValidator(
+            self._new_basename).validate(context)
         if validation_result:
             old_filename = context.filename
             modify_imports = self._should_modify_imports()
@@ -382,9 +393,10 @@ class RenameResourceFile(_Command):
                                 old_filename=old_filename).publish()
         return validation_result
 
+
 class SortKeywords(_ReversibleCommand):
     index_difference = None
-    
+
     def _execute(self, context):
         index_difference = context.sort_keywords()
         self._undo_command = RestoreKeywordOrder(index_difference)
@@ -392,11 +404,12 @@ class SortKeywords(_ReversibleCommand):
     def _get_undo_command(self):
         return self._undo_command
 
+
 class RestoreKeywordOrder(_ReversibleCommand):
-    
+
     def __init__(self, index_difference):
         self._index_difference = index_difference
-    
+
     def _execute(self, context):
         context.restore_keyword_order(self._index_difference)
 
@@ -553,15 +566,17 @@ class FindOccurrences(_Command):
         self._keyword_regexp = self._create_regexp(keyword_name)
 
     def _create_regexp(self, keyword_name):
-        if contains_scalar_variable(keyword_name) and not is_variable(keyword_name):
+        if variablematcher.contains_scalar_variable(keyword_name) and \
+                not variablematcher.is_variable(keyword_name):
             kw = lambda: 0
             kw.arguments = None
             kw.name = keyword_name
             return EmbeddedArgsHandler(kw).name_regexp
 
     def execute(self, context):
-        self._keyword_source = self._keyword_info and self._keyword_info.source or \
-                               self._find_keyword_source(context.datafile_controller)
+        self._keyword_source = \
+            self._keyword_info and self._keyword_info.source or \
+            self._find_keyword_source(context.datafile_controller)
         return self._find_occurrences_in(self._items_from(context))
 
     def _items_from(self, context):
@@ -580,15 +595,16 @@ class FindOccurrences(_Command):
     def _items_from_datafile(self, df):
         for setting in df.settings:
             yield setting
-        for items_from_test in (self._items_from_test(test) for test in df.tests):
-            for item in items_from_test:
+        for test_items in (self._items_from_test(test) for test in df.tests):
+            for item in test_items:
                 yield item
-        for items_from_keyword in (self._items_from_keyword(kw) for kw in df.keywords):
-            for item in items_from_keyword:
+        for kw_items in (self._items_from_keyword(kw) for kw in df.keywords):
+            for item in kw_items:
                 yield item
 
     def _items_from_keyword(self, kw):
-        return chain([kw.keyword_name] if kw.source == self._keyword_source else [], kw.steps, [kw.teardown] if kw.teardown else [])
+        return chain([kw.keyword_name] if kw.source == self._keyword_source
+                     else [], kw.steps, [kw.teardown] if kw.teardown else [])
 
     def _items_from_test(self, test):
         return chain(test.settings, test.steps)
@@ -599,11 +615,12 @@ class FindOccurrences(_Command):
 
     def _find_occurrences_in(self, items):
         return (Occurrence(item, self._keyword_name) for item in items
-            if self._contains_item(item))
+                if self._contains_item(item))
 
     def _contains_item(self, item):
         self._yield_for_other_threads()
-        return item.contains_keyword(self._keyword_regexp or self._keyword_name)
+        return item.contains_keyword(
+            self._keyword_regexp or self._keyword_name)
 
     def _yield_for_other_threads(self):
         # GIL !?#!!!
@@ -647,13 +664,12 @@ class FindVariableOccurrences(FindOccurrences):
     def _items_from_datafile_should_be_checked(self, datafile):
         if self._is_file_variable(self._keyword_name, self._context):
             return datafile in [self._context.datafile_controller] + \
-                                self._get_all_where_used(self._context)
+                self._get_all_where_used(self._context)
         elif self._is_imported_variable(self._keyword_name, self._context):
             return datafile in [self._get_source_of_imported_var(
-                                    self._keyword_name, self._context)] + \
-                                self._get_all_where_used(
-                                    self._get_source_of_imported_var(
-                                        self._keyword_name, self._context))
+                                self._keyword_name, self._context)] + \
+                self._get_all_where_used(self._get_source_of_imported_var(
+                                         self._keyword_name, self._context))
         else:
             return True
 
@@ -661,19 +677,19 @@ class FindVariableOccurrences(FindOccurrences):
         if isinstance(context, VariableController):
             return False
         return name in context.get_local_variables() or \
-                any(step.contains_variable_assignment(name)
-                    for step in context.steps)
+            any(step.contains_variable_assignment(name)
+                for step in context.steps)
 
     def _is_file_variable(self, name, context):
         return context.datafile_controller.variables.contains_variable(name)
-    
+
     def _is_imported_variable(self, name, context):
         return self._get_source_of_imported_var(name, context) not in \
-                                        [None, context.datafile_controller]
-    
+            [None, context.datafile_controller]
+
     def _is_builtin_variable(self, name):
         return name in _VariableStash.global_variables.keys()
-    
+
     def _get_source_of_imported_var(self, name, context):
         for df in self._get_all_imported(context):
             if df.variables.contains_variable(name):
@@ -683,16 +699,17 @@ class FindVariableOccurrences(FindOccurrences):
     def _get_all_imported(self, context):
         files = [context.datafile_controller]
         for f in files:
-            files += [imp.get_imported_controller() 
-                        for imp in f.imports if imp.is_resource and 
-                            imp.get_imported_controller() not in files]
+            files += [imp.get_imported_controller()
+                      for imp in f.imports if imp.is_resource and
+                      imp.get_imported_controller() not in files]
         return files
 
     def _get_all_where_used(self, context):
         files = [context.datafile_controller]
         for f in files:
             if isinstance(f, ResourceFileController):
-                files += [imp.datafile_controller for imp in f.get_where_used()]
+                files += [imp.datafile_controller
+                          for imp in f.get_where_used()]
         return files
 
 
@@ -744,10 +761,12 @@ class _AddDataFile(_Command):
     def _add_data_file(self, context):
         raise NotImplementedError(self.__class__.__name__)
 
+
 class AddTestCaseFile(_AddDataFile):
 
     def _add_data_file(self, context):
         return context.new_test_case_file(self._path)
+
 
 class AddTestDataDirectory(_AddDataFile):
 
@@ -824,7 +843,8 @@ class AddVariable(_ReversibleCommand):
         return self._undo_command
 
     def __str__(self):
-        return 'AddVariable("%s", "%s", "%s")' % (self._name, self._value, self._comment)
+        return 'AddVariable("%s", "%s", "%s")' % \
+            (self._name, self._value, self._comment)
 
 
 class RecreateMacro(_ReversibleCommand):
@@ -876,7 +896,8 @@ def ExtractList(name, value, comment, cells):
     row, col = cells[0]
     return CompositeCommand(AddVariable(name, value, comment),
                             ChangeCellValue(row, col, name),
-                            DeleteCells((row, col+1), (row, col+len(cells)-1)))
+                            DeleteCells(
+                                (row, col + 1), (row, col + len(cells) - 1)))
 
 
 class ChangeCellValue(_StepsChangingCommand):
@@ -892,7 +913,8 @@ class ChangeCellValue(_StepsChangingCommand):
             context.add_step(len(steps))
             steps = context.steps
         step = self._step(context)
-        self._undo_command = ChangeCellValue(self._row, self._col, step.get_value(self._col))
+        self._undo_command = ChangeCellValue(
+            self._row, self._col, step.get_value(self._col))
         step.change(self._col, self._value)
         self._step(context).remove_empty_columns_from_end()
         assert self._validate_postcondition(context), \
@@ -905,14 +927,15 @@ class ChangeCellValue(_StepsChangingCommand):
         if value == should_be:
             return True
         return self._col == 0 and \
-               value.replace(' ', '').upper() == ':FOR' and \
-               should_be.replace(' ', '').upper() == ':FOR'
+            value.replace(' ', '').upper() == ':FOR' and \
+            should_be.replace(' ', '').upper() == ':FOR'
 
     def _get_undo_command(self):
         return self._undo_command
 
     def __str__(self):
-        return '%s(%s, %s, "%s")' % (self.__class__.__name__, self._row, self._col, self._value)
+        return '%s(%s, %s, "%s")' % \
+            (self.__class__.__name__, self._row, self._col, self._value)
 
 
 class SaveFile(_Command):
@@ -920,7 +943,8 @@ class SaveFile(_Command):
     def execute(self, context):
         RideSaving(path=context.filename, datafile=context).publish()
         datafile_controller = context.datafile_controller
-        for macro_controller in chain(datafile_controller.tests, datafile_controller.keywords):
+        for macro_controller in chain(
+                datafile_controller.tests, datafile_controller.keywords):
             macro_controller.execute(Purify())
         datafile_controller.save()
         datafile_controller.unmark_dirty()
@@ -943,8 +967,9 @@ class Purify(_Command):
         while True:
             if len(context.steps) <= i:
                 break
-            step = context.steps[i] # Steps can changes during this operation
+            # Steps can changes during this operation
             # this is why index based iteration - step reference can be stale
+            step = context.steps[i]
             step.remove_empty_columns_from_end()
             if step.has_only_comment():
                 step.remove_empty_columns_from_beginning()
@@ -964,7 +989,8 @@ class InsertCell(_StepsChangingCommand):
 
     def change_steps(self, context):
         self._step(context).shift_right(self._col)
-        assert self._step(context).get_value(self._col) == '', 'Should have an empty value after insert'
+        assert self._step(context).get_value(self._col) == '', \
+            'Should have an empty value after insert'
         return True
 
     def _get_undo_command(self):
@@ -982,9 +1008,10 @@ class DeleteCell(_StepsChangingCommand):
 
     def change_steps(self, context):
         step = self._step(context)
-        self._undo_command = StepsChangingCompositeCommand(InsertCell(self._row, self._col),
-                                              ChangeCellValue(self._row, self._col,
-                                                              step.get_value(self._col)))
+        self._undo_command = StepsChangingCompositeCommand(
+            InsertCell(self._row, self._col),
+            ChangeCellValue(self._row, self._col,
+                            step.get_value(self._col)))
         step.shift_left(self._col)
         return True
 
@@ -1015,7 +1042,8 @@ class DeleteRow(_RowChangingCommand):
 
     def _change_value(self, context):
         step = context.steps[self._row]
-        self._undo_command = StepsChangingCompositeCommand(AddRow(self._row), PasteArea((self._row, 0), [step.as_list()]))
+        self._undo_command = StepsChangingCompositeCommand(
+            AddRow(self._row), PasteArea((self._row, 0), [step.as_list()]))
         context.remove_step(self._row)
 
     def _get_undo_command(self):
@@ -1030,7 +1058,8 @@ class AddRow(_RowChangingCommand):
         row = self._row if self._row != -1 else len(context.steps)
         context.add_step(row)
         assert not(any(i for i in self._step(context).as_list() if i)), \
-            'Should have an empty row after add instead %r' % self._step(context).as_list()
+            'Should have an empty row after add instead %r' % \
+            self._step(context).as_list()
 
     def _get_undo_command(self):
         return DeleteRow(self._row)
@@ -1065,7 +1094,8 @@ class MoveRowsUp(_StepsChangingCommand):
         return [self._rows]
 
     def change_steps(self, context):
-        if len(self._rows) == 0 or self._last_row > len(context.steps)-1 or self._first_row == 0:
+        if len(self._rows) == 0 or self._last_row > len(context.steps) - 1 or \
+                self._first_row == 0:
             return False
         number_of_steps_before = len(context.steps)
         for row in self._rows:
@@ -1082,7 +1112,7 @@ class MoveRowsUp(_StepsChangingCommand):
         return self._rows[0]
 
     def _get_undo_command(self):
-        return MoveRowsDown([r-1 for r in self._rows if r > 0])
+        return MoveRowsDown([r - 1 for r in self._rows if r > 0])
 
 
 class MoveRowsDown(_StepsChangingCommand):
@@ -1094,7 +1124,7 @@ class MoveRowsDown(_StepsChangingCommand):
         return [self._rows]
 
     def change_steps(self, context):
-        if len(self._rows) == 0 or self._last_row >= len(context.steps)-1:
+        if len(self._rows) == 0 or self._last_row >= len(context.steps) - 1:
             return False
         number_of_steps_before = len(context.steps)
         for row in reversed(self._rows):
@@ -1107,7 +1137,7 @@ class MoveRowsDown(_StepsChangingCommand):
         return self._rows[-1]
 
     def _get_undo_command(self):
-        return MoveRowsUp([r+1 for r in self._rows])
+        return MoveRowsUp([r + 1 for r in self._rows])
 
 
 class CompositeCommand(_ReversibleCommand):
@@ -1129,7 +1159,8 @@ class CompositeCommand(_ReversibleCommand):
         return CompositeCommand(*undos)
 
     def _executions(self, context):
-        return [(cmd._execute(context), cmd._get_undo_command()) for cmd in self._commands]
+        return [(cmd._execute(context), cmd._get_undo_command())
+                for cmd in self._commands]
 
 
 class StepsChangingCompositeCommand(_StepsChangingCommand, CompositeCommand):
@@ -1138,7 +1169,8 @@ class StepsChangingCompositeCommand(_StepsChangingCommand, CompositeCommand):
         self._commands = commands
 
     def change_steps(self, context):
-        return any(changed for changed in CompositeCommand._execute(self, context))
+        return any(changed
+                   for changed in CompositeCommand._execute(self, context))
 
     def _get_undo_command(self):
         return self._undo_command
@@ -1147,15 +1179,17 @@ class StepsChangingCompositeCommand(_StepsChangingCommand, CompositeCommand):
         return StepsChangingCompositeCommand(*undos)
 
     def _executions(self, context):
-        return [(cmd.change_steps(context), cmd._get_undo_command()) for cmd in self._commands]
+        return [(cmd.change_steps(context), cmd._get_undo_command())
+                for cmd in self._commands]
 
 
 def DeleteRows(rows):
-    return StepsChangingCompositeCommand(*[DeleteRow(r) for r in reversed(sorted(rows))])
+    return StepsChangingCompositeCommand(*[DeleteRow(r)
+                                         for r in reversed(sorted(rows))])
 
 
 def AddRows(rows):
-    #TODO: Refactor to use AddRows(_StepsChangingCommand) command
+    # TODO: Refactor to use AddRows(_StepsChangingCommand) command
     first_row = sorted(rows)[0]
     return StepsChangingCompositeCommand(*[AddRow(first_row) for _ in rows])
 
@@ -1171,22 +1205,26 @@ def UncommentRows(rows):
 def ClearArea(top_left, bottom_right):
     row_s, col_s = top_left
     row_e, col_e = bottom_right
-    return StepsChangingCompositeCommand(*[ChangeCellValue(row, col, '')
-                              for row in range(row_s,row_e+1)
-                              for col in range(col_s, col_e+1)])
+    return StepsChangingCompositeCommand(
+        *[ChangeCellValue(row, col, '')
+          for row in range(row_s, row_e + 1)
+          for col in range(col_s, col_e + 1)])
 
 
 def PasteArea(top_left, content):
     row_s, col_s = top_left
-    return StepsChangingCompositeCommand(*[ChangeCellValue(row+row_s, col+col_s, content[row][col])
-                              for row in range(len(content))
-                              for col in range(len(content[row]))])
+    return StepsChangingCompositeCommand(
+        *[ChangeCellValue(row + row_s, col + col_s, content[row][col])
+          for row in range(len(content))
+          for col in range(len(content[row]))])
+
 
 def InsertArea(top_left, content):
     row, _ = top_left
     return StepsChangingCompositeCommand(
         AddRows([row+i for i in range(len(content))]),
-            PasteArea(top_left, content))
+        PasteArea(top_left, content))
+
 
 def _rows_from_selection(selection):
     res = []
@@ -1195,6 +1233,7 @@ def _rows_from_selection(selection):
             res += [row]
     return res
 
+
 def _cols_from_selection(selection):
     res = []
     for row, col in selection:
@@ -1202,17 +1241,20 @@ def _cols_from_selection(selection):
             res += [col]
     return res
 
+
 def InsertCells(top_left, bottom_right):
     row_s, col_s = top_left
     row_e, col_e = bottom_right
-    return StepsChangingCompositeCommand(*[InsertCell(row, col)
-                              for row in range(row_s,row_e+1)
-                              for col in range(col_s, col_e+1)])
+    return StepsChangingCompositeCommand(
+        *[InsertCell(row, col)
+          for row in range(row_s, row_e + 1)
+          for col in range(col_s, col_e + 1)])
 
 
 def DeleteCells(top_left, bottom_right):
     row_s, col_s = top_left
     row_e, col_e = bottom_right
-    return StepsChangingCompositeCommand(*[DeleteCell(row, col_s)
-                              for row in range(row_s,row_e+1)
-                              for _ in range(col_s, col_e+1)])
+    return StepsChangingCompositeCommand(
+        *[DeleteCell(row, col_s)
+          for row in range(row_s, row_e + 1)
+          for _ in range(col_s, col_e + 1)])

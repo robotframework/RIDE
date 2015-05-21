@@ -13,15 +13,12 @@
 #  limitations under the License.
 
 from itertools import chain
+import os
 
-from robot.parsing.tablepopulators import UserKeywordPopulator, TestCasePopulator
-from robot.parsing.model import Step, ResourceFile
-
-from robotide.controller.basecontroller import ControllerWithParent,\
-    _BaseController
-from robotide.controller.settingcontrollers import (DocumentationController,
-        FixtureController, TagsController, TimeoutController,
-        TemplateController, ArgumentsController, ReturnValueController)
+from robotide.controller.basecontroller import ControllerWithParent
+from robotide.controller.settingcontrollers import DocumentationController,\
+    FixtureController, TagsController, TimeoutController,\
+    TemplateController, ArgumentsController, ReturnValueController
 from robotide.controller.arguments import parse_arguments_to_var_dict
 from robotide.controller.basecontroller import WithUndoRedoStacks
 from robotide.namespace.local_namespace import LocalNamespace
@@ -29,17 +26,19 @@ from robotide.publish.messages import RideItemStepsChanged, RideItemNameChanged,
     RideItemSettingsChanged
 from robotide.controller.stepcontrollers import ForLoopStepController,\
     StepController, IntendedStepController
-import os
-from robotide.spec.iteminfo import ResourceUserKeywordInfo, TestCaseUserKeywordInfo
+from robotide.spec.iteminfo import ResourceUserKeywordInfo, \
+    TestCaseUserKeywordInfo
 from robotide.controller.tags import Tag
-from robotide import utils
+from robotide import robotapi
+from robotide.utils import variablematcher
 
 
 KEYWORD_NAME_FIELD = 'Keyword Name'
 TESTCASE_NAME_FIELD = 'Test Case Name'
 
+
 def _empty_step():
-    return Step([])
+    return robotapi.Step([])
 
 
 class ItemNameController(object):
@@ -53,7 +52,7 @@ class ItemNameController(object):
         return name.match(self._item.name)
 
     def contains_variable(self, name):
-        return utils.value_contains_variable(self._item.name, name)
+        return variablematcher.value_contains_variable(self._item.name, name)
 
     def replace_keyword(self, new_name, old_value=None):
         self._item.rename(new_name)
@@ -85,7 +84,8 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self._init(data)
         self._has_steps_changed = True
         self._steps_cached = None
-        self.datafile_controller.register_for_namespace_updates(self._clear_cached_steps)
+        self.datafile_controller.register_for_namespace_updates(
+            self._clear_cached_steps)
 
     @property
     def source(self):
@@ -123,7 +123,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
 
     @property
     def max_columns(self):
-        return max(chain((len(step.as_list()) for step in self.steps) , [0]))
+        return max(chain((len(step.as_list()) for step in self.steps), [0]))
 
     def has_template(self):
         return False
@@ -179,7 +179,8 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         return self.datafile_controller.is_library_keyword(value)
 
     def delete(self):
-        self.datafile_controller.unregister_namespace_updates(self._clear_cached_steps)
+        self.datafile_controller.unregister_namespace_updates(
+            self._clear_cached_steps)
         return self._parent.delete(self)
 
     def rename(self, new_name):
@@ -190,12 +191,13 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         new = self._parent.new(name)
         for orig, copied in zip(self.settings, new.settings):
             copied.set_from(orig)
-        new.data.steps = [Step(s.as_list()) for s in self.steps]
+        new.data.steps = [robotapi.Step(s.as_list()) for s in self.steps]
         new.notify_steps_changed()
         return new
 
     def get_empty_rows(self):
-        return [index for index, step in enumerate(self.steps) if self._is_empty_step(step)]
+        return [index for index, step in enumerate(self.steps)
+                if self._is_empty_step(step)]
 
     def _is_empty_step(self, step):
         return step.as_list() == []
@@ -244,7 +246,8 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self._create_extracted_kw(name, argstr, extracted_steps)
 
     def get_raw_steps(self):
-        self._has_steps_changed = True # Reveales inner state so can't be sure if cache is up to date
+        # Reveales inner state so can't be sure if cache is up to date
+        self._has_steps_changed = True
         return self.data.steps
 
     def set_raw_steps(self, steps):
@@ -257,12 +260,14 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         return self._convert_controller_to_steps(extracted_steps)
 
     def _convert_controller_to_steps(self, step_controllers):
-        return [Step(s.as_list()) for s in step_controllers]
+        return [robotapi.Step(s.as_list()) for s in step_controllers]
 
     def _replace_steps_with_kw(self, name, step_range):
-        steps_before_extraction_point = self._convert_controller_to_steps(self.steps[:step_range[0]])
-        extracted_kw_step = [Step([name])]
-        steps_after_extraction_point = self._convert_controller_to_steps(self.steps[step_range[1] + 1:])
+        steps_before_extraction_point = self._convert_controller_to_steps(
+            self.steps[:step_range[0]])
+        extracted_kw_step = [robotapi.Step([name])]
+        steps_after_extraction_point = self._convert_controller_to_steps(
+            self.steps[step_range[1] + 1:])
         self.set_steps(steps_before_extraction_point + extracted_kw_step +
                        steps_after_extraction_point)
 
@@ -293,20 +298,22 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
 
 class TestCaseController(_WithStepsController):
 
-    _populator = TestCasePopulator
+    _populator = robotapi.TestCasePopulator
     filename = ""
 
     def _init(self, test):
         self._test = test
 
     def __eq__(self, other):
-        if self is other : return True
-        if other.__class__ != self.__class__ : return False
+        if self is other:
+            return True
+        if other.__class__ != self.__class__:
+            return False
         return self._test == other._test
 
     @property
     def longname(self):
-        return self.parent.parent.longname+'.'+self.data.name
+        return self.parent.parent.longname + '.' + self.data.name
 
     @property
     def test_name(self):
@@ -369,7 +376,7 @@ class TestCaseController(_WithStepsController):
 
 
 class UserKeywordController(_WithStepsController):
-    _populator = UserKeywordPopulator
+    _populator = robotapi.UserKeywordPopulator
     _TEARDOWN_NOT_SET = object()
     _teardown = _TEARDOWN_NOT_SET
 
@@ -385,7 +392,7 @@ class UserKeywordController(_WithStepsController):
 
     @property
     def info(self):
-        if isinstance(self.datafile, ResourceFile):
+        if isinstance(self.datafile, robotapi.ResourceFile):
             return ResourceUserKeywordInfo(self.data)
         return TestCaseUserKeywordInfo(self.data)
 
@@ -406,8 +413,7 @@ class UserKeywordController(_WithStepsController):
                   TimeoutController(self, self._kw.timeout),
                   ReturnValueController(self, self._kw.return_)]
         if hasattr(self._kw, 'teardown'):
-            result = result[:2] + \
-                     [self.teardown] + result[2:]
+            result = result[:2] + [self.teardown] + result[2:]
         return result
 
     @property

@@ -14,12 +14,12 @@
 
 import re
 from itertools import chain
-from robot.parsing.settings import Comment
 
-from robotide.publish.messages import (RideImportSettingChanged,
-        RideImportSettingRemoved, RideVariableUpdated, RideItemSettingsChanged, RideImportSettingAdded)
-from robotide import utils
-from robotide.utils import overrides
+from robotide.publish.messages import RideImportSettingChanged,\
+    RideImportSettingRemoved, RideVariableUpdated, RideItemSettingsChanged, \
+    RideImportSettingAdded
+from robotide import robotapi, utils
+from robotide.utils import overrides, variablematcher
 
 from .tags import Tag, ForcedTag, DefaultTag
 from .basecontroller import ControllerWithParent
@@ -65,13 +65,15 @@ class _SettingController(ControllerWithParent):
         return ''
 
     def contains_keyword(self, name):
-        return self._contains_keyword(name.match if not isinstance(name, basestring) else lambda i: utils.eq(i, name))
+        matcher = name.match if not isinstance(name, basestring) \
+            else lambda i: utils.eq(i, name)
+        return self._contains_keyword(matcher)
 
     def _contains_keyword(self, matcher_function):
         return any(matcher_function(item or '') for item in self.as_list())
 
     def contains_variable(self, name):
-        return utils.value_contains_variable(self.value, name)
+        return variablematcher.value_contains_variable(self.value, name)
 
     @property
     def is_set(self):
@@ -90,8 +92,8 @@ class _SettingController(ControllerWithParent):
 
     def set_comment(self, comment):
         if comment != self.comment:
-            if not isinstance(comment, Comment):
-                comment = Comment(comment)
+            if not isinstance(comment, robotapi.Comment):
+                comment = robotapi.Comment(comment)
             self._data.comment = comment
             self.mark_dirty()
 
@@ -129,7 +131,7 @@ class DocumentationController(_SettingController):
         return False
 
     def _get_editable_value(self):
-        return self._unescape_newlines_and_handle_escaped_backslashes(self.value)
+        return self._unescape_newlines_and_handle_escapes(self.value)
 
     def _set_editable_value(self, value):
         self.set_value(self._escape_newlines_and_leading_hash(value))
@@ -140,7 +142,7 @@ class DocumentationController(_SettingController):
     def visible_value(self):
         return utils.html_format(utils.unescape(self.value))
 
-    def _unescape_newlines_and_handle_escaped_backslashes(self, item):
+    def _unescape_newlines_and_handle_escapes(self, item):
         for regexp in self.newline_regexps:
             item = regexp.sub(self._newline_replacer, item)
         return item
@@ -214,12 +216,12 @@ class TagsController(_SettingController):
     def __iter__(self):
         forced = self._parent.force_tags
         if self._tags.value is None:
-            return chain(forced,
-                    self._parent.default_tags).__iter__()
+            return chain(forced, self._parent.default_tags).__iter__()
         if len(self._tags.value) == 0:
             return chain(forced, [Tag('', controller=self)])
-        return chain(forced,
-                (Tag(t, index, self) for index, t in enumerate(self._tags.value))).__iter__()
+        own_tags = (Tag(t, index, self)
+                    for index, t in enumerate(self._tags.value))
+        return chain(forced, own_tags).__iter__()
 
     @property
     def is_set(self):
@@ -238,7 +240,8 @@ class DefaultTagsController(TagsController):
     def __iter__(self):
         if self._tags.value is None:
             return [].__iter__()
-        return (DefaultTag(t, index, self) for index, t in enumerate(self._tags.value)).__iter__()
+        return (DefaultTag(t, index, self)
+                for index, t in enumerate(self._tags.value)).__iter__()
 
 
 class ForceTagsController(TagsController):
@@ -262,14 +265,15 @@ class ForceTagsController(TagsController):
         if obj is None:
             return result
         force_tags = obj._setting_table.force_tags
-        return self._recursive_gather_from(obj.parent,
-                                           self._gather_from_data(force_tags, obj.force_tags)+
-                                           result)
+        return self._recursive_gather_from(
+            obj.parent,
+            self._gather_from_data(force_tags, obj.force_tags) + result)
 
     def _gather_from_data(self, tags, parent):
         if tags.value is None:
             return []
-        return [ForcedTag(t, index, parent) for index, t in enumerate(tags.value)]
+        return [ForcedTag(t, index, parent)
+                for index, t in enumerate(tags.value)]
 
 
 class TimeoutController(_SettingController):
@@ -374,15 +378,6 @@ class VariableController(_SettingController):
     def _label(self, data):
         return ''
 
-    def __eq__(self, other):
-        if not other:
-            return False
-        if self is other:
-            return True
-        if self._var == other._var:
-            return True
-        return False
-
     def __ne__(self, other):
         return not (self == other)
 
@@ -430,12 +425,14 @@ class VariableController(_SettingController):
         return self.parent.validate_list_variable_name(new_name, self)
 
     def __eq__(self, other):
-        if self is other : return True
-        if other.__class__ != self.__class__ : return False
+        if self is other:
+            return True
+        if other.__class__ != self.__class__:
+            return False
         return self._var == other._var
 
     def __hash__(self):
-        return hash(self._var)+1
+        return hash(self._var) + 1
 
 
 def ImportController(parent, import_):
@@ -469,7 +466,7 @@ class _ImportController(_SettingController):
 
     @property
     def display_value(self):
-        value = self.args + (['WITH NAME' , self.alias] if self.alias else [])
+        value = self.args + (['WITH NAME', self.alias] if self.alias else [])
         return ' | '.join(value)
 
     @property
@@ -501,11 +498,13 @@ class _ImportController(_SettingController):
         self.parent.remove_import_data(self._import)
 
     def publish_added(self):
-        RideImportSettingAdded(datafile=self.datafile_controller,
+        RideImportSettingAdded(
+            datafile=self.datafile_controller,
             import_controller=self, type=self.type.lower()).publish()
 
     def publish_edited(self):
-        RideImportSettingChanged(datafile=self.datafile_controller,
+        RideImportSettingChanged(
+            datafile=self.datafile_controller,
             import_controller=self, type=self.type.lower()).publish()
 
     def publish_removed(self):
@@ -527,7 +526,8 @@ class ResourceImportController(_ImportController):
     def get_imported_controller(self):
         if not self._resolved_import:
             self._imported_resource_controller = \
-                self.parent.resource_file_controller_factory.find_with_import(self._import)
+                self.parent.resource_file_controller_factory.find_with_import(
+                    self._import)
             if self._imported_resource_controller:
                 self._imported_resource_controller.add_known_import(self)
             self._resolved_import = True
@@ -539,13 +539,15 @@ class ResourceImportController(_ImportController):
 
     @overrides(_ImportController)
     def publish_added(self):
-        self.get_imported_controller() #Resolve the import <-> ResourceFileController link
+        # Resolve the import <-> ResourceFileController link
+        self.get_imported_controller()
         _ImportController.publish_added(self)
 
     @overrides(_ImportController)
     def publish_removed(self):
         self._previous_imported_controller = self.get_imported_controller()
-        self.unresolve() #Unresolve the import <-> ResourceFileController link
+        # Unresolve the import <-> ResourceFileController link
+        self.unresolve()
         self._prevent_resolve()
         _ImportController.publish_removed(self)
 
@@ -568,8 +570,8 @@ class ResourceImportController(_ImportController):
         if self.contains_filename(old_name):
             self.set_value(self.name[:-len(old_name)] + new_name)
         else:
-            # If original result has changed and this import relays on variables
-            # can't know if import is still resolved
+            # If original result has changed and this import relies on
+            # variables, can't know if import is still resolved
             self.unresolve()
 
     def change_format(self, format):

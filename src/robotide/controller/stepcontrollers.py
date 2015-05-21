@@ -14,13 +14,12 @@
 
 import re
 
-from robot.parsing.model import Step, ForLoop
-from robotide import utils
+from robotide import robotapi, utils
+from robotide.utils import variablematcher
 from robotide.controller.basecontroller import _BaseController
 from robotide.controller.cellinfo import (CellPosition, CellType, CellInfo,
                                           CellContent, ContentType)
 from robotide.namespace.local_namespace import LocalNamespace
-from robotide.utils import overrides
 
 
 class StepController(_BaseController):
@@ -29,7 +28,8 @@ class StepController(_BaseController):
 
     def __init__(self, parent, step):
         self._init(parent, step)
-        self._step.args = self._change_last_empty_to_empty_var(self._step.args, self._step.comment)
+        self._step.args = self._change_last_empty_to_empty_var(
+            self._step.args, self._step.comment)
 
     def _init(self, parent, step):
         self.parent = parent
@@ -55,19 +55,22 @@ class StepController(_BaseController):
         return self.parent.get_keyword_info(kw)
 
     def __eq__(self, other):
-        if self is other : return True
+        if self is other:
+            return True
         return self._steps_are_equal(self._step, other._step)
 
     def _steps_are_equal(self, fst, snd):
-        if fst is snd: return True
-        if not snd: return False
+        if fst is snd:
+            return True
+        if not snd:
+            return False
         return (fst.assign == snd.assign and
                 fst.keyword == snd.keyword and
                 fst.args == snd.args)
 
     def get_value(self, col):
         values = self.as_list()
-        if len(values) <= col :
+        if len(values) <= col:
             return ''
         return values[col]
 
@@ -75,7 +78,8 @@ class StepController(_BaseController):
         if col not in self._cell_info_cache:
             position = self._get_cell_position(col)
             content = self._get_content_with_type(col, position)
-            self._cell_info_cache[col] = self._build_cell_info(content, position)
+            self._cell_info_cache[col] = self._build_cell_info(
+                content, position)
         return self._cell_info_cache[col]
 
     @property
@@ -84,7 +88,8 @@ class StepController(_BaseController):
 
     def is_assigning(self, value):
         for assignment in self.assignments:
-            if assignment.replace('=', '').strip() == value.replace('=', '').strip():
+            if assignment.replace('=', '').strip() == \
+                    value.replace('=', '').strip():
                 return True
         return False
 
@@ -109,13 +114,13 @@ class StepController(_BaseController):
             return CellPosition(CellType.MUST_BE_EMPTY, None)
         if col >= args_amount and self._last_argument_is_varargs(args):
             return CellPosition(CellType.OPTIONAL, args[-1])
-        if self._has_list_var_value_before(col-1):
+        if self._has_list_var_value_before(col - 1):
             return CellPosition(CellType.UNKNOWN, None)
         if col > args_amount:
             return CellPosition(CellType.MUST_BE_EMPTY, None)
         if col <= self._number_of_mandatory_arguments(args, args_amount):
-            return CellPosition(CellType.MANDATORY, args[col-1])
-        return CellPosition(CellType.OPTIONAL, args[col-1])
+            return CellPosition(CellType.MANDATORY, args[col - 1])
+        return CellPosition(CellType.OPTIONAL, args[col - 1])
 
     def _number_of_mandatory_arguments(self, args, args_amount):
         defaults = [arg for arg in args if '=' in arg]
@@ -131,8 +136,8 @@ class StepController(_BaseController):
         for idx, value in enumerate(self.args):
             if idx > arg_index:
                 return False
-            if utils.is_list_variable(value) and \
-               not utils.is_list_variable_subitem(value):
+            if variablematcher.is_list_variable(value) and \
+               not variablematcher.is_list_variable_subitem(value):
                 return True
         return False
 
@@ -142,14 +147,18 @@ class StepController(_BaseController):
             return CellContent(ContentType.COMMENTED, value)
         if self._get_last_none_empty_col_idx() < col:
             return CellContent(ContentType.EMPTY, value)
-        if utils.is_variable(value):
+        if variablematcher.is_variable(value):
             if self._is_unknow_variable(value, position):
                 return CellContent(ContentType.UNKNOWN_VARIABLE, value)
             return CellContent(ContentType.VARIABLE, value)
         if self.is_user_keyword(value):
-            return CellContent(ContentType.USER_KEYWORD, value, self.get_keyword_info(value).source)
+            return CellContent(
+                ContentType.USER_KEYWORD, value,
+                self.get_keyword_info(value).source)
         if self.is_library_keyword(value):
-            return CellContent(ContentType.LIBRARY_KEYWORD, value, self.get_keyword_info(value).source)
+            return CellContent(
+                ContentType.LIBRARY_KEYWORD, value,
+                self.get_keyword_info(value).source)
         return CellContent(ContentType.STRING, value)
 
     def _is_unknow_variable(self, value, position):
@@ -160,11 +169,13 @@ class StepController(_BaseController):
             return False
         inner_value = value[2:-1]
         modified = re.split(r'\W', inner_value, 1)[0]
-        return not self._get_local_namespace().has_name('%s{%s}' % (value[0],modified))
+        return not self._get_local_namespace().has_name(
+            '%s{%s}' % (value[0], modified))
 
     def _get_local_namespace(self):
         index = self.parent.index_of_step(self._step)
-        return LocalNamespace(self.parent, self.datafile_controller._namespace, index)
+        return LocalNamespace(
+            self.parent, self.datafile_controller._namespace, index)
 
     def _get_last_none_empty_col_idx(self):
         values = self.as_list()
@@ -186,27 +197,33 @@ class StepController(_BaseController):
         return self._step.as_list()
 
     def contains_variable(self, name):
-        return any(utils.value_contains_variable(item, name) for item in self.as_list())
+        return any(variablematcher.value_contains_variable(item, name)
+                   for item in self.as_list())
 
     def contains_variable_assignment(self, name):
-        return any(utils.value_contains_variable(item, "%s=" % name) for item in self.as_list())
+        return any(variablematcher.value_contains_variable(item, "%s=" % name)
+                   for item in self.as_list())
 
     def contains_keyword(self, name):
-        return any(self._kw_name_match(item, name) for item in [self.keyword or ''] + self.args)
+        return any(self._kw_name_match(item, name)
+                   for item in [self.keyword or ''] + self.args)
 
     def _kw_name_match(self, item, expected):
         if isinstance(expected, basestring):
             return utils.eq(item, expected) or (
                 self._GIVEN_WHEN_THEN_MATCHER.match(item) and
-                utils.eq(self._GIVEN_WHEN_THEN_MATCHER.sub('', item), expected))
+                utils.eq(
+                    self._GIVEN_WHEN_THEN_MATCHER.sub('', item), expected))
         return expected.match(item)
 
     def replace_keyword(self, new_name, old_name):
         if self._kw_name_match(self.keyword or '', old_name):
-            self._step.keyword = self._kw_name_replace(self.keyword, new_name, old_name)
+            self._step.keyword = self._kw_name_replace(
+                self.keyword, new_name, old_name)
         for index, value in enumerate(self.args):
             if self._kw_name_match(value, old_name):
-                self._step.args[index] = self._kw_name_replace(value, new_name, old_name)
+                self._step.args[index] = self._kw_name_replace(
+                    value, new_name, old_name)
 
     def _kw_name_replace(self, old_value, new_match, old_match):
         old_prefix_matcher = self._GIVEN_WHEN_THEN_MATCHER.match(old_value)
@@ -216,7 +233,7 @@ class StepController(_BaseController):
         old_match_matcher = self._GIVEN_WHEN_THEN_MATCHER.match(old_match)
         if old_match_matcher and old_match_matcher.group(0) == old_prefix:
             return new_match
-        return old_prefix+new_match
+        return old_prefix + new_match
 
     @property
     def datafile(self):
@@ -240,7 +257,7 @@ class StepController(_BaseController):
 
     def change(self, col, new_value):
         cells = self.as_list()
-        if col >= len(cells) :
+        if col >= len(cells):
             cells = cells + ['' for _ in range(col - len(cells) + 1)]
         cells[col] = new_value
         comment = self._get_comment(cells)
@@ -255,7 +272,7 @@ class StepController(_BaseController):
     def _is_commented(self, col):
         if self._has_comment_keyword():
             return col > self._keyword_column
-        for i in range(min(col+1, len(self.as_list()))):
+        for i in range(min(col + 1, len(self.as_list()))):
             if self.get_value(i).strip().startswith('#'):
                 return True
         return False
@@ -288,18 +305,18 @@ class StepController(_BaseController):
         if len(cells) > from_column:
             if comment:
                 cells.pop()
-            cells = cells[:from_column] + cells[from_column+1:]
+            cells = cells[:from_column] + cells[from_column + 1:]
             self._recreate(cells, comment)
 
     def insert_before(self, new_step):
         steps = self.parent.get_raw_steps()
         index = steps.index(self._step)
-        self.parent.set_raw_steps(steps[:index]+[new_step]+steps[index:])
+        self.parent.set_raw_steps(steps[:index] + [new_step] + steps[index:])
 
     def insert_after(self, new_step):
         steps = self.parent.get_raw_steps()
-        index = steps.index(self._step)+1
-        self.parent.set_raw_steps(steps[:index]+[new_step]+steps[index:])
+        index = steps.index(self._step) + 1
+        self.parent.set_raw_steps(steps[:index] + [new_step] + steps[index:])
 
     def remove_empty_columns_from_end(self):
         cells = self.as_list()
@@ -318,12 +335,12 @@ class StepController(_BaseController):
         self.parent._clear_cached_steps()
 
     def move_up(self):
-        previous_step = self.parent.step(self._index()-1)
+        previous_step = self.parent.step(self._index() - 1)
         self.remove()
         previous_step.insert_before(self._step)
 
     def move_down(self):
-        next_step = self.parent.step(self._index()+1)
+        next_step = self.parent.step(self._index() + 1)
         self.remove()
         next_step.insert_after(self._step)
 
@@ -331,8 +348,10 @@ class StepController(_BaseController):
         return self.parent.index_of_step(self._step)
 
     def has_only_comment(self):
-        non_empty_cells = [cell for cell in self._step.as_list() if cell.strip() != '']
-        return len(non_empty_cells) == 1 and non_empty_cells[0].startswith('# ')
+        non_empty_cells = [cell for cell
+                           in self._step.as_list() if cell.strip() != '']
+        return len(non_empty_cells) == 1 and \
+            non_empty_cells[0].startswith('# ')
 
     def _get_comment(self, cells):
         if not cells:
@@ -344,11 +363,13 @@ class StepController(_BaseController):
             self._recreate_as_partial_for_loop(cells, comment)
         elif self._is_intended_step(cells):
             i = self._index()
-            previous_step = self.parent.step(i-1)
+            previous_step = self.parent.step(i - 1)
             if type(previous_step) == ForLoopStepController:
-                self._recreate_as_intended_step(previous_step, cells, comment, i)
+                self._recreate_as_intended_step(
+                    previous_step, cells, comment, i)
             elif type(previous_step) == IntendedStepController:
-                self._recreate_as_intended_step(previous_step.parent, cells, comment, i)
+                self._recreate_as_intended_step(
+                    previous_step.parent, cells, comment, i)
             else:
                 self._step.__init__(cells, comment)
         else:
@@ -359,36 +380,37 @@ class StepController(_BaseController):
 
     def _is_intended_step(self, cells):
         return cells and not cells[0].strip() and \
-               any(c.strip() for c in cells) and self._index() > 0
+            any(c.strip() for c in cells) and self._index() > 0
 
     def _recreate_as_partial_for_loop(self, cells, comment):
         index = self._index()
-        self.parent.replace_step(index, PartialForLoop(cells[1:], first_cell=cells[0], comment=comment))
+        self.parent.replace_step(index, PartialForLoop(
+            cells[1:], first_cell=cells[0], comment=comment))
         self._recreate_next_step(index)
 
     def _recreate_as_intended_step(self, for_loop_step, cells, comment, index):
         self.remove()
-        for_loop_step.add_step(Step(cells[1:], comment))
+        for_loop_step.add_step(robotapi.Step(cells[1:], comment))
         self._recreate_next_step(index)
 
     def _recreate_next_step(self, index):
-        if len(self.parent.steps) > index+1:
-                next_step = self.parent.step(index+1)
+        if len(self.parent.steps) > index + 1:
+                next_step = self.parent.step(index + 1)
                 next_step._recreate(next_step.as_list())
 
     def notify_value_changed(self):
         self.parent.notify_steps_changed()
 
 
-class PartialForLoop(ForLoop):
+class PartialForLoop(robotapi.ForLoop):
 
     def __init__(self, cells, first_cell=':FOR', comment=None):
         self._cells = cells
         self._first_cell = first_cell
-        ForLoop.__init__(self, cells, comment)
+        robotapi.ForLoop.__init__(self, cells, comment)
 
     def as_list(self, indent=False, include_comment=False):
-        return [self._first_cell]+self._cells+self.comment.as_list()
+        return [self._first_cell] + self._cells + self.comment.as_list()
 
 
 class ForLoopStepController(StepController):
@@ -405,7 +427,7 @@ class ForLoopStepController(StepController):
         return self._step.vars
 
     def move_up(self):
-        previous_step = self.parent.step(self._index()-1)
+        previous_step = self.parent.step(self._index() - 1)
         if isinstance(previous_step, ForLoopStepController):
             self._swap_forloop_headers(previous_step)
         else:
@@ -422,7 +444,7 @@ class ForLoopStepController(StepController):
         self.parent.set_raw_steps(steps)
 
     def move_down(self):
-        next_step = self.step(self._index()+1)
+        next_step = self.step(self._index() + 1)
         next_step.move_up()
         if len(self._step.steps) == 0:
             self._recreate_complete_for_loop_header(cells=self.as_list())
@@ -443,7 +465,7 @@ class ForLoopStepController(StepController):
         self._step.steps = steps
 
     def _get_cell_position(self, col):
-        until_range = len(self._step.vars)+1
+        until_range = len(self._step.vars) + 1
         if col == 0:
             return CellPosition(CellType.MANDATORY, None)
         if col < until_range:
@@ -452,9 +474,9 @@ class ForLoopStepController(StepController):
             return CellPosition(CellType.MANDATORY, None)
         if not self._step.range:
             return CellPosition(CellType.OPTIONAL, None)
-        if col <= until_range+1:
+        if col <= until_range + 1:
             return CellPosition(CellType.MANDATORY, None)
-        if col <= until_range+3:
+        if col <= until_range + 3:
             return CellPosition(CellType.OPTIONAL, None)
         return CellPosition(CellType.MUST_BE_EMPTY, None)
 
@@ -463,17 +485,18 @@ class ForLoopStepController(StepController):
 
     @property
     def steps(self):
-        return [IntendedStepController(self, sub_step) for sub_step in self.get_raw_steps()]
+        return [IntendedStepController(self, sub_step)
+                for sub_step in self.get_raw_steps()]
 
     def index_of_step(self, step):
         index_in_for_loop = self.get_raw_steps().index(step)
-        return self._index()+index_in_for_loop+1
+        return self._index() + index_in_for_loop + 1
 
     def _get_comment(self, cells):
         return None
 
     def comment(self):
-        self._replace_with_new_cells(['Comment']+self.as_list())
+        self._replace_with_new_cells(['Comment'] + self.as_list())
 
     def uncomment(self):
         pass
@@ -508,7 +531,8 @@ class ForLoopStepController(StepController):
         steps = self.parent.data.steps
         index = steps.index(self._step)
         steps.remove(self._step)
-        self.parent.data.steps = steps[:index] + self.get_raw_steps() + steps[index:]
+        self.parent.data.steps = \
+            steps[:index] + self.get_raw_steps() + steps[index:]
         self._step.steps = []
 
     def _represent_valid_for_loop_header(self, cells):
@@ -516,7 +540,7 @@ class ForLoopStepController(StepController):
             return False
         if cells[0] != self.as_list()[0]:
             return False
-        in_token_index = len(self.vars)+1
+        in_token_index = len(self.vars) + 1
         if len(cells) <= in_token_index:
             return False
         if len(self.as_list()) <= in_token_index:
@@ -527,10 +551,10 @@ class ForLoopStepController(StepController):
 
     def _replace_with_new_cells(self, cells):
         index = self.parent.index_of_step(self._step)
-        self.parent.replace_step(index, Step(cells))
+        self.parent.replace_step(index, robotapi.Step(cells))
         self.get_raw_steps().reverse()
         for substep in self.steps:
-            self.parent.add_step(index+1, Step(substep.as_list()))
+            self.parent.add_step(index + 1, robotapi.Step(substep.as_list()))
 
     def notify_steps_changed(self):
         self.notify_value_changed()
@@ -548,12 +572,12 @@ class IntendedStepController(StepController):
         return 1
 
     def as_list(self):
-        return ['']+self._step.as_list()
+        return [''] + self._step.as_list()
 
     def _get_cell_position(self, col):
         if col == 0:
             return CellPosition(CellType.MUST_BE_EMPTY, None)
-        return StepController._get_cell_position(self, col-1)
+        return StepController._get_cell_position(self, col - 1)
 
     def _get_local_namespace(self):
         p = self.parent.parent
@@ -592,13 +616,15 @@ class IntendedStepController(StepController):
 
     def _replace_with_normal_step(self, index, cells=None, comment=None):
         index_of_parent = self.parent.parent.index_of_step(self.parent._step)
-        self.parent.parent.add_step(index_of_parent+index+2, Step(cells or self.as_list(), comment=comment))
+        self.parent.parent.add_step(
+            index_of_parent + index + 2,
+            robotapi.Step(cells or self.as_list(), comment=comment))
         self.parent.get_raw_steps().pop(index)
 
     def remove(self):
         self.parent.get_raw_steps().remove(self._step)
 
-    @overrides(StepController)
+    @utils.overrides(StepController)
     def remove_empty_columns_from_end(self):
         if self._invalid:
             return

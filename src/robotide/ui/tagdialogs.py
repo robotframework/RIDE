@@ -15,21 +15,24 @@
 import wx
 import wx.lib.mixins.listctrl as listmix
 
-from robot.utils import NormalizedDict
+from robotide import utils
 from robotide.controller.commands import ChangeTag, DeleteTag
-from types import *
 from robotide.publish import RideOpenTagSearch
-from robotide.ui.treenodehandlers import ResourceRootHandler, ResourceFileHandler
+from robotide.ui.treenodehandlers import ResourceRootHandler, \
+    ResourceFileHandler
 from robotide.widgets import ButtonWithHandler, PopupMenuItems
+
 
 class ViewAllTagsDialog(wx.Frame):
 
     def __init__(self, controller, frame):
-        wx.Frame.__init__(self, frame, title="View all tags", style=wx.SYSTEM_MENU|wx.CAPTION|wx.CLOSE_BOX|wx.CLIP_CHILDREN|wx.FRAME_FLOAT_ON_PARENT)
+        style = wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN | \
+            wx.FRAME_FLOAT_ON_PARENT
+        wx.Frame.__init__(self, frame, title="View all tags", style=style)
         self.frame = frame
         self.tree = self.frame.tree
         self._controller = controller
-        self._results = NormalizedDict()
+        self._results = utils.NormalizedDict()
         self.selected_tests = list()
         self.tagged_test_cases = list()
         self.unique_tags = 0
@@ -39,11 +42,12 @@ class ViewAllTagsDialog(wx.Frame):
         self._make_bindings()
 
     def _build_ui(self):
-        self.SetSize((500,400))
+        self.SetSize((500, 400))
         parent_x, parent_y = self.frame.GetPosition()
         parent_size_x, parent_size_y = self.frame.tree.GetSize()
-        self.SetPosition((parent_x+parent_size_x+50,parent_y+50))
-        self.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DFACE))
+        self.SetPosition((parent_x + parent_size_x + 50, parent_y + 50))
+        self.SetBackgroundColour(
+            wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DFACE))
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
         self._build_notebook()
         self._build_tag_lister()
@@ -54,9 +58,10 @@ class ViewAllTagsDialog(wx.Frame):
         panel_tag_vw = wx.Panel(self._notebook)
         sizer_tag_vw = wx.BoxSizer(wx.VERTICAL)
         panel_tag_vw.SetSizer(sizer_tag_vw)
-        self._tags_list = TagsListCtrl(panel_tag_vw,style=wx.LC_REPORT)
+        self._tags_list = TagsListCtrl(panel_tag_vw, style=wx.LC_REPORT)
         self._tags_list.InsertColumn(0, "Tag", width=200)
-        self._tags_list.InsertColumn(1, "Occurrences", width=25, format=wx.LIST_FORMAT_CENTER)
+        self._tags_list.InsertColumn(1, "Occurrences", width=25,
+                                     format=wx.LIST_FORMAT_CENTER)
         self._tags_list.SetMinSize((450, 250))
         self._tags_list.set_dialog(self)
         sizer_tag_vw.Add(self._tags_list, 1, wx.ALL | wx.EXPAND, 3)
@@ -64,8 +69,10 @@ class ViewAllTagsDialog(wx.Frame):
 
     def _build_controls(self):
         self._clear_button = ButtonWithHandler(self, 'Refresh', self.OnClear)
-        self._show_tagged_tests_button = ButtonWithHandler(self, 'Included Tag Search')
-        self._show_excluded_tests_button = ButtonWithHandler(self, 'Excluded Tag Search')
+        self._show_tagged_tests_button = ButtonWithHandler(
+            self, 'Included Tag Search')
+        self._show_excluded_tests_button = ButtonWithHandler(
+            self, 'Excluded Tag Search')
         controls = wx.BoxSizer(wx.HORIZONTAL)
         controls.Add(self._show_tagged_tests_button, 0, wx.ALL, 3)
         controls.Add(self._show_excluded_tests_button, 0, wx.ALL, 3)
@@ -95,19 +102,21 @@ class ViewAllTagsDialog(wx.Frame):
         self.unique_tags = 0
 
         for tag_name, tests in self._results:
-            self._tags_list.SetClientData(self.unique_tags, (tests,tag_name))
-            self._tags_list.InsertStringItem(self.unique_tags, unicode(tag_name))
+            self._tags_list.SetClientData(self.unique_tags, (tests, tag_name))
+            self._tags_list.InsertStringItem(
+                self.unique_tags, unicode(tag_name))
             self.tagged_test_cases += tests
             self._tags_list.SetStringItem(self.unique_tags, 1, str(len(tests)))
             self.unique_tags += 1
-        self._tags_list.SetColumnWidth(1,wx.LIST_AUTOSIZE_USEHEADER)
+        self._tags_list.SetColumnWidth(1, wx.LIST_AUTOSIZE_USEHEADER)
         self._tags_list.setResizeColumn(1)
         self.tagged_test_cases = list(set(self.tagged_test_cases))
         self.update_footer()
 
     def update_footer(self):
         footer_string = "Total tests %d, Tests with tags %d, Unique tags %d, Currently selected tests %d" % \
-                    (self.total_test_cases, len(self.tagged_test_cases), self.unique_tags, len(self.selected_tests))
+            (self.total_test_cases, len(self.tagged_test_cases),
+             self.unique_tags, len(self.selected_tests))
         self._footer_text.SetLabel(footer_string)
 
     def show_dialog(self):
@@ -124,7 +133,7 @@ class ViewAllTagsDialog(wx.Frame):
         pass
 
     def _search_for_tags(self):
-        self._unique_tags = NormalizedDict()
+        self._unique_tags = utils.NormalizedDict()
         self._tagit = dict()
         self._test_cases = list()
         for test in self.frame._controller.all_testcases():
@@ -134,7 +143,7 @@ class ViewAllTagsDialog(wx.Frame):
                     continue
                 else:
                     tag_name = unicode(tag)
-                if self._unique_tags.has_key(tag_name):
+                if tag_name in self._unique_tags:
                     self._unique_tags[tag_name].append(test)
                     self._tagit[tag_name].append(tag)
                 else:
@@ -142,7 +151,8 @@ class ViewAllTagsDialog(wx.Frame):
                     self._tagit[tag_name] = [tag]
 
         self.total_test_cases = len(self._test_cases)
-        self._results = sorted(self._unique_tags.items(), key=lambda x: len(x[1]), reverse=True)
+        self._results = sorted(
+            self._unique_tags.items(), key=lambda x: len(x[1]), reverse=True)
 
     def GetListCtrl(self):
         return self._tags_list
@@ -152,24 +162,27 @@ class ViewAllTagsDialog(wx.Frame):
 
     def _add_checked_tags_into_list(self):
         tags = []
-        for tests,tag_name in self._tags_list.get_checked_items():
+        for tests, tag_name in self._tags_list.get_checked_items():
             tags.append(tag_name)
         return tags
 
     def OnIncludedTagSearch(self, event):
         included_tags = self._add_checked_tags_into_list()
-        RideOpenTagSearch(includes=' '.join(included_tags), excludes="").publish()
+        RideOpenTagSearch(includes=' '.join(included_tags),
+                          excludes='').publish()
 
     def OnExcludedTagSearch(self, event):
         excluded_tags = self._add_checked_tags_into_list()
-        RideOpenTagSearch(includes="", excludes=' '.join(excluded_tags)).publish()
+        RideOpenTagSearch(includes='',
+                          excludes=' '.join(excluded_tags)).publish()
 
     def OnClear(self, event):
         self._execute()
         for tag_name, tests in self._results:
             self.tree.DeselectTests(tests)
         for item in self.tree.GetItemChildren():
-            if not isinstance(item.GetData(), ResourceRootHandler or ResourceFileHandler):
+            if not isinstance(item.GetData(), ResourceRootHandler or
+                              ResourceFileHandler):
                 self.tree.CollapseAllSubNodes(item)
         self.update_footer()
 
@@ -182,34 +195,32 @@ class ViewAllTagsDialog(wx.Frame):
 
     def OnRightClick(self, event):
         self._index = event.GetIndex()
-        self.tree._popup_creator.show(self, PopupMenuItems(self, ["Select all",
-                                                                  "Clear",
-                                                                  "---",
-                                                                  "Rename",
-                                                                  "Delete",
-                                                                  "---",
-                                                                  "Show tests with this tag",
-                                                                  "Show tests without this tag"]),
+        menu_items = ["Select all", "Clear", "---", "Rename", "Delete", "---",
+                      "Show tests with this tag",
+                      "Show tests without this tag"]
+        self.tree._popup_creator.show(self, PopupMenuItems(self, menu_items),
                                       self._controller)
 
     def OnShowTestsWithThisTag(self, event):
         if self._index == -1:
             return
-        tests,tag_name = self._tags_list.GetClientData(self._index)
+        tests, tag_name = self._tags_list.GetClientData(self._index)
         RideOpenTagSearch(includes=tag_name, excludes="").publish()
 
     def OnShowTestsWithoutThisTag(self, event):
         if self._index == -1:
             return
-        tests,tag_name = self._tags_list.GetClientData(self._index)
+        tests, tag_name = self._tags_list.GetClientData(self._index)
         RideOpenTagSearch(includes="", excludes=tag_name).publish()
 
     def OnRename(self, event):
         if self._index == -1:
             return
-        tests,tag_name = self._tags_list.GetClientData(self._index)
+        tests, tag_name = self._tags_list.GetClientData(self._index)
         tags_to_rename = self._tagit[tag_name]
-        name = wx.GetTextFromUser(message="Renaming tag '%s'." % tag_name, default_value=tag_name, caption='Rename')
+        name = wx.GetTextFromUser(
+            message="Renaming tag '%s'." % tag_name, default_value=tag_name,
+            caption='Rename')
         if name:
             for tag in tags_to_rename:
                 tag.controller.execute(ChangeTag(tag, name))
@@ -220,10 +231,11 @@ class ViewAllTagsDialog(wx.Frame):
     def OnDelete(self, event):
         if self._index == -1:
             return
-        tests,tag_name = self._tags_list.GetClientData(self._index)
+        tests, tag_name = self._tags_list.GetClientData(self._index)
         tags_to_delete = self._tagit[tag_name]
-        if wx.MessageBox("Delete a tag '%s' ?" % tag_name, caption='Confirm',
-            style=wx.YES_NO | wx.ICON_QUESTION) == wx.YES:
+        if wx.MessageBox(
+            "Delete a tag '%s' ?" % tag_name, caption='Confirm',
+                style=wx.YES_NO | wx.ICON_QUESTION) == wx.YES:
             for tag in tags_to_delete:
                 tag.execute(DeleteTag())
             self._execute()
@@ -237,22 +249,23 @@ class ViewAllTagsDialog(wx.Frame):
             self.Destroy()
 
     def OnTagSelected(self, event):
-        item = self._tags_list.GetItem(event.GetIndex())
+        self._tags_list.GetItem(event.GetIndex())
 
     def item_in_kw_list_checked(self, index, flag):
         self.selected_tests = list()
-        if flag == False:
+        if flag is False:
             tests, tag_name = self._tags_list.GetClientData(index)
             self.tree.DeselectTests(tests)
         if self._tags_list.get_number_of_checked_items() > 0:
-            for tests,tag_name in self._tags_list.get_checked_items():
+            for tests, tag_name in self._tags_list.get_checked_items():
                 self.selected_tests += tests
                 self.tree.SelectTests(tests)
         self.selected_tests = list(set(self.selected_tests))
         self.update_footer()
 
 
-class TagsListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin, listmix.ListCtrlAutoWidthMixin):
+class TagsListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin,
+                   listmix.ListCtrlAutoWidthMixin):
     def __init__(self, parent, style):
         self.parent = parent
         wx.ListCtrl.__init__(self, parent=parent, style=style)
@@ -263,7 +276,7 @@ class TagsListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin, listmix.ListCtrlAuto
 
     def OnCheckItem(self, index, flag):
         if self._dlg:
-            self._dlg.item_in_kw_list_checked(index,flag)
+            self._dlg.item_in_kw_list_checked(index, flag)
         else:
             pass
 

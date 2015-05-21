@@ -14,7 +14,6 @@
 
 import wx
 from wx import grid
-from robot.parsing.model import Variable
 
 from robotide.context import IS_MAC
 from robotide.controller.commands import (ChangeCellValue, ClearArea, PasteArea,
@@ -27,8 +26,8 @@ from robotide.publish import (RideItemStepsChanged,
                               RideSettingsChanged, PUBLISHER)
 from robotide.usages.UsageRunner import Usages, VariableUsages
 from robotide.ui.progress import RenameProgressObserver
-from robotide import utils
-from robotide.utils import RideEventHandler, overrides, is_variable
+from robotide import robotapi, utils
+from robotide.utils import RideEventHandler, overrides, variablematcher
 from robotide.widgets import PopupMenu, PopupMenuItems
 
 from .grid import GridEditor
@@ -580,7 +579,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
             choice_dialog.Destroy()
             return is_var, value
         else:
-            return utils.is_variable(cellvalue), cellvalue
+            return variablematcher.is_variable(cellvalue), cellvalue
 
     def _execute_find_where_used(self, is_variable, searchstring):
         usages_dialog_class = VariableUsages if is_variable else Usages
@@ -593,7 +592,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         return variables and variables[0] != value
 
     def _extract_scalar(self, cell):
-        var = Variable(self._controller.datafile.variable_table,
+        var = robotapi.Variable(self._controller.datafile.variable_table,
             '', self.GetCellValue(*cell), '')
         dlg = ScalarVariableDialog(
             self._controller.datafile_controller.variables, var)
@@ -603,7 +602,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._execute(ExtractScalar(name, value, comment, cell))
 
     def _extract_list(self, cells):
-        var = Variable(self._controller.datafile.variable_table,
+        var = robotapi.Variable(self._controller.datafile.variable_table,
             '', [self.GetCellValue(*cell) for cell in cells], '')
         dlg = ListVariableDialog(self._controller.datafile_controller.variables,
                                  var, self._plugin)

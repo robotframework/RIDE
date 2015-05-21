@@ -11,21 +11,18 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-import os
 
+import os
+from os.path import relpath, dirname, isdir
 import wx
 from wx.lib.expando import ExpandoTextCtrl
 from wx.lib.filebrowsebutton import FileBrowseButton
-from robot.utils.normalizing import normalize
-from os.path import relpath, dirname, isdir
+
+from robotide import context, utils
+from robotide.namespace.suggesters import SuggestionSource
 from robotide.spec.iteminfo import VariableInfo
 
-from robotide import context
-from robotide.namespace.suggesters import SuggestionSource
-
 from .popupwindow import RidePopupWindow, HtmlPopupWindow
-import robotide.utils as utils
-from robotide.context import IS_WINDOWS
 
 
 _PREFERRED_POPUP_SIZE = (400, 200)
@@ -189,7 +186,7 @@ class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
             path =  relpath(value, src if isdir(src) else dirname(src))
         else:
             path = value
-        return path.replace('\\', '/') if IS_WINDOWS else path.replace('\\', '\\\\')
+        return path.replace('\\', '/') if context.IS_WINDOWS else path.replace('\\', '\\\\')
 
 
 class Suggestions(object):
@@ -213,16 +210,16 @@ class Suggestions(object):
     def _get_choices(self, value, row):
         if self._previous_value and value.startswith(self._previous_value):
             return [(key, val) for key, val in self._previous_choices
-                                    if normalize(key).startswith(normalize(value))]
+                                    if utils.normalize(key).startswith(utils.normalize(value))]
         choices = self._suggestion_source.get_suggestions(value, row)
         duplicate_names = self._get_duplicate_names(choices)
         return self._format_choices(choices, value, duplicate_names)
 
     def _get_duplicate_names(self, choices):
         results = set()
-        normalized_names = [normalize(ch.name) for ch in choices]
+        normalized_names = [utils.normalize(ch.name) for ch in choices]
         for choice in choices:
-            normalized = normalize(choice.name)
+            normalized = utils.normalize(choice.name)
             if normalized_names.count(normalized) > 1:
                 results.add(normalized)
         return results
@@ -236,9 +233,9 @@ class Suggestions(object):
     def _matches_unique_shortname(self, choice, prefix, duplicate_names):
         if isinstance(choice, VariableInfo):
             return True
-        if not normalize(choice.name).startswith(normalize(prefix)):
+        if not utils.normalize(choice.name).startswith(utils.normalize(prefix)):
             return False
-        if normalize(choice.name) in duplicate_names:
+        if utils.normalize(choice.name) in duplicate_names:
             return False
         return True
 

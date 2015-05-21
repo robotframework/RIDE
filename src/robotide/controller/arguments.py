@@ -15,7 +15,7 @@
 import re
 
 from robotide.robotapi import is_var
-from robotide.utils import find_variable_basenames, is_scalar_variable
+from robotide.utils import variablematcher
 
 
 def parse_arguments_to_var_dict(args, name):
@@ -25,12 +25,13 @@ def parse_arguments_to_var_dict(args, name):
         if parsed:
             result[parsed[0]] = parsed[1]
     if not args and name:
-        for var in find_variable_basenames(name):
-            if is_scalar_variable(var):
+        for var in variablematcher.find_variable_basenames(name):
+            if variablematcher.is_scalar_variable(var):
                 result[var] = None
     return result
 
 default_val_regexp = re.compile(r'([$@]\{.*\})\s*=\s*(.*)')
+
 
 def parse_argument(argument):
     match = default_val_regexp.match(argument)

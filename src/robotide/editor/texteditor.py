@@ -13,16 +13,13 @@
 #  limitations under the License.
 
 from time import time
-from robotide.context.platform import IS_WINDOWS, IS_MAC
-import wx
-from wx import stc
 from StringIO import StringIO
 import string
+import wx
+from wx import stc
 
-from robot.parsing.model import TestDataDirectory
-from robot.parsing.populators import FromFilePopulator
-from robot.parsing.txtreader import TxtReader
-
+from robotide import robotapi
+from robotide.context.platform import IS_WINDOWS, IS_MAC
 from robotide.controller.commands import SetDataFile
 from robotide.controller.dataloader import TestDataDirectoryWithExcludes
 from robotide.publish.messages import RideMessage
@@ -241,8 +238,8 @@ class DataFileWrapper(object): # TODO: bad class name
     def _create_target(self):
         data = self._data.data
         target_class = type(data)
-        if isinstance(data, TestDataDirectory):
-            target = TestDataDirectory(source=self._data.directory)
+        if isinstance(data, robotapi.TestDataDirectory):
+            target = robotapi.TestDataDirectory(source=self._data.directory)
             target.initfile = data.initfile
             return target
         return target_class(source=self._data.source)
@@ -514,10 +511,11 @@ class RobotDataEditor(stc.StyledTextCtrl):
         self.stylizer.stylize()
 
 
-class FromStringIOPopulator(FromFilePopulator):
+class FromStringIOPopulator(robotapi.FromFilePopulator):
 
     def populate(self, content):
-        TxtReader().read(content, self)
+        robotapi.TxtReader().read(content, self)
+
 
 class RobotStylizer(object):
     def __init__(self, editor, settings):

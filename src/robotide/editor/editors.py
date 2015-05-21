@@ -13,9 +13,8 @@
 #  limitations under the License.
 
 import wx
-from robot.parsing.settings import Setting
 
-from robotide import context
+from robotide import robotapi, context
 from robotide.controller.settingcontrollers import (DocumentationController,
     VariableController, TagsController)
 from robotide.usages.UsageRunner import ResourceFileUsages
@@ -160,7 +159,7 @@ class _RobotTableEditor(EditorPanel):
 
     def highlight_cell(self, obj, row, column):
         '''Highlight the given object at the given row and column'''
-        if isinstance(obj, Setting):
+        if isinstance(obj, robotapi.Setting):
             setting_editor = self._get_settings_editor(obj)
             if setting_editor and hasattr(setting_editor, "highlight"):
                 setting_editor.highlight(column)

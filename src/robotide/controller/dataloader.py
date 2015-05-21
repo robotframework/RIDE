@@ -15,8 +15,7 @@
 import os
 from threading import Thread
 
-from robot.parsing.model import TestDataDirectory, TestCaseFile
-from robot.parsing.populators import FromFilePopulator, FromDirectoryPopulator
+from robotide import robotapi
 
 
 class DataLoader(object):
@@ -33,7 +32,8 @@ class DataLoader(object):
         return self._load(_InitFileLoader(path), load_observer)
 
     def resources_for(self, datafile, load_observer):
-        return self._load(_ResourceLoader(datafile, self._namespace.get_resources), load_observer)
+        return self._load(_ResourceLoader(
+            datafile, self._namespace.get_resources), load_observer)
 
     def _load(self, loader, load_observer):
         self._wait_until_loaded(loader, load_observer)
@@ -57,7 +57,7 @@ class _DataLoaderThread(Thread):
         try:
             self.result = self._run()
         except Exception:
-            pass # TODO: Log this error somehow
+            pass  # TODO: Log this error somehow
 
 
 class _DataLoader(_DataLoaderThread):
@@ -78,9 +78,9 @@ class _InitFileLoader(_DataLoaderThread):
         self._path = path
 
     def _run(self):
-        result = TestDataDirectory(source=os.path.dirname(self._path))
+        result = robotapi.TestDataDirectory(source=os.path.dirname(self._path))
         result.initfile = self._path
-        FromFilePopulator(result).populate(self._path)
+        robotapi.FromFilePopulator(result).populate(self._path)
         return result
 
 
@@ -95,17 +95,19 @@ class _ResourceLoader(_DataLoaderThread):
         return self._loader(self._datafile)
 
 
-class TestDataDirectoryWithExcludes(TestDataDirectory):
+class TestDataDirectoryWithExcludes(robotapi.TestDataDirectory):
 
     def __init__(self, parent, source, settings):
         self._settings = settings
-        TestDataDirectory.__init__(self, parent, source)
+        robotapi.TestDataDirectory.__init__(self, parent, source)
 
     def add_child(self, path, include_suites):
         if not self._settings.excludes.contains(path):
-            self.children.append(TestData(parent=self, source=path, settings=self._settings))
+            self.children.append(TestData(
+                parent=self, source=path, settings=self._settings))
         else:
             self.children.append(ExcludedDirectory(self, path))
+
 
 def TestData(source, parent=None, settings=None):
     """Parses a file or directory to a corresponding model object.
@@ -118,13 +120,14 @@ def TestData(source, parent=None, settings=None):
         data = TestDataDirectoryWithExcludes(parent, source, settings)
         data.populate()
         return data
-    return TestCaseFile(parent, source).populate()
+    return robotapi.TestCaseFile(parent, source).populate()
 
-class ExcludedDirectory(TestDataDirectory):
+
+class ExcludedDirectory(robotapi.TestDataDirectory):
     def __init__(self, parent, path):
         self._parent = parent
         self._path = path
-        TestDataDirectory.__init__(self, parent, path)
+        robotapi.TestDataDirectory.__init__(self, parent, path)
 
     def has_tests(self):
         return True
