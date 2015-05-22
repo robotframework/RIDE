@@ -1,21 +1,7 @@
-#  Copyright 2008 Nokia Siemens Networks Oyj
-#
-#  Licensed under the Apache License, Version 2.0 (the "License");
-#  you may not use this file except in compliance with the License.
-#  You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-#  Unless required by applicable law or agreed to in writing, software
-#  distributed under the License is distributed on an "AS IS" BASIS,
-#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#  See the License for the specific language governing permissions and
-#  limitations under the License.
-
 import unittest
 
 from robot.utils.asserts import assert_equals, assert_none, assert_false, \
-    assert_raises_with_msg, assert_true
+    assert_true
 
 from robotide.publish import RideMessage, RideLog, PUBLISHER
 from robotide.pluginapi import Plugin
@@ -23,6 +9,7 @@ from robotide.pluginapi import Plugin
 
 class RideTestMessage(RideMessage):
     pass
+
 
 class RideMessageWithData(RideMessage):
     data = ['data_item', 'more_data']
@@ -50,9 +37,9 @@ class TestSubscribingToEvents(unittest.TestCase):
                       'ride.test')
 
     def test_event_with_data(self):
-        RideMessageWithData(data_item='Data', more_data=[1,2,3]).publish()
+        RideMessageWithData(data_item='Data', more_data=[1, 2, 3]).publish()
         assert_equals(self.plugin.record['data_item'], 'Data')
-        assert_equals(self.plugin.record['more_data'], [1,2,3])
+        assert_equals(self.plugin.record['more_data'], [1, 2, 3])
 
     def test_subscribing_multiple_times(self):
         RideTestMessage().publish()
@@ -86,7 +73,8 @@ class TestUnsubscribingFromEvents(unittest.TestCase):
         self.plugin.unsubscribe(self.plugin.OnTestEventClass, RideTestMessage)
         RideTestMessage().publish()
         assert_none(self.plugin.class_handler_topic)
-        assert_equals(len(PUBLISHER._listeners[self.plugin]), listener_count-1)
+        assert_equals(
+            len(PUBLISHER._listeners[self.plugin]), listener_count - 1)
 
     def test_unsubscribe_with_string(self):
         self.plugin.unsubscribe(self.plugin.OnTestEventString, 'ride.test')
@@ -94,7 +82,8 @@ class TestUnsubscribingFromEvents(unittest.TestCase):
         assert_none(self.plugin.string_handler_topic)
 
     def test_unsubscribe_with_string_is_case_insensitive(self):
-        self.plugin.unsubscribe(self.plugin.OnTestEventStringWrongCase, 'RiDe.TEst')
+        self.plugin.unsubscribe(
+            self.plugin.OnTestEventStringWrongCase, 'RiDe.TEst')
         RideTestMessage().publish()
         assert_none(self.plugin.case_insensitive_string_handler_topic)
 
@@ -105,14 +94,15 @@ class TestUnsubscribingFromEvents(unittest.TestCase):
 
     def test_unsubscribing_multiple_times_subscribed_all(self):
         for _ in range(5):
-            self.plugin.unsubscribe(self.plugin.counting_handler, RideTestMessage)
+            self.plugin.unsubscribe(
+                self.plugin.counting_handler, RideTestMessage)
         RideTestMessage().publish()
         assert_equals(self.plugin.count, 0)
 
     def test_unsubscribing_from_hierarchy(self):
         self.plugin.unsubscribe(self.plugin.hierarchical_listener, RideMessage)
         RideTestMessage().publish()
-        RideMessageWithData(data_item='Data', more_data=[1,2,3]).publish()
+        RideMessageWithData(data_item='Data', more_data=[1, 2, 3]).publish()
         assert_equals(self.plugin.hierarchy_events, [])
 
     def test_unsubscribing_from_one_of_the_multiple_topics(self):
@@ -136,7 +126,7 @@ class TestUnsubscribingFromEvents(unittest.TestCase):
         self.plugin.unsubscribe_all()
         self._unsubscribe_all = False
         RideTestMessage().publish()
-        RideMessageWithData(data_item='Data', more_data=[1,2,3]).publish()
+        RideMessageWithData(data_item='Data', more_data=[1, 2, 3]).publish()
         assert_none(self.plugin.class_handler_topic)
         assert_none(self.plugin.string_handler_topic)
         assert_none(self.plugin.case_insensitive_string_handler_topic)
@@ -157,8 +147,9 @@ class TestBrokenMessageListener(unittest.TestCase):
     def test_broken_listener(self):
         self.plugin.subscribe(self.plugin.error_listener, RideLog)
         RideTestMessage().publish()
-        assert_true(self.plugin.error.message.startswith('Error in listener: ride.test'),
-                    'Wrong error message text: ' + self.plugin.error.message)
+        assert_true(self.plugin.error.message.startswith(
+            'Error in listener: ride.test'),
+            'Wrong error message text: ' + self.plugin.error.message)
         assert_equals(self.plugin.error.topic, 'ride.log.exception')
         assert_equals(self.plugin.error.level, 'ERROR')
 

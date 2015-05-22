@@ -1,17 +1,3 @@
-#  Copyright 2008 Nokia Siemens Networks Oyj
-#
-#  Licensed under the Apache License, Version 2.0 (the "License");
-#  you may not use this file except in compliance with the License.
-#  You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-#  Unless required by applicable law or agreed to in writing, software
-#  distributed under the License is distributed on an "AS IS" BASIS,
-#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#  See the License for the specific language governing permissions and
-#  limitations under the License.
-
 from robotide.preferences.settings import Settings, Excludes
 from robotide.publish import PUBLISHER
 
@@ -44,12 +30,14 @@ class MessageRecordingLoadObserver(object):
 class _FakeModel(object):
     suite = None
 
+
 class _FakeActions(object):
     def register_action(self, *args):
         return self
 
     def unregister(self, *args):
         pass
+
 
 class _FakeUIObject(object):
     Enable = InsertSeparator = Append = Connect = lambda *args: None
@@ -87,13 +75,14 @@ class _FakeSetting(object):
     get = lambda self, name, default: True
     set = lambda self, name, value: None
 
+
 class PublisherListener(object):
 
     def __init__(self, topic):
         PUBLISHER.subscribe(self._listener, topic, self)
         self._topic = topic
         self.data = []
-        self.outer_listener = lambda message:0
+        self.outer_listener = lambda message: 0
 
     def _listener(self, data):
         self.data.append(data)
@@ -105,5 +94,3 @@ class PublisherListener(object):
 
     def unsubscribe(self):
         PUBLISHER.unsubscribe(self._listener, self._topic, self)
-
-

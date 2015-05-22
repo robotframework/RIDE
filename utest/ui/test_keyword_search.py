@@ -1,17 +1,3 @@
-#  Copyright 2008 Nokia Siemens Networks Oyj
-#  
-#  Licensed under the Apache License, Version 2.0 (the "License");
-#  you may not use this file except in compliance with the License.
-#  You may obtain a copy of the License at
-#  
-#      http://www.apache.org/licenses/LICENSE-2.0
-#  
-#  Unless required by applicable law or agreed to in writing, software
-#  distributed under the License is distributed on an "AS IS" BASIS,
-#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#  See the License for the specific language governing permissions and
-#  limitations under the License.
-
 import unittest
 from robot.utils.asserts import assert_equals, assert_true
 
@@ -20,18 +6,18 @@ from robotide.ui.keywordsearch import _KeywordData, _SearchCriteria,\
 from robotide.spec.iteminfo import ItemInfo
 
 test_kws = [ItemInfo(name, source, desc) for name, source, desc in
-            [ ('Should Be Equal', 'BuiltIn', 'Foo'),
-              ('get bar', 'resource.txt', 'getting bar'),
-              ('get bar2', 'resource2.txt', 'getting bar'),
-              ('Get File', 'OperatingSystem', 'Bar'),
-              ('Bar', 'OBarsystem', 'Doc'),
-              ('BarBar', 'OBarBarSystem', 'Doc'),
-              ('User Keyword', 'resource.html', 'Quuz'), ]
-           ]
+            [('Should Be Equal', 'BuiltIn', 'Foo'),
+             ('get bar', 'resource.txt', 'getting bar'),
+             ('get bar2', 'resource2.txt', 'getting bar'),
+             ('Get File', 'OperatingSystem', 'Bar'),
+             ('Bar', 'OBarsystem', 'Doc'),
+             ('BarBar', 'OBarBarSystem', 'Doc'),
+             ('User Keyword', 'resource.html', 'Quuz'), ]
+            ]
 
 
 class Keyword(object):
-    
+
     def __init__(self, name, source, doc):
         self.name = name
         self.source = source
@@ -64,10 +50,11 @@ class TestSearchCriteria(unittest.TestCase):
     def test_exact_source_filter_matches(self):
         self._test_criteria(True, '', True, self.keyword, 'source.txt')
         self._test_criteria(True, 'data', True, self.keyword, 'source.txt')
-        self._test_criteria(False, 'no match', True, self.keyword, 'source.txt')
+        self._test_criteria(
+            False, 'no match', True, self.keyword, 'source.txt')
 
     def test_exact_source_filter_does_not_match(self):
-        self._test_criteria(False, 'doc', True, self.keyword,  'Some')
+        self._test_criteria(False, 'doc', True, self.keyword, 'Some')
         self._test_criteria(False, 'data', False, self.keyword, 'Some')
 
     def test_source_filter_all_keywords(self):
@@ -76,11 +63,14 @@ class TestSearchCriteria(unittest.TestCase):
 
     def test_source_filter_resource_keywords(self):
         self._test_criteria(True, '', True, self.keyword, ALL_USER_KEYWORDS)
-        self._test_criteria(False, '', True, self.library_keyword, ALL_USER_KEYWORDS)
+        self._test_criteria(
+            False, '', True, self.library_keyword, ALL_USER_KEYWORDS)
 
     def test_source_filter_library_keywords(self):
-        self._test_criteria(True, '', True, self.library_keyword, ALL_LIBRARY_KEYWORDS)
-        self._test_criteria(False, '', True, self.keyword, ALL_LIBRARY_KEYWORDS)
+        self._test_criteria(
+            True, '', True, self.library_keyword, ALL_LIBRARY_KEYWORDS)
+        self._test_criteria(
+            False, '', True, self.keyword, ALL_LIBRARY_KEYWORDS)
 
     def _test_criteria(self, expected, pattern, search_doc, keyword,
                        source_filter=ALL_KEYWORDS):
@@ -120,7 +110,7 @@ class TestKeyWordData(unittest.TestCase):
         for index, name in enumerate(['User Keyword',
                                       'Should Be Equal',
                                       'Get File',
-                                      'get bar2', 
+                                      'get bar2',
                                       'get bar',
                                       'BarBar',
                                       'Bar']):

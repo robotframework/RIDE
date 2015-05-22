@@ -1,19 +1,3 @@
-#  Copyright 2008 Nokia Siemens Networks Oyj
-#
-#  Licensed under the Apache License, Version 2.0 (the "License");
-#  you may not use this file except in compliance with the License.
-#  You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-#  Unless required by applicable law or agreed to in writing, software
-#  distributed under the License is distributed on an "AS IS" BASIS,
-#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#  See the License for the specific language governing permissions and
-#  limitations under the License.
-
-# This is needed to be able to create WX objects.
-
 import unittest
 
 from robotide.robotapi import (TestDataDirectory, TestCaseFile, ResourceFile,
@@ -39,15 +23,17 @@ th.FakeDirectorySuiteHandler = th.FakeUserKeywordHandler = \
     th.FakeResourceHandler = th.TestDataDirectoryHandler
 st.Editor = lambda *args: _FakeEditor()
 from robotide.ui.tree import Tree
-Tree._show_correct_editor = lambda self, x:None
+Tree._show_correct_editor = lambda self, x: None
 Tree.get_active_datafile = lambda self: None
-Tree._select = lambda self, node: self.SelectItem(node) # CallAfter does not work in unit tests
+# CallAfter does not work in unit tests
+Tree._select = lambda self, node: self.SelectItem(node)
 # wx needs to imported last so that robotide can select correct wx version.
 import wx
 
 
 class _FakeMainFrame(wx.Frame):
     _editor_panel = None
+
     def publish(self, *args):
         pass
 
@@ -56,14 +42,17 @@ class _FakeImageList(wx.ImageList):
     def __init__(self):
         wx.ImageList.__init__(self, 16, 16)
         self._image = _FakeImage(self)
+
     def __getitem__(self, name):
         return self._image
+
 
 class _FakeImage(object):
     def __init__(self, imglist):
         self.normal = self.expanded = \
             imglist.Add(wx.ArtProvider_GetBitmap(wx.ART_FOLDER, wx.ART_OTHER,
-                                                 (16,16)))
+                                                 (16, 16)))
+
 
 class _FakeEditor(object):
     view = close = lambda *args: None
@@ -74,9 +63,9 @@ class _BaseSuiteTreeTest(unittest.TestCase):
     def setUp(self):
         frame = _FakeMainFrame(None)
         self._model = self._create_model()
-        self._tree = Tree(frame, ActionRegisterer(MenuBar(frame), ToolBar(frame),
-                                                  ShortcutRegistry(frame)))
-        images =  TreeImageList()
+        self._tree = Tree(frame, ActionRegisterer(
+            MenuBar(frame), ToolBar(frame), ShortcutRegistry(frame)))
+        images = TreeImageList()
         self._tree._images = images
         self._tree.SetImageList(images)
         self._tree.populate(self._model)
@@ -94,7 +83,8 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         res.keyword_table.keywords.append(UserKeyword(res, 'Resource Keyword'))
         library_manager = LibraryManager(':memory:')
         library_manager.create_database()
-        model = Project(Namespace(FakeSettings()), library_manager=library_manager)
+        model = Project(
+            Namespace(FakeSettings()), library_manager=library_manager)
         model._controller = TestDataDirectoryController(suite)
         rfc = ResourceFileController(res, project=model)
         model.resources.append(rfc)
@@ -106,8 +96,8 @@ class _BaseSuiteTreeTest(unittest.TestCase):
 
     def _create_file_suite(self, source):
         suite = self._create_suite(TestCaseFile, source)
-        suite.testcase_table.tests  = [TestCase(suite, '%s Fake Test %d' % (suite.name, i))
-                                       for i in range(5)]
+        suite.testcase_table.tests = [TestCase(
+            suite, '%s Fake Test %d' % (suite.name, i)) for i in range(5)]
         return suite
 
     def _create_suite(self, suite_class, source, is_dir=False):
@@ -115,9 +105,9 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         suite.source = source
         if is_dir:
             suite.directory = source
-        suite.keyword_table.keywords = [ UserKeyword(suite.keyword_table,
-                                                     '%s Fake UK %d' % (suite.name, i))
-                                         for i in range(5) ]
+        suite.keyword_table.keywords = [
+            UserKeyword(suite.keyword_table, '%s Fake UK %d' % (suite.name, i))
+            for i in range(5)]
         return suite
 
     def _expand_all(self):
@@ -128,8 +118,10 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         return self._tree.GetItemText(self._tree.GetSelection())
 
     def _get_node(self, label):
-        node = self._tree._controller.find_node_with_label(self._tree._root, label)
-        return node or self._tree._controller.find_node_with_label(self._tree._root, '*' + label)
+        node = self._tree._controller.find_node_with_label(
+            self._tree._root, label)
+        return node or self._tree._controller.find_node_with_label(
+            self._tree._root, '*' + label)
 
     def _select_node(self, label):
         self._tree.SelectItem(self._get_node(label))
@@ -139,10 +131,10 @@ class TestPopulating(_BaseSuiteTreeTest):
 
     def test_suite_count_and_names(self):
         assert_equals(len(self._tree._datafile_nodes), 5)
-        for index, name in enumerate(['Top Suite'] +
-                                     ['Sub Suite %d' % i for i in range(3)]):
-            assert_equals(self._tree.GetItemText(self._tree._datafile_nodes[index]),
-                          name)
+        for idx, name in enumerate(['Top Suite'] +
+                                   ['Sub Suite %d' % i for i in range(3)]):
+            assert_equals(
+                self._tree.GetItemText(self._tree._datafile_nodes[idx]), name)
 
     def test_file_suite_has_correct_subnodes(self):
         file_suite = self._tree._datafile_nodes[1]
@@ -177,7 +169,8 @@ class TestNodeSearchAndSelection(_BaseSuiteTreeTest):
 
     def test_searching_matching_uk_node(self):
         self._select_and_assert_selection(self._model.data.keywords[0].data)
-        self._select_and_assert_selection(self._model.data.children[1].keywords[2].data)
+        self._select_and_assert_selection(
+            self._model.data.children[1].keywords[2].data)
 
     def _select_and_assert_selection(self, uk):
         self._tree.select_user_keyword_node(uk)
@@ -202,8 +195,9 @@ class TestNodeRemoval(_BaseSuiteTreeTest):
         name = self._model.data.children[1].keywords[1].name
         root = self._tree._root
         count = self._tree.GetChildrenCount(self._tree._root)
-        self._tree.Delete(self._tree._controller.find_node_with_label(root, name))
-        assert_equals(count -1, self._tree.GetChildrenCount(self._tree._root))
+        self._tree.Delete(
+            self._tree._controller.find_node_with_label(root, name))
+        assert_equals(count - 1, self._tree.GetChildrenCount(self._tree._root))
 
 
 class TestRefreshingDataNode(_BaseSuiteTreeTest):

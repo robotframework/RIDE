@@ -1,17 +1,3 @@
-#  Copyright 2010 Nokia Siemens Networks Oyj
-#  
-#  Licensed under the Apache License, Version 2.0 (the "License");
-#  you may not use this file except in compliance with the License.
-#  You may obtain a copy of the License at
-#  
-#      http://www.apache.org/licenses/LICENSE-2.0
-#  
-#  Unless required by applicable law or agreed to in writing, software
-#  distributed under the License is distributed on an "AS IS" BASIS,
-#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#  See the License for the specific language governing permissions and
-#  limitations under the License.
-
 import unittest
 
 from robot.utils.asserts import assert_equals, assert_none
@@ -45,8 +31,7 @@ class TestPopupMenuItems(unittest.TestCase):
         assert_equals(len(items._items), 1)
         items.add_menu_item(PopupMenuItem('Do', parent=parent))
         assert_equals(len(items._items), 2)
-        def _test():
-            pass
+        _test = lambda: None
         items.add_menu_item(PopupMenuItem('Do', callable=_test))
         assert_equals(len(items._items), 3)
         assert_equals(items._items[-1].callable, _test)
