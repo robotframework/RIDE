@@ -181,7 +181,10 @@ class PybotProfile(BaseProfile):
         return [self.ArgumentsPanel, self.TagsPanel]
 
     def _create_error_log_message(self, error, returncode):
-        if 'not found' in error or returncode is 127:
+        # bash and zsh use return code 127 and the text `command not found`
+        # In Windows, the error is `The system cannot file the file specified`
+        if 'not found' in error or returncode is 127 or \
+                'system cannot find the file specified':
             return pluginapi.RideLogMessage(
                 RF_INSTALLATION_NOT_FOUND, notify_user=True)
         return None

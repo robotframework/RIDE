@@ -256,8 +256,11 @@ class TestRunnerPlugin(Plugin):
             self._progress_bar.Start()
         except Exception, e:
             self._set_stopped()
-            self._output(str(e))
-            wx.MessageBox("Could not start running tests with command '%s'" % command, "Error", wx.ICON_ERROR)
+            error, log_message = self.get_current_profile().format_error(
+                unicode(e), None)
+            self._output(error)
+            if log_message:
+                log_message.publish()
 
     def _create_command(self):
         command_as_list = self._test_runner.get_command(
@@ -921,4 +924,3 @@ LogIcon = PyEmbeddedImage(
     "+KEM01SY3gM6wBsEAQB0gJ+maZoC3gI6iPYaAIBJsiRmHU0AALOeFC3aK2cWAACUXe7+AwO0"
     "lc9eTHYTAAAAAElFTkSuQmCC")
 getLogIconBitmap = LogIcon.GetBitmap
-
