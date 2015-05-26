@@ -11,13 +11,16 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
 import wx
 
 from robotide.pluginapi import Plugin, ActionInfo, RideLog
-from robotide.widgets import Font
+from robotide import widgets
+
 
 def _message_to_string(msg):
     return '%s [%s]: %s\n\n' % (msg.timestamp, msg.level, msg.message)
+
 
 class LogPlugin(Plugin):
     """Viewer for internal log messages."""
@@ -39,8 +42,8 @@ class LogPlugin(Plugin):
 
     def _create_menu(self):
         self.unregister_actions()
-        self.register_action(ActionInfo('Tools', 'View RIDE Log',
-                                        self.OnViewLog, position=84))
+        self.register_action(ActionInfo(
+            'Tools', 'View RIDE Log', self.OnViewLog, position=84))
 
     def _log_message(self, log_event):
         self._log.append(log_event)
@@ -48,13 +51,17 @@ class LogPlugin(Plugin):
             self._window.update_log()
         if self.log_to_console:
             print _message_to_string(log_event)
+        if log_event.notify_user:
+            widgets.HtmlDialog(
+                log_event.level, log_event.message, padding=10).Show()
 
     def OnViewLog(self, event):
         if not self._window:
             self._window = _LogWindow(self.notebook, self._log)
             self._window.update_log()
             self.register_shortcut('CtrlCmd-C', lambda e: self._window.Copy())
-            self.register_shortcut('CtrlCmd-A', lambda e: self._window.SelectAll())
+            self.register_shortcut(
+                'CtrlCmd-A', lambda e: self._window.SelectAll())
         else:
             self.notebook.show_tab(self._window)
 
@@ -62,11 +69,12 @@ class LogPlugin(Plugin):
 class _LogWindow(wx.TextCtrl):
 
     def __init__(self, notebook, log):
-        wx.TextCtrl.__init__(self, notebook, style=wx.TE_READONLY | wx.TE_MULTILINE)
+        wx.TextCtrl.__init__(
+            self, notebook, style=wx.TE_READONLY | wx.TE_MULTILINE)
         self._log = log
         self._create_ui()
         self._add_to_notebook(notebook)
-        self.SetFont(Font().fixed_log)
+        self.SetFont(widgets.Font().fixed_log)
 
     def _create_ui(self):
         sizer = wx.BoxSizer(wx.VERTICAL)
