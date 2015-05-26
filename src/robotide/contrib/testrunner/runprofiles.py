@@ -26,13 +26,14 @@ any additional arguments.
 import wx
 from wx.lib.filebrowsebutton import FileBrowseButton
 import os
-from robot.errors import DataError, Information, FrameworkError
+from robot.errors import DataError, Information
 from robotide.contrib.testrunner.usages import USAGE
 from robot.utils.argumentparser import ArgumentParser
 from robot.utils.encoding import SYSTEM_ENCODING
-from robotide.utils import overrides
 
+from robotide import pluginapi
 from robotide.widgets import Label
+from robotide.utils import overrides
 
 
 class BaseProfile(object):
@@ -57,7 +58,7 @@ class BaseProfile(object):
         self.plugin = plugin
 
     def get_toolbar(self, parent):
-        '''Returns a panel with toolbar controls to be shown for this profile'''
+        '''Returns a panel with toolbar controls for this profile'''
         return wx.Panel(parent, wx.ID_ANY)
 
     def delete_pressed(self):
@@ -84,6 +85,12 @@ class BaseProfile(object):
         '''
         self.plugin.save_setting(self._get_setting_name(name), value, delay=2)
 
+    def format_error(self, error, returncode):
+        return error, self._create_error_log_message(error, returncode)
+
+    def _create_error_log_message(self, error, returncode):
+        return None
+
     def __getattr__(self, name):
         """Provides attribute access to profile's settings
 
@@ -95,15 +102,22 @@ class BaseProfile(object):
             return getattr(self.plugin, self._get_setting_name(name))
         except AttributeError:
             try:
-                return getattr(self.plugin, name) #Support users old saved values
+                return getattr(self.plugin, name)
             except AttributeError:
-                if self.default_settings.has_key(name):
+                if name in self.default_settings:
                     return self.default_settings[name]
                 raise
 
     def _get_setting_name(self, name):
         """Adds profile's name to the setting."""
         return "%s_%s" % (self.name.replace(' ', '_'), name)
+
+
+RF_INSTALLATION_NOT_FOUND = """Robot Framework installation not found.<br>
+To run tets, you need to install Robot Framework separately.<br>
+See <a href="http://robotframework.org">http://robotframework.org</a> for
+installation instructions.
+"""
 
 
 class PybotProfile(BaseProfile):
@@ -159,17 +173,24 @@ class PybotProfile(BaseProfile):
         panel = wx.Panel(parent, wx.ID_ANY)
         sizer = wx.BoxSizer(wx.VERTICAL)
         for item in self.get_toolbar_items():
-            sizer.Add(item(panel), 0, wx.ALL|wx.EXPAND)
+            sizer.Add(item(panel), 0, wx.ALL | wx.EXPAND)
         panel.SetSizerAndFit(sizer)
         return panel
 
     def get_toolbar_items(self):
         return [self.ArgumentsPanel, self.TagsPanel]
 
+    def _create_error_log_message(self, error, returncode):
+        if 'not found' in error or returncode is 127:
+            return pluginapi.RideLogMessage(
+                RF_INSTALLATION_NOT_FOUND, notify_user=True)
+        return None
+
     @overrides(BaseProfile)
     def delete_pressed(self):
         focused = wx.Window.FindFocus()
-        if focused not in [self._arguments, self._include_tags, self._exclude_tags]:
+        if focused not in [self._arguments, self._include_tags,
+                           self._exclude_tags]:
             return
         start, end = focused.GetSelection()
         focused.Remove(start, max(end, start+1))
@@ -177,13 +198,14 @@ class PybotProfile(BaseProfile):
     def ArgumentsPanel(self, parent):
         panel = wx.Panel(parent, wx.ID_ANY)
         label = Label(panel, label="Arguments: ")
-        self._arguments = wx.TextCtrl(panel, wx.ID_ANY, size=(-1,-1),
-                                     value=self.arguments)
-        self._arguments.SetToolTipString("Arguments for the test run. Arguments are space separated list.")
+        self._arguments = wx.TextCtrl(
+            panel, wx.ID_ANY, size=(-1, -1), value=self.arguments)
+        self._arguments.SetToolTipString(
+            "Arguments for the test run. Arguments are space separated list.")
         self._arguments.Bind(wx.EVT_TEXT, self.OnArgumentsChanged)
         sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.Add(label, 0, wx.ALL|wx.EXPAND)
-        sizer.Add(self._arguments, 1, wx.ALL|wx.EXPAND)
+        sizer.Add(label, 0, wx.ALL | wx.EXPAND)
+        sizer.Add(self._arguments, 1, wx.ALL | wx.EXPAND)
         panel.SetSizerAndFit(sizer)
         self._validate_arguments(self.arguments or u'')
         return panel
@@ -195,9 +217,9 @@ class PybotProfile(BaseProfile):
                                            "Only run tests with these tags")
         exclude_cb = self._create_checkbox(panel, self.apply_exclude_tags,
                                            "Skip tests with these tags")
-        self._include_tags = wx.TextCtrl(panel, wx.ID_ANY, size=(150,-1),
+        self._include_tags = wx.TextCtrl(panel, wx.ID_ANY, size=(150, -1),
                                          value=self.include_tags)
-        self._exclude_tags = wx.TextCtrl(panel, wx.ID_ANY, size=(150,-1),
+        self._exclude_tags = wx.TextCtrl(panel, wx.ID_ANY, size=(150, -1),
                                          value=self.exclude_tags)
 
         panel.Bind(wx.EVT_CHECKBOX, self.OnIncludeCheckbox, include_cb)
@@ -205,11 +227,11 @@ class PybotProfile(BaseProfile):
         self._include_tags.Bind(wx.EVT_TEXT, self.OnIncludeTagsChanged)
         self._exclude_tags.Bind(wx.EVT_TEXT, self.OnExcludeTagsChanged)
 
-        panelsizer = wx.GridBagSizer(2,2)
-        panelsizer.Add(include_cb, (0,0), flag=wx.EXPAND)
-        panelsizer.Add(exclude_cb, (0,1), flag=wx.EXPAND)
-        panelsizer.Add(self._include_tags, (1,0), flag=wx.EXPAND)
-        panelsizer.Add(self._exclude_tags, (1,1), flag=wx.EXPAND)
+        panelsizer = wx.GridBagSizer(2, 2)
+        panelsizer.Add(include_cb, (0, 0), flag=wx.EXPAND)
+        panelsizer.Add(exclude_cb, (0, 1), flag=wx.EXPAND)
+        panelsizer.Add(self._include_tags, (1, 0), flag=wx.EXPAND)
+        panelsizer.Add(self._exclude_tags, (1, 1), flag=wx.EXPAND)
         panelsizer.AddGrowableCol(0)
         panelsizer.AddGrowableCol(1)
         panel.SetSizerAndFit(panelsizer)
@@ -228,9 +250,13 @@ class PybotProfile(BaseProfile):
     def _validate_arguments(self, args):
         assert type(args) is unicode
         invalid_message = self._get_invalid_message(args)
-        self._arguments.SetBackgroundColour('red' if invalid_message else 'white')
-        self._arguments.SetForegroundColour('white' if invalid_message else 'black')
-        self._arguments.SetToolTipString(invalid_message or 'Arguments for the test run. Arguments are space separated list.')
+        self._arguments.SetBackgroundColour(
+            'red' if invalid_message else 'white')
+        self._arguments.SetForegroundColour(
+            'white' if invalid_message else 'black')
+        self._arguments.SetToolTipString(
+            invalid_message or
+            'Arguments for the test run. Arguments are space separated list.')
 
     def _get_invalid_message(self, args):
         try:
@@ -273,17 +299,20 @@ class CustomScriptProfile(PybotProfile):
         return [self.RunScriptPanel, self.ArgumentsPanel, self.TagsPanel]
 
     def _validate_arguments(self, args):
-        #Can't say anything about custom script argument validity
+        # Can't say anything about custom script argument validity
         pass
+
+    def _create_error_log_message(self, error, returncode):
+        return None
 
     def RunScriptPanel(self, parent):
         panel = wx.Panel(parent, wx.ID_ANY)
-        self._script = FileBrowseButton(panel, labelText="Script to run tests:",
-                                        size=(-1, -1), fileMask="*",
-                                        changeCallback=self.OnCustomScriptChanged)
+        self._script = FileBrowseButton(
+            panel, labelText="Script to run tests:", size=(-1, -1),
+            fileMask="*", changeCallback=self.OnCustomScriptChanged)
         self._script.SetValue(self.runner_script)
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self._script, 0, wx.ALL|wx.EXPAND)
+        sizer.Add(self._script, 0, wx.ALL | wx.EXPAND)
         panel.SetSizerAndFit(sizer)
         return panel
 
