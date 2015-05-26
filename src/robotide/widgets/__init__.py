@@ -13,7 +13,7 @@
 #  limitations under the License.
 
 from button import ButtonWithHandler
-from dialog import Dialog
+from dialog import Dialog, HtmlDialog
 from font import Font
 from htmlwindow import HtmlWindow
 from images import ImageList, ImageProvider

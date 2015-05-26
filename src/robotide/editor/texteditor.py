@@ -21,21 +21,18 @@ from wx import stc
 from robotide import robotapi
 from robotide.context.platform import IS_WINDOWS, IS_MAC
 from robotide.controller.commands import SetDataFile
-from robotide.controller.dataloader import TestDataDirectoryWithExcludes
 from robotide.publish.messages import RideMessage
 from robotide.widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler
-from robotide.pluginapi import (Plugin, RideSaving, TreeAwarePluginMixin,
-        RideTreeSelection, RideNotebookTabChanging, RideDataChanged,
-        RideOpenSuite, RideDataChangedToDirty)
-from robotide.widgets.text import TextField
-from robotide.widgets.label import Label
+from robotide.pluginapi import Plugin, RideSaving, TreeAwarePluginMixin,\
+    RideTreeSelection, RideNotebookTabChanging, RideDataChanged,\
+    RideOpenSuite, RideDataChangedToDirty
+from robotide.widgets import TextField, Label, HtmlDialog
 
 try:
     from . import robotframeworklexer
 except Exception as e:
     robotframeworklexer = None
 
-from popupwindow import HtmlDialog
 
 class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     title = 'Text Edit'
