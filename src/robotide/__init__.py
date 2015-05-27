@@ -61,7 +61,7 @@ except VersionError:
 # Insert bundled robot to path before anything else
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'lib'))
 
-from robot.errors import DataError
+from robotide.robotapi import DataError
 
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'spec'))

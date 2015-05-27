@@ -27,7 +27,7 @@ def get_import_result(path, args):
                 _parse_args(kw.arguments)
             ) for kw in lib.handlers.values()]
         return kws
-    except SystemExit:
+    except Exception:
         raise ImportError('Library "%s" import failed' % path)
 
 

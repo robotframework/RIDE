@@ -11,10 +11,12 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
 from Queue import Queue
 from _sqlite3 import OperationalError
 import os
 from threading import Thread
+
 from robotide.publish import RideLogException
 from robotide.spec.librarydatabase import LibraryDatabase
 from robotide.spec.libraryfetcher import get_import_result
@@ -25,6 +27,7 @@ class LibraryManager(Thread):
 
     def __init__(self, database_name, spec_initializer=None):
         self._database_name = database_name
+        self._database = None
         self._messages = Queue()
         self._spec_initializer = spec_initializer or SpecInitializer()
         Thread.__init__(self)
@@ -56,35 +59,39 @@ class LibraryManager(Thread):
         message = self._messages.get()
         if not message:
             return False
-        type = message[0]
-        if type == 'fetch':
+        msg_type = message[0]
+        if msg_type == 'fetch':
             self._handle_fetch_keywords_message(message)
-        elif type == 'insert':
+        elif msg_type == 'insert':
             self._handle_insert_keywords_message(message)
-        elif type == 'create':
+        elif msg_type == 'create':
             self._database.create_database()
         return True
 
     def _handle_fetch_keywords_message(self, message):
         _, library_name, library_args, callback = message
         keywords = self._fetch_keywords(library_name, library_args)
-        self._update_database_and_call_callback_if_needed((library_name, library_args), keywords, callback)
+        self._update_database_and_call_callback_if_needed(
+            (library_name, library_args), keywords, callback)
 
     def _fetch_keywords(self, library_name, library_args):
         try:
-            path = get_path(library_name.replace('/', os.sep), os.path.abspath('.'))
+            path = get_path(
+                library_name.replace('/', os.sep), os.path.abspath('.'))
             return get_import_result(path, library_args)
         except Exception, err:
             kws = self._spec_initializer.init_from_spec(library_name)
             if not kws:
                 msg = 'Importing test library "%s" failed' % library_name
-                RideLogException(message=msg, exception=err, level='WARN').publish()
+                RideLogException(
+                    message=msg, exception=err, level='WARN').publish()
             return kws
 
     def _handle_insert_keywords_message(self, message):
         _, library_name, library_args, result_queue = message
         keywords = self._fetch_keywords(library_name, library_args)
-        self._insert(library_name, library_args, keywords, lambda result: result_queue.put(result))
+        self._insert(library_name, library_args, keywords,
+                     result_queue.put)
 
     def _insert(self, library_name, library_args, keywords, callback):
         self._database.insert_library_keywords(library_name, library_args, keywords or [])
