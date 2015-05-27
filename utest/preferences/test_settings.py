@@ -10,7 +10,7 @@ class SettingsMigrationTestCase(SettingsMigrator, unittest.TestCase):
 
     def setUp(self):
         self._old_settings = {}
-        self._default_settings = lambda:0
+        self._default_settings = lambda: 0
         self._from_0_to_1_called = False
         self._from_1_to_2_called = False
         self._merge_called = False

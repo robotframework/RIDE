@@ -12,11 +12,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from __future__ import with_statement
 import os
 import wx
 from contextlib import contextmanager
-from robotide.application.updatenotifier import UpdateNotifierController, UpdateDialog
 
 from robotide.namespace import Namespace
 from robotide.controller import Project
@@ -26,10 +24,12 @@ from robotide.ui.mainframe import RideFrame
 from robotide.pluginapi import RideLogMessage
 from robotide import context, contrib
 from robotide.preferences import Preferences, RideSettings
-
-from pluginloader import PluginLoader
-from editorprovider import EditorProvider
+from robotide.application.pluginloader import PluginLoader
+from robotide.application.editorprovider import EditorProvider
 from robotide.application.releasenotes import ReleaseNotes
+from robotide.application.updatenotifier import UpdateNotifierController, \
+    UpdateDialog
+
 
 class RIDE(wx.App):
 

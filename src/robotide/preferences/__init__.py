@@ -14,8 +14,8 @@
 
 from .settings import Settings, initialize_settings, RideSettings
 from .editor import PreferenceEditor
-from .widgets import (PreferencesPanel, PreferencesComboBox,
-    PreferencesColorPicker)
+from .widgets import PreferencesPanel, PreferencesComboBox,\
+    PreferencesColorPicker
 from .imports import ImportPreferences
 from .saving import SavingPreferences
 from .colors import GridColorPreferences, TextEditColorPreferences

@@ -1,5 +1,3 @@
-from __future__ import with_statement
-
 import unittest
 import os
 from robotide.preferences import settings
@@ -293,11 +291,11 @@ class TestInitializeSettings(TestSettingsHelper):
         os.removedirs(self.settings_dir)
 
     def test_initialize_settings_creates_directory(self):
-        initialize_settings('user settings', self.settings_path, 'user.cfg')
+        initialize_settings(self.settings_path, 'user.cfg')
         self.assertTrue(os.path.exists(self.settings_dir))
 
     def test_initialize_settings_copies_settings(self):
-        initialize_settings('user settings', self.settings_path, 'user.cfg')
+        initialize_settings(self.settings_path, 'user.cfg')
         self.assertTrue(os.path.exists(self.settings_dir))
 
     def test_initialize_settings_does_merge_when_settings_exists(self):
@@ -306,7 +304,7 @@ class TestInitializeSettings(TestSettingsHelper):
             "foo = 'bar'\nhello = 'world'", self.settings_path)
         self._write_settings("foo = 'new value'\nhello = 'world'",
                              self.user_settings_path)
-        initialize_settings('user settings', self.settings_path, 'user.cfg')
+        initialize_settings(self.settings_path, 'user.cfg')
         self._check_content(
             {'foo': 'new value', 'hello': 'world',
              SettingsMigrator.SETTINGS_VERSION:
@@ -319,7 +317,7 @@ class TestInitializeSettings(TestSettingsHelper):
                              self.settings_path)
         self._write_settings("invalid = invalid", self.user_settings_path)
         self.assertRaises(
-            ConfigurationError, initialize_settings, 'user settings',
+            ConfigurationError, initialize_settings,
             self.settings_path, 'user.cfg')
 
     def test_initialize_settings_replaces_corrupted_settings_with_defaults(
@@ -328,7 +326,7 @@ class TestInitializeSettings(TestSettingsHelper):
         self._write_settings("dlskajldsjjw2018032")
         defaults = self._read_file(self.settings_path)
         settings = self._read_file(initialize_settings(
-            'user settings', self.settings_path, 'user.cfg'))
+            self.settings_path, 'user.cfg'))
         self.assertEqual(defaults, settings)
 
     def _read_file(self, path):

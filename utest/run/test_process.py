@@ -1,12 +1,11 @@
 import unittest
 import os
-import sys
 
 from robotide.run.process import Process
 from robot.utils.asserts import assert_equals, assert_raises_with_msg
 
 
-SCRIPT = os.path.join(os.path.dirname(__file__), 
+SCRIPT = os.path.join(os.path.dirname(__file__),
                       'process_test_scripts.py').replace(' ', '<SPACE>')
 
 
@@ -17,12 +16,6 @@ class TestProcess(unittest.TestCase):
         processed_command = Process(initial_command)._command
         assert_equals(len(processed_command), len(initial_command.split()))
         assert_equals(processed_command[4], 'a2 2 1')
-
-    if sys.version_info[:2] < (2,6):
-        def test_stopping(self):
-                msg = 'Stopping process is possible only with Python 2.6 or newer'
-                assert_raises_with_msg(AttributeError, msg,
-                                       self._create_process(['']).stop)
 
     def test_writing_to_stderr(self):
         self.proc = self._create_process('python %s stderr' % SCRIPT)
