@@ -19,8 +19,6 @@ TEST_DIR = ROOT_DIR/'utest'
 DIST_DIR = ROOT_DIR/'dist'
 BUILD_DIR = ROOT_DIR/'build'
 ROBOTIDE_PACKAGE = ROOT_DIR/'src'/'robotide'
-LIB_TARGET = ROBOTIDE_PACKAGE/'lib'
-LIB_SOURCE = ROOT_DIR/'lib'
 MANIFEST = ROOT_DIR/'MANIFEST.in'
 
 VERSION = open(ROOT_DIR/'VERSION.txt').read().strip()
@@ -64,9 +62,7 @@ Topic :: Software Development :: Testing
       url          = 'https://github.com/robotframework/RIDE/',
       download_url = 'https://github.com/robotframework/RIDE/downloads/',
       package_dir  = {'' : str(SOURCE_DIR)},
-      packages     = find_packages(str(SOURCE_DIR)) + \
-                        ['robotide.lib.%s' % str(name) for name
-                         in find_packages(str(LIB_SOURCE))],
+      packages     = find_packages(str(SOURCE_DIR)),
       package_data = find_package_data(str(SOURCE_DIR)),
       # Robot Framework package data is not included, but RIDE does not need it.
       # # Always install everything, since we may be switching between versions
@@ -207,8 +203,6 @@ def _windows():
 @task
 def _prepare_build():
     _update_version()
-    if not LIB_TARGET.exists():
-        LIB_SOURCE.copytree(LIB_TARGET)
 
 @task
 def _release_notes():
@@ -225,15 +219,13 @@ def _clean(keep_dist=False):
         DIST_DIR.rmtree()
     if BUILD_DIR.exists():
         BUILD_DIR.rmtree()
-    if LIB_TARGET.exists():
-        LIB_TARGET.rmtree()
     for name in 'paver-minilib.zip', 'setup.py':
         p = path(name)
         if p.exists():
             p.remove()
 
 def _remove_bytecode_files():
-    for d in LIB_SOURCE, SOURCE_DIR, TEST_DIR:
+    for d in SOURCE_DIR, TEST_DIR:
         for pyc in d.walkfiles(pattern='*.pyc'):
             os.remove(pyc)
         for clazz in d.walkfiles(pattern='*$py.class'):
@@ -253,7 +245,6 @@ VERSION = '%s'
 """ % VERSION)
 
 def _set_development_path():
-    sys.path.insert(0, LIB_SOURCE)
     sys.path.insert(0, SOURCE_DIR)
 
 def _after_distribution():
