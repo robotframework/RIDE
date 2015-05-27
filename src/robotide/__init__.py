@@ -29,10 +29,11 @@ release. The most stable, and best documented, module is `robotide.pluginapi`.
 
 import sys
 import os
+import subprocess
 from string import Template
 
 errorMessageTemplate = Template("""$reason
-You need to install wxPython $versions toolkit with unicode support to run RIDE.
+You need to install wxPython 2.8.12.1 or newer with unicode support to run RIDE.
 wxPython 2.8.12.1 can be downloaded from http://sourceforge.net/projects/wxpython/files/wxPython/2.8.12.1/""")
 supported_versions = ["2.8"]
 
@@ -43,32 +44,54 @@ try:
         supported_versions.append("2.9")
     wxversion.select(supported_versions)
     import wx
-    if "ansi" in wx.PlatformInfo:
-        print errorMessageTemplate.substitute(
-            reason="wxPython with ansi encoding is not supported",
-            versions=" or ".join(supported_versions))
-        sys.exit(1)
 except ImportError as e:
     if "no appropriate 64-bit architecture" in e.message.lower() and \
        sys.platform == 'darwin':
         print "python should be executed in 32-bit mode with wxPython on OSX."
     else:
-        print errorMessageTemplate.substitute(
-            reason="wxPython not found.",
-            versions=" or ".join(supported_versions))
+        print errorMessageTemplate.substitute(reason="wxPython not found.")
     sys.exit(1)
 except VersionError:
-    print errorMessageTemplate.substitute(
-        reason="Wrong wxPython version.",
-        versions=" or ".join(supported_versions))
+    print errorMessageTemplate.substitute(reason="Wrong wxPython version.")
     sys.exit(1)
 
-# Insert bundled robot to path before anything else
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'lib'))
-sys.path.append(os.path.join(os.path.dirname(__file__), 'spec'))
+if "ansi" in wx.PlatformInfo:
+    print errorMessageTemplate.substitute(
+        reason="wxPython with ansi encoding is not supported")
+    sys.exit(1)
 
-from robotide.robotapi import DataError
-from robotide.application import debugconsole
+
+def set_python_path():
+    # Insert bundled robot to path before anything else
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'lib'))
+    sys.path.append(os.path.join(os.path.dirname(__file__), 'spec'))
+    # Force evaluation of robotapi, since importing robot there modifies
+    # sys.path also
+    from robotide import robotapi
+
+    process = subprocess.Popen(
+        [sys.executable,
+         '-c',
+         'import robot; print robot.__file__ + ", " + robot.__version__'],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT
+    )
+    output, _ = process.communicate()
+    robot_found = 'ImportError' not in output
+    if robot_found:
+        installation_path = os.path.normpath(
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
+        bundled_libraries_path = os.path.join(
+            installation_path, 'lib', 'robot', 'libraries')
+        if bundled_libraries_path in sys.path:
+            sys.path.remove(bundled_libraries_path)
+        rf_file, rf_version = output.strip().split(', ')
+        rf_installation_path = os.path.dirname(rf_file)
+        sys.path.insert(0, os.path.join(rf_installation_path, 'libraries'))
+        return 'Found Robot Framework version {0} from {1}'.format(
+           rf_version, rf_installation_path)
+    else:
+        return 'Robot Framework installation not found'
 
 
 def main(*args):
@@ -78,8 +101,8 @@ def main(*args):
         sys.exit()
     try:
         _run(inpath, not noupdatecheck, debug_console)
-    except DataError, err:
-        print str(err) + '\n\nUse --help to get usage information.'
+    except Exception, err:
+        print unicode(err) + '\n\nUse --help to get usage information.'
 
 
 def _parse_args(args):
@@ -94,13 +117,15 @@ def _parse_args(args):
 
 def _run(inpath=None, updatecheck=True, debug_console=False):
     try:
+        messages = set_python_path()
         from robotide.application import RIDE
+        from robotide.application import debugconsole
     except ImportError:
         _show_old_wxpython_warning_if_needed()
         raise
     if inpath:
         inpath = unicode(inpath, sys.getfilesystemencoding())
-    ride = RIDE(inpath, updatecheck)
+    ride = RIDE(inpath, updatecheck, messages)
     _show_old_wxpython_warning_if_needed(ride.frame)
     if debug_console:
         debugconsole.start(ride)
