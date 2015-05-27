@@ -1,15 +1,14 @@
-from __future__ import with_statement
-
 import unittest
+
 from robotide.controller.project import Backup
 
 
 class BackupTestCase(unittest.TestCase):
 
     def setUp(self):
-        file_controller = lambda:0
+        file_controller = lambda: None
         file_controller.filename = 'some_filename.txt'
-        file_controller.refresh_stat = lambda:0
+        file_controller.refresh_stat = lambda: None
         self._backupper = _MyBackup(file_controller)
 
     def test_backup_is_restored_when_save_raises_exception(self):
@@ -23,7 +22,6 @@ class BackupTestCase(unittest.TestCase):
     def test_backup_is_not_restored_when_save_passes(self):
         with self._backupper:
             self.assertNotEqual(None, self._backupper._backup)
-            pass
         self.assertFalse(self._backupper.restored)
         self.assertEqual(None, self._backupper._backup)
 

@@ -1,4 +1,5 @@
-from robotide.preferences.settings import Settings, Excludes
+from robotide.preferences.settings import Settings
+from robotide.preferences.excludes import Excludes
 from robotide.publish import PUBLISHER
 
 

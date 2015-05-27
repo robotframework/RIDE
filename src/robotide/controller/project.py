@@ -11,7 +11,6 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from __future__ import with_statement
 
 import os
 import shutil
@@ -47,8 +46,9 @@ class Project(_BaseController, WithNamespace):
         self._serializer = Serializer(settings, LOG)
 
     def _construct_library_manager(self, library_manager, settings):
-        return library_manager or LibraryManager(DATABASE_FILE,
-                                                 SpecInitializer(settings.get('library xml directories', [])[:]))
+        return library_manager or \
+            LibraryManager(DATABASE_FILE,
+                SpecInitializer(settings.get('library xml directories', [])[:]))
 
     def __del__(self):
         if self._library_manager:
@@ -96,7 +96,7 @@ class Project(_BaseController, WithNamespace):
     def resource_file_controller_factory(self):
         return self._resource_file_controller_factory
 
-    def find_controller_by_longname(self, longname, testname = None):
+    def find_controller_by_longname(self, longname, testname=None):
         return self._controller.find_controller_by_longname(longname, testname)
 
     def new_directory_project(self, path):

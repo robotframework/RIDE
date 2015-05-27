@@ -42,30 +42,27 @@ linux it's /tmp).
 You can safely manually remove these directories, except for the one
 being used for a currently running test.
 '''
-from Queue import Queue
 import datetime
 import time
 import os
 import sys
-import posixpath
 import re
-from posixpath import curdir, sep, pardir, join
-from robot.output import LEVELS
-from robot.utils import robottime
-from robotide.action.shortcut import localize_shortcuts
-from robotide.contrib.testrunner.runprofiles import CustomScriptProfile
-from robotide.contrib.testrunner.testrunner import TestRunner
-from robotide.publish.messages import RideTestSelectedForRunningChanged, RideNewProject
-
-ON_POSIX = 'posix' in sys.builtin_module_names
-
+from Queue import Queue
 import wx
 import wx.stc
 from wx.lib.embeddedimage import PyEmbeddedImage
-from robotide.pluginapi import Plugin, ActionInfo
-from robotide.contrib.testrunner import runprofiles
-from robotide.widgets import Label, ImageProvider
+
+from robot.output import LEVELS
+from robot.utils import robottime
+
+from robotide.action.shortcut import localize_shortcuts
 from robotide.context import IS_WINDOWS, IS_MAC
+from robotide.contrib.testrunner.testrunner import TestRunner
+from robotide.contrib.testrunner import runprofiles
+from robotide.publish.messages import RideTestSelectedForRunningChanged, RideNewProject
+from robotide.pluginapi import Plugin, ActionInfo
+from robotide.widgets import Label, ImageProvider
+
 
 ID_RUN = wx.NewId()
 ID_STOP = wx.NewId()
@@ -80,24 +77,6 @@ ID_PAUSE_ON_FAILURE = wx.NewId()
 ID_SHOW_MESSAGE_LOG = wx.NewId()
 STYLE_STDERR = 2
 
-
-try:
-    from os.path import relpath
-except ImportError:
-    # the python 2.6 os.path package provides a relpath() function,
-    # but we're running 2.5 so we have to roll our own
-    def relpath(path, start=curdir):
-        """Return a relative version of a path"""
-        if not path:
-            raise ValueError("no path specified")
-        start_list = posixpath.abspath(start).split(sep)
-        path_list = posixpath.abspath(path).split(sep)
-        # Work out how much of the filepath is shared by start and path.
-        i = len(posixpath.commonprefix([start_list, path_list]))
-        rel_list = [pardir] * (len(start_list)-i) + path_list[i:]
-        if not rel_list:
-            return curdir
-        return join(*rel_list)
 
 def _RunProfile(name, run_prefix):
     return type('Profile', (runprofiles.PybotProfile,),
@@ -291,7 +270,7 @@ class TestRunnerPlugin(Plugin):
 
     def _get_current_working_dir(self):
         profile = self.get_current_profile()
-        if profile.name == CustomScriptProfile.name:
+        if profile.name == runprofiles.CustomScriptProfile.name:
             return profile.get_cwd()
         if not os.path.isdir(self.model.suite.source):
             return os.path.dirname(self.model.suite.source)
