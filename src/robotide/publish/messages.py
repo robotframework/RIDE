@@ -346,6 +346,7 @@ class RideItemNameChanged(RideItem):
 
 class RideItemSettingsChanged(RideItem):
     """"""
+    data = ['item', 'value']
 
 
 class RideTestCaseAdded(RideDataChanged):

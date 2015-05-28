@@ -88,7 +88,7 @@ class _SettingController(ControllerWithParent):
         if self._changed(value):
             self._set(value)
             self.mark_dirty()
-            RideItemSettingsChanged(item=self._parent).publish()
+            RideItemSettingsChanged(item=self._parent, value=value).publish()
 
     def set_comment(self, comment):
         if comment != self.comment:

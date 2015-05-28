@@ -18,18 +18,20 @@ from wx.lib.agw.customtreectrl import GenericTreeItem
 from wx.lib.mixins import treemixin
 
 from robotide.controller.ui.treecontroller import TreeController, TestSelectionController
+from robotide.controller.filecontrollers import TestDataDirectoryController, TestCaseFileController
 from robotide.context import IS_WINDOWS
 from robotide.action.actioninfo import ActionInfo
 from robotide.controller.filecontrollers import ResourceFileController
 from robotide.publish.messages import RideTestRunning, RideTestPassed, RideTestFailed, RideTestExecutionStarted, \
     RideImportSetting, RideExcludesChanged, RideIncludesChanged, RideOpenSuite, RideNewProject
-from robotide.ui.images import RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, FAILED_IMAGE_INDEX, ROBOT_IMAGE_INDEX
+from robotide.ui.images import (RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, FAILED_IMAGE_INDEX, ROBOT_IMAGE_INDEX,
+    DOCUMENTED_INDEX, UNDOCUMENTED_INDEX, UNDOCUMENTED_SUITE_INDEX)
 from robotide.ui.treenodehandlers import TestCaseHandler
 from robotide.publish import (PUBLISHER, RideTreeSelection, RideFileNameChanged,
     RideItem, RideUserKeywordAdded, RideTestCaseAdded,
     RideUserKeywordRemoved, RideTestCaseRemoved, RideDataFileRemoved, RideDataChangedToDirty,
     RideDataDirtyCleared, RideVariableRemoved, RideVariableAdded,
-    RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated,
+    RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated, RideItemSettingsChanged,
     RideOpenResource, RideSuiteAdded, RideSelectResource, RideDataFileSet)
 from robotide.controller.commands import MoveTo
 from robotide.widgets import PopupCreator
@@ -144,6 +146,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
             (self._handle_import_setting_message, RideImportSetting),
             (self._mark_excludes, RideExcludesChanged),
             (self._mark_excludes, RideIncludesChanged),
+            (self._documentation_changed, RideItemSettingsChanged),
         ]
         for listener, topic in subscriptions:
             PUBLISHER.subscribe(listener, topic)
@@ -197,6 +200,22 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
         if self._execution_results.has_failed(controller):
             return FAILED_IMAGE_INDEX
         return ROBOT_IMAGE_INDEX
+
+    def _documentation_changed(self, message):
+        wx.CallAfter(self._set_icon_if_documentation_changed, message.controller, message.value)
+
+    def _set_icon_if_documentation_changed(self, controller, value):
+        node = self._controller.find_node_by_controller(controller)
+        if not node:
+            return
+        if controller.__class__ == TestDataDirectoryController:
+            ICON_INDEX = DOCUMENTED_INDEX if value else UNDOCUMENTED_SUITE_INDEX
+            self.SetItemImage(node, ICON_INDEX)
+        elif controller.__class__ == TestCaseFileController:
+            ICON_INDEX = DOCUMENTED_INDEX if value else UNDOCUMENTED_INDEX
+            self.SetItemImage(node, ICON_INDEX)
+        else:
+            return
 
     def populate(self, model):
         self._clear_tree_data()

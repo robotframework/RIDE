@@ -289,7 +289,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         return self._project.resource_import_modified(path, self.directory)
 
     def notify_settings_changed(self):
-        RideItemSettingsChanged(item=self).publish()
+        RideItemSettingsChanged(item=self, value=None).publish()
 
     def notify_steps_changed(self):
         for test in self.tests:

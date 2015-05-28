@@ -374,10 +374,12 @@ class TestRunnerPlugin(Plugin):
                 self._output("\n", source="stdout")
             self._output(err_buffer, source="stderr")
         if self.message_log and not self._messages_log_texts.empty():
-            texts = []
+            # Append text to message_log line by line in case texts contain some unprintable characters.
+            self.message_log.Freeze()
             while not self._messages_log_texts.empty():
-                texts += [self._messages_log_texts.get()]
-            self._AppendText(self.message_log, '\n'+'\n'.join(texts))
+                msg = self._messages_log_texts.get()
+                self._AppendText(self.message_log, '\n'+msg)
+            self.message_log.Thaw()
 
     def GetLastOutputChar(self):
         '''Return the last character in the output window'''
