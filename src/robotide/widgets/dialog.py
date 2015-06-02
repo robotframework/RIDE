@@ -14,6 +14,9 @@
 
 import wx
 
+from robotide.widgets import htmlwindow, sizers
+
+
 class Dialog(wx.Dialog):
 
     def __init__(self, title='', parent=None, size=None, style=None):
@@ -25,13 +28,14 @@ class Dialog(wx.Dialog):
         self.CenterOnParent()
 
     def _create_buttons(self, sizer):
-        buttons = self.CreateStdDialogButtonSizer(wx.OK|wx.CANCEL)
-        sizer.Add(buttons, flag=wx.ALIGN_CENTER|wx.ALL, border=5)
+        buttons = self.CreateStdDialogButtonSizer(wx.OK | wx.CANCEL)
+        sizer.Add(buttons, flag=wx.ALIGN_CENTER | wx.ALL, border=5)
 
     def _create_horizontal_line(self, sizer):
-        line = wx.StaticLine(self, size=(20,-1), style=wx.LI_HORIZONTAL)
-        sizer.Add(line, flag=wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.RIGHT|wx.TOP,
-                  border=5)
+        line = wx.StaticLine(self, size=(20, -1), style=wx.LI_HORIZONTAL)
+        sizer.Add(
+            line, border=5,
+            flag=wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.RIGHT | wx.TOP)
 
     def execute(self):
         retval = None
@@ -42,3 +46,16 @@ class Dialog(wx.Dialog):
 
     def _execute(self):
         raise NotImplementedError(self.__class__.__name__)
+
+
+class HtmlDialog(Dialog):
+
+    def __init__(self, title, content, padding=0):
+        Dialog.__init__(self, title)
+        szr = sizers.VerticalSizer()
+        szr.add_expanding(htmlwindow.HtmlWindow(
+            self, text=content), padding=padding)
+        self.SetSizer(szr)
+
+    def OnKey(self, event):
+        pass

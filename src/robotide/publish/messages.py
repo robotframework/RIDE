@@ -77,7 +77,7 @@ class RideLog(RideMessage):
     Subclasses of this be may used to inform error conditions or to provide
     some kind of debugging information.
     """
-    data = ['message', 'level', 'timestamp']
+    data = ['message', 'level', 'timestamp', 'notify_user']
 
 
 class RideLogMessage(RideLog):
@@ -86,16 +86,17 @@ class RideLogMessage(RideLog):
     This message may used to inform error conditions or to provide
     some kind of debugging information.
     """
-    data = ['message', 'level', 'timestamp']
+    data = ['message', 'level', 'timestamp', 'notify_user']
 
-    def __init__(self, message, level='INFO'):
+    def __init__(self, message, level='INFO', notify_user=False ):
         """Initializes a RIDE log message.
 
         The log ``level`` has default value ``INFO`` and the ``timestamp``
         is generated automatically.
         """
-        RideMessage.__init__(self, message=message, level=level,
-                             timestamp=utils.get_timestamp())
+        RideMessage.__init__(
+            self, message=message, level=level,
+            timestamp=utils.get_timestamp(), notify_user=notify_user)
 
 
 class RideLogException(RideLog):
@@ -106,9 +107,9 @@ class RideLogException(RideLog):
     This message may used to inform error conditions or to provide
     some kind of debugging information.
     """
-    data = ['message', 'level', 'timestamp', 'exception']
+    data = ['message', 'level', 'timestamp', 'exception', 'notify_user']
 
-    def __init__(self, message, exception, level='INFO'):
+    def __init__(self, message, exception, level='INFO', notify_user=False):
         """Initializes a RIDE log exception.
 
         The log ``level`` has default value ``INFO`` and the ``timestamp``
@@ -118,10 +119,11 @@ class RideLogException(RideLog):
         exc_type, exc_value, exc_traceback = sys.exc_info()
         if exc_traceback:
             tb = traceback.extract_tb(exc_traceback)
-            message += '\n\nTraceback (most recent call last):\n%s\n%s' % (unicode(exception) ,''.join(traceback.format_list(tb)))
-        RideMessage.__init__(self, message=message, level=level,
-                             timestamp=utils.get_timestamp(),
-                             exception=exception)
+            message += '\n\nTraceback (most recent call last):\n%s\n%s' % \
+                (unicode(exception), ''.join(traceback.format_list(tb)))
+        RideMessage.__init__(
+            self, message=message, level=level, notify_user=False,
+            timestamp=utils.get_timestamp(), exception=exception)
 
 
 class RideInputValidationError(RideMessage):

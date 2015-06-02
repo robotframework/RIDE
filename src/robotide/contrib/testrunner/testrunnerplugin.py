@@ -45,7 +45,6 @@ being used for a currently running test.
 import datetime
 import time
 import os
-import sys
 import re
 from Queue import Queue
 import wx
@@ -59,7 +58,7 @@ from robotide.action.shortcut import localize_shortcuts
 from robotide.context import IS_WINDOWS, IS_MAC
 from robotide.contrib.testrunner.testrunner import TestRunner
 from robotide.contrib.testrunner import runprofiles
-from robotide.publish.messages import RideTestSelectedForRunningChanged, RideNewProject
+from robotide.publish.messages import RideTestSelectedForRunningChanged
 from robotide.pluginapi import Plugin, ActionInfo
 from robotide.widgets import Label, ImageProvider
 
@@ -89,7 +88,8 @@ class TestRunnerPlugin(Plugin):
                 "show_message_log": True,
                 "profile": "pybot",
                 "sash_position": 200,
-                "runprofiles": [('jybot', 'jybot' + ('.bat' if os.name == 'nt' else ''))]}
+                "runprofiles":
+                    [('jybot', 'jybot' + ('.bat' if os.name == 'nt' else ''))]}
     report_regex = re.compile("^Report: {2}(.*\.html)$", re.MULTILINE)
     log_regex = re.compile("^Log: {5}(.*\.html)$", re.MULTILINE)
     title = "Run"
@@ -249,14 +249,18 @@ class TestRunnerPlugin(Plugin):
         command = self._create_command()
         self._output("command: %s\n" % command)
         try:
-            self._test_runner.run_command(command, self._get_current_working_dir())
+            self._test_runner.run_command(
+                command, self._get_current_working_dir())
             self._process_timer.Start(41) # roughly 24fps
             self._set_running()
             self._progress_bar.Start()
         except Exception, e:
             self._set_stopped()
-            self._output(str(e))
-            wx.MessageBox("Could not start running tests with command '%s'" % command, "Error", wx.ICON_ERROR)
+            error, log_message = self.get_current_profile().format_error(
+                unicode(e), None)
+            self._output(error)
+            if log_message:
+                log_message.publish()
 
     def _create_command(self):
         command_as_list = self._test_runner.get_command(
@@ -326,20 +330,21 @@ class TestRunnerPlugin(Plugin):
         self.SetProfile(self.profile)
 
     def OnProcessEnded(self, evt):
-        output, errors = self._test_runner.get_output_and_errors()
+        output, errors, log_message = self._test_runner.get_output_and_errors(
+            self.get_current_profile())
         self._output(output)
         self._read_report_and_log_from_stdout_if_needed()
         if len(errors) > 0:
             self._output("unexpected error: " + errors)
-        self._progress_bar.Stop()
         if self._process_timer:
             self._process_timer.Stop()
         self._set_stopped()
         self._progress_bar.Stop()
         now = datetime.datetime.now()
         self._output("\ntest finished %s" % robottime.format_time(now.timetuple()))
-        self._set_stopped()
         self._test_runner.command_ended()
+        if log_message:
+            log_message.publish()
 
     def _read_report_and_log_from_stdout_if_needed(self):
         output = self.out.GetText()
@@ -361,7 +366,8 @@ class TestRunnerPlugin(Plugin):
         if not self._test_runner.is_running():
             self.OnProcessEnded(None)
             return
-        out_buffer, err_buffer = self._test_runner.get_output_and_errors()
+        out_buffer, err_buffer, log_message =\
+            self._test_runner.get_output_and_errors(self.get_current_profile())
         if len(out_buffer) > 0:
             self._output(out_buffer, source="stdout")
         if len(err_buffer) > 0:
@@ -918,4 +924,3 @@ LogIcon = PyEmbeddedImage(
     "+KEM01SY3gM6wBsEAQB0gJ+maZoC3gI6iPYaAIBJsiRmHU0AALOeFC3aK2cWAACUXe7+AwO0"
     "lc9eTHYTAAAAAElFTkSuQmCC")
 getLogIconBitmap = LogIcon.GetBitmap
-

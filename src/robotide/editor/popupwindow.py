@@ -15,8 +15,7 @@
 import wx
 
 from robotide.context import POPUP_BACKGROUND, IS_WINDOWS
-from robotide import utils
-from robotide.widgets import Dialog, VerticalSizer, HtmlWindow
+from robotide.widgets import VerticalSizer, HtmlWindow, HtmlDialog
 
 
 class _PopupWindowBase(object):
@@ -68,7 +67,8 @@ class _PopupWindowBase(object):
 
     def set_content(self, content, title=None):
         color = ''.join(hex(item)[2:] for item in POPUP_BACKGROUND)
-        self._current_details = '<body bgcolor=#%s>%s</body>' % (color, content)
+        self._current_details = '<body bgcolor=#%s>%s</body>' % \
+            (color, content)
         self._details.SetPage(self._current_details)
         self._detached_title = title
 
@@ -103,18 +103,6 @@ class MacRidePopupWindow(wx.Frame, _PopupWindowBase):
         self._details.Bind(wx.EVT_MOTION, lambda evt: self.hide())
 
     def OnKey(self, *params):
-        pass
-
-
-class HtmlDialog(Dialog):
-
-    def __init__(self, title, content):
-        Dialog.__init__(self, title)
-        szr = VerticalSizer()
-        szr.add_expanding(HtmlWindow(self, text=content, size=self.Size))
-        self.SetSizer(szr)
-
-    def OnKey(self, event):
         pass
 
 

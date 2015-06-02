@@ -178,7 +178,8 @@ class TestRunner(object):
         command.extend(["--argumentfile", argfile])
         command.extend(["--listener", self._get_listener_to_cmd()])
         command.append(self._get_suite_source_for_command())
-        self._write_argfile(argfile, self._create_standard_args(command, profile, pythonpath, monitor_width, names_to_run))
+        self._write_argfile(argfile, self._create_standard_args(
+            command, profile, pythonpath, monitor_width, names_to_run))
         return command
 
     @staticmethod
@@ -209,13 +210,13 @@ class TestRunner(object):
             return source
         return os.path.abspath(self._project.suite.source)
 
-    def _create_standard_args(self, command, profile, pythonpath, monitor_width, names_to_run):
+    def _create_standard_args(
+            self, command, profile, pythonpath, monitor_width, names_to_run):
         standard_args = []
         standard_args.extend(profile.get_custom_args())
         self._add_tmp_outputdir_if_not_given_by_user(command, standard_args)
-        self._add_pythonpath_if_in_settings_and_not_given_by_user(command,
-                                                                  standard_args,
-                                                                  pythonpath)
+        self._add_pythonpath_if_in_settings_and_not_given_by_user(
+            command, standard_args, pythonpath)
         standard_args.extend(["--monitorcolors", "off"])
         standard_args.extend(["--monitorwidth", monitor_width])
         for suite, test in names_to_run:
@@ -228,7 +229,7 @@ class TestRunner(object):
 
     @staticmethod
     def _add_pythonpath_if_in_settings_and_not_given_by_user(
-        command, standard_args, pythonpath):
+            command, standard_args, pythonpath):
         if '--pythonpath' in command:
             return
         if '-P' in command:
@@ -243,8 +244,11 @@ class TestRunner(object):
         f.write("\n".join(args))
         f.close()
 
-    def get_output_and_errors(self):
-        return self._process.get_output(), self._process.get_errors()
+    def get_output_and_errors(self, profile):
+        stdout, stderr, returncode = self._process.get_output(), \
+            self._process.get_errors(), self._process.get_returncode()
+        error, log_message = profile.format_error(stderr, returncode)
+        return stdout, error, log_message
 
     def is_running(self):
         return self._process and self._process.is_alive()
@@ -300,6 +304,9 @@ class Process(object):
 
     def get_errors(self):
         return self._error_stream.pop()
+
+    def get_returncode(self):
+        return self._process.returncode
 
     def is_alive(self):
         return self._process.poll() is None
