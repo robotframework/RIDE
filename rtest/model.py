@@ -14,7 +14,7 @@
 import os
 from robotide.controller.commands import AddTestCaseFile, AddTestCase, AddKeyword, AddVariable, ChangeCellValue, AddRow, DeleteRow, InsertCell, DeleteCell, MoveRowsUp, MoveRowsDown, ExtractKeyword, RenameKeywordOccurrences, RenameTest, Undo, Redo, SaveFile, NullObserver, MoveUp, MoveDown, AddLibrary, AddResource, DeleteItem, InsertArea
 from robotide.namespace import Namespace
-from robotide.project import Project
+from robotide.controller import Project
 from robotide.preferences import RideSettings
 from robotide.spec import librarydatabase
 
