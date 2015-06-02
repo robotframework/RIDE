@@ -134,7 +134,7 @@ class ViewAllTagsDialog(wx.Frame):
 
     def _search_for_tags(self):
         self._unique_tags = utils.NormalizedDict()
-        self._tagit = dict()
+        self._tagit = utils.NormalizedDict()
         self._test_cases = list()
         for test in self.frame._controller.all_testcases():
             self._test_cases.append(test)
@@ -162,7 +162,7 @@ class ViewAllTagsDialog(wx.Frame):
 
     def _add_checked_tags_into_list(self):
         tags = []
-        for tests, tag_name in self._tags_list.get_checked_items():
+        for _, tag_name in self._tags_list.get_checked_items():
             tags.append(tag_name)
         return tags
 
@@ -178,7 +178,7 @@ class ViewAllTagsDialog(wx.Frame):
 
     def OnClear(self, event):
         self._execute()
-        for tag_name, tests in self._results:
+        for _, tests in self._results:
             self.tree.DeselectTests(tests)
         for item in self.tree.GetItemChildren():
             if not isinstance(item.GetData(), ResourceRootHandler or
@@ -188,7 +188,7 @@ class ViewAllTagsDialog(wx.Frame):
 
     def OnSelectAll(self, event):
         all_tests = []
-        for tag_name, tests in self._results:
+        for _, tests in self._results:
             all_tests += tests
         self.tree.SelectTests(all_tests)
         self._tags_list.CheckAll()
@@ -204,20 +204,20 @@ class ViewAllTagsDialog(wx.Frame):
     def OnShowTestsWithThisTag(self, event):
         if self._index == -1:
             return
-        tests, tag_name = self._tags_list.GetClientData(self._index)
+        _, tag_name = self._tags_list.GetClientData(self._index)
         RideOpenTagSearch(includes=tag_name, excludes="").publish()
 
     def OnShowTestsWithoutThisTag(self, event):
         if self._index == -1:
             return
-        tests, tag_name = self._tags_list.GetClientData(self._index)
+        _, tag_name = self._tags_list.GetClientData(self._index)
         RideOpenTagSearch(includes="", excludes=tag_name).publish()
 
     def OnRename(self, event):
         if self._index == -1:
             return
         tests, tag_name = self._tags_list.GetClientData(self._index)
-        tags_to_rename = self._tagit[tag_name]
+        tags_to_rename = self._tagit[tag_name.lower()]
         name = wx.GetTextFromUser(
             message="Renaming tag '%s'." % tag_name, default_value=tag_name,
             caption='Rename')
@@ -254,10 +254,10 @@ class ViewAllTagsDialog(wx.Frame):
     def item_in_kw_list_checked(self, index, flag):
         self.selected_tests = list()
         if flag is False:
-            tests, tag_name = self._tags_list.GetClientData(index)
+            tests, _ = self._tags_list.GetClientData(index)
             self.tree.DeselectTests(tests)
         if self._tags_list.get_number_of_checked_items() > 0:
-            for tests, tag_name in self._tags_list.get_checked_items():
+            for tests, _ in self._tags_list.get_checked_items():
                 self.selected_tests += tests
                 self.tree.SelectTests(tests)
         self.selected_tests = list(set(self.selected_tests))
@@ -295,11 +295,11 @@ class TagsListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin,
         return items
 
     def get_number_of_checked_items(self):
-        sum = 0
+        total = 0
         for i in range(self.GetItemCount()):
             if self.IsChecked(i):
-                sum += 1
-        return sum
+                total += 1
+        return total
 
     def set_dialog(self, dialog):
         self._dlg = dialog
