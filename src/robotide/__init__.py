@@ -61,10 +61,14 @@ if "ansi" in wx.PlatformInfo:
     sys.exit(1)
 
 
+# Insert bundled robot to path before anything else
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'lib'))
+sys.path.append(os.path.join(os.path.dirname(__file__), 'spec'))
+
+
 def set_python_path():
-    # Insert bundled robot to path before anything else
-    sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'lib'))
-    sys.path.append(os.path.join(os.path.dirname(__file__), 'spec'))
+    """Ensure that installed RF libraries are found first."""
+
     # Force evaluation of robotapi, since importing robot there modifies
     # sys.path also
     from robotide import robotapi
