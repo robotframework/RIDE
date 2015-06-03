@@ -33,9 +33,10 @@ from robotide.application.updatenotifier import UpdateNotifierController, \
 
 class RIDE(wx.App):
 
-    def __init__(self, path=None, updatecheck=True):
+    def __init__(self, path=None, updatecheck=True, messages=''):
         self._initial_path = path
         self._updatecheck = updatecheck
+        self._messages = messages
         context.APP = self
         wx.App.__init__(self, redirect=False)
 
@@ -62,7 +63,8 @@ class RIDE(wx.App):
         return True
 
     def _publish_system_info(self):
-        RideLogMessage(context.SYSTEM_INFO).publish()
+        RideLogMessage(
+            "{0}\n{1}".format(context.SYSTEM_INFO, self._messages)).publish()
 
     @property
     def model(self):

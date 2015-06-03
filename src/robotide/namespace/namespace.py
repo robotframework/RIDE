@@ -22,10 +22,8 @@ from robotide import robotapi, utils
 from robotide.namespace import variablefetcher
 from robotide.namespace.cache import LibraryCache, ExpiringCache
 from robotide.namespace.resourcefactory import ResourceFactory
-from robotide.spec.iteminfo import (TestCaseUserKeywordInfo,
-                                    ResourceUserKeywordInfo,
-                                    VariableInfo, _UserKeywordInfo,
-    ArgumentInfo)
+from robotide.spec.iteminfo import TestCaseUserKeywordInfo,\
+    ResourceUserKeywordInfo, VariableInfo, _UserKeywordInfo, ArgumentInfo
 from robotide.namespace.embeddedargs import EmbeddedArgsHandler
 
 
@@ -34,9 +32,9 @@ class Namespace(object):
     def __init__(self, settings):
         self._settings = settings
         self._library_manager = None
-        self._init_caches()
         self._content_assist_hooks = []
         self._update_listeners = set()
+        self._init_caches()
 
     def _init_caches(self):
         self._lib_cache = LibraryCache(self._settings, self.update, self._library_manager)
@@ -111,33 +109,37 @@ class Namespace(object):
         return start == ''
 
     def _looks_like_variable(self, start):
-        return (len(start) == 1 and start.startswith('$') or start.startswith('@')) \
-            or (len(start) >= 2 and start.startswith('${') or start.startswith('@{'))
+        return (len(start) == 1 and start.startswith('$') or
+                start.startswith('@')) \
+            or (len(start) >= 2 and start.startswith('${') or
+                start.startswith('@{'))
 
     def _variable_suggestions(self, controller, start, ctx):
         datafile = controller.datafile
         start_normalized = utils.normalize(start)
         self._add_kw_arg_vars(controller, ctx.vars)
-        vars = self._retriever.get_variables_from(datafile, ctx)
-        return (v for v in vars
+        variables = self._retriever.get_variables_from(datafile, ctx)
+        return (v for v in variables
                 if utils.normalize(v.name).startswith(start_normalized))
 
-    def _add_kw_arg_vars(self, controller, vars):
+    def _add_kw_arg_vars(self, controller, variables):
         for name, value in controller.get_local_variables().iteritems():
-            vars.set_argument(name, value)
+            variables.set_argument(name, value)
 
     def _keyword_suggestions(self, datafile, start, ctx):
         start_normalized = utils.normalize(start)
-        return (sug for sug in chain(self._get_default_keywords(),
-                                           self._retriever.get_keywords_from(datafile, ctx))
-                      if sug.name_begins_with(start_normalized) or
-                         sug.longname_begins_with(start_normalized))
+        return (sug for sug in chain(
+            self._get_default_keywords(),
+            self._retriever.get_keywords_from(datafile, ctx))
+                if sug.name_begins_with(start_normalized) or
+                sug.longname_begins_with(start_normalized))
 
     def get_resources(self, datafile):
         return self._retriever.get_resources_from(datafile)
 
     def get_resource(self, path, directory='', report_status=True):
-        return self._resource_factory.get_resource(directory, path, report_status=report_status)
+        return self._resource_factory.get_resource(
+            directory, path, report_status=report_status)
 
     def find_resource_with_import(self, imp):
         ctx = self._context_factory.ctx_for_datafile(imp.parent.parent)
@@ -158,10 +160,12 @@ class Namespace(object):
         return kw if kw and kw.is_library_keyword() else None
 
     def is_library_import_ok(self, datafile, imp):
-        return self._retriever.is_library_import_ok(datafile, imp, self._context_factory.ctx_for_datafile(datafile))
+        return self._retriever.is_library_import_ok(
+            datafile, imp, self._context_factory.ctx_for_datafile(datafile))
 
     def is_variables_import_ok(self, datafile, imp):
-        return self._retriever.is_variables_import_ok(datafile, imp, self._context_factory.ctx_for_datafile(datafile))
+        return self._retriever.is_variables_import_ok(
+            datafile, imp, self._context_factory.ctx_for_datafile(datafile))
 
     def find_keyword(self, datafile, kw_name):
         if not kw_name:

@@ -20,7 +20,8 @@ from robotide.robotapi import normpath
 
 class LibraryCache(object):
 
-    def __init__(self, settings, libraries_need_refresh_listener, library_manager):
+    def __init__(self, settings, libraries_need_refresh_listener,
+                 library_manager):
         self._settings = settings
         if library_manager:
             self.set_library_manager(library_manager)
@@ -33,7 +34,8 @@ class LibraryCache(object):
         self._library_manager = library_manager
 
     def expire(self):
-        self.__init__(self._settings, self._libraries_need_refresh_listener, self._library_manager)
+        self.__init__(self._settings, self._libraries_need_refresh_listener,
+                      self._library_manager)
 
     @property
     def _default_libraries(self):
@@ -51,12 +53,14 @@ class LibraryCache(object):
         return [name for name, _ in self._library_keywords]
 
     def _get_library(self, name, args):
-        library_database = self._library_manager.get_new_connection_to_library_database()
+        library_database = \
+            self._library_manager.get_new_connection_to_library_database()
         try:
             last_updated = library_database.get_library_last_updated(name, args)
             if last_updated:
                 if time.time() - last_updated > 10.0:
-                    self._library_manager.fetch_keywords(name, args, self._libraries_need_refresh_listener)
+                    self._library_manager.fetch_keywords(
+                        name, args, self._libraries_need_refresh_listener)
                 return library_database.fetch_library_keywords(name, args)
             return self._library_manager.get_and_insert_keywords(name, args)
         finally:
@@ -69,7 +73,8 @@ class LibraryCache(object):
         args_with_alias = self._alias_to_args(alias, args)
         key = self._key(name, args_with_alias)
         if not self._library_keywords.has_key(key):
-            self._library_keywords[key] = [k.with_alias(alias) for k in self._get_library(name, args)]
+            self._library_keywords[key] = \
+                [k.with_alias(alias) for k in self._get_library(name, args)]
         return self._library_keywords[key]
 
     def _alias_to_args(self, alias, args):
