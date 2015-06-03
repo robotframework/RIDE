@@ -60,7 +60,7 @@ Topic :: Software Development :: Testing
       author       = 'Robot Framework Developers',
       author_email = 'robotframework-devel@googlegroups,com',
       url          = 'https://github.com/robotframework/RIDE/',
-      download_url = 'https://github.com/robotframework/RIDE/downloads/',
+      download_url = 'https://github.com/robotframework/RIDE/releases/',
       package_dir  = {'' : str(SOURCE_DIR)},
       packages     = find_packages(str(SOURCE_DIR)),
       package_data = find_package_data(str(SOURCE_DIR)),
