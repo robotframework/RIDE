@@ -21,11 +21,11 @@ from robotide.preferences.saving import IntegerChoiceEditor
 from robotide.widgets import Label
 
 
-class ColorPreferences(PreferencesPanel):
+class EditorPreferences(PreferencesPanel):
 
     def __init__(self, font_label, section_name, settings, *args,
                  **kwargs):
-        super(ColorPreferences, self).__init__(*args, **kwargs)
+        super(EditorPreferences, self).__init__(*args, **kwargs)
         self._settings = settings
         # N.B. There really ought to be a "reset colors to defaults"
         # button, in case the user gets things hopelessly mixed up
@@ -54,14 +54,14 @@ class ColorPreferences(PreferencesPanel):
         raise NotImplementedError('Implement me')
 
 
-class TextEditColorPreferences(ColorPreferences):
-    location = ("Text Edit Colors and Font Size",)
-    title = "Text Edit Colors and Font Size"
+class TextEditorPreferences(EditorPreferences):
+    location = ("Text Editor",)
+    title = "Text Editor Settings"
 
     def __init__(self, settings, *args, **kwargs):
         self._color_pickers = []  # must be before super class constructor call
-        super(TextEditColorPreferences, self).__init__(
-            'Text Edit Font Size', 'Text Edit', settings, *args,
+        super(TextEditorPreferences, self).__init__(
+            'Text Editor Font Size', 'Text Edit', settings, *args,
             **kwargs)
 
     def create_colors_sizer(self):
@@ -121,12 +121,12 @@ class TextEditColorPreferences(ColorPreferences):
         return join(dirname(abspath(__file__)), 'settings.cfg')
 
 
-class GridColorPreferences(ColorPreferences):
-    location = ("Grid Settings",)
-    title = "Grid Settings"
+class GridEditorPreferences(EditorPreferences):
+    location = ("Grid Editor",)
+    title = "Grid Editor Settings"
 
     def __init__(self, settings, *args, **kwargs):
-        super(GridColorPreferences, self).__init__(
+        super(GridEditorPreferences, self).__init__(
             'Grid Font Size', 'Grid', settings, *args, **kwargs)
         self.Sizer.Add(self._create_grid_config_editor())
 
