@@ -19,6 +19,7 @@ from robotide.context.platform import IS_WINDOWS
 from robotide.preferences.configobj import ConfigObj, ConfigObjError,\
     Section, UnreprError
 from robotide.preferences import excludes
+from robotide.publish import RideSettingsChanged
 
 if IS_WINDOWS:
     SETTINGS_DIRECTORY = os.path.join(
@@ -183,9 +184,10 @@ class ConfigurationError(Exception):
 
 class _Section(object):
 
-    def __init__(self, section, parent=None):
+    def __init__(self, section, parent=None, name=''):
         self._config_obj = section
         self._parent = parent
+        self._name = name
 
     def save(self):
         self._parent.save()
@@ -196,7 +198,7 @@ class _Section(object):
     def __getitem__(self, name):
         value = self._config_obj[name]
         if isinstance(value, Section):
-            return _Section(value, self)
+            return _Section(value, self, name)
         return value
 
     def __iter__(self):
@@ -246,6 +248,7 @@ class _Section(object):
             self._config_obj[name] = value
             if autosave:
                 self.save()
+            RideSettingsChanged(keys=[self._name, name]).publish()
 
     def set_values(self, settings, autosave=True, override=True):
         """Set values from settings. 'settings' needs to be a dictionary.

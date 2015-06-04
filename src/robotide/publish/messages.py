@@ -145,6 +145,7 @@ class RideSettingsChanged(RideMessage):
     """
     data = ['keys']
 
+
 class RideExecuteSpecXmlImport(RideMessage):
     """Sent whenever spec xml import is requested"""
 
