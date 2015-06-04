@@ -19,12 +19,13 @@ import wx
 wxFONTWEIGHT_BOLD = 92
 wxFONTWEIGHT_NORMAL = 90
 
+
 class Colorizer(object):
 
-    def __init__(self, grid, controller, colors):
+    def __init__(self, grid, controller):
         self._grid = grid
         self._controller = controller
-        self._colors=colors
+        self._colors = ColorizationSettings(grid.settings)
         self._current_task_id = 0
         self._timer = None
 
@@ -109,4 +110,4 @@ class ColorizationSettings(object):
         return self.get_background_color('error')
 
     def _get(self, name):
-        return self._settings['Grid'][name.lower().replace('_',' ')]
+        return self._settings[name.lower().replace('_',' ')]

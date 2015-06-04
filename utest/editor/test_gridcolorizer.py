@@ -3,19 +3,18 @@ import random
 
 from robot.libraries.String import String
 
-
 from robotide.controller.cellinfo import CellInfo, ContentType, CellType,\
     CellContent, CellPosition
-from robotide.editor.gridcolorizer import Colorizer, ColorizationSettings
+from robotide.editor.gridcolorizer import Colorizer
 
-from resources import PYAPP_REFERENCE as _ #Needed to be able to create wx components
-
-# wx needs to imported last so that robotide can select correct wx version.
-import wx
+# Needed to be able to create wx components
+from resources import PYAPP_REFERENCE as _
 
 
 class MockGrid(object):
-    SetCellTextColour = SetCellBackgroundColour = SetCellFont = lambda s, x, y, z: True
+    noop = lambda *args: None
+    SetCellTextColour = SetCellBackgroundColour = SetCellFont = noop
+    settings = None
 
     def GetCellFont(self, x, y):
         return Font()
@@ -26,8 +25,10 @@ class Font(object):
 
 
 class ControllerWithCellInfo(object):
-    content_types = [getattr(ContentType, i) for i in dir(ContentType) if not i.startswith('__') ]
-    cell_types = [getattr(CellType, i) for i in dir(CellType) if not i.startswith('__') ]
+    content_types = [getattr(ContentType, i) for i in
+                     dir(ContentType) if not i.startswith('__') ]
+    cell_types = [getattr(CellType, i) for i in
+                  dir(CellType) if not i.startswith('__') ]
 
     def __init__(self):
         self._string = String()
@@ -46,11 +47,11 @@ class ControllerWithCellInfo(object):
 
 
 class TestPerformance(unittest.TestCase):
-    _data = ['Keyword', 'Some longer data in cell', '${variable}', 
+    _data = ['Keyword', 'Some longer data in cell', '${variable}',
              '#asdjaskdkjasdkjaskdjkasjd', 'asdasd,asdasd,as asd jasdj asjd asjdj asd']
 
     def test_colorizing_performance(self):
-        colorizer = Colorizer(MockGrid(), ControllerWithCellInfo(), ColorizationSettings())
+        colorizer = Colorizer(MockGrid(), ControllerWithCellInfo())
         for _ in range(0, 500):
             colorizer._colorize_cell(1,1, self._data[random.randint(0, 4)])
 

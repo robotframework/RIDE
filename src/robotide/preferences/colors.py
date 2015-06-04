@@ -13,10 +13,12 @@
 #  limitations under the License.
 
 import wx
+from wx.lib.masked import NumCtrl
 from os.path import abspath, dirname, join
 
 from robotide.preferences import PreferencesPanel, PreferencesColorPicker
 from robotide.preferences.saving import IntegerChoiceEditor
+from robotide.widgets import Label
 
 
 class ColorPreferences(PreferencesPanel):
@@ -36,7 +38,7 @@ class ColorPreferences(PreferencesPanel):
         font_size_sizer = self._create_font_size_sizer(
             settings[section_name], font_label)
         colors_sizer = self.create_colors_sizer()
-        main_sizer = wx.FlexGridSizer(rows=2, cols=1, hgap=10)
+        main_sizer = wx.FlexGridSizer(rows=3, cols=1, hgap=10)
         main_sizer.Add(font_size_sizer)
         main_sizer.Add(colors_sizer)
         self.SetSizer(main_sizer)
@@ -44,7 +46,7 @@ class ColorPreferences(PreferencesPanel):
     def _create_font_size_sizer(self, settings, title='Font Size'):
         f = IntegerChoiceEditor(
             settings, 'font size', title, [str(i) for i in range(8, 49)])
-        font_size_sizer = wx.FlexGridSizer(rows=1, cols=1)
+        font_size_sizer = wx.FlexGridSizer(rows=1, cols=2, hgap=30)
         font_size_sizer.AddMany([f.label(self), (f.chooser(self),)])
         return font_size_sizer
 
@@ -120,12 +122,43 @@ class TextEditColorPreferences(ColorPreferences):
 
 
 class GridColorPreferences(ColorPreferences):
-    location = ("Grid Colors and Font Size",)
-    title = "Grid Colors and Font Size"
+    location = ("Grid Settings",)
+    title = "Grid Settings"
 
     def __init__(self, settings, *args, **kwargs):
         super(GridColorPreferences, self).__init__(
             'Grid Font Size', 'Grid', settings, *args, **kwargs)
+        self.Sizer.Add(self._create_grid_config_editor())
+
+    def _create_grid_config_editor(self):
+        settings = self._settings['Grid']
+        sizer = wx.FlexGridSizer(rows=3, cols=2, vgap=10)
+        sizer.Add(self._label_for('Default column size'))
+        sizer.Add(self._number_editor(settings, 'col size'))
+        sizer.Add(self._label_for('Auto size columns'))
+        sizer.Add(self._boolean_editor(settings, 'auto size cols'))
+        sizer.Add(self._label_for('Max column size\n(applies when auto size is on)'))
+        sizer.Add(self._number_editor(settings, 'max col size'))
+        return sizer
+
+    def _label_for(self, name):
+        label = ('%s: ' % name).capitalize()
+        return Label(self, label=label)
+
+    def _number_editor(self, settings, name):
+        initial_value = settings[name]
+        editor = NumCtrl(self, value=initial_value)
+        editor.Bind(wx.EVT_TEXT,
+                    lambda evt: settings.set(name, int(editor.GetValue())))
+        return editor
+
+    def _boolean_editor(self, settings, name):
+        initial_value = settings[name]
+        editor = wx.CheckBox(self)
+        editor.SetValue(initial_value)
+        editor.Bind(wx.EVT_CHECKBOX,
+                    lambda evt: settings.set(name, editor.GetValue()))
+        return editor
 
     def create_colors_sizer(self):
         colors_sizer = wx.GridBagSizer()

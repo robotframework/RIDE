@@ -34,7 +34,7 @@ from .tooltips import GridToolTips
 from .editordialogs import UserKeywordNameDialog, ScalarVariableDialog,\
     ListVariableDialog
 from .contentassist import ExpandingContentAssistTextCtrl
-from .gridcolorizer import Colorizer, ColorizationSettings
+from .gridcolorizer import Colorizer
 
 _DEFAULT_FONT_SIZE = 11
 
@@ -62,15 +62,15 @@ class KeywordEditor(GridEditor, RideEventHandler):
     ] + GridEditor._popup_items
 
     def __init__(self, parent, controller, tree):
-        GridEditor.__init__(self, parent, len(controller.steps) + 5,
-                            max((controller.max_columns + 1), 5),
-                            parent.plugin._grid_popup_creator)
+        GridEditor.__init__(
+            self, parent, len(controller.steps) + 5,
+            max((controller.max_columns + 1), 5),
+            parent.plugin._grid_popup_creator,
+            parent.plugin.global_settings['Grid'])
         self._parent = parent
         self._plugin = parent.plugin
         self._cell_selected = False
-        self._colorizer = Colorizer(
-            self, controller, ColorizationSettings(
-                self._plugin.global_settings))
+        self._colorizer = Colorizer(self, controller)
         self._controller = controller
         self._configure_grid()
         PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
@@ -84,11 +84,6 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self._write_steps(self._controller)
         self._tree = tree
         self._has_been_clicked = False
-        font_size = self._plugin.global_settings['Grid'].get(
-            'font size', _DEFAULT_FONT_SIZE)
-        self.SetDefaultCellFont(
-            wx.Font(font_size, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
-                    wx.FONTWEIGHT_NORMAL))
 
     def _namespace_updated(self):
         if not self._updating_namespace:
@@ -107,10 +102,14 @@ class KeywordEditor(GridEditor, RideEventHandler):
     def _configure_grid(self):
         self.SetRowLabelSize(25)
         self.SetColLabelSize(0)
-        self.SetDefaultColSize(170)
+        self.SetDefaultColSize(self.settings['col size'])
         self.SetDefaultCellOverflow(False)
         self.SetDefaultEditor(
             ContentAssistCellEditor(self._plugin, self._controller))
+        font_size = self.settings.get('font size', _DEFAULT_FONT_SIZE)
+        self.SetDefaultCellFont(
+            wx.Font(font_size, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
+                    wx.FONTWEIGHT_NORMAL))
 
     def _make_bindings(self):
         self.Bind(grid.EVT_GRID_EDITOR_SHOWN, self.OnEditor)
