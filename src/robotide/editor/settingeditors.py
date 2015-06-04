@@ -25,6 +25,7 @@ from robotide.widgets import ButtonWithHandler, Label, HtmlWindow, PopupMenu,\
     PopupMenuItems, HtmlDialog
 from robotide.publish import PUBLISHER
 from robotide import utils
+from robotide.utils.highlightmatcher import highlight_matcher
 
 from .formatters import ListToStringFormatter
 from .gridcolorizer import ColorizationSettings
@@ -253,7 +254,7 @@ class SettingValueDisplay(wx.TextCtrl):
         if self._value is None:
             return False
         return [item for item in self._value.split(' | ')
-                if utils.highlight_matcher(text, item)] != []
+                if highlight_matcher(text, item)] != []
 
     def highlight(self, text):
         self._colorize_data(match=text)
