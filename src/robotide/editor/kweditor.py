@@ -73,8 +73,6 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self._colorizer = Colorizer(self, controller)
         self._controller = controller
         self._configure_grid()
-        PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
-        PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
         self._updating_namespace = False
         self._controller.datafile_controller.register_for_namespace_updates(
             self._namespace_updated)
@@ -84,6 +82,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self._write_steps(self._controller)
         self._tree = tree
         self._has_been_clicked = False
+        PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
+        PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
 
     def _namespace_updated(self):
         if not self._updating_namespace:
@@ -106,11 +106,19 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.SetDefaultCellOverflow(False)
         self.SetDefaultEditor(
             ContentAssistCellEditor(self._plugin, self._controller))
+        self._set_fonts()
+
+    def _set_fonts(self, update_cells=False):
         font_size = self.settings.get('font size', _DEFAULT_FONT_SIZE)
         font_family = wx.FONTFAMILY_MODERN if self.settings['fixed font'] \
             else wx.FONTFAMILY_DEFAULT
-        self.SetDefaultCellFont(wx.Font(
-            font_size, font_family, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        font = wx.Font(font_size, font_family, wx.FONTSTYLE_NORMAL,
+                       wx.FONTWEIGHT_NORMAL)
+        self.SetDefaultCellFont(font)
+        for row in range(self.NumberRows):
+            for col in range(self.NumberCols):
+                self.SetCellFont(row, col, font)
+                self.ForceRefresh()
 
     def _make_bindings(self):
         self.Bind(grid.EVT_GRID_EDITOR_SHOWN, self.OnEditor)
@@ -131,8 +139,12 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def OnSettingsChanged(self, data):
         '''Redraw the colors if the color settings are modified'''
-        if data.keys[0] == "Grid":
-            self._colorize_grid()
+        section, setting = data.keys
+        if section == 'Grid':
+            if 'text' in setting or 'background' in setting:
+                self._colorize_grid()
+            elif 'font' in setting:
+                self._set_fonts(update_cells=True)
 
     def OnSelectCell(self, event):
         self._cell_selected = True
