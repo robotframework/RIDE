@@ -43,7 +43,7 @@ class EditorPreferences(PreferencesPanel):
 
     def _create_font_editor(self):
         f = IntegerChoiceEditor(self._settings, 'font size', 'Font Size',
-                                [str(i) for i in range(8, 49)])
+                                [str(i) for i in range(8, 16)])
         sizer = wx.FlexGridSizer(rows=2, cols=2, hgap=30)
         sizer.AddMany([f.label(self), f.chooser(self)])
         if 'fixed font' in self._settings:
