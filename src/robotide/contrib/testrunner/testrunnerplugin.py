@@ -778,7 +778,8 @@ class ProgressBar(wx.Panel):
         self._current_keywords.append(name)
 
     def empty_current_keyword(self):
-        self._current_keywords.pop()
+        if self._current_keywords:
+            self._current_keywords.pop()
 
     def OnTimer(self, event):
         '''A handler for timer events; it updates the statusbar'''
