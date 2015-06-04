@@ -19,6 +19,7 @@ from robotide.context.platform import IS_WINDOWS
 from robotide.preferences.configobj import ConfigObj, ConfigObjError,\
     Section, UnreprError
 from robotide.preferences import excludes
+from robotide.publish import RideSettingsChanged
 
 if IS_WINDOWS:
     SETTINGS_DIRECTORY = os.path.join(
@@ -33,6 +34,7 @@ def initialize_settings(path, dest_file_name=None):
         os.makedirs(SETTINGS_DIRECTORY)
     return _copy_or_migrate_user_settings(
         SETTINGS_DIRECTORY, path, dest_file_name)
+
 
 def _copy_or_migrate_user_settings(settings_dir, source_path, dest_file_name):
     """ Creates settings directory and copies or merges the source to there.
@@ -59,7 +61,6 @@ def _copy_or_migrate_user_settings(settings_dir, source_path, dest_file_name):
 class SettingsMigrator(object):
 
     SETTINGS_VERSION = 'settings_version'
-    CURRENT_SETTINGS_VERSION = 4 #used at least in tests
 
     def __init__(self, default_path, user_path):
         self._default_settings = ConfigObj(default_path, unrepr=True)
@@ -93,9 +94,9 @@ class SettingsMigrator(object):
             self.migrate_from_4_to_5(self._old_settings)
         if self._old_settings.get(self.SETTINGS_VERSION) == 5:
             self.migrate_from_5_to_6(self._old_settings)
-        #so next would be something like:
-        #if self._old_settings[self.SETTINGS_VERSION] == 6:
-        #   self.migrate_from_6_to_7(self._old_settings)
+        # so next would be something like:
+        # if self._old_settings[self.SETTINGS_VERSION] == 6:
+        #   self.migrate_from_6_to_8(self._old_settings)
         self.merge()
 
     def merge(self):
@@ -113,7 +114,8 @@ class SettingsMigrator(object):
         # to run
         pythonpath = settings.get('pythonpath', [])
         if pythonpath:
-            settings['pythonpath'] = [p.strip() for p in pythonpath if p.strip()]
+            settings['pythonpath'] = [p.strip() for p
+                                      in pythonpath if p.strip()]
         settings[self.SETTINGS_VERSION] = 2
 
     def migrate_from_2_to_3(self, settings):
@@ -140,21 +142,36 @@ class SettingsMigrator(object):
         colors = settings.get('Colors', None)
         if colors:
             settings['Grid Colors'] = colors
-            # FIXME: should old section 'Colors' be deleted?
             del settings['Colors']
+        settings[self.SETTINGS_VERSION] = 5
 
     def migrate_from_5_to_6(self, settings):
-        # Added maxmized flag to mainframe
-        settings['mainframe maximized'] = False
-
+        # Made generic Text Edit and Grid sections.
+        grid_colors = settings.get('Grid Colors', None)
+        if grid_colors:
+            settings['Grid'] = grid_colors
+            del settings['Grid Colors']
+        grid_font_size = settings.get('font size', None)
+        if grid_font_size:
+            settings['Grid']['font size'] = grid_font_size
+            del settings['font size']
+        text_edit_colors = settings.get('Text Edit Colors', None)
+        if text_edit_colors:
+            settings['Text Edit'] = text_edit_colors
+            del settings['Text Edit Colors']
+        text_font_size = settings.get('text edit font size', None)
+        if text_font_size:
+            settings['Text Edit']['font size'] = text_font_size
+            del settings['text edit font size']
+        settings[self.SETTINGS_VERSION] = 6
 
     def _write_merged_settings(self, settings, path):
         try:
             with open(path, 'wb') as outfile:
                 settings.write(outfile)
         except IOError:
-            raise RuntimeError('Could not open settings file "%s" for writing' %
-                                   path)
+            raise RuntimeError(
+                'Could not open settings file "%s" for writing' % path)
 
 
 class SectionError(Exception):
@@ -167,9 +184,10 @@ class ConfigurationError(Exception):
 
 class _Section(object):
 
-    def __init__(self, section, parent=None):
+    def __init__(self, section, parent=None, name=''):
         self._config_obj = section
         self._parent = parent
+        self._name = name
 
     def save(self):
         self._parent.save()
@@ -180,7 +198,7 @@ class _Section(object):
     def __getitem__(self, name):
         value = self._config_obj[name]
         if isinstance(value, Section):
-            return _Section(value, self)
+            return _Section(value, self, name)
         return value
 
     def __iter__(self):
@@ -194,7 +212,7 @@ class _Section(object):
         return self._config_obj.iteritems()
 
     def has_setting(self, name):
-        return self._config_obj.has_key(name)
+        return name in self._config_obj
 
     def get(self, name, default):
         """Returns specified setting or (automatically set) default."""
@@ -214,9 +232,10 @@ class _Section(object):
     def set(self, name, value, autosave=True, override=True):
         """Sets setting 'name' value to 'value'.
 
-        'autosave' can be used to define whether to save or not after values are
-        changed. 'override' can be used to specify whether to override existing
-        value or not. Setting which does not exist is anyway always created.
+        'autosave' can be used to define whether to save automatically
+        after values are changed. 'override' can be used to specify
+        whether to override existing value or not. Setting which does
+        not exist is anyway always created.
         """
         if self._is_section(name) and not isinstance(value, _Section):
             raise SectionError("Cannot override section with value.")
@@ -229,6 +248,7 @@ class _Section(object):
             self._config_obj[name] = value
             if autosave:
                 self.save()
+            RideSettingsChanged(keys=[self._name, name]).publish()
 
     def set_values(self, settings, autosave=True, override=True):
         """Set values from settings. 'settings' needs to be a dictionary.
@@ -250,15 +270,16 @@ class _Section(object):
 
     def add_section(self, name, **defaults):
         """Creates section or updates existing section with defaults."""
-        if name in self._config_obj and not isinstance(self._config_obj[name], Section):
+        if name in self._config_obj and \
+           not isinstance(self._config_obj[name], Section):
             raise SectionError('Cannot override value with section.')
         if name not in self._config_obj:
             self._config_obj[name] = {}
         return self[name].set_defaults(**defaults)
 
     def _is_section(self, name):
-        return self._config_obj.has_key(name) and \
-               isinstance(self._config_obj[name], Section)
+        return name in self._config_obj and \
+            isinstance(self._config_obj[name], Section)
 
 
 class Settings(_Section):
@@ -294,5 +315,3 @@ class RideSettings(Settings):
     def get_path(self, *parts):
         """Returns path which combines settings directory and given parts."""
         return os.path.join(self._settings_dir, *parts)
-
-

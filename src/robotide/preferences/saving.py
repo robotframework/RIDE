@@ -16,7 +16,7 @@ import wx
 import textwrap
 
 from .widgets import (PreferencesPanel, PreferencesComboBox,
-        IntegerPreferenceComboBox)
+                      IntegerPreferenceComboBox)
 from robotide.widgets import HelpLabel
 
 
@@ -43,6 +43,7 @@ class _ChoiceEditor(object):
 
 class StringChoiceEditor(_ChoiceEditor):
     _editor_class = PreferencesComboBox
+
 
 class IntegerChoiceEditor(_ChoiceEditor):
     _editor_class = IntegerPreferenceComboBox

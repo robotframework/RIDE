@@ -11,18 +11,20 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-import ConfigParser
+
 import wx
+from wx.lib.masked import NumCtrl
 from os.path import abspath, dirname, join
 
 from robotide.preferences import PreferencesPanel, PreferencesColorPicker
 from robotide.preferences.saving import IntegerChoiceEditor
+from robotide.widgets import Label
 
 
-class ColorPreferences(PreferencesPanel):
+class EditorPreferences(PreferencesPanel):
 
-    def __init__(self, font_label, font_setting_key, settings, *args, **kwargs):
-        super(ColorPreferences, self).__init__(*args, **kwargs)
+    def __init__(self, settings, *args, **kwargs):
+        super(EditorPreferences, self).__init__(*args, **kwargs)
         self._settings = settings
         # N.B. There really ought to be a "reset colors to defaults"
         # button, in case the user gets things hopelessly mixed up
@@ -32,35 +34,40 @@ class ColorPreferences(PreferencesPanel):
         # don't have the time to do that right now, so this will have
         # to suffice.
 
-        font_size_sizer = self._create_font_size_sizer(settings, font_setting_key, font_label)
+        font_editor = self._create_font_editor()
         colors_sizer = self.create_colors_sizer()
-        main_sizer = wx.FlexGridSizer(rows=2, cols=1, hgap=10)
-        main_sizer.Add(font_size_sizer)
+        main_sizer = wx.FlexGridSizer(rows=3, cols=1, hgap=10)
+        main_sizer.Add(font_editor)
         main_sizer.Add(colors_sizer)
         self.SetSizer(main_sizer)
 
-    def _create_font_size_sizer(self, settings, settings_key, title='Font Size'):
-        f = IntegerChoiceEditor(settings,
-                                settings_key,
-                                title,
-                                [str(i) for i in range(8, 49)]
-        )
-        font_size_sizer = wx.FlexGridSizer(rows=1, cols=1)
-        font_size_sizer.AddMany([f.label(self), (f.chooser(self),)])
-        return font_size_sizer
+    def _create_font_editor(self):
+        f = IntegerChoiceEditor(self._settings, 'font size', 'Font Size',
+                                [str(i) for i in range(8, 16)])
+        sizer = wx.FlexGridSizer(rows=2, cols=2, hgap=30)
+        sizer.AddMany([f.label(self), f.chooser(self)])
+        if 'fixed font' in self._settings:
+            sizer.Add(Label(self, label='Use fixed width font'))
+            editor = wx.CheckBox(self)
+            editor.SetValue(self._settings['fixed font'])
+            editor.Bind(wx.EVT_CHECKBOX,
+                        lambda evt: self._settings.set('fixed font',
+                                                       editor.GetValue()))
+            sizer.Add(editor)
+        return sizer
 
     def create_colors_sizer(self):
         raise NotImplementedError('Implement me')
 
-class TextEditColorPreferences(ColorPreferences):
-    location = ("Text Edit Colors and Font Size",)
-    title = "Text Edit Colors and Font Size"
+
+class TextEditorPreferences(EditorPreferences):
+    location = ("Text Editor",)
+    title = "Text Editor Settings"
 
     def __init__(self, settings, *args, **kwargs):
-        self._color_pickers = [] # must be before super class constructor call
-        super(TextEditColorPreferences, self).__init__('Text Edit Font Size',
-                                                       'text edit font size', settings, *args, **kwargs)
-
+        self._color_pickers = []  # must be before super class constructor call
+        super(TextEditorPreferences, self).__init__(
+            settings['Text Edit'], *args, **kwargs)
 
     def create_colors_sizer(self):
         container = wx.GridBagSizer()
@@ -83,11 +90,14 @@ class TextEditColorPreferences(ColorPreferences):
                 column = 0
                 row += 1
             label = wx.StaticText(self, wx.ID_ANY, label_text)
-            button = PreferencesColorPicker(self, wx.ID_ANY, self._settings['Text Edit Colors'], settings_key)
-            container.Add(button, (row, column), flag=wx.ALL|wx.ALIGN_CENTER_VERTICAL, border=4)
+            button = PreferencesColorPicker(
+                self, wx.ID_ANY, self._settings, settings_key)
+            container.Add(button, (row, column),
+                          flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL, border=4)
             self._color_pickers.append(button)
             column += 1
-            container.Add(label, (row, column), flag=wx.ALIGN_CENTER_VERTICAL|wx.LEFT, border=4)
+            container.Add(label, (row, column),
+                          flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border=4)
             column += 1
         reset = wx.Button(self, wx.ID_ANY, 'Reset colors to default')
         self.Bind(wx.EVT_BUTTON, self.OnReset)
@@ -101,7 +111,7 @@ class TextEditColorPreferences(ColorPreferences):
 
     def _read_defaults(self):
         settings = [s.strip() for s in open(self._get_path(), 'r').readlines()]
-        start_index = settings.index('[Text Edit Colors]') + 1
+        start_index = settings.index('[Text Edit]') + 1
         defaults = {}
         for line in settings[start_index:]:
             if line.startswith('['):
@@ -116,12 +126,44 @@ class TextEditColorPreferences(ColorPreferences):
         return join(dirname(abspath(__file__)), 'settings.cfg')
 
 
-class GridColorPreferences(ColorPreferences):
-    location = ("Grid Colors and Font Size",)
-    title = "Grid Colors and Font Size"
+class GridEditorPreferences(EditorPreferences):
+    location = ("Grid Editor",)
+    title = "Grid Editor Settings"
 
     def __init__(self, settings, *args, **kwargs):
-        super(GridColorPreferences, self).__init__('Grid Font Size', 'font size', settings, *args, **kwargs)
+        super(GridEditorPreferences, self).__init__(
+            settings['Grid'], *args, **kwargs)
+        self.Sizer.Add(self._create_grid_config_editor())
+
+    def _create_grid_config_editor(self):
+        settings = self._settings
+        sizer = wx.FlexGridSizer(rows=3, cols=2, vgap=10)
+        sizer.Add(self._label_for('Default column size'))
+        sizer.Add(self._number_editor(settings, 'col size'))
+        sizer.Add(self._label_for('Auto size columns'))
+        sizer.Add(self._boolean_editor(settings, 'auto size cols'))
+        sizer.Add(self._label_for('Max column size\n(applies when auto size is on)'))
+        sizer.Add(self._number_editor(settings, 'max col size'))
+        return sizer
+
+    def _label_for(self, name):
+        label = ('%s: ' % name).capitalize()
+        return Label(self, label=label)
+
+    def _number_editor(self, settings, name):
+        initial_value = settings[name]
+        editor = NumCtrl(self, value=initial_value)
+        editor.Bind(wx.EVT_TEXT,
+                    lambda evt: settings.set(name, int(editor.GetValue())))
+        return editor
+
+    def _boolean_editor(self, settings, name):
+        initial_value = settings[name]
+        editor = wx.CheckBox(self)
+        editor.SetValue(initial_value)
+        editor.Bind(wx.EVT_CHECKBOX,
+                    lambda evt: settings.set(name, editor.GetValue()))
+        return editor
 
     def create_colors_sizer(self):
         colors_sizer = wx.GridBagSizer()
@@ -140,9 +182,12 @@ class GridColorPreferences(ColorPreferences):
             ('text empty', 'Empty Foreground'),
         ):
             lbl = wx.StaticText(self, wx.ID_ANY, label)
-            btn = PreferencesColorPicker(self, wx.ID_ANY, self._settings['Grid Colors'], key)
-            colors_sizer.Add(btn, (row, 0), flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL, border=4)
-            colors_sizer.Add(lbl, (row, 1), flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border=4)
+            btn = PreferencesColorPicker(
+                self, wx.ID_ANY, self._settings, key)
+            colors_sizer.Add(btn, (row, 0),
+                             flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL, border=4)
+            colors_sizer.Add(lbl, (row, 1),
+                             flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border=4)
             row += 1
 
     def _create_background_pickers(self, colors_sizer):
@@ -158,7 +203,10 @@ class GridColorPreferences(ColorPreferences):
             ('background highlight', 'Highlight Background')
         ):
             lbl = wx.StaticText(self, wx.ID_ANY, label)
-            btn = PreferencesColorPicker(self, wx.ID_ANY, self._settings['Grid Colors'], key)
-            colors_sizer.Add(btn, (row, 2), flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL, border=4)
-            colors_sizer.Add(lbl, (row, 3), flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border=4)
+            btn = PreferencesColorPicker(
+                self, wx.ID_ANY, self._settings, key)
+            colors_sizer.Add(btn, (row, 2),
+                             flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL, border=4)
+            colors_sizer.Add(lbl, (row, 3),
+                             flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border=4)
             row += 1

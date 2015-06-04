@@ -16,79 +16,82 @@ import wx
 from wx import grid
 
 from robotide.context import IS_MAC
-from robotide.controller.commands import (ChangeCellValue, ClearArea, PasteArea,
-        DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells,
-        UncommentRows, Undo, Redo, RenameKeywordOccurrences, ExtractKeyword,
-        AddKeywordFromCells, MoveRowsUp, MoveRowsDown, ExtractScalar, ExtractList,
-        InsertArea)
+from robotide.controller.commands import ChangeCellValue, ClearArea, PasteArea,\
+    DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells, UncommentRows,\
+    Undo, Redo, RenameKeywordOccurrences, ExtractKeyword, AddKeywordFromCells,\
+    MoveRowsUp, MoveRowsDown, ExtractScalar, ExtractList, InsertArea
 from robotide.controller.cellinfo import TipMessage, ContentType, CellType
 from robotide.publish import (RideItemStepsChanged,
                               RideSettingsChanged, PUBLISHER)
 from robotide.usages.UsageRunner import Usages, VariableUsages
 from robotide.ui.progress import RenameProgressObserver
 from robotide import robotapi, utils
-from robotide.utils import RideEventHandler, overrides, variablematcher
+from robotide.utils import RideEventHandler, variablematcher
 from robotide.widgets import PopupMenu, PopupMenuItems
 
 from .grid import GridEditor
 from .tooltips import GridToolTips
-from .editordialogs import (UserKeywordNameDialog, ScalarVariableDialog,
-        ListVariableDialog)
+from .editordialogs import UserKeywordNameDialog, ScalarVariableDialog,\
+    ListVariableDialog
 from .contentassist import ExpandingContentAssistTextCtrl
-from .gridcolorizer import Colorizer, ColorizationSettings
+from .gridcolorizer import Colorizer
 
-_DEFAULT_FONT_SIZE=11
+_DEFAULT_FONT_SIZE = 11
+
 
 def requires_focus(function):
     def _row_header_selected_on_linux(self):
         return self.FindFocus() is None
+
     def decorated_function(self, *args):
-        if self.has_focus() or self.IsCellEditControlShown() or _row_header_selected_on_linux(self):
+        if self.has_focus() or self.IsCellEditControlShown() or \
+           _row_header_selected_on_linux(self):
             function(self, *args)
     return decorated_function
 
 
 class KeywordEditor(GridEditor, RideEventHandler):
-    _no_cell = (-1,-1)
+    _no_cell = (-1, -1)
     _popup_menu_shown = False
     dirty = property(lambda self: self._controller.dirty)
     update_value = lambda *args: None
-    _popup_items = ['Create Keyword', 'Extract Keyword', 'Extract Variable',
-                    'Rename Keyword', 'Find Where Used', '---',
-                    'Make Variable\tCtrl-1',
-                    'Make List Variable\tCtrl-2', '---',
-                    'Go to Definition\tCtrl-B', '---'] + GridEditor._popup_items
+    _popup_items = [
+        'Create Keyword', 'Extract Keyword', 'Extract Variable',
+        'Rename Keyword', 'Find Where Used', '---', 'Make Variable\tCtrl-1',
+        'Make List Variable\tCtrl-2', '---', 'Go to Definition\tCtrl-B', '---'
+    ] + GridEditor._popup_items
 
     def __init__(self, parent, controller, tree):
-        GridEditor.__init__(self, parent, len(controller.steps) + 5,
-                            max((controller.max_columns + 1), 5),
-                            parent.plugin._grid_popup_creator)
+        GridEditor.__init__(
+            self, parent, len(controller.steps) + 5,
+            max((controller.max_columns + 1), 5),
+            parent.plugin._grid_popup_creator,
+            parent.plugin.global_settings['Grid'])
         self._parent = parent
         self._plugin = parent.plugin
         self._cell_selected = False
-        self._colorizer = Colorizer(self, controller,
-                                    ColorizationSettings(self._plugin.global_settings))
+        self._colorizer = Colorizer(self, controller)
         self._controller = controller
         self._configure_grid()
-        PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
-        PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
         self._updating_namespace = False
-        self._controller.datafile_controller.register_for_namespace_updates(self._namespace_updated)
+        self._controller.datafile_controller.register_for_namespace_updates(
+            self._namespace_updated)
         self._tooltips = GridToolTips(self)
         self._marked_cell = None
         self._make_bindings()
         self._write_steps(self._controller)
         self._tree = tree
         self._has_been_clicked = False
-        font_size = self._plugin.global_settings.get('font size', _DEFAULT_FONT_SIZE)
-        self.SetDefaultCellFont(wx.Font(font_size, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
+        PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
 
     def _namespace_updated(self):
         if not self._updating_namespace:
             self._updating_namespace = True
             # See following issue for history of the next line:
             # http://code.google.com/p/robotframework-ride/issues/detail?id=1108
-            wx.CallAfter(wx.CallLater, 200, self._update_based_on_namespace_change)
+            wx.CallAfter(
+                wx.CallLater, 200, self._update_based_on_namespace_change)
 
     def _update_based_on_namespace_change(self):
         try:
@@ -99,9 +102,23 @@ class KeywordEditor(GridEditor, RideEventHandler):
     def _configure_grid(self):
         self.SetRowLabelSize(25)
         self.SetColLabelSize(0)
-        self.SetDefaultColSize(170)
+        self.SetDefaultColSize(self.settings['col size'])
         self.SetDefaultCellOverflow(False)
-        self.SetDefaultEditor(ContentAssistCellEditor(self._plugin, self._controller))
+        self.SetDefaultEditor(
+            ContentAssistCellEditor(self._plugin, self._controller))
+        self._set_fonts()
+
+    def _set_fonts(self, update_cells=False):
+        font_size = self.settings.get('font size', _DEFAULT_FONT_SIZE)
+        font_family = wx.FONTFAMILY_MODERN if self.settings['fixed font'] \
+            else wx.FONTFAMILY_DEFAULT
+        font = wx.Font(font_size, font_family, wx.FONTSTYLE_NORMAL,
+                       wx.FONTWEIGHT_NORMAL)
+        self.SetDefaultCellFont(font)
+        for row in range(self.NumberRows):
+            for col in range(self.NumberCols):
+                self.SetCellFont(row, col, font)
+                self.ForceRefresh()
 
     def _make_bindings(self):
         self.Bind(grid.EVT_GRID_EDITOR_SHOWN, self.OnEditor)
@@ -122,8 +139,12 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def OnSettingsChanged(self, data):
         '''Redraw the colors if the color settings are modified'''
-        if data.keys[0] == "Grid Colors":
-            self._colorize_grid()
+        section, setting = data.keys
+        if section == 'Grid':
+            if 'text' in setting or 'background' in setting:
+                self._colorize_grid()
+            elif 'font' in setting:
+                self._set_fonts(update_cells=True)
 
     def OnSelectCell(self, event):
         self._cell_selected = True
@@ -176,7 +197,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self.ClearSelection()
             cursor_row = self.GetGridCursorRow()
             event_row = event.Row
-            start, end = (cursor_row, event_row) if cursor_row < event_row else (event_row, cursor_row)
+            start, end = (cursor_row, event_row) \
+                if cursor_row < event_row else (event_row, cursor_row)
             for row in range(start, end+1):
                 self.SelectRow(row, addToSelected=True)
         else:
@@ -259,7 +281,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self.SetColLabelValue(empty_col, '')
 
     def _colorize_grid(self):
-        selection_content = self._get_single_selection_content_or_none_on_first_call()
+        selection_content = \
+            self._get_single_selection_content_or_none_on_first_call()
         if selection_content is None:
             self.highlight(None)
         else:
@@ -343,8 +366,9 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.save()
         PUBLISHER.unsubscribe(self._data_changed, RideItemStepsChanged)
         if self._namespace_updated:
-            #Prevent re-entry to unregister method
-            self._controller.datafile_controller.unregister_namespace_updates(self._namespace_updated)
+            # Prevent re-entry to unregister method
+            self._controller.datafile_controller.unregister_namespace_updates(
+                self._namespace_updated)
         self._namespace_updated = None
 
     def save(self):
@@ -356,7 +380,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def show_content_assist(self):
         if self.IsCellEditControlShown():
-            self.GetCellEditor(*self.selection.cell).show_content_assist(self.selection.topleft.row)
+            self.GetCellEditor(*self.selection.cell).show_content_assist(
+                self.selection.topleft.row)
 
     def refresh_datafile(self, item, event):
         self._tree.refresh_datafile(item, event)
@@ -391,19 +416,23 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._move_grid_cursor(event, keycode)
         elif control_down and keycode == wx.WXK_SPACE:
             self._open_cell_editor_with_content_assist()
-        elif control_down and not event.AltDown() and keycode in (ord('1'), ord('2')):
-            self._open_cell_editor_and_execute_variable_creator(list_variable=(keycode==ord('2')))
+        elif control_down and not event.AltDown() and \
+                keycode in (ord('1'), ord('2')):
+            self._open_cell_editor_and_execute_variable_creator(
+                list_variable=(keycode == ord('2')))
         elif control_down and event.ShiftDown() and keycode == ord('I'):
             self.OnInsertCells()
         elif control_down and event.ShiftDown() and keycode == ord('D'):
             self.OnDeleteCells()
         elif control_down and keycode == ord('B'):
-            self._navigate_to_matching_user_keyword(self.GetGridCursorRow(), self.GetGridCursorCol())
+            self._navigate_to_matching_user_keyword(
+                self.GetGridCursorRow(), self.GetGridCursorCol())
         else:
             event.Skip()
 
     def OnGoToDefinition(self, event):
-        self._navigate_to_matching_user_keyword(self.GetGridCursorRow(), self.GetGridCursorCol())
+        self._navigate_to_matching_user_keyword(
+            self.GetGridCursorRow(), self.GetGridCursorCol())
 
     def _show_cell_information(self):
         cell = self.cell_under_cursor
@@ -426,7 +455,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
         details = self._plugin.get_keyword_details(value)
         if not details:
             info = self._controller.get_cell_info(cell.Row, cell.Col)
-            if info.cell_type == CellType.KEYWORD and info.content_type == ContentType.STRING:
+            if info.cell_type == CellType.KEYWORD and \
+                     info.content_type == ContentType.STRING:
                 details = """\
         <b>Keyword was not detected by RIDE</b>
         <br>Possible corrections:<br>
@@ -439,8 +469,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
             Library spec XML can be created using libdoc tool from Robot Framework.</li>
         </ul>"""
         if details:
-            self._tooltips.show_info_at(details, value,
-                                    self._cell_to_screen_coordinates(cell))
+            self._tooltips.show_info_at(
+                details, value, self._cell_to_screen_coordinates(cell))
 
     def _cell_to_screen_coordinates(self, cell):
         point = self.CellToRect(cell.Row, cell.Col).GetTopRight()
@@ -473,7 +503,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
         celleditor.Show(True)
         wx.CallAfter(celleditor.show_content_assist)
 
-    def _open_cell_editor_and_execute_variable_creator(self, list_variable=False):
+    def _open_cell_editor_and_execute_variable_creator(
+            self, list_variable=False):
         if not self.IsCellEditControlEnabled():
             self.EnableCellEditControl()
         row = self.GetGridCursorRow()
@@ -482,7 +513,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
         wx.CallAfter(celleditor.execute_variable_creator, list_variable)
 
     def OnMakeVariable(self, event):
-        self._open_cell_editor_and_execute_variable_creator(list_variable=False)
+        self._open_cell_editor_and_execute_variable_creator(
+            list_variable=False)
 
     def OnMakeListVariable(self, event):
         self._open_cell_editor_and_execute_variable_creator(list_variable=True)
@@ -592,8 +624,9 @@ class KeywordEditor(GridEditor, RideEventHandler):
         return variables and variables[0] != value
 
     def _extract_scalar(self, cell):
-        var = robotapi.Variable(self._controller.datafile.variable_table,
-            '', self.GetCellValue(*cell), '')
+        var = robotapi.Variable(
+            self._controller.datafile.variable_table, '',
+            self.GetCellValue(*cell), '')
         dlg = ScalarVariableDialog(
             self._controller.datafile_controller.variables, var)
         if dlg.ShowModal() == wx.ID_OK:
@@ -602,10 +635,11 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._execute(ExtractScalar(name, value, comment, cell))
 
     def _extract_list(self, cells):
-        var = robotapi.Variable(self._controller.datafile.variable_table,
+        var = robotapi.Variable(
+            self._controller.datafile.variable_table,
             '', [self.GetCellValue(*cell) for cell in cells], '')
-        dlg = ListVariableDialog(self._controller.datafile_controller.variables,
-                                 var, self._plugin)
+        dlg = ListVariableDialog(
+            self._controller.datafile_controller.variables, var, self._plugin)
         if dlg.ShowModal() == wx.ID_OK:
             name, value = dlg.get_value()
             comment = dlg.get_comment()
@@ -613,13 +647,13 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def OnRenameKeyword(self, event):
         old_name = self._current_cell_value()
-        if not old_name.strip() or is_variable(old_name):
+        if not old_name.strip() or variablematcher.is_variable(old_name):
             return
         new_name = wx.GetTextFromUser('New name', 'Rename Keyword',
                                       default_value=old_name)
         if new_name:
-            self._execute(RenameKeywordOccurrences(old_name, new_name,
-                                                   RenameProgressObserver(self.GetParent())))
+            self._execute(RenameKeywordOccurrences(
+                old_name, new_name, RenameProgressObserver(self.GetParent())))
 
 
 class ContentAssistCellEditor(grid.PyGridCellEditor):
@@ -637,7 +671,8 @@ class ContentAssistCellEditor(grid.PyGridCellEditor):
         self._tc.execute_variable_creator(list_variable)
 
     def Create(self, parent, id, evthandler):
-        self._tc = ExpandingContentAssistTextCtrl(parent, self._plugin, self._controller)
+        self._tc = ExpandingContentAssistTextCtrl(
+            parent, self._plugin, self._controller)
         self.SetControl(self._tc)
         if evthandler:
             self._tc.PushEventHandler(evthandler)
@@ -693,20 +728,24 @@ class ContentAssistCellEditor(grid.PyGridCellEditor):
 class ChooseUsageSearchStringDialog(wx.Dialog):
 
     def __init__(self, cellvalue):
-        wx.Dialog.__init__(self, None, wx.ID_ANY, "Find Where Used", style=wx.DEFAULT_DIALOG_STYLE)
+        wx.Dialog.__init__(self, None, wx.ID_ANY, "Find Where Used",
+                           style=wx.DEFAULT_DIALOG_STYLE)
         self.caption = "Please select what you want to check for usage"
         variables = utils.find_variable_basenames(cellvalue)
         self.choices = [(False, cellvalue)] + [(True, v) for v in variables]
-        self.choices_string = ["Complete cell content"] + ["Variable " + var for var in variables]
+        self.choices_string = ["Complete cell content"] + \
+                              ["Variable " + var for var in variables]
         self._build_ui()
 
     def _build_ui(self):
-        self.radiobox_choices = wx.RadioBox(self, choices=self.choices_string,
-                                            style=wx.RA_SPECIFY_COLS, majorDimension=1)
+        self.radiobox_choices = wx.RadioBox(
+            self, choices=self.choices_string, style=wx.RA_SPECIFY_COLS,
+            majorDimension=1)
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(wx.StaticText(self, label=self.caption), 0, wx.ALL|wx.EXPAND, 5)
-        sizer.Add(self.radiobox_choices, 0, wx.ALL|wx.EXPAND, 5)
-        sizer.Add(wx.Button(self, wx.ID_OK, label="Search"), 0, wx.ALL|wx.ALIGN_CENTER, 5)
+        sizer.Add(wx.StaticText(self, label=self.caption), 0, wx.ALL | wx.EXPAND, 5)
+        sizer.Add(self.radiobox_choices, 0, wx.ALL | wx.EXPAND, 5)
+        sizer.Add(wx.Button(self, wx.ID_OK, label="Search"),
+                  0, wx.ALL | wx.ALIGN_CENTER, 5)
         big_sizer = wx.BoxSizer(wx.VERTICAL)
         big_sizer.Add(sizer, 0, wx.ALL, 10)
         self.SetSizer(big_sizer)

@@ -43,7 +43,7 @@ class PreferenceEditor(wx.Dialog):
         self._current_panel = None
         self._panels = []
         self._settings = preferences.settings
-        wx.Dialog.__init__(self, parent, wx.ID_ANY, title, size=(800,400),
+        wx.Dialog.__init__(self, parent, wx.ID_ANY, title, size=(800,500),
                            style=wx.RESIZE_BORDER|wx.DEFAULT_DIALOG_STYLE)
 
         if style not in ("tree","notebook","single","auto"):
@@ -51,7 +51,8 @@ class PreferenceEditor(wx.Dialog):
 
         if style == "tree" or (style == "auto" and len(panels) > TREE_THRESHOLD):
             self._sw = wx.SplitterWindow(self, wx.ID_ANY, style=wx.SP_LIVE_UPDATE|wx.SP_3D)
-            self._tree = wx.TreeCtrl(self._sw, wx.ID_ANY, style=wx.TR_HIDE_ROOT|wx.TR_HAS_BUTTONS)
+            self._tree = wx.TreeCtrl(self._sw, wx.ID_ANY,
+                                     style=wx.TR_HIDE_ROOT|wx.TR_HAS_BUTTONS)
             # create a single container which will hold all of the
             # preference panels
             self._container = PanelContainer(self._sw, wx.ID_ANY)
@@ -124,7 +125,7 @@ class PreferenceEditor(wx.Dialog):
 
         Used only when the hierarchical tree is shown.
         """
-        root = self._tree.AddRoot("Root")
+        self._tree.AddRoot("Root")
         for panel_class in panels:
             location = panel_class.location
             if not isinstance(location, tuple):
@@ -214,5 +215,3 @@ class PanelContainer(wx.Panel):
     def SetTitle(self, title):
         """Set the title of the panel"""
         self.title.SetLabel(title)
-
-
