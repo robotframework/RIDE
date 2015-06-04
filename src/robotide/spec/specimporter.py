@@ -11,21 +11,25 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
 import os
 import shutil
 import wx
+
 from robotide.action import ActionInfo
 from robotide.pluginapi import Plugin
 from robotide.publish import RideExecuteSpecXmlImport
 from robotide.spec.xmlreaders import LIBRARY_XML_DIRECTORY, get_name_from_xml
 from robotide.publish import PUBLISHER
 
+
 class SpecImporterPlugin(Plugin):
 
     HEADER = 'Import Library Spec XML'
 
     def enable(self):
-        self.register_action(ActionInfo('Tools', self.HEADER, self.execute_spec_import, position=83))
+        self.register_action(ActionInfo('Tools', self.HEADER,
+                                        self.execute_spec_import, position=83))
         PUBLISHER.subscribe(self.execute_spec_import, RideExecuteSpecXmlImport)
 
     def execute_spec_import(self, event=None):
@@ -41,7 +45,7 @@ class SpecImporterPlugin(Plugin):
         self.model.update_namespace()
 
     def _get_path_to_library_spec(self):
-        wildcard = ('Library Spec XML | *.xml')
+        wildcard = ('Library Spec XML|*.xml|All Files|*.*')
         dlg = wx.FileDialog(self.frame,
                             message='Import Library Spec XML',
                             wildcard=wildcard,
@@ -61,4 +65,3 @@ class SpecImporterPlugin(Plugin):
             wx.MessageBox('Library "%s" imported\nfrom "%s"\nThis may require RIDE restart.' % (name, path), 'Info', wx.OK | wx.ICON_INFORMATION)
         else:
             wx.MessageBox('Could not import library from file "%s"' % path, 'Import failed', wx.OK | wx.ICON_ERROR)
-

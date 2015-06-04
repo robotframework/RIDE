@@ -16,17 +16,16 @@ import os
 import wx
 from wx.lib.filebrowsebutton import DirBrowseButton
 
-from robotide.controller.commands import (CreateNewResource,
-    AddTestDataDirectory, AddTestCaseFile, CreateNewDirectoryProject,
-    CreateNewFileProject, SetFileFormat, SetFileFormatRecuresively)
+from robotide.controller.commands import CreateNewResource,\
+    AddTestDataDirectory, AddTestCaseFile, CreateNewDirectoryProject,\
+    CreateNewFileProject, SetFileFormat, SetFileFormatRecuresively
 from robotide.utils import overrides
-from robotide.widgets import Label
+from robotide.widgets import Label, Dialog
+from robotide.validators import NonEmptyValidator, NewSuitePathValidator,\
+    SuiteFileNameValidator
 # This hack needed to set same label width as with other labels
-DirBrowseButton.createLabel = lambda self: Label(self, size=(110, -1),
-                                                      label=self.labelText)
-
-from robotide.widgets import Dialog
-from robotide.validators import NonEmptyValidator, NewSuitePathValidator, SuiteFileNameValidator
+DirBrowseButton.createLabel = lambda self:\
+    Label(self, size=(110, -1), label=self.labelText)
 
 
 class _CreationDialog(Dialog):
@@ -35,8 +34,10 @@ class _CreationDialog(Dialog):
         sizer = self._init_dialog(title)
         label_sizer = wx.BoxSizer(wx.VERTICAL)
         self._name_editor = self._create_name_editor(label_sizer)
-        self._parent_chooser = self._create_parent_chooser(label_sizer, default_dir)
-        self._path_display = self._create_path_display(label_sizer, default_dir)
+        self._parent_chooser = self._create_parent_chooser(
+            label_sizer, default_dir)
+        self._path_display = self._create_path_display(
+            label_sizer, default_dir)
         radio_group_sizer = wx.BoxSizer(wx.VERTICAL)
         self._type_chooser = self._create_type_chooser(radio_group_sizer)
         self._format_chooser = self._create_format_chooser(radio_group_sizer)
@@ -63,26 +64,26 @@ class _CreationDialog(Dialog):
         name_editor = wx.TextCtrl(self)
         name_editor.SetValidator(NonEmptyValidator('Name'))
         self.Bind(wx.EVT_TEXT, self.OnPathChanged, name_editor)
-        disp_sizer.Add(name_editor, 1, wx.ALIGN_CENTRE|wx.ALL|wx.EXPAND, 3)
+        disp_sizer.Add(name_editor, 1, wx.ALIGN_CENTRE | wx.ALL | wx.EXPAND, 3)
         sizer.Add(disp_sizer, 1, wx.EXPAND)
         return name_editor
 
     def _add_label(self, sizer, text):
         label = Label(self, label=text, size=(110, -1))
-        sizer.Add(label, flag=wx.CENTER|wx.ALL, border=3)
+        sizer.Add(label, flag=wx.CENTER | wx.ALL, border=3)
 
     def _create_type_chooser(self, sizer):
         return self._create_radiobuttons(sizer, 'Type', ['File', 'Directory'])
 
     def _create_format_chooser(self, sizer, callback=True):
-        return self._create_radiobuttons(sizer, 'Format', ['ROBOT', 'TXT', 'TSV', 'HTML'],
-                                         callback)
+        return self._create_radiobuttons(
+            sizer, 'Format', ['ROBOT', 'TXT', 'TSV', 'HTML'], callback)
 
     def _create_radiobuttons(self, sizer, label, choices, callback=True):
         radios = wx.RadioBox(self, label=label, choices=choices)
         if callback:
             self.Bind(wx.EVT_RADIOBOX, self.OnPathChanged, radios)
-        sizer.Add(radios, flag=wx.ALIGN_LEFT|wx.ALL, border=5)
+        sizer.Add(radios, flag=wx.ALIGN_LEFT | wx.ALL, border=5)
         return radios
 
     def _create_parent_chooser(self, sizer, default_dir):
@@ -111,13 +112,14 @@ class _CreationDialog(Dialog):
         disp.SetBackgroundColour('grey')
         if validator:
             disp.SetValidator(validator)
-        disp_sizer.Add(disp, 1, wx.ALL|wx.EXPAND, 3)
+        disp_sizer.Add(disp, 1, wx.ALL | wx.EXPAND, 3)
         sizer.Add(disp_sizer, 1, wx.EXPAND)
         return disp
 
     def _get_path(self):
         name = self._name_editor.GetValue()
-        path = os.path.join(self._parent_chooser.GetValue(), name.replace(' ', '_'))
+        path = os.path.join(self._parent_chooser.GetValue(),
+                            name.replace(' ', '_'))
         if self._is_dir_type():
             path = os.path.join(path, '__init__')
         return path + '.' + self._get_extension()
@@ -152,16 +154,19 @@ class NewProjectDialog(_CreationDialog):
         _CreationDialog.__init__(self, project.default_dir, 'New Project')
 
     def _execute(self):
-        cmd = CreateNewDirectoryProject if self._is_dir_type() else CreateNewFileProject
-        cmd(self._get_path()).execute(self._controller )
+        cmd = CreateNewDirectoryProject if self._is_dir_type()\
+            else CreateNewFileProject
+        cmd(self._get_path()).execute(self._controller)
 
 
 class NewResourceDialog(_WithImmutableParent, _CreationDialog):
 
     def __init__(self, controller, settings):
         self._path = controller.directory
-        _CreationDialog.__init__(self, controller.default_dir, 'New Resource File')
-        self._format_chooser.SetStringSelection(settings['default file format'])
+        _CreationDialog.__init__(self, controller.default_dir,
+                                 'New Resource File')
+        self._format_chooser.SetStringSelection(
+            settings['default file format'])
         self._controller = controller
 
     def _execute(self):
@@ -179,12 +184,14 @@ class AddSuiteDialog(_WithImmutableParent, _CreationDialog):
         self._controller = controller
         self._path = controller.directory
         _CreationDialog.__init__(self, self._path, self.NAME)
-        self._format_chooser.SetStringSelection(settings['default file format'])
+        self._format_chooser.SetStringSelection(
+            settings['default file format'])
 
     @overrides(_CreationDialog)
     def _create_name_editor(self, sizer):
         name_editor = _CreationDialog._create_name_editor(self, sizer)
-        name_editor.SetValidator(SuiteFileNameValidator('Name', self._is_dir_type))
+        name_editor.SetValidator(
+            SuiteFileNameValidator('Name', self._is_dir_type))
         return name_editor
 
     def _execute(self):
@@ -236,7 +243,7 @@ class ChangeFormatDialog(_FileFormatDialog):
 
     def _execute(self):
         cmd = SetFileFormat if not self._get_recursive() \
-                else SetFileFormatRecuresively
+            else SetFileFormatRecuresively
         self._controller.execute(cmd(self._get_format()))
 
     def _get_recursive(self):
@@ -247,7 +254,7 @@ class InitFileFormatDialog(_FileFormatDialog):
 
     def _create_help(self, sizer):
         help = 'Provide format for initialization file in directory\n"%s".' % \
-                    self._controller.directory
+            self._controller.directory
         sizer.Add(Label(self, label=help), flag=wx.ALL, border=5)
 
     def _execute(self):
@@ -257,10 +264,11 @@ class InitFileFormatDialog(_FileFormatDialog):
 class AddResourceDialog(wx.FileDialog):
 
     def __init__(self, window, controller):
-        wildcard = ('All files|*.*|Robot data (*.html)|*.*htm*|'
-                'Robot data (*.tsv)|*.tsv|Robot data (*txt)|*.txt')
+        wildcard = 'Robot data (*.robot)|*.robot|Robot data (*.txt)|*.txt|\
+            All files|*.*'
         self._controller = controller
-        wx.FileDialog.__init__(self, window, message='Open', wildcard=wildcard,
+        wx.FileDialog.__init__(
+            self, window, message='Open', wildcard=wildcard,
             defaultDir=self._controller.default_dir, style=wx.OPEN)
 
     def execute(self):

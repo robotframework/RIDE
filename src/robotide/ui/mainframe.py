@@ -11,15 +11,14 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from robotide.context.platform import IS_MAC
 
 import wx
 
 from robotide.action import ActionInfoCollection, ActionFactory, SeparatorInfo
 from robotide.context import ABOUT_RIDE, SHORTCUT_KEYS
 from robotide.controller.commands import SaveFile, SaveAll
-from robotide.publish import (RideSaveAll, RideClosing, RideSaved, PUBLISHER,
-        RideInputValidationError, RideTreeSelection, RideModificationPrevented)
+from robotide.publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER,\
+    RideInputValidationError, RideTreeSelection, RideModificationPrevented
 from robotide.ui.tagdialogs import ViewAllTagsDialog
 from robotide.utils import RideEventHandler
 from robotide.widgets import Dialog, ImageProvider, HtmlWindow
@@ -86,11 +85,13 @@ class RideFrame(wx.Frame, RideEventHandler):
         wx.CallLater(100, self.actions.register_tools)
 
     def _subscribe_messages(self):
-        for listener, topic in [(lambda msg: self.SetStatusText('Saved %s' % msg.path), RideSaved),
-                                (lambda msg: self.SetStatusText('Saved all files'), RideSaveAll),
-                                (self._set_label, RideTreeSelection),
-                                (self._show_validation_error, RideInputValidationError),
-                                (self._show_modification_prevented_error, RideModificationPrevented)]:
+        for listener, topic in [
+            (lambda msg: self.SetStatusText('Saved %s' % msg.path), RideSaved),
+            (lambda msg: self.SetStatusText('Saved all files'), RideSaveAll),
+            (self._set_label, RideTreeSelection),
+            (self._show_validation_error, RideInputValidationError),
+            (self._show_modification_prevented_error, RideModificationPrevented)
+        ]:
             PUBLISHER.subscribe(listener, topic)
 
     def _set_label(self, message):
@@ -121,7 +122,8 @@ class RideFrame(wx.Frame, RideEventHandler):
         self.actions = ActionRegisterer(mb, self.toolbar,
                                         ShortcutRegistry(self))
         self.tree = Tree(splitter, self.actions, self._application.settings)
-        self.actions.register_actions(ActionInfoCollection(_menudata, self, self.tree))
+        self.actions.register_actions(
+            ActionInfoCollection(_menudata, self, self.tree))
         mb.take_menu_bar_into_use()
         splitter.SetMinimumPaneSize(100)
         splitter.SplitVertically(self.tree, self.notebook, 300)
@@ -149,7 +151,8 @@ class RideFrame(wx.Frame, RideEventHandler):
         event.Skip()
 
     def OnMove(self, event):
-        # When the window is Iconized, a move event is also raised, but we don't want to update the position in the settings file
+        # When the window is Iconized, a move event is also raised, but we
+        # don't want to update the position in the settings file
         if not self.IsIconized() and not self.IsMaximized():
             self._application.settings['mainframe position'] = self.GetPositionTuple()
         event.Skip()
@@ -199,12 +202,11 @@ class RideFrame(wx.Frame, RideEventHandler):
             return ret == wx.YES
         return True
 
-
     def _get_path(self):
-        wildcard = ('All files|*.*|Robot data (*.html)|*.*htm*|'
-                    'Robot data (*.tsv)|*.tsv|Robot data (*txt)|*.txt')
-        dlg = wx.FileDialog(self, message='Open', wildcard=wildcard,
-                            defaultDir=self._controller.default_dir, style=wx.OPEN)
+        wildcard = 'Robot data (*robot)|*.robot|Robot data (*txt)|*.txt|All files|*.*'
+        dlg = wx.FileDialog(
+            self, message='Open', wildcard=wildcard,
+            defaultDir=self._controller.default_dir, style=wx.OPEN)
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.GetPath()
             self._controller.update_default_dir(path)
