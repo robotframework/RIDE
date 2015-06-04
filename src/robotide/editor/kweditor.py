@@ -107,9 +107,10 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.SetDefaultEditor(
             ContentAssistCellEditor(self._plugin, self._controller))
         font_size = self.settings.get('font size', _DEFAULT_FONT_SIZE)
-        self.SetDefaultCellFont(
-            wx.Font(font_size, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
-                    wx.FONTWEIGHT_NORMAL))
+        font_family = wx.FONTFAMILY_MODERN if self.settings['fixed font'] \
+            else wx.FONTFAMILY_DEFAULT
+        self.SetDefaultCellFont(wx.Font(
+            font_size, font_family, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
 
     def _make_bindings(self):
         self.Bind(grid.EVT_GRID_EDITOR_SHOWN, self.OnEditor)
