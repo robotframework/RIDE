@@ -109,4 +109,4 @@ class ColorizationSettings(object):
         return self.get_background_color('error')
 
     def _get(self, name):
-        return self._settings['Grid Colors'][name.lower().replace('_',' ')]
+        return self._settings['Grid'][name.lower().replace('_',' ')]

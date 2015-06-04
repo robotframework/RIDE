@@ -519,7 +519,7 @@ class RobotStylizer(object):
         self.editor = editor
         self.lexer = None
         self.settings = settings
-        self.font_size = settings.get('text edit font size', 8)
+        self.font_size = settings['Text Edit'].get('font size', 8)
         if robotframeworklexer:
             self.lexer = robotframeworklexer.RobotFrameworkLexer()
             self._set_styles()
@@ -527,7 +527,7 @@ class RobotStylizer(object):
             self.editor.GetParent().create_syntax_colorization_help()
 
     def _set_styles(self):
-        color_settings = self.settings.get_without_default('Text Edit Colors')
+        color_settings = self.settings.get_without_default('Text Edit')
         styles = {
             robotframeworklexer.ARGUMENT: {
                 'fore': color_settings['argument']
@@ -592,4 +592,3 @@ class RobotStylizer(object):
             self.editor.StartStyling(position+shift, 31)
             self.editor.SetStyling(len(value.encode('utf-8')), self.tokens[token])
             shift += len(value.encode('utf-8'))-len(value)
-

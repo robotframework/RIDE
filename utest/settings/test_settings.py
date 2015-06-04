@@ -1,7 +1,7 @@
 import unittest
 import os
-from robotide.preferences import settings
 
+from robotide.preferences import settings
 from robotide.preferences.settings import Settings, SectionError,\
     ConfigurationError, initialize_settings, SettingsMigrator
 
@@ -307,8 +307,7 @@ class TestInitializeSettings(TestSettingsHelper):
         initialize_settings(self.settings_path, 'user.cfg')
         self._check_content(
             {'foo': 'new value', 'hello': 'world',
-             SettingsMigrator.SETTINGS_VERSION:
-                SettingsMigrator.CURRENT_SETTINGS_VERSION}, False)
+             SettingsMigrator.SETTINGS_VERSION: 6}, False)
 
     def test_initialize_settings_raises_exception_when_invalid_user_settings(
             self):
