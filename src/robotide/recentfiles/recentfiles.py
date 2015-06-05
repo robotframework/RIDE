@@ -26,12 +26,17 @@ def normalize_path(path):
     return os.path.abspath(path)
 
 
+def remove_non_existing_paths(paths):
+    return [f for f in paths if os.path.exists(f)]
+
+
 class RecentFilesPlugin(Plugin):
     """Add recently opened files to the file menu."""
 
     def __init__(self, application=None):
-        settings = {'recent_files':[], 'max_number_of_files':4}
+        settings = {'recent_files': [], 'max_number_of_files': 4}
         Plugin.__init__(self, application, default_settings=settings)
+        self.recent_files = remove_non_existing_paths(self.recent_files)
 
     def enable(self):
         self._save_currently_loaded_suite()
@@ -41,8 +46,6 @@ class RecentFilesPlugin(Plugin):
         self.subscribe(self.OnFileNameChanged, RideFileNameChanged)
         self.subscribe(self.OnNewProjectOpened, RideNewProject)
         self.subscribe(self.OnSaved, RideSaved)
-        # TODO: This plugin doesn't currently support resources
-        # self._frame.subscribe(self.OnSuiteOpened, ('core', 'open','resource'))
 
     def disable(self):
         self.unregister_actions()
@@ -94,10 +97,11 @@ class RecentFilesPlugin(Plugin):
         if path in self.recent_files:
             self.recent_files.remove(path)
         self.recent_files.insert(0, path)
-        self.recent_files = self.recent_files[:self.max_number_of_files]
         self._save_settings_and_update_file_menu()
 
     def _save_settings_and_update_file_menu(self):
+        self.recent_files = remove_non_existing_paths(self.recent_files)
+        self.recent_files = self.recent_files[:self.max_number_of_files]
         self.save_setting('recent_files', self.recent_files)
         self.unregister_actions()
         self._add_recent_files_to_menu()
@@ -140,4 +144,3 @@ class RecentFileEntry(object):
                                  doc=self.doc)
         action_info.set_menu_position(before='Exit')
         return action_info
-
