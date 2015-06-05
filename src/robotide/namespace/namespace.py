@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 import os
+import sys
 import re
 import operator
 import tempfile
@@ -25,6 +26,7 @@ from robotide.namespace.resourcefactory import ResourceFactory
 from robotide.spec.iteminfo import TestCaseUserKeywordInfo,\
     ResourceUserKeywordInfo, VariableInfo, _UserKeywordInfo, ArgumentInfo
 from robotide.namespace.embeddedargs import EmbeddedArgsHandler
+from robotide.publish import PUBLISHER, RideSettingsChanged
 
 
 class Namespace(object):
@@ -35,12 +37,29 @@ class Namespace(object):
         self._content_assist_hooks = []
         self._update_listeners = set()
         self._init_caches()
+        self._set_pythonpath()
+        PUBLISHER.subscribe(self._setting_changed, RideSettingsChanged)
 
     def _init_caches(self):
-        self._lib_cache = LibraryCache(self._settings, self.update, self._library_manager)
+        self._lib_cache = LibraryCache(
+            self._settings, self.update, self._library_manager)
         self._resource_factory = ResourceFactory(self._settings)
         self._retriever = DatafileRetriever(self._lib_cache, self._resource_factory)
         self._context_factory = _RetrieverContextFactory()
+
+    def _set_pythonpath(self):
+        values = self._settings.get('pythonpath', [])
+        for path in values:
+            if path not in sys.path:
+                sys.path.insert(0, path.replace('/', os.sep))
+
+    def _setting_changed(self, message):
+        section, setting = message.keys
+        if section == '' and setting == 'pythonpath':
+            for p in set(message.old).difference(message.new):
+                if p in sys.path:
+                    sys.path.remove(p)
+            self._set_pythonpath()
 
     def set_library_manager(self, library_manager):
         self._library_manager = library_manager
@@ -512,4 +531,3 @@ class _Keywords(object):
     def _get_bdd_name(self, kw_name):
         match = self.regexp.match(kw_name)
         return match.group(2) if match else None
-

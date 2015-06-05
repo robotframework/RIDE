@@ -142,8 +142,9 @@ class RideSettingsChanged(RideMessage):
     keys is a tuple of key names. For example, if the "Grid Colors" section
     was modified the keys would be ("Grid Colors"), or a specific plugin
     setting might be ("Plugin", "Preview", "format").
+    `old` and `new` contain the old and the new value of the setting.
     """
-    data = ['keys']
+    data = ['keys', 'old', 'new']
 
 
 class RideExecuteSpecXmlImport(RideMessage):

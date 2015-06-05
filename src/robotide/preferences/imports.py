@@ -14,8 +14,8 @@
 
 import wx
 
-from robotide.widgets import (Label, TextField, VerticalSizer, HorizontalSizer,
-        HelpLabel)
+from robotide.widgets import (
+    Label, TextField, VerticalSizer, HorizontalSizer, HelpLabel)
 
 from .widgets import PreferencesPanel
 
@@ -23,6 +23,7 @@ from .widgets import PreferencesPanel
 class ImportPreferences(PreferencesPanel):
     location = ('Importing')
     title = 'Automatic imports and PYTHONPATH'
+
     def __init__(self, parent, settings):
         super(PreferencesPanel, self).__init__(parent)
         self.SetSizer(VerticalSizer())
@@ -49,14 +50,10 @@ class ImportPreferences(PreferencesPanel):
         return Label(self, label=label)
 
     def _editor_for(self, setting):
-        initial_value = ', '.join(setting.current_value)
+        initial_value = ', '.join(setting.original_value)
         editor = TextField(self, initial_value)
-        editor.Bind(wx.EVT_TEXT, lambda evt: setting.set(editor.GetValue()))
+        editor.Bind(wx.EVT_KILL_FOCUS, lambda evt: setting.set(editor.GetValue()))
         return editor
-
-    def close(self):
-        for s in self._settings:
-            s.publish()
 
 
 class Setting(object):
@@ -65,12 +62,8 @@ class Setting(object):
         self._settings = settings
         self.name = name
         self.help = help
-        self._original_value = settings[name]
-        self.current_value = self._original_value
+        self.original_value = settings[name]
 
     def set(self, new_value):
-        self.current_value = [token.strip() for token in new_value.split(',') if token.strip()]
-
-    def publish(self):
-        self._settings.set(self.name, self.current_value)
-        self._settings.notify(self.name, self._original_value, self.current_value)
+        self._settings[self.name] = \
+            [token.strip() for token in new_value.split(',') if token.strip()]

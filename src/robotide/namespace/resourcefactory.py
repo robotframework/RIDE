@@ -26,20 +26,9 @@ class ResourceFactory(object):
         self.python_path_cache = {}
         self._excludes = settings.excludes
         self.check_path_from_excludes = self._excludes.contains
-        self._set_pythonpath(settings.get('pythonpath', []))
-        settings.add_change_listener(self)
 
     def _with_separator(self, dir):
         return os.path.abspath(dir)+os.path.sep
-
-    def _set_pythonpath(self, values):
-        for path in values:
-            if path not in sys.path:
-                sys.path.insert(0, path.replace('/', os.sep))
-
-    def setting_changed(self, name, old_value, new_value):
-        if name == 'pythonpath':
-            self._set_pythonpath(new_value)
 
     def get_resource(self, directory, name, report_status=True):
         path = self._build_path(directory, name)

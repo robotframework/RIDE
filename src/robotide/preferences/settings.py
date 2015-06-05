@@ -245,10 +245,12 @@ class _Section(object):
             for key, _value in value._config_obj.items():
                 self[name].set(key, _value, autosave, override)
         elif name not in self._config_obj or override:
+            old = self._config_obj[name] if name in self._config_obj else None
             self._config_obj[name] = value
             if autosave:
                 self.save()
-            RideSettingsChanged(keys=[self._name, name]).publish()
+            RideSettingsChanged(
+                keys=[self._name, name], old=old, new=value).publish()
 
     def set_values(self, settings, autosave=True, override=True):
         """Set values from settings. 'settings' needs to be a dictionary.
@@ -289,18 +291,10 @@ class Settings(_Section):
             _Section.__init__(self, ConfigObj(user_path, unrepr=True))
         except UnreprError, error:
             raise ConfigurationError(error)
-        self._listeners = []
         self.excludes = excludes.Excludes(SETTINGS_DIRECTORY)
 
     def save(self):
         self._config_obj.write()
-
-    def add_change_listener(self, l):
-        self._listeners.append(l)
-
-    def notify(self, name, old_value, new_value):
-        for l in self._listeners:
-            l.setting_changed(name, old_value, new_value)
 
 
 class RideSettings(Settings):
