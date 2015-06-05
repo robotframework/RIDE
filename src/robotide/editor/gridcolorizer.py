@@ -40,9 +40,12 @@ class Colorizer(object):
             self._timer.Restart(50, self._current_task_id, selection_content)
 
     def _coloring_task(self, task_index, selection_content, row=0, col=0):
-        if task_index != self._current_task_id or self._grid is None:
+        # Since this is a callback in CallLater, the grid might have
+        # been destroyed e.g. when changing tree nodes. In this case
+        # self._grid points to a PyDeadObject, which is Falsy.
+        if task_index != self._current_task_id or not(self._grid):
             return
-        if self._grid and row >= self._grid.NumberRows:
+        if row >= self._grid.NumberRows:
             self._grid.ForceRefresh()
             self._grid.AutoSizeRows()
         elif col < self._grid.NumberCols:
