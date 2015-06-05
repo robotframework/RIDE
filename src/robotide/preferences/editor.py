@@ -92,12 +92,6 @@ class PreferenceEditor(wx.Dialog):
 
             panel = self._container.AddPanel(panels[0])
             self._container.ShowPanel(panel)
-        self.Bind(wx.EVT_CLOSE, self._notify_close)
-
-    def _notify_close(self, event):
-        for p in self._panels:
-            p.close()
-        event.Skip()
 
     def OnTreeSelection(self, event):
         """Show panel that corresponds to selected tree item

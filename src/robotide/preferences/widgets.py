@@ -38,10 +38,6 @@ class PreferencesPanel(wx.Panel):
         container.SetSizerAndFit(sizer)
         return container
 
-    def close(self):
-        """Callback to do actions when editor is closed."""
-        pass
-
 
 class PreferencesComboBox(wx.ComboBox):
     """A combobox tied to a specific setting. Saves value to disk after edit."""

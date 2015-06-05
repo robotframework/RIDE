@@ -1,19 +1,20 @@
 import unittest
 from robotide.preferences.imports import Setting
 
+
 class TestImportSetting(unittest.TestCase):
 
     def setUp(self):
-        settings = {'name':['foo']}
-        self.import_setting = Setting(settings, 'name', 'help')
-        self.assertEqual(['foo'], self.import_setting.current_value)
+        self.settings = {'name': ['foo']}
+        self.import_setting = Setting(self.settings, 'name', 'help')
+        self.assertEqual(['foo'], self.import_setting.original_value)
 
     def test_that_empty_data_is_cleaned(self):
         self._test_data_set('', [])
 
     def _test_data_set(self, value, expected):
         self.import_setting.set(value)
-        self.assertEqual(expected, self.import_setting.current_value)
+        self.assertEqual(expected, self.settings['name'])
 
     def test_that_only_non_empty_data_is_set(self):
         self._test_data_set(',,bar, ,', ['bar'])
