@@ -28,3 +28,5 @@ A very simple demo
 .. _Wiki: https://github.com/robotframework/RIDE/wiki
 .. _BUILD: https://github.com/robotframework/RIDE/blob/master/BUILD.rest
 .. _mailing list: http://groups.google.com/group/robotframework-users/
+
+Join the chat at https://gitter.im/robotframework/RIDE
