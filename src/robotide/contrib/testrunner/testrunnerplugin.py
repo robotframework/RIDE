@@ -98,7 +98,7 @@ class TestRunnerPlugin(Plugin):
         Plugin.__init__(self, application, initially_enabled=True,
                         default_settings=self.defaults)
         self.version = "3.01"
-        self.metadata = {"url": "http://code.google.com/p/robotframework-ride/wiki/TestRunnerPlugin"}
+        self.metadata = {"url": "https://github.com/robotframework/RIDE/wiki/Test-Runner-Plugin"}
         self._reload_timer = None
         self._frame = application.frame
         self._report_file = None

@@ -2,7 +2,7 @@
 
 # Download base image if needed
 if [ ! -e robot-trans.png ]; then
-    wget http://robotframework.googlecode.com/hg/doc/images/robot-trans.png
+    wget https://github.com/robotframework/robotframework/blob/master/doc/images/robot-trans.png
 fi
 
 # Cut base image and save it as PNM and as alpha channel

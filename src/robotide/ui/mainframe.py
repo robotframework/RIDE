@@ -293,10 +293,10 @@ class RideFrame(wx.Frame, RideEventHandler):
         dialog.Show()
 
     def OnReportaProblem(self, event):
-        wx.LaunchDefaultBrowser('http://code.google.com/p/robotframework-ride/issues/list')
+        wx.LaunchDefaultBrowser('http://github.com/robotframework/RIDE/issues')
 
     def OnUserGuide(self, event):
-        wx.LaunchDefaultBrowser('http://code.google.com/p/robotframework/wiki/UserGuide')
+        wx.LaunchDefaultBrowser('http://robotframework.org/robotframework/#user-guide')
 
     def _has_data(self):
         return self._controller.data is not None

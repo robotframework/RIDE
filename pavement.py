@@ -58,7 +58,7 @@ Programming Language :: Python
 Topic :: Software Development :: Testing
           """.strip().splitlines(),
       author       = 'Robot Framework Developers',
-      author_email = 'robotframework-devel@googlegroups,com',
+      author_email = 'robotframework-devel@googlegroups.com',
       url          = 'https://github.com/robotframework/RIDE/',
       download_url = 'https://github.com/robotframework/RIDE/releases/',
       package_dir  = {'' : str(SOURCE_DIR)},
