@@ -25,5 +25,6 @@ A very simple demo
 
 .. _Downloads: https://pypi.python.org/pypi/robotframework-ride
 .. _Wiki: https://github.com/robotframework/RIDE/wiki
+.. _issue tracker: https://github.com/robotframework/RIDE/issues
 .. _BUILD: https://github.com/robotframework/RIDE/blob/master/BUILD.rest
 .. _mailing list: http://groups.google.com/group/robotframework-users/
